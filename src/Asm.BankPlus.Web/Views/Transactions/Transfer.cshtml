@@ -1,0 +1,65 @@
+﻿@model TransferModel
+@{
+    ViewBag.Title = "Transfer";
+}
+
+<section>
+    <header>
+        <h2>Transfer</h2>
+    </header>
+    @using (Html.BeginForm())
+{
+    <fieldset>
+        <legend>Accounts</legend>
+        <header>
+            <h3>Accounts</h3>
+        </header>
+        <div class="fieldGroup">
+            @Html.LabelFor(m => m.SourceAccountId)
+            @Html.DropDownListFor(m => m.SourceAccountId, new SelectList(ViewData["Accounts"] as IEnumerable<VirtualAccount>, "VirtualAccountId", "Name", Model.SourceAccountId))
+            @Html.ValidationMessageFor(m => m.SourceAccountId)
+        </div>
+        <div class="fieldGroup">
+            @Html.LabelFor(m => m.DestinationAccountId)
+            @Html.DropDownListFor(m => m.DestinationAccountId, new SelectList(ViewData["Accounts"] as IEnumerable<VirtualAccount>, "VirtualAccountId", "Name", Model.DestinationAccountId))
+            @Html.ValidationMessageFor(m => m.DestinationAccountId)
+        </div>
+    </fieldset>
+
+        <fieldset>
+            <legend>Details</legend>
+            <header>
+                <h3>Details</h3>
+            </header>
+            <div class="fieldGroup">
+                @Html.LabelFor(m => m.Amount)
+                @Html.TextBoxFor(m => m.Amount, new { type = "number", min = 0.01 })
+                @Html.ValidationMessageFor(m => m.Amount)
+            </div>
+            <div class="fieldGroup">
+                @Html.LabelFor(m => m.Description)
+                @Html.TextBoxFor(m => m.Description)
+            </div>
+        </fieldset>
+        
+        
+        <fieldset>
+            <legend>Recurring Transaction</legend>
+            <header>
+                <h3>Recurring Transaction</h3>
+            </header>
+            <div class="fieldGroup">
+                @Html.LabelFor(m => m.RecurringTransaction)
+                @Html.CheckBoxFor(m => m.RecurringTransaction)
+            </div>
+            <div class="fieldGroup">
+                @Html.LabelFor(m => m.Schedule)
+                @Html.DropDownListFor(m => m.Schedule, new SelectList(ViewData["Schedules"] as IEnumerable<KeyValuePair<Schedule, string>>, "Key", "Value", Model.Schedule))
+            </div>
+        </fieldset>
+
+        <section class="actions">
+            <input type="submit" value="Submit" />
+        </section>
+    }
+</section>

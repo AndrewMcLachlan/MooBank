@@ -1,0 +1,26 @@
+﻿@model HistoryModel
+@{
+    ViewBag.Title = "Transaction History";
+}
+
+<section>
+    <header>
+        <h2>Transaction History for @Model.Account</h2>
+    </header>
+
+    <table class="trasactionHistory">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Account</th>
+                <th>Amount</th>
+                <th>Transaction Type</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            @Html.DisplayFor(m => m.Transactions)
+        </tbody>
+
+    </table>
+</section>

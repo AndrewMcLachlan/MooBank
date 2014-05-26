@@ -1,0 +1,30 @@
+﻿@model Asm.BankPlus.Web.Models.VirtualAccountsModel
+
+@{
+    ViewBag.Title = "Virtual Accounts";
+}
+
+@section scripts
+{
+    <script type="text/javascript" src="~/content/js/virtualaccounts.js"></script>
+}
+
+<section>
+    <header>
+        <h2>Manage Virtual Accounts</h2>
+    </header>
+    <table id="accountManagement" class="accountManagement">
+        <thead>
+            <tr>
+                <th><button id="add" title="Add new account">+</button></th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Balance</th>
+                <th>Is Default</th>
+            </tr>
+        </thead>
+        <tbody>
+            @Html.EditorFor(a => a.VirtualAccounts)
+        </tbody>
+    </table>
+</section>

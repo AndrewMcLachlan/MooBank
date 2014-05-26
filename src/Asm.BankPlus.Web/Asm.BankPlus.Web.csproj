@@ -1,0 +1,353 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{72F91C11-76F9-4C89-86C0-F4E55BCB2642}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Asm.BankPlus.Web</RootNamespace>
+    <AssemblyName>Asm.BankPlus.Web</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <UseIISExpress>false</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Asm.UserService.Security">
+      <HintPath>..\..\packages\Asm.UserService.Security.1.0.3\lib\net45\Asm.UserService.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>..\..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Web.Razor">
+      <HintPath>..\..\packages\Microsoft.AspNet.Razor.3.0.0\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Webpages">
+      <HintPath>..\..\packages\Microsoft.AspNet.Webpages.3.0.0\lib\net45\System.Web.Webpages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Webpages.Deployment">
+      <HintPath>..\..\packages\Microsoft.AspNet.Webpages.3.0.0\lib\net45\System.Web.Webpages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Webpages.Razor">
+      <HintPath>..\..\packages\Microsoft.AspNet.Webpages.3.0.0\lib\net45\System.Web.Webpages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Helpers">
+      <HintPath>..\..\packages\Microsoft.AspNet.Webpages.3.0.0\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc">
+      <HintPath>..\..\packages\Microsoft.AspNet.Mvc.5.0.0\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\css\bankplus\skin.css">
+      <DependentUpon>skin.less</DependentUpon>
+    </Content>
+    <Content Include="Content\css\bankplus\skin.min.css">
+      <DependentUpon>skin.less</DependentUpon>
+    </Content>
+    <Content Include="Content\css\bankplus\variables.css">
+      <DependentUpon>variables.less</DependentUpon>
+    </Content>
+    <Content Include="Content\css\bankplus\variables.min.css">
+      <DependentUpon>variables.less</DependentUpon>
+    </Content>
+    <Content Include="Content\css\bootstrap-theme.css" />
+    <Content Include="Content\css\bootstrap-theme.min.css" />
+    <Content Include="Content\css\bootstrap.css" />
+    <Content Include="Content\css\bootstrap.min.css" />
+    <Content Include="Content\css\fonts.css">
+      <DependentUpon>fonts.less</DependentUpon>
+    </Content>
+    <Content Include="Content\css\fonts.min.css">
+      <DependentUpon>fonts.less</DependentUpon>
+    </Content>
+    <Content Include="Content\css\site.css">
+      <DependentUpon>site.less</DependentUpon>
+    </Content>
+    <Content Include="Content\css\site.min.css">
+      <DependentUpon>site.less</DependentUpon>
+    </Content>
+    <Content Include="Content\css\site.responsive.css">
+      <DependentUpon>site.responsive.less</DependentUpon>
+    </Content>
+    <Content Include="Content\css\site.responsive.min.css">
+      <DependentUpon>site.responsive.less</DependentUpon>
+    </Content>
+    <Content Include="Content\css\variables.css">
+      <DependentUpon>variables.less</DependentUpon>
+    </Content>
+    <Content Include="Content\css\variables.min.css">
+      <DependentUpon>variables.less</DependentUpon>
+    </Content>
+    <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\images\moobank\apple-touch-icon-120x120.png" />
+    <Content Include="Content\images\moobank\apple-touch-icon-152x152.png" />
+    <Content Include="Content\images\moobank\apple-touch-icon-60x60.png" />
+    <Content Include="Content\images\moobank\apple-touch-icon-76x76.png" />
+    <Content Include="Content\images\moobank\apple-touch-startup-image-1536x2008.png" />
+    <Content Include="Content\images\moobank\apple-touch-startup-image-2048x1496.png" />
+    <Content Include="Content\images\moobank\apple-touch-startup-image-640x920.png" />
+    <Content Include="Content\images\background.png" />
+    <Content Include="Content\images\close.png" />
+    <Content Include="Content\images\favicon.png" />
+    <Content Include="Content\images\moobank\moo%402x.png" />
+    <Content Include="Content\images\moobank\moo-small%402x.png" />
+    <Content Include="Content\images\moobank\moo-small.png" />
+    <Content Include="Content\images\moobank\moo.png" />
+    <Content Include="Content\js\bootstrap.js" />
+    <Content Include="Content\js\bootstrap.min.js" />
+    <Content Include="Content\js\core.js" />
+    <Content Include="Content\js\core.min.js">
+      <DependentUpon>core.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\home.js">
+      <DependentUpon>home.ts</DependentUpon>
+    </Content>
+    <Content Include="Content\js\home.min.js">
+      <DependentUpon>home.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\virtualaccounts.js">
+      <DependentUpon>virtualaccounts.ts</DependentUpon>
+    </Content>
+    <Content Include="Content\fonts\OpenSansCondensed.eot" />
+    <Content Include="Content\fonts\OpenSansCondensed.ttf" />
+    <Content Include="Content\fonts\OpenSansCondensed.woff" />
+    <Content Include="Content\fonts\Oswald.eot" />
+    <Content Include="Content\fonts\Oswald.ttf" />
+    <Content Include="Content\fonts\Oswald.woff" />
+    <Content Include="Content\fonts\OswaldLight.eot" />
+    <Content Include="Content\fonts\OswaldLight.ttf" />
+    <Content Include="Content\fonts\OswaldLight.woff" />
+    <Content Include="Content\css\fonts.less" />
+    <Content Include="Content\fonts\OpenSansCondensedBold.eot" />
+    <Content Include="Content\fonts\OpenSansCondensedBold.ttf" />
+    <Content Include="Content\fonts\OpenSansCondensedBold.woff" />
+    <Content Include="Content\fonts\OswaldBold.eot" />
+    <Content Include="Content\fonts\OswaldBold.ttf" />
+    <Content Include="Content\fonts\OswaldBold.woff" />
+    <Content Include="Content\js\virtualaccounts.min.js">
+      <DependentUpon>virtualaccounts.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\virtualaccounts.min.js.map">
+      <DependentUpon>virtualaccounts.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\home.js.map">
+      <DependentUpon>home.ts</DependentUpon>
+    </Content>
+    <Content Include="Content\js\home.min.js.map">
+      <DependentUpon>home.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\virtualaccounts.js.map">
+      <DependentUpon>virtualaccounts.ts</DependentUpon>
+    </Content>
+    <Content Include="Content\js\core.min.js.map">
+      <DependentUpon>core.js</DependentUpon>
+    </Content>
+    <Content Include="Content\css\bankplus\skin.less" />
+    <Content Include="Content\css\bankplus\variables.less" />
+    <None Include="Content\js\_references.js" />
+    <Content Include="Global.asax" />
+    <Content Include="Content\css\site.less" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\css\site.responsive.less" />
+    <Content Include="Content\css\variables.less" />
+    <None Include="Content\js\jquery-2.0.3.intellisense.js">
+      <DependentUpon>jquery-2.0.3.js</DependentUpon>
+    </None>
+    <Content Include="Content\js\jquery-2.0.3.js" />
+    <Content Include="Content\js\jquery-2.0.3.min.js">
+      <DependentUpon>jquery-2.0.3.js</DependentUpon>
+    </Content>
+    <None Include="Content\js\jquery.validate-vsdoc.js">
+      <DependentUpon>jquery.validate.js</DependentUpon>
+    </None>
+    <Content Include="Content\js\jquery.validate.js" />
+    <Content Include="Content\js\jquery.validate.min.js">
+      <DependentUpon>jquery.validate.js</DependentUpon>
+    </Content>
+    <Content Include="Content\js\jquery.validate.unobtrusive.js" />
+    <Content Include="Content\js\jquery.validate.unobtrusive.min.js">
+      <DependentUpon>jquery.validate.unobtrusive.js</DependentUpon>
+    </Content>
+    <Content Include="robots.txt" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Views\Home\RefreshBalances.cshtml" />
+    <Content Include="Views\Transactions\DisplayTemplates\HistoryTransaction.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\TransactionType.cshtml" />
+    <Content Include="Views\Home\Settings.cshtml" />
+    <None Include="Web.ReleaseDemo.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Common\BankPlusAssemblyInfo.cs">
+      <Link>Properties\BankPlusAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Shared\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\DynamicAssemblyInfo.cs">
+      <Link>Properties\DynamicAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AccountsController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\TransactionsController.cs" />
+    <Compile Include="Controllers\VirtualAccountsController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AccountModel.cs" />
+    <Compile Include="Models\HistoryModel.cs" />
+    <Compile Include="Models\LoginModel.cs" />
+    <Compile Include="Models\TransferModel.cs" />
+    <Compile Include="Models\VirtualAccountsModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\web.config" />
+    <Content Include="packages.config" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Login\Index.cshtml" />
+    <Content Include="Views\Transactions\Transfer.cshtml" />
+    <Content Include="Views\VirtualAccounts\Index.cshtml" />
+    <Content Include="Views\VirtualAccounts\EditorTemplates\VirtualAccount.cshtml" />
+    <Content Include="Content\js\jquery-2.0.3.min.map">
+      <DependentUpon>jquery-2.0.3.js</DependentUpon>
+    </Content>
+    <Content Include="Views\Transactions\History.cshtml" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Content\css\moobank\" />
+    <Folder Include="Content\images\bankplus\" />
+    <Folder Include="Views\Accounts\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Asm.BankPlus.DataAccess\Asm.BankPlus.DataAccess.csproj">
+      <Project>{05ab130d-c421-48e6-a688-3b9c95111657}</Project>
+      <Name>Asm.BankPlus.DataAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Asm.BankPlus.Models\Asm.BankPlus.Models.csproj">
+      <Project>{7b08f9b6-8543-4c80-a50c-de68c8af0b7c}</Project>
+      <Name>Asm.BankPlus.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Asm.BankPlus\Asm.BankPlus.csproj">
+      <Project>{689bdd20-39be-4624-a5dd-a3c9f4e597e3}</Project>
+      <Name>Asm.BankPlus</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="Content\js\home.ts" />
+    <TypeScriptCompile Include="Content\js\virtualaccounts.ts" />
+    <TypeScriptCompile Include="Scripts\typings\jquery.validation\jquery.validation.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseDemo|AnyCPU'">
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE;DEMO</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>5042</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://bankplus.mclachlan.home</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

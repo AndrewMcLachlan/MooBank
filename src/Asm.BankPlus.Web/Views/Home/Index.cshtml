@@ -1,0 +1,86 @@
+﻿@model Asm.BankPlus.Models.AccountModel
+
+@{
+    ViewBag.Title = "Account Summary";
+}
+
+@section scripts
+{
+    <script type="text/javascript" src="~/content/js/home.js"></script>
+}
+
+<section>
+    <header>
+        <h2>Virtual Accounts</h2>
+    </header>
+
+    <table id="virtualAccounts" class="accounts" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Balance</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var account in Model.VirtualAccounts)
+            {
+                <tr>
+                    <td class="account">
+                        <div class="name">@account.Name</div>
+                        <div class="description">@account.Description</div>
+                        <nav class="desktop">
+                            <ul>
+                                <li>
+                                    <a href="~/transactions/transfer/@account.VirtualAccountId">Transfer funds</a>
+                                </li>
+                                <li>
+                                    <a href="~/transactions/history/@account.VirtualAccountId">Transactions</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </td>
+                    <td>@account.Balance @(account.Balance < 0 ? "D" : "C")R</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h2>Accounts</h2>
+
+    <table class="accounts" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Current Balance</th>
+                <th>Available Balance</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var account in Model.Accounts)
+            {
+                <tr>
+                    <td class="account">
+                        <div class="name">@account.Name</div>
+                        <nav class="desktop">
+                            <ul>
+                                <li>
+                                    <a href="javascript:home.updateBalance('@account.AccountId')">Update Balance</a>
+                                </li>
+                                <li id="save_@account.AccountId" style="display:none">
+                                    <a href="javascript:home.save('@account.AccountId')">Save</a>
+                                </li>
+                                <li id="cancel_@account.AccountId" style="display:none">
+                                    <a href="javascript:home.cancel('@account.AccountId')">Cancel</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </td>
+                    <td><span id="currentBalanceDisplay_@account.AccountId" class="@(account.AccountBalance < 0 ? "negative" : String.Empty)">@account.AccountBalance @(account.AccountBalance < 0 ? "D" : "C")R</span><input id="currentBalanceEdit_@account.AccountId" type="number" value="@account.AccountBalance" style="display: none" /></td>
+                    <td><span id="availableBalanceDisplay_@account.AccountId" class="@(account.AvailableBalance < 0 ? "negative" : String.Empty)">@account.AvailableBalance @(account.AvailableBalance < 0 ? "D" : "C")R</span><input id="availableBalanceEdit_@account.AccountId" type="number" value="@account.AvailableBalance" style="display:none" /></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>

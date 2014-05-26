@@ -1,0 +1,30 @@
+﻿@{
+    ViewBag.Title = "Settings";
+}
+
+<section>
+    <header>
+        <h2>Settings</h2>
+    </header>
+
+    <section class="box">
+        <header>
+            <h3>Refresh Balances</h3>
+        </header>
+        @using (Html.BeginForm("refreshbalances", "home"))
+        {
+            <label for="password">Email Password</label>
+            <input name="password" id="password" type="password" />
+            <input type="submit" value="Go" />
+        }
+    </section>
+    @*
+    <section class="box">
+        @using (Html.BeginForm("runrecurringtransactions", "home"))
+        {
+        }
+    </section>
+        *@
+</section>
+
+

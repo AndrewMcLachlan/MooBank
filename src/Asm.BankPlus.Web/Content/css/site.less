@@ -1,0 +1,312 @@
+﻿@import url(variables.less);
+@import url(fonts.less);
+
+.negative {
+    color: rgb(204,0,0);
+}
+
+.mobile {
+    display: none;
+}
+
+.desktop {
+    display: inline;
+}
+
+html {
+    background-color: @background;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Calibri, Arial, sans-serif;
+    background-color: #FFF;
+
+    > header {
+        background: url(../images/background.png) no-repeat @background;
+        /*background-color: @background;
+        background: -moz-radial-gradient(65% 50%, ellipse farthest-corner,rgb(255,35,35) 1%, rgb(230,0,0) 50%, @background 100%);
+        background: -webkit-radial-gradient(100% 50%, ellipse farthest-corner, rgb(255,0,0), @background);
+        background: radial-gradient(100% 50%, ellipse farthest-corner, rgb(255,0,0), @background);*/
+        height: 111px;
+
+        img {
+            margin-left: 200px;
+        }
+
+        nav {
+            float: right;
+            margin-top: 10px;
+            margin-right: 20px;
+
+            ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+
+                li {
+                    display: inline-block;
+                    border-right: 1px solid white;
+                    padding: 0 10px 0 8px;
+                }
+
+                    li:last-child {
+                        border-right: none;
+                    }
+            }
+
+            a {
+                color: #FFF;
+                text-decoration: none;
+                font-family: 'Open Sans Condensed', 'Franklin Gothic', Helvetica, Arial, sans-serif;
+                font-weight: bold;
+            }
+        }
+    }
+
+    > footer {
+        font-family: 'Open Sans Condensed', 'Franklin Gothic', Helvetica, Arial, sans-serif;
+        width: 100%;
+        background: @background;
+        text-align: center;
+        color: #FFF;
+        padding-top: 20px;
+        font-weight: bold;
+
+        a {
+            color: #FFF;
+            font-size: 0.8em;
+        }
+    }
+
+    > section {
+        min-height: 800px;
+        margin: 0 200px;
+        background-color: #FFF;
+    }
+}
+
+/*#region Headings*/
+h1, h2, h3, legend {
+    font-family: 'Open Sans Condensed', 'Franklin Gothic', Helvetica, Arial, sans-serif;
+}
+
+h1 {
+    font-size: 3em;
+}
+
+h3, legend {
+    font-size: 1em;
+    margin-top: 0;
+    font-weight: bold;
+}
+
+legend {
+    display:none;
+
+}
+/*#endregion*/
+
+input, select {
+    font-family: Calibri, Arial, sans-serif;
+}
+
+input.description {
+    width: 500px;
+}
+
+input[type=submit] {
+    font-family: 'Franklin Gothic', Helvetica, Arial, snans-serif;
+    color: #FFF;
+    background: linear-gradient(to bottom, #111 0%, #3A3A3A 50%, #000 50%, #000 100%);
+    border: none;
+    border-radius: 5px;
+    padding: 5px 20px;
+}
+
+.clear {
+    clear: both;
+}
+
+/*#region Tables*/
+th {
+    font-family: 'Open Sans Condensed', 'Franklin Gothic', Helvetica, Arial, sans-serif;
+}
+
+table {
+    border-spacing: 0;
+
+
+    th, td {
+        border-bottom: 1px solid #AAA;
+    }
+}
+
+    table.accounts {
+        width: 100%;
+
+        th {
+            text-align: right;
+        }
+
+            th:first-child {
+                width: 50%;
+                text-align: left;
+            }
+
+        td {
+            margin: 0;
+        }
+
+            td.account .name, .accountName {
+                font-size: 1.2em;
+                font-weight: bold;
+            }
+
+            td.account .description {
+                font-size: 0.9em;
+            }
+
+            td.account ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+
+                li {
+                    display: inline;
+                    font-size: 0.8em;
+                    color: #999;
+                }
+
+                    li:before {
+                        content: '|';
+                    }
+
+                    li:first-child:before {
+                        content: '';
+                    }
+
+                a {
+                    color: #999;
+                }
+            }
+
+        th, td {
+            text-align: right;
+        }
+
+        tbody td:first-child {
+            text-align: left;
+        }
+    }
+
+    table.accountManagement {
+        width: 100%;
+
+        th, td {
+            text-align: left;
+        }
+
+        td {
+            padding: 5px 0;
+        }
+
+        button {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+    }
+
+    table.trasactionHistory {
+        width: 100%;
+
+        th {
+            text-align: left;
+        }
+    }
+/*#endregion*/
+
+section.login {
+    background: url(../images/background.png) no-repeat @background;
+    background-position: 0 -111px;
+    color: #FFF;
+    margin: 0;
+    padding-left: 200px;
+    padding-right: 200px;
+
+    header h1 {
+        font-size: 3em;
+        margin: 0 0 20px 0;
+        padding-top: 20px;
+    }
+
+    fieldset {
+        border: none;
+    }
+
+    div.fieldGroup {
+        float: left;
+        padding-right: 20px;
+    }
+
+    label {
+        font-family: 'Open Sans Condensed', 'Franklin Gothic', Helvetica, Arial, sans-serif;
+        font-weight: bold;
+        font-size: 2em;
+        display: block;
+    }
+
+    input[type=text], input[type=email], input[type=password], input[type=number] {
+        font-size: 1.5em;
+        padding: 15px;
+        background: linear-gradient(to bottom, #EEE 0%, #FFF 100%);
+        border: 2px solid #CCC;
+        border-radius: 5px;
+        width: 400px;
+    }
+
+    input[type=submit] {
+        float: left;
+        margin-top: 51px;
+        font-size: 2em;
+        font-weight: bold;
+    }
+
+    .clear {
+        margin-bottom: 20px;
+    }
+}
+
+section.box, fieldset {
+    background-color: #EEE;
+    border-radius: 10px;
+    padding: 15px;
+    font-size: 1.1em;
+    margin-bottom: 20px;
+    border: none;
+
+    .fieldGroup {
+        margin-bottom: 20px;
+    }
+
+        .fieldGroup:last-child {
+            margin-bottom: 0;
+        }
+
+        .fieldGroup label {
+            display: inline-block;
+            width: 150px;
+        }
+
+    select, input[type=text], input[type=number] {
+        font-size: 1em;
+    }
+}
+
+section.actions {
+    input[type=submit] {
+        font-size: 1.1em;
+    }
+}

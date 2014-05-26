@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="5c9c59d1b2004479a64d418ab6f91d03" Name="">
+        <EntityTypeShape EntityType="BankPlusModel.Account" Width="1.5" PointX="0.75" PointY="6.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="BankPlusModel.RecurringTransaction" Width="1.5" PointX="3" PointY="3.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="BankPlusModel.Transaction" Width="1.5" PointX="6.25" PointY="2.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="BankPlusModel.VirtualAccount" Width="1.5" PointX="0.75" PointY="3.25" IsExpanded="true" />
+        <AssociationConnector Association="BankPlusModel.FK_RecurringTransaction_VirtualAccount_Destination" ManuallyRouted="false" />
+        <AssociationConnector Association="BankPlusModel.FK_RecurringTransaction_VirtualAccount_Source" ManuallyRouted="false" />
+        <AssociationConnector Association="BankPlusModel.FK_Transaction_VirtualAccount" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

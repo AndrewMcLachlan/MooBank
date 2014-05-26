@@ -1,0 +1,16 @@
+﻿@model Asm.BankPlus.Web.Models.HistoryTransaction
+
+<tr>
+    <td>@Model.Date</td>
+    <td>@Model.Account</td>
+    @if (Model.TransactionType == TransactionType.Debit || Model.TransactionType == TransactionType.RecurringDebit)
+                    {
+        <td class="negative">-@Model.Amount</td>
+                    }
+                    else
+                    {
+        <td>@Model.Amount</td>
+                    }
+    <td>@Html.DisplayFor(m => m.TransactionType)</td>
+    <td>@Model.Description</td>
+</tr>

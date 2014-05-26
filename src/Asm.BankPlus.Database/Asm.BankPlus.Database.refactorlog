@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="6271ecf0-fcdf-4aa7-bb77-e5d7d47fa084" ChangeDateTime="11/22/2013 20:44:48">
+    <Property Name="ElementName" Value="[dbo].[VirtualAccount].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[VirtualAccount]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="VirtualAccountId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="31494549-e9c3-4b26-9442-ca6669463e8c" ChangeDateTime="11/22/2013 20:47:32">
+    <Property Name="ElementName" Value="[dbo].[Transaction].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Transaction]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="TransactionId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="501947d8-5567-4a77-9e29-0293365f201a" ChangeDateTime="11/22/2013 20:48:38">
+    <Property Name="ElementName" Value="[dbo].[Transaction].[Transaction]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Transaction]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="TransactionTypeId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="2f09a0f7-37df-4b6c-92b4-a2d3e27ae2cd" ChangeDateTime="11/22/2013 20:52:37">
+    <Property Name="ElementName" Value="[dbo].[TransactionType].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TransactionType]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="TrnasactionTypeId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="fda5dcee-bc63-46d3-a185-0fa8ba2f00de" ChangeDateTime="11/22/2013 20:53:12">
+    <Property Name="ElementName" Value="[dbo].[TransactionType].[TrnasactionTypeId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TransactionType]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="TransactionTypeId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="4ffcf148-742a-40a0-9c99-57d74c8d7c99" ChangeDateTime="11/22/2013 20:53:44">
+    <Property Name="ElementName" Value="[dbo].[RecurringTransaction].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[RecurringTransaction]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="RecurringTransactionId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="bc864d09-bce4-4926-a099-ef858def3c0d" ChangeDateTime="11/22/2013 20:54:52">
+    <Property Name="ElementName" Value="[dbo].[RecurringTransaction].[PaymentScheduleId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[RecurringTransaction]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ScheduleId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="2633f58f-e85c-4f2d-a100-f9f004d817e0" ChangeDateTime="11/22/2013 20:55:39">
+    <Property Name="ElementName" Value="[dbo].[Schedule].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Schedule]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ScheduleId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="cde76a66-cbbf-426d-a7b6-595430adbdb3" ChangeDateTime="11/22/2013 23:03:36">
+    <Property Name="ElementName" Value="[dbo].[Account].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Account]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="AccountId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="15481632-103c-4c8f-87e9-a2ab4a5b1c9b" ChangeDateTime="11/25/2013 10:22:01">
+    <Property Name="ElementName" Value="[dbo].[Account].[Balance]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Account]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="AccountBalance" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="91af9231-e04e-413c-bdb3-d2a425f5e8a5" ChangeDateTime="11/28/2013 04:09:32">
+    <Property Name="ElementName" Value="[dbo].[Transaction].[TransactionDate]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Transaction]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="TransactionTime" />
+  </Operation>
+</Operations>
