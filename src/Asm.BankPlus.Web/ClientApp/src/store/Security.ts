@@ -8,7 +8,7 @@ const loggedOut = "LoggedOut";
 const initialState: Security = { loggedIn: false, msal: null };
 
 export const actionCreators = {
-    logIn: () => ({ type: loggedIn }),
+    logIn: (data) => ({ type: loggedIn, data }),
     logOut: () => ({ type: loggedOut })
 };
 
