@@ -1,0 +1,335 @@
+﻿@font-face {
+  font-family: 'Open Sans Condensed';
+  font-style: normal;
+  font-weight: 300;
+  src: url(../fonts/opensanscondensed.eot);
+  src: local("Open Sans Cond Light"), local("OpenSans-CondensedLight"), url(../fonts/opensanscondensed.woff) format("woff"), url(../fonts/opensanscondensed.ttf) format("truetype"), url(../fonts/opensanscondensed.eot) format("embedded-opentype"); }
+
+@font-face {
+  font-family: 'Open Sans Condensed';
+  font-style: normal;
+  font-weight: 700;
+  src: url(../fonts/opensanscondensedbold.eot);
+  src: local("Open Sans Condensed Bold"), local("OpenSans-CondensedBold"), url(../fonts/opensanscondensedbold.woff) format("woff"), url(../fonts/opensanscondensedbold.ttf) format("truetype"), url(../fonts/opensanscondensedbold.eot) format("embedded-opentype"); }
+
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 300;
+  src: url(../fonts/oswaldlight.eot);
+  src: local("Oswald Light"), local("Oswald-Light"), url(../fonts/oswaldlight.woff) format("woff"), url(../fonts/oswaldlight.ttf) format("truetype"), url(../fonts/oswaldlight.eot) format("embedded-opentype"); }
+
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 400;
+  src: url(../fonts/oswald.eot);
+  src: local("Oswald Regular"), local("Oswald-Regular"), url(../fonts/oswald.woff) format("woff"), url(../fonts/oswald.ttf) format("truetype"), url(../fonts/oswald.eot) format("embedded-opentype"); }
+
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 700;
+  src: url(../fonts/oswaldbold.eot);
+  src: local("Oswald Bold"), local("Oswald-Bold"), url(../fonts/oswald.woff) format("woff"), url(../fonts/oswaldbold.ttf) format("truetype"), url(../fonts/oswaldbold.eot) format("embedded-opentype"); }
+
+.negative {
+  color: #cc0000; }
+
+.mobile {
+  display: none; }
+
+.desktop {
+  display: inline; }
+
+html {
+  background-color: #c20000; }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Calibri, Arial, sans-serif;
+  background-color: #FFF; }
+
+div#body > header {
+  background: url(../images/background.png) no-repeat #c20000;
+  /*background-color: $background;
+        background: -moz-radial-gradient(65% 50%, ellipse farthest-corner,rgb(255,35,35) 1%, rgb(230,0,0) 50%, $background 100%);
+        background: -webkit-radial-gradient(100% 50%, ellipse farthest-corner, rgb(255,0,0), $background);
+        background: radial-gradient(100% 50%, ellipse farthest-corner, rgb(255,0,0), $background);*/
+  height: 111px; }
+  div#body > header img {
+    margin-left: 200px; }
+  div#body > header nav {
+    float: right;
+    margin-top: 10px;
+    margin-right: 20px; }
+    div#body > header nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0; }
+      div#body > header nav ul li {
+        display: inline-block;
+        border-right: 1px solid white;
+        padding: 0 10px 0 8px; }
+      div#body > header nav ul li:last-child {
+        border-right: none; }
+    div#body > header nav a {
+      color: #FFF;
+      text-decoration: none;
+      font-family: 'Open Sans Condensed', 'Franklin Gothic', Helvetica, Arial, sans-serif;
+      font-weight: bold; }
+
+div#body > footer {
+  font-family: 'Open Sans Condensed', 'Franklin Gothic', Helvetica, Arial, sans-serif;
+  width: 100%;
+  background: #c20000;
+  text-align: center;
+  color: #FFF;
+  padding-top: 20px;
+  font-weight: bold; }
+  div#body > footer a {
+    color: #FFF;
+    font-size: 0.8em; }
+
+div.container > section {
+  min-height: 800px;
+  margin: 0 200px;
+  background-color: #FFF; }
+
+/*#region Headings*/
+h1, h2, h3, legend {
+  font-family: 'Open Sans Condensed', 'Franklin Gothic', Helvetica, Arial, sans-serif; }
+
+h1 {
+  font-size: 3em; }
+
+h3, legend {
+  font-size: 1em;
+  margin-top: 0;
+  font-weight: bold; }
+
+legend {
+  display: none; }
+
+/*#endregion*/
+input, select {
+  font-family: Calibri, Arial, sans-serif; }
+
+input.description {
+  width: 500px; }
+
+input[type=submit] {
+  font-family: 'Franklin Gothic', Helvetica, Arial, snans-serif;
+  color: #FFF;
+  background: linear-gradient(to bottom, #111 0%, #3A3A3A 50%, #000 50%, #000 100%);
+  border: none;
+  border-radius: 5px;
+  padding: 5px 20px; }
+
+.clear {
+  clear: both; }
+
+/*#region Tables*/
+th {
+  font-family: 'Open Sans Condensed', 'Franklin Gothic', Helvetica, Arial, sans-serif; }
+
+table {
+  border-spacing: 0; }
+  table th, table td {
+    border-bottom: 1px solid #AAA; }
+
+table.accounts {
+  width: 100%; }
+  table.accounts th {
+    text-align: right; }
+  table.accounts th:first-child {
+    width: 50%;
+    text-align: left; }
+  table.accounts td {
+    margin: 0; }
+  table.accounts td.account .name, table.accounts .accountName {
+    font-size: 1.2em;
+    font-weight: bold; }
+  table.accounts td.account .description {
+    font-size: 0.9em; }
+  table.accounts td.account ul {
+    list-style: none;
+    margin: 0;
+    padding: 0; }
+    table.accounts td.account ul li {
+      display: inline;
+      font-size: 0.8em;
+      color: #999; }
+    table.accounts td.account ul li:before {
+      content: '|'; }
+    table.accounts td.account ul li:first-child:before {
+      content: ''; }
+    table.accounts td.account ul a {
+      color: #999; }
+  table.accounts th, table.accounts td {
+    text-align: right; }
+  table.accounts tbody td:first-child {
+    text-align: left; }
+
+table.accountManagement {
+  width: 100%; }
+  table.accountManagement th, table.accountManagement td {
+    text-align: left; }
+  table.accountManagement td {
+    padding: 5px 0; }
+  table.accountManagement button {
+    background: none;
+    border: none;
+    cursor: pointer; }
+
+table.trasactionHistory {
+  width: 100%; }
+  table.trasactionHistory th {
+    text-align: left; }
+
+/*#endregion*/
+section.login {
+  background: url(../images/background.png) no-repeat #c20000;
+  background-position: 0 -111px;
+  color: #FFF;
+  margin: 0;
+  padding-left: 200px;
+  padding-right: 200px; }
+  section.login header h1 {
+    font-size: 3em;
+    margin: 0 0 20px 0;
+    padding-top: 20px; }
+  section.login fieldset {
+    border: none; }
+  section.login div.fieldGroup {
+    float: left;
+    padding-right: 20px; }
+  section.login label {
+    font-family: 'Open Sans Condensed', 'Franklin Gothic', Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 2em;
+    display: block; }
+  section.login input[type=text], section.login input[type=email], section.login input[type=password], section.login input[type=number] {
+    font-size: 1.5em;
+    padding: 15px;
+    background: linear-gradient(to bottom, #EEE 0%, #FFF 100%);
+    border: 2px solid #CCC;
+    border-radius: 5px;
+    width: 400px; }
+  section.login input[type=submit] {
+    float: left;
+    margin-top: 51px;
+    font-size: 2em;
+    font-weight: bold; }
+  section.login .clear {
+    margin-bottom: 20px; }
+
+section.box, fieldset {
+  background-color: #EEE;
+  border-radius: 10px;
+  padding: 15px;
+  font-size: 1.1em;
+  margin-bottom: 20px;
+  border: none; }
+  section.box .fieldGroup, fieldset .fieldGroup {
+    margin-bottom: 20px; }
+  section.box .fieldGroup:last-child, fieldset .fieldGroup:last-child {
+    margin-bottom: 0; }
+  section.box .fieldGroup label, fieldset .fieldGroup label {
+    display: inline-block;
+    width: 150px; }
+  section.box select, section.box input[type=text], section.box input[type=number], fieldset select, fieldset input[type=text], fieldset input[type=number] {
+    font-size: 1em; }
+
+section.actions input[type=submit] {
+  font-size: 1.1em; }
+
+@media (max-width: 1024px), (max-device-width: 1024px) {
+  body > header img {
+    margin-left: 10%; }
+  body > section {
+    min-height: 200px;
+    margin: 0 10% 20px; } }
+
+@media (max-width: 767px), (max-device-width: 767px) {
+  .mobile {
+    display: inline; }
+  .desktop {
+    display: none; }
+  body.login.index {
+    background-color: #c20000; }
+    body.login.index h1 {
+      display: none; }
+  body > header {
+    background: none;
+    background-color: #c20000;
+    height: 56px; }
+    body > header > a {
+      display: block;
+      background-color: #000;
+      width: 100%;
+      height: 32px; }
+    body > header img {
+      margin-left: 0px;
+      -moz-background-size: 99px 32px;
+      -o-background-size: 99px 32px;
+      -webkit-background-size: 99px 32px;
+      background-size: 99px 32px; }
+    body > header nav {
+      float: none;
+      margin: 0;
+      font-size: 0.7em; }
+      body > header nav ul li {
+        line-height: 24px; }
+  body > section {
+    margin: 0 20px 20px; }
+  body > footer {
+    font-weight: normal;
+    padding: 10px 0;
+    font-size: 0.8em; }
+    body > footer a {
+      display: none; }
+  h1 {
+    position: absolute;
+    left: 100px;
+    top: 5px; }
+  h2 {
+    font-size: 1.1em; }
+  table.accounts {
+    font-size: 0.7em; }
+    table.accounts th:first-child {
+      width: auto; }
+    table.accounts td.account .name, table.accounts .accountName {
+      /*font-size: 1em;*/
+      font-weight: bold; }
+    table.accounts td.account .description {
+      font-size: 0.9em; }
+  section.login {
+    margin: 0;
+    padding: 20px;
+    background: none;
+    background-color: #c20000;
+    min-height: 220px; }
+    section.login header h1 {
+      font-size: 2em; }
+    section.login label {
+      font-size: 1.3em; }
+    section.login input[type=text], section.login input[type=email], section.login input[type=password] {
+      padding: 5px;
+      font-size: 1.2em;
+      width: 240px;
+      margin-bottom: 20px; }
+    section.login input[type=submit] {
+      font-size: 1.3em;
+      margin-top: 0; }
+    section.login div.fieldGroup {
+      clear: left; } }
+
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5), only screen and (-o-min-device-pixel-ratio: 3 / 2), only screen and (min--moz-device-pixel-ratio: 1.5), only screen and (min-device-pixel-ratio: 1.5) {
+  /*.mobile {
+        display: none;
+    }
+    .highdpi {
+        display: inline;
+    }*/ }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Asm.BankPlus.DataAccess;
+using Asm.BankPlus.Data;
 using Asm.BankPlus.Models;
 
 namespace Asm.BankPlus.Transactions
@@ -19,7 +19,7 @@ namespace Asm.BankPlus.Transactions
             {
                 Guid groupId = Guid.NewGuid();
 
-                Transaction source = new Transaction
+                var source = new Data.Models.Transaction
                 {
                     Amount = amount,
                     TransactionType = sourceType,
@@ -28,7 +28,7 @@ namespace Asm.BankPlus.Transactions
                     Description = description,
                 };
 
-                Transaction destination = new Transaction
+                var destination = new Data.Models.Transaction
                 {
                     Amount = amount,
                     TransactionType = destinationType,
@@ -37,8 +37,8 @@ namespace Asm.BankPlus.Transactions
                     Description = description,
                 };
 
-                db.Transactions.Add(source);
-                db.Transactions.Add(destination);
+                db.Transaction.Add(source);
+                db.Transaction.Add(destination);
 
                 db.SaveChanges();
             }

@@ -1,8 +1,5 @@
-﻿using Asm.BankPlus.DataAccess;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
+using Asm.BankPlus.Data.Models;
 
 namespace Asm.BankPlus.Web.Models
 {

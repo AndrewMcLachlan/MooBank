@@ -1,31 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using Asm.BankPlus.Web.Mvc;
+using System.Threading.Tasks;
+using Asm.BankPlus.Data;
+using Asm.BankPlus.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Asm.BankPlus.Web.Controllers
 {
-    [Authorize]
-    public class AccountsController : DataAccessController
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AccountsController : ControllerBase
     {
-        [AcceptVerbs(HttpVerbs.Patch)]
-        public ActionResult UpdateBalance(Guid id, decimal currentBalance, decimal availableBalance)
+        private BankPlusContext DataContext { get; }
+
+        public AccountsController(BankPlusContext dataContext)
         {
-            var account = BankPlusDb.Accounts.Where(a => a.AccountId == id).SingleOrDefault();
-
-            if (account == null)
-            {
-                return new HttpStatusCodeResult(404, "Not Found");
-            }
-
-            account.AccountBalance = currentBalance;
-            account.AvailableBalance = availableBalance;
-
-            BankPlusDb.SaveChanges();
-
-            return new HttpStatusCodeResult(200);
+            DataContext = dataContext;
         }
-	}
+
+        public async Task<ActionResult<AccountsModel>> Get()
+        {
+            return new ActionResult<AccountsModel>(new AccountsModel
+            {
+                Accounts = await DataContext.Account.ToListAsync(),
+                VirtualAccounts = await DataContext.VirtualAccount.ToListAsync(),
+            }); ;
+        }
+    }
 }

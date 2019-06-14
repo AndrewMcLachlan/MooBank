@@ -3,23 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Mvc;
-using Asm.BankPlus.DataAccess;
+using Asm.BankPlus.Data;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Asm.BankPlus.Web.Mvc
 {
-    public class DataAccessController : Controller
+    public abstract class BankPlusController : Controller
     {
-        protected readonly BankPlusContext BankPlusDb = new BankPlusContext();
+        protected BankPlusContext DataContext { get; }
 
-        protected override void Dispose(bool disposing)
+        public BankPlusController(BankPlusContext dataContext)
         {
-            if (disposing)
-            {
-                BankPlusDb.Dispose();
-            }
-
-            base.Dispose(disposing);
+            DataContext = dataContext;
         }
     }
 }

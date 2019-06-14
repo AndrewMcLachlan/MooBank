@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Mvc;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Configuration;
 
 namespace Asm.BankPlus.Web.Mvc
 {
     public static class HtmlHelperExtensions
     {
-        public static string AppName(this HtmlHelper html)
+        public static string AppName(this IHtmlHelper<dynamic> html)
         {
-            return ConfigurationManager.AppSettings["AppName"];
+            return ((IConfiguration)html.ViewContext.HttpContext.RequestServices.GetService(typeof(IConfiguration))).GetValue<string>("AppName");
         }
 
-        public static string Skin(this HtmlHelper html)
+        public static string Skin(this IHtmlHelper<dynamic> html)
         {
-            return ConfigurationManager.AppSettings["Skin"].ToLowerInvariant();
+            return ((IConfiguration)html.ViewContext.HttpContext.RequestServices.GetService(typeof(IConfiguration))).GetValue<string>("Skin");
         }
     }
 }

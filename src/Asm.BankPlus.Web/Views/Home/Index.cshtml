@@ -1,86 +1,44 @@
-﻿@model Asm.BankPlus.Models.AccountModel
+﻿<!DOCTYPE html>
 
-@{
-    ViewBag.Title = "Account Summary";
-}
-
-@section scripts
-{
-    <script type="text/javascript" src="~/content/js/home.js"></script>
-}
-
-<section>
-    <header>
-        <h2>Virtual Accounts</h2>
-    </header>
-
-    <table id="virtualAccounts" class="accounts" cellspacing="0">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Balance</th>
-            </tr>
-        </thead>
-        <tbody>
-
-            @foreach (var account in Model.VirtualAccounts)
-            {
-                <tr>
-                    <td class="account">
-                        <div class="name">@account.Name</div>
-                        <div class="description">@account.Description</div>
-                        <nav class="desktop">
-                            <ul>
-                                <li>
-                                    <a href="~/transactions/transfer/@account.VirtualAccountId">Transfer funds</a>
-                                </li>
-                                <li>
-                                    <a href="~/transactions/history/@account.VirtualAccountId">Transactions</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </td>
-                    <td>@account.Balance @(account.Balance < 0 ? "D" : "C")R</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <h2>Accounts</h2>
-
-    <table class="accounts" cellspacing="0">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Current Balance</th>
-                <th>Available Balance</th>
-            </tr>
-        </thead>
-        <tbody>
-
-            @foreach (var account in Model.Accounts)
-            {
-                <tr>
-                    <td class="account">
-                        <div class="name">@account.Name</div>
-                        <nav class="desktop">
-                            <ul>
-                                <li>
-                                    <a href="javascript:home.updateBalance('@account.AccountId')">Update Balance</a>
-                                </li>
-                                <li id="save_@account.AccountId" style="display:none">
-                                    <a href="javascript:home.save('@account.AccountId')">Save</a>
-                                </li>
-                                <li id="cancel_@account.AccountId" style="display:none">
-                                    <a href="javascript:home.cancel('@account.AccountId')">Cancel</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </td>
-                    <td><span id="currentBalanceDisplay_@account.AccountId" class="@(account.AccountBalance < 0 ? "negative" : String.Empty)">@account.AccountBalance @(account.AccountBalance < 0 ? "D" : "C")R</span><input id="currentBalanceEdit_@account.AccountId" type="number" value="@account.AccountBalance" style="display: none" /></td>
-                    <td><span id="availableBalanceDisplay_@account.AccountId" class="@(account.AvailableBalance < 0 ? "negative" : String.Empty)">@account.AvailableBalance @(account.AvailableBalance < 0 ? "D" : "C")R</span><input id="availableBalanceEdit_@account.AccountId" type="number" value="@account.AvailableBalance" style="display:none" /></td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</section>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="version" content="@System.Diagnostics.FileVersionInfo.GetVersionInfo(typeof(Startup).Assembly.Location).FileVersion" />
+  <meta name="application-name" content="@Html.AppName()" />
+  <meta name="skin" content="@Html.Skin()" />
+  <link rel="apple-touch-icon" href="~/images/apple-touch-icon-60x60.png" />
+  <link rel="apple-touch-icon" sizes="76x76" href="~/images/@Html.Skin()/apple-touch-icon-76x176.png" />
+  <link rel="apple-touch-icon" sizes="120x120" href="~/images/@Html.Skin()/apple-touch-icon-120x120.png" />
+  <link rel="apple-touch-icon" sizes="152x152" href="~/images/@Html.Skin()/apple-touch-icon-152x152.png" />
+  <link rel="apple-touch-startup-image" href="~/images/@Html.Skin()/apple-touch-startup-image-640x920.png" media="(device-width: 320px) and (-webkit-device-pixel-ratio: 2)" />
+  <link rel="apple-touch-startup-image" href="~/images/@Html.Skin()/apple-touch-startup-image-1536x2008.png" media="(device-width: 1536px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 2)" />
+  <link rel="apple-touch-startup-image" href="~/images/@Html.Skin()/apple-touch-startup-image-2048x1496.png" media="(device-width: 1536px)  and (orientation: landscape) and (-webkit-device-pixel-ratio: 2)" />
+  <title>@ViewBag.Title - @Html.AppName()</title>
+  <meta name="apple-mobile-web-app-title" content="@Html.AppName()" />
+  <meta name="description" content="@Html.AppName() virtual banking" />
+  <link href="~/images/favicon.png" rel="shortcut icon" />
+  <link rel="stylesheet" href="~/css/site.min.css" type="text/css" />
+  <link rel="stylesheet" href="~/css/@Html.Skin()/skin.min.css" type="text/css" />
+  <base href="~/" />
+</head>
+<body>
+  <div id="root"></div>
+  <script src="~/js/array.min.js"></script>
+  <script src="~/js/polyfill.min.js"></script>
+  <script src="~/js/history.min.js"></script>
+  <script src="~/js/react.production.min.js"></script>
+  <script src="~/js/react-dom.production.min.js"></script>
+  <script src="~/js/prop-types.min.js"></script>
+  <script src="~/js/redux.min.js"></script>
+  <script src="~/js/redux-thunk.min.js"></script>
+  <script src="~/js/react-redux.min.js"></script>
+  <script src="~/js/react-router.js" src-min="~/js/react-router.min.js"></script>
+  <script src="~/js/react-router-dom.js" src-min="~/js/react-router-dom.min.js"></script>
+  <!--<script src="~/js/react-router-redux.js" src-min="~/js/react-router-redux.min.js"></script>-->
+  <script src="~/js/reactstrap.full.min.js"></script>
+  <script src="~/js/msal.min.js"></script>
+  <script src="~/js/dist.js" src-min="~/js/dist.min.js"></script>
+</body>
+</html>

@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Asm.BankPlus.DataAccess;
+using Asm.BankPlus.Data;
 using Asm.BankPlus.Models;
 
 namespace Asm.BankPlus.Transactions
@@ -14,7 +10,7 @@ namespace Asm.BankPlus.Transactions
         {
             using (BankPlusContext db = new BankPlusContext())
             {
-                foreach(var trans in db.RecurringTransactions)
+                foreach(var trans in db.RecurringTransaction)
                 {
                     if (trans.LastRun == null)
                     {
@@ -28,7 +24,7 @@ namespace Asm.BankPlus.Transactions
                         DateTime now = DateTime.Now;
 
                         TimeSpan diff = now - lastRun;
-                        
+
                         bool process = false;
                         switch (trans.Schedule)
                         {
@@ -60,7 +56,7 @@ namespace Asm.BankPlus.Transactions
             }
         }
 
-        private static void RunTransaction(RecurringTransaction trans)
+        private static void RunTransaction(Data.Models.RecurringTransaction trans)
         {
             TransactionProcessor.Process(trans.Amount, trans.SourceVirtualAccountId, trans.DestinationVirtualAccountId, true, trans.Description);
         }
