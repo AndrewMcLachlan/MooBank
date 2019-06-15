@@ -49,6 +49,7 @@
     <None Remove="ClientApp\src\HttpClient.ts" />
     <None Remove="ClientApp\src\index.tsx" />
     <None Remove="ClientApp\src\registerServiceWorker.js" />
+    <None Remove="ClientApp\src\SecurityConfiguration.ts" />
     <None Remove="ClientApp\src\store\Accounts.ts" />
     <None Remove="ClientApp\src\store\App.ts" />
     <None Remove="ClientApp\src\store\configureStore.ts" />
@@ -109,6 +110,7 @@
     <TypeScriptCompile Include="ClientApp\src\HttpClient.ts" />
     <TypeScriptCompile Include="ClientApp\src\index.tsx" />
     <TypeScriptCompile Include="ClientApp\src\registerServiceWorker.js" />
+    <TypeScriptCompile Include="ClientApp\src\securityConfiguration.ts" />
     <TypeScriptCompile Include="ClientApp\src\store\Accounts.ts" />
     <TypeScriptCompile Include="ClientApp\src\store\App.ts" />
     <TypeScriptCompile Include="ClientApp\src\store\configureStore.ts" />

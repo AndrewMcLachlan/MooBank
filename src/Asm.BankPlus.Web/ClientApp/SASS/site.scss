@@ -53,16 +53,25 @@ div#body {
                     padding: 0 10px 0 8px;
                 }
 
-                    li:last-child {
-                        border-right: none;
-                    }
+                li:last-child {
+                    border-right: none;
+                }
             }
 
-            a {
+            a, button {
                 color: #FFF;
                 text-decoration: none;
                 font-family: 'Open Sans Condensed', 'Franklin Gothic', Helvetica, Arial, sans-serif;
                 font-weight: bold;
+            }
+
+            button {
+                background-color: transparent;
+                border: none;
+                padding: 0;
+                margin: 0;
+                font-size: 1em;
+                cursor: pointer;
             }
         }
     }

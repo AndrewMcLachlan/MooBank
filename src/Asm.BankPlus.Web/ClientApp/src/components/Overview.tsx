@@ -2,11 +2,11 @@ import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
 
-import AccountRow from "./AccountRow";
-import VirtualAccountRow from "./VirtualAccountRow";
 import { actionCreators } from "../store/Accounts";
 import * as Model from "../store/state";
 import { State } from "../store/state";
+import AccountRow from "./AccountRow";
+import VirtualAccountRow from "./VirtualAccountRow";
 
 class Overview extends React.Component<OverviewProps, any> {
 

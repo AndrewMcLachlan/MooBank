@@ -1,10 +1,11 @@
-﻿import React from "react";
+﻿import { UserAgentApplication } from "msal";
+import React from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import { State } from "../store/state";
-import { UserAgentApplication } from "msal";
 import { bindActionCreators } from "redux";
+
 import { actionCreators } from "../store/Security";
+import { State } from "../store/state";
 
 class Header extends React.Component<HeaderProps, any> {
 

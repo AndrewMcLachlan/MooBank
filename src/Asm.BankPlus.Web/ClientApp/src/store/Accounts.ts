@@ -15,7 +15,10 @@ const initialState: Accounts = {
 
 export const actionCreators = {
     requestAccounts: () => async (dispatch: Dispatch, getState: () => State) => {
-        if (getState().accounts.areLoading) {
+
+        const state = getState();
+
+        if (state.accounts.areLoading) {
             // Don"t issue a duplicate request (we already have or are loading the requested data)
             return;
         }
@@ -24,7 +27,7 @@ export const actionCreators = {
 
         const url = `api/accounts`;
 
-        const client = new HttpClient("/");
+        const client = new HttpClient(state.app.baseUrl, state.security.msal);
 
         const accounts = await client.get<Accounts>(url);
 

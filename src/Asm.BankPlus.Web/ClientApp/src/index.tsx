@@ -7,6 +7,8 @@ import App from "./App";
 import registerServiceWorker from "./registerServiceWorker";
 import configureStore from "./store/configureStore";
 import { State } from "./store/state";
+import { UserAgentApplication } from "msal";
+import * as securityConfig from "./securityConfiguration";
 
 // Get the application-wide store instance, prepopulating with state from the server where available.
 const initialState = {
@@ -15,15 +17,9 @@ const initialState = {
         baseUrl: document.getElementsByTagName("base")[0].getAttribute("href"),
         skin: Array.from(document.getElementsByTagName("meta")).find((value) => value.getAttribute("name") === "skin").getAttribute("content"),
     },
-    /*accounts: {
-        accounts: [],
-        areLoading: false,
-        virtualAccounts: [],
-    },
     security: {
-        loggedIn: false,
-        msal: null,
-    },*/
+        msal: new UserAgentApplication(securityConfig.msalConfig),
+    },
 };
 
 const store = configureStore(history, initialState);

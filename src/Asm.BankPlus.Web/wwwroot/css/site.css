@@ -74,11 +74,18 @@ div#body > header {
         padding: 0 10px 0 8px; }
       div#body > header nav ul li:last-child {
         border-right: none; }
-    div#body > header nav a {
+    div#body > header nav a, div#body > header nav button {
       color: #FFF;
       text-decoration: none;
       font-family: 'Open Sans Condensed', 'Franklin Gothic', Helvetica, Arial, sans-serif;
       font-weight: bold; }
+    div#body > header nav button {
+      background-color: transparent;
+      border: none;
+      padding: 0;
+      margin: 0;
+      font-size: 1em;
+      cursor: pointer; }
 
 div#body > footer {
   font-family: 'Open Sans Condensed', 'Franklin Gothic', Helvetica, Arial, sans-serif;

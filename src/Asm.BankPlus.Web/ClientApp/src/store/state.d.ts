@@ -21,6 +21,7 @@ export interface Accounts {
 export interface Security {
     loggedIn: boolean;
     msal: UserAgentApplication;
+    name: string;
 }
 
 export interface RealAccount {
