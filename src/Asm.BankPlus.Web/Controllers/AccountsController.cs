@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Asm.BankPlus.Data;
 using Asm.BankPlus.Models;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +9,7 @@ namespace Asm.BankPlus.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize()]
     public class AccountsController : ControllerBase
     {
         private BankPlusContext DataContext { get; }
@@ -27,7 +25,7 @@ namespace Asm.BankPlus.Web.Controllers
             {
                 Accounts = await DataContext.Account.ToListAsync(),
                 VirtualAccounts = await DataContext.VirtualAccount.ToListAsync(),
-            }); ;
+            });
         }
     }
 }
