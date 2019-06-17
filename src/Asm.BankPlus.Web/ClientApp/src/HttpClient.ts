@@ -25,10 +25,10 @@ export default class HttpClient {
 
     private async fetch<T>(url: string, method: "GET" | "DELETE"): Promise<T> {
 
-        const token = this.getToken();
+        const token = await this.getToken();
 
         const response = await fetch(this.baseUrl + url, {
-            credentials: "same-origin",
+            credentials: "include",
             headers: new Headers({
                 Accept: "application/json",
                 Authorization: "Bearer " + token,
@@ -46,11 +46,11 @@ export default class HttpClient {
 
     private async fetchWithBody<TRequest, TResponse>(url: string, data: TRequest, method: "POST" | "PUT" | "PATCH"): Promise<TResponse> {
 
-        const token = this.getToken();
+        const token = await this.getToken();
 
         const response = await fetch(this.baseUrl + url, {
             body: JSON.stringify(data),
-            credentials: "same-origin",
+            credentials: "include",
             headers: new Headers({
                 "Accept": "application/json",
                 "Authorization": "Bearer " + token,
@@ -68,10 +68,10 @@ export default class HttpClient {
         return Promise.reject(body);
     }
 
-    private async getToken() {
+    private getToken(): Promise<string> {
 
-        this.msal.acquireTokenSilent(securityConfiguration.msalRequest).then((tokenResponse) => tokenResponse.accessToken)
-            .catch(() => this.msal.acquireTokenPopup(securityConfiguration.msalRequest).then((tokenResponse) => tokenResponse.accessToken)
-                .catch((error) => console.log(error)));
+        return this.msal.acquireTokenSilent(securityConfiguration.msalRequest).then((tokenResponse) => tokenResponse.idToken.rawIdToken)
+            .catch(() => this.msal.acquireTokenPopup(securityConfiguration.msalRequest).then((tokenResponse) => tokenResponse.idToken.rawIdToken)
+                .catch((error) => { alert("Fail"); console.log(error); return null; }));
     }
 }

@@ -1,5 +1,3 @@
-import { UserAgentApplication } from "msal";
-
 import { ActionWithData } from "./redux-extensions";
 import { Security } from "./state";
 

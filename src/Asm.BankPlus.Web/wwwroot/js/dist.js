@@ -156,7 +156,7 @@ function (_React$Component) {
 
       this.props.msal.acquireTokenSilent(_securityConfiguration__WEBPACK_IMPORTED_MODULE_8__["msalRequest"]).then(function (tokenResponse) {
         _this.props.login(tokenResponse.account.name);
-      });
+      })["catch"]();
     }
   }, {
     key: "render",
@@ -296,10 +296,14 @@ function () {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                token = this.getToken();
-                _context2.next = 3;
+                _context2.next = 2;
+                return this.getToken();
+
+              case 2:
+                token = _context2.sent;
+                _context2.next = 5;
                 return fetch(this.baseUrl + url, {
-                  credentials: "same-origin",
+                  credentials: "include",
                   headers: new Headers({
                     Accept: "application/json",
                     Authorization: "Bearer " + token
@@ -307,25 +311,25 @@ function () {
                   method: method
                 });
 
-              case 3:
+              case 5:
                 response = _context2.sent;
-                _context2.next = 6;
+                _context2.next = 8;
                 return response.json();
 
-              case 6:
+              case 8:
                 body = _context2.sent;
 
                 if (!response.ok) {
-                  _context2.next = 9;
+                  _context2.next = 11;
                   break;
                 }
 
                 return _context2.abrupt("return", body);
 
-              case 9:
+              case 11:
                 return _context2.abrupt("return", Promise.reject(body));
 
-              case 10:
+              case 12:
               case "end":
                 return _context2.stop();
             }
@@ -344,11 +348,15 @@ function () {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                token = this.getToken();
-                _context3.next = 3;
+                _context3.next = 2;
+                return this.getToken();
+
+              case 2:
+                token = _context3.sent;
+                _context3.next = 5;
                 return fetch(this.baseUrl + url, {
                   body: JSON.stringify(data),
-                  credentials: "same-origin",
+                  credentials: "include",
                   headers: new Headers({
                     "Accept": "application/json",
                     "Authorization": "Bearer " + token,
@@ -357,25 +365,25 @@ function () {
                   method: method
                 });
 
-              case 3:
+              case 5:
                 response = _context3.sent;
-                _context3.next = 6;
+                _context3.next = 8;
                 return response.json();
 
-              case 6:
+              case 8:
                 body = _context3.sent;
 
                 if (!(response.ok === true)) {
-                  _context3.next = 9;
+                  _context3.next = 11;
                   break;
                 }
 
                 return _context3.abrupt("return", body);
 
-              case 9:
+              case 11:
                 return _context3.abrupt("return", Promise.reject(body));
 
-              case 10:
+              case 12:
               case "end":
                 return _context3.stop();
             }
@@ -386,32 +394,19 @@ function () {
   }, {
     key: "getToken",
     value: function getToken() {
-      return __awaiter(this, void 0, void 0,
-      /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee4() {
-        var _this = this;
+      var _this = this;
 
-        return regeneratorRuntime.wrap(function _callee4$(_context4) {
-          while (1) {
-            switch (_context4.prev = _context4.next) {
-              case 0:
-                this.msal.acquireTokenSilent(_securityConfiguration__WEBPACK_IMPORTED_MODULE_0__["msalRequest"]).then(function (tokenResponse) {
-                  return tokenResponse.accessToken;
-                })["catch"](function () {
-                  return _this.msal.acquireTokenPopup(_securityConfiguration__WEBPACK_IMPORTED_MODULE_0__["msalRequest"]).then(function (tokenResponse) {
-                    return tokenResponse.accessToken;
-                  })["catch"](function (error) {
-                    return console.log(error);
-                  });
-                });
-
-              case 1:
-              case "end":
-                return _context4.stop();
-            }
-          }
-        }, _callee4, this);
-      }));
+      return this.msal.acquireTokenSilent(_securityConfiguration__WEBPACK_IMPORTED_MODULE_0__["msalRequest"]).then(function (tokenResponse) {
+        return tokenResponse.idToken.rawIdToken;
+      })["catch"](function () {
+        return _this.msal.acquireTokenPopup(_securityConfiguration__WEBPACK_IMPORTED_MODULE_0__["msalRequest"]).then(function (tokenResponse) {
+          return tokenResponse.idToken.rawIdToken;
+        })["catch"](function (error) {
+          alert("Fail");
+          console.log(error);
+          return null;
+        });
+      });
     }
   }]);
 
