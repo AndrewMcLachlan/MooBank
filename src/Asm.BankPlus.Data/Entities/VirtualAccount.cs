@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Asm.BankPlus.Data.Models
+namespace Asm.BankPlus.Data.Entities
 {
     public partial class VirtualAccount
     {
@@ -9,7 +9,6 @@ namespace Asm.BankPlus.Data.Models
         {
             RecurringTransactionDestinationVirtualAccount = new HashSet<RecurringTransaction>();
             RecurringTransactionSourceVirtualAccount = new HashSet<RecurringTransaction>();
-            Transaction = new HashSet<Transaction>();
         }
 
         public Guid VirtualAccountId { get; set; }
@@ -21,6 +20,5 @@ namespace Asm.BankPlus.Data.Models
 
         public virtual ICollection<RecurringTransaction> RecurringTransactionDestinationVirtualAccount { get; set; }
         public virtual ICollection<RecurringTransaction> RecurringTransactionSourceVirtualAccount { get; set; }
-        public virtual ICollection<Transaction> Transaction { get; set; }
     }
 }

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Asm.BankPlus.Models;
 
-namespace Asm.BankPlus.Data.Models
+namespace Asm.BankPlus.Data.Entities
 {
     public partial class RecurringTransaction
     {
@@ -14,7 +15,7 @@ namespace Asm.BankPlus.Data.Models
         public DateTime? LastRun { get; set; }
 
         public virtual VirtualAccount DestinationVirtualAccount { get; set; }
-        public virtual BankPlus.Models.Schedule Schedule { get; set; }
+        public virtual Schedule Schedule { get; set; }
         public virtual VirtualAccount SourceVirtualAccount { get; set; }
     }
 }

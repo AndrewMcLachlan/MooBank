@@ -1,16 +1,10 @@
-﻿using System;
+﻿using Asm.BankPlus.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Asm.BankPlus.Data.Models;
 
 namespace Asm.BankPlus.Data
 {
     public partial class BankPlusContext : DbContext
     {
-        static BankPlusContext()
-        {
-        }
-
         public BankPlusContext()
         {
         }
@@ -19,12 +13,19 @@ namespace Asm.BankPlus.Data
         {
         }
 
-        public virtual DbSet<Account> Account { get; set; }
-        public virtual DbSet<RecurringTransaction> RecurringTransaction { get; set; }
-        public virtual DbSet<Schedule> Schedule { get; set; }
-        public virtual DbSet<Transaction> Transaction { get; set; }
-        public virtual DbSet<TransactionType> TransactionType { get; set; }
-        public virtual DbSet<VirtualAccount> VirtualAccount { get; set; }
+        public virtual DbSet<Account> Accounts { get; set; }
+        public virtual DbSet<AccountAccountHolder> AccountAccountHolder { get; set; }
+        public virtual DbSet<AccountHolder> AccountHolders { get; set; }
+
+        public virtual DbSet<RecurringTransaction> RecurringTransactions { get; set; }
+
+        public virtual DbSet<Transaction> Transactions { get; set; }
+
+        public virtual DbSet<TransactionCategory> TransactionCategories { get; set; }
+
+        public virtual DbSet<TransactionCategoryRule> TransactionCategoryRules { get; set; }
+
+        public virtual DbSet<VirtualAccount> VirtualAccounts { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -32,12 +33,16 @@ namespace Asm.BankPlus.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            foreach(var entity in modelBuilder.Model.GetEntityTypes())
+            {
+                entity.Relational().TableName = entity.ClrType.Name;
+            }
+
             modelBuilder.HasAnnotation("ProductVersion", "2.2.4-servicing-10062");
 
             modelBuilder.Entity<Account>(entity =>
             {
-                entity.HasIndex(e => e.Name)
-                    .IsUnique();
+                entity.HasIndex(e => e.Name).IsUnique();
 
                 entity.Property(e => e.AccountId).HasDefaultValueSql("(newid())");
 
@@ -45,18 +50,44 @@ namespace Asm.BankPlus.Data
 
                 entity.Property(e => e.AvailableBalance).HasColumnType("decimal(10, 2)");
 
+                entity.Property(e => e.Description).HasMaxLength(255);
+
                 entity.Property(e => e.LastUpdated)
                     .HasColumnType("datetime2(0)")
-                    .HasDefaultValueSql("(sysdatetime())");
+                    .HasDefaultValueSql("(sysutcdatetime())");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
+                    .HasMaxLength(50);
 
-                entity.Property(e => e.UpdateVirtualAccount)
+                entity.Property(r => r.AccountType)
+                .HasConversion(e => (int)e, e => (Models.AccountType)e);
+            });
+
+            modelBuilder.Entity<AccountAccountHolder>(entity =>
+            {
+                entity.HasKey(e => new { e.AccountId, e.AccountHolderId });
+            });
+
+            modelBuilder.Entity<AccountHolder>(entity =>
+            {
+                entity.HasIndex(e => e.EmailAddress)
+                    .HasName("IX_AccountHolder_Email")
+                    .IsUnique();
+
+                entity.Property(e => e.AccountHolderId).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.EmailAddress)
                     .IsRequired()
-                    .HasDefaultValueSql("((1))");
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.FirstName)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.LastName)
+                    .IsRequired()
+                    .HasMaxLength(255);
             });
 
             modelBuilder.Entity<RecurringTransaction>(entity =>
@@ -73,7 +104,7 @@ namespace Asm.BankPlus.Data
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_RecurringTransaction_VirtualAccount_Destination");
 
-                /*entity.HasOne(d => d.Schedule.ToString())
+                /*entity.HasOne(d => d.Schedule)
                     .WithMany(p => p.RecurringTransaction)
                     .HasForeignKey(d => d.ScheduleId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
@@ -86,7 +117,7 @@ namespace Asm.BankPlus.Data
                     .HasConstraintName("FK_RecurringTransaction_VirtualAccount_Source");
             });
 
-            modelBuilder.Entity<Schedule>(entity =>
+            /*modelBuilder.Entity<Schedule>(entity =>
             {
                 entity.Property(e => e.ScheduleId).ValueGeneratedNever();
 
@@ -94,10 +125,12 @@ namespace Asm.BankPlus.Data
                     .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
-            });
+            });*/
 
             modelBuilder.Entity<Transaction>(entity =>
             {
+                entity.Property(e => e.TransactionId).HasDefaultValueSql("(newid())");
+
                 entity.Property(e => e.Amount).HasColumnType("decimal(10, 2)");
 
                 entity.Property(e => e.Description)
@@ -106,20 +139,25 @@ namespace Asm.BankPlus.Data
 
                 entity.Property(e => e.TransactionTime).HasDefaultValueSql("(sysdatetime())");
 
-                /*entity.HasOne(d => d.TransactionType.ToString())
+                entity.HasOne(d => d.Account)
+                    .WithMany(p => p.Transaction)
+                    .HasForeignKey(d => d.AccountId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Transaction_Account");
+
+                entity.HasOne(d => d.TransactionCategory)
+                    .WithMany(p => p.Transactions)
+                    .HasForeignKey(d => d.TransactionCategoryId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Transaction_TransactionCategory");
+
+                /*entity.HasOne(d => d.TransactionType)
                     .WithMany(p => p.Transaction)
                     .HasForeignKey(d => d.TransactionTypeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Transaction_TransactionType");*/
-
-                entity.HasOne(d => d.VirtualAccount)
-                    .WithMany(p => p.Transaction)
-                    .HasForeignKey(d => d.VirtualAccountId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Transaction_VirtualAccount");
             });
 
-            modelBuilder.Entity<TransactionType>(entity =>
+            /*modelBuilder.Entity<TransactionType>(entity =>
             {
                 entity.Property(e => e.TransactionTypeId).ValueGeneratedNever();
 
@@ -127,7 +165,7 @@ namespace Asm.BankPlus.Data
                     .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
-            });
+            });*/
 
             modelBuilder.Entity<VirtualAccount>(entity =>
             {
@@ -146,6 +184,39 @@ namespace Asm.BankPlus.Data
                     .HasMaxLength(50)
                     .IsUnicode(false);
             });
+
+
+            modelBuilder.Entity<TransactionCategory>(entity =>
+            {
+               // entity.ToTable("TransactionCategory");
+
+                entity.Property(e => e.TransactionCategoryId).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.Description)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.HasOne(d => d.Parent)
+                    .WithMany(p => p.Children)
+                    .HasForeignKey(d => d.ParentCategoryId)
+                    .HasConstraintName("FK_TransactionCategory_TransactionCategory");
+            });
+
+            modelBuilder.Entity<TransactionCategoryRule>(entity =>
+            {
+                entity.Property(e => e.TransactionCategoryRuleId).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.Contains)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.HasOne(d => d.TransactionCategory)
+                    .WithMany(p => p.TransactionCategoryRules)
+                    .HasForeignKey(d => d.TransactionCategoryId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TransactionCategoryRule_TransactionCategory");
+            });
+
         }
     }
 }
