@@ -1,30 +1,39 @@
-﻿using System.Threading.Tasks;
-using Asm.BankPlus.Data;
-using Asm.BankPlus.Models;
+﻿using System;
+using System.Threading.Tasks;
+using Asm.BankPlus.Repository;
+using Asm.BankPlus.Services;
+using Asm.BankPlus.Web.Models;
+using Asm.BankPlus.Web.Mvc;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace Asm.BankPlus.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize()]
+    [Authorize]
+    // [ValidateAntiForgeryToken]
     public class AccountsController : ControllerBase
     {
-        private BankPlusContext DataContext { get; }
+        private IAccountRepository AccountRepository { get; }
+        private ITransactionRepository TransactionRepository { get; }
+        private IAntiforgery Antiforgery { get; }
 
-        public AccountsController(BankPlusContext dataContext)
+        public AccountsController(IAccountRepository accountRepository, IAntiforgery antiforgery)
         {
-            DataContext = dataContext;
+            AccountRepository = accountRepository;
+            Antiforgery = antiforgery;
         }
 
+        // [ValidateAntiForgeryToken]
+        [HttpGet]
         public async Task<ActionResult<AccountsModel>> Get()
         {
             return new ActionResult<AccountsModel>(new AccountsModel
             {
-                Accounts = await DataContext.Account.ToListAsync(),
-                VirtualAccounts = await DataContext.VirtualAccount.ToListAsync(),
+                Accounts = await AccountRepository.GetAccounts()
             });
         }
     }

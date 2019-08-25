@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Asm.BankPlus.Data.Models;
+using Asm.BankPlus.Models;
 
-namespace Asm.BankPlus.Models
+namespace Asm.BankPlus.Web.Models
 {
     public class AccountsModel
     {
         public IEnumerable<Account> Accounts { get; set; }
 
-        public IEnumerable<VirtualAccount> VirtualAccounts { get; set; }
+        //public IEnumerable<VirtualAccount> VirtualAccounts { get; set; }
     }
 }

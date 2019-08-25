@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Asm.BankPlus.Data.Models;
+using Asm.BankPlus.Data.Entities;
 
 namespace Asm.BankPlus.Web.Models
 {

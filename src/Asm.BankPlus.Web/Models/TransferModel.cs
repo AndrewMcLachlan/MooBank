@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Asm.BankPlus.Data.Models;
+using Asm.BankPlus.Data.Entities;
+using Asm.BankPlus.Models;
 
 namespace Asm.BankPlus.Web.Models
 {

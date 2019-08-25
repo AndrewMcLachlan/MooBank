@@ -21,6 +21,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
+    <PackageReference Include="Serilog.AspNetCore" Version="2.1.1" />
+    <PackageReference Include="Serilog.Sinks.File" Version="4.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -71,7 +73,6 @@
 
   <ItemGroup>
     <None Include="compilerconfig.json" />
-    <None Include="wwwroot\index.html" />
   </ItemGroup>
 
   <ItemGroup>
@@ -85,6 +86,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Asm.BankPlus.Data\Asm.BankPlus.Data.csproj" />
     <ProjectReference Include="..\Asm.BankPlus.Models\Asm.BankPlus.Models.csproj" />
+    <ProjectReference Include="..\Asm.BankPlus.Services\Asm.BankPlus.Services.csproj" />
     <ProjectReference Include="..\Asm.BankPlus\Asm.BankPlus.csproj" />
   </ItemGroup>
 
