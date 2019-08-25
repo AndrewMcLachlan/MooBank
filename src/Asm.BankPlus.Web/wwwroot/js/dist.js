@@ -243,6 +243,7 @@ function () {
 
     this.baseUrl = baseUrl;
     this.msal = msal;
+    this.csrf = this.readCookie("XSRF-TOKEN");
   }
 
   _createClass(HttpClient, [{
@@ -305,8 +306,9 @@ function () {
                 return fetch(this.baseUrl + url, {
                   credentials: "include",
                   headers: new Headers({
-                    Accept: "application/json",
-                    Authorization: "Bearer " + token
+                    "Accept": "application/json",
+                    "Authorization": "Bearer " + token,
+                    "X-XSRF-TOKEN": this.csrf
                   }),
                   method: method
                 });
@@ -407,6 +409,18 @@ function () {
           return null;
         });
       });
+    }
+  }, {
+    key: "readCookie",
+    value: function readCookie(name) {
+      var regex = new RegExp("".concat(name, "=([^;]*)"));
+      var match = regex.exec(document.cookie);
+
+      if (match) {
+        return match[1];
+      }
+
+      return null;
     }
   }]);
 

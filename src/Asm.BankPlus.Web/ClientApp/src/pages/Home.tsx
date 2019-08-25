@@ -1,101 +1,70 @@
-﻿import React from "react";
-import { connect } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import Overview from "../components/Overview";
-import { SecurityProps } from "../global";
-import * as securityConfig from "../securityConfiguration";
-import { actionCreators } from "../store/Security";
+import { actionCreators } from "../store/Accounts";
 import { State } from "../store/state";
+import { AccountRow } from "../components";
+import VirtualAccountRow from "../components/VirtualAccountRow";
 
-class Home extends React.Component<HomeProps, any> {
+export const Home: React.FC = (props) => {
 
-    /*    static contextTypes = {
-            router: PropTypes.object.isRequired,
-        }*/
+    const dispatch = useDispatch();
+    bindActionCreators(actionCreators, dispatch);
 
+    useEffect(() => {
+        dispatch(actionCreators.requestAccounts());
+    }, [props,dispatch]);
 
+    const accounts = useSelector((state: State) => state.accounts.accounts);
+    const virtualAccounts = useSelector((state: State) => state.accounts.virtualAccounts);
 
-    constructor(props) {
-        super(props);
+    const virtualAccountRows = [];
 
-
-    }
-
-    public componentDidMount() {
-
-/*        if (securityConfig.loginType === "POPUP") {
-            if (this.props.msal.getAccount()) {// avoid duplicate code execution on page load in case of iframe and popup window.
-            }
-        }
-        else if (securityConfig.loginType === "REDIRECT") {
-            document.getElementById("SignIn").onclick = () => {
-                this.props.msal.loginRedirect(securityConfig.msalRequest);
-            };
-            if (this.props.msal.getAccount() && !this.props.msal.isCallback(window.location.hash)) {// avoid duplicate code execution on page load in case of iframe and popup window.
-
-            }
-        } else {
-            console.error("Please set a valid login type");
-        }*/
-    }
-
-    public render() {
-        return this.props.loggedIn ? <Overview /> :
-            (
-                <section className="login">
-                    <header>
-                        <h1>Login</h1>
-                    </header>
-                    <button onClick={this.login}>Login</button>
-                </section>
-            );
-    }
-
-    private login = () => {
-        this.signIn();
-    }
-
-    private signIn() {
-
-        this.props.msal.loginPopup(securityConfig.msalRequest).then((loginResponse) => {
-            //Login Success
-            this.props.login(loginResponse.account.name);
-
-        }).catch((error) => {
-            console.log(error);
-        });
-    }
-
-    private authRedirectCallBack(error?, response?) {
-        if (error) {
-            console.log(error);
-        }
-        else {
-            if (response.tokenType === "access_token") {
-
-            } else {
-                console.log("token type is:" + response.tokenType);
-            }
+    if (virtualAccounts) {
+        for (const account of virtualAccounts) {
+            virtualAccountRows.push(<VirtualAccountRow key={account.virtualAccountId} account={account} />);
         }
     }
 
-    private requiresInteraction(errorCode) {
-        if (!errorCode || !errorCode.length) {
-            return false;
+    const accountRows = [];
+    if (accounts) {
+        for (const account of accounts) {
+            accountRows.push(<AccountRow key={account.id} account={account} />);
         }
-        return errorCode === "consent_required" ||
-            errorCode === "interaction_required" ||
-            errorCode === "login_required";
     }
-}
 
-export default connect(
-    (state: State, ownProps) => ({ ...ownProps, loggedIn: state.security.loggedIn, msal: state.security.msal }),
-    (dispatch) => bindActionCreators(actionCreators, dispatch),
-)(Home);
+    return (
+        <section>
 
-interface HomeProps extends SecurityProps {
-    loggedIn: boolean;
-    login: (name: string) => void;
+            <h2>Accounts</h2>
+
+            <table className="accounts">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Current Balance</th>
+                        <th>Available Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {accountRows}
+                </tbody>
+            </table>
+
+            <h2>Virtual Accounts</h2>
+
+            <table id="virtualAccounts" className="accounts">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {virtualAccountRows}
+                </tbody>
+            </table>
+        </section>
+    );
 }

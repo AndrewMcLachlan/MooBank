@@ -1,6 +1,6 @@
 ﻿import { Dispatch } from "redux";
 
-import HttpClient from "../HttpClient";
+import HttpClient from "../services/HttpClient";
 import { ActionWithData } from "./redux-extensions";
 import { Accounts, State } from "./state";
 
@@ -27,7 +27,7 @@ export const actionCreators = {
 
         const url = `api/accounts`;
 
-        const client = new HttpClient(state.app.baseUrl, state.security.msal);
+        const client = new HttpClient(state.app.baseUrl);
 
         const accounts = await client.get<Accounts>(url);
 

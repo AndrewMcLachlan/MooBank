@@ -6,7 +6,7 @@ const initialState: App = {
     skin: "",
 };
 
-export const reducer = (state, action) => {
+export const reducer = (state: App, action:any) => {
     state = state || initialState;
 
     return state;

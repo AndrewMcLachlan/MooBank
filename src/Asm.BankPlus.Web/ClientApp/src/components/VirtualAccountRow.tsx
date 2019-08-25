@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { VirtualAccount } from "../store/state";
 
 class VirtualAccountRow extends Component<VirtualAccountRowProps, any> {
-    constructor(props) {
+    constructor(props:VirtualAccountRowProps) {
         super(props);
     }
 

@@ -3,10 +3,10 @@ import { Security } from "./state";
 
 const loggedIn = "LoggedIn";
 const loggedOut = "LoggedOut";
-const initialState: Security = { loggedIn: false, msal: null, name: null };
+const initialState: Security = { loggedIn: false, name: null };
 
 export const actionCreators = {
-    login: (name) => ({ type: loggedIn, data: name }),
+    login: (name:string) => ({ type: loggedIn, data: name }),
     logout: () => ({ type: loggedOut })
 };
 

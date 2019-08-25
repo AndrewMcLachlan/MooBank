@@ -1,35 +1,31 @@
-﻿import React, { Component } from "react";
-import { connect } from "react-redux";
+﻿import React from "react";
 
-class AccountRow extends Component<any, any> {
-    constructor(props) {
-        super(props);
-    }
+import * as Models from "../models";
 
-    public render() {
-        return (
-            <tr>
-                <td className="account">
-                    <div className="name">{this.props.account.name}</div>
-                    <nav className="desktop">
-                        <ul>
-                            <li>
-                                <a href="">Update Balance</a>
-                            </li>
-                            <li id="save_{this.props.account.AccountId">
-                                <a href="">Save</a>
-                            </li>
-                            <li id="cancel_{this.props.account.AccountId">
-                                <a href="">Cancel</a>
-                            </li>
-                        </ul>
-                    </nav>
-                </td>
-                <td><span id={"currentBalanceDisplay_" + this.props.account.accountId} className={this.props.account.accountBalance < 0 ? " negative" : ""}>{this.props.account.AccountBalance + (this.props.account.accountBalance < 0 ? "D" : "C") + "R"}</span><input id="currentBalanceEdit_{this.props.account.AccountId" type="number" value={this.props.account.AccountBalance} /></td>
-                <td><span id={"availableBalanceDisplay_" + this.props.account.accountId} className={this.props.account.availableBalance < 0 ? " negative" : ""}>{this.props.account.AvailableBalance + (this.props.account.availableBalance < 0 ? "D" : "C") + "R"}</span> <input id="availableBalanceEdit_{this.props.account.AccountId" type="number" value={this.props.account.AvailableBalance} /></td>
-            </tr>
-        );
-    }
+export const AccountRow :React.FC<AccountRowProps> = (props) =>
+(
+<tr>
+    <td className="account">
+        <div className="name">{props.account.name}</div>
+        <nav className="desktop">
+            <ul>
+                <li>
+                    <a href="">Update Balance</a>
+                </li>
+                <li>
+                    <a href="">Save</a>
+                </li>
+                <li>
+                    <a href="">Cancel</a>
+                </li>
+            </ul>
+        </nav>
+    </td>
+    <td><span className={props.account.currentBalance < 0 ? " negative" : ""}>{props.account.currentBalance + (props.account.currentBalance < 0 ? "D" : "C") + "R"}</span><input  type="number" value={props.account.currentBalance} /></td>
+    <td><span className={props.account.availableBalance < 0 ? " negative" : ""}>{props.account.availableBalance + (props.account.availableBalance < 0 ? "D" : "C") + "R"}</span> <input type="number" value={props.account.availableBalance} /></td>
+</tr>
+);
+
+export interface AccountRowProps {
+    account: Models.Account;
 }
-
-export default connect()(AccountRow);

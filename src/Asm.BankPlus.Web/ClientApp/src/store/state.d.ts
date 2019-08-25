@@ -1,9 +1,10 @@
-﻿import Msal, { UserAgentApplication } from "msal";
+﻿import * as Models from "../models";
 
 export interface State {
     app: App,
-    accounts: Accounts,
-    security: Security,
+    accounts?: Accounts,
+    transactionCategories?: TransactionCategories,
+    security?: Security,
 }
 
 export interface App {
@@ -13,24 +14,19 @@ export interface App {
 }
 
 export interface Accounts {
-    accounts: Array<RealAccount>;
-    virtualAccounts: Array<VirtualAccount>;
+    accounts: Models.Account[];
+    virtualAccounts: VirtualAccount[];
+    areLoading: boolean;
+}
+
+export interface TransactionCategories {
+    categories: Models.TransactionCategory[],
     areLoading: boolean;
 }
 
 export interface Security {
     loggedIn: boolean;
-    msal: UserAgentApplication;
     name: string;
-}
-
-export interface RealAccount {
-    accountId: string;
-    name: string;
-    accountBalance: number;
-    availableBalance: number;
-    updateVirtualAccount: boolean;
-    lastUpdated: Date;
 }
 
 export interface VirtualAccount {

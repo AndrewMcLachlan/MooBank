@@ -1,48 +1,42 @@
+import "./App.scss";
+
 import React from "react";
-import { connect } from "react-redux";
-import { Route } from "react-router-dom";
-import { bindActionCreators } from "redux";
+import { Provider } from "react-redux";
 
-import Layout from "./components/Layout";
-import { SecurityProps } from "./global";
-import Home from "./pages/Home";
-import ManageAccounts from "./pages/ManageAccounts";
-import Settings from "./pages/Settings";
-import * as securityConfig from "./securityConfiguration";
-import { actionCreators } from "./store/Security";
-import { State } from "./store/state";
+import { useSecurityService } from "services/SecurityService";
 
-class App extends React.Component<Props, any> {
+import { BrowserRouter, Route } from "react-router-dom";
+import { Layout } from "layouts/Layout";
+import * as Pages from "./pages";
+import configureStore from "store/configureStore";
+import { State } from "store/state";
 
-    constructor(props) {
-        super(props);
+const App: React.FC = () => {
 
-        // this.props.handleRedirectCallback(this.authRedirectCallBack);
-    }
+  const initialState: State = {
+    app: {
+      appName: "MooBank", // Array.from(document.getElementsByTagName("meta")).find((value) => value.getAttribute("name") === "application-name").getAttribute("content"),
+      baseUrl: "/", //document.getElementsByTagName("base")[0].getAttribute("href"),
+      skin: "moobank",// Array.from(document.getElementsByTagName("meta")).find((value) => value.getAttribute("name") === "skin").getAttribute("content"),
+    },
+  };
 
-    public componentDidMount() {
-        this.props.msal.acquireTokenSilent(securityConfig.msalRequest).then((tokenResponse) => {
-            this.props.login(tokenResponse.account.name);
-        }).catch();
-        // TODO: Possibly force login at this stage
-    }
+  const securityService = useSecurityService();
 
-    public render() {
-        return (
-            <Layout>
-                <Route exact={true} path="/" component={Home} />
-                <Route path="/accounts" component={ManageAccounts} />
-                <Route path="/settings" component={Settings} />
-            </Layout>
-        );
-    }
-}
+  const store = configureStore(window.history, initialState);
 
-export default connect(
-    (state: State, ownProps): SecurityProps => ({ ...ownProps, msal: state.security.msal }),
-    (dispatch) => bindActionCreators(actionCreators, dispatch),
-)(App);
+  return (
+    <Provider store={store}>
+      <BrowserRouter basename={initialState.app.baseUrl.replace(/^.*\/\/[^/]+/, "")}>
+        <Layout>
+          <Route exact={true} path="/" component={Pages.Home} />
+          <Route path="/accounts" component={Pages.ManageAccounts} />
+          <Route exact path="/settings" component={Pages.Settings} />
+          <Route path="/settings/transaction-categories" component={Pages.TransactionCategories} />
+        </Layout>
+      </BrowserRouter>
+    </Provider>
+  );
+};
 
-interface Props extends SecurityProps {
-    login: (name: string) => void;
-}
+export default App;
