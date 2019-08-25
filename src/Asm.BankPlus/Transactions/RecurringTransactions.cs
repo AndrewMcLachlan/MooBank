@@ -10,7 +10,7 @@ namespace Asm.BankPlus.Transactions
         {
             using (BankPlusContext db = new BankPlusContext())
             {
-                foreach(var trans in db.RecurringTransaction)
+                foreach(var trans in db.RecurringTransactions)
                 {
                     if (trans.LastRun == null)
                     {
@@ -56,9 +56,9 @@ namespace Asm.BankPlus.Transactions
             }
         }
 
-        private static void RunTransaction(Data.Models.RecurringTransaction trans)
+        private static void RunTransaction(Data.Entities.RecurringTransaction trans)
         {
-            TransactionProcessor.Process(trans.Amount, trans.SourceVirtualAccountId, trans.DestinationVirtualAccountId, true, trans.Description);
+            TransactionProcessor.Transfer(trans.Amount, trans.SourceVirtualAccountId, trans.DestinationVirtualAccountId, true, trans.Description);
         }
     }
 }
