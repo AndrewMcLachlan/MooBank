@@ -23,7 +23,7 @@ namespace Asm.BankPlus.Services
         public async Task<IEnumerable<Account>> GetAccounts()
         {
             //TODO: Filtering based on user
-            return (await DataContext.Accounts.ToListAsync()).Cast<Account>();
+            return (await DataContext.Accounts.ToListAsync()).Select(a => (Account)a);
         }
     }
 }

@@ -27,8 +27,12 @@
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <Compile Remove="ClientApp\SASS\**" />
     <Content Remove="$(SpaRoot)**" />
+    <Content Remove="ClientApp\SASS\**" />
+    <EmbeddedResource Remove="ClientApp\SASS\**" />
     <None Remove="$(SpaRoot)**" />
+    <None Remove="ClientApp\SASS\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
@@ -37,50 +41,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="ClientApp\src\App.tsx" />
-    <None Remove="ClientApp\src\components\AccountRow.tsx" />
-    <None Remove="ClientApp\src\components\Counter.tsx" />
-    <None Remove="ClientApp\src\components\FetchData.tsx" />
-    <None Remove="ClientApp\src\components\Footer.tsx" />
-    <None Remove="ClientApp\src\components\Header.tsx" />
-    <None Remove="ClientApp\src\components\Home.tsx" />
-    <None Remove="ClientApp\src\components\ManageAccounts.tsx" />
-    <None Remove="ClientApp\src\components\NavMenu.tsx" />
-    <None Remove="ClientApp\src\components\Settings.tsx" />
-    <None Remove="ClientApp\src\components\VirtualAccountRow.tsx" />
-    <None Remove="ClientApp\src\global.d.ts" />
-    <None Remove="ClientApp\src\HttpClient.ts" />
-    <None Remove="ClientApp\src\index.tsx" />
-    <None Remove="ClientApp\src\registerServiceWorker.js" />
-    <None Remove="ClientApp\src\SecurityConfiguration.ts" />
-    <None Remove="ClientApp\src\store\Accounts.ts" />
-    <None Remove="ClientApp\src\store\App.ts" />
-    <None Remove="ClientApp\src\store\configureStore.ts" />
-    <None Remove="ClientApp\src\store\redux-extensions.d.ts" />
-    <None Remove="ClientApp\src\store\Security.ts" />
-    <None Remove="ClientApp\src\store\state.d.ts" />
-    <None Remove="ClientApp\src\store\WeatherForecasts.ts" />
+    <None Remove="ClientApp\src\components\CloseBadge.tsx" />
+    <None Remove="ClientApp\src\components\TransactionRow.tsx" />
+    <None Remove="ClientApp\src\models\Transaction.ts" />
+    <None Remove="ClientApp\src\store\Transactions.ts" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="ClientApp\SASS\moobank\skin.scss" />
-    <Content Include="ClientApp\SASS\moobank\variables.scss" />
-    <Content Include="ClientApp\SASS\fonts.scss" />
-    <Content Include="ClientApp\SASS\site.scss" />
-    <Content Include="ClientApp\SASS\responsive.scss" />
-    <Content Include="ClientApp\SASS\variables.scss" />
-  </ItemGroup>
 
   <ItemGroup>
     <None Include="compilerconfig.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ClientApp\SASS\bankplus\" />
-    <Folder Include="Views\Error\" />
-    <Folder Include="wwwroot\css\bankplus\" />
-    <Folder Include="wwwroot\images\bankplus\" />
-    <Folder Include="wwwroot\js\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -91,42 +60,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Include="ClientApp\src\App.tsx" />
-    <TypeScriptCompile Include="ClientApp\src\components\Counter.tsx" />
-    <TypeScriptCompile Include="ClientApp\src\components\FetchData.tsx" />
-    <TypeScriptCompile Include="ClientApp\src\components\Footer.tsx" />
-    <TypeScriptCompile Include="ClientApp\src\components\Header.tsx" />
-    <TypeScriptCompile Include="ClientApp\src\pages\Home.tsx">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="ClientApp\src\pages\Settings.tsx">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="ClientApp\src\components\Overview.tsx" />
-    <TypeScriptCompile Include="ClientApp\src\pages\ManageAccounts.tsx" />
-    <TypeScriptCompile Include="ClientApp\src\components\NavMenu.tsx" />
-    <TypeScriptCompile Include="ClientApp\src\components\AccountRow.tsx">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="ClientApp\src\components\VirtualAccountRow.tsx" />
-    <TypeScriptCompile Include="ClientApp\src\global.d.ts" />
-    <TypeScriptCompile Include="ClientApp\src\HttpClient.ts" />
-    <TypeScriptCompile Include="ClientApp\src\index.tsx" />
-    <TypeScriptCompile Include="ClientApp\src\registerServiceWorker.js" />
-    <TypeScriptCompile Include="ClientApp\src\securityConfiguration.ts" />
-    <TypeScriptCompile Include="ClientApp\src\store\Accounts.ts" />
-    <TypeScriptCompile Include="ClientApp\src\store\App.ts" />
-    <TypeScriptCompile Include="ClientApp\src\store\configureStore.ts" />
-    <TypeScriptCompile Include="ClientApp\src\store\Security.ts" />
-    <TypeScriptCompile Include="ClientApp\src\store\redux-extensions.d.ts" />
-    <TypeScriptCompile Include="ClientApp\src\store\state.d.ts" />
-    <TypeScriptCompile Include="ClientApp\src\store\WeatherForecasts.ts" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="wwwroot\images\moobank\favicon.png">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
+    <TypeScriptCompile Include="ClientApp\src\components\CloseBadge.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\TransactionRow.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\models\Transaction.ts" />
+    <TypeScriptCompile Include="ClientApp\src\store\Transactions.ts" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('node_modules') ">

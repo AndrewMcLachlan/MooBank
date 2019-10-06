@@ -4,14 +4,12 @@
 	[TransactionReference] UNIQUEIDENTIFIER NULL,
     [AccountId] UNIQUEIDENTIFIER NOT NULL,
     [TransactionTypeId] INT NULL,
-    [TransactionCategoryId] INT NULL,
     [Amount] DECIMAL(10, 2) NOT NULL,
     [Description] VARCHAR(255) NULL,
     [TransactionTime] DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
     CONSTRAINT [PK_Transaction] PRIMARY KEY CLUSTERED (TransactionId),
     CONSTRAINT [FK_Transaction_Account] FOREIGN KEY ([AccountId]) REFERENCES [Account]([AccountId]),
     CONSTRAINT [FK_Transaction_TransactionType] FOREIGN KEY ([TransactionTypeId]) REFERENCES [TransactionType]([TransactionTypeId]),
-    CONSTRAINT [FK_Transaction_TransactionCategory] FOREIGN KEY ([TransactionCategoryId]) REFERENCES [TransactionCategory]([TransactionCategoryId]),
 )
 
 GO

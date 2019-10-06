@@ -29,7 +29,7 @@ namespace Asm.BankPlus.Web
                 //.Enrich.WithProperty("ApplicationRole", appRole)
                 //.WriteTo.Trace()
                 //.WriteTo.Seq(seq)
-                .WriteTo.File("Log.log")
+                //.WriteTo.File("Log.log")
                 .CreateLogger();
 
             try
@@ -51,6 +51,14 @@ namespace Asm.BankPlus.Web
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+            .UseSerilog((_, configuration) =>
+            {
+                configuration
+                .Enrich.FromLogContext()
+                .MinimumLevel.Information()
+                .MinimumLevel.Is(LogEventLevel.Information)
+                .WriteTo.File("Log.log");
+            })
                 .UseStartup<Startup>();
     }
 }

@@ -52,3 +52,22 @@ MERGE TransactionType AS TARGET USING (SELECT 3 as TransactionTypeId, 'BalanceAd
 ON (TARGET.TransactionTypeId = SOURCE.TransactionTypeId)
 WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
 WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (3, 'BalanceAdjustment');
+
+/*
+IF ((SELECT COUNT(*)FROM TransactionCategory) = 0)
+BEGIN
+INSERT INTO TransactionCategory ([Description]) VALUES ('Living Expense') --1
+INSERT INTO TransactionCategory ([Description], ParentCategoryId) VALUES ('Utilities', 1) --2
+INSERT INTO TransactionCategory ([Description], ParentCategoryId) VALUES ('Tax', 1) --3
+INSERT INTO TransactionCategory ([Description], ParentCategoryId) VALUES ('Child', 1) --4
+INSERT INTO TransactionCategory ([Description], ParentCategoryId) VALUES ('Insurance', 1) --5
+INSERT INTO TransactionCategory ([Description], ParentCategoryId) VALUES ('Transport', 1) --6
+INSERT INTO TransactionCategory ([Description], ParentCategoryId) VALUES ('Clothes', 1) --6
+INSERT INTO TransactionCategory ([Description], ParentCategoryId) VALUES ('Home Maintenance', 1) --7
+INSERT INTO TransactionCategory ([Description], ParentCategoryId) VALUES ('Home Improvement', 1) --7
+
+INSERT INTO TransactionCategory ([Description], ParentCategoryId) VALUES ('Elecricity', 2)
+INSERT INTO TransactionCategory ([Description], ParentCategoryId) VALUES ('Water', 2)
+INSERT INTO TransactionCategory ([Description], ParentCategoryId) VALUES ('Rates', 1)
+END
+*/

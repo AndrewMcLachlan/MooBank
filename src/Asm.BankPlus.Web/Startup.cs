@@ -41,7 +41,7 @@ namespace Asm.BankPlus.Web
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "wwwroot";
+                configuration.RootPath = "ClientApp";
             });
 
             services.AddDbContext<Data.BankPlusContext>(options => options.UseSqlServer(Configuration.GetConnectionString("BankPlus")));
@@ -180,7 +180,7 @@ namespace Asm.BankPlus.Web
         {
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
-            services.AddScoped<ITransactionCategoryRepository, TransactionCategoryRepository>();
+            services.AddScoped<ITransactionTagRepository, TransactionTagRepository>();
         }
 
         private ProblemDetails CreateProblemDetails(IHostingEnvironment env, HttpContext context, Exception ex)
@@ -192,6 +192,11 @@ namespace Asm.BankPlus.Web
                 case NotFoundException _:
                     context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                     result.Title = "Not found";
+                    result.Detail = ex.Message;
+                    break;
+                case ExistsException _:
+                    context.Response.StatusCode = (int)HttpStatusCode.Conflict;
+                    result.Title = "Already exists";
                     result.Detail = ex.Message;
                     break;
 

@@ -10,9 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Asm.BankPlus.Web.Controllers
 {
-    [Route("api/accounts/{accountId}/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     // [ValidateAntiForgeryToken]
     public class TransactionsController : ControllerBase
     {
@@ -25,22 +25,20 @@ namespace Asm.BankPlus.Web.Controllers
             Antiforgery = antiforgery;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<TransactionsModel>> Get(Guid accountId)
+        [HttpPut]
+        //[ValidateAntiForgeryToken]
+        [Route("{id}/tag/{tagId}")]
+        public async Task<ActionResult<Transaction>> Add(Guid id, int tagId)
         {
-            return new ActionResult<TransactionsModel>(new TransactionsModel
-            {
-                Transactions = await TransactionRepository.GetTransactions(accountId)
-            });
+            return await TransactionRepository.AddTransactionTag(id, tagId);
         }
 
-        [HttpPut]
-        [HttpPatch]
-        [ValidateAntiForgeryToken]
-        [Route("{id}/{categoryId}")]
-        public async Task<ActionResult<Transaction>> SetCategory(Guid accountId, Guid id, int categoryId)
+        [HttpDelete]
+        //[ValidateAntiForgeryToken]
+        [Route("{id}/tag/{tagId}")]
+        public async Task<ActionResult<Transaction>> RemoveTag(Guid id, int tagId)
         {
-            return await TransactionRepository.SetTransactionCategory(id, categoryId);
+            return await TransactionRepository.RemoveTransactionTag(id, tagId);
         }
     }
 }

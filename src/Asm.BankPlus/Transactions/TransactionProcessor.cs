@@ -24,7 +24,7 @@ namespace Asm.BankPlus.Transactions
                 {
                     Amount = amount,
                     TransactionType = sourceType,
-                    TransactionReference = groupId,
+                    //TransactionReference = groupId,
                     AccountId = sourceAccountId,
                     Description = description,
                 };
@@ -33,7 +33,7 @@ namespace Asm.BankPlus.Transactions
                 {
                     Amount = amount,
                     TransactionType = destinationType,
-                    TransactionReference = groupId,
+                    //TransactionReference = groupId,
                     AccountId = destinationAccountId,
                     Description = description,
                 };

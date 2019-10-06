@@ -58,7 +58,7 @@ namespace Asm.BankPlus.Transactions
 
         private static void RunTransaction(Data.Entities.RecurringTransaction trans)
         {
-            TransactionProcessor.Transfer(trans.Amount, trans.SourceVirtualAccountId, trans.DestinationVirtualAccountId, true, trans.Description);
+            _ = TransactionProcessor.Transfer(trans.Amount, trans.SourceVirtualAccountId, trans.DestinationVirtualAccountId, true, trans.Description);
         }
     }
 }

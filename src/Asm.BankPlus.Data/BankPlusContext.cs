@@ -21,9 +21,9 @@ namespace Asm.BankPlus.Data
 
         public virtual DbSet<Transaction> Transactions { get; set; }
 
-        public virtual DbSet<TransactionCategory> TransactionCategories { get; set; }
+        public virtual DbSet<TransactionTag> TransactionTags { get; set; }
 
-        public virtual DbSet<TransactionCategoryRule> TransactionCategoryRules { get; set; }
+        public virtual DbSet<TransactionTagRule> TransactionTagRules { get; set; }
 
         public virtual DbSet<VirtualAccount> VirtualAccounts { get; set; }
 
@@ -129,6 +129,9 @@ namespace Asm.BankPlus.Data
 
             modelBuilder.Entity<Transaction>(entity =>
             {
+
+                entity.HasKey("TransactionId");
+
                 entity.Property(e => e.TransactionId).HasDefaultValueSql("(newid())");
 
                 entity.Property(e => e.Amount).HasColumnType("decimal(10, 2)");
@@ -145,11 +148,17 @@ namespace Asm.BankPlus.Data
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Transaction_Account");
 
-                entity.HasOne(d => d.TransactionCategory)
-                    .WithMany(p => p.Transactions)
-                    .HasForeignKey(d => d.TransactionCategoryId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Transaction_TransactionCategory");
+                entity.HasMany(p => p.TransactionTagLinks)
+                    .WithOne(t => t.Transaction)
+                    .HasForeignKey(d => d.TransactionId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_Transaction_TransactionTransactionTag");
+
+
+                entity.Property(e => e.TransactionType)
+                    .HasColumnName($"{nameof(Transaction.TransactionType)}Id")
+                    .HasConversion(e => (int)e, e => (Models.TransactionType)e)
+                    .HasDefaultValue(Models.TransactionType.Debit);
 
                 /*entity.HasOne(d => d.TransactionType)
                     .WithMany(p => p.Transaction)
@@ -186,35 +195,74 @@ namespace Asm.BankPlus.Data
             });
 
 
-            modelBuilder.Entity<TransactionCategory>(entity =>
+            modelBuilder.Entity<TransactionTag>(entity =>
             {
-               // entity.ToTable("TransactionCategory");
+                entity.ToTable("TransactionTag");
 
-                entity.Property(e => e.TransactionCategoryId).ValueGeneratedOnAdd();
+                entity.Property(e => e.TransactionTagId).ValueGeneratedOnAdd();
 
-                entity.Property(e => e.Description)
+                entity.Property(e => e.Name)
                     .IsRequired()
-                    .HasMaxLength(255);
+                    .HasMaxLength(50);
 
-                entity.HasOne(d => d.Parent)
-                    .WithMany(p => p.Children)
-                    .HasForeignKey(d => d.ParentCategoryId)
-                    .HasConstraintName("FK_TransactionCategory_TransactionCategory");
+                entity.HasMany(d => d.TagsLink)
+                    .WithOne(p => p.Primary)
+                    .HasForeignKey(d => d.PrimaryTransactionTagId)
+                    .HasConstraintName("FK_TransactionTag_TransactionTag_Primary");
+
+                entity.HasMany(d => d.TaggedToLink)
+                    .WithOne(p => p.Secondary)
+                    .HasForeignKey(d => d.SecondaryTransactionTagId)
+                    .HasConstraintName("FK_TransactionTag_TransactionTag_Secondary");
             });
 
-            modelBuilder.Entity<TransactionCategoryRule>(entity =>
+            modelBuilder.Entity<TransactionTagRule>(entity =>
             {
-                entity.Property(e => e.TransactionCategoryRuleId).ValueGeneratedOnAdd();
+                entity.Property(e => e.TransactionTagRuleId).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Contains)
                     .IsRequired()
                     .HasMaxLength(50);
 
-                entity.HasOne(d => d.TransactionCategory)
-                    .WithMany(p => p.TransactionCategoryRules)
-                    .HasForeignKey(d => d.TransactionCategoryId)
+                entity.HasOne(d => d.TransactionTag)
+                    .WithMany(p => p.TransactionTagRules)
+                    .HasForeignKey(d => d.TransactionTagId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_TransactionCategoryRule_TransactionCategory");
+                    .HasConstraintName("FK_TransactionTagRule_TransactionTag");
+            });
+
+            modelBuilder.Entity<TransactionTagTransactionTag>(entity =>
+            {
+                entity.HasKey(e => new { e.PrimaryTransactionTagId, e.SecondaryTransactionTagId });
+
+                /*entity.HasOne(d => d.Primary)
+                    .WithMany(p => p.TransactionTagTransactionTagPrimaryTransactionTag)
+                    .HasForeignKey(d => d.PrimaryTransactionTagId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TransactionTag_TransactionTag_Primary");
+
+                entity.HasOne(d => d.Secondary)
+                    .WithMany(p => p.TransactionTagTransactionTagSecondaryTransactionTag)
+                    .HasForeignKey(d => d.SecondaryTransactionTagId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TransactionTag_TransactionTag_Secondary");*/
+            });
+
+            modelBuilder.Entity<TransactionTransactionTag>(entity =>
+            {
+                entity.HasKey(e => new { e.TransactionId, e.TransactionTagId });
+
+                /*entity.HasOne(d => d.Transaction)
+                    .WithMany(p => p.TransactionTransactionTag)
+                    .HasForeignKey(d => d.TransactionId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TransactionTransactionTag_Transaction");
+
+                entity.HasOne(d => d.TransactionTag)
+                    .WithMany(p => p.TransactionTransactionTag)
+                    .HasForeignKey(d => d.TransactionTagId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TransactionTransactionTag_TransactionTag");*/
             });
 
         }

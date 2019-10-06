@@ -1,4 +1,5 @@
 import "./App.scss";
+import "font-awesome/css/font-awesome.min.css";
 
 import React from "react";
 import { Provider } from "react-redux";
@@ -10,33 +11,43 @@ import { Layout } from "layouts/Layout";
 import * as Pages from "./pages";
 import configureStore from "store/configureStore";
 import { State } from "store/state";
+import { initialState as accountsInitialState } from "store/Accounts";
+import { initialState as tagsInitialState } from "store/TransactionTags";
+import { bindActionCreators, Dispatch } from "redux";
+import { actionCreators } from "store/TransactionTags";
 
 const App: React.FC = () => {
 
-  const initialState: State = {
-    app: {
-      appName: "MooBank", // Array.from(document.getElementsByTagName("meta")).find((value) => value.getAttribute("name") === "application-name").getAttribute("content"),
-      baseUrl: "/", //document.getElementsByTagName("base")[0].getAttribute("href"),
-      skin: "moobank",// Array.from(document.getElementsByTagName("meta")).find((value) => value.getAttribute("name") === "skin").getAttribute("content"),
-    },
-  };
+    const initialState: State = {
+        app: {
+            appName: "MooBank", // Array.from(document.getElementsByTagName("meta")).find((value) => value.getAttribute("name") === "application-name").getAttribute("content"),
+            baseUrl: "/", //document.getElementsByTagName("base")[0].getAttribute("href"),
+            skin: "moobank",// Array.from(document.getElementsByTagName("meta")).find((value) => value.getAttribute("name") === "skin").getAttribute("content"),
+        },
+        accounts: accountsInitialState,
+        transactionTags: tagsInitialState,
+    };
 
-  const securityService = useSecurityService();
+    const store = configureStore(window.history, initialState);
 
-  const store = configureStore(window.history, initialState);
+    const dispatch: Dispatch<any> =store.dispatch;
 
-  return (
-    <Provider store={store}>
-      <BrowserRouter basename={initialState.app.baseUrl.replace(/^.*\/\/[^/]+/, "")}>
-        <Layout>
-          <Route exact={true} path="/" component={Pages.Home} />
-          <Route path="/accounts" component={Pages.ManageAccounts} />
-          <Route exact path="/settings" component={Pages.Settings} />
-          <Route path="/settings/transaction-categories" component={Pages.TransactionCategories} />
-        </Layout>
-      </BrowserRouter>
-    </Provider>
-  );
+    bindActionCreators(actionCreators, dispatch);
+    dispatch(actionCreators.requestCategories());
+
+    return (
+        <Provider store={store}>
+            <BrowserRouter basename={initialState.app.baseUrl.replace(/^.*\/\/[^/]+/, "")}>
+                <Layout>
+                    <Route exact={true} path="/" component={Pages.Home} />
+                    <Route path="/accounts" component={Pages.ManageAccounts} />
+                    <Route path="/accounts/:id" component={Pages.Transactions} />
+                    <Route exact path="/settings" component={Pages.Settings} />
+                    <Route path="/settings/transaction-categories" component={Pages.TransactionTags} />
+                </Layout>
+            </BrowserRouter>
+        </Provider>
+    );
 };
 
 export default App;

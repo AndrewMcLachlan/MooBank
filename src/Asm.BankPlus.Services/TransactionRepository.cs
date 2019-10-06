@@ -19,17 +19,17 @@ namespace Asm.BankPlus.Services
 
         public async Task<Transaction> CreateTransaction(Transaction transaction)
         {
-            Data.Entities.Transaction entity = transaction;
+            Data.Entities.Transaction entity = (Data.Entities.Transaction)transaction;
             DataContext.Add(entity);
 
             await DataContext.SaveChangesAsync();
 
-            return entity;
+            return (Transaction)entity;
         }
 
         public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId)
         {
-            return (await DataContext.Transactions.ToListAsync()).Cast<Transaction>();
+            return (await DataContext.Transactions.Include(t => t.TransactionTagLinks).ThenInclude(t => t.TransactionTag).ToListAsync()).Select(t => (Transaction)t);
         }
 
         public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, DateTime start, DateTime? end, int pageSize, int pageNumber)
@@ -42,17 +42,36 @@ namespace Asm.BankPlus.Services
             return (await DataContext.Transactions.Where(t => t.TransactionTime >= DateTime.Now.Subtract(period) && t.TransactionTime <= DateTime.Now).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync()).Cast<Transaction>();
         }
 
-        public async Task<Transaction> SetTransactionCategory(Guid id, int categoryId)
+        public async Task<Transaction> AddTransactionTag(Guid id, int tagId)
         {
-            Data.Entities.Transaction entity = await DataContext.Transactions.SingleOrDefaultAsync(t => t.TransactionId == id);
+            Data.Entities.Transaction entity = await DataContext.Transactions.Include(t => t.TransactionTagLinks).ThenInclude(t => t.TransactionTag).SingleOrDefaultAsync(t => t.TransactionId == id);
 
-            if (entity == null) throw new NotFoundException();
+            if (entity == null) throw new NotFoundException("Transaction not found");
 
-            entity.TransactionCategoryId = categoryId;
+            if (entity.TransactionTags.Any(t => t.TransactionTagId == tagId)) throw new ExistsException("Cannot add tag, it already exists");
+
+            entity.TransactionTags.Add(new Data.Entities.TransactionTag { TransactionTagId = tagId });
 
             await DataContext.SaveChangesAsync();
 
-            return entity;
+            return (Transaction)entity;
+        }
+
+        public async Task<Transaction> RemoveTransactionTag(Guid id, int tagId)
+        {
+            Data.Entities.Transaction entity = await DataContext.Transactions.Include(t => t.TransactionTagLinks).ThenInclude(t => t.TransactionTag).SingleOrDefaultAsync(t => t.TransactionId == id);
+
+            if (entity == null) throw new NotFoundException("Transaction not found");
+
+            var tag = entity.TransactionTags.SingleOrDefault(t => t.TransactionTagId == tagId);
+
+            if (tag == null) throw new NotFoundException("Tag not found");
+
+            entity.TransactionTags.Remove(tag);
+
+            await DataContext.SaveChangesAsync();
+
+            return (Transaction)entity;
         }
     }
 }

@@ -22,6 +22,7 @@
     <SqlServerVerification>False</SqlServerVerification>
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
     <TargetDatabaseSet>True</TargetDatabaseSet>
+    <DacApplicationName>BankPlus</DacApplicationName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -69,8 +70,10 @@
     <Build Include="dbo\Tables\AccountType.sql" />
     <Build Include="dbo\Tables\AccountHolder.sql" />
     <Build Include="dbo\Tables\AccountAccountHolder.sql" />
-    <Build Include="dbo\Tables\TransactionCategory.sql" />
-    <Build Include="dbo\Tables\TransactionCategoryRule.sql" />
+    <Build Include="dbo\Tables\TransactionTag.sql" />
+    <Build Include="dbo\Tables\TransactionTagRule.sql" />
+    <Build Include="dbo\Tables\TransactionTransactionTag.sql" />
+    <Build Include="dbo\Tables\TransactionTagTransactionTag.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Asm.BankPlus.Database.publish.xml" />

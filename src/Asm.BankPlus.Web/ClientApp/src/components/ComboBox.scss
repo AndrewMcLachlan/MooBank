@@ -1,0 +1,43 @@
+.combo-box {
+    position: relative;
+    
+    input {
+        width: 100%;
+        border-radius: 3px;
+        border-style: solid;
+        border-width: 1px;
+        border-color: #CCC;
+        padding: 2px;
+    }
+
+    ol {
+        list-style: none;
+        padding: 10px 0;
+        margin: 3px 0 0;
+        background-color: #FAFAFA;
+        position: absolute;
+        width: 100%;
+        border-radius: 5px;
+        font-size: 0.7rem;
+
+        li {
+            padding: 2px 10px;
+            cursor: pointer;
+            &:hover {
+                background-color: #AADCF7;
+            }
+        }
+    }
+
+    .cb-arrow {
+        position: absolute;
+        right: 4px;
+        top: 0;
+        line-height: 24px;
+
+        .fa {
+            font-size: 0.7rem;
+            color: #666;
+        }
+    }
+}

@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iis": {
-      "applicationUrl": "https://bankplus.mclachlan.family",
+      "applicationUrl": "https://bankplus-dev.mclachlan.family",
       "sslPort": 0
     },
     "iisExpress": {

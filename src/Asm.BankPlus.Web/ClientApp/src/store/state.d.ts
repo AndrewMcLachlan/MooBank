@@ -3,7 +3,8 @@
 export interface State {
     app: App,
     accounts?: Accounts,
-    transactionCategories?: TransactionCategories,
+    transactions?: Transactions,
+    transactionTags?: TransactionTags,
     security?: Security,
 }
 
@@ -17,10 +18,17 @@ export interface Accounts {
     accounts: Models.Account[];
     virtualAccounts: VirtualAccount[];
     areLoading: boolean;
+    selectedAccount?: Models.Account;
 }
 
-export interface TransactionCategories {
-    categories: Models.TransactionCategory[],
+export interface Transactions {
+    transactions: Models.Transaction[];
+    areLoading: boolean;
+    currentPage: number;
+}
+
+export interface TransactionTags {
+    tags: Models.TransactionTag[],
     areLoading: boolean;
 }
 

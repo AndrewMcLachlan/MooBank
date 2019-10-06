@@ -1,2 +1,3 @@
 export * from "./Account";
-export * from "./TransactionCategory";
+export * from "./Transaction";
+export * from "./TransactionTag";

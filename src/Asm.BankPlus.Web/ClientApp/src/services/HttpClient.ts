@@ -1,6 +1,8 @@
 import { UserAgentApplication } from "msal";
 import { SecurityService } from "./SecurityService";
 
+type httpMethod = "GET" | "DELETE" | "POST" | "PUT" | "PATCH";
+
 export default class HttpClient {
 
     private baseUrl: string;
@@ -17,7 +19,20 @@ export default class HttpClient {
         return this.fetch(url, "GET");
     }
 
-    public put<TRequest, TResponse>(url: string, data: TRequest): Promise<TResponse> {
+    public async delete<T>(url: string): Promise<T> {
+        return this.fetch(url, "DELETE");
+    }
+
+    public patch<TRequest, TResponse>(url: string, data: TRequest): Promise<TResponse> {
+        return this.fetchWithBody(url, data, "PATCH");
+    }
+
+    public put<TRequest, TResponse>(url: string, data?: TRequest): Promise<TResponse> {
+
+        if (!data) {
+            return this.fetch(url, "PUT");
+        }
+
         return this.fetchWithBody(url, data, "PUT");
     }
 
@@ -25,7 +40,7 @@ export default class HttpClient {
         return this.fetchWithBody(url, data, "POST");
     }
 
-    private async fetch<T>(url: string, method: "GET" | "DELETE"): Promise<T> {
+    private async fetch<T>(url: string, method: httpMethod): Promise<T> {
 
         const token = await this.securityService.getToken();
 
@@ -38,6 +53,11 @@ export default class HttpClient {
             }),
             method,
         });
+
+        if (response.status === 201) {
+            return null;
+        }
+
         const body = await response.json();
 
         if (response.ok) {
@@ -47,7 +67,7 @@ export default class HttpClient {
         return Promise.reject(body);
     }
 
-    private async fetchWithBody<TRequest, TResponse>(url: string, data: TRequest, method: "POST" | "PUT" | "PATCH"): Promise<TResponse> {
+    private async fetchWithBody<TRequest, TResponse>(url: string, data: TRequest, method: httpMethod): Promise<TResponse> {
 
         const token = await this.securityService.getToken();
 

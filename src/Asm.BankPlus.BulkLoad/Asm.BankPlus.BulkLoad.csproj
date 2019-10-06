@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Asm.BankPlus.Data\Asm.BankPlus.Data.csproj" />
+    <ProjectReference Include="..\Asm.BankPlus.Models\Asm.BankPlus.Models.csproj" />
+    <ProjectReference Include="..\Asm.BankPlus\Asm.BankPlus.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -13,7 +13,9 @@ namespace Asm.BankPlus.Repository
 
         Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, TimeSpan period, int pageSize, int pageNumber);
 
-        Task<Transaction> SetTransactionCategory(Guid id, int categoryId);
+        Task<Transaction> AddTransactionTag(Guid id, int tagId);
+
+        Task<Transaction> RemoveTransactionTag(Guid id, int tagId);
 
         Task<Transaction> CreateTransaction(Transaction transaction);
 

@@ -1,16 +1,23 @@
-﻿import { Dispatch } from "redux";
+﻿import { Dispatch, combineReducers } from "redux";
 
-import HttpClient from "../services/HttpClient";
+import HttpClient from "services/HttpClient";
 import { ActionWithData } from "./redux-extensions";
 import { Accounts, State } from "./state";
+import { Account } from "models";
 
-const RequestAccounts = "RequestAccounts";
-const ReceiveAccounts = "ReceiveAccounts";
+export const ActionTypes = {
+    RequestAccounts: "RequestAccounts",
+    ReceiveAccounts: "ReceiveAccounts",
+    RequestAccount: "RequestAccount",
+    ReceiveAccount: "ReceiveAccount",
+    SetSelectedAccount: "SetSelectedAccount",
+};
 
-const initialState: Accounts = {
+export const initialState: Accounts = {
     accounts: [],
     areLoading: false,
     virtualAccounts: [],
+    selectedAccount: null,
 };
 
 export const actionCreators = {
@@ -23,7 +30,7 @@ export const actionCreators = {
             return;
         }
 
-        dispatch({ type: RequestAccounts });
+        dispatch({ type: ActionTypes.RequestAccounts });
 
         const url = `api/accounts`;
 
@@ -31,26 +38,48 @@ export const actionCreators = {
 
         const accounts = await client.get<Accounts>(url);
 
-        dispatch({ type: ReceiveAccounts, data: accounts });
+        dispatch({ type: ActionTypes.ReceiveAccounts, data: accounts });
+    },
+
+    requestAccount: (id: string) => async (dispatch: Dispatch, getState: () => State) => {
+
+        const state = getState();
+
+        dispatch({ type: ActionTypes.RequestAccount });
+
+        const url = `api/accounts/${id}`;
+
+        const client = new HttpClient(state.app.baseUrl);
+
+        const account = await client.get<Account>(url);
+
+        dispatch({ type: ActionTypes.ReceiveAccount, data: account });
     },
 };
 
-export const reducer = (state: Accounts = initialState, action: ActionWithData<Accounts>): Accounts => {
+export const reducer = (state: Accounts = initialState, action: ActionWithData<any>): Accounts => {
 
-    if (action.type === RequestAccounts) {
-        return {
-            ...state,
-            areLoading: true,
-        };
-    }
+    switch (action.type) {
+        case ActionTypes.RequestAccounts:
+            return {
+                ...state,
+                areLoading: true,
+            };
 
-    if (action.type === ReceiveAccounts) {
-        return {
-            ...state,
-            accounts: action.data.accounts,
-            areLoading: false,
-            virtualAccounts: action.data.virtualAccounts,
-        };
+        case ActionTypes.ReceiveAccounts:
+            return {
+                ...state,
+                accounts: action.data.accounts,
+                areLoading: false,
+                virtualAccounts: action.data.virtualAccounts,
+            };
+
+        case ActionTypes.ReceiveAccount:
+        case ActionTypes.SetSelectedAccount:
+            return {
+                ...state,
+                selectedAccount: action.data,
+            };
     }
 
     return state;
