@@ -7,6 +7,7 @@ import * as Models from "../models";
 
 const RequestCategories = "RequestCategories";
 const ReceiveCategories = "ReceiveCategories";
+export const CreateTransactionTag = "CreateTransactionTag";
 
 export const initialState: TransactionTags = {
     tags: [],
@@ -48,23 +49,27 @@ export const actionCreators = {
     },
 };
 
-export const reducer = (state: TransactionTags = initialState, action: ActionWithData<Models.TransactionTag[]>): TransactionTags => {
+export const reducer = (state: TransactionTags = initialState, action: ActionWithData<any>): TransactionTags => {
 
-    if (action.type === RequestCategories) {
-        return {
-            ...state,
-            areLoading: true,
-        };
+    switch (action.type) {
+        case RequestCategories:
+            return {
+                ...state,
+                areLoading: true,
+            };
+
+
+        case ReceiveCategories:
+
+            return {
+                ...state,
+                tags: action.data,
+                areLoading: false,
+            };
+
+        case CreateTransactionTag:
+            state.tags.push(action.data);
+            return state;
     }
-
-    if (action.type === ReceiveCategories) {
-
-        return {
-            ...state,
-            tags: action.data,
-            areLoading: false,
-        };
-    }
-
     return state;
 };

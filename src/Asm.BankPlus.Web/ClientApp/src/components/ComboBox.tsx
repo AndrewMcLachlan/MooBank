@@ -17,7 +17,7 @@ export const ComboBox = forwardRef<any, ComboBoxProps>((props, ref) => {
             {comboBox.items && comboBox.items.length > 0 &&
                 <ol className="cb-list">
                     {comboBox.items.map((i) =>
-                        <ComobBoxItem key={i[props.textField]} onSelected={comboBox.onItemSelected} item={i} textField={props.textField} />
+                        <ComobBoxItem key={i[props.valueField]} onSelected={comboBox.onItemSelected} item={i} textField={props.textField} />
                     )}
                 </ol>
             }
@@ -113,7 +113,7 @@ export interface ComboBoxProps {
     onSelected?: (item: any) => void;
     allowAdd?: boolean;
     textField: string;
-   // valueField: string;
+    valueField: string;
     items?: any[];
     hidden?: boolean;
     selectedItem?: any;

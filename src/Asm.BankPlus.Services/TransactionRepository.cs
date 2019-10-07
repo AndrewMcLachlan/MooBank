@@ -50,7 +50,7 @@ namespace Asm.BankPlus.Services
 
             if (entity.TransactionTags.Any(t => t.TransactionTagId == tagId)) throw new ExistsException("Cannot add tag, it already exists");
 
-            entity.TransactionTags.Add(new Data.Entities.TransactionTag { TransactionTagId = tagId });
+            entity.TransactionTags.Add(DataContext.TransactionTags.Single(t => t.TransactionTagId == tagId));
 
             await DataContext.SaveChangesAsync();
 

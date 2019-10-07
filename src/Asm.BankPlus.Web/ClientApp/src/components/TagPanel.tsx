@@ -8,10 +8,15 @@ export const TagPanel: React.FC<TagPanelProps> = (props) => {
     const ref = useRef(null);
     useClickAway(setEditMode, ref);
 
+    function event(item: any, event:(item: any) => void): void {
+        setEditMode(false);
+        if (event) event(item);
+    }
+
     return (
         <props.as className="tag-panel" onClick={() => setEditMode(true)}>
-            {props.selectedItems.map((i) => <CloseBadge onClose={() => props.onRemove && props.onRemove(i)} key={i[props.textField]} pill variant="light">{i[props.textField]}</CloseBadge>)}
-            {editMode && <ComboBox ref={ref} items={props.allItems} textField={props.textField} onSelected={(props.onAdd)} onAdd={props.onCreate} allowAdd={props.allowCreate} />}
+            {props.selectedItems.map((i) => <CloseBadge onClose={() => event(i, props.onRemove)} key={i[props.textField]} pill variant="light">{i[props.textField]}</CloseBadge>)}
+            {editMode && <ComboBox ref={ref} items={props.allItems} textField={props.textField} valueField={props.valueField} onSelected={(item) => event(item, props.onAdd)} onAdd={(item) => event(item, props.onCreate)} allowAdd={props.allowCreate} />}
         </props.as>
     );
 }
@@ -20,6 +25,7 @@ TagPanel.displayName = "TagPanel";
 
 TagPanel.defaultProps = {
     textField: "name",
+    valueField: "id",
     as: "div",
     allowCreate: false,
 }
@@ -33,6 +39,7 @@ export interface TagPanelProps {
     selectedItems: any[];
     allItems: any[];
     textField: string;
+    valueField: string;
 
     search?: (search: string) => any[];
 

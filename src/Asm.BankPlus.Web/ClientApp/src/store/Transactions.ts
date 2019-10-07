@@ -4,6 +4,7 @@ import HttpClient from "../services/HttpClient";
 import { ActionWithData } from "./redux-extensions";
 import { Transactions, State } from "./state";
 import * as Models from "../models";
+import { CreateTransactionTag } from "./TransactionTags";
 
 const RequestTransactions = "RequestTransactions";
 const ReceiveTransactions = "ReceiveTransactions";
@@ -71,13 +72,17 @@ export const actionCreators = {
 
         const tag = await client.put<undefined, Models.TransactionTag>(url);
 
+        dispatch({type: CreateTransactionTag, data: tag});
+
         url = `api/transactions/${transactionId}/tag/${tag.id}`;
 
-        await client.put(url);
+        const transaction = await client.put<undefined, Models.Transaction>(url);
+
+        dispatch({type: AddTransactionTag, data: transaction});
     },
 };
 
-export const reducer = (state: Transactions = initialState, action: ActionWithData<Transactions>): Transactions => {
+export const reducer = (state: Transactions = initialState, action: ActionWithData<any>): Transactions => {
 
     switch (action.type) {
 
@@ -95,6 +100,14 @@ export const reducer = (state: Transactions = initialState, action: ActionWithDa
                 currentPage: action.data.currentPage,
                 areLoading: false,
             };
+
+            case AddTransactionTag:
+                const index = state.transactions.findIndex((t) => t.id === action.data.id);
+                const transactions = [...state.transactions.slice(0, index), action.data, ...state.transactions.slice(index+1) ];
+                return {
+                    ...state,
+                    transactions: transactions,
+                };
     }
 
     return state;

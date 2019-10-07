@@ -23,14 +23,14 @@ export const TransactionRow: React.FC<TransactionRowProps> = (props) => {
 
     useEffect(() => {
         setTagsList(fullTagsList.filter((t) => !transactionRow.tags.some((tt) => t.id === tt.id)));
-    }, [transactionRow.tags]);
+    }, [transactionRow.tags, fullTagsList]);
 
     return (
         <tr>
             <td>{moment(props.transaction.transactionTime).format("YYYY-MM-DD")}</td>
             <td>{props.transaction.description}</td>
             <td>{props.transaction.amount.toLocaleString("en-AU", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-            <TagPanel as="td" selectedItems={transactionRow.tags} allItems={tagsList} textField="name" onAdd={transactionRow.addTag} onRemove={transactionRow.removeTag} onCreate={transactionRow.createTag} allowCreate={true} />
+            <TagPanel as="td" selectedItems={transactionRow.tags} allItems={tagsList} textField="name" valueField="id" onAdd={transactionRow.addTag} onRemove={transactionRow.removeTag} onCreate={transactionRow.createTag} allowCreate={true} />
         </tr>
     );
 }
@@ -40,11 +40,14 @@ function useTransactionRowEvents(props: TransactionRowProps) {
     const dispatch = useDispatch();
     const [tags, setTags] = useState(props.transaction.tags);
 
+    useEffect(() => {
+        setTags(props.transaction.tags);
+    }, [props.transaction.tags]);
+
     bindActionCreators(actionCreators, dispatch);
     bindActionCreators(tagActionCreators, dispatch);
 
     const createTag = (name: string) => {
-        alert("here");
         dispatch(actionCreators.createTagAndAdd(props.transaction.id, name));
     }
 
@@ -57,6 +60,9 @@ function useTransactionRowEvents(props: TransactionRowProps) {
     }
 
     const removeTag = (tag: TransactionTag) => {
+
+        if (!tag.id) return;
+
         dispatch(actionCreators.removeTransactionTag(props.transaction.id, tag.id));
         setTags(tags.filter((t) => t.id !== tag.id));
     }
