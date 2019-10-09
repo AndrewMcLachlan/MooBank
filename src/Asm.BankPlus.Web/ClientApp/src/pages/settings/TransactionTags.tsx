@@ -15,7 +15,7 @@ export const TransactionTags: React.FC = (props) => {
     const categories = useSelector((state: State) => state.transactionTags.tags);
 
     useEffect(() => {
-        dispatch(actionCreators.requestCategories());
+        dispatch(actionCreators.requestTags());
     }, [props,dispatch]);
 
 const cellEditF = cellEditFactory({ mode: "click"});

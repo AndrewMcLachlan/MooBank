@@ -1,6 +1,6 @@
 import "./ComboBox.scss";
 
-import React, { PropsWithChildren, useState, forwardRef } from "react";
+import React, { useState, forwardRef } from "react";
 
 export const ComboBox = forwardRef<any, ComboBoxProps>((props, ref) => {
 
@@ -25,6 +25,8 @@ export const ComboBox = forwardRef<any, ComboBoxProps>((props, ref) => {
     );
 });
 
+ComboBox.displayName = "ComboBox";
+
 const ComobBoxItem: React.FC<ComboBoxItemProps> = (props) => {
 
     const click = (e: React.MouseEvent<HTMLLIElement>) => {
@@ -36,6 +38,8 @@ const ComobBoxItem: React.FC<ComboBoxItemProps> = (props) => {
 
     return (<li onClick={click} tabIndex={2}>{props.item[props.textField]}</li>);
 }
+
+ComobBoxItem.displayName = "ComboBoxItem";
 
 function useComboBox(props: ComboBoxProps) {
 

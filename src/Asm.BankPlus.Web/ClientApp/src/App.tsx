@@ -4,8 +4,6 @@ import "font-awesome/css/font-awesome.min.css";
 import React from "react";
 import { Provider } from "react-redux";
 
-import { useSecurityService } from "services/SecurityService";
-
 import { BrowserRouter, Route } from "react-router-dom";
 import { Layout } from "layouts/Layout";
 import * as Pages from "./pages";
@@ -33,7 +31,7 @@ const App: React.FC = () => {
     const dispatch: Dispatch<any> =store.dispatch;
 
     bindActionCreators(actionCreators, dispatch);
-    dispatch(actionCreators.requestCategories());
+    dispatch(actionCreators.requestTags());
 
     return (
         <Provider store={store}>

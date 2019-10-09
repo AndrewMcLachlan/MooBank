@@ -1,7 +1,30 @@
 import { UserAgentApplication } from "msal";
 import { SecurityService } from "./SecurityService";
 
-type httpMethod = "GET" | "DELETE" | "POST" | "PUT" | "PATCH";
+export type httpMethod = "GET" | "DELETE" | "POST" | "PUT" | "PATCH";
+
+export enum HttpErrorCodes {
+    OK = 200,
+    NoContent = 201,
+    
+    BadRequest = 400,
+    Unauthorized = 401,
+    Forbidden = 403,
+    Conflict = 409,
+
+    InternalServerError = 500,
+    ServiceUnavailable = 403,
+}
+
+export interface ProblemDetails
+{
+    detail: string,
+    instance?: string,
+    status?: number,
+    title?: string,
+    type: string,
+}
+ 
 
 export default class HttpClient {
 
@@ -64,7 +87,7 @@ export default class HttpClient {
             return body;
         }
 
-        return Promise.reject(body);
+        return Promise.reject(response);
     }
 
     private async fetchWithBody<TRequest, TResponse>(url: string, data: TRequest, method: httpMethod): Promise<TResponse> {

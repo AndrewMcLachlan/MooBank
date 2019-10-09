@@ -15,8 +15,8 @@ export const TagPanel: React.FC<TagPanelProps> = (props) => {
 
     return (
         <props.as className="tag-panel" onClick={() => setEditMode(true)}>
-            {props.selectedItems.map((i) => <CloseBadge onClose={() => event(i, props.onRemove)} key={i[props.textField]} pill variant="light">{i[props.textField]}</CloseBadge>)}
-            {editMode && <ComboBox ref={ref} items={props.allItems} textField={props.textField} valueField={props.valueField} onSelected={(item) => event(item, props.onAdd)} onAdd={(item) => event(item, props.onCreate)} allowAdd={props.allowCreate} />}
+            {props.selectedItems.map((i) => <CloseBadge onClose={() => event(i, props.onRemove)} key={i[props.textField]} pill={props.pill} variant={props.variant} bsPrefix={props.bsPrefix}>{i[props.textField]}</CloseBadge>)}
+            {(editMode || props.alwaysShowEditPanel) && <ComboBox ref={ref} items={props.allItems} textField={props.textField} valueField={props.valueField} onSelected={(item) => event(item, props.onAdd)} onAdd={(item) => event(item, props.onCreate)} allowAdd={props.allowCreate} />}
         </props.as>
     );
 }
@@ -28,13 +28,30 @@ TagPanel.defaultProps = {
     valueField: "id",
     as: "div",
     allowCreate: false,
+    alwaysShowEditPanel: false,
+    variant: "light",
+    pill: true,
 }
 
 
 export interface TagPanelProps {
 
+    bsPrefix?: string;
+    variant?:
+      | "primary"
+      | "secondary"
+      | "success"
+      | "danger"
+      | "warning"
+      | "info"
+      | "light"
+      | "dark";
+    pill?: boolean;
+
     as: ElementType;
     allowCreate?: boolean;
+
+    alwaysShowEditPanel?: boolean;
 
     selectedItems: any[];
     allItems: any[];

@@ -3,8 +3,9 @@
 import HttpClient from "../services/HttpClient";
 import { ActionWithData } from "./redux-extensions";
 import { Transactions, State } from "./state";
-import * as Models from "../models";
-import { CreateTransactionTag } from "./TransactionTags";
+
+import { TransactionService } from "services/TransactionService";
+import { TransactionTagService } from "services/TransactionTagService";
 
 const RequestTransactions = "RequestTransactions";
 const ReceiveTransactions = "ReceiveTransactions";
@@ -30,13 +31,9 @@ export const actionCreators = {
 
         dispatch({ type: RequestTransactions });
 
-        const url = `api/accounts/${accountId}/transactions/${pageNumber}`;
+        const service = new TransactionService(state);
 
-        const client = new HttpClient(state.app.baseUrl);
-
-        const transactions = await client.get<Transactions>(url);
-
-        transactions.currentPage = pageNumber;
+        const transactions = await service.getTransactions(accountId, pageNumber);
 
         dispatch({ type: ReceiveTransactions, data: transactions });
     },
@@ -45,40 +42,34 @@ export const actionCreators = {
 
         const state = getState();
 
-        const url = `api/transactions/${transactionId}/tag/${tagId}`;
+        const service = new TransactionService(state);
 
-        const client = new HttpClient(state.app.baseUrl);
+        const transaction = await service.addTransactionTag(transactionId, tagId);
 
-        await client.put(url);
+        dispatch({ type: AddTransactionTag, data: transaction });
     },
 
     removeTransactionTag: (transactionId: string, tagId: number) => async (dispatch: Dispatch, getState: () => State) => {
 
-        const state = getState();
+        const service = new TransactionService(getState());
 
-        const url = `api/transactions/${transactionId}/tag/${tagId}`;
+        const transaction = await service.removeTransactionTag(transactionId, tagId);
 
-        const client = new HttpClient(state.app.baseUrl);
-
-        await client.delete(url);
+        dispatch({ type: RemoveTransactionTag, data: transaction });
     },
 
     createTagAndAdd: (transactionId: string, tagName: string) => async (dispatch: Dispatch, getState: () => State) => {
         const state = getState();
 
-        let url = `api/transaction/tags/${tagName}`;
+        const transactionTagService = new TransactionTagService(state);
 
-        const client = new HttpClient(state.app.baseUrl);
+        const tag = await transactionTagService.createTag(tagName);
 
-        const tag = await client.put<undefined, Models.TransactionTag>(url);
+        const service = new TransactionService(state);
 
-        dispatch({type: CreateTransactionTag, data: tag});
+        const transaction = await service.addTransactionTag(transactionId, tag.id);
 
-        url = `api/transactions/${transactionId}/tag/${tag.id}`;
-
-        const transaction = await client.put<undefined, Models.Transaction>(url);
-
-        dispatch({type: AddTransactionTag, data: transaction});
+        dispatch({ type: AddTransactionTag, data: transaction });
     },
 };
 
@@ -101,13 +92,22 @@ export const reducer = (state: Transactions = initialState, action: ActionWithDa
                 areLoading: false,
             };
 
-            case AddTransactionTag:
-                const index = state.transactions.findIndex((t) => t.id === action.data.id);
-                const transactions = [...state.transactions.slice(0, index), action.data, ...state.transactions.slice(index+1) ];
-                return {
-                    ...state,
-                    transactions: transactions,
-                };
+        case AddTransactionTag: {
+            const index = state.transactions.findIndex((t) => t.id === action.data.id);
+            const transactions = [...state.transactions.slice(0, index), action.data, ...state.transactions.slice(index + 1)];
+            return {
+                ...state,
+                transactions: transactions,
+            };
+        }
+        case RemoveTransactionTag: {
+            const index = state.transactions.findIndex((t) => t.id === action.data.id);
+            const transactions = [...state.transactions.slice(0, index), action.data, ...state.transactions.slice(index + 1)];
+            return {
+                ...state,
+                transactions: transactions,
+            };
+        }
     }
 
     return state;

@@ -1,13 +1,13 @@
 ﻿import { Dispatch } from "redux";
 
-import HttpClient from "../services/HttpClient";
+import * as Models from "models";
 import { ActionWithData } from "./redux-extensions";
 import { TransactionTags, State } from "./state";
-import * as Models from "../models";
+import { TransactionTagService } from "services/TransactionTagService";
 
-const RequestCategories = "RequestCategories";
-const ReceiveCategories = "ReceiveCategories";
-export const CreateTransactionTag = "CreateTransactionTag";
+const RequestTags = "RequestTags";
+const ReceiveTags = "ReceiveTags";
+const CreateTag = "CreateTransactionTag";
 
 export const initialState: TransactionTags = {
     tags: [],
@@ -15,60 +15,57 @@ export const initialState: TransactionTags = {
 };
 
 export const actionCreators = {
-    requestCategories: () => async (dispatch: Dispatch, getState: () => State) => {
+    requestTags: () => async (dispatch: Dispatch, getState: () => State) => {
 
         const state = getState();
 
-        if (state.accounts.areLoading) {
+        if (state.transactionTags.areLoading) {
             // Don't issue a duplicate request (we already have or are loading the requested data)
             return;
         }
 
-        dispatch({ type: RequestCategories });
+        dispatch({ type: RequestTags });
 
-        const url = `api/transaction/tags`;
+        const service = new TransactionTagService(state);
 
-        const client = new HttpClient(state.app.baseUrl);
+        const tags = await service.getTags();
 
-        const tags = await client.get<Models.TransactionTag[]>(url);
-
-        dispatch({ type: ReceiveCategories, data: tags });
+        dispatch({ type: ReceiveTags, data: tags });
     },
 
-    createTag: (name: string) => (dispatch: Dispatch, getState: () => State) => {
+    createTag: (name: string) => async (dispatch: Dispatch, getState: () => State) => {
 
-        const state = getState();
+        const service = new TransactionTagService(getState());
 
-        const url = `api/transaction/tags/${name}`;
+        const tag = await service.createTag(name);
 
-        const client = new HttpClient(state.app.baseUrl);
-
-        const tag = client.put<undefined, Models.TransactionTag>(url);
+        dispatch({type: CreateTag, data: tag});
 
         return tag;
     },
 };
 
-export const reducer = (state: TransactionTags = initialState, action: ActionWithData<any>): TransactionTags => {
+export const reducer = (state: TransactionTags = initialState, action: ActionWithData<Models.TransactionTag[] | Models.TransactionTag>): TransactionTags => {
 
     switch (action.type) {
-        case RequestCategories:
+        case RequestTags:
             return {
                 ...state,
                 areLoading: true,
             };
 
 
-        case ReceiveCategories:
+        case ReceiveTags:
 
             return {
                 ...state,
-                tags: action.data,
+                tags: (action.data as Models.TransactionTag[]).sort((t1,t2) => t1.name.localeCompare(t2.name)),
                 areLoading: false,
             };
 
-        case CreateTransactionTag:
-            state.tags.push(action.data);
+        case CreateTag:
+            state.tags.push((action.data as Models.TransactionTag));
+            state.tags.sort((t1,t2) => t1.name.localeCompare(t2.name));
             return state;
     }
     return state;

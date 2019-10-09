@@ -19,6 +19,8 @@ export const CloseBadge: React.FC<PropsWithChildren<CloseBadgeProps>> = (props) 
     return (<Badge {...other} className={className} >{props.children}<span><i onClick={click} className="fa fa-close" /></span></Badge>);
 }
 
+CloseBadge.displayName = "CloseBadge";
+
 export interface CloseBadgeProps extends BadgeProps {
     onClose?: () => void;
 }
