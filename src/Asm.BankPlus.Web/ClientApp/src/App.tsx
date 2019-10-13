@@ -39,9 +39,10 @@ const App: React.FC = () => {
                 <Layout>
                     <Route exact={true} path="/" component={Pages.Home} />
                     <Route path="/accounts" component={Pages.ManageAccounts} />
-                    <Route path="/accounts/:id" component={Pages.Transactions} />
+                    <Route exact path="/accounts/:id" component={Pages.Transactions} />
+                    <Route path="/accounts/:id/import" component={Pages.Import} />
                     <Route exact path="/settings" component={Pages.Settings} />
-                    <Route path="/settings/transaction-categories" component={Pages.TransactionTags} />
+                    <Route path="/settings/tags" component={Pages.TransactionTags} />
                 </Layout>
             </BrowserRouter>
         </Provider>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Asm.BankPlus.Models;
 using Transaction = Asm.BankPlus.Models.Transaction;
 
 namespace Asm.BankPlus.Repository
@@ -19,6 +20,6 @@ namespace Asm.BankPlus.Repository
 
         Task<Transaction> CreateTransaction(Transaction transaction);
 
-
+        Task CreateTransactions(IEnumerable<Transaction> transactions);
     }
 }

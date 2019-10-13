@@ -1,12 +1,14 @@
 import { UserAgentApplication } from "msal";
 import { SecurityService } from "./SecurityService";
+import { throwStatement } from "@babel/types";
 
 export type httpMethod = "GET" | "DELETE" | "POST" | "PUT" | "PATCH";
 
-export enum HttpErrorCodes {
+export enum HttpStatusCodes {
     OK = 200,
-    NoContent = 201,
-    
+    Created = 201,
+    NoContent = 204,
+
     BadRequest = 400,
     Unauthorized = 401,
     Forbidden = 403,
@@ -16,17 +18,17 @@ export enum HttpErrorCodes {
     ServiceUnavailable = 403,
 }
 
-export interface ProblemDetails
-{
+export interface ProblemDetails {
     detail: string,
     instance?: string,
     status?: number,
     title?: string,
     type: string,
 }
- 
+
 
 export default class HttpClient {
+    
 
     private baseUrl: string;
     private securityService: SecurityService;
@@ -34,7 +36,7 @@ export default class HttpClient {
 
     constructor(baseUrl: string) {
         this.baseUrl = baseUrl;
-        this.securityService = new  SecurityService();
+        this.securityService = new SecurityService();
         this.csrf = this.readCookie("XSRF-TOKEN");
     }
 
@@ -63,6 +65,22 @@ export default class HttpClient {
         return this.fetchWithBody(url, data, "POST");
     }
 
+    postFile<TResponse>(url: string, file: File) : Promise<TResponse> {
+        return this.fetchWithFormData(url, null, "POST", [file]);
+    }
+
+    postFiles<TResponse>(url: string, files: File[]) : Promise<TResponse> {
+        return this.fetchWithFormData(url, null, "POST", files);
+    }
+
+    postFileAndData<TRequest, TResponse>(url: string, file: File, data: TRequest) : Promise<TResponse> {
+        return this.fetchWithFormData(url, data, "POST", [file]);
+    }
+
+    postFilesAndData<TRequest, TResponse>(url: string, files: File[], data: TRequest) : Promise<TResponse> {
+        return this.fetchWithFormData(url, data, "POST", files);
+    }
+
     private async fetch<T>(url: string, method: httpMethod): Promise<T> {
 
         const token = await this.securityService.getToken();
@@ -77,15 +95,19 @@ export default class HttpClient {
             method,
         });
 
-        if (response.status === 201) {
+        if (response.status === HttpStatusCodes.NoContent) {
             return null;
         }
 
-        const body = await response.json();
-
         if (response.ok) {
-            return body;
+            try {
+                return await response.json();
+            }
+            catch {
+                Promise.reject(response);
+            }
         }
+
 
         return Promise.reject(response);
     }
@@ -104,14 +126,55 @@ export default class HttpClient {
             }),
             method,
         });
-
-        const body = await response.json();
-
-        if (response.ok === true) {
-            return body;
+        if (response.status === HttpStatusCodes.NoContent) {
+            return null;
         }
 
-        return Promise.reject(body);
+        if (response.ok) {
+            try {
+                return await response.json();
+            }
+            catch {
+                Promise.reject(response);
+            }
+        }
+
+        return Promise.reject(response);
+    }
+
+    private async fetchWithFormData<TRequest, TResponse>(url: string, data: TRequest, method: httpMethod, files: File[]): Promise<TResponse> {
+        const token = await this.securityService.getToken();
+
+        const formData = new FormData();
+
+        for (const file of files) {
+            formData.append("file", file, file.name);
+        }
+
+        const response = await fetch(this.baseUrl + url, {
+            body: formData,
+            credentials: "include",
+            headers: new Headers({
+                "Accept": "application/json",
+                "Authorization": "Bearer " + token,
+            }),
+            method,
+        });
+
+        if (response.status === HttpStatusCodes.NoContent) {
+            return null;
+        }
+
+        if (response.ok) {
+            try {
+                return await response.json();
+            }
+            catch {
+                Promise.reject(response);
+            }
+        }
+
+        return Promise.reject(response);
     }
 
     private readCookie(name: string): string {

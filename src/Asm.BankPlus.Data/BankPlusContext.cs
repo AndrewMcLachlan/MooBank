@@ -14,7 +14,11 @@ namespace Asm.BankPlus.Data
         }
 
         public virtual DbSet<Account> Accounts { get; set; }
+
+        //public virtual DbSet<AccountController> AccountControllers { get; set; }
+
         public virtual DbSet<AccountAccountHolder> AccountAccountHolder { get; set; }
+
         public virtual DbSet<AccountHolder> AccountHolders { get; set; }
 
         public virtual DbSet<RecurringTransaction> RecurringTransactions { get; set; }
@@ -27,13 +31,15 @@ namespace Asm.BankPlus.Data
 
         public virtual DbSet<VirtualAccount> VirtualAccounts { get; set; }
 
+        public virtual DbSet<ImportAccount> ImportAccounts { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            foreach(var entity in modelBuilder.Model.GetEntityTypes())
+            foreach (var entity in modelBuilder.Model.GetEntityTypes())
             {
                 entity.Relational().TableName = entity.ClrType.Name;
             }
@@ -62,7 +68,12 @@ namespace Asm.BankPlus.Data
 
                 entity.Property(r => r.AccountType)
                 .HasConversion(e => (int)e, e => (Models.AccountType)e);
+
+                entity.Property(r => r.AccountController)
+                .HasConversion(e => (int)e, e => (Models.AccountController)e);
             });
+
+            // modelBuilder.Entity<AccountController>
 
             modelBuilder.Entity<AccountAccountHolder>(entity =>
             {
@@ -263,6 +274,13 @@ namespace Asm.BankPlus.Data
                     .HasForeignKey(d => d.TransactionTagId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TransactionTransactionTag_TransactionTag");*/
+            });
+
+            modelBuilder.Entity<ImportAccount>(entity =>
+            {
+                entity.HasKey(e => e.AccountId);
+                entity.HasOne(e => e.Account).WithOne().HasForeignKey<Account>(a => a.AccountId);
+                entity.HasOne(e => e.ImporterType);
             });
 
         }

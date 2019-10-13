@@ -31,6 +31,7 @@ TagPanel.defaultProps = {
     alwaysShowEditPanel: false,
     variant: "light",
     pill: true,
+    readonly: false,
 }
 
 
@@ -57,6 +58,8 @@ export interface TagPanelProps {
     allItems: any[];
     textField: string;
     valueField: string;
+
+    readonly?: boolean;
 
     search?: (search: string) => any[];
 

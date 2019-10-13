@@ -9,5 +9,8 @@ namespace Asm.BankPlus.Models
         NotSet = 0,
         Transaction = 1,
         Savings = 2,
+        Credit = 3,
+        Mortgage = 4,
+        SuperAnnuation = 5,
     }
 }

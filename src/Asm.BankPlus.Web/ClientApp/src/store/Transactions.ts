@@ -6,6 +6,7 @@ import { Transactions, State } from "./state";
 
 import { TransactionService } from "services/TransactionService";
 import { TransactionTagService } from "services/TransactionTagService";
+import { ShowMessage } from "./App";
 
 const RequestTransactions = "RequestTransactions";
 const ReceiveTransactions = "ReceiveTransactions";
@@ -33,9 +34,14 @@ export const actionCreators = {
 
         const service = new TransactionService(state);
 
-        const transactions = await service.getTransactions(accountId, pageNumber);
-
-        dispatch({ type: ReceiveTransactions, data: transactions });
+        try {
+            const transactions = await service.getTransactions(accountId, pageNumber);
+            dispatch({ type: ReceiveTransactions, data: transactions });
+        }
+        catch (error) {
+            dispatch({ type: ShowMessage, data: error.message });
+            dispatch({ type: ReceiveTransactions, data: [] });
+        }
     },
 
     addTransactionTag: (transactionId: string, tagId: number) => async (dispatch: Dispatch, getState: () => State) => {
@@ -44,18 +50,26 @@ export const actionCreators = {
 
         const service = new TransactionService(state);
 
-        const transaction = await service.addTransactionTag(transactionId, tagId);
-
-        dispatch({ type: AddTransactionTag, data: transaction });
+        try {
+            const transaction = await service.addTransactionTag(transactionId, tagId);
+            dispatch({ type: AddTransactionTag, data: transaction });
+        }
+        catch (error) {
+            dispatch({ type: ShowMessage, data: error.message });
+        }
     },
 
     removeTransactionTag: (transactionId: string, tagId: number) => async (dispatch: Dispatch, getState: () => State) => {
 
         const service = new TransactionService(getState());
 
-        const transaction = await service.removeTransactionTag(transactionId, tagId);
-
-        dispatch({ type: RemoveTransactionTag, data: transaction });
+        try {
+            const transaction = await service.removeTransactionTag(transactionId, tagId);
+            dispatch({ type: RemoveTransactionTag, data: transaction });
+        }
+        catch (error) {
+            dispatch({ type: ShowMessage, data: error.message });
+        }
     },
 
     createTagAndAdd: (transactionId: string, tagName: string) => async (dispatch: Dispatch, getState: () => State) => {
@@ -67,9 +81,13 @@ export const actionCreators = {
 
         const service = new TransactionService(state);
 
-        const transaction = await service.addTransactionTag(transactionId, tag.id);
-
-        dispatch({ type: AddTransactionTag, data: transaction });
+        try {
+            const transaction = await service.addTransactionTag(transactionId, tag.id);
+            dispatch({ type: AddTransactionTag, data: transaction });
+        }
+        catch (error) {
+            dispatch({ type: ShowMessage, data: error.message });
+        }
     },
 };
 

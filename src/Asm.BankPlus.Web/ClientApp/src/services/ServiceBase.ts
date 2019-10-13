@@ -1,5 +1,5 @@
 import { State } from "store/state";
-import { HttpErrorCodes, ProblemDetails } from "./HttpClient";
+import { HttpStatusCodes, ProblemDetails } from "./HttpClient";
 
 export class ServiceBase {
 
@@ -14,12 +14,17 @@ export class ServiceBase {
     }
 
     protected async handleError(response: Response): Promise<void> {
-        switch (response.status as HttpErrorCodes) {
-            case HttpErrorCodes.ServiceUnavailable:
+        switch (response.status as HttpStatusCodes) {
+            case HttpStatusCodes.ServiceUnavailable:
                 throw new Error(`${this.state.app.appName} is currently unavailable`);
             default:
+                try {
                 const problemDetails: ProblemDetails = await response.json();
                 this.handleProblemDetails(problemDetails);
+                }
+                catch(error) {
+                    throw new Error(`${this.state.app.appName} is currently unavailable`);
+                }
         }
 
         return Promise.resolve();

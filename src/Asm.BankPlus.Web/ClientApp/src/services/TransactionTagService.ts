@@ -17,7 +17,7 @@ export class TransactionTagService extends ServiceBase {
             return await client.get<Models.TransactionTag[]>(url);
         }
         catch (response) {
-            super.handleError(response);
+            await super.handleError(response);
         }
     }
 
@@ -30,7 +30,7 @@ export class TransactionTagService extends ServiceBase {
             return await client.put<undefined, Models.TransactionTag>(url);
         }
         catch (response) {
-            super.handleError(response);
+            await super.handleError(response);
         }
     }
 }

@@ -12,6 +12,7 @@ export interface App {
     appName: string;
     skin: string;
     baseUrl: string;
+    message?: string;
 }
 
 export interface Accounts {

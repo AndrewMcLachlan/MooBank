@@ -1,0 +1,26 @@
+div.upload {
+    height: 200px;
+    widtH:200px;
+z-index: 2;
+    border: 1px solid #ccc;
+    position: relative;
+
+    i {
+        font-size: 4rem;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        z-index: 1;
+        transform: translate(-50%,-50%);
+        color: #E5E5E5;
+    }
+
+    label {
+        height: 100%;
+        width: 100%;
+    }
+
+    input[type=file] {
+        display: none;
+    }
+}

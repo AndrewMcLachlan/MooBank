@@ -10,5 +10,9 @@ namespace Asm.BankPlus.Repository
         Task<IEnumerable<Account>> GetAccounts();
 
         Task<Account> GetAccount(Guid id);
+
+        Task<Account> SetBalance(Guid id, decimal balance);
+
+        Task<Account> SetBalance(Guid id, decimal balance, decimal availableBalance);
     }
 }

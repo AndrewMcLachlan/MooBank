@@ -6,10 +6,12 @@
     [AccountBalance] DECIMAL(10, 2) NOT NULL CONSTRAINT DF_AccountBalance DEFAULT 0,
     [AvailableBalance] DECIMAL(10, 2) NOT NULL CONSTRAINT DF_AvailableBalance DEFAULT 0,
     [AccountTypeId] INT NOT NULL,
+    [AccountControllerId] INT NOT NULL,
     [UpdateVirtualAccount] BIT NOT NULL CONSTRAINT DF_UpdateVirtualAccount DEFAULT 0,
     [LastUpdated] DATETIME2(0) NOT NULL CONSTRAINT DF_LastUpdated DEFAULT SYSUTCDATETIME(),
     CONSTRAINT PK_Account PRIMARY KEY CLUSTERED (AccountId),
-    CONSTRAINT FK_Account_AccountType FOREIGN KEY (AccountTypeId) REFERENCES AccountType(AccountTypeId)
+    CONSTRAINT FK_Account_AccountType FOREIGN KEY (AccountTypeId) REFERENCES AccountType(AccountTypeId),
+    CONSTRAINT FK_Account_AccountController FOREIGN KEY (AccountControllerId) REFERENCES AccountController(AccountControllerId)
 )
 
 GO

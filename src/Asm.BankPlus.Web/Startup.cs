@@ -1,8 +1,10 @@
 using System;
 using System.IO;
 using System.Net;
+using Asm.BankPlus.Importers;
 using Asm.BankPlus.Repository;
 using Asm.BankPlus.Services;
+using Asm.BankPlus.Services.Importers;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
@@ -181,6 +183,8 @@ namespace Asm.BankPlus.Web
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
             services.AddScoped<ITransactionTagRepository, TransactionTagRepository>();
+            services.AddScoped<IngImporter>();
+            services.AddScoped<IImporterFactory, ImporterFactory>();
         }
 
         private ProblemDetails CreateProblemDetails(IHostingEnvironment env, HttpContext context, Exception ex)

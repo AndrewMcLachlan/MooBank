@@ -36,6 +36,21 @@ ON (TARGET.AccountTypeId = SOURCE.AccountTypeId)
 WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
 WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (5, 'Superannuation');
 
+--Account Controller
+MERGE AccountController AS TARGET USING (SELECT 0 as AccountControllerId, 'Manual' as [Type]) AS SOURCE
+ON (TARGET.AccountControllerId = SOURCE.AccountControllerId)
+WHEN MATCHED AND TARGET.[Type] <> SOURCE.[Type] THEN UPDATE SET Target.[Type] = SOURCE.[Type]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (0, 'Manual');
+
+MERGE AccountController AS TARGET USING (SELECT 1 as AccountControllerId, 'VirtualAccount' as [Type]) AS SOURCE
+ON (TARGET.AccountControllerId = SOURCE.AccountControllerId)
+WHEN MATCHED AND TARGET.[Type] <> SOURCE.[Type] THEN UPDATE SET Target.[Type] = SOURCE.[Type]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (1, 'VirtualAccount');
+
+MERGE AccountController AS TARGET USING (SELECT 2 as AccountControllerId, 'Import' as [Type]) AS SOURCE
+ON (TARGET.AccountControllerId = SOURCE.AccountControllerId)
+WHEN MATCHED AND TARGET.[Type] <> SOURCE.[Type] THEN UPDATE SET Target.[Type] = SOURCE.[Type]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (2, 'Import');
 
 -- Transaction Type
 MERGE TransactionType AS TARGET USING (SELECT 1 as TransactionTypeId, 'Credit' as [Description]) AS SOURCE
@@ -52,6 +67,7 @@ MERGE TransactionType AS TARGET USING (SELECT 3 as TransactionTypeId, 'BalanceAd
 ON (TARGET.TransactionTypeId = SOURCE.TransactionTypeId)
 WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
 WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (3, 'BalanceAdjustment');
+
 
 /*
 IF ((SELECT COUNT(*)FROM TransactionCategory) = 0)

@@ -4,6 +4,7 @@ import * as Models from "models";
 import { ActionWithData } from "./redux-extensions";
 import { TransactionTags, State } from "./state";
 import { TransactionTagService } from "services/TransactionTagService";
+import { genericCaller, ShowMessage } from "./App";
 
 const RequestTags = "RequestTags";
 const ReceiveTags = "ReceiveTags";
@@ -28,20 +29,27 @@ export const actionCreators = {
 
         const service = new TransactionTagService(state);
 
-        const tags = await service.getTags();
-
-        dispatch({ type: ReceiveTags, data: tags });
+        try {
+            const tags = await service.getTags();
+            dispatch({ type: ReceiveTags, data: tags });
+        }
+        catch (error) {
+            dispatch({ type: ShowMessage, data: error.message });
+            dispatch({ type: ReceiveTags, data: [] });
+        }
     },
 
     createTag: (name: string) => async (dispatch: Dispatch, getState: () => State) => {
 
         const service = new TransactionTagService(getState());
 
-        const tag = await service.createTag(name);
-
-        dispatch({type: CreateTag, data: tag});
-
-        return tag;
+        try {
+            const tag = await service.createTag(name);
+            dispatch({ type: CreateTag, data: tag });
+        }
+        catch (error) {
+            dispatch({ type: ShowMessage, data: error.message });
+        }
     },
 };
 
@@ -59,13 +67,13 @@ export const reducer = (state: TransactionTags = initialState, action: ActionWit
 
             return {
                 ...state,
-                tags: (action.data as Models.TransactionTag[]).sort((t1,t2) => t1.name.localeCompare(t2.name)),
+                tags: (action.data as Models.TransactionTag[]).sort((t1, t2) => t1.name.localeCompare(t2.name)),
                 areLoading: false,
             };
 
         case CreateTag:
             state.tags.push((action.data as Models.TransactionTag));
-            state.tags.sort((t1,t2) => t1.name.localeCompare(t2.name));
+            state.tags.sort((t1, t2) => t1.name.localeCompare(t2.name));
             return state;
     }
     return state;

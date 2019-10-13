@@ -15,6 +15,8 @@ namespace Asm.BankPlus.Data.Entities
                 AvailableBalance = account.AvailableBalance,
                 CurrentBalance = account.AccountBalance,
                 BalanceDate = account.LastUpdated,
+                AccountType = account.AccountType,
+                Controller = account.AccountController,
             };
         }
     }

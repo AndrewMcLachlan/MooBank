@@ -14,21 +14,27 @@
     display: inline;
 }
 
+.alert {
+    margin-bottom: 0;
+}
+
 html {
     background-color: $background;
 }
 
 body {
     background-color: #FFF;
+    font-family: 'Open Sans Condensed', 'Franklin Gothic', Helvetica, Arial, sans-serif;
+    font-weight: bold;
 }
 
 div#body {
     > header {
-        background: url(./images/background.png) no-repeat $background;
+        /*background: url(./images/background.png) no-repeat $background;*/
         /*background-color: $background;
         background: -moz-radial-gradient(65% 50%, ellipse farthest-corner,rgb(255,35,35) 1%, rgb(230,0,0) 50%, $background 100%);
-        background: -webkit-radial-gradient(100% 50%, ellipse farthest-corner, rgb(255,0,0), $background);
-        background: radial-gradient(100% 50%, ellipse farthest-corner, rgb(255,0,0), $background);*/
+        background: -webkit-radial-gradient(100% 50%, ellipse farthest-corner, rgb(255,0,0), $background);*/
+        background: radial-gradient(circle farthest-corner, rgb(255,0,0) 0, $background 50%);
         height: 111px;
 
         img {

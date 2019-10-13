@@ -6,7 +6,8 @@
     <DeployScriptFileName>Asm.BankPlus.Database.sql</DeployScriptFileName>
     <TargetConnectionString>Data Source=.\MSSQLServer2016;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False</TargetConnectionString>
     <BlockWhenDriftDetected>False</BlockWhenDriftDetected>
-    <RegisterDataTierApplication>True</RegisterDataTierApplication>
+    <RegisterDataTierApplication>False</RegisterDataTierApplication>
     <ProfileVersionNumber>1</ProfileVersionNumber>
+    <BlockOnPossibleDataLoss>False</BlockOnPossibleDataLoss>
   </PropertyGroup>
 </Project>

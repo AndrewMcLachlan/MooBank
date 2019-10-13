@@ -14,76 +14,86 @@ export const useSecurityService = (): SecurityService => new SecurityService();
 
 export class SecurityService {
 
-    private msal: UserAgentApplication;
-    
-    public get userName(): string { 
-        const account = this.msal.getAccount();
+    private static msal: UserAgentApplication;
+
+    public get userName(): string {
+        const account = SecurityService.msal.getAccount();
         return (account ? account.name : "");
     }
 
     constructor() {
-        this.msal = new UserAgentApplication(msalConfig);
-        this.msal.handleRedirectCallback((error) => {
-            if (error) {
-                throw error;
-            }
-        });
+        if (!SecurityService.msal) {
+            SecurityService.msal = new UserAgentApplication(msalConfig);
+            SecurityService.msal.handleRedirectCallback((error) => {
+                if (error) {
+                    throw error;
+                }
+            });
+        }
     }
 
     public isUserLoggedIn(): boolean {
-        return this.msal && !!this.msal.getAccount();
+        const idToken = sessionStorage.getItem('msal.idtoken');
+        const hasToken = idToken !== null && idToken !== '';
+
+        const error = sessionStorage.getItem('msal.error');
+        const hasError = error === 'login_required';
+
+        return hasToken && !hasError;
     }
 
     public login() {
 
         if (this.isUserLoggedIn()) {
-            return this.msal.getAccount().name;
+            return;
         }
 
         try {
-            alert("here");
-            this.msal.loginRedirect(msalRequest);
-            //return loginResponse.account.name;
+            SecurityService.msal.loginRedirect(msalRequest);
         }
         catch(e) {
             console.log(e);
         }
     }
 
+    public logout() {
+        SecurityService.msal.logout();
+    }
+
     public async getToken(): Promise<string> {
-   
+
             const tokenRequest = {... msalRequest, forceRefresh: false};
-   
+
             try {
-                if (!this.msal) {
+                if (!SecurityService.msal) {
                     return Promise.reject();
                 }
-                let response = await this.msal.acquireTokenSilent(tokenRequest);
+                let response = await SecurityService.msal.acquireTokenSilent(tokenRequest);
                 return response.accessToken;
             }
-    
+
             catch (err) {
                 switch (err.name) {
-    
+
                     case "InteractionRequiredAuthError":
                         try {
-                            if (!this.msal) {
+                            if (!SecurityService.msal) {
                                 return Promise.reject();
                             }
-                            const response = await this.msal.acquireTokenPopup(tokenRequest);
+                            const response = await SecurityService.msal.acquireTokenPopup(tokenRequest);
                             return response.accessToken;
                         }
                         catch  {
                             this.login();
                         }
                         break;
-    
+                    case 'invalid_grant':
                     case "login_required":
                         this.login();
                         break;
                 }
                 return Promise.resolve("");
-    
+
             }
     }
 }
@@ -104,7 +114,7 @@ export const msalConfig: Configuration = {
 function getBaseUrl():string {
     let location = window.location;
     let baseURL = location.protocol + "//" + location.hostname;
-  
+
     if (typeof location.port !== "undefined" && location.port !== "")
     {
         baseURL += ":" + location.port;

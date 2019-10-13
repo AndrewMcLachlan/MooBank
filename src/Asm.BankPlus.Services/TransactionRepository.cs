@@ -73,5 +73,15 @@ namespace Asm.BankPlus.Services
 
             return (Transaction)entity;
         }
+
+        public async Task CreateTransactions(IEnumerable<Transaction> transactions)
+        {
+            foreach(var t in transactions)
+            {
+                DataContext.Add((Data.Entities.Transaction)t);
+            }
+
+            await DataContext.SaveChangesAsync();
+        }
     }
 }

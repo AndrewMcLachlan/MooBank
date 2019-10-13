@@ -1,9 +1,10 @@
-﻿import { Dispatch, combineReducers } from "redux";
+﻿import { Dispatch } from "redux";
 
 import HttpClient from "services/HttpClient";
 import { ActionWithData } from "./redux-extensions";
 import { Accounts, State } from "./state";
 import { Account } from "models";
+import { ImportService } from "services";
 
 export const ActionTypes = {
     RequestAccounts: "RequestAccounts",
@@ -11,6 +12,7 @@ export const ActionTypes = {
     RequestAccount: "RequestAccount",
     ReceiveAccount: "ReceiveAccount",
     SetSelectedAccount: "SetSelectedAccount",
+    ImportTransactions: "ImportTransactions",
 };
 
 export const initialState: Accounts = {
@@ -54,6 +56,13 @@ export const actionCreators = {
         const account = await client.get<Account>(url);
 
         dispatch({ type: ActionTypes.ReceiveAccount, data: account });
+    },
+
+    importTransactions: (id: string, file: File) => async (dispatch: Dispatch, getState: () => State) => {
+
+        const service = new ImportService(getState());
+
+        await service.importTransactions(id, file);
     },
 };
 
