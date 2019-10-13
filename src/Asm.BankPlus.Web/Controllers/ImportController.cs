@@ -22,7 +22,7 @@ namespace Asm.BankPlus.Web.Controllers
         }
 
         [Route("api/accounts/{accountid}/[controller]")]
-        public async Task Post(Guid accountId, IFormFile file)
+        public async Task<ActionResult> Post(Guid accountId, IFormFile file)
         {
             var account = await _accountRepository.GetAccount(accountId);
 
