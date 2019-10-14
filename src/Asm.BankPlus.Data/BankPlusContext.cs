@@ -235,11 +235,16 @@ namespace Asm.BankPlus.Data
                     .IsRequired()
                     .HasMaxLength(50);
 
-                entity.HasOne(d => d.TransactionTag)
-                    .WithMany(p => p.TransactionTagRules)
-                    .HasForeignKey(d => d.TransactionTagId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_TransactionTagRule_TransactionTag");
+                entity.HasMany(p => p.TransactionTagLinks)
+                    .WithOne(t => t.TransactionTagRule)
+                    .HasForeignKey(d => d.TransactionTagRuleId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_TransactionTagRule_TransactionTagRuleTransactionTag");
+
+                entity.HasOne(e => e.Account)
+                    .WithMany()
+                    .HasForeignKey(e => e.AccountId);
+
             });
 
             modelBuilder.Entity<TransactionTagTransactionTag>(entity =>
@@ -276,12 +281,18 @@ namespace Asm.BankPlus.Data
                     .HasConstraintName("FK_TransactionTransactionTag_TransactionTag");*/
             });
 
-            modelBuilder.Entity<ImportAccount>(entity =>
+            modelBuilder.Entity<TransactionTagRuleTransactionTag>(entity =>
             {
-                entity.HasKey(e => e.AccountId);
-                entity.HasOne(e => e.Account).WithOne().HasForeignKey<Account>(a => a.AccountId);
-                entity.HasOne(e => e.ImporterType);
+                entity.HasKey(e => new { e.TransactionTagRuleId, e.TransactionTagId });
             });
+
+            modelBuilder.Entity<ImportAccount>(entity =>
+        {
+            entity.HasKey(e => e.AccountId);
+            entity.HasOne(e => e.Account).WithOne().HasForeignKey<Account>(a => a.AccountId);
+            entity.HasOne(e => e.ImporterType);
+        });
+
 
         }
     }

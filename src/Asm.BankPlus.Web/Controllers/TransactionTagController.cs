@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Asm.BankPlus.Models;
 using Asm.BankPlus.Repository;
+using Asm.BankPlus.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Asm.BankPlus.Web.Controllers
@@ -23,43 +24,39 @@ namespace Asm.BankPlus.Web.Controllers
             return Ok(await TagRepository.GetTransactionTags());
         }
 
-        [HttpGet]
-        [Route("{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<TransactionTag>> Get(int id)
         {
             return await TagRepository.GetTransactionTag(id);
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<ActionResult<TransactionTag>> Create(TransactionTag category)
         {
-            return await TagRepository.CreateTransactionTag(category);
+            var tag = await TagRepository.CreateTransactionTag(category);
+
+            return Created($"api/transaction/tags/{tag.Id}", tag);
         }
 
         [HttpPut("{name}")]
-        //[ValidateAntiForgeryToken]
         public async Task<ActionResult<TransactionTag>> CreateByName(string name)
         {
-            return await TagRepository.CreateTransactionTag(name);
+            var tag = await TagRepository.CreateTransactionTag(name);
+
+            return Created($"api/transaction/tags/{tag.Id}", tag);
         }
 
-        [HttpPatch]
-        [ValidateAntiForgeryToken]
-        [Route("{id}")]
-        public async Task<ActionResult<TransactionTag>> Update(int id, [FromBody]TransactionTag category)
+        [HttpPatch("{id}")]
+        public async Task<ActionResult<TransactionTag>> Update(int id, [FromBody]TransactionTagModel tag)
         {
-            if (category.Id != id) return BadRequest(new ProblemDetails { Title = "Bad Request", Detail = "Invaild body" });
-
-            return await TagRepository.UpdateTransactionTag(category);
+            return await TagRepository.UpdateTransactionTag(id, tag.Name);
         }
 
-        [HttpDelete]
-        [Route("{id}")]
+        [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
             await TagRepository.DeleteTransactionTag(id);
-            return Ok();
+            return NoContent();
         }
     }
 }

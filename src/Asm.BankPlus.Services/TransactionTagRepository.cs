@@ -30,11 +30,11 @@ namespace Asm.BankPlus.Services
             return transactionTag;
         }
 
-        public async Task<TransactionTag> UpdateTransactionTag(TransactionTag tag)
+        public async Task<TransactionTag> UpdateTransactionTag(int id, string name)
         {
-            var entity = await GetTransactionTagEntity(tag.Id);
+            var entity = await GetTransactionTagEntity(id);
 
-            entity.Name = tag.Name;
+            entity.Name = name;
 
             await DataContext.SaveChangesAsync();
 
@@ -64,7 +64,7 @@ namespace Asm.BankPlus.Services
         {
             var tag = await DataContext.TransactionTags.Where(c => c.TransactionTagId == id).SingleOrDefaultAsync();
 
-            if (tag == null) throw new NotFoundException();
+            if (tag == null) throw new NotFoundException($"Transaction tag with id {id} was not found");
 
             return tag;
         }

@@ -8,10 +8,11 @@ namespace Asm.BankPlus.Data.Entities
     {
         public int TransactionTagRuleId { get; set; }
 
+        public Guid AccountId { get; set; }
+
         public string Contains { get; set; }
 
-        public int TransactionTagId { get; set; }
-
-        public virtual TransactionTag TransactionTag { get; set; }
+        public virtual Account Account { get; set; }
+        public virtual ICollection<TransactionTagRuleTransactionTag> TransactionTagLinks { get; set; }
     }
 }

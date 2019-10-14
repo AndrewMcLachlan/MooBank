@@ -10,7 +10,7 @@ namespace Asm.BankPlus.Repository
 
         Task<TransactionTag> CreateTransactionTag(string name);
 
-        Task<TransactionTag> UpdateTransactionTag(TransactionTag tag);
+        Task<TransactionTag> UpdateTransactionTag(int id, string name);
 
         Task<IEnumerable<TransactionTag>> GetTransactionTags();
 
