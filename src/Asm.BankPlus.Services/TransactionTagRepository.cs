@@ -15,12 +15,12 @@ namespace Asm.BankPlus.Services
         {
         }
 
-        public async Task<TransactionTag> CreateTransactionTag(string name)
+        public async Task<TransactionTag> Create(string name)
         {
-            return await CreateTransactionTag(new TransactionTag { Name = name });
+            return await Create(new TransactionTag { Name = name });
         }
 
-        public async Task<TransactionTag> CreateTransactionTag(TransactionTag tag)
+        public async Task<TransactionTag> Create(TransactionTag tag)
         {
             Data.Entities.TransactionTag transactionTag = tag;
             DataContext.Add(transactionTag);
@@ -30,43 +30,75 @@ namespace Asm.BankPlus.Services
             return transactionTag;
         }
 
-        public async Task<TransactionTag> UpdateTransactionTag(int id, string name)
+        public async Task<TransactionTag> Update(int id, string name)
         {
-            var entity = await GetTransactionTagEntity(id);
+            var tag = await GetEntity(id);
 
-            entity.Name = name;
+            tag.Name = name;
 
             await DataContext.SaveChangesAsync();
 
-            return entity;
+            return tag;
         }
 
-        public async Task<IEnumerable<TransactionTag>> GetTransactionTags()
+        public async Task<IEnumerable<TransactionTag>> Get()
         {
             return (await DataContext.TransactionTags.Where(t => !t.Deleted).ToListAsync()).Select(t => (TransactionTag)t).ToList();
         }
 
-        public async Task<TransactionTag> GetTransactionTag(int id)
+        public async Task<TransactionTag> Get(int id)
         {
-            return await GetTransactionTagEntity(id);
+            return await GetEntity(id);
         }
 
-        public async Task DeleteTransactionTag(int id)
+        public async Task Delete(int id)
         {
-            var tag = await GetTransactionTagEntity(id);
+            var tag = await GetEntity(id);
 
             tag.Deleted = true;
 
             await DataContext.SaveChangesAsync();
         }
 
-        private async Task<Data.Entities.TransactionTag> GetTransactionTagEntity(int id)
+        private async Task<Data.Entities.TransactionTag> GetEntity(int id)
         {
             var tag = await DataContext.TransactionTags.Where(c => c.TransactionTagId == id).SingleOrDefaultAsync();
 
             if (tag == null) throw new NotFoundException($"Transaction tag with id {id} was not found");
 
             return tag;
+        }
+
+        public async Task<TransactionTag> AddSubTag(int id, int subId)
+        {
+            if (id == subId) throw new InvalidOperationException("Cannot add a tag to itself");
+
+            var tag = await DataContext.TransactionTags.Include(t => t.TagsLink).Where(c => c.TransactionTagId == id).SingleOrDefaultAsync();
+            if (tag == null) throw new NotFoundException($"Transaction tag with id {id} was not found");
+
+            var subTag = await GetEntity(subId);
+
+            if (tag.Tags.Any(t => t == subTag)) throw new ExistsException($"Tag with id {subId} has already been added");
+
+            tag.Tags.Add(subTag);
+
+            await DataContext.SaveChangesAsync();
+
+            return tag;
+        }
+
+        public async Task RemoveSubTag(int id, int subId)
+        {
+            var tag = await DataContext.TransactionTags.Include(t => t.TagsLink).Where(c => c.TransactionTagId == id).SingleOrDefaultAsync();
+            if (tag == null) throw new NotFoundException($"Transaction tag with id {id} was not found");
+
+            var subTag = await GetEntity(subId);
+
+            if (!tag.Tags.Any(t => t == subTag)) throw new NotFoundException($"Tag with id {subId} has not been added");
+
+            tag.Tags.Remove(subTag);
+
+            await DataContext.SaveChangesAsync();
         }
     }
 }

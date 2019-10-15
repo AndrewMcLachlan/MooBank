@@ -6,15 +6,20 @@ namespace Asm.BankPlus.Repository
 {
     public interface ITransactionTagRepository
     {
-        Task<TransactionTag> CreateTransactionTag(TransactionTag tag);
+        Task<TransactionTag> Create(TransactionTag tag);
 
-        Task<TransactionTag> CreateTransactionTag(string name);
+        Task<TransactionTag> Create(string name);
 
-        Task<TransactionTag> UpdateTransactionTag(int id, string name);
+        Task<TransactionTag> Update(int id, string name);
 
-        Task<IEnumerable<TransactionTag>> GetTransactionTags();
+        Task<IEnumerable<TransactionTag>> Get();
 
-        Task<TransactionTag> GetTransactionTag(int id);
-        Task DeleteTransactionTag(int id);
+        Task<TransactionTag> Get(int id);
+
+        Task Delete(int id);
+
+        Task<TransactionTag> AddSubTag(int id, int subId);
+
+        Task RemoveSubTag(int id, int subId);
     }
 }

@@ -4,13 +4,6 @@ namespace Asm.BankPlus.Data.Entities
 {
     public partial class TransactionTag
     {
-        public TransactionTag()
-        {
-            TaggedToLink = new HashSet<TransactionTagTransactionTag>();
-            TagsLink = new HashSet<TransactionTagTransactionTag>();
-            TransactionTagRules = new HashSet<TransactionTagRule>();
-        }
-
         public int TransactionTagId { get; set; }
 
         public string Name { get; set; }

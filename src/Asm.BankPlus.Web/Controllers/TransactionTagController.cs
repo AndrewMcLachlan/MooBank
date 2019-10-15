@@ -21,19 +21,19 @@ namespace Asm.BankPlus.Web.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TransactionTag>>> Get()
         {
-            return Ok(await TagRepository.GetTransactionTags());
+            return Ok(await TagRepository.Get());
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<TransactionTag>> Get(int id)
         {
-            return await TagRepository.GetTransactionTag(id);
+            return await TagRepository.Get(id);
         }
 
         [HttpPost]
         public async Task<ActionResult<TransactionTag>> Create(TransactionTag category)
         {
-            var tag = await TagRepository.CreateTransactionTag(category);
+            var tag = await TagRepository.Create(category);
 
             return Created($"api/transaction/tags/{tag.Id}", tag);
         }
@@ -41,7 +41,7 @@ namespace Asm.BankPlus.Web.Controllers
         [HttpPut("{name}")]
         public async Task<ActionResult<TransactionTag>> CreateByName(string name)
         {
-            var tag = await TagRepository.CreateTransactionTag(name);
+            var tag = await TagRepository.Create(name);
 
             return Created($"api/transaction/tags/{tag.Id}", tag);
         }
@@ -49,13 +49,28 @@ namespace Asm.BankPlus.Web.Controllers
         [HttpPatch("{id}")]
         public async Task<ActionResult<TransactionTag>> Update(int id, [FromBody]TransactionTagModel tag)
         {
-            return await TagRepository.UpdateTransactionTag(id, tag.Name);
+            return await TagRepository.Update(id, tag.Name);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            await TagRepository.DeleteTransactionTag(id);
+            await TagRepository.Delete(id);
+            return NoContent();
+        }
+
+        [HttpPut("{id}/tags/{subId}")]
+        public async Task<ActionResult<TransactionTag>> AddSubTag(int id, int subId)
+        {
+            var tag = await TagRepository.AddSubTag(id, subId);
+
+            return Created($"api/transaction/tags/{id}/tags/{subId}", tag);
+        }
+
+        [HttpDelete("{id}/tags/{subId}")]
+        public async Task<ActionResult> RemoveSubTag(int id, int subId)
+        {
+            await TagRepository.RemoveSubTag(id, subId);
             return NoContent();
         }
     }
