@@ -13,12 +13,10 @@ namespace Asm.BankPlus.Repository
 
         Task<IEnumerable<TransactionTagRule>> Get(Guid accountId);
 
-        Task Delete(int id);
+        Task Delete(Guid accountId, int id);
 
         Task<TransactionTagRule> AddTransactionTag(Guid accountId, int id, int tagId);
 
         Task<TransactionTagRule> RemoveTransactionTag(Guid accountId, int id, int tagId);
-
-
     }
 }

@@ -1,18 +1,16 @@
 ﻿import { Dispatch } from "redux";
 
-import HttpClient from "../services/HttpClient";
 import { ActionWithData } from "./redux-extensions";
 import { Transactions, State } from "./state";
 
-import { TransactionService } from "services/TransactionService";
-import { TransactionTagService } from "services/TransactionTagService";
+import { TransactionService, TransactionTagService } from "services";
 import { ShowMessage } from "./App";
 
 const RequestTransactions = "RequestTransactions";
 const ReceiveTransactions = "ReceiveTransactions";
 
-const AddTransactionTag = "AddTransactionTag";
-const RemoveTransactionTag = "RemoveTransactionTag";
+const AddTransactionTag = "TransactionAddTransactionTag";
+const RemoveTransactionTag = "TransactionRemoveTransactionTag";
 
 const initialState: Transactions = {
     transactions: [],

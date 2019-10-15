@@ -31,9 +31,9 @@ namespace Asm.BankPlus.Services
             return (Models.TransactionTagRule)rule;
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(Guid accountId, int id)
         {
-            var rule = await DataContext.TransactionTagRules.Where(t => t.TransactionTagRuleId == id).SingleOrDefaultAsync();
+            var rule = await DataContext.TransactionTagRules.Where(t => t.AccountId == accountId && t.TransactionTagRuleId == id).SingleOrDefaultAsync();
 
             if (rule == null) throw new NotFoundException($"Transaction tag rule with ID {id} was not found");
 

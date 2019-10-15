@@ -62,13 +62,13 @@ namespace Asm.BankPlus.Web.Controllers
             });
         }
 
-        [HttpGet("{accountId}/transaction/tag/rule/{id}")]
+        [HttpGet("{accountId}/transaction/tag/rules/{id}")]
         public async Task<ActionResult<TransactionTagRule>> GetTagRule(Guid accountId, int id)
         {
             return new ActionResult<TransactionTagRule>(await TransactionTagRuleRepository.Get(accountId, id));
         }
 
-        [HttpPost("{accountId}/transaction/tag/rule")]
+        [HttpPost("{accountId}/transaction/tag/rules")]
         public async Task<ActionResult<TransactionTagRule>> PutTagRule(Guid accountId, [FromBody]TransactionTagRuleModel rule)
         {
             var newRule = await TransactionTagRuleRepository.Create(accountId, rule.Contains, rule.Tags);
@@ -76,15 +76,23 @@ namespace Asm.BankPlus.Web.Controllers
             return Created($"api/accounts/{accountId}/transaction/tag/rule/{newRule.Id}", newRule);
         }
 
-        [HttpPut("{accountId}/transaction/tag/rule/{id}/tag/{tagId}")]
-        public async Task<ActionResult<TransactionTagRule>> PutTagRule(Guid accountId, int id, int tagId)
+        [HttpDelete("{accountId}/transaction/tag/rules/{id}")]
+        public async Task<ActionResult> DeleteTagRule(Guid accountId, int id)
+        {
+            await TransactionTagRuleRepository.Delete(accountId, id);
+
+            return NoContent();
+        }
+
+        [HttpPut("{accountId}/transaction/tag/rules/{id}/tag/{tagId}")]
+        public async Task<ActionResult<TransactionTagRule>> PutTagRuleTag(Guid accountId, int id, int tagId)
         {
             return Created($"api/accounts/{accountId}/transaction/tag/rule/{id}/{tagId}",
                     await TransactionTagRuleRepository.AddTransactionTag(accountId, id, tagId));
         }
 
-        [HttpDelete("{accountId}/transaction/tag/rule/{id}/tag/{tagId}")]
-        public async Task<ActionResult> DeleteTagRule(Guid accountId, int id, int tagId)
+        [HttpDelete("{accountId}/transaction/tag/rules/{id}/tag/{tagId}")]
+        public async Task<ActionResult> DeleteTagRuleTag(Guid accountId, int id, int tagId)
         {
             await TransactionTagRuleRepository.RemoveTransactionTag(accountId, id, tagId);
 

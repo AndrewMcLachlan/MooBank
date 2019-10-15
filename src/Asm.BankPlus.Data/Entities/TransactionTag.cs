@@ -10,9 +10,9 @@ namespace Asm.BankPlus.Data.Entities
 
         public bool Deleted { get; set; }
 
-        public virtual ICollection<TransactionTagTransactionTag> TaggedToLink { get; set; }
+        public virtual ICollection<TransactionTagTransactionTag> TaggedToLinks { get; set; }
 
-        public virtual ICollection<TransactionTagTransactionTag> TagsLink { get; set; }
+        public virtual ICollection<TransactionTagTransactionTag> TagLinks { get; set; }
 
         public virtual ICollection<TransactionTagRule> TransactionTagRules { get; set; }
     }

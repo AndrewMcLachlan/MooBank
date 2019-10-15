@@ -11,6 +11,7 @@ import configureStore from "store/configureStore";
 import { State } from "store/state";
 import { initialState as accountsInitialState } from "store/Accounts";
 import { initialState as tagsInitialState } from "store/TransactionTags";
+import { initialState as rulesInitialState } from "store/TransactionTagRules";
 import { bindActionCreators, Dispatch } from "redux";
 import { actionCreators } from "store/TransactionTags";
 
@@ -24,6 +25,7 @@ const App: React.FC = () => {
         },
         accounts: accountsInitialState,
         transactionTags: tagsInitialState,
+        transactionTagRules: rulesInitialState,
     };
 
     const store = configureStore(window.history, initialState);

@@ -183,6 +183,7 @@ namespace Asm.BankPlus.Web
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
             services.AddScoped<ITransactionTagRepository, TransactionTagRepository>();
+            services.AddScoped<ITransactionTagRuleRepository, TransactionTagRuleRepository>();
             services.AddScoped<IngImporter>();
             services.AddScoped<IImporterFactory, ImporterFactory>();
         }

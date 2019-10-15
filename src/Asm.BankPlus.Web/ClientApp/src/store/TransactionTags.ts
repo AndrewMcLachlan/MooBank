@@ -9,6 +9,8 @@ import { genericCaller, ShowMessage } from "./App";
 const RequestTags = "RequestTags";
 const ReceiveTags = "ReceiveTags";
 const CreateTag = "CreateTransactionTag";
+const AddTransactionTag = "TagAddTransactionTag";
+const RemoveTransactionTag = "TagRemoveTransactionTag";
 
 export const initialState: TransactionTags = {
     tags: [],
@@ -46,6 +48,50 @@ export const actionCreators = {
         try {
             const tag = await service.createTag(name);
             dispatch({ type: CreateTag, data: tag });
+        }
+        catch (error) {
+            dispatch({ type: ShowMessage, data: error.message });
+        }
+    },
+
+    addTransactionTag: (tagId: number, subId: number) => async (dispatch: Dispatch, getState: () => State) => {
+
+        const state = getState();
+
+        const service = new TransactionTagService(state);
+
+        try {
+            const transaction = await service.addTransactionTag(tagId, subId);
+            dispatch({ type: AddTransactionTag, data: transaction });
+        }
+        catch (error) {
+            dispatch({ type: ShowMessage, data: error.message });
+        }
+    },
+
+    removeTransactionTag: (tagId: number, subId: number) => async (dispatch: Dispatch, getState: () => State) => {
+
+        const service = new TransactionTagService(getState());
+
+        try {
+            const transaction = await service.removeTransactionTag(tagId, subId);
+            dispatch({ type: RemoveTransactionTag, data: transaction });
+        }
+        catch (error) {
+            dispatch({ type: ShowMessage, data: error.message });
+        }
+    },
+
+    createTagAndAdd: (tagId: number, tagName: string) => async (dispatch: Dispatch, getState: () => State) => {
+        const state = getState();
+
+        const service = new TransactionTagService(state);
+
+        const tag = await service.createTag(tagName);
+
+        try {
+            const transaction = await service.addTransactionTag(tagId, tag.id);
+            dispatch({ type: AddTransactionTag, data: transaction });
         }
         catch (error) {
             dispatch({ type: ShowMessage, data: error.message });

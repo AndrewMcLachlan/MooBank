@@ -5,6 +5,7 @@ export interface State {
     accounts?: Accounts,
     transactions?: Transactions,
     transactionTags?: TransactionTags,
+    transactionTagRules?: TransactionTagRules,
     security?: Security,
 }
 
@@ -20,6 +21,11 @@ export interface Accounts {
     virtualAccounts: VirtualAccount[];
     areLoading: boolean;
     selectedAccount?: Models.Account;
+}
+
+export interface TransactionTagRules {
+    rules?: Models.Rule[];
+    areLoading: boolean;
 }
 
 export interface Transactions {

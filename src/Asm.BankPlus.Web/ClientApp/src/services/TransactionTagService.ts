@@ -33,4 +33,30 @@ export class TransactionTagService extends ServiceBase {
             await super.handleError(response);
         }
     }
+
+    public async addTransactionTag(tagId: number, subId: number): Promise<Models.Transaction> {
+        const url = `api/transaction/tags/${tagId}/tags/${subId}`;
+
+        const client = new HttpClient(this.state.app.baseUrl);
+
+        try {
+            return await client.put(url);
+        }
+        catch (response) {
+            super.handleError(response as Response);
+        }
+    }
+
+    public async removeTransactionTag(tagId: number, subId: number) {
+        const url = `api/transaction/tags/${tagId}/tags/${subId}`;
+
+        const client = new HttpClient(this.state.app.baseUrl);
+
+        try {
+            return await client.delete(url);
+        }
+        catch (response) {
+            super.handleError(response as Response);
+        }
+    }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace Asm.BankPlus.Data.Entities
 {
@@ -8,12 +9,12 @@ namespace Asm.BankPlus.Data.Entities
     {
         public TransactionTag()
         {
-            TaggedToLink = new HashSet<TransactionTagTransactionTag>();
-            TagsLink = new HashSet<TransactionTagTransactionTag>();
+            TaggedToLinks = new HashSet<TransactionTagTransactionTag>();
+            TagLinks = new HashSet<TransactionTagTransactionTag>();
             TransactionTagRules = new HashSet<TransactionTagRule>();
 
             Tags = new ManyToManyCollection<TransactionTagTransactionTag, TransactionTag, int>(
-                TagsLink,
+                TagLinks,
                 (t) => new TransactionTagTransactionTag { PrimaryTransactionTagId = this.TransactionTagId, SecondaryTransactionTagId = t.TransactionTagId },
                 (t) => t.Secondary,
                 (t) => t.SecondaryTransactionTagId,
@@ -24,13 +25,13 @@ namespace Asm.BankPlus.Data.Entities
         [NotMapped]
         public ICollection<TransactionTag> Tags { get; set; }
 
-
         public static implicit operator Models.TransactionTag(TransactionTag transactionTag)
         {
             return new Models.TransactionTag()
             {
                 Id = transactionTag.TransactionTagId,
                 Name = transactionTag.Name,
+                Tags = transactionTag.Tags.Select(t => (Models.TransactionTag)t),
             };
         }
 
@@ -43,6 +44,7 @@ namespace Asm.BankPlus.Data.Entities
             };
         }
 
+        #region Equals
         public bool Equals(TransactionTag other)
         {
             if (other == null) return false;
@@ -64,8 +66,8 @@ namespace Asm.BankPlus.Data.Entities
 
         public static bool operator ==(TransactionTag t1, TransactionTag t2)
         {
-            if (t1 == null ^ t2 == null) return false;
-            if (t1 == null && t2 == null) return true;
+            if ((object)null == (object)t1 ^ (object)null == (object)t2) return false;
+            if ((object)null == t1 && (object)null == (object)t2) return true;
 
             return t1.Equals(t2);
         }
@@ -79,5 +81,6 @@ namespace Asm.BankPlus.Data.Entities
         {
             return this.TransactionTagId.GetHashCode() ^ TransactionTagId.GetHashCode();
         }
+        #endregion
     }
 }

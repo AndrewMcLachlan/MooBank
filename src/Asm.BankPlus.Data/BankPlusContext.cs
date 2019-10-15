@@ -216,12 +216,12 @@ namespace Asm.BankPlus.Data
                     .IsRequired()
                     .HasMaxLength(50);
 
-                entity.HasMany(d => d.TagsLink)
+                entity.HasMany(d => d.TagLinks)
                     .WithOne(p => p.Primary)
                     .HasForeignKey(d => d.PrimaryTransactionTagId)
                     .HasConstraintName("FK_TransactionTag_TransactionTag_Primary");
 
-                entity.HasMany(d => d.TaggedToLink)
+                entity.HasMany(d => d.TaggedToLinks)
                     .WithOne(p => p.Secondary)
                     .HasForeignKey(d => d.SecondaryTransactionTagId)
                     .HasConstraintName("FK_TransactionTag_TransactionTag_Secondary");

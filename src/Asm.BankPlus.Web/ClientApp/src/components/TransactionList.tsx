@@ -36,7 +36,7 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
         dataSource = [];
     }
 
-    const columns = [{
+    /*const columns = [{
         dataField: "id",
         text: "",
         hidden: true,
@@ -61,7 +61,7 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
 
         sort: false,
     }
-    ];
+    ];*/
 
     return (
         <section>

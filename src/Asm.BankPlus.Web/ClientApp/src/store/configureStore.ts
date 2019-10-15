@@ -9,6 +9,7 @@ import * as Security from "./Security";
 import { State } from "./state";
 import * as Transactions from "./Transactions";
 import * as TransactionTags from "./TransactionTags";
+import * as TransactionTagRules from "./TransactionTagRules";
 
 declare global {
 
@@ -24,6 +25,7 @@ export default function configureStore(history: any, initialState: State) {
         app: App.reducer,
         security: Security.reducer,
         transactionTags: TransactionTags.reducer,
+        transactionTagRules: TransactionTagRules.reducer,
     };
 
     const middleware = [

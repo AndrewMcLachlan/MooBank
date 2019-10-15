@@ -9,5 +9,7 @@ namespace Asm.BankPlus.Models
         public int Id { get; set; }
 
         public string Name { get; set; }
+
+        public IEnumerable<TransactionTag> Tags { get; set; }
     }
 }

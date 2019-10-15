@@ -43,7 +43,7 @@ namespace Asm.BankPlus.Services
 
         public async Task<IEnumerable<TransactionTag>> Get()
         {
-            return (await DataContext.TransactionTags.Where(t => !t.Deleted).ToListAsync()).Select(t => (TransactionTag)t).ToList();
+            return (await DataContext.TransactionTags.Include(t => t.TagLinks).Where(t => !t.Deleted).ToListAsync()).Select(t => (TransactionTag)t).ToList();
         }
 
         public async Task<TransactionTag> Get(int id)
@@ -60,22 +60,11 @@ namespace Asm.BankPlus.Services
             await DataContext.SaveChangesAsync();
         }
 
-        private async Task<Data.Entities.TransactionTag> GetEntity(int id)
-        {
-            var tag = await DataContext.TransactionTags.Where(c => c.TransactionTagId == id).SingleOrDefaultAsync();
-
-            if (tag == null) throw new NotFoundException($"Transaction tag with id {id} was not found");
-
-            return tag;
-        }
-
         public async Task<TransactionTag> AddSubTag(int id, int subId)
         {
             if (id == subId) throw new InvalidOperationException("Cannot add a tag to itself");
 
-            var tag = await DataContext.TransactionTags.Include(t => t.TagsLink).Where(c => c.TransactionTagId == id).SingleOrDefaultAsync();
-            if (tag == null) throw new NotFoundException($"Transaction tag with id {id} was not found");
-
+            var tag = await GetEntity(id, true);
             var subTag = await GetEntity(subId);
 
             if (tag.Tags.Any(t => t == subTag)) throw new ExistsException($"Tag with id {subId} has already been added");
@@ -89,9 +78,7 @@ namespace Asm.BankPlus.Services
 
         public async Task RemoveSubTag(int id, int subId)
         {
-            var tag = await DataContext.TransactionTags.Include(t => t.TagsLink).Where(c => c.TransactionTagId == id).SingleOrDefaultAsync();
-            if (tag == null) throw new NotFoundException($"Transaction tag with id {id} was not found");
-
+            var tag = await GetEntity(id, true);
             var subTag = await GetEntity(subId);
 
             if (!tag.Tags.Any(t => t == subTag)) throw new NotFoundException($"Tag with id {subId} has not been added");
@@ -100,5 +87,17 @@ namespace Asm.BankPlus.Services
 
             await DataContext.SaveChangesAsync();
         }
+
+        private async Task<Data.Entities.TransactionTag> GetEntity(int id, bool includeSubTags = false)
+        {
+            var tag = includeSubTags ?
+                await DataContext.TransactionTags.Include(t => t.TagLinks).Where(c => c.TransactionTagId == id).SingleOrDefaultAsync() :
+                await DataContext.TransactionTags.Where(c => c.TransactionTagId == id).SingleOrDefaultAsync();
+
+            if (tag == null) throw new NotFoundException($"Transaction tag with id {id} was not found");
+
+            return tag;
+        }
+
     }
 }

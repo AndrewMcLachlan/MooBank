@@ -62,6 +62,8 @@ namespace Asm.BankPlus.Web.Controllers
         [HttpPut("{id}/tags/{subId}")]
         public async Task<ActionResult<TransactionTag>> AddSubTag(int id, int subId)
         {
+            if (id == subId) return Conflict();
+
             var tag = await TagRepository.AddSubTag(id, subId);
 
             return Created($"api/transaction/tags/{id}/tags/{subId}", tag);
@@ -70,6 +72,8 @@ namespace Asm.BankPlus.Web.Controllers
         [HttpDelete("{id}/tags/{subId}")]
         public async Task<ActionResult> RemoveSubTag(int id, int subId)
         {
+            if (id == subId) return Conflict();
+
             await TagRepository.RemoveSubTag(id, subId);
             return NoContent();
         }
