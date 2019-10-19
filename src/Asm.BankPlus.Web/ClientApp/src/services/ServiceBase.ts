@@ -23,6 +23,7 @@ export class ServiceBase {
                 this.handleProblemDetails(problemDetails);
                 }
                 catch(error) {
+                    console.error(error);
                     throw new Error(`${this.state.app.appName} is currently unavailable`);
                 }
         }

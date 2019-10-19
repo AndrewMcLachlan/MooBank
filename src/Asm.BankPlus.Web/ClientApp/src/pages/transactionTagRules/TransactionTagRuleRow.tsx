@@ -2,10 +2,13 @@
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import { TransactionTagRule, TransactionTag } from "../models";
-import { actionCreators } from "../store/TransactionTags";
-import { State } from "../store/state";
-import { TagPanel } from "./TagPanel";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import { TransactionTagRule, TransactionTag } from "../../models";
+import { actionCreators } from "../../store/TransactionTagRules";
+import { State } from "../../store/state";
+import { TagPanel } from "../../components/TagPanel";
+import { ClickableIcon } from "components/ClickableIcon";
 
 export const TransactionTagRuleRow: React.FC<TransactionTagRuleRowProps> = (props) => {
 
@@ -23,9 +26,12 @@ export const TransactionTagRuleRow: React.FC<TransactionTagRuleRowProps> = (prop
         <tr>
             <td>{props.rule.contains}</td>
             <TagPanel as="td" selectedItems={transactionRow.tags} allItems={tagsList} textField="name" valueField="id" onAdd={transactionRow.addTag} onRemove={transactionRow.removeTag} onCreate={transactionRow.createTag} allowCreate={true} />
+            <td><span onClick={transactionRow.deleteRule}><ClickableIcon icon="trash-alt" title="Delete" /></span></td>
         </tr>
     );
 }
+
+TransactionTagRuleRow.displayName = "TransactionTagRuleRow";
 
 function useTransactionTagRuleRowEvents(props: TransactionTagRuleRowProps) {
 
@@ -38,6 +44,10 @@ function useTransactionTagRuleRowEvents(props: TransactionTagRuleRowProps) {
 
     bindActionCreators(actionCreators, dispatch);
 
+    const deleteRule = () => {
+        dispatch(actionCreators.deleteRule(props.rule));
+    }
+
     const createTag = (name: string) => {
         dispatch(actionCreators.createTagAndAdd(props.rule.id, name));
     }
@@ -47,7 +57,7 @@ function useTransactionTagRuleRowEvents(props: TransactionTagRuleRowProps) {
         if (!tag.id) return;
 
         dispatch(actionCreators.addTransactionTag(props.rule.id, tag.id));
-        setTags(tags.concat([tag]));
+        setTags([ ...tags, tag]);
     }
 
     const removeTag = (tag: TransactionTag) => {
@@ -59,6 +69,7 @@ function useTransactionTagRuleRowEvents(props: TransactionTagRuleRowProps) {
     }
 
     return {
+        deleteRule,
         createTag,
         addTag,
         removeTag,

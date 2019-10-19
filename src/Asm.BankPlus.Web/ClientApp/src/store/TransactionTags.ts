@@ -4,7 +4,7 @@ import * as Models from "models";
 import { ActionWithData } from "./redux-extensions";
 import { TransactionTags, State } from "./state";
 import { TransactionTagService } from "services/TransactionTagService";
-import { genericCaller, ShowMessage } from "./App";
+import { ShowMessage } from "./App";
 
 const RequestTags = "RequestTags";
 const ReceiveTags = "ReceiveTags";
@@ -36,6 +36,7 @@ export const actionCreators = {
             dispatch({ type: ReceiveTags, data: tags });
         }
         catch (error) {
+            console.error(error.message);
             dispatch({ type: ShowMessage, data: error.message });
             dispatch({ type: ReceiveTags, data: [] });
         }
@@ -50,6 +51,7 @@ export const actionCreators = {
             dispatch({ type: CreateTag, data: tag });
         }
         catch (error) {
+            console.error(error.message);
             dispatch({ type: ShowMessage, data: error.message });
         }
     },
@@ -65,6 +67,7 @@ export const actionCreators = {
             dispatch({ type: AddTransactionTag, data: transaction });
         }
         catch (error) {
+            console.error(error.message);
             dispatch({ type: ShowMessage, data: error.message });
         }
     },
@@ -78,6 +81,7 @@ export const actionCreators = {
             dispatch({ type: RemoveTransactionTag, data: transaction });
         }
         catch (error) {
+            console.error(error.message);
             dispatch({ type: ShowMessage, data: error.message });
         }
     },
@@ -94,6 +98,7 @@ export const actionCreators = {
             dispatch({ type: AddTransactionTag, data: transaction });
         }
         catch (error) {
+            console.error(error.message);
             dispatch({ type: ShowMessage, data: error.message });
         }
     },

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace Asm.BankPlus.Data.Entities
@@ -13,6 +14,7 @@ namespace Asm.BankPlus.Data.Entities
         public string Contains { get; set; }
 
         public virtual Account Account { get; set; }
+
         public virtual ICollection<TransactionTagRuleTransactionTag> TransactionTagLinks { get; set; }
     }
 }

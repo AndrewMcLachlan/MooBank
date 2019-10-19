@@ -9,20 +9,31 @@ namespace Asm.BankPlus.Data.Entities
 {
     public partial class TransactionTagRule
     {
+        private ManyToManyCollection<TransactionTagRuleTransactionTag, TransactionTag, int> _transactionTags;
+
         public TransactionTagRule()
         {
             TransactionTagLinks = new HashSet<TransactionTagRuleTransactionTag>();
-            TransactionTags = new ManyToManyCollection<TransactionTagRuleTransactionTag, TransactionTag, int>(
+            _transactionTags = new ManyToManyCollection<TransactionTagRuleTransactionTag, TransactionTag, int>(
                 TransactionTagLinks,
-                (t) => new TransactionTagRuleTransactionTag { TransactionTagRuleId = this.TransactionTagRuleId, TransactionTagId = t.TransactionTagId },
-                (t) => t.TransactionTag,
-                (t) => t.TransactionTagId,
-                (t) => t.TransactionTagId
+                manyEntityAdd: (t) => new TransactionTagRuleTransactionTag { TransactionTagRuleId = this.TransactionTagRuleId, TransactionTagId = t.TransactionTagId },
+                childSelector: (t) => t.TransactionTag,
+                manyEntityChildKeySelector: (t) => t.TransactionTagId,
+                childKeySelector: (t) => t.TransactionTagId
             );
         }
 
         [NotMapped]
-        public ICollection<TransactionTag> TransactionTags { get; set; }
+        public ICollection<TransactionTag> TransactionTags
+        {
+            get { return _transactionTags;  }
+            set
+            {
+                _transactionTags.Clear();
+                _transactionTags.AddRange(value);
+            }
+
+        }
 
         public static explicit operator Models.TransactionTagRule(TransactionTagRule rule)
         {
@@ -30,7 +41,7 @@ namespace Asm.BankPlus.Data.Entities
             {
                 Id = rule.TransactionTagRuleId,
                 Contains = rule.Contains,
-                Tags = rule.TransactionTags.Select(t => (Models.TransactionTag)t),
+                Tags = rule.TransactionTags.Where(t => t != null).Select(t => (Models.TransactionTag)t),
             };
         }
 
@@ -39,7 +50,8 @@ namespace Asm.BankPlus.Data.Entities
             return new TransactionTagRule
             {
                 TransactionTagRuleId = rule.Id,
-                TransactionTags = rule.Tags.Select(t => (TransactionTag)t).ToList(),
+                Contains = rule.Contains,
+                TransactionTags = rule.Tags.Where(t=> t != null).Select(t => (TransactionTag)t).ToList(),
             };
         }
     }

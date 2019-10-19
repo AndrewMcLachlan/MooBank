@@ -37,6 +37,15 @@ namespace Asm.BankPlus.Data
             ParentCollection.Add(ManyEntityAdd(item));
         }
 
+        public void AddRange(IEnumerable<TChild> items)
+        {
+            if (items == null) return;
+            foreach (var item in items)
+            {
+                ParentCollection.Add(ManyEntityAdd(item));
+            }
+        }
+
         public void Clear() => ParentCollection.Clear();
 
         public bool Contains(TChild item) => ParentCollection.Any(t => ManyEntityChildKeySelector(t).Equals(ChildKeySelector(item)));

@@ -15,8 +15,6 @@ namespace Asm.BankPlus.Data
 
         public virtual DbSet<Account> Accounts { get; set; }
 
-        //public virtual DbSet<AccountController> AccountControllers { get; set; }
-
         public virtual DbSet<AccountAccountHolder> AccountAccountHolder { get; set; }
 
         public virtual DbSet<AccountHolder> AccountHolders { get; set; }
@@ -72,8 +70,6 @@ namespace Asm.BankPlus.Data
                 entity.Property(r => r.AccountController)
                 .HasConversion(e => (int)e, e => (Models.AccountController)e);
             });
-
-            // modelBuilder.Entity<AccountController>
 
             modelBuilder.Entity<AccountAccountHolder>(entity =>
             {
@@ -171,21 +167,7 @@ namespace Asm.BankPlus.Data
                     .HasConversion(e => (int)e, e => (Models.TransactionType)e)
                     .HasDefaultValue(Models.TransactionType.Debit);
 
-                /*entity.HasOne(d => d.TransactionType)
-                    .WithMany(p => p.Transaction)
-                    .HasForeignKey(d => d.TransactionTypeId)
-                    .HasConstraintName("FK_Transaction_TransactionType");*/
             });
-
-            /*modelBuilder.Entity<TransactionType>(entity =>
-            {
-                entity.Property(e => e.TransactionTypeId).ValueGeneratedNever();
-
-                entity.Property(e => e.Description)
-                    .IsRequired()
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-            });*/
 
             modelBuilder.Entity<VirtualAccount>(entity =>
             {
@@ -204,7 +186,6 @@ namespace Asm.BankPlus.Data
                     .HasMaxLength(50)
                     .IsUnicode(false);
             });
-
 
             modelBuilder.Entity<TransactionTag>(entity =>
             {
@@ -229,6 +210,8 @@ namespace Asm.BankPlus.Data
 
             modelBuilder.Entity<TransactionTagRule>(entity =>
             {
+                entity.HasKey(t => t.TransactionTagRuleId);
+
                 entity.Property(e => e.TransactionTagRuleId).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Contains)
@@ -287,11 +270,11 @@ namespace Asm.BankPlus.Data
             });
 
             modelBuilder.Entity<ImportAccount>(entity =>
-        {
-            entity.HasKey(e => e.AccountId);
-            entity.HasOne(e => e.Account).WithOne().HasForeignKey<Account>(a => a.AccountId);
-            entity.HasOne(e => e.ImporterType);
-        });
+            {
+                entity.HasKey(e => e.AccountId);
+                entity.HasOne(e => e.Account).WithOne().HasForeignKey<Account>(a => a.AccountId);
+                entity.HasOne(e => e.ImporterType);
+            });
 
 
         }

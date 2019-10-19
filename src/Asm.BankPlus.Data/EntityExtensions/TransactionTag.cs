@@ -11,7 +11,7 @@ namespace Asm.BankPlus.Data.Entities
         {
             TaggedToLinks = new HashSet<TransactionTagTransactionTag>();
             TagLinks = new HashSet<TransactionTagTransactionTag>();
-            TransactionTagRules = new HashSet<TransactionTagRule>();
+            TransactionTagRuleLinks = new HashSet<TransactionTagRuleTransactionTag>();
 
             Tags = new ManyToManyCollection<TransactionTagTransactionTag, TransactionTag, int>(
                 TagLinks,
@@ -27,6 +27,7 @@ namespace Asm.BankPlus.Data.Entities
 
         public static implicit operator Models.TransactionTag(TransactionTag transactionTag)
         {
+            if (transactionTag == null) return null;
             return new Models.TransactionTag()
             {
                 Id = transactionTag.TransactionTagId,

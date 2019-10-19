@@ -9,6 +9,7 @@ import { ShowMessage } from "./App";
 const RequestRules = "RequestRules";
 const ReceiveRules = "ReceiveRules";
 const CreateRule = "CreateTransactionTagRule";
+const DeleteRule= "DeleteTransactionTagRule";
 const AddTransactionTag = "RuleAddTransactionTag";
 const RemoveTransactionTag = "RuleRemoveTransactionTag";
 
@@ -22,6 +23,8 @@ export const actionCreators = {
 
         const state = getState();
 
+        if (!state.accounts.selectedAccount) return;
+
         if (state.transactionTagRules.areLoading) {
             // Don't issue a duplicate request (we already have or are loading the requested data)
             return;
@@ -33,9 +36,10 @@ export const actionCreators = {
 
         try {
             const rules = await service.getRules(state.accounts.selectedAccount.id);
-            dispatch({ type: ReceiveRules, data: rules });
+            dispatch({ type: ReceiveRules, data: rules.rules });
         }
         catch (error) {
+            console.error(error.message);
             dispatch({ type: ShowMessage, data: error.message });
             dispatch({ type: ReceiveRules, data: [] });
         }
@@ -48,10 +52,26 @@ export const actionCreators = {
         const service = new TransactionTagRuleService(state);
 
         try {
-            const tag = await service.createRule(state.accounts.selectedAccount.id, rule);
-            dispatch({ type: CreateRule, data: tag });
+            const newRule = await service.createRule(state.accounts.selectedAccount.id, rule);
+            dispatch({ type: CreateRule, data: newRule });
         }
         catch (error) {
+            console.error(error.message);
+            dispatch({ type: ShowMessage, data: error.message });
+        }
+    },
+
+    deleteRule: (rule: Models.TransactionTagRule) => async (dispatch: Dispatch, getState: () => State) => {
+        const state = getState();
+
+        const service = new TransactionTagRuleService(state);
+
+        try {
+            await service.deleteRule(state.accounts.selectedAccount.id, rule.id);
+            dispatch({ type: DeleteRule, data: rule });
+        }
+        catch (error) {
+            console.error(error.message);
             dispatch({ type: ShowMessage, data: error.message });
         }
     },
@@ -124,8 +144,16 @@ export const reducer = (state: TransactionTagRules = initialState, action: Actio
             };
 
         case CreateRule:
-            state.rules.push((action.data as Models.TransactionTagRule));
-            state.rules.sort((t1, t2) => t1.name.localeCompare(t2.name));
+            const newRules = [ ...state.rules, (action.data as Models.TransactionTagRule)];
+            newRules.sort((t1, t2) => t1.contains.localeCompare(t2.contains));
+            return {
+                ...state,
+                rules: newRules,
+            };
+
+        case DeleteRule:
+            state.rules = state.rules.filter(r => r.id !== (action.data as Models.TransactionTagRule).id)
+            state.rules.sort((t1, t2) => t1.contains.localeCompare(t2.contains));
             return state;
     }
     return state;

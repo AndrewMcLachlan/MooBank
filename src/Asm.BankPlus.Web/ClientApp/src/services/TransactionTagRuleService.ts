@@ -29,7 +29,7 @@ export class TransactionTagRuleService extends ServiceBase {
         const client = new HttpClient(this.state.app.baseUrl);
 
         try {
-            return await client.put<Models.TransactionTagRule, Models.TransactionTagRule>(url);
+            return await client.post<Models.TransactionTagRule, Models.TransactionTagRule>(url, rule);
         }
         catch (response) {
             await super.handleError(response);

@@ -2,6 +2,7 @@ import React from "react";
 
 import { Account } from "../models";
 import { AccountBalance } from ".";
+import { Link } from "react-router-dom";
 
 export const AccountSummary: React.FC<AccountSummaryProps> = (props) => {
 
@@ -23,6 +24,9 @@ export const AccountSummary: React.FC<AccountSummaryProps> = (props) => {
                     </tr>
                 </tbody>
             </table>
+            <ul className="control-panel">
+                <li><Link to={`/accounts/${props.account.id}/tag-rules`}>Tag Rules</Link></li>
+            </ul>
         </>
     )
 }

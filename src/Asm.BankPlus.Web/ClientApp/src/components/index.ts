@@ -8,6 +8,5 @@ export * from "./TagPanel";
 export * from "./TransactionList";
 export * from "./TransactionRow";
 export * from "./TransactionTagRow";
-export * from "./TransactionTagRuleRow";
 export * from "./Upload";
 export * from "./VirtualAccountRow";

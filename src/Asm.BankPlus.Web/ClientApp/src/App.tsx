@@ -1,19 +1,18 @@
 import "./App.scss";
-import "font-awesome/css/font-awesome.min.css";
 
 import React from "react";
 import { Provider } from "react-redux";
-
 import { BrowserRouter, Route } from "react-router-dom";
+import { bindActionCreators, Dispatch } from "redux";
+
 import { Layout } from "layouts/Layout";
 import * as Pages from "./pages";
+
+import { initialState as accountsInitialState } from "store/Accounts";
 import configureStore from "store/configureStore";
 import { State } from "store/state";
-import { initialState as accountsInitialState } from "store/Accounts";
-import { initialState as tagsInitialState } from "store/TransactionTags";
+import { initialState as tagsInitialState, actionCreators } from "store/TransactionTags";
 import { initialState as rulesInitialState } from "store/TransactionTagRules";
-import { bindActionCreators, Dispatch } from "redux";
-import { actionCreators } from "store/TransactionTags";
 
 const App: React.FC = () => {
 
@@ -42,6 +41,7 @@ const App: React.FC = () => {
                     <Route exact={true} path="/" component={Pages.Home} />
                     <Route path="/accounts" component={Pages.ManageAccounts} />
                     <Route exact path="/accounts/:id" component={Pages.Transactions} />
+                    <Route path="/accounts/:id/tag-rules" component={Pages.TransactionTagRules} />
                     <Route path="/accounts/:id/import" component={Pages.Import} />
                     <Route exact path="/settings" component={Pages.Settings} />
                     <Route path="/settings/tags" component={Pages.TransactionTags} />

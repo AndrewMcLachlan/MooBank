@@ -9,6 +9,8 @@ namespace Asm.BankPlus.Repository
     {
         Task<TransactionTagRule> Create(Guid accountId, string contains, IEnumerable<int> tagIds);
 
+        Task<TransactionTagRule> Create(Guid accountId, string contains, IEnumerable<TransactionTag> tagIds);
+
         Task<TransactionTagRule> Get(Guid accountId, int id);
 
         Task<IEnumerable<TransactionTagRule>> Get(Guid accountId);

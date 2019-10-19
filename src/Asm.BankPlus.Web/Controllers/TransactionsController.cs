@@ -14,12 +14,10 @@ namespace Asm.BankPlus.Web.Controllers
     public class TransactionsController : ControllerBase
     {
         private ITransactionRepository TransactionRepository { get; }
-        private IAntiforgery Antiforgery { get; }
 
-        public TransactionsController(ITransactionRepository transactionRepository, IAntiforgery antiforgery)
+        public TransactionsController(ITransactionRepository transactionRepository)
         {
             TransactionRepository = transactionRepository;
-            Antiforgery = antiforgery;
         }
 
         [HttpPut("{id}/tag/{tagId}")]

@@ -3,3 +3,4 @@ export * from "./Import";
 export * from "./ManageAccounts";
 export * from "./settings";
 export * from "./Transactions";
+export * from "./transactionTagRules/TransactionTagRules";

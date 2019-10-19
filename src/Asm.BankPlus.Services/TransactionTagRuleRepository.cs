@@ -31,11 +31,25 @@ namespace Asm.BankPlus.Services
             return (Models.TransactionTagRule)rule;
         }
 
+        public async Task<Models.TransactionTagRule> Create(Guid accountId, string contains, IEnumerable<Models.TransactionTag> tags)
+        {
+            var rule = new TransactionTagRule
+            {
+                AccountId = accountId,
+                Contains = contains,
+                TransactionTags = tags.Select(t => (TransactionTag)t).ToList(),
+            };
+
+            DataContext.Add(rule);
+
+            await DataContext.SaveChangesAsync();
+
+            return await Get(accountId, rule.TransactionTagRuleId);
+        }
+
         public async Task Delete(Guid accountId, int id)
         {
-            var rule = await DataContext.TransactionTagRules.Where(t => t.AccountId == accountId && t.TransactionTagRuleId == id).SingleOrDefaultAsync();
-
-            if (rule == null) throw new NotFoundException($"Transaction tag rule with ID {id} was not found");
+            var rule = await GetEntity(accountId, id);
 
             DataContext.TransactionTagRules.Remove(rule);
 
@@ -44,20 +58,16 @@ namespace Asm.BankPlus.Services
 
         public async Task<Models.TransactionTagRule> Get(Guid accountId, int id)
         {
-            var rule = await DataContext.TransactionTagRules.Where(t => t.TransactionTagRuleId == id && t.AccountId == accountId).SingleOrDefaultAsync();
-
-            if (rule == null) throw new NotFoundException($"Transaction tag rule with ID {id} was not found");
-
-            return (Models.TransactionTagRule)rule;
+            return (Models.TransactionTagRule) await GetEntity(accountId, id);
         }
         public async Task<IEnumerable<Models.TransactionTagRule>> Get(Guid accountId)
         {
-            return await DataContext.TransactionTagRules.Where(t => t.AccountId == accountId).Select(t => (Models.TransactionTagRule)t).ToListAsync();
+            return await DataContext.TransactionTagRules.Include(t => t.TransactionTagLinks).ThenInclude(t => t.TransactionTag).Where(t => t.AccountId == accountId).Select(t => (Models.TransactionTagRule)t).ToListAsync();
         }
 
-        public async Task<Models.TransactionTagRule> AddTransactionTag(Guid accountid, int id, int tagId)
+        public async Task<Models.TransactionTagRule> AddTransactionTag(Guid accountId, int id, int tagId)
         {
-            TransactionTagRule entity = await DataContext.TransactionTagRules.Include(t => t.TransactionTagLinks).ThenInclude(t => t.TransactionTag).SingleOrDefaultAsync(t => t.TransactionTagRuleId == id && t.AccountId == accountid);
+            var entity = await GetEntity(accountId, id);
 
             if (entity == null) throw new NotFoundException($"Transaction tag rule with ID {id} not found");
 
@@ -72,9 +82,7 @@ namespace Asm.BankPlus.Services
 
         public async Task<Models.TransactionTagRule> RemoveTransactionTag(Guid accountId, int id, int tagId)
         {
-            TransactionTagRule entity = await DataContext.TransactionTagRules.Include(t => t.TransactionTagLinks).ThenInclude(t => t.TransactionTag).SingleOrDefaultAsync(t => t.TransactionTagRuleId == id && t.AccountId == accountId);
-
-            if (entity == null) throw new NotFoundException($"Transaction tag rule with ID {id} was not found");
+            var entity = await GetEntity(accountId, id);
 
             var tag = entity.TransactionTags.SingleOrDefault(t => t.TransactionTagId == tagId);
 
@@ -85,6 +93,13 @@ namespace Asm.BankPlus.Services
             await DataContext.SaveChangesAsync();
 
             return (Models.TransactionTagRule)entity;
+        }
+
+        private async Task<TransactionTagRule> GetEntity(Guid accountId, int id)
+        {
+            TransactionTagRule entity = await DataContext.TransactionTagRules.Include(t => t.TransactionTagLinks).ThenInclude(t => t.TransactionTag).SingleOrDefaultAsync(t => t.TransactionTagRuleId == id && t.AccountId == accountId);
+
+            return entity ?? throw new NotFoundException($"Transaction tag rule with ID {id} was not found");
         }
     }
 }

@@ -24,7 +24,7 @@ export interface Accounts {
 }
 
 export interface TransactionTagRules {
-    rules?: Models.Rule[];
+    rules?: Models.TransactionTagRule[];
     areLoading: boolean;
 }
 
