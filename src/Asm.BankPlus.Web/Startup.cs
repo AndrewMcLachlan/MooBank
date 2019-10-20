@@ -38,12 +38,10 @@ namespace Asm.BankPlus.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "ClientApp";
+                configuration.RootPath = "ClientApp/build";
             });
 
             services.AddDbContext<Data.BankPlusContext>(options => options.UseSqlServer(Configuration.GetConnectionString("BankPlus")));
@@ -53,16 +51,14 @@ namespace Asm.BankPlus.Web
             AddAuthentication(services);
 
             services.AddAuthorization();
-            services.AddAntiforgery((options) =>
-            {
-                options.HeaderName = "X-XSRF-TOKEN";
-            });
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             RegisterServices(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IAntiforgery antiforgery)//, ILogger logger)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)//, ILogger logger)
         {
             if (env.IsDevelopment())
             {
@@ -103,35 +99,17 @@ namespace Asm.BankPlus.Web
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
-            app.Use(next => context =>
-            {
-                string path = context.Request.Path.Value;
-
-                if (
-                    String.Equals(path, "/", StringComparison.OrdinalIgnoreCase) ||
-                    String.Equals(path, "/index.html", StringComparison.OrdinalIgnoreCase))
-                {
-                    // The request token can be sent as a JavaScript-readable cookie,
-                    // and Angular uses it by default.
-                    var tokens = antiforgery.GetAndStoreTokens(context);
-                    context.Response.Cookies.Append("XSRF-TOKEN", tokens.RequestToken,
-                        new CookieOptions() { HttpOnly = false });
-                }
-
-                return next(context);
-            });
-
             app.UseMvc(routes =>
             {
-                routes.MapRoute("All", "{*url}", new { controller = "Home", action = "Index" });
-                /*routes.MapRoute(
+                //routes.MapRoute("All", "{*url}", new { controller = "Home", action = "Index" });
+                routes.MapRoute(
                     name: "default",
-                    template: "{controller=home}/{action=Index}/{id?}");*/
+                    template: "{controller=home}/{action=Index}/{id?}");
             });
 
             app.UseSpa(spa =>
             {
-                spa.Options.DefaultPage = "/";
+                //spa.Options.DefaultPage = "/";
                 spa.Options.SourcePath = "ClientApp";
 
                 if (env.IsDevelopment())
