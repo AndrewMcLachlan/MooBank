@@ -1,6 +1,7 @@
 import "./ComboBox.scss";
 
 import React, { useState, forwardRef } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const ComboBox = forwardRef<any, ComboBoxProps>((props, ref) => {
 
@@ -12,7 +13,7 @@ export const ComboBox = forwardRef<any, ComboBoxProps>((props, ref) => {
         <div className="combo-box" hidden={props.hidden} ref={ref}>
             <input type="text" onChange={comboBox.onChange} value={value} tabIndex={1} />
             <div className="cb-arrow" onClick={comboBox.showHideItems}>
-                <i className="fa fa-chevron-down" />
+                <FontAwesomeIcon icon="chevron-down" />
             </div>
             {comboBox.items && comboBox.items.length > 0 &&
                 <ol className="cb-list">

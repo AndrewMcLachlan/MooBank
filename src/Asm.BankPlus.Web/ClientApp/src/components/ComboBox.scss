@@ -1,6 +1,6 @@
 .combo-box {
     position: relative;
-    
+
     input {
         width: 100%;
         border-radius: 3px;
@@ -35,7 +35,7 @@
         top: 0;
         line-height: 24px;
 
-        .fa {
+        svg, .fa {
             font-size: 0.7rem;
             color: #666;
         }
