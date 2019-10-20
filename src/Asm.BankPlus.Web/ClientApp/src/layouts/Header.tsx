@@ -10,7 +10,9 @@ const appState = useAppState();
 
         return (
             <header>
+                <div className="container">
                 <Link to="/"><img src={appState.baseUrl + "images/" + appState.skin + "/moo@2x.png"} alt={appState.appName} className="desktop" width="76" height="111" /><img src={appState.baseUrl + "images/" + appState.skin + "/moo-small@2x.png"} alt={appState.appName} className="img mobile" width="99" height="32" /></Link>
+                </div>
                 <nav>
                     <ul>
                         <li><Link to="/">Home</Link></li>

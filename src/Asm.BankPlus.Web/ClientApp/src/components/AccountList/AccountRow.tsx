@@ -1,16 +1,17 @@
 ﻿import React from "react";
+import { useHistory } from "react-router-dom";
 
-import * as Models from "../models";
+import * as Models from "../../models";
 import { NavLink } from "react-router-dom";
-import { ActionTypes } from "../store/Accounts";
+import { ActionTypes } from "../../store/Accounts";
 import { useDispatch } from "react-redux";
-import { AccountController } from "../models";
+import { AccountController } from "../../models";
 
 import { ManualAccountRow} from "./ManualAccountRow";
 
 export const AccountRow: React.FC<AccountRowProps> = (props) => {
 
-    const dispatch = useDispatch();
+const { onRowClick } = useAccountRowCommonState(props);
 
     switch (props.account.controller) {
         case AccountController.Manual:
@@ -19,9 +20,9 @@ export const AccountRow: React.FC<AccountRowProps> = (props) => {
     }
 
     return (
-        <tr>
+        <tr onClick={onRowClick} className="clickable">
             <td className="account">
-                <div className="name"><NavLink onClick={() => dispatch({ type: ActionTypes.SetSelectedAccount, data: props.account })} to={"accounts/" + props.account.id}>{props.account.name}</NavLink></div>
+                <div className="name">{props.account.name}</div>
             </td>
             <td><span className={props.account.currentBalance < 0 ? " negative" : ""}>{props.account.currentBalance + (props.account.currentBalance < 0 ? "D" : "C") + "R"}</span></td>
             <td><span className={props.account.availableBalance < 0 ? " negative" : ""}>{props.account.availableBalance + (props.account.availableBalance < 0 ? "D" : "C") + "R"}</span></td>
@@ -33,6 +34,22 @@ AccountRow.displayName = "AccountRow";
 
 export interface AccountRowProps {
     account: Models.Account;
+}
+
+export const useAccountRowCommonState = (props: AccountRowProps) => {
+
+    const dispatch = useDispatch();
+
+    var history = useHistory();
+
+    const onRowClick = () => {
+        dispatch({ type: ActionTypes.SetSelectedAccount, data: props.account });
+        history.push(`accounts/${props.account.id}`);
+    };
+
+    return {
+        onRowClick,
+    };
 }
 
 /*const useRenderers = (props: AccountRowProps) => {

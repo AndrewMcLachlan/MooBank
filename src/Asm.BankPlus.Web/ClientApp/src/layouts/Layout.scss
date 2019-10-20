@@ -1,0 +1,72 @@
+@import "variables";
+
+div#root {
+    > header {
+        /*background: url(./images/background.png) no-repeat $background;*/
+        /*background-color: $background;
+        background: -moz-radial-gradient(65% 50%, ellipse farthest-corner,rgb(255,35,35) 1%, rgb(230,0,0) 50%, $background 100%);
+        background: -webkit-radial-gradient(100% 50%, ellipse farthest-corner, rgb(255,0,0), $background);*/
+        background: radial-gradient(circle farthest-corner, rgb(255,0,0) 0, $background 40%);
+        background-position-x: 200px;
+        height: 111px;
+
+        nav {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+
+            ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+
+                li {
+                    display: inline-block;
+                    border-right: 1px solid white;
+                    padding: 0 10px 0 8px;
+                }
+
+                li:last-child {
+                    border-right: none;
+                }
+            }
+
+            a, button {
+                color: #FFF;
+                text-decoration: none;
+                font-family: $primary-fonts;
+                font-weight: bold;
+            }
+
+            button {
+                background-color: transparent;
+                border: none;
+                padding: 0;
+                margin: 0;
+                font-size: 1em;
+                cursor: pointer;
+            }
+        }
+    }
+
+    > footer {
+        font-family: $primary-fonts;
+        width: 100%;
+        background: $background;
+        text-align: center;
+        color: #FFF;
+        padding-top: 20px;
+        font-weight: bold;
+
+        a {
+            color: #FFF;
+            font-size: 0.8em;
+        }
+    }
+}
+
+main.container {
+        min-height: 800px;
+        background-color: #FFF;
+        padding-top: 20px;
+}

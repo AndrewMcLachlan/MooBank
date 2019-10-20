@@ -1,16 +1,13 @@
 ﻿import React, { useState, useRef, useEffect } from "react";
 import moment from "moment";
 
-import { Transaction, TransactionTag } from "../models";
-import { Badge, Button } from "react-bootstrap";
-import { CloseBadge, ComboBox } from "components";
+import { Transaction, TransactionTag } from "../../models";
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
-import { actionCreators } from "store/Transactions";
-import { actionCreators as tagActionCreators } from "store/TransactionTags";
-import { State } from "store/state";
-import { useClickAway } from "hooks/clickAway";
-import { TagPanel } from "./TagPanel";
+import { actionCreators } from "../../store/Transactions";
+import { actionCreators as tagActionCreators } from "../../store/TransactionTags";
+import { State } from "../../store/state";
+import { TagPanel } from "../../components";
 
 export const TransactionRow: React.FC<TransactionRowProps> = (props) => {
 

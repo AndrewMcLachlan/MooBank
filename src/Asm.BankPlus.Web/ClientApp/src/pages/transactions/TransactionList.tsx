@@ -1,3 +1,5 @@
+import "./TransactionList.scss";
+
 import React, { useEffect } from "react";
 //import Table from "react-bootstrap-table-next";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,13 +12,11 @@ import moment from "moment";
 //import paginationFactory from 'react-bootstrap-table2-paginator';
 //import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 
-import { actionCreators as accountActionCreators } from "../store/Accounts";
-import { actionCreators as transactionActionCreators } from "../store/Transactions";
-import {  Transactions as TransactionsState, State } from "../store/state";
-import { TransactionTag, Account } from "../models";
-import { TransactionRow } from "../components";
-import { threadId } from "worker_threads";
-
+import { actionCreators as accountActionCreators } from "../../store/Accounts";
+import { actionCreators as transactionActionCreators } from "../../store/Transactions";
+import {  Transactions as TransactionsState, State } from "../../store/state";
+import { TransactionTag, Account } from "../../models";
+import { TransactionRow } from "./TransactionRow";
 
 export const TransactionList: React.FC<TransactionListProps> = (props) => {
 
@@ -65,7 +65,7 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
 
     return (
         <section>
-            <Table striped bordered={false} borderless>
+            <Table striped bordered={false} borderless className="transactions">
                 <thead>
                     <tr>
                         <th>Date</th>

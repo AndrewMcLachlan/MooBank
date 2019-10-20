@@ -1,7 +1,7 @@
 ﻿import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import { VirtualAccount } from "../store/state";
+import { VirtualAccount } from "../../store/state";
 
 class VirtualAccountRow extends Component<VirtualAccountRowProps, any> {
     constructor(props:VirtualAccountRowProps) {
