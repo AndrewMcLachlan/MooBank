@@ -139,7 +139,7 @@ namespace Asm.BankPlus.Data
 
                 entity.HasKey("TransactionId");
 
-                entity.Property(e => e.TransactionId).HasDefaultValueSql("(newid())");
+                entity.Property(e => e.TransactionId).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Amount).HasColumnType("decimal(10, 2)");
 

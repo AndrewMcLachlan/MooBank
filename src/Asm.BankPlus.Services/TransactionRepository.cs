@@ -57,6 +57,21 @@ namespace Asm.BankPlus.Services
             return (Transaction)entity;
         }
 
+        public async Task<Transaction> AddTransactionTags(Guid id, IEnumerable<int> tags)
+        {
+            Data.Entities.Transaction entity = await DataContext.Transactions.Include(t => t.TransactionTagLinks).ThenInclude(t => t.TransactionTag).SingleOrDefaultAsync(t => t.TransactionId == id);
+
+            var existingIds = entity.TransactionTags.Select(t => t.TransactionTagId);
+
+            var filteredTags = tags.Where(t => !existingIds.Contains(t));
+
+            entity.TransactionTags.AddRange(DataContext.TransactionTags.Where(t => filteredTags.Contains(t.TransactionTagId)));
+
+            await DataContext.SaveChangesAsync();
+
+            return (Transaction)entity;
+        }
+
         public async Task<Transaction> RemoveTransactionTag(Guid id, int tagId)
         {
             Data.Entities.Transaction entity = await DataContext.Transactions.Include(t => t.TransactionTagLinks).ThenInclude(t => t.TransactionTag).SingleOrDefaultAsync(t => t.TransactionId == id);
@@ -74,14 +89,15 @@ namespace Asm.BankPlus.Services
             return (Transaction)entity;
         }
 
-        public async Task CreateTransactions(IEnumerable<Transaction> transactions)
+        public async Task<IEnumerable<Transaction>> CreateTransactions(IEnumerable<Transaction> transactions)
         {
-            foreach(var t in transactions)
-            {
-                DataContext.Add((Data.Entities.Transaction)t);
-            }
+            var entities = transactions.Select(t => (Data.Entities.Transaction)t).ToList();
+
+            DataContext.AddRange(entities);
 
             await DataContext.SaveChangesAsync();
+
+            return entities.Select(t => (Transaction)t);
         }
     }
 }

@@ -6,6 +6,6 @@ namespace Asm.BankPlus.Importers
 {
     public interface IImporter
     {
-        Task Import(Account account, Stream contents);
+        Task<TransactionImportResult> Import(Account account, Stream contents);
     }
 }

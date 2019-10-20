@@ -16,10 +16,12 @@ namespace Asm.BankPlus.Repository
 
         Task<Transaction> AddTransactionTag(Guid id, int tagId);
 
+        Task<Transaction> AddTransactionTags(Guid id, IEnumerable<int> tags);
+
         Task<Transaction> RemoveTransactionTag(Guid id, int tagId);
 
         Task<Transaction> CreateTransaction(Transaction transaction);
 
-        Task CreateTransactions(IEnumerable<Transaction> transactions);
+        Task<IEnumerable<Transaction>> CreateTransactions(IEnumerable<Transaction> transactions);
     }
 }

@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Asm.BankPlus.Importers;
 using Asm.BankPlus.Models;
@@ -12,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Asm.BankPlus.Services.Importers
 {
-    public class IngImporter : IImporter
+    public class IngImporter : ImporterBase
     {
         private const int Columns = 5;
         private const int DateColumn = 0;
@@ -21,19 +19,11 @@ namespace Asm.BankPlus.Services.Importers
         private const int DebitColumn = 3;
         private const int BalanceColumn = 4;
 
-        private readonly ITransactionRepository _transactionRepository;
-        private readonly IAccountRepository _accountRepository;
-        private readonly ILogger<IngImporter> _logger;
-
-
-        public IngImporter(ITransactionRepository transactionRepository, IAccountRepository accountRepository, ILogger<IngImporter> logger)
+        public IngImporter(ITransactionRepository transactionRepository, IAccountRepository accountRepository, ITransactionTagRuleRepository transactionTagRuleRepository, ILogger<IngImporter> logger) : base(transactionRepository, accountRepository, transactionTagRuleRepository, logger)
         {
-            _transactionRepository = transactionRepository;
-            _logger = logger;
-            _accountRepository = accountRepository;
         }
 
-        public async Task Import(Account account, Stream contents)
+        protected override async Task<TransactionImportResult> DoImport(Account account, Stream contents)
         {
             using var reader = new StreamReader(contents);
             var transactions = new List<Transaction>();
@@ -58,35 +48,35 @@ namespace Asm.BankPlus.Services.Importers
                 #region Validation
                 if (columns.Length != Columns)
                 {
-                    _logger.LogWarning($"Unrecognised entry at line {lineCount}");
+                    Logger.LogWarning($"Unrecognised entry at line {lineCount}");
                     continue;
                 }
 
                 if (!DateTime.TryParseExact(columns[DateColumn], "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out transactionTime))
                 {
-                    _logger.LogWarning($"Incorrect date format at line {lineCount}");
+                    Logger.LogWarning($"Incorrect date format at line {lineCount}");
                     continue;
                 }
                 if (String.IsNullOrWhiteSpace(columns[DescriptionColumn]))
                 {
-                    _logger.LogWarning($"Description not supplied at line {lineCount}");
+                    Logger.LogWarning($"Description not supplied at line {lineCount}");
                     continue;
                 }
 
                 if (String.IsNullOrEmpty(columns[CreditColumn]) && String.IsNullOrEmpty(columns[DebitColumn]) || !String.IsNullOrEmpty(columns[CreditColumn]) && !String.IsNullOrEmpty(columns[DebitColumn]))
                 {
-                    _logger.LogWarning($"Credit or Debit amount not supplied at line {lineCount}");
+                    Logger.LogWarning($"Credit or Debit amount not supplied at line {lineCount}");
                     continue;
                 }
 
                 if (!String.IsNullOrEmpty(columns[CreditColumn]) && !Decimal.TryParse(columns[CreditColumn], out credit))
                 {
-                    _logger.LogWarning($"Incorrect credit format at line {lineCount}");
+                    Logger.LogWarning($"Incorrect credit format at line {lineCount}");
                     continue;
                 }
                 else if (!String.IsNullOrEmpty(columns[DebitColumn]) && !Decimal.TryParse(columns[DebitColumn], out debit))
                 {
-                    _logger.LogWarning($"Incorrect debit format at line {lineCount}");
+                    Logger.LogWarning($"Incorrect debit format at line {lineCount}");
                     continue;
                 }
 
@@ -94,7 +84,7 @@ namespace Asm.BankPlus.Services.Importers
 
                 if (!Decimal.TryParse(columns[BalanceColumn], out decimal balance))
                 {
-                    _logger.LogWarning($"Incorrect balance format at line {lineCount}");
+                    Logger.LogWarning($"Incorrect balance format at line {lineCount}");
                     continue;
                 }
                 #endregion
@@ -111,10 +101,11 @@ namespace Asm.BankPlus.Services.Importers
                 });
             }
 
-            await _accountRepository.SetBalance(account.Id, endBalance.Value);
+            await AccountRepository.SetBalance(account.Id, endBalance.Value);
 
-            await _transactionRepository.CreateTransactions(transactions);
+            var savedTransactions = await TransactionRepository.CreateTransactions(transactions);
 
+            return new TransactionImportResult(savedTransactions);
         }
     }
 }

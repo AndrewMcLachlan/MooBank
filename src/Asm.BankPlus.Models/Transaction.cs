@@ -6,7 +6,7 @@ namespace Asm.BankPlus.Models
 {
     public class Transaction
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = new Guid();
         public Guid? Reference { get; set; }
         public Guid AccountId { get; set; }
         public decimal Amount { get; set; }
