@@ -97,13 +97,9 @@ div#body {
     }
 }
 
-div.container {
-
-    > section {
+main.container {
         min-height: 800px;
-        margin: 0 200px;
         background-color: #FFF;
-    }
 }
 
 /*#region Headings*/

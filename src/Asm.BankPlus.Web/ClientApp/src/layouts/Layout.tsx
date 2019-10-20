@@ -9,7 +9,7 @@ export const Layout:React.FC = (props: React.PropsWithChildren<any>) => (
     <div id="body">
         <Alert />
         <Header />
-        <Container>
+        <Container as="main">
             {props.children}
         </Container>
         <Footer />
