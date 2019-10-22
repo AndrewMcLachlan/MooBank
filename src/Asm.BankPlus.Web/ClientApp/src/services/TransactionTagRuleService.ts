@@ -5,10 +5,6 @@ import HttpClient from "./HttpClient";
 
 export class TransactionTagRuleService extends ServiceBase {
 
-    constructor(state: State) {
-        super(state);
-    }
-
     public async getRules(accountId: string): Promise<TransactionTagRules> {
         const url = `api/accounts/${accountId}/transaction/tag/rules`;
 

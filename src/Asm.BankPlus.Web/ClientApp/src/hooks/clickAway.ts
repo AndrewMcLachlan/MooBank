@@ -1,4 +1,4 @@
-import React, { useEffect, Ref } from "react";
+import React, { useEffect } from "react";
 
 
 export const useClickAway = (setShow: (value: boolean) => void, ref: React.RefObject<any>) => {

@@ -5,10 +5,6 @@ import HttpClient from "./HttpClient";
 
 export class TransactionService extends ServiceBase {
 
-    constructor(state: State) {
-        super(state);
-    }
-
     public async getTransactions(accountId: string, pageNumber: number): Promise<Transactions> {
         const url = `api/accounts/${accountId}/transactions/${pageNumber}`;
 

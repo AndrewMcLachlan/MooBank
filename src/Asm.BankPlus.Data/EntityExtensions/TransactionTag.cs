@@ -7,13 +7,15 @@ namespace Asm.BankPlus.Data.Entities
 {
     public partial class TransactionTag : IEquatable<TransactionTag>
     {
+        private ManyToManyCollection<TransactionTagTransactionTag, TransactionTag, int> _tags;
+
         public TransactionTag()
         {
             TaggedToLinks = new HashSet<TransactionTagTransactionTag>();
             TagLinks = new HashSet<TransactionTagTransactionTag>();
             TransactionTagRuleLinks = new HashSet<TransactionTagRuleTransactionTag>();
 
-            Tags = new ManyToManyCollection<TransactionTagTransactionTag, TransactionTag, int>(
+            _tags = new ManyToManyCollection<TransactionTagTransactionTag, TransactionTag, int>(
                 TagLinks,
                 (t) => new TransactionTagTransactionTag { PrimaryTransactionTagId = this.TransactionTagId, SecondaryTransactionTagId = t.TransactionTagId },
                 (t) => t.Secondary,
@@ -23,7 +25,17 @@ namespace Asm.BankPlus.Data.Entities
         }
 
         [NotMapped]
-        public ICollection<TransactionTag> Tags { get; set; }
+        public ICollection<TransactionTag> Tags
+        {
+            get { return _tags; }
+            set
+            {
+                _tags.Clear();
+                _tags.AddRange(value);
+            }
+
+        }
+
 
         public static implicit operator Models.TransactionTag(TransactionTag transactionTag)
         {
@@ -42,6 +54,7 @@ namespace Asm.BankPlus.Data.Entities
             {
                 TransactionTagId = transactionTag.Id,
                 Name = transactionTag.Name,
+                Tags = transactionTag.Tags.Select(t => (TransactionTag)t).ToList(),
             };
         }
 

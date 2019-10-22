@@ -4,10 +4,7 @@ import { ServiceBase } from "./ServiceBase";
 import HttpClient from "./HttpClient";
 
 export class TransactionTagService extends ServiceBase {
-    constructor(state: State) {
-        super(state);
-    }
-
+    
     public async getTags() {
         const url = `api/transaction/tags`;
 
@@ -21,13 +18,26 @@ export class TransactionTagService extends ServiceBase {
         }
     }
 
-    public async createTag(name: string): Promise<Models.TransactionTag> {
+    public async createTag(name: string, tags?: Models.TransactionTag[]): Promise<Models.TransactionTag> {
         const url = `api/transaction/tags/${name}`;
 
         const client = new HttpClient(this.state.app.baseUrl);
 
         try {
-            return await client.put<undefined, Models.TransactionTag>(url);
+            return await client.put<Models.TransactionTag[], Models.TransactionTag>(url, tags);
+        }
+        catch (response) {
+            await super.handleError(response);
+        }
+    }
+
+    public async deleteTag(tag: Models.TransactionTag) {
+        const url = `api/transaction/tags/${tag.id}`;
+
+        const client = new HttpClient(this.state.app.baseUrl);
+
+        try {
+            return await client.delete<Models.TransactionTag>(url);
         }
         catch (response) {
             await super.handleError(response);

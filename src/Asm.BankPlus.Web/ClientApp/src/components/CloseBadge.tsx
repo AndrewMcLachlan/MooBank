@@ -2,6 +2,7 @@
 
 import React, { PropsWithChildren } from "react";
 import { Badge, BadgeProps } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const CloseBadge: React.FC<PropsWithChildren<CloseBadgeProps>> = (props) => {
 
@@ -16,7 +17,7 @@ export const CloseBadge: React.FC<PropsWithChildren<CloseBadgeProps>> = (props) 
 
     className = (className + " close-badge").trim();
 
-    return (<Badge {...other} className={className} >{props.children}<span><i onClick={click} className="fa fa-close" /></span></Badge>);
+    return (<Badge {...other} className={className} >{props.children}<span onClick={click}><FontAwesomeIcon icon="times-circle" /></span></Badge>);
 }
 
 CloseBadge.displayName = "CloseBadge";

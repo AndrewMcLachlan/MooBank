@@ -120,6 +120,4 @@ const useComponentState = (props:TransactionTagRuleProps) => {
 
 export interface TransactionTagRuleProps extends RouteComponentProps<{ id: string }> {
 
-} {
-
 }

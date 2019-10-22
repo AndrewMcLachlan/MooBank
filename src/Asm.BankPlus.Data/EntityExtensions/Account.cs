@@ -19,5 +19,19 @@ namespace Asm.BankPlus.Data.Entities
                 Controller = account.AccountController,
             };
         }
+
+        public static explicit operator Account(Models.Account account)
+        {
+            return new Account
+            {
+                AccountId = account.Id,
+                Name = account.Name,
+                AvailableBalance = account.AvailableBalance,
+                AccountBalance = account.CurrentBalance,
+                LastUpdated = account.BalanceDate,
+                AccountType = account.AccountType,
+                AccountController = account.Controller,
+            };
+        }
     }
 }

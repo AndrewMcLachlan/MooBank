@@ -1,4 +1,4 @@
-import React, { useState, useRef, ReactPropTypes, ElementType } from "react";
+import React, { useState, useRef, ElementType } from "react";
 import { CloseBadge, ComboBox } from "components";
 import { useClickAway } from "hooks/clickAway";
 

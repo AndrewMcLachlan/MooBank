@@ -15,6 +15,17 @@ namespace Asm.BankPlus.Services
         {
         }
 
+        public async Task<Account> Create(Account account)
+        {
+            var entity = (Data.Entities.Account)account;
+
+            DataContext.Add(entity);
+
+            await DataContext.SaveChangesAsync();
+
+            return entity;
+        }
+
         public async Task<Account> GetAccount(Guid id)
         {
             return await GetAccountEntity(id);

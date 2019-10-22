@@ -2,7 +2,7 @@ import "./App.scss";
 
 import React from "react";
 import { Provider } from "react-redux";
-import { BrowserRouter, Route } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { bindActionCreators, Dispatch } from "redux";
 
 import { Layout } from "layouts/Layout";
@@ -38,13 +38,16 @@ const App: React.FC = () => {
         <Provider store={store}>
             <BrowserRouter basename={initialState.app.baseUrl.replace(/^.*\/\/[^/]+/, "")}>
                 <Layout>
+                    <Switch>
                     <Route exact={true} path="/" component={Pages.Home} />
-                    <Route path="/accounts" component={Pages.ManageAccounts} />
+                    <Route exact path="/accounts" component={Pages.ManageAccounts} />
+                    <Route path="/accounts/create" component={Pages.CreateAccount} />
                     <Route exact path="/accounts/:id" component={Pages.Transactions} />
                     <Route path="/accounts/:id/tag-rules" component={Pages.TransactionTagRules} />
                     <Route path="/accounts/:id/import" component={Pages.Import} />
                     <Route exact path="/settings" component={Pages.Settings} />
                     <Route path="/settings/tags" component={Pages.TransactionTags} />
+                    </Switch>
                 </Layout>
             </BrowserRouter>
         </Provider>

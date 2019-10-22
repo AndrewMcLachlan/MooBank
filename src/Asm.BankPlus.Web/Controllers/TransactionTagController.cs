@@ -31,17 +31,17 @@ namespace Asm.BankPlus.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<TransactionTag>> Create(TransactionTag category)
+        public async Task<ActionResult<TransactionTag>> Create(TransactionTag tag)
         {
-            var tag = await TagRepository.Create(category);
+            var newTag = await TagRepository.Create(tag);
 
-            return Created($"api/transaction/tags/{tag.Id}", tag);
+            return Created($"api/transaction/tags/{newTag.Id}", newTag);
         }
 
         [HttpPut("{name}")]
-        public async Task<ActionResult<TransactionTag>> CreateByName(string name)
+        public async Task<ActionResult<TransactionTag>> CreateByName(string name, [FromBody]TransactionTag[] tags)
         {
-            var tag = await TagRepository.Create(name);
+            var tag = await TagRepository.Create(new TransactionTag { Name = name, Tags = tags });
 
             return Created($"api/transaction/tags/{tag.Id}", tag);
         }

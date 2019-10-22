@@ -1,4 +1,4 @@
-import { Configuration, UserAgentApplication, AuthenticationParameters } from "msal";
+import { Configuration, UserAgentApplication } from "msal";
 
 // this can be used for login or token request, however in more complex situations
 // this can have diverging options
@@ -62,7 +62,7 @@ export class SecurityService {
 
     public async getToken(): Promise<string> {
 
-            const tokenRequest = {... msalRequest, forceRefresh: false};
+            const tokenRequest = {...msalRequest, forceRefresh: false};
 
             try {
                 if (!SecurityService.msal) {

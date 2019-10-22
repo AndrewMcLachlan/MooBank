@@ -27,7 +27,7 @@ namespace Asm.BankPlus.Services
 
             await DataContext.SaveChangesAsync();
 
-            return transactionTag;
+            return await Get(transactionTag.TransactionTagId);
         }
 
         public async Task<TransactionTag> Update(int id, string name)

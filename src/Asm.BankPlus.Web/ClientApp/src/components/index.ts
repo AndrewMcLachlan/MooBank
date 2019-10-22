@@ -5,5 +5,4 @@ export * from "./AccountSummary";
 export * from "./CloseBadge";
 export * from "./ComboBox";
 export * from "./TagPanel";
-export * from "./TransactionTagRow";
 export * from "./Upload";

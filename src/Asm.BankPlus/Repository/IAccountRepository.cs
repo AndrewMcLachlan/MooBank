@@ -14,5 +14,7 @@ namespace Asm.BankPlus.Repository
         Task<Account> SetBalance(Guid id, decimal balance);
 
         Task<Account> SetBalance(Guid id, decimal balance, decimal availableBalance);
+
+        Task<Account> Create(Account account);
     }
 }

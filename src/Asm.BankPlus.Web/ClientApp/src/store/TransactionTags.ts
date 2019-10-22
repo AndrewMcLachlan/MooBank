@@ -9,6 +9,7 @@ import { ShowMessage } from "./App";
 const RequestTags = "RequestTags";
 const ReceiveTags = "ReceiveTags";
 const CreateTag = "CreateTransactionTag";
+const DeleteTag = "DeleteTransactionTag";
 const AddTransactionTag = "TagAddTransactionTag";
 const RemoveTransactionTag = "TagRemoveTransactionTag";
 
@@ -42,13 +43,31 @@ export const actionCreators = {
         }
     },
 
-    createTag: (name: string) => async (dispatch: Dispatch, getState: () => State) => {
+    createTag: (newTag: string | Models.TransactionTag) => async (dispatch: Dispatch, getState: () => State) => {
+
+        const service = new TransactionTagService(getState());
+
+        const name = (newTag as Models.TransactionTag).name || (newTag as string)
+
+        const tags = (newTag as Models.TransactionTag).tags;
+
+        try {
+            const tag = await service.createTag(name, tags);
+            dispatch({ type: CreateTag, data: tag });
+        }
+        catch (error) {
+            console.error(error.message);
+            dispatch({ type: ShowMessage, data: error.message });
+        }
+    },
+
+    deleteTag: (tag: Models.TransactionTag) => async (dispatch: Dispatch, getState: () => State) => {
 
         const service = new TransactionTagService(getState());
 
         try {
-            const tag = await service.createTag(name);
-            dispatch({ type: CreateTag, data: tag });
+            await service.deleteTag(tag);
+            dispatch({ type: DeleteTag, data: tag });
         }
         catch (error) {
             console.error(error.message);
@@ -124,6 +143,13 @@ export const reducer = (state: TransactionTags = initialState, action: ActionWit
 
         case CreateTag:
             state.tags.push((action.data as Models.TransactionTag));
+            state.tags.sort((t1, t2) => t1.name.localeCompare(t2.name));
+            return {
+                ...state,
+                tags: state.tags
+            };
+        case DeleteTag:
+            state.tags = state.tags.filter(r => r.id !== (action.data as Models.TransactionTag).id)
             state.tags.sort((t1, t2) => t1.name.localeCompare(t2.name));
             return state;
     }

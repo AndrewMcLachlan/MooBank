@@ -4,13 +4,13 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faCheckCircle, faTrashAlt, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle, faTrashAlt, faChevronDown, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { SecurityService } from "services/SecurityService";
 
-library.add(faCheckCircle, faTrashAlt, faChevronDown);
+library.add(faCheckCircle, faTrashAlt, faChevronDown, faTimesCircle);
 
 const securityService: SecurityService = new SecurityService();
 if (securityService.isUserLoggedIn()) {
