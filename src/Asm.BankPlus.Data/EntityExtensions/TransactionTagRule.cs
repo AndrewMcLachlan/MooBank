@@ -41,7 +41,7 @@ namespace Asm.BankPlus.Data.Entities
             {
                 Id = rule.TransactionTagRuleId,
                 Contains = rule.Contains,
-                Tags = rule.TransactionTags.Where(t => t != null).Select(t => (Models.TransactionTag)t),
+                Tags = rule.TransactionTags.Where(t => t != null && !t.Deleted).Select(t => (Models.TransactionTag)t),
             };
         }
 

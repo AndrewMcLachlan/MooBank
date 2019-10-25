@@ -49,9 +49,9 @@ namespace Asm.BankPlus.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Account>> Create(Account account)
+        public async Task<ActionResult<Account>> Create(NewAccountModel account)
         {
-            Account newAccount = await AccountRepository.Create(account);
+            Account newAccount = await AccountRepository.Create((Account)account);
 
             return CreatedAtAction("Get", new { id = newAccount.Id }, newAccount);
         }

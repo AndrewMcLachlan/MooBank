@@ -142,15 +142,13 @@ export const reducer = (state: TransactionTags = initialState, action: ActionWit
             };
 
         case CreateTag:
-            state.tags.push((action.data as Models.TransactionTag));
-            state.tags.sort((t1, t2) => t1.name.localeCompare(t2.name));
-            return {
-                ...state,
-                tags: state.tags
-            };
+            state.tags = [ ...state.tags, action.data as Models.TransactionTag];
+            state.tags = state.tags.sort((t1, t2) => t1.name.localeCompare(t2.name));
+            return state;
+
         case DeleteTag:
             state.tags = state.tags.filter(r => r.id !== (action.data as Models.TransactionTag).id)
-            state.tags.sort((t1, t2) => t1.name.localeCompare(t2.name));
+            state.tags = state.tags.sort((t1, t2) => t1.name.localeCompare(t2.name));
             return state;
     }
     return state;

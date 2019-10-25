@@ -45,7 +45,10 @@ function useTransactionTagRowEvents(props: TransactionTagRowProps) {
     }
 
     const deleteTag = () => {
-        dispatch(actionCreators.deleteTag(props.tag));
+
+        if (window.confirm("Deleting this tag will remove it from all rules and transactions. Are you sure?")) {
+            dispatch(actionCreators.deleteTag(props.tag));
+        }
     }
 
     const addTag = (tag: TransactionTag) => {

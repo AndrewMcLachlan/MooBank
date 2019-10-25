@@ -5,8 +5,11 @@ import { ActionWithData } from "./redux-extensions";
 import { Accounts, State } from "./state";
 import { Account } from "models";
 import { ImportService } from "services";
+import { async } from "q";
 
 export const ActionTypes = {
+    CreateAccount: "CreateAccount",
+    AccountCreated: "AccountCreated",
     RequestAccounts: "RequestAccounts",
     ReceiveAccounts: "ReceiveAccounts",
     RequestAccount: "RequestAccount",
@@ -56,6 +59,20 @@ export const actionCreators = {
         const account = await client.get<Account>(url);
 
         dispatch({ type: ActionTypes.ReceiveAccount, data: account });
+    },
+
+    createAccount: (account: Account) => async (dispatch: Dispatch, getState: () => State) => {
+        const state = getState();
+
+        dispatch({ type: ActionTypes.CreateAccount });
+
+        const url = `api/accounts`;
+
+        const client = new HttpClient(state.app.baseUrl);
+
+        const newAccount = await client.post<Account, Account>(url, account);
+
+        dispatch({ type: ActionTypes.AccountCreated, data: account})
     },
 
     importTransactions: (id: string, file: File) => async (dispatch: Dispatch, getState: () => State) => {

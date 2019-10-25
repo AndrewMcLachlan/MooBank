@@ -33,7 +33,7 @@ namespace Asm.BankPlus.Data.Entities
                 TransactionType = transaction.TransactionType,
                 AccountId = transaction.AccountId,
                 Description = transaction.Description,
-                Tags = transaction.TransactionTags.Select(t => (Models.TransactionTag)t),
+                Tags = transaction.TransactionTags.Where(t => !t.Deleted).Select(t => (Models.TransactionTag)t),
             };
         }
 

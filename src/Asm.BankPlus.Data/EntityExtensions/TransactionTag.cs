@@ -44,7 +44,7 @@ namespace Asm.BankPlus.Data.Entities
             {
                 Id = transactionTag.TransactionTagId,
                 Name = transactionTag.Name,
-                Tags = transactionTag.Tags.Select(t => (Models.TransactionTag)t),
+                Tags = transactionTag.Tags.Where(t => t != null).Select(t => (Models.TransactionTag)t),
             };
         }
 
