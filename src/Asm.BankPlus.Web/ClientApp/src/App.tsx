@@ -44,7 +44,7 @@ const App: React.FC = () => {
                 <Layout>
                     <Switch>
                     <Route exact={true} path="/" component={Pages.Home} />
-                    <Route exact path="/accounts" component={Pages.ManageAccounts} />
+                    <Route exact path="/accounts" component={Pages.CreateAccount} />
                     <Route path="/accounts/create" component={Pages.CreateAccount} />
                     <Route exact path="/accounts/:id" component={Pages.Transactions} />
                     <Route path="/accounts/:id/tag-rules" component={Pages.TransactionTagRules} />

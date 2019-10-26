@@ -12,8 +12,11 @@ import { TransactionTagRow } from "./TransactionTagRow";
 import { TagPanel } from "components";
 import { TransactionTag } from "models";
 import { ClickableIcon } from "components/ClickableIcon";
+import { usePageTitle } from "hooks";
 
 export const TransactionTags: React.FC = () => {
+
+    usePageTitle("Tags");
 
     const { newTag, fullTagsList, tagsList, addTag, createTag, removeTag, nameChange } = useComponentState();
 

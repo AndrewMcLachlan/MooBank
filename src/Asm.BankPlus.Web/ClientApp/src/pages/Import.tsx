@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelectedAccount } from "hooks";
+import { useSelectedAccount, usePageTitle } from "hooks";
 import { RouteComponentProps } from "react-router-dom";
 import { AccountController } from "models";
 import { Upload, FilesAddedEvent } from "components";
@@ -8,6 +8,8 @@ import { bindActionCreators } from "redux";
 import { actionCreators } from "store/Accounts";
 
 export const Import: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
+
+    usePageTitle("Import Transactions");
 
     const accountId = props.match.params.id;
     const account = useSelectedAccount(accountId);

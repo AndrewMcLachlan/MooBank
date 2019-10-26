@@ -13,12 +13,14 @@ import { TagPanel } from "../../components";
 
 import { TransactionTag, TransactionTagRule } from "models";
 import { RouteComponentProps } from "react-router";
-import { useSelectedAccount } from "hooks";
+import { useSelectedAccount, usePageTitle } from "hooks";
 
 import { TransactionTagRuleRow } from "./TransactionTagRuleRow";
 import { ClickableIcon } from "../../components/ClickableIcon";
 
 export const TransactionTagRules: React.FC<TransactionTagRuleProps> = (props) => {
+
+    usePageTitle("Transaction Tag Rules");
 
     const { newRule, fullTagsList, addTag, createTag, removeTag, nameChange, createRule } = useComponentState(props);
 

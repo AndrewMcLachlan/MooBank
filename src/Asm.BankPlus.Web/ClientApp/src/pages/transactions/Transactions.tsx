@@ -3,9 +3,11 @@ import { RouteComponentProps } from "react-router";
 
 import { TransactionList } from "./TransactionList";
 import { AccountSummary } from "components";
-import { useSelectedAccount } from "hooks";
+import { useSelectedAccount, usePageTitle } from "hooks";
 
 export const Transactions: React.FC<TransactionsProps> = (props) => {
+
+    usePageTitle("Transactions");
 
     const accountId = props.match.params.id;
 
