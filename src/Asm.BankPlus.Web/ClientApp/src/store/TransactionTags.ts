@@ -47,9 +47,9 @@ export const actionCreators = {
 
         const service = new TransactionTagService(getState());
 
-        const name = (newTag as Models.TransactionTag).name || (newTag as string)
+        const name = ((newTag as Models.TransactionTag).name || (newTag as string)).trim();
 
-        const tags = (newTag as Models.TransactionTag).tags;
+        const tags = (newTag as Models.TransactionTag).tags || [];
 
         try {
             const tag = await service.createTag(name, tags);
