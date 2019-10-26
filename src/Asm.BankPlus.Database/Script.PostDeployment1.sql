@@ -14,76 +14,63 @@ Post-Deployment Script Template
 MERGE AccountType AS TARGET USING (SELECT 1 as AccountTypeId, 'Transaction' as [Description]) AS SOURCE
 ON (TARGET.AccountTypeId = SOURCE.AccountTypeId)
 WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (1, 'Transaction');
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (1, SOURCE.[Description]);
 
 MERGE AccountType AS TARGET USING (SELECT 2 as AccountTypeId, 'Savings' as [Description]) AS SOURCE
 ON (TARGET.AccountTypeId = SOURCE.AccountTypeId)
 WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (2, 'Savings');
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (2, SOURCE.[Description]);
 
 MERGE AccountType AS TARGET USING (SELECT 3 as AccountTypeId, 'Credit' as [Description]) AS SOURCE
 ON (TARGET.AccountTypeId = SOURCE.AccountTypeId)
 WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (3, 'Credit');
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (3, SOURCE.[Description]);
 
 MERGE AccountType AS TARGET USING (SELECT 4 as AccountTypeId, 'Mortgage' as [Description]) AS SOURCE
 ON (TARGET.AccountTypeId = SOURCE.AccountTypeId)
 WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (4, 'Mortgage');
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (4, SOURCE.[Description]);
 
 MERGE AccountType AS TARGET USING (SELECT 5 as AccountTypeId, 'Superannuation' as [Description]) AS SOURCE
 ON (TARGET.AccountTypeId = SOURCE.AccountTypeId)
 WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (5, 'Superannuation');
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (5, SOURCE.[Description]);
 
 --Account Controller
 MERGE AccountController AS TARGET USING (SELECT 0 as AccountControllerId, 'Manual' as [Type]) AS SOURCE
 ON (TARGET.AccountControllerId = SOURCE.AccountControllerId)
 WHEN MATCHED AND TARGET.[Type] <> SOURCE.[Type] THEN UPDATE SET Target.[Type] = SOURCE.[Type]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (0, 'Manual');
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (0, SOURCE.[Type]);
 
 MERGE AccountController AS TARGET USING (SELECT 1 as AccountControllerId, 'VirtualAccount' as [Type]) AS SOURCE
 ON (TARGET.AccountControllerId = SOURCE.AccountControllerId)
 WHEN MATCHED AND TARGET.[Type] <> SOURCE.[Type] THEN UPDATE SET Target.[Type] = SOURCE.[Type]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (1, 'VirtualAccount');
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (1, SOURCE.[Type]);
 
 MERGE AccountController AS TARGET USING (SELECT 2 as AccountControllerId, 'Import' as [Type]) AS SOURCE
 ON (TARGET.AccountControllerId = SOURCE.AccountControllerId)
 WHEN MATCHED AND TARGET.[Type] <> SOURCE.[Type] THEN UPDATE SET Target.[Type] = SOURCE.[Type]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (2, 'Import');
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (2, SOURCE.[Type]);
 
 -- Transaction Type
 MERGE TransactionType AS TARGET USING (SELECT 1 as TransactionTypeId, 'Credit' as [Description]) AS SOURCE
 ON (TARGET.TransactionTypeId = SOURCE.TransactionTypeId)
 WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (1, 'Credit');
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (1, SOURCE.[Description]);
 
 MERGE TransactionType AS TARGET USING (SELECT 2 as TransactionTypeId, 'Debit' as [Description]) AS SOURCE
 ON (TARGET.TransactionTypeId = SOURCE.TransactionTypeId)
 WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (2, 'Debit');
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (2, SOURCE.[Description]);
 
 MERGE TransactionType AS TARGET USING (SELECT 3 as TransactionTypeId, 'BalanceAdjustment' as [Description]) AS SOURCE
 ON (TARGET.TransactionTypeId = SOURCE.TransactionTypeId)
 WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (3, 'BalanceAdjustment');
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (3, SOURCE.[Description]);
 
 
-/*
-IF ((SELECT COUNT(*)FROM TransactionCategory) = 0)
-BEGIN
-INSERT INTO TransactionCategory ([Description]) VALUES ('Living Expense') --1
-INSERT INTO TransactionCategory ([Description], ParentCategoryId) VALUES ('Utilities', 1) --2
-INSERT INTO TransactionCategory ([Description], ParentCategoryId) VALUES ('Tax', 1) --3
-INSERT INTO TransactionCategory ([Description], ParentCategoryId) VALUES ('Child', 1) --4
-INSERT INTO TransactionCategory ([Description], ParentCategoryId) VALUES ('Insurance', 1) --5
-INSERT INTO TransactionCategory ([Description], ParentCategoryId) VALUES ('Transport', 1) --6
-INSERT INTO TransactionCategory ([Description], ParentCategoryId) VALUES ('Clothes', 1) --6
-INSERT INTO TransactionCategory ([Description], ParentCategoryId) VALUES ('Home Maintenance', 1) --7
-INSERT INTO TransactionCategory ([Description], ParentCategoryId) VALUES ('Home Improvement', 1) --7
+-- Importer Types
+MERGE ImporterType AS TARGET USING (SELECT 'Asm.BankPlus.Services.Importers.IngImporter, Asm.BankPlus.Services' as [Type]) AS SOURCE
+ON (TARGET.[Type] = SOURCE.[Type])
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.[Type]);
 
-INSERT INTO TransactionCategory ([Description], ParentCategoryId) VALUES ('Elecricity', 2)
-INSERT INTO TransactionCategory ([Description], ParentCategoryId) VALUES ('Water', 2)
-INSERT INTO TransactionCategory ([Description], ParentCategoryId) VALUES ('Rates', 1)
-END
-*/
