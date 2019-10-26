@@ -1,12 +1,12 @@
 ﻿import React, { useState, useEffect } from "react";
 
-import { TransactionTag } from "../../../models";
+import { TransactionTag } from "../../models";
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
-import { actionCreators } from "../../../store/TransactionTags";
-import { State } from "../../../store/state";
-import { TagPanel } from "../../../components/TagPanel";
-import { ClickableIcon } from "components/ClickableIcon";
+import { actionCreators } from "../../store/TransactionTags";
+import { State } from "../../store/state";
+import { TagPanel } from "../../components/TagPanel";
+import { ClickableIcon } from "../../components/ClickableIcon";
 
 export const TransactionTagRow: React.FC<TransactionTagRowProps> = (props) => {
 

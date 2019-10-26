@@ -66,6 +66,7 @@ const useComponentState = () => {
 
     const createTag = () => {
         dispatch(actionCreators.createTag(newTag));
+        setNewTag(blankTag);
     }
 
     const createSubTag = (name: string) => {
