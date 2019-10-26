@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Asm.BankPlus.Models;
 using Asm.BankPlus.Repository;
@@ -41,7 +42,7 @@ namespace Asm.BankPlus.Web.Controllers
         [HttpPut("{name}")]
         public async Task<ActionResult<TransactionTag>> CreateByName(string name, [FromBody]TransactionTag[] tags)
         {
-            var tag = await TagRepository.Create(new TransactionTag { Name = name, Tags = tags });
+            var tag = await TagRepository.Create(new TransactionTag { Name = Uri.UnescapeDataString(name), Tags = tags });
 
             return Created($"api/transaction/tags/{tag.Id}", tag);
         }
