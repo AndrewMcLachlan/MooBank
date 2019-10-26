@@ -18,6 +18,8 @@ export const TransactionTags: React.FC = () => {
     const { newTag, fullTagsList, tagsList, addTag, createTag, removeTag, nameChange } = useComponentState();
 
     return (
+        <>
+        <h1>Transaction Tags</h1>
         <Table striped bordered={false} borderless className="transaction-tags">
             <thead>
                 <tr>
@@ -27,13 +29,14 @@ export const TransactionTags: React.FC = () => {
             </thead>
             <tbody>
                 <tr>
-                    <td><input type="text" placeholder="Transaction description contains..." value={newTag.name} onChange={nameChange} /></td>
+                    <td><input type="text" placeholder="Tag name" value={newTag.name} onChange={nameChange} /></td>
                     <TagPanel as="td" selectedItems={newTag.tags} allItems={tagsList} textField="name" valueField="id" onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} />
                     <td><span onClick={createTag}><ClickableIcon icon="check-circle" title="Save" /></span></td>
                 </tr>
                 {fullTagsList && fullTagsList.map((t) => <TransactionTagRow key={t.id} tag={t} />)}
             </tbody>
         </Table>
+        </>
     );
 }
 

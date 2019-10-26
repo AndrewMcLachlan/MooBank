@@ -15,7 +15,7 @@ import { TransactionTag, TransactionTagRule } from "models";
 import { RouteComponentProps } from "react-router";
 import { useSelectedAccount } from "hooks";
 
-import { TransactionTagRuleRow} from "./TransactionTagRuleRow";
+import { TransactionTagRuleRow } from "./TransactionTagRuleRow";
 import { ClickableIcon } from "../../components/ClickableIcon";
 
 export const TransactionTagRules: React.FC<TransactionTagRuleProps> = (props) => {
@@ -25,41 +25,43 @@ export const TransactionTagRules: React.FC<TransactionTagRuleProps> = (props) =>
     const rules = useSelector((state: State) => state.transactionTagRules.rules);
 
     return (
-        <Table striped bordered={false} borderless className="transaction-tag-rules">
-            <thead>
-                <tr>
-                    <th>When a transaction contains</th>
-                    <th>Apply tag(s)</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><input type="text" placeholder="Transaction description contains..." value={newRule.contains} onChange={nameChange} /></td>
-                    <TagPanel as="td" selectedItems={newRule.tags} allItems={fullTagsList} textField="name" valueField="id" onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} />
-                    <td><span onClick={createRule}><ClickableIcon icon="check-circle" title="Save" /></span></td>
-                </tr>
-                {rules && rules.map((r) => <TransactionTagRuleRow key={r.id} rule={r} />)}
-            </tbody>
-        </Table>
-
+        <>
+            <h1>Transaction Tag Rules</h1>
+            <Table striped bordered={false} borderless className="transaction-tag-rules">
+                <thead>
+                    <tr>
+                        <th>When a transaction contains</th>
+                        <th>Apply tag(s)</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="text" placeholder="Transaction description contains..." value={newRule.contains} onChange={nameChange} /></td>
+                        <TagPanel as="td" selectedItems={newRule.tags} allItems={fullTagsList} textField="name" valueField="id" onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} />
+                        <td><span onClick={createRule}><ClickableIcon icon="check-circle" title="Save" /></span></td>
+                    </tr>
+                    {rules && rules.map((r) => <TransactionTagRuleRow key={r.id} rule={r} />)}
+                </tbody>
+            </Table>
+        </>
     );
 }
 
 TransactionTagRules.displayName = "TransactionTagRules";
 
-const useComponentState = (props:TransactionTagRuleProps) => {
+const useComponentState = (props: TransactionTagRuleProps) => {
 
     var dispatch = useDispatch();
 
-    const blankRule = {id: 0, contains: "", tags: []} as TransactionTagRule;
+    const blankRule = { id: 0, contains: "", tags: [] } as TransactionTagRule;
 
     const accountId = props.match.params.id;
     const account = useSelectedAccount(accountId);
 
     const fullTagsList = useSelector((state: State) => state.transactionTags.tags);
 
-    const [newRule, setNewRule] = useState(blankRule); 
+    const [newRule, setNewRule] = useState(blankRule);
     const [tagsList, setTagsList] = useState([]);
 
     bindActionCreators(actionCreators, dispatch);
@@ -80,7 +82,7 @@ const useComponentState = (props:TransactionTagRuleProps) => {
     }
 
     const nameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setNewRule({...newRule, contains: e.currentTarget.value});
+        setNewRule({ ...newRule, contains: e.currentTarget.value });
     }
 
     const createTag = (name: string) => {
@@ -108,7 +110,7 @@ const useComponentState = (props:TransactionTagRuleProps) => {
     return {
         newRule,
         fullTagsList,
-        
+
         createTag,
         addTag,
         removeTag,
