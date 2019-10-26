@@ -49,7 +49,7 @@ const App: React.FC = () => {
                     <Route exact path="/accounts/:id" component={Pages.Transactions} />
                     <Route path="/accounts/:id/tag-rules" component={Pages.TransactionTagRules} />
                     <Route path="/accounts/:id/import" component={Pages.Import} />
-                    <Route exact path="/settings" component={Pages.Settings} />
+                    <Route exact path="/settings" component={Pages.TransactionTags} />
                     <Route path="/settings/tags" component={Pages.TransactionTags} />
                     </Switch>
                 </Layout>
