@@ -3,9 +3,8 @@
 import HttpClient from "services/HttpClient";
 import { ActionWithData } from "./redux-extensions";
 import { Accounts, State } from "./state";
-import { Account } from "models";
+import { Account, ImportAccount } from "models";
 import { ImportService } from "services";
-import { async } from "q";
 
 export const ActionTypes = {
     CreateAccount: "CreateAccount",
@@ -61,7 +60,7 @@ export const actionCreators = {
         dispatch({ type: ActionTypes.ReceiveAccount, data: account });
     },
 
-    createAccount: (account: Account) => async (dispatch: Dispatch, getState: () => State) => {
+    createAccount: (account: Account, importAccount: ImportAccount) => async (dispatch: Dispatch, getState: () => State) => {
         const state = getState();
 
         dispatch({ type: ActionTypes.CreateAccount });
@@ -70,9 +69,9 @@ export const actionCreators = {
 
         const client = new HttpClient(state.app.baseUrl);
 
-        const newAccount = await client.post<Account, Account>(url, account);
+        const newAccount = await client.post<{account: Account, importAccount: ImportAccount }, Account>(url, { account, importAccount });
 
-        dispatch({ type: ActionTypes.AccountCreated, data: account})
+        dispatch({ type: ActionTypes.AccountCreated, data: newAccount})
     },
 
     importTransactions: (id: string, file: File) => async (dispatch: Dispatch, getState: () => State) => {

@@ -10,6 +10,7 @@ import { State } from "./state";
 import * as Transactions from "./Transactions";
 import * as TransactionTags from "./TransactionTags";
 import * as TransactionTagRules from "./TransactionTagRules";
+import * as ReferenceData from "./ReferenceData";
 
 declare global {
 
@@ -26,6 +27,7 @@ export default function configureStore(history: any, initialState: State) {
         security: Security.reducer,
         transactionTags: TransactionTags.reducer,
         transactionTagRules: TransactionTagRules.reducer,
+        referenceData: ReferenceData.reducer,
     };
 
     const middleware = [

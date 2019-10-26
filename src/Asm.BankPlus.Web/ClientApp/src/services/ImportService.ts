@@ -1,13 +1,8 @@
 import * as Models from "../models";
-import { State, Transactions } from "../store/state";
 import { ServiceBase } from "./ServiceBase";
 import HttpClient from "./HttpClient";
 
 export class ImportService extends ServiceBase {
-
-    constructor(state: State) {
-        super(state);
-    }
 
     public async importTransactions(accountId: string, file: File): Promise<void> {
         const url = `api/accounts/${accountId}/import`;

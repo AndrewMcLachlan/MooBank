@@ -164,6 +164,7 @@ namespace Asm.BankPlus.Web
             services.AddScoped<ITransactionTagRuleRepository, TransactionTagRuleRepository>();
             services.AddScoped<IngImporter>();
             services.AddScoped<IImporterFactory, ImporterFactory>();
+            services.AddScoped<IReferenceDataRepository, ReferenceDataRepository>();
         }
 
         private ProblemDetails CreateProblemDetails(IHostingEnvironment env, HttpContext context, Exception ex)

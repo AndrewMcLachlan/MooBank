@@ -7,15 +7,13 @@ import { bindActionCreators } from "redux";
 
 import { Table } from "react-bootstrap";
 
-import moment from "moment";
-
 //import paginationFactory from 'react-bootstrap-table2-paginator';
 //import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 
 import { actionCreators as accountActionCreators } from "../../store/Accounts";
 import { actionCreators as transactionActionCreators } from "../../store/Transactions";
-import {  Transactions as TransactionsState, State } from "../../store/state";
-import { TransactionTag, Account } from "../../models";
+import { State } from "../../store/state";
+import { Account } from "../../models";
 import { TransactionRow } from "./TransactionRow";
 
 export const TransactionList: React.FC<TransactionListProps> = (props) => {

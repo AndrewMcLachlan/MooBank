@@ -31,6 +31,8 @@ namespace Asm.BankPlus.Data
 
         public virtual DbSet<ImportAccount> ImportAccounts { get; set; }
 
+        public virtual DbSet<ImporterType> ImporterTypes { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
         }
@@ -48,6 +50,7 @@ namespace Asm.BankPlus.Data
             {
                 entity.HasIndex(e => e.Name).IsUnique();
 
+                entity.Property(e => e.AccountId).ValueGeneratedOnAdd();
                 entity.Property(e => e.AccountId).HasDefaultValueSql("(newid())");
 
                 entity.Property(e => e.AccountBalance).HasColumnType("decimal(10, 2)");
@@ -273,10 +276,13 @@ namespace Asm.BankPlus.Data
             {
                 entity.HasKey(e => e.AccountId);
                 entity.HasOne(e => e.Account).WithOne().HasForeignKey<Account>(a => a.AccountId);
-                entity.HasOne(e => e.ImporterType);
+                entity.HasOne(e => e.ImporterType).WithMany().HasForeignKey(i => i.ImporterTypeId);
             });
 
-
+            modelBuilder.Entity<ImporterType>(entity =>
+            {
+                entity.HasKey(e => e.ImporterTypeId);
+            });
         }
     }
 }

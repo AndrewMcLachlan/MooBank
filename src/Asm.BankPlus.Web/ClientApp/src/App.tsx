@@ -11,7 +11,8 @@ import * as Pages from "./pages";
 import { initialState as accountsInitialState } from "store/Accounts";
 import configureStore from "store/configureStore";
 import { State } from "store/state";
-import { initialState as tagsInitialState, actionCreators } from "store/TransactionTags";
+import { initialState as tagsInitialState, actionCreators as tagActionCreators } from "store/TransactionTags";
+import { initialState as refDataInitialState, actionCreators as refDataActionCreators } from "store/ReferenceData";
 import { initialState as rulesInitialState } from "store/TransactionTagRules";
 
 const App: React.FC = () => {
@@ -25,14 +26,17 @@ const App: React.FC = () => {
         accounts: accountsInitialState,
         transactionTags: tagsInitialState,
         transactionTagRules: rulesInitialState,
+        referenceData: refDataInitialState,
     };
 
     const store = configureStore(window.history, initialState);
 
     const dispatch: Dispatch<any> =store.dispatch;
 
-    bindActionCreators(actionCreators, dispatch);
-    dispatch(actionCreators.requestTags());
+    bindActionCreators(tagActionCreators, dispatch);
+    bindActionCreators(refDataActionCreators, dispatch);
+    dispatch(tagActionCreators.requestTags());
+    dispatch(refDataActionCreators.requestImporterTypes());
 
     return (
         <Provider store={store}>

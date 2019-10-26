@@ -1,5 +1,5 @@
 import * as Models from "../models";
-import { State, TransactionTagRules } from "../store/state";
+import { TransactionTagRules } from "../store/state";
 import { ServiceBase } from "./ServiceBase";
 import HttpClient from "./HttpClient";
 

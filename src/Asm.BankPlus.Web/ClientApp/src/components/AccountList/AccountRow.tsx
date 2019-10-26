@@ -2,7 +2,6 @@
 import { useHistory } from "react-router-dom";
 
 import * as Models from "../../models";
-import { NavLink } from "react-router-dom";
 import { ActionTypes } from "../../store/Accounts";
 import { useDispatch } from "react-redux";
 import { AccountController } from "../../models";

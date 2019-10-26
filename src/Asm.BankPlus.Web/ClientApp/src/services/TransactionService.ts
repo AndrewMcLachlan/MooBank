@@ -1,5 +1,5 @@
 import * as Models from "models";
-import { State, Transactions } from "store/state";
+import { Transactions } from "store/state";
 import { ServiceBase } from "./ServiceBase";
 import HttpClient from "./HttpClient";
 

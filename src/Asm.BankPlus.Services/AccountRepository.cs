@@ -26,6 +26,34 @@ namespace Asm.BankPlus.Services
             return entity;
         }
 
+        public async Task<Account> CreateImportAccount(Account account, int importerTypeId)
+        {
+            var importerType = await DataContext.ImporterTypes.Where(i => i.ImporterTypeId == importerTypeId).SingleOrDefaultAsync();
+
+            if (importerType == null) throw new NotFoundException("Unknown importer type ID " + importerTypeId);
+
+
+            var entity = (Data.Entities.Account)account;
+            entity.AccountId = Guid.Empty;
+
+            DataContext.Accounts.Add(entity);
+
+            await DataContext.SaveChangesAsync();
+
+
+            var importAccountEntity = new Data.Entities.ImportAccount
+            {
+                AccountId = entity.AccountId,
+                ImporterTypeId = importerTypeId,
+            };
+
+            DataContext.Add(importAccountEntity);
+
+            await DataContext.SaveChangesAsync();
+
+            return entity;
+        }
+
         public async Task<Account> GetAccount(Guid id)
         {
             return await GetAccountEntity(id);

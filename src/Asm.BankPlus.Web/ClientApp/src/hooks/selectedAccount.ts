@@ -14,7 +14,10 @@ export const useSelectedAccount = (accountId: string)  => {
     bindActionCreators(actionCreators, dispatch);
 
     useEffect(() => {
-        let _ = (!account || account.id !== accountId) ? dispatch(actionCreators.requestAccount(accountId)) : null;
+        if (!account || account.id !== accountId)
+        {
+            dispatch(actionCreators.requestAccount(accountId));
+        } 
     }, [dispatch, account, accountId]);
 
     return account;

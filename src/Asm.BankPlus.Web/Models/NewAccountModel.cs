@@ -1,37 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Asm.BankPlus.Models;
+using Asm.BankPlus.Web.Models.NewAccount;
 
 namespace Asm.BankPlus.Web.Models
 {
-    public class NewAccountModel
+    public partial class NewAccountModel
     {
-        public string Name { get; set; }
 
-        public DateTime BalanceDate { get; set; }
+        public Account Account { get; set; }
 
-        public decimal CurrentBalance { get; set; }
-
-        public decimal AvailableBalance { get; set; }
-
-        public AccountType AccountType { get; set; }
-
-        public AccountController Controller { get; set; }
-
-        public static explicit operator Account(NewAccountModel account)
-        {
-            return new Account
-            {
-                Id = Guid.NewGuid(),
-                AccountType = account.AccountType,
-                AvailableBalance = account.AvailableBalance,
-                BalanceDate = account.BalanceDate,
-                Controller = account.Controller,
-                CurrentBalance = account.CurrentBalance,
-                Name = account.Name,
-            };
-        }
+        public ImportAccount ImportAccount { get; set; }
     }
 }

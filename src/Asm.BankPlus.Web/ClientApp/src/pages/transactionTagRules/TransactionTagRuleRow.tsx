@@ -1,8 +1,6 @@
-﻿import React, { useState, useRef, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { TransactionTagRule, TransactionTag } from "../../models";
 import { actionCreators } from "../../store/TransactionTagRules";

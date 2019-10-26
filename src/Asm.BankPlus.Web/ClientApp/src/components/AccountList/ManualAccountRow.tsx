@@ -1,8 +1,7 @@
 ﻿import React, { useState, useRef } from "react";
-import { useDispatch } from "react-redux";
-import { NavLink, useHistory } from "react-router-dom";
+//import { useDispatch } from "react-redux";
+//import { useHistory } from "react-router-dom";
 
-import { ActionTypes } from "../../store/Accounts";
 import { AccountRowProps, useAccountRowCommonState } from "./AccountRow";
 import { useClickAway } from "../../hooks";
 
@@ -30,8 +29,8 @@ ManualAccountRow.displayName = "ManualAccountRow";
 
 const useComponentState = () => {
 
-    const dispatch = useDispatch();
-    const history = useHistory();
+    //const dispatch = useDispatch();
+    //const history = useHistory();
 
     const [editingBalance, setEditingBalance] = useState(false);
     const [editingAvBalance, setEditingAvBalance] = useState(false);

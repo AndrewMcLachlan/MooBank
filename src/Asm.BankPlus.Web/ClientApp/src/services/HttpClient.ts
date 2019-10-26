@@ -1,6 +1,4 @@
-import { UserAgentApplication } from "msal";
 import { SecurityService } from "./SecurityService";
-import { throwStatement } from "@babel/types";
 
 export type httpMethod = "GET" | "DELETE" | "POST" | "PUT" | "PATCH";
 

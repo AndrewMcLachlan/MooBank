@@ -1,6 +1,6 @@
 export * from "./Home/Home";
 export * from "./Import";
-export * from "./CreateAccount";
+export * from "./createAccount/CreateAccount";
 export * from "./ManageAccounts";
 export * from "./settings";
 export * from "./transactions/Transactions";

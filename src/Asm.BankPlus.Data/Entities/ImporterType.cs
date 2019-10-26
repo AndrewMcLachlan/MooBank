@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Asm.BankPlus.Data.Entities
 {
-    public class ImporterType
+    public partial class ImporterType
     {
         public int ImporterTypeId { get; set; }
 

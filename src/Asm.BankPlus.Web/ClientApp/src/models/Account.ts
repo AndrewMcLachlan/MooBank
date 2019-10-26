@@ -23,3 +23,7 @@ export interface Account {
     accountType: AccountType;
     controller: AccountController;
 }
+
+export interface ImportAccount {
+    importerTypeId: number;
+}

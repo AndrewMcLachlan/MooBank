@@ -7,6 +7,7 @@ export interface State {
     transactionTags?: TransactionTags,
     transactionTagRules?: TransactionTagRules,
     security?: Security,
+    referenceData?: ReferenceData,
 }
 
 export interface App {
@@ -52,4 +53,8 @@ export interface VirtualAccount {
     defaultAccount: boolean;
     closed: boolean;
 
+}
+
+export interface ReferenceData {
+    importAccountTypes: Models.ImporterType[];
 }
