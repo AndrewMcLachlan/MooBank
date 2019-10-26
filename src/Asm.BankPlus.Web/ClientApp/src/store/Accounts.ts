@@ -69,9 +69,9 @@ export const actionCreators = {
 
         const client = new HttpClient(state.app.baseUrl);
 
-        const newAccount = await client.post<{account: Account, importAccount: ImportAccount }, Account>(url, { account, importAccount });
+        const newAccount = await client.post<{ account: Account, importAccount: ImportAccount }, Account>(url, { account, importAccount });
 
-        dispatch({ type: ActionTypes.AccountCreated, data: newAccount})
+        dispatch({ type: ActionTypes.AccountCreated, data: newAccount })
     },
 
     importTransactions: (id: string, file: File) => async (dispatch: Dispatch, getState: () => State) => {
@@ -105,6 +105,14 @@ export const reducer = (state: Accounts = initialState, action: ActionWithData<a
                 ...state,
                 selectedAccount: action.data,
             };
+
+        case ActionTypes.AccountCreated:
+            return {
+                ...state,
+                accounts: [...state.accounts, action.data],
+            }
+
+
     }
 
     return state;
