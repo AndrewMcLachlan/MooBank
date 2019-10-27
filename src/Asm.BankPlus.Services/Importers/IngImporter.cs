@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Asm.BankPlus.Data.Entities.Ing;
 using Asm.BankPlus.Importers;
 using Asm.BankPlus.Models;
 using Asm.BankPlus.Repository;
@@ -18,6 +20,11 @@ namespace Asm.BankPlus.Services.Importers
         private const int CreditColumn = 2;
         private const int DebitColumn = 3;
         private const int BalanceColumn = 4;
+
+        private static readonly Regex VisaPurchase = new Regex(@"(.*) - Visa Purchase - Receipt \d{6}In (.*) Date (.*) Card (462263xxxxxx\d{4})");
+        private static readonly Regex DirectDebit = new Regex(@"(.*) - Direct Debit - Receipt \d{6} (.*)");
+        private static readonly Regex DirectPayment = new Regex(@"");
+
 
         public IngImporter(ITransactionRepository transactionRepository, IAccountRepository accountRepository, ITransactionTagRuleRepository transactionTagRuleRepository, ILogger<IngImporter> logger) : base(transactionRepository, accountRepository, transactionTagRuleRepository, logger)
         {
@@ -91,14 +98,23 @@ namespace Asm.BankPlus.Services.Importers
 
                 if (endBalance == null) endBalance = balance;
 
-                transactions.Add(new Transaction
+                var transaction = new Transaction
                 {
                     AccountId = account.Id,
                     Amount = transactionType == TransactionType.Credit ? credit : debit,
                     Description = columns[DescriptionColumn],
                     TransactionTime = transactionTime,
                     TransactionType = transactionType,
-                });
+                };
+
+                TransactionExtra extraInfo = ParseDescription(columns[DescriptionColumn]);
+
+                /*if (extraInfo != null)
+                {
+                    extraInfo.Transaction = transaction;
+                }*/
+
+                transactions.Add(transaction);
             }
 
             await AccountRepository.SetBalance(account.Id, endBalance.Value);
@@ -106,6 +122,11 @@ namespace Asm.BankPlus.Services.Importers
             var savedTransactions = await TransactionRepository.CreateTransactions(transactions);
 
             return new TransactionImportResult(savedTransactions);
+        }
+
+        private TransactionExtra ParseDescription(string description)
+        {
+            return null;
         }
     }
 }
