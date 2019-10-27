@@ -4,11 +4,12 @@ using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Asm.BankPlus.Data.Entities.Ing;
+using Asm.BankPlus.Models.Ing;
 using Asm.BankPlus.Importers;
 using Asm.BankPlus.Models;
 using Asm.BankPlus.Repository;
 using Microsoft.Extensions.Logging;
+using Asm.BankPlus.Repository.Ing;
 
 namespace Asm.BankPlus.Services.Importers
 {
@@ -21,13 +22,21 @@ namespace Asm.BankPlus.Services.Importers
         private const int DebitColumn = 3;
         private const int BalanceColumn = 4;
 
-        private static readonly Regex VisaPurchase = new Regex(@"(.*) - Visa Purchase - Receipt \d{6}In (.*) Date (.*) Card (462263xxxxxx\d{4})");
-        private static readonly Regex DirectDebit = new Regex(@"(.*) - Direct Debit - Receipt \d{6} (.*)");
-        private static readonly Regex DirectPayment = new Regex(@"");
+        private static readonly Regex VisaPurchase = new Regex(@"^(.+) - Visa Purchase - Receipt (\d{6})In (.+) Date (.+) Card (462263xxxxxx\d{4})");
+        private static readonly Regex DirectDebit = new Regex(@"^(.+) - Direct Debit - Receipt (\d{6}) (.+)");
+        private static readonly Regex InternalTransfer = new Regex(@"^(.+) - Internal Transfer - Receipt (\d{6}) (.*)");
+        private static readonly Regex EftposPurchase = new Regex(@"^(.+) - EFTPOS Purchase - Receipt (\d{6})Date (.+) Card (462263xxxxxx\d{4})");
+        private static readonly Regex DirectPayment = new Regex(@"^([^-]+) - Receipt (\d{6})");
 
+        private readonly ITransactionExtraRepository _transactionExtraRepository;
 
-        public IngImporter(ITransactionRepository transactionRepository, IAccountRepository accountRepository, ITransactionTagRuleRepository transactionTagRuleRepository, ILogger<IngImporter> logger) : base(transactionRepository, accountRepository, transactionTagRuleRepository, logger)
+        public IngImporter(ITransactionRepository transactionRepository,
+                           IAccountRepository accountRepository,
+                           ITransactionTagRuleRepository transactionTagRuleRepository,
+                           ILogger<IngImporter> logger,
+                           ITransactionExtraRepository transactionExtraRepository) : base(transactionRepository, accountRepository, transactionTagRuleRepository, logger)
         {
+            _transactionExtraRepository = transactionExtraRepository;
         }
 
         protected override async Task<TransactionImportResult> DoImport(Account account, Stream contents)
@@ -107,13 +116,6 @@ namespace Asm.BankPlus.Services.Importers
                     TransactionType = transactionType,
                 };
 
-                TransactionExtra extraInfo = ParseDescription(columns[DescriptionColumn]);
-
-                /*if (extraInfo != null)
-                {
-                    extraInfo.Transaction = transaction;
-                }*/
-
                 transactions.Add(transaction);
             }
 
@@ -121,11 +123,97 @@ namespace Asm.BankPlus.Services.Importers
 
             var savedTransactions = await TransactionRepository.CreateTransactions(transactions);
 
+            var transactionExtras = new List<TransactionExtra>();
+
+            foreach(var transaction in savedTransactions)
+            {
+                TransactionExtra extraInfo = ParseDescription(transaction);
+
+                if (extraInfo != null)
+                {
+                    transactionExtras.Add(extraInfo);
+                }
+
+            }
+
+            await _transactionExtraRepository.CreateTransactionExtras(transactionExtras);
+
             return new TransactionImportResult(savedTransactions);
         }
 
-        private TransactionExtra ParseDescription(string description)
+        private TransactionExtra ParseDescription(Transaction transaction)
         {
+            var match = VisaPurchase.Match(transaction.Description);
+
+            if (match.Success)
+            {
+                return new TransactionExtra
+                {
+                    TransactionId = transaction.Id,
+                    Description = match.Groups[1].Value,
+                    Location = match.Groups[3].Value,
+                    PurchaseDate = DateTime.Parse(match.Groups[4].Value),
+                    PurchaseType = "Visa",
+                    ReceiptNumber = Int32.Parse(match.Groups[2].Value),
+                };
+            }
+
+            match = DirectDebit.Match(transaction.Description);
+
+            if (match.Success)
+            {
+                return new TransactionExtra
+                {
+                    TransactionId = transaction.Id,
+                    Description = match.Groups[1].Value,
+                    PurchaseType = "Direct Debit",
+                    ReceiptNumber = Int32.Parse(match.Groups[2].Value),
+                    Reference = match.Groups[3].Value,
+                };
+            }
+
+            match = InternalTransfer.Match(transaction.Description);
+
+            if (match.Success)
+            {
+                return new TransactionExtra
+                {
+                    TransactionId = transaction.Id,
+                    Description = match.Groups[1].Value,
+                    PurchaseType = "Internal Transfer",
+                    ReceiptNumber = Int32.Parse(match.Groups[2].Value),
+                    Reference = match.Groups[3].Value
+                };
+            }
+
+            match = EftposPurchase.Match(transaction.Description);
+
+            if (match.Success)
+            {
+                return new TransactionExtra
+                {
+                    TransactionId = transaction.Id,
+                    Description = match.Groups[1].Value,
+                    PurchaseDate = DateTime.Parse(match.Groups[3].Value),
+                    PurchaseType = "Visa",
+                    ReceiptNumber = Int32.Parse(match.Groups[2].Value),
+                };
+            }
+
+            match = DirectPayment.Match(transaction.Description);
+            {
+                if (match.Success)
+                {
+                    return new TransactionExtra
+                    {
+                        TransactionId = transaction.Id,
+                        Description = match.Groups[1].Value,
+                        PurchaseType = "Direct",
+                        ReceiptNumber = Int32.Parse(match.Groups[2].Value),
+                    };
+                }
+            }
+
             return null;
         }
     }

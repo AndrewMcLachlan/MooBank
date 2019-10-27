@@ -1,13 +1,12 @@
 ﻿import React, { useState, useRef } from "react";
-//import { useDispatch } from "react-redux";
-//import { useHistory } from "react-router-dom";
+import { getBalanceString } from "helpers";
 
 import { AccountRowProps, useAccountRowCommonState } from "./AccountRow";
 import { useClickAway } from "../../hooks";
 
 export const ManualAccountRow: React.FC<AccountRowProps> = (props) => {
 
-    const { balanceRef, avBalanceRef, editingBalance, editingAvBalance, balanceClick, avBalanceClick, } = useComponentState();
+    const { balanceRef, avBalanceRef, editingBalance, editingAvBalance, balanceClick, avBalanceClick, balanceChange, avBalanceChange, balance, avBalance } = useComponentState(props);
     const { onRowClick } = useAccountRowCommonState(props);
 
     return (
@@ -15,25 +14,28 @@ export const ManualAccountRow: React.FC<AccountRowProps> = (props) => {
             <td className="account">
                 <div className="name">{props.account.name}</div>
             </td>
-            <td onClick={balanceClick} ref={balanceRef}> {!editingBalance && <span className={props.account.currentBalance < 0 ? " negative" : ""}>{props.account.currentBalance + (props.account.currentBalance < 0 ? "D" : "C") + "R"}</span>}
-                {editingBalance && <input type="number" value={props.account.currentBalance} />}
+            <td onClick={balanceClick} ref={balanceRef}> {!editingBalance && <span className={props.account.currentBalance < 0 ? " negative" : ""}>{getBalanceString(balance)}</span>}
+                {editingBalance && <input type="number" value={balance} onChange={balanceChange} />}
             </td>
-            <td onClick={avBalanceClick} ref={avBalanceRef}> {!editingAvBalance && <span className={props.account.availableBalance < 0 ? " negative" : ""}>{props.account.availableBalance + (props.account.availableBalance < 0 ? "D" : "C") + "R"}</span>}
-                {editingAvBalance && <input type="number" value={props.account.availableBalance} />}
-            </td>
+            {/*<td onClick={avBalanceClick} ref={avBalanceRef}> {!editingAvBalance && <span className={props.account.availableBalance < 0 ? " negative" : ""}>{getBalanceString(avBalance)}</span>}
+                {editingAvBalance && <input type="number" value={avBalance} onChange={avBalanceChange} />}
+            </td>*/}
         </tr>
     );
 }
 
 ManualAccountRow.displayName = "ManualAccountRow";
 
-const useComponentState = () => {
+const useComponentState = (props: AccountRowProps) => {
 
     //const dispatch = useDispatch();
     //const history = useHistory();
 
     const [editingBalance, setEditingBalance] = useState(false);
     const [editingAvBalance, setEditingAvBalance] = useState(false);
+
+    const [balance, setBalance] = useState(props.account.currentBalance);
+    const [avBalance, setAvBalance] = useState(props.account.availableBalance);
 
     const balanceRef = useRef(null);
     useClickAway(setEditingBalance, balanceRef);
@@ -53,6 +55,14 @@ const useComponentState = () => {
         e.stopPropagation();
     };
 
+    const balanceChange =(e: React.ChangeEvent<HTMLInputElement>) => {
+        setBalance(parseFloat(e.currentTarget.value));
+    }
+
+    const avBalanceChange =(e: React.ChangeEvent<HTMLInputElement>) => {
+        setAvBalance(parseFloat(e.currentTarget.value));
+    }
+
     return {
         balanceRef,
         avBalanceRef,
@@ -62,6 +72,12 @@ const useComponentState = () => {
 
         balanceClick,
         avBalanceClick,
+
+        balanceChange,
+        avBalanceChange,
+
+        balance,
+        avBalance,
     };
 }
 

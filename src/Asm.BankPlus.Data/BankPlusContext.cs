@@ -64,7 +64,7 @@ namespace Asm.BankPlus.Data
                 entity.Property(e => e.Description).HasMaxLength(255);
 
                 entity.Property(e => e.LastUpdated)
-                    .HasColumnType("datetime2(0)")
+                    .HasColumnType("datetimeoffset(0)")
                     .HasDefaultValueSql("(sysutcdatetime())");
 
                 entity.Property(e => e.Name)
@@ -89,7 +89,7 @@ namespace Asm.BankPlus.Data
                     .HasName("IX_AccountHolder_Email")
                     .IsUnique();
 
-                entity.Property(e => e.AccountHolderId).HasDefaultValueSql("(newid())");
+                entity.Property(e => e.AccountHolderId);
 
                 entity.Property(e => e.EmailAddress)
                     .IsRequired()

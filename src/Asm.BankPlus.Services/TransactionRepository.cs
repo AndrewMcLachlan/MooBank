@@ -13,12 +13,17 @@ namespace Asm.BankPlus.Services
 {
     public class TransactionRepository : DataRepository, ITransactionRepository
     {
-        public TransactionRepository(BankPlusContext dataContext) : base(dataContext)
+        private readonly ISecurityRepository _security;
+
+        public TransactionRepository(BankPlusContext dataContext, ISecurityRepository security) : base(dataContext)
         {
+            _security = security;
         }
 
         public async Task<Transaction> CreateTransaction(Transaction transaction)
         {
+            _security.AssertPermission(transaction.AccountId);
+
             Data.Entities.Transaction entity = (Data.Entities.Transaction)transaction;
             DataContext.Add(entity);
 
@@ -29,24 +34,28 @@ namespace Asm.BankPlus.Services
 
         public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId)
         {
-            return (await DataContext.Transactions.Include(t => t.TransactionTagLinks).ThenInclude(t => t.TransactionTag).ToListAsync()).Select(t => (Transaction)t);
+            _security.AssertPermission(accountId);
+
+            return (await DataContext.Transactions.Include(t => t.TransactionTagLinks).ThenInclude(t => t.TransactionTag).Where(t => t.AccountId == accountId).ToListAsync()).Select(t => (Transaction)t);
         }
 
         public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, DateTime start, DateTime? end, int pageSize, int pageNumber)
         {
-            return (await DataContext.Transactions.Where(t => t.TransactionTime >= start && t.TransactionTime <= (end ?? DateTime.Now)).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync()).Cast<Transaction>();
+            _security.AssertPermission(accountId);
+
+            return (await DataContext.Transactions.Where(t => t.AccountId == accountId && t.TransactionTime >= start && t.TransactionTime <= (end ?? DateTime.Now)).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync()).Cast<Transaction>();
         }
 
         public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, TimeSpan period, int pageSize, int pageNumber)
         {
-            return (await DataContext.Transactions.Where(t => t.TransactionTime >= DateTime.Now.Subtract(period) && t.TransactionTime <= DateTime.Now).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync()).Cast<Transaction>();
+            _security.AssertPermission(accountId);
+
+            return (await DataContext.Transactions.Where(t => t.AccountId == accountId && t.TransactionTime >= DateTime.Now.Subtract(period) && t.TransactionTime <= DateTime.Now).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync()).Cast<Transaction>();
         }
 
         public async Task<Transaction> AddTransactionTag(Guid id, int tagId)
         {
-            Data.Entities.Transaction entity = await DataContext.Transactions.Include(t => t.TransactionTagLinks).ThenInclude(t => t.TransactionTag).SingleOrDefaultAsync(t => t.TransactionId == id);
-
-            if (entity == null) throw new NotFoundException("Transaction not found");
+            var entity = await GetEntity(id);
 
             if (entity.TransactionTags.Any(t => t.TransactionTagId == tagId)) throw new ExistsException("Cannot add tag, it already exists");
 
@@ -59,7 +68,7 @@ namespace Asm.BankPlus.Services
 
         public async Task<Transaction> AddTransactionTags(Guid id, IEnumerable<int> tags)
         {
-            Data.Entities.Transaction entity = await DataContext.Transactions.Include(t => t.TransactionTagLinks).ThenInclude(t => t.TransactionTag).SingleOrDefaultAsync(t => t.TransactionId == id);
+            var entity = await GetEntity(id);
 
             var existingIds = entity.TransactionTags.Select(t => t.TransactionTagId);
 
@@ -74,9 +83,7 @@ namespace Asm.BankPlus.Services
 
         public async Task<Transaction> RemoveTransactionTag(Guid id, int tagId)
         {
-            Data.Entities.Transaction entity = await DataContext.Transactions.Include(t => t.TransactionTagLinks).ThenInclude(t => t.TransactionTag).SingleOrDefaultAsync(t => t.TransactionId == id);
-
-            if (entity == null) throw new NotFoundException("Transaction not found");
+            var entity = await GetEntity(id);
 
             var tag = entity.TransactionTags.SingleOrDefault(t => t.TransactionTagId == tagId);
 
@@ -91,6 +98,8 @@ namespace Asm.BankPlus.Services
 
         public async Task<IEnumerable<Transaction>> CreateTransactions(IEnumerable<Transaction> transactions)
         {
+            transactions.Select(t => t.AccountId).Distinct().ToList().ForEach(a => _security.AssertPermission(a));
+
             var entities = transactions.Select(t => (Data.Entities.Transaction)t).ToList();
 
             DataContext.AddRange(entities);
@@ -98,6 +107,17 @@ namespace Asm.BankPlus.Services
             await DataContext.SaveChangesAsync();
 
             return entities.Select(t => (Transaction)t);
+        }
+
+        private async Task<Data.Entities.Transaction> GetEntity(Guid id)
+        {
+            Data.Entities.Transaction entity = await DataContext.Transactions.Include(t => t.TransactionTagLinks).ThenInclude(t => t.TransactionTag).SingleOrDefaultAsync(t => t.TransactionId == id);
+
+            if (entity == null) throw new NotFoundException("Transaction not found");
+
+            _security.AssertPermission(entity.AccountId);
+
+            return entity;
         }
     }
 }

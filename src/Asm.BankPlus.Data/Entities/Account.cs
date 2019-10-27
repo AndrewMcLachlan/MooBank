@@ -20,7 +20,7 @@ namespace Asm.BankPlus.Data.Entities
 
         public bool UpdateVirtualAccount { get; set; }
 
-        public DateTime LastUpdated { get; set; }
+        public DateTimeOffset LastUpdated { get; set; }
 
         [Column("AccountControllerId")]
         public Models.AccountController AccountController { get; set; }

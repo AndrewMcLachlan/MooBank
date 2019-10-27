@@ -24,7 +24,7 @@ const { onRowClick } = useAccountRowCommonState(props);
                 <div className="name">{props.account.name}</div>
             </td>
             <td><span className={props.account.currentBalance < 0 ? " negative" : ""}>{props.account.currentBalance + (props.account.currentBalance < 0 ? "D" : "C") + "R"}</span></td>
-            <td><span className={props.account.availableBalance < 0 ? " negative" : ""}>{props.account.availableBalance + (props.account.availableBalance < 0 ? "D" : "C") + "R"}</span></td>
+{/*}            <td><span className={props.account.availableBalance < 0 ? " negative" : ""}>{props.account.availableBalance + (props.account.availableBalance < 0 ? "D" : "C") + "R"}</span></td>*/}
         </tr>
     );
 }

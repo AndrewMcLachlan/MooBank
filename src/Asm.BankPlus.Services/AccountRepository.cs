@@ -6,18 +6,29 @@ using Asm.BankPlus.Repository;
 using Asm.BankPlus.Data;
 using Asm.BankPlus.Models;
 using Microsoft.EntityFrameworkCore;
+using Asm.Security;
+using Asm.BankPlus.Security;
 
 namespace Asm.BankPlus.Services
 {
     public class AccountRepository : DataRepository, IAccountRepository
     {
-        public AccountRepository(BankPlusContext dataContext) : base(dataContext)
+        private readonly IAccountHolderRepository _accountHolderRepository;
+        private readonly ISecurityRepository _securityRepository;
+        private readonly IUserDataProvider _userDataProvider;
+
+        public AccountRepository(BankPlusContext dataContext, IAccountHolderRepository accountHolderRepository, IUserDataProvider userDataProvider, ISecurityRepository securityRepository) : base(dataContext)
         {
+            _accountHolderRepository = accountHolderRepository;
+            _securityRepository = securityRepository;
+            _userDataProvider = userDataProvider;
         }
 
         public async Task<Account> Create(Account account)
         {
             var entity = (Data.Entities.Account)account;
+
+            entity.AccountHolders.Add((Data.Entities.AccountHolder) await _accountHolderRepository.GetCurrent());
 
             DataContext.Add(entity);
 
@@ -32,9 +43,9 @@ namespace Asm.BankPlus.Services
 
             if (importerType == null) throw new NotFoundException("Unknown importer type ID " + importerTypeId);
 
-
             var entity = (Data.Entities.Account)account;
-            entity.AccountId = Guid.Empty;
+
+            entity.AccountHolders.Add((Data.Entities.AccountHolder)await _accountHolderRepository.GetCurrent());
 
             DataContext.Accounts.Add(entity);
 
@@ -61,10 +72,7 @@ namespace Asm.BankPlus.Services
 
         public async Task<IEnumerable<Account>> GetAccounts()
         {
-            //TODO: Filtering based on user
-            //return (await DataContext.Accounts.Where(a => a.AccountHolders.Where(ah => ah.EmailAddress == .ToListAsync()).Select(a => (Account)a);
-
-            return (await DataContext.Accounts.ToListAsync()).Select(a => (Account)a);
+            return await DataContext.Accounts.Include(a => a.AccountHolderLinks).Where(a => a.AccountHolderLinks.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId)).Select(a => (Account)a).ToListAsync();
         }
 
         public async Task<Account> SetBalance(Guid id, decimal balance)
@@ -92,12 +100,18 @@ namespace Asm.BankPlus.Services
 
         public async Task<decimal> GetPosition()
         {
-            return await DataContext.Accounts.Where(a => a.IncludeInPosition).SumAsync(a => a.AvailableBalance);
+            return await DataContext.Accounts.Where(a => a.AccountHolderLinks.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId) && a.IncludeInPosition).SumAsync(a => a.AccountBalance);
         }
 
         private async Task<Data.Entities.Account> GetAccountEntity(Guid id)
         {
-            return await DataContext.Accounts.Where(a => a.AccountId == id).SingleOrDefaultAsync();
+            var entity = await DataContext.Accounts.Include(a => a.AccountHolderLinks).Where(a => a.AccountId == id).SingleOrDefaultAsync();
+
+            if (entity == null) throw new NotFoundException("Acccount not found");
+
+            _securityRepository.AssertPermission(entity);
+
+            return entity;
         }
     }
 }

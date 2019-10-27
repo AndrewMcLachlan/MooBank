@@ -45,6 +45,7 @@ export const CreateAccount: React.FC = () => {
             accountType: accountType,
             controller: accountController,
             balanceUpdated: new Date(),
+            includeInPosition: true,
         }, importAccount));
 
         setSubmitted(true);

@@ -12,7 +12,7 @@ namespace Asm.BankPlus.Models
 
         public string Name { get; set; }
 
-        public DateTime BalanceDate { get; set; }
+        public DateTimeOffset BalanceDate { get; set; }
 
         public decimal CurrentBalance { get; set; }
 

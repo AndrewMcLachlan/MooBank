@@ -3,8 +3,11 @@ using System.IO;
 using System.Net;
 using Asm.BankPlus.Importers;
 using Asm.BankPlus.Repository;
+using Asm.BankPlus.Repository.Ing;
+using Asm.BankPlus.Security;
 using Asm.BankPlus.Services;
 using Asm.BankPlus.Services.Importers;
+using Asm.BankPlus.Services.Ing;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
@@ -47,6 +50,8 @@ namespace Asm.BankPlus.Web
             services.AddDbContext<Data.BankPlusContext>(options => options.UseSqlServer(Configuration.GetConnectionString("BankPlus")));
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
+            services.AddPrincipalProvider();
 
             AddAuthentication(services);
 
@@ -165,6 +170,10 @@ namespace Asm.BankPlus.Web
             services.AddScoped<IngImporter>();
             services.AddScoped<IImporterFactory, ImporterFactory>();
             services.AddScoped<IReferenceDataRepository, ReferenceDataRepository>();
+            services.AddScoped<IAccountHolderRepository, AccountHolderRepository>();
+            services.AddScoped<IUserDataProvider, GraphUserDataProvider>();
+            services.AddScoped<ISecurityRepository, SecurityRepository>();
+            services.AddScoped<ITransactionExtraRepository, TransactionExtraRepository>();
         }
 
         private ProblemDetails CreateProblemDetails(IHostingEnvironment env, HttpContext context, Exception ex)

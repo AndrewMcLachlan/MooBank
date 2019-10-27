@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-//using Asm.BankPlus.Data.Entities.Ing;
+using System.Transactions;
+using Asm.BankPlus.Models.Ing;
 
 namespace Asm.BankPlus.Repository.Ing
 {
     public interface ITransactionExtraRepository
     {
-        //Add(IEnumerable<TransactionExtra>)
+        Task CreateTransactionExtras(IEnumerable<TransactionExtra> transactions);
     }
 }

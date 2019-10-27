@@ -11,12 +11,17 @@ namespace Asm.BankPlus.Services
 {
     public class TransactionTagRuleRepository : DataRepository, ITransactionTagRuleRepository
     {
-        public TransactionTagRuleRepository(BankPlusContext bankPlusContext) : base(bankPlusContext)
+        private readonly ISecurityRepository _security;
+
+        public TransactionTagRuleRepository(BankPlusContext bankPlusContext, ISecurityRepository security) : base(bankPlusContext)
         {
+            _security = security;
         }
 
         public async Task<Models.TransactionTagRule> Create(Guid accountId, string contains, IEnumerable<int> tagIds)
         {
+            _security.AssertPermission(accountId);
+
             var rule = new TransactionTagRule
             {
                 AccountId = accountId,
@@ -33,6 +38,8 @@ namespace Asm.BankPlus.Services
 
         public async Task<Models.TransactionTagRule> Create(Guid accountId, string contains, IEnumerable<Models.TransactionTag> tags)
         {
+            _security.AssertPermission(accountId);
+
             var rule = new TransactionTagRule
             {
                 AccountId = accountId,
@@ -62,6 +69,8 @@ namespace Asm.BankPlus.Services
         }
         public async Task<IEnumerable<Models.TransactionTagRule>> Get(Guid accountId)
         {
+            _security.AssertPermission(accountId);
+
             return await DataContext.TransactionTagRules.Include(t => t.TransactionTagLinks).ThenInclude(t => t.TransactionTag).Where(t => t.AccountId == accountId).Select(t => (Models.TransactionTagRule)t).ToListAsync();
         }
 
@@ -99,7 +108,11 @@ namespace Asm.BankPlus.Services
         {
             TransactionTagRule entity = await DataContext.TransactionTagRules.Include(t => t.TransactionTagLinks).ThenInclude(t => t.TransactionTag).SingleOrDefaultAsync(t => t.TransactionTagRuleId == id && t.AccountId == accountId);
 
-            return entity ?? throw new NotFoundException($"Transaction tag rule with ID {id} was not found");
+            if (entity == null) throw new NotFoundException($"Transaction tag rule with ID {id} was not found");
+
+            _security.AssertPermission(entity.AccountId);
+
+            return entity;
         }
     }
 }

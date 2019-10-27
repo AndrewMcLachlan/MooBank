@@ -22,6 +22,7 @@ export interface Account {
     balanceUpdated: Date;
     accountType: AccountType;
     controller: AccountController;
+    includeInPosition: boolean;
 }
 
 export interface ImportAccount {

@@ -16,5 +16,7 @@ namespace Asm.BankPlus.Models
         public TransactionType TransactionType { get; set; }
 
         public IEnumerable<TransactionTag> Tags { get; set; }
+
+        public object ExtraInfo { get; set; }
     }
 }

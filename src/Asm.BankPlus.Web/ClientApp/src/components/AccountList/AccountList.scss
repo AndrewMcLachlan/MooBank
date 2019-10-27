@@ -58,7 +58,11 @@ table.accounts {
         text-align: right;
     }
 
-    tbody td:first-child {
+    tbody td:first-child, tfoot td:first-child {
         text-align: left;
+    }
+
+    tfoot {
+        border-top-style: double;
     }
 }

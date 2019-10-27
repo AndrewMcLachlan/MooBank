@@ -11,8 +11,4 @@
     <ProjectReference Include="..\Asm.BankPlus.Models\Asm.BankPlus.Models.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Security\" />
-  </ItemGroup>
-
 </Project>

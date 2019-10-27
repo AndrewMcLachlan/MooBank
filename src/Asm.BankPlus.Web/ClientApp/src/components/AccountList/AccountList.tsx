@@ -10,6 +10,7 @@ import { actionCreators } from "../../store/Accounts";
 import { AccountRow } from "./AccountRow";
 import VirtualAccountRow from "./VirtualAccountRow";
 import { State } from "../../store/state";
+import { getBalanceString } from "helpers";
 
 export const AccountList: React.FC<AccountListProps> = () => {
     const dispatch = useDispatch();
@@ -49,7 +50,7 @@ export const AccountList: React.FC<AccountListProps> = () => {
                         <tr>
                             <th>Name</th>
                             <th>Current Balance</th>
-                            <th>Available Balance</th>
+                            {/*<th>Available Balance</th>*/}
                         </tr>
                     </thead>
                     <tbody>
@@ -58,7 +59,7 @@ export const AccountList: React.FC<AccountListProps> = () => {
                     <tfoot>
                         <tr>
                             <td>Position</td>
-                            <td colSpan={2}></td>
+                            <td>{getBalanceString(position)}</td>
                         </tr>
                     </tfoot>
                 </Table>
