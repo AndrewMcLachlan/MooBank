@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 import { State } from "../store/state";
 import { useSelector } from "react-redux";
+import { SecurityService } from "services";
 
 export const Header : React.FC<HeaderProps> = (props) => {
 
@@ -18,7 +19,7 @@ const appState = useAppState();
                         <li><Link to="/">Home</Link></li>
                         <li className="desktop"><Link to="/accounts">Manage Accounts</Link></li>
                         <li className="desktop"><Link to="/settings">Settings</Link></li>
-                        <li><button>Logout</button></li>
+                        <li><button onClick={() => (new SecurityService()).logout()}>Logout</button></li>
                     </ul>
                 </nav>
             </header>
