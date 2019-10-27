@@ -1,4 +1,6 @@
-﻿using Asm.BankPlus.Data.Entities;
+﻿using System;
+using Asm.BankPlus.Data.Entities;
+using Asm.BankPlus.Data.Entities.Ing;
 using Microsoft.EntityFrameworkCore;
 
 namespace Asm.BankPlus.Data
@@ -32,6 +34,8 @@ namespace Asm.BankPlus.Data
         public virtual DbSet<ImportAccount> ImportAccounts { get; set; }
 
         public virtual DbSet<ImporterType> ImporterTypes { get; set; }
+
+        public virtual DbSet<TransactionExtra> TransactionsExtra {get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -282,6 +286,20 @@ namespace Asm.BankPlus.Data
             modelBuilder.Entity<ImporterType>(entity =>
             {
                 entity.HasKey(e => e.ImporterTypeId);
+            });
+
+            DefineIngModel(modelBuilder);
+        }
+
+        private void DefineIngModel(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<TransactionExtra>(entity =>
+            {
+                entity.ToTable("TransactionExtra", "ing");
+
+                entity.HasKey(e => e.TransactionId);
+
+                entity.HasOne(e => e.Transaction).WithOne().HasForeignKey<Transaction>(e => e.TransactionId);
             });
         }
     }
