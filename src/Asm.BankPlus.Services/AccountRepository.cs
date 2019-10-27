@@ -62,7 +62,9 @@ namespace Asm.BankPlus.Services
         public async Task<IEnumerable<Account>> GetAccounts()
         {
             //TODO: Filtering based on user
-            return (await DataContext.Accounts.Where(a => a.AccountHolders.Where(ah => ah.EmailAddress == .ToListAsync()).Select(a => (Account)a);
+            //return (await DataContext.Accounts.Where(a => a.AccountHolders.Where(ah => ah.EmailAddress == .ToListAsync()).Select(a => (Account)a);
+
+            return (await DataContext.Accounts.ToListAsync()).Select(a => (Account)a);
         }
 
         public async Task<Account> SetBalance(Guid id, decimal balance)
