@@ -7,5 +7,9 @@ namespace Asm.BankPlus.Data.Entities
     {
         public Guid AccountId { get; set; }
         public Guid AccountHolderId { get; set; }
+
+        public virtual Account Account { get; set; }
+
+        public virtual AccountHolder AccountHolder { get; set; }
     }
 }

@@ -22,6 +22,7 @@ export const initialState: Accounts = {
     areLoading: false,
     virtualAccounts: [],
     selectedAccount: null,
+    position: 0,
 };
 
 export const actionCreators = {
@@ -97,6 +98,7 @@ export const reducer = (state: Accounts = initialState, action: ActionWithData<a
                 accounts: action.data.accounts,
                 areLoading: false,
                 virtualAccounts: action.data.virtualAccounts,
+                position: action.data.position,
             };
 
         case ActionTypes.ReceiveAccount:

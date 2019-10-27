@@ -22,6 +22,7 @@ export interface Accounts {
     virtualAccounts: VirtualAccount[];
     areLoading: boolean;
     selectedAccount?: Models.Account;
+    position: number;
 }
 
 export interface TransactionTagRules {

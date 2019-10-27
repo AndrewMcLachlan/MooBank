@@ -29,7 +29,8 @@ namespace Asm.BankPlus.Web.Controllers
         {
             return new ActionResult<AccountsModel>(new AccountsModel
             {
-                Accounts = await AccountRepository.GetAccounts()
+                Accounts = await AccountRepository.GetAccounts(),
+                Position = await AccountRepository.GetPosition(),
             });
         }
 

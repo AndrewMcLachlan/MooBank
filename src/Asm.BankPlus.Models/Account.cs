@@ -14,10 +14,11 @@ namespace Asm.BankPlus.Models
 
         public DateTime BalanceDate { get; set; }
 
-
         public decimal CurrentBalance { get; set; }
 
         public decimal AvailableBalance { get; set; }
+
+        public bool IncludeInPosition { get; set; }
 
         public AccountType AccountType { get; set; }
 

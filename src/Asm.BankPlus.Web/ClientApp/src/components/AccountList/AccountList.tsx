@@ -19,8 +19,10 @@ export const AccountList: React.FC<AccountListProps> = () => {
         dispatch(actionCreators.requestAccounts());
     }, [dispatch]);
 
-    const accounts = useSelector((state: State) => state.accounts.accounts);
-    const virtualAccounts = useSelector((state: State) => state.accounts.virtualAccounts);
+    const accountsState = useSelector((state: State) => state.accounts);
+
+    const { accounts, virtualAccounts, position } = accountsState;
+
 
     const virtualAccountRows = [];
 
@@ -53,9 +55,15 @@ export const AccountList: React.FC<AccountListProps> = () => {
                     <tbody>
                         {accountRows}
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <td>Position</td>
+                            <td colSpan={2}></td>
+                        </tr>
+                    </tfoot>
                 </Table>
             </section>
-            <section className="account-list">
+           {/* <section className="account-list">
                 <h2>Virtual Accounts</h2>
 
                 <Table id="virtualAccounts" className="accounts">
@@ -69,7 +77,7 @@ export const AccountList: React.FC<AccountListProps> = () => {
                         {virtualAccountRows}
                     </tbody>
                 </Table>
-            </section>
+    </section>*/}
         </>
     );
 }

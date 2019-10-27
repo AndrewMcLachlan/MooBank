@@ -18,5 +18,7 @@ namespace Asm.BankPlus.Repository
         Task<Account> Create(Account account);
 
         Task<Account> CreateImportAccount(Account account, int importerTypeId);
+
+        Task<decimal> GetPosition();
     }
 }

@@ -6,11 +6,6 @@ namespace Asm.BankPlus.Data.Entities
 {
     public partial class Account
     {
-        public Account()
-        {
-            Transaction = new HashSet<Transaction>();
-        }
-
         public Guid AccountId { get; set; }
 
         public string Name { get; set; }
@@ -20,6 +15,8 @@ namespace Asm.BankPlus.Data.Entities
         public decimal AccountBalance { get; set; }
 
         public decimal AvailableBalance { get; set; }
+
+        public bool IncludeInPosition { get; set; }
 
         public bool UpdateVirtualAccount { get; set; }
 
@@ -32,5 +29,7 @@ namespace Asm.BankPlus.Data.Entities
         public Models.AccountType AccountType { get; set; }
 
         public virtual ICollection<Transaction> Transaction { get; set; }
+
+        public virtual ICollection<AccountAccountHolder> AccountHolderLinks { get; set; }
     }
 }
