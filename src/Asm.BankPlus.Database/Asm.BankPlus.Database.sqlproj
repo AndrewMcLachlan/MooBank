@@ -62,6 +62,7 @@
     <Folder Include="Security" />
     <Folder Include="ing" />
     <Folder Include="ing\Tables" />
+    <Folder Include="dbo\Views" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\Account.sql" />
@@ -84,6 +85,8 @@
     <Build Include="Security\ing.sql" />
     <Build Include="ing\Tables\TransactionExtra.sql" />
     <Build Include="dbo\Tables\CardOwner.sql" />
+    <Build Include="dbo\Views\TagRelationships.sql" />
+    <Build Include="dbo\Views\TransactionsTags.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Asm.BankPlus.Database.publish.xml" />
