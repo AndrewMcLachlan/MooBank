@@ -20,6 +20,8 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
 
     const transactions = useSelector((state: State) => state.transactions.transactions);
     const pageNumber = useSelector((state: State) => state.transactions.currentPage);
+    const totalTransactions = useSelector((state: State) => state.transactions.total);
+    const pageSize = useSelector((state: State) => state.transactions.pageSize);
     const dispatch = useDispatch();
 
     bindActionCreators(accountActionCreators, dispatch);
@@ -61,6 +63,11 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
     }
     ];*/
 
+    const numberOfPages = Math.ceil(totalTransactions / pageSize);
+
+    const showNext = pageNumber < numberOfPages;
+    const showPrev = pageNumber > 1;
+
     return (
         <section>
             <Table striped bordered={false} borderless className="transactions">
@@ -75,6 +82,15 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
                 <tbody>
                     {transactions && transactions.map((t) => <TransactionRow key={t.id} transaction={t} />) }
                 </tbody>
+                <tfoot>
+<tr>
+    <td>Page {pageNumber} of {numberOfPages} ({totalTransactions} transactions)</td>
+    <td>
+    { showPrev && <button onClick={() => dispatch(transactionActionCreators.requestTransactions(props.account.id, Math.max(pageNumber - 1,1)))}>Prev</button>}
+    { showNext && <button onClick={() => dispatch(transactionActionCreators.requestTransactions(props.account.id, Math.min(pageNumber + 1,numberOfPages)))}>Next</button>}
+    </td>
+</tr>
+                </tfoot>
             </Table>
 
 

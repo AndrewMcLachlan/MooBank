@@ -34,6 +34,8 @@ export interface Transactions {
     transactions: Models.Transaction[];
     areLoading: boolean;
     currentPage: number;
+    pageSize: number;
+    total: number;
 }
 
 export interface TransactionTags {

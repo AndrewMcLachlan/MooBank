@@ -40,12 +40,14 @@ namespace Asm.BankPlus.Web.Controllers
             return new ActionResult<Account>(await AccountRepository.GetAccount(id));
         }
 
-        [HttpGet("{accountId}/transactions/{pageNumber?}")]
-        public async Task<ActionResult<TransactionsModel>> Get(Guid accountId, int? pageNumber = 1)
+        [HttpGet("{accountId}/transactions/{pageSize?}/{pageNumber?}")]
+        public async Task<ActionResult<TransactionsModel>> Get(Guid accountId, int? pageSize = 50, int? pageNumber = 1)
         {
             return new ActionResult<TransactionsModel>(new TransactionsModel
             {
-                Transactions = await TransactionRepository.GetTransactions(accountId)
+                Transactions = await TransactionRepository.GetTransactions(accountId, pageSize.Value, pageNumber.Value),
+                PageNumber = pageNumber,
+                Total = await TransactionRepository.GetTotalTransactions(accountId),
             });
         }
 

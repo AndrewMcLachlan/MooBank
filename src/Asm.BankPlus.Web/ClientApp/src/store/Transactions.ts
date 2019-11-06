@@ -16,6 +16,8 @@ const initialState: Transactions = {
     transactions: [],
     areLoading: false,
     currentPage: 1,
+    pageSize: 50,
+    total: 0,
 };
 
 export const actionCreators = {
@@ -33,7 +35,7 @@ export const actionCreators = {
         const service = new TransactionService(state);
 
         try {
-            const transactions = await service.getTransactions(accountId, pageNumber);
+            const transactions = await service.getTransactions(accountId, state.transactions.pageSize, pageNumber);
             dispatch({ type: ReceiveTransactions, data: transactions });
         }
         catch (error) {
@@ -105,6 +107,7 @@ export const reducer = (state: Transactions = initialState, action: ActionWithDa
                 ...state,
                 transactions: action.data.transactions,
                 currentPage: action.data.currentPage,
+                total: action.data.total,
                 areLoading: false,
             };
 

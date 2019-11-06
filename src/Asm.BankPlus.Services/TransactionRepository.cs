@@ -32,6 +32,13 @@ namespace Asm.BankPlus.Services
             return (Transaction)entity;
         }
 
+        public async Task<int> GetTotalTransactions(Guid accountId)
+        {
+            _security.AssertPermission(accountId);
+
+            return await DataContext.Transactions.Where(t => t.AccountId == accountId).CountAsync();
+        }
+
         public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId)
         {
             _security.AssertPermission(accountId);
@@ -39,18 +46,25 @@ namespace Asm.BankPlus.Services
             return (await DataContext.Transactions.Include(t => t.TransactionTagLinks).ThenInclude(t => t.TransactionTag).Where(t => t.AccountId == accountId).ToListAsync()).Select(t => (Transaction)t);
         }
 
+        public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, int pageSize, int pageNumber)
+        {
+            _security.AssertPermission(accountId);
+
+            return (await DataContext.Transactions.Where(t => t.AccountId == accountId).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync()).Select(t => (Transaction)t);
+        }
+
         public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, DateTime start, DateTime? end, int pageSize, int pageNumber)
         {
             _security.AssertPermission(accountId);
 
-            return (await DataContext.Transactions.Where(t => t.AccountId == accountId && t.TransactionTime >= start && t.TransactionTime <= (end ?? DateTime.Now)).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync()).Cast<Transaction>();
+            return (await DataContext.Transactions.Where(t => t.AccountId == accountId && t.TransactionTime >= start && t.TransactionTime <= (end ?? DateTime.Now)).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync()).Select(t => (Transaction)t);
         }
 
         public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, TimeSpan period, int pageSize, int pageNumber)
         {
             _security.AssertPermission(accountId);
 
-            return (await DataContext.Transactions.Where(t => t.AccountId == accountId && t.TransactionTime >= DateTime.Now.Subtract(period) && t.TransactionTime <= DateTime.Now).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync()).Cast<Transaction>();
+            return (await DataContext.Transactions.Where(t => t.AccountId == accountId && t.TransactionTime >= DateTime.Now.Subtract(period) && t.TransactionTime <= DateTime.Now).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync()).Select(t => (Transaction)t);
         }
 
         public async Task<Transaction> AddTransactionTag(Guid id, int tagId)

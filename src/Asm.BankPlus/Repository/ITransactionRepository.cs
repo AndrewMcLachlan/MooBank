@@ -8,7 +8,11 @@ namespace Asm.BankPlus.Repository
 {
     public interface ITransactionRepository
     {
+        Task<int> GetTotalTransactions(Guid accountId);
+
         Task<IEnumerable<Transaction>> GetTransactions(Guid accountId);
+
+        Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, int pageSize, int pageNumber);
 
         Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, DateTime start, DateTime? end, int pageSize, int pageNumber);
 
