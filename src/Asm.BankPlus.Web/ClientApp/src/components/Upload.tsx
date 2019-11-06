@@ -10,7 +10,7 @@ export const Upload: React.FC<UploadProps> = (props) => {
         <div className="upload" onDragEnter={dragEvents.dragEnter} onDragLeave={dragEvents.dragLeave} onDragOver={dragEvents.dragOver} onDrop={dragEvents.drop} >
             <i className="fa fa-upload" />
             <label>
-            <input type="file" accept="text/csv" multiple={props.allowMultiple} />
+            <input type="file" accept="text/csv" multiple={props.allowMultiple} onChange={dragEvents.filesChanged} />
             </label>
         </div>
     );
@@ -29,11 +29,30 @@ const useDragEvents = (props: UploadProps) => {
     const stopEvent = (e: React.SyntheticEvent<any>) => {
         e.preventDefault();
         e.stopPropagation();
-    }
+    };
 
     const onFilesAdded = (currentFiles: File[], newFiles: File[]) => {
         props.onFilesAdded && props.onFilesAdded({ currentFiles, newFiles });
-    }
+    };
+
+    const filesChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const currentFiles = files.concat();
+        const newFiles = [];
+
+        if (props.allowMultiple) {
+
+            for (let i = 0; i < e.currentTarget.files.length;i++) {
+                newFiles.push(e.currentTarget.files[i]);
+            }
+
+            onFilesAdded(currentFiles, newFiles);
+            setFiles(files.concat(newFiles));
+        }
+        else {
+            onFilesAdded(currentFiles, [e.currentTarget.files[0]]);
+            setFiles([e.currentTarget.files[0]]);
+        }
+    };
 
     const drop = (e: React.DragEvent<HTMLDivElement>) => {
         stopEvent(e);
@@ -87,6 +106,7 @@ const useDragEvents = (props: UploadProps) => {
         dragLeave,
         dragOver,
         isDragging,
+        filesChanged,
     };
 }
 
