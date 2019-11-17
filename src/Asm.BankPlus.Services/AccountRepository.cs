@@ -86,12 +86,14 @@ namespace Asm.BankPlus.Services
             return account;
         }
 
-        public async Task<Account> SetBalance(Guid id, decimal balance, decimal availableBalance)
+        public async Task<Account> SetBalance(Guid id, decimal? balance, decimal? availableBalance)
         {
             var account = await GetAccountEntity(id);
 
-            account.AccountBalance = balance;
-            account.AvailableBalance = availableBalance;
+            if (account.AccountController != AccountController.Manual) throw new InvalidOperationException("Cannot manually adjust balance of non-manually controlled account");
+
+            account.AccountBalance = balance ?? account.AccountBalance;
+            account.AvailableBalance = availableBalance ?? account.AvailableBalance;
 
             await DataContext.SaveChangesAsync();
 

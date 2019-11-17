@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Asm.BankPlus.Models;
 using Asm.BankPlus.Repository;
 using Asm.BankPlus.Web.Models;
-using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -61,5 +60,12 @@ namespace Asm.BankPlus.Web.Controllers
             return CreatedAtAction("Get", new { id = newAccount.Id }, newAccount);
         }
 
+        [HttpPatch("{accountId}")]
+        public async Task<ActionResult<Account>> UpdateBalance(Guid accountId, UpdateBalanceModel model)
+        {
+            if (model == null || (model.CurrentBalance == null && model.AvailableBalance == null)) return BadRequest(ModelState);
+
+            return Ok(await AccountRepository.SetBalance(accountId, model.CurrentBalance, model.AvailableBalance));
+        }
     }
 }
