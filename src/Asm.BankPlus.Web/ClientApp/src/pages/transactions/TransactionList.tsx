@@ -13,8 +13,10 @@ import { Table } from "react-bootstrap";
 import { actionCreators as accountActionCreators } from "../../store/Accounts";
 import { actionCreators as transactionActionCreators } from "../../store/Transactions";
 import { State } from "../../store/state";
-import { Account } from "../../models";
-import { TransactionRow } from "./TransactionRow";
+import { Account, AccountController } from "../../models";
+import { TransactionRow, TransactionRowProps } from "./TransactionRow";
+import { TransactionRowIng } from "./TransactionRowIng";
+import { statement } from "@babel/template";
 
 export const TransactionList: React.FC<TransactionListProps> = (props) => {
 
@@ -80,14 +82,16 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {transactions && transactions.map((t) => <TransactionRow key={t.id} transaction={t} />) }
+                    {transactions && transactions.map((t) => t.extraInfo ? <TransactionRowIng key={t.id} transaction={t} /> : <TransactionRow key={t.id} transaction={t} />) }
                 </tbody>
                 <tfoot>
 <tr>
-    <td>Page {pageNumber} of {numberOfPages} ({totalTransactions} transactions)</td>
-    <td>
-    { showPrev && <button onClick={() => dispatch(transactionActionCreators.requestTransactions(props.account.id, Math.max(pageNumber - 1,1)))}>Prev</button>}
-    { showNext && <button onClick={() => dispatch(transactionActionCreators.requestTransactions(props.account.id, Math.min(pageNumber + 1,numberOfPages)))}>Next</button>}
+    <td colSpan={2}>Page {pageNumber} of {numberOfPages} ({totalTransactions} transactions)</td>
+    <td colSpan={2}>
+    <button disabled={!showPrev} className="btn" onClick={() => dispatch(transactionActionCreators.requestTransactions(props.account.id, 1))}>&lt;&lt;</button>
+    <button disabled={!showPrev} className="btn" onClick={() => dispatch(transactionActionCreators.requestTransactions(props.account.id, Math.max(pageNumber - 1,1)))}>&lt;</button>
+    <button disabled={!showNext} className="btn" onClick={() => dispatch(transactionActionCreators.requestTransactions(props.account.id, Math.min(pageNumber + 1,numberOfPages)))}>&gt;</button>
+    <button disabled={!showNext} className="btn" onClick={() => dispatch(transactionActionCreators.requestTransactions(props.account.id, numberOfPages))}>&gt;&gt;</button>
     </td>
 </tr>
                 </tfoot>

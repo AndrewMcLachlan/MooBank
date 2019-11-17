@@ -122,8 +122,22 @@ thead th {
     font-size: 1.2rem;
 }
 
-th, td {
+/*th, td {
     border-bottom: 1px solid #AAA;
+}*/
+
+.table tfoot {
+    /*border-top: 2px double #000;*/
+    border-top-style: double;
+
+    td {
+        vertical-align: middle;
+    }
+
+    button.btn {
+        font-weight: bold;
+        outline: none;
+    }
 }
 
 table.accountManagement {
