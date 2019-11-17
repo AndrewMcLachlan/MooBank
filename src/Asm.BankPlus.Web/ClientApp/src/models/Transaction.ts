@@ -17,4 +17,5 @@ export interface Transaction {
     transactionTime: Date;
     transactionType: TransactionType;
     tags: TransactionTag[];
+    extraInfo: any;
 }
