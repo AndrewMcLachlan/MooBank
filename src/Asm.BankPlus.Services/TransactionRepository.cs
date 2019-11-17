@@ -43,28 +43,28 @@ namespace Asm.BankPlus.Services
         {
             _security.AssertPermission(accountId);
 
-            return (await DataContext.Transactions.Include(t => t.TransactionTagLinks).ThenInclude(t => t.TransactionTag).Where(t => t.AccountId == accountId).ToListAsync()).Select(t => (Transaction)t);
+            return (await GetTransactionsQuery(accountId).Where(t => t.AccountId == accountId).ToListAsync()).Select(t => (Transaction)t).OrderByDescending(t => t.TransactionTime);
         }
 
         public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, int pageSize, int pageNumber)
         {
             _security.AssertPermission(accountId);
 
-            return (await DataContext.Transactions.Where(t => t.AccountId == accountId).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync()).Select(t => (Transaction)t);
+            return await GetTransactionsQuery(accountId).Paging(pageSize, pageNumber);
         }
 
         public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, DateTime start, DateTime? end, int pageSize, int pageNumber)
         {
             _security.AssertPermission(accountId);
 
-            return (await DataContext.Transactions.Where(t => t.AccountId == accountId && t.TransactionTime >= start && t.TransactionTime <= (end ?? DateTime.Now)).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync()).Select(t => (Transaction)t);
+            return await GetTransactionsQuery(accountId).Where(t => t.TransactionTime >= start && t.TransactionTime <= (end ?? DateTime.Now)).Paging(pageSize, pageNumber);
         }
 
         public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, TimeSpan period, int pageSize, int pageNumber)
         {
             _security.AssertPermission(accountId);
 
-            return (await DataContext.Transactions.Where(t => t.AccountId == accountId && t.TransactionTime >= DateTime.Now.Subtract(period) && t.TransactionTime <= DateTime.Now).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync()).Select(t => (Transaction)t);
+            return await GetTransactionsQuery(accountId).Where(t => t.TransactionTime >= DateTime.Now.Subtract(period) && t.TransactionTime <= DateTime.Now).Paging(pageSize, pageNumber);
         }
 
         public async Task<Transaction> AddTransactionTag(Guid id, int tagId)
@@ -123,6 +123,11 @@ namespace Asm.BankPlus.Services
             return entities.Select(t => (Transaction)t);
         }
 
+        private IQueryable<Data.Entities.Transaction> GetTransactionsQuery(Guid accountId)
+        {
+            return DataContext.Transactions.Include(t => t.TransactionTagLinks).ThenInclude(t => t.TransactionTag).Where(t => t.AccountId == accountId);
+        }
+
         private async Task<Data.Entities.Transaction> GetEntity(Guid id)
         {
             Data.Entities.Transaction entity = await DataContext.Transactions.Include(t => t.TransactionTagLinks).ThenInclude(t => t.TransactionTag).SingleOrDefaultAsync(t => t.TransactionId == id);
@@ -132,6 +137,14 @@ namespace Asm.BankPlus.Services
             _security.AssertPermission(entity.AccountId);
 
             return entity;
+        }
+    }
+
+    public static class IQueryableExtensions
+    {
+        public static async Task<IEnumerable<Transaction>> Paging(this IQueryable<Data.Entities.Transaction> query, int pageSize, int pageNumber)
+        {
+            return (await query.Skip((pageNumber - 1) * pageSize).OrderByDescending(t => t.TransactionTime).Take(pageSize).ToListAsync()).Select(t => (Transaction)t);
         }
     }
 }
