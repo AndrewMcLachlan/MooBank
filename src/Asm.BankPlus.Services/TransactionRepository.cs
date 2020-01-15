@@ -144,7 +144,7 @@ namespace Asm.BankPlus.Services
     {
         public static async Task<IEnumerable<Transaction>> Paging(this IQueryable<Data.Entities.Transaction> query, int pageSize, int pageNumber)
         {
-            return (await query.Skip((pageNumber - 1) * pageSize).OrderByDescending(t => t.TransactionTime).Take(pageSize).ToListAsync()).Select(t => (Transaction)t);
+            return (await query.OrderByDescending(t => t.TransactionTime).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync()).Select(t => (Transaction)t);
         }
     }
 }
