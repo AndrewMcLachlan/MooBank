@@ -50,9 +50,20 @@ nav.control-panel {
         font-size: 0.9rem;
     }
 
-a {
-    color: #999;
-}
+    button, button:hover, button:active, button:focus {
+        outline: none;
+        background: none;
+        border: none;
+        font-weight: bold;
+    }
+
+    button:hover {
+        text-decoration: underline;
+    }
+
+    a, button {
+        color: #999;
+    }
 
     li {
         display: inline-block;

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Asm.BankPlus.Models;
 using Asm.BankPlus.Repository;
+using Asm.BankPlus.Services;
 using Asm.BankPlus.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +15,13 @@ namespace Asm.BankPlus.Web.Controllers
     [Authorize]
     public class AccountTransactionTagRulesController : ControllerBase
     {
+        private IAccountService AccountService { get; }
         private ITransactionTagRuleRepository TransactionTagRuleRepository { get; }
 
-        public AccountTransactionTagRulesController(ITransactionTagRuleRepository transactionTagRuleRepository)
+        public AccountTransactionTagRulesController(ITransactionTagRuleRepository transactionTagRuleRepository, IAccountService accountService)
         {
             TransactionTagRuleRepository = transactionTagRuleRepository;
+            AccountService = accountService;
         }
 
         [HttpGet]
@@ -64,6 +68,14 @@ namespace Asm.BankPlus.Web.Controllers
             await TransactionTagRuleRepository.RemoveTransactionTag(accountId, id, tagId);
 
             return NoContent();
+        }
+
+        [HttpPost("run")]
+        public ActionResult Post(Guid accountId)
+        {
+            _ = AccountService.RunTransactionRules(accountId);
+
+            return StatusCode(202);
         }
     }
 }

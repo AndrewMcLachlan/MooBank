@@ -90,8 +90,6 @@ namespace Asm.BankPlus.Services
 
             entity.TransactionTags.AddRange(DataContext.TransactionTags.Where(t => filteredTags.Contains(t.TransactionTagId)));
 
-            await DataContext.SaveChangesAsync();
-
             return (Transaction)entity;
         }
 

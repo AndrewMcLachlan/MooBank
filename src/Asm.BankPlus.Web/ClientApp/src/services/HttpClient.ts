@@ -5,6 +5,7 @@ export type httpMethod = "GET" | "DELETE" | "POST" | "PUT" | "PATCH";
 export enum HttpStatusCodes {
     OK = 200,
     Created = 201,
+    Accepted = 202,
     NoContent = 204,
 
     BadRequest = 400,
@@ -124,8 +125,9 @@ export default class HttpClient {
             }),
             method,
         });
-        if (response.status === HttpStatusCodes.NoContent) {
-            return null;
+
+        if (response.status === HttpStatusCodes.NoContent || response.status === HttpStatusCodes.Accepted) {
+            return;
         }
 
         if (response.ok) {
@@ -159,8 +161,8 @@ export default class HttpClient {
             method,
         });
 
-        if (response.status === HttpStatusCodes.NoContent) {
-            return null;
+        if (response.status === HttpStatusCodes.NoContent || response.status === HttpStatusCodes.Accepted) {
+            return;
         }
 
         if (response.ok) {

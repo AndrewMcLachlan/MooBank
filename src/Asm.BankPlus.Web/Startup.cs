@@ -47,7 +47,10 @@ namespace Asm.BankPlus.Web
                 configuration.RootPath = "ClientApp/build";
             });
 
-            services.AddDbContext<Data.BankPlusContext>(options => options.UseSqlServer(Configuration.GetConnectionString("BankPlus")));
+            services.AddDbContext<Data.BankPlusContext>(options => options.UseSqlServer(Configuration.GetConnectionString("BankPlus"), options =>
+            {
+                options.EnableRetryOnFailure(3);
+            }));
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
@@ -175,6 +178,7 @@ namespace Asm.BankPlus.Web
             services.AddScoped<IUserDataProvider, GraphUserDataProvider>();
             services.AddScoped<ISecurityRepository, SecurityRepository>();
             services.AddScoped<ITransactionExtraRepository, TransactionExtraRepository>();
+            services.AddScoped<IAccountService, AccountService>();
         }
 
         private ProblemDetails CreateProblemDetails(IHostingEnvironment env, HttpContext context, Exception ex)

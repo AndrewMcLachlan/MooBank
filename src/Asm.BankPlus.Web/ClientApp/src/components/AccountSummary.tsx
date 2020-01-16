@@ -4,23 +4,17 @@ import React from "react";
 
 import { Account, AccountController } from "../models";
 import { AccountBalance } from ".";
-import { Link } from "react-router-dom";
+import { PageHeader } from "./PageHeader";
+import { MenuItem } from "models/MenuItem";
 
 export const AccountSummary: React.FC<AccountSummaryProps> = (props) => {
 
-    const { renderMenu } = useRenderers(props);
+    const { getMenuItems } = useRenderers(props);
 
     if (!props.account) return null;
 
     return (
-        <section className="account-summary">
-            <header>
-                <h1>{props.account.name}</h1>
-                <nav className="control-panel">
-                    {renderMenu()}
-                </nav>
-            </header>
-
+        <PageHeader title={props.account.name} menuItems={getMenuItems()}>
             <table className="table">
                 <tbody>
                     <tr>
@@ -33,7 +27,7 @@ export const AccountSummary: React.FC<AccountSummaryProps> = (props) => {
                     </tr>
                 </tbody>
             </table>
-        </section>
+        </PageHeader>
     )
 }
 
@@ -41,20 +35,21 @@ AccountSummary.displayName = "AccountSummary";
 
 const useRenderers = (props: AccountSummaryProps) => {
 
-    const renderMenu = () => {
 
-        const items = [<li><Link to={`/accounts/${props.account.id}/tag-rules`}>Tag Rules</Link></li>];
+    const getMenuItems = () => {
+
+        const items: MenuItem[] = [{ route: `/accounts/${props.account.id}/tag-rules`, text: "Tag Rules" }];
 
         switch (props.account.controller) {
             case AccountController.Import:
-                items.push(<li><Link to={`/accounts/${props.account.id}/import`}>Import</Link></li>);
+                items.push({ route: `/accounts/${props.account.id}/import`, text: "Import" });
         }
 
-        return <ul>{items}</ul>;
+        return items;
     };
 
     return {
-        renderMenu,
+        getMenuItems,
     };
 }
 

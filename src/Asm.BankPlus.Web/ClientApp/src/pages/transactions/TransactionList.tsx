@@ -31,7 +31,7 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
 
     useEffect(() => {
         props.account && dispatch(transactionActionCreators.requestTransactions(props.account.id, pageNumber));
-    }, [dispatch, props.account, pageNumber]);
+    }, [dispatch, props.account]);
 
     let dataSource = transactions;
     if (!dataSource || dataSource === null) {
@@ -82,18 +82,18 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {transactions && transactions.map((t) => t.extraInfo ? <TransactionRowIng key={t.id} transaction={t} /> : <TransactionRow key={t.id} transaction={t} />) }
+                    {transactions && transactions.map((t) => t.extraInfo ? <TransactionRowIng key={t.id} transaction={t} /> : <TransactionRow key={t.id} transaction={t} />)}
                 </tbody>
                 <tfoot>
-<tr>
-    <td colSpan={2}>Page {pageNumber} of {numberOfPages} ({totalTransactions} transactions)</td>
-    <td colSpan={2}>
-    <button disabled={!showPrev} className="btn" onClick={() => dispatch(transactionActionCreators.requestTransactions(props.account.id, 1))}>&lt;&lt;</button>
-    <button disabled={!showPrev} className="btn" onClick={() => dispatch(transactionActionCreators.requestTransactions(props.account.id, Math.max(pageNumber - 1,1)))}>&lt;</button>
-    <button disabled={!showNext} className="btn" onClick={() => dispatch(transactionActionCreators.requestTransactions(props.account.id, Math.min(pageNumber + 1,numberOfPages)))}>&gt;</button>
-    <button disabled={!showNext} className="btn" onClick={() => dispatch(transactionActionCreators.requestTransactions(props.account.id, numberOfPages))}>&gt;&gt;</button>
-    </td>
-</tr>
+                    <tr>
+                        <td colSpan={2}>Page {pageNumber} of {numberOfPages} ({totalTransactions} transactions)</td>
+                        <td colSpan={2}>
+                            <button disabled={!showPrev} className="btn" onClick={() => dispatch(transactionActionCreators.requestTransactions(props.account.id, 1))}>&lt;&lt;</button>
+                            <button disabled={!showPrev} className="btn" onClick={() => dispatch(transactionActionCreators.requestTransactions(props.account.id, Math.max(pageNumber - 1, 1)))}>&lt;</button>
+                            <button disabled={!showNext} className="btn" onClick={() => dispatch(transactionActionCreators.requestTransactions(props.account.id, Math.min(pageNumber + 1, numberOfPages)))}>&gt;</button>
+                            <button disabled={!showNext} className="btn" onClick={() => dispatch(transactionActionCreators.requestTransactions(props.account.id, numberOfPages))}>&gt;&gt;</button>
+                        </td>
+                    </tr>
                 </tfoot>
             </Table>
 

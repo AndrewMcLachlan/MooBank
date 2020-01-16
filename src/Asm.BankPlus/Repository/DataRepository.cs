@@ -1,17 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Threading.Tasks;
 using Asm.BankPlus.Data;
 
 namespace Asm.BankPlus.Repository
 {
-    public abstract class DataRepository
+    public interface IDataRepository
+    {
+        Task<int> SaveChanges();
+    }
+
+    public abstract class DataRepository : IDataRepository
     {
         protected BankPlusContext DataContext { get; }
 
         protected DataRepository(BankPlusContext dataContext)
         {
             DataContext = dataContext;
+        }
+
+        public Task<int> SaveChanges()
+        {
+            return DataContext.SaveChangesAsync();
         }
     }
 }

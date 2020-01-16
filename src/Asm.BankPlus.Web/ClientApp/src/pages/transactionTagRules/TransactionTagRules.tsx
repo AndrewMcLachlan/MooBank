@@ -1,7 +1,7 @@
 import "./TransactionTagRules.scss";
 
 import React, { useEffect, useState } from "react";
-import { Table } from "react-bootstrap";
+import { Table, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
 
@@ -9,7 +9,7 @@ import { State } from "../../store/state";
 import { actionCreators } from "../../store/TransactionTagRules";
 import { actionCreators as tagActionCreators } from "../../store/TransactionTags";
 
-import { TagPanel } from "../../components";
+import { TagPanel, PageHeader } from "../../components";
 
 import { TransactionTag, TransactionTagRule } from "models";
 import { RouteComponentProps } from "react-router";
@@ -22,13 +22,15 @@ export const TransactionTagRules: React.FC<TransactionTagRuleProps> = (props) =>
 
     usePageTitle("Transaction Tag Rules");
 
-    const { newRule, fullTagsList, addTag, createTag, removeTag, nameChange, createRule } = useComponentState(props);
+    const { newRule, fullTagsList, addTag, createTag, removeTag, nameChange, createRule, runRules } = useComponentState(props);
 
     const rules = useSelector((state: State) => state.transactionTagRules.rules);
 
     return (
         <>
-            <h1>Transaction Tag Rules</h1>
+             <PageHeader title="Transaction Tag Rules" menuItems={[
+                 { text: "Run Rules Now", onClick: runRules }
+             ]} />
             <Table striped bordered={false} borderless className="transaction-tag-rules">
                 <thead>
                     <tr>
@@ -107,7 +109,11 @@ const useComponentState = (props: TransactionTagRuleProps) => {
 
         newRule.tags = newRule.tags.filter((t) => t.id !== tag.id);
         setNewRule(newRule);
-    }
+    };
+
+    const runRules = () => {
+        dispatch(actionCreators.runRules());
+    };
 
     return {
         newRule,
@@ -119,6 +125,8 @@ const useComponentState = (props: TransactionTagRuleProps) => {
 
         nameChange,
         createRule,
+
+        runRules,
     };
 }
 

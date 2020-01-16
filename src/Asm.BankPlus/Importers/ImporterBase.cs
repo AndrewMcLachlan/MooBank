@@ -47,6 +47,8 @@ namespace Asm.BankPlus.Importers
 
                 await TransactionRepository.AddTransactionTags(transaction.Id, applicableTags);
             }
+
+            await TransactionRepository.SaveChanges();
         }
     }
 }

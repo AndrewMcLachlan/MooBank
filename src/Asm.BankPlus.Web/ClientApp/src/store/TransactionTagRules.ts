@@ -123,6 +123,21 @@ export const actionCreators = {
             dispatch({ type: ShowMessage, data: error.message });
         }
     },
+
+    runRules: () => async (dispatch: Dispatch, getState: () => State) => {
+
+        const state = getState();
+
+        const service = new TransactionTagRuleService(state);
+
+        try {
+            await service.runRules(state.accounts.selectedAccount.id);
+        }
+        catch (error) {
+            console.error(error.message);
+            dispatch({ type: ShowMessage, data: error.message });
+        }
+    },
 };
 
 export const reducer = (state: TransactionTagRules = initialState, action: ActionWithData<Models.TransactionTagRule[] | Models.TransactionTagRule>): TransactionTagRules => {

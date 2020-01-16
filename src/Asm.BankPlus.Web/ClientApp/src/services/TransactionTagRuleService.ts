@@ -70,4 +70,17 @@ export class TransactionTagRuleService extends ServiceBase {
             super.handleError(response as Response);
         }
     }
+
+    public async runRules(accountId: string) {
+        const url =`api/accounts/${accountId}/transaction/tag/rules/run`;
+
+        const client = new HttpClient(this.state.app.baseUrl);
+
+        try {
+            return await client.post(url, undefined);
+        }
+        catch (response) {
+            super.handleError(response as Response);
+        }
+    }
 }

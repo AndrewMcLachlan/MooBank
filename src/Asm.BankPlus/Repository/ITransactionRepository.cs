@@ -6,7 +6,7 @@ using Transaction = Asm.BankPlus.Models.Transaction;
 
 namespace Asm.BankPlus.Repository
 {
-    public interface ITransactionRepository
+    public interface ITransactionRepository : IDataRepository
     {
         Task<int> GetTotalTransactions(Guid accountId);
 
