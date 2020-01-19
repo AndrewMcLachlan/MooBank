@@ -8,4 +8,4 @@ UNPIVOT
 )
 SELECT p.TransactionId, p.TagId, t.[Name] FROM
 PivotTags p
-INNER JOIN TransactionTag t ON p.TagId = t.[Name]
+INNER JOIN TransactionTag t ON p.TagId = t.TransactionTagId

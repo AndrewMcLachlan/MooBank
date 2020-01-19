@@ -87,6 +87,8 @@
     <Build Include="dbo\Tables\CardOwner.sql" />
     <Build Include="dbo\Views\TagRelationships.sql" />
     <Build Include="dbo\Views\TransactionsTags.sql" />
+    <Build Include="dbo\Views\TagAmounts.sql" />
+    <Build Include="dbo\Views\TagAmountsByMonth.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Asm.BankPlus.Database.publish.xml" />
