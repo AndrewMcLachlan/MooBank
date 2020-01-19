@@ -110,7 +110,7 @@ export const actionCreators = {
 
         const service = new TransactionTagService(state);
 
-        const tag = await service.createTag(tagName);
+        const tag = await service.createTag(tagName, []);
 
         try {
             const transaction = await service.addTransactionTag(tagId, tag.id);

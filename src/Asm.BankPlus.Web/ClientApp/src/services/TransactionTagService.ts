@@ -17,7 +17,7 @@ export class TransactionTagService extends ServiceBase {
         }
     }
 
-    public async createTag(name: string, tags?: Models.TransactionTag[]): Promise<Models.TransactionTag> {
+    public async createTag(name: string, tags: Models.TransactionTag[]): Promise<Models.TransactionTag> {
         const url = `api/transaction/tags/${encodeURIComponent(name)}`;
 
         const client = new HttpClient(this.state.app.baseUrl);

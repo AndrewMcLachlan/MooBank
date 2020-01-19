@@ -77,7 +77,7 @@ export const actionCreators = {
 
         const transactionTagService = new TransactionTagService(state);
 
-        const tag = await transactionTagService.createTag(tagName);
+        const tag = await transactionTagService.createTag(tagName, []);
 
         const service = new TransactionService(state);
 

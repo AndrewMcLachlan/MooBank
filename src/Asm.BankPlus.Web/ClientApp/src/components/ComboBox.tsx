@@ -80,7 +80,7 @@ function useComboBox(props: ComboBoxProps) {
     const onItemSelected = (item: any) => {
 
         if (item === newItem) {
-            item[props.textField] = (item[props.textField] as string).replace(/\(Add new\)$/, "");
+            item[props.textField] = (item[props.textField] as string).replace(/ \(Add new\)$/, "");
             props.onAdd && props.onAdd(item[props.textField] as string);
         }
 
