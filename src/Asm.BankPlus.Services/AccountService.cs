@@ -10,36 +10,16 @@ namespace Asm.BankPlus.Services
 {
         public class AccountService : IAccountService
     {
-        private readonly IAccountRepository _accountRepository;
-        private readonly ITransactionTagRuleRepository _transactionTagRuleRepository;
-        private readonly ITransactionRepository _transactionRepository;
+        private readonly IRunRulesQueue _queue;
 
-        public AccountService(IAccountRepository accountRepository, ITransactionRepository transactionRepository, ITransactionTagRuleRepository transactionTagRuleRepository)
+        public AccountService(IAccountRepository accountRepository, ITransactionRepository transactionRepository, ITransactionTagRuleRepository transactionTagRuleRepository, IRunRulesQueue queue)
         {
-            _accountRepository = accountRepository;
-            _transactionRepository = transactionRepository;
-            _transactionTagRuleRepository = transactionTagRuleRepository;
+            _queue = queue;
         }
 
-        public async Task<IEnumerable<Transaction>> RunTransactionRules(Guid accountId)
+        public void RunTransactionRules(Guid accountId)
         {
-            var transactions = await _transactionRepository.GetTransactions(accountId);
-
-            var rules = await _transactionTagRuleRepository.Get(accountId);
-
-            var updatedTransactions = new List<Transaction>();
-
-            foreach (var transaction in transactions)
-            {
-                var applicableTags = rules.Where(r => transaction.Description.Contains(r.Contains, StringComparison.OrdinalIgnoreCase)).SelectMany(r => r.Tags.Select(t => t.Id)).Distinct();
-
-                updatedTransactions.Add(await _transactionRepository.AddTransactionTags(transaction.Id, applicableTags));
-            }
-
-            await _transactionRepository.SaveChanges();
-
-            return updatedTransactions;
+            _queue.QueueRunRules(accountId);
         }
-
     }
 }

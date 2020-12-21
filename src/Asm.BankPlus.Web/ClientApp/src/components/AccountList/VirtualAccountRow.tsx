@@ -20,7 +20,7 @@ class VirtualAccountRow extends Component<VirtualAccountRowProps, any> {
                                 <a href={"/transactions/history/" + this.props.account.virtualAccountId}>Transactions</a>
                             </li>
                         </ul>
-                    </nav>
+                    </nav>e
                 </td>
                 <td>{this.props.account.balance.toFixed(2) + " " + (this.props.account.balance < 0 ? "D" : "C") + "R"}</td>
             </tr>

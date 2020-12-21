@@ -24,4 +24,5 @@ CloseBadge.displayName = "CloseBadge";
 
 export interface CloseBadgeProps extends BadgeProps {
     onClose?: () => void;
+    onClick?: () => void;
 }

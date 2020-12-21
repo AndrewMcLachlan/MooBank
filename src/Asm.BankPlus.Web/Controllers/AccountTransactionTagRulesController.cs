@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using Asm.BankPlus.Models;
 using Asm.BankPlus.Repository;
@@ -71,11 +72,11 @@ namespace Asm.BankPlus.Web.Controllers
         }
 
         [HttpPost("run")]
-        public ActionResult Post(Guid accountId)
+        public ActionResult Run(Guid accountId)
         {
-            _ = AccountService.RunTransactionRules(accountId);
+            AccountService.RunTransactionRules(accountId);
 
-            return StatusCode(202);
+            return StatusCode((int)HttpStatusCode.Accepted);
         }
     }
 }

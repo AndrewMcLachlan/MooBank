@@ -1,11 +1,9 @@
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
-
-import { State } from "../store/state";
+import { useApp } from "../components";
 
 export function usePageTitle(title: string) {
 
-    let appName = useSelector((state: State) => state.app.appName);
+    const { appName } = useApp();
 
     useEffect(() => {
         document.title = `${title} : ${appName}`;

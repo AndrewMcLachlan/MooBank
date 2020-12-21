@@ -72,7 +72,7 @@ namespace Asm.BankPlus.Services
 
         public async Task<IEnumerable<Account>> GetAccounts()
         {
-            return await DataContext.Accounts.Include(a => a.AccountHolderLinks).Where(a => a.AccountHolderLinks.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId)).Select(a => (Account)a).ToListAsync();
+            return await DataContext.Accounts.Include(a => a.AccountHolders).Where(a => a.AccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId)).Select(a => (Account)a).ToListAsync();
         }
 
         public async Task<Account> SetBalance(Guid id, decimal balance)
@@ -102,12 +102,12 @@ namespace Asm.BankPlus.Services
 
         public async Task<decimal> GetPosition()
         {
-            return await DataContext.Accounts.Where(a => a.AccountHolderLinks.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId) && a.IncludeInPosition).SumAsync(a => a.AccountBalance);
+            return await DataContext.Accounts.Where(a => a.AccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId) && a.IncludeInPosition).SumAsync(a => a.AccountBalance);
         }
 
         private async Task<Data.Entities.Account> GetAccountEntity(Guid id)
         {
-            var entity = await DataContext.Accounts.Include(a => a.AccountHolderLinks).Where(a => a.AccountId == id).SingleOrDefaultAsync();
+            var entity = await DataContext.Accounts.Include(a => a.AccountHolders).Where(a => a.AccountId == id).SingleOrDefaultAsync();
 
             if (entity == null) throw new NotFoundException("Acccount not found");
 

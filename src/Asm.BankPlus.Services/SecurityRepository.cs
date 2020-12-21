@@ -20,7 +20,7 @@ namespace Asm.BankPlus.Services
 
         public void AssertPermission(Guid accountId)
         {
-            if (!DataContext.Accounts.Any(a => a.AccountId == accountId && a.AccountHolderLinks.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId)))
+            if (!DataContext.Accounts.Any(a => a.AccountId == accountId && a.AccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId)))
             {
                 throw new NotAuthorisedException("Not authorised to view this account");
             }
@@ -28,7 +28,7 @@ namespace Asm.BankPlus.Services
 
         public void AssertPermission(Account account)
         {
-            if (!account.AccountHolderLinks.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId))
+            if (!account.AccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId))
             {
                 throw new NotAuthorisedException("Not authorised to view this account");
             }

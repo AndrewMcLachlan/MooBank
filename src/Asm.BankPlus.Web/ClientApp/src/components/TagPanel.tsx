@@ -1,6 +1,6 @@
 import React, { useState, useRef, ElementType } from "react";
-import { CloseBadge, ComboBox } from "components";
-import { useClickAway } from "hooks/clickAway";
+import { CloseBadge, ComboBox } from ".";
+import { useClickAway } from "../hooks/clickAway";
 
 export const TagPanel: React.FC<TagPanelProps> = (props) => {
 

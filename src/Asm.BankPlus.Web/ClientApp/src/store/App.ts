@@ -2,10 +2,8 @@
 import { ActionWithData } from "./redux-extensions";
 import { Dispatch } from "react";
 
-const initialState: App = {
-    appName: "",
-    baseUrl: "",
-    skin: "",
+export const initialState: App = {
+    baseUrl: "/",
 };
 
 export const ShowMessage = "ShowMessage";

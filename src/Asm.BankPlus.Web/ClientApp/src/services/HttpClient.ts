@@ -1,4 +1,7 @@
-import { SecurityService } from "./SecurityService";
+import axios, { AxiosInstance } from "axios";
+import { request } from "http";
+
+import { apiRequest } from "../components";
 
 export type httpMethod = "GET" | "DELETE" | "POST" | "PUT" | "PATCH";
 
@@ -25,18 +28,26 @@ export interface ProblemDetails {
     type: string,
 }
 
+export let httpClient: AxiosInstance;
+
+export const createHttpClient = (baseUrl: string) => {
+    const a = axios.create({
+    baseURL: baseUrl,
+    headers: {
+        "Accept": "application/json",
+    }});
+
+    httpClient = a;
+};
 
 export default class HttpClient {
-    
+
 
     private baseUrl: string;
-    private securityService: SecurityService;
     private csrf: string;
 
     constructor(baseUrl: string) {
         this.baseUrl = baseUrl;
-        this.securityService = new SecurityService();
-        this.csrf = this.readCookie("XSRF-TOKEN");
     }
 
     public async get<T>(url: string): Promise<T> {
@@ -64,32 +75,31 @@ export default class HttpClient {
         return this.fetchWithBody(url, data, "POST");
     }
 
-    postFile<TResponse>(url: string, file: File) : Promise<TResponse> {
+    postFile<TResponse>(url: string, file: File): Promise<TResponse> {
         return this.fetchWithFormData(url, null, "POST", [file]);
     }
 
-    postFiles<TResponse>(url: string, files: File[]) : Promise<TResponse> {
+    postFiles<TResponse>(url: string, files: File[]): Promise<TResponse> {
         return this.fetchWithFormData(url, null, "POST", files);
     }
 
-    postFileAndData<TRequest, TResponse>(url: string, file: File, data: TRequest) : Promise<TResponse> {
+    postFileAndData<TRequest, TResponse>(url: string, file: File, data: TRequest): Promise<TResponse> {
         return this.fetchWithFormData(url, data, "POST", [file]);
     }
 
-    postFilesAndData<TRequest, TResponse>(url: string, files: File[], data: TRequest) : Promise<TResponse> {
+    postFilesAndData<TRequest, TResponse>(url: string, files: File[], data: TRequest): Promise<TResponse> {
         return this.fetchWithFormData(url, data, "POST", files);
     }
 
     private async fetch<T>(url: string, method: httpMethod): Promise<T> {
 
-        const token = await this.securityService.getToken();
+        const token = await this.getToken();
 
         const response = await fetch(this.baseUrl + url, {
             credentials: "include",
             headers: new Headers({
                 "Accept": "application/json",
                 "Authorization": "Bearer " + token,
-                "X-XSRF-TOKEN": this.csrf,
             }),
             method,
         });
@@ -113,7 +123,7 @@ export default class HttpClient {
 
     private async fetchWithBody<TRequest, TResponse>(url: string, data: TRequest, method: httpMethod): Promise<TResponse> {
 
-        const token = await this.securityService.getToken();
+        const token = await this.getToken();
 
         const response = await fetch(this.baseUrl + url, {
             body: JSON.stringify(data),
@@ -143,7 +153,7 @@ export default class HttpClient {
     }
 
     private async fetchWithFormData<TRequest, TResponse>(url: string, data: TRequest, method: httpMethod, files: File[]): Promise<TResponse> {
-        const token = await this.securityService.getToken();
+        const token = await this.getToken();
 
         const formData = new FormData();
 
@@ -175,6 +185,12 @@ export default class HttpClient {
         }
 
         return Promise.reject(response);
+    }
+
+    private getToken(): Promise<string> {
+        //return Promise.resolve("");
+        //return window.getToken(apiRequest, "loginRedirect");
+        return Promise.resolve(window.token);
     }
 
     private readCookie(name: string): string {

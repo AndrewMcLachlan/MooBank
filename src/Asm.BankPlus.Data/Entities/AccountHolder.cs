@@ -10,6 +10,6 @@ namespace Asm.BankPlus.Data.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
-        public virtual ICollection<AccountAccountHolder> AccountLinks { get; set; }
+        public virtual ICollection<Account> Accounts { get; set; }
     }
 }

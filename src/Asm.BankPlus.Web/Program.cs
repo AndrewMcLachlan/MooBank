@@ -7,6 +7,7 @@ using Serilog;
 using Serilog.Events;
 using Serilog.AspNetCore;
 using Serilog.Sinks.File;
+using Microsoft.Extensions.Hosting;
 
 namespace Asm.BankPlus.Web
 {
@@ -16,10 +17,7 @@ namespace Asm.BankPlus.Web
         {
             Environment.CurrentDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\..\..\..";
 
-            //var appEnv = Configuration.GetValue<string>("ApplicationEnvironment");
-            //var appName = Configuration.GetValue<string>("ApplicationName");
-            //var appRole = Configuration.GetValue<string>("ApplicationRole");
-            //var seq = Configuration.GetValue<string>("SeqEndpoint");
+            //var seq = Configuration.GetValue<string>("Seq:Endpoint");
 
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Is(LogEventLevel.Information)
@@ -35,7 +33,7 @@ namespace Asm.BankPlus.Web
             try
             {
                 Log.Information("Starting...");
-                CreateWebHostBuilder(args).Build().Run();
+                CreateHostBuilder(args).Build().Run();
                 return 0;
             }
             catch (Exception ex)
@@ -49,16 +47,17 @@ namespace Asm.BankPlus.Web
             }
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-            .UseSerilog((_, configuration) =>
-            {
-                configuration
-                .Enrich.FromLogContext()
-                .MinimumLevel.Information()
-                .MinimumLevel.Is(LogEventLevel.Information)
-                .WriteTo.File("Log.log");
-            })
-                .UseStartup<Startup>();
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                    webBuilder.UseSerilog((_, configuration) =>
+                    {
+                        configuration
+                        .Enrich.FromLogContext()
+                        .MinimumLevel.Information()
+                        .MinimumLevel.Is(LogEventLevel.Information)
+                        .WriteTo.File("Log.log", rollingInterval: RollingInterval.Day);
+                    })
+                .UseStartup<Startup>());
     }
 }

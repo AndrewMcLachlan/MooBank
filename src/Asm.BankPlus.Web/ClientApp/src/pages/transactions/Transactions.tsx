@@ -1,22 +1,25 @@
 import React from "react";
-import { RouteComponentProps } from "react-router";
+import { RouteComponentProps, useParams } from "react-router";
 
 import { TransactionList } from "./TransactionList";
-import { AccountSummary } from "components";
-import { useSelectedAccount, usePageTitle } from "hooks";
+import { AccountSummary } from "../../components";
+import { usePageTitle } from "../../hooks";
+import { useAccount } from "../../services";
 
 export const Transactions: React.FC<TransactionsProps> = (props) => {
 
     usePageTitle("Transactions");
 
-    const accountId = props.match.params.id;
+    const { id } = useParams<any>()
 
-    const account = useSelectedAccount(accountId);
+    const account = useAccount(id);
+
+    if (!account.data) return (null);
 
     return (
         <>
-            <AccountSummary account={account} />
-            <TransactionList account={account} />
+            <AccountSummary account={account.data} />
+            <TransactionList account={account.data} />
         </>);
 }
 

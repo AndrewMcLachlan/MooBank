@@ -11,8 +11,6 @@ export interface State {
 }
 
 export interface App {
-    appName: string;
-    skin: string;
     baseUrl: string;
     message?: string;
 }
@@ -36,6 +34,7 @@ export interface Transactions {
     currentPage: number;
     pageSize: number;
     total: number;
+    filterTagged: boolean;
 }
 
 export interface TransactionTags {

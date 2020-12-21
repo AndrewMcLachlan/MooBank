@@ -26,14 +26,18 @@ const renderMenu = (menuItems: MenuItem[]) => {
 
     const items = [];
 
+    let keysuffix = 0;
+
     for (const menuItem of menuItems) {
 
         if (menuItem.route) {
-            items.push(<li><Link to={menuItem.route} onClick={() => menuItem.onClick && menuItem.onClick()}>{menuItem.text}</Link></li>);
+            items.push(<li key={"route" + keysuffix.toString()}><Link to={menuItem.route} onClick={() => menuItem.onClick && menuItem.onClick()}>{menuItem.text}</Link></li>);
         }
         else if (menuItem.onClick) {
-            items.push(<li><button onClick={() => menuItem.onClick()}>{menuItem.text}</button></li>);
+            items.push(<li key={"click" + keysuffix.toString()}><button onClick={() => menuItem.onClick()}>{menuItem.text}</button></li>);
         }
+
+        keysuffix++;
     }
 
     return items;

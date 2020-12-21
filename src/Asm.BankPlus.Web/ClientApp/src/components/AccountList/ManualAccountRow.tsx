@@ -1,5 +1,5 @@
 ﻿import React, { useState, useRef } from "react";
-import { getBalanceString } from "helpers";
+import { getBalanceString } from "../../helpers";
 
 import { AccountRowProps, useAccountRowCommonState } from "./AccountRow";
 import { useClickAway } from "../../hooks";

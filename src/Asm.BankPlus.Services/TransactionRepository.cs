@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Transactions;
 using Asm.BankPlus.Data;
-using Asm.BankPlus.Models;
 using Asm.BankPlus.Repository;
 using Microsoft.EntityFrameworkCore;
 using Transaction = Asm.BankPlus.Models.Transaction;
@@ -39,6 +37,13 @@ namespace Asm.BankPlus.Services
             return await DataContext.Transactions.Where(t => t.AccountId == accountId).CountAsync();
         }
 
+        public async Task<int> GetTotalUntaggedTransactions(Guid accountId)
+        {
+            _security.AssertPermission(accountId);
+
+            return await DataContext.Transactions.Where(t => t.AccountId == accountId && !t.TransactionTags.Any()).CountAsync();
+        }
+
         public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId)
         {
             _security.AssertPermission(accountId);
@@ -65,6 +70,13 @@ namespace Asm.BankPlus.Services
             _security.AssertPermission(accountId);
 
             return await GetTransactionsQuery(accountId).Where(t => t.TransactionTime >= DateTime.Now.Subtract(period) && t.TransactionTime <= DateTime.Now).Paging(pageSize, pageNumber);
+        }
+
+        public async Task<IEnumerable<Transaction>> GetUntaggedTransactions(Guid accountId, int pageSize, int pageNumber)
+        {
+            _security.AssertPermission(accountId);
+
+            return await GetTransactionsQuery(accountId).Where(t => !t.TransactionTags.Any()).Paging(pageSize, pageNumber);
         }
 
         public async Task<Transaction> AddTransactionTag(Guid id, int tagId)
@@ -123,12 +135,12 @@ namespace Asm.BankPlus.Services
 
         private IQueryable<Data.Entities.Transaction> GetTransactionsQuery(Guid accountId)
         {
-            return DataContext.Transactions.Include(t => t.TransactionTagLinks).ThenInclude(t => t.TransactionTag).Where(t => t.AccountId == accountId);
+            return DataContext.Transactions.Include(t => t.TransactionTags).Where(t => t.AccountId == accountId);
         }
 
         private async Task<Data.Entities.Transaction> GetEntity(Guid id)
         {
-            Data.Entities.Transaction entity = await DataContext.Transactions.Include(t => t.TransactionTagLinks).ThenInclude(t => t.TransactionTag).SingleOrDefaultAsync(t => t.TransactionId == id);
+            Data.Entities.Transaction entity = await DataContext.Transactions.Include(t => t.TransactionTags).SingleOrDefaultAsync(t => t.TransactionId == id);
 
             if (entity == null) throw new NotFoundException("Transaction not found");
 

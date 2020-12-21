@@ -1,41 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
 namespace Asm.BankPlus.Data.Entities
 {
     public partial class TransactionTag : IEquatable<TransactionTag>
     {
-        private ManyToManyCollection<TransactionTagTransactionTag, TransactionTag, int> _tags;
-
         public TransactionTag()
         {
-            TaggedToLinks = new HashSet<TransactionTagTransactionTag>();
-            TagLinks = new HashSet<TransactionTagTransactionTag>();
-            TransactionTagRuleLinks = new HashSet<TransactionTagRuleTransactionTag>();
-
-            _tags = new ManyToManyCollection<TransactionTagTransactionTag, TransactionTag, int>(
-                TagLinks,
-                (t) => new TransactionTagTransactionTag { PrimaryTransactionTagId = this.TransactionTagId, SecondaryTransactionTagId = t.TransactionTagId },
-                (t) => t.Secondary,
-                (t) => t.SecondaryTransactionTagId,
-                (t) => t.TransactionTagId
-            );
+            TaggedTo = new HashSet<TransactionTag>();
+            Tags = new HashSet<TransactionTag>();
+            Rules = new HashSet<TransactionTagRule>();
         }
-
-        [NotMapped]
-        public ICollection<TransactionTag> Tags
-        {
-            get { return _tags; }
-            set
-            {
-                _tags.Clear();
-                _tags.AddRange(value);
-            }
-
-        }
-
 
         public static implicit operator Models.TransactionTag(TransactionTag transactionTag)
         {

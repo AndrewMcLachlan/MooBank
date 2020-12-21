@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { useSelector } from "react-redux";
-import { State } from "store/state";
+import { State } from "../../store/state";
 import { Form } from "react-bootstrap";
 
 export const ImportSettings: React.FC<ImportSettingsProps> = (props) => {

@@ -6,7 +6,6 @@ using Asm.BankPlus.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-
 namespace Asm.BankPlus.Web.Controllers
 {
     [Route("api/[controller]")]
@@ -47,6 +46,17 @@ namespace Asm.BankPlus.Web.Controllers
                 Transactions = await TransactionRepository.GetTransactions(accountId, pageSize.Value, pageNumber.Value),
                 PageNumber = pageNumber,
                 Total = await TransactionRepository.GetTotalTransactions(accountId),
+            });
+        }
+
+        [HttpGet("{accountId}/transactions/untagged/{pageSize?}/{pageNumber?}")]
+        public async Task<ActionResult<TransactionsModel>> Getuntagged(Guid accountId, int? pageSize = 50, int? pageNumber = 1)
+        {
+            return new ActionResult<TransactionsModel>(new TransactionsModel
+            {
+                Transactions = await TransactionRepository.GetUntaggedTransactions(accountId, pageSize.Value, pageNumber.Value),
+                PageNumber = pageNumber,
+                Total = await TransactionRepository.GetTotalUntaggedTransactions(accountId),
             });
         }
 

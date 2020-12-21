@@ -30,6 +30,6 @@ namespace Asm.BankPlus.Data.Entities
 
         public virtual ICollection<Transaction> Transaction { get; set; }
 
-        public virtual ICollection<AccountAccountHolder> AccountHolderLinks { get; set; }
+        public virtual ICollection<AccountHolder> AccountHolders { get; set; }
     }
 }

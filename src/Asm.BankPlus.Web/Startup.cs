@@ -8,22 +8,17 @@ using Asm.BankPlus.Security;
 using Asm.BankPlus.Services;
 using Asm.BankPlus.Services.Importers;
 using Asm.BankPlus.Services.Ing;
-using Microsoft.AspNetCore.Antiforgery;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Logging;
 using Newtonsoft.Json;
 
@@ -41,6 +36,8 @@ namespace Asm.BankPlus.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers();
+
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
@@ -60,13 +57,11 @@ namespace Asm.BankPlus.Web
 
             services.AddAuthorization();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
             RegisterServices(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)//, ILogger logger)
+        public void Configure(IApplicationBuilder app, IHostEnvironment env)//, ILogger logger)
         {
             if (env.IsDevelopment())
             {
@@ -108,12 +103,13 @@ namespace Asm.BankPlus.Web
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
-            app.UseMvc(routes =>
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
             {
-                //routes.MapRoute("All", "{*url}", new { controller = "Home", action = "Index" });
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=home}/{action=Index}/{id?}");
+                endpoints.MapControllers();
             });
 
             app.UseSpa(spa =>
@@ -179,9 +175,12 @@ namespace Asm.BankPlus.Web
             services.AddScoped<ISecurityRepository, SecurityRepository>();
             services.AddScoped<ITransactionExtraRepository, TransactionExtraRepository>();
             services.AddScoped<IAccountService, AccountService>();
+
+            services.AddHostedService<RunRulesService>();
+            services.AddSingleton<IRunRulesQueue, RunRulesQueue>();
         }
 
-        private ProblemDetails CreateProblemDetails(IHostingEnvironment env, HttpContext context, Exception ex)
+        private ProblemDetails CreateProblemDetails(IHostEnvironment env, HttpContext context, Exception ex)
         {
             ProblemDetails result = new ProblemDetails();
 

@@ -5,7 +5,7 @@ import React from "react";
 import { Account, AccountController } from "../models";
 import { AccountBalance } from ".";
 import { PageHeader } from "./PageHeader";
-import { MenuItem } from "models/MenuItem";
+import { MenuItem } from "../models/MenuItem";
 
 export const AccountSummary: React.FC<AccountSummaryProps> = (props) => {
 

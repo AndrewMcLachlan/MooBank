@@ -3,7 +3,7 @@
 import { ActionWithData } from "./redux-extensions";
 import { Transactions, State } from "./state";
 
-import { TransactionService, TransactionTagService } from "services";
+import { TransactionService, TransactionTagService } from "../services";
 import { ShowMessage } from "./App";
 
 const RequestTransactions = "RequestTransactions";
@@ -12,15 +12,28 @@ const ReceiveTransactions = "ReceiveTransactions";
 const AddTransactionTag = "TransactionAddTransactionTag";
 const RemoveTransactionTag = "TransactionRemoveTransactionTag";
 
+export const SetTransactionListFilter = "SetTransactionListFilter";
+
 const initialState: Transactions = {
     transactions: [],
     areLoading: false,
     currentPage: 1,
     pageSize: 50,
     total: 0,
+    filterTagged: false,
 };
 
 export const actionCreators = {
+
+    setFilter: (filterTagged: boolean, accountId: string, pageNumber: number) => async (dispatch: Dispatch, getState: () => State) => {
+        
+        const state = getState();
+
+        state.transactions.filterTagged = filterTagged;
+
+        actionCreators.requestTransactions(accountId, pageNumber);
+    },
+
     requestTransactions: (accountId: string, pageNumber: number) => async (dispatch: Dispatch, getState: () => State) => {
 
         const state = getState();
@@ -35,7 +48,8 @@ export const actionCreators = {
         const service = new TransactionService(state);
 
         try {
-            const transactions = await service.getTransactions(accountId, state.transactions.pageSize, pageNumber);
+
+            const transactions = await service.getTransactions(accountId, state.transactions.filterTagged, state.transactions.pageSize, pageNumber);
             dispatch({ type: ReceiveTransactions, data: transactions });
         }
         catch (error) {
@@ -126,6 +140,12 @@ export const reducer = (state: Transactions = initialState, action: ActionWithDa
                 ...state,
                 transactions: transactions,
             };
+        }
+        case SetTransactionListFilter: {
+            return {
+                ...state,
+                filterTagged: action.data,
+            }
         }
     }
 

@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import { Form, Button, InputGroup, FormControlProps } from "react-bootstrap";
+import { Form, Button, InputGroup } from "react-bootstrap";
 import { AccountType, AccountController, ImportAccount } from "../../models";
 import { toNameValue } from "../../extensions";
 import { useDispatch } from "react-redux";
-import { actionCreators } from "store/Accounts";
+import { actionCreators } from "../../store/Accounts";
 import { bindActionCreators } from "redux";
 import { Redirect } from "react-router";
 
 import { ImportSettings } from "./ImportSettings";
 import { BsPrefixProps, ReplaceProps } from "react-bootstrap/helpers";
-import { usePageTitle } from "hooks";
+import { usePageTitle } from "../../hooks";
 
 export const CreateAccount: React.FC = () => {
 
@@ -78,7 +78,7 @@ export const CreateAccount: React.FC = () => {
                 </Form.Group>
                 <Form.Group controlId="AccountType" >
                     <Form.Label>Type</Form.Label>
-                    <Form.Control as="select" value={accountType.toString()} onChange={(e: React.FormEvent<ReplaceProps<React.ElementType<any>, BsPrefixProps<React.ElementType<any>> & FormControlProps>>) => setAccountType(parseInt(e.currentTarget.value))}>
+                    <Form.Control as="select" value={accountType.toString()} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setAccountType(parseInt(e.currentTarget.value))}>
                         {accountTypes.map(a =>
                             <option value={a.value} key={a.value}>{a.name}</option>
                         )}

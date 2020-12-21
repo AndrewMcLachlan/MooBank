@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Asm.BankPlus.Data.Entities
@@ -9,18 +7,8 @@ namespace Asm.BankPlus.Data.Entities
     {
         public Transaction()
         {
-            TransactionTagLinks = new HashSet<TransactionTransactionTag>();
-            TransactionTags = new ManyToManyCollection<TransactionTransactionTag, TransactionTag, int>(
-                TransactionTagLinks,
-                (t) => new TransactionTransactionTag { TransactionId = this.TransactionId, TransactionTagId = t.TransactionTagId },
-                (t) => t.TransactionTag,
-                (t) => t.TransactionTagId,
-                (t) => t.TransactionTagId
-            );
+            TransactionTags = new HashSet<TransactionTag>();
         }
-
-        [NotMapped]
-        public ICollection<TransactionTag> TransactionTags { get; set; }
 
         public static explicit operator Models.Transaction(Transaction transaction)
         {

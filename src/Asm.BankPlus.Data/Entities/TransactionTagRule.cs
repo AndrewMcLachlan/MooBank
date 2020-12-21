@@ -15,6 +15,6 @@ namespace Asm.BankPlus.Data.Entities
 
         public virtual Account Account { get; set; }
 
-        public virtual ICollection<TransactionTagRuleTransactionTag> TransactionTagLinks { get; set; }
+        public virtual ICollection<TransactionTag> TransactionTags { get; set; }
     }
 }

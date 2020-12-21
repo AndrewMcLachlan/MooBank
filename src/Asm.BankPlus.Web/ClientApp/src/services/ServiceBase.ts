@@ -1,4 +1,4 @@
-import { State } from "store/state";
+import { State } from "../store/state";
 import { HttpStatusCodes, ProblemDetails } from "./HttpClient";
 
 export class ServiceBase {
@@ -16,7 +16,7 @@ export class ServiceBase {
     protected async handleError(response: Response): Promise<void> {
         switch (response.status as HttpStatusCodes) {
             case HttpStatusCodes.ServiceUnavailable:
-                throw new Error(`${this.state.app.appName} is currently unavailable`);
+                throw new Error(`MooBank is currently unavailable`);
             default:
                 try {
                 const problemDetails: ProblemDetails = await response.json();
@@ -24,7 +24,7 @@ export class ServiceBase {
                 }
                 catch(error) {
                     console.error(error);
-                    throw new Error(`${this.state.app.appName} is currently unavailable`);
+                    throw new Error(`MooBank is currently unavailable`);
                 }
         }
 

@@ -1,9 +1,9 @@
 ﻿import { Dispatch } from "redux";
 
-import * as Models from "models";
+import * as Models from "../models";
 import { ActionWithData } from "./redux-extensions";
 import { TransactionTags, State } from "./state";
-import { TransactionTagService } from "services/TransactionTagService";
+import { TransactionTagService } from "../services/TransactionTagService";
 import { ShowMessage } from "./App";
 
 const RequestTags = "RequestTags";

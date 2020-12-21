@@ -43,7 +43,7 @@ namespace Asm.BankPlus.Services
 
         public async Task<IEnumerable<TransactionTag>> Get()
         {
-            return (await DataContext.TransactionTags.Include(t => t.TagLinks).Where(t => !t.Deleted).ToListAsync()).Select(t => (TransactionTag)t).ToList();
+            return (await DataContext.TransactionTags.Include(t => t.Tags).Where(t => !t.Deleted).ToListAsync()).Select(t => (TransactionTag)t).ToList();
         }
 
         public async Task<TransactionTag> Get(int id)
@@ -91,7 +91,7 @@ namespace Asm.BankPlus.Services
         private async Task<Data.Entities.TransactionTag> GetEntity(int id, bool includeSubTags = false)
         {
             var tag = includeSubTags ?
-                await DataContext.TransactionTags.Include(t => t.TagLinks).Where(c => c.TransactionTagId == id).SingleOrDefaultAsync() :
+                await DataContext.TransactionTags.Include(t => t.Tags).Where(c => c.TransactionTagId == id).SingleOrDefaultAsync() :
                 await DataContext.TransactionTags.Where(c => c.TransactionTagId == id).SingleOrDefaultAsync();
 
             if (tag == null) throw new NotFoundException($"Transaction tag with id {id} was not found");

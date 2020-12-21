@@ -1,12 +1,20 @@
-import * as Models from "models";
-import { Transactions } from "store/state";
+import * as Models from "../models";
+import { Transactions } from "../store/state";
 import { ServiceBase } from "./ServiceBase";
-import HttpClient from "./HttpClient";
+import HttpClient, { httpClient } from "./HttpClient";
+import { useQuery } from "react-query";
+
+export const useTransactions = (accountId: string, filterTagged: boolean, pageSize: number, pageNumber: number) => {
+
+    const url = `api/accounts/${accountId}/transactions/${filterTagged ? "untagged/" : ""}${pageSize}/${pageNumber}`;
+
+    return useQuery(["transactions", accountId, filterTagged, pageSize, pageNumber], async () : Promise<Transactions> => (await httpClient.get(url)).data);
+}
 
 export class TransactionService extends ServiceBase {
 
-    public async getTransactions(accountId: string, pageSize: number, pageNumber: number): Promise<Transactions> {
-        const url = `api/accounts/${accountId}/transactions/${pageSize}/${pageNumber}`;
+    public async getTransactions(accountId: string, filterTagged: boolean, pageSize: number, pageNumber: number): Promise<Transactions> {
+        const url = `api/accounts/${accountId}/transactions/${filterTagged ? "untagged/" : ""}${pageSize}/${pageNumber}`;
 
         const client = new HttpClient(this.state.app.baseUrl);
 

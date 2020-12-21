@@ -8,16 +8,17 @@ import { faCheckCircle, faTrashAlt, faChevronDown, faTimesCircle } from "@fortaw
 
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import { SecurityService } from "services/SecurityService";
+import { MsalProvider, msalConfig } from "./components";
 
 library.add(faCheckCircle, faTrashAlt, faChevronDown, faTimesCircle);
 
-const securityService: SecurityService = new SecurityService();
-if (securityService.isUserLoggedIn()) {
-    ReactDOM.render(<App />, document.getElementById("root"));
-} else {
-    securityService.login();
-}
+ReactDOM.render(
+    (
+        <MsalProvider config={msalConfig}>
+            <App />
+        </MsalProvider>
+    ), document.getElementById("root"));
+
 
 
 // If you want your app to work offline and load faster, you can change

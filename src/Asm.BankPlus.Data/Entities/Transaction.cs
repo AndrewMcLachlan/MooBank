@@ -18,7 +18,7 @@ namespace Asm.BankPlus.Data.Entities
 
         public DateTime TransactionTime { get; set; }
 
-        public virtual ICollection<TransactionTransactionTag> TransactionTagLinks { get; set; }
+        public ICollection<TransactionTag> TransactionTags { get; set; }
 
         public virtual Account Account { get; set; }
 

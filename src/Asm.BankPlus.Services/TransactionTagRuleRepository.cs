@@ -71,7 +71,7 @@ namespace Asm.BankPlus.Services
         {
             _security.AssertPermission(accountId);
 
-            return await DataContext.TransactionTagRules.Include(t => t.TransactionTagLinks).ThenInclude(t => t.TransactionTag).Where(t => t.AccountId == accountId).Select(t => (Models.TransactionTagRule)t).ToListAsync();
+            return await DataContext.TransactionTagRules.Include(t => t.TransactionTags).Where(t => t.AccountId == accountId).Select(t => (Models.TransactionTagRule)t).ToListAsync();
         }
 
         public async Task<Models.TransactionTagRule> AddTransactionTag(Guid accountId, int id, int tagId)
@@ -106,7 +106,7 @@ namespace Asm.BankPlus.Services
 
         private async Task<TransactionTagRule> GetEntity(Guid accountId, int id)
         {
-            TransactionTagRule entity = await DataContext.TransactionTagRules.Include(t => t.TransactionTagLinks).ThenInclude(t => t.TransactionTag).SingleOrDefaultAsync(t => t.TransactionTagRuleId == id && t.AccountId == accountId);
+            TransactionTagRule entity = await DataContext.TransactionTagRules.Include(t => t.TransactionTags).SingleOrDefaultAsync(t => t.TransactionTagRuleId == id && t.AccountId == accountId);
 
             if (entity == null) throw new NotFoundException($"Transaction tag rule with ID {id} was not found");
 

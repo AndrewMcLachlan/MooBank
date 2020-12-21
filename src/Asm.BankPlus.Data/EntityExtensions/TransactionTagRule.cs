@@ -9,30 +9,9 @@ namespace Asm.BankPlus.Data.Entities
 {
     public partial class TransactionTagRule
     {
-        private ManyToManyCollection<TransactionTagRuleTransactionTag, TransactionTag, int> _transactionTags;
-
         public TransactionTagRule()
         {
-            TransactionTagLinks = new HashSet<TransactionTagRuleTransactionTag>();
-            _transactionTags = new ManyToManyCollection<TransactionTagRuleTransactionTag, TransactionTag, int>(
-                TransactionTagLinks,
-                manyEntityAdd: (t) => new TransactionTagRuleTransactionTag { TransactionTagRuleId = this.TransactionTagRuleId, TransactionTagId = t.TransactionTagId },
-                childSelector: (t) => t.TransactionTag,
-                manyEntityChildKeySelector: (t) => t.TransactionTagId,
-                childKeySelector: (t) => t.TransactionTagId
-            );
-        }
-
-        [NotMapped]
-        public ICollection<TransactionTag> TransactionTags
-        {
-            get { return _transactionTags;  }
-            set
-            {
-                _transactionTags.Clear();
-                _transactionTags.AddRange(value);
-            }
-
+            TransactionTags = new HashSet<TransactionTag>();
         }
 
         public static explicit operator Models.TransactionTagRule(TransactionTagRule rule)

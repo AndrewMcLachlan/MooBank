@@ -6,7 +6,7 @@ import { TransactionTagRule, TransactionTag } from "../../models";
 import { actionCreators } from "../../store/TransactionTagRules";
 import { State } from "../../store/state";
 import { TagPanel } from "../../components/TagPanel";
-import { ClickableIcon } from "components/ClickableIcon";
+import { ClickableIcon } from "../../components/ClickableIcon";
 
 export const TransactionTagRuleRow: React.FC<TransactionTagRuleRowProps> = (props) => {
 

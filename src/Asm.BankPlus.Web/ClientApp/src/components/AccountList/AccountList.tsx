@@ -1,41 +1,30 @@
 import "./AccountList.scss";
 
-import React, { useEffect } from "react";
+import React from "react";
 import { Table } from "react-bootstrap";
-import { useSelector, useDispatch } from "react-redux";
-import { bindActionCreators } from "redux";
-
-import { actionCreators } from "../../store/Accounts";
 
 import { AccountRow } from "./AccountRow";
-import VirtualAccountRow from "./VirtualAccountRow";
-import { State } from "../../store/state";
-import { getBalanceString } from "helpers";
+//import VirtualAccountRow from "./VirtualAccountRow";
+import { getBalanceString } from "../../helpers";
+import { useAccounts } from "../../services";
 
 export const AccountList: React.FC<AccountListProps> = () => {
-    const dispatch = useDispatch();
-    bindActionCreators(actionCreators, dispatch);
 
-    useEffect(() => {
-        dispatch(actionCreators.requestAccounts());
-    }, [dispatch]);
+    const accountsQuery = useAccounts();
 
-    const accountsState = useSelector((state: State) => state.accounts);
-
-    const { accounts, virtualAccounts, position } = accountsState;
-
+    const { data } = accountsQuery;
 
     const virtualAccountRows = [];
 
-    if (virtualAccounts) {
+/*    if (virtualAccounts) {
         for (const account of virtualAccounts) {
             virtualAccountRows.push(<VirtualAccountRow key={account.virtualAccountId} account={account} />);
         }
-    }
+    }*/
 
     const accountRows = [];
-    if (accounts) {
-        for (const account of accounts) {
+    if (data?.accounts) {
+        for (const account of data?.accounts) {
             accountRows.push(<AccountRow key={account.id} account={account} />);
         }
     }
@@ -59,7 +48,7 @@ export const AccountList: React.FC<AccountListProps> = () => {
                     <tfoot>
                         <tr>
                             <td>Position</td>
-                            <td>{getBalanceString(position)}</td>
+                            <td>{getBalanceString(data?.position)}</td>
                         </tr>
                     </tfoot>
                 </Table>

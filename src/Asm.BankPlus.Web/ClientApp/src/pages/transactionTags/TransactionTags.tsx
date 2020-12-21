@@ -5,14 +5,14 @@ import { Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import { actionCreators } from "store/TransactionTags";
-import { State } from "store/state";
+import { actionCreators } from "../../store/TransactionTags";
+import { State } from "../../store/state";
 import { TransactionTagRow } from "./TransactionTagRow";
 
-import { TagPanel } from "components";
-import { TransactionTag } from "models";
-import { ClickableIcon } from "components/ClickableIcon";
-import { usePageTitle } from "hooks";
+import { TagPanel } from "../../components";
+import { TransactionTag } from "../../models";
+import { ClickableIcon } from "../../components/ClickableIcon";
+import { usePageTitle } from "../../hooks";
 
 export const TransactionTags: React.FC = () => {
 

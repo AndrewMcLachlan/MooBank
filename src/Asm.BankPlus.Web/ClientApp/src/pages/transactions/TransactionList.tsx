@@ -1,77 +1,51 @@
 import "./TransactionList.scss";
 
 import React, { useEffect } from "react";
-//import Table from "react-bootstrap-table-next";
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import { Table } from "react-bootstrap";
 
-//import paginationFactory from 'react-bootstrap-table2-paginator';
-//import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
-
 import { actionCreators as accountActionCreators } from "../../store/Accounts";
-import { actionCreators as transactionActionCreators } from "../../store/Transactions";
+import { actionCreators as transactionActionCreators, SetTransactionListFilter } from "../../store/Transactions";
 import { State } from "../../store/state";
-import { Account, AccountController } from "../../models";
-import { TransactionRow, TransactionRowProps } from "./TransactionRow";
+import { Account } from "../../models";
+import { TransactionRow } from "./TransactionRow";
 import { TransactionRowIng } from "./TransactionRowIng";
-import { statement } from "@babel/template";
+import { useTransactions } from "../../services";
+import { useParams } from "react-router";
 
 export const TransactionList: React.FC<TransactionListProps> = (props) => {
 
-    const transactions = useSelector((state: State) => state.transactions.transactions);
+    const { id } = useParams<any>();
+
     const pageNumber = useSelector((state: State) => state.transactions.currentPage);
     const totalTransactions = useSelector((state: State) => state.transactions.total);
     const pageSize = useSelector((state: State) => state.transactions.pageSize);
+    const filterTagged = useSelector((state: State) => state.transactions.filterTagged);
     const dispatch = useDispatch();
+
+    const transactionsQuery = useTransactions(id, filterTagged, pageSize, pageNumber);
+    const transactions = transactionsQuery.data?.transactions;
 
     bindActionCreators(accountActionCreators, dispatch);
     bindActionCreators(transactionActionCreators, dispatch);
 
     useEffect(() => {
         props.account && dispatch(transactionActionCreators.requestTransactions(props.account.id, pageNumber));
-    }, [dispatch, props.account]);
-
-    let dataSource = transactions;
-    if (!dataSource || dataSource === null) {
-        dataSource = [];
-    }
-
-    /*const columns = [{
-        dataField: "id",
-        text: "",
-        hidden: true,
-    }, {
-        dataField: "transactionTime",
-        text: "Date",
-        formatter: (cell: any) => cell && moment(cell).format("DD/MM/YYYY"),
-        sort: true,
-    }, {
-        dataField: "description",
-        text: "Descripton",
-        sort: true,
-    }, {
-        dataField: "amount",
-        text: "Amount",
-        formatter: (cell: number) => cell && (cell.toLocaleString("en-AU", { minimumFractionDigits: 2, maximumFractionDigits: 2 })),
-        sort: true,
-    }, {
-        dataField: "tags",
-        text: "Tags",
-        formatter: (cell: TransactionTag[]) => cell.map((tt) => <p>{tt.name}</p>),
-
-        sort: false,
-    }
-    ];*/
+    }, [dispatch, props.account, filterTagged]);
 
     const numberOfPages = Math.ceil(totalTransactions / pageSize);
-
+ 
     const showNext = pageNumber < numberOfPages;
     const showPrev = pageNumber > 1;
 
     return (
         <section>
+            <div className="filter-panel">
+                <input id="filter-tagged" type="checkbox" onChange={(e) => dispatch({  type: SetTransactionListFilter, data: e.currentTarget.checked})} />
+                <label htmlFor="filter-tagged">Only show transactions without tags</label>
+            </div>
             <Table striped bordered={false} borderless className="transactions">
                 <thead>
                     <tr>
@@ -96,17 +70,6 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
                     </tr>
                 </tfoot>
             </Table>
-
-
-
-            {/*            <Table keyField="id"
-                data={dataSource}
-                noDataIndication="No transactions to display"
-                pagination={paginationFactory()}
-                columns={columns}
-                bordered={false}
-                striped
-                bootstrap4 />*/}
         </section>
     );
 }

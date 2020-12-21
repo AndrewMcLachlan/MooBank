@@ -1,7 +1,7 @@
 import "./TransactionTagRules.scss";
 
 import React, { useEffect, useState } from "react";
-import { Table, Button } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
 
@@ -11,12 +11,13 @@ import { actionCreators as tagActionCreators } from "../../store/TransactionTags
 
 import { TagPanel, PageHeader } from "../../components";
 
-import { TransactionTag, TransactionTagRule } from "models";
-import { RouteComponentProps } from "react-router";
-import { useSelectedAccount, usePageTitle } from "hooks";
+import { TransactionTag, TransactionTagRule } from "../../models";
+import { RouteComponentProps, useParams } from "react-router";
+import { usePageTitle } from "../../hooks";
 
 import { TransactionTagRuleRow } from "./TransactionTagRuleRow";
 import { ClickableIcon } from "../../components/ClickableIcon";
+import { useAccount } from "../../services";
 
 export const TransactionTagRules: React.FC<TransactionTagRuleProps> = (props) => {
 
@@ -60,8 +61,8 @@ const useComponentState = (props: TransactionTagRuleProps) => {
 
     const blankRule = { id: 0, contains: "", tags: [] } as TransactionTagRule;
 
-    const accountId = props.match.params.id;
-    const account = useSelectedAccount(accountId);
+    const { id } = useParams<any>();
+    const account = useAccount(id);
 
     const fullTagsList = useSelector((state: State) => state.transactionTags.tags);
 
