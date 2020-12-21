@@ -1,20 +1,4 @@
 import * as Models from "../models";
-import { ServiceBase } from "./ServiceBase";
-import HttpClient from "./HttpClient";
+import { useApiQuery } from "./useApiQuery";
 
-export class ReferenceDataService extends ServiceBase {
-    
-    public async getImporterTypes() {
-        const url = `api/referencedata/importertypes`;
-
-        const client = new HttpClient(this.state.app.baseUrl);
-
-        try {
-            return await client.get<Models.ImporterType[]>(url);
-        }
-        catch (response) {
-            await super.handleError(response);
-        }
-    }
-
-}
+export const useImporterTypes = () => useApiQuery<Models.ImporterType[]>(["tags"], `api/referencedata/importertypes`);

@@ -1,18 +1,6 @@
-import React from "react";
-import { useQuery } from "react-query";
-
 import { Account, Accounts } from "../models";
-import { httpClient } from "./HttpClient";
+import { useApiQuery } from "./useApiQuery";
 
-export const useAccounts = () => {
+export const useAccounts = () => useApiQuery<Accounts>(["accounts"], `api/accounts`);
 
-    const url = `api/accounts`;
-
-    return useQuery(["accounts"], async () : Promise<Accounts> => (await httpClient.get(url)).data);
-}
-
-export const useAccount = (accountId: string) => {
-    const url = `api/accounts/${accountId}`;
-
-    return useQuery(["account", accountId], async () : Promise<Account> => (await httpClient.get(url)).data);
-}
+export const useAccount = (accountId: string) => useApiQuery<Account>(["account", accountId], `api/accounts/${accountId}`);

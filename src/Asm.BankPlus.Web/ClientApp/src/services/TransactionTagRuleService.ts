@@ -1,51 +1,67 @@
 import * as Models from "../models";
-import { TransactionTagRules } from "../store/state";
 import { ServiceBase } from "./ServiceBase";
-import HttpClient from "./HttpClient";
+import HttpClient, { httpClient } from "./HttpClient";
+import { useApiQuery } from "./useApiQuery";
+import { useQueryClient } from "react-query";
+import { useMutation } from "react-query";
+
+export const useRules = (accountId: string) => useApiQuery<Models.TransactionTagRules>(["rules", accountId], `api/accounts/${accountId}/transaction/tag/rules`);
+
+export const useRunRules = () => useMutation<null, null, { accountId: string }>(async (variables) => await httpClient.post(`api/accounts/${variables.accountId}/transaction/tag/rules/run`));
+
+export const useAddTransactionTagRuleTag = () => {
+
+    const queryClient = useQueryClient();
+
+    return useMutation<Models.TransactionTagRule, null, { accountId: string, ruleId: number, tagId: number }>(async (variables) => (await httpClient.put<Models.TransactionTagRule>(`api/accounts/${variables.accountId}/transaction/tag/rules/${variables.ruleId}/tag/${variables.tagId}`)).data, {
+        onSuccess: (data: Models.TransactionTagRule, variables: { accountId: string, ruleId: number, tagId: number }) => {
+            queryClient.setQueryData<Models.TransactionTagRule>(["transactionrules", { id: variables.ruleId }], data);
+        }
+    });
+}
+
+export const useRemoveTransactionTagRuleTag = () => {
+
+    const queryClient = useQueryClient();
+
+    return useMutation<Models.TransactionTagRule, null, { accountId: string, ruleId: number, tagId: number }>(async (variables) => (await httpClient.delete<Models.TransactionTagRule>(`api/accounts/${variables.accountId}/transaction/tag/rules/${variables.ruleId}/tag/${variables.tagId}`)).data, {
+        onSuccess: (data: Models.TransactionTagRule, variables: { accountId: string, ruleId: number, tagId: number }) => {
+            queryClient.setQueryData<Models.TransactionTagRule>(["transactionrules", { id: variables.ruleId }], data);
+        }
+    });
+}
+
+export const useCreateRule = () => {
+
+    const queryClient = useQueryClient();
+
+    return useMutation<Models.TransactionTagRule, null, { accountId: string; rule: Models.TransactionTagRule }>(async (variables) => (await httpClient.post<Models.TransactionTagRule>(`api/accounts/${variables.accountId}/transaction/tag/rules`, variables.rule)).data, {
+        onSuccess: (data: Models.TransactionTagRule) => {
+            queryClient.setQueryData<Models.TransactionTagRule>(["tags", { id: data.id }], data);
+            let allRules = queryClient.getQueryData<Models.TransactionTagRule[]>(["transactionrules"]);
+            allRules = allRules.sort((t1, t2) => t1.contains.localeCompare(t2.contains));
+            queryClient.setQueryData<Models.TransactionTagRule[]>(["transactionrules"], allRules);
+        }
+    });
+}
+
+export const useDeleteRule = () => {
+
+    const queryClient = useQueryClient();
+
+    return useMutation<null, null, { accountId: string; ruleId: number}>(async (variables) => (await httpClient.delete(`api/accounts/${variables.accountId}/transaction/tag/rules/${variables.ruleId}`)).data, {
+        onSuccess: (variables: { accountId: string; ruleId: number}) => {
+            let allTags = queryClient.getQueryData<Models.TransactionTagRule[]>(["transactionrules"]);
+            allTags = allTags.filter(r => r.id !== (variables.ruleId));
+            allTags = allTags.sort((t1, t2) => t1.contains.localeCompare(t2.contains));
+            queryClient.setQueryData<Models.TransactionTagRule[]>(["transactionrules"], allTags);
+        }
+    });
+}
 
 export class TransactionTagRuleService extends ServiceBase {
 
-    public async getRules(accountId: string): Promise<TransactionTagRules> {
-        const url = `api/accounts/${accountId}/transaction/tag/rules`;
-
-        const client = new HttpClient(this.state.app.baseUrl);
-
-        try {
-            const rules = await client.get<TransactionTagRules>(url);
-            return rules;
-        }
-        catch (response) {
-            super.handleError(response as Response);
-        }
-    }
-
-    public async createRule(accountId: string, rule: Models.TransactionTagRule): Promise<Models.TransactionTagRule> {
-        const url = `api/accounts/${accountId}/transaction/tag/rules`;
-
-        const client = new HttpClient(this.state.app.baseUrl);
-
-        try {
-            return await client.post<Models.TransactionTagRule, Models.TransactionTagRule>(url, rule);
-        }
-        catch (response) {
-            await super.handleError(response);
-        }
-    }
-
-    public async deleteRule(accountId: string, ruleId: number): Promise<void> {
-        const url = `api/accounts/${accountId}/transaction/tag/rules/${ruleId}`;
-
-        const client = new HttpClient(this.state.app.baseUrl);
-
-        try {
-            return await client.delete<void>(url);
-        }
-        catch (response) {
-            await super.handleError(response);
-        }
-    }
-
-    public async addTransactionTag(accountId: string, ruleId: number, tagId: number): Promise<Models.TransactionTagRule> {
+/*    public async addTransactionTag(accountId: string, ruleId: number, tagId: number): Promise<Models.TransactionTagRule> {
         const url = `api/accounts/${accountId}/transaction/tag/rules/${ruleId}/tag/${tagId}`;
 
         const client = new HttpClient(this.state.app.baseUrl);
@@ -72,7 +88,7 @@ export class TransactionTagRuleService extends ServiceBase {
     }
 
     public async runRules(accountId: string) {
-        const url =`api/accounts/${accountId}/transaction/tag/rules/run`;
+        const url = `api/accounts/${accountId}/transaction/tag/rules/run`;
 
         const client = new HttpClient(this.state.app.baseUrl);
 
@@ -82,5 +98,5 @@ export class TransactionTagRuleService extends ServiceBase {
         catch (response) {
             super.handleError(response as Response);
         }
-    }
+    }*/
 }

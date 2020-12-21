@@ -46,6 +46,11 @@ namespace Asm.BankPlus.Services
             return (await DataContext.TransactionTags.Include(t => t.Tags).Where(t => !t.Deleted).ToListAsync()).Select(t => (TransactionTag)t).ToList();
         }
 
+        public async Task<IEnumerable<Data.Entities.TransactionTag>> Get(IEnumerable<int> tagIds)
+        {
+            return await DataContext.TransactionTags.Where(t => tagIds.Contains(t.TransactionTagId)).ToListAsync();
+        }
+
         public async Task<TransactionTag> Get(int id)
         {
             return await GetEntity(id);
@@ -98,6 +103,5 @@ namespace Asm.BankPlus.Services
 
             return tag;
         }
-
     }
 }

@@ -1,71 +1,66 @@
 import * as Models from "../models";
 import { ServiceBase } from "./ServiceBase";
-import HttpClient from "./HttpClient";
+import HttpClient, { httpClient } from "./HttpClient";
+import { useApiQuery } from "./useApiQuery";
+import { useMutation, useQueryClient } from "react-query";
 
-export class TransactionTagService extends ServiceBase {
-    
-    public async getTags() {
-        const url = `api/transaction/tags`;
+interface TransactionTagVariables {
+    name: string;
+}
 
-        const client = new HttpClient(this.state.app.baseUrl);
+export const useTags = () => useApiQuery<Models.TransactionTag[]>(["tags"], `api/transaction/tags`);
 
-        try {
-            return await client.get<Models.TransactionTag[]>(url);
+export const useCreateTag = () => {
+
+    const queryClient = useQueryClient();
+
+    return useMutation<Models.TransactionTag, null, TransactionTagVariables | Models.TransactionTag>(async (variables) => {
+
+        const name = (variables as Models.TransactionTag).name || (variables.name).trim();
+        const tags = (variables as Models.TransactionTag).tags || [];
+
+        return (await httpClient.put<Models.TransactionTag>(`api/transaction/tags/${encodeURIComponent(name)}`, tags)).data;
+    }, {
+        onSuccess: (data: Models.TransactionTag) => {
+            queryClient.setQueryData<Models.TransactionTag>(["tags", { id: data.id }], data);
+            let allTags = queryClient.getQueryData<Models.TransactionTag[]>(["tags"]);
+            allTags = allTags.sort((t1, t2) => t1.name.localeCompare(t2.name));
+            queryClient.setQueryData<Models.TransactionTag[]>(["tags"], allTags);
         }
-        catch (response) {
-            await super.handleError(response);
+    });
+}
+
+export const useDeleteTag = () => {
+
+    const queryClient = useQueryClient();
+
+    return useMutation<null, null, { id: number }>(async (variables) => (await httpClient.delete(`api/transaction/tags/${variables.id}`)).data, {
+        onSuccess: (variables: { id: number }) => {
+            let allTags = queryClient.getQueryData<Models.TransactionTag[]>(["tags"]);
+            allTags = allTags.filter(r => r.id !== (variables.id));
+            allTags = allTags.sort((t1, t2) => t1.name.localeCompare(t2.name));
+            queryClient.setQueryData<Models.TransactionTag[]>(["tags"], allTags);
         }
-    }
+    });
+}
 
-    public async createTag(name: string, tags: Models.TransactionTag[]): Promise<Models.TransactionTag> {
-        const url = `api/transaction/tags/${encodeURIComponent(name)}`;
+export const useAddSubTag = () => {
 
-        const client = new HttpClient(this.state.app.baseUrl);
+    const queryClient = useQueryClient();
 
-        try {
-            return await client.put<Models.TransactionTag[], Models.TransactionTag>(url, tags);
+    return useMutation<Models.TransactionTag, null, { tagId: number, subTagId: number }>(async (variables) => (await httpClient.put<Models.TransactionTag>(`api/transaction/tags/${variables.tagId}/tags/${variables.subTagId}`)).data, {
+        onSuccess: (data: Models.TransactionTag, variables: { tagId: number, subTagId: number }) => {
+            queryClient.setQueryData<Models.TransactionTag>(["tags", { id: variables.tagId }], data);
         }
-        catch (response) {
-            await super.handleError(response);
+    });
+}
+export const useRemoveSubTag = () => {
+
+    const queryClient = useQueryClient();
+
+    return useMutation<Models.TransactionTag, null, { tagId: number, subTagId: number }>(async (variables) => (await httpClient.delete<Models.TransactionTag>(`api/transaction/tags/${variables.tagId}/tags/${variables.subTagId}`)).data, {
+        onSuccess: (data: Models.TransactionTag, variables: { tagId: number, subTagId: number }) => {
+            queryClient.setQueryData<Models.TransactionTag>(["tags", { id: variables.tagId }], data);
         }
-    }
-
-    public async deleteTag(tag: Models.TransactionTag) {
-        const url = `api/transaction/tags/${tag.id}`;
-
-        const client = new HttpClient(this.state.app.baseUrl);
-
-        try {
-            return await client.delete<Models.TransactionTag>(url);
-        }
-        catch (response) {
-            await super.handleError(response);
-        }
-    }
-
-    public async addTransactionTag(tagId: number, subId: number): Promise<Models.Transaction> {
-        const url = `api/transaction/tags/${tagId}/tags/${subId}`;
-
-        const client = new HttpClient(this.state.app.baseUrl);
-
-        try {
-            return await client.put(url);
-        }
-        catch (response) {
-            super.handleError(response as Response);
-        }
-    }
-
-    public async removeTransactionTag(tagId: number, subId: number) {
-        const url = `api/transaction/tags/${tagId}/tags/${subId}`;
-
-        const client = new HttpClient(this.state.app.baseUrl);
-
-        try {
-            return await client.delete(url);
-        }
-        catch (response) {
-            super.handleError(response as Response);
-        }
-    }
+    });
 }

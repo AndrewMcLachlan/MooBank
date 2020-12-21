@@ -3,10 +3,11 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { State } from "../../store/state";
 import { Form } from "react-bootstrap";
+import { useImporterTypes } from "../../services";
 
 export const ImportSettings: React.FC<ImportSettingsProps> = (props) => {
 
-    const importerTypes = useSelector((state: State) => state.referenceData.importAccountTypes);
+    const importerTypes = useImporterTypes();
 
     const [selectedId, setSelectedId] = useState(0);
 
@@ -15,7 +16,7 @@ export const ImportSettings: React.FC<ImportSettingsProps> = (props) => {
             <Form.Label>Importer Type</Form.Label>
             <Form.Control as="select" value={selectedId.toString()} required onChange={(e) => { setSelectedId(parseInt(e.currentTarget.value)); props.onChange && props.onChange(parseInt(e.currentTarget.value)) }}>
                 <option value="0">Select...</option>
-                {importerTypes.map(a =>
+                {importerTypes.data?.map(a =>
                     <option value={a.id} key={a.id}>{a.type}</option>
                 )}
             </Form.Control>

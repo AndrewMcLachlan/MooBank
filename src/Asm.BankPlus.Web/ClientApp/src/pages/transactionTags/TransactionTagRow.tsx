@@ -1,18 +1,16 @@
 ﻿import React, { useState, useEffect } from "react";
 
 import { TransactionTag } from "../../models";
-import { useDispatch, useSelector } from "react-redux";
-import { bindActionCreators } from "redux";
-import { actionCreators } from "../../store/TransactionTags";
-import { State } from "../../store/state";
 import { TagPanel } from "../../components/TagPanel";
 import { ClickableIcon } from "../../components/ClickableIcon";
+import { useAddSubTag, useCreateTag, useDeleteTag, useRemoveSubTag, useTags } from "../../services";
 
 export const TransactionTagRow: React.FC<TransactionTagRowProps> = (props) => {
 
     const transactionRow = useTransactionTagRowEvents(props);
 
-    const fullTagsList = useSelector((state: State) => state.transactionTags.tags);
+    const fullTagsListQuery = useTags();
+    const fullTagsList = fullTagsListQuery.data ?? [];
 
     const [tagsList, setTagsList] = useState([]);
 
@@ -31,23 +29,29 @@ export const TransactionTagRow: React.FC<TransactionTagRowProps> = (props) => {
 
 function useTransactionTagRowEvents(props: TransactionTagRowProps) {
 
-    const dispatch = useDispatch();
     const [tags, setTags] = useState(props.tag.tags);
+
+    const createTransactionTag = useCreateTag();
+    const deleteTransactionTag = useDeleteTag();
+    const addSubTag = useAddSubTag();
+    const removeSubTag = useRemoveSubTag();
 
     useEffect(() => {
         setTags(props.tag.tags);
     }, [props.tag.tags]);
 
-    bindActionCreators(actionCreators, dispatch);
-
     const createTag = (name: string) => {
-        dispatch(actionCreators.createTagAndAdd(props.tag.id, name));
+        createTransactionTag.mutate({ name }, {
+            onSuccess: (data) => {
+                addSubTag.mutate({ tagId: props.tag.id, subTagId: data.id});
+            }
+        });
     }
 
     const deleteTag = () => {
 
         if (window.confirm("Deleting this tag will remove it from all rules and transactions. Are you sure?")) {
-            dispatch(actionCreators.deleteTag(props.tag));
+            deleteTransactionTag.mutate({ id: props.tag.id});
         }
     }
 
@@ -55,7 +59,7 @@ function useTransactionTagRowEvents(props: TransactionTagRowProps) {
 
         if (!tag.id) return;
 
-        dispatch(actionCreators.addTransactionTag(props.tag.id, tag.id));
+        addSubTag.mutate({ tagId: props.tag.id, subTagId: tag.id });
         setTags(tags.concat([tag]));
     }
 
@@ -63,7 +67,7 @@ function useTransactionTagRowEvents(props: TransactionTagRowProps) {
 
         if (!tag.id) return;
 
-        dispatch(actionCreators.removeTransactionTag(props.tag.id, tag.id));
+        removeSubTag.mutate({ tagId: props.tag.id, subTagId: tag.id});
         setTags(tags.filter((t) => t.id !== tag.id));
     }
 

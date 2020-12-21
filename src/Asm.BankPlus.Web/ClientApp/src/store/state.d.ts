@@ -4,10 +4,7 @@ export interface State {
     app: App,
     accounts?: Accounts,
     transactions?: Transactions,
-    transactionTags?: TransactionTags,
-    transactionTagRules?: TransactionTagRules,
     security?: Security,
-    referenceData?: ReferenceData,
 }
 
 export interface App {
@@ -23,23 +20,12 @@ export interface Accounts {
     position: number;
 }
 
-export interface TransactionTagRules {
-    rules?: Models.TransactionTagRule[];
-    areLoading: boolean;
-}
-
 export interface Transactions {
-    transactions: Models.Transaction[];
     areLoading: boolean;
     currentPage: number;
     pageSize: number;
     total: number;
     filterTagged: boolean;
-}
-
-export interface TransactionTags {
-    tags: Models.TransactionTag[],
-    areLoading: boolean;
 }
 
 export interface Security {
@@ -55,8 +41,4 @@ export interface VirtualAccount {
     defaultAccount: boolean;
     closed: boolean;
 
-}
-
-export interface ReferenceData {
-    importAccountTypes: Models.ImporterType[];
 }

@@ -2,20 +2,16 @@
 import moment from "moment";
 
 import { Transaction, TransactionTag } from "../../models";
-import { useDispatch, useSelector } from "react-redux";
-import { bindActionCreators } from "redux";
-import { actionCreators } from "../../store/Transactions";
-import { actionCreators as tagActionCreators } from "../../store/TransactionTags";
-import { State } from "../../store/state";
 import { TagPanel } from "../../components";
 import { TransactionRowProps } from "./TransactionRow";
+import { useAddTransactionTag, useCreateTag, useRemoveTransactionTag, useTags } from "../../services";
 
 export const TransactionRowIng: React.FC<TransactionRowProps> = (props) => {
 
-    //const [editMode, setEditMode] = useState(false);
     const transactionRow = useTransactionRowEvents(props);
 
-    const fullTagsList = useSelector((state: State) => state.transactionTags.tags);
+    const fullTagsListQuery = useTags();
+    const fullTagsList = fullTagsListQuery.data ?? [];
 
     const [tagsList, setTagsList] = useState([]);
 
@@ -37,25 +33,29 @@ TransactionRowIng.displayName = "TransactionRowIng";
 
 function useTransactionRowEvents(props: TransactionRowProps) {
 
-    const dispatch = useDispatch();
     const [tags, setTags] = useState(props.transaction.tags);
+
+    const addTransactionTag = useAddTransactionTag();
+    const removeTransactionTag = useRemoveTransactionTag();
+    const createTransactionTag = useCreateTag();
 
     useEffect(() => {
         setTags(props.transaction.tags);
     }, [props.transaction.tags]);
 
-    bindActionCreators(actionCreators, dispatch);
-    bindActionCreators(tagActionCreators, dispatch);
-
     const createTag = (name: string) => {
-        dispatch(actionCreators.createTagAndAdd(props.transaction.id, name));
+        createTransactionTag.mutate({ name }, {
+            onSuccess: (data) => {
+                addTransactionTag.mutate({ transactionId: props.transaction.id, tagId: data.id});
+            }
+        });
     }
 
     const addTag = (tag: TransactionTag) => {
 
         if (!tag.id) return;
 
-        dispatch(actionCreators.addTransactionTag(props.transaction.id, tag.id));
+        addTransactionTag.mutate({ transactionId: props.transaction.id, tagId: tag.id });
         setTags(tags.concat([tag]));
     }
 
@@ -63,7 +63,7 @@ function useTransactionRowEvents(props: TransactionRowProps) {
 
         if (!tag.id) return;
 
-        dispatch(actionCreators.removeTransactionTag(props.transaction.id, tag.id));
+        removeTransactionTag.mutate({ transactionId: props.transaction.id, tagId: tag.id });
         setTags(tags.filter((t) => t.id !== tag.id));
     }
 

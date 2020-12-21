@@ -2,17 +2,14 @@ import "./TransactionTags.scss";
 
 import React, { useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
-import { bindActionCreators } from "redux";
 
-import { actionCreators } from "../../store/TransactionTags";
-import { State } from "../../store/state";
 import { TransactionTagRow } from "./TransactionTagRow";
 
 import { TagPanel } from "../../components";
 import { TransactionTag } from "../../models";
 import { ClickableIcon } from "../../components/ClickableIcon";
 import { usePageTitle } from "../../hooks";
+import { useAddSubTag, useCreateTag, useRemoveSubTag, useTags } from "../../services";
 
 export const TransactionTags: React.FC = () => {
 
@@ -45,32 +42,31 @@ export const TransactionTags: React.FC = () => {
 
 const useComponentState = () => {
 
-    var dispatch = useDispatch();
-
     const blankTag = {id: 0, name: "", tags: []} as TransactionTag;
 
-    const fullTagsList = useSelector((state: State) => state.transactionTags.tags);
+    const fullTagsListQuery = useTags();
+    const fullTagsList = fullTagsListQuery.data ?? [];
+
+    
+    const createTransactionTag = useCreateTag();
+    const addSubTag = useAddSubTag();
+    const removeSubTag = useRemoveSubTag();
+    
 
     const [newTag, setNewTag] = useState(blankTag); 
     const [tagsList, setTagsList] = useState([]);
-
-    bindActionCreators(actionCreators, dispatch);
-
-    useEffect(() => {
-        dispatch(actionCreators.requestTags());
-    }, [dispatch]);
-
+  
     useEffect(() => {
         setTagsList(fullTagsList.filter((t) => !newTag.tags.some((tt) => t.id === tt.id)));
     }, [newTag.tags, fullTagsList]);
 
     const createTag = () => {
-        dispatch(actionCreators.createTag(newTag));
+        createTransactionTag.mutate(newTag);
         setNewTag(blankTag);
     }
 
     const createSubTag = (name: string) => {
-        dispatch(actionCreators.createTag(name));
+        createTransactionTag.mutate({ name });
     }
 
     const nameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,8 +77,6 @@ const useComponentState = () => {
 
         if (!tag.id) return;
 
-        //dispatch(actionCreators.addTransactionTag(props.transaction.id, tag.id));
-        //setTags(tags.concat([tag]));
         newTag.tags.push(tag);
         setNewTag(newTag);
     }

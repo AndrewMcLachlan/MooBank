@@ -1,18 +1,17 @@
 ﻿import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { bindActionCreators } from "redux";
 
 import { TransactionTagRule, TransactionTag } from "../../models";
-import { actionCreators } from "../../store/TransactionTagRules";
-import { State } from "../../store/state";
 import { TagPanel } from "../../components/TagPanel";
 import { ClickableIcon } from "../../components/ClickableIcon";
+import { useCreateTag, useTags } from "../../services/TransactionTagService";
+import { useAddTransactionTagRuleTag, useDeleteRule, useRemoveTransactionTagRuleTag } from "../../services";
 
 export const TransactionTagRuleRow: React.FC<TransactionTagRuleRowProps> = (props) => {
 
     const transactionRow = useTransactionTagRuleRowEvents(props);
 
-    const fullTagsList = useSelector((state: State) => state.transactionTags.tags);
+    const fullTagsListQuery = useTags();
+    const fullTagsList = fullTagsListQuery.data ?? [];
 
     const [tagsList, setTagsList] = useState([]);
 
@@ -33,38 +32,45 @@ TransactionTagRuleRow.displayName = "TransactionTagRuleRow";
 
 function useTransactionTagRuleRowEvents(props: TransactionTagRuleRowProps) {
 
-    const dispatch = useDispatch();
+    const createTransactionTag = useCreateTag();
+    const addTransactionTagRuleTag = useAddTransactionTagRuleTag();
+    const removeTransactionTagRuleTag = useRemoveTransactionTagRuleTag();
+    
+    const deleteTransactionTagRule = useDeleteRule();
+
     const [tags, setTags] = useState(props.rule.tags);
 
     useEffect(() => {
         setTags(props.rule.tags);
     }, [props.rule.tags]);
 
-    bindActionCreators(actionCreators, dispatch);
-
     const deleteRule = () => {
-        dispatch(actionCreators.deleteRule(props.rule));
-    }
+        deleteTransactionTagRule.mutate({accountId: props.accountId, ruleId: props.rule.id});
+    };
 
     const createTag = (name: string) => {
-        dispatch(actionCreators.createTagAndAdd(props.rule.id, name));
-    }
+        createTransactionTag.mutate({ name }, {
+            onSuccess: (data) => {
+                addTransactionTagRuleTag.mutate({ accountId: props.accountId, ruleId: props.rule.id, tagId: data.id});
+            }
+        });
+    };
 
     const addTag = (tag: TransactionTag) => {
 
         if (!tag.id) return;
 
-        dispatch(actionCreators.addTransactionTag(props.rule.id, tag.id));
+        addTransactionTagRuleTag.mutate({ accountId: props.accountId, ruleId: props.rule.id, tagId: tag.id});
         setTags([ ...tags, tag]);
-    }
+    };
 
     const removeTag = (tag: TransactionTag) => {
 
         if (!tag.id) return;
 
-        dispatch(actionCreators.removeTransactionTag(props.rule.id, tag.id));
+        removeTransactionTagRuleTag.mutate({ accountId: props.accountId, ruleId: props.rule.id, tagId: tag.id});
         setTags(tags.filter((t) => t.id !== tag.id));
-    }
+    };
 
     return {
         deleteRule,
@@ -77,4 +83,5 @@ function useTransactionTagRuleRowEvents(props: TransactionTagRuleRowProps) {
 
 export interface TransactionTagRuleRowProps {
     rule: TransactionTagRule;
+    accountId: string;
 }

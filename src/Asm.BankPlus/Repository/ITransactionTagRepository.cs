@@ -14,6 +14,8 @@ namespace Asm.BankPlus.Repository
 
         Task<IEnumerable<TransactionTag>> Get();
 
+        Task<IEnumerable<Data.Entities.TransactionTag>> Get(IEnumerable<int> tagIds);
+
         Task<TransactionTag> Get(int id);
 
         Task Delete(int id);
@@ -21,5 +23,6 @@ namespace Asm.BankPlus.Repository
         Task<TransactionTag> AddSubTag(int id, int subId);
 
         Task RemoveSubTag(int id, int subId);
+
     }
 }

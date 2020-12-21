@@ -4,7 +4,6 @@ import React, { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Provider as ReduxProvider } from "react-redux";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import { bindActionCreators, Dispatch } from "redux";
 
 import { Layout } from "./layouts/Layout";
 import * as Pages from "./pages";
@@ -13,9 +12,6 @@ import { initialState as accountsInitialState } from "./store/Accounts";
 import configureStore from "./store/configureStore";
 import { State } from "./store/state";
 import { initialState as appInitialState } from "./store/App";
-import { initialState as tagsInitialState, actionCreators as tagActionCreators } from "./store/TransactionTags";
-import { initialState as refDataInitialState, actionCreators as refDataActionCreators } from "./store/ReferenceData";
-import { initialState as rulesInitialState } from "./store/TransactionTagRules";
 import { apiRequest, AppProvider, useMsal } from "./components";
 import { createHttpClient, httpClient } from "./services/HttpClient";
 
@@ -26,9 +22,6 @@ const App: React.FC = () => {
     const initialState: State = {
         app: appInitialState,
         accounts: accountsInitialState,
-        transactionTags: tagsInitialState,
-        transactionTagRules: rulesInitialState,
-        referenceData: refDataInitialState,
     };
 
     const { isAuthenticated, getToken } = useMsal();
@@ -51,12 +44,6 @@ const App: React.FC = () => {
 
     const store = configureStore(window.history, initialState);
 
-    const dispatch: Dispatch<any> = store.dispatch;
-
-    bindActionCreators(tagActionCreators, dispatch);
-    bindActionCreators(refDataActionCreators, dispatch);
-    dispatch(tagActionCreators.requestTags());
-    dispatch(refDataActionCreators.requestImporterTypes());
     return (
         <AppProvider appName="MooBank" // Array.from(document.getElementsByTagName("meta")).find((value) => value.getAttribute("name") === "application-name").getAttribute("content"),
             baseUrl={baseUrl} //document.getElementsByTagName("base")[0].getAttribute("href"),
@@ -71,7 +58,7 @@ const App: React.FC = () => {
                                 <Route exact path="/accounts" component={Pages.CreateAccount} />
                                 <Route path="/accounts/create" component={Pages.CreateAccount} />
                                 <Route exact path="/accounts/:id" component={Pages.Transactions} />
-                                <Route path="/accounts/:id/tag-rules" component={Pages.TransactionTagRules} />
+                                <Route path="/accounts/:accountId/tag-rules" component={Pages.TransactionTagRules} />
                                 <Route path="/accounts/:id/import" component={Pages.Import} />
                                 <Route exact path="/settings" component={Pages.TransactionTags} />
                                 <Route path="/settings/tags" component={Pages.TransactionTags} />

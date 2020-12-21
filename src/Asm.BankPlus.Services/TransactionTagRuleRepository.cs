@@ -12,10 +12,12 @@ namespace Asm.BankPlus.Services
     public class TransactionTagRuleRepository : DataRepository, ITransactionTagRuleRepository
     {
         private readonly ISecurityRepository _security;
+        private readonly ITransactionTagRepository _transactionTags;
 
-        public TransactionTagRuleRepository(BankPlusContext bankPlusContext, ISecurityRepository security) : base(bankPlusContext)
+        public TransactionTagRuleRepository(BankPlusContext bankPlusContext, ISecurityRepository security, ITransactionTagRepository transactionTags) : base(bankPlusContext)
         {
             _security = security;
+            _transactionTags = transactionTags;
         }
 
         public async Task<Models.TransactionTagRule> Create(Guid accountId, string contains, IEnumerable<int> tagIds)
@@ -44,7 +46,7 @@ namespace Asm.BankPlus.Services
             {
                 AccountId = accountId,
                 Contains = contains,
-                TransactionTags = tags.Select(t => (TransactionTag)t).ToList(),
+                TransactionTags =  (await _transactionTags.Get(tags.Select(t => t.Id))).ToList(),
             };
 
             DataContext.Add(rule);

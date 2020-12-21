@@ -2,12 +2,8 @@ import "./TransactionTagRules.scss";
 
 import React, { useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
-import { bindActionCreators } from "redux";
 
 import { State } from "../../store/state";
-import { actionCreators } from "../../store/TransactionTagRules";
-import { actionCreators as tagActionCreators } from "../../store/TransactionTags";
 
 import { TagPanel, PageHeader } from "../../components";
 
@@ -17,21 +13,22 @@ import { usePageTitle } from "../../hooks";
 
 import { TransactionTagRuleRow } from "./TransactionTagRuleRow";
 import { ClickableIcon } from "../../components/ClickableIcon";
-import { useAccount } from "../../services";
+import { useCreateRule, useCreateTag, useRules, useRunRules, useTags, useTransactions } from "../../services";
 
 export const TransactionTagRules: React.FC<TransactionTagRuleProps> = (props) => {
 
     usePageTitle("Transaction Tag Rules");
 
-    const { newRule, fullTagsList, addTag, createTag, removeTag, nameChange, createRule, runRules } = useComponentState(props);
+    const { accountId, newRule, fullTagsList, addTag, createTag, removeTag, nameChange, createRule, runRules } = useComponentState(props);
 
-    const rules = useSelector((state: State) => state.transactionTagRules.rules);
+    const rulesQuery = useRules(accountId);
+    const rules = rulesQuery.data?.rules;
 
     return (
         <>
-             <PageHeader title="Transaction Tag Rules" menuItems={[
-                 { text: "Run Rules Now", onClick: runRules }
-             ]} />
+            <PageHeader title="Transaction Tag Rules" menuItems={[
+                { text: "Run Rules Now", onClick: runRules }
+            ]} />
             <Table striped bordered={false} borderless className="transaction-tag-rules">
                 <thead>
                     <tr>
@@ -46,7 +43,7 @@ export const TransactionTagRules: React.FC<TransactionTagRuleProps> = (props) =>
                         <TagPanel as="td" selectedItems={newRule.tags} allItems={fullTagsList} textField="name" valueField="id" onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} />
                         <td><span onClick={createRule}><ClickableIcon icon="check-circle" title="Save" /></span></td>
                     </tr>
-                    {rules && rules.map((r) => <TransactionTagRuleRow key={r.id} rule={r} />)}
+                    {rules && rules.map((r) => <TransactionTagRuleRow key={r.id} accountId={accountId} rule={r} />)}
                 </tbody>
             </Table>
         </>
@@ -57,32 +54,26 @@ TransactionTagRules.displayName = "TransactionTagRules";
 
 const useComponentState = (props: TransactionTagRuleProps) => {
 
-    var dispatch = useDispatch();
+    const { accountId } = useParams<any>();
 
     const blankRule = { id: 0, contains: "", tags: [] } as TransactionTagRule;
 
-    const { id } = useParams<any>();
-    const account = useAccount(id);
-
-    const fullTagsList = useSelector((state: State) => state.transactionTags.tags);
+    const fullTagsListQuery = useTags();
+    const fullTagsList = fullTagsListQuery.data ?? [];
 
     const [newRule, setNewRule] = useState(blankRule);
     const [tagsList, setTagsList] = useState([]);
 
-    bindActionCreators(actionCreators, dispatch);
-    bindActionCreators(tagActionCreators, dispatch);
-
-    useEffect(() => {
-        dispatch(actionCreators.requestRules());
-    }, [account, dispatch]);
+    const createTransactionTag = useCreateTag();
+    const createTransactionTagRule = useCreateRule();
+    const runTransactionTagRules = useRunRules();
 
     useEffect(() => {
         setTagsList(fullTagsList.filter((t) => !newRule.tags.some((tt) => t.id === tt.id)));
     }, [newRule.tags, fullTagsList]);
 
     const createRule = () => {
-        dispatch(actionCreators.createRule(newRule));
-
+        createTransactionTagRule.mutate({ accountId, rule: newRule });
         setNewRule(blankRule);
     }
 
@@ -91,7 +82,7 @@ const useComponentState = (props: TransactionTagRuleProps) => {
     }
 
     const createTag = (name: string) => {
-        dispatch(tagActionCreators.createTag(name));
+        createTransactionTag.mutate({ name });
     }
 
     const addTag = (tag: TransactionTag) => {
@@ -113,10 +104,12 @@ const useComponentState = (props: TransactionTagRuleProps) => {
     };
 
     const runRules = () => {
-        dispatch(actionCreators.runRules());
+        runTransactionTagRules.mutate({ accountId });
     };
 
     return {
+        accountId,
+
         newRule,
         fullTagsList,
 

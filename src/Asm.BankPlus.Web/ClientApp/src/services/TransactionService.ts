@@ -1,56 +1,36 @@
+import { AxiosResponse } from "axios";
+import { useMutation, useQueryClient } from "react-query";
+
 import * as Models from "../models";
-import { Transactions } from "../store/state";
-import { ServiceBase } from "./ServiceBase";
-import HttpClient, { httpClient } from "./HttpClient";
-import { useQuery } from "react-query";
+import { httpClient } from "./HttpClient";
+import { useApiQuery } from "./useApiQuery";
 
-export const useTransactions = (accountId: string, filterTagged: boolean, pageSize: number, pageNumber: number) => {
+export const useTransactions = (accountId: string, filterTagged: boolean, pageSize: number, pageNumber: number) =>
+    useApiQuery<Models.Transactions>(["transactions", accountId, filterTagged, pageSize, pageNumber], `api/accounts/${accountId}/transactions/${filterTagged ? "untagged/" : ""}${pageSize}/${pageNumber}`);
 
-    const url = `api/accounts/${accountId}/transactions/${filterTagged ? "untagged/" : ""}${pageSize}/${pageNumber}`;
-
-    return useQuery(["transactions", accountId, filterTagged, pageSize, pageNumber], async () : Promise<Transactions> => (await httpClient.get(url)).data);
+interface TransactionTagVariables {
+    transactionId: string,
+    tagId: number,
 }
 
-export class TransactionService extends ServiceBase {
+export const useAddTransactionTag = () => {
 
-    public async getTransactions(accountId: string, filterTagged: boolean, pageSize: number, pageNumber: number): Promise<Transactions> {
-        const url = `api/accounts/${accountId}/transactions/${filterTagged ? "untagged/" : ""}${pageSize}/${pageNumber}`;
+    const queryClient = useQueryClient();
 
-        const client = new HttpClient(this.state.app.baseUrl);
-
-        try {
-            const transactions = await client.get<Transactions>(url);
-            transactions.currentPage = pageNumber;
-            return transactions;
+    return useMutation<Models.Transaction, null, TransactionTagVariables>(async (variables) => (await httpClient.put<Models.Transaction>(`api/transactions/${variables.transactionId}/tag/${variables.tagId}`)).data, {
+        onSuccess: (data: Models.Transaction, variables: TransactionTagVariables) => {
+            queryClient.setQueryData<Models.Transaction>(["transactions", { id: variables.transactionId }], data);
         }
-        catch (response) {
-            super.handleError(response as Response);
+    });
+}
+
+export const useRemoveTransactionTag = () => {
+
+    const queryClient = useQueryClient();
+
+    return useMutation<Models.Transaction, null, TransactionTagVariables>(async (variables) => (await httpClient.delete<Models.Transaction>(`api/transactions/${variables.transactionId}/tag/${variables.tagId}`)).data, {
+        onSuccess: (data: Models.Transaction, variables: TransactionTagVariables) => {
+            queryClient.setQueryData<Models.Transaction>(["transactions", { id: variables.transactionId }], data);
         }
-    }
-
-    public async addTransactionTag(transactionId: string, tagId: number): Promise<Models.Transaction> {
-        const url = `api/transactions/${transactionId}/tag/${tagId}`;
-
-        const client = new HttpClient(this.state.app.baseUrl);
-
-        try {
-            return await client.put(url);
-        }
-        catch (response) {
-            super.handleError(response as Response);
-        }
-    }
-
-    public async removeTransactionTag(transactionId: string, tagId: number) {
-        const url = `api/transactions/${transactionId}/tag/${tagId}`;
-
-        const client = new HttpClient(this.state.app.baseUrl);
-
-        try {
-            return await client.delete(url);
-        }
-        catch (response) {
-            super.handleError(response as Response);
-        }
-    }
+    });
 }
