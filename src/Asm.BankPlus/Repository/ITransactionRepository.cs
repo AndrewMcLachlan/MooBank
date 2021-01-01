@@ -29,6 +29,7 @@ namespace Asm.BankPlus.Repository
         Task<Transaction> CreateTransaction(Transaction transaction);
 
         Task<IEnumerable<Transaction>> CreateTransactions(IEnumerable<Transaction> transactions);
+
         Task<IEnumerable<Transaction>> GetUntaggedTransactions(Guid accountId, int value1, int value2);
     }
 }

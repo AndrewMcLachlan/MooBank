@@ -1,22 +1,16 @@
 import React, { useState } from "react";
 import { Form, Button, InputGroup } from "react-bootstrap";
-import { AccountType, AccountController, ImportAccount } from "../../models";
+import { Account, AccountType, AccountController, ImportAccount } from "../../models";
 import { toNameValue } from "../../extensions";
-import { useDispatch } from "react-redux";
-import { actionCreators } from "../../store/Accounts";
-import { bindActionCreators } from "redux";
 import { Redirect } from "react-router";
 
 import { ImportSettings } from "./ImportSettings";
-import { BsPrefixProps, ReplaceProps } from "react-bootstrap/helpers";
 import { usePageTitle } from "../../hooks";
+import { useCreateAccount } from "../../services";
 
 export const CreateAccount: React.FC = () => {
 
     usePageTitle("Create Account");
-
-    const dispatch = useDispatch();
-    bindActionCreators(actionCreators, dispatch);
 
     const accountTypes = toNameValue(AccountType);
 
@@ -30,13 +24,15 @@ export const CreateAccount: React.FC = () => {
     const [importerTypeId, setImporterTypeId] = useState(0);
     const [submitted, setSubmitted] = useState(false);
 
+    const createAccount = useCreateAccount();
+
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.stopPropagation();
         e.preventDefault();
 
         const importAccount: ImportAccount = accountController === AccountController.Import ? { importerTypeId: importerTypeId } : null;
 
-        dispatch(actionCreators.createAccount({
+        const account: Account = {
             id: null,
             name: name,
             description: description,
@@ -46,7 +42,9 @@ export const CreateAccount: React.FC = () => {
             controller: accountController,
             balanceUpdated: new Date(),
             includeInPosition: true,
-        }, importAccount));
+        };
+
+        createAccount.create(account, importAccount);
 
         setSubmitted(true);
     }

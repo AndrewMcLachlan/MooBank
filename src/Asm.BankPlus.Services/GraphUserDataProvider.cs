@@ -31,7 +31,7 @@ namespace Asm.BankPlus.Services
 
                 if (id == null)
                 {
-                    throw new InvalidOperationException("Not corectly logged in");
+                    throw new InvalidOperationException("Not correctly logged in");
                 }
 
                 return Guid.Parse(id);

@@ -15,7 +15,7 @@ export const TransactionTagRow: React.FC<TransactionTagRowProps> = (props) => {
     const [tagsList, setTagsList] = useState([]);
 
     useEffect(() => {
-        setTagsList(fullTagsList.filter((t) => t.id !== props.tag.id && !transactionRow.tags.some((tt) => t.id === tt.id)));
+        setTagsList(fullTagsList.filter((t) => t.id !== props.tag.id && transactionRow.tags && !transactionRow.tags.some((tt) => t.id === tt.id)));
     }, [transactionRow.tags, fullTagsList]);
 
     return (

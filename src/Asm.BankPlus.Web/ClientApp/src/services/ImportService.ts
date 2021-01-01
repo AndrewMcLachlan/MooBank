@@ -1,10 +1,13 @@
 import * as Models from "../models";
 import { ServiceBase } from "./ServiceBase";
 import HttpClient from "./HttpClient";
+import { useApiPostFile } from "./api";
+
+export const useImportTransactions = () => useApiPostFile<{accountId: string, file: File}>((variables) => `api/accounts/${variables.accountId}/import`);
 
 export class ImportService extends ServiceBase {
 
-    public async importTransactions(accountId: string, file: File): Promise<void> {
+/*    public async importTransactions(accountId: string, file: File): Promise<void> {
         const url = `api/accounts/${accountId}/import`;
 
         const client = new HttpClient(this.state.app.baseUrl);
@@ -15,9 +18,9 @@ export class ImportService extends ServiceBase {
         catch (response) {
             super.handleError(response as Response);
         }
-    }
+    }*/
 
-    public async addTransactionTag(transactionId: string, tagId: number): Promise<Models.Transaction> {
+/*    public async addTransactionTag(transactionId: string, tagId: number): Promise<Models.Transaction> {
         const url = `api/transactions/${transactionId}/tag/${tagId}`;
 
         const client = new HttpClient(this.state.app.baseUrl);
@@ -41,5 +44,5 @@ export class ImportService extends ServiceBase {
         catch (response) {
             super.handleError(response as Response);
         }
-    }
+    }*/
 }

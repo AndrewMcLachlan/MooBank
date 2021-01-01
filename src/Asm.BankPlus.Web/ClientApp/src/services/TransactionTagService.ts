@@ -1,18 +1,18 @@
 import * as Models from "../models";
-import { ServiceBase } from "./ServiceBase";
-import HttpClient, { httpClient } from "./HttpClient";
-import { useApiQuery } from "./useApiQuery";
+import { useApiGet, useApiPut, useApiDelete, useApiDatalessPut } from "./api";
 import { useMutation, useQueryClient } from "react-query";
+import { useHttpClient } from "../components";
 
 interface TransactionTagVariables {
     name: string;
 }
 
-export const useTags = () => useApiQuery<Models.TransactionTag[]>(["tags"], `api/transaction/tags`);
+export const useTags = () => useApiGet<Models.TransactionTag[]>(["tags"], `api/transaction/tags`);
 
 export const useCreateTag = () => {
 
     const queryClient = useQueryClient();
+    const httpClient = useHttpClient();
 
     return useMutation<Models.TransactionTag, null, TransactionTagVariables | Models.TransactionTag>(async (variables) => {
 
@@ -34,7 +34,7 @@ export const useDeleteTag = () => {
 
     const queryClient = useQueryClient();
 
-    return useMutation<null, null, { id: number }>(async (variables) => (await httpClient.delete(`api/transaction/tags/${variables.id}`)).data, {
+    return useApiDelete<{ id: number }>((variables) => `api/transaction/tags/${variables.id}`, {
         onSuccess: (variables: { id: number }) => {
             let allTags = queryClient.getQueryData<Models.TransactionTag[]>(["tags"]);
             allTags = allTags.filter(r => r.id !== (variables.id));
@@ -48,19 +48,21 @@ export const useAddSubTag = () => {
 
     const queryClient = useQueryClient();
 
-    return useMutation<Models.TransactionTag, null, { tagId: number, subTagId: number }>(async (variables) => (await httpClient.put<Models.TransactionTag>(`api/transaction/tags/${variables.tagId}/tags/${variables.subTagId}`)).data, {
-        onSuccess: (data: Models.TransactionTag, variables: { tagId: number, subTagId: number }) => {
+    return useApiDatalessPut<Models.TransactionTag, { tagId: number, subTagId: number }>((variables) => `api/transaction/tags/${variables.tagId}/tags/${variables.subTagId}`, {
+        onSuccess: (data: Models.TransactionTag, variables) => {
             queryClient.setQueryData<Models.TransactionTag>(["tags", { id: variables.tagId }], data);
         }
     });
 }
+
 export const useRemoveSubTag = () => {
 
     const queryClient = useQueryClient();
 
-    return useMutation<Models.TransactionTag, null, { tagId: number, subTagId: number }>(async (variables) => (await httpClient.delete<Models.TransactionTag>(`api/transaction/tags/${variables.tagId}/tags/${variables.subTagId}`)).data, {
-        onSuccess: (data: Models.TransactionTag, variables: { tagId: number, subTagId: number }) => {
-            queryClient.setQueryData<Models.TransactionTag>(["tags", { id: variables.tagId }], data);
+    return useApiDelete<{ tagId: number, subTagId: number }>((variables) => `api/transaction/tags/${variables.tagId}/tags/${variables.subTagId}`, {
+        onSuccess: (data: null, variables) => {
+            const tag = queryClient.getQueryData<Models.TransactionTag>(["tags", { id: variables.tagId }]);
+            tag.tags =tag.tags.filter(t => t.id !== variables.subTagId);
         }
     });
 }

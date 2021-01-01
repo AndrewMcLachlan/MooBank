@@ -6,3 +6,4 @@ export * from "./Transactions";
 export * from "./TransactionTag";
 export * from "./TransactionTagRule";
 export * from "./TransactionTagRules";
+export * from "./VirtualAccount";

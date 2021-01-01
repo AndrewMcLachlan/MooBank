@@ -44,10 +44,13 @@ namespace Asm.BankPlus.Web
                 configuration.RootPath = "ClientApp/build";
             });
 
-            services.AddDbContext<Data.BankPlusContext>(options => options.UseSqlServer(Configuration.GetConnectionString("BankPlus"), options =>
+            services.AddManagedServiceIdentityForSqlServer();
+
+            services.AddDbContext<Data.BankPlusContext>((services, options) => options.UseSqlServer(Configuration.GetConnectionString("BankPlus"), options =>
             {
                 options.EnableRetryOnFailure(3);
-            }));
+            }).AddManagedServiceIdentity(services));
+
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 

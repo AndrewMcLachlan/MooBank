@@ -1,25 +1,25 @@
-import { AxiosResponse } from "axios";
-import { useMutation, useQueryClient } from "react-query";
+import { useQueryClient } from "react-query";
 
 import * as Models from "../models";
-import { httpClient } from "./HttpClient";
-import { useApiQuery } from "./useApiQuery";
+import { useApiGet, useApiPut, useApiDelete, useApiDatalessPut } from "./api";
 
-export const useTransactions = (accountId: string, filterTagged: boolean, pageSize: number, pageNumber: number) =>
-    useApiQuery<Models.Transactions>(["transactions", accountId, filterTagged, pageSize, pageNumber], `api/accounts/${accountId}/transactions/${filterTagged ? "untagged/" : ""}${pageSize}/${pageNumber}`);
+const transactionKey = "transactions";
 
 interface TransactionTagVariables {
     transactionId: string,
     tagId: number,
 }
 
+export const useTransactions = (accountId: string, filterTagged: boolean, pageSize: number, pageNumber: number) =>
+    useApiGet<Models.Transactions>([transactionKey, accountId, filterTagged, pageSize, pageNumber], `api/accounts/${accountId}/transactions/${filterTagged ? "untagged/" : ""}${pageSize}/${pageNumber}`);
+
 export const useAddTransactionTag = () => {
 
     const queryClient = useQueryClient();
 
-    return useMutation<Models.Transaction, null, TransactionTagVariables>(async (variables) => (await httpClient.put<Models.Transaction>(`api/transactions/${variables.transactionId}/tag/${variables.tagId}`)).data, {
-        onSuccess: (data: Models.Transaction, variables: TransactionTagVariables) => {
-            queryClient.setQueryData<Models.Transaction>(["transactions", { id: variables.transactionId }], data);
+    return useApiDatalessPut<Models.Transaction, TransactionTagVariables>((variables) => `api/transactions/${variables.transactionId}/tag/${variables.tagId}`, {
+        onSuccess: (data: Models.Transaction, variables) => {
+            queryClient.setQueryData<Models.Transaction>([transactionKey, { id: variables.transactionId }], data);
         }
     });
 }
@@ -28,9 +28,11 @@ export const useRemoveTransactionTag = () => {
 
     const queryClient = useQueryClient();
 
-    return useMutation<Models.Transaction, null, TransactionTagVariables>(async (variables) => (await httpClient.delete<Models.Transaction>(`api/transactions/${variables.transactionId}/tag/${variables.tagId}`)).data, {
-        onSuccess: (data: Models.Transaction, variables: TransactionTagVariables) => {
-            queryClient.setQueryData<Models.Transaction>(["transactions", { id: variables.transactionId }], data);
+    return useApiDelete<TransactionTagVariables>((variables) => `api/transactions/${variables.transactionId}/tag/${variables.tagId}`, {
+        onSuccess: (_data: null, variables) => {
+            const transaction = queryClient.getQueryData<Models.Transaction>([transactionKey, { id: variables.transactionId }]);
+            transaction.tags = transaction.tags.filter(t => t.id !== variables.tagId);
+            queryClient.setQueryData<Models.Transaction>([transactionKey, { id: variables.transactionId }], transaction);
         }
     });
 }

@@ -6,7 +6,6 @@ import { bindActionCreators } from "redux";
 
 import { Table } from "react-bootstrap";
 
-import { actionCreators as accountActionCreators } from "../../store/Accounts";
 import { SetTransactionListFilter, SetCurrentPage } from "../../store/Transactions";
 import { State } from "../../store/state";
 import { Account } from "../../models";
@@ -28,8 +27,6 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
     const transactionsQuery = useTransactions(id, filterTagged, pageSize, pageNumber);
     const transactions = transactionsQuery.data?.transactions;
 
-    bindActionCreators(accountActionCreators, dispatch);
-
     const numberOfPages = Math.ceil(totalTransactions / pageSize);
   
     const showNext = pageNumber < numberOfPages;
@@ -37,10 +34,11 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
 
     return (
         <section>
-            <div className="filter-panel">
-                <input id="filter-tagged" type="checkbox" onChange={(e) => dispatch({  type: SetTransactionListFilter, data: e.currentTarget.checked})} />
+            <fieldset className="filter-panel">
+                <legend>Filters</legend>
+                <input id="filter-tagged" type="checkbox" checked={filterTagged} onChange={(e) => dispatch({  type: SetTransactionListFilter, data: e.currentTarget.checked})} />
                 <label htmlFor="filter-tagged">Only show transactions without tags</label>
-            </div>
+            </fieldset>
             <Table striped bordered={false} borderless className="transactions">
                 <thead>
                     <tr>

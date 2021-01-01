@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Asm.BankPlus.Data;
-using Asm.BankPlus.Models;
+using Asm.BankPlus.Data.Entities;
 using Asm.BankPlus.Repository;
 using Asm.BankPlus.Security;
 using Asm.Security;
@@ -25,7 +25,7 @@ namespace Asm.BankPlus.Services
 
             if (accountHolder != null)
             {
-                return (AccountHolder)accountHolder;
+                return accountHolder;
             }
 
             accountHolder = await _userDataProvider.GetCurrentUser();
@@ -34,7 +34,7 @@ namespace Asm.BankPlus.Services
 
             await DataContext.SaveChangesAsync();
 
-            return (AccountHolder)accountHolder;
+            return accountHolder;
         }
     }
 }

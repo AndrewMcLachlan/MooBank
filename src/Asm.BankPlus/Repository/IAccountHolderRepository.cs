@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Asm.BankPlus.Models;
+using Asm.BankPlus.Data.Entities;
 
 namespace Asm.BankPlus.Repository
 {

@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" />
     <ProjectReference Include="..\Asm.BankPlus.Data\Asm.BankPlus.Data.csproj" />
     <ProjectReference Include="..\Asm.BankPlus.Models\Asm.BankPlus.Models.csproj" />
   </ItemGroup>

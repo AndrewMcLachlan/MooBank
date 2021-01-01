@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Asm.BankPlus.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Asm.BankPlus.Repository
 {

@@ -2,7 +2,6 @@
 import { useHistory } from "react-router-dom";
 
 import * as Models from "../../models";
-import { ActionTypes } from "../../store/Accounts";
 import { useDispatch } from "react-redux";
 import { AccountController } from "../../models";
 
@@ -37,12 +36,9 @@ export interface AccountRowProps {
 
 export const useAccountRowCommonState = (props: AccountRowProps) => {
 
-    const dispatch = useDispatch();
-
     var history = useHistory();
 
     const onRowClick = () => {
-        dispatch({ type: ActionTypes.SetSelectedAccount, data: props.account });
         history.push(`accounts/${props.account.id}`);
     };
 

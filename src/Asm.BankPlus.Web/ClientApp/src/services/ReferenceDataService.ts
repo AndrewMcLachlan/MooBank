@@ -1,4 +1,4 @@
 import * as Models from "../models";
-import { useApiQuery } from "./useApiQuery";
+import { useApiGet } from "./useApiGet";
 
-export const useImporterTypes = () => useApiQuery<Models.ImporterType[]>(["tags"], `api/referencedata/importertypes`);
+export const useImporterTypes = () => useApiGet<Models.ImporterType[]>(["tags"], `api/referencedata/importertypes`);

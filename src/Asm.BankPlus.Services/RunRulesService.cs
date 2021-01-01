@@ -40,7 +40,6 @@ namespace Asm.BankPlus.Services
                     var transactionRepository = scope.ServiceProvider.GetRequiredService<ITransactionRepository>();
                     var transactionTagRuleRepository = scope.ServiceProvider.GetRequiredService<ITransactionTagRuleRepository>();
 
-
                     var transactions = await transactionRepository.GetTransactions(accountId);
 
                     var rules = await transactionTagRuleRepository.Get(accountId);

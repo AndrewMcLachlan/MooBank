@@ -7,7 +7,6 @@ export const SetTransactionListFilter = "SetTransactionListFilter";
 export const SetCurrentPage = "SetCurrentPage";
 
 const initialState: Transactions = {
-    areLoading: false,
     currentPage: 1,
     pageSize: 50,
     total: 0,

@@ -5,3 +5,7 @@
     [Deleted] BIT NOT NULL CONSTRAINT [DF_TransactionTag_Deleted] DEFAULT 0,
     CONSTRAINT [PK_TransactionTag] PRIMARY KEY CLUSTERED (TransactionTagId),
 )
+
+GO
+
+CREATE UNIQUE INDEX [IX_TransactionTag_Name] ON [dbo].[TransactionTag] ([Name])

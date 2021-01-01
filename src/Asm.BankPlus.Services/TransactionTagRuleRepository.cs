@@ -73,7 +73,7 @@ namespace Asm.BankPlus.Services
         {
             _security.AssertPermission(accountId);
 
-            return await DataContext.TransactionTagRules.Include(t => t.TransactionTags).Where(t => t.AccountId == accountId).Select(t => (Models.TransactionTagRule)t).ToListAsync();
+            return await DataContext.TransactionTagRules.Include(t => t.TransactionTags).Where(t => t.AccountId == accountId).OrderBy(t => t.Contains).Select(t => (Models.TransactionTagRule)t).ToListAsync();
         }
 
         public async Task<Models.TransactionTagRule> AddTransactionTag(Guid accountId, int id, int tagId)

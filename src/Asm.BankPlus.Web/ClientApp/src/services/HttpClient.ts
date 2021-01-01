@@ -1,9 +1,6 @@
-import axios, { AxiosInstance } from "axios";
-import { request } from "http";
 
-import { apiRequest } from "../components";
-
-export type httpMethod = "GET" | "DELETE" | "POST" | "PUT" | "PATCH";
+export type httpMutatingMethod = "DELETE" | "POST" | "PUT" | "PATCH";
+export type httpMethod = "GET" | httpMutatingMethod;
 
 export enum HttpStatusCodes {
     OK = 200,
@@ -28,17 +25,6 @@ export interface ProblemDetails {
     type: string,
 }
 
-export let httpClient: AxiosInstance;
-
-export const createHttpClient = (baseUrl: string) => {
-    const a = axios.create({
-    baseURL: baseUrl,
-    headers: {
-        "Accept": "application/json",
-    }});
-
-    httpClient = a;
-};
 
 export default class HttpClient {
 

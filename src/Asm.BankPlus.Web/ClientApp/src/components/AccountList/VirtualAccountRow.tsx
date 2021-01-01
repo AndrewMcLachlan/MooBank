@@ -1,7 +1,7 @@
 ﻿import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import { VirtualAccount } from "../../store/state";
+import { VirtualAccount } from "../../models";
 
 class VirtualAccountRow extends Component<VirtualAccountRowProps, any> {
 
@@ -14,15 +14,15 @@ class VirtualAccountRow extends Component<VirtualAccountRowProps, any> {
                     <nav className="desktop">
                         <ul>
                             <li>
-                                <a href={"/transactions/transfer/" + this.props.account.virtualAccountId}>Transfer funds</a>
+                                <a href={"/transactions/transfer/" + this.props.account.id}>Transfer funds</a>
                             </li>
                             <li>
-                                <a href={"/transactions/history/" + this.props.account.virtualAccountId}>Transactions</a>
+                                <a href={"/transactions/history/" + this.props.account.id}>Transactions</a>
                             </li>
                         </ul>
                     </nav>e
                 </td>
-                <td>{this.props.account.balance.toFixed(2) + " " + (this.props.account.balance < 0 ? "D" : "C") + "R"}</td>
+                <td>{this.props.account.currentBalance.toFixed(2) + " " + (this.props.account.currentBalance < 0 ? "D" : "C") + "R"}</td>
             </tr>
         );
     }

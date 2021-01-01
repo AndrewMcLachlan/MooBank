@@ -15,7 +15,7 @@ export const TagPanel: React.FC<TagPanelProps> = (props) => {
 
     return (
         <props.as className="tag-panel" onClick={() => setEditMode(true)}>
-            {props.selectedItems.map((i) => <CloseBadge onClose={() => event(i, props.onRemove)} key={i[props.textField]} pill={props.pill} variant={props.variant} bsPrefix={props.bsPrefix}>{i[props.textField]}</CloseBadge>)}
+            {props.selectedItems && props.selectedItems.map((i) => <CloseBadge onClose={() => event(i, props.onRemove)} key={i[props.textField]} pill={props.pill} variant={props.variant} bsPrefix={props.bsPrefix}>{i[props.textField]}</CloseBadge>)}
             {(editMode || props.alwaysShowEditPanel) && <ComboBox ref={ref} items={props.allItems} textField={props.textField} valueField={props.valueField} onSelected={(item) => event(item, props.onAdd)} onAdd={(item) => event(item, props.onCreate)} allowAdd={props.allowCreate} />}
         </props.as>
     );
