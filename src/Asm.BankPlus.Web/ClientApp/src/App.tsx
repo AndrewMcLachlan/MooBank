@@ -8,24 +8,16 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { Layout } from "./layouts/Layout";
 import * as Pages from "./pages";
 
-import configureStore from "./store/configureStore";
-import { State } from "./store/state";
-import { initialState as appInitialState } from "./store/App";
-import {  AppProvider, HttpClientProvider, useMsal } from "./components";
+import { AppStore } from "./store/configureStore";
+import { AppProvider, HttpClientProvider, useMsal } from "./components";
 
 const App: React.FC = () => {
 
     const baseUrl = "/"; //document.getElementsByTagName("base")[0].getAttribute("href");
 
-    const initialState: State = {
-        app: appInitialState,
-    };
-
     const { isAuthenticated } = useMsal();
 
     const queryClient = new QueryClient();
-
-    const store = configureStore(window.history, initialState);
 
     return (
         <AppProvider appName="MooBank" // Array.from(document.getElementsByTagName("meta")).find((value) => value.getAttribute("name") === "application-name").getAttribute("content"),
@@ -34,7 +26,7 @@ const App: React.FC = () => {
         >
             <HttpClientProvider baseUrl={baseUrl}>
                 <QueryClientProvider client={queryClient}>
-                    <ReduxProvider store={store}>
+                    <ReduxProvider store={AppStore}>
                         <BrowserRouter basename={baseUrl.replace(/^.*\/\/[^/]+/, "")}>
                             <Layout>
                                 {isAuthenticated && <Switch>

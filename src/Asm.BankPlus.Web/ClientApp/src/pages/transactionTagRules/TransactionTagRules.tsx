@@ -2,8 +2,7 @@ import "./TransactionTagRules.scss";
 
 import React, { useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
-
-import { State } from "../../store/state";
+import Select from "react-select";
 
 import { TagPanel, PageHeader } from "../../components";
 
@@ -45,6 +44,7 @@ export const TransactionTagRules: React.FC = () => {
                     <tr>
                         <td><input type="text" placeholder="Transaction description contains..." value={newRule.contains} onChange={nameChange} /></td>
                         <TagPanel as="td" selectedItems={newRule.tags} allItems={fullTagsList} textField="name" valueField="id" onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} />
+                        {/*<Select defaultOptions={fullTagsList} getOptionLabel={(t:TransactionTag) => t.name } getOptionValue={(t:TransactionTag) => t.id.toString() } hideSelectedOptions={true} isOptionSelected={t => } onChange />*/}
                         <td><span onClick={createRule}><ClickableIcon icon="check-circle" title="Save" /></span></td>
                     </tr>
                     {data?.rules && data.rules.map((r) => <TransactionTagRuleRow key={r.id} accountId={accountId} rule={r} />)}

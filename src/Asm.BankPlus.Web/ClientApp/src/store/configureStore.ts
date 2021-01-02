@@ -1,38 +1,15 @@
-import { routerMiddleware, routerReducer } from "react-router-redux";
-import { applyMiddleware, combineReducers, createStore } from "redux";
-import thunk from "redux-thunk";
+import { combineReducers, createStore } from "@reduxjs/toolkit";
 import { composeWithDevTools } from "redux-devtools-extension";
 
-import * as App from "./App";
-import { State } from "./state";
-import * as Transactions from "./Transactions";
+import { AppSlice } from "./App";
+import { TransactionsSlice } from "./Transactions";
 
-declare global {
-
-    interface Window {
-        devToolsExtension: any;
-    }
-}
-
-export default function configureStore(history: any, initialState: State) {
-    const reducers = {
-        transactions: Transactions.reducer,
-        app: App.reducer,
-    };
-
-    const middleware = [
-        thunk,
-        routerMiddleware(history),
-    ];
-
-    const rootReducer = combineReducers({
-        ...reducers,
-        routing: routerReducer,
+const rootReducer = combineReducers(
+    {
+        app: AppSlice.reducer,
+        transactions: TransactionsSlice.reducer,
     });
 
-    return createStore(
-        rootReducer,
-        initialState,
-        composeWithDevTools(applyMiddleware(...middleware)),
-    );
-}
+const enhancer = composeWithDevTools();
+
+export const AppStore = createStore(rootReducer, enhancer);

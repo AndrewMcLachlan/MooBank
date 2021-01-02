@@ -1,7 +1,6 @@
-﻿import { Dispatch } from "redux";
+﻿import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { ActionWithData } from "./redux-extensions";
-import { Transactions, State } from "./state";
+import { Transactions } from "./state";
 
 export const SetTransactionListFilter = "SetTransactionListFilter";
 export const SetCurrentPage = "SetCurrentPage";
@@ -9,27 +8,37 @@ export const SetCurrentPage = "SetCurrentPage";
 const initialState: Transactions = {
     currentPage: 1,
     pageSize: 50,
-    total: 0,
     filterTagged: false,
 };
 
-export const reducer = (state: Transactions = initialState, action: ActionWithData<any>): Transactions => {
+export const reducers = {
 
-    switch (action.type) {
+    setCurrentPage: (state: Transactions, action: PayloadAction<number>) => {
+        return {
+            ...state,
+            currentPage: action.payload,
+        };
+    },
 
-        case SetCurrentPage:
-            return {
-                ...state,
-                currentPage: action.data
-            };
+    setPageSize: (state: Transactions, action: PayloadAction<number>) => {
+        return {
+            ...state,
+            pageSize: action.payload,
+        };
+    },
 
-        case SetTransactionListFilter: {
-            return {
-                ...state,
-                filterTagged: action.data,
-            }
-        }
-    }
-
-    return state;
+    setTransactionListFilter: (state: Transactions, action: PayloadAction<boolean>) => {
+        return {
+            ...state,
+            filterTagged: action.payload,
+        };
+    },
 };
+
+export const TransactionsSlice = createSlice({
+    name: "Transactions",
+    initialState: initialState,
+    reducers: reducers
+});
+
+

@@ -14,9 +14,9 @@ export const AccountList: React.FC<AccountListProps> = () => {
 
     const { data } = accountsQuery;
 
-    const virtualAccountRows = [];
+   /* const virtualAccountRows = [];
 
-/*    if (virtualAccounts) {
+    if (virtualAccounts) {
         for (const account of virtualAccounts) {
             virtualAccountRows.push(<VirtualAccountRow key={account.virtualAccountId} account={account} />);
         }

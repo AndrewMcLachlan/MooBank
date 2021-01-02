@@ -1,32 +1,21 @@
 ﻿import { App } from "./state";
-import { ActionWithData } from "./redux-extensions";
-import { Dispatch } from "react";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export const initialState: App = {
     baseUrl: "/",
 };
 
-export const ShowMessage = "ShowMessage";
-
-export const genericCaller = (dispatch: Dispatch<ActionWithData<string>>, callback: () => any) => {
-    try {
-        return callback();
-    }
-    catch (error) {
-        dispatch({ type: "ShowMessage", data: (error as Error).message});
+export const reducers = {
+    showMessage: (state: App, action: PayloadAction<string>) => {
+            return {
+                ...state,
+                message: action.payload,
+            }
     }
 }
 
-export const reducer = (state: App, action:ActionWithData<string>) => {
-    state = state || initialState;
-
-    switch (action.type) {
-        case "ShowMessage":
-            return {
-                ...state,
-                message: action.data,
-            }
-    }
-
-    return state;
-};
+export const AppSlice = createSlice({
+    name: "App",
+    initialState: initialState,
+    reducers: reducers
+});
