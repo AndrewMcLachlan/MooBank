@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -51,9 +52,9 @@ namespace Asm.BankPlus.Web
         private class ConfigureAzureOptions : IConfigureNamedOptions<JwtBearerOptions>
         {
             private readonly AzureAppConfiguration _azureOptions;
-            private readonly IHostingEnvironment environment;
+            private readonly IHostEnvironment environment;
 
-            public ConfigureAzureOptions(IOptions<AzureAppConfiguration> azureOptions, IHostingEnvironment environment)
+            public ConfigureAzureOptions(IOptions<AzureAppConfiguration> azureOptions, IHostEnvironment environment)
             {
                 _azureOptions = azureOptions.Value;
                 this.environment = environment;

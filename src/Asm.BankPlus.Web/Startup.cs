@@ -36,6 +36,8 @@ namespace Asm.BankPlus.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplicationInsightsTelemetry();
+
             services.AddControllers();
 
             // In production, the React files will be served from this directory
@@ -53,6 +55,12 @@ namespace Asm.BankPlus.Web
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
+            services.AddHsts(options =>
+            {
+                options.MaxAge = TimeSpan.FromDays(365);
+                options.IncludeSubDomains = true;
+            });
 
             services.AddPrincipalProvider();
 
@@ -72,20 +80,9 @@ namespace Asm.BankPlus.Web
             }
             else
             {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
                 app.UseHttpsRedirection();
             }
-
-            /*using (StreamReader iisUrlRewriteConfig = File.OpenText("rewrite.config"))
-            {
-                var options = new RewriteOptions()
-                    .AddIISUrlRewrite(iisUrlRewriteConfig);
-
-                app.UseRewriter(options);
-            }*/
-
 
             app.UseExceptionHandler(errorApp =>
             {
@@ -94,8 +91,6 @@ namespace Asm.BankPlus.Web
                     context.Response.ContentType = "application/json";
 
                     var exceptionHandlerFeature = context.Features.Get<IExceptionHandlerFeature>();
-
-                    //logger.Log(LogLevel.Error, exceptionHandlerFeature.Error, exceptionHandlerFeature.Error.Message);
 
                     await context.Response.WriteAsync(JsonConvert.SerializeObject(CreateProblemDetails(env, context, exceptionHandlerFeature.Error)));
                 });
@@ -117,18 +112,29 @@ namespace Asm.BankPlus.Web
 
             app.UseSpa(spa =>
             {
-                //spa.Options.DefaultPage = "/";
                 spa.Options.SourcePath = "ClientApp";
+
+                spa.Options.DefaultPageStaticFileOptions = new StaticFileOptions
+                {
+                    OnPrepareResponse = context =>
+                    {
+                        // never cache index.html
+                        if (context.File.Name == "index.html")
+                        {
+                            context.Context.Response.Headers.Add("Cache-Control", "no-cache, no-store");
+                            context.Context.Response.Headers.Add("Expires", "-1");
+                        }
+                    }
+                };
 
                 if (env.IsDevelopment())
                 {
-                    //spa.UseReactDevelopmentServer(npmScript: "start");
                     spa.UseProxyToSpaDevelopmentServer("http://localhost:3000");
                 }
             });
         }
 
-        private void AddAuthentication(IServiceCollection services)
+        private static void AddAuthentication(IServiceCollection services)
         {
             //services.AddAuthentication(AzureADDefaults.JwtBearerAuthenticationScheme).AddAzureADBearer((options) => Configuration.Bind("AzureAD", options));
 
@@ -148,23 +154,9 @@ namespace Asm.BankPlus.Web
                 options.CallbackPath = "/signin-oidc";
                 options.RedirectUrl = null;
             });
-
-            /*.AddAzureADBearer(null, JwtBearerDefaults.AuthenticationScheme, options =>
-        {
-            //
-            options.OpenIdConnectSchemeName = JwtBearerDefaults.AuthenticationScheme;
-            options.Domain = "mclachlan.family";
-            options.TenantId = "30efefb9-9034-4e0c-8c69-17f4578f5924";
-            //options.Authority = "https://login.microsoftonline.com/30efefb9-9034-4e0c-8c69-17f4578f5924/v2.0";
-            //options.Audience = "045f8afa-70f2-4700-ab75-77ac41b306f7";
-            options.ClientId = "045f8afa-70f2-4700-ab75-77ac41b306f7";
-            options.ClientSecret = "gvwLXheN2Ba2OKFE*AxKi9jupyNq6.]+";
-            //options.TokenValidationParameters.ValidateLifetime = true;
-            //options.TokenValidationParameters.ClockSkew = TimeSpan.Zero;
-        });*/
         }
 
-        private void RegisterServices(IServiceCollection services)
+        private static void RegisterServices(IServiceCollection services)
         {
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
@@ -183,7 +175,7 @@ namespace Asm.BankPlus.Web
             services.AddSingleton<IRunRulesQueue, RunRulesQueue>();
         }
 
-        private ProblemDetails CreateProblemDetails(IHostEnvironment env, HttpContext context, Exception ex)
+        private static ProblemDetails CreateProblemDetails(IHostEnvironment env, HttpContext context, Exception ex)
         {
             ProblemDetails result = new ProblemDetails();
 

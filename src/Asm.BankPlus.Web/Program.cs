@@ -8,27 +8,20 @@ using Serilog.Events;
 using Serilog.AspNetCore;
 using Serilog.Sinks.File;
 using Microsoft.Extensions.Hosting;
+using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Asm.BankPlus.Web
 {
     public class Program
     {
+        private static readonly string Env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
         public static int Main(string[] args)
         {
-            Environment.CurrentDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\..\..\..";
+            //Environment.CurrentDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\..\..\..";
 
-            //var seq = Configuration.GetValue<string>("Seq:Endpoint");
-
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Is(LogEventLevel.Information)
-                //.MinimumLevel.Override("LOR.DigitalReports", new LoggingLevelSwitch(LogEventLevel.Information))
-                //.Enrich.WithProperty("ApplicationEnvironment", appEnv)
-                //.Enrich.WithProperty("ApplicationName", appName)
-                //.Enrich.WithProperty("ApplicationRole", appRole)
-                //.WriteTo.Trace()
-                //.WriteTo.Seq(seq)
-                //.WriteTo.File("Log.log")
-                .CreateLogger();
+            Log.Logger = ConfigureLogging(new LoggerConfiguration()).CreateLogger();
 
             try
             {
@@ -49,15 +42,27 @@ namespace Asm.BankPlus.Web
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                    webBuilder.UseSerilog((_, configuration) =>
-                    {
-                        configuration
-                        .Enrich.FromLogContext()
-                        .MinimumLevel.Information()
-                        .MinimumLevel.Is(LogEventLevel.Information)
-                        .WriteTo.File("Log.log", rollingInterval: RollingInterval.Day);
-                    })
-                .UseStartup<Startup>());
+                .ConfigureWebHostDefaults(webBuilder => webBuilder
+                    .UseSerilog((_, configuration) => ConfigureLogging(configuration))
+                    .UseStartup<Startup>());
+
+
+        private static LoggerConfiguration ConfigureLogging(LoggerConfiguration configuration)
+        {
+            configuration
+                .Enrich.FromLogContext()
+                .MinimumLevel.Information()
+                .MinimumLevel.Is(LogEventLevel.Information)
+                .WriteTo.Trace()
+                .WriteTo.ApplicationInsights(TelemetryConfiguration.CreateDefault(), TelemetryConverter.Traces);
+
+            if (Env == "Development")
+            {
+                configuration.WriteTo.File("Log.log", rollingInterval: RollingInterval.Day);
+            }
+
+            return configuration;
+        }
     }
+
 }
