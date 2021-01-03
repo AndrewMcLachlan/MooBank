@@ -2,7 +2,6 @@
 import { useHistory } from "react-router-dom";
 
 import * as Models from "../../models";
-import { useDispatch } from "react-redux";
 import { AccountController } from "../../models";
 
 import { ManualAccountRow} from "./ManualAccountRow";

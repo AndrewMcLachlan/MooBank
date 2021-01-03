@@ -2,12 +2,12 @@ import "./TransactionTagRules.scss";
 
 import React, { useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
-import Select from "react-select";
+//import Select from "react-select";
 
 import { TagPanel, PageHeader } from "../../components";
 
 import { TransactionTag, TransactionTagRule } from "../../models";
-import { RouteComponentProps, useParams } from "react-router";
+import { useParams } from "react-router";
 import { usePageTitle } from "../../hooks";
 
 import { TransactionTagRuleRow } from "./TransactionTagRuleRow";

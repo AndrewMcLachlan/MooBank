@@ -1,5 +1,5 @@
 import * as Models from "../models";
-import { useApiGet, useApiPut, useApiDelete, useApiDatalessPut } from "./api";
+import { useApiGet, useApiDelete, useApiDatalessPut } from "./api";
 import { useMutation, useQueryClient } from "react-query";
 import { useHttpClient } from "../components";
 

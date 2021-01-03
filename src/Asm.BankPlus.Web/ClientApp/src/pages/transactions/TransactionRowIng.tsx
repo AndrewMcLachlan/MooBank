@@ -1,7 +1,7 @@
 ﻿import React, { useState, useEffect } from "react";
 import moment from "moment";
 
-import { Transaction, TransactionTag } from "../../models";
+import { TransactionTag } from "../../models";
 import { TagPanel } from "../../components";
 import { TransactionRowProps } from "./TransactionRow";
 import { useAddTransactionTag, useCreateTag, useRemoveTransactionTag, useTags } from "../../services";
@@ -11,13 +11,13 @@ export const TransactionRowIng: React.FC<TransactionRowProps> = (props) => {
     const transactionRow = useTransactionRowEvents(props);
 
     const fullTagsListQuery = useTags();
-    const fullTagsList = fullTagsListQuery.data ?? [];
 
     const [tagsList, setTagsList] = useState([]);
 
     useEffect(() => {
-        setTagsList(fullTagsList.filter((t) => !transactionRow.tags.some((tt) => t.id === tt.id)));
-    }, [transactionRow.tags, fullTagsList]);
+        if (!fullTagsListQuery.data) return;
+        setTagsList(fullTagsListQuery.data.filter((t) => !transactionRow.tags.some((tt) => t.id === tt.id)));
+    }, [transactionRow.tags, fullTagsListQuery.data]);
 
     return (
         <tr>
@@ -46,7 +46,7 @@ function useTransactionRowEvents(props: TransactionRowProps) {
     const createTag = (name: string) => {
         createTransactionTag.mutate({ name }, {
             onSuccess: (data) => {
-                addTransactionTag.mutate({ transactionId: props.transaction.id, tagId: data.id});
+                addTransactionTag.mutate({ transactionId: props.transaction.id, tag: data});
             }
         });
     }
@@ -55,7 +55,7 @@ function useTransactionRowEvents(props: TransactionRowProps) {
 
         if (!tag.id) return;
 
-        addTransactionTag.mutate({ transactionId: props.transaction.id, tagId: tag.id });
+        addTransactionTag.mutate({ transactionId: props.transaction.id, tag });
         setTags(tags.concat([tag]));
     }
 
@@ -63,7 +63,7 @@ function useTransactionRowEvents(props: TransactionRowProps) {
 
         if (!tag.id) return;
 
-        removeTransactionTag.mutate({ transactionId: props.transaction.id, tagId: tag.id });
+        removeTransactionTag.mutate({ transactionId: props.transaction.id, tag });
         setTags(tags.filter((t) => t.id !== tag.id));
     }
 

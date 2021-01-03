@@ -1,8 +1,13 @@
 import * as Models from "../models";
-import { useApiGet, useApiPost, useApiPut, useApiDelete, useApiDatalessPut, useApiDatalessPost } from "./api";
+import { useApiGet, useApiPost, useApiDelete, useApiDatalessPut, useApiDatalessPost } from "./api";
 import { useQueryClient } from "react-query";
+import { TransactionTag } from "../models";
 
 const transactionRulesKey = "transactionrules";
+
+interface TransactionTagRuleVariables {
+    accountId: string, ruleId: number, tag: TransactionTag,
+}
 
 export const useRules = (accountId: string) => useApiGet<Models.TransactionTagRules>([transactionRulesKey, accountId], `api/accounts/${accountId}/transaction/tag/rules`);
 
@@ -12,10 +17,13 @@ export const useAddTransactionTagRuleTag = () => {
 
     const queryClient = useQueryClient();
 
-    return useApiDatalessPut<Models.TransactionTagRule, { accountId: string, ruleId: number, tagId: number }>((variables) => `api/accounts/${variables.accountId}/transaction/tag/rules/${variables.ruleId}/tag/${variables.tagId}`, {
-        onSuccess: (data: Models.TransactionTagRule, variables: { accountId: string, ruleId: number, tagId: number }) => {
-            queryClient.setQueryData<Models.TransactionTagRule>([transactionRulesKey, variables.accountId, { id: variables.ruleId }], data);
-        }
+    return useApiDatalessPut<Models.TransactionTagRule, TransactionTagRuleVariables>((variables) => `api/accounts/${variables.accountId}/transaction/tag/rules/${variables.ruleId}/tag/${variables.tag.id}`, {
+        onMutate: (variables) => {
+            const rules = queryClient.getQueryData<Models.TransactionTagRules>([transactionRulesKey, variables.accountId]);
+            const data = rules.rules.find(t => t.id === variables.ruleId);
+            data.tags.push(variables.tag);
+            queryClient.setQueryData<Models.TransactionTagRules>([transactionRulesKey, variables.accountId], rules);
+        },
     });
 }
 
@@ -23,10 +31,14 @@ export const useRemoveTransactionTagRuleTag = () => {
 
     const queryClient = useQueryClient();
 
-    return useApiDelete<{ accountId: string, ruleId: number, tagId: number }>((variables) => `api/accounts/${variables.accountId}/transaction/tag/rules/${variables.ruleId}/tag/${variables.tagId}`, {
-        onSuccess: (data: Models.TransactionTagRule, variables: { accountId: string, ruleId: number, tagId: number }) => {
-            queryClient.setQueryData<Models.TransactionTagRule>([transactionRulesKey, variables.accountId, { id: variables.ruleId }], data);
-        }
+    return useApiDelete<TransactionTagRuleVariables>((variables) => `api/accounts/${variables.accountId}/transaction/tag/rules/${variables.ruleId}/tag/${variables.tag.id}`, {
+        onMutate: (variables) => {
+            const rules = queryClient.getQueryData<Models.TransactionTagRules>([transactionRulesKey, variables.accountId]);
+            const data = rules.rules.find(t => t.id === variables.ruleId);
+            const tagIndex = data.tags.findIndex(t => t.id === variables.tag.id);
+            data.tags.splice(tagIndex, 1);
+            queryClient.setQueryData<Models.TransactionTagRules>([transactionRulesKey, variables.accountId], rules);
+        },
     });
 }
 

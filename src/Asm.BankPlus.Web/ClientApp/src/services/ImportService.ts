@@ -1,6 +1,4 @@
-import * as Models from "../models";
 import { ServiceBase } from "./ServiceBase";
-import HttpClient from "./HttpClient";
 import { useApiPostFile } from "./api";
 
 export const useImportTransactions = () => useApiPostFile<{accountId: string, file: File}>((variables) => `api/accounts/${variables.accountId}/import`);

@@ -9,7 +9,7 @@ import { TagPanel } from "../../components";
 import { TransactionTag } from "../../models";
 import { ClickableIcon } from "../../components/ClickableIcon";
 import { usePageTitle } from "../../hooks";
-import { useAddSubTag, useCreateTag, useRemoveSubTag, useTags } from "../../services";
+import { useCreateTag, useTags } from "../../services";
 
 export const TransactionTags: React.FC = () => {
 
@@ -45,20 +45,17 @@ const useComponentState = () => {
     const blankTag = {id: 0, name: "", tags: []} as TransactionTag;
 
     const fullTagsListQuery = useTags();
-    const fullTagsList = fullTagsListQuery.data ?? [];
+    const fullTagsList = fullTagsListQuery.data;
 
-    
     const createTransactionTag = useCreateTag();
-    const addSubTag = useAddSubTag();
-    const removeSubTag = useRemoveSubTag();
-    
 
     const [newTag, setNewTag] = useState(blankTag); 
     const [tagsList, setTagsList] = useState([]);
   
     useEffect(() => {
-        setTagsList(fullTagsList.filter((t) => !newTag.tags.some((tt) => t.id === tt.id)));
-    }, [newTag.tags, fullTagsList]);
+        if (!fullTagsListQuery.data) return;
+        setTagsList(fullTagsListQuery.data.filter((t) => !newTag.tags.some((tt) => t.id === tt.id)));
+    }, [newTag.tags, fullTagsListQuery.data]);
 
     const createTag = () => {
         createTransactionTag.mutate(newTag);
