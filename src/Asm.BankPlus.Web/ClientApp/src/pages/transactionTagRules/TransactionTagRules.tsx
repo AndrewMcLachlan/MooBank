@@ -12,7 +12,7 @@ import { usePageTitle } from "../../hooks";
 
 import { TransactionTagRuleRow } from "./TransactionTagRuleRow";
 import { ClickableIcon } from "../../components/ClickableIcon";
-import { useCreateRule, useCreateTag, useRules, useRunRules, useTags, useTransactions } from "../../services";
+import { useCreateRule, useCreateTag, useRules, useRunRules, useTags } from "../../services";
 
 export const TransactionTagRules: React.FC = () => {
 
@@ -64,7 +64,7 @@ const useComponentState = (accountId: string) => {
     const fullTagsList = fullTagsListQuery.data ?? [];
 
     const [newRule, setNewRule] = useState(blankRule);
-    const [tagsList, setTagsList] = useState([]);
+    const [, setTagsList] = useState([]);
 
     const createTransactionTag = useCreateTag();
     const createTransactionTagRule = useCreateRule();

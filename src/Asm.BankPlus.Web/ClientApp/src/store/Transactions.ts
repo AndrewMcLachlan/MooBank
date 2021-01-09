@@ -1,4 +1,4 @@
-﻿import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { Transactions } from "./state";
 

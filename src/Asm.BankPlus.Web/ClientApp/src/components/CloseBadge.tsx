@@ -1,4 +1,4 @@
-﻿import "./CloseBadge.scss";
+import "./CloseBadge.scss";
 
 import React, { PropsWithChildren } from "react";
 import { Badge, BadgeProps } from "react-bootstrap";

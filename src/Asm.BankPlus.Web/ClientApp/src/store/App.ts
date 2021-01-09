@@ -1,4 +1,4 @@
-﻿import { App } from "./state";
+import { App } from "./state";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export const initialState: App = {

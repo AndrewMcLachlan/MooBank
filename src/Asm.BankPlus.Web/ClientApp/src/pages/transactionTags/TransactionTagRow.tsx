@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 import { TransactionTag } from "../../models";
 import { TagPanel } from "../../components/TagPanel";

@@ -6,7 +6,7 @@ import { useClickAway } from "../../hooks";
 
 export const ManualAccountRow: React.FC<AccountRowProps> = (props) => {
 
-    const { balanceRef, avBalanceRef, editingBalance, editingAvBalance, balanceClick, avBalanceClick, balanceChange, avBalanceChange, balance, avBalance } = useComponentState(props);
+    const { balanceRef, editingBalance, balanceClick, balanceChange, balance } = useComponentState(props);
     const { onRowClick } = useAccountRowCommonState(props);
 
     return (
@@ -28,29 +28,15 @@ ManualAccountRow.displayName = "ManualAccountRow";
 
 const useComponentState = (props: AccountRowProps) => {
 
-    //const dispatch = useDispatch();
-    //const history = useHistory();
-
     const [editingBalance, setEditingBalance] = useState(false);
-    const [editingAvBalance, setEditingAvBalance] = useState(false);
 
     const [balance, setBalance] = useState(props.account.currentBalance);
-    const [avBalance, setAvBalance] = useState(props.account.availableBalance);
 
     const balanceRef = useRef(null);
     useClickAway(setEditingBalance, balanceRef);
 
-    const avBalanceRef = useRef(null);
-    useClickAway(setEditingAvBalance, avBalanceRef);
-
     const balanceClick = (e: React.MouseEvent<HTMLTableDataCellElement>) => {
         setEditingBalance(true);
-        e.preventDefault();
-        e.stopPropagation();
-    };
-
-    const avBalanceClick = (e: React.MouseEvent<HTMLTableDataCellElement>) => {
-        setEditingAvBalance(true);
         e.preventDefault();
         e.stopPropagation();
     };
@@ -59,25 +45,17 @@ const useComponentState = (props: AccountRowProps) => {
         setBalance(parseFloat(e.currentTarget.value));
     }
 
-    const avBalanceChange =(e: React.ChangeEvent<HTMLInputElement>) => {
-        setAvBalance(parseFloat(e.currentTarget.value));
-    }
 
     return {
         balanceRef,
-        avBalanceRef,
 
         editingBalance,
-        editingAvBalance,
 
         balanceClick,
-        avBalanceClick,
 
         balanceChange,
-        avBalanceChange,
 
         balance,
-        avBalance,
     };
 }
 

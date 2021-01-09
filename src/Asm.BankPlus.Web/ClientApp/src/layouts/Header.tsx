@@ -7,11 +7,7 @@ export const Header: React.FC<HeaderProps> = (props) => {
 
     const appState = useApp();
 
-    const { loading, isAuthenticated, login, logout } = useMsal();
-
-    /*if (!isAuthenticated && !loading) {
-        login("loginRedirect");
-    }*/
+    const { isAuthenticated, login, logout } = useMsal();
 
     return (
         <header>
@@ -20,7 +16,7 @@ export const Header: React.FC<HeaderProps> = (props) => {
             </div>
             <nav>
                 <ul>
-                    {!isAuthenticated && <li><a onClick={() => login("loginRedirect")}>Login</a></li>}
+                    {!isAuthenticated && <li><button onClick={() => login("loginRedirect")}>Login</button></li>}
                     <li><Link to="/">Home</Link></li>
                     <li className="desktop"><Link to="/accounts">Manage Accounts</Link></li>
                     <li className="desktop"><Link to="/settings">Settings</Link></li>

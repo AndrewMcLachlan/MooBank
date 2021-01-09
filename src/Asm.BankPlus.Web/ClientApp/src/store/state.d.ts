@@ -1,4 +1,4 @@
-﻿export interface State {
+export interface State {
     app: App,
     transactions?: Transactions,
 }
