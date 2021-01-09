@@ -47,48 +47,9 @@ namespace Asm.BankPlus.Data
             {
                 entity.SetTableName(entity.ClrType.Name);
             }
-            modelBuilder.Entity<Account>(entity =>
-            {
-                entity.HasIndex(e => e.Name).IsUnique();
 
-                entity.Property(e => e.AccountId).ValueGeneratedOnAdd();
-                entity.Property(e => e.AccountId).HasDefaultValueSql("(newid())");
+            modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
 
-                entity.Property(e => e.AccountBalance).HasColumnType("decimal(10, 2)");
-
-                entity.Property(e => e.AvailableBalance).HasColumnType("decimal(10, 2)");
-
-                entity.Property(e => e.Description).HasMaxLength(255);
-
-                entity.Property(e => e.LastUpdated)
-                    .HasColumnType("datetimeoffset(0)")
-                    .HasDefaultValueSql("(sysutcdatetime())");
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(r => r.AccountType)
-                .HasConversion(e => (int)e, e => (Models.AccountType)e);
-
-                entity.Property(r => r.AccountController)
-                .HasConversion(e => (int)e, e => (Models.AccountController)e);
-
-                entity.HasMany(p => p.AccountHolders)
-                      .WithMany(t => t.Accounts)
-                      .UsingEntity<AccountAccountHolder>(
-                           aah => aah.HasOne(aah2 => aah2.AccountHolder)
-                                     .WithMany()
-                                     .HasForeignKey(aah2 => aah2.AccountHolderId),
-                           aah => aah.HasOne(aah2 => aah2.Account)
-                                     .WithMany()
-                                      .HasForeignKey(aah2 => aah2.AccountId),
-                           aah =>
-                           {
-                               aah.HasKey(e => new { e.AccountId, e.AccountHolderId });
-                           });
-
-            });
 
             modelBuilder.Entity<AccountAccountHolder>(entity =>
             {
@@ -152,49 +113,6 @@ namespace Asm.BankPlus.Data
                     .HasMaxLength(50)
                     .IsUnicode(false);
             });*/
-
-            modelBuilder.Entity<Transaction>(entity =>
-            {
-
-                entity.HasKey("TransactionId");
-
-                entity.Property(e => e.TransactionId).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Amount).HasColumnType("decimal(10, 2)");
-
-                entity.Property(e => e.Description)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.TransactionTime).HasDefaultValueSql("(sysdatetime())");
-
-                entity.HasOne(d => d.Account)
-                    .WithMany(p => p.Transaction)
-                    .HasForeignKey(d => d.AccountId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Transaction_Account");
-
-                entity.HasMany(p => p.TransactionTags)
-                    .WithMany(t => t.Transactions)
-                    .UsingEntity<TransactionTransactionTag>(
-                        ttt => ttt.HasOne(ttt2 => ttt2.TransactionTag)
-                                  .WithMany()
-                                  .HasForeignKey(ttt2 => ttt2.TransactionTagId),
-                        ttt => ttt.HasOne(ttt2 => ttt2.Transaction)
-                                  .WithMany()
-                                  .HasForeignKey(ttt2 => ttt2.TransactionId),
-                        ttt =>
-                        {
-                            ttt.HasKey(e => new { e.TransactionId, e.TransactionTagId });
-                        });
-
-
-                entity.Property(e => e.TransactionType)
-                    .HasColumnName($"{nameof(Transaction.TransactionType)}Id")
-                    .HasConversion(e => (int)e, e => (Models.TransactionType)e)
-                    .HasDefaultValue(Models.TransactionType.Debit);
-
-            });
 
             modelBuilder.Entity<VirtualAccount>(entity =>
             {
@@ -303,19 +221,6 @@ namespace Asm.BankPlus.Data
                 entity.HasKey(e => e.ImporterTypeId);
             });
 
-            DefineIngModel(modelBuilder);
-        }
-
-        private void DefineIngModel(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<TransactionExtra>(entity =>
-            {
-                entity.ToTable("TransactionExtra", "ing");
-
-                entity.HasKey(e => e.TransactionId);
-
-                entity.HasOne(e => e.Transaction).WithOne().HasForeignKey<Transaction>(e => e.TransactionId);
-            });
         }
     }
 }

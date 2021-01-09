@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Asm.BankPlus.Data.Entities.Ing
 {
@@ -23,6 +24,6 @@ namespace Asm.BankPlus.Data.Entities.Ing
         [StringLength(50)]
         public string Reference { get; set; }
 
-        public virtual Transaction Transaction { get; set; }
+        //public virtual Transaction Transaction { get; set; }
     }
 }

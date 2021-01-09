@@ -22,11 +22,11 @@ namespace Asm.BankPlus.Services.Importers
         private const int DebitColumn = 3;
         private const int BalanceColumn = 4;
 
-        private static readonly Regex VisaPurchase = new Regex(@"^(.+) - Visa Purchase - Receipt (\d{6})In (.+) Date (.+) Card (462263xxxxxx\d{4})");
-        private static readonly Regex DirectDebit = new Regex(@"^(.+) - Direct Debit - Receipt (\d{6}) (.+)");
-        private static readonly Regex InternalTransfer = new Regex(@"^(.+) - Internal Transfer - Receipt (\d{6}) (.*)");
-        private static readonly Regex EftposPurchase = new Regex(@"^(.+) - EFTPOS Purchase - Receipt (\d{6})Date (.+) Card (462263xxxxxx\d{4})");
-        private static readonly Regex DirectPayment = new Regex(@"^([^-]+) - Receipt (\d{6})");
+        private static readonly Regex VisaPurchase = new(@"^(.+) - Visa Purchase - Receipt (\d{6})In (.+) Date (.+) Card (462263xxxxxx\d{4})");
+        private static readonly Regex DirectDebit = new(@"^(.+) - Direct Debit - Receipt (\d{6}) (.+)");
+        private static readonly Regex InternalTransfer = new(@"^(.+) - Internal Transfer - Receipt (\d{6}) (.*)");
+        private static readonly Regex EftposPurchase = new(@"^(.+) - EFTPOS Purchase - Receipt (\d{6})Date (.+) Card (462263xxxxxx\d{4})");
+        private static readonly Regex DirectPayment = new(@"^([^-]+) - Receipt (\d{6})");
 
         private readonly ITransactionExtraRepository _transactionExtraRepository;
 
@@ -141,7 +141,7 @@ namespace Asm.BankPlus.Services.Importers
             return new TransactionImportResult(savedTransactions);
         }
 
-        private TransactionExtra ParseDescription(Transaction transaction)
+        private static TransactionExtra ParseDescription(Transaction transaction)
         {
             var match = VisaPurchase.Match(transaction.Description);
 
@@ -194,7 +194,7 @@ namespace Asm.BankPlus.Services.Importers
                 {
                     TransactionId = transaction.Id,
                     Description = match.Groups[1].Value,
-                    PurchaseDate = DateTime.Parse(match.Groups[3].Value),
+                    PurchaseDate = DateTime.ParseExact(match.Groups[3].Value, "dd MMM yyyy Ti\\me h:mmtt", CultureInfo.CurrentCulture),
                     PurchaseType = "Visa",
                     ReceiptNumber = Int32.Parse(match.Groups[2].Value),
                 };

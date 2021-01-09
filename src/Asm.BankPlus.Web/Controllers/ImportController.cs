@@ -32,6 +32,5 @@ namespace Asm.BankPlus.Web.Controllers
 
             return NoContent();
         }
-
     }
 }

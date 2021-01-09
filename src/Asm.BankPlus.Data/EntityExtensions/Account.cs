@@ -8,7 +8,7 @@ namespace Asm.BankPlus.Data.Entities
     {
         public Account()
         {
-            Transaction = new HashSet<Transaction>();
+            Transactions = new HashSet<Transaction>();
             AccountHolders = new HashSet<AccountHolder>();
         }
 
