@@ -7,6 +7,7 @@ import { Redirect } from "react-router";
 import { ImportSettings } from "./ImportSettings";
 import { usePageTitle } from "../../hooks";
 import { useCreateAccount } from "../../services";
+import { emptyGuid } from "../../helpers";
 
 export const CreateAccount: React.FC = () => {
 
@@ -23,6 +24,7 @@ export const CreateAccount: React.FC = () => {
     const [accountController, setAccountController] = useState(AccountController.Manual);
     const [importerTypeId, setImporterTypeId] = useState(0);
     const [submitted, setSubmitted] = useState(false);
+    const [includeInPosition, setIncludeInPosition] = useState(true);
 
     const createAccount = useCreateAccount();
 
@@ -33,7 +35,7 @@ export const CreateAccount: React.FC = () => {
         const importAccount: ImportAccount = accountController === AccountController.Import ? { importerTypeId: importerTypeId } : null;
 
         const account: Account = {
-            id: null,
+            id: emptyGuid,
             name: name,
             description: description,
             availableBalance: balance,
@@ -41,7 +43,7 @@ export const CreateAccount: React.FC = () => {
             accountType: accountType,
             controller: accountController,
             balanceUpdated: new Date(),
-            includeInPosition: true,
+            includeInPosition: includeInPosition,
         };
 
         createAccount.create(account, importAccount);
@@ -73,6 +75,10 @@ export const CreateAccount: React.FC = () => {
                         <InputGroup.Prepend>$</InputGroup.Prepend>
                         <Form.Control type="number" required value={balance.toString()} onChange={(e: any) => setBalance(e.currentTarget.value)} />
                     </InputGroup>
+                </Form.Group>
+                <Form.Group controlId="OpeningBalance" >
+                    <Form.Label htmlFor="includeInPosition">Include in Position</Form.Label>
+                    <Form.Switch id="includeInPosition" checked={includeInPosition} onChange={(e) => setIncludeInPosition(e.currentTarget.checked)} />
                 </Form.Group>
                 <Form.Group controlId="AccountType" >
                     <Form.Label>Type</Form.Label>

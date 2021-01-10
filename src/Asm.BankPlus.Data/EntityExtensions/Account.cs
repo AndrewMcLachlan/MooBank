@@ -31,7 +31,7 @@ namespace Asm.BankPlus.Data.Entities
         {
             return new Account
             {
-                AccountId = account.Id,
+                AccountId = account.Id == Guid.Empty ? Guid.NewGuid() : account.Id,
                 Name = account.Name,
                 AvailableBalance = account.AvailableBalance,
                 AccountBalance = account.CurrentBalance,

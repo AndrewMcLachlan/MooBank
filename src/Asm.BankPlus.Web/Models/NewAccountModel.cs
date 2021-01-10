@@ -8,7 +8,7 @@ namespace Asm.BankPlus.Web.Models
     public partial class NewAccountModel
     {
 
-        public Account Account { get; set; }
+        public BankPlus.Models.Account Account { get; set; }
 
         public ImportAccount ImportAccount { get; set; }
     }

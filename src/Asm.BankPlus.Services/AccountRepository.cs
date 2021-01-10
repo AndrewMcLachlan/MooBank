@@ -28,7 +28,7 @@ namespace Asm.BankPlus.Services
         {
             var entity = (Data.Entities.Account)account;
 
-            entity.AccountHolders.Add((Data.Entities.AccountHolder) await _accountHolderRepository.GetCurrent());
+            entity.AccountHolders.Add(await _accountHolderRepository.GetCurrent());
 
             DataContext.Add(entity);
 

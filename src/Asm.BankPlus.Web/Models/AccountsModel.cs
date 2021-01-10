@@ -8,7 +8,7 @@ namespace Asm.BankPlus.Web.Models
 {
     public class AccountsModel
     {
-        public IEnumerable<Account> Accounts { get; set; }
+        public IEnumerable<BankPlus.Models.Account> Accounts { get; set; }
 
         public decimal Position { get; set; }
 
