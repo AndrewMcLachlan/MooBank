@@ -6,24 +6,27 @@ import { Account, AccountController } from "../models";
 import { AccountBalance } from ".";
 import { PageHeader } from "./PageHeader";
 import { MenuItem } from "../models/MenuItem";
+import { useAccount } from "./AccountProvider";
 
 export const AccountSummary: React.FC<AccountSummaryProps> = (props) => {
 
-    const { getMenuItems } = useRenderers(props);
+    const account = useAccount();
 
-    if (!props.account) return null;
+    const { getMenuItems } = useRenderers(account);
+
+    if (!account) return null;
 
     return (
-        <PageHeader title={props.account.name} menuItems={getMenuItems()}>
+        <PageHeader title={account.name} menuItems={getMenuItems()}>
             <table className="table">
                 <tbody>
                     <tr>
                         <th>Balance</th>
-                        <td><AccountBalance balance={props.account.currentBalance} /></td>
+                        <td><AccountBalance balance={account.currentBalance} /></td>
                     </tr>
                     <tr>
                         <th>Available Balance</th>
-                        <td><AccountBalance balance={props.account.availableBalance} /></td>
+                        <td><AccountBalance balance={account.availableBalance} /></td>
                     </tr>
                 </tbody>
             </table>
@@ -33,16 +36,17 @@ export const AccountSummary: React.FC<AccountSummaryProps> = (props) => {
 
 AccountSummary.displayName = "AccountSummary";
 
-const useRenderers = (props: AccountSummaryProps) => {
-
+const useRenderers = (account: Account) => {
 
     const getMenuItems = () => {
 
-        const items: MenuItem[] = [{ route: `/accounts/${props.account.id}/tag-rules`, text: "Tag Rules" }];
+        if (!account) return [];
 
-        switch (props.account.controller) {
+        const items: MenuItem[] = [{ route: `/accounts/${account.id}/tag-rules`, text: "Tag Rules" }];
+
+        switch (account.controller) {
             case AccountController.Import:
-                items.push({ route: `/accounts/${props.account.id}/import`, text: "Import" });
+                items.push({ route: `/accounts/${account.id}/import`, text: "Import" });
         }
 
         return items;
@@ -54,5 +58,4 @@ const useRenderers = (props: AccountSummaryProps) => {
 }
 
 export interface AccountSummaryProps {
-    account: Account;
 }

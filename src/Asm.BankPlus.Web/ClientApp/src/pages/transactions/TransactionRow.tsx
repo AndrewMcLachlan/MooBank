@@ -2,12 +2,11 @@
 import moment from "moment";
 
 import { Transaction, TransactionTag } from "../../models";
-import { TagPanel } from "../../components";
+import { TagPanel, useAccount } from "../../components";
 import { useAddTransactionTag, useCreateTag, useRemoveTransactionTag, useTags } from "../../services";
 
 export const TransactionRow: React.FC<TransactionRowProps> = (props) => {
 
-    //const [editMode, setEditMode] = useState(false);
     const transactionRow = useTransactionRowEvents(props);
 
     const fullTagsListQuery = useTags();
@@ -29,7 +28,9 @@ export const TransactionRow: React.FC<TransactionRowProps> = (props) => {
     );
 }
 
-function useTransactionRowEvents(props: TransactionRowProps) {
+export const useTransactionRowEvents = (props: TransactionRowProps) => {
+
+    const account = useAccount();
 
     const [tags, setTags] = useState(props.transaction.tags);
 
@@ -44,7 +45,7 @@ function useTransactionRowEvents(props: TransactionRowProps) {
     const createTag = (name: string) => {
         createTransactionTag.mutate({ name }, {
             onSuccess: (data) => {
-                addTransactionTag.mutate({ transactionId: props.transaction.id, tag: data});
+                addTransactionTag.mutate({ accountId: account.id, transactionId: props.transaction.id, tag: data});
             }
         });
     }
@@ -53,7 +54,7 @@ function useTransactionRowEvents(props: TransactionRowProps) {
 
         if (!tag.id) return;
 
-        addTransactionTag.mutate({ transactionId: props.transaction.id, tag });
+        addTransactionTag.mutate({accountId: account.id, transactionId: props.transaction.id, tag });
         setTags(tags.concat([tag]));
     }
 
@@ -61,7 +62,7 @@ function useTransactionRowEvents(props: TransactionRowProps) {
 
         if (!tag.id) return;
 
-        removeTransactionTag.mutate({ transactionId: props.transaction.id, tag });
+        removeTransactionTag.mutate({ accountId: account.id,  transactionId: props.transaction.id, tag });
         setTags(tags.filter((t) => t.id !== tag.id));
     }
 

@@ -38,6 +38,7 @@ export const AccountList: React.FC<AccountListProps> = () => {
                     <thead>
                         <tr>
                             <th>Name</th>
+                            <th>Type</th>
                             <th>Current Balance</th>
                             {/*<th>Available Balance</th>*/}
                         </tr>
@@ -46,8 +47,8 @@ export const AccountList: React.FC<AccountListProps> = () => {
                         {accountRows}
                     </tbody>
                     <tfoot>
-                        <tr>
-                            <td>Position</td>
+                        <tr className="position">
+                            <td colSpan={2}>Position</td>
                             <td>{getBalanceString(data?.position)}</td>
                         </tr>
                     </tfoot>

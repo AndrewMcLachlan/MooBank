@@ -7,7 +7,6 @@ import { Table } from "react-bootstrap";
 
 import { TransactionsSlice } from "../../store/Transactions";
 import { State } from "../../store/state";
-import { Account } from "../../models";
 import { TransactionRow } from "./TransactionRow";
 import { TransactionRowIng } from "./TransactionRowIng";
 import { useTransactions } from "../../services";
@@ -67,5 +66,4 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
 }
 
 export interface TransactionListProps {
-    account: Account;
 }

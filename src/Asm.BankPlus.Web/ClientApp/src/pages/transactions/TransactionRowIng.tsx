@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import moment from "moment";
 
-import { TransactionTag } from "../../models";
 import { TagPanel } from "../../components";
 import { TransactionRowProps } from "./TransactionRow";
-import { useAddTransactionTag, useCreateTag, useRemoveTransactionTag, useTags } from "../../services";
+import { useTags } from "../../services";
+import { useTransactionRowEvents } from "./TransactionRow";
 
 export const TransactionRowIng: React.FC<TransactionRowProps> = (props) => {
 
@@ -30,47 +30,3 @@ export const TransactionRowIng: React.FC<TransactionRowProps> = (props) => {
 }
 
 TransactionRowIng.displayName = "TransactionRowIng";
-
-function useTransactionRowEvents(props: TransactionRowProps) {
-
-    const [tags, setTags] = useState(props.transaction.tags);
-
-    const addTransactionTag = useAddTransactionTag();
-    const removeTransactionTag = useRemoveTransactionTag();
-    const createTransactionTag = useCreateTag();
-
-    useEffect(() => {
-        setTags(props.transaction.tags);
-    }, [props.transaction.tags]);
-
-    const createTag = (name: string) => {
-        createTransactionTag.mutate({ name }, {
-            onSuccess: (data) => {
-                addTransactionTag.mutate({ transactionId: props.transaction.id, tag: data});
-            }
-        });
-    }
-
-    const addTag = (tag: TransactionTag) => {
-
-        if (!tag.id) return;
-
-        addTransactionTag.mutate({ transactionId: props.transaction.id, tag });
-        setTags(tags.concat([tag]));
-    }
-
-    const removeTag = (tag: TransactionTag) => {
-
-        if (!tag.id) return;
-
-        removeTransactionTag.mutate({ transactionId: props.transaction.id, tag });
-        setTags(tags.filter((t) => t.id !== tag.id));
-    }
-
-    return {
-        createTag,
-        addTag,
-        removeTag,
-        tags,
-    };
-}

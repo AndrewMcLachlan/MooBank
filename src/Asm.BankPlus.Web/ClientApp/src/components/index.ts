@@ -1,6 +1,7 @@
 export * from "./Alert";
 export * from "./AccountBalance";
 export * from "./AccountList/index";
+export * from "./AccountProvider";
 export * from "./AccountSummary";
 export * from "./AppProvider";
 export * from "./CloseBadge";

@@ -1,20 +1,23 @@
 ﻿import React, { useState, useRef } from "react";
 import { getBalanceString } from "../../helpers";
 
-import { AccountRowProps, useAccountRowCommonState } from "./AccountRow";
+import { AccountRowProps } from "./AccountRow";
 import { useClickAway } from "../../hooks";
+import { AccountType } from "../../models";
 
 export const ManualAccountRow: React.FC<AccountRowProps> = (props) => {
 
     const { balanceRef, editingBalance, balanceClick, balanceChange, balance } = useComponentState(props);
-    const { onRowClick } = useAccountRowCommonState(props);
 
     return (
-        <tr onClick={onRowClick} className="clickable">
+        <tr onClick={balanceClick} className="clickable" ref={balanceRef}>
             <td className="account">
                 <div className="name">{props.account.name}</div>
             </td>
-            <td onClick={balanceClick} ref={balanceRef}> {!editingBalance && <span className={props.account.currentBalance < 0 ? " negative" : ""}>{getBalanceString(balance)}</span>}
+            <td>
+                {AccountType[props.account.accountType]}
+            </td>
+            <td> {!editingBalance && <span className={props.account.currentBalance < 0 ? " negative" : ""}>{getBalanceString(balance)}</span>}
                 {editingBalance && <input type="number" value={balance} onChange={balanceChange} />}
             </td>
             {/*<td onClick={avBalanceClick} ref={avBalanceRef}> {!editingAvBalance && <span className={props.account.availableBalance < 0 ? " negative" : ""}>{getBalanceString(avBalance)}</span>}
@@ -35,13 +38,13 @@ const useComponentState = (props: AccountRowProps) => {
     const balanceRef = useRef(null);
     useClickAway(setEditingBalance, balanceRef);
 
-    const balanceClick = (e: React.MouseEvent<HTMLTableDataCellElement>) => {
+    const balanceClick = (e: React.MouseEvent<HTMLTableRowElement>) => {
         setEditingBalance(true);
         e.preventDefault();
         e.stopPropagation();
     };
 
-    const balanceChange =(e: React.ChangeEvent<HTMLInputElement>) => {
+    const balanceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setBalance(parseFloat(e.currentTarget.value));
     }
 

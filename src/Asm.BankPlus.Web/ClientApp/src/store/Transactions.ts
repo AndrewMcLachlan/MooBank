@@ -1,9 +1,6 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+﻿import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { Transactions } from "./state";
-
-export const SetTransactionListFilter = "SetTransactionListFilter";
-export const SetCurrentPage = "SetCurrentPage";
 
 const initialState: Transactions = {
     currentPage: 1,
