@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Table } from "react-bootstrap";
 
 import { TransactionsSlice } from "../../store/Transactions";
-import { State } from "../../store/state";
+import { sortDirection, State } from "../../store/state";
 import { TransactionRow } from "./TransactionRow";
 import { TransactionRowIng } from "./TransactionRowIng";
 import { useTransactions } from "../../services";
@@ -19,16 +19,33 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
     const pageNumber = useSelector((state: State) => state.transactions.currentPage);
     const pageSize = useSelector((state: State) => state.transactions.pageSize);
     const filterTagged = useSelector((state: State) => state.transactions.filterTagged);
+    const sortField = useSelector((state: State) => state.transactions.sortField);
+    const sortDirection = useSelector((state: State) => state.transactions.sortDirection);
     const dispatch = useDispatch();
 
-    const transactionsQuery = useTransactions(id, filterTagged, pageSize, pageNumber);
+    const transactionsQuery = useTransactions(id, filterTagged, pageSize, pageNumber, sortField, sortDirection);
     const transactions = transactionsQuery.data?.transactions;
     const totalTransactions = transactionsQuery.data?.total ?? 0;
 
     const numberOfPages = Math.ceil(totalTransactions / pageSize);
-  
+
     const showNext = pageNumber < numberOfPages;
     const showPrev = pageNumber > 1;
+
+    const sort = (newSortField: string) => {
+
+        let newSortDirection: sortDirection = "Ascending";
+
+        if (newSortField === sortField)
+        {
+            newSortDirection = sortDirection === "Ascending" ? "Descending" : "Ascending";
+        }
+
+        dispatch(TransactionsSlice.actions.setSort([newSortField, newSortDirection]));
+    }
+
+    const getClassName = (field: string) => 
+        field === sortField ? `sortable ${sortDirection.toLowerCase()}` : `sortable`;
 
     return (
         <section>
@@ -40,9 +57,9 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
             <Table striped bordered={false} borderless className="transactions">
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>Description</th>
-                        <th>Amount</th>
+                        <th className={getClassName("TransactionTime")} onClick={() => sort("TransactionTime")}>Date</th>
+                        <th className={getClassName("Description")} onClick={() => sort("Description")}>Description</th>
+                        <th className={getClassName("Amount")} onClick={() => sort("Amount")}>Amount</th>
                         <th>Tags</th>
                     </tr>
                 </thead>

@@ -14,11 +14,11 @@ namespace Asm.BankPlus.Repository
 
         Task<IEnumerable<Transaction>> GetTransactions(Guid accountId);
 
-        Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, int pageSize, int pageNumber);
+        Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, int pageSize, int pageNumber, string sortField, SortDirection sortDirection);
 
-        Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, DateTime start, DateTime? end, int pageSize, int pageNumber);
+        Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, DateTime start, DateTime? end, int pageSize, int pageNumber, string sortField, SortDirection sortDirection);
 
-        Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, TimeSpan period, int pageSize, int pageNumber);
+        Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, TimeSpan period, int pageSize, int pageNumber, string sortField, SortDirection sortDirection);
 
         Task<Transaction> AddTransactionTag(Guid id, int tagId);
 
@@ -30,6 +30,6 @@ namespace Asm.BankPlus.Repository
 
         Task<IEnumerable<Transaction>> CreateTransactions(IEnumerable<Transaction> transactions);
 
-        Task<IEnumerable<Transaction>> GetUntaggedTransactions(Guid accountId, int value1, int value2);
+        Task<IEnumerable<Transaction>> GetUntaggedTransactions(Guid accountId, int pageSize, int pageNumber, string sortField, SortDirection sortDirection);
     }
 }

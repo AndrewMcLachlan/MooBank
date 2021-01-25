@@ -39,22 +39,22 @@ namespace Asm.BankPlus.Web.Controllers
         }
 
         [HttpGet("{accountId}/transactions/{pageSize?}/{pageNumber?}")]
-        public async Task<ActionResult<TransactionsModel>> Get(Guid accountId, int? pageSize = 50, int? pageNumber = 1)
+        public async Task<ActionResult<TransactionsModel>> Get(Guid accountId, int? pageSize = 50, int? pageNumber = 1, [FromQuery] string sortField = null, [FromQuery] SortDirection sortDirection = SortDirection.Ascending)
         {
             return new ActionResult<TransactionsModel>(new TransactionsModel
             {
-                Transactions = await TransactionRepository.GetTransactions(accountId, pageSize.Value, pageNumber.Value),
+                Transactions = await TransactionRepository.GetTransactions(accountId, pageSize.Value, pageNumber.Value, sortField, sortDirection),
                 PageNumber = pageNumber,
                 Total = await TransactionRepository.GetTotalTransactions(accountId),
             });
         }
 
         [HttpGet("{accountId}/transactions/untagged/{pageSize?}/{pageNumber?}")]
-        public async Task<ActionResult<TransactionsModel>> Getuntagged(Guid accountId, int? pageSize = 50, int? pageNumber = 1)
+        public async Task<ActionResult<TransactionsModel>> Getuntagged(Guid accountId, int? pageSize = 50, int? pageNumber = 1, [FromQuery]string sortField = null, [FromQuery] SortDirection sortDirection = SortDirection.Ascending)
         {
             return new ActionResult<TransactionsModel>(new TransactionsModel
             {
-                Transactions = await TransactionRepository.GetUntaggedTransactions(accountId, pageSize.Value, pageNumber.Value),
+                Transactions = await TransactionRepository.GetUntaggedTransactions(accountId, pageSize.Value, pageNumber.Value, sortField, sortDirection),
                 PageNumber = pageNumber,
                 Total = await TransactionRepository.GetTotalUntaggedTransactions(accountId),
             });

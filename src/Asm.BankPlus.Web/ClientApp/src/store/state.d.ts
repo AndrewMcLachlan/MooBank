@@ -12,5 +12,8 @@ export interface Transactions {
     currentPage: number;
     pageSize: number;
     filterTagged: boolean;
+    sortField: string;
+    sortDirection: sortDirection;
 }
 
+export type sortDirection = "Ascending" | "Descending";

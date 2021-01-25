@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading.Tasks;
 using Asm.BankPlus.Data;
 using Asm.BankPlus.Repository;
@@ -51,32 +53,32 @@ namespace Asm.BankPlus.Services
             return (await GetTransactionsQuery(accountId).Where(t => t.AccountId == accountId).ToListAsync()).Select(t => (Transaction)t).OrderByDescending(t => t.TransactionTime);
         }
 
-        public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, int pageSize, int pageNumber)
+        public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, int pageSize, int pageNumber, string sortField, SortDirection sortDirection)
         {
             _security.AssertPermission(accountId);
 
-            return await GetTransactionsQuery(accountId).Paging(pageSize, pageNumber);
+            return await GetTransactionsQuery(accountId).Sort(sortField, sortDirection).Paging(pageSize, pageNumber).ToModelListAsync();
         }
 
-        public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, DateTime start, DateTime? end, int pageSize, int pageNumber)
+        public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, DateTime start, DateTime? end, int pageSize, int pageNumber, string sortField, SortDirection sortDirection)
         {
             _security.AssertPermission(accountId);
 
-            return await GetTransactionsQuery(accountId).Where(t => t.TransactionTime >= start && t.TransactionTime <= (end ?? DateTime.Now)).Paging(pageSize, pageNumber);
+            return await GetTransactionsQuery(accountId).Where(t => t.TransactionTime >= start && t.TransactionTime <= (end ?? DateTime.Now)).Sort(sortField, sortDirection).Paging(pageSize, pageNumber).ToModelListAsync();
         }
 
-        public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, TimeSpan period, int pageSize, int pageNumber)
+        public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, TimeSpan period, int pageSize, int pageNumber, string sortField, SortDirection sortDirection)
         {
             _security.AssertPermission(accountId);
 
-            return await GetTransactionsQuery(accountId).Where(t => t.TransactionTime >= DateTime.Now.Subtract(period) && t.TransactionTime <= DateTime.Now).Paging(pageSize, pageNumber);
+            return await GetTransactionsQuery(accountId).Where(t => t.TransactionTime >= DateTime.Now.Subtract(period) && t.TransactionTime <= DateTime.Now).Sort(sortField, sortDirection).Paging(pageSize, pageNumber).ToModelListAsync();
         }
 
-        public async Task<IEnumerable<Transaction>> GetUntaggedTransactions(Guid accountId, int pageSize, int pageNumber)
+        public async Task<IEnumerable<Transaction>> GetUntaggedTransactions(Guid accountId, int pageSize, int pageNumber, string sortField, SortDirection sortDirection)
         {
             _security.AssertPermission(accountId);
 
-            return await GetTransactionsQuery(accountId).Where(t => !t.TransactionTags.Any()).Paging(pageSize, pageNumber);
+            return await GetTransactionsQuery(accountId).Where(t => !t.TransactionTags.Any()).Sort(sortField, sortDirection).Paging(pageSize, pageNumber).ToModelListAsync();
         }
 
         public async Task<Transaction> AddTransactionTag(Guid id, int tagId)
@@ -152,9 +154,44 @@ namespace Asm.BankPlus.Services
 
     public static class IQueryableExtensions
     {
-        public static async Task<IEnumerable<Transaction>> Paging(this IQueryable<Data.Entities.Transaction> query, int pageSize, int pageNumber)
+        private static readonly PropertyInfo[] _transactionProperties;
+
+        static IQueryableExtensions()
         {
-            return (await query.OrderByDescending(t => t.TransactionTime).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync()).Select(t => (Transaction)t);
+            _transactionProperties = typeof(Transaction).GetProperties();
+        }
+
+        public static IQueryable<Data.Entities.Transaction> Paging(this IQueryable<Data.Entities.Transaction> query, int pageSize, int pageNumber)
+        {
+            return query.Skip((pageNumber - 1) * pageSize).Take(pageSize);
+        }
+
+        public static async Task<IEnumerable<Transaction>> ToModelListAsync(this IQueryable<Data.Entities.Transaction> query)
+        {
+            return (await query.ToListAsync()).Select(t => (Transaction)t);
+        }
+
+        public static IOrderedQueryable<Data.Entities.Transaction> Sort(this IQueryable<Data.Entities.Transaction> query, string field, SortDirection direction)
+        {
+            if (!String.IsNullOrWhiteSpace(field))
+            {
+                PropertyInfo property = _transactionProperties.SingleOrDefault(p => p.Name.Equals(field, StringComparison.OrdinalIgnoreCase));
+
+                if (property == null) throw new ArgumentException($"Unknown field {field}", nameof(field));
+
+
+                ParameterExpression param = Expression.Parameter(typeof(Data.Entities.Transaction), String.Empty);
+                MemberExpression propertyExp = Expression.Property(param, field);
+                LambdaExpression sort = Expression.Lambda(propertyExp, param);
+                MethodCallExpression call = Expression.Call(typeof(Queryable), "OrderBy" + (direction == SortDirection.Descending ? "Descending" : String.Empty), new[] { typeof(Data.Entities.Transaction), propertyExp.Type },
+                query.Expression,
+                Expression.Quote(sort));
+                return (IOrderedQueryable<Data.Entities.Transaction>)query.Provider.CreateQuery<Data.Entities.Transaction>(call);
+            }
+
+            Expression<Func<Data.Entities.Transaction, object>> sortFunc = t => t.TransactionTime;
+            return direction == SortDirection.Ascending ? query.OrderBy(sortFunc) : query.OrderByDescending(sortFunc);
+
         }
     }
 }
