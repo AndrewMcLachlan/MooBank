@@ -28,3 +28,40 @@
     }
 
 }
+
+.filter-panel {
+
+    .form-row {
+        display: flex;
+        gap: 10px;
+    }
+
+    .form-group {
+        margin: 0;
+        display: flex;
+
+        &.description {
+            flex-grow: 2;
+        }
+    }
+
+    .form-check{
+        padding-top: 5px;
+    }
+
+    .form-label { 
+        //display: inline;
+        padding-top: 5px;
+        padding-right: 10px;
+    }
+
+   }
+
+/*.transaction-list-header {
+    display: flex;
+    gap: 10px;
+
+    .account-summary {
+        width: 50%;
+    }
+}*/

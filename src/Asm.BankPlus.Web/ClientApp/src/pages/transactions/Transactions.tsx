@@ -1,8 +1,9 @@
 import React from "react";
 import { RouteComponentProps, useParams } from "react-router";
 
+import { FilterPanel } from "./FilterPanel";
 import { TransactionList } from "./TransactionList";
-import { AccountProvider, AccountSummary } from "../../components";
+import { AccountHeader, AccountProvider, AccountSummary } from "../../components";
 import { usePageTitle } from "../../hooks";
 import { useAccount } from "../../services";
 
@@ -18,7 +19,11 @@ export const Transactions: React.FC<TransactionsProps> = (props) => {
 
     return (
         <AccountProvider account={account.data}>
-            <AccountSummary  />
+            <AccountHeader />
+            <div className="transaction-list-header">
+                <AccountSummary />
+                <FilterPanel />
+            </div>
             <TransactionList />
         </AccountProvider>);
 }

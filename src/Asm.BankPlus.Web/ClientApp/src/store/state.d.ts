@@ -11,9 +11,16 @@ export interface App {
 export interface Transactions {
     currentPage: number;
     pageSize: number;
-    filterTagged: boolean;
+    filter: TransactionsFilter;
     sortField: string;
     sortDirection: sortDirection;
+}
+
+export interface TransactionsFilter {
+    filterTagged?: boolean;
+    description?: string;
+    start?: string;
+    end?: string;
 }
 
 export type sortDirection = "Ascending" | "Descending";

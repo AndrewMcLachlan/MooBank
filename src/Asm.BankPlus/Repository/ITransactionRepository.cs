@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Asm.BankPlus.Models;
 using Transaction = Asm.BankPlus.Models.Transaction;
 
 namespace Asm.BankPlus.Repository
 {
     public interface ITransactionRepository : IDataRepository
     {
-        Task<int> GetTotalTransactions(Guid accountId);
+        Task<int> GetTotalTransactions(Guid accountId, string filter, DateTime? start, DateTime? end);
 
-        Task<int> GetTotalUntaggedTransactions(Guid accountId);
+        Task<int> GetTotalUntaggedTransactions(Guid accountId, string filter, DateTime? start, DateTime? end);
 
         Task<IEnumerable<Transaction>> GetTransactions(Guid accountId);
 
-        Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, int pageSize, int pageNumber, string sortField, SortDirection sortDirection);
+        Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, string filter, DateTime? start, DateTime? end, int pageSize, int pageNumber, string sortField, SortDirection sortDirection);
 
         Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, DateTime start, DateTime? end, int pageSize, int pageNumber, string sortField, SortDirection sortDirection);
 
@@ -30,6 +29,6 @@ namespace Asm.BankPlus.Repository
 
         Task<IEnumerable<Transaction>> CreateTransactions(IEnumerable<Transaction> transactions);
 
-        Task<IEnumerable<Transaction>> GetUntaggedTransactions(Guid accountId, int pageSize, int pageNumber, string sortField, SortDirection sortDirection);
+        Task<IEnumerable<Transaction>> GetUntaggedTransactions(Guid accountId, string filter, DateTime? start, DateTime? end, int pageSize, int pageNumber, string sortField, SortDirection sortDirection);
     }
 }

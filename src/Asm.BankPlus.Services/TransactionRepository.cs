@@ -32,18 +32,22 @@ namespace Asm.BankPlus.Services
             return (Transaction)entity;
         }
 
-        public async Task<int> GetTotalTransactions(Guid accountId)
+        public async Task<int> GetTotalTransactions(Guid accountId, string filter, DateTime? start, DateTime? end)
         {
             _security.AssertPermission(accountId);
 
-            return await DataContext.Transactions.Where(t => t.AccountId == accountId).CountAsync();
+            Expression<Func<Data.Entities.Transaction, bool>> predicate = (t) => (filter == null || t.Description.Contains(filter)) && (start == null || t.TransactionTime >= start) && (end == null || t.TransactionTime <= end);
+
+            return await DataContext.Transactions.Where(t => t.AccountId == accountId).Where(predicate).CountAsync();
         }
 
-        public async Task<int> GetTotalUntaggedTransactions(Guid accountId)
+        public async Task<int> GetTotalUntaggedTransactions(Guid accountId, string filter, DateTime? start, DateTime? end)
         {
             _security.AssertPermission(accountId);
 
-            return await DataContext.Transactions.Where(t => t.AccountId == accountId && !t.TransactionTags.Any()).CountAsync();
+            Expression<Func<Data.Entities.Transaction, bool>> predicate = (t) => (filter == null || t.Description.Contains(filter)) && (start == null || t.TransactionTime >= start) && (end == null || t.TransactionTime <= end);
+
+            return await DataContext.Transactions.Where(t => t.AccountId == accountId && !t.TransactionTags.Any()).Where(predicate).CountAsync();
         }
 
         public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId)
@@ -53,32 +57,36 @@ namespace Asm.BankPlus.Services
             return (await GetTransactionsQuery(accountId).Where(t => t.AccountId == accountId).ToListAsync()).Select(t => (Transaction)t).OrderByDescending(t => t.TransactionTime);
         }
 
-        public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, int pageSize, int pageNumber, string sortField, SortDirection sortDirection)
+        public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, string filter, DateTime? start, DateTime? end, int pageSize, int pageNumber, string sortField, SortDirection sortDirection)
         {
             _security.AssertPermission(accountId);
 
-            return await GetTransactionsQuery(accountId).Sort(sortField, sortDirection).Paging(pageSize, pageNumber).ToModelListAsync();
+            Expression<Func<Data.Entities.Transaction, bool>> predicate = (t) => (filter == null || t.Description.Contains(filter)) && (start == null || t.TransactionTime >= start) && (end == null || t.TransactionTime <= end);
+
+            return await GetTransactionsQuery(accountId).Where(predicate).Sort(sortField, sortDirection).Page(pageSize, pageNumber).ToModelListAsync();
         }
 
         public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, DateTime start, DateTime? end, int pageSize, int pageNumber, string sortField, SortDirection sortDirection)
         {
             _security.AssertPermission(accountId);
 
-            return await GetTransactionsQuery(accountId).Where(t => t.TransactionTime >= start && t.TransactionTime <= (end ?? DateTime.Now)).Sort(sortField, sortDirection).Paging(pageSize, pageNumber).ToModelListAsync();
+            return await GetTransactionsQuery(accountId).Where(t => t.TransactionTime >= start && t.TransactionTime <= (end ?? DateTime.Now)).Sort(sortField, sortDirection).Page(pageSize, pageNumber).ToModelListAsync();
         }
 
         public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, TimeSpan period, int pageSize, int pageNumber, string sortField, SortDirection sortDirection)
         {
             _security.AssertPermission(accountId);
 
-            return await GetTransactionsQuery(accountId).Where(t => t.TransactionTime >= DateTime.Now.Subtract(period) && t.TransactionTime <= DateTime.Now).Sort(sortField, sortDirection).Paging(pageSize, pageNumber).ToModelListAsync();
+            return await GetTransactionsQuery(accountId).Where(t => t.TransactionTime >= DateTime.Now.Subtract(period) && t.TransactionTime <= DateTime.Now).Sort(sortField, sortDirection).Page(pageSize, pageNumber).ToModelListAsync();
         }
 
-        public async Task<IEnumerable<Transaction>> GetUntaggedTransactions(Guid accountId, int pageSize, int pageNumber, string sortField, SortDirection sortDirection)
+        public async Task<IEnumerable<Transaction>> GetUntaggedTransactions(Guid accountId, string filter, DateTime? start, DateTime? end, int pageSize, int pageNumber, string sortField, SortDirection sortDirection)
         {
             _security.AssertPermission(accountId);
 
-            return await GetTransactionsQuery(accountId).Where(t => !t.TransactionTags.Any()).Sort(sortField, sortDirection).Paging(pageSize, pageNumber).ToModelListAsync();
+            Expression<Func<Data.Entities.Transaction, bool>> predicate = (t) => (filter == null || t.Description.Contains(filter)) && (start == null || t.TransactionTime >= start) && (end == null || t.TransactionTime <= end);
+
+            return await GetTransactionsQuery(accountId).Where(predicate).Where(t => !t.TransactionTags.Any()).Sort(sortField, sortDirection).Page(pageSize, pageNumber).ToModelListAsync();
         }
 
         public async Task<Transaction> AddTransactionTag(Guid id, int tagId)
@@ -161,7 +169,7 @@ namespace Asm.BankPlus.Services
             _transactionProperties = typeof(Transaction).GetProperties();
         }
 
-        public static IQueryable<Data.Entities.Transaction> Paging(this IQueryable<Data.Entities.Transaction> query, int pageSize, int pageNumber)
+        public static IQueryable<Data.Entities.Transaction> Page(this IQueryable<Data.Entities.Transaction> query, int pageSize, int pageNumber)
         {
             return query.Skip((pageNumber - 1) * pageSize).Take(pageSize);
         }

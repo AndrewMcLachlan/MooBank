@@ -18,12 +18,12 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
 
     const pageNumber = useSelector((state: State) => state.transactions.currentPage);
     const pageSize = useSelector((state: State) => state.transactions.pageSize);
-    const filterTagged = useSelector((state: State) => state.transactions.filterTagged);
+    const filter = useSelector((state: State) => state.transactions.filter);
     const sortField = useSelector((state: State) => state.transactions.sortField);
     const sortDirection = useSelector((state: State) => state.transactions.sortDirection);
     const dispatch = useDispatch();
 
-    const transactionsQuery = useTransactions(id, filterTagged, pageSize, pageNumber, sortField, sortDirection);
+    const transactionsQuery = useTransactions(id, filter, pageSize, pageNumber, sortField, sortDirection);
     const transactions = transactionsQuery.data?.transactions;
     const totalTransactions = transactionsQuery.data?.total ?? 0;
 
@@ -36,49 +36,41 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
 
         let newSortDirection: sortDirection = "Ascending";
 
-        if (newSortField === sortField)
-        {
+        if (newSortField === sortField) {
             newSortDirection = sortDirection === "Ascending" ? "Descending" : "Ascending";
         }
 
         dispatch(TransactionsSlice.actions.setSort([newSortField, newSortDirection]));
     }
 
-    const getClassName = (field: string) => 
+    const getClassName = (field: string) =>
         field === sortField ? `sortable ${sortDirection.toLowerCase()}` : `sortable`;
 
     return (
-        <section>
-            <fieldset className="filter-panel">
-                <legend>Filters</legend>
-                <input id="filter-tagged" type="checkbox" checked={filterTagged} onChange={(e) => dispatch(TransactionsSlice.actions.setTransactionListFilter(e.currentTarget.checked))} />
-                <label htmlFor="filter-tagged">Only show transactions without tags</label>
-            </fieldset>
-            <Table striped bordered={false} borderless className="transactions">
-                <thead>
-                    <tr>
-                        <th className={getClassName("TransactionTime")} onClick={() => sort("TransactionTime")}>Date</th>
-                        <th className={getClassName("Description")} onClick={() => sort("Description")}>Description</th>
-                        <th className={getClassName("Amount")} onClick={() => sort("Amount")}>Amount</th>
-                        <th>Tags</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {transactions && transactions.map((t) => t.extraInfo ? <TransactionRowIng key={t.id} transaction={t} /> : <TransactionRow key={t.id} transaction={t} />)}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colSpan={2}>Page {pageNumber} of {numberOfPages} ({totalTransactions} transactions)</td>
-                        <td colSpan={2}>
-                            <button disabled={!showPrev} className="btn" onClick={() => dispatch(TransactionsSlice.actions.setCurrentPage(1))}>&lt;&lt;</button>
-                            <button disabled={!showPrev} className="btn" onClick={() => dispatch(TransactionsSlice.actions.setCurrentPage(Math.max(pageNumber - 1, 1)))}>&lt;</button>
-                            <button disabled={!showNext} className="btn" onClick={() => dispatch(TransactionsSlice.actions.setCurrentPage(Math.min(pageNumber + 1, numberOfPages)))}>&gt;</button>
-                            <button disabled={!showNext} className="btn" onClick={() => dispatch(TransactionsSlice.actions.setCurrentPage(numberOfPages))}>&gt;&gt;</button>
-                        </td>
-                    </tr>
-                </tfoot>
-            </Table>
-        </section>
+        <Table striped bordered={false} borderless className="transactions">
+            <thead>
+                <tr>
+                    <th className={getClassName("TransactionTime")} onClick={() => sort("TransactionTime")}>Date</th>
+                    <th className={getClassName("Description")} onClick={() => sort("Description")}>Description</th>
+                    <th className={getClassName("Amount")} onClick={() => sort("Amount")}>Amount</th>
+                    <th>Tags</th>
+                </tr>
+            </thead>
+            <tbody>
+                {transactions && transactions.map((t) => t.extraInfo ? <TransactionRowIng key={t.id} transaction={t} /> : <TransactionRow key={t.id} transaction={t} />)}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colSpan={2}>Page {pageNumber} of {numberOfPages} ({totalTransactions} transactions)</td>
+                    <td colSpan={2}>
+                        <button disabled={!showPrev} className="btn" onClick={() => dispatch(TransactionsSlice.actions.setCurrentPage(1))}>&lt;&lt;</button>
+                        <button disabled={!showPrev} className="btn" onClick={() => dispatch(TransactionsSlice.actions.setCurrentPage(Math.max(pageNumber - 1, 1)))}>&lt;</button>
+                        <button disabled={!showNext} className="btn" onClick={() => dispatch(TransactionsSlice.actions.setCurrentPage(Math.min(pageNumber + 1, numberOfPages)))}>&gt;</button>
+                        <button disabled={!showNext} className="btn" onClick={() => dispatch(TransactionsSlice.actions.setCurrentPage(numberOfPages))}>&gt;&gt;</button>
+                    </td>
+                </tr>
+            </tfoot>
+        </Table>
     );
 }
 

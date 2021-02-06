@@ -1,11 +1,13 @@
 ﻿import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { sortDirection, Transactions } from "./state";
+import { sortDirection, Transactions, TransactionsFilter } from "./state";
 
 const initialState: Transactions = {
     currentPage: 1,
     pageSize: 50,
-    filterTagged: false,
+    filter: {
+        filterTagged: false,
+    },
     sortField: "",
     sortDirection: "Descending",
 };
@@ -26,10 +28,17 @@ export const reducers = {
         };
     },
 
-    setTransactionListFilter: (state: Transactions, action: PayloadAction<boolean>) => {
+    setTransactionListFilter: (state: Transactions, action: PayloadAction<TransactionsFilter>): Transactions => {
+
+        const newFilter: TransactionsFilter = {
+            description: action.payload.description ?? state.filter.description,
+            filterTagged: action.payload.filterTagged ?? state.filter.filterTagged,
+            start: action.payload.start ?? state.filter.start,
+            end: action.payload.end ?? state.filter.end,
+        };
         return {
             ...state,
-            filterTagged: action.payload,
+            filter: newFilter,
         };
     },
 

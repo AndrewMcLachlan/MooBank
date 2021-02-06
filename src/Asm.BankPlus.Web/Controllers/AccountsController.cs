@@ -39,24 +39,28 @@ namespace Asm.BankPlus.Web.Controllers
         }
 
         [HttpGet("{accountId}/transactions/{pageSize?}/{pageNumber?}")]
-        public async Task<ActionResult<TransactionsModel>> Get(Guid accountId, int? pageSize = 50, int? pageNumber = 1, [FromQuery] string sortField = null, [FromQuery] SortDirection sortDirection = SortDirection.Ascending)
+        public async Task<ActionResult<TransactionsModel>> Get(Guid accountId, int? pageSize = 50, int? pageNumber = 1, [FromQuery] DateTime? start = null, [FromQuery] DateTime? end = null, [FromQuery] string filter = null, [FromQuery] string sortField = null, [FromQuery] SortDirection sortDirection = SortDirection.Ascending)
         {
+            if (start != null && end != null && end < start) return BadRequest($"{nameof(start)} is less than {nameof(end)}");
+
             return new ActionResult<TransactionsModel>(new TransactionsModel
             {
-                Transactions = await TransactionRepository.GetTransactions(accountId, pageSize.Value, pageNumber.Value, sortField, sortDirection),
+                Transactions = await TransactionRepository.GetTransactions(accountId, filter, start, end, pageSize.Value, pageNumber.Value, sortField, sortDirection),
                 PageNumber = pageNumber,
-                Total = await TransactionRepository.GetTotalTransactions(accountId),
+                Total = await TransactionRepository.GetTotalTransactions(accountId, filter, start, end),
             });
         }
 
         [HttpGet("{accountId}/transactions/untagged/{pageSize?}/{pageNumber?}")]
-        public async Task<ActionResult<TransactionsModel>> Getuntagged(Guid accountId, int? pageSize = 50, int? pageNumber = 1, [FromQuery]string sortField = null, [FromQuery] SortDirection sortDirection = SortDirection.Ascending)
+        public async Task<ActionResult<TransactionsModel>> Getuntagged(Guid accountId, int? pageSize = 50, int? pageNumber = 1, [FromQuery] DateTime? start = null, [FromQuery] DateTime? end = null, [FromQuery] string filter = null, [FromQuery]string sortField = null, [FromQuery] SortDirection sortDirection = SortDirection.Ascending)
         {
+            if (start != null && end != null && end < start) return BadRequest($"{nameof(start)} is less than {nameof(end)}");
+
             return new ActionResult<TransactionsModel>(new TransactionsModel
             {
-                Transactions = await TransactionRepository.GetUntaggedTransactions(accountId, pageSize.Value, pageNumber.Value, sortField, sortDirection),
+                Transactions = await TransactionRepository.GetUntaggedTransactions(accountId, filter, start, end, pageSize.Value, pageNumber.Value, sortField, sortDirection),
                 PageNumber = pageNumber,
-                Total = await TransactionRepository.GetTotalUntaggedTransactions(accountId),
+                Total = await TransactionRepository.GetTotalUntaggedTransactions(accountId, filter, start, end),
             });
         }
 
