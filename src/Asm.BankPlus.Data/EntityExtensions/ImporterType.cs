@@ -7,7 +7,8 @@
             return new Models.ImporterType
             {
                 Id = entity.ImporterTypeId,
-                Type = entity.Type
+                Type = entity.Type,
+                Name = entity.Name,
             };
         }
 
@@ -16,7 +17,8 @@
             return new ImporterType
             {
                 ImporterTypeId = model.Id,
-                Type = model.Type
+                Type = model.Type,
+                Name = model.Name,
             };
         }
     }

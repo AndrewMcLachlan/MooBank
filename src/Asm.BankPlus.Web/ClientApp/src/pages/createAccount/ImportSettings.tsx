@@ -15,7 +15,7 @@ export const ImportSettings: React.FC<ImportSettingsProps> = (props) => {
             <Form.Control as="select" value={selectedId.toString()} required onChange={(e) => { setSelectedId(parseInt(e.currentTarget.value)); props.onChange && props.onChange(parseInt(e.currentTarget.value)) }}>
                 <option value="0">Select...</option>
                 {importerTypes.data?.map(a =>
-                    <option value={a.id} key={a.id}>{a.type}</option>
+                    <option value={a.id} key={a.id}>{a.name}</option>
                 )}
             </Form.Control>
         </Form.Group>
