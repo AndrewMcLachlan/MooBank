@@ -13,8 +13,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.BankPlus.Models", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.BankPlus.Data", "src\Asm.BankPlus.Data\Asm.BankPlus.Data.csproj", "{8836E750-5ABA-43B6-82ED-631D6900FA26}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.BankPlus.BulkLoad", "src\Asm.BankPlus.BulkLoad\Asm.BankPlus.BulkLoad.csproj", "{881B49FE-8397-43E0-B5C0-F9FA354946C1}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.BankPlus.Services", "src\Asm.BankPlus.Services\Asm.BankPlus.Services.csproj", "{FC276E8E-5636-47CE-8847-8EC960D53CB9}"
 EndProject
 Global
@@ -43,10 +41,6 @@ Global
 		{8836E750-5ABA-43B6-82ED-631D6900FA26}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8836E750-5ABA-43B6-82ED-631D6900FA26}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8836E750-5ABA-43B6-82ED-631D6900FA26}.Release|Any CPU.Build.0 = Release|Any CPU
-		{881B49FE-8397-43E0-B5C0-F9FA354946C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{881B49FE-8397-43E0-B5C0-F9FA354946C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{881B49FE-8397-43E0-B5C0-F9FA354946C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{881B49FE-8397-43E0-B5C0-F9FA354946C1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FC276E8E-5636-47CE-8847-8EC960D53CB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FC276E8E-5636-47CE-8847-8EC960D53CB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC276E8E-5636-47CE-8847-8EC960D53CB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
