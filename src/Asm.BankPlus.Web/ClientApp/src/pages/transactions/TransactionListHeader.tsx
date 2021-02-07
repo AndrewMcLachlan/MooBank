@@ -1,13 +1,11 @@
 import "./AccountSummary.scss";
 
 import React from "react";
-
-import { Account, AccountController } from "../models";
-import { AccountBalance } from ".";
-import { PageHeader } from "./PageHeader";
-import { MenuItem } from "../models/MenuItem";
-import { useAccount } from "./AccountProvider";
 import { Table } from "react-bootstrap";
+
+import { Account, AccountController } from "../../models";
+import { AccountBalance, PageHeader, useAccount } from "../../components";
+import { MenuItem } from "../../models/MenuItem";
 
 export const AccountSummary: React.FC<AccountSummaryProps> = (props) => {
 
