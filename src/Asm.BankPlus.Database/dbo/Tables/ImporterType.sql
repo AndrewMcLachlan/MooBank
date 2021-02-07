@@ -2,7 +2,7 @@
 (
 	[ImporterTypeId] INT NOT NULL IDENTITY(1,1),
     [Type] NVARCHAR(255) NOT NULL,
-    [Name] NVARCHAR(50) NOT NULL DEFAULT '', 
+    [Name] NVARCHAR(50) NOT NULL,
     CONSTRAINT [PK_ImporterType] PRIMARY KEY CLUSTERED (ImporterTypeId)
 )
 GO
