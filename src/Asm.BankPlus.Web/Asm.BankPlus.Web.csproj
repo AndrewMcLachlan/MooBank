@@ -39,19 +39,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="compilerconfig.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="ClientApp\src\components\CloseBadge.tsx" />
     <None Remove="ClientApp\src\components\TransactionRow.tsx" />
     <None Remove="ClientApp\src\models\Transaction.ts" />
     <None Remove="ClientApp\src\store\Transactions.ts" />
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <None Include="compilerconfig.json" />
   </ItemGroup>
 
   <ItemGroup>
