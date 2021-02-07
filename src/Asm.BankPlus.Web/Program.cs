@@ -58,7 +58,7 @@ namespace Asm.BankPlus.Web
 
             if (Env == "Development")
             {
-                configuration.WriteTo.File("Log.log", rollingInterval: RollingInterval.Day);
+                configuration.WriteTo.File(@"logs\Log.log", rollingInterval: RollingInterval.Day);
             }
 
             return configuration;
