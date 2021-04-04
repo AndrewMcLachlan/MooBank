@@ -286,4 +286,15 @@ table .balance {
     text-align: right;
 }
 
+.breadcrumb {
+    margin-top: 0;
+    padding: 0;
+    font-weight: normal;
+    background-color: transparent;
+
+    a {
+        color: black;
+    }
+}
+
 @import 'responsive';

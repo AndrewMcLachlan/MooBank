@@ -8,6 +8,7 @@ import { ImportSettings } from "./ImportSettings";
 import { usePageTitle } from "../../hooks";
 import { useCreateAccount } from "../../services";
 import { emptyGuid } from "../../helpers";
+import { PageHeader } from "../../components";
 
 export const CreateAccount: React.FC = () => {
 
@@ -57,7 +58,7 @@ export const CreateAccount: React.FC = () => {
 
     return (
         <>
-            <h1>Create Account</h1>
+            <PageHeader title="Create Account" breadcrumbs={[["Create Account", "./accounts"]]} />
             <Form onSubmit={handleSubmit}>
                 <Form.Group controlId="AccountName" >
                     <Form.Label>Name</Form.Label>

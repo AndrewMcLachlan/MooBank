@@ -17,7 +17,7 @@ export const AccountSummary: React.FC<AccountSummaryProps> = (props) => {
 
     return (
         <>
-            <PageHeader title={account.name} menuItems={getMenuItems()} />
+            <PageHeader title={account.name} menuItems={getMenuItems()} breadcrumbs={[[account.name,`/accounts/${account.id}`]]} />
             <Table>
                 <tbody>
                     <tr>

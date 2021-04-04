@@ -2,9 +2,7 @@ import "./AccountSummary.scss";
 
 import React from "react";
 
-import { Account, AccountController } from "../models";
 import { AccountBalance } from ".";
-import { MenuItem } from "../models/MenuItem";
 import { useAccount } from "./AccountProvider";
 import { Table } from "react-bootstrap";
 

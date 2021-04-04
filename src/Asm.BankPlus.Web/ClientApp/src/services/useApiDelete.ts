@@ -1,7 +1,7 @@
-import { useMutation, MutationOptions } from "react-query";
+import { useMutation, UseMutationOptions } from "react-query";
 import { useHttpClient } from "../components";
 
-export const useApiDelete = <Variables>(path: (variables: Variables) => string, options?: MutationOptions<null, null, Variables>) => {
+export const useApiDelete = <Variables>(path: (variables: Variables) => string, options?: UseMutationOptions<null, null, Variables>) => {
 
     const httpClient = useHttpClient();
 

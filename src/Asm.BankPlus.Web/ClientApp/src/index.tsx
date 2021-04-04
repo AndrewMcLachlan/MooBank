@@ -4,13 +4,13 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faCheckCircle, faTrashAlt, faChevronDown, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle, faTrashAlt, faChevronDown, faTimesCircle, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { MsalProvider, msalConfig } from "./components";
 
-library.add(faCheckCircle, faTrashAlt, faChevronDown, faTimesCircle);
+library.add(faCheckCircle, faTrashAlt, faChevronDown, faTimesCircle,faArrowLeft);
 
 ReactDOM.render(
     (

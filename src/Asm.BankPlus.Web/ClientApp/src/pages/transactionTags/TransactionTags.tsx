@@ -5,7 +5,7 @@ import { Table } from "react-bootstrap";
 
 import { TransactionTagRow } from "./TransactionTagRow";
 
-import { TagPanel } from "../../components";
+import { PageHeader, TagPanel } from "../../components";
 import { TransactionTag } from "../../models";
 import { ClickableIcon } from "../../components/ClickableIcon";
 import { usePageTitle } from "../../hooks";
@@ -19,7 +19,7 @@ export const TransactionTags: React.FC = () => {
 
     return (
         <>
-        <h1>Transaction Tags</h1>
+        <PageHeader title="Transaction Tags" breadcrumbs={[["Transaction Tags", "/settings"]]} />
         <Table striped bordered={false} borderless className="transaction-tags">
             <thead>
                 <tr>

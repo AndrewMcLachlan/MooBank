@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { TransactionsSlice } from "../../store/Transactions";
 import { State } from "../../store/state";
-import { Col, Form } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 
 export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
 

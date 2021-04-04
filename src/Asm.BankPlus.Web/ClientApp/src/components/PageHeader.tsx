@@ -3,21 +3,35 @@ import "./PageHeader.scss";
 import React from "react";
 import { MenuItem } from "../models/MenuItem";
 import { Link } from "react-router-dom";
+import { Breadcrumb } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
 
 export const PageHeader: React.FC<PageHeaderProps> = (props) => {
+
     return (
         <section className="page-header">
             <header>
-                <h1>{props.title}</h1>
+                <Breadcrumb>
+                    <LinkContainer to="/">
+                        <Breadcrumb.Item>Home</Breadcrumb.Item>
+                    </LinkContainer>
+                    {props.breadcrumbs.map(([name, to]) =>
+                        <LinkContainer to={to}>
+                            <Breadcrumb.Item>{name}</Breadcrumb.Item>
+                        </LinkContainer>
+                    )}
+                </Breadcrumb>
                 <nav className="control-panel">
                     <ul>
                         {renderMenu(props.menuItems)}
                     </ul>
                 </nav>
             </header>
+            <h1>{props.title}</h1>
+
             {props.children}
         </section>
-    )
+    );
 }
 
 PageHeader.displayName = "PageHeader";
@@ -44,7 +58,14 @@ const renderMenu = (menuItems: MenuItem[]) => {
 
 }
 
+PageHeader.defaultProps = {
+    menuItems: [],
+    breadcrumbs: [],
+}
+
 interface PageHeaderProps {
     title: string;
-    menuItems: MenuItem[];
+    menuItems?: MenuItem[];
+    goBack?: string;
+    breadcrumbs?: [string, string][];
 }

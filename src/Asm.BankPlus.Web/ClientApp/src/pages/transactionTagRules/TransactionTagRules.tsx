@@ -1,6 +1,6 @@
 import "./TransactionTagRules.scss";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Table } from "react-bootstrap";
 //import Select from "react-select";
 
@@ -12,7 +12,7 @@ import { usePageTitle } from "../../hooks";
 
 import { TransactionTagRuleRow } from "./TransactionTagRuleRow";
 import { ClickableIcon } from "../../components/ClickableIcon";
-import { useCreateRule, useCreateTag, useRules, useRunRules, useTags } from "../../services";
+import { useAccount, useCreateRule, useCreateTag, useRules, useRunRules, useTags } from "../../services";
 
 export const TransactionTagRules: React.FC = () => {
 
@@ -23,15 +23,17 @@ export const TransactionTagRules: React.FC = () => {
     const rulesQuery = useRules(accountId);
     const { data } = rulesQuery;
 
-    console.debug(rulesQuery);
-
     const { newRule, fullTagsList, addTag, createTag, removeTag, nameChange, createRule, runRules } = useComponentState(accountId);
+
+    const account = useAccount(accountId);
+
+    if (!account.data) return (null);
 
     return (
         <>
             <PageHeader title="Transaction Tag Rules" menuItems={[
                 { text: "Run Rules Now", onClick: runRules }
-            ]} />
+            ]} breadcrumbs={[[account.data.name,`/accounts/${accountId}`], ["Tag Rules", `/accounts/${accountId}/tag-rules`]]} />
             <Table striped bordered={false} borderless className="transaction-tag-rules">
                 <thead>
                     <tr>
@@ -64,15 +66,10 @@ const useComponentState = (accountId: string) => {
     const fullTagsList = fullTagsListQuery.data ?? [];
 
     const [newRule, setNewRule] = useState(blankRule);
-    const [, setTagsList] = useState([]);
 
     const createTransactionTag = useCreateTag();
     const createTransactionTagRule = useCreateRule();
     const runTransactionTagRules = useRunRules();
-
-    useEffect(() => {
-        setTagsList(fullTagsList.filter((t) => !newRule.tags.some((tt) => t.id === tt.id)));
-    }, [newRule.tags, fullTagsListQuery]);
 
     const createRule = () => {
         createTransactionTagRule.mutate([{ accountId }, newRule]);

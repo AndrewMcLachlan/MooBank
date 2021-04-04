@@ -2,7 +2,7 @@ import React from "react";
 import { usePageTitle } from "../hooks";
 import { RouteComponentProps, useParams } from "react-router-dom";
 import { AccountController } from "../models";
-import { Upload, FilesAddedEvent } from "../components";
+import { Upload, FilesAddedEvent, PageHeader } from "../components";
 import { useAccount, useImportTransactions } from "../services";
 
 export const Import: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
@@ -22,5 +22,10 @@ export const Import: React.FC<RouteComponentProps<{ id: string }>> = (props) => 
         importTransactions.mutate({ accountId: id, file: e.newFiles[0] });
     }
 
-    return <Upload onFilesAdded={filesAdded} />;
+    return (
+        <>
+        <PageHeader title="Import Transactions" breadcrumbs={[[account.data.name,`/accounts/${id}`], ["Import", `/accounts/${id}/import`]]} />
+        <Upload onFilesAdded={filesAdded} />
+        </>
+    );
 }
