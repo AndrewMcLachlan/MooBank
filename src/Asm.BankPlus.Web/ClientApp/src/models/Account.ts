@@ -13,8 +13,10 @@ export enum AccountController {
     Import = 2,
 }
 
+export type accountId = string;
+
 export interface Account {
-    id: string;
+    id: accountId;
     name: string;
     description?: string;
     currentBalance: number;

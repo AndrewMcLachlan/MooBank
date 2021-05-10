@@ -1,6 +1,7 @@
 import { useQueryClient } from "react-query";
-import { Account, Accounts, ImportAccount } from "../models";
+import { Account, accountId, Accounts, ImportAccount } from "../models";
 import { useApiGet, useApiPost } from "./api";
+import { useApiPatch } from "./useApiPatch";
 
 export const useAccounts = () => useApiGet<Accounts>(["accounts"], `api/accounts`);
 
@@ -28,4 +29,21 @@ export const useCreateAccount = () => {
     };
 
     return { create, ...rest };
+}
+
+export const useUpdateBalance = () => {
+    const queryClient = useQueryClient();
+
+    const { mutate, ...rest} = useApiPatch<Account, accountId, { currentBalance: number, availableBalance: number }>((accountId) => `api/accounts/${accountId}`, {
+        onError: () => {
+            queryClient.invalidateQueries(["accounts"]);
+        },
+    });
+
+    const update = (accountId: string, currentBalance: number, availableBalance: number) => {
+
+        mutate([accountId, {currentBalance, availableBalance}]);
+    };
+
+    return { update, ...rest };
 }
