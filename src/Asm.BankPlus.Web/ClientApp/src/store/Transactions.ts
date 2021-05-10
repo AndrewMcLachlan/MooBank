@@ -8,7 +8,7 @@ const initialState: Transactions = {
     filter: {
         filterTagged: false,
     },
-    sortField: "",
+    sortField: "TransactionTime",
     sortDirection: "Descending",
 };
 
