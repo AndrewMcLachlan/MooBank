@@ -15,7 +15,11 @@ const App: React.FC = () => {
 
     const baseUrl = "/"; //document.getElementsByTagName("base")[0].getAttribute("href");
 
-    const { isAuthenticated } = useMsal();
+    const { isAuthenticated, loading, login } = useMsal();
+
+    if (!isAuthenticated && !loading) {
+        login("loginRedirect");
+    }
 
     const queryClient = new QueryClient();
 

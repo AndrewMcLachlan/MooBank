@@ -28,15 +28,43 @@ export interface MsalContextValues {
     logout: () => void,
     getToken: (request: any, method: LoginMethod) => Promise<string>,
 }
-  
-export const msalConfig = {
+
+export const msalConfig: msal.Configuration = {
     auth: {
         clientId: "045f8afa-70f2-4700-ab75-77ac41b306f7",
         authority: "https://login.microsoftonline.com/30efefb9-9034-4e0c-8c69-17f4578f5924",
+        redirectUri: window.location.origin,
+        navigateToLoginRequestUrl: true,
+        postLogoutRedirectUri: window.location.origin,
     },
     cache: {
-        cacheLocation: "localStorage", // This configures where your cache will be stored
+        cacheLocation: "sessionStorage", // This configures where your cache will be stored
         storeAuthStateInCookie: false, // Set this to "true" if you are having issues on IE11 or Edge
+    },
+    system: {
+        loggerOptions: {
+            loggerCallback: (level, message, containsPii) => {
+                if (containsPii) {
+                    return;
+                }
+                switch (level) {
+                    case msal.LogLevel.Error:
+                        console.error(message);
+                        return;
+                    case msal.LogLevel.Info:
+                        console.info(message);
+                        return;
+                    case msal.LogLevel.Verbose:
+                        console.debug(message);
+                        return;
+                    case msal.LogLevel.Warning:
+                        console.warn(message);
+                        return;
+                    default:
+                        return;
+                }
+            }
+        }
     }
 };
 
@@ -61,8 +89,8 @@ export const MsalContext = React.createContext<MsalContextValues | undefined>(un
 export const MsalProvider = ({
     children,
     config,
-}:MsalProviderProps) => {
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>();
+}: MsalProviderProps) => {
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [user, setUser] = useState<msal.AccountInfo>();
     const [token, setToken] = useState<string>();
     const [publicClient, setPublicClient] = useState<msal.PublicClientApplication>();
@@ -74,47 +102,50 @@ export const MsalProvider = ({
         // need to call getAccount here?
         const currentAccounts = pc.getAllAccounts();
         if (currentAccounts === null) {
-            console.log("No accounts detected");
+            console.info("No accounts detected");
             return null;
         }
 
         if (currentAccounts.length > 1) {
             // Add choose account code here
-            console.log("Multiple accounts detected, need to add choose account code.");
+            console.warn("Multiple accounts detected, need to add choose account code.");
             return currentAccounts[0];
         } else if (currentAccounts.length === 1) {
             return currentAccounts[0];
         }
     }
 
-    
+
     if (!publicClient) {
         const pc: msal.PublicClientApplication = new msal.PublicClientApplication(config);
+        
+        pc.addEventCallback((message) => { if (message?.eventType === msal.EventType.HANDLE_REDIRECT_START) setLoading(true); });
 
-        pc.handleRedirectPromise().then((response) => 
-        {
-            setLoading(false);
+        pc.handleRedirectPromise().then((response) => {
             if (response) {
                 setUser(getAccount(pc));
                 setIsAuthenticated(true);
-                if(response.accessToken) {
-                  setToken(response.accessToken);
+                if (response.accessToken) {
+                    setToken(response.accessToken);
                 }
-            } 
+            }
         }).catch(error => {
-            console.log(error);
+            console.error(error);
             setLoginError(error);
-        });
+        }).finally((() => setLoading(false)));
 
         if (getAccount(pc)) {
             setUser(getAccount(pc));
             setIsAuthenticated(true);
         }
-        
+
         setPublicClient(pc);
     }
 
     const login = async (method: LoginMethod) => {
+        if (loading) return;
+        setLoading(true);
+
         const signInType = (isIE || isEdge) ? "loginRedirect" : method;
         if (signInType === "loginPopup") {
             setPopupOpen(true);
@@ -127,20 +158,19 @@ export const MsalProvider = ({
                     setIsAuthenticated(true);
                 }
             } catch (error) {
-                console.log(error);
+                console.error(error);
                 setLoginError(error);
             } finally {
                 setPopupOpen(false);
             }
         } else if (signInType === "loginRedirect") {
-            setLoading(true);
 
-            publicClient.loginRedirect(loginRequest)
+            publicClient.loginRedirect(loginRequest);
         }
     }
 
     const logout = () => {
-        publicClient.logout();
+        publicClient.loginRedirect();
     }
 
     const getTokenPopup = async (request: any) => {
@@ -154,7 +184,7 @@ export const MsalProvider = ({
         } catch (error) {
             try {
                 setPopupOpen(true);
-                
+
                 const response = await publicClient.acquireTokenPopup(request);
                 setToken(response.accessToken);
                 return response.accessToken;
@@ -178,13 +208,13 @@ export const MsalProvider = ({
             setToken(token);
             return token;
         }
-        catch(error) {
-               
-            try{
+        catch (error) {
+
+            try {
                 setLoading(true);
                 publicClient.acquireTokenRedirect(request);
             }
-            catch(error) { 
+            catch (error) {
                 console.log(error);
                 setLoginError(error);
             }
@@ -192,11 +222,10 @@ export const MsalProvider = ({
     }
 
     const getToken = async (request: any, method: LoginMethod): Promise<string> => {
-        const signInType = (isIE || isEdge)? "loginRedirect" : method;
-        if(signInType === "loginRedirect") {
+        const signInType = (isIE || isEdge) ? "loginRedirect" : method;
+        if (signInType === "loginRedirect") {
             return await getTokenRedirect(request);
-        } else
-        {
+        } else {
             return await getTokenPopup(request);
         }
     }
