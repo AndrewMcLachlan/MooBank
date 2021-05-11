@@ -1,10 +1,11 @@
 ﻿import React, { useState, useRef } from "react";
-import { getBalanceString } from "../../helpers";
+import { getBalanceString, numberClassName } from "../../helpers";
 
 import { AccountRowProps } from "./AccountRow";
 import { useClickAway } from "../../hooks";
 import { AccountType } from "../../models";
 import { useUpdateBalance } from "../../services";
+import classNames from "classnames";
 
 export const ManualAccountRow: React.FC<AccountRowProps> = (props) => {
 
@@ -18,7 +19,8 @@ export const ManualAccountRow: React.FC<AccountRowProps> = (props) => {
             <td>
                 {AccountType[props.account.accountType]}
             </td>
-            <td> {!editingBalance && <span className={props.account.currentBalance < 0 ? " negative" : ""}>{getBalanceString(balance)}</span>}
+            <td className={classNames("number", numberClassName(props.account.currentBalance))}>
+                {!editingBalance && getBalanceString(balance)}
                 {editingBalance && <input type="number" value={balance} onChange={balanceChange} onKeyPress={keyPress} />}
             </td>
             {/*<td onClick={avBalanceClick} ref={avBalanceRef}> {!editingAvBalance && <span className={props.account.availableBalance < 0 ? " negative" : ""}>{getBalanceString(avBalance)}</span>}

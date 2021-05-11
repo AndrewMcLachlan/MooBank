@@ -1,64 +1,71 @@
 section.account-list {
     max-width: 1140px;
-    margin: 0 auto 50px ;
+    margin: 0 auto 50px;
 }
 
 table.accounts {
     width: 100%;
 
     th {
-        text-align: right;
+        text-align: left;
         font-weight: normal;
         font-size: 1.2rem;
     }
 
-        th:first-child {
-            width: 50%;
-            text-align: left;
-        }
+    th:first-child {
+        width: 50%;
+        text-align: left;
+    }
 
     td {
         margin: 0;
     }
 
-        td.account .name, .accountName {
-            font-size: 1.0em;
-            font-weight: bold;
-        }
-
-        td.account .description {
-            font-size: 0.9rem;
-        }
-
-        td.account ul {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-
-            li {
-                display: inline;
-                font-size: 0.8em;
-                color: #999;
-            }
-
-                li:before {
-                    content: '|';
-                }
-
-                li:first-child:before {
-                    content: '';
-                }
-
-            a {
-                color: #999;
-            }
-        }
-
-    th, td {
-        text-align: right;
+    td.account .name,
+    .accountName {
+        font-size: 1em;
+        font-weight: bold;
     }
 
-    tbody td:first-child, tfoot td:first-child {
+    td.account .description {
+        font-size: 0.9rem;
+    }
+
+    td.account ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        li {
+            display: inline;
+            font-size: 0.8em;
+            color: #999;
+        }
+
+        li:before {
+            content: "|";
+        }
+
+        li:first-child:before {
+            content: "";
+        }
+
+        a {
+            color: #999;
+        }
+    }
+
+    th.number,
+    td.number {
+        text-align: right;
+        width: 15%;
+    }
+
+    th.type {
+        width: 15%;
+    }
+
+    tfoot td:first-child {
         text-align: left;
     }
 

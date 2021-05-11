@@ -1,5 +1,7 @@
-﻿import React from "react";
+﻿import classNames from "classnames";
+import React from "react";
 import { useHistory } from "react-router-dom";
+import { getBalanceString, numberClassName } from "../../helpers";
 
 import * as Models from "../../models";
 import { AccountController, AccountType } from "../../models";
@@ -17,14 +19,14 @@ export const AccountRow: React.FC<AccountRowProps> = (props) => {
 
     return (
         <tr onClick={onRowClick} className="clickable">
-            <td className="account">
-                <div className="name">{props.account.name}</div>
+            <td>
+               {props.account.name}
             </td>
             <td>
                 {AccountType[props.account.accountType]}
             </td>
-            <td><span className={props.account.currentBalance < 0 ? " negative" : ""}>{props.account.currentBalance + (props.account.currentBalance < 0 ? "D" : "C") + "R"}</span></td>
-            {/*}            <td><span className={props.account.availableBalance < 0 ? " negative" : ""}>{props.account.availableBalance + (props.account.availableBalance < 0 ? "D" : "C") + "R"}</span></td>*/}
+            <td className={classNames("number", numberClassName(props.account.currentBalance))}>{getBalanceString(props.account.currentBalance)}</td>
+            {/*<td><span className={classNames("number", numberClassName(props.account.currentBalance))}>{getBalanceString(props.account.availableBalance)}</span></td>*/}
         </tr>
     );
 }
