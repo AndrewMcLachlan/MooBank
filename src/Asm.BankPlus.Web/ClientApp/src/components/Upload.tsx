@@ -10,6 +10,10 @@ export const Upload: React.FC<UploadProps> = (props) => {
         <div className="upload" onDragEnter={dragEvents.dragEnter} onDragLeave={dragEvents.dragLeave} onDragOver={dragEvents.dragOver} onDrop={dragEvents.drop} >
             <i className="fa fa-upload" />
             <label>
+                <div>
+                    <span>Drag a file here</span>
+                    <span>or click to browse</span>
+                </div>
             <input type="file" accept="text/csv" multiple={props.allowMultiple} onChange={dragEvents.filesChanged} />
             </label>
         </div>
