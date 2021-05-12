@@ -25,6 +25,7 @@ export interface Account {
     accountType: AccountType;
     controller: AccountController;
     includeInPosition: boolean;
+    importerTypeId?: number;
 }
 
 export interface ImportAccount {

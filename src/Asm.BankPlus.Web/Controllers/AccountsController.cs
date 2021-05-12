@@ -75,6 +75,14 @@ namespace Asm.BankPlus.Web.Controllers
         }
 
         [HttpPatch("{accountId}")]
+        public async Task<ActionResult<Account>> UpdateAccount(Guid accountId, Account model)
+        {
+            if (model == null || model.Id != accountId) return BadRequest(ModelState);
+
+            return Ok(await AccountRepository.Update(model));
+        }
+
+        [HttpPatch("{accountId}/balance")]
         public async Task<ActionResult<Account>> UpdateBalance(Guid accountId, UpdateBalanceModel model)
         {
             if (model == null || (model.CurrentBalance == null && model.AvailableBalance == null)) return BadRequest(ModelState);

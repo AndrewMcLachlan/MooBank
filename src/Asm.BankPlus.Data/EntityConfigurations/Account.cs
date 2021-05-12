@@ -53,6 +53,11 @@ namespace Asm.BankPlus.Data.EntityConfigurations
                        {
                            aah.HasKey(e => new { e.AccountId, e.AccountHolderId });
                        });
+
+            entity.HasOne(e => e.ImportAccount)
+                  .WithOne(e => e.Account)
+                  .HasForeignKey<Entities.Account>(e => e.AccountId);
+
         }
     }
 }

@@ -35,13 +35,15 @@ const App: React.FC = () => {
                             <Layout>
                                 {isAuthenticated && <Switch>
                                     <Route exact={true} path="/" component={Pages.Home} />
-                                    <Route exact path="/accounts" component={Pages.CreateAccount} />
+                                    <Route exact path="/accounts" component={Pages.ManageAccounts} />
+                                    <Route exact path="/accounts/:id/manage" component={Pages.ManageAccount} />
                                     <Route path="/accounts/create" component={Pages.CreateAccount} />
                                     <Route exact path="/accounts/:id" component={Pages.Transactions} />
                                     <Route path="/accounts/:accountId/tag-rules" component={Pages.TransactionTagRules} />
                                     <Route path="/accounts/:id/import" component={Pages.Import} />
                                     <Route exact path="/settings" component={Pages.TransactionTags} />
                                     <Route path="/settings/tags" component={Pages.TransactionTags} />
+                                    <Route component={Pages.Error404} />
                                 </Switch>}
                             </Layout>
                         </BrowserRouter>

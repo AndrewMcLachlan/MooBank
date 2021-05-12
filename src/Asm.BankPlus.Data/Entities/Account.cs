@@ -28,6 +28,8 @@ namespace Asm.BankPlus.Data.Entities
         [Column("AccountTypeId")]
         public Models.AccountType AccountType { get; set; }
 
+        public virtual ImportAccount ImportAccount { get; set; }
+
         public virtual ICollection<Transaction> Transactions { get; set; }
 
         public virtual ICollection<AccountHolder> AccountHolders { get; set; }

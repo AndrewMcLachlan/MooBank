@@ -65,6 +65,44 @@ namespace Asm.BankPlus.Services
             return entity;
         }
 
+        public async Task<Account> Update(Account account)
+        {
+            var entity = await GetAccountEntity(account.Id);
+
+            entity.Name = account.Name;
+            entity.Description = account.Description;
+            entity.IncludeInPosition = account.IncludeInPosition;
+            entity.AccountType = account.AccountType;
+
+            if (entity.AccountController != account.Controller)
+            {
+                entity.AccountController = account.Controller;
+
+                if (account.Controller == AccountController.Import)
+                {
+                    var importerType = await DataContext.ImporterTypes.Where(i => i.ImporterTypeId == account.ImporterTypeId).SingleOrDefaultAsync();
+
+                    if (importerType == null) throw new NotFoundException("Unknown importer type ID " + account.ImporterTypeId);
+
+                    var importAccountEntity = new Data.Entities.ImportAccount
+                    {
+                        AccountId = entity.AccountId,
+                        ImporterTypeId = account.ImporterTypeId.Value,
+                    };
+
+                    DataContext.Add(importAccountEntity);
+                }
+                else if (entity.ImportAccount != null)
+                {
+                    DataContext.Remove(entity.ImportAccount);
+                }
+            }
+
+            await DataContext.SaveChangesAsync();
+
+            return entity;
+        }
+
         public async Task<Account> GetAccount(Guid id)
         {
             return await GetAccountEntity(id);
@@ -107,7 +145,7 @@ namespace Asm.BankPlus.Services
 
         private async Task<Data.Entities.Account> GetAccountEntity(Guid id)
         {
-            var entity = await DataContext.Accounts.Include(a => a.AccountHolders).Where(a => a.AccountId == id).SingleOrDefaultAsync();
+            var entity = await DataContext.Accounts.Include(a => a.ImportAccount).Include(a => a.AccountHolders).Where(a => a.AccountId == id).SingleOrDefaultAsync();
 
             if (entity == null) throw new NotFoundException("Acccount not found");
 

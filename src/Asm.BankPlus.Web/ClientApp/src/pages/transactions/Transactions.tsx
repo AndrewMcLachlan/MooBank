@@ -9,11 +9,10 @@ import { useAccount } from "../../services";
 
 export const Transactions: React.FC<TransactionsProps> = (props) => {
 
-    usePageTitle("Transactions");
-
     const { id } = useParams<any>()
 
     const account = useAccount(id);
+    usePageTitle(account?.data?.name);
 
     if (!account.data) return (null);
 

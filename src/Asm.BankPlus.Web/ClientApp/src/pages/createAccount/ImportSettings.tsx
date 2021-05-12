@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Form } from "react-bootstrap";
 import { useImporterTypes } from "../../services";
@@ -8,6 +8,10 @@ export const ImportSettings: React.FC<ImportSettingsProps> = (props) => {
     const importerTypes = useImporterTypes();
 
     const [selectedId, setSelectedId] = useState(0);
+
+    useEffect(() => {
+        setSelectedId(props.selectedId ?? 0);
+    }, [props.selectedId]);
 
     return (
         <Form.Group controlId="importer-type" hidden={!props.show}>

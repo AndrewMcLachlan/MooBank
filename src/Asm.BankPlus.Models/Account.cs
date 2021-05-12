@@ -12,6 +12,8 @@ namespace Asm.BankPlus.Models
 
         public string Name { get; set; }
 
+        public string Description { get; set; }
+
         public DateTimeOffset BalanceDate { get; set; }
 
         public decimal CurrentBalance { get; set; }
@@ -23,5 +25,7 @@ namespace Asm.BankPlus.Models
         public AccountType AccountType { get; set; }
 
         public AccountController Controller { get; set; }
+
+        public int? ImporterTypeId { get; set; }
     }
 }

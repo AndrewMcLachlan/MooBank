@@ -209,12 +209,6 @@ namespace Asm.BankPlus.Data
                 entity.HasKey(e => new { e.TransactionTagRuleId, e.TransactionTagId });
             });
 
-            modelBuilder.Entity<ImportAccount>(entity =>
-            {
-                entity.HasKey(e => e.AccountId);
-                entity.HasOne(e => e.Account).WithOne().HasForeignKey<Account>(a => a.AccountId);
-                entity.HasOne(e => e.ImporterType).WithMany().HasForeignKey(i => i.ImporterTypeId);
-            });
 
             modelBuilder.Entity<ImporterType>(entity =>
             {
