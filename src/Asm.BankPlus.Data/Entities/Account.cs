@@ -33,5 +33,7 @@ namespace Asm.BankPlus.Data.Entities
         public virtual ICollection<Transaction> Transactions { get; set; }
 
         public virtual ICollection<AccountHolder> AccountHolders { get; set; }
+
+        public virtual ICollection<VirtualAccount> VirtualAccounts { get; set; }
     }
 }

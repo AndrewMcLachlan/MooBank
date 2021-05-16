@@ -3,25 +3,19 @@ import { Account, accountId, Accounts, ImportAccount } from "../models";
 import { useApiGet, useApiPost } from "./api";
 import { useApiPatch } from "./useApiPatch";
 
-export const useAccounts = () => useApiGet<Accounts>(["accounts"], `api/accounts`);
+export const accountsKey = "accounts";
 
-export const useAccount = (accountId: string) => useApiGet<Account>(["accounts", {id: accountId }], `api/accounts/${accountId}`);
+export const useAccounts = () => useApiGet<Accounts>(accountsKey, `api/accounts`);
+
+export const useAccount = (accountId: string) => useApiGet<Account>(["account", { accountId }], `api/accounts/${accountId}`);
 
 export const useCreateAccount = () => {
 
     const queryClient = useQueryClient();
 
     const { mutate, ...rest} = useApiPost<Account, null, { account: Account, importAccount: ImportAccount }>(() => `api/accounts`, {
-        onMutate: ([, account]) => {
-            const accounts = queryClient.getQueryData<Accounts>(["accounts"]);
-            if (!accounts) return;
-
-            accounts.accounts.push(account.account);
-
-            queryClient.setQueryData<Accounts>(["accounts"], accounts);
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries(["accounts"]);
+        onSettled: () => {
+            queryClient.invalidateQueries(accountsKey);
         }
     });
 
@@ -36,17 +30,9 @@ export const useUpdateAccount = () => {
     const queryClient = useQueryClient();
 
     const { mutate, ...rest} = useApiPatch<Account, accountId, Account>((accountId) => `api/accounts/${accountId}`, {
-        onMutate: ([, account]) => {
-            const accounts = queryClient.getQueryData<Accounts>(["accounts"]);
-
-            if (!accounts) return;
-
-            accounts.accounts.splice(accounts.accounts.findIndex((value) => value.id === account.id), 1, account);
-
-            queryClient.setQueryData<Accounts>(["accounts"], accounts);
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries(["accounts"]);
+        onSettled: (_data,_error,[accountId]) => {
+            queryClient.invalidateQueries(accountsKey);
+            queryClient.invalidateQueries(["account", { accountId }]);
         }
     });
 
@@ -61,8 +47,8 @@ export const useUpdateBalance = () => {
     const queryClient = useQueryClient();
 
     const { mutate, ...rest} = useApiPatch<Account, accountId, { currentBalance: number, availableBalance: number }>((accountId) => `api/accounts/${accountId}/balance`, {
-        onError: () => {
-            queryClient.invalidateQueries(["accounts"]);
+        onSettled: () => {
+            queryClient.invalidateQueries(accountsKey);
         },
     });
 

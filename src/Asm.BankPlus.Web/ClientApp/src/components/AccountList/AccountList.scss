@@ -13,8 +13,7 @@ table.accounts {
     }
 
     th:first-child {
-        width: 50%;
-        text-align: left;
+        width: 38px;
     }
 
     td {
@@ -72,5 +71,19 @@ table.accounts {
     tfoot {
         border-top-style: double;
         font-size: 1.2rem;
+    }
+
+    tr.virtual {
+        background-color: rgba(0, 0, 0, 0.03);
+        font-size: 0.9rem;
+        color: rgba(33, 37, 41, 0.8);
+
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.075);
+        }
+
+        td.name {
+            padding-left: 20px;
+        }
     }
 }

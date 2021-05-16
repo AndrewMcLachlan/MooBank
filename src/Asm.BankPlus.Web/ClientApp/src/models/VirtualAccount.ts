@@ -1,6 +1,6 @@
 
-import { Account } from ".";
+import { AccountBase } from ".";
 
-export interface VirtualAccount extends Account {
-
+export interface VirtualAccount extends AccountBase {
+    balance: number;
 }

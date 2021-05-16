@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
-import { Form, InputGroup, Button } from "react-bootstrap"
+import { Form, Button } from "react-bootstrap"
 import { PageHeader } from "../../components"
-import { AccountController, AccountType, ImportAccount } from "../../models"
+import { AccountController, AccountType } from "../../models"
 import { ImportSettings } from "../createAccount/ImportSettings"
 import * as Models from "../../models";
 import { toNameValue } from "../../extensions"
@@ -45,7 +45,7 @@ export const ManageAccount = (props: ManageAccountProps) => {
 
     return (
         <>
-            <PageHeader title="Manage Account" breadcrumbs={[["Manage Accounts", "/accounts"], [account?.name, `/accounts/${account.id}`]]} />
+            <PageHeader title="Manage Account" breadcrumbs={[["Manage Accounts", "/accounts"], [account?.name, `/accounts/${account.id}`]]} menuItems={[{text: "Create Virtual Account", route: `/accounts/${id}/virtual/create`}]} />
             <Form onSubmit={handleSubmit}>
                 <Form.Group controlId="AccountName" >
                     <Form.Label>Name</Form.Label>
@@ -54,7 +54,7 @@ export const ManageAccount = (props: ManageAccountProps) => {
                 </Form.Group>
                 <Form.Group controlId="AccountDescription" >
                     <Form.Label >Description</Form.Label>
-                    <Form.Control type="text" as="textarea" required maxLength={255} value={account.description} onChange={(e: any) => setDescription(e.currentTarget.value)} />
+                    <Form.Control type="text" as="textarea" maxLength={255} value={account.description} onChange={(e: any) => setDescription(e.currentTarget.value)} />
                     <Form.Control.Feedback type="invalid">Please enter a description</Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="IncludeInPosition" >

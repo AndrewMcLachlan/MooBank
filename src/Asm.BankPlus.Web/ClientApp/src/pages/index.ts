@@ -7,3 +7,4 @@ export * from "./settings";
 export * from "./transactions/Transactions";
 export * from "./transactionTagRules/TransactionTagRules";
 export * from "./transactionTags";
+export * from "./virtualAccounts";

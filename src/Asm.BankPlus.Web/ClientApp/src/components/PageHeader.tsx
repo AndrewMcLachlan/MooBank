@@ -16,7 +16,7 @@ export const PageHeader: React.FC<PageHeaderProps> = (props) => {
                         <Breadcrumb.Item>Home</Breadcrumb.Item>
                     </LinkContainer>
                     {props.breadcrumbs.map(([name, to]) =>
-                        <LinkContainer to={to}>
+                        <LinkContainer key={to} to={to}>
                             <Breadcrumb.Item>{name}</Breadcrumb.Item>
                         </LinkContainer>
                     )}

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Asm.BankPlus.Models
 {
@@ -27,5 +25,12 @@ namespace Asm.BankPlus.Models
         public AccountController Controller { get; set; }
 
         public int? ImporterTypeId { get; set; }
+
+        public IEnumerable<VirtualAccount> VirtualAccounts { get; set; }
+
+        public decimal VirtualAccountRemainingBalance
+        {
+            get => CurrentBalance - (VirtualAccounts?.Sum(v => v.Balance) ?? 0);
+        }
     }
 }

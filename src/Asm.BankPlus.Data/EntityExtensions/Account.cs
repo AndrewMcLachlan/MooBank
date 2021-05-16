@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -8,6 +9,7 @@ namespace Asm.BankPlus.Data.Entities
     {
         public Account()
         {
+            VirtualAccounts = new HashSet<VirtualAccount>();
             Transactions = new HashSet<Transaction>();
             AccountHolders = new HashSet<AccountHolder>();
         }
@@ -26,6 +28,10 @@ namespace Asm.BankPlus.Data.Entities
                 AccountType = account.AccountType,
                 Controller = account.AccountController,
                 ImporterTypeId = account.ImportAccount?.ImporterTypeId,
+                VirtualAccounts = account.VirtualAccounts != null && account.VirtualAccounts.Any() ?
+                                  account.VirtualAccounts.Select(v => (Models.VirtualAccount)v)
+                                                         .Union(new[] { new Models.VirtualAccount { Id = Guid.Empty, Name = "Remaining", Balance = account.AccountBalance - account.VirtualAccounts.Sum(v => v.Balance) } }).ToArray() :
+                                    Array.Empty<Models.VirtualAccount>(),
             };
         }
 

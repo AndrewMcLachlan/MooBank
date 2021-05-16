@@ -45,6 +45,7 @@ export const CreateAccount: React.FC = () => {
             controller: accountController,
             balanceUpdated: new Date(),
             includeInPosition: includeInPosition,
+            virtualAccounts: [],
         };
 
         createAccount.create(account, importAccount);

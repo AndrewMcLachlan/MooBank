@@ -8,6 +8,6 @@
     [Amount] DECIMAL(10, 2) NOT NULL,
     [LastRun] DATETIME2 NULL,
     CONSTRAINT [FK_RecurringTransaction_Schedule] FOREIGN KEY ([ScheduleId]) REFERENCES [Schedule]([ScheduleId]),
-    CONSTRAINT [FK_RecurringTransaction_VirtualAccount_Source] FOREIGN KEY ([SourceVirtualAccountId]) REFERENCES [dbo].[VirtualAccount]([AccountId]),
-    CONSTRAINT [FK_RecurringTransaction_VirtualAccount_Destination] FOREIGN KEY ([DestinationVirtualAccountId]) REFERENCES [dbo].[VirtualAccount]([AccountId])
+    CONSTRAINT [FK_RecurringTransaction_VirtualAccount_Source] FOREIGN KEY ([SourceVirtualAccountId]) REFERENCES [dbo].[VirtualAccount]([VirtualAccountId]),
+    CONSTRAINT [FK_RecurringTransaction_VirtualAccount_Destination] FOREIGN KEY ([DestinationVirtualAccountId]) REFERENCES [dbo].[VirtualAccount]([VirtualAccountId])
 )

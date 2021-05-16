@@ -77,7 +77,7 @@ namespace Asm.BankPlus.Data
                     .HasMaxLength(255);
             });
 
-            modelBuilder.Entity<RecurringTransaction>(entity =>
+            /*modelBuilder.Entity<RecurringTransaction>(entity =>
             {
                 entity.Property(e => e.Amount).HasColumnType("decimal(10, 2)");
 
@@ -95,14 +95,14 @@ namespace Asm.BankPlus.Data
                     .WithMany(p => p.RecurringTransaction)
                     .HasForeignKey(d => d.ScheduleId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_RecurringTransaction_Schedule");*/
+                    .HasConstraintName("FK_RecurringTransaction_Schedule");* /
 
                 entity.HasOne(d => d.SourceVirtualAccount)
                     .WithMany(p => p.RecurringTransactionSourceVirtualAccount)
                     .HasForeignKey(d => d.SourceVirtualAccountId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_RecurringTransaction_VirtualAccount_Source");
-            });
+            });*/
 
             /*modelBuilder.Entity<Schedule>(entity =>
             {
@@ -114,23 +114,6 @@ namespace Asm.BankPlus.Data
                     .IsUnicode(false);
             });*/
 
-            modelBuilder.Entity<VirtualAccount>(entity =>
-            {
-                entity.HasIndex(e => e.DefaultAccount)
-                    .IsUnique()
-                    .HasFilter("([DefaultAccount]=(1))");
-
-                entity.Property(e => e.VirtualAccountId).HasDefaultValueSql("(newid())");
-
-                entity.Property(e => e.Balance).HasColumnType("decimal(10, 2)");
-
-                entity.Property(e => e.Description).IsUnicode(false);
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-            });
 
             modelBuilder.Entity<TransactionTag>(entity =>
             {

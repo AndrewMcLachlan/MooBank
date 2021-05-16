@@ -1,3 +1,5 @@
+import { VirtualAccount } from "./VirtualAccount";
+
 export enum AccountType {
     None = 0,
     Transaction = 1,
@@ -15,10 +17,13 @@ export enum AccountController {
 
 export type accountId = string;
 
-export interface Account {
+export interface AccountBase {
     id: accountId;
     name: string;
     description?: string;
+}
+
+export interface Account extends AccountBase {
     currentBalance: number;
     availableBalance: number;
     balanceUpdated: Date;
@@ -26,6 +31,8 @@ export interface Account {
     controller: AccountController;
     includeInPosition: boolean;
     importerTypeId?: number;
+    virtualAccountRemainingBalance?: number;
+    virtualAccounts: VirtualAccount[];
 }
 
 export interface ImportAccount {

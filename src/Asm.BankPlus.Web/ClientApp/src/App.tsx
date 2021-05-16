@@ -3,7 +3,7 @@ import "./App.scss";
 import React from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Provider as ReduxProvider } from "react-redux";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 
 import { Layout } from "./layouts/Layout";
 import * as Pages from "./pages";
@@ -39,9 +39,11 @@ const App: React.FC = () => {
                                     <Route exact path="/accounts/:id/manage" component={Pages.ManageAccount} />
                                     <Route path="/accounts/create" component={Pages.CreateAccount} />
                                     <Route exact path="/accounts/:id" component={Pages.Transactions} />
+                                    <Route path="/accounts/:accountId/virtual/create" component={Pages.CreateVirtualAccount} />
+                                    <Route path="/accounts/:accountId/virtual/:virtualid" component={Pages.ManageVirtualAccount} />
                                     <Route path="/accounts/:accountId/tag-rules" component={Pages.TransactionTagRules} />
                                     <Route path="/accounts/:id/import" component={Pages.Import} />
-                                    <Route exact path="/settings" component={Pages.TransactionTags} />
+                                    <Redirect exact path="/settings" to="/settings/tags" />
                                     <Route path="/settings/tags" component={Pages.TransactionTags} />
                                     <Route component={Pages.Error404} />
                                 </Switch>}

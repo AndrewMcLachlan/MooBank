@@ -58,6 +58,10 @@ namespace Asm.BankPlus.Data.EntityConfigurations
                   .WithOne(e => e.Account)
                   .HasForeignKey<Entities.Account>(e => e.AccountId);
 
+            entity.HasMany(e => e.VirtualAccounts)
+                  .WithOne(e => e.Account)
+                  .HasForeignKey(e => e.AccountId);
+
         }
     }
 }

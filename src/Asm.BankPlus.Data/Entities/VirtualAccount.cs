@@ -7,18 +7,20 @@ namespace Asm.BankPlus.Data.Entities
     {
         public VirtualAccount()
         {
-            RecurringTransactionDestinationVirtualAccount = new HashSet<RecurringTransaction>();
-            RecurringTransactionSourceVirtualAccount = new HashSet<RecurringTransaction>();
+            //RecurringTransactionDestinationVirtualAccount = new HashSet<RecurringTransaction>();
+            //RecurringTransactionSourceVirtualAccount = new HashSet<RecurringTransaction>();
         }
 
         public Guid VirtualAccountId { get; set; }
+        public Guid AccountId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public decimal Balance { get; set; }
-        public bool DefaultAccount { get; set; }
-        public bool Closed { get; set; }
 
-        public virtual ICollection<RecurringTransaction> RecurringTransactionDestinationVirtualAccount { get; set; }
-        public virtual ICollection<RecurringTransaction> RecurringTransactionSourceVirtualAccount { get; set; }
+        public virtual Account Account { get; set; }
+
+
+        //        public virtual ICollection<RecurringTransaction> RecurringTransactionDestinationVirtualAccount { get; set; }
+        //public virtual ICollection<RecurringTransaction> RecurringTransactionSourceVirtualAccount { get; set; }
     }
 }

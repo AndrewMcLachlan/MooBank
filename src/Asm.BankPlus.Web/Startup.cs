@@ -170,6 +170,7 @@ namespace Asm.BankPlus.Web
             services.AddScoped<ISecurityRepository, SecurityRepository>();
             services.AddScoped<ITransactionExtraRepository, TransactionExtraRepository>();
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IVirtualAccountRepository, VirtualAccountRepository>();
 
             services.AddHostedService<RunRulesService>();
             services.AddSingleton<IRunRulesQueue, RunRulesQueue>();
