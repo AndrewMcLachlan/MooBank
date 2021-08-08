@@ -93,6 +93,7 @@
   <ItemGroup>
     <None Include="Asm.BankPlus.Database.publish.xml" />
     <None Include="Azure.publish.xml" />
+    <None Include="Azure.Test.publish.xml" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment1.sql" />
