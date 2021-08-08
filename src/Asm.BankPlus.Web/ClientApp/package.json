@@ -12,6 +12,7 @@
     "@types/react-router-bootstrap": "^0.24.5",
     "@types/react-select": "^3.1.2",
     "axios": "^0.21.1",
+    "bootstrap": "^4.3.1",
     "classnames": "^2.3.1",
     "crypto-js": "^4.0.0",
     "moment": "^2.29.1",
@@ -27,8 +28,7 @@
     "react-router-redux": "^4.0.8",
     "react-select": "^3.2.0",
     "redux-devtools-extension": "^2.13.9",
-    "semver": "^7.3.5",
-    "typescript": "^4.2.3"
+    "semver": "^7.3.5"
   },
   "devDependencies": {
     "@types/node": "12.7.2",
@@ -42,14 +42,14 @@
     "@types/redux-thunk": "^2.1.0",
     "@typescript-eslint/eslint-plugin": "^4.20.0",
     "@typescript-eslint/parser": "^4.20.0",
-    "bootstrap": "^4.3.1",
     "eslint": "^7.23.0",
     "eslint-plugin-flowtype": "^5.4.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-react": "^7.23.1",
     "node-sass": "^4.14.1",
-    "react-scripts": "^4.0.3"
+    "react-scripts": "^4.0.3",
+    "typescript": "^4.2.3"
   },
   "scripts": {
     "start": "react-scripts start",

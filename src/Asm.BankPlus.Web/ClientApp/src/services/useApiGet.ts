@@ -1,4 +1,4 @@
-import { useQuery, QueryKey, UseQueryOptions, useQueryClient } from "react-query";
+import { useQuery, QueryKey, UseQueryOptions } from "react-query";
 import { useHttpClient } from "../components";
 
 export const useApiGet = <T>(key: QueryKey, path: string, options?: UseQueryOptions<T>) => {

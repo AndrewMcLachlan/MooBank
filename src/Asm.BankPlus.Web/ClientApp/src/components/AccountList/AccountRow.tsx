@@ -4,7 +4,7 @@ import { MD5 } from "crypto-js";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
-import { emptyGuid, getBalanceString, numberClassName } from "../../helpers";
+import { getBalanceString, numberClassName } from "../../helpers";
 
 import * as Models from "../../models";
 import { AccountType } from "../../models";

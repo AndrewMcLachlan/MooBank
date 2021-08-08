@@ -1,19 +1,15 @@
 import "./AccountList.scss";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Spinner, Table } from "react-bootstrap";
 
 import { AccountRow } from "./AccountRow";
-import { emptyGuid, getBalanceString } from "../../helpers";
+import { getBalanceString } from "../../helpers";
 import { useAccounts } from "../../services";
-import { AccountController, Accounts } from "../../models";
+import { AccountController } from "../../models";
 import { ManualAccountRow } from "./ManualAccountRow";
-import { useHttpClient } from "../HttpClientProvider";
-import { useQuery } from "react-query";
 
 export const AccountList: React.FC<AccountListProps> = () => {
-
-    const httpClient = useHttpClient();
 
     const { data, isLoading } = useAccounts();
 
