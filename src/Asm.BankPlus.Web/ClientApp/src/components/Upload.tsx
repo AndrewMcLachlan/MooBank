@@ -1,22 +1,30 @@
 import "./Upload.scss";
 
 import React, { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const Upload: React.FC<UploadProps> = (props) => {
 
     const dragEvents = useDragEvents(props);
 
     return (
-        <div className="upload" onDragEnter={dragEvents.dragEnter} onDragLeave={dragEvents.dragLeave} onDragOver={dragEvents.dragOver} onDrop={dragEvents.drop} >
-            <i className="fa fa-upload" />
-            <label>
-                <div>
-                    <span>Drag a file here</span>
-                    <span>or click to browse</span>
-                </div>
-            <input type="file" accept="text/csv" multiple={props.allowMultiple} onChange={dragEvents.filesChanged} />
-            </label>
-        </div>
+        <section className="upload">
+            <div className="upload-box" onDragEnter={dragEvents.dragEnter} onDragLeave={dragEvents.dragLeave} onDragOver={dragEvents.dragOver} onDrop={dragEvents.drop} >
+                <FontAwesomeIcon icon={["fas", "upload"]} />
+                <label>
+                    <div>
+                        <span>Drag a file here</span>
+                        <span>or click to browse</span>
+                    </div>
+                    <input type="file" accept="text/csv" multiple={props.allowMultiple} onChange={dragEvents.filesChanged} />
+                </label>
+            </div>
+            <ul>
+                {dragEvents.files.map(f =>
+                    <li>{f.name}</li>
+                )}
+            </ul>
+        </section>
     );
 }
 
@@ -45,7 +53,7 @@ const useDragEvents = (props: UploadProps) => {
 
         if (props.allowMultiple) {
 
-            for (let i = 0; i < e.currentTarget.files.length;i++) {
+            for (let i = 0; i < e.currentTarget.files.length; i++) {
                 newFiles.push(e.currentTarget.files[i]);
             }
 
@@ -70,7 +78,7 @@ const useDragEvents = (props: UploadProps) => {
 
             if (props.allowMultiple) {
 
-                for (let i = 0; i < e.dataTransfer.files.length;i++) {
+                for (let i = 0; i < e.dataTransfer.files.length; i++) {
                     newFiles.push(e.dataTransfer.files[i]);
                 }
 
@@ -111,6 +119,7 @@ const useDragEvents = (props: UploadProps) => {
         dragOver,
         isDragging,
         filesChanged,
+        files,
     };
 }
 

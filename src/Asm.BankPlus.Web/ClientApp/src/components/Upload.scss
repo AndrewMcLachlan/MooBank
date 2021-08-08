@@ -1,18 +1,18 @@
-div.upload {
+div.upload-box {
     height: 200px;
     width: 200px;
     z-index: 2;
     border: 1px solid #ccc;
     position: relative;
 
-    i {
+    svg {
         font-size: 4rem;
         position: absolute;
         left: 50%;
         top: 50%;
-        z-index: 1;
+        z-index: -1;
         transform: translate(-50%, -50%);
-        color: #e5e5e5;
+        opacity: 0.1;
     }
 
     label {
@@ -25,9 +25,10 @@ div.upload {
     }
 
     div {
-        width: 90%;
-        margin: 35% auto;
-        height: 100%;
+        width: 100%;
+        margin: 0 auto;
+        top: 35%;
+        position: absolute;
 
         span {
             display: block;
