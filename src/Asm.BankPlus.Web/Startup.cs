@@ -129,7 +129,7 @@ namespace Asm.BankPlus.Web
 
                 if (env.IsDevelopment())
                 {
-                    spa.UseProxyToSpaDevelopmentServer("http://localhost:3000");
+                    spa.UseProxyToSpaDevelopmentServer("http://localhost:3005");
                 }
             });
         }
