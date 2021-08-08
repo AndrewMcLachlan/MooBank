@@ -59,10 +59,30 @@ namespace Asm.BankPlus.Services.Importers
 
                 string line = await reader.ReadLineAsync();
 
-                string[] columns = line.Split(",");
+                string[] prelimColumns = line.Split(",");
+
+                List<string> columns = new();
+
+                string current = null;
+
+                foreach(string str in prelimColumns)
+                {
+                    if (str.StartsWith("\"") && !str.EndsWith("\""))
+                    {
+                        current = str;
+                    }
+                    else if (!str.StartsWith("\"") && str.EndsWith("\""))
+                    {
+                        columns.Add((current + str).Trim('"').Replace("\"\"", "\""));
+                    }
+                    else
+                    {
+                        columns.Add(str);
+                    }
+                }
 
                 #region Validation
-                if (columns.Length != Columns)
+                if (columns.Count != Columns)
                 {
                     Logger.LogWarning($"Unrecognised entry at line {lineCount}");
                     continue;
