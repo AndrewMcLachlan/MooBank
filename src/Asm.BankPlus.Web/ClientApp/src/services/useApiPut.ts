@@ -1,5 +1,5 @@
 import { useMutation, UseMutationOptions } from "react-query";
-import { useHttpClient } from "../components";
+import { useHttpClient } from "../providers";
 
 export const useApiPut = <Response, Variables, Data = null>(path: (variables: Variables) => string, options?: UseMutationOptions<Response, null, [Variables, Data]>) => {
 

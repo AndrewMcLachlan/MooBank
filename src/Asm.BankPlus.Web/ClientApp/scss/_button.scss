@@ -1,0 +1,25 @@
+button {
+    &.link {
+        outline: none;
+        border: none;
+        background: none;
+        color: inherit;
+        font-family: inherit;
+
+        &:hover {
+            text-decoration: underline;
+        }
+
+        &:focus,
+        &:active {
+            outline: none;
+        }
+    }
+
+    &.icon {
+        background: none;
+        border: none;
+        outline: none;
+        color: inherit;
+    }
+}

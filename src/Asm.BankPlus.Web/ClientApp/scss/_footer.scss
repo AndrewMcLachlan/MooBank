@@ -1,0 +1,39 @@
+main > footer {
+    font-family: $secondary-fonts;
+    width: 100%;
+    background: var(--footer);
+    text-align: center;
+    color: var(--footer-text);
+    font-weight: bold;
+
+    a {
+        color: var(--footer-text);
+        font-size: 0.8em;
+    }
+
+    @include media-breakpoint-down(md) {
+        height: 50px;
+        min-height: 50px;
+
+        ul {
+            width: 90%;
+            height: 100%;
+            margin: 0 auto;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+          }
+      
+          li {
+            padding: 0 5px;
+          }
+    }
+  
+    @include media-breakpoint-up(lg) {
+      height: 80px;
+      min-height: 80px;
+      padding-top: 20px;
+    }
+}

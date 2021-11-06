@@ -1,7 +1,7 @@
 import * as Models from "../models";
 import { useApiGet, useApiDelete, useApiDatalessPut } from "./api";
 import { useMutation, useQueryClient } from "react-query";
-import { useHttpClient } from "../components";
+import { useHttpClient } from "../providers";
 
 interface TransactionTagVariables {
     name: string;

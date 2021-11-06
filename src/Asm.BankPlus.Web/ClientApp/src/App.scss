@@ -1,18 +1,8 @@
-﻿@import "variables";
-@import "fonts.scss";
-@import "../node_modules/bootstrap/scss/bootstrap";
-@import "./components/Common.scss";
+﻿@import "../scss/base.scss";
 
-html {
-    background-color: $background;
-}
+$primary-fonts: 'Open Sans Condensed';
 
-body {
-    background-color: #FFF;
-    color: $text-color;
-    font-family: $primary-fonts;
-    font-weight: bold;
-}
+@import "../scss/components.scss";
 
 #root > header {
     position: relative;
@@ -42,6 +32,7 @@ body {
 nav.control-panel {
 
     color: #CCCCCC;
+    font-weight: bold;
 
     ul {
        margin: 0;
@@ -83,14 +74,6 @@ nav.control-panel {
 }
 
 /*#region Headings*/
-h1, h2, h3, legend {
-    font-family: $primary-fonts;
-}
-
-h1 {
-    font-size: 3em;
-}
-
 h3, legend {
     font-size: 1em;
     margin-top: 0;
@@ -151,6 +134,10 @@ thead th {
     }
 }
 
+tbody td {
+    font-weight: bold;
+}
+
 table.accountManagement {
     width: 100%;
 
@@ -177,53 +164,6 @@ table.trasactionHistory {
     }
 }
 /*#endregion*/
-
-section.login {
-    background: url(./images/background.png) no-repeat $background;
-    background-position: 0 -111px;
-    color: #FFF;
-    margin: 0;
-    padding-left: 200px;
-    padding-right: 200px;
-
-    header h1 {
-        font-size: 3em;
-        margin: 0 0 20px 0;
-        padding-top: 20px;
-    }
-
-    div.fieldGroup {
-        float: left;
-        padding-right: 20px;
-    }
-
-    label {
-        font-family: $primary-fonts;
-        font-weight: bold;
-        font-size: 2em;
-        display: block;
-    }
-
-    input[type=text], input[type=email], input[type=password], input[type=number] {
-        font-size: 1.5em;
-        padding: 15px;
-        background: linear-gradient(to bottom, #EEE 0%, #FFF 100%);
-        border: 2px solid #CCC;
-        border-radius: 5px;
-        width: 400px;
-    }
-
-    input[type=submit] {
-        float: left;
-        margin-top: 51px;
-        font-size: 2em;
-        font-weight: bold;
-    }
-
-    .clear {
-        margin-bottom: 20px;
-    }
-}
 
 section.box {
     background-color: #EEE;
@@ -269,9 +209,8 @@ fieldset {
     border-radius: 4px;
 
     legend {
-        display: inline;
+        display: block;
         font-weight: normal;
-        width: auto;
         font-size: 1.5rem;
         padding: 0 5px;
         margin: 0;
@@ -284,17 +223,6 @@ input[type=checkbox] {
 
 table .balance {
     text-align: right;
-}
-
-.breadcrumb {
-    margin-top: 0;
-    padding: 0;
-    font-weight: normal;
-    background-color: transparent;
-
-    a {
-        color: black;
-    }
 }
 
 @import 'responsive';

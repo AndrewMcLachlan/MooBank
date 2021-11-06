@@ -1,12 +1,13 @@
 import React from "react";
 
-import {  AccountList } from "../../components";
-import { usePageTitle } from "../../hooks";
+import { AccountList } from "../../components";
+import { Page } from "../../layouts";
 
-export const Home: React.FC = (props) => {
-
-    usePageTitle("Home");
-
-    return <AccountList />
- 
-}
+export const Home: React.FC = () => (
+    <Page title="Home">
+        <Page.Header title="Accounts" hidebreadcrumb />
+        <Page.Content>
+            <AccountList />
+        </Page.Content>
+    </Page>
+);

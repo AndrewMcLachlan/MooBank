@@ -1,14 +1,10 @@
-import React from "react";
 import { Table } from "react-bootstrap";
-import { PageHeader } from "../../components";
-import { usePageTitle } from "../../hooks";
+import { Page } from "../../layouts";
 import { useAccounts } from "../../services";
 
 import { AccountRow } from "./AccountRow";
 
 export const ManageAccounts = () => {
-
-    usePageTitle("Manage Accounts");
 
     const accountsQuery = useAccounts();
 
@@ -30,23 +26,25 @@ export const ManageAccounts = () => {
     }
 
     return (
-        <>
-            <PageHeader title="Manage Accounts" breadcrumbs={[["Manage Accounts", "./accounts"]]} menuItems={[{ text: "Create Account", route: "/accounts/create" }]} />
-            <Table className="accounts" hover>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Type</th>
-                        <th>Controller</th>
-                        <th>Current Balance</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {accountRows}
-                </tbody>
-            </Table>
-        </>
+        <Page title="Manage Accounts">
+            <Page.Header title="Manage Accounts" breadcrumbs={[["Manage Accounts", "./accounts"]]} menuItems={[{ text: "Create Account", route: "/accounts/create" }]} />
+            <Page.Content>
+                <Table className="accounts" hover>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Type</th>
+                            <th>Controller</th>
+                            <th>Current Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {accountRows}
+                    </tbody>
+                </Table>
+            </Page.Content>
+        </Page>
     );
 }
 

@@ -1,15 +1,13 @@
 import React from "react";
-import { usePageTitle } from "../hooks";
 import { RouteComponentProps, useHistory, useParams } from "react-router-dom";
 import { AccountController } from "../models";
-import { Upload, FilesAddedEvent, PageHeader } from "../components";
+import { Upload, FilesAddedEvent } from "../components";
 import { useAccount, useImportTransactions } from "../services";
 import Button from "react-bootstrap/Button";
 import { useState } from "react";
+import { Page } from "../layouts";
 
 export const Import: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
-
-    usePageTitle("Import Transactions");
 
     const history = useHistory();
 
@@ -38,10 +36,12 @@ export const Import: React.FC<RouteComponentProps<{ id: string }>> = (props) => 
     }
 
     return (
-        <>
-            <PageHeader title="Import Transactions" breadcrumbs={[[account.data.name, `/accounts/${id}`], ["Import", `/accounts/${id}/import`]]} />
-            <Upload onFilesAdded={filesAdded} />
-            <Button variant="primary" onClick={submitClick} disabled={!file}>Import</Button>
-        </>
+        <Page title="Import Transactions">
+            <Page.Header title="Import Transactions" breadcrumbs={[[account.data.name, `/accounts/${id}`], ["Import", `/accounts/${id}/import`]]} />
+            <Page.Content>
+                <Upload onFilesAdded={filesAdded} />
+                <Button variant="primary" onClick={submitClick} disabled={!file}>Import</Button>
+            </Page.Content>
+        </Page>
     );
 }

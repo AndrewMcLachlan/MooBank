@@ -1,15 +1,16 @@
 {
-  "short_name": "BankPlus",
-  "name": "BankPlus",
+  "short_name": "MooBank",
+  "name": "MooBank",
   "icons": [
     {
-      "src": "favicon.ong",
-      "sizes": "16x16",
-      "type": "image/png"
+      "src": "logo.svg",
+      "sizes": "512x512 256x256 192x192 128x128 64x64 48x48 32x32 24x24 16x16",
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#C20000",
+  "background_color": "#C20000"
 }

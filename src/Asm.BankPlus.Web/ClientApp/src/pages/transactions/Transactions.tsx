@@ -4,27 +4,31 @@ import { RouteComponentProps, useParams } from "react-router";
 import { FilterPanel } from "./FilterPanel";
 import { TransactionList } from "./TransactionList";
 import { AccountHeader, AccountProvider, AccountSummary } from "../../components";
-import { usePageTitle } from "../../hooks";
 import { useAccount } from "../../services";
+import { Page } from "../../layouts";
 
-export const Transactions: React.FC<TransactionsProps> = (props) => {
+export const Transactions: React.FC<TransactionsProps> = () => {
 
     const { id } = useParams<any>()
 
     const account = useAccount(id);
-    usePageTitle(account?.data?.name);
 
     if (!account.data) return (null);
 
     return (
-        <AccountProvider account={account.data}>
-            <AccountHeader />
-            <div className="transaction-list-header">
-                <AccountSummary />
-                <FilterPanel />
-            </div>
-            <TransactionList />
-        </AccountProvider>);
+        <Page title={account?.data?.name}>
+            <AccountProvider account={account.data}>
+                <AccountHeader />
+                <Page.Content>
+                    <div className="transaction-list-header">
+                        <AccountSummary />
+                        <FilterPanel />
+                    </div>
+                    <TransactionList />
+                </Page.Content>
+            </AccountProvider>
+        </Page>
+    );
 }
 
 export interface TransactionsProps extends RouteComponentProps<{ id: string }> {

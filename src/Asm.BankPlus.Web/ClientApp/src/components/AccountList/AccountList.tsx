@@ -16,7 +16,6 @@ export const AccountList: React.FC<AccountListProps> = () => {
     return (
 
         <section className="account-list">
-            <h1>Accounts</h1>
 
             <Table className="accounts" hover>
                 <thead>
@@ -30,7 +29,10 @@ export const AccountList: React.FC<AccountListProps> = () => {
                 </thead>
                 <tbody>
                     {!isLoading && data?.accounts && data.accounts.map(a => a.controller === AccountController.Manual ? <ManualAccountRow key={a.id} account={a} /> : <AccountRow key={a.id} account={a} />)}
-                    {isLoading && <Spinner animation="border" />}
+                    {isLoading &&
+                        <tr><td colSpan={4} className="spinner">
+                            <Spinner animation="border" />
+                        </td></tr>}
                 </tbody>
                 <tfoot>
                     <tr className="position">

@@ -157,7 +157,7 @@ export const MsalProvider = ({
                     setUser(getAccount(publicClient));
                     setIsAuthenticated(true);
                 }
-            } catch (error) {
+            } catch (error: any) {
                 console.error(error);
                 setLoginError(error);
             } finally {
@@ -189,7 +189,7 @@ export const MsalProvider = ({
                 setToken(response.accessToken);
                 return response.accessToken;
             }
-            catch (error) {
+            catch (error: any) {
                 console.log(error);
                 setLoginError(error);
             }
@@ -214,7 +214,7 @@ export const MsalProvider = ({
                 setLoading(true);
                 publicClient.acquireTokenRedirect(request);
             }
-            catch (error) {
+            catch (error: any) {
                 console.log(error);
                 setLoginError(error);
             }

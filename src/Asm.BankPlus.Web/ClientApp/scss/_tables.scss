@@ -1,0 +1,20 @@
+.table {
+    color: var(--color);
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+    background-color: var(--table-stripe);
+    color: var(--color);
+    box-shadow: none;
+}
+
+.table-hover > tbody > tr:hover > * {
+    color: var(--color);
+    background-color: var(--hover);
+    box-shadow: none;
+}
+
+td.spinner {
+    text-align: center;
+    margin: 20px;
+}

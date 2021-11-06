@@ -9,7 +9,7 @@ import { Layout } from "./layouts/Layout";
 import * as Pages from "./pages";
 
 import { AppStore } from "./store/configureStore";
-import { AppProvider, HttpClientProvider, useMsal } from "./components";
+import { AppProvider, HttpClientProvider, useMsal } from "./providers";
 
 const App: React.FC = () => {
 

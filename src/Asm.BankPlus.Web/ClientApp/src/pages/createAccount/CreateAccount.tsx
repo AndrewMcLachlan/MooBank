@@ -5,14 +5,11 @@ import { toNameValue } from "../../extensions";
 import { Redirect } from "react-router";
 
 import { ImportSettings } from "./ImportSettings";
-import { usePageTitle } from "../../hooks";
 import { useCreateAccount } from "../../services";
 import { emptyGuid } from "../../helpers";
-import { PageHeader } from "../../components";
+import { Page } from "../../layouts";
 
 export const CreateAccount: React.FC = () => {
-
-    usePageTitle("Create Account");
 
     const accountTypes = toNameValue(AccountType);
 
@@ -58,50 +55,52 @@ export const CreateAccount: React.FC = () => {
     }
 
     return (
-        <>
-            <PageHeader title="Create Account" breadcrumbs={[["Manage Accounts", "/accounts"], ["Create Account", "/accounts/create"]]} />
-            <Form onSubmit={handleSubmit}>
-                <Form.Group controlId="AccountName" >
-                    <Form.Label>Name</Form.Label>
-                    <Form.Control type="text" required maxLength={50} value={name} onChange={(e: any) => setName(e.currentTarget.value)} />
-                    <Form.Control.Feedback type="invalid">Please enter a name</Form.Control.Feedback>
-                </Form.Group>
-                <Form.Group controlId="AccountDescription" >
-                    <Form.Label >Description</Form.Label>
-                    <Form.Control type="text" as="textarea" required maxLength={255} value={description} onChange={(e: any) => setDescription(e.currentTarget.value)} />
-                    <Form.Control.Feedback type="invalid">Please enter a description</Form.Control.Feedback>
-                </Form.Group>
-                <Form.Group controlId="OpeningBalance" >
-                    <Form.Label>Opening Balance</Form.Label>
-                    <InputGroup>
-                        <InputGroup.Prepend>$</InputGroup.Prepend>
-                        <Form.Control type="number" required value={balance.toString()} onChange={(e: any) => setBalance(e.currentTarget.value)} />
-                    </InputGroup>
-                </Form.Group>
-                <Form.Group controlId="OpeningBalance" >
-                    <Form.Label htmlFor="includeInPosition">Include in Position</Form.Label>
-                    <Form.Switch id="includeInPosition" checked={includeInPosition} onChange={(e) => setIncludeInPosition(e.currentTarget.checked)} />
-                </Form.Group>
-                <Form.Group controlId="AccountType" >
-                    <Form.Label>Type</Form.Label>
-                    <Form.Control as="select" value={accountType.toString()} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setAccountType(parseInt(e.currentTarget.value))}>
-                        {accountTypes.map(a =>
-                            <option value={a.value} key={a.value}>{a.name}</option>
-                        )}
-                    </Form.Control>
-                </Form.Group>
-                <Form.Group controlId="AccountController">
-                    <Form.Label>Controller</Form.Label>
-                    <Form.Control as="select" value={accountController.toString()} onChange={(e: any) => setAccountController(parseInt(e.currentTarget.value))}>
-                        {accountControllers.map(a =>
-                            <option value={a.value} key={a.value}>{a.name}</option>
-                        )}
-                    </Form.Control>
-                </Form.Group>
-                <ImportSettings show={accountController === AccountController.Import} selectedId={importerTypeId} onChange={(e) => setImporterTypeId(e)} />
-                <Button type="submit" variant="primary">Create</Button>
-            </Form>
-        </>
+        <Page title="Create Account">
+            <Page.Header title="Create Account" breadcrumbs={[["Manage Accounts", "/accounts"], ["Create Account", "/accounts/create"]]} />
+            <Page.Content>
+                <Form onSubmit={handleSubmit}>
+                    <Form.Group controlId="AccountName" >
+                        <Form.Label>Name</Form.Label>
+                        <Form.Control type="text" required maxLength={50} value={name} onChange={(e: any) => setName(e.currentTarget.value)} />
+                        <Form.Control.Feedback type="invalid">Please enter a name</Form.Control.Feedback>
+                    </Form.Group>
+                    <Form.Group controlId="AccountDescription" >
+                        <Form.Label >Description</Form.Label>
+                        <Form.Control type="text" as="textarea" required maxLength={255} value={description} onChange={(e: any) => setDescription(e.currentTarget.value)} />
+                        <Form.Control.Feedback type="invalid">Please enter a description</Form.Control.Feedback>
+                    </Form.Group>
+                    <Form.Group controlId="OpeningBalance" >
+                        <Form.Label>Opening Balance</Form.Label>
+                        <InputGroup>
+                            <InputGroup.Text>$</InputGroup.Text>
+                            <Form.Control type="number" required value={balance.toString()} onChange={(e: any) => setBalance(e.currentTarget.value)} />
+                        </InputGroup>
+                    </Form.Group>
+                    <Form.Group controlId="OpeningBalance" >
+                        <Form.Label htmlFor="includeInPosition">Include in Position</Form.Label>
+                        <Form.Switch id="includeInPosition" checked={includeInPosition} onChange={(e) => setIncludeInPosition(e.currentTarget.checked)} />
+                    </Form.Group>
+                    <Form.Group controlId="AccountType" >
+                        <Form.Label>Type</Form.Label>
+                        <Form.Select value={accountType.toString()} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setAccountType(parseInt(e.currentTarget.value))}>
+                            {accountTypes.map(a =>
+                                <option value={a.value} key={a.value}>{a.name}</option>
+                            )}
+                        </Form.Select>
+                    </Form.Group>
+                    <Form.Group controlId="AccountController">
+                        <Form.Label>Controller</Form.Label>
+                        <Form.Control as="select" value={accountController.toString()} onChange={(e: any) => setAccountController(parseInt(e.currentTarget.value))}>
+                            {accountControllers.map(a =>
+                                <option value={a.value} key={a.value}>{a.name}</option>
+                            )}
+                        </Form.Control>
+                    </Form.Group>
+                    <ImportSettings show={accountController === AccountController.Import} selectedId={importerTypeId} onChange={(e) => setImporterTypeId(e)} />
+                    <Button type="submit" variant="primary">Create</Button>
+                </Form>
+            </Page.Content>
+        </Page>
     );
 }
 

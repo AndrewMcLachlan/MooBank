@@ -1,3 +1,25 @@
+:root {
+    --virtual-color: rgba(33, 37, 41, 0.8);
+    --virtual-background-color: rgba(0, 0, 0, 0.03);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --virtual-color: rgba(220, 216, 213, 1);
+        --virtual-background-color: rgba(255, 255, 255, 0.06);
+    }
+}
+
+.light {
+    --virtual-color: rgba(33, 37, 41, 0.8);
+    --virtual-background-color: rgba(0, 0, 0, 0.03);
+}
+
+.dark {
+    --virtual-color: rgba(180, 176, 173, 1);
+    --virtual-background-color: rgba(255, 255, 255, 0.03);
+}
+
 section.account-list {
     max-width: 1140px;
     margin: 0 auto 50px;
@@ -74,9 +96,9 @@ table.accounts {
     }
 
     tr.virtual {
-        background-color: rgba(0, 0, 0, 0.03);
+        background-color: var(--virtual-background-color);
         font-size: 0.9rem;
-        color: rgba(33, 37, 41, 0.8);
+        color: var(--virtual-color);
 
         &:hover {
             background-color: rgba(0, 0, 0, 0.075);
@@ -85,5 +107,9 @@ table.accounts {
         td.name {
             padding-left: 20px;
         }
+    }
+
+    tr.position {
+        font-weight: 700;
     }
 }

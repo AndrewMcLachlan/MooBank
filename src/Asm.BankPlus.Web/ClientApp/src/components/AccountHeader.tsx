@@ -3,7 +3,7 @@ import "./AccountSummary.scss";
 import React from "react";
 
 import { Account, AccountController } from "../models";
-import { PageHeader } from "./PageHeader";
+import { PageHeader } from "../layouts/PageHeader";
 import { MenuItem } from "../models/MenuItem";
 import { useAccount } from "./AccountProvider";
 

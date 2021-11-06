@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import axios, { AxiosInstance } from "axios";
 
-import { apiRequest, useMsal } from ".";
+import { apiRequest, useMsal } from "./MsalProvider";
 
 export interface HttpClientProviderProps {
     baseUrl: string;

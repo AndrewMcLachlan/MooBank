@@ -4,19 +4,18 @@ import React, { useState } from "react";
 import { Table } from "react-bootstrap";
 //import Select from "react-select";
 
-import { TagPanel, PageHeader } from "../../components";
+import { TagPanel } from "../../components";
 
 import { TransactionTag, TransactionTagRule } from "../../models";
 import { useParams } from "react-router";
-import { usePageTitle } from "../../hooks";
 
 import { TransactionTagRuleRow } from "./TransactionTagRuleRow";
 import { ClickableIcon } from "../../components/ClickableIcon";
 import { useAccount, useCreateRule, useCreateTag, useRules, useRunRules, useTags } from "../../services";
+import { Page } from "../../layouts";
 
 export const TransactionTagRules: React.FC = () => {
 
-    usePageTitle("Transaction Tag Rules");
 
     const { accountId } = useParams<any>();
 
@@ -30,29 +29,30 @@ export const TransactionTagRules: React.FC = () => {
     if (!account.data) return (null);
 
     return (
-        <>
-            <PageHeader title="Transaction Tag Rules" menuItems={[
-                { text: "Run Rules Now", onClick: runRules }
-            ]} breadcrumbs={[[account.data.name,`/accounts/${accountId}`], ["Tag Rules", `/accounts/${accountId}/tag-rules`]]} />
-            <Table striped bordered={false} borderless className="transaction-tag-rules">
-                <thead>
-                    <tr>
-                        <th>When a transaction contains</th>
-                        <th>Apply tag(s)</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><input type="text" placeholder="Transaction description contains..." value={newRule.contains} onChange={nameChange} /></td>
-                        <TagPanel as="td" selectedItems={newRule.tags} allItems={fullTagsList} textField="name" valueField="id" onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} />
-                        {/*<Select defaultOptions={fullTagsList} getOptionLabel={(t:TransactionTag) => t.name } getOptionValue={(t:TransactionTag) => t.id.toString() } hideSelectedOptions={true} isOptionSelected={t => } onChange />*/}
-                        <td><span onClick={createRule}><ClickableIcon icon="check-circle" title="Save" /></span></td>
-                    </tr>
-                    {data?.rules && data.rules.map((r) => <TransactionTagRuleRow key={r.id} accountId={accountId} rule={r} />)}
-                </tbody>
-            </Table>
-        </>
+        <Page title="Transaction Tag Rules">
+            <Page.Header title="Transaction Tag Rules" menuItems={[{ text: "Run Rules Now", onClick: runRules }]}
+                breadcrumbs={[[account.data.name, `/accounts/${accountId}`], ["Tag Rules", `/accounts/${accountId}/tag-rules`]]} />
+            <Page.Content>
+                <Table striped bordered={false} borderless className="transaction-tag-rules">
+                    <thead>
+                        <tr>
+                            <th>When a transaction contains</th>
+                            <th>Apply tag(s)</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="text" placeholder="Transaction description contains..." value={newRule.contains} onChange={nameChange} /></td>
+                            <TagPanel as="td" selectedItems={newRule.tags} allItems={fullTagsList} textField="name" valueField="id" onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} />
+                            {/*<Select defaultOptions={fullTagsList} getOptionLabel={(t:TransactionTag) => t.name } getOptionValue={(t:TransactionTag) => t.id.toString() } hideSelectedOptions={true} isOptionSelected={t => } onChange />*/}
+                            <td><span onClick={createRule}><ClickableIcon icon="check-circle" title="Save" /></span></td>
+                        </tr>
+                        {data?.rules && data.rules.map((r) => <TransactionTagRuleRow key={r.id} accountId={accountId} rule={r} />)}
+                    </tbody>
+                </Table>
+            </Page.Content>
+        </Page>
     );
 }
 

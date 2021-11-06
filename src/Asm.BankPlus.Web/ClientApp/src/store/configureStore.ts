@@ -10,6 +10,6 @@ const rootReducer = combineReducers(
         transactions: TransactionsSlice.reducer,
     });
 
-const enhancer = composeWithDevTools();
+const enhancer = composeWithDevTools({});
 
-export const AppStore = createStore(rootReducer, enhancer);
+export const AppStore = createStore(rootReducer, enhancer());
