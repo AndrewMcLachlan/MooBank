@@ -2,8 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>true</ImplicitUsings>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
-    <TypeScriptToolsVersion>4.3</TypeScriptToolsVersion>
     <IsPackable>false</IsPackable>
     <SpaRoot>ClientApp\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);node_modules\**</DefaultItemExcludes>
@@ -29,6 +30,7 @@
     <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
     <PackageReference Include="Serilog.Sinks.ApplicationInsights" Version="3.1.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+    <PackageReference Include="Serilog.Sinks.Seq" Version="5.1.0" />
     <PackageReference Include="Serilog.Sinks.Trace" Version="3.0.0" />
   </ItemGroup>
 
@@ -44,24 +46,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="ClientApp\src\components\CloseBadge.tsx" />
-    <None Remove="ClientApp\src\components\TransactionRow.tsx" />
-    <None Remove="ClientApp\src\models\Transaction.ts" />
-    <None Remove="ClientApp\src\store\Transactions.ts" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Asm.BankPlus.Data\Asm.BankPlus.Data.csproj" />
     <ProjectReference Include="..\Asm.BankPlus.Models\Asm.BankPlus.Models.csproj" />
     <ProjectReference Include="..\Asm.BankPlus.Services\Asm.BankPlus.Services.csproj" />
     <ProjectReference Include="..\Asm.BankPlus\Asm.BankPlus.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <TypeScriptCompile Include="ClientApp\src\components\CloseBadge.tsx" />
-    <TypeScriptCompile Include="ClientApp\src\components\TransactionRow.tsx" />
-    <TypeScriptCompile Include="ClientApp\src\models\Transaction.ts" />
-    <TypeScriptCompile Include="ClientApp\src\store\Transactions.ts" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('node_modules') ">

@@ -1,93 +1,93 @@
-﻿using System;
-using System.Threading.Tasks;
-using Asm.BankPlus.Models;
+﻿using Asm.BankPlus.Models;
 using Asm.BankPlus.Repository;
 using Asm.BankPlus.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Asm.BankPlus.Web.Controllers
+namespace Asm.BankPlus.Web.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+[Authorize]
+public class AccountsController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    [Authorize]
-    public class AccountsController : ControllerBase
+    private readonly IAccountRepository _accountRepository;
+    private readonly ITransactionRepository _transactionRepository;
+
+    private readonly ILogger<AccountsController> _logger;
+
+    public AccountsController(IAccountRepository accountRepository, ITransactionRepository transactionRepository, ILogger<AccountsController> logger)
     {
-        private IAccountRepository AccountRepository { get; }
-        private ITransactionRepository TransactionRepository { get; }
+        _accountRepository = accountRepository;
+        _transactionRepository = transactionRepository;
+        _logger = logger;
+    }
 
-        public AccountsController(IAccountRepository accountRepository, ITransactionRepository transactionRepository)
+    [HttpGet]
+    public async Task<ActionResult<AccountsModel>> Get()
+    {
+        return new ActionResult<AccountsModel>(new AccountsModel
         {
-            AccountRepository = accountRepository;
-            TransactionRepository = transactionRepository;
-        }
+            Accounts = await _accountRepository.GetAccounts(),
+            Position = await _accountRepository.GetPosition(),
+        });
+    }
 
-        [HttpGet]
-        public async Task<ActionResult<AccountsModel>> Get()
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Account>> Get(Guid id)
+    {
+        return new ActionResult<Account>(await _accountRepository.GetAccount(id));
+    }
+
+    [HttpGet("{accountId}/transactions/{pageSize?}/{pageNumber?}")]
+    public async Task<ActionResult<TransactionsModel>> Get(Guid accountId, int? pageSize = 50, int? pageNumber = 1, [FromQuery] DateTime? start = null, [FromQuery] DateTime? end = null, [FromQuery] string filter = null, [FromQuery] string sortField = null, [FromQuery] SortDirection sortDirection = SortDirection.Ascending)
+    {
+        if (start != null && end != null && end < start) return BadRequest($"{nameof(start)} is less than {nameof(end)}");
+
+        return new ActionResult<TransactionsModel>(new TransactionsModel
         {
-            return new ActionResult<AccountsModel>(new AccountsModel
-            {
-                Accounts = await AccountRepository.GetAccounts(),
-                Position = await AccountRepository.GetPosition(),
-            });
-        }
+            Transactions = await _transactionRepository.GetTransactions(accountId, filter, start, end, pageSize.Value, pageNumber.Value, sortField, sortDirection),
+            PageNumber = pageNumber,
+            Total = await _transactionRepository.GetTotalTransactions(accountId, filter, start, end),
+        });
+    }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Account>> Get(Guid id)
+    [HttpGet("{accountId}/transactions/untagged/{pageSize?}/{pageNumber?}")]
+    public async Task<ActionResult<TransactionsModel>> Getuntagged(Guid accountId, int? pageSize = 50, int? pageNumber = 1, [FromQuery] DateTime? start = null, [FromQuery] DateTime? end = null, [FromQuery] string filter = null, [FromQuery] string sortField = null, [FromQuery] SortDirection sortDirection = SortDirection.Ascending)
+    {
+        if (start != null && end != null && end < start) return BadRequest($"{nameof(start)} is less than {nameof(end)}");
+
+        return new ActionResult<TransactionsModel>(new TransactionsModel
         {
-            return new ActionResult<Account>(await AccountRepository.GetAccount(id));
-        }
+            Transactions = await _transactionRepository.GetUntaggedTransactions(accountId, filter, start, end, pageSize.Value, pageNumber.Value, sortField, sortDirection),
+            PageNumber = pageNumber,
+            Total = await _transactionRepository.GetTotalUntaggedTransactions(accountId, filter, start, end),
+        });
+    }
 
-        [HttpGet("{accountId}/transactions/{pageSize?}/{pageNumber?}")]
-        public async Task<ActionResult<TransactionsModel>> Get(Guid accountId, int? pageSize = 50, int? pageNumber = 1, [FromQuery] DateTime? start = null, [FromQuery] DateTime? end = null, [FromQuery] string filter = null, [FromQuery] string sortField = null, [FromQuery] SortDirection sortDirection = SortDirection.Ascending)
-        {
-            if (start != null && end != null && end < start) return BadRequest($"{nameof(start)} is less than {nameof(end)}");
+    [HttpPost]
+    public async Task<ActionResult<Account>> Create(NewAccountModel model)
+    {
+        Account newAccount = model.ImportAccount != null ?
+            await _accountRepository.CreateImportAccount((Account)model.Account, model.ImportAccount.ImporterTypeId) :
+            await _accountRepository.Create((Account)model.Account);
 
-            return new ActionResult<TransactionsModel>(new TransactionsModel
-            {
-                Transactions = await TransactionRepository.GetTransactions(accountId, filter, start, end, pageSize.Value, pageNumber.Value, sortField, sortDirection),
-                PageNumber = pageNumber,
-                Total = await TransactionRepository.GetTotalTransactions(accountId, filter, start, end),
-            });
-        }
+        return CreatedAtAction("Get", new { id = newAccount.Id }, newAccount);
+    }
 
-        [HttpGet("{accountId}/transactions/untagged/{pageSize?}/{pageNumber?}")]
-        public async Task<ActionResult<TransactionsModel>> Getuntagged(Guid accountId, int? pageSize = 50, int? pageNumber = 1, [FromQuery] DateTime? start = null, [FromQuery] DateTime? end = null, [FromQuery] string filter = null, [FromQuery]string sortField = null, [FromQuery] SortDirection sortDirection = SortDirection.Ascending)
-        {
-            if (start != null && end != null && end < start) return BadRequest($"{nameof(start)} is less than {nameof(end)}");
+    [HttpPatch("{accountId}")]
+    public async Task<ActionResult<Account>> UpdateAccount(Guid accountId, Account model)
+    {
+        if (model == null || model.Id != accountId) return BadRequest(ModelState);
 
-            return new ActionResult<TransactionsModel>(new TransactionsModel
-            {
-                Transactions = await TransactionRepository.GetUntaggedTransactions(accountId, filter, start, end, pageSize.Value, pageNumber.Value, sortField, sortDirection),
-                PageNumber = pageNumber,
-                Total = await TransactionRepository.GetTotalUntaggedTransactions(accountId, filter, start, end),
-            });
-        }
+        return Ok(await _accountRepository.Update(model));
+    }
 
-        [HttpPost]
-        public async Task<ActionResult<Account>> Create(NewAccountModel model)
-        {
-            Account newAccount = model.ImportAccount != null ?
-                await AccountRepository.CreateImportAccount((Account)model.Account, model.ImportAccount.ImporterTypeId) :
-                await AccountRepository.Create((Account)model.Account);
+    [HttpPatch("{accountId}/balance")]
+    public async Task<ActionResult<Account>> UpdateBalance(Guid accountId, UpdateBalanceModel model)
+    {
+        if (model == null || (model.CurrentBalance == null && model.AvailableBalance == null)) return BadRequest(ModelState);
 
-            return CreatedAtAction("Get", new { id = newAccount.Id }, newAccount);
-        }
-
-        [HttpPatch("{accountId}")]
-        public async Task<ActionResult<Account>> UpdateAccount(Guid accountId, Account model)
-        {
-            if (model == null || model.Id != accountId) return BadRequest(ModelState);
-
-            return Ok(await AccountRepository.Update(model));
-        }
-
-        [HttpPatch("{accountId}/balance")]
-        public async Task<ActionResult<Account>> UpdateBalance(Guid accountId, UpdateBalanceModel model)
-        {
-            if (model == null || (model.CurrentBalance == null && model.AvailableBalance == null)) return BadRequest(ModelState);
-
-            return Ok(await AccountRepository.SetBalance(accountId, model.CurrentBalance, model.AvailableBalance));
-        }
+        return Ok(await _accountRepository.SetBalance(accountId, model.CurrentBalance, model.AvailableBalance));
     }
 }
