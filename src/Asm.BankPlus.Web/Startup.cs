@@ -41,7 +41,7 @@ public class Startup
         services.AddDbContext<BankPlusContext>((services, options) => options.UseSqlServer(Configuration.GetConnectionString("BankPlus"), options =>
         {
             options.EnableRetryOnFailure(3);
-        }).UseAzureAuthenticationProvider());
+        }));
 
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
