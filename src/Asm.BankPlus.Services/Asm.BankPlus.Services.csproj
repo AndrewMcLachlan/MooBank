@@ -1,19 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Asm" Version="2.1.365" />
+    <PackageReference Include="Asm" Version="3.0.446" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.8" />
-    <PackageReference Include="Microsoft.Graph" Version="4.1.0" />
-    <PackageReference Include="Microsoft.Identity.Client" Version="4.35.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.9" />
+    <PackageReference Include="Microsoft.Graph" Version="4.10.0" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.38.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Asm.BankPlus.Data\Asm.BankPlus.Data.csproj" />
+    <ProjectReference Include="..\Asm.BankPlus.Infrastructure\Asm.BankPlus.Infrastructure.csproj" />
     <ProjectReference Include="..\Asm.BankPlus.Models\Asm.BankPlus.Models.csproj" />
     <ProjectReference Include="..\Asm.BankPlus\Asm.BankPlus.csproj" />
   </ItemGroup>

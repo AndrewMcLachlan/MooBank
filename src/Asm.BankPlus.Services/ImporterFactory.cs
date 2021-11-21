@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Asm.BankPlus.Data;
-using Asm.BankPlus.Importers;
-using Asm.BankPlus.Repository;
+﻿using Asm.BankPlus.Importers;
 using Microsoft.EntityFrameworkCore;
 
 namespace Asm.BankPlus.Services

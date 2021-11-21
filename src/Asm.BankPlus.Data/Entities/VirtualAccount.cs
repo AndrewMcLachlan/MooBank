@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Asm.BankPlus.Data.Entities
 {
@@ -13,8 +14,9 @@ namespace Asm.BankPlus.Data.Entities
 
         public Guid VirtualAccountId { get; set; }
         public Guid AccountId { get; set; }
+
         public string Name { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public decimal Balance { get; set; }
 
         public virtual Account Account { get; set; }

@@ -14,7 +14,7 @@ namespace Asm.BankPlus.Data.Entities
 
         public decimal Amount { get; set; }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         public DateTime TransactionTime { get; set; }
 
@@ -22,6 +22,6 @@ namespace Asm.BankPlus.Data.Entities
 
         public virtual Account Account { get; set; }
 
-        public BankPlus.Models.TransactionType TransactionType { get; set; }
+        public BankPlus.Models.TransactionType? TransactionType { get; set; }
     }
 }

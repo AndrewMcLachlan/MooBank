@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Asm.BankPlus.Models;
 
-namespace Asm.BankPlus.Repository
+namespace Asm.BankPlus.Data.Repositories
 {
     public interface ITransactionTagRepository
     {

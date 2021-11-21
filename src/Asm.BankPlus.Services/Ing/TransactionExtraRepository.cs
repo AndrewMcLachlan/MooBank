@@ -1,10 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Asm.BankPlus.Data;
+﻿using Asm.BankPlus.Data.Repositories.Ing;
 using Asm.BankPlus.Models.Ing;
-using Asm.BankPlus.Repository;
-using Asm.BankPlus.Repository.Ing;
 
 namespace Asm.BankPlus.Services.Ing
 {

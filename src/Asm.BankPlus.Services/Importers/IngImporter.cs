@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
+﻿using System.Globalization;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Asm.BankPlus.Models.Ing;
+using Asm.BankPlus.Data.Repositories.Ing;
 using Asm.BankPlus.Importers;
 using Asm.BankPlus.Models;
-using Asm.BankPlus.Repository;
+using Asm.BankPlus.Models.Ing;
 using Microsoft.Extensions.Logging;
-using Asm.BankPlus.Repository.Ing;
 
 namespace Asm.BankPlus.Services.Importers
 {

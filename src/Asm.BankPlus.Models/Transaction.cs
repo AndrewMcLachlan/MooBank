@@ -13,7 +13,7 @@ namespace Asm.BankPlus.Models
         public string Description { get; set; }
         public DateTime TransactionTime { get; set; }
 
-        public TransactionType TransactionType { get; set; }
+        public TransactionType? TransactionType { get; set; }
 
         public IEnumerable<TransactionTag> Tags { get; set; }
 

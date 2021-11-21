@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Asm.BankPlus.Data;
-using Asm.BankPlus.Data.Entities;
-using Asm.BankPlus.Repository;
+﻿using Asm.BankPlus.Data.Entities;
 using Asm.BankPlus.Security;
 using Microsoft.AspNetCore.Http;
 

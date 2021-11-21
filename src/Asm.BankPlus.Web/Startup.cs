@@ -1,18 +1,15 @@
 using System.Net;
+using Asm.BankPlus.Data.Repositories.Ing;
 using Asm.BankPlus.Importers;
-using Asm.BankPlus.Repository;
-using Asm.BankPlus.Repository.Ing;
+using Asm.BankPlus.Infrastructure;
 using Asm.BankPlus.Security;
-using Asm.BankPlus.Services;
 using Asm.BankPlus.Services.Importers;
 using Asm.BankPlus.Services.Ing;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Logging;
-using Newtonsoft.Json;
 using Serilog;
 
 namespace Asm.BankPlus.Web;
@@ -33,18 +30,18 @@ public class Startup
 
         services.AddControllers();
 
+        services.AddProblemDetailsFactory();
+
         // In production, the React files will be served from this directory
         services.AddSpaStaticFiles(configuration =>
         {
             configuration.RootPath = "ClientApp/build";
         });
 
-        services.AddManagedServiceIdentityForSqlServer();
-
-        services.AddDbContext<Data.BankPlusContext>((services, options) => options.UseSqlServer(Configuration.GetConnectionString("BankPlus"), options =>
+        services.AddDbContext<BankPlusContext>((services, options) => options.UseSqlServer(Configuration.GetConnectionString("BankPlus"), options =>
         {
             options.EnableRetryOnFailure(3);
-        }).AddManagedServiceIdentity(services));
+        }).UseAzureAuthenticationProvider());
 
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
@@ -77,17 +74,7 @@ public class Startup
             app.UseHttpsRedirection();
         }
 
-        app.UseExceptionHandler(errorApp =>
-        {
-            errorApp.Run(async context =>
-            {
-                context.Response.ContentType = "application/json";
-
-                var exceptionHandlerFeature = context.Features.Get<IExceptionHandlerFeature>();
-
-                await context.Response.WriteAsync(JsonConvert.SerializeObject(CreateProblemDetails(env, context, exceptionHandlerFeature.Error)));
-            });
-        });
+        app.UseStandardExceptionHandler();
 
         app.UseSerilogRequestLogging(options =>
         {
@@ -135,26 +122,10 @@ public class Startup
         });
     }
 
-    private static void AddAuthentication(IServiceCollection services)
+    private void AddAuthentication(IServiceCollection services)
     {
-        //services.AddAuthentication(AzureADDefaults.JwtBearerAuthenticationScheme).AddAzureADBearer((options) => Configuration.Bind("AzureAD", options));
-
         IdentityModelEventSource.ShowPII = true;
-        services.AddAuthentication(options =>
-        {
-            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddAzureAdBearer(options =>
-        {
-            options.TenantId = "30efefb9-9034-4e0c-8c69-17f4578f5924";
-            options.ADAuthority = "https://login.microsoftonline.com/";
-            options.Audience = "045f8afa-70f2-4700-ab75-77ac41b306f7";
-            options.ApplicationId = "045f8afa-70f2-4700-ab75-77ac41b306f7";
-            options.ApplicationSecret = "gvwLXheN2Ba2OKFE*AxKi9jupyNq6.]+";
-            options.CallbackPath = "/signin-oidc";
-            options.RedirectUrl = null;
-        });
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddAzureAdBearer(options => Configuration.Bind("OAuth", options));
     }
 
     private static void RegisterServices(IServiceCollection services)

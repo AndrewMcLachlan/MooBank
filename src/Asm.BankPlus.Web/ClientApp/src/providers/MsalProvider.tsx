@@ -69,13 +69,13 @@ export const msalConfig: msal.Configuration = {
 };
 
 // Add here scopes for id token to be used at MS Identity Platform endpoints.
-export const loginRequest = {
+export const loginRequest: msal.RedirectRequest = {
     scopes: ["openid", "profile", "User.Read"],
-    forceRefresh: false // Set this to "true" to skip a cached token and go to the server to get a new token
+    //forceRefresh: false // Set this to "true" to skip a cached token and go to the server to get a new token
 };
 
 // Add here scopes for id token to be used at MS Identity Platform endpoints.
-export const apiRequest = {
+export const apiRequest: msal.SilentRequest = {
     scopes: ["api://bankplus.mclachlan.family/api.read"],
     forceRefresh: false // Set this to "true" to skip a cached token and go to the server to get a new token
 };

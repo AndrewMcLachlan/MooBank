@@ -1,10 +1,5 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Asm.BankPlus.Data;
-using Asm.BankPlus.Data.Entities;
-using Asm.BankPlus.Repository;
+﻿using Asm.BankPlus.Data.Entities;
 using Asm.BankPlus.Security;
-using Asm.Security;
 using Microsoft.EntityFrameworkCore;
 
 namespace Asm.BankPlus.Services

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Asm.BankPlus.Services
+﻿namespace Asm.BankPlus.Services
 {
     public class AccountService : IAccountService
     {

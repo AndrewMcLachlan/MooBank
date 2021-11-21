@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Asm.BankPlus.Data;
-using Asm.BankPlus.Models;
-using Asm.BankPlus.Repository;
+﻿using Asm.BankPlus.Models;
 using Asm.BankPlus.Security;
 using Microsoft.EntityFrameworkCore;
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Asm.BankPlus.Data.Entities;
 
-namespace Asm.BankPlus.Repository
+namespace Asm.BankPlus.Data.Repositories
 {
     public interface ISecurityRepository
     {

@@ -1,10 +1,4 @@
-﻿using Asm.BankPlus.Models;
-using Asm.BankPlus.Repository;
-using Asm.BankPlus.Web.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-
-namespace Asm.BankPlus.Web.Controllers;
+﻿namespace Asm.BankPlus.Web.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]

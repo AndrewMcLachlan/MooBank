@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28917.182
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.31903.286
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.BankPlus.Web", "src\Asm.BankPlus.Web\Asm.BankPlus.Web.csproj", "{F424AA48-81DB-4D75-A198-7C5AAA9C71B5}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.BankPlus.Data", "src\Asm.BankPlus.Data\Asm.BankPlus.Data.csproj", "{8836E750-5ABA-43B6-82ED-631D6900FA26}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.BankPlus.Services", "src\Asm.BankPlus.Services\Asm.BankPlus.Services.csproj", "{FC276E8E-5636-47CE-8847-8EC960D53CB9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asm.BankPlus.Infrastructure", "src\Asm.BankPlus.Infrastructure\Asm.BankPlus.Infrastructure.csproj", "{EE7A3FB3-48E4-4973-802F-F4B95FCF48C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{FC276E8E-5636-47CE-8847-8EC960D53CB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC276E8E-5636-47CE-8847-8EC960D53CB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC276E8E-5636-47CE-8847-8EC960D53CB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE7A3FB3-48E4-4973-802F-F4B95FCF48C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE7A3FB3-48E4-4973-802F-F4B95FCF48C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE7A3FB3-48E4-4973-802F-F4B95FCF48C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE7A3FB3-48E4-4973-802F-F4B95FCF48C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
