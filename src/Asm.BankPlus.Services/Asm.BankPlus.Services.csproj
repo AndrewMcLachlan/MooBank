@@ -7,9 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Asm" Version="3.0.446" />
+    <PackageReference Include="Asm" Version="3.0.448" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.9" />
     <PackageReference Include="Microsoft.Graph" Version="4.10.0" />
     <PackageReference Include="Microsoft.Identity.Client" Version="4.38.0" />
   </ItemGroup>
