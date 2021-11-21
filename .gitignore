@@ -261,5 +261,5 @@ __pycache__/
 *.pyc
 
 # Local app settings
-appsettings.localdev.json
+appsettings.Development.json
 /src/Asm.BankPlus.Web/Properties/serviceDependencies.local.json
