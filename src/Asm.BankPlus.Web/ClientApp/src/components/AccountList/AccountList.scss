@@ -25,6 +25,14 @@ section.account-list {
     margin: 0 auto 50px;
 }
 
+@for $i from 5 through 100 {
+    @if $i % 5 == 0 {
+        .column-#{$i} {
+            width: $i * 1%;
+        }
+    }
+}
+
 table.accounts {
     width: 100%;
 
@@ -34,7 +42,7 @@ table.accounts {
         font-size: 1.2rem;
     }
 
-    th:first-child {
+    th.expander {
         width: 38px;
     }
 

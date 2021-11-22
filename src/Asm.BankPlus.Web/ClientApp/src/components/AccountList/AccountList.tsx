@@ -20,7 +20,7 @@ export const AccountList: React.FC<AccountListProps> = () => {
             <Table className="accounts" hover>
                 <thead>
                     <tr>
-                        <th></th>
+                        <th className="expander"></th>
                         <th>Name</th>
                         <th className="type">Type</th>
                         <th className="number">Current Balance</th>

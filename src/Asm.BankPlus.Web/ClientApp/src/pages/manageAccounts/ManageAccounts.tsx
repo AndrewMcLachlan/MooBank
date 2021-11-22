@@ -34,9 +34,9 @@ export const ManageAccounts = () => {
                         <tr>
                             <th>Name</th>
                             <th>Description</th>
-                            <th>Type</th>
-                            <th>Controller</th>
-                            <th>Current Balance</th>
+                            <th className="type">Type</th>
+                            <th className="type">Controller</th>
+                            <th className="number">Current Balance</th>
                         </tr>
                     </thead>
                     <tbody>
