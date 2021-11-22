@@ -17,8 +17,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Asm.Web" Version="3.0.448" />
-    <PackageReference Include="Asm.Web.Mvc" Version="3.0.448" />
+    <PackageReference Include="Asm.Web" Version="3.0.452" />
+    <PackageReference Include="Asm.Web.Mvc" Version="3.0.452" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.19.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="6.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="6.0.0" />
@@ -29,10 +29,6 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
-    <PackageReference Include="Serilog.Sinks.ApplicationInsights" Version="3.1.0" />
-    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-    <PackageReference Include="Serilog.Sinks.Seq" Version="5.1.0" />
-    <PackageReference Include="Serilog.Sinks.Trace" Version="3.0.0" />
   </ItemGroup>
 
   <ItemGroup>

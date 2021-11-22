@@ -147,33 +147,4 @@ public class Startup
         services.AddHostedService<RunRulesService>();
         services.AddSingleton<IRunRulesQueue, RunRulesQueue>();
     }
-
-    private static ProblemDetails CreateProblemDetails(IHostEnvironment env, HttpContext context, Exception ex)
-    {
-        ProblemDetails result = new ProblemDetails();
-
-        switch (ex)
-        {
-            case NotFoundException _:
-                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                result.Title = "Not found";
-                result.Detail = ex.Message;
-                break;
-            case ExistsException _:
-                context.Response.StatusCode = (int)HttpStatusCode.Conflict;
-                result.Title = "Already exists";
-                result.Detail = ex.Message;
-                break;
-
-            default:
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                result.Title = "Unexpected error occured";
-                result.Detail = !env.IsProduction() ? ex.ToString() : null;
-                break;
-        }
-
-        result.Status = context.Response.StatusCode;
-
-        return result;
-    }
 }
