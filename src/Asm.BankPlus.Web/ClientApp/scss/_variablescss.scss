@@ -56,6 +56,7 @@
   --hover: #ECECEC;
   --box-background: rgba(0,0,0,0.03);
   --table-stripe: var(--box-background);
+  --hover: #AADCF7;
 }
 
 .dark {
@@ -68,5 +69,6 @@
   --footer-text: #EEE;
   --hover: #6E6E6E;
   --box-background: rgba(255, 255, 255, 0.06);
-  --table-stripe: var(--box-background); 
+  --table-stripe: var(--box-background);
+  --hover: var(--primary);
 }
