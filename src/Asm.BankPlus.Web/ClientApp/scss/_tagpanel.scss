@@ -1,0 +1,9 @@
+.tag-panel {
+    .close-badge {
+        margin-right: 2px;
+
+        :last-child {
+            margin-right: 0;
+        }
+    }
+}

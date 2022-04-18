@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
-import { Redirect, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router-dom";
 import { emptyGuid } from "../../helpers";
 import { Page } from "../../layouts";
 import { VirtualAccount } from "../../models";
@@ -9,13 +9,13 @@ import { useAccount, useCreateVirtualAccount } from "../../services";
 export const CreateVirtualAccount = () => {
 
     const { accountId } = useParams<any>();
+    const navigate = useNavigate();
 
     const parentAccount = useAccount(accountId);
 
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [balance, setBalance] = useState(0);
-    const [submitted, setSubmitted] = useState(false);
 
     const createVirtualAccount = useCreateVirtualAccount();
 
@@ -32,11 +32,7 @@ export const CreateVirtualAccount = () => {
 
         createVirtualAccount.create(accountId, account);
 
-        setSubmitted(true);
-    }
-
-    if (submitted) {
-        return <Redirect to="/" />;
+        navigate("/");
     }
 
     return (

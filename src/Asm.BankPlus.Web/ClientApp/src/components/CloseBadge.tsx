@@ -3,6 +3,7 @@ import "./CloseBadge.scss";
 import React, { PropsWithChildren } from "react";
 import { Badge, BadgeProps } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
 export const CloseBadge: React.FC<PropsWithChildren<CloseBadgeProps>> = (props) => {
 
@@ -13,16 +14,13 @@ export const CloseBadge: React.FC<PropsWithChildren<CloseBadgeProps>> = (props) 
         props.onClose && props.onClose();
     }
 
-    let { onClick, className, ...other } = props;
+    const { className, ...other } = props;
 
-    className = (className + " close-badge").trim();
-
-    return (<Badge {...other} className={className} >{props.children}<span onClick={click}><FontAwesomeIcon icon="times-circle" /></span></Badge>);
+    return (<Badge {...other} className={classNames(className, "close-badge")} >{props.children}<span onClick={click}><FontAwesomeIcon icon="times-circle" /></span></Badge>);
 }
 
 CloseBadge.displayName = "CloseBadge";
 
 export interface CloseBadgeProps extends BadgeProps {
     onClose?: () => void;
-    onClick?: () => void;
 }

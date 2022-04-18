@@ -1,8 +1,8 @@
 ﻿import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import { MD5 } from "crypto-js";
+import { MD5 } from "../../helpers";
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { getBalanceString, numberClassName } from "../../helpers";
 
@@ -49,10 +49,10 @@ export interface AccountRowProps {
 
 export const useAccountRowCommonState = (props: AccountRowProps) => {
 
-    var history = useHistory();
+    var navigate = useNavigate();
 
     const onRowClick = () => {
-        history.push(`accounts/${props.account.id}`);
+        navigate(`accounts/${props.account.id}`);
     };
 
     return {

@@ -8,7 +8,7 @@ import { useUpdateBalance } from "../../services";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { VirtualAccountRow } from "./VirtualAccountRow";
-import { MD5 } from "crypto-js";
+import { MD5 } from "../../helpers";
 
 export const ManualAccountRow: React.FC<AccountRowProps> = (props) => {
 

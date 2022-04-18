@@ -1,6 +1,5 @@
 
-import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faCheckCircle, faTrashAlt, faChevronDown, faChevronUp, faTimesCircle, faArrowLeft, faChevronRight, faUpload } from "@fortawesome/free-solid-svg-icons";
@@ -11,12 +10,13 @@ import { MsalProvider, msalConfig } from "./providers";
 
 library.add(faCheckCircle, faTrashAlt, faChevronDown, faChevronUp, faTimesCircle, faArrowLeft, faChevronRight, faUpload);
 
-ReactDOM.render(
-    (
+const root = createRoot(document.getElementById("root"));
+
+root.render(
         <MsalProvider config={msalConfig}>
             <App />
         </MsalProvider>
-    ), document.getElementById("root"));
+    );
 
 
 

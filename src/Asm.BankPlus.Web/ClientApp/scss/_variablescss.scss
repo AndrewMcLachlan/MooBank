@@ -7,7 +7,7 @@
   
   --background: #FFF;
   --color: #{$text-color};
-  --primary: #{primary};
+  --primary: #{$primary};
   --input-border: #666;
   --disabled: #999;
 
@@ -70,5 +70,4 @@
   --hover: #6E6E6E;
   --box-background: rgba(255, 255, 255, 0.06);
   --table-stripe: var(--box-background);
-  --hover: var(--primary);
 }

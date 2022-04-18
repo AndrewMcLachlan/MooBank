@@ -1,5 +1,5 @@
 import React from "react";
-import { RouteComponentProps, useHistory, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AccountController } from "../models";
 import { Upload, FilesAddedEvent } from "../components";
 import { useAccount, useImportTransactions } from "../services";
@@ -7,9 +7,9 @@ import Button from "react-bootstrap/Button";
 import { useState } from "react";
 import { Page } from "../layouts";
 
-export const Import: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
+export const Import: React.FC = () => {
 
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const { id } = useParams<any>();
     const account = useAccount(id);
@@ -30,7 +30,7 @@ export const Import: React.FC<RouteComponentProps<{ id: string }>> = (props) => 
         if (!file) return;
         importTransactions.mutate({ accountId: id, file: file }, {
             onSuccess: () => {
-                history.goBack();
+                navigate(-1);
             }
         });
     }

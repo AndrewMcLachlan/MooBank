@@ -23,3 +23,7 @@ button {
         color: inherit;
     }
 }
+
+.btn, .btn:hover {
+    color: var(--color);
+}

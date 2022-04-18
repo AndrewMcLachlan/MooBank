@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Form, Button, InputGroup } from "react-bootstrap";
 import { Account, AccountType, AccountController, ImportAccount } from "../../models";
 import { toNameValue } from "../../extensions";
-import { Redirect } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 import { ImportSettings } from "./ImportSettings";
 import { useCreateAccount } from "../../services";
@@ -10,6 +10,8 @@ import { emptyGuid } from "../../helpers";
 import { Page } from "../../layouts";
 
 export const CreateAccount: React.FC = () => {
+
+    const navigate = useNavigate();
 
     const accountTypes = toNameValue(AccountType);
 
@@ -21,7 +23,6 @@ export const CreateAccount: React.FC = () => {
     const [accountType, setAccountType] = useState(AccountType.Transaction);
     const [accountController, setAccountController] = useState(AccountController.Manual);
     const [importerTypeId, setImporterTypeId] = useState(0);
-    const [submitted, setSubmitted] = useState(false);
     const [includeInPosition, setIncludeInPosition] = useState(true);
 
     const createAccount = useCreateAccount();
@@ -47,11 +48,7 @@ export const CreateAccount: React.FC = () => {
 
         createAccount.create(account, importAccount);
 
-        setSubmitted(true);
-    }
-
-    if (submitted) {
-        return <Redirect to="/" />;
+        navigate("/");
     }
 
     return (

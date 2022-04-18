@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 import { Breadcrumb, Container } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 
-export type PageHeaderComponent = React.FC<PageHeaderProps>;
+export type PageHeaderComponent = React.FC<React.PropsWithChildren<PageHeaderProps>>;
 
-export const PageHeader: React.FC<PageHeaderProps> = (props) => {
+export const PageHeader: PageHeaderComponent = (props) => {
 
     return (
         <header>

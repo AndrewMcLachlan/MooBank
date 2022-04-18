@@ -1,5 +1,5 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import * as Models from "../../models";
 import { AccountController, AccountType } from "../../models";
@@ -34,10 +34,10 @@ export interface AccountRowProps {
 
 export const useAccountRowCommonState = (props: AccountRowProps) => {
 
-    var history = useHistory();
+    var navigate = useNavigate();
 
     const onRowClick = () => {
-        history.push(`accounts/${props.account.id}/manage`);
+        navigate(`/accounts/${props.account.id}/manage`);
     };
 
     return {

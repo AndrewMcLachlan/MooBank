@@ -1,5 +1,5 @@
 import React from "react";
-import { RouteComponentProps, useParams } from "react-router";
+import { useParams } from "react-router-dom";
 
 import { FilterPanel } from "./FilterPanel";
 import { TransactionList } from "./TransactionList";
@@ -7,7 +7,7 @@ import { AccountHeader, AccountProvider, AccountSummary } from "../../components
 import { useAccount } from "../../services";
 import { Page } from "../../layouts";
 
-export const Transactions: React.FC<TransactionsProps> = () => {
+export const Transactions: React.FC = () => {
 
     const { id } = useParams<any>()
 
@@ -29,8 +29,4 @@ export const Transactions: React.FC<TransactionsProps> = () => {
             </AccountProvider>
         </Page>
     );
-}
-
-export interface TransactionsProps extends RouteComponentProps<{ id: string }> {
-
 }

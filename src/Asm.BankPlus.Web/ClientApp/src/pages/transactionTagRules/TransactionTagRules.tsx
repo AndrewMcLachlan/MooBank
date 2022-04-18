@@ -7,7 +7,7 @@ import { Table } from "react-bootstrap";
 import { TagPanel } from "../../components";
 
 import { TransactionTag, TransactionTagRule } from "../../models";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 
 import { TransactionTagRuleRow } from "./TransactionTagRuleRow";
 import { ClickableIcon } from "../../components/ClickableIcon";

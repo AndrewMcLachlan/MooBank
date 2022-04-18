@@ -14,7 +14,7 @@ export interface Transaction {
     accountId: string;
     amount: number;
     description: string;
-    transactionTime: Date;
+    transactionTime: string;
     transactionType: TransactionType;
     tags: TransactionTag[];
     extraInfo: any;

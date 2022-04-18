@@ -1,0 +1,22 @@
+form > div {
+    margin-bottom: 15px;
+}
+
+input {
+    background-color: var(--background);
+    border: 1px solid #CCC;
+    border-radius: 3px;
+}
+
+.form-control, .form-select, .form-check-input {
+    background-color: var(--background);
+    color: var(--color);
+}
+
+.form-check-input {
+    border-color: #CCC;
+}
+
+.form-switch .form-check-input {
+background-image: url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%27-4 -4 8 8%27%3e%3ccircle r=%273%27 fill=%27rgba%28255, 255, 255, 0.75%29%27/%3e%3c/svg%3e");
+}

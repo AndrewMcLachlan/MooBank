@@ -1,5 +1,6 @@
 ﻿import React, { useState, useEffect } from "react";
-import moment from "moment";
+import format from "date-fns/format";
+import parseISO from "date-fns/parseISO";
 
 import { TagPanel } from "../../components";
 import { TransactionRowProps } from "./TransactionRow";
@@ -21,7 +22,7 @@ export const TransactionRowIng: React.FC<TransactionRowProps> = (props) => {
 
     return (
         <tr>
-            <td>{moment(props.transaction.transactionTime).format("YYYY-MM-DD")}</td>
+            <td>{format(parseISO(props.transaction.transactionTime), "yyyy-MM-dd")}</td>
             <td>{props.transaction.description}</td>
             <td>{props.transaction.amount.toLocaleString("en-AU", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
             <TagPanel as="td" selectedItems={transactionRow.tags} allItems={tagsList} textField="name" valueField="id" onAdd={transactionRow.addTag} onRemove={transactionRow.removeTag} onCreate={transactionRow.createTag} allowCreate={true} />

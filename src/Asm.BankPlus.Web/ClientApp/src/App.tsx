@@ -3,7 +3,7 @@ import "./App.scss";
 import React from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Provider as ReduxProvider } from "react-redux";
-import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import { Layout } from "./layouts/Layout";
 import * as Pages from "./pages";
@@ -33,20 +33,20 @@ const App: React.FC = () => {
                     <ReduxProvider store={AppStore}>
                         <BrowserRouter basename={baseUrl.replace(/^.*\/\/[^/]+/, "")}>
                             <Layout>
-                                {isAuthenticated && <Switch>
-                                    <Route exact={true} path="/" component={Pages.Home} />
-                                    <Route exact path="/accounts" component={Pages.ManageAccounts} />
-                                    <Route exact path="/accounts/:id/manage" component={Pages.ManageAccount} />
-                                    <Route path="/accounts/create" component={Pages.CreateAccount} />
-                                    <Route exact path="/accounts/:id" component={Pages.Transactions} />
-                                    <Route path="/accounts/:accountId/virtual/create" component={Pages.CreateVirtualAccount} />
-                                    <Route path="/accounts/:accountId/virtual/:virtualid" component={Pages.ManageVirtualAccount} />
-                                    <Route path="/accounts/:accountId/tag-rules" component={Pages.TransactionTagRules} />
-                                    <Route path="/accounts/:id/import" component={Pages.Import} />
-                                    <Redirect exact path="/settings" to="/settings/tags" />
-                                    <Route path="/settings/tags" component={Pages.TransactionTags} />
-                                    <Route component={Pages.Error404} />
-                                </Switch>}
+                                {isAuthenticated && <Routes>
+                                    <Route path="/" element={<Pages.Home />} />
+                                    <Route path="/accounts" element={<Pages.ManageAccounts />} />
+                                    <Route path="/accounts/:id/manage" element={<Pages.ManageAccount />} />
+                                    <Route path="/accounts/create" element={<Pages.CreateAccount />} />
+                                    <Route path="/accounts/:id" element={<Pages.Transactions />} />
+                                    <Route path="/accounts/:accountId/virtual/create" element={<Pages.CreateVirtualAccount />} />
+                                    <Route path="/accounts/:accountId/virtual/:virtualid" element={<Pages.ManageVirtualAccount />} />
+                                    <Route path="/accounts/:accountId/tag-rules" element={<Pages.TransactionTagRules />} />
+                                    <Route path="/accounts/:id/import" element={<Pages.Import />} />
+                                    <Route path="/settings" element={<Navigate to="/settings/tags" />} />
+                                    <Route path="/settings/tags" element={<Pages.TransactionTags />} />
+                                    <Route path="*" element={<Pages.Error404 />} />
+                                </Routes>}
                             </Layout>
                         </BrowserRouter>
                     </ReduxProvider>

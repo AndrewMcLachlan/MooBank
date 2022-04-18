@@ -10,7 +10,7 @@ import { sortDirection, State } from "../../store/state";
 import { TransactionRow } from "./TransactionRow";
 import { TransactionRowIng } from "./TransactionRowIng";
 import { useTransactions } from "../../services";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 
 export const TransactionList: React.FC<TransactionListProps> = (props) => {
 

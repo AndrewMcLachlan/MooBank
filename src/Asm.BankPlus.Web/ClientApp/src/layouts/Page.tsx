@@ -1,10 +1,10 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import { usePageTitle } from "../hooks";
 
 import { PageContent, PageContentComponent } from "./PageContent";
 import { PageHeader, PageHeaderComponent } from "./PageHeader";
 
-export type PageComponent = React.FC<PageProps> & {
+export type PageComponent = React.FC<PropsWithChildren<PageProps>> & {
     Content: PageContentComponent;
     Header: PageHeaderComponent;
 }

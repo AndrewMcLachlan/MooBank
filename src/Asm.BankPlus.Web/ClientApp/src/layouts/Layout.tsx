@@ -7,7 +7,7 @@ import { Header } from "./Header";
 import { LayoutProvider } from "../providers";
 import { Theme } from "../models/Layout";
 
-export const Layout: React.FC = (props: React.PropsWithChildren<any>) => {
+export const Layout: React.FC<React.PropsWithChildren<any>> = (props) => {
 
     const [theme, setTheme] = useState<Theme>(window.localStorage.getItem("theme") as Theme);
 

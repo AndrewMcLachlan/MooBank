@@ -5,10 +5,10 @@ import { ImportSettings } from "../createAccount/ImportSettings";
 import * as Models from "../../models";
 import { toNameValue } from "../../extensions";
 import { useAccount, useUpdateAccount } from "../../services";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import { Page } from "../../layouts";
 
-export const ManageAccount = (props: ManageAccountProps) => {
+export const ManageAccount = () => {
 
     const accountTypes = toNameValue(AccountType);
     const accountControllers = toNameValue(AccountController);
