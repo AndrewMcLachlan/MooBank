@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Asm.BankPlus.Importers
+namespace Asm.MooBank.Importers
 {
     public interface IImporterFactory
     {

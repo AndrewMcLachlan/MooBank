@@ -1,4 +1,4 @@
-﻿namespace Asm.BankPlus.Data.Entities
+﻿namespace Asm.MooBank.Data.Entities
 {
     public partial class AccountHolder
     {

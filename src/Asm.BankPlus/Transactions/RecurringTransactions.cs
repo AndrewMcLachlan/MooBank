@@ -1,7 +1,7 @@
-﻿using Asm.BankPlus.Infrastructure;
-using Asm.BankPlus.Models;
+﻿using Asm.MooBank.Infrastructure;
+using Asm.MooBank.Models;
 
-namespace Asm.BankPlus.Transactions
+namespace Asm.MooBank.Transactions
 {
     public static class RecurringTransactions
     {

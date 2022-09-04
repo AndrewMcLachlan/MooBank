@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Asm.BankPlus.Models;
+using Asm.MooBank.Models;
 
-namespace Asm.BankPlus.Data.Entities
+namespace Asm.MooBank.Data.Entities
 {
     public partial class RecurringTransaction
     {

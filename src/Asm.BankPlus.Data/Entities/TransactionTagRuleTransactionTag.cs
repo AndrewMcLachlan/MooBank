@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Asm.BankPlus.Data.Entities
+namespace Asm.MooBank.Data.Entities
 {
     public class TransactionTagRuleTransactionTag
     {

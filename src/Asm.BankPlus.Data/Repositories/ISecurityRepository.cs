@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Asm.BankPlus.Data.Entities;
+using Asm.MooBank.Data.Entities;
 
-namespace Asm.BankPlus.Data.Repositories
+namespace Asm.MooBank.Data.Repositories
 {
     public interface ISecurityRepository
     {

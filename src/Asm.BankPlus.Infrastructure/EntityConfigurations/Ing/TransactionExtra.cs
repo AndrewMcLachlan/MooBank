@@ -1,4 +1,4 @@
-﻿namespace Asm.BankPlus.Infrastructure.EntityConfigurations;
+﻿namespace Asm.MooBank.Infrastructure.EntityConfigurations;
 
 public class TransactionExtra : IEntityTypeConfiguration<Data.Entities.Ing.TransactionExtra>
 {

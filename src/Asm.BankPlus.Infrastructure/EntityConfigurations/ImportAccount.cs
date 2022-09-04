@@ -1,4 +1,4 @@
-﻿namespace Asm.BankPlus.Infrastructure.EntityConfigurations;
+﻿namespace Asm.MooBank.Infrastructure.EntityConfigurations;
 
 public class ImportAccount : IEntityTypeConfiguration<Data.Entities.ImportAccount>
 {

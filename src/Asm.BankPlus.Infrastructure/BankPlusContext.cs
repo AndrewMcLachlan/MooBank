@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using Asm.BankPlus.Data.Entities;
-using Asm.BankPlus.Data.Entities.Ing;
+using Asm.MooBank.Data.Entities;
+using Asm.MooBank.Data.Entities.Ing;
 using Microsoft.EntityFrameworkCore;
 
-namespace Asm.BankPlus.Infrastructure
+namespace Asm.MooBank.Infrastructure
 {
     public partial class BankPlusContext : DbContext
     {

@@ -1,4 +1,4 @@
-﻿namespace Asm.BankPlus.Infrastructure;
+﻿namespace Asm.MooBank.Infrastructure;
 
 public abstract class DataRepository : IDataRepository
 {

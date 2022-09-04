@@ -1,7 +1,7 @@
-﻿using Asm.BankPlus.Data.Entities;
+﻿using Asm.MooBank.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Asm.BankPlus.Services
+namespace Asm.MooBank.Services
 {
     public class TransactionTagRuleRepository : DataRepository, ITransactionTagRuleRepository
     {

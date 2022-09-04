@@ -1,6 +1,6 @@
-﻿using Transaction = Asm.BankPlus.Models.Transaction;
+﻿using Transaction = Asm.MooBank.Models.Transaction;
 
-namespace Asm.BankPlus.Data.Repositories;
+namespace Asm.MooBank.Data.Repositories;
 
 public interface ITransactionRepository : IDataRepository
 {

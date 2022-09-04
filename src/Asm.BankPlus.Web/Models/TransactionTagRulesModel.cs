@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Asm.BankPlus.Models;
+using Asm.MooBank.Models;
 
-namespace Asm.BankPlus.Web.Models
+namespace Asm.MooBank.Web.Models
 {
     public class TransactionTagRulesModel
     {

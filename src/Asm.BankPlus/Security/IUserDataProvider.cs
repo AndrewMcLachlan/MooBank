@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Asm.BankPlus.Data.Entities;
+using Asm.MooBank.Data.Entities;
 
-namespace Asm.BankPlus.Security
+namespace Asm.MooBank.Security
 {
     public interface IUserDataProvider
     {

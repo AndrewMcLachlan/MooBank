@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Asm.BankPlus.Models;
+using Asm.MooBank.Models;
 
-namespace Asm.BankPlus.Data.Repositories
+namespace Asm.MooBank.Data.Repositories
 {
     public interface IAccountRepository
     {

@@ -1,11 +1,11 @@
 ﻿using System.Net.Http.Headers;
-using Asm.BankPlus.Data.Entities;
-using Asm.BankPlus.Security;
+using Asm.MooBank.Data.Entities;
+using Asm.MooBank.Security;
 using Asm.Security;
 using Microsoft.Graph;
 using Microsoft.Identity.Client;
 
-namespace Asm.BankPlus.Services
+namespace Asm.MooBank.Services
 {
     public class GraphUserDataProvider : IUserDataProvider
     {

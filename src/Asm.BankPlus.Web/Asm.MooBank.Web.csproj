@@ -6,7 +6,7 @@
     <ImplicitUsings>true</ImplicitUsings>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <IsPackable>false</IsPackable>
-    <SpaRoot>ClientApp\</SpaRoot>
+    <SpaRoot>MookBankApp\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);node_modules\**</DefaultItemExcludes>
   </PropertyGroup>
 
@@ -33,21 +33,31 @@
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
-    <Compile Remove="ClientApp\SASS\**" />
+    <Compile Remove="MooBankApp\SASS\**" />
     <Content Remove="$(SpaRoot)**" />
-    <Content Remove="ClientApp\SASS\**" />
-    <EmbeddedResource Remove="ClientApp\SASS\**" />
+    <Content Remove="MooBankApp\SASS\**" />
+    <EmbeddedResource Remove="MooBankApp\SASS\**" />
     <None Remove="$(SpaRoot)**" />
-    <None Remove="ClientApp\SASS\**" />
+    <None Remove="MooBankApp\SASS\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Asm.BankPlus.Data\Asm.BankPlus.Data.csproj" />
-    <ProjectReference Include="..\Asm.BankPlus.Infrastructure\Asm.BankPlus.Infrastructure.csproj" />
-    <ProjectReference Include="..\Asm.BankPlus.Models\Asm.BankPlus.Models.csproj" />
-    <ProjectReference Include="..\Asm.BankPlus.Services\Asm.BankPlus.Services.csproj" />
-    <ProjectReference Include="..\Asm.BankPlus\Asm.BankPlus.csproj" />
+    <None Include="MooBankApp\build\asset-manifest.json" />
+    <None Include="MooBankApp\build\manifest.json" />
+    <None Include="MooBankApp\package-lock.json" />
+    <None Include="MooBankApp\package.json" />
+    <None Include="MooBankApp\public\manifest.json" />
+    <None Include="MooBankApp\tsconfig.json" />
+    <None Include="MooBankApp\tsconfig.prod.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Asm.BankPlus.Data\Asm.MooBank.Data.csproj" />
+    <ProjectReference Include="..\Asm.BankPlus.Infrastructure\Asm.MooBank.Infrastructure.csproj" />
+    <ProjectReference Include="..\Asm.BankPlus.Models\Asm.MooBank.Models.csproj" />
+    <ProjectReference Include="..\Asm.BankPlus.Services\Asm.MooBank.Services.csproj" />
+    <ProjectReference Include="..\Asm.BankPlus\Asm.MooBank.csproj" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('node_modules') ">

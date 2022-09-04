@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace Asm.BankPlus.Data.Entities
+namespace Asm.MooBank.Data.Entities
 {
     public partial class ImportAccount
     {

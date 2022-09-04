@@ -1,4 +1,4 @@
-﻿namespace Asm.BankPlus.Models
+﻿namespace Asm.MooBank.Models
 {
     public enum AccountController
     {

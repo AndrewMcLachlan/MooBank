@@ -1,7 +1,7 @@
-﻿using Asm.BankPlus.Models;
+﻿using Asm.MooBank.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Asm.BankPlus.Services
+namespace Asm.MooBank.Services
 {
     public class ReferenceDataRepository : DataRepository, IReferenceDataRepository
     {

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Asm.BankPlus.Models;
-using Asm.BankPlus.Data.Repositories;
+using Asm.MooBank.Models;
+using Asm.MooBank.Data.Repositories;
 using Microsoft.Extensions.Logging;
 
-namespace Asm.BankPlus.Importers
+namespace Asm.MooBank.Importers
 {
     public abstract class ImporterBase : IImporter
     {

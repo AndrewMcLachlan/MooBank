@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace Asm.BankPlus.Web.Controllers
+namespace Asm.MooBank.Web.Controllers
 {
     [Route("api/accounts/{accountId}/transaction/tag/rules")]
     [ApiController]

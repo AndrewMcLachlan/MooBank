@@ -1,8 +1,8 @@
-﻿using Asm.BankPlus.Models;
-using Asm.BankPlus.Security;
+﻿using Asm.MooBank.Models;
+using Asm.MooBank.Security;
 using Microsoft.EntityFrameworkCore;
 
-namespace Asm.BankPlus.Services
+namespace Asm.MooBank.Services
 {
     public class VirtualAccountRepository : DataRepository, IVirtualAccountRepository
     {

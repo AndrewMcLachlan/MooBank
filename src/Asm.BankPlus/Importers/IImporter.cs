@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
-using Asm.BankPlus.Models;
+using Asm.MooBank.Models;
 
-namespace Asm.BankPlus.Importers
+namespace Asm.MooBank.Importers
 {
     public interface IImporter
     {

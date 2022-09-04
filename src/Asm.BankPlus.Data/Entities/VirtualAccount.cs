@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Asm.BankPlus.Data.Entities
+namespace Asm.MooBank.Data.Entities
 {
     public partial class VirtualAccount
     {

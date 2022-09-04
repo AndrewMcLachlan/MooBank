@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Asm.BankPlus.Data.Entities
+namespace Asm.MooBank.Data.Entities
 {
     public partial class TransactionTransactionTag
     {

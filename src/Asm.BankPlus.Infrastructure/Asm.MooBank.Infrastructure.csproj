@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Asm.BankPlus.Data\Asm.BankPlus.Data.csproj" />
+    <ProjectReference Include="..\Asm.BankPlus.Data\Asm.MooBank.Data.csproj" />
   </ItemGroup>
 
 </Project>

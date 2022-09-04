@@ -1,12 +1,12 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
-using Asm.BankPlus.Data.Repositories.Ing;
-using Asm.BankPlus.Importers;
-using Asm.BankPlus.Models;
-using Asm.BankPlus.Models.Ing;
+using Asm.MooBank.Data.Repositories.Ing;
+using Asm.MooBank.Importers;
+using Asm.MooBank.Models;
+using Asm.MooBank.Models.Ing;
 using Microsoft.Extensions.Logging;
 
-namespace Asm.BankPlus.Services.Importers
+namespace Asm.MooBank.Services.Importers
 {
     public class IngImporter : ImporterBase
     {

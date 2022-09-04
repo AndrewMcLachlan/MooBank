@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Transactions;
-using Asm.BankPlus.Models.Ing;
+using Asm.MooBank.Models.Ing;
 
-namespace Asm.BankPlus.Data.Repositories.Ing
+namespace Asm.MooBank.Data.Repositories.Ing
 {
     public interface ITransactionExtraRepository
     {

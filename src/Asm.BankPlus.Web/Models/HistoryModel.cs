@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Asm.BankPlus.Data.Entities;
-using Asm.BankPlus.Models;
+using Asm.MooBank.Data.Entities;
+using Asm.MooBank.Models;
 
-namespace Asm.BankPlus.Web.Models
+namespace Asm.MooBank.Web.Models
 {
     public class HistoryModel
     {

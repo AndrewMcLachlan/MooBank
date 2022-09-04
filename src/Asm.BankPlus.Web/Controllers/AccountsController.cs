@@ -1,4 +1,4 @@
-﻿namespace Asm.BankPlus.Web.Controllers;
+﻿namespace Asm.MooBank.Web.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]

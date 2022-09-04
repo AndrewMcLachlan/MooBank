@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Asm.BankPlus.Models.Ing
+namespace Asm.MooBank.Models.Ing
 {
     public class TransactionExtra
     {

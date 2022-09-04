@@ -1,4 +1,4 @@
-﻿namespace Asm.BankPlus.Web.Models.NewAccount
+﻿namespace Asm.MooBank.Web.Models.NewAccount
 {
     public class ImportAccount
     {

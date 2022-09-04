@@ -1,7 +1,7 @@
-﻿using Asm.BankPlus.Data.Repositories.Ing;
-using Asm.BankPlus.Models.Ing;
+﻿using Asm.MooBank.Data.Repositories.Ing;
+using Asm.MooBank.Models.Ing;
 
-namespace Asm.BankPlus.Services.Ing
+namespace Asm.MooBank.Services.Ing
 {
     public class TransactionExtraRepository : DataRepository, ITransactionExtraRepository
     {

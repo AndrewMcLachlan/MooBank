@@ -1,6 +1,6 @@
-﻿using Asm.BankPlus.Importers;
+﻿using Asm.MooBank.Importers;
 
-namespace Asm.BankPlus.Web.Controllers;
+namespace Asm.MooBank.Web.Controllers;
 
 [ApiController]
 public class ImportController : ControllerBase

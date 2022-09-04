@@ -19,7 +19,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Asm.BankPlus.Web": {
+    "Asm.MooBank.Web": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
@@ -29,7 +29,7 @@
     },
     "IIS": {
       "commandName": "IIS",
-      "commandLineArgs": ".\\bin\\debug\\netcoreapp2.2\\Asm.BankPlus.Web.dll",
+      "commandLineArgs": ".\\bin\\debug\\netcoreapp2.2\\Asm.MooBank.Web.dll",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

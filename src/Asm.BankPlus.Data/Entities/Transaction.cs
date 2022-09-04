@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Asm.BankPlus.Data.Entities
+namespace Asm.MooBank.Data.Entities
 {
     public partial class Transaction
     {
@@ -22,6 +22,6 @@ namespace Asm.BankPlus.Data.Entities
 
         public virtual Account Account { get; set; }
 
-        public BankPlus.Models.TransactionType? TransactionType { get; set; }
+        public MooBank.Models.TransactionType? TransactionType { get; set; }
     }
 }

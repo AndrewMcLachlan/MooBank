@@ -1,8 +1,8 @@
-﻿using Asm.BankPlus.Infrastructure;
-using Asm.BankPlus.Models;
-using Transaction = Asm.BankPlus.Models.Transaction;
+﻿using Asm.MooBank.Infrastructure;
+using Asm.MooBank.Models;
+using Transaction = Asm.MooBank.Models.Transaction;
 
-namespace Asm.BankPlus.Transactions
+namespace Asm.MooBank.Transactions
 {
     public static class TransactionProcessor
     {

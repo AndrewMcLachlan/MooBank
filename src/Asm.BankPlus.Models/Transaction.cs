@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Asm.BankPlus.Models
+namespace Asm.MooBank.Models
 {
     public class Transaction
     {

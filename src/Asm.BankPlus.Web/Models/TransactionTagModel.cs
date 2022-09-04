@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Asm.BankPlus.Web.Models
+namespace Asm.MooBank.Web.Models
 {
     public class TransactionTagModel
     {

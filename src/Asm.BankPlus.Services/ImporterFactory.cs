@@ -1,7 +1,7 @@
-﻿using Asm.BankPlus.Importers;
+﻿using Asm.MooBank.Importers;
 using Microsoft.EntityFrameworkCore;
 
-namespace Asm.BankPlus.Services
+namespace Asm.MooBank.Services
 {
     public class ImporterFactory : DataRepository, IImporterFactory
     {

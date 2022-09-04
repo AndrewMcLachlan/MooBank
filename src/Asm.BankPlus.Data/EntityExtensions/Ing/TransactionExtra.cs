@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Asm.BankPlus.Data.Entities.Ing
+namespace Asm.MooBank.Data.Entities.Ing
 {
     public partial class TransactionExtra
     {

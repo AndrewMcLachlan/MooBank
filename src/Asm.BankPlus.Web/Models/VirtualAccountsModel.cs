@@ -1,4 +1,4 @@
-﻿namespace Asm.BankPlus.Web.Models;
+﻿namespace Asm.MooBank.Web.Models;
 
 public class VirtualAccountsModel
 {

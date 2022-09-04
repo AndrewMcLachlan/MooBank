@@ -1,8 +1,8 @@
-﻿using Asm.BankPlus.Data.Entities;
-using Asm.BankPlus.Security;
+﻿using Asm.MooBank.Data.Entities;
+using Asm.MooBank.Security;
 using Microsoft.AspNetCore.Http;
 
-namespace Asm.BankPlus.Services
+namespace Asm.MooBank.Services
 {
     public class SecurityRepository : DataRepository, ISecurityRepository
     {

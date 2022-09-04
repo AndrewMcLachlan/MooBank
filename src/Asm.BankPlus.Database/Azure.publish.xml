@@ -3,7 +3,7 @@
   <PropertyGroup>
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
     <TargetDatabaseName>BankPlus</TargetDatabaseName>
-    <DeployScriptFileName>Asm.BankPlus.Database.sql</DeployScriptFileName>
+    <DeployScriptFileName>Asm.MooBank.Database.sql</DeployScriptFileName>
     <TargetConnectionString>Data Source=mclachlan.database.windows.net;Persist Security Info=False;User ID=amc.home@outlook.com;Pooling=False;MultipleActiveResultSets=False;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False;Authentication="Active Directory Interactive"</TargetConnectionString>
     <BlockWhenDriftDetected>False</BlockWhenDriftDetected>
     <RegisterDataTierApplication>True</RegisterDataTierApplication>

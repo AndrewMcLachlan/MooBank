@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Asm.BankPlus.Models
+namespace Asm.MooBank.Models
 {
     public class TransactionImportResult
     {

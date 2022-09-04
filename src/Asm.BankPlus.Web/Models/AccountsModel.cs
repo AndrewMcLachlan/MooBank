@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Asm.BankPlus.Models;
+using Asm.MooBank.Models;
 
-namespace Asm.BankPlus.Web.Models
+namespace Asm.MooBank.Web.Models
 {
     public class AccountsModel
     {
-        public IEnumerable<BankPlus.Models.Account> Accounts { get; set; }
+        public IEnumerable<MooBank.Models.Account> Accounts { get; set; }
 
         public decimal Position { get; set; }
 

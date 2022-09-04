@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Asm.BankPlus.Services
+namespace Asm.MooBank.Services
 {
     public interface IAccountService
     {

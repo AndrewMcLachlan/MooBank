@@ -1,10 +1,10 @@
 ﻿using System.Collections.Concurrent;
-using Asm.BankPlus.Models;
+using Asm.MooBank.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Asm.BankPlus.Services
+namespace Asm.MooBank.Services
 {
     public class RunRulesService : BackgroundService
     {

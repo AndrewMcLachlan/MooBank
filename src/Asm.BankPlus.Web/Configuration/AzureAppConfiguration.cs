@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Asm.BankPlus.Web.Configuration
+namespace Asm.MooBank.Web.Configuration
 {
     public class AzureAppConfiguration
     {

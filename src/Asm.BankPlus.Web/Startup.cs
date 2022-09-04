@@ -1,10 +1,10 @@
 using System.Net;
-using Asm.BankPlus.Data.Repositories.Ing;
-using Asm.BankPlus.Importers;
-using Asm.BankPlus.Infrastructure;
-using Asm.BankPlus.Security;
-using Asm.BankPlus.Services.Importers;
-using Asm.BankPlus.Services.Ing;
+using Asm.MooBank.Data.Repositories.Ing;
+using Asm.MooBank.Importers;
+using Asm.MooBank.Infrastructure;
+using Asm.MooBank.Security;
+using Asm.MooBank.Services.Importers;
+using Asm.MooBank.Services.Ing;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Logging;
 using Serilog;
 
-namespace Asm.BankPlus.Web;
+namespace Asm.MooBank.Web;
 
 public class Startup
 {
@@ -35,10 +35,10 @@ public class Startup
         // In production, the React files will be served from this directory
         services.AddSpaStaticFiles(configuration =>
         {
-            configuration.RootPath = "ClientApp/build";
+            configuration.RootPath = "MookBankApp/build";
         });
 
-        services.AddDbContext<BankPlusContext>((services, options) => options.UseSqlServer(Configuration.GetConnectionString("BankPlus"), options =>
+        services.AddDbContext<BankPlusContext>((services, options) => options.UseSqlServer(Configuration.GetConnectionString("MookBank"), options =>
         {
             options.EnableRetryOnFailure(3);
         }));
@@ -100,7 +100,7 @@ public class Startup
 
         app.UseSpa(spa =>
         {
-            spa.Options.SourcePath = "ClientApp";
+            spa.Options.SourcePath = "MookBankApp";
 
             spa.Options.DefaultPageStaticFileOptions = new StaticFileOptions
             {

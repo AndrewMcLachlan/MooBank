@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Asm.BankPlus.Models
+namespace Asm.MooBank.Models
 {
     public class VirtualAccount
     {

@@ -1,4 +1,4 @@
-﻿namespace Asm.BankPlus.Data.Repositories;
+﻿namespace Asm.MooBank.Data.Repositories;
 
 public interface IDataRepository
 {

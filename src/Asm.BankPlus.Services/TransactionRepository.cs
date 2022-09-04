@@ -2,9 +2,9 @@
 using System.Reflection;
 using Asm.Extensions;
 using Microsoft.EntityFrameworkCore;
-using Transaction = Asm.BankPlus.Models.Transaction;
+using Transaction = Asm.MooBank.Models.Transaction;
 
-namespace Asm.BankPlus.Services
+namespace Asm.MooBank.Services
 {
     public class TransactionRepository : DataRepository, ITransactionRepository
     {

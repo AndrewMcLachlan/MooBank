@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Asm.BankPlus.Models
+namespace Asm.MooBank.Models
 {
     public class Account
     {

@@ -1,4 +1,4 @@
-﻿namespace Asm.BankPlus.Services
+﻿namespace Asm.MooBank.Services
 {
     public class AccountService : IAccountService
     {
