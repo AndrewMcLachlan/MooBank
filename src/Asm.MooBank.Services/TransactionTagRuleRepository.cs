@@ -1,4 +1,5 @@
 ﻿using Asm.MooBank.Data.Entities;
+using Asm.MooBank.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Services

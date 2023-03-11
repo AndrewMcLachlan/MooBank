@@ -1,4 +1,5 @@
-﻿using Asm.MooBank.Models;
+﻿using Asm.MooBank.Infrastructure.Repositories;
+using Asm.MooBank.Models;
 using Asm.MooBank.Security;
 using Microsoft.EntityFrameworkCore;
 

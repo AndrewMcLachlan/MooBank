@@ -1,4 +1,5 @@
 ﻿using Asm.MooBank.Data.Repositories.Ing;
+using Asm.MooBank.Infrastructure.Repositories;
 using Asm.MooBank.Models.Ing;
 
 namespace Asm.MooBank.Services.Ing
