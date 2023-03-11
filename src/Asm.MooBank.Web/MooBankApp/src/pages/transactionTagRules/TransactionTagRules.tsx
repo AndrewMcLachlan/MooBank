@@ -4,13 +4,12 @@ import React, { useState } from "react";
 import { Table } from "react-bootstrap";
 //import Select from "react-select";
 
-import { TagPanel } from "../../components";
+import { ClickableIcon, TagPanel } from "@andrewmclachlan/mooapp";
 
 import { TransactionTag, TransactionTagRule } from "../../models";
 import { useParams } from "react-router-dom";
 
 import { TransactionTagRuleRow } from "./TransactionTagRuleRow";
-import { ClickableIcon } from "../../components/ClickableIcon";
 import { useAccount, useCreateRule, useCreateTag, useRules, useRunRules, useTags } from "../../services";
 import { Page } from "../../layouts";
 

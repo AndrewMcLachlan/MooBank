@@ -38,7 +38,7 @@ public class Startup
             configuration.RootPath = "MookBankApp/build";
         });
 
-        services.AddDbContext<BankPlusContext>((services, options) => options.UseSqlServer(Configuration.GetConnectionString("MookBank"), options =>
+        services.AddDbContext<BankPlusContext>((services, options) => options.UseSqlServer(Configuration.GetConnectionString("MooBank"), options =>
         {
             options.EnableRetryOnFailure(3);
         }));

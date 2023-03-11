@@ -9,9 +9,9 @@ import { Page } from "../../layouts";
 
 export const Transactions: React.FC = () => {
 
-    const { id } = useParams<any>()
+    const { id } = useParams<{id: string}>();
 
-    const account = useAccount(id);
+    const account = useAccount(id!);
 
     if (!account.data) return (null);
 

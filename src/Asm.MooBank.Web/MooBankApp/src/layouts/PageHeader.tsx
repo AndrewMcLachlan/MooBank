@@ -9,34 +9,33 @@ export type PageHeaderComponent = React.FC<React.PropsWithChildren<PageHeaderPro
 export const PageHeader: PageHeaderComponent = (props) => {
 
     return (
-        <header>
+        <>
             <header className="page-header">
                 <Container>
                     <h2>{props.title}</h2>
-
                     {props.children}
+                    <nav className="control-panel">
+                        <ul>
+                            {renderMenu(props.menuItems!)}
+                        </ul>
+                    </nav>
                 </Container>
             </header>
-            <Container className="secondary-nav" hidden={props.menuItems!.length === 0 && props.hidebreadcrumb}>
-                <section className="nav">
+            <header className="breadcrumb-container">
+                <Container hidden={props.menuItems!.length === 0 && props.hidebreadcrumb}>
                     <Breadcrumb hidden={props.hidebreadcrumb}>
                         <LinkContainer to="/">
                             <Breadcrumb.Item>Home</Breadcrumb.Item>
                         </LinkContainer>
-                        {props.breadcrumbs.map(([name, to]) =>
+                        {props.breadcrumbs?.map(([name, to]) =>
                             <LinkContainer key={to} to={to}>
                                 <Breadcrumb.Item>{name}</Breadcrumb.Item>
                             </LinkContainer>
                         )}
                     </Breadcrumb>
-                    <nav className="control-panel">
-                        <ul>
-                            {renderMenu(props.menuItems)}
-                        </ul>
-                    </nav>
-                </section>
-            </Container>
-        </header>
+                </Container>
+            </header>
+        </>
     );
 }
 
@@ -44,7 +43,7 @@ PageHeader.displayName = "PageHeader";
 
 const renderMenu = (menuItems: MenuItem[]) => {
 
-    const items = [];
+    const items: React.ReactNode[] = [];
 
     let keysuffix = 0;
 

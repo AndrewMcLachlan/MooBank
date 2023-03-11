@@ -2,8 +2,7 @@ import { useQueryClient } from "react-query";
 import { emptyGuid } from "../helpers";
 import { Account, accountId,  Accounts,  VirtualAccount } from "../models";
 import { accountsKey } from "./AccountService";
-import { useApiGet, useApiPost } from "./api";
-import { useApiPatch } from "./useApiPatch";
+import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
 
 interface VirtualAccountVariables {
     accountId: accountId;
@@ -60,8 +59,11 @@ export const useUpdateVirtualAccountBalance = () => {
             if (!accounts) return;
 
             const account = accounts.accounts.find(a => a.id === accountId);
+            if (!account) return;
             const vAccount = account.virtualAccounts.find(a => a.id === virtualAccountId);
+            if (!vAccount) return;
             const remaining = account.virtualAccounts.find(a => a.id === emptyGuid);
+            if (!remaining) return;
             //const others = account.virtualAccounts.filter(a => a.id !== emptyGuid);
             
             const difference = vAccount.balance - balance;
@@ -74,7 +76,7 @@ export const useUpdateVirtualAccountBalance = () => {
             
             queryClient.setQueryData<Accounts>(accountsKey, { ...accounts });
 
-            console.debug(queryClient.getQueryData<Accounts>(accountsKey).accounts.find(a => a.id === accountId));
+            console.debug(queryClient.getQueryData<Accounts>(accountsKey)!.accounts.find(a => a.id === accountId));
 
             return accounts;
         },

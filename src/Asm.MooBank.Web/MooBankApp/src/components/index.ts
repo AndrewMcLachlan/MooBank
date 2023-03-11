@@ -4,8 +4,3 @@ export * from "./AccountList/index";
 export * from "./AccountHeader";
 export * from "./AccountProvider";
 export * from "./AccountSummary";
-export * from "./CloseBadge";
-export * from "./ComboBox";
-export * from "./TagPanel";
-export * from "./ThemeSwitcher";
-export * from "./Upload";

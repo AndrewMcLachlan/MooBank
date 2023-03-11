@@ -19,8 +19,8 @@ export const ManageAccounts = () => {
   }*/
 
     const accountRows = [];
-    if (data?.accounts) {
-        for (const account of data?.accounts) {
+    if (data) {
+        for (const account of data) {
             accountRows.push(<AccountRow key={account.id} account={account} />);
         }
     }

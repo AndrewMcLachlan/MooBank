@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { TransactionTagRule, TransactionTag } from "../../models";
-import { TagPanel } from "../../components/TagPanel";
-import { ClickableIcon } from "../../components/ClickableIcon";
+import { ClickableIcon, TagPanel } from "@andrewmclachlan/mooapp";
 import { useCreateTag, useTags } from "../../services/TransactionTagService";
 import { useAddTransactionTagRuleTag, useDeleteRule, useRemoveTransactionTagRuleTag } from "../../services";
 

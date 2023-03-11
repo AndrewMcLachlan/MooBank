@@ -5,27 +5,25 @@
 [Authorize]
 public class AccountsController : ControllerBase
 {
+    private readonly IAccountService _accountService;
     private readonly IAccountRepository _accountRepository;
     private readonly ITransactionRepository _transactionRepository;
 
     private readonly ILogger<AccountsController> _logger;
 
-    public AccountsController(IAccountRepository accountRepository, ITransactionRepository transactionRepository, ILogger<AccountsController> logger)
+    public AccountsController(IAccountService accountService, IAccountRepository accountRepository, ITransactionRepository transactionRepository, ILogger<AccountsController> logger)
     {
+        _accountService = accountService;
         _accountRepository = accountRepository;
         _transactionRepository = transactionRepository;
         _logger = logger;
     }
 
     [HttpGet]
-    public async Task<ActionResult<AccountsModel>> Get()
-    {
-        return new ActionResult<AccountsModel>(new AccountsModel
-        {
-            Accounts = await _accountRepository.GetAccounts(),
-            Position = await _accountRepository.GetPosition(),
-        });
-    }
+    public Task<IEnumerable<Account>> Get(CancellationToken token = default) => _accountRepository.GetAccounts(token);
+
+    [HttpGet("position")]
+    public Task<AccountsList> GetFormatted(CancellationToken token = default) => _accountService.GetFormattedAccounts(token);
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Account>> Get(Guid id)
@@ -47,7 +45,7 @@ public class AccountsController : ControllerBase
     }
 
     [HttpGet("{accountId}/transactions/untagged/{pageSize?}/{pageNumber?}")]
-    public async Task<ActionResult<TransactionsModel>> Getuntagged(Guid accountId, int? pageSize = 50, int? pageNumber = 1, [FromQuery] DateTime? start = null, [FromQuery] DateTime? end = null, [FromQuery] string filter = null, [FromQuery] string sortField = null, [FromQuery] SortDirection sortDirection = SortDirection.Ascending)
+    public async Task<ActionResult<TransactionsModel>> GetUntagged(Guid accountId, int? pageSize = 50, int? pageNumber = 1, [FromQuery] DateTime? start = null, [FromQuery] DateTime? end = null, [FromQuery] string filter = null, [FromQuery] string sortField = null, [FromQuery] SortDirection sortDirection = SortDirection.Ascending)
     {
         if (start != null && end != null && end < start) return BadRequest($"{nameof(start)} is less than {nameof(end)}");
 

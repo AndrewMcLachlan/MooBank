@@ -2,7 +2,7 @@
 import format from "date-fns/format";
 import parseISO from "date-fns/parseISO";
 
-import { TagPanel } from "../../components";
+import { TagPanel } from "@andrewmclachlan/mooapp";
 import { TransactionRowProps } from "./TransactionRow";
 import { useTags } from "../../services";
 import { useTransactionRowEvents } from "./TransactionRow";

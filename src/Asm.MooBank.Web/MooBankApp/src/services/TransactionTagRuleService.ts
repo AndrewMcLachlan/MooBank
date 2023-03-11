@@ -1,5 +1,5 @@
 import * as Models from "../models";
-import { useApiGet, useApiPost, useApiDelete, useApiDatalessPut, useApiDatalessPost } from "./api";
+import { useApiGet, useApiPost, useApiDelete, useApiDatalessPut, useApiDatalessPost } from "@andrewmclachlan/mooapp";
 import { useQueryClient } from "react-query";
 import { TransactionTag } from "../models";
 
@@ -20,7 +20,9 @@ export const useAddTransactionTagRuleTag = () => {
     return useApiDatalessPut<Models.TransactionTagRule, TransactionTagRuleVariables>((variables) => `api/accounts/${variables.accountId}/transaction/tag/rules/${variables.ruleId}/tag/${variables.tag.id}`, {
         onMutate: (variables) => {
             const rules = queryClient.getQueryData<Models.TransactionTagRules>([transactionRulesKey, variables.accountId]);
+            if (!rules) return;
             const data = rules.rules.find(t => t.id === variables.ruleId);
+            if (!data) return;
             data.tags.push(variables.tag);
             queryClient.setQueryData<Models.TransactionTagRules>([transactionRulesKey, variables.accountId], rules);
         },
@@ -34,7 +36,9 @@ export const useRemoveTransactionTagRuleTag = () => {
     return useApiDelete<TransactionTagRuleVariables>((variables) => `api/accounts/${variables.accountId}/transaction/tag/rules/${variables.ruleId}/tag/${variables.tag.id}`, {
         onMutate: (variables) => {
             const rules = queryClient.getQueryData<Models.TransactionTagRules>([transactionRulesKey, variables.accountId]);
+            if (!rules) return;
             const data = rules.rules.find(t => t.id === variables.ruleId);
+            if (!data) return;
             const tagIndex = data.tags.findIndex(t => t.id === variables.tag.id);
             data.tags.splice(tagIndex, 1);
             queryClient.setQueryData<Models.TransactionTagRules>([transactionRulesKey, variables.accountId], rules);
@@ -68,8 +72,9 @@ export const useDeleteRule = () => {
     const queryClient = useQueryClient();
 
     return useApiDelete<{ accountId: string; ruleId: number }>((variables) => `api/accounts/${variables.accountId}/transaction/tag/rules/${variables.ruleId}`, {
-        onSuccess: (variables: { accountId: string; ruleId: number }) => {
+        onSuccess: (_data, variables: { accountId: string; ruleId: number }) => {
             let allTags = queryClient.getQueryData<Models.TransactionTagRule[]>([transactionRulesKey]);
+            if (!allTags) return;
             allTags = allTags.filter(r => r.id !== (variables.ruleId));
             allTags = allTags.sort((t1, t2) => t1.contains.localeCompare(t2.contains));
             queryClient.setQueryData<Models.TransactionTagRule[]>([transactionRulesKey], allTags);

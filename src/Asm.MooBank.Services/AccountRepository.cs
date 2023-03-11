@@ -80,7 +80,7 @@ namespace Asm.MooBank.Services
                     var importAccountEntity = new Data.Entities.ImportAccount
                     {
                         AccountId = entity.AccountId,
-                        ImporterTypeId = account.ImporterTypeId.Value,
+                        ImporterTypeId = account.ImporterTypeId!.Value,
                     };
 
                     DataContext.Add(importAccountEntity);
@@ -96,15 +96,10 @@ namespace Asm.MooBank.Services
             return entity;
         }
 
-        public async Task<Account> GetAccount(Guid id)
-        {
-            return await GetAccountEntity(id);
-        }
+        public async Task<Account> GetAccount(Guid id) => await GetAccountEntity(id);
 
-        public async Task<IEnumerable<Account>> GetAccounts()
-        {
-            return await DataContext.Accounts.Include(a => a.VirtualAccounts).Include(a => a.AccountHolders).Where(a => a.AccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId)).Select(a => (Account)a).ToListAsync();
-        }
+        public async Task<IEnumerable<Account>> GetAccounts(CancellationToken cancellationToken = default) =>
+            await DataContext.Accounts.Include(a => a.VirtualAccounts).Include(a => a.AccountHolders).Where(a => a.AccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId)).Select(a => (Account)a).ToListAsync(cancellationToken);
 
         public async Task<Account> SetBalance(Guid id, decimal balance)
         {

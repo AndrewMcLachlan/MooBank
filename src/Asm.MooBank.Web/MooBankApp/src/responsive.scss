@@ -1,6 +1,4 @@
-﻿@import 'variables';
-
-@media (max-width: 1024px), (max-device-width: 1024px) {
+﻿@media (max-width: 1024px), (max-device-width: 1024px) {
     body {
         > header {
             img {
@@ -26,7 +24,7 @@
     }
 
     body.login.index {
-        background-color: $background;
+        background-color: var(--background);
 
         h1 {
             display: none;
@@ -37,7 +35,7 @@
 
         > header {
             background: none;
-            background-color: $background;
+            background-color: var(--background);
             height: 56px;
 
             > a {
@@ -87,16 +85,6 @@
         }
     }
 
-    h1 {
-        position: absolute;
-        left: 100px;
-        top: 5px;
-    }
-
-    h2 {
-        font-size: 1.1em;
-    }
-
     table.accounts {
         font-size: 0.7em;
 
@@ -119,7 +107,7 @@
         margin: 0;
         padding: 20px;
         background: none;
-        background-color: $background;
+        background-color: var(--background);
         min-height: 220px;
 
         header h1 {

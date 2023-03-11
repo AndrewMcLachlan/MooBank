@@ -2,8 +2,10 @@
 import format from "date-fns/format";
 import parseISO from "date-fns/parseISO";
 
+import { TagPanel } from "@andrewmclachlan/mooapp";
+
 import { Transaction, TransactionTag } from "../../models";
-import { TagPanel, useAccount } from "../../components";
+import { useAccount } from "../../components";
 import { useAddTransactionTag, useCreateTag, useRemoveTransactionTag, useTags } from "../../services";
 
 export const TransactionRow: React.FC<TransactionRowProps> = (props) => {
@@ -46,7 +48,7 @@ export const useTransactionRowEvents = (props: TransactionRowProps) => {
     const createTag = (name: string) => {
         createTransactionTag.mutate({ name }, {
             onSuccess: (data) => {
-                addTransactionTag.mutate({ accountId: account.id, transactionId: props.transaction.id, tag: data});
+                addTransactionTag.mutate({ accountId: account.id, transactionId: props.transaction.id, tag: data });
             }
         });
     }
@@ -55,7 +57,7 @@ export const useTransactionRowEvents = (props: TransactionRowProps) => {
 
         if (!tag.id) return;
 
-        addTransactionTag.mutate({accountId: account.id, transactionId: props.transaction.id, tag });
+        addTransactionTag.mutate({ accountId: account.id, transactionId: props.transaction.id, tag });
         setTags(tags.concat([tag]));
     }
 
@@ -63,7 +65,7 @@ export const useTransactionRowEvents = (props: TransactionRowProps) => {
 
         if (!tag.id) return;
 
-        removeTransactionTag.mutate({ accountId: account.id,  transactionId: props.transaction.id, tag });
+        removeTransactionTag.mutate({ accountId: account.id, transactionId: props.transaction.id, tag });
         setTags(tags.filter((t) => t.id !== tag.id));
     }
 

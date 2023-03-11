@@ -1,6 +1,6 @@
 export interface State {
     app: App,
-    transactions?: Transactions,
+    transactions: Transactions,
 }
 
 export interface App {

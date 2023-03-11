@@ -35,6 +35,18 @@ export interface Account extends AccountBase {
     virtualAccounts: VirtualAccount[];
 }
 
+export const emptyAccount : Account = {
+    id: "",
+    name: "",
+    currentBalance: 0,
+    availableBalance: 0,
+    balanceUpdated: new Date(),
+    accountType: AccountType.None,
+    controller: AccountController.Manual,
+    includeInPosition: false,
+    virtualAccounts: [],
+}
+
 export interface ImportAccount {
     importerTypeId: number;
 }

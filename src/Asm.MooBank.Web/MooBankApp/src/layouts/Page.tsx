@@ -13,11 +13,7 @@ const Page: PageComponent = (props) => {
 
     usePageTitle(props.title);
 
-    return (
-        <article>
-            {props.children}
-        </article>
-    )
+    return (<>{props.children}</>);
 }
 
 Page.Content = PageContent;

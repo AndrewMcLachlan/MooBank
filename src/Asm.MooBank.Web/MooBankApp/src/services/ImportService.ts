@@ -1,9 +1,9 @@
-import { ServiceBase } from "./ServiceBase";
-import { useApiPostFile } from "./api";
+//import { ServiceBase } from "./ServiceBase";
+import { useApiPostFile } from "@andrewmclachlan/mooapp";
 
 export const useImportTransactions = () => useApiPostFile<{accountId: string, file: File}>((variables) => `api/accounts/${variables.accountId}/import`);
 
-export class ImportService extends ServiceBase {
+/*export class ImportService extends ServiceBase {
 
 /*    public async importTransactions(accountId: string, file: File): Promise<void> {
         const url = `api/accounts/${accountId}/import`;
@@ -42,5 +42,5 @@ export class ImportService extends ServiceBase {
         catch (response) {
             super.handleError(response as Response);
         }
-    }*/
-}
+    }
+}*/

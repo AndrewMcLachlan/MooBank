@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { TransactionTag } from "../../models";
-import { TagPanel } from "../../components/TagPanel";
-import { ClickableIcon } from "../../components/ClickableIcon";
+import { ClickableIcon, TagPanel } from "@andrewmclachlan/mooapp";
 import { useAddSubTag, useCreateTag, useDeleteTag, useRemoveSubTag, useTags } from "../../services";
 
 export const TransactionTagRow: React.FC<TransactionTagRowProps> = (props) => {

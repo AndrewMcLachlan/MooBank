@@ -1,11 +1,22 @@
-﻿@import "../scss/base.scss";
+﻿@import "~@andrewmclachlan/mooapp/scss/mooapp.scss";
 
-$primary-fonts: 'Open Sans Condensed';
+:root {
+    --bs-font-sans-serif: 'Open Sans Condensed', 'Franklin Gothic', Helvetica, Arial, sans-serif;
+    --breadcrumb-background: #333;
+}
 
-@import "../scss/components.scss";
+@media (prefers-color-scheme: dark) {
+    :root {
+        --breadcrumb-background: #1A1919;
+    }
+}
 
-#root > header {
-    position: relative;
+.light {
+    --breadcrumb-background: #CFCCCC;
+}
+
+.dark {
+    --breadcrumb-background: #1A1919;
 }
 
 .negative {
@@ -24,9 +35,23 @@ $primary-fonts: 'Open Sans Condensed';
     margin-bottom: 0;
 }
 
-
 .clear {
     clear: both;
+}
+
+.breadcrumb {
+    --bs-breadcrumb-margin-bottom: 0;
+}
+
+.breadcrumb-container {
+    font-weight: bold;
+    align-items: center;
+    background-color: var(--breadcrumb-background);
+
+    > .container {
+        height: 2rem;
+        padding-bottom: 2px;
+    }
 }
 
 nav.control-panel {
@@ -96,7 +121,6 @@ input.description {
 }
 
 input[type=submit] {
-    font-family: $primary-fonts;
     color: #FFF;
     background: linear-gradient(to bottom, #111 0%, #3A3A3A 50%, #000 50%, #000 100%);
     border: none;

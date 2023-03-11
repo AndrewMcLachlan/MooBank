@@ -5,9 +5,8 @@ import { Table } from "react-bootstrap";
 
 import { TransactionTagRow } from "./TransactionTagRow";
 
-import { TagPanel } from "../../components";
+import { ClickableIcon , TagPanel } from "@andrewmclachlan/mooapp";
 import { TransactionTag } from "../../models";
-import { ClickableIcon } from "../../components/ClickableIcon";
 import { useCreateTag, useTags } from "../../services";
 import { Page } from "../../layouts";
 

@@ -1,5 +1,5 @@
 export * from "./Account";
-export * from "./Accounts";
+export * from "./AccountList";
 export * from "./ImporterType";
 export * from "./Layout";
 export * from "./Transaction";

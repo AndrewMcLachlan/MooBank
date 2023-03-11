@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import * as Models from "../models";
 import { TransactionTag } from "../models";
 import { sortDirection, State, TransactionsFilter } from "../store/state";
-import { useApiGet, useApiDelete, useApiDatalessPut } from "./api";
+import { useApiGet, useApiDelete, useApiDatalessPut } from "@andrewmclachlan/mooapp";
 
 const transactionKey = "transactions";
 
@@ -36,11 +36,15 @@ export const useAddTransactionTag = () => {
 
     return useApiDatalessPut<Models.Transaction, TransactionTagVariables>((variables) => `api/transactions/${variables.transactionId}/tag/${variables.tag.id}`, {
         onMutate: (variables) => {
-            queryClient.setQueryData<Models.Transactions>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection], (t) => {
-                const data = t.transactions.find(t => t.id === variables.transactionId);
-                data.tags.push(variables.tag);
-                return t;
-            });
+
+            let transactions = queryClient.getQueryData<Models.Transactions>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection]);
+            if (!transactions) return;
+
+            const transaction = transactions.transactions.find(tr => tr.id === variables.transactionId);
+            if (!transaction) return;
+            transaction.tags.push(variables.tag);
+
+            queryClient.setQueryData<Models.Transactions>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection], transactions);
         },
     });
 }
@@ -54,11 +58,14 @@ export const useRemoveTransactionTag = () => {
     return useApiDelete<TransactionTagVariables>((variables) => `api/transactions/${variables.transactionId}/tag/${variables.tag.id}`, {
         onMutate: (variables) => {
             
-            queryClient.setQueryData<Models.Transactions>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection], (t => {
-                const transaction = t.transactions.find(tr => tr.id === variables.transactionId);
-                transaction.tags = transaction.tags.filter(t => t.id !== variables.tag.id);
-                return t;
-            }));
+            let transactions = queryClient.getQueryData<Models.Transactions>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection]);
+            if (!transactions) return;
+
+            const transaction = transactions.transactions.find(tr => tr.id === variables.transactionId);
+            if (!transaction) return;
+            transaction.tags = transaction.tags.filter(t => t.id !== variables.tag.id);
+
+            queryClient.setQueryData<Models.Transactions>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection], transactions);
         }
     });
 }

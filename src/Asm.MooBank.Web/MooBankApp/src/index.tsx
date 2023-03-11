@@ -1,22 +1,34 @@
+import React from "react";
 
+import { QueryClient } from "react-query";
 import { createRoot } from "react-dom/client";
+import { Provider as ReduxProvider } from "react-redux";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faCheckCircle, faTrashAlt, faChevronDown, faChevronUp, faTimesCircle, faArrowLeft, faChevronRight, faUpload } from "@fortawesome/free-solid-svg-icons";
 
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import { MsalProvider, msalConfig } from "./providers";
+import { AppProvider } from "./providers";
+import { MooApp } from "@andrewmclachlan/mooapp";
+import { AppStore } from "./store/configureStore";
 
 library.add(faCheckCircle, faTrashAlt, faChevronDown, faChevronUp, faTimesCircle, faArrowLeft, faChevronRight, faUpload);
 
-const root = createRoot(document.getElementById("root"));
+const root = createRoot(document.getElementById("root")!);
 
 root.render(
-        <MsalProvider config={msalConfig}>
-            <App />
-        </MsalProvider>
-    );
+    <AppProvider appName="MooBank" // Array.from(document.getElementsByTagName("meta")).find((value) => value.getAttribute("name") === "application-name").getAttribute("content"),
+        baseUrl="/" //document.getElementsByTagName("base")[0].getAttribute("href"),
+        skin="moobank" // Array.from(document.getElementsByTagName("meta")).find((value) => value.getAttribute("name") === "skin").getAttribute("content"),
+    >
+        <MooApp clientId="045f8afa-70f2-4700-ab75-77ac41b306f7" scopes={["api://bankplus.mclachlan.family/api.read"]}>
+            <ReduxProvider store={AppStore}>
+                <App />
+            </ReduxProvider>
+        </MooApp>
+    </AppProvider>
+);
 
 
 

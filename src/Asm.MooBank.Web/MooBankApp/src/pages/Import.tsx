@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AccountController } from "../models";
-import { Upload, FilesAddedEvent } from "../components";
+import { Upload, FilesAddedEvent } from "@andrewmclachlan/mooapp";
 import { useAccount, useImportTransactions } from "../services";
 import Button from "react-bootstrap/Button";
 import { useState } from "react";
@@ -39,7 +39,7 @@ export const Import: React.FC = () => {
         <Page title="Import Transactions">
             <Page.Header title="Import Transactions" breadcrumbs={[[account.data.name, `/accounts/${id}`], ["Import", `/accounts/${id}/import`]]} />
             <Page.Content>
-                <Upload onFilesAdded={filesAdded} />
+                <Upload onFilesAdded={filesAdded} accept="text/csv" />
                 <Button variant="primary" onClick={submitClick} disabled={!file}>Import</Button>
             </Page.Content>
         </Page>
