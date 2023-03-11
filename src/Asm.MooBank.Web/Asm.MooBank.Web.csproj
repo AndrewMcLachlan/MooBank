@@ -6,7 +6,7 @@
     <ImplicitUsings>true</ImplicitUsings>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <IsPackable>false</IsPackable>
-    <SpaRoot>MookBankApp\</SpaRoot>
+    <SpaRoot>MooBankApp\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);node_modules\**</DefaultItemExcludes>
   </PropertyGroup>
 
