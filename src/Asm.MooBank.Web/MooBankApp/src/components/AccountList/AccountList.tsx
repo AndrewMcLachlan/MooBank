@@ -17,7 +17,7 @@ export const AccountList: React.FC<AccountListProps> = () => {
 
     return (
         <>
-            <section className="account-list">
+            <section>
                 {hasBoth && <h2>Main Accounts</h2>}
                 <Table className="accounts" hover>
                     <thead>
@@ -45,7 +45,7 @@ export const AccountList: React.FC<AccountListProps> = () => {
                 </Table>
             </section>
 
-            <section className="account-list">
+            <section>
                 {hasBoth && <h2>Other Accounts</h2>}
                 <Table className="accounts" hover>
                     <thead>

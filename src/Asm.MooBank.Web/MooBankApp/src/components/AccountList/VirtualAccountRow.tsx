@@ -10,8 +10,6 @@ import { useUpdateVirtualAccountBalance } from "../../services";
 export const VirtualAccountRow: React.FC<VirtualAccountRowProps> = (props) => {
     const { balanceRef, editingBalance, balanceClick, balanceChange, balance, keyPress } = useComponentState(props);
 
-    console.debug(`Rerender virtual account row: ${balance} `);
-
     return (
         <tr onClick={balanceClick} className="virtual clickable" ref={balanceRef}>
             <td></td>
@@ -52,8 +50,7 @@ const useComponentState = (props: VirtualAccountRowProps) => {
 
     const balanceRef = useRef(null);
 
-    useEffect(() =>
-    {
+    useEffect(() => {
         setBalance(props.account.balance);
     }, [props]);
 

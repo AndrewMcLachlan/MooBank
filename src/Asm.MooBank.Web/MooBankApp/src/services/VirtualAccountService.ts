@@ -1,7 +1,7 @@
 import { useQueryClient } from "react-query";
 import { emptyGuid } from "../helpers";
 import { Account, accountId,  AccountList,  VirtualAccount } from "../models";
-import { accountsKey } from "./AccountService";
+import { accountListKey, accountsKey } from "./AccountService";
 import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
 
 interface VirtualAccountVariables {
@@ -53,8 +53,9 @@ export const useUpdateVirtualAccountBalance = () => {
         onMutate: async ([{ accountId, virtualAccountId }, { balance }]) => {
 
             await queryClient.cancelQueries(accountsKey);
+            await queryClient.cancelQueries(accountListKey);
 
-            const accounts = queryClient.getQueryData<AccountList>(accountsKey);
+            const accounts = queryClient.getQueryData<AccountList>([accountListKey]);
             
             if (!accounts) return;
 
@@ -74,7 +75,7 @@ export const useUpdateVirtualAccountBalance = () => {
             //accounts.accounts = [];
             accounts.position = 0;
             
-            queryClient.setQueryData<AccountList>(accountsKey, { ...accounts });
+            queryClient.setQueryData<AccountList>(accountListKey, { ...accounts });
 
             return accounts;
         },
@@ -85,6 +86,7 @@ export const useUpdateVirtualAccountBalance = () => {
 
         onSettled: () => {
             queryClient.invalidateQueries(accountsKey);
+            queryClient.invalidateQueries(accountListKey);
         },
     });
 

@@ -3,10 +3,11 @@ import { Account, accountId, AccountList, ImportAccount } from "../models";
 import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
 
 export const accountsKey = "accounts";
+export const accountListKey = "account-list";
 
 export const useAccounts = () => useApiGet<Account[]>(accountsKey, `api/accounts`);
 
-export const useFormattedAccounts = () => useApiGet<AccountList>(accountsKey, "api/accounts/position");
+export const useFormattedAccounts = () => useApiGet<AccountList>(accountListKey, "api/accounts/position");
 
 export const useAccount = (accountId: string) => useApiGet<Account>(["account", { accountId }], `api/accounts/${accountId}`);
 

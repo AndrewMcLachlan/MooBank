@@ -1,3 +1,5 @@
+import React from "react";
+
 import { Table } from "react-bootstrap";
 import { Page } from "../../layouts";
 import { useAccounts } from "../../services";
@@ -10,20 +12,7 @@ export const ManageAccounts = () => {
 
     const { data } = accountsQuery;
 
-    /* const virtualAccountRows = [];
-
-  if (virtualAccounts) {
-      for (const account of virtualAccounts) {
-          virtualAccountRows.push(<VirtualAccountRow key={account.virtualAccountId} account={account} />);
-      }
-  }*/
-
-    const accountRows = [];
-    if (data) {
-        for (const account of data) {
-            accountRows.push(<AccountRow key={account.id} account={account} />);
-        }
-    }
+    const accountRows: React.ReactNode[] = data?.map(a => <AccountRow key={a.id} account={a} />) ?? [];
 
     return (
         <Page title="Manage Accounts">
