@@ -69,6 +69,22 @@ WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Ta
 WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (3, SOURCE.[Description]);
 
 
+-- Schedule
+MERGE Schedule AS TARGET USING (SELECT 1 as ScheduleId, 'Daily' as [Description]) AS SOURCE
+ON (TARGET.ScheduleId = SOURCE.ScheduleId)
+WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.ScheduleId, SOURCE.[Description]);
+
+MERGE Schedule AS TARGET USING (SELECT 2 as ScheduleId, 'Weekly' as [Description]) AS SOURCE
+ON (TARGET.ScheduleId = SOURCE.ScheduleId)
+WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.ScheduleId, SOURCE.[Description]);
+
+MERGE Schedule AS TARGET USING (SELECT 3 as ScheduleId, 'Monthly' as [Description]) AS SOURCE
+ON (TARGET.ScheduleId = SOURCE.ScheduleId)
+WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.ScheduleId, SOURCE.[Description]);
+
 -- Importer Types
 MERGE ImporterType AS TARGET USING (SELECT 'Asm.BankPlus.Services.Importers.IngImporter, Asm.BankPlus.Services' as [Type], 'ING' as [Name]) AS SOURCE
 ON (TARGET.[Type] = SOURCE.[Type])
