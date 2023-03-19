@@ -13,6 +13,7 @@ public partial record Account
             Description = account.Description,
             CurrentBalance = account.Balance,
             BalanceDate = account.LastUpdated,
+            AccountType = GetAccountType(account),
         };
     }
 
@@ -27,4 +28,11 @@ public partial record Account
             LastUpdated = account.BalanceDate,
         };
     }
+
+    private static string? GetAccountType(Domain.Entities.Account.Account account) =>
+        account switch
+        {
+            Domain.Entities.Account.InstitutionAccount iAccount => iAccount.AccountType.ToString(),
+            _ => null,
+        };
 }

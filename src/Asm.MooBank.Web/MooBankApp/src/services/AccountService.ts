@@ -6,7 +6,7 @@ export const accountsKey = "accounts";
 
 export const useAccounts = () => useApiGet<Account[]>(accountsKey, `api/accounts`);
 
-export const useFormattedAccounts = () => useApiGet<AccountList>(["account-list"], "api/accounts/position");
+export const useFormattedAccounts = () => useApiGet<AccountList>(accountsKey, "api/accounts/position");
 
 export const useAccount = (accountId: string) => useApiGet<Account>(["account", { accountId }], `api/accounts/${accountId}`);
 

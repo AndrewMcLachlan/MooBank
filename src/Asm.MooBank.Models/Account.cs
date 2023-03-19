@@ -11,4 +11,6 @@ public partial record Account
     public DateTimeOffset BalanceDate { get; set; }
 
     public decimal CurrentBalance { get; set; }
+
+    public string? AccountType { get; set; }
 }

@@ -1,6 +1,6 @@
 import { useQueryClient } from "react-query";
 import { emptyGuid } from "../helpers";
-import { Account, accountId,  Accounts,  VirtualAccount } from "../models";
+import { Account, accountId,  AccountList,  VirtualAccount } from "../models";
 import { accountsKey } from "./AccountService";
 import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
 
@@ -54,11 +54,11 @@ export const useUpdateVirtualAccountBalance = () => {
 
             await queryClient.cancelQueries(accountsKey);
 
-            const accounts = queryClient.getQueryData<Accounts>(accountsKey);
+            const accounts = queryClient.getQueryData<AccountList>(accountsKey);
             
             if (!accounts) return;
 
-            const account = accounts.accounts.find(a => a.id === accountId);
+            const account = accounts.positionedAccounts.find(a => a.id === accountId) ?? accounts.otherAccounts.find(a => a.id === accountId);
             if (!account) return;
             const vAccount = account.virtualAccounts.find(a => a.id === virtualAccountId);
             if (!vAccount) return;
@@ -74,9 +74,7 @@ export const useUpdateVirtualAccountBalance = () => {
             //accounts.accounts = [];
             accounts.position = 0;
             
-            queryClient.setQueryData<Accounts>(accountsKey, { ...accounts });
-
-            console.debug(queryClient.getQueryData<Accounts>(accountsKey)!.accounts.find(a => a.id === accountId));
+            queryClient.setQueryData<AccountList>(accountsKey, { ...accounts });
 
             return accounts;
         },

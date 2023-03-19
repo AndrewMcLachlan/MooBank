@@ -27,14 +27,16 @@ public class AccountService : ServiceBase, IAccountService
 {
     private readonly IRunRulesQueue _queue;
     private readonly Domain.Entities.Account.IInstitutionAccountRepository _accountRepository;
+    private readonly ITransactionRepository _transactionRepository;
     private readonly IAccountHolderRepository _accountHolderRepository;
     private readonly ISecurityRepository _securityRepository;
     private readonly IUserDataProvider _userDataProvider;
 
-    public AccountService(IUnitOfWork unitOfWork, IRunRulesQueue queue, Domain.Entities.Account.IInstitutionAccountRepository accountRepository, IAccountHolderRepository accountHolderRepository, IUserDataProvider userDataProvider, ISecurityRepository securityRepository) : base(unitOfWork)
+    public AccountService(IUnitOfWork unitOfWork, IRunRulesQueue queue, Domain.Entities.Account.IInstitutionAccountRepository accountRepository, IAccountHolderRepository accountHolderRepository, ITransactionRepository transactionRepository, IUserDataProvider userDataProvider, ISecurityRepository securityRepository) : base(unitOfWork)
     {
         _queue = queue;
         _accountRepository = accountRepository;
+        _transactionRepository = transactionRepository;
         _accountHolderRepository = accountHolderRepository;
         _securityRepository = securityRepository;
         _userDataProvider = userDataProvider;
@@ -100,10 +102,18 @@ public class AccountService : ServiceBase, IAccountService
 
     public async Task<Account> SetBalance(Guid id, decimal balance)
     {
-        // TODO: Create transaction when modifying balance
         var account = await GetAccountEntity(id);
 
         if (account.AccountController != AccountController.Manual) throw new InvalidOperationException("Cannot manually adjust balance of non-manually controlled account");
+
+        _transactionRepository.Add(new Domain.Entities.Transaction
+        {
+            Account = account,
+            Amount = account.Balance - balance,
+            Description = "Balance adjustment",
+            TransactionTime = DateTime.Now,
+            TransactionType = TransactionType.BalanceAdjustment,
+        });
 
         account.Balance = balance;
 
