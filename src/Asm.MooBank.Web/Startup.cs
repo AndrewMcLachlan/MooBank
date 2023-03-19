@@ -19,6 +19,8 @@ namespace Asm.MooBank.Web;
 
 public class Startup
 {
+    private const string SpaRoot = "MooBankApp";
+
     public Startup(IConfiguration configuration)
     {
         Configuration = configuration;
@@ -38,7 +40,7 @@ public class Startup
         // In production, the React files will be served from this directory
         services.AddSpaStaticFiles(configuration =>
         {
-            configuration.RootPath = "MookBankApp/build";
+            configuration.RootPath = $"{SpaRoot}/build";
         });
 
         services.AddMooBankDbContext(Configuration);
@@ -101,7 +103,7 @@ public class Startup
 
         app.UseSpa(spa =>
         {
-            spa.Options.SourcePath = "MookBankApp";
+            spa.Options.SourcePath = SpaRoot;
 
             spa.Options.DefaultPageStaticFileOptions = new StaticFileOptions
             {

@@ -7,7 +7,7 @@
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <IsPackable>false</IsPackable>
     <SpaRoot>MooBankApp\</SpaRoot>
-    <DefaultItemExcludes>$(DefaultItemExcludes);node_modules\**</DefaultItemExcludes>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -27,12 +27,8 @@
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
-    <Compile Remove="MooBankApp\SASS\**" />
     <Content Remove="$(SpaRoot)**" />
-    <Content Remove="MooBankApp\SASS\**" />
-    <EmbeddedResource Remove="MooBankApp\SASS\**" />
     <None Remove="$(SpaRoot)**" />
-    <None Remove="MooBankApp\SASS\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
