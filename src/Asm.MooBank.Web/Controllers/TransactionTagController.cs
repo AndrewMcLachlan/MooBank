@@ -4,29 +4,26 @@
     [ApiController]
     public class TransactionTagController : ControllerBase
     {
-        private ITransactionTagRepository TagRepository { get; }
+        private readonly ITransactionTagService _tagService;
 
-        public TransactionTagController(ITransactionTagRepository categoryRepository)
+        public TransactionTagController(ITransactionTagService categoryService)
         {
-            TagRepository = categoryRepository;
+            _tagService = categoryService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TransactionTag>>> Get()
-        {
-            return Ok(await TagRepository.Get());
-        }
+        public Task<IEnumerable<TransactionTag>> Get(CancellationToken cancellationToken = default) => _tagService.GetAll(cancellationToken);
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<TransactionTag>> Get(int id)
+        public async Task<TransactionTag> Get(int id, CancellationToken cancellationToken = default)
         {
-            return await TagRepository.Get(id);
+            return await _tagService.Get(id, cancellationToken);
         }
 
         [HttpPost]
         public async Task<ActionResult<TransactionTag>> Create(TransactionTag tag)
         {
-            var newTag = await TagRepository.Create(tag);
+            var newTag = await _tagService.Create(tag);
 
             return Created($"api/transaction/tags/{newTag.Id}", newTag);
         }
@@ -34,7 +31,7 @@
         [HttpPut("{name}")]
         public async Task<ActionResult<TransactionTag>> CreateByName(string name, [FromBody]TransactionTag[] tags)
         {
-            var tag = await TagRepository.Create(new TransactionTag { Name = Uri.UnescapeDataString(name), Tags = tags });
+            var tag = await _tagService.Create(new TransactionTag { Name = Uri.UnescapeDataString(name), Tags = tags });
 
             return Created($"api/transaction/tags/{tag.Id}", tag);
         }
@@ -42,13 +39,13 @@
         [HttpPatch("{id}")]
         public async Task<ActionResult<TransactionTag>> Update(int id, [FromBody]TransactionTagModel tag)
         {
-            return await TagRepository.Update(id, tag.Name);
+            return await _tagService.Update(id, tag.Name);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            await TagRepository.Delete(id);
+            await _tagService.Delete(id);
             return NoContent();
         }
 
@@ -57,7 +54,7 @@
         {
             if (id == subId) return Conflict();
 
-            var tag = await TagRepository.AddSubTag(id, subId);
+            var tag = await _tagService.AddSubTag(id, subId);
 
             return Created($"api/transaction/tags/{id}/tags/{subId}", tag);
         }
@@ -67,7 +64,7 @@
         {
             if (id == subId) return Conflict();
 
-            await TagRepository.RemoveSubTag(id, subId);
+            await _tagService.RemoveSubTag(id, subId);
             return NoContent();
         }
     }

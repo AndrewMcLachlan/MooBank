@@ -2,7 +2,7 @@
 
 namespace Asm.MooBank.Models;
 
-public class AccountsList
+public record AccountsList
 {
     public IEnumerable<Account> PositionedAccounts { get; set; }
 

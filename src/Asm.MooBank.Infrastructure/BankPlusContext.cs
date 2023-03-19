@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using Asm.MooBank.Data.Entities;
-using Asm.MooBank.Data.Entities.Ing;
+using Asm.Domain;
+using Asm.MooBank.Domain.Entities.Account;
+using Asm.MooBank.Domain.Entities.AccountHolder;
+using Asm.MooBank.Domain.Entities.Ing;
+using Asm.MooBank.Domain.Entities.RecurringTransactions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Infrastructure
 {
-    public partial class BankPlusContext : DbContext
+    public partial class BankPlusContext : DbContext, IUnitOfWork
     {
         public BankPlusContext()
         {
@@ -152,35 +155,6 @@ namespace Asm.MooBank.Infrastructure
                         });
             });
 
-            modelBuilder.Entity<TransactionTagRule>(entity =>
-            {
-                entity.HasKey(t => t.TransactionTagRuleId);
-
-                entity.Property(e => e.TransactionTagRuleId).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Contains)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.HasMany(p => p.TransactionTags)
-                   .WithMany(d => d.Rules)
-                      .UsingEntity<TransactionTagRuleTransactionTag>(
-                        ttr => ttr.HasOne(ttr2 => ttr2.TransactionTag)
-                                  .WithMany()
-                                  .HasForeignKey(tt2 => tt2.TransactionTagId),
-                        ttr => ttr.HasOne(ttr2 => ttr2.TransactionTagRule)
-                                  .WithMany()
-                                  .HasForeignKey(ttr2 => ttr2.TransactionTagRuleId),
-                        t4 =>
-                        {
-                            t4.HasKey(e => new { e.TransactionTagRuleId, e.TransactionTagId });
-                        });
-
-                entity.HasOne(e => e.Account)
-                    .WithMany()
-                    .HasForeignKey(e => e.AccountId);
-
-            });
 
             modelBuilder.Entity<TransactionTagTransactionTag>(entity =>
             {

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace Asm.MooBank.Models;
 
-namespace Asm.MooBank.Models
+class TransactionImportResult
 {
-    class TransactionImportResult
-    {
-    }
 }

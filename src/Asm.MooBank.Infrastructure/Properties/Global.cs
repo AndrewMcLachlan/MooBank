@@ -1,4 +1,4 @@
-﻿global using Asm.MooBank.Data.Entities;
-global using Asm.MooBank.Data.Repositories;
+﻿global using Asm.MooBank.Domain.Entities;
+global using Asm.MooBank.Domain.Repositories;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;

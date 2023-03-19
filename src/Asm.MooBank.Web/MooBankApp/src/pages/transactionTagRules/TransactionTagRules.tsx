@@ -42,7 +42,7 @@ export const TransactionTagRules: React.FC = () => {
                     </thead>
                     <tbody>
                         <tr>
-                            <td><input type="text" placeholder="Transaction description contains..." value={newRule.contains} onChange={nameChange} /></td>
+                            <td><input type="text" className="form-control" placeholder="Transaction description contains..." value={newRule.contains} onChange={nameChange} /></td>
                             <TagPanel as="td" selectedItems={newRule.tags} allItems={fullTagsList} textField="name" valueField="id" onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} />
                             {/*<Select defaultOptions={fullTagsList} getOptionLabel={(t:TransactionTag) => t.name } getOptionValue={(t:TransactionTag) => t.id.toString() } hideSelectedOptions={true} isOptionSelected={t => } onChange />*/}
                             <td><span onClick={createRule}><ClickableIcon icon="check-circle" title="Save" /></span></td>

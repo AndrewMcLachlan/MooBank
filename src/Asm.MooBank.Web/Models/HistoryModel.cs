@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Asm.MooBank.Data.Entities;
+using Asm.MooBank.Domain.Entities;
 using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Web.Models

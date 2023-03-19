@@ -8,11 +8,11 @@ namespace Asm.MooBank.Web.Controllers
     public class AccountTransactionTagRulesController : ControllerBase
     {
         private IAccountService AccountService { get; }
-        private ITransactionTagRuleRepository TransactionTagRuleRepository { get; }
+        private ITransactionTagRuleService TransactionTagRuleService { get; }
 
-        public AccountTransactionTagRulesController(ITransactionTagRuleRepository transactionTagRuleRepository, IAccountService accountService)
+        public AccountTransactionTagRulesController(ITransactionTagRuleService transactionTagRuleService, IAccountService accountService)
         {
-            TransactionTagRuleRepository = transactionTagRuleRepository;
+            TransactionTagRuleService = transactionTagRuleService;
             AccountService = accountService;
         }
 
@@ -21,20 +21,20 @@ namespace Asm.MooBank.Web.Controllers
         {
             return new ActionResult<TransactionTagRulesModel>(new TransactionTagRulesModel
             {
-                Rules = await TransactionTagRuleRepository.Get(accountId),
+                Rules = await TransactionTagRuleService.Get(accountId),
             });
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<TransactionTagRule>> Get(Guid accountId, int id)
         {
-            return new ActionResult<TransactionTagRule>(await TransactionTagRuleRepository.Get(accountId, id));
+            return new ActionResult<TransactionTagRule>(await TransactionTagRuleService.Get(accountId, id));
         }
 
         [HttpPost]
         public async Task<ActionResult<TransactionTagRule>> Post(Guid accountId, [FromBody]TransactionTagRuleModel rule)
         {
-            var newRule = await TransactionTagRuleRepository.Create(accountId, rule.Contains, rule.Tags);
+            var newRule = await TransactionTagRuleService.Create(accountId, rule.Contains, rule.Tags);
 
             return Created($"api/accounts/{accountId}/transaction/tag/rule/{newRule.Id}", newRule);
         }
@@ -42,7 +42,7 @@ namespace Asm.MooBank.Web.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(Guid accountId, int id)
         {
-            await TransactionTagRuleRepository.Delete(accountId, id);
+            await TransactionTagRuleService.Delete(accountId, id);
 
             return NoContent();
         }
@@ -51,13 +51,13 @@ namespace Asm.MooBank.Web.Controllers
         public async Task<ActionResult<TransactionTagRule>> PutTag(Guid accountId, int id, int tagId)
         {
             return Created($"api/accounts/{accountId}/transaction/tag/rule/{id}/{tagId}",
-                    await TransactionTagRuleRepository.AddTransactionTag(accountId, id, tagId));
+                    await TransactionTagRuleService.AddTransactionTag(accountId, id, tagId));
         }
 
         [HttpDelete("{id}/tag/{tagId}")]
         public async Task<ActionResult> DeleteTag(Guid accountId, int id, int tagId)
         {
-            await TransactionTagRuleRepository.RemoveTransactionTag(accountId, id, tagId);
+            await TransactionTagRuleService.RemoveTransactionTag(accountId, id, tagId);
 
             return NoContent();
         }

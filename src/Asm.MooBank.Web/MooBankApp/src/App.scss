@@ -71,6 +71,7 @@ nav.control-panel {
         background: none;
         border: none;
         font-weight: bold;
+        font-size: 0.9rem;
     }
 
     button:hover {
@@ -112,8 +113,8 @@ legend {
 /*#endregion*/
 
 /*#region Forms*/
-input, select {
-    font-family: Calibri, Arial, sans-serif;
+input, select, textarea {
+    font-family: "Open Sans", "Segoe UI", Arial, sans-serif;
 }
 
 input.description {
@@ -247,6 +248,10 @@ input[type=checkbox] {
 
 table .balance {
     text-align: right;
+}
+
+form > div {
+    margin-bottom: 1rem;
 }
 
 @import 'responsive';

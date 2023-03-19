@@ -6,29 +6,27 @@
 public class AccountsController : ControllerBase
 {
     private readonly IAccountService _accountService;
-    private readonly IAccountRepository _accountRepository;
-    private readonly ITransactionRepository _transactionRepository;
+    private readonly ITransactionService _transactionService;
 
     private readonly ILogger<AccountsController> _logger;
 
-    public AccountsController(IAccountService accountService, IAccountRepository accountRepository, ITransactionRepository transactionRepository, ILogger<AccountsController> logger)
+    public AccountsController(IAccountService accountService, ITransactionService transactionService, ILogger<AccountsController> logger)
     {
         _accountService = accountService;
-        _accountRepository = accountRepository;
-        _transactionRepository = transactionRepository;
+        _transactionService = transactionService;
         _logger = logger;
     }
 
     [HttpGet]
-    public Task<IEnumerable<Account>> Get(CancellationToken token = default) => _accountRepository.GetAccounts(token);
+    public Task<IEnumerable<InstitutionAccount>> Get(CancellationToken token = default) => _accountService.GetAccounts(token);
 
     [HttpGet("position")]
     public Task<AccountsList> GetFormatted(CancellationToken token = default) => _accountService.GetFormattedAccounts(token);
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Account>> Get(Guid id)
+    public async Task<ActionResult<InstitutionAccount>> Get(Guid id)
     {
-        return new ActionResult<Account>(await _accountRepository.GetAccount(id));
+        return new ActionResult<InstitutionAccount>(await _accountService.GetAccount(id));
     }
 
     [HttpGet("{accountId}/transactions/{pageSize?}/{pageNumber?}")]
@@ -38,9 +36,9 @@ public class AccountsController : ControllerBase
 
         return new ActionResult<TransactionsModel>(new TransactionsModel
         {
-            Transactions = await _transactionRepository.GetTransactions(accountId, filter, start, end, pageSize.Value, pageNumber.Value, sortField, sortDirection),
+            Transactions = await _transactionService.GetTransactions(accountId, filter, start, end, pageSize.Value, pageNumber.Value, sortField, sortDirection),
             PageNumber = pageNumber,
-            Total = await _transactionRepository.GetTotalTransactions(accountId, filter, start, end),
+            Total = await _transactionService.GetTotalTransactions(accountId, filter, start, end),
         });
     }
 
@@ -51,35 +49,33 @@ public class AccountsController : ControllerBase
 
         return new ActionResult<TransactionsModel>(new TransactionsModel
         {
-            Transactions = await _transactionRepository.GetUntaggedTransactions(accountId, filter, start, end, pageSize.Value, pageNumber.Value, sortField, sortDirection),
+            Transactions = await _transactionService.GetUntaggedTransactions(accountId, filter, start, end, pageSize.Value, pageNumber.Value, sortField, sortDirection),
             PageNumber = pageNumber,
-            Total = await _transactionRepository.GetTotalUntaggedTransactions(accountId, filter, start, end),
+            Total = await _transactionService.GetTotalUntaggedTransactions(accountId, filter, start, end),
         });
     }
 
     [HttpPost]
-    public async Task<ActionResult<Account>> Create(NewAccountModel model)
+    public async Task<ActionResult<InstitutionAccount>> Create(NewAccountModel model)
     {
-        Account newAccount = model.ImportAccount != null ?
-            await _accountRepository.CreateImportAccount((Account)model.Account, model.ImportAccount.ImporterTypeId) :
-            await _accountRepository.Create((Account)model.Account);
+        var newAccount = await _accountService.Create(model.Account);
 
         return CreatedAtAction("Get", new { id = newAccount.Id }, newAccount);
     }
 
     [HttpPatch("{accountId}")]
-    public async Task<ActionResult<Account>> UpdateAccount(Guid accountId, Account model)
+    public async Task<ActionResult<InstitutionAccount>> UpdateAccount(Guid accountId, InstitutionAccount model)
     {
         if (model == null || model.Id != accountId) return BadRequest(ModelState);
 
-        return Ok(await _accountRepository.Update(model));
+        return Ok(await _accountService.Update(model));
     }
 
     [HttpPatch("{accountId}/balance")]
-    public async Task<ActionResult<Account>> UpdateBalance(Guid accountId, UpdateBalanceModel model)
+    public async Task<ActionResult<InstitutionAccount>> UpdateBalance(Guid accountId, UpdateBalanceModel model)
     {
-        if (model == null || (model.CurrentBalance == null && model.AvailableBalance == null)) return BadRequest(ModelState);
+        if (model == null || (model.CurrentBalance == null)) return BadRequest(ModelState);
 
-        return Ok(await _accountRepository.SetBalance(accountId, model.CurrentBalance, model.AvailableBalance));
+        return Ok(await _accountService.SetBalance(accountId, model.CurrentBalance.Value));
     }
 }

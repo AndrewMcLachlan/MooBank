@@ -1,8 +1,10 @@
-﻿namespace Asm.MooBank.Infrastructure.EntityConfigurations;
+﻿using Asm.MooBank.Domain.Entities.Account;
 
-public class Account : IEntityTypeConfiguration<Data.Entities.Account>
+namespace Asm.MooBank.Infrastructure.EntityConfigurations;
+
+public class Account : IEntityTypeConfiguration<Domain.Entities.Account.Account>
 {
-    public void Configure(EntityTypeBuilder<Data.Entities.Account> entity)
+    public void Configure(EntityTypeBuilder<Domain.Entities.Account.Account> entity)
     {
         entity.HasKey(e => e.AccountId);
 
@@ -11,9 +13,7 @@ public class Account : IEntityTypeConfiguration<Data.Entities.Account>
         entity.Property(e => e.AccountId).ValueGeneratedOnAdd();
         entity.Property(e => e.AccountId).HasDefaultValueSql("(newid())");
 
-        entity.Property(e => e.AccountBalance).HasColumnType("decimal(10, 2)");
-
-        entity.Property(e => e.AvailableBalance).HasColumnType("decimal(10, 2)");
+        entity.Property(e => e.Balance).HasColumnType("decimal(10, 2)");
 
         entity.Property(e => e.Description).HasMaxLength(255);
 
@@ -24,12 +24,6 @@ public class Account : IEntityTypeConfiguration<Data.Entities.Account>
         entity.Property(e => e.Name)
             .IsRequired()
             .HasMaxLength(50);
-
-        entity.Property(r => r.AccountType)
-        .HasConversion(e => (int)e, e => (Models.AccountType)e);
-
-        entity.Property(r => r.AccountController)
-        .HasConversion(e => (int)e, e => (Models.AccountController)e);
 
         entity.HasMany(p => p.AccountHolders)
               .WithMany(t => t.Accounts)
@@ -44,14 +38,5 @@ public class Account : IEntityTypeConfiguration<Data.Entities.Account>
                    {
                        aah.HasKey(e => new { e.AccountId, e.AccountHolderId });
                    });
-
-        entity.HasOne(e => e.ImportAccount)
-              .WithOne(e => e.Account)
-              .HasForeignKey<Data.Entities.Account>(e => e.AccountId);
-
-        entity.HasMany(e => e.VirtualAccounts)
-              .WithOne(e => e.Account)
-              .HasForeignKey(e => e.AccountId);
-
     }
 }

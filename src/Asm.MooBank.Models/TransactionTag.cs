@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace Asm.MooBank.Models;
 
-namespace Asm.MooBank.Models
+public partial record TransactionTag
 {
-    public class TransactionTag
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        public string Name { get; set; }
+    public string Name { get; set; }
 
-        public IEnumerable<TransactionTag> Tags { get; set; }
-    }
+    public IEnumerable<TransactionTag> Tags { get; set; }
 }

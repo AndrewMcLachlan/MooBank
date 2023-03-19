@@ -1,11 +1,10 @@
-﻿namespace Asm.MooBank.Models
+﻿namespace Asm.MooBank.Models;
+
+public partial record ImporterType
 {
-    public class ImporterType
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        public string Type { get; set; }
+    public string Type { get; set; }
 
-        public string Name { get; set; }
-    }
+    public string Name { get; set; }
 }

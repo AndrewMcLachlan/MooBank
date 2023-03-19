@@ -5,23 +5,22 @@
 [Authorize]
 public class TransactionsController : ControllerBase
 {
-    private ITransactionRepository TransactionRepository { get; }
+    private readonly ITransactionService _transactionService;
 
-    public TransactionsController(ITransactionRepository transactionRepository)
+    public TransactionsController(ITransactionService transactionService)
     {
-        TransactionRepository = transactionRepository;
+        _transactionService = transactionService;
     }
 
     [HttpPut("{id}/tag/{tagId}")]
-    public async Task<ActionResult<Transaction>> Add(Guid id, int tagId)
+    public async Task<ActionResult<Transaction>> Add(Guid id, int tagId, CancellationToken cancellationToken = default)
     {
-        return Created($"api/transactions/{id}/tag/{tagId}",
-            await TransactionRepository.AddTransactionTag(id, tagId));
+        return Created($"api/transactions/{id}/tag/{tagId}", await _transactionService.AddTransactionTag(id, tagId, cancellationToken));
     }
 
     [HttpDelete("{id}/tag/{tagId}")]
     public async Task<ActionResult<Transaction>> RemoveTag(Guid id, int tagId)
     {
-        return await TransactionRepository.RemoveTransactionTag(id, tagId);
+        return await _transactionService.RemoveTransactionTag(id, tagId);
     }
 }

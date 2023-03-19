@@ -7,9 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Asm.MooBank.Data\Asm.MooBank.Data.csproj" />
-    <ProjectReference Include="..\Asm.MooBank.Infrastructure\Asm.MooBank.Infrastructure.csproj" />
-    <ProjectReference Include="..\Asm.MooBank.Models\Asm.MooBank.Models.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
   </ItemGroup>
 
 </Project>

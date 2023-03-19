@@ -1,10 +1,13 @@
 using System.Net;
-using Asm.MooBank.Data.Repositories.Ing;
+using Asm.MooBank.Domain.Entities.Account;
+using Asm.MooBank.Domain.Repositories;
+using Asm.MooBank.Domain.Repositories.Ing;
 using Asm.MooBank.Importers;
 using Asm.MooBank.Infrastructure;
+using Asm.MooBank.Infrastructure.Repositories;
+using Asm.MooBank.Infrastructure.Repositories.Ing;
 using Asm.MooBank.Security;
 using Asm.MooBank.Services.Importers;
-using Asm.MooBank.Services.Ing;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -38,12 +41,9 @@ public class Startup
             configuration.RootPath = "MookBankApp/build";
         });
 
-        services.AddDbContext<BankPlusContext>((services, options) => options.UseSqlServer(Configuration.GetConnectionString("MooBank"), options =>
-        {
-            options.EnableRetryOnFailure(3);
-        }));
+        services.AddMooBankDbContext(Configuration);
 
-        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+        services.AddHttpContextAccessor();
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
         services.AddHsts(options =>
@@ -58,11 +58,12 @@ public class Startup
 
         services.AddAuthorization();
 
-        RegisterServices(services);
+        services.AddRepositories();
+        services.AddServices();
+        services.AddUserDataProvider();
     }
 
-    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IHostEnvironment env)//, ILogger logger)
+    public void Configure(IApplicationBuilder app, IHostEnvironment env)
     {
         if (env.IsDevelopment())
         {
@@ -126,25 +127,5 @@ public class Startup
     {
         IdentityModelEventSource.ShowPII = true;
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddAzureAdBearer(options => Configuration.Bind("OAuth", options));
-    }
-
-    private static void RegisterServices(IServiceCollection services)
-    {
-        services.AddScoped<IAccountRepository, AccountRepository>();
-        services.AddScoped<ITransactionRepository, TransactionRepository>();
-        services.AddScoped<ITransactionTagRepository, TransactionTagRepository>();
-        services.AddScoped<ITransactionTagRuleRepository, TransactionTagRuleRepository>();
-        services.AddScoped<IngImporter>();
-        services.AddScoped<IImporterFactory, ImporterFactory>();
-        services.AddScoped<IReferenceDataRepository, ReferenceDataRepository>();
-        services.AddScoped<IAccountHolderRepository, AccountHolderRepository>();
-        services.AddScoped<IUserDataProvider, GraphUserDataProvider>();
-        services.AddScoped<ISecurityRepository, SecurityRepository>();
-        services.AddScoped<ITransactionExtraRepository, TransactionExtraRepository>();
-        services.AddScoped<IAccountService, AccountService>();
-        services.AddScoped<IVirtualAccountRepository, VirtualAccountRepository>();
-
-        services.AddHostedService<RunRulesService>();
-        services.AddSingleton<IRunRulesQueue, RunRulesQueue>();
     }
 }

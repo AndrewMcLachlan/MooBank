@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Asm.MooBank.Data.Entities;
+﻿using Asm.MooBank.Domain.Entities.Account;
 
-namespace Asm.MooBank.Data.Repositories
+namespace Asm.MooBank.Domain.Repositories;
+
+public interface ISecurityRepository
 {
-    public interface ISecurityRepository
-    {
-        void AssertPermission(Guid accountId);
-        void AssertPermission(Account account);
-    }
+    void AssertPermission(Guid accountId);
+    void AssertPermission(Account account);
 }

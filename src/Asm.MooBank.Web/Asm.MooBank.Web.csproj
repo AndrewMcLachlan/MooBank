@@ -17,16 +17,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Asm.Web" Version="3.0.528" />
-    <PackageReference Include="Asm.Web.Mvc" Version="3.0.528" />
+    <PackageReference Include="Asm.Web" Version="3.0.554" />
+    <PackageReference Include="Asm.Web.Mvc" Version="3.0.554" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="6.0.14" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="7.0.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.4" />
   </ItemGroup>
 
@@ -52,7 +47,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Asm.MooBank.Data\Asm.MooBank.Data.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Data\Asm.MooBank.Domain.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Infrastructure\Asm.MooBank.Infrastructure.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Models\Asm.MooBank.Models.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Services\Asm.MooBank.Services.csproj" />

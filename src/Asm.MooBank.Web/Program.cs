@@ -1,1 +1,1 @@
-WebStart<Startup>.Run(args, "MooBank");
+return WebStart<Startup>.Run(args, "MooBank");

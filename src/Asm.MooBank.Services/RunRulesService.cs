@@ -1,88 +1,90 @@
 ﻿using System.Collections.Concurrent;
+using Asm.Domain;
+using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Asm.MooBank.Services
+namespace Asm.MooBank.Services;
+
+public class RunRulesService : BackgroundService
 {
-    public class RunRulesService : BackgroundService
+    private readonly ILogger _logger;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
+    private readonly IRunRulesQueue _taskQueue;
+
+    public RunRulesService(IRunRulesQueue taskQueue, ILoggerFactory loggerFactory, IServiceScopeFactory serviceScopeFactory)
     {
-        private readonly ILogger _logger;
-        private readonly IServiceScopeFactory _serviceScopeFactory;
-        private readonly IRunRulesQueue _taskQueue;
+        _taskQueue = taskQueue;
+        _logger = loggerFactory.CreateLogger<RunRulesService>();
+        _serviceScopeFactory = serviceScopeFactory;
+    }
 
-        public RunRulesService(IRunRulesQueue taskQueue, ILoggerFactory loggerFactory, IServiceScopeFactory serviceScopeFactory)
+    protected async override Task ExecuteAsync(CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Queued Hosted Service is starting.");
+
+        while (!cancellationToken.IsCancellationRequested)
         {
-            _taskQueue = taskQueue;
-            _logger = loggerFactory.CreateLogger<RunRulesService>();
-            _serviceScopeFactory = serviceScopeFactory;
-        }
+            var accountId = await _taskQueue.DequeueAsync(cancellationToken);
 
-        protected async override Task ExecuteAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Queued Hosted Service is starting.");
-
-            while (!cancellationToken.IsCancellationRequested)
+            try
             {
-                var accountId = await _taskQueue.DequeueAsync(cancellationToken);
+                using var scope = _serviceScopeFactory.CreateScope();
+                var transactionRepository = scope.ServiceProvider.GetRequiredService<ITransactionRepository>();
+                var transactionTagRuleRepository = scope.ServiceProvider.GetRequiredService<ITransactionTagRuleRepository>();
+                var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
-                try
+                var transactions = await transactionRepository.GetTransactions(accountId, cancellationToken);
+
+                var rules = await transactionTagRuleRepository.GetForAccount(accountId, cancellationToken);
+
+                var updatedTransactions = new List<Transaction>();
+
+                foreach (var transaction in transactions)
                 {
-                    using var scope = _serviceScopeFactory.CreateScope();
-                    var transactionRepository = scope.ServiceProvider.GetRequiredService<ITransactionRepository>();
-                    var transactionTagRuleRepository = scope.ServiceProvider.GetRequiredService<ITransactionTagRuleRepository>();
+                    var applicableTags = rules.Where(r => transaction.Description?.Contains(r.Contains, StringComparison.OrdinalIgnoreCase) ?? false).SelectMany(r => r.TransactionTags.Select(t => new Domain.Entities.TransactionTag { TransactionTagId = t.TransactionTagId })).Distinct();
 
-                    var transactions = await transactionRepository.GetTransactions(accountId);
-
-                    var rules = await transactionTagRuleRepository.Get(accountId);
-
-                    var updatedTransactions = new List<Transaction>();
-
-                    foreach (var transaction in transactions)
-                    {
-                        var applicableTags = rules.Where(r => transaction.Description.Contains(r.Contains, StringComparison.OrdinalIgnoreCase)).SelectMany(r => r.Tags.Select(t => t.Id)).Distinct();
-
-                        updatedTransactions.Add(await transactionRepository.AddTransactionTags(transaction.Id, applicableTags));
-                    }
-
-                    await transactionRepository.SaveChanges();
+                    transaction.TransactionTags.AddRange(applicableTags);
+                    //updatedTransactions.Add(await transactionRepository.AddTransactionTags(transaction.Id, applicableTags));
                 }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Error occurred running rules for account {AccountId}.", nameof(accountId));
-                }
+
+                await unitOfWork.SaveChangesAsync(cancellationToken);
             }
-
-            _logger.LogInformation("Queued Hosted Service is stopping.");
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred running rules for account {AccountId}.", nameof(accountId));
+            }
         }
-    }
 
-    public interface IRunRulesQueue
+        _logger.LogInformation("Queued Hosted Service is stopping.");
+    }
+}
+
+public interface IRunRulesQueue
+{
+    void QueueRunRules(Guid accountId);
+
+    Task<Guid> DequeueAsync(CancellationToken cancellationToken);
+}
+
+public class RunRulesQueue : IRunRulesQueue
+{
+    private readonly ConcurrentQueue<Guid> _workItems = new();
+    private readonly SemaphoreSlim _signal = new(0);
+
+    public void QueueRunRules(Guid accountId)
     {
-        void QueueRunRules(Guid accountId);
-
-        Task<Guid> DequeueAsync(CancellationToken cancellationToken);
+        _workItems.Enqueue(accountId);
+        _signal.Release();
     }
 
-    public class RunRulesQueue : IRunRulesQueue
+    public async Task<Guid> DequeueAsync(CancellationToken cancellationToken)
     {
-        private readonly ConcurrentQueue<Guid> _workItems = new();
-        private readonly SemaphoreSlim _signal = new(0);
+        await _signal.WaitAsync(cancellationToken);
+        _workItems.TryDequeue(out var workItem);
 
-        public void QueueRunRules(Guid accountId)
-        {
-            _workItems.Enqueue(accountId);
-            _signal.Release();
-        }
-
-        public async Task<Guid> DequeueAsync(CancellationToken cancellationToken)
-        {
-            await _signal.WaitAsync(cancellationToken);
-            _workItems.TryDequeue(out var workItem);
-
-            return workItem;
-        }
+        return workItem;
     }
-
 }

@@ -1,4 +1,4 @@
-﻿global using Asm.MooBank.Data.Repositories;
+﻿global using Asm.MooBank.Domain.Repositories;
 global using Asm.MooBank.Models;
 global using Asm.MooBank.Services;
 global using Asm.MooBank.Web;

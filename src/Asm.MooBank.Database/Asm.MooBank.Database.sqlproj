@@ -90,6 +90,7 @@
     <Build Include="dbo\Views\TransactionsTags.sql" />
     <Build Include="dbo\Views\TagAmounts.sql" />
     <Build Include="dbo\Views\TagAmountsByMonth.sql" />
+    <Build Include="dbo\Tables\InstitutionAccount.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Asm.BankPlus.Database.publish.xml" />

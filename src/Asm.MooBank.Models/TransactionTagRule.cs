@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Asm.MooBank.Models;
 
-namespace Asm.MooBank.Models
+public partial record TransactionTagRule
 {
-    public class TransactionTagRule
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        public string Contains { get; set; }
+    public string Contains { get; set; }
 
-        public IEnumerable<TransactionTag> Tags { get; set; }
-    }
+    public IEnumerable<TransactionTag> Tags { get; set; }
 }

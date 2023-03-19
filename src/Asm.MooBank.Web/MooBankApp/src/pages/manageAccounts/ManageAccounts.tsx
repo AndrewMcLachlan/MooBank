@@ -27,7 +27,7 @@ export const ManageAccounts = () => {
 
     return (
         <Page title="Manage Accounts">
-            <Page.Header title="Manage Accounts" breadcrumbs={[["Manage Accounts", "./accounts"]]} menuItems={[{ text: "Create Account", route: "/accounts/create" }]} />
+            <Page.Header title="Manage Accounts" breadcrumbs={[["Manage Accounts", "/accounts"]]} menuItems={[{ text: "Create Account", route: "/accounts/create" }]} />
             <Page.Content>
                 <Table className="accounts" hover>
                     <thead>

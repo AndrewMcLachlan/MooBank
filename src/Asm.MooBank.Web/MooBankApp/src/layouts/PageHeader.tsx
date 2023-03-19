@@ -1,7 +1,7 @@
 import React from "react";
 import { MenuItem } from "../models/MenuItem";
 import { Link } from "react-router-dom";
-import { Breadcrumb, Container } from "react-bootstrap";
+import { Breadcrumb, Button, Container } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 
 export type PageHeaderComponent = React.FC<React.PropsWithChildren<PageHeaderProps>>;
@@ -53,7 +53,7 @@ const renderMenu = (menuItems: MenuItem[]) => {
             items.push(<li key={"route" + keysuffix.toString()}><Link to={menuItem.route} onClick={() => menuItem.onClick && menuItem.onClick()}>{menuItem.text}</Link></li>);
         }
         else if (menuItem.onClick) {
-            items.push(<li key={"click" + keysuffix.toString()}><button onClick={() => menuItem.onClick()}>{menuItem.text}</button></li>);
+            items.push(<li key={"click" + keysuffix.toString()}><Button variant="link" onClick={() => menuItem.onClick()}>{menuItem.text}</Button></li>);
         }
 
         keysuffix++;

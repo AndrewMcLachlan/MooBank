@@ -1,27 +1,19 @@
-﻿using Asm.MooBank.Importers;
-
-namespace Asm.MooBank.Web.Controllers;
+﻿namespace Asm.MooBank.Web.Controllers;
 
 [ApiController]
 public class ImportController : ControllerBase
 {
-    private readonly IAccountRepository _accountRepository;
-    private readonly IImporterFactory _importerFactory;
+    private readonly IImportService _importService;
 
-    public ImportController(IAccountRepository accountRepository, IImporterFactory importerFactory)
+    public ImportController(IImportService importService)
     {
-        _importerFactory = importerFactory;
-        _accountRepository = accountRepository;
+        _importService = importService;
     }
 
     [Route("api/accounts/{accountid}/[controller]")]
-    public async Task<ActionResult> Post(Guid accountId, IFormFile file)
+    public async Task<ActionResult> Post(Guid accountId, IFormFile file, CancellationToken cancellationToken = default)
     {
-        var account = await _accountRepository.GetAccount(accountId);
-
-        IImporter importer = _importerFactory.Create(accountId);
-
-        await importer.Import(account, file.OpenReadStream());
+        await _importService.Import(accountId, file, cancellationToken);
 
         return NoContent();
     }

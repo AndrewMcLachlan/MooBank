@@ -16,7 +16,7 @@ export const AccountHeader: React.FC<AccountHeaderProps> = (props) => {
     if (!account) return null;
 
     return (
-        <PageHeader title={account.name} menuItems={getMenuItems()} breadcrumbs={[[account.name,`/accounts/${account.id}`]]} />
+        <PageHeader title={account.name} menuItems={getMenuItems()} breadcrumbs={[[account.name, `/accounts/${account.id}`]]} />
     )
 }
 
@@ -34,6 +34,8 @@ const useRenderers = (account: Account) => {
             case AccountController.Import:
                 items.push({ route: `/accounts/${account.id}/import`, text: "Import" });
         }
+
+        items.push({ route: `/accounts/${account.id}/manage`, text: "Manage" });
 
         return items;
     };

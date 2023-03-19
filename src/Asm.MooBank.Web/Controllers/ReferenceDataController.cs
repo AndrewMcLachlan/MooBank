@@ -4,16 +4,16 @@
 [ApiController]
 public class ReferenceDataController : ControllerBase
 {
-    private readonly IReferenceDataRepository _repository;
+    private readonly IReferenceDataService _service;
 
-    public ReferenceDataController(IReferenceDataRepository repository)
+    public ReferenceDataController(IReferenceDataService service)
     {
-        _repository = repository;
+        _service = service;
     }
 
     [HttpGet("importertypes")]
     public async Task<ActionResult<IEnumerable<ImporterType>>> GetImporterTypes()
     {
-        return Ok(await _repository.GetImporterTypes());
+        return Ok(await _service.GetImporterTypes());
     }
 }
