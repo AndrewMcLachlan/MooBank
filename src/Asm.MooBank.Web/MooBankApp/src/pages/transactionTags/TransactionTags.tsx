@@ -27,7 +27,7 @@ export const TransactionTags: React.FC = () => {
                     </thead>
                     <tbody>
                         <tr>
-                            <td><input type="text" placeholder="Tag name" value={newTag.name} onChange={nameChange} /></td>
+                            <td><input type="text" placeholder="Tag name" value={newTag.name} onChange={nameChange} className="form-control" /></td>
                             <TagPanel as="td" selectedItems={newTag.tags} allItems={tagsList} textField="name" valueField="id" onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} />
                             <td><span onClick={createTag}><ClickableIcon icon="check-circle" title="Save" /></span></td>
                         </tr>
