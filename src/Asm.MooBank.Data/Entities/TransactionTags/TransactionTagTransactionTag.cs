@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Asm.MooBank.Domain.Entities
+namespace Asm.MooBank.Domain.Entities.TransactionTags
 {
     public partial class TransactionTagTransactionTag
     {

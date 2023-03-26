@@ -1,4 +1,4 @@
-﻿namespace Asm.MooBank.Domain.Entities;
+﻿namespace Asm.MooBank.Domain.Entities.ReferenceData;
 
 public partial class ImporterType
 {

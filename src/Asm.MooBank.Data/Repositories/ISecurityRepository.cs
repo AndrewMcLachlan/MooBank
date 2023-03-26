@@ -1,9 +1,13 @@
 ﻿using Asm.MooBank.Domain.Entities.Account;
+using Asm.MooBank.Domain.Entities.AccountGroup;
 
 namespace Asm.MooBank.Domain.Repositories;
 
 public interface ISecurityRepository
 {
-    void AssertPermission(Guid accountId);
-    void AssertPermission(Account account);
+    void AssertAccountPermission(Guid accountId);
+    void AssertAccountPermission(Account account);
+
+    void AssertAccountGroupPermission(Guid accountGroupId);
+    void AssertAccountGroupPermission(AccountGroup accountGroup);
 }

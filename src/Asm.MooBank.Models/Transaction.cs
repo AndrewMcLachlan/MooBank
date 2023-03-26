@@ -9,7 +9,7 @@ public partial record Transaction
     public Guid? Reference { get; set; }
     public Guid AccountId { get; set; }
     public decimal Amount { get; set; }
-    public string Description { get; set; }
+    public string? Description { get; set; }
     public DateTime TransactionTime { get; set; }
 
     public TransactionType? TransactionType { get; set; }

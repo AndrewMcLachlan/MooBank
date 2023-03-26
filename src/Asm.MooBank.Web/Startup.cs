@@ -1,17 +1,5 @@
-using System.Net;
-using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Domain.Repositories;
-using Asm.MooBank.Domain.Repositories.Ing;
-using Asm.MooBank.Importers;
-using Asm.MooBank.Infrastructure;
-using Asm.MooBank.Infrastructure.Repositories;
-using Asm.MooBank.Infrastructure.Repositories.Ing;
-using Asm.MooBank.Security;
-using Asm.MooBank.Services.Importers;
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Logging;
 using Serilog;
 
@@ -61,7 +49,9 @@ public class Startup
         services.AddAuthorization();
 
         services.AddRepositories();
+        services.AddEntities();
         services.AddServices();
+        services.AddCqrs();
         services.AddUserDataProvider();
     }
 

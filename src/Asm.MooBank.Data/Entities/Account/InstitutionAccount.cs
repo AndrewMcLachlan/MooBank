@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Asm.MooBank.Domain.Entities.Transactions;
+using Asm.MooBank.Security;
 
 namespace Asm.MooBank.Domain.Entities.Account;
 
@@ -7,9 +9,12 @@ public class InstitutionAccount : Account
     public InstitutionAccount()
     {
         VirtualAccounts = new HashSet<VirtualAccount>();
-        Transactions = new HashSet<Transaction>();
-        AccountHolders = new HashSet<AccountHolder.AccountHolder>();
     }
+
+   /* protected InstitutionAccount(IUserIdProvider userIdProvider) : base(userIdProvider)
+    {
+        VirtualAccounts = new HashSet<VirtualAccount>();
+    }*/
 
     public bool IncludeInPosition { get; set; }
 

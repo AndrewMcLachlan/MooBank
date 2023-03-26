@@ -1,4 +1,6 @@
-﻿namespace Asm.MooBank.Infrastructure.Repositories;
+﻿using Asm.MooBank.Domain.Entities.ReferenceData;
+
+namespace Asm.MooBank.Infrastructure.Repositories;
 
 public class ReferenceDataRepository : IReferenceDataRepository
 {

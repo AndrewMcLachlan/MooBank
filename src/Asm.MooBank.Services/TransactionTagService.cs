@@ -1,4 +1,5 @@
 ﻿using Asm.Domain;
+using ITransactionTagRepository = Asm.MooBank.Domain.Entities.TransactionTags.ITransactionTagRepository;
 using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Services;
@@ -40,7 +41,7 @@ public class TransactionTagService : ServiceBase, ITransactionTagService
 
     public async Task<TransactionTag> Create(TransactionTag tag)
     {
-        Domain.Entities.TransactionTag transactionTag = tag;
+        Domain.Entities.TransactionTags.TransactionTag transactionTag = tag;
         _transactionTagRepository.Add(transactionTag);
 
         await UnitOfWork.SaveChangesAsync();
@@ -103,5 +104,5 @@ public class TransactionTagService : ServiceBase, ITransactionTagService
         await UnitOfWork.SaveChangesAsync();
     }
 
-    private Task<Domain.Entities.TransactionTag> GetEntity(int id, bool includeSubTags = false, CancellationToken cancellationToken = default) => _transactionTagRepository.Get(id, includeSubTags);
+    private Task<Domain.Entities.TransactionTags.TransactionTag> GetEntity(int id, bool includeSubTags = false, CancellationToken cancellationToken = default) => _transactionTagRepository.Get(id, includeSubTags);
 }

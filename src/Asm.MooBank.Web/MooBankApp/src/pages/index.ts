@@ -3,6 +3,7 @@ export * from "./Home/Home";
 export * from "./Import";
 export * from "./createAccount/CreateAccount";
 export * from "./manageAccounts";
+export * from "./manageAccountGroups";
 export * from "./settings";
 export * from "./transactions/Transactions";
 export * from "./transactionTagRules/TransactionTagRules";

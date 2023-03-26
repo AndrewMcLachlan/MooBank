@@ -5,6 +5,7 @@ using Asm.MooBank.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ITransactionRepository = Asm.MooBank.Domain.Entities.Transactions.ITransactionRepository;
 
 namespace Asm.MooBank.Services;
 
@@ -44,7 +45,7 @@ public class RunRulesService : BackgroundService
 
                 foreach (var transaction in transactions)
                 {
-                    var applicableTags = rules.Where(r => transaction.Description?.Contains(r.Contains, StringComparison.OrdinalIgnoreCase) ?? false).SelectMany(r => r.TransactionTags.Select(t => new Domain.Entities.TransactionTag { TransactionTagId = t.TransactionTagId })).Distinct();
+                    var applicableTags = rules.Where(r => transaction.Description?.Contains(r.Contains, StringComparison.OrdinalIgnoreCase) ?? false).SelectMany(r => r.TransactionTags.Select(t => new Domain.Entities.TransactionTags.TransactionTag { TransactionTagId = t.TransactionTagId })).Distinct();
 
                     transaction.TransactionTags.AddRange(applicableTags);
                     //updatedTransactions.Add(await transactionRepository.AddTransactionTags(transaction.Id, applicableTags));

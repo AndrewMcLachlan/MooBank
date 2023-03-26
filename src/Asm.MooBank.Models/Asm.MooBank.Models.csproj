@@ -11,4 +11,8 @@
     <ProjectReference Include="..\Asm.MooBank.Data\Asm.MooBank.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Asm.Cqrs" Version="3.0.572" />
+  </ItemGroup>
+
 </Project>

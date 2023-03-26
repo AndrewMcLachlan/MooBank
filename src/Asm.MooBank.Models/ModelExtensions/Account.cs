@@ -26,6 +26,7 @@ public partial record Account
             Description = account.Description,
             Balance = account.CurrentBalance,
             LastUpdated = account.BalanceDate,
+            //AccountGroups = account.AccountGroupId == null ? Array.Empty<Domain.Entities.AccountGroup.AccountGroup>() : new Domain.Entities.AccountGroup.AccountGroup[] { new Domain.Entities.AccountGroup.AccountGroup { Id = account.AccountGroupId.Value } }
         };
     }
 

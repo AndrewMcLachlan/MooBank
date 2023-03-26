@@ -1,5 +1,4 @@
-﻿using Asm.MooBank.Domain.Entities;
-using Asm.MooBank.Domain.Repositories;
+﻿using Asm.MooBank.Domain.Entities.TransactionTags;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 

@@ -22,7 +22,7 @@ export const TransactionTagRuleRow: React.FC<TransactionTagRuleRowProps> = (prop
         <tr>
             <td>{props.rule.contains}</td>
             <TagPanel as="td" selectedItems={transactionRow.tags} allItems={tagsList} textField="name" valueField="id" onAdd={transactionRow.addTag} onRemove={transactionRow.removeTag} onCreate={transactionRow.createTag} allowCreate={true} />
-            <td><span onClick={transactionRow.deleteRule}><ClickableIcon icon="trash-alt" title="Delete" /></span></td>
+            <td className="row-action"><span onClick={transactionRow.deleteRule}><ClickableIcon icon="trash-alt" title="Delete" /></span></td>
         </tr>
     );
 }

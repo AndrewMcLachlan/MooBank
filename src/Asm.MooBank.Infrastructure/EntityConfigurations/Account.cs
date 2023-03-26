@@ -25,9 +25,14 @@ public class Account : IEntityTypeConfiguration<Domain.Entities.Account.Account>
             .IsRequired()
             .HasMaxLength(50);
 
-        entity.HasMany(p => p.AccountHolders)
+        entity.HasMany(p => p.AccountAccountHolders)
+               .WithOne(e => e.Account)
+               .HasPrincipalKey(e => e.AccountId)
+               .HasForeignKey(p => p.AccountId);
+
+        /*entity.HasMany(p => p.AccountHolders)
               .WithMany(t => t.Accounts)
-              .UsingEntity<AccountAccountHolder>(
+              .UsingEntity<Domain.Entities.Account.AccountAccountHolder>(
                    aah => aah.HasOne(aah2 => aah2.AccountHolder)
                              .WithMany()
                              .HasForeignKey(aah2 => aah2.AccountHolderId),
@@ -38,5 +43,20 @@ public class Account : IEntityTypeConfiguration<Domain.Entities.Account.Account>
                    {
                        aah.HasKey(e => new { e.AccountId, e.AccountHolderId });
                    });
+
+        entity.HasMany(p => p.AccountGroups)
+              .WithMany(t => t.Accounts)
+              .UsingEntity<Domain.Entities.Account.AccountAccountHolder>(
+                   aah => aah.HasOne(aah2 => aah2.AccountGroup)
+                             .WithMany()
+                             .HasForeignKey(aah2 => aah2.AccountGroupId),
+                   aah => aah.HasOne(aah2 => aah2.Account)
+                             .WithMany()
+                              .HasForeignKey(aah2 => aah2.AccountId),
+                   aah =>
+                   {
+                       aah.HasKey(e => new { e.AccountId, e.AccountHolderId });
+                   });
+        */
     }
 }

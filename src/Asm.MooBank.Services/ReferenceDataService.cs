@@ -1,4 +1,5 @@
-﻿using Asm.MooBank.Models;
+﻿using IReferenceDataRepository = Asm.MooBank.Domain.Entities.ReferenceData.IReferenceDataRepository;
+using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Services;
 

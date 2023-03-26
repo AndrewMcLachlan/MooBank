@@ -1,6 +1,4 @@
-﻿using Asm.MooBank.Domain.Entities.Account;
-
-namespace Asm.MooBank.Infrastructure.EntityConfigurations;
+﻿namespace Asm.MooBank.Infrastructure.EntityConfigurations;
 
 public class InstitutionAccount : IEntityTypeConfiguration<Domain.Entities.Account.InstitutionAccount>
 {

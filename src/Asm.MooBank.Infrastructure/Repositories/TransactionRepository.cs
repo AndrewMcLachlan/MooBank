@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
-using Asm.MooBank.Domain.Repositories;
-using Transaction = Asm.MooBank.Domain.Entities.Transaction;
+using Asm.MooBank.Domain.Entities.Transactions;
+using Transaction = Asm.MooBank.Domain.Entities.Transactions.Transaction;
 
 namespace Asm.MooBank.Infrastructure.Repositories
 {
@@ -22,30 +22,30 @@ namespace Asm.MooBank.Infrastructure.Repositories
 
         public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, CancellationToken cancellationToken = default)
         {
-            _security.AssertPermission(accountId);
+            _security.AssertAccountPermission(accountId);
 
             return (await GetTransactionsQuery(accountId).Where(t => t.AccountId == accountId).ToListAsync(cancellationToken)).OrderByDescending(t => t.TransactionTime);
         }
 
         public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, string filter, DateTime? start, DateTime? end, int pageSize, int pageNumber, string sortField, SortDirection sortDirection, CancellationToken cancellationToken = default)
         {
-            _security.AssertPermission(accountId);
+            _security.AssertAccountPermission(accountId);
 
-            Expression<Func<Transaction, bool>> predicate = (t) => (filter == null || t.Description.Contains(filter)) && (start == null || t.TransactionTime >= start) && (end == null || t.TransactionTime <= end);
+            Expression<Func<Transaction, bool>> predicate = (t) => (filter == null || (t.Description != null && t.Description.Contains(filter))) && (start == null || t.TransactionTime >= start) && (end == null || t.TransactionTime <= end);
 
             return await GetTransactionsQuery(accountId).Where(predicate).Sort(sortField, sortDirection).Page(pageSize, pageNumber).ToListAsync(cancellationToken);
         }
 
         public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, DateTime start, DateTime? end, int pageSize, int pageNumber, string sortField, SortDirection sortDirection, CancellationToken cancellationToken = default)
         {
-            _security.AssertPermission(accountId);
+            _security.AssertAccountPermission(accountId);
 
             return await GetTransactionsQuery(accountId).Where(t => t.TransactionTime >= start && t.TransactionTime <= (end ?? DateTime.Now)).Sort(sortField, sortDirection).Page(pageSize, pageNumber).ToListAsync(cancellationToken);
         }
 
         public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, TimeSpan period, int pageSize, int pageNumber, string sortField, SortDirection sortDirection, CancellationToken cancellationToken = default)
         {
-            _security.AssertPermission(accountId);
+            _security.AssertAccountPermission(accountId);
 
             return await GetTransactionsQuery(accountId).Where(t => t.TransactionTime >= DateTime.Now.Subtract(period) && t.TransactionTime <= DateTime.Now).Sort(sortField, sortDirection).Page(pageSize, pageNumber).ToListAsync(cancellationToken);
         }
@@ -87,7 +87,7 @@ namespace Asm.MooBank.Infrastructure.Repositories
         {
             if (!String.IsNullOrWhiteSpace(field))
             {
-                PropertyInfo property = _transactionProperties.SingleOrDefault(p => p.Name.Equals(field, StringComparison.OrdinalIgnoreCase));
+                PropertyInfo? property = _transactionProperties.SingleOrDefault(p => p.Name.Equals(field, StringComparison.OrdinalIgnoreCase));
 
                 if (property == null) throw new ArgumentException($"Unknown field {field}", nameof(field));
 

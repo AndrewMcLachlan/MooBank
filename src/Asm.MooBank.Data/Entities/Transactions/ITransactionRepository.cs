@@ -1,6 +1,7 @@
-﻿using Transaction = Asm.MooBank.Domain.Entities.Transaction;
+﻿using Asm.MooBank.Domain.Repositories;
+using Transaction = Asm.MooBank.Domain.Entities.Transactions.Transaction;
 
-namespace Asm.MooBank.Domain.Repositories;
+namespace Asm.MooBank.Domain.Entities.Transactions;
 
 public interface ITransactionRepository : IWritableRepository<Transaction, Guid>
 {

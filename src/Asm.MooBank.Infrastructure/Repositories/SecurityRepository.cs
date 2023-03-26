@@ -1,5 +1,5 @@
 ﻿using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Domain.Repositories;
+using Asm.MooBank.Domain.Entities.AccountGroup;
 using Asm.MooBank.Security;
 using Microsoft.AspNetCore.Http;
 
@@ -18,23 +18,40 @@ public class SecurityRepository : ISecurityRepository
         _bankPlusContext = dataContext;
     }
 
-    public void AssertPermission(Guid accountId)
+    public void AssertAccountPermission(Guid accountId)
     {
         // HACK
         if (_runningOutOfContext) return;
 
-        if (!_bankPlusContext.Accounts.Any(a => a.AccountId == accountId && a.AccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId)))
+        if (!_bankPlusContext.Accounts.Any(a => a.AccountId == accountId && a.AccountAccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId)))
         {
             throw new NotAuthorisedException("Not authorised to view this account");
         }
     }
 
-    public void AssertPermission(Account account)
+    public void AssertAccountPermission(Account account)
     {
         // HACK
         if (_runningOutOfContext) return;
 
-        if (!account.AccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId))
+        if (!account.AccountAccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId))
+        {
+            throw new NotAuthorisedException("Not authorised to view this account");
+        }
+    }
+
+    public void AssertAccountGroupPermission(Guid accountGroupId)
+    {
+
+        if (!_bankPlusContext.AccountGroups.Any(a => a.Id == accountGroupId && a.OwnerId == _userDataProvider.CurrentUserId))
+        {
+            throw new NotAuthorisedException("Not authorised to view this account group");
+        }
+    }
+
+    public void AssertAccountGroupPermission(AccountGroup accountGroup)
+    {
+        if (accountGroup.OwnerId != _userDataProvider.CurrentUserId)
         {
             throw new NotAuthorisedException("Not authorised to view this account");
         }

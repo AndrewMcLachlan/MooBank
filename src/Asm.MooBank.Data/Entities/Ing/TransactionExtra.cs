@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Asm.MooBank.Domain.Entities.Transactions;
 
 namespace Asm.MooBank.Domain.Entities.Ing;
 

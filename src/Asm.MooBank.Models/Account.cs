@@ -2,15 +2,17 @@
 
 public partial record Account
 {
-    public Guid Id { get; set; }
+    public required Guid Id { get; set; }
 
-    public string Name { get; set; }
+    public required string Name { get; set; }
 
     public string? Description { get; set; }
 
-    public DateTimeOffset BalanceDate { get; set; }
+    public required DateTimeOffset BalanceDate { get; set; }
 
-    public decimal CurrentBalance { get; set; }
+    public required decimal CurrentBalance { get; set; }
 
     public string? AccountType { get; set; }
+
+    public Guid? AccountGroupId { get; set; }
 }

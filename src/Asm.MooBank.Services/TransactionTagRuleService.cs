@@ -1,6 +1,7 @@
 ﻿using Asm.Domain;
 using Asm.MooBank.Models;
 using ITransactionTagRuleRepository = Asm.MooBank.Domain.Entities.Account.ITransactionTagRuleRepository;
+using ITransactionTagRepository = Asm.MooBank.Domain.Entities.TransactionTags.ITransactionTagRepository;
 
 namespace Asm.MooBank.Services;
 
@@ -36,13 +37,13 @@ public class TransactionTagRuleService : ServiceBase, ITransactionTagRuleService
 
     public async Task<TransactionTagRule> Create(Guid accountId, string contains, IEnumerable<int> tagIds)
     {
-        _security.AssertPermission(accountId);
+        _security.AssertAccountPermission(accountId);
 
         var rule = new Domain.Entities.Account.TransactionTagRule
         {
             AccountId = accountId,
             Contains = contains,
-            TransactionTags = tagIds.Select(t => new Domain.Entities.TransactionTag { TransactionTagId = t }).ToList(),
+            TransactionTags = tagIds.Select(t => new Domain.Entities.TransactionTags.TransactionTag { TransactionTagId = t }).ToList(),
         };
 
         _transactionTagRuleRepository.Add(rule);
@@ -54,7 +55,7 @@ public class TransactionTagRuleService : ServiceBase, ITransactionTagRuleService
 
     public async Task<Models.TransactionTagRule> Create(Guid accountId, string contains, IEnumerable<TransactionTag> tags)
     {
-        _security.AssertPermission(accountId);
+        _security.AssertAccountPermission(accountId);
 
         var rule = new Domain.Entities.Account.TransactionTagRule
         {
@@ -83,7 +84,7 @@ public class TransactionTagRuleService : ServiceBase, ITransactionTagRuleService
 
     public async Task<IEnumerable<TransactionTagRule>> Get(Guid accountId, CancellationToken cancellationToken = default)
     {
-        _security.AssertPermission(accountId);
+        _security.AssertAccountPermission(accountId);
 
         return await _transactionTagRuleRepository.GetForAccount(accountId).ToModelAsync(cancellationToken);
     }
@@ -120,7 +121,7 @@ public class TransactionTagRuleService : ServiceBase, ITransactionTagRuleService
 
     private async Task<Domain.Entities.Account.TransactionTagRule> GetEntity(Guid accountId, int id)
     {
-        _security.AssertPermission(accountId);
+        _security.AssertAccountPermission(accountId);
 
         Domain.Entities.Account.TransactionTagRule entity = await _transactionTagRuleRepository.Get(accountId, id);
 

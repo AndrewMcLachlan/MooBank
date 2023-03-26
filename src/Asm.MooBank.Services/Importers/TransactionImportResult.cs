@@ -1,4 +1,4 @@
-﻿using Asm.MooBank.Domain.Entities;
+﻿using Asm.MooBank.Domain.Entities.Transactions;
 
 namespace Asm.MooBank.Importers;
 

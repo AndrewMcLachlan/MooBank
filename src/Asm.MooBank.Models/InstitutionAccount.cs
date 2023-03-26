@@ -4,7 +4,7 @@ public partial record InstitutionAccount : Account
 {
     public bool IncludeInPosition { get; set; }
 
-    public AccountType AccountType { get; set; }
+    public new AccountType AccountType { get; set; }
 
     public AccountController Controller { get; set; }
 

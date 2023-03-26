@@ -1,4 +1,5 @@
 ﻿using Asm.MooBank.Domain.Entities.Account;
+using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Security;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
@@ -14,10 +15,10 @@ public class InstitutionAccountRepository : RepositoryDeleteBase<InstitutionAcco
 
     public override async Task<IEnumerable<InstitutionAccount>> GetAll(CancellationToken cancellationToken = default)
     {
-        return await DataSet.Where(a => a.AccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId)).ToListAsync(cancellationToken);
+        return await DataSet.Where(a => a.AccountAccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId)).ToListAsync(cancellationToken);
     }
 
-    protected override IQueryable<InstitutionAccount> GetById(Guid id) => DataSet.Where(a => a.AccountId == id && a.AccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId));
+    protected override IQueryable<InstitutionAccount> GetById(Guid id) => DataSet.Where(a => a.AccountId == id && a.AccountAccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId));
 
     public async Task<IEnumerable<ImporterType>> GetImporterTypes(CancellationToken cancellationToken = default) => await DataContext.Set<ImporterType>().ToListAsync(cancellationToken);
 
@@ -40,7 +41,7 @@ public class InstitutionAccountRepository : RepositoryDeleteBase<InstitutionAcco
     }
 
     public Task<decimal> GetPosition() =>
-        DataSet.Where(a => a.AccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId) && a.IncludeInPosition).SumAsync(a => a.Balance);
+        DataSet.Where(a => a.AccountAccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId) && a.IncludeInPosition).SumAsync(a => a.Balance);
 
 
 }

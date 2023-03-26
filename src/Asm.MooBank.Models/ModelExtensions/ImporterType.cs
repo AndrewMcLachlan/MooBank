@@ -2,7 +2,7 @@
 
 public partial record ImporterType
 {
-    public static explicit operator ImporterType(Domain.Entities.ImporterType entity)
+    public static explicit operator ImporterType(Domain.Entities.ReferenceData.ImporterType entity)
     {
         return new ImporterType
         {
@@ -12,9 +12,9 @@ public partial record ImporterType
         };
     }
 
-    public static explicit operator Domain.Entities.ImporterType(ImporterType model)
+    public static explicit operator Domain.Entities.ReferenceData.ImporterType(ImporterType model)
     {
-        return new Domain.Entities.ImporterType
+        return new Domain.Entities.ReferenceData.ImporterType
         {
             ImporterTypeId = model.Id,
             Type = model.Type,
@@ -25,12 +25,12 @@ public partial record ImporterType
 
 public static class IEnumerableImporterTypeExtensions
 {
-    public static IEnumerable<ImporterType> ToModel(this IEnumerable<Domain.Entities.ImporterType> entities)
+    public static IEnumerable<ImporterType> ToModel(this IEnumerable<Domain.Entities.ReferenceData.ImporterType> entities)
     {
         return entities.Select(t => (ImporterType)t);
     }
 
-    public static async Task<IEnumerable<ImporterType>> ToModelAsync(this Task<IEnumerable<Domain.Entities.ImporterType>> entityTask, CancellationToken cancellationToken = default)
+    public static async Task<IEnumerable<ImporterType>> ToModelAsync(this Task<IEnumerable<Domain.Entities.ReferenceData.ImporterType>> entityTask, CancellationToken cancellationToken = default)
     {
         return (await entityTask.WaitAsync(cancellationToken)).Select(t => (ImporterType)t);
     }

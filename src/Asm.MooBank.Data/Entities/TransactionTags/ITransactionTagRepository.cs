@@ -1,7 +1,6 @@
-﻿using Asm.MooBank.Domain.Entities;
+﻿using Asm.MooBank.Domain.Repositories;
 
-
-namespace Asm.MooBank.Domain.Repositories;
+namespace Asm.MooBank.Domain.Entities.TransactionTags;
 
 public interface ITransactionTagRepository : IDeletableRepository<TransactionTag, int>
 {

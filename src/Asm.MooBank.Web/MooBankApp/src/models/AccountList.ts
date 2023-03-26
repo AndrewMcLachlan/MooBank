@@ -1,7 +1,12 @@
 import { Account } from ".";
 
 export interface AccountList {
-    positionedAccounts: Account[],
-    otherAccounts: Account[],
+    accountGroups: AccountListGroup[],
     position: number,
+}
+
+export interface AccountListGroup {
+    name: string,
+    accounts: Account[],
+    position?: number
 }

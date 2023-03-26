@@ -1,13 +1,17 @@
-﻿using System.Collections.Generic;
-
-namespace Asm.MooBank.Models;
+﻿namespace Asm.MooBank.Models;
 
 public record AccountsList
 {
-    public IEnumerable<InstitutionAccount> PositionedAccounts { get; set; }
+    public required IEnumerable<AccountListGroup> AccountGroups { get; init; }
 
-    public IEnumerable<InstitutionAccount> OtherAccounts { get; set; }
+    public decimal Position { get; init; }
 
-    public decimal Position { get; set; }
+}
 
+public record AccountListGroup
+{
+    public required string Name { get; init; }
+
+    public required IEnumerable<InstitutionAccount> Accounts { get; init; }
+    public decimal? Position { get; set; }
 }

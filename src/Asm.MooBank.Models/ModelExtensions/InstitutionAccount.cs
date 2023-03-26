@@ -37,3 +37,35 @@ public partial record InstitutionAccount
         };
     }
 }
+
+
+public static class InstitutionAccountExtensions
+{
+    public static InstitutionAccount ToModel(this Domain.Entities.Account.InstitutionAccount entity, Guid userId)
+    {
+        var result = (InstitutionAccount)entity;
+        result.AccountGroupId = entity.GetAccountGroup(userId)?.Id;
+
+        return result;
+    }
+
+    public static async Task<InstitutionAccount> ToModelAsync(this Task<Domain.Entities.Account.InstitutionAccount> entityTask, Guid userId, CancellationToken cancellationToken = default)
+    {
+        var entity = await entityTask.WaitAsync(cancellationToken);
+
+        var result = (InstitutionAccount)entity;
+        result.AccountGroupId = entity.GetAccountGroup(userId)?.Id;
+
+        return result;
+    }
+
+    public static IEnumerable<InstitutionAccount> ToModel(this IEnumerable<Domain.Entities.Account.InstitutionAccount> entities)
+    {
+        return entities.Select(t => (InstitutionAccount)t);
+    }
+
+    public static async Task<IEnumerable<InstitutionAccount>> ToModelAsync(this Task<IEnumerable<Domain.Entities.Account.InstitutionAccount>> entityTask, CancellationToken cancellationToken = default)
+    {
+        return (await entityTask.WaitAsync(cancellationToken)).Select(t => (InstitutionAccount)t);
+    }
+}

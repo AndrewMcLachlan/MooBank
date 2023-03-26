@@ -21,7 +21,7 @@ export const TransactionTagRow: React.FC<TransactionTagRowProps> = (props) => {
         <tr>
             <td>{props.tag.name}</td>
             <TagPanel as="td" selectedItems={transactionRow.tags} allItems={tagsList} textField="name" valueField="id" onAdd={transactionRow.addTag} onRemove={transactionRow.removeTag} onCreate={transactionRow.createTag} allowCreate={true} />
-            <td><span onClick={transactionRow.deleteTag}><ClickableIcon icon="trash-alt" title="Delete" /></span></td>
+            <td className="row-action"><span onClick={transactionRow.deleteTag}><ClickableIcon icon="trash-alt" title="Delete" /></span></td>
         </tr>
     );
 }

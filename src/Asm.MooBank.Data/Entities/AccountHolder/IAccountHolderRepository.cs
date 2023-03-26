@@ -1,7 +1,7 @@
 ﻿using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Domain.Entities.AccountHolder;
+using Asm.MooBank.Domain.Repositories;
 
-namespace Asm.MooBank.Domain.Repositories;
+namespace Asm.MooBank.Domain.Entities.AccountHolder;
 
 public interface IAccountHolderRepository : IWritableRepository<AccountHolder, Guid>
 {

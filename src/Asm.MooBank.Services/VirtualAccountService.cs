@@ -30,7 +30,7 @@ public class VirtualAccountService : ServiceBase, IVirtualAccountService
 
     public async Task<VirtualAccount> Create(Guid accountId, VirtualAccount account)
     {
-        _securityRepository.AssertPermission(accountId);
+        _securityRepository.AssertAccountPermission(accountId);
 
         var entity = (Domain.Entities.Account.VirtualAccount)account;
 
@@ -45,7 +45,7 @@ public class VirtualAccountService : ServiceBase, IVirtualAccountService
 
     public async Task Delete(Guid accountId, Guid virtualAccountId)
     {
-        _securityRepository.AssertPermission(accountId);
+        _securityRepository.AssertAccountPermission(accountId);
 
         var entity = await GetEntity(accountId, virtualAccountId);
 
@@ -58,7 +58,7 @@ public class VirtualAccountService : ServiceBase, IVirtualAccountService
 
     public async Task<VirtualAccount> Update(Guid accountId, VirtualAccount account)
     {
-        _securityRepository.AssertPermission(accountId);
+        _securityRepository.AssertAccountPermission(accountId);
 
         var entity = await GetEntity(accountId, account.Id);
 
@@ -73,7 +73,7 @@ public class VirtualAccountService : ServiceBase, IVirtualAccountService
 
     public async Task<VirtualAccount> UpdateBalance(Guid accountId, Guid virtualAccountId, decimal balance)
     {
-        _securityRepository.AssertPermission(accountId);
+        _securityRepository.AssertAccountPermission(accountId);
 
         var entity = await GetEntity(accountId, virtualAccountId);
 
@@ -86,7 +86,7 @@ public class VirtualAccountService : ServiceBase, IVirtualAccountService
 
     private async Task<Domain.Entities.Account.VirtualAccount> GetEntity(Guid accountId, Guid virtualAccountId)
     {
-        _securityRepository.AssertPermission(accountId);
+        _securityRepository.AssertAccountPermission(accountId);
 
         var entity = await _virtualAccountRepository.Get(virtualAccountId);
 

@@ -5,7 +5,7 @@ import { toNameValue } from "../../extensions";
 import { useNavigate } from "react-router-dom";
 
 import { ImportSettings } from "./ImportSettings";
-import { useCreateAccount } from "../../services";
+import { useAccountGroups, useCreateAccount } from "../../services";
 import { emptyGuid } from "../../helpers";
 import { Page } from "../../layouts";
 
@@ -14,6 +14,7 @@ export const CreateAccount: React.FC = () => {
     const navigate = useNavigate();
 
     const accountTypes = toNameValue(AccountType);
+    const { data: accountGroups } = useAccountGroups();
 
     const accountControllers = toNameValue(AccountController);
 
@@ -23,9 +24,7 @@ export const CreateAccount: React.FC = () => {
     const [accountType, setAccountType] = useState(AccountType.Transaction);
     const [accountController, setAccountController] = useState(AccountController.Manual);
     const [importerTypeId, setImporterTypeId] = useState(0);
-    const [includeInPosition, setIncludeInPosition] = useState(true);
-
-    const createAccount = useCreateAccount();
+    const [accountGroupId, setAccountGroupId] = useState("");
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.stopPropagation();
@@ -42,7 +41,7 @@ export const CreateAccount: React.FC = () => {
             accountType: accountType,
             controller: accountController,
             balanceUpdated: new Date(),
-            includeInPosition: includeInPosition,
+            accountGroupId: accountGroupId,
             virtualAccounts: [],
         };
 
@@ -56,26 +55,30 @@ export const CreateAccount: React.FC = () => {
             <Page.Header title="Create Account" breadcrumbs={[["Manage Accounts", "/accounts"], ["Create Account", "/accounts/create"]]} />
             <Page.Content>
                 <Form onSubmit={handleSubmit}>
-                    <Form.Group controlId="AccountName" >
+                    <Form.Group controlId="accountName" >
                         <Form.Label>Name</Form.Label>
                         <Form.Control type="text" required maxLength={50} value={name} onChange={(e: any) => setName(e.currentTarget.value)} />
                         <Form.Control.Feedback type="invalid">Please enter a name</Form.Control.Feedback>
                     </Form.Group>
-                    <Form.Group controlId="AccountDescription" >
+                    <Form.Group controlId="accountDescription" >
                         <Form.Label >Description</Form.Label>
                         <Form.Control type="text" as="textarea" required maxLength={255} value={description} onChange={(e: any) => setDescription(e.currentTarget.value)} />
                         <Form.Control.Feedback type="invalid">Please enter a description</Form.Control.Feedback>
                     </Form.Group>
-                    <Form.Group controlId="OpeningBalance" >
+                    <Form.Group controlId="openingBalance" >
                         <Form.Label>Opening Balance</Form.Label>
                         <InputGroup>
                             <InputGroup.Text>$</InputGroup.Text>
                             <Form.Control type="number" required value={balance.toString()} onChange={(e: any) => setBalance(e.currentTarget.value)} />
                         </InputGroup>
                     </Form.Group>
-                    <Form.Group controlId="OpeningBalance" >
-                        <Form.Label htmlFor="includeInPosition">Include in Position</Form.Label>
-                        <Form.Switch id="includeInPosition" checked={includeInPosition} onChange={(e) => setIncludeInPosition(e.currentTarget.checked)} />
+                    <Form.Group controlId="group">
+                        <Form.Label>Group</Form.Label>
+                        <Form.Control as="select" value={accountGroupId} onChange={(e: any) => setAccountGroupId(e.currentTarget.value)}>
+                            {accountGroups?.map(a =>
+                                <option value={a.id} key={a.id}>{a.name}</option>
+                            )}
+                        </Form.Control>
                     </Form.Group>
                     <Form.Group controlId="AccountType" >
                         <Form.Label>Type</Form.Label>

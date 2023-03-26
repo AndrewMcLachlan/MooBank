@@ -1,9 +1,8 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
-using Asm.MooBank.Domain.Entities;
 using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Ing;
-using Asm.MooBank.Domain.Repositories.Ing;
+using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Importers;
 using Microsoft.Extensions.Logging;
 using TransactionType = Asm.MooBank.Models.TransactionType;

@@ -2,9 +2,9 @@
 
 public partial record Transaction
 {
-    public static explicit operator Models.Transaction(Domain.Entities.Transaction transaction)
+    public static explicit operator Transaction(Domain.Entities.Transactions.Transaction transaction)
     {
-        return new Models.Transaction
+        return new Transaction
         {
             Id = transaction.TransactionId,
             Reference = transaction.TransactionReference,
@@ -13,13 +13,13 @@ public partial record Transaction
             TransactionType = transaction.TransactionType,
             AccountId = transaction.AccountId,
             Description = transaction.Description,
-            Tags = transaction.TransactionTags.Where(t => !t.Deleted).Select(t => (Models.TransactionTag)t),
+            Tags = transaction.TransactionTags.Where(t => !t.Deleted).Select(t => (TransactionTag)t),
         };
     }
 
-    public static explicit operator Domain.Entities.Transaction(Models.Transaction transaction)
+    public static explicit operator Domain.Entities.Transactions.Transaction(Transaction transaction)
     {
-        return new Domain.Entities.Transaction
+        return new Domain.Entities.Transactions.Transaction
         {
             //TransactionId = transaction.Id == Guid.Empty ? Guid.NewGuid() : transaction.Id,
             TransactionId = transaction.Id,
@@ -35,12 +35,12 @@ public partial record Transaction
 
 public static class IEnumerableTransactionExtensions
 {
-    public static IEnumerable<Transaction> ToModel(this IEnumerable<Domain.Entities.Transaction> entities)
+    public static IEnumerable<Transaction> ToModel(this IEnumerable<Domain.Entities.Transactions.Transaction> entities)
     {
         return entities.Select(t => (Transaction)t);
     }
 
-    public static async Task<IEnumerable<Transaction>> ToModelAsync(this Task<IEnumerable<Domain.Entities.Transaction>> entityTask, CancellationToken cancellationToken = default)
+    public static async Task<IEnumerable<Transaction>> ToModelAsync(this Task<IEnumerable<Domain.Entities.Transactions.Transaction>> entityTask, CancellationToken cancellationToken = default)
     {
         return (await entityTask.WaitAsync(cancellationToken)).Select(t => (Transaction)t);
     }

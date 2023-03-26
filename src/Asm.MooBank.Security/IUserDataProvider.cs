@@ -2,10 +2,8 @@
 
 namespace Asm.MooBank.Security;
 
-public interface IUserDataProvider
+public interface IUserDataProvider : IUserIdProvider
 {
-    Guid CurrentUserId { get; }
-
     Task<AccountHolder> GetCurrentUser();
 
 }

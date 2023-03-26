@@ -1,6 +1,7 @@
 ﻿using Asm.Domain;
-using Asm.MooBank.Domain.Entities;
+using Asm.MooBank.Domain.Entities.TransactionTags;
 using Asm.MooBank.Domain.Entities.Account;
+using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Importers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;

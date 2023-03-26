@@ -15,8 +15,7 @@ import { Page } from "../../layouts";
 
 export const TransactionTagRules: React.FC = () => {
 
-
-    const { accountId } = useParams<any>();
+    const { accountId } = useParams<{accountId: string}>();
 
     const rulesQuery = useRules(accountId);
     const { data } = rulesQuery;
@@ -29,7 +28,7 @@ export const TransactionTagRules: React.FC = () => {
 
     return (
         <Page title="Transaction Tag Rules">
-            <Page.Header title="Transaction Tag Rules" menuItems={[{ text: "Run Rules Now", onClick: runRules }]}
+            <Page.Header goBack title="Transaction Tag Rules" menuItems={[{ text: "Run Rules Now", onClick: runRules }]}
                 breadcrumbs={[[account.data.name, `/accounts/${accountId}`], ["Tag Rules", `/accounts/${accountId}/tag-rules`]]} />
             <Page.Content>
                 <Table striped bordered={false} borderless className="transaction-tag-rules">
@@ -45,7 +44,7 @@ export const TransactionTagRules: React.FC = () => {
                             <td><input type="text" className="form-control" placeholder="Transaction description contains..." value={newRule.contains} onChange={nameChange} /></td>
                             <TagPanel as="td" selectedItems={newRule.tags} allItems={fullTagsList} textField="name" valueField="id" onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} />
                             {/*<Select defaultOptions={fullTagsList} getOptionLabel={(t:TransactionTag) => t.name } getOptionValue={(t:TransactionTag) => t.id.toString() } hideSelectedOptions={true} isOptionSelected={t => } onChange />*/}
-                            <td><span onClick={createRule}><ClickableIcon icon="check-circle" title="Save" /></span></td>
+                            <td className="row-action"><span onClick={createRule}><ClickableIcon icon="check-circle" title="Save" size="xl" /></span></td>
                         </tr>
                         {data?.rules && data.rules.map((r) => <TransactionTagRuleRow key={r.id} accountId={accountId} rule={r} />)}
                     </tbody>

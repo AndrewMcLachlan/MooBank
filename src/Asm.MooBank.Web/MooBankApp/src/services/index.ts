@@ -1,4 +1,5 @@
 export * from "./AccountService";
+export * from "./AccountGroupService";
 export * from "./ImportService";
 export * from "./ReferenceDataService";
 export * from "./TransactionService";

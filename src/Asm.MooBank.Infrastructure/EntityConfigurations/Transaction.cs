@@ -1,10 +1,10 @@
-﻿using Asm.MooBank.Domain.Entities;
+﻿using Asm.MooBank.Domain.Entities.Transactions;
 
 namespace Asm.MooBank.Infrastructure.EntityConfigurations;
 
-public class Transaction : IEntityTypeConfiguration<Domain.Entities.Transaction>
+public class Transaction : IEntityTypeConfiguration<Domain.Entities.Transactions.Transaction>
 {
-    public void Configure(EntityTypeBuilder<Domain.Entities.Transaction> entity)
+    public void Configure(EntityTypeBuilder<Domain.Entities.Transactions.Transaction> entity)
     {
         entity.HasKey("TransactionId");
 
@@ -37,7 +37,7 @@ public class Transaction : IEntityTypeConfiguration<Domain.Entities.Transaction>
                 });
 
         entity.Property(e => e.TransactionType)
-            .HasColumnName($"{nameof(Domain.Entities.Transaction.TransactionType)}Id")
+            .HasColumnName($"{nameof(Domain.Entities.Transactions.Transaction.TransactionType)}Id")
             .HasConversion(e => (int)e, e => (Models.TransactionType)e)
             .HasDefaultValue(Models.TransactionType.Debit);
 

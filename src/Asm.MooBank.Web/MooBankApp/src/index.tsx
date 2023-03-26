@@ -5,7 +5,7 @@ import { createRoot } from "react-dom/client";
 import { Provider as ReduxProvider } from "react-redux";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faCheckCircle, faTrashAlt, faChevronDown, faChevronUp, faTimesCircle, faArrowLeft, faChevronRight, faUpload } from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle, faTrashAlt, faChevronDown, faChevronUp, faTimesCircle, faArrowLeft, faChevronRight, faCircleChevronLeft, faUpload } from "@fortawesome/free-solid-svg-icons";
 
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
@@ -13,7 +13,7 @@ import { AppProvider } from "./providers";
 import { MooApp } from "@andrewmclachlan/mooapp";
 import { AppStore } from "./store/configureStore";
 
-library.add(faCheckCircle, faTrashAlt, faChevronDown, faChevronUp, faTimesCircle, faArrowLeft, faChevronRight, faUpload);
+library.add(faCheckCircle, faTrashAlt, faChevronDown, faChevronUp, faTimesCircle, faArrowLeft, faChevronRight, faCircleChevronLeft, faUpload);
 
 const root = createRoot(document.getElementById("root")!);
 

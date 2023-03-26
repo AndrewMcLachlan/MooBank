@@ -1,6 +1,4 @@
-﻿using Asm.MooBank.Domain.Entities.Ing;
-
-namespace Asm.MooBank.Domain.Repositories.Ing;
+﻿namespace Asm.MooBank.Domain.Entities.Ing;
 
 public interface ITransactionExtraRepository
 {

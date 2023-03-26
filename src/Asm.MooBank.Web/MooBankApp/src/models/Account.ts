@@ -28,6 +28,7 @@ export interface Account extends AccountBase {
     availableBalance: number;
     balanceUpdated: Date;
     accountType: AccountType;
+    accountGroupId: string;
     controller: AccountController;
     includeInPosition: boolean;
     importerTypeId?: number;
@@ -44,6 +45,7 @@ export const emptyAccount : Account = {
     accountType: AccountType.None,
     controller: AccountController.Manual,
     includeInPosition: false,
+    accountGroupId: "",
     virtualAccounts: [],
 }
 

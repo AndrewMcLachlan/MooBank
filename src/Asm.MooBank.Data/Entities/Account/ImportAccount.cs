@@ -1,4 +1,6 @@
-﻿namespace Asm.MooBank.Domain.Entities.Account;
+﻿using Asm.MooBank.Domain.Entities.ReferenceData;
+
+namespace Asm.MooBank.Domain.Entities.Account;
 
 public partial class ImportAccount
 {

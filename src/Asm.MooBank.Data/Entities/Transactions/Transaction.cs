@@ -1,4 +1,6 @@
-﻿namespace Asm.MooBank.Domain.Entities;
+﻿using Asm.MooBank.Domain.Entities.TransactionTags;
+
+namespace Asm.MooBank.Domain.Entities.Transactions;
 
 public partial class Transaction
 {

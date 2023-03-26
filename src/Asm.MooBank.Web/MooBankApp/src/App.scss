@@ -183,10 +183,11 @@ table.accountManagement {
 
 table.trasactionHistory {
     width: 100%;
+}
 
-    th {
-        text-align: left;
-    }
+.row-action {
+    vertical-align: middle;
+    text-align: center;
 }
 /*#endregion*/
 
@@ -252,6 +253,15 @@ table .balance {
 
 form > div {
     margin-bottom: 1rem;
+}
+
+.page-header {
+    .container { column-gap: 1rem;
+    }
+    h2 {
+        flex-grow: 1;
+    }
+    
 }
 
 @import 'responsive';

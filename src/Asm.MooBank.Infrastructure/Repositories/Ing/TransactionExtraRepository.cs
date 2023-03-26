@@ -1,5 +1,4 @@
 ﻿using Asm.MooBank.Domain.Entities.Ing;
-using Asm.MooBank.Domain.Repositories.Ing;
 
 namespace Asm.MooBank.Infrastructure.Repositories.Ing
 {

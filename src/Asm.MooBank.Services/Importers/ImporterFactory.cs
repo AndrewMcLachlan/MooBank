@@ -1,5 +1,4 @@
-﻿using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Importers;
+﻿using Asm.MooBank.Importers;
 using IInstitutionAccountRepository = Asm.MooBank.Domain.Entities.Account.IInstitutionAccountRepository;
 
 namespace Asm.MooBank.Services.Importers;

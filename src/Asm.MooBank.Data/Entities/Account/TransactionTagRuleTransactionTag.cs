@@ -1,4 +1,6 @@
-﻿namespace Asm.MooBank.Domain.Entities.Account;
+﻿using Asm.MooBank.Domain.Entities.TransactionTags;
+
+namespace Asm.MooBank.Domain.Entities.Account;
 
 public class TransactionTagRuleTransactionTag
 {

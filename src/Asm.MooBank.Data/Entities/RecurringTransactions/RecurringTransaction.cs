@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Asm.MooBank.Domain.Entities.Account;
 
 namespace Asm.MooBank.Domain.Entities.RecurringTransactions;
 
@@ -10,7 +11,7 @@ public class RecurringTransaction
     public decimal Amount { get; set; }
     public DateTime? LastRun { get; set; }
 
-    public virtual Account.VirtualAccount VirtualAccount { get; set; }
+    public virtual VirtualAccount VirtualAccount { get; set; }
 
     [Column("ScheduleId")]
     public virtual ScheduleFrequency Schedule { get; set; }

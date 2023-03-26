@@ -1,4 +1,6 @@
 ﻿using Asm.Domain;
+using ITransactionRepository = Asm.MooBank.Domain.Entities.Transactions.ITransactionRepository;
+using Asm.MooBank.Domain.Entities.TransactionTags;
 using Asm.MooBank.Models;
 using Microsoft.EntityFrameworkCore;
 using IAccountRepository = Asm.MooBank.Domain.Entities.Account.IInstitutionAccountRepository;
@@ -46,7 +48,7 @@ public class TransactionService : ServiceBase, ITransactionService
 
     public async Task<int> GetTotalTransactions(Guid accountId, string filter, DateTime? start, DateTime? end, CancellationToken cancellationToken = default)
     {
-        _security.AssertPermission(accountId);
+        _security.AssertAccountPermission(accountId);
 
         return await _transactionRepository.GetTransactionCount(accountId, filter, start, end, cancellationToken);
 
@@ -54,42 +56,42 @@ public class TransactionService : ServiceBase, ITransactionService
 
     public async Task<int> GetTotalUntaggedTransactions(Guid accountId, string filter, DateTime? start, DateTime? end, CancellationToken cancellationToken = default)
     {
-        _security.AssertPermission(accountId);
+        _security.AssertAccountPermission(accountId);
 
         return await _transactionRepository.GetUntaggedTransactionCount(accountId, filter, start, end, cancellationToken);
     }
 
     public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, CancellationToken cancellationToken = default)
     {
-        _security.AssertPermission(accountId);
+        _security.AssertAccountPermission(accountId);
 
         return (await _transactionRepository.GetTransactions(accountId)).Select(t => (Transaction)t).OrderByDescending(t => t.TransactionTime);
     }
 
     public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, string filter, DateTime? start, DateTime? end, int pageSize, int pageNumber, string sortField, SortDirection sortDirection, CancellationToken cancellationToken = default)
     {
-        _security.AssertPermission(accountId);
+        _security.AssertAccountPermission(accountId);
 
         return await _transactionRepository.GetTransactions(accountId, filter, start, end, pageSize, pageNumber, sortField, sortDirection).ToModelAsync();
     }
 
     public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, DateTime start, DateTime? end, int pageSize, int pageNumber, string sortField, SortDirection sortDirection, CancellationToken cancellationToken = default)
     {
-        _security.AssertPermission(accountId);
+        _security.AssertAccountPermission(accountId);
 
         return await _transactionRepository.GetTransactions(accountId, start, end, pageSize, pageNumber, sortField, sortDirection).ToModelAsync();
     }
 
     public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, TimeSpan period, int pageSize, int pageNumber, string sortField, SortDirection sortDirection, CancellationToken cancellationToken = default)
     {
-        _security.AssertPermission(accountId);
+        _security.AssertAccountPermission(accountId);
 
         return await _transactionRepository.GetTransactions(accountId, period, pageSize, pageNumber, sortField, sortDirection).ToModelAsync();
     }
 
     public async Task<IEnumerable<Transaction>> GetUntaggedTransactions(Guid accountId, string filter, DateTime? start, DateTime? end, int pageSize, int pageNumber, string sortField, SortDirection sortDirection, CancellationToken cancellationToken = default)
     {
-        _security.AssertPermission(accountId);
+        _security.AssertAccountPermission(accountId);
 
         return await _transactionRepository.GetTransactions(accountId, filter, start, end, pageSize, pageNumber, sortField, sortDirection).ToModelAsync();
     }
@@ -141,9 +143,9 @@ public class TransactionService : ServiceBase, ITransactionService
 
     public async Task<IEnumerable<Transaction>> CreateTransactions(IEnumerable<Transaction> transactions)
     {
-        transactions.Select(t => t.AccountId).Distinct().ToList().ForEach(_security.AssertPermission);
+        transactions.Select(t => t.AccountId).Distinct().ToList().ForEach(_security.AssertAccountPermission);
 
-        var entities = transactions.Select(t => (Domain.Entities.Transaction)t).ToList();
+        var entities = transactions.Select(t => (Domain.Entities.Transactions.Transaction)t).ToList();
 
         _transactionRepository.AddRange(entities);
 
@@ -152,11 +154,11 @@ public class TransactionService : ServiceBase, ITransactionService
         return entities.Select(t => (Transaction)t);
     }
 
-    private async Task<Domain.Entities.Transaction> GetEntity(Guid id)
+    private async Task<Domain.Entities.Transactions.Transaction> GetEntity(Guid id)
     {
-        Domain.Entities.Transaction entity = await _transactionRepository.Get(id);
+        Domain.Entities.Transactions.Transaction entity = await _transactionRepository.Get(id);
 
-        _security.AssertPermission(entity.AccountId);
+        _security.AssertAccountPermission(entity.AccountId);
 
         return entity;
     }
@@ -168,7 +170,7 @@ public class TransactionService : ServiceBase, ITransactionService
                                           isRecurring ? TransactionType.RecurringDebit : TransactionType.Debit :
                                           isRecurring ? TransactionType.RecurringCredit : TransactionType.Credit;
 
-        Domain.Entities.Transaction transaction = new()
+        Domain.Entities.Transactions.Transaction transaction = new()
         {
             Amount = amount,
             AccountId = accountId,

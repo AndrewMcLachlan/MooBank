@@ -1,5 +1,5 @@
 ﻿using Asm.Domain;
-using Asm.MooBank.Domain.Repositories;
+using IAccountHolderRepository = Asm.MooBank.Domain.Entities.AccountHolder.IAccountHolderRepository;
 using Asm.MooBank.Models;
 using Asm.MooBank.Security;
 
