@@ -16,6 +16,9 @@ public enum TransactionType
     [Display(Name = "Recurring Debit")]
     RecurringDebit = 4,
 
-    [Display(Name = "Balance Adjustment")]
-    BalanceAdjustment = 5,
+    [Display(Name = "Balance Adjustment Credit")]
+    BalanceAdjustmentCredit = 5,
+
+    [Display(Name = "Balance Adjustment Debit")]
+    BalanceAdjustmentDebit = 6,
 }

@@ -28,7 +28,10 @@ const useRenderers = (account: Account) => {
 
         if (!account) return [];
 
-        const items: MenuItem[] = [{ route: `/accounts/${account.id}/tag-rules`, text: "Tag Rules" }];
+        const items: MenuItem[] = [
+            { route: `/accounts/${account.id}/reports`, text: "Reports" },
+            { route: `/accounts/${account.id}/tag-rules`, text: "Tag Rules" },
+        ];
 
         switch (account.controller) {
             case AccountController.Import:

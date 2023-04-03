@@ -2,6 +2,7 @@ export * from "./AccountService";
 export * from "./AccountGroupService";
 export * from "./ImportService";
 export * from "./ReferenceDataService";
+export * from "./ReportsService";
 export * from "./TransactionService";
 export * from "./TransactionTagService";
 export * from "./TransactionTagRuleService";

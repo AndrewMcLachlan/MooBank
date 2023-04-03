@@ -9,18 +9,24 @@
     :root {
         --breadcrumb-background: #1A1919;
     }
+
+    body {
+        color-scheme: dark;
+    }
 }
 
 .light {
     --breadcrumb-background: #CFCCCC;
+    color-scheme: light;
 }
 
 .dark {
     --breadcrumb-background: #1A1919;
+    color-scheme: dark;
 }
 
 .negative {
-    color: rgb(204,0,0);
+    color: rgb(204, 0, 0);
 }
 
 .mobile {
@@ -48,7 +54,7 @@
     align-items: center;
     background-color: var(--breadcrumb-background);
 
-    > .container {
+    >.container {
         height: 2rem;
         padding-bottom: 2px;
     }
@@ -60,13 +66,16 @@ nav.control-panel {
     font-weight: bold;
 
     ul {
-       margin: 0;
+        margin: 0;
         padding: 0;
         list-style: none;
         font-size: 0.9rem;
     }
 
-    button, button:hover, button:active, button:focus {
+    button,
+    button:hover,
+    button:active,
+    button:focus {
         outline: none;
         background: none;
         border: none;
@@ -78,7 +87,8 @@ nav.control-panel {
         text-decoration: underline;
     }
 
-    a, button {
+    a,
+    button {
         color: #999;
     }
 
@@ -100,20 +110,24 @@ nav.control-panel {
 }
 
 /*#region Headings*/
-h3, legend {
+h3,
+legend {
     font-size: 1em;
     margin-top: 0;
     font-weight: bold;
 }
 
 legend {
-    display:none;
+    display: none;
 
 }
+
 /*#endregion*/
 
 /*#region Forms*/
-input, select, textarea {
+input,
+select,
+textarea {
     font-family: "Open Sans", "Segoe UI", Arial, sans-serif;
 }
 
@@ -128,6 +142,7 @@ input[type=submit] {
     border-radius: 5px;
     padding: 5px 20px;
 }
+
 /*#endregion*/
 
 /*#region Tables*/
@@ -166,7 +181,8 @@ tbody td {
 table.accountManagement {
     width: 100%;
 
-    th, td {
+    th,
+    td {
         text-align: left;
     }
 
@@ -189,6 +205,7 @@ table.trasactionHistory {
     vertical-align: middle;
     text-align: center;
 }
+
 /*#endregion*/
 
 section.box {
@@ -212,7 +229,9 @@ section.box {
         }
     }
 
-    select, input[type=text], input[type=number] {
+    select,
+    input[type=text],
+    input[type=number] {
         font-size: 1em;
     }
 }
@@ -225,11 +244,11 @@ section.actions {
 
 .input-group-prepend {
     font-size: 1.5rem;
-    margin-right:0;
+    margin-right: 0;
 }
 
 fieldset {
-    border: 1px solid #000;
+    border: 1px solid;
     padding: 10px;
     padding-top: 5px;
     border-radius: 4px;
@@ -251,17 +270,19 @@ table .balance {
     text-align: right;
 }
 
-form > div {
+form>div {
     margin-bottom: 1rem;
 }
 
 .page-header {
-    .container { column-gap: 1rem;
+    .container {
+        column-gap: 1rem;
     }
+
     h2 {
         flex-grow: 1;
     }
-    
+
 }
 
 @import 'responsive';

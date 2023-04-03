@@ -14,7 +14,7 @@ const App: React.FC = () => {
     if (!isAuthenticated) return null;
 
     return (
-        <Layout size="small">
+        <Layout size={"moo-small" as any}>
             <Layout.Header AppName="MooBank" Menu={[
                     <Link to="/accounts">Manage Accounts</Link>,
                     <Link to="/account-groups">Account Groups</Link>,
@@ -31,6 +31,7 @@ const App: React.FC = () => {
                 <Route path="/accounts/:accountId/virtual/:virtualid" element={<Pages.ManageVirtualAccount />} />
                 <Route path="/accounts/:accountId/tag-rules" element={<Pages.TransactionTagRules />} />
                 <Route path="/accounts/:id/import" element={<Pages.Import />} />
+                <Route path="/accounts/:id/reports" element={<Pages.InOut />} />
                 <Route path="/settings" element={<Navigate to="/settings/tags" />} />
                 <Route path="/settings/tags" element={<Pages.TransactionTags />} />
                 <Route path="*" element={<Pages.Error404 />} />

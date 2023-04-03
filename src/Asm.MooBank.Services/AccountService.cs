@@ -111,13 +111,15 @@ public class AccountService : ServiceBase, IAccountService
 
         if (account.AccountController != AccountController.Manual) throw new InvalidOperationException("Cannot manually adjust balance of non-manually controlled account");
 
+        var amount = account.Balance - balance;
+
         _transactionRepository.Add(new Domain.Entities.Transactions.Transaction
         {
             Account = account,
-            Amount = account.Balance - balance,
+            Amount = amount,
             Description = "Balance adjustment",
             TransactionTime = DateTime.Now,
-            TransactionType = TransactionType.BalanceAdjustment,
+            TransactionType = amount > 0 ? TransactionType.BalanceAdjustmentCredit : TransactionType.BalanceAdjustmentDebit,
         });
 
         account.Balance = balance;

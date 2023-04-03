@@ -17,8 +17,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Asm.Web" Version="3.0.572" />
-    <PackageReference Include="Asm.Web.Mvc" Version="3.0.572" />
+    <PackageReference Include="Asm.Web" Version="3.0.574" />
+    <PackageReference Include="Asm.Web.Mvc" Version="3.0.574" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="6.0.15" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="7.0.4" />

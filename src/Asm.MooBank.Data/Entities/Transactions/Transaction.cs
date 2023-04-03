@@ -1,7 +1,9 @@
-﻿using Asm.MooBank.Domain.Entities.TransactionTags;
+﻿using Asm.Domain;
+using Asm.MooBank.Domain.Entities.TransactionTags;
 
 namespace Asm.MooBank.Domain.Entities.Transactions;
 
+[AggregateRoot]
 public partial class Transaction
 {
     public Transaction()
@@ -25,5 +27,5 @@ public partial class Transaction
 
     public virtual Account.Account Account { get; set; }
 
-    public TransactionType? TransactionType { get; set; }
+    public TransactionType TransactionType { get; set; }
 }

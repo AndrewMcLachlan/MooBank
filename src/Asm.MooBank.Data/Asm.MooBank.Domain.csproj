@@ -11,8 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Asm" Version="3.0.572" />
-    <PackageReference Include="Asm.Domain" Version="3.0.572" />
+    <PackageReference Include="Asm" Version="3.0.574" />
+    <PackageReference Include="Asm.Domain" Version="3.0.574" />
   </ItemGroup>
 
   <ItemGroup>
