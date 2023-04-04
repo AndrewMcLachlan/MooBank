@@ -10,11 +10,11 @@ import { sortDirection, State } from "../../store/state";
 import { TransactionRow } from "./TransactionRow";
 import { TransactionRowIng } from "./TransactionRowIng";
 import { useTransactions } from "../../services";
-import { useParams } from "react-router-dom";
+import { useIdParams } from "../../hooks";
 
 export const TransactionList: React.FC<TransactionListProps> = (props) => {
 
-    const { id } = useParams<any>();
+    const id = useIdParams();
 
     const pageNumber = useSelector((state: State) => state.transactions.currentPage);
     const pageSize = useSelector((state: State) => state.transactions.pageSize);

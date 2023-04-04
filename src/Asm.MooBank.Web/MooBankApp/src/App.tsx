@@ -14,7 +14,7 @@ const App: React.FC = () => {
     if (!isAuthenticated) return null;
 
     return (
-        <Layout size={"moo-small" as any}>
+        <Layout size="small">
             <Layout.Header AppName="MooBank" Menu={[
                     <Link to="/accounts">Manage Accounts</Link>,
                     <Link to="/account-groups">Account Groups</Link>,

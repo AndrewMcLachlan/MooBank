@@ -14,7 +14,7 @@ export const TransactionRow: React.FC<TransactionRowProps> = (props) => {
 
     const fullTagsListQuery = useTags();
 
-    const [tagsList, setTagsList] = useState([]);
+    const [tagsList, setTagsList] = useState<TransactionTag[]>([]);
 
     useEffect(() => {
         if (!fullTagsListQuery.data) return;
@@ -26,7 +26,7 @@ export const TransactionRow: React.FC<TransactionRowProps> = (props) => {
             <td>{format(parseISO(props.transaction.transactionTime), "yyyy-MM-dd")}</td>
             <td>{props.transaction.description}</td>
             <td>{props.transaction.amount.toLocaleString("en-AU", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-            <TagPanel as="td" selectedItems={transactionRow.tags} allItems={tagsList} textField="name" valueField="id" onAdd={transactionRow.addTag} onRemove={transactionRow.removeTag} onCreate={transactionRow.createTag} allowCreate={true} />
+            <td><TagPanel selectedItems={transactionRow.tags} allItems={tagsList} textField="name" valueField="id" onAdd={transactionRow.addTag} onRemove={transactionRow.removeTag} onCreate={transactionRow.createTag} allowCreate={true} /></td>
         </tr>
     );
 }

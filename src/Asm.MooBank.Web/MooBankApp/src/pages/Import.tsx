@@ -1,17 +1,19 @@
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { AccountController } from "../models";
 import { Upload, FilesAddedEvent } from "@andrewmclachlan/mooapp";
 import { useAccount, useImportTransactions } from "../services";
 import Button from "react-bootstrap/Button";
 import { useState } from "react";
 import { Page } from "../layouts";
+import { useIdParams } from "../hooks";
 
 export const Import: React.FC = () => {
 
     const navigate = useNavigate();
 
-    const { id } = useParams<any>();
+    const id = useIdParams();
+
     const account = useAccount(id);
 
     const importTransactions = useImportTransactions();

@@ -53,6 +53,7 @@
     font-weight: bold;
     align-items: center;
     background-color: var(--breadcrumb-background);
+    margin-bottom: 0.5rem;
 
     >.container {
         height: 2rem;
@@ -274,6 +275,11 @@ form>div {
     margin-bottom: 1rem;
 }
 
+.horizontal-form-controls {
+    display: flex;
+    align-items: flex-end;;
+}
+
 .page-header {
     .container {
         column-gap: 1rem;
@@ -281,6 +287,7 @@ form>div {
 
     h2 {
         flex-grow: 1;
+        text-align: left!important;
     }
 
 }

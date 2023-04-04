@@ -17,12 +17,12 @@ export const TransactionTagRules: React.FC = () => {
 
     const { accountId } = useParams<{accountId: string}>();
 
-    const rulesQuery = useRules(accountId);
+    const rulesQuery = useRules(accountId!);
     const { data } = rulesQuery;
 
-    const { newRule, fullTagsList, addTag, createTag, removeTag, nameChange, createRule, runRules } = useComponentState(accountId);
+    const { newRule, fullTagsList, addTag, createTag, removeTag, nameChange, createRule, runRules } = useComponentState(accountId!);
 
-    const account = useAccount(accountId);
+    const account = useAccount(accountId!);
 
     if (!account.data) return (null);
 
@@ -42,11 +42,11 @@ export const TransactionTagRules: React.FC = () => {
                     <tbody>
                         <tr>
                             <td><input type="text" className="form-control" placeholder="Transaction description contains..." value={newRule.contains} onChange={nameChange} /></td>
-                            <TagPanel as="td" selectedItems={newRule.tags} allItems={fullTagsList} textField="name" valueField="id" onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} />
+                            <td><TagPanel selectedItems={newRule.tags} allItems={fullTagsList} textField="name" valueField="id" onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} /></td>
                             {/*<Select defaultOptions={fullTagsList} getOptionLabel={(t:TransactionTag) => t.name } getOptionValue={(t:TransactionTag) => t.id.toString() } hideSelectedOptions={true} isOptionSelected={t => } onChange />*/}
                             <td className="row-action"><span onClick={createRule}><ClickableIcon icon="check-circle" title="Save" size="xl" /></span></td>
                         </tr>
-                        {data?.rules && data.rules.map((r) => <TransactionTagRuleRow key={r.id} accountId={accountId} rule={r} />)}
+                        {data?.rules && data.rules.map((r) => <TransactionTagRuleRow key={r.id} accountId={accountId!} rule={r} />)}
                     </tbody>
                 </Table>
             </Page.Content>
