@@ -1,4 +1,5 @@
-﻿using Asm.MooBank.Domain.Entities.Transactions;
+﻿using System.Diagnostics.CodeAnalysis;
+using Asm.MooBank.Domain.Entities.Transactions;
 
 namespace Asm.MooBank.Domain.Entities.TransactionTags;
 
@@ -25,4 +26,20 @@ public partial class TransactionTag
     public virtual ICollection<TransactionTag> Tags { get; set; }
 
     //public virtual ICollection<TransactionTagRule> Rules { get; set; }
+}
+
+
+public class TransactionTagEqualityComparer : IEqualityComparer<TransactionTag>
+{
+    public bool Equals(TransactionTag? x, TransactionTag? y)
+    {
+        if (x is null && y is null) return true;
+        if (x is null || y is null) return false;
+
+        return x.TransactionTagId == y.TransactionTagId;
+
+
+    }
+
+    public int GetHashCode([DisallowNull] TransactionTag obj) => obj.TransactionTagId.GetHashCode();
 }

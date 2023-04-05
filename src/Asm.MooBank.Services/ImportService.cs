@@ -46,11 +46,11 @@ public class ImportService : ServiceBase, IImportService
 
     private async Task ApplyTransactionRules(Account account, IEnumerable<Transaction> transactions, CancellationToken cancellationToken = default)
     {
-        var rules = await _transactionTagRuleRepository.GetForAccount(account.AccountId);
+        var rules = await _transactionTagRuleRepository.GetForAccount(account.AccountId, cancellationToken);
 
         foreach (var transaction in transactions)
         {
-            var applicableTags = rules.Where(r => transaction.Description?.Contains(r.Contains, StringComparison.OrdinalIgnoreCase) ?? false).SelectMany(r => r.TransactionTags.Select(t => new TransactionTag { TransactionTagId = t.TransactionTagId })).Distinct().ToList();
+            var applicableTags = rules.Where(r => transaction.Description?.Contains(r.Contains, StringComparison.OrdinalIgnoreCase) ?? false).SelectMany(r => r.TransactionTags).Distinct(new TransactionTagEqualityComparer()).ToList();
 
             transaction.TransactionTags = applicableTags;
             //_transactionRepository.Add(transaction.Id, applicableTags);
