@@ -63,10 +63,8 @@ namespace Asm.MooBank.Infrastructure.Repositories
         public async Task<IEnumerable<Transaction>> GetUntaggedTransactions(Guid accountId, string filter, DateTime? start, DateTime? end, int pageSize, int pageNumber, string sortField, SortDirection sortDirection, CancellationToken cancellationToken = default) =>
             await GetTransactionsQuery(accountId).Where((t) => (filter == null || (t.Description != null && t.Description.Contains(filter))) && (start == null || t.TransactionTime >= start) && (end == null || t.TransactionTime <= end)).Where(t => !t.TransactionTags.Any()).Sort(sortField, sortDirection).Page(pageSize, pageNumber).ToListAsync(cancellationToken);
 
-        protected override IQueryable<Transaction> GetById(Guid id)
-        {
-            throw new NotImplementedException();
-        }
+        protected override IQueryable<Transaction> GetById(Guid id) =>
+            DataContext.Transactions.Where(t => t.TransactionId == id);
     }
 
     public static class IQueryableExtensions

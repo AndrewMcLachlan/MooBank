@@ -21,8 +21,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.WebJobs", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Security", "src\Asm.MooBank.Security\Asm.MooBank.Security.csproj", "{A543D5EE-AD1A-47A8-8E18-154710A6A44F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asm.MooBank.EFTest", "tests\Asm.MooBank.EFTest\Asm.MooBank.EFTest.csproj", "{0421ADDB-3F8D-4305-8B5C-E37A83C5054C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,10 +63,6 @@ Global
 		{A543D5EE-AD1A-47A8-8E18-154710A6A44F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A543D5EE-AD1A-47A8-8E18-154710A6A44F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A543D5EE-AD1A-47A8-8E18-154710A6A44F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0421ADDB-3F8D-4305-8B5C-E37A83C5054C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0421ADDB-3F8D-4305-8B5C-E37A83C5054C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0421ADDB-3F8D-4305-8B5C-E37A83C5054C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0421ADDB-3F8D-4305-8B5C-E37A83C5054C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
