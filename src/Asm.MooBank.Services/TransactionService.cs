@@ -102,7 +102,9 @@ public class TransactionService : ServiceBase, ITransactionService
 
         if (entity.TransactionTags.Any(t => t.TransactionTagId == tagId)) throw new ExistsException("Cannot add tag, it already exists");
 
-        entity.TransactionTags.Add(entity.TransactionTags.Single(t => t.TransactionTagId == tagId));
+        var tag = await _transactionTagRepository.Get(tagId);
+
+        entity.TransactionTags.Add(tag);
 
         await UnitOfWork.SaveChangesAsync(cancellationToken);
 
