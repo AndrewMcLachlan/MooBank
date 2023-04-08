@@ -93,7 +93,7 @@ public class TransactionService : ServiceBase, ITransactionService
     {
         _security.AssertAccountPermission(accountId);
 
-        return await _transactionRepository.GetTransactions(accountId, filter, start, end, pageSize, pageNumber, sortField, sortDirection).ToModelAsync();
+        return await _transactionRepository.GetUntaggedTransactions(accountId, filter, start, end, pageSize, pageNumber, sortField, sortDirection).ToModelAsync();
     }
 
     public async Task<Transaction> AddTransactionTag(Guid id, int tagId, CancellationToken cancellationToken = default)

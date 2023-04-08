@@ -76,10 +76,6 @@ namespace Asm.MooBank.Infrastructure.Repositories
             _transactionProperties = typeof(Transaction).GetProperties();
         }
 
-        public static IQueryable<Transaction> Page(this IQueryable<Transaction> query, int pageSize, int pageNumber)
-        {
-            return query.Skip((pageNumber - 1) * pageSize).Take(pageSize);
-        }
 
         public static IOrderedQueryable<Transaction> Sort(this IQueryable<Transaction> query, string field, SortDirection direction)
         {
