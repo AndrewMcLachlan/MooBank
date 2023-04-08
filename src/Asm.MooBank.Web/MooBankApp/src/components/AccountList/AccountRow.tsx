@@ -32,7 +32,6 @@ export const AccountRow: React.FC<AccountRowProps> = (props) => {
                 <td>{props.account.name}</td>
                 <td>{AccountType[props.account.accountType]}</td>
                 <td className={classNames("number", numberClassName(props.account.currentBalance))}>{getBalanceString(props.account.currentBalance)}</td>
-                {/*<td><span className={classNames("number", numberClassName(props.account.currentBalance))}>{getBalanceString(props.account.availableBalance)}</span></td>*/}
             </tr>
             {showVirtualAccounts && props.account.virtualAccounts &&
                 props.account.virtualAccounts.map(va => <VirtualAccountRow key={va.id} accountId={props.account.id} account={va} />)

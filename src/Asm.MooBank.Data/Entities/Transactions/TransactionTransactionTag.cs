@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Asm.MooBank.Domain.Entities.TransactionTags;
+﻿using Asm.MooBank.Domain.Entities.TransactionTags;
 
 namespace Asm.MooBank.Domain.Entities.Transactions
 {

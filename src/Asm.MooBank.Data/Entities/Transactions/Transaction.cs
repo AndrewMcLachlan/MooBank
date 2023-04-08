@@ -1,4 +1,5 @@
-﻿using Asm.Domain;
+﻿using System.Linq.Expressions;
+using Asm.Domain;
 using Asm.MooBank.Domain.Entities.TransactionTags;
 
 namespace Asm.MooBank.Domain.Entities.Transactions;

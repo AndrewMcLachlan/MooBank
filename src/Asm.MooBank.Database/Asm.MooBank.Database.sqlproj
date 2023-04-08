@@ -92,11 +92,12 @@
     <Build Include="dbo\Views\TagAmountsByMonth.sql" />
     <Build Include="dbo\Tables\InstitutionAccount.sql" />
     <Build Include="dbo\Tables\AccountGroup.sql" />
+    <Build Include="dbo\Views\TagHierarchies.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Asm.BankPlus.Database.publish.xml" />
     <None Include="Azure.publish.xml" />
     <None Include="Azure.Test.publish.xml" />
+    <None Include="Asm.MooBank.Database.publish.xml" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment1.sql" />

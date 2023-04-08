@@ -1,7 +1,6 @@
-export interface InOutReport {
-    accountId: string,
-    start: string,
-    end: string,
+import { BaseReport } from "./BaseReport";
+
+export interface InOutReport extends BaseReport {
     income: number,
     outgoings: number,
 }

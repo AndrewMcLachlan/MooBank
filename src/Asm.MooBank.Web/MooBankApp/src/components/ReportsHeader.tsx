@@ -4,15 +4,18 @@ import { Account } from "../models";
 import { PageHeader } from "../layouts/PageHeader";
 import { MenuItem } from "../models/MenuItem";
 import { useAccount } from "./AccountProvider";
+import { useLocation } from "react-router";
 
-export const ReportsHeader: React.FC<ReportsHeaderProps> = ({account}) => {
+export const ReportsHeader: React.FC<ReportsHeaderProps> = ({account, title}) => {
+
+    const location = useLocation();
 
     if (!account) return null;
 
     const { getMenuItems } = getRenderers(account);
 
     return (
-        <PageHeader title={account.name} menuItems={getMenuItems()} breadcrumbs={[[account.name, `/accounts/${account.id}`], ["Reports", `/accounts/${account.id}/reports`]]} />
+        <PageHeader title={account.name} menuItems={getMenuItems()} breadcrumbs={[[account.name, `/accounts/${account.id}`], ["Reports", `/accounts/${account.id}/reports`], [title, location.pathname]]} />
     )
 }
 
@@ -25,7 +28,8 @@ const getRenderers = (account: Account) => {
         if (!account) return [];
 
         const items: MenuItem[] = [
-            { route: `/account/${account.id}/reports/in-out`, text: "Incoming v Outgoing" },
+            { route: `/accounts/${account.id}/reports/in-out`, text: "Incoming vs Expenses" },
+            { route: `/accounts/${account.id}/reports/breakdown`, text: "Breakdown" },
         ];
 
         return items;
@@ -38,4 +42,5 @@ const getRenderers = (account: Account) => {
 
 export interface ReportsHeaderProps {
     account?: Account;
+    title: string;
 }

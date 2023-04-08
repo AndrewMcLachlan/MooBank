@@ -60,7 +60,7 @@ public class TransactionTagService : ServiceBase, ITransactionTagService
         return tag;
     }
 
-    public Task<IEnumerable<TransactionTag>> GetAll(CancellationToken cancellationToken = default) => _transactionTagRepository.GetAll().ToModelAsync(cancellationToken);
+    public async Task<IEnumerable<TransactionTag>> GetAll(CancellationToken cancellationToken = default) => (await _transactionTagRepository.GetAll(cancellationToken).ToModelAsync(cancellationToken)).OrderBy(t => t.Name);
     //(await DataContext.TransactionTags.Include(t => t.Tags).Where(t => !t.Deleted).ToListAsync()).OrderBy(t => t.Name).Select(t => (TransactionTag)t).ToList();
 
     public Task<IEnumerable<TransactionTag>> Get(IEnumerable<int> tagIds, CancellationToken cancellationToken = default) => _transactionTagRepository.Get(tagIds).ToModelAsync(cancellationToken);

@@ -101,7 +101,7 @@ WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Ta
 WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.ScheduleId, SOURCE.[Description]);
 
 -- Importer Types
-MERGE ImporterType AS TARGET USING (SELECT 'Asm.BankPlus.Services.Importers.IngImporter, Asm.BankPlus.Services' as [Type], 'ING' as [Name]) AS SOURCE
+MERGE ImporterType AS TARGET USING (SELECT 'Asm.MooBank.Services.Importers.IngImporter, Asm.MooBank.Services' as [Type], 'ING' as [Name]) AS SOURCE
 ON (TARGET.[Type] = SOURCE.[Type])
 WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.[Type], SOURCE.[Name]);
 

@@ -1,15 +1,16 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Asm.Domain;
 using Asm.MooBank.Domain.Entities.Transactions;
 
 namespace Asm.MooBank.Domain.Entities.TransactionTags;
 
-public partial class TransactionTag
+[AggregateRoot]
+public partial class TransactionTag : IEquatable<TransactionTag>
 {
     public TransactionTag()
     {
         TaggedTo = new HashSet<TransactionTag>();
         Tags = new HashSet<TransactionTag>();
-        //Rules = new HashSet<TransactionTagRule>();
     }
 
 
@@ -25,7 +26,17 @@ public partial class TransactionTag
 
     public virtual ICollection<TransactionTag> Tags { get; set; }
 
-    //public virtual ICollection<TransactionTagRule> Rules { get; set; }
+    public bool Equals(TransactionTag? other)
+    {
+        if (other is null) return false;
+
+        return other.TransactionTagId == TransactionTagId;
+    }
+
+
+    public override bool Equals(object? obj) => Equals(obj as TransactionTag);
+
+    public override int GetHashCode() => TransactionTagId.GetHashCode();
 }
 
 

@@ -25,5 +25,21 @@ namespace Asm.MooBank.Web.Controllers
 
             return QueryDispatcher.Dispatch(query, cancellationToken);
         }
+
+        [HttpGet("{reportType}/tags/{start}/{end}/{parentTag?}")]
+        public Task<ByTagReport> GetExpenses(Guid accountId, DateOnly start, DateOnly end, ReportType reportType, int? parentTag, CancellationToken cancellationToken)
+        {
+            GetByTagReport query = new()
+            {
+                AccountId = accountId,
+                Start = start,
+                End = end,
+                TagId = parentTag,
+                ReportType = reportType,
+            };
+
+            return QueryDispatcher.Dispatch(query, cancellationToken);
+        }
+
     }
 }

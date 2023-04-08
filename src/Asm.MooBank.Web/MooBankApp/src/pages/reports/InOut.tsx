@@ -21,6 +21,9 @@ import { Chart as ChartJS, ChartData, registerables } from "chart.js";
 import { useLayout } from "@andrewmclachlan/mooapp";
 
 import { Button, Col, Form, Row } from "react-bootstrap";
+import { PeriodSelector } from "../../components/PeriodSelector";
+import { useIdParams } from "../../hooks";
+import { getCachedPeriod } from "../../helpers";
 
 ChartJS.register(...registerables);
 
@@ -30,43 +33,17 @@ export const InOut = () => {
 
     const theTheme = theme ?? defaultTheme;
 
-    const { id: accountId } = useParams<{ id: string }>();
+    const accountId= useIdParams();
 
-    const options: PeriodOption[] = [
-        { value: "1", label: "Last Month", start: startOfMonth(addMonths(new Date(), -1)), end: endOfMonth(addMonths(new Date(), -1)) },
-        { value: "2", label: "Previous Month", start: startOfMonth(addMonths(new Date(), -2)), end: endOfMonth(addMonths(new Date(), -2)) },
-        { value: "3", label: "Last 3 months", start: startOfMonth(addMonths(new Date(), -3)), end: endOfMonth(addMonths(new Date(), -1)) },
-        { value: "4", label: "Last 12 months", start: startOfMonth(addMonths(new Date(), -12)), end: endOfMonth(addMonths(new Date(), -1)) },
-        { value: "5", label: "Last year", start: startOfYear(addYears(new Date(), -1)), end: endOfYear(addYears(new Date(), -1)) },
-        { value: "0", label: "Custom" },
-    ];
-
-    const [selectedPeriod, setSelectedPeriod] = useState<string>("1");
-    const [customStart, setCustomStart] = useState<string>(format(startOfMonth(addMonths(new Date(), -1)), "dd/MM/yyy"));
-    const [customEnd, setCustomEnd] = useState<string>(format(endOfMonth(addMonths(new Date(), -1)), "dd/MM/yyyy"));
-    const [period, setPeriod] = useState([startOfMonth(addMonths(new Date(), -1)), endOfMonth(addMonths(new Date(), -1))]);
+    const [period, setPeriod] = useState(getCachedPeriod());
 
     const account = useAccount(accountId!);
 
-    const report = useInOutReport(accountId!, period[0], period[1]);
 
-    const changePeriod = (e: ChangeEvent<HTMLSelectElement>) => {
-        const index = e.currentTarget.selectedIndex;
-        const option = options[index];
-        setSelectedPeriod(option.value);
-
-        if (option.value !== "0") {
-            setPeriod([option.start!, option.end!]);
-        }
-
-    }
-
-    const customPeriodGo = () => {
-        setPeriod([parseISO(customStart), parseISO(customEnd)]);
-    }
+    const report = useInOutReport(accountId!, period.startDate, period.endDate);
 
     const dataset: ChartData<"bar", number[], string> = {
-        labels: [formatPeriod(period[0], period[1])],
+        labels: [formatPeriod(period.startDate, period.endDate)],
 
         datasets: [{
             label: "Income",
@@ -83,28 +60,9 @@ export const InOut = () => {
 
     return (
         <Page title="Incoming vs Outging">
-            <ReportsHeader account={account.data} />
+            <ReportsHeader account={account.data} title="Income vs Expenses" />
             <Page.Content>
-                <Row>
-                    <Col xl="4">
-                        <Form.Label htmlFor="period">Period</Form.Label>
-                        <Form.Select id="period" onChange={changePeriod} value={selectedPeriod}>
-                            {options.map((o, index) =>
-                                <option value={o.value} label={o.label} key={index} />
-                            )}
-                        </Form.Select>
-                    </Col>
-                    <Col xl="3" hidden={selectedPeriod !== "0"}>
-                        <Form.Label htmlFor="custom-start">From</Form.Label>
-                        <Form.Control id="custom-start" type="date" value={customStart} onChange={(e) => setCustomStart(e.currentTarget.value)} />
-                    </Col>
-                    <Col xl="3" hidden={selectedPeriod !== "0"}>
-                        <Form.Label htmlFor="custom-end">To</Form.Label>
-                        <Form.Control id="custom-end" type="date" value={customEnd} onChange={(e) => setCustomEnd(e.currentTarget.value)} />
-                    </Col>
-                    <Col xl="2" className="horizontal-form-controls" hidden={selectedPeriod !== "0"}>
-                        <Button onClick={customPeriodGo}>Go</Button></Col>
-                </Row>
+             <PeriodSelector value={period} onChange={setPeriod} />
                 <section className="inout">
                     <Bar id="inout" data={dataset} options={{
                         indexAxis: "y",
