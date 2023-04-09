@@ -3,6 +3,7 @@ export * from "./AccountGroup";
 export * from "./AccountList";
 export * from "./ImporterType";
 export * from "./Layout";
+export * from "./PagedResult";
 export * from "./Transaction";
 export * from "./Transactions";
 export * from "./TransactionTag";

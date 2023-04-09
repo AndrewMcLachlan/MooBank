@@ -33,8 +33,9 @@ const App: React.FC = () => {
                     <Route path="/accounts/:id/import" element={<Pages.Import />} />
                     <Route path="/accounts/:id/reports" element={<Navigate to="in-out" replace />} />
                     <Route path="/accounts/:id/reports/in-out" element={<Pages.InOut />} />
-                    <Route path="/accounts/:id/reports/breakdown" element={<Pages.Breakdown />} />
-                    <Route path="/settings" element={<Navigate to="/settings/tags" />} />
+                    <Route path="/accounts/:id/reports/breakdown/:tagId?" element={<Pages.Breakdown />} />
+                    <Route path="/accounts/:id/reports/by-tag" element={<Pages.ByTag />} />
+                    <Route path="/settings" element={<Navigate to="/settings/tags" replace />} />
                     <Route path="/settings/tags" element={<Pages.TransactionTags />} />
                     <Route path="/account-groups" element={<Pages.ManageAccountGroups />} />
                     <Route path="/account-groups/:id/manage" element={<Pages.ManageAccountGroup />} />

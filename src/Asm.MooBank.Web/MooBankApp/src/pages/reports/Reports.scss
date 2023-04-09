@@ -1,3 +1,14 @@
+.report {
+
+    &.doughnut h3 {
+        width:100%;
+        text-align: center;
+        margin-top: 20px;
+        font-size: 2rem;
+        margin-left: -80px;
+    }
+}
+
 .inout {
     height: 200px;
     width: 100%;

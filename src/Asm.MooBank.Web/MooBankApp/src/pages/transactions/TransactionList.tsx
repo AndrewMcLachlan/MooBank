@@ -24,7 +24,7 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
     const dispatch = useDispatch();
 
     const transactionsQuery = useTransactions(id, filter, pageSize, pageNumber, sortField, sortDirection);
-    const transactions = transactionsQuery.data?.transactions;
+    const transactions = transactionsQuery.data?.results;
     const totalTransactions = transactionsQuery.data?.total ?? 0;
 
     const numberOfPages = Math.ceil(totalTransactions / pageSize);

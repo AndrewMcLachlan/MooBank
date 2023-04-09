@@ -29,32 +29,6 @@ public class AccountsController : ControllerBase
         return new ActionResult<InstitutionAccount>(await _accountService.GetAccount(id));
     }
 
-    [HttpGet("{accountId}/transactions/{pageSize?}/{pageNumber?}")]
-    public async Task<ActionResult<TransactionsModel>> Get(Guid accountId, int? pageSize = 50, int? pageNumber = 1, [FromQuery] DateTime? start = null, [FromQuery] DateTime? end = null, [FromQuery] string filter = null, [FromQuery] string sortField = null, [FromQuery] SortDirection sortDirection = SortDirection.Ascending)
-    {
-        if (start != null && end != null && end < start) return BadRequest($"{nameof(start)} is less than {nameof(end)}");
-
-        return new ActionResult<TransactionsModel>(new TransactionsModel
-        {
-            Transactions = await _transactionService.GetTransactions(accountId, filter, start, end, pageSize.Value, pageNumber.Value, sortField, sortDirection),
-            PageNumber = pageNumber,
-            Total = await _transactionService.GetTotalTransactions(accountId, filter, start, end),
-        });
-    }
-
-    [HttpGet("{accountId}/transactions/untagged/{pageSize?}/{pageNumber?}")]
-    public async Task<ActionResult<TransactionsModel>> GetUntagged(Guid accountId, int? pageSize = 50, int? pageNumber = 1, [FromQuery] DateTime? start = null, [FromQuery] DateTime? end = null, [FromQuery] string filter = null, [FromQuery] string sortField = null, [FromQuery] SortDirection sortDirection = SortDirection.Ascending)
-    {
-        if (start != null && end != null && end < start) return BadRequest($"{nameof(start)} is less than {nameof(end)}");
-
-        return new ActionResult<TransactionsModel>(new TransactionsModel
-        {
-            Transactions = await _transactionService.GetUntaggedTransactions(accountId, filter, start, end, pageSize.Value, pageNumber.Value, sortField, sortDirection),
-            PageNumber = pageNumber,
-            Total = await _transactionService.GetTotalUntaggedTransactions(accountId, filter, start, end),
-        });
-    }
-
     [HttpPost]
     public async Task<ActionResult<InstitutionAccount>> Create(NewAccountModel model)
     {

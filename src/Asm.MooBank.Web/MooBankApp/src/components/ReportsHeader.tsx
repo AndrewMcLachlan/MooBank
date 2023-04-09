@@ -3,14 +3,13 @@ import React from "react";
 import { Account } from "../models";
 import { PageHeader } from "../layouts/PageHeader";
 import { MenuItem } from "../models/MenuItem";
-import { useAccount } from "./AccountProvider";
 import { useLocation } from "react-router";
 
 export const ReportsHeader: React.FC<ReportsHeaderProps> = ({account, title}) => {
 
     const location = useLocation();
 
-    if (!account) return null;
+    if (!account) return <PageHeader title="&nbsp;" />;
 
     const { getMenuItems } = getRenderers(account);
 
@@ -30,6 +29,7 @@ const getRenderers = (account: Account) => {
         const items: MenuItem[] = [
             { route: `/accounts/${account.id}/reports/in-out`, text: "Incoming vs Expenses" },
             { route: `/accounts/${account.id}/reports/breakdown`, text: "Breakdown" },
+            { route: `/accounts/${account.id}/reports/by-tag`, text: "By Tag" },
         ];
 
         return items;

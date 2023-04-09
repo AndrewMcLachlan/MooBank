@@ -13,7 +13,7 @@ public partial record Transaction
             TransactionType = transaction.TransactionType,
             AccountId = transaction.AccountId,
             Description = transaction.Description,
-            Tags = transaction.TransactionTags.Where(t => !t.Deleted).Select(t => (TransactionTag)t),
+            Tags = transaction.TransactionTags.Where(t => !t.Deleted).ToSimpleModel(),
         };
     }
 
@@ -21,7 +21,6 @@ public partial record Transaction
     {
         return new Domain.Entities.Transactions.Transaction
         {
-            //TransactionId = transaction.Id == Guid.Empty ? Guid.NewGuid() : transaction.Id,
             TransactionId = transaction.Id,
             TransactionReference = transaction.Reference,
             Amount = transaction.Amount,

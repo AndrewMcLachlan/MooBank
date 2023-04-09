@@ -9,25 +9,11 @@ namespace Asm.MooBank.Services;
 
 public interface ITransactionService
 {
-    Task<int> GetTotalTransactions(Guid accountId, string filter, DateTime? start, DateTime? end, CancellationToken cancellationToken = default);
-
-    Task<int> GetTotalUntaggedTransactions(Guid accountId, string filter, DateTime? start, DateTime? end, CancellationToken cancellationToken = default);
-
-    Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, CancellationToken cancellationToken = default);
-
-    Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, string filter, DateTime? start, DateTime? end, int pageSize, int pageNumber, string sortField, SortDirection sortDirection, CancellationToken cancellationToken = default);
-
-    Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, DateTime start, DateTime? end, int pageSize, int pageNumber, string sortField, SortDirection sortDirection, CancellationToken cancellationToken = default);
-
-    Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, TimeSpan period, int pageSize, int pageNumber, string sortField, SortDirection sortDirection, CancellationToken cancellationToken = default);
-
-    Task<IEnumerable<Transaction>> GetUntaggedTransactions(Guid accountId, string filter, DateTime? start, DateTime? end, int pageSize, int pageNumber, string sortField, SortDirection sortDirection, CancellationToken cancellationToken = default);
-
-    Task<Transaction> AddTransactionTag(Guid id, int tagId, CancellationToken cancellationToken = default);
+    Task<Transaction> AddTransactionTag(Guid accountId, Guid id, int tagId, CancellationToken cancellationToken = default);
 
     Task<Transaction> AddTransactionTags(Guid id, IEnumerable<int> tags, CancellationToken cancellationToken = default);
 
-    Task<Transaction> RemoveTransactionTag(Guid id, int tagId, CancellationToken cancellationToken = default);
+    Task<Transaction> RemoveTransactionTag(Guid accountId, Guid id, int tagId, CancellationToken cancellationToken = default);
 
     Task AddTransaction(decimal amount, Guid accountId, bool isRecurring, string? description = null);
 }
@@ -46,58 +32,12 @@ public class TransactionService : ServiceBase, ITransactionService
         _security = securityRepository;
     }
 
-    public async Task<int> GetTotalTransactions(Guid accountId, string filter, DateTime? start, DateTime? end, CancellationToken cancellationToken = default)
+
+
+    public async Task<Transaction> AddTransactionTag(Guid accountId, Guid id, int tagId, CancellationToken cancellationToken = default)
     {
         _security.AssertAccountPermission(accountId);
 
-        return await _transactionRepository.GetTransactionCount(accountId, filter, start, end, cancellationToken);
-
-    }
-
-    public async Task<int> GetTotalUntaggedTransactions(Guid accountId, string filter, DateTime? start, DateTime? end, CancellationToken cancellationToken = default)
-    {
-        _security.AssertAccountPermission(accountId);
-
-        return await _transactionRepository.GetUntaggedTransactionCount(accountId, filter, start, end, cancellationToken);
-    }
-
-    public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, CancellationToken cancellationToken = default)
-    {
-        _security.AssertAccountPermission(accountId);
-
-        return (await _transactionRepository.GetTransactions(accountId)).Select(t => (Transaction)t).OrderByDescending(t => t.TransactionTime);
-    }
-
-    public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, string filter, DateTime? start, DateTime? end, int pageSize, int pageNumber, string sortField, SortDirection sortDirection, CancellationToken cancellationToken = default)
-    {
-        _security.AssertAccountPermission(accountId);
-
-        return await _transactionRepository.GetTransactions(accountId, filter, start, end, pageSize, pageNumber, sortField, sortDirection).ToModelAsync();
-    }
-
-    public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, DateTime start, DateTime? end, int pageSize, int pageNumber, string sortField, SortDirection sortDirection, CancellationToken cancellationToken = default)
-    {
-        _security.AssertAccountPermission(accountId);
-
-        return await _transactionRepository.GetTransactions(accountId, start, end, pageSize, pageNumber, sortField, sortDirection).ToModelAsync();
-    }
-
-    public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, TimeSpan period, int pageSize, int pageNumber, string sortField, SortDirection sortDirection, CancellationToken cancellationToken = default)
-    {
-        _security.AssertAccountPermission(accountId);
-
-        return await _transactionRepository.GetTransactions(accountId, period, pageSize, pageNumber, sortField, sortDirection).ToModelAsync();
-    }
-
-    public async Task<IEnumerable<Transaction>> GetUntaggedTransactions(Guid accountId, string filter, DateTime? start, DateTime? end, int pageSize, int pageNumber, string sortField, SortDirection sortDirection, CancellationToken cancellationToken = default)
-    {
-        _security.AssertAccountPermission(accountId);
-
-        return await _transactionRepository.GetUntaggedTransactions(accountId, filter, start, end, pageSize, pageNumber, sortField, sortDirection).ToModelAsync();
-    }
-
-    public async Task<Transaction> AddTransactionTag(Guid id, int tagId, CancellationToken cancellationToken = default)
-    {
         var entity = await GetEntity(id);
 
         if (entity.TransactionTags.Any(t => t.TransactionTagId == tagId)) throw new ExistsException("Cannot add tag, it already exists");
@@ -128,8 +68,10 @@ public class TransactionService : ServiceBase, ITransactionService
         return (Transaction)entity;
     }
 
-    public async Task<Transaction> RemoveTransactionTag(Guid id, int tagId, CancellationToken cancellationToken = default)
+    public async Task<Transaction> RemoveTransactionTag(Guid accountId, Guid id, int tagId, CancellationToken cancellationToken = default)
     {
+        _security.AssertAccountPermission(accountId);
+
         var entity = await GetEntity(id);
 
         var tag = entity.TransactionTags.SingleOrDefault(t => t.TransactionTagId == tagId);

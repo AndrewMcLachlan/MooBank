@@ -17,6 +17,7 @@
         [HttpGet("{id}")]
         public async Task<TransactionTag> Get(int id, CancellationToken cancellationToken = default)
         {
+            if (id == 0) return null!;
             return await _tagService.Get(id, cancellationToken);
         }
 

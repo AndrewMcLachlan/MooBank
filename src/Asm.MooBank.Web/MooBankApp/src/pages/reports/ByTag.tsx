@@ -7,7 +7,7 @@ import getYear from "date-fns/getYear";
 
 import { Page } from "../../layouts";
 import { ReportsHeader } from "../../components";
-import { useAccount, useBreakdownReport, useTag } from "../../services";
+import { useAccount, useByTagReport, useTag } from "../../services";
 
 import { Doughnut, getElementAtEvent } from "react-chartjs-2";
 import { Chart as ChartJS, ChartData, registerables } from "chart.js";
@@ -19,7 +19,6 @@ import { Period, lastMonth } from "../../helpers/dateFns";
 import { ReportType } from "../../models/reports";
 import { ReportTypeSelector } from "../../components/ReportTypeSelector";
 import { getCachedPeriod } from "../../helpers";
-import {  useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 ChartJS.register(...registerables);
@@ -35,23 +34,20 @@ const colours = [
     "#ffa600",
 ]
 
-export const Breakdown = () => {
+export const ByTag = () => {
+
 
     const { theme, defaultTheme } = useLayout();
     const theTheme = theme ?? defaultTheme;
 
-    const { id: accountId, tagId } = useParams<{ id: string, tagId: string }>();
+    const accountId = useIdParams();
 
-    console.debug(tagId);
     const [reportType, setReportType] = useState<ReportType>(ReportType.Expenses);
     const [period, setPeriod] = useState<Period>(getCachedPeriod());
-    const [selectedTagId, setSelectedTagId] = useState<number | undefined>(tagId ? parseInt(tagId) : undefined);
-    const [previousTagId, setPreviousTagId] = useState<number | undefined>();
-    const tag = useTag(selectedTagId ?? 0);
 
     const account = useAccount(accountId!);
 
-    const report = useBreakdownReport(accountId!, period.startDate, period.endDate, reportType, selectedTagId);
+    const report = useByTagReport(accountId!, period.startDate, period.endDate, reportType);
 
     const chartRef = useRef();
 
@@ -61,7 +57,6 @@ export const Breakdown = () => {
             label: "",
             data: report.data?.tags.map(t => t.amount) ?? [],
             backgroundColor: colours,//theTheme === "dark" ? "#228b22" : "#00FF00",
-            //categoryPercentage: 1,
         }],
     };
 
@@ -72,8 +67,7 @@ export const Breakdown = () => {
                 <ReportTypeSelector value={reportType} onChange={setReportType} hidden />
                 <PeriodSelector value={period} onChange={setPeriod} />
                 <section className="report doughnut">
-                    {tag.data?.name && <h3><FontAwesomeIcon className="clickable" icon="circle-chevron-left" size="xs" onClick={() => setSelectedTagId(previousTagId)} /> {tag.data.name}</h3>}
-                    {!tag.data &&<h3>Top-Level Tags</h3>}
+                    <h3>All Tags</h3>
                     <Doughnut id="bytag" ref={chartRef} data={dataset} options={{
                         plugins: {
                             legend: {
@@ -89,13 +83,7 @@ export const Breakdown = () => {
                             intersect: true,
                         },
                     }}
-                        onClick={(e) => {
-                            var elements = getElementAtEvent(chartRef.current!, e);
-                            if (elements.length !== 1) return;
-                            if (!report.data!.tags[elements[0].index].hasChildren) return;
-                            setPreviousTagId(selectedTagId);
-                            setSelectedTagId(report.data!.tags[elements[0].index].tagId);
-                        }} />
+                     />
                 </section>
             </Page.Content>
         </Page >

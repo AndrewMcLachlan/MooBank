@@ -8,5 +8,5 @@ export interface TagValue {
     tagId: number,
     tagName: string,
     amount: number,
-    percent: number,
+    hasChildren: boolean,
 }
