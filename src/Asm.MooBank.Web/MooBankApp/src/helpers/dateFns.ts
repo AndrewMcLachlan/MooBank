@@ -17,6 +17,11 @@ export const periodEquals = (a?: Period, b?: Period) => a?.startDate.getTime() =
 export const startOfLastMonth = () => startOfMonth(addMonths(new Date(), -1));
 export const endOfLastMonth = () => endOfMonth(addMonths(new Date(), -1));
 
-export const lastMonth = (): Period => ({startDate: startOfLastMonth(), endDate: endOfLastMonth()});
+export const lastMonth: Period = { startDate: startOfLastMonth(), endDate: endOfLastMonth() };
+export const previousMonth: Period = { startDate: startOfMonth(addMonths(new Date(), -2)), endDate: endOfMonth(addMonths(new Date(), -2)) };
+export const last3Months: Period = { startDate: startOfMonth(addMonths(new Date(), -3)), endDate: endOfMonth(addMonths(new Date(), -1)) };
+export const last6Months: Period = { startDate: startOfMonth(addMonths(new Date(), -6)), endDate: endOfMonth(addMonths(new Date(), -1)) };
+export const last12Months: Period = { startDate: startOfMonth(addMonths(new Date(), -12)), endDate: endOfMonth(addMonths(new Date(), -1)) };
+export const lastYear: Period = { startDate: startOfYear(addYears(new Date(), -1)), endDate: endOfYear(addYears(new Date(), -1)) };
 
 export const formatISODate = (date: Date) => format(date, "yyyy-MM-dd");

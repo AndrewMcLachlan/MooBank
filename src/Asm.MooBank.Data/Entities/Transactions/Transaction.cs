@@ -24,6 +24,8 @@ public partial class Transaction
 
     public DateTime TransactionTime { get; set; }
 
+    public bool ExcludeFromReporting { get; set; }
+
     public virtual ICollection<TransactionTag> TransactionTags { get; set; }
 
     public virtual Account.Account Account { get; set; }

@@ -24,6 +24,7 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import { PeriodSelector } from "../../components/PeriodSelector";
 import { useIdParams } from "../../hooks";
 import { getCachedPeriod } from "../../helpers";
+import { InOutTrend } from "./InOutTrend";
 
 ChartJS.register(...registerables);
 
@@ -51,7 +52,7 @@ export const InOut = () => {
             backgroundColor: theTheme === "dark" ? "#228b22" : "#00FF00",
             //categoryPercentage: 1
         }, {
-            label: "Outgoings",
+            label: "Exprenses",
             data: [Math.abs(report.data?.outgoings ?? 0)],
             backgroundColor: theTheme === "dark" ? "#800020" : "#e23d28",
             //categoryPercentage: 1,
@@ -63,24 +64,26 @@ export const InOut = () => {
             <ReportsHeader account={account.data} title="Income vs Expenses" />
             <Page.Content>
              <PeriodSelector value={period} onChange={setPeriod} />
-                <section className="inout">
+                <section className="report inout">
+                    <h3>Total Income vs Expenses</h3>
                     <Bar id="inout" data={dataset} options={{
                         indexAxis: "y",
                         maintainAspectRatio: false,
                         scales: {
                             y: {
                                 grid: {
-                                    color: theTheme === "dark" ? "#666" : "#E5E5E5"
+                                    color: theTheme === "dark" ? "#333" : "#E5E5E5"
                                 },
                             },
                             x: {
                                 grid: {
-                                    color: theTheme === "dark" ? "#666" : "#E5E5E5"
+                                    color: theTheme === "dark" ? "#333" : "#E5E5E5"
                                 },
                             }
                         }
                     }} />
                 </section>
+                <InOutTrend period={period} />
             </Page.Content>
         </Page >
     );

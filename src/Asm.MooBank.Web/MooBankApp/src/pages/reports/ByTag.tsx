@@ -57,6 +57,7 @@ export const ByTag = () => {
             label: "",
             data: report.data?.tags.map(t => t.amount) ?? [],
             backgroundColor: colours,//theTheme === "dark" ? "#228b22" : "#00FF00",
+            //categoryPercentage: 1,
         }],
     };
 

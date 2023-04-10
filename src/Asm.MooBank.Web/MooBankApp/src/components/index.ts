@@ -5,3 +5,4 @@ export * from "./AccountHeader";
 export * from "./AccountProvider";
 export * from "./AccountSummary";
 export * from "./ReportsHeader";
+export * from "./TagSelector";

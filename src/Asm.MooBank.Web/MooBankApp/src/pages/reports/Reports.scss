@@ -1,15 +1,21 @@
 .report {
 
-    &.doughnut h3 {
-        width:100%;
+    margin-bottom: 50px;
+
+    h3 {
+        width: 100%;
         text-align: center;
         margin-top: 20px;
         font-size: 2rem;
+    }
+
+    &.doughnut h3 {
         margin-left: -80px;
     }
-}
 
-.inout {
-    height: 200px;
-    width: 100%;
+    &.inout {
+        height: 200px;
+        width: 100%;
+        margin-bottom: calc(50px + 2rem);
+    }
 }

@@ -4,7 +4,6 @@ import format from "date-fns/format";
 import getMonth from "date-fns/getMonth";
 import getYear from "date-fns/getYear";
 
-
 import { Page } from "../../layouts";
 import { ReportsHeader } from "../../components";
 import { useAccount, useBreakdownReport, useTag } from "../../services";
@@ -42,7 +41,6 @@ export const Breakdown = () => {
 
     const { id: accountId, tagId } = useParams<{ id: string, tagId: string }>();
 
-    console.debug(tagId);
     const [reportType, setReportType] = useState<ReportType>(ReportType.Expenses);
     const [period, setPeriod] = useState<Period>(getCachedPeriod());
     const [selectedTagId, setSelectedTagId] = useState<number | undefined>(tagId ? parseInt(tagId) : undefined);
@@ -66,10 +64,10 @@ export const Breakdown = () => {
     };
 
     return (
-        <Page title="By Tag">
-            <ReportsHeader account={account.data} title="By Tag" />
+        <Page title="Breakdown">
+            <ReportsHeader account={account.data} title="Breakdown" />
             <Page.Content>
-                <ReportTypeSelector value={reportType} onChange={setReportType} hidden />
+                <ReportTypeSelector value={reportType} onChange={setReportType} />
                 <PeriodSelector value={period} onChange={setPeriod} />
                 <section className="report doughnut">
                     {tag.data?.name && <h3><FontAwesomeIcon className="clickable" icon="circle-chevron-left" size="xs" onClick={() => setSelectedTagId(previousTagId)} /> {tag.data.name}</h3>}
