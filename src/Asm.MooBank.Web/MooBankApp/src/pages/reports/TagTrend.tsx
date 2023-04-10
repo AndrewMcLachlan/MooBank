@@ -34,8 +34,6 @@ export const TagTrend: React.FC = () => {
     const [selectedTagId, setSelectedTagId] = useState<number>(tagId ? parseInt(tagId) : 1);
     const report = useTagTrendReport(accountId!, period.startDate, period.endDate, reportType, selectedTagId);
 
-
-
     const dataset: ChartData<"line", number[], string> = {
         labels: report.data?.months.map(i => i.month) ?? [],
 
@@ -65,7 +63,7 @@ export const TagTrend: React.FC = () => {
             <ReportsHeader account={account.data} title="Tag Trend" />
             <Page.Content>
                 <ReportTypeSelector value={reportType} onChange={setReportType} hidden />
-                <PeriodSelector value={period} onChange={setPeriod} />
+                <PeriodSelector value={period} onChange={setPeriod} instant />
                 <TagSelector value={selectedTagId} onChange={setSelectedTagId} />
                 <section className="report">
                     <h3>Tag Trend</h3>

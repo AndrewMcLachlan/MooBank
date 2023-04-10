@@ -24,10 +24,10 @@ export const useCreateTag = () => {
     }, {
         onSuccess: (data: Models.TransactionTag) => {
             queryClient.setQueryData<Models.TransactionTag>(["tags", { id: data.id }], data);
-            let allTags = queryClient.getQueryData<Models.TransactionTag[]>(["tags"]);
+            const allTags = queryClient.getQueryData<Models.TransactionTag[]>(["tags"]);
             if (!allTags) return;
-            allTags = allTags.sort((t1, t2) => t1.name.localeCompare(t2.name));
-            queryClient.setQueryData<Models.TransactionTag[]>(["tags"], allTags);
+            const newTags = [data, ...allTags].sort((t1, t2) => t1.name.localeCompare(t2.name));
+            queryClient.setQueryData<Models.TransactionTag[]>(["tags"], newTags);
         }
     });
 }
