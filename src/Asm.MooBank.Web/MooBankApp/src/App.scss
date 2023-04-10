@@ -13,16 +13,28 @@
     body {
         color-scheme: dark;
     }
+
+    .table {
+        --bs-table-striped-bg: rgba(0,0,0,0.5);
+    }
 }
 
 .light {
     --breadcrumb-background: #CFCCCC;
     color-scheme: light;
+    
+    .table {
+        --bs-table-striped-bg: rgba(0,0,0,0.05);
+    }
 }
 
 .dark {
     --breadcrumb-background: #1A1919;
     color-scheme: dark;
+
+    .table {
+        --bs-table-striped-bg: rgba(0,0,0,0.5);
+    }
 }
 
 .negative {
@@ -161,17 +173,22 @@ thead th {
     border-bottom: 1px solid #AAA;
 }*/
 
-.table tfoot {
-    /*border-top: 2px double #000;*/
-    border-top-style: double;
+.table {
 
-    td {
-        vertical-align: middle;
-    }
+    
 
-    button.btn {
-        font-weight: bold;
-        outline: none;
+    tfoot {
+        /*border-top: 2px double #000;*/
+        border-top-style: double;
+
+        td {
+            vertical-align: middle;
+        }
+
+        button.btn {
+            font-weight: bold;
+            outline: none;
+        }
     }
 }
 
@@ -277,7 +294,8 @@ form>div {
 
 .horizontal-form-controls {
     display: flex;
-    align-items: flex-end;;
+    align-items: flex-end;
+    ;
 }
 
 .page-header {
@@ -287,7 +305,7 @@ form>div {
 
     h2 {
         flex-grow: 1;
-        text-align: left!important;
+        text-align: left !important;
     }
 
 }

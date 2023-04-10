@@ -42,7 +42,7 @@ export const ManageAccount = () => {
 
     return (
         <Page title={account?.name}>
-            <Page.Header title="Manage Account" goBack breadcrumbs={[["Manage Accounts", "/accounts"], [account?.name, `/accounts/${account.id}/manage`]]} menuItems={[{ text: "Create Virtual Account", route: `/accounts/${id}/virtual/create` }]} />
+            <Page.Header title="Manage Account" goBack breadcrumbs={[["Manage Accounts", "/accounts"], [account?.name, `/accounts/${account.id}/manage`]]} menuItems={[{ text: "Create Virtual Account", route: `/accounts/${id}/virtual/create` }, { text: "Transactions", route: `/accounts/${id}`}]} />
             {account &&
                 <Page.Content>
                     <Form onSubmit={handleSubmit}>
