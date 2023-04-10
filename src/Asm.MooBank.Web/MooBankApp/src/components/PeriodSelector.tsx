@@ -1,10 +1,10 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 
-
 import format from "date-fns/format";
 import parseISO from "date-fns/parseISO";
 
-import { Button, ButtonGroup, Col, Form, Row } from "react-bootstrap";
+import { FormGroup, FormRow, FormRow as Row } from "./";
+import { Button, Col, Form } from "react-bootstrap";
 import { Period, endOfLastMonth, last12Months, last3Months, lastMonth, lastYear, periodEquals, previousMonth, startOfLastMonth } from "../helpers/dateFns";
 
 export const PeriodSelector: React.FC<PeriodSelectorProps> = (props) => {
@@ -23,13 +23,24 @@ export const PeriodSelector: React.FC<PeriodSelectorProps> = (props) => {
         const option = options[index];
         setSelectedPeriod(option?.value ?? "0");
 
-        if (option.value !== "0") {
+        if (option) {
             setPeriod(option);
+        }
+
+        if (!option && props.instant) {
+            customPeriodGo();
         }
     }
 
     const customPeriodGo = () => {
         setPeriod({ startDate: parseISO(customStart), endDate: parseISO(customEnd) });
+    }
+
+    const onCustomChange = (setter: React.Dispatch<React.SetStateAction<string>>, value: string) => {
+        setter(value);
+        if (props.instant) {
+            customPeriodGo();
+        }
     }
 
     useEffect(() => {
@@ -38,38 +49,41 @@ export const PeriodSelector: React.FC<PeriodSelectorProps> = (props) => {
     }, [period]);
 
     return (
-        <>
-            <Row>
-                <Col xl="4">
-                    <Form.Label htmlFor="period">Period</Form.Label>
-                    <Form.Select id="period" onChange={changePeriod} value={selectedPeriod}>
-                        {options.map((o, index) =>
-                            <option value={o.value} label={o.label} key={index} />
-                        )}
-                        <option value="0" label="Custom" />
-                    </Form.Select>
-                </Col>
-                <Form.Group as={Col} xl="3" hidden={selectedPeriod !== "0"}>
-                    <Form.Label htmlFor="custom-start">From</Form.Label>
-                    <Form.Control disabled={selectedPeriod !== "0"} id="custom-start" type="date" value={customStart} onChange={(e) => setCustomStart(e.currentTarget.value)} />
-                </Form.Group>
-                <Col xl="3" hidden={selectedPeriod !== "0"}>
-                    <Form.Label htmlFor="custom-end">To</Form.Label>
-                    <Form.Control disabled={selectedPeriod !== "0"} id="custom-end" type="date" value={customEnd} onChange={(e) => setCustomEnd(e.currentTarget.value)} />
-                </Col>
-                <Col xl="2" className="horizontal-form-controls" hidden={selectedPeriod !== "0"}>
-                    <Button disabled={selectedPeriod !== "0"} onClick={customPeriodGo}>Go</Button>
-                </Col>
-            </Row>
-        </>
-    )
+        <FormRow>
+            <FormGroup xl="4">
+                <Form.Label htmlFor="period">Period</Form.Label>
+                <Form.Select id="period" onChange={changePeriod} value={selectedPeriod}>
+                    {options.map((o, index) =>
+                        <option value={o.value} label={o.label} key={index} />
+                    )}
+                    <option value="0" label="Custom" />
+                </Form.Select>
+            </FormGroup>
+            <FormGroup as={Col} xl={props.instant ? "4" : "3"} hidden={selectedPeriod !== "0"}>
+                <Form.Label htmlFor="custom-start">From</Form.Label>
+                <Form.Control disabled={selectedPeriod !== "0"} id="custom-start" type="date" value={customStart} onChange={(e) => onCustomChange(setCustomStart, e.currentTarget.value)} />
+            </FormGroup>
+            <FormGroup xl={props.instant ? "4" : "3"} hidden={selectedPeriod !== "0"}>
+                <Form.Label htmlFor="custom-end">To</Form.Label>
+                <Form.Control disabled={selectedPeriod !== "0"} id="custom-end" type="date" value={customEnd} onChange={(e) => onCustomChange(setCustomEnd, e.currentTarget.value)} />
+            </FormGroup>
+            <FormGroup xl="2" className="horizontal-form-controls" hidden={selectedPeriod !== "0" || props.instant}>
+                <Button disabled={selectedPeriod !== "0"} onClick={customPeriodGo}>Go</Button>
+            </FormGroup>
+        </FormRow>
+    );
 }
 
 PeriodSelector.displayName = "PeriodSelector";
 
+PeriodSelector.defaultProps = {
+    instant: false,
+};
+
 export interface PeriodSelectorProps {
     value?: Period;
     onChange?: (value: Period) => void;
+    instant?: boolean;
 }
 
 export type PeriodType = "lastMonth" | "previousMonth" | "last3Months" | "last12Months" | "lastYear" | "custom";

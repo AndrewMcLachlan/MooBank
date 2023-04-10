@@ -30,7 +30,6 @@ export interface Account extends AccountBase {
     accountType: AccountType;
     accountGroupId: string;
     controller: AccountController;
-    includeInPosition: boolean;
     importerTypeId?: number;
     virtualAccountRemainingBalance?: number;
     virtualAccounts: VirtualAccount[];

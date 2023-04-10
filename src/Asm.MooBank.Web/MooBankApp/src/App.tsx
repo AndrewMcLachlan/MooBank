@@ -31,12 +31,13 @@ const App: React.FC = () => {
                     <Route path="/accounts/:accountId/virtual/:virtualid" element={<Pages.ManageVirtualAccount />} />
                     <Route path="/accounts/:accountId/tag-rules" element={<Pages.TransactionTagRules />} />
                     <Route path="/accounts/:id/import" element={<Pages.Import />} />
-                    <Route path="/accounts/:id/reports" element={<Navigate to="in-out" replace />} />
-                    <Route path="/accounts/:id/reports/in-out" element={<Pages.InOut />} />
-                    {/*<Route path="/accounts/:id/reports/in-out-trend" element={<Pages.InOutTrend />} />*/}
-                    <Route path="/accounts/:id/reports/breakdown/:tagId?" element={<Pages.Breakdown />} />
-                    <Route path="/accounts/:id/reports/by-tag" element={<Pages.ByTag />} />
-                    <Route path="/accounts/:id/reports/tag-trend/:tagId?" element={<Pages.TagTrend />} />
+                    <Route path="/accounts/:id/reports" element={<Pages.Reports />}>
+                        <Route path="in-out" element={<Pages.InOut />} />
+                        {/*<Route path="/accounts/:id/reports/in-out-trend" element={<Pages.InOutTrend />} />*/}
+                        <Route path="breakdown/:tagId?" element={<Pages.Breakdown />} />
+                        <Route path="by-tag" element={<Pages.ByTag />} />
+                        <Route path="tag-trend/:tagId?" element={<Pages.TagTrend />} />
+                    </Route>
                     <Route path="/settings" element={<Navigate to="/settings/tags" replace />} />
                     <Route path="/settings/tags" element={<Pages.TransactionTags />} />
                     <Route path="/account-groups" element={<Pages.ManageAccountGroups />} />

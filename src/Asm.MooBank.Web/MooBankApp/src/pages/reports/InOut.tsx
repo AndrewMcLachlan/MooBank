@@ -1,32 +1,26 @@
-import React, { ChangeEvent, ReactEventHandler, SyntheticEvent, useState } from "react";
+import React, { useState } from "react";
 
-import addMonths from "date-fns/addMonths";
-import endOfMonth from "date-fns/endOfMonth";
-import startOfMonth from "date-fns/startOfMonth";
-import addYears from "date-fns/addYears";
-import endOfYear from "date-fns/endOfYear";
-import startOfYear from "date-fns/startOfYear";
 import format from "date-fns/format";
 import getMonth from "date-fns/getMonth";
 import getYear from "date-fns/getYear";
-import parseISO from "date-fns/parseISO";
 
 import { Page } from "../../layouts";
-import { ReportsHeader } from "../../components";
+import { ReportsHeader } from "./ReportsHeader";
 import { useAccount, useInOutReport } from "../../services";
 import { useParams } from "react-router-dom";
 
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, ChartData, registerables } from "chart.js";
+import chartTrendline from "chartjs-plugin-trendline";
 import { useLayout } from "@andrewmclachlan/mooapp";
 
-import { Button, Col, Form, Row } from "react-bootstrap";
 import { PeriodSelector } from "../../components/PeriodSelector";
 import { useIdParams } from "../../hooks";
 import { getCachedPeriod } from "../../helpers";
 import { InOutTrend } from "./InOutTrend";
 
 ChartJS.register(...registerables);
+ChartJS.register(chartTrendline);
 
 export const InOut = () => {
 
@@ -50,17 +44,15 @@ export const InOut = () => {
             label: "Income",
             data: [report.data?.income ?? 0],
             backgroundColor: theTheme === "dark" ? "#228b22" : "#00FF00",
-            //categoryPercentage: 1
         }, {
-            label: "Exprenses",
+            label: "Expenses",
             data: [Math.abs(report.data?.outgoings ?? 0)],
             backgroundColor: theTheme === "dark" ? "#800020" : "#e23d28",
-            //categoryPercentage: 1,
         }]
     };
 
     return (
-        <Page title="Incoming vs Outging">
+        <Page title="Income vs Expenses">
             <ReportsHeader account={account.data} title="Income vs Expenses" />
             <Page.Content>
              <PeriodSelector value={period} onChange={setPeriod} />

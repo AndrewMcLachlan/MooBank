@@ -6,10 +6,10 @@ import getYear from "date-fns/getYear";
 
 
 import { Page } from "../../layouts";
-import { ReportsHeader } from "../../components";
+import { ReportsHeader } from "./ReportsHeader";
 import { useAccount, useByTagReport, useTag } from "../../services";
 
-import { Doughnut, getElementAtEvent } from "react-chartjs-2";
+import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ChartData, registerables } from "chart.js";
 import { useLayout } from "@andrewmclachlan/mooapp";
 
@@ -19,20 +19,10 @@ import { Period, lastMonth } from "../../helpers/dateFns";
 import { ReportType } from "../../models/reports";
 import { ReportTypeSelector } from "../../components/ReportTypeSelector";
 import { getCachedPeriod } from "../../helpers";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { chartColours } from "./chartColours";
 
 ChartJS.register(...registerables);
 
-const colours = [
-    "#003f5c",
-    "#2f4b7c",
-    "#665191",
-    "#a05195",
-    "#d45087",
-    "#f95d6a",
-    "#ff7c43",
-    "#ffa600",
-]
 
 export const ByTag = () => {
 
@@ -56,7 +46,7 @@ export const ByTag = () => {
         datasets: [{
             label: "",
             data: report.data?.tags.map(t => t.amount) ?? [],
-            backgroundColor: colours,//theTheme === "dark" ? "#228b22" : "#00FF00",
+            backgroundColor: chartColours,//theTheme === "dark" ? "#228b22" : "#00FF00",
             //categoryPercentage: 1,
         }],
     };

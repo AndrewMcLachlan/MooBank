@@ -1,24 +1,12 @@
-import React, { ChangeEvent, ReactEventHandler, SyntheticEvent, useState } from "react";
+import React from "react";
 
-
-import format from "date-fns/format";
-import getMonth from "date-fns/getMonth";
-import getYear from "date-fns/getYear";
-import parseISO from "date-fns/parseISO";
-
-import { Page } from "../../layouts";
-import { ReportsHeader } from "../../components";
-import { useAccount, useInOutReport, useInOutTrendReport } from "../../services";
-import { useParams } from "react-router-dom";
+import { useInOutTrendReport } from "../../services";
 
 import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, ChartData, registerables } from "chart.js";
 import { useLayout } from "@andrewmclachlan/mooapp";
 
-import { Button, Col, Form, Row } from "react-bootstrap";
-import { PeriodSelector } from "../../components/PeriodSelector";
 import { useIdParams } from "../../hooks";
-import { getCachedPeriod } from "../../helpers";
 import { Period } from "../../helpers/dateFns";
 
 ChartJS.register(...registerables);
@@ -41,14 +29,25 @@ export const InOutTrend: React.FC<InOutTrendProps> = ({period}) => {
             data: report.data?.income.map(i => i.amount) ?? [],
             backgroundColor: theTheme === "dark" ? "#228b22" : "#00FF00",
             borderColor: theTheme === "dark" ? "#228b22" : "#00FF00",
-            showLine: true,
-            //categoryPercentage: 1
+            // @ts-ignore
+            trendlineLinear: {
+                colorMin: theTheme === "dark" ? "#99fb99" : "#bbfbbb",
+                colorMax: theTheme === "dark" ? "#99fb99" : "#bbfbbb",
+                lineStyle: "solid",
+                width: 2,
+            }
         }, {
             label: "Expenses",
             data: report.data?.expenses.map(i => Math.abs(i.amount)) ?? [],
             backgroundColor: theTheme === "dark" ? "#800020" : "#e23d28",
             borderColor: theTheme === "dark" ? "#800020" : "#e23d28",
-            //categoryPercentage: 1,
+            // @ts-ignore
+            trendlineLinear: {
+                colorMin: theTheme === "dark" ? "#FF7790" : "#FFAAC0",
+                colorMax: theTheme === "dark" ? "#FF7790" : "#FFAAC0",
+                lineStyle: "solid",
+                width: 2,
+            }
         }]
     };
 

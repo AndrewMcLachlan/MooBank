@@ -15,13 +15,13 @@ export const useCreateAccount = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutate, ...rest} = useApiPost<Account, null, { account: Account, importAccount: ImportAccount }>(() => `api/accounts`, {
+    const { mutate, ...rest} = useApiPost<Account, null, { account: Account, importAccount?: ImportAccount }>(() => `api/accounts`, {
         onSettled: () => {
             queryClient.invalidateQueries(accountsKey);
         }
     });
 
-    const create = (account: Account, importAccount: ImportAccount) => {
+    const create = (account: Account, importAccount?: ImportAccount) => {
         mutate([null, {account, importAccount}]);
     };
 

@@ -4,5 +4,6 @@ export * from "./AccountList/index";
 export * from "./AccountHeader";
 export * from "./AccountProvider";
 export * from "./AccountSummary";
-export * from "./ReportsHeader";
+export * from "./FormGroup";
+export * from "./FormRow";
 export * from "./TagSelector";

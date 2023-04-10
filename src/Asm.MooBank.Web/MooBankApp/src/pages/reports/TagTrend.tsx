@@ -1,29 +1,23 @@
-import React, { ChangeEvent, ReactEventHandler, SyntheticEvent, useState } from "react";
-
-
-import format from "date-fns/format";
-import getMonth from "date-fns/getMonth";
-import getYear from "date-fns/getYear";
-import parseISO from "date-fns/parseISO";
+import React, { useState } from "react";
 
 import { Page } from "../../layouts";
-import { ReportsHeader, TagSelector } from "../../components";
-import { useAccount, useInOutReport, useInOutTrendReport, useTagTrendReport } from "../../services";
+import { TagSelector } from "../../components";
+import { ReportsHeader } from "./ReportsHeader";
+import { useAccount, useTagTrendReport } from "../../services";
 import { useParams } from "react-router-dom";
 
 import { Line } from "react-chartjs-2";
-import { Chart as ChartJS, ChartData, registerables } from "chart.js";
+import { Chart as ChartJS, ChartData, plugins, registerables } from "chart.js";
 import { useLayout } from "@andrewmclachlan/mooapp";
-
-import { Button, Col, Form, Row } from "react-bootstrap";
+import chartTrendline from "chartjs-plugin-trendline";
 import { PeriodSelector } from "../../components/PeriodSelector";
-import { useIdParams } from "../../hooks";
 import { getCachedPeriod } from "../../helpers";
 import { Period } from "../../helpers/dateFns";
 import { ReportType } from "../../models/reports";
 import { ReportTypeSelector } from "../../components/ReportTypeSelector";
 
 ChartJS.register(...registerables);
+ChartJS.register(chartTrendline);
 
 export const TagTrend: React.FC = () => {
 
@@ -39,7 +33,7 @@ export const TagTrend: React.FC = () => {
     const [period, setPeriod] = useState<Period>(getCachedPeriod());
     const [selectedTagId, setSelectedTagId] = useState<number>(tagId ? parseInt(tagId) : 1);
     const report = useTagTrendReport(accountId!, period.startDate, period.endDate, reportType, selectedTagId);
-console.debug(selectedTagId)
+
     const dataset: ChartData<"line", number[], string> = {
         labels: report.data?.months.map(i => i.month) ?? [],
 
@@ -48,12 +42,19 @@ console.debug(selectedTagId)
             data: report.data?.months.map(i => Math.abs(i.amount)) ?? [],
             backgroundColor: theTheme === "dark" ? "#228b22" : "#00FF00",
             borderColor: theTheme === "dark" ? "#228b22" : "#00FF00",
+            // @ts-ignore
+            trendlineLinear: {
+                colorMin: theTheme === "dark" ? "#800020" : "#e23d28",
+                colorMax: theTheme === "dark" ? "#800020" : "#e23d28",
+                lineStyle: "solid",
+                width: 2,
+            }
         }]
     };
 
     return (
         <Page title="Tag Trend">
-            <ReportsHeader account={account.data} title="Breakdown" />
+            <ReportsHeader account={account.data} title="Tag Trend" />
             <Page.Content>
                 <ReportTypeSelector value={reportType} onChange={setReportType} hidden />
                 <PeriodSelector value={period} onChange={setPeriod} />

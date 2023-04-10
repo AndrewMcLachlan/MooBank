@@ -5,12 +5,13 @@ import { useCreateAccountGroup, useUpdateAccountGroup } from "../../services";
 import { emptyGuid } from "@andrewmclachlan/mooapp";
 import { Page } from "../../layouts";
 import { Button, Form } from "react-bootstrap";
+import { FormGroup, FormRow } from "../../components";
 
 export interface AccountGroupFormProps {
     accountGroup?: AccountGroup
 }
 
-export const AccountGroupForm : React.FC<AccountGroupFormProps> = ({accountGroup}) =>  {
+export const AccountGroupForm: React.FC<AccountGroupFormProps> = ({ accountGroup }) => {
     const navigate = useNavigate();
 
     const [name, setName] = useState(accountGroup?.name ?? "");
@@ -54,20 +55,26 @@ export const AccountGroupForm : React.FC<AccountGroupFormProps> = ({accountGroup
             <Page.Header goBack title={`${verb} Account Group`} breadcrumbs={[["Manage Account Groups", "/account-groups"], breadcrumb]} />
             {accountGroup && <Page.Content>
                 <Form onSubmit={handleSubmit}>
-                    <Form.Group controlId="name" >
-                        <Form.Label>Name</Form.Label>
-                        <Form.Control type="text" required maxLength={50} value={name} onChange={(e: any) => setName(e.currentTarget.value)} />
-                        <Form.Control.Feedback type="invalid">Please enter a name</Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group controlId="description" >
-                        <Form.Label >Description</Form.Label>
-                        <Form.Control type="text" as="textarea" maxLength={4000} value={description} onChange={(e: any) => setDescription(e.currentTarget.value)} />
-                        <Form.Control.Feedback type="invalid">Please enter a description</Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Label htmlFor="showPosition">Show Position for Group</Form.Label>
-                        <Form.Switch id="showPosition" checked={showPosition} onChange={(e) => setShowPosition(e.currentTarget.checked)} />
-                    </Form.Group>
+                    <FormRow>
+                        <FormGroup controlId="name" >
+                            <Form.Label>Name</Form.Label>
+                            <Form.Control type="text" required maxLength={50} value={name} onChange={(e: any) => setName(e.currentTarget.value)} />
+                            <Form.Control.Feedback type="invalid">Please enter a name</Form.Control.Feedback>
+                        </FormGroup>
+                    </FormRow>
+                    <FormRow>
+                        <FormGroup controlId="description">
+                            <Form.Label>Description</Form.Label>
+                            <Form.Control type="text" as="textarea" maxLength={4000} value={description} onChange={(e: any) => setDescription(e.currentTarget.value)} />
+                            <Form.Control.Feedback type="invalid">Please enter a description</Form.Control.Feedback>
+                        </FormGroup>
+                    </FormRow>
+                    <FormRow>
+                        <FormGroup controlId="showPosition">
+                            <Form.Label>Show Position for Group</Form.Label>
+                            <Form.Switch checked={showPosition} onChange={(e) => setShowPosition(e.currentTarget.checked)} />
+                        </FormGroup>
+                    </FormRow>
                     <Button type="submit" variant="primary">Save</Button>
                 </Form>
             </Page.Content>}

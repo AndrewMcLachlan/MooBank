@@ -20,7 +20,7 @@ internal class GetInOutReport : IQueryHandler<Models.Queries.Reports.GetInOutRep
     {
         _securityRepository.AssertAccountPermission(request.AccountId);
 
-        var results = await _transactions.Where(t => t.TransactionTime >= request.Start.ToStartOfDay() && t.TransactionTime <= request.End.ToEndOfDay())
+        var results = await _transactions.Where(t => !t.ExcludeFromReporting && t.TransactionTime >= request.Start.ToStartOfDay() && t.TransactionTime <= request.End.ToEndOfDay())
             .GroupBy(t => t.TransactionType)
             .Select(g => new
             {
