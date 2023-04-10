@@ -25,7 +25,7 @@ internal class GetTagTrendReport : IQueryHandler<Models.Queries.Reports.GetTagTr
     {
         _securityRepository.AssertAccountPermission(request.AccountId);
 
-        var transactionTypeFilter = request.ReportType.ToTransactionFilter();
+        var transactionTypeFilter = request.ReportType.ToTransactionFilter2();
 
         var tag = await _tags.SingleAsync(t => t.TransactionTagId == request.TagId, cancellationToken);
         var tags = await _tags.Include(t => t.Tags).Where(t => !t.Deleted && t.TaggedTo.Any(t2 => t2.TransactionTagId == request.TagId)).ToListAsync(cancellationToken);
@@ -36,13 +36,16 @@ internal class GetTagTrendReport : IQueryHandler<Models.Queries.Reports.GetTagTr
         var start = request.Start.ToStartOfDay();
         var end = request.End.ToEndOfDay();
 
-        var transactions = await _transactions.Include(t => t.TransactionTags).ThenInclude(t => t.Tags).Where(t => !t.ExcludeFromReporting && t.TransactionTime >= start && t.TransactionTime <= end && t.TransactionTags.Any(tt => allTags.Contains(tt))).Where(transactionTypeFilter).ToListAsync(cancellationToken);
-
+        var transactions = await _transactions.Include(t => t.TransactionTags).ThenInclude(t => t.Tags)
+            .Where(t => !t.ExcludeFromReporting && t.TransactionTime >= start && t.TransactionTime <= end && t.TransactionTags.Any(tt => allTags.Contains(tt)))
+            //.Where(transactionTypeFilter)
+            .ToListAsync(cancellationToken);
 
         var months = transactions.GroupBy(t => new DateOnly(t.TransactionTime.Year, t.TransactionTime.Month, 1)).OrderBy(g => g.Key).Select(g => new TrendPoint
         {
             Month = g.Key,
-            Amount = g.Sum(t => t.Amount)
+            Amount = g.Where(transactionTypeFilter).Sum(t => t.Amount),
+            OffsetAmount = g.Sum(t => t.Amount)
         });
 
         return new()
@@ -55,4 +58,16 @@ internal class GetTagTrendReport : IQueryHandler<Models.Queries.Reports.GetTagTr
             Months = months,
         };
     }
+}
+
+
+file static class ReportTypeExtensions
+{
+    public static Func<Transaction, bool> ToTransactionFilter2(this ReportType reportType) =>
+        reportType switch
+        {
+            ReportType.Expenses => (Transaction t) => TransactionTypes.Debit.Contains(t.TransactionType),
+            ReportType.Income => (Transaction t) => TransactionTypes.Credit.Contains(t.TransactionType),
+            _ => (Transaction t) => true
+        };
 }

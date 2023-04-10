@@ -6,4 +6,6 @@ public record TrendPoint
 
     public required decimal Amount { get; init; }
 
+    public decimal? OffsetAmount { get; init; }
 }
+

@@ -34,12 +34,14 @@ export const TagTrend: React.FC = () => {
     const [selectedTagId, setSelectedTagId] = useState<number>(tagId ? parseInt(tagId) : 1);
     const report = useTagTrendReport(accountId!, period.startDate, period.endDate, reportType, selectedTagId);
 
+
+
     const dataset: ChartData<"line", number[], string> = {
         labels: report.data?.months.map(i => i.month) ?? [],
 
         datasets: [{
-            label: report.data?.tagName,
-            data: report.data?.months.map(i => Math.abs(i.amount)) ?? [],
+            label: `${report.data?.tagName} (Offset)`,
+            data: report.data?.months.map(i => Math.abs(i.offsetAmount!)) ?? [],
             backgroundColor: theTheme === "dark" ? "#228b22" : "#00FF00",
             borderColor: theTheme === "dark" ? "#228b22" : "#00FF00",
             // @ts-ignore
@@ -49,6 +51,12 @@ export const TagTrend: React.FC = () => {
                 lineStyle: "solid",
                 width: 2,
             }
+        }, {
+            label: `${report.data?.tagName} (Expenses)`,
+            data: report.data?.months.map(i => Math.abs(i.amount)) ?? [],
+            backgroundColor: theTheme === "dark" ? "#800020" : "#e23d28",
+            borderColor: theTheme === "dark" ? "#800020" : "#e23d28",
+
         }]
     };
 
