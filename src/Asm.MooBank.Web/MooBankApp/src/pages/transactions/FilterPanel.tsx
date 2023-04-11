@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PeriodSelector } from "../../components/PeriodSelector";
 import { Period } from "../../helpers/dateFns";
 import { getCachedPeriod } from "../../helpers";
+import { Input } from "../../components/AccountList/Input";
 
 export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
 
@@ -34,7 +35,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
                 <Row>
                     <Col className="description">
                         <Form.Label htmlFor="filter-desc">Description</Form.Label>
-                        <Form.Control id="filter-desc" type="text" value={filterDescription} onChange={(e) => dispatch(TransactionsSlice.actions.setTransactionListFilter({ description: e.currentTarget.value }))} placeholder="Contains..." />
+                        <Input id="filter-desc" type="text" value={filterDescription} onChange={(e) => dispatch(TransactionsSlice.actions.setTransactionListFilter({ description: e.currentTarget.value }))} placeholder="Contains..." clearable />
                     </Col>
                 </Row>
                 <PeriodSelector value={period} onChange={setPeriod} instant />

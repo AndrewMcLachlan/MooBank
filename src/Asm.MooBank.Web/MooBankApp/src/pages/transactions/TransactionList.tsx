@@ -3,7 +3,7 @@ import "./TransactionList.scss";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { Table } from "react-bootstrap";
+import { Pagination, Table } from "react-bootstrap";
 
 import { TransactionsSlice } from "../../store/Transactions";
 import { sortDirection, State } from "../../store/state";
@@ -43,8 +43,22 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
         dispatch(TransactionsSlice.actions.setSort([newSortField, newSortDirection]));
     }
 
-    const getClassName = (field: string) =>
-        field === sortField ? `sortable ${sortDirection.toLowerCase()}` : `sortable`;
+    const getClassName = (field: string) => field === sortField ? `sortable ${sortDirection.toLowerCase()}` : `sortable`;
+
+    const pagesToDisplay: number[] = [];
+    if (pageNumber < 3 || numberOfPages <= 5) {
+        for (let i = 1; i <= 5 && i <= numberOfPages; i++) {
+            pagesToDisplay.push(i);
+        }
+    } else if (pageNumber >= numberOfPages - 3) {
+        for (let i = numberOfPages - 4; i <= numberOfPages; i++) {
+            pagesToDisplay.push(i);
+        }
+    } else {
+        for (let i = pageNumber - 2; i <= pageNumber + 2; i++) {
+            pagesToDisplay.push(i);
+        }
+    }
 
     return (
         <Table striped bordered={false} borderless className="transactions">
@@ -58,15 +72,23 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
             </thead>
             <tbody>
                 {transactions && transactions.map((t) => t.extraInfo ? <TransactionRowIng key={t.id} transaction={t} /> : <TransactionRow key={t.id} transaction={t} />)}
+                {!transactions && Array.from({ length: 50 }, (value, index) => index).map((i) => <tr key={i}><td colSpan={4}>&nbsp;</td></tr>)}
             </tbody>
             <tfoot>
                 <tr>
                     <td colSpan={2}>Page {pageNumber} of {numberOfPages} ({totalTransactions} transactions)</td>
                     <td colSpan={2}>
-                        <button disabled={!showPrev} className="btn" onClick={() => dispatch(TransactionsSlice.actions.setCurrentPage(1))}>&lt;&lt;</button>
-                        <button disabled={!showPrev} className="btn" onClick={() => dispatch(TransactionsSlice.actions.setCurrentPage(Math.max(pageNumber - 1, 1)))}>&lt;</button>
-                        <button disabled={!showNext} className="btn" onClick={() => dispatch(TransactionsSlice.actions.setCurrentPage(Math.min(pageNumber + 1, numberOfPages)))}>&gt;</button>
-                        <button disabled={!showNext} className="btn" onClick={() => dispatch(TransactionsSlice.actions.setCurrentPage(numberOfPages))}>&gt;&gt;</button>
+                        <Pagination>
+                            <Pagination.First disabled={!showPrev} onClick={() => dispatch(TransactionsSlice.actions.setCurrentPage(1))} />
+                            <Pagination.Prev disabled={!showPrev} onClick={() => dispatch(TransactionsSlice.actions.setCurrentPage(1))} />
+                            {pagesToDisplay.map((page) => (
+                                <Pagination.Item key={page} active={page === pageNumber} onClick={() => dispatch(TransactionsSlice.actions.setCurrentPage(page))}>
+                                    {page}
+                                </Pagination.Item>
+                            ))}
+                            <Pagination.Next disabled={!showNext} onClick={() => dispatch(TransactionsSlice.actions.setCurrentPage(Math.min(pageNumber + 1, numberOfPages)))} />
+                            <Pagination.Last disabled={!showNext} onClick={() => dispatch(TransactionsSlice.actions.setCurrentPage(numberOfPages))} />
+                        </Pagination>
                     </td>
                 </tr>
             </tfoot>
