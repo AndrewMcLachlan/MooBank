@@ -76,7 +76,7 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
             </tbody>
             <tfoot>
                 <tr>
-                    <td colSpan={2}>Page {pageNumber} of {numberOfPages} ({totalTransactions} transactions)</td>
+                    <td colSpan={2} className="page-totals">Page {pageNumber} of {numberOfPages} ({totalTransactions} transactions)</td>
                     <td colSpan={2}>
                         <Pagination>
                             <Pagination.First disabled={!showPrev} onClick={() => dispatch(TransactionsSlice.actions.setCurrentPage(1))} />

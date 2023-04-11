@@ -190,10 +190,11 @@ thead th {
 
 .table {
 
-    
+    .page-totals {
+        font-family: var(--font-family-alt);
+    }
 
     tfoot {
-        font-family: var(--font-family-alt);
         /*border-top: 2px double #000;*/
         border-top-style: double;
 
