@@ -1,31 +1,29 @@
 import "./FilterPanel.scss";
 
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, } from "react-redux";
 import { FormRow as Row } from "../../components";
 import { TransactionsSlice } from "../../store/Transactions";
-import { State } from "../../store/state";
 import { Col, Collapse, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PeriodSelector } from "../../components/PeriodSelector";
 import { Period } from "../../helpers/dateFns";
 import { getCachedPeriod } from "../../helpers";
 import { Input } from "../../components/AccountList/Input";
+import { useLocalStorage } from "@andrewmclachlan/mooapp";
 
-export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
+export const FilterPanel: React.FC<FilterPanelProps> = () => {
 
-    const filterTagged = useSelector((state: State) => state.transactions.filter.filterTagged);
-    const filterDescription = useSelector((state: State) => state.transactions.filter.description);
+    const [filterTagged, setFilterTagged] = useLocalStorage("filter-tagged", false);
+    const [filterDescription, setFilterDescription] = useLocalStorage("filter-description", "");
     const [period, setPeriod] = useState<Period>(getCachedPeriod());
-    const filterStart = useSelector((state: State) => state.transactions.filter.start);
-    const filterEnd = useSelector((state: State) => state.transactions.filter.end);
     const dispatch = useDispatch();
 
     const [open, setOpen] = useState(false);
 
     useEffect(() => {
-        dispatch(TransactionsSlice.actions.setTransactionListFilter({ start: period.startDate.toISOString(), end: period.endDate.toISOString() }));
-    }, [period]);
+        dispatch(TransactionsSlice.actions.setTransactionListFilter({description: filterDescription, filterTagged, start: period.startDate.toISOString(), end: period.endDate.toISOString() }));
+    }, [period, filterDescription, filterTagged]);
 
     return (
         <fieldset className="filter-panel box">
@@ -35,13 +33,13 @@ export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
                 <Row>
                     <Col className="description">
                         <Form.Label htmlFor="filter-desc">Description</Form.Label>
-                        <Input id="filter-desc" type="text" value={filterDescription} onChange={(e) => dispatch(TransactionsSlice.actions.setTransactionListFilter({ description: e.currentTarget.value }))} placeholder="Contains..." clearable />
+                        <Input id="filter-desc" type="text" value={filterDescription} onChange={(e) => setFilterDescription(e.currentTarget.value)} placeholder="Contains..." clearable />
                     </Col>
                 </Row>
                 <PeriodSelector value={period} onChange={setPeriod} instant />
                 <Row>
                     <Form.Group>
-                        <Form.Check id="filter-tagged" label="Only show transactions without tags" checked={filterTagged} onChange={(e) => dispatch(TransactionsSlice.actions.setTransactionListFilter({ filterTagged: e.currentTarget.checked }))} />
+                        <Form.Check id="filter-tagged" label="Only show transactions without tags" checked={filterTagged} onChange={(e) => setFilterTagged(e.currentTarget.checked)} />
                     </Form.Group>
                 </Row>
                 </>
