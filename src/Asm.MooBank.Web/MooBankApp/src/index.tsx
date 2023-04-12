@@ -1,6 +1,5 @@
 import React from "react";
 
-import { QueryClient } from "react-query";
 import { createRoot } from "react-dom/client";
 import { Provider as ReduxProvider } from "react-redux";
 

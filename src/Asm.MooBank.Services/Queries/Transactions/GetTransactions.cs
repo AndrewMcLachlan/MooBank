@@ -66,10 +66,12 @@ file static class IQueryableExtensions
 
             ParameterExpression param = Expression.Parameter(typeof(Transaction), String.Empty);
             MemberExpression propertyExp = Expression.Property(param, field);
-            LambdaExpression sort = Expression.Lambda(propertyExp, param);
-            MethodCallExpression call = Expression.Call(typeof(Queryable), "OrderBy" + (direction == SortDirection.Descending ? "Descending" : String.Empty), new[] { typeof(Transaction), propertyExp.Type },
-            query.Expression,
-            Expression.Quote(sort));
+            Expression sortBody = field == "Amount" ? Expression.Call(typeof(Math), "Abs", null, propertyExp) : propertyExp;
+            LambdaExpression sort = Expression.Lambda(sortBody, param);
+            MethodCallExpression call =
+                Expression.Call(typeof(Queryable), "OrderBy" + (direction == SortDirection.Descending ? "Descending" : String.Empty), new[] { typeof(Transaction), propertyExp.Type },
+                query.Expression,
+                Expression.Quote(sort));
             return (IOrderedQueryable<Transaction>)query.Provider.CreateQuery<Transaction>(call);
         }
 
