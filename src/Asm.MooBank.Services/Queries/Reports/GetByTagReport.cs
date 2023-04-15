@@ -19,7 +19,7 @@ internal class GetByTagReport : IQueryHandler<Models.Queries.Reports.GetByTagRep
     {
         _securityRepository.AssertAccountPermission(request.AccountId);
 
-        var transactionTypeFilter = request.ReportType.ToTransactionFilter();
+        var transactionTypeFilter = request.ReportType.ToTransactionFilterExpression();
 
 
         var start = request.Start.ToStartOfDay();
@@ -34,14 +34,14 @@ internal class GetByTagReport : IQueryHandler<Models.Queries.Reports.GetByTagRep
             {
                 TagId = t.TransactionTagId,
                 TagName = t.Name,
-                Amount = Math.Abs(g.Sum(t => t.Amount)),
+                GrossAmount = Math.Abs(g.Sum(t => t.Amount)),
             })).ToList();
 
         var tagValues = tagValuesInterim.GroupBy(t => new { t.TagId, t.TagName }).Select(g => new TagValue
         {
             TagId = g.Key.TagId,
             TagName = g.Key.TagName,
-            Amount = g.Sum(t => t.Amount),
+            GrossAmount = g.Sum(t => t.GrossAmount),
         }).ToList();
 
         if (request.TagId == null)
@@ -50,7 +50,7 @@ internal class GetByTagReport : IQueryHandler<Models.Queries.Reports.GetByTagRep
             tagValues.Add(new TagValue
             {
                 TagName = "Untagged",
-                Amount = Math.Abs(tagLessAmount),
+                GrossAmount = Math.Abs(tagLessAmount),
             });
         }
 
@@ -59,7 +59,7 @@ internal class GetByTagReport : IQueryHandler<Models.Queries.Reports.GetByTagRep
             AccountId = request.AccountId,
             Start = request.Start,
             End = request.End,
-            Tags = tagValues.OrderByDescending(t => t.Amount),
+            Tags = tagValues.OrderByDescending(t => t.GrossAmount),
         };
     }
 }

@@ -20,6 +20,7 @@ export const useTransactions = (accountId: string, filter: TransactionsFilter, p
     let filterString = filter.description ? `&filter=${filter.description}` : "";
         filterString += filter.start ? `&start=${filter.start}` : "";
         filterString += filter.end ? `&end=${filter.end}` : "";
+        filterString += filter.tag ? `&tagid=${filter.tag}` : "";
 
     let queryString = sortString + filterString;
     queryString = queryString.startsWith("&") ? queryString.substr(1) : queryString;

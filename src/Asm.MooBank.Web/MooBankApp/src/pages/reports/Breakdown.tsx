@@ -53,7 +53,7 @@ export const Breakdown = () => {
         labels: report.data?.tags.map(t => t.tagName) ?? [],
         datasets: [{
             label: "",
-            data: report.data?.tags.map(t => t.amount) ?? [],
+            data: report.data?.tags.map(t => t.grossAmount) ?? [],
             backgroundColor: chartColours,//theTheme === "dark" ? "#228b22" : "#00FF00",
             //categoryPercentage: 1,
         }],

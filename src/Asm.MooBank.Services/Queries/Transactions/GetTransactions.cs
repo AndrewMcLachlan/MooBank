@@ -51,6 +51,7 @@ file static class IQueryableExtensions
         result = result.Where(t => request.Filter == null || (t.Description != null && t.Description.Contains(request.Filter)));
         result = result.Where(t => (request.Start == null || t.TransactionTime >= request.Start) && (request.End == null || t.TransactionTime <= request.End));
         result = result.Where(t => !request.UntaggedOnly || !t.TransactionTags.Any());
+        result = result.Where(t => request.TagId == null || (t.TransactionTags.Any(t => t.TransactionTagId == request.TagId)));
 
         return result;
     }

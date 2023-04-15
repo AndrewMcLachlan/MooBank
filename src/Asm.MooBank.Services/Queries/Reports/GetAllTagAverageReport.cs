@@ -30,10 +30,10 @@ internal class GetAllTagAverageReport : IQueryHandler<Models.Queries.Reports.Get
         var start = request.Start.ToStartOfDay();
         var end = request.End.ToEndOfDay();
 
-        var transactions = await _transactions.Include(t => t.TransactionTags).Where(t => !t.ExcludeFromReporting && t.TransactionTime >= start && t.TransactionTime <= end).Where(transactionTypeFilter).ToListAsync(cancellationToken);
+        var transactions = await _transactions.Include(t => t.TransactionTags).Where(t => !t.ExcludeFromReporting && t.TransactionTime >= start && t.TransactionTime <= end).ToListAsync(cancellationToken);
 
         var total = transactions.Sum(t => t.Amount);
-        decimal months = transactions.Min(t => t.TransactionTime).DifferenceInMonths(transactions.Max(t => t.TransactionTime));
+        decimal months = Math.Max(transactions.Min(t => t.TransactionTime).DifferenceInMonths(transactions.Max(t => t.TransactionTime)), 1);
 
         var tagValuesInterim = transactions
             .GroupBy(t => t.TransactionTags)
@@ -42,14 +42,16 @@ internal class GetAllTagAverageReport : IQueryHandler<Models.Queries.Reports.Get
             {
                 TagId = t.TransactionTagId,
                 TagName = t.Name,
-                Amount = g.Sum(t => t.Amount),
+                GrossAmount = g.WhereByReportType(request.ReportType).Sum(t => t.Amount),
+                NetAmount = g.Sum(t => t.Amount),
             }));
 
         var tagValues = tagValuesInterim.GroupBy(t => new { t.TagId, t.TagName }).Select(g => new TagValue
         {
             TagId = g.Key.TagId,
             TagName = g.Key.TagName,
-            Amount = g.Sum(t => t.Amount),
+            GrossAmount = g.Sum(t => t.GrossAmount),
+            NetAmount = g.Sum(t => t.NetAmount),
         });
 
         var consolidatedTagValues = tagValues.Select(t =>
@@ -58,16 +60,18 @@ internal class GetAllTagAverageReport : IQueryHandler<Models.Queries.Reports.Get
 
             return t with
             {
-                Amount = t.Amount + tagValues.Where(tv => relatedTags.Contains(tv.TagId!.Value)).Sum(tv => tv.Amount),
+                GrossAmount = t.GrossAmount + tagValues.Where(tv => relatedTags.Contains(tv.TagId!.Value)).Sum(tv => tv.GrossAmount),
+                NetAmount = t.NetAmount + tagValues.Where(tv => relatedTags.Contains(tv.TagId!.Value)).Sum(tv => tv.NetAmount),
                 HasChildren = relatedTags.Any(),
             };
         });
 
 
         // Filter out small values
-        var filteredTagValues = consolidatedTagValues.Where(t => (t.Amount / total) > 0.005m).Select(t => t with
+        var filteredTagValues = consolidatedTagValues.Where(t => (t.NetAmount / total) > 0.005m).Select(t => t with
         {
-            Amount = Math.Round(Math.Abs(t.Amount / months)),
+            NetAmount = Math.Round(Math.Abs(t.NetAmount!.Value / months)),
+            GrossAmount = Math.Round(Math.Abs(t.GrossAmount / months)),
         });
 
         /*var tagLessAmount = await _transactions.Where(t => !t.ExcludeFromReporting && t.TransactionTime >= start && t.TransactionTime <= end && !t.TransactionTags.Any()).Where(transactionTypeFilter).SumAsync(t => t.Amount, cancellationToken);
@@ -83,7 +87,7 @@ internal class GetAllTagAverageReport : IQueryHandler<Models.Queries.Reports.Get
             Start = request.Start,
             End = request.End,
             ReportType = request.ReportType,
-            Tags = filteredTagValues.OrderByDescending(t => t.Amount),
+            Tags = filteredTagValues.Take(50).OrderByDescending(t => t.NetAmount),
         };
     }
 }

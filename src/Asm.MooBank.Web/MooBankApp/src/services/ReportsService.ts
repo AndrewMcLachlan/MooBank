@@ -1,7 +1,6 @@
 import { useApiGet } from "@andrewmclachlan/mooapp";
-import { ByTagReport, InOutReport, InOutTrendReport, ReportType } from "../models/reports";
+import { AllTagAverageReport, ByTagReport, InOutReport, InOutTrendReport, ReportType, TagTrendReport, TagTrendReportSettings } from "../models/reports";
 import { formatISODate } from "../helpers/dateFns";
-import { TagTrendReport, TagTrendReportSettings } from "../models/reports";
 
 export const reportsKey = "reports";
 
@@ -16,8 +15,6 @@ export const useByTagReport = (accountId: string, start: Date, end: Date, report
 export const useTagTrendReport = (accountId: string, start: Date, end: Date, reportType: ReportType, tagId: number, settings: TagTrendReportSettings) => useApiGet<TagTrendReport>([reportsKey, accountId, "tag-trend", reportType, start, end, tagId, settings], `api/accounts/${accountId}/reports/${ReportType[reportType].toLowerCase()}/tag-trend/${formatISODate(start)}/${formatISODate(end)}/${tagId}${toQuery(settings)}`);
 
 export const useAllTagAverageReport = (accountId: string, start: Date, end: Date, reportType: ReportType) => useApiGet<AllTagAverageReport>([reportsKey, accountId, "all-tag-average", reportType, start, end], `api/accounts/${accountId}/reports/${ReportType[reportType].toLowerCase()}/all-tag-average/${formatISODate(start)}/${formatISODate(end)}`);
-
-
 
 const toQuery = (settings: TagTrendReportSettings) => {
 

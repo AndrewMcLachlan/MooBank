@@ -33,9 +33,11 @@ export const reducers = {
         const newFilter: TransactionsFilter = {
             description: action.payload.description ?? state.filter.description,
             filterTagged: action.payload.filterTagged ?? state.filter.filterTagged,
+            tag: action.payload.tag === undefined ? state.filter.tag : action.payload.tag,
             start: action.payload.start ?? state.filter.start,
             end: action.payload.end ?? state.filter.end,
         };
+
         return {
             ...state,
             filter: newFilter,

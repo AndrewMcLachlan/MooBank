@@ -4,9 +4,10 @@ export interface ByTagReport extends BaseReport {
     tags: TagValue[],
 }
 
-export interface TagValue { 
+export interface TagValue {
     tagId: number,
     tagName: string,
-    amount: number,
+    grossAmount: number,
+    netAmount?: number,
     hasChildren: boolean,
 }

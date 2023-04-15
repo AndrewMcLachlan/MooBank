@@ -18,7 +18,7 @@ export const PageHeader: PageHeaderComponent = (props) => {
                     {props.goBack && <FontAwesomeIcon className="clickable" icon="circle-chevron-left" size="lg" onClick={() => navigate(-1)} />}
                     <h2>{props.title}</h2>
                     {props.children}
-                    <nav className="control-panel">
+                    <nav className="secondary-nav">
                         <ul>
                             {renderMenu(props.menuItems!)}
                         </ul>

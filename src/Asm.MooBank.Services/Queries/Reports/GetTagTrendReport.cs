@@ -25,7 +25,7 @@ internal class GetTagTrendReport : IQueryHandler<Models.Queries.Reports.GetTagTr
     {
         _securityRepository.AssertAccountPermission(request.AccountId);
 
-        var transactionTypeFilter = request.ReportType.ToTransactionFilter2();
+        var transactionTypeFilter = request.ReportType.ToTransactionFilter();
 
         var tag = await _tags.SingleAsync(t => t.TransactionTagId == request.TagId, cancellationToken);
         var tags = await _tags.Include(t => t.Tags).Where(t => !t.Deleted && t.TaggedTo.Any(t2 => t2.TransactionTagId == request.TagId)).ToListAsync(cancellationToken);
@@ -38,7 +38,6 @@ internal class GetTagTrendReport : IQueryHandler<Models.Queries.Reports.GetTagTr
 
         var transactions = await _transactions.Include(t => t.TransactionTags).ThenInclude(t => t.Tags)
             .Where(t => !t.ExcludeFromReporting && t.TransactionTime >= start && t.TransactionTime <= end && t.TransactionTags.Any(tt => allTags.Contains(tt)))
-            //.Where(transactionTypeFilter)
             .ToListAsync(cancellationToken);
 
         var months = transactions.GroupBy(t => new DateOnly(t.TransactionTime.Year, t.TransactionTime.Month, 1)).OrderBy(g => g.Key).Select(g => new TrendPoint
@@ -102,16 +101,4 @@ internal class GetTagTrendReport : IQueryHandler<Models.Queries.Reports.GetTagTr
             current = month.Month;
         }
     }
-}
-
-
-file static class ReportTypeExtensions
-{
-    public static Func<Transaction, bool> ToTransactionFilter2(this ReportType reportType) =>
-        reportType switch
-        {
-            ReportType.Expenses => (Transaction t) => TransactionTypes.Debit.Contains(t.TransactionType),
-            ReportType.Income => (Transaction t) => TransactionTypes.Credit.Contains(t.TransactionType),
-            _ => (Transaction t) => true
-        };
 }

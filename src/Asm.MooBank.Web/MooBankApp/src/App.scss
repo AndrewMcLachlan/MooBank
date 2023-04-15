@@ -88,7 +88,7 @@ label {
     }
 }
 
-nav.control-panel {
+nav.secondary-nav {
 
     color: #CCCCCC;
     font-weight: bold;
@@ -283,6 +283,7 @@ section.actions {
 }
 
 fieldset {
+    position: relative;
     border: 1px solid;
     padding: 10px;
     padding-top: 5px;
@@ -354,4 +355,43 @@ form>div {
     list-style: none;
 }
 
+.control-panel {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+}
+
+.react-select {
+    font-family: var(--font-family-alt);
+
+    .react-select__control, .react-select__menu {
+        background-color: var(--bs-body-bg);
+        color: var(--bs-body-color);
+    }
+    .react-select__single-value {
+        color: var(--bs-body-color);
+    }
+
+    .react-select__input-container {
+        color: var(--bs-body-color);
+    }
+
+    .react-select__option--is-focused {
+        background-color: var(--hover);
+    }
+
+    .react-select__option--is-selected {
+        background-color: rgba(var(--bs-primary-rgb), 1);
+    }
+
+    
+
+    .react-select__control--is-focused {
+        border-color: #86b7fe;
+        outline: 0;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+}
+
 @import 'responsive';
+

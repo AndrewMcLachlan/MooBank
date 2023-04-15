@@ -1,10 +1,5 @@
 import React, { useRef, useState } from "react";
 
-import format from "date-fns/format";
-import getMonth from "date-fns/getMonth";
-import getYear from "date-fns/getYear";
-
-
 import { Page } from "../../layouts";
 import { ReportsHeader } from "./ReportsHeader";
 import { useAccount, useAllTagAverageReport } from "../../services";
@@ -19,7 +14,7 @@ import { Period, lastMonth } from "../../helpers/dateFns";
 import { ReportType } from "../../models/reports";
 import { ReportTypeSelector } from "../../components/ReportTypeSelector";
 import { getCachedPeriod } from "../../helpers";
-import { chartColours } from "./chartColours";
+import { chartColours, desaturatedChartColours } from "./chartColours";
 import { useNavigate } from "react-router";
 
 ChartJS.register(...registerables);
@@ -33,6 +28,7 @@ export const AllTagAverage = () => {
 
     const [reportType, setReportType] = useState<ReportType>(ReportType.Expenses);
     const [period, setPeriod] = useState<Period>(getCachedPeriod());
+    const [showGross] = useState<boolean>(false); //TODO: may make this an option
 
     const account = useAccount(accountId!);
 
@@ -44,11 +40,19 @@ export const AllTagAverage = () => {
         labels: report.data?.tags.map(t => t.tagName) ?? [],
         datasets: [{
             label: "",
-            data: report.data?.tags.map(t => t.amount) ?? [],
-            backgroundColor: chartColours
+            data: report.data?.tags.map(t => t.netAmount!) ?? [],
+            backgroundColor: chartColours,
         }],
     };
-    //http://localhost:3005/accounts/6b4ae4d9-d4ba-41f7-80e6-076863df9407/reports/breakdown/29
+
+    if (showGross) {
+        dataset.datasets.push({
+            label: "",
+            data: report.data?.tags.map(t => t.grossAmount!) ?? [],
+            backgroundColor: desaturatedChartColours,
+        });
+    }
+
     return (
         <Page title="All Tag Average">
             <ReportsHeader account={account.data} title="All Tag Average" />
@@ -56,7 +60,7 @@ export const AllTagAverage = () => {
                 <ReportTypeSelector value={reportType} onChange={setReportType} hidden />
                 <PeriodSelector value={period} onChange={setPeriod} />
                 <section className="report">
-                    <h3>Average Across Tags</h3>
+                    <h3>Average Across Top 50 Tags</h3>
                     <Bar id="alltagaverage" ref={chartRef} data={dataset} options={{
                         plugins: {
                             legend: {
@@ -72,6 +76,11 @@ export const AllTagAverage = () => {
                             mode: "point",
                             intersect: true,
                         },
+                        scales: {
+                            x: {
+                                stacked: true
+                            }
+                        }
                     }}
                         onClick={(e) => {
                             var elements = getElementAtEvent(chartRef.current!, e);
@@ -85,16 +94,4 @@ export const AllTagAverage = () => {
         </Page >
     );
 
-}
-
-const formatPeriod = (start: Date, end: Date): string => {
-
-    const sameYear = getYear(start) === getYear(end);
-    const sameMonth = getMonth(start) === getMonth(end);
-
-    if (sameYear && sameMonth) return format(start, "MMM");
-
-    if (sameYear) return `${format(start, "MMM")} - ${format(end, "MMM")}`;
-
-    return `${format(start, "MMM yy")} - ${format(end, "MMM yy")}`;
 }

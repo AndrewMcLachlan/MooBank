@@ -21,3 +21,27 @@ export const chartColours = [
     "#e15c4e",
     "#d43d51",
 ]
+
+export const desaturatedChartColours = [
+    "#1c3540",
+    "#465165",
+    "#6d647e",
+    "#6d647e",
+    "#ac788e",
+    "#ca8c91",
+    "#c7927b",
+    "#b38f4d",
+    "#285e54",
+    "#3d996e",
+    "#597d6c",
+    "#8fa487",
+    "#acca74",
+    "#a4b08e",
+    "#d7cfa7",
+    "#cfbd98",
+    "#c9ad8b",
+    "#c29d83",
+    "#bc8e7d",
+    "#b5807a",
+    "#a76a72",
+]

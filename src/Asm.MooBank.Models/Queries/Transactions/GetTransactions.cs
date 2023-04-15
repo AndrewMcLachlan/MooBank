@@ -10,6 +10,8 @@ public record GetTransactions : IQuery<PagedResult<Transaction>>
 
     public DateTime? End { get; init; }
 
+    public int? TagId { get; set; }
+
     public required int PageSize { get; init; }
 
     public required int PageNumber { get; init; }

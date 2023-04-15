@@ -25,10 +25,10 @@ internal class GetBreakdownReport : IQueryHandler<Models.Queries.Reports.GetBrea
     {
         _securityRepository.AssertAccountPermission(request.AccountId);
 
-        var transactionTypeFilter = request.ReportType.ToTransactionFilter();
+        var transactionTypeFilter = request.ReportType.ToTransactionFilterExpression();
 
         IEnumerable<TransactionTag> tags;
-        IEnumerable<TransactionTag> topTags;
+        List<TransactionTag> topTags;
         IEnumerable<TransactionTagRelationship> lowerTags;
 
         if (request.TagId == null)
@@ -40,8 +40,10 @@ internal class GetBreakdownReport : IQueryHandler<Models.Queries.Reports.GetBrea
         else
         {
             topTags = await _tags.Include(t => t.Tags).Where(t => !t.Deleted && t.TaggedTo.Any(t2 => t2.TransactionTagId == request.TagId)).ToListAsync(cancellationToken);
+            topTags.Add(_tags.Include(t => t.Tags).Single(t => t.TransactionTagId == request.TagId));
             lowerTags = await _tagRelationships.Include(t => t.TransactionTag).ThenInclude(t => t.Tags).Include(t => t.ParentTag).ThenInclude(t => t.Tags).Where(tr => !tr.TransactionTag.Deleted && topTags.Contains(tr.ParentTag)).ToListAsync(cancellationToken);
         }
+
 
         tags = topTags.Union(lowerTags.Select(tr => tr.TransactionTag), new TransactionTagEqualityComparer());
 
@@ -56,7 +58,7 @@ internal class GetBreakdownReport : IQueryHandler<Models.Queries.Reports.GetBrea
             {
                 TagId = g.Key.TransactionTagId,
                 TagName = g.Key.Name,
-                Amount = Math.Abs(g.Sum(t => t.Amount)),
+                GrossAmount = Math.Abs(g.Sum(t => t.Amount)),
                 HasChildren = g.Key.Tags.Any(t => !t.Deleted),
             }).ToList();
 
@@ -65,7 +67,7 @@ internal class GetBreakdownReport : IQueryHandler<Models.Queries.Reports.GetBrea
             var tagLessAmount = await _transactions.Where(t => !t.ExcludeFromReporting && t.TransactionTime >= start && t.TransactionTime <= end && !t.TransactionTags.Any()).Where(transactionTypeFilter).SumAsync(t => t.Amount, cancellationToken);
             tagValues.Add(new TagValue {
                 TagName = "Untagged",
-                Amount = Math.Abs(tagLessAmount),
+                GrossAmount = Math.Abs(tagLessAmount),
             });
         }
 
@@ -74,7 +76,7 @@ internal class GetBreakdownReport : IQueryHandler<Models.Queries.Reports.GetBrea
             AccountId = request.AccountId,
             Start = request.Start,
             End = request.End,
-            Tags = tagValues.OrderByDescending(t => t.Amount),
+            Tags = tagValues.OrderByDescending(t => t.GrossAmount),
         };
     }
 }
