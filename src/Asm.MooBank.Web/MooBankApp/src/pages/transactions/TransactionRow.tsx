@@ -4,9 +4,9 @@ import parseISO from "date-fns/parseISO";
 
 import { TagPanel } from "@andrewmclachlan/mooapp";
 
-import { Transaction, TransactionTag } from "../../models";
-import { useAccount } from "../../components";
-import { useAddTransactionTag, useCreateTag, useRemoveTransactionTag, useTags } from "../../services";
+import { Transaction, TransactionTag } from "models";
+import { useAccount } from "components";
+import { useAddTransactionTag, useCreateTag, useRemoveTransactionTag, useTags } from "services";
 
 export const TransactionRow: React.FC<TransactionRowProps> = (props) => {
 

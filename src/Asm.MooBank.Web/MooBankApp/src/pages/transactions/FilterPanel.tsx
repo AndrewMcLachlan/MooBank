@@ -2,24 +2,24 @@ import "./FilterPanel.scss";
 
 import React, { useEffect, useState } from "react";
 import { useDispatch, } from "react-redux";
-import { FormRow as Row, TagSelector } from "../../components";
-import { TransactionsSlice } from "../../store/Transactions";
+import { FormRow as Row, TagSelector } from "components";
+import { TransactionsSlice } from "store/Transactions";
 import { Button, Col, Collapse, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PeriodSelector } from "../../components/PeriodSelector";
-import { Period } from "../../helpers/dateFns";
-import { getCachedPeriod } from "../../helpers";
-import { Input } from "../../components/AccountList/Input";
+import { PeriodSelector } from "components/PeriodSelector";
+import { Period } from "helpers/dateFns";
+import { Input } from "components/AccountList/Input";
 import { useLocalStorage } from "@andrewmclachlan/mooapp";
 import Select from "react-select";
-import { useTags } from "../../services";
+import { useTags } from "services";
+import { usePeriod } from "hooks";
 
 export const FilterPanel: React.FC<FilterPanelProps> = () => {
 
     const [filterTagged, setFilterTagged] = useLocalStorage("filter-tagged", false);
     const [filterDescription, setFilterDescription] = useLocalStorage("filter-description", "");
     const [filterTag, setFilterTag] = useLocalStorage<number | null>("filter-tag", null);
-    const [period, setPeriod] = useState<Period>(getCachedPeriod());
+    const [period, setPeriod] = useState<Period>({startDate: null,endDate: null});
     const tags = useTags();
     const dispatch = useDispatch();
 
@@ -34,7 +34,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = () => {
     const tag = tags.data?.find(t => t.id === filterTag);
 
     useEffect(() => {
-        dispatch(TransactionsSlice.actions.setTransactionListFilter({ description: filterDescription, filterTagged, tag: filterTag, start: period.startDate.toISOString(), end: period.endDate.toISOString() }));
+        dispatch(TransactionsSlice.actions.setTransactionListFilter({ description: filterDescription, filterTagged, tag: filterTag, start: period.startDate?.toISOString(), end: period.endDate?.toISOString() }));
     }, [period, filterDescription, filterTagged, filterTag]);
 
     return (
@@ -53,7 +53,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = () => {
                             <Select options={tags.data ?? []} isClearable value={tag} getOptionLabel={t => t.name} getOptionValue={t => t.id.toString()} onChange={(v) => setFilterTag(v?.id ?? null)} className="react-select" classNamePrefix="react-select" />
                         </Col>
                     </Row>
-                    <PeriodSelector value={period} onChange={setPeriod} instant />
+                    <PeriodSelector instant onChange={setPeriod} />
                     <Row>
                         <Form.Group>
                             <Form.Check id="filter-tagged" label="Only show transactions without tags" checked={filterTagged} onChange={(e) => setFilterTagged(e.currentTarget.checked)} />

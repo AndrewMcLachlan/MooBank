@@ -1,10 +1,11 @@
 import { useQueryClient } from "react-query";
 import { useSelector } from "react-redux";
 
-import * as Models from "../models";
-import { TransactionTag } from "../models";
-import { sortDirection, State, TransactionsFilter } from "../store/state";
+import * as Models from "models";
+import { TransactionTag } from "models";
+import { sortDirection, State, TransactionsFilter } from "store/state";
 import { useApiGet, useApiDelete, useApiDatalessPut } from "@andrewmclachlan/mooapp";
+import { debug } from "console";
 
 const transactionKey = "transactions";
 
@@ -23,7 +24,7 @@ export const useTransactions = (accountId: string, filter: TransactionsFilter, p
         filterString += filter.tag ? `&tagid=${filter.tag}` : "";
 
     let queryString = sortString + filterString;
-    queryString = queryString.startsWith("&") ? queryString.substr(1) : queryString;
+    queryString = queryString.startsWith("&") ? queryString.substring(1) : queryString;
     queryString = queryString.length > 0 && queryString[0] !== "?" ? `?${queryString}` : queryString;
 
     return useApiGet<Models.PagedResult<Models.Transaction>>([transactionKey, accountId, filter, pageSize, pageNumber, sortField, sortDirection], `api/accounts/${accountId}/transactions/${filter.filterTagged ? "untagged/" : ""}${pageSize}/${pageNumber}${queryString}`);

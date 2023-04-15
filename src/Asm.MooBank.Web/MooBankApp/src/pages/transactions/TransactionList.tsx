@@ -5,12 +5,12 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { Pagination, Table } from "react-bootstrap";
 
-import { TransactionsSlice } from "../../store/Transactions";
-import { sortDirection, State } from "../../store/state";
+import { TransactionsSlice } from "store/Transactions";
+import { sortDirection, State } from "store/state";
 import { TransactionRow } from "./TransactionRow";
 import { TransactionRowIng } from "./TransactionRowIng";
-import { useTransactions } from "../../services";
-import { useIdParams } from "../../hooks";
+import { useTransactions } from "services";
+import { useIdParams } from "hooks";
 
 export const TransactionList: React.FC<TransactionListProps> = (props) => {
 

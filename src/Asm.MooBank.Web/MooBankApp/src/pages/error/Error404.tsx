@@ -1,6 +1,6 @@
 import React from "react";
 
-import { usePageTitle } from "../../hooks";
+import { usePageTitle } from "hooks";
 
 export const Error404: React.FC = () => {
 

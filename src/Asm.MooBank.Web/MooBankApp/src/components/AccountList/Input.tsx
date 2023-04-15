@@ -1,11 +1,11 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useRef } from "react";
-import { Form, FormControlProps, FormControlElement } from "react-bootstrap";
+import { useRef } from "react";
+import { Form, FormControlProps } from "react-bootstrap";
 import { BsPrefixRefForwardingComponent } from "react-bootstrap/esm/helpers";
 
-export const Input: BsPrefixRefForwardingComponent<"input", InputProps> = ({clrearable, ref, ...props}) => {
+export const Input: BsPrefixRefForwardingComponent<"input", InputProps> = ({clearable, ref, ...rest}) => {
 
-    const tref = useRef<FormControlElement>();
+    const tref = useRef<any>();
     const theRef = ref ?? tref;
 
     const onClick = () => {
@@ -17,12 +17,12 @@ export const Input: BsPrefixRefForwardingComponent<"input", InputProps> = ({clre
 
     }
 
-    const formControlProps = {ref: theRef, ...props} as InputProps;
+    const formControlProps = {ref: theRef, ...rest} as InputProps;
 
     return (
-        <div className="clearable">
+        <div className={clearable && "clearable"}>
             <Form.Control {...formControlProps} />
-            <FontAwesomeIcon icon="xmark" className="input-clear" onClick={onClick} size="lg" />
+            {clearable && <FontAwesomeIcon icon="xmark" className="input-clear" onClick={onClick} size="lg" />}
         </div>
     );
 }

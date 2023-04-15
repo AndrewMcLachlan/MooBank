@@ -5,14 +5,15 @@ import parseISO from "date-fns/parseISO";
 
 import { FormGroup, FormRow, FormRow as Row } from "./";
 import { Button, Col, Form } from "react-bootstrap";
-import { Period, endOfLastMonth, last12Months, last3Months, last6Months, lastMonth, lastYear, periodEquals, previousMonth, startOfLastMonth } from "../helpers/dateFns";
+import { Period, endOfLastMonth, last12Months, last3Months, last6Months, lastMonth, lastYear, periodEquals, previousMonth, startOfLastMonth } from "helpers/dateFns";
+import { usePeriod } from "hooks";
 
 export const PeriodSelector: React.FC<PeriodSelectorProps> = (props) => {
 
-    const [selectedPeriod, setSelectedPeriod] = useState<string>(getPeriodId(props.value));
-    const [customStart, setCustomStart] = useState<string>(format(props.value?.startDate ?? startOfLastMonth(), "yyyy-MM-dd"));
-    const [customEnd, setCustomEnd] = useState<string>(format(props.value?.endDate ?? endOfLastMonth(), "yyyy-MM-dd"));
-    const [period, setPeriod] = useState<Period>(props.value ?? { startDate: startOfLastMonth(), endDate: endOfLastMonth() });
+    const [period, setPeriod] = usePeriod();
+    const [selectedPeriod, setSelectedPeriod] = useState<string>(getPeriodId(period));
+    const [customStart, setCustomStart] = useState<Date>(period.startDate);
+    const [customEnd, setCustomEnd] = useState<Date>(period.endDate);
 
     useEffect(() => {
         setSelectedPeriod(getPeriodId(props.value));
@@ -33,19 +34,28 @@ export const PeriodSelector: React.FC<PeriodSelectorProps> = (props) => {
     }
 
     const customPeriodGo = () => {
-        setPeriod({ startDate: parseISO(customStart), endDate: parseISO(customEnd) });
+        setPeriod({ startDate: customStart, endDate: customEnd });
     }
 
-    const onCustomChange = (setter: React.Dispatch<React.SetStateAction<string>>, value: string) => {
-        setter(value);
+    const onCustomStartChange = (value: Date) => {
+        setCustomStart(value);
+
         if (props.instant) {
-            customPeriodGo();
+            setPeriod({ startDate: value, endDate: customEnd });
+        }
+    }
+
+    const onCustomEndChange = (value: Date) => {
+        setCustomEnd(value);
+
+        if (props.instant) {
+            setPeriod({ startDate: customStart, endDate: value });
         }
     }
 
     useEffect(() => {
         props.onChange && props.onChange(period);
-        window.localStorage.setItem("report-period", JSON.stringify(period));
+        setSelectedPeriod(getPeriodId(period));
     }, [period]);
 
     return (
@@ -61,11 +71,11 @@ export const PeriodSelector: React.FC<PeriodSelectorProps> = (props) => {
             </FormGroup>
             <FormGroup as={Col} xl={props.instant ? "4" : "3"} hidden={selectedPeriod !== "0"}>
                 <Form.Label htmlFor="custom-start">From</Form.Label>
-                <Form.Control disabled={selectedPeriod !== "0"} id="custom-start" type="date" value={customStart} onChange={(e) => onCustomChange(setCustomStart, e.currentTarget.value)} />
+                <Form.Control disabled={selectedPeriod !== "0"} id="custom-start" type="date" value={customStart ? format(customStart, "yyyy-MM-dd") :""} onChange={(e) => onCustomStartChange((e.currentTarget as any).valueAsDate)} />
             </FormGroup>
             <FormGroup xl={props.instant ? "4" : "3"} hidden={selectedPeriod !== "0"}>
                 <Form.Label htmlFor="custom-end">To</Form.Label>
-                <Form.Control disabled={selectedPeriod !== "0"} id="custom-end" type="date" value={customEnd} onChange={(e) => onCustomChange(setCustomEnd, e.currentTarget.value)} />
+                <Form.Control disabled={selectedPeriod !== "0"} id="custom-end" type="date" value={customEnd ? format(customEnd, "yyyy-MM-dd"): ""} onChange={(e) => onCustomEndChange((e.currentTarget as any).valueAsDate)} />
             </FormGroup>
             <FormGroup xl="2" className="horizontal-form-controls" hidden={selectedPeriod !== "0" || props.instant}>
                 <Button disabled={selectedPeriod !== "0"} onClick={customPeriodGo}>Go</Button>
@@ -78,12 +88,14 @@ PeriodSelector.displayName = "PeriodSelector";
 
 PeriodSelector.defaultProps = {
     instant: false,
+    cacheKey: "period",
 };
 
 export interface PeriodSelectorProps {
     value?: Period;
     onChange?: (value: Period) => void;
     instant?: boolean;
+    cacheKey?: string;
 }
 
 export type PeriodType = "lastMonth" | "previousMonth" | "last3Months" | "last6Months" | "last12Months" | "lastYear" | "custom";

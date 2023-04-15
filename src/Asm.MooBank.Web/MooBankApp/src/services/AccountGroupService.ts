@@ -1,5 +1,5 @@
 import { useQueryClient } from "react-query";
-import { AccountGroup } from "../models";
+import { AccountGroup } from "models";
 import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
 
 export const accountGroupsKey = "account-groups";

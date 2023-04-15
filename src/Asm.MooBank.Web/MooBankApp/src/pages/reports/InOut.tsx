@@ -4,19 +4,18 @@ import format from "date-fns/format";
 import getMonth from "date-fns/getMonth";
 import getYear from "date-fns/getYear";
 
-import { Page } from "../../layouts";
+import { Page } from "layouts";
 import { ReportsHeader } from "./ReportsHeader";
-import { useAccount, useInOutReport } from "../../services";
-import { useParams } from "react-router-dom";
+import { useAccount, useInOutReport } from "services";
 
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, ChartData, registerables } from "chart.js";
 import chartTrendline from "chartjs-plugin-trendline";
 import { useLayout } from "@andrewmclachlan/mooapp";
 
-import { PeriodSelector } from "../../components/PeriodSelector";
-import { useIdParams } from "../../hooks";
-import { getCachedPeriod } from "../../helpers";
+import { PeriodSelector } from "components/PeriodSelector";
+import { useIdParams } from "hooks";
+import { getCachedPeriod } from "helpers";
 import { InOutTrend } from "./InOutTrend";
 
 ChartJS.register(...registerables);

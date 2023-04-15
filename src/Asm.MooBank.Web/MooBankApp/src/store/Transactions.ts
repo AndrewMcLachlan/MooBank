@@ -7,6 +7,7 @@ const initialState: Transactions = {
     pageSize: 50,
     filter: {
         filterTagged: false,
+        tag: null,
     },
     sortField: "TransactionTime",
     sortDirection: "Descending",

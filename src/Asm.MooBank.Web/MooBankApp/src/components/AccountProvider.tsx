@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 
-import { Account, emptyAccount } from "../models";
+import { Account, emptyAccount } from "models";
 
 export interface AccountProviderProps {
     account: Account;

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
-import { emptyGuid } from "../../helpers";
-import { Page } from "../../layouts";
-import { VirtualAccount } from "../../models";
-import { useAccount, useCreateVirtualAccount } from "../../services";
+import { emptyGuid } from "helpers";
+import { Page } from "layouts";
+import { VirtualAccount } from "models";
+import { useAccount, useCreateVirtualAccount } from "services";
 
 export const CreateVirtualAccount = () => {
 

@@ -6,9 +6,9 @@ import { Table } from "react-bootstrap";
 import { TransactionTagRow } from "./TransactionTagRow";
 
 import { ClickableIcon , TagPanel } from "@andrewmclachlan/mooapp";
-import { TransactionTag } from "../../models";
-import { useCreateTag, useTags } from "../../services";
-import { Page } from "../../layouts";
+import { TransactionTag } from "models";
+import { useCreateTag, useTags } from "services";
+import { Page } from "layouts";
 
 export const TransactionTags: React.FC = () => {
 

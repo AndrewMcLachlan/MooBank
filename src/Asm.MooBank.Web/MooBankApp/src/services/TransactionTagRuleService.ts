@@ -1,7 +1,7 @@
-import * as Models from "../models";
+import * as Models from "models";
 import { useApiGet, useApiPost, useApiDelete, useApiDatalessPut, useApiDatalessPost } from "@andrewmclachlan/mooapp";
 import { useQueryClient } from "react-query";
-import { TransactionTag } from "../models";
+import { TransactionTag } from "models";
 
 const transactionRulesKey = "transactionrules";
 

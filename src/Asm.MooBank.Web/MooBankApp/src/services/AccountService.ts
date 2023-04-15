@@ -1,5 +1,5 @@
 import { useQueryClient } from "react-query";
-import { Account, accountId, AccountList, ImportAccount } from "../models";
+import { Account, accountId, AccountList, ImportAccount } from "models";
 import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
 
 export const accountsKey = "accounts";

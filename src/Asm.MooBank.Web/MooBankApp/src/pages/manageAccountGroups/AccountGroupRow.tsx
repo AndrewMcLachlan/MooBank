@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 
-import * as Models from "../../models";
+import * as Models from "models";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const AccountGroupRow: React.FC<AccountGroupRowProps> = (props) => {

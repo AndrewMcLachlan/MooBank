@@ -1,8 +1,8 @@
 import React from "react";
 
 import { Table } from "react-bootstrap";
-import { Page } from "../../layouts";
-import { useAccountGroups } from "../../services";
+import { Page } from "layouts";
+import { useAccountGroups } from "services";
 
 import { AccountGroupRow } from "./AccountGroupRow";
 

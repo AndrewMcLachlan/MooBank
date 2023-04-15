@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useApp } from "../providers";
+import { useApp } from "providers";
 
 export function usePageTitle(title?: string) {
 

@@ -4,20 +4,20 @@ import format from "date-fns/format";
 import getMonth from "date-fns/getMonth";
 import getYear from "date-fns/getYear";
 
-import { Page } from "../../layouts";
+import { Page } from "layouts";
 import { ReportsHeader } from "./ReportsHeader";
-import { useAccount, useBreakdownReport, useTag } from "../../services";
+import { useAccount, useBreakdownReport, useTag } from "services";
 
 import { Doughnut, getElementAtEvent } from "react-chartjs-2";
 import { Chart as ChartJS, ChartData, registerables } from "chart.js";
 import { useLayout } from "@andrewmclachlan/mooapp";
 
-import { useIdParams } from "../../hooks";
-import { PeriodSelector } from "../../components/PeriodSelector";
-import { Period, lastMonth } from "../../helpers/dateFns";
-import { ReportType } from "../../models/reports";
-import { ReportTypeSelector } from "../../components/ReportTypeSelector";
-import { getCachedPeriod } from "../../helpers";
+import { useIdParams } from "hooks";
+import { PeriodSelector } from "components/PeriodSelector";
+import { Period, lastMonth } from "helpers/dateFns";
+import { ReportType } from "models/reports";
+import { ReportTypeSelector } from "components/ReportTypeSelector";
+import { getCachedPeriod } from "helpers";
 import { matchRoutes, useLocation, useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { chartColours } from "./chartColours";

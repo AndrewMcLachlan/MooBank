@@ -3,9 +3,9 @@ import { useParams } from "react-router-dom";
 
 import { FilterPanel } from "./FilterPanel";
 import { TransactionList } from "./TransactionList";
-import { AccountHeader, AccountProvider, AccountSummary } from "../../components";
-import { useAccount } from "../../services";
-import { Page } from "../../layouts";
+import { AccountHeader, AccountProvider, AccountSummary } from "components";
+import { useAccount } from "services";
+import { Page } from "layouts";
 
 export const Transactions: React.FC = () => {
 

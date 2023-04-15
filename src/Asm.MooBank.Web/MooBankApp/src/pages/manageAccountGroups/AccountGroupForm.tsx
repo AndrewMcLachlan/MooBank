@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { AccountGroup } from "../../models";
+import { AccountGroup } from "models";
 import { useNavigate } from "react-router-dom";
-import { useCreateAccountGroup, useUpdateAccountGroup } from "../../services";
+import { useCreateAccountGroup, useUpdateAccountGroup } from "services";
 import { emptyGuid } from "@andrewmclachlan/mooapp";
-import { Page } from "../../layouts";
+import { Page } from "layouts";
 import { Button, Form } from "react-bootstrap";
-import { FormGroup, FormRow } from "../../components";
+import { FormGroup, FormRow } from "components";
 
 export interface AccountGroupFormProps {
     accountGroup?: AccountGroup

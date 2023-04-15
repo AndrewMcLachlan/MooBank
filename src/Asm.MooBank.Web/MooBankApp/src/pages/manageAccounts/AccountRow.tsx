@@ -1,8 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-import * as Models from "../../models";
-import { AccountController, AccountType } from "../../models";
+import * as Models from "models";
+import { AccountController, AccountType } from "models";
 
 export const AccountRow: React.FC<AccountRowProps> = (props) => {
 

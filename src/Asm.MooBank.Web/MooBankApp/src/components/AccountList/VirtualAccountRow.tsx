@@ -1,11 +1,11 @@
 import classNames from "classnames";
 import React, { useEffect, useRef, useState } from "react";
 
-import { emptyGuid, getBalanceString, numberClassName } from "../../helpers";
-import { useClickAway } from "../../hooks";
+import { emptyGuid, getBalanceString, numberClassName } from "helpers";
+import { useClickAway } from "hooks";
 
-import { accountId, VirtualAccount } from "../../models";
-import { useUpdateVirtualAccountBalance } from "../../services";
+import { accountId, VirtualAccount } from "models";
+import { useUpdateVirtualAccountBalance } from "services";
 
 export const VirtualAccountRow: React.FC<VirtualAccountRowProps> = (props) => {
     const { balanceRef, editingBalance, balanceClick, balanceChange, balance, keyPress } = useComponentState(props);

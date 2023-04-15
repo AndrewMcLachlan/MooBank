@@ -1,19 +1,19 @@
 import React, { useRef, useState } from "react";
 
-import { Page } from "../../layouts";
+import { Page } from "layouts";
 import { ReportsHeader } from "./ReportsHeader";
-import { useAccount, useAllTagAverageReport } from "../../services";
+import { useAccount, useAllTagAverageReport } from "services";
 
 import { Bar, getElementAtEvent } from "react-chartjs-2";
 import { Chart as ChartJS, ChartData, registerables } from "chart.js";
 import { useLayout } from "@andrewmclachlan/mooapp";
 
-import { useIdParams } from "../../hooks";
-import { PeriodSelector } from "../../components/PeriodSelector";
-import { Period, lastMonth } from "../../helpers/dateFns";
-import { ReportType } from "../../models/reports";
-import { ReportTypeSelector } from "../../components/ReportTypeSelector";
-import { getCachedPeriod } from "../../helpers";
+import { useIdParams } from "hooks";
+import { PeriodSelector } from "components/PeriodSelector";
+import { Period, lastMonth } from "helpers/dateFns";
+import { ReportType } from "models/reports";
+import { ReportTypeSelector } from "components/ReportTypeSelector";
+import { getCachedPeriod } from "helpers";
 import { chartColours, desaturatedChartColours } from "./chartColours";
 import { useNavigate } from "react-router";
 

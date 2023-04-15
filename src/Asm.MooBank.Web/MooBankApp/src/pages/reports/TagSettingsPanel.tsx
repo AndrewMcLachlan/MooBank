@@ -1,5 +1,5 @@
 import React from "react";
-import { TransactionTag, TransactionTagSettings } from "../../models";
+import { TransactionTag, TransactionTagSettings } from "models";
 import { Form } from "react-bootstrap";
 
 export const TagSettingsPanel:React.FC<TagSettingsPanelProps> = ({tag, onChange}) => {

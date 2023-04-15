@@ -1,7 +1,7 @@
 import React from "react";
 
-import { AccountList } from "../../components";
-import { Page } from "../../layouts";
+import { AccountList } from "components";
+import { Page } from "layouts";
 
 export const Home: React.FC = () => (
     <Page title="Home">

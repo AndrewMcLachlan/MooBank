@@ -1,6 +1,6 @@
 import React, { HTMLAttributes } from "react";
 import { Button, ButtonGroup, Col, Row } from "react-bootstrap";
-import { ReportType } from "../models/reports";
+import { ReportType } from "models/reports";
 
 export const ReportTypeSelector: React.FC<ReportTypeSelectorProps> = ({value, onChange, ...rest}) => {
 

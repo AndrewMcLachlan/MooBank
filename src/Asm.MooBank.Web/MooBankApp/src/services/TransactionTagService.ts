@@ -1,4 +1,4 @@
-import * as Models from "../models";
+import * as Models from "models";
 import { useApiGet, useApiDelete, useApiDatalessPut, useHttpClient } from "@andrewmclachlan/mooapp";
 import { useMutation, useQueryClient } from "react-query";
 

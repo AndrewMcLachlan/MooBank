@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { useAccountGroup } from "../../services";
+import { useAccountGroup } from "services";
 import { AccountGroupForm } from "./AccountGroupForm";
 import { useParams } from "react-router-dom";
 

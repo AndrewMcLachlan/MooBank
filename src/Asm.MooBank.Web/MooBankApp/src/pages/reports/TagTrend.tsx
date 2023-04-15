@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from "react";
 
-import { Page } from "../../layouts";
-import { TagSelector } from "../../components";
+import { Page } from "layouts";
+import { TagSelector } from "components";
 import { ReportsHeader } from "./ReportsHeader";
-import { useAccount, useTag, useTagTrendReport } from "../../services";
+import { useAccount, useTag, useTagTrendReport } from "services";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, ChartData, plugins, registerables } from "chart.js";
 import { useLayout } from "@andrewmclachlan/mooapp";
 import chartTrendline from "chartjs-plugin-trendline";
-import { PeriodSelector } from "../../components/PeriodSelector";
-import { getCachedPeriod } from "../../helpers";
-import { Period } from "../../helpers/dateFns";
-import { ReportType, TagTrendReportSettings, defaultSettings } from "../../models/reports";
-import { ReportTypeSelector } from "../../components/ReportTypeSelector";
+import { PeriodSelector } from "components/PeriodSelector";
+import { getCachedPeriod } from "helpers";
+import { Period } from "helpers/dateFns";
+import { ReportType, TagTrendReportSettings, defaultSettings } from "models/reports";
+import { ReportTypeSelector } from "components/ReportTypeSelector";
 import { TagSettingsPanel } from "./TagSettingsPanel";
-import { TransactionTagSettings } from "../../models";
+import { TransactionTagSettings } from "models";
 
 ChartJS.register(...registerables);
 ChartJS.register(chartTrendline);

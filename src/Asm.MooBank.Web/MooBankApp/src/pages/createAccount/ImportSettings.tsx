@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { Form } from "react-bootstrap";
-import { useImporterTypes } from "../../services";
+import { useImporterTypes } from "services";
 
 export const ImportSettings: React.FC<ImportSettingsProps> = (props) => {
 

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Form, Button, Row } from "react-bootstrap";
-import { AccountController, AccountType } from "../../models";
+import { AccountController, AccountType } from "models";
 import { ImportSettings } from "../createAccount/ImportSettings";
-import * as Models from "../../models";
-import { toNameValue } from "../../extensions";
-import { useAccount, useAccountGroups, useUpdateAccount } from "../../services";
+import * as Models from "models";
+import { toNameValue } from "extensions";
+import { useAccount, useAccountGroups, useUpdateAccount } from "services";
 import { useParams } from "react-router-dom";
-import { Page } from "../../layouts";
+import { Page } from "layouts";
 
 export const ManageAccount = () => {
 

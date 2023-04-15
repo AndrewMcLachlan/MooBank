@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from "react";
-import { usePageTitle } from "../hooks";
+import { usePageTitle } from "hooks";
 
 import { PageContent, PageContentComponent } from "./PageContent";
 import { PageHeader, PageHeaderComponent } from "./PageHeader";

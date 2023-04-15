@@ -1,14 +1,14 @@
 ﻿import React, { useState, useRef } from "react";
-import { getBalanceString, numberClassName } from "../../helpers";
+import { getBalanceString, numberClassName } from "helpers";
 
 import { AccountRowProps } from "./AccountRow";
-import { useClickAway } from "../../hooks";
-import { AccountType } from "../../models";
-import { useUpdateBalance } from "../../services";
+import { useClickAway } from "hooks";
+import { AccountType } from "models";
+import { useUpdateBalance } from "services";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { VirtualAccountRow } from "./VirtualAccountRow";
-import { MD5 } from "../../helpers";
+import { MD5 } from "helpers";
 
 export const ManualAccountRow: React.FC<AccountRowProps> = (props) => {
 

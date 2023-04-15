@@ -12,7 +12,7 @@ export interface Period {
     endDate: Date;
 }
 
-export const periodEquals = (a?: Period, b?: Period) => a?.startDate.getTime() === b?.startDate.getTime() && a?.endDate.getTime() === b?.endDate.getTime();
+export const periodEquals = (a?: Period, b?: Period) => a?.startDate?.getTime() === b?.startDate?.getTime() && a?.endDate?.getTime() === b?.endDate?.getTime();
 
 export const startOfLastMonth = () => startOfMonth(addMonths(new Date(), -1));
 export const endOfLastMonth = () => endOfMonth(addMonths(new Date(), -1));

@@ -6,12 +6,12 @@ import { Table } from "react-bootstrap";
 
 import { ClickableIcon, TagPanel } from "@andrewmclachlan/mooapp";
 
-import { TransactionTag, TransactionTagRule } from "../../models";
+import { TransactionTag, TransactionTagRule } from "models";
 import { useParams } from "react-router-dom";
 
 import { TransactionTagRuleRow } from "./TransactionTagRuleRow";
-import { useAccount, useCreateRule, useCreateTag, useRules, useRunRules, useTags } from "../../services";
-import { Page } from "../../layouts";
+import { useAccount, useCreateRule, useCreateTag, useRules, useRunRules, useTags } from "services";
+import { Page } from "layouts";
 
 export const TransactionTagRules: React.FC = () => {
 

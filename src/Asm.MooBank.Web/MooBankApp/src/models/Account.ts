@@ -43,7 +43,6 @@ export const emptyAccount : Account = {
     balanceUpdated: new Date(),
     accountType: AccountType.None,
     controller: AccountController.Manual,
-    includeInPosition: false,
     accountGroupId: "",
     virtualAccounts: [],
 }

@@ -6,6 +6,7 @@
       "dom.iterable",
       "esnext"
     ],
+    "baseUrl": "src",
     "allowJs": true,
     "skipLibCheck": false,
     "esModuleInterop": true,
@@ -22,10 +23,11 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": [
-    "/src"
+    "src/**/*"
   ],
   "exclude": [
-    "node_modules",
-    "node_modules/**/src",
+    "node_modules/**/*",
+    "node_modules/**/src/**/*",
+    "node_modules/react-redux/src/utils/Subscription.ts"
   ]
 }

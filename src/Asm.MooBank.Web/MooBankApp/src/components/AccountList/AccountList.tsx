@@ -1,7 +1,7 @@
 import "./AccountList.scss";
 
 import React from "react";
-import { useFormattedAccounts } from "../../services";
+import { useFormattedAccounts } from "services";
 import { AccountListGroup } from "./AccountListGroup";
 
 export const AccountList: React.FC<AccountListProps> = (_props) => {

@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { Form, Button, InputGroup, Col } from "react-bootstrap";
-import { Account, AccountType, AccountController, ImportAccount } from "../../models";
-import { toNameValue } from "../../extensions";
+import { Account, AccountType, AccountController, ImportAccount } from "models";
+import { toNameValue } from "extensions";
 import { useNavigate } from "react-router-dom";
 
 import { ImportSettings } from "./ImportSettings";
-import { useAccountGroups, useCreateAccount } from "../../services";
-import { emptyGuid } from "../../helpers";
-import { Page } from "../../layouts";
-import { FormGroup, FormRow } from "../../components";
+import { useAccountGroups, useCreateAccount } from "services";
+import { emptyGuid } from "helpers";
+import { Page } from "layouts";
+import { FormGroup, FormRow } from "components";
 
 export const CreateAccount: React.FC = () => {
 

@@ -1,8 +1,8 @@
 import React from "react";
 
-import { Account } from "../../models";
-import { PageHeader } from "../../layouts/PageHeader";
-import { MenuItem } from "../../models/MenuItem";
+import { Account } from "models";
+import { PageHeader } from "layouts/PageHeader";
+import { MenuItem } from "models/MenuItem";
 import { useLocation } from "react-router";
 
 export const ReportsHeader: React.FC<ReportsHeaderProps> = ({account, title}) => {

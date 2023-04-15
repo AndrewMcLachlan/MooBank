@@ -1,5 +1,5 @@
 import React from "react";
-import { MenuItem } from "../models/MenuItem";
+import { MenuItem } from "models/MenuItem";
 import { Link, useNavigate, } from "react-router-dom";
 import { Breadcrumb, Button, Container } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";

@@ -1,13 +1,13 @@
 import React from "react";
 
-import { useInOutTrendReport } from "../../services";
+import { useInOutTrendReport } from "services";
 
 import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, ChartData, registerables } from "chart.js";
 import { useLayout } from "@andrewmclachlan/mooapp";
 
-import { useIdParams } from "../../hooks";
-import { Period } from "../../helpers/dateFns";
+import { useIdParams } from "hooks";
+import { Period } from "helpers/dateFns";
 
 ChartJS.register(...registerables);
 

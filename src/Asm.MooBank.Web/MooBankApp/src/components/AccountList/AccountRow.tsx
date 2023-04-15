@@ -1,13 +1,13 @@
 ﻿import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import { MD5 } from "../../helpers";
+import { MD5 } from "helpers";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { getBalanceString, numberClassName } from "../../helpers";
+import { getBalanceString, numberClassName } from "helpers";
 
-import * as Models from "../../models";
-import { AccountType } from "../../models";
+import * as Models from "models";
+import { AccountType } from "models";
 
 import { VirtualAccountRow } from "./VirtualAccountRow";
 
