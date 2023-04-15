@@ -3,7 +3,7 @@ import { Period, lastMonth } from "./dateFns";
 
 export const getCachedPeriod = (period?: Period) => {
     var periodCache = window.localStorage.getItem("report-period");
-    if (periodCache === null) return period ?? lastMonth();
+    if (periodCache === null) return period ?? lastMonth;
 
     const result = JSON.parse(periodCache);
 
