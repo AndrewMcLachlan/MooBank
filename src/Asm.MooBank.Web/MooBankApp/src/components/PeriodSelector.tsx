@@ -5,7 +5,7 @@ import parseISO from "date-fns/parseISO";
 
 import { FormGroup, FormRow, FormRow as Row } from "./";
 import { Button, Col, Form } from "react-bootstrap";
-import { Period, endOfLastMonth, last12Months, last3Months, lastMonth, lastYear, periodEquals, previousMonth, startOfLastMonth } from "../helpers/dateFns";
+import { Period, endOfLastMonth, last12Months, last3Months, last6Months, lastMonth, lastYear, periodEquals, previousMonth, startOfLastMonth } from "../helpers/dateFns";
 
 export const PeriodSelector: React.FC<PeriodSelectorProps> = (props) => {
 
@@ -86,7 +86,7 @@ export interface PeriodSelectorProps {
     instant?: boolean;
 }
 
-export type PeriodType = "lastMonth" | "previousMonth" | "last3Months" | "last12Months" | "lastYear" | "custom";
+export type PeriodType = "lastMonth" | "previousMonth" | "last3Months" | "last6Months" | "last12Months" | "lastYear" | "custom";
 
 interface PeriodOption extends Period {
     value: string,
@@ -97,9 +97,9 @@ const options: PeriodOption[] = [
     { value: "1", label: "Last Month", ...lastMonth },
     { value: "2", label: "Previous Month", ...previousMonth },
     { value: "3", label: "Last 3 months", ...last3Months },
-    { value: "4", label: "Last 12 months", ...last12Months },
-    { value: "5", label: "Last year", ...lastYear },
-    //{ value: "0", label: "Custom" },
+    { value: "4", label: "Last 6 months", ...last6Months },
+    { value: "5", label: "Last 12 months", ...last12Months },
+    { value: "6", label: "Last year", ...lastYear },
 ];
 
 

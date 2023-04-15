@@ -1,4 +1,5 @@
-﻿using Asm.MooBank.Domain.Entities.TransactionTags;
+﻿using System.Runtime.CompilerServices;
+using Asm.MooBank.Domain.Entities.TransactionTags;
 
 namespace Asm.MooBank.Models;
 
@@ -13,6 +14,7 @@ public partial record TransactionTag
             Id = transactionTag.TransactionTagId,
             Name = transactionTag.Name,
             Tags = transactionTag.Tags.Where(t => t != null).Select(t => (TransactionTag)t).OrderBy(t => t.Name),
+            Settings = transactionTag.Settings
         };
     }
 
@@ -23,7 +25,35 @@ public partial record TransactionTag
             TransactionTagId = transactionTag.Id,
             Name = transactionTag.Name,
             Tags = transactionTag.Tags.Select(t => (Domain.Entities.TransactionTags.TransactionTag)t).ToList(),
+            Settings = new Domain.Entities.TransactionTags.TransactionTagSettings
+            {
+                ApplySmoothing = transactionTag.Settings.ApplySmoothing
+            }
         };
+    }
+
+
+    public partial record TransactionTagSettings
+    {
+        public static implicit operator TransactionTagSettings(Domain.Entities.TransactionTags.TransactionTagSettings? settings)
+        {
+            if (settings == null) return null!;
+
+            return new TransactionTagSettings
+            {
+                ApplySmoothing = settings.ApplySmoothing,
+            };
+        }
+
+        public static implicit operator Domain.Entities.TransactionTags.TransactionTagSettings(TransactionTagSettings? settings)
+        {
+            if (settings == null) return null!;
+
+            return new Domain.Entities.TransactionTags.TransactionTagSettings
+            {
+                ApplySmoothing = settings.ApplySmoothing,
+            };
+        }
     }
 }
 

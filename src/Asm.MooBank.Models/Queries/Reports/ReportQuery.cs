@@ -1,6 +1,6 @@
 ﻿namespace Asm.MooBank.Models.Queries.Reports;
 
-public abstract record BaseReportQuery
+public abstract record ReportQuery
 {
     public required Guid AccountId { get; init; }
 

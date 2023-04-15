@@ -1,5 +1,6 @@
 import "./Reports.scss";
 
+export * from "./AllTagAverage";
 export * from "./Breakdown";
 export * from "./ByTag";
 export * from "./InOut";

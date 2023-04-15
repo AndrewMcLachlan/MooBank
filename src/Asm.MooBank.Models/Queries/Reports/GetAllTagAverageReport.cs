@@ -2,6 +2,7 @@
 
 namespace Asm.MooBank.Models.Queries.Reports;
 
-public record GetInOutTrendReport : ReportQuery, IQuery<InOutTrendReport>
+public record GetAllTagAverageReport : TypedReportQuery, IQuery<AllTagAverageReport>
 {
+
 }

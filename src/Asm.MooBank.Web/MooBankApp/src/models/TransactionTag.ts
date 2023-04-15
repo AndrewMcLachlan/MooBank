@@ -2,6 +2,11 @@ export interface TransactionTag {
     id: number;
     name: string;
     tags: TransactionTag[];
+    settings?: TransactionTagSettings;
+}
+
+export interface TransactionTagSettings {
+    applySmoothing: boolean;
 }
 
 export const compareTransactionTags = (left: TransactionTag, right: TransactionTag):boolean => {

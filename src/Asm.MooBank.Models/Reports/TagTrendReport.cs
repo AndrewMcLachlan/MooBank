@@ -7,4 +7,6 @@ public record TagTrendReport : ReportBase
     public required string TagName { get; init; }
 
     public required IEnumerable<TrendPoint> Months { get; init; }
+    public decimal Average { get; set; }
+    public decimal? OffsetAverage { get; set; }
 }

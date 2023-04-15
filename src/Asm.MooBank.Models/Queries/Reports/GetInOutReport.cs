@@ -3,6 +3,6 @@ using Asm.MooBank.Models.Reports;
 
 namespace Asm.MooBank.Models.Queries.Reports;
 
-public record GetInOutReport : BaseReportQuery, IQuery<InOutReport>
+public record GetInOutReport : ReportQuery, IQuery<InOutReport>
 {
 }

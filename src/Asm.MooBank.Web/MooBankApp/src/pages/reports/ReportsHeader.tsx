@@ -28,6 +28,7 @@ const getRenderers = (account: Account) => {
 
         const items: MenuItem[] = [
             { route: `/accounts/${account.id}/reports/in-out`, text: "Incoming vs Expenses" },
+            { route: `/accounts/${account.id}/reports/all-tag-average`, text: "All Tag Average" },
             { route: `/accounts/${account.id}/reports/breakdown`, text: "Breakdown" },
             { route: `/accounts/${account.id}/reports/by-tag`, text: "By Tag" },
             { route: `/accounts/${account.id}/reports/tag-trend`, text: "Tag Trend" },

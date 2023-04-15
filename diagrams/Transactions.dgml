@@ -1,0 +1,402 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DirectedGraph DataVirtualized="True" ZoomLevel="-1" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+  <Nodes>
+    <Node Id="Transaction" Category="EntityType" Annotations="NavigationAccessMode: Field Relational:TableName: Transaction RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.ValueTuple`2[System.Type,System.Nullable`1[System.Boolean]]]" BaseClass="" Bounds="77.6,318.239696453452,455.353372395834,309.800631095367" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot" Group="Expanded" IsAbstract="False" Label="Transaction" Name="Transaction" UseManualLocation="True" />
+    <Node Id="Transaction.Account" Category="Navigation Property" Bounds="97.6000213623047,358.239995117188,80.5,25.96" Dependent="" Field="" Inverse="Transactions" Label="Account (1)" Name="Account" Principal="Account" PropertyAccessMode="PropertyAccessMode.Field" Type="Account" />
+    <Node Id="Transaction.AccountId" Category="Property Foreign" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="" BeforeSaveBehavior="PropertySaveBehavior.Save" Bounds="334.390083414713,358.239781494141,109.286666666667,25.96" Field="" IsAlternateKey="False" IsConcurrencyToken="False" IsForeignKey="True" IsIndexed="True" IsPrimaryKey="False" IsRequired="True" IsShadow="False" IsUnicode="True" Label="AccountId (Guid)" MaxLength="None" Name="AccountId" PropertyAccessMode="PropertyAccessMode.Default" Type="Guid" ValueGenerated="None" />
+    <Node Id="Transaction.Amount" Category="Property Required" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnType: decimal(10, 2)" BeforeSaveBehavior="PropertySaveBehavior.Save" Bounds="97.6000246175131,414.200017089844,114.423333333333,25.96" Field="" IsAlternateKey="False" IsConcurrencyToken="False" IsForeignKey="False" IsIndexed="False" IsPrimaryKey="False" IsRequired="True" IsShadow="False" IsUnicode="True" Label="Amount (decimal)" MaxLength="None" Name="Amount" PropertyAccessMode="PropertyAccessMode.Default" Type="decimal" ValueGenerated="None" />
+    <Node Id="Transaction.Description" Category="Property Optional" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 255 Unicode: False" BeforeSaveBehavior="PropertySaveBehavior.Save" Bounds="392.076711832682,414.199849243164,120.876666666667,25.96" Field="" IsAlternateKey="False" IsConcurrencyToken="False" IsForeignKey="False" IsIndexed="False" IsPrimaryKey="False" IsRequired="False" IsShadow="False" IsUnicode="False" Label="Description (string)" MaxLength="(255)" Name="Description" PropertyAccessMode="PropertyAccessMode.Default" Type="string" ValueGenerated="None" />
+    <Node Id="Transaction.ExcludeFromReporting" Category="Property Required" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="" BeforeSaveBehavior="PropertySaveBehavior.Save" Bounds="300.550137736002,526.120061035156,174.296666666667,25.96" Field="" IsAlternateKey="False" IsConcurrencyToken="False" IsForeignKey="False" IsIndexed="False" IsPrimaryKey="False" IsRequired="True" IsShadow="False" IsUnicode="True" Label="ExcludeFromReporting (bool)" MaxLength="None" Name="ExcludeFromReporting" PropertyAccessMode="PropertyAccessMode.Default" Type="bool" ValueGenerated="None" />
+    <Node Id="Transaction.LazyLoader" Category="Navigation Property" Bounds="208.100018005371,358.239842529297,96.29,25.96" Dependent="" Field="" Inverse="" Label="LazyLoader (1)" Name="LazyLoader" Principal="" PropertyAccessMode="PropertyAccessMode.Default" Type="n" />
+    <Node Id="Transaction.TransactionId" Category="Property Primary" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="" BeforeSaveBehavior="PropertySaveBehavior.Save" Bounds="97.6000508626303,470.1600390625,125.633333333333,25.96" Field="" IsAlternateKey="False" IsConcurrencyToken="False" IsForeignKey="False" IsIndexed="False" IsPrimaryKey="True" IsRequired="True" IsShadow="False" IsUnicode="True" Label="TransactionId (Guid)" MaxLength="None" Name="TransactionId" PropertyAccessMode="PropertyAccessMode.Default" Type="Guid" ValueGenerated="ValueGenerated.OnAdd" />
+    <Node Id="Transaction.TransactionReference" Category="Property Optional" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="" BeforeSaveBehavior="PropertySaveBehavior.Save" Bounds="97.6001342773438,526.120061035156,172.95,25.96" Field="" IsAlternateKey="False" IsConcurrencyToken="False" IsForeignKey="False" IsIndexed="False" IsPrimaryKey="False" IsRequired="False" IsShadow="False" IsUnicode="True" Label="TransactionReference (Guid?)" MaxLength="None" Name="TransactionReference" PropertyAccessMode="PropertyAccessMode.Default" Type="Guid?" ValueGenerated="None" />
+    <Node Id="Transaction.TransactionTags" Category="Navigation Property" Bounds="242.023328755696,414.199940795898,120.053333333334,25.96" Dependent="" Field="" Inverse="Transactions" Label="TransactionTags (1)" Name="TransactionTags" Principal="" PropertyAccessMode="PropertyAccessMode.Field" Type="ICollection&lt;TransactionTag&gt;" />
+    <Node Id="Transaction.TransactionTime" Category="Property Required" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:DefaultValueSql: (sysdatetime())" BeforeSaveBehavior="PropertySaveBehavior.Save" Bounds="253.233398030599,470.160084838867,166.853333333333,25.96" Field="" IsAlternateKey="False" IsConcurrencyToken="False" IsForeignKey="False" IsIndexed="False" IsPrimaryKey="False" IsRequired="True" IsShadow="False" IsUnicode="True" Label="TransactionTime (DateTime)" MaxLength="None" Name="TransactionTime" PropertyAccessMode="PropertyAccessMode.Default" Type="DateTime" ValueGenerated="ValueGenerated.OnAdd" />
+    <Node Id="Transaction.TransactionType" Category="Property Required" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: TransactionTypeId Relational:DefaultValue: Debit ValueConverter: Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter`2[Asm.MooBank.Models.TransactionType,System.Int32]" BeforeSaveBehavior="PropertySaveBehavior.Save" Bounds="97.5999950154624,582.080083007813,199.753333333333,25.96" Field="" IsAlternateKey="False" IsConcurrencyToken="False" IsForeignKey="False" IsIndexed="False" IsPrimaryKey="False" IsRequired="True" IsShadow="False" IsUnicode="True" Label="TransactionType (TransactionType)" MaxLength="None" Name="TransactionType" PropertyAccessMode="PropertyAccessMode.Default" Type="TransactionType" ValueGenerated="ValueGenerated.OnAdd" />
+    <Node Id="TransactionTag" Category="EntityType" Annotations="NavigationAccessMode: Field Relational:Schema: Relational:TableName: TransactionTag RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.ValueTuple`2[System.Type,System.Nullable`1[System.Boolean]]]" BaseClass="" Bounds="862.45669921875,271.819766578759,384.440009765625,253.840509501965" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot" Group="Expanded" IsAbstract="False" Label="TransactionTag" Name="TransactionTag" />
+    <Node Id="TransactionTag.Deleted" Category="Property Required" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="" BeforeSaveBehavior="PropertySaveBehavior.Save" Bounds="1004.77665039063,367.779976080724,95.8299999999999,25.96" Field="" IsAlternateKey="False" IsConcurrencyToken="False" IsForeignKey="False" IsIndexed="False" IsPrimaryKey="False" IsRequired="True" IsShadow="False" IsUnicode="True" Label="Deleted (bool)" MaxLength="None" Name="Deleted" PropertyAccessMode="PropertyAccessMode.Default" Type="bool" ValueGenerated="None" />
+    <Node Id="TransactionTag.LazyLoader" Category="Navigation Property" Bounds="1130.60670898438,367.779989420573,96.29,25.96" Dependent="" Field="" Inverse="" Label="LazyLoader (1)" Name="LazyLoader" Principal="" PropertyAccessMode="PropertyAccessMode.Default" Type="n" />
+    <Node Id="TransactionTag.Name" Category="Property Required" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 50" BeforeSaveBehavior="PropertySaveBehavior.Save" Bounds="882.45669921875,367.779969746082,92.3199999999997,25.96" Field="" IsAlternateKey="False" IsConcurrencyToken="False" IsForeignKey="False" IsIndexed="False" IsPrimaryKey="False" IsRequired="True" IsShadow="False" IsUnicode="True" Label="Name (string)" MaxLength="(50)" Name="Name" PropertyAccessMode="PropertyAccessMode.Default" Type="string" ValueGenerated="None" />
+    <Node Id="TransactionTag.Settings" Category="Navigation Property" Bounds="972.660067816842,311.819866578759,79.6366666666675,25.96" Dependent="TransactionTagSettings" Field="" Inverse="" Label="Settings (1)" Name="Settings" Principal="" PropertyAccessMode="PropertyAccessMode.Field" Type="TransactionTagSettings" />
+    <Node Id="TransactionTag.TaggedTo" Category="Navigation Property" Bounds="1082.29673448351,311.819889420573,87.6666666666661,25.96" Dependent="" Field="" Inverse="Tags" Label="TaggedTo (1)" Name="TaggedTo" Principal="" PropertyAccessMode="PropertyAccessMode.Field" Type="ICollection&lt;TransactionTag&gt;" />
+    <Node Id="TransactionTag.Tags" Category="Navigation Property" Bounds="882.456734483509,311.819869746082,60.2033333333329,25.96" Dependent="" Field="" Inverse="TaggedTo" Label="Tags (1)" Name="Tags" Principal="" PropertyAccessMode="PropertyAccessMode.Field" Type="ICollection&lt;TransactionTag&gt;" />
+    <Node Id="TransactionTag.TransactionTagId" Category="Property Primary" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="SqlServer:ValueGenerationStrategy: IdentityColumn" BeforeSaveBehavior="PropertySaveBehavior.Save" Bounds="1014.39677571615,423.740089420573,132.513333333332,25.96" Field="" IsAlternateKey="False" IsConcurrencyToken="False" IsForeignKey="False" IsIndexed="False" IsPrimaryKey="True" IsRequired="True" IsShadow="False" IsUnicode="True" Label="TransactionTagId (int)" MaxLength="None" Name="TransactionTagId" PropertyAccessMode="PropertyAccessMode.Default" Type="int" ValueGenerated="ValueGenerated.OnAdd" />
+    <Node Id="TransactionTag.TransactionTagRule" Category="Navigation Property" Bounds="882.45671875,479.700169746082,138.110000000001,25.96" Dependent="" Field="" Inverse="TransactionTags" Label="TransactionTagRule (1)" Name="TransactionTagRule" Principal="" PropertyAccessMode="PropertyAccessMode.Field" Type="n" />
+    <Node Id="TransactionTag.Transactions" Category="Navigation Property" Bounds="882.4567578125,423.740076080724,101.940000000001,25.96" Dependent="" Field="" Inverse="TransactionTags" Label="Transactions (1)" Name="Transactions" Principal="" PropertyAccessMode="PropertyAccessMode.Field" Type="ICollection&lt;Transaction&gt;" />
+    <Node Id="TransactionTagRelationship" Category="EntityType" Annotations="NavigationAccessMode: Field Relational:Schema: dbo Relational:TableName: TagHierarchies RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.ValueTuple`2[System.Type,System.Nullable`1[System.Boolean]]]" BaseClass="" Bounds="759.851694335937,-96.8002285095099,281.250105794271,197.8804" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot" Group="Expanded" IsAbstract="False" Label="TransactionTagRelationship" Name="TransactionTagRelationship" UseManualLocation="True" />
+    <Node Id="TransactionTagRelationship.Id" Category="Property Primary" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="" BeforeSaveBehavior="PropertySaveBehavior.Save" Bounds="779.851617431641,-56.7999871063232,54.5500000000002,25.96" Field="" IsAlternateKey="False" IsConcurrencyToken="False" IsForeignKey="True" IsIndexed="True" IsPrimaryKey="True" IsRequired="True" IsShadow="False" IsUnicode="True" Label="Id (int)" MaxLength="None" Name="Id" PropertyAccessMode="PropertyAccessMode.Default" Type="int" ValueGenerated="None" />
+    <Node Id="TransactionTagRelationship.LazyLoader" Category="Navigation Property" Bounds="779.851704101563,55.1200625610352,96.29,25.96" Dependent="" Field="" Inverse="" Label="LazyLoader (1)" Name="LazyLoader" Principal="" PropertyAccessMode="PropertyAccessMode.Default" Type="n" />
+    <Node Id="TransactionTagRelationship.Ordinal" Category="Property Required" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="" BeforeSaveBehavior="PropertySaveBehavior.Save" Bounds="898.684989420573,-0.840020446777316,93.3166666666666,25.96" Field="" IsAlternateKey="False" IsConcurrencyToken="False" IsForeignKey="False" IsIndexed="False" IsPrimaryKey="False" IsRequired="True" IsShadow="False" IsUnicode="True" Label="Ordinal (long)" MaxLength="None" Name="Ordinal" PropertyAccessMode="PropertyAccessMode.Default" Type="long" ValueGenerated="None" />
+    <Node Id="TransactionTagRelationship.ParentId" Category="Property Primary" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="" BeforeSaveBehavior="PropertySaveBehavior.Save" Bounds="864.401877034506,-56.8001377868652,88.2733333333326,25.96" Field="" IsAlternateKey="False" IsConcurrencyToken="False" IsForeignKey="True" IsIndexed="True" IsPrimaryKey="True" IsRequired="True" IsShadow="False" IsUnicode="True" Label="ParentId (int)" MaxLength="None" Name="ParentId" PropertyAccessMode="PropertyAccessMode.Default" Type="int" ValueGenerated="None" />
+    <Node Id="TransactionTagRelationship.ParentTag" Category="Navigation Property" Bounds="779.851643880208,-0.840005187988254,88.8333333333339,25.96" Dependent="" Field="" Inverse="" Label="ParentTag (1)" Name="ParentTag" Principal="TransactionTag" PropertyAccessMode="PropertyAccessMode.Field" Type="TransactionTag" />
+    <Node Id="TransactionTagRelationship.TransactionTag" Category="Navigation Property" Bounds="906.141826171875,55.1200625610352,114.96,25.96" Dependent="" Field="" Inverse="" Label="TransactionTag (1)" Name="TransactionTag" Principal="TransactionTag" PropertyAccessMode="PropertyAccessMode.Field" Type="TransactionTag" />
+    <Node Id="TransactionTagSettings" Category="EntityType" Annotations="NavigationAccessMode: Field Relational:TableName: TransactionTagSettings RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.ValueTuple`2[System.Type,System.Nullable`1[System.Boolean]]]" BaseClass="" Bounds="1578.12336914062,-67.2002026448585,192.306722005209,197.8804" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot" Group="Expanded" IsAbstract="False" Label="TransactionTagSettings" Name="TransactionTagSettings" UseManualLocation="True" />
+    <Node Id="TransactionTagSettings.ApplySmoothing" Category="Property Required" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="" BeforeSaveBehavior="PropertySaveBehavior.Save" Bounds="1598.12344401042,28.7600047302246,143.496666666667,25.96" Field="" IsAlternateKey="False" IsConcurrencyToken="False" IsForeignKey="False" IsIndexed="False" IsPrimaryKey="False" IsRequired="True" IsShadow="False" IsUnicode="True" Label="ApplySmoothing (bool)" MaxLength="None" Name="ApplySmoothing" PropertyAccessMode="PropertyAccessMode.Default" Type="bool" ValueGenerated="None" />
+    <Node Id="TransactionTagSettings.LazyLoader" Category="Property Optional" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="" BeforeSaveBehavior="PropertySaveBehavior.Save" Bounds="1598.12347330729,84.7201220703125,152.306666666667,25.96" Field="nofield" IsAlternateKey="False" IsConcurrencyToken="False" IsForeignKey="False" IsIndexed="False" IsPrimaryKey="False" IsRequired="False" IsShadow="False" IsUnicode="True" Label="LazyLoader (ILazyLoader)" MaxLength="None" Name="LazyLoader" PropertyAccessMode="PropertyAccessMode.Default" Type="ILazyLoader" ValueGenerated="None" />
+    <Node Id="TransactionTagSettings.TransactionTagID" Category="Property Primary" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="" BeforeSaveBehavior="PropertySaveBehavior.Save" Bounds="1598.12341796875,-27.2001030731201,133.860000000001,25.96" Field="nofield" IsAlternateKey="False" IsConcurrencyToken="False" IsForeignKey="True" IsIndexed="False" IsPrimaryKey="True" IsRequired="True" IsShadow="True" IsUnicode="True" Label="TransactionTagID (int)" MaxLength="None" Name="TransactionTagID" PropertyAccessMode="PropertyAccessMode.Default" Type="int" ValueGenerated="None" />
+    <Node Id="TransactionTagTransactionTag" Category="EntityType" Annotations="NavigationAccessMode: Field RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.ValueTuple`2[System.Type,System.Nullable`1[System.Boolean]]]" BaseClass="" Bounds="1140.76330729167,-156.800202644859,339.026681315105,197.8804" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot" Group="Expanded" IsAbstract="False" Label="TransactionTagTransactionTag" Name="TransactionTagTransactionTag" UseManualLocation="True" />
+    <Node Id="TransactionTagTransactionTag.LazyLoader" Category="Navigation Property" Bounds="1160.763203125,-60.839986114502,96.29,25.96" Dependent="" Field="" Inverse="" Label="LazyLoader (1)" Name="LazyLoader" Principal="" PropertyAccessMode="PropertyAccessMode.Default" Type="n" />
+    <Node Id="TransactionTagTransactionTag.Primary" Category="Navigation Property" Bounds="1160.76316894531,-116.800088195801,77.2199999999993,25.96" Dependent="" Field="" Inverse="" Label="Primary (1)" Name="Primary" Principal="TransactionTag" PropertyAccessMode="PropertyAccessMode.Field" Type="TransactionTag" />
+    <Node Id="TransactionTagTransactionTag.PrimaryTransactionTagId" Category="Property Primary" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="" BeforeSaveBehavior="PropertySaveBehavior.Save" Bounds="1287.05317545573,-60.8399975585938,172.736666666668,25.96" Field="" IsAlternateKey="False" IsConcurrencyToken="False" IsForeignKey="True" IsIndexed="False" IsPrimaryKey="True" IsRequired="True" IsShadow="False" IsUnicode="True" Label="PrimaryTransactionTagId (int)" MaxLength="None" Name="PrimaryTransactionTagId" PropertyAccessMode="PropertyAccessMode.Default" Type="int" ValueGenerated="None" />
+    <Node Id="TransactionTagTransactionTag.Secondary" Category="Navigation Property" Bounds="1267.98315266927,-116.799985198975,92.1633333333339,25.96" Dependent="" Field="" Inverse="" Label="Secondary (1)" Name="Secondary" Principal="TransactionTag" PropertyAccessMode="PropertyAccessMode.Field" Type="TransactionTag" />
+    <Node Id="TransactionTagTransactionTag.SecondaryTransactionTagId" Category="Property Primary" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="" BeforeSaveBehavior="PropertySaveBehavior.Save" Bounds="1160.76327148437,-4.87988403320315,187.68,25.96" Field="" IsAlternateKey="False" IsConcurrencyToken="False" IsForeignKey="True" IsIndexed="True" IsPrimaryKey="True" IsRequired="True" IsShadow="False" IsUnicode="True" Label="SecondaryTransactionTagId (int)" MaxLength="None" Name="SecondaryTransactionTagId" PropertyAccessMode="PropertyAccessMode.Default" Type="int" ValueGenerated="None" />
+    <Node Id="TransactionTransactionTag" Category="EntityType" Annotations="" BaseClass="" Bounds="160.980024414063,-68.0002026448896,310.593380533854,197.8804" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot" Group="Expanded" IsAbstract="False" Label="TransactionTransactionTag" Name="TransactionTransactionTag" UseManualLocation="True" />
+    <Node Id="TransactionTransactionTag.LazyLoader" Category="Navigation Property" Bounds="180.97994354248,-27.9999840545654,96.29,25.96" Dependent="" Field="" Inverse="" Label="LazyLoader (1)" Name="LazyLoader" Principal="" PropertyAccessMode="PropertyAccessMode.Default" Type="n" />
+    <Node Id="TransactionTransactionTag.Transaction" Category="Navigation Property" Bounds="307.270068766276,-28.0000908660888,96.8466666666664,25.96" Dependent="" Field="" Inverse="" Label="Transaction (1)" Name="Transaction" Principal="Transaction" PropertyAccessMode="PropertyAccessMode.Field" Type="Transaction" />
+    <Node Id="TransactionTransactionTag.TransactionId" Category="Property Primary" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="" BeforeSaveBehavior="PropertySaveBehavior.Save" Bounds="325.94008992513,27.9600093078614,125.633333333333,25.96" Field="" IsAlternateKey="False" IsConcurrencyToken="False" IsForeignKey="True" IsIndexed="False" IsPrimaryKey="True" IsRequired="True" IsShadow="False" IsUnicode="True" Label="TransactionId (Guid)" MaxLength="None" Name="TransactionId" PropertyAccessMode="PropertyAccessMode.Default" Type="Guid" ValueGenerated="None" />
+    <Node Id="TransactionTransactionTag.TransactionTag" Category="Navigation Property" Bounds="180.980133361816,27.9599978637696,114.96,25.96" Dependent="" Field="" Inverse="" Label="TransactionTag (1)" Name="TransactionTag" Principal="TransactionTag" PropertyAccessMode="PropertyAccessMode.Field" Type="TransactionTag" />
+    <Node Id="TransactionTransactionTag.TransactionTagId" Category="Property Primary" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="" BeforeSaveBehavior="PropertySaveBehavior.Save" Bounds="180.979971211751,83.9201342773438,132.513333333333,25.96" Field="" IsAlternateKey="False" IsConcurrencyToken="False" IsForeignKey="True" IsIndexed="True" IsPrimaryKey="True" IsRequired="True" IsShadow="False" IsUnicode="True" Label="TransactionTagId (int)" MaxLength="None" Name="TransactionTagId" PropertyAccessMode="PropertyAccessMode.Default" Type="int" ValueGenerated="None" />
+  </Nodes>
+  <Links>
+    <Link Source="Transaction" Target="Transaction.Account" Category="Contains" />
+    <Link Source="Transaction" Target="Transaction.AccountId" Category="Contains" />
+    <Link Source="Transaction" Target="Transaction.Amount" Category="Contains" />
+    <Link Source="Transaction" Target="Transaction.Description" Category="Contains" />
+    <Link Source="Transaction" Target="Transaction.ExcludeFromReporting" Category="Contains" />
+    <Link Source="Transaction" Target="Transaction.LazyLoader" Category="Contains" />
+    <Link Source="Transaction" Target="Transaction.TransactionId" Category="Contains" />
+    <Link Source="Transaction" Target="Transaction.TransactionReference" Category="Contains" />
+    <Link Source="Transaction" Target="Transaction.TransactionTags" Category="Contains" />
+    <Link Source="Transaction" Target="Transaction.TransactionTime" Category="Contains" />
+    <Link Source="Transaction" Target="Transaction.TransactionType" Category="Contains" />
+    <Link Source="TransactionTag" Target="TransactionTag.Deleted" Category="Contains" />
+    <Link Source="TransactionTag" Target="TransactionTag.LazyLoader" Category="Contains" />
+    <Link Source="TransactionTag" Target="TransactionTag.Name" Category="Contains" />
+    <Link Source="TransactionTag" Target="TransactionTag.Settings" Category="Contains" />
+    <Link Source="TransactionTag" Target="TransactionTag.TaggedTo" Category="Contains" />
+    <Link Source="TransactionTag" Target="TransactionTag.Tags" Category="Contains" />
+    <Link Source="TransactionTag" Target="TransactionTag.TransactionTagId" Category="Contains" />
+    <Link Source="TransactionTag" Target="TransactionTag.TransactionTagRule" Category="Contains" />
+    <Link Source="TransactionTag" Target="TransactionTag.Transactions" Category="Contains" />
+    <Link Source="TransactionTagRelationship" Target="TransactionTag" Category="Foreign Key" Annotations="" Bounds="938.945160383155,101.08017149049,63.1229514422492,162.351314464683" From="TransactionTagRelationship.ParentId" IsUnique="True" Label="1:1" LabelBounds="974.516549421635,171.090170045677,15.54,15.96" Name="TransactionTagRelationship -&gt; TransactionTag" To="TransactionTag.TransactionTagId" />
+    <Link Source="TransactionTagRelationship" Target="TransactionTagRelationship.Id" Category="Contains" />
+    <Link Source="TransactionTagRelationship" Target="TransactionTagRelationship.LazyLoader" Category="Contains" />
+    <Link Source="TransactionTagRelationship" Target="TransactionTagRelationship.Ordinal" Category="Contains" />
+    <Link Source="TransactionTagRelationship" Target="TransactionTagRelationship.ParentId" Category="Contains" />
+    <Link Source="TransactionTagRelationship" Target="TransactionTagRelationship.ParentTag" Category="Contains" />
+    <Link Source="TransactionTagRelationship" Target="TransactionTagRelationship.TransactionTag" Category="Contains" />
+    <Link Source="TransactionTagSettings" Target="TransactionTag" Category="Foreign Key" Annotations="" Bounds="1254.64026641606,88.6933290369274,323.483102724568,191.604747362149" From="TransactionTagSettings.TransactionTagID" IsUnique="True" Label="1:1" LabelBounds="1495.74463630794,139.812218506605,15.54,15.96" Name="TransactionTagSettings -&gt; TransactionTag" To="TransactionTag.TransactionTagId" />
+    <Link Source="TransactionTagSettings" Target="TransactionTagSettings.ApplySmoothing" Category="Contains" />
+    <Link Source="TransactionTagSettings" Target="TransactionTagSettings.LazyLoader" Category="Contains" />
+    <Link Source="TransactionTagSettings" Target="TransactionTagSettings.TransactionTagID" Category="Contains" />
+    <Link Source="TransactionTagTransactionTag" Target="TransactionTag" Category="Foreign Key" Annotations="" Bounds="1130.12151487238,41.0801973551415,124.769438297106,222.886310772085" From="TransactionTagTransactionTag.SecondaryTransactionTagId" IsUnique="False" Label="1:*" LabelBounds="1194.25140256572,153.500279939235,14.0733333333337,15.96" Name="TransactionTagTransactionTag -&gt; TransactionTag" To="TransactionTag.TransactionTagId" />
+    <Link Source="TransactionTagTransactionTag" Target="TransactionTagTransactionTag.LazyLoader" Category="Contains" />
+    <Link Source="TransactionTagTransactionTag" Target="TransactionTagTransactionTag.Primary" Category="Contains" />
+    <Link Source="TransactionTagTransactionTag" Target="TransactionTagTransactionTag.PrimaryTransactionTagId" Category="Contains" />
+    <Link Source="TransactionTagTransactionTag" Target="TransactionTagTransactionTag.Secondary" Category="Contains" />
+    <Link Source="TransactionTagTransactionTag" Target="TransactionTagTransactionTag.SecondaryTransactionTagId" Category="Contains" />
+    <Link Source="TransactionTransactionTag" Target="Transaction" Category="Foreign Key" Annotations="" Bounds="309.353749660691,129.88019735511,4.46175972388482,179.362282405452" From="TransactionTransactionTag.TransactionId" IsUnique="False" Label="1:*" LabelBounds="315.584629713972,211.631074542867,14.0733333333333,15.96" Name="TransactionTransactionTag -&gt; Transaction" To="Transaction.TransactionId" />
+    <Link Source="TransactionTransactionTag" Target="TransactionTag" Category="Foreign Key" Annotations="" Bounds="471.573404947917,108.293907460361,382.8273493524,190.687852501795" From="TransactionTransactionTag.TransactionTagId" IsUnique="False" Label="1:*" LabelBounds="571.162791792061,139.705409451606,14.0733333333333,15.96" Name="TransactionTransactionTag -&gt; TransactionTag" To="TransactionTag.TransactionTagId" />
+    <Link Source="TransactionTransactionTag" Target="TransactionTransactionTag.LazyLoader" Category="Contains" />
+    <Link Source="TransactionTransactionTag" Target="TransactionTransactionTag.Transaction" Category="Contains" />
+    <Link Source="TransactionTransactionTag" Target="TransactionTransactionTag.TransactionId" Category="Contains" />
+    <Link Source="TransactionTransactionTag" Target="TransactionTransactionTag.TransactionTag" Category="Contains" />
+    <Link Source="TransactionTransactionTag" Target="TransactionTransactionTag.TransactionTagId" Category="Contains" />
+  </Links>
+  <Categories>
+    <Category Id="Contains" Label="Contains" Description="Whether the source of the link contains the target object" CanBeDataDriven="False" CanLinkedNodesBeDataDriven="True" IncomingActionLabel="Contained By" IsContainment="True" OutgoingActionLabel="Contains" />
+    <Category Id="EntityType" />
+    <Category Id="Foreign Key" />
+    <Category Id="Navigation Property" />
+    <Category Id="Property Foreign" />
+    <Category Id="Property Optional" />
+    <Category Id="Property Primary" />
+    <Category Id="Property Required" />
+  </Categories>
+  <Properties>
+    <Property Id="AfterSaveBehavior" Group="Property Flags" DataType="System.String" />
+    <Property Id="Annotations" Description="Annotations" Group="Model Properties" DataType="System.String" />
+    <Property Id="BaseClass" Description="Base class" Group="Model Properties" DataType="System.String" />
+    <Property Id="BeforeSaveBehavior" Group="Property Flags" DataType="System.String" />
+    <Property Id="Bounds" DataType="System.Windows.Rect" />
+    <Property Id="CanBeDataDriven" Label="CanBeDataDriven" Description="CanBeDataDriven" DataType="System.Boolean" />
+    <Property Id="CanLinkedNodesBeDataDriven" Label="CanLinkedNodesBeDataDriven" Description="CanLinkedNodesBeDataDriven" DataType="System.Boolean" />
+    <Property Id="ChangeTrackingStrategy" Description="Change tracking strategy" Group="Model Properties" DataType="System.String" />
+    <Property Id="DataVirtualized" Label="Data Virtualized" Description="If true, the graph can contain nodes and links that represent data for virtualized nodes/links (i.e. not actually created in the graph)." DataType="System.Boolean" />
+    <Property Id="Dependent" Description="Dependent entity" Group="Model Properties" DataType="System.String" />
+    <Property Id="Expression" DataType="System.String" />
+    <Property Id="Field" Description="Backing field" Group="Model Properties" DataType="System.String" />
+    <Property Id="From" Description="Target property" Group="Model Properties" DataType="System.String" />
+    <Property Id="Group" Label="Group" Description="Display the node as a group" DataType="Microsoft.VisualStudio.GraphModel.GraphGroupStyle" />
+    <Property Id="GroupLabel" DataType="System.String" />
+    <Property Id="IncomingActionLabel" Label="IncomingActionLabel" Description="IncomingActionLabel" DataType="System.String" />
+    <Property Id="Inverse" Description="Inverse entity" Group="Model Properties" DataType="System.String" />
+    <Property Id="IsAbstract" Label="IsAbstract" Description="IsAbstract" Group="Model Properties" DataType="System.Boolean" />
+    <Property Id="IsAlternateKey" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsConcurrencyToken" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsContainment" DataType="System.Boolean" />
+    <Property Id="IsEnabled" DataType="System.Boolean" />
+    <Property Id="IsForeignKey" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsIndexed" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsPrimaryKey" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsRequired" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsShadow" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsUnicode" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsUnique" Group="Model Properties" DataType="System.Boolean" />
+    <Property Id="Label" Label="Label" Description="Displayable label of an Annotatable object" DataType="System.String" />
+    <Property Id="LabelBounds" DataType="System.Windows.Rect" />
+    <Property Id="MaxLength" DataType="System.String" />
+    <Property Id="Name" Group="Model Properties" DataType="System.String" />
+    <Property Id="OutgoingActionLabel" Label="OutgoingActionLabel" Description="OutgoingActionLabel" DataType="System.String" />
+    <Property Id="Principal" Description="Principal entity" Group="Model Properties" DataType="System.String" />
+    <Property Id="PropertyAccessMode" Group="Property Flags" DataType="System.String" />
+    <Property Id="TargetType" DataType="System.Type" />
+    <Property Id="To" Description="Source property" Group="Model Properties" DataType="System.String" />
+    <Property Id="Type" Description="CLR data type" Group="Model Properties" DataType="System.String" />
+    <Property Id="UseManualLocation" DataType="System.Boolean" />
+    <Property Id="Value" DataType="System.String" />
+    <Property Id="ValueGenerated" Group="Property Flags" DataType="System.String" />
+    <Property Id="ValueLabel" DataType="System.String" />
+    <Property Id="Visibility" Label="Visibility" Description="Defines whether a node in the graph is visible or not" DataType="System.Windows.Visibility" />
+    <Property Id="ZoomLevel" DataType="System.String" />
+  </Properties>
+  <Styles>
+    <Style TargetType="Node" GroupLabel="EntityType" ValueLabel="True">
+      <Condition Expression="HasCategory('EntityType')" />
+      <Setter Property="Background" Value="#FFC0C0C0" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Property Primary" ValueLabel="True">
+      <Condition Expression="HasCategory('Property Primary')" />
+      <Setter Property="Background" Value="#FF008000" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Property Optional" ValueLabel="True">
+      <Condition Expression="HasCategory('Property Optional')" />
+      <Setter Property="Background" Value="#FF808040" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Property Foreign" ValueLabel="True">
+      <Condition Expression="HasCategory('Property Foreign')" />
+      <Setter Property="Background" Value="#FF8080FF" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Property Required" ValueLabel="True">
+      <Condition Expression="HasCategory('Property Required')" />
+      <Setter Property="Background" Value="#FFC0A000" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Navigation Property" ValueLabel="True">
+      <Condition Expression="HasCategory('Navigation Property')" />
+      <Setter Property="Background" Value="#FF990000" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Navigation Collection" ValueLabel="True">
+      <Condition Expression="HasCategory('Navigation Collection')" />
+      <Setter Property="Background" Value="#FFFF3232" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Model" ValueLabel="True">
+      <Condition Expression="HasCategory('Model')" />
+      <Setter Property="Background" Value="#FFFFFFFF" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Results" ValueLabel="True">
+      <Condition Expression="HasCategory('QueryResult')" />
+      <Setter Property="Background" Value="#FFBCFFBE" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Test Project" ValueLabel="Test Project">
+      <Condition Expression="HasCategory('CodeMap_TestProject')" />
+      <Setter Property="Icon" Value="CodeMap_TestProject" />
+      <Setter Property="Background" Value="#FF307A69" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Web Project" ValueLabel="Web Project">
+      <Condition Expression="HasCategory('CodeMap_WebProject')" />
+      <Setter Property="Icon" Value="CodeMap_WebProject" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Windows Store Project" ValueLabel="Windows Store Project">
+      <Condition Expression="HasCategory('CodeMap_WindowsStoreProject')" />
+      <Setter Property="Icon" Value="CodeMap_WindowsStoreProject" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Phone Project" ValueLabel="Phone Project">
+      <Condition Expression="HasCategory('CodeMap_PhoneProject')" />
+      <Setter Property="Icon" Value="CodeMap_PhoneProject" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Portable Library" ValueLabel="Portable Library">
+      <Condition Expression="HasCategory('CodeMap_PortableLibraryProject')" />
+      <Setter Property="Icon" Value="CodeMap_PortableLibraryProject" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="WPF Project" ValueLabel="WPF Project">
+      <Condition Expression="HasCategory('CodeMap_WpfProject')" />
+      <Setter Property="Icon" Value="CodeMap_WpfProject" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="VSIX Project" ValueLabel="VSIX Project">
+      <Condition Expression="HasCategory('CodeMap_VsixProject')" />
+      <Setter Property="Icon" Value="CodeMap_VsixProject" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Modeling Project" ValueLabel="Modeling Project">
+      <Condition Expression="HasCategory('CodeMap_ModelingProject')" />
+      <Setter Property="Icon" Value="CodeMap_ModelingProject" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Assembly" ValueLabel="Has category">
+      <Condition Expression="HasCategory('CodeSchema_Assembly')" />
+      <Setter Property="Background" Value="#FF094167" />
+      <Setter Property="Stroke" Value="#FF094167" />
+      <Setter Property="Icon" Value="CodeSchema_Assembly" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Namespace" ValueLabel="Has category">
+      <Condition Expression="HasCategory('CodeSchema_Namespace')" />
+      <Setter Property="Background" Value="#FF0E619A" />
+      <Setter Property="Stroke" Value="#FF0E619A" />
+      <Setter Property="Icon" Value="CodeSchema_Namespace" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Interface" ValueLabel="Has category">
+      <Condition Expression="HasCategory('CodeSchema_Interface')" />
+      <Setter Property="Background" Value="#FF1382CE" />
+      <Setter Property="Stroke" Value="#FF1382CE" />
+      <Setter Property="Icon" Value="CodeSchema_Interface" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Struct" ValueLabel="Has category">
+      <Condition Expression="HasCategory('CodeSchema_Struct')" />
+      <Setter Property="Background" Value="#FF1382CE" />
+      <Setter Property="Stroke" Value="#FF1382CE" />
+      <Setter Property="Icon" Value="CodeSchema_Struct" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Enumeration" ValueLabel="Has category">
+      <Condition Expression="HasCategory('CodeSchema_Enum')" />
+      <Setter Property="Background" Value="#FF1382CE" />
+      <Setter Property="Stroke" Value="#FF1382CE" />
+      <Setter Property="Icon" Value="CodeSchema_Enum" />
+      <Setter Property="LayoutSettings" Value="List" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Delegate" ValueLabel="Has category">
+      <Condition Expression="HasCategory('CodeSchema_Delegate')" />
+      <Setter Property="Background" Value="#FF1382CE" />
+      <Setter Property="Stroke" Value="#FF1382CE" />
+      <Setter Property="Icon" Value="CodeSchema_Delegate" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Class" ValueLabel="Has category">
+      <Condition Expression="HasCategory('CodeSchema_Type')" />
+      <Setter Property="Background" Value="#FF0E70C0" />
+      <Setter Property="Stroke" Value="#FF0E70C0" />
+      <Setter Property="Icon" Value="CodeSchema_Class" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Property" ValueLabel="Has category">
+      <Condition Expression="HasCategory('CodeSchema_Property')" />
+      <Setter Property="Background" Value="#FFE0E0E0" />
+      <Setter Property="Stroke" Value="#FFE0E0E0" />
+      <Setter Property="Icon" Value="CodeSchema_Property" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Method" ValueLabel="Has category">
+      <Condition Expression="HasCategory('CodeSchema_Method') Or HasCategory('CodeSchema_CallStackUnresolvedMethod')" />
+      <Setter Property="Background" Value="#FFE0E0E0" />
+      <Setter Property="Stroke" Value="#FFE0E0E0" />
+      <Setter Property="Icon" Value="CodeSchema_Method" />
+      <Setter Property="LayoutSettings" Value="List" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Event" ValueLabel="Has category">
+      <Condition Expression="HasCategory('CodeSchema_Event')" />
+      <Setter Property="Background" Value="#FFE0E0E0" />
+      <Setter Property="Stroke" Value="#FFE0E0E0" />
+      <Setter Property="Icon" Value="CodeSchema_Event" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Field" ValueLabel="Has category">
+      <Condition Expression="HasCategory('CodeSchema_Field')" />
+      <Setter Property="Background" Value="#FFE0E0E0" />
+      <Setter Property="Stroke" Value="#FFE0E0E0" />
+      <Setter Property="Icon" Value="CodeSchema_Field" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Out Parameter" ValueLabel="Has category">
+      <Condition Expression="CodeSchemaProperty_IsOut = 'True'" />
+      <Setter Property="Icon" Value="CodeSchema_OutParameter" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Parameter" ValueLabel="Has category">
+      <Condition Expression="HasCategory('CodeSchema_Parameter')" />
+      <Setter Property="Icon" Value="CodeSchema_Parameter" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Local Variable" ValueLabel="Has category">
+      <Condition Expression="HasCategory('CodeSchema_LocalExpression')" />
+      <Setter Property="Icon" Value="CodeSchema_LocalExpression" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Externals" ValueLabel="Has category">
+      <Condition Expression="HasCategory('Externals')" />
+      <Setter Property="Background" Value="#FF424242" />
+      <Setter Property="Stroke" Value="#FF424242" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="Inherits From" ValueLabel="True">
+      <Condition Expression="HasCategory('InheritsFrom')" />
+      <Setter Property="Stroke" Value="#FF00A600" />
+      <Setter Property="StrokeDashArray" Value="2 0" />
+      <Setter Property="DrawArrow" Value="true" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="Implements" ValueLabel="True">
+      <Condition Expression="HasCategory('Implements')" />
+      <Setter Property="Stroke" Value="#8000A600" />
+      <Setter Property="StrokeDashArray" Value="2 2" />
+      <Setter Property="DrawArrow" Value="true" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="Calls" ValueLabel="True">
+      <Condition Expression="HasCategory('CodeSchema_Calls')" />
+      <Setter Property="Stroke" Value="#FFFF00FF" />
+      <Setter Property="StrokeDashArray" Value="2 0" />
+      <Setter Property="DrawArrow" Value="true" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="Function Pointer" ValueLabel="True">
+      <Condition Expression="HasCategory('CodeSchema_FunctionPointer')" />
+      <Setter Property="Stroke" Value="#FFFF00FF" />
+      <Setter Property="StrokeDashArray" Value="2 2" />
+      <Setter Property="DrawArrow" Value="true" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="Field Read" ValueLabel="True">
+      <Condition Expression="HasCategory('CodeSchema_FieldRead')" />
+      <Setter Property="Stroke" Value="#FF00AEEF" />
+      <Setter Property="StrokeDashArray" Value="2 2" />
+      <Setter Property="DrawArrow" Value="true" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="Field Write" ValueLabel="True">
+      <Condition Expression="HasCategory('CodeSchema_FieldWrite')" />
+      <Setter Property="Stroke" Value="#FF00AEEF" />
+      <Setter Property="DrawArrow" Value="true" />
+      <Setter Property="IsHidden" Value="false" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="Inherits From" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="HasCategory('InheritsFrom') And Target.HasCategory('CodeSchema_Class')" />
+      <Setter Property="TargetDecorator" Value="OpenArrow" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="Implements" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="HasCategory('Implements') And Target.HasCategory('CodeSchema_Interface')" />
+      <Setter Property="TargetDecorator" Value="OpenArrow" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="Comment Link" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="Source.HasCategory('Comment')" />
+      <Setter Property="Stroke" Value="#FFE5C365" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Cursor Location Changed" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="IsCursorLocation" />
+      <Setter Property="IndicatorWest" Value="WestIndicator" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Disabled Breakpoint Location Changed" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="DisabledBreakpointCount" />
+      <Setter Property="IndicatorWest" Value="WestIndicator" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Enabled Breakpoint Location Changed" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="EnabledBreakpointCount" />
+      <Setter Property="IndicatorWest" Value="WestIndicator" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Instruction Pointer Location Changed" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="IsInstructionPointerLocation" />
+      <Setter Property="IndicatorWest" Value="WestIndicator" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Current Callstack Changed" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="IsCurrentCallstackFrame" />
+      <Setter Property="IndicatorWest" Value="WestIndicator" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="Return" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="HasCategory('CodeSchema_ReturnTypeLink')" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="References" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="HasCategory('References')" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="Uses Attribute" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="HasCategory('CodeSchema_AttributeUse')" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Solution Folder" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="HasCategory('CodeMap_SolutionFolder')" />
+      <Setter Property="Background" Value="#FFDEBA83" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="Project Reference" ValueLabel="Project Reference">
+      <Condition Expression="HasCategory('CodeMap_ProjectReference')" />
+      <Setter Property="Stroke" Value="#9A9A9A" />
+      <Setter Property="StrokeDashArray" Value="2 2" />
+      <Setter Property="DrawArrow" Value="true" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="External Reference" ValueLabel="External Reference">
+      <Condition Expression="HasCategory('CodeMap_ExternalReference')" />
+      <Setter Property="Stroke" Value="#9A9A9A" />
+      <Setter Property="StrokeDashArray" Value="2 2" />
+      <Setter Property="DrawArrow" Value="true" />
+    </Style>
+  </Styles>
+</DirectedGraph>

@@ -5,6 +5,8 @@ import { useTags } from "../services"
 export const TagSelector: React.FC<TagSelectorProps> = ({ value, onChange }) => {
 
     const tags = useTags();
+    console.debug(value);
+    console.debug(tags.data?.find(t => t.id === value));
 
     return (
         <ComboBox items={tags.data} valueField="id" textField="name" selectedItem={tags.data?.find(t => t.id === value)} onSelected={(v) => onChange && onChange(v.id)} />

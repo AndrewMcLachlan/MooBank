@@ -37,6 +37,7 @@ const App: React.FC = () => {
                         <Route path="breakdown/:tagId?" element={<Pages.Breakdown />} />
                         <Route path="by-tag" element={<Pages.ByTag />} />
                         <Route path="tag-trend/:tagId?" element={<Pages.TagTrend />} />
+                        <Route path="all-tag-average" element={<Pages.AllTagAverage />} />
                     </Route>
                     <Route path="/settings" element={<Navigate to="/settings/tags" replace />} />
                     <Route path="/settings/tags" element={<Pages.TransactionTags />} />

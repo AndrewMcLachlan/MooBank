@@ -14,7 +14,7 @@ public class ReportsController : CommandQueryController
     }
 
     [HttpGet("in-out/{start}/{end}")]
-    public Task<InOutReport> GetInOut(Guid accountId, DateOnly start, DateOnly end, CancellationToken cancellationToken)
+    public Task<InOutReport> GetInOut(Guid accountId, DateOnly start, DateOnly end, CancellationToken cancellationToken = default)
     {
         GetInOutReport query = new()
         {
@@ -27,7 +27,7 @@ public class ReportsController : CommandQueryController
     }
 
     [HttpGet("in-out-trend/{start}/{end}")]
-    public Task<InOutTrendReport> GetInOutTrend(Guid accountId, DateOnly start, DateOnly end, CancellationToken cancellationToken)
+    public Task<InOutTrendReport> GetInOutTrend(Guid accountId, DateOnly start, DateOnly end, CancellationToken cancellationToken = default)
     {
         GetInOutTrendReport query = new()
         {
@@ -41,7 +41,7 @@ public class ReportsController : CommandQueryController
 
 
     [HttpGet("{reportType}/tags/{start}/{end}/{parentTag?}")]
-    public Task<ByTagReport> GetByTag(Guid accountId, DateOnly start, DateOnly end, ReportType reportType, int? parentTag, CancellationToken cancellationToken)
+    public Task<ByTagReport> GetByTag(Guid accountId, DateOnly start, DateOnly end, ReportType reportType, int? parentTag, CancellationToken cancellationToken = default)
     {
         GetByTagReport query = new()
         {
@@ -56,7 +56,7 @@ public class ReportsController : CommandQueryController
     }
 
     [HttpGet("{reportType}/breakdown/{start}/{end}/{parentTag?}")]
-    public Task<BreakdownReport> GetBreakdown(Guid accountId, DateOnly start, DateOnly end, ReportType reportType, int? parentTag, CancellationToken cancellationToken)
+    public Task<BreakdownReport> GetBreakdown(Guid accountId, DateOnly start, DateOnly end, ReportType reportType, int? parentTag, CancellationToken cancellationToken = default)
     {
         GetBreakdownReport query = new()
         {
@@ -71,7 +71,7 @@ public class ReportsController : CommandQueryController
     }
 
     [HttpGet("{reportType}/tag-trend/{start}/{end}/{tag}")]
-    public Task<TagTrendReport> GetTagTrend(Guid accountId, DateOnly start, DateOnly end, ReportType reportType, int tag, CancellationToken cancellationToken)
+    public Task<TagTrendReport> GetTagTrend(Guid accountId, DateOnly start, DateOnly end, ReportType reportType, int tag, [FromQuery]TagTrendReportSettings settings, CancellationToken cancellationToken = default)
     {
         GetTagTrendReport query = new()
         {
@@ -79,6 +79,21 @@ public class ReportsController : CommandQueryController
             Start = start,
             End = end,
             TagId = tag,
+            ReportType = reportType,
+            Settings = settings,
+        };
+
+        return QueryDispatcher.Dispatch(query, cancellationToken);
+    }
+
+    [HttpGet("{reportType}/all-tag-average/{start}/{end}")]
+    public Task<AllTagAverageReport> GetAllTagAverage(Guid accountId, DateOnly start, DateOnly end, ReportType reportType, CancellationToken cancellationToken = default)
+    {
+        GetAllTagAverageReport query = new()
+        {
+            AccountId = accountId,
+            Start = start,
+            End = end,
             ReportType = reportType,
         };
 

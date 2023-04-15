@@ -26,6 +26,9 @@ public partial class TransactionTag : IEquatable<TransactionTag>
 
     public virtual ICollection<TransactionTag> Tags { get; set; }
 
+    public virtual TransactionTagSettings? Settings { get; set; }
+
+    #region Equality
     public bool Equals(TransactionTag? other)
     {
         if (other is null) return false;
@@ -37,6 +40,7 @@ public partial class TransactionTag : IEquatable<TransactionTag>
     public override bool Equals(object? obj) => Equals(obj as TransactionTag);
 
     public override int GetHashCode() => TransactionTagId.GetHashCode();
+    #endregion
 }
 
 

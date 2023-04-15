@@ -2,9 +2,14 @@
 
 namespace Asm.MooBank.Models.Queries.Reports;
 
-public record GetTagTrendReport : BaseReportQuery, IQuery<TagTrendReport>
+public record GetTagTrendReport : TypedReportQuery, IQuery<TagTrendReport>
 {
     public required int TagId { get; init; }
 
-    public required ReportType ReportType { get; init; }
+    public TagTrendReportSettings Settings { get; init; } = new TagTrendReportSettings();
+}
+
+public record TagTrendReportSettings
+{
+    public bool ApplySmoothing { get; init; }
 }

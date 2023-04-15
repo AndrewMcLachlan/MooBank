@@ -1,7 +1,7 @@
 import { useApiGet } from "@andrewmclachlan/mooapp";
 import { ByTagReport, InOutReport, InOutTrendReport, ReportType } from "../models/reports";
 import { formatISODate } from "../helpers/dateFns";
-import { TagTrendReport } from "../models/reports/TagTrendReport";
+import { TagTrendReport, TagTrendReportSettings } from "../models/reports";
 
 export const reportsKey = "reports";
 
@@ -13,4 +13,21 @@ export const useBreakdownReport = (accountId: string, start: Date, end: Date, re
 
 export const useByTagReport = (accountId: string, start: Date, end: Date, reportType: ReportType) => useApiGet<ByTagReport>([reportsKey, accountId, "by-tag", reportType, start, end], `api/accounts/${accountId}/reports/${ReportType[reportType].toLowerCase()}/tags/${formatISODate(start)}/${formatISODate(end)}`);
 
-export const useTagTrendReport = (accountId: string, start: Date, end: Date, reportType: ReportType, tagId: number) => useApiGet<TagTrendReport>([reportsKey, accountId, "tag-trend", reportType, start, end, tagId], `api/accounts/${accountId}/reports/${ReportType[reportType].toLowerCase()}/tag-trend/${formatISODate(start)}/${formatISODate(end)}/${tagId}`);
+export const useTagTrendReport = (accountId: string, start: Date, end: Date, reportType: ReportType, tagId: number, settings: TagTrendReportSettings) => useApiGet<TagTrendReport>([reportsKey, accountId, "tag-trend", reportType, start, end, tagId, settings], `api/accounts/${accountId}/reports/${ReportType[reportType].toLowerCase()}/tag-trend/${formatISODate(start)}/${formatISODate(end)}/${tagId}${toQuery(settings)}`);
+
+export const useAllTagAverageReport = (accountId: string, start: Date, end: Date, reportType: ReportType) => useApiGet<AllTagAverageReport>([reportsKey, accountId, "all-tag-average", reportType, start, end], `api/accounts/${accountId}/reports/${ReportType[reportType].toLowerCase()}/all-tag-average/${formatISODate(start)}/${formatISODate(end)}`);
+
+
+
+const toQuery = (settings: TagTrendReportSettings) => {
+
+    if (!settings) return "";
+
+    let query = "?";
+
+    for(const entry of Object.entries(settings)) {
+        query += `${entry[0]}=${entry[1]}&`;
+    }
+
+    return query.slice(0, -1);
+}

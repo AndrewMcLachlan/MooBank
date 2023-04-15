@@ -48,6 +48,11 @@ internal class GetTagTrendReport : IQueryHandler<Models.Queries.Reports.GetTagTr
             OffsetAmount = g.Sum(t => t.Amount)
         });
 
+        if (request.Settings.ApplySmoothing)
+        {
+            months = ApplySmoothing(months);
+        }
+
         return new()
         {
             AccountId = request.AccountId,
@@ -56,7 +61,46 @@ internal class GetTagTrendReport : IQueryHandler<Models.Queries.Reports.GetTagTr
             TagId = request.TagId,
             TagName = tag.Name,
             Months = months,
+            Average = months.Average(),
+            OffsetAverage = months.AverageOffset(),
         };
+    }
+
+    private IEnumerable<TrendPoint> ApplySmoothing(IEnumerable<TrendPoint> months)
+    {
+        if (!months.Any()) yield break;
+
+        DateOnly current = months.First().Month;
+
+        yield return months.First();
+
+        foreach(var month in months.Skip(1))
+        {
+            if (month.Month < current) throw new InvalidOperationException("The report data points are no ordered by month");
+
+            if (month.Month.Month == current.Month + 1)
+            {
+                current = month.Month;
+                yield return month;
+                continue;
+            }
+
+            decimal difference = month.Month.Month - current.Month;
+            var averageAmount = month.Amount / difference;
+            var averageOffset = month.OffsetAmount / difference;
+
+            for(var i =0;i<difference; i++)
+            {
+                yield return new TrendPoint
+                {
+                    Amount = averageAmount,
+                    Month = current.AddMonths(i),
+                    OffsetAmount = averageOffset,
+                };
+            }
+
+            current = month.Month;
+        }
     }
 }
 

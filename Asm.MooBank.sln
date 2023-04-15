@@ -21,6 +21,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.WebJobs", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Security", "src\Asm.MooBank.Security\Asm.MooBank.Security.csproj", "{A543D5EE-AD1A-47A8-8E18-154710A6A44F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "diagrams", "diagrams", "{2F95640D-BDB2-42E0-BDFB-5F3CA190C51A}"
+	ProjectSection(SolutionItems) = preProject
+		diagrams\Model.dgml = diagrams\Model.dgml
+		diagrams\Transactions.dgml = diagrams\Transactions.dgml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
