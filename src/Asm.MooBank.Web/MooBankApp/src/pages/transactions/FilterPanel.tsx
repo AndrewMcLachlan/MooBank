@@ -31,8 +31,6 @@ export const FilterPanel: React.FC<FilterPanelProps> = () => {
         setFilterTag(null);
     }
 
-    const tag = tags.data?.find(t => t.id === filterTag);
-
     useEffect(() => {
         dispatch(TransactionsSlice.actions.setTransactionListFilter({ description: filterDescription, filterTagged, tag: filterTag, start: period.startDate?.toISOString(), end: period.endDate?.toISOString() }));
     }, [period, filterDescription, filterTagged, filterTag]);
@@ -50,7 +48,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = () => {
                         </Col>
                         <Col>
                             <Form.Label htmlFor="filter-desc">Tags</Form.Label>
-                            <Select options={tags.data ?? []} isClearable value={tag} getOptionLabel={t => t.name} getOptionValue={t => t.id.toString()} onChange={(v) => setFilterTag(v?.id ?? null)} className="react-select" classNamePrefix="react-select" />
+                            <TagSelector onChange={setFilterTag} value={filterTag} />
                         </Col>
                     </Row>
                     <PeriodSelector instant onChange={setPeriod} />

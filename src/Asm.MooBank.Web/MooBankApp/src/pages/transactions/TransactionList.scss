@@ -14,19 +14,6 @@
     th:nth-child(4) {
         width: 20%;
     }
-
-    .sortable {
-        cursor: pointer;
-
-        &.ascending::before {
-            content: '\1F815'
-        }
-
-        &.descending::before {
-            content: '\1F817'
-        }
-    }
-
 }
 
 /*.transaction-list-header {

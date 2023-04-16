@@ -1,3 +1,5 @@
+import { sortDirection } from "store/state";
+
 export interface TransactionTag {
     id: number;
     name: string;
@@ -29,3 +31,14 @@ export const compareTransactionTagArray = (left: TransactionTag[], right: Transa
         return true;
 }
 
+export const sort = (sortDirection: sortDirection) => (a: TransactionTag, b: TransactionTag) => {
+
+    const retVal = sortDirection === "Ascending" ? 1 : -1;
+    const aName = a.name.toUpperCase();
+    const bName = b.name.toUpperCase();
+
+    if (aName === bName ) return 0;
+    if (aName > bName) return retVal;
+    if (aName < bName) return -retVal;
+
+}

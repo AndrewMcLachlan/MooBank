@@ -6,4 +6,6 @@ export * from "./AccountProvider";
 export * from "./AccountSummary";
 export * from "./FormGroup";
 export * from "./FormRow";
+export * from "./Paginaton";
+export * from "./TagPanel";
 export * from "./TagSelector";

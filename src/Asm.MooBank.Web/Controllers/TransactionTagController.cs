@@ -30,9 +30,9 @@
         }
 
         [HttpPut("{name}")]
-        public async Task<ActionResult<TransactionTag>> CreateByName(string name, [FromBody]TransactionTag[] tags)
+        public async Task<ActionResult<TransactionTag>> CreateByName(string name, [FromBody]int[] tags, CancellationToken cancellationToken = default)
         {
-            var tag = await _tagService.Create(new TransactionTag { Name = Uri.UnescapeDataString(name), Tags = tags });
+            var tag = await _tagService.Create(name, tags, cancellationToken);
 
             return Created($"api/transaction/tags/{tag.Id}", tag);
         }

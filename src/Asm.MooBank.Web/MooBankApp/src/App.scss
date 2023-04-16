@@ -20,16 +20,16 @@ label {
     }
 
     .table {
-        --bs-table-striped-bg: rgba(0,0,0,0.5);
+        --bs-table-striped-bg: rgba(0, 0, 0, 0.5);
     }
 }
 
 .light {
     --breadcrumb-background: #CFCCCC;
     color-scheme: light;
-    
+
     .table {
-        --bs-table-striped-bg: rgba(0,0,0,0.05);
+        --bs-table-striped-bg: rgba(0, 0, 0, 0.05);
     }
 }
 
@@ -38,7 +38,7 @@ label {
     color-scheme: dark;
 
     .table {
-        --bs-table-striped-bg: rgba(0,0,0,0.5);
+        --bs-table-striped-bg: rgba(0, 0, 0, 0.5);
     }
 }
 
@@ -184,9 +184,9 @@ thead th {
     font-size: 1.2rem;
 }
 
-/*th, td {
-    border-bottom: 1px solid #AAA;
-}*/
+td {
+    vertical-align: middle;
+}
 
 .table {
 
@@ -205,6 +205,18 @@ thead th {
         button.btn {
             font-weight: bold;
             outline: none;
+        }
+    }
+
+    .sortable {
+        cursor: pointer;
+
+        &.ascending::before {
+            content: '\1F815'
+        }
+
+        &.descending::before {
+            content: '\1F817'
         }
     }
 }
@@ -361,13 +373,48 @@ form>div {
     top: 5px;
 }
 
+.tag-panel .readonly {
+    .react-select__indicators {
+        display: none;
+    }
+
+    .react-select__placeholder {
+        display: none;
+    }
+
+    .react-select__input-container {
+        display: none;
+    }
+}
+
+td.tag-panel .react-select {
+    width: 100%
+}
+
 .react-select {
     font-family: var(--font-family-alt);
+    font-weight: normal;
 
-    .react-select__control, .react-select__menu {
+    &.readonly {
+
+        .react-select__control {
+            background-color: transparent;
+        }
+        .react-select__value-container {
+            padding: 2px 9px;
+        }
+    }
+
+    .react-select__control,
+    .react-select__menu {
         background-color: var(--bs-body-bg);
         color: var(--bs-body-color);
     }
+
+    .react-select__value-container {
+        gap: 8px;
+    }
+
     .react-select__single-value {
         color: var(--bs-body-color);
     }
@@ -384,14 +431,45 @@ form>div {
         background-color: rgba(var(--bs-primary-rgb), 1);
     }
 
-    
-
     .react-select__control--is-focused {
         border-color: #86b7fe;
         outline: 0;
         box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
     }
+
+    .react-select__multi-value {
+        @extend .badge;
+        @extend .rounded-pill;
+        @extend .bg-primary;
+        display: flex;
+        align-items: center;
+        margin: 0;
+    }
+
+    .react-select__multi-value__label {
+        color: #FFF;
+        font-family: var(--bs-body-font-family);
+        padding: 0;
+        font-size: 100%;
+        overflow: unset;
+    }
+
+    .react-select__multi-value__remove {
+        padding: 0;
+        margin-left: 4px;
+        background-color: #FFF;
+        border-radius: 800px;
+        height: 12px;
+        width: 12px;
+        ;
+
+        svg {
+            fill: rgba(var(--bs-primary-rgb), 1) !important;
+            stroke: rgba(var(--bs-primary-rgb), 1) !important;
+        }
+
+    }
+
 }
 
 @import 'responsive';
-

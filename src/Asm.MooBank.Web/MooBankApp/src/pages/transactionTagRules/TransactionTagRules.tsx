@@ -4,7 +4,8 @@ import React, { useState } from "react";
 import { Table } from "react-bootstrap";
 //import Select from "react-select";
 
-import { ClickableIcon, TagPanel } from "@andrewmclachlan/mooapp";
+import { ClickableIcon } from "@andrewmclachlan/mooapp";
+import { TagPanel } from "components";
 
 import { TransactionTag, TransactionTagRule } from "models";
 import { useParams } from "react-router-dom";
@@ -20,7 +21,7 @@ export const TransactionTagRules: React.FC = () => {
     const rulesQuery = useRules(accountId!);
     const { data } = rulesQuery;
 
-    const { newRule, fullTagsList, addTag, createTag, removeTag, nameChange, createRule, runRules } = useComponentState(accountId!);
+    const { newRule, fullTagsList, addTag, createTag, removeTag, nameChange, createRule, runRules, keyUp } = useComponentState(accountId!);
 
     const account = useAccount(accountId!);
 
@@ -34,16 +35,15 @@ export const TransactionTagRules: React.FC = () => {
                 <Table striped bordered={false} borderless className="transaction-tag-rules">
                     <thead>
                         <tr>
-                            <th>When a transaction contains</th>
+                            <th className="column-20">When a transaction contains</th>
                             <th>Apply tag(s)</th>
-                            <th></th>
+                            <th className="column-5"></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td><input type="text" className="form-control" placeholder="Transaction description contains..." value={newRule.contains} onChange={nameChange} /></td>
-                            <td><TagPanel selectedItems={newRule.tags} allItems={fullTagsList} textField="name" valueField="id" onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} /></td>
-                            {/*<Select defaultOptions={fullTagsList} getOptionLabel={(t:TransactionTag) => t.name } getOptionValue={(t:TransactionTag) => t.id.toString() } hideSelectedOptions={true} isOptionSelected={t => } onChange />*/}
+                            <td><input type="text" className="form-control" placeholder="Description contains..." value={newRule.contains} onChange={nameChange} /></td>
+                            <TagPanel as="td" selectedItems={newRule.tags} items={fullTagsList} labelField={t => t.name} valueField={t => t.id.toString()} onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} onKeyUp={keyUp} />
                             <td className="row-action"><span onClick={createRule}><ClickableIcon icon="check-circle" title="Save" size="xl" /></span></td>
                         </tr>
                         {data?.rules && data.rules.map((r) => <TransactionTagRuleRow key={r.id} accountId={accountId!} rule={r} />)}
@@ -103,7 +103,12 @@ const useComponentState = (accountId: string) => {
     const runRules = () => {
         runTransactionTagRules.mutate({ accountId });
     };
-
+    
+    const keyUp: React.KeyboardEventHandler<HTMLTableCellElement> = (e) => { 
+        if (e.key === "Enter") {
+            createRule();
+        }
+    }
     return {
         newRule,
         fullTagsList,
@@ -114,6 +119,7 @@ const useComponentState = (accountId: string) => {
 
         nameChange,
         createRule,
+        keyUp,
 
         runRules,
     };

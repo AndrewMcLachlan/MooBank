@@ -17,8 +17,8 @@ export const useCreateTag = () => {
 
     return useMutation<Models.TransactionTag, null, TransactionTagVariables | Models.TransactionTag>(async (variables) => {
 
-        const name = (variables as Models.TransactionTag).name || (variables.name).trim();
-        const tags = (variables as Models.TransactionTag).tags || [];
+        const name = (variables as Models.TransactionTag).name?.trim() ?? (variables.name).trim();
+        const tags = (variables as Models.TransactionTag).tags?.map(t => t.id) ?? [];
 
         return (await httpClient.put<Models.TransactionTag>(`api/transaction/tags/${encodeURIComponent(name)}`, tags)).data;
     }, {

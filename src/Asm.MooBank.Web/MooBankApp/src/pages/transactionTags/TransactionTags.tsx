@@ -5,14 +5,17 @@ import { Table } from "react-bootstrap";
 
 import { TransactionTagRow } from "./TransactionTagRow";
 
-import { ClickableIcon , TagPanel } from "@andrewmclachlan/mooapp";
-import { TransactionTag } from "models";
+import { ClickableIcon } from "@andrewmclachlan/mooapp";
+import { Pagination, TagPanel } from "components";
+import { TransactionTag, sort } from "models";
 import { useCreateTag, useTags } from "services";
 import { Page } from "layouts";
+import { getNumberOfPages } from "helpers/paging";
+import { sortDirection } from "store/state";
 
 export const TransactionTags: React.FC = () => {
 
-    const { newTag, fullTagsList, tagsList, addTag, createTag, removeTag, nameChange } = useComponentState();
+    const { newTag, pagedTags, tagsList, addTag, createTag, removeTag, nameChange, pageNumber, numberOfPages, pageChange, totalTags, sortDirection, changeSortDirection, keyUp } = useComponentState();
 
     return (
         <Page title="Tags">
@@ -21,18 +24,26 @@ export const TransactionTags: React.FC = () => {
                 <Table striped bordered={false} borderless className="transaction-tags">
                     <thead>
                         <tr>
-                            <th>Name</th>
+                            <th className={`column-15 sortable ${sortDirection.toLowerCase()}`} onClick={changeSortDirection}>Name</th>
                             <th>Tags</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td><input type="text" placeholder="Tag name" value={newTag.name} onChange={nameChange} className="form-control" /></td>
-                            <td><TagPanel selectedItems={newTag.tags} allItems={tagsList} textField="name" valueField="id" onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} /></td>
+                            <TagPanel as="td" selectedItems={newTag.tags} items={tagsList} labelField={t => t.name} valueField={t => t.id.toString()} onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} onKeyUp={keyUp} />
                             <td className="row-action"><span onClick={createTag}><ClickableIcon icon="check-circle" title="Save" size="xl" /></span></td>
                         </tr>
-                        {fullTagsList && fullTagsList.map((t) => <TransactionTagRow key={t.id} tag={t} />)}
+                        {pagedTags.map((t) => <TransactionTagRow key={t.id} tag={t} />)}
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colSpan={1} className="page-totals">Page {pageNumber} of {numberOfPages} ({totalTags} tags)</td>
+                            <td colSpan={2}>
+                                <Pagination pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={pageChange} />
+                            </td>
+                        </tr>
+                    </tfoot>
                 </Table>
             </Page.Content>
         </Page>
@@ -44,12 +55,30 @@ const useComponentState = () => {
     const blankTag = { id: 0, name: "", tags: [] } as TransactionTag;
 
     const fullTagsListQuery = useTags();
-    const fullTagsList = fullTagsListQuery.data;
+    const fullTagsList = fullTagsListQuery.data ?? [];
 
     const createTransactionTag = useCreateTag();
 
     const [newTag, setNewTag] = useState(blankTag);
     const [tagsList, setTagsList] = useState<TransactionTag[]>([]);
+    const [pagedTags, setPagedTags] = useState<TransactionTag[]>([]);
+
+    const [pageNumber, setPageNumber] = useState<number>(1);
+    const [pageSize, setPageSize] = useState<number>(20);
+
+    const [sortDirection, setSortDirection] = useState<sortDirection>("Ascending");
+
+    const numberOfPages = getNumberOfPages(fullTagsList.length, pageSize);
+    const totalTags = fullTagsList.length;
+    const pageChange = (_current: number, newPage: number) => setPageNumber(newPage);
+
+    useEffect(() => {
+        setPagedTags(fullTagsList.sort(sort(sortDirection)).slice((pageNumber - 1) * pageSize, ((pageNumber - 1) * pageSize) + pageSize));
+    }, [fullTagsList, sortDirection, pageNumber]);
+
+    const changeSortDirection = () => {
+        setSortDirection(sortDirection === "Ascending" ? "Descending" : "Ascending");
+    }
 
     useEffect(() => {
         if (!fullTagsListQuery.data) return;
@@ -85,6 +114,12 @@ const useComponentState = () => {
         setNewTag(newTag);
     }
 
+    const keyUp: React.KeyboardEventHandler<HTMLTableCellElement> = (e) => { 
+        if (e.key === "Enter") {
+            createTag();
+        }
+    }
+
     return {
         newTag,
         fullTagsList,
@@ -96,5 +131,11 @@ const useComponentState = () => {
         removeTag,
 
         nameChange,
+
+        pagedTags,
+        pageNumber, numberOfPages, pageChange, totalTags,
+        changeSortDirection,sortDirection,
+
+        keyUp,
     };
 }
