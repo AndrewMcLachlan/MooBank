@@ -2,7 +2,7 @@
 import format from "date-fns/format";
 import parseISO from "date-fns/parseISO";
 
-import { TagPanel } from "@andrewmclachlan/mooapp";
+import { TransactionTagPanel } from "components";
 import { TransactionRowProps } from "./TransactionRow";
 import { useTags } from "services";
 import { useTransactionRowEvents } from "./TransactionRow";
@@ -25,7 +25,7 @@ export const TransactionRowIng: React.FC<TransactionRowProps> = (props) => {
             <td>{format(parseISO(props.transaction.transactionTime), "yyyy-MM-dd")}</td>
             <td>{props.transaction.description}</td>
             <td>{props.transaction.amount.toLocaleString("en-AU", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-            <TagPanel as="td" selectedItems={transactionRow.tags} allItems={tagsList} textField="name" valueField="id" onAdd={transactionRow.addTag} onRemove={transactionRow.removeTag} onCreate={transactionRow.createTag} allowCreate={true} />
+            <TransactionTagPanel as="td" selectedItems={transactionRow.tags} items={tagsList} onAdd={transactionRow.addTag} onRemove={transactionRow.removeTag} onCreate={transactionRow.createTag} allowCreate={true} />
         </tr>
     );
 }

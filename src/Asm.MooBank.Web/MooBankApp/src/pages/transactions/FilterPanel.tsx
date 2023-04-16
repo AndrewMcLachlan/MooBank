@@ -10,9 +10,10 @@ import { PeriodSelector } from "components/PeriodSelector";
 import { Period } from "helpers/dateFns";
 import { Input } from "components/AccountList/Input";
 import { useLocalStorage } from "@andrewmclachlan/mooapp";
-import Select from "react-select";
-import { useTags } from "services";
-import { usePeriod } from "hooks";
+import classnames from "classnames";
+
+
+
 
 export const FilterPanel: React.FC<FilterPanelProps> = () => {
 
@@ -20,10 +21,9 @@ export const FilterPanel: React.FC<FilterPanelProps> = () => {
     const [filterDescription, setFilterDescription] = useLocalStorage("filter-description", "");
     const [filterTag, setFilterTag] = useLocalStorage<number | null>("filter-tag", null);
     const [period, setPeriod] = useState<Period>({startDate: null,endDate: null});
-    const tags = useTags();
     const dispatch = useDispatch();
 
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useLocalStorage("filter-panel-open", false);
 
     const clear = () => {
         setFilterDescription("");
@@ -32,15 +32,15 @@ export const FilterPanel: React.FC<FilterPanelProps> = () => {
     }
 
     useEffect(() => {
-        dispatch(TransactionsSlice.actions.setTransactionListFilter({ description: filterDescription, filterTagged, tag: filterTag, start: period.startDate?.toISOString(), end: period.endDate?.toISOString() }));
+        dispatch(TransactionsSlice.actions.setTransactionListFilter({ description: filterDescription, filterTagged, tag: filterTag, start: period?.startDate?.toISOString(), end: period?.endDate?.toISOString() }));
     }, [period, filterDescription, filterTagged, filterTag]);
 
     return (
         <fieldset className="filter-panel box">
-            <legend className="clickable" onClick={() => setOpen(!open)}><FontAwesomeIcon icon={open ? "chevron-up" : "chevron-down"} size="xs" />Filters</legend>
-            <div className="control-panel"><Button onClick={clear} variant="link">Clear Filters</Button></div>
+            <legend className={classnames("clickable", open && "open")} onClick={() => setOpen(!open)}><FontAwesomeIcon icon="chevron-down" size="xs" />Filters</legend>
+            <div className="control-panel"><FontAwesomeIcon className="clickable" title="Clear filters" icon="filter-circle-xmark" onClick={clear} size="lg" /></div>
             <Collapse in={open}>
-                <>
+                <div>
                     <Row>
                         <Col className="description">
                             <Form.Label htmlFor="filter-desc">Description</Form.Label>
@@ -57,7 +57,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = () => {
                             <Form.Check id="filter-tagged" label="Only show transactions without tags" checked={filterTagged} onChange={(e) => setFilterTagged(e.currentTarget.checked)} />
                         </Form.Group>
                     </Row>
-                </>
+                </div>
             </Collapse>
         </fieldset>
     );

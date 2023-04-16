@@ -7,5 +7,5 @@ export * from "./AccountSummary";
 export * from "./FormGroup";
 export * from "./FormRow";
 export * from "./Paginaton";
-export * from "./TagPanel";
+export * from "./TransactionTagPanel";
 export * from "./TagSelector";

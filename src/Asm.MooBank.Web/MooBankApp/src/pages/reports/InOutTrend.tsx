@@ -19,7 +19,7 @@ export const InOutTrend: React.FC<InOutTrendProps> = ({period}) => {
 
     const accountId = useIdParams();
 
-    const report = useInOutTrendReport(accountId!, period.startDate, period.endDate);
+    const report = useInOutTrendReport(accountId!, period?.startDate, period?.endDate);
 
     const dataset: ChartData<"line", number[], string> = {
         labels: report.data?.income.map(i => i.month) ?? [],

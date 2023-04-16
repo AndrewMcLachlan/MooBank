@@ -2,10 +2,9 @@ import "./TransactionTagRules.scss";
 
 import React, { useState } from "react";
 import { Table } from "react-bootstrap";
-//import Select from "react-select";
 
 import { ClickableIcon } from "@andrewmclachlan/mooapp";
-import { TagPanel } from "components";
+import { TransactionTagPanel } from "components";
 
 import { TransactionTag, TransactionTagRule } from "models";
 import { useParams } from "react-router-dom";
@@ -43,7 +42,7 @@ export const TransactionTagRules: React.FC = () => {
                     <tbody>
                         <tr>
                             <td><input type="text" className="form-control" placeholder="Description contains..." value={newRule.contains} onChange={nameChange} /></td>
-                            <TagPanel as="td" selectedItems={newRule.tags} items={fullTagsList} labelField={t => t.name} valueField={t => t.id.toString()} onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} onKeyUp={keyUp} />
+                            <TransactionTagPanel as="td" selectedItems={newRule.tags} items={fullTagsList} onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} onKeyUp={keyUp} />
                             <td className="row-action"><span onClick={createRule}><ClickableIcon icon="check-circle" title="Save" size="xl" /></span></td>
                         </tr>
                         {data?.rules && data.rules.map((r) => <TransactionTagRuleRow key={r.id} accountId={accountId!} rule={r} />)}

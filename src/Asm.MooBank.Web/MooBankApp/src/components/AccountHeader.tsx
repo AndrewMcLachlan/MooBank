@@ -16,7 +16,7 @@ export const AccountHeader: React.FC<AccountHeaderProps> = (props) => {
     if (!account) return null;
 
     return (
-        <PageHeader title={account.name} menuItems={getMenuItems()} breadcrumbs={[[account.name, `/accounts/${account.id}`]]} />
+        <PageHeader goBack title={account.name} menuItems={getMenuItems()} breadcrumbs={[[account.name, `/accounts/${account.id}`]]} />
     )
 }
 

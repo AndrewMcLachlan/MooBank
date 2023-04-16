@@ -18,4 +18,4 @@ export const getPagesToDisplay = (pageNumber: number, numberOfPages: number): nu
     return pagesToDisplay;
 }
 
-export const getNumberOfPages = (total: number, pageSize: number) => Math.ceil(total / pageSize);
+export const getNumberOfPages = (total: number, pageSize: number) => Math.max(1, Math.ceil(total / pageSize));

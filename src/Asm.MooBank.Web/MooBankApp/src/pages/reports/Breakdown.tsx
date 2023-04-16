@@ -34,14 +34,14 @@ export const Breakdown = () => {
     const { id: accountId, tagId } = useParams<{ id: string, tagId: string }>();
 
     const [reportType, setReportType] = useState<ReportType>(ReportType.Expenses);
-    const [period, setPeriod] = useState<Period>(getCachedPeriod());
+    const [period, setPeriod] = useState<Period>({startDate: null,endDate: null});
     const [selectedTagId, setSelectedTagId] = useState<number | undefined>(tagId ? parseInt(tagId) : undefined);
     const [previousTagId, setPreviousTagId] = useState<number | undefined>();
     const tag = useTag(selectedTagId ?? 0);
 
     const account = useAccount(accountId!);
 
-    const report = useBreakdownReport(accountId!, period.startDate, period.endDate, reportType, selectedTagId);
+    const report = useBreakdownReport(accountId!, period?.startDate, period?.endDate, reportType, selectedTagId);
 
     const chartRef = useRef();
 
@@ -64,7 +64,7 @@ export const Breakdown = () => {
             <ReportsHeader account={account.data} title="Breakdown" />
             <Page.Content>
                 <ReportTypeSelector value={reportType} onChange={setReportType} />
-                <PeriodSelector value={period} onChange={setPeriod} />
+                <PeriodSelector onChange={setPeriod} />
                 <section className="report doughnut">
                     {tag.data?.name && <h3><FontAwesomeIcon className="clickable" icon="circle-chevron-left" size="xs" onClick={() => navigate(-1)} /> {tag.data.name}</h3>}
                     {!tag.data && <h3>Top-Level Tags</h3>}

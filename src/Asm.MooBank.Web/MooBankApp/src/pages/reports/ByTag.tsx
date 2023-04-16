@@ -15,7 +15,7 @@ import { useLayout } from "@andrewmclachlan/mooapp";
 
 import { useIdParams } from "hooks";
 import { PeriodSelector } from "components/PeriodSelector";
-import { Period, lastMonth } from "helpers/dateFns";
+import { Period } from "helpers/dateFns";
 import { ReportType } from "models/reports";
 import { ReportTypeSelector } from "components/ReportTypeSelector";
 import { getCachedPeriod } from "helpers";
@@ -33,11 +33,11 @@ export const ByTag = () => {
     const accountId = useIdParams();
 
     const [reportType, setReportType] = useState<ReportType>(ReportType.Expenses);
-    const [period, setPeriod] = useState<Period>(getCachedPeriod());
+    const [period, setPeriod] = useState<Period>({startDate: null,endDate: null});
 
     const account = useAccount(accountId!);
 
-    const report = useByTagReport(accountId!, period.startDate, period.endDate, reportType);
+    const report = useByTagReport(accountId!, period?.startDate, period?.endDate, reportType);
 
     const chartRef = useRef();
 

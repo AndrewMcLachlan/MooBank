@@ -27,12 +27,12 @@ export const AllTagAverage = () => {
     const accountId = useIdParams();
 
     const [reportType, setReportType] = useState<ReportType>(ReportType.Expenses);
-    const [period, setPeriod] = useState<Period>(getCachedPeriod());
+    const [period, setPeriod] = useState<Period>({startDate: null,endDate: null});
     const [showGross] = useState<boolean>(false); //TODO: may make this an option
 
     const account = useAccount(accountId!);
 
-    const report = useAllTagAverageReport(accountId!, period.startDate, period.endDate, reportType);
+    const report = useAllTagAverageReport(accountId!, period?.startDate, period?.endDate, reportType);
 
     const chartRef = useRef();
 
@@ -58,7 +58,7 @@ export const AllTagAverage = () => {
             <ReportsHeader account={account.data} title="All Tag Average" />
             <Page.Content>
                 <ReportTypeSelector value={reportType} onChange={setReportType} hidden />
-                <PeriodSelector value={period} onChange={setPeriod} />
+                <PeriodSelector onChange={setPeriod} />
                 <section className="report">
                     <h3>Average Across Top 50 Tags</h3>
                     <Bar id="alltagaverage" ref={chartRef} data={dataset} options={{

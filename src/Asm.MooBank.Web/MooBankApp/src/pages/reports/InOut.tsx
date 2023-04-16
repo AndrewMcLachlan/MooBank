@@ -17,6 +17,7 @@ import { PeriodSelector } from "components/PeriodSelector";
 import { useIdParams } from "hooks";
 import { getCachedPeriod } from "helpers";
 import { InOutTrend } from "./InOutTrend";
+import { Period } from "helpers/dateFns";
 
 ChartJS.register(...registerables);
 ChartJS.register(chartTrendline);
@@ -29,15 +30,15 @@ export const InOut = () => {
 
     const accountId= useIdParams();
 
-    const [period, setPeriod] = useState(getCachedPeriod());
+    const [period, setPeriod] = useState<Period>({startDate: null,endDate: null});
 
     const account = useAccount(accountId!);
 
 
-    const report = useInOutReport(accountId!, period.startDate, period.endDate);
+    const report = useInOutReport(accountId!, period?.startDate, period?.endDate);
 
     const dataset: ChartData<"bar", number[], string> = {
-        labels: [formatPeriod(period.startDate, period.endDate)],
+        labels: [formatPeriod(period?.startDate, period?.endDate)],
 
         datasets: [{
             label: "Income",
@@ -54,7 +55,7 @@ export const InOut = () => {
         <Page title="Income vs Expenses">
             <ReportsHeader account={account.data} title="Income vs Expenses" />
             <Page.Content>
-             <PeriodSelector value={period} onChange={setPeriod} />
+             <PeriodSelector onChange={setPeriod} />
                 <section className="report inout">
                     <h3>Total Income vs Expenses</h3>
                     <Bar id="inout" data={dataset} options={{
@@ -88,7 +89,9 @@ interface PeriodOption {
     end?: Date,
 }
 
-const formatPeriod = (start: Date, end: Date): string => {
+const formatPeriod = (start?: Date, end?: Date): string => {
+
+    if (!start && !end) return "All time";
 
     const sameYear = getYear(start) === getYear(end);
     const sameMonth = getMonth(start) === getMonth(end);

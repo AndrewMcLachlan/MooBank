@@ -32,10 +32,10 @@ export const TagTrend: React.FC = () => {
     const account = useAccount(accountId!);
 
     const [reportType, setReportType] = useState<ReportType>(ReportType.Expenses);
-    const [period, setPeriod] = useState<Period>(getCachedPeriod());
+    const [period, setPeriod] = useState<Period>({startDate: null,endDate: null});
     const [selectedTagId, setSelectedTagId] = useState<number>(tagId ? Number(tagId) : 1);
     const [settings, setSettings] = useState<TagTrendReportSettings>(defaultSettings);
-    const report = useTagTrendReport(accountId!, period.startDate, period.endDate, reportType, selectedTagId, settings);
+    const report = useTagTrendReport(accountId!, period?.startDate, period?.endDate, reportType, selectedTagId, settings);
 
     const { data: selectedTag } = useTag(selectedTagId);
 
@@ -76,13 +76,12 @@ export const TagTrend: React.FC = () => {
         setSettings({applySmoothing: settings.applySmoothing});
     }
 
-
     return (
         <Page title="Tag Trend">
             <ReportsHeader account={account.data} title="Tag Trend" />
             <Page.Content>
                 <ReportTypeSelector value={reportType} onChange={setReportType} hidden />
-                <PeriodSelector value={period} onChange={setPeriod} instant />
+                <PeriodSelector onChange={setPeriod} instant />
                 <TagSettingsPanel tag={selectedTag} onChange={settingsChanged} />
                 <TagSelector value={selectedTagId} onChange={tagChanged} />
                 <section className="report">

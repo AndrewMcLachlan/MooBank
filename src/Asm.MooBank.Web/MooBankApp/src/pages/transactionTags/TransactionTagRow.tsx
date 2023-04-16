@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { TransactionTag } from "models";
 import { ClickableIcon } from "@andrewmclachlan/mooapp";
-import { TagPanel } from "components";
+import { TransactionTagPanel } from "components";
 import { useAddSubTag, useCreateTag, useDeleteTag, useRemoveSubTag, useTags } from "services";
 
 export const TransactionTagRow: React.FC<TransactionTagRowProps> = (props) => {
@@ -21,7 +21,7 @@ export const TransactionTagRow: React.FC<TransactionTagRowProps> = (props) => {
     return (
         <tr>
             <td>{props.tag.name}</td>
-            <TagPanel as="td" selectedItems={transactionRow.tags} items={tagsList} labelField={(t) => t?.name} valueField={(t) => t?.id?.toString()} onAdd={transactionRow.addTag} onRemove={transactionRow.removeTag} onCreate={transactionRow.createTag} allowCreate={true} />
+            <TransactionTagPanel as="td" selectedItems={transactionRow.tags} items={tagsList} onAdd={transactionRow.addTag} onRemove={transactionRow.removeTag} onCreate={transactionRow.createTag} allowCreate={true} />
             <td className="row-action"><span onClick={transactionRow.deleteTag}><ClickableIcon icon="trash-alt" title="Delete" /></span></td>
         </tr>
     );

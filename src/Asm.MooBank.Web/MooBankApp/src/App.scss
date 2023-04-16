@@ -4,6 +4,7 @@
     --bs-font-sans-serif: 'Open Sans Condensed', 'Franklin Gothic', Helvetica, Arial, sans-serif;
     --breadcrumb-background: #333;
     --font-family-alt: 'Open Sans', 'Franklin Gothic', Helvetica, Arial, sans-serif;
+    --bs-border-color: #AAA;
 }
 
 label {
@@ -296,10 +297,10 @@ section.actions {
 
 fieldset {
     position: relative;
-    border: 1px solid;
-    padding: 10px;
-    padding-top: 5px;
-    border-radius: 4px;
+    border: 1px solid (var(--bs-border-color));
+    padding: 20px;
+    padding-top: 15px;
+    border-radius: 6px;
 
     legend {
         display: block;
@@ -369,107 +370,16 @@ form>div {
 
 .control-panel {
     position: absolute;
-    right: 5px;
-    top: 5px;
+    right: 15px;
+    top: 15px;
 }
 
-.tag-panel .readonly {
-    .react-select__indicators {
-        display: none;
-    }
-
-    .react-select__placeholder {
-        display: none;
-    }
-
-    .react-select__input-container {
-        display: none;
-    }
+legend svg {
+    transition: transform 300ms cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 
-td.tag-panel .react-select {
-    width: 100%
-}
-
-.react-select {
-    font-family: var(--font-family-alt);
-    font-weight: normal;
-
-    &.readonly {
-
-        .react-select__control {
-            background-color: transparent;
-        }
-        .react-select__value-container {
-            padding: 2px 9px;
-        }
-    }
-
-    .react-select__control,
-    .react-select__menu {
-        background-color: var(--bs-body-bg);
-        color: var(--bs-body-color);
-    }
-
-    .react-select__value-container {
-        gap: 8px;
-    }
-
-    .react-select__single-value {
-        color: var(--bs-body-color);
-    }
-
-    .react-select__input-container {
-        color: var(--bs-body-color);
-    }
-
-    .react-select__option--is-focused {
-        background-color: var(--hover);
-    }
-
-    .react-select__option--is-selected {
-        background-color: rgba(var(--bs-primary-rgb), 1);
-    }
-
-    .react-select__control--is-focused {
-        border-color: #86b7fe;
-        outline: 0;
-        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-    }
-
-    .react-select__multi-value {
-        @extend .badge;
-        @extend .rounded-pill;
-        @extend .bg-primary;
-        display: flex;
-        align-items: center;
-        margin: 0;
-    }
-
-    .react-select__multi-value__label {
-        color: #FFF;
-        font-family: var(--bs-body-font-family);
-        padding: 0;
-        font-size: 100%;
-        overflow: unset;
-    }
-
-    .react-select__multi-value__remove {
-        padding: 0;
-        margin-left: 4px;
-        background-color: #FFF;
-        border-radius: 800px;
-        height: 12px;
-        width: 12px;
-        ;
-
-        svg {
-            fill: rgba(var(--bs-primary-rgb), 1) !important;
-            stroke: rgba(var(--bs-primary-rgb), 1) !important;
-        }
-
-    }
-
+legend.open svg {
+    transform: rotate(-180deg);
 }
 
 @import 'responsive';
