@@ -2,7 +2,7 @@
 import { getBalanceString, numberClassName } from "helpers";
 
 import { AccountRowProps } from "./AccountRow";
-import { useClickAway } from "hooks";
+import { useClickAway } from "@andrewmclachlan/mooapp";
 import { AccountType } from "models";
 import { useUpdateBalance } from "services";
 import classNames from "classnames";
