@@ -1,19 +1,18 @@
 import "./FilterPanel.scss";
 
-import React, { useEffect, useState } from "react";
-import { useDispatch, } from "react-redux";
-import { FormRow as Row, TagSelector } from "components";
-import { TransactionsSlice } from "store/Transactions";
-import { Button, Col, Collapse, Form } from "react-bootstrap";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PeriodSelector } from "components/PeriodSelector";
-import { Period } from "helpers/dateFns";
-import { Input } from "components/AccountList/Input";
 import { useLocalStorage } from "@andrewmclachlan/mooapp";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classnames from "classnames";
+import { useEffect, useState } from "react";
+import { Col, Collapse, Form } from "react-bootstrap";
+import { useDispatch, } from "react-redux";
 
+import { FormRow as Row, TagSelector } from "components";
+import { Input } from "components/AccountList/Input";
+import { PeriodSelector } from "components";
+import { TransactionsSlice } from "store/Transactions";
 
-
+import { Period } from "helpers/dateFns";
 
 export const FilterPanel: React.FC<FilterPanelProps> = () => {
 
@@ -38,9 +37,9 @@ export const FilterPanel: React.FC<FilterPanelProps> = () => {
     return (
         <fieldset className="filter-panel box">
             <legend className={classnames("clickable", open && "open")} onClick={() => setOpen(!open)}><FontAwesomeIcon icon="chevron-down" size="xs" />Filters</legend>
-            <div className="control-panel"><FontAwesomeIcon className="clickable" title="Clear filters" icon="filter-circle-xmark" onClick={clear} size="lg" /></div>
+            <div className="control-panel"><FontAwesomeIcon className="clickable" title="Clear filters" icon="filter-circle-xmark" onClick={clear} size="lg" aria-controls="filter-panel-collapse" /></div>
             <Collapse in={open}>
-                <div>
+                <div id="filter-panel-collapse">
                     <Row>
                         <Col className="description">
                             <Form.Label htmlFor="filter-desc">Description</Form.Label>

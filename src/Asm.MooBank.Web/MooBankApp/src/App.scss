@@ -68,8 +68,9 @@ label {
 
     svg {
         position: absolute;
-        right: 1rem;
+        right: 0.6rem;
         top: calc(1rem - 7px);
+        fill: var(--bs-body-color);
     }
 }
 
