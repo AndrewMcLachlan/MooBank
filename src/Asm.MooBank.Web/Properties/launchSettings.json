@@ -1,27 +1,13 @@
 {
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iis": {
-      "applicationUrl": "https://bankplus-dev.mclachlan.family",
-      "sslPort": 0
-    },
-    "iisExpress": {
-      "applicationUrl": "http://localhost:51579",
-      "sslPort": 44356
-    }
-  },
   "profiles": {
     "IIS Express": {
       "commandName": "IISExpress",
-      "launchBrowser": false,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "Asm.MooBank.Web": {
       "commandName": "Project",
-      "launchBrowser": false,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
@@ -29,11 +15,32 @@
     },
     "IIS": {
       "commandName": "IIS",
-      "commandLineArgs": ".\\bin\\debug\\netcoreapp2.2\\Asm.MooBank.Web.dll",
+      "commandLineArgs": ".\\bin\\debug\\net7.0\\Asm.MooBank.Web.dll",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "ancmHostingModel": "InProcess"
+    },
+    "WSL": {
+      "commandName": "WSL2",
+      "launchUrl": "https://localhost:44356",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "https://localhost:44356;http://localhost:51579"
+      },
+      "distributionName": ""
+    }
+  },
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "https://moobank-dev.mclachlan.family",
+      "sslPort": 443
+    },
+    "iisExpress": {
+      "applicationUrl": "http://localhost:51579",
+      "sslPort": 44356
     }
   }
 }
