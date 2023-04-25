@@ -1,7 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Asm.MooBank.Domain.Entities.TransactionTags;
-
-namespace Asm.MooBank.Models;
+﻿namespace Asm.MooBank.Models;
 
 public partial record TransactionTag
 {
@@ -64,6 +61,7 @@ public static class IEnumerableTransactionTagExtensions
         return entities.Select(t => (TransactionTag)t);
     }
 
+
     public static async Task<IEnumerable<TransactionTag>> ToModelAsync(this Task<IEnumerable<Domain.Entities.TransactionTags.TransactionTag>> entityTask, CancellationToken cancellationToken = default)
     {
         return (await entityTask.WaitAsync(cancellationToken)).Select(t => (TransactionTag)t);
@@ -77,4 +75,17 @@ public static class IEnumerableTransactionTagExtensions
             Name = t.Name,
         });
     }
+
+    public static async Task<IEnumerable<TransactionTag>> ToHierarchyModelAsync(this Task<List<Domain.Entities.TransactionTags.TransactionTag>> entityTask, CancellationToken cancellationToken = default)
+    {
+        return (await entityTask.WaitAsync(cancellationToken)).Select(t => t.ToHierarchyModel());
+    }
+
+    public static TransactionTag ToHierarchyModel(this Domain.Entities.TransactionTags.TransactionTag entity) =>
+        new()
+        {
+            Id = entity.TransactionTagId,
+            Name = entity.Name,
+            Tags = entity.Tags?.Select(t => t.ToHierarchyModel()) ?? Enumerable.Empty<TransactionTag>(),
+        };
 }

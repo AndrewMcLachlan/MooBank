@@ -8,6 +8,8 @@ interface TransactionTagVariables {
 
 export const useTags = () => useApiGet<Models.TransactionTag[]>(["tags"], "api/transaction/tags");
 
+export const useTagsHierarchy = () => useApiGet<Models.TransactionTagHierarchy>(["tags-hierarchy"], "api/transaction/tags/hierarchy");
+
 export const useTag = (id: number) => useApiGet<Models.TransactionTag>(["tags", id], `api/transaction/tags/${id}`);
 
 export const useCreateTag = () => {

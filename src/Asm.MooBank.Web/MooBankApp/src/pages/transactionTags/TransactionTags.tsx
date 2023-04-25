@@ -12,6 +12,7 @@ import { useCreateTag, useTags } from "services";
 import { Page } from "layouts";
 import { getNumberOfPages } from "helpers/paging";
 import { sortDirection } from "store/state";
+import { TagsHeader } from "./TagsHeader";
 
 export const TransactionTags: React.FC = () => {
 
@@ -19,7 +20,7 @@ export const TransactionTags: React.FC = () => {
 
     return (
         <Page title="Tags">
-            <Page.Header title="Transaction Tags" breadcrumbs={[["Transaction Tags", "/settings"]]} />
+            <TagsHeader />
             <Page.Content>
                 <Table striped bordered={false} borderless className="transaction-tags">
                     <thead>

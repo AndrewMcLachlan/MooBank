@@ -7,6 +7,7 @@ export * from "./PagedResult";
 export * from "./Transaction";
 export * from "./Transactions";
 export * from "./TransactionTag";
+export * from "./TransactionTagHierarchy";
 export * from "./TransactionTagRule";
 export * from "./TransactionTagRules";
 export * from "./VirtualAccount";

@@ -1,18 +1,25 @@
-﻿namespace Asm.MooBank.Web.Controllers
+﻿using Asm.Cqrs.Commands;
+using Asm.Cqrs.Queries;
+using Asm.MooBank.Models.Queries.TransactionTags;
+
+namespace Asm.MooBank.Web.Controllers
 {
     [Route("api/transaction/tags")]
     [ApiController]
-    public class TransactionTagController : ControllerBase
+    public class TransactionTagController : CommandQueryController
     {
         private readonly ITransactionTagService _tagService;
 
-        public TransactionTagController(ITransactionTagService categoryService)
+        public TransactionTagController(IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher, ITransactionTagService categoryService) : base(queryDispatcher, commandDispatcher)
         {
             _tagService = categoryService;
         }
 
         [HttpGet]
         public Task<IEnumerable<TransactionTag>> Get(CancellationToken cancellationToken = default) => _tagService.GetAll(cancellationToken);
+
+        [HttpGet("hierarchy")]
+        public Task<TransactionTagHierarchy> GetHierarchy(CancellationToken cancellationToken = default) => QueryDispatcher.Dispatch(new GetTransactionTagsHierarchy(), cancellationToken);
 
         [HttpGet("{id}")]
         public async Task<TransactionTag> Get(int id, CancellationToken cancellationToken = default)

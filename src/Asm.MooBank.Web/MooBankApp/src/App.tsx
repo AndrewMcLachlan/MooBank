@@ -18,7 +18,7 @@ const App: React.FC = () => {
             <Layout.Header AppName="MooBank" Menu={[
                 <Link to="/accounts">Manage Accounts</Link>,
                 <Link to="/account-groups">Account Groups</Link>,
-                <Link to="/settings">Settings</Link>
+                <Link to="/settings/tags">Tags</Link>
             ]} />
             <Layout.Article>
                 <Routes>
@@ -41,6 +41,7 @@ const App: React.FC = () => {
                     </Route>
                     <Route path="/settings" element={<Navigate to="/settings/tags" replace />} />
                     <Route path="/settings/tags" element={<Pages.TransactionTags />} />
+                    <Route path="/settings/tags/visualiser" element={<Pages.Visualiser />} />
                     <Route path="/account-groups" element={<Pages.ManageAccountGroups />} />
                     <Route path="/account-groups/:id/manage" element={<Pages.ManageAccountGroup />} />
                     <Route path="/account-groups/create" element={<Pages.CreateAccountGroup />} />
