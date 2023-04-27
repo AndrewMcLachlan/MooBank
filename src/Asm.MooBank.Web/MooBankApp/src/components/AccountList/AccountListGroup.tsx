@@ -12,7 +12,7 @@ export interface AccountListGroupProps {
 }
 
 export const AccountListGroup: React.FC<AccountListGroupProps> = ({ accountGroup, isLoading }) => (
-    <section>
+    <section hidden={accountGroup.accounts.length > 0}>
         <h2>{accountGroup?.name}</h2>
         <Table className="accounts" hover>
             <thead>
