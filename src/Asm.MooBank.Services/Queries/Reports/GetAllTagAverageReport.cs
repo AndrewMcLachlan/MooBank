@@ -23,7 +23,6 @@ internal class GetAllTagAverageReport : IQueryHandler<Models.Queries.Reports.Get
     {
         _securityRepository.AssertAccountPermission(request.AccountId);
 
-        var transactionTypeFilter = request.ReportType.ToTransactionFilter();
 
         var relationships = await _tagRelationships.Include(t => t.TransactionTag).ThenInclude(t => t.Tags).Include(t => t.ParentTag).ThenInclude(t => t.Tags).Where(tr => !tr.TransactionTag.Deleted).ToListAsync(cancellationToken);
 
