@@ -1,5 +1,6 @@
 ﻿using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.TransactionTagHierarchies;
+using Asm.MooBank.Models.Queries.Reports;
 using Asm.MooBank.Models.Reports;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,10 +28,7 @@ internal class GetAllTagAverageReport : IQueryHandler<Models.Queries.Reports.Get
         var relationships = await _tagRelationships.Include(t => t.TransactionTag).ThenInclude(t => t.Tags).Include(t => t.ParentTag).ThenInclude(t => t.Tags).Where(tr => !tr.TransactionTag.Deleted).ToListAsync(cancellationToken);
 
 
-        var start = request.Start.ToStartOfDay();
-        var end = request.End.ToEndOfDay();
-
-        var transactions = await _transactions.Include(t => t.TransactionTags).Where(t => !t.ExcludeFromReporting && t.TransactionTime >= start && t.TransactionTime <= end).ToListAsync(cancellationToken);
+        var transactions = await _transactions.Include(t => t.TransactionTags).Where(request).ToListAsync(cancellationToken);
 
         var total = transactions.Sum(t => t.Amount);
         decimal months = Math.Max(transactions.Min(t => t.TransactionTime).DifferenceInMonths(transactions.Max(t => t.TransactionTime)), 1);

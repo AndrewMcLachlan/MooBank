@@ -1,4 +1,5 @@
 ﻿using Asm.MooBank.Domain.Entities.Transactions;
+using Asm.MooBank.Models.Queries.Reports;
 using Asm.MooBank.Models.Reports;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,13 +20,11 @@ internal class GetByTagReport : IQueryHandler<Models.Queries.Reports.GetByTagRep
     {
         _securityRepository.AssertAccountPermission(request.AccountId);
 
-        var transactionTypeFilter = request.ReportType.ToTransactionFilterExpression();
-
 
         var start = request.Start.ToStartOfDay();
         var end = request.End.ToEndOfDay();
 
-        var transactions = await _transactions.Include(t => t.TransactionTags).Where(t => !t.ExcludeFromReporting && t.TransactionTime >= start && t.TransactionTime <= end).Where(transactionTypeFilter).ToListAsync(cancellationToken);
+        var transactions = await _transactions.Include(t => t.TransactionTags).Where(request).ToListAsync(cancellationToken);
 
         var tagValuesInterim = transactions
             .GroupBy(t => t.TransactionTags)
@@ -46,7 +45,7 @@ internal class GetByTagReport : IQueryHandler<Models.Queries.Reports.GetByTagRep
 
         if (request.TagId == null)
         {
-            var tagLessAmount = await _transactions.Where(t => !t.ExcludeFromReporting && t.TransactionTime >= start && t.TransactionTime <= end && !t.TransactionTags.Any()).Where(transactionTypeFilter).SumAsync(t => t.Amount, cancellationToken);
+            var tagLessAmount = await _transactions.Where(request).Where(t => !t.TransactionTags.Any()).SumAsync(t => t.Amount, cancellationToken);
             tagValues.Add(new TagValue
             {
                 TagName = "Untagged",

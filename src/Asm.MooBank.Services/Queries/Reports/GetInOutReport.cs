@@ -1,5 +1,5 @@
-﻿using Asm.Cqrs.Queries;
-using Asm.MooBank.Domain.Entities.Transactions;
+﻿using Asm.MooBank.Domain.Entities.Transactions;
+using Asm.MooBank.Models.Queries.Reports;
 using Asm.MooBank.Models.Reports;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,7 +20,7 @@ internal class GetInOutReport : IQueryHandler<Models.Queries.Reports.GetInOutRep
     {
         _securityRepository.AssertAccountPermission(request.AccountId);
 
-        var results = await _transactions.Where(t => !t.ExcludeFromReporting && t.TransactionTime >= request.Start.ToStartOfDay() && t.TransactionTime <= request.End.ToEndOfDay())
+        var results = await _transactions.Where(request)
             .GroupBy(t => t.TransactionType)
             .Select(g => new
             {

@@ -1,6 +1,7 @@
 ﻿using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.TransactionTagHierarchies;
 using Asm.MooBank.Domain.Entities.TransactionTags;
+using Asm.MooBank.Models.Queries.Reports;
 using Asm.MooBank.Models.Reports;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,7 +26,6 @@ internal class GetBreakdownReport : IQueryHandler<Models.Queries.Reports.GetBrea
     {
         _securityRepository.AssertAccountPermission(request.AccountId);
 
-        var transactionTypeFilter = request.ReportType.ToTransactionFilterExpression();
 
         IEnumerable<TransactionTag> tags;
         List<TransactionTag> topTags;
@@ -50,7 +50,7 @@ internal class GetBreakdownReport : IQueryHandler<Models.Queries.Reports.GetBrea
         var start = request.Start.ToStartOfDay();
         var end = request.End.ToEndOfDay();
 
-        var transactions = await _transactions.Include(t => t.TransactionTags).ThenInclude(t => t.Tags).Where(t => !t.ExcludeFromReporting && t.TransactionTime >= start && t.TransactionTime <= end && t.TransactionTags.Any(tt => tags.Contains(tt))).Where(transactionTypeFilter).ToListAsync(cancellationToken);
+        var transactions = await _transactions.Include(t => t.TransactionTags).ThenInclude(t => t.Tags).Where(request).Where(t => t.TransactionTags.Any(tt => tags.Contains(tt))).ToListAsync(cancellationToken);
 
         var tagValues = transactions
             .GroupBy(t => topTags.FirstOrDefault(tag => t.TransactionTags.Contains(tag)) ?? lowerTags.Where(tag => t.TransactionTags.Contains(tag.TransactionTag)).Select(tag => tag.ParentTag).First())
@@ -64,7 +64,7 @@ internal class GetBreakdownReport : IQueryHandler<Models.Queries.Reports.GetBrea
 
         if (request.TagId == null)
         {
-            var tagLessAmount = await _transactions.Where(t => !t.ExcludeFromReporting && t.TransactionTime >= start && t.TransactionTime <= end && !t.TransactionTags.Any()).Where(transactionTypeFilter).SumAsync(t => t.Amount, cancellationToken);
+            var tagLessAmount = await _transactions.Where(request).SumAsync(t => t.Amount, cancellationToken);
             tagValues.Add(new TagValue {
                 TagName = "Untagged",
                 GrossAmount = Math.Abs(tagLessAmount),

@@ -1,4 +1,5 @@
 ﻿using Asm.MooBank.Domain.Entities.Transactions;
+using Asm.MooBank.Models.Queries.Reports;
 using Asm.MooBank.Models.Reports;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,11 +20,7 @@ internal class GetInOutTrendReport : IQueryHandler<Models.Queries.Reports.GetInO
     {
         _securityRepository.AssertAccountPermission(request.AccountId);
 
-        var groupedQuery = await (
-            from t in _transactions
-            where !t.ExcludeFromReporting && t.TransactionTime >= request.Start.ToStartOfDay() && t.TransactionTime <= request.End.ToEndOfDay()
-            group t by t.TransactionType
-        ).ToListAsync(cancellationToken);
+        var groupedQuery = await _transactions.Where(request).GroupBy(t => t.TransactionType).ToListAsync(cancellationToken);
 
         var income = GetTrendPoints(groupedQuery.Where(g => g.Key.IsCredit()).SelectMany(g => g.AsQueryable()));
         var expenses = GetTrendPoints(groupedQuery.Where(g => g.Key.IsDebit()).SelectMany(g => g.AsQueryable()));
