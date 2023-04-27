@@ -27,7 +27,8 @@ internal class GetBreakdownReport : IQueryHandler<Models.Queries.Reports.GetBrea
         _securityRepository.AssertAccountPermission(request.AccountId);
 
 
-        IEnumerable<TransactionTag> tags;
+        TransactionTag? rootTag = null;
+        IList<TransactionTag> tags;
         List<TransactionTag> topTags;
         IEnumerable<TransactionTagRelationship> lowerTags;
 
@@ -39,13 +40,17 @@ internal class GetBreakdownReport : IQueryHandler<Models.Queries.Reports.GetBrea
         }
         else
         {
+            rootTag = _tags.Include(t => t.Tags).Single(t => t.TransactionTagId == request.TagId);
             topTags = await _tags.Include(t => t.Tags).Where(t => !t.Deleted && t.TaggedTo.Any(t2 => t2.TransactionTagId == request.TagId)).ToListAsync(cancellationToken);
-            topTags.Add(_tags.Include(t => t.Tags).Single(t => t.TransactionTagId == request.TagId));
             lowerTags = await _tagRelationships.Include(t => t.TransactionTag).ThenInclude(t => t.Tags).Include(t => t.ParentTag).ThenInclude(t => t.Tags).Where(tr => !tr.TransactionTag.Deleted && topTags.Contains(tr.ParentTag)).ToListAsync(cancellationToken);
         }
 
 
-        tags = topTags.Union(lowerTags.Select(tr => tr.TransactionTag), new TransactionTagEqualityComparer());
+        tags = topTags.Union(lowerTags.Select(tr => tr.TransactionTag), new TransactionTagEqualityComparer()).ToList();
+        if (rootTag != null)
+        {
+            tags.Add(rootTag);
+        }
 
         var start = request.Start.ToStartOfDay();
         var end = request.End.ToEndOfDay();
@@ -53,7 +58,7 @@ internal class GetBreakdownReport : IQueryHandler<Models.Queries.Reports.GetBrea
         var transactions = await _transactions.Include(t => t.TransactionTags).ThenInclude(t => t.Tags).Where(request).Where(t => t.TransactionTags.Any(tt => tags.Contains(tt))).ToListAsync(cancellationToken);
 
         var tagValues = transactions
-            .GroupBy(t => topTags.FirstOrDefault(tag => t.TransactionTags.Contains(tag)) ?? lowerTags.Where(tag => t.TransactionTags.Contains(tag.TransactionTag)).Select(tag => tag.ParentTag).First())
+            .GroupBy(t => rootTag != null && t.TransactionTags.Contains(rootTag) ? rootTag : (topTags.FirstOrDefault(tag => t.TransactionTags.Contains(tag)) ?? lowerTags.Where(tag => t.TransactionTags.Contains(tag.TransactionTag)).Select(tag => tag.ParentTag).First()))
             .Select(g => new TagValue
             {
                 TagId = g.Key.TransactionTagId,
