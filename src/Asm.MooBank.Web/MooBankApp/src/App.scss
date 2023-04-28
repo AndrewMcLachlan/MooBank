@@ -70,7 +70,11 @@ label {
         position: absolute;
         right: 0.6rem;
         top: calc(1rem - 7px);
-        fill: var(--bs-body-color);
+        fill: hsl(0, 0%, 80%);
+    }
+
+    input:focus + svg {
+        fill: hsl(0, 0%, 40%);
     }
 }
 
