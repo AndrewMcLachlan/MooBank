@@ -1,7 +1,9 @@
 import * as Models from "models";
-import { useApiGet, useApiPost, useApiDelete, useApiDatalessPut, useApiDatalessPost } from "@andrewmclachlan/mooapp";
-import { useQueryClient } from "react-query";
+import { useApiGet, useApiPost, useApiDelete, useApiDatalessPut, useApiDatalessPost, useApiPatch, useHttpClient } from "@andrewmclachlan/mooapp";
+import { UseMutationOptions, useMutation, useQueryClient } from "react-query";
 import { TransactionTag } from "models";
+import { REFUSED } from "dns";
+import { AxiosResponse } from "axios";
 
 const transactionRulesKey = "transactionrules";
 
@@ -63,6 +65,32 @@ export const useCreateRule = () => {
         },
         onSuccess: () => {
             //queryClient.invalidateQueries([transactionRulesKey]);
+        }
+    });
+}
+
+export const useUpdateRule = () => {
+
+    const queryClient = useQueryClient();
+
+    return useApiPatch<Models.TransactionTagRule, { accountId: string, id: number }, Models.TransactionTagRule>((variables) => `api/accounts/${variables.accountId}/transaction/tag/rules/${variables.id}`, {
+
+        onMutate: ([variables, data]) => {
+            const allRules = queryClient.getQueryData<Models.TransactionTagRules>([transactionRulesKey, variables.accountId]);
+            if (!allRules) {
+                console.warn("Query Cache is missing Transaction Rules");
+                return;
+            }
+
+            var ruleIndex = allRules.rules.findIndex(r => r.id === variables.id);
+
+            allRules.rules.splice(ruleIndex, 1, data);
+
+            allRules.rules = allRules.rules.sort((t1, t2) => t1.contains.localeCompare(t2.contains));
+            queryClient.setQueryData<Models.TransactionTagRules>([transactionRulesKey, variables.accountId], allRules);
+        },
+        onError: (_error, [variables, _data]) => {
+            queryClient.invalidateQueries([transactionRulesKey, variables.accountId]);
         }
     });
 }

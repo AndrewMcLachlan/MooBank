@@ -11,6 +11,8 @@ public partial class TransactionTagRule
     }
     public int TransactionTagRuleId { get; set; }
 
+    public string? Description { get; set; }
+
     public Guid AccountId { get; set; }
 
     public string Contains { get; set; }

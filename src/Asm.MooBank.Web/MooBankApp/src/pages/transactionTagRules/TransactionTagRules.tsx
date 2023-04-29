@@ -20,7 +20,7 @@ export const TransactionTagRules: React.FC = () => {
     const rulesQuery = useRules(accountId!);
     const { data } = rulesQuery;
 
-    const { newRule, fullTagsList, addTag, createTag, removeTag, nameChange, createRule, runRules, keyUp } = useComponentState(accountId!);
+    const { newRule, fullTagsList, addTag, createTag, removeTag, nameChange, descriptionChange, createRule, runRules, keyUp } = useComponentState(accountId!);
 
     const account = useAccount(accountId!);
 
@@ -35,7 +35,8 @@ export const TransactionTagRules: React.FC = () => {
                     <thead>
                         <tr>
                             <th className="column-20">When a transaction contains</th>
-                            <th>Apply tag(s)</th>
+                            <th className="column-30">Apply tag(s)</th>
+                            <th className="column-35">Description</th>
                             <th className="column-5"></th>
                         </tr>
                     </thead>
@@ -43,6 +44,7 @@ export const TransactionTagRules: React.FC = () => {
                         <tr>
                             <td><input type="text" className="form-control" placeholder="Description contains..." value={newRule.contains} onChange={nameChange} /></td>
                             <TransactionTagPanel as="td" selectedItems={newRule.tags} items={fullTagsList} onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} onKeyUp={keyUp} />
+                            <td><input type="text" className="form-control" placeholder="Notes..." value={newRule.contains} onChange={descriptionChange} /></td>
                             <td className="row-action"><span onClick={createRule}><ClickableIcon icon="check-circle" title="Save" size="xl" /></span></td>
                         </tr>
                         {data?.rules && data.rules.map((r) => <TransactionTagRuleRow key={r.id} accountId={accountId!} rule={r} />)}
@@ -75,6 +77,10 @@ const useComponentState = (accountId: string) => {
 
     const nameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setNewRule({ ...newRule, contains: e.currentTarget.value });
+    }
+
+    const descriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setNewRule({ ...newRule, description: e.currentTarget.value });
     }
 
     const createTag = (name: string) => {
@@ -117,6 +123,7 @@ const useComponentState = (accountId: string) => {
         removeTag,
 
         nameChange,
+        descriptionChange,
         createRule,
         keyUp,
 

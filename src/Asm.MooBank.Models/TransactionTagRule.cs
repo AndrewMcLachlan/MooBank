@@ -2,9 +2,11 @@
 
 public partial record TransactionTagRule
 {
-    public int Id { get; set; }
+    public required int Id { get; set; }
 
-    public string Contains { get; set; }
+    public required string Contains { get; set; }
 
-    public IEnumerable<TransactionTag> Tags { get; set; }
+    public string? Description { get; set; }
+
+    public required IEnumerable<TransactionTag> Tags { get; set; }
 }

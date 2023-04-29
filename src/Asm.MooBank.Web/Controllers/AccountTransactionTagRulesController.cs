@@ -1,16 +1,20 @@
 ﻿using System.Net;
+using Asm.Cqrs.Commands;
+using Asm.Cqrs.Queries;
+using Asm.MooBank.Models.Commands.AccountGroup;
+using Asm.MooBank.Models.Commands.TransactionTagRules;
 
 namespace Asm.MooBank.Web.Controllers
 {
     [Route("api/accounts/{accountId}/transaction/tag/rules")]
     [ApiController]
     [Authorize]
-    public class AccountTransactionTagRulesController : ControllerBase
+    public class AccountTransactionTagRulesController : CommandQueryController
     {
         private IAccountService AccountService { get; }
         private ITransactionTagRuleService TransactionTagRuleService { get; }
 
-        public AccountTransactionTagRulesController(ITransactionTagRuleService transactionTagRuleService, IAccountService accountService)
+        public AccountTransactionTagRulesController(IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher, ITransactionTagRuleService transactionTagRuleService, IAccountService accountService) : base(queryDispatcher, commandDispatcher)
         {
             TransactionTagRuleService = transactionTagRuleService;
             AccountService = accountService;
@@ -37,6 +41,16 @@ namespace Asm.MooBank.Web.Controllers
             var newRule = await TransactionTagRuleService.Create(accountId, rule.Contains, rule.Tags);
 
             return Created($"api/accounts/{accountId}/transaction/tag/rule/{newRule.Id}", newRule);
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<ActionResult<TransactionTagRule>> Update(Guid accountId, int id, [FromBody]TransactionTagRule rule)
+        {
+            if (rule.Id != id) return BadRequest();
+
+            var updateRule = new UpdateRule(accountId, id, rule);
+
+            return Ok(await CommandDispatcher.Dispatch(updateRule));
         }
 
         [HttpDelete("{id}")]

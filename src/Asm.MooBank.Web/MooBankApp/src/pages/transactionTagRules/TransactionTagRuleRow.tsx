@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 
 import { TransactionTagRule, TransactionTag } from "models";
-import { ClickableIcon } from "@andrewmclachlan/mooapp";
+import { ClickableIcon, EditColumn, EditColumnProps, ValueProps } from "@andrewmclachlan/mooapp";
 import { TransactionTagPanel } from "components";
 import { useCreateTag, useTags } from "services/TransactionTagService";
-import { useAddTransactionTagRuleTag, useDeleteRule, useRemoveTransactionTagRuleTag } from "services";
+import { useAddTransactionTagRuleTag, useDeleteRule, useRemoveTransactionTagRuleTag, useUpdateRule } from "services";
 
 export const TransactionTagRuleRow: React.FC<TransactionTagRuleRowProps> = (props) => {
 
@@ -21,8 +21,9 @@ export const TransactionTagRuleRow: React.FC<TransactionTagRuleRowProps> = (prop
 
     return (
         <tr>
-            <td>{props.rule.contains}</td>
+            <EditColumn value={props.rule.contains} onChange={(value) => transactionRow.updateRule({...props.rule, contains: value })} />
             <TransactionTagPanel as="td" selectedItems={transactionRow.tags} items={tagsList}  onAdd={transactionRow.addTag} onRemove={transactionRow.removeTag} onCreate={transactionRow.createTag} allowCreate={true} />
+            <EditColumn value={props.rule.description} onChange={(value) => transactionRow.updateRule({...props.rule, description: value })} />
             <td className="row-action"><span onClick={transactionRow.deleteRule}><ClickableIcon icon="trash-alt" title="Delete" /></span></td>
         </tr>
     );
@@ -31,6 +32,8 @@ export const TransactionTagRuleRow: React.FC<TransactionTagRuleRowProps> = (prop
 TransactionTagRuleRow.displayName = "TransactionTagRuleRow";
 
 function useTransactionTagRuleRowEvents(props: TransactionTagRuleRowProps) {
+
+    const updateTransctionTagRule = useUpdateRule();
 
     const createTransactionTag = useCreateTag();
     const addTransactionTagRuleTag = useAddTransactionTagRuleTag();
@@ -72,11 +75,17 @@ function useTransactionTagRuleRowEvents(props: TransactionTagRuleRowProps) {
         setTags(tags.filter((t) => t.id !== tag.id));
     };
 
+    const updateRule = (rule: TransactionTagRule) => {
+        console.debug(rule);
+        updateTransctionTagRule.mutate([{accountId: props.accountId, id: props.rule.id, }, rule]);
+    }
+
     return {
         deleteRule,
         createTag,
         addTag,
         removeTag,
+        updateRule,
         tags,
     };
 }

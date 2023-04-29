@@ -1,6 +1,6 @@
 import "./FilterPanel.scss";
 
-import { useLocalStorage } from "@andrewmclachlan/mooapp";
+import { Input, useLocalStorage } from "@andrewmclachlan/mooapp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classnames from "classnames";
 import { useEffect, useState } from "react";
@@ -8,7 +8,6 @@ import { Col, Collapse, Form } from "react-bootstrap";
 import { useDispatch, } from "react-redux";
 
 import { FormRow as Row, TagSelector } from "components";
-import { Input } from "components/AccountList/Input";
 import { PeriodSelector } from "components";
 import { TransactionsSlice } from "store/Transactions";
 

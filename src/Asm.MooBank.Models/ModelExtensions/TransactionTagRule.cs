@@ -8,6 +8,7 @@ public partial record TransactionTagRule
         {
             Id = rule.TransactionTagRuleId,
             Contains = rule.Contains,
+            Description = rule.Description,
             Tags = rule.TransactionTags.Where(t => t != null && !t.Deleted).Select(t => (TransactionTag)t),
         };
     }
@@ -18,6 +19,7 @@ public partial record TransactionTagRule
         {
             TransactionTagRuleId = rule.Id,
             Contains = rule.Contains,
+            Description = rule.Description,
             TransactionTags = rule.Tags.Where(t=> t != null).Select(t => (Domain.Entities.TransactionTags.TransactionTag)t).ToList(),
         };
     }
