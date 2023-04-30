@@ -1,5 +1,6 @@
 ﻿using Asm.Cqrs.Commands;
 using Asm.Cqrs.Queries;
+using Asm.MooBank.Models.Commands.Transaction;
 using Asm.MooBank.Models.Queries.Transactions;
 using Microsoft.Identity.Client;
 
@@ -35,6 +36,12 @@ public class TransactionsController : CommandQueryController
         var result = await GetTransactions(accountId, pageSize, pageNumber, start, end, filter, tagId, sortField, sortDirection, true, cancellationToken);
 
         return new ActionResult<PagedResult<Transaction>>(result);
+    }
+
+    [HttpPatch("{id}")]
+    public async Task<Transaction> Add(Guid id, [FromBody]TransactionModel model, CancellationToken cancellationToken = default)
+    {
+        return await CommandDispatcher.Dispatch(new SetTransactionNotes(id, model.Notes), cancellationToken);
     }
 
     [HttpPut("{id}/tag/{tagId}")]

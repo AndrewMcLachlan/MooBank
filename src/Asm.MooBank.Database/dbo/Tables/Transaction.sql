@@ -7,6 +7,7 @@
     [Amount] DECIMAL(10, 2) NOT NULL,
     [Description] VARCHAR(255) NULL,
     [TransactionTime] DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
+    [Notes] NVARCHAR(512) NULL,
     [ExcludeFromReporting] BIT NOT NULL CONSTRAINT DF_Transaction_ExcludeFromReporting DEFAULT(0)
     CONSTRAINT [PK_Transaction] PRIMARY KEY CLUSTERED (TransactionId),
     CONSTRAINT [FK_Transaction_Account] FOREIGN KEY ([AccountId]) REFERENCES [Account]([AccountId]),

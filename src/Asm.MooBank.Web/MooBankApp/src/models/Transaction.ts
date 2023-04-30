@@ -17,5 +17,10 @@ export interface Transaction {
     transactionTime: string;
     transactionType: TransactionType;
     tags: TransactionTag[];
+    notes?: string;
     extraInfo: any;
+}
+
+export interface TransactionUpdate {
+    notes?: string;
 }

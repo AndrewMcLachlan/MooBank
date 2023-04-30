@@ -45,10 +45,14 @@ public class RunRulesService : BackgroundService
 
                 foreach (var transaction in transactions)
                 {
-                    var applicableTags = rules.Where(r => transaction.Description?.Contains(r.Contains, StringComparison.OrdinalIgnoreCase) ?? false).SelectMany(r => r.TransactionTags).Distinct();
+                    var applicableRules = rules.Where(r => transaction.Description?.Contains(r.Contains, StringComparison.OrdinalIgnoreCase) ?? false);
+                    var applicableTags = applicableRules.SelectMany(r => r.TransactionTags).Distinct();
 
                     transaction.TransactionTags.AddRange(applicableTags);
-                    //updatedTransactions.Add(await transactionRepository.AddTransactionTags(transaction.Id, applicableTags));
+                    if (String.IsNullOrEmpty(transaction.Notes))
+                    {
+                        transaction.Notes = String.Join(". ", applicableRules.Select(r => r.Description));
+                    }
                 }
 
                 await unitOfWork.SaveChangesAsync(cancellationToken);

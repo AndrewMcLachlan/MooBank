@@ -13,6 +13,7 @@ public partial record Transaction
             TransactionType = transaction.TransactionType,
             AccountId = transaction.AccountId,
             Description = transaction.Description,
+            Notes = transaction.Notes,
             Tags = transaction.TransactionTags.Where(t => !t.Deleted).ToSimpleModel(),
         };
     }
@@ -28,6 +29,7 @@ public partial record Transaction
             TransactionType = transaction.TransactionType,
             AccountId = transaction.AccountId,
             Description = transaction.Description,
+            Notes = transaction.Notes,
         };
     }
 }

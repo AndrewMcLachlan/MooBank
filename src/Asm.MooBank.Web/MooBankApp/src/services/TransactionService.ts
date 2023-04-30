@@ -2,17 +2,19 @@ import { useQueryClient } from "react-query";
 import { useSelector } from "react-redux";
 
 import * as Models from "models";
-import { TransactionTag } from "models";
+import { Transaction, TransactionTag } from "models";
 import { sortDirection, State, TransactionsFilter } from "store/state";
-import { useApiGet, useApiDelete, useApiDatalessPut } from "@andrewmclachlan/mooapp";
-import { debug } from "console";
+import { useApiGet, useApiDelete, useApiDatalessPut, useApiPatch } from "@andrewmclachlan/mooapp";
 
 const transactionKey = "transactions";
 
-interface TransactionTagVariables {
+interface TransactionVariables {
     accountId: string,
     transactionId: string,
-    tag: TransactionTag,
+}
+
+interface TransactionTagVariables extends TransactionVariables {
+     tag: TransactionTag,
 }
 
 export const useTransactions = (accountId: string, filter: TransactionsFilter, pageSize: number, pageNumber: number, sortField: string, sortDirection: sortDirection) => {
@@ -28,6 +30,28 @@ export const useTransactions = (accountId: string, filter: TransactionsFilter, p
     queryString = queryString.length > 0 && queryString[0] !== "?" ? `?${queryString}` : queryString;
 
     return useApiGet<Models.PagedResult<Models.Transaction>>([transactionKey, accountId, filter, pageSize, pageNumber, sortField, sortDirection], `api/accounts/${accountId}/transactions/${filter.filterTagged ? "untagged/" : ""}${pageSize}/${pageNumber}${queryString}`);
+}
+
+export const useUpdateTransactionNotes = () => {
+
+    const queryClient = useQueryClient();
+
+    const { currentPage, pageSize, filter, sortField, sortDirection } = useSelector((state: State) => state.transactions);
+
+    return useApiPatch<Transaction, TransactionVariables, Models.TransactionUpdate>((variables) => `api/accounts/${variables.accountId}/transactions/${variables.transactionId}`, {
+        onMutate: ([variables, data]) => {
+
+            let transactions = queryClient.getQueryData<Models.PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection]);
+            if (!transactions) return;
+
+            const transaction = transactions.results.find(tr => tr.id === variables.transactionId);
+            if (!transaction) return;
+
+            transaction.notes = data.notes;
+
+            queryClient.setQueryData<Models.PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection], transactions);
+        },
+    });
 }
 
 export const useAddTransactionTag = () => {

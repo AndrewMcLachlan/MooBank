@@ -1,0 +1,13 @@
+.transaction-details {
+    display: grid;
+    grid-template-columns: 100px max-content;
+    row-gap: 10px;
+
+    h4 {
+        font-weight: bold;
+    }
+
+    .value {
+        font-weight: bold;
+    }
+}

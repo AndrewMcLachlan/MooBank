@@ -19,9 +19,9 @@ internal class UpdateRuleHandler : ICommandHandler<UpdateRule, Models.Transactio
 
     public async Task<Models.TransactionTagRule> Handle(UpdateRule request, CancellationToken cancellationToken)
     {
-        _security.AssertAccountPermission(request.AccountId);
-
         var entity = await _transactionTagRuleRepository.Get(request.Rule.Id, cancellationToken);
+
+        _security.AssertAccountPermission(entity.AccountId);
 
         entity.Contains = request.Rule.Contains;
         entity.Description = request.Rule.Description;

@@ -2,79 +2,33 @@
 import format from "date-fns/format";
 import parseISO from "date-fns/parseISO";
 
-import { TransactionTagPanel } from "components";
-
-import { Transaction, TransactionTag } from "models";
-import { useAccount } from "components";
-import { useAddTransactionTag, useCreateTag, useRemoveTransactionTag, useTags } from "services";
+import { Transaction } from "models";
+import { TransactionDetails } from "./TransactionDetails";
+import { TransactionTransactionTagPanel } from "./TransactionTransactionTagPanel";
+import { useUpdateTransactionNotes } from "services";
 
 export const TransactionRow: React.FC<TransactionRowProps> = (props) => {
 
-    const transactionRow = useTransactionRowEvents(props);
+    const [showDetails, setShowDetails] = useState(false);
 
-    const fullTagsListQuery = useTags();
+    const updateNotes = useUpdateTransactionNotes();
 
-    const [tagsList, setTagsList] = useState<TransactionTag[]>([]);
-
-    useEffect(() => {
-        if (!fullTagsListQuery.data) return;
-        setTagsList(fullTagsListQuery.data.filter((t) => !transactionRow.tags.some((tt) => t.id === tt.id)));
-    }, [transactionRow.tags, fullTagsListQuery.data]);
+    const onSave = (notes: string) => {
+        updateNotes.mutate([{ accountId: props.transaction.accountId, transactionId: props.transaction.id }, { notes }]);
+        setShowDetails(false);
+    }
 
     return (
-        <tr>
-            <td>{format(parseISO(props.transaction.transactionTime), "yyyy-MM-dd")}</td>
-            <td>{props.transaction.description}</td>
-            <td>{props.transaction.amount.toLocaleString("en-AU", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-            <TransactionTagPanel as="td" selectedItems={transactionRow.tags} items={tagsList} onAdd={transactionRow.addTag} onRemove={transactionRow.removeTag} onCreate={transactionRow.createTag} allowCreate={true} />
-        </tr>
+        <>
+            <TransactionDetails transaction={props.transaction} show={showDetails} onHide={() => setShowDetails(false)} onSave={onSave} />
+            <tr className="clickable" onClick={() => setShowDetails(true)} title={props.transaction.notes}>
+                <td>{format(parseISO(props.transaction.transactionTime), "yyyy-MM-dd")}</td>
+                <td>{props.transaction.description}</td>
+                <td>{props.transaction.amount.toLocaleString("en-AU", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <TransactionTransactionTagPanel as="td" transaction={props.transaction} />
+            </tr>
+        </>
     );
-}
-
-export const useTransactionRowEvents = (props: TransactionRowProps) => {
-
-    const account = useAccount();
-
-    const [tags, setTags] = useState(props.transaction.tags);
-
-    const addTransactionTag = useAddTransactionTag();
-    const removeTransactionTag = useRemoveTransactionTag();
-    const createTransactionTag = useCreateTag();
-
-    useEffect(() => {
-        setTags(props.transaction.tags);
-    }, [props.transaction.tags]);
-
-    const createTag = (name: string) => {
-        createTransactionTag.mutate({ name }, {
-            onSuccess: (data) => {
-                addTransactionTag.mutate({ accountId: account.id, transactionId: props.transaction.id, tag: data });
-            }
-        });
-    }
-
-    const addTag = (tag: TransactionTag) => {
-
-        if (!tag.id) return;
-
-        addTransactionTag.mutate({ accountId: account.id, transactionId: props.transaction.id, tag });
-        setTags(tags.concat([tag]));
-    }
-
-    const removeTag = (tag: TransactionTag) => {
-
-        if (!tag.id) return;
-
-        removeTransactionTag.mutate({ accountId: account.id, transactionId: props.transaction.id, tag });
-        setTags(tags.filter((t) => t.id !== tag.id));
-    }
-
-    return {
-        createTag,
-        addTag,
-        removeTag,
-        tags,
-    };
 }
 
 export interface TransactionRowProps {

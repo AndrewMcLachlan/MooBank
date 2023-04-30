@@ -2,30 +2,17 @@
 import format from "date-fns/format";
 import parseISO from "date-fns/parseISO";
 
-import { TransactionTagPanel } from "components";
 import { TransactionRowProps } from "./TransactionRow";
-import { useTags } from "services";
-import { useTransactionRowEvents } from "./TransactionRow";
+import { TransactionTransactionTagPanel } from "./TransactionTransactionTagPanel";
 
 export const TransactionRowIng: React.FC<TransactionRowProps> = (props) => {
-
-    const transactionRow = useTransactionRowEvents(props);
-
-    const fullTagsListQuery = useTags();
-
-    const [tagsList, setTagsList] = useState([]);
-
-    useEffect(() => {
-        if (!fullTagsListQuery.data) return;
-        setTagsList(fullTagsListQuery.data.filter((t) => !transactionRow.tags.some((tt) => t.id === tt.id)));
-    }, [transactionRow.tags, fullTagsListQuery.data]);
 
     return (
         <tr>
             <td>{format(parseISO(props.transaction.transactionTime), "yyyy-MM-dd")}</td>
             <td>{props.transaction.description}</td>
             <td>{props.transaction.amount.toLocaleString("en-AU", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-            <TransactionTagPanel as="td" selectedItems={transactionRow.tags} items={tagsList} onAdd={transactionRow.addTag} onRemove={transactionRow.removeTag} onCreate={transactionRow.createTag} allowCreate={true} />
+            <TransactionTransactionTagPanel as="td" transaction={props.transaction} />
         </tr>
     );
 }
