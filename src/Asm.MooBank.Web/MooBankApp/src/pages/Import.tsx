@@ -39,7 +39,7 @@ export const Import: React.FC = () => {
 
     return (
         <Page title="Import Transactions">
-            <Page.Header title="Import Transactions" breadcrumbs={[[account.data.name, `/accounts/${id}`], ["Import", `/accounts/${id}/import`]]} />
+            <Page.Header title="Import Transactions" breadcrumbs={[[account.data.name, `/accounts/${id}`], ["Import", `/accounts/${id}/import`]]} goBack />
             <Page.Content>
                 <Upload onFilesAdded={filesAdded} accept="text/csv" />
                 <Button variant="primary" onClick={submitClick} disabled={!file}>Import</Button>
