@@ -31,7 +31,7 @@ export const compareTransactionTagArray = (left: TransactionTag[], right: Transa
         return true;
 }
 
-export const sort = (sortDirection: sortDirection) => (a: TransactionTag, b: TransactionTag) => {
+export const sortTags = (sortDirection: sortDirection) => (a: TransactionTag, b: TransactionTag) => {
 
     const retVal = sortDirection === "Ascending" ? 1 : -1;
     const aName = a.name.toUpperCase();

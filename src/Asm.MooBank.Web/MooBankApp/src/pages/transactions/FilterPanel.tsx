@@ -42,7 +42,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = () => {
                     <Row>
                         <Col className="description">
                             <Form.Label htmlFor="filter-desc">Description</Form.Label>
-                            <Input id="filter-desc" type="text" value={filterDescription} onChange={(e) => setFilterDescription(e.currentTarget.value)} placeholder="Contains..." clearable />
+                            <Form.Control id="filter-desc" type="search" value={filterDescription} onChange={(e) => setFilterDescription(e.currentTarget.value)} placeholder="Contains..." />
                         </Col>
                         <Col>
                             <Form.Label htmlFor="filter-desc">Tags</Form.Label>

@@ -1,31 +1,38 @@
 import "./TransactionTags.scss";
 
 import React, { useEffect, useState } from "react";
-import { Table } from "react-bootstrap";
+import { Col, Row, Table } from "react-bootstrap";
 
 import { TransactionTagRow } from "./TransactionTagRow";
 
 import { ClickableIcon } from "@andrewmclachlan/mooapp";
 import { Pagination, TransactionTagPanel } from "components";
-import { TransactionTag, sort } from "models";
+import { TransactionTag, sortTags } from "models";
 import { useCreateTag, useTags } from "services";
 import { Page } from "layouts";
 import { getNumberOfPages } from "helpers/paging";
 import { sortDirection } from "store/state";
 import { TagsHeader } from "./TagsHeader";
+import { changeSortDirection } from "helpers/sorting";
+import { SearchBox } from "components/SearchBox";
 
 export const TransactionTags: React.FC = () => {
 
-    const { newTag, pagedTags, tagsList, addTag, createTag, removeTag, nameChange, pageNumber, numberOfPages, pageChange, totalTags, sortDirection, changeSortDirection, keyUp } = useComponentState();
+    const { newTag, pagedTags, tagsList, addTag, createTag, removeTag, nameChange, pageNumber, numberOfPages, pageChange, totalTags, sortDirection, setSortDirection, keyUp, search, setSearch } = useComponentState();
 
     return (
         <Page title="Tags">
             <TagsHeader />
             <Page.Content>
+                <Row>
+                    <Col xl={6}>
+                        <SearchBox value={search} onChange={(v) => setSearch(v)} />
+                    </Col>
+                </Row>
                 <Table striped bordered={false} borderless className="transaction-tags">
                     <thead>
                         <tr>
-                            <th className={`column-15 sortable ${sortDirection.toLowerCase()}`} onClick={changeSortDirection}>Name</th>
+                            <th className={`column-15 sortable ${sortDirection.toLowerCase()}`} onClick={() => setSortDirection(changeSortDirection(sortDirection))}>Name</th>
                             <th>Tags</th>
                         </tr>
                     </thead>
@@ -62,24 +69,26 @@ const useComponentState = () => {
 
     const [newTag, setNewTag] = useState(blankTag);
     const [tagsList, setTagsList] = useState<TransactionTag[]>([]);
+    const [filteredTags, setFilteredTags] = useState<TransactionTag[]>([]);
     const [pagedTags, setPagedTags] = useState<TransactionTag[]>([]);
 
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(20);
 
     const [sortDirection, setSortDirection] = useState<sortDirection>("Ascending");
+    const [search, setSearch] = useState("");
 
-    const numberOfPages = getNumberOfPages(fullTagsList.length, pageSize);
-    const totalTags = fullTagsList.length;
+    const numberOfPages = getNumberOfPages(filteredTags.length, pageSize);
+    const totalTags = filteredTags.length;
     const pageChange = (_current: number, newPage: number) => setPageNumber(newPage);
 
     useEffect(() => {
-        setPagedTags(fullTagsList.sort(sort(sortDirection)).slice((pageNumber - 1) * pageSize, ((pageNumber - 1) * pageSize) + pageSize));
-    }, [fullTagsList, sortDirection, pageNumber]);
+        setFilteredTags(fullTagsList.filter(t => t.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())));
+    }, [fullTagsList, search]);
 
-    const changeSortDirection = () => {
-        setSortDirection(sortDirection === "Ascending" ? "Descending" : "Ascending");
-    }
+    useEffect(() => {
+        setPagedTags(filteredTags.sort(sortTags(sortDirection)).slice((pageNumber - 1) * pageSize, ((pageNumber - 1) * pageSize) + pageSize));
+    }, [filteredTags, sortDirection, pageNumber]);
 
     useEffect(() => {
         if (!fullTagsListQuery.data) return;
@@ -115,7 +124,7 @@ const useComponentState = () => {
         setNewTag(newTag);
     }
 
-    const keyUp: React.KeyboardEventHandler<HTMLTableCellElement> = (e) => { 
+    const keyUp: React.KeyboardEventHandler<HTMLTableCellElement> = (e) => {
         if (e.key === "Enter") {
             createTag();
         }
@@ -135,8 +144,9 @@ const useComponentState = () => {
 
         pagedTags,
         pageNumber, numberOfPages, pageChange, totalTags,
-        changeSortDirection,sortDirection,
+        sortDirection, setSortDirection,
 
         keyUp,
+        search, setSearch
     };
 }
