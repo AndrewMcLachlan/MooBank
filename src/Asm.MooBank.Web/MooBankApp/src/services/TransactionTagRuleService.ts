@@ -53,18 +53,15 @@ export const useCreateRule = () => {
     const queryClient = useQueryClient();
 
     return useApiPost<Models.TransactionTagRule, { accountId: string }, Models.TransactionTagRule>((variables) => `api/accounts/${variables.accountId}/transaction/tag/rules`, {
-        onMutate: ([variables, data]) => {
-            const allRules = queryClient.getQueryData<Models.TransactionTagRules>([transactionRulesKey, variables.accountId]);
+        onSuccess: (data, variables) => {
+            const allRules = queryClient.getQueryData<Models.TransactionTagRules>([transactionRulesKey, variables[0].accountId]);
             if (!allRules) {
                 console.warn("Query Cache is missing Transaction Rules");
                 return;
             }
             allRules.rules.push(data);
             allRules.rules = allRules.rules.sort((t1, t2) => t1.contains.localeCompare(t2.contains));
-            queryClient.setQueryData<Models.TransactionTagRules>([transactionRulesKey, variables.accountId], allRules);
-        },
-        onSuccess: () => {
-            //queryClient.invalidateQueries([transactionRulesKey]);
+            queryClient.setQueryData<Models.TransactionTagRules>([transactionRulesKey, variables[0].accountId], allRules);
         }
     });
 }
@@ -101,11 +98,11 @@ export const useDeleteRule = () => {
 
     return useApiDelete<{ accountId: string; ruleId: number }>((variables) => `api/accounts/${variables.accountId}/transaction/tag/rules/${variables.ruleId}`, {
         onSuccess: (_data, variables: { accountId: string; ruleId: number }) => {
-            let allTags = queryClient.getQueryData<Models.TransactionTagRule[]>([transactionRulesKey]);
-            if (!allTags) return;
-            allTags = allTags.filter(r => r.id !== (variables.ruleId));
-            allTags = allTags.sort((t1, t2) => t1.contains.localeCompare(t2.contains));
-            queryClient.setQueryData<Models.TransactionTagRule[]>([transactionRulesKey], allTags);
+            const allRules = queryClient.getQueryData<Models.TransactionTagRules>([transactionRulesKey, variables.accountId]);
+            if (!allRules) return;
+            allRules.rules = allRules.rules.filter(r => r.id !== (variables.ruleId));
+            allRules.rules = allRules.rules.sort((t1, t2) => t1.contains.localeCompare(t2.contains));
+            queryClient.setQueryData<Models.TransactionTagRules>([transactionRulesKey, variables.accountId], allRules);
         }
     });
 }

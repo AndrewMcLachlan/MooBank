@@ -36,21 +36,21 @@ namespace Asm.MooBank.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<TransactionTagRule>> Post(Guid accountId, [FromBody]TransactionTagRuleModel rule)
+        public async Task<ActionResult<TransactionTagRule>> Post(Guid accountId, [FromBody]TransactionTagRuleModel rule, CancellationToken cancellationToken = default)
         {
-            var newRule = await TransactionTagRuleService.Create(accountId, rule.Contains, rule.Tags);
+            var newRule = await TransactionTagRuleService.Create(accountId, rule.Contains, rule.Description, rule.Tags, cancellationToken);
 
             return Created($"api/accounts/{accountId}/transaction/tag/rule/{newRule.Id}", newRule);
         }
 
         [HttpPatch("{id}")]
-        public async Task<ActionResult<TransactionTagRule>> Update(Guid accountId, int id, [FromBody]TransactionTagRule rule)
+        public async Task<ActionResult<TransactionTagRule>> Update(Guid accountId, int id, [FromBody]TransactionTagRule rule, CancellationToken cancellationToken = default)
         {
             if (rule.Id != id) return BadRequest();
 
             var updateRule = new UpdateRule(accountId, id, rule);
 
-            return Ok(await CommandDispatcher.Dispatch(updateRule));
+            return Ok(await CommandDispatcher.Dispatch(updateRule, cancellationToken));
         }
 
         [HttpDelete("{id}")]

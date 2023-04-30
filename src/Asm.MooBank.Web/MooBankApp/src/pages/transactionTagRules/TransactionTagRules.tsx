@@ -44,7 +44,7 @@ export const TransactionTagRules: React.FC = () => {
                         <tr>
                             <td><input type="text" className="form-control" placeholder="Description contains..." value={newRule.contains} onChange={nameChange} /></td>
                             <TransactionTagPanel as="td" selectedItems={newRule.tags} items={fullTagsList} onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} onKeyUp={keyUp} />
-                            <td><input type="text" className="form-control" placeholder="Notes..." value={newRule.contains} onChange={descriptionChange} /></td>
+                            <td><input type="text" className="form-control" placeholder="Notes..." value={newRule.description} onChange={descriptionChange} /></td>
                             <td className="row-action"><span onClick={createRule}><ClickableIcon icon="check-circle" title="Save" size="xl" /></span></td>
                         </tr>
                         {data?.rules && data.rules.map((r) => <TransactionTagRuleRow key={r.id} accountId={accountId!} rule={r} />)}
@@ -59,7 +59,7 @@ TransactionTagRules.displayName = "TransactionTagRules";
 
 const useComponentState = (accountId: string) => {
 
-    const blankRule = { id: 0, contains: "", tags: [] } as TransactionTagRule;
+    const blankRule = { id: 0, contains: "", description: "", tags: [] } as TransactionTagRule;
 
     const fullTagsListQuery = useTags();
     const fullTagsList = fullTagsListQuery.data ?? [];
@@ -91,8 +91,6 @@ const useComponentState = (accountId: string) => {
 
         if (!tag.id) return;
 
-        //dispatch(actionCreators.addTransactionTag(props.transaction.id, tag.id));
-        //setTags(tags.concat([tag]));
         newRule.tags.push(tag);
         setNewRule(newRule);
     }

@@ -1,15 +1,15 @@
 ﻿using Asm.Domain;
 using Asm.MooBank.Models;
-using ITransactionTagRuleRepository = Asm.MooBank.Domain.Entities.Account.ITransactionTagRuleRepository;
 using ITransactionTagRepository = Asm.MooBank.Domain.Entities.TransactionTags.ITransactionTagRepository;
+using ITransactionTagRuleRepository = Asm.MooBank.Domain.Entities.Account.ITransactionTagRuleRepository;
 
 namespace Asm.MooBank.Services;
 
 public interface ITransactionTagRuleService
 {
-    Task<TransactionTagRule> Create(Guid accountId, string contains, IEnumerable<int> tagIds);
+    Task<TransactionTagRule> Create(Guid accountId, string contains, string? description, IEnumerable<int> tagIds, CancellationToken cancellationToken = default);
 
-    Task<TransactionTagRule> Create(Guid accountId, string contains, IEnumerable<TransactionTag> tagIds);
+    Task<TransactionTagRule> Create(Guid accountId, string contains, string? description, IEnumerable<TransactionTag> tagIds, CancellationToken cancellationToken = default);
 
     Task<TransactionTagRule> Get(Guid accountId, int id);
 
@@ -35,7 +35,7 @@ public class TransactionTagRuleService : ServiceBase, ITransactionTagRuleService
         _transactionTags = transactionTags;
     }
 
-    public async Task<TransactionTagRule> Create(Guid accountId, string contains, IEnumerable<int> tagIds)
+    public async Task<TransactionTagRule> Create(Guid accountId, string contains, string? description, IEnumerable<int> tagIds, CancellationToken cancellationToken = default)
     {
         _security.AssertAccountPermission(accountId);
 
@@ -43,17 +43,18 @@ public class TransactionTagRuleService : ServiceBase, ITransactionTagRuleService
         {
             AccountId = accountId,
             Contains = contains,
+            Description = description,
             TransactionTags = tagIds.Select(t => new Domain.Entities.TransactionTags.TransactionTag { TransactionTagId = t }).ToList(),
         };
 
         _transactionTagRuleRepository.Add(rule);
 
-        await UnitOfWork.SaveChangesAsync();
+        await UnitOfWork.SaveChangesAsync(cancellationToken);
 
         return rule;
     }
 
-    public async Task<Models.TransactionTagRule> Create(Guid accountId, string contains, IEnumerable<TransactionTag> tags)
+    public async Task<TransactionTagRule> Create(Guid accountId, string contains, string? description, IEnumerable<TransactionTag> tags, CancellationToken cancellationToken = default)
     {
         _security.AssertAccountPermission(accountId);
 
@@ -61,12 +62,13 @@ public class TransactionTagRuleService : ServiceBase, ITransactionTagRuleService
         {
             AccountId = accountId,
             Contains = contains,
+            Description = description,
             TransactionTags = (await _transactionTags.Get(tags.Select(t => t.Id))).ToList(),
         };
 
         _transactionTagRuleRepository.Add(rule);
 
-        await UnitOfWork.SaveChangesAsync();
+        await UnitOfWork.SaveChangesAsync(cancellationToken);
 
         return await Get(accountId, rule.TransactionTagRuleId);
     }
