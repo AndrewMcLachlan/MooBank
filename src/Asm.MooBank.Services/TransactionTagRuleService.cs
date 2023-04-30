@@ -1,5 +1,6 @@
 ﻿using Asm.Domain;
 using Asm.MooBank.Models;
+using Microsoft.Identity.Client;
 using ITransactionTagRepository = Asm.MooBank.Domain.Entities.TransactionTags.ITransactionTagRepository;
 using ITransactionTagRuleRepository = Asm.MooBank.Domain.Entities.Account.ITransactionTagRuleRepository;
 
@@ -15,7 +16,7 @@ public interface ITransactionTagRuleService
 
     Task<IEnumerable<TransactionTagRule>> Get(Guid accountId, CancellationToken cancellationToken = default);
 
-    Task Delete(Guid accountId, int id);
+    Task Delete(Guid accountId, int id, CancellationToken cancellationToken = default);
 
     Task<TransactionTagRule> AddTransactionTag(Guid accountId, int id, int tagId);
 
@@ -73,13 +74,13 @@ public class TransactionTagRuleService : ServiceBase, ITransactionTagRuleService
         return await Get(accountId, rule.TransactionTagRuleId);
     }
 
-    public async Task Delete(Guid accountId, int id)
+    public async Task Delete(Guid accountId, int id, CancellationToken cancellationToken = default)
     {
-        var rule = await GetEntity(accountId, id);
+        _security.AssertAccountPermission(accountId);
 
-        _transactionTagRuleRepository.Delete(rule);
+        await _transactionTagRuleRepository.Delete(accountId, id, cancellationToken);
 
-        await UnitOfWork.SaveChangesAsync();
+        await UnitOfWork.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<TransactionTagRule> Get(Guid accountId, int id) => await GetEntity(accountId, id);

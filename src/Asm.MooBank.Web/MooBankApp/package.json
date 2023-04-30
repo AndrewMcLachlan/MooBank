@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@andrewmclachlan/mooapp": "^1.0.630",
+    "@andrewmclachlan/mooapp": "^1.0.633",
     "@azure/msal-browser": "^2.30.0",
     "@azure/msal-react": "^1.4.9",
     "@fortawesome/fontawesome-svg-core": "^6.1.1",

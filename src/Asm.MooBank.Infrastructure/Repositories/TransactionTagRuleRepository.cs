@@ -9,6 +9,12 @@ public class TransactionTagRuleRepository : RepositoryDeleteBase<TransactionTagR
     {
     }
 
+    public async Task Delete(Guid accountId, int id, CancellationToken cancellationToken = default)
+    {
+        var entity = await DataSet.Include(r => r.TransactionTags).Where(r => r.TransactionTagRuleId == id && r.AccountId == accountId).SingleOrDefaultAsync(cancellationToken) ?? throw new NotFoundException();
+        DataContext.Remove(entity);
+    }
+
     public async Task<TransactionTagRule> Get(Guid accountId, int id, CancellationToken cancellationToken = default)
     {
         var rule = await DataSet.Where(t => t.AccountId == accountId && t.TransactionTagRuleId == id).SingleOrDefaultAsync(cancellationToken);

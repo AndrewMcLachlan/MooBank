@@ -83,7 +83,7 @@ export const TransactionTagRules: React.FC = () => {
                     <tfoot>
                         <tr>
                             <td colSpan={1} className="page-totals">Page {pageNumber} of {numberOfPages} ({totalTags} tags)</td>
-                            <td colSpan={2}>
+                            <td colSpan={3}>
                                 <Pagination pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={pageChange} />
                             </td>
                         </tr>
