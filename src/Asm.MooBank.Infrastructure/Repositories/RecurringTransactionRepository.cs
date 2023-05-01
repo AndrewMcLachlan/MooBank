@@ -4,7 +4,7 @@ namespace Asm.MooBank.Infrastructure.Repositories;
 
 internal class RecurringTransactionRepository : RepositoryBase<RecurringTransaction, int>, IRecurringTransactionRepository
 {
-    public RecurringTransactionRepository(BankPlusContext dataContext) : base(dataContext)
+    public RecurringTransactionRepository(MooBankContext dataContext) : base(dataContext)
     {
     }
 

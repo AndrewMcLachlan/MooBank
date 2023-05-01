@@ -4,14 +4,14 @@ namespace Asm.MooBank.Infrastructure.Repositories;
 
 public abstract class RepositoryBase<TEntity, TKey> : IRepository<TEntity, TKey> where TEntity : class
 {
-    protected BankPlusContext DataContext { get; }
+    protected MooBankContext DataContext { get; }
 
     protected IQueryable<TEntity> DataSet
     {
         get => DataContext.Set<TEntity>();
     }
 
-    protected RepositoryBase(BankPlusContext dataContext)
+    protected RepositoryBase(MooBankContext dataContext)
     {
         DataContext = dataContext;
     }

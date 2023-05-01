@@ -9,7 +9,7 @@ namespace Asm.MooBank.Infrastructure.Repositories
         private readonly IUserDataProvider _userDataProvider;
 
 
-        public AccountHolderRepository(BankPlusContext dataContext, IUserDataProvider userDataProvider) : base(dataContext)
+        public AccountHolderRepository(MooBankContext dataContext, IUserDataProvider userDataProvider) : base(dataContext)
         {
             _userDataProvider = userDataProvider;
         }

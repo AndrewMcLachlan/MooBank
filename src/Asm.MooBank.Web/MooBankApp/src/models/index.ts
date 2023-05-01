@@ -1,6 +1,7 @@
 export * from "./Account";
 export * from "./AccountGroup";
 export * from "./AccountList";
+export * from "./BudgetLine";
 export * from "./ImporterType";
 export * from "./Layout";
 export * from "./PagedResult";

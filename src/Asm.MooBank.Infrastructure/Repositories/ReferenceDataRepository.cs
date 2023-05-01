@@ -4,9 +4,9 @@ namespace Asm.MooBank.Infrastructure.Repositories;
 
 public class ReferenceDataRepository : IReferenceDataRepository
 {
-    private BankPlusContext DataContext { get; }
+    private MooBankContext DataContext { get; }
 
-    public ReferenceDataRepository(BankPlusContext dataContext)
+    public ReferenceDataRepository(MooBankContext dataContext)
     {
         DataContext = dataContext;
     }

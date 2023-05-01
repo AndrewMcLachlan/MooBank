@@ -12,13 +12,13 @@ using Asm.MooBank.Domain.Entities.TransactionTags;
 
 namespace Asm.MooBank.Infrastructure;
 
-public partial class BankPlusContext : DbContext, IUnitOfWork, IReadOnlyDbContext
+public partial class MooBankContext : DbContext, IUnitOfWork, IReadOnlyDbContext
 {
-    public BankPlusContext()
+    public MooBankContext()
     {
     }
 
-    public BankPlusContext(DbContextOptions<BankPlusContext> options) : base(options)
+    public MooBankContext(DbContextOptions<MooBankContext> options) : base(options)
     {
     }
 

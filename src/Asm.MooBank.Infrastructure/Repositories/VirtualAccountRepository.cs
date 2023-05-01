@@ -6,7 +6,7 @@ namespace Asm.MooBank.Infrastructure.Repositories
 {
     public class VirtualAccountRepository : RepositoryDeleteBase<VirtualAccount, Guid>, IVirtualAccountRepository
     {
-        public VirtualAccountRepository(BankPlusContext dataContext) : base(dataContext)
+        public VirtualAccountRepository(MooBankContext dataContext) : base(dataContext)
         {
         }
 

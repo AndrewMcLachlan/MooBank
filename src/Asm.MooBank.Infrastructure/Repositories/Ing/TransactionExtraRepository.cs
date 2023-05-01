@@ -4,7 +4,7 @@ namespace Asm.MooBank.Infrastructure.Repositories.Ing
 {
     public class TransactionExtraRepository : RepositoryBase<TransactionExtra, Guid>, ITransactionExtraRepository
     {
-        public TransactionExtraRepository(BankPlusContext dataContext) : base(dataContext)
+        public TransactionExtraRepository(MooBankContext dataContext) : base(dataContext)
         {
         }
 

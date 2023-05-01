@@ -9,7 +9,7 @@ namespace Asm.MooBank.Infrastructure.Repositories
     {
         private readonly ISecurityRepository _security;
 
-        public TransactionRepository(BankPlusContext dataContext, ISecurityRepository security) : base(dataContext)
+        public TransactionRepository(MooBankContext dataContext, ISecurityRepository security) : base(dataContext)
         {
             _security = security;
         }

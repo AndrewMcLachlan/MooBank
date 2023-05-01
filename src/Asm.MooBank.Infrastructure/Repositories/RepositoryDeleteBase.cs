@@ -5,7 +5,7 @@ namespace Asm.MooBank.Infrastructure.Repositories;
 public abstract class RepositoryDeleteBase<TEntity, TKey> : RepositoryBase<TEntity, TKey>, IDeletableRepository<TEntity, TKey> where TEntity : class
 {
 
-    protected RepositoryDeleteBase(BankPlusContext dataContext) : base(dataContext)
+    protected RepositoryDeleteBase(MooBankContext dataContext) : base(dataContext)
     {
     }
 

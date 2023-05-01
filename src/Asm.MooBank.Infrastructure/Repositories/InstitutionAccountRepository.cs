@@ -8,7 +8,7 @@ public class InstitutionAccountRepository : RepositoryDeleteBase<InstitutionAcco
 {
     private readonly IUserDataProvider _userDataProvider;
 
-    public InstitutionAccountRepository(BankPlusContext dataContext, IUserDataProvider userDataProvider) : base(dataContext)
+    public InstitutionAccountRepository(MooBankContext dataContext, IUserDataProvider userDataProvider) : base(dataContext)
     {
         _userDataProvider = userDataProvider;
     }

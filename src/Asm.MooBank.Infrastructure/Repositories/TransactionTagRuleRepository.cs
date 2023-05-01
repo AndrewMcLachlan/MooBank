@@ -5,7 +5,7 @@ namespace Asm.MooBank.Infrastructure.Repositories;
 public class TransactionTagRuleRepository : RepositoryDeleteBase<TransactionTagRule, int>, ITransactionTagRuleRepository
 {
 
-    public TransactionTagRuleRepository(BankPlusContext bankPlusContext) : base(bankPlusContext)
+    public TransactionTagRuleRepository(MooBankContext bankPlusContext) : base(bankPlusContext)
     {
     }
 
