@@ -19,7 +19,7 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
                     <div>Amount</div>
                     <div className="value">{props.transaction.amount}</div>
                     <div>Description</div>
-                    <div className="value">{props.transaction.description}</div>
+                    <div className="value description">{props.transaction.description}</div>
                     <div>Tags</div>
                     <TransactionTransactionTagPanel as="div" transaction={props.transaction} />
                 </section>
