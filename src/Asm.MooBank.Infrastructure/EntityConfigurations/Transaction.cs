@@ -2,7 +2,7 @@
 
 namespace Asm.MooBank.Infrastructure.EntityConfigurations;
 
-public class Transaction : IEntityTypeConfiguration<Domain.Entities.Transactions.Transaction>
+internal class TransactionConfiguration : IEntityTypeConfiguration<Domain.Entities.Transactions.Transaction>
 {
     public void Configure(EntityTypeBuilder<Domain.Entities.Transactions.Transaction> entity)
     {
@@ -40,6 +40,8 @@ public class Transaction : IEntityTypeConfiguration<Domain.Entities.Transactions
             .HasColumnName($"{nameof(Domain.Entities.Transactions.Transaction.TransactionType)}Id")
             .HasConversion(e => (int)e, e => (Models.TransactionType)e)
             .HasDefaultValue(Models.TransactionType.Debit);
+
+        entity.HasOne(e => e.OffsetBy).WithOne(e => e.Offsets).HasForeignKey<Transaction>(t => t.TransactionId);
 
     }
 }

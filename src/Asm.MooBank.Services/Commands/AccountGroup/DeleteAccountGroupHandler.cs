@@ -1,5 +1,4 @@
-﻿using Asm.Cqrs.Commands;
-using Asm.Domain;
+﻿using Asm.Domain;
 using Asm.MooBank.Domain.Entities.AccountGroup;
 using Asm.MooBank.Models.Commands.AccountGroup;
 
@@ -26,7 +25,7 @@ internal class DeleteAccountGroupHandler : ICommandHandler<DeleteAccountGroup, b
 
         _accountGroupRepository.Delete(group);
 
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return true;
     }

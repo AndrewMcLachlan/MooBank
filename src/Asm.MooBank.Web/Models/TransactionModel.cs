@@ -1,4 +1,3 @@
-﻿namespace Asm.MooBank.Web.Models
-{
-    public record TransactionModel(string? Notes);
-}
+﻿namespace Asm.MooBank.Web.Models;
+
+public record TransactionModel(string? Notes, Guid OffsetByTransactionId);

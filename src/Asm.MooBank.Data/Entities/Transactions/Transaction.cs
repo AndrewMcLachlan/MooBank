@@ -28,9 +28,15 @@ public partial class Transaction
 
     public bool ExcludeFromReporting { get; set; }
 
+    public Guid? OffsetByTransactionId { get; set; }
+
     public virtual ICollection<TransactionTag> TransactionTags { get; set; }
 
     public virtual Account.Account Account { get; set; }
+
+    public virtual Transaction? OffsetBy { get; set; }
+
+    public virtual Transaction? Offsets { get; set; }
 
     public TransactionType TransactionType { get; set; }
 }

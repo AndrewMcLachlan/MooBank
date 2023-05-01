@@ -1,6 +1,6 @@
 .transaction-details {
     display: grid;
-    grid-template-columns: 100px max-content;
+    grid-template-columns: 100px calc(100% - 100px);
     row-gap: 10px;
 
     h4 {

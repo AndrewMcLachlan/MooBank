@@ -14,5 +14,9 @@ public partial record Transaction
 
     public IEnumerable<TransactionTag> Tags { get; set; }
 
+    public Transaction? Offsets { get; set; }
+
+    public Transaction? OffsetBy { get; set; }
+
     public object? ExtraInfo { get; set; }
 }
