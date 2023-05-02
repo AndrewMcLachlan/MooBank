@@ -21,6 +21,6 @@ internal class SearchHandler : IQueryHandler<Search, IEnumerable<Models.Transact
 
         var startTime = request.StartDate.ToStartOfDay();
 
-        return _transactions.IncludeAll().Where<Transaction>(t => t.AccountId == request.AccountId && t.TransactionTime > startTime && t.TransactionType == request.TransactionType && t.TransactionTags.Any(tt => request.TagIds.Contains(tt.TransactionTagId))).ToModelAsync(cancellationToken: cancellationToken);
+        return _transactions.IncludeAll().Where<Transaction>(t => t.AccountId == request.AccountId && t.Offsets == null && t.TransactionTime > startTime && t.TransactionType == request.TransactionType && t.TransactionTags.Any(tt => request.TagIds.Contains(tt.TransactionTagId))).ToModelAsync(cancellationToken: cancellationToken);
     }
 }
