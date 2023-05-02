@@ -42,7 +42,7 @@ public class TransactionsController : CommandQueryController
         QueryDispatcher.Dispatch(new Search(accountId, start, transactionType, tagIds), cancellationToken);
 
     [HttpPatch("{id}")]
-    public Task<Transaction> Add(Guid id, [FromBody] TransactionModel model, CancellationToken cancellationToken = default) =>
+    public Task<Transaction> Update(Guid id, [FromBody] TransactionModel model, CancellationToken cancellationToken = default) =>
         CommandDispatcher.Dispatch(new UpdateTransaction(id, model.Notes, model.OffsetByTransactionId), cancellationToken);
 
     [HttpPut("{id}/tag/{tagId}")]

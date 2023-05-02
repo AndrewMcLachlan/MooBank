@@ -18,9 +18,11 @@ export interface Transaction {
     transactionType: TransactionType;
     tags: TransactionTag[];
     notes?: string;
+    offsetBy?: Transaction;
     extraInfo: any;
 }
 
 export interface TransactionUpdate {
     notes?: string;
+    offsetByTransactionId?: string;
 }

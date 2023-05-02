@@ -1,5 +1,4 @@
-﻿using System.Linq.Expressions;
-using Asm.Domain;
+﻿using Asm.Domain;
 using Asm.MooBank.Domain.Entities.TransactionTags;
 
 namespace Asm.MooBank.Domain.Entities.Transactions;
@@ -19,6 +18,8 @@ public partial class Transaction
     public Guid AccountId { get; set; }
 
     public decimal Amount { get; set; }
+
+    public decimal NetAmount { get; set; }
 
     public string? Description { get; set; }
 

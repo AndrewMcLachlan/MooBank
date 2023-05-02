@@ -5,16 +5,17 @@ import parseISO from "date-fns/parseISO";
 import { Transaction } from "models";
 import { TransactionDetails } from "./TransactionDetails";
 import { TransactionTransactionTagPanel } from "./TransactionTransactionTagPanel";
-import { useUpdateTransactionNotes } from "services";
+import { useUpdateTransaction } from "services";
 
 export const TransactionRow: React.FC<TransactionRowProps> = (props) => {
 
     const [showDetails, setShowDetails] = useState(false);
 
-    const updateNotes = useUpdateTransactionNotes();
+    const updateTransaction = useUpdateTransaction();
 
-    const onSave = (notes: string) => {
-        updateNotes.mutate([{ accountId: props.transaction.accountId, transactionId: props.transaction.id }, { notes }]);
+    const onSave = (notes: string, offsetBy?: Transaction) => {
+        
+        updateTransaction.mutate([{ accountId: props.transaction.accountId, transactionId: props.transaction.id }, { notes, offsetByTransactionId: offsetBy.id }]);
         setShowDetails(false);
     }
 
