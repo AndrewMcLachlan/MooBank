@@ -14,11 +14,16 @@ public class ImporterFactory : IImporterFactory
         _services = services;
     }
 
-    public async Task<IImporter> Create(Guid accountId, CancellationToken cancellationToken = default)
+    public async Task<IImporter?> Create(Guid accountId, CancellationToken cancellationToken = default)
     {
         var account = await _accountRepository.Get(accountId, cancellationToken);
 
-        var typeName = account.ImportAccount?.ImporterType.Type ?? throw new InvalidOperationException("Not an import account");
+        var typeName = account.ImportAccount?.ImporterType.Type;
+
+        if (typeName == null)
+        {
+            return null;
+        }
 
         var type = Type.GetType(typeName) ?? throw new InvalidOperationException("Not a valid importer type");
 

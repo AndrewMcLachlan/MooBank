@@ -26,8 +26,8 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
                     <TransactionTransactionTagPanel as="div" transaction={props.transaction} />
                 </section>
                 <section className="mt-3">
-                <div>
-                    <label>Corresponding rebate/refund</label>
+                <div hidden={props.transaction.transactionType % 2 === 1}>
+                    <label>Corresponding rebate / refund</label>
                     <TransactionSearch value={offsetBy} onChange={(v) => setOffsetBy(v)} transaction={props.transaction} />
                 </div>
                 <div  className="mt-3">

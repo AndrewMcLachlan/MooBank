@@ -11,7 +11,7 @@ public abstract record ReportQuery
 
 public static class ReportQueryExtensions
 {
-    public static IQueryable<Domain.Entities.Transactions.Transaction> Where(this IQueryable<Domain.Entities.Transactions.Transaction> transactions, ReportQuery query)
+    public static IQueryable<Domain.Entities.Transactions.Transaction> WhereByQuery(this IQueryable<Domain.Entities.Transactions.Transaction> transactions, ReportQuery query)
     {
         var start = query.Start.ToStartOfDay();
         var end = query.End.ToEndOfDay();

@@ -1,6 +1,8 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
+using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Transactions;
+using Asm.MooBank.Importers;
 using Asm.MooBank.Models.Queries.Transactions;
 using Microsoft.EntityFrameworkCore;
 using PagedResult = Asm.MooBank.Models.PagedResult<Asm.MooBank.Models.Transaction>;
@@ -9,29 +11,50 @@ namespace Asm.MooBank.Services.Queries.Transactions;
 
 public class GetTransactionsHandler : IQueryHandler<GetTransactions, PagedResult>
 {
+    private readonly IQueryDispatcher _queryDispatcher;
     private readonly IQueryable<Transaction> _transactions;
+    private readonly IQueryable<Account> _accounts;
     private readonly ISecurityRepository _security;
+    private readonly IImporterFactory _importerFactory;
 
 
-    public GetTransactionsHandler(IQueryable<Transaction> transactions, ISecurityRepository securityRepository)
+    public GetTransactionsHandler(IQueryDispatcher queryDispatcher, IQueryable<Transaction> transactions, IQueryable<Account> accounts, ISecurityRepository securityRepository, IImporterFactory importerFactory)
     {
+        _queryDispatcher = queryDispatcher;
         _transactions = transactions;
+        _accounts = accounts;
         _security = securityRepository;
+        _importerFactory = importerFactory;
     }
 
     public async Task<PagedResult> Handle(GetTransactions request, CancellationToken cancellationToken)
     {
         _security.AssertAccountPermission(request.AccountId);
 
+
         var total = await _transactions.Where(request).CountAsync(cancellationToken);
 
         var results = await _transactions.IncludeAll().Where(request).Sort(request.SortField, request.SortDirection).Page(request.PageSize, request.PageNumber).ToModelAsync(cancellationToken);
 
-        return new PagedResult
+        var result = new PagedResult
         {
             Results = results,
             Total = total,
         };
+
+        var importer = await _importerFactory.Create(request.AccountId, cancellationToken);
+
+        if (importer != null)
+        {
+            var extraRequest = importer.CreateExtraDetailsRequest(result);
+
+            if (extraRequest != null)
+            {
+                result = await _queryDispatcher.Dispatch(extraRequest, cancellationToken);
+            }
+        }
+
+        return result;
     }
 }
 

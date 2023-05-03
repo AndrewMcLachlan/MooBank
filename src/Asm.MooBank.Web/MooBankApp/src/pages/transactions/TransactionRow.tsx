@@ -22,9 +22,9 @@ export const TransactionRow: React.FC<TransactionRowProps> = (props) => {
     return (
         <>
             <TransactionDetails transaction={props.transaction} show={showDetails} onHide={() => setShowDetails(false)} onSave={onSave} />
-            <tr className="clickable" onClick={() => setShowDetails(true)} title={props.transaction.notes}>
+            <tr className="clickable transaction-row" onClick={() => setShowDetails(true)} title={props.transaction.notes}>
                 <td>{format(parseISO(props.transaction.transactionTime), "yyyy-MM-dd")}</td>
-                <td className="description">{props.transaction.description}</td>
+                <td className="description" colSpan={props.colspan}>{props.transaction.description}</td>
                 <td>{props.transaction.amount.toLocaleString("en-AU", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                 <TransactionTransactionTagPanel as="td" transaction={props.transaction} />
             </tr>
@@ -34,4 +34,5 @@ export const TransactionRow: React.FC<TransactionRowProps> = (props) => {
 
 export interface TransactionRowProps {
     transaction: Transaction;
+    colspan?: number
 }

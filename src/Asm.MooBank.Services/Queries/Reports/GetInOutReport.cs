@@ -20,7 +20,7 @@ internal class GetInOutReport : IQueryHandler<Models.Queries.Reports.GetInOutRep
     {
         _securityRepository.AssertAccountPermission(request.AccountId);
 
-        var results = await _transactions.Where(request)
+        var results = await _transactions.WhereByQuery(request)
             .GroupBy(t => t.TransactionType)
             .Select(g => new
             {

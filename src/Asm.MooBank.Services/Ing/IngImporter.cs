@@ -4,6 +4,8 @@ using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Ing;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Importers;
+using Asm.MooBank.Models.Queries.Transactions;
+using Asm.MooBank.Models.Queries.Transactions.Ing;
 using Microsoft.Extensions.Logging;
 using TransactionType = Asm.MooBank.Models.TransactionType;
 
@@ -243,5 +245,8 @@ namespace Asm.MooBank.Services.Importers
 
             return null;
         }
+
+        public GetTransactionExtraDetails? CreateExtraDetailsRequest(Models.PagedResult<Models.Transaction> transactions) =>
+            new GetIngTransactionExtraDetails(transactions);
     }
 }

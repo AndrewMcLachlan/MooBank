@@ -6,12 +6,13 @@ import { TransactionList } from "./TransactionList";
 import { AccountHeader, AccountProvider, AccountSummary } from "components";
 import { useAccount } from "services";
 import { Page } from "layouts";
+import { useIdParams } from "hooks";
 
 export const Transactions: React.FC = () => {
 
-    const { id } = useParams<{id: string}>();
+    const id = useIdParams();
 
-    const account = useAccount(id!);
+    const account = useAccount(id);
 
     if (!account.data) return (null);
 
@@ -24,7 +25,7 @@ export const Transactions: React.FC = () => {
                         <AccountSummary />
                         <FilterPanel />
                     </div>
-                    <TransactionList />
+                    <TransactionList account={account.data} />
                 </Page.Content>
             </AccountProvider>
         </Page>
