@@ -18,4 +18,7 @@ public static class ReportQueryExtensions
 
         return transactions.Where(t => t.AccountId == query.AccountId && !t.ExcludeFromReporting && t.TransactionTime >= start && t.TransactionTime <= end);
     }
+
+    public static IQueryable<Domain.Entities.Transactions.Transaction> ExcludeOffset(this IQueryable<Domain.Entities.Transactions.Transaction> transactions) =>
+        transactions.Where(t => t.Offsets == null);
 }

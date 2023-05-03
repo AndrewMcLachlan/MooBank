@@ -37,7 +37,7 @@ export const TransactionRowIng: React.FC<TransactionRowProps> = (props) => {
             */}
                 <td>{props.transaction.extraInfo.location}</td>
                 <td>{props.transaction.extraInfo.purchaseDate && format(parseISO(props.transaction.extraInfo.purchaseDate), "yyyy-MM-dd")}</td>
-                <td>{props.transaction.amount.toLocaleString("en-AU", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td className="amount">{props.transaction.amount.toLocaleString("en-AU", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                 <TransactionTransactionTagPanel as="td" transaction={props.transaction} />
             </tr>
         </>

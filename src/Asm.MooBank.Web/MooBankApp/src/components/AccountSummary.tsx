@@ -17,7 +17,7 @@ export const AccountSummary: React.FC<AccountSummaryProps> = (props) => {
             <tbody>
                 <tr>
                     <th>Balance</th>
-                    <td className="balance"><AccountBalance balance={account.currentBalance} /></td>
+                    <td className="balance amount"><AccountBalance balance={account.currentBalance} /></td>
                 </tr>
                 {/*<tr>
                         <th>Available Balance</th>

@@ -25,7 +25,7 @@ export const TransactionRow: React.FC<TransactionRowProps> = (props) => {
             <tr className="clickable transaction-row" onClick={() => setShowDetails(true)} title={props.transaction.notes}>
                 <td>{format(parseISO(props.transaction.transactionTime), "yyyy-MM-dd")}</td>
                 <td className="description" colSpan={props.colspan}>{props.transaction.description}</td>
-                <td>{props.transaction.amount.toLocaleString("en-AU", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td className="amount">{props.transaction.amount.toLocaleString("en-AU", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                 <TransactionTransactionTagPanel as="td" transaction={props.transaction} />
             </tr>
         </>

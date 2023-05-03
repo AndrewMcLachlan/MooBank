@@ -8,7 +8,17 @@ export const TransactionSearch: React.FC<TransactionSearchProps> = (props) => {
     const transactions = useSearchTransactions(props.transaction, props.transactionType);
 
     return (
-        <Select value={props.value} options={transactions.data ?? []} getOptionValue={(t) => t.id} getOptionLabel={(t) => `${t.amount} - ${t.description}`} isClearable className="react-select" classNamePrefix="react-select" placeholder="Select Transaction..." onChange={props.onChange} />
+        <Select value={props.value} 
+                options={transactions.data ?? []}
+                getOptionValue={(t) => t.id}
+                isClearable 
+                className="react-select"
+                classNamePrefix="react-select"
+                placeholder="Select Transaction..."
+                onChange={props.onChange}
+                formatOptionLabel={(t) =>
+                    <><span className="amount">${t.amount}</span> - {t.description}</>
+                } />
     );
 }
 

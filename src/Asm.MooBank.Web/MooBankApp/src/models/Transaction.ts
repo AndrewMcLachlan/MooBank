@@ -8,6 +8,10 @@ export enum TransactionType {
     BalanceAdjustment = 5,
 }
 
+export const isCredit = (transactionType: TransactionType) => transactionType % 2 === 1;
+
+export const isDebit = (transactionType: TransactionType) => transactionType % 2 === 0;
+
 export interface Transaction {
     id: string;
     reference: string;
@@ -19,6 +23,7 @@ export interface Transaction {
     tags: TransactionTag[];
     notes?: string;
     offsetBy?: Transaction;
+    offsets: Transaction;
     extraInfo: any;
 }
 

@@ -1,15 +1,21 @@
 import "./TransactionDetails.scss";
 
-import { Transaction } from "models";
+import { Transaction, isCredit } from "models";
 import { Button, Modal, } from "react-bootstrap";
 import { TransactionTransactionTagPanel } from "./TransactionTransactionTagPanel";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TransactionSearch } from "components";
+import { TransactionDetailsIng } from "./TransactionDetailsIng";
 
 export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => {
 
+    const [transaction, setTransaction] = useState(props.transaction);
     const [notes, setNotes] = useState(props.transaction.notes ?? "");
     const [offsetBy, setOffsetBy] = useState<Transaction>(props.transaction.offsetBy);
+
+    useEffect(() => setTransaction(props.transaction), [props.transaction]);
+
+    if (!transaction) return null;
 
     return (
         <Modal show={props.show} onHide={props.onHide} size="lg">
@@ -19,21 +25,28 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
             <Modal.Body>
                 <section className="transaction-details">
                     <div>Amount</div>
-                    <div className="value">{props.transaction.amount}</div>
+                    <div className="value amount">{props.transaction.amount}</div>
                     <div>Description</div>
                     <div className="value description">{props.transaction.description}</div>
+                    {props.transaction.extraInfo && <TransactionDetailsIng transaction={transaction} />}
+                    {props.transaction.offsets &&
+                        <>
+                            <div>Rebate / refund for</div>
+                            <div className="value"><span className="amount">{props.transaction.offsets?.amount}</span> - {props.transaction.offsets?.description}</div>
+                        </>
+                    }
                     <div>Tags</div>
                     <TransactionTransactionTagPanel as="div" transaction={props.transaction} />
                 </section>
                 <section className="mt-3">
-                <div hidden={props.transaction.transactionType % 2 === 1}>
-                    <label>Corresponding rebate / refund</label>
-                    <TransactionSearch value={offsetBy} onChange={(v) => setOffsetBy(v)} transaction={props.transaction} />
-                </div>
-                <div  className="mt-3">
-                    <label>Notes</label>
-                    <textarea className="form-control" value={notes} onChange={(e) => setNotes(e.currentTarget.value)} />
-                </div>
+                    <div hidden={isCredit(props.transaction.transactionType)}>
+                        <label>Corresponding rebate / refund</label>
+                        <TransactionSearch value={offsetBy} onChange={(v) => setOffsetBy(v)} transaction={props.transaction} />
+                    </div>
+                    <div className="mt-3">
+                        <label>Notes</label>
+                        <textarea className="form-control" value={notes} onChange={(e) => setNotes(e.currentTarget.value)} />
+                    </div>
                 </section>
             </Modal.Body>
             <Modal.Footer>

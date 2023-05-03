@@ -25,7 +25,7 @@ internal class GetInOutReport : IQueryHandler<Models.Queries.Reports.GetInOutRep
             .Select(g => new
             {
                 TransactionType = g.Key,
-                Amount = g.Sum(t => t.Amount)
+                Amount = g.Sum(t => t.NetAmount)
             }).ToListAsync(cancellationToken);
 
         return new()

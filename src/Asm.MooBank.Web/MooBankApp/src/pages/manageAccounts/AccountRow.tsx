@@ -20,8 +20,7 @@ export const AccountRow: React.FC<AccountRowProps> = (props) => {
                 {AccountType[props.account.accountType]}
             </td>
             <td>{AccountController[props.account.controller]}</td>
-            <td className="number"><span className={props.account.currentBalance < 0 ? " negative" : ""}>{props.account.currentBalance + (props.account.currentBalance < 0 ? "D" : "C") + "R"}</span></td>
-            {/*}            <td><span className={props.account.availableBalance < 0 ? " negative" : ""}>{props.account.availableBalance + (props.account.availableBalance < 0 ? "D" : "C") + "R"}</span></td>*/}
+            <td className="amount number"><span className={props.account.currentBalance < 0 ? " negative" : ""}>{props.account.currentBalance + (props.account.currentBalance < 0 ? "D" : "C") + "R"}</span></td>
         </tr>
     );
 }

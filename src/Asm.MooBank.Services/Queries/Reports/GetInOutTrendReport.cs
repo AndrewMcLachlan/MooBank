@@ -20,7 +20,7 @@ internal class GetInOutTrendReport : IQueryHandler<Models.Queries.Reports.GetInO
     {
         _securityRepository.AssertAccountPermission(request.AccountId);
 
-        var groupedQuery = await _transactions.WhereByQuery(request).GroupBy(t => t.TransactionType).ToListAsync(cancellationToken);
+        var groupedQuery = await _transactions.WhereByQuery(request).ExcludeOffset().GroupBy(t => t.TransactionType).ToListAsync(cancellationToken);
 
         var income = GetTrendPoints(groupedQuery.Where(g => g.Key.IsCredit()).SelectMany(g => g.AsQueryable()));
         var expenses = GetTrendPoints(groupedQuery.Where(g => g.Key.IsDebit()).SelectMany(g => g.AsQueryable()));
@@ -35,12 +35,12 @@ internal class GetInOutTrendReport : IQueryHandler<Models.Queries.Reports.GetInO
         };
     }
 
-    private IEnumerable<TrendPoint> GetTrendPoints(IEnumerable<Transaction> transactions)
+    private static IEnumerable<TrendPoint> GetTrendPoints(IEnumerable<Transaction> transactions)
     {
         return transactions.GroupBy(t => new DateOnly(t.TransactionTime.Year, t.TransactionTime.Month, 1)).OrderBy(g => g.Key).Select(g => new TrendPoint
         {
             Month = g.Key,
-            Amount = g.Sum(t => t.Amount)
+            Amount = g.Sum(t => t.NetAmount)
         });
     }
 }
