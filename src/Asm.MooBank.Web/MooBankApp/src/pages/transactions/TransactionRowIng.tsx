@@ -24,19 +24,14 @@ export const TransactionRowIng: React.FC<TransactionRowProps> = (props) => {
         return <TransactionRow {...props} colspan={3} />;
     }
 
-
     return (
         <>
             <TransactionDetails transaction={props.transaction} show={showDetails} onHide={() => setShowDetails(false)} onSave={onSave} />
             <tr className="clickable transaction-row" onClick={() => setShowDetails(true)} title={props.transaction.notes}>
-                <td>{format(parseISO(props.transaction.transactionTime), "yyyy-MM-dd")}</td>
+                <td>{format(parseISO(props.transaction.transactionTime), "dd/MM/yyyy")}</td>
                 <td>{props.transaction.extraInfo.description}</td>
-                {/*
-            <td>{props.transaction.extraInfo.purchaseType}</td>
-            <td>{props.transaction.extraInfo.receiptNumber}</td>
-            */}
                 <td>{props.transaction.extraInfo.location}</td>
-                <td>{props.transaction.extraInfo.purchaseDate && format(parseISO(props.transaction.extraInfo.purchaseDate), "yyyy-MM-dd")}</td>
+                <td>{props.transaction.extraInfo.purchaseDate && format(parseISO(props.transaction.extraInfo.purchaseDate), "dd/MM/yyyy")}</td>
                 <td className="amount">{props.transaction.amount.toLocaleString("en-AU", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                 <TransactionTransactionTagPanel as="td" transaction={props.transaction} />
             </tr>

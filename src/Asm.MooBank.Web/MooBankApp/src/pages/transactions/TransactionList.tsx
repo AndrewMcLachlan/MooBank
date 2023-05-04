@@ -30,24 +30,21 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
 
     const numberOfPages = getNumberOfPages(totalTransactions, pageSize);
 
-    // const TableHead = TransactionTableHead;
-    // const TableRow =  TransactionRow;
     const TableHead = transactions?.some(t => t.extraInfo) ? TransactionTableHeadIng : TransactionTableHead;
     const TableRow = transactions?.some(t => t.extraInfo) ? TransactionRowIng : TransactionRow;
-
-
+    const colspan = transactions?.some(t => t.extraInfo) ? 4 : 2;
 
     return (
         <Table striped bordered={false} borderless className="transactions">
             <TableHead />
             <tbody>
                 {transactions && transactions.map((t) => <TableRow key={t.id} transaction={t} />)}
-                {!transactions && Array.from({ length: 50 }, (value, index) => index).map((i) => <tr key={i}><td colSpan={4}>&nbsp;</td></tr>)}
+                {!transactions && Array.from({ length: 50 }, (_value, index) => index).map((i) => <tr key={i}><td colSpan={4}>&nbsp;</td></tr>)}
             </tbody>
             <tfoot>
                 <tr>
                     <td colSpan={2} className="page-totals">Page {pageNumber} of {numberOfPages} ({totalTransactions} transactions)</td>
-                    <td colSpan={2}>
+                    <td colSpan={colspan}>
                         <Pagination pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={(_current, newPage) => dispatch(TransactionsSlice.actions.setCurrentPage(newPage))} />
                     </td>
                 </tr>
