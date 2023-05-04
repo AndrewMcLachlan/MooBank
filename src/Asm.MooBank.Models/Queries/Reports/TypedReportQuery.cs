@@ -10,5 +10,5 @@ public abstract record TypedReportQuery : ReportQuery
 public static class TypedReportQueryExtensions
 {
     public static IQueryable<Domain.Entities.Transactions.Transaction> WhereByReportQuery(this IQueryable<Domain.Entities.Transactions.Transaction> transactions, TypedReportQuery query) =>
-        transactions.WhereByQuery(query as ReportQuery).WhereByReportType(query.ReportType);
+        transactions.WhereByReportQuery(query as ReportQuery).WhereByReportType(query.ReportType);
 }

@@ -20,7 +20,7 @@ internal class GetInOutTrendReport : IQueryHandler<Models.Queries.Reports.GetInO
     {
         _securityRepository.AssertAccountPermission(request.AccountId);
 
-        var groupedQuery = await _transactions.WhereByQuery(request).ExcludeOffset().GroupBy(t => t.TransactionType).ToListAsync(cancellationToken);
+        var groupedQuery = await _transactions.WhereByReportQuery(request).ExcludeOffset().GroupBy(t => t.TransactionType).ToListAsync(cancellationToken);
 
         var income = GetTrendPoints(groupedQuery.Where(g => g.Key.IsCredit()).SelectMany(g => g.AsQueryable()));
         var expenses = GetTrendPoints(groupedQuery.Where(g => g.Key.IsDebit()).SelectMany(g => g.AsQueryable()));

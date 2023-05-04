@@ -1,7 +1,7 @@
 ﻿CREATE FUNCTION [dbo].[TransactionNetAmount]
 (
     @OffsetByTransactionId UNIQUEIDENTIFIER NULL,
-    @Amount int
+    @Amount DECIMAL(10,2)
 )
 RETURNS DECIMAL(10,2)
 AS
