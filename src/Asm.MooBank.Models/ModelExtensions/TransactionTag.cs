@@ -24,7 +24,8 @@ public partial record TransactionTag
             Tags = transactionTag.Tags.Select(t => (Domain.Entities.TransactionTags.TransactionTag)t).ToList(),
             Settings = new Domain.Entities.TransactionTags.TransactionTagSettings
             {
-                ApplySmoothing = transactionTag.Settings.ApplySmoothing
+                ApplySmoothing = transactionTag.Settings.ApplySmoothing,
+                ExcludeFromReporting = transactionTag.Settings.ExcludeFromReporting,
             }
         };
     }
@@ -39,6 +40,7 @@ public partial record TransactionTag
             return new TransactionTagSettings
             {
                 ApplySmoothing = settings.ApplySmoothing,
+                ExcludeFromReporting = settings.ExcludeFromReporting,
             };
         }
 
@@ -46,9 +48,10 @@ public partial record TransactionTag
         {
             if (settings == null) return null!;
 
-            return new Domain.Entities.TransactionTags.TransactionTagSettings
+            return new Domain.Entities.TransactionTags.TransactionTagSettings()
             {
                 ApplySmoothing = settings.ApplySmoothing,
+                ExcludeFromReporting = settings.ExcludeFromReporting,
             };
         }
     }

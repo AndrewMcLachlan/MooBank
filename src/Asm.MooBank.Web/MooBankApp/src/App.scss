@@ -1,4 +1,5 @@
 ﻿@import "~@andrewmclachlan/mooapp/scss/mooapp.scss";
+@import "../scss/transactionTagDetails";
 
 :root {
     --bs-font-sans-serif: 'Open Sans Condensed', 'Franklin Gothic', Helvetica, Arial, sans-serif;
@@ -73,7 +74,7 @@ label {
         fill: hsl(0, 0%, 80%);
     }
 
-    input:focus + svg {
+    input:focus+svg {
         fill: hsl(0, 0%, 40%);
     }
 }
@@ -257,6 +258,14 @@ table.trasactionHistory {
 .row-action {
     vertical-align: middle;
     text-align: center;
+
+    svg {
+        margin-right: 8px;
+
+        &:last-child {
+            padding-right: 0;
+        }
+    }
 }
 
 /*#endregion*/
@@ -397,6 +406,10 @@ input.search-box {
 
 .description {
     white-space: pre-wrap;
+}
+
+.empty-row {
+    height: 54px;
 }
 
 @import 'responsive';

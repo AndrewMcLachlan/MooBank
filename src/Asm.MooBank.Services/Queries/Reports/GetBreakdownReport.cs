@@ -34,7 +34,7 @@ internal class GetBreakdownReport : IQueryHandler<Models.Queries.Reports.GetBrea
 
         if (request.TagId == null)
         {
-            topTags = await _tags.Include(t => t.Tags).Where(t => !t.Deleted && !t.TaggedTo.Any()).ToListAsync(cancellationToken);
+            topTags = await _tags.Include(t => t.Tags).Where(t => !t.Deleted && (t.Settings == null || !t.Settings.ExcludeFromReporting) && !t.TaggedTo.Any()).ToListAsync(cancellationToken);
             lowerTags = await _tagRelationships.Include(t => t.TransactionTag).ThenInclude(t => t.Tags).Include(t => t.ParentTag).ThenInclude(t => t.Tags).Where(tr => !tr.TransactionTag.Deleted && topTags.Contains(tr.ParentTag)).ToListAsync(cancellationToken);
 
         }
@@ -42,8 +42,8 @@ internal class GetBreakdownReport : IQueryHandler<Models.Queries.Reports.GetBrea
         {
             // Include the root tag for any transactions
             rootTag = _tags.Include(t => t.Tags).Single(t => t.TransactionTagId == request.TagId);
-            topTags = await _tags.Include(t => t.Tags).Where(t => !t.Deleted && t.TaggedTo.Any(t2 => t2.TransactionTagId == request.TagId)).ToListAsync(cancellationToken);
-            lowerTags = await _tagRelationships.Include(t => t.TransactionTag).ThenInclude(t => t.Tags).Include(t => t.ParentTag).ThenInclude(t => t.Tags).Where(tr => !tr.TransactionTag.Deleted && topTags.Contains(tr.ParentTag)).ToListAsync(cancellationToken);
+            topTags = await _tags.Include(t => t.Tags).Where(t => !t.Deleted && (t.Settings == null || !t.Settings.ExcludeFromReporting) && t.TaggedTo.Any(t2 => t2.TransactionTagId == request.TagId)).ToListAsync(cancellationToken);
+            lowerTags = await _tagRelationships.Include(t => t.TransactionTag).ThenInclude(t => t.Tags).Include(t => t.ParentTag).ThenInclude(t => t.Tags).Where(tr => !tr.TransactionTag.Deleted && (tr.TransactionTag.Settings == null || !tr.TransactionTag.Settings.ExcludeFromReporting) && topTags.Contains(tr.ParentTag)).ToListAsync(cancellationToken);
         }
 
 

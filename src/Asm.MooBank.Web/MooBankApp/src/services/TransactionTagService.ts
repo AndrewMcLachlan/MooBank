@@ -25,7 +25,6 @@ export const useCreateTag = () => {
         return (await httpClient.put<Models.TransactionTag>(`api/transaction/tags/${encodeURIComponent(name)}`, tags)).data;
     }, {
         onSuccess: (data: Models.TransactionTag) => {
-            queryClient.setQueryData<Models.TransactionTag>(["tags", { id: data.id }], data);
             const allTags = queryClient.getQueryData<Models.TransactionTag[]>(["tags"]);
             if (!allTags) return;
             const newTags = [data, ...allTags].sort((t1, t2) => t1.name.localeCompare(t2.name));
@@ -44,7 +43,7 @@ export const useUpdateTag = () => {
         const name = variables.name?.trim() ?? (variables.name).trim();
         const id = variables.id;
 
-        return (await httpClient.patch<Models.TransactionTag>(`api/transaction/tags/${id}`, { name })).data;
+        return (await httpClient.patch<Models.TransactionTag>(`api/transaction/tags/${id}`, { name, excludeFromReporting: variables.settings.excludeFromReporting, applySmoothing: variables.settings.applySmoothing })).data;
     }, {
         onSuccess: (data: Models.TransactionTag) => {
             queryClient.setQueryData<Models.TransactionTag>(["tags", { id: data.id }], data);
@@ -57,6 +56,7 @@ export const useUpdateTag = () => {
 
             const newTags = allTags.sort((t1, t2) => t1.name.localeCompare(t2.name));
             queryClient.setQueryData<Models.TransactionTag[]>(["tags"], newTags);
+            queryClient.invalidateQueries(["tags"]);
         }
     });
 }

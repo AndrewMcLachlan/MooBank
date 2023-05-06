@@ -10,8 +10,6 @@ public interface ITransactionTagService
 
     Task<TransactionTag> Create(string name, IEnumerable<int> tags, CancellationToken cancellationToken = default);
 
-    Task<TransactionTag> Update(int id, string name);
-
     Task<IEnumerable<TransactionTag>> GetAll(CancellationToken cancellationToken = default);
 
     Task<IEnumerable<TransactionTag>> Get(IEnumerable<int> tagIds, CancellationToken cancellationToken = default);
@@ -59,17 +57,6 @@ public class TransactionTagService : ServiceBase, ITransactionTagService
         await UnitOfWork.SaveChangesAsync();
 
         return transactionTag;
-    }
-
-    public async Task<TransactionTag> Update(int id, string name)
-    {
-        var tag = await GetEntity(id);
-
-        tag.Name = name;
-
-        await UnitOfWork.SaveChangesAsync();
-
-        return tag;
     }
 
     public async Task<IEnumerable<TransactionTag>> GetAll(CancellationToken cancellationToken = default) => (await _transactionTagRepository.GetAll(cancellationToken).ToModelAsync(cancellationToken)).OrderBy(t => t.Name);

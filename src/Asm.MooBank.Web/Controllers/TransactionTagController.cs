@@ -1,5 +1,6 @@
 ﻿using Asm.Cqrs.Commands;
 using Asm.Cqrs.Queries;
+using Asm.MooBank.Models.Commands.TransactionTags;
 using Asm.MooBank.Models.Queries.TransactionTags;
 
 namespace Asm.MooBank.Web.Controllers
@@ -45,10 +46,8 @@ namespace Asm.MooBank.Web.Controllers
         }
 
         [HttpPatch("{id}")]
-        public async Task<ActionResult<TransactionTag>> Update(int id, [FromBody]TransactionTagModel tag)
-        {
-            return await _tagService.Update(id, tag.Name);
-        }
+        public Task<TransactionTag> Update(int id, [FromBody]TransactionTagModel tag, CancellationToken cancellationToken = default) =>
+            CommandDispatcher.Dispatch(new Update(id, tag.Name, tag.ExcludeFromReporting, tag.ApplySmoothing), cancellationToken);
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)

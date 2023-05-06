@@ -8,6 +8,15 @@ public class TransactionTagRepository : RepositoryDeleteBase<TransactionTag, int
     {
     }
 
+    public void AddSettings(TransactionTag transactionTag)
+    {
+        if (transactionTag.Settings == null)
+        {
+            DataContext.Add(new TransactionTagSettings(transactionTag.TransactionTagId));
+        }
+    }
+
+
     public override async Task<IEnumerable<TransactionTag>> GetAll(CancellationToken cancellationToken = default)
     {
         return await DataSet.Include(t => t.Tags).Where(t => !t.Deleted).ToListAsync(cancellationToken);
@@ -20,8 +29,8 @@ public class TransactionTagRepository : RepositoryDeleteBase<TransactionTag, int
     public async Task<TransactionTag> Get(int id, bool includeSubTags = false)
     {
         var tag = includeSubTags ?
-            await GetById(id).Include(t => t.Tags).SingleOrDefaultAsync() :
-            await GetById(id).SingleOrDefaultAsync();
+            await GetById(id).Include(t => t.Settings).Include(t => t.Tags).SingleOrDefaultAsync() :
+            await GetById(id).Include(t => t.Settings).SingleOrDefaultAsync();
 
         return tag ?? throw new NotFoundException($"Transaction tag with id {id} was not found");
     }
