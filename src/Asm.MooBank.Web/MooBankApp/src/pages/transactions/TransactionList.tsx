@@ -32,7 +32,7 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
 
     const TableHead = transactions?.some(t => t.extraInfo) ? TransactionTableHeadIng : TransactionTableHead;
     const TableRow = transactions?.some(t => t.extraInfo) ? TransactionRowIng : TransactionRow;
-    const colspan = transactions?.some(t => t.extraInfo) ? 4 : 2;
+    const colspan = transactions?.some(t => t.extraInfo) ? 5 : 2;
 
     return (
         <Table striped bordered={false} borderless className="transactions">
