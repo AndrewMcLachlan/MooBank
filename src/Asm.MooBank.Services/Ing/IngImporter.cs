@@ -1,12 +1,13 @@
 ﻿using System.Globalization;
-using System.Text.RegularExpressions;
 using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Ing;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Importers;
 using Asm.MooBank.Models.Queries.Transactions;
 using Asm.MooBank.Models.Queries.Transactions.Ing;
+using Asm.MooBank.Services.Ing;
 using Microsoft.Extensions.Logging;
+using Microsoft.Identity.Client;
 using TransactionType = Asm.MooBank.Models.TransactionType;
 
 namespace Asm.MooBank.Services.Importers
@@ -19,23 +20,6 @@ namespace Asm.MooBank.Services.Importers
         private const int CreditColumn = 2;
         private const int DebitColumn = 3;
         private const int BalanceColumn = 4;
-
-        [GeneratedRegex("^(.+) - Visa Purchase - Receipt (\\d{6})In (.+) Date (.+) Card (462263xxxxxx\\d{4})")]
-        private static partial Regex VisaPurchase();
-        [GeneratedRegex("^(.+) - Direct Debit - Receipt (\\d{6}) (.+)")]
-        private static partial Regex DirectDebit();
-        [GeneratedRegex("^(.+) - Internal Transfer - Receipt (\\d{6}) (.*)")]
-        private static partial Regex InternalTransfer();
-        [GeneratedRegex("^(.+) - EFTPOS Purchase - Receipt (\\d{6})Date (.+) Card (462263xxxxxx\\d{4})")]
-        private static partial Regex EftposPurchase();
-        [GeneratedRegex("^([^-]+) - Receipt (\\d{6})")]
-        private static partial Regex DirectPayment();
-
-        //private static readonly Regex VisaPurchase = VisaPurchaseRegEx();
-        //private static readonly Regex DirectDebit = DirectDebit();
-        //private static readonly Regex InternalTransfer = InternalTransfer();
-        //private static readonly Regex EftposPurchase = EftposPurchase();
-        //private static readonly Regex DirectPayment = DirectPayment();
 
         private readonly ITransactionExtraRepository _transactionExtraRepository;
         private readonly ITransactionRepository _transactionRepository;
@@ -150,11 +134,13 @@ namespace Asm.MooBank.Services.Importers
 
             _transactionRepository.AddRange(transactions);
 
+            //var cardNames = account.AccountAccountHolders.SelectMany(a => a.AccountHolder.Cards).ToDictionary(ac => ac.Last4Digits, ac => ac.AccountHolder.FirstName);
+
             var transactionExtras = new List<TransactionExtra>();
 
             foreach (var transaction in transactions)
             {
-                TransactionExtra? extraInfo = ParseDescription(transaction);
+                TransactionExtra? extraInfo = TransactionParser.ParseDescription(transaction);
 
                 if (extraInfo != null)
                 {
@@ -168,85 +154,30 @@ namespace Asm.MooBank.Services.Importers
             return new TransactionImportResult(transactions, endBalance!.Value);
         }
 
-        private static TransactionExtra? ParseDescription(Transaction transaction)
+        public async Task Reprocess(Account account, CancellationToken cancellationToken = default)
         {
-            var description = transaction.Description ?? String.Empty;
+            var transactions = await _transactionRepository.GetTransactions(account.AccountId, cancellationToken);
+            var processed = await _transactionExtraRepository.GetAll(account.AccountId, cancellationToken);
+            var unprocessed = await _transactionExtraRepository.GetUnprocessedTransactions(transactions, cancellationToken);
 
-            var match = VisaPurchase().Match(description);
+            var transactionExtras = new List<TransactionExtra>();
 
-            if (match.Success)
+            processed.ToList().ForEach(e => TransactionParser.ParseDescription(e.Transaction, ref e));
+
+            foreach (var transaction in unprocessed)
             {
-                return new TransactionExtra
+                TransactionExtra? extraInfo = TransactionParser.ParseDescription(transaction);
+
+                if (extraInfo != null)
                 {
-                    Transaction = transaction,
-                    Description = match.Groups[1].Value,
-                    Location = match.Groups[3].Value,
-                    PurchaseDate = DateTime.Parse(match.Groups[4].Value),
-                    PurchaseType = "Visa",
-                    ReceiptNumber = Int32.Parse(match.Groups[2].Value),
-                };
-            }
-
-            match = DirectDebit().Match(description);
-
-            if (match.Success)
-            {
-                return new TransactionExtra
-                {
-                    Transaction = transaction,
-                    Description = match.Groups[1].Value,
-                    PurchaseType = "Direct Debit",
-                    ReceiptNumber = Int32.Parse(match.Groups[2].Value),
-                    Reference = match.Groups[3].Value,
-                };
-            }
-
-            match = InternalTransfer().Match(description);
-
-            if (match.Success)
-            {
-                return new TransactionExtra
-                {
-                    Transaction = transaction,
-                    Description = match.Groups[1].Value,
-                    PurchaseType = "Internal Transfer",
-                    ReceiptNumber = Int32.Parse(match.Groups[2].Value),
-                    Reference = match.Groups[3].Value
-                };
-            }
-
-            match = EftposPurchase().Match(description);
-
-            if (match.Success)
-            {
-                return new TransactionExtra
-                {
-                    Transaction = transaction,
-                    Description = match.Groups[1].Value,
-                    PurchaseDate = DateTime.ParseExact(match.Groups[3].Value, "dd MMM yyyy Ti\\me h:mmtt", CultureInfo.CurrentCulture),
-                    PurchaseType = "Visa",
-                    ReceiptNumber = Int32.Parse(match.Groups[2].Value),
-                };
-            }
-
-            match = DirectPayment().Match(description);
-            {
-                if (match.Success)
-                {
-                    return new TransactionExtra
-                    {
-                        Transaction = transaction,
-                        Description = match.Groups[1].Value,
-                        PurchaseType = "Direct",
-                        ReceiptNumber = Int32.Parse(match.Groups[2].Value),
-                    };
+                    transactionExtras.Add(extraInfo);
                 }
             }
 
-            return null;
+            _transactionExtraRepository.AddRange(transactionExtras);
         }
 
-        public GetTransactionExtraDetails? CreateExtraDetailsRequest(Models.PagedResult<Models.Transaction> transactions) =>
-            new GetIngTransactionExtraDetails(transactions);
+        public GetTransactionExtraDetails? CreateExtraDetailsRequest(Guid accountId, Models.PagedResult<Models.Transaction> transactions) =>
+            new GetIngTransactionExtraDetails(accountId, transactions);
     }
 }

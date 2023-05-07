@@ -52,6 +52,7 @@ public class Startup
         services.AddEntities();
         services.AddServices();
         services.AddCqrs();
+        services.AddCommands();
         services.AddUserDataProvider();
     }
 

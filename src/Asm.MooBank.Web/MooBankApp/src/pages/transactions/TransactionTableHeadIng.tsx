@@ -31,6 +31,7 @@ export const TransactionTableHeadIng: React.FC = () => {
                 */}
                 <th>Location</th>
                 <th>Purchase Date</th>
+                <th>Who</th>
                 <th className={getClassName("Amount")} onClick={() => sort("Amount")}>Amount</th>
                 <th>Tags</th>
             </tr>

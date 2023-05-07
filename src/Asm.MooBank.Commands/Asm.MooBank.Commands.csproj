@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Asm.Cqrs" Version="3.0.574" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Asm.MooBank.Models\Asm.MooBank.Models.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Services\Asm.MooBank.Services.csproj" />
+  </ItemGroup>
+
+</Project>

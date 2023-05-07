@@ -46,7 +46,7 @@ public class GetTransactionsHandler : IQueryHandler<GetTransactions, PagedResult
 
         if (importer != null)
         {
-            var extraRequest = importer.CreateExtraDetailsRequest(result);
+            var extraRequest = importer.CreateExtraDetailsRequest(request.AccountId, result);
 
             if (extraRequest != null)
             {

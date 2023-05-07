@@ -6,14 +6,12 @@
 public class AccountsController : ControllerBase
 {
     private readonly IAccountService _accountService;
-    private readonly ITransactionService _transactionService;
 
     private readonly ILogger<AccountsController> _logger;
 
-    public AccountsController(IAccountService accountService, ITransactionService transactionService, ILogger<AccountsController> logger)
+    public AccountsController(IAccountService accountService, ILogger<AccountsController> logger)
     {
         _accountService = accountService;
-        _transactionService = transactionService;
         _logger = logger;
     }
 

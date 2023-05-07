@@ -10,7 +10,7 @@
     <PackageReference Include="Asm" Version="3.0.574" />
     <PackageReference Include="Asm.Cqrs" Version="3.0.574" />
     <PackageReference Include="Azure.Identity" Version="1.8.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>

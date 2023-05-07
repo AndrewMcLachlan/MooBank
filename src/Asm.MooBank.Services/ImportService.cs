@@ -1,16 +1,14 @@
 ﻿using Asm.Domain;
-using Asm.MooBank.Domain.Entities.TransactionTags;
 using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Transactions;
+using Asm.MooBank.Domain.Entities.TransactionTags;
 using Asm.MooBank.Importers;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 
 namespace Asm.MooBank.Services;
 
 public interface IImportService
 {
-    Task Import(Guid accountId, IFormFile file, CancellationToken cancellationToken = default);
+    Task Import(Guid accountId, Stream stream, CancellationToken cancellationToken = default);
 }
 
 public class ImportService : ServiceBase, IImportService
@@ -28,12 +26,10 @@ public class ImportService : ServiceBase, IImportService
         _importerFactory = importerFactory;
     }
 
-    public async Task Import(Guid accountId, IFormFile file, CancellationToken cancellationToken = default)
+    public async Task Import(Guid accountId, Stream stream, CancellationToken cancellationToken = default)
     {
         var account = await _accountRepository.Get(accountId, cancellationToken);
-        IImporter importer = await _importerFactory.Create(accountId, cancellationToken);
-
-        using Stream stream = file.OpenReadStream();
+        IImporter importer = await _importerFactory.Create(accountId, cancellationToken) ?? throw new ArgumentException("Not a valid import account", nameof(accountId));
 
         var importResult = await importer.Import(account, stream, cancellationToken);
 

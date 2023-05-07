@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[AccountHolder]
 (
-	[AccountHolderId] UNIQUEIDENTIFIER NOT NULL,
+    [AccountHolderId] UNIQUEIDENTIFIER NOT NULL,
     [EmailAddress] NVARCHAR(255) NOT NULL,
     [FirstName] NVARCHAR(255) NULL,
     [LastName] NVARCHAR(255) NULL,

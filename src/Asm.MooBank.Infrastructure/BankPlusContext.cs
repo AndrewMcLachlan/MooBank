@@ -77,25 +77,6 @@ public partial class BankPlusContext : DbContext, IUnitOfWork, IReadOnlyDbContex
             entity.HasKey(e => e.Id);
         });
 
-        modelBuilder.Entity<AccountHolder>(entity =>
-        {
-            entity.HasIndex(e => e.EmailAddress)
-                .HasDatabaseName("IX_AccountHolder_Email")
-                .IsUnique();
-
-            entity.HasKey(e => e.AccountHolderId);
-
-            entity.Property(e => e.EmailAddress)
-                .IsRequired()
-                .HasMaxLength(255);
-
-            entity.Property(e => e.FirstName)
-                .HasMaxLength(255);
-
-            entity.Property(e => e.LastName)
-                .HasMaxLength(255);
-        });
-
         /*modelBuilder.Entity<RecurringTransaction>(entity =>
         {
             entity.Property(e => e.Amount).HasColumnType("decimal(10, 2)");

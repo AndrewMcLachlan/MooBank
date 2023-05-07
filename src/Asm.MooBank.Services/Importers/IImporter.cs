@@ -7,5 +7,18 @@ public interface IImporter
 {
     Task<TransactionImportResult> Import(Account account, Stream contents, CancellationToken cancellationToken = default);
 
-    GetTransactionExtraDetails? CreateExtraDetailsRequest(Models.PagedResult<Models.Transaction> transactions);
+    /// <summary>
+    /// Reprocess existing transactions.
+    /// </summary>
+    /// <param name="account">The account to process</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task Reprocess(Account account, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Creates a query request to get transaction extra details.
+    /// </summary>
+    /// <param name="transactions">The transaction to enrich.</param>
+    /// <returns>A query request.</returns>
+    GetTransactionExtraDetails? CreateExtraDetailsRequest(Guid accountId, Models.PagedResult<Models.Transaction> transactions);
 }

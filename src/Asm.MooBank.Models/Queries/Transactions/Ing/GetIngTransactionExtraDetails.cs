@@ -1,3 +1,3 @@
 ﻿namespace Asm.MooBank.Models.Queries.Transactions.Ing;
 
-public record GetIngTransactionExtraDetails(PagedResult<Transaction> Transactions) : GetTransactionExtraDetails(Transactions);
+public record GetIngTransactionExtraDetails(Guid AccountId, PagedResult<Transaction> Transactions) : GetTransactionExtraDetails(Transactions);

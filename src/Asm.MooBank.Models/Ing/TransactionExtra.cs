@@ -10,9 +10,11 @@ public partial record TransactionExtra
 
     public int? ReceiptNumber { get; set; }
 
-    public string Location { get; set; }
+    public string? Location { get; set; }
 
     public DateTime? PurchaseDate { get; set; }
 
     public string? Reference { get; set; }
+
+    public string? Who { get; set; }
 }

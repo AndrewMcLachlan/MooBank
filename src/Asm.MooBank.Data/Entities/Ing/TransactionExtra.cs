@@ -25,5 +25,8 @@ public partial class TransactionExtra
     [StringLength(50)]
     public string? Reference { get; set; }
 
+    public short? Last4Digits { get; set; }
+
     public virtual Transaction Transaction { get; set; }
+
 }

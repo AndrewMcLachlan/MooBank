@@ -9,15 +9,14 @@ export const TransactionTagTransactionTagPanel: React.FC<TransactionTagTransacti
 
     const tagRow = useTagEvents(tag);
 
-    const fullTagsListQuery = useTags();
-    const fullTagsList = fullTagsListQuery.data ?? [];
+    const {data: fullTagsList} = useTags();
 
     const [tagsList, setTagsList] = useState<TransactionTag[]>([]);
 
     useEffect(() => {
-        if (!fullTagsListQuery.data) return;
+        if (!fullTagsList) return;
         setTagsList(fullTagsList.filter((t) => t.id !== tag.id && tagRow.tags && !tagRow.tags.some((tt) => t.id === tt.id)));
-    }, [tagRow.tags, fullTagsListQuery.data]);
+    }, [tagRow.tags, fullTagsList]);
 
     return (
         <TransactionTagPanel {...rest} selectedItems={tagRow.tags} items={tagsList} onAdd={tagRow.addTag} onRemove={tagRow.removeTag} onCreate={tagRow.createTag} allowCreate={true} />

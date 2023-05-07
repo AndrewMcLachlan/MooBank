@@ -1,6 +1,12 @@
-﻿namespace Asm.MooBank.Domain.Entities.Ing;
+﻿using Asm.MooBank.Domain.Entities.Transactions;
 
-public interface ITransactionExtraRepository
+namespace Asm.MooBank.Domain.Entities.Ing;
+
+public interface ITransactionExtraRepository : IRepository<TransactionExtra>
 {
     void AddRange(IEnumerable<TransactionExtra> transactions);
+
+    Task<IEnumerable<Transaction>> GetUnprocessedTransactions(IEnumerable<Transaction> transactions, CancellationToken cancellationToken = default);
+
+    Task<IEnumerable<TransactionExtra>> GetAll(Guid accountId, CancellationToken cancellationToken = default);
 }

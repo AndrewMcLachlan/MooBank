@@ -1,4 +1,5 @@
-﻿using Asm.MooBank.Importers;
+﻿using Asm.MooBank.Domain.Entities.ReferenceData;
+using Asm.MooBank.Importers;
 using IInstitutionAccountRepository = Asm.MooBank.Domain.Entities.Account.IInstitutionAccountRepository;
 
 namespace Asm.MooBank.Services.Importers;
@@ -19,6 +20,20 @@ public class ImporterFactory : IImporterFactory
         var account = await _accountRepository.Get(accountId, cancellationToken);
 
         var typeName = account.ImportAccount?.ImporterType.Type;
+
+        if (typeName == null)
+        {
+            return null;
+        }
+
+        var type = Type.GetType(typeName) ?? throw new InvalidOperationException("Not a valid importer type");
+
+        return _services.GetService(type) as IImporter ?? throw new InvalidOperationException("Not a valid importer type"); ;
+    }
+
+    public IImporter? Create(ImporterType? importerType)
+    {
+        var typeName = importerType?.Type;
 
         if (typeName == null)
         {

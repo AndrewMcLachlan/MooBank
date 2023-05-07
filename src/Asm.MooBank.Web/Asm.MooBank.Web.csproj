@@ -48,6 +48,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Asm.MooBank.Commands\Asm.MooBank.Commands.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Data\Asm.MooBank.Domain.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Infrastructure\Asm.MooBank.Infrastructure.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Models\Asm.MooBank.Models.csproj" />

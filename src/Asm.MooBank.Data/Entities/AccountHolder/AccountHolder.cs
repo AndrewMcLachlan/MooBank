@@ -7,6 +7,7 @@ public partial class AccountHolder
     public AccountHolder()
     {
         Accounts = new HashSet<Account.Account>();
+        Cards = new HashSet<AccountHolderCard>();
     }
     public Guid AccountHolderId { get; set; }
     public string EmailAddress { get; set; }
@@ -15,4 +16,6 @@ public partial class AccountHolder
 
     [NotMapped]
     public virtual ICollection<Account.Account> Accounts { get; set; }
+
+    public virtual ICollection<AccountHolderCard> Cards { get; set; }
 }

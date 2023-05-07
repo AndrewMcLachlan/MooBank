@@ -30,3 +30,21 @@ public partial record TransactionExtra
         };
     }
 }
+
+public static class TransactionExtraExtensions
+{
+    public static TransactionExtra ToModel(this Domain.Entities.Ing.TransactionExtra entity, IDictionary<short, string?> cardNames)
+    {
+        return new TransactionExtra
+        {
+            Description = entity.Description,
+            Location = entity.Location,
+            PurchaseDate = entity.PurchaseDate,
+            PurchaseType = entity.PurchaseType,
+            ReceiptNumber = entity.ReceiptNumber,
+            Reference = entity.Reference,
+            TransactionId = entity.TransactionId,
+            Who = entity.Last4Digits != null && cardNames.ContainsKey(entity.Last4Digits.Value) ? cardNames[entity.Last4Digits.Value] : null,
+        };
+    }
+}
