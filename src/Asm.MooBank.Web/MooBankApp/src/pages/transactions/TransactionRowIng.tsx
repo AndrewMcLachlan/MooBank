@@ -7,6 +7,7 @@ import { TransactionTransactionTagPanel } from "./TransactionTransactionTagPanel
 import { TransactionDetails } from "./TransactionDetails";
 import { useUpdateTransaction } from "services";
 import { Transaction } from "models";
+import { formatCurrency } from "helpers";
 
 export const TransactionRowIng: React.FC<TransactionRowProps> = (props) => {
 
@@ -28,12 +29,11 @@ export const TransactionRowIng: React.FC<TransactionRowProps> = (props) => {
         <>
             <TransactionDetails transaction={props.transaction} show={showDetails} onHide={() => setShowDetails(false)} onSave={onSave} />
             <tr className="clickable transaction-row" onClick={() => setShowDetails(true)} title={props.transaction.notes}>
-                <td>{format(parseISO(props.transaction.transactionTime), "dd/MM/yyyy")}</td>
+                <td>{props.transaction.extraInfo.purchaseDate ? format(parseISO(props.transaction.extraInfo.purchaseDate), "dd/MM/yyyy") : format(parseISO(props.transaction.transactionTime), "dd/MM/yyyy")}</td>
                 <td>{props.transaction.extraInfo.description}</td>
                 <td>{props.transaction.extraInfo.location}</td>
-                <td>{props.transaction.extraInfo.purchaseDate && format(parseISO(props.transaction.extraInfo.purchaseDate), "dd/MM/yyyy")}</td>
                 <td>{props.transaction.extraInfo.who}</td>
-                <td className="amount">{props.transaction.amount.toLocaleString("en-AU", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td className="amount">{formatCurrency(props.transaction.amount)}</td>
                 <TransactionTransactionTagPanel as="td" transaction={props.transaction} />
             </tr>
         </>

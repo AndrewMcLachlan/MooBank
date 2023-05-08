@@ -17,6 +17,7 @@ export interface Transaction {
     reference: string;
     accountId: string;
     amount: number;
+    netAmount: number;
     description: string;
     transactionTime: string;
     transactionType: TransactionType;

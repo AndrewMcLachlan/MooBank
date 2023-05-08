@@ -6,6 +6,7 @@ import { Transaction } from "models";
 import { TransactionDetails } from "./TransactionDetails";
 import { TransactionTransactionTagPanel } from "./TransactionTransactionTagPanel";
 import { useUpdateTransaction } from "services";
+import { formatCurrency } from "helpers";
 
 export const TransactionRow: React.FC<TransactionRowProps> = (props) => {
 
@@ -25,7 +26,7 @@ export const TransactionRow: React.FC<TransactionRowProps> = (props) => {
             <tr className="clickable transaction-row" onClick={() => setShowDetails(true)} title={props.transaction.notes}>
                 <td>{format(parseISO(props.transaction.transactionTime), "dd/MM/yyyy")}</td>
                 <td className="description" colSpan={props.colspan}>{props.transaction.description}</td>
-                <td className="amount">{props.transaction.amount.toLocaleString("en-AU", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td className="amount">{formatCurrency(props.transaction.amount)}</td>
                 <TransactionTransactionTagPanel as="td" transaction={props.transaction} />
             </tr>
         </>

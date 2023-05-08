@@ -65,7 +65,7 @@ export const TransactionTagRules: React.FC = () => {
                         <tr>
                             <th className={`column-20 sortable ${sortDirection.toLowerCase()}`} onClick={() => setSortDirection(changeSortDirection(sortDirection))}>When a transaction contains</th>
                             <th className="column-30">Apply tag(s)</th>
-                            <th className="column-35">Description</th>
+                            <th className="column-35">Notes</th>
                             <th className="column-5"></th>
                         </tr>
                     </thead>

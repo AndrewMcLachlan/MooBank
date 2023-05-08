@@ -1,11 +1,10 @@
-import "./TransactionDetails.scss";
-
 import { Transaction, isCredit } from "models";
 import { Button, Modal, } from "react-bootstrap";
 import { TransactionTransactionTagPanel } from "./TransactionTransactionTagPanel";
 import { useEffect, useState } from "react";
 import { TransactionSearch } from "components";
 import { TransactionDetailsIng } from "./TransactionDetailsIng";
+import { formatCurrency } from "helpers";
 
 export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => {
 
@@ -25,7 +24,13 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
             <Modal.Body>
                 <section className="transaction-details">
                     <div>Amount</div>
-                    <div className="value amount">{props.transaction.amount}</div>
+                    <div className="value amount">{formatCurrency(props.transaction.amount)}</div>
+                    {props.transaction.netAmount !== props.transaction.amount &&
+                        <>
+                            <div>Net Amount</div>
+                            <div className="value amount">{formatCurrency(props.transaction.netAmount)}</div>
+                        </>
+                    }
                     <div>Description</div>
                     <div className="value description">{props.transaction.description}</div>
                     {props.transaction.extraInfo && <TransactionDetailsIng transaction={transaction} />}

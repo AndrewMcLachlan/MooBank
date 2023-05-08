@@ -1,5 +1,6 @@
 ﻿@import "~@andrewmclachlan/mooapp/scss/mooapp.scss";
 @import "../scss/transactionTagDetails";
+@import "../scss/transactionDetails";
 
 :root {
     --bs-font-sans-serif: 'Open Sans Condensed', 'Franklin Gothic', Helvetica, Arial, sans-serif;
@@ -219,11 +220,13 @@ td {
         cursor: pointer;
 
         &.ascending::before {
-            content: '\1F815'
+            content: '\1F815';
+            margin-right: 5px;
         }
 
         &.descending::before {
-            content: '\1F817'
+            content: '\1F817';
+            margin-right: 5px;
         }
     }
 }

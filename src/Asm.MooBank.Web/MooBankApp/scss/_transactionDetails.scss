@@ -11,3 +11,10 @@
         font-weight: bold;
     }
 }
+
+.transaction-details-extra {
+    grid-column: 1 / span 2;
+    display: grid;
+    grid-template-columns: 110px 250px 110px 250px;
+    row-gap: 10px;
+}

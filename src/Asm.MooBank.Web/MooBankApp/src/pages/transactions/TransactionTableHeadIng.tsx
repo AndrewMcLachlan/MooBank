@@ -23,14 +23,9 @@ export const TransactionTableHeadIng: React.FC = () => {
     return (
         <thead>
             <tr className="transaction-head-ing">
-                <th className={getClassName("TransactionTime")} onClick={() => sort("TransactionTime")}>Date</th>
+                <th className={getClassName("TransactionTime")} onClick={() => sort("TransactionTime")}>Purchase Date</th>
                 <th className={getClassName("Description")} onClick={() => sort("Description")}>Description</th>
-                {/*
-                <th className={getClassName("PurchaseType")}>Purchase Type</th>
-                <th className={getClassName("ReceiptNumber")}>Receipt #</th>
-                */}
                 <th>Location</th>
-                <th>Purchase Date</th>
                 <th>Who</th>
                 <th className={getClassName("Amount")} onClick={() => sort("Amount")}>Amount</th>
                 <th>Tags</th>
