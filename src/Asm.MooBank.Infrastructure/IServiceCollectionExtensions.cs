@@ -12,6 +12,7 @@ using Asm.MooBank.Domain.Entities.TransactionTags;
 using Asm.MooBank.Infrastructure;
 using Asm.MooBank.Infrastructure.Repositories;
 using Asm.MooBank.Infrastructure.Repositories.Ing;
+using Asm.MooBank.Security;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 
