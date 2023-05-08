@@ -21,13 +21,13 @@ internal sealed class AddSubTagHandler : DataCommandHandler, ICommandHandler<Add
     {
         request.Deconstruct(out int id, out int subId);
 
-        if (id == subId) throw new InvalidOperationException("Cannot add a tag to itself!");
+        if (id == subId) throw new ExistsException("Cannot add a tag to itself!");
 
         var tag = await GetEntity(id, true, cancellationToken);
         var subTag = await GetEntity(subId, false, cancellationToken);
 
         if (_transactionTagRelationships.Any(tr => tr.TransactionTag == subTag && tr.ParentTag == tag)) throw new ExistsException($"{subTag.Name} is already a child or grand-child of {tag.Name}");
-        if (_transactionTagRelationships.Any(tr => tr.TransactionTag == tag && tr.ParentTag == subTag)) throw new InvalidOperationException($"{subTag.Name} is parent or grand-parent of {tag.Name}. Circular relationships are not allowed!");
+        if (_transactionTagRelationships.Any(tr => tr.TransactionTag == tag && tr.ParentTag == subTag)) throw new ExistsException($"{subTag.Name} is parent or grand-parent of {tag.Name}. Circular relationships are not allowed!");
 
         tag.Tags.Add(subTag);
 

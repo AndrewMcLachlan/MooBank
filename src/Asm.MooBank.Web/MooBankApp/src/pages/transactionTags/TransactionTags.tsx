@@ -131,7 +131,7 @@ const useComponentState = () => {
     }
 
     const keyUp: React.KeyboardEventHandler<HTMLTableCellElement> = (e) => {
-        if (e.key === "Enter" || e.key === "Tab") {
+        if (e.key === "Enter") {
             createTag();
         }
     }

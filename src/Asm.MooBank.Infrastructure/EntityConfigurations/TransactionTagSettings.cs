@@ -1,6 +1,6 @@
 ﻿namespace Asm.MooBank.Infrastructure.EntityConfigurations;
 
-public class TransactionTagSettings : IEntityTypeConfiguration<Domain.Entities.TransactionTags.TransactionTagSettings>
+public class TransactionTagSettingsConfiguration : IEntityTypeConfiguration<Domain.Entities.TransactionTags.TransactionTagSettings>
 {
     public void Configure(EntityTypeBuilder<Domain.Entities.TransactionTags.TransactionTagSettings> entity)
     {
