@@ -1,0 +1,20 @@
+.transaction-details {
+    display: grid;
+    grid-template-columns: 110px calc(100% - 110px);
+    row-gap: 10px;
+
+    h4 {
+        font-weight: bold;
+    }
+
+    .value {
+        font-weight: bold;
+    }
+}
+
+.transaction-details-extra {
+    grid-column: 1 / span 2;
+    display: grid;
+    grid-template-columns: 110px 250px 110px 250px;
+    row-gap: 10px;
+}

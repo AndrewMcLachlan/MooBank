@@ -32,10 +32,10 @@ public class AccountService : ServiceBase, IAccountService
     private readonly IInstitutionAccountRepository _accountRepository;
     private readonly ITransactionRepository _transactionRepository;
     private readonly IAccountHolderRepository _accountHolderRepository;
-    private readonly ISecurityRepository _securityRepository;
+    private readonly Domain.Repositories.ISecurity _securityRepository;
     private readonly IUserDataProvider _userDataProvider;
 
-    public AccountService(IUnitOfWork unitOfWork, IRunRulesQueue queue, IInstitutionAccountRepository accountRepository, IAccountHolderRepository accountHolderRepository, ITransactionRepository transactionRepository, IUserDataProvider userDataProvider, ISecurityRepository securityRepository) : base(unitOfWork)
+    public AccountService(IUnitOfWork unitOfWork, IRunRulesQueue queue, IInstitutionAccountRepository accountRepository, IAccountHolderRepository accountHolderRepository, ITransactionRepository transactionRepository, IUserDataProvider userDataProvider, Domain.Repositories.ISecurity securityRepository) : base(unitOfWork)
     {
         _queue = queue;
         _accountRepository = accountRepository;

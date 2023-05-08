@@ -7,8 +7,6 @@ namespace Asm.MooBank.Domain.Entities.Account;
 [AggregateRoot]
 public class Account
 {
-    private readonly IUserIdProvider? _userIdProvider;
-
     public Account()
     {
         Transactions = new HashSet<Transaction>();

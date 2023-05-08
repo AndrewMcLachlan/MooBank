@@ -1,5 +1,4 @@
-﻿using System.Linq.Expressions;
-using Asm.Domain;
+﻿using Asm.Domain;
 using Asm.MooBank.Domain.Entities.TransactionTags;
 
 namespace Asm.MooBank.Domain.Entities.Transactions;
@@ -20,6 +19,8 @@ public partial class Transaction
 
     public decimal Amount { get; set; }
 
+    public decimal NetAmount { get; set; }
+
     public string? Description { get; set; }
 
     public DateTime TransactionTime { get; set; }
@@ -28,9 +29,15 @@ public partial class Transaction
 
     public bool ExcludeFromReporting { get; set; }
 
+    public Guid? OffsetByTransactionId { get; set; }
+
     public virtual ICollection<TransactionTag> TransactionTags { get; set; }
 
     public virtual Account.Account Account { get; set; }
+
+    public virtual Transaction? OffsetBy { get; set; }
+
+    public virtual Transaction? Offsets { get; set; }
 
     public TransactionType TransactionType { get; set; }
 }

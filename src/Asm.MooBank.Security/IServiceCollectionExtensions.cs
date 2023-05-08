@@ -1,7 +1,6 @@
-﻿using Asm.MooBank.Security;
-using Asm.MooBank.Services;
+﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Asm.MooBank.Security;
 
 public static class IServiceCollectionExtensions
 {

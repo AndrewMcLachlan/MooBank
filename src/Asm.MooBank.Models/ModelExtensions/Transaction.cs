@@ -2,21 +2,23 @@
 
 public partial record Transaction
 {
-    public static explicit operator Transaction(Domain.Entities.Transactions.Transaction transaction)
-    {
-        return new Transaction
+    public static explicit operator Transaction(Domain.Entities.Transactions.Transaction transaction) =>
+        new()
         {
             Id = transaction.TransactionId,
             Reference = transaction.TransactionReference,
             Amount = transaction.Amount,
+            NetAmount = transaction.NetAmount,
             TransactionTime = transaction.TransactionTime,
             TransactionType = transaction.TransactionType,
             AccountId = transaction.AccountId,
             Description = transaction.Description,
             Notes = transaction.Notes,
             Tags = transaction.TransactionTags.Where(t => !t.Deleted).ToSimpleModel(),
+            OffsetBy = transaction.OffsetBy?.ToSimpleModel(),
+            Offsets = transaction.Offsets?.ToSimpleModel(),
+
         };
-    }
 
     public static explicit operator Domain.Entities.Transactions.Transaction(Transaction transaction)
     {
@@ -30,12 +32,27 @@ public partial record Transaction
             AccountId = transaction.AccountId,
             Description = transaction.Description,
             Notes = transaction.Notes,
+            OffsetByTransactionId = transaction.OffsetBy?.Id,
         };
     }
 }
 
 public static class IEnumerableTransactionExtensions
 {
+    public static Transaction ToSimpleModel(this Domain.Entities.Transactions.Transaction transaction) =>
+        new()
+        {
+            Id = transaction.TransactionId,
+            Reference = transaction.TransactionReference,
+            Amount = transaction.Amount,
+            NetAmount = transaction.NetAmount,
+            TransactionTime = transaction.TransactionTime,
+            TransactionType = transaction.TransactionType,
+            AccountId = transaction.AccountId,
+            Description = transaction.Description,
+            Notes = transaction.Notes,
+        };
+
     public static IEnumerable<Transaction> ToModel(this IEnumerable<Domain.Entities.Transactions.Transaction> entities)
     {
         return entities.Select(t => (Transaction)t);

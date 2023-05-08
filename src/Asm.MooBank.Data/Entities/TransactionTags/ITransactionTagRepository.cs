@@ -4,7 +4,9 @@ namespace Asm.MooBank.Domain.Entities.TransactionTags;
 
 public interface ITransactionTagRepository : IDeletableRepository<TransactionTag, int>
 {
-    Task<IEnumerable<TransactionTag>> Get(IEnumerable<int> tagIds);
+    void AddSettings(TransactionTag transactionTag);
 
-    Task<TransactionTag> Get(int id, bool includeSubTags = false);
+    Task<IEnumerable<TransactionTag>> Get(IEnumerable<int> tagIds, CancellationToken cancellationToken = default);
+
+    Task<TransactionTag> Get(int id, bool includeSubTags = false, CancellationToken cancellationToken = default);
 }

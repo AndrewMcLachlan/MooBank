@@ -18,7 +18,7 @@ import { SearchBox } from "components/SearchBox";
 
 export const TransactionTags: React.FC = () => {
 
-    const { newTag, pagedTags, tagsList, addTag, createTag, removeTag, nameChange, pageNumber, numberOfPages, pageChange, totalTags, sortDirection, setSortDirection, keyUp, search, setSearch } = useComponentState();
+    const { newTag, pagedTags, tagsList, addTag, createTag, removeTag, nameChange, pageNumber, numberOfPages, pageChange, totalTags, sortDirection, setSortDirection, keyUp, search, setSearch, isLoading } = useComponentState();
 
     return (
         <Page title="Tags">
@@ -34,6 +34,7 @@ export const TransactionTags: React.FC = () => {
                         <tr>
                             <th className={`column-15 sortable ${sortDirection.toLowerCase()}`} onClick={() => setSortDirection(changeSortDirection(sortDirection))}>Name</th>
                             <th>Tags</th>
+                            <th className="column-5"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -42,16 +43,18 @@ export const TransactionTags: React.FC = () => {
                             <TransactionTagPanel as="td" selectedItems={newTag.tags} items={tagsList} onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} onKeyUp={keyUp} />
                             <td className="row-action"><span onClick={createTag}><ClickableIcon icon="check-circle" title="Save" size="xl" /></span></td>
                         </tr>
-                        {pagedTags.map((t) => <TransactionTagRow key={t.id} tag={t} />)}
+                        {pagedTags.map((t, i) => <TransactionTagRow key={i} tag={t} />)}
                     </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colSpan={1} className="page-totals">Page {pageNumber} of {numberOfPages} ({totalTags} tags)</td>
-                            <td colSpan={2}>
-                                <Pagination pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={pageChange} />
-                            </td>
-                        </tr>
-                    </tfoot>
+                    {!isLoading &&
+                        <tfoot>
+                            <tr>
+                                <td colSpan={1} className="page-totals">Page {pageNumber} of {numberOfPages} ({totalTags} tags)</td>
+                                <td colSpan={2}>
+                                    <Pagination pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={pageChange} />
+                                </td>
+                            </tr>
+                        </tfoot>
+                    }
                 </Table>
             </Page.Content>
         </Page>
@@ -62,18 +65,17 @@ const useComponentState = () => {
 
     const blankTag = { id: 0, name: "", tags: [] } as TransactionTag;
 
-    const fullTagsListQuery = useTags();
-    const fullTagsList = fullTagsListQuery.data ?? [];
+    const { data: allTags, isLoading } = useTags();
 
     const createTransactionTag = useCreateTag();
+
+    const [pageNumber, setPageNumber] = useState<number>(1);
+    const [pageSize, setPageSize] = useState<number>(20);
 
     const [newTag, setNewTag] = useState(blankTag);
     const [tagsList, setTagsList] = useState<TransactionTag[]>([]);
     const [filteredTags, setFilteredTags] = useState<TransactionTag[]>([]);
-    const [pagedTags, setPagedTags] = useState<TransactionTag[]>([]);
-
-    const [pageNumber, setPageNumber] = useState<number>(1);
-    const [pageSize, setPageSize] = useState<number>(20);
+    const [pagedTags, setPagedTags] = useState<TransactionTag[]>(Array.from({ length: pageSize }).map(v => undefined));
 
     const [sortDirection, setSortDirection] = useState<sortDirection>("Ascending");
     const [search, setSearch] = useState("");
@@ -83,17 +85,21 @@ const useComponentState = () => {
     const pageChange = (_current: number, newPage: number) => setPageNumber(newPage);
 
     useEffect(() => {
-        setFilteredTags(fullTagsList.filter(t => t.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())));
-    }, [fullTagsList, search]);
+        setFilteredTags(allTags?.filter(t => t?.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())) ?? []);
+    }, [JSON.stringify(allTags), search]);
 
     useEffect(() => {
+        if (isLoading) {
+            setPagedTags(Array.from({ length: pageSize }).map(v => undefined));
+            return;
+        }
         setPagedTags(filteredTags.sort(sortTags(sortDirection)).slice((pageNumber - 1) * pageSize, ((pageNumber - 1) * pageSize) + pageSize));
     }, [filteredTags, sortDirection, pageNumber]);
 
     useEffect(() => {
-        if (!fullTagsListQuery.data) return;
-        setTagsList(fullTagsListQuery.data.filter((t) => !newTag.tags.some((tt) => t.id === tt.id)));
-    }, [newTag.tags, fullTagsListQuery.data]);
+        if (!allTags) return;
+        setTagsList(allTags.filter((t) => !newTag.tags.some((tt) => t.id === tt.id)));
+    }, [newTag.tags, allTags]);
 
     const createTag = () => {
         createTransactionTag.mutate(newTag);
@@ -132,8 +138,8 @@ const useComponentState = () => {
 
     return {
         newTag,
-        fullTagsList,
         tagsList,
+        isLoading,
 
         createTag,
         createSubTag,
@@ -143,7 +149,7 @@ const useComponentState = () => {
         nameChange,
 
         pagedTags,
-        pageNumber, numberOfPages, pageChange, totalTags,
+        pageNumber, numberOfPages, pageChange, totalTags, pageSize,
         sortDirection, setSortDirection,
 
         keyUp,

@@ -10,14 +10,16 @@
     <PackageReference Include="Asm" Version="3.0.638" />
     <PackageReference Include="Asm.Cqrs" Version="3.0.638" />
     <PackageReference Include="Azure.Identity" Version="1.8.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Asm.MooBank\Asm.MooBank.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Data\Asm.MooBank.Domain.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Importers\Asm.MooBank.Importers.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Infrastructure\Asm.MooBank.Infrastructure.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Models\Asm.MooBank.Models.csproj" />
-    <ProjectReference Include="..\Asm.MooBank\Asm.MooBank.csproj" />
+
   </ItemGroup>
 
 </Project>

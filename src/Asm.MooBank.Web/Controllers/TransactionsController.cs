@@ -2,7 +2,6 @@
 using Asm.Cqrs.Queries;
 using Asm.MooBank.Models.Commands.Transaction;
 using Asm.MooBank.Models.Queries.Transactions;
-using Microsoft.Identity.Client;
 
 namespace Asm.MooBank.Web.Controllers;
 
@@ -38,23 +37,22 @@ public class TransactionsController : CommandQueryController
         return new ActionResult<PagedResult<Transaction>>(result);
     }
 
+    [HttpGet]
+    public Task<IEnumerable<Transaction>> Search(Guid accountId, [FromQuery] DateOnly start, [FromQuery] TransactionType transactionType, [FromQuery] int[] tagIds, CancellationToken cancellationToken = default) =>
+        QueryDispatcher.Dispatch(new Search(accountId, start, transactionType, tagIds), cancellationToken);
+
     [HttpPatch("{id}")]
-    public async Task<Transaction> Add(Guid id, [FromBody]TransactionModel model, CancellationToken cancellationToken = default)
-    {
-        return await CommandDispatcher.Dispatch(new SetTransactionNotes(id, model.Notes), cancellationToken);
-    }
+    public Task<Transaction> Update(Guid id, [FromBody] TransactionModel model, CancellationToken cancellationToken = default) =>
+        CommandDispatcher.Dispatch(new UpdateTransaction(id, model.Notes, model.OffsetByTransactionId), cancellationToken);
 
     [HttpPut("{id}/tag/{tagId}")]
-    public async Task<ActionResult<Transaction>> Add(Guid accountId, Guid id, int tagId, CancellationToken cancellationToken = default)
-    {
-        return Created($"api/transactions/{id}/tag/{tagId}", await _transactionService.AddTransactionTag(accountId, id, tagId, cancellationToken));
-    }
+    public async Task<ActionResult<Transaction>> Add(Guid accountId, Guid id, int tagId, CancellationToken cancellationToken = default) =>
+        Created($"api/transactions/{id}/tag/{tagId}", await _transactionService.AddTransactionTag(accountId, id, tagId, cancellationToken));
+
 
     [HttpDelete("{id}/tag/{tagId}")]
-    public async Task<ActionResult<Transaction>> RemoveTag(Guid accountId, Guid id, int tagId)
-    {
-        return await _transactionService.RemoveTransactionTag(accountId, id, tagId);
-    }
+    public Task<Transaction> RemoveTag(Guid accountId, Guid id, int tagId) =>
+        _transactionService.RemoveTransactionTag(accountId, id, tagId);
 
     private Task<PagedResult<Transaction>> GetTransactions(Guid accountId, int pageSize, int pageNumber, DateTime? start, DateTime? end, string? filter, int? tagId, string? sortField, SortDirection sortDirection, bool untaggedOnly, CancellationToken cancellationToken)
     {
@@ -74,4 +72,5 @@ public class TransactionsController : CommandQueryController
 
         return QueryDispatcher.Dispatch(request, cancellationToken);
     }
+
 }

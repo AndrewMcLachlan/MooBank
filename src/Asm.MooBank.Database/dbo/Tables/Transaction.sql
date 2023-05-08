@@ -5,13 +5,16 @@
     [AccountId] UNIQUEIDENTIFIER NOT NULL,
     [TransactionTypeId] INT NULL,
     [Amount] DECIMAL(10, 2) NOT NULL,
+    [NetAmount] AS dbo.TransactionNetAmount(OffsetByTransactionId, Amount),
     [Description] VARCHAR(255) NULL,
     [TransactionTime] DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
     [Notes] NVARCHAR(512) NULL,
-    [ExcludeFromReporting] BIT NOT NULL CONSTRAINT DF_Transaction_ExcludeFromReporting DEFAULT(0)
+    [ExcludeFromReporting] BIT NOT NULL CONSTRAINT DF_Transaction_ExcludeFromReporting DEFAULT(0),
+    [OffsetByTransactionId] UNIQUEIDENTIFIER NULL,
     CONSTRAINT [PK_Transaction] PRIMARY KEY CLUSTERED (TransactionId),
     CONSTRAINT [FK_Transaction_Account] FOREIGN KEY ([AccountId]) REFERENCES [Account]([AccountId]),
     CONSTRAINT [FK_Transaction_TransactionType] FOREIGN KEY ([TransactionTypeId]) REFERENCES [TransactionType]([TransactionTypeId]),
+    CONSTRAINT [FK_Transaction_Transaction] FOREIGN KEY ([TransactionId]) REFERENCES [Transaction]([TransactionId]),
 )
 
 GO

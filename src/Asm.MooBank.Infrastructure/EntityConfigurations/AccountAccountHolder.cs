@@ -1,6 +1,6 @@
 ﻿namespace Asm.MooBank.Infrastructure.EntityConfigurations;
 
-internal class AccountAccountHolder : IEntityTypeConfiguration<Domain.Entities.Account.AccountAccountHolder>
+internal class AccountAccountHolderConfiguration : IEntityTypeConfiguration<Domain.Entities.Account.AccountAccountHolder>
 {
     public void Configure(EntityTypeBuilder<Domain.Entities.Account.AccountAccountHolder> entity)
     {

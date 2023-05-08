@@ -9,6 +9,7 @@ export interface TransactionTag {
 
 export interface TransactionTagSettings {
     applySmoothing: boolean;
+    excludeFromReporting: boolean;
 }
 
 export const compareTransactionTags = (left: TransactionTag, right: TransactionTag):boolean => {

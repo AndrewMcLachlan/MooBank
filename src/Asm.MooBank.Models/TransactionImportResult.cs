@@ -1,5 +1,5 @@
 ﻿namespace Asm.MooBank.Models;
 
-class TransactionImportResult
+public class TransactionImportResult
 {
 }

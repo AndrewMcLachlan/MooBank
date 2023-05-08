@@ -11,11 +11,6 @@ public class InstitutionAccount : Account
         VirtualAccounts = new HashSet<VirtualAccount>();
     }
 
-   /* protected InstitutionAccount(IUserIdProvider userIdProvider) : base(userIdProvider)
-    {
-        VirtualAccounts = new HashSet<VirtualAccount>();
-    }*/
-
     public bool IncludeInPosition { get; set; }
 
     public new DateTimeOffset LastUpdated { get; set; }

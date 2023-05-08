@@ -31,7 +31,7 @@ export const AccountRow: React.FC<AccountRowProps> = (props) => {
                 <td onClick={showVirtualAccountsClick}>{props.account.virtualAccounts && props.account.virtualAccounts.length > 0 && <FontAwesomeIcon icon={showVirtualAccounts ? "chevron-down" : "chevron-right"} />}</td>
                 <td>{props.account.name}</td>
                 <td>{AccountType[props.account.accountType]}</td>
-                <td className={classNames("number", numberClassName(props.account.currentBalance))}>{getBalanceString(props.account.currentBalance)}</td>
+                <td className={classNames("amount", "number", numberClassName(props.account.currentBalance))}>{getBalanceString(props.account.currentBalance)}</td>
             </tr>
             {showVirtualAccounts && props.account.virtualAccounts &&
                 props.account.virtualAccounts.map(va => <VirtualAccountRow key={va.id} accountId={props.account.id} account={va} />)

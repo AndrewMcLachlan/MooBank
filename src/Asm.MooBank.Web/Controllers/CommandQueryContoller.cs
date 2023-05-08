@@ -1,6 +1,5 @@
 ﻿using Asm.Cqrs.Commands;
 using Asm.Cqrs.Queries;
-using Asm.MooBank.Services.Queries;
 
 namespace Asm.MooBank.Web.Controllers;
 

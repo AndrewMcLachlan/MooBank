@@ -5,6 +5,8 @@ import * as Models from "models";
 import { Transaction, TransactionTag } from "models";
 import { sortDirection, State, TransactionsFilter } from "store/state";
 import { useApiGet, useApiDelete, useApiDatalessPut, useApiPatch } from "@andrewmclachlan/mooapp";
+import format from "date-fns/format";
+import parseISO from "date-fns/parseISO";
 
 const transactionKey = "transactions";
 
@@ -32,7 +34,16 @@ export const useTransactions = (accountId: string, filter: TransactionsFilter, p
     return useApiGet<Models.PagedResult<Models.Transaction>>([transactionKey, accountId, filter, pageSize, pageNumber, sortField, sortDirection], `api/accounts/${accountId}/transactions/${filter.filterTagged ? "untagged/" : ""}${pageSize}/${pageNumber}${queryString}`);
 }
 
-export const useUpdateTransactionNotes = () => {
+export const useSearchTransactions = (transaction: Models.Transaction, searchType: Models.TransactionType) => {
+
+    let queryString = `?start=${format(parseISO(transaction.transactionTime), 'yyyy-MM-dd')}&transactionType=${searchType}&`;
+
+    queryString += transaction.tags.map(t => `tagIds=${t.id}`).join(`&`);
+
+    return useApiGet<Models.Transaction[]>([transactionKey, transaction.id], `api/accounts/${transaction.accountId}/transactions${queryString}`)
+}
+
+export const useUpdateTransaction = () => {
 
     const queryClient = useQueryClient();
 

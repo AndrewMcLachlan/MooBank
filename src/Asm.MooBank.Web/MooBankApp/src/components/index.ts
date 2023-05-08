@@ -8,5 +8,7 @@ export * from "./FormGroup";
 export * from "./FormRow";
 export * from "./Paginaton";
 export * from "./PeriodSelector";
+export * from "./TransactionSearch";
 export * from "./TransactionTagPanel";
 export * from "./TagSelector";
+export * from "./Tooltip";

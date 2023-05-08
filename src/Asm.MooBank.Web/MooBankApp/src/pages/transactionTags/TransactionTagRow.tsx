@@ -1,85 +1,64 @@
 import React, { useState, useEffect } from "react";
 
 import { TransactionTag } from "models";
-import { ClickableIcon } from "@andrewmclachlan/mooapp";
-import { TransactionTagPanel } from "components";
-import { useAddSubTag, useCreateTag, useDeleteTag, useRemoveSubTag, useTags } from "services";
+import { ClickableIcon, EditColumn } from "@andrewmclachlan/mooapp";
+import { useDeleteTag, useTags, useUpdateTag } from "services";
+import { TransactionTagTransactionTagPanel } from "./TransactionTagTransactionTagPanel";
+import { TransactionTagDetails } from "./TransactionTagDetails";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useUpdatingState } from "hooks";
 
 export const TransactionTagRow: React.FC<TransactionTagRowProps> = (props) => {
 
-    const transactionRow = useTransactionTagRowEvents(props);
+    const [showDetails, setShowDetails] = useState(false);
 
-    const fullTagsListQuery = useTags();
-    const fullTagsList = fullTagsListQuery.data ?? [];
+    const { tag, ...tagRow } = useTagRowEvents(props);
 
-    const [tagsList, setTagsList] = useState([]);
-
-    useEffect(() => {
-        setTagsList(fullTagsList.filter((t) => t.id !== props.tag.id && transactionRow.tags && !transactionRow.tags.some((tt) => t.id === tt.id)));
-    }, [transactionRow.tags, fullTagsList]);
-
+    if (!tag) return (
+        <tr className="empty-row"><td colSpan={3}>&nbsp;</td></tr>
+    );
+        
     return (
-        <tr>
-            <td>{props.tag.name}</td>
-            <TransactionTagPanel as="td" selectedItems={transactionRow.tags} items={tagsList} onAdd={transactionRow.addTag} onRemove={transactionRow.removeTag} onCreate={transactionRow.createTag} allowCreate={true} />
-            <td className="row-action"><span onClick={transactionRow.deleteTag}><ClickableIcon icon="trash-alt" title="Delete" /></span></td>
-        </tr>
+        <>
+            <TransactionTagDetails tag={tag} show={showDetails} onHide={() => setShowDetails(false)} />
+            <tr>
+                <EditColumn value={tag.name} onChange={(tagRow.updateTag)} />
+                <TransactionTagTransactionTagPanel as="td" tag={tag} />
+                <td className="row-action">
+                    <span onClick={() => setShowDetails(true)}><ClickableIcon icon="pen-to-square" title="Edit Details" size="1x" /></span>
+                    <span onClick={tagRow.deleteTag}><ClickableIcon icon="trash-alt" title="Delete" size="1x" /></span>
+                </td>
+            </tr>
+        </>
     );
 }
 
-function useTransactionTagRowEvents(props: TransactionTagRowProps) {
+function useTagRowEvents(props: TransactionTagRowProps) {
 
-    const [tags, setTags] = useState(props.tag.tags);
+    const [tag, setTag] = useUpdatingState(props.tag);
 
-    const createTransactionTag = useCreateTag();
+    const updateTransactionTag = useUpdateTag();
     const deleteTransactionTag = useDeleteTag();
-    const addSubTag = useAddSubTag();
-    const removeSubTag = useRemoveSubTag();
-
-    useEffect(() => {
-        setTags(props.tag.tags);
-    }, [props.tag.tags]);
-
-    const createTag = (name: string) => {
-        createTransactionTag.mutate({ name }, {
-            onSuccess: (data) => {
-                addSubTag.mutate({ tagId: props.tag.id, subTagId: data.id});
-            }
-        });
-    }
 
     const deleteTag = () => {
 
         if (window.confirm("Deleting this tag will remove it from all rules and transactions. Are you sure?")) {
-            deleteTransactionTag.mutate({ id: props.tag.id});
+            deleteTransactionTag.mutate({ id: props.tag.id });
         }
     }
 
-    const addTag = (tag: TransactionTag) => {
-
-        if (!tag.id) return;
-
-        addSubTag.mutate({ tagId: props.tag.id, subTagId: tag.id });
-        setTags(tags.concat([tag]));
-    }
-
-    const removeTag = (tag: TransactionTag) => {
-
-        if (!tag.id) return;
-
-        removeSubTag.mutate({ tagId: props.tag.id, subTagId: tag.id});
-        setTags(tags.filter((t) => t.id !== tag.id));
+    const updateTag = (name: string) => {
+        updateTransactionTag.mutate({ ...tag, name });
+        setTag({ ...tag, name });
     }
 
     return {
-        createTag,
         deleteTag,
-        addTag,
-        removeTag,
-        tags,
+        updateTag,
+        tag,
     };
 }
 
 export interface TransactionTagRowProps {
-    tag: TransactionTag;
+    tag?: TransactionTag;
 }

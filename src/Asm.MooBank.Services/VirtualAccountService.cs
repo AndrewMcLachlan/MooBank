@@ -19,10 +19,10 @@ public interface IVirtualAccountService
 
 public class VirtualAccountService : ServiceBase, IVirtualAccountService
 {
-    private readonly ISecurityRepository _securityRepository;
+    private readonly ISecurity _securityRepository;
     private readonly IVirtualAccountRepository _virtualAccountRepository;
 
-    public VirtualAccountService(IUnitOfWork unitOfWork, IVirtualAccountRepository virtualAccountRepository, ISecurityRepository securityRepository) : base(unitOfWork)
+    public VirtualAccountService(IUnitOfWork unitOfWork, IVirtualAccountRepository virtualAccountRepository, ISecurity securityRepository) : base(unitOfWork)
     {
         _virtualAccountRepository = virtualAccountRepository;
         _securityRepository = securityRepository;

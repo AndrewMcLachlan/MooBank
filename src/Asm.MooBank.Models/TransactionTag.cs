@@ -22,6 +22,8 @@ public partial record TransactionTag
     public partial record TransactionTagSettings
     {
         public bool ApplySmoothing { get; init; }
+
+        public bool ExcludeFromReporting { get; init; }
     }
 }
 

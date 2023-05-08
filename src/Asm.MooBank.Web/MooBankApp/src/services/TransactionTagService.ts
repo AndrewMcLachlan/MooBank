@@ -25,11 +25,38 @@ export const useCreateTag = () => {
         return (await httpClient.put<Models.TransactionTag>(`api/transaction/tags/${encodeURIComponent(name)}`, tags)).data;
     }, {
         onSuccess: (data: Models.TransactionTag) => {
-            queryClient.setQueryData<Models.TransactionTag>(["tags", { id: data.id }], data);
             const allTags = queryClient.getQueryData<Models.TransactionTag[]>(["tags"]);
             if (!allTags) return;
             const newTags = [data, ...allTags].sort((t1, t2) => t1.name.localeCompare(t2.name));
             queryClient.setQueryData<Models.TransactionTag[]>(["tags"], newTags);
+        }
+    });
+}
+
+export const useUpdateTag = () => {
+
+    const queryClient = useQueryClient();
+    const httpClient = useHttpClient();
+
+    return useMutation<Models.TransactionTag, null, Models.TransactionTag>(async (variables) => {
+
+        const name = variables.name?.trim() ?? (variables.name).trim();
+        const id = variables.id;
+
+        return (await httpClient.patch<Models.TransactionTag>(`api/transaction/tags/${id}`, { name, excludeFromReporting: variables.settings.excludeFromReporting, applySmoothing: variables.settings.applySmoothing })).data;
+    }, {
+        onSuccess: (data: Models.TransactionTag) => {
+            queryClient.setQueryData<Models.TransactionTag>(["tags", { id: data.id }], data);
+            const allTags = queryClient.getQueryData<Models.TransactionTag[]>(["tags"]);
+            if (!allTags) return;
+            
+            var tagIndex = allTags.findIndex(r => r.id === data.id);
+
+            allTags.splice(tagIndex, 1, data);
+
+            const newTags = allTags.sort((t1, t2) => t1.name.localeCompare(t2.name));
+            queryClient.setQueryData<Models.TransactionTag[]>(["tags"], newTags);
+            queryClient.invalidateQueries(["tags"]);
         }
     });
 }
@@ -54,9 +81,21 @@ export const useAddSubTag = () => {
     const queryClient = useQueryClient();
 
     return useApiDatalessPut<Models.TransactionTag, { tagId: number, subTagId: number }>((variables) => `api/transaction/tags/${variables.tagId}/tags/${variables.subTagId}`, {
-        onSuccess: (data: Models.TransactionTag, variables) => {
-            queryClient.setQueryData<Models.TransactionTag>(["tags", { id: variables.tagId }], data);
+        onSuccess: (data: Models.TransactionTag) => {
+            queryClient.setQueryData<Models.TransactionTag>(["tags", { id: data.id }], data);
+            const allTags = queryClient.getQueryData<Models.TransactionTag[]>(["tags"]);
+            if (!allTags) return;
+            
+            var tagIndex = allTags.findIndex(r => r.id === data.id);
+
+            allTags.splice(tagIndex, 1, data);
+
+            const newTags = allTags.sort((t1, t2) => t1.name.localeCompare(t2.name));
+            queryClient.setQueryData<Models.TransactionTag[]>(["tags"], newTags);
         }
+        /*onSuccess: (data: Models.TransactionTag, variables) => {
+            queryClient.setQueryData<Models.TransactionTag>(["tags", { id: variables.tagId }], data);
+        }*/
     });
 }
 
@@ -65,10 +104,22 @@ export const useRemoveSubTag = () => {
     const queryClient = useQueryClient();
 
     return useApiDelete<{ tagId: number, subTagId: number }>((variables) => `api/transaction/tags/${variables.tagId}/tags/${variables.subTagId}`, {
-        onSuccess: (data: null, variables) => {
+        onSuccess: (data: Models.TransactionTag) => {
+            queryClient.setQueryData<Models.TransactionTag>(["tags", { id: data.id }], data);
+            const allTags = queryClient.getQueryData<Models.TransactionTag[]>(["tags"]);
+            if (!allTags) return;
+            
+            var tagIndex = allTags.findIndex(r => r.id === data.id);
+
+            allTags.splice(tagIndex, 1, data);
+
+            const newTags = allTags.sort((t1, t2) => t1.name.localeCompare(t2.name));
+            queryClient.setQueryData<Models.TransactionTag[]>(["tags"], newTags);
+        }
+        /*onSuccess: (data: null, variables) => {
             const tag = queryClient.getQueryData<Models.TransactionTag>(["tags", { id: variables.tagId }]);
             if (!tag) return;
-            tag.tags =tag.tags.filter(t => t.id !== variables.subTagId);
-        }
+            tag.tags = tag.tags.filter(t => t.id !== variables.subTagId);
+        }*/
     });
 }

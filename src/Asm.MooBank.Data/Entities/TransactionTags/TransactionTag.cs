@@ -9,8 +9,10 @@ public partial class TransactionTag : IEquatable<TransactionTag>
 {
     public TransactionTag()
     {
+        Settings = new();
         TaggedTo = new HashSet<TransactionTag>();
         Tags = new HashSet<TransactionTag>();
+        Transactions = new HashSet<Transaction>();
     }
 
 
@@ -26,7 +28,7 @@ public partial class TransactionTag : IEquatable<TransactionTag>
 
     public virtual ICollection<TransactionTag> Tags { get; set; }
 
-    public virtual TransactionTagSettings? Settings { get; set; }
+    public virtual TransactionTagSettings Settings { get; set; }
 
     #region Equality
     public bool Equals(TransactionTag? other)

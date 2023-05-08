@@ -1,0 +1,17 @@
+.tag-details {
+    display: grid;
+    grid-template-columns: 200px calc(100% - 200px);
+    row-gap: 10px;
+
+    h4 {
+        font-weight: bold;
+    }
+
+    .value {
+        font-weight: bold;
+    }
+}
+
+.tooltip-icon {
+    margin-left: 5px;
+}

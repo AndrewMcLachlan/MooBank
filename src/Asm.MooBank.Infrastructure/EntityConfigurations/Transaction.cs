@@ -2,10 +2,13 @@
 
 namespace Asm.MooBank.Infrastructure.EntityConfigurations;
 
-public class Transaction : IEntityTypeConfiguration<Domain.Entities.Transactions.Transaction>
+internal class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
 {
-    public void Configure(EntityTypeBuilder<Domain.Entities.Transactions.Transaction> entity)
+    public void Configure(EntityTypeBuilder<Transaction> entity)
     {
+        // Required do to computed column savings issues. See https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-7.0/breaking-changes#sqlserver-tables-with-triggers
+        entity.ToTable(t => t.HasTrigger("FakeTrigger"));
+
         entity.HasKey("TransactionId");
 
         entity.Property(e => e.TransactionId).ValueGeneratedOnAdd();
@@ -15,6 +18,10 @@ public class Transaction : IEntityTypeConfiguration<Domain.Entities.Transactions
         entity.Property(e => e.Description)
             .HasMaxLength(255)
             .IsUnicode(false);
+
+        entity.Property(e => e.Amount).HasPrecision(10, 2);
+
+        entity.Property(e => e.NetAmount).HasComputedColumnSql();
 
         entity.Property(e => e.TransactionTime).HasDefaultValueSql("(sysdatetime())");
 
@@ -37,9 +44,11 @@ public class Transaction : IEntityTypeConfiguration<Domain.Entities.Transactions
                 });
 
         entity.Property(e => e.TransactionType)
-            .HasColumnName($"{nameof(Domain.Entities.Transactions.Transaction.TransactionType)}Id")
+            .HasColumnName($"{nameof(Transaction.TransactionType)}Id")
             .HasConversion(e => (int)e, e => (Models.TransactionType)e)
             .HasDefaultValue(Models.TransactionType.Debit);
+
+        entity.HasOne(e => e.OffsetBy).WithOne(e => e.Offsets).HasForeignKey<Transaction>(t => t.OffsetByTransactionId);
 
     }
 }

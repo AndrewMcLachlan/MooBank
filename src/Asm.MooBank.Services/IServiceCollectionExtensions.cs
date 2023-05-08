@@ -1,6 +1,4 @@
-﻿using Asm.MooBank.Importers;
-using Asm.MooBank.Services;
-using Asm.MooBank.Services.Importers;
+﻿using Asm.MooBank.Services;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -18,15 +16,5 @@ public static class AsmMooBankServicesIServiceCollectionExtensions
                 .AddScoped<IVirtualAccountService, VirtualAccountService>()
 
                 .AddHostedService<RunRulesService>()
-                .AddSingleton<IRunRulesQueue, RunRulesQueue>()
-                .AddScoped<IImporterFactory, ImporterFactory>()
-
-                .AddImporters();
-
-    public static IServiceCollection AddImporters(this IServiceCollection services) =>
-        services.AddScoped<IngImporter>();
-
-    public static IServiceCollection AddCqrs(this IServiceCollection services) =>
-        services.AddCommandHandlers(typeof(AsmMooBankServicesIServiceCollectionExtensions).Assembly)
-                .AddQueryHandlers(typeof(AsmMooBankServicesIServiceCollectionExtensions).Assembly);
+                .AddSingleton<IRunRulesQueue, RunRulesQueue>();
 }

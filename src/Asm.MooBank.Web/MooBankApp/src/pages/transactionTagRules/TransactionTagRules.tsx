@@ -21,9 +21,7 @@ export const TransactionTagRules: React.FC = () => {
 
     const { accountId } = useParams<{ accountId: string }>();
 
-    const rulesQuery = useRules(accountId!);
-    const { data } = rulesQuery;
-    const rules = data?.rules ?? [];
+    const {data: rules} = useRules(accountId!);
 
     const [filteredRules, setFilteredRules] = useState<TransactionTagRule[]>([]);
     const [pagedRules, setPagedRules] = useState<TransactionTagRule[]>([]);
@@ -37,7 +35,7 @@ export const TransactionTagRules: React.FC = () => {
     const pageChange = (_current: number, newPage: number) => setPageNumber(newPage);
     
     useEffect(() => {
-        setFilteredRules(rules.filter(r => r.contains.toLocaleLowerCase().includes(search.toLocaleLowerCase())));
+        setFilteredRules(rules?.rules.filter(r => r.contains.toLocaleLowerCase().includes(search.toLocaleLowerCase())) ?? []);
     }, [rules, search]);
 
     useEffect(() => {
@@ -67,7 +65,7 @@ export const TransactionTagRules: React.FC = () => {
                         <tr>
                             <th className={`column-20 sortable ${sortDirection.toLowerCase()}`} onClick={() => setSortDirection(changeSortDirection(sortDirection))}>When a transaction contains</th>
                             <th className="column-30">Apply tag(s)</th>
-                            <th className="column-35">Description</th>
+                            <th className="column-35">Notes</th>
                             <th className="column-5"></th>
                         </tr>
                     </thead>
