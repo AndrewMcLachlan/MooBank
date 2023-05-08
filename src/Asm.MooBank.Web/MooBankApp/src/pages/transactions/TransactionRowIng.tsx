@@ -22,7 +22,7 @@ export const TransactionRowIng: React.FC<TransactionRowProps> = (props) => {
     }
 
     if (!props.transaction.extraInfo) {
-        return <TransactionRow {...props} colspan={4} />;
+        return <TransactionRow {...props} colspan={3} />;
     }
 
     return (

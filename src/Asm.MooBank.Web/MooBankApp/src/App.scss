@@ -219,14 +219,16 @@ td {
     .sortable {
         cursor: pointer;
 
-        &.ascending::before {
+        &.ascending::after {
             content: '\1F815';
-            margin-right: 5px;
+            margin-right: -0.5rem;
+            margin-left: 0.25rem;
         }
 
-        &.descending::before {
+        &.descending::after {
             content: '\1F817';
-            margin-right: 5px;
+            margin-right: -0.5rem;
+            margin-left: 0.25rem;
         }
     }
 }
