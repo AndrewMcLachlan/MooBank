@@ -1,6 +1,6 @@
 ﻿using Asm.Cqrs.Commands;
 using Asm.Cqrs.Queries;
-using Asm.MooBank.Models.Commands.TransactionTags;
+using Asm.MooBank.Commands.TransactionTags;
 using Asm.MooBank.Models.Queries.TransactionTags;
 
 namespace Asm.MooBank.Web.Controllers
@@ -30,9 +30,9 @@ namespace Asm.MooBank.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<TransactionTag>> Create(TransactionTag tag)
+        public async Task<ActionResult<TransactionTag>> Create(TransactionTag tag, CancellationToken cancellationToken = default)
         {
-            var newTag = await _tagService.Create(tag);
+            var newTag = await CommandDispatcher.Dispatch(new Create(tag), cancellationToken);
 
             return Created($"api/transaction/tags/{newTag.Id}", newTag);
         }
@@ -40,7 +40,7 @@ namespace Asm.MooBank.Web.Controllers
         [HttpPut("{name}")]
         public async Task<ActionResult<TransactionTag>> CreateByName(string name, [FromBody]int[] tags, CancellationToken cancellationToken = default)
         {
-            var tag = await _tagService.Create(name, tags, cancellationToken);
+            var tag = await CommandDispatcher.Dispatch(new CreateByName(name, tags), cancellationToken);
 
             return Created($"api/transaction/tags/{tag.Id}", tag);
         }
@@ -57,11 +57,11 @@ namespace Asm.MooBank.Web.Controllers
         }
 
         [HttpPut("{id}/tags/{subId}")]
-        public async Task<ActionResult<TransactionTag>> AddSubTag(int id, int subId)
+        public async Task<ActionResult<TransactionTag>> AddSubTag(int id, int subId, CancellationToken cancellationToken = default)
         {
             if (id == subId) return Conflict();
 
-            var tag = await _tagService.AddSubTag(id, subId);
+            var tag = await CommandDispatcher.Dispatch(new AddSubTag(id, subId), cancellationToken);
 
             return Created($"api/transaction/tags/{id}/tags/{subId}", tag);
         }

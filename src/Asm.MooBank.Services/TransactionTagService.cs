@@ -6,10 +6,6 @@ namespace Asm.MooBank.Services;
 
 public interface ITransactionTagService
 {
-    Task<TransactionTag> Create(TransactionTag tag);
-
-    Task<TransactionTag> Create(string name, IEnumerable<int> tags, CancellationToken cancellationToken = default);
-
     Task<IEnumerable<TransactionTag>> GetAll(CancellationToken cancellationToken = default);
 
     Task<IEnumerable<TransactionTag>> Get(IEnumerable<int> tagIds, CancellationToken cancellationToken = default);
@@ -17,8 +13,6 @@ public interface ITransactionTagService
     Task<TransactionTag> Get(int id, CancellationToken cancellationToken = default);
 
     Task Delete(int id);
-
-    Task<TransactionTag> AddSubTag(int id, int subId);
 
     Task RemoveSubTag(int id, int subId);
 }
@@ -30,33 +24,6 @@ public class TransactionTagService : ServiceBase, ITransactionTagService
     public TransactionTagService(IUnitOfWork unitOfWork, ITransactionTagRepository transactionTagRepository) : base(unitOfWork)
     {
         _transactionTagRepository = transactionTagRepository;
-    }
-
-    public async Task<TransactionTag> Create(string name, IEnumerable<int> tags, CancellationToken cancellationToken = default)
-    {
-        var tagEntities = await _transactionTagRepository.Get(tags);
-
-        Domain.Entities.TransactionTags.TransactionTag transactionTag = new()
-        {
-            Name = name,
-            Tags = tagEntities.ToList(),
-        };
-
-        _transactionTagRepository.Add(transactionTag);
-
-        await UnitOfWork.SaveChangesAsync(cancellationToken);
-
-        return transactionTag;
-    }
-
-    public async Task<TransactionTag> Create(TransactionTag tag)
-    {
-        Domain.Entities.TransactionTags.TransactionTag transactionTag = tag;
-        _transactionTagRepository.Add(transactionTag);
-
-        await UnitOfWork.SaveChangesAsync();
-
-        return transactionTag;
     }
 
     public async Task<IEnumerable<TransactionTag>> GetAll(CancellationToken cancellationToken = default) => (await _transactionTagRepository.GetAll(cancellationToken).ToModelAsync(cancellationToken)).OrderBy(t => t.Name);
@@ -73,22 +40,6 @@ public class TransactionTagService : ServiceBase, ITransactionTagService
         _transactionTagRepository.Delete(entity);
 
         await UnitOfWork.SaveChangesAsync();
-    }
-
-    public async Task<TransactionTag> AddSubTag(int id, int subId)
-    {
-        if (id == subId) throw new InvalidOperationException("Cannot add a tag to itself");
-
-        var tag = await GetEntity(id, true);
-        var subTag = await GetEntity(subId);
-
-        if (tag.Tags.Any(t => t == subTag)) throw new ExistsException($"Tag with id {subId} has already been added");
-
-        tag.Tags.Add(subTag);
-
-        await UnitOfWork.SaveChangesAsync();
-
-        return tag;
     }
 
     public async Task RemoveSubTag(int id, int subId)

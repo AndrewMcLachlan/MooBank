@@ -22,10 +22,10 @@ public class TransactionService : ServiceBase, ITransactionService
 {
     private readonly ITransactionRepository _transactionRepository;
     private readonly ITransactionTagRepository _transactionTagRepository;
-    private readonly ISecurityRepository _security;
+    private readonly ISecurity _security;
 
 
-    public TransactionService(IUnitOfWork unitOfWork, ITransactionRepository transactionRepository, ITransactionTagRepository transactionTagRepository, ISecurityRepository securityRepository) : base(unitOfWork)
+    public TransactionService(IUnitOfWork unitOfWork, ITransactionRepository transactionRepository, ITransactionTagRepository transactionTagRepository, ISecurity securityRepository) : base(unitOfWork)
     {
         _transactionRepository = transactionRepository;
         _transactionTagRepository = transactionTagRepository;

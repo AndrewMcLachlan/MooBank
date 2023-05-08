@@ -25,11 +25,11 @@ public interface ITransactionTagRuleService
 
 public class TransactionTagRuleService : ServiceBase, ITransactionTagRuleService
 {
-    private readonly ISecurityRepository _security;
+    private readonly ISecurity _security;
     private readonly ITransactionTagRepository _transactionTags;
     private readonly ITransactionTagRuleRepository _transactionTagRuleRepository;
 
-    public TransactionTagRuleService(IUnitOfWork unitOfWork, ISecurityRepository security, ITransactionTagRuleRepository transactionTagRuleRepository, ITransactionTagRepository transactionTags) : base(unitOfWork)
+    public TransactionTagRuleService(IUnitOfWork unitOfWork, ISecurity security, ITransactionTagRuleRepository transactionTagRuleRepository, ITransactionTagRepository transactionTags) : base(unitOfWork)
     {
         _security = security;
         _transactionTagRuleRepository = transactionTagRuleRepository;

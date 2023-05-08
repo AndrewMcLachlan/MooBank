@@ -1,12 +1,11 @@
 ﻿using Asm.MooBank.Domain.Entities.AccountHolder;
 using Asm.MooBank.Models.Config;
-using Asm.MooBank.Security;
 using Asm.Security;
 using Azure.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.Graph;
 
-namespace Asm.MooBank.Services;
+namespace Asm.MooBank.Security;
 
 internal class GraphUserDataProvider : IUserDataProvider
 {

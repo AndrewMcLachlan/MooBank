@@ -6,7 +6,7 @@ public interface ITransactionTagRepository : IDeletableRepository<TransactionTag
 {
     void AddSettings(TransactionTag transactionTag);
 
-    Task<IEnumerable<TransactionTag>> Get(IEnumerable<int> tagIds);
+    Task<IEnumerable<TransactionTag>> Get(IEnumerable<int> tagIds, CancellationToken cancellationToken = default);
 
-    Task<TransactionTag> Get(int id, bool includeSubTags = false);
+    Task<TransactionTag> Get(int id, bool includeSubTags = false, CancellationToken cancellationToken = default);
 }

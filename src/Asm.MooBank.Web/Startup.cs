@@ -1,3 +1,6 @@
+using Asm.MooBank.Commands;
+using Asm.MooBank.Institution.Ing;
+using Asm.MooBank.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.IdentityModel.Logging;
@@ -51,9 +54,12 @@ public class Startup
         services.AddRepositories();
         services.AddEntities();
         services.AddServices();
-        services.AddCqrs();
         services.AddCommands();
+        services.AddQueries();
         services.AddUserDataProvider();
+        services.AddImporterFactory();
+
+        services.AddIng();
     }
 
     public void Configure(IApplicationBuilder app, IHostEnvironment env)

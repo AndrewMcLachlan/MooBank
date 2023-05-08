@@ -1,5 +1,4 @@
 ﻿using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Domain.Repositories;
 using Asm.MooBank.Importers;
 
 namespace Asm.MooBank.Commands.Import;
@@ -8,10 +7,10 @@ internal class ReprocessHandler : ICommandHandler<Reprocess>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IInstitutionAccountRepository _institutionAccountRepository;
-    private readonly ISecurityRepository _security;
+    private readonly ISecurity _security;
     private readonly IImporterFactory _importerFactory;
 
-    public ReprocessHandler(IUnitOfWork unitOfWork, IInstitutionAccountRepository institutionAccountRepository, ISecurityRepository security, IImporterFactory importerFactory)
+    public ReprocessHandler(IUnitOfWork unitOfWork, IInstitutionAccountRepository institutionAccountRepository, ISecurity security, IImporterFactory importerFactory)
     {
         _unitOfWork = unitOfWork;
         _institutionAccountRepository = institutionAccountRepository;

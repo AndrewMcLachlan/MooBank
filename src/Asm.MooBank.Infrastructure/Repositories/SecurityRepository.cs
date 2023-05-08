@@ -5,7 +5,7 @@ using Asm.MooBank.Security;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
-public class SecurityRepository : ISecurityRepository
+public class SecurityRepository : Domain.Repositories.ISecurity
 {
     private readonly IUserDataProvider _userDataProvider;
     private readonly BankPlusContext _bankPlusContext;
