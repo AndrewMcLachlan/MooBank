@@ -1,7 +1,9 @@
 ﻿using Asm.Cqrs.Commands;
 using Asm.Cqrs.Queries;
 using Asm.MooBank.Models.Commands.Budget;
-using Asm.MooBank.Models.Queries.Budget;
+using Asm.MooBank.Models.Reports;
+using Asm.MooBank.Queries.Budget;
+using Asm.MooBank.Queries.Reports;
 
 namespace Asm.MooBank.Web.Controllers
 {
@@ -42,6 +44,14 @@ namespace Asm.MooBank.Web.Controllers
             await CommandDispatcher.Dispatch<Delete>(new Delete(accountId, id), cancellationToken);
 
             return NoContent();
+        }
+
+        [HttpGet("tag/{tagId}")]
+        public async Task<ByTagReport> GetValueForTag(Guid accountId, int tagId, CancellationToken cancellationToken = default)
+        {
+            var today = DateTime.Today.ToDateOnly();
+
+            return await QueryDispatcher.Dispatch(new GetByTagReport(tagId) { AccountId = accountId, Start = today.AddMonths(-1).ToStartOfMonth(), End = today.AddMonths(-1).ToEndOfMonth(), ReportType = ReportType.Expenses}, cancellationToken);
         }
     }
 }

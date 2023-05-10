@@ -1,11 +1,11 @@
 ﻿using Asm.MooBank.Domain.Entities.Transactions;
-using Asm.MooBank.Models.Queries.Reports;
+using Asm.MooBank.Queries.Reports;
 using Asm.MooBank.Models.Reports;
 using Microsoft.EntityFrameworkCore;
 
-namespace Asm.MooBank.Services.Queries.Reports;
+namespace Asm.MooBank.Queries.Reports;
 
-internal class GetInOutReportHandler : IQueryHandler<Models.Queries.Reports.GetInOutReport, InOutReport>
+internal class GetInOutReportHandler : IQueryHandler<Asm.MooBank.Queries.Reports.GetInOutReport, InOutReport>
 {
     private readonly IQueryable<Transaction> _transactions;
     private readonly ISecurity _securityRepository;
@@ -16,7 +16,7 @@ internal class GetInOutReportHandler : IQueryHandler<Models.Queries.Reports.GetI
         _securityRepository = securityRepository;
     }
 
-    public async Task<InOutReport> Handle(Models.Queries.Reports.GetInOutReport request, CancellationToken cancellationToken)
+    public async Task<InOutReport> Handle(Asm.MooBank.Queries.Reports.GetInOutReport request, CancellationToken cancellationToken)
     {
         _securityRepository.AssertAccountPermission(request.AccountId);
 

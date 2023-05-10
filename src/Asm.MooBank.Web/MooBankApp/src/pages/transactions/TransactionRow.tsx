@@ -16,7 +16,7 @@ export const TransactionRow: React.FC<TransactionRowProps> = (props) => {
 
     const onSave = (notes: string, offsetBy?: Transaction) => {
         
-        updateTransaction.mutate([{ accountId: props.transaction.accountId, transactionId: props.transaction.id }, { notes, offsetByTransactionId: offsetBy.id }]);
+        updateTransaction.mutate([{ accountId: props.transaction.accountId, transactionId: props.transaction.id }, { notes, offsetByTransactionId: offsetBy?.id }]);
         setShowDetails(false);
     }
 

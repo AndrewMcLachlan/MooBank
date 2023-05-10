@@ -1,11 +1,8 @@
-﻿using Asm.Cqrs.Queries;
-using Asm.MooBank.Models;
-using Asm.MooBank.Security;
-using Microsoft.EntityFrameworkCore;
+﻿using Asm.MooBank.Models;
 
-namespace Asm.MooBank.Services.Queries.AccountGroup;
+namespace Asm.MooBank.Queries.AccountGroup;
 
-internal class GetAccountGroupsHandler : IQueryHandler<Models.Queries.AccountGroup.GetAccountGroups, IEnumerable<Models.AccountGroup>>
+internal class GetAccountGroupsHandler : IQueryHandler<GetAccountGroups, IEnumerable<Models.AccountGroup>>
 {
     private readonly IUserDataProvider _userDataProvider;
     private readonly IQueryable<Domain.Entities.AccountGroup.AccountGroup> _accountGroups;
@@ -16,6 +13,6 @@ internal class GetAccountGroupsHandler : IQueryHandler<Models.Queries.AccountGro
         _accountGroups = accountGroups;
     }
 
-    public Task<IEnumerable<Models.AccountGroup>> Handle(Models.Queries.AccountGroup.GetAccountGroups _, CancellationToken cancellationToken) =>
+    public Task<IEnumerable<Models.AccountGroup>> Handle(GetAccountGroups _, CancellationToken cancellationToken) =>
         _accountGroups.Where(ag => ag.OwnerId == _userDataProvider.CurrentUserId).ToListAsync(cancellationToken).ToModelAsync(cancellationToken);
 }

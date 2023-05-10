@@ -1,7 +1,7 @@
 ﻿using Asm.Cqrs.Commands;
 using Asm.Cqrs.Queries;
 using Asm.MooBank.Commands.TransactionTags;
-using Asm.MooBank.Models.Queries.TransactionTags;
+using Asm.MooBank.Queries.TransactionTags;
 
 namespace Asm.MooBank.Web.Controllers
 {

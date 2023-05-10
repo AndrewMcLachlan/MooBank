@@ -1,4 +1,6 @@
 ﻿@import "~@andrewmclachlan/mooapp/scss/mooapp.scss";
+@import "../scss/budget";
+@import "../scss/components";
 @import "../scss/transactionTagDetails";
 @import "../scss/transactionDetails";
 
@@ -220,13 +222,13 @@ td {
         cursor: pointer;
 
         &.ascending::after {
-            content: '\1F815';
+            content: '\1F829';
             margin-right: -0.5rem;
             margin-left: 0.25rem;
         }
 
         &.descending::after {
-            content: '\1F817';
+            content: '\1F82B';
             margin-right: -0.5rem;
             margin-left: 0.25rem;
         }

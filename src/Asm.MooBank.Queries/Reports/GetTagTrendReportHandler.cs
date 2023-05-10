@@ -2,13 +2,13 @@
 using Asm.MooBank.Domain.Entities.TransactionTagHierarchies;
 using Asm.MooBank.Domain.Entities.TransactionTags;
 using Asm.MooBank.Domain.Repositories;
-using Asm.MooBank.Models.Queries.Reports;
+using Asm.MooBank.Queries.Reports;
 using Asm.MooBank.Models.Reports;
 using Microsoft.EntityFrameworkCore;
 
-namespace Asm.MooBank.Services.Queries.Reports;
+namespace Asm.MooBank.Queries.Reports;
 
-internal class GetTagTrendReportHandler : IQueryHandler<Models.Queries.Reports.GetTagTrendReport, TagTrendReport>
+internal class GetTagTrendReportHandler : IQueryHandler<Asm.MooBank.Queries.Reports.GetTagTrendReport, TagTrendReport>
 {
     private readonly IQueryable<Transaction> _transactions;
     private readonly IQueryable<TransactionTag> _tags;
@@ -23,7 +23,7 @@ internal class GetTagTrendReportHandler : IQueryHandler<Models.Queries.Reports.G
         _securityRepository = securityRepository;
     }
 
-    public async Task<TagTrendReport> Handle(Models.Queries.Reports.GetTagTrendReport request, CancellationToken cancellationToken)
+    public async Task<TagTrendReport> Handle(Asm.MooBank.Queries.Reports.GetTagTrendReport request, CancellationToken cancellationToken)
     {
         _securityRepository.AssertAccountPermission(request.AccountId);
 

@@ -1,7 +1,7 @@
 ﻿using Asm.Cqrs.Commands;
 using Asm.Cqrs.Queries;
-using Asm.MooBank.Models.Queries.Reports;
 using Asm.MooBank.Models.Reports;
+using Asm.MooBank.Queries.Reports;
 
 namespace Asm.MooBank.Web.Controllers;
 

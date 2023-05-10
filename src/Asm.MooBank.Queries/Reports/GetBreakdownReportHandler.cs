@@ -1,13 +1,13 @@
 ﻿using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.TransactionTagHierarchies;
 using Asm.MooBank.Domain.Entities.TransactionTags;
-using Asm.MooBank.Models.Queries.Reports;
+using Asm.MooBank.Queries.Reports;
 using Asm.MooBank.Models.Reports;
 using Microsoft.EntityFrameworkCore;
 
-namespace Asm.MooBank.Services.Queries.Reports;
+namespace Asm.MooBank.Queries.Reports;
 
-internal class GetBreakdownReportHandler : IQueryHandler<Models.Queries.Reports.GetBreakdownReport, BreakdownReport>
+internal class GetBreakdownReportHandler : IQueryHandler<Asm.MooBank.Queries.Reports.GetBreakdownReport, BreakdownReport>
 {
     private readonly IQueryable<Transaction> _transactions;
     private readonly IQueryable<TransactionTag> _tags;
@@ -22,7 +22,7 @@ internal class GetBreakdownReportHandler : IQueryHandler<Models.Queries.Reports.
         _securityRepository = securityRepository;
     }
 
-    public async Task<BreakdownReport> Handle(Models.Queries.Reports.GetBreakdownReport request, CancellationToken cancellationToken)
+    public async Task<BreakdownReport> Handle(Asm.MooBank.Queries.Reports.GetBreakdownReport request, CancellationToken cancellationToken)
     {
         _securityRepository.AssertAccountPermission(request.AccountId);
 

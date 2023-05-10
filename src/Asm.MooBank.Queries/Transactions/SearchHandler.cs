@@ -1,8 +1,8 @@
 ﻿using Asm.MooBank.Domain.Entities.Transactions;
-using Asm.MooBank.Models.Queries.Transactions;
+using Asm.MooBank.Queries.Transactions;
 using Microsoft.EntityFrameworkCore;
 
-namespace Asm.MooBank.Services.Queries.Transactions;
+namespace Asm.MooBank.Queries.Transactions;
 
 internal class SearchHandler : IQueryHandler<Search, IEnumerable<Models.Transaction>>
 {

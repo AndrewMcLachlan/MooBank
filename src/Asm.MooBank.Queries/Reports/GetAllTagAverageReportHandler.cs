@@ -1,12 +1,12 @@
 ﻿using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.TransactionTagHierarchies;
-using Asm.MooBank.Models.Queries.Reports;
+using Asm.MooBank.Queries.Reports;
 using Asm.MooBank.Models.Reports;
 using Microsoft.EntityFrameworkCore;
 
-namespace Asm.MooBank.Services.Queries.Reports;
+namespace Asm.MooBank.Queries.Reports;
 
-internal class GetAllTagAverageReportHandler : IQueryHandler<Models.Queries.Reports.GetAllTagAverageReport, AllTagAverageReport>
+internal class GetAllTagAverageReportHandler : IQueryHandler<Asm.MooBank.Queries.Reports.GetAllTagAverageReport, AllTagAverageReport>
 {
     private readonly IQueryable<Transaction> _transactions;
     private readonly IQueryable<TransactionTagRelationship> _tagRelationships;
@@ -19,7 +19,7 @@ internal class GetAllTagAverageReportHandler : IQueryHandler<Models.Queries.Repo
         _securityRepository = securityRepository;
     }
 
-    public async Task<AllTagAverageReport> Handle(Models.Queries.Reports.GetAllTagAverageReport request, CancellationToken cancellationToken)
+    public async Task<AllTagAverageReport> Handle(Asm.MooBank.Queries.Reports.GetAllTagAverageReport request, CancellationToken cancellationToken)
     {
         _securityRepository.AssertAccountPermission(request.AccountId);
 

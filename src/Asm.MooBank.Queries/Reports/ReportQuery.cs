@@ -1,4 +1,4 @@
-﻿namespace Asm.MooBank.Models.Queries.Reports;
+﻿namespace Asm.MooBank.Queries.Reports;
 
 public abstract record ReportQuery
 {

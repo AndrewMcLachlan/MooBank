@@ -16,7 +16,7 @@ public class BudgetLine : KeyedEntity<Guid>
 
     public bool Income { get; set; }
 
-    public int? Month { get; set; }
+    public short Month { get; set; } = 4095; // Bits representing selected months
 
     public Guid AccountId { get; set; }
 

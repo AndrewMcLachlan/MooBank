@@ -1,4 +1,6 @@
-﻿namespace Asm.MooBank.Models.Queries.Transactions;
+﻿using Asm.MooBank.Models;
+
+namespace Asm.MooBank.Queries.Transactions;
 
 public record GetTransactions : IQuery<PagedResult<Transaction>>
 {

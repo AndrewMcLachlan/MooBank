@@ -1,8 +1,8 @@
 ﻿using Asm.MooBank.Domain.Entities.Budget;
-using Asm.MooBank.Models.Queries.Budget;
-using Microsoft.EntityFrameworkCore;
 
-namespace Asm.MooBank.Services.Queries.Budget;
+namespace Asm.MooBank.Queries.Budget;
+
+public record Get(Guid AccountId, Guid Id) : IQuery<Models.BudgetLine>;
 
 internal class GetHandler : QueryHandlerBase, IQueryHandler<Get, Models.BudgetLine>
 {

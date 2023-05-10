@@ -1,7 +1,7 @@
 import { ClickableIcon, emptyGuid } from "@andrewmclachlan/mooapp";
 import Select from "react-select";
 
-import { TransactionTagPanel } from "components";
+import { MonthSelector, TransactionTagPanel } from "components";
 import { TransactionTag } from "models";
 import { useState } from "react";
 import { Form } from "react-bootstrap";
@@ -25,6 +25,7 @@ export const NewBudgetLine: React.FC<NewBudgetLineProps> = (props) => {
         <tr>
             <td className="column-30"><Select<TransactionTag> value={tag} onChange={(t: TransactionTag) => setTag(t)} options={allTags.data ?? []} getOptionLabel={(t) => t.name} getOptionValue={(t) => t.id?.toString()} className="react-select" classNamePrefix="react-select" /></td>
             <td><Form.Control type="number" min={0} value={amount} onChange={(e) => setAmount((e.currentTarget as any).valueAsNumber)} /></td>
+            <MonthSelector as="td" className="column-30" />
             <td className="column-5"><ClickableIcon icon="check-circle" title="Save" size="xl" onClick={add} /></td>
         </tr>
     );

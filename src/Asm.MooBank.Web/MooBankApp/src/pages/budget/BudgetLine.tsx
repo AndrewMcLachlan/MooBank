@@ -1,4 +1,4 @@
-import { TransactionTagPanel } from "components";
+import { MonthSelector, TransactionTagPanel } from "components";
 import * as Models from "models";
 import { useDeleteBudgetLine, useUpdateBudget } from "services/BudgetService";
 
@@ -11,6 +11,7 @@ export const BudgetLine: React.FC<BudgetLineProps> = (props) => {
         <tr key={props.budgetLine.id}>
             <td><TransactionTagPanel value={props.budgetLine.tagId} /></td>
             <td>{props.budgetLine.amount}</td>
+            <td><MonthSelector /></td>
         </tr>
     );
 }

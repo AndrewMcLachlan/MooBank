@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TransactionModel = Asm.MooBank.Models.Transaction;
 
-namespace Asm.MooBank.Services.Queries.Transactions;
+namespace Asm.MooBank.Queries.Transactions;
 
 internal static class IQueryableExtensions
 {

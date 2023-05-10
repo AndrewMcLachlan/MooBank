@@ -3,11 +3,11 @@ using System.Reflection;
 using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Importers;
-using Asm.MooBank.Models.Queries.Transactions;
+using Asm.MooBank.Queries.Transactions;
 using Microsoft.EntityFrameworkCore;
 using PagedResult = Asm.MooBank.Models.PagedResult<Asm.MooBank.Models.Transaction>;
 
-namespace Asm.MooBank.Services.Queries.Transactions;
+namespace Asm.MooBank.Queries.Transactions;
 
 public class GetTransactionsHandler : IQueryHandler<GetTransactions, PagedResult>
 {

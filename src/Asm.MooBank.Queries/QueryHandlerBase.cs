@@ -1,4 +1,4 @@
-﻿namespace Asm.MooBank.Services.Queries;
+﻿namespace Asm.MooBank.Queries;
 
 internal abstract class QueryHandlerBase
 {

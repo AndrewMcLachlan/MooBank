@@ -10,7 +10,7 @@ public partial record BudgetLine
 
     public decimal Amount { get; set; }
 
-    public int? Month { get; set; }
+    public short Month { get; set; }
 
     public bool Income { get; set; }
 }

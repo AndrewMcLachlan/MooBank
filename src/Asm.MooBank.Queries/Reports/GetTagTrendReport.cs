@@ -1,6 +1,6 @@
 ﻿using Asm.MooBank.Models.Reports;
 
-namespace Asm.MooBank.Models.Queries.Reports;
+namespace Asm.MooBank.Queries.Reports;
 
 public record GetTagTrendReport : TypedReportQuery, IQuery<TagTrendReport>
 {

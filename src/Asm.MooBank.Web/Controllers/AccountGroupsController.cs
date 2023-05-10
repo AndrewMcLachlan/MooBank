@@ -1,7 +1,7 @@
 ﻿using Asm.Cqrs.Commands;
 using Asm.Cqrs.Queries;
 using Asm.MooBank.Models.Commands.AccountGroup;
-using Asm.MooBank.Models.Queries.AccountGroup;
+using Asm.MooBank.Queries.AccountGroup;
 
 namespace Asm.MooBank.Web.Controllers;
 

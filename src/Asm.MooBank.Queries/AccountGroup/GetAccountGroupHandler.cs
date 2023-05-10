@@ -2,9 +2,9 @@
 using Asm.MooBank.Security;
 using Microsoft.EntityFrameworkCore;
 
-namespace Asm.MooBank.Services.Queries.AccountGroup;
+namespace Asm.MooBank.Queries.AccountGroup;
 
-internal class GetAccountGroupHandler : IQueryHandler<Models.Queries.AccountGroup.GetAccountGroup, Models.AccountGroup>
+internal class GetAccountGroupHandler : IQueryHandler<GetAccountGroup, Models.AccountGroup>
 {
     private readonly IUserDataProvider _userDataProvider;
     private readonly IQueryable<Domain.Entities.AccountGroup.AccountGroup> _accountGroups;
@@ -15,7 +15,7 @@ internal class GetAccountGroupHandler : IQueryHandler<Models.Queries.AccountGrou
         _userDataProvider = userDataProvider;
     }
 
-    public async Task<Models.AccountGroup> Handle(Models.Queries.AccountGroup.GetAccountGroup request, CancellationToken cancellationToken)
+    public async Task<Models.AccountGroup> Handle(GetAccountGroup request, CancellationToken cancellationToken)
     {
         var accountGroup = await _accountGroups.SingleOrDefaultAsync(a => a.Id == request.Id && a.OwnerId == _userDataProvider.CurrentUserId, cancellationToken);
 

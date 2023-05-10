@@ -1,10 +1,10 @@
 ﻿using Asm.MooBank.Models;
-using Asm.MooBank.Models.Queries.TransactionTags;
+using Asm.MooBank.Queries.TransactionTags;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using TransactionTagEntity = Asm.MooBank.Domain.Entities.TransactionTags.TransactionTag;
 
-namespace Asm.MooBank.Services.Queries.TransactionTags;
+namespace Asm.MooBank.Queries.TransactionTags;
 internal class GetTransactionTagsHierarchyHandler : IQueryHandler<GetTransactionTagsHierarchy, TransactionTagHierarchy>
 {
     private readonly IQueryable<TransactionTagEntity> _tags;

@@ -6,6 +6,7 @@ export * from "./AccountProvider";
 export * from "./AccountSummary";
 export * from "./FormGroup";
 export * from "./FormRow";
+export * from "./MonthSelector";
 export * from "./Paginaton";
 export * from "./PeriodSelector";
 export * from "./TransactionSearch";
