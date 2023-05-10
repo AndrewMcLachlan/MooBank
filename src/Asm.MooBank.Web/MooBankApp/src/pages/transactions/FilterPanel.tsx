@@ -15,13 +15,44 @@ import { Period } from "helpers/dateFns";
 
 export const FilterPanel: React.FC<FilterPanelProps> = () => {
 
-    const [filterTagged, setFilterTagged] = useLocalStorage("filter-tagged", false);
+    const params = new URLSearchParams(window.location.search);
+
+    const [storedFilterTagged, setStoredFilterTagged] = useLocalStorage("filter-tagged", false);
     const [filterDescription, setFilterDescription] = useLocalStorage("filter-description", "");
-    const [filterTag, setFilterTag] = useLocalStorage<number | null>("filter-tag", null);
-    const [period, setPeriod] = useState<Period>({startDate: null,endDate: null});
+    const [storedFilterTag, setStoredFilterTag] = useLocalStorage<number | null>("filter-tag", null);
+
+    const [localFilterTag, setLocalFilterTag] = useState(Number(params.get("tag")) ?? storedFilterTag);
+    const [localFilterTagged, setLocalFilterTagged] = useState<boolean>(Number(params.get("tag")) ? false : params.get("untagged") ? true : storedFilterTagged);
+    const filterTag = localFilterTag ?? storedFilterTag;
+    const filterTagged = localFilterTagged ?? storedFilterTagged;
+
+    const setFilterTag = (tag: number) => {
+        params.delete("tag");
+        const queryString = params.toString();
+        const newUrl = window.location.origin + window.location.pathname + (queryString === "" ? "" : `?${queryString}`);
+
+        window.history.replaceState({ path: newUrl }, "", newUrl);
+
+        setLocalFilterTag(tag);
+        setStoredFilterTag(tag);
+    }
+
+    const setFilterTagged = (filter: boolean) => {
+        params.delete("untagged");
+        const queryString = params.toString();
+        const newUrl = window.location.origin + window.location.pathname + (queryString === "" ? "" : `?${queryString}`);
+
+        window.history.replaceState({ path: newUrl }, "", newUrl);
+
+        setLocalFilterTagged(filter);
+        setStoredFilterTagged(filter);
+    }
+
+    const [period, setPeriod] = useState<Period>({ startDate: null, endDate: null });
     const dispatch = useDispatch();
 
     const [open, setOpen] = useLocalStorage("filter-panel-open", false);
+
 
     const clear = () => {
         setFilterDescription("");
@@ -31,7 +62,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = () => {
 
     useEffect(() => {
         dispatch(TransactionsSlice.actions.setTransactionListFilter({ description: filterDescription, filterTagged, tag: filterTag, start: period?.startDate?.toISOString(), end: period?.endDate?.toISOString() }));
-    }, [period, filterDescription, filterTagged, filterTag]);
+    }, [period, filterDescription, filterTagged, filterTag, window.location.search]);
 
     return (
         <fieldset className="filter-panel box">

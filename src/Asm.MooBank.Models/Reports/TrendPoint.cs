@@ -15,7 +15,7 @@ public static class TrendPointExtensions
     public static decimal Average(this IEnumerable<TrendPoint> trendPoints)
     {
         var start = trendPoints.Min(t => t.Month);
-        var end = trendPoints.Max(t => t.Month);
+        var end = trendPoints.Max(t => t.Month).ToEndOfMonth();
 
         decimal months = end.DifferenceInMonths(start);
 
@@ -25,9 +25,9 @@ public static class TrendPointExtensions
     public static decimal? AverageOffset(this IEnumerable<TrendPoint> trendPoints)
     {
         var start = trendPoints.Min(t => t.Month);
-        var end = trendPoints.Max(t => t.Month);
+        var end = trendPoints.Max(t => t.Month).ToEndOfMonth();
 
-        decimal months = (end.Year - start.Year) * 12 + (end.Month - start.Month);
+        decimal months = end.DifferenceInMonths(start); //(end.Year - start.Year) * 12 + (end.Month - start.Month);
 
         decimal? result = trendPoints.Sum(t => t.OffsetAmount) / months;
 

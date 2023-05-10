@@ -34,8 +34,8 @@ export const Breakdown = () => {
     const { id: accountId, tagId } = useParams<{ id: string, tagId: string }>();
 
     const [reportType, setReportType] = useState<ReportType>(ReportType.Expenses);
-    const [period, setPeriod] = useState<Period>({startDate: null,endDate: null});
-    const [selectedTagId, setSelectedTagId] = useState<number | undefined>(tagId ? parseInt(tagId) : undefined);
+    const [period, setPeriod] = useState<Period>({ startDate: null, endDate: null });
+    const [selectedTagId, setSelectedTagId] = useState<number | undefined>(tagId ? Number(tagId) : undefined);
     const [previousTagId, setPreviousTagId] = useState<number | undefined>();
     const tag = useTag(selectedTagId ?? 0);
 
@@ -54,8 +54,7 @@ export const Breakdown = () => {
         datasets: [{
             label: "",
             data: report.data?.tags.map(t => t.grossAmount) ?? [],
-            backgroundColor: chartColours,//theTheme === "dark" ? "#228b22" : "#00FF00",
-            //categoryPercentage: 1,
+            backgroundColor: chartColours,
         }],
     };
 
@@ -86,10 +85,17 @@ export const Breakdown = () => {
                         onClick={(e) => {
                             var elements = getElementAtEvent(chartRef.current!, e);
                             if (elements.length !== 1) return;
-                            if (!report.data!.tags[elements[0].index].hasChildren) return;
+                            const tag = report.data!.tags[elements[0].index];
+                            if (!tag.hasChildren || tag.tagId === selectedTagId) {
+
+                                const url = !selectedTagId ?  `/accounts/${accountId}?untagged=true` : `/accounts/${accountId}?tag=${tag.tagId}`;
+
+                                navigate(url);
+                                return;
+                            }
                             setPreviousTagId(selectedTagId);
-                            setSelectedTagId(report.data!.tags[elements[0].index].tagId);
-                            navigate(`/accounts/${accountId}/reports/breakdown/${report.data!.tags[elements[0].index].tagId}`);
+                            setSelectedTagId(tag.tagId);
+                            navigate(`/accounts/${accountId}/reports/breakdown/${tag.tagId}`);
                         }} />
                 </section>
             </Page.Content>
