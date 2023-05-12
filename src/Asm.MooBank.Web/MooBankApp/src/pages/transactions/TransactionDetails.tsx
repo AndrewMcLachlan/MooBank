@@ -41,7 +41,7 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
                         </>
                     }
                     <div>Tags</div>
-                    <TransactionTransactionTagPanel as="div" transaction={props.transaction} />
+                    <TransactionTransactionTagPanel as="div" transaction={props.transaction} alwaysShowEditPanel />
                 </section>
                 <section className="mt-3">
                     <div hidden={isCredit(props.transaction.transactionType)}>
