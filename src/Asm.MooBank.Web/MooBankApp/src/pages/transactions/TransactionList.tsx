@@ -16,6 +16,7 @@ import { Pagination } from "components";
 import { Account } from "models";
 import { TransactionTableHead } from "./TransactionTableHead";
 import { TransactionTableHeadIng } from "./TransactionTableHeadIng";
+import { useDebounce } from "use-debounce";
 
 export const TransactionList: React.FC<TransactionListProps> = (props) => {
 
@@ -23,8 +24,9 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
 
     const { currentPage: pageNumber, pageSize, filter, sortField, sortDirection } = useSelector((state: State) => state.transactions);
     const dispatch = useDispatch();
+    const [debouncedFilter] = useDebounce(filter, 250);
 
-    const transactionsQuery = useTransactions(id, filter, pageSize, pageNumber, sortField, sortDirection);
+    const transactionsQuery = useTransactions(id, debouncedFilter, pageSize, pageNumber, sortField, sortDirection);
     const transactions = transactionsQuery.data?.results;
     const totalTransactions = transactionsQuery.data?.total ?? 0;
 
