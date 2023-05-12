@@ -1,8 +1,8 @@
-﻿using Asm.Domain;
-using Asm.MooBank.Domain.Entities.Budget;
-using Asm.MooBank.Models.Commands.Budget;
+﻿using Asm.MooBank.Domain.Entities.Budget;
 
 namespace Asm.MooBank.Services.Commands.Budget;
+
+public record Delete(Guid AccountId, Guid Id) : ICommand;
 
 internal class DeleteHandler : CommandHandlerBase, ICommandHandler<Delete>
 {
