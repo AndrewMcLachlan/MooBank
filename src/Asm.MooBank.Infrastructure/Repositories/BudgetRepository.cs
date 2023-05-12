@@ -9,6 +9,15 @@ namespace Asm.MooBank.Infrastructure.Repositories
         {
         }
 
+        public override BudgetLine Add(BudgetLine entity)
+        {
+            var result = base.Add(entity);
+
+            Context.Entry(result).Reference(e => e.Tag).Load();
+
+            return result;
+        }
+
         public override void Delete(Guid id)
         {
             Context.Remove(new BudgetLine(id));
