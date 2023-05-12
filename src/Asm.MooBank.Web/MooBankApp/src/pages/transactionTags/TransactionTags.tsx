@@ -85,7 +85,15 @@ const useComponentState = () => {
     const pageChange = (_current: number, newPage: number) => setPageNumber(newPage);
 
     useEffect(() => {
-        setFilteredTags(allTags?.filter(t => t?.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())) ?? []);
+        const searchTerm = search.toLocaleLowerCase();
+        if (searchTerm === "") {
+            setFilteredTags(allTags);
+            return;
+        }
+        
+        const matchingTags = allTags?.filter(t => t?.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())) ?? [];
+        const matchingSubTags = allTags?.filter(t => !matchingTags.some(t2 => t2.id === t.id) && t?.tags.some(t2 => matchingTags.some(t3 => t3.id === t2.id)));
+        setFilteredTags(matchingTags.concat(matchingSubTags));
     }, [JSON.stringify(allTags), search]);
 
     useEffect(() => {
