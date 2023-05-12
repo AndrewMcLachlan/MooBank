@@ -1,6 +1,7 @@
 import { useQueryClient } from "react-query";
 import { BudgetLine } from "models";
 import { useApiDelete, useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
+import { ByTagReport, TagValue } from "models/reports";
 
 interface BudgetVariables {
     accountId: string,
@@ -50,7 +51,7 @@ export const useDeleteBudgetLine = () => {
 
     const queryClient = useQueryClient();
 
-    return useApiDelete<BudgetVariables>((variables) => `api/accounts/${variables.accountId}/transaction/tag/rules/${variables.id}`, {
+    return useApiDelete<BudgetVariables>((variables) => `api/accounts/${variables.accountId}/budget/${variables.id}`, {
         onSuccess: (_data, variables: BudgetVariables) => {
             let budgetLines = queryClient.getQueryData<BudgetLine[]>([budgetKey, variables.accountId]);
             if (!budgetLines) return;
@@ -60,3 +61,7 @@ export const useDeleteBudgetLine = () => {
         }
     });
 }
+
+export const useGetTagValue = (accountId: string, tagId: number) =>  useApiGet<ByTagReport>(["budget", accountId, "by-tag", tagId], `api/accounts/${accountId}/budget/tag/${tagId}`, {
+    enabled: !!accountId && !!tagId
+});

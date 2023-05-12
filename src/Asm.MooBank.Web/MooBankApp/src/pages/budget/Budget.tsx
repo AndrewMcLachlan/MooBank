@@ -27,8 +27,6 @@ export const Budget: React.FC = () => {
                             )}
                             <NewBudgetLine income accountId={id} />
                         </tbody>
-
-
                     </Table>
                 </section>
                 <section className="budget">

@@ -12,9 +12,14 @@ public partial record BudgetLine
             Income = budgetLine.Income,
         };
 
-    public static implicit operator Domain.Entities.Budget.BudgetLine(BudgetLine budgetLine) =>
+}
+
+public static class BudgetLineExtensions
+{
+    public static Domain.Entities.Budget.BudgetLine ToDomain(this BudgetLine budgetLine, Guid accountId) =>
         new(budgetLine.Id)
         {
+            AccountId = accountId,
             TagId = budgetLine.TagId,
             Amount = budgetLine.Amount,
             Month = budgetLine.Month,

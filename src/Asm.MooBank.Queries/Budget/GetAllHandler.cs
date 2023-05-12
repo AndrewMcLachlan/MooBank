@@ -17,7 +17,7 @@ internal class GetAllHandler : QueryHandlerBase, IQueryHandler<GetAll, IEnumerab
     {
         Security.AssertAccountPermission(request.AccountId);
 
-        return _budgetLines.Where(b => b.AccountId == request.AccountId).ToModelAsync(cancellationToken);
+        return _budgetLines.Include(b => b.Tag).Where(b => b.AccountId == request.AccountId).ToModelAsync(cancellationToken);
     }
 }
 

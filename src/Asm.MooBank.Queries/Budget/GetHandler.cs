@@ -17,7 +17,7 @@ internal class GetHandler : QueryHandlerBase, IQueryHandler<Get, Models.BudgetLi
     {
         Security.AssertAccountPermission(request.AccountId);
 
-        var entity = await _budgetLines.SingleOrDefaultAsync(b => b.AccountId == request.AccountId && b.Id == request.Id, cancellationToken) ?? throw new NotFoundException();
+        var entity = await _budgetLines.Include(b => b.Tag).SingleOrDefaultAsync(b => b.AccountId == request.AccountId && b.Id == request.Id, cancellationToken) ?? throw new NotFoundException();
 
         return entity;
     }
