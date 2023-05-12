@@ -43,7 +43,7 @@ export const TransactionTags: React.FC = () => {
                             <TransactionTagPanel as="td" selectedItems={newTag.tags} items={tagsList} onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} onKeyUp={keyUp} />
                             <td className="row-action"><span onClick={createTag}><ClickableIcon icon="check-circle" title="Save" size="xl" /></span></td>
                         </tr>
-                        {pagedTags.map((t, i) => <TransactionTagRow key={i} tag={t} />)}
+                        {pagedTags.map((t, i) => <TransactionTagRow key={`${i}${(t?.id ?? "")}`} tag={t} />)}
                     </tbody>
                     {!isLoading &&
                         <tfoot>
