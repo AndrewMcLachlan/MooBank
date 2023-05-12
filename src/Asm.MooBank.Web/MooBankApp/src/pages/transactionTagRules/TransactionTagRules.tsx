@@ -21,6 +21,8 @@ export const TransactionTagRules: React.FC = () => {
 
     const { accountId } = useParams<{ accountId: string }>();
 
+    const { newRule, fullTagsList, addTag, createTag, removeTag, nameChange, descriptionChange, createRule, runRules, keyUp } = useComponentState(accountId!);
+
     const {data: rules} = useRules(accountId!);
 
     const [filteredRules, setFilteredRules] = useState<TransactionTagRule[]>([]);
@@ -31,20 +33,27 @@ export const TransactionTagRules: React.FC = () => {
     const [search, setSearch] = useState("");
 
     const numberOfPages = getNumberOfPages(filteredRules.length, pageSize);
-    const totalTags = filteredRules.length;
+    const totalRules = filteredRules.length;
     const pageChange = (_current: number, newPage: number) => setPageNumber(newPage);
     
     useEffect(() => {
-        setFilteredRules(rules?.rules.filter(r => r.contains.toLocaleLowerCase().includes(search.toLocaleLowerCase())) ?? []);
+        const searchTerm = search.toLocaleLowerCase();
+        if (searchTerm === "") {
+            setFilteredRules(rules?.rules ?? []);
+            return;
+        }
+
+        const matchingRules = rules?.rules.filter(r => r.contains.toLocaleLowerCase().includes(searchTerm) || (r.description?.toLocaleLowerCase().includes(searchTerm) ?? false)) ?? [];
+        const matchingTags = fullTagsList?.filter(t => t?.name.toLocaleLowerCase().includes(searchTerm)) ?? [];
+        const matchingTagRules = rules?.rules.filter(r => matchingRules.every(r2 => r2.id !== r.id) && r?.tags.some(t => matchingTags.some(t2 => t2.id === t.id)));
+
+        setFilteredRules(matchingRules.concat(matchingTagRules));
     }, [rules, search]);
 
     useEffect(() => {
         setPagedRules(filteredRules.sort(sortRules(sortDirection)).slice((pageNumber - 1) * pageSize, ((pageNumber - 1) * pageSize) + pageSize));
     }, [filteredRules, sortDirection, pageNumber]);
 
-
-
-    const { newRule, fullTagsList, addTag, createTag, removeTag, nameChange, descriptionChange, createRule, runRules, keyUp } = useComponentState(accountId!);
 
     const account = useAccount(accountId!);
 
@@ -80,7 +89,7 @@ export const TransactionTagRules: React.FC = () => {
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colSpan={1} className="page-totals">Page {pageNumber} of {numberOfPages} ({totalTags} tags)</td>
+                            <td colSpan={1} className="page-totals">Page {pageNumber} of {numberOfPages} ({totalRules} tags)</td>
                             <td colSpan={3}>
                                 <Pagination pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={pageChange} />
                             </td>
