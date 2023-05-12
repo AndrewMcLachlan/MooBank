@@ -37,6 +37,9 @@ export const TransactionTagRules: React.FC = () => {
     const pageChange = (_current: number, newPage: number) => setPageNumber(newPage);
     
     useEffect(() => {
+        
+        setPageNumber(1);
+
         const searchTerm = search.toLocaleLowerCase();
         if (searchTerm === "") {
             setFilteredRules(rules?.rules ?? []);
@@ -53,7 +56,6 @@ export const TransactionTagRules: React.FC = () => {
     useEffect(() => {
         setPagedRules(filteredRules.sort(sortRules(sortDirection)).slice((pageNumber - 1) * pageSize, ((pageNumber - 1) * pageSize) + pageSize));
     }, [filteredRules, sortDirection, pageNumber]);
-
 
     const account = useAccount(accountId!);
 

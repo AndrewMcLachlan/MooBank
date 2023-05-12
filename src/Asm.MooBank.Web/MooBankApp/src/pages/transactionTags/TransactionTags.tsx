@@ -85,6 +85,9 @@ const useComponentState = () => {
     const pageChange = (_current: number, newPage: number) => setPageNumber(newPage);
 
     useEffect(() => {
+        
+        setPageNumber(1);
+
         const searchTerm = search.toLocaleLowerCase();
         if (searchTerm === "") {
             setFilteredTags(allTags ?? []);

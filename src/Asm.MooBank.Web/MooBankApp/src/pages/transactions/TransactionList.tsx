@@ -1,6 +1,6 @@
 import "./TransactionList.scss";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Table } from "react-bootstrap";
@@ -25,6 +25,8 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
     const { currentPage: pageNumber, pageSize, filter, sortField, sortDirection } = useSelector((state: State) => state.transactions);
     const dispatch = useDispatch();
     const [debouncedFilter] = useDebounce(filter, 250);
+
+    useEffect(() => { dispatch(TransactionsSlice.actions.setCurrentPage(1)) }, [debouncedFilter]);
 
     const transactionsQuery = useTransactions(id, debouncedFilter, pageSize, pageNumber, sortField, sortDirection);
     const transactions = transactionsQuery.data?.results;
