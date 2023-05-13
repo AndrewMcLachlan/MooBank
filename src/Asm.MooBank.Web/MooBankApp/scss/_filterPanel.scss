@@ -1,7 +1,12 @@
 .filter-panel {
 
-    legend svg {
-        margin-right: 10px;
+    legend {
+
+        padding-bottom: 10px;
+
+        svg {
+            margin-right: 10px;
+        }
     }
 
     .form-row {
@@ -18,14 +23,7 @@
         }
     }
 
-    .form-check{
+    .form-check {
         padding-top: 5px;
     }
-
-    .form-label { 
-        //display: inline;
-        padding-top: 5px;
-        padding-right: 10px;
-    }
-
-   }
+}
