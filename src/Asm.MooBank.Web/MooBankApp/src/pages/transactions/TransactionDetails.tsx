@@ -4,7 +4,7 @@ import { TransactionTransactionTagPanel } from "./TransactionTransactionTagPanel
 import { useEffect, useState } from "react";
 import { TransactionSearch } from "components";
 import { TransactionDetailsIng } from "./TransactionDetailsIng";
-import { formatCurrency } from "helpers";
+import { formatCurrency } from "@andrewmclachlan/mooapp";
 
 export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => {
 

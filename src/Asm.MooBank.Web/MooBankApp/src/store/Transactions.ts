@@ -1,6 +1,7 @@
 ﻿import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { sortDirection, Transactions, TransactionsFilter } from "./state";
+import { SortDirection } from "@andrewmclachlan/mooapp";
+import { Transactions, TransactionsFilter } from "./state";
 
 const initialState: Transactions = {
     currentPage: 1,
@@ -45,7 +46,7 @@ export const reducers = {
         };
     },
 
-    setSort: (state: Transactions, action: PayloadAction<[string, sortDirection]>) => {
+    setSort: (state: Transactions, action: PayloadAction<[string, SortDirection]>) => {
         return {
             ...state,
             sortField: action.payload[0],
@@ -60,7 +61,7 @@ export const reducers = {
         };
     },
 
-    setSortDirection: (state: Transactions, action: PayloadAction<sortDirection>) => {
+    setSortDirection: (state: Transactions, action: PayloadAction<SortDirection>) => {
         return {
             ...state,
             sortDirection: action.payload,

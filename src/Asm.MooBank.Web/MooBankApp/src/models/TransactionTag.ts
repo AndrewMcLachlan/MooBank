@@ -1,4 +1,4 @@
-import { sortDirection } from "store/state";
+import { SortDirection } from "@andrewmclachlan/mooapp";
 
 export interface TransactionTag {
     id: number;
@@ -32,7 +32,7 @@ export const compareTransactionTagArray = (left: TransactionTag[], right: Transa
         return true;
 }
 
-export const sortTags = (sortDirection: sortDirection) => (a: TransactionTag, b: TransactionTag) => {
+export const sortTags = (sortDirection: SortDirection) => (a: TransactionTag, b: TransactionTag) => {
 
     const retVal = sortDirection === "Ascending" ? 1 : -1;
     const aName = a.name.toUpperCase();

@@ -6,7 +6,7 @@ import { Transaction } from "models";
 import { TransactionDetails } from "./TransactionDetails";
 import { TransactionTransactionTagPanel } from "./TransactionTransactionTagPanel";
 import { useUpdateTransaction } from "services";
-import { formatCurrency } from "helpers";
+import { formatCurrency } from "@andrewmclachlan/mooapp";
 
 export const TransactionRow: React.FC<TransactionRowProps> = (props) => {
 

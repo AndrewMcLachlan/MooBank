@@ -1,7 +1,6 @@
-import { useApiGet } from "@andrewmclachlan/mooapp";
+import { trimEnd, useApiGet } from "@andrewmclachlan/mooapp";
 import { AllTagAverageReport, ByTagReport, InOutReport, InOutTrendReport, ReportType, TagTrendReport, TagTrendReportSettings } from "models/reports";
 import { allTime, formatISODate } from "helpers/dateFns";
-import { trimEnd } from "helpers";
 
 export const reportsKey = "reports";
 

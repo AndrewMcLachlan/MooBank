@@ -1,11 +1,11 @@
-import { Input, useLocalStorage } from "@andrewmclachlan/mooapp";
+import { Input, Tooltip, useLocalStorage } from "@andrewmclachlan/mooapp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classnames from "classnames";
 import { useEffect, useState } from "react";
 import { Col, Collapse, Form } from "react-bootstrap";
 import { useDispatch, } from "react-redux";
 
-import { FormRow as Row, TagSelector, Tooltip } from "components";
+import { FormRow as Row, TagSelector } from "components";
 import { PeriodSelector } from "components";
 import { TransactionsSlice } from "store/Transactions";
 

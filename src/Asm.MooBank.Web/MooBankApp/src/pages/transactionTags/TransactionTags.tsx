@@ -5,16 +5,12 @@ import { Col, Row, Table } from "react-bootstrap";
 
 import { TransactionTagRow } from "./TransactionTagRow";
 
-import { ClickableIcon } from "@andrewmclachlan/mooapp";
-import { Pagination, TransactionTagPanel } from "components";
+import { changeSortDirection, ClickableIcon, getNumberOfPages, Pagination, SearchBox, SortDirection } from "@andrewmclachlan/mooapp";
+import { TransactionTagPanel } from "components";
 import { TransactionTag, sortTags } from "models";
 import { useCreateTag, useTags } from "services";
 import { Page } from "layouts";
-import { getNumberOfPages } from "helpers/paging";
-import { sortDirection } from "store/state";
 import { TagsHeader } from "./TagsHeader";
-import { changeSortDirection } from "helpers/sorting";
-import { SearchBox } from "components/SearchBox";
 
 export const TransactionTags: React.FC = () => {
 
@@ -26,7 +22,7 @@ export const TransactionTags: React.FC = () => {
             <Page.Content>
                 <Row>
                     <Col xl={6}>
-                        <SearchBox value={search} onChange={(v) => setSearch(v)} />
+                        <SearchBox value={search} onChange={(v: string) => setSearch(v)} />
                     </Col>
                 </Row>
                 <Table striped bordered={false} borderless className="transaction-tags">
@@ -77,7 +73,7 @@ const useComponentState = () => {
     const [filteredTags, setFilteredTags] = useState<TransactionTag[]>([]);
     const [pagedTags, setPagedTags] = useState<TransactionTag[]>(Array.from({ length: pageSize }).map(v => undefined));
 
-    const [sortDirection, setSortDirection] = useState<sortDirection>("Ascending");
+    const [sortDirection, setSortDirection] = useState<SortDirection>("Ascending");
     const [search, setSearch] = useState("");
 
     const numberOfPages = getNumberOfPages(filteredTags.length, pageSize);
@@ -85,7 +81,7 @@ const useComponentState = () => {
     const pageChange = (_current: number, newPage: number) => setPageNumber(newPage);
 
     useEffect(() => {
-        
+
         setPageNumber(1);
 
         const searchTerm = search.toLocaleLowerCase();
@@ -93,7 +89,7 @@ const useComponentState = () => {
             setFilteredTags(allTags ?? []);
             return;
         }
-        
+
         const matchingTags = allTags?.filter(t => t?.name.toLocaleLowerCase().includes(searchTerm)) ?? [];
         const matchingSubTags = allTags?.filter(t => !matchingTags.some(t2 => t2.id === t.id) && t?.tags.some(t2 => matchingTags.some(t3 => t3.id === t2.id)));
         setFilteredTags(matchingTags.concat(matchingSubTags));

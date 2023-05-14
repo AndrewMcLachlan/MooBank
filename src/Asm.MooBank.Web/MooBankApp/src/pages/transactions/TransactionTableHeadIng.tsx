@@ -1,5 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
-import { sortDirection, State } from "store/state";
+
+import { SortDirection } from "@andrewmclachlan/mooapp";
+
+import { State } from "store/state";
 import { TransactionsSlice } from "store/Transactions";
 
 export const TransactionTableHeadIng: React.FC = () => {
@@ -9,7 +12,7 @@ export const TransactionTableHeadIng: React.FC = () => {
 
     const sort = (newSortField: string) => {
 
-        let newSortDirection: sortDirection = "Ascending";
+        let newSortDirection: SortDirection = "Ascending";
 
         if (newSortField === sortField) {
             newSortDirection = sortDirection === "Ascending" ? "Descending" : "Ascending";

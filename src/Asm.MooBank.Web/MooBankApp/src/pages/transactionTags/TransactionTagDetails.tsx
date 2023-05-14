@@ -1,5 +1,4 @@
-import { Tooltip } from "components";
-import { useUpdatingState } from "hooks";
+import { Tooltip, useUpdatingState } from "@andrewmclachlan/mooapp";
 import { TransactionTag } from "models";
 import { Button, Form, Modal } from "react-bootstrap";
 import { useUpdateTag } from "services";

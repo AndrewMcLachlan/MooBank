@@ -6,9 +6,8 @@ import { useAccount, useAllTagAverageReport } from "services";
 
 import { Bar, getElementAtEvent } from "react-chartjs-2";
 import { Chart as ChartJS, ChartData, registerables } from "chart.js";
-import { useLayout } from "@andrewmclachlan/mooapp";
+import { useIdParams, useLayout } from "@andrewmclachlan/mooapp";
 
-import { useIdParams } from "hooks";
 import { PeriodSelector } from "components/PeriodSelector";
 import { Period, lastMonth } from "helpers/dateFns";
 import { ReportType } from "models/reports";

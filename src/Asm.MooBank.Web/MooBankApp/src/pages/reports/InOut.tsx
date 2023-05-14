@@ -11,11 +11,9 @@ import { useAccount, useInOutReport } from "services";
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, ChartData, registerables } from "chart.js";
 import chartTrendline from "chartjs-plugin-trendline";
-import { useLayout } from "@andrewmclachlan/mooapp";
+import { useIdParams, useLayout } from "@andrewmclachlan/mooapp";
 
 import { PeriodSelector } from "components/PeriodSelector";
-import { useIdParams } from "hooks";
-import { getCachedPeriod } from "helpers";
 import { InOutTrend } from "./InOutTrend";
 import { Period } from "helpers/dateFns";
 

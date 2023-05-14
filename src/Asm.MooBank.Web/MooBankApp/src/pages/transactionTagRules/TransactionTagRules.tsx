@@ -3,8 +3,8 @@ import "./TransactionTagRules.scss";
 import React, { useEffect, useState } from "react";
 import { Col, Row, Table } from "react-bootstrap";
 
-import { ClickableIcon } from "@andrewmclachlan/mooapp";
-import { Pagination, TransactionTagPanel } from "components";
+import { changeSortDirection, ClickableIcon, getNumberOfPages, SearchBox, SortDirection, Pagination } from "@andrewmclachlan/mooapp";
+import { TransactionTagPanel } from "components";
 
 import { TransactionTag, TransactionTagRule, sortRules, sortTags } from "models";
 import { useParams } from "react-router-dom";
@@ -12,10 +12,7 @@ import { useParams } from "react-router-dom";
 import { TransactionTagRuleRow } from "./TransactionTagRuleRow";
 import { useAccount, useCreateRule, useCreateTag, useRules, useRunRules, useTags } from "services";
 import { Page } from "layouts";
-import { getNumberOfPages } from "helpers/paging";
-import { sortDirection } from "store/state";
-import { changeSortDirection } from "helpers/sorting";
-import { SearchBox } from "components/SearchBox";
+
 
 export const TransactionTagRules: React.FC = () => {
 
@@ -29,7 +26,7 @@ export const TransactionTagRules: React.FC = () => {
     const [pagedRules, setPagedRules] = useState<TransactionTagRule[]>([]);
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(20);
-    const [sortDirection, setSortDirection] = useState<sortDirection>("Ascending");
+    const [sortDirection, setSortDirection] = useState<SortDirection>("Ascending");
     const [search, setSearch] = useState("");
 
     const numberOfPages = getNumberOfPages(filteredRules.length, pageSize);
@@ -68,7 +65,7 @@ export const TransactionTagRules: React.FC = () => {
             <Page.Content>
                 <Row>
                     <Col xl={6}>
-                        <SearchBox value={search} onChange={(v) => setSearch(v)} />
+                        <SearchBox value={search} onChange={(v: string) => setSearch(v)} />
                     </Col>
                 </Row>
                 <Table striped bordered={false} borderless className="transaction-tag-rules">

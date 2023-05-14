@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 
 import { TransactionTag } from "models";
-import { ClickableIcon, EditColumn } from "@andrewmclachlan/mooapp";
+import { ClickableIcon, EditColumn, useUpdatingState } from "@andrewmclachlan/mooapp";
 import { useDeleteTag, useTags, useUpdateTag } from "services";
 import { TransactionTagTransactionTagPanel } from "./TransactionTagTransactionTagPanel";
 import { TransactionTagDetails } from "./TransactionTagDetails";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useUpdatingState } from "hooks";
+
 
 export const TransactionTagRow: React.FC<TransactionTagRowProps> = (props) => {
 

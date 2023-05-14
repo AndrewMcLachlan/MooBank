@@ -3,8 +3,8 @@ import { useSelector } from "react-redux";
 
 import * as Models from "models";
 import { Transaction, TransactionTag } from "models";
-import { sortDirection, State, TransactionsFilter } from "store/state";
-import { useApiGet, useApiDelete, useApiDatalessPut, useApiPatch } from "@andrewmclachlan/mooapp";
+import { State, TransactionsFilter } from "store/state";
+import { SortDirection, useApiGet, useApiDelete, useApiDatalessPut, useApiPatch } from "@andrewmclachlan/mooapp";
 import format from "date-fns/format";
 import parseISO from "date-fns/parseISO";
 
@@ -19,7 +19,7 @@ interface TransactionTagVariables extends TransactionVariables {
      tag: TransactionTag,
 }
 
-export const useTransactions = (accountId: string, filter: TransactionsFilter, pageSize: number, pageNumber: number, sortField: string, sortDirection: sortDirection) => {
+export const useTransactions = (accountId: string, filter: TransactionsFilter, pageSize: number, pageNumber: number, sortField: string, sortDirection: SortDirection) => {
 
     const sortString = sortField && sortField !== null && sortField !== "" ? `sortField=${sortField}&sortDirection=${sortDirection}` : "";
     let filterString = filter.description ? `&filter=${filter.description}` : "";

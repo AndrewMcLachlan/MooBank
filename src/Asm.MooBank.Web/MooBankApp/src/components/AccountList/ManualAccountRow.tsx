@@ -2,13 +2,12 @@
 import { getBalanceString, numberClassName } from "helpers";
 
 import { AccountRowProps } from "./AccountRow";
-import { useClickAway } from "@andrewmclachlan/mooapp";
+import { MD5, useClickAway } from "@andrewmclachlan/mooapp";
 import { AccountType } from "models";
 import { useUpdateBalance } from "services";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { VirtualAccountRow } from "./VirtualAccountRow";
-import { MD5 } from "helpers";
 
 export const ManualAccountRow: React.FC<AccountRowProps> = (props) => {
 
@@ -16,7 +15,7 @@ export const ManualAccountRow: React.FC<AccountRowProps> = (props) => {
 
     const [showVirtualAccounts, setShowVirtualAccounts] = useState<Boolean>(localStorage.getItem(`account|${MD5(props.account.id)}`) === "true");
 
-    const showVirtualAccountsClick = (e: React.MouseEvent<HTMLTableDataCellElement>) => {
+    const showVirtualAccountsClick = (e: React.MouseEvent<HTMLTableCellElement>) => {
         e.preventDefault();
         e.stopPropagation();
         setShowVirtualAccounts(!showVirtualAccounts);

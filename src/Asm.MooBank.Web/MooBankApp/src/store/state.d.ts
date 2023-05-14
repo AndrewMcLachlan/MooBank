@@ -1,3 +1,5 @@
+import { SortDirection } from "@andrewmclachlan/mooapp";
+
 export interface State {
     app: App,
     transactions: Transactions,
@@ -13,7 +15,7 @@ export interface Transactions {
     pageSize: number;
     filter: TransactionsFilter;
     sortField: string;
-    sortDirection: sortDirection;
+    sortDirection: SortDirection;
 }
 
 export interface TransactionsFilter {
@@ -23,5 +25,3 @@ export interface TransactionsFilter {
     start?: string;
     end?: string;
 }
-
-export type sortDirection = "Ascending" | "Descending";

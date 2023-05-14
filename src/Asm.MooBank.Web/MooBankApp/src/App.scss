@@ -365,29 +365,6 @@ form>div {
 
 .pagination {
     font-family: var(--font-family-alt);
-    justify-content: flex-end;
-    --bs-pagination-padding-x: 0.75rem;
-    --bs-pagination-padding-y: 0.375rem;
-    --bs-pagination-font-size: 1rem;
-    --bs-pagination-color: var(--bs-body-color);
-    --bs-pagination-bg: transparent;
-    --bs-pagination-border-width: 1px;
-    --bs-pagination-border-color: #dee2e6;
-    --bs-pagination-hover-color: var(--bs-link-hover-color);
-    --bs-pagination-hover-bg: #e9ecef;
-    --bs-pagination-hover-border-color: #dee2e6;
-    --bs-pagination-focus-color: var(--bs-link-hover-color);
-    --bs-pagination-focus-bg: #e9ecef;
-    --bs-pagination-focus-box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-    --bs-pagination-active-color: #fff;
-    --bs-pagination-active-bg: #0d6efd;
-    --bs-pagination-active-border-color: #dee2e6;
-    --bs-pagination-disabled-color: #6c757d;
-    --bs-pagination-disabled-bg: transparent;
-    --bs-pagination-disabled-border-color: #dee2e6;
-    display: flex;
-    padding-left: 0;
-    list-style: none;
 }
 
 .control-panel {
@@ -402,14 +379,6 @@ legend svg {
 
 legend.open svg {
     transform: rotate(-180deg);
-}
-
-input.search-box {
-    padding-left: calc(1rem + 20px);
-    background-repeat: no-repeat;
-    background-size: 1rem;
-    background-position: 10px center;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23666' viewBox='0 0 512 512'%3E%3C%21--%21%20Font%20Awesome%20Pro%206.4.0%20by%20%40fontawesome%20-%20https%3A%2F%2Ffontawesome.com%20License%20-%20https%3A%2F%2Ffontawesome.com%2Flicense%20%28Commercial%20License%29%20Copyright%202023%20Fonticons%2C%20Inc.%20--%3E%3Cpath d='M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z'/%3E%3C/svg%3E");
 }
 
 .description {
