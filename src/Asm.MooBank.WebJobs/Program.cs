@@ -8,6 +8,7 @@ static void ConfigureServices(HostBuilderContext context, IServiceCollection ser
     services.AddMooBankDbContext(context.Configuration);
     services.AddRepositories();
     services.AddEntities();
+    services.AddImporterFactory();
     services.AddServices();
     services.AddSingleton<IUserDataProvider, UserDataProvider>();
     services.AddSingleton<IHttpContextAccessor, DummyHttpContextAccessor>();

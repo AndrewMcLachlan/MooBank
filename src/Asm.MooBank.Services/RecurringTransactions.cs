@@ -1,6 +1,7 @@
 ﻿using Asm.Domain;
 using Asm.MooBank.Domain.Entities.RecurringTransactions;
 using Asm.MooBank.Models;
+using Microsoft.Extensions.Logging;
 
 namespace Asm.MooBank.Services;
 
@@ -13,11 +14,13 @@ public class RecurringTransactionService : ServiceBase, IRecurringTransactionSer
 {
     private readonly IRecurringTransactionRepository _recurringTransactionRepository;
     private readonly ITransactionService _transactionService;
+    private readonly ILogger<RecurringTransactionService> _logger;
 
-    public RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionService transactionService, IRecurringTransactionRepository recurringTransactionRepository) : base(unitOfWork)
+    public RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionService transactionService, IRecurringTransactionRepository recurringTransactionRepository, ILogger<RecurringTransactionService> logger) : base(unitOfWork)
     {
         _transactionService = transactionService;
         _recurringTransactionRepository = recurringTransactionRepository;
+        _logger = logger;
     }
 
     public async Task Process()
@@ -26,7 +29,8 @@ public class RecurringTransactionService : ServiceBase, IRecurringTransactionSer
         {
             if (trans.LastRun == null)
             {
-                await RunTransaction(trans);
+                _logger.LogInformation("Recurring transaction for {accountId} has not been run before. Creating first run.", trans.VirtualAccountId);
+                RunTransaction(trans);
                 trans.LastRun = DateTime.Now;
             }
             else
@@ -37,29 +41,26 @@ public class RecurringTransactionService : ServiceBase, IRecurringTransactionSer
                 TimeSpan diff = now - lastRun;
 
                 bool process = false;
-                switch (trans.Schedule)
+                process = trans.Schedule switch
                 {
-                    case ScheduleFrequency.Daily:
-                        process = diff.TotalDays >= 1;
-                        break;
-                    case ScheduleFrequency.Weekly:
-                        process = diff.TotalDays >= 7;
-                        break;
-                    case ScheduleFrequency.Monthly:
-                        // Make sure some time has passed and
-                        // that we are one calendar month apart or as close as we can be
-                        // (e.g. if the transaction last ran on the 31st Jan, the next run will be the 28th Feb).
+                    ScheduleFrequency.Daily => diff.TotalDays >= 1,
+                    ScheduleFrequency.Weekly => diff.TotalDays >= 7,
 
-                        process = diff.TotalDays >= 28 && (lastRun.Day == now.Day || DateTime.DaysInMonth(now.Year, now.Month) < lastRun.Day);
-                        break;
-                    default:
-                        throw new InvalidOperationException("Unsupported schedule: " + trans.Schedule.ToString());
-                }
-
+                    // Make sure some time has passed and
+                    // that we are one calendar month apart or as close as we can be
+                    // (e.g. if the transaction last ran on the 31st Jan, the next run will be the 28th Feb).
+                    ScheduleFrequency.Monthly => diff.TotalDays >= 28 && (lastRun.Day == now.Day || DateTime.DaysInMonth(now.Year, now.Month) < lastRun.Day),
+                    _ => throw new InvalidOperationException("Unsupported schedule: " + trans.Schedule.ToString()),
+                };
                 if (process)
                 {
-                    await RunTransaction(trans);
+                    _logger.LogInformation("Running recurring transaction for {accountId}.", trans.VirtualAccountId);
+                    RunTransaction(trans);
                     trans.LastRun = DateTime.Now;
+                }
+                else
+                {
+                    _logger.LogInformation("Recurring transaction for {accountId} not due to run", trans.VirtualAccountId);
                 }
             }
         }
@@ -67,10 +68,11 @@ public class RecurringTransactionService : ServiceBase, IRecurringTransactionSer
         await UnitOfWork.SaveChangesAsync();
     }
 
-    private async Task RunTransaction(RecurringTransaction trans)
+    private void RunTransaction(RecurringTransaction trans)
     {
-        await _transactionService.AddTransaction(trans.Amount, trans.VirtualAccountId, true, trans.Description);
+        _transactionService.AddTransaction(trans.Amount, trans.VirtualAccountId, true, trans.Description);
 
         trans.VirtualAccount.Balance += trans.Amount;
+        trans.VirtualAccount.LastUpdated = DateTime.UtcNow;
     }
 }

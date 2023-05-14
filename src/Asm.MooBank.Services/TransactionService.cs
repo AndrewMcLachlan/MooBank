@@ -15,7 +15,7 @@ public interface ITransactionService
 
     Task<Transaction> RemoveTransactionTag(Guid accountId, Guid id, int tagId, CancellationToken cancellationToken = default);
 
-    Task AddTransaction(decimal amount, Guid accountId, bool isRecurring, string? description = null);
+    void AddTransaction(decimal amount, Guid accountId, bool isRecurring, string? description = null);
 }
 
 public class TransactionService : ServiceBase, ITransactionService
@@ -108,7 +108,7 @@ public class TransactionService : ServiceBase, ITransactionService
     }
 
 
-    public async Task AddTransaction(decimal amount, Guid accountId, bool isRecurring, string? description = null)
+    public void AddTransaction(decimal amount, Guid accountId, bool isRecurring, string? description = null)
     {
         TransactionType transactionType = amount < 0 ?
                                           isRecurring ? TransactionType.RecurringDebit : TransactionType.Debit :
@@ -123,6 +123,6 @@ public class TransactionService : ServiceBase, ITransactionService
             TransactionType = transactionType,
         };
 
-        await UnitOfWork.SaveChangesAsync();
+        _transactionRepository.Add(transaction);
     }
 }
