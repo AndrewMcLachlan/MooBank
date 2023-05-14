@@ -1,6 +1,7 @@
 ﻿using Asm.Domain;
 using IVirtualAccountRepository = Asm.MooBank.Domain.Entities.Account.IVirtualAccountRepository;
 using Asm.MooBank.Models;
+using Asm.MooBank.Domain.Entities.Transactions;
 
 namespace Asm.MooBank.Services;
 
@@ -21,10 +22,12 @@ public class VirtualAccountService : ServiceBase, IVirtualAccountService
 {
     private readonly ISecurity _securityRepository;
     private readonly IVirtualAccountRepository _virtualAccountRepository;
+    private readonly ITransactionRepository _transactionRepository;
 
-    public VirtualAccountService(IUnitOfWork unitOfWork, IVirtualAccountRepository virtualAccountRepository, ISecurity securityRepository) : base(unitOfWork)
+    public VirtualAccountService(IUnitOfWork unitOfWork, IVirtualAccountRepository virtualAccountRepository, ITransactionRepository transactionRepository, ISecurity securityRepository) : base(unitOfWork)
     {
         _virtualAccountRepository = virtualAccountRepository;
+        _transactionRepository = transactionRepository;
         _securityRepository = securityRepository;
     }
 
@@ -75,13 +78,24 @@ public class VirtualAccountService : ServiceBase, IVirtualAccountService
     {
         _securityRepository.AssertAccountPermission(accountId);
 
-        var entity = await GetEntity(accountId, virtualAccountId);
+        var account = await GetEntity(accountId, virtualAccountId);
 
-        entity.Balance = balance;
+        var amount = account.Balance - balance;
+
+        _transactionRepository.Add(new Domain.Entities.Transactions.Transaction
+        {
+            Account = account,
+            Amount = amount,
+            Description = "Balance adjustment",
+            TransactionTime = DateTime.Now,
+            TransactionType = amount > 0 ? TransactionType.BalanceAdjustmentCredit : TransactionType.BalanceAdjustmentDebit,
+        });
+
+        account.Balance = balance;
 
         await UnitOfWork.SaveChangesAsync();
 
-        return entity;
+        return account;
     }
 
     private async Task<Domain.Entities.Account.VirtualAccount> GetEntity(Guid accountId, Guid virtualAccountId)
