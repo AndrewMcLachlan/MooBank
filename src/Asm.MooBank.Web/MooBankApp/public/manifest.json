@@ -1,12 +1,18 @@
 {
   "short_name": "MooBank",
   "name": "MooBank",
+  "description": "Manage your finances better!",
   "icons": [
     {
       "src": "logo.svg",
-      "sizes": "512x512 256x256 192x192 128x128 64x64 48x48 32x32 24x24 16x16",
+      "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
+    },
+    {
+      "src": "favicon.ico",
+      "type": "image/png",
+      "sizes": "16x16"
     }
   ],
   "start_url": ".",
