@@ -104,7 +104,7 @@ const draw = (canvas: HTMLCanvasElement, tagHierarchy: TransactionTagHierarchy, 
 
         if (x > screen.availWidth / 2) {
             x = xPadding;
-            y += paddedBoxHeight * (size.y);            
+            y += paddedBoxHeight * (size.y);
             maxY = y;
         } else {
             maxY = Math.max(maxY, y + (paddedBoxHeight * size.y));
@@ -175,6 +175,13 @@ class Tag {
 
     public display: Direction;
 
+    // Gets the horizontal start of the box
+    public boxStartx() {
+        const { x, y: _ } = this.position;
+        const { x: width, y: _height } = this.requiredSize();
+        return (x + ((width * paddedBoxWidth) / 2)) - halfPaddedBoxWidth;
+    }
+
     public draw(ctx: CanvasRenderingContext2D, theme: Theme) {
 
         const cts = ctx;
@@ -182,17 +189,20 @@ class Tag {
         const { x, y } = this.position;
         const { x: width, y: height } = this.requiredSize();
 
-        // Box appears centered above children
-        const start = (x + ((width * paddedBoxWidth) / 2)) - (halfPaddedBoxWidth);
 
-        if (this.tag.name.startsWith("Luxury")) {
-            console.debug(this.tagRenderers);
-        }
+        // The start position of the box.
+        // If the box has children, calculate the start point as the middle of its immediate children. 
+        const childWidth = this.tagRenderers.length <= 1 ? 0 : (this.tagRenderers[this.tagRenderers.length - 1].position.x + paddedBoxWidth) - this.tagRenderers[0].boxStartx();
+        const childStart = this.tagRenderers[0]?.boxStartx() ?? x;
+        const start = this.tagRenderers.length <= 1 ? this.boxStartx() : (childStart + (childWidth / 2)) - halfPaddedBoxWidth;
 
+        // Draw the box
         ctx.fillStyle = this.colour;
         ctx.beginPath();
         ctx.roundRect(start, y, boxWidth, boxHeight, [cornerRadius]);
         ctx.fill();
+
+        // Begin - Draw the text
         ctx.textAlign = "center";
         ctx.fillStyle = "#FFFFFF";
         cts.textBaseline = "middle";
@@ -215,7 +225,6 @@ class Tag {
             splitNameParts.push(splitName2);
         }
 
-
         let startY = halfBoxHeight - (halfLineHeight * (splitNameParts.length - 1));
 
         for (const name of splitNameParts) {
@@ -224,6 +233,7 @@ class Tag {
         }
         ctx.strokeStyle = theme == "light" ? "#666666" : "#FFFFFF";
         ctx.lineWidth = 2;
+        // End - Draw the text
 
         if (this.display === "horizontal") {
             if (this.tag.tags.length > 0) {
@@ -231,22 +241,24 @@ class Tag {
                 ctx.moveTo(start + halfBoxWidth, y + boxHeight);
                 ctx.lineTo(start + halfBoxWidth, y + boxHeight + halfYPadding);
 
-                //Horizontal line above child tags
-                ctx.moveTo(x + (halfPaddedBoxWidth) - halfXPadding - (1.2), y + boxHeight + halfYPadding);
-                ctx.lineTo(x + (width * paddedBoxWidth) - (halfPaddedBoxWidth) - (3.8), y + boxHeight + halfYPadding);
+                if (this.tagRenderers.length > 1) {
+                    //Horizontal line above child tags
+                    ctx.moveTo((this.tagRenderers[0]?.boxStartx() ?? x) + halfBoxWidth - (1.2), y + boxHeight + halfYPadding);
+                    ctx.lineTo(x + (width * paddedBoxWidth) - (halfPaddedBoxWidth) - (3.8), y + boxHeight + halfYPadding);
+                }
             }
-            ctx.stroke();
 
             if (!this.isRoot) {
                 // Vertical line up from box
                 ctx.moveTo(start + (halfBoxWidth), y);
                 ctx.lineTo(start + (halfBoxWidth), y - halfYPadding);
-                ctx.stroke();
             }
         }
 
+        // Draw all lines
+        ctx.stroke();
+
         for (const tag of this.tagRenderers) {
-            if (this.tag.name.startsWith("Luxury")) console.debug("Here");
             tag.draw(ctx, theme);
         }
     }
@@ -265,7 +277,6 @@ class Tag {
 
         for (const child of tag.tags ?? []) {
             const { x, y } = this.getSizeUnits(child, depth + 1);
-
 
             length += (Math.max(0, x - 1));
             newDepth = Math.max(newDepth, y);
