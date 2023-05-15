@@ -1,8 +1,8 @@
 ﻿using Asm.MooBank.Domain.Entities.Transactions;
-using Asm.MooBank.Queries.Transactions;
-using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Queries.Transactions;
+
+public record Search(Guid AccountId, DateOnly StartDate, Models.TransactionType TransactionType, IEnumerable<int> TagIds) : IQuery<IEnumerable<Models.Transaction>>;
 
 internal class SearchHandler : IQueryHandler<Search, IEnumerable<Models.Transaction>>
 {
@@ -19,7 +19,9 @@ internal class SearchHandler : IQueryHandler<Search, IEnumerable<Models.Transact
     {
         _securityRepository.AssertAccountPermission(request.AccountId);
 
-        var startTime = request.StartDate.ToStartOfDay();
+        // Sometimes rebates are accounted prior to the debit transaction.
+        // Go back 5 days, just in case.
+        var startTime = request.StartDate.AddDays(-5).ToStartOfDay();
 
         return _transactions.IncludeAll().Where<Transaction>(t => t.AccountId == request.AccountId && t.Offsets == null && t.TransactionTime >= startTime && t.TransactionType == request.TransactionType && t.TransactionTags.Any(tt => request.TagIds.Contains(tt.TransactionTagId))).ToModelAsync(cancellationToken: cancellationToken);
     }
