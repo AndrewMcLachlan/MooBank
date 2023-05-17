@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Asm.Domain;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Security;
 
 namespace Asm.MooBank.Domain.Entities.Account;
 
+[AggregateRoot]
 public class InstitutionAccount : Account
 {
     public InstitutionAccount()

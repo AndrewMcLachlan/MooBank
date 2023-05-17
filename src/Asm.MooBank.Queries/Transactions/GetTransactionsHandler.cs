@@ -1,6 +1,5 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
-using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Importers;
 using Asm.MooBank.Queries.Transactions;
@@ -35,16 +34,14 @@ public class GetTransactionsHandler : IQueryHandler<GetTransactions, PagedResult
 {
     private readonly IQueryDispatcher _queryDispatcher;
     private readonly IQueryable<Transaction> _transactions;
-    private readonly IQueryable<Account> _accounts;
     private readonly ISecurity _security;
     private readonly IImporterFactory _importerFactory;
 
 
-    public GetTransactionsHandler(IQueryDispatcher queryDispatcher, IQueryable<Transaction> transactions, IQueryable<Account> accounts, ISecurity securityRepository, IImporterFactory importerFactory)
+    public GetTransactionsHandler(IQueryDispatcher queryDispatcher, IQueryable<Transaction> transactions, ISecurity securityRepository, IImporterFactory importerFactory)
     {
         _queryDispatcher = queryDispatcher;
         _transactions = transactions;
-        _accounts = accounts;
         _security = securityRepository;
         _importerFactory = importerFactory;
     }

@@ -49,9 +49,11 @@ public static class InstitutionAccountExtensions
         return result;
     }
 
-    public static async Task<InstitutionAccount> ToModelAsync(this Task<Domain.Entities.Account.InstitutionAccount> entityTask, Guid userId, CancellationToken cancellationToken = default)
+    public static async Task<InstitutionAccount?> ToModelAsync(this Task<Domain.Entities.Account.InstitutionAccount?> entityTask, Guid userId, CancellationToken cancellationToken = default)
     {
         var entity = await entityTask.WaitAsync(cancellationToken);
+
+        if (entity == null) return null;
 
         var result = (InstitutionAccount)entity;
         result.AccountGroupId = entity.GetAccountGroup(userId)?.Id;

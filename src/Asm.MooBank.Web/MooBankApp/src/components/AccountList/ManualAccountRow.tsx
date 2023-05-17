@@ -8,10 +8,11 @@ import { useUpdateBalance } from "services";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { VirtualAccountRow } from "./VirtualAccountRow";
+import { useNavigate } from "react-router-dom";
 
 export const ManualAccountRow: React.FC<AccountRowProps> = (props) => {
 
-    const { balanceRef, editingBalance, balanceClick, balanceChange, balance, keyPress } = useComponentState(props);
+    const { balanceRef, editingBalance, balanceClick, onRowClick, balanceChange, balance, keyPress } = useComponentState(props);
 
     const [showVirtualAccounts, setShowVirtualAccounts] = useState<Boolean>(localStorage.getItem(`account|${MD5(props.account.id)}`) === "true");
 
@@ -25,11 +26,11 @@ export const ManualAccountRow: React.FC<AccountRowProps> = (props) => {
 
     return (
         <>
-            <tr onClick={balanceClick} className="clickable" ref={balanceRef}>
+            <tr onClick={onRowClick} className="clickable" ref={balanceRef}>
                 <td onClick={showVirtualAccountsClick}>{props.account.virtualAccounts && props.account.virtualAccounts.length > 0 && <FontAwesomeIcon icon={showVirtualAccounts ? "chevron-down" : "chevron-right"} />}</td>
                 <td className="name">{props.account.name}</td>
                 <td>{AccountType[props.account.accountType]}</td>
-                <td className={classNames("amount", "number", numberClassName(props.account.currentBalance))}>
+                <td className={classNames("amount", "number", numberClassName(props.account.currentBalance))} onClick={balanceClick}>
                     {!editingBalance && getBalanceString(balance)}
                     {editingBalance && <input type="number" value={balance} onChange={balanceChange} onKeyPress={keyPress} />}
                 </td>
@@ -58,12 +59,18 @@ const useComponentState = (props: AccountRowProps) => {
 
     const balanceRef = useRef(null);
 
+    const navigate = useNavigate();
+
     useClickAway(setEditingBalance, balanceRef, () => (editingBalance && props.account.currentBalance !== balance) && updateBalance.update(props.account.id, balance, balance));
 
-    const balanceClick = (e: React.MouseEvent<HTMLTableRowElement>) => {
+    const balanceClick: React.MouseEventHandler<HTMLTableCellElement> = (e) => {
         setEditingBalance(true);
         e.preventDefault();
         e.stopPropagation();
+    };
+
+    const onRowClick = () => {
+        navigate(`accounts/${props.account.id}`);
     };
 
     const balanceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,6 +91,7 @@ const useComponentState = (props: AccountRowProps) => {
         editingBalance,
 
         balanceClick,
+        onRowClick,
 
         balanceChange,
 

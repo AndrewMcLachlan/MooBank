@@ -11,8 +11,6 @@ public interface IAccountService
 {
     Task<IEnumerable<InstitutionAccount>> GetAccounts(CancellationToken cancellationToken = default);
 
-    Task<InstitutionAccount> GetAccount(Guid id);
-
     Task<Account> SetBalance(Guid id, decimal balance);
 
     Task<InstitutionAccount> Create(InstitutionAccount account);
@@ -103,7 +101,6 @@ public class AccountService : ServiceBase, IAccountService
         return entity;
     }
 
-    public Task<InstitutionAccount> GetAccount(Guid id) => GetAccountEntity(id).ToModelAsync(_userDataProvider.CurrentUserId);
 
     public async Task<Account> SetBalance(Guid id, decimal balance)
     {

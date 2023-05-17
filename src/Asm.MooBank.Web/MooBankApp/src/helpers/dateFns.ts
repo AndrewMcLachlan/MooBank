@@ -17,6 +17,7 @@ export const periodEquals = (a?: Period, b?: Period) => a?.startDate?.getTime() 
 export const startOfLastMonth = () => startOfMonth(addMonths(new Date(), -1));
 export const endOfLastMonth = () => endOfMonth(addMonths(new Date(), -1));
 
+export const thisMonth: Period = { startDate: startOfMonth(new Date()), endDate: endOfMonth(new Date()) };
 export const lastMonth: Period = { startDate: startOfLastMonth(), endDate: endOfLastMonth() };
 export const previousMonth: Period = { startDate: startOfMonth(addMonths(new Date(), -2)), endDate: endOfMonth(addMonths(new Date(), -2)) };
 export const last3Months: Period = { startDate: startOfMonth(addMonths(new Date(), -3)), endDate: endOfMonth(addMonths(new Date(), -1)) };

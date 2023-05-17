@@ -1,15 +1,19 @@
-﻿namespace Asm.MooBank.Web.Controllers;
+﻿using Asm.Cqrs.Commands;
+using Asm.Cqrs.Queries;
+using Asm.MooBank.Queries.Account;
+
+namespace Asm.MooBank.Web.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class AccountsController : ControllerBase
+public class AccountsController : CommandQueryController
 {
     private readonly IAccountService _accountService;
 
     private readonly ILogger<AccountsController> _logger;
 
-    public AccountsController(IAccountService accountService, ILogger<AccountsController> logger)
+    public AccountsController(IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher, IAccountService accountService, ILogger<AccountsController> logger) : base(queryDispatcher, commandDispatcher)
     {
         _accountService = accountService;
         _logger = logger;
@@ -22,10 +26,8 @@ public class AccountsController : ControllerBase
     public Task<AccountsList> GetFormatted(CancellationToken token = default) => _accountService.GetFormattedAccounts(token);
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<InstitutionAccount>> Get(Guid id)
-    {
-        return new ActionResult<InstitutionAccount>(await _accountService.GetAccount(id));
-    }
+    public Task<InstitutionAccount> Get(Guid id, CancellationToken cancellationToken = default) =>
+        QueryDispatcher.Dispatch(new Get(id), cancellationToken);
 
     [HttpPost]
     public async Task<ActionResult<InstitutionAccount>> Create(NewAccountModel model)

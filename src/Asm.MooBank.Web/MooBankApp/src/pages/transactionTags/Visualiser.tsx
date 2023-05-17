@@ -111,26 +111,22 @@ const draw = (canvas: HTMLCanvasElement, tagHierarchy: TransactionTagHierarchy, 
         }
     }
 
-    //maxSize.y += 3;
-
     container.style.width = `${maxSize.x * paddedBoxWidth}px`;
-    container.style.height = `${maxY}px`;//`${maxSize.y * paddedBoxHeight}px`;
+    container.style.height = `${maxY}px`;
 
     canvas.width = maxSize.x * paddedBoxWidth + 1;
     canvas.height = canvas.offsetHeight;
     const ctx = canvas.getContext("2d");
-    const cts = ctx; // Just in case
 
     ctx.font = `normal ${fontSize} 'Open Sans'`
 
     for (const tag of tagRenderers) {
-        //console.debug(tag.tag.name + " " + tag.position.x + " " + maxSize.x);
         tag.draw(ctx, theme);
     }
 
 }
 
-type Direction = "vertical" | "horizontal"
+type Direction = "vertical" | "horizontal";
 
 class Tag {
 

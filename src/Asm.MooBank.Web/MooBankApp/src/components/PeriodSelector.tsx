@@ -4,7 +4,7 @@ import format from "date-fns/format";
 
 import { FormGroup, FormRow as Row } from "./";
 import { Button, Col, Form } from "react-bootstrap";
-import { Period, allTime, last12Months, last3Months, last6Months, lastMonth, lastYear, previousMonth } from "helpers/dateFns";
+import { Period, allTime, last12Months, last3Months, last6Months, lastMonth, lastYear, previousMonth, thisMonth } from "helpers/dateFns";
 import { usePeriod } from "hooks";
 import { useLocalStorage } from "@andrewmclachlan/mooapp";
 
@@ -19,7 +19,7 @@ export const PeriodSelector: React.FC<PeriodSelectorProps> = (props) => {
     const changePeriod = (e: ChangeEvent<HTMLSelectElement>) => {
         const index = e.currentTarget.selectedIndex;
         const option = options[index];
-        setSelectedPeriod(option?.value ?? "0");
+        setSelectedPeriod(option?.value ?? "-1");
 
         if (option) {
             setPeriod(option);
@@ -31,7 +31,7 @@ export const PeriodSelector: React.FC<PeriodSelectorProps> = (props) => {
     }
 
     useEffect(() => {
-        if (selectedPeriod === "0") {
+        if (selectedPeriod === "-1") {
             setPeriod(customPeriod);
         }
     }, [customPeriod]);
@@ -71,15 +71,15 @@ export const PeriodSelector: React.FC<PeriodSelectorProps> = (props) => {
                     <option value="0">Custom</option>
                 </Form.Select>
             </FormGroup>
-            <FormGroup as={Col} xl={props.instant ? "4" : "3"} hidden={selectedPeriod !== "0"}>
+            <FormGroup as={Col} xl={props.instant ? "4" : "3"} hidden={selectedPeriod !== "-1"}>
                 <Form.Label htmlFor="custom-start">From</Form.Label>
                 <Form.Control disabled={selectedPeriod !== "0"} id="custom-start" type="date" value={customStart ? format(customStart, "yyyy-MM-dd") :""} onChange={(e) => onCustomStartChange((e.currentTarget as any).valueAsDate)} />
             </FormGroup>
-            <FormGroup xl={props.instant ? "4" : "3"} hidden={selectedPeriod !== "0"}>
+            <FormGroup xl={props.instant ? "4" : "3"} hidden={selectedPeriod !== "-1"}>
                 <Form.Label htmlFor="custom-end">To</Form.Label>
                 <Form.Control disabled={selectedPeriod !== "0"} id="custom-end" type="date" value={customEnd ? format(customEnd, "yyyy-MM-dd"): ""} onChange={(e) => onCustomEndChange((e.currentTarget as any).valueAsDate)} />
             </FormGroup>
-            <FormGroup xl="2" className="horizontal-form-controls" hidden={selectedPeriod !== "0" || props.instant}>
+            <FormGroup xl="2" className="horizontal-form-controls" hidden={selectedPeriod !== "-1" || props.instant}>
                 <Button disabled={selectedPeriod !== "0"} onClick={customPeriodGo}>Go</Button>
             </FormGroup>
         </Row>
@@ -100,7 +100,7 @@ export interface PeriodSelectorProps {
     cacheKey?: string;
 }
 
-export type PeriodType = "lastMonth" | "previousMonth" | "last3Months" | "last6Months" | "last12Months" | "lastYear" | "allTime" | "custom";
+export type PeriodType = "thisMonth" | "lastMonth" | "previousMonth" | "last3Months" | "last6Months" | "last12Months" | "lastYear" | "allTime" | "custom";
 
 interface PeriodOption extends Period {
     value: string,
@@ -108,6 +108,7 @@ interface PeriodOption extends Period {
 }
 
 const options: PeriodOption[] = [
+    { value: "0", label: "This Month", ...thisMonth },
     { value: "1", label: "Last Month", ...lastMonth },
     { value: "2", label: "Previous Month", ...previousMonth },
     { value: "3", label: "Last 3 months", ...last3Months },
