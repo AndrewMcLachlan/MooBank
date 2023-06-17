@@ -1,11 +1,11 @@
 ﻿using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.TransactionTagHierarchies;
 using Asm.MooBank.Domain.Entities.TransactionTags;
-using Asm.MooBank.Queries.Reports;
 using Asm.MooBank.Models.Reports;
-using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Queries.Reports;
+
+public record GetBreakdownReport(int? TagId) : TypedReportQuery, IQuery<BreakdownReport>;
 
 internal class GetBreakdownReportHandler : IQueryHandler<Asm.MooBank.Queries.Reports.GetBreakdownReport, BreakdownReport>
 {

@@ -7,7 +7,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faCheckCircle, faTrashAlt, faChevronDown, faChevronUp, faTimesCircle, faArrowLeft, faChevronRight, faCircleChevronLeft, faUpload, faXmark, faFilterCircleXmark, faInfoCircle, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 
 import App from "./App";
-import * as serviceWorker from "./serviceWorker";
+import * as serviceWorker from "./serviceWorkerRegistration";
 import { AppProvider } from "./providers";
 import { MooApp } from "@andrewmclachlan/mooapp";
 import { AppStore } from "./store/configureStore";

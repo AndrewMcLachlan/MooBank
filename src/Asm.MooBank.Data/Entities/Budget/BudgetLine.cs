@@ -18,7 +18,7 @@ public class BudgetLine : KeyedEntity<Guid>
 
     public short Month { get; set; } = 4095; // Bits representing selected months
 
-    public Guid AccountId { get; set; }
+    public Guid BudgetId { get; set; }
 
-    public virtual Account.Account Account { get; set; }
+    public virtual Budget Budget { get; set; }
 }

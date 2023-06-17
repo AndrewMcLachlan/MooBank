@@ -74,7 +74,6 @@ const useComponentState = (props: AccountRowProps) => {
     };
 
     const balanceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-
         setBalance(parseFloat(e.currentTarget.value));
     }
 

@@ -27,3 +27,5 @@ export const lastYear: Period = { startDate: startOfYear(addYears(new Date(), -1
 export const allTime: Period = { startDate: startOfYear(addYears(new Date(), -50)), endDate: endOfYear(new Date()) };
 
 export const formatISODate = (date: Date) => format(date, "yyyy-MM-dd");
+
+export const isMonthSelected = (months: number, month: number) => (months & (1 << month)) !== 0;

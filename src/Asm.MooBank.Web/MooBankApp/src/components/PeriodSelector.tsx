@@ -117,17 +117,3 @@ const options: PeriodOption[] = [
     { value: "6", label: "Last year", ...lastYear },
     { value: "7", label: "All time", ...allTime },
 ];
-
-/*
-const getPeriodId = (value?: Period) => {
-
-    if (!value) return "1";
-
-    for (const o of options) {
-        if (periodEquals(value, o)) {
-            return o.value;
-        }
-    }
-
-    return "0";
-}*/

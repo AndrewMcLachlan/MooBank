@@ -1,24 +1,20 @@
-﻿using Asm.MooBank.Domain.Entities.Budget;
+﻿namespace Asm.MooBank.Queries.Budget;
 
-namespace Asm.MooBank.Queries.Budget;
+public record Get(Guid AccountId, short Year) : IQuery<Models.Budget?>;
 
-public record Get(Guid AccountId, Guid Id) : IQuery<Models.BudgetLine>;
-
-internal class GetHandler : QueryHandlerBase, IQueryHandler<Get, Models.BudgetLine>
+internal class GetHandler : QueryHandlerBase, IQueryHandler<Get, Models.Budget?>
 {
-    private readonly IQueryable<BudgetLine> _budgetLines;
+    private readonly IQueryable<Domain.Entities.Budget.Budget> _budgets;
 
-    public GetHandler(IQueryable<BudgetLine> budgetLines, ISecurity security) : base(security)
+    public GetHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, ISecurity security) : base(security)
     {
-        _budgetLines = budgetLines;
+        _budgets = budgets;
     }
 
-    public async Task<Models.BudgetLine> Handle(Get request, CancellationToken cancellationToken)
+    public async Task<Models.Budget?> Handle(Get request, CancellationToken cancellationToken)
     {
         Security.AssertAccountPermission(request.AccountId);
 
-        var entity = await _budgetLines.Include(b => b.Tag).SingleOrDefaultAsync(b => b.AccountId == request.AccountId && b.Id == request.Id, cancellationToken) ?? throw new NotFoundException();
-
-        return entity;
+        return await _budgets.Include(b => b.Lines).ThenInclude(b => b.Tag).Where(b => b.AccountId == request.AccountId && b.Year == request.Year).SingleOrDefaultAsync(cancellationToken);
     }
 }

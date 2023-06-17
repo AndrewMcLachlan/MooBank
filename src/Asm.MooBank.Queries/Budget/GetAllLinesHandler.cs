@@ -1,19 +1,20 @@
-﻿using Asm.MooBank.Domain.Entities.Budget;
+﻿/*
+using Asm.MooBank.Domain.Entities.Budget;
 
 namespace Asm.MooBank.Queries.Budget;
 
-public record GetAll(Guid AccountId) : IQuery<IEnumerable<Models.BudgetLine>>;
+public record GetAllLines(Guid AccountId) : IQuery<IEnumerable<Models.BudgetLine>>;
 
-internal class GetAllHandler : QueryHandlerBase, IQueryHandler<GetAll, IEnumerable<Models.BudgetLine>>
+internal class GetAllLinesHandler : QueryHandlerBase, IQueryHandler<GetAllLines, IEnumerable<Models.BudgetLine>>
 {
     private readonly IQueryable<BudgetLine> _budgetLines;
 
-    public GetAllHandler(IQueryable<BudgetLine> budgetLines, ISecurity security) : base(security)
+    public GetAllLinesHandler(IQueryable<BudgetLine> budgetLines, ISecurity security) : base(security)
     {
         _budgetLines = budgetLines;
     }
 
-    public Task<IEnumerable<Models.BudgetLine>> Handle(GetAll request, CancellationToken cancellationToken)
+    public Task<IEnumerable<Models.BudgetLine>> Handle(GetAllLines request, CancellationToken cancellationToken)
     {
         Security.AssertAccountPermission(request.AccountId);
 
@@ -21,8 +22,9 @@ internal class GetAllHandler : QueryHandlerBase, IQueryHandler<GetAll, IEnumerab
     }
 }
 
-file static class IQuerableExtensions
+file static class IQueryableExtensions
 {
     public static async Task<IEnumerable<Models.BudgetLine>> ToModelAsync(this IQueryable<BudgetLine> query, CancellationToken cancellationToken = default) =>
     await query.Select(t => (Models.BudgetLine)t).ToListAsync(cancellationToken);
 }
+*/

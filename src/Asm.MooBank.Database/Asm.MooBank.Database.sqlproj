@@ -99,6 +99,7 @@
     <Build Include="dbo\Tables\AccountHolderCard.sql" />
     <Build Include="dbo\Tables\BudgetLine.sql" />
     <Build Include="dbo\Views\OffsetTransactions.sql" />
+    <Build Include="dbo\Tables\Budget.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Azure.publish.xml" />

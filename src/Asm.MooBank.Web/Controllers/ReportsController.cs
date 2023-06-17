@@ -58,12 +58,11 @@ public class ReportsController : CommandQueryController
     [HttpGet("{reportType}/breakdown/{start}/{end}/{parentTag?}")]
     public Task<BreakdownReport> GetBreakdown(Guid accountId, DateOnly start, DateOnly end, ReportType reportType, int? parentTag, CancellationToken cancellationToken = default)
     {
-        GetBreakdownReport query = new()
+        GetBreakdownReport query = new(parentTag)
         {
             AccountId = accountId,
             Start = start,
             End = end,
-            TagId = parentTag,
             ReportType = reportType,
         };
 
