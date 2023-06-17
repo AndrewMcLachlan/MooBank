@@ -10,7 +10,7 @@ namespace Asm.MooBank.Infrastructure.Repositories
         {
         }
 
-        public BudgetLine Add(BudgetLine entity)
+        public BudgetLine AddLine(BudgetLine entity)
         {
             var result = Context.Add(entity).Entity;
 

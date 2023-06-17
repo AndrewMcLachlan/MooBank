@@ -24,9 +24,10 @@ internal class CreateLineHandler : CommandHandlerBase, ICommandHandler<CreateLin
 
         var entity = budgetLine.ToDomain(budget.Id);
 
-        budget.Lines.Add(entity);
+        _budgetRepository.AddLine(entity);
 
         await UnitOfWork.SaveChangesAsync(cancellationToken);
+
 
         return entity;
     }

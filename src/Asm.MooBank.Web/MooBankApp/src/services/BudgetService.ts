@@ -53,13 +53,13 @@ export const useDeleteBudgetLine = () => {
 
     const queryClient = useQueryClient();
 
-    const {mutate, ...rest} = useApiDelete<BudgetVariables>((variables) => `api/accounts/${variables.accountId}/budget/${variables.year}lines/${variables.lineId}`, {
+    const {mutate, ...rest} = useApiDelete<BudgetVariables>((variables) => `api/accounts/${variables.accountId}/budget/${variables.year}/lines/${variables.lineId}`, {
         onSuccess: (_data, variables: BudgetVariables) => {
-            let budgetLines = queryClient.getQueryData<BudgetLine[]>([budgetKey, variables.accountId]);
-            if (!budgetLines) return;
-            budgetLines = budgetLines.filter(r => r.id !== (variables.lineId));
-            budgetLines = budgetLines.sort((t1, t2) => t1.name.localeCompare(t2.name));
-            queryClient.setQueryData<BudgetLine[]>([budgetKey, variables.accountId], budgetLines);
+            let budget = queryClient.getQueryData<Budget>([budgetKey, variables.accountId, variables.year]);
+            if (!budget) return;
+            budget.expensesLines = budget.expensesLines.filter(r => r.id !== (variables.lineId));
+            budget.incomeLines = budget.incomeLines.filter(r => r.id !== (variables.lineId));
+            queryClient.setQueryData<Budget>([budgetKey, variables.accountId, variables.year], budget);
         }
     });
 
