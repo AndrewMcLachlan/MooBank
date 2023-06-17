@@ -15,17 +15,17 @@ public class AccountGroupsController : CommandQueryController
 
     [HttpGet]
     public Task<IEnumerable<AccountGroup>> GetAll() =>
-        QueryDispatcher.Dispatch(new GetAccountGroups());
+        QueryDispatcher.Dispatch(new GetAll());
 
 
     [HttpGet("{id}")]
     public Task<AccountGroup> Get(Guid id) =>
-        QueryDispatcher.Dispatch(new GetAccountGroup(id));
+        QueryDispatcher.Dispatch(new Get(id));
 
     [HttpPost]
     public async Task<IActionResult> Create(AccountGroup accountGroup)
     {
-        var createdGroup = await CommandDispatcher.Dispatch(new CreateAccountGroup(accountGroup));
+        var createdGroup = await CommandDispatcher.Dispatch(new Create(accountGroup));
 
         return CreatedAtAction(nameof(Get), new { id = createdGroup.Id }, createdGroup);
     }
@@ -35,13 +35,13 @@ public class AccountGroupsController : CommandQueryController
     {
         if (accountGroup.Id != id) return BadRequest();
 
-        return Ok(await CommandDispatcher.Dispatch(new UpdateAccountGroup(accountGroup)));
+        return Ok(await CommandDispatcher.Dispatch(new Update(accountGroup)));
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        await CommandDispatcher.Dispatch(new DeleteAccountGroup(id));
+        await CommandDispatcher.Dispatch(new Delete(id));
 
         return NoContent();
     }

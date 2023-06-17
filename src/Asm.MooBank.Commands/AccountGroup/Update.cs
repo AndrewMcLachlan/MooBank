@@ -1,23 +1,23 @@
-﻿using Asm.Domain;
-using Asm.MooBank.Domain.Entities.AccountGroup;
-using Asm.MooBank.Models.Commands.AccountGroup;
+﻿using Asm.MooBank.Domain.Entities.AccountGroup;
 
-namespace Asm.MooBank.Commands.AccountGroup;
+namespace Asm.MooBank.Models.Commands.AccountGroup;
 
-internal class UpdateAccountGroupHandler : ICommandHandler<UpdateAccountGroup, Models.AccountGroup>
+public record Update(Models.AccountGroup AccountGroup) : ICommand<Models.AccountGroup>;
+
+internal class UpdateHandler : ICommandHandler<Update, Models.AccountGroup>
 {
     private readonly IAccountGroupRepository _accountGroupRepository;
     private readonly ISecurity _securityRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public UpdateAccountGroupHandler(IAccountGroupRepository accountGroupRepository, ISecurity securityRepository, IUnitOfWork unitOfWork)
+    public UpdateHandler(IAccountGroupRepository accountGroupRepository, ISecurity securityRepository, IUnitOfWork unitOfWork)
     {
         _accountGroupRepository = accountGroupRepository;
         _securityRepository = securityRepository;
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Models.AccountGroup> Handle(UpdateAccountGroup request, CancellationToken cancellationToken)
+    public async Task<Models.AccountGroup> Handle(Update request, CancellationToken cancellationToken)
     {
         var entity = await _accountGroupRepository.Get(request.AccountGroup.Id, cancellationToken);
 
@@ -33,3 +33,4 @@ internal class UpdateAccountGroupHandler : ICommandHandler<UpdateAccountGroup, M
     }
 }
 
+;

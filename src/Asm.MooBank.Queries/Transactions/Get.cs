@@ -7,7 +7,7 @@ using PagedResult = Asm.MooBank.Models.PagedResult<Asm.MooBank.Models.Transactio
 
 namespace Asm.MooBank.Queries.Transactions;
 
-public record GetTransactions : IQuery<PagedResult>
+public record Get : IQuery<PagedResult>
 {
     public required Guid AccountId { get; init; }
 
@@ -30,7 +30,7 @@ public record GetTransactions : IQuery<PagedResult>
     public required bool UntaggedOnly { get; init; } = false;
 }
 
-public class GetTransactionsHandler : IQueryHandler<GetTransactions, PagedResult>
+internal class GetHandler : IQueryHandler<Get, PagedResult>
 {
     private readonly IQueryDispatcher _queryDispatcher;
     private readonly IQueryable<Transaction> _transactions;
@@ -38,7 +38,7 @@ public class GetTransactionsHandler : IQueryHandler<GetTransactions, PagedResult
     private readonly IImporterFactory _importerFactory;
 
 
-    public GetTransactionsHandler(IQueryDispatcher queryDispatcher, IQueryable<Transaction> transactions, ISecurity securityRepository, IImporterFactory importerFactory)
+    public GetHandler(IQueryDispatcher queryDispatcher, IQueryable<Transaction> transactions, ISecurity securityRepository, IImporterFactory importerFactory)
     {
         _queryDispatcher = queryDispatcher;
         _transactions = transactions;
@@ -46,7 +46,7 @@ public class GetTransactionsHandler : IQueryHandler<GetTransactions, PagedResult
         _importerFactory = importerFactory;
     }
 
-    public async Task<PagedResult> Handle(GetTransactions request, CancellationToken cancellationToken)
+    public async Task<PagedResult> Handle(Get request, CancellationToken cancellationToken)
     {
         _security.AssertAccountPermission(request.AccountId);
 
@@ -86,7 +86,7 @@ file static class IQueryableExtensions
         _transactionProperties = typeof(Transaction).GetProperties();
     }
 
-    public static IQueryable<Transaction> Where(this IQueryable<Transaction> query, GetTransactions request)
+    public static IQueryable<Transaction> Where(this IQueryable<Transaction> query, Get request)
     {
         var result = query.Where(t => t.AccountId == request.AccountId);
 

@@ -56,7 +56,7 @@ public class TransactionsController : CommandQueryController
 
     private Task<PagedResult<Transaction>> GetTransactions(Guid accountId, int pageSize, int pageNumber, DateTime? start, DateTime? end, string? filter, int? tagId, string? sortField, SortDirection sortDirection, bool untaggedOnly, CancellationToken cancellationToken)
     {
-        GetTransactions request = new()
+        Get request = new()
         {
             AccountId = accountId,
             Filter = filter,

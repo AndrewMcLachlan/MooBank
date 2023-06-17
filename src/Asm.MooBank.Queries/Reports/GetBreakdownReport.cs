@@ -7,7 +7,7 @@ namespace Asm.MooBank.Queries.Reports;
 
 public record GetBreakdownReport(int? TagId) : TypedReportQuery, IQuery<BreakdownReport>;
 
-internal class GetBreakdownReportHandler : IQueryHandler<Asm.MooBank.Queries.Reports.GetBreakdownReport, BreakdownReport>
+internal class GetBreakdownReportHandler : IQueryHandler<GetBreakdownReport, BreakdownReport>
 {
     private readonly IQueryable<Transaction> _transactions;
     private readonly IQueryable<TransactionTag> _tags;
@@ -22,7 +22,7 @@ internal class GetBreakdownReportHandler : IQueryHandler<Asm.MooBank.Queries.Rep
         _securityRepository = securityRepository;
     }
 
-    public async Task<BreakdownReport> Handle(Asm.MooBank.Queries.Reports.GetBreakdownReport request, CancellationToken cancellationToken)
+    public async Task<BreakdownReport> Handle(GetBreakdownReport request, CancellationToken cancellationToken)
     {
         _securityRepository.AssertAccountPermission(request.AccountId);
 

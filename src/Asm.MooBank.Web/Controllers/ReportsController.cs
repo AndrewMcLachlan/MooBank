@@ -72,12 +72,11 @@ public class ReportsController : CommandQueryController
     [HttpGet("{reportType}/tag-trend/{start}/{end}/{tag}")]
     public Task<TagTrendReport> GetTagTrend(Guid accountId, DateOnly start, DateOnly end, ReportType reportType, int tag, [FromQuery]TagTrendReportSettings settings, CancellationToken cancellationToken = default)
     {
-        GetTagTrendReport query = new()
+        GetTagTrendReport query = new(tag)
         {
             AccountId = accountId,
             Start = start,
             End = end,
-            TagId = tag,
             ReportType = reportType,
             Settings = settings,
         };
