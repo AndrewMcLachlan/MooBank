@@ -35,8 +35,8 @@ public class RecurringTransactionService : ServiceBase, IRecurringTransactionSer
             }
             else
             {
-                DateTime lastRun = trans.LastRun.Value;
-                DateTime now = DateTime.Now;
+                DateTime lastRun = trans.LastRun.Value.Date;
+                DateTime now = DateTime.Today;
 
                 TimeSpan diff = now - lastRun;
 
