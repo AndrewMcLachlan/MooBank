@@ -30,7 +30,7 @@
     "react-router-redux": "^4.0.8",
     "react-select": "^5.7.2",
     "redux-devtools-extension": "^2.13.9",
-    "semver": "^7.3.7",
+    "semver": "^7.5.2",
     "use-debounce": "^9.0.4"
   },
   "devDependencies": {
