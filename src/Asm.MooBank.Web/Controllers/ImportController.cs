@@ -27,7 +27,7 @@ public class ImportController : CommandQueryController
     [HttpPost("api/accounts/{accountid}/[controller]/reprocess")]
     public async Task<ActionResult> Reprocess(Guid accountId, CancellationToken cancellationToken = default)
     {
-        await CommandDispatcher.Dispatch<object>(new Reprocess(accountId), cancellationToken);
+        await CommandDispatcher.Dispatch(new Reprocess(accountId), cancellationToken);
 
         return NoContent();
     }

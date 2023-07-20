@@ -60,10 +60,16 @@ public class Startup
         services.AddImporterFactory();
 
         services.AddIng();
+
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen();
     }
 
     public void Configure(IApplicationBuilder app, IHostEnvironment env)
     {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();

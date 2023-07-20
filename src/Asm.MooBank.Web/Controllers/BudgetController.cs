@@ -51,7 +51,7 @@ public class BudgetController : CommandQueryController
     [HttpDelete("{year}/lines/{id}")]
     public async Task<ActionResult> Delete(Guid accountId, short year, Guid id, CancellationToken cancellationToken = default)
     {
-        await CommandDispatcher.Dispatch<DeleteLine>(new DeleteLine(accountId, year, id), cancellationToken);
+        await CommandDispatcher.Dispatch(new DeleteLine(accountId, year, id), cancellationToken);
 
         return NoContent();
     }

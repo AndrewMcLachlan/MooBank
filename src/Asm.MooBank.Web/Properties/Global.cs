@@ -4,6 +4,7 @@ global using Asm.MooBank.Services;
 global using Asm.MooBank.Web;
 global using Asm.MooBank.Web.Models;
 global using Asm.Web;
+global using Asm.Web.Controllers;
 global using Asm.Web.Security;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Mvc;
