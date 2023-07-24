@@ -38,7 +38,7 @@ public partial class IngImporter : IImporter
         // Throw away header row
         await reader.ReadLineAsync(cancellationToken);
 
-        int lineCount = 2;
+        int lineCount = 1;
 
         decimal? endBalance = null;
 
@@ -49,6 +49,7 @@ public partial class IngImporter : IImporter
             decimal debit = 0;
 
             string line = (await reader.ReadLineAsync(cancellationToken))!;
+            lineCount++;
 
             string[] prelimColumns = line.Split(",");
 
