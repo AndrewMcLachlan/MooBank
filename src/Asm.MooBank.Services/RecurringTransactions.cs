@@ -5,11 +5,17 @@ using Microsoft.Extensions.Logging;
 
 namespace Asm.MooBank.Services;
 
+/// <summary>
+/// Interface for the recurring transaction service.
+/// </summary>
 public interface IRecurringTransactionService
 {
     Task Process();
 }
 
+/// <summary>
+/// Processes recurring transactions.
+/// </summary>
 public class RecurringTransactionService : ServiceBase, IRecurringTransactionService
 {
     private readonly IRecurringTransactionRepository _recurringTransactionRepository;
@@ -23,6 +29,12 @@ public class RecurringTransactionService : ServiceBase, IRecurringTransactionSer
         _logger = logger;
     }
 
+
+    /// <summary>
+    /// Get all recurring transactions and process them.
+    /// </summary>
+    /// <returns>A task.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when the schedule type is unrecognised.</exception>
     public async Task Process()
     {
         foreach (var trans in await _recurringTransactionRepository.GetAll())
@@ -68,6 +80,10 @@ public class RecurringTransactionService : ServiceBase, IRecurringTransactionSer
         await UnitOfWork.SaveChangesAsync();
     }
 
+    /// <summary>
+    /// Execute the transaction and update the balance.
+    /// </summary>
+    /// <param name="trans">The recurring transaction definition.</param>
     private void RunTransaction(RecurringTransaction trans)
     {
         _transactionService.AddTransaction(trans.Amount, trans.VirtualAccountId, true, trans.Description);
