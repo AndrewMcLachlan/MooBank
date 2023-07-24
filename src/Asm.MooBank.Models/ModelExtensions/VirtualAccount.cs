@@ -12,12 +12,16 @@ public partial record VirtualAccount
             Balance = account.Balance,
         };
     }
+}
 
-    public static explicit operator Domain.Entities.Account.VirtualAccount(VirtualAccount account)
+public static class VirtualAccountExtensions
+{
+    public static Domain.Entities.Account.VirtualAccount ToEntity(this VirtualAccount account, Guid parentAccountId)
     {
         return new Domain.Entities.Account.VirtualAccount
         {
             AccountId = account.Id == Guid.Empty ? Guid.NewGuid() : account.Id,
+            InstitutionAccountId = parentAccountId,
             Name = account.Name,
             Description = account.Description,
             Balance = account.Balance,

@@ -35,9 +35,7 @@ public class VirtualAccountService : ServiceBase, IVirtualAccountService
     {
         _securityRepository.AssertAccountPermission(accountId);
 
-        var entity = (Domain.Entities.Account.VirtualAccount)account;
-
-        entity.AccountId = accountId;
+        var entity = account.ToEntity(accountId);
 
         entity = _virtualAccountRepository.Add(entity);
 
