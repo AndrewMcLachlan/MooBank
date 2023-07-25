@@ -28,7 +28,7 @@ jobs:
         filePath: 'Common.props'
         versionPropertyName: 'Version'
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore Asm.MooBank.sln
     - name: Publish
       run: dotnet publish Asm.MooBank.sln --output ${{ github.workspace }}/publish --configuration Release --p:Version=${{ steps.set-version-number.outputs.version }} --p:FileVersion=${{ steps.set-version-number.outputs.version }} --no-restore
     - name: Publish WebJob
