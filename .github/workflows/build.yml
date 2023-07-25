@@ -25,7 +25,7 @@ jobs:
       id: set-version-number
       uses: andrewmclachlan/actions/set-version-number@master
       with:
-        filePath: 'Common.Props'
+        filePath: 'Common.props'
         versionPropertyName: 'Version'
     - name: Restore dependencies
       run: dotnet restore
