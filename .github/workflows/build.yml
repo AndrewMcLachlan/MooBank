@@ -22,7 +22,7 @@ jobs:
         NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
     - name: Set version number
       id: set-version-number
-      uses: andrewmclachlan/devops/set-version-number@v1
+      uses: andrewmclachlan/devops/set-version-number@master
       with:
         filePath: 'Common.Props'
         versionPropertyName: 'Version'
