@@ -43,23 +43,25 @@ jobs:
     - name: Publish WebJob
       run: 'dotnet publish src/Asm.MooBank.WebJobs/Asm.MooBank.WebJobs.csproj --output ${{ github.workspace }}/publish/App_Data/jobs/triggered/Recurring --configuration Release'
     - name: Install Octopus CLI
-      uses: OctopusDeploy/install-octopus-cli-action@v1
+      uses: OctopusDeploy/install-octopus-cli-action@v3
       with:
         version: latest
     - name: Package
       run: octo pack --id="Asm.MooBank.Web" --format="NuPkg" --version="${{ steps.set-version-number.outputs.version }}" --basePath="${{ github.workspace }}/publish" --outFolder="${{ github.workspace }}/artifacts"
     - name: Push packages
-      uses: OctopusDeploy/push-package-action@v1
+      uses: OctopusDeploy/push-package-action@v3
       with:
         api_key: ${{ secrets.OCTOPUSAPIKEY }}
         server: ${{ vars.OCTOPUSURL }}
         packages: " ${{ github.workspace }}/artifacts/Asm.MooBank.Web.${{ steps.set-version-number.outputs.version }}.nupkg"
         space: 'Default'
     - name: Create release
-      uses: OctopusDeploy/create-release-action@v1
+      uses: OctopusDeploy/create-release-action@v3
       with:
         api_key: ${{ secrets.OCTOPUSAPIKEY }}
         server: ${{ vars.OCTOPUSURL }}
+        release_number: ${{ steps.set-version-number.outputs.version }}
+        package_version: ${{ steps.set-version-number.outputs.version }}
         space: 'Default'
         project: "MooBank"
         progress: false
