@@ -47,7 +47,7 @@ jobs:
       with:
         version: latest
     - name: Package
-      run: octo pack --id="Asm.MooBank.Web" --format="NuPkg" --version="${{ steps.set-version-number.outputs.version }}" --basePath="${{ github.workspace }}/publish" --outFolder="${{ github.workspace }}/artifacts"
+      run: octopus pack --id="Asm.MooBank.Web" --format="NuPkg" --version="${{ steps.set-version-number.outputs.version }}" --basePath="${{ github.workspace }}/publish" --outFolder="${{ github.workspace }}/artifacts"
     - name: Push packages
       uses: OctopusDeploy/push-package-action@v3
       with:
