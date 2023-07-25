@@ -1,0 +1,51 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: Build
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 7.x
+    - name: Set version number
+      id: set-version-number
+      uses: andrewmclachlan/devops/set-version-number@1
+      with:
+        filePath: 'Common.Props'
+        versionPropertyName: 'Version'
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Publish
+      run: dotnet publish Asm.MooBank.sln --output ${{ github.workspace }}/publish --configuration Release --p:Version=${{ set-version-number.outputs.version }} --p:FileVersion=${{ set-version-number.outputs.version }} --no-restore
+    - name: Publish WebJob
+      run: 'dotnet publish src/Asm.MooBank.WebJobs/Asm.MooBank.WebJobs.csproj --output ${{ github.workspace }}/publish/App_Data/jobs/triggered/Recurring --configuration Release'
+    - name: Install Octopus CLI
+      uses: OctopusDeploy/install-octopus-cli-action@v1
+      with:
+        version: latest
+    - name: Package
+      run: octo pack --id="Asm.MooBank.Web" --format="NuPkg" --version="${{ set-version-number.outputs.version }}" --basePath="${{ github.workspace }}/publish" --outFolder="${{ github.workspace }}/artifacts"
+    - name: Push packages
+      uses: OctopusDeploy/push-package-action@v1
+      with:
+        api_key: ${{ secrets.OctopusAPIKey }}
+        server: ${{ secrets.OctopusURL }}
+        packages: "artifacts/OctoPetShop.Database.${{ env.PACKAGE_VERSION }}.zip,artifacts/OctoPetShop.Web.${{ env.PACKAGE_VERSION }}.zip,artifacts/OctoPetShop.ProductService.${{ env.PACKAGE_VERSION }}.zip,artifacts/OctoPetShop.ShoppingCartService.${{ env.PACKAGE_VERSION }}.zip"
+        space: 'Default'
+    - name: Create release
+      uses: OctopusDeploy/create-release-action@v1
+      with:
+        api_key: ${{ secrets.OctopusAPIKey }}
+        server: ${{ secrets.OctopusURL }}
+        space: 'Default'
+        project: "MooBank"
+        progress: false
