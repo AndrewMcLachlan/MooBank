@@ -20,7 +20,7 @@ jobs:
         dotnet-version: 7.x
         source-url: https://nuget.pkg.github.com/AndrewMcLachlan/index.json
       env:
-        NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        NUGET_AUTH_TOKEN: ${{secrets.CROSS_REPO_PACKAGE_TOKEN}}
     - name: Set version number
       id: set-version-number
       uses: andrewmclachlan/actions/set-version-number@master
