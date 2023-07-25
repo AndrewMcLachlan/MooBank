@@ -53,7 +53,7 @@ jobs:
       with:
         api_key: ${{ secrets.OCTOPUSAPIKEY }}
         server: ${{ vars.OCTOPUSURL }}
-        packages: "artifacts/Asm.MooBank.Web.${{ steps.set-version-number.outputs.version }}.nupkg"
+        packages: " ${{ github.workspace }}/artifacts/Asm.MooBank.Web.${{ steps.set-version-number.outputs.version }}.nupkg"
         space: 'Default'
     - name: Create release
       uses: OctopusDeploy/create-release-action@v1
