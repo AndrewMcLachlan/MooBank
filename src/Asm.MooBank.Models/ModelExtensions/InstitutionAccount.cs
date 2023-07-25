@@ -15,7 +15,7 @@ public partial record InstitutionAccount
             Controller = account.AccountController,
             ImporterTypeId = account.ImportAccount?.ImporterTypeId,
             VirtualAccounts = account.VirtualAccounts != null && account.VirtualAccounts.Any() ?
-                              account.VirtualAccounts.Select(v => (VirtualAccount)v)
+                              account.VirtualAccounts.OrderBy(v => v.Name).Select(v => (VirtualAccount)v)
                                                      .Union(new[] { new VirtualAccount { Id = Guid.Empty, Name = "Remaining", Balance = account.Balance - account.VirtualAccounts.Sum(v => v.Balance) } }).ToArray() :
                                 Array.Empty<VirtualAccount>(),
         };
