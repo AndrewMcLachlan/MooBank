@@ -27,13 +27,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "diagrams", "diagrams", "{2F
 		diagrams\Transactions.dgml = diagrams\Transactions.dgml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asm.MooBank.Commands", "src\Asm.MooBank.Commands\Asm.MooBank.Commands.csproj", "{5F7FC702-7671-495E-B722-FED761F481BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Commands", "src\Asm.MooBank.Commands\Asm.MooBank.Commands.csproj", "{5F7FC702-7671-495E-B722-FED761F481BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asm.MooBank.Queries", "src\Asm.MooBank.Queries\Asm.MooBank.Queries.csproj", "{F493AB4B-28F0-4600-BCC2-F7F5F384AA42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Queries", "src\Asm.MooBank.Queries\Asm.MooBank.Queries.csproj", "{F493AB4B-28F0-4600-BCC2-F7F5F384AA42}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asm.MooBank.Importers", "src\Asm.MooBank.Importers\Asm.MooBank.Importers.csproj", "{13BE41CF-56DE-460A-B20F-E93E5AD44FA5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Importers", "src\Asm.MooBank.Importers\Asm.MooBank.Importers.csproj", "{13BE41CF-56DE-460A-B20F-E93E5AD44FA5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asm.MooBank.Institution.Ing", "src\Asm.MooBank.Institution.Ing\Asm.MooBank.Institution.Ing.csproj", "{D52C951F-030B-4BFD-8803-EF5DBE55F246}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Institution.Ing", "src\Asm.MooBank.Institution.Ing\Asm.MooBank.Institution.Ing.csproj", "{D52C951F-030B-4BFD-8803-EF5DBE55F246}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{07F4FBE0-487C-4F4D-AAAC-6E3DC848D55C}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		Common.props = Common.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
