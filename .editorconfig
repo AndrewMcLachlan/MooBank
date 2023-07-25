@@ -6,7 +6,7 @@ root = true
 indent_style = space
 indent_size = 4
 
-[*.{config,xml,html,xsd,xsl,xslt,cshtml,html,csproj,proj,msbuild,vbproj,vstemplate,transform}]
+[*.{config,xml,html,xsd,xsl,xslt,cshtml,html,csproj,proj,msbuild,vbproj,vstemplate,transform,props}]
 indent_size = 2
 
 [*.json]

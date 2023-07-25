@@ -1,0 +1,17 @@
+﻿<Project>
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Authors>Andrew McLachlan</Authors>
+    <Company />
+    <Copyright>Copyright © Andrew McLachlan 2013. All rights reserved.</Copyright>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <AssemblyVersion>3.0.0.0</AssemblyVersion>
+    <Version>3.0.0</Version>
+    <Product>MooBank</Product>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/AndrewMcLachlan/MooBank</RepositoryUrl>
+  </PropertyGroup>
+</Project>
