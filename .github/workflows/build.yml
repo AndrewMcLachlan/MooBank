@@ -51,7 +51,7 @@ jobs:
         OCTOPUS_URL: ${{ vars.OCTOPUSURL }}
         OCTOPUS_API_KEY: ${{ secrets.OCTOPUSAPIKEY }}
         OCTOPUS_SPACE: Default
-      run: octopus package nuget create --id="Asm.MooBank.Web" --version="${{ steps.set-version-number.outputs.version }}" --basePath="${{ github.workspace }}/publish" --outFolder="${{ github.workspace }}/artifacts"
+      run: octopus package nuget create --id Asm.MooBank.Web --version ${{ steps.set-version-number.outputs.version }} --basePath ${{ github.workspace }}/publish --outFolder ${{ github.workspace }}/artifacts
     - name: Push packages
       uses: OctopusDeploy/push-package-action@v3
       with:
