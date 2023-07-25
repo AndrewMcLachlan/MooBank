@@ -46,6 +46,8 @@ jobs:
       uses: OctopusDeploy/install-octopus-cli-action@v3
       with:
         version: latest
+    - name: Create artifacts folder
+      run: mkdir ${{ github.workspace }}/artifacts
     - name: Package
       env:
         OCTOPUS_URL: ${{ vars.OCTOPUSURL }}
