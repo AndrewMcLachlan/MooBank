@@ -29,8 +29,16 @@ jobs:
         versionPropertyName: 'Version'
     - name: Restore dependencies
       run: dotnet restore Asm.MooBank.sln
+    - name: Setup node and npm
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+        cache: npm
+        registry-url: "https://npm.pkg.github.com"
     - name: Publish
-      run: dotnet publish Asm.MooBank.sln --output ${{ github.workspace }}/publish --configuration Release --p:Version=${{ steps.set-version-number.outputs.version }} --p:FileVersion=${{ steps.set-version-number.outputs.version }} --no-restore
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.CROSS_REPO_PACKAGE_TOKEN }}
+      run: dotnet publish src/Asm.MooBank.Web/Asm.MooBank.Web.cspoj --output ${{ github.workspace }}/publish --configuration Release --p:Version=${{ steps.set-version-number.outputs.version }} --p:FileVersion=${{ steps.set-version-number.outputs.version }} --no-restore
     - name: Publish WebJob
       run: 'dotnet publish src/Asm.MooBank.WebJobs/Asm.MooBank.WebJobs.csproj --output ${{ github.workspace }}/publish/App_Data/jobs/triggered/Recurring --configuration Release'
     - name: Install Octopus CLI
