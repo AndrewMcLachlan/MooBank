@@ -16,6 +16,9 @@ library.add(faCheckCircle, faTrashAlt, faChevronDown, faChevronUp, faTimesCircle
 
 const root = createRoot(document.getElementById("root")!);
 
+const versionMeta = Array.from(document.getElementsByTagName("meta")).find((value) => value.getAttribute("name") === "application-version");
+fetch("/api/meta").then((response) => response.json()).then((meta) => { versionMeta.content = meta.version });
+
 root.render(
     <AppProvider appName="MooBank" // Array.from(document.getElementsByTagName("meta")).find((value) => value.getAttribute("name") === "application-name").getAttribute("content"),
         baseUrl="/" //document.getElementsByTagName("base")[0].getAttribute("href"),
