@@ -1,21 +1,37 @@
 import { useTags } from "services"
-import Select from "react-select"
+import Select, { MultiValue } from "react-select"
 import { TransactionTag } from "models";
 
-export const TagSelector: React.FC<TagSelectorProps> = ({ value, onChange }) => {
+export const TagSelector: React.FC<TagSelectorProps> = ({ value, multi, onChange }) => {
 
     const tags = useTags();
 
-    const tag = typeof value === "number" ? tags.data?.find(t => t.id === value) : value as TransactionTag;
+    const tag = typeof value === "number" ? tags.data?.find(t => t.id === value) : 
+                Array.isArray(value) ? tags.data?.filter(t => value.includes(t.id)) :
+                value as TransactionTag;
+
+    const change = (v: TransactionTag | MultiValue<TransactionTag>) => {
+        if (!onChange) return;
+
+        if (multi) {
+            onChange((v as MultiValue<TransactionTag>).map(t => t.id));
+            return;
+        }
+
+        onChange((v as TransactionTag).id);
+    }
 
     return (
-        <Select options={tags.data ?? []} isClearable value={tag} getOptionLabel={t => t.name} getOptionValue={t => t.id.toString()} onChange={(v) => onChange && onChange(v?.id ?? null)} className="react-select" classNamePrefix="react-select" />
+        <Select options={tags.data ?? []} isMulti={multi} isClearable value={tag} getOptionLabel={t => t.name} getOptionValue={t => t.id.toString()} onChange={change} className="react-select" classNamePrefix="react-select" />
     )
 }
 
-export interface TagSelectorProps {
-    value?: number | TransactionTag,
-    onChange: (value: number) => void;
-}
+TagSelector.defaultProps = {
+    multi: false,
+};
 
-//<ComboBox items={tags.data} valueField="id" textField="name" selectedItem={tags.data?.find(t => t.id === value)} onSelected={(v) => onChange && onChange(v.id)} />
+export interface TagSelectorProps {
+    value?: number | TransactionTag | number[],
+    multi?: boolean;
+    onChange: (value: number | number[]) => void;
+}

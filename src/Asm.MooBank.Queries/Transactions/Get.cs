@@ -17,7 +17,7 @@ public record Get : IQuery<PagedResult>
 
     public DateTime? End { get; init; }
 
-    public int? TagId { get; set; }
+    public IEnumerable<int>? TagIds { get; set; }
 
     public required int PageSize { get; init; }
 
@@ -100,7 +100,7 @@ file static class IQueryableExtensions
 
         result = result.Where(t => (request.Start == null || t.TransactionTime >= request.Start) && (request.End == null || t.TransactionTime <= request.End));
         result = result.Where(t => !request.UntaggedOnly || !t.TransactionTags.Any());
-        result = result.Where(t => request.TagId == null || (t.TransactionTags.Any(t => t.TransactionTagId == request.TagId)));
+        result = result.Where(t => request.TagIds == null || (t.TransactionTags.Any(t => request.TagIds.Contains(t.TransactionTagId))));
 
         return result;
     }

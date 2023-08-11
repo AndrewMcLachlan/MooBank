@@ -18,21 +18,21 @@ public class TransactionsController : CommandQueryController
     }
 
     [HttpGet("{pageSize?}/{pageNumber?}")]
-    public async Task<ActionResult<PagedResult<Transaction>>> Get(Guid accountId, int pageSize = 50, int pageNumber = 1, [FromQuery] DateTime? start = null, [FromQuery] DateTime? end = null, [FromQuery] string? filter = null, [FromQuery] int? tagId = null, [FromQuery] string? sortField = null, [FromQuery] SortDirection sortDirection = SortDirection.Ascending, CancellationToken cancellationToken = default)
+    public async Task<ActionResult<PagedResult<Transaction>>> Get(Guid accountId, int pageSize = 50, int pageNumber = 1, [FromQuery] DateTime? start = null, [FromQuery] DateTime? end = null, [FromQuery] string? filter = null, [FromQuery] int[]? tagIds = null, [FromQuery] string? sortField = null, [FromQuery] SortDirection sortDirection = SortDirection.Ascending, CancellationToken cancellationToken = default)
     {
         if (start != null && end != null && end < start) return BadRequest($"{nameof(start)} is less than {nameof(end)}");
 
-        var result = await GetTransactions(accountId, pageSize, pageNumber, start, end, filter, tagId, sortField, sortDirection, false, cancellationToken);
+        var result = await GetTransactions(accountId, pageSize, pageNumber, start, end, filter, tagIds, sortField, sortDirection, false, cancellationToken);
 
         return new ActionResult<PagedResult<Transaction>>(result);
     }
 
     [HttpGet("untagged/{pageSize?}/{pageNumber?}")]
-    public async Task<ActionResult<PagedResult<Transaction>>> GetUntagged(Guid accountId, CancellationToken cancellationToken, int pageSize = 50, int pageNumber = 1, [FromQuery] DateTime? start = null, [FromQuery] DateTime? end = null, [FromQuery] string? filter = null, [FromQuery] int? tagId = null, [FromQuery] string? sortField = null, [FromQuery] SortDirection sortDirection = SortDirection.Ascending)
+    public async Task<ActionResult<PagedResult<Transaction>>> GetUntagged(Guid accountId, CancellationToken cancellationToken, int pageSize = 50, int pageNumber = 1, [FromQuery] DateTime? start = null, [FromQuery] DateTime? end = null, [FromQuery] string? filter = null, [FromQuery] int[]? tagIds = null, [FromQuery] string? sortField = null, [FromQuery] SortDirection sortDirection = SortDirection.Ascending)
     {
         if (start != null && end != null && end < start) return BadRequest($"{nameof(start)} is less than {nameof(end)}");
 
-        var result = await GetTransactions(accountId, pageSize, pageNumber, start, end, filter, tagId, sortField, sortDirection, true, cancellationToken);
+        var result = await GetTransactions(accountId, pageSize, pageNumber, start, end, filter, tagIds, sortField, sortDirection, true, cancellationToken);
 
         return new ActionResult<PagedResult<Transaction>>(result);
     }
@@ -54,7 +54,7 @@ public class TransactionsController : CommandQueryController
     public Task<Transaction> RemoveTag(Guid accountId, Guid id, int tagId) =>
         _transactionService.RemoveTransactionTag(accountId, id, tagId);
 
-    private Task<PagedResult<Transaction>> GetTransactions(Guid accountId, int pageSize, int pageNumber, DateTime? start, DateTime? end, string? filter, int? tagId, string? sortField, SortDirection sortDirection, bool untaggedOnly, CancellationToken cancellationToken)
+    private Task<PagedResult<Transaction>> GetTransactions(Guid accountId, int pageSize, int pageNumber, DateTime? start, DateTime? end, string? filter, int[]? tagId, string? sortField, SortDirection sortDirection, bool untaggedOnly, CancellationToken cancellationToken)
     {
         Get request = new()
         {
@@ -62,7 +62,7 @@ public class TransactionsController : CommandQueryController
             Filter = filter,
             Start = start,
             End = end,
-            TagId = tagId,
+            TagIds = tagId,
             PageNumber = pageNumber,
             PageSize = pageSize,
             SortDirection = sortDirection,

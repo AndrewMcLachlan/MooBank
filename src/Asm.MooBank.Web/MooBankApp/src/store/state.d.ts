@@ -21,7 +21,7 @@ export interface Transactions {
 export interface TransactionsFilter {
     filterTagged?: boolean;
     description?: string;
-    tag: number | null;
+    tags: number[] | null;
     start?: string;
     end?: string;
 }

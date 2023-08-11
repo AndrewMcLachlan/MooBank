@@ -68,19 +68,19 @@ export const PeriodSelector: React.FC<PeriodSelectorProps> = (props) => {
                     {options.map((o, index) =>
                         <option value={o.value} key={index}>{o.label}</option>
                     )}
-                    <option value="0">Custom</option>
+                    <option value="-1">Custom</option>
                 </Form.Select>
             </FormGroup>
             <FormGroup as={Col} xl={props.instant ? "4" : "3"} hidden={selectedPeriod !== "-1"}>
                 <Form.Label htmlFor="custom-start">From</Form.Label>
-                <Form.Control disabled={selectedPeriod !== "0"} id="custom-start" type="date" value={customStart ? format(customStart, "yyyy-MM-dd") :""} onChange={(e) => onCustomStartChange((e.currentTarget as any).valueAsDate)} />
+                <Form.Control disabled={selectedPeriod !== "-1"} id="custom-start" type="date" value={customStart ? format(customStart, "yyyy-MM-dd") :""} onChange={(e) => onCustomStartChange((e.currentTarget as any).valueAsDate)} />
             </FormGroup>
             <FormGroup xl={props.instant ? "4" : "3"} hidden={selectedPeriod !== "-1"}>
                 <Form.Label htmlFor="custom-end">To</Form.Label>
-                <Form.Control disabled={selectedPeriod !== "0"} id="custom-end" type="date" value={customEnd ? format(customEnd, "yyyy-MM-dd"): ""} onChange={(e) => onCustomEndChange((e.currentTarget as any).valueAsDate)} />
+                <Form.Control disabled={selectedPeriod !== "-1"} id="custom-end" type="date" value={customEnd ? format(customEnd, "yyyy-MM-dd"): ""} onChange={(e) => onCustomEndChange((e.currentTarget as any).valueAsDate)} />
             </FormGroup>
             <FormGroup xl="2" className="horizontal-form-controls" hidden={selectedPeriod !== "-1" || props.instant}>
-                <Button disabled={selectedPeriod !== "0"} onClick={customPeriodGo}>Go</Button>
+                <Button disabled={selectedPeriod !== "-1"} onClick={customPeriodGo}>Go</Button>
             </FormGroup>
         </Row>
     );

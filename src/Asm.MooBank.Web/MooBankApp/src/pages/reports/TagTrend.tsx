@@ -67,8 +67,8 @@ export const TagTrend: React.FC = () => {
         setSelectedTagId(tagId ? Number(tagId) : 1);
     }, [tagId]);
 
-    const tagChanged = (id: number) => {
-        setSelectedTagId(id);
+    const tagChanged = (id: number | number[]) => {
+        setSelectedTagId(Number(id));
         navigate(`/accounts/${accountId}/reports/tag-trend/${id}`);
     }
 

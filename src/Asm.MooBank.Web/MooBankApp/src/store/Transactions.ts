@@ -8,7 +8,7 @@ const initialState: Transactions = {
     pageSize: 50,
     filter: {
         filterTagged: false,
-        tag: null,
+        tags: null,
     },
     sortField: "TransactionTime",
     sortDirection: "Descending",
@@ -35,7 +35,7 @@ export const reducers = {
         const newFilter: TransactionsFilter = {
             description: action.payload.description ?? state.filter.description,
             filterTagged: action.payload.filterTagged ?? state.filter.filterTagged,
-            tag: action.payload.tag === undefined ? state.filter.tag : action.payload.tag,
+            tags: action.payload.tags === undefined ? state.filter.tags : action.payload.tags,
             start: action.payload.start ?? state.filter.start,
             end: action.payload.end ?? state.filter.end,
         };

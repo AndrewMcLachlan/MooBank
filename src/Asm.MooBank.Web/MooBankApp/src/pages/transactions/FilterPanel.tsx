@@ -15,24 +15,28 @@ export const FilterPanel: React.FC<FilterPanelProps> = () => {
 
     const params = new URLSearchParams(window.location.search);
 
+    const tagParams = params.get("tag")?.split(",").map(t => Number(t));
+
     const [storedFilterTagged, setStoredFilterTagged] = useLocalStorage("filter-tagged", false);
     const [filterDescription, setFilterDescription] = useLocalStorage("filter-description", "");
-    const [storedFilterTag, setStoredFilterTag] = useLocalStorage<number | null>("filter-tag", null);
+    const [storedFilterTags, setStoredFilterTags] = useLocalStorage<number[] | null>("filter-tag", []);
 
-    const [localFilterTag, setLocalFilterTag] = useState(Number(params.get("tag")) ?? storedFilterTag);
-    const [localFilterTagged, setLocalFilterTagged] = useState<boolean>(Number(params.get("tag")) ? false : params.get("untagged") ? true : storedFilterTagged);
-    const filterTag = localFilterTag ?? storedFilterTag;
+    const [localFilterTags, setLocalFilterTags] = useState<number[]>(tagParams ?? storedFilterTags);
+    const [localFilterTagged, setLocalFilterTagged] = useState<boolean>(tagParams?.length > 0 ? false : params.get("untagged") ? true : storedFilterTagged);
+    const filterTags = localFilterTags ?? storedFilterTags;
     const filterTagged = localFilterTagged ?? storedFilterTagged;
 
-    const setFilterTag = (tag: number) => {
+    const setFilterTags = (tag: number | number[]) => {
         params.delete("tag");
         const queryString = params.toString();
         const newUrl = window.location.origin + window.location.pathname + (queryString === "" ? "" : `?${queryString}`);
 
         window.history.replaceState({ path: newUrl }, "", newUrl);
 
-        setLocalFilterTag(tag);
-        setStoredFilterTag(tag);
+        const tagArray = Array.isArray(tag) ? tag : [tag];
+
+        setLocalFilterTags(tagArray);
+        setStoredFilterTags(tagArray);
     }
 
     const setFilterTagged = (filter: boolean) => {
@@ -55,12 +59,12 @@ export const FilterPanel: React.FC<FilterPanelProps> = () => {
     const clear = () => {
         setFilterDescription("");
         setFilterTagged(false);
-        setFilterTag(null);
+        setFilterTags(null);
     }
 
     useEffect(() => {
-        dispatch(TransactionsSlice.actions.setTransactionListFilter({ description: filterDescription, filterTagged, tag: filterTag, start: period?.startDate?.toISOString(), end: period?.endDate?.toISOString() }));
-    }, [period, filterDescription, filterTagged, filterTag, window.location.search]);
+        dispatch(TransactionsSlice.actions.setTransactionListFilter({ description: filterDescription, filterTagged, tags: filterTags, start: period?.startDate?.toISOString(), end: period?.endDate?.toISOString() }));
+    }, [period, filterDescription, filterTagged, filterTags, window.location.search]);
 
     return (
         <fieldset className="filter-panel box">
@@ -75,8 +79,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = () => {
                         </Col>
                         <Col>
                             <Form.Label htmlFor="filter-desc">Tags</Form.Label>
-                            {/*<TransactionTagPanel allowCreate={false} alwaysShowEditPanel value={filterTags} onChange={setFilterTags} />*/}
-                            <TagSelector onChange={setFilterTag} value={filterTag} />
+                            <TagSelector onChange={setFilterTags} multi value={filterTags} />
                         </Col>
                     </Row>
                     <PeriodSelector instant onChange={setPeriod} />
