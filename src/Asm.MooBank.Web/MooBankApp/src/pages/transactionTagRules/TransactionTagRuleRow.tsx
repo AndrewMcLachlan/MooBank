@@ -76,7 +76,6 @@ function useTransactionTagRuleRowEvents(props: TransactionTagRuleRowProps) {
     };
 
     const updateRule = (rule: TransactionTagRule) => {
-        console.debug(rule);
         updateTransctionTagRule.mutate([{accountId: props.accountId, id: props.rule.id, }, rule]);
     }
 
