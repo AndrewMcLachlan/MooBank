@@ -19,6 +19,15 @@ const root = createRoot(document.getElementById("root")!);
 const versionMeta = Array.from(document.getElementsByTagName("meta")).find((value) => value.getAttribute("name") === "application-version");
 fetch("/api/meta").then((response) => response.json()).then((meta) => { versionMeta.content = meta.version });
 
+
+/* Upgrade 2023.8 */
+const filterTags = window.localStorage.getItem("filter-tag");
+if (filterTags && !filterTags.includes("[")) {
+    window.localStorage.setItem("filter-tag", `[${filterTags}]`);
+}
+/* End Upgrade */
+
+
 root.render(
     <AppProvider appName="MooBank" // Array.from(document.getElementsByTagName("meta")).find((value) => value.getAttribute("name") === "application-name").getAttribute("content"),
         baseUrl="/" //document.getElementsByTagName("base")[0].getAttribute("href"),
