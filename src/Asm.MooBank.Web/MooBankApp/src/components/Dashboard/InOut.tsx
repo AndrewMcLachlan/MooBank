@@ -12,6 +12,8 @@ export const InOutWidget: React.FC = () => {
 
     if (isLoading) return <Spinner />;
 
+    if (!accounts?.length) return null;
+
     return (
         <Section title={`${accounts[0].name} - Last Month`} size={3} className="inout">
             <InOut accountId={id} period={lastMonth} />
