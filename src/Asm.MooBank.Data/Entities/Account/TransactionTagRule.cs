@@ -1,4 +1,4 @@
-﻿using Asm.MooBank.Domain.Entities.TransactionTags;
+﻿using Asm.MooBank.Domain.Entities.Tag;
 
 namespace Asm.MooBank.Domain.Entities.Account;
 
@@ -7,7 +7,7 @@ public partial class TransactionTagRule
 
     public TransactionTagRule()
     {
-        TransactionTags = new HashSet<TransactionTag>();
+        TransactionTags = new HashSet<Tag.Tag>();
     }
     public int TransactionTagRuleId { get; set; }
 
@@ -19,5 +19,5 @@ public partial class TransactionTagRule
 
     public virtual Account Account { get; set; }
 
-    public virtual ICollection<TransactionTag> TransactionTags { get; set; }
+    public virtual ICollection<Tag.Tag> TransactionTags { get; set; }
 }

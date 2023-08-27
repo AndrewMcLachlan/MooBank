@@ -105,3 +105,55 @@ MERGE ImporterType AS TARGET USING (SELECT 'Asm.MooBank.Services.Importers.IngIm
 ON (TARGET.[Type] = SOURCE.[Type])
 WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.[Type], SOURCE.[Name]);
 
+
+-- Institution Type
+MERGE InstitutionType AS TARGET USING (SELECT 1 as Id, 'Bank' as [Name]) AS SOURCE
+ON (TARGET.Id = SOURCE.Id)
+WHEN MATCHED AND TARGET.[Name] <> SOURCE.[Name] THEN UPDATE SET Target.[Name] = SOURCE.[Name]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.[Id], SOURCE.[Name]);
+
+MERGE InstitutionType AS TARGET USING (SELECT 2 as Id, 'Superannutation Fund' as [Name]) AS SOURCE
+ON (TARGET.Id = SOURCE.Id)
+WHEN MATCHED AND TARGET.[Name] <> SOURCE.[Name] THEN UPDATE SET Target.[Name] = SOURCE.[Name]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.[Id], SOURCE.[Name]);
+
+MERGE InstitutionType AS TARGET USING (SELECT 3 as Id, 'Share Trading' as [Name]) AS SOURCE
+ON (TARGET.Id = SOURCE.Id)
+WHEN MATCHED AND TARGET.[Name] <> SOURCE.[Name] THEN UPDATE SET Target.[Name] = SOURCE.[Name]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.[Id], SOURCE.[Name]);
+
+
+-- Institution
+MERGE Institution AS TARGET USING (SELECT 1 as Id, 'ING' as [Name], 1 as [InstitutionTypeId]) AS SOURCE
+ON (TARGET.Id = SOURCE.Id)
+WHEN MATCHED AND TARGET.[Name] <> SOURCE.[Name] THEN UPDATE SET Target.[Name] = SOURCE.[Name], Target.[InstitutionTypeId] = SOURCE.[InstitutionTypeId]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.[Id], SOURCE.[Name], SOURCE.[InstitutionTypeId]);
+
+MERGE Institution AS TARGET USING (SELECT 2 as Id, 'AustralianSuper' as [Name], 2 as [InstitutionTypeId]) AS SOURCE
+ON (TARGET.Id = SOURCE.Id)
+WHEN MATCHED AND TARGET.[Name] <> SOURCE.[Name] THEN UPDATE SET Target.[Name] = SOURCE.[Name], Target.[InstitutionTypeId] = SOURCE.[InstitutionTypeId]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.[Id], SOURCE.[Name], SOURCE.[InstitutionTypeId]);
+
+-- Family
+MERGE Family as TARGET USING (SELECT 'DB1A117B-84A9-4F15-B6C2-6BD959B9BAF7' as Id, 'McLachlan' as [Name]) AS SOURCE
+ON (TARGET.Id = SOURCE.Id)
+WHEN MATCHED AND TARGET.[Name] <> SOURCE.[Name] THEN UPDATE SET Target.[Name] = SOURCE.[Name]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.[Id], SOURCE.[Name]);
+
+-- Account holder update
+UPDATE AccountHolder SET FamilyId = 'DB1A117B-84A9-4F15-B6C2-6BD959B9BAF7'
+
+-- Update Institution Account
+UPDATE InstitutionAccount SET InstitutionId = 1 WHERE AccountId IN
+('6b4ae4d9-d4ba-41f7-80e6-076863df9407',
+'3740bb76-e226-4bce-a8ab-3203824a6fa9',
+'1c42cea9-6b71-4e37-bced-8ef259e9e55e')
+
+UPDATE InstitutionAccount SET InstitutionId = 2 WHERE AccountId IN
+('5688057c-88eb-4b78-8041-821a3e3ec478')
+
+-- Tag update
+UPDATE Tag SET FamilyId = 'DB1A117B-84A9-4F15-B6C2-6BD959B9BAF7'
+
+-- Budget update
+UPDATE Budget SET FamilyId = 'DB1A117B-84A9-4F15-B6C2-6BD959B9BAF7'

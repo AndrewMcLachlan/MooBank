@@ -1,25 +1,20 @@
-﻿@import "~@andrewmclachlan/mooapp/scss/mooapp.scss";
+﻿@import "~/@andrewmclachlan/mooapp/scss/mooapp.scss";
+@import "~/@andrewmclachlan/mooapp/scss/mixins";
 @import "../scss/budget";
 @import "../scss/components";
 @import "../scss/filterPanel";
 @import "../scss/transactionTagDetails";
 @import "../scss/transactionDetails";
 
-:root {
-    --bs-font-sans-serif: 'Open Sans Condensed', 'Franklin Gothic', Helvetica, Arial, sans-serif;
-    --breadcrumb-background: #333;
-    --font-family-alt: 'Open Sans', 'Franklin Gothic', Helvetica, Arial, sans-serif;
-    --bs-border-color: #AAA;
+@include h-all {
+    font-family: var(--secondary-fonts);
 }
 
 label {
-    font-family: var(--font-family-alt);
+    font-family: var(--secondary-fonts);
 }
 
 @media (prefers-color-scheme: dark) {
-    :root {
-        --breadcrumb-background: #1A1919;
-    }
 
     body {
         color-scheme: dark;
@@ -31,8 +26,8 @@ label {
 }
 
 .light {
-    --breadcrumb-background: #CFCCCC;
     color-scheme: light;
+    --breadcrumb-background: #1A1919;
 
     .table {
         --bs-table-striped-bg: rgba(0, 0, 0, 0.05);
@@ -40,7 +35,6 @@ label {
 }
 
 .dark {
-    --breadcrumb-background: #1A1919;
     color-scheme: dark;
 
     .table {
@@ -91,8 +85,7 @@ label {
     font-weight: bold;
     align-items: center;
     background-color: var(--breadcrumb-background);
-    margin-bottom: 0.5rem;
-
+e
     >.container {
         height: 2rem;
         padding-bottom: 2px;
@@ -149,13 +142,6 @@ nav.secondary-nav {
 }
 
 /*#region Headings*/
-h3,
-legend {
-    font-size: 1em;
-    margin-top: 0;
-    font-weight: bold;
-}
-
 legend {
     display: none;
 
@@ -167,7 +153,7 @@ legend {
 input,
 select,
 textarea {
-    font-family: "Open Sans", "Segoe UI", Arial, sans-serif;
+    font-family: "Inter", "Open Sans", "Segoe UI", Arial, sans-serif;
 }
 
 input.description {
@@ -192,7 +178,6 @@ table {
 
 thead th {
     font-weight: normal;
-    font-size: 1.2rem;
 }
 
 td {
@@ -279,7 +264,8 @@ table.trasactionHistory {
 /*#endregion*/
 
 section.box {
-    background-color: #EEE;
+
+    background-color: var(--panel-bg);
     border-radius: 10px;
     padding: 15px;
     font-size: 1.1em;
@@ -319,7 +305,7 @@ section.actions {
 
 fieldset {
     position: relative;
-    border: 1px solid (var(--bs-border-color));
+    border: 1px solid var(--bs-border-color);
     padding: 20px;
     padding-top: 15px;
     border-radius: 6px;
@@ -387,6 +373,11 @@ legend.open svg {
 
 .empty-row {
     height: 54px;
+}
+
+.report canvas {
+    max-height: calc(100vh - 415px);
+    max-width: 100%;
 }
 
 @import 'responsive';

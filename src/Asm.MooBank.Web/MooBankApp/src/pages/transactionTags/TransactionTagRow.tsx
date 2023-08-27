@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import { TransactionTag } from "models";
 import { ClickableIcon, EditColumn, useUpdatingState } from "@andrewmclachlan/mooapp";
-import { useDeleteTag, useTags, useUpdateTag } from "services";
+import { useDeleteTag, useUpdateTag } from "services";
 import { TransactionTagTransactionTagPanel } from "./TransactionTagTransactionTagPanel";
 import { TransactionTagDetails } from "./TransactionTagDetails";
 
@@ -47,8 +47,8 @@ function useTagRowEvents(props: TransactionTagRowProps) {
     }
 
     const updateTag = (name: string) => {
-        updateTransactionTag.mutate({ ...tag, name });
-        setTag({ ...tag, name });
+        updateTransactionTag.mutate({ ...tag!, name });
+        setTag({ ...tag!, name });
     }
 
     return {

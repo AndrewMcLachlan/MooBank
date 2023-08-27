@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { TransactionTagRule, TransactionTag } from "models";
-import { ClickableIcon, EditColumn, EditColumnProps, ValueProps } from "@andrewmclachlan/mooapp";
+import { ClickableIcon, EditColumn } from "@andrewmclachlan/mooapp";
 import { TransactionTagPanel } from "components";
 import { useCreateTag, useTags } from "services/TransactionTagService";
 import { useAddTransactionTagRuleTag, useDeleteRule, useRemoveTransactionTagRuleTag, useUpdateRule } from "services";

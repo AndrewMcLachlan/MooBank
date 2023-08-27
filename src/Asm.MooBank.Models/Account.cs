@@ -10,7 +10,11 @@ public partial record Account
 
     public required DateTimeOffset BalanceDate { get; set; }
 
+    public DateOnly? LastTransaction { get; set; }
+
     public required decimal CurrentBalance { get; set; }
+
+    public required decimal CalculatedBalance { get; set; }
 
     public string? AccountType { get; set; }
 

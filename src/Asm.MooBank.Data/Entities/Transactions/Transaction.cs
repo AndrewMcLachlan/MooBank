@@ -1,5 +1,5 @@
 ﻿using Asm.Domain;
-using Asm.MooBank.Domain.Entities.TransactionTags;
+using Asm.MooBank.Domain.Entities.Tag;
 
 namespace Asm.MooBank.Domain.Entities.Transactions;
 
@@ -8,7 +8,7 @@ public partial class Transaction
 {
     public Transaction()
     {
-        TransactionTags = new HashSet<TransactionTag>();
+        TransactionTags = new HashSet<Tag.Tag>();
     }
 
     public Guid TransactionId { get; set; }
@@ -31,7 +31,7 @@ public partial class Transaction
 
     public Guid? OffsetByTransactionId { get; set; }
 
-    public virtual ICollection<TransactionTag> TransactionTags { get; set; }
+    public virtual ICollection<Tag.Tag> TransactionTags { get; set; }
 
     public virtual Account.Account Account { get; set; }
 

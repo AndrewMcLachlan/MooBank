@@ -1,4 +1,4 @@
-﻿using ITransactionTagRepository = Asm.MooBank.Domain.Entities.TransactionTags.ITransactionTagRepository;
+﻿using ITransactionTagRepository = Asm.MooBank.Domain.Entities.Tag.ITransactionTagRepository;
 using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Commands.TransactionTags;
@@ -20,7 +20,7 @@ internal sealed class CreateByNameHandler : DataCommandHandler, ICommandHandler<
 
         var tagEntities = await _transactionTagRepository.Get(tags);
 
-        Domain.Entities.TransactionTags.TransactionTag transactionTag = new()
+        Domain.Entities.Tag.Tag transactionTag = new()
         {
             Name = name,
             Tags = tagEntities.ToList(),

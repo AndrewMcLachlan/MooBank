@@ -1,6 +1,6 @@
 ﻿using Asm.MooBank.Models;
 using Microsoft.EntityFrameworkCore.Query;
-using TransactionTagEntity = Asm.MooBank.Domain.Entities.TransactionTags.TransactionTag;
+using TransactionTagEntity = Asm.MooBank.Domain.Entities.Tag.Tag;
 
 namespace Asm.MooBank.Queries.TransactionTags;
 

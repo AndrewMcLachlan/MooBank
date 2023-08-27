@@ -1,7 +1,7 @@
 ﻿using Asm.Domain;
 using Asm.MooBank.Models;
 using Microsoft.Identity.Client;
-using ITransactionTagRepository = Asm.MooBank.Domain.Entities.TransactionTags.ITransactionTagRepository;
+using ITransactionTagRepository = Asm.MooBank.Domain.Entities.Tag.ITransactionTagRepository;
 using ITransactionTagRuleRepository = Asm.MooBank.Domain.Entities.Account.ITransactionTagRuleRepository;
 
 namespace Asm.MooBank.Services;
@@ -45,7 +45,7 @@ public class TransactionTagRuleService : ServiceBase, ITransactionTagRuleService
             AccountId = accountId,
             Contains = contains,
             Description = description,
-            TransactionTags = tagIds.Select(t => new Domain.Entities.TransactionTags.TransactionTag { TransactionTagId = t }).ToList(),
+            TransactionTags = tagIds.Select(t => new Domain.Entities.Tag.Tag { Id = t }).ToList(),
         };
 
         _transactionTagRuleRepository.Add(rule);
@@ -98,7 +98,7 @@ public class TransactionTagRuleService : ServiceBase, ITransactionTagRuleService
 
         if (entity == null) throw new NotFoundException($"Transaction tag rule with ID {id} not found");
 
-        if (entity.TransactionTags.Any(t => t.TransactionTagId == tagId)) throw new ExistsException("Cannot add tag, it already exists");
+        if (entity.TransactionTags.Any(t => t.Id == tagId)) throw new ExistsException("Cannot add tag, it already exists");
 
         entity.TransactionTags.Add(await _transactionTags.Get(tagId));
 
@@ -111,7 +111,7 @@ public class TransactionTagRuleService : ServiceBase, ITransactionTagRuleService
     {
         var entity = await GetEntity(accountId, id);
 
-        var tag = entity.TransactionTags.SingleOrDefault(t => t.TransactionTagId == tagId);
+        var tag = entity.TransactionTags.SingleOrDefault(t => t.Id == tagId);
 
         if (tag == null) throw new NotFoundException($"Tag with id {id} was not found");
 

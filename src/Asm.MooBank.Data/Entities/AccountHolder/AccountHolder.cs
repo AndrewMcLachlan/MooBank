@@ -14,8 +14,12 @@ public partial class AccountHolder
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
 
+    public Guid FamilyId { get; set; }
+
     [NotMapped]
     public virtual ICollection<Account.Account> Accounts { get; set; }
 
     public virtual ICollection<AccountHolderCard> Cards { get; set; }
+
+    public virtual Family.Family Family { get; set; }
 }

@@ -25,8 +25,9 @@ export interface AccountBase {
 
 export interface Account extends AccountBase {
     currentBalance: number;
-    availableBalance: number;
-    balanceUpdated: Date;
+    calculatedBalance: number;
+    balanceDate: Date;
+    lastTransaction?: string;
     accountType: AccountType;
     accountGroupId: string;
     controller: AccountController;
@@ -39,11 +40,11 @@ export const emptyAccount : Account = {
     id: "",
     name: "",
     currentBalance: 0,
-    availableBalance: 0,
-    balanceUpdated: new Date(),
+    balanceDate: new Date(),
     accountType: AccountType.None,
     controller: AccountController.Manual,
     accountGroupId: "",
+    calculatedBalance: 0,
     virtualAccounts: [],
 }
 

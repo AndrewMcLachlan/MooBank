@@ -1,3 +1,4 @@
+export * from "./accounts";
 export * from "./budget";
 export * from "./createAccount/CreateAccount";
 export * from "./error";

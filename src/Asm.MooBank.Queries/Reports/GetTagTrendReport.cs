@@ -1,6 +1,6 @@
 ﻿using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.TransactionTagHierarchies;
-using Asm.MooBank.Domain.Entities.TransactionTags;
+using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Models.Reports;
 
 namespace Asm.MooBank.Queries.Reports;
@@ -16,11 +16,11 @@ public record TagTrendReportSettings(bool ApplySmoothing = false);
 internal class GetTagTrendReportHandler : IQueryHandler<GetTagTrendReport, TagTrendReport>
 {
     private readonly IQueryable<Transaction> _transactions;
-    private readonly IQueryable<TransactionTag> _tags;
+    private readonly IQueryable<Tag> _tags;
     private readonly IQueryable<TransactionTagRelationship> _tagRelationships;
     private readonly ISecurity _securityRepository;
 
-    public GetTagTrendReportHandler(IQueryable<Transaction> transactions, IQueryable<TransactionTag> tags, IQueryable<TransactionTagRelationship> tagRelationships, ISecurity securityRepository)
+    public GetTagTrendReportHandler(IQueryable<Transaction> transactions, IQueryable<Tag> tags, IQueryable<TransactionTagRelationship> tagRelationships, ISecurity securityRepository)
     {
         _transactions = transactions;
         _tags = tags;
@@ -34,8 +34,8 @@ internal class GetTagTrendReportHandler : IQueryHandler<GetTagTrendReport, TagTr
 
         var transactionTypeFilter = request.ReportType.ToTransactionFilter();
 
-        var tag = await _tags.SingleAsync(t => t.TransactionTagId == request.TagId, cancellationToken);
-        var tags = await _tags.Include(t => t.Tags).Where(t => !t.Deleted && t.TaggedTo.Any(t2 => t2.TransactionTagId == request.TagId)).ToListAsync(cancellationToken);
+        var tag = await _tags.SingleAsync(t => t.Id == request.TagId, cancellationToken);
+        var tags = await _tags.Include(t => t.Tags).Where(t => !t.Deleted && t.TaggedTo.Any(t2 => t2.Id == request.TagId)).ToListAsync(cancellationToken);
         var tagHierarchies = await _tagRelationships.Include(t => t.TransactionTag).ThenInclude(t => t.Tags).Include(t => t.ParentTag).ThenInclude(t => t.Tags).Where(tr => tr.Ordinal == 1 && tags.Contains(tr.ParentTag)).ToListAsync(cancellationToken);
         var allTags = tags.Union(tagHierarchies.Select(t => t.TransactionTag)).ToList();
         allTags.Add(tag);

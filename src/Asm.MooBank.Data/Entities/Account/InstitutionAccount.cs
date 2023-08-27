@@ -1,7 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Asm.Domain;
-using Asm.MooBank.Domain.Entities.Transactions;
-using Asm.MooBank.Security;
 
 namespace Asm.MooBank.Domain.Entities.Account;
 
@@ -12,6 +10,8 @@ public class InstitutionAccount : Account
     {
         VirtualAccounts = new HashSet<VirtualAccount>();
     }
+
+    public int InstitutionId { get; set; }
 
     public bool IncludeInPosition { get; set; }
 
@@ -26,4 +26,6 @@ public class InstitutionAccount : Account
     public virtual ImportAccount? ImportAccount { get; set; }
 
     public virtual ICollection<VirtualAccount> VirtualAccounts { get; set; }
+
+    public virtual Institution.Institution Institution { get; set; }
 }

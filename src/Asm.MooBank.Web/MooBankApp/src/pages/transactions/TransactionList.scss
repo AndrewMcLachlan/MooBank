@@ -1,3 +1,14 @@
+.transactions-header {
+    .section:first-child {
+        flex-basis: 400px;
+        flex-shrink: 1;
+    }
+
+    .section:last-child {
+        flex-grow: 1;
+    }
+}
+
 .transactions .transaction-head {
     th:nth-child(1) {
         width: 10%;

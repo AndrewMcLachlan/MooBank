@@ -1,0 +1,13 @@
+export {ReactComponent as Budget } from "./budget.svg";
+export {ReactComponent as Cog } from "./cog.svg";
+export {ReactComponent as Dashboard } from "./dashboard.svg";
+export {ReactComponent as Hierarchy } from "./hierarchy.svg";
+export {ReactComponent as Import } from "./import.svg";
+export {ReactComponent as PiggyBank } from "./pig.svg";
+export {ReactComponent as Reports } from "./reports.svg";
+export {ReactComponent as ReportsSolid } from "./reports.solid.svg";
+export {ReactComponent as Rules } from "./rules.svg";
+export {ReactComponent as Sliders } from "./sliders.svg";
+export {ReactComponent as Stack } from "./stack.svg";
+export {ReactComponent as Tags } from "./tags.svg";
+export {ReactComponent as Transaction } from "./transaction.svg";

@@ -6,7 +6,7 @@ using Asm.MooBank.Services.Commands.Budget;
 
 namespace Asm.MooBank.Web.Controllers;
 
-[Route("/api/accounts/{accountId}/[controller]")]
+[Route("/api/[controller]")]
 public class BudgetController : CommandQueryController
 {
     public BudgetController(IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher) : base(queryDispatcher, commandDispatcher)
@@ -14,15 +14,15 @@ public class BudgetController : CommandQueryController
     }
 
     [HttpGet]
-    public Task<IEnumerable<short>> GetYears(Guid accountId, CancellationToken cancellationToken = default) =>
-        QueryDispatcher.Dispatch(new GetYears(accountId), cancellationToken);
+    public Task<IEnumerable<short>> GetYears(CancellationToken cancellationToken = default) =>
+        QueryDispatcher.Dispatch(new GetYears(), cancellationToken);
 
 
     [HttpGet("{year}")]
-    public async Task<Budget> Get(Guid accountId, short year, CancellationToken cancellationToken = default)
+    public async Task<Budget> Get(short year, CancellationToken cancellationToken = default)
     {
-        var budget = await QueryDispatcher.Dispatch(new Get(accountId, year), cancellationToken) ??
-                     await CommandDispatcher.Dispatch(new Create(accountId, year), cancellationToken);
+        var budget = await QueryDispatcher.Dispatch(new Get(year), cancellationToken) ??
+                     await CommandDispatcher.Dispatch(new Create(year), cancellationToken);
         return budget;
     }
 
@@ -33,31 +33,31 @@ public class BudgetController : CommandQueryController
     */
 
     [HttpPost("{year}/lines")]
-    public async Task<ActionResult<BudgetLine>> Create(Guid accountId, short year, [FromBody] BudgetLine budgetLine, CancellationToken cancellationToken = default)
+    public async Task<ActionResult<BudgetLine>> Create(short year, [FromBody] BudgetLine budgetLine, CancellationToken cancellationToken = default)
     {
-        var model = await CommandDispatcher.Dispatch(new CreateLine(accountId, year, budgetLine), cancellationToken);
+        var model = await CommandDispatcher.Dispatch(new CreateLine(year, budgetLine), cancellationToken);
 
         return CreatedAtAction("Get", model);
     }
 
     [HttpPatch("{year}/lines/{id}")]
-    public async Task<ActionResult<BudgetLine>> Update(Guid accountId, short year, Guid id, [FromBody] BudgetLine budgetLine, CancellationToken cancellationToken = default)
+    public async Task<ActionResult<BudgetLine>> Update(short year, Guid id, [FromBody] BudgetLine budgetLine, CancellationToken cancellationToken = default)
     {
         if (id != budgetLine.Id) return BadRequest();
 
-        return await CommandDispatcher.Dispatch(new UpdateLine(accountId, year, id, budgetLine), cancellationToken);
+        return await CommandDispatcher.Dispatch(new UpdateLine(year, id, budgetLine), cancellationToken);
     }
 
     [HttpDelete("{year}/lines/{id}")]
-    public async Task<ActionResult> Delete(Guid accountId, short year, Guid id, CancellationToken cancellationToken = default)
+    public async Task<ActionResult> Delete(short year, Guid id, CancellationToken cancellationToken = default)
     {
-        await CommandDispatcher.Dispatch(new DeleteLine(accountId, year, id), cancellationToken);
+        await CommandDispatcher.Dispatch(new DeleteLine(year, id), cancellationToken);
 
         return NoContent();
     }
 
     [HttpGet("tag/{tagId}")]
-    public Task<decimal> GetValueForTag(Guid accountId, int tagId, CancellationToken cancellationToken = default) =>
-        QueryDispatcher.Dispatch(new GetValueForTag(accountId, tagId), cancellationToken);
+    public Task<decimal> GetValueForTag(int tagId, CancellationToken cancellationToken = default) =>
+        QueryDispatcher.Dispatch(new GetValueForTag(tagId), cancellationToken);
 
 }

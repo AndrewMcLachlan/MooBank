@@ -29,18 +29,20 @@ namespace Asm.MooBank.Infrastructure.Repositories
             Context.Remove(new BudgetLine(id));
         }
 
-        public Task<Budget> GetByYear(Guid accountId, short year, CancellationToken cancellationToken = default) =>
-            Entities.Where(b => b.AccountId == accountId && b.Year == year).SingleAsync(cancellationToken);
 
-        public async Task<Budget> GetOrCreate(Guid accountId, short year, CancellationToken cancellationToken = default)
+        // TODO: Get family ID from user data provider
+        public Task<Budget> GetByYear(Guid familyId, short year, CancellationToken cancellationToken = default) =>
+            Entities.Where(b => b.FamilyId == familyId && b.Year == year).SingleAsync(cancellationToken);
+
+        public async Task<Budget> GetOrCreate(Guid familyId, short year, CancellationToken cancellationToken = default)
         {
-            var budget = await Entities.Where(b => b.AccountId == accountId && b.Year == year).SingleOrDefaultAsync(cancellationToken);
+            var budget = await Entities.Where(b => b.FamilyId == familyId && b.Year == year).SingleOrDefaultAsync(cancellationToken);
 
             if (budget == null)
             {
                 budget = new Budget(Guid.Empty)
                 {
-                    AccountId = accountId,
+                    FamilyId = familyId,
                     Year = year,
                 };
 

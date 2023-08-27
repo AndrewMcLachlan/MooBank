@@ -1,6 +1,6 @@
 ﻿using Asm.MooBank.Domain.Entities.TransactionTagHierarchies;
 using Asm.MooBank.Models;
-using ITransactionTagRepository = Asm.MooBank.Domain.Entities.TransactionTags.ITransactionTagRepository;
+using ITransactionTagRepository = Asm.MooBank.Domain.Entities.Tag.ITransactionTagRepository;
 
 namespace Asm.MooBank.Commands.TransactionTags;
 
@@ -36,6 +36,6 @@ internal sealed class AddSubTagHandler : DataCommandHandler, ICommandHandler<Add
         return tag;
     }
 
-    private Task<Domain.Entities.TransactionTags.TransactionTag> GetEntity(int id, bool includeSubTags = false, CancellationToken cancellationToken = default) =>
+    private Task<Domain.Entities.Tag.Tag> GetEntity(int id, bool includeSubTags = false, CancellationToken cancellationToken = default) =>
         _transactionTagRepository.Get(id, includeSubTags, cancellationToken);
 }

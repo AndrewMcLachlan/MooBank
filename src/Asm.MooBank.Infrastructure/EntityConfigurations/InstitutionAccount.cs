@@ -22,5 +22,7 @@ public class InstitutionAccount : IEntityTypeConfiguration<Domain.Entities.Accou
               .WithOne(e => e.InstitutionAccount)
               .HasForeignKey(e => e.InstitutionAccountId);
 
+        entity.HasOne(e => e.Institution).WithMany().HasForeignKey(e => e.InstitutionId);
+
     }
 }

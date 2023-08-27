@@ -51,7 +51,7 @@ export const useAccountRowCommonState = (props: AccountRowProps) => {
     var navigate = useNavigate();
 
     const onRowClick = () => {
-        navigate(`accounts/${props.account.id}`);
+        navigate(`/accounts/${props.account.id}`);
     };
 
     return {

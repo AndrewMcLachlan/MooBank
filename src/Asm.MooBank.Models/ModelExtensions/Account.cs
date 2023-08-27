@@ -12,7 +12,9 @@ public partial record Account
             Name = account.Name,
             Description = account.Description,
             CurrentBalance = account.Balance,
+            CalculatedBalance = account.CalculatedBalance,
             BalanceDate = account.LastUpdated,
+            LastTransaction = account.LastTransaction,
             AccountType = GetAccountType(account),
         };
     }

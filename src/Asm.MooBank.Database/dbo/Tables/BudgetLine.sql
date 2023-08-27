@@ -8,6 +8,6 @@ CREATE TABLE [dbo].[BudgetLine]
     [Income] BIT NOT NULL CONSTRAINT DF_BudgetLine_Income DEFAULT 0,
     CONSTRAINT [PK_BudgetLine] PRIMARY KEY CLUSTERED (Id),
     CONSTRAINT [FK_BudgetLine_Budget] FOREIGN KEY (BudgetId) REFERENCES [Budget](Id),
-    CONSTRAINT [FK_BudgetLine_Tag] FOREIGN KEY (TagId) REFERENCES [TransactionTag](TransactionTagId)
+    CONSTRAINT [FK_BudgetLine_Tag] FOREIGN KEY (TagId) REFERENCES [Tag]([Id])
 )
 GO

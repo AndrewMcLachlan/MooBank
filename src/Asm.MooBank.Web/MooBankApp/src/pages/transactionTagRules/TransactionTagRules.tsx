@@ -1,40 +1,40 @@
 import "./TransactionTagRules.scss";
 
 import React, { useEffect, useState } from "react";
-import { Col, Row, Table } from "react-bootstrap";
+import { Button, Col, Row, Table } from "react-bootstrap";
 
-import { changeSortDirection, ClickableIcon, getNumberOfPages, SearchBox, SortDirection, Pagination } from "@andrewmclachlan/mooapp";
-import { TransactionTagPanel } from "components";
+import { changeSortDirection, ClickableIcon, getNumberOfPages, SearchBox, SortDirection, Pagination, useIdParams, Section } from "@andrewmclachlan/mooapp";
+import { AccountPage, TransactionTagPanel, useAccount } from "components";
 
-import { TransactionTag, TransactionTagRule, sortRules, sortTags } from "models";
-import { useParams } from "react-router-dom";
+import { TransactionTag, TransactionTagRule, sortRules } from "models";
 
 import { TransactionTagRuleRow } from "./TransactionTagRuleRow";
-import { useAccount, useCreateRule, useCreateTag, useRules, useRunRules, useTags } from "services";
+import { useCreateRule, useCreateTag, useRules, useRunRules, useTags } from "services";
 import { Page } from "layouts";
 
 
 export const TransactionTagRules: React.FC = () => {
 
-    const { accountId } = useParams<{ accountId: string }>();
+    const id = useIdParams();
+    const account = useAccount();
 
-    const { newRule, fullTagsList, addTag, createTag, removeTag, nameChange, descriptionChange, createRule, runRules, keyUp } = useComponentState(accountId!);
+    const { newRule, fullTagsList, addTag, createTag, removeTag, nameChange, descriptionChange, createRule, runRules, keyUp } = useComponentState(id);
 
-    const {data: rules} = useRules(accountId!);
+    const { data: rules } = useRules(id);
 
     const [filteredRules, setFilteredRules] = useState<TransactionTagRule[]>([]);
     const [pagedRules, setPagedRules] = useState<TransactionTagRule[]>([]);
     const [pageNumber, setPageNumber] = useState<number>(1);
-    const [pageSize, setPageSize] = useState<number>(20);
+    const [pageSize, _setPageSize] = useState<number>(20);
     const [sortDirection, setSortDirection] = useState<SortDirection>("Ascending");
     const [search, setSearch] = useState("");
 
     const numberOfPages = getNumberOfPages(filteredRules.length, pageSize);
     const totalRules = filteredRules.length;
     const pageChange = (_current: number, newPage: number) => setPageNumber(newPage);
-    
+
     useEffect(() => {
-        
+
         setPageNumber(1);
 
         const searchTerm = search.toLocaleLowerCase();
@@ -54,49 +54,46 @@ export const TransactionTagRules: React.FC = () => {
         setPagedRules(filteredRules.sort(sortRules(sortDirection)).slice((pageNumber - 1) * pageSize, ((pageNumber - 1) * pageSize) + pageSize));
     }, [filteredRules, sortDirection, pageNumber]);
 
-    const account = useAccount(accountId!);
-
-    if (!account.data) return (null);
+    if (!account) return (null);
 
     return (
-        <Page title="Transaction Tag Rules">
-            <Page.Header goBack title="Transaction Tag Rules" menuItems={[{ text: "Run Rules Now", onClick: runRules }]}
-                breadcrumbs={[[account.data.name, `/accounts/${accountId}`], ["Tag Rules", `/accounts/${accountId}/tag-rules`]]} />
-            <Page.Content>
-                <Row>
-                    <Col xl={6}>
-                        <SearchBox value={search} onChange={(v: string) => setSearch(v)} />
-                    </Col>
-                </Row>
-                <Table striped bordered={false} borderless className="transaction-tag-rules">
-                    <thead>
-                        <tr>
-                            <th className={`column-20 sortable ${sortDirection.toLowerCase()}`} onClick={() => setSortDirection(changeSortDirection(sortDirection))}>When a transaction contains</th>
-                            <th className="column-30">Apply tag(s)</th>
-                            <th className="column-35">Notes</th>
-                            <th className="column-5"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><input type="text" className="form-control" placeholder="Description contains..." value={newRule.contains} onChange={nameChange} /></td>
-                            <TransactionTagPanel as="td" selectedItems={newRule.tags} items={fullTagsList} onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} onKeyUp={keyUp} />
-                            <td><input type="text" className="form-control" placeholder="Notes..." value={newRule.description} onChange={descriptionChange} /></td>
-                            <td className="row-action"><span onClick={createRule}><ClickableIcon icon="check-circle" title="Save" size="xl" /></span></td>
-                        </tr>
-                        {pagedRules.map((r) => <TransactionTagRuleRow key={r.id} accountId={accountId!} rule={r} />)}
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colSpan={1} className="page-totals">Page {pageNumber} of {numberOfPages} ({totalRules} tags)</td>
-                            <td colSpan={3}>
-                                <Pagination pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={pageChange} />
-                            </td>
-                        </tr>
-                    </tfoot>
-                </Table>
-            </Page.Content>
-        </Page>
+        <AccountPage title="Transaction Tag Rules" breadcrumbs={[{ text: "Tag Rules", route: `/accounts/${id}/tag-rules` }]}>
+            <div className="section-group">
+                <Section className="col-xl-4">
+                    <SearchBox value={search} onChange={(v: string) => setSearch(v)} />
+                </Section>
+                <Section>
+                    <Button onClick={runRules}>Run Rules</Button>
+                </Section>
+            </div>
+            <Table striped bordered={false} borderless className="section transaction-tag-rules">
+                <thead>
+                    <tr>
+                        <th className={`column-20 sortable ${sortDirection.toLowerCase()}`} onClick={() => setSortDirection(changeSortDirection(sortDirection))}>When a transaction contains</th>
+                        <th className="column-30">Apply tag(s)</th>
+                        <th className="column-35">Notes</th>
+                        <th className="column-5"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="text" className="form-control" placeholder="Description contains..." value={newRule.contains} onChange={nameChange} /></td>
+                        <TransactionTagPanel as="td" selectedItems={newRule.tags} items={fullTagsList} onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} onKeyUp={keyUp} />
+                        <td><input type="text" className="form-control" placeholder="Notes..." value={newRule.description} onChange={descriptionChange} /></td>
+                        <td className="row-action"><span onClick={createRule}><ClickableIcon icon="check-circle" title="Save" size="xl" /></span></td>
+                    </tr>
+                    {pagedRules.map((r) => <TransactionTagRuleRow key={r.id} accountId={id} rule={r} />)}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colSpan={1} className="page-totals">Page {pageNumber} of {numberOfPages} ({totalRules} tags)</td>
+                        <td colSpan={3}>
+                            <Pagination pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={pageChange} />
+                        </td>
+                    </tr>
+                </tfoot>
+            </Table>
+        </AccountPage>
     );
 }
 

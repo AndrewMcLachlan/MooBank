@@ -1,16 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import format from "date-fns/format";
-import getMonth from "date-fns/getMonth";
-import getYear from "date-fns/getYear";
-
-import { Page } from "layouts";
-import { ReportsHeader } from "./ReportsHeader";
+import { ReportsPage } from "./ReportsPage";
 import { useAccount, useBreakdownReport, useTag } from "services";
 
 import { Doughnut, getElementAtEvent } from "react-chartjs-2";
 import { Chart as ChartJS, ChartData, registerables } from "chart.js";
-import { useLayout } from "@andrewmclachlan/mooapp";
+import { Section, useLayout } from "@andrewmclachlan/mooapp";
 
 import { PeriodSelector } from "components/PeriodSelector";
 import { Period } from "helpers/dateFns";
@@ -57,59 +52,46 @@ export const Breakdown = () => {
     };
 
     return (
-        <Page title="Breakdown">
-            <ReportsHeader account={account.data} title="Breakdown" />
-            <Page.Content>
+        <ReportsPage title="Breakdown">
+            <Section>
                 <ReportTypeSelector value={reportType} onChange={setReportType} />
                 <PeriodSelector onChange={setPeriod} />
-                <section className="report doughnut">
-                    {tag.data?.name && <h3><FontAwesomeIcon className="clickable" icon="circle-chevron-left" size="xs" onClick={() => navigate(-1)} /> {tag.data.name}</h3>}
-                    {!tag.data && <h3>Top-Level Tags</h3>}
-                    <Doughnut id="bytag" ref={chartRef} data={dataset} options={{
-                        plugins: {
-                            legend: {
-                                position: "right"
-                            },
-                            tooltip: {
-                                mode: "point",
-                                intersect: false,
-                            } as any,
+            </Section>
+            <Section className="report doughnut">
+                {tag.data?.name && <h3><FontAwesomeIcon className="clickable" icon="circle-chevron-left" size="xs" onClick={() => navigate(-1)} /> {tag.data.name}</h3>}
+                {!tag.data && <h3>Top-Level Tags</h3>}
+                <Doughnut id="bytag" className="bob" ref={chartRef} data={dataset} options={{
+
+                    plugins: {
+                        legend: {
+                            position: "right"
                         },
-                        hover: {
+                        tooltip: {
                             mode: "point",
-                            intersect: true,
-                        },
-                    }}
-                        onClick={(e) => {
-                            var elements = getElementAtEvent(chartRef.current!, e);
-                            if (elements.length !== 1) return;
-                            const tag = report.data!.tags[elements[0].index];
-                            if (!tag.hasChildren || tag.tagId === selectedTagId) {
+                            intersect: false,
+                        } as any,
+                    },
+                    hover: {
+                        mode: "point",
+                        intersect: true,
+                    },
+                }}
+                    onClick={(e) => {
+                        var elements = getElementAtEvent(chartRef.current!, e);
+                        if (elements.length !== 1) return;
+                        const tag = report.data!.tags[elements[0].index];
+                        if (!tag.hasChildren || tag.tagId === selectedTagId) {
 
-                                const url = !selectedTagId ?  `/accounts/${accountId}?untagged=true` : `/accounts/${accountId}?tag=${tag.tagId}`;
+                            const url = !selectedTagId ? `/accounts/${accountId}?untagged=true` : `/accounts/${accountId}?tag=${tag.tagId}`;
 
-                                navigate(url);
-                                return;
-                            }
-                            setPreviousTagId(selectedTagId);
-                            setSelectedTagId(tag.tagId);
-                            navigate(`/accounts/${accountId}/reports/breakdown/${tag.tagId}`);
-                        }} />
-                </section>
-            </Page.Content>
-        </Page >
+                            navigate(url);
+                            return;
+                        }
+                        setPreviousTagId(selectedTagId);
+                        setSelectedTagId(tag.tagId);
+                        navigate(`/accounts/${accountId}/reports/breakdown/${tag.tagId}`);
+                    }} />
+            </Section>
+        </ReportsPage>
     );
-
-}
-
-const formatPeriod = (start: Date, end: Date): string => {
-
-    const sameYear = getYear(start) === getYear(end);
-    const sameMonth = getMonth(start) === getMonth(end);
-
-    if (sameYear && sameMonth) return format(start, "MMM");
-
-    if (sameYear) return `${format(start, "MMM")} - ${format(end, "MMM")}`;
-
-    return `${format(start, "MMM yy")} - ${format(end, "MMM yy")}`;
 }

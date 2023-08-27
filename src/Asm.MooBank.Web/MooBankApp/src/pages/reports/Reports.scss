@@ -1,8 +1,6 @@
 .report {
 
-    margin-bottom: 50px;
-
-    h3 {
+   /* h3 {
         width: 100%;
         text-align: center;
         margin-top: 20px;
@@ -11,11 +9,15 @@
 
     &.doughnut h3 {
         margin-left: -80px;
-    }
+    }*/
+}
 
-    &.inout {
-        height: 200px;
-        width: 100%;
-        margin-bottom: calc(50px + 2rem);
-    }
+.inout {
+    max-height: 300px;
+    padding-bottom: calc(50px + 2rem);
+}
+
+.inout-trend {
+    max-height: 800px;
+    padding-bottom: calc(50px + 2rem);
 }

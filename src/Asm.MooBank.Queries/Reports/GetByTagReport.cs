@@ -33,7 +33,7 @@ internal class GetByTagReportHandler : IQueryHandler<GetByTagReport, ByTagReport
             .SelectMany(g => g.Key.Select(t =>
             new TagValue
             {
-                TagId = t.TransactionTagId,
+                TagId = t.Id,
                 TagName = t.Name,
                 GrossAmount = Math.Abs(g.Sum(t => t.NetAmount)), // This looks weird, but is correct
             })).ToList();

@@ -1,32 +1,32 @@
-﻿using Asm.MooBank.Domain.Entities.TransactionTags;
+﻿using Asm.MooBank.Domain.Entities.Tag;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
-public class TransactionTagRepository : RepositoryDeleteBase<TransactionTag, int>, ITransactionTagRepository
+public class TransactionTagRepository : RepositoryDeleteBase<Tag, int>, ITransactionTagRepository
 {
     public TransactionTagRepository(MooBankContext dataContext) : base(dataContext)
     {
     }
 
-    public void AddSettings(TransactionTag transactionTag)
+    public void AddSettings(Tag transactionTag)
     {
         if (transactionTag.Settings == null)
         {
-            DataContext.Add(new TransactionTagSettings(transactionTag.TransactionTagId));
+            DataContext.Add(new TransactionTagSettings(transactionTag.Id));
         }
     }
 
 
-    public override async Task<IEnumerable<TransactionTag>> GetAll(CancellationToken cancellationToken = default)
+    public override async Task<IEnumerable<Tag>> GetAll(CancellationToken cancellationToken = default)
     {
         return await DataSet.Include(t => t.Tags).Where(t => !t.Deleted).ToListAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<TransactionTag>> Get(IEnumerable<int> tagIds, CancellationToken cancellationToken = default) =>
-        await DataSet.Where(t => tagIds.Contains(t.TransactionTagId)).ToListAsync(cancellationToken);
+    public async Task<IEnumerable<Tag>> Get(IEnumerable<int> tagIds, CancellationToken cancellationToken = default) =>
+        await DataSet.Where(t => tagIds.Contains(t.Id)).ToListAsync(cancellationToken);
 
 
-    public async Task<TransactionTag> Get(int id, bool includeSubTags = false, CancellationToken cancellationToken = default)
+    public async Task<Tag> Get(int id, bool includeSubTags = false, CancellationToken cancellationToken = default)
     {
         var tag = includeSubTags ?
             await GetById(id).Include(t => t.Settings).Include(t => t.Tags).SingleOrDefaultAsync(cancellationToken) :
@@ -35,10 +35,10 @@ public class TransactionTagRepository : RepositoryDeleteBase<TransactionTag, int
         return tag ?? throw new NotFoundException($"Transaction tag with id {id} was not found");
     }
 
-    public override void Delete(TransactionTag tag)
+    public override void Delete(Tag tag)
     {
         tag.Deleted = true;
     }
 
-    protected override IQueryable<TransactionTag> GetById(int id) => DataSet.Where(t => t.TransactionTagId == id);
+    protected override IQueryable<Tag> GetById(int id) => DataSet.Where(t => t.Id == id);
 }

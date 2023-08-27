@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { AccountGroup } from "models";
 import { useNavigate } from "react-router-dom";
 import { useCreateAccountGroup, useUpdateAccountGroup } from "services";
-import { emptyGuid } from "@andrewmclachlan/mooapp";
-import { Page } from "layouts";
+import { emptyGuid, NavItem, Page, Section } from "@andrewmclachlan/mooapp";
 import { Button, Form } from "react-bootstrap";
 import { FormGroup, FormRow } from "components";
 
@@ -48,12 +47,11 @@ export const AccountGroupForm: React.FC<AccountGroupFormProps> = ({ accountGroup
     }
 
     const verb = accountGroup?.id === emptyGuid ? "Create" : "Manage";
-    const breadcrumb: [string, string] = !accountGroup ? ["", ""] : accountGroup?.id === emptyGuid ? ["Create Account Group", "/account-groups/create"] : [accountGroup?.name, `/account-groups/${accountGroup?.id}/manage`];
+    const breadcrumb: NavItem[] = !accountGroup ? [] : accountGroup?.id === emptyGuid ? [{text: "Create Account Group", route: "/account-groups/create"}] : [{text: accountGroup?.name, route: `/account-groups/${accountGroup?.id}/manage`}];
 
     return (
-        <Page title={`${verb} Account Group`}>
-            <Page.Header goBack title={`${verb} Account Group`} breadcrumbs={[["Manage Account Groups", "/account-groups"], breadcrumb]} />
-            {accountGroup && <Page.Content>
+        <Page title={`${verb} Account Group`} breadcrumbs={[{ text: "Manage Account Groups", route: "/account-groups"}, ...breadcrumb]}>
+            {accountGroup && <Section>
                 <Form onSubmit={handleSubmit}>
                     <FormRow>
                         <FormGroup controlId="name" >
@@ -77,7 +75,7 @@ export const AccountGroupForm: React.FC<AccountGroupFormProps> = ({ accountGroup
                     </FormRow>
                     <Button type="submit" variant="primary">Save</Button>
                 </Form>
-            </Page.Content>}
+            </Section>}
         </Page>
     );
 }

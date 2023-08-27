@@ -8,7 +8,6 @@ import { faCheckCircle, faTrashAlt, faChevronDown, faChevronUp, faTimesCircle, f
 
 import App from "./App";
 import * as serviceWorker from "./serviceWorkerRegistration";
-import { AppProvider } from "./providers";
 import { MooApp } from "@andrewmclachlan/mooapp";
 import { AppStore } from "./store/configureStore";
 
@@ -17,7 +16,8 @@ library.add(faCheckCircle, faTrashAlt, faChevronDown, faChevronUp, faTimesCircle
 const root = createRoot(document.getElementById("root")!);
 
 const versionMeta = Array.from(document.getElementsByTagName("meta")).find((value) => value.getAttribute("name") === "application-version");
-fetch("/api/meta").then((response) => response.json()).then((meta) => { versionMeta.content = meta.version });
+versionMeta.content = import.meta.env.VITE_REACT_APP_VERSION;
+//fetch("/api/meta").then((response) => response.json()).then((meta) => { versionMeta.content = meta.version });
 
 
 /* Upgrade 2023.8 */
@@ -29,16 +29,11 @@ if (filterTags && !filterTags.includes("[")) {
 
 
 root.render(
-    <AppProvider appName="MooBank" // Array.from(document.getElementsByTagName("meta")).find((value) => value.getAttribute("name") === "application-name").getAttribute("content"),
-        baseUrl="/" //document.getElementsByTagName("base")[0].getAttribute("href"),
-        skin="moobank" // Array.from(document.getElementsByTagName("meta")).find((value) => value.getAttribute("name") === "skin").getAttribute("content"),
-    >
-        <MooApp clientId="045f8afa-70f2-4700-ab75-77ac41b306f7" scopes={["api://bankplus.mclachlan.family/api.read"]}>
+        <MooApp clientId="045f8afa-70f2-4700-ab75-77ac41b306f7" scopes={["api://bankplus.mclachlan.family/api.read"]} name="MooBank" version={import.meta.env.VITE_REACT_APP_VERSION}>
             <ReduxProvider store={AppStore}>
                 <App />
             </ReduxProvider>
         </MooApp>
-    </AppProvider>
 );
 
 

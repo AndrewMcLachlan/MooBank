@@ -1,4 +1,4 @@
-﻿using ITransactionTagRepository = Asm.MooBank.Domain.Entities.TransactionTags.ITransactionTagRepository;
+﻿using ITransactionTagRepository = Asm.MooBank.Domain.Entities.Tag.ITransactionTagRepository;
 using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Commands.TransactionTags;
@@ -16,7 +16,7 @@ internal sealed class CreateHandler : DataCommandHandler, ICommandHandler<Create
 
     public async Task<TransactionTag> Handle(Create request, CancellationToken cancellationToken)
     {
-        Domain.Entities.TransactionTags.TransactionTag transactionTag = request.Tag;
+        Domain.Entities.Tag.Tag transactionTag = request.Tag;
         _transactionTagRepository.Add(transactionTag);
 
         await UnitOfWork.SaveChangesAsync(cancellationToken);

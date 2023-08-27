@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\..\Common.props"/>
+  <Import Project="..\..\Common.props" />
 
   <ItemGroup>
-    <PackageReference Include="Asm" Version="3.0.691" />
-    <PackageReference Include="Asm.Cqrs" Version="3.0.691" />
-    <PackageReference Include="Azure.Identity" Version="1.8.2" />
+    <PackageReference Include="Asm" Version="3.1.1" />
+    <PackageReference Include="Asm.Cqrs" Version="3.1.1" />
+    <PackageReference Include="Azure.Identity" Version="1.10.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
   </ItemGroup>
 

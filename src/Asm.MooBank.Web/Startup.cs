@@ -31,7 +31,7 @@ public class Startup
         // In production, the React files will be served from this directory
         services.AddSpaStaticFiles(configuration =>
         {
-            configuration.RootPath = $"{SpaRoot}/build";
+            configuration.RootPath = $"{SpaRoot}/dist";
         });
 
         services.AddMooBankDbContext(Configuration);
@@ -130,6 +130,7 @@ public class Startup
 
     private void AddAuthentication(IServiceCollection services)
     {
+        //TODO added on token validated support in library.
         IdentityModelEventSource.ShowPII = true;
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddAzureAdBearer(options => Configuration.Bind("OAuth", options));
     }

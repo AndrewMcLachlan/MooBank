@@ -13,7 +13,7 @@ export const PageHeader: PageHeaderComponent = (props) => {
 
     return (
         <>
-            <header className="page-header">
+            {/*<header className="page-header">
                 <Container>
                     {props.goBack && <FontAwesomeIcon className="clickable" icon="circle-chevron-left" size="lg" onClick={() => navigate(-1)} />}
                     <h2>{props.title}</h2>
@@ -26,7 +26,7 @@ export const PageHeader: PageHeaderComponent = (props) => {
                 </Container>
             </header>
             <header className="breadcrumb-container">
-                <Container hidden={props.menuItems!.length === 0 && props.hidebreadcrumb}>
+                <Container fluid>
                     <Breadcrumb hidden={props.hidebreadcrumb}>
                         <LinkContainer to="/">
                             <Breadcrumb.Item>Home</Breadcrumb.Item>
@@ -38,7 +38,7 @@ export const PageHeader: PageHeaderComponent = (props) => {
                         )}
                     </Breadcrumb>
                 </Container>
-            </header>
+            </header>*/}
         </>
     );
 }
@@ -74,7 +74,7 @@ PageHeader.defaultProps = {
     goBack: false,
 }
 
-interface PageHeaderProps {
+export interface PageHeaderProps {
     title: string;
     menuItems?: MenuItem[];
     goBack?: boolean;

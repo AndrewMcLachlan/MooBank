@@ -6,7 +6,7 @@
     <Company />
     <Copyright>Copyright © Andrew McLachlan 2013. All rights reserved.</Copyright>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <AssemblyVersion>3.0.0.0</AssemblyVersion>
+    <AssemblyVersion>4.0.0.0</AssemblyVersion>
     <FileVersion>2023.8.0</FileVersion>
     <Version>2023.8.0</Version>
     <Product>MooBank</Product>

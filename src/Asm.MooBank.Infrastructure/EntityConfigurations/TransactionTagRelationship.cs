@@ -1,5 +1,5 @@
 ﻿using Asm.MooBank.Domain.Entities.TransactionTagHierarchies;
-using Asm.MooBank.Domain.Entities.TransactionTags;
+using Asm.MooBank.Domain.Entities.Tag;
 
 namespace Asm.MooBank.Infrastructure.EntityConfigurations;
 

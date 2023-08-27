@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Asm.Domain;
-using Asm.MooBank.Domain.Entities.TransactionTags;
+using Asm.MooBank.Domain.Entities.Tag;
 
 namespace Asm.MooBank.Domain.Entities.TransactionTagHierarchies;
 
@@ -14,7 +14,7 @@ public class TransactionTagRelationship
 
     public long Ordinal { get; set; }
 
-    public virtual TransactionTag TransactionTag { get; set; }
+    public virtual Tag.Tag TransactionTag { get; set; }
 
-    public virtual TransactionTag ParentTag { get; set; }
+    public virtual Tag.Tag ParentTag { get; set; }
 }

@@ -23,9 +23,13 @@ public class Account
 
     public DateTimeOffset LastUpdated { get; set; }
 
+    public DateOnly? LastTransaction { get; set; }
+
     public virtual ICollection<Transaction> Transactions { get; set; }
 
     public virtual ICollection<AccountAccountHolder> AccountAccountHolders { get; set; }
+
+    public decimal CalculatedBalance { get; set; }
 
     public AccountGroup.AccountGroup? GetAccountGroup(Guid accountHolderId)
     {

@@ -37,7 +37,7 @@ internal class GetAllTagAverageReportHandler : IQueryHandler<GetAllTagAverageRep
             .SelectMany(g => g.Key.Select(t =>
             new TagValue
             {
-                TagId = t.TransactionTagId,
+                TagId = t.Id,
                 TagName = t.Name,
                 GrossAmount = g.WhereByReportType(request.ReportType).Sum(t => t.Amount),
                 NetAmount = g.Sum(t => t.Amount),

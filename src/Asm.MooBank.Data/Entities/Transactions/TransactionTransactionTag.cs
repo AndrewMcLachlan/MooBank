@@ -1,4 +1,4 @@
-﻿using Asm.MooBank.Domain.Entities.TransactionTags;
+﻿using Asm.MooBank.Domain.Entities.Tag;
 
 namespace Asm.MooBank.Domain.Entities.Transactions
 {
@@ -14,6 +14,6 @@ namespace Asm.MooBank.Domain.Entities.Transactions
 
         public virtual Transaction Transaction { get; set; }
 
-        public virtual TransactionTag TransactionTag { get; set; }
+        public virtual Tag.Tag TransactionTag { get; set; }
     }
 }

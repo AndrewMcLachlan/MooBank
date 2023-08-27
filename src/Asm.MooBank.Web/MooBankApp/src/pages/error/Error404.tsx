@@ -1,14 +1,12 @@
 import React from "react";
 
-import { usePageTitle } from "hooks";
+import { Page  } from "@andrewmclachlan/mooapp";
 
 export const Error404: React.FC = () => {
 
-    usePageTitle("404");
-
     return (
-        <section>
+        <Page title="404">
             <h1>Page not found</h1>
-        </section>
+        </Page>
     );
 }

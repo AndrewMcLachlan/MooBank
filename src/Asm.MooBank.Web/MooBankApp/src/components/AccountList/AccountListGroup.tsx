@@ -5,6 +5,7 @@ import { AccountController, AccountListGroup as Model } from "models";
 import { ManualAccountRow } from "./ManualAccountRow";
 import { AccountRow } from "./AccountRow";
 import { getBalanceString } from "helpers";
+import { Section } from "@andrewmclachlan/mooapp";
 
 export interface AccountListGroupProps {
     accountGroup: Model;
@@ -12,8 +13,7 @@ export interface AccountListGroupProps {
 }
 
 export const AccountListGroup: React.FC<AccountListGroupProps> = ({ accountGroup, isLoading }) => (
-    <section hidden={accountGroup.accounts.length === 0}>
-        <h2>{accountGroup?.name}</h2>
+    <Section title={accountGroup?.name} size={2} hidden={accountGroup.accounts.length === 0}>
         <Table className="accounts" hover>
             <thead>
                 <tr>
@@ -38,5 +38,5 @@ export const AccountListGroup: React.FC<AccountListGroupProps> = ({ accountGroup
                 </tr>
             </tfoot>}
         </Table>
-    </section>
+    </Section>
 )

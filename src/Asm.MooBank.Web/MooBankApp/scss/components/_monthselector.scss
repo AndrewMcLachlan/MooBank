@@ -1,4 +1,4 @@
-@import "~bootstrap/scss/mixins";
+@import "~/bootstrap/scss/mixins";
 
 .month-selector .clear {
     fill: var(--bs-body-color);
@@ -31,7 +31,7 @@
         transform: translate(-50%, -50%);
         font-size: 0.8rem;
         font-weight: bold;
-        font-family: 'Open Sans';
+        font-family: var(--bs-font-sans-serif);
     }
 
     &#jan::before,

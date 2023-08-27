@@ -17,7 +17,7 @@ export const NewBudgetLine: React.FC<NewBudgetLineProps> = (props) => {
     const [tag, setTag] = useState<TransactionTag>(null);
     const [month, setMonth] = useState(4095);
 
-    const { data: tagValue } = useGetTagValue(props.accountId, tag?.id);
+    const { data: tagValue } = useGetTagValue(tag?.id);
 
     useEffect(() => {
         if (!tagValue || !tag) return;
@@ -26,7 +26,7 @@ export const NewBudgetLine: React.FC<NewBudgetLineProps> = (props) => {
     }, [tagValue]);
 
     const add = () => {
-        createBudget.create(props.accountId, props.year, { amount, tagId: tag?.id, name: tag?.name, id: emptyGuid, income: props.income!, month });
+        createBudget.create(props.year, { amount, tagId: tag?.id, name: tag?.name, id: emptyGuid, income: props.income!, month });
         setTag(null);
         setAmount(0);
     };
@@ -46,7 +46,6 @@ NewBudgetLine.defaultProps = {
 }
 
 export interface NewBudgetLineProps {
-    accountId: string;
     year: number;
     income?: boolean;
 }

@@ -1,4 +1,4 @@
-import * as Models from "models";
+import * as Models from "../models";
 import { useApiGet, useApiDelete, useApiDatalessPut, useHttpClient } from "@andrewmclachlan/mooapp";
 import { useMutation, useQueryClient } from "react-query";
 
@@ -43,7 +43,7 @@ export const useUpdateTag = () => {
         const name = variables.name?.trim() ?? (variables.name).trim();
         const id = variables.id;
 
-        return (await httpClient.patch<Models.TransactionTag>(`api/transaction/tags/${id}`, { name, excludeFromReporting: variables.settings.excludeFromReporting, applySmoothing: variables.settings.applySmoothing })).data;
+        return (await httpClient.patch<Models.TransactionTag>(`api/transaction/tags/${id}`, { name, excludeFromReporting: variables.settings?.excludeFromReporting, applySmoothing: variables.settings?.applySmoothing })).data;
     }, {
         onSuccess: (data: Models.TransactionTag) => {
             queryClient.setQueryData<Models.TransactionTag>(["tags", { id: data.id }], data);

@@ -1,6 +1,6 @@
 ﻿namespace Asm.MooBank.Queries.Budget;
 
-public record GetYears(Guid AccountId) : IQuery<IEnumerable<short>>;
+public record GetYears() : IQuery<IEnumerable<short>>;
 
 internal class GetYearsHandler : QueryHandlerBase, IQueryHandler<GetYears, IEnumerable<short>>
 {
@@ -14,8 +14,8 @@ internal class GetYearsHandler : QueryHandlerBase, IQueryHandler<GetYears, IEnum
 
     public async Task<IEnumerable<short>> Handle(GetYears request, CancellationToken cancellationToken)
     {
-        Security.AssertAccountPermission(request.AccountId);
+        Guid familyId = await Security.GetFamilyId();
 
-        return await _budgets.Where(b => b.AccountId == request.AccountId).Select(b => b.Year).ToListAsync(cancellationToken: cancellationToken);
+        return await _budgets.Where(b => b.FamilyId == familyId).Select(b => b.Year).ToListAsync(cancellationToken: cancellationToken);
     }
 }

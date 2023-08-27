@@ -61,7 +61,7 @@ export const PeriodSelector: React.FC<PeriodSelectorProps> = (props) => {
     }, [period]);
 
     return (
-        <Row>
+        <section>
             <FormGroup xl="4">
                 <Form.Label htmlFor="period">Period</Form.Label>
                 <Form.Select id="period" onChange={changePeriod} value={selectedPeriod}>
@@ -82,7 +82,7 @@ export const PeriodSelector: React.FC<PeriodSelectorProps> = (props) => {
             <FormGroup xl="2" className="horizontal-form-controls" hidden={selectedPeriod !== "-1" || props.instant}>
                 <Button disabled={selectedPeriod !== "-1"} onClick={customPeriodGo}>Go</Button>
             </FormGroup>
-        </Row>
+        </section>
     );
 }
 

@@ -29,10 +29,9 @@ public partial record Budget
 
 public static class BudgetExtensions
 {
-    public static Domain.Entities.Budget.Budget ToDomain(this Budget budget,  Guid accountId) =>
+    public static Domain.Entities.Budget.Budget ToDomain(this Budget budget) =>
         new(Guid.Empty)
         {
-            AccountId = accountId,
             Year = budget.Year,
         };
 }

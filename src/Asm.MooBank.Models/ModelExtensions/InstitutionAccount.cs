@@ -2,28 +2,26 @@
 
 public partial record InstitutionAccount
 {
-    public static implicit operator InstitutionAccount(Domain.Entities.Account.InstitutionAccount account)
+    public static implicit operator InstitutionAccount(Domain.Entities.Account.InstitutionAccount account) => new()
     {
-        return new InstitutionAccount
-        {
-            Id = account.AccountId,
-            Name = account.Name,
-            Description = account.Description,
-            CurrentBalance = account.Balance,
-            BalanceDate = ((Domain.Entities.Account.Account)account).LastUpdated,
-            AccountType = account.AccountType,
-            Controller = account.AccountController,
-            ImporterTypeId = account.ImportAccount?.ImporterTypeId,
-            VirtualAccounts = account.VirtualAccounts != null && account.VirtualAccounts.Any() ?
+        Id = account.AccountId,
+        Name = account.Name,
+        Description = account.Description,
+        CurrentBalance = account.Balance,
+        CalculatedBalance = account.CalculatedBalance,
+        BalanceDate = ((Domain.Entities.Account.Account)account).LastUpdated,
+        LastTransaction = account.LastTransaction,
+        AccountType = account.AccountType,
+        Controller = account.AccountController,
+        ImporterTypeId = account.ImportAccount?.ImporterTypeId,
+        VirtualAccounts = account.VirtualAccounts != null && account.VirtualAccounts.Any() ?
                               account.VirtualAccounts.OrderBy(v => v.Name).Select(v => (VirtualAccount)v)
                                                      .Union(new[] { new VirtualAccount { Id = Guid.Empty, Name = "Remaining", Balance = account.Balance - account.VirtualAccounts.Sum(v => v.Balance) } }).ToArray() :
                                 Array.Empty<VirtualAccount>(),
-        };
-    }
+    };
 
-    public static explicit operator Domain.Entities.Account.InstitutionAccount(InstitutionAccount account)
-    {
-        return new Domain.Entities.Account.InstitutionAccount
+    public static explicit operator Domain.Entities.Account.InstitutionAccount(InstitutionAccount account) =>
+        new Domain.Entities.Account.InstitutionAccount
         {
             AccountId = account.Id == Guid.Empty ? Guid.NewGuid() : account.Id,
             Name = account.Name,
@@ -35,7 +33,6 @@ public partial record InstitutionAccount
             AccountController = account.Controller,
             ImportAccount = account.ImporterTypeId == null ? null : new Domain.Entities.Account.ImportAccount { ImporterTypeId = account.ImporterTypeId.Value, AccountId = account.Id },
         };
-    }
 }
 
 
@@ -66,7 +63,7 @@ public static class InstitutionAccountExtensions
         return entities.Select(t => (InstitutionAccount)t);
     }
 
-    public static async Task<IEnumerable<InstitutionAccount>> ToModelAsync(this Task<IEnumerable<Domain.Entities.Account.InstitutionAccount>> entityTask, CancellationToken cancellationToken = default)
+    public static async Task<IEnumerable<InstitutionAccount>> ToModelAsync(this Task<List<Domain.Entities.Account.InstitutionAccount>> entityTask, CancellationToken cancellationToken = default)
     {
         return (await entityTask.WaitAsync(cancellationToken)).Select(t => (InstitutionAccount)t);
     }

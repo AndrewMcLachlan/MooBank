@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg id="SVGRoot" width="32" height="32" version="1.1" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+ <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.965">
+  <circle cx="6.9688" cy="17.329" r="2.9062"/>
+  <circle cx="16" cy="9.5017" r="2.9062"/>
+  <circle cx="24.982" cy="19.136" r="2.9062"/>
+  <path d="m6.9688 20.469v7.4375"/>
+  <path d="M 15.9825,12.8125 16,28"/>
+  <path d="m7 14v-10"/>
+  <path d="m15.982 6.375v-2.4063"/>
+  <path d="m24.982 16.211v-12.228"/>
+  <path d="m24.982 28v-5.5"/>
+ </g>
+</svg>

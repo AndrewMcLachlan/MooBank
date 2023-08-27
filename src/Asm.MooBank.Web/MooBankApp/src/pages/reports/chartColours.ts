@@ -1,3 +1,19 @@
+import { useLayout } from "@andrewmclachlan/mooapp"
+
+export const useChartColours = () => {
+    const { theme, defaultTheme } = useLayout();
+    const themeName = theme.theme === "" ? defaultTheme.theme : theme.theme;
+
+    return {
+        income: themeName === "dark" ? "#228b22" : "#4C4",
+        incomeTrend:themeName === "dark" ? "#99fb99" : "#bbfbbb",
+        expenses: themeName === "dark" ? "#800020" : "#e23d28",
+        expensesTrend: themeName === "dark" ? "#FF7790" : "#FFAAC0",
+        neutralTrend: themeName === "dark" ? "#808080" : "#b0b0b0",
+        grid: themeName === "dark" ? "#333" : "#E5E5E5",
+    };
+}
+
 export const chartColours = [
     "#003f5c",
     "#2f4b7c",

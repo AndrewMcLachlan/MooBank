@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Form, Button, Row } from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
 import { AccountController, AccountType } from "models";
 import { ImportSettings } from "../createAccount/ImportSettings";
 import * as Models from "models";
 import { toNameValue } from "extensions";
-import { useAccount, useAccountGroups, useUpdateAccount } from "services";
-import { useParams } from "react-router-dom";
-import { Page } from "layouts";
+import { useAccountGroups, useUpdateAccount } from "services";
+import { useNavigate, useParams } from "react-router-dom";
+import { Section } from "@andrewmclachlan/mooapp";
+import { AccountPage, useAccount } from "components";
 
 export const ManageAccount = () => {
 
@@ -14,17 +15,23 @@ export const ManageAccount = () => {
     const accountControllers = toNameValue(AccountController);
     const { data: accountGroups } = useAccountGroups();
 
+    const navigate = useNavigate();
+
     const { id } = useParams<any>()
 
-    const accountQuery = useAccount(id!);
+    const existingAccount = useAccount();
 
-    const [account, setAccount] = useState<Models.Account>(Models.emptyAccount);
+    useEffect(() => {
+        setAccount(existingAccount ?? Models.emptyAccount);
+    }, [existingAccount]);
+
+    const [account, setAccount] = useState<Models.Account>(existingAccount ?? Models.emptyAccount);
 
     const updateAccount = useUpdateAccount();
 
     useEffect(() => {
-        setAccount(accountQuery.data ?? Models.emptyAccount);
-    }, [accountQuery.data]);
+        setAccount(account ?? Models.emptyAccount);
+    }, [account]);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.stopPropagation();
@@ -41,10 +48,14 @@ export const ManageAccount = () => {
     const setImporterTypeId = (importerTypeId: number) => setAccount({ ...account, importerTypeId: importerTypeId });
 
     return (
-        <Page title={account?.name}>
-            <Page.Header title="Manage Account" goBack breadcrumbs={[["Manage Accounts", "/accounts"], [account?.name, `/accounts/${account.id}/manage`]]} menuItems={[{ text: "Create Virtual Account", route: `/accounts/${id}/virtual/create` }, { text: "Transactions", route: `/accounts/${id}`}]} />
+        <AccountPage title="Manage" breadcrumbs={[{ text: "Manage", route: `/accounts/${account.id}/manage` }]}>
+            <div className="section-group">
+                <Section>
+                    <Button onClick={() => navigate(`/accounts/${id}/manage/virtual/create`)}>New Virtual Account</Button>
+                </Section>
+            </div>
             {account &&
-                <Page.Content>
+                <Section>
                     <Form onSubmit={handleSubmit}>
                         <Form.Group controlId="AccountName">
                             <Form.Label>Name</Form.Label>
@@ -84,9 +95,9 @@ export const ManageAccount = () => {
                         <ImportSettings show={account.controller === AccountController.Import} selectedId={account.importerTypeId} onChange={(e) => setImporterTypeId(e)} />
                         <Button type="submit" variant="primary">Update</Button>
                     </Form>
-                </Page.Content>
+                </Section>
             }
-        </Page>
+        </AccountPage>
     );
 }
 

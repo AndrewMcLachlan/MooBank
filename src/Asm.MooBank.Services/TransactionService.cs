@@ -1,6 +1,6 @@
 ﻿using Asm.Domain;
 using ITransactionRepository = Asm.MooBank.Domain.Entities.Transactions.ITransactionRepository;
-using Asm.MooBank.Domain.Entities.TransactionTags;
+using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Models;
 using Microsoft.EntityFrameworkCore;
 using IAccountRepository = Asm.MooBank.Domain.Entities.Account.IInstitutionAccountRepository;
@@ -40,7 +40,7 @@ public class TransactionService : ServiceBase, ITransactionService
 
         var entity = await GetEntity(id);
 
-        if (entity.TransactionTags.Any(t => t.TransactionTagId == tagId)) throw new ExistsException("Cannot add tag, it already exists");
+        if (entity.TransactionTags.Any(t => t.Id == tagId)) throw new ExistsException("Cannot add tag, it already exists");
 
         var tag = await _transactionTagRepository.Get(tagId);
 
@@ -55,7 +55,7 @@ public class TransactionService : ServiceBase, ITransactionService
     {
         var entity = await GetEntity(id);
 
-        var existingIds = entity.TransactionTags.Select(t => t.TransactionTagId);
+        var existingIds = entity.TransactionTags.Select(t => t.Id);
 
         var filteredTags = tags.Where(t => !existingIds.Contains(t));
 
@@ -74,7 +74,7 @@ public class TransactionService : ServiceBase, ITransactionService
 
         var entity = await GetEntity(id);
 
-        var tag = entity.TransactionTags.SingleOrDefault(t => t.TransactionTagId == tagId);
+        var tag = entity.TransactionTags.SingleOrDefault(t => t.Id == tagId);
 
         if (tag == null) throw new NotFoundException("Tag not found");
 

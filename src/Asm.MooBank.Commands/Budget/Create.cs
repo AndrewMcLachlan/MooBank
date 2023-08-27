@@ -3,7 +3,7 @@ using Asm.MooBank.Services.Commands;
 
 namespace Asm.MooBank.Commands.Budget;
 
-public record Create(Guid AccountId, short Year) : ICommand<Models.Budget>;
+public record Create(short Year) : ICommand<Models.Budget>;
 internal class CreateHandler : CommandHandlerBase, ICommandHandler<Create, Models.Budget>
 {
     private readonly IBudgetRepository _budgetRepository;
@@ -15,11 +15,11 @@ internal class CreateHandler : CommandHandlerBase, ICommandHandler<Create, Model
 
     public async Task<Models.Budget> Handle(Create request, CancellationToken cancellationToken)
     {
-        Security.AssertAccountPermission(request.AccountId);
+        var familyId = await Security.GetFamilyId();
 
         var entity = _budgetRepository.Add(new Domain.Entities.Budget.Budget(Guid.Empty)
         {
-            AccountId = request.AccountId,
+            FamilyId = familyId,
             Year = request.Year,
         });
 

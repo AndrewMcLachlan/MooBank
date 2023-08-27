@@ -14,6 +14,8 @@ public static class TrendPointExtensions
 {
     public static decimal Average(this IEnumerable<TrendPoint> trendPoints)
     {
+        if (!trendPoints.Any()) return 0;
+
         var start = trendPoints.Min(t => t.Month);
         var end = trendPoints.Max(t => t.Month).ToEndOfMonth();
 

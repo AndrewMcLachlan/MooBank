@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\..\Common.props"/>
+  <Import Project="..\..\Common.props" />
 
   <ItemGroup>
     <ProjectReference Include="..\Asm.MooBank.Data\Asm.MooBank.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Asm.Cqrs" Version="3.0.691" />
+    <PackageReference Include="Asm.Cqrs" Version="3.1.1" />
   </ItemGroup>
 
 </Project>

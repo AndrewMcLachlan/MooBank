@@ -20,7 +20,7 @@ public partial record TransactionTagRule
             TransactionTagRuleId = rule.Id,
             Contains = rule.Contains,
             Description = rule.Description,
-            TransactionTags = rule.Tags.Where(t=> t != null).Select(t => (Domain.Entities.TransactionTags.TransactionTag)t).ToList(),
+            TransactionTags = rule.Tags.Where(t=> t != null).Select(t => (Domain.Entities.Tag.Tag)t).ToList(),
         };
     }
 }

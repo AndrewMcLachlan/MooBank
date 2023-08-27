@@ -3,7 +3,7 @@
 import { TransactionTagPanel, TransactionTagPanelProps } from "components";
 
 import { TransactionTag } from "models";
-import { useAddSubTag, useCreateTag, useRemoveSubTag, useTags } from "services";
+import { useAddSubTag, useCreateTag, useRemoveSubTag, useTags } from "../../services";
 
 export const TransactionTagTransactionTagPanel: React.FC<TransactionTagTransactionTagPanelProps> = ({tag, ...rest}) => {
 

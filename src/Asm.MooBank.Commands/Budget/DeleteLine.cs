@@ -2,7 +2,7 @@
 
 namespace Asm.MooBank.Services.Commands.Budget;
 
-public record DeleteLine(Guid AccountId, short Year, Guid Id) : ICommand;
+public record DeleteLine(short Year, Guid Id) : ICommand;
 
 internal class DeleteLineHandler : CommandHandlerBase, ICommandHandler<DeleteLine>
 {
@@ -15,7 +15,7 @@ internal class DeleteLineHandler : CommandHandlerBase, ICommandHandler<DeleteLin
 
     public Task Handle(DeleteLine request, CancellationToken cancellationToken)
     {
-        Security.AssertAccountPermission(request.AccountId);
+        Security.AssetBudgetLinePermission(request.Id);
 
         _budgetRepository.DeleteLine(request.Id);
 

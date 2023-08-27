@@ -5,55 +5,49 @@ import { Col, Row, Table } from "react-bootstrap";
 
 import { TransactionTagRow } from "./TransactionTagRow";
 
-import { changeSortDirection, ClickableIcon, getNumberOfPages, Pagination, SearchBox, SortDirection } from "@andrewmclachlan/mooapp";
+import { changeSortDirection, ClickableIcon, getNumberOfPages, Pagination, SearchBox, Section, SortDirection } from "@andrewmclachlan/mooapp";
 import { TransactionTagPanel } from "components";
 import { TransactionTag, sortTags } from "models";
 import { useCreateTag, useTags } from "services";
-import { Page } from "layouts";
-import { TagsHeader } from "./TagsHeader";
+import { TagsPage } from "./TagsPage";
 
 export const TransactionTags: React.FC = () => {
 
     const { newTag, pagedTags, tagsList, addTag, createTag, removeTag, nameChange, pageNumber, numberOfPages, pageChange, totalTags, sortDirection, setSortDirection, keyUp, search, setSearch, isLoading } = useComponentState();
 
     return (
-        <Page title="Tags">
-            <TagsHeader />
-            <Page.Content>
-                <Row>
-                    <Col xl={6}>
-                        <SearchBox value={search} onChange={(v: string) => setSearch(v)} />
-                    </Col>
-                </Row>
-                <Table striped bordered={false} borderless className="transaction-tags">
-                    <thead>
+        <TagsPage>
+            <Section>
+                <SearchBox value={search} onChange={(v: string) => setSearch(v)} />
+            </Section>
+            <Table striped bordered={false} borderless className="transaction-tags">
+                <thead>
+                    <tr>
+                        <th className={`column-15 sortable ${sortDirection.toLowerCase()}`} onClick={() => setSortDirection(changeSortDirection(sortDirection))}>Name</th>
+                        <th>Tags</th>
+                        <th className="column-5"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="text" placeholder="Tag name" value={newTag.name} onChange={nameChange} className="form-control" /></td>
+                        <TransactionTagPanel as="td" selectedItems={newTag.tags} items={tagsList} onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} onKeyUp={keyUp} />
+                        <td className="row-action"><span onClick={createTag}><ClickableIcon icon="check-circle" title="Save" size="xl" /></span></td>
+                    </tr>
+                    {pagedTags.map((t, i) => <TransactionTagRow key={`${i}${(t?.id ?? "")}`} tag={t} />)}
+                </tbody>
+                {!isLoading &&
+                    <tfoot>
                         <tr>
-                            <th className={`column-15 sortable ${sortDirection.toLowerCase()}`} onClick={() => setSortDirection(changeSortDirection(sortDirection))}>Name</th>
-                            <th>Tags</th>
-                            <th className="column-5"></th>
+                            <td colSpan={1} className="page-totals">Page {pageNumber} of {numberOfPages} ({totalTags} tags)</td>
+                            <td colSpan={2}>
+                                <Pagination pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={pageChange} />
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><input type="text" placeholder="Tag name" value={newTag.name} onChange={nameChange} className="form-control" /></td>
-                            <TransactionTagPanel as="td" selectedItems={newTag.tags} items={tagsList} onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} onKeyUp={keyUp} />
-                            <td className="row-action"><span onClick={createTag}><ClickableIcon icon="check-circle" title="Save" size="xl" /></span></td>
-                        </tr>
-                        {pagedTags.map((t, i) => <TransactionTagRow key={`${i}${(t?.id ?? "")}`} tag={t} />)}
-                    </tbody>
-                    {!isLoading &&
-                        <tfoot>
-                            <tr>
-                                <td colSpan={1} className="page-totals">Page {pageNumber} of {numberOfPages} ({totalTags} tags)</td>
-                                <td colSpan={2}>
-                                    <Pagination pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={pageChange} />
-                                </td>
-                            </tr>
-                        </tfoot>
-                    }
-                </Table>
-            </Page.Content>
-        </Page>
+                    </tfoot>
+                }
+            </Table>
+        </TagsPage>
     );
 }
 
@@ -66,12 +60,12 @@ const useComponentState = () => {
     const createTransactionTag = useCreateTag();
 
     const [pageNumber, setPageNumber] = useState<number>(1);
-    const [pageSize, setPageSize] = useState<number>(20);
+    const [pageSize, _setPageSize] = useState<number>(20);
 
     const [newTag, setNewTag] = useState(blankTag);
     const [tagsList, setTagsList] = useState<TransactionTag[]>([]);
     const [filteredTags, setFilteredTags] = useState<TransactionTag[]>([]);
-    const [pagedTags, setPagedTags] = useState<TransactionTag[]>(Array.from({ length: pageSize }).map(v => undefined));
+    const [pagedTags, setPagedTags] = useState<TransactionTag[] | undefined[]>(Array.from({ length: pageSize }).map(_v => undefined));
 
     const [sortDirection, setSortDirection] = useState<SortDirection>("Ascending");
     const [search, setSearch] = useState("");
@@ -97,7 +91,7 @@ const useComponentState = () => {
 
     useEffect(() => {
         if (isLoading) {
-            setPagedTags(Array.from({ length: pageSize }).map(v => undefined));
+            setPagedTags(Array.from({ length: pageSize }).map(_v => undefined));
             return;
         }
         setPagedTags(filteredTags.sort(sortTags(sortDirection)).slice((pageNumber - 1) * pageSize, ((pageNumber - 1) * pageSize) + pageSize));

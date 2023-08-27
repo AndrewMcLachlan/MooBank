@@ -1,4 +1,4 @@
-﻿using Asm.MooBank.Domain.Entities.TransactionTags;
+﻿using Asm.MooBank.Domain.Entities.Tag;
 
 namespace Asm.MooBank.Commands.TransactionTags;
 

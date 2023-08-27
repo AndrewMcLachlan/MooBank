@@ -4,7 +4,9 @@
     [EmailAddress] NVARCHAR(255) NOT NULL,
     [FirstName] NVARCHAR(255) NULL,
     [LastName] NVARCHAR(255) NULL,
-    CONSTRAINT PK_AccountHolderId PRIMARY KEY (AccountHolderId)
+    [FamilyId] UNIQUEIDENTIFIER NULL,
+    CONSTRAINT PK_AccountHolderId PRIMARY KEY (AccountHolderId),
+    CONSTRAINT FK_AccountHolder_Family FOREIGN KEY (FamilyId) REFERENCES Family(Id),
 )
 
 GO

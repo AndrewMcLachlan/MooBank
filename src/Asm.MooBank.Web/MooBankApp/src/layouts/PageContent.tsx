@@ -1,10 +1,13 @@
 import React from "react";
-import { Container } from "react-bootstrap";
 
-export type PageContentComponent = React.FC<React.PropsWithChildren<{}>>;
+import { Section } from "@andrewmclachlan/mooapp";
 
-export const PageContent:PageContentComponent = (props) => (
-    <Container>
+export type PageContentComponent = React.FC<React.PropsWithChildren<PageContentProps>>;
+
+export const PageContent: PageContentComponent = (props) => (
+    <Section>
         {props.children}
-    </Container>
+    </Section>
 )
+
+export interface PageContentProps { }

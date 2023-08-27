@@ -1,11 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { AccountController } from "models";
+import { AccountController } from "../models";
 import { Upload, useIdParams, FilesAddedEvent } from "@andrewmclachlan/mooapp";
-import { useAccount, useImportTransactions } from "services";
+import { useAccount, useImportTransactions } from "../services";
 import Button from "react-bootstrap/Button";
 import { useState } from "react";
-import { Page } from "layouts";
+import { Page } from "../layouts";
 
 export const Import: React.FC = () => {
 

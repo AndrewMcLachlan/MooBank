@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Form, Button, InputGroup, Col } from "react-bootstrap";
-import { Account, AccountType, AccountController, ImportAccount } from "models";
-import { toNameValue } from "extensions";
+import { Account, AccountType, AccountController, ImportAccount } from "../../models";
+import { toNameValue } from "../../extensions";
 import { useNavigate } from "react-router-dom";
 
 import { ImportSettings } from "./ImportSettings";
@@ -38,12 +38,13 @@ export const CreateAccount: React.FC = () => {
             id: emptyGuid,
             name: name,
             description: description,
-            availableBalance: balance,
             currentBalance: balance,
             accountType: accountType,
             controller: accountController,
-            balanceUpdated: new Date(),
+            balanceDate: new Date(),
             accountGroupId: accountGroupId,
+            calculatedBalance: balance,
+            lastTransaction: undefined,
             virtualAccounts: [],
         };
 

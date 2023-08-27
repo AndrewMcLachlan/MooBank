@@ -76,7 +76,7 @@
     <Build Include="dbo\Tables\AccountType.sql" />
     <Build Include="dbo\Tables\AccountHolder.sql" />
     <Build Include="dbo\Tables\AccountAccountHolder.sql" />
-    <Build Include="dbo\Tables\TransactionTag.sql" />
+    <Build Include="dbo\Tables\Tag.sql" />
     <Build Include="dbo\Tables\TransactionTagRule.sql" />
     <Build Include="dbo\Tables\TransactionTransactionTag.sql" />
     <Build Include="dbo\Tables\TransactionTagTransactionTag.sql" />
@@ -101,6 +101,10 @@
     <Build Include="dbo\Tables\BudgetLine.sql" />
     <Build Include="dbo\Views\OffsetTransactions.sql" />
     <Build Include="dbo\Tables\Budget.sql" />
+    <Build Include="dbo\Functions\LastTransaction.sql" />
+    <Build Include="dbo\Tables\Family.sql" />
+    <Build Include="dbo\Tables\Institution.sql" />
+    <Build Include="dbo\Tables\InstitutionType.sql" />
     <Build Include="dbo\Functions\AccountBalance.sql" />
   </ItemGroup>
   <ItemGroup>
@@ -116,6 +120,9 @@
       <Version>1.0.0</Version>
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="Asm.MooBank.Database.refactorlog" />
   </ItemGroup>
   <Import Project="$(NETCoreTargetsPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" Condition="'$(NetCoreBuild)' == 'true'" />
   <Target Name="BeforeBuild">

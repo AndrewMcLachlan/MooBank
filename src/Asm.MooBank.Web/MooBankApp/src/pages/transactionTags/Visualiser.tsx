@@ -1,32 +1,29 @@
 import { useEffect, useRef, useState } from "react";
 
-import { Page } from "layouts";
-import { TransactionTag } from "models";
+import { Page } from "../../layouts";
+import { TransactionTag } from "../../models";
 
-import { useTags, useTagsHierarchy } from "services"
+import { useTagsHierarchy } from "../../services"
 import { Container } from "react-bootstrap";
-import { TransactionTagHierarchy } from "models/TransactionTagHierarchy";
-import { chartColours } from "pages/reports/chartColours";
-import { usePageTitle } from "hooks";
-import { TagsHeader } from "./TagsHeader";
+import { TransactionTagHierarchy } from "../../models/TransactionTagHierarchy";
+import { chartColours } from "../reports/chartColours";
+import { TagsPage } from "./TagsPage";
 import { Theme, useLayout } from "@andrewmclachlan/mooapp";
 
 export const Visualiser = () => {
 
     const { theme } = useLayout();
 
-    usePageTitle("Tags");
-
     const [readyToRender, setReadyToRender] = useState<boolean>(false);
 
     const tagHierarchy = useTagsHierarchy();
 
-    const ref = useRef<HTMLCanvasElement>();
+    const ref: any = useRef<HTMLCanvasElement>();
     const containerRef = useRef();
 
     const fontFile = new FontFace(
-        "Open Sans",
-        "url('/static/media/mem8YaGs126MiZpBA-UFVZ0b.2a947e89d2e241121d6f.woff2')"
+        "Inter",
+        "url('https://cdn.mclachlan.family/fonts/Inter-Medium.woff2')"
     );
     document.fonts.add(fontFile);
 
@@ -44,19 +41,18 @@ export const Visualiser = () => {
     }, [ref.current, containerRef.current, tagHierarchy.data, readyToRender, theme]);
 
     return (
-        <Page>
-            <TagsHeader />
+        <TagsPage>
             <Container fluid style={{}} ref={containerRef}>
                 <canvas ref={ref} style={{ width: "100%", height: "100%" }}></canvas>
             </Container>
-        </Page>
+        </TagsPage>
     )
 
 };
 
 const xPadding: Pixel = 10;
 const yPadding: Pixel = 40;
-const halfXPadding: Pixel = xPadding / 2;
+//const halfXPadding: Pixel = xPadding / 2;
 const halfYPadding: Pixel = yPadding / 2;
 
 const boxWidth: Pixel = 75;
@@ -68,7 +64,7 @@ const cornerRadius = boxWidth / 5;
 const paddedBoxWidth: Pixel = boxWidth + xPadding;
 const paddedBoxHeight: Pixel = boxHeight + yPadding;
 const halfPaddedBoxWidth: Pixel = paddedBoxWidth / 2;
-const halfPaddedBoxHeight: Pixel = paddedBoxHeight / 2;
+//const halfPaddedBoxHeight: Pixel = paddedBoxHeight / 2;
 
 const fontSize = "10pt";
 const lineHeight = 12;
@@ -116,9 +112,9 @@ const draw = (canvas: HTMLCanvasElement, tagHierarchy: TransactionTagHierarchy, 
 
     canvas.width = maxSize.x * paddedBoxWidth + 1;
     canvas.height = canvas.offsetHeight;
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d")!;
 
-    ctx.font = `normal ${fontSize} 'Open Sans'`
+    ctx.font = `normal ${fontSize} 'Inter'`
 
     for (const tag of tagRenderers) {
         tag.draw(ctx, theme);
@@ -183,7 +179,7 @@ class Tag {
         const cts = ctx;
 
         const { x, y } = this.position;
-        const { x: width, y: height } = this.requiredSize();
+        const { x: width, y: _height } = this.requiredSize();
 
 
         // The start position of the box.
@@ -227,7 +223,7 @@ class Tag {
             ctx.fillText(name, start + halfBoxWidth, y + startY);
             startY += lineHeight;
         }
-        ctx.strokeStyle = theme == "light" ? "#666666" : "#FFFFFF";
+        ctx.strokeStyle = theme.theme == "light" ? "#666666" : "#FFFFFF";
         ctx.lineWidth = 2;
         // End - Draw the text
 

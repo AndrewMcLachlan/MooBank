@@ -31,9 +31,9 @@ export const TransactionTagDetails: React.FC<TransactionTagDetailsProps> = (prop
                     <div>Name</div>
                     <Form.Control value={name} onChange={(e) => setName(e.currentTarget.value)} onBlur={(e) => updateName(e.currentTarget.value)} onKeyUp={(e) => onKeyLeave(e, updateName)} />
                     <div>Exclude from Reporting</div>
-                    <Form.Check checked={tag.settings.excludeFromReporting} onChange={(e) => updateExcludeFromReporting(e.currentTarget.checked)} />
+                    <Form.Check checked={tag.settings?.excludeFromReporting} onChange={(e) => updateExcludeFromReporting(e.currentTarget.checked)} />
                     <div>Allow Smoothing<Tooltip id="smoothing">Provides an option to average non-monthly transactions in trend reports</Tooltip></div>
-                    <Form.Check checked={tag.settings.applySmoothing} onChange={(e) => updateAllowSmoothing(e.currentTarget.checked)} />
+                    <Form.Check checked={tag.settings?.applySmoothing} onChange={(e) => updateAllowSmoothing(e.currentTarget.checked)} />
                     <div>Tags</div>
                     <TransactionTagTransactionTagPanel as="div" tag={tag} alwaysShowEditPanel />
                 </section>

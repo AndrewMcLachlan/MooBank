@@ -1,0 +1,12 @@
+.account-summary {
+
+    font-family: var(--secondary-fonts);
+    font-size: 1.4rem;
+
+    .key-value {
+        >:last-child {
+            font-weight: bold;
+        }
+    }
+
+}

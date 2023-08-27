@@ -8,7 +8,7 @@ using Asm.MooBank.Domain.Entities.Ing;
 using Asm.MooBank.Domain.Entities.RecurringTransactions;
 using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Domain.Entities.Transactions;
-using Asm.MooBank.Domain.Entities.TransactionTags;
+using Asm.MooBank.Domain.Entities.Tag;
 
 namespace Asm.MooBank.Infrastructure;
 
@@ -41,7 +41,7 @@ public partial class MooBankContext : DbContext, IUnitOfWork, IReadOnlyDbContext
     public virtual DbSet<Transaction> Transactions { get; set; }
 
     [AllowNull]
-    public virtual DbSet<TransactionTag> TransactionTags { get; set; }
+    public virtual DbSet<Tag> TransactionTags { get; set; }
 
     [AllowNull]
     public virtual DbSet<TransactionTagRule> TransactionTagRules { get; set; }

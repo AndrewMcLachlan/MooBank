@@ -1,7 +1,7 @@
 ﻿using Asm.Domain;
 using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Transactions;
-using Asm.MooBank.Domain.Entities.TransactionTags;
+using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Importers;
 
 namespace Asm.MooBank.Services;

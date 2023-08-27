@@ -12,9 +12,9 @@ public class Budget : KeyedEntity<Guid>
 
     public short Year { get; set; }
 
-    public Guid AccountId { get; set; }
+    public Guid FamilyId { get; set; }
 
-    public virtual Account.Account Account { get; set; }
+    public virtual Family.Family Family { get; set; }
 
     public virtual ICollection<BudgetLine> Lines { get; set; }
 

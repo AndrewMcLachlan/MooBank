@@ -23,5 +23,7 @@ public class AccountHolderConfiguration : IEntityTypeConfiguration<AccountHolder
             .HasMaxLength(255);
 
         entity.HasMany(e => e.Cards).WithOne(e => e.AccountHolder).HasForeignKey(e => e.AccountHolderId);
+
+        entity.HasOne(e => e.Family).WithMany().HasForeignKey(e => e.FamilyId);
     }
 }
