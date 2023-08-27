@@ -14,7 +14,7 @@ export const InOutWidget: React.FC = () => {
 
     return (
         <Section title={`${accounts[0].name} - Last Month`} size={3} className="inout">
-            <InOut accountId={id} period={last12Months} />
+            <InOut accountId={id} period={lastMonth} />
         </Section>
     )
 };
