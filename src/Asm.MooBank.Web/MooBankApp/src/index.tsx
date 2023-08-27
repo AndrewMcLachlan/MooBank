@@ -17,8 +17,6 @@ const root = createRoot(document.getElementById("root")!);
 
 const versionMeta = Array.from(document.getElementsByTagName("meta")).find((value) => value.getAttribute("name") === "application-version");
 versionMeta.content = import.meta.env.VITE_REACT_APP_VERSION;
-//fetch("/api/meta").then((response) => response.json()).then((meta) => { versionMeta.content = meta.version });
-
 
 /* Upgrade 2023.8 */
 const filterTags = window.localStorage.getItem("filter-tag");
@@ -29,11 +27,11 @@ if (filterTags && !filterTags.includes("[")) {
 
 
 root.render(
-        <MooApp clientId="045f8afa-70f2-4700-ab75-77ac41b306f7" scopes={["api://bankplus.mclachlan.family/api.read"]} name="MooBank" version={import.meta.env.VITE_REACT_APP_VERSION}>
-            <ReduxProvider store={AppStore}>
-                <App />
-            </ReduxProvider>
-        </MooApp>
+    <MooApp clientId="045f8afa-70f2-4700-ab75-77ac41b306f7" scopes={["api://bankplus.mclachlan.family/api.read"]} name="MooBank" version={import.meta.env.VITE_REACT_APP_VERSION}>
+        <ReduxProvider store={AppStore}>
+            <App />
+        </ReduxProvider>
+    </MooApp>
 );
 
 
