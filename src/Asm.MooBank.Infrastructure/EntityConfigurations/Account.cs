@@ -6,6 +6,9 @@ public class Account : IEntityTypeConfiguration<Domain.Entities.Account.Account>
 {
     public void Configure(EntityTypeBuilder<Domain.Entities.Account.Account> entity)
     {
+        // Required for computed columns
+        entity.ToTable(t => t.HasTrigger("ComputedColumns"));
+
         entity.HasKey(e => e.AccountId);
 
         entity.HasIndex(e => e.Name).IsUnique();
@@ -24,6 +27,12 @@ public class Account : IEntityTypeConfiguration<Domain.Entities.Account.Account>
         entity.Property(e => e.Name)
             .IsRequired()
             .HasMaxLength(50);
+
+        entity.Property(e => e.CalculatedBalance)
+            .ValueGeneratedOnAddOrUpdate();
+
+        entity.Property(e => e.LastTransaction)
+            .ValueGeneratedOnAddOrUpdate();
 
         entity.HasMany(p => p.AccountAccountHolders)
                .WithOne(e => e.Account)

@@ -39,6 +39,18 @@ public class VirtualAccountService : ServiceBase, IVirtualAccountService
 
         entity = _virtualAccountRepository.Add(entity);
 
+        if (entity.Balance != 0)
+        {
+            _transactionRepository.Add(new Domain.Entities.Transactions.Transaction
+            {
+                Account = entity,
+                Amount = entity.Balance,
+                Description = "Initial balance",
+                TransactionTime = DateTime.Now,
+                TransactionType = entity.Balance > 0 ? TransactionType.BalanceAdjustmentCredit : TransactionType.BalanceAdjustmentDebit,
+            });
+        }
+
         await UnitOfWork.SaveChangesAsync();
 
         return entity;

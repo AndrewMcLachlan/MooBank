@@ -1,19 +1,16 @@
 import React, { useState } from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { Section, emptyGuid } from "@andrewmclachlan/mooapp";
-import { Page } from "../../layouts";
+import { Section, emptyGuid, useIdParams } from "@andrewmclachlan/mooapp";
 import { VirtualAccount } from "../../models";
-import { useAccount, useCreateVirtualAccount } from "../../services";
-import { useAccountParams } from "../../hooks";
-import { AccountPage } from "components";
+import { useCreateVirtualAccount } from "../../services";
+import { AccountPage, useAccount } from "components";
 
 export const CreateVirtualAccount = () => {
 
-    const accountId = useAccountParams();
     const navigate = useNavigate();
 
-    const parentAccount = useAccount(accountId);
+    const parentAccount = useAccount();
 
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
@@ -32,14 +29,14 @@ export const CreateVirtualAccount = () => {
             balance: balance,
         };
 
-        createVirtualAccount.create(accountId, account);
+        createVirtualAccount.create(parentAccount.id, account);
 
-        navigate("/");
+        navigate(`/accounts/${parentAccount.id}/manage/`);
     }
 
     return (
-        <AccountPage title="Create Virtual Account" breadcrumbs={[{text: "Create Virtual Account", route: `/accounts/${accountId}/manage/virtual/create`}]}>
-            
+        <AccountPage title="Create Virtual Account" breadcrumbs={[{text: "Create Virtual Account", route: `/accounts/${parentAccount.id}/manage/virtual/create`}]}>
+
             <Section>
                 <Form onSubmit={handleSubmit}>
                     <Form.Group controlId="AccountName" >
