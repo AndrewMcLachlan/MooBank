@@ -2,7 +2,7 @@
 
 import { TransactionTagPanel } from "components";
 
-import { Transaction, TransactionTag } from "models";
+import { Transaction, Tag } from "models";
 import { useAccount } from "components";
 import { useAddTransactionTag, useCreateTag, useRemoveTransactionTag, useTags } from "services";
 
@@ -12,7 +12,7 @@ export const TransactionTransactionTagPanel: React.FC<TransactionTransactionTagP
 
     const fullTagsListQuery = useTags();
 
-    const [tagsList, setTagsList] = useState<TransactionTag[]>([]);
+    const [tagsList, setTagsList] = useState<Tag[]>([]);
 
     useEffect(() => {
         if (!fullTagsListQuery.data) return;
@@ -46,7 +46,7 @@ export const useTransactionRowEvents = (props: TransactionTransactionTagPanelPro
         });
     }
 
-    const addTag = (tag: TransactionTag) => {
+    const addTag = (tag: Tag) => {
 
         if (!tag.id) return;
 
@@ -54,7 +54,7 @@ export const useTransactionRowEvents = (props: TransactionTransactionTagPanelPro
         setTags(tags.concat([tag]));
     }
 
-    const removeTag = (tag: TransactionTag) => {
+    const removeTag = (tag: Tag) => {
 
         if (!tag.id) return;
 

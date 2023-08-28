@@ -1,9 +1,9 @@
 import { SortDirection } from "@andrewmclachlan/mooapp";
 
-export interface TransactionTag {
+export interface Tag {
     id: number;
     name: string;
-    tags: TransactionTag[];
+    tags: Tag[];
     settings?: TransactionTagSettings;
 }
 
@@ -12,14 +12,14 @@ export interface TransactionTagSettings {
     excludeFromReporting: boolean;
 }
 
-export const compareTransactionTags = (left: TransactionTag, right: TransactionTag):boolean => {
+export const compareTransactionTags = (left: Tag, right: Tag):boolean => {
     if (!left && !right) return true;
     if (!left || !right) return false;    
 
     return left.id === right.id && left.name === right.name && left.tags.length === right.tags.length;
 }
 
-export const compareTransactionTagArray = (left: TransactionTag[], right: TransactionTag[]) => {
+export const compareTransactionTagArray = (left: Tag[], right: Tag[]) => {
         if (!left && !right) return true;
         if (!left || !right) return false;
         if (left.length !== right.length) return false;
@@ -32,7 +32,7 @@ export const compareTransactionTagArray = (left: TransactionTag[], right: Transa
         return true;
 }
 
-export const sortTags = (sortDirection: SortDirection) => (a: TransactionTag, b: TransactionTag) => {
+export const sortTags = (sortDirection: SortDirection) => (a: Tag, b: Tag) => {
 
     const retVal = sortDirection === "Ascending" ? 1 : -1;
     const aName = a.name.toUpperCase();

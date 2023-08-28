@@ -6,7 +6,7 @@ import { Button, Col, Row, Table } from "react-bootstrap";
 import { changeSortDirection, ClickableIcon, getNumberOfPages, SearchBox, SortDirection, Pagination, useIdParams, Section } from "@andrewmclachlan/mooapp";
 import { AccountPage, TransactionTagPanel, useAccount } from "components";
 
-import { TransactionTag, TransactionTagRule, sortRules } from "models";
+import { Tag, TransactionTagRule, sortRules } from "models";
 
 import { TransactionTagRuleRow } from "./TransactionTagRuleRow";
 import { useCreateRule, useCreateTag, useRules, useRunRules, useTags } from "services";
@@ -129,7 +129,7 @@ const useComponentState = (accountId: string) => {
         createTransactionTag.mutate({ name });
     }
 
-    const addTag = (tag: TransactionTag) => {
+    const addTag = (tag: Tag) => {
 
         if (!tag.id) return;
 
@@ -137,7 +137,7 @@ const useComponentState = (accountId: string) => {
         setNewRule(newRule);
     }
 
-    const removeTag = (tag: TransactionTag) => {
+    const removeTag = (tag: Tag) => {
 
         if (!tag.id) return;
 

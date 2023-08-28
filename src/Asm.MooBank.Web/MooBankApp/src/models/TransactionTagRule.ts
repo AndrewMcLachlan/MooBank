@@ -1,11 +1,11 @@
 import { SortDirection } from "@andrewmclachlan/mooapp";
-import { TransactionTag } from ".";
+import { Tag } from ".";
 
 export interface TransactionTagRule {
     id: number;
     contains: string;
     description?: string;
-    tags: TransactionTag[];
+    tags: Tag[];
 }
 
 export const sortRules = (sortDirection: SortDirection) => (a: TransactionTagRule, b: TransactionTagRule) => {

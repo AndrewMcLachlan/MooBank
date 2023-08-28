@@ -1,5 +1,5 @@
 import { ValueProps } from "@andrewmclachlan/mooapp";
-import { Transaction, TransactionTag, TransactionType } from "models";
+import { Transaction, Tag, TransactionType } from "models";
 import Select from "react-select";
 import { useSearchTransactions } from "services";
 

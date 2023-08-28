@@ -1,6 +1,6 @@
-import { TransactionTag } from "./TransactionTag";
+import { Tag } from "./TransactionTag";
 
-export interface TransactionTagHierarchy {
+export interface TagHierarchy {
     levels: Record<number, number>;
-    tags: TransactionTag[];
+    tags: Tag[];
 }

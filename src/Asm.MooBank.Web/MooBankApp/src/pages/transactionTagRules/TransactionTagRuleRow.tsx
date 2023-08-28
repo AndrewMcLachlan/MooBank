@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 
-import { TransactionTagRule, TransactionTag } from "models";
+import { TransactionTagRule, Tag } from "models";
 import { ClickableIcon, EditColumn } from "@andrewmclachlan/mooapp";
 import { TransactionTagPanel } from "components";
-import { useCreateTag, useTags } from "services/TransactionTagService";
+import { useCreateTag, useTags } from "services/TagService";
 import { useAddTransactionTagRuleTag, useDeleteRule, useRemoveTransactionTagRuleTag, useUpdateRule } from "services";
 
 export const TransactionTagRuleRow: React.FC<TransactionTagRuleRowProps> = (props) => {
@@ -59,7 +59,7 @@ function useTransactionTagRuleRowEvents(props: TransactionTagRuleRowProps) {
         });
     };
 
-    const addTag = (tag: TransactionTag) => {
+    const addTag = (tag: Tag) => {
 
         if (!tag.id) return;
 
@@ -67,7 +67,7 @@ function useTransactionTagRuleRowEvents(props: TransactionTagRuleRowProps) {
         setTags([ ...tags, tag]);
     };
 
-    const removeTag = (tag: TransactionTag) => {
+    const removeTag = (tag: Tag) => {
 
         if (!tag.id) return;
 

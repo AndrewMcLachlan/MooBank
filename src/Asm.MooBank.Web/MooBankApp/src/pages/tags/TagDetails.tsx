@@ -1,8 +1,8 @@
 import { Tooltip, useUpdatingState } from "@andrewmclachlan/mooapp";
-import { TransactionTag } from "models";
+import { Tag } from "models";
 import { Button, Form, Modal } from "react-bootstrap";
 import { useUpdateTag } from "services";
-import { TransactionTagTransactionTagPanel } from "./TransactionTagTransactionTagPanel";
+import { TransactionTagTransactionTagPanel } from "./TagTagPanel";
 import { onKeyLeave } from "helpers";
 
 export const TransactionTagDetails: React.FC<TransactionTagDetailsProps> = (props) => {
@@ -16,7 +16,7 @@ export const TransactionTagDetails: React.FC<TransactionTagDetailsProps> = (prop
     const updateAllowSmoothing = (allowSmoothing: boolean) => save({...tag, settings: {...tag.settings, applySmoothing: allowSmoothing}});
     const updateName = (name: string) => save({...tag, name});
 
-    const save = (newTag: TransactionTag) => {
+    const save = (newTag: Tag) => {
         updateTag.mutate(newTag);
         setTag(newTag);
     }
@@ -46,7 +46,7 @@ export const TransactionTagDetails: React.FC<TransactionTagDetailsProps> = (prop
 }
 
 export interface TransactionTagDetailsProps {
-    tag: TransactionTag
+    tag: Tag
     show: boolean;
     onHide: () => void;
 }

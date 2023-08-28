@@ -1,12 +1,12 @@
 import * as Models from "../models";
 import { useApiGet, useApiPost, useApiDelete, useApiDatalessPut, useApiDatalessPost, useApiPatch } from "@andrewmclachlan/mooapp";
 import {  useQueryClient } from "react-query";
-import { TransactionTag } from "../models";
+import { Tag } from "../models";
 
 const transactionRulesKey = "transactionrules";
 
 interface TransactionTagRuleVariables {
-    accountId: string, ruleId: number, tag: TransactionTag,
+    accountId: string, ruleId: number, tag: Tag,
 }
 
 export const useRules = (accountId: string) => useApiGet<Models.TransactionTagRules>([transactionRulesKey, accountId], `api/accounts/${accountId}/transaction/tag/rules`);

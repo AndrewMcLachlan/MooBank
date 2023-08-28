@@ -2,7 +2,7 @@
 
 import { TransactionTagPanel, TransactionTagPanelProps } from "components";
 
-import { TransactionTag } from "models";
+import { Tag } from "models";
 import { useAddSubTag, useCreateTag, useRemoveSubTag, useTags } from "../../services";
 
 export const TransactionTagTransactionTagPanel: React.FC<TransactionTagTransactionTagPanelProps> = ({tag, ...rest}) => {
@@ -11,7 +11,7 @@ export const TransactionTagTransactionTagPanel: React.FC<TransactionTagTransacti
 
     const {data: fullTagsList} = useTags();
 
-    const [tagsList, setTagsList] = useState<TransactionTag[]>([]);
+    const [tagsList, setTagsList] = useState<Tag[]>([]);
 
     useEffect(() => {
         if (!fullTagsList) return;
@@ -23,7 +23,7 @@ export const TransactionTagTransactionTagPanel: React.FC<TransactionTagTransacti
     );
 }
 
-export const useTagEvents = (tag: TransactionTag) => {
+export const useTagEvents = (tag: Tag) => {
 
     const [tags, setTags] = useState(tag.tags);
 
@@ -43,7 +43,7 @@ export const useTagEvents = (tag: TransactionTag) => {
         });
     }
 
-    const addTag = (subTag: TransactionTag) => {
+    const addTag = (subTag: Tag) => {
 
         if (!subTag.id) return;
 
@@ -51,7 +51,7 @@ export const useTagEvents = (tag: TransactionTag) => {
         setTags(tags.concat([subTag]));
     }
 
-    const removeTag = (subTag: TransactionTag) => {
+    const removeTag = (subTag: Tag) => {
 
         if (!subTag.id) return;   
 
@@ -68,5 +68,5 @@ export const useTagEvents = (tag: TransactionTag) => {
 }
 
 export interface TransactionTagTransactionTagPanelProps extends Partial<Pick<TransactionTagPanelProps, "as" | "alwaysShowEditPanel">> {
-    tag: TransactionTag;
+    tag: Tag;
 }

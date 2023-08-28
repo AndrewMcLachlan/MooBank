@@ -4,6 +4,6 @@ export * from "./ImportService";
 export * from "./ReferenceDataService";
 export * from "./ReportsService";
 export * from "./TransactionService";
-export * from "./TransactionTagService";
+export * from "./TagService";
 export * from "./TransactionTagRuleService";
 export * from "./VirtualAccountService";

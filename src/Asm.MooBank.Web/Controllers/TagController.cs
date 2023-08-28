@@ -5,13 +5,13 @@ using Asm.MooBank.Queries.TransactionTags;
 
 namespace Asm.MooBank.Web.Controllers
 {
-    [Route("api/transaction/tags")]
+    [Route("api/tags")]
     [ApiController]
-    public class TransactionTagController : CommandQueryController
+    public class TagController : CommandQueryController
     {
         private readonly ITransactionTagService _tagService;
 
-        public TransactionTagController(IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher, ITransactionTagService categoryService) : base(queryDispatcher, commandDispatcher)
+        public TagController(IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher, ITransactionTagService categoryService) : base(queryDispatcher, commandDispatcher)
         {
             _tagService = categoryService;
         }
@@ -34,7 +34,7 @@ namespace Asm.MooBank.Web.Controllers
         {
             var newTag = await CommandDispatcher.Dispatch(new Create(tag), cancellationToken);
 
-            return Created($"api/transaction/tags/{newTag.Id}", newTag);
+            return Created($"api/tags/{newTag.Id}", newTag);
         }
 
         [HttpPut("{name}")]
@@ -42,7 +42,7 @@ namespace Asm.MooBank.Web.Controllers
         {
             var tag = await CommandDispatcher.Dispatch(new CreateByName(name, tags), cancellationToken);
 
-            return Created($"api/transaction/tags/{tag.Id}", tag);
+            return Created($"api/tags/{tag.Id}", tag);
         }
 
         [HttpPatch("{id}")]
@@ -63,7 +63,7 @@ namespace Asm.MooBank.Web.Controllers
 
             var tag = await CommandDispatcher.Dispatch(new AddSubTag(id, subId), cancellationToken);
 
-            return Created($"api/transaction/tags/{id}/tags/{subId}", tag);
+            return Created($"api/tags/{id}/tags/{subId}", tag);
         }
 
         [HttpDelete("{id}/tags/{subId}")]

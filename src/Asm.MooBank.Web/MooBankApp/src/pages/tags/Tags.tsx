@@ -1,13 +1,13 @@
-import "./TransactionTags.scss";
+import "./Tags.scss";
 
 import React, { useEffect, useState } from "react";
 import { Col, Row, Table } from "react-bootstrap";
 
-import { TransactionTagRow } from "./TransactionTagRow";
+import { TransactionTagRow } from "./TagRow";
 
 import { changeSortDirection, ClickableIcon, getNumberOfPages, Pagination, SearchBox, Section, SortDirection } from "@andrewmclachlan/mooapp";
 import { TransactionTagPanel } from "components";
-import { TransactionTag, sortTags } from "models";
+import { Tag, sortTags } from "models";
 import { useCreateTag, useTags } from "services";
 import { TagsPage } from "./TagsPage";
 
@@ -53,7 +53,7 @@ export const TransactionTags: React.FC = () => {
 
 const useComponentState = () => {
 
-    const blankTag = { id: 0, name: "", tags: [] } as TransactionTag;
+    const blankTag = { id: 0, name: "", tags: [] } as Tag;
 
     const { data: allTags, isLoading } = useTags();
 
@@ -63,9 +63,9 @@ const useComponentState = () => {
     const [pageSize, _setPageSize] = useState<number>(20);
 
     const [newTag, setNewTag] = useState(blankTag);
-    const [tagsList, setTagsList] = useState<TransactionTag[]>([]);
-    const [filteredTags, setFilteredTags] = useState<TransactionTag[]>([]);
-    const [pagedTags, setPagedTags] = useState<TransactionTag[] | undefined[]>(Array.from({ length: pageSize }).map(_v => undefined));
+    const [tagsList, setTagsList] = useState<Tag[]>([]);
+    const [filteredTags, setFilteredTags] = useState<Tag[]>([]);
+    const [pagedTags, setPagedTags] = useState<Tag[] | undefined[]>(Array.from({ length: pageSize }).map(_v => undefined));
 
     const [sortDirection, setSortDirection] = useState<SortDirection>("Ascending");
     const [search, setSearch] = useState("");
@@ -115,7 +115,7 @@ const useComponentState = () => {
         setNewTag({ ...newTag, name: e.currentTarget.value });
     }
 
-    const addTag = (tag: TransactionTag) => {
+    const addTag = (tag: Tag) => {
 
         if (!tag.id) return;
 
@@ -123,7 +123,7 @@ const useComponentState = () => {
         setNewTag(newTag);
     }
 
-    const removeTag = (tag: TransactionTag) => {
+    const removeTag = (tag: Tag) => {
 
         if (!tag.id) return;
 

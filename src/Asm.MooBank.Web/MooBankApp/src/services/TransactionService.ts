@@ -2,7 +2,7 @@ import { useQueryClient } from "react-query";
 import { useSelector } from "react-redux";
 
 import * as Models from "../models";
-import { Transaction, TransactionTag } from "../models";
+import { Transaction, Tag } from "../models";
 import { State, TransactionsFilter } from "../store/state";
 import { SortDirection, useApiGet, useApiDelete, useApiDatalessPut, useApiPatch } from "@andrewmclachlan/mooapp";
 import format from "date-fns/format";
@@ -16,7 +16,7 @@ interface TransactionVariables {
 }
 
 interface TransactionTagVariables extends TransactionVariables {
-     tag: TransactionTag,
+     tag: Tag,
 }
 
 export const useTransactions = (accountId: string, filter: TransactionsFilter, pageSize: number, pageNumber: number, sortField: string, sortDirection: SortDirection) => {

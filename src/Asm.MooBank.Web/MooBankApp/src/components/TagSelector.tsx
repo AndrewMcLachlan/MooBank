@@ -1,6 +1,6 @@
 import { useTags } from "services"
 import Select, { MultiValue } from "react-select"
-import { TransactionTag } from "models";
+import { Tag } from "models";
 
 export const TagSelector: React.FC<TagSelectorProps> = ({ value, multi, onChange }) => {
 
@@ -8,17 +8,17 @@ export const TagSelector: React.FC<TagSelectorProps> = ({ value, multi, onChange
 
     const tag = typeof value === "number" ? tags.data?.find(t => t.id === value) : 
                 Array.isArray(value) ? tags.data?.filter(t => value.includes(t.id)) :
-                value as TransactionTag;
+                value as Tag;
 
-    const change = (v: TransactionTag | MultiValue<TransactionTag>) => {
+    const change = (v: Tag | MultiValue<Tag>) => {
         if (!onChange) return;
 
         if (multi) {
-            onChange((v as MultiValue<TransactionTag>).map(t => t.id));
+            onChange((v as MultiValue<Tag>).map(t => t.id));
             return;
         }
 
-        onChange((v as TransactionTag).id);
+        onChange((v as Tag).id);
     }
 
     return (
@@ -31,7 +31,7 @@ TagSelector.defaultProps = {
 };
 
 export interface TagSelectorProps {
-    value?: number | TransactionTag | number[],
+    value?: number | Tag | number[],
     multi?: boolean;
     onChange: (value: number | number[]) => void;
 }

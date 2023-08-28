@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 
-import { TransactionTag } from "models";
+import { Tag } from "models";
 import { ClickableIcon, EditColumn, useUpdatingState } from "@andrewmclachlan/mooapp";
 import { useDeleteTag, useUpdateTag } from "services";
-import { TransactionTagTransactionTagPanel } from "./TransactionTagTransactionTagPanel";
-import { TransactionTagDetails } from "./TransactionTagDetails";
+import { TransactionTagTransactionTagPanel } from "./TagTagPanel";
+import { TransactionTagDetails } from "./TagDetails";
 
 
 export const TransactionTagRow: React.FC<TransactionTagRowProps> = (props) => {
@@ -59,5 +59,5 @@ function useTagRowEvents(props: TransactionTagRowProps) {
 }
 
 export interface TransactionTagRowProps {
-    tag?: TransactionTag;
+    tag?: Tag;
 }

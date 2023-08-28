@@ -1,10 +1,10 @@
 import { TagPanel, TagPanelProps } from "@andrewmclachlan/mooapp";
-import { TransactionTag } from "models";
+import { Tag } from "models";
 import { ElementType } from "react";
 
 
 export const TransactionTagPanel = (props: TransactionTagPanelProps) => (
-    <TagPanel<TransactionTag> {...props} selectedItems={props.selectedItems} items={props.items} labelField={(t) => t.name} valueField={(t) => t.id?.toString()}  />
+    <TagPanel<Tag> {...props} selectedItems={props.selectedItems} items={props.items} labelField={(t) => t.name} valueField={(t) => t.id?.toString()}  />
 );
 
 TagPanel.displayName = "TransactionTagPanel";
@@ -16,6 +16,6 @@ TagPanel.defaultProps = {
     alwaysShowEditPanel: false,
 }
 
-export interface TransactionTagPanelProps extends Omit<TagPanelProps<TransactionTag, ElementType>, "labelField" | "valueField"> {
+export interface TransactionTagPanelProps extends Omit<TagPanelProps<Tag, ElementType>, "labelField" | "valueField"> {
 
 }

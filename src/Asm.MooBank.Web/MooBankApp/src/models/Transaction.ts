@@ -1,4 +1,4 @@
-import { TransactionTag } from "./TransactionTag";
+import { Tag } from "./TransactionTag";
 
 export enum TransactionType {
     Credit = 1,
@@ -21,7 +21,7 @@ export interface Transaction {
     description: string;
     transactionTime: string;
     transactionType: TransactionType;
-    tags: TransactionTag[];
+    tags: Tag[];
     notes?: string;
     offsetBy?: Transaction;
     offsets: Transaction;

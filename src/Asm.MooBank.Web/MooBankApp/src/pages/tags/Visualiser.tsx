@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 
 import { Page } from "../../layouts";
-import { TransactionTag } from "../../models";
+import { Tag } from "../../models";
 
 import { useTagsHierarchy } from "../../services"
 import { Container } from "react-bootstrap";
-import { TransactionTagHierarchy } from "../../models/TransactionTagHierarchy";
+import { TagHierarchy } from "../../models/TransactionTagHierarchy";
 import { chartColours } from "../reports/chartColours";
 import { TagsPage } from "./TagsPage";
 import { Theme, useLayout } from "@andrewmclachlan/mooapp";
@@ -70,7 +70,7 @@ const fontSize = "10pt";
 const lineHeight = 12;
 const halfLineHeight = lineHeight / 2;
 
-const draw = (canvas: HTMLCanvasElement, tagHierarchy: TransactionTagHierarchy, container: HTMLDivElement, theme: Theme) => {
+const draw = (canvas: HTMLCanvasElement, tagHierarchy: TagHierarchy, container: HTMLDivElement, theme: Theme) => {
 
     let x: Pixel = xPadding;
     let y: Pixel = yPadding;
@@ -89,7 +89,7 @@ const draw = (canvas: HTMLCanvasElement, tagHierarchy: TransactionTagHierarchy, 
             colourIndex = 0;
         }
 
-        const renderer = new Tag(tag, { x, y }, true, colour, "horizontal", true);
+        const renderer = new TagVisual(tag, { x, y }, true, colour, "horizontal", true);
         tagRenderers.push(renderer);
 
         const size = renderer.requiredSize();
@@ -124,9 +124,9 @@ const draw = (canvas: HTMLCanvasElement, tagHierarchy: TransactionTagHierarchy, 
 
 type Direction = "vertical" | "horizontal";
 
-class Tag {
+class TagVisual {
 
-    constructor(tag: TransactionTag, position: Point, isRoot: boolean, colour: string, display: Direction, resetColour: boolean = false) {
+    constructor(tag: Tag, position: Point, isRoot: boolean, colour: string, display: Direction, resetColour: boolean = false) {
         this.tag = tag;
         this.position = position;
         this.isRoot = isRoot;
@@ -146,7 +146,7 @@ class Tag {
                 colourIndex = 0;
             }
 
-            const renderer = new Tag(childTag, { x, y }, false, childColour, "horizontal");
+            const renderer = new TagVisual(childTag, { x, y }, false, childColour, "horizontal");
             this.tagRenderers.push(renderer);
 
             const size = renderer.requiredSize();
@@ -157,7 +157,7 @@ class Tag {
 
     public tagRenderers: Tag[];
 
-    public tag: TransactionTag;
+    public tag: Tag;
 
     public position: Point;
 
@@ -262,7 +262,7 @@ class Tag {
         return { x: Math.max(1, dim.x), y: dim.y };
     }
 
-    private getSizeUnits = (tag: TransactionTag, depth: Unit = 1): UnitArea => {
+    private getSizeUnits = (tag: Tag, depth: Unit = 1): UnitArea => {
 
         let length = (tag.tags ?? []).length;
         let newDepth = depth;
