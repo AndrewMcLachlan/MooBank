@@ -1,13 +1,11 @@
 .filter-panel {
 
-    legend {
+    position: relative;
 
-        padding-bottom: 10px;
-
-        svg {
-            margin-right: 10px;
-        }
+    svg {
+        margin-right: 10px;
     }
+
 
     .form-row {
         display: flex;
