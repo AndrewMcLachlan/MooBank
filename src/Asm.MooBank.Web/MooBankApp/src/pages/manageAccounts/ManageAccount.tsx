@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, Table } from "react-bootstrap";
 import { AccountController, AccountType } from "models";
 import { ImportSettings } from "../createAccount/ImportSettings";
 import * as Models from "models";
@@ -55,47 +55,54 @@ export const ManageAccount = () => {
                 </Section>
             </div>
             {account &&
-                <Section>
-                    <Form onSubmit={handleSubmit}>
-                        <Form.Group controlId="AccountName">
-                            <Form.Label>Name</Form.Label>
-                            <Form.Control type="text" required maxLength={50} value={account.name} onChange={(e: any) => setName(e.currentTarget.value)} />
-                            <Form.Control.Feedback type="invalid">Please enter a name</Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group controlId="AccountDescription">
-                            <Form.Label >Description</Form.Label>
-                            <Form.Control type="text" as="textarea" maxLength={255} value={account.description} onChange={(e: any) => setDescription(e.currentTarget.value)} />
-                            <Form.Control.Feedback type="invalid">Please enter a description</Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group controlId="accountGroup" >
-                            <Form.Label>Group</Form.Label>
-                            <Form.Select value={account.accountGroupId} onChange={(e: any) => setAccountGroupId(e.currentTarget.value)}>
-                                <option value="" />
-                                {accountGroups?.map(a =>
-                                    <option value={a.id} key={a.id}>{a.name}</option>
-                                )}
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group controlId="AccountType" >
-                            <Form.Label>Type</Form.Label>
-                            <Form.Select value={account.accountType.toString()} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setAccountType(parseInt(e.currentTarget.value))}>
-                                {accountTypes.map(a =>
-                                    <option value={a.value} key={a.value}>{a.name}</option>
-                                )}
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group controlId="AccountController">
-                            <Form.Label>Controller</Form.Label>
-                            <Form.Select value={account.controller.toString()} onChange={(e: any) => setAccountController(parseInt(e.currentTarget.value))}>
-                                {accountControllers.map(a =>
-                                    <option value={a.value} key={a.value}>{a.name}</option>
-                                )}
-                            </Form.Select>
-                        </Form.Group>
-                        <ImportSettings show={account.controller === AccountController.Import} selectedId={account.importerTypeId} onChange={(e) => setImporterTypeId(e)} />
-                        <Button type="submit" variant="primary">Update</Button>
-                    </Form>
-                </Section>
+                <>
+                    <Section>
+                        <Form onSubmit={handleSubmit}>
+                            <Form.Group controlId="AccountName">
+                                <Form.Label>Name</Form.Label>
+                                <Form.Control type="text" required maxLength={50} value={account.name} onChange={(e: any) => setName(e.currentTarget.value)} />
+                                <Form.Control.Feedback type="invalid">Please enter a name</Form.Control.Feedback>
+                            </Form.Group>
+                            <Form.Group controlId="AccountDescription">
+                                <Form.Label >Description</Form.Label>
+                                <Form.Control type="text" as="textarea" maxLength={255} value={account.description} onChange={(e: any) => setDescription(e.currentTarget.value)} />
+                                <Form.Control.Feedback type="invalid">Please enter a description</Form.Control.Feedback>
+                            </Form.Group>
+                            <Form.Group controlId="accountGroup" >
+                                <Form.Label>Group</Form.Label>
+                                <Form.Select value={account.accountGroupId} onChange={(e: any) => setAccountGroupId(e.currentTarget.value)}>
+                                    <option value="" />
+                                    {accountGroups?.map(a =>
+                                        <option value={a.id} key={a.id}>{a.name}</option>
+                                    )}
+                                </Form.Select>
+                            </Form.Group>
+                            <Form.Group controlId="AccountType" >
+                                <Form.Label>Type</Form.Label>
+                                <Form.Select value={account.accountType.toString()} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setAccountType(parseInt(e.currentTarget.value))}>
+                                    {accountTypes.map(a =>
+                                        <option value={a.value} key={a.value}>{a.name}</option>
+                                    )}
+                                </Form.Select>
+                            </Form.Group>
+                            <Form.Group controlId="AccountController">
+                                <Form.Label>Controller</Form.Label>
+                                <Form.Select value={account.controller.toString()} onChange={(e: any) => setAccountController(parseInt(e.currentTarget.value))}>
+                                    {accountControllers.map(a =>
+                                        <option value={a.value} key={a.value}>{a.name}</option>
+                                    )}
+                                </Form.Select>
+                            </Form.Group>
+                            <ImportSettings show={account.controller === AccountController.Import} selectedId={account.importerTypeId} onChange={(e) => setImporterTypeId(e)} />
+                            <Button type="submit" variant="primary">Update</Button>
+                        </Form>
+                    </Section>
+                    <Section title="Virtual Accounts">
+                        <Table>
+
+                        </Table>
+                    </Section>
+                </>
             }
         </AccountPage>
     );

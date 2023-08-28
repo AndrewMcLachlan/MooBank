@@ -17,7 +17,6 @@ const App: React.FC = () => {
     return (
         <Layout size="small">
             <Layout.Header AppName="" Menu={[]} />
-            <Layout.Breadcrumb />
             <Layout.Sidebar navItems={[
                 {
                     text: "Dashboard",

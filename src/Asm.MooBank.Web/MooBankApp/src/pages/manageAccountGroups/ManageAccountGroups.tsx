@@ -1,11 +1,12 @@
 import React from "react";
 
 import { Button, Table } from "react-bootstrap";
-import { Page, Section } from "@andrewmclachlan/mooapp";
+import { IconButton, Page, Section } from "@andrewmclachlan/mooapp";
 import { useAccountGroups } from "services";
 
 import { AccountGroupRow } from "./AccountGroupRow";
 import { Link, useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const ManageAccountGroups = () => {
 
@@ -18,13 +19,8 @@ export const ManageAccountGroups = () => {
     const accountRows: React.ReactNode[] = data?.map(a => <AccountGroupRow key={a.id} accountGroup={a} />) ?? [];
 
     return (
-        <Page title="Manage Account Groups" breadcrumbs={[{ text: "Manage Account Groups", route: "/account-groups" }]}>
-            <div className="section-group">
-                <Section>
-                    <Button onClick={() => navigate("/account-groups/create")}>Create Group</Button>
-            </Section>
-            </div>
-            <Table className="accounts section" hover>
+        <Page title="Account Groups" breadcrumbs={[{ text: "Account Groups", route: "/account-groups" }]} actions={[<IconButton onClick={() => navigate("/account-groups/create")} icon="plus">Create Group</IconButton>]}>
+            <Table className="accounts section" hover striped>
                 <thead>
                     <tr>
                         <th className="column-25">Name</th>
