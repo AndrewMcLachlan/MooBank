@@ -76,7 +76,7 @@ const draw = (canvas: HTMLCanvasElement, tagHierarchy: TagHierarchy, container: 
     let y: Pixel = yPadding;
     let maxY: Pixel = yPadding;
 
-    const tagRenderers: Tag[] = [];
+    const tagRenderers: TagVisual[] = [];
 
     const maxSize: Point = { x: 0, y: 0 };
 
@@ -155,7 +155,7 @@ class TagVisual {
         }
     }
 
-    public tagRenderers: Tag[];
+    public tagRenderers: TagVisual[];
 
     public tag: Tag;
 
