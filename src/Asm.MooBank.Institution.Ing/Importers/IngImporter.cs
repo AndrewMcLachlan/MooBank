@@ -19,12 +19,14 @@ public partial class IngImporter : IImporter
     private const int DebitColumn = 3;
     private const int BalanceColumn = 4;
 
+    private readonly IQueryable<Transaction> _transactions;
     private readonly ITransactionExtraRepository _transactionExtraRepository;
     private readonly ITransactionRepository _transactionRepository;
     private readonly ILogger<IngImporter> _logger;
 
-    public IngImporter(ITransactionExtraRepository transactionExtraRepository, ITransactionRepository transactionRepository, ILogger<IngImporter> logger)
+    public IngImporter(IQueryable<Transaction> transactions, ITransactionExtraRepository transactionExtraRepository, ITransactionRepository transactionRepository, ILogger<IngImporter> logger)
     {
+        _transactions = transactions;
         _transactionExtraRepository = transactionExtraRepository;
         _transactionRepository = transactionRepository;
         _logger = logger;
@@ -32,6 +34,7 @@ public partial class IngImporter : IImporter
 
     public async Task<TransactionImportResult> Import(Account account, Stream contents, CancellationToken cancellationToken = default)
     {
+
         using var reader = new StreamReader(contents);
         var transactions = new List<Transaction>();
 
@@ -131,9 +134,12 @@ public partial class IngImporter : IImporter
             transactions.Add(transaction);
         }
 
-        _transactionRepository.AddRange(transactions);
+        (DateTime minTransactionTime, DateTime maxTransactionTime) = (transactions.Min(t => t.TransactionTime), transactions.Max(t => t.TransactionTime));
 
-        //var cardNames = account.AccountAccountHolders.SelectMany(a => a.AccountHolder.Cards).ToDictionary(ac => ac.Last4Digits, ac => ac.AccountHolder.FirstName);
+        // Exclude transactions with matching date and amount.
+        transactions = transactions.Except(_transactions.Where(t => t.TransactionTime >= minTransactionTime && t.TransactionTime <= maxTransactionTime), new TransactionComparer()).ToList();
+
+        _transactionRepository.AddRange(transactions);
 
         var transactionExtras = new List<TransactionExtra>();
 
