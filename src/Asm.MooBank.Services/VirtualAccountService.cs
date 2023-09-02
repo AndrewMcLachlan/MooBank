@@ -77,7 +77,7 @@ public class VirtualAccountService : ServiceBase, IVirtualAccountService
 
         entity.Name = account.Name;
         entity.Description = account.Description;
-        entity.Balance = account.Balance;
+        entity.Balance = account.CurrentBalance;
 
         await UnitOfWork.SaveChangesAsync();
 

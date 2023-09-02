@@ -1,6 +1,6 @@
 import { useIdParams } from "@andrewmclachlan/mooapp";
 import { AccountProvider } from "components";
-import { Navigate, Outlet, useLocation, useMatch } from "react-router-dom";
+import { Navigate, Outlet, useMatch } from "react-router-dom";
 import { useAccount } from "services";
 
 export const Account = () => {

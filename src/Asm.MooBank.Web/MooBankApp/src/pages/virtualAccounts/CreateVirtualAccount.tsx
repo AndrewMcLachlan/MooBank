@@ -26,7 +26,7 @@ export const CreateVirtualAccount = () => {
             id: emptyGuid,
             name: name,
             description: description,
-            balance: balance,
+            currentBalance: balance,
         };
 
         createVirtualAccount.create(parentAccount.id, account);

@@ -24,7 +24,7 @@ public class InstitutionAccountRepository : RepositoryDeleteBase<InstitutionAcco
 
     public async Task<ImporterType> GetImporterType(int importerTypeId, CancellationToken cancellationToken = default)
     {
-        var entity = await DataContext.Set<ImporterType>().Where(i => i.ImporterTypeId == importerTypeId).SingleOrDefaultAsync();
+        var entity = await DataContext.Set<ImporterType>().Where(i => i.ImporterTypeId == importerTypeId).SingleOrDefaultAsync(cancellationToken: cancellationToken);
 
         return entity ?? throw new NotFoundException($"Unknown importer type ID {importerTypeId}");
     }

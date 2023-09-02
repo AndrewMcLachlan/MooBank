@@ -6,18 +6,21 @@ import { emptyGuid, useClickAway } from "@andrewmclachlan/mooapp";
 
 import { accountId, VirtualAccount } from "models";
 import { useUpdateVirtualAccountBalance } from "services";
+import { useNavigate } from "react-router-dom";
 
 export const VirtualAccountRow: React.FC<VirtualAccountRowProps> = (props) => {
-    const { balanceRef, editingBalance, balanceClick, balanceChange, balance, keyPress } = useComponentState(props);
+    const { balanceRef, editingBalance, balanceClick, balanceChange, balance, keyPress, onRowClick } = useComponentState(props);
+
+    const clickable = props.account.id !== emptyGuid;
 
     return (
-        <tr onClick={balanceClick} className="virtual clickable" ref={balanceRef}>
+        <tr onClick={clickable && onRowClick} className={classNames("virtual", clickable && "clickable")} ref={balanceRef}>
             <td></td>
             <td className="name">{props.account.name}</td>
             <td>Virtual</td>
-            <td className={classNames("amount", "number", numberClassName(balance))}>
+            <td className={classNames("amount", "number", numberClassName(balance))} onClick={clickable && balanceClick}>
                 {!editingBalance && getBalanceString(balance)}
-                {editingBalance && <input type="number" value={balance} onChange={balanceChange} onKeyPress={keyPress} />}
+                {editingBalance && <input type="number" value={balance} onChange={balanceChange} onKeyUp={keyPress} />}
             </td>
         </tr>
     );
@@ -32,21 +35,21 @@ VirtualAccountRow.displayName = "VirtualAccountRow";
 
 const useComponentState = (props: VirtualAccountRowProps) => {
 
-    const [editingBalance, setEditingBalance] = useState(false);
+    const navigate = useNavigate();
 
-    const [balance, setBalance] = useState(props.account.balance);
+    const [editingBalance, setEditingBalance] = useState(false);
+    const [balance, setBalance] = useState(props.account.currentBalance);
 
     const updateBalance = useUpdateVirtualAccountBalance();
-
     const balanceRef = useRef(null);
 
     useEffect(() => {
-        setBalance(props.account.balance);
+        setBalance(props.account.currentBalance);
     }, [props]);
 
-    useClickAway(setEditingBalance, balanceRef, () => (editingBalance && props.account.balance !== balance) && updateBalance.update(props.accountId, props.account.id, balance));
+    useClickAway(setEditingBalance, balanceRef, () => (editingBalance && props.account.currentBalance !== balance) && updateBalance.update(props.accountId, props.account.id, balance));
 
-    const balanceClick = (e: React.MouseEvent<HTMLTableRowElement>) => {
+    const balanceClick = (e: React.MouseEvent<HTMLTableCellElement>) => {
         setEditingBalance(props.account.id !== emptyGuid);
         e.preventDefault();
         e.stopPropagation();
@@ -64,6 +67,10 @@ const useComponentState = (props: VirtualAccountRowProps) => {
         }
     }
 
+    const onRowClick = () => {
+        navigate(`/accounts/${props.accountId}/virtual/${props.account.id}`);
+    };
+
     return {
         balanceRef,
 
@@ -76,5 +83,7 @@ const useComponentState = (props: VirtualAccountRowProps) => {
         balance,
 
         keyPress,
+
+        onRowClick,
     };
 }

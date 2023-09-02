@@ -9,7 +9,10 @@ public partial record VirtualAccount
             Id = account.AccountId,
             Name = account.Name,
             Description = account.Description,
-            Balance = account.Balance,
+            CurrentBalance = account.Balance,
+            CalculatedBalance = account.CalculatedBalance,
+            BalanceDate = account.LastUpdated,
+            LastTransaction = account.LastTransaction,
         };
     }
 }
@@ -24,7 +27,7 @@ public static class VirtualAccountExtensions
             InstitutionAccountId = parentAccountId,
             Name = account.Name,
             Description = account.Description,
-            Balance = account.Balance,
+            Balance = account.CurrentBalance,
         };
     }
 }

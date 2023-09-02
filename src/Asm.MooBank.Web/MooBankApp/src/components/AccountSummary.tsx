@@ -22,7 +22,7 @@ export const AccountSummary: React.FC<AccountSummaryProps> = ({className, ...pro
             </div>
             <div className="key-value">
                 <div>Last Transaction</div>
-                <div>{format(parseISO(account.lastTransaction), "dd/MM/yyyy")}</div>
+                <div>{account.lastTransaction ? format(parseISO(account.lastTransaction), "dd/MM/yyyy") : "-"}</div>
             </div><hr/>
             <div className="key-value">
                 <div>Type</div>

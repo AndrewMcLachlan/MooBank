@@ -19,8 +19,23 @@ public class SecurityRepository : ISecurity
 
     public void AssertAccountPermission(Guid accountId)
     {
+        var virtualAccount = _mooBankContext.VirtualAccounts.SingleOrDefault(va => va.AccountId == accountId);
 
-        if (!_mooBankContext.Accounts.Any(a => a.AccountId == accountId && a.AccountAccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId)))
+        var accountToCheck = (virtualAccount != null) ? virtualAccount.InstitutionAccountId : accountId;
+
+        if (! _mooBankContext.Accounts.Any(a => a.AccountId == accountToCheck && a.AccountAccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId)))
+        {
+            throw new NotAuthorisedException("Not authorised to view this account");
+        }
+    }
+
+    public async Task AssertAccountPermissionAsync(Guid accountId)
+    {
+        var virtualAccount = await _mooBankContext.VirtualAccounts.SingleOrDefaultAsync(va => va.AccountId == accountId);
+
+        var accountToCheck = (virtualAccount != null) ? virtualAccount.InstitutionAccountId : accountId;
+
+        if (!(await _mooBankContext.Accounts.AnyAsync(a => a.AccountId == accountToCheck && a.AccountAccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId))))
         {
             throw new NotAuthorisedException("Not authorised to view this account");
         }

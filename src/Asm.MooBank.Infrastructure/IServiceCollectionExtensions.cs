@@ -40,6 +40,7 @@ public static class IServiceCollectionExtensions
 
     public static IServiceCollection AddRepositories(this IServiceCollection services) =>
         services.AddScoped<IInstitutionAccountRepository, InstitutionAccountRepository>()
+                .AddScoped<IAccountRepository, AccountRepository>()
                 .AddScoped<IAccountGroupRepository, AccountGroupRepository>()
                 .AddScoped<IAccountHolderRepository, AccountHolderRepository>()
                 .AddScoped<IBudgetRepository, BudgetRepository>()

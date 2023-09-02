@@ -14,6 +14,6 @@ public partial record InstitutionAccount : Account
 
     public decimal VirtualAccountRemainingBalance
     {
-        get => CurrentBalance - (VirtualAccounts?.Sum(v => v.Balance) ?? 0);
+        get => CurrentBalance - (VirtualAccounts?.Sum(v => v.CurrentBalance) ?? 0);
     }
 }

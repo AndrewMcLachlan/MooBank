@@ -21,10 +21,10 @@ export interface AccountBase {
     id: accountId;
     name: string;
     description?: string;
+    currentBalance: number;
 }
 
 export interface Account extends AccountBase {
-    currentBalance: number;
     calculatedBalance: number;
     balanceDate: Date;
     lastTransaction?: string;
