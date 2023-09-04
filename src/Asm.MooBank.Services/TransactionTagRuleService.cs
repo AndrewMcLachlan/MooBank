@@ -10,7 +10,7 @@ public interface ITransactionTagRuleService
 {
     Task<TransactionTagRule> Create(Guid accountId, string contains, string? description, IEnumerable<int> tagIds, CancellationToken cancellationToken = default);
 
-    Task<TransactionTagRule> Create(Guid accountId, string contains, string? description, IEnumerable<TransactionTag> tagIds, CancellationToken cancellationToken = default);
+    Task<TransactionTagRule> Create(Guid accountId, string contains, string? description, IEnumerable<Tag> tagIds, CancellationToken cancellationToken = default);
 
     Task<TransactionTagRule> Get(Guid accountId, int id);
 
@@ -55,7 +55,7 @@ public class TransactionTagRuleService : ServiceBase, ITransactionTagRuleService
         return rule;
     }
 
-    public async Task<TransactionTagRule> Create(Guid accountId, string contains, string? description, IEnumerable<TransactionTag> tags, CancellationToken cancellationToken = default)
+    public async Task<TransactionTagRule> Create(Guid accountId, string contains, string? description, IEnumerable<Tag> tags, CancellationToken cancellationToken = default)
     {
         _security.AssertAccountPermission(accountId);
 

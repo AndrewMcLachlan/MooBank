@@ -1,8 +1,8 @@
 ﻿using Asm.MooBank.Domain.Entities.Transactions;
 
-namespace Asm.MooBank.Models.Commands.Transaction;
+namespace Asm.MooBank.Commands.Transaction;
 
-public record UpdateTransaction(Guid Id, string? Notes, Guid? OffsetByTransactionId) : ICommand<Models.Transaction>;
+public record UpdateTransaction(Guid Id, string? Notes, Guid? OffsetByTransactionId, bool ExcludeFromReporting = false) : ICommand<Models.Transaction>;
 
 internal class UpdateTransactionHandler : ICommandHandler<UpdateTransaction, Models.Transaction>
 {
@@ -25,6 +25,7 @@ internal class UpdateTransactionHandler : ICommandHandler<UpdateTransaction, Mod
 
         entity.Notes = request.Notes;
         entity.OffsetByTransactionId = request.OffsetByTransactionId;
+        entity.ExcludeFromReporting = request.ExcludeFromReporting;
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

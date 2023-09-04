@@ -2,6 +2,8 @@
 using Asm.Domain;
 
 namespace Asm.MooBank.Domain.Entities.Institution;
+
+[AggregateRoot]
 public class Institution : KeyedEntity<int>
 {
     public Institution() : base(default)

@@ -1,8 +1,18 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Navigate, Outlet, PathPattern, useMatch } from "react-router-dom";
 
 export const Settings: React.FC = () => {
-    return (<section>
-        <Link to="/settings/tags">Edit Transaction Tags</Link>
-    </section>);
+
+    const pattern: PathPattern = {
+        path: "/settings",
+        end: true,
+    };
+    const match = useMatch(pattern);
+
+    if (match)
+    {
+        return <Navigate to={`/settings/families`} replace />
+    }
+
+    return <Outlet />;
 }

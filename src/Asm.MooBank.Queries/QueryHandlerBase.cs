@@ -1,11 +1,13 @@
-﻿namespace Asm.MooBank.Queries;
+﻿using Asm.MooBank.Models;
+
+namespace Asm.MooBank.Queries;
 
 internal abstract class QueryHandlerBase
 {
-    protected ISecurity Security { get; }
+    protected AccountHolder AccountHolder { get; }
 
-    public QueryHandlerBase(ISecurity security)
+    public QueryHandlerBase(AccountHolder accountHolder)
     {
-        Security = security;
+        AccountHolder = accountHolder;
     }
 }

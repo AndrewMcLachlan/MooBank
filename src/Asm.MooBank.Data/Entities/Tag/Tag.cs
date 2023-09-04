@@ -22,6 +22,8 @@ public partial class Tag : IEquatable<Tag>
 
     public bool Deleted { get; set; }
 
+    public Guid FamilyId { get; set; }
+
     public virtual ICollection<Transaction> Transactions { get; set; }
 
     public virtual ICollection<Tag> TaggedTo { get; set; }

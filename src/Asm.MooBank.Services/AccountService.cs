@@ -3,7 +3,6 @@ using IInstitutionAccountRepository = Asm.MooBank.Domain.Entities.Account.IInsti
 using Asm.MooBank.Domain.Entities.AccountHolder;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Models;
-using Asm.MooBank.Security;
 
 namespace Asm.MooBank.Services;
 
@@ -19,8 +18,6 @@ public interface IAccountService
 
     Task<decimal> GetPosition();
 
-    Task<AccountsList> GetFormattedAccounts(CancellationToken cancellation = default);
-
     void RunTransactionRules(Guid accountId);
 }
 
@@ -29,16 +26,14 @@ public class AccountService : ServiceBase, IAccountService
     private readonly IRunRulesQueue _queue;
     private readonly IInstitutionAccountRepository _accountRepository;
     private readonly ITransactionRepository _transactionRepository;
-    private readonly IAccountHolderRepository _accountHolderRepository;
     private readonly ISecurity _securityRepository;
     private readonly IUserDataProvider _userDataProvider;
 
-    public AccountService(IUnitOfWork unitOfWork, IRunRulesQueue queue, IInstitutionAccountRepository accountRepository, IAccountHolderRepository accountHolderRepository, ITransactionRepository transactionRepository, IUserDataProvider userDataProvider, ISecurity securityRepository) : base(unitOfWork)
+    public AccountService(IUnitOfWork unitOfWork, IRunRulesQueue queue, IInstitutionAccountRepository accountRepository, ITransactionRepository transactionRepository, IUserDataProvider userDataProvider, ISecurity securityRepository) : base(unitOfWork)
     {
         _queue = queue;
         _accountRepository = accountRepository;
         _transactionRepository = transactionRepository;
-        _accountHolderRepository = accountHolderRepository;
         _securityRepository = securityRepository;
         _userDataProvider = userDataProvider;
     }
@@ -48,8 +43,6 @@ public class AccountService : ServiceBase, IAccountService
         var entity = (Domain.Entities.Account.InstitutionAccount)account;
 
         entity.SetAccountHolder(_userDataProvider.CurrentUserId);
-
-        //entity.AccountHolders.Add(await _accountHolderRepository.GetCurrent());
 
         _accountRepository.Add(entity);
 
@@ -129,35 +122,6 @@ public class AccountService : ServiceBase, IAccountService
     public Task<decimal> GetPosition() => _accountRepository.GetPosition();
 
     public async Task<IEnumerable<InstitutionAccount>> GetAccounts(CancellationToken cancellationToken = default) => (await _accountRepository.GetAll(cancellationToken)).Select(a => (InstitutionAccount)a);
-
-
-    public async Task<AccountsList> GetFormattedAccounts(CancellationToken cancellation = default)
-    {
-        var accounts = await _accountRepository.GetAll(cancellation);
-        var position = await _accountRepository.GetPosition();
-        var userId = _userDataProvider.CurrentUserId;
-
-        var groups = accounts.Select(a => a.GetAccountGroup(userId)).Where(a => a != null).Distinct().Select(ag => new AccountListGroup
-        {
-            Name = ag.Name,
-            Accounts = accounts.Where(a => a.GetAccountGroup(userId)?.Id == ag.Id).ToModel(),
-            Position = ag.ShowPosition ? accounts.Where(a => a.GetAccountGroup(userId)?.Id == ag.Id).Sum(a => a.Balance) : null,
-        });
-
-        var otherAccounts = new AccountListGroup[] {
-            new AccountListGroup
-            {
-                Name = "Other Accounts",
-                Accounts = accounts.Where(a => a.GetAccountGroup(userId) == null).ToModel(),
-            }
-        };
-
-        return new AccountsList
-        {
-            AccountGroups = groups.Union(otherAccounts),
-            Position = groups.Sum(g => g.Position ?? 0),
-        };
-    }
 
     public void RunTransactionRules(Guid accountId)
     {

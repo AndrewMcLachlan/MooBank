@@ -2,6 +2,7 @@
 using Asm.MooBank.Importers;
 
 namespace Asm.MooBank.Commands.Import;
+
 public record Reprocess(Guid AccountId) : ICommand;
 
 internal class ReprocessHandler : ICommandHandler<Reprocess>

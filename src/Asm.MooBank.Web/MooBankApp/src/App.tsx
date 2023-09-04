@@ -6,18 +6,25 @@ import { Link, Navigate, Route, Routes } from "react-router-dom";
 
 import * as Pages from "./pages";
 import { ErrorBoundary, Layout } from "@andrewmclachlan/mooapp";
-import { useIsAuthenticated } from "@azure/msal-react";
+import { useIsAuthenticated, useMsal } from "@azure/msal-react";
 import { Cog } from "./assets";
+import { useHasRole } from "hooks";
 
 const App: React.FC = () => {
 
     const isAuthenticated = useIsAuthenticated();
 
+    const hasRole = useHasRole();
+
     if (!isAuthenticated) return null;
+
+    const menu = hasRole("Admin") ?
+        [(<Link to="/settings/families"><Cog /></Link>)] :
+        [];
 
     return (
         <Layout size="small">
-            <Layout.Header AppName="" Menu={[/*(<Link to="/settings"><Cog /></Link>)*/]} />
+            <Layout.Header AppName="" Menu={menu} />
             <Layout.Sidebar navItems={[
                 {
                     text: "Dashboard",
@@ -42,7 +49,7 @@ const App: React.FC = () => {
                 {
                     text: "Tags",
                     image: <Icons.Tags />,
-                    route: "/settings/tags"
+                    route: "/tags"
                 },
             ]} />
             <ErrorBoundary>
@@ -55,7 +62,7 @@ const App: React.FC = () => {
                         <Route path="manage" element={<Pages.ManageAccount />} />
                         <Route path="transactions" element={<Pages.Transactions />} />
                         <Route path="manage/virtual/create" element={<Pages.CreateVirtualAccount />} />
-                        <Route path="manage/virtual/:virtualid" element={<Pages.ManageVirtualAccount />} />
+                        <Route path="manage/virtual/:virtualId" element={<Pages.ManageVirtualAccount />} />
                         <Route path="tag-rules" element={<Pages.TransactionTagRules />} />
                         <Route path="import" element={<Pages.Import />} />
                         <Route path="reports" element={<Pages.Reports />}>
@@ -70,9 +77,12 @@ const App: React.FC = () => {
                         </Route>
                     </Route>
                     <Route path="/budget" element={<Pages.Budget />} />
-                    <Route path="/settings" element={<Navigate to="/settings/tags" replace />} />
-                    <Route path="/settings/tags" element={<Pages.TransactionTags />} />
-                    <Route path="/settings/tags/visualiser" element={<Pages.Visualiser />} />
+                    <Route path="/settings" element={<Pages.Settings />}>
+                        <Route path="families" element={<Pages.Families />} />
+                        <Route path="institutions" element={<Pages.Institutions />} />
+                    </Route>
+                    <Route path="/tags" element={<Pages.TransactionTags />} />
+                    <Route path="/tags/visualiser" element={<Pages.Visualiser />} />
                     <Route path="/account-groups" element={<Pages.ManageAccountGroups />} />
                     <Route path="/account-groups/:id/manage" element={<Pages.ManageAccountGroup />} />
                     <Route path="/account-groups/create" element={<Pages.CreateAccountGroup />} />

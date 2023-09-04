@@ -3,18 +3,18 @@ using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Commands.TransactionTags;
 
-public sealed record CreateByName(string Name, IEnumerable<int> Tags) : ICommand<TransactionTag>;
+public sealed record CreateByName(string Name, IEnumerable<int> Tags) : ICommand<Tag>;
 
-internal sealed class CreateByNameHandler : DataCommandHandler, ICommandHandler<CreateByName, TransactionTag>
+internal sealed class CreateByNameHandler : CommandHandlerBase, ICommandHandler<CreateByName, Tag>
 {
     private readonly ITransactionTagRepository _transactionTagRepository;
 
-    public CreateByNameHandler(IUnitOfWork unitOfWork, ITransactionTagRepository transactionTagRepository) : base(unitOfWork)
+    public CreateByNameHandler(IUnitOfWork unitOfWork, ITransactionTagRepository transactionTagRepository, AccountHolder accountHolder, ISecurity security) : base(unitOfWork, accountHolder, security)
     {
         _transactionTagRepository = transactionTagRepository;
     }
 
-    public async Task<TransactionTag> Handle(CreateByName request, CancellationToken cancellationToken)
+    public async Task<Tag> Handle(CreateByName request, CancellationToken cancellationToken)
     {
         request.Deconstruct(out string name, out IEnumerable<int> tags);
 
@@ -23,6 +23,7 @@ internal sealed class CreateByNameHandler : DataCommandHandler, ICommandHandler<
         Domain.Entities.Tag.Tag transactionTag = new()
         {
             Name = name,
+            FamilyId = AccountHolder.FamilyId,
             Tags = tagEntities.ToList(),
         };
         _transactionTagRepository.Add(transactionTag);

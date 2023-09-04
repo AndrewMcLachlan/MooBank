@@ -1,11 +1,24 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Asm.MooBank.Security.Authorisation;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Asm.MooBank.Security;
 
 public static class IServiceCollectionExtensions
 {
     public static IServiceCollection AddUserDataProvider(this IServiceCollection services) =>
-        services.AddScoped<IUserIdProvider, GraphUserDataProvider>()
-                .AddScoped<IUserDataProvider, GraphUserDataProvider>();
+         /* services.AddScoped<IUserIdProvider, GraphUserDataProvider>()
+                  .AddScoped<IUserDataProvider, GraphUserDataProvider>();*/
+
+         services.AddScoped<IUserIdProvider, ClaimsUserDataProvider>()
+                .AddScoped<IUserDataProvider, ClaimsUserDataProvider>();
+
+    public static IServiceCollection AddAuthorisationHandlers(this IServiceCollection services)
+    {
+        services.AddScoped<IAuthorizationHandler, AccountHolderAuthorisationHandler>();
+        services.AddScoped<IAuthorizationHandler, FamilyMemberAuthorisationHandler>();
+
+        return services;
+    }
 
 }

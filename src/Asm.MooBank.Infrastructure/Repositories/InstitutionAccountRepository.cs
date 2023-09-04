@@ -15,7 +15,7 @@ public class InstitutionAccountRepository : RepositoryDeleteBase<InstitutionAcco
 
     public override async Task<IEnumerable<InstitutionAccount>> GetAll(CancellationToken cancellationToken = default)
     {
-        return await DataSet.Where(a => a.AccountAccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId)).ToListAsync(cancellationToken);
+        return await DataSet.Include(a => a.VirtualAccounts).Where(a => a.AccountAccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId)).ToListAsync(cancellationToken);
     }
 
     protected override IQueryable<InstitutionAccount> GetById(Guid id) => DataSet.Where(a => a.AccountId == id && a.AccountAccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId));

@@ -1,16 +1,16 @@
 ﻿namespace Asm.MooBank.Models;
 
-public partial record TransactionTag
+public partial record Tag
 {
-    private readonly TransactionTagSettings _settings = new();
+    private readonly TagSettings _settings = new();
 
     public int Id { get; set; }
 
     public required string Name { get; set; }
 
-    public IEnumerable<TransactionTag> Tags { get; set; } = Enumerable.Empty<TransactionTag>();
+    public IEnumerable<Tag> Tags { get; set; } = Enumerable.Empty<Tag>();
 
-    public TransactionTagSettings Settings
+    public TagSettings Settings
     {
         get => _settings;
         init
@@ -19,7 +19,7 @@ public partial record TransactionTag
         }
     }
 
-    public partial record TransactionTagSettings
+    public partial record TagSettings
     {
         public bool ApplySmoothing { get; init; }
 

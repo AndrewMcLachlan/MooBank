@@ -21,14 +21,14 @@ public static class IServiceCollectionExtensions
 
     public static IServiceCollection AddMooBankDbContext(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<MooBankContext>((services, options) => options.UseLazyLoadingProxies().UseSqlServer(configuration.GetConnectionString("MooBank"), options =>
+        services.AddDbContext<MooBankContext>((services, options) => options/*.UseLazyLoadingProxies()*/.UseSqlServer(configuration.GetConnectionString("MooBank"), options =>
         {
             options.EnableRetryOnFailure(3);
             options.UseDateOnlyTimeOnly();
         }));
 
         //HACK: To be fixed
-        services.AddReadOnlyDbContext<IReadOnlyDbContext, MooBankContext>((services, options) => options.UseLazyLoadingProxies().UseSqlServer(configuration.GetConnectionString("MooBank"), options =>
+        services.AddReadOnlyDbContext<IReadOnlyDbContext, MooBankContext>((services, options) => options/*.UseLazyLoadingProxies()*/.UseSqlServer(configuration.GetConnectionString("MooBank"), options =>
         {
             options.EnableRetryOnFailure(3);
             options.UseDateOnlyTimeOnly();

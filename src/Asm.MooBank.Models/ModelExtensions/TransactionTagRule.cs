@@ -9,7 +9,7 @@ public partial record TransactionTagRule
             Id = rule.TransactionTagRuleId,
             Contains = rule.Contains,
             Description = rule.Description,
-            Tags = rule.TransactionTags.Where(t => t != null && !t.Deleted).Select(t => (TransactionTag)t),
+            Tags = rule.TransactionTags.Where(t => t != null && !t.Deleted).Select(t => (Tag)t),
         };
     }
 

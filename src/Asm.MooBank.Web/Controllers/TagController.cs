@@ -1,7 +1,7 @@
 ﻿using Asm.Cqrs.Commands;
 using Asm.Cqrs.Queries;
 using Asm.MooBank.Commands.TransactionTags;
-using Asm.MooBank.Queries.TransactionTags;
+using Asm.MooBank.Queries.Tags;
 
 namespace Asm.MooBank.Web.Controllers
 {
@@ -17,20 +17,20 @@ namespace Asm.MooBank.Web.Controllers
         }
 
         [HttpGet]
-        public Task<IEnumerable<TransactionTag>> Get(CancellationToken cancellationToken = default) => _tagService.GetAll(cancellationToken);
+        public Task<IEnumerable<Tag>> Get(CancellationToken cancellationToken = default) => QueryDispatcher.Dispatch(new GetAll(), cancellationToken);
 
         [HttpGet("hierarchy")]
-        public Task<TransactionTagHierarchy> GetHierarchy(CancellationToken cancellationToken = default) => QueryDispatcher.Dispatch(new GetTransactionTagsHierarchy(), cancellationToken);
+        public Task<TransactionTagHierarchy> GetHierarchy(CancellationToken cancellationToken = default) => QueryDispatcher.Dispatch(new GetTagsHierarchy(), cancellationToken);
 
         [HttpGet("{id}")]
-        public async Task<TransactionTag> Get(int id, CancellationToken cancellationToken = default)
+        public async Task<Tag> Get(int id, CancellationToken cancellationToken = default)
         {
             if (id == 0) return null!;
             return await _tagService.Get(id, cancellationToken);
         }
 
         [HttpPost]
-        public async Task<ActionResult<TransactionTag>> Create(TransactionTag tag, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<Tag>> Create(Tag tag, CancellationToken cancellationToken = default)
         {
             var newTag = await CommandDispatcher.Dispatch(new Create(tag), cancellationToken);
 
@@ -38,7 +38,7 @@ namespace Asm.MooBank.Web.Controllers
         }
 
         [HttpPut("{name}")]
-        public async Task<ActionResult<TransactionTag>> CreateByName(string name, [FromBody]int[] tags, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<Tag>> CreateByName(string name, [FromBody]int[] tags, CancellationToken cancellationToken = default)
         {
             var tag = await CommandDispatcher.Dispatch(new CreateByName(name, tags), cancellationToken);
 
@@ -46,7 +46,7 @@ namespace Asm.MooBank.Web.Controllers
         }
 
         [HttpPatch("{id}")]
-        public Task<TransactionTag> Update(int id, [FromBody]TransactionTagModel tag, CancellationToken cancellationToken = default) =>
+        public Task<Tag> Update(int id, [FromBody]TransactionTagModel tag, CancellationToken cancellationToken = default) =>
             CommandDispatcher.Dispatch(new Update(id, tag.Name, tag.ExcludeFromReporting, tag.ApplySmoothing), cancellationToken);
 
         [HttpDelete("{id}")]
@@ -57,7 +57,7 @@ namespace Asm.MooBank.Web.Controllers
         }
 
         [HttpPut("{id}/tags/{subId}")]
-        public async Task<ActionResult<TransactionTag>> AddSubTag(int id, int subId, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<Tag>> AddSubTag(int id, int subId, CancellationToken cancellationToken = default)
         {
             if (id == subId) return Conflict();
 

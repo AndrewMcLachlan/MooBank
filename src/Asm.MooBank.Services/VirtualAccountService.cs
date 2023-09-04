@@ -77,7 +77,8 @@ public class VirtualAccountService : ServiceBase, IVirtualAccountService
 
         entity.Name = account.Name;
         entity.Description = account.Description;
-        entity.Balance = account.CurrentBalance;
+
+        SetBalance(entity, account.CurrentBalance);
 
         await UnitOfWork.SaveChangesAsync();
 
@@ -90,6 +91,15 @@ public class VirtualAccountService : ServiceBase, IVirtualAccountService
 
         var account = await GetEntity(accountId, virtualAccountId);
 
+        SetBalance(account, balance);
+
+        await UnitOfWork.SaveChangesAsync();
+
+        return account;
+    }
+
+    private void SetBalance(Domain.Entities.Account.VirtualAccount account, decimal balance)
+    {
         var amount = account.Balance - balance;
 
         _transactionRepository.Add(new Domain.Entities.Transactions.Transaction
@@ -102,10 +112,6 @@ public class VirtualAccountService : ServiceBase, IVirtualAccountService
         });
 
         account.Balance = balance;
-
-        await UnitOfWork.SaveChangesAsync();
-
-        return account;
     }
 
     private async Task<Domain.Entities.Account.VirtualAccount> GetEntity(Guid accountId, Guid virtualAccountId)

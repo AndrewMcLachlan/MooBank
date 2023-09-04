@@ -1,4 +1,4 @@
-﻿using Asm.MooBank.Domain.Entities.AccountHolder;
+﻿using Asm.MooBank.Models;
 using Asm.MooBank.Models.Config;
 using Asm.Security;
 using Azure.Identity;
@@ -27,16 +27,11 @@ internal class GraphUserDataProvider : IUserDataProvider
         {
             var id = _principalProvider.Principal?.Claims.Where(c => c.Type == UserIdClaimType).Select(c => c.Value).SingleOrDefault();
 
-            if (id == null)
-            {
-                throw new InvalidOperationException("Not correctly logged in");
-            }
-
-            return Guid.Parse(id);
+            return id == null ? throw new InvalidOperationException("Not correctly logged in") : Guid.Parse(id);
         }
     }
 
-    public async Task<AccountHolder> GetCurrentUser()
+    public async ValueTask<AccountHolder> GetCurrentUser()
     {
         return await GetUser(CurrentUserId);
     }
@@ -54,10 +49,10 @@ internal class GraphUserDataProvider : IUserDataProvider
 
         return new AccountHolder
         {
-            AccountHolderId = id,
+            Id = id,
             FirstName = user.GivenName,
             LastName = user.Surname,
-            EmailAddress = user.Mail,
+            EmailAddress = user.Mail!,
         };
     }
 

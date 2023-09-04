@@ -6,7 +6,7 @@ public partial class AccountHolder
 {
     public AccountHolder()
     {
-        Accounts = new HashSet<Account.Account>();
+        AccountAccountHolders = new HashSet<Account.AccountAccountHolder>();
         Cards = new HashSet<AccountHolderCard>();
     }
     public Guid AccountHolderId { get; set; }
@@ -17,7 +17,9 @@ public partial class AccountHolder
     public Guid FamilyId { get; set; }
 
     [NotMapped]
-    public virtual ICollection<Account.Account> Accounts { get; set; }
+    public IEnumerable<Account.Account> Accounts => AccountAccountHolders?.Select(a => a.Account) ?? Enumerable.Empty<Account.Account>();
+
+    public virtual ICollection<Account.AccountAccountHolder> AccountAccountHolders { get; set; }
 
     public virtual ICollection<AccountHolderCard> Cards { get; set; }
 

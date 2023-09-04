@@ -1,15 +1,18 @@
-﻿using Asm.Domain;
+﻿using Asm.MooBank.Models;
 
-namespace Asm.MooBank.Services.Commands;
+namespace Asm.MooBank.Commands;
 
 public abstract class CommandHandlerBase
 {
     protected IUnitOfWork UnitOfWork { get; }
     protected ISecurity Security { get; }
 
-    public CommandHandlerBase(IUnitOfWork unitOfWork, ISecurity security)
+    protected AccountHolder AccountHolder { get; }
+
+    public CommandHandlerBase(IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security)
     {
         UnitOfWork = unitOfWork;
+        AccountHolder = accountHolder;
         Security = security;
     }
 }

@@ -1,9 +1,9 @@
-﻿using Asm.MooBank.Domain.Entities.AccountHolder;
+﻿using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Security;
 
 public interface IUserDataProvider : IUserIdProvider
 {
-    Task<AccountHolder> GetCurrentUser();
+    ValueTask<AccountHolder> GetCurrentUser();
 
 }

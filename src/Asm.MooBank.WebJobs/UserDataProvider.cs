@@ -1,5 +1,4 @@
-﻿using Asm.MooBank.Domain.Entities.AccountHolder;
-using Asm.MooBank.Security;
+﻿using Asm.MooBank.Models;
 
 namespace Asm.MooBank.WebJobs
 {
@@ -7,7 +6,7 @@ namespace Asm.MooBank.WebJobs
     {
         public Guid CurrentUserId => Guid.Empty;
 
-        public Task<AccountHolder> GetCurrentUser()
+        public ValueTask<AccountHolder> GetCurrentUser()
         {
             throw new NotSupportedException();
         }

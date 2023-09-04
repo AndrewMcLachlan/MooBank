@@ -8,5 +8,5 @@ public partial record TransactionTagRule
 
     public string? Description { get; set; }
 
-    public required IEnumerable<TransactionTag> Tags { get; set; }
+    public required IEnumerable<Tag> Tags { get; set; }
 }

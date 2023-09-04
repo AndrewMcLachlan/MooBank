@@ -1,5 +1,5 @@
 ﻿using Asm.MooBank.Domain.Entities.Budget;
-using Asm.MooBank.Services.Commands;
+using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Commands.Budget;
 
@@ -8,18 +8,16 @@ internal class CreateHandler : CommandHandlerBase, ICommandHandler<Create, Model
 {
     private readonly IBudgetRepository _budgetRepository;
 
-    public CreateHandler(IBudgetRepository budgetRepository, IUnitOfWork unitOfWork, ISecurity security) : base(unitOfWork, security)
+    public CreateHandler(IBudgetRepository budgetRepository, IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security) : base(unitOfWork, accountHolder, security)
     {
         _budgetRepository = budgetRepository;
     }
 
     public async Task<Models.Budget> Handle(Create request, CancellationToken cancellationToken)
     {
-        var familyId = await Security.GetFamilyId();
-
         var entity = _budgetRepository.Add(new Domain.Entities.Budget.Budget(Guid.Empty)
         {
-            FamilyId = familyId,
+            FamilyId = AccountHolder.FamilyId,
             Year = request.Year,
         });
 

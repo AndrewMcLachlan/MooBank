@@ -4,9 +4,9 @@ import { AccountController, AccountType } from "models";
 import { ImportSettings } from "../createAccount/ImportSettings";
 import * as Models from "models";
 import { toNameValue } from "extensions";
-import { useAccountGroups, useUpdateAccount } from "services";
+import { useAccountGroups, useUpdateAccount, useVirtualAccounts } from "services";
 import { useNavigate, useParams } from "react-router-dom";
-import { Section } from "@andrewmclachlan/mooapp";
+import { IconButton, Section, useIdParams } from "@andrewmclachlan/mooapp";
 import { AccountPage, useAccount } from "components";
 
 export const ManageAccount = () => {
@@ -17,9 +17,11 @@ export const ManageAccount = () => {
 
     const navigate = useNavigate();
 
-    const { id } = useParams<any>()
+    const id = useIdParams();
 
     const existingAccount = useAccount();
+    const { data: virtualAccounts } = useVirtualAccounts(existingAccount?.id ?? id);
+
 
     useEffect(() => {
         setAccount(existingAccount ?? Models.emptyAccount);
@@ -48,12 +50,7 @@ export const ManageAccount = () => {
     const setImporterTypeId = (importerTypeId: number) => setAccount({ ...account, importerTypeId: importerTypeId });
 
     return (
-        <AccountPage title="Manage" breadcrumbs={[{ text: "Manage", route: `/accounts/${account.id}/manage` }]}>
-            <div className="section-group">
-                <Section>
-                    <Button onClick={() => navigate(`/accounts/${id}/manage/virtual/create`)}>New Virtual Account</Button>
-                </Section>
-            </div>
+        <AccountPage title="Manage" breadcrumbs={[{ text: "Manage", route: `/accounts/${account.id}/manage` }]} actions={[<IconButton key="nva" onClick={() => navigate(`/accounts/${id}/manage/virtual/create`)} icon="plus">New Virtual Account</IconButton>]}>
             {account &&
                 <>
                     <Section>
@@ -98,8 +95,21 @@ export const ManageAccount = () => {
                         </Form>
                     </Section>
                     <Section title="Virtual Accounts">
-                        <Table>
-
+                        <Table striped hover>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {virtualAccounts && virtualAccounts.map(a => (
+                                    <tr key={a.id} className="clickable" onClick={() => navigate(`/accounts/${account.id}/manage/virtual/${a.id}`)}>
+                                        <td>{a.name}</td>
+                                        <td>{a.description}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
                         </Table>
                     </Section>
                 </>

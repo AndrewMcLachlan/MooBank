@@ -1,6 +1,7 @@
 ﻿using Asm.MooBank.Domain.Entities.Budget;
+using Asm.MooBank.Models;
 
-namespace Asm.MooBank.Services.Commands.Budget;
+namespace Asm.MooBank.Commands.Budget;
 
 public record DeleteLine(short Year, Guid Id) : ICommand;
 
@@ -8,14 +9,14 @@ internal class DeleteLineHandler : CommandHandlerBase, ICommandHandler<DeleteLin
 {
     private readonly IBudgetRepository _budgetRepository;
 
-    public DeleteLineHandler(IBudgetRepository budgetRepository, IUnitOfWork unitOfWork, ISecurity security) : base(unitOfWork, security)
+    public DeleteLineHandler(IBudgetRepository budgetRepository, IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security) : base(unitOfWork, accountHolder, security)
     {
         _budgetRepository = budgetRepository;
     }
 
     public Task Handle(DeleteLine request, CancellationToken cancellationToken)
     {
-        Security.AssetBudgetLinePermission(request.Id);
+        Security.AssertBudgetLinePermission(request.Id);
 
         _budgetRepository.DeleteLine(request.Id);
 

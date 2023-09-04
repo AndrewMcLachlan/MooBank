@@ -70,7 +70,7 @@ const useComponentState = (props: AccountRowProps) => {
     };
 
     const onRowClick = () => {
-        navigate(`accounts/${props.account.id}`);
+        navigate(`/accounts/${props.account.id}`);
     };
 
     const balanceChange = (e: React.ChangeEvent<HTMLInputElement>) => {

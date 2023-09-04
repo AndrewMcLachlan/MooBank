@@ -8,21 +8,19 @@ public record GetValueForTag(int TagId) : IQuery<decimal>
     public DateOnly End { get; init; } = DateTime.Today.ToDateOnly().AddMonths(-1).ToEndOfMonth();
 }
 
-internal class GetValueForTagHandler : IQueryHandler<GetValueForTag, decimal>
+internal class GetValueForTagHandler : QueryHandlerBase, IQueryHandler<GetValueForTag, decimal>
 {
     private readonly IQueryable<Transaction> _transactions;
-    private readonly ISecurity _security;
 
-    public GetValueForTagHandler(IQueryable<Transaction> transactions, ISecurity security)
+    public GetValueForTagHandler(IQueryable<Transaction> transactions, Models.AccountHolder accountHolder) : base(accountHolder)
     {
         _transactions = transactions;
-        _security = security;
     }
 
     public async Task<decimal> Handle(GetValueForTag request, CancellationToken cancellationToken)
     {
-        var familyId = await _security.GetFamilyId(cancellationToken);
-        var accountIds = await _security.GetAccountIds(cancellationToken);
+        var familyId = AccountHolder.FamilyId;
+        var accountIds = AccountHolder.Accounts;
 
         var start = request.Start.ToStartOfDay();
         var end = request.End.ToEndOfDay();

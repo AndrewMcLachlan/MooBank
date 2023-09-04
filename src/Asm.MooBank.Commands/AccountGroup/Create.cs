@@ -1,31 +1,28 @@
 ﻿using Asm.MooBank.Domain.Entities.AccountGroup;
+using Asm.MooBank.Domain.Entities.AccountHolder;
 
-namespace Asm.MooBank.Models.Commands.AccountGroup;
+namespace Asm.MooBank.Commands.AccountGroup;
 
 public record Create(Models.AccountGroup AccountGroup) : ICommand<Models.AccountGroup>;
 
-internal class CreateHandler : ICommandHandler<Create, Models.AccountGroup>
+internal class CreateHandler : CommandHandlerBase, ICommandHandler<Create, Models.AccountGroup>
 {
     private readonly IAccountGroupRepository _accountGroupRepository;
-    private readonly IUserDataProvider _userDataProvider;
-    private readonly IUnitOfWork _unitOfWork;
 
-    public CreateHandler(IAccountGroupRepository accountGroupRepository, IUserDataProvider userDataProvider, IUnitOfWork unitOfWork)
+    public CreateHandler(IAccountGroupRepository accountGroupRepository, IUnitOfWork unitOfWork, Models.AccountHolder accountHolder, ISecurity security) : base(unitOfWork, accountHolder, security)
     {
         _accountGroupRepository = accountGroupRepository;
-        _userDataProvider = userDataProvider;
-        _unitOfWork = unitOfWork;
     }
 
     public async Task<Models.AccountGroup> Handle(Create request, CancellationToken cancellationToken)
     {
         var entity = (Domain.Entities.AccountGroup.AccountGroup)request.AccountGroup;
 
-        entity.OwnerId = _userDataProvider.CurrentUserId;
+        entity.OwnerId = AccountHolder.Id;
 
         _accountGroupRepository.Add(entity);
 
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await UnitOfWork.SaveChangesAsync(cancellationToken);
 
         return (Models.AccountGroup)entity;
     }

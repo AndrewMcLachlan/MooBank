@@ -11,7 +11,10 @@ public interface ISecurity
     void AssertAccountGroupPermission(Guid accountGroupId);
     void AssertAccountGroupPermission(AccountGroup accountGroup);
 
-    Task<Guid> GetFamilyId(CancellationToken cancellationToken = default);
-    Task AssetBudgetLinePermission(Guid id, CancellationToken cancellationToken = default);
+    Task AssertFamilyPermission(Guid familyId);
+
+    Task AssertBudgetLinePermission(Guid id, CancellationToken cancellationToken = default);
     Task<IEnumerable<Guid>> GetAccountIds(CancellationToken cancellationToken = default);
+
+    void AssertAdministrator();
 }

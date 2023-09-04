@@ -1,16 +1,24 @@
-﻿namespace Asm.MooBank.Web.Controllers;
+﻿using Asm.Cqrs.Commands;
+using Asm.Cqrs.Queries;
+using Asm.MooBank.Queries.VirtualAccount;
+
+namespace Asm.MooBank.Web.Controllers;
 
 [Route("api/accounts/{accountId}/virtual")]
 [ApiController]
 [Authorize]
-public class VirtualAccountsController : ControllerBase
+public class VirtualAccountsController : CommandQueryController
 {
     private readonly IVirtualAccountService _virtualAccountService;
 
-    public VirtualAccountsController(IVirtualAccountService virtualAccountService)
+    public VirtualAccountsController(IVirtualAccountService virtualAccountService, IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher) : base(queryDispatcher, commandDispatcher)
     {
         _virtualAccountService = virtualAccountService;
     }
+
+    [HttpGet]
+    public Task<IEnumerable<VirtualAccount>> Get(Guid accountId, CancellationToken cancellationToken = default) =>
+        QueryDispatcher.Dispatch(new GetForAccount(accountId), cancellationToken);
 
     [HttpGet("{virtualAccountId}")]
     public Task<VirtualAccount> Get(Guid accountId, Guid virtualAccountId)

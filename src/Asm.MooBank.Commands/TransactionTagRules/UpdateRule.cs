@@ -1,8 +1,8 @@
 ﻿using Asm.MooBank.Domain.Entities.Account;
 
-namespace Asm.MooBank.Models.Commands.TransactionTagRules;
+namespace Asm.MooBank.Commands.TransactionTagRules;
 
-public record UpdateRule(Guid AccountId, int RuleId, TransactionTagRule Rule) : ICommand<TransactionTagRule>;
+public record UpdateRule(Guid AccountId, int RuleId, Models.TransactionTagRule Rule) : ICommand<Models.TransactionTagRule>;
 
 internal class UpdateRuleHandler : ICommandHandler<UpdateRule, Models.TransactionTagRule>
 {

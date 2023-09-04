@@ -1,8 +1,10 @@
-using Asm.MooBank.Commands;
+using System.Security.Claims;
+using Asm.MooBank.Infrastructure;
 using Asm.MooBank.Institution.Ing;
 using Asm.MooBank.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Logging;
 using Serilog;
 
@@ -49,7 +51,14 @@ public class Startup
 
         AddAuthentication(services);
 
-        services.AddAuthorization();
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicies();
+        });
+
+        services.AddAuthorisationHandlers();
+
+        services.AddScoped(provider => provider.GetRequiredService<IUserDataProvider>().GetCurrentUser().Result);
 
         services.AddRepositories();
         services.AddEntities();
@@ -129,9 +138,46 @@ public class Startup
     }
 
     private void AddAuthentication(IServiceCollection services)
+
     {
         //TODO added on token validated support in library.
         IdentityModelEventSource.ShowPII = true;
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddAzureAdBearer(options => Configuration.Bind("OAuth", options));
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddAzureADBearer(options =>
+        {
+            options.Events = new JwtBearerEvents
+            {
+                OnAuthenticationFailed = context =>
+                {
+                    Log.Error(context.Exception, "Authentication failed.");
+                    return Task.CompletedTask;
+                },
+                OnTokenValidated = async context =>
+                {
+                    var principal = context.Principal;
+
+                    if (principal?.Identity is ClaimsIdentity identity)
+                    {
+                        Guid userId = context.Principal!.GetClaimValue<Guid>(Security.ClaimTypes.UserId);
+                        var dataContext = context.HttpContext.RequestServices.GetRequiredService<MooBankContext>();
+
+                        var user = await dataContext.AccountHolders.Include(ah => ah.AccountAccountHolders).ThenInclude(aah => aah.Account).AsNoTracking().SingleOrDefaultAsync(ah => ah.AccountHolderId == userId);
+
+                        if (user == null)
+                        {
+                            context.Fail("User does not exist in the database.");
+                            return;
+                        }
+
+                        var claims = user.Accounts.Select(a => new Claim(Security.ClaimTypes.AccountId, a.AccountId.ToString())).ToList();
+
+                        claims.Add(new(Security.ClaimTypes.FamilyId, user.FamilyId.ToString()));
+
+                        principal.AddIdentity(new(claims));
+                    }
+                }
+            };
+
+            Configuration.Bind("OAuth", options.AzureOAuthOptions);
+        });
     }
 }

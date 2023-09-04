@@ -2,25 +2,25 @@
 using Microsoft.EntityFrameworkCore.Query;
 using TransactionTagEntity = Asm.MooBank.Domain.Entities.Tag.Tag;
 
-namespace Asm.MooBank.Queries.TransactionTags;
+namespace Asm.MooBank.Queries.Tags;
 
-public record GetTransactionTagsHierarchy : IQuery<TransactionTagHierarchy>;
+public record GetTagsHierarchy : IQuery<TransactionTagHierarchy>;
 
-internal class GetTransactionTagsHierarchyHandler : IQueryHandler<GetTransactionTagsHierarchy, TransactionTagHierarchy>
+internal class GetTagsHierarchyHandler : QueryHandlerBase, IQueryHandler<GetTagsHierarchy, TransactionTagHierarchy>
 {
     private readonly IQueryable<TransactionTagEntity> _tags;
 
 
-    public GetTransactionTagsHierarchyHandler(IQueryable<TransactionTagEntity> tags)
+    public GetTagsHierarchyHandler(IQueryable<TransactionTagEntity> tags, AccountHolder accountHolder) : base(accountHolder)
     {
         _tags = tags;
     }
 
-    public async Task<TransactionTagHierarchy> Handle(GetTransactionTagsHierarchy request, CancellationToken cancellationToken)
+    public async Task<TransactionTagHierarchy> Handle(GetTagsHierarchy request, CancellationToken cancellationToken)
     {
         const int maxLevels = 5;
 
-        IIncludableQueryable<TransactionTagEntity, IEnumerable<TransactionTagEntity>> query = _tags.Where(t => !t.Deleted && !t.TaggedTo.Any()).Include(t => t.Tags.Where(t => !t.Deleted));
+        IIncludableQueryable<TransactionTagEntity, IEnumerable<TransactionTagEntity>> query = _tags.Where(t => t.FamilyId == AccountHolder.FamilyId && !t.Deleted && !t.TaggedTo.Any()).Include(t => t.Tags.Where(t => !t.Deleted));
 
         for (int i = 0; i < maxLevels; i++)
         {

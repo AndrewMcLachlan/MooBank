@@ -4,7 +4,7 @@ import { Account, AccountController } from "models";
 import { useAccount } from "./AccountProvider";
 import { NavItem, NavItemDivider, Page, PageProps } from "@andrewmclachlan/mooapp";
 
-import { Cog, Import, Reports, Rules, Sliders, Transaction } from "assets";
+import {  Import, Reports, Rules, Sliders, Transaction } from "assets";
 
 export const AccountPage: React.FC<PropsWithChildren<AccountPageProps>> = ({ children, ...props }) => {
 
@@ -13,7 +13,7 @@ export const AccountPage: React.FC<PropsWithChildren<AccountPageProps>> = ({ chi
     if (!account) return null;
 
     return (
-        <Page title={`${account.name}${props.title && " : "}${props.title}`} navItems={getMenuItems(account, props.navItems ?? [])} breadcrumbs={[{ text: "Accounts", route: "/accounts"}, { text: account.name, route: `/accounts/${account.id}` }, ...props.breadcrumbs]}>
+        <Page title={`${account.name}${props.title && " : "}${props.title}`} actions={props.actions} navItems={getMenuItems(account, props.navItems ?? [])} breadcrumbs={[{ text: "Accounts", route: "/accounts"}, { text: account.name, route: `/accounts/${account.id}` }, ...props.breadcrumbs]}>
             {children}
         </Page>
     )

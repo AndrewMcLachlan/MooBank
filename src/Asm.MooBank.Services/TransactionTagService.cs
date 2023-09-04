@@ -6,11 +6,11 @@ namespace Asm.MooBank.Services;
 
 public interface ITransactionTagService
 {
-    Task<IEnumerable<TransactionTag>> GetAll(CancellationToken cancellationToken = default);
+    //Task<IEnumerable<Tag>> GetAll(CancellationToken cancellationToken = default);
 
-    Task<IEnumerable<TransactionTag>> Get(IEnumerable<int> tagIds, CancellationToken cancellationToken = default);
+    Task<IEnumerable<Tag>> Get(IEnumerable<int> tagIds, CancellationToken cancellationToken = default);
 
-    Task<TransactionTag> Get(int id, CancellationToken cancellationToken = default);
+    Task<Tag> Get(int id, CancellationToken cancellationToken = default);
 
     Task Delete(int id);
 
@@ -26,13 +26,13 @@ public class TransactionTagService : ServiceBase, ITransactionTagService
         _transactionTagRepository = transactionTagRepository;
     }
 
-    public async Task<IEnumerable<TransactionTag>> GetAll(CancellationToken cancellationToken = default) => (await _transactionTagRepository.GetAll(cancellationToken).ToModelAsync(cancellationToken)).OrderBy(t => t.Name);
+    //public async Task<IEnumerable<Tag>> GetAll(CancellationToken cancellationToken = default) => (await _transactionTagRepository.GetAll(cancellationToken).ToModelAsync(cancellationToken)).OrderBy(t => t.Name);
     //(await DataContext.TransactionTags.Include(t => t.Tags).Where(t => !t.Deleted).ToListAsync()).OrderBy(t => t.Name).Select(t => (TransactionTag)t).ToList();
 
-    public Task<IEnumerable<TransactionTag>> Get(IEnumerable<int> tagIds, CancellationToken cancellationToken = default) => _transactionTagRepository.Get(tagIds).ToModelAsync(cancellationToken);
+    public Task<IEnumerable<Tag>> Get(IEnumerable<int> tagIds, CancellationToken cancellationToken = default) => _transactionTagRepository.Get(tagIds).ToModelAsync(cancellationToken);
     //return await DataContext.TransactionTags.Where(t => tagIds.Contains(t.TransactionTagId)).ToListAsync();
 
-    public async Task<TransactionTag> Get(int id, CancellationToken cancellationToken = default) => await GetEntity(id, false, cancellationToken);
+    public async Task<Tag> Get(int id, CancellationToken cancellationToken = default) => await GetEntity(id, false, cancellationToken);
 
     public async Task Delete(int id)
     {

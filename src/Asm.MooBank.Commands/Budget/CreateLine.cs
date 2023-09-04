@@ -1,7 +1,7 @@
 ﻿using Asm.MooBank.Domain.Entities.Budget;
 using Asm.MooBank.Models;
 
-namespace Asm.MooBank.Services.Commands.Budget;
+namespace Asm.MooBank.Commands.Budget;
 
 public record CreateLine(short Year, Models.BudgetLine BudgetLine) : ICommand<Models.BudgetLine>;
 
@@ -9,7 +9,7 @@ internal class CreateLineHandler : CommandHandlerBase, ICommandHandler<CreateLin
 {
     private readonly IBudgetRepository _budgetRepository;
 
-    public CreateLineHandler(IUnitOfWork unitOfWork, IBudgetRepository budgetRepository, ISecurity security) : base(unitOfWork, security)
+    public CreateLineHandler(IUnitOfWork unitOfWork, IBudgetRepository budgetRepository, AccountHolder accountHolder, ISecurity security) : base(unitOfWork, accountHolder, security)
     {
         _budgetRepository = budgetRepository;
     }
@@ -18,9 +18,7 @@ internal class CreateLineHandler : CommandHandlerBase, ICommandHandler<CreateLin
     {
         request.Deconstruct( out short year, out Models.BudgetLine budgetLine);
 
-        var familyId = await Security.GetFamilyId();
-
-        var budget = await _budgetRepository.GetOrCreate(familyId, year, cancellationToken);
+        var budget = await _budgetRepository.GetOrCreate(AccountHolder.FamilyId, year, cancellationToken);
 
         var entity = budgetLine.ToDomain(budget.Id);
 

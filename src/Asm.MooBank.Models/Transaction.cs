@@ -13,7 +13,7 @@ public partial record Transaction
 
     public TransactionType TransactionType { get; set; }
 
-    public IEnumerable<TransactionTag> Tags { get; set; }
+    public IEnumerable<Tag> Tags { get; set; }
 
     public Transaction? Offsets { get; set; }
 

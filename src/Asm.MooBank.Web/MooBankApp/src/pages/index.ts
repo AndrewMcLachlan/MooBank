@@ -2,6 +2,8 @@ export * from "./accounts";
 export * from "./budget";
 export * from "./createAccount/CreateAccount";
 export * from "./error";
+export * from "./families";
+export * from "./institutions";
 export * from "./Home/Home";
 export * from "./Import";
 export * from "./manageAccounts";

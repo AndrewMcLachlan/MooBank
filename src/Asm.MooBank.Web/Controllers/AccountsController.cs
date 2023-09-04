@@ -20,10 +20,10 @@ public class AccountsController : CommandQueryController
     }
 
     [HttpGet]
-    public Task<IEnumerable<InstitutionAccount>> Get(CancellationToken token = default) => _accountService.GetAccounts(token);
+    public Task<IEnumerable<InstitutionAccount>> Get(CancellationToken cancellationToken = default) => _accountService.GetAccounts(cancellationToken);
 
     [HttpGet("position")]
-    public Task<AccountsList> GetFormatted(CancellationToken token = default) => _accountService.GetFormattedAccounts(token);
+    public Task<AccountsList> GetFormatted(CancellationToken cancellationToken = default) => QueryDispatcher.Dispatch(new GetFormatted(), cancellationToken);
 
     [HttpGet("{id}")]
     public Task<InstitutionAccount> Get(Guid id, CancellationToken cancellationToken = default) =>

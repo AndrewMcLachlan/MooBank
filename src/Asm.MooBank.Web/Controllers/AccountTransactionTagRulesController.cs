@@ -1,8 +1,7 @@
 ﻿using System.Net;
 using Asm.Cqrs.Commands;
 using Asm.Cqrs.Queries;
-using Asm.MooBank.Models.Commands.AccountGroup;
-using Asm.MooBank.Models.Commands.TransactionTagRules;
+using Asm.MooBank.Commands.TransactionTagRules;
 
 namespace Asm.MooBank.Web.Controllers
 {
