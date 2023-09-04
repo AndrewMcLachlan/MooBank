@@ -8,6 +8,8 @@ interface VirtualAccountVariables {
     virtualAccountId: accountId;
 }
 
+export const useVirtualAccounts = (accountId: accountId) => useApiGet<VirtualAccount[]>(["virtualaccount", accountId], `api/accounts/${accountId}/virtual`);
+
 export const useVirtualAccount = (accountId: accountId, virtualAccountId: accountId) => useApiGet<Account>(["virtualaccount", { accountId, virtualAccountId }], `api/accounts/${accountId}/virtual/${virtualAccountId}`);
 
 export const useCreateVirtualAccount = () => {
@@ -66,11 +68,11 @@ export const useUpdateVirtualAccountBalance = () => {
             if (!remaining) return;
             //const others = account.virtualAccounts.filter(a => a.id !== emptyGuid);
             
-            const difference = vAccount.balance - balance;
+            const difference = vAccount.currentBalance - balance;
 
-            vAccount.balance = balance;
-            remaining.balance += difference;
-            account.virtualAccountRemainingBalance = remaining.balance;
+            vAccount.currentBalance = balance;
+            remaining.currentBalance += difference;
+            account.virtualAccountRemainingBalance = remaining.currentBalance;
             //accounts.accounts = [];
             accounts.position = 0;
             
