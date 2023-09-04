@@ -1,6 +1,6 @@
 ﻿import React, { useState, useEffect } from "react";
 
-import { TransactionTagPanel } from "components";
+import { TagPanel } from "components";
 
 import { Transaction, Tag } from "models";
 import { useAccount } from "components";
@@ -20,7 +20,7 @@ export const TransactionTransactionTagPanel: React.FC<TransactionTransactionTagP
     }, [transactionRow.tags, fullTagsListQuery.data]);
 
     return (
-        <TransactionTagPanel as={props.as} selectedItems={transactionRow.tags} items={tagsList} onAdd={transactionRow.addTag} onRemove={transactionRow.removeTag} onCreate={transactionRow.createTag} allowCreate={true} alwaysShowEditPanel={props.alwaysShowEditPanel}  />
+        <TagPanel as={props.as} selectedItems={transactionRow.tags} items={tagsList} onAdd={transactionRow.addTag} onRemove={transactionRow.removeTag} onCreate={transactionRow.createTag} allowCreate={true} alwaysShowEditPanel={props.alwaysShowEditPanel}  />
     );
 }
 

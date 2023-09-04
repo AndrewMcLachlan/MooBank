@@ -2,11 +2,11 @@ import "./App.scss";
 import * as Icons from "./assets";
 
 import React from "react";
-import { Link, Navigate, Route, Routes } from "react-router-dom";
+import { Link, Route, Routes } from "react-router-dom";
 
 import * as Pages from "./pages";
 import { ErrorBoundary, Layout } from "@andrewmclachlan/mooapp";
-import { useIsAuthenticated, useMsal } from "@azure/msal-react";
+import { useIsAuthenticated } from "@azure/msal-react";
 import { Cog } from "./assets";
 import { useHasRole } from "hooks";
 
@@ -54,7 +54,7 @@ const App: React.FC = () => {
             ]} />
             <ErrorBoundary>
                 <Routes>
-                    <Route path="/" element={<Pages.Home />} />
+                    <Route path="/" element={<Pages.Dashboard />} />
                     <Route path="/accounts" element={<Pages.Accounts />} />
                     <Route path="/accounts/manage" element={<Pages.ManageAccounts />} />
                     <Route path="/accounts/create" element={<Pages.CreateAccount />} />
@@ -63,7 +63,7 @@ const App: React.FC = () => {
                         <Route path="transactions" element={<Pages.Transactions />} />
                         <Route path="manage/virtual/create" element={<Pages.CreateVirtualAccount />} />
                         <Route path="manage/virtual/:virtualId" element={<Pages.ManageVirtualAccount />} />
-                        <Route path="tag-rules" element={<Pages.TransactionTagRules />} />
+                        <Route path="tag-rules" element={<Pages.Rules />} />
                         <Route path="import" element={<Pages.Import />} />
                         <Route path="reports" element={<Pages.Reports />}>
                             <Route path="in-out" element={<Pages.InOutPage />} />

@@ -9,5 +9,5 @@ export * from "./FormRow";
 export * from "./MonthSelector";
 export * from "./PeriodSelector";
 export * from "./TransactionSearch";
-export * from "./TransactionTagPanel";
+export * from "./TagPanel";
 export * from "./TagSelector";

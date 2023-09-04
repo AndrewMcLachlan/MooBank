@@ -4,27 +4,27 @@ export interface Tag {
     id: number;
     name: string;
     tags: Tag[];
-    settings?: TransactionTagSettings;
+    settings?: TagSettings;
 }
 
-export interface TransactionTagSettings {
+export interface TagSettings {
     applySmoothing: boolean;
     excludeFromReporting: boolean;
 }
 
-export const compareTransactionTags = (left: Tag, right: Tag):boolean => {
+export const compareTags = (left: Tag, right: Tag):boolean => {
     if (!left && !right) return true;
     if (!left || !right) return false;    
 
     return left.id === right.id && left.name === right.name && left.tags.length === right.tags.length;
 }
 
-export const compareTransactionTagArray = (left: Tag[], right: Tag[]) => {
+export const compareTagArray = (left: Tag[], right: Tag[]) => {
         if (!left && !right) return true;
         if (!left || !right) return false;
         if (left.length !== right.length) return false;
         for (let i = 0; i<left.length;i++) {
-            if (!compareTransactionTags(left[i], right[i])) {
+            if (!compareTags(left[i], right[i])) {
                 return false;
             }
         }

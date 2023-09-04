@@ -1,7 +1,7 @@
 import { ClickableIcon, emptyGuid, useIdParams } from "@andrewmclachlan/mooapp";
 import Select from "react-select";
 
-import { MonthSelector, TransactionTagPanel } from "components";
+import { MonthSelector, TagPanel } from "components";
 import { Tag } from "models";
 import { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";

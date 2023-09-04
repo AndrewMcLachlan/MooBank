@@ -3,7 +3,6 @@ import React from "react";
 import { AccountList } from "../../components";
 import { Page } from "@andrewmclachlan/mooapp";
 import { Link } from "react-router-dom";
-import { Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const Accounts: React.FC = () => (

@@ -1,4 +1,4 @@
-import { Tag } from "./TransactionTag";
+import { Tag } from "./Tag";
 
 export enum TransactionType {
     Credit = 1,

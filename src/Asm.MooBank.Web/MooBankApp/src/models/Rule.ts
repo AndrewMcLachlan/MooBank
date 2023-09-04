@@ -1,14 +1,14 @@
 import { SortDirection } from "@andrewmclachlan/mooapp";
 import { Tag } from ".";
 
-export interface TransactionTagRule {
+export interface Rule {
     id: number;
     contains: string;
     description?: string;
     tags: Tag[];
 }
 
-export const sortRules = (sortDirection: SortDirection) => (a: TransactionTagRule, b: TransactionTagRule) => {
+export const sortRules = (sortDirection: SortDirection) => (a: Rule, b: Rule) => {
 
     const retVal = sortDirection === "Ascending" ? 1 : -1;
     const aName = a.contains.toUpperCase();

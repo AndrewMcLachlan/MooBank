@@ -6,7 +6,7 @@ import { Col, Row, Table } from "react-bootstrap";
 import { TransactionTagRow } from "./TagRow";
 
 import { changeSortDirection, ClickableIcon, getNumberOfPages, Pagination, SearchBox, Section, SortDirection } from "@andrewmclachlan/mooapp";
-import { TransactionTagPanel } from "components";
+import { TagPanel } from "components";
 import { Tag, sortTags } from "models";
 import { useCreateTag, useTags } from "services";
 import { TagsPage } from "./TagsPage";
@@ -31,7 +31,7 @@ export const TransactionTags: React.FC = () => {
                 <tbody>
                     <tr>
                         <td><input type="text" placeholder="Tag name" value={newTag.name} onChange={nameChange} className="form-control" /></td>
-                        <TransactionTagPanel as="td" selectedItems={newTag.tags} items={tagsList} onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} onKeyUp={keyUp} />
+                        <TagPanel as="td" selectedItems={newTag.tags} items={tagsList} onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} onKeyUp={keyUp} />
                         <td className="row-action"><span onClick={createTag}><ClickableIcon icon="check-circle" title="Save" size="xl" /></span></td>
                     </tr>
                     {pagedTags.map((t, i) => <TransactionTagRow key={`${i}${(t?.id ?? "")}`} tag={t} />)}

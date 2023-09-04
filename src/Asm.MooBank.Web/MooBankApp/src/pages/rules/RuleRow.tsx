@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 
-import { TransactionTagRule, Tag } from "models";
+import { Rule, Tag } from "models";
 import { ClickableIcon, EditColumn } from "@andrewmclachlan/mooapp";
-import { TransactionTagPanel } from "components";
+import { TagPanel } from "components";
 import { useCreateTag, useTags } from "services/TagService";
 import { useAddTransactionTagRuleTag, useDeleteRule, useRemoveTransactionTagRuleTag, useUpdateRule } from "services";
 
-export const TransactionTagRuleRow: React.FC<TransactionTagRuleRowProps> = (props) => {
+export const RuleRow: React.FC<RuleRowProps> = (props) => {
 
-    const transactionRow = useTransactionTagRuleRowEvents(props);
+    const transactionRow = useRuleRowEvents(props);
 
     const fullTagsListQuery = useTags();
     const fullTagsList = fullTagsListQuery.data ?? [];
@@ -22,16 +22,16 @@ export const TransactionTagRuleRow: React.FC<TransactionTagRuleRowProps> = (prop
     return (
         <tr>
             <EditColumn value={props.rule.contains} onChange={(value) => transactionRow.updateRule({...props.rule, contains: value })} />
-            <TransactionTagPanel as="td" selectedItems={transactionRow.tags} items={tagsList}  onAdd={transactionRow.addTag} onRemove={transactionRow.removeTag} onCreate={transactionRow.createTag} allowCreate={true} />
+            <TagPanel as="td" selectedItems={transactionRow.tags} items={tagsList}  onAdd={transactionRow.addTag} onRemove={transactionRow.removeTag} onCreate={transactionRow.createTag} allowCreate={true} />
             <EditColumn value={props.rule.description} onChange={(value) => transactionRow.updateRule({...props.rule, description: value })} />
             <td className="row-action"><span onClick={transactionRow.deleteRule}><ClickableIcon icon="trash-alt" title="Delete" /></span></td>
         </tr>
     );
 }
 
-TransactionTagRuleRow.displayName = "TransactionTagRuleRow";
+RuleRow.displayName = "RuleRow";
 
-function useTransactionTagRuleRowEvents(props: TransactionTagRuleRowProps) {
+function useRuleRowEvents(props: RuleRowProps) {
 
     const updateTransctionTagRule = useUpdateRule();
 
@@ -75,7 +75,7 @@ function useTransactionTagRuleRowEvents(props: TransactionTagRuleRowProps) {
         setTags(tags.filter((t) => t.id !== tag.id));
     };
 
-    const updateRule = (rule: TransactionTagRule) => {
+    const updateRule = (rule: Rule) => {
         updateTransctionTagRule.mutate([{accountId: props.accountId, id: props.rule.id, }, rule]);
     }
 
@@ -89,7 +89,7 @@ function useTransactionTagRuleRowEvents(props: TransactionTagRuleRowProps) {
     };
 }
 
-export interface TransactionTagRuleRowProps {
-    rule: TransactionTagRule;
+export interface RuleRowProps {
+    rule: Rule;
     accountId: string;
 }

@@ -1,19 +1,17 @@
-import "./TransactionTagRules.scss";
+import "./Rules.scss";
 
 import React, { useEffect, useState } from "react";
-import { Button, Col, Row, Table } from "react-bootstrap";
+import { Button, Table } from "react-bootstrap";
 
 import { changeSortDirection, ClickableIcon, getNumberOfPages, SearchBox, SortDirection, Pagination, useIdParams, Section } from "@andrewmclachlan/mooapp";
-import { AccountPage, TransactionTagPanel, useAccount } from "components";
+import { AccountPage, TagPanel, useAccount } from "components";
 
-import { Tag, TransactionTagRule, sortRules } from "models";
+import { Tag, Rule, sortRules } from "models";
 
-import { TransactionTagRuleRow } from "./TransactionTagRuleRow";
+import { RuleRow } from "./RuleRow";
 import { useCreateRule, useCreateTag, useRules, useRunRules, useTags } from "services";
-import { Page } from "layouts";
 
-
-export const TransactionTagRules: React.FC = () => {
+export const Rules: React.FC = () => {
 
     const id = useIdParams();
     const account = useAccount();
@@ -22,8 +20,8 @@ export const TransactionTagRules: React.FC = () => {
 
     const { data: rules } = useRules(id);
 
-    const [filteredRules, setFilteredRules] = useState<TransactionTagRule[]>([]);
-    const [pagedRules, setPagedRules] = useState<TransactionTagRule[]>([]);
+    const [filteredRules, setFilteredRules] = useState<Rule[]>([]);
+    const [pagedRules, setPagedRules] = useState<Rule[]>([]);
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [pageSize, _setPageSize] = useState<number>(20);
     const [sortDirection, setSortDirection] = useState<SortDirection>("Ascending");
@@ -57,7 +55,7 @@ export const TransactionTagRules: React.FC = () => {
     if (!account) return (null);
 
     return (
-        <AccountPage title="Transaction Tag Rules" breadcrumbs={[{ text: "Tag Rules", route: `/accounts/${id}/tag-rules` }]}>
+        <AccountPage title="Rules" breadcrumbs={[{ text: "Rules", route: `/accounts/${id}/rules` }]}>
             <div className="section-group">
                 <Section className="col-xl-4">
                     <SearchBox value={search} onChange={(v: string) => setSearch(v)} />
@@ -78,11 +76,11 @@ export const TransactionTagRules: React.FC = () => {
                 <tbody>
                     <tr>
                         <td><input type="text" className="form-control" placeholder="Description contains..." value={newRule.contains} onChange={nameChange} /></td>
-                        <TransactionTagPanel as="td" selectedItems={newRule.tags} items={fullTagsList} onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} onKeyUp={keyUp} />
+                        <TagPanel as="td" selectedItems={newRule.tags} items={fullTagsList} onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} onKeyUp={keyUp} />
                         <td><input type="text" className="form-control" placeholder="Notes..." value={newRule.description} onChange={descriptionChange} /></td>
                         <td className="row-action"><span onClick={createRule}><ClickableIcon icon="check-circle" title="Save" size="xl" /></span></td>
                     </tr>
-                    {pagedRules.map((r) => <TransactionTagRuleRow key={r.id} accountId={id} rule={r} />)}
+                    {pagedRules.map((r) => <RuleRow key={r.id} accountId={id} rule={r} />)}
                 </tbody>
                 <tfoot>
                     <tr>
@@ -97,11 +95,11 @@ export const TransactionTagRules: React.FC = () => {
     );
 }
 
-TransactionTagRules.displayName = "TransactionTagRules";
+Rules.displayName = "Rules";
 
 const useComponentState = (accountId: string) => {
 
-    const blankRule = { id: 0, contains: "", description: "", tags: [] } as TransactionTagRule;
+    const blankRule = { id: 0, contains: "", description: "", tags: [] } as Rule;
 
     const fullTagsListQuery = useTags();
     const fullTagsList = fullTagsListQuery.data ?? [];

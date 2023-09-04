@@ -1,6 +1,6 @@
 ﻿import React, { useState, useEffect } from "react";
 
-import { TransactionTagPanel, TransactionTagPanelProps } from "components";
+import { TagPanel, TagPanelProps } from "components";
 
 import { Tag } from "models";
 import { useAddSubTag, useCreateTag, useRemoveSubTag, useTags } from "../../services";
@@ -19,7 +19,7 @@ export const TransactionTagTransactionTagPanel: React.FC<TransactionTagTransacti
     }, [tagRow.tags, fullTagsList]);
 
     return (
-        <TransactionTagPanel {...rest} selectedItems={tagRow.tags} items={tagsList} onAdd={tagRow.addTag} onRemove={tagRow.removeTag} onCreate={tagRow.createTag} allowCreate={true} />
+        <TagPanel {...rest} selectedItems={tagRow.tags} items={tagsList} onAdd={tagRow.addTag} onRemove={tagRow.removeTag} onCreate={tagRow.createTag} allowCreate={true} />
     );
 }
 
@@ -67,6 +67,6 @@ export const useTagEvents = (tag: Tag) => {
     };
 }
 
-export interface TransactionTagTransactionTagPanelProps extends Partial<Pick<TransactionTagPanelProps, "as" | "alwaysShowEditPanel">> {
+export interface TransactionTagTransactionTagPanelProps extends Partial<Pick<TagPanelProps, "as" | "alwaysShowEditPanel">> {
     tag: Tag;
 }

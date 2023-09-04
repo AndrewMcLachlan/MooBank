@@ -1,4 +1,4 @@
-import { TransactionTagSettings } from "../TransactionTag";
+import { TagSettings } from "../Tag";
 import { BaseReport } from "./BaseReport";
 import { TrendPoint } from "./TrendPoint";
 
@@ -10,7 +10,7 @@ export interface TagTrendReport extends BaseReport {
     offsetAverage: number,
 }
 
-export interface TagTrendReportSettings extends Pick<TransactionTagSettings, "applySmoothing"> {
+export interface TagTrendReportSettings extends Pick<TagSettings, "applySmoothing"> {
 
 }
 

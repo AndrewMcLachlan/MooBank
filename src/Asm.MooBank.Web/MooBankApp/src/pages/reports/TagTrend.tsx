@@ -14,7 +14,7 @@ import { Period } from "helpers/dateFns";
 import { ReportType, TagTrendReportSettings, defaultSettings } from "models/reports";
 import { ReportTypeSelector } from "components/ReportTypeSelector";
 import { TagSettingsPanel } from "./TagSettingsPanel";
-import { TransactionTagSettings } from "models";
+import { TagSettings } from "models";
 import { useChartColours } from "./chartColours";
 import { Section } from "@andrewmclachlan/mooapp";
 
@@ -71,7 +71,7 @@ export const TagTrend: React.FC = () => {
         navigate(`/accounts/${accountId}/reports/tag-trend/${id}`);
     }
 
-    const settingsChanged = (settings: TransactionTagSettings) => {
+    const settingsChanged = (settings: TagSettings) => {
         setSettings({ applySmoothing: settings.applySmoothing });
     }
 
