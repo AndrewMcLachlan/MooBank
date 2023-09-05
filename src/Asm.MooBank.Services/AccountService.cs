@@ -8,13 +8,9 @@ namespace Asm.MooBank.Services;
 
 public interface IAccountService
 {
-    Task<IEnumerable<InstitutionAccount>> GetAccounts(CancellationToken cancellationToken = default);
-
     Task<Account> SetBalance(Guid id, decimal balance);
 
     Task<InstitutionAccount> Create(InstitutionAccount account);
-
-    Task<InstitutionAccount> Update(InstitutionAccount account);
 
     Task<decimal> GetPosition();
 
@@ -59,42 +55,6 @@ public class AccountService : ServiceBase, IAccountService
         return entity;
     }
 
-    public async Task<InstitutionAccount> Update(InstitutionAccount account)
-    {
-        var entity = await GetAccountEntity(account.Id);
-
-        entity.Name = account.Name;
-        entity.Description = account.Description;
-        entity.SetAccountGroup(account.AccountGroupId, _userDataProvider.CurrentUserId);
-        entity.AccountType = account.AccountType;
-
-        if (account.Controller != entity.AccountController)
-        {
-            entity.AccountController = account.Controller;
-            if (account.Controller == AccountController.Import)
-            {
-                var importerType = await _accountRepository.GetImporterType(account.ImporterTypeId ?? throw new InvalidOperationException("Import account without importer type"));
-
-                if (importerType == null) throw new NotFoundException("Unknown importer type ID " + account.ImporterTypeId);
-
-                entity.ImportAccount = new Domain.Entities.Account.ImportAccount
-                {
-                    AccountId = entity.AccountId,
-                    ImporterTypeId = account.ImporterTypeId!.Value,
-                };
-            }
-            else if (entity.ImportAccount != null)
-            {
-                _accountRepository.RemoveImportAccount(entity.ImportAccount);
-            }
-        }
-
-        await UnitOfWork.SaveChangesAsync();
-
-        return entity;
-    }
-
-
     public async Task<Account> SetBalance(Guid id, decimal balance)
     {
         var account = await GetAccountEntity(id);
@@ -120,8 +80,6 @@ public class AccountService : ServiceBase, IAccountService
     }
 
     public Task<decimal> GetPosition() => _accountRepository.GetPosition();
-
-    public async Task<IEnumerable<InstitutionAccount>> GetAccounts(CancellationToken cancellationToken = default) => (await _accountRepository.GetAll(cancellationToken)).Select(a => (InstitutionAccount)a);
 
     public void RunTransactionRules(Guid accountId)
     {

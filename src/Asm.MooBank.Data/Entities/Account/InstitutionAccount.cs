@@ -17,6 +17,8 @@ public class InstitutionAccount : Account
 
     public new DateTimeOffset LastUpdated { get; set; }
 
+    public bool ShareWithFamily { get; set; }
+
     [Column("AccountControllerId")]
     public AccountController AccountController { get; set; }
 

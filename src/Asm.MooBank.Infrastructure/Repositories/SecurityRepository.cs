@@ -58,7 +58,7 @@ public class SecurityRepository : ISecurity
     {
         var authResult = _authorizationService.AuthorizeAsync(_principalProvider.Principal!, account.AccountId, Policies.AccountHolder).Result;
 
-        if (!account.AccountAccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId))
+        if (!authResult.Succeeded)
         {
             throw new NotAuthorisedException("Not authorised to view this account");
         }

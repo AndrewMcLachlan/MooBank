@@ -5,7 +5,7 @@ using Asm.MooBank.Security;
 namespace Asm.MooBank.Domain.Entities.Account;
 
 [AggregateRoot]
-public class Account
+public class Account : Entity
 {
     public Account()
     {

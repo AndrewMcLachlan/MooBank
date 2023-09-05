@@ -6,7 +6,12 @@ namespace Asm.MooBank.WebJobs
     {
         public Guid CurrentUserId => Guid.Empty;
 
-        public ValueTask<AccountHolder> GetCurrentUser()
+        public AccountHolder GetCurrentUser()
+        {
+            throw new NotSupportedException();
+        }
+
+        public Task<AccountHolder> GetCurrentUserAsync(CancellationToken cancellationToken = default)
         {
             throw new NotSupportedException();
         }

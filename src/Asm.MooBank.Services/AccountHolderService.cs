@@ -30,7 +30,7 @@ namespace Asm.MooBank.Services
                 return accountHolder;
             }
 
-            accountHolder = await _userDataProvider.GetCurrentUser();
+            accountHolder = await _userDataProvider.GetCurrentUserAsync(cancellationToken);
 
             _accountHolderRepository.Add(accountHolder);
 

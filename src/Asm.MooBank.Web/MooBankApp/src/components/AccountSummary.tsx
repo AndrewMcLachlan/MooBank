@@ -26,7 +26,7 @@ export const AccountSummary: React.FC<AccountSummaryProps> = ({className, ...pro
             </div><hr/>
             <div className="key-value">
                 <div>Type</div>
-                <div>{AccountType[account.accountType]}</div>
+                <div>{AccountType[account.accountType] ?? "Virtual"}</div>
             </div>
 
         </Section>

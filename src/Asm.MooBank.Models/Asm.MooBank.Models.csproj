@@ -7,7 +7,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Asm.Cqrs" Version="3.1.2" />
+    <PackageReference Include="Asm.Cqrs" Version="3.1.4" />
   </ItemGroup>
 
 </Project>

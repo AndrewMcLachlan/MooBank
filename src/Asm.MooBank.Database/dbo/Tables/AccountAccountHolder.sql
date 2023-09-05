@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[AccountAccountHolder]
 (
-	AccountId UNIQUEIDENTIFIER NOT NULL,
+    AccountId UNIQUEIDENTIFIER NOT NULL,
     AccountHolderId UNIQUEIDENTIFIER NOT NULL,
     AccountGroupId UNIQUEIDENTIFIER NULL,
     CONSTRAINT PK_AccountAccountHolder PRIMARY KEY (AccountId, AccountHolderId),

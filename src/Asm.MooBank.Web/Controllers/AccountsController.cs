@@ -1,5 +1,6 @@
 ﻿using Asm.Cqrs.Commands;
 using Asm.Cqrs.Queries;
+using Asm.MooBank.Commands.Account;
 using Asm.MooBank.Queries.Account;
 
 namespace Asm.MooBank.Web.Controllers;
@@ -20,7 +21,7 @@ public class AccountsController : CommandQueryController
     }
 
     [HttpGet]
-    public Task<IEnumerable<InstitutionAccount>> Get(CancellationToken cancellationToken = default) => _accountService.GetAccounts(cancellationToken);
+    public Task<IEnumerable<InstitutionAccount>> Get(CancellationToken cancellationToken = default) => QueryDispatcher.Dispatch(new GetAll(), cancellationToken);
 
     [HttpGet("position")]
     public Task<AccountsList> GetFormatted(CancellationToken cancellationToken = default) => QueryDispatcher.Dispatch(new GetFormatted(), cancellationToken);
@@ -38,11 +39,11 @@ public class AccountsController : CommandQueryController
     }
 
     [HttpPatch("{accountId}")]
-    public async Task<ActionResult<InstitutionAccount>> UpdateAccount(Guid accountId, InstitutionAccount model)
+    public async Task<ActionResult<InstitutionAccount>> UpdateAccount(Guid accountId, InstitutionAccount model, CancellationToken cancellationToken = default)
     {
         if (model == null || model.Id != accountId) return BadRequest(ModelState);
 
-        return Ok(await _accountService.Update(model));
+        return Ok(await CommandDispatcher.Dispatch(new Update(model), cancellationToken));
     }
 
     [HttpPatch("{accountId}/balance")]

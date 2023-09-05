@@ -1,5 +1,5 @@
 import { Section } from "@andrewmclachlan/mooapp";
-import { last12Months, lastMonth, previousMonth } from "helpers/dateFns";
+import { lastMonth } from "helpers/dateFns";
 import { InOut } from "pages";
 import { Spinner } from "react-bootstrap";
 import { useAccounts } from "services";
@@ -8,11 +8,11 @@ export const InOutWidget: React.FC = () => {
 
     const {data: accounts, isLoading } = useAccounts();
 
-    const id = accounts ? accounts[0].id : null;
+    if (!accounts?.length) return null;
+
+    const id = accounts.find(a => a.isPrimary === true)?.id ?? accounts[0].id;
 
     if (isLoading) return <Spinner />;
-
-    if (!accounts?.length) return null;
 
     return (
         <Section title={`${accounts[0].name} - Last Month`} size={3} className="inout">

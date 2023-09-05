@@ -4,7 +4,7 @@ import { AccountController, AccountType } from "models";
 import { ImportSettings } from "../createAccount/ImportSettings";
 import * as Models from "models";
 import { toNameValue } from "extensions";
-import { useAccountGroups, useUpdateAccount, useVirtualAccounts } from "services";
+import { useAccountGroups, useInstitutions, useUpdateAccount, useVirtualAccounts } from "services";
 import { useNavigate, useParams } from "react-router-dom";
 import { IconButton, Section, useIdParams } from "@andrewmclachlan/mooapp";
 import { AccountPage, useAccount } from "components";
@@ -14,6 +14,7 @@ export const ManageAccount = () => {
     const accountTypes = toNameValue(AccountType);
     const accountControllers = toNameValue(AccountController);
     const { data: accountGroups } = useAccountGroups();
+    const { data: institutions } = useInstitutions();
 
     const navigate = useNavigate();
 
@@ -48,6 +49,8 @@ export const ManageAccount = () => {
     const setAccountType = (accountType: AccountType) => setAccount({ ...account, accountType: accountType });
     const setAccountController = (accountController: AccountController) => setAccount({ ...account, controller: accountController });
     const setImporterTypeId = (importerTypeId: number) => setAccount({ ...account, importerTypeId: importerTypeId });
+    const setShareWithFamily = (shareWithFamily: boolean) => setAccount({ ...account, shareWithFamily: shareWithFamily });
+    const setInstitution = (institutionId: number) => setAccount({ ...account, institutionId: institutionId });
 
     return (
         <AccountPage title="Manage" breadcrumbs={[{ text: "Manage", route: `/accounts/${account.id}/manage` }]} actions={[<IconButton key="nva" onClick={() => navigate(`/accounts/${id}/manage/virtual/create`)} icon="plus">New Virtual Account</IconButton>]}>
@@ -64,6 +67,14 @@ export const ManageAccount = () => {
                                 <Form.Label >Description</Form.Label>
                                 <Form.Control type="text" as="textarea" maxLength={255} value={account.description} onChange={(e: any) => setDescription(e.currentTarget.value)} />
                                 <Form.Control.Feedback type="invalid">Please enter a description</Form.Control.Feedback>
+                            </Form.Group>
+                            <Form.Group>
+                                <Form.Label>Institution</Form.Label>
+                                <Form.Select value={account.institutionId.toString()} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setInstitution(Number(e.currentTarget.value))}>
+                                    {institutions?.map(a =>
+                                        <option value={a.id} key={a.id}>{a.name}</option>
+                                    )}
+                                </Form.Select>
                             </Form.Group>
                             <Form.Group controlId="accountGroup" >
                                 <Form.Label>Group</Form.Label>
@@ -91,6 +102,10 @@ export const ManageAccount = () => {
                                 </Form.Select>
                             </Form.Group>
                             <ImportSettings show={account.controller === AccountController.Import} selectedId={account.importerTypeId} onChange={(e) => setImporterTypeId(e)} />
+                            <Form.Group controlId="ShareWithFamily">
+                                <Form.Label>Visible to other family members</Form.Label>
+                                <Form.Check checked={account.shareWithFamily} onChange={(e: any) => setShareWithFamily(e.currentTarget.checked)} />
+                            </Form.Group>
                             <Button type="submit" variant="primary">Update</Button>
                         </Form>
                     </Section>

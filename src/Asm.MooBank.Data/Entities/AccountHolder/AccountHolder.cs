@@ -16,6 +16,8 @@ public partial class AccountHolder
 
     public Guid FamilyId { get; set; }
 
+    public Guid? PrimaryAccountId { get;set; }
+
     [NotMapped]
     public IEnumerable<Account.Account> Accounts => AccountAccountHolders?.Select(a => a.Account) ?? Enumerable.Empty<Account.Account>();
 

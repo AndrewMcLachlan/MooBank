@@ -33,6 +33,9 @@ export interface Account extends AccountBase {
     controller: AccountController;
     importerTypeId?: number;
     virtualAccountRemainingBalance?: number;
+    isPrimary?: boolean;
+    shareWithFamily: boolean;
+    institutionId: number;
     virtualAccounts: VirtualAccount[];
 }
 
@@ -45,6 +48,8 @@ export const emptyAccount : Account = {
     controller: AccountController.Manual,
     accountGroupId: "",
     calculatedBalance: 0,
+    shareWithFamily: false,
+    institutionId: 0,
     virtualAccounts: [],
 }
 

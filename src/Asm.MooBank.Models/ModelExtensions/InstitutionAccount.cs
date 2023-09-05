@@ -14,25 +14,28 @@ public partial record InstitutionAccount
         AccountType = account.AccountType,
         Controller = account.AccountController,
         ImporterTypeId = account.ImportAccount?.ImporterTypeId,
+        ShareWithFamily = account.ShareWithFamily,
+        InstitutionId = account.InstitutionId,
         VirtualAccounts = account.VirtualAccounts != null && account.VirtualAccounts.Any() ?
                               account.VirtualAccounts.OrderBy(v => v.Name).Select(v => (VirtualAccount)v)
                                                      .Union(new[] { new VirtualAccount { Id = Guid.Empty, Name = "Remaining", CurrentBalance = account.Balance - account.VirtualAccounts.Sum(v => v.Balance) } }).ToArray() :
                                 Array.Empty<VirtualAccount>(),
     };
 
-    public static explicit operator Domain.Entities.Account.InstitutionAccount(InstitutionAccount account) =>
-        new Domain.Entities.Account.InstitutionAccount
-        {
-            AccountId = account.Id == Guid.Empty ? Guid.NewGuid() : account.Id,
-            Name = account.Name,
-            Description = account.Description,
-            Balance = account.CurrentBalance,
-            IncludeInPosition = account.IncludeInPosition,
-            LastUpdated = account.BalanceDate,
-            AccountType = account.AccountType,
-            AccountController = account.Controller,
-            ImportAccount = account.ImporterTypeId == null ? null : new Domain.Entities.Account.ImportAccount { ImporterTypeId = account.ImporterTypeId.Value, AccountId = account.Id },
-        };
+    public static explicit operator Domain.Entities.Account.InstitutionAccount(InstitutionAccount account) => new()
+    {
+        AccountId = account.Id == Guid.Empty ? Guid.NewGuid() : account.Id,
+        Name = account.Name,
+        Description = account.Description,
+        Balance = account.CurrentBalance,
+        IncludeInPosition = account.IncludeInPosition,
+        LastUpdated = account.BalanceDate,
+        AccountType = account.AccountType,
+        AccountController = account.Controller,
+        ShareWithFamily = account.ShareWithFamily,
+        InstitutionId = account.InstitutionId,
+        ImportAccount = account.ImporterTypeId == null ? null : new Domain.Entities.Account.ImportAccount { ImporterTypeId = account.ImporterTypeId.Value, AccountId = account.Id },
+    };
 }
 
 

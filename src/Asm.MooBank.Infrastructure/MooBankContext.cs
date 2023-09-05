@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Asm.Domain;
 using Asm.Domain.Infrastructure;
 using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.AccountGroup;
@@ -7,18 +6,19 @@ using Asm.MooBank.Domain.Entities.AccountHolder;
 using Asm.MooBank.Domain.Entities.Ing;
 using Asm.MooBank.Domain.Entities.RecurringTransactions;
 using Asm.MooBank.Domain.Entities.ReferenceData;
-using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.Tag;
+using Asm.MooBank.Domain.Entities.Transactions;
+using MediatR;
 
 namespace Asm.MooBank.Infrastructure;
 
-public partial class MooBankContext : DbContext, IUnitOfWork, IReadOnlyDbContext
+public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
 {
-    public MooBankContext()
+    public MooBankContext(IMediator mediator) : base(mediator)
     {
     }
 
-    public MooBankContext(DbContextOptions<MooBankContext> options) : base(options)
+    public MooBankContext(DbContextOptions<MooBankContext> options, IMediator mediator) : base(options, mediator)
     {
     }
 

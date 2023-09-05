@@ -14,7 +14,7 @@ internal class BudgetLineAuthorisationHandler : AuthorizationHandler<BudgetLineR
 
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, BudgetLineRequirement requirement, Domain.Entities.Budget.BudgetLine resource)
     {
-        var user = await _userDataProvider.GetCurrentUser();
+        var user = await _userDataProvider.GetCurrentUserAsync();
         if (user == null) return;
 
         if (resource.Budget.FamilyId == user.FamilyId)

@@ -5,8 +5,10 @@
     [FirstName] NVARCHAR(255) NULL,
     [LastName] NVARCHAR(255) NULL,
     [FamilyId] UNIQUEIDENTIFIER NULL,
+    [PrimaryAccountId] UNIQUEIDENTIFIER NULL,
     CONSTRAINT PK_AccountHolderId PRIMARY KEY (AccountHolderId),
     CONSTRAINT FK_AccountHolder_Family FOREIGN KEY (FamilyId) REFERENCES Family(Id),
+    CONSTRAINT FK_AccountHolder_PrimaryAccount FOREIGN KEY (PrimaryAccountId) REFERENCES InstitutionAccount(AccountId),
 )
 
 GO

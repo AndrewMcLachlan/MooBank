@@ -58,7 +58,7 @@ public class Startup
 
         services.AddAuthorisationHandlers();
 
-        services.AddScoped(provider => provider.GetRequiredService<IUserDataProvider>().GetCurrentUser().Result);
+        services.AddScoped(provider => provider.GetRequiredService<IUserDataProvider>().GetCurrentUser());
 
         services.AddRepositories();
         services.AddEntities();
@@ -170,6 +170,7 @@ public class Startup
 
                         var claims = user.Accounts.Select(a => new Claim(Security.ClaimTypes.AccountId, a.AccountId.ToString())).ToList();
 
+                        if (user.PrimaryAccountId != null) claims.Add(new(Security.ClaimTypes.PrimaryAccountId, user.PrimaryAccountId.Value.ToString()));
                         claims.Add(new(Security.ClaimTypes.FamilyId, user.FamilyId.ToString()));
 
                         principal.AddIdentity(new(claims));

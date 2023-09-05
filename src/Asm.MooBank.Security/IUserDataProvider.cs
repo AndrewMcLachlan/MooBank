@@ -4,6 +4,7 @@ namespace Asm.MooBank.Security;
 
 public interface IUserDataProvider : IUserIdProvider
 {
-    ValueTask<AccountHolder> GetCurrentUser();
+    AccountHolder GetCurrentUser();
+    Task<AccountHolder> GetCurrentUserAsync(CancellationToken cancellationToken = default);
 
 }

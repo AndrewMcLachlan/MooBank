@@ -10,6 +10,12 @@ public partial record InstitutionAccount : Account
 
     public int? ImporterTypeId { get; set; }
 
+    public bool IsPrimary { get; set; }
+
+    public bool ShareWithFamily { get; set; }
+
+    public int InstitutionId { get; set; }
+
     public IEnumerable<VirtualAccount> VirtualAccounts { get; set; } = Enumerable.Empty<VirtualAccount>();
 
     public decimal VirtualAccountRemainingBalance
