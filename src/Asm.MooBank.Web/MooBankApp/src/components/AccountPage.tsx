@@ -32,7 +32,7 @@ const getMenuItems = (account: Account, navItems: NavItem[]) => {
         const items: (NavItem|ReactNode)[] = [
             { route: `/accounts/${account.id}/transactions`, text: "Transactions", image: <Transaction /> },
             { route: `/accounts/${account.id}/reports`, text: "Reports", image: <Reports /> },
-            { route: `/accounts/${account.id}/tag-rules`, text: "Rules", image: <Rules /> },
+            { route: `/accounts/${account.id}/rules`, text: "Rules", image: <Rules /> },
         ];
 
         switch (account.controller) {

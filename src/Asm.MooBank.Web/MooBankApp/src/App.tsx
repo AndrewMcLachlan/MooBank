@@ -63,7 +63,7 @@ const App: React.FC = () => {
                         <Route path="transactions" element={<Pages.Transactions />} />
                         <Route path="manage/virtual/create" element={<Pages.CreateVirtualAccount />} />
                         <Route path="manage/virtual/:virtualId" element={<Pages.ManageVirtualAccount />} />
-                        <Route path="tag-rules" element={<Pages.Rules />} />
+                        <Route path="rules" element={<Pages.Rules />} />
                         <Route path="import" element={<Pages.Import />} />
                         <Route path="reports" element={<Pages.Reports />}>
                             <Route path="in-out" element={<Pages.InOutPage />} />
