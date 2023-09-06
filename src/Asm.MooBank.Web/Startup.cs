@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Text.Json.Serialization;
 using Asm.MooBank.Infrastructure;
 using Asm.MooBank.Institution.Ing;
 using Asm.MooBank.Security;
@@ -26,7 +27,10 @@ public class Startup
     {
         services.AddApplicationInsightsTelemetry();
 
-        services.AddControllers();
+        services.AddControllers().AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        });
 
         services.AddProblemDetailsFactory();
 

@@ -11,8 +11,8 @@ public partial record Budget
         for (int i = 0; i < 12; i++)
         {
             var mask = 1 << i;
-            var monthIncome = lines.Where(l => l.Income && (l.Month & (1 << i)) != 0).Sum(l => l.Amount);
-            var monthExpenses = lines.Where(l => !l.Income && (l.Month & (1 << i)) != 0).Sum(l => l.Amount);
+            var monthIncome = lines.Where(l => l.Type == BudgetLineType.Income && (l.Month & (1 << i)) != 0).Sum(l => l.Amount);
+            var monthExpenses = lines.Where(l => l.Type == BudgetLineType.Expenses && (l.Month & (1 << i)) != 0).Sum(l => l.Amount);
 
             months.Add(new(i, monthIncome, monthExpenses));
         }
@@ -20,8 +20,8 @@ public partial record Budget
         return new()
         {
             Year = budget.Year,
-            IncomeLines = lines.Where(l => l.Income).OrderBy(l => l.Name),
-            ExpensesLines = lines.Where(l => !l.Income).OrderBy(l => l.Name),
+            IncomeLines = lines.Where(l => l.Type == BudgetLineType.Income).OrderBy(l => l.Name),
+            ExpensesLines = lines.Where(l => l.Type == BudgetLineType.Expenses).OrderBy(l => l.Name),
             Months = months,
         };
     }

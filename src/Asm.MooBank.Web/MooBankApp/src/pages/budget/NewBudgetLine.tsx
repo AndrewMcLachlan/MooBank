@@ -1,8 +1,8 @@
-import { ClickableIcon, emptyGuid, useIdParams } from "@andrewmclachlan/mooapp";
+import { ClickableIcon, emptyGuid } from "@andrewmclachlan/mooapp";
 import Select from "react-select";
 
-import { MonthSelector, TagPanel } from "components";
-import { Tag } from "models";
+import { MonthSelector } from "components";
+import { BudgetLineType, Tag } from "models";
 import { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import { useTags } from "services";
@@ -15,6 +15,7 @@ export const NewBudgetLine: React.FC<NewBudgetLineProps> = (props) => {
 
     const [amount, setAmount] = useState(0);
     const [tag, setTag] = useState<Tag>(null);
+    const [notes, setNotes] = useState<string>("");
     const [month, setMonth] = useState(4095);
 
     const { data: tagValue } = useGetTagValue(tag?.id);
@@ -26,26 +27,24 @@ export const NewBudgetLine: React.FC<NewBudgetLineProps> = (props) => {
     }, [tagValue]);
 
     const add = () => {
-        createBudget.create(props.year, { amount, tagId: tag?.id, name: tag?.name, id: emptyGuid, income: props.income!, month });
+        createBudget.create(props.year, { amount, tagId: tag?.id, name: tag?.name, notes: notes, id: emptyGuid, type: props.type, month });
         setTag(null);
         setAmount(0);
+        setNotes("");
     };
 
     return (
         <tr>
-            <td className="column-30"><Select<Tag> value={tag} onChange={(t: Tag) => setTag(t)} options={allTags.data ?? []} getOptionLabel={(t) => t.name} getOptionValue={(t) => t.id?.toString()} className="react-select" classNamePrefix="react-select" /></td>
+            <td><Select<Tag> value={tag} onChange={(t: Tag) => setTag(t)} options={allTags.data ?? []} getOptionLabel={(t) => t.name} getOptionValue={(t) => t.id?.toString()} className="react-select" classNamePrefix="react-select" /></td>
+            <td><Form.Control value={notes} onChange={(e) => setNotes(e.currentTarget.value)} /></td>
             <td><Form.Control type="number" min={0} value={amount} onChange={(e) => setAmount((e.currentTarget as any).valueAsNumber)} /></td>
-            <MonthSelector as="td" className="column-30" value={month} onChange={setMonth} />
-            <td className="column-5"><ClickableIcon icon="check-circle" title="Save" size="xl" onClick={add} /></td>
+            <MonthSelector as="td" value={month} onChange={setMonth} />
+            <td><ClickableIcon icon="check-circle" title="Save" size="xl" onClick={add} /></td>
         </tr>
     );
 }
 
-NewBudgetLine.defaultProps = {
-    income: false,
-}
-
 export interface NewBudgetLineProps {
     year: number;
-    income?: boolean;
+    type: BudgetLineType;
 }

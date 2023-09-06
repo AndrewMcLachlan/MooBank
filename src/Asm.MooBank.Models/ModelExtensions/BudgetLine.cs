@@ -8,9 +8,10 @@ public partial record BudgetLine
             Id = budgetLine.Id,
             TagId = budgetLine.TagId,
             Name = budgetLine.Tag.Name,
+            Notes = budgetLine.Notes,
             Amount = budgetLine.Amount,
             Month = budgetLine.Month,
-            Income = budgetLine.Income,
+            Type = budgetLine.Income ? BudgetLineType.Income : BudgetLineType.Expenses,
         };
 
 }
@@ -22,9 +23,10 @@ public static class BudgetLineExtensions
         {
             BudgetId = budgetId,
             TagId = budgetLine.TagId,
+            Notes = budgetLine.Notes,
             Amount = budgetLine.Amount,
             Month = budgetLine.Month,
-            Income = budgetLine.Income,
+            Income = budgetLine.Type == BudgetLineType.Income,
         };
 
     public static IEnumerable<BudgetLine> ToModel(this IEnumerable<Domain.Entities.Budget.BudgetLine> budgetLines)

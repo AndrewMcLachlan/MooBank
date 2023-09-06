@@ -16,7 +16,7 @@ internal class UpdateLineHandler : CommandHandlerBase, ICommandHandler<UpdateLin
 
     public async Task<Models.BudgetLine> Handle(UpdateLine request, CancellationToken cancellationToken)
     {
-        await Security.AssertBudgetLinePermission(request.Id);
+        await Security.AssertBudgetLinePermission(request.Id, cancellationToken);
 
         var budget = await _budgetRepository.GetByYear(AccountHolder.FamilyId, request.Year, cancellationToken);
 
@@ -25,6 +25,7 @@ internal class UpdateLineHandler : CommandHandlerBase, ICommandHandler<UpdateLin
         entity.Amount = request.BudgetLine.Amount;
         entity.TagId = request.BudgetLine.TagId;
         entity.Month = request.BudgetLine.Month;
+        entity.Notes = request.BudgetLine.Notes;
 
         await UnitOfWork.SaveChangesAsync(cancellationToken);
 

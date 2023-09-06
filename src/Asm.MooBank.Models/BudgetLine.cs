@@ -8,9 +8,11 @@ public partial record BudgetLine
 
     public int TagId { get; set; }
 
+    public string? Notes { get; set; }
+
     public decimal Amount { get; set; }
 
     public short Month { get; set; }
 
-    public bool Income { get; set; }
+    public BudgetLineType Type { get; set; }
 }

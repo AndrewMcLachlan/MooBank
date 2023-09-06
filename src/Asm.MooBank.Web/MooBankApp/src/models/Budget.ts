@@ -9,10 +9,13 @@ export interface BudgetLine {
     id: string,
     name: string,
     tagId: number,
+    notes?: string,
     amount: number,
     month?: number,
-    income: boolean,
+    type: BudgetLineType,
 }
+
+export type BudgetLineType = "income" | "expenses";
 
 export interface BudgetMonth {
     month: number;

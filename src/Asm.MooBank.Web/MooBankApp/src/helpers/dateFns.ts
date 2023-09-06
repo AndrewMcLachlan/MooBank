@@ -29,3 +29,13 @@ export const allTime: Period = { startDate: startOfYear(addYears(new Date(), -50
 export const formatISODate = (date: Date) => format(date, "yyyy-MM-dd");
 
 export const isMonthSelected = (months: number, month: number) => (months & (1 << month)) !== 0;
+
+export const numberOfMonths = (months: number) =>{
+    let count = 0;
+    for (let i = 0; i < 12; i++) {
+        if (isMonthSelected(months, i)) {
+            count++;
+        }
+    }
+    return count;
+}

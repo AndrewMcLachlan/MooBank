@@ -31,6 +31,10 @@ public class BudgetController : CommandQueryController
         QueryDispatcher.Dispatch(new Get(accountId, id), cancellationToken);
     */
 
+    [HttpGet("{year}/lines/{id}")]
+    public Task<BudgetLine> Get(short year, Guid id, CancellationToken cancellationToken = default) =>
+        QueryDispatcher.Dispatch(new GetLine(year, id), cancellationToken);
+
     [HttpPost("{year}/lines")]
     public async Task<ActionResult<BudgetLine>> Create(short year, [FromBody] BudgetLine budgetLine, CancellationToken cancellationToken = default)
     {

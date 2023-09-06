@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import format from "date-fns/format";
 import * as Models from "models";
 import { isMonthSelected } from "helpers/dateFns";
+import { BudgetTable } from "./BudgetTable";
 
 export const Budget: React.FC = () => {
 
@@ -66,6 +67,10 @@ export const Budget: React.FC = () => {
                     </Col>
                 </Row>
             </Section>
+            <BudgetTable title="Income" year={year} lines={filteredBudget?.incomeLines} type="income" />
+            <BudgetTable title="Expenses" year={year} lines={filteredBudget?.expensesLines} type="expenses" />
+            
+            {/*
             <Section className="budget" title="Income">
                 <Table striped className="budget-list">
                     <thead>
@@ -115,6 +120,7 @@ export const Budget: React.FC = () => {
                     </tfoot>
                 </Table>
             </Section>
+                        */}
             <Section title="Monthly Budget">
                 <Table striped className="budget-list">
                     <thead>

@@ -1,4 +1,5 @@
-﻿using Asm.Domain;
+﻿using System.ComponentModel.DataAnnotations;
+using Asm.Domain;
 using Asm.MooBank.Domain.Entities.Tag;
 
 namespace Asm.MooBank.Domain.Entities.Budget;
@@ -11,6 +12,9 @@ public class BudgetLine : KeyedEntity<Guid>
     public int TagId { get; set; }
 
     public virtual Tag.Tag Tag { get; set; }
+
+    [MaxLength(255)]
+    public string? Notes { get; set; }
 
     public decimal Amount { get; set; }
 
