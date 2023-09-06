@@ -34,7 +34,7 @@ public class RunRulesService : BackgroundService
             {
                 using var scope = _serviceScopeFactory.CreateScope();
                 var transactionRepository = scope.ServiceProvider.GetRequiredService<ITransactionRepository>();
-                var transactionTagRuleRepository = scope.ServiceProvider.GetRequiredService<ITransactionTagRuleRepository>();
+                var transactionTagRuleRepository = scope.ServiceProvider.GetRequiredService<IRuleRepository>();
                 var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
                 var transactions = await transactionRepository.GetTransactions(accountId, cancellationToken);
@@ -46,7 +46,7 @@ public class RunRulesService : BackgroundService
                 foreach (var transaction in transactions)
                 {
                     var applicableRules = rules.Where(r => transaction.Description?.Contains(r.Contains, StringComparison.OrdinalIgnoreCase) ?? false);
-                    var applicableTags = applicableRules.SelectMany(r => r.TransactionTags).Distinct();
+                    var applicableTags = applicableRules.SelectMany(r => r.Tags).Distinct();
 
                     transaction.TransactionTags.AddRange(applicableTags);
                     if (String.IsNullOrEmpty(transaction.Notes))

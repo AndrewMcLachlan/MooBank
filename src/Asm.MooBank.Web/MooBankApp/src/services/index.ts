@@ -7,5 +7,5 @@ export * from "./ReferenceDataService";
 export * from "./ReportsService";
 export * from "./TransactionService";
 export * from "./TagService";
-export * from "./TransactionTagRuleService";
+export * from "./RuleService";
 export * from "./VirtualAccountService";

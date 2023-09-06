@@ -1,6 +1,6 @@
 import "./Rules.scss";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Button, Table } from "react-bootstrap";
 
 import { changeSortDirection, ClickableIcon, getNumberOfPages, SearchBox, SortDirection, Pagination, useIdParams, Section } from "@andrewmclachlan/mooapp";
@@ -32,9 +32,9 @@ export const Rules: React.FC = () => {
     const pageChange = (_current: number, newPage: number) => setPageNumber(newPage);
 
     useEffect(() => {
-
         setPageNumber(1);
-
+        console.debug("Rules changed");
+        console.debug(rules);
         const searchTerm = search.toLocaleLowerCase();
         if (searchTerm === "") {
             setFilteredRules(rules?.rules ?? []);
@@ -46,11 +46,11 @@ export const Rules: React.FC = () => {
         const matchingTagRules = rules?.rules.filter(r => matchingRules.every(r2 => r2.id !== r.id) && r?.tags.some(t => matchingTags.some(t2 => t2.id === t.id)));
 
         setFilteredRules(matchingRules.concat(matchingTagRules));
-    }, [rules, search]);
+    }, [JSON.stringify(rules), search]);
 
     useEffect(() => {
         setPagedRules(filteredRules.sort(sortRules(sortDirection)).slice((pageNumber - 1) * pageSize, ((pageNumber - 1) * pageSize) + pageSize));
-    }, [filteredRules, sortDirection, pageNumber]);
+    }, [JSON.stringify(filteredRules), sortDirection, pageNumber]);
 
     if (!account) return (null);
 

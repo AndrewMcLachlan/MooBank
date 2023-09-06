@@ -7,11 +7,11 @@ namespace Asm.MooBank.Web.Controllers
 {
     [Route("api/tags")]
     [ApiController]
-    public class TagController : CommandQueryController
+    public class TagsController : CommandQueryController
     {
         private readonly ITransactionTagService _tagService;
 
-        public TagController(IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher, ITransactionTagService categoryService) : base(queryDispatcher, commandDispatcher)
+        public TagsController(IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher, ITransactionTagService categoryService) : base(queryDispatcher, commandDispatcher)
         {
             _tagService = categoryService;
         }

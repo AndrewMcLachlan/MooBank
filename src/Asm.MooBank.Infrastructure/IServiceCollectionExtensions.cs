@@ -50,7 +50,7 @@ public static class IServiceCollectionExtensions
                 .AddScoped<ITransactionExtraRepository, TransactionExtraRepository>()
                 .AddScoped<ITransactionRepository, TransactionRepository>()
                 .AddScoped<ITransactionTagRepository, TransactionTagRepository>()
-                .AddScoped<ITransactionTagRuleRepository, TransactionTagRuleRepository>()
+                .AddScoped<IRuleRepository, RuleRepository>()
                 .AddScoped<IVirtualAccountRepository, VirtualAccountRepository>();
 
     public static IServiceCollection AddEntities(this IServiceCollection services) =>

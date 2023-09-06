@@ -2,7 +2,7 @@
 
 [Route("api/[controller]")]
 [ApiController]
-public class MetaController : Controller
+public class MetaController : ControllerBase
 {
     [HttpGet]
     public ActionResult<MetaModel> Get()

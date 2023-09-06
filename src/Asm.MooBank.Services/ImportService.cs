@@ -14,10 +14,10 @@ public interface IImportService
 public class ImportService : ServiceBase, IImportService
 {
     private readonly IInstitutionAccountRepository _accountRepository;
-    private readonly ITransactionTagRuleRepository _transactionTagRuleRepository;
+    private readonly IRuleRepository _transactionTagRuleRepository;
     private readonly IImporterFactory _importerFactory;
 
-    public ImportService(IUnitOfWork unitOfWork, IInstitutionAccountRepository accountRepository, ITransactionTagRuleRepository transactionTagRuleRepository, IImporterFactory importerFactory) : base(unitOfWork)
+    public ImportService(IUnitOfWork unitOfWork, IInstitutionAccountRepository accountRepository, IRuleRepository transactionTagRuleRepository, IImporterFactory importerFactory) : base(unitOfWork)
     {
         _accountRepository = accountRepository;
         _transactionTagRuleRepository = transactionTagRuleRepository;
@@ -44,7 +44,7 @@ public class ImportService : ServiceBase, IImportService
 
         foreach (var transaction in transactions)
         {
-            var applicableTags = rules.Where(r => transaction.Description?.Contains(r.Contains, StringComparison.OrdinalIgnoreCase) ?? false).SelectMany(r => r.TransactionTags).Distinct(new TransactionTagEqualityComparer()).ToList();
+            var applicableTags = rules.Where(r => transaction.Description?.Contains(r.Contains, StringComparison.OrdinalIgnoreCase) ?? false).SelectMany(r => r.Tags).Distinct(new TransactionTagEqualityComparer()).ToList();
 
             transaction.TransactionTags = applicableTags;
             //_transactionRepository.Add(transaction.Id, applicableTags);

@@ -1,6 +1,6 @@
 ﻿namespace Asm.MooBank.Models;
 
-public partial record TransactionTagRule
+public partial record Rule
 {
     public required int Id { get; set; }
 

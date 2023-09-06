@@ -2,19 +2,19 @@
 
 namespace Asm.MooBank.Infrastructure.EntityConfigurations;
 
-public class TransactionTagRule : IEntityTypeConfiguration<Domain.Entities.Account.TransactionTagRule>
+public class Rule : IEntityTypeConfiguration<Domain.Entities.Account.Rule>
 {
-    public void Configure(EntityTypeBuilder<Domain.Entities.Account.TransactionTagRule> entity)
+    public void Configure(EntityTypeBuilder<Domain.Entities.Account.Rule> entity)
     {
-        entity.HasKey(t => t.TransactionTagRuleId);
+        entity.HasKey(t => t.Id);
 
-        entity.Property(e => e.TransactionTagRuleId).ValueGeneratedOnAdd();
+        entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
         entity.Property(e => e.Contains)
                             .IsRequired()
                             .HasMaxLength(50);
 
-        entity.HasMany(p => p.TransactionTags)
+        entity.HasMany(p => p.Tags)
                            .WithMany()
                               .UsingEntity<TransactionTagRuleTransactionTag>(
                                 ttr => ttr.HasOne(ttr2 => ttr2.TransactionTag)

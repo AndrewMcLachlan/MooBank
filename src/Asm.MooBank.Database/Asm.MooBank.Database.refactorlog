@@ -14,4 +14,32 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="[Id]" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="a4a57f94-cadf-41de-b2d1-ff95a70624b3" ChangeDateTime="09/06/2023 11:07:00">
+    <Property Name="ElementName" Value="[dbo].[TransactionTagRule]" />
+    <Property Name="ElementType" Value="SqlTable" />
+    <Property Name="ParentElementName" Value="[dbo]" />
+    <Property Name="ParentElementType" Value="SqlSchema" />
+    <Property Name="NewName" Value="[Rule]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="438fc504-b20e-4fd8-b975-a13bc0b45a4f" ChangeDateTime="09/06/2023 11:07:59">
+    <Property Name="ElementName" Value="[dbo].[Rule].[TransactionTagRuleId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Rule]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[Id]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="60e60707-d5f5-4788-b3d8-f45042f8a2b4" ChangeDateTime="09/06/2023 11:08:13">
+    <Property Name="ElementName" Value="[dbo].[PK_TransactionTagRule]" />
+    <Property Name="ElementType" Value="SqlPrimaryKeyConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[Rule]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[PK_Rule]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="cf47bdd2-1c96-46c9-b805-704c276d5fdc" ChangeDateTime="09/06/2023 11:08:29">
+    <Property Name="ElementName" Value="[dbo].[FK_TransactionTagRule_Account]" />
+    <Property Name="ElementType" Value="SqlForeignKeyConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[Rule]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[FK_Rule_Account]" />
+  </Operation>
 </Operations>

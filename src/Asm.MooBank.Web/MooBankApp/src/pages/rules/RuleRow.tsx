@@ -4,7 +4,7 @@ import { Rule, Tag } from "models";
 import { ClickableIcon, EditColumn } from "@andrewmclachlan/mooapp";
 import { TagPanel } from "components";
 import { useCreateTag, useTags } from "services/TagService";
-import { useAddTransactionTagRuleTag, useDeleteRule, useRemoveTransactionTagRuleTag, useUpdateRule } from "services";
+import { useAddRuleTag, useDeleteRule, useRemoveRuleTag, useUpdateRule } from "services";
 
 export const RuleRow: React.FC<RuleRowProps> = (props) => {
 
@@ -36,8 +36,8 @@ function useRuleRowEvents(props: RuleRowProps) {
     const updateTransctionTagRule = useUpdateRule();
 
     const createTransactionTag = useCreateTag();
-    const addTransactionTagRuleTag = useAddTransactionTagRuleTag();
-    const removeTransactionTagRuleTag = useRemoveTransactionTagRuleTag();
+    const addTransactionTagRuleTag = useAddRuleTag();
+    const removeTransactionTagRuleTag = useRemoveRuleTag();
     
     const deleteTransactionTagRule = useDeleteRule();
 

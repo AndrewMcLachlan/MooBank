@@ -12,7 +12,7 @@ public static class AsmMooBankServicesIServiceCollectionExtensions
                 .AddScoped<IReferenceDataService, ReferenceDataService>()
                 .AddScoped<ITransactionService, TransactionService>()
                 .AddScoped<ITransactionTagService, TransactionTagService>()
-                .AddScoped<ITransactionTagRuleService, TransactionTagRuleService>()
+                .AddScoped<IRuleService, RuleService>()
                 .AddScoped<IVirtualAccountService, VirtualAccountService>()
 
                 .AddHostedService<RunRulesService>()

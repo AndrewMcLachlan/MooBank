@@ -8,7 +8,7 @@ public class TransactionTagRuleTransactionTag
 
     public int TransactionTagId { get; set; }
 
-    public virtual TransactionTagRule TransactionTagRule { get; set; }
+    public virtual Rule TransactionTagRule { get; set; }
 
     public virtual Tag.Tag TransactionTag { get; set; }
 }

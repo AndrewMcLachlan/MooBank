@@ -44,7 +44,7 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
     public virtual DbSet<Tag> TransactionTags { get; set; }
 
     [AllowNull]
-    public virtual DbSet<TransactionTagRule> TransactionTagRules { get; set; }
+    public virtual DbSet<Rule> TransactionTagRules { get; set; }
 
     [AllowNull]
     public virtual DbSet<VirtualAccount> VirtualAccounts { get; set; }

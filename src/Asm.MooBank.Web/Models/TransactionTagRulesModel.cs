@@ -8,6 +8,6 @@ namespace Asm.MooBank.Web.Models
 {
     public class TransactionTagRulesModel
     {
-        public IEnumerable<TransactionTagRule> Rules { get; set; }
+        public IEnumerable<Rule> Rules { get; set; }
     }
 }

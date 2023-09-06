@@ -2,22 +2,22 @@
 
 namespace Asm.MooBank.Commands.Rules;
 
-public record UpdateRule(Guid AccountId, int RuleId, Models.TransactionTagRule Rule) : ICommand<Models.TransactionTagRule>;
+public record UpdateRule(Guid AccountId, int RuleId, Models.Rule Rule) : ICommand<Models.Rule>;
 
-internal class UpdateRuleHandler : ICommandHandler<UpdateRule, Models.TransactionTagRule>
+internal class UpdateRuleHandler : ICommandHandler<UpdateRule, Models.Rule>
 {
-    private readonly ITransactionTagRuleRepository _transactionTagRuleRepository;
+    private readonly IRuleRepository _transactionTagRuleRepository;
     private readonly ISecurity _security;
     private readonly IUnitOfWork _unitOfWork;
 
-    public UpdateRuleHandler(ITransactionTagRuleRepository transactionTagRuleRepository, ISecurity securityRepository, IUnitOfWork unitOfWork)
+    public UpdateRuleHandler(IRuleRepository transactionTagRuleRepository, ISecurity securityRepository, IUnitOfWork unitOfWork)
     {
         _transactionTagRuleRepository = transactionTagRuleRepository;
         _security = securityRepository;
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Models.TransactionTagRule> Handle(UpdateRule request, CancellationToken cancellationToken)
+    public async Task<Models.Rule> Handle(UpdateRule request, CancellationToken cancellationToken)
     {
         var entity = await _transactionTagRuleRepository.Get(request.Rule.Id, cancellationToken);
 

@@ -77,7 +77,7 @@
     <Build Include="dbo\Tables\AccountHolder.sql" />
     <Build Include="dbo\Tables\AccountAccountHolder.sql" />
     <Build Include="dbo\Tables\Tag.sql" />
-    <Build Include="dbo\Tables\TransactionTagRule.sql" />
+    <Build Include="dbo\Tables\Rule.sql" />
     <Build Include="dbo\Tables\TransactionTransactionTag.sql" />
     <Build Include="dbo\Tables\TransactionTagTransactionTag.sql" />
     <Build Include="dbo\Tables\AccountController.sql" />
