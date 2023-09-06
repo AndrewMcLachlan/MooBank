@@ -2,7 +2,7 @@
 using Asm.MooBank.Models;
 using ITransactionTagRepository = Asm.MooBank.Domain.Entities.Tag.ITransactionTagRepository;
 
-namespace Asm.MooBank.Commands.TransactionTags;
+namespace Asm.MooBank.Commands.Tags;
 
 public sealed record AddSubTag(int Id, int SubId) : ICommand<Tag>;
 

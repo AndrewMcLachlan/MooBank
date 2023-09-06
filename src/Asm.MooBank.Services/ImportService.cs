@@ -14,14 +14,12 @@ public interface IImportService
 public class ImportService : ServiceBase, IImportService
 {
     private readonly IInstitutionAccountRepository _accountRepository;
-    private readonly ITransactionRepository _transactionRepository;
     private readonly ITransactionTagRuleRepository _transactionTagRuleRepository;
     private readonly IImporterFactory _importerFactory;
 
-    public ImportService(IUnitOfWork unitOfWork, ITransactionRepository transactionRepository, IInstitutionAccountRepository accountRepository, ITransactionTagRuleRepository transactionTagRuleRepository, IImporterFactory importerFactory) : base(unitOfWork)
+    public ImportService(IUnitOfWork unitOfWork, IInstitutionAccountRepository accountRepository, ITransactionTagRuleRepository transactionTagRuleRepository, IImporterFactory importerFactory) : base(unitOfWork)
     {
         _accountRepository = accountRepository;
-        _transactionRepository = transactionRepository;
         _transactionTagRuleRepository = transactionTagRuleRepository;
         _importerFactory = importerFactory;
     }

@@ -1,7 +1,7 @@
 ﻿using ITransactionTagRepository = Asm.MooBank.Domain.Entities.Tag.ITransactionTagRepository;
 using Asm.MooBank.Models;
 
-namespace Asm.MooBank.Commands.TransactionTags;
+namespace Asm.MooBank.Commands.Tags;
 
 public sealed record CreateByName(string Name, IEnumerable<int> Tags) : ICommand<Tag>;
 

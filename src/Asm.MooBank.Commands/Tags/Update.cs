@@ -1,6 +1,6 @@
 ﻿using Asm.MooBank.Domain.Entities.Tag;
 
-namespace Asm.MooBank.Commands.TransactionTags;
+namespace Asm.MooBank.Commands.Tags;
 
 public sealed record Update(int TagId, string Name, bool ExcludeFromReporting, bool ApplySmoothing) : ICommand<Models.Tag>;
 
