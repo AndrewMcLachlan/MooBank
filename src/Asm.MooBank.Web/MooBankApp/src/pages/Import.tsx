@@ -1,11 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { AccountController } from "../models";
-import { Upload, useIdParams, FilesAddedEvent } from "@andrewmclachlan/mooapp";
+import { Page, Upload, useIdParams, FilesAddedEvent } from "@andrewmclachlan/mooapp";
 import { useAccount, useImportTransactions } from "../services";
 import Button from "react-bootstrap/Button";
 import { useState } from "react";
-import { Page } from "../layouts";
 
 export const Import: React.FC = () => {
 
@@ -37,12 +36,9 @@ export const Import: React.FC = () => {
     }
 
     return (
-        <Page title="Import Transactions">
-            <Page.Header title="Import Transactions" breadcrumbs={[[account.data.name, `/accounts/${id}`], ["Import", `/accounts/${id}/import`]]} goBack />
-            <Page.Content>
-                <Upload onFilesAdded={filesAdded} accept="text/csv" />
-                <Button variant="primary" onClick={submitClick} disabled={!file}>Import</Button>
-            </Page.Content>
+        <Page title="Import Transactions" breadcrumbs={[{ text: account.data.name, route: `/accounts/${id}` }, { text: "Import", route: `/accounts/${id}/import` }]}>
+            <Upload onFilesAdded={filesAdded} accept="text/csv" />
+            <Button variant="primary" onClick={submitClick} disabled={!file}>Import</Button>
         </Page>
     );
 }

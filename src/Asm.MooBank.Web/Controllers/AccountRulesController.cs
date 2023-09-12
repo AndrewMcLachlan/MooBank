@@ -88,10 +88,5 @@ namespace Asm.MooBank.Web.Controllers
 
             return StatusCode((int)HttpStatusCode.Accepted);
         }
-
-        public string ControllerName<T>()
-        {
-            return nameof(T).Replace("Controller", String.Empty);
-        }
     }
 }

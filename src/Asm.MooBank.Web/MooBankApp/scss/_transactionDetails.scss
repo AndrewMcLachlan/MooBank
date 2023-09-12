@@ -12,6 +12,16 @@
     }
 }
 
+.delete-offset {
+    position: relative;
+
+    svg {
+        position: absolute;
+        right: 50%;
+        top: 50%;
+    }
+}
+
 .transaction-details-extra {
     grid-column: 1 / span 2;
     display: grid;

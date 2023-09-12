@@ -18,7 +18,7 @@ public abstract class RepositoryBase<TEntity, TKey> : IRepository<TEntity, TKey>
 
     public virtual async Task<IEnumerable<TEntity>> GetAll(CancellationToken cancellationToken = default) => await DataSet.ToListAsync(cancellationToken);
 
-    public async Task<TEntity> Get(TKey id, CancellationToken cancellationToken = default)
+    public virtual async Task<TEntity> Get(TKey id, CancellationToken cancellationToken = default)
     {
         var entity = await GetById(id).SingleOrDefaultAsync(cancellationToken);
 

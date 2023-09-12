@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-import { Page } from "layouts";
 import { TagSelector } from "components";
 import { ReportsPage } from "./ReportsPage";
 import { useAccount, useTag, useTagTrendReport } from "services";

@@ -1,23 +1,46 @@
-import { Transaction, isCredit } from "models";
-import { Button, Modal, } from "react-bootstrap";
+import { Transaction, TransactionOffset, isCredit } from "models";
+import { Button, Col, Form, Modal, Row, } from "react-bootstrap";
 import { TransactionTransactionTagPanel } from "./TransactionTransactionTagPanel";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { TransactionSearch } from "components";
 import { TransactionDetailsIng } from "./TransactionDetailsIng";
-import { formatCurrency } from "@andrewmclachlan/mooapp";
+import { IconButton, Input, formatCurrency } from "@andrewmclachlan/mooapp";
+import { useInvalidateSearch } from "services";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { off } from "process";
 
 export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => {
 
-    const [transaction, setTransaction] = useState(props.transaction);
-    const [notes, setNotes] = useState(props.transaction.notes ?? "");
-    const [offsetBy, setOffsetBy] = useState<Transaction>(props.transaction.offsetBy);
+    const invalidateSearch = useInvalidateSearch(props.transaction.id);
 
-    useEffect(() => setTransaction(props.transaction), [props.transaction]);
+    const transaction = useMemo(() => props.transaction, [props.transaction]);
+    const [notes, setNotes] = useState(props.transaction.notes ?? "");
+    const [offsetBy, setOffsetBy] = useState<TransactionOffset[]>(props.transaction.offsetBy);
+
+    const offsetChanged = (offset: TransactionOffset) => {
+        if (offset.amount > offset.transaction.amount || offset.amount <= 0) offset.amount = offset.transaction.amount;
+        
+        const newOffsetBy = [...offsetBy];
+        const index = newOffsetBy.findIndex(o => o.transaction.id === offset.transaction.id);
+        if (index === -1) {
+            newOffsetBy.push(offset);
+        } else {
+            newOffsetBy[index] = offset;
+        }
+        invalidateSearch();
+        setOffsetBy(newOffsetBy);
+    };
+
+    const removeOffset = (transactionId: string) => {
+        const newOffsetBy = offsetBy.filter(o => o.transaction.id !== transactionId);
+        invalidateSearch();
+        setOffsetBy(newOffsetBy);
+    }
 
     if (!transaction) return null;
 
     return (
-        <Modal show={props.show} onHide={props.onHide} size="lg">
+        <Modal show={props.show} onHide={props.onHide} size="xl">
             <Modal.Header closeButton>
                 <Modal.Title>Transaction</Modal.Title>
             </Modal.Header>
@@ -34,25 +57,44 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
                     <div>Description</div>
                     <div className="value description">{props.transaction.description}</div>
                     {props.transaction.extraInfo && <TransactionDetailsIng transaction={transaction} />}
-                    {props.transaction.offsets &&
+                    {props.transaction.offsets?.map((to) =>
                         <>
                             <div>Rebate / refund for</div>
-                            <div className="value"><span className="amount">{props.transaction.offsets?.amount}</span> - {props.transaction.offsets?.description}</div>
-                        </>
-                    }
+                            <div className="value"><span className="amount">{to.amount}</span> - {to.transaction.description}</div>
+                        </>                        
+                    )}
                     <div>Tags</div>
                     <TransactionTransactionTagPanel as="div" transaction={props.transaction} alwaysShowEditPanel />
                 </section>
-                <section className="mt-3">
-                    <div hidden={isCredit(props.transaction.transactionType)}>
-                        <label>Corresponding rebate / refund</label>
-                        <TransactionSearch value={offsetBy} onChange={(v) => setOffsetBy(v)} transaction={props.transaction} />
-                    </div>
-                    <div className="mt-3">
-                        <label>Notes</label>
-                        <textarea className="form-control" value={notes} onChange={(e) => setNotes(e.currentTarget.value)} />
-                    </div>
+                <section className="mt-3" hidden={isCredit(props.transaction.transactionType)}>
+                    {offsetBy?.map((to) =>
+                        <Form.Group as={Row} key={to.transaction.id}>
+                            <Col xl={9}>
+                                <label>Corresponding rebate / refund</label>
+                                <TransactionSearch value={to.transaction} onChange={(v) => offsetChanged({ ...to, transaction: v })} transaction={props.transaction} />
+                            </Col>
+                            <Col xl={2}>
+                                <Form.Label>Amount</Form.Label>
+                                <Form.Control type="number" value={to.amount} required max={to.transaction.amount} onChange={e => offsetChanged({ ...to, amount: (e.currentTarget as any).valueAsNumber })} />
+                                <Form.Control.Feedback type="invalid">Please enter an amount</Form.Control.Feedback>
+                            </Col>
+                            <Col className="delete-offset">
+                                <FontAwesomeIcon icon="trash-alt" onClick={() => removeOffset(to.transaction.id)} />
+                            </Col>
+                        </Form.Group>
+                    )}
+                    <Form.Group as={Row}>
+                        <Col xl={9}>
+                            <label>Corresponding rebate / refund</label>
+                            <TransactionSearch onChange={(v) => offsetChanged({ transaction: v, amount: v.amount })} transaction={props.transaction} excludedTransactions={offsetBy?.map(o => o.transaction.id)} />
+                        </Col>
+                    </Form.Group>
                 </section>
+                <section className="mt-3">
+                    <label>Notes</label>
+                    <textarea className="form-control" value={notes} onChange={(e) => setNotes(e.currentTarget.value)} />
+                </section>
+
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={props.onHide}>Close</Button>
@@ -66,5 +108,5 @@ export interface TransactionDetailsProps {
     transaction: Transaction;
     show: boolean;
     onHide: () => void;
-    onSave: (notes?: string, offsetBy?: Transaction) => void;
+    onSave: (notes?: string, offsetBy?: TransactionOffset[]) => void;
 }

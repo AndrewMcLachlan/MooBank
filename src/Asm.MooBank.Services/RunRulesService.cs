@@ -48,7 +48,7 @@ public class RunRulesService : BackgroundService
                     var applicableRules = rules.Where(r => transaction.Description?.Contains(r.Contains, StringComparison.OrdinalIgnoreCase) ?? false);
                     var applicableTags = applicableRules.SelectMany(r => r.Tags).Distinct();
 
-                    transaction.TransactionTags.AddRange(applicableTags);
+                    transaction.Tags.AddRange(applicableTags);
                     if (String.IsNullOrEmpty(transaction.Notes))
                     {
                         transaction.Notes = String.Join(". ", applicableRules.Select(r => r.Description));

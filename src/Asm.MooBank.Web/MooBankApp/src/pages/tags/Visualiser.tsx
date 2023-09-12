@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 
-import { Page } from "../../layouts";
 import { Tag } from "../../models";
 
 import { useTagsHierarchy } from "../../services"

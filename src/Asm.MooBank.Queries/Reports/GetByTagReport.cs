@@ -26,10 +26,10 @@ internal class GetByTagReportHandler : IQueryHandler<GetByTagReport, ByTagReport
         var start = request.Start.ToStartOfDay();
         var end = request.End.ToEndOfDay();
 
-        var transactions = await _transactions.Include(t => t.TransactionTags).WhereByReportQuery(request).ToListAsync(cancellationToken);
+        var transactions = await _transactions.Include(t => t.Tags).WhereByReportQuery(request).ToListAsync(cancellationToken);
 
         var tagValuesInterim = transactions
-            .GroupBy(t => t.TransactionTags)
+            .GroupBy(t => t.Tags)
             .SelectMany(g => g.Key.Select(t =>
             new TagValue
             {
@@ -47,7 +47,7 @@ internal class GetByTagReportHandler : IQueryHandler<GetByTagReport, ByTagReport
 
         if (request.TagId == null)
         {
-            var tagLessAmount = await _transactions.WhereByReportQuery(request).Where(t => !t.TransactionTags.Any()).SumAsync(t => t.Amount, cancellationToken);
+            var tagLessAmount = await _transactions.WhereByReportQuery(request).Where(t => !t.Tags.Any()).SumAsync(t => t.Amount, cancellationToken);
             tagValues.Add(new TagValue
             {
                 TagName = "Untagged",

@@ -43,6 +43,13 @@ export const useSearchTransactions = (transaction: Models.Transaction, searchTyp
     return useApiGet<Models.Transaction[]>([transactionKey, transaction.id], `api/accounts/${transaction.accountId}/transactions${queryString}`)
 }
 
+export const useInvalidateSearch = (transactionId: string) => {
+
+    const queryClient = useQueryClient();
+
+    return () => queryClient.invalidateQueries([transactionKey, transactionId]);
+}
+
 export const useUpdateTransaction = () => {
 
     const queryClient = useQueryClient();
@@ -62,6 +69,9 @@ export const useUpdateTransaction = () => {
 
             queryClient.setQueryData<Models.PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection], transactions);
         },
+        onError: (_error, [variables, _data]) => {
+            queryClient.invalidateQueries([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection]);
+        }
     });
 }
 

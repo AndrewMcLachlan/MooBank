@@ -1,14 +1,7 @@
 import React, { useState } from "react";
 
-import format from "date-fns/format";
-import getMonth from "date-fns/getMonth";
-import getYear from "date-fns/getYear";
-
-import { Page } from "layouts";
 import { ReportsPage } from "../ReportsPage";
-import { useAccount, useInOutReport } from "services";
 
-import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, ChartData, registerables } from "chart.js";
 import chartTrendline from "chartjs-plugin-trendline";
 import { Section, useIdParams, useLayout } from "@andrewmclachlan/mooapp";

@@ -6,7 +6,7 @@ import { TransactionRow, TransactionRowProps } from "./TransactionRow";
 import { TransactionTransactionTagPanel } from "./TransactionTransactionTagPanel";
 import { TransactionDetails } from "./TransactionDetails";
 import { useUpdateTransaction } from "services";
-import { Transaction } from "models";
+import { Transaction, TransactionOffset } from "models";
 import { formatCurrency } from "@andrewmclachlan/mooapp";
 
 export const TransactionRowIng: React.FC<TransactionRowProps> = (props) => {
@@ -15,9 +15,9 @@ export const TransactionRowIng: React.FC<TransactionRowProps> = (props) => {
 
     const updateTransaction = useUpdateTransaction();
 
-    const onSave = (notes: string, offsetBy?: Transaction) => {
-        
-        updateTransaction.mutate([{ accountId: props.transaction.accountId, transactionId: props.transaction.id }, { notes, offsetByTransactionId: offsetBy?.id }]);
+    const onSave = (notes: string, offsetBy?: TransactionOffset[]) => {
+
+        updateTransaction.mutate([{ accountId: props.transaction.accountId, transactionId: props.transaction.id }, { notes, offsetBy: offsetBy?.map(to => ({ transactionOffsetId: to.transaction.id, amount: to.amount })) }]);
         setShowDetails(false);
     }
 

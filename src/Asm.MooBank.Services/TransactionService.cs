@@ -40,11 +40,11 @@ public class TransactionService : ServiceBase, ITransactionService
 
         var entity = await GetEntity(id);
 
-        if (entity.TransactionTags.Any(t => t.Id == tagId)) throw new ExistsException("Cannot add tag, it already exists");
+        if (entity.Tags.Any(t => t.Id == tagId)) throw new ExistsException("Cannot add tag, it already exists");
 
         var tag = await _transactionTagRepository.Get(tagId);
 
-        entity.TransactionTags.Add(tag);
+        entity.Tags.Add(tag);
 
         await UnitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -55,13 +55,13 @@ public class TransactionService : ServiceBase, ITransactionService
     {
         var entity = await GetEntity(id);
 
-        var existingIds = entity.TransactionTags.Select(t => t.Id);
+        var existingIds = entity.Tags.Select(t => t.Id);
 
         var filteredTags = tags.Where(t => !existingIds.Contains(t));
 
         var tagEntities = await _transactionTagRepository.Get(filteredTags);
 
-        entity.TransactionTags.AddRange(tagEntities);
+        entity.Tags.AddRange(tagEntities);
 
         await UnitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -74,11 +74,11 @@ public class TransactionService : ServiceBase, ITransactionService
 
         var entity = await GetEntity(id);
 
-        var tag = entity.TransactionTags.SingleOrDefault(t => t.Id == tagId);
+        var tag = entity.Tags.SingleOrDefault(t => t.Id == tagId);
 
         if (tag == null) throw new NotFoundException("Tag not found");
 
-        entity.TransactionTags.Remove(tag);
+        entity.Tags.Remove(tag);
 
         await UnitOfWork.SaveChangesAsync(cancellationToken);
 

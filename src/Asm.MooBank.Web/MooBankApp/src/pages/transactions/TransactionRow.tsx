@@ -2,7 +2,7 @@
 import format from "date-fns/format";
 import parseISO from "date-fns/parseISO";
 
-import { Transaction } from "models";
+import { Transaction, TransactionOffset } from "models";
 import { TransactionDetails } from "./TransactionDetails";
 import { TransactionTransactionTagPanel } from "./TransactionTransactionTagPanel";
 import { useUpdateTransaction } from "services";
@@ -14,9 +14,9 @@ export const TransactionRow: React.FC<TransactionRowProps> = (props) => {
 
     const updateTransaction = useUpdateTransaction();
 
-    const onSave = (notes: string, offsetBy?: Transaction) => {
+    const onSave = (notes: string, offsetBy?: TransactionOffset[]) => {
         
-        updateTransaction.mutate([{ accountId: props.transaction.accountId, transactionId: props.transaction.id }, { notes, offsetByTransactionId: offsetBy?.id }]);
+        updateTransaction.mutate([{ accountId: props.transaction.accountId, transactionId: props.transaction.id }, { notes, offsetBy: offsetBy?.map(to => ({ transactionOffsetId: to.transaction.id, amount: to.amount }))}]);
         setShowDetails(false);
     }
 

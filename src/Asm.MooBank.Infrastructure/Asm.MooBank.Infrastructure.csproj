@@ -3,7 +3,7 @@
   <Import Project="..\..\Common.props" />
 
   <ItemGroup>
-    <PackageReference Include="Asm.Domain.Infrastructure" Version="3.1.4" />
+    <PackageReference Include="Asm.Domain.Infrastructure" Version="3.1.5" />
     <PackageReference Include="EfCore.SchemaCompare" Version="7.0.0" />
     <PackageReference Include="ErikEJ.EntityFrameworkCore.SqlServer.DateOnlyTimeOnly" Version="7.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.10" />

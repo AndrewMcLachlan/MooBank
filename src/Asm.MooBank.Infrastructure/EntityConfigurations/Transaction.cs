@@ -29,7 +29,7 @@ internal class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
             .WithMany(p => p.Transactions)
             .HasForeignKey(d => d.AccountId);
 
-        entity.HasMany(p => p.TransactionTags)
+        entity.HasMany(p => p.Tags)
             .WithMany(t => t.Transactions)
             .UsingEntity<TransactionTransactionTag>(
                 ttt => ttt.HasOne(ttt2 => ttt2.TransactionTag)
@@ -48,7 +48,13 @@ internal class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
             .HasConversion(e => (int)e, e => (Models.TransactionType)e)
             .HasDefaultValue(Models.TransactionType.Debit);
 
-        entity.HasOne(e => e.OffsetBy).WithOne(e => e.Offsets).HasForeignKey<Transaction>(t => t.OffsetByTransactionId);
+        //entity.HasOne(e => e.OffsetBy).WithOne(e => e.Offsets).HasForeignKey<Transaction>(t => t.OffsetByTransactionId);
+
+        // This transaction is offset by the linked "OffsetTransactionId" transaction
+        entity.HasMany(e => e.OffsetBy).WithOne(e => e.Transaction).HasForeignKey(t => t.TransactionId);
+
+        // This transaction offsets the linked "TransactionId" transaction
+        entity.HasMany(e => e.Offsets).WithOne(e => e.OffsetByTransaction).HasForeignKey(t => t.OffsetTransactionId);
 
     }
 }

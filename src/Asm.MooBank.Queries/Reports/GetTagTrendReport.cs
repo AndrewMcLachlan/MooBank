@@ -41,8 +41,8 @@ internal class GetTagTrendReportHandler : IQueryHandler<GetTagTrendReport, TagTr
         allTags.Add(tag);
 
 
-        var transactions = await _transactions.Include(t => t.TransactionTags).ThenInclude(t => t.Tags)
-            .WhereByReportQuery(request).Where(t => t.TransactionTags.Any(tt => allTags.Contains(tt)))
+        var transactions = await _transactions.Include(t => t.Tags).ThenInclude(t => t.Tags)
+            .WhereByReportQuery(request).Where(t => t.Tags.Any(tt => allTags.Contains(tt)))
             .ToListAsync(cancellationToken);
 
         var months = transactions.GroupBy(t => new DateOnly(t.TransactionTime.Year, t.TransactionTime.Month, 1)).OrderBy(g => g.Key).Select(g => new TrendPoint

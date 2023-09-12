@@ -106,6 +106,8 @@
     <Build Include="dbo\Tables\Institution.sql" />
     <Build Include="dbo\Tables\InstitutionType.sql" />
     <Build Include="dbo\Functions\AccountBalance.sql" />
+    <Build Include="dbo\Tables\TransactionOffset.sql" />
+    <Build Include="dbo\Functions\CheckOffsetAmount.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Azure.publish.xml" />

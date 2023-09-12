@@ -8,7 +8,7 @@ public partial class Transaction
 {
     public Transaction()
     {
-        TransactionTags = new HashSet<Tag.Tag>();
+        Tags = new HashSet<Tag.Tag>();
     }
 
     public Guid TransactionId { get; set; }
@@ -31,13 +31,18 @@ public partial class Transaction
 
     public Guid? OffsetByTransactionId { get; set; }
 
-    public virtual ICollection<Tag.Tag> TransactionTags { get; set; }
+    public virtual ICollection<Tag.Tag> Tags { get; set; }
 
     public virtual Account.Account Account { get; set; }
 
-    public virtual Transaction? OffsetBy { get; set; }
+    public virtual ICollection<TransactionOffset> OffsetBy { get; set; } = new HashSet<TransactionOffset>();
 
-    public virtual Transaction? Offsets { get; set; }
+    public virtual ICollection<TransactionOffset> Offsets { get; set; } = new HashSet<TransactionOffset>();
 
     public TransactionType TransactionType { get; set; }
+
+    public void RemoveOffset(TransactionOffset offset)
+    {
+        OffsetBy.Remove(offset);
+    }
 }

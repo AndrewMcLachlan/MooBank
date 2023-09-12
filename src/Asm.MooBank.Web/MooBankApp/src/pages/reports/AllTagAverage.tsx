@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
 
 import { useAccount } from "components";
-import { Page } from "layouts";
 import { ReportsPage } from "./ReportsPage";
 import { useAllTagAverageReport } from "services";
 

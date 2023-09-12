@@ -1,3 +1,5 @@
-﻿namespace Asm.MooBank.Web.Models;
+﻿using Asm.MooBank.Models.Commands.Transactions;
 
-public record TransactionModel(string? Notes, Guid? OffsetByTransactionId);
+namespace Asm.MooBank.Web.Models;
+
+public record TransactionModel(string? Notes, IEnumerable<CreateOffset> OffsetBy);

@@ -14,9 +14,9 @@ public partial record Transaction
             AccountId = transaction.AccountId,
             Description = transaction.Description,
             Notes = transaction.Notes,
-            Tags = transaction.TransactionTags.Where(t => !t.Deleted).ToSimpleModel(),
-            OffsetBy = transaction.OffsetBy?.ToSimpleModel(),
-            Offsets = transaction.Offsets?.ToSimpleModel(),
+            Tags = transaction.Tags.Where(t => !t.Deleted).ToSimpleModel(),
+            OffsetBy = transaction.OffsetBy.Select(t => t.ToOffsetByModel()),
+            Offsets = transaction.Offsets.Select(t => t.ToOffsetModel()),
 
         };
 
@@ -32,7 +32,8 @@ public partial record Transaction
             AccountId = transaction.AccountId,
             Description = transaction.Description,
             Notes = transaction.Notes,
-            OffsetByTransactionId = transaction.OffsetBy?.Id,
+            // TODO: Write back to transaction
+            //OffsetByTransactionId = transaction.OffsetBy?.Id,
         };
     }
 }

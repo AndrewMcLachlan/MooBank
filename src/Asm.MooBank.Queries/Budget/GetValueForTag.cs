@@ -25,7 +25,7 @@ internal class GetValueForTagHandler : QueryHandlerBase, IQueryHandler<GetValueF
         var start = request.Start.ToStartOfDay();
         var end = request.End.ToEndOfDay();
 
-        var query = _transactions.Where(t => accountIds.Contains(t.AccountId) && !t.ExcludeFromReporting && t.TransactionTags.Any(tt => tt.Id == request.TagId));
+        var query = _transactions.Where(t => accountIds.Contains(t.AccountId) && !t.ExcludeFromReporting && t.Tags.Any(tt => tt.Id == request.TagId));
 
         var sum = await query.Where(t => t.TransactionTime >= start && t.TransactionTime <= end).Select(t => t.NetAmount).SumAsync(cancellationToken);
 

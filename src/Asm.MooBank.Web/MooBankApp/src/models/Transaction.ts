@@ -23,12 +23,22 @@ export interface Transaction {
     transactionType: TransactionType;
     tags: Tag[];
     notes?: string;
-    offsetBy?: Transaction;
-    offsets: Transaction;
+    offsetBy?: TransactionOffset[];
+    offsets: TransactionOffset[];
     extraInfo: any;
 }
 
 export interface TransactionUpdate {
     notes?: string;
-    offsetByTransactionId?: string;
+    offsetBy?: TransactionOffsetUpdate[];
+}
+
+export interface TransactionOffsetUpdate {
+    transactionOffsetId: string;
+    amount: number;
+}
+
+export interface TransactionOffset {
+    transaction: Transaction;
+    amount: number;
 }

@@ -8,5 +8,8 @@ internal class RecurringTransactionRepository : RepositoryBase<RecurringTransact
     {
     }
 
+    public override async Task<IEnumerable<RecurringTransaction>> GetAll(CancellationToken cancellationToken = default) =>
+        await DataSet.Include(rt => rt.VirtualAccount).ToListAsync(cancellationToken);
+
     protected override IQueryable<RecurringTransaction> GetById(int id) => DataSet.Where(t => t.RecurringTransactionId == id);
 }

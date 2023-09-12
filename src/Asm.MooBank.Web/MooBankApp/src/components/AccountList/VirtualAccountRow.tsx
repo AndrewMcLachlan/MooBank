@@ -14,7 +14,7 @@ export const VirtualAccountRow: React.FC<VirtualAccountRowProps> = (props) => {
     const clickable = props.account.id !== emptyGuid;
 
     return (
-        <tr onClick={clickable && onRowClick} className={classNames("virtual", clickable && "clickable")} ref={balanceRef}>
+        <tr onClick={clickable ? onRowClick : undefined} className={classNames("virtual", clickable && "clickable")} ref={balanceRef}>
             <td></td>
             <td className="name">{props.account.name}</td>
             <td>Virtual</td>

@@ -55,4 +55,6 @@ public static class IServiceCollectionExtensions
 
     public static IServiceCollection AddEntities(this IServiceCollection services) =>
         services.AddAggregateRoots<MooBankContext>(typeof(IAccountGroupRepository).Assembly);
+
+
 }

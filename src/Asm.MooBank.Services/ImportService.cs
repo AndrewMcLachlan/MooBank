@@ -46,7 +46,7 @@ public class ImportService : ServiceBase, IImportService
         {
             var applicableTags = rules.Where(r => transaction.Description?.Contains(r.Contains, StringComparison.OrdinalIgnoreCase) ?? false).SelectMany(r => r.Tags).Distinct(new TransactionTagEqualityComparer()).ToList();
 
-            transaction.TransactionTags = applicableTags;
+            transaction.Tags = applicableTags;
             //_transactionRepository.Add(transaction.Id, applicableTags);
         }
     }
