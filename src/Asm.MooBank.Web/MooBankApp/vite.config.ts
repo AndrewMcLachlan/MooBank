@@ -7,7 +7,7 @@ import { fileURLToPath } from "url"
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [tsconfigpaths(), svgr(), react(), splitVendorChunkPlugin(), visualizer() as any],
+  plugins: [tsconfigpaths(), svgr(), react(), visualizer() as any],
   server: {
     port: 3005,
     proxy: {
