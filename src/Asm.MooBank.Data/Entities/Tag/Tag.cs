@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Asm.Domain;
-using Asm.MooBank.Domain.Entities.Transactions;
 
 namespace Asm.MooBank.Domain.Entities.Tag;
 
@@ -12,25 +11,22 @@ public partial class Tag : IEquatable<Tag>
         Settings = new();
         TaggedTo = new HashSet<Tag>();
         Tags = new HashSet<Tag>();
-        Transactions = new HashSet<Transaction>();
     }
 
 
     public int Id { get; set; }
 
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
 
     public bool Deleted { get; set; }
 
     public Guid FamilyId { get; set; }
 
-    public virtual ICollection<Transaction> Transactions { get; set; }
-
     public virtual ICollection<Tag> TaggedTo { get; set; }
 
     public virtual ICollection<Tag> Tags { get; set; }
 
-    public virtual TransactionTagSettings Settings { get; set; }
+    public virtual TagSettings Settings { get; set; }
 
     #region Equality
     public bool Equals(Tag? other)
@@ -48,7 +44,7 @@ public partial class Tag : IEquatable<Tag>
 }
 
 
-public class TransactionTagEqualityComparer : IEqualityComparer<Tag>
+public class TagEqualityComparer : IEqualityComparer<Tag>
 {
     public bool Equals(Tag? x, Tag? y)
     {

@@ -11,8 +11,6 @@ public interface ITransactionService
 {
     Task<Transaction> AddTransactionTag(Guid accountId, Guid id, int tagId, CancellationToken cancellationToken = default);
 
-    Task<Transaction> AddTransactionTags(Guid id, IEnumerable<int> tags, CancellationToken cancellationToken = default);
-
     Task<Transaction> RemoveTransactionTag(Guid accountId, Guid id, int tagId, CancellationToken cancellationToken = default);
 
     void AddTransaction(decimal amount, Guid accountId, bool isRecurring, string? description = null);
@@ -42,26 +40,9 @@ public class TransactionService : ServiceBase, ITransactionService
 
         if (entity.Tags.Any(t => t.Id == tagId)) throw new ExistsException("Cannot add tag, it already exists");
 
-        var tag = await _transactionTagRepository.Get(tagId);
+        var tag = await _transactionTagRepository.Get(tagId, cancellationToken);
 
-        entity.Tags.Add(tag);
-
-        await UnitOfWork.SaveChangesAsync(cancellationToken);
-
-        return (Transaction)entity;
-    }
-
-    public async Task<Transaction> AddTransactionTags(Guid id, IEnumerable<int> tags, CancellationToken cancellationToken = default)
-    {
-        var entity = await GetEntity(id);
-
-        var existingIds = entity.Tags.Select(t => t.Id);
-
-        var filteredTags = tags.Where(t => !existingIds.Contains(t));
-
-        var tagEntities = await _transactionTagRepository.Get(filteredTags);
-
-        entity.Tags.AddRange(tagEntities);
+        entity.AddOrUpdateSplit(tag);
 
         await UnitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -74,11 +55,9 @@ public class TransactionService : ServiceBase, ITransactionService
 
         var entity = await GetEntity(id);
 
-        var tag = entity.Tags.SingleOrDefault(t => t.Id == tagId);
+        var tag = entity.Tags.SingleOrDefault(t => t.Id == tagId) ?? throw new NotFoundException("Tag not found");
 
-        if (tag == null) throw new NotFoundException("Tag not found");
-
-        entity.Tags.Remove(tag);
+        entity.UpdateOrRemoveSplit(tag);
 
         await UnitOfWork.SaveChangesAsync(cancellationToken);
 

@@ -12,7 +12,7 @@ public class TransactionTagRepository : RepositoryDeleteBase<Tag, int>, ITransac
     {
         if (transactionTag.Settings == null)
         {
-            DataContext.Add(new TransactionTagSettings(transactionTag.Id));
+            DataContext.Add(new TagSettings(transactionTag.Id));
         }
     }
 

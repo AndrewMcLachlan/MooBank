@@ -52,7 +52,7 @@ internal class GetHandler : IQueryHandler<Get, PagedResult>
         _security.AssertAccountPermission(request.AccountId);
 
 
-        var total = await _transactions.Include(t => t.OffsetBy).Include(t => t.Offsets).Where(request).CountAsync(cancellationToken);
+        var total = await _transactions.Where(request).CountAsync(cancellationToken);
 
         var results = await _transactions.IncludeAll().Where(request).Sort(request.SortField, request.SortDirection).Page(request.PageSize, request.PageNumber).ToModelAsync(cancellationToken);
 
@@ -100,8 +100,8 @@ file static class IQueryableExtensions
         }
 
         result = result.Where(t => (request.Start == null || t.TransactionTime >= request.Start) && (request.End == null || t.TransactionTime <= request.End));
-        result = result.Where(t => !request.UntaggedOnly || !t.Tags.Any());
-        result = result.Where(t => request.TagIds.IsNullOrEmpty() || (t.Tags.Any(t => request.TagIds!.Contains(t.Id))));
+        result = result.Where(t => !request.UntaggedOnly || !t.TransactionSplits.SelectMany(ts => ts.Tags).Any());
+        result = result.Where(t => request.TagIds.IsNullOrEmpty() || (t.TransactionSplits.SelectMany(ts => ts.Tags).Any(t => request.TagIds!.Contains(t.Id))));
 
         return result;
     }

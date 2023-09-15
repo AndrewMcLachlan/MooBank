@@ -29,6 +29,6 @@ internal class TagConfiguration : IEntityTypeConfiguration<Domain.Entities.Tag.T
                 });
 
         //entity.OwnsOne(e => e.Settings).WithOwner().HasForeignKey("TransactionTagID");
-        entity.HasOne(e => e.Settings).WithOne().HasForeignKey<TransactionTagSettings>(e => e.TransactionTagId);
+        entity.HasOne(e => e.Settings).WithOne().HasForeignKey<TagSettings>(e => e.TransactionTagId);
     }
 }

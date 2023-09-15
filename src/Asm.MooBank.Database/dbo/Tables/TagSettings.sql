@@ -1,4 +1,4 @@
-CREATE TABLE [dbo].[TransactionTagSettings]
+CREATE TABLE [dbo].[TagSettings]
 (
     TransactionTagId INT NOT NULL,
     ApplySmoothing BIT NOT NULL CONSTRAINT DF_TransactionTagSettings_ApplySettings DEFAULT(0),

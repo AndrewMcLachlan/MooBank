@@ -5,7 +5,7 @@
     [AccountId] UNIQUEIDENTIFIER NOT NULL,
     [TransactionTypeId] INT NULL,
     [Amount] DECIMAL(10, 2) NOT NULL,
-    [NetAmount] AS dbo.TransactionNetAmount(OffsetByTransactionId, Amount),
+    [NetAmount] AS dbo.TransactionNetAmount(TransactionId, Amount),
     [Description] VARCHAR(255) NULL,
     [TransactionTime] DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
     [Notes] NVARCHAR(512) NULL,

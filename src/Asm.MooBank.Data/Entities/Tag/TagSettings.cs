@@ -1,13 +1,13 @@
 ﻿namespace Asm.MooBank.Domain.Entities.Tag;
 
-public class TransactionTagSettings
+public class TagSettings
 {
-    public TransactionTagSettings()
+    public TagSettings()
     {
 
     }
 
-    public TransactionTagSettings(int id)
+    public TagSettings(int id)
     {
         TransactionTagId = id;
     }

@@ -22,7 +22,7 @@ public partial record Tag
             Id = transactionTag.Id,
             Name = transactionTag.Name,
             Tags = transactionTag.Tags.Select(t => (Domain.Entities.Tag.Tag)t).ToList(),
-            Settings = new Domain.Entities.Tag.TransactionTagSettings
+            Settings = new Domain.Entities.Tag.TagSettings
             {
                 ApplySmoothing = transactionTag.Settings.ApplySmoothing,
                 ExcludeFromReporting = transactionTag.Settings.ExcludeFromReporting,
@@ -33,7 +33,7 @@ public partial record Tag
 
     public partial record TagSettings
     {
-        public static implicit operator TagSettings(Domain.Entities.Tag.TransactionTagSettings? settings)
+        public static implicit operator TagSettings(Domain.Entities.Tag.TagSettings? settings)
         {
             if (settings == null) return null!;
 
@@ -44,11 +44,11 @@ public partial record Tag
             };
         }
 
-        public static implicit operator Domain.Entities.Tag.TransactionTagSettings(TagSettings? settings)
+        public static implicit operator Domain.Entities.Tag.TagSettings(TagSettings? settings)
         {
             if (settings == null) return null!;
 
-            return new Domain.Entities.Tag.TransactionTagSettings()
+            return new Domain.Entities.Tag.TagSettings()
             {
                 ApplySmoothing = settings.ApplySmoothing,
                 ExcludeFromReporting = settings.ExcludeFromReporting,

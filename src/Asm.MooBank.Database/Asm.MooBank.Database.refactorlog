@@ -42,4 +42,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="[FK_Rule_Account]" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="774c740a-d463-4713-8fdc-d3e84a332c79" ChangeDateTime="09/12/2023 22:57:44">
+    <Property Name="ElementName" Value="[dbo].[TransactionTagSettings]" />
+    <Property Name="ElementType" Value="SqlTable" />
+    <Property Name="ParentElementName" Value="[dbo]" />
+    <Property Name="ParentElementType" Value="SqlSchema" />
+    <Property Name="NewName" Value="[TagSettings]" />
+  </Operation>
 </Operations>

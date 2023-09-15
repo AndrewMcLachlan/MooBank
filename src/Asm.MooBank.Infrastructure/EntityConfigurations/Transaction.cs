@@ -29,19 +29,8 @@ internal class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
             .WithMany(p => p.Transactions)
             .HasForeignKey(d => d.AccountId);
 
-        entity.HasMany(p => p.Tags)
-            .WithMany(t => t.Transactions)
-            .UsingEntity<TransactionTransactionTag>(
-                ttt => ttt.HasOne(ttt2 => ttt2.TransactionTag)
-                          .WithMany()
-                          .HasForeignKey(ttt2 => ttt2.TransactionTagId),
-                ttt => ttt.HasOne(ttt2 => ttt2.Transaction)
-                          .WithMany()
-                          .HasForeignKey(ttt2 => ttt2.TransactionId),
-                ttt =>
-                {
-                    ttt.HasKey(e => new { e.TransactionId, e.TransactionTagId });
-                });
+        entity.HasMany(p => p.TransactionSplits)
+            .WithOne().HasForeignKey(e => e.TransactionId);
 
         entity.Property(e => e.TransactionType)
             .HasColumnName($"{nameof(Transaction.TransactionType)}Id")
