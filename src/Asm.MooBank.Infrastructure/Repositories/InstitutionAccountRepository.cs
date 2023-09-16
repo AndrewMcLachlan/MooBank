@@ -18,7 +18,7 @@ public class InstitutionAccountRepository : RepositoryDeleteBase<InstitutionAcco
         return await DataSet.Include(a => a.VirtualAccounts).Where(a => a.AccountAccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId)).ToListAsync(cancellationToken);
     }
 
-    protected override IQueryable<InstitutionAccount> GetById(Guid id) => DataSet.Include(a => a.AccountAccountHolders).Where(a => a.AccountId == id && a.AccountAccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId));
+    protected override IQueryable<InstitutionAccount> GetById(Guid id) => DataSet.Include(a => a.AccountAccountHolders).Include(t => t.ImportAccount).Where(a => a.AccountId == id && a.AccountAccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId));
 
     public async Task<IEnumerable<ImporterType>> GetImporterTypes(CancellationToken cancellationToken = default) => await DataContext.Set<ImporterType>().ToListAsync(cancellationToken);
 
@@ -43,5 +43,6 @@ public class InstitutionAccountRepository : RepositoryDeleteBase<InstitutionAcco
     public Task<decimal> GetPosition() =>
         DataSet.Where(a => a.AccountAccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId) && a.IncludeInPosition).SumAsync(a => a.Balance);
 
-
+    public Task Load(InstitutionAccount account, CancellationToken cancellationToken) =>
+        DataContext.Entry(account).Reference(a => a.ImportAccount).Query().Include(i => i.ImporterType).LoadAsync(cancellationToken);
 }

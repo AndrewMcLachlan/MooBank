@@ -1,4 +1,5 @@
-﻿using Asm.MooBank.Domain.Entities.ReferenceData;
+﻿using Asm.MooBank.Domain.Entities.Account;
+using Asm.MooBank.Domain.Entities.ReferenceData;
 using IAccountRepository = Asm.MooBank.Domain.Entities.Account.IAccountRepository;
 
 namespace Asm.MooBank.Importers;
@@ -7,10 +8,12 @@ internal class ImporterFactory : IImporterFactory
 {
     private readonly IServiceProvider _services;
     private readonly IAccountRepository _accountRepository;
+    private readonly IInstitutionAccountRepository _institutionAccountRepository;
 
-    public ImporterFactory(IAccountRepository accountRepository, IServiceProvider services)
+    public ImporterFactory(IAccountRepository accountRepository, IInstitutionAccountRepository institutionAccountRepository, IServiceProvider services)
     {
         _accountRepository = accountRepository;
+        _institutionAccountRepository = institutionAccountRepository;
         _services = services;
     }
 
@@ -22,6 +25,8 @@ internal class ImporterFactory : IImporterFactory
         {
             return null;
         }
+
+        await _institutionAccountRepository.Load(account, cancellationToken);
 
         var typeName = account.ImportAccount?.ImporterType.Type;
 
