@@ -20,7 +20,7 @@ internal class GetInOutReportHandler : IQueryHandler<GetInOutReport, InOutReport
     {
         _securityRepository.AssertAccountPermission(request.AccountId);
 
-        var results = await _transactions.WhereByReportQuery(request)
+        var results = await _transactions.Include(t => t.OffsetBy).Include(t => t.Offsets).WhereByReportQuery(request)
             .ExcludeOffset()
             .GroupBy(t => t.TransactionType)
             .Select(g => new

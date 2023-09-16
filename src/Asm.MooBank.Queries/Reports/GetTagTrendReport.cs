@@ -2,6 +2,7 @@
 using Asm.MooBank.Domain.Entities.TransactionTagHierarchies;
 using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Models.Reports;
+using Asm.MooBank.Queries.Transactions;
 
 namespace Asm.MooBank.Queries.Reports;
 
@@ -41,8 +42,8 @@ internal class GetTagTrendReportHandler : IQueryHandler<GetTagTrendReport, TagTr
         allTags.Add(tag);
 
 
-        var transactions = await _transactions.Include(t => t.Tags).ThenInclude(t => t.Tags)
-            .WhereByReportQuery(request).Where(t => t.Tags.Any(tt => allTags.Contains(tt)))
+        var transactions = await _transactions.IncludeTagsAndSubTags()
+            .WhereByReportQuery(request).Where(t => t.TransactionSplits.SelectMany(ts => ts.Tags).Any(tt => allTags.Contains(tt)))
             .ToListAsync(cancellationToken);
 
         var months = transactions.GroupBy(t => new DateOnly(t.TransactionTime.Year, t.TransactionTime.Month, 1)).OrderBy(g => g.Key).Select(g => new TrendPoint

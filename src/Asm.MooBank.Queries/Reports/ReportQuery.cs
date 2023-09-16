@@ -20,5 +20,5 @@ public static class ReportQueryExtensions
     }
 
     public static IQueryable<Domain.Entities.Transactions.Transaction> ExcludeOffset(this IQueryable<Domain.Entities.Transactions.Transaction> transactions) =>
-        transactions.Where(t => t.Offsets == null);
+        transactions.Where(t => !t.Offsets.Any());
 }

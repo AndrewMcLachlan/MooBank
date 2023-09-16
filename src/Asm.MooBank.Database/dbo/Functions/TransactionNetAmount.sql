@@ -6,5 +6,5 @@
 RETURNS DECIMAL(10,2)
 AS
 BEGIN
-    RETURN ISNULL((SELECT SUM(Amount) FROM [TransactionOffset] WHERE TransactionId = TransactionId), 0) + @Amount
+    RETURN ISNULL((SELECT SUM(Amount) FROM [TransactionOffset] WHERE TransactionId = @OffsetByTransactionId), 0) + @Amount
 END

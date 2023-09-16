@@ -26,6 +26,8 @@ public static class TrendPointExtensions
 
     public static decimal? AverageOffset(this IEnumerable<TrendPoint> trendPoints)
     {
+        if (!trendPoints.Any()) return null;
+
         var start = trendPoints.Min(t => t.Month);
         var end = trendPoints.Max(t => t.Month).ToEndOfMonth();
 

@@ -27,7 +27,7 @@ internal class GetAllTagAverageReportHandler : IQueryHandler<GetAllTagAverageRep
         var relationships = await _tagRelationships.Include(t => t.TransactionTag).ThenInclude(t => t.Tags).Include(t => t.ParentTag).ThenInclude(t => t.Tags).Where(tr => !tr.TransactionTag.Deleted).ToListAsync(cancellationToken);
 
 
-        var transactions = await ReportQueryExtensions.WhereByReportQuery(_transactions.Include(t => t.Tags), request).ToListAsync(cancellationToken);
+        var transactions = await ReportQueryExtensions.WhereByReportQuery(_transactions.Include(t => t.TransactionSplits).ThenInclude(t => t.Tags), request).ToListAsync(cancellationToken);
 
         var total = transactions.Sum(t => t.Amount);
         decimal months = Math.Max(transactions.Min(t => t.TransactionTime).DifferenceInMonths(transactions.Max(t => t.TransactionTime)), 1);
