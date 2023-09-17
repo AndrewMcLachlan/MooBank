@@ -6,11 +6,12 @@ import { Section } from "@andrewmclachlan/mooapp";
 import classNames from "classnames";
 import format from "date-fns/format";
 import parseISO from "date-fns/parseISO";
-import { AccountType } from "models";
+import { useInstitutions } from "services";
 
 export const AccountSummary: React.FC<AccountSummaryProps> = ({className, ...props }) => {
 
     const account = useAccount();
+    const { data: institutions } = useInstitutions();
 
     if (!account) return null;
 
@@ -27,6 +28,10 @@ export const AccountSummary: React.FC<AccountSummaryProps> = ({className, ...pro
             <div className="key-value">
                 <div>Type</div>
                 <div>{account.accountType ?? "Virtual"}</div>
+            </div>
+            <div className="key-value">
+                <div>Institution</div>
+                <div>{institutions?.find(i => i.id === account.institutionId).name}</div>
             </div>
 
         </Section>

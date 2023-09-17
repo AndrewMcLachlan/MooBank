@@ -12,6 +12,11 @@
     }
 }
 
+.splits .row:not(:first-child),
+.offsets .row:not(:first-child) {
+    margin-bottom: 20px;
+}
+
 .delete-offset {
     position: relative;
 

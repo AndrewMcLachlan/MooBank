@@ -3,10 +3,10 @@ import format from "date-fns/format";
 import parseISO from "date-fns/parseISO";
 
 import { TransactionRow, TransactionRowProps } from "./TransactionRow";
-import { TransactionTransactionTagPanel } from "./TransactionTransactionTagPanel";
+import { TransactionTagPanel } from "./TransactionTagPanel";
 import { TransactionDetails } from "./TransactionDetails";
 import { useUpdateTransaction } from "services";
-import { Transaction, TransactionOffset } from "models";
+import { Transaction, TransactionOffset, TransactionSplit } from "models";
 import { formatCurrency } from "@andrewmclachlan/mooapp";
 
 export const TransactionRowIng: React.FC<TransactionRowProps> = (props) => {
@@ -15,9 +15,8 @@ export const TransactionRowIng: React.FC<TransactionRowProps> = (props) => {
 
     const updateTransaction = useUpdateTransaction();
 
-    const onSave = (notes: string, offsetBy?: TransactionOffset[]) => {
-
-        updateTransaction.mutate([{ accountId: props.transaction.accountId, transactionId: props.transaction.id }, { notes, offsetBy: offsetBy?.map(to => ({ transactionOffsetId: to.transaction.id, amount: to.amount })) }]);
+    const onSave = (notes: string, splits: TransactionSplit[], offsetBy?: TransactionOffset[]) => {
+        updateTransaction.mutate([{ accountId: props.transaction.accountId, transactionId: props.transaction.id }, { notes, splits, offsetBy: offsetBy?.map(to => ({ transactionOffsetId: to.transaction.id, amount: to.amount })) }]);
         setShowDetails(false);
     }
 
@@ -34,7 +33,7 @@ export const TransactionRowIng: React.FC<TransactionRowProps> = (props) => {
                 <td>{props.transaction.extraInfo.location}</td>
                 <td>{props.transaction.extraInfo.who}</td>
                 <td className="amount">{formatCurrency(props.transaction.amount)}</td>
-                <TransactionTransactionTagPanel as="td" transaction={props.transaction} />
+                <TransactionTagPanel as="td" transaction={props.transaction} />
             </tr>
         </>
     );

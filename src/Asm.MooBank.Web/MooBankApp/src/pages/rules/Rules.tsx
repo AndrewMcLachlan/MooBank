@@ -33,8 +33,6 @@ export const Rules: React.FC = () => {
 
     useEffect(() => {
         setPageNumber(1);
-        console.debug("Rules changed");
-        console.debug(rules);
         const searchTerm = search.toLocaleLowerCase();
         if (searchTerm === "") {
             setFilteredRules(rules?.rules ?? []);

@@ -31,10 +31,10 @@ public partial class Transaction
 
     public Guid? OffsetByTransactionId { get; set; }
 
-    public virtual ICollection<TransactionSplit> TransactionSplits { get; set; } = new HashSet<TransactionSplit>();
+    public virtual ICollection<TransactionSplit> Splits { get; set; } = new HashSet<TransactionSplit>();
 
     [NotMapped]
-    public IEnumerable<Tag.Tag> Tags => TransactionSplits.SelectMany(ts => ts.Tags);
+    public IEnumerable<Tag.Tag> Tags => Splits.SelectMany(ts => ts.Tags);
 
     public virtual Account.Account Account { get; set; }
 
@@ -48,7 +48,7 @@ public partial class Transaction
 
     public void AddOrUpdateSplit(IEnumerable<Tag.Tag> tags)
     {
-        var split = TransactionSplits.FirstOrDefault();
+        var split = Splits.FirstOrDefault();
 
         if (split == null)
         {
@@ -58,7 +58,7 @@ public partial class Transaction
                 TransactionId = TransactionId,
                 Amount = Amount,
             };
-            TransactionSplits.Add(split);
+            Splits.Add(split);
             return;
         }
 
@@ -67,7 +67,7 @@ public partial class Transaction
 
     public void UpdateOrRemoveSplit(Tag.Tag tag)
     {
-        foreach (var split in TransactionSplits)
+        foreach (var split in Splits)
         {
             if (split.Tags.Contains(tag, new TagEqualityComparer()))
             {
@@ -75,7 +75,7 @@ public partial class Transaction
 
                 if (!split.Tags.Any())
                 {
-                    TransactionSplits.Remove(split);
+                    Splits.Remove(split);
                 }
 
                 break;
@@ -86,5 +86,10 @@ public partial class Transaction
     public void RemoveOffset(TransactionOffset offset)
     {
         OffsetBy.Remove(offset);
+    }
+
+    public void RemoveSplit(TransactionSplit split)
+    {
+        Splits.Remove(split);
     }
 }

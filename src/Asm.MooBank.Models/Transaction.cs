@@ -1,6 +1,4 @@
-﻿using Asm.MooBank.Domain.Entities.Transactions;
-
-namespace Asm.MooBank.Models;
+﻿namespace Asm.MooBank.Models;
 
 public partial record Transaction
 {
@@ -15,7 +13,9 @@ public partial record Transaction
 
     public TransactionType TransactionType { get; set; }
 
-    public IEnumerable<Tag> Tags { get; set; }
+    public IEnumerable<Tag> Tags { get; set; } = Enumerable.Empty<Tag>();
+
+    public IEnumerable<TransactionSplit> Splits { get; set; } = Enumerable.Empty<TransactionSplit>();
 
     public IEnumerable<TransactionOffset> Offsets { get; set; } = Enumerable.Empty<TransactionOffset>();
 

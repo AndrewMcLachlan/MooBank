@@ -1,19 +1,10 @@
 import { VirtualAccount } from "./VirtualAccount";
 
-export enum AccountType {
-    None = 0,
-    Transaction = 1,
-    Savings = 2,
-    Credit = 3,
-    Mortgage = 4,
-    Superannuation = 5,
-}
+export const AccountTypes = ["None", "Transaction", "Savings", "Credit", "Mortgage", "Superannuation"] as AccountType[];
+export type AccountType = "None" | "Transaction" | "Savings" | "Credit" | "Mortgage" | "Superannuation";
 
-export enum AccountController {
-    Manual = 0,
-    Virtual = 1,
-    Import = 2,
-}
+export const AccountControllers = ["Manual", "Virtual", "Import"] as AccountController[];
+export type AccountController = "Manual" | "Virtual" | "Import";
 
 export type accountId = string;
 
@@ -44,8 +35,8 @@ export const emptyAccount : Account = {
     name: "",
     currentBalance: 0,
     balanceDate: new Date(),
-    accountType: AccountType.None,
-    controller: AccountController.Manual,
+    accountType: "None",
+    controller: "Manual",
     accountGroupId: "",
     calculatedBalance: 0,
     shareWithFamily: false,

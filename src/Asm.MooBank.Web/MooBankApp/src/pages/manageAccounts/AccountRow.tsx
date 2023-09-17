@@ -2,7 +2,6 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 import * as Models from "models";
-import { AccountController, AccountType } from "models";
 
 export const AccountRow: React.FC<AccountRowProps> = (props) => {
 
@@ -17,9 +16,9 @@ export const AccountRow: React.FC<AccountRowProps> = (props) => {
                 {props.account.description}
             </td>
             <td>
-                {AccountType[props.account.accountType]}
+                {props.account.accountType}
             </td>
-            <td>{AccountController[props.account.controller]}</td>
+            <td>{props.account.controller}</td>
             <td className="amount number"><span className={props.account.currentBalance < 0 ? " negative" : ""}>{props.account.currentBalance + (props.account.currentBalance < 0 ? "D" : "C") + "R"}</span></td>
         </tr>
     );

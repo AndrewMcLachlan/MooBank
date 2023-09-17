@@ -66,6 +66,8 @@ export const useUpdateTransaction = () => {
             if (!transaction) return;
 
             transaction.notes = data.notes;
+            transaction.splits = data.splits;
+            transaction.tags = data.splits.flatMap(s => s.tags);
 
             queryClient.setQueryData<Models.PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection], transactions);
         },

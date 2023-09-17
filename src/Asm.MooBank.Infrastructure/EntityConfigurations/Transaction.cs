@@ -29,7 +29,7 @@ internal class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
             .WithMany(p => p.Transactions)
             .HasForeignKey(d => d.AccountId);
 
-        entity.HasMany(p => p.TransactionSplits)
+        entity.HasMany(p => p.Splits)
             .WithOne().HasForeignKey(e => e.TransactionId);
 
         entity.Property(e => e.TransactionType)

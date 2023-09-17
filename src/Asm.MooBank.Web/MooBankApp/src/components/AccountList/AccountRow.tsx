@@ -30,7 +30,7 @@ export const AccountRow: React.FC<AccountRowProps> = (props) => {
             <tr onClick={onRowClick} className="clickable">
                 <td onClick={showVirtualAccountsClick}>{props.account.virtualAccounts && props.account.virtualAccounts.length > 0 && <FontAwesomeIcon icon={showVirtualAccounts ? "chevron-down" : "chevron-right"} />}</td>
                 <td>{props.account.name}</td>
-                <td>{AccountType[props.account.accountType]}</td>
+                <td>{props.account.accountType}</td>
                 <td className={classNames("amount", "number", numberClassName(props.account.currentBalance))}>{getBalanceString(props.account.currentBalance)}</td>
             </tr>
             {showVirtualAccounts && props.account.virtualAccounts &&

@@ -24,7 +24,7 @@ export const AccountListGroup: React.FC<AccountListGroupProps> = ({ accountGroup
                 </tr>
             </thead>
             <tbody>
-                {!isLoading && accountGroup && accountGroup.accounts.map(a => a.controller === AccountController.Manual ? <ManualAccountRow key={a.id} account={a} /> : <AccountRow key={a.id} account={a} />)}
+                {!isLoading && accountGroup && accountGroup.accounts.map(a => a.controller === "Manual" ? <ManualAccountRow key={a.id} account={a} /> : <AccountRow key={a.id} account={a} />)}
                 {isLoading &&
                     <tr><td colSpan={4} className="spinner">
                         <Spinner animation="border" />

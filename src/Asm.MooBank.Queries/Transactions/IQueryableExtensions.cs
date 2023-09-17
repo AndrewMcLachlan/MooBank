@@ -11,7 +11,7 @@ internal static class IQueryableExtensions
         query.IncludeTags().Include(t => t.OffsetBy).ThenInclude(t => t.OffsetByTransaction).Include(t => t.Offsets).ThenInclude(t => t.Transaction);
 
     public static IIncludableQueryable<Transaction, ICollection<Domain.Entities.Tag.Tag>> IncludeTags(this IQueryable<Transaction> query) =>
-        query.Include(t => t.TransactionSplits).ThenInclude(ts => ts.Tags);
+        query.Include(t => t.Splits).ThenInclude(ts => ts.Tags);
 
     public static IIncludableQueryable<Transaction, ICollection<Domain.Entities.Tag.Tag>> IncludeTagsAndSubTags(this IQueryable<Transaction> query) =>
         query.IncludeTags().ThenInclude(t => t.Tags);

@@ -36,7 +36,7 @@ const getMenuItems = (account: Account, navItems: NavItem[]) => {
         ];
 
         switch (account.controller) {
-            case AccountController.Import:
+            case "Import":
                 items.push({ route: `/accounts/${account.id}/import`, text: "Import", image: <Import /> });
         }
 

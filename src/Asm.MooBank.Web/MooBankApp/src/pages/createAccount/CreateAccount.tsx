@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Form, Button, InputGroup, Col } from "react-bootstrap";
-import { Account, AccountType, AccountController, ImportAccount } from "../../models";
+import { Account, AccountTypes, AccountControllers, ImportAccount, AccountType, AccountController } from "../../models";
 import { toNameValue } from "../../extensions";
 import { useNavigate } from "react-router-dom";
 
@@ -12,18 +12,15 @@ export const CreateAccount: React.FC = () => {
 
     const navigate = useNavigate();
 
-    const accountTypes = toNameValue(AccountType);
     const { data: accountGroups } = useAccountGroups();
     const { data: institutions } = useInstitutions();
     const createAccount = useCreateAccount();
 
-    const accountControllers = toNameValue(AccountController);
-
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [balance, setBalance] = useState(0);
-    const [accountType, setAccountType] = useState(AccountType.Transaction);
-    const [accountController, setAccountController] = useState(AccountController.Manual);
+    const [accountType, setAccountType] = useState<AccountType>("Transaction");
+    const [accountController, setAccountController] = useState<AccountController>("Manual");
     const [importerTypeId, setImporterTypeId] = useState(0);
     const [accountGroupId, setAccountGroupId] = useState("");
     const [shareWithFamily, setShareWithFamily] = useState(false);
@@ -33,7 +30,7 @@ export const CreateAccount: React.FC = () => {
         e.stopPropagation();
         e.preventDefault();
 
-        const importAccount: ImportAccount | undefined = accountController === AccountController.Import ? { importerTypeId: importerTypeId } : undefined;
+        const importAccount: ImportAccount | undefined = accountController === "Import" ? { importerTypeId: importerTypeId } : undefined;
 
         const account: Account = {
             id: emptyGuid,
@@ -94,21 +91,21 @@ export const CreateAccount: React.FC = () => {
                 </Form.Group>
                 <Form.Group controlId="AccountType" >
                     <Form.Label>Type</Form.Label>
-                    <Form.Select value={accountType.toString()} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setAccountType(parseInt(e.currentTarget.value))}>
-                        {accountTypes.map(a =>
-                            <option value={a.value} key={a.value}>{a.name}</option>
+                    <Form.Select value={accountType.toString()} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setAccountType(e.currentTarget.value as AccountType)}>
+                        {AccountTypes.map(a =>
+                            <option value={a} key={a}>{a}</option>
                         )}
                     </Form.Select>
                 </Form.Group>
                 <Form.Group controlId="AccountController">
                     <Form.Label>Controller</Form.Label>
-                    <Form.Control as="select" value={accountController.toString()} onChange={(e: any) => setAccountController(parseInt(e.currentTarget.value))}>
-                        {accountControllers.map(a =>
-                            <option value={a.value} key={a.value}>{a.name}</option>
+                    <Form.Control as="select" value={accountController.toString()} onChange={(e: any) => setAccountController(e.currentTarget.value as AccountController)}>
+                        {AccountControllers.map(a =>
+                            <option value={a} key={a}>{a}</option>
                         )}
                     </Form.Control>
                 </Form.Group>
-                <ImportSettings show={accountController === AccountController.Import} selectedId={importerTypeId} onChange={(e) => setImporterTypeId(e)} />
+                <ImportSettings show={accountController === "Import"} selectedId={importerTypeId} onChange={(e) => setImporterTypeId(e)} />
                 <Form.Group controlId="ShareWithFamily">
                     <Form.Label>Visible to other family members</Form.Label>
                     <Form.Check checked={shareWithFamily} onChange={(e: any) => setShareWithFamily(e.currentTarget.checked)} />

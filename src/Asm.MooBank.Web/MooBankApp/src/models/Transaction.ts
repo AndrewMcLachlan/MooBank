@@ -1,4 +1,7 @@
+import { v4 as guid } from "uuid";
+
 import { Tag } from "./Tag";
+import { emptyGuid } from "@andrewmclachlan/mooapp";
 
 export enum TransactionType {
     Credit = 1,
@@ -23,6 +26,7 @@ export interface Transaction {
     transactionType: TransactionType;
     tags: Tag[];
     notes?: string;
+    splits: TransactionSplit[];
     offsetBy?: TransactionOffset[];
     offsets: TransactionOffset[];
     extraInfo: any;
@@ -30,6 +34,7 @@ export interface Transaction {
 
 export interface TransactionUpdate {
     notes?: string;
+    splits?: TransactionSplit[];
     offsetBy?: TransactionOffsetUpdate[];
 }
 
@@ -42,3 +47,17 @@ export interface TransactionOffset {
     transaction: Transaction;
     amount: number;
 }
+
+export interface TransactionSplit {
+    id: string;
+    amount: number;
+    tags: Tag[];
+}
+
+export const emptyTransactionSplit: TransactionSplit = {
+    id: emptyGuid,
+    amount: 0,
+    tags: [],
+};
+
+export const getSplitTotal = (splits: TransactionSplit[]) => splits.reduce((total, split) => total + split.amount, 0);

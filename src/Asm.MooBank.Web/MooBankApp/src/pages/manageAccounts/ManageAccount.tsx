@@ -11,8 +11,6 @@ import { AccountPage, useAccount } from "components";
 
 export const ManageAccount = () => {
 
-    const accountTypes = toNameValue(AccountType);
-    const accountControllers = toNameValue(AccountController);
     const { data: accountGroups } = useAccountGroups();
     const { data: institutions } = useInstitutions();
 
@@ -87,21 +85,21 @@ export const ManageAccount = () => {
                             </Form.Group>
                             <Form.Group controlId="AccountType" >
                                 <Form.Label>Type</Form.Label>
-                                <Form.Select value={account.accountType.toString()} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setAccountType(parseInt(e.currentTarget.value))}>
-                                    {accountTypes.map(a =>
-                                        <option value={a.value} key={a.value}>{a.name}</option>
+                                <Form.Select value={account.accountType} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setAccountType(e.currentTarget.value as AccountType)}>
+                                    {Models.AccountTypes.map(a =>
+                                        <option value={a} key={a}>{a}</option>
                                     )}
                                 </Form.Select>
                             </Form.Group>
                             <Form.Group controlId="AccountController">
                                 <Form.Label>Controller</Form.Label>
-                                <Form.Select value={account.controller.toString()} onChange={(e: any) => setAccountController(parseInt(e.currentTarget.value))}>
-                                    {accountControllers.map(a =>
-                                        <option value={a.value} key={a.value}>{a.name}</option>
+                                <Form.Select value={account.controller} onChange={(e: any) => setAccountController(e.currentTarget.value as AccountController)}>
+                                    {Models.AccountControllers.map(a =>
+                                        <option value={a} key={a}>{a}</option>
                                     )}
                                 </Form.Select>
                             </Form.Group>
-                            <ImportSettings show={account.controller === AccountController.Import} selectedId={account.importerTypeId} onChange={(e) => setImporterTypeId(e)} />
+                            <ImportSettings show={account.controller === "Import"} selectedId={account.importerTypeId} onChange={(e) => setImporterTypeId(e)} />
                             <Form.Group controlId="ShareWithFamily">
                                 <Form.Label>Visible to other family members</Form.Label>
                                 <Form.Check checked={account.shareWithFamily} onChange={(e: any) => setShareWithFamily(e.currentTarget.checked)} />

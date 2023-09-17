@@ -23,6 +23,6 @@ internal class SearchHandler : IQueryHandler<Search, IEnumerable<Models.Transact
         // Go back 5 days, just in case.
         var startTime = request.StartDate.AddDays(-5).ToStartOfDay();
 
-        return _transactions.IncludeAll().Where<Transaction>(t => t.AccountId == request.AccountId && t.TransactionTime >= startTime && t.TransactionType == request.TransactionType && t.TransactionSplits.SelectMany(ts => ts.Tags).Any(tt => request.TagIds.Contains(tt.Id))).ToModelAsync(cancellationToken: cancellationToken);
+        return _transactions.IncludeAll().Where<Transaction>(t => t.AccountId == request.AccountId && t.TransactionTime >= startTime && t.TransactionType == request.TransactionType && t.Splits.SelectMany(ts => ts.Tags).Any(tt => request.TagIds.Contains(tt.Id))).ToModelAsync(cancellationToken: cancellationToken);
     }
 }

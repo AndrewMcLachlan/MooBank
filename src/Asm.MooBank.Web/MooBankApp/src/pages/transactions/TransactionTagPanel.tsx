@@ -6,7 +6,7 @@ import { Transaction, Tag } from "models";
 import { useAccount } from "components";
 import { useAddTransactionTag, useCreateTag, useRemoveTransactionTag, useTags } from "services";
 
-export const TransactionTransactionTagPanel: React.FC<TransactionTransactionTagPanelProps> = (props) => {
+export const TransactionTagPanel: React.FC<TransactionTagPanelProps> = (props) => {
 
     const transactionRow = useTransactionRowEvents(props);
 
@@ -24,7 +24,7 @@ export const TransactionTransactionTagPanel: React.FC<TransactionTransactionTagP
     );
 }
 
-export const useTransactionRowEvents = (props: TransactionTransactionTagPanelProps) => {
+export const useTransactionRowEvents = (props: TransactionTagPanelProps) => {
 
     const account = useAccount();
 
@@ -70,11 +70,11 @@ export const useTransactionRowEvents = (props: TransactionTransactionTagPanelPro
     };
 }
 
-TransactionTransactionTagPanel.defaultProps = {
+TransactionTagPanel.defaultProps = {
     alwaysShowEditPanel: false,
 }
 
-export interface TransactionTransactionTagPanelProps {
+export interface TransactionTagPanelProps {
     as?: string;
     alwaysShowEditPanel?: boolean;
     transaction: Transaction;

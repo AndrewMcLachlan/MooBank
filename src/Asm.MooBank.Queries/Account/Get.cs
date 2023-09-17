@@ -19,7 +19,7 @@ internal class GetHandler : IQueryHandler<Get, Models.InstitutionAccount>
 
     public async Task<Models.InstitutionAccount> Handle(Get request, CancellationToken cancellationToken)
     {
-        var entity = await _accounts.Include(a => a.AccountAccountHolders).ThenInclude(ah => ah.AccountGroup).Include(a => a.ImportAccount).Include(a => a.VirtualAccounts).SingleOrDefaultAsync(a => a.AccountId == request.AccountId, cancellationToken) ?? throw new NotFoundException();
+        var entity = await _accounts.Include(a => a.AccountAccountHolders).ThenInclude(ah => ah.AccountGroup).Include(a => a.ImportAccount).Include(a => a.VirtualAccounts).Include(a => a.Institution).SingleOrDefaultAsync(a => a.AccountId == request.AccountId, cancellationToken) ?? throw new NotFoundException();
 
         _security.AssertAccountPermission(entity);
 

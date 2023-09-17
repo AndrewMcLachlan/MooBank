@@ -15,6 +15,7 @@ public partial record Transaction
             Description = transaction.Description,
             Notes = transaction.Notes,
             Tags = transaction.Tags.Where(t => !t.Deleted).ToSimpleModel(),
+            Splits = transaction.Splits.Select(t => t.ToModel()),
             OffsetBy = transaction.OffsetBy.Select(t => t.ToOffsetByModel()),
             Offsets = transaction.Offsets.Select(t => t.ToOffsetModel()),
 

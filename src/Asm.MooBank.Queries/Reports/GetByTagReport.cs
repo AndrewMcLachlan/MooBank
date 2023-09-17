@@ -46,7 +46,7 @@ internal class GetByTagReportHandler : IQueryHandler<GetByTagReport, ByTagReport
 
         if (request.TagId == null)
         {
-            var tagLessAmount = await _transactions.IncludeTags().WhereByReportQuery(request).Where(t => !t.TransactionSplits.SelectMany(ts => ts.Tags).Any()).SumAsync(t => t.Amount, cancellationToken);
+            var tagLessAmount = await _transactions.IncludeTags().WhereByReportQuery(request).Where(t => !t.Splits.SelectMany(ts => ts.Tags).Any()).SumAsync(t => t.Amount, cancellationToken);
             tagValues.Add(new TagValue
             {
                 TagName = "Untagged",
