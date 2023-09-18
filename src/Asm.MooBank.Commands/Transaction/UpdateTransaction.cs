@@ -43,7 +43,7 @@ internal class UpdateTransactionHandler : ICommandHandler<UpdateTransaction, Mod
             {
                 Amount = split.Amount,
                 TransactionId = entity.TransactionId,
-                Tags = split.Tags.Select(t => (Domain.Entities.Tag.Tag)t).ToList()
+                Tags = (await _tagRepository.Get(split.Tags.Select(t => t.Id), cancellationToken)).ToList(),
             });
         }
 
