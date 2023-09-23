@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using Asm.Domain.Infrastructure;
 using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.AccountGroup;
 using Asm.MooBank.Domain.Entities.AccountHolder;
-using Asm.MooBank.Domain.Entities.Ing;
 using Asm.MooBank.Domain.Entities.RecurringTransactions;
 using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Domain.Entities.Tag;
@@ -14,6 +14,8 @@ namespace Asm.MooBank.Infrastructure;
 
 public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
 {
+    private static readonly List<Assembly> Assemblies = [];
+
     public MooBankContext(IMediator mediator) : base(mediator)
     {
     }
@@ -55,8 +57,7 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
     [AllowNull]
     public virtual DbSet<ImporterType> ImporterTypes { get; set; }
 
-    [AllowNull]
-    public virtual DbSet<TransactionExtra> TransactionsExtra {get; set; }
+    public static void RegisterAssembly(Assembly assembly) => Assemblies.Add(assembly);
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -70,6 +71,8 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
         }
 
         modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
+
+        Assemblies.ForEach(a => modelBuilder.ApplyConfigurationsFromAssembly(a));
 
 
         modelBuilder.Entity<AccountGroup>(entity =>

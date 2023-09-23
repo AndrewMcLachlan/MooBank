@@ -4,7 +4,7 @@ using Asm.MooBank.Domain.Entities.Ing;
 using Asm.MooBank.Domain.Entities.Transactions;
 
 namespace Asm.MooBank.Institution.Ing.Importers;
-public partial class TransactionParser
+internal partial class TransactionParser
 {
     [GeneratedRegex("^(.+) - Visa Purchase - Receipt (\\d{4,6})In (.+) Date (.+) Card \\d{6}xxxxxx(\\d{4})")]
     private static partial Regex VisaPurchase();
@@ -36,142 +36,127 @@ public partial class TransactionParser
     [GeneratedRegex("^(.+) - BPAY Bill Payment - Receipt (\\d{4,6}) To (.+)")]
     private static partial Regex Bpay();
 
-    public static TransactionExtra? ParseDescription(Transaction transaction)
+    internal static ParsedTransaction ParseDescription(string description)
     {
-        TransactionExtra? transactionExtra = new();
-        ParseDescription(transaction, ref transactionExtra);
+        ParsedTransaction parsed = new();
 
-        return transactionExtra;
-    }
-
-    public static void ParseDescription(Transaction transaction, ref TransactionExtra? transactionExtra)
-    {
-        if (transactionExtra == null) return;
-
-        var description = transaction.Description?.Trim('"') ?? String.Empty;
+        description = description?.Trim('"') ?? String.Empty;
 
         var match = VisaPurchase().Match(description);
 
         if (match.Success)
         {
-            transactionExtra.Transaction = transaction;
-            transactionExtra.Description = match.Groups[1].Value.Trim();
-            transactionExtra.Location = match.Groups[3].Value.Trim();
-            transactionExtra.PurchaseDate = DateTime.Parse(match.Groups[4].Value);
-            transactionExtra.PurchaseType = "Visa";
-            transactionExtra.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
-            transactionExtra.Last4Digits = Int16.Parse(match.Groups[5].Value);
-            return;
+            parsed.Description = match.Groups[1].Value.Trim();
+            parsed.Location = match.Groups[3].Value.Trim();
+            parsed.PurchaseDate = DateTime.Parse(match.Groups[4].Value);
+            parsed.PurchaseType = "Visa";
+            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
+            parsed.Last4Digits = Int16.Parse(match.Groups[5].Value);
+            return parsed;
         }
 
         match = VisaRefund().Match(description);
 
         if (match.Success)
         {
-
-            transactionExtra.Transaction = transaction;
-            transactionExtra.Description = match.Groups[1].Value.Trim();
-            transactionExtra.Location = match.Groups[3].Value.Trim();
-            transactionExtra.PurchaseDate = DateTime.Parse(match.Groups[4].Value);
-            transactionExtra.PurchaseType = "Visa";
-            transactionExtra.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
-            transactionExtra.Last4Digits = Int16.Parse(match.Groups[5].Value);
-            return;
+            parsed.Description = match.Groups[1].Value.Trim();
+            parsed.Location = match.Groups[3].Value.Trim();
+            parsed.PurchaseDate = DateTime.Parse(match.Groups[4].Value);
+            parsed.PurchaseType = "Visa";
+            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
+            parsed.Last4Digits = Int16.Parse(match.Groups[5].Value);
+            return parsed;
         }
 
         match = VisaForeignCurrency().Match(description);
 
         if (match.Success)
         {
-            transactionExtra.Transaction = transaction;
-            transactionExtra.Description = $"{match.Groups[1].Value.Trim()} ({match.Groups[3].Value.Trim()})";
-            transactionExtra.Location = match.Groups[4].Value.Trim();
-            transactionExtra.PurchaseDate = DateTime.Parse(match.Groups[5].Value);
-            transactionExtra.PurchaseType = "Visa";
-            transactionExtra.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
-            transactionExtra.Last4Digits = Int16.Parse(match.Groups[6].Value);
-            return;
+            parsed.Description = $"{match.Groups[1].Value.Trim()} ({match.Groups[3].Value.Trim()})";
+            parsed.Location = match.Groups[4].Value.Trim();
+            parsed.PurchaseDate = DateTime.Parse(match.Groups[5].Value);
+            parsed.PurchaseType = "Visa";
+            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
+            parsed.Last4Digits = Int16.Parse(match.Groups[6].Value);
+            return parsed;
         }
 
         match = DirectDebit().Match(description);
 
         if (match.Success)
         {
-            transactionExtra.Transaction = transaction;
-            transactionExtra.Description = match.Groups[1].Value.Trim();
-            transactionExtra.PurchaseType = "Direct Debit";
-            transactionExtra.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
-            transactionExtra.Reference = match.Groups[3].Value.Trim();
-            return;
+            parsed.Description = match.Groups[1].Value.Trim();
+            parsed.PurchaseType = "Direct Debit";
+            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
+            parsed.Reference = match.Groups[3].Value.Trim();
+            return parsed;
         }
 
         match = InternalTransfer().Match(description);
 
         if (match.Success)
         {
-            transactionExtra.Transaction = transaction;
-            transactionExtra.Description = match.Groups[1].Value.Trim();
-            transactionExtra.PurchaseType = "Internal Transfer";
-            transactionExtra.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
-            transactionExtra.Reference = match.Groups[3].Value.Trim();
-            return;
+            parsed.Description = match.Groups[1].Value.Trim();
+            parsed.PurchaseType = "Internal Transfer";
+            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
+            parsed.Reference = match.Groups[3].Value.Trim();
+            return parsed;
         }
 
         match = EftposPurchase().Match(description);
 
         if (match.Success)
         {
-            transactionExtra.Transaction = transaction;
-            transactionExtra.Description = match.Groups[1].Value.Trim();
-            transactionExtra.PurchaseDate = DateTime.ParseExact($"{match.Groups[3].Value} {match.Groups[4].Value}", "dd MMM yyyy h:mmtt", CultureInfo.InvariantCulture);
-            transactionExtra.PurchaseType = "EFTPOS";
-            transactionExtra.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
-            transactionExtra.Last4Digits = Int16.Parse(match.Groups[5].Value);
-            return;
+            parsed.Description = match.Groups[1].Value.Trim();
+            parsed.PurchaseDate = DateTime.ParseExact($"{match.Groups[3].Value} {match.Groups[4].Value}", "dd MMM yyyy h:mmtt", CultureInfo.InvariantCulture);
+            parsed.PurchaseType = "EFTPOS";
+            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
+            parsed.Last4Digits = Int16.Parse(match.Groups[5].Value);
+            return parsed;
         }
 
         match = DirectPayment().Match(description);
         if (match.Success)
         {
-            transactionExtra.Transaction = transaction;
-            transactionExtra.Description = match.Groups[1].Value.Trim();
-            transactionExtra.PurchaseType = "Direct";
-            transactionExtra.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
-            return;
+
+            parsed.Description = match.Groups[1].Value.Trim();
+            parsed.PurchaseType = "Direct";
+            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
+            return parsed;
         }
 
         match= OskoPayment().Match(description);
         if (match.Success)
         {
-            transactionExtra.Transaction = transaction;
-            transactionExtra.Description = $"{match.Groups[1].Value.Trim()} ({match.Groups[3].Value})";
-            transactionExtra.PurchaseType = "Osko";
-            transactionExtra.ReceiptNumber = Int32.Parse(match.Groups[4].Value);
-            transactionExtra.Reference = match.Groups[6].Value.Trim();
-            return;
+
+            parsed.Description = $"{match.Groups[1].Value.Trim()} ({match.Groups[3].Value})";
+            parsed.PurchaseType = "Osko";
+            parsed.ReceiptNumber = Int32.Parse(match.Groups[4].Value);
+            parsed.Reference = match.Groups[6].Value.Trim();
+            return parsed;
         }
 
         match = SalaryDeposit().Match(description);
         if (match.Success)
         {
-            transactionExtra.Transaction = transaction;
-            transactionExtra.PurchaseType = "Salary";
-            transactionExtra.Description = $"Salary - {match.Groups[2].Value.Trim()}";
-            transactionExtra.ReceiptNumber = Int32.Parse(match.Groups[1].Value);
-            return;
+
+            parsed.PurchaseType = "Salary";
+            parsed.Description = $"Salary - {match.Groups[2].Value.Trim()}";
+            parsed.ReceiptNumber = Int32.Parse(match.Groups[1].Value);
+            return parsed;
         }
 
         match = Bpay().Match(description);
         if (match.Success)
         {
-            transactionExtra.Transaction = transaction;
-            transactionExtra.PurchaseType = "BPAY";
-            transactionExtra.Description = $"{match.Groups[1].Value.Trim()} - {match.Groups[3].Value.Trim()}";
-            transactionExtra.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
-            return;
+
+            parsed.PurchaseType = "BPAY";
+            parsed.Description = $"{match.Groups[1].Value.Trim()} - {match.Groups[3].Value.Trim()}";
+            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
+            return parsed;
         }
 
-        transactionExtra = null;
+        parsed.Description = description;
+        return parsed;
     }
-
 }

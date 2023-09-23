@@ -4,7 +4,7 @@ import { AccountController, AccountType } from "models";
 import { ImportSettings } from "../createAccount/ImportSettings";
 import * as Models from "models";
 import { toNameValue } from "extensions";
-import { useAccountGroups, useInstitutions, useUpdateAccount, useVirtualAccounts } from "services";
+import { useAccountGroups, useInstitutions, useReprocessTransactions, useUpdateAccount, useVirtualAccounts } from "services";
 import { useNavigate, useParams } from "react-router-dom";
 import { IconButton, Section, useIdParams } from "@andrewmclachlan/mooapp";
 import { AccountPage, useAccount } from "components";
@@ -13,6 +13,7 @@ export const ManageAccount = () => {
 
     const { data: accountGroups } = useAccountGroups();
     const { data: institutions } = useInstitutions();
+    const reprocessTransactions = useReprocessTransactions();
 
     const navigate = useNavigate();
 
@@ -41,6 +42,17 @@ export const ManageAccount = () => {
         updateAccount.update(account);
     }
 
+    const getActions = (accountController: AccountController) => {
+
+        const actions = [<IconButton key="nva" onClick={() => navigate(`/accounts/${id}/manage/virtual/create`)} icon="plus">New Virtual Account</IconButton>];
+
+        if (accountController === "Import") {
+            actions.push(<IconButton key="rpt" onClick={() => reprocessTransactions.mutate({ accountId: id })} icon="plus">Reprocess Transactions</IconButton>);
+        }
+
+        return actions;
+    }
+
     const setName = (name: string) => setAccount({ ...account, name: name });
     const setDescription = (description: string) => setAccount({ ...account, description: description });
     const setAccountGroupId = (accountGroupId: string) => setAccount({ ...account, accountGroupId: accountGroupId });
@@ -51,7 +63,7 @@ export const ManageAccount = () => {
     const setInstitution = (institutionId: number) => setAccount({ ...account, institutionId: institutionId });
 
     return (
-        <AccountPage title="Manage" breadcrumbs={[{ text: "Manage", route: `/accounts/${account.id}/manage` }]} actions={[<IconButton key="nva" onClick={() => navigate(`/accounts/${id}/manage/virtual/create`)} icon="plus">New Virtual Account</IconButton>]}>
+        <AccountPage title="Manage" breadcrumbs={[{ text: "Manage", route: `/accounts/${account.id}/manage` }]} actions={getActions(account.controller)}>
             {account &&
                 <>
                     <Section>

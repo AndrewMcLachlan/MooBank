@@ -11,11 +11,12 @@ public partial class Transaction
     {
     }
 
+    #region Columns
     public Guid TransactionId { get; set; }
 
-    public Guid? TransactionReference { get; set; }
-
     public Guid AccountId { get; set; }
+
+    public Guid? AccountHolderId { get; set; }
 
     public decimal Amount { get; set; }
 
@@ -23,27 +24,41 @@ public partial class Transaction
 
     public string? Description { get; set; }
 
+    public string? Location { get; set; }
+
+    public string? Reference { get; set; }
+
     public DateTime TransactionTime { get; set; }
 
     public string? Notes { get; set; }
 
     public bool ExcludeFromReporting { get; set; }
 
-    public Guid? OffsetByTransactionId { get; set; }
+    public TransactionType TransactionType { get; set; }
 
+    public string? Source { get; set; }
+
+    public object? Extra { get; set; }
+    #endregion
+
+    #region Navigation Properties
     public virtual ICollection<TransactionSplit> Splits { get; set; } = new HashSet<TransactionSplit>();
 
-    [NotMapped]
-    public IEnumerable<Tag.Tag> Tags => Splits.SelectMany(ts => ts.Tags);
-
     public virtual Account.Account Account { get; set; }
+
+    public virtual AccountHolder.AccountHolder? AccountHolder { get; set; }
 
     public virtual ICollection<TransactionOffset> OffsetBy { get; set; } = new HashSet<TransactionOffset>();
 
     public virtual ICollection<TransactionOffset> Offsets { get; set; } = new HashSet<TransactionOffset>();
+    #endregion
 
-    public TransactionType TransactionType { get; set; }
+    #region Properties
+    [NotMapped]
+    public IEnumerable<Tag.Tag> Tags => Splits.SelectMany(ts => ts.Tags);
+    #endregion
 
+    #region Methods
     public void AddOrUpdateSplit(Tag.Tag tag) => AddOrUpdateSplit(new[] { tag });
 
     public void AddOrUpdateSplit(IEnumerable<Tag.Tag> tags)
@@ -92,4 +107,5 @@ public partial class Transaction
     {
         Splits.Remove(split);
     }
+    #endregion
 }

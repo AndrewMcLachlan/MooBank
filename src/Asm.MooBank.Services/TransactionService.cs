@@ -64,7 +64,7 @@ public class TransactionService : ServiceBase, ITransactionService
         return (Transaction)entity;
     }
 
-    public async Task<IEnumerable<Transaction>> CreateTransactions(IEnumerable<Transaction> transactions)
+    /*public async Task<IEnumerable<Transaction>> CreateTransactions(IEnumerable<Transaction> transactions)
     {
         transactions.Select(t => t.AccountId).Distinct().ToList().ForEach(_security.AssertAccountPermission);
 
@@ -75,7 +75,7 @@ public class TransactionService : ServiceBase, ITransactionService
         await UnitOfWork.SaveChangesAsync();
 
         return entities.Select(t => (Transaction)t);
-    }
+    }*/
 
     private async Task<Domain.Entities.Transactions.Transaction> GetEntity(Guid id)
     {

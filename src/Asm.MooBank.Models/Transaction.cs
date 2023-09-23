@@ -3,11 +3,16 @@
 public partial record Transaction
 {
     public Guid Id { get; set; } = new Guid();
-    public Guid? Reference { get; set; }
     public Guid AccountId { get; set; }
     public decimal Amount { get; set; }
     public decimal NetAmount { get; set; }
     public string? Description { get; set; }
+
+    public string? Location { get; set; }
+
+    public string? AccountHolderName { get; set; }
+
+    public string? Reference { get; set; }
     public string? Notes { get; set; }
     public DateTime TransactionTime { get; set; }
 

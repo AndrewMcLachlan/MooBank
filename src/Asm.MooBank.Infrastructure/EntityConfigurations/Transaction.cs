@@ -1,4 +1,5 @@
-﻿using Asm.MooBank.Domain.Entities.Transactions;
+﻿using System.Text.Json;
+using Asm.MooBank.Domain.Entities.Transactions;
 
 namespace Asm.MooBank.Infrastructure.EntityConfigurations;
 
@@ -37,6 +38,8 @@ internal class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
             .HasConversion(e => (int)e, e => (Models.TransactionType)e)
             .HasDefaultValue(Models.TransactionType.Debit);
 
+        entity.HasOne(e => e.AccountHolder).WithMany().HasForeignKey(e => e.AccountHolderId);
+
         //entity.HasOne(e => e.OffsetBy).WithOne(e => e.Offsets).HasForeignKey<Transaction>(t => t.OffsetByTransactionId);
 
         // This transaction is offset by the linked "OffsetTransactionId" transaction
@@ -45,5 +48,9 @@ internal class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
         // This transaction offsets the linked "TransactionId" transaction
         entity.HasMany(e => e.Offsets).WithOne(e => e.OffsetByTransaction).HasForeignKey(t => t.OffsetTransactionId);
 
+
+        entity.Property(e => e.Extra).HasConversion(
+                       v => JsonSerializer.Serialize(v, new JsonSerializerOptions()),
+                       v => JsonSerializer.Deserialize<object>(v, JsonSerializerOptions.Default));
     }
 }

@@ -111,6 +111,7 @@
     <Build Include="dbo\Tables\TransactionSplit.sql" />
     <Build Include="dbo\Tables\TransactionSplitTag.sql" />
     <Build Include="dbo\Functions\CheckSplitAmount.sql" />
+    <Build Include="ing\Tables\TransactionRaw.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Azure.publish.xml" />

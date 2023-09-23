@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
+using Asm.MooBank.Domain.Entities.AccountHolder;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Importers;
 using Asm.MooBank.Queries.Transactions;
@@ -62,18 +63,6 @@ internal class GetHandler : IQueryHandler<Get, PagedResult>
             Total = total,
         };
 
-        var importer = await _importerFactory.Create(request.AccountId, cancellationToken);
-
-        if (importer != null)
-        {
-            var extraRequest = importer.CreateExtraDetailsRequest(request.AccountId, result);
-
-            if (extraRequest != null)
-            {
-                result = await _queryDispatcher.Dispatch(extraRequest, cancellationToken);
-            }
-        }
-
         return result;
     }
 }
@@ -91,7 +80,7 @@ file static class IQueryableExtensions
     {
         var result = query.Where(t => t.AccountId == request.AccountId);
 
-        var filters = request.Filter?.Split(',') ?? Array.Empty<string>();
+        var filters = request.Filter?.Split(',') ?? [];
 
         if (!String.IsNullOrWhiteSpace(request.Filter))
         {
@@ -110,14 +99,20 @@ file static class IQueryableExtensions
     {
         if (!String.IsNullOrWhiteSpace(field))
         {
-            PropertyInfo? property = _transactionProperties.SingleOrDefault(p => p.Name.Equals(field, StringComparison.OrdinalIgnoreCase));
+            PropertyInfo? property = _transactionProperties.SingleOrDefault(p => p.Name.Equals(field, StringComparison.OrdinalIgnoreCase)) ?? throw new ArgumentException($"Unknown field {field}", nameof(field));
 
-            if (property == null) throw new ArgumentException($"Unknown field {field}", nameof(field));
-
+            // Hiding implementation details from the front-end
+            if (field == "AccountHolder") field = "AccountHolder.FirstName";
 
             ParameterExpression param = Expression.Parameter(typeof(Transaction), String.Empty);
-            MemberExpression propertyExp = Expression.Property(param, field);
+
+            Expression propertyExp = field.Split('.').Aggregate((Expression)param, Expression.Property);
+
+            //MemberExpression propertyExp = Expression.Property(param, field);
+
+
             Expression sortBody = field == "Amount" ? Expression.Call(typeof(Math), "Abs", null, propertyExp) : propertyExp;
+
             LambdaExpression sort = Expression.Lambda(sortBody, param);
             MethodCallExpression call =
                 Expression.Call(typeof(Queryable), "OrderBy" + (direction == SortDirection.Descending ? "Descending" : String.Empty), new[] { typeof(Transaction), propertyExp.Type },

@@ -8,12 +8,10 @@ import { Table } from "react-bootstrap";
 import { TransactionsSlice } from "store/Transactions";
 import { State } from "store/state";
 import { TransactionRow } from "./TransactionRow";
-import { TransactionRowIng } from "./TransactionRowIng";
 import { useTransactions } from "services";
 import { getNumberOfPages, Pagination, useIdParams } from "@andrewmclachlan/mooapp";
 import { Account } from "models";
 import { TransactionTableHead } from "./TransactionTableHead";
-import { TransactionTableHeadIng } from "./TransactionTableHeadIng";
 import { useDebounce } from "use-debounce";
 
 export const TransactionList: React.FC<TransactionListProps> = (props) => {
@@ -30,21 +28,17 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
 
     const numberOfPages = getNumberOfPages(totalTransactions, pageSize);
 
-    const TableHead = transactions?.some(t => t.extraInfo) ? TransactionTableHeadIng : TransactionTableHead;
-    const TableRow = transactions?.some(t => t.extraInfo) ? TransactionRowIng : TransactionRow;
-    const colspan = transactions?.some(t => t.extraInfo) ? 4 : 2;
-
     return (
         <Table striped bordered={false} borderless className="transactions">
-            <TableHead />
+            <TransactionTableHead />
             <tbody>
-                {transactions && transactions.map((t) => <TableRow key={t.id} transaction={t} />)}
+                {transactions && transactions.map((t) => <TransactionRow key={t.id} transaction={t} />)}
                 {!transactions && Array.from({ length: 50 }, (_value, index) => index).map((i) => <tr key={i}><td colSpan={4}>&nbsp;</td></tr>)}
             </tbody>
             <tfoot>
                 <tr>
                     <td colSpan={2} className="page-totals">Page {pageNumber} of {numberOfPages} ({totalTransactions} transactions)</td>
-                    <td colSpan={colspan}>
+                    <td colSpan={4}>
                         <Pagination pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={(_current, newPage) => dispatch(TransactionsSlice.actions.setCurrentPage(newPage))} />
                     </td>
                 </tr>

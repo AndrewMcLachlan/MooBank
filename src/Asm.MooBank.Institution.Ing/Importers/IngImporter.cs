@@ -1,16 +1,17 @@
 ﻿using System.Globalization;
+using System.Threading;
 using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Domain.Entities.Ing;
+using Asm.MooBank.Domain.Entities.AccountHolder;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Importers;
-using Asm.MooBank.Models.Queries.Transactions;
-using Asm.MooBank.Institution.Ing.Queries.Transactions;
+using Asm.MooBank.Institution.Ing.Domain;
+using Asm.MooBank.Institution.Ing.Models;
 using Microsoft.Extensions.Logging;
 using TransactionType = Asm.MooBank.Models.TransactionType;
 
 namespace Asm.MooBank.Institution.Ing.Importers;
 
-public partial class IngImporter : IImporter
+internal partial class IngImporter : IImporter
 {
     private const int Columns = 5;
     private const int DateColumn = 0;
@@ -20,14 +21,19 @@ public partial class IngImporter : IImporter
     private const int BalanceColumn = 4;
 
     private readonly IQueryable<Transaction> _transactions;
-    private readonly ITransactionExtraRepository _transactionExtraRepository;
+    private readonly IQueryable<TransactionRaw> _rawTransactions;
+    private readonly IAccountHolderRepository _accountHolderRepository;
+    private readonly ITransactionRawRepository _transactionRawRepository;
     private readonly ITransactionRepository _transactionRepository;
     private readonly ILogger<IngImporter> _logger;
+    private readonly Dictionary<short, AccountHolder> _accountHolders = new();
 
-    public IngImporter(IQueryable<Transaction> transactions, ITransactionExtraRepository transactionExtraRepository, ITransactionRepository transactionRepository, ILogger<IngImporter> logger)
+    public IngImporter(IQueryable<Transaction> transactions, IQueryable<TransactionRaw> rawTransactions, IAccountHolderRepository accountHolderRepository, ITransactionRawRepository transactionRawRepository, ITransactionRepository transactionRepository, ILogger<IngImporter> logger)
     {
+        _accountHolderRepository = accountHolderRepository;
         _transactions = transactions;
-        _transactionExtraRepository = transactionExtraRepository;
+        _rawTransactions = rawTransactions;
+        _transactionRawRepository = transactionRawRepository;
         _transactionRepository = transactionRepository;
         _logger = logger;
     }
@@ -36,7 +42,7 @@ public partial class IngImporter : IImporter
     {
 
         using var reader = new StreamReader(contents);
-        var transactions = new List<Transaction>();
+        var rawTransactions = new List<TransactionRaw>();
 
         // Throw away header row
         await reader.ReadLineAsync(cancellationToken);
@@ -47,7 +53,7 @@ public partial class IngImporter : IImporter
 
         while (!reader.EndOfStream)
         {
-            DateTime transactionTime = DateTime.MinValue;
+            DateOnly transactionTime = DateOnly.MinValue;
             decimal credit = 0;
             decimal debit = 0;
 
@@ -56,7 +62,7 @@ public partial class IngImporter : IImporter
 
             string[] prelimColumns = line.Split(",");
 
-            List<string> columns = new();
+            List<string> columns = [];
 
             string? current = null;
 
@@ -83,7 +89,7 @@ public partial class IngImporter : IImporter
                 continue;
             }
 
-            if (!DateTime.TryParseExact(columns[DateColumn], "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out transactionTime))
+            if (!DateOnly.TryParseExact(columns[DateColumn], "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out transactionTime))
             {
                 _logger.LogWarning("Incorrect date format at line {lineCount}", lineCount);
                 continue;
@@ -122,53 +128,81 @@ public partial class IngImporter : IImporter
 
             endBalance ??= balance;
 
+            if (_rawTransactions.Any(t => t.Description == columns[DescriptionColumn] && t.Date == transactionTime))
+            {
+                _logger.LogInformation("Duplicate transaction found {description} {date}", columns[DescriptionColumn], transactionTime);
+                continue;
+            }
+
+
+            var parsed = TransactionParser.ParseDescription(columns[DescriptionColumn]);
+
             var transaction = new Transaction
             {
                 AccountId = account.AccountId,
+                AccountHolder = parsed.Last4Digits != null ? await _accountHolderRepository.GetByCard(parsed.Last4Digits.Value, cancellationToken) : null,
                 Amount = transactionType == TransactionType.Credit ? credit : debit,
-                Description = columns[DescriptionColumn],
-                TransactionTime = transactionTime,
+                Description = parsed.Description,
+                Location = parsed.Location,
+                Extra = new TransactionExtra
+                {
+                    ReceiptNumber = parsed.ReceiptNumber,
+                    ProcessedDate = transactionTime,
+                    PurchaseType = parsed.PurchaseType,
+                },
+                Reference = parsed.Reference,
+                TransactionTime = parsed.PurchaseDate ?? transactionTime.ToStartOfDay(),
                 TransactionType = transactionType,
+                Source = "ING Import",
             };
 
-            transactions.Add(transaction);
-        }
-
-        (DateTime minTransactionTime, DateTime maxTransactionTime) = (transactions.Min(t => t.TransactionTime), transactions.Max(t => t.TransactionTime));
-
-        // Exclude transactions with matching date and amount.
-        transactions = transactions.Except(_transactions.Where(t => t.TransactionTime >= minTransactionTime && t.TransactionTime <= maxTransactionTime), new TransactionComparer()).ToList();
-
-        _transactionRepository.AddRange(transactions);
-
-        var transactionExtras = new List<TransactionExtra>();
-
-        foreach (var transaction in transactions)
-        {
-            TransactionExtra? extraInfo = TransactionParser.ParseDescription(transaction);
-
-            if (extraInfo != null)
+            var transactionRaw = new TransactionRaw
             {
-                transactionExtras.Add(extraInfo);
-            }
+                AccountId = account.AccountId,
+                Balance = balance,
+                Credit = credit,
+                Date = transactionTime,
+                Debit = debit,
+                Description = columns[DescriptionColumn],
+                Imported = DateTime.Now,
+                Transaction = transaction,
+            };
 
+            rawTransactions.Add(transactionRaw);
         }
 
-        _transactionExtraRepository.AddRange(transactionExtras);
+        _transactionRawRepository.AddRange(rawTransactions);
 
-        return new TransactionImportResult(transactions, endBalance!.Value);
+        return new TransactionImportResult(rawTransactions.Select(r => r.Transaction), endBalance!.Value);
     }
 
     public async Task Reprocess(Account account, CancellationToken cancellationToken = default)
     {
         var transactions = await _transactionRepository.GetTransactions(account.AccountId, cancellationToken);
-        var processed = await _transactionExtraRepository.GetAll(account.AccountId, cancellationToken);
-        var unprocessed = await _transactionExtraRepository.GetUnprocessedTransactions(transactions, cancellationToken);
+        var transactionIds = transactions.Select(t => t.TransactionId);
 
-        var transactionExtras = new List<TransactionExtra>();
+        var rawTransactions = await _transactionRawRepository.GetAll(account.AccountId, cancellationToken);
+        var processed = rawTransactions.Where(t => t.TransactionId != null && transactionIds.Contains(t.TransactionId.Value));
+        var unprocessed = rawTransactions.Except(processed, new Asm.Domain.IIdentifiableEqualityComparer<TransactionRaw, Guid>());
 
-        processed.ToList().ForEach(e => TransactionParser.ParseDescription(e.Transaction, ref e));
+        foreach (var raw in processed)
+        {
+            var parsed = TransactionParser.ParseDescription(raw.Description);
 
+            raw.Transaction.AccountHolder = await GetAccountHolder(parsed.Last4Digits, cancellationToken);
+            raw.Transaction.Description = parsed.Description;
+            raw.Transaction.Location = parsed.Location;
+            raw.Transaction.Extra = new TransactionExtra
+            {
+                ReceiptNumber = parsed.ReceiptNumber,
+                ProcessedDate = raw.Date,
+                PurchaseType = parsed.PurchaseType,
+            };
+            raw.Transaction.Reference = parsed.Reference;
+            raw.Transaction.TransactionTime = parsed.PurchaseDate ?? raw.Date.ToStartOfDay();
+
+        }
+        /*
         foreach (var transaction in unprocessed)
         {
             TransactionExtra? extraInfo = TransactionParser.ParseDescription(transaction);
@@ -177,11 +211,23 @@ public partial class IngImporter : IImporter
             {
                 transactionExtras.Add(extraInfo);
             }
-        }
-
-        _transactionExtraRepository.AddRange(transactionExtras);
+        }*/
     }
 
-    public GetTransactionExtraDetails? CreateExtraDetailsRequest(Guid accountId, Models.PagedResult<Models.Transaction> transactions) =>
-        new GetIngTransactionExtraDetails(accountId, transactions);
+    private async ValueTask<AccountHolder?> GetAccountHolder(short? last4Digits, CancellationToken cancellationToken)
+    {
+        if (last4Digits == null) return null;
+
+        if (!_accountHolders.TryGetValue(last4Digits.Value, out AccountHolder? accountHolder))
+        {
+            accountHolder = await _accountHolderRepository.GetByCard(last4Digits.Value, cancellationToken);
+            if (accountHolder == null) return null;
+            _accountHolders.Add(last4Digits.Value, accountHolder);
+        }
+
+        return accountHolder;
+    }
+
+    /*public GetTransactionExtraDetails? CreateExtraDetailsRequest(Guid accountId, Models.PagedResult<Models.Transaction> transactions) =>
+        new GetIngTransactionExtraDetails(accountId, transactions);*/
 }

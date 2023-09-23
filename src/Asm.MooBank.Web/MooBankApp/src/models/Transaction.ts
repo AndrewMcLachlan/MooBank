@@ -17,11 +17,13 @@ export const isDebit = (transactionType: TransactionType) => transactionType % 2
 
 export interface Transaction {
     id: string;
-    reference: string;
     accountId: string;
     amount: number;
     netAmount: number;
     description: string;
+    location?: string;
+    reference?: string;
+    accountHolderName?: string;
     transactionTime: string;
     transactionType: TransactionType;
     tags: Tag[];

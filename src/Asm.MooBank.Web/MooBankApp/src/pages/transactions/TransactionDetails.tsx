@@ -3,7 +3,7 @@ import { Button, Col, Form, Modal, Row, } from "react-bootstrap";
 import { TransactionSplitPanel } from "./TransactionSplitPanel";
 import { useEffect, useMemo, useState } from "react";
 import { TransactionSearch } from "components";
-import { TransactionDetailsIng } from "./TransactionDetailsIng";
+import { ExtraInfo } from "./ExtraInfo";
 import { ClickableIcon, IconButton, Input, formatCurrency } from "@andrewmclachlan/mooapp";
 import { useInvalidateSearch } from "services";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -69,23 +69,29 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
             </Modal.Header>
             <Modal.Body>
                 <section className="transaction-details">
-                    <div>Amount</div>
-                    <div className="value amount">{formatCurrency(props.transaction.amount)}</div>
-                    {props.transaction.netAmount !== props.transaction.amount &&
-                        <>
-                            <div>Net Amount</div>
-                            <div className="value amount">{formatCurrency(props.transaction.netAmount)}</div>
-                        </>
-                    }
-                    <div>Description</div>
-                    <div className="value description">{props.transaction.description}</div>
-                    {props.transaction.extraInfo && <TransactionDetailsIng transaction={transaction} />}
-                    {props.transaction.offsets?.map((to) =>
+                    <section>
+                        <div>Amount</div>
+                        <div className="value amount">{formatCurrency(props.transaction.amount)}</div>
+                        {props.transaction.netAmount !== props.transaction.amount &&
+                            <>
+                                <div>Net Amount</div>
+                                <div className="value amount">{formatCurrency(props.transaction.netAmount)}</div>
+                            </>
+                        }
+                        <div>Description</div>
+                        <div className="value description">{props.transaction.description}</div>
+                        <div>Who</div>
+                        <div className="value">{props.transaction.accountHolderName}</div>
+                        <div>Location</div>
+                        <div className="value">{props.transaction.location}</div>
+                        {props.transaction.offsets?.map((to) =>
                         <>
                             <div>Rebate / refund for</div>
                             <div className="value"><span className="amount">{to.amount}</span> - {to.transaction.description}</div>
                         </>
                     )}
+                    </section>
+                    {props.transaction.extraInfo && <ExtraInfo transaction={transaction} />}
                 </section>
                 <section className="splits">
                     <Row>
@@ -149,7 +155,7 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={props.onHide}>Close</Button>
-                <Button variant="primary" onClick={() => { props.onSave(notes, splits, offsetBy)}}>Save</Button>
+                <Button variant="primary" onClick={() => { props.onSave(notes, splits, offsetBy) }}>Save</Button>
             </Modal.Footer>
         </Modal >
     );

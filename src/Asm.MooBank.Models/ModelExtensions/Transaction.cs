@@ -6,13 +6,16 @@ public partial record Transaction
         new()
         {
             Id = transaction.TransactionId,
-            Reference = transaction.TransactionReference,
+            Reference = transaction.Reference,
             Amount = transaction.Amount,
             NetAmount = transaction.NetAmount,
             TransactionTime = transaction.TransactionTime,
             TransactionType = transaction.TransactionType,
             AccountId = transaction.AccountId,
             Description = transaction.Description,
+            Location = transaction.Location,
+            AccountHolderName = transaction.AccountHolder?.FirstName,
+            ExtraInfo = transaction.Extra,
             Notes = transaction.Notes,
             Tags = transaction.Tags.Where(t => !t.Deleted).ToSimpleModel(),
             Splits = transaction.Splits.Select(t => t.ToModel()),
@@ -21,22 +24,23 @@ public partial record Transaction
 
         };
 
-    public static explicit operator Domain.Entities.Transactions.Transaction(Transaction transaction)
+   /* public static explicit operator Domain.Entities.Transactions.Transaction(Transaction transaction)
     {
         return new Domain.Entities.Transactions.Transaction
         {
             TransactionId = transaction.Id,
-            TransactionReference = transaction.Reference,
+            Reference = transaction.Reference,
             Amount = transaction.Amount,
+            NetAmount = transaction.NetAmount,
+            Location = transaction.Location,
+
             TransactionTime = transaction.TransactionTime,
             TransactionType = transaction.TransactionType,
             AccountId = transaction.AccountId,
             Description = transaction.Description,
             Notes = transaction.Notes,
-            // TODO: Write back to transaction
-            //OffsetByTransactionId = transaction.OffsetBy?.Id,
         };
-    }
+    }*/
 }
 
 public static class IEnumerableTransactionExtensions
@@ -45,7 +49,7 @@ public static class IEnumerableTransactionExtensions
         new()
         {
             Id = transaction.TransactionId,
-            Reference = transaction.TransactionReference,
+            Reference = transaction.Reference,
             Amount = transaction.Amount,
             NetAmount = transaction.NetAmount,
             TransactionTime = transaction.TransactionTime,

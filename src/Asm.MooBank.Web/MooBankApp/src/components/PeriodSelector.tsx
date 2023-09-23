@@ -2,8 +2,8 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 
 import format from "date-fns/format";
 
-import { FormGroup, FormRow as Row } from "./";
-import { Button, Col, Form } from "react-bootstrap";
+import { FormGroup  } from "./";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import { Period, allTime, last12Months, last3Months, last6Months, lastMonth, lastYear, previousMonth, thisMonth } from "helpers/dateFns";
 import { usePeriod } from "hooks";
 import { useLocalStorage } from "@andrewmclachlan/mooapp";
@@ -61,7 +61,7 @@ export const PeriodSelector: React.FC<PeriodSelectorProps> = (props) => {
     }, [period]);
 
     return (
-        <section>
+        <Row as="section">
             <FormGroup xl="4">
                 <Form.Label htmlFor="period">Period</Form.Label>
                 <Form.Select id="period" onChange={changePeriod} value={selectedPeriod}>
@@ -82,7 +82,7 @@ export const PeriodSelector: React.FC<PeriodSelectorProps> = (props) => {
             <FormGroup xl="2" className="horizontal-form-controls" hidden={selectedPeriod !== "-1" || props.instant}>
                 <Button disabled={selectedPeriod !== "-1"} onClick={customPeriodGo}>Go</Button>
             </FormGroup>
-        </section>
+        </Row>
     );
 }
 

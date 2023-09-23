@@ -3,14 +3,12 @@ using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.AccountGroup;
 using Asm.MooBank.Domain.Entities.AccountHolder;
 using Asm.MooBank.Domain.Entities.Budget;
-using Asm.MooBank.Domain.Entities.Ing;
 using Asm.MooBank.Domain.Entities.RecurringTransactions;
 using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Infrastructure;
 using Asm.MooBank.Infrastructure.Repositories;
-using Asm.MooBank.Infrastructure.Repositories.Ing;
 using Asm.MooBank.Security;
 using Microsoft.Extensions.Configuration;
 
@@ -47,7 +45,6 @@ public static class IServiceCollectionExtensions
                 .AddScoped<IRecurringTransactionRepository, RecurringTransactionRepository>()
                 .AddScoped<IReferenceDataRepository, ReferenceDataRepository>()
                 .AddScoped<ISecurity, SecurityRepository>()
-                .AddScoped<ITransactionExtraRepository, TransactionExtraRepository>()
                 .AddScoped<ITransactionRepository, TransactionRepository>()
                 .AddScoped<ITransactionTagRepository, TransactionTagRepository>()
                 .AddScoped<IRuleRepository, RuleRepository>()
