@@ -62,7 +62,7 @@ internal partial class IngImporter : IImporter
 
             string[] prelimColumns = line.Split(",");
 
-            List<string> columns = [];
+            List<string> columns = new();
 
             string? current = null;
 

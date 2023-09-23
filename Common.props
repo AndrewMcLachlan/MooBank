@@ -1,7 +1,7 @@
 ﻿<Project>
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>11</LangVersion>
     <Authors>Andrew McLachlan</Authors>
     <Company />
     <Copyright>Copyright © Andrew McLachlan 2013. All rights reserved.</Copyright>

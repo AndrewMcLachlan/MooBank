@@ -14,7 +14,7 @@ namespace Asm.MooBank.Infrastructure;
 
 public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
 {
-    private static readonly List<Assembly> Assemblies = [];
+    private static readonly List<Assembly> Assemblies = new();
 
     public MooBankContext(IMediator mediator) : base(mediator)
     {

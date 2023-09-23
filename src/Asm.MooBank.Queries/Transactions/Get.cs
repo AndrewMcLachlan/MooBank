@@ -80,7 +80,7 @@ file static class IQueryableExtensions
     {
         var result = query.Where(t => t.AccountId == request.AccountId);
 
-        var filters = request.Filter?.Split(',') ?? [];
+        var filters = request.Filter?.Split(',') ?? Array.Empty<string>();
 
         if (!String.IsNullOrWhiteSpace(request.Filter))
         {
