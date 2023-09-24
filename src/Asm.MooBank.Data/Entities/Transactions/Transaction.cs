@@ -28,6 +28,8 @@ public partial class Transaction
 
     public string? Reference { get; set; }
 
+    public DateTime? PurchaseDate { get; set; }
+
     public DateTime TransactionTime { get; set; }
 
     public string? Notes { get; set; }
@@ -48,9 +50,7 @@ public partial class Transaction
 
     public virtual AccountHolder.AccountHolder? AccountHolder { get; set; }
 
-    public virtual ICollection<TransactionOffset> OffsetBy { get; set; } = new HashSet<TransactionOffset>();
-
-    public virtual ICollection<TransactionOffset> Offsets { get; set; } = new HashSet<TransactionOffset>();
+    public virtual ICollection<TransactionOffset> OffsetFor { get; set; } = new HashSet<TransactionOffset>();
     #endregion
 
     #region Properties
@@ -96,11 +96,6 @@ public partial class Transaction
                 break;
             }
         }
-    }
-
-    public void RemoveOffset(TransactionOffset offset)
-    {
-        OffsetBy.Remove(offset);
     }
 
     public void RemoveSplit(TransactionSplit split)

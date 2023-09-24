@@ -25,7 +25,7 @@ export const TransactionSearch: React.FC<TransactionSearchProps> = (props) => {
 }
 
 TransactionSearch.defaultProps = {
-    transactionType: TransactionType.Credit,
+    transactionType: "Credit",
     excludedTransactions: [],
 };
 

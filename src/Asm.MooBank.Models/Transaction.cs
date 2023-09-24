@@ -22,9 +22,7 @@ public partial record Transaction
 
     public IEnumerable<TransactionSplit> Splits { get; set; } = Enumerable.Empty<TransactionSplit>();
 
-    public IEnumerable<TransactionOffset> Offsets { get; set; } = Enumerable.Empty<TransactionOffset>();
-
-    public IEnumerable<TransactionOffset> OffsetBy { get; set; } = Enumerable.Empty<TransactionOffset>();
+    public IEnumerable<TransactionOffsetFor> OffsetFor { get; set; } = Enumerable.Empty<TransactionOffsetFor>();
 
     public object? ExtraInfo { get; set; }
 }

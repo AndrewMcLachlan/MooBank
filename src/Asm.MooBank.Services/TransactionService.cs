@@ -98,7 +98,7 @@ public class TransactionService : ServiceBase, ITransactionService
             Amount = amount,
             AccountId = accountId,
             Description = description,
-            TransactionTime = DateTime.UtcNow,
+            TransactionTime = DateTime.Now,
             TransactionType = transactionType,
         };
 

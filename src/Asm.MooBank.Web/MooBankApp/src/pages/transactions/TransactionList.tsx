@@ -33,7 +33,7 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
             <TransactionTableHead />
             <tbody>
                 {transactions && transactions.map((t) => <TransactionRow key={t.id} transaction={t} />)}
-                {!transactions && Array.from({ length: 50 }, (_value, index) => index).map((i) => <tr key={i}><td colSpan={4}>&nbsp;</td></tr>)}
+                {!transactions && Array.from({ length: 50 }, (_value, index) => index).map((i) => <tr key={i}><td colSpan={6}>&nbsp;</td></tr>)}
             </tbody>
             <tfoot>
                 <tr>

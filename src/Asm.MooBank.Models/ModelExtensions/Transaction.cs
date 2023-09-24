@@ -1,7 +1,10 @@
-﻿namespace Asm.MooBank.Models;
+﻿
+namespace Asm.MooBank.Models;
 
 public partial record Transaction
 {
+    public DateTime? PurchaseDate { get; private set; }
+
     public static explicit operator Transaction(Domain.Entities.Transactions.Transaction transaction) =>
         new()
         {
@@ -9,6 +12,7 @@ public partial record Transaction
             Reference = transaction.Reference,
             Amount = transaction.Amount,
             NetAmount = transaction.NetAmount,
+            PurchaseDate = transaction.PurchaseDate,
             TransactionTime = transaction.TransactionTime,
             TransactionType = transaction.TransactionType,
             AccountId = transaction.AccountId,
@@ -19,8 +23,7 @@ public partial record Transaction
             Notes = transaction.Notes,
             Tags = transaction.Tags.Where(t => !t.Deleted).ToSimpleModel(),
             Splits = transaction.Splits.Select(t => t.ToModel()),
-            OffsetBy = transaction.OffsetBy.Select(t => t.ToOffsetByModel()),
-            Offsets = transaction.Offsets.Select(t => t.ToOffsetModel()),
+            OffsetFor = transaction.OffsetFor.Select(t => t.ToOffsetForModel()),
 
         };
 

@@ -1,6 +1,4 @@
 .transaction-details {
-display: flex;
-
     h4 {
         font-weight: bold;
     }
@@ -8,6 +6,10 @@ display: flex;
     .value {
         font-weight: bold;
     }
+}
+
+.transaction-info {
+    display: flex;
 
     section {
         flex: 1;
@@ -16,7 +18,21 @@ display: flex;
         row-gap: 10px;
     }
 
-    padding-bottom: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.offset-for {
+    display: flex;
+
+    div {
+        flex: 1;
+    }
+
+    margin-bottom: 1rem;
+}
+
+.notes, .offsets {
+    padding-bottom: .5rem;
     border-bottom: 1px solid var(--bs-body-color);
     margin-bottom: 1.5rem;
 }
@@ -33,21 +49,5 @@ display: flex;
         position: absolute;
         right: 50%;
         top: 50%;
-    }
-}
-
-.transaction-details-extra2 {
-    /*grid-column: 1 / span 2;
-    display: grid;
-    grid-template-columns: 110px 250px 110px 250px;
-    row-gap: 10px;*/
-    display: flex;
-
-    > div {
-        display: flex;
-    }
-
-    label {
-        width: 150px;
     }
 }

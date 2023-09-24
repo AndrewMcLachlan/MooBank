@@ -89,7 +89,7 @@ internal partial class IngImporter : IImporter
                 continue;
             }
 
-            if (!DateOnly.TryParseExact(columns[DateColumn], "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out transactionTime))
+            if (!DateOnly.TryParseExact(columns[DateColumn], "dd/MM/yyyy", out transactionTime))
             {
                 _logger.LogWarning("Incorrect date format at line {lineCount}", lineCount);
                 continue;
@@ -151,7 +151,8 @@ internal partial class IngImporter : IImporter
                     PurchaseType = parsed.PurchaseType,
                 },
                 Reference = parsed.Reference,
-                TransactionTime = parsed.PurchaseDate ?? transactionTime.ToStartOfDay(),
+                PurchaseDate = parsed.PurchaseDate,
+                TransactionTime = transactionTime.ToStartOfDay(),
                 TransactionType = transactionType,
                 Source = "ING Import",
             };

@@ -7,7 +7,7 @@ import { useCreateTag, useTags } from "services";
 import { emptyGuid } from "@andrewmclachlan/mooapp";
 
 
-export const TransactionSplitPanel: React.FC<TransactionSplitPanelProps> = (props) => {
+export const TransactionSplitTagPanel: React.FC<TransactionSplitPanelProps> = (props) => {
 
     const [transactionSplit, setTransactionSplit] = useState<TransactionSplit>(props.transactionSplit);
 
@@ -59,8 +59,7 @@ export const TransactionSplitPanel: React.FC<TransactionSplitPanelProps> = (prop
     );
 }
 
-
-TransactionSplitPanel.defaultProps = {
+TransactionSplitTagPanel.defaultProps = {
     alwaysShowEditPanel: false,
 }
 

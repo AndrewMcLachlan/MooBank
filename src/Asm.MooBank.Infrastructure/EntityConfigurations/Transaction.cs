@@ -31,7 +31,7 @@ internal class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
             .HasForeignKey(d => d.AccountId);
 
         entity.HasMany(p => p.Splits)
-            .WithOne().HasForeignKey(e => e.TransactionId);
+            .WithOne(s => s.Transaction).HasForeignKey(e => e.TransactionId);
 
         entity.Property(e => e.TransactionType)
             .HasColumnName($"{nameof(Transaction.TransactionType)}Id")
@@ -43,10 +43,10 @@ internal class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
         //entity.HasOne(e => e.OffsetBy).WithOne(e => e.Offsets).HasForeignKey<Transaction>(t => t.OffsetByTransactionId);
 
         // This transaction is offset by the linked "OffsetTransactionId" transaction
-        entity.HasMany(e => e.OffsetBy).WithOne(e => e.Transaction).HasForeignKey(t => t.TransactionId);
+        //entity.HasMany(e => e.OffsetBy).WithOne(e => e.TransactionSplit).HasForeignKey(t => t.TransactionSplitId);
 
         // This transaction offsets the linked "TransactionId" transaction
-        entity.HasMany(e => e.Offsets).WithOne(e => e.OffsetByTransaction).HasForeignKey(t => t.OffsetTransactionId);
+        entity.HasMany(e => e.OffsetFor).WithOne(e => e.OffsetByTransaction).HasForeignKey(t => t.OffsetTransactionId);
 
 
         entity.Property(e => e.Extra).HasConversion(

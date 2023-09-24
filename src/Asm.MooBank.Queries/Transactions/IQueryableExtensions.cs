@@ -8,7 +8,10 @@ namespace Asm.MooBank.Queries.Transactions;
 internal static class IQueryableExtensions
 {
     public static IQueryable<Transaction> IncludeAll(this IQueryable<Transaction> query) =>
-        query.IncludeTags().Include(t => t.AccountHolder).Include(t => t.OffsetBy).ThenInclude(t => t.OffsetByTransaction).Include(t => t.Offsets).ThenInclude(t => t.Transaction);
+        query.IncludeTags().IncludeOffsets().Include(t => t.AccountHolder);
+
+    public static IIncludableQueryable<Transaction, Transaction> IncludeOffsets(this IQueryable<Transaction> query) =>
+        query.Include(t => t.Splits).ThenInclude(ts => ts.OffsetBy).ThenInclude(to => to.OffsetByTransaction).Include(t => t.OffsetFor).ThenInclude(t => t.TransactionSplit).ThenInclude(t => t.Transaction);
 
     public static IIncludableQueryable<Transaction, ICollection<Domain.Entities.Tag.Tag>> IncludeTags(this IQueryable<Transaction> query) =>
         query.Include(t => t.Splits).ThenInclude(ts => ts.Tags);

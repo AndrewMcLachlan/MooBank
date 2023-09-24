@@ -1,5 +1,5 @@
 ﻿namespace Asm.MooBank.Models;
-public partial record TransactionOffset
+public partial record TransactionOffsetBy
 {
     public required Transaction Transaction { get; init; }
 

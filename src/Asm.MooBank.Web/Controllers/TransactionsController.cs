@@ -43,7 +43,7 @@ public class TransactionsController : CommandQueryController
 
     [HttpPatch("{id}")]
     public Task<Transaction> Update(Guid id, [FromBody] TransactionModel model, CancellationToken cancellationToken = default) =>
-        CommandDispatcher.Dispatch(new UpdateTransaction(id, model.Notes, model.Splits, model.OffsetBy), cancellationToken);
+        CommandDispatcher.Dispatch(new UpdateTransaction(id, model.Notes, model.Splits), cancellationToken);
 
     [HttpPut("{id}/tag/{tagId}")]
     public async Task<ActionResult<Transaction>> Add(Guid accountId, Guid id, int tagId, CancellationToken cancellationToken = default) =>

@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Asm.Domain;
+using MediatR;
 
 namespace Asm.MooBank.Domain.Entities.Transactions;
 public class TransactionSplit : KeyedEntity<Guid>
@@ -15,6 +16,10 @@ public class TransactionSplit : KeyedEntity<Guid>
     public Guid TransactionId { get; set; }
 
     public decimal Amount { get; set; }
+
+    public virtual Transaction Transaction { get; set; } = null!;
+
+    public virtual ICollection<TransactionOffset> OffsetBy { get; set; } = new HashSet<TransactionOffset>();
 
     public virtual ICollection<Tag.Tag> Tags { get; set; } = new HashSet<Tag.Tag>();
 
@@ -32,5 +37,10 @@ public class TransactionSplit : KeyedEntity<Guid>
         {
             Tags.Add(tag);
         }
+    }
+
+    public void RemoveOffset(TransactionOffset offset)
+    {
+        OffsetBy.Remove(offset);
     }
 }

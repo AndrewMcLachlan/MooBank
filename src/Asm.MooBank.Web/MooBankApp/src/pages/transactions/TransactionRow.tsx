@@ -16,7 +16,7 @@ export const TransactionRow: React.FC<TransactionRowProps> = (props) => {
 
     const onSave = (notes: string, splits?: TransactionSplit[], offsetBy?: TransactionOffset[]) => {
         
-        updateTransaction.mutate([{ accountId: props.transaction.accountId, transactionId: props.transaction.id }, { notes, splits, offsetBy: offsetBy?.map(to => ({ transactionOffsetId: to.transaction.id, amount: to.amount }))}]);
+        updateTransaction.mutate([{ accountId: props.transaction.accountId, transactionId: props.transaction.id }, { notes, splits}]);
         setShowDetails(false);
     }
 
@@ -24,7 +24,7 @@ export const TransactionRow: React.FC<TransactionRowProps> = (props) => {
         <>
             <TransactionDetails transaction={props.transaction} show={showDetails} onHide={() => setShowDetails(false)} onSave={onSave} />
             <tr className="clickable transaction-row" onClick={() => setShowDetails(true)} title={props.transaction.notes}>
-                <td>{format(parseISO(props.transaction.transactionTime), "dd/MM/yyyy")}</td>
+                <td>{format(parseISO(props.transaction.purchaseDate ?? props.transaction.transactionTime), "dd/MM/yyyy")}</td>
                 <td className="description" colSpan={props.colspan}>{props.transaction.description}</td>
                 <td>{props.transaction.location}</td>
                 <td>{props.transaction.accountHolderName}</td>

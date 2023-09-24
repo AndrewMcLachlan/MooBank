@@ -66,6 +66,7 @@
     <Folder Include="ing" />
     <Folder Include="ing\Tables" />
     <Folder Include="dbo\Views" />
+    <Folder Include="Scripts" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\Account.sql" />
@@ -112,6 +113,7 @@
     <Build Include="dbo\Tables\TransactionSplitTag.sql" />
     <Build Include="dbo\Functions\CheckSplitAmount.sql" />
     <Build Include="ing\Tables\TransactionRaw.sql" />
+    <Build Include="dbo\Tables\TransactionSplitOffset.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Azure.publish.xml" />

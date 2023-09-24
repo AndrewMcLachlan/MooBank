@@ -1,6 +1,5 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
-using Asm.MooBank.Domain.Entities.AccountHolder;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Importers;
 using Asm.MooBank.Queries.Transactions;
@@ -107,8 +106,6 @@ file static class IQueryableExtensions
             ParameterExpression param = Expression.Parameter(typeof(Transaction), String.Empty);
 
             Expression propertyExp = field.Split('.').Aggregate((Expression)param, Expression.Property);
-
-            //MemberExpression propertyExp = Expression.Property(param, field);
 
 
             Expression sortBody = field == "Amount" ? Expression.Call(typeof(Math), "Abs", null, propertyExp) : propertyExp;

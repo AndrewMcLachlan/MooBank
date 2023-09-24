@@ -3,7 +3,7 @@ import { v4 as guid } from "uuid";
 import { Tag } from "./Tag";
 import { emptyGuid } from "@andrewmclachlan/mooapp";
 
-export enum TransactionType {
+enum TransactionTypesEnum {
     Credit = 1,
     Debit = 2,
     RecurringCredit = 3,
@@ -11,9 +11,13 @@ export enum TransactionType {
     BalanceAdjustment = 5,
 }
 
-export const isCredit = (transactionType: TransactionType) => transactionType % 2 === 1;
+export const TransactionTypes = ["Credit", "Debit", "RecurringCredit", "RecurringDebit", "BalanceAdjustment"] as TransactionType[];
+export type TransactionType = "Credit" | "Debit" | "RecurringCredit" | "RecurringDebit" | "BalanceAdjustment";
 
-export const isDebit = (transactionType: TransactionType) => transactionType % 2 === 0;
+
+export const isCredit = (transactionType: TransactionType) => TransactionTypesEnum[transactionType] % 2 === 1;
+
+export const isDebit = (transactionType: TransactionType) => TransactionTypesEnum[transactionType] % 2 === 0;
 
 export interface Transaction {
     id: string;
@@ -29,15 +33,13 @@ export interface Transaction {
     tags: Tag[];
     notes?: string;
     splits: TransactionSplit[];
-    offsetBy?: TransactionOffset[];
-    offsets: TransactionOffset[];
+    offsetFor: TransactionOffset[];
     extraInfo: any;
 }
 
 export interface TransactionUpdate {
     notes?: string;
     splits?: TransactionSplit[];
-    offsetBy?: TransactionOffsetUpdate[];
 }
 
 export interface TransactionOffsetUpdate {
@@ -53,12 +55,14 @@ export interface TransactionOffset {
 export interface TransactionSplit {
     id: string;
     amount: number;
+    offsetBy: TransactionOffset[];
     tags: Tag[];
 }
 
 export const emptyTransactionSplit: TransactionSplit = {
     id: emptyGuid,
     amount: 0,
+    offsetBy: [],
     tags: [],
 };
 

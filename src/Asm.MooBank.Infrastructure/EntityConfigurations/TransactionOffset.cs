@@ -6,7 +6,9 @@ internal class TransactionOffsetConfiguration : IEntityTypeConfiguration<Transac
 {
     public void Configure(EntityTypeBuilder<TransactionOffset> entity)
     {
-        entity.HasKey(e => new { e.TransactionId, e.OffsetTransactionId })
+        entity.ToTable("TransactionSplitOffset", "dbo");
+
+        entity.HasKey(e => new { e.TransactionSplitId, e.OffsetTransactionId })
               .HasName("PK_TransactionOffset");
     }
 }

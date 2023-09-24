@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Col, Form, Row } from "react-bootstrap";
-import { TransactionSplitPanel } from "./TransactionSplitPanel";
+import { TransactionSplitTagPanel } from "./TransactionSplitTagPanel";
 import { ClickableIcon } from "@andrewmclachlan/mooapp";
 import { Transaction, TransactionSplit, emptyTransactionSplit } from "models";
 import { valueAsNumber } from "helpers";
@@ -28,7 +28,7 @@ export const NewTransactionSplit: React.FC<NewTransactionSplitProps> = ({ transa
     return (
         <Form.Group as={Row}>
             <Col xl={9}>
-                <TransactionSplitPanel as="div" transactionId={transaction.id} onChange={(s) => splitChanged({ ...split, tags: s.tags })} alwaysShowEditPanel transactionSplit={split} />
+                <TransactionSplitTagPanel as="div" transactionId={transaction.id} onChange={(s) => splitChanged({ ...split, tags: s.tags })} alwaysShowEditPanel transactionSplit={split} />
             </Col>
             <Col xl={2}>
                 <Form.Control type="number" value={split.amount} required min={0} max={maxSplit} onChange={(s) => splitChanged({ ...split, amount: valueAsNumber(s.currentTarget) })} />

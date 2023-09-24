@@ -1,22 +1,22 @@
 ﻿namespace Asm.MooBank.Models;
-public partial record TransactionOffset
+public partial record TransactionOffsetBy
 {
 
 }
 
 public static class TransactionOffsetExtensions
 {
-    public static TransactionOffset ToOffsetByModel(this Domain.Entities.Transactions.TransactionOffset transactionOffset) =>
+    public static TransactionOffsetBy ToOffsetByModel(this Domain.Entities.Transactions.TransactionOffset transactionOffset) =>
     new()
     {
         Transaction = transactionOffset.OffsetByTransaction.ToSimpleModel(),
         Amount = transactionOffset.Amount,
     };
 
-    public static TransactionOffset ToOffsetModel(this Domain.Entities.Transactions.TransactionOffset transactionOffset) =>
-new()
-{
-    Transaction = transactionOffset.Transaction.ToSimpleModel(),
-    Amount = transactionOffset.Amount,
-};
+    public static TransactionOffsetFor ToOffsetForModel(this Domain.Entities.Transactions.TransactionOffset transactionOffset) =>
+    new()
+    {
+        Transaction = transactionOffset.TransactionSplit.Transaction.ToSimpleModel(),
+        Amount = transactionOffset.Amount,
+    };
 }

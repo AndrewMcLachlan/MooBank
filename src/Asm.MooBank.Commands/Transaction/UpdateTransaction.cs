@@ -4,7 +4,7 @@ using Asm.MooBank.Models.Commands.Transactions;
 
 namespace Asm.MooBank.Commands.Transaction;
 
-public record UpdateTransaction(Guid Id, string? Notes, IEnumerable<Models.TransactionSplit> Splits, IEnumerable<CreateOffset> Offsets, bool ExcludeFromReporting = false) : ICommand<Models.Transaction>;
+public record UpdateTransaction(Guid Id, string? Notes, IEnumerable<Models.TransactionSplit> Splits, bool ExcludeFromReporting = false) : ICommand<Models.Transaction>;
 
 internal class UpdateTransactionHandler : ICommandHandler<UpdateTransaction, Models.Transaction>
 {
@@ -53,33 +53,33 @@ internal class UpdateTransactionHandler : ICommandHandler<UpdateTransaction, Mod
             splitEntity.Amount = split.Amount;
             var tags = await _tagRepository.Get(split.Tags.Select(t => t.Id), cancellationToken);
             splitEntity.UpdateTags(tags);
-        }
-        #endregion
 
-        #region Offsets
-        var offsetsToRemove = entity.OffsetBy.Where(o => !request.Offsets.Any(ro => ro.TransactionOffsetId == o.OffsetTransactionId)).ToList();
-        var offsetsToAdd = request.Offsets.Where(o => !entity.OffsetBy.Any(ro => ro.OffsetTransactionId == o.TransactionOffsetId)).ToList();
-        var offsetsToUpdate = request.Offsets.Where(o => entity.OffsetBy.Any(ro => ro.OffsetTransactionId == o.TransactionOffsetId)).ToList();
+            #region Offsets
+            var offsetsToRemove = splitEntity.OffsetBy.Where(o => !split.OffsetBy.Any(ro => ro.Transaction.Id == o.OffsetTransactionId)).ToList();
+            var offsetsToAdd = split.OffsetBy.Where(o => !splitEntity.OffsetBy.Any(ro => ro.OffsetTransactionId == o.Transaction.Id)).ToList();
+            var offsetsToUpdate = split.OffsetBy.Where(o => splitEntity.OffsetBy.Any(ro => ro.OffsetTransactionId == o.Transaction.Id)).ToList();
 
-        foreach (var offset in offsetsToRemove)
-        {
-            entity.RemoveOffset(offset);
-        }
-
-        foreach (var offset in offsetsToAdd)
-        {
-            entity.OffsetBy.Add(new TransactionOffset
+            foreach (var offset in offsetsToRemove)
             {
-                Amount = offset.Amount,
-                TransactionId = entity.TransactionId,
-                OffsetTransactionId = offset.TransactionOffsetId,
-            });
-        }
+                splitEntity.RemoveOffset(offset);
+            }
 
-        foreach (var offset in offsetsToUpdate)
-        {
-            var offsetEntity = entity.OffsetBy.First(o => o.OffsetTransactionId == offset.TransactionOffsetId);
-            offsetEntity.Amount = offset.Amount;
+            foreach (var offset in offsetsToAdd)
+            {
+                splitEntity.OffsetBy.Add(new TransactionOffset
+                {
+                    Amount = offset.Amount,
+                    TransactionSplitId = splitEntity.Id,
+                    OffsetTransactionId = offset.Transaction.Id,
+                });
+            }
+
+            foreach (var offset in offsetsToUpdate)
+            {
+                var offsetEntity = splitEntity.OffsetBy.First(o => o.OffsetTransactionId == offset.Transaction.Id);
+                offsetEntity.Amount = offset.Amount;
+            }
+            #endregion
         }
         #endregion
 

@@ -5,6 +5,7 @@ public static class TransactionSplitExtensions
     {
         Id = split.Id,
         Amount = Math.Abs(split.Amount),
-        Tags = split.Tags.Where(t => !t.Deleted).ToSimpleModel()
+        Tags = split.Tags.Where(t => !t.Deleted).ToSimpleModel(),
+        OffsetBy = split.OffsetBy.Select(t => t.ToOffsetByModel()),
     };
 }
