@@ -28,6 +28,7 @@ export interface Transaction {
     location?: string;
     reference?: string;
     accountHolderName?: string;
+    purchaseDate?: string;
     transactionTime: string;
     transactionType: TransactionType;
     tags: Tag[];
