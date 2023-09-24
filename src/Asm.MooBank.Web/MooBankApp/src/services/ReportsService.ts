@@ -31,8 +31,8 @@ const toQuery = (settings: TagTrendReportSettings) => {
 
 const datesToUrl = (start?: Date, end?:Date) => {
 
-    start = start ?? allTime.startDate;
-    end = end ?? allTime.endDate;
+    start = start ?? new Date();
+    end = end ?? new Date();
 
     return`/${formatISODate(start)}/${formatISODate(end)}`;
 }

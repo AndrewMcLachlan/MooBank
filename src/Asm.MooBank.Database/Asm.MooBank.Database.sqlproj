@@ -114,6 +114,10 @@
     <Build Include="dbo\Functions\CheckSplitAmount.sql" />
     <Build Include="ing\Tables\TransactionRaw.sql" />
     <Build Include="dbo\Tables\TransactionSplitOffset.sql" />
+    <None Include="Scripts\BackfillTransactionRaw.sql" />
+    <None Include="Scripts\FillTransactionOffset.sql" />
+    <None Include="Scripts\FillTransactionRaw.sql" />
+    <None Include="Scripts\FillTransactionSplits.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Azure.publish.xml" />

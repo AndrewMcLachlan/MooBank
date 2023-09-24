@@ -23,13 +23,20 @@ internal class GetAllTagAverageReportHandler : IQueryHandler<GetAllTagAverageRep
     {
         _securityRepository.AssertAccountPermission(request.AccountId);
 
-
         var relationships = await _tagRelationships.Include(t => t.TransactionTag).ThenInclude(t => t.Tags).Include(t => t.ParentTag).ThenInclude(t => t.Tags).Where(tr => !tr.TransactionTag.Deleted).ToListAsync(cancellationToken);
 
+        var transactions = await _transactions.Include(t => t.Splits).ThenInclude(t => t.Tags).WhereByReportQuery(request).WhereByReportType(request.ReportType).ToListAsync(cancellationToken);
 
-        var transactions = await ReportQueryExtensions.WhereByReportQuery(_transactions.Include(t => t.Splits).ThenInclude(t => t.Tags), request).ToListAsync(cancellationToken);
+        if (!transactions.Any()) return new()
+        {
+            AccountId = request.AccountId,
+            Start = request.Start,
+            End = request.End,
+            ReportType = request.ReportType,
+            Tags = Array.Empty<TagValue>(),
+        };
 
-        var total = transactions.Sum(t => t.Amount);
+        var total = transactions.Sum(t => t.NetAmount);
         decimal months = Math.Max(transactions.Min(t => t.TransactionTime).DifferenceInMonths(transactions.Max(t => t.TransactionTime)), 1);
 
         var tagValuesInterim = transactions
@@ -40,7 +47,7 @@ internal class GetAllTagAverageReportHandler : IQueryHandler<GetAllTagAverageRep
                 TagId = t.Id,
                 TagName = t.Name,
                 GrossAmount = g.WhereByReportType(request.ReportType).Sum(t => t.Amount),
-                NetAmount = g.Sum(t => t.Amount),
+                NetAmount = g.Sum(t => t.NetAmount),
             }));
 
         var tagValues = tagValuesInterim.GroupBy(t => new { t.TagId, t.TagName }).Select(g => new TagValue
