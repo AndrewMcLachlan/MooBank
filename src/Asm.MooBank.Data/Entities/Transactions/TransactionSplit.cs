@@ -5,7 +5,7 @@ using MediatR;
 namespace Asm.MooBank.Domain.Entities.Transactions;
 public class TransactionSplit : KeyedEntity<Guid>
 {
-    public TransactionSplit() : base(Guid.NewGuid())
+    public TransactionSplit() : base(Guid.Empty)
     {
     }
 
