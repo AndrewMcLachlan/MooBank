@@ -36,7 +36,7 @@ internal partial class TransactionParser
     [GeneratedRegex("^(.+) - BPAY Bill Payment - Receipt (\\d{4,6}) To (.+)")]
     private static partial Regex Bpay();
 
-    internal static ParsedTransaction ParseDescription(string description)
+    internal static ParsedTransaction ParseDescription(string? description)
     {
         ParsedTransaction parsed = new();
 

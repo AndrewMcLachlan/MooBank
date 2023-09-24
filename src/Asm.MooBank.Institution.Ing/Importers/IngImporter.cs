@@ -200,7 +200,8 @@ internal partial class IngImporter : IImporter
                 PurchaseType = parsed.PurchaseType,
             };
             raw.Transaction.Reference = parsed.Reference;
-            raw.Transaction.TransactionTime = parsed.PurchaseDate ?? raw.Date.ToStartOfDay();
+            raw.Transaction.PurchaseDate = parsed.PurchaseDate;
+            raw.Transaction.TransactionTime = raw.Date.ToStartOfDay();
 
         }
         /*
