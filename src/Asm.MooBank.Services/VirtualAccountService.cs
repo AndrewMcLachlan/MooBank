@@ -46,6 +46,7 @@ public class VirtualAccountService : ServiceBase, IVirtualAccountService
                 Account = entity,
                 Amount = entity.Balance,
                 Description = "Initial balance",
+                Source = "Web",
                 TransactionTime = DateTime.Now,
                 TransactionType = entity.Balance > 0 ? TransactionType.BalanceAdjustmentCredit : TransactionType.BalanceAdjustmentDebit,
             });
@@ -107,6 +108,7 @@ public class VirtualAccountService : ServiceBase, IVirtualAccountService
             Account = account,
             Amount = amount,
             Description = "Balance adjustment",
+            Source = "Web",
             TransactionTime = DateTime.Now,
             TransactionType = amount > 0 ? TransactionType.BalanceAdjustmentCredit : TransactionType.BalanceAdjustmentDebit,
         });

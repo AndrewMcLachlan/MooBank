@@ -68,6 +68,7 @@ public class AccountService : ServiceBase, IAccountService
             Account = account,
             Amount = amount,
             Description = "Balance adjustment",
+            Source = "Web",
             TransactionTime = DateTime.Now,
             TransactionType = amount > 0 ? TransactionType.BalanceAdjustmentCredit : TransactionType.BalanceAdjustmentDebit,
         });
