@@ -2,10 +2,10 @@
 
 namespace Asm.MooBank.Web.Models;
 
-public partial class NewAccountModel
+public partial record NewAccountModel
 {
 
-    public MooBank.Models.InstitutionAccount Account { get; set; }
+    public required InstitutionAccount Account { get; init; }
 
-    public ImportAccount ImportAccount { get; set; }
+    public ImportAccount? ImportAccount { get; init; }
 }

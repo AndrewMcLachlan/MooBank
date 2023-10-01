@@ -40,7 +40,7 @@ export const CreateAccount: React.FC = () => {
             accountType: accountType,
             controller: accountController,
             balanceDate: new Date(),
-            accountGroupId: accountGroupId,
+            accountGroupId: accountGroupId === "" ? undefined : accountGroupId,
             calculatedBalance: balance,
             lastTransaction: undefined,
             shareWithFamily: shareWithFamily,
@@ -84,6 +84,7 @@ export const CreateAccount: React.FC = () => {
                 <Form.Group controlId="group">
                     <Form.Label>Group</Form.Label>
                     <Form.Control as="select" value={accountGroupId} onChange={(e: any) => setAccountGroupId(e.currentTarget.value)}>
+                        <option value="">Select a group...</option>
                         {accountGroups?.map(a =>
                             <option value={a.id} key={a.id}>{a.name}</option>
                         )}
