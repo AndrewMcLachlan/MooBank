@@ -39,6 +39,7 @@ public class AccountService : ServiceBase, IAccountService
         var entity = (Domain.Entities.Account.InstitutionAccount)account;
 
         entity.SetAccountHolder(_userDataProvider.CurrentUserId);
+        entity.SetAccountGroup(account.AccountGroupId, _userDataProvider.CurrentUserId);
 
         _accountRepository.Add(entity);
 

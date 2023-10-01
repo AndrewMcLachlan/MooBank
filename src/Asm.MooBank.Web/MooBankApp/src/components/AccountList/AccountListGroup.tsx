@@ -30,7 +30,7 @@ export const AccountListGroup: React.FC<AccountListGroupProps> = ({ accountGroup
                         <Spinner animation="border" />
                     </td></tr>}
             </tbody>
-            { accountGroup.position && <tfoot>
+            { accountGroup.position !== undefined && accountGroup.position !== null && <tfoot>
                 <tr className="position">
                     <td />
                     <td colSpan={2}>Position</td>
