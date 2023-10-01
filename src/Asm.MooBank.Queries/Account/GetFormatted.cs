@@ -20,7 +20,10 @@ internal class GetFormattedHandler : IQueryHandler<GetFormatted, AccountsList>
     {
         var userId = _accountHolder.Id;
 
-        var accounts = await _accounts.Include(a => a.VirtualAccounts).Include(a => a.AccountAccountHolders).ThenInclude(a => a.AccountGroup).Where(a => a.AccountAccountHolders.Any(ah => ah.AccountHolderId == userId)).ToListAsync(cancellationToken);
+        var accounts = await _accounts.Include(a => a.VirtualAccounts).Include(a => a.AccountAccountHolders).ThenInclude(a => a.AccountGroup)
+                                      .Where(a => a.AccountAccountHolders.Any(ah => ah.AccountHolderId == userId) ||
+                                                  a.ShareWithFamily && a.AccountAccountHolders.Any(ah => ah.AccountHolder.FamilyId == _accountHolder.FamilyId))
+                                      .ToListAsync(cancellationToken);
 
         var groups = accounts.Select(a => a.GetAccountGroup(userId)).Where(ag => ag != null).Distinct(new IIdentifiableEqualityComparer<Domain.Entities.AccountGroup.AccountGroup, Guid>()!).Select(ag => new AccountListGroup
         {
