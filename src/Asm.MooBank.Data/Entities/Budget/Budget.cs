@@ -1,4 +1,5 @@
-﻿using Asm.Domain;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Asm.Domain;
 
 namespace Asm.MooBank.Domain.Entities.Budget;
 
@@ -17,5 +18,4 @@ public class Budget : KeyedEntity<Guid>
     public virtual Family.Family Family { get; set; }
 
     public virtual ICollection<BudgetLine> Lines { get; set; }
-
 }

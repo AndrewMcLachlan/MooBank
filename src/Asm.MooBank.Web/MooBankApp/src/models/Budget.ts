@@ -23,3 +23,16 @@ export interface BudgetMonth {
     expenses: number;
     remainder: number;
 }
+
+export interface BudgetReportByMonth {
+    items: BudgetReportValueMonth[];
+}
+
+export interface  BudgetReportValue {
+    budgetedAmount: number;
+    actual: number;
+}
+
+export interface BudgetReportValueMonth extends BudgetReportValue {
+    month: number;
+}

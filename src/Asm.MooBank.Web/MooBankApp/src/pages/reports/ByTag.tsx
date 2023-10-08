@@ -11,7 +11,7 @@ import { PeriodSelector } from "components/PeriodSelector";
 import { Period } from "helpers/dateFns";
 import { ReportType } from "models/reports";
 import { ReportTypeSelector } from "components/ReportTypeSelector";
-import { chartColours } from "./chartColours";
+import { chartColours } from "../../helpers/chartColours";
 
 ChartJS.register(...registerables);
 

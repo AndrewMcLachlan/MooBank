@@ -14,7 +14,7 @@ import { ReportType, TagTrendReportSettings, defaultSettings } from "models/repo
 import { ReportTypeSelector } from "components/ReportTypeSelector";
 import { TagSettingsPanel } from "./TagSettingsPanel";
 import { TagSettings } from "models";
-import { useChartColours } from "./chartColours";
+import { useChartColours } from "../../helpers/chartColours";
 import { Section } from "@andrewmclachlan/mooapp";
 
 ChartJS.register(...registerables);

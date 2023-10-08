@@ -10,7 +10,7 @@ import chartTrendline from "chartjs-plugin-trendline";
 
 import { Period } from "helpers/dateFns";
 import { useInOutReport } from "services";
-import { useChartColours } from "../chartColours";
+import { useChartColours } from "helpers/chartColours";
 
 ChartJS.register(...registerables);
 ChartJS.register(chartTrendline);

@@ -4,10 +4,9 @@ import { useInOutTrendReport } from "services";
 
 import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, ChartData, registerables } from "chart.js";
-import { Section, useIdParams, useLayout } from "@andrewmclachlan/mooapp";
 
 import { Period } from "helpers/dateFns";
-import { useChartColours } from "../chartColours";
+import { useChartColours } from "helpers/chartColours";
 
 ChartJS.register(...registerables);
 

@@ -10,6 +10,7 @@ import format from "date-fns/format";
 import * as Models from "models";
 import { isMonthSelected } from "helpers/dateFns";
 import { BudgetTable } from "./BudgetTable";
+import { BudgetPage } from "./BudgetPage";
 
 export const Budget: React.FC = () => {
 
@@ -47,7 +48,7 @@ export const Budget: React.FC = () => {
     }, [month, budget]);
 
     return (
-        <Page title={title} breadcrumbs={[{ text: "Budget", route: `/budget` }]}>
+        <BudgetPage title={title}>
             <Section>
                 <Row>
                     <Col>
@@ -138,7 +139,7 @@ export const Budget: React.FC = () => {
                     </tbody>
                 </Table>
             </Section>
-        </Page>
+        </BudgetPage>
     );
 
 }

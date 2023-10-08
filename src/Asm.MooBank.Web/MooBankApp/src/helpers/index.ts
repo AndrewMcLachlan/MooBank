@@ -1,3 +1,4 @@
+export * from "./chartColours";
 export * from "./classNameHelpers";
 export * from "./getCachedPeriod";
 export * from "./onKeyLeave";

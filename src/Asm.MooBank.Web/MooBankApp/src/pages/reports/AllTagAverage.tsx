@@ -12,7 +12,7 @@ import { PeriodSelector } from "components/PeriodSelector";
 import { Period } from "helpers/dateFns";
 import { ReportType } from "models/reports";
 import { ReportTypeSelector } from "components/ReportTypeSelector";
-import { chartColours, desaturatedChartColours } from "./chartColours";
+import { chartColours, desaturatedChartColours } from "../../helpers/chartColours";
 import { useNavigate } from "react-router";
 
 ChartJS.register(...registerables);

@@ -5,6 +5,7 @@ CREATE TABLE dbo.[InstitutionAccount]
     [AccountControllerId] INT NOT NULL,
     [IncludeInPosition] BIT NOT NULL CONSTRAINT DF_InstitutionAccount_IncludeInPosition DEFAULT 0,
     [InstitutionId] INT NULL,
+    [IncludeInBudget] BIT NOT NULL CONSTRAINT DF_InstitutionAccount_IncludeInBudget DEFAULT 0,
     [ShareWithFamily] BIT NOT NULL CONSTRAINT DF_InstitutionAccount_ShareWithFamily DEFAULT 0,
     [LastUpdated] DATETIMEOFFSET(0) NOT NULL CONSTRAINT DF_InstitutionAccount_LastUpdated DEFAULT SYSUTCDATETIME(),
     CONSTRAINT PK_InstitutionAccount PRIMARY KEY CLUSTERED (AccountId),

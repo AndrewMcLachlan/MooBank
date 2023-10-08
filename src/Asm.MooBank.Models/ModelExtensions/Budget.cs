@@ -1,4 +1,6 @@
-﻿namespace Asm.MooBank.Models;
+﻿using System.Collections.Generic;
+
+namespace Asm.MooBank.Models;
 
 public partial record Budget
 {
@@ -34,4 +36,19 @@ public static class BudgetExtensions
         {
             Year = budget.Year,
         };
+
+    public static IEnumerable<BudgetMonth> ToMonths(this Domain.Entities.Budget.Budget budget)
+    {
+        List<BudgetMonth> months = new();
+        for (int i = 0; i < 12; i++)
+        {
+            var mask = 1 << i;
+            var monthIncome = budget.Lines.Where(l => l.Income && (l.Month & (1 << i)) != 0).Sum(l => l.Amount);
+            var monthExpenses = budget.Lines.Where(l => !l.Income && (l.Month & (1 << i)) != 0).Sum(l => l.Amount);
+
+            months.Add(new(i, monthIncome, monthExpenses));
+        }
+
+        return months;
+    }
 }

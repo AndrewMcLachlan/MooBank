@@ -5,7 +5,7 @@ import { Tag } from "../../models";
 import { useTagsHierarchy } from "../../services"
 import { Container } from "react-bootstrap";
 import { TagHierarchy } from "../../models/TagHierarchy";
-import { chartColours } from "../reports/chartColours";
+import { chartColours } from "../../helpers/chartColours";
 import { TagsPage } from "./TagsPage";
 import { Theme, useLayout } from "@andrewmclachlan/mooapp";
 

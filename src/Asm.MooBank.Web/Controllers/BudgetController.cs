@@ -63,4 +63,11 @@ public class BudgetController : CommandQueryController
     public Task<decimal> GetValueForTag(int tagId, CancellationToken cancellationToken = default) =>
         QueryDispatcher.Dispatch(new GetValueForTag(tagId), cancellationToken);
 
+    [HttpGet("{year}/report")]
+    public Task<BudgetReportByMonth> GetReportByMonth(short year, CancellationToken cancellationToken = default) =>
+        QueryDispatcher.Dispatch(new Report(year), cancellationToken);
+
+
+    //[HttpGet("{year}/report/{month}")] // For tag breakdown per month
+
 }

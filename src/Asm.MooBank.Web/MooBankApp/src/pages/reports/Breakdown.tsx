@@ -13,7 +13,7 @@ import { ReportType } from "models/reports";
 import { ReportTypeSelector } from "components/ReportTypeSelector";
 import { useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { chartColours } from "./chartColours";
+import { chartColours } from "../../helpers/chartColours";
 
 ChartJS.register(...registerables);
 

@@ -1,7 +1,9 @@
-import { useLayout } from "@andrewmclachlan/mooapp"
+import { useTheme } from "@andrewmclachlan/mooapp"
 
 export const useChartColours = () => {
-    const { theme, defaultTheme } = useLayout();
+    const stuff = useTheme();
+    console.debug(stuff);
+    const { theme, defaultTheme } = useTheme();
     const themeName = theme.theme === "" ? defaultTheme.theme : theme.theme;
 
     return {
