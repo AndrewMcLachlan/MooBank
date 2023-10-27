@@ -18,18 +18,11 @@ public interface IVirtualAccountService
     Task<VirtualAccount> UpdateBalance(Guid accountId, Guid virtualAccountId, decimal balance);
 }
 
-public class VirtualAccountService : ServiceBase, IVirtualAccountService
+public class VirtualAccountService(IUnitOfWork unitOfWork, IVirtualAccountRepository virtualAccountRepository, ITransactionRepository transactionRepository, ISecurity securityRepository) : ServiceBase(unitOfWork), IVirtualAccountService
 {
-    private readonly ISecurity _securityRepository;
-    private readonly IVirtualAccountRepository _virtualAccountRepository;
-    private readonly ITransactionRepository _transactionRepository;
-
-    public VirtualAccountService(IUnitOfWork unitOfWork, IVirtualAccountRepository virtualAccountRepository, ITransactionRepository transactionRepository, ISecurity securityRepository) : base(unitOfWork)
-    {
-        _virtualAccountRepository = virtualAccountRepository;
-        _transactionRepository = transactionRepository;
-        _securityRepository = securityRepository;
-    }
+    private readonly ISecurity _securityRepository = securityRepository;
+    private readonly IVirtualAccountRepository _virtualAccountRepository = virtualAccountRepository;
+    private readonly ITransactionRepository _transactionRepository = transactionRepository;
 
     public async Task<VirtualAccount> Create(Guid accountId, VirtualAccount account)
     {

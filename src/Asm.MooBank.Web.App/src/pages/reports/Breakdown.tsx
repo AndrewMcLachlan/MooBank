@@ -5,7 +5,7 @@ import { useAccount, useBreakdownReport, useTag } from "services";
 
 import { Doughnut, getElementAtEvent } from "react-chartjs-2";
 import { Chart as ChartJS, ChartData, registerables } from "chart.js";
-import { Section, useLayout } from "@andrewmclachlan/mooapp";
+import { Section, useTheme } from "@andrewmclachlan/mooapp";
 
 import { PeriodSelector } from "components/PeriodSelector";
 import { Period } from "helpers/dateFns";
@@ -21,7 +21,7 @@ export const Breakdown = () => {
 
     const navigate = useNavigate();
 
-    const { theme, defaultTheme } = useLayout();
+    const { theme, defaultTheme } = useTheme();
     const theTheme = theme ?? defaultTheme;
 
     const { id: accountId, tagId } = useParams<{ id: string, tagId: string }>();

@@ -80,59 +80,9 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
             entity.HasKey(e => e.Id);
         });
 
-        /*modelBuilder.Entity<RecurringTransaction>(entity =>
-        {
-            entity.Property(e => e.Amount).HasColumnType("decimal(10, 2)");
-
-            entity.Property(e => e.Description)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-
-            entity.HasOne(d => d.DestinationVirtualAccount)
-                .WithMany(p => p.RecurringTransactionDestinationVirtualAccount)
-                .HasForeignKey(d => d.DestinationVirtualAccountId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_RecurringTransaction_VirtualAccount_Destination");
-
-            /*entity.HasOne(d => d.Schedule)
-                .WithMany(p => p.RecurringTransaction)
-                .HasForeignKey(d => d.ScheduleId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_RecurringTransaction_Schedule");* /
-
-            entity.HasOne(d => d.SourceVirtualAccount)
-                .WithMany(p => p.RecurringTransactionSourceVirtualAccount)
-                .HasForeignKey(d => d.SourceVirtualAccountId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_RecurringTransaction_VirtualAccount_Source");
-        });*/
-
-        /*modelBuilder.Entity<Schedule>(entity =>
-        {
-            entity.Property(e => e.ScheduleId).ValueGeneratedNever();
-
-            entity.Property(e => e.Description)
-                .IsRequired()
-                .HasMaxLength(50)
-                .IsUnicode(false);
-        });*/
-
-
         modelBuilder.Entity<TransactionTagTransactionTag>(entity =>
         {
             entity.HasKey(e => new { e.PrimaryTransactionTagId, e.SecondaryTransactionTagId });
-
-            /*entity.HasOne(d => d.Primary)
-                .WithMany(p => p.TransactionTagTransactionTagPrimaryTransactionTag)
-                .HasForeignKey(d => d.PrimaryTransactionTagId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_TransactionTag_TransactionTag_Primary");
-
-            entity.HasOne(d => d.Secondary)
-                .WithMany(p => p.TransactionTagTransactionTagSecondaryTransactionTag)
-                .HasForeignKey(d => d.SecondaryTransactionTagId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_TransactionTag_TransactionTag_Secondary");*/
         });
 
         modelBuilder.Entity<TransactionTagRuleTransactionTag>(entity =>

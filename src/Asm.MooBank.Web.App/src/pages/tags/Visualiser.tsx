@@ -2,16 +2,16 @@ import { useEffect, useRef, useState } from "react";
 
 import { Tag } from "../../models";
 
-import { useTagsHierarchy } from "../../services"
+import { Theme, useTheme } from "@andrewmclachlan/mooapp";
 import { Container } from "react-bootstrap";
-import { TagHierarchy } from "../../models/TagHierarchy";
 import { chartColours } from "../../helpers/chartColours";
+import { TagHierarchy } from "../../models/TagHierarchy";
+import { useTagsHierarchy } from "../../services";
 import { TagsPage } from "./TagsPage";
-import { Theme, useLayout } from "@andrewmclachlan/mooapp";
 
 export const Visualiser = () => {
 
-    const { theme } = useLayout();
+    const { theme } = useTheme();
 
     const [readyToRender, setReadyToRender] = useState<boolean>(false);
 
@@ -182,7 +182,7 @@ class TagVisual {
 
 
         // The start position of the box.
-        // If the box has children, calculate the start point as the middle of its immediate children. 
+        // If the box has children, calculate the start point as the middle of its immediate children.
         const childWidth = this.tagRenderers.length <= 1 ? 0 : (this.tagRenderers[this.tagRenderers.length - 1].position.x + paddedBoxWidth) - this.tagRenderers[0].boxStartx();
         const childStart = this.tagRenderers[0]?.boxStartx() ?? x;
         const start = this.tagRenderers.length <= 1 ? this.boxStartx() : (childStart + (childWidth / 2)) - halfPaddedBoxWidth;

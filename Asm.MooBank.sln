@@ -43,6 +43,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Institutions", "Institutions", "{2754ACBC-340B-4D5C-AEE8-1AC1AD5CF9E0}"
 EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "Asm.MooBank.Web.App", "src\Asm.MooBank.Web.App\Asm.MooBank.Web.App.esproj", "{47DC3410-DDFD-4B06-A26B-509AA5BAF27A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -101,6 +103,12 @@ Global
 		{D52C951F-030B-4BFD-8803-EF5DBE55F246}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D52C951F-030B-4BFD-8803-EF5DBE55F246}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D52C951F-030B-4BFD-8803-EF5DBE55F246}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47DC3410-DDFD-4B06-A26B-509AA5BAF27A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47DC3410-DDFD-4B06-A26B-509AA5BAF27A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47DC3410-DDFD-4B06-A26B-509AA5BAF27A}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{47DC3410-DDFD-4B06-A26B-509AA5BAF27A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47DC3410-DDFD-4B06-A26B-509AA5BAF27A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47DC3410-DDFD-4B06-A26B-509AA5BAF27A}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

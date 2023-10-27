@@ -9,18 +9,11 @@ using ITransactionRepository = Asm.MooBank.Domain.Entities.Transactions.ITransac
 
 namespace Asm.MooBank.Services;
 
-public class RunRulesService : BackgroundService
+public class RunRulesService(IRunRulesQueue taskQueue, ILoggerFactory loggerFactory, IServiceScopeFactory serviceScopeFactory) : BackgroundService
 {
-    private readonly ILogger _logger;
-    private readonly IServiceScopeFactory _serviceScopeFactory;
-    private readonly IRunRulesQueue _taskQueue;
-
-    public RunRulesService(IRunRulesQueue taskQueue, ILoggerFactory loggerFactory, IServiceScopeFactory serviceScopeFactory)
-    {
-        _taskQueue = taskQueue;
-        _logger = loggerFactory.CreateLogger<RunRulesService>();
-        _serviceScopeFactory = serviceScopeFactory;
-    }
+    private readonly ILogger _logger = loggerFactory.CreateLogger<RunRulesService>();
+    private readonly IServiceScopeFactory _serviceScopeFactory = serviceScopeFactory;
+    private readonly IRunRulesQueue _taskQueue = taskQueue;
 
     protected async override Task ExecuteAsync(CancellationToken cancellationToken)
     {
