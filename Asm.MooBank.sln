@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.31903.286
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Web.Api", "src\Asm.MooBank.Web\Asm.MooBank.Web.Api.csproj", "{F424AA48-81DB-4D75-A198-7C5AAA9C71B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Web.Api", "src\Asm.MooBank.Web.Api\Asm.MooBank.Web.Api.csproj", "{F424AA48-81DB-4D75-A198-7C5AAA9C71B5}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Asm.MooBank.Database", "src\Asm.MooBank.Database\Asm.MooBank.Database.sqlproj", "{8F8240C5-B472-4CB6-A115-5578AB3DD0DB}"
 EndProject
@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank", "src\Asm.MooB
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Models", "src\Asm.MooBank.Models\Asm.MooBank.Models.csproj", "{9B078748-1B3D-4BD5-B749-EE8FB68AD0DC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Domain", "src\Asm.MooBank.Data\Asm.MooBank.Domain.csproj", "{8836E750-5ABA-43B6-82ED-631D6900FA26}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Domain", "src\Asm.MooBank.Domain\Asm.MooBank.Domain.csproj", "{8836E750-5ABA-43B6-82ED-631D6900FA26}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Services", "src\Asm.MooBank.Services\Asm.MooBank.Services.csproj", "{FC276E8E-5636-47CE-8847-8EC960D53CB9}"
 EndProject
