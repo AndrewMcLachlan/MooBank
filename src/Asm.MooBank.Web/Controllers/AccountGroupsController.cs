@@ -5,7 +5,7 @@ using Asm.MooBank.Queries.AccountGroup;
 
 namespace Asm.MooBank.Web.Controllers;
 
-[Route("api/account-groups")]
+[Route("api/account-groups-old")]
 public class AccountGroupsController : CommandQueryController
 {
     public AccountGroupsController(IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher) : base(queryDispatcher, commandDispatcher)

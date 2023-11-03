@@ -8,7 +8,7 @@ namespace Asm.MooBank.Services;
 
 public interface IRuleService
 {
-    Task<Rule> Create(Guid accountId, string contains, string? description, IEnumerable<int> tagIds, CancellationToken cancellationToken = default);
+    //Task<Rule> Create(Guid accountId, string contains, string? description, IEnumerable<int> tagIds, CancellationToken cancellationToken = default);
 
     Task<Rule> Create(Guid accountId, string contains, string? description, IEnumerable<Tag> tagIds, CancellationToken cancellationToken = default);
 
@@ -36,7 +36,7 @@ public class RuleService : ServiceBase, IRuleService
         _transactionTags = transactionTags;
     }
 
-    public async Task<Rule> Create(Guid accountId, string contains, string? description, IEnumerable<int> tagIds, CancellationToken cancellationToken = default)
+   /* public async Task<Rule> Create(Guid accountId, string contains, string? description, IEnumerable<int> tagIds, CancellationToken cancellationToken = default)
     {
         _security.AssertAccountPermission(accountId);
 
@@ -53,7 +53,7 @@ public class RuleService : ServiceBase, IRuleService
         await UnitOfWork.SaveChangesAsync(cancellationToken);
 
         return rule;
-    }
+    }*/
 
     public async Task<Rule> Create(Guid accountId, string contains, string? description, IEnumerable<Tag> tags, CancellationToken cancellationToken = default)
     {
@@ -72,7 +72,7 @@ public class RuleService : ServiceBase, IRuleService
         await UnitOfWork.SaveChangesAsync(cancellationToken);
 
         return await Get(accountId, rule.Id);
-    }
+    }*/
 
     public async Task Delete(Guid accountId, int id, CancellationToken cancellationToken = default)
     {

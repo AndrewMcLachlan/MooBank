@@ -1,5 +1,8 @@
-﻿namespace Asm.MooBank.Domain.Entities.ReferenceData;
+﻿using Asm.Domain;
 
+namespace Asm.MooBank.Domain.Entities.ReferenceData;
+
+[AggregateRoot]
 public partial class ImporterType
 {
     public int ImporterTypeId { get; set; }

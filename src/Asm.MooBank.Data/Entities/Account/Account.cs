@@ -31,6 +31,8 @@ public class Account : Entity
 
     public decimal CalculatedBalance { get; set; }
 
+    public virtual ICollection<Rule> Rules { get; set; }
+
     public AccountGroup.AccountGroup? GetAccountGroup(Guid accountHolderId)
     {
         return AccountAccountHolders.Select(aah => aah.AccountGroup).SingleOrDefault(ag => ag?.OwnerId == accountHolderId);

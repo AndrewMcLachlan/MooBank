@@ -1,3 +1,3 @@
-﻿namespace Asm.MooBank.Web.Models;
+﻿namespace Asm.MooBank.Web.Api.Models;
 
 public record MetaModel(Version Version);

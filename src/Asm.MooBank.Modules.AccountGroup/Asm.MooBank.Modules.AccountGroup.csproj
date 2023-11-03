@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Asm.AspNetCore" Version="3.2.18" />
+    <PackageReference Include="Asm.Cqrs.AspNetCore" Version="3.2.18" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Asm.MooBank\Asm.MooBank.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Commands\Asm.MooBank.Commands.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Data\Asm.MooBank.Domain.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Queries\Asm.MooBank.Queries.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Security\Asm.MooBank.Security.csproj" />
+  </ItemGroup>
+
+</Project>

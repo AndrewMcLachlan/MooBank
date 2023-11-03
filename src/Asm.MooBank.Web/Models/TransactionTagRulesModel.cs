@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Asm.MooBank.Models;
-
-namespace Asm.MooBank.Web.Models
+﻿namespace Asm.MooBank.Web.Api.Models
 {
     public class TransactionTagRulesModel
     {
-        public IEnumerable<Rule> Rules { get; set; }
+        public IEnumerable<MooBank.Modules.Account.Models.Rule> Rules { get; set; }
     }
 }

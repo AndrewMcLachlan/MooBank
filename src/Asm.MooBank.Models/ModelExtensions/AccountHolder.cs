@@ -1,8 +1,8 @@
 ﻿namespace Asm.MooBank.Models;
 
-public partial record AccountHolder
+public static class AccountHolderExtensions
 {
-    public static implicit operator Domain.Entities.AccountHolder.AccountHolder(AccountHolder accountHolder)
+    public static Domain.Entities.AccountHolder.AccountHolder ToDomain(this AccountHolder accountHolder)
     {
         return new Domain.Entities.AccountHolder.AccountHolder
         {
@@ -13,7 +13,7 @@ public partial record AccountHolder
         };
     }
 
-    public static implicit operator AccountHolder(Domain.Entities.AccountHolder.AccountHolder accountHolder)
+    public static AccountHolder ToModel(this Domain.Entities.AccountHolder.AccountHolder accountHolder)
     {
         return new AccountHolder
         {

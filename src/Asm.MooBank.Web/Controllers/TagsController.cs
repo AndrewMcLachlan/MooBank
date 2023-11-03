@@ -2,8 +2,9 @@
 using Asm.Cqrs.Queries;
 using Asm.MooBank.Commands.Tags;
 using Asm.MooBank.Queries.Tags;
+using Asm.MooBank.Web.Api.Models;
 
-namespace Asm.MooBank.Web.Controllers
+namespace Asm.MooBank.Web.Api.Controllers
 {
     [Route("api/tags")]
     [ApiController]
@@ -38,7 +39,7 @@ namespace Asm.MooBank.Web.Controllers
         }
 
         [HttpPut("{name}")]
-        public async Task<ActionResult<Tag>> CreateByName(string name, [FromBody]int[] tags, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<Tag>> CreateByName(string name, [FromBody] int[] tags, CancellationToken cancellationToken = default)
         {
             var tag = await CommandDispatcher.Dispatch(new CreateByName(name, tags), cancellationToken);
 
@@ -46,7 +47,7 @@ namespace Asm.MooBank.Web.Controllers
         }
 
         [HttpPatch("{id}")]
-        public Task<Tag> Update(int id, [FromBody]TransactionTagModel tag, CancellationToken cancellationToken = default) =>
+        public Task<Tag> Update(int id, [FromBody] TransactionTagModel tag, CancellationToken cancellationToken = default) =>
             CommandDispatcher.Dispatch(new Update(id, tag.Name, tag.ExcludeFromReporting, tag.ApplySmoothing), cancellationToken);
 
         [HttpDelete("{id}")]

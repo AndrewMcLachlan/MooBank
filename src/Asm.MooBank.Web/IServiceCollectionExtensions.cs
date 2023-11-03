@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
-namespace Asm.MooBank.Web;
+namespace Asm.MooBank.Web.Api;
 
 public static class IServiceCollectionExtensions
 {

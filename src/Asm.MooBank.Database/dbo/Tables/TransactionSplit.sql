@@ -6,5 +6,5 @@ CREATE TABLE [dbo].[TransactionSplit]
 
     CONSTRAINT [PK_TransactionSplit] PRIMARY KEY CLUSTERED (Id),
     CONSTRAINT [FK_TransactionSplit_Transaction] FOREIGN KEY (TransactionId) REFERENCES [Transaction](TransactionId),
-    CONSTRAINT [CK_TransactionSplit_Amount] CHECK([dbo].[CheckSplitAmount](TransactionId, Amount) = 1)
+    CONSTRAINT [CK_TransactionSplit_Amount] CHECK([dbo].[CheckSplitAmount](Id, TransactionId, Amount) = 1)
 )

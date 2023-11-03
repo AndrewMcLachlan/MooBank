@@ -24,7 +24,7 @@ public class VirtualAccountService(IUnitOfWork unitOfWork, IVirtualAccountReposi
     private readonly IVirtualAccountRepository _virtualAccountRepository = virtualAccountRepository;
     private readonly ITransactionRepository _transactionRepository = transactionRepository;
 
-    public async Task<VirtualAccount> Create(Guid accountId, VirtualAccount account)
+   /* public async Task<VirtualAccount> Create(Guid accountId, VirtualAccount account)
     {
         _securityRepository.AssertAccountPermission(accountId);
 
@@ -48,9 +48,9 @@ public class VirtualAccountService(IUnitOfWork unitOfWork, IVirtualAccountReposi
         await UnitOfWork.SaveChangesAsync();
 
         return entity;
-    }
+    }*/
 
-    public async Task Delete(Guid accountId, Guid virtualAccountId)
+    /*public async Task Delete(Guid accountId, Guid virtualAccountId)
     {
         _securityRepository.AssertAccountPermission(accountId);
 
@@ -59,9 +59,9 @@ public class VirtualAccountService(IUnitOfWork unitOfWork, IVirtualAccountReposi
         _virtualAccountRepository.Delete(entity);
 
         await UnitOfWork.SaveChangesAsync();
-    }
+    }*/
 
-    public async Task<VirtualAccount> Get(Guid accountId, Guid virtualAccountId) => await GetEntity(accountId, virtualAccountId);
+   // public async Task<VirtualAccount> Get(Guid accountId, Guid virtualAccountId) => await GetEntity(accountId, virtualAccountId);
 
     public async Task<VirtualAccount> Update(Guid accountId, VirtualAccount account)
     {

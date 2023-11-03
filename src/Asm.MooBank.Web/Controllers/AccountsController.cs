@@ -1,7 +1,8 @@
 ﻿using Asm.Cqrs.Commands;
 using Asm.Cqrs.Queries;
-using Asm.MooBank.Commands.Account;
-using Asm.MooBank.Queries.Account;
+using Asm.MooBank.Modules.Account.Commands.InstitutionAccount;
+using Asm.MooBank.Modules.Account.Models;
+using Asm.MooBank.Modules.Account.Queries.InstitutionAccount;
 
 namespace Asm.MooBank.Web.Controllers;
 
@@ -10,13 +11,10 @@ namespace Asm.MooBank.Web.Controllers;
 [Authorize]
 public class AccountsController : CommandQueryController
 {
-    private readonly IAccountService _accountService;
-
     private readonly ILogger<AccountsController> _logger;
 
-    public AccountsController(IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher, IAccountService accountService, ILogger<AccountsController> logger) : base(queryDispatcher, commandDispatcher)
+    public AccountsController(IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher, ILogger<AccountsController> logger) : base(queryDispatcher, commandDispatcher)
     {
-        _accountService = accountService;
         _logger = logger;
     }
 
@@ -31,9 +29,9 @@ public class AccountsController : CommandQueryController
         QueryDispatcher.Dispatch(new Get(id), cancellationToken);
 
     [HttpPost]
-    public async Task<ActionResult<InstitutionAccount>> Create(NewAccountModel model)
+    public async Task<ActionResult<InstitutionAccount>> Create(NewAccountModel model, CancellationToken cancellationToken = default)
     {
-        var newAccount = await _accountService.Create(model.Account);
+        var newAccount = await CommandDispatcher.Dispatch(new Create(model.Account), cancellationToken);
 
         return CreatedAtAction("Get", new { id = newAccount.Id }, newAccount);
     }
@@ -47,10 +45,10 @@ public class AccountsController : CommandQueryController
     }
 
     [HttpPatch("{accountId}/balance")]
-    public async Task<ActionResult<InstitutionAccount>> UpdateBalance(Guid accountId, UpdateBalanceModel model)
+    public async Task<ActionResult<InstitutionAccount>> UpdateBalance(Guid accountId, UpdateBalanceModel model, CancellationToken cancellationToken = default)
     {
         if (model == null || (model.CurrentBalance == null)) return BadRequest(ModelState);
 
-        return Ok(await _accountService.SetBalance(accountId, model.CurrentBalance.Value));
+        return Ok(await CommandDispatcher.Dispatch(new UpdateBalance(accountId, model.CurrentBalance.Value), cancellationToken));
     }
 }

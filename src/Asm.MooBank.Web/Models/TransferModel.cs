@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Asm.MooBank.Web.Models;
+namespace Asm.MooBank.Web.Api.Models;
 
 public class TransferModel
 {
@@ -10,7 +10,7 @@ public class TransferModel
 
     [Required]
     [Display(Name = "Transfer To")]
-    public Guid DestinationAccountId { get; set;}
+    public Guid DestinationAccountId { get; set; }
 
     [Range(0.01, Double.MaxValue)]
     [Required]

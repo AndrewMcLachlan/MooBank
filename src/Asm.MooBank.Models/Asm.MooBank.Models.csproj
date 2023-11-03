@@ -3,11 +3,12 @@
   <Import Project="..\..\Common.props" />
 
   <ItemGroup>
+    <ProjectReference Include="..\Asm.MooBank\Asm.MooBank.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Data\Asm.MooBank.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Asm.Cqrs" Version="3.1.5" />
+    <PackageReference Include="Asm.Cqrs" Version="3.2.18" />
   </ItemGroup>
 
 </Project>

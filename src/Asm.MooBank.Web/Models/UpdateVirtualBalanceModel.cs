@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Asm.MooBank.Web.Models
+namespace Asm.MooBank.Web.Api.Models
 {
     public class UpdateVirtualBalanceModel
     {

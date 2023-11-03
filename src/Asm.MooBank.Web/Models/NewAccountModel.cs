@@ -1,6 +1,6 @@
-﻿using Asm.MooBank.Web.Models.NewAccount;
+﻿using Asm.MooBank.Modules.Account.Models.Account;
 
-namespace Asm.MooBank.Web.Models;
+namespace Asm.MooBank.Web.Api.Models;
 
 public partial record NewAccountModel
 {

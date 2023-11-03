@@ -1,5 +1,6 @@
 ﻿using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.AccountGroup;
+using Asm.MooBank.Domain.Entities.AccountHolder;
 using Asm.MooBank.Domain.Entities.Budget;
 using Asm.MooBank.Security;
 using Asm.MooBank.Security.Authorisation;

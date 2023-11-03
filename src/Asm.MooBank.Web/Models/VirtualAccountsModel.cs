@@ -1,4 +1,4 @@
-﻿namespace Asm.MooBank.Web.Models;
+﻿namespace Asm.MooBank.Modules.Account.Models.Account;
 
 public class VirtualAccountsModel
 {

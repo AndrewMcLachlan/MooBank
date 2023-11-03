@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using Asm.Cqrs.Commands;
 using Asm.Cqrs.Queries;
-using Asm.MooBank.Commands.Rules;
 
 namespace Asm.MooBank.Web.Controllers
 {

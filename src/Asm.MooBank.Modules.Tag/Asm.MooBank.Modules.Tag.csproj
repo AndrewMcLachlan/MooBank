@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\Common.props" />
+
+  <ItemGroup>
+    <PackageReference Include="Asm.AspNetCore" Version="3.2.18" />
+    <PackageReference Include="Asm.Cqrs" Version="3.2.18" />
+    <PackageReference Include="Asm.Cqrs.AspNetCore" Version="3.2.18" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0-rc.2.23480.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Asm.MooBank\Asm.MooBank.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Commands\Asm.MooBank.Commands.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Data\Asm.MooBank.Domain.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Models\Asm.MooBank.Models.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Queries\Asm.MooBank.Queries.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Security\Asm.MooBank.Security.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Endpoints\" />
+    <Folder Include="Models\" />
+  </ItemGroup>
+
+</Project>

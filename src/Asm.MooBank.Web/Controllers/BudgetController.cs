@@ -1,7 +1,8 @@
 ﻿using Asm.Cqrs.Commands;
 using Asm.Cqrs.Queries;
-using Asm.MooBank.Commands.Budget;
-using Asm.MooBank.Queries.Budget;
+using Asm.MooBank.Modules.Budget.Commands;
+using Asm.MooBank.Modules.Budget.Queries;
+using Asm.MooBank.Modules.Budget.Models;
 
 namespace Asm.MooBank.Web.Controllers;
 

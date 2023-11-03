@@ -69,6 +69,7 @@ export const CreateAccount: React.FC = () => {
                 <Form.Group>
                     <Form.Label>Institution</Form.Label>
                     <Form.Select value={institution.toString()} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setInstitution(Number(e.currentTarget.value))}>
+                        <option value="">Select an institution...</option>
                         {institutions?.map(a =>
                             <option value={a.id} key={a.id}>{a.name}</option>
                         )}

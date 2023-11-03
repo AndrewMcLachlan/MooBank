@@ -1,19 +1,39 @@
 using System.Text.Json.Serialization;
+using Asm.AspNetCore.Modules;
 using Asm.MooBank.Institution.Ing;
 using Asm.MooBank.Security;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Serilog;
 
-WebApplicationStart.Run(args, "Asm.MooBank.Web", AddServices, AddApp);
+WebApplicationStart.Run(args, "Asm.MooBank.Web.Api", AddServices, AddApp);
 
-static void AddServices(WebApplicationBuilder builder)
+
+void AddServices(WebApplicationBuilder builder)
 {
     var services = builder.Services;
 
-    builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen();
+    builder.RegisterModules(() =>
+        new IModule[]
+        {
+            new Asm.MooBank.Modules.Account.Module(),
+            new Asm.MooBank.Modules.AccountGroup.Module(),
+            new Asm.MooBank.Modules.Budget.Module(),
+            new Asm.MooBank.Modules.Family.Module(),
+            new Asm.MooBank.Modules.Institution.Module(),
+            new Asm.MooBank.Modules.ReferenceData.Module(),
+            new Asm.MooBank.Modules.Reports.Module(),
+            new Asm.MooBank.Modules.Tag.Module(),
+            new Asm.MooBank.Modules.Transactions.Module(),
+        });
+
+    services.AddEndpointsApiExplorer();
+    services.AddSwaggerGen();
 
     services.AddApplicationInsightsTelemetry();
+
+    services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
+        options.SerializerOptions.Converters.Add(new JsonStringEnumConverter())
+    );
 
     services.AddControllers().AddJsonOptions(options =>
     {
@@ -60,7 +80,7 @@ static void AddServices(WebApplicationBuilder builder)
     services.AddSwaggerGen();
 }
 
-static void AddApp(WebApplication app)
+void AddApp(WebApplication app)
 {
     app.UseStaticFiles();
 
@@ -94,20 +114,20 @@ static void AddApp(WebApplication app)
 
     app.UseAuthorization();
 
-    /*app.MapGet("/weatherforecast", () =>
+    IEndpointRouteBuilder builder = app.MapGroup("/api")
+        .WithOpenApi();
+
+    builder.MapGet("/api/meta", () =>
     {
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-            new WeatherForecast
-            (
-                DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                Random.Shared.Next(-20, 55),
-                summaries[Random.Shared.Next(summaries.Length)]
-            ))
-            .ToArray();
-        return forecast;
-    })
-    .WithName("GetWeatherForecast")
-    .WithOpenApi();*/
+        var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+        System.Diagnostics.FileVersionInfo fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
+
+        if (fileVersionInfo.FileVersion == null) return Results.NotFound();
+
+        return Results.Ok(new MetaModel(new Version(fileVersionInfo.FileVersion!)));
+    });
+
+    builder.MapModuleEndpoints();
 
     app.MapControllers();
 

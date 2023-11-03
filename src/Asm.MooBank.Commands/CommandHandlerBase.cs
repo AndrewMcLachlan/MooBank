@@ -2,17 +2,10 @@
 
 namespace Asm.MooBank.Commands;
 
-public abstract class CommandHandlerBase
+public abstract class CommandHandlerBase(IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security)
 {
-    protected IUnitOfWork UnitOfWork { get; }
-    protected ISecurity Security { get; }
+    protected IUnitOfWork UnitOfWork { get; } = unitOfWork;
+    protected ISecurity Security { get; } = security;
 
-    protected AccountHolder AccountHolder { get; }
-
-    public CommandHandlerBase(IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security)
-    {
-        UnitOfWork = unitOfWork;
-        AccountHolder = accountHolder;
-        Security = security;
-    }
+    protected AccountHolder AccountHolder { get; } = accountHolder;
 }

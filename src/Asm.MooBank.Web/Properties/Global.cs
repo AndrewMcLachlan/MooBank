@@ -1,10 +1,8 @@
-﻿global using Asm.MooBank.Domain.Repositories;
+﻿global using Asm.AspNetCore;
+global using Asm.AspNetCore.Controllers;
+global using Asm.AspNetCore.Security;
 global using Asm.MooBank.Models;
-global using Asm.MooBank.Services;
-global using Asm.MooBank.Web;
-global using Asm.MooBank.Web.Models;
-global using Asm.Web;
-global using Asm.Web.Controllers;
-global using Asm.Web.Security;
+global using Asm.MooBank.Web.Api;
+global using Asm.MooBank.Web.Api.Models;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Mvc;

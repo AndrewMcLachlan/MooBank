@@ -1,0 +1,88 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <Import Project="..\..\Common.props" />
+
+  <PropertyGroup>
+    <SpaRoot>..\Asm.MooBank.Web.App</SpaRoot>
+    <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
+    <SpaProxyServerUrl>https://localhost:3005</SpaProxyServerUrl>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\AccountGroupsController.cs" />
+    <Compile Remove="Controllers\AccountRulesController.cs" />
+    <Compile Remove="Controllers\AccountsController.cs" />
+    <Compile Remove="Controllers\BudgetController.cs" />
+    <Compile Remove="Controllers\FamiliesController.cs" />
+    <Compile Remove="Controllers\InstitutionsController.cs" />
+    <Compile Remove="Controllers\MetaController.cs" />
+    <Compile Remove="Controllers\ReferenceDataController.cs" />
+    <Compile Remove="Controllers\ReportsController.cs" />
+    <Compile Remove="Controllers\TagsController.cs" />
+    <Compile Remove="Controllers\VirtualAccountsController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Controllers\ImportController.cs_" />
+    <None Remove="Controllers\TransactionsController.cs_" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="Asm.AspNetCore" Version="3.2.18" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0-beta4" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0-rc.2.23480.2" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaProxy">
+      <Version>8.*-*</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0-rc.2.23480.1">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0-rc.2.23509.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Asm.MooBank.Modules.Family\Asm.MooBank.Modules.Family.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Modules.Institution\Asm.MooBank.Modules.Institution.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Modules.ReferenceData\Asm.MooBank.Modules.ReferenceData.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Modules.Reports\Asm.MooBank.Modules.Reports.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Importers\Asm.MooBank.Importers.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Institution.Ing\Asm.MooBank.Institution.Ing.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Modules.AccountGroup\Asm.MooBank.Modules.AccountGroup.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Modules.Account\Asm.MooBank.Modules.Account.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Modules.Budget\Asm.MooBank.Modules.Budget.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Modules.Tag\Asm.MooBank.Modules.Tag.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Modules.Transactions\Asm.MooBank.Modules.Transactions.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Security\Asm.MooBank.Security.csproj" />
+    <ProjectReference Include="..\Asm.MooBank\Asm.MooBank.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Commands\Asm.MooBank.Commands.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Data\Asm.MooBank.Domain.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Infrastructure\Asm.MooBank.Infrastructure.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Models\Asm.MooBank.Models.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Queries\Asm.MooBank.Queries.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Services\Asm.MooBank.Services.csproj" />
+</ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\NewAccount\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Controllers\AccountGroupsController.cs" />
+    <None Include="Controllers\AccountRulesController.cs" />
+    <None Include="Controllers\AccountsController.cs" />
+    <None Include="Controllers\BudgetController.cs" />
+    <None Include="Controllers\FamiliesController.cs" />
+    <None Include="Controllers\InstitutionsController.cs" />
+    <None Include="Controllers\MetaController.cs" />
+    <None Include="Controllers\ReferenceDataController.cs" />
+    <None Include="Controllers\ReportsController.cs" />
+    <None Include="Controllers\TagsController.cs" />
+    <None Include="Controllers\VirtualAccountsController.cs" />
+  </ItemGroup>
+
+
+</Project>

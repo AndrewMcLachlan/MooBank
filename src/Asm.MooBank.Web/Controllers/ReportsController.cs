@@ -3,7 +3,7 @@ using Asm.Cqrs.Queries;
 using Asm.MooBank.Models.Reports;
 using Asm.MooBank.Queries.Reports;
 
-namespace Asm.MooBank.Web.Controllers;
+namespace Asm.MooBank.Web.Api.Controllers;
 
 [Route("api/accounts/{accountId}/[controller]")]
 [ApiController]
@@ -70,7 +70,7 @@ public class ReportsController : CommandQueryController
     }
 
     [HttpGet("{reportType}/tag-trend/{start}/{end}/{tag}")]
-    public Task<TagTrendReport> GetTagTrend(Guid accountId, DateOnly start, DateOnly end, ReportType reportType, int tag, [FromQuery]TagTrendReportSettings settings, CancellationToken cancellationToken = default)
+    public Task<TagTrendReport> GetTagTrend(Guid accountId, DateOnly start, DateOnly end, ReportType reportType, int tag, [FromQuery] TagTrendReportSettings settings, CancellationToken cancellationToken = default)
     {
         GetTagTrendReport query = new(tag)
         {
