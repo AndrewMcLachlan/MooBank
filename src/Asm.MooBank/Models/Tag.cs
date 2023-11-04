@@ -89,7 +89,20 @@ public partial record Tag
 public static class TagExtensions
 {
     public static Tag ToModel(this Domain.Entities.Tag.Tag entity) => (Tag)entity;
-}
+
+    public static Domain.Entities.Tag.Tag ToEntity(this Tag tag) =>
+        new()
+        {
+            Id = tag.Id,
+            Name = tag.Name,
+            Tags = tag.Tags.Select(t => (Domain.Entities.Tag.Tag)t).ToList(),
+            Settings = new Domain.Entities.Tag.TagSettings
+            {
+                ApplySmoothing = tag.Settings.ApplySmoothing,
+                ExcludeFromReporting = tag.Settings.ExcludeFromReporting,
+            }
+        };
+    }
 
 public static class IEnumerableTransactionTagExtensions
 {

@@ -17,7 +17,7 @@ internal sealed class CreateHandler : CommandHandlerBase, ICommandHandler<Create
 
     public async ValueTask<Models.Tag> Handle(Create request, CancellationToken cancellationToken)
     {
-        Domain.Entities.Tag.Tag tag = request.Tag;
+        Domain.Entities.Tag.Tag tag = request.Tag.ToEntity();
         tag.FamilyId = AccountHolder.FamilyId;
 
         _transactionTagRepository.Add(tag);

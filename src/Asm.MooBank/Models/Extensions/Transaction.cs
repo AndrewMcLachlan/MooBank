@@ -1,11 +1,10 @@
-﻿
-namespace Asm.MooBank.Models;
+﻿using Asm.MooBank.Models;
 
-public partial record Transaction
+namespace Asm.MooBank;
+
+public static class TransactionExtensions
 {
-    public DateTime? PurchaseDate { get; private set; }
-
-    public static explicit operator Transaction(Domain.Entities.Transactions.Transaction transaction) =>
+    public static Transaction ToModel(this Domain.Entities.Transactions.Transaction transaction) =>
         new()
         {
             Id = transaction.TransactionId,
@@ -27,27 +26,6 @@ public partial record Transaction
 
         };
 
-   /* public static explicit operator Domain.Entities.Transactions.Transaction(Transaction transaction)
-    {
-        return new Domain.Entities.Transactions.Transaction
-        {
-            TransactionId = transaction.Id,
-            Reference = transaction.Reference,
-            Amount = transaction.Amount,
-            NetAmount = transaction.NetAmount,
-            Location = transaction.Location,
-
-            TransactionTime = transaction.TransactionTime,
-            TransactionType = transaction.TransactionType,
-            AccountId = transaction.AccountId,
-            Description = transaction.Description,
-            Notes = transaction.Notes,
-        };
-    }*/
-}
-
-public static class IEnumerableTransactionExtensions
-{
     public static Transaction ToSimpleModel(this Domain.Entities.Transactions.Transaction transaction) =>
         new()
         {
@@ -62,13 +40,12 @@ public static class IEnumerableTransactionExtensions
             Notes = transaction.Notes,
         };
 
-    public static IEnumerable<Transaction> ToModel(this IEnumerable<Domain.Entities.Transactions.Transaction> entities)
-    {
-        return entities.Select(t => (Transaction)t);
-    }
+    public static IEnumerable<Transaction> ToModel(this IEnumerable<Domain.Entities.Transactions.Transaction> entities) =>
+        entities.Select(t => t.ToModel());
 
-    public static async Task<IEnumerable<Transaction>> ToModelAsync(this Task<IEnumerable<Domain.Entities.Transactions.Transaction>> entityTask, CancellationToken cancellationToken = default)
-    {
-        return (await entityTask.WaitAsync(cancellationToken)).Select(t => (Transaction)t);
-    }
+    public static IQueryable<Transaction> ToModel(this IQueryable<Domain.Entities.Transactions.Transaction> entities) =>
+        entities.Select(t => t.ToModel());
+
+    public static async Task<IEnumerable<Transaction>> ToModelAsync(this Task<IEnumerable<Domain.Entities.Transactions.Transaction>> entityTask, CancellationToken cancellationToken = default) =>
+        (await entityTask.WaitAsync(cancellationToken)).Select(t => t.ToModel());
 }

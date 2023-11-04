@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import * as Models from "../models";
 import { Transaction, Tag } from "../models";
 import { State, TransactionsFilter } from "../store/state";
-import { SortDirection, useApiGet, useApiDelete, useApiDatalessPut, useApiPatch, useApiDatalessPost } from "@andrewmclachlan/mooapp";
+import { SortDirection, useApiGet, useApiPagedGet, useApiDelete, useApiDatalessPut, useApiPatch, useApiDatalessPost } from "@andrewmclachlan/mooapp";
 import format from "date-fns/format";
 import parseISO from "date-fns/parseISO";
 
@@ -31,7 +31,7 @@ export const useTransactions = (accountId: string, filter: TransactionsFilter, p
     queryString = queryString.startsWith("&") ? queryString.substring(1) : queryString;
     queryString = queryString.length > 0 && queryString[0] !== "?" ? `?${queryString}` : queryString;
 
-    return useApiGet<Models.PagedResult<Models.Transaction>>([transactionKey, accountId, filter, pageSize, pageNumber, sortField, sortDirection], `api/accounts/${accountId}/transactions/${filter.filterTagged ? "untagged/" : ""}${pageSize}/${pageNumber}${queryString}`);
+    return useApiPagedGet<Models.PagedResult<Models.Transaction>>([transactionKey, accountId, filter, pageSize, pageNumber, sortField, sortDirection], `api/accounts/${accountId}/transactions/${filter.filterTagged ? "untagged/" : ""}${pageSize}/${pageNumber}${queryString}`);
 }
 
 export const useSearchTransactions = (transaction: Models.Transaction, searchType: Models.TransactionType) => {

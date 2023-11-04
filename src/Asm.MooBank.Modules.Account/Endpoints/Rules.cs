@@ -11,7 +11,7 @@ public class RulesEndpoints : EndpointGroupBase
 {
     public override string Name => "Account Rules";
 
-    public override string Path => "account/{accountId}/rules";
+    public override string Path => "accounts/{accountId}/rules";
 
     public override string Tags => "Account Rules";
 

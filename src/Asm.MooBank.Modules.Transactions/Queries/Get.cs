@@ -1,7 +1,6 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
 using Asm.MooBank.Domain.Entities.Transactions;
-using Asm.MooBank.Importers;
 using Asm.MooBank.Modules.Transactions.Queries;
 using Asm.MooBank.Queries.Transactions;
 using Microsoft.IdentityModel.Tokens;
@@ -29,33 +28,21 @@ public record Get : IQuery<PagedResult>
 
     public SortDirection SortDirection { get; init; } = SortDirection.Ascending;
 
-    public required bool UntaggedOnly { get; init; } = false;
+    public bool? UntaggedOnly { get; init; } = false;
 }
 
-internal class GetHandler : IQueryHandler<Get, PagedResult>
+internal class GetHandler(IQueryable<Transaction> transactions, ISecurity securityRepository) : IQueryHandler<Get, PagedResult>
 {
-    private readonly IQueryDispatcher _queryDispatcher;
-    private readonly IQueryable<Transaction> _transactions;
-    private readonly ISecurity _security;
-    private readonly IImporterFactory _importerFactory;
+    private readonly IQueryable<Transaction> _transactions = transactions;
+    private readonly ISecurity _security = securityRepository;
 
-
-    public GetHandler(IQueryDispatcher queryDispatcher, IQueryable<Transaction> transactions, ISecurity securityRepository, IImporterFactory importerFactory)
+    public async ValueTask<PagedResult> Handle(Get query, CancellationToken cancellationToken)
     {
-        _queryDispatcher = queryDispatcher;
-        _transactions = transactions;
-        _security = securityRepository;
-        _importerFactory = importerFactory;
-    }
+        _security.AssertAccountPermission(query.AccountId);
 
-    public async ValueTask<PagedResult> Handle(Get request, CancellationToken cancellationToken)
-    {
-        _security.AssertAccountPermission(request.AccountId);
+        var total = await _transactions.Where(query).CountAsync(cancellationToken);
 
-
-        var total = await _transactions.Where(request).CountAsync(cancellationToken);
-
-        var results = await _transactions.IncludeAll().Where(request).Sort(request.SortField, request.SortDirection).Page(request.PageSize, request.PageNumber).ToModelAsync(cancellationToken);
+        var results = await _transactions.IncludeAll().Where(query).Sort(query.SortField, query.SortDirection).Page(query.PageSize, query.PageNumber).ToModelAsync(cancellationToken);
 
         var result = new PagedResult
         {
@@ -69,28 +56,28 @@ internal class GetHandler : IQueryHandler<Get, PagedResult>
 
 file static class IQueryableExtensions
 {
-    private static readonly PropertyInfo[] _transactionProperties;
+    private static readonly PropertyInfo[] TransactionProperties;
 
     static IQueryableExtensions()
     {
-        _transactionProperties = typeof(Transaction).GetProperties();
+        TransactionProperties = typeof(Transaction).GetProperties();
     }
 
-    public static IQueryable<Transaction> Where(this IQueryable<Transaction> query, Get request)
+    public static IQueryable<Transaction> Where(this IQueryable<Transaction> queryable, Get query)
     {
-        var result = query.Where(t => t.AccountId == request.AccountId);
+        var result = queryable.Where(t => t.AccountId == query.AccountId);
 
-        var filters = request.Filter?.Split(',') ?? Array.Empty<string>();
+        var filters = query.Filter?.Split(',') ?? [];
 
-        if (!String.IsNullOrWhiteSpace(request.Filter))
+        if (!String.IsNullOrWhiteSpace(query.Filter))
         {
             var predicate = filters.Select(f => (Expression<Func<Transaction, bool>>)(t => t.Description != null && EF.Functions.Like(t.Description, $"%{f}%")));
             result = result.WhereAny(predicate);
         }
 
-        result = result.Where(t => (request.Start == null || t.TransactionTime >= request.Start) && (request.End == null || t.TransactionTime <= request.End));
-        result = result.Where(t => !request.UntaggedOnly || !t.Splits.SelectMany(ts => ts.Tags).Any());
-        result = result.Where(t => request.TagIds.IsNullOrEmpty() || t.Splits.SelectMany(ts => ts.Tags).Any(t => request.TagIds!.Contains(t.Id)));
+        result = result.Where(t => (query.Start == null || t.TransactionTime >= query.Start) && (query.End == null || t.TransactionTime <= query.End));
+        result = result.Where(t => !query.UntaggedOnly ?? false || !t.Splits.SelectMany(ts => ts.Tags).Any());
+        result = result.Where(t => query.TagIds.IsNullOrEmpty() || t.Splits.SelectMany(ts => ts.Tags).Any(t => query.TagIds!.Contains(t.Id)));
 
         return result;
     }
@@ -99,7 +86,7 @@ file static class IQueryableExtensions
     {
         if (!String.IsNullOrWhiteSpace(field))
         {
-            PropertyInfo? property = _transactionProperties.SingleOrDefault(p => p.Name.Equals(field, StringComparison.OrdinalIgnoreCase)) ?? throw new ArgumentException($"Unknown field {field}", nameof(field));
+            PropertyInfo? property = TransactionProperties.SingleOrDefault(p => p.Name.Equals(field, StringComparison.OrdinalIgnoreCase)) ?? throw new ArgumentException($"Unknown field {field}", nameof(field));
 
             // Hiding implementation details from the front-end
             if (field == "AccountHolder") field = "AccountHolder.FirstName";
@@ -113,7 +100,7 @@ file static class IQueryableExtensions
 
             LambdaExpression sort = Expression.Lambda(sortBody, param);
             MethodCallExpression call =
-                Expression.Call(typeof(Queryable), "OrderBy" + (direction == SortDirection.Descending ? "Descending" : String.Empty), new[] { typeof(Transaction), propertyExp.Type },
+                Expression.Call(typeof(Queryable), "OrderBy" + (direction == SortDirection.Descending ? "Descending" : String.Empty), [typeof(Transaction), propertyExp.Type],
                 query.Expression,
                 Expression.Quote(sort));
             return (IOrderedQueryable<Transaction>)query.Provider.CreateQuery<Transaction>(call);
@@ -139,16 +126,10 @@ file static class IQueryableExtensions
     }
 }
 
-file class ParameterSubstitutionVisitor : ExpressionVisitor
+file class ParameterSubstitutionVisitor(ParameterExpression source, ParameterExpression destination) : ExpressionVisitor
 {
-    private readonly ParameterExpression _destination;
-    private readonly ParameterExpression _source;
-
-    public ParameterSubstitutionVisitor(ParameterExpression source, ParameterExpression destination)
-    {
-        _source = source;
-        _destination = destination;
-    }
+    private readonly ParameterExpression _destination = destination;
+    private readonly ParameterExpression _source = source;
 
     protected override Expression VisitParameter(ParameterExpression node)
     {

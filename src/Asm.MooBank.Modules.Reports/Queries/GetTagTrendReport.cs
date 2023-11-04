@@ -6,38 +6,32 @@ using Asm.MooBank.Queries.Transactions;
 
 namespace Asm.MooBank.Queries.Reports;
 
-public record GetTagTrendReport(int TagId) : TypedReportQuery, IQuery<TagTrendReport>
+public record GetTagTrendReport : TypedReportQuery, IQuery<TagTrendReport>
 {
-    public TagTrendReportSettings Settings { get; init; } = new TagTrendReportSettings();
+    public int TagId { get; init; }
+
+    public bool? ApplySmoothing { get; init; } = false;
+
+   // public TagTrendReportSettings Settings { get; init; } = new TagTrendReportSettings();
 }
 
-public record TagTrendReportSettings(bool ApplySmoothing = false);
+//public record TagTrendReportSettings(bool ApplySmoothing = false);
 
 
-internal class GetTagTrendReportHandler : IQueryHandler<GetTagTrendReport, TagTrendReport>
+internal class GetTagTrendReportHandler(IQueryable<Transaction> transactions, IQueryable<Tag> tags, IQueryable<TransactionTagRelationship> tagRelationships, ISecurity securityRepository) : IQueryHandler<GetTagTrendReport, TagTrendReport>
 {
-    private readonly IQueryable<Transaction> _transactions;
-    private readonly IQueryable<Tag> _tags;
-    private readonly IQueryable<TransactionTagRelationship> _tagRelationships;
-    private readonly ISecurity _securityRepository;
-
-    public GetTagTrendReportHandler(IQueryable<Transaction> transactions, IQueryable<Tag> tags, IQueryable<TransactionTagRelationship> tagRelationships, ISecurity securityRepository)
-    {
-        _transactions = transactions;
-        _tags = tags;
-        _tagRelationships = tagRelationships;
-        _securityRepository = securityRepository;
-    }
+    private readonly IQueryable<Transaction> _transactions = transactions;
+    private readonly IQueryable<Tag> _tags = tags;
 
     public async ValueTask<TagTrendReport> Handle(GetTagTrendReport request, CancellationToken cancellationToken)
     {
-        _securityRepository.AssertAccountPermission(request.AccountId);
+        securityRepository.AssertAccountPermission(request.AccountId);
 
         var transactionTypeFilter = request.ReportType.ToTransactionFilter();
 
         var tag = await _tags.SingleAsync(t => t.Id == request.TagId, cancellationToken);
         var tags = await _tags.Include(t => t.Tags).Where(t => !t.Deleted && t.TaggedTo.Any(t2 => t2.Id == request.TagId)).ToListAsync(cancellationToken);
-        var tagHierarchies = await _tagRelationships.Include(t => t.TransactionTag).ThenInclude(t => t.Tags).Include(t => t.ParentTag).ThenInclude(t => t.Tags).Where(tr => tr.Ordinal == 1 && tags.Contains(tr.ParentTag)).ToListAsync(cancellationToken);
+        var tagHierarchies = await tagRelationships.Include(t => t.TransactionTag).ThenInclude(t => t.Tags).Include(t => t.ParentTag).ThenInclude(t => t.Tags).Where(tr => tr.Ordinal == 1 && tags.Contains(tr.ParentTag)).ToListAsync(cancellationToken);
         var allTags = tags.Union(tagHierarchies.Select(t => t.TransactionTag)).ToList();
         allTags.Add(tag);
 
@@ -53,7 +47,7 @@ internal class GetTagTrendReportHandler : IQueryHandler<GetTagTrendReport, TagTr
             OffsetAmount = g.Sum(t => t.Amount)
         });
 
-        if (request.Settings.ApplySmoothing)
+        if (request.ApplySmoothing ?? false)
         {
             months = ApplySmoothing(months);
         }

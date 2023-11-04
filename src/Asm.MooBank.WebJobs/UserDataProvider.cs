@@ -1,6 +1,6 @@
 ﻿using Asm.MooBank.Models;
 
-namespace Asm.MooBank.WebJobs
+namespace Asm.MooBank.Web.Jobs
 {
     internal class UserDataProvider : IUserDataProvider
     {

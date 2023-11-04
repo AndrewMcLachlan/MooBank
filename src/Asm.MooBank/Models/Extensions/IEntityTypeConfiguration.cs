@@ -1,4 +1,4 @@
-﻿namespace Asm.MooBank.Models.ModelExtensions;
+﻿namespace Asm.MooBank.Models.Extensions;
 
 internal interface IEntityTypeConfiguration<T>
 {

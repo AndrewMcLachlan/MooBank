@@ -26,6 +26,6 @@ internal class AddTagHandler(ITransactionRepository transactionRepository, ITran
 
         await UnitOfWork.SaveChangesAsync(cancellationToken);
 
-        return (Models.Transaction)entity;
+        return entity.ToModel();
     }
 }

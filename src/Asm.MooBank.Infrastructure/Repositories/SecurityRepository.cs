@@ -1,6 +1,5 @@
 ﻿using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.AccountGroup;
-using Asm.MooBank.Domain.Entities.AccountHolder;
 using Asm.MooBank.Domain.Entities.Budget;
 using Asm.MooBank.Security;
 using Asm.MooBank.Security.Authorisation;
@@ -9,20 +8,12 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
-public class SecurityRepository : ISecurity
+public class SecurityRepository(MooBankContext dataContext, IAuthorizationService authorizationService, IUserDataProvider userDataProvider, IPrincipalProvider principalProvider) : ISecurity
 {
-    private readonly IUserDataProvider _userDataProvider;
-    private readonly IPrincipalProvider _principalProvider;
-    private readonly MooBankContext _mooBankContext;
-    private readonly IAuthorizationService _authorizationService;
-
-    public SecurityRepository(MooBankContext dataContext, IAuthorizationService authorizationService, IUserDataProvider userDataProvider, IPrincipalProvider principalProvider)
-    {
-        _userDataProvider = userDataProvider;
-        _mooBankContext = dataContext;
-        _authorizationService = authorizationService;
-        _principalProvider = principalProvider;
-    }
+    private readonly IUserDataProvider _userDataProvider = userDataProvider;
+    private readonly IPrincipalProvider _principalProvider = principalProvider;
+    private readonly MooBankContext _mooBankContext = dataContext;
+    private readonly IAuthorizationService _authorizationService = authorizationService;
 
     public void AssertAccountPermission(Guid accountId)
     {
@@ -33,7 +24,6 @@ public class SecurityRepository : ISecurity
 
 
         if (!authResult.Succeeded)
-        //if (! _mooBankContext.Accounts.Any(a => a.AccountId == accountToCheck && a.AccountAccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId)))
 
         {
             throw new NotAuthorisedException("Not authorised to view this account");
@@ -49,7 +39,6 @@ public class SecurityRepository : ISecurity
         var authResult = await _authorizationService.AuthorizeAsync(_principalProvider.Principal!, accountToCheck, Policies.AccountHolder);
 
         if (!authResult.Succeeded)
-        //if (!(await _mooBankContext.Accounts.AnyAsync(a => a.AccountId == accountToCheck && a.AccountAccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId))))
         {
             throw new NotAuthorisedException("Not authorised to view this account");
         }
@@ -77,7 +66,7 @@ public class SecurityRepository : ISecurity
     {
         if (accountGroup.OwnerId != _userDataProvider.CurrentUserId)
         {
-            throw new NotAuthorisedException("Not authorised to view this account");
+            throw new NotAuthorisedException("Not authorised to view this account group");
         }
     }
 
@@ -87,7 +76,7 @@ public class SecurityRepository : ISecurity
 
         if (!authResult.Succeeded)
         {
-            throw new NotAuthorisedException("Not authorised to view this account");
+            throw new NotAuthorisedException("Not authorised to view this family");
         }
     }
 

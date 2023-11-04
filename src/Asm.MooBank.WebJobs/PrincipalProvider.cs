@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using Asm.Security;
 
-namespace Asm.MooBank.WebJobs;
+namespace Asm.MooBank.Web.Jobs;
 
 internal class PrincipalProvider : IPrincipalProvider
 {

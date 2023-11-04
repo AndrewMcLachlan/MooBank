@@ -1,5 +1,6 @@
 ﻿using Asm.Domain;
 using Asm.MooBank.Models;
+using Asm.MooBank.Models.Extensions;
 using Asm.MooBank.Modules.Family.Models;
 
 namespace Asm.MooBank.Modules.Family.Models;

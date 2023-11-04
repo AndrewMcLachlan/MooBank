@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Asm.MooBank\Asm.MooBank.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Models\Asm.MooBank.Models.csproj" />
   </ItemGroup>
 

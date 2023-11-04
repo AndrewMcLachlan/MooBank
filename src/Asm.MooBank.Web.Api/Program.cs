@@ -27,18 +27,19 @@ void AddServices(WebApplicationBuilder builder)
         });
 
     services.AddEndpointsApiExplorer();
-    services.AddSwaggerGen();
+    services.AddSwaggerGen(options =>
+    {
+        options.CustomSchemaIds(type => type.FullName?
+            //.Replace("Asm.MooBank.Modules", String.Empty)
+            //.Replace("Asm.MooBank.Models", String.Empty)
+            .Replace('+', '.'));
+    });
 
     services.AddApplicationInsightsTelemetry();
 
     services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
         options.SerializerOptions.Converters.Add(new JsonStringEnumConverter())
     );
-
-    services.AddControllers().AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    });
 
     services.AddProblemDetailsFactory();
 
@@ -69,8 +70,8 @@ void AddServices(WebApplicationBuilder builder)
     services.AddRepositories();
     services.AddEntities();
     services.AddServices();
-    services.AddCommands();
-    services.AddQueries();
+    //services.AddCommands();
+    //services.AddQueries();
     services.AddUserDataProvider();
     services.AddImporterFactory();
 
@@ -117,7 +118,26 @@ void AddApp(WebApplication app)
     IEndpointRouteBuilder builder = app.MapGroup("/api")
         .WithOpenApi();
 
-    builder.MapGet("/api/meta", () =>
+    /*app.Use(async (HttpContext context, RequestDelegate next) =>
+    {
+        var endpoint = context.GetEndpoint();
+
+        if (!(endpoint?.DisplayName?.Contains("Average") ?? false))
+        {
+            await next(context);
+            return;
+        }
+
+        Enum.TryParse(typeof(Asm.MooBank.Models.Reports.ReportType), out )
+
+        var task = endpoint?.RequestDelegate?.Invoke(context) ?? Task.CompletedTask;
+
+        await task;
+
+        await next(context);
+    });*/
+
+    builder.MapGet("/meta", () =>
     {
         var assembly = System.Reflection.Assembly.GetExecutingAssembly();
         System.Diagnostics.FileVersionInfo fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
@@ -125,11 +145,9 @@ void AddApp(WebApplication app)
         if (fileVersionInfo.FileVersion == null) return Results.NotFound();
 
         return Results.Ok(new MetaModel(new Version(fileVersionInfo.FileVersion!)));
-    });
+    }).WithNames("Meta");
 
     builder.MapModuleEndpoints();
-
-    app.MapControllers();
 
     app.MapFallbackToFile("/index.html");
 

@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Asm.MooBank.WebJobs;
+namespace Asm.MooBank.Web.Jobs;
 internal class AuthorisationService : IAuthorizationService
 {
     public Task<AuthorizationResult> AuthorizeAsync(ClaimsPrincipal user, object? resource, IEnumerable<IAuthorizationRequirement> requirements)

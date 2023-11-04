@@ -11,25 +11,18 @@ public interface IImportService
     Task Import(Guid accountId, Stream stream, CancellationToken cancellationToken = default);
 }
 
-public class ImportService : ServiceBase, IImportService
+public class ImportService(IUnitOfWork unitOfWork, IInstitutionAccountRepository accountRepository, IRuleRepository transactionTagRuleRepository, IImporterFactory importerFactory) : ServiceBase(unitOfWork), IImportService
 {
-    private readonly IInstitutionAccountRepository _accountRepository;
-    private readonly IRuleRepository _transactionTagRuleRepository;
-    private readonly IImporterFactory _importerFactory;
-
-    public ImportService(IUnitOfWork unitOfWork, IInstitutionAccountRepository accountRepository, IRuleRepository transactionTagRuleRepository, IImporterFactory importerFactory) : base(unitOfWork)
-    {
-        _accountRepository = accountRepository;
-        _transactionTagRuleRepository = transactionTagRuleRepository;
-        _importerFactory = importerFactory;
-    }
+    private readonly IInstitutionAccountRepository _accountRepository = accountRepository;
+    private readonly IRuleRepository _transactionTagRuleRepository = transactionTagRuleRepository;
+    private readonly IImporterFactory _importerFactory = importerFactory;
 
     public async Task Import(Guid accountId, Stream stream, CancellationToken cancellationToken = default)
     {
         var account = await _accountRepository.Get(accountId, cancellationToken);
         IImporter importer = await _importerFactory.Create(accountId, cancellationToken) ?? throw new ArgumentException("Not a valid import account", nameof(accountId));
 
-        var importResult = await importer.Import(account, stream, cancellationToken);
+        var importResult = await importer.Import(account.AccountId, stream, cancellationToken);
 
         await ApplyTransactionRules(account, importResult.Transactions, cancellationToken);
 

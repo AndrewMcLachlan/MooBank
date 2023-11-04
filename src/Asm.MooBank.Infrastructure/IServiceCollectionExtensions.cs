@@ -7,6 +7,7 @@ using Asm.MooBank.Domain.Entities.RecurringTransactions;
 using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Domain.Entities.Transactions;
+using Asm.MooBank.Importers;
 using Asm.MooBank.Infrastructure;
 using Asm.MooBank.Infrastructure.Repositories;
 using Asm.MooBank.Security;
@@ -19,17 +20,15 @@ public static class IServiceCollectionExtensions
 
     public static IServiceCollection AddMooBankDbContext(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<MooBankContext>((services, options) => options/*.UseLazyLoadingProxies()*/.UseSqlServer(configuration.GetConnectionString("MooBank"), options =>
+        services.AddDbContext<MooBankContext>((services, options) => options.UseSqlServer(configuration.GetConnectionString("MooBank"), options =>
         {
             options.EnableRetryOnFailure(3);
-            //options.UseDateOnlyTimeOnly();
         }));
 
         //HACK: To be fixed
-        services.AddReadOnlyDbContext<IReadOnlyDbContext, MooBankContext>((services, options) => options/*.UseLazyLoadingProxies()*/.UseSqlServer(configuration.GetConnectionString("MooBank"), options =>
+        services.AddReadOnlyDbContext<IReadOnlyDbContext, MooBankContext>((services, options) => options.UseSqlServer(configuration.GetConnectionString("MooBank"), options =>
         {
             options.EnableRetryOnFailure(3);
-            //options.UseDateOnlyTimeOnly();
         }));
 
 
@@ -53,5 +52,6 @@ public static class IServiceCollectionExtensions
     public static IServiceCollection AddEntities(this IServiceCollection services) =>
         services.AddAggregateRoots<MooBankContext>(typeof(IAccountGroupRepository).Assembly);
 
-
+    public static IServiceCollection AddImporterFactory(this IServiceCollection services) =>
+        services.AddTransient<IImporterFactory, ImporterFactory>();
 }

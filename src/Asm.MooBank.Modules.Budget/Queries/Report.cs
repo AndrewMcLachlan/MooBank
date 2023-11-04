@@ -5,20 +5,12 @@ namespace Asm.MooBank.Modules.Budget.Queries;
 
 public record Report(short Year) : IQuery<BudgetReportByMonth>;
 
-internal class ReportHandler : IQueryHandler<Report, BudgetReportByMonth>
+internal class ReportHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, IQueryable<Domain.Entities.Account.InstitutionAccount> accounts, IQueryable<Domain.Entities.Transactions.Transaction> transactions, AccountHolder accountHolder) : IQueryHandler<Report, BudgetReportByMonth>
 {
-    private readonly IQueryable<Domain.Entities.Budget.Budget> _budgets;
-    private readonly IQueryable<Domain.Entities.Account.InstitutionAccount> _accounts;
-    private readonly IQueryable<Domain.Entities.Transactions.Transaction> _transactions;
-    private readonly MooBank.Models.AccountHolder _accountHolder;
-
-    public ReportHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, IQueryable<Domain.Entities.Account.InstitutionAccount> accounts, IQueryable<Domain.Entities.Transactions.Transaction> transactions, MooBank.Models.AccountHolder accountHolder)
-    {
-        _budgets = budgets;
-        _accounts = accounts;
-        _transactions = transactions;
-        _accountHolder = accountHolder;
-    }
+    private readonly IQueryable<Domain.Entities.Budget.Budget> _budgets = budgets;
+    private readonly IQueryable<Domain.Entities.Account.InstitutionAccount> _accounts = accounts;
+    private readonly IQueryable<Domain.Entities.Transactions.Transaction> _transactions = transactions;
+    private readonly AccountHolder _accountHolder = accountHolder;
 
     public async ValueTask<BudgetReportByMonth> Handle(Report request, CancellationToken cancellationToken)
     {

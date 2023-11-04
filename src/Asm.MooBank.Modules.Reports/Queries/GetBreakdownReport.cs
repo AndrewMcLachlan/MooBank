@@ -6,34 +6,29 @@ using Asm.MooBank.Queries.Transactions;
 
 namespace Asm.MooBank.Queries.Reports;
 
-public record GetBreakdownReport(int? TagId) : TypedReportQuery, IQuery<BreakdownReport>;
-
-internal class GetBreakdownReportHandler : IQueryHandler<GetBreakdownReport, BreakdownReport>
+public record GetBreakdownReport : TypedReportQuery, IQuery<BreakdownReport>
 {
-    private readonly IQueryable<Transaction> _transactions;
-    private readonly IQueryable<Tag> _tags;
-    private readonly IQueryable<TransactionTagRelationship> _tagRelationships;
-    private readonly ISecurity _securityRepository;
+    public int? ParentTagId { get; init; } = null;
+}
 
-    public GetBreakdownReportHandler(IQueryable<Transaction> transactions, IQueryable<Tag> tags, IQueryable<TransactionTagRelationship> tagRelationships, ISecurity securityRepository)
-    {
-        _transactions = transactions;
-        _tags = tags;
-        _tagRelationships = tagRelationships;
-        _securityRepository = securityRepository;
-    }
+internal class GetBreakdownReportHandler(IQueryable<Transaction> transactions, IQueryable<Tag> tags, IQueryable<TransactionTagRelationship> tagRelationships, ISecurity securityRepository) : IQueryHandler<GetBreakdownReport, BreakdownReport>
+{
+    private readonly IQueryable<Transaction> _transactions = transactions;
+    private readonly IQueryable<Tag> _tags = tags;
+    private readonly IQueryable<TransactionTagRelationship> _tagRelationships = tagRelationships;
+    private readonly ISecurity _securityRepository = securityRepository;
 
     public async ValueTask<BreakdownReport> Handle(GetBreakdownReport request, CancellationToken cancellationToken)
     {
         _securityRepository.AssertAccountPermission(request.AccountId);
 
+        var parentTagId = request.ParentTagId;
 
         Tag? rootTag = null;
-        IList<Tag> tags;
         List<Tag> topTags;
         IEnumerable<TransactionTagRelationship> lowerTags;
 
-        if (request.TagId == null)
+        if (parentTagId == null)
         {
             topTags = await _tags.Include(t => t.Tags).Where(t => !t.Deleted && (t.Settings == null || !t.Settings.ExcludeFromReporting) && !t.TaggedTo.Any()).ToListAsync(cancellationToken);
             lowerTags = await _tagRelationships.Include(t => t.TransactionTag).ThenInclude(t => t.Tags).Include(t => t.ParentTag).ThenInclude(t => t.Tags).Where(tr => !tr.TransactionTag.Deleted && topTags.Contains(tr.ParentTag)).ToListAsync(cancellationToken);
@@ -42,13 +37,13 @@ internal class GetBreakdownReportHandler : IQueryHandler<GetBreakdownReport, Bre
         else
         {
             // Include the root tag for any transactions
-            rootTag = _tags.Include(t => t.Tags).Single(t => t.Id == request.TagId);
-            topTags = await _tags.Include(t => t.Tags).Where(t => !t.Deleted && (t.Settings == null || !t.Settings.ExcludeFromReporting) && t.TaggedTo.Any(t2 => t2.Id == request.TagId)).ToListAsync(cancellationToken);
+            rootTag = _tags.Include(t => t.Tags).Single(t => t.Id == parentTagId);
+            topTags = await _tags.Include(t => t.Tags).Where(t => !t.Deleted && (t.Settings == null || !t.Settings.ExcludeFromReporting) && t.TaggedTo.Any(t2 => t2.Id == parentTagId)).ToListAsync(cancellationToken);
             lowerTags = await _tagRelationships.Include(t => t.TransactionTag).ThenInclude(t => t.Tags).Include(t => t.ParentTag).ThenInclude(t => t.Tags).Where(tr => !tr.TransactionTag.Deleted && (tr.TransactionTag.Settings == null || !tr.TransactionTag.Settings.ExcludeFromReporting) && topTags.Contains(tr.ParentTag)).ToListAsync(cancellationToken);
         }
 
 
-        tags = topTags.Union(lowerTags.Select(tr => tr.TransactionTag), new TagEqualityComparer()).ToList();
+        List<Tag> tags = topTags.Union(lowerTags.Select(tr => tr.TransactionTag), new TagEqualityComparer()).ToList();
         if (rootTag != null)
         {
             tags.Add(rootTag);
@@ -69,7 +64,7 @@ internal class GetBreakdownReportHandler : IQueryHandler<GetBreakdownReport, Bre
                 HasChildren = g.Key.Tags.Any(t => !t.Deleted),
             }).ToList();
 
-        if (request.TagId == null)
+        if (parentTagId == null)
         {
             var tagLessAmount = await _transactions.IncludeTags().WhereByReportQuery(request).Where(t => !t.Splits.SelectMany(t => t.Tags).Any()).SumAsync(t => t.Amount, cancellationToken);
             tagValues.Add(new TagValue {

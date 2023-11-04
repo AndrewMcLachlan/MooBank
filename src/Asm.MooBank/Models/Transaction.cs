@@ -16,6 +16,8 @@ public partial record Transaction
     public string? Notes { get; set; }
     public DateTime TransactionTime { get; set; }
 
+    public DateTime? PurchaseDate { get; set; }
+
     public TransactionType TransactionType { get; set; }
 
     public IEnumerable<Tag> Tags { get; set; } = Enumerable.Empty<Tag>();

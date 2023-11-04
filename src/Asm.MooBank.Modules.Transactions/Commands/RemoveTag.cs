@@ -22,6 +22,6 @@ internal class RemoveTagHandler(ITransactionRepository transactionRepository, IU
 
         await UnitOfWork.SaveChangesAsync(cancellationToken);
 
-        return (Models.Transaction)entity;
+        return entity.ToModel();
     }
 }

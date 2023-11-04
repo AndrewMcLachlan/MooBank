@@ -46,7 +46,7 @@ public partial class Transaction
     #region Navigation Properties
     public virtual ICollection<TransactionSplit> Splits { get; set; } = new HashSet<TransactionSplit>();
 
-    public virtual Account.Account Account { get; set; }
+    public virtual Account.Account Account { get; set; } = null!;
 
     public virtual AccountHolder.AccountHolder? AccountHolder { get; set; }
 
@@ -88,7 +88,7 @@ public partial class Transaction
             {
                 split.Tags.Remove(tag);
 
-                if (!split.Tags.Any())
+                if (split.Tags.Count == 0)
                 {
                     Splits.Remove(split);
                 }

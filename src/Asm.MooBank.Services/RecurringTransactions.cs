@@ -16,18 +16,11 @@ public interface IRecurringTransactionService
 /// <summary>
 /// Processes recurring transactions.
 /// </summary>
-public class RecurringTransactionService : ServiceBase, IRecurringTransactionService
+public class RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionService transactionService, IRecurringTransactionRepository recurringTransactionRepository, ILogger<RecurringTransactionService> logger) : ServiceBase(unitOfWork), IRecurringTransactionService
 {
-    private readonly IRecurringTransactionRepository _recurringTransactionRepository;
-    private readonly ITransactionService _transactionService;
-    private readonly ILogger<RecurringTransactionService> _logger;
-
-    public RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionService transactionService, IRecurringTransactionRepository recurringTransactionRepository, ILogger<RecurringTransactionService> logger) : base(unitOfWork)
-    {
-        _transactionService = transactionService;
-        _recurringTransactionRepository = recurringTransactionRepository;
-        _logger = logger;
-    }
+    private readonly IRecurringTransactionRepository _recurringTransactionRepository = recurringTransactionRepository;
+    private readonly ITransactionService _transactionService = transactionService;
+    private readonly ILogger<RecurringTransactionService> _logger = logger;
 
 
     /// <summary>

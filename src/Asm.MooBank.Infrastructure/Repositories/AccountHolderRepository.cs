@@ -7,12 +7,14 @@ namespace Asm.MooBank.Infrastructure.Repositories
     {
         private readonly IUserDataProvider _userDataProvider;
 
+        [Obsolete("Not used")]
 
         public AccountHolderRepository(MooBankContext dataContext, IUserDataProvider userDataProvider) : base(dataContext)
         {
             _userDataProvider = userDataProvider;
         }
 
+        [Obsolete("Not used")]
         public Task<AccountHolder?> GetCurrentOrNull(CancellationToken cancellationToken = default) =>
             DataContext.AccountHolders.SingleOrDefaultAsync(a => a.AccountHolderId == _userDataProvider.CurrentUserId, cancellationToken);
 

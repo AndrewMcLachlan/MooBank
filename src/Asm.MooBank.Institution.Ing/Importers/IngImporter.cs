@@ -6,12 +6,13 @@ using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Importers;
 using Asm.MooBank.Institution.Ing.Domain;
 using Asm.MooBank.Institution.Ing.Models;
+using Asm.MooBank.Models.Extensions;
 using Microsoft.Extensions.Logging;
 using TransactionType = Asm.MooBank.Models.TransactionType;
 
 namespace Asm.MooBank.Institution.Ing.Importers;
 
-internal partial class IngImporter : IImporter
+internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, IAccountHolderRepository accountHolderRepository, ITransactionRawRepository transactionRawRepository, ITransactionRepository transactionRepository, ILogger<IngImporter> logger) : IImporter
 {
     private const int Columns = 5;
     private const int DateColumn = 0;
@@ -20,25 +21,14 @@ internal partial class IngImporter : IImporter
     private const int DebitColumn = 3;
     private const int BalanceColumn = 4;
 
-    private readonly IQueryable<Transaction> _transactions;
-    private readonly IQueryable<TransactionRaw> _rawTransactions;
-    private readonly IAccountHolderRepository _accountHolderRepository;
-    private readonly ITransactionRawRepository _transactionRawRepository;
-    private readonly ITransactionRepository _transactionRepository;
-    private readonly ILogger<IngImporter> _logger;
-    private readonly Dictionary<short, AccountHolder> _accountHolders = new();
+    private readonly IQueryable<TransactionRaw> _rawTransactions = rawTransactions;
+    private readonly IAccountHolderRepository _accountHolderRepository = accountHolderRepository;
+    private readonly ITransactionRawRepository _transactionRawRepository = transactionRawRepository;
+    private readonly ITransactionRepository _transactionRepository = transactionRepository;
+    private readonly ILogger<IngImporter> _logger = logger;
+    private readonly Dictionary<short, AccountHolder> _accountHolders = [];
 
-    public IngImporter(IQueryable<Transaction> transactions, IQueryable<TransactionRaw> rawTransactions, IAccountHolderRepository accountHolderRepository, ITransactionRawRepository transactionRawRepository, ITransactionRepository transactionRepository, ILogger<IngImporter> logger)
-    {
-        _accountHolderRepository = accountHolderRepository;
-        _transactions = transactions;
-        _rawTransactions = rawTransactions;
-        _transactionRawRepository = transactionRawRepository;
-        _transactionRepository = transactionRepository;
-        _logger = logger;
-    }
-
-    public async Task<TransactionImportResult> Import(Account account, Stream contents, CancellationToken cancellationToken = default)
+    public async Task<MooBank.Models.TransactionImportResult> Import(Guid accountId, Stream contents, CancellationToken cancellationToken = default)
     {
 
         using var reader = new StreamReader(contents);
@@ -62,17 +52,17 @@ internal partial class IngImporter : IImporter
 
             string[] prelimColumns = line.Split(",");
 
-            List<string> columns = new();
+            List<string> columns = [];
 
             string? current = null;
 
             foreach (string str in prelimColumns)
             {
-                if (str.StartsWith("\"") && !str.EndsWith("\""))
+                if (str.StartsWith('\"') && !str.EndsWith('\"'))
                 {
                     current = str;
                 }
-                else if (!str.StartsWith("\"") && str.EndsWith("\""))
+                else if (!str.StartsWith('\"') && str.EndsWith('\"'))
                 {
                     columns.Add((current + str).Trim('"').Replace("\"\"", "\""));
                 }
@@ -139,7 +129,7 @@ internal partial class IngImporter : IImporter
 
             var transaction = new Transaction
             {
-                AccountId = account.AccountId,
+                AccountId = accountId,
                 AccountHolder = parsed.Last4Digits != null ? await _accountHolderRepository.GetByCard(parsed.Last4Digits.Value, cancellationToken) : null,
                 Amount = transactionType == TransactionType.Credit ? credit : debit,
                 Description = parsed.Description,
@@ -159,7 +149,7 @@ internal partial class IngImporter : IImporter
 
             var transactionRaw = new TransactionRaw
             {
-                AccountId = account.AccountId,
+                AccountId = accountId,
                 Balance = balance,
                 Credit = credit,
                 Date = transactionTime,
@@ -174,15 +164,15 @@ internal partial class IngImporter : IImporter
 
         _transactionRawRepository.AddRange(rawTransactions);
 
-        return new TransactionImportResult(rawTransactions.Select(r => r.Transaction), endBalance!.Value);
+        return new MooBank.Models.TransactionImportResult(rawTransactions.Select(r => r.Transaction), endBalance!.Value);
     }
 
-    public async Task Reprocess(Account account, CancellationToken cancellationToken = default)
+    public async Task Reprocess(Guid accountId, CancellationToken cancellationToken = default)
     {
-        var transactions = await _transactionRepository.GetTransactions(account.AccountId, cancellationToken);
+        var transactions = await _transactionRepository.GetTransactions(accountId, cancellationToken);
         var transactionIds = transactions.Select(t => t.TransactionId);
 
-        var rawTransactions = await _transactionRawRepository.GetAll(account.AccountId, cancellationToken);
+        var rawTransactions = await _transactionRawRepository.GetAll(accountId, cancellationToken);
         var processed = rawTransactions.Where(t => t.TransactionId != null && transactionIds.Contains(t.TransactionId.Value));
         var unprocessed = rawTransactions.Except(processed, new Asm.Domain.IIdentifiableEqualityComparer<TransactionRaw, Guid>());
 

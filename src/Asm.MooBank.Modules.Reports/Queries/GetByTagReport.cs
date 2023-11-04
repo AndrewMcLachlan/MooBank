@@ -4,18 +4,15 @@ using Asm.MooBank.Queries.Transactions;
 
 namespace Asm.MooBank.Queries.Reports;
 
-public record GetByTagReport(int? TagId = null) : TypedReportQuery, IQuery<ByTagReport>;
-
-internal class GetByTagReportHandler : IQueryHandler<GetByTagReport, ByTagReport>
+public record GetByTagReport : TypedReportQuery, IQuery<ByTagReport>
 {
-    private readonly IQueryable<Transaction> _transactions;
-    private readonly ISecurity _securityRepository;
+    public int? ParentTagId { get; init; } = null;
+}
 
-    public GetByTagReportHandler(IQueryable<Transaction> transactions, ISecurity securityRepository)
-    {
-        _transactions = transactions;
-        _securityRepository = securityRepository;
-    }
+internal class GetByTagReportHandler(IQueryable<Transaction> transactions, ISecurity securityRepository) : IQueryHandler<GetByTagReport, ByTagReport>
+{
+    private readonly IQueryable<Transaction> _transactions = transactions;
+    private readonly ISecurity _securityRepository = securityRepository;
 
     public async ValueTask<ByTagReport> Handle(GetByTagReport request, CancellationToken cancellationToken)
     {
@@ -44,7 +41,7 @@ internal class GetByTagReportHandler : IQueryHandler<GetByTagReport, ByTagReport
             GrossAmount = g.Sum(t => t.GrossAmount),
         }).ToList();
 
-        if (request.TagId == null)
+        if (request.ParentTagId == null)
         {
             var tagLessAmount = await _transactions.IncludeTags().WhereByReportQuery(request).Where(t => !t.Splits.SelectMany(ts => ts.Tags).Any()).SumAsync(t => t.Amount, cancellationToken);
             tagValues.Add(new TagValue

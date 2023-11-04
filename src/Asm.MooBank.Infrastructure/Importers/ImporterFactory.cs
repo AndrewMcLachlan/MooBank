@@ -1,5 +1,4 @@
 ﻿using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Domain.Entities.ReferenceData;
 using IAccountRepository = Asm.MooBank.Domain.Entities.Account.IAccountRepository;
 
 namespace Asm.MooBank.Importers;
@@ -37,20 +36,18 @@ internal class ImporterFactory : IImporterFactory
 
         var type = Type.GetType(typeName) ?? throw new InvalidOperationException("Not a valid importer type");
 
-        return _services.GetService(type) as IImporter ?? throw new InvalidOperationException("Not a valid importer type"); ;
+        return _services.GetService(type) as IImporter ?? throw new InvalidOperationException("Not a valid importer type");
     }
 
-    public IImporter? Create(ImporterType? importerType)
+    public IImporter? Create(string? importerType)
     {
-        var typeName = importerType?.Type;
-
-        if (typeName == null)
+        if (importerType == null)
         {
             return null;
         }
 
-        var type = Type.GetType(typeName) ?? throw new InvalidOperationException("Not a valid importer type");
+        var type = Type.GetType(importerType) ?? throw new InvalidOperationException("Not a valid importer type");
 
-        return _services.GetService(type) as IImporter ?? throw new InvalidOperationException("Not a valid importer type"); ;
+        return _services.GetService(type) as IImporter ?? throw new InvalidOperationException("Not a valid importer type");
     }
 }

@@ -7,5 +7,7 @@ public enum AccountType
     Savings = 2,
     Credit = 3,
     Mortgage = 4,
-    SuperAnnuation = 5,
+    Superannuation = 5,
+    Investment = 6,
+    Shares = 7,
 }

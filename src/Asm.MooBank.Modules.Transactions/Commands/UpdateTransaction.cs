@@ -1,25 +1,16 @@
 ﻿using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Domain.Entities.Transactions;
-using Asm.MooBank.Models.Commands.Transactions;
 
 namespace Asm.MooBank.Modules.Transactions.Commands;
 
 public record UpdateTransaction(Guid Id, string? Notes, IEnumerable<Models.TransactionSplit> Splits, bool ExcludeFromReporting = false) : ICommand<Models.Transaction>;
 
-internal class UpdateTransactionHandler : ICommandHandler<UpdateTransaction, Models.Transaction>
+internal class UpdateTransactionHandler(ITransactionRepository transactionRepository, ITransactionTagRepository tagRepository, ISecurity securityRepository, IUnitOfWork unitOfWork) : ICommandHandler<UpdateTransaction, Models.Transaction>
 {
-    private readonly ITransactionRepository _transactionRepository;
-    private readonly ITransactionTagRepository _tagRepository;
-    private readonly ISecurity _security;
-    private readonly IUnitOfWork _unitOfWork;
-
-    public UpdateTransactionHandler(ITransactionRepository transactionRepository, ITransactionTagRepository tagRepository, ISecurity securityRepository, IUnitOfWork unitOfWork)
-    {
-        _transactionRepository = transactionRepository;
-        _tagRepository = tagRepository;
-        _security = securityRepository;
-        _unitOfWork = unitOfWork;
-    }
+    private readonly ITransactionRepository _transactionRepository = transactionRepository;
+    private readonly ITransactionTagRepository _tagRepository = tagRepository;
+    private readonly ISecurity _security = securityRepository;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     public async ValueTask<Models.Transaction> Handle(UpdateTransaction request, CancellationToken cancellationToken)
     {
@@ -88,6 +79,6 @@ internal class UpdateTransactionHandler : ICommandHandler<UpdateTransaction, Mod
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return (Models.Transaction)entity;
+        return entity.ToModel();
     }
 }

@@ -1,4 +1,7 @@
-﻿namespace Asm.MooBank.Models;
+﻿using Asm.MooBank.Models;
+
+namespace Asm.MooBank;
+
 public static class TransactionSplitExtensions
 {
     public static TransactionSplit ToModel(this Domain.Entities.Transactions.TransactionSplit split) => new()

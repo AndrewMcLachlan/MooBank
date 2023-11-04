@@ -1,4 +1,4 @@
-﻿namespace Asm.MooBank.Models;
+﻿namespace Asm.MooBank.Models.Extensions;
 
 public static class AccountHolderExtensions
 {

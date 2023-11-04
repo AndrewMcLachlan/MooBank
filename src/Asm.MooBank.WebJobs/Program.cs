@@ -11,11 +11,9 @@ static void ConfigureServices(HostBuilderContext context, IServiceCollection ser
     services.AddMooBankDbContext(context.Configuration);
     services.AddRepositories();
     services.AddEntities();
-    services.AddCommands();
-    services.AddQueries();
     services.AddImporterFactory();
     services.AddServices();
-    services.AddSingleton<AccountHolder>(new AccountHolder());
+    services.AddSingleton(new AccountHolder());
 
     services.AddSingleton<IAuthorizationService, AuthorisationService>();
     services.AddSingleton<IUserDataProvider, UserDataProvider>();

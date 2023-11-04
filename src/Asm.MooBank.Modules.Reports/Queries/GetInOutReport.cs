@@ -5,16 +5,10 @@ namespace Asm.MooBank.Queries.Reports;
 
 public record GetInOutReport : ReportQuery, IQuery<InOutReport>;
 
-internal class GetInOutReportHandler : IQueryHandler<GetInOutReport, InOutReport>
+internal class GetInOutReportHandler(IQueryable<Transaction> transactions, ISecurity securityRepository) : IQueryHandler<GetInOutReport, InOutReport>
 {
-    private readonly IQueryable<Transaction> _transactions;
-    private readonly ISecurity _securityRepository;
-
-    public GetInOutReportHandler(IQueryable<Transaction> transactions, ISecurity securityRepository)
-    {
-        _transactions = transactions;
-        _securityRepository = securityRepository;
-    }
+    private readonly IQueryable<Transaction> _transactions = transactions;
+    private readonly ISecurity _securityRepository = securityRepository;
 
     public async ValueTask<InOutReport> Handle(GetInOutReport request, CancellationToken cancellationToken)
     {

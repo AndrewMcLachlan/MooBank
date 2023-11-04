@@ -21,13 +21,13 @@ internal class ImportHandler(IAccountRepository accountRepository, IRuleReposito
 
         Security.AssertAccountPermission(accountId);
 
-        var baseAccount = await _accountRepository.Get(accountId) ?? throw new NotFoundException($"Account with ID {accountId} not found");
+        var baseAccount = await _accountRepository.Get(accountId, cancellationToken) ?? throw new NotFoundException($"Account with ID {accountId} not found");
 
         if (baseAccount is not Domain.Entities.Account.InstitutionAccount account) throw new ArgumentException("Not a valid import account", nameof(request));
 
         IImporter importer = await _importerFactory.Create(accountId, cancellationToken) ?? throw new ArgumentException("Not a valid import account", nameof(request));
 
-        var importResult = await importer.Import(account, stream, cancellationToken);
+        var importResult = await importer.Import(account.AccountId, stream, cancellationToken);
 
         await ApplyTransactionRules(account, importResult.Transactions, cancellationToken);
 

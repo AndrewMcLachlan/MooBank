@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace Asm.MooBank.WebJobs
+namespace Asm.MooBank.Web.Jobs
 {
     internal class DummyHttpContextAccessor : IHttpContextAccessor
     {

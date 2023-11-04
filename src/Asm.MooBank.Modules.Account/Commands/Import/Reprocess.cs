@@ -5,20 +5,12 @@ namespace Asm.MooBank.Modules.Account.Commands.Import;
 
 public record Reprocess(Guid AccountId) : ICommand;
 
-internal class ReprocessHandler : ICommandHandler<Reprocess>
+internal class ReprocessHandler(IUnitOfWork unitOfWork, IInstitutionAccountRepository institutionAccountRepository, ISecurity security, IImporterFactory importerFactory) : ICommandHandler<Reprocess>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IInstitutionAccountRepository _institutionAccountRepository;
-    private readonly ISecurity _security;
-    private readonly IImporterFactory _importerFactory;
-
-    public ReprocessHandler(IUnitOfWork unitOfWork, IInstitutionAccountRepository institutionAccountRepository, ISecurity security, IImporterFactory importerFactory)
-    {
-        _unitOfWork = unitOfWork;
-        _institutionAccountRepository = institutionAccountRepository;
-        _security = security;
-        _importerFactory = importerFactory;
-    }
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IInstitutionAccountRepository _institutionAccountRepository = institutionAccountRepository;
+    private readonly ISecurity _security = security;
+    private readonly IImporterFactory _importerFactory = importerFactory;
 
     public async ValueTask Handle(Reprocess request, CancellationToken cancellationToken)
     {
@@ -26,14 +18,14 @@ internal class ReprocessHandler : ICommandHandler<Reprocess>
 
         var account = await _institutionAccountRepository.Get(request.AccountId, cancellationToken);
 
-        var importer = _importerFactory.Create(account.ImportAccount?.ImporterType);
+        var importer = _importerFactory.Create(account.ImportAccount?.ImporterType.Type);
 
         if (importer == null)
         {
             return;
         }
 
-        await importer.Reprocess(account, cancellationToken);
+        await importer.Reprocess(request.AccountId, cancellationToken);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }

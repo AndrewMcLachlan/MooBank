@@ -10,13 +10,13 @@ internal class TransactionsEndpoints : EndpointGroupBase
 {
     public override string Name => "Transactions";
 
-    public override string Path => "/account/{accountId}/transactions";
+    public override string Path => "accounts/{accountId}/transactions";
 
     public override string Tags => "Transactions";
 
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {
-        builder.MapPagedQuery<Get, Transaction>("{pageSize?}/{pageNumber?}")
+        builder.MapPagedQuery<Get, Transaction>("{pageSize}/{pageNumber}")
             .WithNames("Get Transactions");
 
         builder.MapPagedQuery<Get, Transaction>("untagged/{pageSize?}/{pageNumber?}")
