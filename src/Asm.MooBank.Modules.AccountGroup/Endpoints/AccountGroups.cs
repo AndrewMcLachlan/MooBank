@@ -1,5 +1,4 @@
 ﻿using Asm.Cqrs.AspNetCore;
-using Asm.MooBank.Models;
 using Asm.MooBank.Modules.AccountGroup.Commands;
 using Asm.MooBank.Modules.AccountGroup.Queries;
 using Microsoft.AspNetCore.Builder;
@@ -35,22 +34,7 @@ public class AccountGroups : EndpointGroupBase
             .WithName("Update Account Group")
             .Produces<Models.AccountGroup>();
 
-        routeGroupBuilder.MapDelete2<Delete>("/{id}")
+        routeGroupBuilder.MapDelete<Delete>("/{id}")
             .WithName("Delete Account Group");
-    }
-}
-
-public static class Ext
-{
-    public static RouteHandlerBuilder MapDelete2<TRequest>(this IEndpointRouteBuilder builder, string pattern) where TRequest : ICommand
-    {
-        return builder.MapDelete(pattern, HandleDelete2<TRequest>);
-    }
-
-    internal static async ValueTask<IResult> HandleDelete2<TRequest>([AsParameters] TRequest request, ICommandDispatcher dispatcher, CancellationToken cancellationToken) where TRequest : ICommand
-    {
-        await dispatcher.Dispatch(request!, cancellationToken);
-
-        return Results.NoContent();
     }
 }
