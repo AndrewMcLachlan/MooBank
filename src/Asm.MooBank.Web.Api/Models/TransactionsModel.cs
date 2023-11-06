@@ -8,7 +8,7 @@ namespace Asm.MooBank.Web.Api.Models
 {
     public class TransactionsModel
     {
-        public IEnumerable<Transaction> Transactions { get; set; }
+        public IEnumerable<Transaction> Transactions { get; set; } = [];
 
         public int Total { get; set; }
         public int? PageNumber { get; internal set; }

@@ -1,28 +1,22 @@
 ﻿using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.Tag;
+using Asm.MooBank.Modules.Tag.Models;
 
 namespace Asm.MooBank.Modules.Tag.Commands;
 
-public sealed record Update(int TagId, string Name, bool ExcludeFromReporting, bool ApplySmoothing) : ICommand<Models.Tag>;
+public sealed record Update(int TagId, UpdateTag Tag) : ICommand<MooBank.Models.Tag>;
 
-internal sealed class UpdateHandler : CommandHandlerBase, ICommandHandler<Update, Models.Tag>
+internal sealed class UpdateHandler(ITagRepository transactionTagRepository, IUnitOfWork unitOfWork, MooBank.Models.AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Update, MooBank.Models.Tag>
 {
-    private readonly ITransactionTagRepository _transactionTagRepository;
-
-    public UpdateHandler(ITransactionTagRepository transactionTagRepository, IUnitOfWork unitOfWork, Models.AccountHolder accountHolder, ISecurity security) : base(unitOfWork, accountHolder, security)
+    public async ValueTask<MooBank.Models.Tag> Handle(Update request, CancellationToken cancellationToken)
     {
-        _transactionTagRepository = transactionTagRepository;
-    }
-
-    public async ValueTask<Models.Tag> Handle(Update request, CancellationToken cancellationToken)
-    {
-        var tag = await _transactionTagRepository.Get(request.TagId, cancellationToken);
+        var tag = await transactionTagRepository.Get(request.TagId, cancellationToken);
 
         await Security.AssertFamilyPermission(tag.FamilyId);
 
-        tag.Name = request.Name;
-        tag.Settings.ExcludeFromReporting = request.ExcludeFromReporting;
-        tag.Settings.ApplySmoothing = request.ApplySmoothing;
+        tag.Name = request.Tag.Name;
+        tag.Settings.ExcludeFromReporting = request.Tag.ExcludeFromReporting;
+        tag.Settings.ApplySmoothing = request.Tag.ApplySmoothing;
 
         await UnitOfWork.SaveChangesAsync(cancellationToken);
 

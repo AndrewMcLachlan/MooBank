@@ -2,7 +2,7 @@
 
 namespace Asm.MooBank.Modules.Account.Queries.Rule;
 
-public record Get(Guid AccountId, int Id) : IQuery<Models.Rule>;
+public record Get(Guid AccountId, int RuleId) : IQuery<Models.Rule>;
 
 internal class GetHandler(IQueryable<Domain.Entities.Account.Account> accounts, ISecurity security, MooBank.Models.AccountHolder accountHolder) : QueryHandlerBase(accountHolder), IQueryHandler<Get, Models.Rule>
 {
@@ -15,8 +15,8 @@ internal class GetHandler(IQueryable<Domain.Entities.Account.Account> accounts, 
 
         var account = await _accounts.SingleOrDefaultAsync(a => a.AccountId == request.AccountId, cancellationToken) ?? throw new NotFoundException();
 
-        var rule = account.Rules.SingleOrDefault(r => r.Id == request.Id) ?? throw new NotFoundException();
+        var rule = account.Rules.SingleOrDefault(r => r.Id == request.RuleId) ?? throw new NotFoundException();
 
-        return (Models.Rule)rule;
+        return rule.ToModel();
     }
 }

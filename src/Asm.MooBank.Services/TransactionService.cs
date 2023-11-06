@@ -14,10 +14,10 @@ public interface ITransactionService
     void AddTransaction(decimal amount, Guid accountId, bool isRecurring, string? description = null);
 }
 
-public class TransactionService(IUnitOfWork unitOfWork, ITransactionRepository transactionRepository, ITransactionTagRepository transactionTagRepository, ISecurity securityRepository) : ServiceBase(unitOfWork), ITransactionService
+public class TransactionService(IUnitOfWork unitOfWork, ITransactionRepository transactionRepository, ITagRepository transactionTagRepository, ISecurity securityRepository) : ServiceBase(unitOfWork), ITransactionService
 {
     private readonly ITransactionRepository _transactionRepository = transactionRepository;
-    private readonly ITransactionTagRepository _transactionTagRepository = transactionTagRepository;
+    private readonly ITagRepository _transactionTagRepository = transactionTagRepository;
     private readonly ISecurity _security = securityRepository;
 
     public async Task<Transaction> AddTransactionTag(Guid accountId, Guid id, int tagId, CancellationToken cancellationToken = default)

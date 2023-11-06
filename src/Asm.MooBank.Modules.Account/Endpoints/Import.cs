@@ -9,7 +9,7 @@ internal class Import : EndpointGroupBase
 {
     public override string Name => "Import";
 
-    public override string Path => "/accounts/{accountid}/import";
+    public override string Path => "/accounts/{accountId}/import";
 
     public override string Tags => "Import";
 
@@ -23,7 +23,7 @@ internal class Import : EndpointGroupBase
         })
             .WithNames("Import Transactions");
 
-        builder.MapCommand<Reprocess>("/reprocess")
+        builder.MapCommand<Reprocess>("/reprocess", StatusCodes.Status204NoContent)
             .WithNames("Reprocess Transactions")
             .Produces(StatusCodes.Status204NoContent);
 

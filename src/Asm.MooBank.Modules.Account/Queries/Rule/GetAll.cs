@@ -1,5 +1,4 @@
 ﻿using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Account.Models;
 using Asm.MooBank.Queries;
 
 namespace Asm.MooBank.Modules.Account.Queries.Rule;
@@ -15,7 +14,7 @@ internal class GetAllHandler(IQueryable<Domain.Entities.Account.Account> account
     {
         _security.AssertAccountPermission(request.AccountId);
 
-        var account = await _accounts.SingleOrDefaultAsync(a => a.AccountId == request.AccountId, cancellationToken) ?? throw new NotFoundException();
+        var account = await _accounts.Include(a => a.Rules).ThenInclude(r => r.Tags).SingleOrDefaultAsync(a => a.AccountId == request.AccountId, cancellationToken) ?? throw new NotFoundException();
 
         return account.Rules.ToModel();
     }

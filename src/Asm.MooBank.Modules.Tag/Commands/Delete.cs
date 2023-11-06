@@ -6,9 +6,9 @@ namespace Asm.MooBank.Modules.Tag.Commands;
 
 internal record Delete(int Id) : ICommand;
 
-internal class DeleteHandler(ITransactionTagRepository tagRepository, IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Delete>
+internal class DeleteHandler(ITagRepository tagRepository, IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Delete>
 {
-    private readonly ITransactionTagRepository _tagRepository = tagRepository;
+    private readonly ITagRepository _tagRepository = tagRepository;
 
     public async ValueTask Handle(Delete command, CancellationToken cancellationToken)
     {

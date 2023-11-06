@@ -50,7 +50,7 @@ export const CreateAccount: React.FC = () => {
 
         createAccount.create(account, importAccount);
 
-        navigate("/");
+        navigate("/accounts");
     }
 
     return (

@@ -2,7 +2,7 @@
 
 namespace Asm.MooBank.Domain.Entities.Tag;
 
-public interface ITransactionTagRepository : IDeletableRepository<Tag, int>
+public interface ITagRepository : IDeletableRepository<Tag, int>
 {
     void AddSettings(Tag transactionTag);
 

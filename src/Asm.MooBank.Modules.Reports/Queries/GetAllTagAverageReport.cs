@@ -6,28 +6,19 @@ namespace Asm.MooBank.Queries.Reports;
 
 public record GetAllTagAverageReport : TypedReportQuery, IQuery<AllTagAverageReport>;
 
-internal class GetAllTagAverageReportHandler : IQueryHandler<GetAllTagAverageReport, AllTagAverageReport>
+internal class GetAllTagAverageReportHandler(IQueryable<Transaction> transactions, IQueryable<TransactionTagRelationship> tagRelationships, ISecurity securityRepository) : IQueryHandler<GetAllTagAverageReport, AllTagAverageReport>
 {
-    private readonly IQueryable<Transaction> _transactions;
-    private readonly IQueryable<TransactionTagRelationship> _tagRelationships;
-    private readonly ISecurity _securityRepository;
-
-    public GetAllTagAverageReportHandler(IQueryable<Transaction> transactions, IQueryable<TransactionTagRelationship> tagRelationships, ISecurity securityRepository)
-    {
-        _transactions = transactions;
-        _tagRelationships = tagRelationships;
-        _securityRepository = securityRepository;
-    }
+    private readonly IQueryable<Transaction> _transactions = transactions;
 
     public async ValueTask<AllTagAverageReport> Handle(GetAllTagAverageReport request, CancellationToken cancellationToken)
     {
-        _securityRepository.AssertAccountPermission(request.AccountId);
+        securityRepository.AssertAccountPermission(request.AccountId);
 
-        var relationships = await _tagRelationships.Include(t => t.TransactionTag).ThenInclude(t => t.Tags.Where(t => !t.Deleted && !t.Settings.ExcludeFromReporting)).Include(t => t.ParentTag).ThenInclude(t => t.Tags.Where(t => !t.Deleted && !t.Settings.ExcludeFromReporting)).Where(tr => !tr.TransactionTag.Deleted && !tr.TransactionTag.Settings.ExcludeFromReporting).ToListAsync(cancellationToken);
+        var relationships = await tagRelationships.Include(t => t.TransactionTag).ThenInclude(t => t.Tags.Where(t => !t.Deleted && !t.Settings.ExcludeFromReporting)).Include(t => t.ParentTag).ThenInclude(t => t.Tags.Where(t => !t.Deleted && !t.Settings.ExcludeFromReporting)).Where(tr => !tr.TransactionTag.Deleted && !tr.TransactionTag.Settings.ExcludeFromReporting).ToListAsync(cancellationToken);
 
         var transactions = await _transactions.Include(t => t.Splits).ThenInclude(t => t.Tags.Where(t => !t.Deleted && !t.Settings.ExcludeFromReporting)).WhereByReportQuery(request).WhereByReportType(request.ReportType).ToListAsync(cancellationToken);
 
-        if (!transactions.Any()) return new()
+        if (transactions.Count == 0) return new()
         {
             AccountId = request.AccountId,
             Start = request.Start,

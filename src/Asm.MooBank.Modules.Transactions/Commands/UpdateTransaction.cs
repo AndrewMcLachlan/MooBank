@@ -5,10 +5,10 @@ namespace Asm.MooBank.Modules.Transactions.Commands;
 
 public record UpdateTransaction(Guid Id, string? Notes, IEnumerable<Models.TransactionSplit> Splits, bool ExcludeFromReporting = false) : ICommand<Models.Transaction>;
 
-internal class UpdateTransactionHandler(ITransactionRepository transactionRepository, ITransactionTagRepository tagRepository, ISecurity securityRepository, IUnitOfWork unitOfWork) : ICommandHandler<UpdateTransaction, Models.Transaction>
+internal class UpdateTransactionHandler(ITransactionRepository transactionRepository, ITagRepository tagRepository, ISecurity securityRepository, IUnitOfWork unitOfWork) : ICommandHandler<UpdateTransaction, Models.Transaction>
 {
     private readonly ITransactionRepository _transactionRepository = transactionRepository;
-    private readonly ITransactionTagRepository _tagRepository = tagRepository;
+    private readonly ITagRepository _tagRepository = tagRepository;
     private readonly ISecurity _security = securityRepository;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 

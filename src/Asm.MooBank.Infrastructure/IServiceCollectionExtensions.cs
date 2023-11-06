@@ -1,4 +1,5 @@
-﻿using Asm.Domain.Infrastructure;
+﻿using System.Reflection;
+using Asm.Domain.Infrastructure;
 using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.AccountGroup;
 using Asm.MooBank.Domain.Entities.AccountHolder;
@@ -31,6 +32,12 @@ public static class IServiceCollectionExtensions
             options.EnableRetryOnFailure(3);
         }));
 
+        //HACK: Required for domain events. To be fixed.
+        services.AddMediatR(options =>
+        {
+            options.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+        });
+
 
         return services.AddUnitOfWork<MooBankContext>();
     }
@@ -45,7 +52,7 @@ public static class IServiceCollectionExtensions
                 .AddScoped<IReferenceDataRepository, ReferenceDataRepository>()
                 .AddScoped<ISecurity, SecurityRepository>()
                 .AddScoped<ITransactionRepository, TransactionRepository>()
-                .AddScoped<ITransactionTagRepository, TransactionTagRepository>()
+                .AddScoped<ITagRepository, TransactionTagRepository>()
                 .AddScoped<IRuleRepository, RuleRepository>()
                 .AddScoped<IVirtualAccountRepository, VirtualAccountRepository>();
 

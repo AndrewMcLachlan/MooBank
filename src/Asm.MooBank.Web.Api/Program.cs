@@ -29,6 +29,15 @@ void AddServices(WebApplicationBuilder builder)
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen(options =>
     {
+        var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+        System.Diagnostics.FileVersionInfo fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
+
+        options.SwaggerDoc("v1", new()
+        {
+            Title = "MooBank API",
+            Version = fileVersionInfo.FileVersion
+        });
+
         options.CustomSchemaIds(type => type.FullName?
             //.Replace("Asm.MooBank.Modules", String.Empty)
             //.Replace("Asm.MooBank.Models", String.Empty)
@@ -42,6 +51,7 @@ void AddServices(WebApplicationBuilder builder)
     );
 
     services.AddProblemDetailsFactory();
+    //services.AddProblemDetails();
 
     services.AddMooBankDbContext(builder.Configuration);
 
@@ -117,35 +127,6 @@ void AddApp(WebApplication app)
 
     IEndpointRouteBuilder builder = app.MapGroup("/api")
         .WithOpenApi();
-
-    /*app.Use(async (HttpContext context, RequestDelegate next) =>
-    {
-        var endpoint = context.GetEndpoint();
-
-        if (!(endpoint?.DisplayName?.Contains("Average") ?? false))
-        {
-            await next(context);
-            return;
-        }
-
-        Enum.TryParse(typeof(Asm.MooBank.Models.Reports.ReportType), out )
-
-        var task = endpoint?.RequestDelegate?.Invoke(context) ?? Task.CompletedTask;
-
-        await task;
-
-        await next(context);
-    });*/
-
-    builder.MapGet("/meta", () =>
-    {
-        var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-        System.Diagnostics.FileVersionInfo fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
-
-        if (fileVersionInfo.FileVersion == null) return Results.NotFound();
-
-        return Results.Ok(new MetaModel(new Version(fileVersionInfo.FileVersion!)));
-    }).WithNames("Meta");
 
     builder.MapModuleEndpoints();
 

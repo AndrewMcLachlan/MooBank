@@ -12,5 +12,4 @@ export * from "./Transactions";
 export * from "./Tag";
 export * from "./TagHierarchy";
 export * from "./Rule";
-export * from "./Rules";
 export * from "./VirtualAccount";

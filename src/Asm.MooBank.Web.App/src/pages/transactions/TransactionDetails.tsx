@@ -1,7 +1,7 @@
 import { Transaction, TransactionOffset, TransactionSplit, isCredit, getSplitTotal, isDebit } from "models";
 import { Button, Col, Form, Modal, Row, } from "react-bootstrap";
 import { TransactionSplit as TransactionSplitPanel } from "./TransactionSplit";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ExtraInfo } from "./ExtraInfo";
 import { formatCurrency } from "@andrewmclachlan/mooapp";
 import { NewTransactionSplit } from "./NewTransactionSplit";
@@ -62,10 +62,10 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
                 </section>
                 <section className="offset-for" hidden={props.transaction.offsetFor?.length === 0}>
                     {props.transaction.offsetFor?.map((to) =>
-                        <>
+                        <React.Fragment key={to.transaction.id}>
                             <div>Rebate / refund for</div>
                             <div className="value"><span className="amount">{to.amount}</span> - {to.transaction.description}</div>
-                        </>
+                        </React.Fragment>
                     )}
                 </section>
                 <section className="notes">
@@ -84,9 +84,9 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
                     </Row>
                     <div>
                         {splits?.map((split) =>
-                            <>
+                            <React.Fragment key={split.id}>
                                 <TransactionSplitPanel key={split.id} transaction={transaction} split={split} splitChanged={splitChanged} removeSplit={removeSplit} />
-                            </>
+                            </React.Fragment>
                         )}
                     </div>
                     <div>

@@ -65,7 +65,7 @@ internal class GetTagTrendReportHandler(IQueryable<Transaction> transactions, IQ
         };
     }
 
-    private IEnumerable<TrendPoint> ApplySmoothing(IEnumerable<TrendPoint> months)
+    private static IEnumerable<TrendPoint> ApplySmoothing(IEnumerable<TrendPoint> months)
     {
         if (!months.Any()) yield break;
 

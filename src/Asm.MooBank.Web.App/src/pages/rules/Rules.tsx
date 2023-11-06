@@ -35,13 +35,13 @@ export const Rules: React.FC = () => {
         setPageNumber(1);
         const searchTerm = search.toLocaleLowerCase();
         if (searchTerm === "") {
-            setFilteredRules(rules?.rules ?? []);
+            setFilteredRules(rules ?? []);
             return;
         }
 
-        const matchingRules = rules?.rules.filter(r => r.contains.toLocaleLowerCase().includes(searchTerm) || (r.description?.toLocaleLowerCase().includes(searchTerm) ?? false)) ?? [];
+        const matchingRules = rules?.filter(r => r.contains.toLocaleLowerCase().includes(searchTerm) || (r.description?.toLocaleLowerCase().includes(searchTerm) ?? false)) ?? [];
         const matchingTags = fullTagsList?.filter(t => t?.name.toLocaleLowerCase().includes(searchTerm)) ?? [];
-        const matchingTagRules = rules?.rules.filter(r => matchingRules.every(r2 => r2.id !== r.id) && r?.tags.some(t => matchingTags.some(t2 => t2.id === t.id)));
+        const matchingTagRules = rules?.filter(r => matchingRules.every(r2 => r2.id !== r.id) && r?.tags.some(t => matchingTags.some(t2 => t2.id === t.id)));
 
         setFilteredRules(matchingRules.concat(matchingTagRules));
     }, [JSON.stringify(rules), search]);
@@ -76,7 +76,7 @@ export const Rules: React.FC = () => {
                         <td><input type="text" className="form-control" placeholder="Description contains..." value={newRule.contains} onChange={nameChange} /></td>
                         <TagPanel as="td" selectedItems={newRule.tags} items={fullTagsList} onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} onKeyUp={keyUp} />
                         <td><input type="text" className="form-control" placeholder="Notes..." value={newRule.description} onChange={descriptionChange} /></td>
-                        <td className="row-action"><span onClick={createRule}><ClickableIcon icon="check-circle" title="Save" size="xl" /></span></td>
+                        <td className="row-action"><ClickableIcon icon="check-circle" title="Save" size="xl" onClick={createRule} /></td>
                     </tr>
                     {pagedRules.map((r) => <RuleRow key={r.id} accountId={id} rule={r} />)}
                 </tbody>

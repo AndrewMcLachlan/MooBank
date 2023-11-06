@@ -28,6 +28,6 @@ internal class UpdateRuleHandler : ICommandHandler<Update, Models.Rule>
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return entity;
+        return entity.ToModel();
     }
 }
