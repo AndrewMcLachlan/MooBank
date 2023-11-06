@@ -1,5 +1,4 @@
-﻿using Asm.Domain;
-using Asm.MooBank.Models;
+﻿using Asm.MooBank.Models;
 using Asm.MooBank.Models.Extensions;
 using Asm.MooBank.Modules.Family.Models;
 
@@ -23,7 +22,7 @@ public static class FamilyExtensions
             Members = family.AccountHolders.Select(ah => ah.ToModel()),
         };
 
-    public static async Task<IEnumerable<Family>> ToModelAsync(this Task<List<Domain.Entities.Family.Family>> entityTask, CancellationToken cancellationToken = default) =>
-        (await entityTask.WaitAsync(cancellationToken)).Select(f => f.ToModel());
+    public static IQueryable<Family> ToModel(this IQueryable<Domain.Entities.Family.Family> query) =>
+        query.Select(f => f.ToModel());
 }
 

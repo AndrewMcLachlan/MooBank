@@ -14,6 +14,6 @@ internal class GetAllHandler(IQueryable<Domain.Entities.Institution.Institution>
     {
         _security.AssertAdministrator();
 
-        return await _institutions.ToListAsync(cancellationToken).ToModelAsync(cancellationToken);
+        return await _institutions.ToModel().ToListAsync(cancellationToken);
     }
 }

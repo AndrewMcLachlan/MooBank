@@ -1,6 +1,6 @@
 ﻿namespace Asm.MooBank.Modules.Institution.Models;
 
-public record Institution
+public sealed record Institution
 {
     public required int Id { get; init; }
 
@@ -16,7 +16,7 @@ public static class InstitutionExtensions
             Name = institution.Name,
         };
 
-    public static async Task<IEnumerable<Institution>> ToModelAsync(this Task<List<Domain.Entities.Institution.Institution>> entityTask, CancellationToken cancellationToken = default) =>
-        (await entityTask.WaitAsync(cancellationToken)).Select(f => f.ToModel());
+    public static IQueryable<Institution> ToModel(this IQueryable<Domain.Entities.Institution.Institution> query) =>
+        query.Select(f => f.ToModel());
 }
 
