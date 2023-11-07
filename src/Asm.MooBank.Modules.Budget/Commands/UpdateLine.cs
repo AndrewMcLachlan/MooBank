@@ -7,20 +7,13 @@ namespace Asm.MooBank.Modules.Budget.Commands;
 
 public record UpdateLine(short Year, Guid Id, Models.BudgetLine BudgetLine) : ICommand<Models.BudgetLine>;
 
-internal class UpdateLineHandler : CommandHandlerBase, ICommandHandler<UpdateLine, Models.BudgetLine>
+internal class UpdateLineHandler(IUnitOfWork unitOfWork, IBudgetRepository budgetRepository, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<UpdateLine, Models.BudgetLine>
 {
-    private readonly IBudgetRepository _budgetRepository;
-
-    public UpdateLineHandler(IUnitOfWork unitOfWork, IBudgetRepository budgetRepository, AccountHolder accountHolder, ISecurity security) : base(unitOfWork, accountHolder, security)
-    {
-        _budgetRepository = budgetRepository;
-    }
-
     public async ValueTask<Models.BudgetLine> Handle(UpdateLine request, CancellationToken cancellationToken)
     {
         await Security.AssertBudgetLinePermission(request.Id, cancellationToken);
 
-        var budget = await _budgetRepository.GetByYear(AccountHolder.FamilyId, request.Year, cancellationToken);
+        var budget = await budgetRepository.GetByYear(AccountHolder.FamilyId, request.Year, cancellationToken);
 
         var entity = budget.Lines.Single(b => b.Id == request.Id);
 
@@ -31,6 +24,6 @@ internal class UpdateLineHandler : CommandHandlerBase, ICommandHandler<UpdateLin
 
         await UnitOfWork.SaveChangesAsync(cancellationToken);
 
-        return entity;
+        return entity.ToModel();
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Asm.MooBank.Modules.Budget.Models;
 
-public partial record Budget
+public sealed record Budget
 {
     public required short Year { get; set; }
 
@@ -11,14 +11,20 @@ public partial record Budget
     public required IEnumerable<BudgetMonth> Months { get; init; } = Enumerable.Empty<BudgetMonth>();
 }
 
-public partial record Budget
+public static class BudgetExtensions
 {
-    public static implicit operator Budget(Domain.Entities.Budget.Budget? budget)
+    public static Domain.Entities.Budget.Budget ToDomain(this Budget budget) =>
+        new(Guid.Empty)
+        {
+            Year = budget.Year,
+        };
+
+    public static Budget ToModel(this Domain.Entities.Budget.Budget? budget)
     {
         if (budget == null) return null!;
 
         var lines = budget.Lines.ToModel();
-        List<BudgetMonth> months = new();
+        List<BudgetMonth> months = [];
         for (int i = 0; i < 12; i++)
         {
             var mask = 1 << i;
@@ -36,15 +42,6 @@ public partial record Budget
             Months = months,
         };
     }
-}
-
-public static class BudgetExtensions
-{
-    public static Domain.Entities.Budget.Budget ToDomain(this Budget budget) =>
-        new(Guid.Empty)
-        {
-            Year = budget.Year,
-        };
 
     public static IEnumerable<BudgetMonth> ToMonths(this Domain.Entities.Budget.Budget budget)
     {

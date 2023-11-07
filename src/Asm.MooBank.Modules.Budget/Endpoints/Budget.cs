@@ -31,7 +31,7 @@ public class Budget : EndpointGroupBase
             .WithNames("Get Budget Line")
             .Produces<BudgetLine>();
 
-        routeGroupBuilder.MapPostCreate<CreateLine, BudgetLine>("/{year}/lines", "Get Budget Line", (BudgetLine line) => new { id = line.Id })
+        routeGroupBuilder.MapPostCreate<CreateLine, BudgetLine>("/{year}/lines", "Get Budget Line", (BudgetLine line) => new { id = line.Id }, CommandBinding.Parameters)
             .WithNames("Create Budget Line")
             .Produces<BudgetLine>();
 

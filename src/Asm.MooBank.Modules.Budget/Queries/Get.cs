@@ -1,4 +1,5 @@
 ﻿using Asm.MooBank.Models;
+using Asm.MooBank.Modules.Budget.Models;
 using Asm.MooBank.Queries;
 
 namespace Asm.MooBank.Modules.Budget.Queries;
@@ -18,6 +19,8 @@ internal class GetHandler : QueryHandlerBase, IQueryHandler<Get, Models.Budget?>
     {
         var familyId = AccountHolder.FamilyId;
 
-        return await _budgets.Include(b => b.Lines).ThenInclude(b => b.Tag).Where(b => b.FamilyId == familyId && b.Year == request.Year).SingleOrDefaultAsync(cancellationToken);
+        var entity = await _budgets.Include(b => b.Lines).ThenInclude(b => b.Tag).Where(b => b.FamilyId == familyId && b.Year == request.Year).SingleOrDefaultAsync(cancellationToken);
+
+        return entity.ToModel();
     }
 }

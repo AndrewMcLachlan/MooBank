@@ -1,6 +1,6 @@
 ﻿namespace Asm.MooBank.Modules.Budget.Models;
 
-public partial record BudgetLine
+public sealed record BudgetLine
 {
     public Guid Id { get; set; }
 
@@ -17,9 +17,9 @@ public partial record BudgetLine
     public BudgetLineType Type { get; set; }
 }
 
-public partial record BudgetLine
+public static class BudgetLineExtensions
 {
-    public static implicit operator BudgetLine(Domain.Entities.Budget.BudgetLine budgetLine) =>
+    public static BudgetLine ToModel(this Domain.Entities.Budget.BudgetLine budgetLine) =>
         new()
         {
             Id = budgetLine.Id,
@@ -31,10 +31,6 @@ public partial record BudgetLine
             Type = budgetLine.Income ? BudgetLineType.Income : BudgetLineType.Expenses,
         };
 
-}
-
-public static class BudgetLineExtensions
-{
     public static Domain.Entities.Budget.BudgetLine ToDomain(this BudgetLine budgetLine, Guid budgetId) =>
         new(budgetLine.Id)
         {
@@ -48,6 +44,6 @@ public static class BudgetLineExtensions
 
     public static IEnumerable<BudgetLine> ToModel(this IEnumerable<Domain.Entities.Budget.BudgetLine> budgetLines)
     {
-        return budgetLines.Select(bl => (BudgetLine)bl);
+        return budgetLines.Select(bl => bl.ToModel());
     }
 }

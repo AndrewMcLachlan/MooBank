@@ -18,6 +18,6 @@ internal class GetYearsHandler : QueryHandlerBase, IQueryHandler<GetYears, IEnum
     {
         Guid familyId = AccountHolder.FamilyId;
 
-        return await _budgets.Where(b => b.FamilyId == familyId).Select(b => b.Year).ToListAsync(cancellationToken: cancellationToken);
+        return await _budgets.Where(b => b.FamilyId == familyId).Select(b => b.Year).ToListAsync(cancellationToken);
     }
 }
