@@ -21,7 +21,7 @@ public static class RuleExtensions
             Id = rule.Id,
             Contains = rule.Contains,
             Description = rule.Description,
-            Tags = rule.Tags.Where(t => t != null && !t.Deleted).Select(t => (Tag)t),
+            Tags = rule.Tags.Where(t => t != null && !t.Deleted).Select(t => t.ToModel()),
         };
 
     public static IEnumerable<Rule> ToModel(this IEnumerable<Domain.Entities.Account.Rule> entities) =>

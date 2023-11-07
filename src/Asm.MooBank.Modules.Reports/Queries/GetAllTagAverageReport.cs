@@ -1,12 +1,12 @@
 ﻿using Asm.MooBank.Domain.Entities.Transactions;
-using Asm.MooBank.Domain.Entities.TransactionTagHierarchies;
+using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Models.Reports;
 
 namespace Asm.MooBank.Queries.Reports;
 
 public record GetAllTagAverageReport : TypedReportQuery, IQuery<AllTagAverageReport>;
 
-internal class GetAllTagAverageReportHandler(IQueryable<Transaction> transactions, IQueryable<TransactionTagRelationship> tagRelationships, ISecurity securityRepository) : IQueryHandler<GetAllTagAverageReport, AllTagAverageReport>
+internal class GetAllTagAverageReportHandler(IQueryable<Transaction> transactions, IQueryable<TagRelationship> tagRelationships, ISecurity securityRepository) : IQueryHandler<GetAllTagAverageReport, AllTagAverageReport>
 {
     private readonly IQueryable<Transaction> _transactions = transactions;
 

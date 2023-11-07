@@ -20,16 +20,16 @@ internal class TagsEndpoints : EndpointGroupBase
         builder.MapQuery<GetAll, IEnumerable<MooBank.Models.Tag>>("")
             .WithNames("Get Tags");
 
-        builder.MapQuery<GetTagsHierarchy, TransactionTagHierarchy>("hierarchy")
+        builder.MapQuery<GetTagsHierarchy, TagHierarchy>("hierarchy")
             .WithNames("Get Tag Hierarchy");
 
         builder.MapQuery<Get, MooBank.Models.Tag>("{id}")
             .WithNames("Get Tag");
 
-        builder.MapPostCreate<Create, MooBank.Models.Tag>("", "get-tag", t => new { t.Id })
+        builder.MapPostCreate<Create, MooBank.Models.Tag>("", "get-tag", t => new { t.Id }, CommandBinding.Body)
             .WithNames("Create Tag");
 
-        builder.MapPutCreate<CreateByName, MooBank.Models.Tag>("{name}", "get-tag", t => new { t.Id }, CommandBinding.Parameters)
+        builder.MapPutCreate<CreateByName, MooBank.Models.Tag>("{name}", "get-tag", t => new { t.Id })
             .WithNames("Create Tag by Name")
             .WithSummary("Create a tag by name");
 

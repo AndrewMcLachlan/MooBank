@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using Asm.Domain;
-using Asm.MooBank.Domain.Entities.Tag;
 
-namespace Asm.MooBank.Domain.Entities.TransactionTagHierarchies;
+namespace Asm.MooBank.Domain.Entities.TagRelationships;
 
 [Table("TagHierarchies",Schema = "dbo")]
 [AggregateRoot]
-public class TransactionTagRelationship
+public class TagRelationship
 {
     public int Id { get; set; }
 
@@ -14,7 +14,9 @@ public class TransactionTagRelationship
 
     public long Ordinal { get; set; }
 
+    [AllowNull]
     public virtual Tag.Tag TransactionTag { get; set; }
 
+    [AllowNull]
     public virtual Tag.Tag ParentTag { get; set; }
 }

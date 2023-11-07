@@ -10,5 +10,5 @@ internal class GetHandler(IQueryable<Domain.Entities.Tag.Tag> tags, AccountHolde
     private readonly IQueryable<Domain.Entities.Tag.Tag> _tags = tags;
 
     public async ValueTask<MooBank.Models.Tag> Handle(Get request, CancellationToken cancellationToken) =>
-        (await _tags.Where(t => t.Id == request.Id && t.FamilyId == AccountHolder.FamilyId).Select(t => t.ToModel()).SingleOrDefaultAsync(cancellationToken)) ?? throw new NotFoundException();
+        (await _tags.Where(t => t.Id == request.Id && t.FamilyId == AccountHolder.FamilyId).ToModel().SingleOrDefaultAsync(cancellationToken)) ?? throw new NotFoundException();
 }

@@ -5,9 +5,9 @@ using TransactionTagEntity = Asm.MooBank.Domain.Entities.Tag.Tag;
 
 namespace Asm.MooBank.Modules.Tag.Queries;
 
-public record GetTagsHierarchy : IQuery<TransactionTagHierarchy>;
+public record GetTagsHierarchy : IQuery<TagHierarchy>;
 
-internal class GetTagsHierarchyHandler : QueryHandlerBase, IQueryHandler<GetTagsHierarchy, TransactionTagHierarchy>
+internal class GetTagsHierarchyHandler : QueryHandlerBase, IQueryHandler<GetTagsHierarchy, TagHierarchy>
 {
     private readonly IQueryable<TransactionTagEntity> _tags;
 
@@ -17,7 +17,7 @@ internal class GetTagsHierarchyHandler : QueryHandlerBase, IQueryHandler<GetTags
         _tags = tags;
     }
 
-    public async ValueTask<TransactionTagHierarchy> Handle(GetTagsHierarchy request, CancellationToken cancellationToken)
+    public async ValueTask<TagHierarchy> Handle(GetTagsHierarchy request, CancellationToken cancellationToken)
     {
         const int maxLevels = 5;
 

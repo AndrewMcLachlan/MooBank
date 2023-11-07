@@ -17,6 +17,6 @@ internal sealed class CreateHandler(IUnitOfWork unitOfWork, ITagRepository trans
 
         await UnitOfWork.SaveChangesAsync(cancellationToken);
 
-        return tag;
+        return tag.ToModel();
     }
 }

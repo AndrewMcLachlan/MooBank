@@ -1,5 +1,6 @@
 ﻿using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.Tag;
+using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Tag.Models;
 
 namespace Asm.MooBank.Modules.Tag.Commands;
@@ -20,6 +21,6 @@ internal sealed class UpdateHandler(ITagRepository transactionTagRepository, IUn
 
         await UnitOfWork.SaveChangesAsync(cancellationToken);
 
-        return tag;
+        return tag.ToModel();
     }
 }

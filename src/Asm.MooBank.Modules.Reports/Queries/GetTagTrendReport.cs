@@ -1,5 +1,5 @@
 ﻿using Asm.MooBank.Domain.Entities.Transactions;
-using Asm.MooBank.Domain.Entities.TransactionTagHierarchies;
+using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Models.Reports;
 using Asm.MooBank.Queries.Transactions;
@@ -18,7 +18,7 @@ public record GetTagTrendReport : TypedReportQuery, IQuery<TagTrendReport>
 //public record TagTrendReportSettings(bool ApplySmoothing = false);
 
 
-internal class GetTagTrendReportHandler(IQueryable<Transaction> transactions, IQueryable<Tag> tags, IQueryable<TransactionTagRelationship> tagRelationships, ISecurity securityRepository) : IQueryHandler<GetTagTrendReport, TagTrendReport>
+internal class GetTagTrendReportHandler(IQueryable<Transaction> transactions, IQueryable<Tag> tags, IQueryable<TagRelationship> tagRelationships, ISecurity securityRepository) : IQueryHandler<GetTagTrendReport, TagTrendReport>
 {
     private readonly IQueryable<Transaction> _transactions = transactions;
     private readonly IQueryable<Tag> _tags = tags;

@@ -10,11 +10,11 @@ internal class GetAllHandler(IQueryable<Domain.Entities.Tag.Tag> tags, AccountHo
     private readonly IQueryable<Domain.Entities.Tag.Tag> _tags = tags;
 
     public async ValueTask<IEnumerable<MooBank.Models.Tag>> Handle(GetAll _, CancellationToken cancellationToken) =>
-        (await _tags
+        await _tags
             .Include(t => t.Settings)
             .Include(t => t.Tags)
         .ThenInclude(t => t.Tags)
         .ThenInclude(t => t.Tags)
         .ThenInclude(t => t.Tags)
-        .Where(t => t.FamilyId == AccountHolder.FamilyId && !t.Deleted).ToListAsync(cancellationToken).ToModelAsync(cancellationToken)).OrderBy(t => t.Name);
+        .Where(t => t.FamilyId == AccountHolder.FamilyId && !t.Deleted).OrderBy(t => t.Name).ToModel().ToListAsync(cancellationToken);
 }

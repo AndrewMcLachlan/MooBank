@@ -1,5 +1,5 @@
 ﻿using Asm.MooBank.Domain.Entities.Transactions;
-using Asm.MooBank.Domain.Entities.TransactionTagHierarchies;
+using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Models.Reports;
 using Asm.MooBank.Queries.Transactions;
@@ -11,11 +11,11 @@ public record GetBreakdownReport : TypedReportQuery, IQuery<BreakdownReport>
     public int? ParentTagId { get; init; } = null;
 }
 
-internal class GetBreakdownReportHandler(IQueryable<Transaction> transactions, IQueryable<Tag> tags, IQueryable<TransactionTagRelationship> tagRelationships, ISecurity securityRepository) : IQueryHandler<GetBreakdownReport, BreakdownReport>
+internal class GetBreakdownReportHandler(IQueryable<Transaction> transactions, IQueryable<Tag> tags, IQueryable<TagRelationship> tagRelationships, ISecurity securityRepository) : IQueryHandler<GetBreakdownReport, BreakdownReport>
 {
     private readonly IQueryable<Transaction> _transactions = transactions;
     private readonly IQueryable<Tag> _tags = tags;
-    private readonly IQueryable<TransactionTagRelationship> _tagRelationships = tagRelationships;
+    private readonly IQueryable<TagRelationship> _tagRelationships = tagRelationships;
     private readonly ISecurity _securityRepository = securityRepository;
 
     public async ValueTask<BreakdownReport> Handle(GetBreakdownReport request, CancellationToken cancellationToken)
@@ -26,7 +26,7 @@ internal class GetBreakdownReportHandler(IQueryable<Transaction> transactions, I
 
         Tag? rootTag = null;
         List<Tag> topTags;
-        IEnumerable<TransactionTagRelationship> lowerTags;
+        IEnumerable<TagRelationship> lowerTags;
 
         if (parentTagId == null)
         {

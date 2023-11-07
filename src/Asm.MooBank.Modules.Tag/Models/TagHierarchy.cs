@@ -1,6 +1,6 @@
 ﻿namespace Asm.MooBank.Models;
 
-public record TransactionTagHierarchy
+public record TagHierarchy
 {
     public required IDictionary<int, int> Levels { get;init; }
 

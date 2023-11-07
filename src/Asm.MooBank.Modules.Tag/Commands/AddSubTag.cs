@@ -1,13 +1,13 @@
 ﻿using Asm.MooBank.Commands;
-using Asm.MooBank.Domain.Entities.TransactionTagHierarchies;
+using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Models;
 using ITagRepository = Asm.MooBank.Domain.Entities.Tag.ITagRepository;
 
 namespace Asm.MooBank.Modules.Tag.Commands;
 
-public sealed record AddSubTag(int Id, int SubId) : ICommand<MooBank.Models.Tag>;
+public sealed record AddSubTag(int Id, int SubTagId) : ICommand<MooBank.Models.Tag>;
 
-internal sealed class AddSubTagHandler(ITagRepository transactionTagRepository, IQueryable<TransactionTagRelationship> transactionTagRelationships, IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<AddSubTag, MooBank.Models.Tag>
+internal sealed class AddSubTagHandler(ITagRepository tagRepository, IQueryable<TagRelationship> transactionTagRelationships, IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<AddSubTag, MooBank.Models.Tag>
 {
     public async ValueTask<MooBank.Models.Tag> Handle(AddSubTag request, CancellationToken cancellationToken)
     {
@@ -27,9 +27,9 @@ internal sealed class AddSubTagHandler(ITagRepository transactionTagRepository, 
 
         await UnitOfWork.SaveChangesAsync(cancellationToken);
 
-        return tag;
+        return tag.ToModel();
     }
 
     private Task<Domain.Entities.Tag.Tag> GetEntity(int id, bool includeSubTags = false, CancellationToken cancellationToken = default) =>
-        transactionTagRepository.Get(id, includeSubTags, cancellationToken);
+        tagRepository.Get(id, includeSubTags, cancellationToken);
 }

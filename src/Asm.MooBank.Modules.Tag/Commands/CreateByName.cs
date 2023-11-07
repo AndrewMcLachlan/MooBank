@@ -1,11 +1,25 @@
-﻿using ITagRepository = Asm.MooBank.Domain.Entities.Tag.ITagRepository;
+﻿using Asm.MooBank.Commands;
 using Asm.MooBank.Models;
-using Asm.MooBank.Commands;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Json;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using ITagRepository = Asm.MooBank.Domain.Entities.Tag.ITagRepository;
 
 namespace Asm.MooBank.Modules.Tag.Commands;
 
-public sealed record CreateByName(string Name, IEnumerable<int> Tags) : ICommand<MooBank.Models.Tag>;
+public sealed record CreateByName(string Name, IEnumerable<int> Tags) : ICommand<MooBank.Models.Tag>
+{
+    public static async ValueTask<CreateByName?> BindAsync(HttpContext httpContext)
+    {
+        var options = httpContext.RequestServices.GetRequiredService<IOptions<JsonOptions>>();
+
+        string name = httpContext.Request.RouteValues["name"] as string ?? throw new BadHttpRequestException("name not found");
+
+        var tags = await System.Text.Json.JsonSerializer.DeserializeAsync<IEnumerable<int>>(httpContext.Request.Body, options.Value.SerializerOptions, cancellationToken: httpContext.RequestAborted);
+        return new CreateByName(name, tags ?? []);
+    }
+}
 
 internal sealed class CreateByNameHandler(IUnitOfWork unitOfWork, ITagRepository transactionTagRepository, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<CreateByName, MooBank.Models.Tag>
 {
@@ -15,16 +29,16 @@ internal sealed class CreateByNameHandler(IUnitOfWork unitOfWork, ITagRepository
 
         var tagEntities = await transactionTagRepository.Get(tags, cancellationToken);
 
-        Domain.Entities.Tag.Tag transactionTag = new()
+        Domain.Entities.Tag.Tag tag = new()
         {
             Name = name,
             FamilyId = AccountHolder.FamilyId,
             Tags = tagEntities.ToList(),
         };
-        transactionTagRepository.Add(transactionTag);
+        transactionTagRepository.Add(tag);
 
         await UnitOfWork.SaveChangesAsync(cancellationToken);
 
-        return transactionTag;
+        return tag.ToModel();
     }
 }

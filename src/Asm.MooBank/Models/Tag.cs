@@ -1,6 +1,6 @@
 ﻿namespace Asm.MooBank.Models;
 
-public partial record Tag
+public sealed record Tag
 {
     private readonly TagSettings _settings = new();
 
@@ -27,99 +27,44 @@ public partial record Tag
     }
 }
 
-
-
-public partial record Tag
+public static class TagExtensions
 {
-
-    public static implicit operator Tag(Domain.Entities.Tag.Tag transactionTag)
+    public static Tag ToModel(this Domain.Entities.Tag.Tag entity)
     {
-        if (transactionTag == null) return null!;
+        if (entity == null) return null!;
         return new Tag()
         {
-            Id = transactionTag.Id,
-            Name = transactionTag.Name,
-            Tags = transactionTag.Tags.Where(t => t != null).Select(t => (Tag)t).OrderBy(t => t.Name),
-            Settings = transactionTag.Settings
-        };
-    }
-
-    public static implicit operator Domain.Entities.Tag.Tag(Tag transactionTag)
-    {
-        return new Domain.Entities.Tag.Tag
-        {
-            Id = transactionTag.Id,
-            Name = transactionTag.Name,
-            Tags = transactionTag.Tags.Select(t => (Domain.Entities.Tag.Tag)t).ToList(),
-            Settings = new Domain.Entities.Tag.TagSettings
+            Id = entity.Id,
+            Name = entity.Name,
+            Tags = entity.Tags.Where(t => t != null).Select(t => t.ToModel()).OrderBy(t => t.Name),
+            Settings = new Tag.TagSettings
             {
-                ApplySmoothing = transactionTag.Settings.ApplySmoothing,
-                ExcludeFromReporting = transactionTag.Settings.ExcludeFromReporting,
+                ApplySmoothing = entity.Settings.ApplySmoothing,
+                ExcludeFromReporting = entity.Settings.ExcludeFromReporting,
             }
         };
     }
-
-
-    public partial record TagSettings
-    {
-        public static implicit operator TagSettings(Domain.Entities.Tag.TagSettings? settings)
-        {
-            if (settings == null) return null!;
-
-            return new TagSettings
-            {
-                ApplySmoothing = settings.ApplySmoothing,
-                ExcludeFromReporting = settings.ExcludeFromReporting,
-            };
-        }
-
-        public static implicit operator Domain.Entities.Tag.TagSettings(TagSettings? settings)
-        {
-            if (settings == null) return null!;
-
-            return new Domain.Entities.Tag.TagSettings()
-            {
-                ApplySmoothing = settings.ApplySmoothing,
-                ExcludeFromReporting = settings.ExcludeFromReporting,
-            };
-        }
-    }
-}
-
-public static class TagExtensions
-{
-    public static Tag ToModel(this Domain.Entities.Tag.Tag entity) => (Tag)entity;
 
     public static Domain.Entities.Tag.Tag ToEntity(this Tag tag) =>
         new()
         {
             Id = tag.Id,
             Name = tag.Name,
-            Tags = tag.Tags.Select(t => (Domain.Entities.Tag.Tag)t).ToList(),
+            Tags = tag.Tags.Select(t => t.ToEntity()).ToList(),
             Settings = new Domain.Entities.Tag.TagSettings
             {
                 ApplySmoothing = tag.Settings.ApplySmoothing,
                 ExcludeFromReporting = tag.Settings.ExcludeFromReporting,
             }
         };
-    }
+    public static ICollection<Domain.Entities.Tag.Tag> ToEntities(this IEnumerable<Tag> tags) =>
+        tags.Select(t => t.ToEntity()).ToArray();
 
-public static class IEnumerableTransactionTagExtensions
-{
-    public static IEnumerable<Tag> ToModel(this IEnumerable<Domain.Entities.Tag.Tag> entities)
-    {
-        return entities.Select(t => (Tag)t);
-    }
+    public static IEnumerable<Tag> ToModel(this IEnumerable<Domain.Entities.Tag.Tag> entities) =>
+        entities.Select(t => t.ToModel());
 
-    public static async Task<IEnumerable<Tag>> ToModelAsync(this Task<List<Domain.Entities.Tag.Tag>> entityTask, CancellationToken cancellationToken = default)
-    {
-        return (await entityTask.WaitAsync(cancellationToken)).Select(t => (Tag)t);
-    }
-
-    public static async Task<IEnumerable<Tag>> ToModelAsync(this Task<IEnumerable<Domain.Entities.Tag.Tag>> entityTask, CancellationToken cancellationToken = default)
-    {
-        return (await entityTask.WaitAsync(cancellationToken)).Select(t => (Tag)t);
-    }
+    public static IQueryable<Tag> ToModel(this IQueryable<Domain.Entities.Tag.Tag> query) =>
+        query.Select(t => t.ToModel());
 
     public static IEnumerable<Tag> ToSimpleModel(this IEnumerable<Domain.Entities.Tag.Tag> entities)
     {
@@ -130,10 +75,8 @@ public static class IEnumerableTransactionTagExtensions
         });
     }
 
-    public static async Task<IEnumerable<Tag>> ToHierarchyModelAsync(this Task<List<Domain.Entities.Tag.Tag>> entityTask, CancellationToken cancellationToken = default)
-    {
-        return (await entityTask.WaitAsync(cancellationToken)).Select(t => t.ToHierarchyModel());
-    }
+    public static async Task<IEnumerable<Tag>> ToHierarchyModelAsync(this Task<List<Domain.Entities.Tag.Tag>> entityTask, CancellationToken cancellationToken = default) =>
+        (await entityTask.WaitAsync(cancellationToken)).Select(t => t.ToHierarchyModel());
 
     public static Tag ToHierarchyModel(this Domain.Entities.Tag.Tag entity) =>
         new()
