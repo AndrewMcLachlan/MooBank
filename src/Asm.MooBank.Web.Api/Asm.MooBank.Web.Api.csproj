@@ -10,19 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\AccountGroupsController.cs" />
-    <Compile Remove="Controllers\AccountRulesController.cs" />
     <Compile Remove="Controllers\AccountsController.cs" />
-    <Compile Remove="Controllers\BudgetController.cs" />
-    <Compile Remove="Controllers\FamiliesController.cs" />
     <Compile Remove="Controllers\ImportController.cs" />
     <Compile Remove="Controllers\InstitutionsController.cs" />
-    <Compile Remove="Controllers\MetaController.cs" />
     <Compile Remove="Controllers\ReferenceDataController.cs" />
-    <Compile Remove="Controllers\ReportsController.cs" />
-    <Compile Remove="Controllers\TagsController.cs" />
-    <Compile Remove="Controllers\TransactionsController.cs" />
-    <Compile Remove="Controllers\VirtualAccountsController.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -60,19 +51,10 @@
 </ItemGroup>
 
   <ItemGroup>
-    <None Include="Controllers\AccountGroupsController.cs" />
-    <None Include="Controllers\AccountRulesController.cs" />
     <None Include="Controllers\AccountsController.cs" />
-    <None Include="Controllers\BudgetController.cs" />
-    <None Include="Controllers\FamiliesController.cs" />
     <None Include="Controllers\ImportController.cs" />
     <None Include="Controllers\InstitutionsController.cs" />
-    <None Include="Controllers\MetaController.cs" />
     <None Include="Controllers\ReferenceDataController.cs" />
-    <None Include="Controllers\ReportsController.cs" />
-    <None Include="Controllers\TagsController.cs" />
-    <None Include="Controllers\TransactionsController.cs" />
-    <None Include="Controllers\VirtualAccountsController.cs" />
   </ItemGroup>
 
 
