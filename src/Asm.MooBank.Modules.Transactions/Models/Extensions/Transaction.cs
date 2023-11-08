@@ -1,6 +1,7 @@
 ﻿using Asm.MooBank.Models;
+using Asm.MooBank.Modules.Transactions.Models;
 
-namespace Asm.MooBank;
+namespace Asm.MooBank.Modules.Transactions;
 
 public static class TransactionExtensions
 {

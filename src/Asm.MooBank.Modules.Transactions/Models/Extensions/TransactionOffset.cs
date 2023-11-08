@@ -1,8 +1,6 @@
-﻿namespace Asm.MooBank.Models;
-public partial record TransactionOffsetBy
-{
+﻿using Asm.MooBank.Modules.Transactions.Models;
 
-}
+namespace Asm.MooBank.Modules.Transactions;
 
 public static class TransactionOffsetExtensions
 {

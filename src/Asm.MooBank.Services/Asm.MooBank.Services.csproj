@@ -6,6 +6,7 @@
     <Compile Remove="AccountHolderService.cs" />
     <Compile Remove="AccountService.cs" />
     <Compile Remove="RuleService.cs" />
+    <Compile Remove="TransactionService.cs" />
     <Compile Remove="TransactionTagService.cs" />
     <Compile Remove="VirtualAccountService.cs" />
   </ItemGroup>
@@ -14,6 +15,7 @@
     <None Include="AccountHolderService.cs" />
     <None Include="AccountService.cs" />
     <None Include="RuleService.cs" />
+    <None Include="TransactionService.cs" />
     <None Include="TransactionTagService.cs" />
     <None Include="VirtualAccountService.cs" />
   </ItemGroup>

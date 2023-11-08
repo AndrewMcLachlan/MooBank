@@ -1,8 +1,6 @@
 ﻿using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Models;
-using Asm.MooBank.Models.Extensions;
-using Microsoft.Identity.Client;
 
 namespace Asm.MooBank.Modules.Transactions.Commands;
 
@@ -10,8 +8,6 @@ public record Add(decimal Amount, Guid AccountId, bool IsRecurring, string? Desc
 
 internal class AddHandler(ITransactionRepository transactionRepository, IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Add, Models.Transaction>
 {
-    private readonly ITransactionRepository _transactionRepository = transactionRepository;
-
     public async ValueTask<Models.Transaction> Handle(Add command, CancellationToken cancellationToken)
     {
         command.Deconstruct(out var amount, out var accountId, out var isRecurring, out var description);
@@ -32,7 +28,7 @@ internal class AddHandler(ITransactionRepository transactionRepository, IUnitOfW
             TransactionType = transactionType,
         };
 
-        _transactionRepository.Add(transaction);
+        transactionRepository.Add(transaction);
 
         await UnitOfWork.SaveChangesAsync(cancellationToken);
 

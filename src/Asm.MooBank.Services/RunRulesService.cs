@@ -34,8 +34,6 @@ public class RunRulesService(IRunRulesQueue taskQueue, ILoggerFactory loggerFact
 
                 var rules = await transactionTagRuleRepository.GetForAccount(accountId, cancellationToken);
 
-                var updatedTransactions = new List<Transaction>();
-
                 foreach (var transaction in transactions)
                 {
                     var applicableRules = rules.Where(r => transaction.Description?.Contains(r.Contains, StringComparison.OrdinalIgnoreCase) ?? false);

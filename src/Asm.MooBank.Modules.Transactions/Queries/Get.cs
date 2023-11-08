@@ -4,12 +4,14 @@ using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Modules.Transactions.Queries;
 using Asm.MooBank.Queries.Transactions;
 using Microsoft.IdentityModel.Tokens;
-using PagedResult = Asm.PagedResult<Asm.MooBank.Models.Transaction>;
+using PagedResult = Asm.PagedResult<Asm.MooBank.Modules.Transactions.Models.Transaction>;
 
 namespace Asm.MooBank.Modules.Transactions.Queries;
 
-public record Get : IQuery<PagedResult>
+public sealed record Get : IQuery<PagedResult>
 {
+    private bool _untagged;
+
     public required Guid AccountId { get; init; }
 
     public string? Filter { get; init; }
@@ -28,21 +30,21 @@ public record Get : IQuery<PagedResult>
 
     public SortDirection SortDirection { get; init; } = SortDirection.Ascending;
 
-    public bool? UntaggedOnly { get; init; } = false;
+    public string Untagged { init => _untagged = value == "untagged"; }
+
+    public bool? UntaggedOnly { get => _untagged; }
 }
 
-internal class GetHandler(IQueryable<Transaction> transactions, ISecurity securityRepository) : IQueryHandler<Get, PagedResult>
+internal class GetHandler(IQueryable<Transaction> transactions, ISecurity security) : IQueryHandler<Get, PagedResult>
 {
-    private readonly IQueryable<Transaction> _transactions = transactions;
-    private readonly ISecurity _security = securityRepository;
 
     public async ValueTask<PagedResult> Handle(Get query, CancellationToken cancellationToken)
     {
-        _security.AssertAccountPermission(query.AccountId);
+        security.AssertAccountPermission(query.AccountId);
 
-        var total = await _transactions.Where(query).CountAsync(cancellationToken);
+        var total = await transactions.Where(query).CountAsync(cancellationToken);
 
-        var results = await _transactions.IncludeAll().Where(query).Sort(query.SortField, query.SortDirection).Page(query.PageSize, query.PageNumber).ToModelAsync(cancellationToken);
+        var results = await transactions.IncludeAll().Where(query).Sort(query.SortField, query.SortDirection).Page(query.PageSize, query.PageNumber).ToModel().ToListAsync(cancellationToken);
 
         var result = new PagedResult
         {
@@ -60,7 +62,7 @@ file static class IQueryableExtensions
 
     static IQueryableExtensions()
     {
-        TransactionProperties = typeof(Transaction).GetProperties();
+        TransactionProperties = typeof(Models.Transaction).GetProperties();
     }
 
     public static IQueryable<Transaction> Where(this IQueryable<Transaction> queryable, Get query)
@@ -76,7 +78,7 @@ file static class IQueryableExtensions
         }
 
         result = result.Where(t => (query.Start == null || t.TransactionTime >= query.Start) && (query.End == null || t.TransactionTime <= query.End));
-        result = result.Where(t => !query.UntaggedOnly ?? false || !t.Splits.SelectMany(ts => ts.Tags).Any());
+        result = result.Where(t => !(query.UntaggedOnly ?? false) || !t.Splits.SelectMany(ts => ts.Tags).Any());
         result = result.Where(t => query.TagIds.IsNullOrEmpty() || t.Splits.SelectMany(ts => ts.Tags).Any(t => query.TagIds!.Contains(t.Id)));
 
         return result;

@@ -1,6 +1,6 @@
 ﻿using Asm.Cqrs.AspNetCore;
-using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Transactions.Commands;
+using Asm.MooBank.Modules.Transactions.Models;
 using Asm.MooBank.Modules.Transactions.Queries;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
@@ -19,13 +19,13 @@ internal class TransactionsEndpoints : EndpointGroupBase
         builder.MapPagedQuery<Get, Transaction>("{pageSize}/{pageNumber}")
             .WithNames("Get Transactions");
 
-        builder.MapPagedQuery<Get, Transaction>("untagged/{pageSize?}/{pageNumber?}")
+        builder.MapPagedQuery<Get, Transaction>("{untagged:alpha?}/{pageSize?}/{pageNumber?}")
             .WithNames("Get Untagged Transactions");
 
-        builder.MapQuery<Search, IEnumerable<Transaction>>("search")
+        builder.MapQuery<Search, IEnumerable<Transaction>>("")
             .WithNames("Search Transactions");
 
-        builder.MapPatchCommand<UpdateTransaction, Transaction>("{id}")
+        builder.MapPatchCommand<UpdateTransaction, Transaction>("{id}", CommandBinding.None)
             .WithNames("Get Transaction");
 
         builder.MapPutCommand<AddTag, Transaction>("{id}/tag/{tagId}")

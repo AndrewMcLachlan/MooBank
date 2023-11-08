@@ -8,13 +8,11 @@ internal record RemoveTag(Guid AccountId, Guid Id, int TagId) : ICommand<Models.
 
 internal class RemoveTagHandler(ITransactionRepository transactionRepository, IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<RemoveTag, Models.Transaction>
 {
-    private readonly ITransactionRepository _transactionRepository = transactionRepository;
-
     public async ValueTask<Models.Transaction> Handle(RemoveTag request, CancellationToken cancellationToken)
     {
         Security.AssertAccountPermission(request.AccountId);
 
-        var entity = await _transactionRepository.Get(request.Id, cancellationToken);
+        var entity = await transactionRepository.Get(request.Id, cancellationToken);
 
         var tag = entity.Tags.SingleOrDefault(t => t.Id == request.TagId) ?? throw new NotFoundException("Tag not found");
 

@@ -88,7 +88,7 @@ public partial class Transaction
             {
                 split.Tags.Remove(tag);
 
-                if (split.Tags.Count == 0)
+                if (split.Tags.Count == 0 && Splits.Count > 1)
                 {
                     Splits.Remove(split);
                 }

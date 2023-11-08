@@ -1,7 +1,9 @@
 ﻿using Asm.Domain;
 using Asm.MooBank.Domain.Entities.RecurringTransactions;
+using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Models;
 using Microsoft.Extensions.Logging;
+using Microsoft.Identity.Client;
 
 namespace Asm.MooBank.Services;
 
@@ -16,13 +18,8 @@ public interface IRecurringTransactionService
 /// <summary>
 /// Processes recurring transactions.
 /// </summary>
-public class RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionService transactionService, IRecurringTransactionRepository recurringTransactionRepository, ILogger<RecurringTransactionService> logger) : ServiceBase(unitOfWork), IRecurringTransactionService
+public class RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionRepository transactionRepository, IRecurringTransactionRepository recurringTransactionRepository, ILogger<RecurringTransactionService> logger) : ServiceBase(unitOfWork), IRecurringTransactionService
 {
-    private readonly IRecurringTransactionRepository _recurringTransactionRepository = recurringTransactionRepository;
-    private readonly ITransactionService _transactionService = transactionService;
-    private readonly ILogger<RecurringTransactionService> _logger = logger;
-
-
     /// <summary>
     /// Get all recurring transactions and process them.
     /// </summary>
@@ -30,11 +27,11 @@ public class RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionSer
     /// <exception cref="InvalidOperationException">Thrown when the schedule type is unrecognised.</exception>
     public async Task Process()
     {
-        foreach (var trans in await _recurringTransactionRepository.GetAll())
+        foreach (var trans in await recurringTransactionRepository.GetAll())
         {
             if (trans.LastRun == null)
             {
-                _logger.LogInformation("Recurring transaction for {accountId} has not been run before. Creating first run.", trans.VirtualAccountId);
+                logger.LogInformation("Recurring transaction for {accountId} has not been run before. Creating first run.", trans.VirtualAccountId);
                 RunTransaction(trans);
                 trans.LastRun = DateTime.Now;
             }
@@ -59,13 +56,13 @@ public class RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionSer
                 };
                 if (process)
                 {
-                    _logger.LogInformation("Running recurring transaction for {accountId}.", trans.VirtualAccountId);
+                    logger.LogInformation("Running recurring transaction for {accountId}.", trans.VirtualAccountId);
                     RunTransaction(trans);
                     trans.LastRun = DateTime.Now;
                 }
                 else
                 {
-                    _logger.LogInformation("Recurring transaction for {accountId} not due to run", trans.VirtualAccountId);
+                    logger.LogInformation("Recurring transaction for {accountId} not due to run", trans.VirtualAccountId);
                 }
             }
         }
@@ -79,7 +76,21 @@ public class RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionSer
     /// <param name="trans">The recurring transaction definition.</param>
     private void RunTransaction(RecurringTransaction trans)
     {
-        _transactionService.AddTransaction(trans.Amount, trans.VirtualAccountId, true, trans.Description);
+        TransactionType transactionType = trans.Amount < 0 ?
+                                  TransactionType.RecurringDebit:
+                                  TransactionType.RecurringCredit;
+
+        Domain.Entities.Transactions.Transaction transaction = new()
+        {
+            Amount = trans.Amount,
+            AccountId = trans.VirtualAccountId,
+            Description = trans.Description,
+            Source = "Recurring",
+            TransactionTime = DateTime.Now,
+            TransactionType = transactionType,
+        };
+
+        transactionRepository.Add(transaction);
 
         trans.VirtualAccount.Balance += trans.Amount;
         trans.VirtualAccount.LastUpdated = DateTime.UtcNow;
