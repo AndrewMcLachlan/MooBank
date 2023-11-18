@@ -14,5 +14,7 @@
     <Nullable>enable</Nullable>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/AndrewMcLachlan/MooBank</RepositoryUrl>
+    <AsmPackageVersion>3.*-*</AsmPackageVersion>
+    <DotNetPackageVersion>8.*-*</DotNetPackageVersion>
   </PropertyGroup>
 </Project>

@@ -4,9 +4,9 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Asm.Cqrs" Version="3.2.24" />
-    <PackageReference Include="Asm.Domain" Version="3.2.24" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Asm.Cqrs" Version="$(AsmPackageVersion)" />
+    <PackageReference Include="Asm.Domain" Version="$(AsmPackageVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(DotNetPackageVersion)" />
   </ItemGroup>
 
   <ItemGroup>

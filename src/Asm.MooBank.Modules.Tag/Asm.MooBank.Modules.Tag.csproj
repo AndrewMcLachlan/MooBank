@@ -3,10 +3,10 @@
   <Import Project="..\..\Common.props" />
 
   <ItemGroup>
-    <PackageReference Include="Asm.AspNetCore" Version="3.2.24" />
-    <PackageReference Include="Asm.Cqrs" Version="3.2.24" />
-    <PackageReference Include="Asm.Cqrs.AspNetCore" Version="3.2.24" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
+    <PackageReference Include="Asm.AspNetCore" Version="$(AsmPackageVersion)" />
+    <PackageReference Include="Asm.Cqrs" Version="$(AsmPackageVersion)" />
+    <PackageReference Include="Asm.Cqrs.AspNetCore" Version="$(AsmPackageVersion)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(DotNetPackageVersion)" />
   </ItemGroup>
 
   <ItemGroup>
