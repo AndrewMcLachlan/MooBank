@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Services", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Infrastructure", "src\Asm.MooBank.Infrastructure\Asm.MooBank.Infrastructure.csproj", "{EE7A3FB3-48E4-4973-802F-F4B95FCF48C0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Web.Jobs", "src\Asm.MooBank.WebJobs\Asm.MooBank.Web.Jobs.csproj", "{61B4982B-665D-4B0A-B330-92D8E4110FB6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Web.Jobs", "src\Asm.MooBank.Web.Jobs\Asm.MooBank.Web.Jobs.csproj", "{61B4982B-665D-4B0A-B330-92D8E4110FB6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Security", "src\Asm.MooBank.Security\Asm.MooBank.Security.csproj", "{A543D5EE-AD1A-47A8-8E18-154710A6A44F}"
 EndProject
