@@ -26,7 +26,9 @@ namespace Asm.MooBank.Infrastructure.Repositories
 
         public void DeleteLine(Guid id)
         {
-            Context.Remove(new BudgetLine(id));
+            var entity = Context.ChangeTracker.Entries<BudgetLine>().SingleOrDefault(e => e.Entity.Id == id)?.Entity ?? new BudgetLine(id);
+
+            Context.Remove(entity);
         }
 
 

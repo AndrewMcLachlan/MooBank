@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\Common.props" />
+
+  <ItemGroup>
+    <PackageReference Include="Asm.AspNetCore" Version="$(AsmPackageVersion)" />
+    <PackageReference Include="Asm.Cqrs.AspNetCore" Version="$(AsmPackageVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Asm.MooBank\Asm.MooBank.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Domain\Asm.MooBank.Domain.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Security\Asm.MooBank.Security.csproj" />
+  </ItemGroup>
+
+</Project>

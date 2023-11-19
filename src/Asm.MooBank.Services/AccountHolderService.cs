@@ -27,16 +27,16 @@ namespace Asm.MooBank.Services
 
             if (accountHolder != null)
             {
-                return accountHolder;
+                return accountHolder.ToModel();
             }
 
-            accountHolder = await _userDataProvider.GetCurrentUserAsync(cancellationToken);
+            accountHolder = (await _userDataProvider.GetCurrentUserAsync(cancellationToken)).ToDomain();
 
             _accountHolderRepository.Add(accountHolder);
 
             await UnitOfWork.SaveChangesAsync(cancellationToken);
 
-            return accountHolder;
+            return accountHolder.ToModel();
         }
     }
 }

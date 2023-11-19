@@ -18,20 +18,13 @@ public interface IVirtualAccountService
     Task<VirtualAccount> UpdateBalance(Guid accountId, Guid virtualAccountId, decimal balance);
 }
 
-public class VirtualAccountService : ServiceBase, IVirtualAccountService
+public class VirtualAccountService(IUnitOfWork unitOfWork, IVirtualAccountRepository virtualAccountRepository, ITransactionRepository transactionRepository, ISecurity securityRepository) : ServiceBase(unitOfWork), IVirtualAccountService
 {
-    private readonly ISecurity _securityRepository;
-    private readonly IVirtualAccountRepository _virtualAccountRepository;
-    private readonly ITransactionRepository _transactionRepository;
+    private readonly ISecurity _securityRepository = securityRepository;
+    private readonly IVirtualAccountRepository _virtualAccountRepository = virtualAccountRepository;
+    private readonly ITransactionRepository _transactionRepository = transactionRepository;
 
-    public VirtualAccountService(IUnitOfWork unitOfWork, IVirtualAccountRepository virtualAccountRepository, ITransactionRepository transactionRepository, ISecurity securityRepository) : base(unitOfWork)
-    {
-        _virtualAccountRepository = virtualAccountRepository;
-        _transactionRepository = transactionRepository;
-        _securityRepository = securityRepository;
-    }
-
-    public async Task<VirtualAccount> Create(Guid accountId, VirtualAccount account)
+   /* public async Task<VirtualAccount> Create(Guid accountId, VirtualAccount account)
     {
         _securityRepository.AssertAccountPermission(accountId);
 
@@ -55,9 +48,9 @@ public class VirtualAccountService : ServiceBase, IVirtualAccountService
         await UnitOfWork.SaveChangesAsync();
 
         return entity;
-    }
+    }*/
 
-    public async Task Delete(Guid accountId, Guid virtualAccountId)
+    /*public async Task Delete(Guid accountId, Guid virtualAccountId)
     {
         _securityRepository.AssertAccountPermission(accountId);
 
@@ -66,9 +59,9 @@ public class VirtualAccountService : ServiceBase, IVirtualAccountService
         _virtualAccountRepository.Delete(entity);
 
         await UnitOfWork.SaveChangesAsync();
-    }
+    }*/
 
-    public async Task<VirtualAccount> Get(Guid accountId, Guid virtualAccountId) => await GetEntity(accountId, virtualAccountId);
+   // public async Task<VirtualAccount> Get(Guid accountId, Guid virtualAccountId) => await GetEntity(accountId, virtualAccountId);
 
     public async Task<VirtualAccount> Update(Guid accountId, VirtualAccount account)
     {

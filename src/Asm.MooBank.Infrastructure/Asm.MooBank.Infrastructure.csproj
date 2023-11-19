@@ -3,18 +3,16 @@
   <Import Project="..\..\Common.props" />
 
   <ItemGroup>
-    <PackageReference Include="Asm.Domain.Infrastructure" Version="3.1.5" />
-    <PackageReference Include="EfCore.SchemaCompare" Version="7.0.0" />
-    <PackageReference Include="ErikEJ.EntityFrameworkCore.SqlServer.DateOnlyTimeOnly" Version="7.0.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.10" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.10">
+    <PackageReference Include="Asm.Domain.Infrastructure" Version="$(AsmPackageVersion)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(DotNetPackageVersion)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="$(DotNetPackageVersion)">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.10" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.10" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.10" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.10">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="$(DotNetPackageVersion)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="$(DotNetPackageVersion)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="$(DotNetPackageVersion)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="$(DotNetPackageVersion)">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -22,7 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Asm.MooBank\Asm.MooBank.csproj" />
-    <ProjectReference Include="..\Asm.MooBank.Data\Asm.MooBank.Domain.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Domain\Asm.MooBank.Domain.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Security\Asm.MooBank.Security.csproj" />
   </ItemGroup>
 

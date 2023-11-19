@@ -3,6 +3,7 @@ using IInstitutionAccountRepository = Asm.MooBank.Domain.Entities.Account.IInsti
 using Asm.MooBank.Domain.Entities.AccountHolder;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Models;
+using Asm.MooBank.Modules.Account.Models;
 
 namespace Asm.MooBank.Services;
 

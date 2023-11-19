@@ -3,19 +3,15 @@ using Asm.MooBank.Security;
 
 namespace Asm.MooBank.Infrastructure.Repositories
 {
-    public class AccountHolderRepository : RepositoryBase<AccountHolder, Guid>, IAccountHolderRepository
+    public class AccountHolderRepository(MooBankContext dataContext, IUserDataProvider userDataProvider) : RepositoryBase<AccountHolder, Guid>(dataContext), IAccountHolderRepository
     {
-        private readonly IUserDataProvider _userDataProvider;
+        private readonly IUserDataProvider _userDataProvider = userDataProvider;
 
-
-        public AccountHolderRepository(MooBankContext dataContext, IUserDataProvider userDataProvider) : base(dataContext)
-        {
-            _userDataProvider = userDataProvider;
-        }
-
+        [Obsolete("Not used")]
         public Task<AccountHolder?> GetCurrentOrNull(CancellationToken cancellationToken = default) =>
             DataContext.AccountHolders.SingleOrDefaultAsync(a => a.AccountHolderId == _userDataProvider.CurrentUserId, cancellationToken);
 
+        [Obsolete("Not used")]
         public Task<AccountHolder> GetCurrent(CancellationToken cancellationToken = default) =>
             (DataContext.AccountHolders.SingleOrDefaultAsync(a => a.AccountHolderId == _userDataProvider.CurrentUserId, cancellationToken) ?? throw new NotAuthorisedException())!;
 

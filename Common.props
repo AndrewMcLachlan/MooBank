@@ -1,18 +1,20 @@
 ﻿<Project>
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <LangVersion>11</LangVersion>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
     <Authors>Andrew McLachlan</Authors>
     <Company />
     <Copyright>Copyright © Andrew McLachlan 2013. All rights reserved.</Copyright>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <AssemblyVersion>4.0.0.0</AssemblyVersion>
-    <FileVersion>2023.10.0</FileVersion>
-    <Version>2023.10.0</Version>
+    <FileVersion>2023.11.0</FileVersion>
+    <Version>2023.11.0</Version>
     <Product>MooBank</Product>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/AndrewMcLachlan/MooBank</RepositoryUrl>
+    <AsmPackageVersion>3.*-*</AsmPackageVersion>
+    <DotNetPackageVersion>8.*-*</DotNetPackageVersion>
   </PropertyGroup>
 </Project>

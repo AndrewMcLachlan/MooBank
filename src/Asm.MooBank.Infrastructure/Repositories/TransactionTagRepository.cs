@@ -2,12 +2,8 @@
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
-public class TransactionTagRepository : RepositoryDeleteBase<Tag, int>, ITransactionTagRepository
+public class TransactionTagRepository(MooBankContext dataContext, Models.AccountHolder accountHolder) : RepositoryDeleteBase<Tag, int>(dataContext), ITagRepository
 {
-    public TransactionTagRepository(MooBankContext dataContext) : base(dataContext)
-    {
-    }
-
     public void AddSettings(Tag transactionTag)
     {
         if (transactionTag.Settings == null)
@@ -19,11 +15,11 @@ public class TransactionTagRepository : RepositoryDeleteBase<Tag, int>, ITransac
 
     public override async Task<IEnumerable<Tag>> GetAll(CancellationToken cancellationToken = default)
     {
-        return await DataSet.Include(t => t.Tags).Where(t => !t.Deleted).ToListAsync(cancellationToken);
+        return await DataSet.Include(t => t.Tags).Where(t => t.FamilyId == accountHolder.FamilyId && !t.Deleted).ToListAsync(cancellationToken);
     }
 
     public async Task<IEnumerable<Tag>> Get(IEnumerable<int> tagIds, CancellationToken cancellationToken = default) =>
-        await DataSet.Where(t => tagIds.Contains(t.Id)).ToListAsync(cancellationToken);
+        await DataSet.Where(t => t.FamilyId == accountHolder.FamilyId && tagIds.Contains(t.Id)).ToListAsync(cancellationToken);
 
 
     public async Task<Tag> Get(int id, bool includeSubTags = false, CancellationToken cancellationToken = default)
@@ -40,5 +36,5 @@ public class TransactionTagRepository : RepositoryDeleteBase<Tag, int>, ITransac
         tag.Deleted = true;
     }
 
-    protected override IQueryable<Tag> GetById(int id) => DataSet.Where(t => t.Id == id);
+    protected override IQueryable<Tag> GetById(int id) => DataSet.Where(t => t.Id == id && t.FamilyId == accountHolder.FamilyId);
 }

@@ -3,16 +3,33 @@
   <Import Project="..\..\Common.props" />
 
   <ItemGroup>
-    <PackageReference Include="Asm" Version="3.1.5" />
-    <PackageReference Include="Asm.Cqrs" Version="3.1.5" />
-    <PackageReference Include="Azure.Identity" Version="1.10.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
+    <Compile Remove="AccountHolderService.cs" />
+    <Compile Remove="AccountService.cs" />
+    <Compile Remove="RuleService.cs" />
+    <Compile Remove="TransactionService.cs" />
+    <Compile Remove="TransactionTagService.cs" />
+    <Compile Remove="VirtualAccountService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="AccountHolderService.cs" />
+    <None Include="AccountService.cs" />
+    <None Include="RuleService.cs" />
+    <None Include="TransactionService.cs" />
+    <None Include="TransactionTagService.cs" />
+    <None Include="VirtualAccountService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Asm" Version="$(AsmPackageVersion)" />
+    <PackageReference Include="Asm.Cqrs" Version="$(AsmPackageVersion)" />
+    <PackageReference Include="Azure.Identity" Version="1.10.4" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="$(DotNetPackageVersion)" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Asm.MooBank\Asm.MooBank.csproj" />
-    <ProjectReference Include="..\Asm.MooBank.Data\Asm.MooBank.Domain.csproj" />
-    <ProjectReference Include="..\Asm.MooBank.Importers\Asm.MooBank.Importers.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Domain\Asm.MooBank.Domain.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Infrastructure\Asm.MooBank.Infrastructure.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Models\Asm.MooBank.Models.csproj" />
 

@@ -2,8 +2,6 @@
 using ITransactionRepository = Asm.MooBank.Domain.Entities.Transactions.ITransactionRepository;
 using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Models;
-using Microsoft.EntityFrameworkCore;
-using IAccountRepository = Asm.MooBank.Domain.Entities.Account.IInstitutionAccountRepository;
 
 namespace Asm.MooBank.Services;
 
@@ -16,21 +14,11 @@ public interface ITransactionService
     void AddTransaction(decimal amount, Guid accountId, bool isRecurring, string? description = null);
 }
 
-public class TransactionService : ServiceBase, ITransactionService
+public class TransactionService(IUnitOfWork unitOfWork, ITransactionRepository transactionRepository, ITagRepository transactionTagRepository, ISecurity securityRepository) : ServiceBase(unitOfWork), ITransactionService
 {
-    private readonly ITransactionRepository _transactionRepository;
-    private readonly ITransactionTagRepository _transactionTagRepository;
-    private readonly ISecurity _security;
-
-
-    public TransactionService(IUnitOfWork unitOfWork, ITransactionRepository transactionRepository, ITransactionTagRepository transactionTagRepository, ISecurity securityRepository) : base(unitOfWork)
-    {
-        _transactionRepository = transactionRepository;
-        _transactionTagRepository = transactionTagRepository;
-        _security = securityRepository;
-    }
-
-
+    private readonly ITransactionRepository _transactionRepository = transactionRepository;
+    private readonly ITagRepository _transactionTagRepository = transactionTagRepository;
+    private readonly ISecurity _security = securityRepository;
 
     public async Task<Transaction> AddTransactionTag(Guid accountId, Guid id, int tagId, CancellationToken cancellationToken = default)
     {
@@ -46,7 +34,7 @@ public class TransactionService : ServiceBase, ITransactionService
 
         await UnitOfWork.SaveChangesAsync(cancellationToken);
 
-        return (Transaction)entity;
+        return entity.ToModel();
     }
 
     public async Task<Transaction> RemoveTransactionTag(Guid accountId, Guid id, int tagId, CancellationToken cancellationToken = default)
@@ -61,7 +49,7 @@ public class TransactionService : ServiceBase, ITransactionService
 
         await UnitOfWork.SaveChangesAsync(cancellationToken);
 
-        return (Transaction)entity;
+        return entity.ToModel();
     }
 
     /*public async Task<IEnumerable<Transaction>> CreateTransactions(IEnumerable<Transaction> transactions)
