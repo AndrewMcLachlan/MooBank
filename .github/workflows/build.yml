@@ -37,10 +37,10 @@ jobs:
         cache-dependency-path: 'src/Asm.MooBank.Web.App/package-lock.json'
         registry-url: "https://npm.pkg.github.com"
     - name: Publish
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.CROSS_REPO_PACKAGE_TOKEN }}
       run: dotnet publish src/Asm.MooBank.Web.Api/Asm.MooBank.Web.Api.csproj --output ${{ github.workspace }}/publish --configuration Release --p:Version=${{ steps.set-version-number.outputs.version }} --p:FileVersion=${{ steps.set-version-number.outputs.version }} --no-restore
     - name: Install App dependencies
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.CROSS_REPO_PACKAGE_TOKEN }}
       run: npm ci --prefix src/Asm.MooBank.Web.App
     - name: Build App
       run: npm run build --prefix src/Asm.MooBank.Web.App
