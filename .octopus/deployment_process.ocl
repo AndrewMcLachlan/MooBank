@@ -1,0 +1,48 @@
+step "deploy" {
+    name = "Deploy"
+    properties = {
+        Octopus.Action.TargetRoles = "MooBank"
+    }
+
+    action {
+        action_type = "Octopus.AzureAppService"
+        properties = {
+            Octopus.Action.Azure.AppSettings = <<-EOT
+                [
+                   {
+                      "name": "Seq:Host",
+                      "value": "#{Seq:Host}",
+                      "slotSetting": false
+                   },
+                   {
+                      "name": "Seq:APIKey",
+                      "value": "#{Seq:APIKey}",
+                      "slotSetting": false
+                   }
+                ]
+                EOT
+            Octopus.Action.Azure.DeploymentType = "Package"
+            Octopus.Action.EnabledFeatures = "Octopus.Features.JsonConfigurationVariables,Octopus.Features.ConfigurationTransforms,Octopus.Features.SubstituteInFiles"
+            Octopus.Action.Package.AutomaticallyRunConfigurationTransformationFiles = "True"
+            Octopus.Action.Package.DownloadOnTentacle = "False"
+            Octopus.Action.Package.FeedId = "octopus-server-built-in"
+            Octopus.Action.Package.JsonConfigurationVariablesTargets = <<-EOT
+                appsettings.json
+                App_Data/**/appsettings.json
+                EOT
+            Octopus.Action.Package.PackageId = "Asm.MooBank.Web"
+            Octopus.Action.RunOnServer = "true"
+            OctopusUseBundledTooling = "False"
+        }
+        worker_pool = "hosted-ubuntu"
+
+        packages {
+            acquisition_location = "Server"
+            feed = "octopus-server-built-in"
+            package_id = "Asm.MooBank.Web"
+            properties = {
+                SelectionMode = "immediate"
+            }
+        }
+    }
+}

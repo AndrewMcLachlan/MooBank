@@ -1,0 +1,20 @@
+variable "ApplicationInsights:InstrumentationKey" {
+    value "3f1721ce-1f32-4c7a-a690-83a2f9a50496" {
+        environment = ["production"]
+    }
+}
+
+variable "ConnectionStrings:MooBank" {
+    value "#{ConnectionString}" {}
+}
+
+variable "Database:Name" {
+    value "MooBank" {
+        environment = ["production"]
+    }
+
+    value "MooBank-Test" {
+        description = ""
+        environment = ["staging"]
+    }
+}
