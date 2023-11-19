@@ -40,7 +40,9 @@ jobs:
       env:
         NODE_AUTH_TOKEN: ${{ secrets.CROSS_REPO_PACKAGE_TOKEN }}
       run: dotnet publish src/Asm.MooBank.Web.Api/Asm.MooBank.Web.Api.csproj --output ${{ github.workspace }}/publish --configuration Release --p:Version=${{ steps.set-version-number.outputs.version }} --p:FileVersion=${{ steps.set-version-number.outputs.version }} --no-restore
-    - name: Publish App
+    - name: Install App dependencies
+      run: npm ci --prefix src/Asm.MooBank.Web.App
+    - name: Build App
       run: npm run build --prefix src/Asm.MooBank.Web.App
     - name: Copy App
       run: cp -r src/Asm.MooBank.Web.App/dist ${{ github.workspace }}/publish/wwwroot
@@ -72,6 +74,8 @@ jobs:
         server: ${{ vars.OCTOPUSURL }}
         release_number: ${{ steps.set-version-number.outputs.version }}
         package_version: ${{ steps.set-version-number.outputs.version }}
+        git_ref: ${{ (github.ref_type == 'tag' && github.event.repository.default_branch ) || (github.head_ref || github.ref) }}
+        git_commit: ${{ github.event.after || github.event.pull_request.head.sha }}
         space: 'Default'
         project: "MooBank"
         progress: false

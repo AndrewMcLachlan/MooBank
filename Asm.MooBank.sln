@@ -32,7 +32,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Config", "Config", "{07F4FBE0-487C-4F4D-AAAC-6E3DC848D55C}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
-		.github\workflows\build.yml = .github\workflows\build.yml
 		Common.props = Common.props
 	EndProjectSection
 EndProject
@@ -59,6 +58,14 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.Transactions", "src\Asm.MooBank.Modules.Transactions\Asm.MooBank.Modules.Transactions.csproj", "{C5167967-0DA8-4133-A89B-1C246C8536C5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.ReferenceData", "src\Asm.MooBank.Modules.ReferenceData\Asm.MooBank.Modules.ReferenceData.csproj", "{2E2085E6-C45F-4EAB-9F39-8DC83CE3B9B2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".octopus", ".octopus", "{35E7F8C4-A21C-442C-BD47-7A8575597CD4}"
+	ProjectSection(SolutionItems) = preProject
+		.octopus\deployment_process.ocl = .octopus\deployment_process.ocl
+		.octopus\deployment_settings.ocl = .octopus\deployment_settings.ocl
+		.octopus\schema_version.ocl = .octopus\schema_version.ocl
+		.octopus\variables.ocl = .octopus\variables.ocl
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
