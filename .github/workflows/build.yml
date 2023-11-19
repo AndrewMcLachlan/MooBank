@@ -40,6 +40,10 @@ jobs:
       env:
         NODE_AUTH_TOKEN: ${{ secrets.CROSS_REPO_PACKAGE_TOKEN }}
       run: dotnet publish src/Asm.MooBank.Web.Api/Asm.MooBank.Web.Api.csproj --output ${{ github.workspace }}/publish --configuration Release --p:Version=${{ steps.set-version-number.outputs.version }} --p:FileVersion=${{ steps.set-version-number.outputs.version }} --no-restore
+    - name: Publish App
+      run: npm run build --prefix src/Asm.MooBank.Web.App
+    - name: Copy App
+      run: cp -r src/Asm.MooBank.Web.App/dist ${{ github.workspace }}/publish/wwwroot
     - name: Publish WebJob
       run: 'dotnet publish src/Asm.MooBank.Web.Jobs/Asm.MooBank.Web.Jobs.csproj --runtime win-x64 --no-self-contained --output ${{ github.workspace }}/publish/App_Data/jobs/triggered/Recurring --configuration Release --p:Version=${{ steps.set-version-number.outputs.version }} --p:FileVersion=${{ steps.set-version-number.outputs.version }} --no-restore'
     - name: Install Octopus CLI
