@@ -7,22 +7,15 @@ namespace Asm.MooBank.Modules.Account.Commands.InstitutionAccount;
 
 public record Update(Models.Account.InstitutionAccount Account) : ICommand<Models.Account.InstitutionAccount>;
 
-internal class UpdateHandler : CommandHandlerBase, ICommandHandler<Update, Models.Account.InstitutionAccount>
+internal class UpdateHandler(IUnitOfWork unitOfWork, IInstitutionAccountRepository accountRepository, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Update, Models.Account.InstitutionAccount>
 {
-    private readonly IInstitutionAccountRepository _accountRepository;
-
-    public UpdateHandler(IUnitOfWork unitOfWork, IInstitutionAccountRepository accountRepository, AccountHolder accountHolder, ISecurity security) : base(unitOfWork, accountHolder, security)
-    {
-        _accountRepository = accountRepository;
-    }
-
     public async ValueTask<Models.Account.InstitutionAccount> Handle(Update request, CancellationToken cancellationToken)
     {
         request.Deconstruct(out var account);
 
         Security.AssertAccountPermission(account.Id);
 
-        var entity = await _accountRepository.Get(account.Id, cancellationToken);
+        var entity = await accountRepository.Get(account.Id, cancellationToken);
 
         entity.Name = account.Name;
         entity.Description = account.Description;
@@ -36,7 +29,7 @@ internal class UpdateHandler : CommandHandlerBase, ICommandHandler<Update, Model
             entity.AccountController = account.Controller;
             if (account.Controller == AccountController.Import)
             {
-                var importerType = await _accountRepository.GetImporterType(account.ImporterTypeId ?? throw new InvalidOperationException("Import account without importer type"), cancellationToken);
+                var importerType = await accountRepository.GetImporterType(account.ImporterTypeId ?? throw new InvalidOperationException("Import account without importer type"), cancellationToken);
 
                 if (importerType == null) throw new NotFoundException("Unknown importer type ID " + account.ImporterTypeId);
 
@@ -48,7 +41,7 @@ internal class UpdateHandler : CommandHandlerBase, ICommandHandler<Update, Model
             }
             else if (entity.ImportAccount != null)
             {
-                _accountRepository.RemoveImportAccount(entity.ImportAccount);
+                accountRepository.RemoveImportAccount(entity.ImportAccount);
             }
         }
 

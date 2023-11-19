@@ -17,7 +17,7 @@ internal class AddTagHandler(IAccountRepository accountRepository, ITagRepositor
     {
         Security.AssertAccountPermission(request.AccountId);
 
-        var account = await _accountRepository.Get(request.AccountId, cancellationToken) ?? throw new NotFoundException($"Account with ID {request.AccountId} not found");
+        var account = await _accountRepository.Get(request.AccountId, cancellationToken);
 
         var rule = account.Rules.Where(r => r.Id == request.RuleId).SingleOrDefault() ?? throw new NotFoundException($"Rule with ID {request.RuleId} not found");
 

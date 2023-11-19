@@ -27,7 +27,7 @@ public static class VirtualAccountExtensions
     {
         return new Domain.Entities.Account.VirtualAccount
         {
-            AccountId = account.Id == Guid.Empty ? Guid.NewGuid() : account.Id,
+            AccountId = account.Id,
             InstitutionAccountId = parentAccountId,
             Name = account.Name,
             Description = account.Description,

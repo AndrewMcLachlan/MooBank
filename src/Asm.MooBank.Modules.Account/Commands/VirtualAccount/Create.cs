@@ -15,12 +15,7 @@ internal class CreateHandler(Domain.Entities.Account.IAccountRepository accountR
     public async ValueTask<Models.Account.VirtualAccount> Handle(Create request, CancellationToken cancellationToken)
     {
         _security.AssertAccountPermission(request.AccountId);
-        var account = await _accountRepository.Get(request.AccountId, cancellationToken);
-
-        if (account is not Domain.Entities.Account.InstitutionAccount institutionAccount)
-        {
-            throw new InvalidOperationException("Cannot create virtual account on non-institution account.");
-        }
+        var account = await _accountRepository.GetInstitutionAccount(request.AccountId, cancellationToken);
 
         var entity = request.VirtualAccount.ToEntity(request.AccountId);
 
@@ -38,7 +33,7 @@ internal class CreateHandler(Domain.Entities.Account.IAccountRepository accountR
             });
         }
 
-        institutionAccount.VirtualAccounts.Add(entity);
+        account.VirtualAccounts.Add(entity);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

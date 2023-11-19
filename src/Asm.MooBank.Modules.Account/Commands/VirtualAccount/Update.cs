@@ -1,11 +1,28 @@
-﻿using Asm.MooBank.Commands;
+﻿using System.Text.Json.Serialization;
+using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Json;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using IAccountRepository = Asm.MooBank.Domain.Entities.Account.IAccountRepository;
 
 namespace Asm.MooBank.Modules.Account.Commands.VirtualAccount;
 
-public record Update(Guid AccountId, Guid VirtualAccountId, string Name, string Description, decimal Balance) : ICommand<Models.Account.VirtualAccount>;
+public record Update(Guid AccountId, Guid VirtualAccountId, string Name, string Description, decimal CurrentBalance) : ICommand<Models.Account.VirtualAccount>
+{
+    public static async ValueTask<Update?> BindAsync(HttpContext httpContext)
+    {
+        var options = httpContext.RequestServices.GetRequiredService<IOptions<JsonOptions>>();
+
+        if (!Guid.TryParse(httpContext.Request.RouteValues["accountId"] as string, out Guid accountId)) throw new BadHttpRequestException("invalid account ID");
+        if (!Guid.TryParse(httpContext.Request.RouteValues["virtualAccountId"] as string, out Guid virtualAccountId)) throw new BadHttpRequestException("invalid account ID");
+
+        var update = await System.Text.Json.JsonSerializer.DeserializeAsync<Update>(httpContext.Request.Body, options.Value.SerializerOptions, cancellationToken: httpContext.RequestAborted);
+        return update! with { AccountId = accountId, VirtualAccountId = virtualAccountId };
+    }
+}
 
 internal class UpdateHandler(IAccountRepository accountRepository, ITransactionRepository transactionRepository, AccountHolder accountHolder, ISecurity security, IUnitOfWork unitOfWork) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Update, Models.Account.VirtualAccount>
 {
@@ -16,19 +33,12 @@ internal class UpdateHandler(IAccountRepository accountRepository, ITransactionR
     {
         Security.AssertAccountPermission(request.AccountId);
 
-        var account = await _accountRepository.Get(request.AccountId, cancellationToken);
+        var account = await _accountRepository.GetVirtualAccount(request.AccountId, request.VirtualAccountId, cancellationToken);
 
-        if (account is not Domain.Entities.Account.InstitutionAccount institutionAccount)
-        {
-            throw new InvalidOperationException("Cannot update virtual account on non-institution account.");
-        }
+        account.Name = request.Name;
+        account.Description = request.Description;
 
-        var entity = institutionAccount.VirtualAccounts.SingleOrDefault(va => va.AccountId == request.VirtualAccountId) ?? throw new NotFoundException();
-
-        entity.Name = request.Name;
-        entity.Description = request.Description;
-
-        var amount = entity.Balance - request.Balance;
+        var amount = account.Balance - request.CurrentBalance;
 
         //TODO: Should be done via domain event
         _transactionRepository.Add(new Domain.Entities.Transactions.Transaction
@@ -41,10 +51,10 @@ internal class UpdateHandler(IAccountRepository accountRepository, ITransactionR
             TransactionType = amount > 0 ? TransactionType.BalanceAdjustmentCredit : TransactionType.BalanceAdjustmentDebit,
         });
 
-        entity.Balance = request.Balance;
+        account.Balance = request.CurrentBalance;
 
 
         await UnitOfWork.SaveChangesAsync(cancellationToken);
-        return entity;
+        return account;
     }
 }

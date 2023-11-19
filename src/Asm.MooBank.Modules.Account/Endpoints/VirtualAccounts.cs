@@ -22,10 +22,10 @@ internal class VirtualAccounts : EndpointGroupBase
         builder.MapQuery<Get, VirtualAccount>("/{virtualAccountId}")
             .WithNames("Get Virtual Account");
 
-        builder.MapPostCreate<Create, VirtualAccount>("/", "Get Virtual Account", a => new { a.Id })
+        builder.MapPostCreate<Create, VirtualAccount>("/", "Get Virtual Account".ToMachine(), a => new { VirtualAccountId = a.Id }, CommandBinding.Parameters)
             .WithNames("Create Virtual Account");
 
-        builder.MapPatchCommand<Update, VirtualAccount>("/{virtualAccountId}")
+        builder.MapPatchCommand<Update, VirtualAccount>("/{virtualAccountId}", CommandBinding.None)
             .WithNames("Update Virtual Account");
 
         builder.MapPatchCommand<UpdateBalance, VirtualAccount>("/{virtualAccountId}/balance")
