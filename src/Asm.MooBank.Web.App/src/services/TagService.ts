@@ -1,12 +1,12 @@
 import * as Models from "../models";
 import { useApiGet, useApiDelete, useApiDatalessPut, useHttpClient } from "@andrewmclachlan/mooapp";
-import { useMutation, useQueryClient } from "react-query";
+import { UseMutationResult, UseQueryResult, useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface TagVariables {
     name: string;
 }
 
-export const useTags = () => useApiGet<Models.Tag[]>(["tags"], "api/tags");
+export const useTags = (): UseQueryResult<Models.Tag[]> => useApiGet<Models.Tag[]>(["tags"], "api/tags");
 
 export const useTagsHierarchy = () => useApiGet<Models.TagHierarchy>(["tags-hierarchy"], "api/tags/hierarchy");
 
@@ -17,13 +17,14 @@ export const useCreateTag = () => {
     const queryClient = useQueryClient();
     const httpClient = useHttpClient();
 
-    return useMutation<Models.Tag, null, TagVariables | Models.Tag>(async (variables) => {
+    return useMutation<Models.Tag, null, TagVariables | Models.Tag>({
+        mutationFn: async (variables) => {
 
-        const name = (variables as Models.Tag).name?.trim() ?? (variables.name).trim();
-        const tags = (variables as Models.Tag).tags?.map(t => t.id) ?? [];
+            const name = (variables as Models.Tag).name?.trim() ?? (variables.name).trim();
+            const tags = (variables as Models.Tag).tags?.map(t => t.id) ?? [];
 
-        return (await httpClient.put<Models.Tag>(`api/tags/${encodeURIComponent(name)}`, tags)).data;
-    }, {
+            return (await httpClient.put<Models.Tag>(`api/tags/${encodeURIComponent(name)}`, tags)).data;
+        },
         onSuccess: (data: Models.Tag) => {
             const allTags = queryClient.getQueryData<Models.Tag[]>(["tags"]);
             if (!allTags) return;
@@ -33,32 +34,34 @@ export const useCreateTag = () => {
     });
 }
 
-export const useUpdateTag = () => {
+export const useUpdateTag = (): UseMutationResult<Models.Tag, null, Models.Tag, unknown> => {
 
     const queryClient = useQueryClient();
     const httpClient = useHttpClient();
 
-    return useMutation<Models.Tag, null, Models.Tag>(async (variables) => {
+    return useMutation<Models.Tag, null, Models.Tag>(
+        {
+            mutationFn: async (variables) => {
 
-        const name = variables.name?.trim() ?? (variables.name).trim();
-        const id = variables.id;
+                const name = variables.name?.trim() ?? (variables.name).trim();
+                const id = variables.id;
 
-        return (await httpClient.patch<Models.Tag>(`api/tags/${id}`, { name, excludeFromReporting: variables.settings?.excludeFromReporting, applySmoothing: variables.settings?.applySmoothing })).data;
-    }, {
-        onSuccess: (data: Models.Tag) => {
-            queryClient.setQueryData<Models.Tag>(["tags", { id: data.id }], data);
-            const allTags = queryClient.getQueryData<Models.Tag[]>(["tags"]);
-            if (!allTags) return;
-            
-            var tagIndex = allTags.findIndex(r => r.id === data.id);
+                return (await httpClient.patch<Models.Tag>(`api/tags/${id}`, { name, excludeFromReporting: variables.settings?.excludeFromReporting, applySmoothing: variables.settings?.applySmoothing })).data;
+            },
+            onSuccess: (data: Models.Tag) => {
+                queryClient.setQueryData<Models.Tag>(["tags", { id: data.id }], data);
+                const allTags = queryClient.getQueryData<Models.Tag[]>(["tags"]);
+                if (!allTags) return;
 
-            allTags.splice(tagIndex, 1, data);
+                var tagIndex = allTags.findIndex(r => r.id === data.id);
 
-            const newTags = allTags.sort((t1, t2) => t1.name.localeCompare(t2.name));
-            queryClient.setQueryData<Models.Tag[]>(["tags"], newTags);
-            queryClient.invalidateQueries(["tags"]);
-        }
-    });
+                allTags.splice(tagIndex, 1, data);
+
+                const newTags = allTags.sort((t1, t2) => t1.name.localeCompare(t2.name));
+                queryClient.setQueryData<Models.Tag[]>(["tags"], newTags);
+                queryClient.invalidateQueries({ queryKey: ["tags"] });
+            }
+        });
 }
 
 export const useDeleteTag = () => {
@@ -85,7 +88,7 @@ export const useAddSubTag = () => {
             queryClient.setQueryData<Models.Tag>(["tags", { id: data.id }], data);
             const allTags = queryClient.getQueryData<Models.Tag[]>(["tags"]);
             if (!allTags) return;
-            
+
             var tagIndex = allTags.findIndex(r => r.id === data.id);
 
             allTags.splice(tagIndex, 1, data);
@@ -108,7 +111,7 @@ export const useRemoveSubTag = () => {
             queryClient.setQueryData<Models.Tag>(["tags", { id: data.id }], data);
             const allTags = queryClient.getQueryData<Models.Tag[]>(["tags"]);
             if (!allTags) return;
-            
+
             var tagIndex = allTags.findIndex(r => r.id === data.id);
 
             allTags.splice(tagIndex, 1, data);

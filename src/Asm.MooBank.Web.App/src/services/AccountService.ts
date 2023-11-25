@@ -1,13 +1,13 @@
-import { useQueryClient } from "react-query";
+import { useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { Account, accountId, AccountList, ImportAccount } from "../models";
 import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
 
 export const accountsKey = "accounts";
 export const accountListKey = "account-list";
 
-export const useAccounts = () => useApiGet<Account[]>(accountsKey, `api/accounts`);
+export const useAccounts = (): UseQueryResult<Account[]> => useApiGet<Account[]>([accountsKey], `api/accounts`);
 
-export const useFormattedAccounts = () => useApiGet<AccountList>(accountListKey, "api/accounts/position");
+export const useFormattedAccounts = () => useApiGet<AccountList>([accountListKey], "api/accounts/position");
 
 export const useAccount = (accountId: string) => useApiGet<Account>(["account", { accountId }], `api/accounts/${accountId}`);
 
@@ -17,7 +17,7 @@ export const useCreateAccount = () => {
 
     const { mutate, ...rest} = useApiPost<Account, null, { account: Account, importAccount?: ImportAccount }>(() => `api/accounts`, {
         onSettled: () => {
-            queryClient.invalidateQueries(accountsKey);
+            queryClient.invalidateQueries({ queryKey: [accountsKey]});
         }
     });
 
@@ -33,8 +33,8 @@ export const useUpdateAccount = () => {
 
     const { mutate, ...rest} = useApiPatch<Account, accountId, Account>((accountId) => `api/accounts/${accountId}`, {
         onSettled: (_data,_error,[accountId]) => {
-            queryClient.invalidateQueries(accountsKey);
-            queryClient.invalidateQueries(["account", { accountId }]);
+            queryClient.invalidateQueries({ queryKey: [accountsKey]});
+            queryClient.invalidateQueries({ queryKey: ["account", { accountId }]});
         }
     });
 
@@ -50,7 +50,7 @@ export const useUpdateBalance = () => {
 
     const { mutate, ...rest} = useApiPatch<Account, accountId, { currentBalance: number, availableBalance: number }>((accountId) => `api/accounts/${accountId}/balance`, {
         onSettled: () => {
-            queryClient.invalidateQueries(accountsKey);
+            queryClient.invalidateQueries({ queryKey: [accountsKey]});
         },
     });
 

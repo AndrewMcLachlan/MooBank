@@ -1,4 +1,4 @@
-import { useQueryClient } from "react-query";
+import { useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { Account, accountId,  AccountList,  VirtualAccount } from "../models";
 import { accountListKey, accountsKey } from "./AccountService";
 import { emptyGuid, useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
@@ -8,7 +8,7 @@ interface VirtualAccountVariables {
     virtualAccountId: accountId;
 }
 
-export const useVirtualAccounts = (accountId: accountId) => useApiGet<VirtualAccount[]>(["virtualaccount", accountId], `api/accounts/${accountId}/virtual`);
+export const useVirtualAccounts = (accountId: accountId): UseQueryResult<VirtualAccount[]> => useApiGet<VirtualAccount[]>(["virtualaccount", accountId], `api/accounts/${accountId}/virtual`);
 
 export const useVirtualAccount = (accountId: accountId, virtualAccountId: accountId) => useApiGet<Account>(["virtualaccount", { accountId, virtualAccountId }], `api/accounts/${accountId}/virtual/${virtualAccountId}`);
 
@@ -18,7 +18,7 @@ export const useCreateVirtualAccount = () => {
 
     const { mutate, ...rest } = useApiPost<VirtualAccount, accountId, VirtualAccount>((accountId) => `api/accounts/${accountId}/virtual`, {
         onSuccess: () => {
-            queryClient.invalidateQueries(accountsKey);
+            queryClient.invalidateQueries({ queryKey: [accountsKey]});
         }
     });
 
@@ -34,8 +34,8 @@ export const useUpdateVirtualAccount = () => {
 
     const { mutate, ...rest } = useApiPatch<Account, VirtualAccountVariables, VirtualAccount>(({ accountId, virtualAccountId }) => `api/accounts/${accountId}/virtual/${virtualAccountId}`, {
         onSettled: (_data,_error, [{accountId, virtualAccountId}]) => {
-            queryClient.invalidateQueries(accountsKey);
-            queryClient.invalidateQueries(["virtualaccount", { accountId, virtualAccountId }]);
+            queryClient.invalidateQueries({ queryKey: [accountsKey]});
+            queryClient.invalidateQueries({ queryKey: ["virtualaccount", { accountId, virtualAccountId }] });
         }
     });
 
@@ -53,8 +53,8 @@ export const useUpdateVirtualAccountBalance = () => {
 
         onMutate: async ([{ accountId, virtualAccountId }, { balance }]) => {
 
-            await queryClient.cancelQueries(accountsKey);
-            await queryClient.cancelQueries(accountListKey);
+            await queryClient.cancelQueries({ queryKey: [accountsKey]});
+            await queryClient.cancelQueries({ queryKey: [accountListKey]});
 
             const accounts = queryClient.getQueryData<AccountList>([accountListKey]);
             
@@ -76,7 +76,7 @@ export const useUpdateVirtualAccountBalance = () => {
             //accounts.accounts = [];
             accounts.position = 0;
             
-            queryClient.setQueryData<AccountList>(accountListKey, { ...accounts });
+            queryClient.setQueryData<AccountList>([accountListKey], { ...accounts });
 
             return accounts;
         },
@@ -86,8 +86,8 @@ export const useUpdateVirtualAccountBalance = () => {
         },
 
         onSettled: () => {
-            queryClient.invalidateQueries(accountsKey);
-            queryClient.invalidateQueries(accountListKey);
+            queryClient.invalidateQueries({ queryKey: [accountsKey]});
+            queryClient.invalidateQueries({ queryKey: [accountListKey]});
         },
     });
 

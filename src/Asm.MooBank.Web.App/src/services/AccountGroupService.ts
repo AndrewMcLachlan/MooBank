@@ -1,10 +1,10 @@
-import { useQueryClient } from "react-query";
+import { UseQueryResult, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AccountGroup } from "../models";
 import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
 
 export const accountGroupsKey = "account-groups";
 
-export const useAccountGroups = () => useApiGet<AccountGroup[]>(accountGroupsKey, "api/account-groups");
+export const useAccountGroups = (): UseQueryResult<AccountGroup[]> => useApiGet<AccountGroup[]>([accountGroupsKey], "api/account-groups");
 
 export const useAccountGroup = (id: string) => useApiGet<AccountGroup>([accountGroupsKey, id], `api/account-groups/${id}`);
 
@@ -14,7 +14,7 @@ export const useCreateAccountGroup = () => {
 
     const { mutate, ...rest} = useApiPost<AccountGroup, null, AccountGroup>(() => "api/account-groups", {
         onSettled: () => {
-            queryClient.invalidateQueries(accountGroupsKey);
+            queryClient.invalidateQueries({ queryKey: [accountGroupsKey]});
         }
     });
 
@@ -33,7 +33,7 @@ export const useUpdateAccountGroup = () => {
 
     const { mutate, ...rest} = useApiPatch<AccountGroup, string, AccountGroup>((id) => `api/account-groups/${id}`, {
         onSettled: () => {
-            queryClient.invalidateQueries(accountGroupsKey);
+            queryClient.invalidateQueries({ queryKey: [accountGroupsKey]});
         }
     });
 

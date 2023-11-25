@@ -1,4 +1,4 @@
-import { useQueryClient } from "react-query";
+import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 
 import * as Models from "../models";
@@ -19,7 +19,7 @@ interface TransactionTagVariables extends TransactionVariables {
      tag: Tag,
 }
 
-export const useTransactions = (accountId: string, filter: TransactionsFilter, pageSize: number, pageNumber: number, sortField: string, sortDirection: SortDirection) => {
+export const useTransactions = (accountId: string, filter: TransactionsFilter, pageSize: number, pageNumber: number, sortField: string, sortDirection: SortDirection): UseQueryResult<Models.PagedResult<Models.Transaction>> => {
 
     const sortString = sortField && sortField !== null && sortField !== "" ? `sortField=${sortField}&sortDirection=${sortDirection}` : "";
     let filterString = filter.description ? `&filter=${filter.description}` : "";
@@ -47,7 +47,7 @@ export const useInvalidateSearch = (transactionId: string) => {
 
     const queryClient = useQueryClient();
 
-    return () => queryClient.invalidateQueries([transactionKey, transactionId]);
+    return () => queryClient.invalidateQueries({ queryKey: [transactionKey, transactionId]});
 }
 
 export const useUpdateTransaction = () => {
@@ -72,7 +72,7 @@ export const useUpdateTransaction = () => {
             queryClient.setQueryData<Models.PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection], transactions);
         },
         onError: (_error, [variables, _data]) => {
-            queryClient.invalidateQueries([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection]);
+            queryClient.invalidateQueries({ queryKey: [transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection]});
         }
     });
 }

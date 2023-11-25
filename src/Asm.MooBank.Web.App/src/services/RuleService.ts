@@ -1,6 +1,6 @@
 import * as Models from "../models";
 import { useApiGet, useApiPost, useApiDelete, useApiDatalessPut, useApiDatalessPost, useApiPatch } from "@andrewmclachlan/mooapp";
-import {  useQueryClient } from "react-query";
+import {  UseQueryResult, useQueryClient } from "@tanstack/react-query";
 import { Tag } from "../models";
 
 const rulesKey = "rules";
@@ -9,7 +9,7 @@ interface RuleVariables {
     accountId: string, ruleId: number, tag: Tag,
 }
 
-export const useRules = (accountId: string) => useApiGet<Models.Rule[]>([rulesKey, accountId], `api/accounts/${accountId}/rules`);
+export const useRules = (accountId: string): UseQueryResult<Models.Rule[]> => useApiGet<Models.Rule[]>([rulesKey, accountId], `api/accounts/${accountId}/rules`);
 
 export const useRunRules = () => useApiDatalessPost<null, { accountId: string }>((variables) => `api/accounts/${variables.accountId}/rules/run`);
 
@@ -63,7 +63,7 @@ export const useCreateRule = () => {
             queryClient.setQueryData<Models.Rule[]>([rulesKey, variables.accountId], allRules);
         },
         onError: (_error, [variables, _data]) => {
-            queryClient.invalidateQueries([rulesKey, variables.accountId]);
+            queryClient.invalidateQueries({ queryKey: [rulesKey, variables.accountId]});
         }
     });
 }
@@ -89,7 +89,7 @@ export const useUpdateRule = () => {
             queryClient.setQueryData<Models.Rule[]>([rulesKey, variables.accountId], allRules);
         },
         onError: (_error, [variables, _data]) => {
-            queryClient.invalidateQueries([rulesKey, variables.accountId]);
+            queryClient.invalidateQueries({ queryKey: [[rulesKey, variables.accountId]]});
         }
     });
 }

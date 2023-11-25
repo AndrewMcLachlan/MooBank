@@ -7,7 +7,6 @@ import { Link, Route, Routes } from "react-router-dom";
 import * as Pages from "./pages";
 import { ErrorBoundary, Layout } from "@andrewmclachlan/mooapp";
 import { useIsAuthenticated } from "@azure/msal-react";
-import { Cog } from "./assets";
 import { useHasRole } from "hooks";
 
 const App: React.FC = () => {
@@ -19,7 +18,7 @@ const App: React.FC = () => {
     if (!isAuthenticated) return null;
 
     const menu = hasRole("Admin") ?
-        [(<Link to="/settings/families"><Cog /></Link>)] :
+        [(<Link to="/settings/families"><Icons.Cog /></Link>)] :
         [];
 
     return (

@@ -1,4 +1,4 @@
-import { useQueryClient } from "react-query";
+import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
 import { Budget, BudgetLine, BudgetReportByMonth } from "../models";
 import { useApiDelete, useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
 
@@ -7,9 +7,9 @@ interface BudgetVariables {
     lineId?: string,
 }
 
-export const budgetKey = "budget";
+export const budgetKey = ["budget"];
 
-export const useBudgetYears = () => useApiGet<number[]>([budgetKey], `api/budget`);
+export const useBudgetYears = (): UseQueryResult<number[]> => useApiGet<number[]>([budgetKey], `api/budget`);
 
 export const useBudget = (year: number) => useApiGet<Budget>([budgetKey, year], `api/budget/${year}`);
 
@@ -19,7 +19,7 @@ export const useCreateBudgetLine = () => {
 
     const { mutate, ...rest } = useApiPost<BudgetLine, BudgetVariables, BudgetLine>((variables) => `api/budget/${variables.year}/lines`, {
         onSettled: () => {
-            queryClient.invalidateQueries(budgetKey);
+            queryClient.invalidateQueries({ queryKey: [budgetKey]});
         }
     });
 
@@ -36,7 +36,7 @@ export const useUpdateBudgetLine = () => {
 
     const { mutate, ...rest } = useApiPatch<BudgetLine, BudgetVariables, BudgetLine>((variables) => `api/budget/${variables.year}/lines/${variables.lineId}`, {
         onSettled: () => {
-            queryClient.invalidateQueries(budgetKey);
+            queryClient.invalidateQueries({ queryKey: [budgetKey]});
         }
     });
 
