@@ -48,34 +48,15 @@ jobs:
       run: cp -r src/Asm.MooBank.Web.App/dist ${{ github.workspace }}/publish/wwwroot
     - name: Publish WebJob
       run: 'dotnet publish src/Asm.MooBank.Web.Jobs/Asm.MooBank.Web.Jobs.csproj --runtime win-x64 --no-self-contained --output ${{ github.workspace }}/publish/App_Data/jobs/triggered/Recurring --configuration Release --p:Version=${{ steps.set-version-number.outputs.version }} --p:FileVersion=${{ steps.set-version-number.outputs.version }} --no-restore'
-    - name: Install Octopus CLI
-      uses: OctopusDeploy/install-octopus-cli-action@v3
-      with:
-        version: latest
-    - name: Create artifacts folder
-      run: mkdir ${{ github.workspace }}/artifacts
-    - name: Package
-      env:
-        OCTOPUS_URL: ${{ vars.OCTOPUSURL }}
-        OCTOPUS_API_KEY: ${{ secrets.OCTOPUSAPIKEY }}
-        OCTOPUS_SPACE: Default
-      run: octopus package zip create --id Asm.MooBank.Web --version ${{ steps.set-version-number.outputs.version }} --base-path ${{ github.workspace }}/publish --out-folder ${{ github.workspace }}/artifacts
-    - name: Push packages
-      uses: OctopusDeploy/push-package-action@v3
-      with:
-        api_key: ${{ secrets.OCTOPUSAPIKEY }}
-        server: ${{ vars.OCTOPUSURL }}
-        packages: " ${{ github.workspace }}/artifacts/Asm.MooBank.Web.${{ steps.set-version-number.outputs.version }}.zip"
-        space: 'Default'
-    - name: Create release
-      uses: OctopusDeploy/create-release-action@v3
-      with:
-        api_key: ${{ secrets.OCTOPUSAPIKEY }}
-        server: ${{ vars.OCTOPUSURL }}
-        release_number: ${{ steps.set-version-number.outputs.version }}
-        package_version: ${{ steps.set-version-number.outputs.version }}
-        git_ref: ${{ (github.ref_type == 'tag' && github.event.repository.default_branch ) || (github.head_ref || github.ref) }}
-        git_commit: ${{ github.event.after || github.event.pull_request.head.sha }}
-        space: 'Default'
-        project: "MooBank"
-        progress: false
+    outputs:
+      version: ${{ steps.set-version-number.outputs.version }}
+
+  deploy:
+    if: (github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy
+        uses: ./.github/workflows/deploy.yml
+        with:
+          version: ${{ needs.build.outputs.version }}
