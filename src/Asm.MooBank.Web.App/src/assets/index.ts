@@ -1,3 +1,4 @@
+/// <reference types="vite-plugin-svgr/client" />
 export {default as Budget } from "./budget.svg?react";
 export {default as Cog } from "./cog.svg?react";
 export {default as Dashboard } from "./dashboard.svg?react";
