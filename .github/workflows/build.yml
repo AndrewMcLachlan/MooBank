@@ -52,7 +52,7 @@ jobs:
       version: ${{ steps.set-version-number.outputs.version }}
 
   deploy:
-    if: (github.ref == 'refs/heads/main')
+    if: (github.ref == 'refs/heads/master')
     runs-on: ubuntu-latest
     needs: build
     steps:
