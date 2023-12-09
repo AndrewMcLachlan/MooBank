@@ -55,5 +55,6 @@ jobs:
     if: (github.ref == 'refs/heads/master')
     needs: build
     uses: ./.github/workflows/deploy.yml
+    secrets: inherit
     with:
       version: ${{ needs.build.outputs.version }}
