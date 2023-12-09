@@ -4,7 +4,7 @@ import format from "date-fns/format";
 
 import { FormGroup  } from "./";
 import { Button, Col, Form, Row } from "react-bootstrap";
-import { Period, allTime, last12Months, last3Months, last6Months, lastMonth, lastYear, previousMonth, thisMonth } from "helpers/dateFns";
+import { Period, allTime, last12Months, last3Months, last6Months, lastMonth, lastYear, previousMonth, thisMonth, thisYear } from "helpers/dateFns";
 import { usePeriod } from "hooks";
 import { useLocalStorage } from "@andrewmclachlan/mooapp";
 
@@ -114,6 +114,7 @@ const options: PeriodOption[] = [
     { value: "3", label: "Last 3 months", ...last3Months },
     { value: "4", label: "Last 6 months", ...last6Months },
     { value: "5", label: "Last 12 months", ...last12Months },
+    { value: "8", label: "This Year", ...thisYear },
     { value: "6", label: "Last year", ...lastYear },
     { value: "7", label: "All time", ...allTime },
 ];
