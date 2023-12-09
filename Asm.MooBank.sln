@@ -67,6 +67,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".octopus", ".octopus", "{35
 		.octopus\variables.ocl = .octopus\variables.ocl
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{EAC5F111-34BB-4633-A274-257074F46E7F}"
+	ProjectSection(SolutionItems) = preProject
+		.github\dependabot.yml = .github\dependabot.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{609F2607-9FFD-4DF1-AB84-5E745FD6395E}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\build.yml = .github\workflows\build.yml
+		.github\workflows\deploy.yml = .github\workflows\deploy.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -170,6 +181,7 @@ Global
 		{33DBFE2A-2EAE-4B04-855B-D5ADEDF38D74} = {38BEA81E-F80F-44DE-A930-9BD5D3A62FFF}
 		{C5167967-0DA8-4133-A89B-1C246C8536C5} = {38BEA81E-F80F-44DE-A930-9BD5D3A62FFF}
 		{2E2085E6-C45F-4EAB-9F39-8DC83CE3B9B2} = {38BEA81E-F80F-44DE-A930-9BD5D3A62FFF}
+		{609F2607-9FFD-4DF1-AB84-5E745FD6395E} = {EAC5F111-34BB-4633-A274-257074F46E7F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0CAD466B-BD01-4883-9CDC-F62C19A2A615}

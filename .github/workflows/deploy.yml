@@ -10,6 +10,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+    - name: Check
+      run: echo ${{ vars.OCTOPUSURL }}
     - name: Install Octopus CLI
       uses: OctopusDeploy/install-octopus-cli-action@v3
       with:
