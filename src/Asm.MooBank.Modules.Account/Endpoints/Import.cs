@@ -1,5 +1,6 @@
 ﻿using Asm.Cqrs.AspNetCore;
 using Asm.MooBank.Modules.Account.Commands.Import;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -21,6 +22,7 @@ internal class Import : EndpointGroupBase
             await commandDispatcher.Dispatch(new Commands.Import.Import(accountId, stream), cancellationToken);
             return Results.NoContent();
         })
+            .WithMetadata(new RequireAntiforgeryTokenAttribute(false))
             .WithNames("Import Transactions");
 
         builder.MapCommand<Reprocess>("/reprocess", StatusCodes.Status204NoContent)
