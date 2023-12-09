@@ -6,6 +6,18 @@ on:
         type: string
         description: 'Version number'
         required: true
+      project:
+        type: string
+        description: 'The name of the Octopus project'
+        required: true
+      package-name:
+        type: string
+        description: 'The name of the package'
+        required: true
+      space:
+        type: string
+        description: 'The Octopus Deploy space'
+        default: Default
     secrets:
       OCTOPUSAPIKEY:
         description: 'Octopus API Key'
@@ -18,21 +30,18 @@ jobs:
       uses: OctopusDeploy/install-octopus-cli-action@v3
       with:
         version: latest
-    - name: Create artifacts folder
-      run: mkdir ${{ github.workspace }}/artifacts
-    - name: Package
-      env:
-        OCTOPUS_URL: ${{ vars.OCTOPUSURL }}
-        OCTOPUS_API_KEY: ${{ secrets.OCTOPUSAPIKEY }}
-        OCTOPUS_SPACE: Default
-      run: octopus package zip create --id Asm.MooBank.Web --version ${{ inputs.version }} --base-path ${{ github.workspace }}/publish --out-folder ${{ github.workspace }}/artifacts
+    - name: Restore cache
+      uses: actions/cache/restore@v3
+      with:
+        path: ${{ github.workspace }}/artifacts/${{ inputs.package-name }}.${{ inputs.version }}.zip
+        key: ${{ runner.os }}-package-${{ inputs.version }}
     - name: Push packages
       uses: OctopusDeploy/push-package-action@v3
       with:
         api_key: ${{ secrets.OCTOPUSAPIKEY }}
         server: ${{ vars.OCTOPUSURL }}
-        packages: " ${{ github.workspace }}/artifacts/Asm.MooBank.Web.${{ inputs.version }}.zip"
-        space: 'Default'
+        packages: " ${{ github.workspace }}/artifacts/${{ inputs.package-name }}.${{ inputs.version }}.zip"
+        space: ${{ inputs.space }}
     - name: Create release
       uses: OctopusDeploy/create-release-action@v3
       with:
@@ -42,6 +51,6 @@ jobs:
         package_version: ${{ inputs.version }}
         git_ref: ${{ (github.ref_type == 'tag' && github.event.repository.default_branch ) || (github.head_ref || github.ref) }}
         git_commit: ${{ github.event.after || github.event.pull_request.head.sha }}
-        space: 'Default'
-        project: "MooBank"
+        space: ${{ inputs.space }}
+        project: ${{ inputs.project }}
         progress: false

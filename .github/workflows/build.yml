@@ -48,6 +48,27 @@ jobs:
       run: cp -r src/Asm.MooBank.Web.App/dist ${{ github.workspace }}/publish/wwwroot
     - name: Publish WebJob
       run: 'dotnet publish src/Asm.MooBank.Web.Jobs/Asm.MooBank.Web.Jobs.csproj --runtime win-x64 --no-self-contained --output ${{ github.workspace }}/publish/App_Data/jobs/triggered/Recurring --configuration Release --p:Version=${{ steps.set-version-number.outputs.version }} --p:FileVersion=${{ steps.set-version-number.outputs.version }} --no-restore'
+    - name: Install Octopus CLI
+      if: (github.ref == 'refs/heads/master')
+      uses: OctopusDeploy/install-octopus-cli-action@v3
+      with:
+        version: latest
+    - name: Create artifacts folder
+      run: mkdir ${{ github.workspace }}/artifacts
+    - name: Package
+      if: (github.ref == 'refs/heads/master')
+      env:
+        OCTOPUS_URL: ${{ vars.OCTOPUSURL }}
+        OCTOPUS_API_KEY: ${{ secrets.OCTOPUSAPIKEY }}
+        OCTOPUS_SPACE: Default
+      run: octopus package zip create --id Asm.MooBank.Web --version ${{ inputs.version }} --base-path ${{ github.workspace }}/publish --out-folder ${{ github.workspace }}/artifacts
+    - name: Cache Package
+      if: (github.ref == 'refs/heads/master')
+      uses: actions/cache@v3
+      with:
+        path: ${{ github.workspace }}/artifacts/Asm.MooBank.Web.${{ inputs.version }}.zip
+        key: ${{ runner.os }}-package-${{ inputs.version }}
+
     outputs:
       version: ${{ steps.set-version-number.outputs.version }}
 
@@ -58,3 +79,5 @@ jobs:
     secrets: inherit
     with:
       version: ${{ needs.build.outputs.version }}
+      project: MooBank
+      package-name: Asm.MooBank.Web
