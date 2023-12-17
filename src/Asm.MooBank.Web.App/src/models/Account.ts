@@ -12,16 +12,19 @@ export interface AccountBase {
     id: accountId;
     name: string;
     description?: string;
-    accountGroupId: string;
     currentBalance: number;
+}
+
+export interface TopLevelAccount {
     shareWithFamily: boolean;
+    accountGroupId: string;
 }
 
 export interface TransactionAccount extends AccountBase {
     lastTransaction?: string;
     calculatedBalance: number;
 }
-export interface Account extends TransactionAccount {
+export interface InstitutionAccount extends TransactionAccount, TopLevelAccount {
     balanceDate: Date;
     accountType: AccountType;
     controller: AccountController;
@@ -32,7 +35,7 @@ export interface Account extends TransactionAccount {
     virtualAccounts: VirtualAccount[];
 }
 
-export const emptyAccount : Account = {
+export const emptyAccount : InstitutionAccount = {
     id: "",
     name: "",
     currentBalance: 0,

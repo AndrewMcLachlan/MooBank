@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Form, Button, InputGroup, Col } from "react-bootstrap";
-import { Account, AccountTypes, AccountControllers, ImportAccount, AccountType, AccountController } from "../../models";
+import { InstitutionAccount, AccountTypes, AccountControllers, ImportAccount, AccountType, AccountController } from "../../models";
 import { toNameValue } from "../../extensions";
 import { useNavigate } from "react-router-dom";
 
@@ -32,7 +32,7 @@ export const CreateAccount: React.FC = () => {
 
         const importAccount: ImportAccount | undefined = accountController === "Import" ? { importerTypeId: importerTypeId } : undefined;
 
-        const account: Account = {
+        const account: InstitutionAccount = {
             id: emptyGuid,
             name: name,
             description: description,

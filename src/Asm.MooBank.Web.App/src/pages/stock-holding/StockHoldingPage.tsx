@@ -1,6 +1,6 @@
 import React, { PropsWithChildren, ReactNode } from "react";
 
-import { Account, StockHolding } from "models";
+import { InstitutionAccount, StockHolding } from "models";
 import { useStockHolding } from "./StockHoldingProvider";
 import { NavItem, NavItemDivider, Page, PageProps } from "@andrewmclachlan/mooapp";
 

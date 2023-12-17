@@ -1,6 +1,6 @@
-import { AccountBase } from "./Account";
+import { AccountBase, TopLevelAccount } from "./Account";
 
-export interface StockHoldingBase extends AccountBase {
+export interface StockHoldingBase extends AccountBase, TopLevelAccount {
     symbol: string;
     quantity: number;
 }

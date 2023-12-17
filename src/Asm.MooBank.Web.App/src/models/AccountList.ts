@@ -1,4 +1,4 @@
-import { Account } from ".";
+import { InstitutionAccount } from ".";
 
 export interface AccountList {
     accountGroups: AccountListGroup[],
@@ -7,6 +7,6 @@ export interface AccountList {
 
 export interface AccountListGroup {
     name: string,
-    accounts: Account[],
+    accounts: InstitutionAccount[],
     position?: number
 }

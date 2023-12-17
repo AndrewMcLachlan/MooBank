@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from "react";
 
-import { Account } from "models";
+import { InstitutionAccount } from "models";
 import { useLocation } from "react-router";
 import { NavItem } from "@andrewmclachlan/mooapp";
 import { AccountPage, useAccount } from "components";
@@ -22,7 +22,7 @@ export const ReportsPage: React.FC<PropsWithChildren<ReportsHeaderProps>> = ({ c
 
 ReportsPage.displayName = "ReportsHeader";
 
-const getMenuItems = (account: Account) => {
+const getMenuItems = (account: InstitutionAccount) => {
 
     if (!account) return [];
 

@@ -1,12 +1,12 @@
 import React, { useContext } from "react";
 
-import { Account, emptyAccount } from "models";
+import { InstitutionAccount, emptyAccount } from "models";
 
 export interface AccountProviderProps {
-    account: Account;
+    account: InstitutionAccount;
 }
 
-export const AccountContext = React.createContext<Account>(emptyAccount);
+export const AccountContext = React.createContext<InstitutionAccount>(emptyAccount);
 export const AccountProvider: React.FC<React.PropsWithChildren<AccountProviderProps>> = ({ account, children }) => {
 
     return (

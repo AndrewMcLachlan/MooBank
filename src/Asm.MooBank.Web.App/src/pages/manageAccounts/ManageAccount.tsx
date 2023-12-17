@@ -26,7 +26,7 @@ export const ManageAccount = () => {
         setAccount(existingAccount ?? Models.emptyAccount);
     }, [existingAccount]);
 
-    const [account, setAccount] = useState<Models.Account>(existingAccount ?? Models.emptyAccount);
+    const [account, setAccount] = useState<Models.InstitutionAccount>(existingAccount ?? Models.emptyAccount);
 
     const updateAccount = useUpdateAccount();
 
@@ -143,5 +143,5 @@ export const ManageAccount = () => {
 }
 
 export interface ManageAccountProps {
-    account: Models.Account;
+    account: Models.InstitutionAccount;
 }

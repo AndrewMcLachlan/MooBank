@@ -1,6 +1,6 @@
 import React, { PropsWithChildren, ReactNode } from "react";
 
-import { Account, AccountController } from "models";
+import { InstitutionAccount, AccountController } from "models";
 import { useAccount } from "./AccountProvider";
 import { NavItem, NavItemDivider, Page, PageProps } from "@andrewmclachlan/mooapp";
 
@@ -25,7 +25,7 @@ AccountPage.defaultProps = {
     breadcrumbs: []
 }
 
-const getMenuItems = (account: Account, navItems: NavItem[]) => {
+const getMenuItems = (account: InstitutionAccount, navItems: NavItem[]) => {
 
     if (!account) return [];
 

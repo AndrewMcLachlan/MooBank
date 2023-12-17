@@ -27,7 +27,7 @@ export const AccountRow: React.FC<AccountRowProps> = (props) => {
 AccountRow.displayName = "AccountRow";
 
 export interface AccountRowProps {
-    account: Models.Account;
+    account: Models.InstitutionAccount;
 }
 
 export const useAccountRowCommonState = (props: AccountRowProps) => {
