@@ -24,8 +24,6 @@
 
   <ItemGroup>
     <PackageReference Include="Asm.AspNetCore" Version="$(AsmPackageVersion)" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="$(DotNetPackageVersion)" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="$(DotNetPackageVersion)" />
   </ItemGroup>
 
   <ItemGroup>
