@@ -30,7 +30,8 @@ public static class IServiceCollectionExtensions
         //HACK: To be fixed
         services.AddReadOnlyDbContext<IReadOnlyDbContext, MooBankContext>((services, options) => options.UseSqlServer(configuration.GetConnectionString("MooBank"), options =>
         {
-            options.EnableRetryOnFailure(3);
+            options.UseAzureSqlDefaults();
+            options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
         }));
 
         //HACK: Required for domain events. To be fixed.
