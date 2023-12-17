@@ -29,7 +29,7 @@ internal class UpdateBalanceHandler(IAccountRepository accountRepository, ITrans
         //TODO: Should be done via domain event
         _transactionRepository.Add(new Domain.Entities.Transactions.Transaction
         {
-            Account = account,
+            Account = institutionAccount,
             Amount = amount,
             Description = "Balance adjustment",
             Source = "Web",

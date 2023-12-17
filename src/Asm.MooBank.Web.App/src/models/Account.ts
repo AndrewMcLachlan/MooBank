@@ -1,7 +1,7 @@
 import { VirtualAccount } from "./VirtualAccount";
 
 export const AccountTypes = ["None", "Transaction", "Savings", "Credit", "Mortgage", "Superannuation"] as AccountType[];
-export type AccountType = "None" | "Transaction" | "Savings" | "Credit" | "Mortgage" | "Superannuation";
+export type AccountType = "None" | "Transaction" | "Savings" | "Credit" | "Mortgage" | "Superannuation" | "Stock Holding" | "Virtual";
 
 export const AccountControllers = ["Manual", "Virtual", "Import"] as AccountController[];
 export type AccountController = "Manual" | "Virtual" | "Import";
@@ -12,20 +12,22 @@ export interface AccountBase {
     id: accountId;
     name: string;
     description?: string;
+    accountGroupId: string;
     currentBalance: number;
+    shareWithFamily: boolean;
 }
 
-export interface Account extends AccountBase {
-    calculatedBalance: number;
-    balanceDate: Date;
+export interface TransactionAccount extends AccountBase {
     lastTransaction?: string;
+    calculatedBalance: number;
+}
+export interface Account extends TransactionAccount {
+    balanceDate: Date;
     accountType: AccountType;
-    accountGroupId: string;
     controller: AccountController;
     importerTypeId?: number;
     virtualAccountRemainingBalance?: number;
     isPrimary?: boolean;
-    shareWithFamily: boolean;
     institutionId: number;
     virtualAccounts: VirtualAccount[];
 }

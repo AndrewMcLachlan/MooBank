@@ -2,11 +2,21 @@
 
 namespace Asm.MooBank.Modules.Account.Models.Account;
 
-public partial record InstitutionAccount : Account
+public partial record InstitutionAccount : TransactionAccount
 {
+    private AccountType _accountType;
+
     public bool IncludeInPosition { get; set; }
 
-    public new AccountType AccountType { get; set; }
+    public new AccountType AccountType
+    {
+        get => _accountType;
+        set
+        {
+            _accountType = value;
+            base.AccountType = value.ToString();
+        }
+    }
 
     public AccountController Controller { get; set; }
 
@@ -18,8 +28,6 @@ public partial record InstitutionAccount : Account
 
     public int InstitutionId { get; set; }
 
-    public IEnumerable<VirtualAccount> VirtualAccounts { get; set; } = Enumerable.Empty<VirtualAccount>();
-
     public decimal VirtualAccountRemainingBalance
     {
         get => CurrentBalance - (VirtualAccounts?.Sum(v => v.CurrentBalance) ?? 0);
@@ -30,7 +38,7 @@ public static class InstitutionAccountExtensions
 {
     public static InstitutionAccount ToModel(this Domain.Entities.Account.InstitutionAccount account) => new()
     {
-        Id = account.AccountId,
+        Id = account.Id,
         Name = account.Name,
         Description = account.Description,
         CurrentBalance = account.Balance,
@@ -47,9 +55,8 @@ public static class InstitutionAccountExtensions
                                                  .Union(new[] { new VirtualAccount { Id = Guid.Empty, Name = "Remaining", CurrentBalance = account.Balance - account.VirtualAccounts.Sum(v => v.Balance) } }).ToArray() : [],
     };
 
-    public static Domain.Entities.Account.InstitutionAccount ToEntity(this InstitutionAccount account) => new()
+    public static Domain.Entities.Account.InstitutionAccount ToEntity(this InstitutionAccount account) => new(account.Id == Guid.Empty ? Guid.NewGuid() : account.Id)
     {
-        AccountId = account.Id == Guid.Empty ? Guid.NewGuid() : account.Id,
         Name = account.Name,
         Description = account.Description,
         Balance = account.CurrentBalance,

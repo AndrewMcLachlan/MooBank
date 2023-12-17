@@ -46,7 +46,7 @@ public partial class Transaction
     #region Navigation Properties
     public virtual ICollection<TransactionSplit> Splits { get; set; } = new HashSet<TransactionSplit>();
 
-    public virtual Account.Account Account { get; set; } = null!;
+    public virtual Account.TransactionAccount Account { get; set; } = null!;
 
     public virtual AccountHolder.AccountHolder? AccountHolder { get; set; }
 

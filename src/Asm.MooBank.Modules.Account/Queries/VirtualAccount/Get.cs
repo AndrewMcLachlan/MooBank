@@ -14,11 +14,11 @@ internal class GetHandler(IQueryable<Domain.Entities.Account.Account> accounts, 
     {
         _security.AssertAccountPermission(request.AccountId);
 
-        var account = await _accounts.Include("VirtualAccounts").SingleOrDefaultAsync(a => a.AccountId == request.AccountId, cancellationToken) ?? throw new NotFoundException();
+        var account = await _accounts.Include("VirtualAccounts").SingleOrDefaultAsync(a => a.Id == request.AccountId, cancellationToken) ?? throw new NotFoundException();
 
         if (account is not Domain.Entities.Account.InstitutionAccount institutionAccount) throw new InvalidOperationException("Virtual accounts are only available for institution accounts.");
 
-            var virtualAccount = institutionAccount.VirtualAccounts.SingleOrDefault(va => va.AccountId == request.VirtualAccountId) ?? throw new NotFoundException();
+            var virtualAccount = institutionAccount.VirtualAccounts.SingleOrDefault(va => va.Id == request.VirtualAccountId) ?? throw new NotFoundException();
 
             return (Models.Account.VirtualAccount)virtualAccount;
 

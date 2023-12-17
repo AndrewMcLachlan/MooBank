@@ -80,7 +80,7 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
             entity.HasKey(e => e.Id);
         });
 
-        modelBuilder.Entity<TransactionTagTransactionTag>(entity =>
+        modelBuilder.Entity<TagTag>(entity =>
         {
             entity.HasKey(e => new { e.PrimaryTransactionTagId, e.SecondaryTransactionTagId });
         });

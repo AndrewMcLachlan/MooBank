@@ -11,8 +11,7 @@ export const Account = () => {
 
     const match = useMatch("/accounts/:id");
 
-    if (match)
-    {
+    if (match) {
         return <Navigate to={`/accounts/${id}/transactions`} replace />
     }
 

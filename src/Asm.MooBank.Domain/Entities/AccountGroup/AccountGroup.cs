@@ -6,15 +6,9 @@ namespace Asm.MooBank.Domain.Entities.AccountGroup;
 [AggregateRoot]
 public class AccountGroup : IIdentifiable<Guid>
 {
-
-    public AccountGroup()
-    {
-        Accounts = new HashSet<Account.Account>();
-    }
-
     public Guid Id { get; set; }
 
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
 
     public string? Description { get; set; }
 
@@ -22,9 +16,9 @@ public class AccountGroup : IIdentifiable<Guid>
 
     public bool ShowPosition { get; set; }
 
-    public virtual AccountHolder.AccountHolder Owner { get; set; }
+    public virtual AccountHolder.AccountHolder Owner { get; set; } = null!;
 
     [NotMapped]
-    public virtual ICollection<Account.Account> Accounts { get; set; }
+    public virtual ICollection<Account.Account> Accounts { get; set; } = new HashSet<Account.Account>();
 
 }

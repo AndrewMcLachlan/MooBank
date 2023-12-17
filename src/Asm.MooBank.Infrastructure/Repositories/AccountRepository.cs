@@ -5,7 +5,7 @@ namespace Asm.MooBank.Infrastructure.Repositories;
 public class AccountRepository(MooBankContext dataContext) : RepositoryDeleteBase<Account, Guid>(dataContext), IAccountRepository
 {
     public override Task<Account> Get(Guid id, CancellationToken cancellationToken = default) =>
-        (DataSet.Include(a => a.Rules).ThenInclude(a => a.Tags).Where(a => a.AccountId == id).SingleOrDefaultAsync(cancellationToken) ?? throw new NotFoundException())!;
+        (DataSet.Include(a => a.Rules).ThenInclude(a => a.Tags).Where(a => a.Id == id).SingleOrDefaultAsync(cancellationToken) ?? throw new NotFoundException())!;
 
     public async Task<InstitutionAccount> GetInstitutionAccount(Guid accountId, CancellationToken cancellationToken)
     {
@@ -20,8 +20,8 @@ public class AccountRepository(MooBankContext dataContext) : RepositoryDeleteBas
     public async Task<VirtualAccount> GetVirtualAccount(Guid accountId, Guid institutionAccountId, CancellationToken cancellationToken)
     {
         var account = await GetInstitutionAccount(institutionAccountId, cancellationToken);
-        return account.VirtualAccounts.SingleOrDefault(va => va.AccountId == accountId) ?? throw new NotFoundException();
+        return account.VirtualAccounts.SingleOrDefault(va => va.Id == accountId) ?? throw new NotFoundException();
     }
 
-    protected override IQueryable<Account> GetById(Guid id) => DataSet.Where(a => a.AccountId == id);
+    protected override IQueryable<Account> GetById(Guid id) => DataSet.Where(a => a.Id == id);
 }

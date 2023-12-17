@@ -13,7 +13,7 @@ internal class GetForAccountHandler(IQueryable<Domain.Entities.Account.Instituti
     {
         _security.AssertAccountPermission(request.AccountId);
 
-        var account = await _accounts.Include(a => a.VirtualAccounts).SingleOrDefaultAsync(a => a.AccountId == request.AccountId, cancellationToken);
+        var account = await _accounts.Include(a => a.VirtualAccounts).SingleOrDefaultAsync(a => a.Id == request.AccountId, cancellationToken);
 
         return account != null ? account.VirtualAccounts.Select(va => (Models.Account.VirtualAccount)va) : throw new NotFoundException("Account not found");
     }

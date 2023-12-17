@@ -35,7 +35,7 @@ internal class UpdateHandler(IUnitOfWork unitOfWork, IInstitutionAccountReposito
 
                 entity.ImportAccount = new Domain.Entities.Account.ImportAccount
                 {
-                    AccountId = entity.AccountId,
+                    AccountId = entity.Id,
                     ImporterTypeId = account.ImporterTypeId!.Value,
                 };
             }

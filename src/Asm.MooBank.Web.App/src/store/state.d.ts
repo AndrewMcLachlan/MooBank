@@ -1,8 +1,10 @@
 import { SortDirection } from "@andrewmclachlan/mooapp";
+import { StockTransaction } from "models";
 
 export interface State {
     app: App,
     transactions: Transactions,
+    stockTransactions: Transactions,
 }
 
 export interface App {
@@ -21,7 +23,7 @@ export interface Transactions {
 export interface TransactionsFilter {
     filterTagged?: boolean;
     description?: string;
-    tags: number[] | null;
+    tags?: number[] | null;
     start?: string;
     end?: string;
 }

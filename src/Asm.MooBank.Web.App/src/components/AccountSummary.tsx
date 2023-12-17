@@ -29,9 +29,9 @@ export const AccountSummary: React.FC<AccountSummaryProps> = ({className, ...pro
                 <div>Type</div>
                 <div>{account.accountType ?? "Virtual"}</div>
             </div>
-            <div className="key-value">
+            <div className="key-value" hidden={!account.institutionId}>
                 <div>Institution</div>
-                <div>{institutions?.find(i => i.id === account.institutionId).name}</div>
+                <div>{institutions?.find(i => i.id === account.institutionId)?.name}</div>
             </div>
 
         </Section>

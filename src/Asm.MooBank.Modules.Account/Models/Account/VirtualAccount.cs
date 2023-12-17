@@ -1,6 +1,6 @@
 ﻿namespace Asm.MooBank.Modules.Account.Models.Account;
 
-public partial record VirtualAccount : Account
+public partial record VirtualAccount : TransactionAccount
 {
 }
 
@@ -10,7 +10,7 @@ public partial record VirtualAccount
     {
         return new VirtualAccount
         {
-            Id = account.AccountId,
+            Id = account.Id,
             Name = account.Name,
             Description = account.Description,
             CurrentBalance = account.Balance,
@@ -23,15 +23,11 @@ public partial record VirtualAccount
 
 public static class VirtualAccountExtensions
 {
-    public static Domain.Entities.Account.VirtualAccount ToEntity(this VirtualAccount account, Guid parentAccountId)
+    public static Domain.Entities.Account.VirtualAccount ToEntity(this VirtualAccount account, Guid parentAccountId) => new(account.Id)
     {
-        return new Domain.Entities.Account.VirtualAccount
-        {
-            AccountId = account.Id,
-            InstitutionAccountId = parentAccountId,
-            Name = account.Name,
-            Description = account.Description,
-            Balance = account.CurrentBalance,
-        };
-    }
+        InstitutionAccountId = parentAccountId,
+        Name = account.Name,
+        Description = account.Description,
+        Balance = account.CurrentBalance,
+    };
 }

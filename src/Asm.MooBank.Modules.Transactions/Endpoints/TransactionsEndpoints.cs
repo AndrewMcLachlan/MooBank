@@ -1,7 +1,7 @@
 ﻿using Asm.Cqrs.AspNetCore;
-using Asm.MooBank.Modules.Transactions.Commands;
+using Asm.MooBank.Modules.Transactions.Commands.Transactions;
 using Asm.MooBank.Modules.Transactions.Models;
-using Asm.MooBank.Modules.Transactions.Queries;
+using Asm.MooBank.Modules.Transactions.Queries.Transactions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 
@@ -26,7 +26,7 @@ internal class TransactionsEndpoints : EndpointGroupBase
             .WithNames("Search Transactions");
 
         builder.MapPatchCommand<UpdateTransaction, Transaction>("{id}", CommandBinding.None)
-            .WithNames("Get Transaction");
+            .WithNames("Update Transaction");
 
         builder.MapPutCommand<AddTag, Transaction>("{id}/tag/{tagId}")
             .WithNames("Add Tag");

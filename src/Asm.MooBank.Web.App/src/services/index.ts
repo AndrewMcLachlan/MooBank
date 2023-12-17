@@ -5,6 +5,8 @@ export * from "./ImportService";
 export * from "./InstitutionService";
 export * from "./ReferenceDataService";
 export * from "./ReportsService";
+export * from "./StockHoldingService";
+export * from "./StockTransactionService";
 export * from "./TransactionService";
 export * from "./TagService";
 export * from "./RuleService";

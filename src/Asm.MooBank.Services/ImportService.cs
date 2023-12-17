@@ -22,7 +22,7 @@ public class ImportService(IUnitOfWork unitOfWork, IInstitutionAccountRepository
         var account = await _accountRepository.Get(accountId, cancellationToken);
         IImporter importer = await _importerFactory.Create(accountId, cancellationToken) ?? throw new ArgumentException("Not a valid import account", nameof(accountId));
 
-        var importResult = await importer.Import(account.AccountId, stream, cancellationToken);
+        var importResult = await importer.Import(account.Id, stream, cancellationToken);
 
         await ApplyTransactionRules(account, importResult.Transactions, cancellationToken);
 
@@ -33,7 +33,7 @@ public class ImportService(IUnitOfWork unitOfWork, IInstitutionAccountRepository
 
     private async Task ApplyTransactionRules(Account account, IEnumerable<Transaction> transactions, CancellationToken cancellationToken = default)
     {
-        var rules = await _transactionTagRuleRepository.GetForAccount(account.AccountId, cancellationToken);
+        var rules = await _transactionTagRuleRepository.GetForAccount(account.Id, cancellationToken);
 
         foreach (var transaction in transactions)
         {

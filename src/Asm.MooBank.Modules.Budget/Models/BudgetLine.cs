@@ -2,19 +2,19 @@
 
 public sealed record BudgetLine
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; init; }
 
-    public string Name { get; set; }
+    public required string Name { get; init; }
 
-    public int TagId { get; set; }
+    public int TagId { get; init; }
 
-    public string? Notes { get; set; }
+    public string? Notes { get; init; }
 
-    public decimal Amount { get; set; }
+    public decimal Amount { get; init; }
 
-    public short Month { get; set; }
+    public short Month { get; init; }
 
-    public BudgetLineType Type { get; set; }
+    public BudgetLineType Type { get; init; }
 }
 
 public static class BudgetLineExtensions

@@ -1,0 +1,47 @@
+import { Section, Tooltip, useLocalStorage } from "@andrewmclachlan/mooapp";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useEffect, useState } from "react";
+import { Col, Form } from "react-bootstrap";
+import { useDispatch, } from "react-redux";
+
+import { FormRow as Row } from "components";
+import { PeriodSelector } from "components";
+import { StockTransactionsSlice } from "store";
+
+import { Period } from "helpers/dateFns";
+
+export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
+
+    const params = new URLSearchParams(window.location.search);
+
+    const [filterDescription, setFilterDescription] = useLocalStorage("filter-description", "");
+
+     const [period, setPeriod] = useState<Period>({ startDate: null, endDate: null });
+    const dispatch = useDispatch();
+
+    const [open, setOpen] = useLocalStorage("filter-panel-open", false);
+
+    const clear = () => {
+        setFilterDescription("");
+    }
+
+    useEffect(() => {
+        dispatch(StockTransactionsSlice.actions.setTransactionListFilter({ description: filterDescription, start: period?.startDate?.toISOString(), end: period?.endDate?.toISOString() }));
+    }, [period, filterDescription, window.location.search]);
+
+    return (
+        <Section className="filter-panel" title="Filter" {...props}>
+            <div className="control-panel"><FontAwesomeIcon className="clickable" title="Clear filters" icon="filter-circle-xmark" onClick={clear} size="lg" aria-controls="filter-panel-collapse" /></div>
+            <Row>
+                <Col className="description">
+                    <Form.Label htmlFor="filter-desc">Description</Form.Label><Tooltip id="filter-desc">Search for multiple terms by separating them with a comma</Tooltip>
+                    <Form.Control id="filter-desc" type="search" value={filterDescription} onChange={(e) => setFilterDescription(e.currentTarget.value)} placeholder="Contains..." />
+                </Col>
+            </Row>
+            <PeriodSelector instant onChange={setPeriod} />
+        </Section>
+    );
+}
+
+export interface FilterPanelProps extends React.HTMLAttributes<HTMLElement> {
+}

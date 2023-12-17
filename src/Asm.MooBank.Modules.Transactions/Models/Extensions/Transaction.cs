@@ -24,7 +24,6 @@ public static class TransactionExtensions
             Tags = transaction.Tags.Where(t => !t.Deleted).ToSimpleModel(),
             Splits = transaction.Splits.Select(t => t.ToModel()),
             OffsetFor = transaction.OffsetFor.Select(t => t.ToOffsetForModel()),
-
         };
 
     public static Transaction ToSimpleModel(this Domain.Entities.Transactions.Transaction transaction) =>

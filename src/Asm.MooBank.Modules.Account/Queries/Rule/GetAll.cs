@@ -14,7 +14,7 @@ internal class GetAllHandler(IQueryable<Domain.Entities.Account.Account> account
     {
         _security.AssertAccountPermission(request.AccountId);
 
-        var account = await _accounts.Include(a => a.Rules).ThenInclude(r => r.Tags).SingleOrDefaultAsync(a => a.AccountId == request.AccountId, cancellationToken) ?? throw new NotFoundException();
+        var account = await _accounts.Include(a => a.Rules).ThenInclude(r => r.Tags).SingleOrDefaultAsync(a => a.Id == request.AccountId, cancellationToken) ?? throw new NotFoundException();
 
         return account.Rules.ToModel();
     }

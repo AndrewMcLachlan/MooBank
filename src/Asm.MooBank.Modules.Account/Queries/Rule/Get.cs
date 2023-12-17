@@ -13,7 +13,7 @@ internal class GetHandler(IQueryable<Domain.Entities.Account.Account> accounts, 
     {
         _security.AssertAccountPermission(request.AccountId);
 
-        var account = await _accounts.SingleOrDefaultAsync(a => a.AccountId == request.AccountId, cancellationToken) ?? throw new NotFoundException();
+        var account = await _accounts.SingleOrDefaultAsync(a => a.Id == request.AccountId, cancellationToken) ?? throw new NotFoundException();
 
         var rule = account.Rules.SingleOrDefault(r => r.Id == request.RuleId) ?? throw new NotFoundException();
 

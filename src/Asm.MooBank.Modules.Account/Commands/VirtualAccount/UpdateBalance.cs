@@ -23,14 +23,14 @@ internal class UpdateBalanceHandler(IAccountRepository accountRepository, ITrans
             throw new InvalidOperationException("Cannot update virtual account on non-institution account.");
         }
 
-        var entity = institutionAccount.VirtualAccounts.SingleOrDefault(va => va.AccountId == request.VirtualAccountId) ?? throw new NotFoundException();
+        var entity = institutionAccount.VirtualAccounts.SingleOrDefault(va => va.Id == request.VirtualAccountId) ?? throw new NotFoundException();
 
         var amount = entity.Balance - request.Balance;
 
         //TODO: Should be done via domain event
         _transactionRepository.Add(new Domain.Entities.Transactions.Transaction
         {
-            Account = account,
+            Account = institutionAccount,
             Amount = amount,
             Description = "Balance adjustment",
             Source = "Web",

@@ -4,10 +4,9 @@ import { FilterPanel } from "./FilterPanel";
 import { TransactionList } from "./TransactionList";
 import { AccountPage, AccountProvider, AccountSummary } from "../../components";
 import { useAccount } from "components";
+import { AccountType } from "models";
 
 export const Transactions: React.FC = () => {
-
-    const account = useAccount();
 
     return (
         <AccountPage title="Transactions">
@@ -15,7 +14,7 @@ export const Transactions: React.FC = () => {
                 <AccountSummary />
                 <FilterPanel />
             </div>
-            <TransactionList account={account} />
+            <TransactionList />
         </AccountPage>
     );
 }

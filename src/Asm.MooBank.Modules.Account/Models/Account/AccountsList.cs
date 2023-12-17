@@ -12,6 +12,6 @@ public record AccountListGroup
 {
     public required string Name { get; init; }
 
-    public required IEnumerable<InstitutionAccount> Accounts { get; init; }
+    public required IEnumerable<Account> Accounts { get; init; }
     public decimal? Position { get; set; }
 }

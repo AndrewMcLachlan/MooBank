@@ -5,13 +5,11 @@ using Asm.MooBank.Domain.Entities.Tag;
 namespace Asm.MooBank.Domain.Entities.Budget;
 
 [AggregateRoot]
-public class BudgetLine : KeyedEntity<Guid>
+public class BudgetLine(Guid id) : KeyedEntity<Guid>(id)
 {
-    public BudgetLine(Guid id) : base(id) { }
-
     public int TagId { get; set; }
 
-    public virtual Tag.Tag Tag { get; set; }
+    public virtual Tag.Tag Tag { get; set; } = null!;
 
     [MaxLength(255)]
     public string? Notes { get; set; }
@@ -24,5 +22,5 @@ public class BudgetLine : KeyedEntity<Guid>
 
     public Guid BudgetId { get; set; }
 
-    public virtual Budget Budget { get; set; }
+    public virtual Budget Budget { get; set; } = null!;
 }

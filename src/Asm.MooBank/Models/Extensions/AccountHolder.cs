@@ -8,6 +8,7 @@ public static class AccountHolderExtensions
         {
             AccountHolderId = accountHolder.Id,
             EmailAddress = accountHolder.EmailAddress,
+            FamilyId = accountHolder.FamilyId,
             FirstName = accountHolder.FirstName,
             LastName = accountHolder.LastName,
         };
@@ -19,6 +20,7 @@ public static class AccountHolderExtensions
         {
             Id = accountHolder.AccountHolderId,
             EmailAddress = accountHolder.EmailAddress,
+            FamilyId = accountHolder.FamilyId,
             FirstName = accountHolder.FirstName,
             LastName = accountHolder.LastName,
         };

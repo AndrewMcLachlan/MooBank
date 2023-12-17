@@ -20,7 +20,7 @@ internal class DeleteHandler(IAccountRepository accountRepository, MooBank.Model
             throw new InvalidOperationException("Cannot delete virtual account on non-institution account.");
         }
 
-        var virtualAccount = institutionAccount.VirtualAccounts.SingleOrDefault(va => va.AccountId == request.VirtualAccountId) ?? throw new NotFoundException("Virtual Account not found");
+        var virtualAccount = institutionAccount.VirtualAccounts.SingleOrDefault(va => va.Id == request.VirtualAccountId) ?? throw new NotFoundException("Virtual Account not found");
 
         institutionAccount.VirtualAccounts.Remove(virtualAccount);
 

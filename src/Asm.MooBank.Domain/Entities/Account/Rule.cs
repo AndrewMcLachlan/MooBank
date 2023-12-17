@@ -17,7 +17,7 @@ public partial class Rule : KeyedEntity<int>
 
     public Guid AccountId { get; set; }
 
-    public string Contains { get; set; } = String.Empty;
+    public required string Contains { get; set; }
 
     public virtual Account Account { get; set; } = null!;
 

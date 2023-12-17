@@ -37,7 +37,7 @@ public static class IServiceCollectionExtensions
                         return;
                     }
 
-                    var claims = user.Accounts.Select(a => new Claim(Security.ClaimTypes.AccountId, a.AccountId.ToString())).ToList();
+                    var claims = user.Accounts.Select(a => new Claim(Security.ClaimTypes.AccountId, a.Id.ToString())).ToList();
 
                     if (user.PrimaryAccountId != null) claims.Add(new Claim(Security.ClaimTypes.PrimaryAccountId, user.PrimaryAccountId.Value.ToString()));
                     claims.Add(new Claim(Security.ClaimTypes.FamilyId, user.FamilyId.ToString()));

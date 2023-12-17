@@ -1,8 +1,8 @@
 ﻿using Asm.MooBank.Domain.Entities.Transactions;
-using Asm.MooBank.Modules.Transactions.Queries;
+using Asm.MooBank.Modules.Transactions.Queries.Transactions;
 using Asm.MooBank.Queries.Transactions;
 
-namespace Asm.MooBank.Modules.Transactions.Queries;
+namespace Asm.MooBank.Modules.Transactions.Queries.Transactions;
 
 public record Search(Guid AccountId, DateOnly StartDate, MooBank.Models.TransactionType TransactionType, IEnumerable<int> TagIds) : IQuery<IEnumerable<Models.Transaction>>;
 

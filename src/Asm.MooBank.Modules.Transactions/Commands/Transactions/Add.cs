@@ -2,7 +2,7 @@
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Models;
 
-namespace Asm.MooBank.Modules.Transactions.Commands;
+namespace Asm.MooBank.Modules.Transactions.Commands.Transactions;
 
 public record Add(decimal Amount, Guid AccountId, bool IsRecurring, string? Description = null) : ICommand<Models.Transaction>;
 
@@ -18,7 +18,7 @@ internal class AddHandler(ITransactionRepository transactionRepository, IUnitOfW
                                    isRecurring ? TransactionType.RecurringDebit : TransactionType.Debit :
                                    isRecurring ? TransactionType.RecurringCredit : TransactionType.Credit;
 
-        Domain.Entities.Transactions.Transaction transaction = new()
+        Transaction transaction = new()
         {
             Amount = amount,
             AccountId = accountId,

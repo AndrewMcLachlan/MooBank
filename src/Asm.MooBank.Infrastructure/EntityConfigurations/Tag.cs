@@ -16,7 +16,7 @@ internal class TagConfiguration : IEntityTypeConfiguration<Domain.Entities.Tag.T
 
         entity.HasMany(d => d.Tags)
               .WithMany(d => d.TaggedTo)
-              .UsingEntity<TransactionTagTransactionTag>(
+              .UsingEntity<TagTag>(
                 t4 => t4.HasOne(t42 => t42.Primary)
                           .WithMany()
                           .HasForeignKey(t42 => t42.PrimaryTransactionTagId),

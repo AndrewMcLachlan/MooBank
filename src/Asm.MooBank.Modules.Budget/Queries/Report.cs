@@ -11,7 +11,7 @@ internal class ReportHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, 
     {
         var budget = await budgets.Include(b => b.Lines).SingleOrDefaultAsync(b => b.FamilyId == accountHolder.FamilyId && b.Year == request.Year, cancellationToken) ?? throw new NotFoundException();
 
-        var budgetAccounts = await accounts.Where(a => a.IncludeInBudget && accountHolder.Accounts.Contains(a.AccountId)).Select(a => a.AccountId).ToArrayAsync(cancellationToken);
+        var budgetAccounts = await accounts.Where(a => a.IncludeInBudget && accountHolder.Accounts.Contains(a.Id)).Select(a => a.Id).ToArrayAsync(cancellationToken);
 
         var budgetTransactions = await transactions.Where(t => budgetAccounts.Contains(t.AccountId) && TransactionTypes.Debit.Contains(t.TransactionType) && !t.ExcludeFromReporting && t.TransactionTime.Year == request.Year).ToArrayAsync(cancellationToken);
 

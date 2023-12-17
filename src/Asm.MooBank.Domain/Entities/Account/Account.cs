@@ -1,19 +1,13 @@
 ﻿using Asm.Domain;
-using Asm.MooBank.Domain.Entities.Transactions;
 
 namespace Asm.MooBank.Domain.Entities.Account;
 
 [AggregateRoot]
-public class Account : Entity
+public abstract class Account(Guid id) : KeyedEntity<Guid>(id)
 {
-    public Account()
+    public Account() : this(Guid.Empty)
     {
-        Rules = new HashSet<Rule>();
-        Transactions = new HashSet<Transaction>();
-        AccountAccountHolders = new HashSet<AccountAccountHolder>();
     }
-
-    public Guid AccountId { get; set; }
 
     public required string Name { get; set; }
 
@@ -23,15 +17,15 @@ public class Account : Entity
 
     public DateTimeOffset LastUpdated { get; set; }
 
-    public DateOnly? LastTransaction { get; set; }
+    //public DateOnly? LastTransaction { get; set; }
 
-    public virtual ICollection<Transaction> Transactions { get; set; }
+    //public virtual ICollection<Transaction> Transactions { get; set; }
 
-    public virtual ICollection<AccountAccountHolder> AccountAccountHolders { get; set; }
+    public virtual ICollection<AccountAccountHolder> AccountAccountHolders { get; set; } = new HashSet<AccountAccountHolder>();
 
-    public decimal CalculatedBalance { get; set; }
+    //public decimal CalculatedBalance { get; set; }
 
-    public virtual ICollection<Rule> Rules { get; set; }
+    public virtual ICollection<Rule> Rules { get; set; } = new HashSet<Rule>();
 
     public AccountGroup.AccountGroup? GetAccountGroup(Guid accountHolderId)
     {

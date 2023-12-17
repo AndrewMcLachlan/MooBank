@@ -11,6 +11,7 @@ public class Module : IModule
     public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
     {
         new Endpoints.TransactionsEndpoints().MapGroup(endpoints);
+        new Endpoints.StockTransactionsEndpoints().MapGroup(endpoints);
 
         return endpoints;
     }

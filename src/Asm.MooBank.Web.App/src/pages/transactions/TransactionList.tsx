@@ -10,11 +10,13 @@ import { State } from "store/state";
 import { TransactionRow } from "./TransactionRow";
 import { useTransactions } from "services";
 import { getNumberOfPages, Pagination, useIdParams } from "@andrewmclachlan/mooapp";
-import { Account } from "models";
 import { TransactionTableHead } from "./TransactionTableHead";
 import { useDebounce } from "use-debounce";
+import { useAccount } from "components";
 
-export const TransactionList: React.FC<TransactionListProps> = (props) => {
+export const TransactionList: React.FC<TransactionListProps> = () => {
+
+    const account = useAccount();
 
     const { currentPage: pageNumber, pageSize, filter, sortField, sortDirection } = useSelector((state: State) => state.transactions);
     const dispatch = useDispatch();
@@ -22,7 +24,7 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
 
     useEffect(() => { dispatch(TransactionsSlice.actions.setCurrentPage(1)) }, [debouncedFilter]);
 
-    const transactionsQuery = useTransactions(props.account.id, debouncedFilter, pageSize, pageNumber, sortField, sortDirection);
+    const transactionsQuery = useTransactions(account.id, debouncedFilter, pageSize, pageNumber, sortField, sortDirection);
     const transactions = transactionsQuery.data?.results;
     const totalTransactions = transactionsQuery.data?.total ?? 0;
 
@@ -48,5 +50,4 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
 }
 
 export interface TransactionListProps {
-    account: Account;
 }

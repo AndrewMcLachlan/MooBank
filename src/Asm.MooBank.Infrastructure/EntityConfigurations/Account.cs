@@ -9,12 +9,13 @@ public class Account : IEntityTypeConfiguration<Domain.Entities.Account.Account>
         // Required for computed columns
         entity.ToTable(t => t.HasTrigger("ComputedColumns"));
 
-        entity.HasKey(e => e.AccountId);
+        entity.HasKey(e => e.Id);
+        entity.Property(e => e.Id).HasColumnName("AccountId");
 
         entity.HasIndex(e => e.Name).IsUnique();
 
-        entity.Property(e => e.AccountId).ValueGeneratedOnAdd();
-        entity.Property(e => e.AccountId).HasDefaultValueSql("(newid())");
+        entity.Property(e => e.Id).ValueGeneratedOnAdd();
+        entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
 
         entity.Property(e => e.Balance).HasColumnType("decimal(10, 2)");
 
@@ -28,15 +29,9 @@ public class Account : IEntityTypeConfiguration<Domain.Entities.Account.Account>
             .IsRequired()
             .HasMaxLength(50);
 
-        entity.Property(e => e.CalculatedBalance)
-            .ValueGeneratedOnAddOrUpdate();
-
-        entity.Property(e => e.LastTransaction)
-            .ValueGeneratedOnAddOrUpdate();
-
         entity.HasMany(p => p.AccountAccountHolders)
                .WithOne(e => e.Account)
-               .HasPrincipalKey(e => e.AccountId)
+               .HasPrincipalKey(e => e.Id)
                .HasForeignKey(p => p.AccountId);
 
         /*entity.HasMany(p => p.AccountHolders)

@@ -9,12 +9,12 @@ public partial class AccountHolder
         AccountAccountHolders = new HashSet<Account.AccountAccountHolder>();
         Cards = new HashSet<AccountHolderCard>();
     }
-    public Guid AccountHolderId { get; set; }
-    public string EmailAddress { get; set; }
+    public required Guid AccountHolderId { get; set; }
+    public required string EmailAddress { get; set; }
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
 
-    public Guid FamilyId { get; set; }
+    public required Guid FamilyId { get; set; }
 
     public Guid? PrimaryAccountId { get;set; }
 
@@ -25,5 +25,5 @@ public partial class AccountHolder
 
     public virtual ICollection<AccountHolderCard> Cards { get; set; }
 
-    public virtual Family.Family Family { get; set; }
+    public Family.Family Family { get; set; } = null!;
 }

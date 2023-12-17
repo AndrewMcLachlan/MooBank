@@ -17,7 +17,7 @@ public class ClaimsUserDataProvider(IPrincipalProvider principalProvider) : IUse
         return new()
         {
             Id = CurrentUserId,
-            EmailAddress = principalProvider.Principal.GetClaimValue<string>(System.Security.Claims.ClaimTypes.Email),
+            EmailAddress = principalProvider.Principal.GetClaimValue<string>(System.Security.Claims.ClaimTypes.Email) ?? throw new InvalidOperationException("User must have an email"),
             FirstName = principalProvider.Principal.GetClaimValue<string>(System.Security.Claims.ClaimTypes.GivenName),
             LastName = principalProvider.Principal.GetClaimValue<string>(System.Security.Claims.ClaimTypes.Surname),
             Accounts = principalProvider.Principal.Claims.Where(c => c.Type == ClaimTypes.AccountId).Select(c => c.Value).Select(Guid.Parse).ToList(),

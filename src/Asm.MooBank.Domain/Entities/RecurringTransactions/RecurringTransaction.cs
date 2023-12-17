@@ -11,7 +11,7 @@ public class RecurringTransaction
     public decimal Amount { get; set; }
     public DateTime? LastRun { get; set; }
 
-    public virtual VirtualAccount VirtualAccount { get; set; }
+    public virtual VirtualAccount VirtualAccount { get; set; } = null!;
 
     [Column("ScheduleId")]
     public virtual ScheduleFrequency Schedule { get; set; }

@@ -18,7 +18,7 @@ const App: React.FC = () => {
     if (!isAuthenticated) return null;
 
     const menu = hasRole("Admin") ?
-        [(<Link to="/settings/families"><Icons.Cog /></Link>)] :
+        [(<Link key="settings" to="/settings/families"><Icons.Cog /></Link>)] :
         [];
 
     return (
@@ -74,6 +74,11 @@ const App: React.FC = () => {
                         <Route path="virtual/:virtualId" element={<Pages.VirtualAccount />}>
                             <Route path="transactions" element={<Pages.Transactions />} />
                         </Route>
+                    </Route>
+                    <Route path="/stock/create" element={<Pages.CreateStockHolding />} />
+                    <Route path="/stock/:id" element={<Pages.StockHolding />}>
+                        <Route path="manage" element={<Pages.ManageStockHolding />} />
+                        <Route path="transactions" element={<Pages.StockTransactions />} />
                     </Route>
                     <Route path="/budget" element={<Pages.Budget />} />
                     <Route path="/budget/report" element={<Pages.BudgetReport />} />

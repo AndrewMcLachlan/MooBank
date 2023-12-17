@@ -4,7 +4,7 @@ public partial record AccountHolder
 {
     public Guid Id { get; set; }
 
-    public string? EmailAddress { get; set; }
+    public required string EmailAddress { get; set; }
 
     public string? FirstName { get; set; }
 

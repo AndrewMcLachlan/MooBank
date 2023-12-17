@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Asm.MooBank.Modules.Transactions.Commands;
+namespace Asm.MooBank.Modules.Transactions.Commands.Transactions;
 
 public record UpdateTransaction(Guid AccountId, Guid Id, string? Notes, IEnumerable<Models.TransactionSplit> Splits, bool ExcludeFromReporting = false) : ICommand<Models.Transaction>
 {

@@ -46,7 +46,7 @@ public class SecurityRepository(MooBankContext dataContext, IAuthorizationServic
 
     public void AssertAccountPermission(Account account)
     {
-        var authResult = _authorizationService.AuthorizeAsync(_principalProvider.Principal!, account.AccountId, Policies.AccountHolder).Result;
+        var authResult = _authorizationService.AuthorizeAsync(_principalProvider.Principal!, account.Id, Policies.AccountHolder).Result;
 
         if (!authResult.Succeeded)
         {

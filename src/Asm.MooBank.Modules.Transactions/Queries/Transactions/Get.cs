@@ -1,12 +1,12 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
 using Asm.MooBank.Domain.Entities.Transactions;
-using Asm.MooBank.Modules.Transactions.Queries;
+using Asm.MooBank.Modules.Transactions.Queries.Transactions;
 using Asm.MooBank.Queries.Transactions;
 using Microsoft.IdentityModel.Tokens;
 using PagedResult = Asm.PagedResult<Asm.MooBank.Modules.Transactions.Models.Transaction>;
 
-namespace Asm.MooBank.Modules.Transactions.Queries;
+namespace Asm.MooBank.Modules.Transactions.Queries.Transactions;
 
 public sealed record Get : IQuery<PagedResult>
 {

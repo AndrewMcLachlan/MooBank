@@ -1,6 +1,6 @@
 export * from "./accounts";
 export * from "./budget";
-export * from "./createAccount/CreateAccount";
+export * from "./createAccount";
 export * from "./error";
 export * from "./families";
 export * from "./institutions";
@@ -10,6 +10,8 @@ export * from "./manageAccounts";
 export * from "./manageAccountGroups";
 export * from "./reports";
 export * from "./settings";
+export * from "./stock-holding";
+export * from "./stock-holding/transactions";
 export * from "./transactions/Transactions";
 export * from "./rules/Rules";
 export * from "./tags";

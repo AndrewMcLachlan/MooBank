@@ -5,8 +5,6 @@
     [Description] NVARCHAR(255) NULL,
     [Balance] DECIMAL(10, 2) NOT NULL CONSTRAINT DF_AccountBalance DEFAULT 0,
     [LastUpdated] DATETIMEOFFSET(0) NOT NULL CONSTRAINT DF_LastUpdated DEFAULT SYSUTCDATETIME(),
-    [LastTransaction] AS dbo.LastTransaction(AccountId),
-    [CalculatedBalance] AS dbo.AccountBalance(AccountId),
     CONSTRAINT PK_Account PRIMARY KEY CLUSTERED (AccountId),
 )
 

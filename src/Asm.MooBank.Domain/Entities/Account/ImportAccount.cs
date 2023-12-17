@@ -6,7 +6,7 @@ public partial class ImportAccount
 {
     public Guid AccountId { get; set; }
 
-    public int ImporterTypeId { get; set; }
+    public required int ImporterTypeId { get; set; }
 
-    public virtual ImporterType ImporterType { get; set; }
+    public ImporterType ImporterType { get; set; } = null!;
 }

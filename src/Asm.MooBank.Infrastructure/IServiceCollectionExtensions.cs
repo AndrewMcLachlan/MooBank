@@ -6,6 +6,7 @@ using Asm.MooBank.Domain.Entities.AccountHolder;
 using Asm.MooBank.Domain.Entities.Budget;
 using Asm.MooBank.Domain.Entities.RecurringTransactions;
 using Asm.MooBank.Domain.Entities.ReferenceData;
+using Asm.MooBank.Domain.Entities.StockHolding;
 using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Importers;
@@ -51,6 +52,7 @@ public static class IServiceCollectionExtensions
                 .AddScoped<IRecurringTransactionRepository, RecurringTransactionRepository>()
                 .AddScoped<IReferenceDataRepository, ReferenceDataRepository>()
                 .AddScoped<ISecurity, SecurityRepository>()
+                .AddScoped<IStockHoldingRepository, StockHoldingRepository>()
                 .AddScoped<ITransactionRepository, TransactionRepository>()
                 .AddScoped<ITagRepository, TransactionTagRepository>()
                 .AddScoped<IRuleRepository, RuleRepository>()

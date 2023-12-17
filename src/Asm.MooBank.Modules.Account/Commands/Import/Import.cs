@@ -27,7 +27,7 @@ internal class ImportHandler(IAccountRepository accountRepository, IRuleReposito
 
         IImporter importer = await _importerFactory.Create(accountId, cancellationToken) ?? throw new ArgumentException("Not a valid import account", nameof(request));
 
-        var importResult = await importer.Import(account.AccountId, stream, cancellationToken);
+        var importResult = await importer.Import(account.Id, stream, cancellationToken);
 
         await ApplyTransactionRules(account, importResult.Transactions, cancellationToken);
 
@@ -38,7 +38,7 @@ internal class ImportHandler(IAccountRepository accountRepository, IRuleReposito
 
     private async Task ApplyTransactionRules(Domain.Entities.Account.Account account, IEnumerable<Domain.Entities.Transactions.Transaction> transactions, CancellationToken cancellationToken = default)
     {
-        var rules = await _ruleRepository.GetForAccount(account.AccountId, cancellationToken);
+        var rules = await _ruleRepository.GetForAccount(account.Id, cancellationToken);
 
         foreach (var transaction in transactions)
         {
