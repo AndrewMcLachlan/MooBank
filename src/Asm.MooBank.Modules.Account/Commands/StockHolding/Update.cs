@@ -39,6 +39,7 @@ internal class UpdateHandler(IStockHoldingRepository repository, IUnitOfWork uni
         stockHolding.Name = command.Name;
         stockHolding.Description = command.Description;
         stockHolding.ShareWithFamily = command.ShareWithFamily;
+        stockHolding.CurrentPrice = command.CurrentPrice;
 
         stockHolding.SetAccountGroup(command.AccountGroupId, AccountHolder.Id);
 
