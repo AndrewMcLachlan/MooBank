@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.WebJobs;
 
-return await WebJobStart.RunAsync(args, "MooBank", ConfigureWebJobs, ConfigureServices);
+return await WebJobStart.RunAsync(args, "Asm.MooBank.Web.Jobs", ConfigureWebJobs, ConfigureServices);
 
 static void ConfigureWebJobs(IWebJobsBuilder builder)
 {
