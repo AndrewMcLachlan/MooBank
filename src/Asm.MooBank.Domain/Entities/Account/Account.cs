@@ -1,4 +1,5 @@
-﻿using Asm.Domain;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Asm.Domain;
 
 namespace Asm.MooBank.Domain.Entities.Account;
 
@@ -17,35 +18,30 @@ public abstract class Account(Guid id) : KeyedEntity<Guid>(id)
 
     public DateTimeOffset LastUpdated { get; set; }
 
-    //public DateOnly? LastTransaction { get; set; }
+    public virtual ICollection<AccountAccountHolder> AccountHolders { get; set; } = new HashSet<AccountAccountHolder>();
 
-    //public virtual ICollection<Transaction> Transactions { get; set; }
+    public virtual ICollection<AccountAccountViewer> AccountViewers { get; set; } = new HashSet<AccountAccountViewer>();
 
-    public virtual ICollection<AccountAccountHolder> AccountAccountHolders { get; set; } = new HashSet<AccountAccountHolder>();
-
-    //public decimal CalculatedBalance { get; set; }
 
     public virtual ICollection<Rule> Rules { get; set; } = new HashSet<Rule>();
 
-    public AccountGroup.AccountGroup? GetAccountGroup(Guid accountHolderId)
-    {
-        return AccountAccountHolders.Select(aah => aah.AccountGroup).SingleOrDefault(ag => ag?.OwnerId == accountHolderId);
-    }
+    public virtual AccountGroup.AccountGroup? GetAccountGroup(Guid accountHolderId) =>
+        AccountHolders.Where(a => a.AccountHolderId == accountHolderId).Select(aah => aah.AccountGroup).SingleOrDefault();
 
     public void SetAccountGroup(Guid? accountGroupId, Guid currentUserId)
     {
-        var existing = AccountAccountHolders.Single(aah => aah.AccountHolderId == currentUserId);
+        var existing = AccountHolders.Single(aah => aah.AccountHolderId == currentUserId);
 
         existing.AccountGroupId = accountGroupId;
     }
 
     public void SetAccountHolder(Guid currentUserId)
     {
-        var existing = AccountAccountHolders.SingleOrDefault(aah => aah.AccountHolderId == currentUserId);
+        var existing = AccountHolders.SingleOrDefault(aah => aah.AccountHolderId == currentUserId);
 
         if (existing != null) throw new ExistsException("User is already an account holder");
 
-        AccountAccountHolders.Add(new AccountAccountHolder
+        AccountHolders.Add(new AccountAccountHolder
         {
             AccountHolderId = currentUserId,
         });

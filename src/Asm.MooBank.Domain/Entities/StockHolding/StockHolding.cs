@@ -1,4 +1,6 @@
-﻿using Asm.Domain;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Asm.Domain;
+using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Transactions;
 
 namespace Asm.MooBank.Domain.Entities.StockHolding;
@@ -18,4 +20,19 @@ public class StockHolding(Guid id) : Account.Account(id)
     public new DateTimeOffset LastUpdated { get; set; } = DateTimeOffset.Now;
 
     public ICollection<StockTransaction> Transactions { get; set; } = [];
+
+    [NotMapped]
+    public IEnumerable<AccountAccountViewer> ValidAccountViewers
+    {
+        get
+        {
+            if (!ShareWithFamily) return [];
+            var familyIds = base.AccountHolders.Select(a => a.AccountHolder.FamilyId).Distinct();
+            return AccountViewers.Where(a => familyIds.Contains(a.AccountHolder.FamilyId));
+        }
+    }
+
+    public override AccountGroup.AccountGroup? GetAccountGroup(Guid accountHolderId) =>
+        base.GetAccountGroup(accountHolderId) ??
+        ValidAccountViewers.Where(a => a.AccountHolderId == accountHolderId).Select(aah => aah.AccountGroup).SingleOrDefault();
 }

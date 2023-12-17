@@ -29,7 +29,7 @@ public class Account : IEntityTypeConfiguration<Domain.Entities.Account.Account>
             .IsRequired()
             .HasMaxLength(50);
 
-        entity.HasMany(p => p.AccountAccountHolders)
+        entity.HasMany(p => p.AccountHolders)
                .WithOne(e => e.Account)
                .HasPrincipalKey(e => e.Id)
                .HasForeignKey(p => p.AccountId);

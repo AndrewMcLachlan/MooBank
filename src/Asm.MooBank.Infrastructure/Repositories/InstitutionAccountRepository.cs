@@ -15,10 +15,10 @@ public class InstitutionAccountRepository : RepositoryDeleteBase<InstitutionAcco
 
     public override async Task<IEnumerable<InstitutionAccount>> GetAll(CancellationToken cancellationToken = default)
     {
-        return await DataSet.Include(a => a.VirtualAccounts).Where(a => a.AccountAccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId)).ToListAsync(cancellationToken);
+        return await DataSet.Include(a => a.VirtualAccounts).Where(a => a.AccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId)).ToListAsync(cancellationToken);
     }
 
-    protected override IQueryable<InstitutionAccount> GetById(Guid id) => DataSet.Include(a => a.AccountAccountHolders).Include(t => t.ImportAccount).ThenInclude(i => i!.ImporterType).Where(a => a.Id == id && a.AccountAccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId));
+    protected override IQueryable<InstitutionAccount> GetById(Guid id) => DataSet.Include(a => a.AccountHolders).Include(t => t.ImportAccount).ThenInclude(i => i!.ImporterType).Where(a => a.Id == id && a.AccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId));
 
     public async Task<IEnumerable<ImporterType>> GetImporterTypes(CancellationToken cancellationToken = default) => await DataContext.Set<ImporterType>().ToListAsync(cancellationToken);
 
@@ -41,7 +41,7 @@ public class InstitutionAccountRepository : RepositoryDeleteBase<InstitutionAcco
     }
 
     public Task<decimal> GetPosition() =>
-        DataSet.Where(a => a.AccountAccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId) && a.IncludeInPosition).SumAsync(a => a.Balance);
+        DataSet.Where(a => a.AccountHolders.Any(ah => ah.AccountHolderId == _userDataProvider.CurrentUserId) && a.IncludeInPosition).SumAsync(a => a.Balance);
 
     public Task Load(InstitutionAccount account, CancellationToken cancellationToken) =>
         DataContext.Entry(account).Reference(a => a.ImportAccount).Query().Include(i => i.ImporterType).LoadAsync(cancellationToken);
