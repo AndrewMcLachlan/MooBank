@@ -11,8 +11,8 @@
     <OutputType>Database</OutputType>
     <RootPath>
     </RootPath>
-    <RootNamespace>Asm.BankPlus.Database</RootNamespace>
-    <AssemblyName>Asm.BankPlus.Database</AssemblyName>
+    <RootNamespace>Asm.MooBank.Database</RootNamespace>
+    <AssemblyName>Asm.MooBank.Database</AssemblyName>
     <ModelCollation>1033, CI</ModelCollation>
     <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
     <DeployToDatabase>True</DeployToDatabase>
