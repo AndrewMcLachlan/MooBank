@@ -78,6 +78,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\deploy.yml = .github\workflows\deploy.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asm.MooBank.Eodhd", "src\Asm.MooBank.Eodhd\Asm.MooBank.Eodhd.csproj", "{5EED26F8-2233-49E7-A302-82EF46DACE1A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -166,6 +168,10 @@ Global
 		{2E2085E6-C45F-4EAB-9F39-8DC83CE3B9B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E2085E6-C45F-4EAB-9F39-8DC83CE3B9B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E2085E6-C45F-4EAB-9F39-8DC83CE3B9B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EED26F8-2233-49E7-A302-82EF46DACE1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EED26F8-2233-49E7-A302-82EF46DACE1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EED26F8-2233-49E7-A302-82EF46DACE1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EED26F8-2233-49E7-A302-82EF46DACE1A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

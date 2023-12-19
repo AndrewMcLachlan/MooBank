@@ -3,6 +3,7 @@ using Asm.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.WebJobs;
+using Microsoft.Extensions.Configuration;
 
 return await WebJobStart.RunAsync(args, "Asm.MooBank.Web.Jobs", ConfigureWebJobs, ConfigureServices);
 
@@ -18,6 +19,7 @@ static void ConfigureServices(HostBuilderContext context, IServiceCollection ser
     services.AddEntities();
     services.AddImporterFactory();
     services.AddServices();
+    services.AddEodhd(options => context.Configuration.Bind("EODHD", options));
     services.AddSingleton(new AccountHolder() { EmailAddress = "moobank@mclachlan.family"});
 
     services.AddSingleton<IAuthorizationService, AuthorisationService>();

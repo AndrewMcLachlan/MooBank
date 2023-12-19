@@ -9,6 +9,15 @@ namespace Asm.MooBank.Domain.Entities.StockHolding;
 public class StockHolding(Guid id) : Account.Account(id)
 {
     public string Symbol { get; set; } = null!;
+
+    public string Exchange { get; set; } = null!;
+
+    [NotMapped]
+    public string InternationalSymbol
+    {
+        get => $"{Symbol}.{Exchange}";
+    }
+
     public int Quantity { get; set; }
 
     public decimal CurrentPrice { get; set; }

@@ -4,6 +4,8 @@ using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.AccountGroup;
 using Asm.MooBank.Domain.Entities.AccountHolder;
 using Asm.MooBank.Domain.Entities.Budget;
+using Asm.MooBank.Domain.Entities.Family;
+using Asm.MooBank.Domain.Entities.Institution;
 using Asm.MooBank.Domain.Entities.RecurringTransactions;
 using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Domain.Entities.StockHolding;
@@ -50,6 +52,8 @@ public static class IServiceCollectionExtensions
                 .AddScoped<IAccountGroupRepository, AccountGroupRepository>()
                 .AddScoped<IAccountHolderRepository, AccountHolderRepository>()
                 .AddScoped<IBudgetRepository, BudgetRepository>()
+                .AddScoped<IFamilyRepository, FamilyRepository>()
+                .AddScoped<IInstitutionRepository, InstitutionRepository>()
                 .AddScoped<IRecurringTransactionRepository, RecurringTransactionRepository>()
                 .AddScoped<IReferenceDataRepository, ReferenceDataRepository>()
                 .AddScoped<ISecurity, SecurityRepository>()

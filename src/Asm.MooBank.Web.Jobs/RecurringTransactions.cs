@@ -2,7 +2,7 @@
 using Microsoft.Azure.WebJobs;
 
 namespace Asm.MooBank.Web.Jobs;
-public class Runner(IRecurringTransactionService recurringTransactionService)
+public class RecurringTransactions(IRecurringTransactionService recurringTransactionService)
 {
 #if DEBUG
     private const bool RunOnStartup = true;

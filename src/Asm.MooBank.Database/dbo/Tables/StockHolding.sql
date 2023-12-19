@@ -2,6 +2,7 @@ CREATE TABLE [dbo].[StockHolding]
 (
     AccountId UNIQUEIDENTIFIER NOT NULL,
     Symbol CHAR(3) NOT NULL,
+    Exchange CHAR(2) NOT NULL CONSTRAINT DF_StockHolding_Exchange DEFAULT 'AU',
     Quantity AS dbo.StockQuantity(AccountId),
     CurrentPrice DECIMAL(18, 2) NOT NULL,
     [CurrentValue] AS dbo.StockValue(AccountId, CurrentPrice),

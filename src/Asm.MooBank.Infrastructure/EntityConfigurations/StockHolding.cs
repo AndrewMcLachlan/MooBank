@@ -10,6 +10,9 @@ internal class StockHoldingConfiguration : IEntityTypeConfiguration<StockHolding
 
         builder.ToTable(t => t.HasTrigger("ComputedColumns"));
 
+        builder.Property(e => e.Symbol).HasMaxLength(3);
+        builder.Property(e => e.Exchange).HasMaxLength(2);
+
         builder.HasMany(e => e.Transactions).WithOne(e => e.StockHolding)
                .HasForeignKey(e => e.AccountId);
 
