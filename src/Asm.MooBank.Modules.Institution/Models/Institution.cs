@@ -5,6 +5,8 @@ public sealed record Institution
     public required int Id { get; init; }
 
     public required string Name { get; init; }
+
+    public required int InstitutionTypeId { get; init; }
 }
 
 public static class InstitutionExtensions
@@ -14,6 +16,7 @@ public static class InstitutionExtensions
         {
             Id = institution.Id,
             Name = institution.Name,
+            InstitutionTypeId = institution.InstitutionTypeId,
         };
 
     public static IQueryable<Institution> ToModel(this IQueryable<Domain.Entities.Institution.Institution> query) =>

@@ -1,4 +1,5 @@
 ﻿using Asm.Cqrs.AspNetCore;
+using Asm.MooBank.Modules.Family.Commands;
 using Asm.MooBank.Modules.Family.Queries;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -18,5 +19,11 @@ internal class Families : EndpointGroupBase
         routeGroupBuilder.MapQuery<GetAll, IEnumerable<Models.Family>>("/")
             .WithName("Get All Families")
             .Produces<IEnumerable<Models.Family>>();
+
+        routeGroupBuilder.MapQuery<Get, Models.Family>("/{id}")
+            .WithName("Get Family")
+            .Produces<Models.Family>();
+
+        routeGroupBuilder.MapPostCreate<Create, Models.Family>("/", "Get Family".ToMachine(), (i) => new { i.Id });
     }
 }

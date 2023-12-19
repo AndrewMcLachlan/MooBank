@@ -18,7 +18,7 @@ const App: React.FC = () => {
     if (!isAuthenticated) return null;
 
     const menu = hasRole("Admin") ?
-        [(<Link key="settings" to="/settings/families"><Icons.Cog /></Link>)] :
+        [(<Link key="settings" to="/settings"><Icons.Cog /></Link>)] :
         [];
 
     return (
@@ -84,7 +84,10 @@ const App: React.FC = () => {
                     <Route path="/budget/report" element={<Pages.BudgetReport />} />
                     <Route path="/settings" element={<Pages.Settings />}>
                         <Route path="families" element={<Pages.Families />} />
+                        <Route path="families/add" element={<Pages.CreateFamily />} />
                         <Route path="institutions" element={<Pages.Institutions />} />
+                        <Route path="institutions/add" element={<Pages.CreateInstitution />} />
+                        <Route path="institutions/:id" element={<Pages.ManageInstitution />} />
                     </Route>
                     <Route path="/tags" element={<Pages.TransactionTags />} />
                     <Route path="/tags/visualiser" element={<Pages.Visualiser />} />
