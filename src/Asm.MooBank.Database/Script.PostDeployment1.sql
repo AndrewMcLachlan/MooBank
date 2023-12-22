@@ -122,18 +122,6 @@ ON (TARGET.Id = SOURCE.Id)
 WHEN MATCHED AND TARGET.[Name] <> SOURCE.[Name] THEN UPDATE SET Target.[Name] = SOURCE.[Name]
 WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.[Id], SOURCE.[Name]);
 
-
--- Institution
-MERGE Institution AS TARGET USING (SELECT 1 as Id, 'ING' as [Name], 1 as [InstitutionTypeId]) AS SOURCE
-ON (TARGET.Id = SOURCE.Id)
-WHEN MATCHED AND TARGET.[Name] <> SOURCE.[Name] THEN UPDATE SET Target.[Name] = SOURCE.[Name], Target.[InstitutionTypeId] = SOURCE.[InstitutionTypeId]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.[Id], SOURCE.[Name], SOURCE.[InstitutionTypeId]);
-
-MERGE Institution AS TARGET USING (SELECT 2 as Id, 'AustralianSuper' as [Name], 2 as [InstitutionTypeId]) AS SOURCE
-ON (TARGET.Id = SOURCE.Id)
-WHEN MATCHED AND TARGET.[Name] <> SOURCE.[Name] THEN UPDATE SET Target.[Name] = SOURCE.[Name], Target.[InstitutionTypeId] = SOURCE.[InstitutionTypeId]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.[Id], SOURCE.[Name], SOURCE.[InstitutionTypeId]);
-
 -- Family
 MERGE Family as TARGET USING (SELECT 'DB1A117B-84A9-4F15-B6C2-6BD959B9BAF7' as Id, 'McLachlan' as [Name]) AS SOURCE
 ON (TARGET.Id = SOURCE.Id)
