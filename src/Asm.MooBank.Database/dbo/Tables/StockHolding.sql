@@ -6,7 +6,6 @@ CREATE TABLE [dbo].[StockHolding]
     Quantity AS dbo.StockQuantity(AccountId),
     CurrentPrice DECIMAL(18, 2) NOT NULL,
     [CurrentValue] AS dbo.StockValue(AccountId, CurrentPrice),
-    [ShareWithFamily] BIT NOT NULL CONSTRAINT DF_StockHolding_ShareWithFamily DEFAULT 0,
     [LastUpdated] DATETIMEOFFSET(0) NOT NULL CONSTRAINT DF_StockHolding_LastUpdated DEFAULT SYSUTCDATETIME(),
     CONSTRAINT PK_StockHolding PRIMARY KEY CLUSTERED (AccountId),
     CONSTRAINT FK_StockHolding_Account FOREIGN KEY (AccountId) REFERENCES Account(AccountId),

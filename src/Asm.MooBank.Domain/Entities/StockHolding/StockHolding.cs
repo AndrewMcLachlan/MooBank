@@ -24,8 +24,6 @@ public class StockHolding(Guid id) : Account.Account(id)
 
     public decimal CurrentValue { get; set; }
 
-    public bool ShareWithFamily { get; set; }
-
     public new DateTimeOffset LastUpdated { get; set; } = DateTimeOffset.Now;
 
     public ICollection<StockTransaction> Transactions { get; set; } = [];

@@ -4,6 +4,7 @@
     [Name] NVARCHAR(50) NOT NULL,
     [Description] NVARCHAR(255) NULL,
     [Balance] DECIMAL(10, 2) NOT NULL CONSTRAINT DF_AccountBalance DEFAULT 0,
+    [ShareWithFamily] BIT NOT NULL CONSTRAINT DF_Account_ShareWithFamily DEFAULT 0,
     [LastUpdated] DATETIMEOFFSET(0) NOT NULL CONSTRAINT DF_LastUpdated DEFAULT SYSUTCDATETIME(),
     CONSTRAINT PK_Account PRIMARY KEY CLUSTERED (AccountId),
 )

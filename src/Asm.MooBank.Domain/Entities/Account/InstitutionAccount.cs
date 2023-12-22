@@ -14,8 +14,6 @@ public class InstitutionAccount(Guid id) : TransactionAccount(id)
 
     public bool IncludeInBudget { get; set; }
 
-    public bool ShareWithFamily { get; set; }
-
     [Column("AccountControllerId")]
     public AccountController AccountController { get; set; }
 

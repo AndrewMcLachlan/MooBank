@@ -8,5 +8,7 @@ public static  class Policies
 
     public const string AccountHolder = nameof(AccountHolder);
 
+    public const string AccountViewer = nameof(AccountViewer);
+
     public const string BudgetLine = nameof(BudgetLine);
 }

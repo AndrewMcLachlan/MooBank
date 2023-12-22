@@ -15,6 +15,8 @@ public partial record AccountHolder
     public Guid? PrimaryAccountId { get; set; }
 
     public IEnumerable<Guid> Accounts { get; set; } = Enumerable.Empty<Guid>();
+
+    public IEnumerable<Guid> SharedAccounts { get; set; } = Enumerable.Empty<Guid>();
 }
 
 

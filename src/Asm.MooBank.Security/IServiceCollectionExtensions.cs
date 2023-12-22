@@ -13,6 +13,7 @@ public static class IServiceCollectionExtensions
     public static IServiceCollection AddAuthorisationHandlers(this IServiceCollection services)
     {
         services.AddScoped<IAuthorizationHandler, AccountHolderAuthorisationHandler>();
+        services.AddScoped<IAuthorizationHandler, AccountViewerAuthorisationHandler>();
         services.AddScoped<IAuthorizationHandler, FamilyMemberAuthorisationHandler>();
 
         return services;

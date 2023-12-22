@@ -21,6 +21,13 @@ public static class AuthorizationOptionsExtensions
             policy.Requirements.Add(new AccountHolderRequirement());
         });
 
+        options.AddPolicy(Policies.AccountViewer, policy =>
+        {
+            policy.RequireAuthenticatedUser();
+            policy.RequireClaim(ClaimTypes.AccountId);
+            policy.Requirements.Add(new AccountViewerRequirement());
+        });
+
         options.AddPolicy(Policies.Admin, policy =>
         {
             policy.RequireAuthenticatedUser();

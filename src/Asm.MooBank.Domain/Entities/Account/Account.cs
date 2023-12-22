@@ -18,6 +18,8 @@ public abstract class Account(Guid id) : KeyedEntity<Guid>(id)
 
     public DateTimeOffset LastUpdated { get; set; }
 
+    public bool ShareWithFamily { get; set; }
+
     public virtual ICollection<AccountAccountHolder> AccountHolders { get; set; } = new HashSet<AccountAccountHolder>();
 
     public virtual ICollection<AccountAccountViewer> AccountViewers { get; set; } = new HashSet<AccountAccountViewer>();

@@ -21,6 +21,7 @@ public class ClaimsUserDataProvider(IPrincipalProvider principalProvider) : IUse
             FirstName = principalProvider.Principal.GetClaimValue<string>(System.Security.Claims.ClaimTypes.GivenName),
             LastName = principalProvider.Principal.GetClaimValue<string>(System.Security.Claims.ClaimTypes.Surname),
             Accounts = principalProvider.Principal.Claims.Where(c => c.Type == ClaimTypes.AccountId).Select(c => c.Value).Select(Guid.Parse).ToList(),
+            SharedAccounts = principalProvider.Principal.Claims.Where(c => c.Type == ClaimTypes.SharedAccountId).Select(c => c.Value).Select(Guid.Parse).ToList(),
             FamilyId = principalProvider.Principal.GetClaimValue<Guid>(ClaimTypes.FamilyId),
             PrimaryAccountId = principalProvider.Principal.GetClaimValue<Guid?>(ClaimTypes.PrimaryAccountId),
         };
