@@ -38,6 +38,7 @@ public class StockPriceService(IUnitOfWork unitOfWork, IStockHoldingRepository s
             }
 
             stock.CurrentPrice = prices[stock.InternationalSymbol];
+            stock.LastUpdated = DateTimeOffset.UtcNow;
             logger.LogInformation("Setting {symbol} to {price}", stock.InternationalSymbol, stock.CurrentPrice);
         }
 

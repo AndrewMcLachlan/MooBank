@@ -1,4 +1,5 @@
 ﻿using Asm.MooBank.Models;
+using Asm.MooBank.Services;
 using Asm.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -26,4 +27,6 @@ static void ConfigureServices(HostBuilderContext context, IServiceCollection ser
     services.AddSingleton<IUserDataProvider, UserDataProvider>();
     services.AddSingleton<IHttpContextAccessor, DummyHttpContextAccessor>();
     services.AddSingleton<IPrincipalProvider, PrincipalProvider>();
+
+    services.AddScoped<IStockPriceService, StockPriceService>();
 }
