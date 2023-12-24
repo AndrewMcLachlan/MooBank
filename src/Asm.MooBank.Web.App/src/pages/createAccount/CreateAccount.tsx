@@ -23,6 +23,7 @@ export const CreateAccount: React.FC = () => {
     const [accountController, setAccountController] = useState<AccountController>("Manual");
     const [importerTypeId, setImporterTypeId] = useState(0);
     const [accountGroupId, setAccountGroupId] = useState("");
+    const [includeInBudget, setIncludeInBudget] = useState(false);
     const [shareWithFamily, setShareWithFamily] = useState(false);
     const [institution, setInstitution] = useState(0);
 
@@ -45,6 +46,7 @@ export const CreateAccount: React.FC = () => {
             lastTransaction: undefined,
             shareWithFamily: shareWithFamily,
             institutionId: institution,
+            includeInBudget: includeInBudget,
             virtualAccounts: [],
         };
 
@@ -108,6 +110,10 @@ export const CreateAccount: React.FC = () => {
                     </Form.Control>
                 </Form.Group>
                 <ImportSettings show={accountController === "Import"} selectedId={importerTypeId} onChange={(e) => setImporterTypeId(e)} />
+                <Form.Group controlId="IncludeInBudget">
+                                <Form.Label>Include this account in the budget</Form.Label>
+                                <Form.Check checked={includeInBudget} onChange={(e: any) => setIncludeInBudget(e.currentTarget.checked)} />
+                            </Form.Group>
                 <Form.Group controlId="ShareWithFamily">
                     <Form.Label>Visible to other family members</Form.Label>
                     <Form.Check checked={shareWithFamily} onChange={(e: any) => setShareWithFamily(e.currentTarget.checked)} />
