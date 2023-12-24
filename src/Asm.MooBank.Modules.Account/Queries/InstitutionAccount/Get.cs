@@ -8,7 +8,12 @@ internal class GetHandler(IQueryable<Domain.Entities.Account.InstitutionAccount>
 {
     public async ValueTask<Models.Account.InstitutionAccount> Handle(Get request, CancellationToken cancellationToken)
     {
-        var entity = await accounts.Include(a => a.AccountHolders).ThenInclude(ah => ah.AccountGroup).Include(a => a.ImportAccount).Include(a => a.VirtualAccounts).Include(a => a.Institution).SingleOrDefaultAsync(a => a.Id == request.Id, cancellationToken) ?? throw new NotFoundException();
+        var entity = await accounts.Include(a => a.AccountHolders).ThenInclude(ah => ah.AccountGroup)
+                                   .Include(a => a.AccountHolders).ThenInclude(ah => ah.AccountHolder)
+                                   .Include(a => a.AccountViewers).ThenInclude(ah => ah.AccountGroup)
+                                   .Include(a => a.AccountViewers).ThenInclude(ah => ah.AccountHolder)
+                                   .Include(a => a.ImportAccount).Include(a => a.VirtualAccounts).Include(a => a.Institution)
+                                   .SingleOrDefaultAsync(a => a.Id == request.Id, cancellationToken) ?? throw new NotFoundException();
 
         security.AssertAccountPermission(entity);
 

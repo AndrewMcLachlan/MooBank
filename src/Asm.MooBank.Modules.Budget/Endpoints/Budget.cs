@@ -47,6 +47,9 @@ public class Budget : EndpointGroupBase
 
         routeGroupBuilder.MapQuery<Report, BudgetReportByMonth>("/{year}/report")
             .WithNames("Get Budget Report");
+
+        routeGroupBuilder.MapQuery<ReportForMonth, BudgetReportValueMonth?>("/{year}/report/{month}")
+            .WithNames("Get Budget Report for Month");
     }
 }
 

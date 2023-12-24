@@ -60,6 +60,7 @@ export const ManageAccount = () => {
     const setImporterTypeId = (importerTypeId: number) => setAccount({ ...account, importerTypeId: importerTypeId });
     const setShareWithFamily = (shareWithFamily: boolean) => setAccount({ ...account, shareWithFamily: shareWithFamily });
     const setInstitution = (institutionId: number) => setAccount({ ...account, institutionId: institutionId });
+    const setIncludeInBudget = (includeInBudget: boolean) => setAccount({ ...account, includeInBudget: includeInBudget });
 
     return (
         <AccountPage title="Manage" breadcrumbs={[{ text: "Manage", route: `/accounts/${account.id}/manage` }]} actions={getActions(account.controller)}>
@@ -111,6 +112,10 @@ export const ManageAccount = () => {
                                 </Form.Select>
                             </Form.Group>
                             <ImportSettings show={account.controller === "Import"} selectedId={account.importerTypeId} onChange={(e) => setImporterTypeId(e)} />
+                            <Form.Group controlId="IncludeInBudget">
+                                <Form.Label>Include this account in the budget</Form.Label>
+                                <Form.Check checked={account.includeInBudget} onChange={(e: any) => setIncludeInBudget(e.currentTarget.checked)} />
+                            </Form.Group>
                             <Form.Group controlId="ShareWithFamily">
                                 <Form.Label>Visible to other family members</Form.Label>
                                 <Form.Check checked={account.shareWithFamily} onChange={(e: any) => setShareWithFamily(e.currentTarget.checked)} />

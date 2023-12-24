@@ -1,7 +1,23 @@
-main.dashboard>section {
-    
-    flex: 0 0 auto;
+main.dashboard {
 
-    width: 33.333333%;
-    
+    .row {
+    --bs-gutter-y: 1.5rem;
+    }
+
+    [class^="col"] {
+        max-height: 300px;
+    }
+
+    .section {
+
+        flex: 0 0 auto;
+
+        height: 100%;
+
+    }
+
+    .report {
+        max-height: 300px;
+        padding-bottom: calc(50px + 2rem);
+    }
 }

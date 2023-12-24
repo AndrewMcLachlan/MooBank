@@ -32,9 +32,30 @@ public abstract class Account(Guid id) : KeyedEntity<Guid>(id)
 
     public void SetAccountGroup(Guid? accountGroupId, Guid currentUserId)
     {
-        var existing = AccountHolders.Single(aah => aah.AccountHolderId == currentUserId);
+        var existing = AccountHolders.SingleOrDefault(aah => aah.AccountHolderId == currentUserId);
 
-        existing.AccountGroupId = accountGroupId;
+        if (existing == null)
+        {
+            var existingViewer = AccountViewers.SingleOrDefault(av => av.AccountHolderId == currentUserId);
+
+            if (existingViewer != null)
+            {
+                existingViewer.AccountGroupId = accountGroupId;
+            }
+            else
+            {
+                AccountViewers.Add(new AccountAccountViewer
+                {
+                    AccountGroupId = accountGroupId,
+                    AccountHolderId = currentUserId,
+                });
+            }
+        }
+        else
+        {
+
+            existing.AccountGroupId = accountGroupId;
+        }
     }
 
     public void SetAccountHolder(Guid currentUserId)

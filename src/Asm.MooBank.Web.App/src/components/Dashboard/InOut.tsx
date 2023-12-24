@@ -1,22 +1,17 @@
-import { Section } from "@andrewmclachlan/mooapp";
 import { lastMonth } from "helpers/dateFns";
 import { InOut } from "pages";
-import { Spinner } from "react-bootstrap";
 import { useAccounts } from "services";
+import { Widget } from "./Widget";
 
 export const InOutWidget: React.FC = () => {
 
     const {data: accounts, isLoading } = useAccounts();
 
-    if (!accounts?.length) return null;
-
-    const id = accounts.find(a => a.isPrimary === true)?.id ?? accounts[0].id;
-
-    if (isLoading) return <Spinner />;
+    const id = accounts?.find(a => a.isPrimary === true)?.id ?? (accounts && accounts[0].id);
 
     return (
-        <Section title={`${accounts[0].name} - Last Month`} size={3} className="inout">
-            <InOut accountId={id} period={lastMonth} />
-        </Section>
-    )
+        <Widget title={(accounts && `${accounts[0].name} - Last Month`) ?? 'Last Month'} size={2} className="report" loading={isLoading}>
+            {id && <InOut accountId={id} period={lastMonth} />}
+        </Widget>
+    );
 };

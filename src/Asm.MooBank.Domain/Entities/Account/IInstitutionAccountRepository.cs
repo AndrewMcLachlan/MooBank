@@ -7,9 +7,6 @@ public interface IInstitutionAccountRepository : IDeletableRepository<Institutio
 {
     Task<ImporterType> GetImporterType(int importerTypeId, CancellationToken cancellationToken = default);
     Task<IEnumerable<ImporterType>> GetImporterTypes(CancellationToken cancellationToken = default);
-    Task<decimal> GetPosition();
-    void AddImportAccount(ImportAccount importAccountEntity);
-
     void RemoveImportAccount(ImportAccount entity);
 
     Task Load(InstitutionAccount account, CancellationToken cancellationToken = default);

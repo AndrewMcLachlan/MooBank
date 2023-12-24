@@ -28,6 +28,8 @@ public partial record InstitutionAccount : TransactionAccount
 
     public int InstitutionId { get; set; }
 
+    public bool IncludeInBudget { get; init; }
+
     public decimal VirtualAccountRemainingBalance
     {
         get => CurrentBalance - (VirtualAccounts?.Sum(v => v.CurrentBalance) ?? 0);
@@ -49,6 +51,7 @@ public static class InstitutionAccountExtensions
         Controller = account.AccountController,
         ImporterTypeId = account.ImportAccount?.ImporterTypeId,
         ShareWithFamily = account.ShareWithFamily,
+        IncludeInBudget = account.IncludeInBudget,
         InstitutionId = account.InstitutionId,
         VirtualAccounts = account.VirtualAccounts != null && account.VirtualAccounts.Count != 0 ?
                           account.VirtualAccounts.OrderBy(v => v.Name).Select(v => (VirtualAccount)v)
@@ -65,6 +68,7 @@ public static class InstitutionAccountExtensions
         AccountType = account.AccountType,
         AccountController = account.Controller,
         ShareWithFamily = account.ShareWithFamily,
+        IncludeInBudget = account.IncludeInBudget,
         InstitutionId = account.InstitutionId,
         ImportAccount = account.ImporterTypeId == null ? null : new Domain.Entities.Account.ImportAccount { ImporterTypeId = account.ImporterTypeId.Value, AccountId = account.Id },
     };

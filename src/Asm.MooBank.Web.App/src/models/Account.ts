@@ -31,6 +31,7 @@ export interface InstitutionAccount extends TransactionAccount, TopLevelAccount 
     importerTypeId?: number;
     virtualAccountRemainingBalance?: number;
     isPrimary?: boolean;
+    includeInBudget: boolean;
     institutionId: number;
     virtualAccounts: VirtualAccount[];
 }
@@ -45,6 +46,7 @@ export const emptyAccount : InstitutionAccount = {
     accountGroupId: "",
     calculatedBalance: 0,
     shareWithFamily: false,
+    includeInBudget: false,
     institutionId: 0,
     virtualAccounts: [],
 }

@@ -1,4 +1,5 @@
-﻿using Asm.MooBank.Commands;
+﻿using System.Text;
+using Asm.MooBank.Commands;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Account.Models.Account;
 using IInstitutionAccountRepository = Asm.MooBank.Domain.Entities.Account.IInstitutionAccountRepository;
@@ -23,6 +24,7 @@ internal class UpdateHandler(IUnitOfWork unitOfWork, IInstitutionAccountReposito
         entity.AccountType = account.AccountType;
         entity.ShareWithFamily = account.ShareWithFamily;
         entity.InstitutionId = account.InstitutionId;
+        entity.IncludeInBudget = account.IncludeInBudget;
 
         if (account.Controller != entity.AccountController)
         {
