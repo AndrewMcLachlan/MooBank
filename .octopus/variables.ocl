@@ -18,3 +18,7 @@ variable "Database:Name" {
         environment = ["staging"]
     }
 }
+
+variable "Logging:LogLevel:Default" {
+    value "Warning" {}
+}
