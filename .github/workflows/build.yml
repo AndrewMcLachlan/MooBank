@@ -4,9 +4,13 @@
 name: Build
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    branches:
+      - "master"
+    paths-ignore:
+      - ".octopus/**"
+  pull_request_target:
+    branches:
+      - "master"
   workflow_dispatch:
 jobs:
   build:
