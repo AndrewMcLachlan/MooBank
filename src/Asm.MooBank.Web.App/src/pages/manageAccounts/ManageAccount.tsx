@@ -23,10 +23,10 @@ export const ManageAccount = () => {
 
 
     useEffect(() => {
-        setAccount(existingAccount ?? Models.emptyAccount);
+        setAccount(existingAccount as Models.InstitutionAccount ?? Models.emptyAccount);
     }, [existingAccount]);
 
-    const [account, setAccount] = useState<Models.InstitutionAccount>(existingAccount ?? Models.emptyAccount);
+    const [account, setAccount] = useState<Models.InstitutionAccount>(existingAccount as Models.InstitutionAccount ?? Models.emptyAccount);
 
     const updateAccount = useUpdateAccount();
 

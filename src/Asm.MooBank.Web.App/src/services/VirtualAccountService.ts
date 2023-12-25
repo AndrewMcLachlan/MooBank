@@ -10,7 +10,7 @@ interface VirtualAccountVariables {
 
 export const useVirtualAccounts = (accountId: accountId): UseQueryResult<VirtualAccount[]> => useApiGet<VirtualAccount[]>(["virtualaccount", accountId], `api/accounts/${accountId}/virtual`);
 
-export const useVirtualAccount = (accountId: accountId, virtualAccountId: accountId) => useApiGet<InstitutionAccount>(["virtualaccount", { accountId, virtualAccountId }], `api/accounts/${accountId}/virtual/${virtualAccountId}`);
+export const useVirtualAccount = (accountId: accountId, virtualAccountId: accountId) => useApiGet<VirtualAccount>(["virtualaccount", { accountId, virtualAccountId }], `api/accounts/${accountId}/virtual/${virtualAccountId}`);
 
 export const useCreateVirtualAccount = () => {
 

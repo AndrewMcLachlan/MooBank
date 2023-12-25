@@ -1,10 +1,10 @@
-import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
+import { UseMutationResult, UseQueryResult, useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 
 import * as Models from "../models";
 import { Transaction, Tag } from "../models";
 import { State, TransactionsFilter } from "../store/state";
-import { SortDirection, useApiGet, useApiPagedGet, useApiDelete, useApiDatalessPut, useApiPatch, useApiDatalessPost } from "@andrewmclachlan/mooapp";
+import { SortDirection, useApiGet, useApiPagedGet, useApiDelete, useApiDatalessPut, useApiPatch, useApiDatalessPost, useApiPost } from "@andrewmclachlan/mooapp";
 import format from "date-fns/format";
 import parseISO from "date-fns/parseISO";
 
@@ -117,4 +117,21 @@ export const useRemoveTransactionTag = () => {
             queryClient.setQueryData<Models.PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection], transactions);
         }
     });
+}
+
+export const useCreateTransaction = () => {
+
+    const queryClient = useQueryClient();
+
+    const { mutate, ...rest}: UseMutationResult = useApiPost<Transaction, { accountId: string }, Models.CreateTransaction>((variables) => `api/accounts/${variables.accountId}/transactions`, {
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: [transactionKey]});
+        }
+    });
+
+    const create = (accountId:string, transaction: Models.CreateTransaction) => {
+        mutate([{accountId}, transaction]);
+    };
+
+    return { create, ...rest };
 }

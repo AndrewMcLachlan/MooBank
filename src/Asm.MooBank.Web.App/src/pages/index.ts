@@ -10,7 +10,7 @@ export * from "./reports";
 export * from "./settings";
 export * from "./stock-holding";
 export * from "./stock-holding/transactions";
-export * from "./transactions/Transactions";
+export * from "./transactions";
 export * from "./rules/Rules";
 export * from "./tags";
 export * from "./virtualAccounts";

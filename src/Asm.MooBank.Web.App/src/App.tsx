@@ -60,6 +60,7 @@ const App: React.FC = () => {
                     <Route path="/accounts/:id" element={<Pages.Account />}>
                         <Route path="manage" element={<Pages.ManageAccount />} />
                         <Route path="transactions" element={<Pages.Transactions />} />
+                        <Route path="transactions/add" element={<Pages.AddTransaction />} />
                         <Route path="manage/virtual/create" element={<Pages.CreateVirtualAccount />} />
                         <Route path="manage/virtual/:virtualId" element={<Pages.ManageVirtualAccount />} />
                         <Route path="rules" element={<Pages.Rules />} />
@@ -73,6 +74,7 @@ const App: React.FC = () => {
                         </Route>
                         <Route path="virtual/:virtualId" element={<Pages.VirtualAccount />}>
                             <Route path="transactions" element={<Pages.Transactions />} />
+                            <Route path="transactions/add" element={<Pages.AddTransaction />} />
                         </Route>
                     </Route>
                     <Route path="/stock/create" element={<Pages.CreateStockHolding />} />

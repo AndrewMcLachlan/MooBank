@@ -25,6 +25,9 @@ internal class TransactionsEndpoints : EndpointGroupBase
         builder.MapQuery<Search, IEnumerable<Transaction>>("")
             .WithNames("Search Transactions");
 
+        builder.MapCommand<Create, Transaction>("", CommandBinding.None)
+            .WithNames("Create Transaction");
+
         builder.MapPatchCommand<UpdateTransaction, Transaction>("{id}", CommandBinding.None)
             .WithNames("Update Transaction");
 

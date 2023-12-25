@@ -8,6 +8,7 @@ import format from "date-fns/format";
 import parseISO from "date-fns/parseISO";
 import { useInstitutions } from "services";
 import { KeyValue } from "./KeyValue";
+import { InstitutionAccount } from "models";
 
 export const AccountSummary: React.FC<AccountSummaryProps> = ({ className, ...props }) => {
 
@@ -29,11 +30,11 @@ export const AccountSummary: React.FC<AccountSummaryProps> = ({ className, ...pr
             <hr />
             <KeyValue>
                 <div>Type</div>
-                <div>{account.accountType ?? "Virtual"}</div>
+                <div>{(account as InstitutionAccount).accountType ?? "Virtual"}</div>
             </KeyValue>
-            <KeyValue hidden={!account.institutionId}>
+            <KeyValue hidden={!(account as InstitutionAccount).institutionId}>
                 <div>Institution</div>
-                <div>{institutions?.find(i => i.id === account.institutionId)?.name}</div>
+                <div>{institutions?.find(i => i.id === (account as InstitutionAccount).institutionId)?.name}</div>
             </KeyValue>
         </Section>
     )

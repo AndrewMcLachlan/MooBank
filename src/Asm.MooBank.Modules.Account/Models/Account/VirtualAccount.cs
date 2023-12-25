@@ -2,6 +2,7 @@
 
 public partial record VirtualAccount : TransactionAccount
 {
+    public Guid ParentId { get; set; }
 }
 
 public partial record VirtualAccount
@@ -11,6 +12,7 @@ public partial record VirtualAccount
         return new VirtualAccount
         {
             Id = account.Id,
+            ParentId = account.InstitutionAccountId,
             Name = account.Name,
             Description = account.Description,
             CurrentBalance = account.Balance,

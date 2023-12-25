@@ -1,7 +1,6 @@
-import { v4 as guid } from "uuid";
-
 import { Tag } from "./Tag";
 import { emptyGuid } from "@andrewmclachlan/mooapp";
+import format from "date-fns/format";
 
 enum TransactionTypesEnum {
     Credit = 1,
@@ -68,3 +67,19 @@ export const emptyTransactionSplit: TransactionSplit = {
 };
 
 export const getSplitTotal = (splits: TransactionSplit[]) => splits.reduce((total, split) => total + split.amount, 0);
+
+export interface CreateTransaction {
+    id: string;
+    amount: number;
+    description: string;
+    reference: string;
+    transactionTime: string;
+}
+
+export const emptyTransaction: CreateTransaction = {
+    id: emptyGuid,
+    amount: 0,
+    description: "",
+    reference: "",
+    transactionTime: format(new Date(), 'yyyy-MM-dd'),
+}
