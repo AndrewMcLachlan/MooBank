@@ -14,7 +14,7 @@ export const ReportsPage: React.FC<PropsWithChildren<ReportsHeaderProps>> = ({ c
     if (!account) return  null;
 
     return (
-        <AccountPage navItems={getMenuItems(account)} breadcrumbs={[{ text: "Reports", route: `/accounts/${account.id}/reports` }, { text: title, route: location.pathname }]} title={title}>
+        <AccountPage navItems={getMenuItems(account as InstitutionAccount)} breadcrumbs={[{ text: "Reports", route: `/accounts/${account.id}/reports` }, { text: title, route: location.pathname }]} title={title}>
             {children}
         </AccountPage>
     )
