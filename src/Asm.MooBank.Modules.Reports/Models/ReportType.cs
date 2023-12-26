@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace Asm.MooBank.Models.Reports;
+namespace Asm.MooBank.Modules.Reports.Models;
 
 public struct ReportType
 {
@@ -55,17 +55,17 @@ public static class ReportTypeExtensions
     public static Expression<Func<Domain.Entities.Transactions.Transaction, bool>> ToTransactionFilterExpression(this ReportType reportType) =>
         (ReportTypeInner)reportType switch
         {
-            ReportType.Expenses => (Domain.Entities.Transactions.Transaction t) => TransactionTypes.Debit.Contains(t.TransactionType),
-            ReportType.Income => (Domain.Entities.Transactions.Transaction t) => TransactionTypes.Credit.Contains(t.TransactionType),
-            _ => (Domain.Entities.Transactions.Transaction t) => true
+            ReportType.Expenses => (t) => TransactionTypes.Debit.Contains(t.TransactionType),
+            ReportType.Income => (t) => TransactionTypes.Credit.Contains(t.TransactionType),
+            _ => (t) => true
         };
 
     public static Func<Domain.Entities.Transactions.Transaction, bool> ToTransactionFilter(this ReportType reportType) =>
         (ReportTypeInner)reportType switch
         {
-            ReportType.Expenses => (Domain.Entities.Transactions.Transaction t) => TransactionTypes.Debit.Contains(t.TransactionType),
-            ReportType.Income => (Domain.Entities.Transactions.Transaction t) => TransactionTypes.Credit.Contains(t.TransactionType),
-            _ => (Domain.Entities.Transactions.Transaction t) => true
+            ReportType.Expenses => (t) => TransactionTypes.Debit.Contains(t.TransactionType),
+            ReportType.Income => (t) => TransactionTypes.Credit.Contains(t.TransactionType),
+            _ => (t) => true
         };
 
     public static IQueryable<Domain.Entities.Transactions.Transaction> WhereByReportType(this IQueryable<Domain.Entities.Transactions.Transaction> transactions, ReportType reportType) =>

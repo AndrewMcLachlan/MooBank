@@ -1,7 +1,7 @@
 ﻿using Asm.MooBank.Domain.Entities.Transactions;
-using Asm.MooBank.Models.Reports;
+using Asm.MooBank.Modules.Reports.Models;
 
-namespace Asm.MooBank.Queries.Reports;
+namespace Asm.MooBank.Modules.Reports.Queries;
 
 public record GetInOutTrendReport : ReportQuery, IQuery<InOutTrendReport>;
 

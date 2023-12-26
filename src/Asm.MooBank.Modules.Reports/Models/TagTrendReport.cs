@@ -1,4 +1,4 @@
-﻿namespace Asm.MooBank.Models.Reports;
+﻿namespace Asm.MooBank.Modules.Reports.Models;
 
 public record TagTrendReport : ReportBase
 {

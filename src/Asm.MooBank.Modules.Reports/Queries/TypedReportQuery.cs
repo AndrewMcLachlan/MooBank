@@ -1,6 +1,6 @@
-﻿using Asm.MooBank.Models.Reports;
+﻿using Asm.MooBank.Modules.Reports.Models;
 
-namespace Asm.MooBank.Queries.Reports;
+namespace Asm.MooBank.Modules.Reports.Queries;
 
 public abstract record TypedReportQuery : ReportQuery
 {

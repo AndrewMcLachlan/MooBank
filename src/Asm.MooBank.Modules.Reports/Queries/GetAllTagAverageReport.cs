@@ -1,8 +1,8 @@
 ﻿using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.TagRelationships;
-using Asm.MooBank.Models.Reports;
+using Asm.MooBank.Modules.Reports.Models;
 
-namespace Asm.MooBank.Queries.Reports;
+namespace Asm.MooBank.Modules.Reports.Queries;
 
 public record GetAllTagAverageReport : TypedReportQuery, IQuery<AllTagAverageReport>;
 
@@ -63,7 +63,7 @@ internal class GetAllTagAverageReportHandler(IQueryable<Transaction> transaction
 
 
         // Filter out small values
-        var filteredTagValues = consolidatedTagValues.Where(t => (t.NetAmount / total) > 0.005m).Select(t => t with
+        var filteredTagValues = consolidatedTagValues.Where(t => t.NetAmount / total > 0.005m).Select(t => t with
         {
             NetAmount = Math.Round(Math.Abs(t.NetAmount!.Value / months)),
             GrossAmount = Math.Round(Math.Abs(t.GrossAmount / months)),

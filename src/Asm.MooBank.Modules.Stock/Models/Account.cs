@@ -1,5 +1,8 @@
-﻿namespace Asm.MooBank.Modules.Account.Models.Account;
+﻿namespace Asm.MooBank.Modules.Stock.Models;
 
+/// <summary>
+/// Duplicate, to be fixed
+/// </summary>
 public abstract record Account
 {
     public required Guid Id { get; set; }
@@ -15,6 +18,4 @@ public abstract record Account
     public string? AccountType { get; set; }
 
     public Guid? AccountGroupId { get; set; }
-
-    public IEnumerable<VirtualAccount> VirtualAccounts { get; set; } = [];
 }

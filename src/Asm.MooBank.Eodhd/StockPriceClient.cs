@@ -25,7 +25,7 @@ public class StockPriceClient(HttpClient httpClient, IOptions<EodhdConfig> confi
 
             if (prices == null || !prices.Any())
             {
-                logger.LogError("No prices returned");
+                logger.LogWarning("No prices returned");
                 return null;
             }
 

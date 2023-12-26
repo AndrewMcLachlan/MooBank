@@ -8,15 +8,7 @@ namespace Asm.MooBank.Domain.Entities.StockHolding;
 [AggregateRoot]
 public class StockHolding(Guid id) : Account.Account(id)
 {
-    public string Symbol { get; set; } = null!;
-
-    public string Exchange { get; set; } = null!;
-
-    [NotMapped]
-    public string InternationalSymbol
-    {
-        get => $"{Symbol}.{Exchange}";
-    }
+    public StockSymbol Symbol { get; set; } = null!;
 
     public int Quantity { get; set; }
 

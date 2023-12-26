@@ -1,10 +1,10 @@
 ﻿using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.StockHolding;
 using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Account.Models.Account;
+using Asm.MooBank.Modules.Stock.Models;
 
-namespace Asm.MooBank.Modules.Account.Commands.StockHolding;
-public sealed record Create() : ICommand<Models.Account.StockHolding>
+namespace Asm.MooBank.Modules.Stock.Commands;
+public sealed record Create() : ICommand<Models.StockHolding>
 {
     public required string Name { get; init; }
     public required string Description { get; init; }
@@ -16,9 +16,9 @@ public sealed record Create() : ICommand<Models.Account.StockHolding>
     public Guid? AccountGroupId { get; init; }
 }
 
-internal class CreateHandler(IStockHoldingRepository repository, IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Create, Models.Account.StockHolding>
+internal class CreateHandler(IStockHoldingRepository repository, IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Create, Models.StockHolding>
 {
-    public async ValueTask<Models.Account.StockHolding> Handle(Create command, CancellationToken cancellationToken)
+    public async ValueTask<Models.StockHolding> Handle(Create command, CancellationToken cancellationToken)
     {
         Domain.Entities.StockHolding.StockHolding entity = new(Guid.Empty)
         {

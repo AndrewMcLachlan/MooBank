@@ -1,6 +1,6 @@
 ﻿using Asm.Cqrs.AspNetCore;
-using Asm.MooBank.Models.Reports;
-using Asm.MooBank.Queries.Reports;
+using Asm.MooBank.Modules.Reports.Models;
+using Asm.MooBank.Modules.Reports.Queries;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 
@@ -32,6 +32,5 @@ internal class Reports : EndpointGroupBase
 
         builder.MapQuery<GetAllTagAverageReport, AllTagAverageReport>("{reportType}/all-tag-average/{start}/{end}")
             .WithNames("All Tag Average Report");
-
     }
 }

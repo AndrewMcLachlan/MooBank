@@ -1,6 +1,8 @@
 ﻿using Asm.Domain;
+using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Domain.Entities.StockHolding;
 using Asm.MooBank.Eodhd;
+using Asm.MooBank.Models;
 using Microsoft.Extensions.Logging;
 
 namespace Asm.MooBank.Services;
@@ -9,7 +11,7 @@ public interface IStockPriceService
     Task Update();
 }
 
-public class StockPriceService(IUnitOfWork unitOfWork, IStockHoldingRepository stockHoldingRepository, IStockPriceClient stockPriceClient, ILogger<StockPriceService> logger) : IStockPriceService
+public class StockPriceService(IUnitOfWork unitOfWork, IStockHoldingRepository stockHoldingRepository, IReferenceDataRepository referenceDataRepository, IStockPriceClient stockPriceClient, ILogger<StockPriceService> logger) : IStockPriceService
 {
     public async Task Update()
     {
@@ -17,9 +19,9 @@ public class StockPriceService(IUnitOfWork unitOfWork, IStockHoldingRepository s
 
         var stocks = await stockHoldingRepository.Get();
 
-        var symbols = stocks.Select(s => s.InternationalSymbol).Distinct();
+        var symbols = stocks.Select(s => s.Symbol).Distinct();
 
-        Dictionary<string, decimal> prices = [];
+        Dictionary<StockSymbol, decimal> prices = [];
 
         foreach (var symbol in symbols)
         {
@@ -31,15 +33,26 @@ public class StockPriceService(IUnitOfWork unitOfWork, IStockHoldingRepository s
 
         foreach (var stock in stocks)
         {
-            if (!prices.ContainsKey(stock.InternationalSymbol))
+            if (!prices.ContainsKey(stock.Symbol))
             {
-                logger.LogWarning("Unable to set the prices for {symbol}", stock.InternationalSymbol);
+                logger.LogWarning("Unable to set the prices for {symbol}", stock.Symbol);
                 continue;
             }
 
-            stock.CurrentPrice = prices[stock.InternationalSymbol];
+            stock.CurrentPrice = prices[stock.Symbol];
             stock.LastUpdated = DateTimeOffset.UtcNow;
-            logger.LogInformation("Setting {symbol} to {price}", stock.InternationalSymbol, stock.CurrentPrice);
+
+            logger.LogInformation("Setting {symbol} to {price}", stock.Symbol, stock.CurrentPrice);
+        }
+
+        foreach (var price in prices)
+        {
+            referenceDataRepository.AddStockPrice(new StockPriceHistory()
+            {
+                Symbol = price.Key,
+                Date = DateOnlyExtensions.Today().AddDays(-1),
+                Price = price.Value,
+            });
         }
 
         await unitOfWork.SaveChangesAsync();

@@ -1,8 +1,8 @@
 ﻿using Asm.MooBank.Domain.Entities.Transactions;
-using Asm.MooBank.Models.Reports;
+using Asm.MooBank.Modules.Reports.Models;
 using Asm.MooBank.Queries.Transactions;
 
-namespace Asm.MooBank.Queries.Reports;
+namespace Asm.MooBank.Modules.Reports.Queries;
 
 public record GetByTagReport : TypedReportQuery, IQuery<ByTagReport>
 {

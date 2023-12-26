@@ -1,6 +1,23 @@
-﻿using Asm.MooBank.Modules.Transactions.Models;
+﻿using Asm.MooBank.Models;
 
-namespace Asm.MooBank.Modules.Transactions;
+namespace Asm.MooBank.Modules.Stock.Models;
+public record StockTransaction
+{
+    public Guid Id { get; set; } = new Guid();
+    public Guid AccountId { get; set; }
+    public decimal Price { get; set; }
+    public int Quantity { get; set; }
+    public string? Description { get; set; }
+
+    public decimal Fees { get; set; }
+
+    public string? AccountHolderName { get; set; }
+
+    public DateTimeOffset TransactionDate { get; set; }
+
+    public TransactionType TransactionType { get; set; }
+}
+
 public static class StockTransactionExtensions
 {
     public static StockTransaction ToModel(this Domain.Entities.Transactions.StockTransaction stockTransaction) =>

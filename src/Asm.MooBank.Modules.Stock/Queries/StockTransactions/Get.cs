@@ -1,9 +1,10 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
-using Asm.MooBank.Domain.Entities.Transactions;
-using PagedResult = Asm.PagedResult<Asm.MooBank.Modules.Transactions.Models.StockTransaction>;
+using Asm.MooBank.Modules.Stock.Models;
+using Asm.MooBank.Modules.Stock.Queries.StockTransactions;
+using PagedResult = Asm.PagedResult<Asm.MooBank.Modules.Stock.Models.StockTransaction>;
 
-namespace Asm.MooBank.Modules.Transactions.Queries.StockTransactions;
+namespace Asm.MooBank.Modules.Stock.Queries.StockTransactions;
 
 public sealed record Get : IQuery<PagedResult>
 {
@@ -24,7 +25,7 @@ public sealed record Get : IQuery<PagedResult>
     public SortDirection SortDirection { get; init; } = SortDirection.Ascending;
 }
 
-internal class GetHandler(IQueryable<StockTransaction> transactions, ISecurity security) : IQueryHandler<Get, PagedResult>
+internal class GetHandler(IQueryable<Domain.Entities.Transactions.StockTransaction> transactions, ISecurity security) : IQueryHandler<Get, PagedResult>
 {
     public async ValueTask<PagedResult> Handle(Get query, CancellationToken cancellationToken)
     {
@@ -53,7 +54,7 @@ file static class IQueryableExtensions
         TransactionProperties = typeof(Models.StockTransaction).GetProperties();
     }
 
-    public static IQueryable<StockTransaction> Where(this IQueryable<StockTransaction> queryable, Get query)
+    public static IQueryable<Domain.Entities.Transactions.StockTransaction> Where(this IQueryable<Domain.Entities.Transactions.StockTransaction> queryable, Get query)
     {
         var result = queryable.Where(t => t.AccountId == query.AccountId);
 
@@ -62,7 +63,7 @@ file static class IQueryableExtensions
         return result;
     }
 
-    public static IOrderedQueryable<StockTransaction> Sort(this IQueryable<StockTransaction> query, string? field, SortDirection direction)
+    public static IOrderedQueryable<Domain.Entities.Transactions.StockTransaction> Sort(this IQueryable<Domain.Entities.Transactions.StockTransaction> query, string? field, SortDirection direction)
     {
         if (!String.IsNullOrWhiteSpace(field))
         {
@@ -71,7 +72,7 @@ file static class IQueryableExtensions
             // Hiding implementation details from the front-end
             if (field == "AccountHolder") field = "AccountHolder.FirstName";
 
-            ParameterExpression param = Expression.Parameter(typeof(StockTransaction), String.Empty);
+            ParameterExpression param = Expression.Parameter(typeof(Domain.Entities.Transactions.StockTransaction), String.Empty);
 
             Expression propertyExp = field.Split('.').Aggregate((Expression)param, Expression.Property);
 
@@ -80,13 +81,13 @@ file static class IQueryableExtensions
 
             LambdaExpression sort = Expression.Lambda(sortBody, param);
             MethodCallExpression call =
-                Expression.Call(typeof(Queryable), "OrderBy" + (direction == SortDirection.Descending ? "Descending" : String.Empty), [typeof(StockTransaction), propertyExp.Type],
+                Expression.Call(typeof(Queryable), "OrderBy" + (direction == SortDirection.Descending ? "Descending" : String.Empty), [typeof(Domain.Entities.Transactions.StockTransaction), propertyExp.Type],
                 query.Expression,
                 Expression.Quote(sort));
-            return (IOrderedQueryable<StockTransaction>)query.Provider.CreateQuery<StockTransaction>(call);
+            return (IOrderedQueryable<Domain.Entities.Transactions.StockTransaction>)query.Provider.CreateQuery<Domain.Entities.Transactions.StockTransaction>(call);
         }
 
-        Expression<Func<StockTransaction, object>> sortFunc = t => t.TransactionDate;
+        Expression<Func<Domain.Entities.Transactions.StockTransaction, object>> sortFunc = t => t.TransactionDate;
         return direction == SortDirection.Ascending ? query.OrderBy(sortFunc) : query.OrderByDescending(sortFunc);
 
     }

@@ -1,11 +1,11 @@
 ﻿using Asm.Cqrs.AspNetCore;
-using Asm.MooBank.Modules.Account.Commands.StockHolding;
-using Asm.MooBank.Modules.Account.Models.Account;
-using Asm.MooBank.Modules.Account.Queries.StockHolding;
+using Asm.MooBank.Modules.Stock.Commands;
+using Asm.MooBank.Modules.Stock.Models;
+using Asm.MooBank.Modules.Stock.Queries;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 
-namespace Asm.MooBank.Modules.Account.Endpoints;
+namespace Asm.MooBank.Modules.Stock.Endpoints;
 internal class StockHoldings : EndpointGroupBase
 {
     public override string Name => "Stock Holdings";
@@ -24,5 +24,8 @@ internal class StockHoldings : EndpointGroupBase
 
         builder.MapPatchCommand<Update, StockHolding>("/{id}", CommandBinding.None)
             .WithNames("Update Stock Holding");
+
+        builder.MapQuery<GetStockHoldingReport, StockHoldingReport>("stock-holding")
+            .WithNames("Stock Holding Report");
     }
 }

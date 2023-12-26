@@ -1,10 +1,10 @@
 ﻿using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Domain.Entities.Tag;
-using Asm.MooBank.Models.Reports;
 using Asm.MooBank.Queries.Transactions;
+using Asm.MooBank.Modules.Reports.Models;
 
-namespace Asm.MooBank.Queries.Reports;
+namespace Asm.MooBank.Modules.Reports.Queries;
 
 public record GetBreakdownReport : TypedReportQuery, IQuery<BreakdownReport>
 {
@@ -55,7 +55,7 @@ internal class GetBreakdownReportHandler(IQueryable<Transaction> transactions, I
         var transactions = await _transactions.IncludeTagsAndSubTags().WhereByReportQuery(request).Where(t => t.Splits.SelectMany(t => t.Tags).Any(tt => tags.Contains(tt))).ToListAsync(cancellationToken);
 
         var tagValues = transactions
-            .GroupBy(t => rootTag != null && t.Tags.Contains(rootTag) ? rootTag : (topTags.FirstOrDefault(tag => t.Tags.Contains(tag)) ?? lowerTags.Where(tag => t.Tags.Contains(tag.TransactionTag)).Select(tag => tag.ParentTag).First()))
+            .GroupBy(t => rootTag != null && t.Tags.Contains(rootTag) ? rootTag : topTags.FirstOrDefault(tag => t.Tags.Contains(tag)) ?? lowerTags.Where(tag => t.Tags.Contains(tag.TransactionTag)).Select(tag => tag.ParentTag).First())
             .Select(g => new TagValue
             {
                 TagId = g.Key.Id,
@@ -67,7 +67,8 @@ internal class GetBreakdownReportHandler(IQueryable<Transaction> transactions, I
         if (parentTagId == null)
         {
             var tagLessAmount = await _transactions.IncludeTags().WhereByReportQuery(request).Where(t => !t.Splits.SelectMany(t => t.Tags).Any()).SumAsync(t => t.Amount, cancellationToken);
-            tagValues.Add(new TagValue {
+            tagValues.Add(new TagValue
+            {
                 TagName = "Untagged",
                 GrossAmount = Math.Abs(tagLessAmount),
             });

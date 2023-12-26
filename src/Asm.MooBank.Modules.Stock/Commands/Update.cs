@@ -1,14 +1,14 @@
 ﻿using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.StockHolding;
 using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Account.Models.Account;
+using Asm.MooBank.Modules.Stock.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Asm.MooBank.Modules.Account.Commands.StockHolding;
-public sealed record Update : ICommand<Models.Account.StockHolding>
+namespace Asm.MooBank.Modules.Stock.Commands;
+public sealed record Update : ICommand<Models.StockHolding>
 {
     public Guid AccountId { get; init; }
     public required string Name { get; init; }
@@ -28,9 +28,9 @@ public sealed record Update : ICommand<Models.Account.StockHolding>
     }
 }
 
-internal class UpdateHandler(IStockHoldingRepository repository, IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Update, Models.Account.StockHolding>
+internal class UpdateHandler(IStockHoldingRepository repository, IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Update, Models.StockHolding>
 {
-    public async ValueTask<Models.Account.StockHolding> Handle(Update command, CancellationToken cancellationToken)
+    public async ValueTask<Models.StockHolding> Handle(Update command, CancellationToken cancellationToken)
     {
         Security.AssertAccountPermission(command.AccountId);
 

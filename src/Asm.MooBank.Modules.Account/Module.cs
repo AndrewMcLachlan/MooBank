@@ -13,7 +13,6 @@ public class Module : IModule
         new Endpoints.Accounts().MapGroup(endpoints);
         new Endpoints.Import().MapGroup(endpoints);
         new Endpoints.RulesEndpoints().MapGroup(endpoints);
-        new Endpoints.StockHoldings().MapGroup(endpoints);
         new Endpoints.VirtualAccounts().MapGroup(endpoints);
 
         return endpoints;

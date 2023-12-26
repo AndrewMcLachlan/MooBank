@@ -1,10 +1,10 @@
 ﻿using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Domain.Entities.Tag;
-using Asm.MooBank.Models.Reports;
 using Asm.MooBank.Queries.Transactions;
+using Asm.MooBank.Modules.Reports.Models;
 
-namespace Asm.MooBank.Queries.Reports;
+namespace Asm.MooBank.Modules.Reports.Queries;
 
 public record GetTagTrendReport : TypedReportQuery, IQuery<TagTrendReport>
 {
@@ -12,7 +12,7 @@ public record GetTagTrendReport : TypedReportQuery, IQuery<TagTrendReport>
 
     public bool? ApplySmoothing { get; init; } = false;
 
-   // public TagTrendReportSettings Settings { get; init; } = new TagTrendReportSettings();
+    // public TagTrendReportSettings Settings { get; init; } = new TagTrendReportSettings();
 }
 
 //public record TagTrendReportSettings(bool ApplySmoothing = false);
