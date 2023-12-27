@@ -2,7 +2,19 @@
 
 public partial class VirtualAccount(Guid id) : TransactionAccount(id)
 {
-    public Guid InstitutionAccountId { get; set; }
+    public Guid ParentAccountId { get; set; }
 
-    public virtual InstitutionAccount InstitutionAccount { get; set; } = null!;
+    public ICollection<RecurringTransaction> RecurringTransactions { get; set; } = new HashSet<RecurringTransaction>();
+
+
+    public void AddRecurringTransaction(string? description, decimal amount, ScheduleFrequency schedule)
+    {
+        RecurringTransactions.Add(new()
+        {
+            Amount = amount,
+            Description = description,
+            VirtualAccountId = Id,
+            Schedule = schedule,
+        });
+    }
 }

@@ -27,6 +27,8 @@ public abstract class Account(Guid id) : KeyedEntity<Guid>(id)
 
     public virtual ICollection<Rule> Rules { get; set; } = new HashSet<Rule>();
 
+    public virtual ICollection<VirtualAccount> VirtualAccounts { get; set; } = new HashSet<VirtualAccount>();
+
     public virtual AccountGroup.AccountGroup? GetAccountGroup(Guid accountHolderId) =>
         AccountHolders.Where(a => a.AccountHolderId == accountHolderId).Select(aah => aah.AccountGroup).SingleOrDefault();
 

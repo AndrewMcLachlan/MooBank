@@ -53,7 +53,7 @@ internal class UpdateTransactionHandler(ITransactionRepository transactionReposi
             entity.Splits.Add(new TransactionSplit(split.Id)
             {
                 Amount = split.Amount,
-                TransactionId = entity.TransactionId,
+                TransactionId = entity.Id,
                 Tags = (await tagRepository.Get(split.Tags.Select(t => t.Id), cancellationToken)).ToList(),
             });
         }

@@ -6,5 +6,5 @@ internal class AccountGroupRepository : RepositoryDeleteBase<AccountGroup, Guid>
 {
     public AccountGroupRepository(MooBankContext dataContext) : base(dataContext) { }
 
-    protected override IQueryable<AccountGroup> GetById(Guid id) => DataSet.Where(ag => ag.Id == id);
+    protected override IQueryable<AccountGroup> GetById(Guid id) => Entities.Where(ag => ag.Id == id);
 }

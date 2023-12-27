@@ -170,7 +170,7 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
     public async Task Reprocess(Guid accountId, CancellationToken cancellationToken = default)
     {
         var transactions = await _transactionRepository.GetTransactions(accountId, cancellationToken);
-        var transactionIds = transactions.Select(t => t.TransactionId);
+        var transactionIds = transactions.Select(t => t.Id);
 
         var rawTransactions = await _transactionRawRepository.GetAll(accountId, cancellationToken);
         var processed = rawTransactions.Where(t => t.TransactionId != null && transactionIds.Contains(t.TransactionId.Value));

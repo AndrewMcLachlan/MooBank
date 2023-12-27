@@ -1,20 +1,11 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Asm.Domain;
 
 namespace Asm.MooBank.Domain.Entities.Tag;
 
 [AggregateRoot]
-public partial class Tag : IEquatable<Tag>
+public partial class Tag(int id) : KeyedEntity<int>(id), IEquatable<Tag>
 {
-    public Tag()
-    {
-        Settings = new();
-        TaggedTo = new HashSet<Tag>();
-        Tags = new HashSet<Tag>();
-    }
-
-
-    public int Id { get; set; }
+    public Tag() : this(default) { }
 
     public string Name { get; set; } = null!;
 
@@ -22,11 +13,11 @@ public partial class Tag : IEquatable<Tag>
 
     public Guid FamilyId { get; set; }
 
-    public virtual ICollection<Tag> TaggedTo { get; set; }
+    public virtual ICollection<Tag> TaggedTo { get; set; } = new HashSet<Tag>();
 
-    public virtual ICollection<Tag> Tags { get; set; }
+    public virtual ICollection<Tag> Tags { get; set; } = new HashSet<Tag>();
 
-    public virtual TagSettings Settings { get; set; }
+    public virtual TagSettings Settings { get; set; } = new();
 
     #region Equality
     public bool Equals(Tag? other)

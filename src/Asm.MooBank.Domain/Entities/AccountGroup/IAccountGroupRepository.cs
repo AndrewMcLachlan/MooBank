@@ -1,7 +1,5 @@
-﻿using Asm.MooBank.Domain.Repositories;
+﻿namespace Asm.MooBank.Domain.Entities.AccountGroup;
 
-namespace Asm.MooBank.Domain.Entities.AccountGroup;
-
-public interface IAccountGroupRepository : IDeletableRepository<AccountGroup, Guid>
+public interface IAccountGroupRepository : IDeletableRepository<AccountGroup, Guid>, IWritableRepository<AccountGroup, Guid>
 {
 }

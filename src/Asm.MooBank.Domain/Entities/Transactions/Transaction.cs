@@ -1,19 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using Asm.Domain;
 using Asm.MooBank.Domain.Entities.Tag;
 
 namespace Asm.MooBank.Domain.Entities.Transactions;
 
 [AggregateRoot]
-public partial class Transaction
+public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
 {
-    public Transaction()
-    {
-    }
+    public Transaction() : this(default) { }
 
     #region Columns
-    public Guid TransactionId { get; set; }
-
     public Guid AccountId { get; set; }
 
     public Guid? AccountHolderId { get; set; }
@@ -70,7 +65,7 @@ public partial class Transaction
             split = new()
             {
                 Tags = tags.ToList(),
-                TransactionId = TransactionId,
+                TransactionId = Id,
                 Amount = Amount,
             };
             Splits.Add(split);

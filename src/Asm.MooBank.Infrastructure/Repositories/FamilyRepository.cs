@@ -2,6 +2,6 @@
 using Asm.MooBank.Domain.Entities.Family;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
-internal class FamilyRepository(MooBankContext context) : RepositoryBase<MooBankContext, Family, Guid>(context), IFamilyRepository
+internal class FamilyRepository(MooBankContext context) : RepositoryWriteBase<MooBankContext, Family, Guid>(context), IFamilyRepository
 {
 }

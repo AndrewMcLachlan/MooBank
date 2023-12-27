@@ -1,38 +1,11 @@
-﻿using Asm.MooBank.Domain.Repositories;
+﻿using Asm.Domain;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
-public abstract class RepositoryBase<TEntity, TKey> : IRepository<TEntity, TKey> where TEntity : class
+public abstract class RepositoryBase<TEntity, TKey> : Asm.Domain.Infrastructure.RepositoryBase<MooBankContext, TEntity, TKey>, IRepository<TEntity, TKey> where TEntity : KeyedEntity<TKey> where TKey : struct
 {
-    protected MooBankContext DataContext { get; }
-
-    protected IQueryable<TEntity> DataSet
+    protected RepositoryBase(MooBankContext context) : base(context)
     {
-        get => DataContext.Set<TEntity>();
-    }
-
-    protected RepositoryBase(MooBankContext dataContext)
-    {
-        DataContext = dataContext;
-    }
-
-    public virtual async Task<IEnumerable<TEntity>> GetAll(CancellationToken cancellationToken = default) => await DataSet.ToListAsync(cancellationToken);
-
-    public virtual async Task<TEntity> Get(TKey id, CancellationToken cancellationToken = default)
-    {
-        var entity = await GetById(id).SingleOrDefaultAsync(cancellationToken);
-
-        return entity ?? throw new NotFoundException();
-    }
-
-    public virtual TEntity Add(TEntity entity)
-    {
-        return DataContext.Set<TEntity>().Add(entity).Entity;
-    }
-
-    public TEntity Update(TEntity entity)
-    {
-        return DataContext.Set<TEntity>().Update(entity).Entity;
     }
 
     protected abstract IQueryable<TEntity> GetById(TKey id);

@@ -1,9 +1,8 @@
 ﻿using Asm.MooBank.Domain.Entities.ReferenceData;
-using Asm.MooBank.Domain.Repositories;
 
 namespace Asm.MooBank.Domain.Entities.Account;
 
-public interface IInstitutionAccountRepository : IDeletableRepository<InstitutionAccount, Guid>
+public interface IInstitutionAccountRepository : IDeletableRepository<InstitutionAccount, Guid>, IWritableRepository<InstitutionAccount,Guid>
 {
     Task<ImporterType> GetImporterType(int importerTypeId, CancellationToken cancellationToken = default);
     Task<IEnumerable<ImporterType>> GetImporterTypes(CancellationToken cancellationToken = default);

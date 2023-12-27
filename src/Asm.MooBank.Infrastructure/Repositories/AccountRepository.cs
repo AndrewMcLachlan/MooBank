@@ -2,10 +2,15 @@
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
-public class AccountRepository(MooBankContext dataContext) : RepositoryDeleteBase<Account, Guid>(dataContext), IAccountRepository
+public class AccountRepository(MooBankContext dataContext) : Asm.Domain.Infrastructure.RepositoryDeleteBase<MooBankContext, Account, Guid>(dataContext), IAccountRepository
 {
+    public override void Delete(Guid id)
+    {
+        throw new NotImplementedException();
+    }
+
     public override Task<Account> Get(Guid id, CancellationToken cancellationToken = default) =>
-        (DataSet.Include(a => a.Rules).ThenInclude(a => a.Tags).Where(a => a.Id == id).SingleOrDefaultAsync(cancellationToken) ?? throw new NotFoundException())!;
+        (Entities.Include(a => a.Rules).ThenInclude(a => a.Tags).Where(a => a.Id == id).SingleOrDefaultAsync(cancellationToken) ?? throw new NotFoundException())!;
 
     public async Task<InstitutionAccount> GetInstitutionAccount(Guid accountId, CancellationToken cancellationToken)
     {
@@ -23,5 +28,5 @@ public class AccountRepository(MooBankContext dataContext) : RepositoryDeleteBas
         return account.VirtualAccounts.SingleOrDefault(va => va.Id == accountId) ?? throw new NotFoundException();
     }
 
-    protected override IQueryable<Account> GetById(Guid id) => DataSet.Where(a => a.Id == id);
+    protected IQueryable<Account> GetById(Guid id) => Entities.Where(a => a.Id == id);
 }

@@ -1,6 +1,4 @@
-﻿using Asm.MooBank.Domain.Repositories;
-
-namespace Asm.MooBank.Domain.Entities.Transactions;
+﻿namespace Asm.MooBank.Domain.Entities.Transactions;
 
 public interface ITransactionRepository : IWritableRepository<Transaction, Guid>
 {

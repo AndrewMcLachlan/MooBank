@@ -49,4 +49,11 @@
     <Property Name="ParentElementType" Value="SqlSchema" />
     <Property Name="NewName" Value="[TagSettings]" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="5a7dea4a-c72d-480f-89af-8764b0a3b51c" ChangeDateTime="12/27/2023 02:48:26">
+    <Property Name="ElementName" Value="[dbo].[VirtualAccount].[InstitutionAccountId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[VirtualAccount]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[ParentAccountId]" />
+  </Operation>
 </Operations>

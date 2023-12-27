@@ -3,7 +3,7 @@ using Asm.MooBank.Institution.Ing.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Institution.Ing.Infrastructure;
-internal class TransactionRawRepository : Asm.Domain.Infrastructure.RepositoryBase<MooBankContext, TransactionRaw, Guid>, ITransactionRawRepository
+internal class TransactionRawRepository : Asm.Domain.Infrastructure.RepositoryWriteBase<MooBankContext, TransactionRaw, Guid>, ITransactionRawRepository
 {
     public TransactionRawRepository(MooBankContext context) : base(context)
     {

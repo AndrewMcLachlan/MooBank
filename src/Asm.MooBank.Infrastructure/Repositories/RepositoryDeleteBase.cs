@@ -1,16 +1,19 @@
-﻿using Asm.MooBank.Domain.Repositories;
+﻿using Asm.Domain;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
-public abstract class RepositoryDeleteBase<TEntity, TKey> : RepositoryBase<TEntity, TKey>, IDeletableRepository<TEntity, TKey> where TEntity : class
+public abstract class RepositoryDeleteBase<TEntity, TKey> : Asm.Domain.Infrastructure.RepositoryDeleteBase<MooBankContext, TEntity, TKey> where TEntity : KeyedEntity<TKey> where TKey : struct
 {
 
     protected RepositoryDeleteBase(MooBankContext dataContext) : base(dataContext)
     {
     }
 
-    public virtual void Delete(TEntity entity)
+    public override void Delete(TKey id)
     {
-        DataContext.Set<TEntity>().Remove(entity);
+        throw new NotImplementedException();
     }
+
+    protected abstract IQueryable<TEntity> GetById(TKey id);
+
 }

@@ -10,6 +10,6 @@ namespace Asm.MooBank.Infrastructure.Repositories
         {
         }
 
-        protected override IQueryable<VirtualAccount> GetById(Guid id) =>  DataSet.Where(v => v.Id == id);
+        protected override IQueryable<VirtualAccount> GetById(Guid id) =>  Entities.Where(v => v.Id == id);
     }
 }

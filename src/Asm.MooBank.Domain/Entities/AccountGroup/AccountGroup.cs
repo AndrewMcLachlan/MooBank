@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using Asm.Domain;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Asm.MooBank.Domain.Entities.AccountGroup;
 
 [AggregateRoot]
-public class AccountGroup : IIdentifiable<Guid>
+public class AccountGroup([DisallowNull] Guid id) : KeyedEntity<Guid>(id)
 {
-    public Guid Id { get; set; }
+    public AccountGroup() : this(default) { }
 
     public string Name { get; set; } = null!;
 

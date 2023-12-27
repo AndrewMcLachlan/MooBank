@@ -46,9 +46,8 @@ public static class TagExtensions
     }
 
     public static Domain.Entities.Tag.Tag ToEntity(this Tag tag) =>
-        new()
+        new(tag.Id)
         {
-            Id = tag.Id,
             Name = tag.Name,
             Tags = tag.Tags.Select(t => t.ToEntity()).ToList(),
             Settings = new Domain.Entities.Tag.TagSettings

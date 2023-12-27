@@ -10,9 +10,10 @@ internal class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
         // Required do to computed column savings issues. See https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-7.0/breaking-changes#sqlserver-tables-with-triggers
         entity.ToTable(t => t.HasTrigger("FakeTrigger"));
 
-        entity.HasKey("TransactionId");
+        entity.HasKey("Id");
+        entity.Property(t => t.Id).HasColumnName("TransactionId");
 
-        entity.Property(e => e.TransactionId).ValueGeneratedOnAdd();
+        entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
         entity.Property(e => e.Amount).HasColumnType("decimal(10, 2)");
 

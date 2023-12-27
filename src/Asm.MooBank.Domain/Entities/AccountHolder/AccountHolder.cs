@@ -2,14 +2,10 @@
 
 namespace Asm.MooBank.Domain.Entities.AccountHolder;
 
-public partial class AccountHolder
+public partial class AccountHolder(Guid id) : KeyedEntity<Guid>(id)
 {
-    public AccountHolder()
-    {
-        AccountAccountHolders = new HashSet<Account.AccountAccountHolder>();
-        Cards = new HashSet<AccountHolderCard>();
-    }
-    public required Guid AccountHolderId { get; set; }
+    public AccountHolder() : this(default) { }
+
     public required string EmailAddress { get; set; }
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
@@ -21,9 +17,9 @@ public partial class AccountHolder
     [NotMapped]
     public IEnumerable<Account.Account> Accounts => AccountAccountHolders?.Select(a => a.Account) ?? Enumerable.Empty<Account.Account>();
 
-    public virtual ICollection<Account.AccountAccountHolder> AccountAccountHolders { get; set; }
+    public virtual ICollection<Account.AccountAccountHolder> AccountAccountHolders { get; set; } = new HashSet<Account.AccountAccountHolder>();
 
-    public virtual ICollection<AccountHolderCard> Cards { get; set; }
+    public virtual ICollection<AccountHolderCard> Cards { get; set; } = new HashSet<AccountHolderCard>();
 
     public Family.Family Family { get; set; } = null!;
 }

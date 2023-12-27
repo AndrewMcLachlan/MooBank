@@ -8,18 +8,18 @@ public class TransactionTagRepository(MooBankContext dataContext, Models.Account
     {
         if (transactionTag.Settings == null)
         {
-            DataContext.Add(new TagSettings(transactionTag.Id));
+            Context.Add(new TagSettings(transactionTag.Id));
         }
     }
 
 
-    public override async Task<IEnumerable<Tag>> GetAll(CancellationToken cancellationToken = default)
+    public override async Task<IEnumerable<Tag>> Get(CancellationToken cancellationToken = default)
     {
-        return await DataSet.Include(t => t.Tags).Where(t => t.FamilyId == accountHolder.FamilyId && !t.Deleted).ToListAsync(cancellationToken);
+        return await Entities.Include(t => t.Tags).Where(t => t.FamilyId == accountHolder.FamilyId && !t.Deleted).ToListAsync(cancellationToken);
     }
 
     public async Task<IEnumerable<Tag>> Get(IEnumerable<int> tagIds, CancellationToken cancellationToken = default) =>
-        await DataSet.Where(t => t.FamilyId == accountHolder.FamilyId && tagIds.Contains(t.Id)).ToListAsync(cancellationToken);
+        await Entities.Where(t => t.FamilyId == accountHolder.FamilyId && tagIds.Contains(t.Id)).ToListAsync(cancellationToken);
 
 
     public async Task<Tag> Get(int id, bool includeSubTags = false, CancellationToken cancellationToken = default)
@@ -36,5 +36,5 @@ public class TransactionTagRepository(MooBankContext dataContext, Models.Account
         tag.Deleted = true;
     }
 
-    protected override IQueryable<Tag> GetById(int id) => DataSet.Where(t => t.Id == id && t.FamilyId == accountHolder.FamilyId);
+    protected override IQueryable<Tag> GetById(int id) => Entities.Where(t => t.Id == id && t.FamilyId == accountHolder.FamilyId);
 }

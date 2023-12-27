@@ -18,10 +18,9 @@ public class SecurityRepository(MooBankContext dataContext, IAuthorizationServic
     public void AssertAccountPermission(Guid accountId)
     {
         var virtualAccount = _mooBankContext.VirtualAccounts.Find(accountId);
-        var accountToCheck = (virtualAccount != null) ? virtualAccount.InstitutionAccountId : accountId;
+        var accountToCheck = (virtualAccount != null) ? virtualAccount.ParentAccountId : accountId;
 
         var authResult = _authorizationService.AuthorizeAsync(_principalProvider.Principal!, accountToCheck, Policies.AccountViewer).Result;
-
 
         if (!authResult.Succeeded)
 
@@ -34,7 +33,7 @@ public class SecurityRepository(MooBankContext dataContext, IAuthorizationServic
     {
         var virtualAccount = await _mooBankContext.VirtualAccounts.FindAsync(accountId);
 
-        var accountToCheck = (virtualAccount != null) ? virtualAccount.InstitutionAccountId : accountId;
+        var accountToCheck = (virtualAccount != null) ? virtualAccount.Id : accountId;
 
         var authResult = await _authorizationService.AuthorizeAsync(_principalProvider.Principal!, accountToCheck, Policies.AccountViewer);
 

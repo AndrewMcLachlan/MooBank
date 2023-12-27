@@ -18,10 +18,6 @@ public class InstitutionAccount : IEntityTypeConfiguration<Domain.Entities.Accou
               .WithOne()
             .HasForeignKey<Domain.Entities.Account.ImportAccount>(e => e.AccountId);
 
-        entity.HasMany(e => e.VirtualAccounts)
-              .WithOne(e => e.InstitutionAccount)
-              .HasForeignKey(e => e.InstitutionAccountId);
-
         entity.HasOne(e => e.Institution).WithMany().HasForeignKey(e => e.InstitutionId);
 
     }

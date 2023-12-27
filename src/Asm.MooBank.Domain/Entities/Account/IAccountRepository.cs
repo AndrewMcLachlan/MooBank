@@ -1,4 +1,4 @@
-﻿using Asm.MooBank.Domain.Repositories;
+﻿using Asm.Domain;
 
 namespace Asm.MooBank.Domain.Entities.Account;
 

@@ -6,7 +6,6 @@ using Asm.MooBank.Domain.Entities.AccountHolder;
 using Asm.MooBank.Domain.Entities.Budget;
 using Asm.MooBank.Domain.Entities.Family;
 using Asm.MooBank.Domain.Entities.Institution;
-using Asm.MooBank.Domain.Entities.RecurringTransactions;
 using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Domain.Entities.StockHolding;
 using Asm.MooBank.Domain.Entities.Tag;

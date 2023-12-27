@@ -8,7 +8,7 @@ public static class TransactionExtensions
     public static Transaction ToModel(this Domain.Entities.Transactions.Transaction transaction) =>
         new()
         {
-            Id = transaction.TransactionId,
+            Id = transaction.Id,
             Reference = transaction.Reference,
             Amount = transaction.Amount,
             NetAmount = transaction.NetAmount,
@@ -29,7 +29,7 @@ public static class TransactionExtensions
     public static Transaction ToSimpleModel(this Domain.Entities.Transactions.Transaction transaction) =>
         new()
         {
-            Id = transaction.TransactionId,
+            Id = transaction.Id,
             Reference = transaction.Reference,
             Amount = transaction.Amount,
             NetAmount = transaction.NetAmount,

@@ -7,6 +7,7 @@
     <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
     <SpaProxyServerUrl>https://localhost:3005</SpaProxyServerUrl>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
+    <UserSecretsId>6fe8aeec-2ada-4d1b-bfd6-2bcfbbf5f7d9</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

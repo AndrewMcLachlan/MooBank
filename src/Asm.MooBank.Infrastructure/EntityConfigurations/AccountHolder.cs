@@ -10,7 +10,8 @@ public class AccountHolderConfiguration : IEntityTypeConfiguration<AccountHolder
             .HasDatabaseName("IX_AccountHolder_Email")
             .IsUnique();
 
-        entity.HasKey(e => e.AccountHolderId);
+        entity.HasKey(e => e.Id);
+        entity.Property(e => e.Id).HasColumnName("AccountHolderId");
 
         entity.Property(e => e.EmailAddress)
             .IsRequired()
@@ -24,7 +25,7 @@ public class AccountHolderConfiguration : IEntityTypeConfiguration<AccountHolder
 
         entity.HasMany(p => p.AccountAccountHolders)
             .WithOne(e => e.AccountHolder)
-            .HasPrincipalKey(e => e.AccountHolderId)
+            .HasPrincipalKey(e => e.Id)
             .HasForeignKey(p => p.AccountHolderId);
 
         entity.HasMany(e => e.Cards).WithOne(e => e.AccountHolder).HasForeignKey(e => e.AccountHolderId);

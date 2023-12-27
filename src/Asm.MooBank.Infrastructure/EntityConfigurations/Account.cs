@@ -34,6 +34,10 @@ public class Account : IEntityTypeConfiguration<Domain.Entities.Account.Account>
                .HasPrincipalKey(e => e.Id)
                .HasForeignKey(p => p.AccountId);
 
+        entity.HasMany(e => e.VirtualAccounts)
+            .WithOne()
+            .HasForeignKey(e => e.ParentAccountId);
+
         /*entity.HasMany(p => p.AccountHolders)
               .WithMany(t => t.Accounts)
               .UsingEntity<Domain.Entities.Account.AccountAccountHolder>(

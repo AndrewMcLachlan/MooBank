@@ -1,15 +1,11 @@
-﻿using Asm.MooBank.Domain.Entities.RecurringTransactions;
+﻿using Asm.MooBank.Domain.Entities.Account;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
-internal class RecurringTransactionRepository : RepositoryBase<RecurringTransaction, int>, IRecurringTransactionRepository
+internal class RecurringTransactionRepository(MooBankContext context) : RepositoryBase<RecurringTransaction, Guid>(context), IRecurringTransactionRepository
 {
-    public RecurringTransactionRepository(MooBankContext dataContext) : base(dataContext)
-    {
-    }
+    public override async Task<IEnumerable<RecurringTransaction>> Get(CancellationToken cancellationToken = default) =>
+        await Entities.Include(rt => rt.VirtualAccount).ToListAsync(cancellationToken);
 
-    public override async Task<IEnumerable<RecurringTransaction>> GetAll(CancellationToken cancellationToken = default) =>
-        await DataSet.Include(rt => rt.VirtualAccount).ToListAsync(cancellationToken);
-
-    protected override IQueryable<RecurringTransaction> GetById(int id) => DataSet.Where(t => t.RecurringTransactionId == id);
+    protected override IQueryable<RecurringTransaction> GetById(Guid id) => Entities.Where(t => t.Id == id);
 }

@@ -12,7 +12,7 @@ public partial record VirtualAccount
         return new VirtualAccount
         {
             Id = account.Id,
-            ParentId = account.InstitutionAccountId,
+            ParentId = account.Id,
             Name = account.Name,
             Description = account.Description,
             CurrentBalance = account.Balance,
@@ -27,7 +27,7 @@ public static class VirtualAccountExtensions
 {
     public static Domain.Entities.Account.VirtualAccount ToEntity(this VirtualAccount account, Guid parentAccountId) => new(account.Id)
     {
-        InstitutionAccountId = parentAccountId,
+        ParentAccountId = parentAccountId,
         Name = account.Name,
         Description = account.Description,
         Balance = account.CurrentBalance,

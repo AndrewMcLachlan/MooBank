@@ -1,6 +1,4 @@
-﻿using Asm.MooBank.Domain.Repositories;
-
-namespace Asm.MooBank.Domain.Entities.Account;
+﻿namespace Asm.MooBank.Domain.Entities.Account;
 
 public interface IRuleRepository : IDeletableRepository<Rule, int>
 {

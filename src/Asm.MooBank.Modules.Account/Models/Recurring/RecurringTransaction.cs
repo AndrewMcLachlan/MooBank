@@ -1,0 +1,31 @@
+﻿using Asm.MooBank.Models;
+
+namespace Asm.MooBank.Modules.Account.Models.Recurring;
+public record RecurringTransaction
+{
+    public Guid Id { get; init; }
+
+    public Guid VirtualAccountId { get; init; }
+
+    public decimal Amount { get; init; }
+
+    public DateTimeOffset? LastRun { get; init; }
+
+    public ScheduleFrequency Schedule { get; init; }
+}
+
+public static class RecurringTransactionExtensions
+{
+    public static RecurringTransaction ToModel(this Domain.Entities.Account.RecurringTransaction recurringTransaction) =>
+        new()
+        {
+            Amount = recurringTransaction.Amount,
+            LastRun = recurringTransaction.LastRun,
+            Schedule = recurringTransaction.Schedule,
+            Id = recurringTransaction.Id,
+            VirtualAccountId = recurringTransaction.VirtualAccountId,
+        };
+
+    public static IEnumerable<RecurringTransaction> ToModel (this IEnumerable<Domain.Entities.Account.RecurringTransaction> recurringTransactions) =>
+        recurringTransactions.Select(t => t.ToModel());
+}

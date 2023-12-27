@@ -1,8 +1,6 @@
-﻿using Asm.MooBank.Domain.Repositories;
+﻿namespace Asm.MooBank.Domain.Entities.AccountHolder;
 
-namespace Asm.MooBank.Domain.Entities.AccountHolder;
-
-public interface IAccountHolderRepository : IWritableRepository<AccountHolder, Guid>
+public interface IAccountHolderRepository : IRepository<AccountHolder, Guid>
 {
 
     //Task<AccountHolder?> GetCurrentOrNull(CancellationToken cancellationToken = default);

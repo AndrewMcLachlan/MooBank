@@ -22,8 +22,6 @@ public class InstitutionAccount(Guid id) : TransactionAccount(id)
 
     public virtual ImportAccount? ImportAccount { get; set; }
 
-    public virtual ICollection<VirtualAccount> VirtualAccounts { get; set; } = new HashSet<VirtualAccount>();
-
     public virtual Institution.Institution Institution { get; set; } = null!;
 
     [NotMapped]

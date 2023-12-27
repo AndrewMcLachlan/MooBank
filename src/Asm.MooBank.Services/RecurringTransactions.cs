@@ -1,5 +1,5 @@
 ﻿using Asm.Domain;
-using Asm.MooBank.Domain.Entities.RecurringTransactions;
+using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Models;
 using Microsoft.Extensions.Logging;
@@ -27,7 +27,7 @@ public class RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionRep
     /// <exception cref="InvalidOperationException">Thrown when the schedule type is unrecognised.</exception>
     public async Task Process()
     {
-        foreach (var trans in await recurringTransactionRepository.GetAll())
+        foreach (var trans in await recurringTransactionRepository.Get())
         {
             if (trans.LastRun == null)
             {
