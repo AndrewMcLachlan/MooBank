@@ -1,9 +1,3 @@
-variable "ApplicationInsights:InstrumentationKey" {
-    value "3f1721ce-1f32-4c7a-a690-83a2f9a50496" {
-        environment = ["production"]
-    }
-}
-
 variable "ConnectionStrings:MooBank" {
     value "#{ConnectionString}" {}
 }
@@ -21,4 +15,10 @@ variable "Database:Name" {
 
 variable "Logging:LogLevel:Default" {
     value "Warning" {}
+}
+
+variable "ApplicationInsights:InstrumentationKey" {
+    value "451d5b74-a539-4b0e-ac97-838dac318f55" {
+        environment = ["production"]
+    }
 }
