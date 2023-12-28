@@ -7,6 +7,7 @@ import { State, TransactionsFilter } from "../store/state";
 import { SortDirection, useApiGet, useApiPagedGet, useApiDelete, useApiDatalessPut, useApiPatch, useApiDatalessPost, useApiPost } from "@andrewmclachlan/mooapp";
 import format from "date-fns/format";
 import parseISO from "date-fns/parseISO";
+import { UseCreateMutationResult } from "./Mutations";
 
 const transactionKey = "transactions";
 
@@ -119,7 +120,7 @@ export const useRemoveTransactionTag = () => {
     });
 }
 
-export const useCreateTransaction = (): Omit<UseCreateMutationResult, "mutate"> => {
+export const useCreateTransaction = (): UseCreateMutationResult<(accountId:string, transaction: Models.CreateTransaction) => void> => {
 
     const queryClient = useQueryClient();
 
@@ -134,8 +135,4 @@ export const useCreateTransaction = (): Omit<UseCreateMutationResult, "mutate"> 
     };
 
     return { create, ...rest };
-}
-
-export interface UseCreateMutationResult extends Omit<UseMutationResult, "mutate"> {
-    create: (accountId:string, transaction: Models.CreateTransaction) => void;
 }
