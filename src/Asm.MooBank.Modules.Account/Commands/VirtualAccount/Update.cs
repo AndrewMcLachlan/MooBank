@@ -1,7 +1,8 @@
-﻿using System.Text.Json.Serialization;
-using Asm.MooBank.Commands;
+﻿using Asm.MooBank.Commands;
+using Asm.MooBank.Domain.Entities.Account.Specifications;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Models;
+using Asm.MooBank.Modules.Account.Models.Account;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,16 +30,18 @@ internal class UpdateHandler(IAccountRepository accountRepository, ITransactionR
     private readonly IAccountRepository _accountRepository = accountRepository;
     private readonly ITransactionRepository _transactionRepository = transactionRepository;
 
-    public async ValueTask<Models.Account.VirtualAccount> Handle(Update request, CancellationToken cancellationToken)
+    public async ValueTask<Models.Account.VirtualAccount> Handle(Update command, CancellationToken cancellationToken)
     {
-        Security.AssertAccountPermission(request.AccountId);
+        Security.AssertAccountPermission(command.AccountId);
 
-        var account = await _accountRepository.GetVirtualAccount(request.AccountId, request.VirtualAccountId, cancellationToken);
+        var parentAccount = await _accountRepository.Get(command.AccountId, new VirtualAccountSpecification(), cancellationToken);
 
-        account.Name = request.Name;
-        account.Description = request.Description;
+        var account = parentAccount.VirtualAccounts.SingleOrDefault(a => a.Id == command.VirtualAccountId) ?? throw new NotFoundException();
 
-        var amount = account.Balance - request.CurrentBalance;
+        account.Name = command.Name;
+        account.Description = command.Description;
+
+        var amount = account.Balance - command.CurrentBalance;
 
         //TODO: Should be done via domain event
         _transactionRepository.Add(new Domain.Entities.Transactions.Transaction
@@ -51,10 +54,10 @@ internal class UpdateHandler(IAccountRepository accountRepository, ITransactionR
             TransactionType = amount > 0 ? TransactionType.BalanceAdjustmentCredit : TransactionType.BalanceAdjustmentDebit,
         });
 
-        account.Balance = request.CurrentBalance;
+        account.Balance = command.CurrentBalance;
 
 
         await UnitOfWork.SaveChangesAsync(cancellationToken);
-        return account;
+        return account.ToModel();
     }
 }

@@ -1,12 +1,9 @@
 ﻿using Asm.MooBank.Domain.Entities.AccountHolder;
-using Asm.MooBank.Security;
 
 namespace Asm.MooBank.Infrastructure.Repositories
 {
-    public class AccountHolderRepository(MooBankContext dataContext, IUserDataProvider userDataProvider) : RepositoryBase<AccountHolder, Guid>(dataContext), IAccountHolderRepository
+    public class AccountHolderRepository(MooBankContext dataContext) : RepositoryBase<AccountHolder, Guid>(dataContext), IAccountHolderRepository
     {
-        private readonly IUserDataProvider _userDataProvider = userDataProvider;
-
         protected override IQueryable<AccountHolder> GetById(Guid Id)
         {
             throw new NotSupportedException();

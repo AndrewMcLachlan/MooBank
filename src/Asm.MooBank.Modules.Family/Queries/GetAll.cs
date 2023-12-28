@@ -9,7 +9,7 @@ internal class GetAllHandler(IQueryable<Domain.Entities.Family.Family> families,
 {
     public async ValueTask<IEnumerable<Models.Family>>Handle(GetAll request, CancellationToken cancellationToken)
     {
-        security.AssertAdministrator();
+        await security.AssertAdministrator(cancellationToken);
 
         return await families.Include(f => f.AccountHolders).ToModel().ToListAsync(cancellationToken);
     }

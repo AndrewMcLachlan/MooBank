@@ -45,9 +45,9 @@ const getMenuItems = (account: InstitutionAccount | VirtualAccount, navItems: Na
             case "Import":
                 items.push({ route: `${baseRoute}/import`, text: "Import", image: <Import /> });
         }
-
-        items.push({ route: `${baseRoute}/manage`, text: "Manage", image: <Sliders /> });
     }
+    
+        items.push({ route: `${baseRoute}/manage`, text: "Manage", image: <Sliders /> });
 
     if (navItems.length > 0) {
         items.push(<NavItemDivider />);

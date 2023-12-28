@@ -119,7 +119,7 @@ export const useRemoveTransactionTag = () => {
     });
 }
 
-export const useCreateTransaction = () => {
+export const useCreateTransaction = (): Omit<UseCreateMutationResult, "mutate"> => {
 
     const queryClient = useQueryClient();
 
@@ -134,4 +134,8 @@ export const useCreateTransaction = () => {
     };
 
     return { create, ...rest };
+}
+
+export interface UseCreateMutationResult extends Omit<UseMutationResult, "mutate"> {
+    create: (accountId:string, transaction: Models.CreateTransaction) => void;
 }

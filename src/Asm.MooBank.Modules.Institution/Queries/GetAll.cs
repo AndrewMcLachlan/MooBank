@@ -12,7 +12,7 @@ internal class GetAllHandler(IQueryable<Domain.Entities.Institution.Institution>
 
     public async ValueTask<IEnumerable<Models.Institution>> Handle(GetAll request, CancellationToken cancellationToken)
     {
-        _security.AssertAdministrator();
+        await _security.AssertAdministrator(cancellationToken);
 
         return await _institutions.ToModel().ToListAsync(cancellationToken);
     }

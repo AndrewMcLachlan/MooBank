@@ -14,18 +14,12 @@ public class AccountRepository(MooBankContext dataContext) : Asm.Domain.Infrastr
 
     public async Task<InstitutionAccount> GetInstitutionAccount(Guid accountId, CancellationToken cancellationToken)
     {
-        var account = await GetById(accountId).Include("VirtualAccounts").SingleOrDefaultAsync() ?? throw new NotFoundException();
+        var account = await GetById(accountId).Include("VirtualAccounts").SingleOrDefaultAsync(cancellationToken) ?? throw new NotFoundException();
 
         if (account is not InstitutionAccount institutionAccount)
             throw new InvalidOperationException("Cannot update virtual account on non-institution account.");
 
         return institutionAccount;
-    }
-
-    public async Task<VirtualAccount> GetVirtualAccount(Guid accountId, Guid institutionAccountId, CancellationToken cancellationToken)
-    {
-        var account = await GetInstitutionAccount(institutionAccountId, cancellationToken);
-        return account.VirtualAccounts.SingleOrDefault(va => va.Id == accountId) ?? throw new NotFoundException();
     }
 
     protected IQueryable<Account> GetById(Guid id) => Entities.Where(a => a.Id == id);

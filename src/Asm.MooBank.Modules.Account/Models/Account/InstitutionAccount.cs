@@ -54,7 +54,7 @@ public static class InstitutionAccountExtensions
         IncludeInBudget = account.IncludeInBudget,
         InstitutionId = account.InstitutionId,
         VirtualAccounts = account.VirtualAccounts != null && account.VirtualAccounts.Count != 0 ?
-                          account.VirtualAccounts.OrderBy(v => v.Name).Select(v => (VirtualAccount)v)
+                          account.VirtualAccounts.OrderBy(v => v.Name).Select(v => v.ToModel())
                                                  .Union(new[] { new VirtualAccount { Id = Guid.Empty, Name = "Remaining", CurrentBalance = account.Balance - account.VirtualAccounts.Sum(v => v.Balance) } }).ToArray() : [],
     };
 

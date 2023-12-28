@@ -25,7 +25,7 @@ internal class Import : EndpointGroupBase
             .WithMetadata(new RequireAntiforgeryTokenAttribute(false))
             .WithNames("Import Transactions");
 
-        builder.MapCommand<Reprocess>("/reprocess", StatusCodes.Status204NoContent)
+        builder.MapCommand<Reprocess>("/reprocess", StatusCodes.Status204NoContent, CommandBinding.Parameters)
             .WithNames("Reprocess Transactions")
             .Produces(StatusCodes.Status204NoContent);
 

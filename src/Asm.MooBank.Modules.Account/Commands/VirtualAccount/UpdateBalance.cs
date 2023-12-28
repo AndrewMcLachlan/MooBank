@@ -1,6 +1,7 @@
 ﻿using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Models;
+using Asm.MooBank.Modules.Account.Models.Account;
 using IAccountRepository = Asm.MooBank.Domain.Entities.Account.IAccountRepository;
 
 namespace Asm.MooBank.Modules.Account.Commands.VirtualAccount;
@@ -18,19 +19,14 @@ internal class UpdateBalanceHandler(IAccountRepository accountRepository, ITrans
 
         var account = await _accountRepository.Get(request.AccountId, cancellationToken);
 
-        if (account is not Domain.Entities.Account.InstitutionAccount institutionAccount)
-        {
-            throw new InvalidOperationException("Cannot update virtual account on non-institution account.");
-        }
-
-        var entity = institutionAccount.VirtualAccounts.SingleOrDefault(va => va.Id == request.VirtualAccountId) ?? throw new NotFoundException();
+        var entity = account.VirtualAccounts.SingleOrDefault(va => va.Id == request.VirtualAccountId) ?? throw new NotFoundException();
 
         var amount = entity.Balance - request.Balance;
 
         //TODO: Should be done via domain event
         _transactionRepository.Add(new Domain.Entities.Transactions.Transaction
         {
-            Account = institutionAccount,
+            Account = entity,
             Amount = amount,
             Description = "Balance adjustment",
             Source = "Web",
@@ -42,6 +38,6 @@ internal class UpdateBalanceHandler(IAccountRepository accountRepository, ITrans
 
         await UnitOfWork.SaveChangesAsync(cancellationToken);
 
-        return entity;
+        return entity.ToModel();
     }
 }

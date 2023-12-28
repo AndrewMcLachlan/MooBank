@@ -4,12 +4,8 @@ using Asm.MooBank.Domain.Entities.Budget;
 
 namespace Asm.MooBank.Infrastructure.Repositories
 {
-    internal class BudgetRepository : RepositoryDeleteBase<MooBankContext, Budget, Guid>, IBudgetRepository
+    internal class BudgetRepository(MooBankContext context) : RepositoryDeleteBase<MooBankContext, Budget, Guid>(context), IBudgetRepository
     {
-        public BudgetRepository(MooBankContext context) : base(context)
-        {
-        }
-
         public BudgetLine AddLine(BudgetLine entity)
         {
             var result = Context.Add(entity).Entity;

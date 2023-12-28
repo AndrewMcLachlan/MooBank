@@ -1,4 +1,4 @@
-import { useQueryClient, UseQueryResult } from "@tanstack/react-query";
+import { UseMutationResult, useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { InstitutionAccount, accountId, AccountList, ImportAccount, NewStockHolding, StockHolding } from "../models";
 import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
 import { accountsKey } from "./AccountService";
@@ -7,7 +7,7 @@ export const stockKey = "stock";
 
 export const useStockHolding = (accountId: string) => useApiGet<StockHolding>([stockKey, { accountId }], `api/stock/${accountId}`);
 
-export const useCreateStockHolding = () => {
+export const useCreateStockHolding = (): UseCreateMutationResult => {
 
     const queryClient = useQueryClient();
 
@@ -24,7 +24,7 @@ export const useCreateStockHolding = () => {
     return { create, ...rest };
 }
 
-export const useUpdateStockHolding = () => {
+export const useUpdateStockHolding = (): UseUpdateMutationResult => {
     const queryClient = useQueryClient();
 
     const { mutate, ...rest} = useApiPatch<InstitutionAccount, accountId, InstitutionAccount>((accountId) => `api/stock/${accountId}`, {
@@ -34,9 +34,17 @@ export const useUpdateStockHolding = () => {
         }
     });
 
-    const update = (account: InstitutionAccount) => {
+    const update = (account: StockHolding) => {
         mutate([account.id, account]);
     };
 
     return { update, ...rest };
+}
+
+export interface UseCreateMutationResult extends Omit<UseMutationResult, "mutate"> {
+    create: (account: NewStockHolding) => void;
+}
+
+export interface UseUpdateMutationResult extends Omit<UseMutationResult, "mutate"> {
+    update: (account: StockHolding) => void;
 }

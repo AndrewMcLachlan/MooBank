@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form, InputGroup } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router-dom";
+import { Button, Form, InputGroup, Table } from "react-bootstrap";
+import { useMatch, useNavigate, useParams } from "react-router-dom";
 import { Section, emptyGuid, useIdParams } from "@andrewmclachlan/mooapp";
 import { VirtualAccount } from "../../models";
 import { useCreateVirtualAccount, useUpdateVirtualAccount, useVirtualAccount } from "../../services";
 import { AccountPage, useAccount } from "components";
+import parseISO from "date-fns/parseISO";
+import format from "date-fns/format";
 
 export const ManageVirtualAccount = () => {
 
     const navigate = useNavigate();
 
-    const { id, virtualId } = useParams<any>();
+    const { id, virtualId } = useParams<{id: string, virtualId: string}>();
 
-    const {data: account} = useVirtualAccount(id, virtualId);
+    const { data: account } = useVirtualAccount(id, virtualId);
+
+    const isDirect = useMatch("/accounts/:id/virtual/:virtualId/manage");
 
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
@@ -30,7 +34,8 @@ export const ManageVirtualAccount = () => {
         e.stopPropagation();
         e.preventDefault();
 
-        const updatedAccount: VirtualAccount = { ...account,
+        const updatedAccount: VirtualAccount = {
+            ...account,
             name: name,
             description: description,
             currentBalance: balance,
@@ -43,8 +48,12 @@ export const ManageVirtualAccount = () => {
 
     if (!account) return null;
 
+    const breadcrumbs = isDirect ? 
+        [{ text: "Manage", route: `/accounts/${id}/virtual/${virtualId}/manage` }] : 
+        [{ text: "Manage", route: `/accounts/${id}/manage` }, { text: account.name, route: `/accounts/${id}/manage/virtual/${virtualId}` }]
+
     return (
-        <AccountPage title="Manage Virtual Account" breadcrumbs={[{text: "Manage", route: `/accounts/${id}/manage`}, {text: account.name, route: `/accounts/${id}/manage/virtual/${virtualId}`}]}>
+        <AccountPage title="Manage Virtual Account" breadcrumbs={breadcrumbs}>
 
             <Section>
                 <Form onSubmit={handleSubmit}>
@@ -67,6 +76,28 @@ export const ManageVirtualAccount = () => {
                     </Form.Group>
                     <Button type="submit" variant="primary">Save</Button>
                 </Form>
+            </Section>
+            <Section title="Recurring Transactions">
+                <Table striped hover>
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Schedule</th>
+                            <th>Last Run</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {account.recurringTransactions && account.recurringTransactions.map(a => (
+                            <tr key={a.id}>
+                                <td>{a.description}</td>
+                                <td>{a.amount}</td>
+                                <td>{a.schedule}</td>
+                                <td>{format(parseISO(a.lastRun), "dd/MM/yyyy HH:mm")}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </Table>
             </Section>
         </AccountPage>
     );

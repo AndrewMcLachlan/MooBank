@@ -4,12 +4,8 @@ using Asm.MooBank.Security;
 
 namespace Asm.MooBank.Infrastructure.Repositories
 {
-    public class VirtualAccountRepository : RepositoryDeleteBase<VirtualAccount, Guid>, IVirtualAccountRepository
+    public class VirtualAccountRepository(MooBankContext dataContext) : RepositoryDeleteBase<VirtualAccount, Guid>(dataContext), IVirtualAccountRepository
     {
-        public VirtualAccountRepository(MooBankContext dataContext) : base(dataContext)
-        {
-        }
-
         protected override IQueryable<VirtualAccount> GetById(Guid id) =>  Entities.Where(v => v.Id == id);
     }
 }

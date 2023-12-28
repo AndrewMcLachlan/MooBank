@@ -37,6 +37,6 @@ internal class CreateHandler(Domain.Entities.Account.IAccountRepository accountR
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return entity;
+        return entity.ToModel();
     }
 }

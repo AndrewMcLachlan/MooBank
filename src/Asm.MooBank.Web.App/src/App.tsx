@@ -75,6 +75,7 @@ const App: React.FC = () => {
                         <Route path="virtual/:virtualId" element={<Pages.VirtualAccount />}>
                             <Route path="transactions" element={<Pages.Transactions />} />
                             <Route path="transactions/add" element={<Pages.AddTransaction />} />
+                            <Route path="manage" element={<Pages.ManageVirtualAccount />} />
                         </Route>
                     </Route>
                     <Route path="/stock/create" element={<Pages.CreateStockHolding />} />

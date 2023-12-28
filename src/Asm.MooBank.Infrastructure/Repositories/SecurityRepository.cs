@@ -93,7 +93,13 @@ public class SecurityRepository(MooBankContext dataContext, IAuthorizationServic
     public async Task<IEnumerable<Guid>> GetAccountIds(CancellationToken cancellationToken = default) =>
         await _mooBankContext.AccountAccountHolder.Where(aah => aah.AccountHolderId == _userDataProvider.CurrentUserId).Select(aah => aah.AccountId).ToListAsync(cancellationToken);
 
-    public void AssertAdministrator()
+    public async Task AssertAdministrator(CancellationToken cancellationToken = default)
     {
+        var authResult = await _authorizationService.AuthorizeAsync(_principalProvider.Principal!, Policies.Admin);
+
+        if (!authResult.Succeeded)
+        {
+            throw new NotAuthorisedException("Not authorised");
+        }
     }
 }

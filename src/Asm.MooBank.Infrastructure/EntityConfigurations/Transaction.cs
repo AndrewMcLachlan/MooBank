@@ -51,7 +51,7 @@ internal class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
 
 
         entity.Property(e => e.Extra).HasConversion(
-                       v => JsonSerializer.Serialize(v, new JsonSerializerOptions()),
+                       v => JsonSerializer.Serialize(v, JsonSerializerOptions.Default),
                        v => JsonSerializer.Deserialize<object>(v, JsonSerializerOptions.Default));
     }
 }

@@ -46,7 +46,7 @@ export const ManageAccount = () => {
         const actions = [<IconButton key="nva" onClick={() => navigate(`/accounts/${id}/manage/virtual/create`)} icon="plus">New Virtual Account</IconButton>];
 
         if (accountController === "Import") {
-            actions.push(<IconButton key="rpt" onClick={() => reprocessTransactions.mutate({ accountId: id })} icon="plus">Reprocess Transactions</IconButton>);
+            actions.push(<IconButton key="rpt" onClick={() => reprocessTransactions.mutate({ accountId: id })} icon="arrows-rotate">Reprocess Transactions</IconButton>);
         }
 
         return actions;

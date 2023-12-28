@@ -7,6 +7,8 @@ public record RecurringTransaction
 
     public Guid VirtualAccountId { get; init; }
 
+    public string? Description { get; init; }
+
     public decimal Amount { get; init; }
 
     public DateTimeOffset? LastRun { get; init; }
@@ -19,6 +21,7 @@ public static class RecurringTransactionExtensions
     public static RecurringTransaction ToModel(this Domain.Entities.Account.RecurringTransaction recurringTransaction) =>
         new()
         {
+            Description = recurringTransaction.Description,
             Amount = recurringTransaction.Amount,
             LastRun = recurringTransaction.LastRun,
             Schedule = recurringTransaction.Schedule,

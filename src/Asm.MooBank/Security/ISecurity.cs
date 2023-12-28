@@ -17,5 +17,5 @@ public interface ISecurity
     Task AssertBudgetLinePermission(Guid id, CancellationToken cancellationToken = default);
     Task<IEnumerable<Guid>> GetAccountIds(CancellationToken cancellationToken = default);
 
-    void AssertAdministrator();
+    Task AssertAdministrator(CancellationToken cancellationToken = default);
 }

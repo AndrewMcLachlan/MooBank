@@ -2,13 +2,8 @@
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
-public class RuleRepository : RepositoryDeleteBase<Rule, int>, IRuleRepository
+public class RuleRepository(MooBankContext context) : RepositoryDeleteBase<Rule, int>(context), IRuleRepository
 {
-
-    public RuleRepository(MooBankContext bankPlusContext) : base(bankPlusContext)
-    {
-    }
-
     public async Task Delete(Guid accountId, int id, CancellationToken cancellationToken = default)
     {
         var entity = await Entities.Include(r => r.Tags).Where(r => r.Id == id && r.AccountId == accountId).SingleOrDefaultAsync(cancellationToken) ?? throw new NotFoundException();

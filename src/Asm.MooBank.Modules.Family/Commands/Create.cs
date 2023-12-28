@@ -12,7 +12,7 @@ internal class CreateHandler(IFamilyRepository repository, IUnitOfWork unitOfWor
 {
     public async ValueTask<Models.Family> Handle(Create command, CancellationToken cancellationToken)
     {
-        Security.AssertAdministrator();
+        await Security.AssertAdministrator(cancellationToken);
 
         Domain.Entities.Family.Family entity = new()
         {

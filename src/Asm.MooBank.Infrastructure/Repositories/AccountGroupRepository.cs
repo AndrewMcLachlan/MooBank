@@ -2,9 +2,7 @@
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
-internal class AccountGroupRepository : RepositoryDeleteBase<AccountGroup, Guid>, IAccountGroupRepository
+internal class AccountGroupRepository(MooBankContext dataContext) : RepositoryDeleteBase<AccountGroup, Guid>(dataContext), IAccountGroupRepository
 {
-    public AccountGroupRepository(MooBankContext dataContext) : base(dataContext) { }
-
     protected override IQueryable<AccountGroup> GetById(Guid id) => Entities.Where(ag => ag.Id == id);
 }
