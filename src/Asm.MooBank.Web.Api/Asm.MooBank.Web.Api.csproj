@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="Asm.AspNetCore" Version="$(AsmPackageVersion)" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0-beta4" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="$(DotNetPackageVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="$(DotNetPackageVersion)" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="$(DotNetPackageVersion)">
