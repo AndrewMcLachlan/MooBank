@@ -47,7 +47,7 @@ const useComponentState = (props: VirtualAccountRowProps) => {
         setBalance(props.account.currentBalance);
     }, [props]);
 
-    useClickAway(setEditingBalance, balanceRef, () => (editingBalance && props.account.currentBalance !== balance) && updateBalance.update(props.accountId, props.account.id, balance));
+    useClickAway(setEditingBalance, balanceRef, () => (editingBalance && props.account.currentBalance !== balance) && updateBalance(props.accountId, props.account.id, balance));
 
     const balanceClick = (e: React.MouseEvent<HTMLTableCellElement>) => {
         setEditingBalance(props.account.id !== emptyGuid);
@@ -62,7 +62,7 @@ const useComponentState = (props: VirtualAccountRowProps) => {
 
     const keyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
-            updateBalance.update(props.accountId, props.account.id, balance);
+            updateBalance(props.accountId, props.account.id, balance);
             setEditingBalance(false);
         }
     }

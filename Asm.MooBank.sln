@@ -35,7 +35,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Config", "Config", "{07F4FB
 		Common.props = Common.props
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Institutions", "Institutions", "{2754ACBC-340B-4D5C-AEE8-1AC1AD5CF9E0}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integrations", "Integrations", "{2754ACBC-340B-4D5C-AEE8-1AC1AD5CF9E0}"
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "Asm.MooBank.Web.App", "src\Asm.MooBank.Web.App\Asm.MooBank.Web.App.esproj", "{47DC3410-DDFD-4B06-A26B-509AA5BAF27A}"
 EndProject
@@ -80,7 +80,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Eodhd", "src\Asm.MooBank.Eodhd\Asm.MooBank.Eodhd.csproj", "{5EED26F8-2233-49E7-A302-82EF46DACE1A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asm.MooBank.Modules.Stock", "src\Asm.MooBank.Modules.Stock\Asm.MooBank.Modules.Stock.csproj", "{E9177C4B-593F-4EDE-B782-4CB7BC7C2D36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.Stock", "src\Asm.MooBank.Modules.Stock\Asm.MooBank.Modules.Stock.csproj", "{E9177C4B-593F-4EDE-B782-4CB7BC7C2D36}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -194,6 +194,7 @@ Global
 		{C5167967-0DA8-4133-A89B-1C246C8536C5} = {38BEA81E-F80F-44DE-A930-9BD5D3A62FFF}
 		{2E2085E6-C45F-4EAB-9F39-8DC83CE3B9B2} = {38BEA81E-F80F-44DE-A930-9BD5D3A62FFF}
 		{609F2607-9FFD-4DF1-AB84-5E745FD6395E} = {EAC5F111-34BB-4633-A274-257074F46E7F}
+		{5EED26F8-2233-49E7-A302-82EF46DACE1A} = {2754ACBC-340B-4D5C-AEE8-1AC1AD5CF9E0}
 		{E9177C4B-593F-4EDE-B782-4CB7BC7C2D36} = {38BEA81E-F80F-44DE-A930-9BD5D3A62FFF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

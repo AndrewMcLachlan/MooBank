@@ -25,14 +25,14 @@ internal class RecurringEndpoints : EndpointGroupBase
             .WithNames("Get Recurring Transaction")
             .Produces<RecurringTransaction>();
 
-        routeGroupBuilder.MapPostCreate<Create, RecurringTransaction>("", "Get Recurring Transaction".ToMachine(), (RecurringTransaction recurring) => new { id = recurring.Id }, CommandBinding.None)
+        routeGroupBuilder.MapPostCreate<Create, RecurringTransaction>("", "Get Recurring Transaction".ToMachine(), (RecurringTransaction recurring) => new { recurringTransactionId = recurring.Id }, CommandBinding.None)
             .WithNames("Create Recurring Transaction")
             .Produces<RecurringTransaction>();
 
 
-        /*routeGroupBuilder.MapPatchCommand<Update, Rule>("/{recurringTransactionId}")
+        routeGroupBuilder.MapPatchCommand<Update, RecurringTransaction>("/{recurringTransactionId}", CommandBinding.None)
             .WithNames("Update Recurring Transaction")
-            .Produces<RecurringTransaction>();*/
+            .Produces<RecurringTransaction>();
 
         routeGroupBuilder.MapDelete<Delete>("/{recurringTransactionId}")
             .WithNames("Delete Recurring Transaction");

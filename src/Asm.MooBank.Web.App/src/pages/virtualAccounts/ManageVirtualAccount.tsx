@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { Button, Form, InputGroup, Table } from "react-bootstrap";
 import { useMatch, useNavigate, useParams } from "react-router-dom";
-import { Section, emptyGuid, useIdParams } from "@andrewmclachlan/mooapp";
+import { EditColumn, Section, emptyGuid, useIdParams } from "@andrewmclachlan/mooapp";
 import { VirtualAccount } from "../../models";
 import { useCreateVirtualAccount, useUpdateVirtualAccount, useVirtualAccount } from "../../services";
 import { AccountPage, useAccount } from "components";
 import parseISO from "date-fns/parseISO";
 import format from "date-fns/format";
+import { useUpdateRecurringTransaction } from "services/RecurringTransactionService";
+import { EditColumn2 } from "./EditColumn2";
+import parse from "date-fns/parse";
+import { RecurringTransactions } from "./RecurringTransactions";
 
 export const ManageVirtualAccount = () => {
 
     const navigate = useNavigate();
 
-    const { id, virtualId } = useParams<{id: string, virtualId: string}>();
+    const { id, virtualId } = useParams<{ id: string, virtualId: string }>();
 
     const { data: account } = useVirtualAccount(id, virtualId);
 
@@ -41,15 +45,15 @@ export const ManageVirtualAccount = () => {
             currentBalance: balance,
         };
 
-        updateVirtualAccount.update(id, updatedAccount);
+        updateVirtualAccount(id, updatedAccount);
 
         navigate(`/accounts/${id}/manage/`);
     }
 
     if (!account) return null;
 
-    const breadcrumbs = isDirect ? 
-        [{ text: "Manage", route: `/accounts/${id}/virtual/${virtualId}/manage` }] : 
+    const breadcrumbs = isDirect ?
+        [{ text: "Manage", route: `/accounts/${id}/virtual/${virtualId}/manage` }] :
         [{ text: "Manage", route: `/accounts/${id}/manage` }, { text: account.name, route: `/accounts/${id}/manage/virtual/${virtualId}` }]
 
     return (
@@ -78,26 +82,7 @@ export const ManageVirtualAccount = () => {
                 </Form>
             </Section>
             <Section title="Recurring Transactions">
-                <Table striped hover>
-                    <thead>
-                        <tr>
-                            <th>Description</th>
-                            <th>Amount</th>
-                            <th>Schedule</th>
-                            <th>Last Run</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {account.recurringTransactions && account.recurringTransactions.map(a => (
-                            <tr key={a.id}>
-                                <td>{a.description}</td>
-                                <td>{a.amount}</td>
-                                <td>{a.schedule}</td>
-                                <td>{format(parseISO(a.lastRun), "dd/MM/yyyy HH:mm")}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </Table>
+                <RecurringTransactions account={account} />
             </Section>
         </AccountPage>
     );

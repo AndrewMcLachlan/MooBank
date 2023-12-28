@@ -13,6 +13,8 @@ public record RecurringTransaction
 
     public DateTimeOffset? LastRun { get; init; }
 
+    public DateOnly NextRun { get; init; }
+
     public ScheduleFrequency Schedule { get; init; }
 }
 
@@ -24,6 +26,7 @@ public static class RecurringTransactionExtensions
             Description = recurringTransaction.Description,
             Amount = recurringTransaction.Amount,
             LastRun = recurringTransaction.LastRun,
+            NextRun = recurringTransaction.NextRun,
             Schedule = recurringTransaction.Schedule,
             Id = recurringTransaction.Id,
             VirtualAccountId = recurringTransaction.VirtualAccountId,

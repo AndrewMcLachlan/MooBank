@@ -1,5 +1,4 @@
-﻿using System.Text;
-using Asm.MooBank.Commands;
+﻿using Asm.MooBank.Commands;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Account.Models.Account;
 using IInstitutionAccountRepository = Asm.MooBank.Domain.Entities.Account.IInstitutionAccountRepository;
@@ -31,9 +30,7 @@ internal class UpdateHandler(IUnitOfWork unitOfWork, IInstitutionAccountReposito
             entity.AccountController = account.Controller;
             if (account.Controller == AccountController.Import)
             {
-                var importerType = await accountRepository.GetImporterType(account.ImporterTypeId ?? throw new InvalidOperationException("Import account without importer type"), cancellationToken);
-
-                if (importerType == null) throw new NotFoundException("Unknown importer type ID " + account.ImporterTypeId);
+                _ = await accountRepository.GetImporterType(account.ImporterTypeId ?? throw new InvalidOperationException("Import account without importer type"), cancellationToken) ?? throw new NotFoundException("Unknown importer type ID " + account.ImporterTypeId);
 
                 entity.ImportAccount = new Domain.Entities.Account.ImportAccount
                 {

@@ -23,7 +23,7 @@ export const AddTransaction = () => {
         e.stopPropagation();
         e.preventDefault();
 
-        addTransaction.create(account.id, transaction);
+        addTransaction(account.id, transaction);
 
         navigate(`/${route}/transactions`);
     }

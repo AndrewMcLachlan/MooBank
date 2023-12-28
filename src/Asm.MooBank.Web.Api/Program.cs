@@ -81,8 +81,6 @@ void AddServices(WebApplicationBuilder builder)
     services.AddRepositories();
     services.AddEntities();
     services.AddServices();
-    //services.AddCommands();
-    //services.AddQueries();
     services.AddUserDataProvider();
     services.AddImporterFactory();
 
@@ -90,6 +88,8 @@ void AddServices(WebApplicationBuilder builder)
 
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen();
+
+    services.AddHealthChecks();
 }
 
 void AddApp(WebApplication app)

@@ -39,7 +39,7 @@ export const CreateStockHolding: React.FC = () => {
             currentBalance: 0,
         };
 
-        createStockHolding.create(stockHolding);
+        createStockHolding(stockHolding);
 
         navigate("/accounts");
     }

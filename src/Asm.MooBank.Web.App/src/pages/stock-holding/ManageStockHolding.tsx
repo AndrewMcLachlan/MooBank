@@ -6,7 +6,6 @@ import { StockHoldingPage } from "./StockHoldingPage";
 import { useNavigate } from "react-router-dom";
 
 import { useAccountGroups, useUpdateStockHolding } from "services";
-import { Page } from "@andrewmclachlan/mooapp";
 
 export const ManageStockHolding: React.FC = () => {
 
@@ -26,7 +25,7 @@ export const ManageStockHolding: React.FC = () => {
         e.stopPropagation();
         e.preventDefault();
 
-        updateStockHolding.update(stockHolding);
+        updateStockHolding(stockHolding);
 
         navigate("/accounts");
     }

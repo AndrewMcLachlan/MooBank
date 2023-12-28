@@ -26,7 +26,7 @@ export const useCreateVirtualAccount = () => {
         mutate([accountId, virtualAccount]);
     };
 
-    return { create, ...rest };
+    return create;
 }
 
 export const useUpdateVirtualAccount = () => {
@@ -43,7 +43,7 @@ export const useUpdateVirtualAccount = () => {
         mutate([{ accountId, virtualAccountId: account.id }, account]);
     };
 
-    return { update, ...rest };
+    return update;
 }
 
 export const useUpdateVirtualAccountBalance = () => {
@@ -96,5 +96,5 @@ export const useUpdateVirtualAccountBalance = () => {
         mutate([{ accountId, virtualAccountId }, { balance }]);
     };
 
-    return { update, ...rest };
+    return update;
 }

@@ -25,7 +25,8 @@ public static class IServiceCollectionExtensions
     {
         services.AddDbContext<MooBankContext>((services, options) => options.UseSqlServer(configuration.GetConnectionString("MooBank"), options =>
         {
-            options.EnableRetryOnFailure(3);
+            options.UseAzureSqlDefaults();
+            options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
         }));
 
         //HACK: To be fixed
@@ -35,12 +36,7 @@ public static class IServiceCollectionExtensions
             options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
         }));
 
-        //HACK: Required for domain events. To be fixed.
-        services.AddMediatR(options =>
-        {
-            options.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-        });
-
+        services.AddDomainEvents(Assembly.GetExecutingAssembly());
 
         return services.AddUnitOfWork<MooBankContext>();
     }
@@ -59,8 +55,7 @@ public static class IServiceCollectionExtensions
                 .AddScoped<IStockHoldingRepository, StockHoldingRepository>()
                 .AddScoped<ITransactionRepository, TransactionRepository>()
                 .AddScoped<ITagRepository, TransactionTagRepository>()
-                .AddScoped<IRuleRepository, RuleRepository>()
-                .AddScoped<IVirtualAccountRepository, VirtualAccountRepository>();
+                .AddScoped<IRuleRepository, RuleRepository>();
 
     public static IServiceCollection AddEntities(this IServiceCollection services) =>
         services.AddAggregateRoots<MooBankContext>(typeof(IAccountGroupRepository).Assembly);

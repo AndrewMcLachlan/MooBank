@@ -12,6 +12,8 @@ public class RecurringTransaction([DisallowNull] Guid id) : KeyedEntity<Guid>(id
     public decimal Amount { get; set; }
     public DateTime? LastRun { get; set; }
 
+    public DateOnly NextRun { get; set; } = DateTime.UtcNow.ToDateOnly();
+
     public virtual VirtualAccount VirtualAccount { get; set; } = null!;
 
     [Column("ScheduleId")]

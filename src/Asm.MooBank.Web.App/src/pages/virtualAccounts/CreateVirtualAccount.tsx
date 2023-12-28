@@ -32,7 +32,7 @@ export const CreateVirtualAccount = () => {
             recurringTransactions: [],
         };
 
-        createVirtualAccount.create(parentAccount.id, account);
+        createVirtualAccount(parentAccount.id, account);
 
         navigate(`/accounts/${parentAccount.id}/manage/`);
     }

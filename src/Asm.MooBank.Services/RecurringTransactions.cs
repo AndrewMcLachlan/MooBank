@@ -29,41 +29,18 @@ public class RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionRep
     {
         foreach (var trans in await recurringTransactionRepository.Get())
         {
-            if (trans.LastRun == null)
+            while (trans.NextRun <= DateTime.UtcNow.ToDateOnly())
             {
-                logger.LogInformation("Recurring transaction for {accountId} has not been run before. Creating first run.", trans.VirtualAccountId);
+                logger.LogInformation("Running recurring transaction for {accountId}.", trans.VirtualAccountId);
                 RunTransaction(trans);
-                trans.LastRun = DateTime.Now;
-            }
-            else
-            {
-                DateTime lastRun = trans.LastRun.Value.Date;
-                DateTime now = DateTime.Today;
-
-                TimeSpan diff = now - lastRun;
-
-                bool process = false;
-                process = trans.Schedule switch
+                trans.LastRun = DateTime.UtcNow;
+                trans.NextRun = trans.Schedule switch
                 {
-                    ScheduleFrequency.Daily => diff.TotalDays >= 1,
-                    ScheduleFrequency.Weekly => diff.TotalDays >= 7,
-
-                    // Make sure some time has passed and
-                    // that we are one calendar month apart or as close as we can be
-                    // (e.g. if the transaction last ran on the 31st Jan, the next run will be the 28th Feb).
-                    ScheduleFrequency.Monthly => diff.TotalDays >= 28 && (lastRun.Day == now.Day || DateTime.DaysInMonth(now.Year, now.Month) < lastRun.Day),
+                    ScheduleFrequency.Daily => trans.NextRun.AddDays(1),
+                    ScheduleFrequency.Weekly => trans.NextRun.AddDays(7),
+                    ScheduleFrequency.Monthly => trans.NextRun.AddMonths(1),
                     _ => throw new InvalidOperationException("Unsupported schedule: " + trans.Schedule.ToString()),
                 };
-                if (process)
-                {
-                    logger.LogInformation("Running recurring transaction for {accountId}.", trans.VirtualAccountId);
-                    RunTransaction(trans);
-                    trans.LastRun = DateTime.Now;
-                }
-                else
-                {
-                    logger.LogInformation("Recurring transaction for {accountId} not due to run", trans.VirtualAccountId);
-                }
             }
         }
 
@@ -80,13 +57,14 @@ public class RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionRep
                                   TransactionType.RecurringDebit:
                                   TransactionType.RecurringCredit;
 
-        Domain.Entities.Transactions.Transaction transaction = new()
+        Transaction transaction = new()
         {
             Amount = trans.Amount,
             AccountId = trans.VirtualAccountId,
             Description = trans.Description,
             Source = "Recurring",
             TransactionTime = DateTime.Now,
+            PurchaseDate = trans.NextRun.ToDateTime(TimeOnly.MinValue),
             TransactionType = transactionType,
         };
 

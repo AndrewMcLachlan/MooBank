@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Asm.MooBank.Modules.Account.Commands.Recurring;
 
-public record Create(Guid AccountId, Guid VirtualAccountId, string? Description, decimal Amount, ScheduleFrequency Schedule) : AccountIdCommand(AccountId), ICommand<Models.Recurring.RecurringTransaction>
+public record Create(Guid AccountId, Guid VirtualAccountId, string? Description, decimal Amount, ScheduleFrequency Schedule, DateOnly NextRun) : AccountIdCommand(AccountId), ICommand<Models.Recurring.RecurringTransaction>
 {
     public static ValueTask<Create> BindAsync(HttpContext context) => BindHelper.BindWithAccountIdAsync<Create>(context);
 }
@@ -28,6 +28,7 @@ internal class CreateHandler(IAccountRepository accountRepository, IUnitOfWork u
             Amount = command.Amount,
             Description = command.Description,
             Schedule = command.Schedule,
+            NextRun = command.NextRun,
         };
 
         virtualAccount.RecurringTransactions.Add(recurringTransaction);
