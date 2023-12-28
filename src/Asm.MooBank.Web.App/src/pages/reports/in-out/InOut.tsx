@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
-import format from "date-fns/format";
-import getMonth from "date-fns/getMonth";
-import getYear from "date-fns/getYear";
+import { format } from "date-fns/format";
+import { getMonth } from "date-fns/getMonth";
+import { getYear } from "date-fns/getYear";
 
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, ChartData, registerables } from "chart.js";

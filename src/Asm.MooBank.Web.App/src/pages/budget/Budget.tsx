@@ -6,7 +6,7 @@ import { BudgetLine } from "./BudgetLine";
 import { NewBudgetLine } from "./NewBudgetLine";
 import { MonthLine } from "./MonthLine";
 import { useEffect, useState } from "react";
-import format from "date-fns/format";
+import { format } from "date-fns/format";
 import * as Models from "models";
 import { isMonthSelected } from "helpers/dateFns";
 import { BudgetTable } from "./BudgetTable";

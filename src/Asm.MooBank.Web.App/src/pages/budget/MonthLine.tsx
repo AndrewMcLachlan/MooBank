@@ -1,5 +1,5 @@
 import * as Models from "models";
-import format from "date-fns/format";
+import { format } from "date-fns/format";
 
 export const MonthLine: React.FC<MonthLineProps> = ({ month }) => (
     <tr>

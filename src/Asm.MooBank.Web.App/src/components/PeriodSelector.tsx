@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 
-import format from "date-fns/format";
+import { format } from "date-fns/format";
 
 import { FormGroup  } from "./";
 import { Button, Col, Form, Row } from "react-bootstrap";

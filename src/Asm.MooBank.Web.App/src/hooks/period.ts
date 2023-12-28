@@ -1,5 +1,5 @@
 import { useLocalStorage } from "@andrewmclachlan/mooapp";
-import parseISO from "date-fns/parseISO";
+import { parseISO } from "date-fns/parseISO";
 import { Period, lastMonth } from "helpers/dateFns";
 
 export const usePeriod = (): [period: Period, setPeriod: (value: Period) => void] => {

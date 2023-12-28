@@ -1,11 +1,10 @@
-import addMonths from "date-fns/addMonths";
-import addYears from "date-fns/addYears";
-import endOfMonth from "date-fns/endOfMonth";
-import endOfYear from "date-fns/endOfYear";
-import format from "date-fns/format";
-import parseISO from "date-fns/parseISO";
-import startOfMonth from "date-fns/startOfMonth";
-import startOfYear from "date-fns/startOfYear";
+import { addMonths } from "date-fns/addMonths";
+import { addYears } from "date-fns/addYears";
+import { endOfMonth } from "date-fns/endOfMonth";
+import { endOfYear } from "date-fns/endOfYear";
+import { format } from "date-fns/format";
+import { startOfMonth } from "date-fns/startOfMonth";
+import { startOfYear } from "date-fns/startOfYear";
 
 export interface Period {
     startDate: Date;
@@ -31,7 +30,7 @@ export const formatISODate = (date: Date) => format(date, "yyyy-MM-dd");
 
 export const isMonthSelected = (months: number, month: number) => (months & (1 << month)) !== 0;
 
-export const numberOfMonths = (months: number) =>{
+export const numberOfMonths = (months: number) => {
     let count = 0;
     for (let i = 0; i < 12; i++) {
         if (isMonthSelected(months, i)) {

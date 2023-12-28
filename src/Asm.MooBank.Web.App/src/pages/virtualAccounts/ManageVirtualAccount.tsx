@@ -5,11 +5,11 @@ import { EditColumn, Section, emptyGuid, useIdParams } from "@andrewmclachlan/mo
 import { VirtualAccount } from "../../models";
 import { useCreateVirtualAccount, useUpdateVirtualAccount, useVirtualAccount } from "../../services";
 import { AccountPage, useAccount } from "components";
-import parseISO from "date-fns/parseISO";
-import format from "date-fns/format";
+import { parseISO } from "date-fns/parseISO";
+import { format } from "date-fns/format";
 import { useUpdateRecurringTransaction } from "services/RecurringTransactionService";
 import { EditColumn2 } from "./EditColumn2";
-import parse from "date-fns/parse";
+import { parse } from "date-fns/parse";
 import { RecurringTransactions } from "./RecurringTransactions";
 
 export const ManageVirtualAccount = () => {

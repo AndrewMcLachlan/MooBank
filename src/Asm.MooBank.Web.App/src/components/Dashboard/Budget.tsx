@@ -1,6 +1,6 @@
-import format from "date-fns/format";
-import getMonth from "date-fns/getMonth";
-import getYear from "date-fns/getYear";
+import { format } from "date-fns/format";
+import { getMonth } from "date-fns/getMonth";
+import { getYear } from "date-fns/getYear";
 
 import { lastMonth } from "helpers/dateFns";
 import { Spinner } from "react-bootstrap";

@@ -1,6 +1,6 @@
 import { Tag } from "./Tag";
 import { emptyGuid } from "@andrewmclachlan/mooapp";
-import format from "date-fns/format";
+import { format } from "date-fns/format";
 
 enum TransactionTypesEnum {
     Credit = 1,

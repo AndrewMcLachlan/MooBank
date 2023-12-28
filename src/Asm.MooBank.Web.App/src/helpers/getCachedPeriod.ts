@@ -1,4 +1,4 @@
-import parseISO from "date-fns/parseISO";
+import { parseISO } from "date-fns/parseISO";
 import { Period, lastMonth } from "./dateFns";
 
 export const getCachedPeriod = (period?: Period) => {
