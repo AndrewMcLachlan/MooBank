@@ -33,6 +33,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Config", "Config", "{07F4FB
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		Common.props = Common.props
+		Build.Directory.targets = Build.Directory.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integrations", "Integrations", "{2754ACBC-340B-4D5C-AEE8-1AC1AD5CF9E0}"
@@ -82,7 +83,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Eodhd", "src\As
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.Stock", "src\Asm.MooBank.Modules.Stock\Asm.MooBank.Modules.Stock.csproj", "{E9177C4B-593F-4EDE-B782-4CB7BC7C2D36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asm.MooBank.ExchangeRateApi", "src\Asm.MooBank.ExchangeRateApi\Asm.MooBank.ExchangeRateApi.csproj", "{34A02BFD-A9AC-47EE-A1DE-A5B00C64CCAA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.ExchangeRateApi", "src\Asm.MooBank.ExchangeRateApi\Asm.MooBank.ExchangeRateApi.csproj", "{34A02BFD-A9AC-47EE-A1DE-A5B00C64CCAA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
