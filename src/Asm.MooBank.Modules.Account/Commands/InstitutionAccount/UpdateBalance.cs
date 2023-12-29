@@ -2,13 +2,14 @@
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Account.Models.Account;
+using Asm.MooBank.Services;
 using IAccountRepository = Asm.MooBank.Domain.Entities.Account.IAccountRepository;
 
 namespace Asm.MooBank.Modules.Account.Commands.InstitutionAccount;
 
 public record UpdateBalance(Guid AccountId, decimal Balance) : ICommand<Models.Account.InstitutionAccount>;
 
-internal class UpdateBalanceHandler(IAccountRepository accountRepository, ITransactionRepository transactionRepository, AccountHolder accountHolder, ISecurity security, IUnitOfWork unitOfWork) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<UpdateBalance, Models.Account.InstitutionAccount>
+internal class UpdateBalanceHandler(IAccountRepository accountRepository, ITransactionRepository transactionRepository, AccountHolder accountHolder, ICurrencyConverter currencyConverter, ISecurity security, IUnitOfWork unitOfWork) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<UpdateBalance, Models.Account.InstitutionAccount>
 {
     private readonly IAccountRepository _accountRepository = accountRepository;
     private readonly ITransactionRepository _transactionRepository = transactionRepository;
@@ -41,6 +42,6 @@ internal class UpdateBalanceHandler(IAccountRepository accountRepository, ITrans
 
         await UnitOfWork.SaveChangesAsync(cancellationToken);
 
-        return institutionAccount.ToModel();
+        return institutionAccount.ToModel(currencyConverter);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Asm.MooBank.Modules.Account.Models.Recurring;
+using Asm.MooBank.Services;
 
 namespace Asm.MooBank.Modules.Account.Models.Account;
 
@@ -11,7 +12,7 @@ public record VirtualAccount : TransactionAccount
 
 public static class VirtualAccountExtensions
 {
-    public static VirtualAccount ToModel(this Domain.Entities.Account.VirtualAccount account)
+    public static VirtualAccount ToModel(this Domain.Entities.Account.VirtualAccount account, ICurrencyConverter currencyConverter)
     {
         return new VirtualAccount
         {
@@ -19,16 +20,18 @@ public static class VirtualAccountExtensions
             ParentId = account.ParentAccountId,
             Name = account.Name,
             Description = account.Description,
+            Currency = account.Currency,
             CurrentBalance = account.Balance,
             CalculatedBalance = account.CalculatedBalance,
+            CurrentBalanceLocalCurrency = currencyConverter.Convert(account.Balance, account.Currency),
             BalanceDate = account.LastUpdated,
             LastTransaction = account.LastTransaction,
             RecurringTransactions = account.RecurringTransactions.ToModel(),
         };
     }
 
-    public static IEnumerable<VirtualAccount> ToModel(this IEnumerable<Domain.Entities.Account.VirtualAccount> accounts) =>
-        accounts.Select(a => a.ToModel());
+    public static IEnumerable<VirtualAccount> ToModel(this IEnumerable<Domain.Entities.Account.VirtualAccount> accounts, ICurrencyConverter currencyConverter) =>
+        accounts.Select(a => a.ToModel(currencyConverter));
 
     public static Domain.Entities.Account.VirtualAccount ToEntity(this VirtualAccount account, Guid parentAccountId) => new(account.Id)
     {

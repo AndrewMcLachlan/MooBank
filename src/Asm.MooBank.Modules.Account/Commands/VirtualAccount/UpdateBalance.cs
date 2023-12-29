@@ -2,20 +2,21 @@
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Account.Models.Account;
+using Asm.MooBank.Services;
 using IAccountRepository = Asm.MooBank.Domain.Entities.Account.IAccountRepository;
 
 namespace Asm.MooBank.Modules.Account.Commands.VirtualAccount;
 
 public record UpdateBalance(Guid AccountId, Guid VirtualAccountId, decimal Balance) : ICommand<Models.Account.VirtualAccount>;
 
-internal class UpdateBalanceHandler(IAccountRepository accountRepository, ITransactionRepository transactionRepository, AccountHolder accountHolder, ISecurity security, IUnitOfWork unitOfWork) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<UpdateBalance, Models.Account.VirtualAccount>
+internal class UpdateBalanceHandler(IAccountRepository accountRepository, ITransactionRepository transactionRepository, ISecurity security, IUnitOfWork unitOfWork, ICurrencyConverter currencyConverter) : ICommandHandler<UpdateBalance, Models.Account.VirtualAccount>
 {
     private readonly IAccountRepository _accountRepository = accountRepository;
     private readonly ITransactionRepository _transactionRepository = transactionRepository;
 
     public async ValueTask<Models.Account.VirtualAccount> Handle(UpdateBalance request, CancellationToken cancellationToken)
     {
-        Security.AssertAccountPermission(request.AccountId);
+        security.AssertAccountPermission(request.AccountId);
 
         var account = await _accountRepository.Get(request.AccountId, cancellationToken);
 
@@ -36,8 +37,8 @@ internal class UpdateBalanceHandler(IAccountRepository accountRepository, ITrans
 
         entity.Balance = request.Balance;
 
-        await UnitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return entity.ToModel();
+        return entity.ToModel(currencyConverter);
     }
 }

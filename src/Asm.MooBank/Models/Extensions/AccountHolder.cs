@@ -11,6 +11,7 @@ public static class AccountHolderExtensions
             FamilyId = accountHolder.FamilyId,
             FirstName = accountHolder.FirstName,
             LastName = accountHolder.LastName,
+            Currency = accountHolder.Currency,
         };
     }
 }

@@ -14,6 +14,8 @@ public abstract class Account(Guid id) : KeyedEntity<Guid>(id)
 
     public string? Description { get; set; }
 
+    public string Currency { get; set; } = "AUD";
+
     public decimal Balance { get; set; }
 
     public DateTimeOffset LastUpdated { get; set; }

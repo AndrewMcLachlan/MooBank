@@ -125,6 +125,7 @@
     <Build Include="dbo\Functions\StockValue.sql" />
     <Build Include="dbo\Tables\AccountAccountViewer.sql" />
     <Build Include="dbo\Tables\StockPriceHistory.sql" />
+    <Build Include="dbo\Tables\ExchangeRates.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Azure.publish.xml" />

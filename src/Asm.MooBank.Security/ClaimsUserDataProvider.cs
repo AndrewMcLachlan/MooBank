@@ -24,6 +24,7 @@ public class ClaimsUserDataProvider(IPrincipalProvider principalProvider) : IUse
             SharedAccounts = principalProvider.Principal.Claims.Where(c => c.Type == ClaimTypes.SharedAccountId).Select(c => c.Value).Select(Guid.Parse).ToList(),
             FamilyId = principalProvider.Principal.GetClaimValue<Guid>(ClaimTypes.FamilyId),
             PrimaryAccountId = principalProvider.Principal.GetClaimValue<Guid?>(ClaimTypes.PrimaryAccountId),
+            Currency = principalProvider.Principal.GetClaimValue<string>(ClaimTypes.Currency) ?? throw new InvalidOperationException("User must have a currency"),
         };
     }
 }

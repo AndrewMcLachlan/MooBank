@@ -45,6 +45,7 @@ public static class IServiceCollectionExtensions
 
                     if (user.PrimaryAccountId != null) claims.Add(new Claim(Security.ClaimTypes.PrimaryAccountId, user.PrimaryAccountId.Value.ToString()));
                     claims.Add(new Claim(Security.ClaimTypes.FamilyId, user.FamilyId.ToString()));
+                    claims.Add(new Claim(Security.ClaimTypes.Currency, user.Currency));
 
                     principal.AddIdentity(new(claims));
                 }

@@ -1,4 +1,5 @@
 ﻿using Asm.MooBank.Models;
+using Asm.MooBank.Services;
 
 namespace Asm.MooBank.Modules.Account.Models.Account;
 
@@ -38,12 +39,14 @@ public partial record InstitutionAccount : TransactionAccount
 
 public static class InstitutionAccountExtensions
 {
-    public static InstitutionAccount ToModel(this Domain.Entities.Account.InstitutionAccount account) => new()
+    public static InstitutionAccount ToModel(this Domain.Entities.Account.InstitutionAccount account, ICurrencyConverter currencyConverter) => new()
     {
         Id = account.Id,
         Name = account.Name,
         Description = account.Description,
+        Currency = account.Currency,
         CurrentBalance = account.Balance,
+        CurrentBalanceLocalCurrency = currencyConverter.Convert(account.Balance, account.Currency),
         CalculatedBalance = account.CalculatedBalance,
         BalanceDate = ((Domain.Entities.Account.Account)account).LastUpdated,
         LastTransaction = account.LastTransaction,
@@ -54,8 +57,8 @@ public static class InstitutionAccountExtensions
         IncludeInBudget = account.IncludeInBudget,
         InstitutionId = account.InstitutionId,
         VirtualAccounts = account.VirtualAccounts != null && account.VirtualAccounts.Count != 0 ?
-                          account.VirtualAccounts.OrderBy(v => v.Name).Select(v => v.ToModel())
-                                                 .Union(new[] { new VirtualAccount { Id = Guid.Empty, Name = "Remaining", CurrentBalance = account.Balance - account.VirtualAccounts.Sum(v => v.Balance) } }).ToArray() : [],
+                          account.VirtualAccounts.OrderBy(v => v.Name).Select(v => v.ToModel(currencyConverter))
+                                                 .Union(Remaining(account, currencyConverter)).ToArray() : [],
     };
 
     public static Domain.Entities.Account.InstitutionAccount ToEntity(this InstitutionAccount account) => new(account.Id == Guid.Empty ? Guid.NewGuid() : account.Id)
@@ -73,33 +76,35 @@ public static class InstitutionAccountExtensions
         ImportAccount = account.ImporterTypeId == null ? null : new Domain.Entities.Account.ImportAccount { ImporterTypeId = account.ImporterTypeId.Value, AccountId = account.Id },
     };
 
-    public static InstitutionAccount ToModel(this Domain.Entities.Account.InstitutionAccount entity, Guid userId)
+    public static InstitutionAccount ToModelWithAccountGroup(this Domain.Entities.Account.InstitutionAccount entity, AccountHolder accountHolder, ICurrencyConverter currencyConverter)
     {
-        var result = entity.ToModel();
-        result.AccountGroupId = entity.GetAccountGroup(userId)?.Id;
+        var result = entity.ToModel(currencyConverter);
+        result.AccountGroupId = entity.GetAccountGroup(accountHolder.Id)?.Id;
 
         return result;
     }
 
-    public static async Task<InstitutionAccount?> ToModelAsync(this Task<Domain.Entities.Account.InstitutionAccount?> entityTask, Guid userId, CancellationToken cancellationToken = default)
+    public static IEnumerable<InstitutionAccount> ToModel(this IEnumerable<Domain.Entities.Account.InstitutionAccount> entities, ICurrencyConverter currencyConverter)
     {
-        var entity = await entityTask.WaitAsync(cancellationToken);
-
-        if (entity == null) return null;
-
-        var result = entity.ToModel();
-        result.AccountGroupId = entity.GetAccountGroup(userId)?.Id;
-
-        return result;
+        return entities.Select(t => t.ToModel(currencyConverter));
     }
 
-    public static IEnumerable<InstitutionAccount> ToModel(this IEnumerable<Domain.Entities.Account.InstitutionAccount> entities)
+    public static IQueryable<InstitutionAccount> ToModel(this IQueryable<Domain.Entities.Account.InstitutionAccount> entities, ICurrencyConverter currencyConverter)
     {
-        return entities.Select(t => t.ToModel());
+        return entities.Select(t => t.ToModel(currencyConverter));
     }
 
-    public static async Task<IEnumerable<InstitutionAccount>> ToModelAsync(this Task<List<Domain.Entities.Account.InstitutionAccount>> entityTask, CancellationToken cancellationToken = default)
+    private static IEnumerable<VirtualAccount> Remaining(Domain.Entities.Account.InstitutionAccount account, ICurrencyConverter currencyConverter)
     {
-        return (await entityTask.WaitAsync(cancellationToken)).Select(t => t.ToModel());
+        var remainingBalance = account.Balance - account.VirtualAccounts.Sum(v => v.Balance);
+
+        yield return new VirtualAccount
+        {
+            Id = Guid.Empty,
+            Name = "Remaining",
+            Currency = account.Currency,
+            CurrentBalance = remainingBalance,
+            CurrentBalanceLocalCurrency = currencyConverter.Convert(remainingBalance, account.Currency)
+        };
     }
 }

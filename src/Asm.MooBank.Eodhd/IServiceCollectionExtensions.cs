@@ -7,7 +7,7 @@ public static class IServiceCollectionExtensions
     {
         services.Configure(options);
 
-        services.AddHttpClient();
+        services.AddHttpClient("eodhd");
         services.AddScoped<IStockPriceClient, StockPriceClient>();
 
         return services;

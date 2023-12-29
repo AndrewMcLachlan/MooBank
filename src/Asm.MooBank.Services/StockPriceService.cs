@@ -41,12 +41,13 @@ public class StockPriceService(IUnitOfWork unitOfWork, IStockHoldingRepository s
 
             stock.CurrentPrice = prices[stock.Symbol];
             stock.LastUpdated = DateTimeOffset.UtcNow;
+       }
 
-            logger.LogInformation("Setting {symbol} to {price}", stock.Symbol, stock.CurrentPrice);
-        }
+        var existingPrices = await referenceDataRepository.GetStockPrices(DateOnlyExtensions.Today().AddDays(-1));
 
-        foreach (var price in prices)
+        foreach (var price in prices.Where(p => !existingPrices.Select(e => e.Symbol).Contains(p.Key)))
         {
+            logger.LogInformation("Setting {symbol} to {price}", price.Key, price.Value);
             referenceDataRepository.AddStockPrice(new StockPriceHistory()
             {
                 Symbol = price.Key,

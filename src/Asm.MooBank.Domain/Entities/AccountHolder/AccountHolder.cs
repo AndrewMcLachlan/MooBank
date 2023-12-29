@@ -2,6 +2,7 @@
 
 namespace Asm.MooBank.Domain.Entities.AccountHolder;
 
+[AggregateRoot]
 public partial class AccountHolder(Guid id) : KeyedEntity<Guid>(id)
 {
     public AccountHolder() : this(default) { }
@@ -10,6 +11,7 @@ public partial class AccountHolder(Guid id) : KeyedEntity<Guid>(id)
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
 
+    public string Currency { get; set; } = "AUD";
     public required Guid FamilyId { get; set; }
 
     public Guid? PrimaryAccountId { get;set; }

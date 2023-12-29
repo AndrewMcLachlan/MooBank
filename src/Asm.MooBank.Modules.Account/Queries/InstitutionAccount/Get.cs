@@ -1,10 +1,12 @@
-﻿using Asm.MooBank.Modules.Account.Models.Account;
+﻿using Asm.MooBank.Models;
+using Asm.MooBank.Modules.Account.Models.Account;
+using Asm.MooBank.Services;
 
 namespace Asm.MooBank.Modules.Account.Queries.InstitutionAccount;
 
 public record Get(Guid Id) : IQuery<Models.Account.InstitutionAccount>;
 
-internal class GetHandler(IQueryable<Domain.Entities.Account.InstitutionAccount> accounts, IUserDataProvider userDataProvider, ISecurity security) : IQueryHandler<Get, Models.Account.InstitutionAccount>
+internal class GetHandler(IQueryable<Domain.Entities.Account.InstitutionAccount> accounts, AccountHolder accountHolder, ISecurity security, ICurrencyConverter currencyConverter) : IQueryHandler<Get, Models.Account.InstitutionAccount>
 {
     public async ValueTask<Models.Account.InstitutionAccount> Handle(Get request, CancellationToken cancellationToken)
     {
@@ -17,7 +19,7 @@ internal class GetHandler(IQueryable<Domain.Entities.Account.InstitutionAccount>
 
         security.AssertAccountPermission(entity);
 
-        var account = entity.ToModel(userDataProvider.CurrentUserId);
+        var account = entity.ToModelWithAccountGroup(accountHolder, currencyConverter);
 
         return account!;
     }

@@ -12,6 +12,10 @@ public abstract record Account
 
     public required decimal CurrentBalance { get; set; }
 
+    public required decimal? CurrentBalanceLocalCurrency { get; set; }
+
+    public required string Currency { get; set; }
+
     public string? AccountType { get; set; }
 
     public Guid? AccountGroupId { get; set; }
