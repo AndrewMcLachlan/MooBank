@@ -1,26 +1,19 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Asm.MooBank.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Asm.MooBank.Security.Authorisation;
 
 
-internal class BudgetLineAuthorisationHandler : AuthorizationHandler<BudgetLineRequirement, Domain.Entities.Budget.BudgetLine>
+internal class BudgetLineAuthorisationHandler(AccountHolder accountHolder) : AuthorizationHandler<BudgetLineRequirement, Domain.Entities.Budget.BudgetLine>
 {
-    private readonly IUserDataProvider _userDataProvider;
-
-    public BudgetLineAuthorisationHandler(IUserDataProvider userDataProvider)
+    protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, BudgetLineRequirement requirement, Domain.Entities.Budget.BudgetLine resource)
     {
-        _userDataProvider = userDataProvider;
-    }
-
-    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, BudgetLineRequirement requirement, Domain.Entities.Budget.BudgetLine resource)
-    {
-        var user = await _userDataProvider.GetCurrentUserAsync();
-        if (user == null) return;
-
-        if (resource.Budget.FamilyId == user.FamilyId)
+        if (resource.Budget.FamilyId == accountHolder.FamilyId)
         {
             context.Succeed(requirement);
         }
+
+        return Task.CompletedTask;
     }
 }
 

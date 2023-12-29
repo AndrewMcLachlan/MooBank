@@ -3,6 +3,7 @@ using Asm.MooBank.Domain.Entities.Account.Specifications;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Account.Models.Account;
+using Asm.MooBank.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,14 +26,14 @@ public record Update(Guid AccountId, Guid VirtualAccountId, string Name, string 
     }
 }
 
-internal class UpdateHandler(IAccountRepository accountRepository, ITransactionRepository transactionRepository, AccountHolder accountHolder, ISecurity security, IUnitOfWork unitOfWork) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Update, Models.Account.VirtualAccount>
+internal class UpdateHandler(IAccountRepository accountRepository, ITransactionRepository transactionRepository, ISecurity security, IUnitOfWork unitOfWork, ICurrencyConverter currencyConverter) : ICommandHandler<Update, Models.Account.VirtualAccount>
 {
     private readonly IAccountRepository _accountRepository = accountRepository;
     private readonly ITransactionRepository _transactionRepository = transactionRepository;
 
     public async ValueTask<Models.Account.VirtualAccount> Handle(Update command, CancellationToken cancellationToken)
     {
-        Security.AssertAccountPermission(command.AccountId);
+        security.AssertAccountPermission(command.AccountId);
 
         var parentAccount = await _accountRepository.Get(command.AccountId, new VirtualAccountSpecification(), cancellationToken);
 
@@ -57,7 +58,7 @@ internal class UpdateHandler(IAccountRepository accountRepository, ITransactionR
         account.Balance = command.CurrentBalance;
 
 
-        await UnitOfWork.SaveChangesAsync(cancellationToken);
-        return account.ToModel();
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+        return account.ToModel(currencyConverter);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Asm.MooBank.Domain.Entities.AccountHolder;
 
+[AggregateRoot]
 public partial class AccountHolder(Guid id) : KeyedEntity<Guid>(id)
 {
     public AccountHolder() : this(default) { }

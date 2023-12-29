@@ -13,5 +13,5 @@ public class ExchangeRate([DisallowNull] int id) : KeyedEntity<int>(id)
 
     public decimal ReverseRate { get; private set; }
 
-    public DateTimeOffset LastUpdated { get; set; }
+    public DateTime LastUpdated { get; set; }
 }

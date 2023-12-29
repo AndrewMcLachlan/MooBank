@@ -30,7 +30,7 @@ internal record ExchangeRateApiResponse
     }
 
     [JsonPropertyName("conversion_rates")]
-    public Dictionary<string, decimal> ConversionRates { get; } = [];
+    public Dictionary<string, decimal> ConversionRates { get; init; } = [];
 }
 
 

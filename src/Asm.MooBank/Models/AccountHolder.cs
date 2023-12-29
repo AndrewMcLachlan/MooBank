@@ -10,6 +10,8 @@ public partial record AccountHolder
 
     public string? LastName { get; set; }
 
+    public required string Currency { get; set; }
+
     public Guid FamilyId { get; set; }
 
     public Guid? PrimaryAccountId { get; set; }

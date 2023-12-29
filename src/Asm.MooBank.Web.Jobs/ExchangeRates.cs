@@ -2,7 +2,7 @@
 using Microsoft.Azure.WebJobs;
 
 namespace Asm.MooBank.Web.Jobs;
-internal class ExchangeRates(IExchangeRateService exchangeRateService)
+public class ExchangeRates(IExchangeRateService exchangeRateService)
 {
 #if DEBUG
     private const bool RunOnStartup = true;

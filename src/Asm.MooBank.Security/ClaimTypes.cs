@@ -6,4 +6,5 @@ public static class ClaimTypes
     public const string AccountId = "http://moobank.mclachlan.family/claims/accountid";
     public const string SharedAccountId = "http://moobank.mclachlan.family/claims/sharedaccountid";
     public const string PrimaryAccountId = "http://moobank.mclachlan.family/claims/primaryaccountid";
+    public const string Currency = "http://moobank.mclachlan.family/claims/currency";
 }
