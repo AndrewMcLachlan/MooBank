@@ -19,7 +19,8 @@ public static class TrendPointExtensions
         var start = trendPoints.Min(t => t.Month);
         var end = trendPoints.Max(t => t.Month).ToEndOfMonth();
 
-        decimal months = end.DifferenceInMonths(start);
+        // If the difference in months is 0, then we have a single month, so we'll use 1 instead.
+        decimal months = Math.Max(end.DifferenceInMonths(start),1);
 
         return Math.Round(Math.Abs(trendPoints.Sum(t => t.Amount) / months));
     }
@@ -31,7 +32,8 @@ public static class TrendPointExtensions
         var start = trendPoints.Min(t => t.Month);
         var end = trendPoints.Max(t => t.Month).ToEndOfMonth();
 
-        decimal months = end.DifferenceInMonths(start); //(end.Year - start.Year) * 12 + (end.Month - start.Month);
+        // If the difference in months is 0, then we have a single month, so we'll use 1 instead.
+        decimal months = Math.Max(end.DifferenceInMonths(start), 1);
 
         decimal? result = trendPoints.Sum(t => t.OffsetAmount) / months;
 

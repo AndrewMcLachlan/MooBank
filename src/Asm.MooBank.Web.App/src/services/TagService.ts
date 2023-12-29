@@ -10,7 +10,7 @@ export const useTags = (): UseQueryResult<Models.Tag[]> => useApiGet<Models.Tag[
 
 export const useTagsHierarchy = () => useApiGet<Models.TagHierarchy>(["tags-hierarchy"], "api/tags/hierarchy");
 
-export const useTag = (id: number) => useApiGet<Models.Tag>(["tags", id], `api/tags/${id}`);
+export const useTag = (id: number) => useApiGet<Models.Tag>(["tags", id], `api/tags/${id}`, { enabled: !!id });
 
 export const useCreateTag = () => {
 

@@ -11,4 +11,5 @@ export {default as Rules } from "./rules.svg?react";
 export {default as Sliders } from "./sliders.svg?react";
 export {default as Stack } from "./stack.svg?react";
 export {default as Tags } from "./tags.svg?react";
+export {default as TwoCoins } from "./two-coins.svg?react";
 export {default as Transaction } from "./transaction.svg?react";

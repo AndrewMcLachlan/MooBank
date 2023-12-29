@@ -1,3 +1,4 @@
+import { UseQueryResult } from "@tanstack/react-query";
 import { trimEnd, useApiGet } from "@andrewmclachlan/mooapp";
 import { AllTagAverageReport, ByTagReport, InOutReport, InOutTrendReport, ReportType, TagTrendReport, TagTrendReportSettings } from "../models/reports";
 import { allTime, formatISODate } from "../helpers/dateFns";
@@ -34,5 +35,5 @@ const datesToUrl = (start?: Date, end?:Date) => {
     start = start ?? new Date();
     end = end ?? new Date();
 
-    return`/${formatISODate(start)}/${formatISODate(end)}`;
+    return `/${formatISODate(start)}/${formatISODate(end)}`;
 }

@@ -29,6 +29,7 @@
     "react-router-redux": "^4.0.8",
     "react-select": "^5.7.2",
     "semver": "^7.3.7",
+    "treeflex": "^2.0.1",
     "use-debounce": "^10.0.0",
     "uuid": "^9.0.1",
     "workbox-core": "^7.0.0",

@@ -25,7 +25,7 @@ export const AddTransaction = () => {
 
         addTransaction(account.id, transaction);
 
-        navigate(`/${route}/transactions`);
+        navigate(`${route}/transactions`);
     }
 
     if (!account) return null;

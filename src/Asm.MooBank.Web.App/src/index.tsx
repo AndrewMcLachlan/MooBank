@@ -1,3 +1,5 @@
+import "~/treeflex/dist/css/treeflex.css";
+
 import React from "react";
 
 import { createRoot } from "react-dom/client";
