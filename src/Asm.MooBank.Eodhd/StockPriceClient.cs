@@ -9,7 +9,7 @@ public interface IStockPriceClient
     Task<decimal?> GetPriceAsync(string symbol);
 }
 
-public class StockPriceClient(HttpClient httpClient, IOptions<EodhdConfig> config, ILogger<StockPriceClient> logger) : IStockPriceClient
+public class StockPriceClient(IHttpClientFactory httpClientFactory, IOptions<EodhdConfig> config, ILogger<StockPriceClient> logger) : IStockPriceClient
 {
     private const string UrlFormat = "https://eodhd.com/api/eod/{0}?api_token={1}&from={2}&to={3}&fmt=json";
 
@@ -21,6 +21,8 @@ public class StockPriceClient(HttpClient httpClient, IOptions<EodhdConfig> confi
 
         try
         {
+            var httpClient = httpClientFactory.CreateClient("eodhd");
+
             IEnumerable<StockPrice>? prices = await httpClient.GetFromJsonAsync<IEnumerable<StockPrice>>(url);
 
             if (prices == null || !prices.Any())

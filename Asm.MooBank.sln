@@ -82,6 +82,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Eodhd", "src\As
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.Stock", "src\Asm.MooBank.Modules.Stock\Asm.MooBank.Modules.Stock.csproj", "{E9177C4B-593F-4EDE-B782-4CB7BC7C2D36}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asm.MooBank.ExchangeRateApi", "src\Asm.MooBank.ExchangeRateApi\Asm.MooBank.ExchangeRateApi.csproj", "{34A02BFD-A9AC-47EE-A1DE-A5B00C64CCAA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -178,6 +180,10 @@ Global
 		{E9177C4B-593F-4EDE-B782-4CB7BC7C2D36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E9177C4B-593F-4EDE-B782-4CB7BC7C2D36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E9177C4B-593F-4EDE-B782-4CB7BC7C2D36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34A02BFD-A9AC-47EE-A1DE-A5B00C64CCAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34A02BFD-A9AC-47EE-A1DE-A5B00C64CCAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34A02BFD-A9AC-47EE-A1DE-A5B00C64CCAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34A02BFD-A9AC-47EE-A1DE-A5B00C64CCAA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -196,6 +202,7 @@ Global
 		{609F2607-9FFD-4DF1-AB84-5E745FD6395E} = {EAC5F111-34BB-4633-A274-257074F46E7F}
 		{5EED26F8-2233-49E7-A302-82EF46DACE1A} = {2754ACBC-340B-4D5C-AEE8-1AC1AD5CF9E0}
 		{E9177C4B-593F-4EDE-B782-4CB7BC7C2D36} = {38BEA81E-F80F-44DE-A930-9BD5D3A62FFF}
+		{34A02BFD-A9AC-47EE-A1DE-A5B00C64CCAA} = {2754ACBC-340B-4D5C-AEE8-1AC1AD5CF9E0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0CAD466B-BD01-4883-9CDC-F62C19A2A615}

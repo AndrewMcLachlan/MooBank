@@ -21,6 +21,7 @@ static void ConfigureServices(HostBuilderContext context, IServiceCollection ser
     services.AddImporterFactory();
     services.AddServices();
     services.AddEodhd(options => context.Configuration.Bind("EODHD", options));
+    services.AddExchangeRateApi(options => context.Configuration.Bind("ExchangeRateApi", options));
     services.AddSingleton(new AccountHolder() { EmailAddress = "moobank@mclachlan.family"});
 
     services.AddSingleton<IAuthorizationService, AuthorisationService>();
