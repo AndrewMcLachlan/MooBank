@@ -1,6 +1,7 @@
 ﻿@import "~/@andrewmclachlan/mooapp/scss/mooapp.scss";
 @import "~/@andrewmclachlan/mooapp/scss/mixins";
 @import "../scss/budget";
+@import "../scss/rainbow";
 @import "../scss/components";
 @import "../scss/filterPanel";
 @import "../scss/transactionTagDetails";
@@ -379,6 +380,8 @@ legend.open svg {
 
 .tf-tree {
 
+    overflow: visible;
+
     .tf-nc {
         border-color: var(--bs-body-color);
         border-width: 2px;
@@ -392,8 +395,13 @@ legend.open svg {
         line-height: 1.2em;
         font-weight: 500;
 
+        span {
+            mix-blend-mode: difference;
+        }
+
         &:after {
             height: 1.1em;
+            mix-blend-mode: normal;
         }
     }
 

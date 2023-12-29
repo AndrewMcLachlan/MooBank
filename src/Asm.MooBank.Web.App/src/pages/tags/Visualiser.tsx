@@ -1,11 +1,11 @@
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ReactNode } from "react";
 
 import { Tag } from "../../models";
 
-import { chartColours } from "../../helpers/chartColours";
 import { useTagsHierarchy } from "../../services";
 import { TagsPage } from "./TagsPage";
 import { Container } from "react-bootstrap";
+import classNames from "classnames";
 
 export const Visualiser = () => {
 
@@ -28,9 +28,8 @@ let colourIndex = 0;
 
 const nextColour = () => {
     colourIndex++;
-    if (colourIndex === chartColours.length) colourIndex = 0;
-    const colour = chartColours[colourIndex];
-    return colour;
+    if (colourIndex >= 20) colourIndex = 0;
+    return `rainbow rainbow-${colourIndex}`;
 }
 
 const getTree = (tags: Tag[]): ReactNode => {
@@ -48,7 +47,7 @@ const getTree = (tags: Tag[]): ReactNode => {
                 <div className="tf-tree">
                     <ul>
                         <li key={tag.id}>
-                            <span className="tf-nc" style={{ backgroundColor: chartColours[0] }}>{tag.name}</span>
+                            <span className="tf-nc rainbow rainbow-0">{tag.name}</span>
                             {tag.tags.length > 0 && getBranch(tag.tags, 0)}
                         </li>
                     </ul>
@@ -65,7 +64,7 @@ const getTree = (tags: Tag[]): ReactNode => {
                     colourIndex = 0;
                     return (
                         <li key={tag.id}>
-                            <span className="tf-nc" style={{ backgroundColor: nextColour() }}>{tag.name}</span>
+                            <span className={classNames("tf-nc", nextColour())}>{tag.name}</span>
                             {tag.tags.length > 0 && getBranch(tag.tags, 0)}
                         </li>
                     );
@@ -83,7 +82,7 @@ const getBranch = (tags: Tag[], level: number): ReactNode => {
         <ul>
             {tags.map(tag => (
                 <li key={tag.id}>
-                    <span className="tf-nc" style={{ backgroundColor: level === 0 ? nextColour() : chartColours[colourIndex] }}>{tag.name}</span>
+                    <span className={classNames("tf-nc", level === 0 ? nextColour() : `rainbow rainbow-${colourIndex}`)}>{tag.name}</span>
                     {tag.tags.length > 0 && getBranch(tag.tags, level + 1)}
                 </li>
             ))}
