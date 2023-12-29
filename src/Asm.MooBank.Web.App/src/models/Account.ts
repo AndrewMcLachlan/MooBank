@@ -13,6 +13,8 @@ export interface AccountBase {
     name: string;
     description?: string;
     currentBalance: number;
+    currentBalanceLocalCurrency: number;
+    currency: string;
 }
 
 export interface TopLevelAccount {
@@ -45,6 +47,8 @@ export const emptyAccount : InstitutionAccount = {
     controller: "Manual",
     accountGroupId: "",
     calculatedBalance: 0,
+    currentBalanceLocalCurrency: 0,
+    currency: "",
     shareWithFamily: false,
     includeInBudget: false,
     institutionId: 0,

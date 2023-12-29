@@ -34,6 +34,8 @@ export const CreateStockHolding: React.FC = () => {
             price: price,
             fees: fees,
             description: description,
+            currency: "AUD",
+            currentBalanceLocalCurrency: 0,
             accountGroupId: accountGroupId === "" ? undefined : accountGroupId,
             shareWithFamily: shareWithFamily,
             currentBalance: 0,
