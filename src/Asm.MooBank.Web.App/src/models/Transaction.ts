@@ -32,12 +32,14 @@ export interface Transaction {
     transactionType: TransactionType;
     tags: Tag[];
     notes?: string;
+    excludeFromReporting?: boolean;
     splits: TransactionSplit[];
     offsetFor: TransactionOffset[];
     extraInfo: any;
 }
 
 export interface TransactionUpdate {
+    excludeFromReporting: boolean;
     notes?: string;
     splits?: TransactionSplit[];
 }

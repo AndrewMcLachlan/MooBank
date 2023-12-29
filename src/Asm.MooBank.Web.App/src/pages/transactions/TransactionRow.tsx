@@ -14,9 +14,9 @@ export const TransactionRow: React.FC<TransactionRowProps> = (props) => {
 
     const updateTransaction = useUpdateTransaction();
 
-    const onSave = (notes: string, splits?: TransactionSplit[], offsetBy?: TransactionOffset[]) => {
+    const onSave = (excludeFromReporting: boolean, notes?: string, splits?: TransactionSplit[], offsetBy?: TransactionOffset[]) => {
         
-        updateTransaction.mutate([{ accountId: props.transaction.accountId, transactionId: props.transaction.id }, { notes, splits}]);
+        updateTransaction.mutate([{ accountId: props.transaction.accountId, transactionId: props.transaction.id }, { excludeFromReporting, notes, splits}]);
         setShowDetails(false);
     }
 

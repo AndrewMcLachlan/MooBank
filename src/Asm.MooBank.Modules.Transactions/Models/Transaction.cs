@@ -16,6 +16,8 @@ public partial record Transaction
 
     public string? Reference { get; set; }
     public string? Notes { get; set; }
+
+    public bool ExcludeFromReporting { get; set; }
     public DateTime TransactionTime { get; set; }
 
     public DateTime? PurchaseDate { get; set; }

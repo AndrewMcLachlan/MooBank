@@ -10,6 +10,7 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
 
     const transaction = useMemo(() => props.transaction, [props.transaction]);
     const [notes, setNotes] = useState(props.transaction.notes ?? "");
+    const [excludeFromReporting, setExcludeFromReporting] = useState(props.transaction.excludeFromReporting ?? false);
     const [splits, setSplits] = useState<TransactionSplit[]>(props.transaction.splits ?? []);
 
     const addSplit = (split: TransactionSplit) => {
@@ -68,6 +69,12 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
                         </React.Fragment>
                     )}
                 </section>
+                <section>
+                    <label className="form-label">Exclude from reporting</label>
+                    <div>
+                    <input type="checkbox" className="form-check-input" checked={excludeFromReporting} onChange={(e) => setExcludeFromReporting(e.currentTarget.checked)} />
+                    </div>
+                </section>
                 <section className="notes">
                     <label>Notes</label>
                     <textarea className="form-control" value={notes} onChange={(e) => setNotes(e.currentTarget.value)} />
@@ -101,7 +108,7 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={props.onHide}>Close</Button>
-                <Button variant="primary" onClick={() => { props.onSave(notes, splits) }}>Save</Button>
+                <Button variant="primary" onClick={() => { props.onSave(excludeFromReporting, notes, splits) }}>Save</Button>
             </Modal.Footer>
         </Modal >
     );
@@ -111,5 +118,5 @@ export interface TransactionDetailsProps {
     transaction: Transaction;
     show: boolean;
     onHide: () => void;
-    onSave: (notes?: string, splits?: TransactionSplit[], offsetBy?: TransactionOffset[]) => void;
+    onSave: (excludeFromReporting: boolean, notes?: string, splits?: TransactionSplit[], offsetBy?: TransactionOffset[]) => void;
 }

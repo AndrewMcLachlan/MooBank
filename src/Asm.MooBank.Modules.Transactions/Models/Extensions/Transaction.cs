@@ -21,6 +21,7 @@ public static class TransactionExtensions
             AccountHolderName = transaction.AccountHolder?.FirstName,
             ExtraInfo = transaction.Extra,
             Notes = transaction.Notes,
+            ExcludeFromReporting = transaction.ExcludeFromReporting,
             Tags = transaction.Tags.Where(t => !t.Deleted).ToSimpleModel(),
             Splits = transaction.Splits.Select(t => t.ToModel()),
             OffsetFor = transaction.OffsetFor.Select(t => t.ToOffsetForModel()),
@@ -38,6 +39,7 @@ public static class TransactionExtensions
             AccountId = transaction.AccountId,
             Description = transaction.Description,
             Notes = transaction.Notes,
+            ExcludeFromReporting = transaction.ExcludeFromReporting,
         };
 
     public static IEnumerable<Transaction> ToModel(this IEnumerable<Domain.Entities.Transactions.Transaction> entities) =>
