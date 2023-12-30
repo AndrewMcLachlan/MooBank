@@ -8,7 +8,7 @@ export const MonthSelector: React.FC<MonthSelectorProps<any>> = ({ className, ..
     const [value, setValue] = useState(props.value);
 
     const onChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-        var mask = 1 << Number(e.currentTarget.value);
+        const mask = 1 << Number(e.currentTarget.value);
         const newValue = value ^ mask;
         setValue(newValue);
         props.onChange?.(newValue);

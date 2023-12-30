@@ -13,7 +13,7 @@ export const ManualAccountRow: React.FC<AccountRowProps> = (props) => {
 
     const { balanceRef, editingBalance, balanceClick, onRowClick, balanceChange, balance, keyPress } = useComponentState(props);
 
-    const [showVirtualAccounts, setShowVirtualAccounts] = useState<Boolean>(localStorage.getItem(`account|${MD5(props.account.id)}`) === "true");
+    const [showVirtualAccounts, setShowVirtualAccounts] = useState<boolean>(localStorage.getItem(`account|${MD5(props.account.id)}`) === "true");
 
     const showVirtualAccountsClick = (e: React.MouseEvent<HTMLTableCellElement>) => {
         e.preventDefault();

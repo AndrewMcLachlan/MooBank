@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { format } from "date-fns/format";
 import { getMonth } from "date-fns/getMonth";
 import { getYear } from "date-fns/getYear";
 
-import { Bar } from "react-chartjs-2";
-import { Chart as ChartJS, ChartData, registerables } from "chart.js";
+import { ChartData, Chart as ChartJS, registerables } from "chart.js";
 import chartTrendline from "chartjs-plugin-trendline";
+import { Bar } from "react-chartjs-2";
 
+import { useChartColours } from "helpers/chartColours";
 import { Period } from "helpers/dateFns";
 import { useInOutReport } from "services";
-import { useChartColours } from "helpers/chartColours";
 
 ChartJS.register(...registerables);
 ChartJS.register(chartTrendline);

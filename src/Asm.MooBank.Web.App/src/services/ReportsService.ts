@@ -1,11 +1,11 @@
 import { UseQueryResult } from "@tanstack/react-query";
 import { trimEnd, useApiGet } from "@andrewmclachlan/mooapp";
 import { AllTagAverageReport, ByTagReport, InOutReport, InOutTrendReport, ReportType, TagTrendReport, TagTrendReportSettings } from "../models/reports";
-import { allTime, formatISODate } from "../helpers/dateFns";
+import { formatISODate } from "../helpers/dateFns";
 
 export const reportsKey = "reports";
 
-export const useInOutReport = (accountId: string, start: Date, end: Date) => useApiGet<InOutReport>([reportsKey, accountId, "in-out", start, end], trimEnd("/", `api/accounts/${accountId}/reports/in-out${datesToUrl(start, end)}`), { enabled: (!!start && !!end) });
+export const useInOutReport = (accountId: string, start: Date, end: Date): UseQueryResult<InOutReport> => useApiGet<InOutReport>([reportsKey, accountId, "in-out", start, end], trimEnd("/", `api/accounts/${accountId}/reports/in-out${datesToUrl(start, end)}`), { enabled: (!!start && !!end) });
 
 export const useInOutTrendReport = (accountId: string, start: Date, end: Date) => useApiGet<InOutTrendReport>([reportsKey, accountId, "in-out-trend", start, end], trimEnd("/", `api/accounts/${accountId}/reports/in-out-trend${datesToUrl(start, end)}`), { enabled: (!!start && !!end) });
 

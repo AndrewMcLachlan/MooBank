@@ -1,12 +1,10 @@
-/// <reference path="../../node_modules/@tanstack/react-query/build/modern/types.d.ts" />
-
-import { DefaultError, UseMutationResult, UseQueryResult, useQueryClient } from "@tanstack/react-query";
+import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 
 import * as Models from "../models";
 import { Transaction, Tag } from "../models";
 import { State, TransactionsFilter } from "../store/state";
-import { SortDirection, useApiGet, useApiPagedGet, useApiDelete, useApiDatalessPut, useApiPatch, useApiDatalessPost, useApiPost } from "@andrewmclachlan/mooapp";
+import { SortDirection, useApiGet, useApiPagedGet, useApiDelete, useApiDatalessPut, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
 import {format} from "date-fns/format";
 import {parseISO} from "date-fns/parseISO";
 
@@ -61,7 +59,7 @@ export const useUpdateTransaction = () => {
     return useApiPatch<Transaction, TransactionVariables, Models.TransactionUpdate>((variables) => `api/accounts/${variables.accountId}/transactions/${variables.transactionId}`, {
         onMutate: ([variables, data]) => {
 
-            let transactions = queryClient.getQueryData<Models.PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection]);
+            const transactions = queryClient.getQueryData<Models.PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection]);
             if (!transactions) return;
 
             const transaction = transactions.results.find(tr => tr.id === variables.transactionId);
@@ -74,7 +72,7 @@ export const useUpdateTransaction = () => {
 
             queryClient.setQueryData<Models.PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection], transactions);
         },
-        onError: (_error, [variables, _data]) => {
+        onError: (_error, [variables]) => {
             queryClient.invalidateQueries({ queryKey: [transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection]});
         }
     });
@@ -89,7 +87,7 @@ export const useAddTransactionTag = () => {
     return useApiDatalessPut<Models.Transaction, TransactionTagVariables>((variables) => `api/accounts/${variables.accountId}/transactions/${variables.transactionId}/tag/${variables.tag.id}`, {
         onMutate: (variables) => {
 
-            let transactions = queryClient.getQueryData<Models.PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection]);
+            const transactions = queryClient.getQueryData<Models.PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection]);
             if (!transactions) return;
 
             const transaction = transactions.results.find(tr => tr.id === variables.transactionId);
@@ -110,7 +108,7 @@ export const useRemoveTransactionTag = () => {
     return useApiDelete<TransactionTagVariables>((variables) => `api/accounts/${variables.accountId}/transactions/${variables.transactionId}/tag/${variables.tag.id}`, {
         onMutate: (variables) => {
             
-            let transactions = queryClient.getQueryData<Models.PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection]);
+            const transactions = queryClient.getQueryData<Models.PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection]);
             if (!transactions) return;
 
             const transaction = transactions.results.find(tr => tr.id === variables.transactionId);
@@ -132,7 +130,7 @@ export const useCreateTransaction = () => {
         }
     });
 
-    const { mutate, ...rest} = res;
+    const { mutate } = res;
 
     const create = (accountId:string, transaction: Models.CreateTransaction) => {
         mutate([{accountId}, transaction]);

@@ -54,7 +54,7 @@ export const useDeleteBudgetLine = () => {
 
     const { mutate, ...rest } = useApiDelete<BudgetVariables>((variables) => `api/budget/${variables.year}/lines/${variables.lineId}`, {
         onSuccess: (_data, variables: BudgetVariables) => {
-            let budget = queryClient.getQueryData<Budget>([budgetKey, variables.year]);
+            const budget = queryClient.getQueryData<Budget>([budgetKey, variables.year]);
             if (!budget) return;
             budget.expensesLines = budget.expensesLines.filter(r => r.id !== (variables.lineId));
             budget.incomeLines = budget.incomeLines.filter(r => r.id !== (variables.lineId));

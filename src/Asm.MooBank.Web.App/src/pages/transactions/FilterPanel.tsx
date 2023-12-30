@@ -1,11 +1,10 @@
 import { Section, Tooltip, useLocalStorage } from "@andrewmclachlan/mooapp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Form } from "react-bootstrap";
 import { useDispatch, } from "react-redux";
 
-import { FormRow as Row, TagSelector } from "components";
-import { PeriodSelector } from "components";
+import { PeriodSelector, FormRow as Row, TagSelector } from "components";
 import { TransactionsSlice } from "store/Transactions";
 
 import { Period } from "helpers/dateFns";
@@ -51,9 +50,6 @@ export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
 
     const [period, setPeriod] = useState<Period>({ startDate: null, endDate: null });
     const dispatch = useDispatch();
-
-    const [open, setOpen] = useLocalStorage("filter-panel-open", false);
-
 
     const clear = () => {
         setFilterDescription("");

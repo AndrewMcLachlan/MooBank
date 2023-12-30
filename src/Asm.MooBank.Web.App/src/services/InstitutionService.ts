@@ -17,8 +17,8 @@ export const useCreateInstitution = () => {
 
     const queryClient = useQueryClient();
 
-    var { mutate, ...rest } = useApiPost<Institution, null, Institution>(() => "api/institutions", {
-        onMutate: ([variables, data]) => {
+    const { mutate, ...rest } = useApiPost<Institution, null, Institution>(() => "api/institutions", {
+        onMutate: ([_variables, data]) => {
             let allInstitutions = queryClient.getQueryData<Institution[]>([institutionKey]);
             if (!allInstitutions) {
                 console.warn("Query Cache is missing Institutions");
@@ -29,7 +29,7 @@ export const useCreateInstitution = () => {
             allInstitutions = allInstitutions.sort((t1, t2) => t1.name.localeCompare(t2.name));
             queryClient.setQueryData<Institution[]>([institutionKey], allInstitutions);
         },
-        onError: (_error, [variables, _data]) => {
+        onError: () => {
             queryClient.invalidateQueries({ queryKey: [institutionKey] });
         }
     });
@@ -45,7 +45,7 @@ export const useUpdateInstitution = () => {
 
     const queryClient = useQueryClient();
 
-    var { mutate, ...rest } = useApiPatch<Institution, number, Institution>((id) => `api/institutions/${id}`, {
+    const { mutate, ...rest } = useApiPatch<Institution, number, Institution>((id) => `api/institutions/${id}`, {
         onMutate: ([id, data]) => {
             let allInstitutions = queryClient.getQueryData<Institution[]>([institutionKey]);
             if (!allInstitutions) {

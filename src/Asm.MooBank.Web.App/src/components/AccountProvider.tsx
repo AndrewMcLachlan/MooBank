@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 
-import { InstitutionAccount, TransactionAccount, VirtualAccount, emptyAccount } from "models";
+import { InstitutionAccount, VirtualAccount, emptyAccount } from "models";
 
 export interface AccountProviderProps {
     account: InstitutionAccount | VirtualAccount;

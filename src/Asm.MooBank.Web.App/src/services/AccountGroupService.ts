@@ -1,6 +1,6 @@
-import { UseQueryResult, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AccountGroup } from "../models";
 import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
+import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
+import { AccountGroup } from "../models";
 
 export const accountGroupsKey = "account-groups";
 

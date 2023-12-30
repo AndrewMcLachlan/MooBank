@@ -1,5 +1,4 @@
 import { SortDirection } from "@andrewmclachlan/mooapp";
-import { StockTransaction } from "models";
 
 export interface State {
     app: App,

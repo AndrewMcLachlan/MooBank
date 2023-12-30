@@ -1,19 +1,18 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 
-import { useAccount } from "components";
-import { ReportsPage } from "./ReportsPage";
 import { useAllTagAverageReport } from "services";
+import { ReportsPage } from "./ReportsPage";
 
-import { Bar, getElementAtEvent } from "react-chartjs-2";
-import { Chart as ChartJS, ChartData, registerables } from "chart.js";
 import { Section, useIdParams } from "@andrewmclachlan/mooapp";
+import { ChartData, Chart as ChartJS, registerables } from "chart.js";
+import { Bar, getElementAtEvent } from "react-chartjs-2";
 
 import { PeriodSelector } from "components/PeriodSelector";
+import { ReportTypeSelector } from "components/ReportTypeSelector";
 import { Period } from "helpers/dateFns";
 import { ReportType } from "models/reports";
-import { ReportTypeSelector } from "components/ReportTypeSelector";
-import { chartColours, desaturatedChartColours } from "../../helpers/chartColours";
 import { useNavigate } from "react-router";
+import { chartColours, desaturatedChartColours } from "../../helpers/chartColours";
 
 ChartJS.register(...registerables);
 
@@ -21,7 +20,6 @@ export const AllTagAverage = () => {
 
     const navigate = useNavigate();
 
-    const account = useAccount();
     const accountId = useIdParams();
 
     const [reportType, setReportType] = useState<ReportType>(ReportType.Expenses);
@@ -79,7 +77,7 @@ export const AllTagAverage = () => {
                     }
                 }}
                     onClick={(e) => {
-                        var elements = getElementAtEvent(chartRef.current!, e);
+                        const elements = getElementAtEvent(chartRef.current!, e);
                         if (elements.length !== 1) return;
                         if (!report.data!.tags[elements[0].index].hasChildren) return;
                         navigate(`/accounts/${accountId}/reports/breakdown/${report.data!.tags[elements[0].index].tagId}`);

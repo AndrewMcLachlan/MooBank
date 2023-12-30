@@ -1,12 +1,12 @@
 import { IconLinkButton } from "@andrewmclachlan/mooapp";
 import { Table } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { useInstitutions } from "services";
 import { SettingsPage } from "../SettingsPage";
-import { useNavigate } from "react-router-dom";
 
 export const Institutions = () => {
 
-    const { data: institutions, isLoading } = useInstitutions();
+    const { data: institutions } = useInstitutions();
 
     const navigate = useNavigate();
 

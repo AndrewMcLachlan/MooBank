@@ -5,7 +5,7 @@ export type NameValue = {
 
 export const toNameValue = (type: any):NameValue[] => {
 
-    let result:NameValue[] = [];
+    const result:NameValue[] = [];
 
     for (const value in type) {
         const realValue = (value as unknown) as number;

@@ -1,10 +1,10 @@
 import React, { PropsWithChildren, ReactNode } from "react";
 
-import { InstitutionAccount, StockHolding } from "models";
-import { useStockHolding } from "./StockHoldingProvider";
 import { NavItem, NavItemDivider, Page, PageProps } from "@andrewmclachlan/mooapp";
+import { StockHolding } from "models";
+import { useStockHolding } from "./StockHoldingProvider";
 
-import { Import, Reports, Rules, Sliders, Transaction } from "assets";
+import { Sliders, Transaction } from "assets";
 
 export const StockHoldingPage: React.FC<PropsWithChildren<AccountPageProps>> = ({ children, ...props }) => {
 

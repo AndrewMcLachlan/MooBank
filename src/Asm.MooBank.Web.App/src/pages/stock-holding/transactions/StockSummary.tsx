@@ -1,3 +1,4 @@
+import React from "react";
 import { Section } from "@andrewmclachlan/mooapp";
 import { useStockHolding } from "../StockHoldingProvider"
 import classNames from "classnames";

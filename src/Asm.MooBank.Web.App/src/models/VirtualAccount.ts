@@ -1,5 +1,5 @@
 
-import { AccountBase, InstitutionAccount, TransactionAccount } from ".";
+import { InstitutionAccount, TransactionAccount } from ".";
 import { RecurringTransaction } from "./RecurringTransaction";
 
 export interface VirtualAccount extends TransactionAccount {

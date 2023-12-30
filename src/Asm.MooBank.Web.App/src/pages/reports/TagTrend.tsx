@@ -1,21 +1,20 @@
+import { Section } from "@andrewmclachlan/mooapp";
+import { ChartData, Chart as ChartJS, registerables } from "chart.js";
+import chartTrendline from "chartjs-plugin-trendline";
 import React, { useEffect, useState } from "react";
-
-import { TagSelector } from "components";
-import { ReportsPage } from "./ReportsPage";
-import { useAccount, useTag, useTagTrendReport } from "services";
+import { Line } from "react-chartjs-2";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { Line } from "react-chartjs-2";
-import { Chart as ChartJS, ChartData, plugins, registerables } from "chart.js";
-import chartTrendline from "chartjs-plugin-trendline";
+import { TagSelector } from "components";
 import { PeriodSelector } from "components/PeriodSelector";
-import { Period } from "helpers/dateFns";
-import { ReportType, TagTrendReportSettings, defaultSettings } from "models/reports";
 import { ReportTypeSelector } from "components/ReportTypeSelector";
-import { TagSettingsPanel } from "./TagSettingsPanel";
+import { Period } from "helpers/dateFns";
 import { TagSettings } from "models";
+import { ReportType, TagTrendReportSettings, defaultSettings } from "models/reports";
+import { useTag, useTagTrendReport } from "services";
 import { useChartColours } from "../../helpers/chartColours";
-import { Section } from "@andrewmclachlan/mooapp";
+import { ReportsPage } from "./ReportsPage";
+import { TagSettingsPanel } from "./TagSettingsPanel";
 
 ChartJS.register(...registerables);
 ChartJS.register(chartTrendline);
@@ -26,8 +25,6 @@ export const TagTrend: React.FC = () => {
     const navigate = useNavigate();
 
     const { id: accountId, tagId } = useParams<{ id: string, tagId: string }>();
-
-    const account = useAccount(accountId!);
 
     const [reportType, setReportType] = useState<ReportType>(ReportType.Expenses);
     const [period, setPeriod] = useState<Period>({ startDate: null, endDate: null });
@@ -45,7 +42,7 @@ export const TagTrend: React.FC = () => {
             data: report.data?.months.map(i => Math.abs(i.offsetAmount!)) ?? [],
             backgroundColor: colours.income,
             borderColor: colours.income,
-            // @ts-ignore
+            // @ts-expect-error Not a known property for some reason
             trendlineLinear: {
                 colorMin: colours.incomeTrend,
                 colorMax: colours.incomeTrend,

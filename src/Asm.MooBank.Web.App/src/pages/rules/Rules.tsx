@@ -1,15 +1,15 @@
 import "./Rules.scss";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
 
-import { changeSortDirection, ClickableIcon, getNumberOfPages, SearchBox, SortDirection, Pagination, useIdParams, Section } from "@andrewmclachlan/mooapp";
+import { ClickableIcon, Pagination, SearchBox, Section, SortDirection, changeSortDirection, getNumberOfPages, useIdParams } from "@andrewmclachlan/mooapp";
 import { AccountPage, TagPanel, useAccount } from "components";
 
-import { Tag, Rule, sortRules } from "models";
+import { Rule, Tag, sortRules } from "models";
 
-import { RuleRow } from "./RuleRow";
 import { useCreateRule, useCreateTag, useRules, useRunRules, useTags } from "services";
+import { RuleRow } from "./RuleRow";
 
 export const Rules: React.FC = () => {
 

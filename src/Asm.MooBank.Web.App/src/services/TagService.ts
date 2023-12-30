@@ -53,7 +53,7 @@ export const useUpdateTag = (): UseMutationResult<Models.Tag, null, Models.Tag, 
                 const allTags = queryClient.getQueryData<Models.Tag[]>(["tags"]);
                 if (!allTags) return;
 
-                var tagIndex = allTags.findIndex(r => r.id === data.id);
+                const tagIndex = allTags.findIndex(r => r.id === data.id);
 
                 allTags.splice(tagIndex, 1, data);
 
@@ -89,7 +89,7 @@ export const useAddSubTag = () => {
             const allTags = queryClient.getQueryData<Models.Tag[]>(["tags"]);
             if (!allTags) return;
 
-            var tagIndex = allTags.findIndex(r => r.id === data.id);
+            const tagIndex = allTags.findIndex(r => r.id === data.id);
 
             allTags.splice(tagIndex, 1, data);
 
@@ -112,7 +112,7 @@ export const useRemoveSubTag = () => {
             const allTags = queryClient.getQueryData<Models.Tag[]>(["tags"]);
             if (!allTags) return;
 
-            var tagIndex = allTags.findIndex(r => r.id === data.id);
+            const tagIndex = allTags.findIndex(r => r.id === data.id);
 
             allTags.splice(tagIndex, 1, data);
 

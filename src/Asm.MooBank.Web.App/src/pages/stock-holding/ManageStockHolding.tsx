@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Form, Button, InputGroup, Col } from "react-bootstrap";
-import { StockHolding, emptyStockHolding } from "../../models";
-import { useStockHolding } from "./StockHoldingProvider";
-import { StockHoldingPage } from "./StockHoldingPage";
+import { Button, Form, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { StockHolding } from "../../models";
+import { StockHoldingPage } from "./StockHoldingPage";
+import { useStockHolding } from "./StockHoldingProvider";
 
 import { useAccountGroups, useUpdateStockHolding } from "services";
 

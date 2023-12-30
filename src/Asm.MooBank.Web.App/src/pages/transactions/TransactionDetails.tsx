@@ -1,10 +1,10 @@
-import { Transaction, TransactionOffset, TransactionSplit, isCredit, getSplitTotal, isDebit } from "models";
-import { Button, Col, Form, Modal, Row, } from "react-bootstrap";
-import { TransactionSplit as TransactionSplitPanel } from "./TransactionSplit";
-import React, { useEffect, useMemo, useState } from "react";
-import { ExtraInfo } from "./ExtraInfo";
 import { formatCurrency } from "@andrewmclachlan/mooapp";
+import { Transaction, TransactionOffset, TransactionSplit, getSplitTotal, isDebit } from "models";
+import React, { useMemo, useState } from "react";
+import { Button, Col, Form, Modal, Row, } from "react-bootstrap";
+import { ExtraInfo } from "./ExtraInfo";
 import { NewTransactionSplit } from "./NewTransactionSplit";
+import { TransactionSplit as TransactionSplitPanel } from "./TransactionSplit";
 
 export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => {
 

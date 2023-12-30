@@ -11,8 +11,8 @@ export const useCreateFamily = () => {
 
     const queryClient = useQueryClient();
 
-    var { mutate, ...rest } = useApiPost<Family, null, Family>(() => "api/families/create", {
-        onMutate: ([variables, data]) => {
+    const { mutate, ...rest } = useApiPost<Family, null, Family>(() => "api/families/create", {
+        onMutate: ([_variables, data]) => {
             let allFamilies = queryClient.getQueryData<Family[]>([familyKey]);
             if (!allFamilies) {
                 console.warn("Query Cache is missing Families");

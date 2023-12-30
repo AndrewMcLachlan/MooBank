@@ -62,7 +62,7 @@ export const useCreateRule = () => {
             allRules = allRules.sort((t1, t2) => t1.contains.localeCompare(t2.contains));
             queryClient.setQueryData<Models.Rule[]>([rulesKey, variables.accountId], allRules);
         },
-        onError: (_error, [variables, _data]) => {
+        onError: (_error, [variables]) => {
             queryClient.invalidateQueries({ queryKey: [rulesKey, variables.accountId]});
         }
     });
@@ -81,14 +81,14 @@ export const useUpdateRule = () => {
                 return;
             }
 
-            var ruleIndex = allRules.findIndex(r => r.id === variables.id);
+            const ruleIndex = allRules.findIndex(r => r.id === variables.id);
 
             allRules.splice(ruleIndex, 1, data);
 
             allRules = allRules.sort((t1, t2) => t1.contains.localeCompare(t2.contains));
             queryClient.setQueryData<Models.Rule[]>([rulesKey, variables.accountId], allRules);
         },
-        onError: (_error, [variables, _data]) => {
+        onError: (_error, [variables]) => {
             queryClient.invalidateQueries({ queryKey: [[rulesKey, variables.accountId]]});
         }
     });

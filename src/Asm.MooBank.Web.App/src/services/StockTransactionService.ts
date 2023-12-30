@@ -1,19 +1,10 @@
-import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
-import { useSelector } from "react-redux";
+import { UseQueryResult } from "@tanstack/react-query";
 
 import * as Models from "../models";
-import { Transaction, Tag } from "../models";
-import { State, TransactionsFilter } from "../store/state";
-import { SortDirection, useApiGet, useApiPagedGet, useApiDelete, useApiDatalessPut, useApiPatch, useApiDatalessPost } from "@andrewmclachlan/mooapp";
-import { format } from "date-fns/format";
-import { parseISO } from "date-fns/parseISO";
+import { TransactionsFilter } from "../store/state";
+import { SortDirection,  useApiPagedGet } from "@andrewmclachlan/mooapp";
 
 const transactionKey = "stock-transactions";
-
-interface TransactionVariables {
-    accountId: string,
-    transactionId: string,
-}
 
 export const useStockTransactions = (accountId: string, filter: TransactionsFilter, pageSize: number, pageNumber: number, sortField: string, sortDirection: SortDirection): UseQueryResult<Models.PagedResult<Models.StockTransaction>> => {
 

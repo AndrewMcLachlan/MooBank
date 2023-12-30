@@ -1,4 +1,5 @@
-import { ClickableIcon, EditColumn, emptyGuid } from "@andrewmclachlan/mooapp";
+import React from "react";
+import { ClickableIcon, EditColumn } from "@andrewmclachlan/mooapp";
 import { format } from "date-fns/format";
 import { parse } from "date-fns/parse";
 import { parseISO } from "date-fns/parseISO";

@@ -4,8 +4,6 @@ import { TagPanel } from "components";
 
 import { Tag, TransactionSplit } from "models";
 import { useCreateTag, useTags } from "services";
-import { emptyGuid } from "@andrewmclachlan/mooapp";
-
 
 export const TransactionSplitTagPanel: React.FC<TransactionSplitPanelProps> = (props) => {
 

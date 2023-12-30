@@ -1,5 +1,3 @@
-import React from "react";
-
 import { useInOutTrendReport } from "services";
 
 import { Line } from "react-chartjs-2";
@@ -24,7 +22,7 @@ export const InOutTrend: React.FC<InOutTrendProps> = ({accountId, period}) => {
             data: report.data?.income.map(i => i.amount) ?? [],
             backgroundColor: colours.income,
             borderColor: colours.income,
-            // @ts-ignore
+            // @ts-expect-error Not a known property for some reason
             trendlineLinear: {
                 colorMin: colours.incomeTrend,
                 colorMax: colours.incomeTrend,
@@ -36,7 +34,7 @@ export const InOutTrend: React.FC<InOutTrendProps> = ({accountId, period}) => {
             data: report.data?.expenses.map(i => Math.abs(i.amount)) ?? [],
             backgroundColor: colours.expenses,
             borderColor: colours.expenses,
-            // @ts-ignore
+            // @ts-expect-error Not a known property for some reason
             trendlineLinear: {
                 colorMin: colours.expensesTrend,
                 colorMax: colours.expensesTrend,

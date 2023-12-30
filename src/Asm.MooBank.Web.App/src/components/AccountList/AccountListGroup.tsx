@@ -1,11 +1,11 @@
 import React from "react";
 import { Spinner, Table } from "react-bootstrap";
 
-import { AccountController, AccountListGroup as Model } from "models";
-import { ManualAccountRow } from "./ManualAccountRow";
-import { AccountRow } from "./AccountRow";
-import { getBalanceString } from "helpers";
 import { Section } from "@andrewmclachlan/mooapp";
+import { getBalanceString } from "helpers";
+import { AccountListGroup as Model } from "models";
+import { AccountRow } from "./AccountRow";
+import { ManualAccountRow } from "./ManualAccountRow";
 
 export interface AccountListGroupProps {
     accountGroup: Model;

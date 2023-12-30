@@ -46,6 +46,8 @@ jobs:
       env:
         NODE_AUTH_TOKEN: ${{ secrets.CROSS_REPO_PACKAGE_TOKEN }}
       run: npm ci --prefix src/Asm.MooBank.Web.App
+    - name: Version App
+      run: npm version ${{ steps.set-version-number.outputs.version }} --prefix src/Asm.MooBank.Web.App
     - name: Build App
       run: npm run build --prefix src/Asm.MooBank.Web.App
     - name: Copy App

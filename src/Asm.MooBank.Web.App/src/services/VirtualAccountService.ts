@@ -16,7 +16,7 @@ export const useCreateVirtualAccount = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutate, ...rest } = useApiPost<VirtualAccount, accountId, VirtualAccount>((accountId) => `api/accounts/${accountId}/virtual`, {
+    const { mutate } = useApiPost<VirtualAccount, accountId, VirtualAccount>((accountId) => `api/accounts/${accountId}/virtual`, {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [accountsKey] });
         }
@@ -32,7 +32,7 @@ export const useCreateVirtualAccount = () => {
 export const useUpdateVirtualAccount = () => {
     const queryClient = useQueryClient();
 
-    const { mutate, ...rest } = useApiPatch<InstitutionAccount, VirtualAccountVariables, VirtualAccount>(({ accountId, virtualAccountId }) => `api/accounts/${accountId}/virtual/${virtualAccountId}`, {
+    const { mutate } = useApiPatch<InstitutionAccount, VirtualAccountVariables, VirtualAccount>(({ accountId, virtualAccountId }) => `api/accounts/${accountId}/virtual/${virtualAccountId}`, {
         onSettled: (_data, _error, [{ accountId, virtualAccountId }]) => {
             queryClient.invalidateQueries({ queryKey: [accountsKey] });
             queryClient.invalidateQueries({ queryKey: ["virtualaccount", { accountId, virtualAccountId }] });
@@ -49,7 +49,7 @@ export const useUpdateVirtualAccount = () => {
 export const useUpdateVirtualAccountBalance = () => {
     const queryClient = useQueryClient();
 
-    const { mutate, ...rest } = useApiPatch<VirtualAccount, VirtualAccountVariables, { balance: number }>(({ accountId, virtualAccountId }) => `api/accounts/${accountId}/virtual/${virtualAccountId}/balance`, {
+    const { mutate } = useApiPatch<VirtualAccount, VirtualAccountVariables, { balance: number }>(({ accountId, virtualAccountId }) => `api/accounts/${accountId}/virtual/${virtualAccountId}/balance`, {
 
         onMutate: async ([{ accountId, virtualAccountId }, { balance }]) => {
 

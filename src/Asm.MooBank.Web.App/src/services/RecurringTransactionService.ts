@@ -17,7 +17,7 @@ export const useCreateRecurringTransaction = () => {
             queryClient.setQueryData<VirtualAccount>(["virtualaccount", { accountId, virtualAccountId }], virtualAccount);
 
         },
-        onSuccess: async (_responseData, [{ accountId, virtualAccountId }, _recurringTransaction]) => {
+        onSuccess: async (_responseData, [{ accountId, virtualAccountId }]) => {
             queryClient.invalidateQueries({ queryKey: ["virtualaccount", { accountId, virtualAccountId }] });
         }
     });
@@ -45,7 +45,7 @@ export const useUpdateRecurringTransaction = () => {
             queryClient.setQueryData<VirtualAccount>(["virtualaccount", { accountId, virtualAccountId }], virtualAccount);
 
         },
-        onSuccess: async (_responseData, [{ accountId, virtualAccountId }, _recurringTransaction]) => {
+        onSuccess: async (_responseData, [{ accountId, virtualAccountId }]) => {
             queryClient.invalidateQueries({ queryKey: ["virtualaccount", { accountId, virtualAccountId }] });
         }
     });

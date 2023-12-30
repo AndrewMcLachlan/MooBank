@@ -44,9 +44,9 @@ const getTree = (tags: Tag[]): ReactNode => {
         bigTags.map(tag => {
             colourIndex = 0;
             return (
-                <div className="tf-tree">
+                <div className="tf-tree" key={tag.id}>
                     <ul>
-                        <li key={tag.id}>
+                        <li>
                             <span className="tf-nc rainbow rainbow-0">{tag.name}</span>
                             {tag.tags.length > 0 && getBranch(tag.tags, 0)}
                         </li>

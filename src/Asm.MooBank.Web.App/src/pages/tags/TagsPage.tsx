@@ -1,3 +1,4 @@
+import React from "react";
 import { Page, PageProps } from "@andrewmclachlan/mooapp";
 import { Hierarchy } from "assets";
 import { PropsWithChildren } from "react";

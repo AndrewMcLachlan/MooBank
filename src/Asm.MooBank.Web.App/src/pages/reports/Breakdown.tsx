@@ -1,18 +1,18 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
+import { useBreakdownReport, useTag } from "services";
 import { ReportsPage } from "./ReportsPage";
-import { useAccount, useBreakdownReport, useTag } from "services";
 
+import { Section } from "@andrewmclachlan/mooapp";
+import { ChartData, Chart as ChartJS, registerables } from "chart.js";
 import { Doughnut, getElementAtEvent } from "react-chartjs-2";
-import { Chart as ChartJS, ChartData, registerables } from "chart.js";
-import { Section, useTheme } from "@andrewmclachlan/mooapp";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PeriodSelector } from "components/PeriodSelector";
+import { ReportTypeSelector } from "components/ReportTypeSelector";
 import { Period } from "helpers/dateFns";
 import { ReportType } from "models/reports";
-import { ReportTypeSelector } from "components/ReportTypeSelector";
 import { useNavigate, useParams } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { chartColours } from "../../helpers/chartColours";
 
 ChartJS.register(...registerables);
@@ -21,18 +21,13 @@ export const Breakdown = () => {
 
     const navigate = useNavigate();
 
-    const { theme, defaultTheme } = useTheme();
-    const theTheme = theme ?? defaultTheme;
-
     const { id: accountId, tagId } = useParams<{ id: string, tagId: string }>();
 
     const [reportType, setReportType] = useState<ReportType>(ReportType.Expenses);
     const [period, setPeriod] = useState<Period>({ startDate: null, endDate: null });
     const [selectedTagId, setSelectedTagId] = useState<number | undefined>(tagId ? Number(tagId) : undefined);
-    const [previousTagId, setPreviousTagId] = useState<number | undefined>();
+    const [_previousTagId, setPreviousTagId] = useState<number | undefined>();
     const tag = useTag(selectedTagId ?? 0);
-
-    const account = useAccount(accountId!);
 
     const report = useBreakdownReport(accountId!, period?.startDate, period?.endDate, reportType, selectedTagId);
 
@@ -77,7 +72,7 @@ export const Breakdown = () => {
                     },
                 }}
                     onClick={(e) => {
-                        var elements = getElementAtEvent(chartRef.current!, e);
+                        const elements = getElementAtEvent(chartRef.current!, e);
                         if (elements.length !== 1) return;
                         const tag = report.data!.tags[elements[0].index];
                         if (!tag.hasChildren || tag.tagId === selectedTagId) {

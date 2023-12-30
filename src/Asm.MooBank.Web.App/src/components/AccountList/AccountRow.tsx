@@ -1,13 +1,12 @@
-﻿import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+﻿import { MD5 } from "@andrewmclachlan/mooapp";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import { MD5 } from "@andrewmclachlan/mooapp";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { getBalanceString, numberClassName } from "helpers";
 
 import * as Models from "models";
-import { AccountType } from "models";
 
 import { VirtualAccountRow } from "./VirtualAccountRow";
 
@@ -15,7 +14,7 @@ export const AccountRow: React.FC<AccountRowProps> = (props) => {
 
     const { onRowClick } = useAccountRowCommonState(props);
 
-    const [showVirtualAccounts, setShowVirtualAccounts] = useState<Boolean>(localStorage.getItem(`account|${MD5(props.account.id)}`) === "true");
+    const [showVirtualAccounts, setShowVirtualAccounts] = useState<boolean>(localStorage.getItem(`account|${MD5(props.account.id)}`) === "true");
 
     const showVirtualAccountsClick = (e: React.MouseEvent<HTMLTableDataCellElement>) => {
         e.preventDefault();
@@ -48,7 +47,7 @@ export interface AccountRowProps {
 
 export const useAccountRowCommonState = (props: AccountRowProps) => {
 
-    var navigate = useNavigate();
+    const navigate = useNavigate();
 
     const onRowClick = () => {
 

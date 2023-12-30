@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { Section, emptyGuid, useIdParams } from "@andrewmclachlan/mooapp";
+import { Section, emptyGuid } from "@andrewmclachlan/mooapp";
 import { VirtualAccount } from "../../models";
 import { useCreateVirtualAccount } from "../../services";
 import { AccountPage, useAccount } from "components";
@@ -46,19 +46,19 @@ export const CreateVirtualAccount = () => {
                 <Form onSubmit={handleSubmit}>
                     <Form.Group controlId="AccountName" >
                         <Form.Label>Name</Form.Label>
-                        <Form.Control type="text" required maxLength={50} value={name} onChange={(e: any) => setName(e.currentTarget.value)} />
+                        <Form.Control type="text" required maxLength={50} value={name} onChange={e => setName(e.currentTarget.value)} />
                         <Form.Control.Feedback type="invalid">Please enter a name</Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group controlId="AccountDescription" >
                         <Form.Label >Description</Form.Label>
-                        <Form.Control type="text" as="textarea" required maxLength={255} value={description} onChange={(e: any) => setDescription(e.currentTarget.value)} />
+                        <Form.Control type="text" as="textarea" required maxLength={255} value={description} onChange={e => setDescription(e.currentTarget.value)} />
                         <Form.Control.Feedback type="invalid">Please enter a description</Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group controlId="OpeningBalance" >
                         <Form.Label>Opening Balance</Form.Label>
                         <InputGroup>
                             <InputGroup.Text>$</InputGroup.Text>
-                            <Form.Control type="number" required value={balance.toString()} onChange={(e: any) => setBalance(e.currentTarget.value)} />
+                            <Form.Control type="number" required value={balance.toString()} onChange={(e: any) => setBalance(e.currentTarget.valueAsNumber)} />
                         </InputGroup>
                     </Form.Group>
                     <Button type="submit" variant="primary">Create</Button>

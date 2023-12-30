@@ -5,13 +5,13 @@ import { accountsKey } from "./AccountService";
 
 export const stockKey = "stock";
 
-export const useStockHolding = (accountId: string) => useApiGet<StockHolding>([stockKey, { accountId }], `api/stock/${accountId}`);
+export const useStockHolding = (accountId: string): UseQueryResult<StockHolding> => useApiGet<StockHolding>([stockKey, { accountId }], `api/stock/${accountId}`);
 
 export const useCreateStockHolding = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutate, ...rest} = useApiPost<InstitutionAccount, null, NewStockHolding>(() => `api/stock`, {
+    const { mutate } = useApiPost<InstitutionAccount, null, NewStockHolding>(() => `api/stock`, {
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: [accountsKey]});
         }
@@ -27,7 +27,7 @@ export const useCreateStockHolding = () => {
 export const useUpdateStockHolding = () => {
     const queryClient = useQueryClient();
 
-    const { mutate, ...rest} = useApiPatch<StockHolding, accountId, StockHolding>((accountId) => `api/stock/${accountId}`, {
+    const { mutate } = useApiPatch<StockHolding, accountId, StockHolding>((accountId) => `api/stock/${accountId}`, {
         onSettled: (_data,_error,[accountId]) => {
             queryClient.invalidateQueries({ queryKey: [accountsKey]});
             queryClient.invalidateQueries({ queryKey: [stockKey, { accountId }]});
