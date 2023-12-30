@@ -1,5 +1,6 @@
 ﻿using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.Transactions;
+using Asm.MooBank.Domain.Entities.Transactions.Specifications;
 using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Modules.Transactions.Commands.Transactions;
@@ -12,7 +13,7 @@ internal class RemoveTagHandler(ITransactionRepository transactionRepository, IU
     {
         Security.AssertAccountPermission(request.AccountId);
 
-        var entity = await transactionRepository.Get(request.Id, cancellationToken);
+        var entity = await transactionRepository.Get(request.Id, new IncludeSplitsSpecification(), cancellationToken);
 
         var tag = entity.Tags.SingleOrDefault(t => t.Id == request.TagId) ?? throw new NotFoundException("Tag not found");
 

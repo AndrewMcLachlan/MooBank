@@ -1,6 +1,7 @@
 ﻿using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Domain.Entities.Transactions;
+using Asm.MooBank.Domain.Entities.Transactions.Specifications;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,7 +29,7 @@ internal class UpdateTransactionHandler(ITransactionRepository transactionReposi
     {
         Security.AssertAccountPermission(request.AccountId);
 
-        var entity = await transactionRepository.Get(request.Id, cancellationToken);
+        var entity = await transactionRepository.Get(request.Id, new IncludeSplitsSpecification(), cancellationToken);
 
         #region Splits
         var splitsToRemove = entity.Splits.Where(o => !request.Splits.Any(ro => ro.Id == o.Id)).ToList();

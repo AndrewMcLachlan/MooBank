@@ -36,7 +36,7 @@ export const TransactionSplit: React.FC<TransactionSplitProps> = ({ transaction,
 
     return (
         <>
-            <Form.Group as={Row} key={JSON.stringify(split)}>
+            <Form.Group as={Row}> {/* key={JSON.stringify(split)}>*/}
                 <Col xl={9}>
                     <TransactionSplitTagPanel as="div" transactionSplit={split} transactionId={transaction.id} alwaysShowEditPanel onChange={(s) => splitChanged({ ...split, tags: s.tags })} />
                 </Col>

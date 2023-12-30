@@ -1,6 +1,6 @@
 import { formatCurrency } from "@andrewmclachlan/mooapp";
 import { Transaction, TransactionOffset, TransactionSplit, getSplitTotal, isDebit } from "models";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Button, Col, Form, Modal, Row, } from "react-bootstrap";
 import { ExtraInfo } from "./ExtraInfo";
 import { NewTransactionSplit } from "./NewTransactionSplit";
@@ -12,6 +12,12 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
     const [notes, setNotes] = useState(props.transaction.notes ?? "");
     const [excludeFromReporting, setExcludeFromReporting] = useState(props.transaction.excludeFromReporting ?? false);
     const [splits, setSplits] = useState<TransactionSplit[]>(props.transaction.splits ?? []);
+
+    useEffect(() => {
+        setNotes(props.transaction.notes ?? "");
+        setExcludeFromReporting(props.transaction.excludeFromReporting ?? false);
+        setSplits(props.transaction.splits ?? []);
+    }, [transaction])
 
     const addSplit = (split: TransactionSplit) => {
         setSplits([...splits, split]);

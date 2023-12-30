@@ -1,6 +1,7 @@
 ﻿using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Domain.Entities.Transactions;
+using Asm.MooBank.Domain.Entities.Transactions.Specifications;
 using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Modules.Transactions.Commands.Transactions;
@@ -13,7 +14,7 @@ internal class AddTagHandler(ITransactionRepository transactionRepository, ITagR
     {
         Security.AssertAccountPermission(request.AccountId);
 
-        var entity = await transactionRepository.Get(request.Id, cancellationToken);
+        var entity = await transactionRepository.Get(request.Id, new IncludeSplitsSpecification(), cancellationToken);
 
         if (entity.Tags.Any(t => t.Id == request.TagId)) throw new ExistsException("Cannot add tag, it already exists");
 
