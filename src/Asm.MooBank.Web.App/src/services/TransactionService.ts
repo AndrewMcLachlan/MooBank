@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import * as Models from "../models";
 import { Transaction, Tag } from "../models";
 import { State, TransactionsFilter } from "../store/state";
-import { SortDirection, useApiGet, useApiPagedGet, useApiDelete, useApiDatalessPut, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
+import { SortDirection, useApiGet, useApiPagedGet, useApiDelete, useApiPutEmpty, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
 import {format} from "date-fns/format";
 import {parseISO} from "date-fns/parseISO";
 
@@ -88,7 +88,7 @@ export const useAddTransactionTag = () => {
 
     const { currentPage, pageSize, filter, sortField, sortDirection } = useSelector((state: State) => state.transactions);
 
-    return useApiDatalessPut<Models.Transaction, TransactionTagVariables>((variables) => `api/accounts/${variables.accountId}/transactions/${variables.transactionId}/tag/${variables.tag.id}`, {
+    return useApiPutEmpty<Models.Transaction, TransactionTagVariables>((variables) => `api/accounts/${variables.accountId}/transactions/${variables.transactionId}/tag/${variables.tag.id}`, {
         onMutate: (variables) => {
 
             const transactions = {...queryClient.getQueryData<Models.PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection])};

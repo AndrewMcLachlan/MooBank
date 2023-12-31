@@ -5,7 +5,7 @@ import React from "react";
 import { Link, Route, Routes } from "react-router-dom";
 
 import * as Pages from "./pages";
-import { ErrorBoundary, Layout } from "@andrewmclachlan/mooapp";
+import { Alerts, ErrorBoundary, Layout } from "@andrewmclachlan/mooapp";
 import { useIsAuthenticated } from "@azure/msal-react";
 import { useHasRole } from "hooks";
 
@@ -23,6 +23,7 @@ const App: React.FC = () => {
 
     return (
         <Layout size="small">
+            <Alerts />
             <Layout.Header AppName="" Menu={menu} />
             <Layout.Sidebar navItems={[
                 {

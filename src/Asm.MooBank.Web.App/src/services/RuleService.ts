@@ -1,5 +1,5 @@
 import * as Models from "../models";
-import { useApiGet, useApiPost, useApiDelete, useApiDatalessPut, useApiDatalessPost, useApiPatch } from "@andrewmclachlan/mooapp";
+import { useApiGet, useApiPost, useApiDelete, useApiPutEmpty, useApiPostEmpty, useApiPatch } from "@andrewmclachlan/mooapp";
 import {  UseQueryResult, useQueryClient } from "@tanstack/react-query";
 import { Tag } from "../models";
 
@@ -11,13 +11,13 @@ interface RuleVariables {
 
 export const useRules = (accountId: string): UseQueryResult<Models.Rule[]> => useApiGet<Models.Rule[]>([rulesKey, accountId], `api/accounts/${accountId}/rules`);
 
-export const useRunRules = () => useApiDatalessPost<null, { accountId: string }>((variables) => `api/accounts/${variables.accountId}/rules/run`);
+export const useRunRules = () => useApiPostEmpty<null, { accountId: string }>((variables) => `api/accounts/${variables.accountId}/rules/run`);
 
 export const useAddRuleTag = () => {
 
     const queryClient = useQueryClient();
 
-    return useApiDatalessPut<Models.Rule, RuleVariables>((variables) => `api/accounts/${variables.accountId}/rules/${variables.ruleId}/tag/${variables.tag.id}`, {
+    return useApiPutEmpty<Models.Rule, RuleVariables>((variables) => `api/accounts/${variables.accountId}/rules/${variables.ruleId}/tag/${variables.tag.id}`, {
         onMutate: (variables) => {
             const rules = queryClient.getQueryData<Models.Rule[]>([rulesKey, variables.accountId]);
             if (!rules) return;

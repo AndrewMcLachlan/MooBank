@@ -1,5 +1,5 @@
 import * as Models from "../models";
-import { useApiGet, useApiDelete, useApiDatalessPut, useHttpClient } from "@andrewmclachlan/mooapp";
+import { useApiGet, useApiDelete, useApiPutEmpty, useHttpClient } from "@andrewmclachlan/mooapp";
 import { UseMutationResult, UseQueryResult, useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface TagVariables {
@@ -83,7 +83,7 @@ export const useAddSubTag = () => {
 
     const queryClient = useQueryClient();
 
-    return useApiDatalessPut<Models.Tag, { tagId: number, subTagId: number }>((variables) => `api/tags/${variables.tagId}/tags/${variables.subTagId}`, {
+    return useApiPutEmpty<Models.Tag, { tagId: number, subTagId: number }>((variables) => `api/tags/${variables.tagId}/tags/${variables.subTagId}`, {
         onSuccess: (data: Models.Tag) => {
             queryClient.setQueryData<Models.Tag>(["tags", { id: data.id }], data);
             const allTags = queryClient.getQueryData<Models.Tag[]>(["tags"]);
