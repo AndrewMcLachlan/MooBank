@@ -43,11 +43,7 @@
 }
 
 .delete-offset {
-    position: relative;
-
-    svg {
-        position: absolute;
-        right: 50%;
-        top: 50%;
-    }
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
