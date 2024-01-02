@@ -5,7 +5,7 @@ import { useByTagReport } from "services";
 
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ChartData, registerables } from "chart.js";
-import { useIdParams } from "@andrewmclachlan/mooapp";
+import { Section, useIdParams } from "@andrewmclachlan/mooapp";
 
 import { PeriodSelector } from "components/PeriodSelector";
 import { Period } from "helpers/dateFns";
@@ -38,8 +38,10 @@ export const ByTag = () => {
 
     return (
         <ReportsPage title="By Tag">
-            <ReportTypeSelector value={reportType} onChange={setReportType} hidden />
-            <PeriodSelector value={period} onChange={setPeriod} />
+            <Section>
+                <ReportTypeSelector value={reportType} onChange={setReportType} hidden />
+                <PeriodSelector value={period} onChange={setPeriod} />
+            </Section>
             <section className="report doughnut">
                 <h3>All Tags</h3>
                 <Doughnut id="bytag" ref={chartRef} data={dataset} options={{

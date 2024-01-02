@@ -5,6 +5,8 @@ import { Button, Col, Form, Modal, Row, } from "react-bootstrap";
 import { ExtraInfo } from "./ExtraInfo";
 import { NewTransactionSplit } from "./NewTransactionSplit";
 import { TransactionSplit as TransactionSplitPanel } from "./TransactionSplit";
+import { parseISO } from "date-fns/parseISO";
+import { format } from "date-fns/format";
 
 export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => {
 
@@ -64,6 +66,8 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
                         <div className="value">{props.transaction.accountHolderName}</div>
                         <div>Location</div>
                         <div className="value">{props.transaction.location}</div>
+                        <div>Purchase Date</div>
+                        <div className="value">{props.transaction.purchaseDate ? format(parseISO(props.transaction.purchaseDate), "dd/MM/yyyy") : "-"}</div>
                     </section>
                     {props.transaction.extraInfo && <ExtraInfo transaction={transaction} />}
                 </section>
@@ -88,10 +92,10 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
                 <section className="splits">
                     <h4>Tags{isDebit(props.transaction.transactionType) && <> &amp; Refunds</>}</h4>
                     <Row>
-                        <Col xl={9}>
+                        <Col sm={9}>
                             <Form.Label>Tags</Form.Label>
                         </Col>
-                        <Col xl={2}>
+                        <Col sm={2}>
                             <Form.Label>Amount</Form.Label>
                         </Col>
                     </Row>
@@ -104,7 +108,7 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
                     </div>
                     <div>
                         <Row>
-                            <Col xl={9}>
+                            <Col sm={9}>
                                 <Form.Label>Split Transaction</Form.Label>
                             </Col>
                         </Row>

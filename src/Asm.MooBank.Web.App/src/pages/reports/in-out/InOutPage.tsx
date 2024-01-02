@@ -22,7 +22,9 @@ export const InOutPage = () => {
 
    return (
         <ReportsPage title="Income vs Expenses">
+            <Section>
             <PeriodSelector onChange={setPeriod} />
+            </Section>
             <Section title="Total Income vs Expenses" size={3} className="report inout">
                 <InOut accountId={accountId} period={period} />
             </Section>
