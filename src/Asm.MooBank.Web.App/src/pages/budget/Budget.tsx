@@ -1,4 +1,4 @@
-import { Section } from "@andrewmclachlan/mooapp";
+import { Section, useLocalStorage } from "@andrewmclachlan/mooapp";
 import { format } from "date-fns/format";
 import { isMonthSelected } from "helpers/dateFns";
 import * as Models from "models";
@@ -8,12 +8,13 @@ import { useBudget, useBudgetYears } from "services/BudgetService";
 import { BudgetPage } from "./BudgetPage";
 import { BudgetTable } from "./BudgetTable";
 import { MonthLine } from "./MonthLine";
+import { useBudgetYear } from "hooks/useBudgetYear";
 
 export const Budget: React.FC = () => {
 
     const next5Years = [...Array(5).keys()].map(i => new Date().getFullYear() + i);
 
-    const [year, setYear] = useState(new Date().getFullYear());
+    const [year, setYear] = useBudgetYear();
     const [month, setMonth] = useState(-1);
     const [selectableYears, setSelectableYears] = useState(next5Years);
     const [filteredBudget, setFilteredBudget] = useState<Models.Budget>();

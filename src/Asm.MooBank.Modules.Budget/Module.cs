@@ -12,6 +12,7 @@ public class Module : IModule
     public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
     {
         new Endpoints.Budget().MapGroup(endpoints);
+        new Endpoints.ReportEndpoint().MapGroup(endpoints);
 
         return endpoints;
     }

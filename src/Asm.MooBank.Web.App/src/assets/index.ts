@@ -5,6 +5,8 @@ export {default as Dashboard } from "./dashboard.svg?react";
 export {default as Hierarchy } from "./hierarchy.svg?react";
 export {default as Import } from "./import.svg?react";
 export {default as PiggyBank } from "./pig.svg?react";
+export {default as PiggyBank2 } from "./piggybank2.svg?react";
+export {default as PiggyBank3 } from "./piggybank3.svg?react";
 export {default as Reports } from "./reports.svg?react";
 export {default as ReportsSolid } from "./reports.solid.svg?react";
 export {default as Rules } from "./rules.svg?react";

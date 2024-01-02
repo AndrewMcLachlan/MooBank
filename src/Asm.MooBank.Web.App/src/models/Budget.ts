@@ -36,3 +36,11 @@ export interface  BudgetReportValue {
 export interface BudgetReportValueMonth extends BudgetReportValue {
     month: number;
 }
+
+export interface BudgetReportForMonthBreakdown {
+    tags: BudgetReportValueTag[];
+}
+
+export interface BudgetReportValueTag extends BudgetReportValue {
+    name: string;
+}

@@ -44,17 +44,5 @@ public class Budget : EndpointGroupBase
 
         routeGroupBuilder.MapQuery<GetValueForTag, decimal>("tag/{tagId}")
             .WithNames("Get Budget Amount for Tag");
-
-        routeGroupBuilder.MapQuery<Report, BudgetReportByMonth>("/{year}/report")
-            .WithNames("Get Budget Report");
-
-        routeGroupBuilder.MapQuery<ReportForMonth, BudgetReportValueMonth?>("/{year}/report/{month}")
-            .WithNames("Get Budget Report for Month");
     }
-}
-
-public record GetBudgetLineRequest()
-{
-    public required short Year { get; set; }
-    public required Guid Id { get; set; }
 }

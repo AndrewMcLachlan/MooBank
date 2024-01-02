@@ -1,14 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import { Bar } from "react-chartjs-2";
+import { Bar, getElementAtEvent } from "react-chartjs-2";
 import { Chart as ChartJS, ChartData, registerables } from "chart.js";
 import chartTrendline from "chartjs-plugin-trendline";
 
 import { useChartColours } from "helpers/chartColours";
-import { Section } from "@andrewmclachlan/mooapp";
+import { Section, useLocalStorage } from "@andrewmclachlan/mooapp";
 import { Col, Form, Row } from "react-bootstrap";
 import { useBudgetReport, useBudgetYears } from "services/BudgetService";
 import { BudgetPage } from "./BudgetPage";
+import { BudgetReportYear } from "./BudgetReportYear";
+import { BudgetReportTags } from "./BudgetReportTags";
+import { useBudgetYear } from "hooks/useBudgetYear";
 
 ChartJS.register(...registerables);
 ChartJS.register(chartTrendline);
@@ -16,12 +19,12 @@ ChartJS.register(chartTrendline);
 export const BudgetReport: React.FC = () => {
 
     const colours = useChartColours();
-    const chartRef = useRef();
 
     const next5Years = [...Array(5).keys()].map(i => new Date().getFullYear() + i);
 
-    const [year, setYear] = useState(new Date().getFullYear());
+    const [year, setYear] = useBudgetYear();
     const [selectableYears, setSelectableYears] = useState(next5Years);
+    const [month, setMonth] = useState<number | undefined>(undefined);
 
     const { data: budgetYears } = useBudgetYears();
 
@@ -65,34 +68,8 @@ export const BudgetReport: React.FC = () => {
                     </Col>
                 </Row>
             </Section>
-            <Section className="report" style={{ width: "2000px ! important"}}>
-                <h3>Budget Report</h3>
-                <Bar id="budget-report" ref={chartRef} data={dataset} options={{
-                    plugins: {
-                        tooltip: {
-                            mode: "point",
-                            intersect: false,
-                        } as any,
-                    },
-                    hover: {
-                        //mode: "point",
-                        //intersect: true,
-                    },
-                    scales: {
-                        x: {
-                            stacked: false
-                        }
-                    }
-                }}
-                   /* onClick={(e) => {
-                        var elements = getElementAtEvent(chartRef.current!, e);
-                        if (elements.length !== 1) return;
-                        if (!report.data!.tags[elements[0].index].hasChildren) return;
-                        navigate(`/accounts/${accountId}/reports/breakdown/${report.data!.tags[elements[0].index].tagId}`);
-                    }}*/
-                />
-            </Section>
+            {month === undefined && <BudgetReportYear year={year} onDrilldown={setMonth} />}
+            {month !== undefined && <BudgetReportTags year={year} month={month} />}
         </BudgetPage>
     );
-
-}
+};

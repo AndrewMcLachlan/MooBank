@@ -33,7 +33,7 @@ const App: React.FC = () => {
                 },
                 {
                     text: "Accounts",
-                    image: <Icons.PiggyBank />,
+                    image: <Icons.PiggyBank3 />,
                     route: "/accounts"
                 },
                 {

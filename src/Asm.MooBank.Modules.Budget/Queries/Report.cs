@@ -23,12 +23,3 @@ internal class ReportHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, 
         };
     }
 }
-
-public record BudgetReportByMonth
-{
-    public IEnumerable<BudgetReportValueMonth> Items { get; init; } = Enumerable.Empty<BudgetReportValueMonth>();
-}
-
-public record BudgetReportValue(decimal BudgetedAmount, decimal? Actual);
-
-public record BudgetReportValueMonth(decimal BudgetedAmount, decimal? Actual, int Month) : BudgetReportValue(BudgetedAmount, Actual);

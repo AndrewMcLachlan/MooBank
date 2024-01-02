@@ -1,5 +1,5 @@
 import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
-import { Budget, BudgetLine, BudgetReportByMonth, BudgetReportValueMonth } from "../models";
+import { Budget, BudgetLine, BudgetReportByMonth, BudgetReportForMonthBreakdown, BudgetReportValueMonth } from "../models";
 import { useApiDelete, useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
 
 interface BudgetVariables {
@@ -76,3 +76,5 @@ export const useGetTagValue = (tagId: number) => useApiGet<number>(["budget", "b
 export const useBudgetReport = (year: number) => useApiGet<BudgetReportByMonth>([budgetKey, year, "report"], `api/budget/${year}/report`);
 
 export const useBudgetReportForMonth = (year: number, month: number) => useApiGet<BudgetReportValueMonth>([budgetKey, year, "report", month], `api/budget/${year}/report/${month}`);
+
+export const useBudgetReportForMonthBreakdown = (year: number, month: number) => useApiGet<BudgetReportForMonthBreakdown>([budgetKey, year, "report", month], `api/budget/${year}/report/${month}/breakdown`);
