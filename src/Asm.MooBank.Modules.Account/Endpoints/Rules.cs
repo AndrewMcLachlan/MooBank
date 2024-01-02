@@ -26,7 +26,7 @@ public class RulesEndpoints : EndpointGroupBase
             .WithNames("Get Account Rule")
             .Produces<Rule>();
 
-        routeGroupBuilder.MapPostCreate<Create, Rule>("", "Get Account Rule".ToMachine(), (Rule rule) => new { id = rule.Id }, CommandBinding.None)
+        routeGroupBuilder.MapPostCreate<Create, Rule>("", "Get Account Rule".ToMachine(), (Rule rule) => new { ruleId = rule.Id }, CommandBinding.None)
             .WithNames("Create Account Rule")
             .Produces<Rule>();
 
