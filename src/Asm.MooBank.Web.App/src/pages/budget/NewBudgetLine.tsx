@@ -27,7 +27,7 @@ export const NewBudgetLine: React.FC<NewBudgetLineProps> = (props) => {
     }, [tagValue]);
 
     const add = () => {
-        createBudget.create(props.year, { amount, tagId: tag?.id, name: tag?.name, notes: notes, id: emptyGuid, type: props.type, month });
+        createBudget(props.year, { amount, tagId: tag?.id, name: tag?.name, notes: notes, id: emptyGuid, type: props.type, month });
         setTag(null);
         setAmount(0);
         setNotes("");

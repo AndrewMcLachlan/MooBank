@@ -12,6 +12,7 @@ import { BudgetPage } from "./BudgetPage";
 import { BudgetReportYear } from "./BudgetReportYear";
 import { BudgetReportTags } from "./BudgetReportTags";
 import { useBudgetYear } from "hooks/useBudgetYear";
+import { useNavigate, useParams } from "react-router-dom";
 
 ChartJS.register(...registerables);
 ChartJS.register(chartTrendline);
@@ -22,11 +23,24 @@ export const BudgetReport: React.FC = () => {
 
     const next5Years = [...Array(5).keys()].map(i => new Date().getFullYear() + i);
 
+    const { month: pathMonth } = useParams<{month?: string}>();
+
     const [year, setYear] = useBudgetYear();
     const [selectableYears, setSelectableYears] = useState(next5Years);
-    const [month, setMonth] = useState<number | undefined>(undefined);
+    const [month, setMonth] = useState<number | undefined>(pathMonth ? Number(pathMonth) : undefined);
 
     const { data: budgetYears } = useBudgetYears();
+
+    const navigate = useNavigate();
+
+    const setMonthAndPath = (month: number ) =>{
+        navigate(`/budget/report/${month}`);
+        setMonth(month);
+    };
+
+    useEffect(() => {
+        setMonth(pathMonth ? Number(pathMonth) : undefined)
+    }, [pathMonth]);
 
     useEffect(() => {
         if (!budgetYears) return;
@@ -38,22 +52,6 @@ export const BudgetReport: React.FC = () => {
         setSelectableYears(newYears);
 
     }, [budgetYears]);
-
-    const report = useBudgetReport(year);
-
-    const dataset: ChartData<"bar", number[], string> = {
-        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-
-        datasets: [{
-            label: "Budgeted",
-            data: report.data?.items.map(i => i.budgetedAmount) ?? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            backgroundColor: colours.income,
-        }, {
-            label: "Actual",
-            data: report.data?.items.map(i => i.actual ?? 0) ?? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            backgroundColor: colours.expenses,
-        }]
-    };
 
     return (
         <BudgetPage title="Budget Report">
@@ -68,7 +66,7 @@ export const BudgetReport: React.FC = () => {
                     </Col>
                 </Row>
             </Section>
-            {month === undefined && <BudgetReportYear year={year} onDrilldown={setMonth} />}
+            {month === undefined && <BudgetReportYear year={year} onDrilldown={setMonthAndPath} />}
             {month !== undefined && <BudgetReportTags year={year} month={month} />}
         </BudgetPage>
     );

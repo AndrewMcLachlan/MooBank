@@ -17,7 +17,7 @@ export const useCreateBudgetLine = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutate, ...rest } = useApiPost<BudgetLine, BudgetVariables, BudgetLine>((variables) => `api/budget/${variables.year}/lines`, {
+    const { mutate } = useApiPost<BudgetLine, BudgetVariables, BudgetLine>((variables) => `api/budget/${variables.year}/lines`, {
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: [budgetKey]});
         }
@@ -27,14 +27,14 @@ export const useCreateBudgetLine = () => {
         mutate([{ year }, budgetLine]);
     };
 
-    return { create, ...rest };
+    return create;
 }
 
 export const useUpdateBudgetLine = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutate, ...rest } = useApiPatch<BudgetLine, BudgetVariables, BudgetLine>((variables) => `api/budget/${variables.year}/lines/${variables.lineId}`, {
+    const { mutate } = useApiPatch<BudgetLine, BudgetVariables, BudgetLine>((variables) => `api/budget/${variables.year}/lines/${variables.lineId}`, {
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: [budgetKey]});
         }
@@ -44,7 +44,7 @@ export const useUpdateBudgetLine = () => {
         mutate([{ year, lineId: budget.id }, budget]);
     };
 
-    return { update, ...rest };
+    return update;
 }
 
 
@@ -52,7 +52,7 @@ export const useDeleteBudgetLine = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutate, ...rest } = useApiDelete<BudgetVariables>((variables) => `api/budget/${variables.year}/lines/${variables.lineId}`, {
+    const { mutate } = useApiDelete<BudgetVariables>((variables) => `api/budget/${variables.year}/lines/${variables.lineId}`, {
         onSuccess: (_data, variables: BudgetVariables) => {
             const budget = queryClient.getQueryData<Budget>([budgetKey, variables.year]);
             if (!budget) return;
@@ -66,7 +66,7 @@ export const useDeleteBudgetLine = () => {
         mutate({ year, lineId });
     }
 
-    return { deleteBudgetLine, ...rest };
+    return deleteBudgetLine;
 }
 
 export const useGetTagValue = (tagId: number) => useApiGet<number>(["budget", "by-tag", tagId], `api/budget/tag/${tagId}`, {
@@ -78,3 +78,6 @@ export const useBudgetReport = (year: number) => useApiGet<BudgetReportByMonth>(
 export const useBudgetReportForMonth = (year: number, month: number) => useApiGet<BudgetReportValueMonth>([budgetKey, year, "report", month], `api/budget/${year}/report/${month}`);
 
 export const useBudgetReportForMonthBreakdown = (year: number, month: number) => useApiGet<BudgetReportForMonthBreakdown>([budgetKey, year, "report", month], `api/budget/${year}/report/${month}/breakdown`);
+
+export const useBudgetReportForMonthBreakdownUnbudgeted = (year: number, month: number) => useApiGet<BudgetReportForMonthBreakdown>([budgetKey, year, "report", month, "unbudgeted"], `api/budget/${year}/report/${month}/breakdown/unbudgeted`);
+

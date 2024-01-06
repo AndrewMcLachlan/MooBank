@@ -17,6 +17,8 @@ public class TransactionSplit : KeyedEntity<Guid>
 
     public decimal Amount { get; set; }
 
+    public decimal NetAmount { get; set; }
+
     public virtual Transaction Transaction { get; set; } = null!;
 
     public virtual ICollection<TransactionOffset> OffsetBy { get; set; } = new HashSet<TransactionOffset>();

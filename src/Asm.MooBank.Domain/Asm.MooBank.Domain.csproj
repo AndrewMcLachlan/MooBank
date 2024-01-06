@@ -3,6 +3,12 @@
   <Import Project="..\..\Common.props" />
 
   <ItemGroup>
+    <Compile Remove="Models\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <None Remove="Models\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Asm" Version="$(AsmPackageVersion)" />
     <PackageReference Include="Asm.Domain" Version="$(AsmPackageVersion)" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(DotNetPackageVersion)" />
@@ -16,10 +22,6 @@
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>Asm.MooBank.Infrastructure</_Parameter1>
     </AssemblyAttribute>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>

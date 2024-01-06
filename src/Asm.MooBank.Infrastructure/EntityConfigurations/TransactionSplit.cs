@@ -12,6 +12,8 @@ internal class TransactionSplitConfiguration : IEntityTypeConfiguration<Transact
 
         entity.Property(e => e.Amount).HasPrecision(10, 2);
 
+        entity.Property(e => e.NetAmount).HasComputedColumnSql();
+
         entity.HasMany(p => p.Tags)
             .WithMany()
             .UsingEntity<TransactionSplitTag>(

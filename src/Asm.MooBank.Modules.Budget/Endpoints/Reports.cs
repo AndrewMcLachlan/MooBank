@@ -25,6 +25,9 @@ public class ReportEndpoint : EndpointGroupBase
 
         routeGroupBuilder.MapQuery<ReportForMonthBreakdown, BudgetReportByMonthBreakdown?>("{month}/breakdown")
             .WithNames("Get Budget Report Breakdown for Month");
+
+        routeGroupBuilder.MapQuery<ReportForMonthBreakdownUnbudgeted, BudgetReportByMonthBreakdown?>("{month}/breakdown/unbudgeted")
+            .WithNames("Get Budget Report Breakdown for Month for Unbudgeted Items");
     }
 }
 

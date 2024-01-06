@@ -6,7 +6,6 @@ export * from "./Family";
 export * from "./ImporterType";
 export * from "./Institution";
 export * from "./Layout";
-export * from "./PagedResult";
 export * from "./StockHolding";
 export * from "./StockTransaction";
 export * from "./Transaction";
