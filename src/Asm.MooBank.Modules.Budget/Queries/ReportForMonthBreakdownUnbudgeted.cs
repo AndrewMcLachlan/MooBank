@@ -100,26 +100,4 @@ public static class Extensions
             }
         }*/
     }
-
-
-    private static bool Traverse(TagRelationship relationship, IEnumerable<TagRelationship> tagRelationships, IEnumerable<Domain.Entities.Tag.Tag> tagsToCheck)
-    {
-        if (tagsToCheck.Any(s => s.Id == relationship.Id))
-        {
-            return true;
-        }
-
-
-        var relationships = tagRelationships.Where(t => t.Id == relationship.ParentId);
-
-        foreach (var rs in relationships)
-        {
-            if (Traverse(rs, tagRelationships, tagsToCheck))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
 }
