@@ -3,9 +3,10 @@ import { ChartData, Chart as ChartJS, registerables } from "chart.js";
 import chartTrendline from "chartjs-plugin-trendline";
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
+import { Form, Row } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { TagSelector } from "components";
+import { FormGroup, TagSelector } from "components";
 import { PeriodSelector } from "components/PeriodSelector";
 import { ReportTypeSelector } from "components/ReportTypeSelector";
 import { Period } from "helpers/dateFns";
@@ -76,8 +77,17 @@ export const TagTrend: React.FC = () => {
             <Section>
                 <ReportTypeSelector value={reportType} onChange={setReportType} hidden />
                 <PeriodSelector onChange={setPeriod} instant />
-                <TagSettingsPanel tag={selectedTag} onChange={settingsChanged} />
-                <TagSelector value={selectedTagId} onChange={tagChanged} />
+                <Row as="section">
+                    <FormGroup xl="4">
+                        <Form.Label>Tag</Form.Label>
+                        <TagSelector value={selectedTagId} onChange={tagChanged} />
+                    </FormGroup>
+                    <FormGroup xl="4">
+                        <Form.Label></Form.Label>
+                        <TagSettingsPanel tag={selectedTag} onChange={settingsChanged} />
+                    </FormGroup>
+                </Row>
+
             </Section>
             <Section className="report" title="Tag Trend" size={3}>
                 <Line id="inout" data={dataset} options={{

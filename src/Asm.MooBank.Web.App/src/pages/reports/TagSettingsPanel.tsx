@@ -4,6 +4,7 @@ import { Form } from "react-bootstrap";
 
 export const TagSettingsPanel:React.FC<TagSettingsPanelProps> = ({tag, onChange}) => {
 
+    console.debug("Tag", tag)
     if (!tag?.settings) return null;
 
     const settingChanged = (settings: TagSettings) => {

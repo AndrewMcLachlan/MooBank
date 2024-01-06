@@ -28,10 +28,10 @@ const getMenuItems = (account: InstitutionAccount) => {
 
     const items: NavItem[] = [
         { route: `/accounts/${account.id}/reports/in-out`, text: "Income vs Expenses" },
-        { route: `/accounts/${account.id}/reports/all-tag-average`, text: "All Tag Average" },
+        { route: `/accounts/${account.id}/reports/all-tag-average`, text: "Top Tags" },
         { route: `/accounts/${account.id}/reports/breakdown`, text: "Breakdown" },
-        { route: `/accounts/${account.id}/reports/by-tag`, text: "By Tag" },
         { route: `/accounts/${account.id}/reports/tag-trend`, text: "Tag Trend" },
+        { route: `/accounts/${account.id}/reports/by-tag`, text: "All Tags" },
     ];
 
     return items;
