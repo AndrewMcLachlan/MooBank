@@ -12,7 +12,7 @@ export const useCreateAccountGroup = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutate, ...rest} = useApiPost<AccountGroup, null, AccountGroup>(() => "api/account-groups", {
+    const { mutate} = useApiPost<AccountGroup, null, AccountGroup>(() => "api/account-groups", {
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: [accountGroupsKey]});
         }
@@ -22,7 +22,7 @@ export const useCreateAccountGroup = () => {
         mutate([null, accountGroup]);
     };
 
-    return { create, ...rest };
+    return create;
 }
 
 
@@ -31,7 +31,7 @@ export const useUpdateAccountGroup = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutate, ...rest} = useApiPatch<AccountGroup, string, AccountGroup>((id) => `api/account-groups/${id}`, {
+    const { mutate} = useApiPatch<AccountGroup, string, AccountGroup>((id) => `api/account-groups/${id}`, {
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: [accountGroupsKey]});
         }
@@ -41,6 +41,6 @@ export const useUpdateAccountGroup = () => {
         mutate([accountGroup.id, accountGroup]);
     };
 
-    return { update, ...rest };
+    return update;
 }
 

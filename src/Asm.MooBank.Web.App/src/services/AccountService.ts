@@ -15,7 +15,7 @@ export const useCreateAccount = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutate, ...rest} = useApiPost<InstitutionAccount, null, { account: InstitutionAccount, importAccount?: ImportAccount }>(() => `api/accounts`, {
+    const { mutate} = useApiPost<InstitutionAccount, null, { account: InstitutionAccount, importAccount?: ImportAccount }>(() => `api/accounts`, {
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: [accountsKey]});
         }
@@ -25,13 +25,13 @@ export const useCreateAccount = () => {
         mutate([null, {account, importAccount}]);
     };
 
-    return { create, ...rest };
+    return create;
 }
 
 export const useUpdateAccount = () => {
     const queryClient = useQueryClient();
 
-    const { mutate, ...rest} = useApiPatch<InstitutionAccount, accountId, InstitutionAccount>((accountId) => `api/accounts/${accountId}`, {
+    const { mutate} = useApiPatch<InstitutionAccount, accountId, InstitutionAccount>((accountId) => `api/accounts/${accountId}`, {
         onSettled: (_data,_error,[accountId]) => {
             queryClient.invalidateQueries({ queryKey: [accountsKey]});
             queryClient.invalidateQueries({ queryKey: ["account", { accountId }]});
@@ -42,13 +42,13 @@ export const useUpdateAccount = () => {
         mutate([account.id, account]);
     };
 
-    return { update, ...rest };
+    return update;
 }
 
 export const useUpdateBalance = () => {
     const queryClient = useQueryClient();
 
-    const { mutate, ...rest} = useApiPatch<InstitutionAccount, accountId, { currentBalance: number, availableBalance: number }>((accountId) => `api/accounts/${accountId}/balance`, {
+    const { mutate} = useApiPatch<InstitutionAccount, accountId, { currentBalance: number, availableBalance: number }>((accountId) => `api/accounts/${accountId}/balance`, {
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: [accountsKey]});
         },
@@ -59,5 +59,5 @@ export const useUpdateBalance = () => {
         mutate([accountId, {currentBalance, availableBalance}]);
     };
 
-    return { update, ...rest };
+    return update;
 }

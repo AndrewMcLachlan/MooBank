@@ -17,7 +17,7 @@ export const useCreateInstitution = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutate, ...rest } = useApiPost<Institution, null, Institution>(() => "api/institutions", {
+    const { mutate } = useApiPost<Institution, null, Institution>(() => "api/institutions", {
         onMutate: ([_variables, data]) => {
             let allInstitutions = queryClient.getQueryData<Institution[]>([institutionKey]);
             if (!allInstitutions) {
@@ -38,14 +38,14 @@ export const useCreateInstitution = () => {
         mutate([null, institution]);
     };
 
-    return { create, ...rest };
+    return create;
 }
 
 export const useUpdateInstitution = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutate, ...rest } = useApiPatch<Institution, number, Institution>((id) => `api/institutions/${id}`, {
+    const { mutate } = useApiPatch<Institution, number, Institution>((id) => `api/institutions/${id}`, {
         onMutate: ([id, data]) => {
             let allInstitutions = queryClient.getQueryData<Institution[]>([institutionKey]);
             if (!allInstitutions) {
@@ -69,5 +69,5 @@ export const useUpdateInstitution = () => {
         mutate([null, institution]);
     };
 
-    return { update, ...rest };
+    return update;
 }

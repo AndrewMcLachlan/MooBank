@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
-using Asm.Domain;
 
 namespace Asm.MooBank.Domain.Entities.TagRelationships;
 

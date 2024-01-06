@@ -18,7 +18,7 @@ export const ManageInstitution: React.FC = () => {
 
     const handleSave = (institution: Institution) => {
 
-        updateInstitution.update(institution);
+        updateInstitution(institution);
 
         navigate("/settings/institutions");
     }

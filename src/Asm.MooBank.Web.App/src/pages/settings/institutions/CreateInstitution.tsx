@@ -13,7 +13,7 @@ export const CreateInstitution: React.FC = () => {
 
     const handleSave = (institution: Institution) => {
 
-        createInstitution.create(institution);
+        createInstitution(institution);
 
         navigate("/settings/institutions");
     }

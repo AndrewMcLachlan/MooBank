@@ -72,7 +72,7 @@ export const BudgetReportTags: React.FC<BudgetReportTagsProps> = ({year, month})
                 />
             </Section>
             <Section className="report" style={{ width: "2000px ! important"}}>
-                <h3><FontAwesomeIcon className="clickable" icon="circle-chevron-left" size="xs" onClick={() => navigate(-1)} /> Unbudgeted Items - {Intl.DateTimeFormat('en', { month: 'long' }).format(new Date(year, month-1))} </h3>
+                <h3>Unbudgeted Items - {Intl.DateTimeFormat('en', { month: 'long' }).format(new Date(year, month-1))} </h3>
                 <Bar id="budget-report" ref={chartRef} data={datasetUnbudgeted} options={{
                     plugins: {
                         tooltip: {

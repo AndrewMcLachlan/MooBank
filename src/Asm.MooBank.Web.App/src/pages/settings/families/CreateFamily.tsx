@@ -18,7 +18,7 @@ export const CreateFamily: React.FC = () => {
         e.stopPropagation();
         e.preventDefault();
 
-        createFamily.create(family);
+        createFamily(family);
 
         navigate("/settings/family");
     }

@@ -1,4 +1,5 @@
-﻿using Asm.MooBank.Domain.Entities.Account;
+﻿using Asm.Domain.Infrastructure;
+using Asm.MooBank.Domain.Entities.Account;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
@@ -10,7 +11,7 @@ public class AccountRepository(MooBankContext dataContext) : Asm.Domain.Infrastr
     }
 
     public override Task<Account> Get(Guid id, CancellationToken cancellationToken = default) =>
-        (Entities.Include(a => a.Rules).ThenInclude(a => a.Tags).Where(a => a.Id == id).SingleOrDefaultAsync(cancellationToken) ?? throw new NotFoundException())!;
+        (Entities.Include(a => a.Rules).ThenInclude(a => a.Tags).FindAsync(id, cancellationToken) ?? throw new NotFoundException())!;
 
     public async Task<InstitutionAccount> GetInstitutionAccount(Guid accountId, CancellationToken cancellationToken)
     {

@@ -51,7 +51,7 @@ export const CreateAccount: React.FC = () => {
             virtualAccounts: [],
         };
 
-        createAccount.create(account, importAccount);
+        createAccount(account, importAccount);
 
         navigate("/accounts");
     }

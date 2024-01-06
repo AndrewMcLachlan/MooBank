@@ -31,6 +31,15 @@ public partial class Tag(int id) : KeyedEntity<int>(id), IEquatable<Tag>
     public override bool Equals(object? obj) => Equals(obj as Tag);
 
     public override int GetHashCode() => Id.GetHashCode();
+
+    public static bool operator ==(Tag? left, Tag? right)
+    {
+        if (left is null) return right is null;
+
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(Tag? left, Tag? right) => !(left == right);
     #endregion
 }
 

@@ -60,7 +60,7 @@ const useComponentState = (props: AccountRowProps) => {
 
     const navigate = useNavigate();
 
-    useClickAway(setEditingBalance, balanceRef, () => (editingBalance && props.account.currentBalance !== balance) && updateBalance.update(props.account.id, balance, balance));
+    useClickAway(setEditingBalance, balanceRef, () => (editingBalance && props.account.currentBalance !== balance) && updateBalance(props.account.id, balance, balance));
 
     const balanceClick: React.MouseEventHandler<HTMLTableCellElement> = (e) => {
         setEditingBalance(true);
@@ -78,7 +78,7 @@ const useComponentState = (props: AccountRowProps) => {
 
     const keyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
-            updateBalance.update(props.account.id, balance, balance);
+            updateBalance(props.account.id, balance, balance);
             setEditingBalance(false);
         }
     }

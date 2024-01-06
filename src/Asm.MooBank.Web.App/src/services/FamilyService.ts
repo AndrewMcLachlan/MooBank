@@ -11,7 +11,7 @@ export const useCreateFamily = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutate, ...rest } = useApiPost<Family, null, Family>(() => "api/families/create", {
+    const { mutate } = useApiPost<Family, null, Family>(() => "api/families/create", {
         onMutate: ([_variables, data]) => {
             let allFamilies = queryClient.getQueryData<Family[]>([familyKey]);
             if (!allFamilies) {
@@ -32,5 +32,5 @@ export const useCreateFamily = () => {
         mutate([null, family]);
     };
 
-    return { create, ...rest };
+    return create;
 }

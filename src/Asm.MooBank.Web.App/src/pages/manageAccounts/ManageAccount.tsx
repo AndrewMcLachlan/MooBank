@@ -38,7 +38,7 @@ export const ManageAccount = () => {
         e.stopPropagation();
         e.preventDefault();
 
-        updateAccount.update(account);
+        updateAccount(account);
     }
 
     const getActions = (accountController: AccountController) => {

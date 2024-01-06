@@ -38,9 +38,9 @@ export const AccountGroupForm: React.FC<AccountGroupFormProps> = ({ accountGroup
         };
 
         if (accountGroup!.id === emptyGuid) {
-            createAccountGroup.create(newAccountGroup);
+            createAccountGroup(newAccountGroup);
         } else {
-            updateAccountGroup.update(newAccountGroup);
+            updateAccountGroup(newAccountGroup);
         }
 
         navigate("/account-groups");

@@ -5,42 +5,48 @@ import { Chart as ChartJS, ChartData, registerables } from "chart.js";
 import chartTrendline from "chartjs-plugin-trendline";
 
 import { useChartColours } from "helpers/chartColours";
-import { Section, useLocalStorage } from "@andrewmclachlan/mooapp";
+import { Section, useLocalStorage, useUpdatingState } from "@andrewmclachlan/mooapp";
 import { Col, Form, Row } from "react-bootstrap";
 import { useBudgetReport, useBudgetYears } from "services/BudgetService";
 import { BudgetPage } from "./BudgetPage";
 import { BudgetReportYear } from "./BudgetReportYear";
 import { BudgetReportTags } from "./BudgetReportTags";
 import { useBudgetYear } from "hooks/useBudgetYear";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 ChartJS.register(...registerables);
 ChartJS.register(chartTrendline);
 
 export const BudgetReport: React.FC = () => {
 
-    const colours = useChartColours();
-
     const next5Years = [...Array(5).keys()].map(i => new Date().getFullYear() + i);
 
-    const { month: pathMonth } = useParams<{month?: string}>();
+    const { year: pathYear, month: pathMonth } = useParams<{year?: string, month?: string}>();
 
     const [year, setYear] = useBudgetYear();
     const [selectableYears, setSelectableYears] = useState(next5Years);
-    const [month, setMonth] = useState<number | undefined>(pathMonth ? Number(pathMonth) : undefined);
+    const [month, setMonth] = useUpdatingState<number | undefined>(pathMonth ? Number(pathMonth) : undefined);
 
     const { data: budgetYears } = useBudgetYears();
 
     const navigate = useNavigate();
 
     const setMonthAndPath = (month: number ) =>{
-        navigate(`/budget/report/${month}`);
-        setMonth(month);
+        navigate(`/budget/report/${year}/${month}`);
     };
 
+    const yearChange= (value: number ) => {
+        setYear(value);
+        navigate(`/budget/report/${value}`);
+    }
+
     useEffect(() => {
-        setMonth(pathMonth ? Number(pathMonth) : undefined)
-    }, [pathMonth]);
+
+        if (!pathYear) return;
+
+        setYear(Number(pathYear));
+
+    }, [pathYear]);
 
     useEffect(() => {
         if (!budgetYears) return;
@@ -49,16 +55,16 @@ export const BudgetReport: React.FC = () => {
 
         next5Years.forEach(y => { if (!newYears.includes(y)) newYears.push(y); });
 
-        setSelectableYears(newYears);
+        setSelectableYears(newYears.sort());
 
     }, [budgetYears]);
 
     return (
-        <BudgetPage title="Budget Report">
+        <BudgetPage title="Budget Report" breadcrumbs={[{ text: "Report", route: "/budget/report" }]}>
             <Section>
                 <Row>
                     <Col>
-                        <Form.Select value={year} onChange={e => setYear(Number(e.currentTarget.value))}>
+                        <Form.Select value={year} onChange={e => yearChange(Number(e.currentTarget.value))}>
                             {selectableYears.map((y) =>
                                 <option value={y} key={y}>{y}</option>
                             )}

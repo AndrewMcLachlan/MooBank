@@ -1,5 +1,6 @@
 ﻿using Asm.MooBank.Domain;
 using Asm.MooBank.Domain.Entities.Tag;
+using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Domain.Entities.Transactions.Specifications;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Budget.Models;
@@ -9,7 +10,7 @@ namespace Asm.MooBank.Modules.Budget.Queries;
 
 public record ReportForMonthBreakdown(short Year, short Month) : IQuery<BudgetReportByMonthBreakdown>;
 
-internal class ReportForMonthBreakdownHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, IQueryable<Domain.Entities.Account.InstitutionAccount> accounts, IQueryable<Domain.Entities.Transactions.Transaction> transactions, AccountHolder accountHolder) : IQueryHandler<ReportForMonthBreakdown, BudgetReportByMonthBreakdown>
+internal class ReportForMonthBreakdownHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, IQueryable<Domain.Entities.Account.InstitutionAccount> accounts, IQueryable<Domain.Entities.Transactions.Transaction> transactions, IQueryable<TagRelationship> tagRelationships, AccountHolder accountHolder) : IQueryHandler<ReportForMonthBreakdown, BudgetReportByMonthBreakdown>
 {
     public async ValueTask<BudgetReportByMonthBreakdown> Handle(ReportForMonthBreakdown query, CancellationToken cancellationToken)
     {
@@ -30,10 +31,10 @@ internal class ReportForMonthBreakdownHandler(IQueryable<Domain.Entities.Budget.
 
         var lineTags = lines.Select(l => l.Tag);
 
-        //var allTags = transactionTags.Union(lineTags).Distinct(new TagEqualityComparer());
-        var otherTagIds = transactionTags.Except(lineTags).Select(t => t.Id);
+        lineTags = lineTags.IncludeWhereRelationship(transactionTags, await tagRelationships.ToListAsync(cancellationToken));
 
-        // TODO: Setup net amount for splits.
+        var otherTagIds = transactionTags.ExceptWhereRelationship(lineTags, tagRelationships).Select(t => t.Id);
+
         BudgetReportByMonthBreakdown breakdown = new(
             lineTags.Select(tag =>
                     new BudgetReportValueTag(tag.Name,
@@ -47,9 +48,6 @@ internal class ReportForMonthBreakdownHandler(IQueryable<Domain.Entities.Budget.
                         Actual: budgetTransactions.SelectMany(t => t.Splits).Where(s => s.Tags.Any(t => otherTagIds.Contains(t.Id))).Sum(t => Math.Abs(t.NetAmount))
                     ))
         );
-
-            //.Select(m => new BudgetReportValueMonth(m.Expenses, Math.Abs(budgetTransactions.Where(t => t.TransactionTime.Month == m.Month + 1).Sum(t => t.NetAmount)), m.Month))
-            //.SingleOrDefault();
 
         return breakdown;
     }
