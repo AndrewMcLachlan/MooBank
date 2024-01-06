@@ -20,7 +20,7 @@ public sealed record Get : IQuery<PagedResult>
 
     public DateTime? End { get; init; }
 
-    public IEnumerable<int>? TagIds { get; set; }
+    public int[]? TagIds { get; set; }
 
     public required int PageSize { get; init; }
 
