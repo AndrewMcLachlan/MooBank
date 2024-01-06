@@ -1,4 +1,4 @@
-import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
+import { UseMutationResult, UseQueryResult, useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 
 import * as Models from "../models";

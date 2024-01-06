@@ -1,18 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 
-import { Bar } from "react-chartjs-2";
-import { Chart as ChartJS, ChartData, registerables } from "chart.js";
+import { ChartData, Chart as ChartJS, registerables } from "chart.js";
 import chartTrendline from "chartjs-plugin-trendline";
+import { Bar } from "react-chartjs-2";
 
-import { useChartColours } from "helpers/chartColours";
 import { Section } from "@andrewmclachlan/mooapp";
-import { Col, Form, Row } from "react-bootstrap";
-import { useBudgetReport, useBudgetReportForMonthBreakdown, useBudgetReportForMonthBreakdownUnbudgeted, useBudgetYears } from "services/BudgetService";
-import { BudgetPage } from "./BudgetPage";
-import { UseQueryResult } from "@tanstack/react-query";
-import { BudgetReportForMonthBreakdown } from "models";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useChartColours } from "helpers/chartColours";
 import { useNavigate } from "react-router-dom";
+import { useBudgetReportForMonthBreakdown, useBudgetReportForMonthBreakdownUnbudgeted } from "services/BudgetService";
 
 ChartJS.register(...registerables);
 ChartJS.register(chartTrendline);

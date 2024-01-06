@@ -1,4 +1,5 @@
 import { useApiPostEmpty, useApiPostFile } from "@andrewmclachlan/mooapp";
+import { UseMutationResult } from "@tanstack/react-query";
 
 export const useImportTransactions = () => useApiPostFile<{accountId: string, file: File}>((variables) => `api/accounts/${variables.accountId}/import`);
 

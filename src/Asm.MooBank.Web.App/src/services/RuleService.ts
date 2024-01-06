@@ -1,6 +1,6 @@
 import * as Models from "../models";
 import { useApiGet, useApiPost, useApiDelete, useApiPutEmpty, useApiPostEmpty, useApiPatch } from "@andrewmclachlan/mooapp";
-import {  UseQueryResult, useQueryClient } from "@tanstack/react-query";
+import {  UseMutationResult, UseQueryResult, useQueryClient } from "@tanstack/react-query";
 import { Tag } from "../models";
 
 const rulesKey = "rules";
