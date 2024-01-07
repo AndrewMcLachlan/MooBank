@@ -6,6 +6,9 @@ internal class TransactionSplitConfiguration : IEntityTypeConfiguration<Transact
 {
     public void Configure(EntityTypeBuilder<TransactionSplit> entity)
     {
+        // Required do to computed column savings issues. See https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-7.0/breaking-changes#sqlserver-tables-with-triggers
+        entity.ToTable(t => t.HasTrigger("FakeTrigger"));
+
         entity.HasKey(e => e.Id);
 
         entity.Property(e => e.Id).ValueGeneratedOnAdd();

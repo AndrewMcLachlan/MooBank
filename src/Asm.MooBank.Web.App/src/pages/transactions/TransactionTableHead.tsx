@@ -30,7 +30,7 @@ export const TransactionTableHead: React.FC = () => {
                 <th className={getClassName("TransactionTime")} onClick={() => sort("TransactionTime")}>Date</th>
                 <th className={getClassName("Description")} onClick={() => sort("Description")}>Description</th>
                 <th className={getClassName("Location")} onClick={() => sort("Location")}>Location</th>
-                <th className={getClassName("AccountHolder")} onClick={() => sort("AccountHolder")}>Who</th>
+                <th className={getClassName("AccountHolderName")} onClick={() => sort("AccountHolderName")}>Who</th>
                 <th className={getClassName("Amount")} onClick={() => sort("Amount")}>Amount</th>
                 <th>Tags</th>
             </tr>
