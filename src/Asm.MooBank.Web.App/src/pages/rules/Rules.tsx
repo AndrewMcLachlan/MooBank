@@ -3,7 +3,7 @@ import "./Rules.scss";
 import React, { useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
 
-import { ClickableIcon, Pagination, SearchBox, Section, SortDirection, changeSortDirection, getNumberOfPages, useIdParams } from "@andrewmclachlan/mooapp";
+import { ClickableIcon, IconButton, Pagination, SearchBox, Section, SortDirection, changeSortDirection, getNumberOfPages, useIdParams } from "@andrewmclachlan/mooapp";
 import { AccountPage, TagPanel, useAccount } from "components";
 
 import { Rule, Tag, sortRules } from "models";
@@ -53,15 +53,10 @@ export const Rules: React.FC = () => {
     if (!account) return (null);
 
     return (
-        <AccountPage title="Rules" breadcrumbs={[{ text: "Rules", route: `/accounts/${id}/rules` }]}>
-            <div className="section-group">
-                <Section className="col-xl-4">
-                    <SearchBox value={search} onChange={(v: string) => setSearch(v)} />
-                </Section>
-                <Section>
-                    <Button onClick={runRules}>Run Rules</Button>
-                </Section>
-            </div>
+        <AccountPage title="Rules" breadcrumbs={[{ text: "Rules", route: `/accounts/${id}/rules` }]} actions={[<IconButton icon="check" onClick={runRules}>Run Rules</IconButton>]}>
+            <Section>
+                <SearchBox value={search} onChange={(v: string) => setSearch(v)} />
+            </Section>
             <Table striped bordered={false} borderless className="section transaction-tag-rules">
                 <thead>
                     <tr>

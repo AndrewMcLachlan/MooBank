@@ -18,13 +18,13 @@ const App: React.FC = () => {
     if (!isAuthenticated) return null;
 
     const menu = hasRole("Admin") ?
-        [(<Link key="settings" to="/settings"><Icons.Cog /></Link>)] :
+        [(<Link key="settings" to="/settings" aria-label="Settings"><Icons.Cog /></Link>)] :
         [];
 
     return (
         <Layout size="small">
             <Alerts />
-            <Layout.Header AppName="" Menu={menu} />
+            <Layout.Header Menu={menu} />
             <Layout.Sidebar navItems={[
                 {
                     text: "Dashboard",

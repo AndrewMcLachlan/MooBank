@@ -1,9 +1,12 @@
 /// <reference types="vite-plugin-svgr/client" />
+export {default as BarChart } from "./bar-chart.svg?react";
 export {default as Budget } from "./budget.svg?react";
 export {default as Cog } from "./cog.svg?react";
 export {default as Dashboard } from "./dashboard.svg?react";
 export {default as Hierarchy } from "./hierarchy.svg?react";
 export {default as Import } from "./import.svg?react";
+export {default as LeftRightArrow } from "./left-right-arrow.svg?react";
+export {default as PieChart } from "./pie-chart.svg?react";
 export {default as PiggyBank } from "./pig.svg?react";
 export {default as PiggyBank2 } from "./piggybank2.svg?react";
 export {default as PiggyBank3 } from "./piggybank3.svg?react";
@@ -13,5 +16,6 @@ export {default as Rules } from "./rules.svg?react";
 export {default as Sliders } from "./sliders.svg?react";
 export {default as Stack } from "./stack.svg?react";
 export {default as Tags } from "./tags.svg?react";
+export {default as Trendline } from "./trendline.svg?react";
 export {default as TwoCoins } from "./two-coins.svg?react";
 export {default as Transaction } from "./transaction.svg?react";
