@@ -4,7 +4,7 @@ using Asm.MooBank.Queries.Transactions;
 
 namespace Asm.MooBank.Modules.Transactions.Queries.Transactions;
 
-public record Search(Guid AccountId, DateOnly Start, MooBank.Models.TransactionType TransactionType, IEnumerable<int> TagIds) : IQuery<IEnumerable<Models.Transaction>>;
+public record Search(Guid AccountId, DateOnly Start, MooBank.Models.TransactionType TransactionType, int[] TagIds) : IQuery<IEnumerable<Models.Transaction>>;
 
 internal class SearchHandler(IQueryable<Transaction> transactions, ISecurity securityRepository) : IQueryHandler<Search, IEnumerable<Models.Transaction>>
 {
