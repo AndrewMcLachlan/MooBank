@@ -39,7 +39,7 @@ export const TagTrend: React.FC = () => {
         labels: report.data?.months.map(i => i.month) ?? [],
 
         datasets: [{
-            label: `${report.data?.tagName} (Offset)`,
+            label: `${report.data?.tagName} (Net)`,
             data: report.data?.months.map(i => Math.abs(i.offsetAmount!)) ?? [],
             backgroundColor: colours.income,
             borderColor: colours.income,
@@ -51,7 +51,7 @@ export const TagTrend: React.FC = () => {
                 width: 2,
             }
         }, {
-            label: `${report.data?.tagName} (Expenses)`,
+            label: `${report.data?.tagName} (Gross)`,
             data: report.data?.months.map(i => Math.abs(i.amount)) ?? [],
             backgroundColor: colours.expenses,
             borderColor: colours.expenses,
