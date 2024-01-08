@@ -54,7 +54,7 @@ export const AllTagAverage = () => {
                 <PeriodSelector onChange={setPeriod} />
             </Section>
             <Section className="report">
-                <h3>Average Across Top 50 Tags</h3>
+                <h3>Average per month Across Top 20 Tags</h3>
                 <Bar id="alltagaverage" ref={chartRef} data={dataset} options={{
                     plugins: {
                         legend: {

@@ -82,7 +82,7 @@ internal class GetAllTagAverageReportHandler(IQueryable<Transaction> transaction
             Start = request.Start,
             End = request.End,
             ReportType = request.ReportType,
-            Tags = filteredTagValues.Take(50).OrderByDescending(t => t.NetAmount),
+            Tags = filteredTagValues.Take(20).OrderByDescending(t => t.NetAmount),
         };
     }
 }
