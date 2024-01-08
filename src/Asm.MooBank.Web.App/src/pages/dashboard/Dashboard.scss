@@ -1,7 +1,6 @@
 main.dashboard {
-
     .row {
-    --bs-gutter-y: 1.5rem;
+        --bs-gutter-y: 1.5rem;
     }
 
     [class^="col"] {
@@ -9,11 +8,9 @@ main.dashboard {
     }
 
     .section {
-
         flex: 0 0 auto;
 
         height: 100%;
-
     }
 
     .report {

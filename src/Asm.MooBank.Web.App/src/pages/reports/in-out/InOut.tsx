@@ -15,7 +15,7 @@ import { useInOutReport } from "services";
 ChartJS.register(...registerables);
 ChartJS.register(chartTrendline);
 
-export const InOut: React.FC<InOutProps> = ({accountId, period}) => {
+export const InOut: React.FC<InOutProps> = ({ accountId, period }) => {
 
     const colours = useChartColours();
 
@@ -35,23 +35,34 @@ export const InOut: React.FC<InOutProps> = ({accountId, period}) => {
         }]
     };
 
+    // Calculate the difference to the nearest $10
+    const difference = Math.round((((report.data?.income ?? 0) - Math.abs(report.data?.outgoings ?? 0)) / 10.0)) * 10;
+
+    if (!report.data) return null;
+
     return (
-        <Bar id="inout" data={dataset} options={{
-            indexAxis: "y",
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    grid: {
-                        color: colours.grid,
-                    },
-                },
-                x: {
-                    grid: {
-                        color: colours.grid,
-                    },
-                }
+        <>
+            {difference > 0 ?
+                <h4 className="text-success amount">${difference} saved</h4> :
+                <h4 className="text-danger amount">${Math.abs(difference)} overspent</h4>
             }
-        }} />
+            <Bar id="inout" data={dataset} options={{
+                indexAxis: "y",
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        grid: {
+                            color: colours.grid,
+                        },
+                    },
+                    x: {
+                        grid: {
+                            color: colours.grid,
+                        },
+                    }
+                }
+            }} />
+        </>
     );
 
 }

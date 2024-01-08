@@ -3,7 +3,7 @@ import { getMonth } from "date-fns/getMonth";
 import { getYear } from "date-fns/getYear";
 
 import { ChartData } from "chart.js";
-import { useChartColours } from "helpers";
+import { getBalanceString, useChartColours } from "helpers";
 import { lastMonth } from "helpers/dateFns";
 import { Bar } from "react-chartjs-2";
 import { useBudgetReportForMonth } from "services/BudgetService";
@@ -31,24 +31,35 @@ export const BudgetWidget: React.FC = () => {
         }]
     };
 
+    // Calculate the difference to the nearest $10
+    const difference = Math.round((((report?.budgetedAmount ?? 0) - Math.abs(report?.actual ?? 0)) / 10.0)) * 10;
+
     return (
-        <Widget title={`Budget - Last Month`} size={2} className="report" loading={isLoading}>
-            <Bar id="inout" data={dataset} options={{
-                indexAxis: "y",
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        grid: {
-                            color: colours.grid,
-                        },
-                    },
-                    x: {
-                        grid: {
-                            color: colours.grid,
-                        },
+        <Widget title={`Budget - Last Month`} size={2} className="report budget" loading={isLoading}>
+            {report &&
+                <>
+                    {difference > 0 ?
+                        <h4 className="text-success amount">${difference} saved</h4> :
+                        <h4 className="text-danger amount">${Math.abs(difference)} overspent</h4>
                     }
-                }
-            }} />
+                    <Bar id="inout" data={dataset} options={{
+                        indexAxis: "y",
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                grid: {
+                                    color: colours.grid,
+                                },
+                            },
+                            x: {
+                                grid: {
+                                    color: colours.grid,
+                                },
+                            }
+                        }
+                    }} />
+                </>
+            }
         </Widget>
     )
 };

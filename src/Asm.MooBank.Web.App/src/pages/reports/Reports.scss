@@ -1,23 +1,28 @@
 .report {
+    &.inout, &.budget {
+        max-height: 300px;
+        padding-bottom: calc(50px + 2rem);
 
-   /* h3 {
-        width: 100%;
-        text-align: center;
-        margin-top: 20px;
-        font-size: 2rem;
+        display: grid;
+        grid-template-areas:
+            "header total"
+            "chart chart";
+        grid-template-columns: 1fr max-content;
+        align-items: center;
+
+        h2 {
+            grid-area: header;
+        }
+        h4 {
+            grid-area: total;
+        }
+        canvas {
+            grid-area: chart;
+        }
     }
 
-    &.doughnut h3 {
-        margin-left: -80px;
-    }*/
-}
-
-.inout {
-    max-height: 300px;
-    padding-bottom: calc(50px + 2rem);
-}
-
-.inout-trend {
-    max-height: 800px;
-    padding-bottom: calc(50px + 2rem);
+    &.inout-trend {
+        max-height: 800px;
+        padding-bottom: calc(50px + 2rem);
+    }
 }
