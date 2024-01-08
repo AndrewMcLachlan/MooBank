@@ -26,9 +26,9 @@ export const ManualAccountRow: React.FC<AccountRowProps> = (props) => {
     return (
         <>
             <tr onClick={onRowClick} className="clickable" ref={balanceRef}>
-                <td onClick={showVirtualAccountsClick}>{props.account.virtualAccounts && props.account.virtualAccounts.length > 0 && <FontAwesomeIcon icon={showVirtualAccounts ? "chevron-down" : "chevron-right"} />}</td>
+                <td className="d-none d-sm-table-cell" onClick={showVirtualAccountsClick}>{props.account.virtualAccounts && props.account.virtualAccounts.length > 0 && <FontAwesomeIcon icon={showVirtualAccounts ? "chevron-down" : "chevron-right"} />}</td>
                 <td className="name">{props.account.name}</td>
-                <td>{props.account.accountType}</td>
+                <td className="d-none d-sm-table-cell">{props.account.accountType}</td>
                 <td className={classNames("amount", "number", numberClassName(props.account.currentBalance))} onClick={balanceClick}>
                     {!editingBalance && getBalanceString(balance)}
                     {editingBalance && <input type="number" value={balance} onChange={balanceChange} onKeyPress={keyPress} />}

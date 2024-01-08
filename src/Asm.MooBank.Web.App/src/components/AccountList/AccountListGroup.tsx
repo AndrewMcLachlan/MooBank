@@ -17,9 +17,9 @@ export const AccountListGroup: React.FC<AccountListGroupProps> = ({ accountGroup
         <Table className="accounts" hover>
             <thead>
                 <tr>
-                    <th className="expander"></th>
+                    <th className="expander d-none d-sm-table-cell"></th>
                     <th>Name</th>
-                    <th className="type">Type</th>
+                    <th className="d-none d-sm-table-cell">Type</th>
                     <th className="number">Current Balance</th>
                 </tr>
             </thead>
@@ -32,8 +32,9 @@ export const AccountListGroup: React.FC<AccountListGroupProps> = ({ accountGroup
             </tbody>
             { accountGroup.position !== undefined && accountGroup.position !== null && <tfoot>
                 <tr className="position">
-                    <td />
-                    <td colSpan={2}>Position</td>
+                    <td className="d-none d-sm-table-cell" />
+                    <td colSpan={2} className="d-none d-sm-table-cell">Position</td>
+                    <td className="d-table-cell d-sm-none"></td>
                     <td className="amount number">{getBalanceString(accountGroup?.position)}</td>
                 </tr>
             </tfoot>}

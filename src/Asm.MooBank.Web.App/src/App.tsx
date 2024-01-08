@@ -25,6 +25,7 @@ const App: React.FC = () => {
         <Layout size="small">
             <Alerts />
             <Layout.Header Menu={menu} />
+            <Layout.MobileHeader Menu={menu} />
             <Layout.Sidebar navItems={[
                 {
                     text: "Dashboard",

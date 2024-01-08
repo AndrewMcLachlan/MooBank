@@ -14,10 +14,10 @@ export const VirtualAccountRow: React.FC<VirtualAccountRowProps> = (props) => {
     const clickable = props.account.id !== emptyGuid;
 
     return (
-        <tr onClick={clickable ? onRowClick : undefined} className={classNames("virtual", clickable && "clickable")} ref={balanceRef}>
+        <tr onClick={clickable ? onRowClick : undefined} className={classNames("virtual", clickable && "clickable", "d-none", "d-sm-table-row")} ref={balanceRef}>
             <td></td>
             <td className="name">{props.account.name}</td>
-            <td>Virtual</td>
+            <td className="d-none d-sm-table-cell">Virtual</td>
             <td className={classNames("amount", "number", numberClassName(balance))} onClick={clickable ? balanceClick : undefined}>
                 {!editingBalance && getBalanceString(balance)}
                 {editingBalance && <input type="number" value={balance} onChange={balanceChange} onKeyUp={keyPress} />}
