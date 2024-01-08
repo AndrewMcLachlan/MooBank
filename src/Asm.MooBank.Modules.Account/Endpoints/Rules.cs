@@ -45,5 +45,8 @@ public class RulesEndpoints : EndpointGroupBase
 
         routeGroupBuilder.MapDelete<RemoveTag>("/{ruleId}/tag/{tagId}")
             .WithNames("Remove Tag from Account Rule");
+
+        routeGroupBuilder.MapCommand<Run>("run", StatusCodes.Status202Accepted, CommandBinding.Parameters)
+            .WithNames("Run rules");
     }
 }
