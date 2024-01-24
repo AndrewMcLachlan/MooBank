@@ -70,7 +70,7 @@ jobs:
       run: octopus package zip create --id Asm.MooBank.Web --version ${{ steps.set-version-number.outputs.version }} --base-path ${{ github.workspace }}/publish --out-folder ${{ github.workspace }}/artifacts
     - name: Cache Package
       if: (github.ref == 'refs/heads/master')
-      uses: actions/cache/save@v3
+      uses: actions/cache/save@v4
       with:
         path: ${{ github.workspace }}/artifacts/Asm.MooBank.Web.${{ steps.set-version-number.outputs.version }}.zip
         key: ${{ runner.os }}-package-${{ steps.set-version-number.outputs.version }}

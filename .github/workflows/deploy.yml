@@ -31,7 +31,7 @@ jobs:
       with:
         version: latest
     - name: Restore cache
-      uses: actions/cache/restore@v3
+      uses: actions/cache/restore@v4
       with:
         path: ${{ github.workspace }}/artifacts/${{ inputs.package-name }}.${{ inputs.version }}.zip
         key: ${{ runner.os }}-package-${{ inputs.version }}
