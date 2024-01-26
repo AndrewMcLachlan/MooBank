@@ -1,5 +1,4 @@
-﻿using Asm.MooBank.Commands;
-using Asm.MooBank.Models;
+﻿using Asm.MooBank.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +20,7 @@ public sealed record CreateByName(string Name, IEnumerable<int> Tags) : ICommand
     }
 }
 
-internal sealed class CreateByNameHandler(IUnitOfWork unitOfWork, ITagRepository transactionTagRepository, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<CreateByName, MooBank.Models.Tag>
+internal sealed class CreateByNameHandler(IUnitOfWork unitOfWork, ITagRepository transactionTagRepository, AccountHolder accountHolder) : ICommandHandler<CreateByName, MooBank.Models.Tag>
 {
     public async ValueTask<MooBank.Models.Tag> Handle(CreateByName request, CancellationToken cancellationToken)
     {
@@ -32,12 +31,12 @@ internal sealed class CreateByNameHandler(IUnitOfWork unitOfWork, ITagRepository
         Domain.Entities.Tag.Tag tag = new()
         {
             Name = name,
-            FamilyId = AccountHolder.FamilyId,
+            FamilyId = accountHolder.FamilyId,
             Tags = tagEntities.ToList(),
         };
         transactionTagRepository.Add(tag);
 
-        await UnitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return tag.ToModel();
     }

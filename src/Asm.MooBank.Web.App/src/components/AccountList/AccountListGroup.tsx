@@ -20,7 +20,7 @@ export const AccountListGroup: React.FC<AccountListGroupProps> = ({ accountGroup
                     <th className="expander d-none d-sm-table-cell"></th>
                     <th>Name</th>
                     <th className="d-none d-sm-table-cell">Type</th>
-                    <th className="number">Current Balance</th>
+                    <th className="number">Balance</th>
                 </tr>
             </thead>
             <tbody>

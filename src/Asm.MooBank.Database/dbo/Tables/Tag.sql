@@ -10,4 +10,4 @@
 
 GO
 
-CREATE UNIQUE INDEX [IX_TransactionTag_Name] ON [dbo].[Tag] ([Name]) WHERE Deleted = 0
+CREATE UNIQUE INDEX [IX_TransactionTag_Name] ON [dbo].[Tag] ([Name], [FamilyId]) WHERE Deleted = 0

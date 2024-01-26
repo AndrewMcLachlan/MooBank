@@ -4,6 +4,7 @@ public interface ITagRepository : IDeletableRepository<Tag, int>, IWritableRepos
 {
     void AddSettings(Tag transactionTag);
 
+
     Task<IEnumerable<Tag>> Get(IEnumerable<int> tagIds, CancellationToken cancellationToken = default);
 
     Task<Tag> Get(int id, bool includeSubTags = false, CancellationToken cancellationToken = default);

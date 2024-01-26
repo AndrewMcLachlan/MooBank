@@ -23,7 +23,7 @@ export const ManageAccounts = () => {
                         <th>Description</th>
                         <th className="type">Type</th>
                         <th className="type">Controller</th>
-                        <th className="number">Current Balance</th>
+                        <th className="number">Balance</th>
                     </tr>
                 </thead>
                 <tbody>

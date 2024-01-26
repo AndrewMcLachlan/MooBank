@@ -23,11 +23,11 @@ public record UpdateTransaction(Guid AccountId, Guid Id, string? Notes, IEnumera
     }
 }
 
-internal class UpdateTransactionHandler(ITransactionRepository transactionRepository, ITagRepository tagRepository, IUnitOfWork unitOfWork, MooBank.Models.AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<UpdateTransaction, Models.Transaction>
+internal class UpdateTransactionHandler(ITransactionRepository transactionRepository, ITagRepository tagRepository, IUnitOfWork unitOfWork, ISecurity security) : ICommandHandler<UpdateTransaction, Models.Transaction>
 {
     public async ValueTask<Models.Transaction> Handle(UpdateTransaction request, CancellationToken cancellationToken)
     {
-        Security.AssertAccountPermission(request.AccountId);
+        security.AssertAccountPermission(request.AccountId);
 
         var entity = await transactionRepository.Get(request.Id, new IncludeSplitsSpecification(), cancellationToken);
 
@@ -98,7 +98,7 @@ internal class UpdateTransactionHandler(ITransactionRepository transactionReposi
         entity.Notes = request.Notes;
         entity.ExcludeFromReporting = request.ExcludeFromReporting;
 
-        await UnitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return entity.ToModel();
     }

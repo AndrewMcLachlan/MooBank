@@ -67,7 +67,7 @@ export const ManageVirtualAccount = () => {
                         <Form.Control.Feedback type="invalid">Please enter a description</Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group controlId="OpeningBalance" >
-                        <Form.Label>Current Balance</Form.Label>
+                        <Form.Label>Balance</Form.Label>
                         <InputGroup>
                             <InputGroup.Text>$</InputGroup.Text>
                             <Form.Control type="number" required value={balance.toString()} onChange={(e: any) => setBalance(e.currentTarget.value)} />

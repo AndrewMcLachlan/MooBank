@@ -18,6 +18,11 @@ public class TransactionTagRepository(MooBankContext dataContext, Models.Account
         return await Entities.Include(t => t.Tags).Where(t => t.FamilyId == accountHolder.FamilyId && !t.Deleted).ToListAsync(cancellationToken);
     }
 
+    public override Task<Tag> Get(int id, CancellationToken cancellationToken = default)
+    {
+        return Get(id, false, cancellationToken);
+    }
+
     public async Task<IEnumerable<Tag>> Get(IEnumerable<int> tagIds, CancellationToken cancellationToken = default) =>
         await Entities.Where(t => t.FamilyId == accountHolder.FamilyId && tagIds.Contains(t.Id)).ToListAsync(cancellationToken);
 

@@ -21,11 +21,11 @@ public record Create(Guid AccountId, string Contains, string? Description, IEnum
     }
 }
 
-internal class CreateHandler(IAccountRepository accountRepository, ITagRepository tagRepository, MooBank.Models.AccountHolder accountHolder, ISecurity security, IUnitOfWork unitOfWork) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Create, Models.Rule>
+internal class CreateHandler(IAccountRepository accountRepository, ITagRepository tagRepository, ISecurity security, IUnitOfWork unitOfWork) : ICommandHandler<Create, Models.Rule>
 {
     public async ValueTask<Models.Rule> Handle(Create request, CancellationToken cancellationToken)
     {
-        Security.AssertAccountPermission(request.AccountId);
+        security.AssertAccountPermission(request.AccountId);
 
         var account = await accountRepository.Get(request.AccountId, cancellationToken);
 
@@ -40,7 +40,7 @@ internal class CreateHandler(IAccountRepository accountRepository, ITagRepositor
 
         account.Rules.Add(rule);
 
-        await UnitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return rule.ToModel();
     }
