@@ -1,26 +1,22 @@
 ﻿using Asm.MooBank.Models;
+using Asm.MooBank.Modules.Budget.Commands;
 using Asm.MooBank.Modules.Budget.Models;
-using Asm.MooBank.Queries;
 
 namespace Asm.MooBank.Modules.Budget.Queries;
 
 public record Get(short Year) : IQuery<Models.Budget?>;
 
-internal class GetHandler : QueryHandlerBase, IQueryHandler<Get, Models.Budget?>
+internal class GetHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, AccountHolder accountHolder, ICommandDispatcher commandDispatcher) : IQueryHandler<Get, Models.Budget?>
 {
-    private readonly IQueryable<Domain.Entities.Budget.Budget> _budgets;
-
-    public GetHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, AccountHolder accountHolder) : base(accountHolder)
+    public async ValueTask<Models.Budget?> Handle(Get query, CancellationToken cancellationToken)
     {
-        _budgets = budgets;
-    }
+        var familyId = accountHolder.FamilyId;
 
-    public async ValueTask<Models.Budget?> Handle(Get request, CancellationToken cancellationToken)
-    {
-        var familyId = AccountHolder.FamilyId;
+        var entity = await budgets.Include(b => b.Lines).ThenInclude(b => b.Tag).Where(b => b.FamilyId == familyId && b.Year == query.Year).SingleOrDefaultAsync(cancellationToken);
 
-        var entity = await _budgets.Include(b => b.Lines).ThenInclude(b => b.Tag).Where(b => b.FamilyId == familyId && b.Year == request.Year).SingleOrDefaultAsync(cancellationToken);
+        if (entity != null) return entity.ToModel();
 
-        return entity.ToModel();
+        // Create the budget if it does not exist
+        return await commandDispatcher.Dispatch(new Create(query.Year), cancellationToken);
     }
 }

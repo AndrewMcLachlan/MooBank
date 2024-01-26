@@ -61,7 +61,7 @@ export const CreateStockHolding: React.FC = () => {
                 </Form.Group>
                 <Form.Group controlId="symbol" >
                     <Form.Label>Symbol</Form.Label>
-                    <Form.Control type="text" required maxLength={3} value={symbol} onChange={(e: any) => setSymbol(e.currentTarget.value)} />
+                    <Form.Control type="text" required value={symbol} onChange={(e: any) => setSymbol(e.currentTarget.value)} />
                     <Form.Control.Feedback type="invalid">Please enter a symbol</Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="quantity" >
