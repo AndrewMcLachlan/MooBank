@@ -1,4 +1,5 @@
 ﻿using Asm.MooBank.Commands;
+using Asm.MooBank.Domain.Entities.Account.Specifications;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Account.Models.Account;
 using Asm.MooBank.Services;
@@ -16,7 +17,7 @@ internal class UpdateHandler(IUnitOfWork unitOfWork, IInstitutionAccountReposito
 
         Security.AssertAccountPermission(account.Id);
 
-        var entity = await accountRepository.Get(account.Id, cancellationToken);
+        var entity = await accountRepository.Get(account.Id, new AccountDetailsSpecification(), cancellationToken);
 
         entity.Name = account.Name;
         entity.Description = account.Description;

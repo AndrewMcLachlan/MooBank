@@ -6,6 +6,10 @@ internal class AccountAccountViewerConfiguration : IEntityTypeConfiguration<Doma
     {
         entity.HasKey(entity => new { entity.AccountId, entity.AccountHolderId });
 
+        entity.HasOne(entity => entity.Account)
+            .WithMany(account => account.AccountViewers)
+                .HasForeignKey(entity => entity.AccountId);
+
         entity.HasOne(entity => entity.AccountGroup)
               .WithMany()
               .HasForeignKey(entity => entity.AccountGroupId);
