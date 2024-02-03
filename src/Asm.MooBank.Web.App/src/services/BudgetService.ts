@@ -75,9 +75,9 @@ export const useGetTagValue = (tagId: number) => useApiGet<number>(["budget", "b
 
 export const useBudgetReport = (year: number) => useApiGet<BudgetReportByMonth>([budgetKey, year, "report"], `api/budget/${year}/report`);
 
-export const useBudgetReportForMonth = (year: number, month: number) => useApiGet<BudgetReportValueMonth>([budgetKey, year, "report", month], `api/budget/${year}/report/${month}`);
+export const useBudgetReportForMonth = (year: number, month: number) => useApiGet<BudgetReportValueMonth>([budgetKey, year, "report", month], `api/budget/${year}/report/${month+1}`);
 
-export const useBudgetReportForMonthBreakdown = (year: number, month: number) => useApiGet<BudgetReportForMonthBreakdown>([budgetKey, year, "report", month], `api/budget/${year}/report/${month}/breakdown`);
+export const useBudgetReportForMonthBreakdown = (year: number, month: number) => useApiGet<BudgetReportForMonthBreakdown>([budgetKey, year, "report", month], `api/budget/${year}/report/${month+1}/breakdown`);
 
-export const useBudgetReportForMonthBreakdownUnbudgeted = (year: number, month: number) => useApiGet<BudgetReportForMonthBreakdown>([budgetKey, year, "report", month, "unbudgeted"], `api/budget/${year}/report/${month}/breakdown/unbudgeted`);
+export const useBudgetReportForMonthBreakdownUnbudgeted = (year: number, month: number) => useApiGet<BudgetReportForMonthBreakdown>([budgetKey, year, "report", month, "unbudgeted"], `api/budget/${year}/report/${month+1}/breakdown/unbudgeted`);
 
