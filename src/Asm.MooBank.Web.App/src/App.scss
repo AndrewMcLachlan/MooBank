@@ -11,7 +11,6 @@
     font-family: var(--secondary-fonts);
 }
 
-
 @media (prefers-color-scheme: dark) {
 
     body {
@@ -442,6 +441,5 @@ legend.open svg {
     flex-direction: column;
     gap: 20px;
 }
-
 
 @import 'responsive';

@@ -26,33 +26,8 @@ const App: React.FC = () => {
             <Alerts />
             <Layout.Header Menu={menu} />
             <Layout.MobileHeader Menu={menu} />
-            <Layout.Sidebar navItems={[
-                {
-                    text: "Dashboard",
-                    image: <Icons.Dashboard />,
-                    route: "/"
-                },
-                {
-                    text: "Accounts",
-                    image: <Icons.PiggyBank3 />,
-                    route: "/accounts"
-                },
-                {
-                    text: "Budget",
-                    image: <Icons.Budget />,
-                    route: "/budget"
-                },
-                {
-                    text: "Groups",
-                    image: <Icons.Stack />,
-                    route: "/account-groups"
-                },
-                {
-                    text: "Tags",
-                    image: <Icons.Tags />,
-                    route: "/tags"
-                },
-            ]} />
+            <Layout.MobileSidebar navItems={sideMenu} />
+            <Layout.Sidebar navItems={sideMenu} />
             <ErrorBoundary>
                 <Routes>
                     <Route path="/" element={<Pages.Dashboard />} />
@@ -108,3 +83,31 @@ const App: React.FC = () => {
 };
 
 export default App;
+
+const sideMenu = [
+    {
+        text: "Dashboard",
+        image: <Icons.Dashboard />,
+        route: "/"
+    },
+    {
+        text: "Accounts",
+        image: <Icons.PiggyBank3 />,
+        route: "/accounts"
+    },
+    {
+        text: "Budget",
+        image: <Icons.Budget />,
+        route: "/budget"
+    },
+    {
+        text: "Groups",
+        image: <Icons.Stack />,
+        route: "/account-groups"
+    },
+    {
+        text: "Tags",
+        image: <Icons.Tags />,
+        route: "/tags"
+    },
+];

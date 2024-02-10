@@ -19,6 +19,11 @@ export const Transactions: React.FC = () => {
 
     return (
         <AccountPage title="Transactions" actions={actions}>
+            {/*<div className="row">
+                <AccountSummary className="col-xl-2 col-md-3 col-sm-12" />
+                <FilterPanel  className="col-xl-10 col-md-9 col-sm-12" />
+    </div>*/}
+
             <div className="section-group transactions-header">
                 <AccountSummary />
                 <FilterPanel />

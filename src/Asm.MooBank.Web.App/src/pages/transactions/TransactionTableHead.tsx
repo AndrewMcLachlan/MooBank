@@ -5,6 +5,7 @@ import { SortDirection} from "@andrewmclachlan/mooapp";
 
 import { State } from "store/state";
 import { TransactionsSlice } from "store/Transactions";
+import classNames from "classnames";
 
 export const TransactionTableHead: React.FC = () => {
 
@@ -29,8 +30,8 @@ export const TransactionTableHead: React.FC = () => {
             <tr className="transaction-head">
                 <th className={getClassName("TransactionTime")} onClick={() => sort("TransactionTime")}>Date</th>
                 <th className={getClassName("Description")} onClick={() => sort("Description")}>Description</th>
-                <th className={getClassName("Location")} onClick={() => sort("Location")}>Location</th>
-                <th className={getClassName("AccountHolderName")} onClick={() => sort("AccountHolderName")}>Who</th>
+                <th className={classNames("d-none d-md-table-cell", getClassName("Location"))} onClick={() => sort("Location")}>Location</th>
+                <th className={classNames("d-none d-md-table-cell", getClassName("AccountHolderName"))} onClick={() => sort("AccountHolderName")}>Who</th>
                 <th className={getClassName("Amount")} onClick={() => sort("Amount")}>Amount</th>
                 <th>Tags</th>
             </tr>
