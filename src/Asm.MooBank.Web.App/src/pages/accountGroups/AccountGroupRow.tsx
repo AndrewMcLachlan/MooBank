@@ -11,7 +11,7 @@ export const AccountGroupRow: React.FC<AccountGroupRowProps> = (props) => {
 
     return (
         <tr onClick={onRowClick} className="clickable">
-            <td className="account">
+            <td>
                 <div className="name">{props.accountGroup.name}</div>
             </td>
             <td>

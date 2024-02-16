@@ -27,16 +27,16 @@ export const AccountSummary: React.FC<AccountSummaryProps> = ({ className, ...pr
                 <div>Balance ({account.currency})</div>
                 <div className="balance amount"><AccountBalance balance={account.currentBalance} /></div>
             </KeyValue>
-            <KeyValue>
+            <KeyValue className="d-none d-lg-flex">
                 <div>Last Transaction</div>
                 <div>{account.lastTransaction ? format(parseISO(account.lastTransaction), "dd/MM/yyyy") : "-"}</div>
             </KeyValue>
-            <hr />
-            <KeyValue>
+            <hr className="d-none d-lg-block" />
+            <KeyValue className="d-none d-lg-flex">
                 <div>Type</div>
                 <div>{(account as InstitutionAccount).accountType ?? "Virtual"}</div>
             </KeyValue>
-            <KeyValue hidden={!(account as InstitutionAccount).institutionId}>
+            <KeyValue hidden={!(account as InstitutionAccount).institutionId} className="d-none d-lg-flex">
                 <div>Institution</div>
                 <div>{institutions?.find(i => i.id === (account as InstitutionAccount).institutionId)?.name}</div>
             </KeyValue>

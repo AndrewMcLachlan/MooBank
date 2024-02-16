@@ -14,9 +14,10 @@
             grid-area: header;
         }
         h4 {
+            font-weight: bold;
             grid-area: total;
         }
-        canvas {
+        div, .spinner, canvas {
             grid-area: chart;
         }
     }

@@ -1,11 +1,10 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { SortDirection} from "@andrewmclachlan/mooapp";
+import { SortableTh, SortDirection } from "@andrewmclachlan/mooapp";
 
 import { State } from "store/state";
 import { TransactionsSlice } from "store/Transactions";
-import classNames from "classnames";
 
 export const TransactionTableHead: React.FC = () => {
 
@@ -23,16 +22,14 @@ export const TransactionTableHead: React.FC = () => {
         dispatch(TransactionsSlice.actions.setSort([newSortField, newSortDirection]));
     }
 
-    const getClassName = (field: string) => field === sortField ? `sortable ${sortDirection.toLowerCase()}` : `sortable`;
-
     return (
         <thead>
             <tr className="transaction-head">
-                <th className={getClassName("TransactionTime")} onClick={() => sort("TransactionTime")}>Date</th>
-                <th className={getClassName("Description")} onClick={() => sort("Description")}>Description</th>
-                <th className={classNames("d-none d-md-table-cell", getClassName("Location"))} onClick={() => sort("Location")}>Location</th>
-                <th className={classNames("d-none d-md-table-cell", getClassName("AccountHolderName"))} onClick={() => sort("AccountHolderName")}>Who</th>
-                <th className={getClassName("Amount")} onClick={() => sort("Amount")}>Amount</th>
+                <SortableTh field="TransactionTime" sortField={sortField} sortDirection={sortDirection} onSort={sort}>Date</SortableTh>
+                <SortableTh field="Description" sortField={sortField} sortDirection={sortDirection} onSort={sort}>Description</SortableTh>
+                <SortableTh field="Location" sortField={sortField} sortDirection={sortDirection} onSort={sort} className="d-none d-md-table-cell">Location</SortableTh>
+                <SortableTh field="AccountHolderName" sortField={sortField} sortDirection={sortDirection} onSort={sort} className="d-none d-md-table-cell">Who</SortableTh>
+                <SortableTh field="Amount" sortField={sortField} sortDirection={sortDirection} onSort={sort}>Amount</SortableTh>
                 <th>Tags</th>
             </tr>
         </thead>

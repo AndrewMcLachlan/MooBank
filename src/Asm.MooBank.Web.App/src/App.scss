@@ -4,8 +4,7 @@
 @import "../scss/rainbow";
 @import "../scss/components";
 @import "../scss/filterPanel";
-@import "../scss/transactionTagDetails";
-@import "../scss/transactionDetails";
+@import "../scss/transactions";
 
 @include h-all {
     font-family: var(--secondary-fonts);
@@ -174,7 +173,7 @@ table {
 }
 
 thead th {
-    font-weight: normal;
+    font-weight: 600;
 }
 
 td {
@@ -200,26 +199,6 @@ td {
             outline: none;
         }
     }
-
-    .sortable {
-        cursor: pointer;
-
-        &.ascending::after {
-            content: '\1F829';
-            margin-right: -0.5rem;
-            margin-left: 0.25rem;
-        }
-
-        &.descending::after {
-            content: '\1F82B';
-            margin-right: -0.5rem;
-            margin-left: 0.25rem;
-        }
-    }
-}
-
-tbody td {
-    font-weight: bold;
 }
 
 table.accountManagement {
@@ -441,5 +420,10 @@ legend.open svg {
     flex-direction: column;
     gap: 20px;
 }
+
+.section-row {
+    --bs-gutter-y: 1.5rem;
+}
+
 
 @import 'responsive';
