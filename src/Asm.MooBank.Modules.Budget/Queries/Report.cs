@@ -19,7 +19,7 @@ internal class ReportHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, 
 
         return new BudgetReportByMonth
         {
-            Items = months.Select(m => new BudgetReportValueMonth(m.Expenses, Math.Abs(budgetTransactions.Where(t => t.TransactionTime.Month == m.Month + 1).Sum(t => t.NetAmount)), m.Month))
+            Items = months.Select(m => new BudgetReportValueMonth(m.Expenses, Math.Abs(budgetTransactions.Where(t => t.TransactionTime.Month == m.Month).Sum(t => t.NetAmount)), m.Month))
         };
     }
 }

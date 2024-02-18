@@ -18,8 +18,8 @@ export const useCreateBudgetLine = () => {
     const queryClient = useQueryClient();
 
     const { mutate } = useApiPost<BudgetLine, BudgetVariables, BudgetLine>((variables) => `api/budget/${variables.year}/lines`, {
-        onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: [budgetKey]});
+        onSettled: (_data, _error, [variables, _line]) => {
+            queryClient.invalidateQueries({ queryKey: [budgetKey, variables.year]});
         }
     });
 
@@ -54,11 +54,12 @@ export const useDeleteBudgetLine = () => {
 
     const { mutate } = useApiDelete<BudgetVariables>((variables) => `api/budget/${variables.year}/lines/${variables.lineId}`, {
         onSuccess: (_data, variables: BudgetVariables) => {
-            const budget = queryClient.getQueryData<Budget>([budgetKey, variables.year]);
+            queryClient.invalidateQueries({ queryKey: [budgetKey, variables.year]});
+            /*const budget = queryClient.getQueryData<Budget>([budgetKey, variables.year]);
             if (!budget) return;
             budget.expensesLines = budget.expensesLines.filter(r => r.id !== (variables.lineId));
             budget.incomeLines = budget.incomeLines.filter(r => r.id !== (variables.lineId));
-            queryClient.setQueryData<Budget>([budgetKey, variables.year], budget);
+            queryClient.setQueryData<Budget>([budgetKey, variables.year], {...budget});*/
         }
     });
 
