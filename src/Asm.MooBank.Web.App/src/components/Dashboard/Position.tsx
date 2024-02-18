@@ -1,5 +1,5 @@
 import { useFormattedAccounts } from "services";
-import { Widget } from "./Widget";
+import { Widget } from "@andrewmclachlan/mooapp";
 import { KeyValue } from "components/KeyValue";
 
 export const PositionWidget: React.FC = () => {

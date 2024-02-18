@@ -7,7 +7,7 @@ import { getBalanceString, useChartColours } from "helpers";
 import { lastMonth } from "helpers/dateFns";
 import { Bar } from "react-chartjs-2";
 import { useBudgetReportForMonth } from "services/BudgetService";
-import { Widget } from "./Widget";
+import { Widget } from "@andrewmclachlan/mooapp";
 
 export const BudgetWidget: React.FC = () => {
 
