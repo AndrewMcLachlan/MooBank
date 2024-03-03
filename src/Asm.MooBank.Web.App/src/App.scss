@@ -73,70 +73,6 @@
     }
 }
 
-.breadcrumb {
-    --bs-breadcrumb-margin-bottom: 0;
-}
-
-.breadcrumb-container {
-    font-weight: bold;
-    align-items: center;
-    background-color: var(--breadcrumb-background);
-
-    e>.container {
-        height: 2rem;
-        padding-bottom: 2px;
-    }
-}
-
-nav.secondary-nav {
-
-    color: #CCCCCC;
-    font-weight: bold;
-
-    ul {
-        margin: 0;
-        padding: 0;
-        list-style: none;
-        font-size: 0.9rem;
-    }
-
-    button,
-    button:hover,
-    button:active,
-    button:focus {
-        outline: none;
-        background: none;
-        border: none;
-        font-weight: bold;
-        font-size: 0.9rem;
-    }
-
-    button:hover {
-        text-decoration: underline;
-    }
-
-    a,
-    button {
-        color: #999;
-    }
-
-    li {
-        display: inline-block;
-
-        padding-left: 0.5rem;
-
-        &:after {
-            padding-left: 0.5rem;
-            content: "|";
-        }
-
-        &:last-child:after {
-            content: "";
-            padding: 0;
-        }
-    }
-}
-
 /*#region Headings*/
 legend {
     display: none;
@@ -181,10 +117,6 @@ td {
 }
 
 .table {
-
-    .page-totals {
-        font-family: var(--font-family-alt);
-    }
 
     tfoot {
         /*border-top: 2px double #000;*/
@@ -238,35 +170,6 @@ table.trasactionHistory {
 }
 
 /*#endregion*/
-
-section.box {
-
-    background-color: var(--panel-bg);
-    border-radius: 10px;
-    padding: 15px;
-    font-size: 1.1em;
-    margin-bottom: 20px;
-    border: none;
-
-    .fieldGroup {
-        margin-bottom: 20px;
-
-        &:last-child {
-            margin-bottom: 0;
-        }
-
-        label {
-            display: inline-block;
-            width: 150px;
-        }
-    }
-
-    select,
-    input[type=text],
-    input[type=number] {
-        font-size: 1em;
-    }
-}
 
 section.actions {
     input[type=submit] {
@@ -323,10 +226,6 @@ form>div {
         text-align: left !important;
     }
 
-}
-
-.pagination {
-    font-family: var(--font-family-alt);
 }
 
 .control-panel {

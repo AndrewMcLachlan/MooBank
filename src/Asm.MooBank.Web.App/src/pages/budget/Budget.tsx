@@ -1,4 +1,4 @@
-import { Section, useLocalStorage } from "@andrewmclachlan/mooapp";
+import { Section, SectionTable, useLocalStorage } from "@andrewmclachlan/mooapp";
 import { format } from "date-fns/format";
 import { isMonthSelected } from "helpers/dateFns";
 import * as Models from "models";
@@ -68,7 +68,7 @@ export const Budget: React.FC = () => {
             </Section>
             <BudgetTable title="Income" year={year} lines={filteredBudget?.incomeLines} type="income" />
             <BudgetTable title="Expenses" year={year} lines={filteredBudget?.expensesLines} type="expenses" />
-            
+
             {/*
             <Section className="budget" title="Income">
                 <Table striped className="budget-list">
@@ -120,23 +120,21 @@ export const Budget: React.FC = () => {
                 </Table>
             </Section>
                         */}
-            <Section title="Monthly Budget">
-                <Table striped className="budget-list">
-                    <thead>
-                        <tr>
-                            <th className="column-15">Month</th>
-                            <th className="column-15">Income</th>
-                            <th className="column-15">Expenses</th>
-                            <th className="column-15">Remainder</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {budget?.months.map((b) =>
-                            <MonthLine month={b} key={b.month} />
-                        )}
-                    </tbody>
-                </Table>
-            </Section>
+            <SectionTable title="Monthly Budget" striped className="budget-list">
+                <thead>
+                    <tr>
+                        <th className="column-15">Month</th>
+                        <th className="column-15">Income</th>
+                        <th className="column-15">Expenses</th>
+                        <th className="column-15">Remainder</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {budget?.months.map((b) =>
+                        <MonthLine month={b} key={b.month} />
+                    )}
+                </tbody>
+            </SectionTable>
         </BudgetPage>
     );
 

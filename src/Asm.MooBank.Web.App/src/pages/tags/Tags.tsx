@@ -5,7 +5,7 @@ import { Table } from "react-bootstrap";
 
 import { TransactionTagRow } from "./TagRow";
 
-import { changeSortDirection, ClickableIcon, getNumberOfPages, Pagination, SearchBox, Section, SortDirection } from "@andrewmclachlan/mooapp";
+import { changeSortDirection, ClickableIcon, getNumberOfPages, Pagination, SearchBox, Section, SectionTable, SortDirection } from "@andrewmclachlan/mooapp";
 import { TagPanel } from "components";
 import { sortTags, Tag } from "models";
 import { useCreateTag, useTags } from "services";
@@ -20,7 +20,7 @@ export const TransactionTags: React.FC = () => {
             <Section>
                 <SearchBox value={search} onChange={(v: string) => setSearch(v)} />
             </Section>
-            <Table striped bordered={false} borderless className="transaction-tags">
+            <SectionTable striped className="transaction-tags">
                 <thead>
                     <tr>
                         <th className={`column-15 sortable ${sortDirection.toLowerCase()}`} onClick={() => setSortDirection(changeSortDirection(sortDirection))}>Name</th>
@@ -46,7 +46,7 @@ export const TransactionTags: React.FC = () => {
                         </tr>
                     </tfoot>
                 }
-            </Table>
+            </SectionTable>
         </TagsPage>
     );
 }

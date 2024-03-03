@@ -1,6 +1,6 @@
 import React from "react";
 
-import { IconButton, Page } from "@andrewmclachlan/mooapp";
+import { IconButton, LoadingTableRows, Page } from "@andrewmclachlan/mooapp";
 import { Table } from "react-bootstrap";
 import { useAccountGroups } from "services";
 
@@ -15,7 +15,7 @@ export const ManageAccountGroups = () => {
 
     const { data } = accountGroupsQuery;
 
-    const accountRows: React.ReactNode[] = data?.map(a => <AccountGroupRow key={a.id} accountGroup={a} />) ?? [];
+    const accountRows: React.ReactNode[] = data?.map(a => <AccountGroupRow key={a.id} accountGroup={a} />) ?? [<LoadingTableRows key={1} rows={2} cols={3} />];
 
     return (
         <Page title="Account Groups" breadcrumbs={[{ text: "Account Groups", route: "/account-groups" }]} actions={[<IconButton key="add" onClick={() => navigate("/account-groups/create")} icon="plus">Create Group</IconButton>]}>

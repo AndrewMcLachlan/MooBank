@@ -1,4 +1,4 @@
-import { IconLinkButton } from "@andrewmclachlan/mooapp";
+import { IconLinkButton, SectionTable } from "@andrewmclachlan/mooapp";
 import { Table } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useInstitutions } from "services";
@@ -12,7 +12,7 @@ export const Institutions = () => {
 
     return (
         <SettingsPage title="Institutions" breadcrumbs={[{ text: "Institutions", route: "/settings/institutions" }]} actions={[<IconLinkButton variant="primary" key="add" to="/settings/institutions/add" icon="plus">Add Institution</IconLinkButton>]}>
-            <Table className="section" striped hover>
+            <SectionTable striped hover>
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -25,7 +25,7 @@ export const Institutions = () => {
                         </tr>
                     ))}
                 </tbody>
-            </Table>
+            </SectionTable>
         </SettingsPage>
     );
 };

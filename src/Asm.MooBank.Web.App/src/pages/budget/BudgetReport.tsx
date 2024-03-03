@@ -1,18 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import { Bar, getElementAtEvent } from "react-chartjs-2";
 import { Chart as ChartJS, ChartData, registerables } from "chart.js";
 import chartTrendline from "chartjs-plugin-trendline";
 
-import { useChartColours } from "helpers/chartColours";
-import { Section, useLocalStorage, useUpdatingState } from "@andrewmclachlan/mooapp";
+import { Section, useUpdatingState } from "@andrewmclachlan/mooapp";
 import { Col, Form, Row } from "react-bootstrap";
-import { useBudgetReport, useBudgetYears } from "services/BudgetService";
+import { useBudgetYears } from "services/BudgetService";
 import { BudgetPage } from "./BudgetPage";
 import { BudgetReportYear } from "./BudgetReportYear";
 import { BudgetReportTags } from "./BudgetReportTags";
 import { useBudgetYear } from "hooks/useBudgetYear";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 ChartJS.register(...registerables);
 ChartJS.register(chartTrendline);
@@ -21,7 +19,7 @@ export const BudgetReport: React.FC = () => {
 
     const next5Years = [...Array(5).keys()].map(i => new Date().getFullYear() + i);
 
-    const { year: pathYear, month: pathMonth } = useParams<{year?: string, month?: string}>();
+    const { year: pathYear, month: pathMonth } = useParams<{ year?: string, month?: string }>();
 
     const [year, setYear] = useBudgetYear();
     const [selectableYears, setSelectableYears] = useState(next5Years);
@@ -31,11 +29,11 @@ export const BudgetReport: React.FC = () => {
 
     const navigate = useNavigate();
 
-    const setMonthAndPath = (month: number ) =>{
+    const setMonthAndPath = (month: number) => {
         navigate(`/budget/report/${year}/${month}`);
     };
 
-    const yearChange= (value: number ) => {
+    const yearChange = (value: number) => {
         setYear(value);
         navigate(`/budget/report/${value}`);
     }

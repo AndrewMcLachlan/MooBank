@@ -1,14 +1,13 @@
-import { Section } from "@andrewmclachlan/mooapp";
+import { SectionTable } from "@andrewmclachlan/mooapp";
 import * as Models from "models";
 import { Table } from "react-bootstrap";
 import { BudgetLine } from "./BudgetLine";
 import { NewBudgetLine } from "./NewBudgetLine";
 import { numberOfMonths } from "helpers/dateFns";
 
-export const BudgetTable: React.FC<BudgetTableProps> = ({title, type, year, lines}) => {
+export const BudgetTable: React.FC<BudgetTableProps> = ({ title, type, year, lines }) => {
     return (
-        <Section className="budget" title={title}>
-        <Table striped className="budget-list">
+        <SectionTable striped className="budget-list" title={title}>
             <thead>
                 <tr>
                     <th className="column-20">Tag</th>
@@ -31,8 +30,7 @@ export const BudgetTable: React.FC<BudgetTableProps> = ({title, type, year, line
                     <td colSpan={3}>{(lines.map(b => b.amount * numberOfMonths(b.month ?? 0)).reduce((total, current) => total + current, 0) / 12).toFixed(2)}</td>
                 </tr>
             </tfoot>
-        </Table>
-    </Section>
+        </SectionTable>
     );
 }
 

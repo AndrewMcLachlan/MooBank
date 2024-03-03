@@ -3,6 +3,7 @@ import { Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useFamilies } from "services";
 import { SettingsPage } from "../SettingsPage";
+import { SectionTable } from "@andrewmclachlan/mooapp";
 
 export const Families = () => {
 
@@ -10,7 +11,7 @@ export const Families = () => {
 
     return (
         <SettingsPage title="Families" breadcrumbs={[{ text: "Families", route: "/settings/families" }]} actions={[<Link key="add" className="btn btn-primary" to="/settings/families/add"><FontAwesomeIcon icon="plus" size="xs" />Add Family</Link>]}>
-            <Table className="section" striped hover>
+            <SectionTable striped hover>
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -23,7 +24,7 @@ export const Families = () => {
                         </tr>
                     ))}
                 </tbody>
-            </Table>
+            </SectionTable>
         </SettingsPage>
     )
 }
