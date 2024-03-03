@@ -10,20 +10,20 @@
  <g transform="translate(-14.93 10)" clip-path="url(#clipPath36422)">
   <path d="m21.974-0.069872h17.956m-17.93-5.9301h17.86v23.86h-17.86z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="2" style="paint-order:stroke markers fill"/>
   <g transform="translate(15.335 -9.6949)">
-   <circle cx="10.806" cy="13.642" r="1.25" d="m 12.056429,13.642385 a 1.25,1.25 0 0 1 -1.25,1.25 1.25,1.25 0 0 1 -1.2500001,-1.25 1.25,1.25 0 0 1 1.2500001,-1.25 1.25,1.25 0 0 1 1.25,1.25 z" style="paint-order:stroke markers fill"/>
-   <circle cx="15.617" cy="13.644" r="1.25" d="m 16.866802,13.643765 a 1.25,1.25 0 0 1 -1.25,1.25 1.25,1.25 0 0 1 -1.25,-1.25 1.25,1.25 0 0 1 1.25,-1.25 1.25,1.25 0 0 1 1.25,1.25 z" style="paint-order:stroke markers fill"/>
-   <circle cx="20.427" cy="13.603" r="1.25" d="m 21.677179,13.602707 a 1.25,1.25 0 0 1 -1.25,1.25 1.25,1.25 0 0 1 -1.25,-1.25 1.25,1.25 0 0 1 1.25,-1.25 1.25,1.25 0 0 1 1.25,1.25 z" style="paint-order:stroke markers fill"/>
+   <circle cx="10.806" cy="13.642" r="1.25" d="m 12.056429,13.642385 a 1.25,1.25 0 0 1 -1.25,1.25 1.25,1.25 0 0 1 -1.2500001,-1.25 1.25,1.25 0 0 1 1.2500001,-1.25 1.25,1.25 0 0 1 1.25,1.25 z" style="paint-order:stroke markers fill" fill="currentColor" stroke="currentColor"/>
+   <circle cx="15.617" cy="13.644" r="1.25" d="m 16.866802,13.643765 a 1.25,1.25 0 0 1 -1.25,1.25 1.25,1.25 0 0 1 -1.25,-1.25 1.25,1.25 0 0 1 1.25,-1.25 1.25,1.25 0 0 1 1.25,1.25 z" style="paint-order:stroke markers fill" fill="currentColor" stroke="currentColor"/>
+   <circle cx="20.427" cy="13.603" r="1.25" d="m 21.677179,13.602707 a 1.25,1.25 0 0 1 -1.25,1.25 1.25,1.25 0 0 1 -1.25,-1.25 1.25,1.25 0 0 1 1.25,-1.25 1.25,1.25 0 0 1 1.25,1.25 z" style="paint-order:stroke markers fill" fill="currentColor" stroke="currentColor"/>
   </g>
   <g>
-   <circle cx="26.142" cy="9.0708" r="1.25" d="m 27.391634,9.0707502 a 1.25,1.25 0 0 1 -1.25,1.2499998 1.25,1.25 0 0 1 -1.25,-1.2499998 1.25,1.25 0 0 1 1.25,-1.25 1.25,1.25 0 0 1 1.25,1.25 z" style="paint-order:stroke markers fill"/>
-   <circle cx="30.952" cy="9.0721" r="1.25" d="m 32.202007,9.0721312 a 1.25,1.25 0 0 1 -1.25,1.2499998 1.25,1.25 0 0 1 -1.25,-1.2499998 1.25,1.25 0 0 1 1.25,-1.25 1.25,1.25 0 0 1 1.25,1.25 z" style="paint-order:stroke markers fill"/>
-   <circle cx="35.762" cy="9.0311" r="1.25" d="m 37.012386,9.0310736 a 1.25,1.25 0 0 1 -1.25,1.2500004 1.25,1.25 0 0 1 -1.25,-1.2500004 1.25,1.25 0 0 1 1.25,-1.25 1.25,1.25 0 0 1 1.25,1.25 z" style="paint-order:stroke markers fill"/>
-   <circle cx="35.762" cy="13.93" r="1.25" d="m 37.012386,13.930125 a 1.25,1.25 0 0 1 -1.25,1.25 1.25,1.25 0 0 1 -1.25,-1.25 1.25,1.25 0 0 1 1.25,-1.25 1.25,1.25 0 0 1 1.25,1.25 z" style="paint-order:stroke markers fill"/>
+   <circle cx="26.142" cy="9.0708" r="1.25" d="m 27.391634,9.0707502 a 1.25,1.25 0 0 1 -1.25,1.2499998 1.25,1.25 0 0 1 -1.25,-1.2499998 1.25,1.25 0 0 1 1.25,-1.25 1.25,1.25 0 0 1 1.25,1.25 z" style="paint-order:stroke markers fill" fill="currentColor" stroke="currentColor"/>
+   <circle cx="30.952" cy="9.0721" r="1.25" d="m 32.202007,9.0721312 a 1.25,1.25 0 0 1 -1.25,1.2499998 1.25,1.25 0 0 1 -1.25,-1.2499998 1.25,1.25 0 0 1 1.25,-1.25 1.25,1.25 0 0 1 1.25,1.25 z" style="paint-order:stroke markers fill" fill="currentColor" stroke="currentColor"/>
+   <circle cx="35.762" cy="9.0311" r="1.25" d="m 37.012386,9.0310736 a 1.25,1.25 0 0 1 -1.25,1.2500004 1.25,1.25 0 0 1 -1.25,-1.2500004 1.25,1.25 0 0 1 1.25,-1.25 1.25,1.25 0 0 1 1.25,1.25 z" style="paint-order:stroke markers fill" fill="currentColor" stroke="currentColor"/>
+   <circle cx="35.762" cy="13.93" r="1.25" d="m 37.012386,13.930125 a 1.25,1.25 0 0 1 -1.25,1.25 1.25,1.25 0 0 1 -1.25,-1.25 1.25,1.25 0 0 1 1.25,-1.25 1.25,1.25 0 0 1 1.25,1.25 z" style="paint-order:stroke markers fill" fill="currentColor" stroke="currentColor"/>
    <path d="m26.131 13.908 4.8304-0.0013" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" style="paint-order:stroke markers fill"/>
   </g>
  </g>
  <g transform="matrix(1.2288 0 0 1.2288 .79902 -8.2676)" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
   <path d="m8.7064 22.967v0.4873m0 4.1363v0.4873m0.81065-4.3866s-1.7586-0.34975-2.0292 0.47163c-0.52634 1.5976 2.7808 1.159 2.4678 2.6194-0.28054 1.3086-2.4447 0.4023-2.4447 0.4023" stroke-width="1.2022" style="paint-order:stroke markers fill"/>
-  <circle cx="8.6324" cy="25.571" r="5.1095" stroke-width="1.5028" style="paint-order:stroke markers fill"/>
+  <circle cx="8.6324" cy="25.571" r="5.1095" stroke-width="1.5028" style="paint-order:stroke markers fill" stroke="currentColor"/>
  </g>
 </svg>
