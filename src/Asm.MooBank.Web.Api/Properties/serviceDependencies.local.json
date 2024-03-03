@@ -3,6 +3,13 @@
     "appInsights1": {
       "type": "appInsights.sdk",
       "dynamicId": null
+    },
+    "mssql1": {
+      "serviceConnectorResourceId": "",
+      "secretStore": "LocalSecretsFile",
+      "type": "mssql.onprem",
+      "connectionId": "ConnectionStrings:MooBank",
+      "dynamicId": null
     }
   }
 }

@@ -1,11 +1,12 @@
 {
   "dependencies": {
-    "mssql1": {
-      "type": "mssql",
-      "connectionId": "ConnectionStrings:MooBank"
-    },
     "appInsights1": {
       "type": "appInsights",
+      "dynamicId": null
+    },
+    "mssql1": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:MooBank",
       "dynamicId": null
     }
   }

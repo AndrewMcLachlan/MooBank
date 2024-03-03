@@ -12,12 +12,18 @@
 
   <ItemGroup>
     <PackageReference Include="Asm.AspNetCore" Version="$(AsmPackageVersion)" />
+    <PackageReference Include="Asm.Cqrs.AspNetCore" Version="$(AsmPackageVersion)" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="$(DotNetPackageVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="$(DotNetPackageVersion)" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="$(DotNetPackageVersion)">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="$(DotNetPackageVersion)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="$(DotNetPackageVersion)">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="$(DotNetPackageVersion)" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
