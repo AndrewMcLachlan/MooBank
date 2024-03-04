@@ -43,7 +43,7 @@ internal class GetFormattedHandler(IQueryable<Domain.Entities.Account.Institutio
             };
         });
 
-        var otherAccounts = new AccountListGroup[] {
+        AccountListGroup otherAccounts =
             new()
             {
                 Name = "Other Accounts",
@@ -51,12 +51,11 @@ internal class GetFormattedHandler(IQueryable<Domain.Entities.Account.Institutio
                     .. institutionAccounts1.Where(a => a.GetAccountGroup(userId) == null).ToModel(currencyConverter),
                     .. stockHoldings1.Where(a => a.GetAccountGroup(userId) == null).ToModel(currencyConverter)
                 ],
-            }
-        };
+            };
 
         return new AccountsList
         {
-            AccountGroups = groups.Union(otherAccounts),
+            AccountGroups = groups.Union(otherAccounts.Accounts.Any() ? [otherAccounts] : []),
             Position = groups.Sum(g => g.Position ?? 0),
         };
     }
