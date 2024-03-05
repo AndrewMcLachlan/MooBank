@@ -79,7 +79,7 @@ jobs:
       version: ${{ steps.set-version-number.outputs.version }}
 
   deploy:
-    if: (github.event_name != 'pull_request' && github.ref == 'refs/heads/master')
+    if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/master')
     needs: build
     uses: ./.github/workflows/deploy.yml
     secrets: inherit
