@@ -38,7 +38,7 @@ public static class IServiceCollectionExtensions
             options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
         }));
 
-        services.AddDomainEvents(Assembly.GetExecutingAssembly());
+        services.AddDomainEvents(typeof(Account).Assembly);
 
         return services.AddUnitOfWork<MooBankContext>();
     }
