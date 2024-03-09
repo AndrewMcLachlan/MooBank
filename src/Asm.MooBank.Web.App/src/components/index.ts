@@ -4,6 +4,7 @@ export * from "./AccountList/index";
 export * from "./AccountPage";
 export * from "./AccountProvider";
 export * from "./AccountSummary";
+export * from "./CurrencySelector";
 export * from "./FormGroup";
 export * from "./FormRow";
 export * from "./MonthSelector";

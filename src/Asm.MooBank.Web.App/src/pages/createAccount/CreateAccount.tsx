@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { AccountController, AccountControllers, AccountType, AccountTypes, ImportAccount, InstitutionAccount } from "models";
 import { useAccountGroups, useCreateAccount, useInstitutions } from "services";
 import { ImportSettings } from "./ImportSettings";
+import { CurrencySelector } from "components";
 
 export const CreateAccount: React.FC = () => {
 
@@ -25,6 +26,7 @@ export const CreateAccount: React.FC = () => {
     const [includeInBudget, setIncludeInBudget] = useState(false);
     const [shareWithFamily, setShareWithFamily] = useState(false);
     const [institution, setInstitution] = useState(0);
+    const [currency, setCurrency] = useState("AUD");
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.stopPropagation();
@@ -36,7 +38,7 @@ export const CreateAccount: React.FC = () => {
             id: emptyGuid,
             name: name,
             description: description,
-            currency: "AUD",
+            currency: currency,
             currentBalance: balance,
             currentBalanceLocalCurrency: balance,
             accountType: accountType,
@@ -77,6 +79,10 @@ export const CreateAccount: React.FC = () => {
                             <option value={a.id} key={a.id}>{a.name}</option>
                         )}
                     </Form.Select>
+                </Form.Group>
+                <Form.Group controlId="currency" onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setCurrency(e.currentTarget.value)}>
+                    <Form.Label>Currency</Form.Label>
+                    <CurrencySelector value={currency} />
                 </Form.Group>
                 <Form.Group controlId="openingBalance" >
                     <Form.Label>Opening Balance</Form.Label>

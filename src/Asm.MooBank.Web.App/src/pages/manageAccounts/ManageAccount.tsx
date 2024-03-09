@@ -6,7 +6,7 @@ import * as Models from "models";
 import { useAccountGroups, useInstitutions, useReprocessTransactions, useUpdateAccount, useVirtualAccounts } from "services";
 import { useNavigate } from "react-router-dom";
 import { IconButton, Section, useIdParams } from "@andrewmclachlan/mooapp";
-import { AccountPage, useAccount } from "components";
+import { AccountPage, CurrencySelector, useAccount } from "components";
 
 export const ManageAccount = () => {
 
@@ -61,6 +61,7 @@ export const ManageAccount = () => {
     const setShareWithFamily = (shareWithFamily: boolean) => setAccount({ ...account, shareWithFamily: shareWithFamily });
     const setInstitution = (institutionId: number) => setAccount({ ...account, institutionId: institutionId });
     const setIncludeInBudget = (includeInBudget: boolean) => setAccount({ ...account, includeInBudget: includeInBudget });
+    const setCurrency = (currency: string) => setAccount({ ...account, currency: currency });
 
     return (
         <AccountPage title="Manage" breadcrumbs={[{ text: "Manage", route: `/accounts/${account.id}/manage` }]} actions={getActions(account.controller)}>
@@ -74,9 +75,13 @@ export const ManageAccount = () => {
                                 <Form.Control.Feedback type="invalid">Please enter a name</Form.Control.Feedback>
                             </Form.Group>
                             <Form.Group controlId="AccountDescription">
-                                <Form.Label >Description</Form.Label>
+                                <Form.Label>Description</Form.Label>
                                 <Form.Control type="text" as="textarea" maxLength={255} value={account.description} onChange={(e: any) => setDescription(e.currentTarget.value)} />
                                 <Form.Control.Feedback type="invalid">Please enter a description</Form.Control.Feedback>
+                            </Form.Group>
+                            <Form.Group controlId="currency">
+                                <Form.Label>Currency</Form.Label>
+                                <CurrencySelector value={account.currency} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setCurrency(e.currentTarget.value)} />
                             </Form.Group>
                             <Form.Group>
                                 <Form.Label>Institution</Form.Label>
