@@ -1,10 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Asm.MooBank.Services;
 
-namespace Asm.MooBank;
-internal class ServiceCollectionExtensions
+namespace Microsoft.Extensions.DependencyInjection;
+
+public static class ServiceCollectionExtensions
 {
+    public static IServiceCollection AddServices(this IServiceCollection services) =>
+    services.AddScoped<IImportService, ImportService>()
+            .AddScoped<IRecurringTransactionService, RecurringTransactionService>()
+            .AddScoped<ICurrencyConverter, CurrencyConverter>()
+            .AddHostedService<PrecacheService>()
+            .AddHostedService<RunRulesService>()
+            .AddSingleton<IRunRulesQueue, RunRulesQueue>()
+            .AddLazyCache();
 }
