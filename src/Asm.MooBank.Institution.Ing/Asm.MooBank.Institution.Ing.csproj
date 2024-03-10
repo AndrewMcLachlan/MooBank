@@ -3,9 +3,9 @@
   <Import Project="..\..\Common.props" />
 
   <ItemGroup>
-    <ProjectReference Include="..\Asm.MooBank.Domain\Asm.MooBank.Domain.csproj" />
-    <ProjectReference Include="..\Asm.MooBank.Models\Asm.MooBank.Models.csproj" />
     <ProjectReference Include="..\Asm.MooBank\Asm.MooBank.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Domain\Asm.MooBank.Domain.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Infrastructure\Asm.MooBank.Infrastructure.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Models\Asm.MooBank.Models.csproj" />
   </ItemGroup>
 
