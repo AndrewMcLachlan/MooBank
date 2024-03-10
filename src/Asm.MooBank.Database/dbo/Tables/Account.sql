@@ -6,6 +6,7 @@
     [Currency] CHAR(3) NOT NULL CONSTRAINT DF_Account_Currency DEFAULT 'AUD',
     [Balance] DECIMAL(10, 2) NOT NULL CONSTRAINT DF_AccountBalance DEFAULT 0,
     [ShareWithFamily] BIT NOT NULL CONSTRAINT DF_Account_ShareWithFamily DEFAULT 0,
+    [Slug] VARCHAR(50) NULL,
     [LastUpdated] DATETIMEOFFSET(0) NOT NULL CONSTRAINT DF_LastUpdated DEFAULT SYSUTCDATETIME(),
     CONSTRAINT PK_Account PRIMARY KEY CLUSTERED (AccountId),
 )
@@ -43,5 +44,3 @@ GO
         END
     END
 GO*/
-
-CREATE UNIQUE INDEX [IX_Account_Name] ON [dbo].[Account] ([Name])

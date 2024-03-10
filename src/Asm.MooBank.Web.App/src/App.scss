@@ -324,5 +324,28 @@ legend.open svg {
     --bs-gutter-y: 1.5rem;
 }
 
+td {
+    height: 52px;
+}
+
+input.form-control {
+    height: 38px;
+}
+
+.form-check-input {
+    height: 1.5rem;
+    width: 1.5rem;
+}
+
+input.form-control:read-only {
+    background-color: var(--bs-disabled-bg);
+    cursor: default;
+
+    &:focus {
+        box-shadow: none;
+        border-color: var(--bs-border-color);
+        background-color: var(--bs-disabled-bg);
+    }
+}
 
 @import 'responsive';

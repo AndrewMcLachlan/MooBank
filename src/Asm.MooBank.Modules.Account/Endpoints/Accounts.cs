@@ -1,4 +1,5 @@
 ﻿using Asm.Cqrs.AspNetCore;
+using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Account.Commands.InstitutionAccount;
 using Asm.MooBank.Modules.Account.Models.Account;
 using Asm.MooBank.Modules.Account.Queries.Account;
@@ -23,6 +24,9 @@ internal class Accounts : EndpointGroupBase
             .WithNames("Get Accounts");
 
         builder.MapQuery<GetFormatted, AccountsList>("/position")
+            .WithNames("Get Formatted Accounts List");
+
+        builder.MapQuery<GetList, IEnumerable<ListItem<Guid>>>("/list")
             .WithNames("Get Accounts List");
 
         builder.MapQuery<Get, InstitutionAccount>("/{id}")

@@ -21,9 +21,9 @@ export const RuleRow: React.FC<RuleRowProps> = (props) => {
 
     return (
         <tr>
-            <EditColumn value={props.rule.contains} onChange={(value) => transactionRow.updateRule({...props.rule, contains: value })} />
+            <EditColumn value={props.rule.contains} onChange={target => transactionRow.updateRule({...props.rule, contains: target.value })} />
             <TagPanel as="td" selectedItems={transactionRow.tags} items={tagsList}  onAdd={transactionRow.addTag} onRemove={transactionRow.removeTag} onCreate={transactionRow.createTag} allowCreate={true} />
-            <EditColumn value={props.rule.description} onChange={(value) => transactionRow.updateRule({...props.rule, description: value })} />
+            <EditColumn value={props.rule.description} onChange={target => transactionRow.updateRule({...props.rule, description: target.value })} />
             <td className="row-action"><span onClick={transactionRow.deleteRule}><ClickableIcon icon="trash-alt" title="Delete" /></span></td>
         </tr>
     );
@@ -38,7 +38,7 @@ function useRuleRowEvents(props: RuleRowProps) {
     const createTransactionTag = useCreateTag();
     const addTransactionTagRuleTag = useAddRuleTag();
     const removeTransactionTagRuleTag = useRemoveRuleTag();
-    
+
     const deleteTransactionTagRule = useDeleteRule();
 
     const [tags, setTags] = useState(props.rule.tags);

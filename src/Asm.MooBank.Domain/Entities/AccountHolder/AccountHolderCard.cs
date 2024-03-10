@@ -3,7 +3,9 @@ public class AccountHolderCard
 {
     public required Guid AccountHolderId { get; set; }
 
+    public string? Name { get; set; }
+
     public required short Last4Digits { get; set; }
 
-    public required AccountHolder AccountHolder { get; set; }
+    public AccountHolder AccountHolder { get; set; } = null!;
 }

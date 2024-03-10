@@ -15,8 +15,8 @@ export const BudgetLine: React.FC<BudgetLineProps> = ({year, budgetLine}) => {
     return (
         <tr key={budgetLine.id}>
             <td>{budgetLine.name}</td>
-            <EditColumn value={budgetLine.notes} onChange={(v) => updateBudgetLine(year, {...budgetLine, notes: v})}/>
-            <EditColumn value={budgetLine.amount.toFixed(2).toString()} onChange={(v) => updateBudgetLine(year, {...budgetLine, amount: Number(v)})}/>
+            <EditColumn value={budgetLine.notes} onChange={(v) => updateBudgetLine(year, {...budgetLine, notes: v.value})}/>
+            <EditColumn value={budgetLine.amount.toFixed(2).toString()} onChange={(v) => updateBudgetLine(year, {...budgetLine, amount: Number(v.value)})}/>
             <td><MonthSelector value={budgetLine.month} onChange={(v) => updateBudgetLine(year, {...budgetLine, month: v})} /></td>
             <td><ClickableIcon icon="trash-alt" onClick={onDelete} /></td>
         </tr>

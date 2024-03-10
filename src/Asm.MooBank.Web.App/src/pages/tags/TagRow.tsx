@@ -16,12 +16,12 @@ export const TransactionTagRow: React.FC<TransactionTagRowProps> = (props) => {
     if (!tag) return (
         <tr className="empty-row"><td colSpan={3}>&nbsp;</td></tr>
     );
-        
+
     return (
         <>
             <TransactionTagDetails tag={tag} show={showDetails} onHide={() => setShowDetails(false)} />
             <tr>
-                <EditColumn value={tag.name} onChange={(tagRow.updateTag)} />
+                <EditColumn value={tag.name} onChange={t => tagRow.updateTag(t.value)} />
                 <TransactionTagTransactionTagPanel as="td" tag={tag} />
                 <td className="row-action">
                     <span onClick={() => setShowDetails(true)}><ClickableIcon icon="pen-to-square" title="Edit Details" size="1x" /></span>

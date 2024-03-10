@@ -1,6 +1,6 @@
 import { useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { InstitutionAccount, accountId, AccountList, VirtualAccount } from "../models";
-import { accountListKey, accountsKey } from "./AccountService";
+import { formattedAccountsKey, accountsKey } from "./AccountService";
 import { emptyGuid, useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
 
 interface VirtualAccountVariables {
@@ -54,9 +54,9 @@ export const useUpdateVirtualAccountBalance = () => {
         onMutate: async ([{ accountId, virtualAccountId }, { balance }]) => {
 
             await queryClient.cancelQueries({ queryKey: [accountsKey] });
-            await queryClient.cancelQueries({ queryKey: [accountListKey] });
+            await queryClient.cancelQueries({ queryKey: [formattedAccountsKey] });
 
-            const accounts = queryClient.getQueryData<AccountList>([accountListKey]);
+            const accounts = queryClient.getQueryData<AccountList>([formattedAccountsKey]);
 
             if (!accounts) return;
 
@@ -76,7 +76,7 @@ export const useUpdateVirtualAccountBalance = () => {
             //accounts.accounts = [];
             accounts.position = 0;
 
-            queryClient.setQueryData<AccountList>([accountListKey], { ...accounts });
+            queryClient.setQueryData<AccountList>([formattedAccountsKey], { ...accounts });
 
             return accounts;
         },
@@ -87,7 +87,7 @@ export const useUpdateVirtualAccountBalance = () => {
 
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: [accountsKey] });
-            queryClient.invalidateQueries({ queryKey: [accountListKey] });
+            queryClient.invalidateQueries({ queryKey: [formattedAccountsKey] });
         },
     });
 

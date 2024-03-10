@@ -58,11 +58,11 @@ export const RecurringTransactions: React.FC<RecurringTransactionsProps> = ({ ac
                 </tr>
                 {account.recurringTransactions && account.recurringTransactions.map(a => (
                     <tr key={a.id}>
-                        <EditColumn value={a.description} onChange={value => updateRecurringTransaction(accountId, virtualId, { ...a, description: value })} />
-                        <EditColumn value={a.amount.toString()} onChange={value => updateRecurringTransaction(accountId, virtualId, { ...a, amount: Number(value) })} />
+                        <EditColumn value={a.description} onChange={target => updateRecurringTransaction(accountId, virtualId, { ...a, description: target.value })} />
+                        <EditColumn type="number" value={a.amount.toString()} onChange={value => updateRecurringTransaction(accountId, virtualId, { ...a, amount: Number(value) })} />
                         <td>{a.schedule}</td>
                         <td>{a.lastRun && format(parseISO(a.lastRun), "dd/MM/yyyy HH:mm")}</td>
-                        <EditColumn value={a.nextRun} onChange={value => updateRecurringTransaction(accountId, virtualId, { ...a, nextRun: value })} type="date">
+                        <EditColumn value={a.nextRun} onChange={target => updateRecurringTransaction(accountId, virtualId, { ...a, nextRun: target.value })} type="date">
                             {format(parse(a.nextRun, "yyyy-MM-dd", new Date()), "dd/MM/yyyy")}
                         </EditColumn>
                         <td className="row-action"><ClickableIcon icon="trash-alt" onClick={() => onDelete(a.id)} /></td>

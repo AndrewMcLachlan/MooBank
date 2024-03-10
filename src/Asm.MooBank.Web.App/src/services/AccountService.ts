@@ -1,13 +1,17 @@
 import { useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { InstitutionAccount, accountId, AccountList, ImportAccount } from "../models";
 import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
+import { ListItem } from "models/ListItem";
 
 export const accountsKey = "accounts";
+export const formattedAccountsKey = "formatted-accounts";
 export const accountListKey = "account-list";
 
 export const useAccounts = (): UseQueryResult<InstitutionAccount[]> => useApiGet<InstitutionAccount[]>([accountsKey], `api/accounts`);
 
-export const useFormattedAccounts = () => useApiGet<AccountList>([accountListKey], "api/accounts/position");
+export const useFormattedAccounts = () => useApiGet<AccountList>([formattedAccountsKey], "api/accounts/position");
+
+export const useAccountsList = () => useApiGet<ListItem<string>[]>([accountListKey], "api/accounts/list");
 
 export const useAccount = (accountId: string) => useApiGet<InstitutionAccount>(["account", { accountId }], `api/accounts/${accountId}`);
 

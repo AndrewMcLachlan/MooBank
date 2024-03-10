@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using Asm.Domain;
 
 namespace Asm.MooBank.Domain.Entities.Account;
 
@@ -21,6 +20,9 @@ public abstract class Account(Guid id) : KeyedEntity<Guid>(id)
     public DateTimeOffset LastUpdated { get; set; }
 
     public bool ShareWithFamily { get; set; }
+
+    [NotMapped]
+    public string? Slug { get; set; }
 
     public virtual ICollection<AccountAccountHolder> AccountHolders { get; set; } = new HashSet<AccountAccountHolder>();
 
