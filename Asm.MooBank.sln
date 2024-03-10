@@ -83,6 +83,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.Stock",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.ExchangeRateApi", "src\Asm.MooBank.ExchangeRateApi\Asm.MooBank.ExchangeRateApi.csproj", "{34A02BFD-A9AC-47EE-A1DE-A5B00C64CCAA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asm.MooBank.Modules.AccountHolder", "src\Asm.MooBank.Modules.AccountHolder\Asm.MooBank.Modules.AccountHolder.csproj", "{2238CEE0-0A21-4C0A-8A18-2DD08020AF99}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -179,6 +181,10 @@ Global
 		{34A02BFD-A9AC-47EE-A1DE-A5B00C64CCAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34A02BFD-A9AC-47EE-A1DE-A5B00C64CCAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34A02BFD-A9AC-47EE-A1DE-A5B00C64CCAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2238CEE0-0A21-4C0A-8A18-2DD08020AF99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2238CEE0-0A21-4C0A-8A18-2DD08020AF99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2238CEE0-0A21-4C0A-8A18-2DD08020AF99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2238CEE0-0A21-4C0A-8A18-2DD08020AF99}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -198,6 +204,7 @@ Global
 		{5EED26F8-2233-49E7-A302-82EF46DACE1A} = {2754ACBC-340B-4D5C-AEE8-1AC1AD5CF9E0}
 		{E9177C4B-593F-4EDE-B782-4CB7BC7C2D36} = {38BEA81E-F80F-44DE-A930-9BD5D3A62FFF}
 		{34A02BFD-A9AC-47EE-A1DE-A5B00C64CCAA} = {2754ACBC-340B-4D5C-AEE8-1AC1AD5CF9E0}
+		{2238CEE0-0A21-4C0A-8A18-2DD08020AF99} = {38BEA81E-F80F-44DE-A930-9BD5D3A62FFF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0CAD466B-BD01-4883-9CDC-F62C19A2A615}
