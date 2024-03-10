@@ -29,14 +29,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Asm.MooBank\Asm.MooBank.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Domain\Asm.MooBank.Domain.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Eodhd\Asm.MooBank.Eodhd.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Infrastructure\Asm.MooBank.Infrastructure.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Institution.Ing\Asm.MooBank.Institution.Ing.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Models\Asm.MooBank.Models.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Security\Asm.MooBank.Security.csproj" />
-    <ProjectReference Include="..\Asm.MooBank.Services\Asm.MooBank.Services.csproj" />
-    <ProjectReference Include="..\Asm.MooBank\Asm.MooBank.csproj" />
   </ItemGroup>
 
   <ItemGroup>

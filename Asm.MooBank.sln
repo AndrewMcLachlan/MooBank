@@ -13,8 +13,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Models", "src\A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Domain", "src\Asm.MooBank.Domain\Asm.MooBank.Domain.csproj", "{8836E750-5ABA-43B6-82ED-631D6900FA26}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Services", "src\Asm.MooBank.Services\Asm.MooBank.Services.csproj", "{FC276E8E-5636-47CE-8847-8EC960D53CB9}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Infrastructure", "src\Asm.MooBank.Infrastructure\Asm.MooBank.Infrastructure.csproj", "{EE7A3FB3-48E4-4973-802F-F4B95FCF48C0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Web.Jobs", "src\Asm.MooBank.Web.Jobs\Asm.MooBank.Web.Jobs.csproj", "{61B4982B-665D-4B0A-B330-92D8E4110FB6}"
@@ -111,10 +109,6 @@ Global
 		{8836E750-5ABA-43B6-82ED-631D6900FA26}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8836E750-5ABA-43B6-82ED-631D6900FA26}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8836E750-5ABA-43B6-82ED-631D6900FA26}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FC276E8E-5636-47CE-8847-8EC960D53CB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FC276E8E-5636-47CE-8847-8EC960D53CB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FC276E8E-5636-47CE-8847-8EC960D53CB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FC276E8E-5636-47CE-8847-8EC960D53CB9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EE7A3FB3-48E4-4973-802F-F4B95FCF48C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EE7A3FB3-48E4-4973-802F-F4B95FCF48C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE7A3FB3-48E4-4973-802F-F4B95FCF48C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
