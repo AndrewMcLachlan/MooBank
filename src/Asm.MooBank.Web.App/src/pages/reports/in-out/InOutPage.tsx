@@ -25,10 +25,10 @@ export const InOutPage = () => {
             <Section>
             <PeriodSelector onChange={setPeriod} />
             </Section>
-            <Section title="Total Income vs Expenses" size={3} className="report inout">
+            <Section title="Total Income vs Expenses" titleSize={3} className="report inout">
                 <InOut accountId={accountId} period={period} />
             </Section>
-            <Section title="Income vs Expenses per Month" size={3} className="report inout-trend">
+            <Section title="Income vs Expenses per Month" titleSize={3} className="report inout-trend">
                 <InOutTrend accountId={accountId} period={period} />
             </Section>
         </ReportsPage>

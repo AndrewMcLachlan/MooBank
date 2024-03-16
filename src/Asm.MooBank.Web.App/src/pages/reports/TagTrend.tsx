@@ -89,7 +89,7 @@ export const TagTrend: React.FC = () => {
                 </Row>
 
             </Section>
-            <Section className="report" title="Tag Trend" size={3}>
+            <Section className="report" title="Tag Trend" titleSize={3}>
                 <Line id="inout" data={dataset} options={{
                     maintainAspectRatio: true,
                     scales: {

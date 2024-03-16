@@ -45,8 +45,8 @@ export const Profile: React.FC = () => {
     const { register, setValue, getValues, reset, ...form } = useForm<AccountHolder>({ defaultValues: me  });
 
     return (
-        <Page title="Profile">
-            <SectionForm title="Profile" onSubmit={form.handleSubmit(handleSubmit)}>
+        <Page title="Profile" breadcrumbs={[{text: "Profile", route: "/profile"}]}>
+            <SectionForm onSubmit={form.handleSubmit(handleSubmit)}>
                 <Form.Group groupId="name">
                     <Form.Label>Name</Form.Label>
                     <Form.Input type="text" value={`${me?.firstName ?? ""} ${me?.lastName ?? ""}`} readOnly />
