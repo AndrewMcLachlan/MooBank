@@ -1,8 +1,9 @@
-import { Form, FormSelectProps } from "react-bootstrap"
+import { Form, SelectProps } from "@andrewmclachlan/mooapp";
+import React from "react";
 
-export const CurrencySelector: React.FC<FormSelectProps> = ({ value, ...props }) => (
+export const CurrencySelector: React.FC<SelectProps> = React.forwardRef(({ value, ...props }, ref) => (
 
-    <Form.Select value={value} {...props}>
+    <Form.Select value={value} {...props} ref={ref}>
         <option value="ADP">ADP</option>
         <option value="AED">AED</option>
         <option value="AFA">AFA</option>
@@ -305,4 +306,4 @@ export const CurrencySelector: React.FC<FormSelectProps> = ({ value, ...props })
         <option value="ZWN">ZWN</option>
         <option value="ZWR">ZWR</option>
     </Form.Select>
-);
+));

@@ -17,6 +17,6 @@ internal static class DbSetExtensions
     /// <exception cref="OperationCanceledException">If the <see cref="CancellationToken" /> is cancelled.</exception>
     public static ValueTask<TEntity?> FindAsync<TEntity>(this DbSet<TEntity> source, object keyValue, CancellationToken cancellationToken = default) where TEntity : class
     {
-        return source.FindAsync(new object[] { keyValue }, cancellationToken);
+        return source.FindAsync([keyValue], cancellationToken);
     }
 }
