@@ -127,21 +127,3 @@ MERGE Family as TARGET USING (SELECT 'DB1A117B-84A9-4F15-B6C2-6BD959B9BAF7' as I
 ON (TARGET.Id = SOURCE.Id)
 WHEN MATCHED AND TARGET.[Name] <> SOURCE.[Name] THEN UPDATE SET Target.[Name] = SOURCE.[Name]
 WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.[Id], SOURCE.[Name]);
-
--- Account holder update
-UPDATE AccountHolder SET FamilyId = 'DB1A117B-84A9-4F15-B6C2-6BD959B9BAF7'
-
--- Update Institution Account
-UPDATE InstitutionAccount SET InstitutionId = 1 WHERE AccountId IN
-('6b4ae4d9-d4ba-41f7-80e6-076863df9407',
-'3740bb76-e226-4bce-a8ab-3203824a6fa9',
-'1c42cea9-6b71-4e37-bced-8ef259e9e55e')
-
-UPDATE InstitutionAccount SET InstitutionId = 2 WHERE AccountId IN
-('5688057c-88eb-4b78-8041-821a3e3ec478')
-
--- Tag update
-UPDATE Tag SET FamilyId = 'DB1A117B-84A9-4F15-B6C2-6BD959B9BAF7'
-
--- Budget update
-UPDATE Budget SET FamilyId = 'DB1A117B-84A9-4F15-B6C2-6BD959B9BAF7'
