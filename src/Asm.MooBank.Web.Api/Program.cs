@@ -1,11 +1,12 @@
 using System.Text.Json.Serialization;
 using Asm.AspNetCore.Modules;
+using Asm.MooBank.Institution.AustralianSuper;
 using Asm.MooBank.Institution.Ing;
 using Asm.MooBank.Security;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Serilog;
 
-WebApplicationStart.Run(args, "Asm.MooBank.Web.Api", AddServices, AddApp);
+return WebApplicationStart.Run(args, "Asm.MooBank.Web.Api", AddServices, AddApp);
 
 
 void AddServices(WebApplicationBuilder builder)
@@ -87,6 +88,7 @@ void AddServices(WebApplicationBuilder builder)
     services.AddImporterFactory();
 
     services.AddIng();
+    services.AddAustralianSuper();
 
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen();

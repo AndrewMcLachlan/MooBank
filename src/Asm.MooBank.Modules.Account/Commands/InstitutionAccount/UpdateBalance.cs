@@ -25,7 +25,7 @@ internal class UpdateBalanceHandler(IAccountRepository accountRepository, ITrans
             throw new InvalidOperationException("Not an institution account.");
         }
 
-        var amount = account.Balance - account.Balance;
+        var amount = request.Balance - account.Balance;
 
         //TODO: Should be done via domain event
         _transactionRepository.Add(new Domain.Entities.Transactions.Transaction

@@ -24,4 +24,7 @@ public class AccountRepository(MooBankContext dataContext) : Asm.Domain.Infrastr
     }
 
     protected IQueryable<Account> GetById(Guid id) => Entities.Where(a => a.Id == id);
+
+    public Task Reload(InstitutionAccount account, CancellationToken cancellationToken) =>
+    Context.Entry(account).ReloadAsync(cancellationToken);
 }

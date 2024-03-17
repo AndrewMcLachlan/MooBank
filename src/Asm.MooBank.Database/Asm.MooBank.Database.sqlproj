@@ -67,6 +67,8 @@
     <Folder Include="ing\Tables" />
     <Folder Include="dbo\Views" />
     <Folder Include="Scripts" />
+    <Folder Include="aussuper" />
+    <Folder Include="aussuper\Tables" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\Account.sql" />
@@ -127,6 +129,8 @@
     <Build Include="dbo\Tables\StockPriceHistory.sql" />
     <Build Include="dbo\Tables\ExchangeRates.sql" />
     <Build Include="dbo\Functions\TransactionSplitNetAmount.sql" />
+    <Build Include="Security\aussuper.sql" />
+    <Build Include="aussuper\Tables\TransactionRaw.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Azure.publish.xml" />

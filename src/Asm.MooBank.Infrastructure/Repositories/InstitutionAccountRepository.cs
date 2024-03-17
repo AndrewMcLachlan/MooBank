@@ -1,4 +1,5 @@
-﻿using Asm.MooBank.Domain.Entities.Account;
+﻿using System.Threading;
+using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Models;
 
@@ -24,4 +25,7 @@ public class InstitutionAccountRepository(MooBankContext dataContext, AccountHol
 
     public Task Load(InstitutionAccount account, CancellationToken cancellationToken) =>
         Context.Entry(account).Reference(a => a.ImportAccount).Query().Include(i => i.ImporterType).LoadAsync(cancellationToken);
+
+    public Task Reload(InstitutionAccount account, CancellationToken cancellationToken) =>
+        Context.Entry(account).ReloadAsync(cancellationToken);
 }

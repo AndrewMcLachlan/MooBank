@@ -31,9 +31,20 @@ internal class ImportHandler(IAccountRepository accountRepository, IRuleReposito
 
         await ApplyTransactionRules(account, importResult.Transactions, cancellationToken);
 
-        account.Balance = importResult.EndBalance;
+        if (importResult.EndBalance is not null)
+        {
+            account.Balance = importResult.EndBalance.Value;
+        }
 
         await UnitOfWork.SaveChangesAsync(cancellationToken);
+
+        if (importResult.EndBalance is null)
+        {
+            await _accountRepository.Reload(account);
+            account.Balance = account.CalculatedBalance;
+
+            await UnitOfWork.SaveChangesAsync(cancellationToken);
+        }
     }
 
     private async Task ApplyTransactionRules(Domain.Entities.Account.Account account, IEnumerable<Domain.Entities.Transactions.Transaction> transactions, CancellationToken cancellationToken = default)

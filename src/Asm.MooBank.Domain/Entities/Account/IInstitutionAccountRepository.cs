@@ -9,4 +9,5 @@ public interface IInstitutionAccountRepository : IDeletableRepository<Institutio
     void RemoveImportAccount(ImportAccount entity);
 
     Task Load(InstitutionAccount account, CancellationToken cancellationToken = default);
+    Task Reload(InstitutionAccount account, CancellationToken cancellationToken = default);
 }

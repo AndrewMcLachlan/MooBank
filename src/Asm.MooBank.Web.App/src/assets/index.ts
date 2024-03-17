@@ -19,3 +19,4 @@ export {default as Tags } from "./tags.svg?react";
 export {default as Trendline } from "./trendline.svg?react";
 export {default as TwoCoins } from "./two-coins.svg?react";
 export {default as Transaction } from "./transaction.svg?react";
+export {default as UpDownArrow } from "./up-down-arrow.svg?react";
