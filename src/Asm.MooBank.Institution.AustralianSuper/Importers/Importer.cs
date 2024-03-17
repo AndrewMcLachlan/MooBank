@@ -9,7 +9,7 @@ using TransactionType = Asm.MooBank.Models.TransactionType;
 
 namespace Asm.MooBank.Institution.AustralianSuper.Importers;
 
-internal partial class Importer(ITransactionRawRepository transactionRawRepository, ITransactionRepository transactionRepository, ILogger<Importer> logger) : IImporter
+internal partial class Importer(IQueryable<TransactionRaw> rawTransactions, ITransactionRawRepository transactionRawRepository, ITransactionRepository transactionRepository, ILogger<Importer> logger) : IImporter
 {
     private const int Columns = 24;
     private const int DateColumn = 0;
@@ -22,10 +22,6 @@ internal partial class Importer(ITransactionRawRepository transactionRawReposito
     private const int SalarySacrificeColumn = 7;
     private const int MemberAdditionalColumn = 8;
     private const int TotalAmountColumn = 23;
-
-    private readonly ITransactionRawRepository _transactionRawRepository = transactionRawRepository;
-    private readonly ITransactionRepository _transactionRepository = transactionRepository;
-    private readonly ILogger<Importer> _logger = logger;
 
     public async Task<MooBank.Models.TransactionImportResult> Import(Guid accountId, Stream contents, CancellationToken cancellationToken = default)
     {
@@ -74,24 +70,24 @@ internal partial class Importer(ITransactionRawRepository transactionRawReposito
             #region Validation
             if (columns.Count != Columns)
             {
-                _logger.LogWarning("Unrecognised entry at line {lineCount}", lineCount);
+                logger.LogWarning("Unrecognised entry at line {lineCount}", lineCount);
                 continue;
             }
 
             if (!DateOnly.TryParseExact(columns[DateColumn], "yyyy-MM-dd", out transactionTime))
             {
-                _logger.LogWarning("Incorrect date format at line {lineCount}", lineCount);
+                logger.LogWarning("Incorrect date format at line {lineCount}", lineCount);
                 continue;
             }
             if (String.IsNullOrWhiteSpace(columns[TitleColumn]))
             {
-                _logger.LogWarning("Description not supplied at line {lineCount}", lineCount);
+                logger.LogWarning("Description not supplied at line {lineCount}", lineCount);
                 continue;
             }
 
             if (String.IsNullOrEmpty(columns[TotalAmountColumn]))
             {
-                _logger.LogWarning("Total amount not supplied at line {lineCount}", lineCount);
+                logger.LogWarning("Total amount not supplied at line {lineCount}", lineCount);
                 continue;
             }
 
@@ -105,16 +101,22 @@ internal partial class Importer(ITransactionRawRepository transactionRawReposito
                 !Decimal.TryParse(columns[MemberAdditionalColumn], out memberAdditional))
 
             {
-                _logger.LogWarning("Incorrect contribution format at line {lineCount}", lineCount);
+                logger.LogWarning("Incorrect contribution format at line {lineCount}", lineCount);
                 continue;
             }
 
             if (!Decimal.TryParse(columns[TotalAmountColumn], out decimal totalAmount))
             {
-                _logger.LogWarning("Incorrect total amount format at line {lineCount}", lineCount);
+                logger.LogWarning("Incorrect total amount format at line {lineCount}", lineCount);
                 continue;
             }
             #endregion
+
+            if (rawTransactions.Any(t => t.Description == columns[DescriptionColumn] && t.Date == transactionTime && t.TotalAmount == totalAmount))
+            {
+                logger.LogInformation("Duplicate transaction found {description} {date} {totalAmount}", columns[DescriptionColumn], transactionTime, totalAmount);
+                continue;
+            }
 
             var transaction = new Transaction
             {
@@ -154,17 +156,17 @@ internal partial class Importer(ITransactionRawRepository transactionRawReposito
             rawTransactions.Add(transactionRaw);
         }
 
-        _transactionRawRepository.AddRange(rawTransactions);
+        transactionRawRepository.AddRange(rawTransactions);
 
         return new MooBank.Models.TransactionImportResult(rawTransactions.Select(r => r.Transaction));
     }
 
     public async Task Reprocess(Guid accountId, CancellationToken cancellationToken = default)
     {
-        var transactions = await _transactionRepository.GetTransactions(accountId, cancellationToken);
+        var transactions = await transactionRepository.GetTransactions(accountId, cancellationToken);
         var transactionIds = transactions.Select(t => t.Id);
 
-        var rawTransactions = await _transactionRawRepository.GetAll(accountId, cancellationToken);
+        var rawTransactions = await transactionRawRepository.GetAll(accountId, cancellationToken);
         var processed = rawTransactions.Where(t => t.TransactionId != null && transactionIds.Contains(t.TransactionId.Value));
         var unprocessed = rawTransactions.Except(processed, new Asm.Domain.IIdentifiableEqualityComparer<TransactionRaw, Guid>());
 
