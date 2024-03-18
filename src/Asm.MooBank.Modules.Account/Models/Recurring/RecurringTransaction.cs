@@ -32,6 +32,6 @@ public static class RecurringTransactionExtensions
             VirtualAccountId = recurringTransaction.VirtualAccountId,
         };
 
-    public static IEnumerable<RecurringTransaction> ToModel (this IEnumerable<Domain.Entities.Account.RecurringTransaction> recurringTransactions) =>
+    public static IEnumerable<RecurringTransaction> ToModel(this IEnumerable<Domain.Entities.Account.RecurringTransaction> recurringTransactions) =>
         recurringTransactions.Select(t => t.ToModel());
 }

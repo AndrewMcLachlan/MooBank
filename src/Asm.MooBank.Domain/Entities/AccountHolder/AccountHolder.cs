@@ -14,7 +14,7 @@ public partial class AccountHolder(Guid id) : KeyedEntity<Guid>(id)
     public string Currency { get; set; } = "AUD";
     public required Guid FamilyId { get; set; }
 
-    public Guid? PrimaryAccountId { get;set; }
+    public Guid? PrimaryAccountId { get; set; }
 
     [NotMapped]
     public IEnumerable<Account.Account> Accounts => AccountAccountHolders?.Select(a => a.Account) ?? Enumerable.Empty<Account.Account>();

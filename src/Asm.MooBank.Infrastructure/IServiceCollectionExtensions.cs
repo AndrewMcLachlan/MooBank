@@ -46,20 +46,20 @@ public static class IServiceCollectionExtensions
     // Keeping this here in case this code becomes useful in the future.
     // Provides a cache of data.
     public static IServiceCollection AddCacheableData(this IServiceCollection services) => services;
-        /*services.AddScoped<IEnumerable<TagRelationship>>(provider =>
+    /*services.AddScoped<IEnumerable<TagRelationship>>(provider =>
+    {
+        var cache = provider.GetRequiredService<IAppCache>();
+
+        return cache.GetOrAdd<IEnumerable<TagRelationship>>("tag-relationships", () =>
         {
-            var cache = provider.GetRequiredService<IAppCache>();
+            var context = provider.GetRequiredService<IReadOnlyDbContext>();
 
-            return cache.GetOrAdd<IEnumerable<TagRelationship>>("tag-relationships", () =>
-            {
-                var context = provider.GetRequiredService<IReadOnlyDbContext>();
-
-                return context.Set<TagRelationship>().ToList();
-            }, new Caching.Memory.MemoryCacheEntryOptions
-            {
-                Priority = Caching.Memory.CacheItemPriority.NeverRemove
-            });
-        });*/
+            return context.Set<TagRelationship>().ToList();
+        }, new Caching.Memory.MemoryCacheEntryOptions
+        {
+            Priority = Caching.Memory.CacheItemPriority.NeverRemove
+        });
+    });*/
 
     public static IServiceCollection AddRepositories(this IServiceCollection services) =>
         services.AddScoped<IInstitutionAccountRepository, InstitutionAccountRepository>()

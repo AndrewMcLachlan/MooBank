@@ -39,6 +39,6 @@ public class AccountHolder : EndpointGroupBase
             .Produces<Models.AccountHolder>();
 
         //routeGroupBuilder.MapDelete<Delete>("/{id}")
-            //.WithName("Delete Account Holder");
+        //.WithName("Delete Account Holder");
     }
 }

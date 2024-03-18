@@ -125,7 +125,7 @@ internal partial class TransactionParser
             return parsed;
         }
 
-        match= OskoPayment().Match(description);
+        match = OskoPayment().Match(description);
         if (match.Success)
         {
 

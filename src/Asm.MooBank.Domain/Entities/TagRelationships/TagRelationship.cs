@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Asm.MooBank.Domain.Entities.TagRelationships;
 
-[Table("TagHierarchies",Schema = "dbo")]
+[Table("TagHierarchies", Schema = "dbo")]
 [AggregateRoot]
 public class TagRelationship
 {

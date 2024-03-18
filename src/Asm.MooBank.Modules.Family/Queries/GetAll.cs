@@ -7,7 +7,7 @@ public record GetAll() : IQuery<IEnumerable<Models.Family>>;
 
 internal class GetAllHandler(IQueryable<Domain.Entities.Family.Family> families, ISecurity security) : IQueryHandler<GetAll, IEnumerable<Models.Family>>
 {
-    public async ValueTask<IEnumerable<Models.Family>>Handle(GetAll request, CancellationToken cancellationToken)
+    public async ValueTask<IEnumerable<Models.Family>> Handle(GetAll request, CancellationToken cancellationToken)
     {
         await security.AssertAdministrator(cancellationToken);
 

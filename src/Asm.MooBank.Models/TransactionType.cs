@@ -4,7 +4,7 @@ namespace Asm.MooBank.Models;
 
 public enum TransactionType
 {
-    [Display(Name="Credit")]
+    [Display(Name = "Credit")]
     Credit = 1,
 
     [Display(Name = "Debit")]

@@ -41,7 +41,7 @@ public class StockPriceService(IUnitOfWork unitOfWork, IStockHoldingRepository s
 
             stock.CurrentPrice = prices[stock.Symbol];
             stock.LastUpdated = DateTimeOffset.UtcNow;
-       }
+        }
 
         var existingPrices = await referenceDataRepository.GetStockPrices(DateOnlyExtensions.Today().AddDays(-1));
 

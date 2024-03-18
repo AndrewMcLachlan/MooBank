@@ -53,7 +53,7 @@ public static class BudgetExtensions
             var monthExpenses = budget.Lines.Where(l => !l.Income && (l.Month & (1 << i)) != 0).Sum(l => l.Amount);
 
             // Add one to the month as the DateTime months are one-based
-            months.Add(new(i+1, monthIncome, monthExpenses));
+            months.Add(new(i + 1, monthIncome, monthExpenses));
         }
 
         return months;
@@ -62,7 +62,7 @@ public static class BudgetExtensions
     public static IEnumerable<Domain.Entities.Budget.BudgetLine> WhereMonth(this IEnumerable<Domain.Entities.Budget.BudgetLine> lines, short month)
     {
         // Subtract one from the month as the DateTime months are one-based
-        var mask = 1 << (month-1);
+        var mask = 1 << (month - 1);
 
         return lines.Where(l => (l.Month & mask) != 0);
     }

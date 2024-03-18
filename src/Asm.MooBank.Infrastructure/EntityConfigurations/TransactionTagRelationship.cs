@@ -1,5 +1,5 @@
-﻿using Asm.MooBank.Domain.Entities.TagRelationships;
-using Asm.MooBank.Domain.Entities.Tag;
+﻿using Asm.MooBank.Domain.Entities.Tag;
+using Asm.MooBank.Domain.Entities.TagRelationships;
 
 namespace Asm.MooBank.Infrastructure.EntityConfigurations;
 

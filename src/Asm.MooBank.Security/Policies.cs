@@ -1,6 +1,6 @@
 ﻿
 namespace Asm.MooBank.Security;
-public static  class Policies
+public static class Policies
 {
     public const string Admin = nameof(Admin);
 

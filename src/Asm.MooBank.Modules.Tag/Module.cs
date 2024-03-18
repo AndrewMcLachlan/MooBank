@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
-using Microsoft.AspNetCore.Routing;
 using Asm.AspNetCore.Modules;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Asm.MooBank.Modules.Tag;

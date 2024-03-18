@@ -54,7 +54,7 @@ public class RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionRep
     private void RunTransaction(RecurringTransaction trans)
     {
         TransactionType transactionType = trans.Amount < 0 ?
-                                  TransactionType.RecurringDebit:
+                                  TransactionType.RecurringDebit :
                                   TransactionType.RecurringCredit;
 
         Transaction transaction = new()

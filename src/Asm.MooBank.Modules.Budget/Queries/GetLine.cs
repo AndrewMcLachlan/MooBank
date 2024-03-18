@@ -1,6 +1,6 @@
 ﻿using Asm.MooBank.Models;
-using Asm.MooBank.Queries;
 using Asm.MooBank.Modules.Budget.Models;
+using Asm.MooBank.Queries;
 
 namespace Asm.MooBank.Modules.Budget.Queries;
 

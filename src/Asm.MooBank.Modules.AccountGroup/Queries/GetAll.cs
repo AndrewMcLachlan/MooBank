@@ -1,6 +1,6 @@
 ﻿using Asm.MooBank.Models;
-using Asm.MooBank.Queries;
 using Asm.MooBank.Modules.AccountGroup.Models;
+using Asm.MooBank.Queries;
 
 namespace Asm.MooBank.Modules.AccountGroup.Queries;
 

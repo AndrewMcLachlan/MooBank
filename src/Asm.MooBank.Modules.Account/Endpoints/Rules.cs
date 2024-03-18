@@ -18,9 +18,9 @@ public class RulesEndpoints : EndpointGroupBase
 
     protected override void MapEndpoints(IEndpointRouteBuilder routeGroupBuilder)
     {
-       routeGroupBuilder.MapQuery<GetAll, IEnumerable<Rule>>("/")
-            .WithNames("Get All Account Rules")
-            .Produces<IEnumerable<Rule>>();
+        routeGroupBuilder.MapQuery<GetAll, IEnumerable<Rule>>("/")
+             .WithNames("Get All Account Rules")
+             .Produces<IEnumerable<Rule>>();
 
         routeGroupBuilder.MapQuery<Get, Rule>("/{ruleId}")
             .WithNames("Get Account Rule")
@@ -39,7 +39,7 @@ public class RulesEndpoints : EndpointGroupBase
             .WithNames("Delete Account Rule");
 
 
-        routeGroupBuilder.MapPutCommand<AddTag,Rule>("/{ruleId}/tag/{tagId}")
+        routeGroupBuilder.MapPutCommand<AddTag, Rule>("/{ruleId}/tag/{tagId}")
             .WithNames("Add Tag to Account Rule")
             .Produces<Rule>();
 

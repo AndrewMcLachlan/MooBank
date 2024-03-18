@@ -1,6 +1,6 @@
-﻿using ITagRepository = Asm.MooBank.Domain.Entities.Tag.ITagRepository;
+﻿using Asm.MooBank.Commands;
 using Asm.MooBank.Models;
-using Asm.MooBank.Commands;
+using ITagRepository = Asm.MooBank.Domain.Entities.Tag.ITagRepository;
 
 namespace Asm.MooBank.Modules.Tag.Commands;
 

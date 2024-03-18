@@ -12,7 +12,7 @@ internal class GetAllHandler(IQueryable<Domain.Entities.Account.Account> account
     {
         security.AssertAccountPermission(query.AccountId);
 
-        var account = await accounts.Include(a => a.VirtualAccounts).ThenInclude(a => a.RecurringTransactions).SingleAsync(a => a.Id ==  query.AccountId, cancellationToken);
+        var account = await accounts.Include(a => a.VirtualAccounts).ThenInclude(a => a.RecurringTransactions).SingleAsync(a => a.Id == query.AccountId, cancellationToken);
 
         return account.VirtualAccounts.SelectMany(v => v.RecurringTransactions).ToModel();
     }

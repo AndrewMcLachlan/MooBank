@@ -1,10 +1,10 @@
 ﻿using Asm.Cqrs.AspNetCore;
-using Asm.MooBank.Modules.Account.Models.Recurring;
 using Asm.MooBank.Modules.Account.Commands.Recurring;
+using Asm.MooBank.Modules.Account.Models.Recurring;
 using Asm.MooBank.Modules.Account.Queries.Recurring;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 
 namespace Asm.MooBank.Modules.Account.Endpoints;
 internal class RecurringEndpoints : EndpointGroupBase

@@ -1,5 +1,5 @@
-﻿using Asm.MooBank.Domain.Entities.Transactions;
-using Asm.MooBank.Domain.Entities.TagRelationships;
+﻿using Asm.MooBank.Domain.Entities.TagRelationships;
+using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Modules.Reports.Models;
 
 namespace Asm.MooBank.Modules.Reports.Queries;

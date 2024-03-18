@@ -40,4 +40,5 @@ public class PrecacheService : IHostedService
         var referenceDataRepository = scope.ServiceProvider.GetRequiredService<IReferenceDataRepository>();
 
         var _ = appCache.GetOrAddAsync($"IReferenceDataRepository-GetExchangeRates", referenceDataRepository.GetExchangeRates, DateTimeOffset.Now.AddHours(12)).Result;
-    }}
+    }
+}

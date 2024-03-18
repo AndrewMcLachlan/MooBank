@@ -26,7 +26,9 @@ internal record ExchangeRateApiResponse
     public required DateTime TimeNextUpdateUtc { get; init; }
 
     [JsonPropertyName("base_code")]
-    public required string BaseCode { get; init;
+    public required string BaseCode
+    {
+        get; init;
     }
 
     [JsonPropertyName("conversion_rates")]
@@ -35,12 +37,12 @@ internal record ExchangeRateApiResponse
 
 
 public class DateTimeConverter : JsonConverter<DateTime>
-    {
-        public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
-            DateTime.ParseExact(reader.GetString()!, "ddd, dd MMM yyyy HH:mm:ss +0000", CultureInfo.InvariantCulture);
+{
+    public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
+        DateTime.ParseExact(reader.GetString()!, "ddd, dd MMM yyyy HH:mm:ss +0000", CultureInfo.InvariantCulture);
 
-        public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
-        {
-            throw new NotImplementedException();
-        }
+    public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
+    {
+        throw new NotImplementedException();
     }
+}

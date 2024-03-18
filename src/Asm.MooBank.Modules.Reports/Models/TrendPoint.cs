@@ -20,7 +20,7 @@ public static class TrendPointExtensions
         var end = trendPoints.Max(t => t.Month).ToEndOfMonth();
 
         // If the difference in months is 0, then we have a single month, so we'll use 1 instead.
-        decimal months = Math.Max(end.DifferenceInMonths(start),1);
+        decimal months = Math.Max(end.DifferenceInMonths(start), 1);
 
         return Math.Round(Math.Abs(trendPoints.Sum(t => t.Amount) / months));
     }
