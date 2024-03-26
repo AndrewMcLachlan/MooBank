@@ -15,4 +15,10 @@
     <ProjectReference Include="..\Asm.MooBank.Security\Asm.MooBank.Security.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Asm.MooBank.Modules.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
 </Project>

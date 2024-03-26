@@ -85,7 +85,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.ExchangeRateApi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.AccountHolder", "src\Asm.MooBank.Modules.AccountHolder\Asm.MooBank.Modules.AccountHolder.csproj", "{2238CEE0-0A21-4C0A-8A18-2DD08020AF99}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asm.MooBank.Institution.AustralianSuper", "src\Asm.MooBank.Institution.AustralianSuper\Asm.MooBank.Institution.AustralianSuper.csproj", "{544C51D0-794B-426C-B7D4-E1DA45CBE916}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Institution.AustralianSuper", "src\Asm.MooBank.Institution.AustralianSuper\Asm.MooBank.Institution.AustralianSuper.csproj", "{544C51D0-794B-426C-B7D4-E1DA45CBE916}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{54709F25-BC08-4B76-9DEE-88687AD76533}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asm.MooBank.Modules.Tests", "tests\Asm.MooBank.Modules.Tests\Asm.MooBank.Modules.Tests.csproj", "{511708F0-5282-4B40-9848-792C0E139FF8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -191,6 +195,10 @@ Global
 		{544C51D0-794B-426C-B7D4-E1DA45CBE916}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{544C51D0-794B-426C-B7D4-E1DA45CBE916}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{544C51D0-794B-426C-B7D4-E1DA45CBE916}.Release|Any CPU.Build.0 = Release|Any CPU
+		{511708F0-5282-4B40-9848-792C0E139FF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{511708F0-5282-4B40-9848-792C0E139FF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{511708F0-5282-4B40-9848-792C0E139FF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{511708F0-5282-4B40-9848-792C0E139FF8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -212,6 +220,7 @@ Global
 		{34A02BFD-A9AC-47EE-A1DE-A5B00C64CCAA} = {2754ACBC-340B-4D5C-AEE8-1AC1AD5CF9E0}
 		{2238CEE0-0A21-4C0A-8A18-2DD08020AF99} = {38BEA81E-F80F-44DE-A930-9BD5D3A62FFF}
 		{544C51D0-794B-426C-B7D4-E1DA45CBE916} = {2754ACBC-340B-4D5C-AEE8-1AC1AD5CF9E0}
+		{511708F0-5282-4B40-9848-792C0E139FF8} = {54709F25-BC08-4B76-9DEE-88687AD76533}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0CAD466B-BD01-4883-9CDC-F62C19A2A615}
