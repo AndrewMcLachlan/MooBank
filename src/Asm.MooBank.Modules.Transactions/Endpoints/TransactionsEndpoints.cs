@@ -1,5 +1,5 @@
 ﻿using Asm.Cqrs.AspNetCore;
-using Asm.MooBank.Modules.Transactions.Commands.Transactions;
+using Asm.MooBank.Modules.Transactions.Commands;
 using Asm.MooBank.Modules.Transactions.Models;
 using Asm.MooBank.Modules.Transactions.Queries.Transactions;
 using Microsoft.AspNetCore.Builder;
