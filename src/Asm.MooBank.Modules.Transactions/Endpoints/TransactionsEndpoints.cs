@@ -28,6 +28,9 @@ internal class TransactionsEndpoints : EndpointGroupBase
         builder.MapCommand<Create, Transaction>("", CommandBinding.None)
             .WithNames("Create Transaction");
 
+        builder.MapCommand<UpdateBalance, Transaction>("/balance-adjustment", CommandBinding.Parameters)
+            .WithNames("Set Balance");
+
         builder.MapPatchCommand<UpdateTransaction, Transaction>("{id}", CommandBinding.None)
             .WithNames("Update Transaction");
 

@@ -10,6 +10,7 @@ import { TransactionList } from "./TransactionList";
 
 import { useAccountRoute } from "hooks/useAccountRoute";
 import { InstitutionAccount } from "models";
+import { UpDownArrow } from "assets";
 
 
 export const Transactions: React.FC = () => {
@@ -19,7 +20,10 @@ export const Transactions: React.FC = () => {
 
     if (!account) return null;
 
-    const actions = !(account as InstitutionAccount).importerTypeId ? [<IconLinkButton key="import" variant="primary" icon="plus" to={`${route}/transactions/add`} relative="route">Add Transaction</IconLinkButton>] : [];
+    const actions = !(account as InstitutionAccount).importerTypeId ? [
+        <IconLinkButton key="add" variant="primary" icon="plus" to={`${route}/transactions/add`} relative="route">Add Transaction</IconLinkButton>,
+        <IconLinkButton key="adjust" variant="primary" customIcon={UpDownArrow} to={`${route}/balance`} relative="route">Adjust balance</IconLinkButton>
+    ] : [];
 
     return (
         <AccountPage title="Transactions" actions={actions}>

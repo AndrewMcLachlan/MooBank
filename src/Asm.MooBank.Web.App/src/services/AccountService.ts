@@ -1,5 +1,5 @@
 import { useQueryClient, UseQueryResult } from "@tanstack/react-query";
-import { InstitutionAccount, accountId, AccountList, ImportAccount } from "../models";
+import { CreateTransaction, InstitutionAccount, AccountId, AccountList, ImportAccount } from "../models";
 import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
 import { ListItem } from "models/ListItem";
 
@@ -35,7 +35,7 @@ export const useCreateAccount = () => {
 export const useUpdateAccount = () => {
     const queryClient = useQueryClient();
 
-    const { mutate} = useApiPatch<InstitutionAccount, accountId, InstitutionAccount>((accountId) => `api/accounts/${accountId}`, {
+    const { mutate} = useApiPatch<InstitutionAccount, AccountId, InstitutionAccount>((accountId) => `api/accounts/${accountId}`, {
         onSettled: (_data,_error,[accountId]) => {
             queryClient.invalidateQueries({ queryKey: [accountsKey]});
             queryClient.invalidateQueries({ queryKey: ["account", { accountId }]});
@@ -52,15 +52,15 @@ export const useUpdateAccount = () => {
 export const useUpdateBalance = () => {
     const queryClient = useQueryClient();
 
-    const { mutate} = useApiPatch<InstitutionAccount, accountId, { currentBalance: number, availableBalance: number }>((accountId) => `api/accounts/${accountId}/balance`, {
+    const { mutate} = useApiPost<InstitutionAccount, AccountId, CreateTransaction>((accountId) => `api/accounts/${accountId}/transactions/balance-adjustment`, {
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: [accountsKey]});
         },
     });
 
-    const update = (accountId: string, currentBalance: number, availableBalance: number) => {
+    const update = (accountId: string, transaction: CreateTransaction) => {
 
-        mutate([accountId, {currentBalance, availableBalance}]);
+        mutate([accountId, transaction]);
     };
 
     return update;

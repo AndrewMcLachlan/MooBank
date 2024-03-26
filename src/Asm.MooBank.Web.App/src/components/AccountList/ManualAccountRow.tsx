@@ -60,7 +60,7 @@ const useComponentState = (props: AccountRowProps) => {
 
     const navigate = useNavigate();
 
-    useClickAway(setEditingBalance, balanceRef, () => (editingBalance && props.account.currentBalance !== balance) && updateBalance(props.account.id, balance, balance));
+    useClickAway(setEditingBalance, balanceRef, () => (editingBalance && props.account.currentBalance !== balance) && doUpdateBalance());
 
     const balanceClick: React.MouseEventHandler<HTMLTableCellElement> = (e) => {
         setEditingBalance(true);
@@ -78,9 +78,13 @@ const useComponentState = (props: AccountRowProps) => {
 
     const keyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
-            updateBalance(props.account.id, balance, balance);
+            doUpdateBalance();
             setEditingBalance(false);
         }
+    }
+
+    const doUpdateBalance = () => {
+        updateBalance(props.account.id, { amount: balance, transactionTime: new Date().toISOString(), description: "Manual Balance Adjustment" });
     }
 
     return {
@@ -98,4 +102,3 @@ const useComponentState = (props: AccountRowProps) => {
         keyPress,
     };
 }
-

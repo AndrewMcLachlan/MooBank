@@ -28,9 +28,6 @@ internal class VirtualAccounts : EndpointGroupBase
         builder.MapPatchCommand<Update, VirtualAccount>("/{virtualAccountId}", CommandBinding.None)
             .WithNames("Update Virtual Account");
 
-        builder.MapPatchCommand<UpdateBalance, VirtualAccount>("/{virtualAccountId}/balance")
-            .WithNames("Set Virtual Account Balance");
-
         builder.MapDelete<Delete>("/{virtualAccountId}")
             .WithNames("Delete Virtual Account");
     }

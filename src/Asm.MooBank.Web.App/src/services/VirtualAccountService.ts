@@ -1,28 +1,28 @@
 import { useQueryClient, UseQueryResult } from "@tanstack/react-query";
-import { InstitutionAccount, accountId, AccountList, VirtualAccount } from "../models";
+import { InstitutionAccount, AccountId, AccountList, VirtualAccount } from "../models";
 import { formattedAccountsKey, accountsKey } from "./AccountService";
 import { emptyGuid, useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
 
 interface VirtualAccountVariables {
-    accountId: accountId;
-    virtualAccountId: accountId;
+    accountId: AccountId;
+    virtualAccountId: AccountId;
 }
 
-export const useVirtualAccounts = (accountId: accountId): UseQueryResult<VirtualAccount[]> => useApiGet<VirtualAccount[]>(["virtualaccount", accountId], `api/accounts/${accountId}/virtual`);
+export const useVirtualAccounts = (accountId: AccountId): UseQueryResult<VirtualAccount[]> => useApiGet<VirtualAccount[]>(["virtualaccount", accountId], `api/accounts/${accountId}/virtual`);
 
-export const useVirtualAccount = (accountId: accountId, virtualAccountId: accountId) => useApiGet<VirtualAccount>(["virtualaccount", { accountId, virtualAccountId }], `api/accounts/${accountId}/virtual/${virtualAccountId}`);
+export const useVirtualAccount = (accountId: AccountId, virtualAccountId: AccountId) => useApiGet<VirtualAccount>(["virtualaccount", { accountId, virtualAccountId }], `api/accounts/${accountId}/virtual/${virtualAccountId}`);
 
 export const useCreateVirtualAccount = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutate } = useApiPost<VirtualAccount, accountId, VirtualAccount>((accountId) => `api/accounts/${accountId}/virtual`, {
+    const { mutate } = useApiPost<VirtualAccount, AccountId, VirtualAccount>((accountId) => `api/accounts/${accountId}/virtual`, {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [accountsKey] });
         }
     });
 
-    const create = (accountId: accountId, virtualAccount: VirtualAccount) => {
+    const create = (accountId: AccountId, virtualAccount: VirtualAccount) => {
         mutate([accountId, virtualAccount]);
     };
 
@@ -39,7 +39,7 @@ export const useUpdateVirtualAccount = () => {
         }
     });
 
-    const update = (accountId: accountId, account: VirtualAccount) => {
+    const update = (accountId: AccountId, account: VirtualAccount) => {
         mutate([{ accountId, virtualAccountId: account.id }, account]);
     };
 
@@ -91,7 +91,7 @@ export const useUpdateVirtualAccountBalance = () => {
         },
     });
 
-    const update = (accountId: string, virtualAccountId: accountId, balance: number) => {
+    const update = (accountId: string, virtualAccountId: AccountId, balance: number) => {
 
         mutate([{ accountId, virtualAccountId }, { balance }]);
     };

@@ -1,5 +1,5 @@
 import { UseQueryResult, useQueryClient, } from "@tanstack/react-query";
-import { InstitutionAccount, accountId, NewStockHolding, StockHolding } from "../models";
+import { InstitutionAccount, AccountId, NewStockHolding, StockHolding } from "../models";
 import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
 import { accountsKey } from "./AccountService";
 
@@ -27,7 +27,7 @@ export const useCreateStockHolding = () => {
 export const useUpdateStockHolding = () => {
     const queryClient = useQueryClient();
 
-    const { mutate } = useApiPatch<StockHolding, accountId, StockHolding>((accountId) => `api/stock/${accountId}`, {
+    const { mutate } = useApiPatch<StockHolding, AccountId, StockHolding>((accountId) => `api/stock/${accountId}`, {
         onSettled: (_data,_error,[accountId]) => {
             queryClient.invalidateQueries({ queryKey: [accountsKey]});
             queryClient.invalidateQueries({ queryKey: [stockKey, { accountId }]});

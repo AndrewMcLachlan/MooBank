@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { getBalanceString, numberClassName } from "helpers";
 import { emptyGuid, useClickAway } from "@andrewmclachlan/mooapp";
 
-import { accountId, VirtualAccount } from "models";
+import { AccountId, VirtualAccount } from "models";
 import { useUpdateVirtualAccountBalance } from "services";
 import { useNavigate } from "react-router-dom";
 
@@ -28,7 +28,7 @@ export const VirtualAccountRow: React.FC<VirtualAccountRowProps> = (props) => {
 
 interface VirtualAccountRowProps {
     account: VirtualAccount;
-    accountId: accountId;
+    accountId: AccountId;
 }
 
 VirtualAccountRow.displayName = "VirtualAccountRow";

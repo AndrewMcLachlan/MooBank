@@ -6,10 +6,10 @@ export type AccountType = "None" | "Transaction" | "Savings" | "Credit" | "Mortg
 export const AccountControllers = ["Manual", "Virtual", "Import"] as AccountController[];
 export type AccountController = "Manual" | "Virtual" | "Import";
 
-export type accountId = string;
+export type AccountId = string;
 
 export interface AccountBase {
-    id: accountId;
+    id: AccountId;
     name: string;
     description?: string;
     currentBalance: number;

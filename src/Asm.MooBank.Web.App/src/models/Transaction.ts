@@ -71,15 +71,15 @@ export const emptyTransactionSplit: TransactionSplit = {
 export const getSplitTotal = (splits: TransactionSplit[]) => splits.reduce((total, split) => total + split.amount, 0);
 
 export interface CreateTransaction {
-    id: string;
+    //id: string;
     amount: number;
     description: string;
-    reference: string;
+    reference?: string;
     transactionTime: string;
 }
 
 export const emptyTransaction: CreateTransaction = {
-    id: emptyGuid,
+    //id: emptyGuid,
     amount: 0,
     description: "",
     reference: "",
