@@ -6,7 +6,7 @@ using IInstitutionAccountRepository = Asm.MooBank.Domain.Entities.Account.IInsti
 
 namespace Asm.MooBank.Modules.Account.Commands.InstitutionAccount;
 
-public record Create(Models.Account.InstitutionAccount Account, ImportAccount ImportAccount) : ICommand<Models.Account.InstitutionAccount>;
+public record Create(Models.Account.InstitutionAccount Account) : ICommand<Models.Account.InstitutionAccount>;
 
 internal class CreateHandler(IInstitutionAccountRepository institutionAccountRepository, IUnitOfWork unitOfWork, AccountHolder accountHolder, ICurrencyConverter currencyConverter, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Create, Models.Account.InstitutionAccount>
 {
@@ -28,11 +28,11 @@ internal class CreateHandler(IInstitutionAccountRepository institutionAccountRep
 
         _accountRepository.Add(entity);
 
-        if (account.ImporterTypeId != null || command.ImportAccount != null)
+        if (account.ImporterTypeId != null)
         {
             entity.ImportAccount = new Domain.Entities.Account.ImportAccount
             {
-                ImporterTypeId = account.ImporterTypeId ?? command.ImportAccount.ImporterTypeId,
+                ImporterTypeId = account.ImporterTypeId.Value,
             };
         }
 

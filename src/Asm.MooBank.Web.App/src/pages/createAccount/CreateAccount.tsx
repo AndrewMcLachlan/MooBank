@@ -32,8 +32,6 @@ export const CreateAccount: React.FC = () => {
         e.stopPropagation();
         e.preventDefault();
 
-        const importAccount: ImportAccount | undefined = accountController === "Import" ? { importerTypeId: importerTypeId } : undefined;
-
         const account: InstitutionAccount = {
             id: emptyGuid,
             name: name,
@@ -50,10 +48,11 @@ export const CreateAccount: React.FC = () => {
             shareWithFamily: shareWithFamily,
             institutionId: institution,
             includeInBudget: includeInBudget,
+            importerTypeId: accountController === "Import" ? importerTypeId : undefined,
             virtualAccounts: [],
         };
 
-        createAccount(account, importAccount);
+        createAccount(account);
 
         navigate("/accounts");
     }
