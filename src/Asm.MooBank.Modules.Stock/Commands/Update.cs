@@ -33,6 +33,10 @@ internal class UpdateHandler(IStockHoldingRepository repository, IUnitOfWork uni
     public async ValueTask<Models.StockHolding> Handle(Update command, CancellationToken cancellationToken)
     {
         Security.AssertAccountPermission(command.AccountId);
+        if (command.AccountGroupId != null)
+        {
+            Security.AssertAccountGroupPermission(command.AccountGroupId.Value);
+        }
 
         var stockHolding = await repository.Get(command.AccountId, new IncludeSpecification(), cancellationToken) ?? throw new NotFoundException();
 

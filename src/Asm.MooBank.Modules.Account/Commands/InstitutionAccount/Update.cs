@@ -11,11 +11,15 @@ public record Update(Models.Account.InstitutionAccount Account) : ICommand<Model
 
 internal class UpdateHandler(IUnitOfWork unitOfWork, IInstitutionAccountRepository accountRepository, AccountHolder accountHolder, ICurrencyConverter currencyConverter, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Update, Models.Account.InstitutionAccount>
 {
-    public async ValueTask<Models.Account.InstitutionAccount> Handle(Update request, CancellationToken cancellationToken)
+    public async ValueTask<Models.Account.InstitutionAccount> Handle(Update command, CancellationToken cancellationToken)
     {
-        request.Deconstruct(out var account);
+        command.Deconstruct(out var account);
 
         Security.AssertAccountPermission(account.Id);
+        if (account.AccountGroupId != null)
+        {
+            Security.AssertAccountGroupPermission(account.AccountGroupId.Value);
+        }
 
         var entity = await accountRepository.Get(account.Id, new AccountDetailsSpecification(), cancellationToken);
 

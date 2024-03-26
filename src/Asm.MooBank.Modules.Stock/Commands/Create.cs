@@ -20,6 +20,11 @@ internal class CreateHandler(IStockHoldingRepository repository, IUnitOfWork uni
 {
     public async ValueTask<Models.StockHolding> Handle(Create command, CancellationToken cancellationToken)
     {
+        if (command.AccountGroupId != null)
+        {
+            Security.AssertAccountGroupPermission(command.AccountGroupId.Value);
+        }
+
         Domain.Entities.StockHolding.StockHolding entity = new(Guid.Empty)
         {
             Name = command.Name,

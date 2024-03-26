@@ -12,9 +12,14 @@ internal class CreateHandler(IInstitutionAccountRepository institutionAccountRep
 {
     private readonly IInstitutionAccountRepository _accountRepository = institutionAccountRepository;
 
-    public async ValueTask<Models.Account.InstitutionAccount> Handle(Create request, CancellationToken cancellationToken)
+    public async ValueTask<Models.Account.InstitutionAccount> Handle(Create command, CancellationToken cancellationToken)
     {
-        var account = request.Account;
+        var account = command.Account;
+
+        if (account.AccountGroupId != null)
+        {
+            Security.AssertAccountGroupPermission(account.AccountGroupId.Value);
+        }
 
         var entity = account.ToEntity();
 
@@ -23,11 +28,11 @@ internal class CreateHandler(IInstitutionAccountRepository institutionAccountRep
 
         _accountRepository.Add(entity);
 
-        if (account.ImporterTypeId != null || request.ImportAccount != null)
+        if (account.ImporterTypeId != null || command.ImportAccount != null)
         {
             entity.ImportAccount = new Domain.Entities.Account.ImportAccount
             {
-                ImporterTypeId = account.ImporterTypeId ?? request.ImportAccount.ImporterTypeId,
+                ImporterTypeId = account.ImporterTypeId ?? command.ImportAccount.ImporterTypeId,
             };
         }
 
