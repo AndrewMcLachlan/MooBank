@@ -2,12 +2,13 @@
 using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.Transactions.Specifications;
+using Asm.MooBank.Modules.Transactions.Models.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Asm.MooBank.Modules.Transactions.Commands.Transactions;
+namespace Asm.MooBank.Modules.Transactions.Commands;
 
 public record UpdateTransaction(Guid AccountId, Guid Id, string? Notes, IEnumerable<Models.TransactionSplit> Splits, bool ExcludeFromReporting = false) : ICommand<Models.Transaction>
 {

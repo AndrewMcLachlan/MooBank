@@ -2,8 +2,9 @@
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.Transactions.Specifications;
 using Asm.MooBank.Models;
+using Asm.MooBank.Modules.Transactions.Models.Extensions;
 
-namespace Asm.MooBank.Modules.Transactions.Commands.Transactions;
+namespace Asm.MooBank.Modules.Transactions.Commands;
 
 internal record RemoveTag(Guid AccountId, Guid Id, int TagId) : ICommand<Models.Transaction>;
 

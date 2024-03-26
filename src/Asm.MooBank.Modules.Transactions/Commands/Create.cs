@@ -1,16 +1,18 @@
 ﻿using Asm.MooBank.Commands;
+using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Models;
+using Asm.MooBank.Modules.Transactions.Models.Extensions;
 using Microsoft.AspNetCore.Http;
 
-namespace Asm.MooBank.Modules.Transactions.Commands.Transactions;
+namespace Asm.MooBank.Modules.Transactions.Commands;
 
 public record Create(Guid AccountId, decimal Amount, string Description, string? Reference, DateTimeOffset TransactionTime) : AccountIdCommand(AccountId), ICommand<Models.Transaction>
 {
     public static ValueTask<Create> BindAsync(HttpContext httpContext) => BindHelper.BindWithAccountIdAsync<Create>(httpContext);
 }
 
-internal class CreateHandler(ITransactionRepository transactionRepository, IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Create, Models.Transaction>
+internal class CreateHandler(IAccountRepository accountRepository, ITransactionRepository transactionRepository, IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Create, Models.Transaction>
 {
     public async ValueTask<Models.Transaction> Handle(Create command, CancellationToken cancellationToken)
     {
@@ -18,12 +20,18 @@ internal class CreateHandler(ITransactionRepository transactionRepository, IUnit
 
         Security.AssertAccountPermission(accountId);
 
+        var account = await accountRepository.Get(command.AccountId, cancellationToken);
+        if (account is not Domain.Entities.Account.TransactionAccount transactionAccount)
+        {
+            throw new InvalidOperationException("Not a transaction account.");
+        }
+
         TransactionType transactionType = amount < 0 ? TransactionType.Debit : TransactionType.Credit;
 
         Transaction transaction = new()
         {
+            Account = transactionAccount,
             Amount = amount,
-            AccountId = accountId,
             Description = description,
             Reference = reference,
             Source = "Web",
@@ -32,7 +40,6 @@ internal class CreateHandler(ITransactionRepository transactionRepository, IUnit
         };
 
         transactionRepository.Add(transaction);
-
 
         await UnitOfWork.SaveChangesAsync(cancellationToken);
 
