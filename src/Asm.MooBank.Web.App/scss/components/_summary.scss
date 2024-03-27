@@ -4,6 +4,12 @@
     font-size: 1.4rem;
 
     .key-value {
+        display: flex;
+        align-items: center;
+        >:first-child{
+            font-family: var(--bs-font-sans-serif);
+            font-size: 1.2rem;
+        }
         >:last-child {
             font-weight: bold;
         }
