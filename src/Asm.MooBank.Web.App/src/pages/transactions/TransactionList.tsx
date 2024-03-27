@@ -28,6 +28,10 @@ export const TransactionList: React.FC<TransactionListProps> = () => {
 
     const numberOfPages = getNumberOfPages(totalTransactions, pageSize);
 
+    if (transactions) {
+        console.debug("transactions",transactions[0].tags);
+    }
+
     return (
         <Table striped bordered={false} borderless className="transactions">
             <TransactionTableHead />

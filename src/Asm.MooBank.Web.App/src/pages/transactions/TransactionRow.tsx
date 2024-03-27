@@ -3,7 +3,7 @@ import { format } from "date-fns/format";
 import { parseISO } from "date-fns/parseISO";
 
 import { Transaction, TransactionOffset, TransactionSplit } from "models";
-import { TransactionDetails } from "./TransactionDetails";
+import { TransactionDetails } from "./details/TransactionDetails";
 import { TransactionTagPanel } from "./TransactionTagPanel";
 import { useUpdateTransaction } from "services";
 import { formatCurrency } from "@andrewmclachlan/mooapp";
@@ -15,7 +15,7 @@ export const TransactionRow: React.FC<TransactionRowProps> = (props) => {
     const updateTransaction = useUpdateTransaction();
 
     const onSave = (excludeFromReporting: boolean, notes?: string, splits?: TransactionSplit[], _offsetBy?: TransactionOffset[]) => {
-        
+
         updateTransaction.mutate([{ accountId: props.transaction.accountId, transactionId: props.transaction.id }, { excludeFromReporting, notes, splits}]);
         setShowDetails(false);
     }

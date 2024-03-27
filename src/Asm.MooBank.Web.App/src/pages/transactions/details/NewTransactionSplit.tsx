@@ -8,16 +8,11 @@ import { Transaction, TransactionSplit, emptyTransactionSplit } from "models";
 import { valueAsNumber } from "helpers";
 
 
-export const NewTransactionSplit: React.FC<NewTransactionSplitProps> = ({ transaction, splitTotal, onSave }) => {
+export const NewTransactionSplit: React.FC<NewTransactionSplitProps> = ({ transaction,  onSave }) => {
 
     const [split, setSplit] = useState(emptyTransactionSplit);
 
-    const maxSplit = Math.abs(transaction.amount) - splitTotal;
-
     const splitChanged = (split: TransactionSplit) => {
-
-        if (split.amount > maxSplit || split.amount < 0) split.amount = maxSplit;
-
         setSplit(split);
     };
 
@@ -32,7 +27,7 @@ export const NewTransactionSplit: React.FC<NewTransactionSplitProps> = ({ transa
                 <TransactionSplitTagPanel as="div" transactionId={transaction.id} onChange={(s) => splitChanged({ ...split, tags: s.tags })} alwaysShowEditPanel transactionSplit={split} />
             </Col>
             <Col sm={2}>
-                <Form.Control type="number" value={split.amount} required min={0} max={maxSplit} onChange={(s) => splitChanged({ ...split, amount: valueAsNumber(s.currentTarget) })} />
+                <Form.Control type="number" value={split.amount} required min={0} max={transaction.amount} onChange={(s) => splitChanged({ ...split, amount: valueAsNumber(s.currentTarget) })} />
                 <Form.Control.Feedback type="invalid">Please enter an amount</Form.Control.Feedback>
             </Col>
             <Col className="delete-offset">
@@ -44,6 +39,5 @@ export const NewTransactionSplit: React.FC<NewTransactionSplitProps> = ({ transa
 
 export interface NewTransactionSplitProps {
     transaction: Transaction;
-    splitTotal: number;
     onSave: (split: TransactionSplit) => void;
 }

@@ -1,48 +1,28 @@
 import { formatCurrency } from "@andrewmclachlan/mooapp";
+import { format } from "date-fns/format";
+import { parseISO } from "date-fns/parseISO";
 import { Transaction, TransactionOffset, TransactionSplit, getSplitTotal, isDebit } from "models";
 import React, { useEffect, useMemo, useState } from "react";
-import { Button, Col, Form, Modal, Row, } from "react-bootstrap";
-import { ExtraInfo } from "./ExtraInfo";
-import { NewTransactionSplit } from "./NewTransactionSplit";
-import { TransactionSplit as TransactionSplitPanel } from "./TransactionSplit";
-import { parseISO } from "date-fns/parseISO";
-import { format } from "date-fns/format";
+import { Button, Modal, OverlayTrigger, Popover } from "react-bootstrap";
+
+import { ExtraInfo } from "../ExtraInfo";
+import { TransactionSplits } from "./TransactionSplits";
 
 export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => {
 
     const transaction = useMemo(() => props.transaction, [props.transaction]);
     const [notes, setNotes] = useState(props.transaction.notes ?? "");
     const [excludeFromReporting, setExcludeFromReporting] = useState(props.transaction.excludeFromReporting ?? false);
-    const [splits, setSplits] = useState<TransactionSplit[]>(props.transaction.splits ?? []);
+    const [splits, setSplits] = useState<TransactionSplit[]>(transaction.splits ?? []);
 
     useEffect(() => {
         setNotes(props.transaction.notes ?? "");
         setExcludeFromReporting(props.transaction.excludeFromReporting ?? false);
-        setSplits(props.transaction.splits ?? []);
-    }, [transaction])
-
-    const addSplit = (split: TransactionSplit) => {
-        setSplits([...splits, split]);
-    }
-
-    const splitChanged = (split: TransactionSplit) => {
-
-        const splitTotal = getSplitTotal(splits) - split.amount;
-        const maxSplit = Math.abs(transaction.amount) - splitTotal;
-
-        if (split.amount > maxSplit || split.amount < 0) split.amount = maxSplit;
-
-        const newSplits = [...splits];
-        newSplits.splice(newSplits.findIndex(o => o.id === split.id), 1, split);
-        setSplits(newSplits);
-    };
-
-    const removeSplit = (id: string) => {
-        const newSplits = splits.filter(s => s.id !== id);
-        setSplits(newSplits);
-    }
+    }, [transaction]);
 
     if (!transaction) return null;
+
+    const invalidSplits = getSplitTotal(splits) !== Math.abs(transaction.amount);
 
     return (
         <Modal show={props.show} onHide={props.onHide} size="xl" className="transaction-details">
@@ -82,7 +62,7 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
                 <section>
                     <label className="form-label">Exclude from reporting</label>
                     <div>
-                    <input type="checkbox" className="form-check-input" checked={excludeFromReporting} onChange={(e) => setExcludeFromReporting(e.currentTarget.checked)} />
+                        <input type="checkbox" className="form-check-input" checked={excludeFromReporting} onChange={(e) => setExcludeFromReporting(e.currentTarget.checked)} />
                     </div>
                 </section>
                 <section className="notes">
@@ -91,34 +71,17 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
                 </section>
                 <section className="splits">
                     <h4>Tags{isDebit(props.transaction.transactionType) && <> &amp; Refunds</>}</h4>
-                    <Row>
-                        <Col sm={9}>
-                            <Form.Label>Tags</Form.Label>
-                        </Col>
-                        <Col sm={2}>
-                            <Form.Label>Amount</Form.Label>
-                        </Col>
-                    </Row>
-                    <div>
-                        {splits?.map((split) =>
-                            <React.Fragment key={split.id}>
-                                <TransactionSplitPanel key={split.id} transaction={transaction} split={split} splitChanged={splitChanged} removeSplit={removeSplit} />
-                            </React.Fragment>
-                        )}
-                    </div>
-                    <div>
-                        <Row>
-                            <Col sm={9}>
-                                <Form.Label>Split Transaction</Form.Label>
-                            </Col>
-                        </Row>
-                        <NewTransactionSplit transaction={transaction} splitTotal={getSplitTotal(splits)} onSave={addSplit} />
-                    </div>
+                    <TransactionSplits transaction={transaction} onChange={setSplits} />
                 </section>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={props.onHide}>Close</Button>
-                <Button variant="primary" onClick={() => { props.onSave(excludeFromReporting, notes, splits) }}>Save</Button>
+                {invalidSplits &&
+                <OverlayTrigger placement="top" overlay={<Popover><Popover.Body>The total of the splits must equal the transaction amount</Popover.Body></Popover>} >
+                    <div><Button variant="primary" disabled>Save</Button></div>
+                </OverlayTrigger>
+                }
+                {!invalidSplits && <Button variant="primary" onClick={() => { props.onSave(excludeFromReporting, notes, splits) }}>Save</Button>}
             </Modal.Footer>
         </Modal >
     );
