@@ -76,8 +76,8 @@ export const useUpdateTransaction = () => {
             queryClient.setQueryData<PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection], transactions);
 
         },
-        onError: (_error, [variables]) => {
-            queryClient.invalidateQueries({ queryKey: [transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection]});
+        onSettled: (_data, _error, [variables]) => {
+            queryClient.invalidateQueries({ queryKey: [transactionKey]});
         }
     });
 }
@@ -101,8 +101,8 @@ export const useAddTransactionTag = () => {
             queryClient.setQueryData<PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection], transactions);
 
         },
-        onError: (_error, variables) => {
-            queryClient.invalidateQueries({ queryKey: [transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection]});
+        onSettled: (_data, _error, variables) => {
+            queryClient.invalidateQueries({ queryKey: [transactionKey]});
         }
     });
 }
@@ -115,7 +115,7 @@ export const useRemoveTransactionTag = () => {
 
     return useApiDelete<TransactionTagVariables>((variables) => `api/accounts/${variables.accountId}/transactions/${variables.transactionId}/tag/${variables.tag.id}`, {
         onMutate: (variables) => {
-            
+
             const transactions = {...queryClient.getQueryData<PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection])};
             if (!transactions) return;
 
@@ -125,8 +125,8 @@ export const useRemoveTransactionTag = () => {
 
             queryClient.setQueryData<PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection], transactions);
         },
-        onError: (_error, variables) => {
-            queryClient.invalidateQueries({ queryKey: [transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection]});
+        onSettled: (_data, _error, variables) => {
+            queryClient.invalidateQueries({ queryKey: [transactionKey]});
         }
     });
 }
