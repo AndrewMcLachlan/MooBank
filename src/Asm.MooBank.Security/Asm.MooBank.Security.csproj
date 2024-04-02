@@ -6,7 +6,7 @@
     <PackageReference Include="Azure.Identity" Version="1.10.4" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="$(DotNetPackageVersion)" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="$(DotNetPackageVersion)" />
-    <PackageReference Include="Microsoft.Identity.Client" Version="4.59.0" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.60.0" />
   </ItemGroup>
 
   <ItemGroup>
