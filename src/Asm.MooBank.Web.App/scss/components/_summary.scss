@@ -1,17 +1,16 @@
 .summary {
 
-    font-family: var(--secondary-fonts);
-    font-size: 1.4rem;
+    font-size: 1.2rem;
 
     .key-value {
         display: flex;
         align-items: center;
         >:first-child{
-            font-family: var(--bs-font-sans-serif);
-            font-size: 1.2rem;
+            //font-size: 1.2rem;
+            font-weight: 300;
         }
         >:last-child {
-            font-weight: bold;
+            font-weight: 500;
         }
     }
 

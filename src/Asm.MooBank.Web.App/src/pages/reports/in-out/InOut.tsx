@@ -52,6 +52,7 @@ export const InOut: React.FC<InOutProps> = ({ accountId, period }) => {
                 scales: {
                     y: {
                         grid: {
+                            display: false,
                             color: colours.grid,
                         },
                     },

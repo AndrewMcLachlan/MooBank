@@ -1,8 +1,7 @@
 import { useTheme } from "@andrewmclachlan/mooapp"
 
 export const useChartColours = () => {
-    const stuff = useTheme();
-    console.debug(stuff);
+
     const { theme, defaultTheme } = useTheme();
     const themeName = theme.theme === "" ? defaultTheme.theme : theme.theme;
 

@@ -6,10 +6,6 @@
 @import "../scss/filterPanel";
 @import "../scss/transactions";
 
-@include h-all {
-    font-family: var(--secondary-fonts);
-}
-
 @media (prefers-color-scheme: dark) {
 
     body {
@@ -65,7 +61,7 @@
         position: absolute;
         right: 0.6rem;
         top: calc(1rem - 7px);
-        fill: hsl(0, 0%, 80%);
+        fill: hsl(0, 0%, 40%);
     }
 
     input:focus+svg {

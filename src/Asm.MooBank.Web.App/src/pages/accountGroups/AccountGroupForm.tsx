@@ -50,7 +50,7 @@ export const AccountGroupForm: React.FC<AccountGroupFormProps> = ({ accountGroup
     const breadcrumb: NavItem[] = !accountGroup ? [] : accountGroup?.id === emptyGuid ? [{text: "Create Account Group", route: "/account-groups/create"}] : [{text: accountGroup?.name, route: `/account-groups/${accountGroup?.id}/manage`}];
 
     return (
-        <Page title={`${verb} Account Group`} breadcrumbs={[{ text: "Manage Account Groups", route: "/account-groups"}, ...breadcrumb]}>
+        <Page title={`${verb} Group`} breadcrumbs={[{ text: "Groups", route: "/account-groups"}, ...breadcrumb]}>
             {accountGroup && <Section>
                 <Form onSubmit={handleSubmit}>
                     <FormRow>
