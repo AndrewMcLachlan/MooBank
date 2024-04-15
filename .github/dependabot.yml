@@ -1,4 +1,10 @@
 version: 2
+registries:
+  npm:
+    type: npm-registry
+    url: https://npm.pkg.github.com
+    token: ${{secreats.CROSS_REPO_PACKAGE_TOKEN}}
+    
 updates:
   - package-ecosystem: npm
     directory: /src/Asm.MooBank.Web.App
