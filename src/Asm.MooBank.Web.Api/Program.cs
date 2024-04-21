@@ -19,6 +19,7 @@ void AddServices(WebApplicationBuilder builder)
             new Asm.MooBank.Modules.Account.Module(),
             new Asm.MooBank.Modules.AccountGroup.Module(),
             new Asm.MooBank.Modules.AccountHolder.Module(),
+            new Asm.MooBank.Modules.Asset.Module(),
             new Asm.MooBank.Modules.Budget.Module(),
             new Asm.MooBank.Modules.Family.Module(),
             new Asm.MooBank.Modules.Institution.Module(),

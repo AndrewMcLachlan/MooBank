@@ -7,11 +7,11 @@ export const InOutWidget: React.FC = () => {
 
     const {data: accounts, isLoading } = useAccounts();
 
-    const id = accounts?.find(a => a.isPrimary === true)?.id ?? (accounts && accounts[0].id);
+    const account = accounts?.find(a => a.isPrimary === true) ?? accounts?.[0];
 
     return (
-        <Widget title={(accounts && `${accounts[0].name} - Last Month`) ?? 'Last Month'} size={2} className="report inout" loading={isLoading}>
-            {id && <InOut accountId={id} period={lastMonth} />}
+        <Widget title={(account && `${account.name} - Last Month`) ?? 'Last Month'} size={2} className="report inout" loading={isLoading}>
+            {account && <InOut accountId={account?.id} period={lastMonth} />}
         </Widget>
     );
 };

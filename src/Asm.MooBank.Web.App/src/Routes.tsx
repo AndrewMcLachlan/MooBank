@@ -39,11 +39,17 @@ export const routes: RouteDefinition = {
                     },
                 }
             },
-            stockCreate: { path: "/stock/create", element: <Pages.CreateStockHolding /> },
+            stockCreate: { path: "/shares/create", element: <Pages.CreateStockHolding /> },
             stock: {
-                path: "/stock/:id", element: <Pages.StockHolding />, children: {
+                path: "/shares/:id", element: <Pages.StockHolding />, children: {
                     manage: { path: "manage", element: <Pages.ManageStockHolding /> },
                     transactions: { path: "transactions", element: <Pages.StockTransactions /> },
+                }
+            },
+            assetCreate: { path: "/assets/create", element: <Pages.CreateAsset /> },
+            asset: {
+                path: "/assets/:id", element: <Pages.Asset />, children: {
+                    manage: { path: "manage", element: <Pages.ManageAsset /> },
                 }
             },
             budget: { path: "/budget", element: <Pages.Budget /> },

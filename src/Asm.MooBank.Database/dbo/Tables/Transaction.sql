@@ -5,7 +5,7 @@
     [AccountId] UNIQUEIDENTIFIER NOT NULL,
     [AccountHolderId] UNIQUEIDENTIFIER NULL,
     [TransactionTypeId] INT NULL,
-    [Amount] DECIMAL(10, 2) NOT NULL,
+    [Amount] DECIMAL(12, 4) NOT NULL,
     [NetAmount] AS dbo.TransactionNetAmount(TransactionId, Amount),
     [Description] VARCHAR(255) NULL,
     [Location] NVARCHAR(150) NULL,

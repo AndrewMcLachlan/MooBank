@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using Asm.Domain;
 
 namespace Asm.MooBank.Domain.Entities.Account;
 

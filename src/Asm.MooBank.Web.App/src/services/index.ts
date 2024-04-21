@@ -1,6 +1,7 @@
 export * from "./AccountService";
 export * from "./AccountGroupService";
 export * from "./AccountHolderService";
+export * from "./AssetService";
 export * from "./FamilyService";
 export * from "./ImportService";
 export * from "./InstitutionService";

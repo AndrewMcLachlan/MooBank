@@ -13,6 +13,7 @@ export interface NewStockHolding extends StockHoldingBase {
 export interface StockHolding extends StockHoldingBase {
     currentPrice: number;
     value: number;
+    gainLoss: number;
 }
 
 export const emptyStockHolding: NewStockHolding = {

@@ -24,7 +24,7 @@ export const ManageAccountGroups = () => {
                     <tr>
                         <th className="column-25">Name</th>
                         <th>Description</th>
-                        <th className="column-10 row-action">Show Position</th>
+                        <th className="column-10 row-action">Show Total</th>
                     </tr>
                 </thead>
                 <tbody>

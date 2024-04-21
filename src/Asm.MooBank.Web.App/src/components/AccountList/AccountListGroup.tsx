@@ -32,7 +32,7 @@ export const AccountListGroup: React.FC<AccountListGroupProps> = ({ accountGroup
         {accountGroup.position !== undefined && accountGroup.position !== null && <tfoot>
             <tr className="position">
                 <td className="d-none d-sm-table-cell" />
-                <td colSpan={2} className="d-none d-sm-table-cell">Position</td>
+                <td colSpan={2} className="d-none d-sm-table-cell">Total</td>
                 <td className="d-table-cell d-sm-none"></td>
                 <td className="amount number">{getBalanceString(accountGroup?.position)}</td>
             </tr>

@@ -15,13 +15,13 @@ internal class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
 
         entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
-        entity.Property(e => e.Amount).HasColumnType("decimal(10, 2)");
+        entity.Property(e => e.Amount).HasColumnType("decimal(12, 4)");
 
         entity.Property(e => e.Description)
             .HasMaxLength(255)
             .IsUnicode(false);
 
-        entity.Property(e => e.Amount).HasPrecision(10, 2);
+        entity.Property(e => e.Amount).HasPrecision(12, 4);
 
         entity.Property(e => e.NetAmount).HasComputedColumnSql();
 

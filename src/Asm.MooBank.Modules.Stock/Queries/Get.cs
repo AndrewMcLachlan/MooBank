@@ -10,7 +10,11 @@ internal class GetHandler(IQueryable<Domain.Entities.StockHolding.StockHolding> 
 {
     public async ValueTask<Models.StockHolding> Handle(Get query, CancellationToken cancellationToken)
     {
-        var entity = await accounts.Include(a => a.AccountHolders).ThenInclude(ah => ah.AccountGroup).SingleOrDefaultAsync(a => a.Id == query.Id, cancellationToken) ?? throw new NotFoundException();
+        var entity = await accounts.Include(a => a.AccountHolders).ThenInclude(ah => ah.AccountGroup)
+                                   .Include(a => a.AccountHolders).ThenInclude(ah => ah.AccountHolder)
+                                   .Include(a => a.AccountViewers).ThenInclude(ah => ah.AccountGroup)
+                                   .Include(a => a.AccountViewers).ThenInclude(ah => ah.AccountHolder)
+                                   .SingleOrDefaultAsync(a => a.Id == query.Id, cancellationToken) ?? throw new NotFoundException();
         security.AssertAccountPermission(entity);
         var account = entity.ToModel(AccountHolder.Id);
 

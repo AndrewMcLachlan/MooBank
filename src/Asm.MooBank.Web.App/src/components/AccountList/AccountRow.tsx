@@ -52,8 +52,11 @@ export const useAccountRowCommonState = (props: AccountRowProps) => {
     const onRowClick = () => {
 
         switch (props.account.accountType) {
-            case "Stock Holding":
-                navigate(`/stock/${props.account.id}`);
+            case "Asset":
+                navigate(`/assets/${props.account.id}`);
+                break;
+            case "Shares":
+                navigate(`/shares/${props.account.id}`);
                 break;
             default:
                 navigate(`/accounts/${props.account.id}`);
@@ -65,4 +68,3 @@ export const useAccountRowCommonState = (props: AccountRowProps) => {
         onRowClick,
     };
 }
-

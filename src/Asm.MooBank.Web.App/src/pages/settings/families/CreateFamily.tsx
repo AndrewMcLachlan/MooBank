@@ -24,7 +24,7 @@ export const CreateFamily: React.FC = () => {
     }
 
     return (
-        <Page title="Create Stock Holding" breadcrumbs={[{ text: "Accounts", route: "/accounts" }, { text: "Create Stock Holding", route: "/stock/create" }]}>
+        <Page title="Create Shares" breadcrumbs={[{ text: "Accounts", route: "/accounts" }, { text: "Create Shares", route: "/shares/create" }]}>
             <Form className="section" onSubmit={handleSubmit}>
                 <Form.Group controlId="accountName" >
                     <Form.Label>Name</Form.Label>

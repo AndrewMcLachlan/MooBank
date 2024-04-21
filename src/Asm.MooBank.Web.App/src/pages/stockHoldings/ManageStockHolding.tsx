@@ -15,7 +15,7 @@ export const ManageStockHolding: React.FC = () => {
     const updateStockHolding = useUpdateStockHolding();
 
     const currentStockHolding = useStockHolding();
-    
+
     useEffect(() => {
         setStockHolding(currentStockHolding);
     }, [currentStockHolding]);
@@ -33,7 +33,7 @@ export const ManageStockHolding: React.FC = () => {
     if (!stockHolding) return null;
 
     return (
-        <StockHoldingPage title="Manage" breadcrumbs={[{ text: "Manage", route: `/stock/${stockHolding.id}/manage` }]}>
+        <StockHoldingPage title="Manage" breadcrumbs={[{ text: "Manage", route: `/shares/${stockHolding.id}/manage` }]}>
             <Form className="section" onSubmit={handleSubmit}>
                 <Form.Group controlId="accountName" >
                     <Form.Label>Name</Form.Label>

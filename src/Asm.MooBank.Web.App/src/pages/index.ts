@@ -1,6 +1,7 @@
 export * from "./accounts";
 export * from "./accountHolder";
 export * from "./accountGroups";
+export * from "./assets";
 export * from "./budget";
 export * from "./createAccount";
 export * from "./dashboard";

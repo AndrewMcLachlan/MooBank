@@ -19,7 +19,7 @@ SettingsPage.defaultProps = {
     breadcrumbs: []
 }
 
-const getMenuItems = (navItems: NavItem[]) => {
+const getMenuItems = (navItems: (ReactNode | NavItem)[]) => {
 
     const items: (NavItem | ReactNode)[] = [
         { route: `/settings/institutions`, text: "Institutions", image: <Sliders />  },

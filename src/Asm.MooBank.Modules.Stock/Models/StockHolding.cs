@@ -9,6 +9,8 @@ public record StockHolding : Account
 
     public decimal CurrentValue { get; init; }
 
+    public decimal GainLoss { get; init; }
+
     public bool ShareWithFamily { get; init; }
 }
 
@@ -21,6 +23,7 @@ public static class StockHoldingExtensions
         Symbol = account.Symbol,
         Description = account.Description,
         CurrentBalance = account.CurrentValue,
+        GainLoss = account.GainLoss,
         BalanceDate = ((Domain.Entities.Account.Account)account).LastUpdated,
         AccountType = "Stock Holding",
         CurrentPrice = account.CurrentPrice,

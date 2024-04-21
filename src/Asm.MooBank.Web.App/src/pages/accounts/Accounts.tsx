@@ -1,14 +1,14 @@
 import React from "react";
 
 import { AccountList } from "../../components";
-import { Page } from "@andrewmclachlan/mooapp";
-import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { IconLinkButton, Page } from "@andrewmclachlan/mooapp";
 
 export const Accounts: React.FC = () => (
     <Page title="Accounts" breadcrumbs={[{ text: "Accounts", route: "/accounts" }]} actions={
-        [<Link key="create-account" className="btn btn-primary" to="/accounts/create"><FontAwesomeIcon icon="plus" />Add Account</Link>,
-        <Link key="crate-stock" className="btn btn-primary" to="/stock/create"><FontAwesomeIcon icon="plus" />Add Stock Holding</Link>
+        [
+            <IconLinkButton key="create-account" variant="primary" to="/accounts/create" icon="plus">Add Account</IconLinkButton>,
+            <IconLinkButton key="create-stock" variant="primary" className="btn btn-primary" to="/shares/create" icon="plus">Add Shares</IconLinkButton>,
+            <IconLinkButton key="create-asset" variant="primary" className="btn btn-primary" to="/assets/create" icon="plus" >Add Asset</IconLinkButton>,
         ]}>
         <AccountList />
     </Page>

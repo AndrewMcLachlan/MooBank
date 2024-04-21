@@ -25,7 +25,7 @@ AccountPage.defaultProps = {
     breadcrumbs: []
 }
 
-const getMenuItems = (account: InstitutionAccount | VirtualAccount, navItems: NavItem[]) => {
+const getMenuItems = (account: InstitutionAccount | VirtualAccount, navItems: (ReactNode | NavItem)[]) => {
 
     if (!account) return [];
 
@@ -46,7 +46,7 @@ const getMenuItems = (account: InstitutionAccount | VirtualAccount, navItems: Na
                 items.push({ route: `${baseRoute}/import`, text: "Import", image: <Import /> });
         }
     }
-    
+
         items.push({ route: `${baseRoute}/manage`, text: "Manage", image: <Sliders /> });
 
     if (navItems.length > 0) {

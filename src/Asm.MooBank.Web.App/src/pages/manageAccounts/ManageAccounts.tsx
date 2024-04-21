@@ -15,7 +15,7 @@ export const ManageAccounts = () => {
     const accountRows: React.ReactNode[] = data?.map(a => <AccountRow key={a.id} account={a} />) ?? [];
 
     return (
-        <Page title="Manage Accounts" breadcrumbs={[{ text: "Manage Accounts", route: "/accounts" }]} navItems={[{ text: "Create Account", route: "/accounts/create" }, { text: "Create Stock Holding", route: "/stock/create" }]}>
+        <Page title="Manage Accounts" breadcrumbs={[{ text: "Manage Accounts", route: "/accounts" }]} navItems={[{ text: "Create Account", route: "/accounts/create" }, { text: "Create Shares", route: "/shares/create" }]}>
             <Table className="accounts" hover>
                 <thead>
                     <tr>

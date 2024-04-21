@@ -15,12 +15,12 @@ export const AccountGroupForm: React.FC<AccountGroupFormProps> = ({ accountGroup
 
     const [name, setName] = useState(accountGroup?.name ?? "");
     const [description, setDescription] = useState(accountGroup?.description ?? "");
-    const [showPosition, setShowPosition] = useState(accountGroup?.showPosition ?? true);
+    const [showTotal, setShowTotal] = useState(accountGroup?.showPosition ?? true);
 
     useEffect(() => {
         setName(accountGroup?.name ?? "");
         setDescription(accountGroup?.description ?? "");
-        setShowPosition(accountGroup?.showPosition ?? true);
+        setShowTotal(accountGroup?.showPosition ?? true);
     }, [accountGroup]);
 
     const createAccountGroup = useCreateAccountGroup();
@@ -34,7 +34,7 @@ export const AccountGroupForm: React.FC<AccountGroupFormProps> = ({ accountGroup
             id: accountGroup!.id,
             name: name,
             description: description,
-            showPosition: showPosition,
+            showPosition: showTotal,
         };
 
         if (accountGroup!.id === emptyGuid) {
@@ -69,8 +69,8 @@ export const AccountGroupForm: React.FC<AccountGroupFormProps> = ({ accountGroup
                     </FormRow>
                     <FormRow>
                         <FormGroup controlId="showPosition">
-                            <Form.Label>Show Position for Group</Form.Label>
-                            <Form.Switch checked={showPosition} onChange={(e) => setShowPosition(e.currentTarget.checked)} />
+                            <Form.Label>Show Total for Group</Form.Label>
+                            <Form.Switch checked={showTotal} onChange={(e) => setShowTotal(e.currentTarget.checked)} />
                         </FormGroup>
                     </FormRow>
                     <Button type="submit" variant="primary">Save</Button>

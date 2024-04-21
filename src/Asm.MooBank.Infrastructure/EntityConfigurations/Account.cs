@@ -17,7 +17,7 @@ public class Account : IEntityTypeConfiguration<Domain.Entities.Account.Account>
         entity.Property(e => e.Id).ValueGeneratedOnAdd();
         entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
 
-        entity.Property(e => e.Balance).HasColumnType("decimal(10, 2)");
+        entity.Property(e => e.Balance).HasColumnType("decimal(12, 4)");
 
         entity.Property(e => e.Description).HasMaxLength(255);
 

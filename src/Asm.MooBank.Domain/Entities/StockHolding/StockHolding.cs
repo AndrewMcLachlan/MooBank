@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using Asm.Domain;
 using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Transactions;
 
@@ -15,6 +14,8 @@ public class StockHolding(Guid id) : Account.Account(id)
     public decimal CurrentPrice { get; set; }
 
     public decimal CurrentValue { get; set; }
+
+    public decimal GainLoss { get; set; }
 
     public new DateTimeOffset LastUpdated { get; set; } = DateTimeOffset.Now;
 

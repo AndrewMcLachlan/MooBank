@@ -7,9 +7,9 @@ internal class StockTransactionConfiguration : IEntityTypeConfiguration<StockTra
     {
         builder.HasKey(e => e.Id);
 
-        builder.Property(e => e.Price).HasColumnType("decimal(10, 2)");
+        builder.Property(e => e.Price).HasColumnType("decimal(12, 4)");
 
-        builder.Property(e => e.Fees).HasColumnType("decimal(10, 2)");
+        builder.Property(e => e.Fees).HasColumnType("decimal(12, 4)");
 
         builder.HasOne(e => e.AccountHolder).WithMany().HasForeignKey(e => e.AccountHolderId);
 

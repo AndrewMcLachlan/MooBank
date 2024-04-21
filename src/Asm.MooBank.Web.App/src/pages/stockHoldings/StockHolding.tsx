@@ -9,10 +9,10 @@ export const StockHolding = () => {
 
     const account = useStockHolding(id);
 
-    const match = useMatch("/stock/:id");
+    const match = useMatch("/shares/:id");
 
     if (match) {
-        return <Navigate to={`/stock/${id}/transactions`} replace />
+        return <Navigate to={`/shares/${id}/transactions`} replace />
     }
 
     return (

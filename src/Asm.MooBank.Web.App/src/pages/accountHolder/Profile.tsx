@@ -40,7 +40,7 @@ export const Profile: React.FC = () => {
 
     useEffect(() => {
         reset(me);
-    }, [me]);
+    }, [me, accounts]);
 
     const { register, setValue, getValues, reset, ...form } = useForm<AccountHolder>({ defaultValues: me  });
 

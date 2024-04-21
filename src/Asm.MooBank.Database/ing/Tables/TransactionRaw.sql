@@ -5,9 +5,9 @@
     [AccountId] UNIQUEIDENTIFIER NOT NULL,
     [Date] DATE NOT NULL DEFAULT SYSDATETIME(),
     [Description] VARCHAR(255) NULL,
-    [Credit] DECIMAL(10, 2) NULL,
-    [Debit] DECIMAL(10, 2) NULL,
-    [Balance] DECIMAL(10, 2) NULL,
+    [Credit] DECIMAL(12, 4) NULL,
+    [Debit] DECIMAL(12, 4) NULL,
+    [Balance] DECIMAL(12, 4) NULL,
     [Imported] DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
     CONSTRAINT [PK_TransactionRaw] PRIMARY KEY CLUSTERED (Id),
 )

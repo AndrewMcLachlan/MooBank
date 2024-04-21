@@ -11,7 +11,7 @@ internal class ExchangeRateConfiguration : IEntityTypeConfiguration<ExchangeRate
 
         builder.HasKey(e => e.Id);
 
-        builder.Property(e => e.Rate).HasColumnType("decimal(10, 2)");
+        builder.Property(e => e.Rate).HasColumnType("decimal(12, 4)");
 
         builder.Property(e => e.ReverseRate)
             .ValueGeneratedOnAddOrUpdate();

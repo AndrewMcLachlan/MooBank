@@ -13,7 +13,7 @@ internal class TransactionSplitConfiguration : IEntityTypeConfiguration<Transact
 
         entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
-        entity.Property(e => e.Amount).HasPrecision(10, 2);
+        entity.Property(e => e.Amount).HasPrecision(12, 4);
 
         entity.Property(e => e.NetAmount).HasComputedColumnSql();
 

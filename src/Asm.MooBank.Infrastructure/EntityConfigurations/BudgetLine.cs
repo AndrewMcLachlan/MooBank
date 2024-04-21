@@ -12,7 +12,7 @@ internal class BudgetLineConfiguration : IEntityTypeConfiguration<BudgetLine>
 
         entity.HasOne(x => x.Tag).WithMany().HasForeignKey(x => x.TagId);
 
-        entity.Property(x => x.Amount).HasPrecision(10, 2);
+        entity.Property(x => x.Amount).HasPrecision(12, 4);
 
         entity.Navigation(x => x.Tag).AutoInclude();
     }

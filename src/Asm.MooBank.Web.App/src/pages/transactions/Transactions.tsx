@@ -22,7 +22,7 @@ export const Transactions: React.FC = () => {
 
     const actions = !(account as InstitutionAccount).importerTypeId ? [
         <IconLinkButton key="add" variant="primary" icon="plus" to={`${route}/transactions/add`} relative="route">Add Transaction</IconLinkButton>,
-        <IconLinkButton key="adjust" variant="primary" customIcon={UpDownArrow} to={`${route}/balance`} relative="route">Adjust balance</IconLinkButton>
+        <IconLinkButton key="adjust" variant="primary" icon={UpDownArrow} to={`${route}/balance`} relative="route">Adjust balance</IconLinkButton>
     ] : [];
 
     return (

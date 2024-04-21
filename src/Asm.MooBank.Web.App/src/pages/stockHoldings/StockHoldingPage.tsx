@@ -13,7 +13,7 @@ export const StockHoldingPage: React.FC<PropsWithChildren<AccountPageProps>> = (
     if (!stockHolding) return null;
 
     return (
-        <Page title={`${stockHolding.name}${props.title && " : "}${props.title}`} actions={props.actions} navItems={getMenuItems(stockHolding, props.navItems ?? [])} breadcrumbs={[{ text: "Accounts", route: "/accounts" }, { text: stockHolding.name, route: `/accounts/${stockHolding.id}` }, ...props.breadcrumbs]}>
+        <Page title={`${stockHolding.name}${props.title && " : "}${props.title}`} actions={props.actions} navItems={getMenuItems(stockHolding, props.navItems ?? [])} breadcrumbs={[{ text: "Accounts", route: "/accounts" }, { text: stockHolding.name, route: `/shares/${stockHolding.id}` }, ...props.breadcrumbs]}>
             {children}
         </Page>
     )
@@ -25,15 +25,15 @@ StockHoldingPage.defaultProps = {
     breadcrumbs: []
 }
 
-const getMenuItems = (stockHolding: StockHolding, navItems: NavItem[]) => {
+const getMenuItems = (stockHolding: StockHolding, navItems: (ReactNode | NavItem)[]) => {
 
     if (!stockHolding) return [];
 
     const items: (NavItem | ReactNode)[] = [
-        { route: `/stock/${stockHolding.id}/transactions`, text: "Transactions", image: <Transaction /> },
+        { route: `/shares/${stockHolding.id}/transactions`, text: "Transactions", image: <Transaction /> },
     ];
 
-    items.push({ route: `/stock/${stockHolding.id}/manage`, text: "Manage", image: <Sliders /> });
+    items.push({ route: `/shares/${stockHolding.id}/manage`, text: "Manage", image: <Sliders /> });
 
     if (navItems.length > 0) {
         items.push(<NavItemDivider />);
