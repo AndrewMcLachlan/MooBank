@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Asm" Version="3.2.109" />
-    <PackageReference Include="Asm.Testing" Version="3.2.109" />
+    <PackageReference Include="Asm" Version="$(AsmPackageVersion)" />
+    <PackageReference Include="Asm.Testing" Version="$(AsmPackageVersion)" />
     <PackageReference Include="coverlet.collector" Version="6.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
