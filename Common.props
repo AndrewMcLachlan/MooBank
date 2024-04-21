@@ -7,8 +7,8 @@
     <Copyright>Copyright © Andrew McLachlan 2013. All rights reserved.</Copyright>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <AssemblyVersion>4.0.0.0</AssemblyVersion>
-    <FileVersion>2024.4.0</FileVersion>
-    <Version>2024.4.0</Version>
+    <FileVersion>$([System.DateTime]::Now.Year).$([System.DateTime]::Now.Month).0</FileVersion>
+    <Version>$([System.DateTime]::Now.Year).$([System.DateTime]::Now.Month).0</Version>
     <Product>MooBank</Product>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
