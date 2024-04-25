@@ -34,7 +34,7 @@ public class Rule : IEntityTypeConfiguration<Domain.Entities.Account.Rule>
 
         entity.HasOne(e => e.Account)
                     .WithMany(e => e.Rules)
-                    .HasForeignKey(e => e.AccountId);
+                    .HasForeignKey(e => e.InstrumentId);
 
     }
 }

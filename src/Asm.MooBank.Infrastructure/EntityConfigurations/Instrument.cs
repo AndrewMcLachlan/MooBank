@@ -2,7 +2,7 @@
 
 namespace Asm.MooBank.Infrastructure.EntityConfigurations;
 
-public class Instrument : IEntityTypeConfiguration<Domain.Entities.Account.Instrument>
+public class InstrumentConfiguration : IEntityTypeConfiguration<Domain.Entities.Account.Instrument>
 {
     public void Configure(EntityTypeBuilder<Domain.Entities.Account.Instrument> entity)
     {
@@ -10,7 +10,8 @@ public class Instrument : IEntityTypeConfiguration<Domain.Entities.Account.Instr
         entity.ToTable(t => t.HasTrigger("ComputedColumns"));
 
         entity.HasKey(e => e.Id);
-        entity.Property(e => e.Id).HasColumnName("Id");
+
+        entity.ToTable("Instrument", tb => tb.Property(e => e.Id).HasColumnName("Id"));
 
         entity.HasIndex(e => e.Name).IsUnique();
 
@@ -29,42 +30,13 @@ public class Instrument : IEntityTypeConfiguration<Domain.Entities.Account.Instr
             .IsRequired()
             .HasMaxLength(50);
 
-        entity.HasMany(p => p.AccountHolders)
-               .WithOne(e => e.Account)
+        entity.HasMany(p => p.Owners)
+               .WithOne(e => e.Instrument)
                .HasPrincipalKey(e => e.Id)
-               .HasForeignKey(p => p.AccountId);
+               .HasForeignKey(p => p.InstrumentId);
 
-        entity.HasMany(e => e.VirtualAccounts)
+        entity.HasMany(e => e.VirtualInstruments)
             .WithOne()
-            .HasForeignKey(e => e.ParentAccountId);
-
-        /*entity.HasMany(p => p.AccountHolders)
-              .WithMany(t => t.Accounts)
-              .UsingEntity<Domain.Entities.Account.AccountAccountHolder>(
-                   aah => aah.HasOne(aah2 => aah2.AccountHolder)
-                             .WithMany()
-                             .HasForeignKey(aah2 => aah2.AccountHolderId),
-                   aah => aah.HasOne(aah2 => aah2.Account)
-                             .WithMany()
-                              .HasForeignKey(aah2 => aah2.AccountId),
-                   aah =>
-                   {
-                       aah.HasKey(e => new { e.AccountId, e.AccountHolderId });
-                   });
-
-        entity.HasMany(p => p.AccountGroups)
-              .WithMany(t => t.Accounts)
-              .UsingEntity<Domain.Entities.Account.AccountAccountHolder>(
-                   aah => aah.HasOne(aah2 => aah2.AccountGroup)
-                             .WithMany()
-                             .HasForeignKey(aah2 => aah2.AccountGroupId),
-                   aah => aah.HasOne(aah2 => aah2.Account)
-                             .WithMany()
-                              .HasForeignKey(aah2 => aah2.AccountId),
-                   aah =>
-                   {
-                       aah.HasKey(e => new { e.AccountId, e.AccountHolderId });
-                   });
-        */
+            .HasForeignKey(e => e.ParentInstrumentId);
     }
 }

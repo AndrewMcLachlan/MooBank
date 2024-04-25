@@ -1,9 +1,9 @@
 ﻿using Asm.MooBank.Domain.Entities.Account;
-using IAccountRepository = Asm.MooBank.Domain.Entities.Account.IAccountRepository;
+using IInstrumentRepository = Asm.MooBank.Domain.Entities.Account.IInstrumentRepository;
 
 namespace Asm.MooBank.Importers;
 
-internal class ImporterFactory(IAccountRepository accountRepository, IInstitutionAccountRepository institutionAccountRepository, IServiceProvider services) : IImporterFactory
+internal class ImporterFactory(IInstrumentRepository accountRepository, IInstitutionAccountRepository institutionAccountRepository, IServiceProvider services) : IImporterFactory
 {
     public async Task<IImporter?> Create(Guid accountId, CancellationToken cancellationToken = default)
     {

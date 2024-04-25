@@ -2,7 +2,7 @@
 
 internal record Get() : IQuery<Models.AccountHolder>;
 
-internal class GetHandler(IQueryable<Domain.Entities.AccountHolder.AccountHolder> accountHolders, MooBank.Models.AccountHolder accountHolder) : IQueryHandler<Get, Models.AccountHolder>
+internal class GetHandler(IQueryable<Domain.Entities.AccountHolder.User> accountHolders, MooBank.Models.AccountHolder accountHolder) : IQueryHandler<Get, Models.AccountHolder>
 {
     public async ValueTask<Models.AccountHolder> Handle(Get query, CancellationToken cancellationToken)
     {

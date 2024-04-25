@@ -10,7 +10,7 @@ internal class UpdateRuleHandler(IRuleRepository transactionTagRuleRepository, I
     {
         var entity = await transactionTagRuleRepository.Get(request.Rule.Id, cancellationToken);
 
-        securityRepository.AssertAccountPermission(entity.AccountId);
+        securityRepository.AssertAccountPermission(entity.InstrumentId);
 
         entity.Contains = request.Rule.Contains;
         entity.Description = request.Rule.Description;

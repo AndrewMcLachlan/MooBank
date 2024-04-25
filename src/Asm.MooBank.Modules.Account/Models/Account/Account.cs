@@ -20,5 +20,5 @@ public abstract record Account
 
     public Guid? AccountGroupId { get; set; }
 
-    public IEnumerable<VirtualAccount> VirtualAccounts { get; set; } = [];
+    public IEnumerable<VirtualInstrument> VirtualAccounts { get; set; } = [];
 }

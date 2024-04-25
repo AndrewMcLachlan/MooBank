@@ -3,7 +3,7 @@ using Asm.MooBank.Services;
 
 namespace Asm.MooBank.Modules.Account.Models.Account;
 
-public record VirtualAccount : TransactionAccount
+public record VirtualInstrument : TransactionAccount
 {
     public Guid ParentId { get; set; }
 
@@ -12,12 +12,12 @@ public record VirtualAccount : TransactionAccount
 
 public static class VirtualAccountExtensions
 {
-    public static VirtualAccount ToModel(this Domain.Entities.Account.VirtualAccount account, ICurrencyConverter currencyConverter)
+    public static VirtualInstrument ToModel(this Domain.Entities.Account.VirtualInstrument account, ICurrencyConverter currencyConverter)
     {
-        return new VirtualAccount
+        return new VirtualInstrument
         {
             Id = account.Id,
-            ParentId = account.ParentAccountId,
+            ParentId = account.ParentInstrumentId,
             Name = account.Name,
             Description = account.Description,
             Currency = account.Currency,
@@ -30,12 +30,12 @@ public static class VirtualAccountExtensions
         };
     }
 
-    public static IEnumerable<VirtualAccount> ToModel(this IEnumerable<Domain.Entities.Account.VirtualAccount> accounts, ICurrencyConverter currencyConverter) =>
+    public static IEnumerable<VirtualInstrument> ToModel(this IEnumerable<Domain.Entities.Account.VirtualInstrument> accounts, ICurrencyConverter currencyConverter) =>
         accounts.Select(a => a.ToModel(currencyConverter));
 
-    public static Domain.Entities.Account.VirtualAccount ToEntity(this VirtualAccount account, Guid parentAccountId) => new(account.Id)
+    public static Domain.Entities.Account.VirtualInstrument ToEntity(this VirtualInstrument account, Guid parentInstrumentId) => new(account.Id)
     {
-        ParentAccountId = parentAccountId,
+        ParentInstrumentId = parentInstrumentId,
         Name = account.Name,
         Description = account.Description,
         Balance = account.CurrentBalance,

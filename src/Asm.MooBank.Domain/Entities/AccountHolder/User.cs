@@ -3,9 +3,9 @@
 namespace Asm.MooBank.Domain.Entities.AccountHolder;
 
 [AggregateRoot]
-public partial class AccountHolder(Guid id) : KeyedEntity<Guid>(id)
+public partial class User(Guid id) : KeyedEntity<Guid>(id)
 {
-    public AccountHolder() : this(default) { }
+    public User() : this(default) { }
 
     public required string EmailAddress { get; set; }
     public string? FirstName { get; set; }
@@ -17,9 +17,9 @@ public partial class AccountHolder(Guid id) : KeyedEntity<Guid>(id)
     public Guid? PrimaryAccountId { get; set; }
 
     [NotMapped]
-    public IEnumerable<Account.Instrument> Accounts => AccountAccountHolders?.Select(a => a.Account) ?? Enumerable.Empty<Account.Instrument>();
+    public IEnumerable<Account.Instrument> Instruments => InstrumentOwners?.Select(a => a.Instrument) ?? [];
 
-    public virtual ICollection<Account.AccountAccountHolder> AccountAccountHolders { get; set; } = new HashSet<Account.AccountAccountHolder>();
+    public virtual ICollection<Account.InstrumentOwner> InstrumentOwners { get; set; } = new HashSet<Account.InstrumentOwner>();
 
     public virtual ICollection<AccountHolderCard> Cards { get; set; } = new HashSet<AccountHolderCard>();
 

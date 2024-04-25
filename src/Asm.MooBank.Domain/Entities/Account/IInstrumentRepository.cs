@@ -2,7 +2,7 @@
 
 namespace Asm.MooBank.Domain.Entities.Account;
 
-public interface IAccountRepository : IDeletableRepository<Instrument, Guid>
+public interface IInstrumentRepository : IDeletableRepository<Instrument, Guid>
 {
     Task<InstitutionAccount> GetInstitutionAccount(Guid accountId, CancellationToken cancellationToken);
 

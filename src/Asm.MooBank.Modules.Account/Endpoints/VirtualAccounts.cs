@@ -16,16 +16,16 @@ internal class VirtualAccounts : EndpointGroupBase
 
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {
-        builder.MapQuery<GetForAccount, IEnumerable<VirtualAccount>>("/")
+        builder.MapQuery<GetForAccount, IEnumerable<VirtualInstrument>>("/")
             .WithNames("Get Virtual Accounts");
 
-        builder.MapQuery<Get, VirtualAccount>("/{virtualAccountId}")
+        builder.MapQuery<Get, VirtualInstrument>("/{virtualAccountId}")
             .WithNames("Get Virtual Account");
 
-        builder.MapPostCreate<Create, VirtualAccount>("/", "Get Virtual Account".ToMachine(), a => new { VirtualAccountId = a.Id }, CommandBinding.Parameters)
+        builder.MapPostCreate<Create, VirtualInstrument>("/", "Get Virtual Account".ToMachine(), a => new { VirtualAccountId = a.Id }, CommandBinding.Parameters)
             .WithNames("Create Virtual Account");
 
-        builder.MapPatchCommand<Update, VirtualAccount>("/{virtualAccountId}", CommandBinding.None)
+        builder.MapPatchCommand<Update, VirtualInstrument>("/{virtualAccountId}", CommandBinding.None)
             .WithNames("Update Virtual Account");
 
         builder.MapDelete<Delete>("/{virtualAccountId}")

@@ -1,8 +1,8 @@
 ﻿namespace Asm.MooBank.Domain.Entities.Account;
 
-public partial class VirtualAccount(Guid id) : TransactionAccount(id)
+public partial class VirtualInstrument(Guid id) : TransactionAccount(id)
 {
-    public Guid ParentAccountId { get; set; }
+    public Guid ParentInstrumentId { get; set; }
 
     public ICollection<RecurringTransaction> RecurringTransactions { get; set; } = new HashSet<RecurringTransaction>();
 

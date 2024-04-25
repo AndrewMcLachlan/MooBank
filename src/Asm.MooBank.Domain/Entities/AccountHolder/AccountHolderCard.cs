@@ -7,5 +7,5 @@ public class AccountHolderCard
 
     public required short Last4Digits { get; set; }
 
-    public AccountHolder AccountHolder { get; set; } = null!;
+    public User AccountHolder { get; set; } = null!;
 }

@@ -10,9 +10,9 @@ internal class GetForVirtualHandler(IQueryable<Domain.Entities.Account.Instrumen
     {
         security.AssertAccountPermission(query.AccountId);
 
-        var account = await accounts.Include(a => a.VirtualAccounts).ThenInclude(a => a.RecurringTransactions).SingleAsync(a => a.Id == query.AccountId, cancellationToken);
+        var account = await accounts.Include(a => a.VirtualInstruments).ThenInclude(a => a.RecurringTransactions).SingleAsync(a => a.Id == query.AccountId, cancellationToken);
 
-        var virtualAccount = account.VirtualAccounts.SingleOrDefault(v => v.Id == query.VirtualAccountId) ?? throw new NotFoundException();
+        var virtualAccount = account.VirtualInstruments.SingleOrDefault(v => v.Id == query.VirtualAccountId) ?? throw new NotFoundException();
 
         return virtualAccount.RecurringTransactions.ToModel();
     }

@@ -20,7 +20,7 @@ public record Update(Guid AccountId, Guid VirtualAccountId, Guid RecurringTransa
     }
 }
 
-internal class UpdateHandler(IAccountRepository accountRepository, IUnitOfWork unitOfWork, ISecurity security) : ICommandHandler<Update, Models.Recurring.RecurringTransaction>
+internal class UpdateHandler(IInstrumentRepository accountRepository, IUnitOfWork unitOfWork, ISecurity security) : ICommandHandler<Update, Models.Recurring.RecurringTransaction>
 {
     public async ValueTask<Models.Recurring.RecurringTransaction> Handle(Update command, CancellationToken cancellationToken)
     {
@@ -28,7 +28,7 @@ internal class UpdateHandler(IAccountRepository accountRepository, IUnitOfWork u
 
         var account = await accountRepository.Get(command.AccountId, new RecurringTransactionSpecification(), cancellationToken);
 
-        var virtualAccount = account.VirtualAccounts.SingleOrDefault(v => v.Id == command.VirtualAccountId) ?? throw new NotFoundException();
+        var virtualAccount = account.VirtualInstruments.SingleOrDefault(v => v.Id == command.VirtualAccountId) ?? throw new NotFoundException();
 
         var recurringTransaction = virtualAccount.RecurringTransactions.SingleOrDefault(rt => rt.Id == command.RecurringTransactionId) ?? throw new NotFoundException();
 

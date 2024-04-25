@@ -18,7 +18,7 @@ public class SecurityRepository(MooBankContext dataContext, IAuthorizationServic
     public void AssertAccountPermission(Guid accountId)
     {
         var virtualAccount = _mooBankContext.VirtualAccounts.Find(accountId);
-        var accountToCheck = (virtualAccount != null) ? virtualAccount.ParentAccountId : accountId;
+        var accountToCheck = (virtualAccount != null) ? virtualAccount.ParentInstrumentId : accountId;
 
         var authResult = _authorizationService.AuthorizeAsync(principalProvider.Principal!, accountToCheck, Policies.AccountViewer).Result;
 
@@ -55,7 +55,7 @@ public class SecurityRepository(MooBankContext dataContext, IAuthorizationServic
 
     public void AssertAccountGroupPermission(Guid accountGroupId)
     {
-        if (!_mooBankContext.AccountGroups.Any(a => a.Id == accountGroupId && a.OwnerId == accountHolder.Id))
+        if (!_mooBankContext.Groups.Any(a => a.Id == accountGroupId && a.OwnerId == accountHolder.Id))
         {
             throw new NotAuthorisedException("Not authorised to view this account group");
         }
@@ -91,7 +91,7 @@ public class SecurityRepository(MooBankContext dataContext, IAuthorizationServic
     }
 
     public async Task<IEnumerable<Guid>> GetAccountIds(CancellationToken cancellationToken = default) =>
-        await _mooBankContext.AccountAccountHolder.Where(aah => aah.AccountHolderId == accountHolder.Id).Select(aah => aah.AccountId).ToListAsync(cancellationToken);
+        await _mooBankContext.InstrumentOwners.Where(aah => aah.UserId == accountHolder.Id).Select(aah => aah.InstrumentId).ToListAsync(cancellationToken);
 
     public async Task AssertAdministrator(CancellationToken cancellationToken = default)
     {

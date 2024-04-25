@@ -4,16 +4,16 @@ using Asm.MooBank.Services;
 
 namespace Asm.MooBank.Modules.Account.Commands.VirtualAccount;
 
-public record Create(Guid AccountId, Models.Account.VirtualAccount VirtualAccount) : ICommand<Models.Account.VirtualAccount>;
+public record Create(Guid AccountId, Models.Account.VirtualInstrument VirtualAccount) : ICommand<Models.Account.VirtualInstrument>;
 
-internal class CreateHandler(Domain.Entities.Account.IAccountRepository accountRepository, Domain.Entities.Transactions.ITransactionRepository transactionRepository, ISecurity securityRepository, IUnitOfWork unitOfWork, ICurrencyConverter currencyConverter) : ICommandHandler<Create, Models.Account.VirtualAccount>
+internal class CreateHandler(Domain.Entities.Account.IInstrumentRepository accountRepository, Domain.Entities.Transactions.ITransactionRepository transactionRepository, ISecurity securityRepository, IUnitOfWork unitOfWork, ICurrencyConverter currencyConverter) : ICommandHandler<Create, Models.Account.VirtualInstrument>
 {
-    private readonly Domain.Entities.Account.IAccountRepository _accountRepository = accountRepository;
+    private readonly Domain.Entities.Account.IInstrumentRepository _accountRepository = accountRepository;
     private readonly Domain.Entities.Transactions.ITransactionRepository _transactionRepository = transactionRepository;
     private readonly ISecurity _security = securityRepository;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async ValueTask<Models.Account.VirtualAccount> Handle(Create request, CancellationToken cancellationToken)
+    public async ValueTask<Models.Account.VirtualInstrument> Handle(Create request, CancellationToken cancellationToken)
     {
         _security.AssertAccountPermission(request.AccountId);
         var account = await _accountRepository.GetInstitutionAccount(request.AccountId, cancellationToken);
@@ -34,7 +34,7 @@ internal class CreateHandler(Domain.Entities.Account.IAccountRepository accountR
             });
         }
 
-        account.VirtualAccounts.Add(entity);
+        account.VirtualInstruments.Add(entity);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

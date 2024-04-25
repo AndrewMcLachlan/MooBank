@@ -21,7 +21,7 @@ public record Create(Guid AccountId, string Contains, string? Description, IEnum
     }
 }
 
-internal class CreateHandler(IAccountRepository accountRepository, ITagRepository tagRepository, ISecurity security, IUnitOfWork unitOfWork) : ICommandHandler<Create, Models.Rule>
+internal class CreateHandler(IInstrumentRepository accountRepository, ITagRepository tagRepository, ISecurity security, IUnitOfWork unitOfWork) : ICommandHandler<Create, Models.Rule>
 {
     public async ValueTask<Models.Rule> Handle(Create request, CancellationToken cancellationToken)
     {
@@ -31,7 +31,7 @@ internal class CreateHandler(IAccountRepository accountRepository, ITagRepositor
 
         var rule = new Domain.Entities.Account.Rule
         {
-            AccountId = request.AccountId,
+            InstrumentId = request.AccountId,
             Contains = request.Contains,
             Description = request.Description,
             Tags = (await tagRepository.Get(request.Tags.Select(t => t.Id), cancellationToken)).ToList(),

@@ -10,7 +10,7 @@ CREATE TABLE [dbo].[StockTransaction]
     Fees DECIMAL(12, 4) NOT NULL,
     TransactionDate DATETIMEOFFSET(0) NOT NULL,
     CONSTRAINT PK_StockTransaction PRIMARY KEY CLUSTERED (Id),
-    CONSTRAINT FK_StockTransaction_StockHolding FOREIGN KEY (AccountId) REFERENCES StockHolding(AccountId),
+    CONSTRAINT FK_StockTransaction_StockHolding FOREIGN KEY (AccountId) REFERENCES StockHolding(InstrumentId),
     CONSTRAINT FK_StockTransaction_TransactionType FOREIGN KEY (TransactionTypeId) REFERENCES TransactionType(TransactionTypeId),
-    CONSTRAINT [FK_StockTransaction_AccountHolder] FOREIGN KEY ([AccountHolderId]) REFERENCES [AccountHolder]([AccountHolderId]),
+    CONSTRAINT [FK_StockTransaction_AccountHolder] FOREIGN KEY ([AccountHolderId]) REFERENCES [User]([Id]),
 )

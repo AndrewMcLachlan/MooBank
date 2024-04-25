@@ -26,7 +26,7 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
     private readonly ITransactionRawRepository _transactionRawRepository = transactionRawRepository;
     private readonly ITransactionRepository _transactionRepository = transactionRepository;
     private readonly ILogger<IngImporter> _logger = logger;
-    private readonly Dictionary<short, AccountHolder> _accountHolders = [];
+    private readonly Dictionary<short, User> _accountHolders = [];
 
     public async Task<MooBank.Models.TransactionImportResult> Import(Guid accountId, Stream contents, CancellationToken cancellationToken = default)
     {
@@ -206,11 +206,11 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
         }*/
     }
 
-    private async ValueTask<AccountHolder?> GetAccountHolder(short? last4Digits, CancellationToken cancellationToken)
+    private async ValueTask<User?> GetAccountHolder(short? last4Digits, CancellationToken cancellationToken)
     {
         if (last4Digits == null) return null;
 
-        if (!_accountHolders.TryGetValue(last4Digits.Value, out AccountHolder? accountHolder))
+        if (!_accountHolders.TryGetValue(last4Digits.Value, out User? accountHolder))
         {
             accountHolder = await _accountHolderRepository.GetByCard(last4Digits.Value, cancellationToken);
             if (accountHolder == null) return null;

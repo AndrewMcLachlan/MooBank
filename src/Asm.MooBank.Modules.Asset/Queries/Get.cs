@@ -10,10 +10,10 @@ internal class GetHandler(IQueryable<Domain.Entities.Asset.Asset> accounts, Acco
 {
     public async ValueTask<Models.Asset> Handle(Get query, CancellationToken cancellationToken)
     {
-        var entity = await accounts.Include(a => a.AccountHolders).ThenInclude(ah => ah.AccountGroup)
-                                   .Include(a => a.AccountHolders).ThenInclude(ah => ah.AccountHolder)
-                                   .Include(a => a.AccountViewers).ThenInclude(ah => ah.AccountGroup)
-                                   .Include(a => a.AccountViewers).ThenInclude(ah => ah.AccountHolder)
+        var entity = await accounts.Include(a => a.Owners).ThenInclude(ah => ah.Group)
+                                   .Include(a => a.Owners).ThenInclude(ah => ah.User)
+                                   .Include(a => a.Viewers).ThenInclude(ah => ah.Group)
+                                   .Include(a => a.Viewers).ThenInclude(ah => ah.User)
                                    .SingleOrDefaultAsync(a => a.Id == query.Id, cancellationToken) ?? throw new NotFoundException();
         security.AssertAccountPermission(entity);
         var account = entity.ToModel(AccountHolder.Id);

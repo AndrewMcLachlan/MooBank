@@ -56,8 +56,8 @@ public static class InstitutionAccountExtensions
         ShareWithFamily = account.ShareWithFamily,
         IncludeInBudget = account.IncludeInBudget,
         InstitutionId = account.InstitutionId,
-        VirtualAccounts = account.VirtualAccounts != null && account.VirtualAccounts.Count != 0 ?
-                          account.VirtualAccounts.OrderBy(v => v.Name).Select(v => v.ToModel(currencyConverter))
+        VirtualAccounts = account.VirtualInstruments != null && account.VirtualInstruments.Count != 0 ?
+                          account.VirtualInstruments.OrderBy(v => v.Name).Select(v => v.ToModel(currencyConverter))
                                                  .Union(Remaining(account, currencyConverter)).ToArray() : [],
     };
 
@@ -94,11 +94,11 @@ public static class InstitutionAccountExtensions
         return entities.Select(t => t.ToModel(currencyConverter));
     }
 
-    private static IEnumerable<VirtualAccount> Remaining(Domain.Entities.Account.InstitutionAccount account, ICurrencyConverter currencyConverter)
+    private static IEnumerable<VirtualInstrument> Remaining(Domain.Entities.Account.InstitutionAccount account, ICurrencyConverter currencyConverter)
     {
-        var remainingBalance = account.Balance - account.VirtualAccounts.Sum(v => v.Balance);
+        var remainingBalance = account.Balance - account.VirtualInstruments.Sum(v => v.Balance);
 
-        yield return new VirtualAccount
+        yield return new VirtualInstrument
         {
             Id = Guid.Empty,
             Name = "Remaining",

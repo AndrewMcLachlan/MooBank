@@ -5,7 +5,7 @@ namespace Asm.MooBank.Modules.Account.Commands.Recurring;
 
 public record Delete(Guid AccountId, Guid RecurringTransactionId) : ICommand;
 
-internal class DeleteHandler(IAccountRepository accountRepository, IUnitOfWork unitOfWork, ISecurity security) : ICommandHandler<Delete>
+internal class DeleteHandler(IInstrumentRepository accountRepository, IUnitOfWork unitOfWork, ISecurity security) : ICommandHandler<Delete>
 {
     public async ValueTask Handle(Delete command, CancellationToken cancellationToken)
     {
@@ -13,7 +13,7 @@ internal class DeleteHandler(IAccountRepository accountRepository, IUnitOfWork u
 
         var account = await accountRepository.Get(command.AccountId, new RecurringTransactionSpecification(), cancellationToken);
 
-        var recurringTransaction = account.VirtualAccounts.SelectMany(v => v.RecurringTransactions).SingleOrDefault(r => r.Id == command.RecurringTransactionId) ?? throw new NotFoundException();
+        var recurringTransaction = account.VirtualInstruments.SelectMany(v => v.RecurringTransactions).SingleOrDefault(r => r.Id == command.RecurringTransactionId) ?? throw new NotFoundException();
 
         recurringTransaction.VirtualAccount.RecurringTransactions.Remove(recurringTransaction);
 

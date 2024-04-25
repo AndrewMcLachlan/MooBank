@@ -7,7 +7,7 @@ namespace Asm.MooBank.Infrastructure.Repositories;
 
 public class InstitutionAccountRepository(MooBankContext dataContext, AccountHolder accountHolder) : RepositoryDeleteBase<InstitutionAccount, Guid>(dataContext), IInstitutionAccountRepository
 {
-    protected override IQueryable<InstitutionAccount> GetById(Guid id) => Entities.Include(a => a.AccountHolders).Include(t => t.ImportAccount).ThenInclude(i => i!.ImporterType).Where(a => a.Id == id && a.AccountHolders.Any(ah => ah.AccountHolderId == accountHolder.Id || (a.ShareWithFamily && ah.AccountHolder.FamilyId == accountHolder.FamilyId)));
+    protected override IQueryable<InstitutionAccount> GetById(Guid id) => Entities.Include(a => a.Owners).Include(t => t.ImportAccount).ThenInclude(i => i!.ImporterType).Where(a => a.Id == id && a.Owners.Any(ah => ah.UserId == accountHolder.Id || (a.ShareWithFamily && ah.User.FamilyId == accountHolder.FamilyId)));
 
     public async Task<IEnumerable<ImporterType>> GetImporterTypes(CancellationToken cancellationToken = default) => await Context.Set<ImporterType>().ToListAsync(cancellationToken);
 

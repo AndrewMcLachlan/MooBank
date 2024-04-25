@@ -1,7 +1,7 @@
 ﻿using Asm.MooBank.Domain.Entities.Transactions.Events;
 
 namespace Asm.MooBank.Domain.Entities.Account.EventHandlers;
-internal class TransactionAddedHandler(IAccountRepository accountRepository) : IDomainEventHandler<TransactionAddedEvent>
+internal class TransactionAddedHandler(IInstrumentRepository accountRepository) : IDomainEventHandler<TransactionAddedEvent>
 {
     public async Task Handle(TransactionAddedEvent request, CancellationToken cancellationToken)
     {

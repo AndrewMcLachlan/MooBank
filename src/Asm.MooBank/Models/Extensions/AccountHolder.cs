@@ -2,7 +2,7 @@
 
 public static class AccountHolderExtensions
 {
-    public static AccountHolder ToModel(this Domain.Entities.AccountHolder.AccountHolder accountHolder)
+    public static AccountHolder ToModel(this Domain.Entities.AccountHolder.User accountHolder)
     {
         return new AccountHolder
         {

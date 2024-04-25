@@ -8,11 +8,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using IAccountRepository = Asm.MooBank.Domain.Entities.Account.IAccountRepository;
+using IInstrumentRepository = Asm.MooBank.Domain.Entities.Account.IInstrumentRepository;
 
 namespace Asm.MooBank.Modules.Account.Commands.VirtualAccount;
 
-public record Update(Guid AccountId, Guid VirtualAccountId, string Name, string Description, decimal CurrentBalance) : ICommand<Models.Account.VirtualAccount>
+public record Update(Guid AccountId, Guid VirtualAccountId, string Name, string Description, decimal CurrentBalance) : ICommand<Models.Account.VirtualInstrument>
 {
     public static async ValueTask<Update?> BindAsync(HttpContext httpContext)
     {
@@ -26,28 +26,28 @@ public record Update(Guid AccountId, Guid VirtualAccountId, string Name, string 
     }
 }
 
-internal class UpdateHandler(IAccountRepository accountRepository, ITransactionRepository transactionRepository, ISecurity security, IUnitOfWork unitOfWork, ICurrencyConverter currencyConverter) : ICommandHandler<Update, Models.Account.VirtualAccount>
+internal class UpdateHandler(IInstrumentRepository instrumentRepository, ITransactionRepository transactionRepository, ISecurity security, IUnitOfWork unitOfWork, ICurrencyConverter currencyConverter) : ICommandHandler<Update, Models.Account.VirtualInstrument>
 {
-    private readonly IAccountRepository _accountRepository = accountRepository;
+    private readonly IInstrumentRepository _accountRepository = instrumentRepository;
     private readonly ITransactionRepository _transactionRepository = transactionRepository;
 
-    public async ValueTask<Models.Account.VirtualAccount> Handle(Update command, CancellationToken cancellationToken)
+    public async ValueTask<Models.Account.VirtualInstrument> Handle(Update command, CancellationToken cancellationToken)
     {
         security.AssertAccountPermission(command.AccountId);
 
-        var parentAccount = await _accountRepository.Get(command.AccountId, new VirtualAccountSpecification(), cancellationToken);
+        var parentInstrument = await _accountRepository.Get(command.AccountId, new VirtualAccountSpecification(), cancellationToken);
 
-        var account = parentAccount.VirtualAccounts.SingleOrDefault(a => a.Id == command.VirtualAccountId) ?? throw new NotFoundException();
+        var instrument = parentInstrument.VirtualInstruments.SingleOrDefault(a => a.Id == command.VirtualAccountId) ?? throw new NotFoundException();
 
-        account.Name = command.Name;
-        account.Description = command.Description;
+        instrument.Name = command.Name;
+        instrument.Description = command.Description;
 
-        var amount = account.Balance - command.CurrentBalance;
+        var amount = instrument.Balance - command.CurrentBalance;
 
         //TODO: Should be done via domain event
         _transactionRepository.Add(new Domain.Entities.Transactions.Transaction
         {
-            Account = account,
+            Account = instrument,
             Amount = amount,
             Description = "Balance adjustment",
             Source = "Web",
@@ -55,10 +55,10 @@ internal class UpdateHandler(IAccountRepository accountRepository, ITransactionR
             TransactionType = amount > 0 ? TransactionType.BalanceAdjustmentCredit : TransactionType.BalanceAdjustmentDebit,
         });
 
-        account.Balance = command.CurrentBalance;
+        instrument.Balance = command.CurrentBalance;
 
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        return account.ToModel(currencyConverter);
+        return instrument.ToModel(currencyConverter);
     }
 }

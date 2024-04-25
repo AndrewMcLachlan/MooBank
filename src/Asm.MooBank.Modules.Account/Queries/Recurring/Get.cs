@@ -11,8 +11,8 @@ internal class GetHandler(IQueryable<Domain.Entities.Account.Instrument> account
     {
         security.AssertAccountPermission(query.AccountId);
 
-        var account = await accounts.Include(a => a.VirtualAccounts).ThenInclude(a => a.RecurringTransactions).SingleAsync(a => a.Id == query.AccountId, cancellationToken);
+        var account = await accounts.Include(a => a.VirtualInstruments).ThenInclude(a => a.RecurringTransactions).SingleAsync(a => a.Id == query.AccountId, cancellationToken);
 
-        return account.VirtualAccounts.SelectMany(v => v.RecurringTransactions).SingleOrDefault(r => r.Id == query.RecurringTransactionId)?.ToModel() ?? throw new NotFoundException();
+        return account.VirtualInstruments.SelectMany(v => v.RecurringTransactions).SingleOrDefault(r => r.Id == query.RecurringTransactionId)?.ToModel() ?? throw new NotFoundException();
     }
 }

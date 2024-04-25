@@ -3,7 +3,7 @@ using Asm.MooBank.Domain.Entities.Account;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
-public class AccountRepository(MooBankContext dataContext) : Asm.Domain.Infrastructure.RepositoryDeleteBase<MooBankContext, Instrument, Guid>(dataContext), IAccountRepository
+public class InstrumentRepository(MooBankContext dataContext) : Asm.Domain.Infrastructure.RepositoryDeleteBase<MooBankContext, Instrument, Guid>(dataContext), IInstrumentRepository
 {
     public override void Delete(Guid id)
     {

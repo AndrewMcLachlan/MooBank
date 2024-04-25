@@ -1,10 +1,10 @@
 ﻿CREATE TABLE [dbo].[TransactionAccount]
 (
-    [AccountId] UNIQUEIDENTIFIER NOT NULL,
-    [LastTransaction] AS dbo.LastTransaction(AccountId),
-    [CalculatedBalance] AS dbo.AccountBalance(AccountId),
-    CONSTRAINT PK_TransactionAccount PRIMARY KEY CLUSTERED (AccountId),
-    CONSTRAINT FK_TransactionAccount_Account FOREIGN KEY (AccountId) REFERENCES [Instrument]([Id]),
+    [InstrumentId] UNIQUEIDENTIFIER NOT NULL,
+    [LastTransaction] AS dbo.LastTransaction([InstrumentId]),
+    [CalculatedBalance] AS dbo.AccountBalance([InstrumentId]),
+    CONSTRAINT PK_TransactionAccount PRIMARY KEY CLUSTERED ([InstrumentId]),
+    CONSTRAINT FK_TransactionAccount_Account FOREIGN KEY ([InstrumentId]) REFERENCES [Instrument]([Id]),
 )
 
 GO

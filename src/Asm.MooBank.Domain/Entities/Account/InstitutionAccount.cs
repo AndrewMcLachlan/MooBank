@@ -24,17 +24,17 @@ public class InstitutionAccount(Guid id) : TransactionAccount(id)
     public virtual Institution.Institution Institution { get; set; } = null!;
 
     [NotMapped]
-    public IEnumerable<AccountAccountViewer> ValidAccountViewers
+    public IEnumerable<InstrumentViewer> ValidAccountViewers
     {
         get
         {
             if (!ShareWithFamily) return [];
-            var familyIds = AccountHolders.Select(a => a.AccountHolder.FamilyId).Distinct();
-            return AccountViewers.Where(a => familyIds.Contains(a.AccountHolder.FamilyId));
+            var familyIds = Owners.Select(a => a.User.FamilyId).Distinct();
+            return Viewers.Where(a => familyIds.Contains(a.User.FamilyId));
         }
     }
 
     public override Group.Group? GetAccountGroup(Guid accountHolderId) =>
         base.GetAccountGroup(accountHolderId) ??
-        ValidAccountViewers.Where(a => a.AccountHolderId == accountHolderId).Select(aah => aah.AccountGroup).SingleOrDefault();
+        ValidAccountViewers.Where(a => a.UserId == accountHolderId).Select(aah => aah.Group).SingleOrDefault();
 }

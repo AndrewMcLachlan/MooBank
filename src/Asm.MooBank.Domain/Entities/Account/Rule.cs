@@ -15,7 +15,7 @@ public partial class Rule : KeyedEntity<int>
 
     public string? Description { get; set; }
 
-    public Guid AccountId { get; set; }
+    public Guid InstrumentId { get; set; }
 
     public required string Contains { get; set; }
 

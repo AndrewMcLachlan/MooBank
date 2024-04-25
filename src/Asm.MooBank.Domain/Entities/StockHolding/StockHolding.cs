@@ -22,17 +22,17 @@ public class StockHolding(Guid id) : Account.Instrument(id)
     public ICollection<StockTransaction> Transactions { get; set; } = [];
 
     [NotMapped]
-    public IEnumerable<AccountAccountViewer> ValidAccountViewers
+    public IEnumerable<InstrumentViewer> ValidAccountViewers
     {
         get
         {
             if (!ShareWithFamily) return [];
-            var familyIds = base.AccountHolders.Select(a => a.AccountHolder.FamilyId).Distinct();
-            return AccountViewers.Where(a => familyIds.Contains(a.AccountHolder.FamilyId));
+            var familyIds = base.Owners.Select(a => a.User.FamilyId).Distinct();
+            return Viewers.Where(a => familyIds.Contains(a.User.FamilyId));
         }
     }
 
     public override Group.Group? GetAccountGroup(Guid accountHolderId) =>
         base.GetAccountGroup(accountHolderId) ??
-        ValidAccountViewers.Where(a => a.AccountHolderId == accountHolderId).Select(aah => aah.AccountGroup).SingleOrDefault();
+        ValidAccountViewers.Where(a => a.UserId == accountHolderId).Select(aah => aah.Group).SingleOrDefault();
 }

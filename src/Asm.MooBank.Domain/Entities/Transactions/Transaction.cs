@@ -43,7 +43,7 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
 
     public virtual Account.TransactionAccount Account { get; set; } = null!;
 
-    public virtual AccountHolder.AccountHolder? AccountHolder { get; set; }
+    public virtual AccountHolder.User? AccountHolder { get; set; }
 
     public virtual ICollection<TransactionOffset> OffsetFor { get; set; } = new HashSet<TransactionOffset>();
     #endregion

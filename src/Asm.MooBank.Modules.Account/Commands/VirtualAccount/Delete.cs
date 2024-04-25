@@ -1,13 +1,13 @@
 ﻿using Asm.MooBank.Commands;
-using IAccountRepository = Asm.MooBank.Domain.Entities.Account.IAccountRepository;
+using IInstrumentRepository = Asm.MooBank.Domain.Entities.Account.IInstrumentRepository;
 
 namespace Asm.MooBank.Modules.Account.Commands.VirtualAccount;
 
 public record Delete(Guid AccountId, Guid VirtualAccountId) : ICommand;
 
-internal class DeleteHandler(IAccountRepository accountRepository, MooBank.Models.AccountHolder accountHolder, ISecurity security, IUnitOfWork unitOfWork) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Delete>
+internal class DeleteHandler(IInstrumentRepository accountRepository, MooBank.Models.AccountHolder accountHolder, ISecurity security, IUnitOfWork unitOfWork) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Delete>
 {
-    private readonly IAccountRepository _accountRepository = accountRepository;
+    private readonly IInstrumentRepository _accountRepository = accountRepository;
 
     public async ValueTask Handle(Delete request, CancellationToken cancellationToken)
     {
@@ -20,9 +20,9 @@ internal class DeleteHandler(IAccountRepository accountRepository, MooBank.Model
             throw new InvalidOperationException("Cannot delete virtual account on non-institution account.");
         }
 
-        var virtualAccount = institutionAccount.VirtualAccounts.SingleOrDefault(va => va.Id == request.VirtualAccountId) ?? throw new NotFoundException("Virtual Account not found");
+        var virtualAccount = institutionAccount.VirtualInstruments.SingleOrDefault(va => va.Id == request.VirtualAccountId) ?? throw new NotFoundException("Virtual Account not found");
 
-        institutionAccount.VirtualAccounts.Remove(virtualAccount);
+        institutionAccount.VirtualInstruments.Remove(virtualAccount);
 
         await UnitOfWork.SaveChangesAsync(cancellationToken);
     }

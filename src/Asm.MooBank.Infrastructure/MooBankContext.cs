@@ -2,11 +2,10 @@
 using System.Reflection;
 using Asm.Domain.Infrastructure;
 using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Domain.Entities.Group;
 using Asm.MooBank.Domain.Entities.AccountHolder;
+using Asm.MooBank.Domain.Entities.Group;
 using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Domain.Entities.Tag;
-using Asm.MooBank.Domain.Entities.Transactions;
 using MediatR;
 
 namespace Asm.MooBank.Infrastructure;
@@ -23,20 +22,18 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
     {
     }
 
-    [AllowNull]
-    public virtual DbSet<Instrument> Accounts { get; set; }
 
     [AllowNull]
-    public virtual DbSet<AccountAccountHolder> AccountAccountHolder { get; set; }
+    public virtual DbSet<InstrumentOwner> InstrumentOwners { get; set; }
 
     [AllowNull]
-    public virtual DbSet<AccountHolder> AccountHolders { get; set; }
+    public virtual DbSet<User> Users { get; set; }
 
     [AllowNull]
-    public virtual DbSet<Group> AccountGroups { get; set; }
+    public virtual DbSet<Group> Groups { get; set; }
 
     [AllowNull]
-    public virtual DbSet<VirtualAccount> VirtualAccounts { get; set; }
+    public virtual DbSet<VirtualInstrument> VirtualAccounts { get; set; }
 
     [AllowNull]
     public virtual DbSet<ImporterType> ImporterTypes { get; set; }

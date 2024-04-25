@@ -16,7 +16,7 @@ public class Group([DisallowNull] Guid id) : KeyedEntity<Guid>(id)
 
     public bool ShowPosition { get; set; }
 
-    public virtual AccountHolder.AccountHolder Owner { get; set; } = null!;
+    public virtual AccountHolder.User Owner { get; set; } = null!;
 
     [NotMapped]
     public virtual ICollection<Account.Instrument> Accounts { get; set; } = new HashSet<Account.Instrument>();

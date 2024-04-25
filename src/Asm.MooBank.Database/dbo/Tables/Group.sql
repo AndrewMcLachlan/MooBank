@@ -6,5 +6,5 @@ CREATE TABLE [Group] (
     [ShowPosition] BIT NOT NULL,
 
     CONSTRAINT PK_Group PRIMARY KEY CLUSTERED (Id),
-    CONSTRAINT FK_Group_AccountHolder FOREIGN KEY ([OwnerId]) REFERENCES [dbo].[AccountHolder](AccountHolderId)
+    CONSTRAINT FK_Group_AccountHolder FOREIGN KEY ([OwnerId]) REFERENCES [dbo].[User]([Id])
 )

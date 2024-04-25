@@ -14,14 +14,14 @@ internal class GetListHandler(IQueryable<Domain.Entities.Account.InstitutionAcco
         var userId = accountHolder.Id;
 
         var institutionAccounts1 = await institutionAccounts
-                                      .Where(a => a.AccountHolders.Any(ah => ah.AccountHolderId == userId) ||
-                                                  a.ShareWithFamily && a.AccountHolders.Any(ah => ah.AccountHolder.FamilyId == accountHolder.FamilyId))
+                                      .Where(a => a.Owners.Any(ah => ah.UserId == userId) ||
+                                                  a.ShareWithFamily && a.Owners.Any(ah => ah.User.FamilyId == accountHolder.FamilyId))
                                       .Select(a => new ListItem<Guid> { Id = a.Id, Name = a.Name })
                                       .ToListAsync(cancellationToken);
 
         var stockHoldings1 = await stockHoldings
-                                      .Where(a => a.AccountHolders.Any(ah => ah.AccountHolderId == userId) ||
-                                                  a.ShareWithFamily && a.AccountHolders.Any(ah => ah.AccountHolder.FamilyId == accountHolder.FamilyId))
+                                      .Where(a => a.Owners.Any(ah => ah.UserId == userId) ||
+                                                  a.ShareWithFamily && a.Owners.Any(ah => ah.User.FamilyId == accountHolder.FamilyId))
                                       .Select(a => new ListItem<Guid> { Id = a.Id, Name = a.Name })
                                       .ToListAsync(cancellationToken);
 

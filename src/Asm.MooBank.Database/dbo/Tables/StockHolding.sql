@@ -1,13 +1,13 @@
 CREATE TABLE [dbo].[StockHolding]
 (
-    AccountId UNIQUEIDENTIFIER NOT NULL,
+    InstrumentId UNIQUEIDENTIFIER NOT NULL,
     Symbol CHAR(5) NOT NULL,
     Exchange CHAR(2) NULL,
-    Quantity AS dbo.StockQuantity(AccountId),
+    Quantity AS dbo.StockQuantity(InstrumentId),
     CurrentPrice DECIMAL(12, 4) NOT NULL,
-    [CurrentValue] AS dbo.StockValue(AccountId, CurrentPrice),
-    GainLoss AS dbo.StockGainLoss(AccountId, CurrentPrice),
+    [CurrentValue] AS dbo.StockValue(InstrumentId, CurrentPrice),
+    GainLoss AS dbo.StockGainLoss(InstrumentId, CurrentPrice),
     [LastUpdated] DATETIMEOFFSET(0) NOT NULL CONSTRAINT DF_StockHolding_LastUpdated DEFAULT SYSUTCDATETIME(),
-    CONSTRAINT PK_StockHolding PRIMARY KEY CLUSTERED (AccountId),
-    CONSTRAINT FK_StockHolding_Account FOREIGN KEY (AccountId) REFERENCES [Instrument]([Id]),
+    CONSTRAINT PK_StockHolding PRIMARY KEY CLUSTERED (InstrumentId),
+    CONSTRAINT FK_StockHolding_Account FOREIGN KEY (InstrumentId) REFERENCES [Instrument]([Id]),
 )

@@ -77,8 +77,8 @@
     <Build Include="dbo\Tables\Transaction.sql" />
     <Build Include="dbo\Tables\TransactionType.sql" />
     <Build Include="dbo\Tables\AccountType.sql" />
-    <Build Include="dbo\Tables\AccountHolder.sql" />
-    <Build Include="dbo\Tables\AccountAccountHolder.sql" />
+    <Build Include="dbo\Tables\User.sql" />
+    <Build Include="dbo\Tables\InstrumentOwner.sql" />
     <Build Include="dbo\Tables\Tag.sql" />
     <Build Include="dbo\Tables\Rule.sql" />
     <Build Include="dbo\Tables\TransactionTransactionTag.sql" />
@@ -86,7 +86,7 @@
     <Build Include="dbo\Tables\AccountController.sql" />
     <Build Include="dbo\Tables\ImportAccount.sql" />
     <Build Include="dbo\Tables\ImporterType.sql" />
-    <Build Include="dbo\Tables\VirtualAccount.sql" />
+    <Build Include="dbo\Tables\VirtualInstrument.sql" />
     <Build Include="dbo\Tables\TransactionTagRuleTransactionTag.sql" />
     <Build Include="Security\ing.sql" />
     <Build Include="ing\Tables\TransactionExtra.sql" />
@@ -125,7 +125,7 @@
     <Build Include="dbo\Tables\TransactionAccount.sql" />
     <Build Include="dbo\Functions\StockQuantity.sql" />
     <Build Include="dbo\Functions\StockValue.sql" />
-    <Build Include="dbo\Tables\AccountAccountViewer.sql" />
+    <Build Include="dbo\Tables\InstrumentViewer.sql" />
     <Build Include="dbo\Tables\StockPriceHistory.sql" />
     <Build Include="dbo\Tables\ExchangeRates.sql" />
     <Build Include="dbo\Functions\TransactionSplitNetAmount.sql" />

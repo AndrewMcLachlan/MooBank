@@ -5,9 +5,10 @@ using Asm.MooBank.Domain.Entities.AccountHolder;
 namespace Asm.MooBank.Domain.Entities.Transactions;
 
 [AggregateRoot]
-public class StockTransaction : Entity, IIdentifiable<Guid>
+public class StockTransaction(Guid id) : KeyedEntity<Guid>(id)
 {
-    public Guid Id { get; set; }
+    public StockTransaction() : this(default) { }
+
     public Guid AccountId { get; set; }
     public string? Description { get; set; }
     public int Quantity { get; set; }
@@ -15,7 +16,7 @@ public class StockTransaction : Entity, IIdentifiable<Guid>
     public decimal Fees { get; set; }
 
     public Guid? AccountHolderId { get; internal set; }
-    public AccountHolder.AccountHolder? AccountHolder { get; set; } = null!;
+    public AccountHolder.User? AccountHolder { get; set; } = null!;
     public DateTimeOffset TransactionDate { get; set; }
 
     public TransactionType TransactionType { get; set; }

@@ -7,7 +7,7 @@ public record AccountHolder : MooBank.Models.AccountHolder
 
 public static class AccountHolderExtensions
 {
-    public static Models.AccountHolder ToModel(this Domain.Entities.AccountHolder.AccountHolder accountHolder)
+    public static Models.AccountHolder ToModel(this Domain.Entities.AccountHolder.User accountHolder)
     {
         return new Models.AccountHolder
         {

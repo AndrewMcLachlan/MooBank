@@ -24,55 +24,55 @@ public abstract class Instrument(Guid id) : KeyedEntity<Guid>(id)
     [NotMapped]
     public string? Slug { get; set; }
 
-    public virtual ICollection<AccountAccountHolder> AccountHolders { get; set; } = new HashSet<AccountAccountHolder>();
+    public virtual ICollection<InstrumentOwner> Owners { get; set; } = [];
 
-    public virtual ICollection<AccountAccountViewer> AccountViewers { get; set; } = new HashSet<AccountAccountViewer>();
+    public virtual ICollection<InstrumentViewer> Viewers { get; set; } = [];
 
 
     public virtual ICollection<Rule> Rules { get; set; } = new HashSet<Rule>();
 
-    public virtual ICollection<VirtualAccount> VirtualAccounts { get; set; } = new HashSet<VirtualAccount>();
+    public virtual ICollection<VirtualInstrument> VirtualInstruments { get; set; } = [];
 
     public virtual Group.Group? GetAccountGroup(Guid accountHolderId) =>
-        AccountHolders.Where(a => a.AccountHolderId == accountHolderId).Select(aah => aah.AccountGroup).SingleOrDefault();
+        Owners.Where(a => a.UserId == accountHolderId).Select(aah => aah.Group).SingleOrDefault();
 
-    public void SetAccountGroup(Guid? accountGroupId, Guid currentUserId)
+    public void SetAccountGroup(Guid? groupId, Guid currentUserId)
     {
-        var existing = AccountHolders.SingleOrDefault(aah => aah.AccountHolderId == currentUserId);
+        var existing = Owners.SingleOrDefault(aah => aah.UserId == currentUserId);
 
         if (existing == null)
         {
-            var existingViewer = AccountViewers.SingleOrDefault(av => av.AccountHolderId == currentUserId);
+            var existingViewer = Viewers.SingleOrDefault(av => av.UserId == currentUserId);
 
             if (existingViewer != null)
             {
-                existingViewer.AccountGroupId = accountGroupId;
+                existingViewer.GroupId = groupId;
             }
             else
             {
-                AccountViewers.Add(new AccountAccountViewer
+                Viewers.Add(new InstrumentViewer
                 {
-                    AccountGroupId = accountGroupId,
-                    AccountHolderId = currentUserId,
+                    GroupId = groupId,
+                    UserId = currentUserId,
                 });
             }
         }
         else
         {
 
-            existing.AccountGroupId = accountGroupId;
+            existing.GroupId = groupId;
         }
     }
 
     public void SetAccountHolder(Guid currentUserId)
     {
-        var existing = AccountHolders.SingleOrDefault(aah => aah.AccountHolderId == currentUserId);
+        var existing = Owners.SingleOrDefault(aah => aah.UserId == currentUserId);
 
         if (existing != null) throw new ExistsException("User is already an account holder");
 
-        AccountHolders.Add(new AccountAccountHolder
+        Owners.Add(new InstrumentOwner
         {
-            AccountHolderId = currentUserId,
+            UserId = currentUserId,
         });
     }
 }

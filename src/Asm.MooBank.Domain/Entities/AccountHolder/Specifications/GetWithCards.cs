@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.AccountHolder.Specifications;
-public class GetWithCards : ISpecification<AccountHolder>
+public class GetWithCards : ISpecification<User>
 {
-    public IQueryable<AccountHolder> Apply(IQueryable<AccountHolder> query) =>
+    public IQueryable<User> Apply(IQueryable<User> query) =>
         query.Include(q => q.Cards);
 
 }

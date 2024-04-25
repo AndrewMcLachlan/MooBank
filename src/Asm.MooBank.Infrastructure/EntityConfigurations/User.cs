@@ -2,16 +2,15 @@
 
 namespace Asm.MooBank.Infrastructure.EntityConfigurations;
 
-public class AccountHolderConfiguration : IEntityTypeConfiguration<AccountHolder>
+public class AccountHolderConfiguration : IEntityTypeConfiguration<User>
 {
-    public void Configure(EntityTypeBuilder<AccountHolder> entity)
+    public void Configure(EntityTypeBuilder<User> entity)
     {
         entity.HasIndex(e => e.EmailAddress)
-            .HasDatabaseName("IX_AccountHolder_Email")
+            .HasDatabaseName("IX_User_Email")
             .IsUnique();
 
         entity.HasKey(e => e.Id);
-        entity.Property(e => e.Id).HasColumnName("AccountHolderId");
 
         entity.Property(e => e.EmailAddress)
             .IsRequired()
@@ -23,10 +22,10 @@ public class AccountHolderConfiguration : IEntityTypeConfiguration<AccountHolder
         entity.Property(e => e.LastName)
             .HasMaxLength(255);
 
-        entity.HasMany(p => p.AccountAccountHolders)
-            .WithOne(e => e.AccountHolder)
+        entity.HasMany(p => p.InstrumentOwners)
+            .WithOne(e => e.User)
             .HasPrincipalKey(e => e.Id)
-            .HasForeignKey(p => p.AccountHolderId);
+            .HasForeignKey(p => p.UserId);
 
         entity.HasMany(e => e.Cards).WithOne(e => e.AccountHolder).HasForeignKey(e => e.AccountHolderId);
 

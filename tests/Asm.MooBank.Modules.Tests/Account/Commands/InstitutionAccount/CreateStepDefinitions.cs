@@ -25,9 +25,9 @@ internal class CreateStepDefinitions(ScenarioInput<Modules.Account.Models.Accoun
             {
                 Name = account.Name,
                 AccountController = account.AccountController,
-                AccountHolders = account.AccountHolders,
+                Owners = account.Owners,
                 AccountType = account.AccountType,
-                AccountViewers = account.AccountViewers,
+                Viewers = account.Viewers,
                 Balance = account.Balance,
                 CalculatedBalance = account.Balance,
                 Currency = account.Currency,
@@ -43,7 +43,7 @@ internal class CreateStepDefinitions(ScenarioInput<Modules.Account.Models.Accoun
                 ShareWithFamily = account.ShareWithFamily,
                 Slug = account.Slug,
                 Transactions = account.Transactions,
-                VirtualAccounts = account.VirtualAccounts,
+                VirtualInstruments = account.VirtualInstruments,
             });
 
         CreateHandler createHandler = new CreateHandler(institutionAccountRepositoryMock.Object, Mocks.UnitOfWorkMock.Object, Models.AccountHolder, Mocks.CurrencyConverterMock.Object, Mocks.SecurityMock.Object);
