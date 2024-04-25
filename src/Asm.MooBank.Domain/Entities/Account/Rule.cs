@@ -19,7 +19,7 @@ public partial class Rule : KeyedEntity<int>
 
     public required string Contains { get; set; }
 
-    public virtual Account Account { get; set; } = null!;
+    public virtual Instrument Account { get; set; } = null!;
 
     public virtual ICollection<Tag.Tag> Tags { get; set; } = new HashSet<Tag.Tag>();
 }

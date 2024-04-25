@@ -35,7 +35,7 @@ export const useAccountRowCommonState = (props: AccountGroupRowProps) => {
     const navigate = useNavigate();
 
     const onRowClick = () => {
-        navigate(`/account-groups/${props.accountGroup.id}/manage`);
+        navigate(`/groups/${props.accountGroup.id}/manage`);
     };
 
     return {

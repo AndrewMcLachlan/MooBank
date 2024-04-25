@@ -17,7 +17,7 @@ public static class StockHoldingExtensions
         Currency = account.Currency,
         CurrentBalance = account.CurrentValue,
         CurrentBalanceLocalCurrency = currencyConverter.Convert(account.CurrentValue, account.Currency),
-        BalanceDate = ((Domain.Entities.Account.Account)account).LastUpdated,
+        BalanceDate = ((Domain.Entities.Account.Instrument)account).LastUpdated,
         AccountType = "Shares",
     };
 

@@ -17,7 +17,7 @@ public partial class AccountHolder(Guid id) : KeyedEntity<Guid>(id)
     public Guid? PrimaryAccountId { get; set; }
 
     [NotMapped]
-    public IEnumerable<Account.Account> Accounts => AccountAccountHolders?.Select(a => a.Account) ?? Enumerable.Empty<Account.Account>();
+    public IEnumerable<Account.Instrument> Accounts => AccountAccountHolders?.Select(a => a.Account) ?? Enumerable.Empty<Account.Instrument>();
 
     public virtual ICollection<Account.AccountAccountHolder> AccountAccountHolders { get; set; } = new HashSet<Account.AccountAccountHolder>();
 

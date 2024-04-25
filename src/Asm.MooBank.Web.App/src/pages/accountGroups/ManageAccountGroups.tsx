@@ -18,7 +18,7 @@ export const ManageAccountGroups = () => {
     const accountRows: React.ReactNode[] = data?.map(a => <AccountGroupRow key={a.id} accountGroup={a} />) ?? [<LoadingTableRows key={1} rows={2} cols={3} />];
 
     return (
-        <Page title="Groups" breadcrumbs={[{ text: "Groups", route: "/account-groups" }]} actions={[<IconButton key="add" onClick={() => navigate("/account-groups/create")} icon="plus">Create Group</IconButton>]}>
+        <Page title="Groups" breadcrumbs={[{ text: "Groups", route: "/groups" }]} actions={[<IconButton key="add" onClick={() => navigate("/groups/create")} icon="plus">Create Group</IconButton>]}>
             <Table className="accounts section" hover striped>
                 <thead>
                     <tr>

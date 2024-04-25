@@ -1,11 +1,11 @@
 ﻿using Asm.MooBank.Commands;
-using Asm.MooBank.Domain.Entities.AccountGroup;
+using Asm.MooBank.Domain.Entities.Group;
 
-namespace Asm.MooBank.Modules.AccountGroup.Commands;
+namespace Asm.MooBank.Modules.Group.Commands;
 
 public record Delete(Guid Id) : ICommand;
 
-internal class DeleteHandler(IAccountGroupRepository accountGroupRepository, IUnitOfWork unitOfWork, MooBank.Models.AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Delete>
+internal class DeleteHandler(IGroupRepository accountGroupRepository, IUnitOfWork unitOfWork, MooBank.Models.AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Delete>
 {
     public async ValueTask Handle(Delete request, CancellationToken cancellationToken)
     {

@@ -71,7 +71,7 @@
     <Folder Include="aussuper\Tables" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="dbo\Tables\Account.sql" />
+    <Build Include="dbo\Tables\Instrument.sql" />
     <Build Include="dbo\Tables\RecurringTransaction.sql" />
     <Build Include="dbo\Tables\Schedule.sql" />
     <Build Include="dbo\Tables\Transaction.sql" />
@@ -96,7 +96,7 @@
     <Build Include="dbo\Views\TagAmounts.sql" />
     <Build Include="dbo\Views\TagAmountsByMonth.sql" />
     <Build Include="dbo\Tables\InstitutionAccount.sql" />
-    <Build Include="dbo\Tables\AccountGroup.sql" />
+    <Build Include="dbo\Tables\Group.sql" />
     <Build Include="dbo\Views\TagHierarchies.sql" />
     <Build Include="dbo\Tables\TagSettings.sql" />
     <Build Include="dbo\Functions\TransactionNetAmount.sql" />

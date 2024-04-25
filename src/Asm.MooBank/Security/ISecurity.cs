@@ -1,16 +1,16 @@
 ﻿
 using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Domain.Entities.AccountGroup;
+using Asm.MooBank.Domain.Entities.Group;
 
 namespace Asm.MooBank.Security;
 
 public interface ISecurity
 {
     void AssertAccountPermission(Guid accountId);
-    void AssertAccountPermission(Account account);
+    void AssertAccountPermission(Instrument account);
 
     void AssertAccountGroupPermission(Guid accountGroupId);
-    void AssertAccountGroupPermission(AccountGroup accountGroup);
+    void AssertAccountGroupPermission(Group accountGroup);
 
     Task AssertFamilyPermission(Guid familyId);
 

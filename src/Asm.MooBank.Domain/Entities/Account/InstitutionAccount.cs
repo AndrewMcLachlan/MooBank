@@ -34,7 +34,7 @@ public class InstitutionAccount(Guid id) : TransactionAccount(id)
         }
     }
 
-    public override AccountGroup.AccountGroup? GetAccountGroup(Guid accountHolderId) =>
+    public override Group.Group? GetAccountGroup(Guid accountHolderId) =>
         base.GetAccountGroup(accountHolderId) ??
         ValidAccountViewers.Where(a => a.AccountHolderId == accountHolderId).Select(aah => aah.AccountGroup).SingleOrDefault();
 }

@@ -1,6 +1,6 @@
 ﻿using Asm.Domain.Infrastructure;
 using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Domain.Entities.AccountGroup;
+using Asm.MooBank.Domain.Entities.Group;
 using Asm.MooBank.Domain.Entities.Budget;
 using Asm.MooBank.Models;
 using Asm.MooBank.Security;
@@ -43,7 +43,7 @@ public class SecurityRepository(MooBankContext dataContext, IAuthorizationServic
         }
     }
 
-    public void AssertAccountPermission(Account account)
+    public void AssertAccountPermission(Instrument account)
     {
         var authResult = _authorizationService.AuthorizeAsync(principalProvider.Principal!, account.Id, Policies.AccountViewer).Result;
 
@@ -61,7 +61,7 @@ public class SecurityRepository(MooBankContext dataContext, IAuthorizationServic
         }
     }
 
-    public void AssertAccountGroupPermission(AccountGroup accountGroup)
+    public void AssertAccountGroupPermission(Group accountGroup)
     {
         if (accountGroup.OwnerId != accountHolder.Id)
         {

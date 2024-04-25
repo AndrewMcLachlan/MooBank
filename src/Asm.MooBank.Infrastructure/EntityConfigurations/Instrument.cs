@@ -2,15 +2,15 @@
 
 namespace Asm.MooBank.Infrastructure.EntityConfigurations;
 
-public class Account : IEntityTypeConfiguration<Domain.Entities.Account.Account>
+public class Instrument : IEntityTypeConfiguration<Domain.Entities.Account.Instrument>
 {
-    public void Configure(EntityTypeBuilder<Domain.Entities.Account.Account> entity)
+    public void Configure(EntityTypeBuilder<Domain.Entities.Account.Instrument> entity)
     {
         // Required for computed columns
         entity.ToTable(t => t.HasTrigger("ComputedColumns"));
 
         entity.HasKey(e => e.Id);
-        entity.Property(e => e.Id).HasColumnName("AccountId");
+        entity.Property(e => e.Id).HasColumnName("Id");
 
         entity.HasIndex(e => e.Name).IsUnique();
 

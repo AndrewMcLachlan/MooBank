@@ -9,5 +9,5 @@ CREATE TABLE [dbo].[StockHolding]
     GainLoss AS dbo.StockGainLoss(AccountId, CurrentPrice),
     [LastUpdated] DATETIMEOFFSET(0) NOT NULL CONSTRAINT DF_StockHolding_LastUpdated DEFAULT SYSUTCDATETIME(),
     CONSTRAINT PK_StockHolding PRIMARY KEY CLUSTERED (AccountId),
-    CONSTRAINT FK_StockHolding_Account FOREIGN KEY (AccountId) REFERENCES Account(AccountId),
+    CONSTRAINT FK_StockHolding_Account FOREIGN KEY (AccountId) REFERENCES [Instrument]([Id]),
 )

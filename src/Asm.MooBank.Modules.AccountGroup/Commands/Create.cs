@@ -1,18 +1,18 @@
 ﻿using Asm.MooBank.Commands;
-using Asm.MooBank.Domain.Entities.AccountGroup;
+using Asm.MooBank.Domain.Entities.Group;
 using Asm.MooBank.Domain.Entities.AccountHolder;
-using Asm.MooBank.Modules.AccountGroup.Models;
+using Asm.MooBank.Modules.Group.Models;
 
-namespace Asm.MooBank.Modules.AccountGroup.Commands;
+namespace Asm.MooBank.Modules.Group.Commands;
 
 
-public record Create(string Name, string Description, bool ShowPosition) : ICommand<Models.AccountGroup>;
+public record Create(string Name, string Description, bool ShowPosition) : ICommand<Models.Group>;
 
-internal class CreateHandler(IAccountGroupRepository accountGroupRepository, IUnitOfWork unitOfWork, MooBank.Models.AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Create, Models.AccountGroup>
+internal class CreateHandler(IGroupRepository groupRepository, IUnitOfWork unitOfWork, MooBank.Models.AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Create, Models.Group>
 {
-    public async ValueTask<Models.AccountGroup> Handle(Create request, CancellationToken cancellationToken)
+    public async ValueTask<Models.Group> Handle(Create request, CancellationToken cancellationToken)
     {
-        Domain.Entities.AccountGroup.AccountGroup entity = new()
+        Domain.Entities.Group.Group entity = new()
         {
             Name = request.Name,
             Description = request.Description,
@@ -20,7 +20,7 @@ internal class CreateHandler(IAccountGroupRepository accountGroupRepository, IUn
             OwnerId = AccountHolder.Id
         };
 
-        accountGroupRepository.Add(entity);
+        groupRepository.Add(entity);
 
         await UnitOfWork.SaveChangesAsync(cancellationToken);
 

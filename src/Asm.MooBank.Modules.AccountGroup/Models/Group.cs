@@ -1,6 +1,6 @@
-﻿namespace Asm.MooBank.Modules.AccountGroup.Models;
+﻿namespace Asm.MooBank.Modules.Group.Models;
 
-public record AccountGroup
+public record Group
 {
     public required Guid Id { get; init; }
     public required string Name { get; init; }
@@ -8,9 +8,9 @@ public record AccountGroup
     public required bool ShowPosition { get; init; }
 }
 
-public static class AccountGroupExtensions
+public static class GroupExtensions
 {
-    public static AccountGroup ToModel(this Domain.Entities.AccountGroup.AccountGroup entity) =>
+    public static Group ToModel(this Domain.Entities.Group.Group entity) =>
         new()
         {
             Id = entity.Id,
@@ -21,6 +21,6 @@ public static class AccountGroupExtensions
 
 
 
-    public static IQueryable<AccountGroup> ToModel(this IQueryable<Domain.Entities.AccountGroup.AccountGroup> query) =>
+    public static IQueryable<Group> ToModel(this IQueryable<Domain.Entities.Group.Group> query) =>
         query.Select(t => t.ToModel());
 }

@@ -47,7 +47,7 @@ internal class ImportHandler(IAccountRepository accountRepository, IRuleReposito
         }
     }
 
-    private async Task ApplyTransactionRules(Domain.Entities.Account.Account account, IEnumerable<Domain.Entities.Transactions.Transaction> transactions, CancellationToken cancellationToken = default)
+    private async Task ApplyTransactionRules(Domain.Entities.Account.Instrument account, IEnumerable<Domain.Entities.Transactions.Transaction> transactions, CancellationToken cancellationToken = default)
     {
         var rules = await _ruleRepository.GetForAccount(account.Id, cancellationToken);
 

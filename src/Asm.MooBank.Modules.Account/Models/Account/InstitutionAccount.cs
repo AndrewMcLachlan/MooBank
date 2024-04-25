@@ -48,7 +48,7 @@ public static class InstitutionAccountExtensions
         CurrentBalance = account.Balance,
         CurrentBalanceLocalCurrency = currencyConverter.Convert(account.Balance, account.Currency),
         CalculatedBalance = account.CalculatedBalance,
-        BalanceDate = ((Domain.Entities.Account.Account)account).LastUpdated,
+        BalanceDate = ((Domain.Entities.Account.Instrument)account).LastUpdated,
         LastTransaction = account.LastTransaction,
         AccountType = account.AccountType,
         Controller = account.AccountController,

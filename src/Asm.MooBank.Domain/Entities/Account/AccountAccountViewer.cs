@@ -7,9 +7,9 @@ public partial class AccountAccountViewer
 
     public Guid? AccountGroupId { get; set; }
 
-    public virtual Account Account { get; set; } = null!;
+    public virtual Instrument Account { get; set; } = null!;
 
     public virtual AccountHolder.AccountHolder AccountHolder { get; set; } = null!;
 
-    public virtual AccountGroup.AccountGroup AccountGroup { get; set; } = null!;
+    public virtual Group.Group AccountGroup { get; set; } = null!;
 }

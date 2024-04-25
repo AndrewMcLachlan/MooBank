@@ -4,7 +4,7 @@
     AccountHolderId UNIQUEIDENTIFIER NOT NULL,
     AccountGroupId UNIQUEIDENTIFIER NULL,
     CONSTRAINT PK_AccountAccountHolder PRIMARY KEY (AccountId, AccountHolderId),
-    CONSTRAINT FK_AccountAccountHolder_Account FOREIGN KEY (AccountId) REFERENCES Account(AccountId),
+    CONSTRAINT FK_AccountAccountHolder_Account FOREIGN KEY (AccountId) REFERENCES [Instrument]([Id]),
     CONSTRAINT FK_AccountAccountHolder_AccountHolder FOREIGN KEY (AccountHolderId) REFERENCES AccountHolder(AccountHolderId),
-    CONSTRAINT FK_AccountAccountHolder_AccountGroup FOREIGN KEY (AccountGroupId) REFERENCES [dbo].[AccountGroup](Id),
+    CONSTRAINT FK_AccountAccountHolder_AccountGroup FOREIGN KEY (AccountGroupId) REFERENCES [dbo].[Group](Id),
 )

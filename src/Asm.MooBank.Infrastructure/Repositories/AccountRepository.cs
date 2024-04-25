@@ -3,14 +3,14 @@ using Asm.MooBank.Domain.Entities.Account;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
-public class AccountRepository(MooBankContext dataContext) : Asm.Domain.Infrastructure.RepositoryDeleteBase<MooBankContext, Account, Guid>(dataContext), IAccountRepository
+public class AccountRepository(MooBankContext dataContext) : Asm.Domain.Infrastructure.RepositoryDeleteBase<MooBankContext, Instrument, Guid>(dataContext), IAccountRepository
 {
     public override void Delete(Guid id)
     {
         throw new NotImplementedException();
     }
 
-    public override Task<Account> Get(Guid id, CancellationToken cancellationToken = default) =>
+    public override Task<Instrument> Get(Guid id, CancellationToken cancellationToken = default) =>
         (Entities.Include(a => a.Rules).ThenInclude(a => a.Tags).FindAsync(id, cancellationToken) ?? throw new NotFoundException())!;
 
     public async Task<InstitutionAccount> GetInstitutionAccount(Guid accountId, CancellationToken cancellationToken)
@@ -23,7 +23,7 @@ public class AccountRepository(MooBankContext dataContext) : Asm.Domain.Infrastr
         return institutionAccount;
     }
 
-    protected IQueryable<Account> GetById(Guid id) => Entities.Where(a => a.Id == id);
+    protected IQueryable<Instrument> GetById(Guid id) => Entities.Where(a => a.Id == id);
 
     public Task Reload(InstitutionAccount account, CancellationToken cancellationToken) =>
     Context.Entry(account).ReloadAsync(cancellationToken);

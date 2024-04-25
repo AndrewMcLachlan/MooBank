@@ -4,7 +4,7 @@ namespace Asm.MooBank.Modules.Account.Queries.Recurring;
 
 public record GetForVirtual(Guid AccountId, Guid VirtualAccountId) : IQuery<IEnumerable<RecurringTransaction>>;
 
-internal class GetForVirtualHandler(IQueryable<Domain.Entities.Account.Account> accounts, ISecurity security) : IQueryHandler<GetForVirtual, IEnumerable<RecurringTransaction>>
+internal class GetForVirtualHandler(IQueryable<Domain.Entities.Account.Instrument> accounts, ISecurity security) : IQueryHandler<GetForVirtual, IEnumerable<RecurringTransaction>>
 {
     public async ValueTask<IEnumerable<RecurringTransaction>> Handle(GetForVirtual query, CancellationToken cancellationToken)
     {

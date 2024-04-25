@@ -3,9 +3,9 @@
 namespace Asm.MooBank.Domain.Entities.Account;
 
 [AggregateRoot]
-public abstract class Account(Guid id) : KeyedEntity<Guid>(id)
+public abstract class Instrument(Guid id) : KeyedEntity<Guid>(id)
 {
-    public Account() : this(Guid.Empty)
+    public Instrument() : this(Guid.Empty)
     {
     }
 
@@ -33,7 +33,7 @@ public abstract class Account(Guid id) : KeyedEntity<Guid>(id)
 
     public virtual ICollection<VirtualAccount> VirtualAccounts { get; set; } = new HashSet<VirtualAccount>();
 
-    public virtual AccountGroup.AccountGroup? GetAccountGroup(Guid accountHolderId) =>
+    public virtual Group.Group? GetAccountGroup(Guid accountHolderId) =>
         AccountHolders.Where(a => a.AccountHolderId == accountHolderId).Select(aah => aah.AccountGroup).SingleOrDefault();
 
     public void SetAccountGroup(Guid? accountGroupId, Guid currentUserId)

@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Asm.Domain.Infrastructure;
 using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Domain.Entities.AccountGroup;
+using Asm.MooBank.Domain.Entities.Group;
 using Asm.MooBank.Domain.Entities.AccountHolder;
 using Asm.MooBank.Domain.Entities.Asset;
 using Asm.MooBank.Domain.Entities.Budget;
@@ -39,7 +39,7 @@ public static class IServiceCollectionExtensions
             options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
         }));
 
-        services.AddDomainEvents(typeof(Account).Assembly);
+        services.AddDomainEvents(typeof(Instrument).Assembly);
 
         return services.AddUnitOfWork<MooBankContext>();
     }
@@ -65,7 +65,7 @@ public static class IServiceCollectionExtensions
     public static IServiceCollection AddRepositories(this IServiceCollection services) =>
         services.AddScoped<IInstitutionAccountRepository, InstitutionAccountRepository>()
                 .AddScoped<IAccountRepository, AccountRepository>()
-                .AddScoped<IAccountGroupRepository, AccountGroupRepository>()
+                .AddScoped<IGroupRepository, AccountGroupRepository>()
                 .AddScoped<IAccountHolderRepository, AccountHolderRepository>()
                 .AddScoped<IAssetRepository, AssetRepository>()
                 .AddScoped<IBudgetRepository, BudgetRepository>()
@@ -80,7 +80,7 @@ public static class IServiceCollectionExtensions
                 .AddScoped<IRuleRepository, RuleRepository>();
 
     public static IServiceCollection AddEntities(this IServiceCollection services) =>
-        services.AddAggregateRoots<MooBankContext>(typeof(IAccountGroupRepository).Assembly);
+        services.AddAggregateRoots<MooBankContext>(typeof(IGroupRepository).Assembly);
 
     public static IServiceCollection AddImporterFactory(this IServiceCollection services) =>
         services.AddTransient<IImporterFactory, ImporterFactory>();

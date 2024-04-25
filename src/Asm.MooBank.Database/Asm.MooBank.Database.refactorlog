@@ -56,4 +56,25 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="[ParentAccountId]" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="32fb742b-3a05-4511-8c4f-c386e8891421" ChangeDateTime="04/25/2024 04:33:51">
+    <Property Name="ElementName" Value="[dbo].[Account]" />
+    <Property Name="ElementType" Value="SqlTable" />
+    <Property Name="ParentElementName" Value="[dbo]" />
+    <Property Name="ParentElementType" Value="SqlSchema" />
+    <Property Name="NewName" Value="[Instrument]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="d38faab7-fa53-4f3e-9476-83a09ba7430c" ChangeDateTime="04/25/2024 04:34:13">
+    <Property Name="ElementName" Value="[dbo].[Instrument].[AccountId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Instrument]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[Id]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="86380696-83d0-42a8-9d2a-4b81901f9879" ChangeDateTime="04/25/2024 04:34:41">
+    <Property Name="ElementName" Value="[dbo].[AccountGroup]" />
+    <Property Name="ElementType" Value="SqlTable" />
+    <Property Name="ParentElementName" Value="[dbo]" />
+    <Property Name="ParentElementType" Value="SqlSchema" />
+    <Property Name="NewName" Value="[Group]" />
+  </Operation>
 </Operations>

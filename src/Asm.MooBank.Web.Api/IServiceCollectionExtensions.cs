@@ -38,7 +38,7 @@ public static class IServiceCollectionExtensions
                         return;
                     }
 
-                    var shared = await dataContext.Set<Account>().Where(a => a.ShareWithFamily && a.AccountHolders.Any(ah => ah.AccountHolder.FamilyId == user.FamilyId)).Select(a => a.Id).ToListAsync();
+                    var shared = await dataContext.Set<Instrument>().Where(a => a.ShareWithFamily && a.AccountHolders.Any(ah => ah.AccountHolder.FamilyId == user.FamilyId)).Select(a => a.Id).ToListAsync();
 
                     var claims = user.Accounts.Select(a => new Claim(Security.ClaimTypes.AccountId, a.Id.ToString())).ToList();
                     claims.AddRange(shared.Select(a => new Claim(Security.ClaimTypes.SharedAccountId, a.ToString())).ToList());

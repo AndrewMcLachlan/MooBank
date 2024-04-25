@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Asm.MooBank.Domain.Entities.AccountGroup;
+namespace Asm.MooBank.Domain.Entities.Group;
 
 [AggregateRoot]
-public class AccountGroup([DisallowNull] Guid id) : KeyedEntity<Guid>(id)
+public class Group([DisallowNull] Guid id) : KeyedEntity<Guid>(id)
 {
-    public AccountGroup() : this(default) { }
+    public Group() : this(default) { }
 
     public string Name { get; set; } = null!;
 
@@ -19,6 +19,6 @@ public class AccountGroup([DisallowNull] Guid id) : KeyedEntity<Guid>(id)
     public virtual AccountHolder.AccountHolder Owner { get; set; } = null!;
 
     [NotMapped]
-    public virtual ICollection<Account.Account> Accounts { get; set; } = new HashSet<Account.Account>();
+    public virtual ICollection<Account.Instrument> Accounts { get; set; } = new HashSet<Account.Instrument>();
 
 }

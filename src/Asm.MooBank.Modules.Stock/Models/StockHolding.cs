@@ -24,7 +24,7 @@ public static class StockHoldingExtensions
         Description = account.Description,
         CurrentBalance = account.CurrentValue,
         GainLoss = account.GainLoss,
-        BalanceDate = ((Domain.Entities.Account.Account)account).LastUpdated,
+        BalanceDate = ((Domain.Entities.Account.Instrument)account).LastUpdated,
         AccountType = "Stock Holding",
         CurrentPrice = account.CurrentPrice,
         Quantity = account.Quantity,

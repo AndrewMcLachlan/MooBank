@@ -11,7 +11,7 @@ public interface IExchangeRateService
     Task UpdateExchangeRates();
 }
 
-public class ExchangeRateService(IUnitOfWork unitOfWork, IExchangeRateClient exchangeRateClient, IQueryable<Account> accounts, IQueryable<AccountHolder> accountHolders, IReferenceDataRepository referenceDataRepository) : IExchangeRateService
+public class ExchangeRateService(IUnitOfWork unitOfWork, IExchangeRateClient exchangeRateClient, IQueryable<Instrument> accounts, IQueryable<AccountHolder> accountHolders, IReferenceDataRepository referenceDataRepository) : IExchangeRateService
 {
     public async Task UpdateExchangeRates()
     {

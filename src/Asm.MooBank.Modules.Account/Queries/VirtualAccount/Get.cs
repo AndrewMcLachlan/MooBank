@@ -6,7 +6,7 @@ namespace Asm.MooBank.Modules.Account.Queries.VirtualAccount;
 
 public record Get(Guid AccountId, Guid VirtualAccountId) : IQuery<Models.Account.VirtualAccount>;
 
-internal class GetHandler(IQueryable<Domain.Entities.Account.Account> accounts, ISecurity security, ICurrencyConverter currencyConverter) : IQueryHandler<Get, Models.Account.VirtualAccount>
+internal class GetHandler(IQueryable<Domain.Entities.Account.Instrument> accounts, ISecurity security, ICurrencyConverter currencyConverter) : IQueryHandler<Get, Models.Account.VirtualAccount>
 {
     public async ValueTask<Models.Account.VirtualAccount> Handle(Get request, CancellationToken cancellationToken)
     {

@@ -6,7 +6,7 @@ namespace Asm.MooBank.Modules.Account.Queries.Recurring;
 
 public record GetAll(Guid AccountId) : IQuery<IEnumerable<RecurringTransaction>>;
 
-internal class GetAllHandler(IQueryable<Domain.Entities.Account.Account> accounts, ISecurity security, AccountHolder accountHolder) : QueryHandlerBase(accountHolder), IQueryHandler<GetAll, IEnumerable<RecurringTransaction>>
+internal class GetAllHandler(IQueryable<Domain.Entities.Account.Instrument> accounts, ISecurity security, AccountHolder accountHolder) : QueryHandlerBase(accountHolder), IQueryHandler<GetAll, IEnumerable<RecurringTransaction>>
 {
     public async ValueTask<IEnumerable<RecurringTransaction>> Handle(GetAll query, CancellationToken cancellationToken)
     {

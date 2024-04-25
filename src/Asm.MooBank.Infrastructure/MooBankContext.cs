@@ -2,7 +2,7 @@
 using System.Reflection;
 using Asm.Domain.Infrastructure;
 using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Domain.Entities.AccountGroup;
+using Asm.MooBank.Domain.Entities.Group;
 using Asm.MooBank.Domain.Entities.AccountHolder;
 using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Domain.Entities.Tag;
@@ -24,7 +24,7 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
     }
 
     [AllowNull]
-    public virtual DbSet<Account> Accounts { get; set; }
+    public virtual DbSet<Instrument> Accounts { get; set; }
 
     [AllowNull]
     public virtual DbSet<AccountAccountHolder> AccountAccountHolder { get; set; }
@@ -33,7 +33,7 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
     public virtual DbSet<AccountHolder> AccountHolders { get; set; }
 
     [AllowNull]
-    public virtual DbSet<AccountGroup> AccountGroups { get; set; }
+    public virtual DbSet<Group> AccountGroups { get; set; }
 
     [AllowNull]
     public virtual DbSet<VirtualAccount> VirtualAccounts { get; set; }
@@ -59,7 +59,7 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
         Assemblies.ForEach(a => modelBuilder.ApplyConfigurationsFromAssembly(a));
 
 
-        modelBuilder.Entity<AccountGroup>(entity =>
+        modelBuilder.Entity<Group>(entity =>
         {
             entity.HasKey(e => e.Id);
         });

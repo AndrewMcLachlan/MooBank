@@ -2,8 +2,8 @@
 
 namespace Asm.MooBank.Domain.Entities.Account.Specifications;
 
-public class VirtualAccountSpecification : ISpecification<Account>
+public class VirtualAccountSpecification : ISpecification<Instrument>
 {
-    public IQueryable<Account> Apply(IQueryable<Account> query) =>
+    public IQueryable<Instrument> Apply(IQueryable<Instrument> query) =>
         query.Include(a => a.VirtualAccounts).ThenInclude(a => a.RecurringTransactions);
 }
