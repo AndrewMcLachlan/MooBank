@@ -79,7 +79,7 @@ public static class InstitutionAccountExtensions
     public static InstitutionAccount ToModelWithAccountGroup(this Domain.Entities.Account.InstitutionAccount entity, AccountHolder accountHolder, ICurrencyConverter currencyConverter)
     {
         var result = entity.ToModel(currencyConverter);
-        result.AccountGroupId = entity.GetAccountGroup(accountHolder.Id)?.Id;
+        result.GroupId = entity.GetAccountGroup(accountHolder.Id)?.Id;
 
         return result;
     }

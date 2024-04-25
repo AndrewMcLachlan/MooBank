@@ -27,7 +27,7 @@ export const AccountGroupRow: React.FC<AccountGroupRowProps> = (props) => {
 AccountGroupRow.displayName = "AccountGroupRow";
 
 export interface AccountGroupRowProps {
-    accountGroup: Models.AccountGroup;
+    accountGroup: Models.Group;
 }
 
 export const useAccountRowCommonState = (props: AccountGroupRowProps) => {

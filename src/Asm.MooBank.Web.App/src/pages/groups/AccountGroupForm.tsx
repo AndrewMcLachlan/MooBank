@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { AccountGroup } from "models";
+import { Group } from "models";
 import { useNavigate } from "react-router-dom";
 import { useCreateAccountGroup, useUpdateAccountGroup } from "services";
 import { emptyGuid, NavItem, Page, Section } from "@andrewmclachlan/mooapp";
@@ -7,7 +7,7 @@ import { Button, Form } from "react-bootstrap";
 import { FormGroup, FormRow } from "components";
 
 export interface AccountGroupFormProps {
-    accountGroup?: AccountGroup
+    accountGroup?: Group
 }
 
 export const AccountGroupForm: React.FC<AccountGroupFormProps> = ({ accountGroup }) => {
@@ -30,7 +30,7 @@ export const AccountGroupForm: React.FC<AccountGroupFormProps> = ({ accountGroup
         e.stopPropagation();
         e.preventDefault();
 
-        const newAccountGroup: AccountGroup = {
+        const newAccountGroup: Group = {
             id: accountGroup!.id,
             name: name,
             description: description,

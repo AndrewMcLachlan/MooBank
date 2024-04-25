@@ -3,7 +3,7 @@
 namespace Asm.MooBank.Modules.Account.Models.Account;
 
 // Duplicate for summary view.
-public record Asset : Account
+public record Asset : Instrument
 {
 }
 

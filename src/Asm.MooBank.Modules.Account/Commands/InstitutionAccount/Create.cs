@@ -16,15 +16,15 @@ internal class CreateHandler(IInstitutionAccountRepository institutionAccountRep
     {
         var account = command.Account;
 
-        if (account.AccountGroupId != null)
+        if (account.GroupId != null)
         {
-            Security.AssertAccountGroupPermission(account.AccountGroupId.Value);
+            Security.AssertAccountGroupPermission(account.GroupId.Value);
         }
 
         var entity = account.ToEntity();
 
         entity.SetAccountHolder(AccountHolder.Id);
-        entity.SetAccountGroup(account.AccountGroupId, AccountHolder.Id);
+        entity.SetAccountGroup(account.GroupId, AccountHolder.Id);
 
         _accountRepository.Add(entity);
 

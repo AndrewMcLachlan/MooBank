@@ -41,6 +41,10 @@ table.accounts {
         width: 32px;
     }
 
+    th:nth-child(3) {
+        width: 15%;
+    }
+
     td {
         margin: 0;
     }

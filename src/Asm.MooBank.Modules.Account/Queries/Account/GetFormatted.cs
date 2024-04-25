@@ -37,7 +37,7 @@ internal class GetFormattedHandler(IQueryable<Domain.Entities.Account.Institutio
 
         var groups = allGroups.Where(ag => ag != null).Select(ag =>
         {
-            IEnumerable<Models.Account.Account> matchingAccounts = [
+            IEnumerable<Models.Account.Instrument> matchingAccounts = [
                 .. institutionAccounts1.Where(a => a.GetAccountGroup(userId)?.Id == ag!.Id).ToModel(currencyConverter),
                 .. stockHoldings1.Where(a => a.GetAccountGroup(userId)?.Id == ag!.Id).ToModel(currencyConverter),
                 .. assets1.Where(a => a.GetAccountGroup(userId)?.Id == ag!.Id).ToModel(currencyConverter),

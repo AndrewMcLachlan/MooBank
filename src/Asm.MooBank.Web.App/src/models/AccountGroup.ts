@@ -1,13 +1,13 @@
 import { emptyGuid } from "@andrewmclachlan/mooapp";
 
-export interface AccountGroup {
+export interface Group {
     id: string;
     name: string;
     description?: string;
     showPosition: boolean;
 }
 
-export const emptyAccountGroup : AccountGroup = {
+export const emptyGroup : Group = {
     id: emptyGuid,
     name: "",
     showPosition: true,

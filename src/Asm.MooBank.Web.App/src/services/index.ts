@@ -1,5 +1,5 @@
 export * from "./AccountService";
-export * from "./AccountGroupService";
+export * from "./GroupService";
 export * from "./AccountHolderService";
 export * from "./AssetService";
 export * from "./FamilyService";

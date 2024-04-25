@@ -1,5 +1,3 @@
-import "./AccountList.scss";
-
 import React from "react";
 import { useFormattedAccounts } from "services";
 import { AccountListGroup } from "./AccountListGroup";

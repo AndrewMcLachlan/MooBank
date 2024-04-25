@@ -21,7 +21,7 @@ internal class Models
         CurrentBalanceLocalCurrency = 1000,
         Id = AccountId,
         Name = "Test Account",
-        AccountGroupId = AccountGroupId,
+        GroupId = AccountGroupId,
         AccountType = AccountType.Transaction,
         BalanceDate = DateTime.UtcNow,
         Description = "Test Account Description",

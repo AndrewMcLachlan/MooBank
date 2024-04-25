@@ -4,7 +4,6 @@ using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Transactions.Models;
 using Asm.MooBank.Modules.Transactions.Models.Extensions;
 using Asm.MooBank.Services;
-using Microsoft.AspNetCore.Mvc;
 using IInstrumentRepository = Asm.MooBank.Domain.Entities.Account.IInstrumentRepository;
 
 namespace Asm.MooBank.Modules.Transactions.Commands;
