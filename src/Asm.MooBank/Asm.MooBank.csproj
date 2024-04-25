@@ -6,7 +6,7 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Asm.Cqrs" Version="$(AsmPackageVersion)" />
     <PackageReference Include="Asm.Domain" Version="$(AsmPackageVersion)" />
-    <PackageReference Include="Azure.Identity" Version="1.11.0" />
+    <PackageReference Include="Azure.Identity" Version="1.11.2" />
     <PackageReference Include="LazyCache.AspNetCore" Version="2.4.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(DotNetPackageVersion)" />
   </ItemGroup>
