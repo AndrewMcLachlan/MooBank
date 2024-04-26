@@ -16,7 +16,7 @@ export const SummaryWidget: React.FC = () => {
                 <div>Net Worth</div>
                 <Amount amount={grandTotal} colour plusminus />
             </KeyValue>
-            <Section.SubHeading>Groups</Section.SubHeading>
+            <Section.Subheading>Groups</Section.Subheading>
             {totals?.map((ag, index) =>
                 <KeyValue key={index}>
                     <div>{ag.name}</div>
