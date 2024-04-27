@@ -1,13 +1,13 @@
 ﻿using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.Asset;
 using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Asset.Models;
+using Asm.MooBank.Modules.Assets.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Asm.MooBank.Modules.Asset.Commands;
+namespace Asm.MooBank.Modules.Assets.Commands;
 public sealed record Update : ICommand<Models.Asset>
 {
     public Guid AccountId { get; init; }
@@ -15,7 +15,7 @@ public sealed record Update : ICommand<Models.Asset>
     public required string Description { get; init; }
     public required bool ShareWithFamily { get; init; }
     public decimal? PurchasePrice { get; init; }
-    public decimal CurrentBalance{ get; init; }
+    public decimal CurrentBalance { get; init; }
     public Guid? AccountGroupId { get; init; }
 
     public static async ValueTask<Update?> BindAsync(HttpContext httpContext)

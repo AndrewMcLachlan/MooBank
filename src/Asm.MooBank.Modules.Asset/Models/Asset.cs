@@ -1,4 +1,4 @@
-﻿namespace Asm.MooBank.Modules.Asset.Models;
+﻿namespace Asm.MooBank.Modules.Assets.Models;
 public record Asset : Account
 {
     public decimal? PurchasePrice { get; init; }

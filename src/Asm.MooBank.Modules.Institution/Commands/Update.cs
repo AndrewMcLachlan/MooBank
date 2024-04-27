@@ -1,13 +1,13 @@
 ﻿using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.Institution;
 using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Institution.Models;
+using Asm.MooBank.Modules.Institutions.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Asm.MooBank.Modules.Institution.Commands;
+namespace Asm.MooBank.Modules.Institutions.Commands;
 
 public sealed record Update(int Id, string Name, int InstitutionTypeId) : ICommand<Models.Institution>
 {

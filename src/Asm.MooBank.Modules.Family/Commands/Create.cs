@@ -1,9 +1,9 @@
 ﻿using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.Family;
 using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Family.Models;
+using Asm.MooBank.Modules.Families.Models;
 
-namespace Asm.MooBank.Modules.Family.Commands;
+namespace Asm.MooBank.Modules.Families.Commands;
 
 public sealed record Create(string Name) : ICommand<Models.Family>;
 

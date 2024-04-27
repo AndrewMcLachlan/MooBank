@@ -1,11 +1,11 @@
 ﻿using Asm.Cqrs.AspNetCore;
-using Asm.MooBank.Modules.Institution.Commands;
-using Asm.MooBank.Modules.Institution.Queries;
+using Asm.MooBank.Modules.Institutions.Commands;
+using Asm.MooBank.Modules.Institutions.Queries;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace Asm.MooBank.Modules.Institution.Endpoints;
+namespace Asm.MooBank.Modules.Institutions.Endpoints;
 internal class Institutions : EndpointGroupBase
 {
     public override string Name => "Institutions";

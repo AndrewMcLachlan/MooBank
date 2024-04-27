@@ -1,14 +1,14 @@
 ﻿using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Asset.Models;
+using Asm.MooBank.Modules.Assets.Models;
 using Asm.MooBank.Queries;
 
-namespace Asm.MooBank.Modules.Asset.Queries;
+namespace Asm.MooBank.Modules.Assets.Queries;
 
-public sealed record Get(Guid Id) : IQuery<Models.Asset>;
+public sealed record Get(Guid Id) : IQuery<Asset>;
 
-internal class GetHandler(IQueryable<Domain.Entities.Asset.Asset> accounts, User accountHolder, ISecurity security) : QueryHandlerBase(accountHolder), IQueryHandler<Get, Models.Asset>
+internal class GetHandler(IQueryable<Domain.Entities.Asset.Asset> accounts, User accountHolder, ISecurity security) : QueryHandlerBase(accountHolder), IQueryHandler<Get, Asset>
 {
-    public async ValueTask<Models.Asset> Handle(Get query, CancellationToken cancellationToken)
+    public async ValueTask<Asset> Handle(Get query, CancellationToken cancellationToken)
     {
         var entity = await accounts.Include(a => a.Owners).ThenInclude(ah => ah.Group)
                                    .Include(a => a.Owners).ThenInclude(ah => ah.User)

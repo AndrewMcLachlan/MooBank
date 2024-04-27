@@ -1,4 +1,4 @@
-﻿namespace Asm.MooBank.Modules.AccountHolder.Queries;
+﻿namespace Asm.MooBank.Modules.Users.Queries;
 
 internal record Get() : IQuery<Models.AccountHolder>;
 

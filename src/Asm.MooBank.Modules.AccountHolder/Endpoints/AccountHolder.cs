@@ -1,11 +1,11 @@
 ﻿using Asm.Cqrs.AspNetCore;
-using Asm.MooBank.Modules.AccountHolder.Commands;
-using Asm.MooBank.Modules.AccountHolder.Queries;
+using Asm.MooBank.Modules.Users.Commands;
+using Asm.MooBank.Modules.Users.Queries;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace Asm.MooBank.Modules.AccountHolder.Endpoints;
+namespace Asm.MooBank.Modules.Users.Endpoints;
 
 public class AccountHolder : EndpointGroupBase
 {

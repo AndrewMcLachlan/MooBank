@@ -17,17 +17,17 @@ void AddServices(WebApplicationBuilder builder)
         new IModule[]
         {
             new Asm.MooBank.Modules.Account.Module(),
-            new Asm.MooBank.Modules.Group.Module(),
-            new Asm.MooBank.Modules.AccountHolder.Module(),
-            new Asm.MooBank.Modules.Asset.Module(),
+            new Asm.MooBank.Modules.Assets.Module(),
             new Asm.MooBank.Modules.Budget.Module(),
-            new Asm.MooBank.Modules.Family.Module(),
-            new Asm.MooBank.Modules.Institution.Module(),
+            new Asm.MooBank.Modules.Families.Module(),
+            new Asm.MooBank.Modules.Group.Module(),
+            new Asm.MooBank.Modules.Institutions.Module(),
             new Asm.MooBank.Modules.ReferenceData.Module(),
             new Asm.MooBank.Modules.Reports.Module(),
             new Asm.MooBank.Modules.Stocks.Module(),
             new Asm.MooBank.Modules.Tags.Module(),
             new Asm.MooBank.Modules.Transactions.Module(),
+            new Asm.MooBank.Modules.Users.Module(),
         });
 
     services.AddEndpointsApiExplorer();

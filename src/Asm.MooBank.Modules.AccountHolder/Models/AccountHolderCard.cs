@@ -1,4 +1,4 @@
-﻿namespace Asm.MooBank.Modules.AccountHolder.Models;
+﻿namespace Asm.MooBank.Modules.Users.Models;
 
 public record AccountHolderCard
 {

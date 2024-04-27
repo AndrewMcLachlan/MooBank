@@ -1,11 +1,11 @@
 ﻿using Asm.Cqrs.AspNetCore;
-using Asm.MooBank.Modules.Asset.Commands;
-using Asm.MooBank.Modules.Asset.Models;
-using Asm.MooBank.Modules.Asset.Queries;
+using Asm.MooBank.Modules.Assets.Models;
+using Asm.MooBank.Modules.Assets.Commands;
+using Asm.MooBank.Modules.Assets.Queries;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 
-namespace Asm.MooBank.Modules.Asset.Endpoints;
+namespace Asm.MooBank.Modules.Assets.Endpoints;
 internal class Assets : EndpointGroupBase
 {
     public override string Name => "Assets";
@@ -16,13 +16,13 @@ internal class Assets : EndpointGroupBase
 
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {
-        builder.MapQuery<Get, Models.Asset>("/{id}")
+        builder.MapQuery<Get, Asset>("/{id}")
             .WithNames("Get Asset");
 
-        builder.MapPostCreate<Create, Models.Asset>("/", "Get Asset".ToMachine(), a => new { a.Id }, CommandBinding.Body)
+        builder.MapPostCreate<Create, Asset>("/", "Get Asset".ToMachine(), a => new { a.Id }, CommandBinding.Body)
             .WithNames("Create Asset");
 
-        builder.MapPatchCommand<Update, Models.Asset>("/{id}", CommandBinding.None)
+        builder.MapPatchCommand<Update, Asset>("/{id}", CommandBinding.None)
             .WithNames("Update Asset");
     }
 }

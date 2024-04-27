@@ -1,15 +1,14 @@
-﻿
-using Asm.MooBank.Domain.Entities.AccountHolder;
+﻿using Asm.MooBank.Domain.Entities.AccountHolder;
 using Asm.MooBank.Domain.Entities.AccountHolder.Specifications;
-using Asm.MooBank.Modules.AccountHolder.Models;
+using Asm.MooBank.Modules.Users.Models;
 
-namespace Asm.MooBank.Modules.AccountHolder.Commands;
+namespace Asm.MooBank.Modules.Users.Commands;
 
-internal record Update(UpdateAccountHolder AccountHolder) : ICommand<Models.AccountHolder>;
+internal record Update(UpdateAccountHolder AccountHolder) : ICommand<AccountHolder>;
 
-internal class UpdateHandler(IUnitOfWork unitOfWork, IAccountHolderRepository repository, MooBank.Models.User accountHolder) : ICommandHandler<Update, Models.AccountHolder>
+internal class UpdateHandler(IUnitOfWork unitOfWork, IAccountHolderRepository repository, MooBank.Models.User accountHolder) : ICommandHandler<Update, AccountHolder>
 {
-    public async ValueTask<Models.AccountHolder> Handle(Update command, CancellationToken cancellationToken)
+    public async ValueTask<AccountHolder> Handle(Update command, CancellationToken cancellationToken)
     {
         var entity = await repository.Get(accountHolder.Id, new GetWithCards(), cancellationToken);
 

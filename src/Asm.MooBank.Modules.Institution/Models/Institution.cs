@@ -1,4 +1,4 @@
-﻿namespace Asm.MooBank.Modules.Institution.Models;
+﻿namespace Asm.MooBank.Modules.Institutions.Models;
 
 public sealed record Institution
 {

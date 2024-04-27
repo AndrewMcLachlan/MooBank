@@ -1,4 +1,4 @@
-﻿namespace Asm.MooBank.Modules.AccountHolder.Models;
+﻿namespace Asm.MooBank.Modules.Users.Models;
 
 public record AccountHolder : MooBank.Models.User
 {
@@ -7,9 +7,9 @@ public record AccountHolder : MooBank.Models.User
 
 public static class AccountHolderExtensions
 {
-    public static Models.AccountHolder ToModel(this Domain.Entities.AccountHolder.User accountHolder)
+    public static AccountHolder ToModel(this Domain.Entities.AccountHolder.User accountHolder)
     {
-        return new Models.AccountHolder
+        return new AccountHolder
         {
             Id = accountHolder.Id,
             EmailAddress = accountHolder.EmailAddress,
@@ -18,7 +18,7 @@ public static class AccountHolderExtensions
             LastName = accountHolder.LastName,
             Currency = accountHolder.Currency,
             PrimaryAccountId = accountHolder.PrimaryAccountId,
-            Cards = accountHolder.Cards.Select(c => new Models.AccountHolderCard
+            Cards = accountHolder.Cards.Select(c => new AccountHolderCard
             {
                 Name = c.Name,
                 Last4Digits = c.Last4Digits,

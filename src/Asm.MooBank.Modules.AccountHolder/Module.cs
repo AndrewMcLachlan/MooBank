@@ -3,7 +3,7 @@ using Asm.AspNetCore.Modules;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Asm.MooBank.Modules.AccountHolder;
+namespace Asm.MooBank.Modules.Users;
 
 public class Module : IModule
 {
