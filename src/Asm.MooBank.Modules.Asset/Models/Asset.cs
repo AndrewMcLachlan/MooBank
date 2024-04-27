@@ -22,7 +22,7 @@ public static class AssetExtensions
     public static Asset ToModel(this Domain.Entities.Asset.Asset asset, Guid userId)
     {
         var result = asset.ToModel();
-        result.AccountGroupId = asset.GetAccountGroup(userId)?.Id;
+        result.GroupId = asset.GetGroup(userId)?.Id;
 
         return result;
     }

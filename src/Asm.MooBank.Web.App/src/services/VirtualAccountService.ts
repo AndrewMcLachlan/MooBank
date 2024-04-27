@@ -60,7 +60,7 @@ export const useUpdateVirtualAccountBalance = () => {
 
             if (!accounts) return;
 
-            const account = accounts.accountGroups.flatMap(g => g.accounts).find(a => a.id === accountId);
+            const account = accounts.groups.flatMap(g => g.accounts).find(a => a.id === accountId);
             if (!account) return;
             const vAccount = account.virtualAccounts.find(a => a.id === virtualAccountId);
             if (!vAccount) return;

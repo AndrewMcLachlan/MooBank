@@ -17,7 +17,7 @@ public static class TransactionExtensions
             AccountId = transaction.AccountId,
             Description = transaction.Description,
             Location = transaction.Location,
-            AccountHolderName = transaction.AccountHolder?.FirstName,
+            AccountHolderName = transaction.User?.FirstName,
             ExtraInfo = transaction.Extra,
             Notes = transaction.Notes,
             ExcludeFromReporting = transaction.ExcludeFromReporting,

@@ -8,7 +8,7 @@ internal class GetStockHoldingReportHandler(IQueryable<Domain.Entities.StockHold
 {
     public async ValueTask<StockHoldingReport> Handle(GetStockHoldingReport query, CancellationToken cancellationToken)
     {
-        security.AssertAccountPermission(query.AccountId);
+        security.AssertInstrumentPermission(query.AccountId);
 
         var stockHolding = await stockHoldings.Include(s => s.Transactions).SingleAsync(s => s.Id == query.AccountId, cancellationToken);
 

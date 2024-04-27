@@ -17,5 +17,5 @@ public abstract record Account
 
     public string? AccountType { get; set; }
 
-    public Guid? AccountGroupId { get; set; }
+    public Guid? GroupId { get; set; }
 }

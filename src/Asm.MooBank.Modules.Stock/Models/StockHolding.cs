@@ -34,7 +34,7 @@ public static class StockHoldingExtensions
     public static StockHolding ToModel(this Domain.Entities.StockHolding.StockHolding account, Guid userId)
     {
         var result = account.ToModel();
-        result.AccountGroupId = account.GetAccountGroup(userId)?.Id;
+        result.GroupId = account.GetGroup(userId)?.Id;
 
         return result;
     }

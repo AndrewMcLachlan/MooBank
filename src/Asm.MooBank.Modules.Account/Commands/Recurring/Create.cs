@@ -16,7 +16,7 @@ internal class CreateHandler(IInstrumentRepository accountRepository, IUnitOfWor
 {
     public async ValueTask<Models.Recurring.RecurringTransaction> Handle(Create command, CancellationToken cancellationToken)
     {
-        security.AssertAccountPermission(command.AccountId);
+        security.AssertInstrumentPermission(command.AccountId);
 
         var account = await accountRepository.Get(command.AccountId, new RecurringTransactionSpecification(), cancellationToken);
 

@@ -15,7 +15,7 @@ public class Module : IModule
 
     public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
     {
-        new Endpoints.AccountHolder().MapGroup(endpoints);
+        new Endpoints.User().MapGroup(endpoints);
         return endpoints;
     }
 }

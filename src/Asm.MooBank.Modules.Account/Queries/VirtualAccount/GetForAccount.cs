@@ -12,7 +12,7 @@ internal class GetForAccountHandler(IQueryable<Domain.Entities.Account.Instituti
 
     public async ValueTask<IEnumerable<VirtualInstrument>> Handle(GetForAccount request, CancellationToken cancellationToken)
     {
-        _security.AssertAccountPermission(request.AccountId);
+        _security.AssertInstrumentPermission(request.AccountId);
 
         var account = await _accounts.Include(a => a.VirtualInstruments).SingleOrDefaultAsync(a => a.Id == request.AccountId, cancellationToken);
 

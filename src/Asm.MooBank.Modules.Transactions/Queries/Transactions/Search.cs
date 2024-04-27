@@ -10,7 +10,7 @@ internal class SearchHandler(IQueryable<Transaction> transactions, ISecurity sec
 {
     public async ValueTask<IEnumerable<Models.Transaction>> Handle(Search request, CancellationToken cancellationToken)
     {
-        securityRepository.AssertAccountPermission(request.AccountId);
+        securityRepository.AssertInstrumentPermission(request.AccountId);
 
         // Sometimes rebates are accounted prior to the debit transaction.
         // Go back 5 days, just in case.

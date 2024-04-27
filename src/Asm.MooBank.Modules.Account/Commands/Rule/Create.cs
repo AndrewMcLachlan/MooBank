@@ -26,7 +26,7 @@ internal class CreateHandler(IInstrumentRepository accountRepository, ITagReposi
 {
     public async ValueTask<Models.Rules.Rule> Handle(Create request, CancellationToken cancellationToken)
     {
-        security.AssertAccountPermission(request.AccountId);
+        security.AssertInstrumentPermission(request.AccountId);
 
         var account = await accountRepository.Get(request.AccountId, cancellationToken);
 

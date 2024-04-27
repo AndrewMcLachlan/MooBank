@@ -65,9 +65,9 @@ export const routes: RouteDefinition = {
             },
             tags: { path: "/tags", element: <Pages.TransactionTags /> },
             tagsVisualiser: { path: "/tags/visualiser", element: <Pages.Visualiser /> },
-            groups: { path: "/groups", element: <Pages.ManageAccountGroups /> },
-            groupsManage: { path: "/groups/:id/manage", element: <Pages.ManageAccountGroup /> },
-            groupsCreate: { path: "/groups/create", element: <Pages.CreateAccountGroup /> },
+            groups: { path: "/groups", element: <Pages.ManageGroups /> },
+            groupsManage: { path: "/groups/:id/manage", element: <Pages.ManageGroup /> },
+            groupsCreate: { path: "/groups/create", element: <Pages.CreateGroup /> },
             profile: { path: "/profile", element: <Pages.Profile /> },
             fallback: { path: "*", element: <Pages.Error404 /> },
         }

@@ -8,7 +8,7 @@ internal class DeleteHandler(IRuleRepository ruleRepository, ISecurity security,
 {
     public async ValueTask Handle(Delete request, CancellationToken cancellationToken)
     {
-        security.AssertAccountPermission(request.AccountId);
+        security.AssertInstrumentPermission(request.AccountId);
 
         await ruleRepository.Delete(request.AccountId, request.RuleId, cancellationToken);
 

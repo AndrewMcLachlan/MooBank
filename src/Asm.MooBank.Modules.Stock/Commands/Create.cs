@@ -13,16 +13,16 @@ public sealed record Create() : ICommand<Models.StockHolding>
     public required int Quantity { get; init; }
     public required decimal Fees { get; init; }
     public required bool ShareWithFamily { get; init; }
-    public Guid? AccountGroupId { get; init; }
+    public Guid? GroupId { get; init; }
 }
 
 internal class CreateHandler(IStockHoldingRepository repository, IUnitOfWork unitOfWork, User user, ISecurity security) :  ICommandHandler<Create, Models.StockHolding>
 {
     public async ValueTask<Models.StockHolding> Handle(Create command, CancellationToken cancellationToken)
     {
-        if (command.AccountGroupId != null)
+        if (command.GroupId != null)
         {
-            security.AssertAccountGroupPermission(command.AccountGroupId.Value);
+            security.AssertGroupPermission(command.GroupId.Value);
         }
 
         Domain.Entities.StockHolding.StockHolding entity = new(Guid.Empty)
@@ -35,7 +35,7 @@ internal class CreateHandler(IStockHoldingRepository repository, IUnitOfWork uni
         };
 
         entity.SetAccountHolder(user.Id);
-        entity.SetAccountGroup(command.AccountGroupId, user.Id);
+        entity.SetGroup(command.GroupId, user.Id);
 
         repository.Add(entity);
 

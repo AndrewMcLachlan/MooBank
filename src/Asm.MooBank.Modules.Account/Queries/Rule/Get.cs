@@ -8,7 +8,7 @@ internal class GetHandler(IQueryable<Domain.Entities.Account.Instrument> account
 {
     public async ValueTask<Models.Rules.Rule> Handle(Get request, CancellationToken cancellationToken)
     {
-        security.AssertAccountPermission(request.AccountId);
+        security.AssertInstrumentPermission(request.AccountId);
 
         var account = await accounts.SingleOrDefaultAsync(a => a.Id == request.AccountId, cancellationToken) ?? throw new NotFoundException();
 

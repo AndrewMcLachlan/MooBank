@@ -1,57 +1,57 @@
 import React, { useEffect, useState } from "react";
 import { Group } from "models";
 import { useNavigate } from "react-router-dom";
-import { useCreateAccountGroup, useUpdateAccountGroup } from "services";
+import { useCreateGroup, useUpdateGroup } from "services";
 import { emptyGuid, NavItem, Page, Section } from "@andrewmclachlan/mooapp";
 import { Button, Form } from "react-bootstrap";
 import { FormGroup, FormRow } from "components";
 
-export interface AccountGroupFormProps {
-    accountGroup?: Group
+export interface GroupFormProps {
+    group?: Group
 }
 
-export const AccountGroupForm: React.FC<AccountGroupFormProps> = ({ accountGroup }) => {
+export const GroupForm: React.FC<GroupFormProps> = ({ group }) => {
     const navigate = useNavigate();
 
-    const [name, setName] = useState(accountGroup?.name ?? "");
-    const [description, setDescription] = useState(accountGroup?.description ?? "");
-    const [showTotal, setShowTotal] = useState(accountGroup?.showPosition ?? true);
+    const [name, setName] = useState(group?.name ?? "");
+    const [description, setDescription] = useState(group?.description ?? "");
+    const [showTotal, setShowTotal] = useState(group?.showPosition ?? true);
 
     useEffect(() => {
-        setName(accountGroup?.name ?? "");
-        setDescription(accountGroup?.description ?? "");
-        setShowTotal(accountGroup?.showPosition ?? true);
-    }, [accountGroup]);
+        setName(group?.name ?? "");
+        setDescription(group?.description ?? "");
+        setShowTotal(group?.showPosition ?? true);
+    }, [group]);
 
-    const createAccountGroup = useCreateAccountGroup();
-    const updateAccountGroup = useUpdateAccountGroup();
+    const createGroup = useCreateGroup();
+    const updateGroup = useUpdateGroup();
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.stopPropagation();
         e.preventDefault();
 
-        const newAccountGroup: Group = {
-            id: accountGroup!.id,
+        const newGroup: Group = {
+            id: group!.id,
             name: name,
             description: description,
             showPosition: showTotal,
         };
 
-        if (accountGroup!.id === emptyGuid) {
-            createAccountGroup(newAccountGroup);
+        if (group!.id === emptyGuid) {
+            createGroup(newGroup);
         } else {
-            updateAccountGroup(newAccountGroup);
+            updateGroup(newGroup);
         }
 
         navigate("/groups");
     }
 
-    const verb = accountGroup?.id === emptyGuid ? "Create" : "Manage";
-    const breadcrumb: NavItem[] = !accountGroup ? [] : accountGroup?.id === emptyGuid ? [{text: "Create Account Group", route: "/groups/create"}] : [{text: accountGroup?.name, route: `/groups/${accountGroup?.id}/manage`}];
+    const verb = group?.id === emptyGuid ? "Create" : "Manage";
+    const breadcrumb: NavItem[] = !group ? [] : group?.id === emptyGuid ? [{text: "Create Group", route: "/groups/create"}] : [{text: group?.name, route: `/groups/${group?.id}/manage`}];
 
     return (
         <Page title={`${verb} Group`} breadcrumbs={[{ text: "Groups", route: "/groups"}, ...breadcrumb]}>
-            {accountGroup && <Section>
+            {group && <Section>
                 <Form onSubmit={handleSubmit}>
                     <FormRow>
                         <FormGroup controlId="name" >

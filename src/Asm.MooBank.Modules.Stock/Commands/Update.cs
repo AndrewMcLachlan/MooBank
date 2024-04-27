@@ -15,7 +15,7 @@ public sealed record Update : ICommand<Models.StockHolding>
     public required string Description { get; init; }
     public required bool ShareWithFamily { get; init; }
     public required decimal CurrentPrice { get; init; }
-    public Guid? AccountGroupId { get; init; }
+    public Guid? GroupId { get; init; }
 
     public static async ValueTask<Update?> BindAsync(HttpContext httpContext)
     {
@@ -32,10 +32,10 @@ internal class UpdateHandler(IStockHoldingRepository repository, IUnitOfWork uni
 {
     public async ValueTask<Models.StockHolding> Handle(Update command, CancellationToken cancellationToken)
     {
-        security.AssertAccountPermission(command.AccountId);
-        if (command.AccountGroupId != null)
+        security.AssertInstrumentPermission(command.AccountId);
+        if (command.GroupId != null)
         {
-            security.AssertAccountGroupPermission(command.AccountGroupId.Value);
+            security.AssertGroupPermission(command.GroupId.Value);
         }
 
         var stockHolding = await repository.Get(command.AccountId, new IncludeSpecification(), cancellationToken) ?? throw new NotFoundException();
@@ -45,7 +45,7 @@ internal class UpdateHandler(IStockHoldingRepository repository, IUnitOfWork uni
         stockHolding.ShareWithFamily = command.ShareWithFamily;
         stockHolding.CurrentPrice = command.CurrentPrice;
 
-        stockHolding.SetAccountGroup(command.AccountGroupId, user.Id);
+        stockHolding.SetGroup(command.GroupId, user.Id);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

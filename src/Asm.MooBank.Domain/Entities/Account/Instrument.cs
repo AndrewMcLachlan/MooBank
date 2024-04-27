@@ -33,10 +33,10 @@ public abstract class Instrument(Guid id) : KeyedEntity<Guid>(id)
 
     public virtual ICollection<VirtualInstrument> VirtualInstruments { get; set; } = [];
 
-    public virtual Group.Group? GetAccountGroup(Guid accountHolderId) =>
+    public virtual Group.Group? GetGroup(Guid accountHolderId) =>
         Owners.Where(a => a.UserId == accountHolderId).Select(aah => aah.Group).SingleOrDefault();
 
-    public void SetAccountGroup(Guid? groupId, Guid currentUserId)
+    public void SetGroup(Guid? groupId, Guid currentUserId)
     {
         var existing = Owners.SingleOrDefault(aah => aah.UserId == currentUserId);
 

@@ -12,13 +12,13 @@ internal class Mocks
         UnitOfWorkMock.Setup(UnitOfWorkMock => UnitOfWorkMock.SaveChangesAsync(default)).ReturnsAsync(1);
 
         SecurityMock = new Mock<ISecurity>();
-        SecurityMock.Setup(s => s.AssertAccountPermission(It.IsAny<Domain.Entities.Account.Instrument>()));
-        SecurityMock.Setup(s => s.AssertAccountPermission(It.IsAny<Guid>()));
-        SecurityMock.Setup(s => s.AssertAccountGroupPermission(It.IsAny<Guid>()));
+        SecurityMock.Setup(s => s.AssertInstrumentPermission(It.IsAny<Domain.Entities.Account.Instrument>()));
+        SecurityMock.Setup(s => s.AssertInstrumentPermission(It.IsAny<Guid>()));
+        SecurityMock.Setup(s => s.AssertGroupPermission(It.IsAny<Guid>()));
         SecurityMock.Setup(s => s.AssertFamilyPermission(It.IsAny<Guid>()));
 
-        SecurityMock.Fail(s => s.AssertAccountPermission(Models.InvalidAccountId));
-        SecurityMock.Fail(s => s.AssertAccountGroupPermission(Models.InvalidAccountGroupId));
+        SecurityMock.Fail(s => s.AssertInstrumentPermission(Models.InvalidAccountId));
+        SecurityMock.Fail(s => s.AssertGroupPermission(Models.InvalidGroupId));
         SecurityMock.Fail(s => s.AssertFamilyPermission(Models.InvalidAccountFamilyId));
 
         CurrencyConverterMock = new Mock<ICurrencyConverter>();

@@ -2,7 +2,7 @@
 
 public record AccountsList
 {
-    public required IEnumerable<AccountListGroup> AccountGroups { get; init; }
+    public required IEnumerable<AccountListGroup> Groups { get; init; }
 
     public decimal Position { get; init; }
 

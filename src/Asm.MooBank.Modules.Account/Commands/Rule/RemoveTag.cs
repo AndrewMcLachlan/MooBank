@@ -12,7 +12,7 @@ internal class RemoveTagHandler(IInstrumentRepository accountRepository, ISecuri
 
     public async ValueTask Handle(RemoveTag request, CancellationToken cancellationToken)
     {
-        security.AssertAccountPermission(request.AccountId);
+        security.AssertInstrumentPermission(request.AccountId);
 
         var account = await _accountRepository.Get(request.AccountId, cancellationToken);
 

@@ -39,7 +39,7 @@ internal class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
             .HasConversion(e => (int)e, e => (Models.TransactionType)e)
             .HasDefaultValue(Models.TransactionType.Debit);
 
-        entity.HasOne(e => e.AccountHolder).WithMany().HasForeignKey(e => e.AccountHolderId);
+        entity.HasOne(e => e.User).WithMany().HasForeignKey(e => e.AccountHolderId);
 
         //entity.HasOne(e => e.OffsetBy).WithOne(e => e.Offsets).HasForeignKey<Transaction>(t => t.OffsetByTransactionId);
 

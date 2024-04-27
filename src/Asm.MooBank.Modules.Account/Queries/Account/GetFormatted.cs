@@ -32,14 +32,14 @@ internal class GetFormattedHandler(IQueryable<Domain.Entities.Account.Institutio
                                                   a.ShareWithFamily && a.Owners.Any(ah => ah.User.FamilyId == user.FamilyId))
                                       .ToListAsync(cancellationToken);
 
-        var allGroups = institutionAccounts1.Select(g => g.GetAccountGroup(userId)).Union(stockHoldings1.Select(g => g.GetAccountGroup(userId))).Distinct(new IIdentifiableEqualityComparer<Domain.Entities.Group.Group, Guid>()!);
+        var allGroups = institutionAccounts1.Select(g => g.GetGroup(userId)).Union(stockHoldings1.Select(g => g.GetGroup(userId))).Distinct(new IIdentifiableEqualityComparer<Domain.Entities.Group.Group, Guid>()!);
 
         var groups = allGroups.Where(ag => ag != null).Select(ag =>
         {
             IEnumerable<Instrument> matchingAccounts = [
-                .. institutionAccounts1.Where(a => a.GetAccountGroup(userId)?.Id == ag!.Id).ToModel(currencyConverter),
-                .. stockHoldings1.Where(a => a.GetAccountGroup(userId)?.Id == ag!.Id).ToModel(currencyConverter),
-                .. assets1.Where(a => a.GetAccountGroup(userId)?.Id == ag!.Id).ToModel(currencyConverter),
+                .. institutionAccounts1.Where(a => a.GetGroup(userId)?.Id == ag!.Id).ToModel(currencyConverter),
+                .. stockHoldings1.Where(a => a.GetGroup(userId)?.Id == ag!.Id).ToModel(currencyConverter),
+                .. assets1.Where(a => a.GetGroup(userId)?.Id == ag!.Id).ToModel(currencyConverter),
             ];
 
             return new AccountListGroup
@@ -55,15 +55,15 @@ internal class GetFormattedHandler(IQueryable<Domain.Entities.Account.Institutio
             {
                 Name = "Other Accounts",
                 Accounts = [
-                    .. institutionAccounts1.Where(a => a.GetAccountGroup(userId) == null).ToModel(currencyConverter),
-                    .. stockHoldings1.Where(a => a.GetAccountGroup(userId) == null).ToModel(currencyConverter),
-                    .. assets1.Where(a => a.GetAccountGroup(userId) == null).ToModel(currencyConverter),
+                    .. institutionAccounts1.Where(a => a.GetGroup(userId) == null).ToModel(currencyConverter),
+                    .. stockHoldings1.Where(a => a.GetGroup(userId) == null).ToModel(currencyConverter),
+                    .. assets1.Where(a => a.GetGroup(userId) == null).ToModel(currencyConverter),
                 ],
             };
 
         return new AccountsList
         {
-            AccountGroups = groups.Union(otherAccounts.Accounts.Any() ? [otherAccounts] : []),
+            Groups = groups.Union(otherAccounts.Accounts.Any() ? [otherAccounts] : []),
             Position = groups.Sum(g => g.Position ?? 0),
         };
     }

@@ -15,7 +15,7 @@ internal class GetByTagReportHandler(IQueryable<Transaction> transactions, ISecu
 
     public async ValueTask<ByTagReport> Handle(GetByTagReport request, CancellationToken cancellationToken)
     {
-        _securityRepository.AssertAccountPermission(request.AccountId);
+        _securityRepository.AssertInstrumentPermission(request.AccountId);
 
 
         var start = request.Start.ToStartOfDay();

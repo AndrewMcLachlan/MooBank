@@ -33,7 +33,7 @@ internal class UpdateHandler(IInstrumentRepository instrumentRepository, ITransa
 
     public async ValueTask<VirtualInstrument> Handle(Update command, CancellationToken cancellationToken)
     {
-        security.AssertAccountPermission(command.AccountId);
+        security.AssertInstrumentPermission(command.AccountId);
 
         var parentInstrument = await _accountRepository.Get(command.AccountId, new VirtualAccountSpecification(), cancellationToken);
 

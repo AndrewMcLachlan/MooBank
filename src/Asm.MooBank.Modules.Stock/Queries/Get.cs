@@ -14,7 +14,7 @@ internal class GetHandler(IQueryable<Domain.Entities.StockHolding.StockHolding> 
                                    .Include(a => a.Viewers).ThenInclude(ah => ah.Group)
                                    .Include(a => a.Viewers).ThenInclude(ah => ah.User)
                                    .SingleOrDefaultAsync(a => a.Id == query.Id, cancellationToken) ?? throw new NotFoundException();
-        security.AssertAccountPermission(entity);
+        security.AssertInstrumentPermission(entity);
         var account = entity.ToModel(user.Id);
 
         return account!;

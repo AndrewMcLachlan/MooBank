@@ -1,19 +1,19 @@
 import { ClickableIcon, EditColumn, Form, SectionForm, Page } from "@andrewmclachlan/mooapp";
 import classNames from "classnames";
 import { CurrencySelector } from "components";
-import { AccountHolder, Card } from "models/AccountHolder";
+import { User, Card } from "models/User";
 import React from "react";
 import { useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import Select from "react-select";
-import { useAccountHolder, useAccountsList, useUpdateAccountHolder } from "services";
+import { useUser, useAccountsList, useUpdateUser } from "services";
 
 export const Profile: React.FC = () => {
 
-    const {data: me} = useAccountHolder();
+    const {data: me} = useUser();
     const { data: accounts } = useAccountsList();
-    const updateMe = useUpdateAccountHolder();
+    const updateMe = useUpdateUser();
 
     const [newCard, setNewCard] = useState<Card>({ name: "", last4Digits: null });
 
@@ -34,7 +34,7 @@ export const Profile: React.FC = () => {
         setValue("cards", cards.sort((a, b) => a.name?.localeCompare(b.name)));
     }
 
-    const handleSubmit = async (data: AccountHolder) => {
+    const handleSubmit = async (data: User) => {
         updateMe(data);
     };
 
@@ -42,7 +42,7 @@ export const Profile: React.FC = () => {
         reset(me);
     }, [me, accounts]);
 
-    const { register, setValue, getValues, reset, ...form } = useForm<AccountHolder>({ defaultValues: me  });
+    const { register, setValue, getValues, reset, ...form } = useForm<User>({ defaultValues: me  });
 
     return (
         <Page title="Profile" breadcrumbs={[{text: "Profile", route: "/profile"}]}>

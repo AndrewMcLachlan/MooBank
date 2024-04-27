@@ -17,7 +17,7 @@ internal class GetBreakdownReportHandler(IQueryable<Transaction> transactions, I
 
     public async ValueTask<BreakdownReport> Handle(GetBreakdownReport request, CancellationToken cancellationToken)
     {
-        security.AssertAccountPermission(request.AccountId);
+        security.AssertInstrumentPermission(request.AccountId);
 
         var parentTagId = request.ParentTagId;
 

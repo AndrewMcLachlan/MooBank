@@ -23,7 +23,7 @@ export const emptyStockHolding: NewStockHolding = {
     quantity: 0,
     price: 0,
     fees: 0,
-    accountGroupId: "",
+    groupId: "",
     currentBalance: 0,
     currentBalanceLocalCurrency: 0,
     currency: "",

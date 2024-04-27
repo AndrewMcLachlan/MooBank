@@ -24,7 +24,7 @@ public class InstitutionAccount(Guid id) : TransactionAccount(id)
     public virtual Institution.Institution Institution { get; set; } = null!;
 
     [NotMapped]
-    public IEnumerable<InstrumentViewer> ValidAccountViewers
+    public IEnumerable<InstrumentViewer> ValidViewers
     {
         get
         {
@@ -34,7 +34,7 @@ public class InstitutionAccount(Guid id) : TransactionAccount(id)
         }
     }
 
-    public override Group.Group? GetAccountGroup(Guid accountHolderId) =>
-        base.GetAccountGroup(accountHolderId) ??
-        ValidAccountViewers.Where(a => a.UserId == accountHolderId).Select(aah => aah.Group).SingleOrDefault();
+    public override Group.Group? GetGroup(Guid user) =>
+        base.GetGroup(user) ??
+        ValidViewers.Where(a => a.UserId == user).Select(aah => aah.Group).SingleOrDefault();
 }

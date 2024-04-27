@@ -14,7 +14,7 @@ internal class AddTagHandler(IInstrumentRepository accountRepository, ITagReposi
 
     public async ValueTask<Models.Rules.Rule> Handle(AddTag request, CancellationToken cancellationToken)
     {
-        security.AssertAccountPermission(request.AccountId);
+        security.AssertInstrumentPermission(request.AccountId);
 
         var account = await _accountRepository.Get(request.AccountId, cancellationToken);
 

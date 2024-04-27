@@ -8,7 +8,7 @@ internal class GetForVirtualHandler(IQueryable<Domain.Entities.Account.Instrumen
 {
     public async ValueTask<IEnumerable<RecurringTransaction>> Handle(GetForVirtual query, CancellationToken cancellationToken)
     {
-        security.AssertAccountPermission(query.AccountId);
+        security.AssertInstrumentPermission(query.AccountId);
 
         var account = await accounts.Include(a => a.VirtualInstruments).ThenInclude(a => a.RecurringTransactions).SingleAsync(a => a.Id == query.AccountId, cancellationToken);
 

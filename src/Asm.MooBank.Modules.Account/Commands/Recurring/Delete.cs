@@ -9,7 +9,7 @@ internal class DeleteHandler(IInstrumentRepository accountRepository, IUnitOfWor
 {
     public async ValueTask Handle(Delete command, CancellationToken cancellationToken)
     {
-        security.AssertAccountPermission(command.AccountId);
+        security.AssertInstrumentPermission(command.AccountId);
 
         var account = await accountRepository.Get(command.AccountId, new RecurringTransactionSpecification(), cancellationToken);
 

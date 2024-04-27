@@ -24,7 +24,7 @@ internal class UpdateHandler(IInstrumentRepository accountRepository, IUnitOfWor
 {
     public async ValueTask<Models.Recurring.RecurringTransaction> Handle(Update command, CancellationToken cancellationToken)
     {
-        security.AssertAccountPermission(command.AccountId);
+        security.AssertInstrumentPermission(command.AccountId);
 
         var account = await accountRepository.Get(command.AccountId, new RecurringTransactionSpecification(), cancellationToken);
 

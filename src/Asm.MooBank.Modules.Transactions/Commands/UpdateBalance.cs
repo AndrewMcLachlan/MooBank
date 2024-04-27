@@ -14,7 +14,7 @@ internal class UpdateBalanceHandler(IInstrumentRepository accountRepository, ITr
 {
     public async ValueTask<Models.Transaction> Handle(UpdateBalance command, CancellationToken cancellationToken)
     {
-        security.AssertAccountPermission(command.AccountId);
+        security.AssertInstrumentPermission(command.AccountId);
 
         var account = await accountRepository.Get(command.AccountId, cancellationToken);
 

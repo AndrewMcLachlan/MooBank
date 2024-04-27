@@ -27,7 +27,7 @@ public class AccountHolderConfiguration : IEntityTypeConfiguration<User>
             .HasPrincipalKey(e => e.Id)
             .HasForeignKey(p => p.UserId);
 
-        entity.HasMany(e => e.Cards).WithOne(e => e.AccountHolder).HasForeignKey(e => e.AccountHolderId);
+        entity.HasMany(e => e.Cards).WithOne(e => e.User).HasForeignKey(e => e.UserId);
 
         entity.HasOne(e => e.Family).WithMany(e => e.AccountHolders).HasForeignKey(e => e.FamilyId);
     }

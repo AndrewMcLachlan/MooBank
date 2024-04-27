@@ -12,7 +12,7 @@ internal class RemoveTagHandler(ITransactionRepository transactionRepository, IU
 {
     public async ValueTask<Models.Transaction> Handle(RemoveTag request, CancellationToken cancellationToken)
     {
-        security.AssertAccountPermission(request.AccountId);
+        security.AssertInstrumentPermission(request.AccountId);
 
         var entity = await transactionRepository.Get(request.Id, new IncludeSplitsSpecification(), cancellationToken);
 

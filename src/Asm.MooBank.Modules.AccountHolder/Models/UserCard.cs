@@ -1,6 +1,6 @@
 ﻿namespace Asm.MooBank.Modules.Users.Models;
 
-public record AccountHolderCard
+public record UserCard
 {
     public Guid Id { get; set; }
 

@@ -13,7 +13,7 @@ internal class ImportHandler(IInstrumentRepository accountRepository, IRuleRepos
     {
         request.Deconstruct(out Guid accountId, out Stream stream);
 
-        security.AssertAccountPermission(accountId);
+        security.AssertInstrumentPermission(accountId);
 
         var baseAccount = await accountRepository.Get(accountId, cancellationToken) ?? throw new NotFoundException($"Account with ID {accountId} not found");
 

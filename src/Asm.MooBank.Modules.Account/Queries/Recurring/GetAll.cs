@@ -9,7 +9,7 @@ internal class GetAllHandler(IQueryable<Domain.Entities.Account.Instrument> acco
 {
     public async ValueTask<IEnumerable<RecurringTransaction>> Handle(GetAll query, CancellationToken cancellationToken)
     {
-        security.AssertAccountPermission(query.AccountId);
+        security.AssertInstrumentPermission(query.AccountId);
 
         var account = await accounts.Include(a => a.VirtualInstruments).ThenInclude(a => a.RecurringTransactions).SingleAsync(a => a.Id == query.AccountId, cancellationToken);
 

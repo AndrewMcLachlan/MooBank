@@ -12,7 +12,7 @@ internal class GetAllTagAverageReportHandler(IQueryable<Transaction> transaction
 
     public async ValueTask<AllTagAverageReport> Handle(GetAllTagAverageReport request, CancellationToken cancellationToken)
     {
-        securityRepository.AssertAccountPermission(request.AccountId);
+        securityRepository.AssertInstrumentPermission(request.AccountId);
 
         var relationships = await tagRelationships.Include(t => t.TransactionTag).ThenInclude(t => t.Tags.Where(t => !t.Deleted && !t.Settings.ExcludeFromReporting)).Include(t => t.ParentTag).ThenInclude(t => t.Tags.Where(t => !t.Deleted && !t.Settings.ExcludeFromReporting)).Where(tr => !tr.TransactionTag.Deleted && !tr.TransactionTag.Settings.ExcludeFromReporting).ToListAsync(cancellationToken);
 

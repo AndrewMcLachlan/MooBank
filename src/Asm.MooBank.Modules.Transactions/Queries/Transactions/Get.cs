@@ -40,7 +40,7 @@ internal class GetHandler(IQueryable<Transaction> transactions, ISecurity securi
 
     public async ValueTask<PagedResult> Handle(Get query, CancellationToken cancellationToken)
     {
-        security.AssertAccountPermission(query.AccountId);
+        security.AssertInstrumentPermission(query.AccountId);
 
         var total = await transactions.Where(query).CountAsync(cancellationToken);
 
@@ -91,7 +91,7 @@ file static class IQueryableExtensions
             PropertyInfo? property = TransactionProperties.SingleOrDefault(p => p.Name.Equals(field, StringComparison.OrdinalIgnoreCase)) ?? throw new ArgumentException($"Unknown field {field}", nameof(field));
 
             // Hiding implementation details from the front-end
-            if (field == "AccountHolderName") field = "AccountHolder.FirstName";
+            if (field == "UserName") field = "User.FirstName";
 
             ParameterExpression param = Expression.Parameter(typeof(Transaction), String.Empty);
 

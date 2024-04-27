@@ -17,9 +17,9 @@ internal class GetHandler(IQueryable<Domain.Entities.Account.InstitutionAccount>
                                    .Include(a => a.ImportAccount).Include(a => a.VirtualInstruments).Include(a => a.Institution)
                                    .SingleOrDefaultAsync(a => a.Id == request.Id, cancellationToken) ?? throw new NotFoundException();
 
-        security.AssertAccountPermission(entity);
+        security.AssertInstrumentPermission(entity);
 
-        var account = entity.ToModelWithAccountGroup(user, currencyConverter);
+        var account = entity.ToModelWithGroup(user, currencyConverter);
 
         return account!;
     }

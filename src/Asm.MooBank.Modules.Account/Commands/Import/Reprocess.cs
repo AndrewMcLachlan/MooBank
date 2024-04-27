@@ -14,7 +14,7 @@ internal class ReprocessHandler(IUnitOfWork unitOfWork, IInstitutionAccountRepos
 
     public async ValueTask Handle(Reprocess request, CancellationToken cancellationToken)
     {
-        _security.AssertAccountPermission(request.AccountId);
+        _security.AssertInstrumentPermission(request.AccountId);
 
         var account = await _institutionAccountRepository.Get(request.AccountId, cancellationToken);
 

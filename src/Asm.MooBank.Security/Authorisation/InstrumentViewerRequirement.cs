@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Asm.MooBank.Security.Authorisation;
 
-internal class AccountViewerAuthorisationHandler(User user) : AuthorizationHandler<AccountViewerRequirement, Guid>
+internal class AccountViewerAuthorisationHandler(User user) : AuthorizationHandler<InstrumentViewerRequirement, Guid>
 {
-    protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, AccountViewerRequirement requirement, Guid resource)
+    protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, InstrumentViewerRequirement requirement, Guid resource)
     {
         if (user.Accounts.Contains(resource) || user.SharedAccounts.Contains(resource))
         {
@@ -17,7 +17,7 @@ internal class AccountViewerAuthorisationHandler(User user) : AuthorizationHandl
 }
 
 
-internal class AccountViewerRequirement : IAuthorizationRequirement
+internal class InstrumentViewerRequirement : IAuthorizationRequirement
 {
     public Guid AccountId { get; init; }
 }

@@ -5,10 +5,10 @@ namespace Asm.MooBank.Modules.Tests;
 [Binding]
 internal class CommonBindings(ScenarioInput<InstitutionAccount> scenarioInput)
 {
-    [Given(@"I have an invalid account group ID")]
-    public void GivenIHaveAnInvalidAccountGroupID()
+    [Given(@"I have an invalid group ID")]
+    public void GivenIHaveAnInvalidGroupId()
     {
-        scenarioInput.Value.GroupId = Models.InvalidAccountGroupId;
+        scenarioInput.Value.GroupId = Models.InvalidGroupId;
     }
 
 }

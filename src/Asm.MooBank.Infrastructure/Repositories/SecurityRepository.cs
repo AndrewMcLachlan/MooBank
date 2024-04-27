@@ -15,12 +15,12 @@ public class SecurityRepository(MooBankContext dataContext, IAuthorizationServic
     private readonly MooBankContext _mooBankContext = dataContext;
     private readonly IAuthorizationService _authorizationService = authorizationService;
 
-    public void AssertAccountPermission(Guid accountId)
+    public void AssertInstrumentPermission(Guid instrumentId)
     {
-        var virtualAccount = _mooBankContext.VirtualAccounts.Find(accountId);
-        var accountToCheck = (virtualAccount != null) ? virtualAccount.ParentInstrumentId : accountId;
+        var virtualAccount = _mooBankContext.VirtualAccounts.Find(instrumentId);
+        var instrumentToCheck = (virtualAccount != null) ? virtualAccount.ParentInstrumentId : instrumentId;
 
-        var authResult = _authorizationService.AuthorizeAsync(principalProvider.Principal!, accountToCheck, Policies.AccountViewer).Result;
+        var authResult = _authorizationService.AuthorizeAsync(principalProvider.Principal!, instrumentToCheck, Policies.InstrumentViewer).Result;
 
         if (!authResult.Succeeded)
 
@@ -29,13 +29,13 @@ public class SecurityRepository(MooBankContext dataContext, IAuthorizationServic
         }
     }
 
-    public async Task AssertAccountPermissionAsync(Guid accountId)
+    public async Task AssertInstrumentPermissionAsync(Guid instrumentId)
     {
-        var virtualAccount = await _mooBankContext.VirtualAccounts.FindAsync(accountId);
+        var virtualAccount = await _mooBankContext.VirtualAccounts.FindAsync(instrumentId);
 
-        var accountToCheck = (virtualAccount != null) ? virtualAccount.Id : accountId;
+        var instrumentToCheck = (virtualAccount != null) ? virtualAccount.Id : instrumentId;
 
-        var authResult = await _authorizationService.AuthorizeAsync(principalProvider.Principal!, accountToCheck, Policies.AccountViewer);
+        var authResult = await _authorizationService.AuthorizeAsync(principalProvider.Principal!, instrumentToCheck, Policies.InstrumentViewer);
 
         if (!authResult.Succeeded)
         {
@@ -43,9 +43,9 @@ public class SecurityRepository(MooBankContext dataContext, IAuthorizationServic
         }
     }
 
-    public void AssertAccountPermission(Instrument account)
+    public void AssertInstrumentPermission(Instrument instrument)
     {
-        var authResult = _authorizationService.AuthorizeAsync(principalProvider.Principal!, account.Id, Policies.AccountViewer).Result;
+        var authResult = _authorizationService.AuthorizeAsync(principalProvider.Principal!, instrument.Id, Policies.InstrumentViewer).Result;
 
         if (!authResult.Succeeded)
         {
@@ -53,17 +53,17 @@ public class SecurityRepository(MooBankContext dataContext, IAuthorizationServic
         }
     }
 
-    public void AssertAccountGroupPermission(Guid accountGroupId)
+    public void AssertGroupPermission(Guid accountId)
     {
-        if (!_mooBankContext.Groups.Any(a => a.Id == accountGroupId && a.OwnerId == user.Id))
+        if (!_mooBankContext.Groups.Any(a => a.Id == accountId && a.OwnerId == user.Id))
         {
             throw new NotAuthorisedException("Not authorised to view this account group");
         }
     }
 
-    public void AssertAccountGroupPermission(Group accountGroup)
+    public void AssertGroupPermission(Group group)
     {
-        if (accountGroup.OwnerId != user.Id)
+        if (group.OwnerId != user.Id)
         {
             throw new NotAuthorisedException("Not authorised to view this account group");
         }
@@ -90,7 +90,7 @@ public class SecurityRepository(MooBankContext dataContext, IAuthorizationServic
         }
     }
 
-    public async Task<IEnumerable<Guid>> GetAccountIds(CancellationToken cancellationToken = default) =>
+    public async Task<IEnumerable<Guid>> GetInstrumentIds(CancellationToken cancellationToken = default) =>
         await _mooBankContext.InstrumentOwners.Where(aah => aah.UserId == user.Id).Select(aah => aah.InstrumentId).ToListAsync(cancellationToken);
 
     public async Task AssertAdministrator(CancellationToken cancellationToken = default)

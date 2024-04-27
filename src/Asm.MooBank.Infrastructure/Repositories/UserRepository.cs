@@ -2,7 +2,7 @@
 
 namespace Asm.MooBank.Infrastructure.Repositories
 {
-    public class AccountHolderRepository(MooBankContext dataContext) : RepositoryBase<User, Guid>(dataContext), IAccountHolderRepository
+    public class UserRepository(MooBankContext dataContext) : RepositoryBase<User, Guid>(dataContext), IUserRepository
     {
         protected override IQueryable<User> GetById(Guid Id)
         {

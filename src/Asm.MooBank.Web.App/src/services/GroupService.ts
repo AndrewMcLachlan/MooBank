@@ -2,24 +2,24 @@ import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
 import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
 import { Group } from "../models";
 
-export const accountGroupsKey = "groups";
+export const groupsKey = "groups";
 
-export const useAccountGroups = (): UseQueryResult<Group[]> => useApiGet<Group[]>([accountGroupsKey], "api/groups");
+export const useGroups = (): UseQueryResult<Group[]> => useApiGet<Group[]>([groupsKey], "api/groups");
 
-export const useAccountGroup = (id: string) => useApiGet<Group>([accountGroupsKey, id], `api/groups/${id}`);
+export const useGroup = (id: string) => useApiGet<Group>([groupsKey, id], `api/groups/${id}`);
 
-export const useCreateAccountGroup = () => {
+export const useCreateGroup = () => {
 
     const queryClient = useQueryClient();
 
     const { mutate} = useApiPost<Group, null, Group>(() => "api/groups", {
         onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: [accountGroupsKey]});
+            queryClient.invalidateQueries({ queryKey: [groupsKey]});
         }
     });
 
-    const create = (accountGroup: Group) => {
-        mutate([null, accountGroup]);
+    const create = (group: Group) => {
+        mutate([null, group]);
     };
 
     return create;
@@ -27,18 +27,18 @@ export const useCreateAccountGroup = () => {
 
 
 
-export const useUpdateAccountGroup = () => {
+export const useUpdateGroup = () => {
 
     const queryClient = useQueryClient();
 
     const { mutate} = useApiPatch<Group, string, Group>((id) => `api/groups/${id}`, {
         onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: [accountGroupsKey]});
+            queryClient.invalidateQueries({ queryKey: [groupsKey]});
         }
     });
 
-    const update = (accountGroup: Group) => {
-        mutate([accountGroup.id, accountGroup]);
+    const update = (group: Group) => {
+        mutate([group.id, group]);
     };
 
     return update;

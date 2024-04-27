@@ -1,3 +1,3 @@
-export * from "./CreateAccountGroup";
-export * from "./ManageAccountGroup";
-export * from "./ManageAccountGroups";
+export * from "./CreateGroup";
+export * from "./ManageGroup";
+export * from "./ManageGroups";

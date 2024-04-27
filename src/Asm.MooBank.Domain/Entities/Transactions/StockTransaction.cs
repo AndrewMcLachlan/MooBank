@@ -15,7 +15,7 @@ public class StockTransaction(Guid id) : KeyedEntity<Guid>(id)
     public decimal Fees { get; set; }
 
     public Guid? AccountHolderId { get; internal set; }
-    public User.User? AccountHolder { get; set; } = null!;
+    public User.User? User { get; set; } = null!;
     public DateTimeOffset TransactionDate { get; set; }
 
     public TransactionType TransactionType { get; set; }

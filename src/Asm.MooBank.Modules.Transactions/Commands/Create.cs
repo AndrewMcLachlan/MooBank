@@ -18,7 +18,7 @@ internal class CreateHandler(IInstrumentRepository accountRepository, ITransacti
     {
         command.Deconstruct(out var accountId, out var amount, out var description, out var reference, out var transactionTime);
 
-        security.AssertAccountPermission(accountId);
+        security.AssertInstrumentPermission(accountId);
 
         var account = await accountRepository.Get(command.AccountId, cancellationToken);
         if (account is not Domain.Entities.Account.TransactionAccount transactionAccount)

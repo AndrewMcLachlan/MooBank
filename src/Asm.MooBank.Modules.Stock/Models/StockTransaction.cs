@@ -23,7 +23,7 @@ public static class StockTransactionExtensions
     public static StockTransaction ToModel(this Domain.Entities.Transactions.StockTransaction stockTransaction) =>
         new()
         {
-            AccountHolderName = stockTransaction.AccountHolder?.FirstName,
+            AccountHolderName = stockTransaction.User?.FirstName,
             Description = stockTransaction.Description,
             TransactionDate = stockTransaction.TransactionDate,
             AccountId = stockTransaction.AccountId,

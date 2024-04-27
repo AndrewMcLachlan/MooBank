@@ -32,7 +32,7 @@ public class StockHolding(Guid id) : Account.Instrument(id)
         }
     }
 
-    public override Group.Group? GetAccountGroup(Guid accountHolderId) =>
-        base.GetAccountGroup(accountHolderId) ??
+    public override Group.Group? GetGroup(Guid accountHolderId) =>
+        base.GetGroup(accountHolderId) ??
         ValidAccountViewers.Where(a => a.UserId == accountHolderId).Select(aah => aah.Group).SingleOrDefault();
 }

@@ -21,7 +21,7 @@ public partial class User(Guid id) : KeyedEntity<Guid>(id)
 
     public virtual ICollection<Account.InstrumentOwner> InstrumentOwners { get; set; } = new HashSet<Account.InstrumentOwner>();
 
-    public virtual ICollection<AccountHolderCard> Cards { get; set; } = new HashSet<AccountHolderCard>();
+    public virtual ICollection<UserCard> Cards { get; set; } = new HashSet<UserCard>();
 
     public Family.Family Family { get; set; } = null!;
 }

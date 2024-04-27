@@ -210,4 +210,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="[InstrumentId]" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="f5aae43a-7b0a-40e2-9c57-1554aa0e9b9c" ChangeDateTime="04/27/2024 01:59:10">
+    <Property Name="ElementName" Value="[dbo].[AccountHolderCard]" />
+    <Property Name="ElementType" Value="SqlTable" />
+    <Property Name="ParentElementName" Value="[dbo]" />
+    <Property Name="ParentElementType" Value="SqlSchema" />
+    <Property Name="NewName" Value="[UserCard]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="34ebec0f-c20d-4194-b125-26cc0bd79cd8" ChangeDateTime="04/27/2024 01:59:21">
+    <Property Name="ElementName" Value="[dbo].[UserCard].[AccountHolderId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[UserCard]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[UserId]" />
+  </Operation>
 </Operations>

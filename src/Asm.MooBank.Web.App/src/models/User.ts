@@ -1,4 +1,4 @@
-export interface AccountHolder {
+export interface User {
     id: string,
     emailAddress : string,
     firstName?: string,

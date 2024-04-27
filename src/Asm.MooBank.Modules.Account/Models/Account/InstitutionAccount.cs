@@ -76,10 +76,10 @@ public static class InstitutionAccountExtensions
         ImportAccount = account.ImporterTypeId == null ? null : new Domain.Entities.Account.ImportAccount { ImporterTypeId = account.ImporterTypeId.Value, AccountId = account.Id },
     };
 
-    public static InstitutionAccount ToModelWithAccountGroup(this Domain.Entities.Account.InstitutionAccount entity, User user, ICurrencyConverter currencyConverter)
+    public static InstitutionAccount ToModelWithGroup(this Domain.Entities.Account.InstitutionAccount entity, User user, ICurrencyConverter currencyConverter)
     {
         var result = entity.ToModel(currencyConverter);
-        result.GroupId = entity.GetAccountGroup(user.Id)?.Id;
+        result.GroupId = entity.GetGroup(user.Id)?.Id;
 
         return result;
     }

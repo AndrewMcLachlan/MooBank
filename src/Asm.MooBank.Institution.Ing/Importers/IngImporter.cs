@@ -12,7 +12,7 @@ using TransactionType = Asm.MooBank.Models.TransactionType;
 
 namespace Asm.MooBank.Institution.Ing.Importers;
 
-internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, IAccountHolderRepository accountHolderRepository, ITransactionRawRepository transactionRawRepository, ITransactionRepository transactionRepository, ILogger<IngImporter> logger) : IImporter
+internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, IUserRepository accountHolderRepository, ITransactionRawRepository transactionRawRepository, ITransactionRepository transactionRepository, ILogger<IngImporter> logger) : IImporter
 {
     private const int Columns = 5;
     private const int DateColumn = 0;
@@ -22,7 +22,7 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
     private const int BalanceColumn = 4;
 
     private readonly IQueryable<TransactionRaw> _rawTransactions = rawTransactions;
-    private readonly IAccountHolderRepository _accountHolderRepository = accountHolderRepository;
+    private readonly IUserRepository _accountHolderRepository = accountHolderRepository;
     private readonly ITransactionRawRepository _transactionRawRepository = transactionRawRepository;
     private readonly ITransactionRepository _transactionRepository = transactionRepository;
     private readonly ILogger<IngImporter> _logger = logger;
@@ -130,7 +130,7 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
             var transaction = new Transaction
             {
                 AccountId = accountId,
-                AccountHolder = parsed.Last4Digits != null ? await _accountHolderRepository.GetByCard(parsed.Last4Digits.Value, cancellationToken) : null,
+                User = parsed.Last4Digits != null ? await _accountHolderRepository.GetByCard(parsed.Last4Digits.Value, cancellationToken) : null,
                 Amount = transactionType == TransactionType.Credit ? credit : debit,
                 Description = parsed.Description,
                 Location = parsed.Location,
@@ -180,7 +180,7 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
         {
             var parsed = TransactionParser.ParseDescription(raw.Description);
 
-            raw.Transaction.AccountHolder = await GetAccountHolder(parsed.Last4Digits, cancellationToken);
+            raw.Transaction.User = await GetAccountHolder(parsed.Last4Digits, cancellationToken);
             raw.Transaction.Description = parsed.Description;
             raw.Transaction.Location = parsed.Location;
             raw.Transaction.Extra = new TransactionExtra

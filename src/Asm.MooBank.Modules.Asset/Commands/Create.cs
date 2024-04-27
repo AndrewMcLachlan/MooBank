@@ -11,16 +11,16 @@ public sealed record Create() : ICommand<Models.Asset>
     public decimal? PurchasePrice { get; init; }
     public decimal CurrentValue { get; init; }
     public required bool ShareWithFamily { get; init; }
-    public Guid? AccountGroupId { get; init; }
+    public Guid? GroupId { get; init; }
 }
 
 internal class CreateHandler(IAssetRepository repository, IUnitOfWork unitOfWork, User user, ISecurity security) :  ICommandHandler<Create, Models.Asset>
 {
     public async ValueTask<Models.Asset> Handle(Create command, CancellationToken cancellationToken)
     {
-        if (command.AccountGroupId != null)
+        if (command.GroupId != null)
         {
-            security.AssertAccountGroupPermission(command.AccountGroupId.Value);
+            security.AssertGroupPermission(command.GroupId.Value);
         }
 
         Domain.Entities.Asset.Asset entity = new(Guid.Empty)
@@ -34,7 +34,7 @@ internal class CreateHandler(IAssetRepository repository, IUnitOfWork unitOfWork
         };
 
         entity.SetAccountHolder(user.Id);
-        entity.SetAccountGroup(command.AccountGroupId, user.Id);
+        entity.SetGroup(command.GroupId, user.Id);
 
         repository.Add(entity);
 

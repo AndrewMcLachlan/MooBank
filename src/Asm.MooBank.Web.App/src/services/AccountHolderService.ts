@@ -1,21 +1,21 @@
-import { useQueryClient, UseQueryResult } from "@tanstack/react-query";
-import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
-import { AccountHolder } from "models/AccountHolder";
+import { useQueryClient } from "@tanstack/react-query";
+import { useApiGet, useApiPatch } from "@andrewmclachlan/mooapp";
+import { User } from "models/User";
 
-export const accountHoldersKey = "account-holders";
+export const usersKey = "users";
 
-export const useAccountHolder = () => useApiGet<AccountHolder>([accountHoldersKey, "me"], `api/account-holders/me`);
+export const useUser = () => useApiGet<User>([usersKey, "me"], `api/users/me`);
 
-export const useUpdateAccountHolder = () => {
+export const useUpdateUser = () => {
     const queryClient = useQueryClient();
 
-    const { mutate} = useApiPatch<AccountHolder, null, AccountHolder>(() => "api/account-holders/me", {
+    const { mutate} = useApiPatch<User, null, User>(() => "api/users/me", {
         onSettled: (_data,_error,[]) => {
-            queryClient.invalidateQueries({ queryKey: [accountHoldersKey]});
+            queryClient.invalidateQueries({ queryKey: [usersKey]});
         }
     });
 
-    const update = (user: AccountHolder) => {
+    const update = (user: User) => {
         mutate([null, user]);
     };
 

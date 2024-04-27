@@ -11,7 +11,7 @@ internal class DeleteHandler(IInstrumentRepository accountRepository, ISecurity 
 
     public async ValueTask Handle(Delete request, CancellationToken cancellationToken)
     {
-        security.AssertAccountPermission(request.AccountId);
+        security.AssertInstrumentPermission(request.AccountId);
 
         var account = await _accountRepository.Get(request.AccountId, cancellationToken);
 

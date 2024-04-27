@@ -15,6 +15,6 @@ Then an exception of type 'Asm.NotAuthorisedException, Asm' is thrown
 
 Scenario: Update Account with invalid account group ID
 Given I have a request to update an institution account
-And I have an invalid account group ID
+And I have an invalid group ID
 When I call UpdateHandler.Handle
 Then an exception of type 'Asm.NotAuthorisedException, Asm' is thrown

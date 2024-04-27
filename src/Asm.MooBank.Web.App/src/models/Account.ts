@@ -19,7 +19,7 @@ export interface AccountBase {
 
 export interface TopLevelAccount {
     shareWithFamily: boolean;
-    accountGroupId: string;
+    groupId: string;
 }
 
 export interface TransactionAccount extends AccountBase {
@@ -45,7 +45,7 @@ export const emptyAccount : InstitutionAccount = {
     balanceDate: new Date(),
     accountType: "None",
     controller: "Manual",
-    accountGroupId: "",
+    groupId: "",
     calculatedBalance: 0,
     currentBalanceLocalCurrency: 0,
     currency: "",

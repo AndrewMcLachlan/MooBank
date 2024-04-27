@@ -5,13 +5,13 @@ import { StockHolding } from "../../models";
 import { StockHoldingPage } from "./StockHoldingPage";
 import { useStockHolding } from "./StockHoldingProvider";
 
-import { useAccountGroups, useUpdateStockHolding } from "services";
+import { useGroups, useUpdateStockHolding } from "services";
 
 export const ManageStockHolding: React.FC = () => {
 
     const navigate = useNavigate();
 
-    const { data: accountGroups } = useAccountGroups();
+    const { data: groups } = useGroups();
     const updateStockHolding = useUpdateStockHolding();
 
     const currentStockHolding = useStockHolding();
@@ -58,9 +58,9 @@ export const ManageStockHolding: React.FC = () => {
                 </Form.Group>
                 <Form.Group controlId="group">
                     <Form.Label>Group</Form.Label>
-                    <Form.Control as="select" value={stockHolding.accountGroupId} onChange={(e: any) => setStockHolding({ ...stockHolding, accountGroupId: e.currentTarget.value })}>
+                    <Form.Control as="select" value={stockHolding.groupId} onChange={(e: any) => setStockHolding({ ...stockHolding, groupId: e.currentTarget.value })}>
                         <option value="">Select a group...</option>
-                        {accountGroups?.map(a =>
+                        {groups?.map(a =>
                             <option value={a.id} key={a.id}>{a.name}</option>
                         )}
                     </Form.Control>

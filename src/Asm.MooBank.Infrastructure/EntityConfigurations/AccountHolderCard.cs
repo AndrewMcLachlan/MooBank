@@ -2,10 +2,10 @@
 
 namespace Asm.MooBank.Infrastructure.EntityConfigurations;
 
-public class AccountHolderCardConfiguration : IEntityTypeConfiguration<AccountHolderCard>
+public class AccountHolderCardConfiguration : IEntityTypeConfiguration<UserCard>
 {
-    public void Configure(EntityTypeBuilder<AccountHolderCard> entity)
+    public void Configure(EntityTypeBuilder<UserCard> entity)
     {
-        entity.HasKey(e => new { e.AccountHolderId, e.Last4Digits });
+        entity.HasKey(e => new { e.UserId, e.Last4Digits });
     }
 }

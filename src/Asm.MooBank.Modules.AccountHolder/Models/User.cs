@@ -1,17 +1,15 @@
-﻿using Asm.MooBank.Domain.Entities.User;
+﻿namespace Asm.MooBank.Modules.Users.Models;
 
-namespace Asm.MooBank.Modules.Users.Models;
-
-public record AccountHolder : MooBank.Models.User
+public record User : MooBank.Models.User
 {
-    public IEnumerable<AccountHolderCard> Cards { get; set; } = [];
+    public IEnumerable<UserCard> Cards { get; set; } = [];
 }
 
-public static class AccountHolderExtensions
+public static class UserExtensions
 {
-    public static AccountHolder ToModel(this User user)
+    public static User ToModel(this Domain.Entities.User.User user)
     {
-        return new AccountHolder
+        return new User
         {
             Id = user.Id,
             EmailAddress = user.EmailAddress,
@@ -20,7 +18,7 @@ public static class AccountHolderExtensions
             LastName = user.LastName,
             Currency = user.Currency,
             PrimaryAccountId = user.PrimaryAccountId,
-            Cards = user.Cards.Select(c => new AccountHolderCard
+            Cards = user.Cards.Select(c => new UserCard
             {
                 Name = c.Name,
                 Last4Digits = c.Last4Digits,

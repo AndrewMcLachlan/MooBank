@@ -11,7 +11,7 @@ internal class RunHandler(IRunRulesQueue runRulesQueue, ISecurity security) : IC
 
     public ValueTask Handle(Run request, CancellationToken cancellationToken)
     {
-        _security.AssertAccountPermission(request.AccountId);
+        _security.AssertInstrumentPermission(request.AccountId);
 
         _runRulesQueue.QueueRunRules(request.AccountId);
 

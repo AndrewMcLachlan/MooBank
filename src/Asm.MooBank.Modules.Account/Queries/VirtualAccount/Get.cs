@@ -10,7 +10,7 @@ internal class GetHandler(IQueryable<Domain.Entities.Account.Instrument> account
 {
     public async ValueTask<VirtualInstrument> Handle(Get request, CancellationToken cancellationToken)
     {
-        security.AssertAccountPermission(request.AccountId);
+        security.AssertInstrumentPermission(request.AccountId);
 
         var account = await accounts.Include(a => a.VirtualInstruments).ThenInclude(va => va.RecurringTransactions).SingleOrDefaultAsync(a => a.Id == request.AccountId, cancellationToken) ?? throw new NotFoundException();
 

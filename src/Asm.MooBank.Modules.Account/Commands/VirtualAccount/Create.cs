@@ -15,7 +15,7 @@ internal class CreateHandler(Domain.Entities.Account.IInstrumentRepository accou
 
     public async ValueTask<Models.Account.VirtualInstrument> Handle(Create request, CancellationToken cancellationToken)
     {
-        _security.AssertAccountPermission(request.AccountId);
+        _security.AssertInstrumentPermission(request.AccountId);
         var account = await _accountRepository.GetInstitutionAccount(request.AccountId, cancellationToken);
 
         var entity = request.VirtualAccount.ToEntity(request.AccountId);

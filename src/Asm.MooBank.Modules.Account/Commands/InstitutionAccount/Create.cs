@@ -17,13 +17,13 @@ internal class CreateHandler(IInstitutionAccountRepository institutionAccountRep
 
         if (account.GroupId != null)
         {
-            security.AssertAccountGroupPermission(account.GroupId.Value);
+            security.AssertGroupPermission(account.GroupId.Value);
         }
 
         var entity = account.ToEntity();
 
         entity.SetAccountHolder(user.Id);
-        entity.SetAccountGroup(account.GroupId, user.Id);
+        entity.SetGroup(account.GroupId, user.Id);
 
         _accountRepository.Add(entity);
 

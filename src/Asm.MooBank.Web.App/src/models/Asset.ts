@@ -14,7 +14,7 @@ export const emptyAsset: NewAsset = {
     id: "",
     name: "",
     purchasePrice: 0,
-    accountGroupId: "",
+    groupId: "",
     currentBalance: 0,
     currentBalanceLocalCurrency: 0,
     currency: "",

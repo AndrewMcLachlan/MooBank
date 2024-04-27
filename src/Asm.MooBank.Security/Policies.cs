@@ -6,9 +6,9 @@ public static class Policies
 
     public const string FamilyMember = nameof(FamilyMember);
 
-    public const string AccountHolder = nameof(AccountHolder);
+    public const string InstrumentOwner = nameof(InstrumentOwner);
 
-    public const string AccountViewer = nameof(AccountViewer);
+    public const string InstrumentViewer = nameof(InstrumentViewer);
 
     public const string BudgetLine = nameof(BudgetLine);
 }

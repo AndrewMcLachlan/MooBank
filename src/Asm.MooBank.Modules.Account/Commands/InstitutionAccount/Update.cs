@@ -15,17 +15,17 @@ internal class UpdateHandler(IUnitOfWork unitOfWork, IInstitutionAccountReposito
     {
         command.Deconstruct(out var account);
 
-        security.AssertAccountPermission(account.Id);
+        security.AssertInstrumentPermission(account.Id);
         if (account.GroupId != null)
         {
-            security.AssertAccountGroupPermission(account.GroupId.Value);
+            security.AssertGroupPermission(account.GroupId.Value);
         }
 
         var entity = await accountRepository.Get(account.Id, new AccountDetailsSpecification(), cancellationToken);
 
         entity.Name = account.Name;
         entity.Description = account.Description;
-        entity.SetAccountGroup(account.GroupId, user.Id);
+        entity.SetGroup(account.GroupId, user.Id);
         entity.AccountType = account.AccountType;
         entity.ShareWithFamily = account.ShareWithFamily;
         entity.InstitutionId = account.InstitutionId;

@@ -11,7 +11,7 @@ internal class StockTransactionConfiguration : IEntityTypeConfiguration<StockTra
 
         builder.Property(e => e.Fees).HasColumnType("decimal(12, 4)");
 
-        builder.HasOne(e => e.AccountHolder).WithMany().HasForeignKey(e => e.AccountHolderId);
+        builder.HasOne(e => e.User).WithMany().HasForeignKey(e => e.AccountHolderId);
 
         builder.Property(e => e.TransactionType)
             .HasColumnName($"{nameof(Transaction.TransactionType)}Id")

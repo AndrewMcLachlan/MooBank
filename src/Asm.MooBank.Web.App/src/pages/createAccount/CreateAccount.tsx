@@ -4,7 +4,7 @@ import { Button, Form, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 import { AccountController, AccountControllers, AccountType, AccountTypes, ImportAccount, InstitutionAccount } from "models";
-import { useAccountGroups, useCreateAccount, useInstitutions } from "services";
+import { useGroups, useCreateAccount, useInstitutions } from "services";
 import { ImportSettings } from "./ImportSettings";
 import { CurrencySelector } from "components";
 
@@ -12,7 +12,7 @@ export const CreateAccount: React.FC = () => {
 
     const navigate = useNavigate();
 
-    const { data: accountGroups } = useAccountGroups();
+    const { data: groups } = useGroups();
     const { data: institutions } = useInstitutions();
     const createAccount = useCreateAccount();
 
@@ -22,7 +22,7 @@ export const CreateAccount: React.FC = () => {
     const [accountType, setAccountType] = useState<AccountType>("Transaction");
     const [accountController, setAccountController] = useState<AccountController>("Manual");
     const [importerTypeId, setImporterTypeId] = useState(0);
-    const [accountGroupId, setAccountGroupId] = useState("");
+    const [groupId, setgroupId] = useState("");
     const [includeInBudget, setIncludeInBudget] = useState(false);
     const [shareWithFamily, setShareWithFamily] = useState(false);
     const [institution, setInstitution] = useState(0);
@@ -42,7 +42,7 @@ export const CreateAccount: React.FC = () => {
             accountType: accountType,
             controller: accountController,
             balanceDate: new Date(),
-            accountGroupId: accountGroupId === "" ? undefined : accountGroupId,
+            groupId: groupId === "" ? undefined : groupId,
             calculatedBalance: balance,
             lastTransaction: undefined,
             shareWithFamily: shareWithFamily,
@@ -92,9 +92,9 @@ export const CreateAccount: React.FC = () => {
                 </Form.Group>
                 <Form.Group controlId="group">
                     <Form.Label>Group</Form.Label>
-                    <Form.Control as="select" value={accountGroupId} onChange={(e: any) => setAccountGroupId(e.currentTarget.value)}>
+                    <Form.Control as="select" value={groupId} onChange={(e: any) => setgroupId(e.currentTarget.value)}>
                         <option value="">Select a group...</option>
-                        {accountGroups?.map(a =>
+                        {groups?.map(a =>
                             <option value={a.id} key={a.id}>{a.name}</option>
                         )}
                     </Form.Control>

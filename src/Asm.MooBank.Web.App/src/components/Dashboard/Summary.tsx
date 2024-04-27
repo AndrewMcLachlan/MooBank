@@ -7,7 +7,7 @@ export const SummaryWidget: React.FC = () => {
 
     const { data: accounts, isLoading } = useFormattedAccounts();
 
-    const totals = accounts?.accountGroups.filter(ag => ag.position);
+    const totals = accounts?.groups.filter(ag => ag.position);
     const grandTotal = totals?.reduce((acc, ag) => acc + ag.position, 0);
 
     return (
