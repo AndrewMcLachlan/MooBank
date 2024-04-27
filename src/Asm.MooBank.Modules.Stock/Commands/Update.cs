@@ -1,13 +1,13 @@
 ﻿using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.StockHolding;
 using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Stock.Models;
+using Asm.MooBank.Modules.Stocks.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Asm.MooBank.Modules.Stock.Commands;
+namespace Asm.MooBank.Modules.Stocks.Commands;
 public sealed record Update : ICommand<Models.StockHolding>
 {
     public Guid AccountId { get; init; }

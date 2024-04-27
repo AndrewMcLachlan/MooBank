@@ -1,8 +1,8 @@
 ﻿using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Stock.Models;
+using Asm.MooBank.Modules.Stocks.Models;
 using Asm.MooBank.Queries;
 
-namespace Asm.MooBank.Modules.Stock.Queries;
+namespace Asm.MooBank.Modules.Stocks.Queries;
 
 public record GetStockHoldingReport(Guid AccountId) : IQuery<StockHoldingReport>;
 

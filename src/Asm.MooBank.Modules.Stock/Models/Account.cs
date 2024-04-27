@@ -1,4 +1,4 @@
-﻿namespace Asm.MooBank.Modules.Stock.Models;
+﻿namespace Asm.MooBank.Modules.Stocks.Models;
 
 /// <summary>
 /// Duplicate, to be fixed

@@ -1,10 +1,10 @@
 ﻿using Asm.Cqrs.AspNetCore;
-using Asm.MooBank.Modules.Stock.Models;
-using Asm.MooBank.Modules.Stock.Queries.StockTransactions;
+using Asm.MooBank.Modules.Stocks.Models;
+using Asm.MooBank.Modules.Stocks.Queries.StockTransactions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 
-namespace Asm.MooBank.Modules.Stock.Endpoints;
+namespace Asm.MooBank.Modules.Stocks.Endpoints;
 internal class StockTransactionsEndpoints : EndpointGroupBase
 {
     public override string Name => "Stock Transactions";

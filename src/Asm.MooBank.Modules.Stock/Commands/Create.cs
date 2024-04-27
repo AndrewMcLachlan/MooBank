@@ -1,9 +1,9 @@
 ﻿using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.StockHolding;
 using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Stock.Models;
+using Asm.MooBank.Modules.Stocks.Models;
 
-namespace Asm.MooBank.Modules.Stock.Commands;
+namespace Asm.MooBank.Modules.Stocks.Commands;
 public sealed record Create() : ICommand<Models.StockHolding>
 {
     public required string Name { get; init; }

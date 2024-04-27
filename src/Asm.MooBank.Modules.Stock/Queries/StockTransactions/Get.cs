@@ -1,10 +1,10 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
-using Asm.MooBank.Modules.Stock.Models;
-using Asm.MooBank.Modules.Stock.Queries.StockTransactions;
-using PagedResult = Asm.PagedResult<Asm.MooBank.Modules.Stock.Models.StockTransaction>;
+using Asm.MooBank.Modules.Stocks.Models;
+using Asm.MooBank.Modules.Stocks.Queries.StockTransactions;
+using PagedResult = Asm.PagedResult<Asm.MooBank.Modules.Stocks.Models.StockTransaction>;
 
-namespace Asm.MooBank.Modules.Stock.Queries.StockTransactions;
+namespace Asm.MooBank.Modules.Stocks.Queries.StockTransactions;
 
 public sealed record Get : IQuery<PagedResult>
 {
@@ -51,7 +51,7 @@ file static class IQueryableExtensions
 
     static IQueryableExtensions()
     {
-        TransactionProperties = typeof(Models.StockTransaction).GetProperties();
+        TransactionProperties = typeof(StockTransaction).GetProperties();
     }
 
     public static IQueryable<Domain.Entities.Transactions.StockTransaction> Where(this IQueryable<Domain.Entities.Transactions.StockTransaction> queryable, Get query)

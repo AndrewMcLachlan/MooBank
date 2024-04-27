@@ -1,4 +1,4 @@
-﻿namespace Asm.MooBank.Modules.Stock.Models;
+﻿namespace Asm.MooBank.Modules.Stocks.Models;
 public record StockHolding : Account
 {
     public required string Symbol { get; init; }
