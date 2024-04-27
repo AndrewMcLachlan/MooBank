@@ -1,4 +1,6 @@
-﻿namespace Asm.MooBank.Models;
+﻿using Asm.MooBank.Models;
+
+namespace Asm.MooBank.Modules.Tags.Models;
 
 public record TagHierarchy
 {

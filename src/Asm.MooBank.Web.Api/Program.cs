@@ -26,7 +26,7 @@ void AddServices(WebApplicationBuilder builder)
             new Asm.MooBank.Modules.ReferenceData.Module(),
             new Asm.MooBank.Modules.Reports.Module(),
             new Asm.MooBank.Modules.Stock.Module(),
-            new Asm.MooBank.Modules.Tag.Module(),
+            new Asm.MooBank.Modules.Tags.Module(),
             new Asm.MooBank.Modules.Transactions.Module(),
         });
 

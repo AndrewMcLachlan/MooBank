@@ -3,13 +3,13 @@ using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Models;
 using ITagRepository = Asm.MooBank.Domain.Entities.Tag.ITagRepository;
 
-namespace Asm.MooBank.Modules.Tag.Commands;
+namespace Asm.MooBank.Modules.Tags.Commands;
 
-public sealed record AddSubTag(int Id, int SubTagId) : ICommand<MooBank.Models.Tag>;
+public sealed record AddSubTag(int Id, int SubTagId) : ICommand<Tag>;
 
-internal sealed class AddSubTagHandler(ITagRepository tagRepository, IEnumerable<TagRelationship> transactionTagRelationships, IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<AddSubTag, MooBank.Models.Tag>
+internal sealed class AddSubTagHandler(ITagRepository tagRepository, IEnumerable<TagRelationship> transactionTagRelationships, IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<AddSubTag, Tag>
 {
-    public async ValueTask<MooBank.Models.Tag> Handle(AddSubTag request, CancellationToken cancellationToken)
+    public async ValueTask<Tag> Handle(AddSubTag request, CancellationToken cancellationToken)
     {
         request.Deconstruct(out int id, out int subId);
 

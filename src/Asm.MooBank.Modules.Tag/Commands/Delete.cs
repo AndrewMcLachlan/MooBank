@@ -2,7 +2,7 @@
 using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Models;
 
-namespace Asm.MooBank.Modules.Tag.Commands;
+namespace Asm.MooBank.Modules.Tags.Commands;
 
 internal record Delete(int Id) : ICommand;
 
