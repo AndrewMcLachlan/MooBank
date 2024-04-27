@@ -34,7 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Asm.MooBank.Modules.Account\Asm.MooBank.Modules.Account.csproj" />
+    <ProjectReference Include="..\..\src\Asm.MooBank.Modules.Account\Asm.MooBank.Modules.Accounts.csproj" />
   </ItemGroup>
 
   <ItemGroup>
