@@ -7,7 +7,7 @@ namespace Asm.MooBank.Modules.Budget.Queries;
 
 public record ReportForMonthBreakdownUnbudgeted(short Year, short Month) : IQuery<BudgetReportByMonthBreakdown>;
 
-internal class ReportForMonthBreakdownUnbudgetedHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, IQueryable<Domain.Entities.Account.InstitutionAccount> accounts, IQueryable<Domain.Entities.Transactions.Transaction> transactions, IQueryable<TagRelationship> tagRelationships, AccountHolder accountHolder) : IQueryHandler<ReportForMonthBreakdownUnbudgeted, BudgetReportByMonthBreakdown>
+internal class ReportForMonthBreakdownUnbudgetedHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, IQueryable<Domain.Entities.Account.InstitutionAccount> accounts, IQueryable<Domain.Entities.Transactions.Transaction> transactions, IQueryable<TagRelationship> tagRelationships, User accountHolder) : IQueryHandler<ReportForMonthBreakdownUnbudgeted, BudgetReportByMonthBreakdown>
 {
     public async ValueTask<BudgetReportByMonthBreakdown> Handle(ReportForMonthBreakdownUnbudgeted query, CancellationToken cancellationToken)
     {

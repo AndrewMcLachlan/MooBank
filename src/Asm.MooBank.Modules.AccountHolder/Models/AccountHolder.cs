@@ -1,6 +1,6 @@
 ﻿namespace Asm.MooBank.Modules.AccountHolder.Models;
 
-public record AccountHolder : MooBank.Models.AccountHolder
+public record AccountHolder : MooBank.Models.User
 {
     public IEnumerable<AccountHolderCard> Cards { get; set; } = [];
 }

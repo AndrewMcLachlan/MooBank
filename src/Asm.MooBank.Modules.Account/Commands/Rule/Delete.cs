@@ -4,7 +4,7 @@ using Asm.MooBank.Domain.Entities.Account;
 namespace Asm.MooBank.Modules.Account.Commands.Rule;
 public record Delete(Guid AccountId, int RuleId) : ICommand;
 
-internal class DeleteHandler(IRuleRepository ruleRepository, MooBank.Models.AccountHolder accountHolder, ISecurity security, IUnitOfWork unitOfWork) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Delete>
+internal class DeleteHandler(IRuleRepository ruleRepository, MooBank.Models.User accountHolder, ISecurity security, IUnitOfWork unitOfWork) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Delete>
 {
     public async ValueTask Handle(Delete request, CancellationToken cancellationToken)
     {

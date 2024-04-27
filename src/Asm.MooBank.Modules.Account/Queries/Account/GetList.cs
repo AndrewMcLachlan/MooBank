@@ -6,7 +6,7 @@ namespace Asm.MooBank.Modules.Account.Queries.Account;
 
 public sealed record GetList() : IQuery<IEnumerable<ListItem<Guid>>>;
 
-internal class GetListHandler(IQueryable<Domain.Entities.Account.InstitutionAccount> institutionAccounts, IQueryable<Domain.Entities.StockHolding.StockHolding> stockHoldings, AccountHolder accountHolder) : IQueryHandler<GetList, IEnumerable<ListItem<Guid>>>
+internal class GetListHandler(IQueryable<Domain.Entities.Account.InstitutionAccount> institutionAccounts, IQueryable<Domain.Entities.StockHolding.StockHolding> stockHoldings, User accountHolder) : IQueryHandler<GetList, IEnumerable<ListItem<Guid>>>
 {
 
     public async ValueTask<IEnumerable<ListItem<Guid>>> Handle(GetList request, CancellationToken cancellationToken = default)

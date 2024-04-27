@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Asm.MooBank.Security.Authorisation;
 
-internal class FamilyMemberAuthorisationHandler(AccountHolder accountHolder) : AuthorizationHandler<FamilyMemberRequirement, Guid>
+internal class FamilyMemberAuthorisationHandler(User accountHolder) : AuthorizationHandler<FamilyMemberRequirement, Guid>
 {
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, FamilyMemberRequirement requirement, Guid resource)
     {

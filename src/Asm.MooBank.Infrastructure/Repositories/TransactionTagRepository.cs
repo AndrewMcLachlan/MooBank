@@ -2,7 +2,7 @@
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
-public class TransactionTagRepository(MooBankContext dataContext, Models.AccountHolder accountHolder) : RepositoryDeleteBase<Tag, int>(dataContext), ITagRepository
+public class TransactionTagRepository(MooBankContext dataContext, Models.User accountHolder) : RepositoryDeleteBase<Tag, int>(dataContext), ITagRepository
 {
     public void AddSettings(Tag transactionTag)
     {

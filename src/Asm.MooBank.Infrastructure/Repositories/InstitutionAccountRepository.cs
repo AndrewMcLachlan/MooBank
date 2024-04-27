@@ -5,7 +5,7 @@ using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
-public class InstitutionAccountRepository(MooBankContext dataContext, AccountHolder accountHolder) : RepositoryDeleteBase<InstitutionAccount, Guid>(dataContext), IInstitutionAccountRepository
+public class InstitutionAccountRepository(MooBankContext dataContext, User accountHolder) : RepositoryDeleteBase<InstitutionAccount, Guid>(dataContext), IInstitutionAccountRepository
 {
     protected override IQueryable<InstitutionAccount> GetById(Guid id) => Entities.Include(a => a.Owners).Include(t => t.ImportAccount).ThenInclude(i => i!.ImporterType).Where(a => a.Id == id && a.Owners.Any(ah => ah.UserId == accountHolder.Id || (a.ShareWithFamily && ah.User.FamilyId == accountHolder.FamilyId)));
 

@@ -22,7 +22,7 @@ static void ConfigureServices(HostBuilderContext context, IServiceCollection ser
     services.AddServices();
     services.AddEodhd(options => context.Configuration.Bind("EODHD", options));
     services.AddExchangeRateApi(options => context.Configuration.Bind("ExchangeRateApi", options));
-    services.AddSingleton(new AccountHolder() { EmailAddress = "moobank@mclachlan.family", Currency = String.Empty });
+    services.AddSingleton(new User() { EmailAddress = "moobank@mclachlan.family", Currency = String.Empty });
 
     services.AddSingleton<IAuthorizationService, AuthorisationService>();
     services.AddSingleton<IHttpContextAccessor, DummyHttpContextAccessor>();

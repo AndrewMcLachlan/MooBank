@@ -7,7 +7,7 @@ namespace Asm.MooBank.Modules.Tags.Commands;
 
 public sealed record AddSubTag(int Id, int SubTagId) : ICommand<Tag>;
 
-internal sealed class AddSubTagHandler(ITagRepository tagRepository, IEnumerable<TagRelationship> transactionTagRelationships, IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<AddSubTag, Tag>
+internal sealed class AddSubTagHandler(ITagRepository tagRepository, IEnumerable<TagRelationship> transactionTagRelationships, IUnitOfWork unitOfWork, User accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<AddSubTag, Tag>
 {
     public async ValueTask<Tag> Handle(AddSubTag request, CancellationToken cancellationToken)
     {

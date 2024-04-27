@@ -6,7 +6,7 @@ namespace Asm.MooBank.Modules.Stock.Queries;
 
 public record GetStockHoldingReport(Guid AccountId) : IQuery<StockHoldingReport>;
 
-internal class GetStockHoldingReportHandler(IQueryable<Domain.Entities.StockHolding.StockHolding> stockHoldings, ISecurity security, AccountHolder accountHolder) : QueryHandlerBase(accountHolder), IQueryHandler<GetStockHoldingReport, StockHoldingReport>
+internal class GetStockHoldingReportHandler(IQueryable<Domain.Entities.StockHolding.StockHolding> stockHoldings, ISecurity security, User accountHolder) : QueryHandlerBase(accountHolder), IQueryHandler<GetStockHoldingReport, StockHoldingReport>
 {
     public async ValueTask<StockHoldingReport> Handle(GetStockHoldingReport query, CancellationToken cancellationToken)
     {

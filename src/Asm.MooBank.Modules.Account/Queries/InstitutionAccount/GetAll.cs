@@ -8,7 +8,7 @@ namespace Asm.MooBank.Modules.Account.Queries.InstitutionAccount;
 
 public record GetAll() : IQuery<IEnumerable<Models.Account.InstitutionAccount>>;
 
-internal class GetAllHandler(IQueryable<DomainInstitutionAccount> institutionAccounts, AccountHolder accountHolder, ICurrencyConverter currencyConverter) : IQueryHandler<GetAll, IEnumerable<Models.Account.InstitutionAccount>>
+internal class GetAllHandler(IQueryable<DomainInstitutionAccount> institutionAccounts, User accountHolder, ICurrencyConverter currencyConverter) : IQueryHandler<GetAll, IEnumerable<Models.Account.InstitutionAccount>>
 {
     public async ValueTask<IEnumerable<Models.Account.InstitutionAccount>> Handle(GetAll request, CancellationToken cancellationToken)
     {

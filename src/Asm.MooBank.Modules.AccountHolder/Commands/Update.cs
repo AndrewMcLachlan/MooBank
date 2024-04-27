@@ -7,7 +7,7 @@ namespace Asm.MooBank.Modules.AccountHolder.Commands;
 
 internal record Update(UpdateAccountHolder AccountHolder) : ICommand<Models.AccountHolder>;
 
-internal class UpdateHandler(IUnitOfWork unitOfWork, IAccountHolderRepository repository, MooBank.Models.AccountHolder accountHolder) : ICommandHandler<Update, Models.AccountHolder>
+internal class UpdateHandler(IUnitOfWork unitOfWork, IAccountHolderRepository repository, MooBank.Models.User accountHolder) : ICommandHandler<Update, Models.AccountHolder>
 {
     public async ValueTask<Models.AccountHolder> Handle(Update command, CancellationToken cancellationToken)
     {

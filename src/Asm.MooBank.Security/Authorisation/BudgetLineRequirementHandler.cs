@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace Asm.MooBank.Security.Authorisation;
 
 
-internal class BudgetLineAuthorisationHandler(AccountHolder accountHolder) : AuthorizationHandler<BudgetLineRequirement, Domain.Entities.Budget.BudgetLine>
+internal class BudgetLineAuthorisationHandler(User accountHolder) : AuthorizationHandler<BudgetLineRequirement, Domain.Entities.Budget.BudgetLine>
 {
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, BudgetLineRequirement requirement, Domain.Entities.Budget.BudgetLine resource)
     {

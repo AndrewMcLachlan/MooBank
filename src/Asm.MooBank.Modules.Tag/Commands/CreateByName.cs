@@ -20,7 +20,7 @@ public sealed record CreateByName(string Name, IEnumerable<int> Tags) : ICommand
     }
 }
 
-internal sealed class CreateByNameHandler(IUnitOfWork unitOfWork, ITagRepository transactionTagRepository, AccountHolder accountHolder) : ICommandHandler<CreateByName, Tag>
+internal sealed class CreateByNameHandler(IUnitOfWork unitOfWork, ITagRepository transactionTagRepository, User accountHolder) : ICommandHandler<CreateByName, Tag>
 {
     public async ValueTask<Tag> Handle(CreateByName request, CancellationToken cancellationToken)
     {

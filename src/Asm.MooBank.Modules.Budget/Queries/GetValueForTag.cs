@@ -9,7 +9,7 @@ public record GetValueForTag(int TagId) : IQuery<decimal>
     public DateOnly End { get; init; } = DateTime.Today.ToDateOnly().AddMonths(-1).ToEndOfMonth();
 }
 
-internal class GetValueForTagHandler(IQueryable<Transaction> transactions, MooBank.Models.AccountHolder accountHolder) : QueryHandlerBase(accountHolder), IQueryHandler<GetValueForTag, decimal>
+internal class GetValueForTagHandler(IQueryable<Transaction> transactions, MooBank.Models.User accountHolder) : QueryHandlerBase(accountHolder), IQueryHandler<GetValueForTag, decimal>
 {
     public async ValueTask<decimal> Handle(GetValueForTag request, CancellationToken cancellationToken)
     {

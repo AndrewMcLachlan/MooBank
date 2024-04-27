@@ -8,7 +8,7 @@ namespace Asm.MooBank.Modules.Account.Commands.Rule;
 
 public record AddTag(Guid AccountId, int RuleId, int TagId) : ICommand<Models.Rule>;
 
-internal class AddTagHandler(IInstrumentRepository accountRepository, ITagRepository tagRepository, IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<AddTag, Models.Rule>
+internal class AddTagHandler(IInstrumentRepository accountRepository, ITagRepository tagRepository, IUnitOfWork unitOfWork, User accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<AddTag, Models.Rule>
 {
     private readonly IInstrumentRepository _accountRepository = accountRepository;
     private readonly ITagRepository _tagsRepository = tagRepository;

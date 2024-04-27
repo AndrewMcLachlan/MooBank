@@ -2,9 +2,9 @@
 
 public static class AccountHolderExtensions
 {
-    public static AccountHolder ToModel(this Domain.Entities.AccountHolder.User accountHolder)
+    public static User ToModel(this Domain.Entities.AccountHolder.User accountHolder)
     {
-        return new AccountHolder
+        return new User
         {
             Id = accountHolder.Id,
             EmailAddress = accountHolder.EmailAddress,

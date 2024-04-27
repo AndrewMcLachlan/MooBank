@@ -8,7 +8,7 @@ namespace Asm.MooBank.Modules.Family.Commands;
 public sealed record Create(string Name) : ICommand<Models.Family>;
 
 
-internal class CreateHandler(IFamilyRepository repository, IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Create, Models.Family>
+internal class CreateHandler(IFamilyRepository repository, IUnitOfWork unitOfWork, User accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Create, Models.Family>
 {
     public async ValueTask<Models.Family> Handle(Create command, CancellationToken cancellationToken)
     {

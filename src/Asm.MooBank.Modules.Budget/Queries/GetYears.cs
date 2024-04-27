@@ -9,7 +9,7 @@ internal class GetYearsHandler : QueryHandlerBase, IQueryHandler<GetYears, IEnum
 {
     private readonly IQueryable<Domain.Entities.Budget.Budget> _budgets;
 
-    public GetYearsHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, AccountHolder accountHolder) : base(accountHolder)
+    public GetYearsHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, User accountHolder) : base(accountHolder)
     {
         _budgets = budgets;
     }

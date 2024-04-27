@@ -5,7 +5,7 @@ namespace Asm.MooBank.Modules.Group.Commands;
 
 public record Delete(Guid Id) : ICommand;
 
-internal class DeleteHandler(IGroupRepository accountGroupRepository, IUnitOfWork unitOfWork, MooBank.Models.AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Delete>
+internal class DeleteHandler(IGroupRepository accountGroupRepository, IUnitOfWork unitOfWork, MooBank.Models.User accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Delete>
 {
     public async ValueTask Handle(Delete request, CancellationToken cancellationToken)
     {

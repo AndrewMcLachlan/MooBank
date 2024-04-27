@@ -5,7 +5,7 @@ namespace Asm.MooBank.Modules.Account.Commands.VirtualAccount;
 
 public record Delete(Guid AccountId, Guid VirtualAccountId) : ICommand;
 
-internal class DeleteHandler(IInstrumentRepository accountRepository, MooBank.Models.AccountHolder accountHolder, ISecurity security, IUnitOfWork unitOfWork) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Delete>
+internal class DeleteHandler(IInstrumentRepository accountRepository, MooBank.Models.User accountHolder, ISecurity security, IUnitOfWork unitOfWork) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Delete>
 {
     private readonly IInstrumentRepository _accountRepository = accountRepository;
 

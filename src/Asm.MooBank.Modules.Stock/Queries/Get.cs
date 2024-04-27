@@ -6,7 +6,7 @@ namespace Asm.MooBank.Modules.Stock.Queries;
 
 public sealed record Get(Guid Id) : IQuery<Models.StockHolding>;
 
-internal class GetHandler(IQueryable<Domain.Entities.StockHolding.StockHolding> accounts, AccountHolder accountHolder, ISecurity security) : QueryHandlerBase(accountHolder), IQueryHandler<Get, Models.StockHolding>
+internal class GetHandler(IQueryable<Domain.Entities.StockHolding.StockHolding> accounts, User accountHolder, ISecurity security) : QueryHandlerBase(accountHolder), IQueryHandler<Get, Models.StockHolding>
 {
     public async ValueTask<Models.StockHolding> Handle(Get query, CancellationToken cancellationToken)
     {

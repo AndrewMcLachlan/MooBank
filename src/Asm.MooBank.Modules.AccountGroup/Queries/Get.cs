@@ -5,7 +5,7 @@ namespace Asm.MooBank.Modules.Group.Queries;
 
 public record Get(Guid Id) : IQuery<Models.Group>;
 
-internal class GetHandler(IQueryable<Domain.Entities.Group.Group> accountGroups, MooBank.Models.AccountHolder accountHolder) : QueryHandlerBase(accountHolder), IQueryHandler<Get, Models.Group>
+internal class GetHandler(IQueryable<Domain.Entities.Group.Group> accountGroups, MooBank.Models.User accountHolder) : QueryHandlerBase(accountHolder), IQueryHandler<Get, Models.Group>
 {
     public async ValueTask<Models.Group> Handle(Get request, CancellationToken cancellationToken)
     {

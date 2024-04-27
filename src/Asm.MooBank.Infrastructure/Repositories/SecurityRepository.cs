@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
-public class SecurityRepository(MooBankContext dataContext, IAuthorizationService authorizationService, IPrincipalProvider principalProvider, AccountHolder accountHolder) : ISecurity
+public class SecurityRepository(MooBankContext dataContext, IAuthorizationService authorizationService, IPrincipalProvider principalProvider, User accountHolder) : ISecurity
 {
     private readonly MooBankContext _mooBankContext = dataContext;
     private readonly IAuthorizationService _authorizationService = authorizationService;

@@ -5,7 +5,7 @@ namespace Asm.MooBank.Modules.Tags.Queries;
 
 public record GetAll() : IQuery<IEnumerable<Tag>>;
 
-internal class GetAllHandler(IQueryable<Domain.Entities.Tag.Tag> tags, AccountHolder accountHolder) : QueryHandlerBase(accountHolder), IQueryHandler<GetAll, IEnumerable<Tag>>
+internal class GetAllHandler(IQueryable<Domain.Entities.Tag.Tag> tags, User accountHolder) : QueryHandlerBase(accountHolder), IQueryHandler<GetAll, IEnumerable<Tag>>
 {
     private readonly IQueryable<Domain.Entities.Tag.Tag> _tags = tags;
 

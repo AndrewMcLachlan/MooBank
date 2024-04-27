@@ -13,7 +13,7 @@ internal class GetTagsHierarchyHandler : QueryHandlerBase, IQueryHandler<GetTags
     private readonly IQueryable<TransactionTagEntity> _tags;
 
 
-    public GetTagsHierarchyHandler(IQueryable<TransactionTagEntity> tags, AccountHolder accountHolder) : base(accountHolder)
+    public GetTagsHierarchyHandler(IQueryable<TransactionTagEntity> tags, User accountHolder) : base(accountHolder)
     {
         _tags = tags;
     }

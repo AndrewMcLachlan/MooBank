@@ -6,7 +6,7 @@ namespace Asm.MooBank.Modules.Group.Commands;
 
 public record Update(Models.Group AccountGroup) : ICommand<Models.Group>;
 
-internal class UpdateHandler(IGroupRepository accountGroupRepository, IUnitOfWork unitOfWork, MooBank.Models.AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Update, Models.Group>
+internal class UpdateHandler(IGroupRepository accountGroupRepository, IUnitOfWork unitOfWork, MooBank.Models.User accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Update, Models.Group>
 {
     public async ValueTask<Models.Group> Handle(Update request, CancellationToken cancellationToken)
     {

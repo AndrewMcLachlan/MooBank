@@ -16,7 +16,7 @@ public sealed record Create() : ICommand<Models.StockHolding>
     public Guid? AccountGroupId { get; init; }
 }
 
-internal class CreateHandler(IStockHoldingRepository repository, IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Create, Models.StockHolding>
+internal class CreateHandler(IStockHoldingRepository repository, IUnitOfWork unitOfWork, User accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Create, Models.StockHolding>
 {
     public async ValueTask<Models.StockHolding> Handle(Create command, CancellationToken cancellationToken)
     {

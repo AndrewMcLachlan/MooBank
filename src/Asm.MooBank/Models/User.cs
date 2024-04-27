@@ -1,6 +1,6 @@
 ﻿namespace Asm.MooBank.Models;
 
-public partial record AccountHolder
+public partial record User
 {
     public Guid Id { get; set; }
 

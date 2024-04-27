@@ -7,7 +7,7 @@ namespace Asm.MooBank.Modules.Tags.Commands;
 
 public sealed record Update(int TagId, UpdateTag Tag) : ICommand<MooBank.Models.Tag>;
 
-internal sealed class UpdateHandler(ITagRepository transactionTagRepository, IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Update, MooBank.Models.Tag>
+internal sealed class UpdateHandler(ITagRepository transactionTagRepository, IUnitOfWork unitOfWork, User accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Update, MooBank.Models.Tag>
 {
     public async ValueTask<MooBank.Models.Tag> Handle(Update request, CancellationToken cancellationToken)
     {

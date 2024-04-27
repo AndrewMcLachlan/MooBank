@@ -27,7 +27,7 @@ internal class Models
         Description = "Test Account Description",
     };
 
-    public readonly AccountHolder AccountHolder = new()
+    public readonly User AccountHolder = new()
     {
         EmailAddress = "mock@mclachlan.family",
         FamilyId = FamilyId,

@@ -5,7 +5,7 @@ namespace Asm.MooBank.Modules.Account.Commands.Rule;
 
 internal record RemoveTag(Guid AccountId, int RuleId, int TagId) : ICommand;
 
-internal class RemoveTagHandler(IInstrumentRepository accountRepository, MooBank.Models.AccountHolder accountHolder, ISecurity security, IUnitOfWork unitOfWork) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<RemoveTag>
+internal class RemoveTagHandler(IInstrumentRepository accountRepository, MooBank.Models.User accountHolder, ISecurity security, IUnitOfWork unitOfWork) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<RemoveTag>
 {
     private readonly IInstrumentRepository _accountRepository = accountRepository;
 

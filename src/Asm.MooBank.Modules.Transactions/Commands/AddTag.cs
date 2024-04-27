@@ -9,7 +9,7 @@ namespace Asm.MooBank.Modules.Transactions.Commands;
 
 internal record AddTag(Guid AccountId, Guid Id, int TagId) : ICommand<Models.Transaction>;
 
-internal class AddTagHandler(ITransactionRepository transactionRepository, ITagRepository tagRepository, IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<AddTag, Models.Transaction>
+internal class AddTagHandler(ITransactionRepository transactionRepository, ITagRepository tagRepository, IUnitOfWork unitOfWork, User accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<AddTag, Models.Transaction>
 {
     public async ValueTask<Models.Transaction> Handle(AddTag request, CancellationToken cancellationToken)
     {

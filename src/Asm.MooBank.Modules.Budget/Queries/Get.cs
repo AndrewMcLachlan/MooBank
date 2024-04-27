@@ -6,7 +6,7 @@ namespace Asm.MooBank.Modules.Budget.Queries;
 
 public record Get(short Year) : IQuery<Models.Budget?>;
 
-internal class GetHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, AccountHolder accountHolder, ICommandDispatcher commandDispatcher) : IQueryHandler<Get, Models.Budget?>
+internal class GetHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, User accountHolder, ICommandDispatcher commandDispatcher) : IQueryHandler<Get, Models.Budget?>
 {
     public async ValueTask<Models.Budget?> Handle(Get query, CancellationToken cancellationToken)
     {

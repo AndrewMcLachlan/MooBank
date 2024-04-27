@@ -22,7 +22,7 @@ public sealed record Update(int Id, string Name, int InstitutionTypeId) : IComma
     }
 }
 
-internal class UpdateHandler(IInstitutionRepository repository, IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Update, Models.Institution>
+internal class UpdateHandler(IInstitutionRepository repository, IUnitOfWork unitOfWork, User accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Update, Models.Institution>
 {
     public async ValueTask<Models.Institution> Handle(Update command, CancellationToken cancellationToken)
     {

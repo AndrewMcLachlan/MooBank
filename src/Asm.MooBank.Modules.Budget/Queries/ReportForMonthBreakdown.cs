@@ -13,7 +13,7 @@ namespace Asm.MooBank.Modules.Budget.Queries;
 /// <param name="Month">The budget month.</param>
 public record ReportForMonthBreakdown(short Year, short Month) : IQuery<BudgetReportByMonthBreakdown>;
 
-internal class ReportForMonthBreakdownHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, IQueryable<Domain.Entities.Account.InstitutionAccount> accounts, IQueryable<Domain.Entities.Transactions.Transaction> transactions, IQueryable<TagRelationship> tagRelationships, AccountHolder accountHolder) : IQueryHandler<ReportForMonthBreakdown, BudgetReportByMonthBreakdown>
+internal class ReportForMonthBreakdownHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, IQueryable<Domain.Entities.Account.InstitutionAccount> accounts, IQueryable<Domain.Entities.Transactions.Transaction> transactions, IQueryable<TagRelationship> tagRelationships, User accountHolder) : IQueryHandler<ReportForMonthBreakdown, BudgetReportByMonthBreakdown>
 {
     public async ValueTask<BudgetReportByMonthBreakdown> Handle(ReportForMonthBreakdown query, CancellationToken cancellationToken)
     {

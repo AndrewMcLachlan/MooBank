@@ -9,7 +9,7 @@ public record Family : IIdentifiable<Guid>
 
     public required string Name { get; set; }
 
-    public IEnumerable<AccountHolder> Members { get; set; } = Enumerable.Empty<AccountHolder>();
+    public IEnumerable<User> Members { get; set; } = Enumerable.Empty<User>();
 }
 
 public static class FamilyExtensions

@@ -9,7 +9,7 @@ namespace Asm.MooBank.Modules.Account.Commands.Import;
 public record Import(Guid AccountId, Stream Stream) : ICommand;
 
 
-internal class ImportHandler(IInstrumentRepository accountRepository, IRuleRepository ruleRepository, IImporterFactory importerFactory, IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Import>
+internal class ImportHandler(IInstrumentRepository accountRepository, IRuleRepository ruleRepository, IImporterFactory importerFactory, IUnitOfWork unitOfWork, User accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Import>
 {
     private readonly IInstrumentRepository _accountRepository = accountRepository;
     private readonly IRuleRepository _ruleRepository = ruleRepository;

@@ -2,7 +2,7 @@
 
 namespace Asm.MooBank.Queries;
 
-public abstract class QueryHandlerBase(AccountHolder accountHolder)
+public abstract class QueryHandlerBase(User accountHolder)
 {
-    protected AccountHolder AccountHolder { get; } = accountHolder;
+    protected User AccountHolder { get; } = accountHolder;
 }
