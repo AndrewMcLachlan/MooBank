@@ -1,7 +1,7 @@
 ﻿using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Queries;
 
-namespace Asm.MooBank.Modules.Budget.Queries;
+namespace Asm.MooBank.Modules.Budgets.Queries;
 
 public record GetValueForTag(int TagId) : IQuery<decimal>
 {

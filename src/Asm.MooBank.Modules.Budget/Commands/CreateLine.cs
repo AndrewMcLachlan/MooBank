@@ -1,9 +1,9 @@
 ﻿using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.Budget;
 using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Budget.Models;
+using Asm.MooBank.Modules.Budgets.Models;
 
-namespace Asm.MooBank.Modules.Budget.Commands;
+namespace Asm.MooBank.Modules.Budgets.Commands;
 
 public record CreateLine(short Year, Models.BudgetLine BudgetLine) : ICommand<Models.BudgetLine>;
 

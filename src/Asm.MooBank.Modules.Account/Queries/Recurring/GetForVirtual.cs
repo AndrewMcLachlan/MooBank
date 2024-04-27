@@ -1,6 +1,6 @@
-﻿using Asm.MooBank.Modules.Account.Models.Recurring;
+﻿using Asm.MooBank.Modules.Accounts.Models.Recurring;
 
-namespace Asm.MooBank.Modules.Account.Queries.Recurring;
+namespace Asm.MooBank.Modules.Accounts.Queries.Recurring;
 
 public record GetForVirtual(Guid AccountId, Guid VirtualAccountId) : IQuery<IEnumerable<RecurringTransaction>>;
 

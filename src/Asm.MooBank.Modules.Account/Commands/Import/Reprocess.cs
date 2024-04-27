@@ -1,7 +1,7 @@
 ﻿using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Importers;
 
-namespace Asm.MooBank.Modules.Account.Commands.Import;
+namespace Asm.MooBank.Modules.Accounts.Commands.Import;
 
 public record Reprocess(Guid AccountId) : ICommand;
 

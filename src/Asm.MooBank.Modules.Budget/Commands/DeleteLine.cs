@@ -2,7 +2,7 @@
 using Asm.MooBank.Domain.Entities.Budget;
 using Asm.MooBank.Models;
 
-namespace Asm.MooBank.Modules.Budget.Commands;
+namespace Asm.MooBank.Modules.Budgets.Commands;
 
 public record DeleteLine(short Year, Guid Id) : ICommand;
 

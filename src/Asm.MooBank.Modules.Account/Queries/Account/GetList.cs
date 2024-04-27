@@ -1,8 +1,8 @@
 ﻿using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Account.Models.Account;
+using Asm.MooBank.Modules.Accounts.Models.Account;
 using Asm.MooBank.Services;
 
-namespace Asm.MooBank.Modules.Account.Queries.Account;
+namespace Asm.MooBank.Modules.Accounts.Queries.Account;
 
 public sealed record GetList() : IQuery<IEnumerable<ListItem<Guid>>>;
 

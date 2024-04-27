@@ -1,7 +1,8 @@
-﻿using Asm.MooBank.Modules.Account.Models.Recurring;
+﻿using Asm.MooBank.Modules.Accounts.Models.Account;
+using Asm.MooBank.Modules.Accounts.Models.Recurring;
 using Asm.MooBank.Services;
 
-namespace Asm.MooBank.Modules.Account.Models.Account;
+namespace Asm.MooBank.Modules.Accounts.Models.Account;
 
 public record VirtualInstrument : TransactionAccount
 {

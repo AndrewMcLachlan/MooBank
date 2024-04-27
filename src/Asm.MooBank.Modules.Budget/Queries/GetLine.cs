@@ -1,8 +1,8 @@
 ﻿using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Budget.Models;
+using Asm.MooBank.Modules.Budgets.Models;
 using Asm.MooBank.Queries;
 
-namespace Asm.MooBank.Modules.Budget.Queries;
+namespace Asm.MooBank.Modules.Budgets.Queries;
 
 public record GetLine(short Year, Guid Id) : IQuery<BudgetLine>;
 

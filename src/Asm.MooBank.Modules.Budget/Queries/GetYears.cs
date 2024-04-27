@@ -1,7 +1,7 @@
 ﻿using Asm.MooBank.Models;
 using Asm.MooBank.Queries;
 
-namespace Asm.MooBank.Modules.Budget.Queries;
+namespace Asm.MooBank.Modules.Budgets.Queries;
 
 public record GetYears() : IQuery<IEnumerable<short>>;
 

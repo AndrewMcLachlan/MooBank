@@ -5,7 +5,6 @@
   <ItemGroup>
     <PackageReference Include="Asm.AspNetCore" Version="$(AsmPackageVersion)" />
     <PackageReference Include="Asm.Cqrs.AspNetCore" Version="$(AsmPackageVersion)" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(DotNetPackageVersion)" />
   </ItemGroup>
 
   <ItemGroup>

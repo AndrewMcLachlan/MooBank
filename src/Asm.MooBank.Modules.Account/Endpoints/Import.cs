@@ -1,11 +1,11 @@
 ﻿using Asm.Cqrs.AspNetCore;
-using Asm.MooBank.Modules.Account.Commands.Import;
+using Asm.MooBank.Modules.Accounts.Commands.Import;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace Asm.MooBank.Modules.Account.Endpoints;
+namespace Asm.MooBank.Modules.Accounts.Endpoints;
 internal class Import : EndpointGroupBase
 {
     public override string Name => "Import";

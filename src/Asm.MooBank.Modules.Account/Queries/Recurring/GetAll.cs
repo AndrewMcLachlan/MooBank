@@ -1,8 +1,8 @@
 ﻿using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Account.Models.Recurring;
+using Asm.MooBank.Modules.Accounts.Models.Recurring;
 using Asm.MooBank.Queries;
 
-namespace Asm.MooBank.Modules.Account.Queries.Recurring;
+namespace Asm.MooBank.Modules.Accounts.Queries.Recurring;
 
 public record GetAll(Guid AccountId) : IQuery<IEnumerable<RecurringTransaction>>;
 

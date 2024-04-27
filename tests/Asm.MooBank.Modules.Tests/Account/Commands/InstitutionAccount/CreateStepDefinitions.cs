@@ -1,13 +1,13 @@
 using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Modules.Account.Commands.InstitutionAccount;
+using Asm.MooBank.Modules.Accounts.Commands.InstitutionAccount;
 using Asm.Testing;
 
 namespace Asm.MooBank.Modules.Tests.Account.Commands.InstitutionAccount;
 
 [Binding]
-internal class CreateStepDefinitions(ScenarioInput<Modules.Account.Models.Account.InstitutionAccount> input, ScenarioResult<Exception> exceptionResult) : StepDefinitionBase
+internal class CreateStepDefinitions(ScenarioInput<Accounts.Models.Account.InstitutionAccount> input, ScenarioResult<Exception> exceptionResult) : StepDefinitionBase
 {
-    private Modules.Account.Models.Account.InstitutionAccount _result;
+    private Accounts.Models.Account.InstitutionAccount _result;
 
     [Given(@"I have a request to create an institution account")]
     public void GivenIHaveARequestToCreateAnInstitutionAccount()

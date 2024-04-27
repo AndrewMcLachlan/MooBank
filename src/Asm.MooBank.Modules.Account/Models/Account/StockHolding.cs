@@ -1,6 +1,6 @@
 ﻿using Asm.MooBank.Services;
 
-namespace Asm.MooBank.Modules.Account.Models.Account;
+namespace Asm.MooBank.Modules.Accounts.Models.Account;
 
 // Duplicate for summary view.
 public record StockHolding : Instrument

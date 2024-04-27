@@ -2,10 +2,10 @@
 using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Account.Specifications;
 using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Account.Models.Recurring;
+using Asm.MooBank.Modules.Accounts.Models.Recurring;
 using Microsoft.AspNetCore.Http;
 
-namespace Asm.MooBank.Modules.Account.Commands.Recurring;
+namespace Asm.MooBank.Modules.Accounts.Commands.Recurring;
 
 public record Create(Guid AccountId, Guid VirtualAccountId, string? Description, decimal Amount, ScheduleFrequency Schedule, DateOnly NextRun) : AccountIdCommand(AccountId), ICommand<Models.Recurring.RecurringTransaction>
 {

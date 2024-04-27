@@ -1,11 +1,11 @@
 ﻿using Asm.Cqrs.AspNetCore;
-using Asm.MooBank.Modules.Account.Commands.VirtualAccount;
-using Asm.MooBank.Modules.Account.Models.Account;
-using Asm.MooBank.Modules.Account.Queries.VirtualAccount;
+using Asm.MooBank.Modules.Accounts.Commands.VirtualAccount;
+using Asm.MooBank.Modules.Accounts.Models.Account;
+using Asm.MooBank.Modules.Accounts.Queries.VirtualAccount;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 
-namespace Asm.MooBank.Modules.Account.Endpoints;
+namespace Asm.MooBank.Modules.Accounts.Endpoints;
 internal class VirtualAccounts : EndpointGroupBase
 {
     public override string Name => "Virtual Accounts";

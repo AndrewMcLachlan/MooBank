@@ -1,19 +1,19 @@
 ﻿using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Account.Models;
+using Asm.MooBank.Modules.Accounts.Models.Rules;
 using IInstrumentRepository = Asm.MooBank.Domain.Entities.Account.IInstrumentRepository;
 
-namespace Asm.MooBank.Modules.Account.Commands.Rule;
+namespace Asm.MooBank.Modules.Accounts.Commands.Rule;
 
-public record AddTag(Guid AccountId, int RuleId, int TagId) : ICommand<Models.Rule>;
+public record AddTag(Guid AccountId, int RuleId, int TagId) : ICommand<Models.Rules.Rule>;
 
-internal class AddTagHandler(IInstrumentRepository accountRepository, ITagRepository tagRepository, IUnitOfWork unitOfWork, User accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<AddTag, Models.Rule>
+internal class AddTagHandler(IInstrumentRepository accountRepository, ITagRepository tagRepository, IUnitOfWork unitOfWork, User accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<AddTag, Models.Rules.Rule>
 {
     private readonly IInstrumentRepository _accountRepository = accountRepository;
     private readonly ITagRepository _tagsRepository = tagRepository;
 
-    public async ValueTask<Models.Rule> Handle(AddTag request, CancellationToken cancellationToken)
+    public async ValueTask<Models.Rules.Rule> Handle(AddTag request, CancellationToken cancellationToken)
     {
         Security.AssertAccountPermission(request.AccountId);
 

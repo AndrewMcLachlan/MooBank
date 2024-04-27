@@ -1,14 +1,15 @@
 ﻿using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Tag;
+using Asm.MooBank.Modules.Accounts.Models.Rules;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Asm.MooBank.Modules.Account.Commands.Rule;
+namespace Asm.MooBank.Modules.Accounts.Commands.Rule;
 
-public record Create(Guid AccountId, string Contains, string? Description, IEnumerable<MooBank.Models.Tag> Tags) : ICommand<Models.Rule>
+public record Create(Guid AccountId, string Contains, string? Description, IEnumerable<MooBank.Models.Tag> Tags) : ICommand<Models.Rules.Rule>
 {
     public static async ValueTask<Create?> BindAsync(HttpContext httpContext)
     {
@@ -21,9 +22,9 @@ public record Create(Guid AccountId, string Contains, string? Description, IEnum
     }
 }
 
-internal class CreateHandler(IInstrumentRepository accountRepository, ITagRepository tagRepository, ISecurity security, IUnitOfWork unitOfWork) : ICommandHandler<Create, Models.Rule>
+internal class CreateHandler(IInstrumentRepository accountRepository, ITagRepository tagRepository, ISecurity security, IUnitOfWork unitOfWork) : ICommandHandler<Create, Models.Rules.Rule>
 {
-    public async ValueTask<Models.Rule> Handle(Create request, CancellationToken cancellationToken)
+    public async ValueTask<Models.Rules.Rule> Handle(Create request, CancellationToken cancellationToken)
     {
         security.AssertAccountPermission(request.AccountId);
 

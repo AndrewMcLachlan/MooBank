@@ -1,4 +1,4 @@
-﻿namespace Asm.MooBank.Modules.Group.Models;
+﻿namespace Asm.MooBank.Modules.Groups.Models;
 
 public record Group
 {

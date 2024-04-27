@@ -1,11 +1,11 @@
 ﻿using Asm.Cqrs.AspNetCore;
-using Asm.MooBank.Modules.Group.Commands;
-using Asm.MooBank.Modules.Group.Queries;
+using Asm.MooBank.Modules.Groups.Commands;
+using Asm.MooBank.Modules.Groups.Queries;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace Asm.MooBank.Modules.Group.Endpoints;
+namespace Asm.MooBank.Modules.Groups.Endpoints;
 
 public class Groups : EndpointGroupBase
 {
@@ -26,7 +26,7 @@ public class Groups : EndpointGroupBase
             .WithName("Get Group")
             .Produces<Models.Group>();
 
-        routeGroupBuilder.MapPostCreate<Create, Models.Group>("/", "Get Group", (Models.Group group) => new { id = group.Id })
+        routeGroupBuilder.MapPostCreate<Create, Models.Group>("/", "Get Group", (group) => new { id = group.Id })
             .WithName("Create Group")
             .Produces<Models.Group>();
 

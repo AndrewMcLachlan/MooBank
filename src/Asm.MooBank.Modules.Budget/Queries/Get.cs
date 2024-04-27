@@ -1,14 +1,14 @@
 ﻿using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Budget.Commands;
-using Asm.MooBank.Modules.Budget.Models;
+using Asm.MooBank.Modules.Budgets.Commands;
+using Asm.MooBank.Modules.Budgets.Models;
 
-namespace Asm.MooBank.Modules.Budget.Queries;
+namespace Asm.MooBank.Modules.Budgets.Queries;
 
-public record Get(short Year) : IQuery<Models.Budget?>;
+public record Get(short Year) : IQuery<Budget?>;
 
-internal class GetHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, User accountHolder, ICommandDispatcher commandDispatcher) : IQueryHandler<Get, Models.Budget?>
+internal class GetHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, User accountHolder, ICommandDispatcher commandDispatcher) : IQueryHandler<Get, Budget?>
 {
-    public async ValueTask<Models.Budget?> Handle(Get query, CancellationToken cancellationToken)
+    public async ValueTask<Budget?> Handle(Get query, CancellationToken cancellationToken)
     {
         var familyId = accountHolder.FamilyId;
 

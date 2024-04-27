@@ -1,8 +1,8 @@
 ﻿using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Account.Models.Account;
+using Asm.MooBank.Modules.Accounts.Models.Account;
 using Asm.MooBank.Services;
 
-namespace Asm.MooBank.Modules.Account.Queries.InstitutionAccount;
+namespace Asm.MooBank.Modules.Accounts.Queries.InstitutionAccount;
 
 public record Get(Guid Id) : IQuery<Models.Account.InstitutionAccount>;
 

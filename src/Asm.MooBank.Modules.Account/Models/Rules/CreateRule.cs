@@ -1,4 +1,4 @@
-﻿namespace Asm.MooBank.Modules.Account.Models.Rules;
+﻿namespace Asm.MooBank.Modules.Accounts.Models.Rules;
 public record CreateRule
 {
     public required Guid AccountId { get; set; }

@@ -2,7 +2,7 @@
 using Asm.MooBank.Domain.Entities.Account.Specifications;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Account.Models.Account;
+using Asm.MooBank.Modules.Accounts.Models.Account;
 using Asm.MooBank.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Json;
@@ -10,9 +10,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using IInstrumentRepository = Asm.MooBank.Domain.Entities.Account.IInstrumentRepository;
 
-namespace Asm.MooBank.Modules.Account.Commands.VirtualAccount;
+namespace Asm.MooBank.Modules.Accounts.Commands.VirtualAccount;
 
-public record Update(Guid AccountId, Guid VirtualAccountId, string Name, string Description, decimal CurrentBalance) : ICommand<Models.Account.VirtualInstrument>
+public record Update(Guid AccountId, Guid VirtualAccountId, string Name, string Description, decimal CurrentBalance) : ICommand<VirtualInstrument>
 {
     public static async ValueTask<Update?> BindAsync(HttpContext httpContext)
     {
@@ -26,12 +26,12 @@ public record Update(Guid AccountId, Guid VirtualAccountId, string Name, string 
     }
 }
 
-internal class UpdateHandler(IInstrumentRepository instrumentRepository, ITransactionRepository transactionRepository, ISecurity security, IUnitOfWork unitOfWork, ICurrencyConverter currencyConverter) : ICommandHandler<Update, Models.Account.VirtualInstrument>
+internal class UpdateHandler(IInstrumentRepository instrumentRepository, ITransactionRepository transactionRepository, ISecurity security, IUnitOfWork unitOfWork, ICurrencyConverter currencyConverter) : ICommandHandler<Update, VirtualInstrument>
 {
     private readonly IInstrumentRepository _accountRepository = instrumentRepository;
     private readonly ITransactionRepository _transactionRepository = transactionRepository;
 
-    public async ValueTask<Models.Account.VirtualInstrument> Handle(Update command, CancellationToken cancellationToken)
+    public async ValueTask<VirtualInstrument> Handle(Update command, CancellationToken cancellationToken)
     {
         security.AssertAccountPermission(command.AccountId);
 
@@ -45,7 +45,7 @@ internal class UpdateHandler(IInstrumentRepository instrumentRepository, ITransa
         var amount = instrument.Balance - command.CurrentBalance;
 
         //TODO: Should be done via domain event
-        _transactionRepository.Add(new Domain.Entities.Transactions.Transaction
+        _transactionRepository.Add(new Transaction
         {
             Account = instrument,
             Amount = amount,

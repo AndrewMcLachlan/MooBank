@@ -1,10 +1,10 @@
 ﻿using Asm.MooBank.Commands;
 using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Account.Models.Account;
+using Asm.MooBank.Modules.Accounts.Models.Account;
 using Asm.MooBank.Services;
 using IInstitutionAccountRepository = Asm.MooBank.Domain.Entities.Account.IInstitutionAccountRepository;
 
-namespace Asm.MooBank.Modules.Account.Commands.InstitutionAccount;
+namespace Asm.MooBank.Modules.Accounts.Commands.InstitutionAccount;
 
 public record Create(Models.Account.InstitutionAccount Account) : ICommand<Models.Account.InstitutionAccount>;
 

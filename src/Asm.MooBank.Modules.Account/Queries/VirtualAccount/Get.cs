@@ -1,14 +1,14 @@
 ﻿using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Account.Models.Account;
+using Asm.MooBank.Modules.Accounts.Models.Account;
 using Asm.MooBank.Services;
 
-namespace Asm.MooBank.Modules.Account.Queries.VirtualAccount;
+namespace Asm.MooBank.Modules.Accounts.Queries.VirtualAccount;
 
-public record Get(Guid AccountId, Guid VirtualAccountId) : IQuery<Models.Account.VirtualInstrument>;
+public record Get(Guid AccountId, Guid VirtualAccountId) : IQuery<VirtualInstrument>;
 
-internal class GetHandler(IQueryable<Domain.Entities.Account.Instrument> accounts, ISecurity security, ICurrencyConverter currencyConverter) : IQueryHandler<Get, Models.Account.VirtualInstrument>
+internal class GetHandler(IQueryable<Domain.Entities.Account.Instrument> accounts, ISecurity security, ICurrencyConverter currencyConverter) : IQueryHandler<Get, VirtualInstrument>
 {
-    public async ValueTask<Models.Account.VirtualInstrument> Handle(Get request, CancellationToken cancellationToken)
+    public async ValueTask<VirtualInstrument> Handle(Get request, CancellationToken cancellationToken)
     {
         security.AssertAccountPermission(request.AccountId);
 

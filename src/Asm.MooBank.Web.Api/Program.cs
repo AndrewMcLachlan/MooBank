@@ -16,11 +16,11 @@ void AddServices(WebApplicationBuilder builder)
     builder.RegisterModules(() =>
         new IModule[]
         {
-            new Asm.MooBank.Modules.Account.Module(),
+            new Asm.MooBank.Modules.Accounts.Module(),
             new Asm.MooBank.Modules.Assets.Module(),
-            new Asm.MooBank.Modules.Budget.Module(),
+            new Asm.MooBank.Modules.Budgets.Module(),
             new Asm.MooBank.Modules.Families.Module(),
-            new Asm.MooBank.Modules.Group.Module(),
+            new Asm.MooBank.Modules.Groups.Module(),
             new Asm.MooBank.Modules.Institutions.Module(),
             new Asm.MooBank.Modules.ReferenceData.Module(),
             new Asm.MooBank.Modules.Reports.Module(),

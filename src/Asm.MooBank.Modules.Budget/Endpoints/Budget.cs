@@ -1,13 +1,13 @@
 ﻿using System.Net;
 using Asm.Cqrs.AspNetCore;
-using Asm.MooBank.Modules.Budget.Commands;
-using Asm.MooBank.Modules.Budget.Models;
-using Asm.MooBank.Modules.Budget.Queries;
+using Asm.MooBank.Modules.Budgets.Commands;
+using Asm.MooBank.Modules.Budgets.Models;
+using Asm.MooBank.Modules.Budgets.Queries;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace Asm.MooBank.Modules.Budget.Endpoints;
+namespace Asm.MooBank.Modules.Budgets.Endpoints;
 public class Budget : EndpointGroupBase
 {
     public override string Name => "Budget";
@@ -32,7 +32,7 @@ public class Budget : EndpointGroupBase
             .Produces<BudgetLine>();
 
         // HACK: How do we get year from the route into the response?
-        routeGroupBuilder.MapPostCreate<CreateLine, BudgetLine>("/{year}/lines", "Get Budget Line".ToMachine(), (BudgetLine line) => new { year = 2023, id = line.Id }, CommandBinding.Parameters)
+        routeGroupBuilder.MapPostCreate<CreateLine, BudgetLine>("/{year}/lines", "Get Budget Line".ToMachine(), (line) => new { year = 2023, id = line.Id }, CommandBinding.Parameters)
             .WithNames("Create Budget Line")
             .Produces<BudgetLine>();
 

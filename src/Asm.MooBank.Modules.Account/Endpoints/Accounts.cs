@@ -1,15 +1,15 @@
 ﻿using Asm.Cqrs.AspNetCore;
 using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Account.Commands.InstitutionAccount;
-using Asm.MooBank.Modules.Account.Models.Account;
-using Asm.MooBank.Modules.Account.Queries.Account;
-using Asm.MooBank.Modules.Account.Queries.InstitutionAccount;
+using Asm.MooBank.Modules.Accounts.Commands.InstitutionAccount;
+using Asm.MooBank.Modules.Accounts.Models.Account;
+using Asm.MooBank.Modules.Accounts.Queries.Account;
+using Asm.MooBank.Modules.Accounts.Queries.InstitutionAccount;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 
-namespace Asm.MooBank.Modules.Account.Endpoints;
+namespace Asm.MooBank.Modules.Accounts.Endpoints;
 internal class Accounts : EndpointGroupBase
 {
     public override string Name => "Accounts";

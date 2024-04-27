@@ -1,12 +1,13 @@
 ﻿using Asm.MooBank.Domain.Entities.Account;
+using Asm.MooBank.Modules.Accounts.Models.Rules;
 
-namespace Asm.MooBank.Modules.Account.Commands.Rule;
+namespace Asm.MooBank.Modules.Accounts.Commands.Rule;
 
-public record Update(Guid AccountId, int RuleId, Models.Rule Rule) : ICommand<Models.Rule>;
+public record Update(Guid AccountId, int RuleId, Models.Rules.Rule Rule) : ICommand<Models.Rules.Rule>;
 
-internal class UpdateRuleHandler(IRuleRepository transactionTagRuleRepository, ISecurity securityRepository, IUnitOfWork unitOfWork) : ICommandHandler<Update, Models.Rule>
+internal class UpdateRuleHandler(IRuleRepository transactionTagRuleRepository, ISecurity securityRepository, IUnitOfWork unitOfWork) : ICommandHandler<Update, Models.Rules.Rule>
 {
-    public async ValueTask<Models.Rule> Handle(Update request, CancellationToken cancellationToken)
+    public async ValueTask<Models.Rules.Rule> Handle(Update request, CancellationToken cancellationToken)
     {
         var entity = await transactionTagRuleRepository.Get(request.Rule.Id, cancellationToken);
 

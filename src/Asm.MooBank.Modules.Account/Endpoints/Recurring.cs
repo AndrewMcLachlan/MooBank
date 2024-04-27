@@ -1,12 +1,12 @@
 ﻿using Asm.Cqrs.AspNetCore;
-using Asm.MooBank.Modules.Account.Commands.Recurring;
-using Asm.MooBank.Modules.Account.Models.Recurring;
-using Asm.MooBank.Modules.Account.Queries.Recurring;
+using Asm.MooBank.Modules.Accounts.Commands.Recurring;
+using Asm.MooBank.Modules.Accounts.Models.Recurring;
+using Asm.MooBank.Modules.Accounts.Queries.Recurring;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace Asm.MooBank.Modules.Account.Endpoints;
+namespace Asm.MooBank.Modules.Accounts.Endpoints;
 internal class RecurringEndpoints : EndpointGroupBase
 {
     public override string Name => "Recurring Transactions";
@@ -25,7 +25,7 @@ internal class RecurringEndpoints : EndpointGroupBase
             .WithNames("Get Recurring Transaction")
             .Produces<RecurringTransaction>();
 
-        routeGroupBuilder.MapPostCreate<Create, RecurringTransaction>("", "Get Recurring Transaction".ToMachine(), (RecurringTransaction recurring) => new { recurringTransactionId = recurring.Id }, CommandBinding.None)
+        routeGroupBuilder.MapPostCreate<Create, RecurringTransaction>("", "Get Recurring Transaction".ToMachine(), (recurring) => new { recurringTransactionId = recurring.Id }, CommandBinding.None)
             .WithNames("Create Recurring Transaction")
             .Produces<RecurringTransaction>();
 

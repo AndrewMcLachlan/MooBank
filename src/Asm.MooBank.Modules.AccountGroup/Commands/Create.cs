@@ -1,9 +1,9 @@
 ﻿using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.Group;
 using Asm.MooBank.Domain.Entities.AccountHolder;
-using Asm.MooBank.Modules.Group.Models;
+using Asm.MooBank.Modules.Groups.Models;
 
-namespace Asm.MooBank.Modules.Group.Commands;
+namespace Asm.MooBank.Modules.Groups.Commands;
 
 
 public record Create(string Name, string Description, bool ShowPosition) : ICommand<Models.Group>;

@@ -1,10 +1,10 @@
 ﻿using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Account.Models.Account;
+using Asm.MooBank.Modules.Accounts.Models.Account;
 using Asm.MooBank.Queries;
 using Asm.MooBank.Services;
 using DomainInstitutionAccount = Asm.MooBank.Domain.Entities.Account.InstitutionAccount;
 
-namespace Asm.MooBank.Modules.Account.Queries.InstitutionAccount;
+namespace Asm.MooBank.Modules.Accounts.Queries.InstitutionAccount;
 
 public record GetAll() : IQuery<IEnumerable<Models.Account.InstitutionAccount>>;
 

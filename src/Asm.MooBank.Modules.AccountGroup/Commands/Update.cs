@@ -1,8 +1,8 @@
 ﻿using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.Group;
-using Asm.MooBank.Modules.Group.Models;
+using Asm.MooBank.Modules.Groups.Models;
 
-namespace Asm.MooBank.Modules.Group.Commands;
+namespace Asm.MooBank.Modules.Groups.Commands;
 
 public record Update(Models.Group AccountGroup) : ICommand<Models.Group>;
 

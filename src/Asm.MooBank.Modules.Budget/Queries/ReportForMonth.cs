@@ -1,7 +1,7 @@
 ﻿using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Budget.Models;
+using Asm.MooBank.Modules.Budgets.Models;
 
-namespace Asm.MooBank.Modules.Budget.Queries;
+namespace Asm.MooBank.Modules.Budgets.Queries;
 
 public record ReportForMonth(short Year, short Month) : IQuery<BudgetReportValueMonth?>;
 

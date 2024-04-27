@@ -1,4 +1,4 @@
-﻿namespace Asm.MooBank.Modules.Account.Models.Account;
+﻿namespace Asm.MooBank.Modules.Accounts.Models.Account;
 public record TransactionAccount : Instrument
 {
     public DateOnly? LastTransaction { get; set; }

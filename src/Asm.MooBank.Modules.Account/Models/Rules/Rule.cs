@@ -1,6 +1,7 @@
 ﻿using Asm.MooBank.Models;
+using Asm.MooBank.Modules.Accounts.Models.Rules;
 
-namespace Asm.MooBank.Modules.Account.Models;
+namespace Asm.MooBank.Modules.Accounts.Models.Rules;
 
 public partial record Rule
 {

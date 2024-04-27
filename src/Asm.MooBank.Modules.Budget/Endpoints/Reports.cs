@@ -1,10 +1,10 @@
 ﻿using Asm.Cqrs.AspNetCore;
-using Asm.MooBank.Modules.Budget.Models;
-using Asm.MooBank.Modules.Budget.Queries;
+using Asm.MooBank.Modules.Budgets.Models;
+using Asm.MooBank.Modules.Budgets.Queries;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 
-namespace Asm.MooBank.Modules.Budget.Endpoints;
+namespace Asm.MooBank.Modules.Budgets.Endpoints;
 public class ReportEndpoint : EndpointGroupBase
 {
     public override string Name => "Budget";

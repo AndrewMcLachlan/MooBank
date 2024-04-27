@@ -1,6 +1,6 @@
 ﻿using Asm.MooBank.Services;
 
-namespace Asm.MooBank.Modules.Account.Commands.Rule;
+namespace Asm.MooBank.Modules.Accounts.Commands.Rule;
 
 public record Run(Guid AccountId) : ICommand;
 

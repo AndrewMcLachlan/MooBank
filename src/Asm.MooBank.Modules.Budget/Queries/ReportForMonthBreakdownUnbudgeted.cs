@@ -1,9 +1,9 @@
 ﻿using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Domain.Entities.Transactions.Specifications;
 using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Budget.Models;
+using Asm.MooBank.Modules.Budgets.Models;
 
-namespace Asm.MooBank.Modules.Budget.Queries;
+namespace Asm.MooBank.Modules.Budgets.Queries;
 
 public record ReportForMonthBreakdownUnbudgeted(short Year, short Month) : IQuery<BudgetReportByMonthBreakdown>;
 

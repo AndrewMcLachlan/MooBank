@@ -4,7 +4,7 @@ using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Importers;
 using Asm.MooBank.Models;
 
-namespace Asm.MooBank.Modules.Account.Commands.Import;
+namespace Asm.MooBank.Modules.Accounts.Commands.Import;
 
 public record Import(Guid AccountId, Stream Stream) : ICommand;
 
@@ -47,7 +47,7 @@ internal class ImportHandler(IInstrumentRepository accountRepository, IRuleRepos
         }
     }
 
-    private async Task ApplyTransactionRules(Domain.Entities.Account.Instrument account, IEnumerable<Domain.Entities.Transactions.Transaction> transactions, CancellationToken cancellationToken = default)
+    private async Task ApplyTransactionRules(Instrument account, IEnumerable<Domain.Entities.Transactions.Transaction> transactions, CancellationToken cancellationToken = default)
     {
         var rules = await _ruleRepository.GetForAccount(account.Id, cancellationToken);
 

@@ -1,9 +1,9 @@
 ﻿using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Domain.Entities.Transactions.Specifications;
 using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Budget.Models;
+using Asm.MooBank.Modules.Budgets.Models;
 
-namespace Asm.MooBank.Modules.Budget.Queries;
+namespace Asm.MooBank.Modules.Budgets.Queries;
 
 /// <summary>
 /// The budget report for a given year and month, broken down by tag.
@@ -73,7 +73,7 @@ public class TagHierarchy : Domain.Entities.Tag.Tag
 {
     public TagHierarchy(Domain.Entities.Tag.Tag tag) : base(tag.Id)
     {
-        this.Name = tag.Name;
+        Name = tag.Name;
     }
 
     public required int[] Ancestors { get; set; }

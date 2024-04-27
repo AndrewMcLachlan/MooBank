@@ -1,5 +1,5 @@
 ﻿using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Account.Models.Account;
+using Asm.MooBank.Modules.Accounts.Models.Account;
 
 namespace Asm.MooBank.Modules.Tests;
 internal class Models
@@ -14,7 +14,7 @@ internal class Models
     public static readonly Guid InvalidAccountFamilyId = new("35462a0c-d902-41cb-bbee-de7acb943739");
 
 
-    public readonly Modules.Account.Models.Account.InstitutionAccount Account = new()
+    public readonly InstitutionAccount Account = new()
     {
         Currency = "AUD",
         CurrentBalance = 1000,

@@ -1,7 +1,7 @@
 ﻿using Asm.MooBank.Commands;
 using IInstrumentRepository = Asm.MooBank.Domain.Entities.Account.IInstrumentRepository;
 
-namespace Asm.MooBank.Modules.Account.Commands.VirtualAccount;
+namespace Asm.MooBank.Modules.Accounts.Commands.VirtualAccount;
 
 public record Delete(Guid AccountId, Guid VirtualAccountId) : ICommand;
 

@@ -1,11 +1,12 @@
 ﻿using Asm.Cqrs.AspNetCore;
-using Asm.MooBank.Modules.Account.Commands.Rule;
-using Asm.MooBank.Modules.Account.Queries.Rule;
+using Asm.MooBank.Modules.Accounts.Commands.Rule;
+using Asm.MooBank.Modules.Accounts.Models.Rules;
+using Asm.MooBank.Modules.Accounts.Queries.Rule;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace Asm.MooBank.Modules.Account.Endpoints;
+namespace Asm.MooBank.Modules.Accounts.Endpoints;
 
 public class RulesEndpoints : EndpointGroupBase
 {
@@ -26,7 +27,7 @@ public class RulesEndpoints : EndpointGroupBase
             .WithNames("Get Account Rule")
             .Produces<Rule>();
 
-        routeGroupBuilder.MapPostCreate<Create, Rule>("", "Get Account Rule".ToMachine(), (Rule rule) => new { ruleId = rule.Id }, CommandBinding.None)
+        routeGroupBuilder.MapPostCreate<Create, Rule>("", "Get Account Rule".ToMachine(), (rule) => new { ruleId = rule.Id }, CommandBinding.None)
             .WithNames("Create Account Rule")
             .Produces<Rule>();
 

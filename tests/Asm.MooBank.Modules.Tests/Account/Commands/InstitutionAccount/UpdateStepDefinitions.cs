@@ -1,12 +1,12 @@
 using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Modules.Account.Commands.InstitutionAccount;
+using Asm.MooBank.Modules.Accounts.Commands.InstitutionAccount;
 
 namespace Asm.MooBank.Modules.Tests.Account.Commands.InstitutionAccount;
 
 [Binding]
-internal class UpdateStepDefinitions(ScenarioInput<Modules.Account.Models.Account.InstitutionAccount> input, ScenarioResult<Exception> exceptionResult) : StepDefinitionBase
+internal class UpdateStepDefinitions(ScenarioInput<Accounts.Models.Account.InstitutionAccount> input, ScenarioResult<Exception> exceptionResult) : StepDefinitionBase
 {
-    private Modules.Account.Models.Account.InstitutionAccount _result;
+    private Accounts.Models.Account.InstitutionAccount _result;
 
     [Given(@"I have a request to update an institution account")]
     public void GivenIHaveARequestToUpdateAnInstitutionAccount()

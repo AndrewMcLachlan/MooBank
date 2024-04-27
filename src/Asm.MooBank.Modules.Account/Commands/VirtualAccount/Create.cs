@@ -1,8 +1,8 @@
 ﻿using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Account.Models.Account;
+using Asm.MooBank.Modules.Accounts.Models.Account;
 using Asm.MooBank.Services;
 
-namespace Asm.MooBank.Modules.Account.Commands.VirtualAccount;
+namespace Asm.MooBank.Modules.Accounts.Commands.VirtualAccount;
 
 public record Create(Guid AccountId, Models.Account.VirtualInstrument VirtualAccount) : ICommand<Models.Account.VirtualInstrument>;
 
