@@ -15,8 +15,8 @@ export const useUpdateAccountHolder = () => {
         }
     });
 
-    const update = (accountHolder: AccountHolder) => {
-        mutate([null, accountHolder]);
+    const update = (user: AccountHolder) => {
+        mutate([null, user]);
     };
 
     return update;

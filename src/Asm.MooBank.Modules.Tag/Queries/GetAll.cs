@@ -5,7 +5,7 @@ namespace Asm.MooBank.Modules.Tags.Queries;
 
 public record GetAll() : IQuery<IEnumerable<Tag>>;
 
-internal class GetAllHandler(IQueryable<Domain.Entities.Tag.Tag> tags, User accountHolder) : QueryHandlerBase(accountHolder), IQueryHandler<GetAll, IEnumerable<Tag>>
+internal class GetAllHandler(IQueryable<Domain.Entities.Tag.Tag> tags, User user) : IQueryHandler<GetAll, IEnumerable<Tag>>
 {
     private readonly IQueryable<Domain.Entities.Tag.Tag> _tags = tags;
 
@@ -16,5 +16,5 @@ internal class GetAllHandler(IQueryable<Domain.Entities.Tag.Tag> tags, User acco
         .ThenInclude(t => t.Tags)
         .ThenInclude(t => t.Tags)
         .ThenInclude(t => t.Tags)
-        .Where(t => t.FamilyId == AccountHolder.FamilyId && !t.Deleted).OrderBy(t => t.Name).ToModel().ToListAsync(cancellationToken);
+        .Where(t => t.FamilyId == user.FamilyId && !t.Deleted).OrderBy(t => t.Name).ToModel().ToListAsync(cancellationToken);
 }

@@ -7,18 +7,18 @@ public record AccountHolder : MooBank.Models.User
 
 public static class AccountHolderExtensions
 {
-    public static AccountHolder ToModel(this Domain.Entities.AccountHolder.User accountHolder)
+    public static AccountHolder ToModel(this Domain.Entities.AccountHolder.User user)
     {
         return new AccountHolder
         {
-            Id = accountHolder.Id,
-            EmailAddress = accountHolder.EmailAddress,
-            FamilyId = accountHolder.FamilyId,
-            FirstName = accountHolder.FirstName,
-            LastName = accountHolder.LastName,
-            Currency = accountHolder.Currency,
-            PrimaryAccountId = accountHolder.PrimaryAccountId,
-            Cards = accountHolder.Cards.Select(c => new AccountHolderCard
+            Id = user.Id,
+            EmailAddress = user.EmailAddress,
+            FamilyId = user.FamilyId,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Currency = user.Currency,
+            PrimaryAccountId = user.PrimaryAccountId,
+            Cards = user.Cards.Select(c => new AccountHolderCard
             {
                 Name = c.Name,
                 Last4Digits = c.Last4Digits,

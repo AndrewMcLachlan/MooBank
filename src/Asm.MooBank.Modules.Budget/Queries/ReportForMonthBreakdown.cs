@@ -13,13 +13,13 @@ namespace Asm.MooBank.Modules.Budgets.Queries;
 /// <param name="Month">The budget month.</param>
 public record ReportForMonthBreakdown(short Year, short Month) : IQuery<BudgetReportByMonthBreakdown>;
 
-internal class ReportForMonthBreakdownHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, IQueryable<Domain.Entities.Account.InstitutionAccount> accounts, IQueryable<Domain.Entities.Transactions.Transaction> transactions, IQueryable<TagRelationship> tagRelationships, User accountHolder) : IQueryHandler<ReportForMonthBreakdown, BudgetReportByMonthBreakdown>
+internal class ReportForMonthBreakdownHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, IQueryable<Domain.Entities.Account.InstitutionAccount> accounts, IQueryable<Domain.Entities.Transactions.Transaction> transactions, IQueryable<TagRelationship> tagRelationships, User user) : IQueryHandler<ReportForMonthBreakdown, BudgetReportByMonthBreakdown>
 {
     public async ValueTask<BudgetReportByMonthBreakdown> Handle(ReportForMonthBreakdown query, CancellationToken cancellationToken)
     {
-        var budget = await budgets.Include(b => b.Lines).ThenInclude(l => l.Tag).ThenInclude(t => t.Settings).SingleOrDefaultAsync(b => b.FamilyId == accountHolder.FamilyId && b.Year == query.Year, cancellationToken) ?? throw new NotFoundException();
+        var budget = await budgets.Include(b => b.Lines).ThenInclude(l => l.Tag).ThenInclude(t => t.Settings).SingleOrDefaultAsync(b => b.FamilyId == user.FamilyId && b.Year == query.Year, cancellationToken) ?? throw new NotFoundException();
 
-        var budgetAccounts = await accounts.Where(a => a.IncludeInBudget && accountHolder.Accounts.Contains(a.Id)).Select(a => a.Id).ToArrayAsync(cancellationToken);
+        var budgetAccounts = await accounts.Where(a => a.IncludeInBudget && user.Accounts.Contains(a.Id)).Select(a => a.Id).ToArrayAsync(cancellationToken);
 
         // Get expense transactions for the given year and month.
         var budgetTransactions = await transactions.Specify(new IncludeSplitsSpecification()).Where(t =>

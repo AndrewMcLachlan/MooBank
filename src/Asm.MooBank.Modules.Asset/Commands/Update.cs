@@ -29,14 +29,14 @@ public sealed record Update : ICommand<Models.Asset>
     }
 }
 
-internal class UpdateHandler(IAssetRepository repository, IUnitOfWork unitOfWork, User accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Update, Models.Asset>
+internal class UpdateHandler(IAssetRepository repository, IUnitOfWork unitOfWork, User user, ISecurity security) :  ICommandHandler<Update, Models.Asset>
 {
     public async ValueTask<Models.Asset> Handle(Update command, CancellationToken cancellationToken)
     {
-        Security.AssertAccountPermission(command.AccountId);
+        security.AssertAccountPermission(command.AccountId);
         if (command.AccountGroupId != null)
         {
-            Security.AssertAccountGroupPermission(command.AccountGroupId.Value);
+            security.AssertAccountGroupPermission(command.AccountGroupId.Value);
         }
 
         var Asset = await repository.Get(command.AccountId, new IncludeSpecification(), cancellationToken) ?? throw new NotFoundException();
@@ -47,9 +47,9 @@ internal class UpdateHandler(IAssetRepository repository, IUnitOfWork unitOfWork
         Asset.ShareWithFamily = command.ShareWithFamily;
         Asset.PurchasePrice = command.PurchasePrice;
 
-        Asset.SetAccountGroup(command.AccountGroupId, AccountHolder.Id);
+        Asset.SetAccountGroup(command.AccountGroupId, user.Id);
 
-        await UnitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Asset.ToModel();
     }

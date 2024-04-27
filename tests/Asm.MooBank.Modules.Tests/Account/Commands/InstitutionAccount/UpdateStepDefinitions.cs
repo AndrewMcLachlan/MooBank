@@ -45,7 +45,7 @@ internal class UpdateStepDefinitions(ScenarioInput<Accounts.Models.Account.Insti
                 //VirtualAccounts = Models.Account.VirtualAccounts,
             });
 
-        UpdateHandler updateHandler = new UpdateHandler(Mocks.UnitOfWorkMock.Object, institutionAccountRepositoryMock.Object, Models.AccountHolder, Mocks.CurrencyConverterMock.Object, Mocks.SecurityMock.Object);
+        UpdateHandler updateHandler = new(Mocks.UnitOfWorkMock.Object, institutionAccountRepositoryMock.Object, Models.AccountHolder, Mocks.CurrencyConverterMock.Object, Mocks.SecurityMock.Object);
 
         Update command = new(input.Value);
 

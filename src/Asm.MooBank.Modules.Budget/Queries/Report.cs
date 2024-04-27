@@ -5,13 +5,13 @@ namespace Asm.MooBank.Modules.Budgets.Queries;
 
 public record Report(short Year) : IQuery<BudgetReportByMonth>;
 
-internal class ReportHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, IQueryable<Domain.Entities.Account.InstitutionAccount> accounts, IQueryable<Domain.Entities.Transactions.Transaction> transactions, User accountHolder) : IQueryHandler<Report, BudgetReportByMonth>
+internal class ReportHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, IQueryable<Domain.Entities.Account.InstitutionAccount> accounts, IQueryable<Domain.Entities.Transactions.Transaction> transactions, User user) : IQueryHandler<Report, BudgetReportByMonth>
 {
     public async ValueTask<BudgetReportByMonth> Handle(Report request, CancellationToken cancellationToken)
     {
-        var budget = await budgets.Include(b => b.Lines).SingleOrDefaultAsync(b => b.FamilyId == accountHolder.FamilyId && b.Year == request.Year, cancellationToken) ?? throw new NotFoundException();
+        var budget = await budgets.Include(b => b.Lines).SingleOrDefaultAsync(b => b.FamilyId == user.FamilyId && b.Year == request.Year, cancellationToken) ?? throw new NotFoundException();
 
-        var budgetAccounts = await accounts.Where(a => a.IncludeInBudget && accountHolder.Accounts.Contains(a.Id)).Select(a => a.Id).ToArrayAsync(cancellationToken);
+        var budgetAccounts = await accounts.Where(a => a.IncludeInBudget && user.Accounts.Contains(a.Id)).Select(a => a.Id).ToArrayAsync(cancellationToken);
 
         var budgetTransactions = await transactions.Where(t => budgetAccounts.Contains(t.AccountId) && TransactionTypes.Debit.Contains(t.TransactionType) && !t.ExcludeFromReporting && t.TransactionTime.Year == request.Year).ToArrayAsync(cancellationToken);
 

@@ -2,11 +2,11 @@
 
 internal record Get() : IQuery<Models.AccountHolder>;
 
-internal class GetHandler(IQueryable<Domain.Entities.AccountHolder.User> accountHolders, MooBank.Models.User accountHolder) : IQueryHandler<Get, Models.AccountHolder>
+internal class GetHandler(IQueryable<Domain.Entities.AccountHolder.User> accountHolders, MooBank.Models.User user) : IQueryHandler<Get, Models.AccountHolder>
 {
     public async ValueTask<Models.AccountHolder> Handle(Get query, CancellationToken cancellationToken)
     {
-        var entity = await accountHolders.Include(a => a.Cards).SingleAsync(a => a.Id == accountHolder.Id, cancellationToken);
+        var entity = await accountHolders.Include(a => a.Cards).SingleAsync(a => a.Id == user.Id, cancellationToken);
 
         return new Models.AccountHolder
         {
@@ -22,8 +22,8 @@ internal class GetHandler(IQueryable<Domain.Entities.AccountHolder.User> account
                 Last4Digits = c.Last4Digits,
                 Name = c.Name,
             }),
-            Accounts = accountHolder.Accounts,
-            SharedAccounts = accountHolder.SharedAccounts,
+            Accounts = user.Accounts,
+            SharedAccounts = user.SharedAccounts,
         };
     }
 }

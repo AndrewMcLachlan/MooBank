@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
-public class SecurityRepository(MooBankContext dataContext, IAuthorizationService authorizationService, IPrincipalProvider principalProvider, User accountHolder) : ISecurity
+public class SecurityRepository(MooBankContext dataContext, IAuthorizationService authorizationService, IPrincipalProvider principalProvider, User user) : ISecurity
 {
     private readonly MooBankContext _mooBankContext = dataContext;
     private readonly IAuthorizationService _authorizationService = authorizationService;
@@ -55,7 +55,7 @@ public class SecurityRepository(MooBankContext dataContext, IAuthorizationServic
 
     public void AssertAccountGroupPermission(Guid accountGroupId)
     {
-        if (!_mooBankContext.Groups.Any(a => a.Id == accountGroupId && a.OwnerId == accountHolder.Id))
+        if (!_mooBankContext.Groups.Any(a => a.Id == accountGroupId && a.OwnerId == user.Id))
         {
             throw new NotAuthorisedException("Not authorised to view this account group");
         }
@@ -63,7 +63,7 @@ public class SecurityRepository(MooBankContext dataContext, IAuthorizationServic
 
     public void AssertAccountGroupPermission(Group accountGroup)
     {
-        if (accountGroup.OwnerId != accountHolder.Id)
+        if (accountGroup.OwnerId != user.Id)
         {
             throw new NotAuthorisedException("Not authorised to view this account group");
         }
@@ -91,7 +91,7 @@ public class SecurityRepository(MooBankContext dataContext, IAuthorizationServic
     }
 
     public async Task<IEnumerable<Guid>> GetAccountIds(CancellationToken cancellationToken = default) =>
-        await _mooBankContext.InstrumentOwners.Where(aah => aah.UserId == accountHolder.Id).Select(aah => aah.InstrumentId).ToListAsync(cancellationToken);
+        await _mooBankContext.InstrumentOwners.Where(aah => aah.UserId == user.Id).Select(aah => aah.InstrumentId).ToListAsync(cancellationToken);
 
     public async Task AssertAdministrator(CancellationToken cancellationToken = default)
     {

@@ -8,11 +8,11 @@ namespace Asm.MooBank.Modules.Families.Commands;
 public sealed record Create(string Name) : ICommand<Models.Family>;
 
 
-internal class CreateHandler(IFamilyRepository repository, IUnitOfWork unitOfWork, User accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Create, Models.Family>
+internal class CreateHandler(IFamilyRepository repository, IUnitOfWork unitOfWork, ISecurity security) :  ICommandHandler<Create, Models.Family>
 {
     public async ValueTask<Models.Family> Handle(Create command, CancellationToken cancellationToken)
     {
-        await Security.AssertAdministrator(cancellationToken);
+        await security.AssertAdministrator(cancellationToken);
 
         Domain.Entities.Family.Family entity = new()
         {
@@ -21,7 +21,7 @@ internal class CreateHandler(IFamilyRepository repository, IUnitOfWork unitOfWor
 
         repository.Add(entity);
 
-        await UnitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return entity.ToModel();
     }

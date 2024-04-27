@@ -1,5 +1,4 @@
-﻿using Asm.MooBank.Commands;
-using Asm.MooBank.Models;
+﻿using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Accounts.Models.Account;
 using Asm.MooBank.Services;
 using IInstitutionAccountRepository = Asm.MooBank.Domain.Entities.Account.IInstitutionAccountRepository;
@@ -8,7 +7,7 @@ namespace Asm.MooBank.Modules.Accounts.Commands.InstitutionAccount;
 
 public record Create(Models.Account.InstitutionAccount Account) : ICommand<Models.Account.InstitutionAccount>;
 
-internal class CreateHandler(IInstitutionAccountRepository institutionAccountRepository, IUnitOfWork unitOfWork, User accountHolder, ICurrencyConverter currencyConverter, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Create, Models.Account.InstitutionAccount>
+internal class CreateHandler(IInstitutionAccountRepository institutionAccountRepository, IUnitOfWork unitOfWork, User user, ICurrencyConverter currencyConverter, ISecurity security) : ICommandHandler<Create, Models.Account.InstitutionAccount>
 {
     private readonly IInstitutionAccountRepository _accountRepository = institutionAccountRepository;
 
@@ -18,13 +17,13 @@ internal class CreateHandler(IInstitutionAccountRepository institutionAccountRep
 
         if (account.GroupId != null)
         {
-            Security.AssertAccountGroupPermission(account.GroupId.Value);
+            security.AssertAccountGroupPermission(account.GroupId.Value);
         }
 
         var entity = account.ToEntity();
 
-        entity.SetAccountHolder(AccountHolder.Id);
-        entity.SetAccountGroup(account.GroupId, AccountHolder.Id);
+        entity.SetAccountHolder(user.Id);
+        entity.SetAccountGroup(account.GroupId, user.Id);
 
         _accountRepository.Add(entity);
 
@@ -36,7 +35,7 @@ internal class CreateHandler(IInstitutionAccountRepository institutionAccountRep
             };
         }
 
-        await UnitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return entity.ToModel(currencyConverter);
     }

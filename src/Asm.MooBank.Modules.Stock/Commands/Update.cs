@@ -28,14 +28,14 @@ public sealed record Update : ICommand<Models.StockHolding>
     }
 }
 
-internal class UpdateHandler(IStockHoldingRepository repository, IUnitOfWork unitOfWork, User accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Update, Models.StockHolding>
+internal class UpdateHandler(IStockHoldingRepository repository, IUnitOfWork unitOfWork, User user, ISecurity security) :  ICommandHandler<Update, Models.StockHolding>
 {
     public async ValueTask<Models.StockHolding> Handle(Update command, CancellationToken cancellationToken)
     {
-        Security.AssertAccountPermission(command.AccountId);
+        security.AssertAccountPermission(command.AccountId);
         if (command.AccountGroupId != null)
         {
-            Security.AssertAccountGroupPermission(command.AccountGroupId.Value);
+            security.AssertAccountGroupPermission(command.AccountGroupId.Value);
         }
 
         var stockHolding = await repository.Get(command.AccountId, new IncludeSpecification(), cancellationToken) ?? throw new NotFoundException();
@@ -45,9 +45,9 @@ internal class UpdateHandler(IStockHoldingRepository repository, IUnitOfWork uni
         stockHolding.ShareWithFamily = command.ShareWithFamily;
         stockHolding.CurrentPrice = command.CurrentPrice;
 
-        stockHolding.SetAccountGroup(command.AccountGroupId, AccountHolder.Id);
+        stockHolding.SetAccountGroup(command.AccountGroupId, user.Id);
 
-        await UnitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return stockHolding.ToModel();
     }

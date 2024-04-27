@@ -20,7 +20,7 @@ public sealed record CreateByName(string Name, IEnumerable<int> Tags) : ICommand
     }
 }
 
-internal sealed class CreateByNameHandler(IUnitOfWork unitOfWork, ITagRepository transactionTagRepository, User accountHolder) : ICommandHandler<CreateByName, Tag>
+internal sealed class CreateByNameHandler(IUnitOfWork unitOfWork, ITagRepository transactionTagRepository, User user) : ICommandHandler<CreateByName, Tag>
 {
     public async ValueTask<Tag> Handle(CreateByName request, CancellationToken cancellationToken)
     {
@@ -31,7 +31,7 @@ internal sealed class CreateByNameHandler(IUnitOfWork unitOfWork, ITagRepository
         Domain.Entities.Tag.Tag tag = new()
         {
             Name = name,
-            FamilyId = accountHolder.FamilyId,
+            FamilyId = user.FamilyId,
             Tags = tagEntities.ToList(),
         };
         transactionTagRepository.Add(tag);

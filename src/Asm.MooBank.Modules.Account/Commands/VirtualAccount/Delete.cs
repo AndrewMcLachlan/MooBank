@@ -5,13 +5,13 @@ namespace Asm.MooBank.Modules.Accounts.Commands.VirtualAccount;
 
 public record Delete(Guid AccountId, Guid VirtualAccountId) : ICommand;
 
-internal class DeleteHandler(IInstrumentRepository accountRepository, MooBank.Models.User accountHolder, ISecurity security, IUnitOfWork unitOfWork) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Delete>
+internal class DeleteHandler(IInstrumentRepository accountRepository, ISecurity security, IUnitOfWork unitOfWork) :  ICommandHandler<Delete>
 {
     private readonly IInstrumentRepository _accountRepository = accountRepository;
 
     public async ValueTask Handle(Delete request, CancellationToken cancellationToken)
     {
-        Security.AssertAccountPermission(request.AccountId);
+        security.AssertAccountPermission(request.AccountId);
 
         var account = await _accountRepository.Get(request.AccountId, cancellationToken);
 
@@ -24,6 +24,6 @@ internal class DeleteHandler(IInstrumentRepository accountRepository, MooBank.Mo
 
         institutionAccount.VirtualInstruments.Remove(virtualAccount);
 
-        await UnitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

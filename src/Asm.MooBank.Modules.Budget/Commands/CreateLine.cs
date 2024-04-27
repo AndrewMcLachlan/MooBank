@@ -7,19 +7,21 @@ namespace Asm.MooBank.Modules.Budgets.Commands;
 
 public record CreateLine(short Year, Models.BudgetLine BudgetLine) : ICommand<Models.BudgetLine>;
 
-internal class CreateLineHandler(IUnitOfWork unitOfWork, IBudgetRepository budgetRepository, User accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<CreateLine, Models.BudgetLine>
+internal class CreateLineHandler(IUnitOfWork unitOfWork, IBudgetRepository budgetRepository, User user) :  ICommandHandler<CreateLine, Models.BudgetLine>
 {
     public async ValueTask<Models.BudgetLine> Handle(CreateLine request, CancellationToken cancellationToken)
     {
+        // Security: Check not required as "year" is the only user input, not a specific budget ID.
+
         request.Deconstruct(out short year, out Models.BudgetLine budgetLine);
 
-        var budget = await budgetRepository.GetOrCreate(AccountHolder.FamilyId, year, cancellationToken);
+        var budget = await budgetRepository.GetOrCreate(user.FamilyId, year, cancellationToken);
 
         var entity = budgetLine.ToDomain(budget.Id);
 
         budgetRepository.AddLine(entity);
 
-        await UnitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return entity.ToModel();
     }

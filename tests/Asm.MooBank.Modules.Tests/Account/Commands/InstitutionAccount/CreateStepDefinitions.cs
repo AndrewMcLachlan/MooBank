@@ -46,7 +46,7 @@ internal class CreateStepDefinitions(ScenarioInput<Accounts.Models.Account.Insti
                 VirtualInstruments = account.VirtualInstruments,
             });
 
-        CreateHandler createHandler = new CreateHandler(institutionAccountRepositoryMock.Object, Mocks.UnitOfWorkMock.Object, Models.AccountHolder, Mocks.CurrencyConverterMock.Object, Mocks.SecurityMock.Object);
+        CreateHandler createHandler = new(institutionAccountRepositoryMock.Object, Mocks.UnitOfWorkMock.Object, Models.AccountHolder, Mocks.CurrencyConverterMock.Object, Mocks.SecurityMock.Object);
 
         Create command = new(input.Value);
 

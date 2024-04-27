@@ -1,5 +1,4 @@
 ﻿using Asm.MooBank.Domain.Entities.Transactions;
-using Asm.MooBank.Queries;
 
 namespace Asm.MooBank.Modules.Budgets.Queries;
 
@@ -9,12 +8,12 @@ public record GetValueForTag(int TagId) : IQuery<decimal>
     public DateOnly End { get; init; } = DateTime.Today.ToDateOnly().AddMonths(-1).ToEndOfMonth();
 }
 
-internal class GetValueForTagHandler(IQueryable<Transaction> transactions, MooBank.Models.User accountHolder) : QueryHandlerBase(accountHolder), IQueryHandler<GetValueForTag, decimal>
+internal class GetValueForTagHandler(IQueryable<Transaction> transactions, MooBank.Models.User user) : IQueryHandler<GetValueForTag, decimal>
 {
     public async ValueTask<decimal> Handle(GetValueForTag request, CancellationToken cancellationToken)
     {
-        var familyId = AccountHolder.FamilyId;
-        var accountIds = AccountHolder.Accounts;
+        var familyId = user.FamilyId;
+        var accountIds = user.Accounts;
 
         var start = request.Start.ToStartOfDay();
         var end = request.End.ToEndOfDay();

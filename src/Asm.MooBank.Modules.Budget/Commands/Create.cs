@@ -7,17 +7,19 @@ namespace Asm.MooBank.Modules.Budgets.Commands;
 
 public record Create(short Year) : ICommand<Models.Budget>;
 
-internal class CreateHandler(IBudgetRepository budgetRepository, IUnitOfWork unitOfWork, User accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Create, Models.Budget>
+internal class CreateHandler(IBudgetRepository budgetRepository, IUnitOfWork unitOfWork, User user) :  ICommandHandler<Create, Models.Budget>
 {
     public async ValueTask<Models.Budget> Handle(Create request, CancellationToken cancellationToken)
     {
+        // Security: Check not required as "year" is the only user input.
+
         var entity = budgetRepository.Add(new Domain.Entities.Budget.Budget(Guid.Empty)
         {
-            FamilyId = AccountHolder.FamilyId,
+            FamilyId = user.FamilyId,
             Year = request.Year,
         });
 
-        await UnitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return entity.ToModel();
     }

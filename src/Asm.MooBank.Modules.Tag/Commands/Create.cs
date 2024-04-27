@@ -6,16 +6,18 @@ namespace Asm.MooBank.Modules.Tags.Commands;
 
 public sealed record Create(Tag Tag) : ICommand<Tag>;
 
-internal sealed class CreateHandler(IUnitOfWork unitOfWork, ITagRepository transactionTagRepository, User accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Create, Tag>
+internal sealed class CreateHandler(IUnitOfWork unitOfWork, ITagRepository transactionTagRepository, User user) :  ICommandHandler<Create, Tag>
 {
     public async ValueTask<Tag> Handle(Create request, CancellationToken cancellationToken)
     {
+        // Security: Check not required as the tag is created against the current user's family.
+
         Domain.Entities.Tag.Tag tag = request.Tag.ToEntity();
-        tag.FamilyId = AccountHolder.FamilyId;
+        tag.FamilyId = user.FamilyId;
 
         transactionTagRepository.Add(tag);
 
-        await UnitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return tag.ToModel();
     }

@@ -12,13 +12,13 @@ public record Create(Guid AccountId, decimal Amount, string Description, string?
     public static ValueTask<Create> BindAsync(HttpContext httpContext) => BindHelper.BindWithAccountIdAsync<Create>(httpContext);
 }
 
-internal class CreateHandler(IInstrumentRepository accountRepository, ITransactionRepository transactionRepository, IUnitOfWork unitOfWork, User accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Create, Models.Transaction>
+internal class CreateHandler(IInstrumentRepository accountRepository, ITransactionRepository transactionRepository, IUnitOfWork unitOfWork, ISecurity security) :  ICommandHandler<Create, Models.Transaction>
 {
     public async ValueTask<Models.Transaction> Handle(Create command, CancellationToken cancellationToken)
     {
         command.Deconstruct(out var accountId, out var amount, out var description, out var reference, out var transactionTime);
 
-        Security.AssertAccountPermission(accountId);
+        security.AssertAccountPermission(accountId);
 
         var account = await accountRepository.Get(command.AccountId, cancellationToken);
         if (account is not Domain.Entities.Account.TransactionAccount transactionAccount)
@@ -41,7 +41,7 @@ internal class CreateHandler(IInstrumentRepository accountRepository, ITransacti
 
         transactionRepository.Add(transaction);
 
-        await UnitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return transaction.ToModel();
     }

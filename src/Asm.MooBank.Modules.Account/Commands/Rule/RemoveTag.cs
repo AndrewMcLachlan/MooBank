@@ -6,13 +6,13 @@ namespace Asm.MooBank.Modules.Accounts.Commands.Rule;
 
 internal record RemoveTag(Guid AccountId, int RuleId, int TagId) : ICommand;
 
-internal class RemoveTagHandler(IInstrumentRepository accountRepository, User user, ISecurity security, IUnitOfWork unitOfWork) : CommandHandlerBase(unitOfWork, user, security), ICommandHandler<RemoveTag>
+internal class RemoveTagHandler(IInstrumentRepository accountRepository, ISecurity security, IUnitOfWork unitOfWork) : ICommandHandler<RemoveTag>
 {
     private readonly IInstrumentRepository _accountRepository = accountRepository;
 
     public async ValueTask Handle(RemoveTag request, CancellationToken cancellationToken)
     {
-        Security.AssertAccountPermission(request.AccountId);
+        security.AssertAccountPermission(request.AccountId);
 
         var account = await _accountRepository.Get(request.AccountId, cancellationToken);
 
@@ -22,6 +22,6 @@ internal class RemoveTagHandler(IInstrumentRepository accountRepository, User us
 
         entity.Tags.Remove(tag);
 
-        await UnitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

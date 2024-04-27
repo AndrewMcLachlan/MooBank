@@ -10,11 +10,11 @@ namespace Asm.MooBank.Modules.Transactions.Commands;
 
 public record UpdateBalance(Guid AccountId, CreateTransaction BalanceUpdate) : ICommand<Models.Transaction>;
 
-internal class UpdateBalanceHandler(IInstrumentRepository accountRepository, ITransactionRepository transactionRepository, User accountHolder, ICurrencyConverter currencyConverter, ISecurity security, IUnitOfWork unitOfWork) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<UpdateBalance, Models.Transaction>
+internal class UpdateBalanceHandler(IInstrumentRepository accountRepository, ITransactionRepository transactionRepository, ICurrencyConverter currencyConverter, ISecurity security, IUnitOfWork unitOfWork) :  ICommandHandler<UpdateBalance, Models.Transaction>
 {
     public async ValueTask<Models.Transaction> Handle(UpdateBalance command, CancellationToken cancellationToken)
     {
-        Security.AssertAccountPermission(command.AccountId);
+        security.AssertAccountPermission(command.AccountId);
 
         var account = await accountRepository.Get(command.AccountId, cancellationToken);
 
@@ -35,7 +35,7 @@ internal class UpdateBalanceHandler(IInstrumentRepository accountRepository, ITr
             TransactionType = amount > 0 ? TransactionType.BalanceAdjustmentCredit : TransactionType.BalanceAdjustmentDebit,
         });
 
-        await UnitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return transaction.ToModel();
     }

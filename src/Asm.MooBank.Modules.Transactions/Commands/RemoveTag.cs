@@ -8,11 +8,11 @@ namespace Asm.MooBank.Modules.Transactions.Commands;
 
 internal record RemoveTag(Guid AccountId, Guid Id, int TagId) : ICommand<Models.Transaction>;
 
-internal class RemoveTagHandler(ITransactionRepository transactionRepository, IUnitOfWork unitOfWork, User accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<RemoveTag, Models.Transaction>
+internal class RemoveTagHandler(ITransactionRepository transactionRepository, IUnitOfWork unitOfWork, ISecurity security) :  ICommandHandler<RemoveTag, Models.Transaction>
 {
     public async ValueTask<Models.Transaction> Handle(RemoveTag request, CancellationToken cancellationToken)
     {
-        Security.AssertAccountPermission(request.AccountId);
+        security.AssertAccountPermission(request.AccountId);
 
         var entity = await transactionRepository.Get(request.Id, new IncludeSplitsSpecification(), cancellationToken);
 
@@ -20,7 +20,7 @@ internal class RemoveTagHandler(ITransactionRepository transactionRepository, IU
 
         entity.UpdateOrRemoveSplit(tag);
 
-        await UnitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return entity.ToModel();
     }

@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Asm.MooBank.Security.Authorisation;
 
-internal class AccountViewerAuthorisationHandler(User accountHolder) : AuthorizationHandler<AccountViewerRequirement, Guid>
+internal class AccountViewerAuthorisationHandler(User user) : AuthorizationHandler<AccountViewerRequirement, Guid>
 {
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, AccountViewerRequirement requirement, Guid resource)
     {
-        if (accountHolder.Accounts.Contains(resource) || accountHolder.SharedAccounts.Contains(resource))
+        if (user.Accounts.Contains(resource) || user.SharedAccounts.Contains(resource))
         {
             context.Succeed(requirement);
         }

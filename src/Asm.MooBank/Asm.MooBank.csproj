@@ -18,4 +18,8 @@
     <ProjectReference Include="..\Asm.MooBank.Models\Asm.MooBank.Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Queries\" />
+  </ItemGroup>
+
 </Project>

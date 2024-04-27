@@ -22,18 +22,18 @@ public sealed record Update(int Id, string Name, int InstitutionTypeId) : IComma
     }
 }
 
-internal class UpdateHandler(IInstitutionRepository repository, IUnitOfWork unitOfWork, User accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Update, Models.Institution>
+internal class UpdateHandler(IInstitutionRepository repository, IUnitOfWork unitOfWork, ISecurity security) : ICommandHandler<Update, Models.Institution>
 {
     public async ValueTask<Models.Institution> Handle(Update command, CancellationToken cancellationToken)
     {
-        await Security.AssertAdministrator(cancellationToken);
+        await security.AssertAdministrator(cancellationToken);
 
         Domain.Entities.Institution.Institution entity = await repository.Get(command.Id, cancellationToken);
 
         entity.Name = command.Name;
         entity.InstitutionTypeId = command.InstitutionTypeId;
 
-        await UnitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return entity.ToModel();
     }

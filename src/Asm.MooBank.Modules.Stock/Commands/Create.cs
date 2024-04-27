@@ -16,13 +16,13 @@ public sealed record Create() : ICommand<Models.StockHolding>
     public Guid? AccountGroupId { get; init; }
 }
 
-internal class CreateHandler(IStockHoldingRepository repository, IUnitOfWork unitOfWork, User accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Create, Models.StockHolding>
+internal class CreateHandler(IStockHoldingRepository repository, IUnitOfWork unitOfWork, User user, ISecurity security) :  ICommandHandler<Create, Models.StockHolding>
 {
     public async ValueTask<Models.StockHolding> Handle(Create command, CancellationToken cancellationToken)
     {
         if (command.AccountGroupId != null)
         {
-            Security.AssertAccountGroupPermission(command.AccountGroupId.Value);
+            security.AssertAccountGroupPermission(command.AccountGroupId.Value);
         }
 
         Domain.Entities.StockHolding.StockHolding entity = new(Guid.Empty)
@@ -34,8 +34,8 @@ internal class CreateHandler(IStockHoldingRepository repository, IUnitOfWork uni
             CurrentPrice = command.Price,
         };
 
-        entity.SetAccountHolder(AccountHolder.Id);
-        entity.SetAccountGroup(command.AccountGroupId, AccountHolder.Id);
+        entity.SetAccountHolder(user.Id);
+        entity.SetAccountGroup(command.AccountGroupId, user.Id);
 
         repository.Add(entity);
 
@@ -48,7 +48,7 @@ internal class CreateHandler(IStockHoldingRepository repository, IUnitOfWork uni
             TransactionType = TransactionType.Credit,
         });
 
-        await UnitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return entity.ToModel();
     }

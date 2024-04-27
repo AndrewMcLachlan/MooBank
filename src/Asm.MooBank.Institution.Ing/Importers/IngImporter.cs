@@ -210,14 +210,14 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
     {
         if (last4Digits == null) return null;
 
-        if (!_accountHolders.TryGetValue(last4Digits.Value, out User? accountHolder))
+        if (!_accountHolders.TryGetValue(last4Digits.Value, out User? user))
         {
-            accountHolder = await _accountHolderRepository.GetByCard(last4Digits.Value, cancellationToken);
-            if (accountHolder == null) return null;
-            _accountHolders.Add(last4Digits.Value, accountHolder);
+            user = await _accountHolderRepository.GetByCard(last4Digits.Value, cancellationToken);
+            if (user == null) return null;
+            _accountHolders.Add(last4Digits.Value, user);
         }
 
-        return accountHolder;
+        return user;
     }
 
     /*public GetTransactionExtraDetails? CreateExtraDetailsRequest(Guid accountId, Models.PagedResult<Models.Transaction> transactions) =>

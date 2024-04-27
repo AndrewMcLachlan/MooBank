@@ -1,6 +1,4 @@
-﻿using Asm.MooBank.Domain.Entities.Asset;
-using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Account.Models.Account;
+﻿using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Accounts.Models.Account;
 using Asm.MooBank.Services;
 
@@ -8,30 +6,30 @@ namespace Asm.MooBank.Modules.Accounts.Queries.Account;
 
 public sealed record GetFormatted() : IQuery<AccountsList>;
 
-internal class GetFormattedHandler(IQueryable<Domain.Entities.Account.InstitutionAccount> institutionAccounts, IQueryable<Domain.Entities.StockHolding.StockHolding> stockHoldings, IQueryable<Domain.Entities.Asset.Asset> assets, User accountHolder, ICurrencyConverter currencyConverter) : IQueryHandler<GetFormatted, AccountsList>
+internal class GetFormattedHandler(IQueryable<Domain.Entities.Account.InstitutionAccount> institutionAccounts, IQueryable<Domain.Entities.StockHolding.StockHolding> stockHoldings, IQueryable<Domain.Entities.Asset.Asset> assets, User user, ICurrencyConverter currencyConverter) : IQueryHandler<GetFormatted, AccountsList>
 {
 
     public async ValueTask<AccountsList> Handle(GetFormatted request, CancellationToken cancellationToken = default)
     {
-        var userId = accountHolder.Id;
+        var userId = user.Id;
 
         var institutionAccounts1 = await institutionAccounts.Include(a => a.VirtualInstruments)
                                                             .Include(a => a.Owners).ThenInclude(a => a.Group).Include(a => a.Owners).ThenInclude(a => a.User)
                                                             .Include(a => a.Viewers).ThenInclude(a => a.Group).Include(a => a.Viewers).ThenInclude(a => a.User)
                                       .Where(a => a.Owners.Any(ah => ah.UserId == userId) ||
-                                                  a.ShareWithFamily && a.Owners.Any(ah => ah.User.FamilyId == accountHolder.FamilyId))
+                                                  a.ShareWithFamily && a.Owners.Any(ah => ah.User.FamilyId == user.FamilyId))
                                       .ToListAsync(cancellationToken);
 
         var stockHoldings1 = await stockHoldings.Include(a => a.Owners).ThenInclude(a => a.Group).Include(a => a.Owners).ThenInclude(a => a.User)
                                                 .Include(a => a.Viewers).ThenInclude(a => a.Group).Include(a => a.Viewers).ThenInclude(a => a.User)
                                       .Where(a => a.Owners.Any(ah => ah.UserId == userId) ||
-                                                  a.ShareWithFamily && a.Owners.Any(ah => ah.User.FamilyId == accountHolder.FamilyId))
+                                                  a.ShareWithFamily && a.Owners.Any(ah => ah.User.FamilyId == user.FamilyId))
                                       .ToListAsync(cancellationToken);
 
         var assets1 = await assets.Include(a => a.Owners).ThenInclude(a => a.Group).Include(a => a.Owners).ThenInclude(a => a.User)
                                                 .Include(a => a.Viewers).ThenInclude(a => a.Group).Include(a => a.Viewers).ThenInclude(a => a.User)
                                       .Where(a => a.Owners.Any(ah => ah.UserId == userId) ||
-                                                  a.ShareWithFamily && a.Owners.Any(ah => ah.User.FamilyId == accountHolder.FamilyId))
+                                                  a.ShareWithFamily && a.Owners.Any(ah => ah.User.FamilyId == user.FamilyId))
                                       .ToListAsync(cancellationToken);
 
         var allGroups = institutionAccounts1.Select(g => g.GetAccountGroup(userId)).Union(stockHoldings1.Select(g => g.GetAccountGroup(userId))).Distinct(new IIdentifiableEqualityComparer<Domain.Entities.Group.Group, Guid>()!);

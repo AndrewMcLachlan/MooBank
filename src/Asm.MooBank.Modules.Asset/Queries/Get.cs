@@ -6,7 +6,7 @@ namespace Asm.MooBank.Modules.Assets.Queries;
 
 public sealed record Get(Guid Id) : IQuery<Asset>;
 
-internal class GetHandler(IQueryable<Domain.Entities.Asset.Asset> accounts, User accountHolder, ISecurity security) : QueryHandlerBase(accountHolder), IQueryHandler<Get, Asset>
+internal class GetHandler(IQueryable<Domain.Entities.Asset.Asset> accounts, User user, ISecurity security) : IQueryHandler<Get, Asset>
 {
     public async ValueTask<Asset> Handle(Get query, CancellationToken cancellationToken)
     {
@@ -16,7 +16,7 @@ internal class GetHandler(IQueryable<Domain.Entities.Asset.Asset> accounts, User
                                    .Include(a => a.Viewers).ThenInclude(ah => ah.User)
                                    .SingleOrDefaultAsync(a => a.Id == query.Id, cancellationToken) ?? throw new NotFoundException();
         security.AssertAccountPermission(entity);
-        var account = entity.ToModel(AccountHolder.Id);
+        var account = entity.ToModel(user.Id);
 
         return account!;
     }

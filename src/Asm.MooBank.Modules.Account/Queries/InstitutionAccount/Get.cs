@@ -6,7 +6,7 @@ namespace Asm.MooBank.Modules.Accounts.Queries.InstitutionAccount;
 
 public record Get(Guid Id) : IQuery<Models.Account.InstitutionAccount>;
 
-internal class GetHandler(IQueryable<Domain.Entities.Account.InstitutionAccount> accounts, User accountHolder, ISecurity security, ICurrencyConverter currencyConverter) : IQueryHandler<Get, Models.Account.InstitutionAccount>
+internal class GetHandler(IQueryable<Domain.Entities.Account.InstitutionAccount> accounts, User user, ISecurity security, ICurrencyConverter currencyConverter) : IQueryHandler<Get, Models.Account.InstitutionAccount>
 {
     public async ValueTask<Models.Account.InstitutionAccount> Handle(Get request, CancellationToken cancellationToken)
     {
@@ -19,7 +19,7 @@ internal class GetHandler(IQueryable<Domain.Entities.Account.InstitutionAccount>
 
         security.AssertAccountPermission(entity);
 
-        var account = entity.ToModelWithAccountGroup(accountHolder, currencyConverter);
+        var account = entity.ToModelWithAccountGroup(user, currencyConverter);
 
         return account!;
     }

@@ -9,23 +9,23 @@ namespace Asm.MooBank.Modules.Accounts.Commands.InstitutionAccount;
 
 public record Update(Models.Account.InstitutionAccount Account) : ICommand<Models.Account.InstitutionAccount>;
 
-internal class UpdateHandler(IUnitOfWork unitOfWork, IInstitutionAccountRepository accountRepository, User accountHolder, ICurrencyConverter currencyConverter, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Update, Models.Account.InstitutionAccount>
+internal class UpdateHandler(IUnitOfWork unitOfWork, IInstitutionAccountRepository accountRepository, User user, ICurrencyConverter currencyConverter, ISecurity security) :  ICommandHandler<Update, Models.Account.InstitutionAccount>
 {
     public async ValueTask<Models.Account.InstitutionAccount> Handle(Update command, CancellationToken cancellationToken)
     {
         command.Deconstruct(out var account);
 
-        Security.AssertAccountPermission(account.Id);
+        security.AssertAccountPermission(account.Id);
         if (account.GroupId != null)
         {
-            Security.AssertAccountGroupPermission(account.GroupId.Value);
+            security.AssertAccountGroupPermission(account.GroupId.Value);
         }
 
         var entity = await accountRepository.Get(account.Id, new AccountDetailsSpecification(), cancellationToken);
 
         entity.Name = account.Name;
         entity.Description = account.Description;
-        entity.SetAccountGroup(account.GroupId, AccountHolder.Id);
+        entity.SetAccountGroup(account.GroupId, user.Id);
         entity.AccountType = account.AccountType;
         entity.ShareWithFamily = account.ShareWithFamily;
         entity.InstitutionId = account.InstitutionId;
@@ -50,7 +50,7 @@ internal class UpdateHandler(IUnitOfWork unitOfWork, IInstitutionAccountReposito
             }
         }
 
-        await UnitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return entity.ToModel(currencyConverter);
     }

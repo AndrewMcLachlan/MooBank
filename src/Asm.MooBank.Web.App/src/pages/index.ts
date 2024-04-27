@@ -1,5 +1,5 @@
 export * from "./accounts";
-export * from "./accountHolder";
+export * from "./user";
 export * from "./groups";
 export * from "./assets";
 export * from "./budget";

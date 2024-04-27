@@ -6,11 +6,11 @@ namespace Asm.MooBank.Modules.Budgets.Queries;
 
 public record Get(short Year) : IQuery<Budget?>;
 
-internal class GetHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, User accountHolder, ICommandDispatcher commandDispatcher) : IQueryHandler<Get, Budget?>
+internal class GetHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, User user, ICommandDispatcher commandDispatcher) : IQueryHandler<Get, Budget?>
 {
     public async ValueTask<Budget?> Handle(Get query, CancellationToken cancellationToken)
     {
-        var familyId = accountHolder.FamilyId;
+        var familyId = user.FamilyId;
 
         var entity = await budgets.Include(b => b.Lines).ThenInclude(b => b.Tag).Where(b => b.FamilyId == familyId && b.Year == query.Year).SingleOrDefaultAsync(cancellationToken);
 

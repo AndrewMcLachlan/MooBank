@@ -6,11 +6,11 @@ namespace Asm.MooBank.Modules.Users.Commands;
 
 internal record Update(UpdateAccountHolder AccountHolder) : ICommand<AccountHolder>;
 
-internal class UpdateHandler(IUnitOfWork unitOfWork, IAccountHolderRepository repository, MooBank.Models.User accountHolder) : ICommandHandler<Update, AccountHolder>
+internal class UpdateHandler(IUnitOfWork unitOfWork, IAccountHolderRepository repository, MooBank.Models.User user) : ICommandHandler<Update, AccountHolder>
 {
     public async ValueTask<AccountHolder> Handle(Update command, CancellationToken cancellationToken)
     {
-        var entity = await repository.Get(accountHolder.Id, new GetWithCards(), cancellationToken);
+        var entity = await repository.Get(user.Id, new GetWithCards(), cancellationToken);
 
         entity.Currency = command.AccountHolder.Currency;
         entity.PrimaryAccountId = command.AccountHolder.PrimaryAccountId;
@@ -31,7 +31,7 @@ internal class UpdateHandler(IUnitOfWork unitOfWork, IAccountHolderRepository re
         {
             entity.Cards.Add(command.AccountHolder.Cards.Select(c => new Domain.Entities.AccountHolder.AccountHolderCard
             {
-                AccountHolderId = accountHolder.Id,
+                AccountHolderId = user.Id,
                 Name = c.Name,
                 Last4Digits = c.Last4Digits,
             }).Single(c => c.Last4Digits == card));
