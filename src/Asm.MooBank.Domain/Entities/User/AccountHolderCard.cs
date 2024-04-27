@@ -1,4 +1,4 @@
-﻿namespace Asm.MooBank.Domain.Entities.AccountHolder;
+﻿namespace Asm.MooBank.Domain.Entities.User;
 public class AccountHolderCard
 {
     public required Guid AccountHolderId { get; set; }

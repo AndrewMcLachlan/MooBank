@@ -1,8 +1,10 @@
-﻿namespace Asm.MooBank.Modules.Users.Queries;
+﻿using Asm.MooBank.Domain.Entities.User;
+
+namespace Asm.MooBank.Modules.Users.Queries;
 
 internal record Get() : IQuery<Models.AccountHolder>;
 
-internal class GetHandler(IQueryable<Domain.Entities.AccountHolder.User> accountHolders, MooBank.Models.User user) : IQueryHandler<Get, Models.AccountHolder>
+internal class GetHandler(IQueryable<User> accountHolders, MooBank.Models.User user) : IQueryHandler<Get, Models.AccountHolder>
 {
     public async ValueTask<Models.AccountHolder> Handle(Get query, CancellationToken cancellationToken)
     {

@@ -2,10 +2,10 @@
 using System.Reflection;
 using Asm.Domain.Infrastructure;
 using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Domain.Entities.AccountHolder;
 using Asm.MooBank.Domain.Entities.Group;
 using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Domain.Entities.Tag;
+using Asm.MooBank.Domain.Entities.User;
 using MediatR;
 
 namespace Asm.MooBank.Infrastructure;

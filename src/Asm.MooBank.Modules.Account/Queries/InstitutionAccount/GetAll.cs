@@ -1,6 +1,5 @@
 ﻿using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Accounts.Models.Account;
-using Asm.MooBank.Queries;
 using Asm.MooBank.Services;
 using DomainInstitutionAccount = Asm.MooBank.Domain.Entities.Account.InstitutionAccount;
 

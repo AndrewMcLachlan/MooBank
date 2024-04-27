@@ -9,7 +9,7 @@ public partial class InstrumentOwner
 
     public virtual Instrument Instrument { get; set; } = null!;
 
-    public virtual AccountHolder.User User { get; set; } = null!;
+    public virtual User.User User { get; set; } = null!;
 
     public virtual Group.Group? Group { get; set; }
 }

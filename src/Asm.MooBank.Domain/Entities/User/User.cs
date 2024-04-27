@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Asm.MooBank.Domain.Entities.AccountHolder;
+namespace Asm.MooBank.Domain.Entities.User;
 
 [AggregateRoot]
 public partial class User(Guid id) : KeyedEntity<Guid>(id)

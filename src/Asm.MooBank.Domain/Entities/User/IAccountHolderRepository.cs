@@ -1,4 +1,4 @@
-﻿namespace Asm.MooBank.Domain.Entities.AccountHolder;
+﻿namespace Asm.MooBank.Domain.Entities.User;
 
 public interface IAccountHolderRepository : IRepository<User, Guid>
 {

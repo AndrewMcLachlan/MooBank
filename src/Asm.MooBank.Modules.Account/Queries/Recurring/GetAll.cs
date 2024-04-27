@@ -1,6 +1,5 @@
 ﻿using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Accounts.Models.Recurring;
-using Asm.MooBank.Queries;
 
 namespace Asm.MooBank.Modules.Accounts.Queries.Recurring;
 

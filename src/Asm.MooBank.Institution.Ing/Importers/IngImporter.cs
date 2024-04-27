@@ -1,8 +1,8 @@
 ﻿using System.Globalization;
 using System.Threading;
 using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Domain.Entities.AccountHolder;
 using Asm.MooBank.Domain.Entities.Transactions;
+using Asm.MooBank.Domain.Entities.User;
 using Asm.MooBank.Importers;
 using Asm.MooBank.Institution.Ing.Domain;
 using Asm.MooBank.Institution.Ing.Models;

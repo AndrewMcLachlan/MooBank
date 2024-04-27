@@ -1,5 +1,5 @@
-﻿using Asm.MooBank.Domain.Entities.AccountHolder;
-using Asm.MooBank.Domain.Entities.AccountHolder.Specifications;
+﻿using Asm.MooBank.Domain.Entities.User;
+using Asm.MooBank.Domain.Entities.User.Specifications;
 using Asm.MooBank.Modules.Users.Models;
 
 namespace Asm.MooBank.Modules.Users.Commands;
@@ -29,7 +29,7 @@ internal class UpdateHandler(IUnitOfWork unitOfWork, IAccountHolderRepository re
 
         foreach (var card in add)
         {
-            entity.Cards.Add(command.AccountHolder.Cards.Select(c => new Domain.Entities.AccountHolder.AccountHolderCard
+            entity.Cards.Add(command.AccountHolder.Cards.Select(c => new Domain.Entities.User.AccountHolderCard
             {
                 AccountHolderId = user.Id,
                 Name = c.Name,

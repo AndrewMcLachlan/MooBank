@@ -16,5 +16,5 @@ public class Family : KeyedEntity<Guid>
 
     public string Name { get; set; } = null!;
 
-    public virtual ICollection<AccountHolder.User> AccountHolders { get; set; } = new List<AccountHolder.User>();
+    public virtual ICollection<User.User> AccountHolders { get; set; } = new List<User.User>();
 }

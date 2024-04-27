@@ -1,6 +1,5 @@
 ﻿using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Stocks.Models;
-using Asm.MooBank.Queries;
 
 namespace Asm.MooBank.Modules.Stocks.Queries;
 

@@ -2,7 +2,6 @@
 using Asm.Domain.Infrastructure;
 using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Group;
-using Asm.MooBank.Domain.Entities.AccountHolder;
 using Asm.MooBank.Domain.Entities.Asset;
 using Asm.MooBank.Domain.Entities.Budget;
 using Asm.MooBank.Domain.Entities.Family;
@@ -18,6 +17,7 @@ using Asm.MooBank.Infrastructure.Repositories;
 using Asm.MooBank.Security;
 using LazyCache;
 using Microsoft.Extensions.Configuration;
+using Asm.MooBank.Domain.Entities.User;
 
 namespace Microsoft.Extensions.DependencyInjection;
 

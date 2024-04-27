@@ -1,8 +1,7 @@
-﻿using Asm.MooBank.Domain.Entities.Transactions;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 
-namespace Asm.MooBank.Queries.Transactions;
+namespace Asm.MooBank.Domain.Entities.Transactions;
 
 public static class IQueryableExtensions
 {
@@ -12,10 +11,10 @@ public static class IQueryableExtensions
     public static IIncludableQueryable<Transaction, Transaction> IncludeOffsets(this IQueryable<Transaction> query) =>
         query.Include(t => t.Splits).ThenInclude(ts => ts.OffsetBy).ThenInclude(to => to.OffsetByTransaction).Include(t => t.OffsetFor).ThenInclude(t => t.TransactionSplit).ThenInclude(t => t.Transaction);
 
-    public static IIncludableQueryable<Transaction, ICollection<Domain.Entities.Tag.Tag>> IncludeTags(this IQueryable<Transaction> query) =>
+    public static IIncludableQueryable<Transaction, ICollection<Tag.Tag>> IncludeTags(this IQueryable<Transaction> query) =>
         query.Include(t => t.Splits).ThenInclude(ts => ts.Tags);
 
-    public static IIncludableQueryable<Transaction, ICollection<Domain.Entities.Tag.Tag>> IncludeTagsAndSubTags(this IQueryable<Transaction> query) =>
+    public static IIncludableQueryable<Transaction, ICollection<Tag.Tag>> IncludeTagsAndSubTags(this IQueryable<Transaction> query) =>
         query.IncludeTags().ThenInclude(t => t.Tags);
 
     // Not parsable by EF Core

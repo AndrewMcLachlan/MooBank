@@ -1,7 +1,7 @@
 ﻿using Asm.Domain;
 using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Domain.Entities.AccountHolder;
 using Asm.MooBank.Domain.Entities.ReferenceData;
+using Asm.MooBank.Domain.Entities.User;
 using Asm.MooBank.ExchangeRateApi;
 
 namespace Asm.MooBank.Services;

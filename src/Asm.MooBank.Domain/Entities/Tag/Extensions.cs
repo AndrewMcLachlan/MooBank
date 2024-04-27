@@ -1,6 +1,4 @@
-﻿using Asm.MooBank.Domain.Entities.Tag;
-
-namespace System.Linq;
+﻿namespace Asm.MooBank.Domain.Entities.Tag;
 public static class Extensions
 {
     public static IEnumerable<Tag> IncludedInReporting(this IEnumerable<Tag> tags) =>

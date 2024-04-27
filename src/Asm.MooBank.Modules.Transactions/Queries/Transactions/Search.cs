@@ -1,7 +1,6 @@
 ﻿using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Modules.Transactions.Models.Extensions;
 using Asm.MooBank.Modules.Transactions.Queries.Transactions;
-using Asm.MooBank.Queries.Transactions;
 
 namespace Asm.MooBank.Modules.Transactions.Queries.Transactions;
 

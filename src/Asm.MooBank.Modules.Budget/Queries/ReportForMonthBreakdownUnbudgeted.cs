@@ -1,4 +1,5 @@
-﻿using Asm.MooBank.Domain.Entities.TagRelationships;
+﻿using Asm.MooBank.Domain.Entities.Tag;
+using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Domain.Entities.Transactions.Specifications;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Budgets.Models;

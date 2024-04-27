@@ -1,4 +1,6 @@
-﻿namespace Asm.MooBank.Modules.Users.Models;
+﻿using Asm.MooBank.Domain.Entities.User;
+
+namespace Asm.MooBank.Modules.Users.Models;
 
 public record AccountHolder : MooBank.Models.User
 {
@@ -7,7 +9,7 @@ public record AccountHolder : MooBank.Models.User
 
 public static class AccountHolderExtensions
 {
-    public static AccountHolder ToModel(this Domain.Entities.AccountHolder.User user)
+    public static AccountHolder ToModel(this User user)
     {
         return new AccountHolder
         {
