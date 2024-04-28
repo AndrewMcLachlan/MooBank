@@ -3,7 +3,7 @@ import { Button, Form, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { NewAsset, emptyAsset } from "../../models";
 
-import { Page, emptyGuid } from "@andrewmclachlan/mooapp";
+import { Page } from "@andrewmclachlan/mooapp";
 import { useGroups, useCreateAsset } from "services";
 
 export const CreateAsset: React.FC = () => {
@@ -15,7 +15,6 @@ export const CreateAsset: React.FC = () => {
 
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
-    //const [quantity, setQuantity] = useState(0);
     const [purchasePrice, setPurchasePrice] = useState(0);
     const [currentValue, setCurrentValue] = useState(0);
     const [groupId, setGroupId] = useState("");
@@ -70,13 +69,6 @@ export const CreateAsset: React.FC = () => {
                         <Form.Control type="number" required value={currentValue.toString()} onChange={(e: any) => setCurrentValue(e.currentTarget.value)} />
                     </InputGroup>
                 </Form.Group>
-                {/* <Form.Group controlId="quantity" >
-                    <Form.Label>Brokerage Fees</Form.Label>
-                    <InputGroup>
-                        <InputGroup.Text>$</InputGroup.Text>
-                        <Form.Control type="number" required value={fees.toString()} onChange={(e: any) => setFees(e.currentTarget.value)} />
-                    </InputGroup>
-                </Form.Group> */}
                 <Form.Group controlId="group">
                     <Form.Label>Group</Form.Label>
                     <Form.Control as="select" value={groupId} onChange={(e: any) => setGroupId(e.currentTarget.value)}>

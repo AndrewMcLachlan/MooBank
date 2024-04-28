@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Asm.MooBank.Modules.Stocks.Commands.Transactions;
 
-public record Create(Guid InstrumentId, int Quantity, decimal Price, decimal Fees, DateTime Date) : InstrumentIdCommand(InstrumentId), ICommand<StockTransaction>
+public record Create(Guid InstrumentId, int Quantity, decimal Price, decimal Fees, string Description, DateTime Date) : InstrumentIdCommand(InstrumentId), ICommand<StockTransaction>
 {
     public static ValueTask<Create> BindAsync(HttpContext httpContext) => BindHelper.BindWithInstrumentIdAsync<Create>("stockHoldingId", httpContext);
 }
@@ -18,7 +18,6 @@ internal class CreateHandler(IStockHoldingRepository stockHoldingRepository, IUn
         await security.AssertInstrumentPermissionAsync(command.InstrumentId, cancellationToken);
 
         var stockHolding = await stockHoldingRepository.Get(command.InstrumentId, cancellationToken);
-            //stockHoldings.SingleOrDefaultAsync(s => s.Id == command.InstrumentId, cancellationToken) ?? throw new NotFoundException();
 
         var transaction = new Domain.Entities.Transactions.StockTransaction(Guid.Empty)
         {
@@ -26,6 +25,7 @@ internal class CreateHandler(IStockHoldingRepository stockHoldingRepository, IUn
             Quantity = command.Quantity,
             Price = command.Price,
             Fees = command.Fees,
+            Description = command.Description,
             TransactionDate = command.Date,
             TransactionType = command.Quantity > 0 ? TransactionType.Credit : TransactionType.Debit,
         };
