@@ -1,12 +1,12 @@
 using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Modules.Account.Commands.InstitutionAccount;
+using Asm.MooBank.Modules.Accounts.Commands.InstitutionAccount;
 
 namespace Asm.MooBank.Modules.Tests.Account.Commands.InstitutionAccount;
 
 [Binding]
-internal class UpdateStepDefinitions(ScenarioInput<Modules.Account.Models.Account.InstitutionAccount> input, ScenarioResult<Exception> exceptionResult) : StepDefinitionBase
+internal class UpdateStepDefinitions(ScenarioInput<Accounts.Models.Account.InstitutionAccount> input, ScenarioResult<Exception> exceptionResult) : StepDefinitionBase
 {
-    private Modules.Account.Models.Account.InstitutionAccount _result;
+    private Accounts.Models.Account.InstitutionAccount _result;
 
     [Given(@"I have a request to update an institution account")]
     public void GivenIHaveARequestToUpdateAnInstitutionAccount()
@@ -34,7 +34,6 @@ internal class UpdateStepDefinitions(ScenarioInput<Modules.Account.Models.Accoun
                 //ImportAccount = Models.Account.ImportAccount,
                 IncludeInBudget = Models.Account.IncludeInBudget,
                 //Institution = Models.Account.Institution,
-                IncludeInPosition = Models.Account.IncludeInPosition,
                 InstitutionId = Models.Account.InstitutionId,
                 LastTransaction = Models.Account.LastTransaction,
                 //LastUpdated = Models.Account.LastUpdated,
@@ -45,7 +44,7 @@ internal class UpdateStepDefinitions(ScenarioInput<Modules.Account.Models.Accoun
                 //VirtualAccounts = Models.Account.VirtualAccounts,
             });
 
-        UpdateHandler updateHandler = new UpdateHandler(Mocks.UnitOfWorkMock.Object, institutionAccountRepositoryMock.Object, Models.AccountHolder, Mocks.CurrencyConverterMock.Object, Mocks.SecurityMock.Object);
+        UpdateHandler updateHandler = new(Mocks.UnitOfWorkMock.Object, institutionAccountRepositoryMock.Object, Models.AccountHolder, Mocks.CurrencyConverterMock.Object, Mocks.SecurityMock.Object);
 
         Update command = new(input.Value);
 

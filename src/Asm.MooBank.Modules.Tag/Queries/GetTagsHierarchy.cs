@@ -1,27 +1,19 @@
 ﻿using Asm.MooBank.Models;
-using Asm.MooBank.Queries;
+using Asm.MooBank.Modules.Tags.Models;
 using Microsoft.EntityFrameworkCore.Query;
 using TransactionTagEntity = Asm.MooBank.Domain.Entities.Tag.Tag;
 
-namespace Asm.MooBank.Modules.Tag.Queries;
+namespace Asm.MooBank.Modules.Tags.Queries;
 
 public record GetTagsHierarchy : IQuery<TagHierarchy>;
 
-internal class GetTagsHierarchyHandler : QueryHandlerBase, IQueryHandler<GetTagsHierarchy, TagHierarchy>
+internal class GetTagsHierarchyHandler(IQueryable<TransactionTagEntity> tags, User user) : IQueryHandler<GetTagsHierarchy, TagHierarchy>
 {
-    private readonly IQueryable<TransactionTagEntity> _tags;
-
-
-    public GetTagsHierarchyHandler(IQueryable<TransactionTagEntity> tags, AccountHolder accountHolder) : base(accountHolder)
-    {
-        _tags = tags;
-    }
-
     public async ValueTask<TagHierarchy> Handle(GetTagsHierarchy request, CancellationToken cancellationToken)
     {
         const int maxLevels = 5;
 
-        IIncludableQueryable<TransactionTagEntity, IEnumerable<TransactionTagEntity>> query = _tags.Where(t => t.FamilyId == AccountHolder.FamilyId && !t.Deleted && !t.TaggedTo.Any()).Include(t => t.Tags.Where(t => !t.Deleted));
+        IIncludableQueryable<TransactionTagEntity, IEnumerable<TransactionTagEntity>> query = tags.Where(t => t.FamilyId == user.FamilyId && !t.Deleted && t.TaggedTo.Count != 0).Include(t => t.Tags.Where(t => !t.Deleted));
 
         for (int i = 0; i < maxLevels; i++)
         {
@@ -29,11 +21,11 @@ internal class GetTagsHierarchyHandler : QueryHandlerBase, IQueryHandler<GetTags
         }
 
 
-        var tags = await query.ToListAsync(cancellationToken).ToHierarchyModelAsync(cancellationToken);
+        var tags1 = await query.ToListAsync(cancellationToken).ToHierarchyModelAsync(cancellationToken);
 
-        var tagLevel = tags;
+        var tagLevel = tags1;
 
-        Dictionary<int, int> levels = new();
+        Dictionary<int, int> levels = [];
 
         for (int i = 1; i <= maxLevels; i++)
         {
@@ -44,7 +36,7 @@ internal class GetTagsHierarchyHandler : QueryHandlerBase, IQueryHandler<GetTags
         return new()
         {
             Levels = levels,
-            Tags = tags,
+            Tags = tags1,
         };
     }
 }

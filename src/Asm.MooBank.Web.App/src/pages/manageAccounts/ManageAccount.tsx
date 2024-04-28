@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Form, Button, Table } from "react-bootstrap";
-import { AccountController, AccountType } from "models";
+import { Controller, AccountType } from "models";
 import { ImportSettings } from "../createAccount/ImportSettings";
 import * as Models from "models";
-import { useAccountGroups, useInstitutions, useReprocessTransactions, useUpdateAccount, useVirtualAccounts } from "services";
+import { useGroups, useInstitutions, useReprocessTransactions, useUpdateAccount, useVirtualAccounts } from "services";
 import { useNavigate } from "react-router-dom";
 import { IconButton, Section, useIdParams } from "@andrewmclachlan/mooapp";
 import { AccountPage, CurrencySelector, useAccount } from "components";
 
 export const ManageAccount = () => {
 
-    const { data: accountGroups } = useAccountGroups();
+    const { data: groups } = useGroups();
     const { data: institutions } = useInstitutions();
     const reprocessTransactions = useReprocessTransactions();
 
@@ -41,7 +41,7 @@ export const ManageAccount = () => {
         updateAccount(account);
     }
 
-    const getActions = (accountController: AccountController) => {
+    const getActions = (accountController: Controller) => {
 
         const actions = [<IconButton key="nva" onClick={() => navigate(`/accounts/${id}/manage/virtual/create`)} icon="plus">New Virtual Account</IconButton>];
 
@@ -54,9 +54,9 @@ export const ManageAccount = () => {
 
     const setName = (name: string) => setAccount({ ...account, name: name });
     const setDescription = (description: string) => setAccount({ ...account, description: description });
-    const setAccountGroupId = (accountGroupId: string) => setAccount({ ...account, accountGroupId: accountGroupId });
+    const setGroupId = (groupId: string) => setAccount({ ...account, groupId: groupId });
     const setAccountType = (accountType: AccountType) => setAccount({ ...account, accountType: accountType });
-    const setAccountController = (accountController: AccountController) => setAccount({ ...account, controller: accountController });
+    const setAccountController = (accountController: Controller) => setAccount({ ...account, controller: accountController });
     const setImporterTypeId = (importerTypeId: number) => setAccount({ ...account, importerTypeId: importerTypeId });
     const setShareWithFamily = (shareWithFamily: boolean) => setAccount({ ...account, shareWithFamily: shareWithFamily });
     const setInstitution = (institutionId: number) => setAccount({ ...account, institutionId: institutionId });
@@ -91,11 +91,11 @@ export const ManageAccount = () => {
                                     )}
                                 </Form.Select>
                             </Form.Group>
-                            <Form.Group controlId="accountGroup" >
+                            <Form.Group controlId="group" >
                                 <Form.Label>Group</Form.Label>
-                                <Form.Select value={account.accountGroupId} onChange={(e: any) => setAccountGroupId(e.currentTarget.value)}>
+                                <Form.Select value={account.groupId} onChange={(e: any) => setGroupId(e.currentTarget.value)}>
                                     <option value="" />
-                                    {accountGroups?.map(a =>
+                                    {groups?.map(a =>
                                         <option value={a.id} key={a.id}>{a.name}</option>
                                     )}
                                 </Form.Select>
@@ -110,8 +110,8 @@ export const ManageAccount = () => {
                             </Form.Group>
                             <Form.Group controlId="AccountController">
                                 <Form.Label>Controller</Form.Label>
-                                <Form.Select value={account.controller} onChange={(e: any) => setAccountController(e.currentTarget.value as AccountController)}>
-                                    {Models.AccountControllers.map(a =>
+                                <Form.Select value={account.controller} onChange={(e: any) => setAccountController(e.currentTarget.value as Controller)}>
+                                    {Models.Controllers.map(a =>
                                         <option value={a} key={a}>{a}</option>
                                     )}
                                 </Form.Select>

@@ -1,21 +1,23 @@
-﻿
-using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Domain.Entities.AccountGroup;
+﻿using Asm.MooBank.Domain.Entities.Group;
+using Asm.MooBank.Domain.Entities.Instrument;
 
 namespace Asm.MooBank.Security;
 
 public interface ISecurity
 {
-    void AssertAccountPermission(Guid accountId);
-    void AssertAccountPermission(Account account);
+    void AssertInstrumentPermission(Guid instrumentId);
 
-    void AssertAccountGroupPermission(Guid accountGroupId);
-    void AssertAccountGroupPermission(AccountGroup accountGroup);
+    Task AssertInstrumentPermissionAsync(Guid instrumentId, CancellationToken cancellationToken);
+
+    void AssertInstrumentPermission(Instrument instrument);
+
+    void AssertGroupPermission(Guid groupId);
+    void AssertGroupPermission(Group group);
 
     Task AssertFamilyPermission(Guid familyId);
 
     Task AssertBudgetLinePermission(Guid id, CancellationToken cancellationToken = default);
-    Task<IEnumerable<Guid>> GetAccountIds(CancellationToken cancellationToken = default);
+    Task<IEnumerable<Guid>> GetInstrumentIds(CancellationToken cancellationToken = default);
 
     Task AssertAdministrator(CancellationToken cancellationToken = default);
 }

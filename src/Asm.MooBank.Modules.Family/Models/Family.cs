@@ -1,15 +1,15 @@
 ﻿using Asm.MooBank.Models;
 using Asm.MooBank.Models.Extensions;
-using Asm.MooBank.Modules.Family.Models;
+using Asm.MooBank.Modules.Families.Models;
 
-namespace Asm.MooBank.Modules.Family.Models;
+namespace Asm.MooBank.Modules.Families.Models;
 public record Family : IIdentifiable<Guid>
 {
     public Guid Id { get; set; }
 
     public required string Name { get; set; }
 
-    public IEnumerable<AccountHolder> Members { get; set; } = Enumerable.Empty<AccountHolder>();
+    public IEnumerable<User> Members { get; set; } = Enumerable.Empty<User>();
 }
 
 public static class FamilyExtensions

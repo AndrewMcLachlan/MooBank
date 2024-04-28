@@ -14,26 +14,26 @@ export const AccountRow: React.FC<AccountRowProps> = (props) => {
 
     const { onRowClick } = useAccountRowCommonState(props);
 
-    const [showVirtualAccounts, setShowVirtualAccounts] = useState<boolean>(localStorage.getItem(`account|${MD5(props.account.id)}`) === "true");
+    const [showVirtualAccounts, setShowVirtualAccounts] = useState<boolean>(localStorage.getItem(`account|${MD5(props.instrument.id)}`) === "true");
 
-    const showVirtualAccountsClick = (e: React.MouseEvent<HTMLTableDataCellElement>) => {
+    const showVirtualAccountsClick = (e: React.MouseEvent<HTMLTableCellElement>) => {
         e.preventDefault();
         e.stopPropagation();
         setShowVirtualAccounts(!showVirtualAccounts);
 
-        localStorage.setItem(`account|${MD5(props.account.id)}`, (!showVirtualAccounts).toString());
+        localStorage.setItem(`account|${MD5(props.instrument.id)}`, (!showVirtualAccounts).toString());
     }
 
     return (
         <>
             <tr onClick={onRowClick} className="clickable">
-                <td className="d-none d-sm-table-cell" onClick={showVirtualAccountsClick}>{props.account.virtualAccounts && props.account.virtualAccounts.length > 0 && <FontAwesomeIcon icon={showVirtualAccounts ? "chevron-down" : "chevron-right"} />}</td>
-                <td>{props.account.name}</td>
-                <td className="d-none d-sm-table-cell">{props.account.accountType}</td>
-                <td className={classNames("amount", "number", numberClassName(props.account.currentBalance))}>{getBalanceString(props.account.currentBalanceLocalCurrency)}</td>
+                <td className="d-none d-sm-table-cell" onClick={showVirtualAccountsClick}>{props.instrument.virtualInstruments && props.instrument.virtualInstruments.length > 0 && <FontAwesomeIcon icon={showVirtualAccounts ? "chevron-down" : "chevron-right"} />}</td>
+                <td>{props.instrument.name}</td>
+                <td className="d-none d-sm-table-cell">{props.instrument.instrumentType}</td>
+                <td className={classNames("amount", "number", numberClassName(props.instrument.currentBalance))}>{getBalanceString(props.instrument.currentBalanceLocalCurrency)}</td>
             </tr>
-            {showVirtualAccounts && props.account.virtualAccounts &&
-                props.account.virtualAccounts.map(va => <VirtualAccountRow key={va.id} accountId={props.account.id} account={va} />)
+            {showVirtualAccounts && props.instrument.virtualInstruments &&
+                props.instrument.virtualInstruments.map(va => <VirtualAccountRow key={va.id} accountId={props.instrument.id} account={va} />)
             }
         </>
     );
@@ -42,7 +42,7 @@ export const AccountRow: React.FC<AccountRowProps> = (props) => {
 AccountRow.displayName = "AccountRow";
 
 export interface AccountRowProps {
-    account: Models.InstitutionAccount;
+    instrument: Models.Instrument;
 }
 
 export const useAccountRowCommonState = (props: AccountRowProps) => {
@@ -51,15 +51,15 @@ export const useAccountRowCommonState = (props: AccountRowProps) => {
 
     const onRowClick = () => {
 
-        switch (props.account.accountType) {
+        switch (props.instrument.instrumentType) {
             case "Asset":
-                navigate(`/assets/${props.account.id}`);
+                navigate(`/assets/${props.instrument.id}`);
                 break;
             case "Shares":
-                navigate(`/shares/${props.account.id}`);
+                navigate(`/shares/${props.instrument.id}`);
                 break;
             default:
-                navigate(`/accounts/${props.account.id}`);
+                navigate(`/accounts/${props.instrument.id}`);
                 break;
         }
     };

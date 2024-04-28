@@ -18,7 +18,7 @@ internal class GetInOutTrendReportHandler : IQueryHandler<GetInOutTrendReport, I
 
     public async ValueTask<InOutTrendReport> Handle(GetInOutTrendReport request, CancellationToken cancellationToken)
     {
-        _securityRepository.AssertAccountPermission(request.AccountId);
+        _securityRepository.AssertInstrumentPermission(request.AccountId);
 
         var groupedQuery = await _transactions.WhereByReportQuery(request).ExcludeOffset().GroupBy(t => t.TransactionType).ToListAsync(cancellationToken);
 

@@ -1,16 +1,16 @@
 ﻿using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Family.Models;
+using Asm.MooBank.Modules.Families.Models;
 
-namespace Asm.MooBank.Modules.Family.Queries;
+namespace Asm.MooBank.Modules.Families.Queries;
 
-public record Get(Guid Id) : IQuery<Models.Family>;
+public record Get(Guid Id) : IQuery<Family>;
 
-internal class GetHandler(IQueryable<Domain.Entities.Family.Family> families, ISecurity security) : IQueryHandler<Get, Models.Family>
+internal class GetHandler(IQueryable<Domain.Entities.Family.Family> families, ISecurity security) : IQueryHandler<Get, Family>
 {
     private readonly IQueryable<Domain.Entities.Family.Family> _families = families;
     private readonly ISecurity _security = security;
 
-    public async ValueTask<Models.Family> Handle(Get query, CancellationToken cancellationToken)
+    public async ValueTask<Family> Handle(Get query, CancellationToken cancellationToken)
     {
         await _security.AssertAdministrator(cancellationToken);
 

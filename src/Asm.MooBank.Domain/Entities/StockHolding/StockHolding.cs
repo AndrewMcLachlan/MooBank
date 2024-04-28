@@ -1,20 +1,24 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using Asm.MooBank.Domain.Entities.Account;
+using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Transactions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.StockHolding;
 
 [AggregateRoot]
-public class StockHolding(Guid id) : Account.Account(id)
+public class StockHolding(Guid id) : Instrument.Instrument(id)
 {
     public StockSymbol Symbol { get; set; } = null!;
 
     public int Quantity { get; set; }
 
+    [Precision(12, 4)]
     public decimal CurrentPrice { get; set; }
 
+    [Precision(12, 4)]
     public decimal CurrentValue { get; set; }
 
+    [Precision(12, 4)]
     public decimal GainLoss { get; set; }
 
     public new DateTimeOffset LastUpdated { get; set; } = DateTimeOffset.Now;
@@ -22,17 +26,17 @@ public class StockHolding(Guid id) : Account.Account(id)
     public ICollection<StockTransaction> Transactions { get; set; } = [];
 
     [NotMapped]
-    public IEnumerable<AccountAccountViewer> ValidAccountViewers
+    public IEnumerable<InstrumentViewer> ValidAccountViewers
     {
         get
         {
             if (!ShareWithFamily) return [];
-            var familyIds = base.AccountHolders.Select(a => a.AccountHolder.FamilyId).Distinct();
-            return AccountViewers.Where(a => familyIds.Contains(a.AccountHolder.FamilyId));
+            var familyIds = base.Owners.Select(a => a.User.FamilyId).Distinct();
+            return Viewers.Where(a => familyIds.Contains(a.User.FamilyId));
         }
     }
 
-    public override AccountGroup.AccountGroup? GetAccountGroup(Guid accountHolderId) =>
-        base.GetAccountGroup(accountHolderId) ??
-        ValidAccountViewers.Where(a => a.AccountHolderId == accountHolderId).Select(aah => aah.AccountGroup).SingleOrDefault();
+    public override Group.Group? GetGroup(Guid accountHolderId) =>
+        base.GetGroup(accountHolderId) ??
+        ValidAccountViewers.Where(a => a.UserId == accountHolderId).Select(aah => aah.Group).SingleOrDefault();
 }

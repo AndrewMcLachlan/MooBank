@@ -2,9 +2,9 @@
 
 namespace Asm.MooBank.Infrastructure.EntityConfigurations;
 
-public class Rule : IEntityTypeConfiguration<Domain.Entities.Account.Rule>
+public class Rule : IEntityTypeConfiguration<Domain.Entities.Instrument.Rule>
 {
-    public void Configure(EntityTypeBuilder<Domain.Entities.Account.Rule> entity)
+    public void Configure(EntityTypeBuilder<Domain.Entities.Instrument.Rule> entity)
     {
         entity.HasKey(t => t.Id);
 
@@ -34,7 +34,7 @@ public class Rule : IEntityTypeConfiguration<Domain.Entities.Account.Rule>
 
         entity.HasOne(e => e.Account)
                     .WithMany(e => e.Rules)
-                    .HasForeignKey(e => e.AccountId);
+                    .HasForeignKey(e => e.InstrumentId);
 
     }
 }

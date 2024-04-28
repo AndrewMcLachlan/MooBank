@@ -1,14 +1,14 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
-using Asm.MooBank.Modules.Stock.Models;
-using Asm.MooBank.Modules.Stock.Queries.StockTransactions;
-using PagedResult = Asm.PagedResult<Asm.MooBank.Modules.Stock.Models.StockTransaction>;
+using Asm.MooBank.Modules.Stocks.Models;
+using Asm.MooBank.Modules.Stocks.Queries.StockTransactions;
+using PagedResult = Asm.PagedResult<Asm.MooBank.Modules.Stocks.Models.StockTransaction>;
 
-namespace Asm.MooBank.Modules.Stock.Queries.StockTransactions;
+namespace Asm.MooBank.Modules.Stocks.Queries.StockTransactions;
 
 public sealed record Get : IQuery<PagedResult>
 {
-    public required Guid AccountId { get; init; }
+    public required Guid StockHoldingId { get; init; }
 
     public string? Filter { get; init; }
 
@@ -29,7 +29,7 @@ internal class GetHandler(IQueryable<Domain.Entities.Transactions.StockTransacti
 {
     public async ValueTask<PagedResult> Handle(Get query, CancellationToken cancellationToken)
     {
-        security.AssertAccountPermission(query.AccountId);
+        security.AssertInstrumentPermission(query.StockHoldingId);
 
         var total = await transactions.Where(query).CountAsync(cancellationToken);
 
@@ -51,12 +51,12 @@ file static class IQueryableExtensions
 
     static IQueryableExtensions()
     {
-        TransactionProperties = typeof(Models.StockTransaction).GetProperties();
+        TransactionProperties = typeof(StockTransaction).GetProperties();
     }
 
     public static IQueryable<Domain.Entities.Transactions.StockTransaction> Where(this IQueryable<Domain.Entities.Transactions.StockTransaction> queryable, Get query)
     {
-        var result = queryable.Where(t => t.AccountId == query.AccountId);
+        var result = queryable.Where(t => t.AccountId == query.StockHoldingId);
 
         result = result.Where(t => (query.Start == null || t.TransactionDate >= query.Start) && (query.End == null || t.TransactionDate <= query.End));
 
@@ -70,7 +70,7 @@ file static class IQueryableExtensions
             PropertyInfo? property = TransactionProperties.SingleOrDefault(p => p.Name.Equals(field, StringComparison.OrdinalIgnoreCase)) ?? throw new ArgumentException($"Unknown field {field}", nameof(field));
 
             // Hiding implementation details from the front-end
-            if (field == "AccountHolder") field = "AccountHolder.FirstName";
+            if (field == "User") field = "User.FirstName";
 
             ParameterExpression param = Expression.Parameter(typeof(Domain.Entities.Transactions.StockTransaction), String.Empty);
 

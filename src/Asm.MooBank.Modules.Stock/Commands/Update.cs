@@ -1,13 +1,14 @@
 ﻿using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.StockHolding;
 using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Stock.Models;
+using Asm.MooBank.Modules.Stocks.Models;
+using Asm.MooBank.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Asm.MooBank.Modules.Stock.Commands;
+namespace Asm.MooBank.Modules.Stocks.Commands;
 public sealed record Update : ICommand<Models.StockHolding>
 {
     public Guid AccountId { get; init; }
@@ -15,7 +16,7 @@ public sealed record Update : ICommand<Models.StockHolding>
     public required string Description { get; init; }
     public required bool ShareWithFamily { get; init; }
     public required decimal CurrentPrice { get; init; }
-    public Guid? AccountGroupId { get; init; }
+    public Guid? GroupId { get; init; }
 
     public static async ValueTask<Update?> BindAsync(HttpContext httpContext)
     {
@@ -28,14 +29,14 @@ public sealed record Update : ICommand<Models.StockHolding>
     }
 }
 
-internal class UpdateHandler(IStockHoldingRepository repository, IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Update, Models.StockHolding>
+internal class UpdateHandler(IStockHoldingRepository repository, IUnitOfWork unitOfWork, User user, ISecurity security, ICurrencyConverter currencyConverter) :  ICommandHandler<Update, Models.StockHolding>
 {
     public async ValueTask<Models.StockHolding> Handle(Update command, CancellationToken cancellationToken)
     {
-        Security.AssertAccountPermission(command.AccountId);
-        if (command.AccountGroupId != null)
+        security.AssertInstrumentPermission(command.AccountId);
+        if (command.GroupId != null)
         {
-            Security.AssertAccountGroupPermission(command.AccountGroupId.Value);
+            security.AssertGroupPermission(command.GroupId.Value);
         }
 
         var stockHolding = await repository.Get(command.AccountId, new IncludeSpecification(), cancellationToken) ?? throw new NotFoundException();
@@ -45,10 +46,10 @@ internal class UpdateHandler(IStockHoldingRepository repository, IUnitOfWork uni
         stockHolding.ShareWithFamily = command.ShareWithFamily;
         stockHolding.CurrentPrice = command.CurrentPrice;
 
-        stockHolding.SetAccountGroup(command.AccountGroupId, AccountHolder.Id);
+        stockHolding.SetGroup(command.GroupId, user.Id);
 
-        await UnitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return stockHolding.ToModel();
+        return stockHolding.ToModel(currencyConverter);
     }
 }

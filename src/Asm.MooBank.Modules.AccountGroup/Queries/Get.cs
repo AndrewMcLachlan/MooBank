@@ -1,16 +1,16 @@
-﻿using Asm.MooBank.Modules.AccountGroup.Models;
-using Asm.MooBank.Queries;
+﻿using Asm.MooBank.Models;
+using Asm.MooBank.Modules.Groups.Models;
 
-namespace Asm.MooBank.Modules.AccountGroup.Queries;
+namespace Asm.MooBank.Modules.Groups.Queries;
 
-public record Get(Guid Id) : IQuery<Models.AccountGroup>;
+public record Get(Guid Id) : IQuery<Group>;
 
-internal class GetHandler(IQueryable<Domain.Entities.AccountGroup.AccountGroup> accountGroups, MooBank.Models.AccountHolder accountHolder) : QueryHandlerBase(accountHolder), IQueryHandler<Get, Models.AccountGroup>
+internal class GetHandler(IQueryable<Domain.Entities.Group.Group> groups, User user) : IQueryHandler<Get, Group>
 {
-    public async ValueTask<Models.AccountGroup> Handle(Get request, CancellationToken cancellationToken)
+    public async ValueTask<Group> Handle(Get request, CancellationToken cancellationToken)
     {
-        var accountGroup = (await accountGroups.SingleOrDefaultAsync(a => a.Id == request.Id && a.OwnerId == AccountHolder.Id, cancellationToken)) ?? throw new NotFoundException($"Account Group with ID {request.Id} could not be found");
+        var group = await groups.SingleOrDefaultAsync(a => a.Id == request.Id && a.OwnerId == user.Id, cancellationToken) ?? throw new NotFoundException($"Group with ID {request.Id} could not be found");
 
-        return accountGroup.ToModel();
+        return group.ToModel();
     }
 }

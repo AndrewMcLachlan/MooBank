@@ -1,16 +1,16 @@
 ﻿using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Budget.Commands;
-using Asm.MooBank.Modules.Budget.Models;
+using Asm.MooBank.Modules.Budgets.Commands;
+using Asm.MooBank.Modules.Budgets.Models;
 
-namespace Asm.MooBank.Modules.Budget.Queries;
+namespace Asm.MooBank.Modules.Budgets.Queries;
 
-public record Get(short Year) : IQuery<Models.Budget?>;
+public record Get(short Year) : IQuery<Budget?>;
 
-internal class GetHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, AccountHolder accountHolder, ICommandDispatcher commandDispatcher) : IQueryHandler<Get, Models.Budget?>
+internal class GetHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, User user, ICommandDispatcher commandDispatcher) : IQueryHandler<Get, Budget?>
 {
-    public async ValueTask<Models.Budget?> Handle(Get query, CancellationToken cancellationToken)
+    public async ValueTask<Budget?> Handle(Get query, CancellationToken cancellationToken)
     {
-        var familyId = accountHolder.FamilyId;
+        var familyId = user.FamilyId;
 
         var entity = await budgets.Include(b => b.Lines).ThenInclude(b => b.Tag).Where(b => b.FamilyId == familyId && b.Year == query.Year).SingleOrDefaultAsync(cancellationToken);
 

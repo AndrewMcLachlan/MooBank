@@ -9,11 +9,11 @@ public interface ICurrencyConverter
     decimal? Convert(decimal amount, string from);
 }
 
-public class CurrencyConverter(IReferenceDataRepository referenceDataRepository, AccountHolder accountHolder, IAppCache appCache) : ICurrencyConverter
+public class CurrencyConverter(IReferenceDataRepository referenceDataRepository, User user, IAppCache appCache) : ICurrencyConverter
 {
     public decimal? Convert(decimal amount, string from)
     {
-        var to = accountHolder.Currency;
+        var to = user.Currency;
 
         var rate = GetExchangeRate(from, to);
 

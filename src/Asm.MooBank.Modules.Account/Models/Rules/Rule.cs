@@ -1,6 +1,7 @@
 ﻿using Asm.MooBank.Models;
+using Asm.MooBank.Modules.Accounts.Models.Rules;
 
-namespace Asm.MooBank.Modules.Account.Models;
+namespace Asm.MooBank.Modules.Accounts.Models.Rules;
 
 public partial record Rule
 {
@@ -15,7 +16,7 @@ public partial record Rule
 
 public static class RuleExtensions
 {
-    public static Rule ToModel(this Domain.Entities.Account.Rule rule) =>
+    public static Rule ToModel(this Domain.Entities.Instrument.Rule rule) =>
         new()
         {
             Id = rule.Id,
@@ -24,10 +25,10 @@ public static class RuleExtensions
             Tags = rule.Tags.Where(t => t != null && !t.Deleted).Select(t => t.ToModel()),
         };
 
-    public static IEnumerable<Rule> ToModel(this IEnumerable<Domain.Entities.Account.Rule> entities) =>
+    public static IEnumerable<Rule> ToModel(this IEnumerable<Domain.Entities.Instrument.Rule> entities) =>
         entities.Select(ToModel);
 
-    public static async Task<IEnumerable<Rule>> ToModelAsync(this Task<IEnumerable<Domain.Entities.Account.Rule>> entityTask, CancellationToken cancellationToken = default)
+    public static async Task<IEnumerable<Rule>> ToModelAsync(this Task<IEnumerable<Domain.Entities.Instrument.Rule>> entityTask, CancellationToken cancellationToken = default)
     {
         return (await entityTask.WaitAsync(cancellationToken)).ToModel();
     }

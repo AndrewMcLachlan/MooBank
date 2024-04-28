@@ -23,14 +23,10 @@ internal class StockHoldingConfiguration : IEntityTypeConfiguration<StockHolding
         builder.Property(e => e.Quantity)
             .ValueGeneratedOnAddOrUpdate();
 
-        builder.Property(e => e.CurrentPrice).HasColumnType("decimal(12, 4)");
-
-        builder.Property(e => e.CurrentValue)
-            .HasColumnType("decimal(12, 4)")
+        builder.Property(e => e.GainLoss)
             .ValueGeneratedOnAddOrUpdate();
 
         builder.Property(e => e.CurrentValue)
-            .HasColumnType("decimal(12, 4)")
             .ValueGeneratedOnAddOrUpdate();
 
     }

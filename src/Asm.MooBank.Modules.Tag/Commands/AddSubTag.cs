@@ -3,13 +3,13 @@ using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Models;
 using ITagRepository = Asm.MooBank.Domain.Entities.Tag.ITagRepository;
 
-namespace Asm.MooBank.Modules.Tag.Commands;
+namespace Asm.MooBank.Modules.Tags.Commands;
 
-public sealed record AddSubTag(int Id, int SubTagId) : ICommand<MooBank.Models.Tag>;
+public sealed record AddSubTag(int Id, int SubTagId) : ICommand<Tag>;
 
-internal sealed class AddSubTagHandler(ITagRepository tagRepository, IEnumerable<TagRelationship> transactionTagRelationships, IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<AddSubTag, MooBank.Models.Tag>
+internal sealed class AddSubTagHandler(ITagRepository tagRepository, IEnumerable<TagRelationship> transactionTagRelationships, IUnitOfWork unitOfWork, ISecurity security) :  ICommandHandler<AddSubTag, Tag>
 {
-    public async ValueTask<MooBank.Models.Tag> Handle(AddSubTag request, CancellationToken cancellationToken)
+    public async ValueTask<Tag> Handle(AddSubTag request, CancellationToken cancellationToken)
     {
         request.Deconstruct(out int id, out int subId);
 
@@ -18,14 +18,14 @@ internal sealed class AddSubTagHandler(ITagRepository tagRepository, IEnumerable
         var tag = await GetEntity(id, true, cancellationToken);
         var subTag = await GetEntity(subId, false, cancellationToken);
 
-        await Security.AssertFamilyPermission(tag.FamilyId);
+        await security.AssertFamilyPermission(tag.FamilyId);
 
         if (transactionTagRelationships.Any(tr => tr.TransactionTag == subTag && tr.ParentTag == tag)) throw new ExistsException($"{subTag.Name} is already a child or grand-child of {tag.Name}");
         if (transactionTagRelationships.Any(tr => tr.TransactionTag == tag && tr.ParentTag == subTag)) throw new ExistsException($"{subTag.Name} is parent or grand-parent of {tag.Name}. Circular relationships are not allowed!");
 
         tag.Tags.Add(subTag);
 
-        await UnitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return tag.ToModel();
     }

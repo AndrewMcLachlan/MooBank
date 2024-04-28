@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Asm.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.ReferenceData;
 
@@ -12,5 +13,6 @@ public class StockPriceHistory([DisallowNull] int id) : KeyedEntity<int>(id)
 
     public required DateOnly Date { get; init; }
 
+    [Precision(12, 4)]
     public required decimal Price { get; init; }
 }

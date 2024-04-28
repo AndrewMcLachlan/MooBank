@@ -1,12 +1,12 @@
 ﻿using Asm.Cqrs.AspNetCore;
-using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Tag.Commands;
-using Asm.MooBank.Modules.Tag.Queries;
+using Asm.MooBank.Modules.Tags.Commands;
+using Asm.MooBank.Modules.Tags.Models;
+using Asm.MooBank.Modules.Tags.Queries;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace Asm.MooBank.Modules.Tag.Endpoints;
+namespace Asm.MooBank.Modules.Tags.Endpoints;
 internal class TagsEndpoints : EndpointGroupBase
 {
     public override string Name => "Tags";

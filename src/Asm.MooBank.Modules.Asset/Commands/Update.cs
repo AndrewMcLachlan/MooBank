@@ -1,13 +1,14 @@
 ﻿using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.Asset;
 using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Asset.Models;
+using Asm.MooBank.Modules.Assets.Models;
+using Asm.MooBank.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Asm.MooBank.Modules.Asset.Commands;
+namespace Asm.MooBank.Modules.Assets.Commands;
 public sealed record Update : ICommand<Models.Asset>
 {
     public Guid AccountId { get; init; }
@@ -15,8 +16,8 @@ public sealed record Update : ICommand<Models.Asset>
     public required string Description { get; init; }
     public required bool ShareWithFamily { get; init; }
     public decimal? PurchasePrice { get; init; }
-    public decimal CurrentBalance{ get; init; }
-    public Guid? AccountGroupId { get; init; }
+    public decimal CurrentBalance { get; init; }
+    public Guid? GroupId { get; init; }
 
     public static async ValueTask<Update?> BindAsync(HttpContext httpContext)
     {
@@ -29,14 +30,14 @@ public sealed record Update : ICommand<Models.Asset>
     }
 }
 
-internal class UpdateHandler(IAssetRepository repository, IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Update, Models.Asset>
+internal class UpdateHandler(IAssetRepository repository, IUnitOfWork unitOfWork, User user, ISecurity security, ICurrencyConverter currencyConverter) :  ICommandHandler<Update, Models.Asset>
 {
     public async ValueTask<Models.Asset> Handle(Update command, CancellationToken cancellationToken)
     {
-        Security.AssertAccountPermission(command.AccountId);
-        if (command.AccountGroupId != null)
+        security.AssertInstrumentPermission(command.AccountId);
+        if (command.GroupId != null)
         {
-            Security.AssertAccountGroupPermission(command.AccountGroupId.Value);
+            security.AssertGroupPermission(command.GroupId.Value);
         }
 
         var Asset = await repository.Get(command.AccountId, new IncludeSpecification(), cancellationToken) ?? throw new NotFoundException();
@@ -47,10 +48,10 @@ internal class UpdateHandler(IAssetRepository repository, IUnitOfWork unitOfWork
         Asset.ShareWithFamily = command.ShareWithFamily;
         Asset.PurchasePrice = command.PurchasePrice;
 
-        Asset.SetAccountGroup(command.AccountGroupId, AccountHolder.Id);
+        Asset.SetGroup(command.GroupId, user.Id);
 
-        await UnitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return Asset.ToModel();
+        return Asset.ToModel(currencyConverter);
     }
 }

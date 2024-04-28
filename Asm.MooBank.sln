@@ -19,12 +19,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Web.Jobs", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Security", "src\Asm.MooBank.Security\Asm.MooBank.Security.csproj", "{A543D5EE-AD1A-47A8-8E18-154710A6A44F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "diagrams", "diagrams", "{2F95640D-BDB2-42E0-BDFB-5F3CA190C51A}"
-	ProjectSection(SolutionItems) = preProject
-		diagrams\Model.dgml = diagrams\Model.dgml
-		diagrams\Transactions.dgml = diagrams\Transactions.dgml
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Institution.Ing", "src\Asm.MooBank.Institution.Ing\Asm.MooBank.Institution.Ing.csproj", "{D52C951F-030B-4BFD-8803-EF5DBE55F246}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Config", "Config", "{07F4FBE0-487C-4F4D-AAAC-6E3DC848D55C}"
@@ -40,17 +34,17 @@ Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "Asm.MooBank.Web.App", "src\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{38BEA81E-F80F-44DE-A930-9BD5D3A62FFF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.Account", "src\Asm.MooBank.Modules.Account\Asm.MooBank.Modules.Account.csproj", "{DE0BFB06-D9E1-4D70-8797-AFC667084CF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.Accounts", "src\Asm.MooBank.Modules.Account\Asm.MooBank.Modules.Accounts.csproj", "{DE0BFB06-D9E1-4D70-8797-AFC667084CF4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.AccountGroup", "src\Asm.MooBank.Modules.AccountGroup\Asm.MooBank.Modules.AccountGroup.csproj", "{60B1B7F8-7E5B-4D02-9610-08013CE4BB33}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.Groups", "src\Asm.MooBank.Modules.AccountGroup\Asm.MooBank.Modules.Groups.csproj", "{60B1B7F8-7E5B-4D02-9610-08013CE4BB33}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.Tag", "src\Asm.MooBank.Modules.Tag\Asm.MooBank.Modules.Tag.csproj", "{0840289D-F07F-496B-8AF3-615D76AFDE24}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.Tags", "src\Asm.MooBank.Modules.Tag\Asm.MooBank.Modules.Tags.csproj", "{0840289D-F07F-496B-8AF3-615D76AFDE24}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.Budget", "src\Asm.MooBank.Modules.Budget\Asm.MooBank.Modules.Budget.csproj", "{D7C006E7-9F10-4A30-A076-DF89209CF3E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.Budgets", "src\Asm.MooBank.Modules.Budget\Asm.MooBank.Modules.Budgets.csproj", "{D7C006E7-9F10-4A30-A076-DF89209CF3E5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.Family", "src\Asm.MooBank.Modules.Family\Asm.MooBank.Modules.Family.csproj", "{26935349-E460-427B-BFAE-552564F35BE5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.Families", "src\Asm.MooBank.Modules.Family\Asm.MooBank.Modules.Families.csproj", "{26935349-E460-427B-BFAE-552564F35BE5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.Institution", "src\Asm.MooBank.Modules.Institution\Asm.MooBank.Modules.Institution.csproj", "{3C8217D4-457B-425C-9626-43AE1C0DDF0D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.Institutions", "src\Asm.MooBank.Modules.Institution\Asm.MooBank.Modules.Institutions.csproj", "{3C8217D4-457B-425C-9626-43AE1C0DDF0D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.Reports", "src\Asm.MooBank.Modules.Reports\Asm.MooBank.Modules.Reports.csproj", "{33DBFE2A-2EAE-4B04-855B-D5ADEDF38D74}"
 EndProject
@@ -79,11 +73,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Eodhd", "src\Asm.MooBank.Eodhd\Asm.MooBank.Eodhd.csproj", "{5EED26F8-2233-49E7-A302-82EF46DACE1A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.Stock", "src\Asm.MooBank.Modules.Stock\Asm.MooBank.Modules.Stock.csproj", "{E9177C4B-593F-4EDE-B782-4CB7BC7C2D36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.Stocks", "src\Asm.MooBank.Modules.Stock\Asm.MooBank.Modules.Stocks.csproj", "{E9177C4B-593F-4EDE-B782-4CB7BC7C2D36}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.ExchangeRateApi", "src\Asm.MooBank.ExchangeRateApi\Asm.MooBank.ExchangeRateApi.csproj", "{34A02BFD-A9AC-47EE-A1DE-A5B00C64CCAA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.AccountHolder", "src\Asm.MooBank.Modules.AccountHolder\Asm.MooBank.Modules.AccountHolder.csproj", "{2238CEE0-0A21-4C0A-8A18-2DD08020AF99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.Users", "src\Asm.MooBank.Modules.AccountHolder\Asm.MooBank.Modules.Users.csproj", "{2238CEE0-0A21-4C0A-8A18-2DD08020AF99}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Institution.AustralianSuper", "src\Asm.MooBank.Institution.AustralianSuper\Asm.MooBank.Institution.AustralianSuper.csproj", "{544C51D0-794B-426C-B7D4-E1DA45CBE916}"
 EndProject
@@ -91,7 +85,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{54709F25
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.Tests", "tests\Asm.MooBank.Modules.Tests\Asm.MooBank.Modules.Tests.csproj", "{511708F0-5282-4B40-9848-792C0E139FF8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.Asset", "src\Asm.MooBank.Modules.Asset\Asm.MooBank.Modules.Asset.csproj", "{60087231-E21C-4E94-884D-285BE13489A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.Assets", "src\Asm.MooBank.Modules.Asset\Asm.MooBank.Modules.Assets.csproj", "{60087231-E21C-4E94-884D-285BE13489A7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.Instruments", "src\Asm.MooBank.Modules.Instruments\Asm.MooBank.Modules.Instruments.csproj", "{E0427C53-3EC8-4D3D-B9EB-8638FB3889A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -205,6 +201,10 @@ Global
 		{60087231-E21C-4E94-884D-285BE13489A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60087231-E21C-4E94-884D-285BE13489A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60087231-E21C-4E94-884D-285BE13489A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0427C53-3EC8-4D3D-B9EB-8638FB3889A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0427C53-3EC8-4D3D-B9EB-8638FB3889A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0427C53-3EC8-4D3D-B9EB-8638FB3889A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0427C53-3EC8-4D3D-B9EB-8638FB3889A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -228,6 +228,7 @@ Global
 		{544C51D0-794B-426C-B7D4-E1DA45CBE916} = {2754ACBC-340B-4D5C-AEE8-1AC1AD5CF9E0}
 		{511708F0-5282-4B40-9848-792C0E139FF8} = {54709F25-BC08-4B76-9DEE-88687AD76533}
 		{60087231-E21C-4E94-884D-285BE13489A7} = {38BEA81E-F80F-44DE-A930-9BD5D3A62FFF}
+		{E0427C53-3EC8-4D3D-B9EB-8638FB3889A3} = {38BEA81E-F80F-44DE-A930-9BD5D3A62FFF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0CAD466B-BD01-4883-9CDC-F62C19A2A615}

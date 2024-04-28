@@ -5,13 +5,13 @@ import { Asset } from "../../models";
 import { AssetPage } from "./AssetPage";
 import { useAsset } from "./AssetProvider";
 
-import { useAccountGroups, useUpdateAsset } from "services";
+import { useGroups, useUpdateAsset } from "services";
 
 export const ManageAsset: React.FC = () => {
 
     const navigate = useNavigate();
 
-    const { data: accountGroups } = useAccountGroups();
+    const { data: groups } = useGroups();
     const updateAsset = useUpdateAsset();
 
     const currentAsset = useAsset();
@@ -61,9 +61,9 @@ export const ManageAsset: React.FC = () => {
                 </Form.Group>
                 <Form.Group controlId="group">
                     <Form.Label>Group</Form.Label>
-                    <Form.Control as="select" value={asset.accountGroupId} onChange={(e: any) => setAsset({ ...asset, accountGroupId: e.currentTarget.value })}>
+                    <Form.Control as="select" value={asset.groupId} onChange={(e: any) => setAsset({ ...asset, groupId: e.currentTarget.value })}>
                         <option value="">Select a group...</option>
-                        {accountGroups?.map(a =>
+                        {groups?.map(a =>
                             <option value={a.id} key={a.id}>{a.name}</option>
                         )}
                     </Form.Control>

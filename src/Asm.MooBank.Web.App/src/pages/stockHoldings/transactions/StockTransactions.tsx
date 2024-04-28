@@ -4,13 +4,20 @@ import { FilterPanel } from "./FilterPanel";
 import { StockTransactionList } from "./StockTransactionList";
 import { StockSummary } from "./StockSummary";
 import { StockHoldingPage } from "../StockHoldingPage";
-import { SectionRow } from "@andrewmclachlan/mooapp";
+import { IconLinkButton, SectionRow } from "@andrewmclachlan/mooapp";
 import { Col } from "react-bootstrap";
+import { useStockHolding } from "../StockHoldingProvider";
 
 export const StockTransactions: React.FC = () => {
 
+    const stockHolding = useStockHolding();
+
+    const actions = stockHolding?.controller === "Manual" ? [
+        <IconLinkButton key="add" variant="primary" icon="plus" to={`shares/${stockHolding.id}/transactions/add`} relative="route">Add Transaction</IconLinkButton>,
+    ] : [];
+
     return (
-        <StockHoldingPage title="Transactions">
+        <StockHoldingPage title="Transactions" actions={actions}>
             <SectionRow>
                 <Col xl={2} md={12} sm={12}>
                     <StockSummary />

@@ -44,6 +44,7 @@ export const routes: RouteDefinition = {
                 path: "/shares/:id", element: <Pages.StockHolding />, children: {
                     manage: { path: "manage", element: <Pages.ManageStockHolding /> },
                     transactions: { path: "transactions", element: <Pages.StockTransactions /> },
+                    transactionsAdd: { path: "transactions/add", element: <Pages.AddStockTransaction /> },
                 }
             },
             assetCreate: { path: "/assets/create", element: <Pages.CreateAsset /> },
@@ -65,9 +66,9 @@ export const routes: RouteDefinition = {
             },
             tags: { path: "/tags", element: <Pages.TransactionTags /> },
             tagsVisualiser: { path: "/tags/visualiser", element: <Pages.Visualiser /> },
-            accountGroups: { path: "/account-groups", element: <Pages.ManageAccountGroups /> },
-            accountGroupsManage: { path: "/account-groups/:id/manage", element: <Pages.ManageAccountGroup /> },
-            accountGroupsCreate: { path: "/account-groups/create", element: <Pages.CreateAccountGroup /> },
+            groups: { path: "/groups", element: <Pages.ManageGroups /> },
+            groupsManage: { path: "/groups/:id/manage", element: <Pages.ManageGroup /> },
+            groupsCreate: { path: "/groups/create", element: <Pages.CreateGroup /> },
             profile: { path: "/profile", element: <Pages.Profile /> },
             fallback: { path: "*", element: <Pages.Error404 /> },
         }

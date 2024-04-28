@@ -1,20 +1,19 @@
-﻿using Asm.MooBank.Commands;
-using Asm.MooBank.Domain.Entities.AccountGroup;
+﻿using Asm.MooBank.Domain.Entities.Group;
 
-namespace Asm.MooBank.Modules.AccountGroup.Commands;
+namespace Asm.MooBank.Modules.Groups.Commands;
 
 public record Delete(Guid Id) : ICommand;
 
-internal class DeleteHandler(IAccountGroupRepository accountGroupRepository, IUnitOfWork unitOfWork, MooBank.Models.AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Delete>
+internal class DeleteHandler(IGroupRepository groupRepository, IUnitOfWork unitOfWork, ISecurity security) :  ICommandHandler<Delete>
 {
     public async ValueTask Handle(Delete request, CancellationToken cancellationToken)
     {
-        var group = await accountGroupRepository.Get(request.Id, cancellationToken);
+        var group = await groupRepository.Get(request.Id, cancellationToken);
 
-        Security.AssertAccountGroupPermission(group);
+        security.AssertGroupPermission(group);
 
-        accountGroupRepository.Delete(group);
+        groupRepository.Delete(group);
 
-        await UnitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

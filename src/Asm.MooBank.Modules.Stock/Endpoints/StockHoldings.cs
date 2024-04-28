@@ -1,16 +1,16 @@
 ﻿using Asm.Cqrs.AspNetCore;
-using Asm.MooBank.Modules.Stock.Commands;
-using Asm.MooBank.Modules.Stock.Models;
-using Asm.MooBank.Modules.Stock.Queries;
+using Asm.MooBank.Modules.Stocks.Commands;
+using Asm.MooBank.Modules.Stocks.Models;
+using Asm.MooBank.Modules.Stocks.Queries;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 
-namespace Asm.MooBank.Modules.Stock.Endpoints;
+namespace Asm.MooBank.Modules.Stocks.Endpoints;
 internal class StockHoldings : EndpointGroupBase
 {
     public override string Name => "Stock Holdings";
 
-    public override string Path => "/stock";
+    public override string Path => "/stocks";
 
     public override string Tags => "Stock Holding";
 

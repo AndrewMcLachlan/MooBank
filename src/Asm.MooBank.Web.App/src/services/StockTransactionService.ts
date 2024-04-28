@@ -1,8 +1,8 @@
-import { UseQueryResult } from "@tanstack/react-query";
+import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
 
 import * as Models from "../models";
 import { TransactionsFilter } from "../store/state";
-import { PagedResult, SortDirection, useApiPagedGet } from "@andrewmclachlan/mooapp";
+import { PagedResult, SortDirection, useApiPagedGet, useApiPost } from "@andrewmclachlan/mooapp";
 
 const transactionKey = "stock-transactions";
 
@@ -17,6 +17,24 @@ export const useStockTransactions = (accountId: string, filter: TransactionsFilt
     queryString = queryString.startsWith("&") ? queryString.substring(1) : queryString;
     queryString = queryString.length > 0 && queryString[0] !== "?" ? `?${queryString}` : queryString;
 
-    return useApiPagedGet<PagedResult<Models.StockTransaction>>([transactionKey, accountId, filter, pageSize, pageNumber, sortField, sortDirection], `api/stock/${accountId}/transactions/${filter.filterTagged ? "untagged/" : ""}${pageSize}/${pageNumber}${queryString}`);
+    return useApiPagedGet<PagedResult<Models.StockTransaction>>([transactionKey, accountId, filter, pageSize, pageNumber, sortField, sortDirection], `api/stocks/${accountId}/transactions/${filter.filterTagged ? "untagged/" : ""}${pageSize}/${pageNumber}${queryString}`);
 }
 
+export const useCreateStockTransaction = () => {
+
+    const queryClient = useQueryClient();
+
+    const res = useApiPost<Models.StockTransaction, { accountId: string }, Models.CreateStockTransaction>((variables) => `api/stocks/${variables.accountId}/transactions`, {
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: [transactionKey]});
+        }
+    });
+
+    const { mutate } = res;
+
+    const create = (accountId:string, transaction: Models.CreateStockTransaction) => {
+        mutate([{accountId}, transaction]);
+    };
+
+    return create;
+}

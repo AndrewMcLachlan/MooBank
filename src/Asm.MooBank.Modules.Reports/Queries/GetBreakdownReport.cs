@@ -2,7 +2,6 @@
 using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Modules.Reports.Models;
-using Asm.MooBank.Queries.Transactions;
 
 namespace Asm.MooBank.Modules.Reports.Queries;
 
@@ -18,7 +17,7 @@ internal class GetBreakdownReportHandler(IQueryable<Transaction> transactions, I
 
     public async ValueTask<BreakdownReport> Handle(GetBreakdownReport request, CancellationToken cancellationToken)
     {
-        security.AssertAccountPermission(request.AccountId);
+        security.AssertInstrumentPermission(request.AccountId);
 
         var parentTagId = request.ParentTagId;
 

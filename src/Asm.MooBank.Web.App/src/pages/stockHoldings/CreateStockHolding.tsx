@@ -4,13 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { NewStockHolding } from "../../models";
 
 import { Page, emptyGuid } from "@andrewmclachlan/mooapp";
-import { useAccountGroups, useCreateStockHolding } from "services";
+import { useGroups, useCreateStockHolding } from "services";
 
 export const CreateStockHolding: React.FC = () => {
 
     const navigate = useNavigate();
 
-    const { data: accountGroups } = useAccountGroups();
+    const { data: groups } = useGroups();
     const createStockHolding = useCreateStockHolding();
 
     const [name, setName] = useState("");
@@ -19,7 +19,7 @@ export const CreateStockHolding: React.FC = () => {
     const [quantity, setQuantity] = useState(0);
     const [price, setPrice] = useState(0);
     const [fees, setFees] = useState(0);
-    const [accountGroupId, setAccountGroupId] = useState("");
+    const [groupId, setGroupId] = useState("");
     const [shareWithFamily, setShareWithFamily] = useState(false);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -36,7 +36,7 @@ export const CreateStockHolding: React.FC = () => {
             description: description,
             currency: "AUD",
             currentBalanceLocalCurrency: 0,
-            accountGroupId: accountGroupId === "" ? undefined : accountGroupId,
+            groupId: groupId === "" ? undefined : groupId,
             shareWithFamily: shareWithFamily,
             currentBalance: 0,
         };
@@ -86,9 +86,9 @@ export const CreateStockHolding: React.FC = () => {
                 </Form.Group>
                 <Form.Group controlId="group">
                     <Form.Label>Group</Form.Label>
-                    <Form.Control as="select" value={accountGroupId} onChange={(e: any) => setAccountGroupId(e.currentTarget.value)}>
+                    <Form.Control as="select" value={groupId} onChange={(e: any) => setGroupId(e.currentTarget.value)}>
                         <option value="">Select a group...</option>
-                        {accountGroups?.map(a =>
+                        {groups?.map(a =>
                             <option value={a.id} key={a.id}>{a.name}</option>
                         )}
                     </Form.Control>

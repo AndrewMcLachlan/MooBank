@@ -71,22 +71,22 @@
     <Folder Include="aussuper\Tables" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="dbo\Tables\Account.sql" />
+    <Build Include="dbo\Tables\Instrument.sql" />
     <Build Include="dbo\Tables\RecurringTransaction.sql" />
     <Build Include="dbo\Tables\Schedule.sql" />
     <Build Include="dbo\Tables\Transaction.sql" />
     <Build Include="dbo\Tables\TransactionType.sql" />
     <Build Include="dbo\Tables\AccountType.sql" />
-    <Build Include="dbo\Tables\AccountHolder.sql" />
-    <Build Include="dbo\Tables\AccountAccountHolder.sql" />
+    <Build Include="dbo\Tables\User.sql" />
+    <Build Include="dbo\Tables\InstrumentOwner.sql" />
     <Build Include="dbo\Tables\Tag.sql" />
     <Build Include="dbo\Tables\Rule.sql" />
     <Build Include="dbo\Tables\TransactionTransactionTag.sql" />
     <Build Include="dbo\Tables\TransactionTagTransactionTag.sql" />
-    <Build Include="dbo\Tables\AccountController.sql" />
+    <Build Include="dbo\Tables\Controller.sql" />
     <Build Include="dbo\Tables\ImportAccount.sql" />
     <Build Include="dbo\Tables\ImporterType.sql" />
-    <Build Include="dbo\Tables\VirtualAccount.sql" />
+    <Build Include="dbo\Tables\VirtualInstrument.sql" />
     <Build Include="dbo\Tables\TransactionTagRuleTransactionTag.sql" />
     <Build Include="Security\ing.sql" />
     <Build Include="ing\Tables\TransactionExtra.sql" />
@@ -96,11 +96,11 @@
     <Build Include="dbo\Views\TagAmounts.sql" />
     <Build Include="dbo\Views\TagAmountsByMonth.sql" />
     <Build Include="dbo\Tables\InstitutionAccount.sql" />
-    <Build Include="dbo\Tables\AccountGroup.sql" />
+    <Build Include="dbo\Tables\Group.sql" />
     <Build Include="dbo\Views\TagHierarchies.sql" />
     <Build Include="dbo\Tables\TagSettings.sql" />
     <Build Include="dbo\Functions\TransactionNetAmount.sql" />
-    <Build Include="dbo\Tables\AccountHolderCard.sql" />
+    <Build Include="dbo\Tables\UserCard.sql" />
     <Build Include="dbo\Tables\BudgetLine.sql" />
     <Build Include="dbo\Views\OffsetTransactions.sql" />
     <Build Include="dbo\Tables\Budget.sql" />
@@ -125,7 +125,7 @@
     <Build Include="dbo\Tables\TransactionAccount.sql" />
     <Build Include="dbo\Functions\StockQuantity.sql" />
     <Build Include="dbo\Functions\StockValue.sql" />
-    <Build Include="dbo\Tables\AccountAccountViewer.sql" />
+    <Build Include="dbo\Tables\InstrumentViewer.sql" />
     <Build Include="dbo\Tables\StockPriceHistory.sql" />
     <Build Include="dbo\Tables\ExchangeRates.sql" />
     <Build Include="dbo\Functions\TransactionSplitNetAmount.sql" />

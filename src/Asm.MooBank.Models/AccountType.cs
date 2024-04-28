@@ -9,5 +9,5 @@ public enum AccountType
     Mortgage = 4,
     Superannuation = 5,
     Investment = 6,
-    Shares = 7,
+    Loan = 7,
 }

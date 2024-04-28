@@ -18,8 +18,8 @@
     [Created] DATETIME2 NOT NULL CONSTRAINT [DF_Transaction_Created] DEFAULT SYSDATETIME(),
     [Source] NVARCHAR(50) NOT NULL CONSTRAINT [DF_Transaction_Source] DEFAULT 'Unknown',
     CONSTRAINT [PK_Transaction] PRIMARY KEY CLUSTERED (TransactionId),
-    CONSTRAINT [FK_Transaction_Account] FOREIGN KEY ([AccountId]) REFERENCES [Account]([AccountId]),
-    CONSTRAINT [FK_Transaction_AccountHolder] FOREIGN KEY ([AccountHolderId]) REFERENCES [AccountHolder]([AccountHolderId]),
+    CONSTRAINT [FK_Transaction_Account] FOREIGN KEY ([AccountId]) REFERENCES [Instrument]([Id]),
+    CONSTRAINT [FK_Transaction_AccountHolder] FOREIGN KEY ([AccountHolderId]) REFERENCES [User]([Id]),
     CONSTRAINT [FK_Transaction_TransactionType] FOREIGN KEY ([TransactionTypeId]) REFERENCES [TransactionType]([TransactionTypeId]),
 )
 

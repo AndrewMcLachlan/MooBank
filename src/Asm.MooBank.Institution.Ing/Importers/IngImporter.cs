@@ -1,8 +1,8 @@
 ﻿using System.Globalization;
 using System.Threading;
 using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Domain.Entities.AccountHolder;
 using Asm.MooBank.Domain.Entities.Transactions;
+using Asm.MooBank.Domain.Entities.User;
 using Asm.MooBank.Importers;
 using Asm.MooBank.Institution.Ing.Domain;
 using Asm.MooBank.Institution.Ing.Models;
@@ -12,7 +12,7 @@ using TransactionType = Asm.MooBank.Models.TransactionType;
 
 namespace Asm.MooBank.Institution.Ing.Importers;
 
-internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, IAccountHolderRepository accountHolderRepository, ITransactionRawRepository transactionRawRepository, ITransactionRepository transactionRepository, ILogger<IngImporter> logger) : IImporter
+internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, IUserRepository accountHolderRepository, ITransactionRawRepository transactionRawRepository, ITransactionRepository transactionRepository, ILogger<IngImporter> logger) : IImporter
 {
     private const int Columns = 5;
     private const int DateColumn = 0;
@@ -22,11 +22,11 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
     private const int BalanceColumn = 4;
 
     private readonly IQueryable<TransactionRaw> _rawTransactions = rawTransactions;
-    private readonly IAccountHolderRepository _accountHolderRepository = accountHolderRepository;
+    private readonly IUserRepository _accountHolderRepository = accountHolderRepository;
     private readonly ITransactionRawRepository _transactionRawRepository = transactionRawRepository;
     private readonly ITransactionRepository _transactionRepository = transactionRepository;
     private readonly ILogger<IngImporter> _logger = logger;
-    private readonly Dictionary<short, AccountHolder> _accountHolders = [];
+    private readonly Dictionary<short, User> _accountHolders = [];
 
     public async Task<MooBank.Models.TransactionImportResult> Import(Guid accountId, Stream contents, CancellationToken cancellationToken = default)
     {
@@ -130,7 +130,7 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
             var transaction = new Transaction
             {
                 AccountId = accountId,
-                AccountHolder = parsed.Last4Digits != null ? await _accountHolderRepository.GetByCard(parsed.Last4Digits.Value, cancellationToken) : null,
+                User = parsed.Last4Digits != null ? await _accountHolderRepository.GetByCard(parsed.Last4Digits.Value, cancellationToken) : null,
                 Amount = transactionType == TransactionType.Credit ? credit : debit,
                 Description = parsed.Description,
                 Location = parsed.Location,
@@ -180,7 +180,7 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
         {
             var parsed = TransactionParser.ParseDescription(raw.Description);
 
-            raw.Transaction.AccountHolder = await GetAccountHolder(parsed.Last4Digits, cancellationToken);
+            raw.Transaction.User = await GetAccountHolder(parsed.Last4Digits, cancellationToken);
             raw.Transaction.Description = parsed.Description;
             raw.Transaction.Location = parsed.Location;
             raw.Transaction.Extra = new TransactionExtra
@@ -206,18 +206,18 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
         }*/
     }
 
-    private async ValueTask<AccountHolder?> GetAccountHolder(short? last4Digits, CancellationToken cancellationToken)
+    private async ValueTask<User?> GetAccountHolder(short? last4Digits, CancellationToken cancellationToken)
     {
         if (last4Digits == null) return null;
 
-        if (!_accountHolders.TryGetValue(last4Digits.Value, out AccountHolder? accountHolder))
+        if (!_accountHolders.TryGetValue(last4Digits.Value, out User? user))
         {
-            accountHolder = await _accountHolderRepository.GetByCard(last4Digits.Value, cancellationToken);
-            if (accountHolder == null) return null;
-            _accountHolders.Add(last4Digits.Value, accountHolder);
+            user = await _accountHolderRepository.GetByCard(last4Digits.Value, cancellationToken);
+            if (user == null) return null;
+            _accountHolders.Add(last4Digits.Value, user);
         }
 
-        return accountHolder;
+        return user;
     }
 
     /*public GetTransactionExtraDetails? CreateExtraDetailsRequest(Guid accountId, Models.PagedResult<Models.Transaction> transactions) =>

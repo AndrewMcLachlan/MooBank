@@ -8,10 +8,10 @@ public class ClaimsUserDataProvider(IPrincipalProvider principalProvider) : IUse
 {
     public Guid CurrentUserId => principalProvider.Principal?.GetClaimValue<Guid>(ClaimTypes.UserId) ?? Guid.Empty;
 
-    public Task<AccountHolder> GetCurrentUserAsync(CancellationToken cancellationToken = default) =>
+    public Task<User> GetCurrentUserAsync(CancellationToken cancellationToken = default) =>
         Task.FromResult(GetCurrentUser());
 
-    public AccountHolder GetCurrentUser()
+    public User GetCurrentUser()
     {
         if (principalProvider.Principal == null) throw new InvalidOperationException("There is no current user");
 

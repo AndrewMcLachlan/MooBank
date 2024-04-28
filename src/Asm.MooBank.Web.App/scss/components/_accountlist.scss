@@ -1,0 +1,123 @@
+:root {
+    --virtual-color: rgba(33, 37, 41, 0.8);
+    --virtual-background-color: rgba(0, 0, 0, 0.03);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --virtual-color: rgba(220, 216, 213, 1);
+        --virtual-background-color: rgba(255, 255, 255, 0.06);
+    }
+}
+
+.light {
+    --virtual-color: rgba(33, 37, 41, 0.8);
+    --virtual-background-color: rgba(0, 0, 0, 0.03);
+}
+
+.dark {
+    --virtual-color: rgba(180, 176, 173, 1);
+    --virtual-background-color: rgba(255, 255, 255, 0.03);
+}
+
+section.account-list {
+    max-width: 1140px;
+    margin: 0 auto 50px;
+}
+
+@for $i from 5 through 100 {
+    @if $i % 5 == 0 {
+        .column-#{$i} {
+            width: $i * 1%;
+        }
+    }
+}
+
+table.accounts {
+    width: 100%;
+
+
+    th.expander {
+        width: 32px;
+    }
+
+    th:nth-child(3) {
+        width: 15%;
+    }
+
+    td {
+        margin: 0;
+    }
+
+    td.account .name,
+    .accountName {
+        font-size: 1em;
+        font-weight: bold;
+    }
+
+    td.account .description {
+        font-size: 0.9rem;
+    }
+
+    td.account ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        li {
+            display: inline;
+            font-size: 0.8em;
+            color: #999;
+        }
+
+        li:before {
+            content: "|";
+        }
+
+        li:first-child:before {
+            content: "";
+        }
+
+        a {
+            color: #999;
+        }
+    }
+
+    th.number,
+    td.number {
+        text-align: right;
+        width: 15%;
+    }
+
+    th.type {
+        width: 15%;
+    }
+
+    tfoot td:first-child {
+        text-align: left;
+    }
+
+    tfoot {
+        border-top-width: 3px;
+        border-top-style: double;
+        font-size: 1.2em;
+    }
+
+    tr.virtual {
+        background-color: var(--virtual-background-color);
+        font-size: 0.9rem;
+        color: var(--virtual-color);
+
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.075);
+        }
+
+        td.name {
+            padding-left: 20px;
+        }
+    }
+
+    tr.position {
+        font-weight: 700;
+    }
+}

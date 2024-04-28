@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Tag;
+using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Transactions;
 
@@ -13,8 +15,10 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
 
     public Guid? AccountHolderId { get; set; }
 
+    [Precision(12, 4)]
     public decimal Amount { get; set; }
 
+    [Precision(12, 4)]
     public decimal NetAmount { get; set; }
 
     public string? Description { get; set; }
@@ -41,9 +45,9 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
     #region Navigation Properties
     public virtual ICollection<TransactionSplit> Splits { get; set; } = new HashSet<TransactionSplit>();
 
-    public virtual Account.TransactionAccount Account { get; set; } = null!;
+    public virtual TransactionInstrument Account { get; set; } = null!;
 
-    public virtual AccountHolder.AccountHolder? AccountHolder { get; set; }
+    public virtual User.User? User { get; set; }
 
     public virtual ICollection<TransactionOffset> OffsetFor { get; set; } = new HashSet<TransactionOffset>();
     #endregion

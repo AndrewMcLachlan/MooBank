@@ -1,13 +1,13 @@
 ﻿using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Institution.Models;
+using Asm.MooBank.Modules.Institutions.Models;
 
-namespace Asm.MooBank.Modules.Institution.Queries;
+namespace Asm.MooBank.Modules.Institutions.Queries;
 
-public record GetAll() : IQuery<IEnumerable<Models.Institution>>;
+public record GetAll() : IQuery<IEnumerable<Institution>>;
 
-internal class GetAllHandler(IQueryable<Domain.Entities.Institution.Institution> institutions) : IQueryHandler<GetAll, IEnumerable<Models.Institution>>
+internal class GetAllHandler(IQueryable<Domain.Entities.Institution.Institution> institutions) : IQueryHandler<GetAll, IEnumerable<Institution>>
 {
 
-    public async ValueTask<IEnumerable<Models.Institution>> Handle(GetAll request, CancellationToken cancellationToken) =>
+    public async ValueTask<IEnumerable<Institution>> Handle(GetAll request, CancellationToken cancellationToken) =>
         await institutions.ToModel().ToListAsync(cancellationToken);
 }

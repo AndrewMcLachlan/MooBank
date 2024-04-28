@@ -1,13 +1,12 @@
 ﻿using Asm.MooBank.Models;
-using Asm.MooBank.Modules.AccountGroup.Models;
-using Asm.MooBank.Queries;
+using Asm.MooBank.Modules.Groups.Models;
 
-namespace Asm.MooBank.Modules.AccountGroup.Queries;
+namespace Asm.MooBank.Modules.Groups.Queries;
 
-public record GetAll : IQuery<IEnumerable<Models.AccountGroup>>;
+public record GetAll : IQuery<IEnumerable<Group>>;
 
-internal class GetAllHandler(IQueryable<Domain.Entities.AccountGroup.AccountGroup> accountGroups, AccountHolder accountHolder) : QueryHandlerBase(accountHolder), IQueryHandler<GetAll, IEnumerable<Models.AccountGroup>>
+internal class GetAllHandler(IQueryable<Domain.Entities.Group.Group> groups, User user) :IQueryHandler<GetAll, IEnumerable<Group>>
 {
-    public async ValueTask<IEnumerable<Models.AccountGroup>> Handle(GetAll _, CancellationToken cancellationToken) =>
-        await accountGroups.Where(ag => ag.OwnerId == AccountHolder.Id).ToModel().ToListAsync(cancellationToken);
+    public async ValueTask<IEnumerable<Group>> Handle(GetAll _, CancellationToken cancellationToken) =>
+        await groups.Where(ag => ag.OwnerId == user.Id).ToModel().ToListAsync(cancellationToken);
 }

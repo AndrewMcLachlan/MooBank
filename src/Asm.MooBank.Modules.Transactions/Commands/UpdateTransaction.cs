@@ -28,7 +28,7 @@ internal class UpdateTransactionHandler(ITransactionRepository transactionReposi
 {
     public async ValueTask<Models.Transaction> Handle(UpdateTransaction request, CancellationToken cancellationToken)
     {
-        security.AssertAccountPermission(request.AccountId);
+        security.AssertInstrumentPermission(request.AccountId);
 
         var entity = await transactionRepository.Get(request.Id, new IncludeSplitsSpecification(), cancellationToken);
 

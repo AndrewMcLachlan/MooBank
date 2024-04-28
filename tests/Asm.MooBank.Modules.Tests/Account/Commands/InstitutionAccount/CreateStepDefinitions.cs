@@ -1,13 +1,12 @@
 using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Modules.Account.Commands.InstitutionAccount;
-using Asm.Testing;
+using Asm.MooBank.Modules.Accounts.Commands.InstitutionAccount;
 
 namespace Asm.MooBank.Modules.Tests.Account.Commands.InstitutionAccount;
 
 [Binding]
-internal class CreateStepDefinitions(ScenarioInput<Modules.Account.Models.Account.InstitutionAccount> input, ScenarioResult<Exception> exceptionResult) : StepDefinitionBase
+internal class CreateStepDefinitions(ScenarioInput<Accounts.Models.Account.InstitutionAccount> input, ScenarioResult<Exception> exceptionResult) : StepDefinitionBase
 {
-    private Modules.Account.Models.Account.InstitutionAccount _result;
+    private Accounts.Models.Account.InstitutionAccount _result;
 
     [Given(@"I have a request to create an institution account")]
     public void GivenIHaveARequestToCreateAnInstitutionAccount()
@@ -24,10 +23,10 @@ internal class CreateStepDefinitions(ScenarioInput<Modules.Account.Models.Accoun
             new Domain.Entities.Account.InstitutionAccount(Models.AccountId)
             {
                 Name = account.Name,
-                AccountController = account.AccountController,
-                AccountHolders = account.AccountHolders,
+                Controller = account.Controller,
+                Owners = account.Owners,
                 AccountType = account.AccountType,
-                AccountViewers = account.AccountViewers,
+                Viewers = account.Viewers,
                 Balance = account.Balance,
                 CalculatedBalance = account.Balance,
                 Currency = account.Currency,
@@ -43,12 +42,25 @@ internal class CreateStepDefinitions(ScenarioInput<Modules.Account.Models.Accoun
                 ShareWithFamily = account.ShareWithFamily,
                 Slug = account.Slug,
                 Transactions = account.Transactions,
-                VirtualAccounts = account.VirtualAccounts,
+                VirtualInstruments = account.VirtualInstruments,
             });
 
-        CreateHandler createHandler = new CreateHandler(institutionAccountRepositoryMock.Object, Mocks.UnitOfWorkMock.Object, Models.AccountHolder, Mocks.CurrencyConverterMock.Object, Mocks.SecurityMock.Object);
+        CreateHandler createHandler = new(institutionAccountRepositoryMock.Object, Mocks.UnitOfWorkMock.Object, Models.AccountHolder, Mocks.CurrencyConverterMock.Object, Mocks.SecurityMock.Object);
 
-        Create command = new(input.Value);
+        Create command = new()
+        {
+            Balance = input.Value.CurrentBalance,
+            Currency = input.Value.Currency,
+            Description = input.Value.Description,
+            Name = input.Value.Name,
+            AccountType = input.Value.AccountType,
+            Controller = input.Value.Controller,
+            ShareWithFamily = input.Value.ShareWithFamily,
+            GroupId = input.Value.GroupId,
+            ImporterTypeId = input.Value.ImporterTypeId,
+            IncludeInBudget = input.Value.IncludeInBudget,
+            InstitutionId = input.Value.InstitutionId,
+        };
 
         await SpecFlowHelper.CatchExceptionAsync(async () => _result = await createHandler.Handle(command, new CancellationToken()), exceptionResult);
     }
@@ -61,10 +73,9 @@ internal class CreateStepDefinitions(ScenarioInput<Modules.Account.Models.Accoun
         Assert.Equal(input.Value.CurrentBalanceLocalCurrency, _result.CurrentBalanceLocalCurrency);
         Assert.Equal(Models.AccountId, _result.Id);
         Assert.Equal(input.Value.Name, _result.Name);
-        Assert.Equal(input.Value.AccountType, _result.AccountType);
         Assert.Equal(input.Value.Description, _result.Description);
         Assert.Equal(input.Value.LastTransaction, _result.LastTransaction);
-        Assert.Equal(input.Value.AccountType, _result.AccountType);
+        Assert.Equal(input.Value.InstrumentType, _result.InstrumentType);
         Assert.Equal(input.Value.Controller, _result.Controller);
         Assert.Equal(input.Value.ImporterTypeId, _result.ImporterTypeId);
         Assert.Equal(input.Value.ShareWithFamily, _result.ShareWithFamily);

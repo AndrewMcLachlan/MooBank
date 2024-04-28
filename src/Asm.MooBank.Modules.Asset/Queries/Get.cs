@@ -1,22 +1,22 @@
 ﻿using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Asset.Models;
-using Asm.MooBank.Queries;
+using Asm.MooBank.Modules.Assets.Models;
+using Asm.MooBank.Services;
 
-namespace Asm.MooBank.Modules.Asset.Queries;
+namespace Asm.MooBank.Modules.Assets.Queries;
 
-public sealed record Get(Guid Id) : IQuery<Models.Asset>;
+public sealed record Get(Guid Id) : IQuery<Asset>;
 
-internal class GetHandler(IQueryable<Domain.Entities.Asset.Asset> accounts, AccountHolder accountHolder, ISecurity security) : QueryHandlerBase(accountHolder), IQueryHandler<Get, Models.Asset>
+internal class GetHandler(IQueryable<Domain.Entities.Asset.Asset> accounts, User user, ISecurity security, ICurrencyConverter currencyConverter) : IQueryHandler<Get, Asset>
 {
-    public async ValueTask<Models.Asset> Handle(Get query, CancellationToken cancellationToken)
+    public async ValueTask<Asset> Handle(Get query, CancellationToken cancellationToken)
     {
-        var entity = await accounts.Include(a => a.AccountHolders).ThenInclude(ah => ah.AccountGroup)
-                                   .Include(a => a.AccountHolders).ThenInclude(ah => ah.AccountHolder)
-                                   .Include(a => a.AccountViewers).ThenInclude(ah => ah.AccountGroup)
-                                   .Include(a => a.AccountViewers).ThenInclude(ah => ah.AccountHolder)
+        var entity = await accounts.Include(a => a.Owners).ThenInclude(ah => ah.Group)
+                                   .Include(a => a.Owners).ThenInclude(ah => ah.User)
+                                   .Include(a => a.Viewers).ThenInclude(ah => ah.Group)
+                                   .Include(a => a.Viewers).ThenInclude(ah => ah.User)
                                    .SingleOrDefaultAsync(a => a.Id == query.Id, cancellationToken) ?? throw new NotFoundException();
-        security.AssertAccountPermission(entity);
-        var account = entity.ToModel(AccountHolder.Id);
+        security.AssertInstrumentPermission(entity);
+        var account = entity.ToModel(user.Id, currencyConverter);
 
         return account!;
     }

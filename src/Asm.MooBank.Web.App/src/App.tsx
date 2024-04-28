@@ -57,7 +57,7 @@ const sideMenu = [
     {
         text: "Groups",
         image: <Icons.Stack />,
-        route: "/account-groups"
+        route: "/groups"
     },
     {
         text: "Tags",

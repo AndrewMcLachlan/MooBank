@@ -2,16 +2,16 @@
 
 public static class AccountHolderExtensions
 {
-    public static AccountHolder ToModel(this Domain.Entities.AccountHolder.AccountHolder accountHolder)
+    public static User ToModel(this Domain.Entities.User.User user)
     {
-        return new AccountHolder
+        return new User
         {
-            Id = accountHolder.Id,
-            EmailAddress = accountHolder.EmailAddress,
-            FamilyId = accountHolder.FamilyId,
-            FirstName = accountHolder.FirstName,
-            LastName = accountHolder.LastName,
-            Currency = accountHolder.Currency,
+            Id = user.Id,
+            EmailAddress = user.EmailAddress,
+            FamilyId = user.FamilyId,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Currency = user.Currency,
         };
     }
 }

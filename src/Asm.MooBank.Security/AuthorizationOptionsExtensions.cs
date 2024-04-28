@@ -14,18 +14,18 @@ public static class AuthorizationOptionsExtensions
             policy.Requirements.Add(new FamilyMemberRequirement());
         });
 
-        options.AddPolicy(Policies.AccountHolder, policy =>
+        options.AddPolicy(Policies.InstrumentOwner, policy =>
         {
             policy.RequireAuthenticatedUser();
             policy.RequireClaim(ClaimTypes.AccountId);
-            policy.Requirements.Add(new AccountHolderRequirement());
+            policy.Requirements.Add(new InstrumentOwnerRequirement());
         });
 
-        options.AddPolicy(Policies.AccountViewer, policy =>
+        options.AddPolicy(Policies.InstrumentViewer, policy =>
         {
             policy.RequireAuthenticatedUser();
             policy.RequireClaim(ClaimTypes.AccountId);
-            policy.Requirements.Add(new AccountViewerRequirement());
+            policy.Requirements.Add(new InstrumentViewerRequirement());
         });
 
         options.AddPolicy(Policies.Admin, policy =>

@@ -12,7 +12,7 @@ internal class GetInOutReportHandler(IQueryable<Transaction> transactions, ISecu
 
     public async ValueTask<InOutReport> Handle(GetInOutReport request, CancellationToken cancellationToken)
     {
-        _securityRepository.AssertAccountPermission(request.AccountId);
+        _securityRepository.AssertInstrumentPermission(request.AccountId);
 
         var results = await _transactions.Include(t => t.Splits).ThenInclude(t => t.OffsetBy).Include(t => t.OffsetFor).WhereByReportQuery(request)
             .ExcludeOffset()

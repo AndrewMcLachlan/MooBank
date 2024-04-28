@@ -1,10 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Asm.MooBank.Domain.Entities.Instrument;
 
 namespace Asm.MooBank.Domain.Entities.Account;
 
 [AggregateRoot]
-public class InstitutionAccount(Guid id) : TransactionAccount(id)
+public class InstitutionAccount(Guid id) : TransactionInstrument(id)
 {
+    public InstitutionAccount() : this(Guid.Empty) { }
+
     public int InstitutionId { get; set; }
 
     public bool IncludeInPosition { get; set; }
@@ -12,9 +15,6 @@ public class InstitutionAccount(Guid id) : TransactionAccount(id)
     public new DateTimeOffset LastUpdated { get; set; } = DateTimeOffset.Now;
 
     public bool IncludeInBudget { get; set; }
-
-    [Column("AccountControllerId")]
-    public AccountController AccountController { get; set; }
 
     [Column("AccountTypeId")]
     public AccountType AccountType { get; set; }
@@ -24,17 +24,17 @@ public class InstitutionAccount(Guid id) : TransactionAccount(id)
     public virtual Institution.Institution Institution { get; set; } = null!;
 
     [NotMapped]
-    public IEnumerable<AccountAccountViewer> ValidAccountViewers
+    public IEnumerable<InstrumentViewer> ValidViewers
     {
         get
         {
             if (!ShareWithFamily) return [];
-            var familyIds = AccountHolders.Select(a => a.AccountHolder.FamilyId).Distinct();
-            return AccountViewers.Where(a => familyIds.Contains(a.AccountHolder.FamilyId));
+            var familyIds = Owners.Select(a => a.User.FamilyId).Distinct();
+            return Viewers.Where(a => familyIds.Contains(a.User.FamilyId));
         }
     }
 
-    public override AccountGroup.AccountGroup? GetAccountGroup(Guid accountHolderId) =>
-        base.GetAccountGroup(accountHolderId) ??
-        ValidAccountViewers.Where(a => a.AccountHolderId == accountHolderId).Select(aah => aah.AccountGroup).SingleOrDefault();
+    public override Group.Group? GetGroup(Guid user) =>
+        base.GetGroup(user) ??
+        ValidViewers.Where(a => a.UserId == user).Select(aah => aah.Group).SingleOrDefault();
 }

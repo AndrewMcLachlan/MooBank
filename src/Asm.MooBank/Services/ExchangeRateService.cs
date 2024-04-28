@@ -1,7 +1,7 @@
 ﻿using Asm.Domain;
-using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Domain.Entities.AccountHolder;
+using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.ReferenceData;
+using Asm.MooBank.Domain.Entities.User;
 using Asm.MooBank.ExchangeRateApi;
 
 namespace Asm.MooBank.Services;
@@ -11,7 +11,7 @@ public interface IExchangeRateService
     Task UpdateExchangeRates();
 }
 
-public class ExchangeRateService(IUnitOfWork unitOfWork, IExchangeRateClient exchangeRateClient, IQueryable<Account> accounts, IQueryable<AccountHolder> accountHolders, IReferenceDataRepository referenceDataRepository) : IExchangeRateService
+public class ExchangeRateService(IUnitOfWork unitOfWork, IExchangeRateClient exchangeRateClient, IQueryable<Instrument> accounts, IQueryable<User> accountHolders, IReferenceDataRepository referenceDataRepository) : IExchangeRateService
 {
     public async Task UpdateExchangeRates()
     {

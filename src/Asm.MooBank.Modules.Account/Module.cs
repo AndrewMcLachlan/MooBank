@@ -3,7 +3,7 @@ using Asm.AspNetCore.Modules;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Asm.MooBank.Modules.Account;
+namespace Asm.MooBank.Modules.Accounts;
 public class Module : IModule
 {
     private static readonly Assembly Assembly = typeof(Module).Assembly;
@@ -11,10 +11,6 @@ public class Module : IModule
     public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
     {
         new Endpoints.Accounts().MapGroup(endpoints);
-        new Endpoints.Import().MapGroup(endpoints);
-        new Endpoints.RecurringEndpoints().MapGroup(endpoints);
-        new Endpoints.RulesEndpoints().MapGroup(endpoints);
-        new Endpoints.VirtualAccounts().MapGroup(endpoints);
 
         return endpoints;
     }

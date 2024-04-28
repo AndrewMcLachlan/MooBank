@@ -5,9 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using ITagRepository = Asm.MooBank.Domain.Entities.Tag.ITagRepository;
 
-namespace Asm.MooBank.Modules.Tag.Commands;
+namespace Asm.MooBank.Modules.Tags.Commands;
 
-public sealed record CreateByName(string Name, IEnumerable<int> Tags) : ICommand<MooBank.Models.Tag>
+public sealed record CreateByName(string Name, IEnumerable<int> Tags) : ICommand<Tag>
 {
     public static async ValueTask<CreateByName?> BindAsync(HttpContext httpContext)
     {
@@ -20,9 +20,9 @@ public sealed record CreateByName(string Name, IEnumerable<int> Tags) : ICommand
     }
 }
 
-internal sealed class CreateByNameHandler(IUnitOfWork unitOfWork, ITagRepository transactionTagRepository, AccountHolder accountHolder) : ICommandHandler<CreateByName, MooBank.Models.Tag>
+internal sealed class CreateByNameHandler(IUnitOfWork unitOfWork, ITagRepository transactionTagRepository, User user) : ICommandHandler<CreateByName, Tag>
 {
-    public async ValueTask<MooBank.Models.Tag> Handle(CreateByName request, CancellationToken cancellationToken)
+    public async ValueTask<Tag> Handle(CreateByName request, CancellationToken cancellationToken)
     {
         request.Deconstruct(out string name, out IEnumerable<int> tags);
 
@@ -31,7 +31,7 @@ internal sealed class CreateByNameHandler(IUnitOfWork unitOfWork, ITagRepository
         Domain.Entities.Tag.Tag tag = new()
         {
             Name = name,
-            FamilyId = accountHolder.FamilyId,
+            FamilyId = user.FamilyId,
             Tags = tagEntities.ToList(),
         };
         transactionTagRepository.Add(tag);

@@ -1,10 +1,8 @@
 ﻿using Asm.Domain;
-using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Domain.Entities.AccountHolder;
+using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Modules.Tests.Extensions;
 using Asm.MooBank.Security;
 using Asm.MooBank.Services;
-using Moq;
 
 namespace Asm.MooBank.Modules.Tests;
 internal class Mocks
@@ -15,13 +13,13 @@ internal class Mocks
         UnitOfWorkMock.Setup(UnitOfWorkMock => UnitOfWorkMock.SaveChangesAsync(default)).ReturnsAsync(1);
 
         SecurityMock = new Mock<ISecurity>();
-        SecurityMock.Setup(s => s.AssertAccountPermission(It.IsAny<Domain.Entities.Account.Account>()));
-        SecurityMock.Setup(s => s.AssertAccountPermission(It.IsAny<Guid>()));
-        SecurityMock.Setup(s => s.AssertAccountGroupPermission(It.IsAny<Guid>()));
+        SecurityMock.Setup(s => s.AssertInstrumentPermission(It.IsAny<Instrument>()));
+        SecurityMock.Setup(s => s.AssertInstrumentPermission(It.IsAny<Guid>()));
+        SecurityMock.Setup(s => s.AssertGroupPermission(It.IsAny<Guid>()));
         SecurityMock.Setup(s => s.AssertFamilyPermission(It.IsAny<Guid>()));
 
-        SecurityMock.Fail(s => s.AssertAccountPermission(Models.InvalidAccountId));
-        SecurityMock.Fail(s => s.AssertAccountGroupPermission(Models.InvalidAccountGroupId));
+        SecurityMock.Fail(s => s.AssertInstrumentPermission(Models.InvalidAccountId));
+        SecurityMock.Fail(s => s.AssertGroupPermission(Models.InvalidGroupId));
         SecurityMock.Fail(s => s.AssertFamilyPermission(Models.InvalidAccountFamilyId));
 
         CurrencyConverterMock = new Mock<ICurrencyConverter>();

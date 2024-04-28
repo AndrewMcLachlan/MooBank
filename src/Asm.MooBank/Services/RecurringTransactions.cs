@@ -3,7 +3,6 @@ using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Models;
 using Microsoft.Extensions.Logging;
-using Microsoft.Identity.Client;
 
 namespace Asm.MooBank.Services;
 
@@ -18,7 +17,7 @@ public interface IRecurringTransactionService
 /// <summary>
 /// Processes recurring transactions.
 /// </summary>
-public class RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionRepository transactionRepository, IRecurringTransactionRepository recurringTransactionRepository, ILogger<RecurringTransactionService> logger) : ServiceBase(unitOfWork), IRecurringTransactionService
+public class RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionRepository transactionRepository, IRecurringTransactionRepository recurringTransactionRepository, ILogger<RecurringTransactionService> logger) : IRecurringTransactionService
 {
     /// <summary>
     /// Get all recurring transactions and process them.
@@ -44,7 +43,7 @@ public class RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionRep
             }
         }
 
-        await UnitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
     }
 
     /// <summary>

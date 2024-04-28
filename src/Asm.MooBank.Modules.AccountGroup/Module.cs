@@ -3,14 +3,14 @@ using Asm.AspNetCore.Modules;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Asm.MooBank.Modules.AccountGroup;
+namespace Asm.MooBank.Modules.Groups;
 public class Module : IModule
 {
     private static readonly Assembly Assembly = typeof(Module).Assembly;
 
     public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
     {
-        new Endpoints.AccountGroups().MapGroup(endpoints);
+        new Endpoints.Groups().MapGroup(endpoints);
 
         return endpoints;
     }

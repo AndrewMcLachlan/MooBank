@@ -1,11 +1,11 @@
 ﻿namespace Asm.MooBank.Infrastructure.EntityConfigurations;
 
-public class VirtualAccount : IEntityTypeConfiguration<Domain.Entities.Account.VirtualAccount>
+public class VirtualAccount : IEntityTypeConfiguration<Domain.Entities.Account.VirtualInstrument>
 {
-    public void Configure(EntityTypeBuilder<Domain.Entities.Account.VirtualAccount> entity)
+    public void Configure(EntityTypeBuilder<Domain.Entities.Account.VirtualInstrument> entity)
     {
-        entity.Property(e => e.Id).HasColumnName("AccountId");
+        entity.ToTable("VirtualInstrument", tb => tb.Property(e => e.Id).HasColumnName("InstrumentId"));
 
-        //entity.HasOne(e => e.InstitutionAccount).WithMany(e => e.VirtualAccounts).HasForeignKey(e => e.InstitutionAccountId);
+        entity.Property(e => e.Id).HasColumnName("InstrumentId");
     }
 }

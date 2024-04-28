@@ -1,8 +1,10 @@
-﻿namespace Asm.MooBank.Infrastructure.EntityConfigurations;
+﻿using Asm.MooBank.Domain.Entities.Instrument;
 
-internal class TransactionAccountConfiguration : IEntityTypeConfiguration<Domain.Entities.Account.TransactionAccount>
+namespace Asm.MooBank.Infrastructure.EntityConfigurations;
+
+internal class TransactionAccountConfiguration : IEntityTypeConfiguration<TransactionInstrument>
 {
-    public void Configure(EntityTypeBuilder<Domain.Entities.Account.TransactionAccount> entity)
+    public void Configure(EntityTypeBuilder<TransactionInstrument> entity)
     {
         // Required for computed columns
         entity.ToTable(t => t.HasTrigger("ComputedColumns"));

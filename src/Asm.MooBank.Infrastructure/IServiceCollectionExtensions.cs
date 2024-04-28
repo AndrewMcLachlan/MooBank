@@ -1,8 +1,7 @@
 ﻿using System.Reflection;
 using Asm.Domain.Infrastructure;
 using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Domain.Entities.AccountGroup;
-using Asm.MooBank.Domain.Entities.AccountHolder;
+using Asm.MooBank.Domain.Entities.Group;
 using Asm.MooBank.Domain.Entities.Asset;
 using Asm.MooBank.Domain.Entities.Budget;
 using Asm.MooBank.Domain.Entities.Family;
@@ -18,6 +17,8 @@ using Asm.MooBank.Infrastructure.Repositories;
 using Asm.MooBank.Security;
 using LazyCache;
 using Microsoft.Extensions.Configuration;
+using Asm.MooBank.Domain.Entities.User;
+using Asm.MooBank.Domain.Entities.Instrument;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -39,7 +40,7 @@ public static class IServiceCollectionExtensions
             options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
         }));
 
-        services.AddDomainEvents(typeof(Account).Assembly);
+        services.AddDomainEvents(typeof(Instrument).Assembly);
 
         return services.AddUnitOfWork<MooBankContext>();
     }
@@ -64,9 +65,9 @@ public static class IServiceCollectionExtensions
 
     public static IServiceCollection AddRepositories(this IServiceCollection services) =>
         services.AddScoped<IInstitutionAccountRepository, InstitutionAccountRepository>()
-                .AddScoped<IAccountRepository, AccountRepository>()
-                .AddScoped<IAccountGroupRepository, AccountGroupRepository>()
-                .AddScoped<IAccountHolderRepository, AccountHolderRepository>()
+                .AddScoped<IInstrumentRepository, InstrumentRepository>()
+                .AddScoped<IGroupRepository, GroupRepository>()
+                .AddScoped<IUserRepository, UserRepository>()
                 .AddScoped<IAssetRepository, AssetRepository>()
                 .AddScoped<IBudgetRepository, BudgetRepository>()
                 .AddScoped<IFamilyRepository, FamilyRepository>()
@@ -80,7 +81,7 @@ public static class IServiceCollectionExtensions
                 .AddScoped<IRuleRepository, RuleRepository>();
 
     public static IServiceCollection AddEntities(this IServiceCollection services) =>
-        services.AddAggregateRoots<MooBankContext>(typeof(IAccountGroupRepository).Assembly);
+        services.AddAggregateRoots<MooBankContext>(typeof(IGroupRepository).Assembly);
 
     public static IServiceCollection AddImporterFactory(this IServiceCollection services) =>
         services.AddTransient<IImporterFactory, ImporterFactory>();

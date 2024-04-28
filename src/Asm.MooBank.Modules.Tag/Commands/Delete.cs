@@ -2,11 +2,11 @@
 using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Models;
 
-namespace Asm.MooBank.Modules.Tag.Commands;
+namespace Asm.MooBank.Modules.Tags.Commands;
 
 internal record Delete(int Id) : ICommand;
 
-internal class DeleteHandler(ITagRepository tagRepository, IUnitOfWork unitOfWork, AccountHolder accountHolder, ISecurity security) : CommandHandlerBase(unitOfWork, accountHolder, security), ICommandHandler<Delete>
+internal class DeleteHandler(ITagRepository tagRepository, IUnitOfWork unitOfWork, ISecurity security) :  ICommandHandler<Delete>
 {
     private readonly ITagRepository _tagRepository = tagRepository;
 
@@ -14,10 +14,10 @@ internal class DeleteHandler(ITagRepository tagRepository, IUnitOfWork unitOfWor
     {
         var entity = await _tagRepository.Get(command.Id, false, cancellationToken);
 
-        await Security.AssertFamilyPermission(entity.FamilyId);
+        await security.AssertFamilyPermission(entity.FamilyId);
 
         _tagRepository.Delete(entity);
 
-        await UnitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

@@ -1,11 +1,11 @@
 ﻿using Asm.Cqrs.AspNetCore;
-using Asm.MooBank.Modules.Family.Commands;
-using Asm.MooBank.Modules.Family.Queries;
+using Asm.MooBank.Modules.Families.Commands;
+using Asm.MooBank.Modules.Families.Queries;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace Asm.MooBank.Modules.Family.Endpoints;
+namespace Asm.MooBank.Modules.Families.Endpoints;
 internal class Families : EndpointGroupBase
 {
     public override string Name => "Families";

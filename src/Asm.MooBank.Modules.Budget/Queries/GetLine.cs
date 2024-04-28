@@ -1,12 +1,11 @@
 ﻿using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Budget.Models;
-using Asm.MooBank.Queries;
+using Asm.MooBank.Modules.Budgets.Models;
 
-namespace Asm.MooBank.Modules.Budget.Queries;
+namespace Asm.MooBank.Modules.Budgets.Queries;
 
 public record GetLine(short Year, Guid Id) : IQuery<BudgetLine>;
 
-internal class GetLineHandler(IQueryable<Domain.Entities.Budget.BudgetLine> budgetLines, AccountHolder accountHolder, ISecurity security) : QueryHandlerBase(accountHolder), IQueryHandler<GetLine, BudgetLine>
+internal class GetLineHandler(IQueryable<Domain.Entities.Budget.BudgetLine> budgetLines, ISecurity security) : IQueryHandler<GetLine, BudgetLine>
 {
     public async ValueTask<BudgetLine> Handle(GetLine request, CancellationToken cancellationToken)
     {

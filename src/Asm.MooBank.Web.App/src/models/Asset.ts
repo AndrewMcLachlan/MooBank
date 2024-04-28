@@ -1,6 +1,6 @@
-import { AccountBase, TopLevelAccount } from "./Account";
+import { Instrument, TopLevelAccount } from "./Account";
 
-export interface AssetBase extends AccountBase, TopLevelAccount {
+export interface AssetBase extends Instrument, TopLevelAccount {
     purchasePrice?: number;
 }
 
@@ -14,7 +14,7 @@ export const emptyAsset: NewAsset = {
     id: "",
     name: "",
     purchasePrice: 0,
-    accountGroupId: "",
+    groupId: "",
     currentBalance: 0,
     currentBalanceLocalCurrency: 0,
     currency: "",

@@ -2,7 +2,7 @@
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
-public class TransactionTagRepository(MooBankContext dataContext, Models.AccountHolder accountHolder) : RepositoryDeleteBase<Tag, int>(dataContext), ITagRepository
+public class TransactionTagRepository(MooBankContext dataContext, Models.User user) : RepositoryDeleteBase<Tag, int>(dataContext), ITagRepository
 {
     public void AddSettings(Tag transactionTag)
     {
@@ -15,7 +15,7 @@ public class TransactionTagRepository(MooBankContext dataContext, Models.Account
 
     public override async Task<IEnumerable<Tag>> Get(CancellationToken cancellationToken = default)
     {
-        return await Entities.Include(t => t.Tags).Where(t => t.FamilyId == accountHolder.FamilyId && !t.Deleted).ToListAsync(cancellationToken);
+        return await Entities.Include(t => t.Tags).Where(t => t.FamilyId == user.FamilyId && !t.Deleted).ToListAsync(cancellationToken);
     }
 
     public override Task<Tag> Get(int id, CancellationToken cancellationToken = default)
@@ -24,7 +24,7 @@ public class TransactionTagRepository(MooBankContext dataContext, Models.Account
     }
 
     public async Task<IEnumerable<Tag>> Get(IEnumerable<int> tagIds, CancellationToken cancellationToken = default) =>
-        await Entities.Where(t => t.FamilyId == accountHolder.FamilyId && tagIds.Contains(t.Id)).ToListAsync(cancellationToken);
+        await Entities.Where(t => t.FamilyId == user.FamilyId && tagIds.Contains(t.Id)).ToListAsync(cancellationToken);
 
 
     public async Task<Tag> Get(int id, bool includeSubTags = false, CancellationToken cancellationToken = default)
@@ -41,5 +41,5 @@ public class TransactionTagRepository(MooBankContext dataContext, Models.Account
         tag.Deleted = true;
     }
 
-    protected override IQueryable<Tag> GetById(int id) => Entities.Where(t => t.Id == id && t.FamilyId == accountHolder.FamilyId);
+    protected override IQueryable<Tag> GetById(int id) => Entities.Where(t => t.Id == id && t.FamilyId == user.FamilyId);
 }

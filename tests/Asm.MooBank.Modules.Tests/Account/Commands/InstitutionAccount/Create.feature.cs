@@ -133,7 +133,7 @@ this.ScenarioInitialize(scenarioInfo);
 testRunner.Given("I have a request to create an institution account", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 12
-testRunner.And("I have an invalid account group ID", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+testRunner.And("I have an invalid group ID", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 13
 testRunner.When("I call CreateHandler.Handle", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");

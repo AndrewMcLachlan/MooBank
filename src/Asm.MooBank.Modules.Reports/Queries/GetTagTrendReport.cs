@@ -2,7 +2,6 @@
 using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Modules.Reports.Models;
-using Asm.MooBank.Queries.Transactions;
 
 namespace Asm.MooBank.Modules.Reports.Queries;
 
@@ -25,7 +24,7 @@ internal class GetTagTrendReportHandler(IQueryable<Transaction> transactions, IQ
 
     public async ValueTask<TagTrendReport> Handle(GetTagTrendReport request, CancellationToken cancellationToken)
     {
-        securityRepository.AssertAccountPermission(request.AccountId);
+        securityRepository.AssertInstrumentPermission(request.AccountId);
 
         var transactionTypeFilter = request.ReportType.ToTransactionFilter();
 

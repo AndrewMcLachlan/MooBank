@@ -1,6 +1,5 @@
 ﻿using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Modules.Reports.Models;
-using Asm.MooBank.Queries.Transactions;
 
 namespace Asm.MooBank.Modules.Reports.Queries;
 
@@ -16,7 +15,7 @@ internal class GetByTagReportHandler(IQueryable<Transaction> transactions, ISecu
 
     public async ValueTask<ByTagReport> Handle(GetByTagReport request, CancellationToken cancellationToken)
     {
-        _securityRepository.AssertAccountPermission(request.AccountId);
+        _securityRepository.AssertInstrumentPermission(request.AccountId);
 
 
         var start = request.Start.ToStartOfDay();
