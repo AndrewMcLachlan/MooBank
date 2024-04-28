@@ -34,7 +34,6 @@ internal class CreateStepDefinitions(ScenarioInput<Accounts.Models.Account.Insti
                 ImportAccount = account.ImportAccount,
                 IncludeInBudget = account.IncludeInBudget,
                 Institution = account.Institution,
-                IncludeInPosition = account.IncludeInPosition,
                 InstitutionId = account.InstitutionId,
                 LastTransaction = account.LastTransaction,
                 LastUpdated = account.LastUpdated,

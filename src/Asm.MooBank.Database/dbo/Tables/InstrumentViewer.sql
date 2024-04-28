@@ -5,6 +5,6 @@ CREATE TABLE [dbo].[InstrumentViewer]
     GroupId UNIQUEIDENTIFIER NOT NULL,
     CONSTRAINT PK_InstrumentViewer PRIMARY KEY (InstrumentId, UserId),
     CONSTRAINT FK_InstrumentViewer_Account FOREIGN KEY (InstrumentId) REFERENCES [Instrument]([Id]),
-    CONSTRAINT FK_InstrumentViewer_AccountHolder FOREIGN KEY (UserId) REFERENCES [User]([Id]),
-    CONSTRAINT FK_InstrumentViewer_AccountGroup FOREIGN KEY (GroupId) REFERENCES [dbo].[Group](Id),
+    CONSTRAINT FK_InstrumentViewer_User FOREIGN KEY (UserId) REFERENCES [User]([Id]),
+    CONSTRAINT FK_InstrumentViewer_Group FOREIGN KEY (GroupId) REFERENCES [dbo].[Group](Id),
 )

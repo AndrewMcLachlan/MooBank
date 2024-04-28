@@ -47,20 +47,20 @@ WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Ta
 WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.AccountTypeId, SOURCE.[Description]);
 
 -- Controller
-MERGE [Controller] AS TARGET USING (SELECT 0 as AccountControllerId, 'Manual' as [Type]) AS SOURCE
-ON (TARGET.[Id] = SOURCE.AccountControllerId)
+MERGE [Controller] AS TARGET USING (SELECT 0 as Id, 'Manual' as [Type]) AS SOURCE
+ON (TARGET.[Id] = SOURCE.Id)
 WHEN MATCHED AND TARGET.[Type] <> SOURCE.[Type] THEN UPDATE SET Target.[Type] = SOURCE.[Type]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.AccountControllerId, SOURCE.[Type]);
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Type]);
 
-MERGE [Controller] AS TARGET USING (SELECT 1 as AccountControllerId, 'Virtual' as [Type]) AS SOURCE
-ON (TARGET.[Id] = SOURCE.AccountControllerId)
+MERGE [Controller] AS TARGET USING (SELECT 1 as Id, 'Virtual' as [Type]) AS SOURCE
+ON (TARGET.[Id] = SOURCE.Id)
 WHEN MATCHED AND TARGET.[Type] <> SOURCE.[Type] THEN UPDATE SET Target.[Type] = SOURCE.[Type]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.AccountControllerId, SOURCE.[Type]);
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Type]);
 
-MERGE [Controller] AS TARGET USING (SELECT 2 as AccountControllerId, 'Import' as [Type]) AS SOURCE
-ON (TARGET.[Id] = SOURCE.AccountControllerId)
+MERGE [Controller] AS TARGET USING (SELECT 2 as Id, 'Import' as [Type]) AS SOURCE
+ON (TARGET.[Id] = SOURCE.Id)
 WHEN MATCHED AND TARGET.[Type] <> SOURCE.[Type] THEN UPDATE SET Target.[Type] = SOURCE.[Type]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.AccountControllerId, SOURCE.[Type]);
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Type]);
 
 -- Transaction Type
 MERGE TransactionType AS TARGET USING (SELECT 1 as TransactionTypeId, 'Credit' as [Description]) AS SOURCE
@@ -143,6 +143,7 @@ WHEN MATCHED AND TARGET.[Name] <> SOURCE.[Name] THEN UPDATE SET Target.[Name] = 
 WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.[Id], SOURCE.[Name]);
 
 
+/*
 --TEMP
 IF (SELECT COUNT(*) FROM Instrument WHERE ControllerId IS NULL) > 0
 BEGIN
@@ -174,4 +175,4 @@ END
 IF (SELECT COUNT(*) FROM Instrument WHERE ControllerId IS NULL) > 0
 BEGIN
 UPDATE Instrument SET ControllerId = 0 WHERE Id IN ('f700bc42-0f10-4bce-9d6a-073d0cb5e620')
-END
+END*/

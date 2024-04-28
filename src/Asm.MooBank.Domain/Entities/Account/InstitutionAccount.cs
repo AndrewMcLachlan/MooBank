@@ -10,8 +10,6 @@ public class InstitutionAccount(Guid id) : TransactionInstrument(id)
 
     public int InstitutionId { get; set; }
 
-    public bool IncludeInPosition { get; set; }
-
     public new DateTimeOffset LastUpdated { get; set; } = DateTimeOffset.Now;
 
     public bool IncludeInBudget { get; set; }

@@ -252,4 +252,95 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="[Id]" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="c75e66cc-e534-458a-a84e-6b3056a700cd" ChangeDateTime="04/28/2024 10:00:42">
+    <Property Name="ElementName" Value="[dbo].[PK_Account]" />
+    <Property Name="ElementType" Value="SqlPrimaryKeyConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[Instrument]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="PK_Instrument" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="c4d443a2-588c-4c28-8cb7-e4eb84bb1944" ChangeDateTime="04/28/2024 10:02:14">
+    <Property Name="ElementName" Value="[dbo].[PK_AccountController]" />
+    <Property Name="ElementType" Value="SqlPrimaryKeyConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[Controller]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="PK_Controller" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="bcc66fb2-8d76-417d-96d6-ee40b320d6a1" ChangeDateTime="04/28/2024 10:02:34">
+    <Property Name="ElementName" Value="[dbo].[PK_AccountAccountHolder]" />
+    <Property Name="ElementType" Value="SqlPrimaryKeyConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[InstrumentOwner]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="PK_InstrumentOwner" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="f429d010-f467-4e1b-a341-c9feb6a42047" ChangeDateTime="04/28/2024 10:02:46">
+    <Property Name="ElementName" Value="[dbo].[FK_AccountAccountHolder_Account]" />
+    <Property Name="ElementType" Value="SqlForeignKeyConstraint" />
+    <Property Name="ParentElementName" Value="" />
+    <Property Name="ParentElementType" Value="" />
+    <Property Name="NewName" Value="FK_InstrumentOwner_Account" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="76735494-0473-4166-9980-b665d5c35050" ChangeDateTime="04/28/2024 10:02:53">
+    <Property Name="ElementName" Value="[dbo].[FK_AccountAccountHolder_AccountHolder]" />
+    <Property Name="ElementType" Value="SqlForeignKeyConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[InstrumentOwner]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="FK_InstrumentOwner_AccountHolder" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="88772264-21af-422f-afdd-0f8066ea6bf1" ChangeDateTime="04/28/2024 10:03:03">
+    <Property Name="ElementName" Value="[dbo].[FK_AccountAccountHolder_AccountGroup]" />
+    <Property Name="ElementType" Value="SqlForeignKeyConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[InstrumentOwner]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="FK_InstrumentOwner_AccountGroup" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="5fb85797-a4ab-4539-936e-09231580f338" ChangeDateTime="04/28/2024 10:03:24">
+    <Property Name="ElementName" Value="[dbo].[FK_InstrumentViewer_AccountHolder]" />
+    <Property Name="ElementType" Value="SqlForeignKeyConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[InstrumentViewer]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="FK_InstrumentViewer_User" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="8395a819-f54c-4338-b74d-e835c8a754db" ChangeDateTime="04/28/2024 10:03:32">
+    <Property Name="ElementName" Value="[dbo].[FK_InstrumentViewer_AccountGroup]" />
+    <Property Name="ElementType" Value="SqlForeignKeyConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[InstrumentViewer]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="FK_InstrumentViewer_Group" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="284cbb87-73ea-4544-9f45-c9794aba0d53" ChangeDateTime="04/28/2024 10:03:57">
+    <Property Name="ElementName" Value="[dbo].[PK_AccountHolderId]" />
+    <Property Name="ElementType" Value="SqlPrimaryKeyConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[User]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="PK_User" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="794c6ed4-5f9c-477c-911e-43a74f598fc1" ChangeDateTime="04/28/2024 10:04:05">
+    <Property Name="ElementName" Value="[dbo].[FK_AccountHolder_Family]" />
+    <Property Name="ElementType" Value="SqlForeignKeyConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[User]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="FK_User_Family" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="27693f36-49ba-4166-a458-2a9bb77da668" ChangeDateTime="04/28/2024 10:04:14">
+    <Property Name="ElementName" Value="[dbo].[FK_AccountHolder_PrimaryAccount]" />
+    <Property Name="ElementType" Value="SqlForeignKeyConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[User]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="FK_User_PrimaryAccount" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="93954f01-e537-4fc6-b5ec-3f45a8c1972b" ChangeDateTime="04/28/2024 10:04:31">
+    <Property Name="ElementName" Value="[dbo].[PK_AccountHolderCard]" />
+    <Property Name="ElementType" Value="SqlPrimaryKeyConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[UserCard]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="PK_UserCard" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="7db5d84f-2bfa-4bae-99dd-5eeb8595241a" ChangeDateTime="04/28/2024 10:04:47">
+    <Property Name="ElementName" Value="[dbo].[FK_AccountHolderCard_AccountHolder]" />
+    <Property Name="ElementType" Value="SqlForeignKeyConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[UserCard]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="FK_UserCard_User" />
+  </Operation>
 </Operations>
