@@ -11,10 +11,6 @@ public class Module : IModule
     public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
     {
         new Endpoints.Accounts().MapGroup(endpoints);
-        new Endpoints.Import().MapGroup(endpoints);
-        new Endpoints.RecurringEndpoints().MapGroup(endpoints);
-        new Endpoints.RulesEndpoints().MapGroup(endpoints);
-        new Endpoints.VirtualAccounts().MapGroup(endpoints);
 
         return endpoints;
     }

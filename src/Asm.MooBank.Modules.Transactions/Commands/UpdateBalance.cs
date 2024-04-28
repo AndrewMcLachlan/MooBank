@@ -1,10 +1,9 @@
-﻿using Asm.MooBank.Commands;
-using Asm.MooBank.Domain.Entities.Transactions;
+﻿using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Transactions.Models;
 using Asm.MooBank.Modules.Transactions.Models.Extensions;
 using Asm.MooBank.Services;
-using IInstrumentRepository = Asm.MooBank.Domain.Entities.Account.IInstrumentRepository;
+using IInstrumentRepository = Asm.MooBank.Domain.Entities.Instrument.IInstrumentRepository;
 
 namespace Asm.MooBank.Modules.Transactions.Commands;
 
@@ -18,7 +17,7 @@ internal class UpdateBalanceHandler(IInstrumentRepository accountRepository, ITr
 
         var account = await accountRepository.Get(command.AccountId, cancellationToken);
 
-        if (account is not Domain.Entities.Account.TransactionAccount transactionAccount)
+        if (account is not Domain.Entities.Instrument.TransactionInstrument transactionAccount)
         {
             throw new InvalidOperationException("Not a transaction account.");
         }

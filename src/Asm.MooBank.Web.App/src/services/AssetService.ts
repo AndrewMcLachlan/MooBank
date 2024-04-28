@@ -1,5 +1,5 @@
 import { UseQueryResult, useQueryClient, } from "@tanstack/react-query";
-import { InstitutionAccount, AccountId, NewAsset, Asset } from "../models";
+import { InstitutionAccount, InstrumentId, NewAsset, Asset } from "../models";
 import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
 import { accountsKey } from "./AccountService";
 
@@ -27,7 +27,7 @@ export const useCreateAsset = () => {
 export const useUpdateAsset = () => {
     const queryClient = useQueryClient();
 
-    const { mutate } = useApiPatch<Asset, AccountId, Asset>((accountId) => `api/assets/${accountId}`, {
+    const { mutate } = useApiPatch<Asset, InstrumentId, Asset>((accountId) => `api/assets/${accountId}`, {
         onSettled: (_data,_error,[accountId]) => {
             queryClient.invalidateQueries({ queryKey: [accountsKey]});
             queryClient.invalidateQueries({ queryKey: [assetKey, { accountId }]});

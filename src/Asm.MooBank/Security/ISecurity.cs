@@ -1,6 +1,5 @@
-﻿
-using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Domain.Entities.Group;
+﻿using Asm.MooBank.Domain.Entities.Group;
+using Asm.MooBank.Domain.Entities.Instrument;
 
 namespace Asm.MooBank.Security;
 
@@ -8,7 +7,7 @@ public interface ISecurity
 {
     void AssertInstrumentPermission(Guid instrumentId);
 
-    Task AssertInstrumentPermissionAsync(Guid instrumentId);
+    Task AssertInstrumentPermissionAsync(Guid instrumentId, CancellationToken cancellationToken);
 
     void AssertInstrumentPermission(Instrument instrument);
 

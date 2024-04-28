@@ -1,5 +1,5 @@
 import { useQueryClient, UseQueryResult } from "@tanstack/react-query";
-import { CreateTransaction, InstitutionAccount, AccountId, AccountList, ImportAccount } from "../models";
+import { CreateTransaction, InstitutionAccount, InstrumentId, AccountList, ImportAccount } from "../models";
 import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
 import { ListItem } from "models/ListItem";
 
@@ -9,9 +9,9 @@ export const accountListKey = "account-list";
 
 export const useAccounts = (): UseQueryResult<InstitutionAccount[]> => useApiGet<InstitutionAccount[]>([accountsKey], `api/accounts`);
 
-export const useFormattedAccounts = () => useApiGet<AccountList>([formattedAccountsKey], "api/accounts/position");
+export const useFormattedAccounts = () => useApiGet<AccountList>([formattedAccountsKey], "api/instruments/summary");
 
-export const useAccountsList = () => useApiGet<ListItem<string>[]>([accountListKey], "api/accounts/list");
+export const useAccountsList = () => useApiGet<ListItem<string>[]>([accountListKey], "api/instruments/list");
 
 export const useAccount = (accountId: string) => useApiGet<InstitutionAccount>(["account", { accountId }], `api/accounts/${accountId}`);
 
@@ -35,7 +35,7 @@ export const useCreateAccount = () => {
 export const useUpdateAccount = () => {
     const queryClient = useQueryClient();
 
-    const { mutate} = useApiPatch<InstitutionAccount, AccountId, InstitutionAccount>((accountId) => `api/accounts/${accountId}`, {
+    const { mutate} = useApiPatch<InstitutionAccount, InstrumentId, InstitutionAccount>((accountId) => `api/accounts/${accountId}`, {
         onSettled: (_data,_error,[accountId]) => {
             queryClient.invalidateQueries({ queryKey: [accountsKey]});
             queryClient.invalidateQueries({ queryKey: ["account", { accountId }]});
@@ -52,7 +52,7 @@ export const useUpdateAccount = () => {
 export const useUpdateBalance = () => {
     const queryClient = useQueryClient();
 
-    const { mutate} = useApiPost<InstitutionAccount, AccountId, CreateTransaction>((accountId) => `api/accounts/${accountId}/transactions/balance-adjustment`, {
+    const { mutate} = useApiPost<InstitutionAccount, InstrumentId, CreateTransaction>((accountId) => `api/accounts/${accountId}/transactions/balance-adjustment`, {
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: [accountsKey]});
         },

@@ -1,5 +1,6 @@
 ﻿using Asm.Domain.Infrastructure;
 using Asm.MooBank.Domain.Entities.Account;
+using Asm.MooBank.Domain.Entities.Instrument;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
@@ -25,6 +26,6 @@ public class InstrumentRepository(MooBankContext dataContext) : Asm.Domain.Infra
 
     protected IQueryable<Instrument> GetById(Guid id) => Entities.Where(a => a.Id == id);
 
-    public Task Reload(InstitutionAccount account, CancellationToken cancellationToken) =>
-    Context.Entry(account).ReloadAsync(cancellationToken);
+    public Task Reload(Instrument instrument, CancellationToken cancellationToken) =>
+    Context.Entry(instrument).ReloadAsync(cancellationToken);
 }

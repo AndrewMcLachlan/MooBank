@@ -2,6 +2,7 @@
 using Asm.MooBank.Domain.Entities.StockHolding;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Stocks.Models;
+using Asm.MooBank.Services;
 
 namespace Asm.MooBank.Modules.Stocks.Commands;
 public sealed record Create() : ICommand<Models.StockHolding>
@@ -16,7 +17,7 @@ public sealed record Create() : ICommand<Models.StockHolding>
     public Guid? GroupId { get; init; }
 }
 
-internal class CreateHandler(IStockHoldingRepository repository, IUnitOfWork unitOfWork, User user, ISecurity security) :  ICommandHandler<Create, Models.StockHolding>
+internal class CreateHandler(IStockHoldingRepository repository, IUnitOfWork unitOfWork, User user, ISecurity security, ICurrencyConverter currencyConverter) :  ICommandHandler<Create, Models.StockHolding>
 {
     public async ValueTask<Models.StockHolding> Handle(Create command, CancellationToken cancellationToken)
     {
@@ -50,6 +51,6 @@ internal class CreateHandler(IStockHoldingRepository repository, IUnitOfWork uni
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return entity.ToModel();
+        return entity.ToModel(currencyConverter);
     }
 }

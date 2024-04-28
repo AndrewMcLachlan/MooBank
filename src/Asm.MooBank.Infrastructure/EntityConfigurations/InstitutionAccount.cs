@@ -8,12 +8,6 @@ public class InstitutionAccount : IEntityTypeConfiguration<Domain.Entities.Accou
             .HasColumnType("datetimeoffset(0)")
             .HasDefaultValueSql("(sysutcdatetime())");
 
-        entity.Property(r => r.AccountType)
-            .HasConversion(e => (int)e, e => (Models.AccountType)e);
-
-        entity.Property(r => r.AccountController)
-            .HasConversion(e => (int)e, e => (Models.AccountController)e);
-
         entity.HasOne(e => e.ImportAccount)
               .WithOne()
             .HasForeignKey<Domain.Entities.Account.ImportAccount>(e => e.AccountId);

@@ -1,5 +1,4 @@
-﻿using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Models;
+﻿using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Importers;
 

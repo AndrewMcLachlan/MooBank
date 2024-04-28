@@ -1,6 +1,8 @@
-﻿namespace Asm.MooBank.Domain.Entities.Account;
+﻿using Asm.MooBank.Domain.Entities.Instrument;
 
-public partial class VirtualInstrument(Guid id) : TransactionAccount(id)
+namespace Asm.MooBank.Domain.Entities.Account;
+
+public partial class VirtualInstrument(Guid id) : TransactionInstrument(id)
 {
     public Guid ParentInstrumentId { get; set; }
 

@@ -1,4 +1,5 @@
 ﻿using Asm.Cqrs.AspNetCore;
+using Asm.MooBank.Modules.Stocks.Commands.Transactions;
 using Asm.MooBank.Modules.Stocks.Models;
 using Asm.MooBank.Modules.Stocks.Queries.StockTransactions;
 using Microsoft.AspNetCore.Builder;
@@ -9,7 +10,7 @@ internal class StockTransactionsEndpoints : EndpointGroupBase
 {
     public override string Name => "Stock Transactions";
 
-    public override string Path => "/stock/{accountId}/transactions";
+    public override string Path => "/stocks/{stockHoldingId}/transactions";
 
     public override string Tags => "Transactions";
 
@@ -17,5 +18,8 @@ internal class StockTransactionsEndpoints : EndpointGroupBase
     {
         builder.MapPagedQuery<Get, StockTransaction>("{pageSize}/{pageNumber}")
             .WithNames("Get Stock Transactions");
+
+        builder.MapCommand<Create, StockTransaction>("/", CommandBinding.None)
+            .WithNames("Create Stock Transaction");
     }
 }

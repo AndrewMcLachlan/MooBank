@@ -1,7 +1,7 @@
-﻿using Asm.MooBank.Commands;
-using Asm.MooBank.Domain.Entities.Asset;
+﻿using Asm.MooBank.Domain.Entities.Asset;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Assets.Models;
+using Asm.MooBank.Services;
 
 namespace Asm.MooBank.Modules.Assets.Commands;
 public sealed record Create() : ICommand<Models.Asset>
@@ -11,16 +11,16 @@ public sealed record Create() : ICommand<Models.Asset>
     public decimal? PurchasePrice { get; init; }
     public decimal CurrentValue { get; init; }
     public required bool ShareWithFamily { get; init; }
-    public Guid? GroupId { get; init; }
+    public Guid? AccountGroupId { get; init; }
 }
 
-internal class CreateHandler(IAssetRepository repository, IUnitOfWork unitOfWork, User user, ISecurity security) :  ICommandHandler<Create, Models.Asset>
+internal class CreateHandler(IAssetRepository repository, IUnitOfWork unitOfWork, User user, ISecurity security, ICurrencyConverter currencyConverter) :  ICommandHandler<Create, Models.Asset>
 {
     public async ValueTask<Models.Asset> Handle(Create command, CancellationToken cancellationToken)
     {
-        if (command.GroupId != null)
+        if (command.AccountGroupId != null)
         {
-            security.AssertGroupPermission(command.GroupId.Value);
+            security.AssertGroupPermission(command.AccountGroupId.Value);
         }
 
         Domain.Entities.Asset.Asset entity = new(Guid.Empty)
@@ -34,13 +34,13 @@ internal class CreateHandler(IAssetRepository repository, IUnitOfWork unitOfWork
         };
 
         entity.SetAccountHolder(user.Id);
-        entity.SetGroup(command.GroupId, user.Id);
+        entity.SetGroup(command.AccountGroupId, user.Id);
 
         repository.Add(entity);
 
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return entity.ToModel();
+        return entity.ToModel(currencyConverter);
     }
 }

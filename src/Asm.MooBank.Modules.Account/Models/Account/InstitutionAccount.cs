@@ -3,23 +3,9 @@ using Asm.MooBank.Services;
 
 namespace Asm.MooBank.Modules.Accounts.Models.Account;
 
-public partial record InstitutionAccount : TransactionAccount
+public partial record InstitutionAccount : TransactionInstrument
 {
-    private AccountType _accountType;
-
-    public bool IncludeInPosition { get; set; }
-
-    public new AccountType AccountType
-    {
-        get => _accountType;
-        set
-        {
-            _accountType = value;
-            base.AccountType = value.ToString();
-        }
-    }
-
-    public AccountController Controller { get; set; }
+    public AccountType AccountType { get; set; }
 
     public int? ImporterTypeId { get; set; }
 
@@ -30,11 +16,6 @@ public partial record InstitutionAccount : TransactionAccount
     public int InstitutionId { get; set; }
 
     public bool IncludeInBudget { get; init; }
-
-    public decimal VirtualAccountRemainingBalance
-    {
-        get => CurrentBalance - (VirtualAccounts?.Sum(v => v.CurrentBalance) ?? 0);
-    }
 }
 
 public static class InstitutionAccountExtensions
@@ -48,15 +29,15 @@ public static class InstitutionAccountExtensions
         CurrentBalance = account.Balance,
         CurrentBalanceLocalCurrency = currencyConverter.Convert(account.Balance, account.Currency),
         CalculatedBalance = account.CalculatedBalance,
-        BalanceDate = ((Domain.Entities.Account.Instrument)account).LastUpdated,
+        BalanceDate = ((Domain.Entities.Instrument.Instrument)account).LastUpdated,
         LastTransaction = account.LastTransaction,
-        AccountType = account.AccountType,
-        Controller = account.AccountController,
+        InstrumentType = account.AccountType.ToString(),
+        Controller = account.Controller,
         ImporterTypeId = account.ImportAccount?.ImporterTypeId,
         ShareWithFamily = account.ShareWithFamily,
         IncludeInBudget = account.IncludeInBudget,
         InstitutionId = account.InstitutionId,
-        VirtualAccounts = account.VirtualInstruments != null && account.VirtualInstruments.Count != 0 ?
+        VirtualInstruments = account.VirtualInstruments != null && account.VirtualInstruments.Count != 0 ?
                           account.VirtualInstruments.OrderBy(v => v.Name).Select(v => v.ToModel(currencyConverter))
                                                  .Union(Remaining(account, currencyConverter)).ToArray() : [],
     };
@@ -66,10 +47,9 @@ public static class InstitutionAccountExtensions
         Name = account.Name,
         Description = account.Description,
         Balance = account.CurrentBalance,
-        IncludeInPosition = account.IncludeInPosition,
         LastUpdated = account.BalanceDate,
         AccountType = account.AccountType,
-        AccountController = account.Controller,
+        Controller = account.Controller,
         ShareWithFamily = account.ShareWithFamily,
         IncludeInBudget = account.IncludeInBudget,
         InstitutionId = account.InstitutionId,
@@ -102,6 +82,7 @@ public static class InstitutionAccountExtensions
         {
             Id = Guid.Empty,
             Name = "Remaining",
+            Controller = Controller.Virtual,
             Currency = account.Currency,
             CurrentBalance = remainingBalance,
             CurrentBalanceLocalCurrency = currencyConverter.Convert(remainingBalance, account.Currency)

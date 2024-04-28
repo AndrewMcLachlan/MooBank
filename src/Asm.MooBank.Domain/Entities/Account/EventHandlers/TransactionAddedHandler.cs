@@ -1,17 +1,18 @@
-﻿using Asm.MooBank.Domain.Entities.Transactions.Events;
+﻿using Asm.MooBank.Domain.Entities.Instrument;
+using Asm.MooBank.Domain.Entities.Transactions.Events;
 
 namespace Asm.MooBank.Domain.Entities.Account.EventHandlers;
-internal class TransactionAddedHandler(IInstrumentRepository accountRepository) : IDomainEventHandler<TransactionAddedEvent>
+internal class TransactionAddedHandler(IInstrumentRepository instrumentRepository) : IDomainEventHandler<TransactionAddedEvent>
 {
     public async Task Handle(TransactionAddedEvent request, CancellationToken cancellationToken)
     {
-        var account = await accountRepository.Get(request.Transaction.AccountId, cancellationToken);
+        var instrument = await instrumentRepository.Get(request.Transaction.AccountId, cancellationToken);
 
-        if (account is InstitutionAccount institutionAccount && institutionAccount.AccountController == AccountController.Import)
+        if (instrument.Controller == Controller.Import)
         {
             return;
         }
 
-        account.Balance += request.Transaction.Amount;
+        instrument.Balance += request.Transaction.Amount;
     }
 }

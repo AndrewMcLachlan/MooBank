@@ -2,6 +2,7 @@
 using Asm.MooBank.Domain.Entities.Asset;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Assets.Models;
+using Asm.MooBank.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,7 +30,7 @@ public sealed record Update : ICommand<Models.Asset>
     }
 }
 
-internal class UpdateHandler(IAssetRepository repository, IUnitOfWork unitOfWork, User user, ISecurity security) :  ICommandHandler<Update, Models.Asset>
+internal class UpdateHandler(IAssetRepository repository, IUnitOfWork unitOfWork, User user, ISecurity security, ICurrencyConverter currencyConverter) :  ICommandHandler<Update, Models.Asset>
 {
     public async ValueTask<Models.Asset> Handle(Update command, CancellationToken cancellationToken)
     {
@@ -51,6 +52,6 @@ internal class UpdateHandler(IAssetRepository repository, IUnitOfWork unitOfWork
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return Asset.ToModel();
+        return Asset.ToModel(currencyConverter);
     }
 }

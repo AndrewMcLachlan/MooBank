@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[TransactionAccount]
+﻿CREATE TABLE [dbo].[TransactionInstrument]
 (
     [InstrumentId] UNIQUEIDENTIFIER NOT NULL,
     [LastTransaction] AS dbo.LastTransaction([InstrumentId]),

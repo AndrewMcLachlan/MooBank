@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-import { AccountController, AccountControllers, AccountType, AccountTypes, ImportAccount, InstitutionAccount } from "models";
+import { Controller, Controllers, AccountType, AccountTypes, ImportAccount, InstitutionAccount } from "models";
 import { useGroups, useCreateAccount, useInstitutions } from "services";
 import { ImportSettings } from "./ImportSettings";
 import { CurrencySelector } from "components";
@@ -20,7 +20,7 @@ export const CreateAccount: React.FC = () => {
     const [description, setDescription] = useState("");
     const [balance, setBalance] = useState(0);
     const [accountType, setAccountType] = useState<AccountType>("Transaction");
-    const [accountController, setAccountController] = useState<AccountController>("Manual");
+    const [accountController, setAccountController] = useState<Controller>("Manual");
     const [importerTypeId, setImporterTypeId] = useState(0);
     const [groupId, setgroupId] = useState("");
     const [includeInBudget, setIncludeInBudget] = useState(false);
@@ -49,7 +49,7 @@ export const CreateAccount: React.FC = () => {
             institutionId: institution,
             includeInBudget: includeInBudget,
             importerTypeId: accountController === "Import" ? importerTypeId : undefined,
-            virtualAccounts: [],
+            virtualInstruments: [],
         };
 
         createAccount(account);
@@ -92,12 +92,12 @@ export const CreateAccount: React.FC = () => {
                 </Form.Group>
                 <Form.Group controlId="group">
                     <Form.Label>Group</Form.Label>
-                    <Form.Control as="select" value={groupId} onChange={(e: any) => setgroupId(e.currentTarget.value)}>
+                    <Form.Select value={groupId} onChange={(e: any) => setgroupId(e.currentTarget.value)}>
                         <option value="">Select a group...</option>
                         {groups?.map(a =>
                             <option value={a.id} key={a.id}>{a.name}</option>
                         )}
-                    </Form.Control>
+                    </Form.Select>
                 </Form.Group>
                 <Form.Group controlId="AccountType" >
                     <Form.Label>Type</Form.Label>
@@ -109,11 +109,11 @@ export const CreateAccount: React.FC = () => {
                 </Form.Group>
                 <Form.Group controlId="AccountController">
                     <Form.Label>Controller</Form.Label>
-                    <Form.Control as="select" value={accountController.toString()} onChange={(e: any) => setAccountController(e.currentTarget.value as AccountController)}>
-                        {AccountControllers.map(a =>
+                    <Form.Select value={accountController.toString()} onChange={(e: any) => setAccountController(e.currentTarget.value as Controller)}>
+                        {Controllers.map(a =>
                             <option value={a} key={a}>{a}</option>
                         )}
-                    </Form.Control>
+                    </Form.Select>
                 </Form.Group>
                 <ImportSettings show={accountController === "Import"} selectedId={importerTypeId} onChange={(e) => setImporterTypeId(e)} />
                 <Form.Group controlId="IncludeInBudget">

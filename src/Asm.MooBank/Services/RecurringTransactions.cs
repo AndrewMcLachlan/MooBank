@@ -3,7 +3,6 @@ using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Models;
 using Microsoft.Extensions.Logging;
-using Microsoft.Identity.Client;
 
 namespace Asm.MooBank.Services;
 

@@ -13,7 +13,7 @@ export interface AccountListGroupProps {
 }
 
 export const AccountListGroup: React.FC<AccountListGroupProps> = ({ group, isLoading }) => (
-    <SectionTable className="accounts" hover title={group?.name} titleSize={2} hidden={group.accounts.length === 0}>
+    <SectionTable className="accounts" hover title={group?.name} titleSize={2} hidden={group.instruments.length === 0}>
         <thead>
             <tr>
                 <th className="expander d-none d-sm-table-cell"></th>
@@ -23,7 +23,9 @@ export const AccountListGroup: React.FC<AccountListGroupProps> = ({ group, isLoa
             </tr>
         </thead>
         <tbody>
-            {!isLoading && group && group.accounts.map(a => a.controller === "Manual" ? <ManualAccountRow key={a.id} account={a} /> : <AccountRow key={a.id} account={a} />)}
+            {//{!isLoading && group && group.instruments.map(a => a.controller === "Manual_BORK" ? <ManualAccountRow key={a.id} instrument={a} /> : <AccountRow key={a.id} instrument={a} />)}
+            }
+            {!isLoading && group && group.instruments.map(a => <AccountRow key={a.id} instrument={a} />)}
             {isLoading &&
                 <tr><td colSpan={4} className="spinner">
                     <Spinner animation="border" />

@@ -2,11 +2,11 @@ import { InstitutionAccount } from ".";
 
 export interface AccountList {
     groups: AccountListGroup[],
-    position: number,
+    total: number,
 }
 
 export interface AccountListGroup {
     name: string,
-    accounts: InstitutionAccount[],
+    instruments: InstitutionAccount[],
     position?: number
 }

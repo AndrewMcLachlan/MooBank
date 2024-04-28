@@ -8,7 +8,7 @@ namespace Asm.MooBank.Modules.Stocks.Queries.StockTransactions;
 
 public sealed record Get : IQuery<PagedResult>
 {
-    public required Guid AccountId { get; init; }
+    public required Guid StockHoldingId { get; init; }
 
     public string? Filter { get; init; }
 
@@ -29,7 +29,7 @@ internal class GetHandler(IQueryable<Domain.Entities.Transactions.StockTransacti
 {
     public async ValueTask<PagedResult> Handle(Get query, CancellationToken cancellationToken)
     {
-        security.AssertInstrumentPermission(query.AccountId);
+        security.AssertInstrumentPermission(query.StockHoldingId);
 
         var total = await transactions.Where(query).CountAsync(cancellationToken);
 
@@ -56,7 +56,7 @@ file static class IQueryableExtensions
 
     public static IQueryable<Domain.Entities.Transactions.StockTransaction> Where(this IQueryable<Domain.Entities.Transactions.StockTransaction> queryable, Get query)
     {
-        var result = queryable.Where(t => t.AccountId == query.AccountId);
+        var result = queryable.Where(t => t.AccountId == query.StockHoldingId);
 
         result = result.Where(t => (query.Start == null || t.TransactionDate >= query.Start) && (query.End == null || t.TransactionDate <= query.End));
 

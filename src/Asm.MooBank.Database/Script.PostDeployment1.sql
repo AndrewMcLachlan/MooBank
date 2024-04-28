@@ -11,46 +11,56 @@ Post-Deployment Script Template
 */
 
 -- Account Type
-MERGE AccountType AS TARGET USING (SELECT 1 as AccountTypeId, 'Transaction' as [Description]) AS SOURCE
-ON (TARGET.AccountTypeId = SOURCE.AccountTypeId)
+MERGE [AccountType] AS TARGET USING (SELECT 1 as AccountTypeId, 'Transaction' as [Description]) AS SOURCE
+ON (TARGET.[Id] = SOURCE.AccountTypeId)
 WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (1, SOURCE.[Description]);
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.AccountTypeId, SOURCE.[Description]);
 
-MERGE AccountType AS TARGET USING (SELECT 2 as AccountTypeId, 'Savings' as [Description]) AS SOURCE
-ON (TARGET.AccountTypeId = SOURCE.AccountTypeId)
+MERGE [AccountType] AS TARGET USING (SELECT 2 as AccountTypeId, 'Savings' as [Description]) AS SOURCE
+ON (TARGET.[Id] = SOURCE.AccountTypeId)
 WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (2, SOURCE.[Description]);
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.AccountTypeId, SOURCE.[Description]);
 
-MERGE AccountType AS TARGET USING (SELECT 3 as AccountTypeId, 'Credit' as [Description]) AS SOURCE
-ON (TARGET.AccountTypeId = SOURCE.AccountTypeId)
+MERGE [AccountType] AS TARGET USING (SELECT 3 as AccountTypeId, 'Credit' as [Description]) AS SOURCE
+ON (TARGET.[Id] = SOURCE.AccountTypeId)
 WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (3, SOURCE.[Description]);
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.AccountTypeId, SOURCE.[Description]);
 
-MERGE AccountType AS TARGET USING (SELECT 4 as AccountTypeId, 'Mortgage' as [Description]) AS SOURCE
-ON (TARGET.AccountTypeId = SOURCE.AccountTypeId)
+MERGE [AccountType] AS TARGET USING (SELECT 4 as AccountTypeId, 'Mortgage' as [Description]) AS SOURCE
+ON (TARGET.[Id] = SOURCE.AccountTypeId)
 WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (4, SOURCE.[Description]);
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.AccountTypeId, SOURCE.[Description]);
 
-MERGE AccountType AS TARGET USING (SELECT 5 as AccountTypeId, 'Superannuation' as [Description]) AS SOURCE
-ON (TARGET.AccountTypeId = SOURCE.AccountTypeId)
+MERGE [AccountType] AS TARGET USING (SELECT 5 as AccountTypeId, 'Superannuation' as [Description]) AS SOURCE
+ON (TARGET.[Id] = SOURCE.AccountTypeId)
 WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (5, SOURCE.[Description]);
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.AccountTypeId, SOURCE.[Description]);
 
---Account Controller
-MERGE AccountController AS TARGET USING (SELECT 0 as AccountControllerId, 'Manual' as [Type]) AS SOURCE
-ON (TARGET.AccountControllerId = SOURCE.AccountControllerId)
+MERGE [AccountType] AS TARGET USING (SELECT 6 as AccountTypeId, 'Investment' as [Description]) AS SOURCE
+ON (TARGET.[Id] = SOURCE.AccountTypeId)
+WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.AccountTypeId, SOURCE.[Description]);
+
+MERGE [AccountType] AS TARGET USING (SELECT 7 as AccountTypeId, 'Loan' as [Description]) AS SOURCE
+ON (TARGET.[Id] = SOURCE.AccountTypeId)
+WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.AccountTypeId, SOURCE.[Description]);
+
+-- Controller
+MERGE [Controller] AS TARGET USING (SELECT 0 as AccountControllerId, 'Manual' as [Type]) AS SOURCE
+ON (TARGET.[Id] = SOURCE.AccountControllerId)
 WHEN MATCHED AND TARGET.[Type] <> SOURCE.[Type] THEN UPDATE SET Target.[Type] = SOURCE.[Type]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (0, SOURCE.[Type]);
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.AccountControllerId, SOURCE.[Type]);
 
-MERGE AccountController AS TARGET USING (SELECT 1 as AccountControllerId, 'VirtualAccount' as [Type]) AS SOURCE
-ON (TARGET.AccountControllerId = SOURCE.AccountControllerId)
+MERGE [Controller] AS TARGET USING (SELECT 1 as AccountControllerId, 'Virtual' as [Type]) AS SOURCE
+ON (TARGET.[Id] = SOURCE.AccountControllerId)
 WHEN MATCHED AND TARGET.[Type] <> SOURCE.[Type] THEN UPDATE SET Target.[Type] = SOURCE.[Type]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (1, SOURCE.[Type]);
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.AccountControllerId, SOURCE.[Type]);
 
-MERGE AccountController AS TARGET USING (SELECT 2 as AccountControllerId, 'Import' as [Type]) AS SOURCE
-ON (TARGET.AccountControllerId = SOURCE.AccountControllerId)
+MERGE [Controller] AS TARGET USING (SELECT 2 as AccountControllerId, 'Import' as [Type]) AS SOURCE
+ON (TARGET.[Id] = SOURCE.AccountControllerId)
 WHEN MATCHED AND TARGET.[Type] <> SOURCE.[Type] THEN UPDATE SET Target.[Type] = SOURCE.[Type]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (2, SOURCE.[Type]);
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.AccountControllerId, SOURCE.[Type]);
 
 -- Transaction Type
 MERGE TransactionType AS TARGET USING (SELECT 1 as TransactionTypeId, 'Credit' as [Description]) AS SOURCE
@@ -131,3 +141,37 @@ MERGE Family as TARGET USING (SELECT 'DB1A117B-84A9-4F15-B6C2-6BD959B9BAF7' as I
 ON (TARGET.Id = SOURCE.Id)
 WHEN MATCHED AND TARGET.[Name] <> SOURCE.[Name] THEN UPDATE SET Target.[Name] = SOURCE.[Name]
 WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.[Id], SOURCE.[Name]);
+
+
+--TEMP
+IF (SELECT COUNT(*) FROM Instrument WHERE ControllerId IS NULL) > 0
+BEGIN
+    UPDATE i SET ControllerId = AccountControllerId FROM Instrument i INNER JOIN InstitutionAccount a ON i.Id = a.InstrumentId
+END
+
+IF (SELECT COUNT(*) FROM Instrument WHERE ControllerId IS NULL) > 0
+BEGIN
+    UPDATE Instrument SET ControllerId = 1 WHERE Id IN
+    ('886d497a-1d72-4df9-97de-3f79a6b71ccc',
+    '288fe263-94f1-4e64-bf0b-911062f188fc',
+    'ce409b61-124c-4401-8e30-bbc3f14649a8',
+    '153d84e6-0727-4dcc-a3cf-bd10854b56e4',
+    '1727e1ac-e447-4fc6-9da0-c1679366ee64',
+    '651e020f-f813-4c89-bef9-d1a92c83cc4e',
+    'f46156e2-9dc7-48a1-bed3-d79e27a77f2a')
+END
+
+IF (SELECT COUNT(*) FROM Instrument WHERE ControllerId IS NULL) > 0
+BEGIN
+UPDATE Instrument SET ControllerId = 0 WHERE Id IN  ('b5966a47-e12e-4680-81aa-16974310abc7')
+END
+
+IF (SELECT COUNT(*) FROM Instrument WHERE ControllerId IS NULL) > 0
+BEGIN
+UPDATE Instrument SET ControllerId = 0 WHERE Id IN ('765f8a49-ddd4-4dfd-96e9-8bb0725695f1')
+END
+
+IF (SELECT COUNT(*) FROM Instrument WHERE ControllerId IS NULL) > 0
+BEGIN
+UPDATE Instrument SET ControllerId = 0 WHERE Id IN ('f700bc42-0f10-4bce-9d6a-073d0cb5e620')
+END

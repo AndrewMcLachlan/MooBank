@@ -1,4 +1,4 @@
-﻿using Asm.MooBank.Domain.Entities.Account;
+﻿using Asm.MooBank.Domain.Entities.Instrument;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
@@ -17,7 +17,7 @@ public class RuleRepository(MooBankContext context) : RepositoryDeleteBase<Rule,
         return rule ?? throw new NotFoundException("Rule not found");
     }
 
-    public async Task<IEnumerable<Rule>> GetForAccount(Guid accountId, CancellationToken cancellationToken = default) =>
+    public async Task<IEnumerable<Rule>> GetForInstrument(Guid accountId, CancellationToken cancellationToken = default) =>
         await Entities.Include(t => t.Tags).Where(t => t.InstrumentId == accountId).OrderBy(t => t.Contains).ToListAsync(cancellationToken);
 
     protected override IQueryable<Rule> GetById(int id) => Entities.Where(t => t.Id == id);

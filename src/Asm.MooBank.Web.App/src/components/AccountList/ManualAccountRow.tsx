@@ -13,23 +13,23 @@ export const ManualAccountRow: React.FC<AccountRowProps> = (props) => {
 
     const { balanceRef, editingBalance, balanceClick, onRowClick, balanceChange, balance, keyPress } = useComponentState(props);
 
-    const [showVirtualAccounts, setShowVirtualAccounts] = useState<boolean>(localStorage.getItem(`account|${MD5(props.account.id)}`) === "true");
+    const [showVirtualAccounts, setShowVirtualAccounts] = useState<boolean>(localStorage.getItem(`account|${MD5(props.instrument.id)}`) === "true");
 
     const showVirtualAccountsClick = (e: React.MouseEvent<HTMLTableCellElement>) => {
         e.preventDefault();
         e.stopPropagation();
         setShowVirtualAccounts(!showVirtualAccounts);
 
-        localStorage.setItem(`account|${MD5(props.account.id)}`, (!showVirtualAccounts).toString());
+        localStorage.setItem(`account|${MD5(props.instrument.id)}`, (!showVirtualAccounts).toString());
     }
 
     return (
         <>
             <tr onClick={onRowClick} className="clickable" ref={balanceRef}>
-                <td className="d-none d-sm-table-cell" onClick={showVirtualAccountsClick}>{props.account.virtualAccounts && props.account.virtualAccounts.length > 0 && <FontAwesomeIcon icon={showVirtualAccounts ? "chevron-down" : "chevron-right"} />}</td>
-                <td className="name">{props.account.name}</td>
-                <td className="d-none d-sm-table-cell">{props.account.accountType}</td>
-                <td className={classNames("amount", "number", numberClassName(props.account.currentBalance))} onClick={balanceClick}>
+                <td className="d-none d-sm-table-cell" onClick={showVirtualAccountsClick}>{props.instrument.virtualAccounts && props.instrument.virtualAccounts.length > 0 && <FontAwesomeIcon icon={showVirtualAccounts ? "chevron-down" : "chevron-right"} />}</td>
+                <td className="name">{props.instrument.name}</td>
+                <td className="d-none d-sm-table-cell">{props.instrument.accountType}</td>
+                <td className={classNames("amount", "number", numberClassName(props.instrument.currentBalance))} onClick={balanceClick}>
                     {!editingBalance && getBalanceString(balance)}
                     {editingBalance && <input type="number" value={balance} onChange={balanceChange} onKeyPress={keyPress} />}
                 </td>
@@ -37,9 +37,9 @@ export const ManualAccountRow: React.FC<AccountRowProps> = (props) => {
                 {editingAvBalance && <input type="number" value={avBalance} onChange={avBalanceChange} />}
             </td>*/}
             </tr>
-            {props.account.virtualAccounts && props.account.virtualAccounts.length > 0 && showVirtualAccounts &&
-                props.account.virtualAccounts.map(va =>
-                    <VirtualAccountRow key={va.id} accountId={props.account.id} account={va} />
+            {props.instrument.virtualAccounts && props.instrument.virtualAccounts.length > 0 && showVirtualAccounts &&
+                props.instrument.virtualAccounts.map(va =>
+                    <VirtualAccountRow key={va.id} accountId={props.instrument.id} account={va} />
                 )
             }
         </>
@@ -52,7 +52,7 @@ const useComponentState = (props: AccountRowProps) => {
 
     const [editingBalance, setEditingBalance] = useState(false);
 
-    const [balance, setBalance] = useState(props.account.currentBalance);
+    const [balance, setBalance] = useState(props.instrument.currentBalance);
 
     const updateBalance = useUpdateBalance();
 
@@ -60,7 +60,7 @@ const useComponentState = (props: AccountRowProps) => {
 
     const navigate = useNavigate();
 
-    useClickAway(setEditingBalance, balanceRef, () => (editingBalance && props.account.currentBalance !== balance) && doUpdateBalance());
+    useClickAway(setEditingBalance, balanceRef, () => (editingBalance && props.instrument.currentBalance !== balance) && doUpdateBalance());
 
     const balanceClick: React.MouseEventHandler<HTMLTableCellElement> = (e) => {
         setEditingBalance(true);
@@ -69,7 +69,7 @@ const useComponentState = (props: AccountRowProps) => {
     };
 
     const onRowClick = () => {
-        navigate(`/accounts/${props.account.id}`);
+        navigate(`/accounts/${props.instrument.id}`);
     };
 
     const balanceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,7 +84,7 @@ const useComponentState = (props: AccountRowProps) => {
     }
 
     const doUpdateBalance = () => {
-        updateBalance(props.account.id, { amount: balance, transactionTime: new Date().toISOString(), description: "Manual Balance Adjustment" });
+        updateBalance(props.instrument.id, { amount: balance, transactionTime: new Date().toISOString(), description: "Manual Balance Adjustment" });
     }
 
     return {

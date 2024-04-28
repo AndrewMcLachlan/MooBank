@@ -1,20 +1,24 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using Asm.MooBank.Domain.Entities.Account;
+using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Transactions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.StockHolding;
 
 [AggregateRoot]
-public class StockHolding(Guid id) : Account.Instrument(id)
+public class StockHolding(Guid id) : Instrument.Instrument(id)
 {
     public StockSymbol Symbol { get; set; } = null!;
 
     public int Quantity { get; set; }
 
+    [Precision(12, 4)]
     public decimal CurrentPrice { get; set; }
 
+    [Precision(12, 4)]
     public decimal CurrentValue { get; set; }
 
+    [Precision(12, 4)]
     public decimal GainLoss { get; set; }
 
     public new DateTimeOffset LastUpdated { get; set; } = DateTimeOffset.Now;

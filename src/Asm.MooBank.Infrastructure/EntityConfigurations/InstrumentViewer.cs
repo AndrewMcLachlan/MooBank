@@ -1,8 +1,10 @@
-﻿namespace Asm.MooBank.Infrastructure.EntityConfigurations;
+﻿using Asm.MooBank.Domain.Entities.Instrument;
 
-internal class InstrumentViewerConfiguration : IEntityTypeConfiguration<Domain.Entities.Account.InstrumentViewer>
+namespace Asm.MooBank.Infrastructure.EntityConfigurations;
+
+internal class InstrumentViewerConfiguration : IEntityTypeConfiguration<InstrumentViewer>
 {
-    public void Configure(EntityTypeBuilder<Domain.Entities.Account.InstrumentViewer> entity)
+    public void Configure(EntityTypeBuilder<InstrumentViewer> entity)
     {
         entity.HasKey(entity => new { entity.InstrumentId, entity.UserId });
 

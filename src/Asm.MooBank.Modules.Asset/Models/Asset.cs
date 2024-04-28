@@ -1,5 +1,7 @@
-﻿namespace Asm.MooBank.Modules.Assets.Models;
-public record Asset : Account
+﻿using Asm.MooBank.Services;
+
+namespace Asm.MooBank.Modules.Assets.Models;
+public record Asset : MooBank.Models.Instrument
 {
     public decimal? PurchasePrice { get; init; }
 
@@ -8,27 +10,30 @@ public record Asset : Account
 
 public static class AssetExtensions
 {
-    public static Asset ToModel(this Domain.Entities.Asset.Asset account) => new()
+    public static Asset ToModel(this Domain.Entities.Asset.Asset asset, ICurrencyConverter currencyConverter) => new()
     {
-        Id = account.Id,
-        Name = account.Name,
-        Description = account.Description,
-        CurrentBalance = account.Balance,
-        BalanceDate = account.LastUpdated,
-        PurchasePrice = account.PurchasePrice,
-        AccountType = "Asset",
+        Id = asset.Id,
+        Name = asset.Name,
+        Description = asset.Description,
+        Controller = asset.Controller,
+        CurrentBalance = asset.Balance,
+        BalanceDate = asset.LastUpdated,
+        PurchasePrice = asset.PurchasePrice,
+        InstrumentType = "Asset",
+        Currency = asset.Currency,
+        CurrentBalanceLocalCurrency = currencyConverter.Convert(asset.Balance, asset.Currency),
     };
 
-    public static Asset ToModel(this Domain.Entities.Asset.Asset asset, Guid userId)
+    public static Asset ToModel(this Domain.Entities.Asset.Asset asset, Guid userId, ICurrencyConverter currencyConverter)
     {
-        var result = asset.ToModel();
+        var result = asset.ToModel(currencyConverter);
         result.GroupId = asset.GetGroup(userId)?.Id;
 
         return result;
     }
 
-    public static IEnumerable<Asset> ToModel(this IEnumerable<Domain.Entities.Asset.Asset> entities)
+    public static IEnumerable<Asset> ToModel(this IEnumerable<Domain.Entities.Asset.Asset> entities, ICurrencyConverter currencyConverter)
     {
-        return entities.Select(t => t.ToModel());
+        return entities.Select(t => t.ToModel(currencyConverter));
     }
 }

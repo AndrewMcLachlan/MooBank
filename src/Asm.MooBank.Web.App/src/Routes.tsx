@@ -44,6 +44,7 @@ export const routes: RouteDefinition = {
                 path: "/shares/:id", element: <Pages.StockHolding />, children: {
                     manage: { path: "manage", element: <Pages.ManageStockHolding /> },
                     transactions: { path: "transactions", element: <Pages.StockTransactions /> },
+                    transactionsAdd: { path: "transactions/add", element: <Pages.AddStockTransaction /> },
                 }
             },
             assetCreate: { path: "/assets/create", element: <Pages.CreateAsset /> },

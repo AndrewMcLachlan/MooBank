@@ -18,6 +18,7 @@ using Asm.MooBank.Security;
 using LazyCache;
 using Microsoft.Extensions.Configuration;
 using Asm.MooBank.Domain.Entities.User;
+using Asm.MooBank.Domain.Entities.Instrument;
 
 namespace Microsoft.Extensions.DependencyInjection;
 

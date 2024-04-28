@@ -1,5 +1,6 @@
 ﻿using Asm.Domain;
 using Asm.MooBank.Domain.Entities.Transactions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Institution.AustralianSuper.Domain;
 
@@ -16,10 +17,20 @@ internal class TransactionRaw(Guid id) : KeyedEntity<Guid>(id)
     public string? Description { get; set; }
     public DateOnly? PaymentPeriodStart { get; set; }
     public DateOnly? PaymentPeriodEnd { get; set; }
+
+    [Precision(12, 4)]
     public decimal? SGContributions { get; set; }
+
+    [Precision(12, 4)]
     public decimal? EmployerAdditional { get; set; }
+
+    [Precision(12, 4)]
     public decimal? SalarySacrifice { get; set; }
+
+    [Precision(12, 4)]
     public decimal? MemberAdditional { get; set; }
+
+    [Precision(12, 4)]
     public decimal TotalAmount { get; set; }
     public DateTime Imported { get; set; }
 

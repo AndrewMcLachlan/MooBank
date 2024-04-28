@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Infrastructure;
 using Asm.MooBank.Security;
 using Microsoft.AspNetCore.Authentication;
@@ -38,7 +37,7 @@ public static class IServiceCollectionExtensions
                         return;
                     }
 
-                    var shared = await dataContext.Set<Instrument>().Where(a => a.ShareWithFamily && a.Owners.Any(ah => ah.User.FamilyId == user.FamilyId)).Select(a => a.Id).ToListAsync();
+                    var shared = await dataContext.Set<Domain.Entities.Instrument.Instrument>().Where(a => a.ShareWithFamily && a.Owners.Any(ah => ah.User.FamilyId == user.FamilyId)).Select(a => a.Id).ToListAsync();
 
                     var claims = user.Instruments.Select(a => new Claim(Security.ClaimTypes.AccountId, a.Id.ToString())).ToList();
                     claims.AddRange(shared.Select(a => new Claim(Security.ClaimTypes.SharedAccountId, a.ToString())).ToList());

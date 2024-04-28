@@ -34,7 +34,6 @@ internal class UpdateStepDefinitions(ScenarioInput<Accounts.Models.Account.Insti
                 //ImportAccount = Models.Account.ImportAccount,
                 IncludeInBudget = Models.Account.IncludeInBudget,
                 //Institution = Models.Account.Institution,
-                IncludeInPosition = Models.Account.IncludeInPosition,
                 InstitutionId = Models.Account.InstitutionId,
                 LastTransaction = Models.Account.LastTransaction,
                 //LastUpdated = Models.Account.LastUpdated,

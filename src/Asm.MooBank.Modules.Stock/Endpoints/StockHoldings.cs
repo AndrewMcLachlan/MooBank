@@ -10,7 +10,7 @@ internal class StockHoldings : EndpointGroupBase
 {
     public override string Name => "Stock Holdings";
 
-    public override string Path => "/stock";
+    public override string Path => "/stocks";
 
     public override string Tags => "Stock Holding";
 

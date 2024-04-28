@@ -1,5 +1,5 @@
 ﻿using Asm.MooBank.Domain.Entities.Account;
-using IInstrumentRepository = Asm.MooBank.Domain.Entities.Account.IInstrumentRepository;
+using IInstrumentRepository = Asm.MooBank.Domain.Entities.Instrument.IInstrumentRepository;
 
 namespace Asm.MooBank.Importers;
 

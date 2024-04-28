@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using Asm.Domain;
-using Asm.MooBank.Domain.Entities.Account;
+using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -32,7 +32,7 @@ public class RunRulesService(IRunRulesQueue taskQueue, ILoggerFactory loggerFact
 
                 var transactions = await transactionRepository.GetTransactions(accountId, cancellationToken);
 
-                var rules = await transactionTagRuleRepository.GetForAccount(accountId, cancellationToken);
+                var rules = await transactionTagRuleRepository.GetForInstrument(accountId, cancellationToken);
 
                 foreach (var transaction in transactions)
                 {

@@ -1,20 +1,23 @@
 import { VirtualAccount } from "./VirtualAccount";
 
-export const AccountTypes = ["None", "Asset", "Transaction", "Savings", "Credit", "Mortgage", "Superannuation", "Shares", "Virtual"] as AccountType[];
-export type AccountType = "None" | "Asset" | "Transaction" | "Savings" | "Credit" | "Mortgage" | "Superannuation" | "Shares" | "Virtual";
+export const AccountTypes = ["None", "Transaction", "Savings", "Credit", "Mortgage", "Superannuation", "Investment", "Loan"] as AccountType[];
+export type AccountType = "None" | "Transaction" | "Savings" | "Credit" | "Mortgage" | "Superannuation" | "Investment" | "Loan";
 
-export const AccountControllers = ["Manual", "Virtual", "Import"] as AccountController[];
-export type AccountController = "Manual" | "Virtual" | "Import";
+export const Controllers = ["Manual", "Virtual", "Import"] as Controller[];
+export type Controller = "Manual" | "Virtual" | "Import";
 
-export type AccountId = string;
+export type InstrumentId = string;
 
-export interface AccountBase {
-    id: AccountId;
+export interface Instrument {
+    id: InstrumentId;
     name: string;
+    controller: Controller;
     description?: string;
     currentBalance: number;
     currentBalanceLocalCurrency: number;
     currency: string;
+    instrumentType?: string;
+    virtualInstruments: VirtualAccount[];
 }
 
 export interface TopLevelAccount {
@@ -22,20 +25,18 @@ export interface TopLevelAccount {
     groupId: string;
 }
 
-export interface TransactionAccount extends AccountBase {
+export interface TransactionAccount extends Instrument {
     lastTransaction?: string;
     calculatedBalance: number;
 }
 export interface InstitutionAccount extends TransactionAccount, TopLevelAccount {
     balanceDate: Date;
     accountType: AccountType;
-    controller: AccountController;
     importerTypeId?: number;
     virtualAccountRemainingBalance?: number;
     isPrimary?: boolean;
     includeInBudget: boolean;
     institutionId: number;
-    virtualAccounts: VirtualAccount[];
 }
 
 export const emptyAccount : InstitutionAccount = {
@@ -52,7 +53,7 @@ export const emptyAccount : InstitutionAccount = {
     shareWithFamily: false,
     includeInBudget: false,
     institutionId: 0,
-    virtualAccounts: [],
+    virtualInstruments: [],
 }
 
 export interface ImportAccount {

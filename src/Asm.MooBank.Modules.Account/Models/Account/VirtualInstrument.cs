@@ -1,26 +1,26 @@
-﻿using Asm.MooBank.Modules.Accounts.Models.Account;
+﻿using Asm.MooBank.Models;
+using Asm.MooBank.Modules.Accounts.Models.Account;
 using Asm.MooBank.Modules.Accounts.Models.Recurring;
 using Asm.MooBank.Services;
 
 namespace Asm.MooBank.Modules.Accounts.Models.Account;
 
-public record VirtualInstrument : TransactionAccount
+public record VirtualAccount : VirtualInstrument
 {
-    public Guid ParentId { get; set; }
-
     public IEnumerable<RecurringTransaction> RecurringTransactions { get; set; } = [];
 }
 
 public static class VirtualAccountExtensions
 {
-    public static VirtualInstrument ToModel(this Domain.Entities.Account.VirtualInstrument account, ICurrencyConverter currencyConverter)
+    public static VirtualAccount ToModel(this Domain.Entities.Account.VirtualInstrument account, ICurrencyConverter currencyConverter)
     {
-        return new VirtualInstrument
+        return new VirtualAccount
         {
             Id = account.Id,
             ParentId = account.ParentInstrumentId,
             Name = account.Name,
             Description = account.Description,
+            Controller = account.Controller,
             Currency = account.Currency,
             CurrentBalance = account.Balance,
             CalculatedBalance = account.CalculatedBalance,
@@ -31,10 +31,10 @@ public static class VirtualAccountExtensions
         };
     }
 
-    public static IEnumerable<VirtualInstrument> ToModel(this IEnumerable<Domain.Entities.Account.VirtualInstrument> accounts, ICurrencyConverter currencyConverter) =>
+    public static IEnumerable<VirtualAccount> ToModel(this IEnumerable<Domain.Entities.Account.VirtualInstrument> accounts, ICurrencyConverter currencyConverter) =>
         accounts.Select(a => a.ToModel(currencyConverter));
 
-    public static Domain.Entities.Account.VirtualInstrument ToEntity(this VirtualInstrument account, Guid parentInstrumentId) => new(account.Id)
+    public static Domain.Entities.Account.VirtualInstrument ToEntity(this VirtualAccount account, Guid parentInstrumentId) => new(account.Id)
     {
         ParentInstrumentId = parentInstrumentId,
         Name = account.Name,

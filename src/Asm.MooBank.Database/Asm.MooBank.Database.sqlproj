@@ -83,7 +83,7 @@
     <Build Include="dbo\Tables\Rule.sql" />
     <Build Include="dbo\Tables\TransactionTransactionTag.sql" />
     <Build Include="dbo\Tables\TransactionTagTransactionTag.sql" />
-    <Build Include="dbo\Tables\AccountController.sql" />
+    <Build Include="dbo\Tables\Controller.sql" />
     <Build Include="dbo\Tables\ImportAccount.sql" />
     <Build Include="dbo\Tables\ImporterType.sql" />
     <Build Include="dbo\Tables\VirtualInstrument.sql" />

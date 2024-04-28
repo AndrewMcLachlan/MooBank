@@ -2,6 +2,7 @@
 using Asm.MooBank.Domain.Entities.StockHolding;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Stocks.Models;
+using Asm.MooBank.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,7 +29,7 @@ public sealed record Update : ICommand<Models.StockHolding>
     }
 }
 
-internal class UpdateHandler(IStockHoldingRepository repository, IUnitOfWork unitOfWork, User user, ISecurity security) :  ICommandHandler<Update, Models.StockHolding>
+internal class UpdateHandler(IStockHoldingRepository repository, IUnitOfWork unitOfWork, User user, ISecurity security, ICurrencyConverter currencyConverter) :  ICommandHandler<Update, Models.StockHolding>
 {
     public async ValueTask<Models.StockHolding> Handle(Update command, CancellationToken cancellationToken)
     {
@@ -49,6 +50,6 @@ internal class UpdateHandler(IStockHoldingRepository repository, IUnitOfWork uni
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return stockHolding.ToModel();
+        return stockHolding.ToModel(currencyConverter);
     }
 }

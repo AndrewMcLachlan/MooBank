@@ -16,6 +16,7 @@ internal class Models
 
     public readonly InstitutionAccount Account = new()
     {
+        Controller = Controller.Manual,
         Currency = "AUD",
         CurrentBalance = 1000,
         CurrentBalanceLocalCurrency = 1000,

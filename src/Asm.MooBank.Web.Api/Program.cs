@@ -22,6 +22,7 @@ void AddServices(WebApplicationBuilder builder)
             new Asm.MooBank.Modules.Families.Module(),
             new Asm.MooBank.Modules.Groups.Module(),
             new Asm.MooBank.Modules.Institutions.Module(),
+            new Asm.MooBank.Modules.Instruments.Module(),
             new Asm.MooBank.Modules.ReferenceData.Module(),
             new Asm.MooBank.Modules.Reports.Module(),
             new Asm.MooBank.Modules.Stocks.Module(),

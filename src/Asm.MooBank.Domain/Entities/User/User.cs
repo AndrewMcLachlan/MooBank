@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Asm.MooBank.Domain.Entities.Instrument;
 
 namespace Asm.MooBank.Domain.Entities.User;
 
@@ -17,9 +18,9 @@ public partial class User(Guid id) : KeyedEntity<Guid>(id)
     public Guid? PrimaryAccountId { get; set; }
 
     [NotMapped]
-    public IEnumerable<Account.Instrument> Instruments => InstrumentOwners?.Select(a => a.Instrument) ?? [];
+    public IEnumerable<Instrument.Instrument> Instruments => InstrumentOwners?.Select(a => a.Instrument) ?? [];
 
-    public virtual ICollection<Account.InstrumentOwner> InstrumentOwners { get; set; } = new HashSet<Account.InstrumentOwner>();
+    public virtual ICollection<InstrumentOwner> InstrumentOwners { get; set; } = new HashSet<InstrumentOwner>();
 
     public virtual ICollection<UserCard> Cards { get; set; } = new HashSet<UserCard>();
 

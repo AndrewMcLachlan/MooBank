@@ -1,6 +1,6 @@
-import { AccountBase, TopLevelAccount } from "./Account";
+import { Instrument, TopLevelAccount } from "./Account";
 
-export interface AssetBase extends AccountBase, TopLevelAccount {
+export interface AssetBase extends Instrument, TopLevelAccount {
     purchasePrice?: number;
 }
 
