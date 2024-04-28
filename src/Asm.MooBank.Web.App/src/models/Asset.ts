@@ -15,8 +15,10 @@ export const emptyAsset: NewAsset = {
     name: "",
     purchasePrice: 0,
     groupId: "",
+    controller: "Manual",
     currentBalance: 0,
     currentBalanceLocalCurrency: 0,
     currency: "",
     shareWithFamily: false,
+    virtualInstruments: [],
 }

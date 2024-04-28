@@ -26,9 +26,9 @@ export const ManualAccountRow: React.FC<AccountRowProps> = (props) => {
     return (
         <>
             <tr onClick={onRowClick} className="clickable" ref={balanceRef}>
-                <td className="d-none d-sm-table-cell" onClick={showVirtualAccountsClick}>{props.instrument.virtualAccounts && props.instrument.virtualAccounts.length > 0 && <FontAwesomeIcon icon={showVirtualAccounts ? "chevron-down" : "chevron-right"} />}</td>
+                <td className="d-none d-sm-table-cell" onClick={showVirtualAccountsClick}>{props.instrument.virtualInstruments && props.instrument.virtualInstruments.length > 0 && <FontAwesomeIcon icon={showVirtualAccounts ? "chevron-down" : "chevron-right"} />}</td>
                 <td className="name">{props.instrument.name}</td>
-                <td className="d-none d-sm-table-cell">{props.instrument.accountType}</td>
+                <td className="d-none d-sm-table-cell">{props.instrument.instrumentType}</td>
                 <td className={classNames("amount", "number", numberClassName(props.instrument.currentBalance))} onClick={balanceClick}>
                     {!editingBalance && getBalanceString(balance)}
                     {editingBalance && <input type="number" value={balance} onChange={balanceChange} onKeyPress={keyPress} />}
@@ -37,8 +37,8 @@ export const ManualAccountRow: React.FC<AccountRowProps> = (props) => {
                 {editingAvBalance && <input type="number" value={avBalance} onChange={avBalanceChange} />}
             </td>*/}
             </tr>
-            {props.instrument.virtualAccounts && props.instrument.virtualAccounts.length > 0 && showVirtualAccounts &&
-                props.instrument.virtualAccounts.map(va =>
+            {props.instrument.virtualInstruments && props.instrument.virtualInstruments.length > 0 && showVirtualAccounts &&
+                props.instrument.virtualInstruments.map(va =>
                     <VirtualAccountRow key={va.id} accountId={props.instrument.id} account={va} />
                 )
             }

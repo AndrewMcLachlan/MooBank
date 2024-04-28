@@ -60,13 +60,13 @@ export const useUpdateVirtualAccountBalance = () => {
 
             if (!accounts) return;
 
-            const account = accounts.groups.flatMap(g => g.accounts).find(a => a.id === accountId);
+            const account = accounts.groups.flatMap(g => g.instruments).find(a => a.id === accountId);
             if (!account) return;
-            const vAccount = account.virtualAccounts.find(a => a.id === virtualAccountId);
+            const vAccount = account.virtualInstruments.find(a => a.id === virtualAccountId);
             if (!vAccount) return;
-            const remaining = account.virtualAccounts.find(a => a.id === emptyGuid);
+            const remaining = account.virtualInstruments.find(a => a.id === emptyGuid);
             if (!remaining) return;
-            //const others = account.virtualAccounts.filter(a => a.id !== emptyGuid);
+            //const others = account.virtualInstruments.filter(a => a.id !== emptyGuid);
 
             const difference = vAccount.currentBalance - balance;
 
@@ -74,7 +74,7 @@ export const useUpdateVirtualAccountBalance = () => {
             remaining.currentBalance += difference;
             account.virtualAccountRemainingBalance = remaining.currentBalance;
             //accounts.accounts = [];
-            accounts.position = 0;
+            accounts.total = 0;
 
             queryClient.setQueryData<AccountList>([formattedAccountsKey], { ...accounts });
 

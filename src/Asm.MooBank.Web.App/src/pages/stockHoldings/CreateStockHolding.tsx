@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { NewStockHolding } from "../../models";
+import { NewStockHolding, emptyStockHolding } from "../../models";
 
 import { Page, emptyGuid } from "@andrewmclachlan/mooapp";
 import { useGroups, useCreateStockHolding } from "services";
@@ -27,13 +27,14 @@ export const CreateStockHolding: React.FC = () => {
         e.preventDefault();
 
         const stockHolding: NewStockHolding = {
-            id: emptyGuid,
+            ...emptyStockHolding,
             name: name,
             symbol: symbol,
             quantity: quantity,
             price: price,
             fees: fees,
             description: description,
+            controller: "Manual",
             currency: "AUD",
             currentBalanceLocalCurrency: 0,
             groupId: groupId === "" ? undefined : groupId,

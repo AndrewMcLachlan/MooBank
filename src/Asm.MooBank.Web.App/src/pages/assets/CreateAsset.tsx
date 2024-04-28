@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { NewAsset } from "../../models";
+import { NewAsset, emptyAsset } from "../../models";
 
 import { Page, emptyGuid } from "@andrewmclachlan/mooapp";
 import { useGroups, useCreateAsset } from "services";
@@ -26,10 +26,11 @@ export const CreateAsset: React.FC = () => {
         e.preventDefault();
 
         const asset: NewAsset = {
-            id: emptyGuid,
+            ...emptyAsset,
             name: name,
             purchasePrice: purchasePrice,
             description: description,
+            controller: "Manual",
             currency: "AUD",
             currentBalanceLocalCurrency: 0,
             groupId: groupId === "" ? undefined : groupId,

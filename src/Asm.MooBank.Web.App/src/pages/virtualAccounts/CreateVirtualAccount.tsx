@@ -32,6 +32,8 @@ export const CreateVirtualAccount = () => {
             calculatedBalance: balance,
             parentId: parentAccount.id,
             recurringTransactions: [],
+            virtualInstruments: [],
+            controller: "Virtual",
         };
 
         createVirtualAccount(parentAccount.id, account);

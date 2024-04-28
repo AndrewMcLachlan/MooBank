@@ -19,13 +19,16 @@ export interface StockHolding extends StockHoldingBase {
 export const emptyStockHolding: NewStockHolding = {
     id: "",
     name: "",
+    description: "",
     symbol: "",
     quantity: 0,
     price: 0,
     fees: 0,
     groupId: "",
+    controller: "Manual",
     currentBalance: 0,
     currentBalanceLocalCurrency: 0,
     currency: "",
     shareWithFamily: false,
+    virtualInstruments: [],
 }
