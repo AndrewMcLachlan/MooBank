@@ -3,7 +3,7 @@ using IInstrumentRepository = Asm.MooBank.Domain.Entities.Instrument.IInstrument
 
 namespace Asm.MooBank.Modules.Instruments.Commands.VirtualAccount;
 
-public record Delete(Guid AccountId, Guid VirtualAccountId) : ICommand;
+public record Delete(Guid InstrumentId, Guid VirtualAccountId) : ICommand;
 
 internal class DeleteHandler(IInstrumentRepository accountRepository, ISecurity security, IUnitOfWork unitOfWork) : ICommandHandler<Delete>
 {
@@ -11,9 +11,9 @@ internal class DeleteHandler(IInstrumentRepository accountRepository, ISecurity 
 
     public async ValueTask Handle(Delete request, CancellationToken cancellationToken)
     {
-        security.AssertInstrumentPermission(request.AccountId);
+        security.AssertInstrumentPermission(request.InstrumentId);
 
-        var account = await _accountRepository.Get(request.AccountId, cancellationToken);
+        var account = await _accountRepository.Get(request.InstrumentId, cancellationToken);
 
         if (account is not Domain.Entities.Account.InstitutionAccount institutionAccount)
         {

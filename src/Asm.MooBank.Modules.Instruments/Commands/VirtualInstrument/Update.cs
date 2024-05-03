@@ -12,7 +12,7 @@ using IInstrumentRepository = Asm.MooBank.Domain.Entities.Instrument.IInstrument
 
 namespace Asm.MooBank.Modules.Instruments.Commands.VirtualAccount;
 
-public record Update(Guid AccountId, Guid VirtualAccountId, string Name, string Description, decimal CurrentBalance) : ICommand<VirtualInstrument>
+public record Update(Guid InstrumentId, Guid VirtualAccountId, string Name, string Description, decimal CurrentBalance) : ICommand<VirtualInstrument>
 {
     public static async ValueTask<Update?> BindAsync(HttpContext httpContext)
     {
@@ -22,7 +22,7 @@ public record Update(Guid AccountId, Guid VirtualAccountId, string Name, string 
         if (!Guid.TryParse(httpContext.Request.RouteValues["virtualAccountId"] as string, out Guid virtualAccountId)) throw new BadHttpRequestException("invalid account ID");
 
         var update = await System.Text.Json.JsonSerializer.DeserializeAsync<Update>(httpContext.Request.Body, options.Value.SerializerOptions, cancellationToken: httpContext.RequestAborted);
-        return update! with { AccountId = accountId, VirtualAccountId = virtualAccountId };
+        return update! with { InstrumentId = accountId, VirtualAccountId = virtualAccountId };
     }
 }
 
@@ -33,9 +33,9 @@ internal class UpdateHandler(IInstrumentRepository instrumentRepository, ITransa
 
     public async ValueTask<VirtualInstrument> Handle(Update command, CancellationToken cancellationToken)
     {
-        security.AssertInstrumentPermission(command.AccountId);
+        security.AssertInstrumentPermission(command.InstrumentId);
 
-        var parentInstrument = await _accountRepository.Get(command.AccountId, new VirtualAccountSpecification(), cancellationToken);
+        var parentInstrument = await _accountRepository.Get(command.InstrumentId, new VirtualAccountSpecification(), cancellationToken);
 
         var instrument = parentInstrument.VirtualInstruments.SingleOrDefault(a => a.Id == command.VirtualAccountId) ?? throw new NotFoundException();
 
