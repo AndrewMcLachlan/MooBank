@@ -76,7 +76,7 @@ export const ManageAccount = () => {
                             </Form.Group>
                             <Form.Group controlId="AccountDescription">
                                 <Form.Label>Description</Form.Label>
-                                <Form.Control type="text" as="textarea" maxLength={255} value={account.description} onChange={(e: any) => setDescription(e.currentTarget.value)} />
+                                <Form.Control type="text" as="textarea" maxLength={255} value={account.description ?? ""} onChange={(e: any) => setDescription(e.currentTarget.value)} />
                                 <Form.Control.Feedback type="invalid">Please enter a description</Form.Control.Feedback>
                             </Form.Group>
                             <Form.Group controlId="currency">

@@ -1,6 +1,7 @@
 import { useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { InstitutionAccount, InstrumentId, AccountList, VirtualAccount } from "../models";
-import { formattedAccountsKey, accountsKey } from "./AccountService";
+import { accountsKey } from "./AccountService";
+import { formattedAccountsKey } from "./InstrumentsService";
 import { emptyGuid, useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
 
 interface VirtualAccountVariables {
@@ -8,15 +9,15 @@ interface VirtualAccountVariables {
     virtualAccountId: InstrumentId;
 }
 
-export const useVirtualAccounts = (accountId: InstrumentId): UseQueryResult<VirtualAccount[]> => useApiGet<VirtualAccount[]>(["virtualaccount", accountId], `api/accounts/${accountId}/virtual`);
+export const useVirtualAccounts = (accountId: InstrumentId): UseQueryResult<VirtualAccount[]> => useApiGet<VirtualAccount[]>(["virtualaccount", accountId], `api/instruments/${accountId}/virtual`);
 
-export const useVirtualAccount = (accountId: InstrumentId, virtualAccountId: InstrumentId) => useApiGet<VirtualAccount>(["virtualaccount", { accountId, virtualAccountId }], `api/accounts/${accountId}/virtual/${virtualAccountId}`);
+export const useVirtualAccount = (accountId: InstrumentId, virtualAccountId: InstrumentId) => useApiGet<VirtualAccount>(["virtualaccount", { accountId, virtualAccountId }], `api/instruments/${accountId}/virtual/${virtualAccountId}`);
 
 export const useCreateVirtualAccount = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutate } = useApiPost<VirtualAccount, InstrumentId, VirtualAccount>((accountId) => `api/accounts/${accountId}/virtual`, {
+    const { mutate } = useApiPost<VirtualAccount, InstrumentId, VirtualAccount>((accountId) => `api/instruments/${accountId}/virtual`, {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [accountsKey] });
         }
@@ -32,7 +33,7 @@ export const useCreateVirtualAccount = () => {
 export const useUpdateVirtualAccount = () => {
     const queryClient = useQueryClient();
 
-    const { mutate } = useApiPatch<InstitutionAccount, VirtualAccountVariables, VirtualAccount>(({ accountId, virtualAccountId }) => `api/accounts/${accountId}/virtual/${virtualAccountId}`, {
+    const { mutate } = useApiPatch<InstitutionAccount, VirtualAccountVariables, VirtualAccount>(({ accountId, virtualAccountId }) => `api/instruments/${accountId}/virtual/${virtualAccountId}`, {
         onSettled: (_data, _error, [{ accountId, virtualAccountId }]) => {
             queryClient.invalidateQueries({ queryKey: [accountsKey] });
             queryClient.invalidateQueries({ queryKey: ["virtualaccount", { accountId, virtualAccountId }] });
@@ -49,7 +50,7 @@ export const useUpdateVirtualAccount = () => {
 export const useUpdateVirtualAccountBalance = () => {
     const queryClient = useQueryClient();
 
-    const { mutate } = useApiPatch<VirtualAccount, VirtualAccountVariables, { balance: number }>(({ accountId, virtualAccountId }) => `api/accounts/${accountId}/virtual/${virtualAccountId}/balance`, {
+    const { mutate } = useApiPatch<VirtualAccount, VirtualAccountVariables, { balance: number }>(({ accountId, virtualAccountId }) => `api/instruments/${accountId}/virtual/${virtualAccountId}/balance`, {
 
         onMutate: async ([{ accountId, virtualAccountId }, { balance }]) => {
 
@@ -73,7 +74,7 @@ export const useUpdateVirtualAccountBalance = () => {
             vAccount.currentBalance = balance;
             remaining.currentBalance += difference;
             account.virtualAccountRemainingBalance = remaining.currentBalance;
-            //accounts.accounts = [];
+            //instruments.accounts = [];
             accounts.total = 0;
 
             queryClient.setQueryData<AccountList>([formattedAccountsKey], { ...accounts });

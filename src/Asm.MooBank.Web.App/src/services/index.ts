@@ -1,9 +1,10 @@
 export * from "./AccountService";
 export * from "./GroupService";
-export * from "./AccountHolderService";
+export * from "./UserService";
 export * from "./AssetService";
 export * from "./FamilyService";
 export * from "./ImportService";
+export * from "./InstrumentsService";
 export * from "./InstitutionService";
 export * from "./ReferenceDataService";
 export * from "./ReportsService";
@@ -12,4 +13,4 @@ export * from "./StockTransactionService";
 export * from "./TransactionService";
 export * from "./TagService";
 export * from "./RuleService";
-export * from "./VirtualAccountService";
+export * from "./VirtualInstrumentService";
