@@ -5,7 +5,7 @@ import { BudgetLine } from "./BudgetLine";
 import { NewBudgetLine } from "./NewBudgetLine";
 import { numberOfMonths } from "helpers/dateFns";
 
-export const BudgetTable: React.FC<BudgetTableProps> = ({ title, type, year, lines }) => {
+export const BudgetTable: React.FC<BudgetTableProps> = ({ title, type, year, lines = [] }) => {
     return (
         <SectionTable striped className="budget-list" title={title}>
             <thead>
@@ -33,10 +33,6 @@ export const BudgetTable: React.FC<BudgetTableProps> = ({ title, type, year, lin
         </SectionTable>
     );
 }
-
-BudgetTable.defaultProps = {
-    lines: [],
-};
 
 export interface BudgetTableProps {
     type: Models.BudgetLineType;

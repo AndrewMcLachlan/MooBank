@@ -5,7 +5,7 @@ import { TagPanel } from "components";
 import { Tag, TransactionSplit } from "models";
 import { useCreateTag, useTags } from "services";
 
-export const TransactionSplitTagPanel: React.FC<TransactionSplitPanelProps> = (props) => {
+export const TransactionSplitTagPanel: React.FC<TransactionSplitPanelProps> = ({ alwaysShowEditPanel = false, ...props }) => {
 
     const [transactionSplit, setTransactionSplit] = useState<TransactionSplit>(props.transactionSplit);
 
@@ -53,12 +53,8 @@ export const TransactionSplitTagPanel: React.FC<TransactionSplitPanelProps> = (p
     }, [transactionSplit.tags, fullTagsListQuery.data]);
 
     return (
-        <TagPanel as={props.as} selectedItems={transactionSplit.tags} items={tagsList} onAdd={addTag} onRemove={removeTag} onCreate={createTag} allowCreate={true} alwaysShowEditPanel={props.alwaysShowEditPanel}  />
+        <TagPanel as={props.as} selectedItems={transactionSplit.tags} items={tagsList} onAdd={addTag} onRemove={removeTag} onCreate={createTag} allowCreate={true} alwaysShowEditPanel={alwaysShowEditPanel}  />
     );
-}
-
-TransactionSplitTagPanel.defaultProps = {
-    alwaysShowEditPanel: false,
 }
 
 export interface TransactionSplitPanelProps {

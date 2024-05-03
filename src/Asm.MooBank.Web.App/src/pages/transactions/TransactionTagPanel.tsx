@@ -6,7 +6,7 @@ import { Transaction, Tag } from "models";
 import { useAccount } from "components";
 import { useAddTransactionTag, useCreateTag, useRemoveTransactionTag, useTags } from "services";
 
-export const TransactionTagPanel: React.FC<TransactionTagPanelProps> = (props) => {
+export const TransactionTagPanel: React.FC<TransactionTagPanelProps> = ({alwaysShowEditPanel = false, ...props}) => {
 
     const transactionRow = useTransactionRowEvents(props);
 
@@ -20,7 +20,7 @@ export const TransactionTagPanel: React.FC<TransactionTagPanelProps> = (props) =
     }, [transactionRow.tags, fullTagsListQuery.data]);
 
     return (
-        <TagPanel as={props.as} selectedItems={transactionRow.tags} items={tagsList} onAdd={transactionRow.addTag} onRemove={transactionRow.removeTag} onCreate={transactionRow.createTag} allowCreate={true} alwaysShowEditPanel={props.alwaysShowEditPanel}  />
+        <TagPanel as={props.as} selectedItems={transactionRow.tags} items={tagsList} onAdd={transactionRow.addTag} onRemove={transactionRow.removeTag} onCreate={transactionRow.createTag} allowCreate={true} alwaysShowEditPanel={alwaysShowEditPanel}  />
     );
 }
 
@@ -68,10 +68,6 @@ export const useTransactionRowEvents = (props: TransactionTagPanelProps) => {
         removeTag,
         tags,
     };
-}
-
-TransactionTagPanel.defaultProps = {
-    alwaysShowEditPanel: false,
 }
 
 export interface TransactionTagPanelProps {

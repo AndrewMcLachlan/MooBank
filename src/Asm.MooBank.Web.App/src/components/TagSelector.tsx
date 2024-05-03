@@ -2,11 +2,11 @@ import { useTags } from "services"
 import Select, { MultiValue } from "react-select"
 import { Tag } from "models";
 
-export const TagSelector: React.FC<TagSelectorProps> = ({ value, multi, onChange }) => {
+export const TagSelector: React.FC<TagSelectorProps> = ({ value, multi = false, onChange }) => {
 
     const tags = useTags();
 
-    const tag = typeof value === "number" ? tags.data?.find(t => t.id === value) : 
+    const tag = typeof value === "number" ? tags.data?.find(t => t.id === value) :
                 Array.isArray(value) ? tags.data?.filter(t => value.includes(t.id)) :
                 value as Tag;
 
@@ -25,10 +25,6 @@ export const TagSelector: React.FC<TagSelectorProps> = ({ value, multi, onChange
         <Select options={tags.data ?? []} isMulti={multi} isClearable value={tag} getOptionLabel={t => t.name} getOptionValue={t => t.id.toString()} onChange={change} className="react-select" classNamePrefix="react-select" />
     )
 }
-
-TagSelector.defaultProps = {
-    multi: false,
-};
 
 export interface TagSelectorProps {
     value?: number | Tag | number[],

@@ -1,6 +1,6 @@
 import classNames from "classnames";
 
-export const Amount: React.FC<AmountProps> = ({ amount, colour, plusminus, creditdebit }) => {
+export const Amount: React.FC<AmountProps> = ({ amount, colour = false, plusminus = false, creditdebit = false }) => {
 
     const negative = amount < 0;
     const cr_dr = creditdebit ? (negative ? "D" : "C") : "";
@@ -11,12 +11,6 @@ export const Amount: React.FC<AmountProps> = ({ amount, colour, plusminus, credi
 
     return (<span className={className}>{`${pl_mi}${amount.toLocaleString()}${cr_dr}`}</span>);
 }
-
-Amount.defaultProps = {
-    colour: false,
-    plusminus: false,
-    creditdebit: false,
-};
 
 export interface AmountProps {
     amount: number,

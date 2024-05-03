@@ -2,20 +2,9 @@ import { TagPanel as MTagPanel, TagPanelProps as MTagPanelProps } from "@andrewm
 import { Tag } from "models";
 import { ElementType } from "react";
 
-
-export const TagPanel = (props: TagPanelProps) => (
-    <MTagPanel<Tag> {...props} selectedItems={props.selectedItems} items={props.items} labelField={(t) => t.name} valueField={(t) => t.id?.toString()}  />
+export const TagPanel: React.FC<TagPanelProps> = ({as = "div", allowCreate = false, readonly = false, alwaysShowEditPanel = false, ...props}) => (
+    <MTagPanel<Tag> as={as} allowCreate={allowCreate} readonly={readonly} alwaysShowEditPanel={alwaysShowEditPanel} {...props} selectedItems={props.selectedItems} items={props.items} labelField={(t) => t.name} valueField={(t) => t.id?.toString()}  />
 );
 
-TagPanel.displayName = "TransactionTagPanel";
-
-TagPanel.defaultProps = {
-    as: "div",
-    allowCreate: false,
-    readonly: false,
-    alwaysShowEditPanel: false,
-}
-
 export interface TagPanelProps extends Omit<MTagPanelProps<Tag, ElementType>, "labelField" | "valueField"> {
-
 }

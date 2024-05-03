@@ -4,19 +4,13 @@ import { NavItem, NavItemDivider, Page, PageProps } from "@andrewmclachlan/mooap
 
 import { Sliders } from "assets";
 
-export const SettingsPage: React.FC<PropsWithChildren<SettingsPageProps>> = ({ children, ...props }) => {
+export const SettingsPage: React.FC<PropsWithChildren<SettingsPageProps>> = ({ children, breadcrumbs = [], ...props }) => {
 
     return (
-        <Page title={props.title} actions={props.actions} navItems={getMenuItems(props.navItems ?? [])} breadcrumbs={[{ text: "Settings", route: "/settings" }, ...props.breadcrumbs]}>
+        <Page title={props.title} actions={props.actions} navItems={getMenuItems(props.navItems ?? [])} breadcrumbs={[{ text: "Settings", route: "/settings" }, ...breadcrumbs]}>
             {children}
         </Page>
     )
-}
-
-SettingsPage.displayName = "SettingsPage";
-
-SettingsPage.defaultProps = {
-    breadcrumbs: []
 }
 
 const getMenuItems = (navItems: (ReactNode | NavItem)[]) => {

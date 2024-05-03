@@ -6,23 +6,17 @@ import { useAsset } from "./AssetProvider";
 
 import { Sliders, Transaction } from "assets";
 
-export const AssetPage: React.FC<PropsWithChildren<AccountPageProps>> = ({ children, ...props }) => {
+export const AssetPage: React.FC<PropsWithChildren<AccountPageProps>> = ({ children, breadcrumbs =[], ...props }) => {
 
     const asset = useAsset();
 
     if (!asset) return null;
 
     return (
-        <Page title={`${asset.name}${props.title && " : "}${props.title}`} actions={props.actions} navItems={getMenuItems(asset, props.navItems ?? [])} breadcrumbs={[{ text: "Accounts", route: "/accounts" }, { text: asset.name, route: `/shares/${asset.id}` }, ...props.breadcrumbs]}>
+        <Page title={`${asset.name}${props.title && " : "}${props.title}`} actions={props.actions} navItems={getMenuItems(asset, props.navItems ?? [])} breadcrumbs={[{ text: "Accounts", route: "/accounts" }, { text: asset.name, route: `/shares/${asset.id}` }, ...breadcrumbs]}>
             {children}
         </Page>
     )
-}
-
-AssetPage.displayName = "AssetPage";
-
-AssetPage.defaultProps = {
-    breadcrumbs: []
 }
 
 const getMenuItems = (asset: Asset, navItems: (NavItem | ReactNode)[]) => {

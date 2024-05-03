@@ -6,25 +6,19 @@ import { useStockHolding } from "./StockHoldingProvider";
 
 import { Sliders, Transaction } from "assets";
 
-export const StockHoldingPage: React.FC<PropsWithChildren<AccountPageProps>> = ({ children, ...props }) => {
+export const StockHoldingPage: React.FC<PropsWithChildren<AccountPageProps>> = ({ children, breadcrumbs = [], ...props }) => {
 
     const stockHolding = useStockHolding();
 
     if (!stockHolding) return null;
 
-console.debug("StockHoldingPage", stockHolding, props);
+    console.debug("StockHoldingPage", stockHolding, props);
 
     return (
-        <Page title={`${stockHolding.name}${props.title && " : "}${props.title}`} actions={props.actions} navItems={getMenuItems(stockHolding, props.navItems ?? [])} breadcrumbs={[{ text: "Accounts", route: "/accounts" }, { text: stockHolding.name, route: `/shares/${stockHolding.id}` }, ...props.breadcrumbs]}>
+        <Page title={`${stockHolding.name}${props.title && " : "}${props.title}`} actions={props.actions} navItems={getMenuItems(stockHolding, props.navItems ?? [])} breadcrumbs={[{ text: "Accounts", route: "/accounts" }, { text: stockHolding.name, route: `/shares/${stockHolding.id}` }, ...breadcrumbs]}>
             {children}
         </Page>
     )
-}
-
-StockHoldingPage.displayName = "StockHoldingPage";
-
-StockHoldingPage.defaultProps = {
-    breadcrumbs: []
 }
 
 const getMenuItems = (stockHolding: StockHolding, navItems: (ReactNode | NavItem)[]) => {

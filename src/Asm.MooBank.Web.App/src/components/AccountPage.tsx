@@ -6,23 +6,17 @@ import { useAccount } from "./AccountProvider";
 
 import { Import, Reports, Rules, Sliders, Transaction } from "assets";
 
-export const AccountPage: React.FC<PropsWithChildren<AccountPageProps>> = ({ children, ...props }) => {
+export const AccountPage: React.FC<PropsWithChildren<AccountPageProps>> = ({ children, breadcrumbs = [], ...props }) => {
 
     const account = useAccount();
 
     if (!account) return null;
 
     return (
-        <Page title={`${account.name}${props.title && " : "}${props.title}`} actions={props.actions} navItems={getMenuItems(account, props.navItems ?? [])} breadcrumbs={[...getBreadcrumbs(account), ...props.breadcrumbs]}>
+        <Page title={`${account.name}${props.title && " : "}${props.title}`} actions={props.actions} navItems={getMenuItems(account, props.navItems ?? [])} breadcrumbs={[...getBreadcrumbs(account), ...breadcrumbs]}>
             {children}
         </Page>
     )
-}
-
-AccountPage.displayName = "AccountPage";
-
-AccountPage.defaultProps = {
-    breadcrumbs: []
 }
 
 const getMenuItems = (account: InstitutionAccount | VirtualAccount, navItems: (ReactNode | NavItem)[]) => {

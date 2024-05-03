@@ -3,9 +3,9 @@ import classNames from "classnames";
 import { isMonthSelected } from "helpers/dateFns";
 import { ElementType, useState } from "react";
 
-export const MonthSelector: React.FC<MonthSelectorProps<any>> = ({ className, ...props }) => {
+export const MonthSelector: React.FC<MonthSelectorProps<any>> = ({ className, as = "div", value: propsValue = 4095, ...props }) => {
 
-    const [value, setValue] = useState(props.value);
+    const [value, setValue] = useState(propsValue);
 
     const onChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
         const mask = 1 << Number(e.currentTarget.value);
@@ -33,14 +33,8 @@ export const MonthSelector: React.FC<MonthSelectorProps<any>> = ({ className, ..
     );
 }
 
-MonthSelector.defaultProps = {
-    as: "div",
-    value: 4095,
-}
-
 export type MonthSelectorProps<TElement extends ElementType> = Props<TElement> & Omit<React.ComponentPropsWithoutRef<TElement>, keyof Props<TElement>>;
 
 interface Props<TElement extends ElementType> extends ValueProps<number> {
     as?: TElement;
 }
-
