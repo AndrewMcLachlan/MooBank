@@ -5,13 +5,13 @@ using Asm.MooBank.Modules.Accounts.Models.Account;
 using Asm.MooBank.Services;
 using IInstitutionAccountRepository = Asm.MooBank.Domain.Entities.Account.IInstitutionAccountRepository;
 
-namespace Asm.MooBank.Modules.Accounts.Commands.InstitutionAccount;
+namespace Asm.MooBank.Modules.Accounts.Commands;
 
-public record Update(Models.Account.InstitutionAccount Account) : ICommand<Models.Account.InstitutionAccount>;
+public record Update(InstitutionAccount Account) : ICommand<InstitutionAccount>;
 
-internal class UpdateHandler(IUnitOfWork unitOfWork, IInstitutionAccountRepository accountRepository, User user, ICurrencyConverter currencyConverter, ISecurity security) :  ICommandHandler<Update, Models.Account.InstitutionAccount>
+internal class UpdateHandler(IUnitOfWork unitOfWork, IInstitutionAccountRepository accountRepository, User user, ICurrencyConverter currencyConverter, ISecurity security) : ICommandHandler<Update, InstitutionAccount>
 {
-    public async ValueTask<Models.Account.InstitutionAccount> Handle(Update command, CancellationToken cancellationToken)
+    public async ValueTask<InstitutionAccount> Handle(Update command, CancellationToken cancellationToken)
     {
         command.Deconstruct(out var account);
 

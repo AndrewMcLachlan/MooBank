@@ -1,13 +1,11 @@
-﻿using System.Net.Http;
-using Asm.MooBank.Commands;
-using Asm.MooBank.Domain.Entities.Account.Specifications;
+﻿using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Instrument.Specifications;
 using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Instruments.Models.Recurring;
+using Asm.MooBank.Modules.Accounts.Models.Recurring;
 using Microsoft.AspNetCore.Http;
 
-namespace Asm.MooBank.Modules.Instruments.Commands.Recurring;
+namespace Asm.MooBank.Modules.Accounts.Commands.Recurring;
 
 public record Update(Guid AccountId, Guid VirtualAccountId, Guid RecurringTransactionId, string? Description, decimal Amount, ScheduleFrequency Schedule, DateOnly NextRun) : InstrumentIdCommand(AccountId), ICommand<Models.Recurring.RecurringTransaction>
 {

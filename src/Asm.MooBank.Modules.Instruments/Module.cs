@@ -12,7 +12,6 @@ public class Module : IModule
     {
         new Endpoints.Instruments().MapGroup(endpoints);
         new Endpoints.Import().MapGroup(endpoints);
-        new Endpoints.RecurringEndpoints().MapGroup(endpoints);
         new Endpoints.RulesEndpoints().MapGroup(endpoints);
         new Endpoints.VirtualAccounts().MapGroup(endpoints);
 

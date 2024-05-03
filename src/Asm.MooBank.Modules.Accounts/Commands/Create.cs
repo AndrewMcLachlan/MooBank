@@ -3,9 +3,9 @@ using Asm.MooBank.Modules.Accounts.Models.Account;
 using Asm.MooBank.Services;
 using IInstitutionAccountRepository = Asm.MooBank.Domain.Entities.Account.IInstitutionAccountRepository;
 
-namespace Asm.MooBank.Modules.Accounts.Commands.InstitutionAccount;
+namespace Asm.MooBank.Modules.Accounts.Commands;
 
-public record Create() : ICommand<Models.Account.InstitutionAccount>
+public record Create() : ICommand<InstitutionAccount>
 {
     public required string Name { get; set; }
 
@@ -30,11 +30,11 @@ public record Create() : ICommand<Models.Account.InstitutionAccount>
     public bool ShareWithFamily { get; set; }
 }
 
-internal class CreateHandler(IInstitutionAccountRepository institutionAccountRepository, IUnitOfWork unitOfWork, User user, ICurrencyConverter currencyConverter, ISecurity security) : ICommandHandler<Create, Models.Account.InstitutionAccount>
+internal class CreateHandler(IInstitutionAccountRepository institutionAccountRepository, IUnitOfWork unitOfWork, User user, ICurrencyConverter currencyConverter, ISecurity security) : ICommandHandler<Create, InstitutionAccount>
 {
     private readonly IInstitutionAccountRepository _accountRepository = institutionAccountRepository;
 
-    public async ValueTask<Models.Account.InstitutionAccount> Handle(Create command, CancellationToken cancellationToken)
+    public async ValueTask<InstitutionAccount> Handle(Create command, CancellationToken cancellationToken)
     {
         if (command.GroupId != null)
         {

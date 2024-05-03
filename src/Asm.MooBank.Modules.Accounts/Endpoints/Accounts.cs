@@ -1,5 +1,5 @@
 ﻿using Asm.Cqrs.AspNetCore;
-using Asm.MooBank.Modules.Accounts.Commands.InstitutionAccount;
+using Asm.MooBank.Modules.Accounts.Commands;
 using Asm.MooBank.Modules.Accounts.Models.Account;
 using Asm.MooBank.Modules.Accounts.Queries;
 using Microsoft.AspNetCore.Builder;

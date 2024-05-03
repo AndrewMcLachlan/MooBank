@@ -2,7 +2,7 @@
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Instrument.Specifications;
 
-namespace Asm.MooBank.Modules.Instruments.Commands.Recurring;
+namespace Asm.MooBank.Modules.Accounts.Commands.Recurring;
 
 public record Delete(Guid AccountId, Guid RecurringTransactionId) : ICommand;
 

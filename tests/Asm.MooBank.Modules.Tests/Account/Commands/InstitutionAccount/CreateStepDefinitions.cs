@@ -1,5 +1,5 @@
 using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Modules.Accounts.Commands.InstitutionAccount;
+using Asm.MooBank.Modules.Accounts.Commands;
 
 namespace Asm.MooBank.Modules.Tests.Account.Commands.InstitutionAccount;
 

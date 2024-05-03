@@ -28,7 +28,7 @@ export const Import: React.FC = () => {
 
     const submitClick = () => {
         if (!file) return;
-        importTransactions.mutate({ accountId: id, file: file }, {
+        importTransactions.mutate({ instrumentId: id, file: file }, {
             onSuccess: () => {
                 navigate(-1);
             }
