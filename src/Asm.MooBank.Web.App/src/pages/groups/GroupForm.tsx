@@ -15,12 +15,12 @@ export const GroupForm: React.FC<GroupFormProps> = ({ group }) => {
 
     const [name, setName] = useState(group?.name ?? "");
     const [description, setDescription] = useState(group?.description ?? "");
-    const [showTotal, setShowTotal] = useState(group?.showPosition ?? true);
+    const [showTotal, setShowTotal] = useState(group?.showTotal ?? true);
 
     useEffect(() => {
         setName(group?.name ?? "");
         setDescription(group?.description ?? "");
-        setShowTotal(group?.showPosition ?? true);
+        setShowTotal(group?.showTotal ?? true);
     }, [group]);
 
     const createGroup = useCreateGroup();
@@ -34,7 +34,7 @@ export const GroupForm: React.FC<GroupFormProps> = ({ group }) => {
             id: group!.id,
             name: name,
             description: description,
-            showPosition: showTotal,
+            showTotal: showTotal,
         };
 
         if (group!.id === emptyGuid) {

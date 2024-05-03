@@ -4,11 +4,11 @@ export interface Group {
     id: string;
     name: string;
     description?: string;
-    showPosition: boolean;
+    showTotal: boolean;
 }
 
 export const emptyGroup : Group = {
     id: emptyGuid,
     name: "",
-    showPosition: true,
+    showTotal: true,
 }

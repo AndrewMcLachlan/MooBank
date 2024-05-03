@@ -17,7 +17,7 @@ export const GroupRow: React.FC<GroupRowProps> = (props) => {
                 {props.group.description}
             </td>
             <td className="row-action">
-                {props.group.showPosition && <FontAwesomeIcon icon="check-circle" size="lg" />}
+                {props.group.showTotal && <FontAwesomeIcon icon="check-circle" size="lg" />}
             </td>
         </tr>
     );

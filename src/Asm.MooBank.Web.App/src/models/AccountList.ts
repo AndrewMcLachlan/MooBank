@@ -8,5 +8,5 @@ export interface AccountList {
 export interface AccountListGroup {
     name: string,
     instruments: InstitutionAccount[],
-    position?: number
+    total?: number
 }

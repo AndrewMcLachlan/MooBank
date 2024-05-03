@@ -7,8 +7,8 @@ export const SummaryWidget: React.FC = () => {
 
     const { data: accounts, isLoading } = useFormattedAccounts();
 
-    const totals = accounts?.groups.filter(ag => ag.position);
-    const grandTotal = totals?.reduce((acc, ag) => acc + ag.position, 0);
+    const totals = accounts?.groups.filter(ag => ag.total);
+    const grandTotal = totals?.reduce((acc, ag) => acc + ag.total, 0);
 
     return (
         <Widget title="Summary" className="summary" loading={isLoading}>
@@ -20,7 +20,7 @@ export const SummaryWidget: React.FC = () => {
             {totals?.map((ag, index) =>
                 <KeyValue key={index}>
                     <div>{ag.name}</div>
-                    <div className="amount">{ag.position.toLocaleString()}</div>
+                    <div className="amount">{ag.total.toLocaleString()}</div>
                 </KeyValue>
             )}
         </Widget>
