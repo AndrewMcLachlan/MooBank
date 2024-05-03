@@ -1,11 +1,10 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 
+import { SaveIcon } from "components/SaveIcon";
+import { valueAsNumber } from "helpers";
+import { Transaction, TransactionSplit, emptyTransactionSplit } from "models";
 import { Col, Form, Row } from "react-bootstrap";
 import { TransactionSplitTagPanel } from "./TransactionSplitTagPanel";
-import { ClickableIcon } from "@andrewmclachlan/mooapp";
-import { Transaction, TransactionSplit, emptyTransactionSplit } from "models";
-import { valueAsNumber } from "helpers";
 
 
 export const NewTransactionSplit: React.FC<NewTransactionSplitProps> = ({ transaction,  onSave }) => {
@@ -31,7 +30,7 @@ export const NewTransactionSplit: React.FC<NewTransactionSplitProps> = ({ transa
                 <Form.Control.Feedback type="invalid">Please enter an amount</Form.Control.Feedback>
             </Col>
             <Col className="delete-offset">
-                <ClickableIcon icon="check-circle" onClick={saveClick} />
+                <SaveIcon onClick={saveClick} />
             </Col>
         </Form.Group>
     );

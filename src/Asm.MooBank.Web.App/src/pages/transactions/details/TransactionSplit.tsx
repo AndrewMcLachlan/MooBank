@@ -1,11 +1,11 @@
-import { Col, Form, Row } from "react-bootstrap";
-import { TransactionSplitTagPanel } from "./TransactionSplitTagPanel";
-import { ClickableIcon } from "@andrewmclachlan/mooapp";
+import { TransactionSearch } from "components";
+import { DeleteIcon } from "components/DeleteIcon";
 import { valueAsNumber } from "helpers";
 import { Transaction, TransactionOffset, TransactionSplit as TransactionSplitModel, isCredit } from "models";
 import React, { useState } from "react";
-import { TransactionSearch } from "components";
+import { Col, Form, Row } from "react-bootstrap";
 import { useInvalidateSearch } from "services";
+import { TransactionSplitTagPanel } from "./TransactionSplitTagPanel";
 
 export const TransactionSplit: React.FC<TransactionSplitProps> = ({ transaction, split, splitChanged, removeSplit }) => {
 
@@ -45,7 +45,7 @@ export const TransactionSplit: React.FC<TransactionSplitProps> = ({ transaction,
                     <Form.Control.Feedback type="invalid">Please enter an amount</Form.Control.Feedback>
                 </Col>
                 <Col className="delete-offset">
-                    <ClickableIcon icon="trash-alt" onClick={() => removeSplit(split.id)} />
+                    <DeleteIcon onClick={() => removeSplit(split.id)} />
                 </Col>
             </Form.Group>
             <section className="offsets" hidden={isCredit(transaction.transactionType)}>
@@ -64,7 +64,7 @@ export const TransactionSplit: React.FC<TransactionSplitProps> = ({ transaction,
                             <Form.Control.Feedback type="invalid">Please enter an amount</Form.Control.Feedback>
                         </Col>
                         <Col className="delete-offset">
-                            <ClickableIcon icon="trash-alt" onClick={() => removeOffset(to.transaction.id)} />
+                            <DeleteIcon onClick={() => removeOffset(to.transaction.id)} />
                         </Col>
                     </Form.Group>
                 )}

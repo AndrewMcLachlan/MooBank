@@ -1,15 +1,15 @@
 import "./Tags.scss";
 
 import React, { useEffect, useState } from "react";
-import { Table } from "react-bootstrap";
 
 import { TransactionTagRow } from "./TagRow";
 
-import { changeSortDirection, ClickableIcon, getNumberOfPages, Pagination, SearchBox, Section, SectionTable, SortDirection } from "@andrewmclachlan/mooapp";
+import { changeSortDirection, getNumberOfPages, Pagination, SearchBox, Section, SectionTable, SortDirection } from "@andrewmclachlan/mooapp";
 import { TagPanel } from "components";
 import { sortTags, Tag } from "models";
 import { useCreateTag, useTags } from "services";
 import { TagsPage } from "./TagsPage";
+import { SaveIcon } from "components/SaveIcon";
 
 export const TransactionTags: React.FC = () => {
 
@@ -32,7 +32,7 @@ export const TransactionTags: React.FC = () => {
                     <tr>
                         <td><input type="text" placeholder="Tag name" value={newTag.name} onChange={nameChange} className="form-control" /></td>
                         <TagPanel as="td" selectedItems={newTag.tags} items={tagsList} onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} onKeyUp={keyUp} />
-                        <td className="row-action"><span onClick={createTag}><ClickableIcon icon="check-circle" title="Save" size="xl" /></span></td>
+                        <td className="row-action"><span onClick={createTag}><SaveIcon /></span></td>
                     </tr>
                     {pagedTags.map((t, i) => <TransactionTagRow key={`${i}${(t?.id ?? "")}`} tag={t} />)}
                 </tbody>

@@ -1,15 +1,16 @@
 import "./Rules.scss";
 
 import React, { useEffect, useState } from "react";
-import { Button, Table } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 
-import { ClickableIcon, IconButton, Pagination, SearchBox, Section, SortDirection, changeSortDirection, getNumberOfPages, useIdParams } from "@andrewmclachlan/mooapp";
+import { IconButton, Pagination, SearchBox, Section, SortDirection, changeSortDirection, getNumberOfPages, useIdParams } from "@andrewmclachlan/mooapp";
 import { AccountPage, TagPanel, useAccount } from "components";
 
 import { Rule, Tag, sortRules } from "models";
 
 import { useCreateRule, useCreateTag, useRules, useRunRules, useTags } from "services";
 import { RuleRow } from "./RuleRow";
+import { SaveIcon } from "components/SaveIcon";
 
 export const Rules: React.FC = () => {
 
@@ -71,7 +72,7 @@ export const Rules: React.FC = () => {
                         <td><input type="text" className="form-control" placeholder="Description contains..." value={newRule.contains} onChange={nameChange} /></td>
                         <TagPanel as="td" selectedItems={newRule.tags} items={fullTagsList} onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} onKeyUp={keyUp} />
                         <td><input type="text" className="form-control" placeholder="Notes..." value={newRule.description} onChange={descriptionChange} /></td>
-                        <td className="row-action"><ClickableIcon icon="check-circle" title="Save" size="xl" onClick={createRule} /></td>
+                        <td className="row-action"><SaveIcon onClick={createRule} /></td>
                     </tr>
                     {pagedRules.map((r) => <RuleRow key={r.id} accountId={id} rule={r} />)}
                 </tbody>

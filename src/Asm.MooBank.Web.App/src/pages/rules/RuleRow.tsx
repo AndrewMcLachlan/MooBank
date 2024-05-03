@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
-import { Rule, Tag } from "models";
-import { ClickableIcon, EditColumn } from "@andrewmclachlan/mooapp";
+import { EditColumn } from "@andrewmclachlan/mooapp";
 import { TagPanel } from "components";
-import { useCreateTag, useTags } from "services/TagService";
+import { DeleteIcon } from "components/DeleteIcon";
+import { Rule, Tag } from "models";
 import { useAddRuleTag, useDeleteRule, useRemoveRuleTag, useUpdateRule } from "services";
+import { useCreateTag, useTags } from "services/TagService";
 
 export const RuleRow: React.FC<RuleRowProps> = (props) => {
 
@@ -24,7 +25,7 @@ export const RuleRow: React.FC<RuleRowProps> = (props) => {
             <EditColumn value={props.rule.contains} onChange={target => transactionRow.updateRule({...props.rule, contains: target.value })} />
             <TagPanel as="td" selectedItems={transactionRow.tags} items={tagsList}  onAdd={transactionRow.addTag} onRemove={transactionRow.removeTag} onCreate={transactionRow.createTag} allowCreate={true} />
             <EditColumn value={props.rule.description} onChange={target => transactionRow.updateRule({...props.rule, description: target.value })} />
-            <td className="row-action"><span onClick={transactionRow.deleteRule}><ClickableIcon icon="trash-alt" title="Delete" /></span></td>
+            <td className="row-action"><span onClick={transactionRow.deleteRule}><DeleteIcon /></span></td>
         </tr>
     );
 }

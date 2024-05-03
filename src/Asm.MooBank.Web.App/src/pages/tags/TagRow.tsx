@@ -5,6 +5,7 @@ import { ClickableIcon, EditColumn, useUpdatingState } from "@andrewmclachlan/mo
 import { useDeleteTag, useUpdateTag } from "services";
 import { TransactionTagTransactionTagPanel } from "./TagTagPanel";
 import { TransactionTagDetails } from "./TagDetails";
+import { DeleteIcon } from "components/DeleteIcon";
 
 
 export const TransactionTagRow: React.FC<TransactionTagRowProps> = (props) => {
@@ -25,7 +26,7 @@ export const TransactionTagRow: React.FC<TransactionTagRowProps> = (props) => {
                 <TransactionTagTransactionTagPanel as="td" tag={tag} />
                 <td className="row-action">
                     <span onClick={() => setShowDetails(true)}><ClickableIcon icon="pen-to-square" title="Edit Details" size="1x" /></span>
-                    <span onClick={tagRow.deleteTag}><ClickableIcon icon="trash-alt" title="Delete" size="1x" /></span>
+                    <span onClick={tagRow.deleteTag}><DeleteIcon /></span>
                 </td>
             </tr>
         </>

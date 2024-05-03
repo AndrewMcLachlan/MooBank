@@ -38,7 +38,7 @@ export const BudgetWidget: React.FC = () => {
         <Widget title={`Budget - Last Month`} size={2} className="report budget" loading={isLoading}>
             {report &&
                 <>
-                    {difference > 0 ?
+                    {difference >= 0 ?
                         <h4 className="text-success amount">${difference} saved</h4> :
                         <h4 className="text-danger amount">${Math.abs(difference)} overspent</h4>
                     }

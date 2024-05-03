@@ -1,11 +1,12 @@
-import React from "react";
-import { ClickableIcon, EditColumn } from "@andrewmclachlan/mooapp";
+import { EditColumn } from "@andrewmclachlan/mooapp";
+import { DeleteIcon } from "components/DeleteIcon";
+import { SaveIcon } from "components/SaveIcon";
 import { format } from "date-fns/format";
 import { parse } from "date-fns/parse";
 import { parseISO } from "date-fns/parseISO";
 import { VirtualAccount } from "models";
 import { RecurringTransaction, Schedule, Schedules, emptyRecurringTransaction } from "models/RecurringTransaction";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Table } from "react-bootstrap";
 import { useCreateRecurringTransaction, useDeleteRecurringTransaction, useUpdateRecurringTransaction } from "services/RecurringTransactionService";
 
@@ -54,7 +55,7 @@ export const RecurringTransactions: React.FC<RecurringTransactionsProps> = ({ ac
                     </td>
                     <td>-</td>
                     <td><input type="date" className="form-control" placeholder="Next Run" value={newRT.nextRun} onChange={e => setNewRT({ ...newRT, nextRun: e.currentTarget.value })} /></td>
-                    <td className="row-action"><ClickableIcon icon="check-circle" title="Save" size="xl" onClick={create} /></td>
+                    <td className="row-action"><SaveIcon onClick={create} /></td>
                 </tr>
                 {account.recurringTransactions && account.recurringTransactions.map(a => (
                     <tr key={a.id}>
@@ -65,7 +66,7 @@ export const RecurringTransactions: React.FC<RecurringTransactionsProps> = ({ ac
                         <EditColumn value={a.nextRun} onChange={target => updateRecurringTransaction(accountId, virtualId, { ...a, nextRun: target.value })} type="date">
                             {format(parse(a.nextRun, "yyyy-MM-dd", new Date()), "dd/MM/yyyy")}
                         </EditColumn>
-                        <td className="row-action"><ClickableIcon icon="trash-alt" onClick={() => onDelete(a.id)} /></td>
+                        <td className="row-action"><DeleteIcon onClick={() => onDelete(a.id)} /></td>
                     </tr>
                 ))}
             </tbody>

@@ -1,5 +1,6 @@
-import { ClickableIcon, EditColumn } from "@andrewmclachlan/mooapp";
+import { EditColumn } from "@andrewmclachlan/mooapp";
 import { MonthSelector } from "components";
+import { DeleteIcon } from "components/DeleteIcon";
 import * as Models from "models";
 import { useDeleteBudgetLine, useUpdateBudgetLine } from "services/BudgetService";
 
@@ -18,7 +19,7 @@ export const BudgetLine: React.FC<BudgetLineProps> = ({year, budgetLine}) => {
             <EditColumn value={budgetLine.notes} onChange={(v) => updateBudgetLine(year, {...budgetLine, notes: v.value})}/>
             <EditColumn value={budgetLine.amount.toFixed(2).toString()} onChange={(v) => updateBudgetLine(year, {...budgetLine, amount: Number(v.value)})}/>
             <td><MonthSelector value={budgetLine.month} onChange={(v) => updateBudgetLine(year, {...budgetLine, month: v})} /></td>
-            <td><ClickableIcon icon="trash-alt" onClick={onDelete} /></td>
+            <td className="row-action"><DeleteIcon onClick={onDelete} /></td>
         </tr>
     );
 }

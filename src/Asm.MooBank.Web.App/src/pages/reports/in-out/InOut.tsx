@@ -42,7 +42,7 @@ export const InOut: React.FC<InOutProps> = ({ accountId, period }) => {
 
     return (
         <>
-            {difference > 0 ?
+            {difference >= 0 ?
                 <h4 className="text-success amount">${difference} saved</h4> :
                 <h4 className="text-danger amount">${Math.abs(difference)} overspent</h4>
             }

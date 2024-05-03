@@ -1,12 +1,13 @@
-import { ClickableIcon, emptyGuid } from "@andrewmclachlan/mooapp";
+import { emptyGuid } from "@andrewmclachlan/mooapp";
 import Select from "react-select";
 
 import { MonthSelector } from "components";
+import { SaveIcon } from "components/SaveIcon";
 import { BudgetLineType, Tag } from "models";
 import { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import { useTags } from "services";
-import { useGetTagValue, useCreateBudgetLine } from "services/BudgetService";
+import { useCreateBudgetLine, useGetTagValue } from "services/BudgetService";
 
 export const NewBudgetLine: React.FC<NewBudgetLineProps> = (props) => {
 
@@ -39,7 +40,7 @@ export const NewBudgetLine: React.FC<NewBudgetLineProps> = (props) => {
             <td><Form.Control value={notes} onChange={(e) => setNotes(e.currentTarget.value)} /></td>
             <td><Form.Control type="number" min={0} value={amount} onChange={(e) => setAmount((e.currentTarget as any).valueAsNumber)} /></td>
             <MonthSelector as="td" value={month} onChange={setMonth} />
-            <td><ClickableIcon icon="check-circle" title="Save" size="xl" onClick={add} /></td>
+            <td className="row-action"><SaveIcon onClick={add} /></td>
         </tr>
     );
 }
