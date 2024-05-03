@@ -1,10 +1,8 @@
-﻿using Asm.MooBank.Commands;
-using Asm.MooBank.Domain.Entities.Tag;
-using Asm.MooBank.Models;
+﻿using Asm.MooBank.Domain.Entities.Tag;
 
 namespace Asm.MooBank.Modules.Tags.Commands;
 
-internal record Delete(int Id) : ICommand;
+public record Delete(int Id) : ICommand;
 
 internal class DeleteHandler(ITagRepository tagRepository, IUnitOfWork unitOfWork, ISecurity security) :  ICommandHandler<Delete>
 {

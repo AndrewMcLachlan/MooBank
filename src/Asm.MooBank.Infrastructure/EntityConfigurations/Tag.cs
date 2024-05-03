@@ -19,16 +19,16 @@ internal class TagConfiguration : IEntityTypeConfiguration<Domain.Entities.Tag.T
               .UsingEntity<TagTag>(
                 t4 => t4.HasOne(t42 => t42.Primary)
                           .WithMany()
-                          .HasForeignKey(t42 => t42.PrimaryTransactionTagId),
+                          .HasForeignKey(t42 => t42.PrimaryTagId),
                 t4 => t4.HasOne(ttt2 => ttt2.Secondary)
                           .WithMany()
-                          .HasForeignKey(ttt2 => ttt2.SecondaryTransactionTagId),
+                          .HasForeignKey(ttt2 => ttt2.SecondaryTagId),
                 t4 =>
                 {
-                    t4.HasKey(e => new { e.PrimaryTransactionTagId, e.SecondaryTransactionTagId });
+                    t4.HasKey(e => new { e.PrimaryTagId, e.SecondaryTagId });
                 });
 
-        //entity.OwnsOne(e => e.Settings).WithOwner().HasForeignKey("TransactionTagID");
-        entity.HasOne(e => e.Settings).WithOne().HasForeignKey<TagSettings>(e => e.TransactionTagId);
+        //entity.OwnsOne(e => e.Settings).WithOwner().HasForeignKey("TagId");
+        entity.HasOne(e => e.Settings).WithOne().HasForeignKey<TagSettings>(e => e.TagId);
     }
 }

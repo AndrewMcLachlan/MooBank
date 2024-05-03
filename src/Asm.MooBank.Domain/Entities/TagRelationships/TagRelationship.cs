@@ -14,7 +14,7 @@ public class TagRelationship
     public long Ordinal { get; set; }
 
     [AllowNull]
-    public virtual Tag.Tag TransactionTag { get; set; }
+    public virtual Tag.Tag Tag { get; set; }
 
     [AllowNull]
     public virtual Tag.Tag ParentTag { get; set; }

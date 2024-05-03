@@ -1,8 +1,8 @@
 CREATE TABLE [dbo].[TagSettings]
 (
-    TransactionTagId INT NOT NULL,
-    ApplySmoothing BIT NOT NULL CONSTRAINT DF_TransactionTagSettings_ApplySettings DEFAULT(0),
-    ExcludeFromReporting BIT NOT NULL CONSTRAINT DF_TransactionTagSettings_ExcludeFromReporting DEFAULT(0),
-    CONSTRAINT PK_TransactionTagSettings PRIMARY KEY CLUSTERED (TransactionTagId),
-    CONSTRAINT FK_TransactionTag_TransactionTagSettings FOREIGN KEY (TransactionTagId) REFERENCES [Tag]([Id])
+    TagId INT NOT NULL,
+    ApplySmoothing BIT NOT NULL CONSTRAINT DF_TagSettings_ApplySettings DEFAULT(0),
+    ExcludeFromReporting BIT NOT NULL CONSTRAINT DF_Settings_ExcludeFromReporting DEFAULT(0),
+    CONSTRAINT PK_TransactionTagSettings PRIMARY KEY CLUSTERED (TagId),
+    CONSTRAINT FK_Tag_TagSettings FOREIGN KEY (TagId) REFERENCES [Tag]([Id])
 )

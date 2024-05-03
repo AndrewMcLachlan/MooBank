@@ -9,14 +9,12 @@ public class TagSettings
 
     public TagSettings(int id)
     {
-        TransactionTagId = id;
+        TagId = id;
     }
 
-    internal int TransactionTagId { get; set; }
+    internal int TagId { get; set; }
 
     public bool ApplySmoothing { get; set; }
 
     public bool ExcludeFromReporting { get; set; }
-
-    //public virtual TransactionTag Tag { get; set; }
 }

@@ -343,4 +343,137 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="FK_UserCard_User" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="2d939393-eff8-4521-b17b-c3d9133f31b0" ChangeDateTime="04/28/2024 10:16:19">
+    <Property Name="ElementName" Value="[dbo].[PK_VirtualAccount]" />
+    <Property Name="ElementType" Value="SqlPrimaryKeyConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[VirtualInstrument]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="PK_VirtualInstrument" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="e49fbc0e-b992-46e4-b2d4-a56cd03e5dd3" ChangeDateTime="04/28/2024 10:17:08">
+    <Property Name="ElementName" Value="[dbo].[TransactionTransactionTag]" />
+    <Property Name="ElementType" Value="SqlTable" />
+    <Property Name="ParentElementName" Value="[dbo]" />
+    <Property Name="ParentElementType" Value="SqlSchema" />
+    <Property Name="NewName" Value="[TransactionTag]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="328e5941-b00e-45e7-8d73-2f413bae4170" ChangeDateTime="04/28/2024 10:19:20">
+    <Property Name="ElementName" Value="[dbo].[TagSettings].[TransactionTagId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TagSettings]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="TagId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="46a79c63-4179-4844-9eb6-a00db939e586" ChangeDateTime="04/28/2024 10:19:36">
+    <Property Name="ElementName" Value="[dbo].[FK_TransactionTag_TransactionTagSettings]" />
+    <Property Name="ElementType" Value="SqlForeignKeyConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[TagSettings]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="FK_Tag_TagSettings" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="104d6944-a892-42b5-a7ae-7664ae5a545d" ChangeDateTime="04/28/2024 10:21:08">
+    <Property Name="ElementName" Value="[dbo].[TransactionTagTransactionTag]" />
+    <Property Name="ElementType" Value="SqlTable" />
+    <Property Name="ParentElementName" Value="[dbo]" />
+    <Property Name="ParentElementType" Value="SqlSchema" />
+    <Property Name="NewName" Value="[TagTag]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="9fd7a877-7774-4616-a7fa-16ee31b7f964" ChangeDateTime="04/28/2024 10:21:17">
+    <Property Name="ElementName" Value="[dbo].[TagTag].[PrimaryTransactionTagId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TagTag]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[PrimaryTagId]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="b30fd0c6-becc-4aba-a0e9-69a8f193d475" ChangeDateTime="04/28/2024 10:21:38">
+    <Property Name="ElementName" Value="[dbo].[TagTag].[SecondaryTransactionTagId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TagTag]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[SecondaryTagId]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="1344c481-bf08-4906-aac0-9dd008f4c984" ChangeDateTime="04/28/2024 10:22:10">
+    <Property Name="ElementName" Value="[dbo].[FK_TransactionTag_TransactionTag_Primary]" />
+    <Property Name="ElementType" Value="SqlForeignKeyConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[TagTag]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[FK_TagTag_Primary]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="d6619f76-9d67-42a2-bed5-8bbaf811c906" ChangeDateTime="04/28/2024 10:22:18">
+    <Property Name="ElementName" Value="[dbo].[FK_TransactionTag_TransactionTag_Secondary]" />
+    <Property Name="ElementType" Value="SqlForeignKeyConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[TagTag]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[FK_TagTag_Secondary]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="fc347270-397f-4811-8efa-3d710b700148" ChangeDateTime="04/28/2024 10:24:29">
+    <Property Name="ElementName" Value="[dbo].[TransactionTagRuleTransactionTag]" />
+    <Property Name="ElementType" Value="SqlTable" />
+    <Property Name="ParentElementName" Value="[dbo]" />
+    <Property Name="ParentElementType" Value="SqlSchema" />
+    <Property Name="NewName" Value="[RuleTag]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="c204affa-f69a-4e48-909d-ab1aa649d2a4" ChangeDateTime="04/28/2024 10:24:37">
+    <Property Name="ElementName" Value="[dbo].[RuleTag].[TransactionTagRuleId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[RuleTag]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[RuleId]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="1580c670-66b0-46bd-8463-7d3333bfb012" ChangeDateTime="04/28/2024 10:24:45">
+    <Property Name="ElementName" Value="[dbo].[RuleTag].[TransactionTagId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[RuleTag]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[TagId]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="bc4c1159-c2e4-4e23-9256-ef3dcdc7a96d" ChangeDateTime="04/28/2024 10:25:02">
+    <Property Name="ElementName" Value="[dbo].[FK_TransactionTagRuleTransactionTag_TransactionTagRule]" />
+    <Property Name="ElementType" Value="SqlForeignKeyConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[RuleTag]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[FK_RuleTag_Rule]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="215e6fe8-bc3a-4c66-9be0-f402dc50f622" ChangeDateTime="04/28/2024 10:25:16">
+    <Property Name="ElementName" Value="[dbo].[FK_TransactionTagRuleTransactionTag_TransactionTag]" />
+    <Property Name="ElementType" Value="SqlForeignKeyConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[RuleTag]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[FK_RuleTag_Tag]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="020cecbe-9920-49aa-ad82-ec7231a0c4f0" ChangeDateTime="04/28/2024 10:25:46">
+    <Property Name="ElementName" Value="[dbo].[DF_TransactionTag_Deleted]" />
+    <Property Name="ElementType" Value="SqlDefaultConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[Tag]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[DF_Tag_Deleted]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="a3dd1caf-96db-4f9d-84c5-5605826dce05" ChangeDateTime="04/28/2024 10:25:56">
+    <Property Name="ElementName" Value="[dbo].[Tag].[IX_TransactionTag_Name]" />
+    <Property Name="ElementType" Value="SqlIndex" />
+    <Property Name="ParentElementName" Value="" />
+    <Property Name="ParentElementType" Value="" />
+    <Property Name="NewName" Value="[IX_Tag_Name]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="52f63fba-5132-4906-8c70-fb11a96f88ca" ChangeDateTime="04/28/2024 10:26:08">
+    <Property Name="ElementName" Value="[dbo].[DF_TransactionTagSettings_ApplySettings]" />
+    <Property Name="ElementType" Value="SqlDefaultConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[TagSettings]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DF_TagSettings_ApplySettings" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="69eb0076-de50-475b-8984-a90eb95dba1b" ChangeDateTime="04/28/2024 10:26:21">
+    <Property Name="ElementName" Value="[dbo].[DF_TransactionTagSettings_ExcludeFromReporting]" />
+    <Property Name="ElementType" Value="SqlDefaultConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[TagSettings]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DF_Settings_ExcludeFromReporting" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="d66f9288-dd4a-4f2e-af94-06eecb98408a" ChangeDateTime="05/03/2024 04:40:14">
+    <Property Name="ElementName" Value="[dbo].[Rule].[AccountId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Rule]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[InstrumentId]" />
+  </Operation>
 </Operations>

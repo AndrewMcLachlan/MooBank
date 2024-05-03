@@ -1,19 +1,19 @@
 ﻿using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Tags.Models;
 using Microsoft.EntityFrameworkCore.Query;
-using TransactionTagEntity = Asm.MooBank.Domain.Entities.Tag.Tag;
+using TagEntity = Asm.MooBank.Domain.Entities.Tag.Tag;
 
 namespace Asm.MooBank.Modules.Tags.Queries;
 
 public record GetTagsHierarchy : IQuery<TagHierarchy>;
 
-internal class GetTagsHierarchyHandler(IQueryable<TransactionTagEntity> tags, User user) : IQueryHandler<GetTagsHierarchy, TagHierarchy>
+internal sealed class GetTagsHierarchyHandler(IQueryable<TagEntity> tags, User user) : IQueryHandler<GetTagsHierarchy, TagHierarchy>
 {
     public async ValueTask<TagHierarchy> Handle(GetTagsHierarchy request, CancellationToken cancellationToken)
     {
         const int maxLevels = 5;
 
-        IIncludableQueryable<TransactionTagEntity, IEnumerable<TransactionTagEntity>> query = tags.Where(t => t.FamilyId == user.FamilyId && !t.Deleted && t.TaggedTo.Count != 0).Include(t => t.Tags.Where(t => !t.Deleted));
+        IIncludableQueryable<TagEntity, IEnumerable<TagEntity>> query = tags.Where(t => t.FamilyId == user.FamilyId && !t.Deleted && t.TaggedTo.Count != 0).Include(t => t.Tags.Where(t => !t.Deleted));
 
         for (int i = 0; i < maxLevels; i++)
         {

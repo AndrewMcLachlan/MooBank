@@ -53,7 +53,7 @@ export const Rules: React.FC = () => {
     if (!account) return (null);
 
     return (
-        <AccountPage title="Rules" breadcrumbs={[{ text: "Rules", route: `/accounts/${id}/rules` }]} actions={[<IconButton icon="check" onClick={runRules}>Run Rules</IconButton>]}>
+        <AccountPage title="Rules" breadcrumbs={[{ text: "Rules", route: `/accounts/${id}/rules` }]} actions={[<IconButton key="run" icon="check" onClick={runRules}>Run Rules</IconButton>]}>
             <Section>
                 <SearchBox value={search} onChange={(v: string) => setSearch(v)} />
             </Section>

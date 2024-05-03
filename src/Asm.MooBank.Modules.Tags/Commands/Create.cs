@@ -6,7 +6,7 @@ namespace Asm.MooBank.Modules.Tags.Commands;
 
 public sealed record Create(Tag Tag) : ICommand<Tag>;
 
-internal sealed class CreateHandler(IUnitOfWork unitOfWork, ITagRepository transactionTagRepository, User user) :  ICommandHandler<Create, Tag>
+internal sealed class CreateHandler(IUnitOfWork unitOfWork, ITagRepository tagRepository, User user) :  ICommandHandler<Create, Tag>
 {
     public async ValueTask<Tag> Handle(Create request, CancellationToken cancellationToken)
     {
@@ -15,7 +15,7 @@ internal sealed class CreateHandler(IUnitOfWork unitOfWork, ITagRepository trans
         Domain.Entities.Tag.Tag tag = request.Tag.ToEntity();
         tag.FamilyId = user.FamilyId;
 
-        transactionTagRepository.Add(tag);
+        tagRepository.Add(tag);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

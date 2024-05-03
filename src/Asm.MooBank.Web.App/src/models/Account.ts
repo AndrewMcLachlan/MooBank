@@ -39,16 +39,27 @@ export interface InstitutionAccount extends TransactionAccount, TopLevelAccount 
     institutionId: number;
 }
 
-export const emptyAccount : InstitutionAccount = {
-    id: "",
+export interface CreateInstitutionAccount {
+    name: string;
+    description?: string;
+    institutionId: number;
+    currency: string;
+    balance: number;
+    groupId: string;
+    accountType: AccountType;
+    importerTypeId?: number;
+    controller: Controller;
+    includeInBudget: boolean;
+    shareWithFamily: boolean;
+    virtualInstruments: VirtualAccount[];
+}
+
+export const emptyAccount : CreateInstitutionAccount = {
     name: "",
-    currentBalance: 0,
-    balanceDate: new Date(),
+    balance: 0,
     accountType: "None",
     controller: "Manual",
     groupId: "",
-    calculatedBalance: 0,
-    currentBalanceLocalCurrency: 0,
     currency: "",
     shareWithFamily: false,
     includeInBudget: false,

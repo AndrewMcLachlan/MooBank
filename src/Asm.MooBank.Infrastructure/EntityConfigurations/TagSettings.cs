@@ -6,6 +6,6 @@ public class TagSettingsConfiguration : IEntityTypeConfiguration<Domain.Entities
     {
         entity.ToTable("TagSettings");
 
-        entity.HasKey(e => e.TransactionTagId);
+        entity.HasKey(e => e.TagId);
     }
 }

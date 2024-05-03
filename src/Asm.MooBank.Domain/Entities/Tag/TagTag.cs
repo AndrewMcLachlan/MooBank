@@ -2,9 +2,9 @@
 
 public partial class TagTag
 {
-    public int PrimaryTransactionTagId { get; set; }
+    public int PrimaryTagId { get; set; }
 
-    public int SecondaryTransactionTagId { get; set; }
+    public int SecondaryTagId { get; set; }
 
     public virtual Tag Primary { get; set; } = null!;
 

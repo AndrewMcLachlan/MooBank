@@ -16,19 +16,19 @@ public class Rule : IEntityTypeConfiguration<Domain.Entities.Instrument.Rule>
 
         entity.HasMany(p => p.Tags)
                            .WithMany()
-                              .UsingEntity<TransactionTagRuleTransactionTag>(
-                                ttr => ttr.HasOne(ttr2 => ttr2.TransactionTag)
+                              .UsingEntity<RuleTag>(
+                                ttr => ttr.HasOne(ttr2 => ttr2.Tag)
                                           .WithMany()
-                                          .HasForeignKey(tt2 => tt2.TransactionTagId),
-                                ttr => ttr.HasOne(ttr2 => ttr2.TransactionTagRule)
+                                          .HasForeignKey(tt2 => tt2.TagId),
+                                ttr => ttr.HasOne(ttr2 => ttr2.Rule)
                                           .WithMany()
-                                          .HasForeignKey(ttr2 => ttr2.TransactionTagRuleId),
+                                          .HasForeignKey(ttr2 => ttr2.RuleId),
                                 t4 =>
                                 {
                                     t4.HasKey(e => new
                                     {
-                                        e.TransactionTagRuleId,
-                                        e.TransactionTagId
+                                        e.RuleId,
+                                        e.TagId
                                     });
                                 });
 

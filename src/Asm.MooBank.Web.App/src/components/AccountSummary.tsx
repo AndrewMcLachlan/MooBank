@@ -23,7 +23,7 @@ export const AccountSummary: React.FC<AccountSummaryProps> = ({ className, ...pr
                 <div>Balance</div>
                 <div className="balance amount"><AccountBalance balance={account.currentBalanceLocalCurrency} /></div>
             </KeyValue>
-            <KeyValue hidden={account.currentBalance === account.currentBalanceLocalCurrency}>
+            <KeyValue hidden={account.currentBalance === account.currentBalanceLocalCurrency || !account.currentBalanceLocalCurrency}>
                 <div>Balance ({account.currency})</div>
                 <div className="balance amount"><AccountBalance balance={account.currentBalance} /></div>
             </KeyValue>
@@ -34,7 +34,7 @@ export const AccountSummary: React.FC<AccountSummaryProps> = ({ className, ...pr
             <hr className="d-none d-lg-block" />
             <KeyValue className="d-none d-lg-flex">
                 <div>Type</div>
-                <div>{(account as InstitutionAccount).accountType ?? "Virtual"}</div>
+                <div>{(account as InstitutionAccount).instrumentType ?? "Virtual"}</div>
             </KeyValue>
             <KeyValue hidden={!(account as InstitutionAccount).institutionId} className="d-none d-lg-flex">
                 <div>Institution</div>

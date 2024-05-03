@@ -30,8 +30,8 @@ internal class GetTagTrendReportHandler(IQueryable<Transaction> transactions, IQ
 
         var tag = await _tags.SingleAsync(t => t.Id == request.TagId, cancellationToken);
         var tags = await _tags.Include(t => t.Tags).Where(t => !t.Deleted && t.TaggedTo.Any(t2 => t2.Id == request.TagId)).ToListAsync(cancellationToken);
-        var tagHierarchies = await tagRelationships.Include(t => t.TransactionTag).ThenInclude(t => t.Tags).Include(t => t.ParentTag).ThenInclude(t => t.Tags).Where(tr => tr.Ordinal == 1 && tags.Contains(tr.ParentTag)).ToListAsync(cancellationToken);
-        var allTags = tags.Union(tagHierarchies.Select(t => t.TransactionTag)).ToList();
+        var tagHierarchies = await tagRelationships.Include(t => t.Tag).ThenInclude(t => t.Tags).Include(t => t.ParentTag).ThenInclude(t => t.Tags).Where(tr => tr.Ordinal == 1 && tags.Contains(tr.ParentTag)).ToListAsync(cancellationToken);
+        var allTags = tags.Union(tagHierarchies.Select(t => t.Tag)).ToList();
         allTags.Add(tag);
 
 

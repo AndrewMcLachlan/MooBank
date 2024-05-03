@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-import { Controller, Controllers, AccountType, AccountTypes, ImportAccount, InstitutionAccount } from "models";
+import { Controller, Controllers, AccountType, AccountTypes, ImportAccount, InstitutionAccount, CreateInstitutionAccount } from "models";
 import { useGroups, useCreateAccount, useInstitutions } from "services";
 import { ImportSettings } from "./ImportSettings";
 import { CurrencySelector } from "components";
@@ -32,19 +32,14 @@ export const CreateAccount: React.FC = () => {
         e.stopPropagation();
         e.preventDefault();
 
-        const account: InstitutionAccount = {
-            id: emptyGuid,
+        const account: CreateInstitutionAccount = {
             name: name,
             description: description,
             currency: currency,
-            currentBalance: balance,
-            currentBalanceLocalCurrency: balance,
+            balance: balance,
             accountType: accountType,
             controller: accountController,
-            balanceDate: new Date(),
             groupId: groupId === "" ? undefined : groupId,
-            calculatedBalance: balance,
-            lastTransaction: undefined,
             shareWithFamily: shareWithFamily,
             institutionId: institution,
             includeInBudget: includeInBudget,
@@ -79,9 +74,9 @@ export const CreateAccount: React.FC = () => {
                         )}
                     </Form.Select>
                 </Form.Group>
-                <Form.Group controlId="currency" onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setCurrency(e.currentTarget.value)}>
+                <Form.Group controlId="currency">
                     <Form.Label>Currency</Form.Label>
-                    <CurrencySelector value={currency} />
+                    <CurrencySelector value={currency} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => { console.debug("currency", e.currentTarget.value); setCurrency(e.currentTarget.value);}} />
                 </Form.Group>
                 <Form.Group controlId="openingBalance" >
                     <Form.Label>Opening Balance</Form.Label>

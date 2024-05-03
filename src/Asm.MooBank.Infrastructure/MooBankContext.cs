@@ -62,14 +62,9 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
             entity.HasKey(e => e.Id);
         });
 
-        modelBuilder.Entity<TagTag>(entity =>
+        modelBuilder.Entity<RuleTag>(entity =>
         {
-            entity.HasKey(e => new { e.PrimaryTransactionTagId, e.SecondaryTransactionTagId });
-        });
-
-        modelBuilder.Entity<TransactionTagRuleTransactionTag>(entity =>
-        {
-            entity.HasKey(e => new { e.TransactionTagRuleId, e.TransactionTagId });
+            entity.HasKey(e => new { e.RuleId, e.TagId });
         });
 
 

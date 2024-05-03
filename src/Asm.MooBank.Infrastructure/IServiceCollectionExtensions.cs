@@ -77,7 +77,7 @@ public static class IServiceCollectionExtensions
                 .AddScoped<ISecurity, SecurityRepository>()
                 .AddScoped<IStockHoldingRepository, StockHoldingRepository>()
                 .AddScoped<ITransactionRepository, TransactionRepository>()
-                .AddScoped<ITagRepository, TransactionTagRepository>()
+                .AddScoped<ITagRepository, TagRepository>()
                 .AddScoped<IRuleRepository, RuleRepository>();
 
     public static IServiceCollection AddEntities(this IServiceCollection services) =>

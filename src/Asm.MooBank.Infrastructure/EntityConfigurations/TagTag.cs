@@ -4,6 +4,8 @@ internal class TagTagConfiguration : IEntityTypeConfiguration<Domain.Entities.Ta
 {
     public void Configure(EntityTypeBuilder<Domain.Entities.Tag.TagTag> entity)
     {
-        entity.ToTable("TransactionTagTransactionTag");
+        entity.ToTable("TagTag");
+
+        entity.HasKey(e => new { e.PrimaryTagId, e.SecondaryTagId });
     }
 }

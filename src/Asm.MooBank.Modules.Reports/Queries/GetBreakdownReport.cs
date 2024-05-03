@@ -28,17 +28,17 @@ internal class GetBreakdownReportHandler(IQueryable<Transaction> transactions, I
         if (parentTagId == null)
         {
             topTags = await _tags.Include(t => t.Tags).Where(t => !t.Deleted && (t.Settings == null || !t.Settings.ExcludeFromReporting) && t.TaggedTo.Count == 0).ToListAsync(cancellationToken);
-            lowerTags = await tagRelationships.Include(t => t.TransactionTag).ThenInclude(t => t.Tags).Include(t => t.ParentTag).ThenInclude(t => t.Tags).Where(tr => !tr.TransactionTag.Deleted && topTags.Contains(tr.ParentTag)).ToListAsync(cancellationToken);
+            lowerTags = await tagRelationships.Include(t => t.Tag).ThenInclude(t => t.Tags).Include(t => t.ParentTag).ThenInclude(t => t.Tags).Where(tr => !tr.Tag.Deleted && topTags.Contains(tr.ParentTag)).ToListAsync(cancellationToken);
         }
         else
         {
             // Include the root tag for any transactions
             rootTag = _tags.Include(t => t.Tags).Single(t => t.Id == parentTagId);
             topTags = await _tags.Include(t => t.Tags).Where(t => !t.Deleted && (t.Settings == null || !t.Settings.ExcludeFromReporting) && t.TaggedTo.Any(t2 => t2.Id == parentTagId)).ToListAsync(cancellationToken);
-            lowerTags = await tagRelationships.Include(t => t.TransactionTag).ThenInclude(t => t.Tags).Include(t => t.ParentTag).ThenInclude(t => t.Tags).Where(tr => !tr.TransactionTag.Deleted && (tr.TransactionTag.Settings == null || !tr.TransactionTag.Settings.ExcludeFromReporting) && topTags.Contains(tr.ParentTag)).ToListAsync(cancellationToken);
+            lowerTags = await tagRelationships.Include(t => t.Tag).ThenInclude(t => t.Tags).Include(t => t.ParentTag).ThenInclude(t => t.Tags).Where(tr => !tr.Tag.Deleted && (tr.Tag.Settings == null || !tr.Tag.Settings.ExcludeFromReporting) && topTags.Contains(tr.ParentTag)).ToListAsync(cancellationToken);
         }
 
-        List<Tag> tags = topTags.Union(lowerTags.Select(tr => tr.TransactionTag), new TagEqualityComparer()).ToList();
+        List<Tag> tags = topTags.Union(lowerTags.Select(tr => tr.Tag), new TagEqualityComparer()).ToList();
         if (rootTag != null)
         {
             tags.Add(rootTag);
@@ -50,7 +50,7 @@ internal class GetBreakdownReportHandler(IQueryable<Transaction> transactions, I
         var transactions = await _transactions.IncludeTagsAndSubTags().WhereByReportQuery(request).Where(t => t.Splits.SelectMany(t => t.Tags).Any(tt => tags.Contains(tt))).ToListAsync(cancellationToken);
 
         var tagValues = transactions
-            .GroupBy(t => rootTag != null && t.Tags.Contains(rootTag) ? rootTag : topTags.FirstOrDefault(tag => t.Tags.Contains(tag)) ?? lowerTags.Where(tag => t.Tags.Contains(tag.TransactionTag)).Select(tag => tag.ParentTag).First())
+            .GroupBy(t => rootTag != null && t.Tags.Contains(rootTag) ? rootTag : topTags.FirstOrDefault(tag => t.Tags.Contains(tag)) ?? lowerTags.Where(tag => t.Tags.Contains(tag.Tag)).Select(tag => tag.ParentTag).First())
             .Select(g => new TagValue
             {
                 TagId = g.Key.Id,

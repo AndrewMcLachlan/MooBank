@@ -41,6 +41,7 @@
     <ProjectReference Include="..\Asm.MooBank.Modules.Assets\Asm.MooBank.Modules.Assets.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Modules.Instruments\Asm.MooBank.Modules.Instruments.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Modules.Stocks\Asm.MooBank.Modules.Stocks.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Modules.Tags\Asm.MooBank.Modules.Tags.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Modules.Transactions\Asm.MooBank.Modules.Transactions.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Security\Asm.MooBank.Security.csproj" />
 </ItemGroup>

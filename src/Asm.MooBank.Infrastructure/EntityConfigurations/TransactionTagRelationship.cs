@@ -3,13 +3,13 @@ using Asm.MooBank.Domain.Entities.TagRelationships;
 
 namespace Asm.MooBank.Infrastructure.EntityConfigurations;
 
-public class TransactionTagRelationshipConfig : IEntityTypeConfiguration<TagRelationship>
+public class TagRelationshipConfig : IEntityTypeConfiguration<TagRelationship>
 {
     public void Configure(EntityTypeBuilder<TagRelationship> entity)
     {
         entity.HasKey(entity => new { entity.Id, entity.ParentId });
 
-        entity.HasOne(t => t.TransactionTag)
+        entity.HasOne(t => t.Tag)
             .WithOne()
             .HasForeignKey<TagRelationship>(t => t.Id);
 

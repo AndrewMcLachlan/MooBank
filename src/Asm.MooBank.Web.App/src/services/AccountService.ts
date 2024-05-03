@@ -1,5 +1,5 @@
 import { useQueryClient, UseQueryResult } from "@tanstack/react-query";
-import { CreateTransaction, InstitutionAccount, InstrumentId, AccountList, ImportAccount } from "../models";
+import { CreateTransaction, InstitutionAccount, InstrumentId, AccountList, ImportAccount, CreateInstitutionAccount } from "../models";
 import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
 import { ListItem } from "models/ListItem";
 
@@ -19,13 +19,13 @@ export const useCreateAccount = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutate} = useApiPost<InstitutionAccount, null, InstitutionAccount>(() => `api/accounts`, {
+    const { mutate} = useApiPost<InstitutionAccount, null, CreateInstitutionAccount>(() => `api/accounts`, {
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: [accountsKey]});
         }
     });
 
-    const create = (account: InstitutionAccount) => {
+    const create = (account: CreateInstitutionAccount) => {
         mutate([null, account]);
     };
 

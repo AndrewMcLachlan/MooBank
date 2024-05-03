@@ -3,14 +3,14 @@ CREATE VIEW [dbo].[TagHierarchies] AS
 WITH  cte AS (
     SELECT tt.[Id] as OGID, NULL as ChildId, tt.*, CAST(tt.Name as VARCHAR(MAX)) as ChildName, CAST(tt.[Id] as VARCHAR(MAX)) as TagIds
     FROM [Tag] tt
-    INNER JOIN TransactionTagTransactionTag tttt ON tt.[Id] = tttt.PrimaryTransactionTagId
+    INNER JOIN [TagTag] tttt ON tt.[Id] = tttt.[PrimaryTagId]
     --LEFT  JOIN TransactionTagTransactionTag tttt2 ON tt.TransactionTagId = tttt2.SecondaryTransactionTagId
     --WHERE tttt2.SecondaryTransactionTagId IS NULL
     UNION ALL
     SELECT cte.OGID, cte.Id as ChildId, tt.*, CAST(tt.Name + ', ' + cte.ChildName as VARCHAR(MAX)), CAST(tt.[Id] as VARCHAR(MAX)) +',' + cte.TagIds
     FROM [Tag] tt
-    INNER JOIN TransactionTagTransactionTag tttt ON tt.[Id] = tttt.SecondaryTransactionTagId
-    INNER JOIN cte ON cte.Id = tttt.PrimaryTransactionTagId
+    INNER JOIN [TagTag] tttt ON tt.[Id] = tttt.[SecondaryTagId]
+    INNER JOIN cte ON cte.Id = tttt.[PrimaryTagId]
   ),
   cte2 AS (
     SELECT DISTINCT cte.OGID as ID, cte.TagIds FROM cte
