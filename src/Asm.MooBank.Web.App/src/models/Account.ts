@@ -54,12 +54,16 @@ export interface CreateInstitutionAccount {
     virtualInstruments: VirtualAccount[];
 }
 
-export const emptyAccount : CreateInstitutionAccount = {
+export const emptyAccount : InstitutionAccount = {
+    id: "",
     name: "",
-    balance: 0,
+    currentBalance: 0,
+    balanceDate: new Date(),
     accountType: "None",
     controller: "Manual",
     groupId: "",
+    calculatedBalance: 0,
+    currentBalanceLocalCurrency: 0,
     currency: "",
     shareWithFamily: false,
     includeInBudget: false,
