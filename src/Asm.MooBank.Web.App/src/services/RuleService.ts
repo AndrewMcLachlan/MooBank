@@ -9,7 +9,7 @@ interface RuleVariables {
     accountId: string, ruleId: number, tag: Tag,
 }
 
-export const useRules = (accountId: string): UseQueryResult<Models.Rule[]> => useApiGet<Models.Rule[]>([rulesKey, accountId], `api/accounts/${accountId}/rules`);
+export const useRules = (accountId: string): UseQueryResult<Models.Rule[]> => useApiGet<Models.Rule[]>([rulesKey, accountId], `api/accounts/${accountId}/rules`, { enabled: !!accountId });
 
 export const useRunRules = () => useApiPostEmpty<null, { accountId: string }>((variables) => `api/accounts/${variables.accountId}/rules/run`);
 
@@ -58,9 +58,8 @@ export const useCreateRule = () => {
                 return;
             }
 
-            allRules.push(data);
-            allRules = allRules.sort((t1, t2) => t1.contains.localeCompare(t2.contains));
-            queryClient.setQueryData<Models.Rule[]>([rulesKey, variables.accountId], allRules);
+            const newRules  = [data, ...allRules].sort((t1, t2) => t1.contains.localeCompare(t2.contains));
+            queryClient.setQueryData<Models.Rule[]>([rulesKey, variables.accountId], newRules);
         },
         onError: (_error, [variables]) => {
             queryClient.invalidateQueries({ queryKey: [rulesKey, variables.accountId]});

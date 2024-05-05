@@ -1,25 +1,29 @@
-import "./Rules.scss";
-
 import React, { useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
 
-import { IconButton, Pagination, SearchBox, Section, SortDirection, changeSortDirection, getNumberOfPages, useIdParams } from "@andrewmclachlan/mooapp";
-import { AccountPage, TagPanel, useAccount } from "components";
+import { IconButton, Pagination, SearchBox, Section, SortDirection, changeSortDirection, getNumberOfPages } from "@andrewmclachlan/mooapp";
+import { AccountPage, useAccount } from "components";
 
-import { Rule, Tag, sortRules } from "models";
+import { Rule, sortRules } from "models";
 
-import { useCreateRule, useCreateTag, useRules, useRunRules, useTags } from "services";
+import { useRules, useRunRules, useTags } from "services";
+import { NewRule } from "./NewRule";
 import { RuleRow } from "./RuleRow";
-import { SaveIcon } from "components/SaveIcon";
 
 export const Rules: React.FC = () => {
 
-    const id = useIdParams();
     const account = useAccount();
 
-    const { newRule, fullTagsList, addTag, createTag, removeTag, nameChange, descriptionChange, createRule, runRules, keyUp } = useComponentState(id);
+    const fullTagsListQuery = useTags();
+    const fullTagsList = fullTagsListQuery.data ?? [];
 
-    const { data: rules } = useRules(id);
+    const runTransactionTagRules = useRunRules();
+
+    const runRules = () => {
+        runTransactionTagRules.mutate({ accountId: account.id });
+    };
+
+    const { data: rules } = useRules(account?.id);
 
     const [filteredRules, setFilteredRules] = useState<Rule[]>([]);
     const [pagedRules, setPagedRules] = useState<Rule[]>([]);
@@ -54,11 +58,11 @@ export const Rules: React.FC = () => {
     if (!account) return (null);
 
     return (
-        <AccountPage title="Rules" breadcrumbs={[{ text: "Rules", route: `/accounts/${id}/rules` }]} actions={[<IconButton key="run" icon="check" onClick={runRules}>Run Rules</IconButton>]}>
+        <AccountPage title="Rules" breadcrumbs={[{ text: "Rules", route: `/accounts/${account.id}/rules` }]} actions={[<IconButton key="run" icon="check" onClick={runRules}>Run Rules</IconButton>]}>
             <Section>
                 <SearchBox value={search} onChange={(v: string) => setSearch(v)} />
             </Section>
-            <Table striped bordered={false} borderless className="section transaction-tag-rules">
+            <Table striped bordered={false} borderless className="section">
                 <thead>
                     <tr>
                         <th className={`column-20 sortable ${sortDirection.toLowerCase()}`} onClick={() => setSortDirection(changeSortDirection(sortDirection))}>When a transaction contains</th>
@@ -68,13 +72,8 @@ export const Rules: React.FC = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td><input type="text" className="form-control" placeholder="Description contains..." value={newRule.contains} onChange={nameChange} /></td>
-                        <TagPanel as="td" selectedItems={newRule.tags} items={fullTagsList} onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} onKeyUp={keyUp} />
-                        <td><input type="text" className="form-control" placeholder="Notes..." value={newRule.description} onChange={descriptionChange} /></td>
-                        <td className="row-action"><SaveIcon onClick={createRule} /></td>
-                    </tr>
-                    {pagedRules.map((r) => <RuleRow key={r.id} accountId={id} rule={r} />)}
+                    <NewRule />
+                    {pagedRules.map((r) => <RuleRow key={r.id} accountId={account.id} rule={r} />)}
                 </tbody>
                 <tfoot>
                     <tr>
@@ -87,78 +86,4 @@ export const Rules: React.FC = () => {
             </Table>
         </AccountPage>
     );
-}
-
-Rules.displayName = "Rules";
-
-const useComponentState = (accountId: string) => {
-
-    const blankRule = { id: 0, contains: "", description: "", tags: [] } as Rule;
-
-    const fullTagsListQuery = useTags();
-    const fullTagsList = fullTagsListQuery.data ?? [];
-
-    const [newRule, setNewRule] = useState(blankRule);
-
-    const createTransactionTag = useCreateTag();
-    const createTransactionTagRule = useCreateRule();
-    const runTransactionTagRules = useRunRules();
-
-    const createRule = () => {
-        createTransactionTagRule.mutate([{ accountId }, newRule]);
-        setNewRule(blankRule);
-    }
-
-    const nameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setNewRule({ ...newRule, contains: e.currentTarget.value });
-    }
-
-    const descriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setNewRule({ ...newRule, description: e.currentTarget.value });
-    }
-
-    const createTag = (name: string) => {
-        createTransactionTag.mutate({ name });
-    }
-
-    const addTag = (tag: Tag) => {
-
-        if (!tag.id) return;
-
-        newRule.tags.push(tag);
-        setNewRule(newRule);
-    }
-
-    const removeTag = (tag: Tag) => {
-
-        if (!tag.id) return;
-
-        newRule.tags = newRule.tags.filter((t) => t.id !== tag.id);
-        setNewRule(newRule);
-    };
-
-    const runRules = () => {
-        runTransactionTagRules.mutate({ accountId });
-    };
-
-    const keyUp: React.KeyboardEventHandler<HTMLTableCellElement> = (e) => {
-        if (e.key === "Enter") {
-            createRule();
-        }
-    }
-    return {
-        newRule,
-        fullTagsList,
-
-        createTag,
-        addTag,
-        removeTag,
-
-        nameChange,
-        descriptionChange,
-        createRule,
-        keyUp,
-
-        runRules,
-    };
 }
