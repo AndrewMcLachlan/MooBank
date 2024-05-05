@@ -7,15 +7,15 @@ using IInstrumentRepository = Asm.MooBank.Domain.Entities.Instrument.IInstrument
 
 namespace Asm.MooBank.Modules.Transactions.Commands;
 
-public record UpdateBalance(Guid AccountId, CreateTransaction BalanceUpdate) : ICommand<Models.Transaction>;
+public record UpdateBalance(Guid InstrumentId, CreateTransaction BalanceUpdate) : ICommand<Models.Transaction>;
 
-internal class UpdateBalanceHandler(IInstrumentRepository accountRepository, ITransactionRepository transactionRepository, ICurrencyConverter currencyConverter, ISecurity security, IUnitOfWork unitOfWork) :  ICommandHandler<UpdateBalance, Models.Transaction>
+internal class UpdateBalanceHandler(IInstrumentRepository accountRepository, ITransactionRepository transactionRepository, ISecurity security, IUnitOfWork unitOfWork) :  ICommandHandler<UpdateBalance, Models.Transaction>
 {
     public async ValueTask<Models.Transaction> Handle(UpdateBalance command, CancellationToken cancellationToken)
     {
-        security.AssertInstrumentPermission(command.AccountId);
+        security.AssertInstrumentPermission(command.InstrumentId);
 
-        var account = await accountRepository.Get(command.AccountId, cancellationToken);
+        var account = await accountRepository.Get(command.InstrumentId, cancellationToken);
 
         if (account is not Domain.Entities.Instrument.TransactionInstrument transactionAccount)
         {

@@ -10,7 +10,7 @@ internal class TransactionsEndpoints : EndpointGroupBase
 {
     public override string Name => "Transactions";
 
-    public override string Path => "accounts/{accountId}/transactions";
+    public override string Path => "accounts/{instrumentId}/transactions";
 
     public override string Tags => "Transactions";
 

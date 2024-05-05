@@ -1,5 +1,4 @@
-﻿using Asm.MooBank.Commands;
-using Asm.MooBank.Domain.Entities.Tag;
+﻿using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.Transactions.Specifications;
 using Asm.MooBank.Modules.Transactions.Models.Extensions;
@@ -10,17 +9,17 @@ using Microsoft.Extensions.Options;
 
 namespace Asm.MooBank.Modules.Transactions.Commands;
 
-public record UpdateTransaction(Guid AccountId, Guid Id, string? Notes, IEnumerable<Models.TransactionSplit> Splits, bool ExcludeFromReporting = false) : ICommand<Models.Transaction>
+public record UpdateTransaction(Guid InstrumentId, Guid Id, string? Notes, IEnumerable<Models.TransactionSplit> Splits, bool ExcludeFromReporting = false) : ICommand<Models.Transaction>
 {
     public static async ValueTask<UpdateTransaction?> BindAsync(HttpContext httpContext)
     {
         var options = httpContext.RequestServices.GetRequiredService<IOptions<JsonOptions>>();
 
-        if (!Guid.TryParse(httpContext.Request.RouteValues["accountId"] as string, out Guid accountId)) throw new BadHttpRequestException("invalid account ID");
+        if (!Guid.TryParse(httpContext.Request.RouteValues["instrumentId"] as string, out Guid instrumentId)) throw new BadHttpRequestException("invalid account ID");
         if (!Guid.TryParse(httpContext.Request.RouteValues["id"] as string, out Guid id)) throw new BadHttpRequestException("invalid transaction ID");
 
         var update = await System.Text.Json.JsonSerializer.DeserializeAsync<UpdateTransaction>(httpContext.Request.Body, options.Value.SerializerOptions, cancellationToken: httpContext.RequestAborted);
-        return update! with { AccountId = accountId, Id = id };
+        return update! with { InstrumentId = instrumentId, Id = id };
     }
 }
 
@@ -28,7 +27,7 @@ internal class UpdateTransactionHandler(ITransactionRepository transactionReposi
 {
     public async ValueTask<Models.Transaction> Handle(UpdateTransaction request, CancellationToken cancellationToken)
     {
-        security.AssertInstrumentPermission(request.AccountId);
+        security.AssertInstrumentPermission(request.InstrumentId);
 
         var entity = await transactionRepository.Get(request.Id, new IncludeSplitsSpecification(), cancellationToken);
 

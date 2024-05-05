@@ -7,6 +7,7 @@ import { State, TransactionsFilter } from "../store/state";
 import { PagedResult, SortDirection, useApiGet, useApiPagedGet, useApiDelete, useApiPutEmpty, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
 import {format} from "date-fns/format";
 import {parseISO} from "date-fns/parseISO";
+import { accountsKey } from "./AccountService";
 
 const transactionKey = "transactions";
 
@@ -136,8 +137,9 @@ export const useCreateTransaction = () => {
     const queryClient = useQueryClient();
 
     const res = useApiPost<Transaction, { accountId: string }, Models.CreateTransaction>((variables) => `api/accounts/${variables.accountId}/transactions`, {
-        onSettled: () => {
+        onSettled: (_data ,_error ,[variables]) => {
             queryClient.invalidateQueries({ queryKey: [transactionKey]});
+            queryClient.refetchQueries({ queryKey: [accountsKey, variables.accountId]});
         }
     });
 

@@ -6,13 +6,13 @@ using Asm.MooBank.Modules.Transactions.Models.Extensions;
 
 namespace Asm.MooBank.Modules.Transactions.Commands;
 
-internal record RemoveTag(Guid AccountId, Guid Id, int TagId) : ICommand<Models.Transaction>;
+internal record RemoveTag(Guid InstrumentId, Guid Id, int TagId) : ICommand<Models.Transaction>;
 
 internal class RemoveTagHandler(ITransactionRepository transactionRepository, IUnitOfWork unitOfWork, ISecurity security) :  ICommandHandler<RemoveTag, Models.Transaction>
 {
     public async ValueTask<Models.Transaction> Handle(RemoveTag request, CancellationToken cancellationToken)
     {
-        security.AssertInstrumentPermission(request.AccountId);
+        security.AssertInstrumentPermission(request.InstrumentId);
 
         var entity = await transactionRepository.Get(request.Id, new IncludeSplitsSpecification(), cancellationToken);
 

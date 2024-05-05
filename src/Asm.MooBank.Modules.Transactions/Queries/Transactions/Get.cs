@@ -12,7 +12,7 @@ public sealed record Get : IQuery<PagedResult>
 {
     private bool _untagged;
 
-    public required Guid AccountId { get; init; }
+    public required Guid InstrumentId { get; init; }
 
     public string? Filter { get; init; }
 
@@ -40,7 +40,7 @@ internal class GetHandler(IQueryable<Transaction> transactions, ISecurity securi
 
     public async ValueTask<PagedResult> Handle(Get query, CancellationToken cancellationToken)
     {
-        security.AssertInstrumentPermission(query.AccountId);
+        security.AssertInstrumentPermission(query.InstrumentId);
 
         var total = await transactions.Where(query).CountAsync(cancellationToken);
 
@@ -67,7 +67,7 @@ file static class IQueryableExtensions
 
     public static IQueryable<Transaction> Where(this IQueryable<Transaction> queryable, Get query)
     {
-        var result = queryable.Where(t => t.AccountId == query.AccountId);
+        var result = queryable.Where(t => t.AccountId == query.InstrumentId);
 
         var filters = query.Filter?.Split(',') ?? [];
 

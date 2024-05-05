@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Asm.MooBank.Modules.Transactions.Commands;
 
-public record Create(Guid AccountId, decimal Amount, string Description, string? Reference, DateTimeOffset TransactionTime) : InstrumentIdCommand(AccountId), ICommand<Models.Transaction>
+public record Create(Guid InstrumentId, decimal Amount, string Description, string? Reference, DateTimeOffset TransactionTime) : InstrumentIdCommand(InstrumentId), ICommand<Models.Transaction>
 {
     public static ValueTask<Create> BindAsync(HttpContext httpContext) => BindHelper.BindWithInstrumentIdAsync<Create>(httpContext);
 }
@@ -16,9 +16,9 @@ internal class CreateHandler(IInstrumentRepository accountRepository, ITransacti
 {
     public async ValueTask<Models.Transaction> Handle(Create command, CancellationToken cancellationToken)
     {
-        command.Deconstruct(out var accountId, out var amount, out var description, out var reference, out var transactionTime);
+        command.Deconstruct(out var instrumentId, out var amount, out var description, out var reference, out var transactionTime);
 
-        security.AssertInstrumentPermission(accountId);
+        security.AssertInstrumentPermission(instrumentId);
 
         var account = await accountRepository.Get(command.InstrumentId, cancellationToken);
         if (account is not Domain.Entities.Instrument.TransactionInstrument transactionAccount)
