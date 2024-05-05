@@ -9,7 +9,7 @@ public sealed record Create() : ICommand<Models.Asset>
     public required string Name { get; init; }
     public required string Description { get; init; }
     public decimal? PurchasePrice { get; init; }
-    public decimal CurrentValue { get; init; }
+    public decimal CurrentBalance { get; init; }
     public required bool ShareWithFamily { get; init; }
     public Guid? AccountGroupId { get; init; }
 }
@@ -25,7 +25,7 @@ internal class CreateHandler(IAssetRepository repository, IUnitOfWork unitOfWork
 
         Domain.Entities.Asset.Asset entity = new(Guid.Empty)
         {
-            Balance = command.CurrentValue,
+            Balance = command.CurrentBalance,
             Name = command.Name,
             Description = command.Description,
             ShareWithFamily = command.ShareWithFamily,
