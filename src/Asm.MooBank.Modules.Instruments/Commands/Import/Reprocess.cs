@@ -1,32 +1,19 @@
-﻿using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Importers;
+﻿using Asm.MooBank.Importers;
 
 namespace Asm.MooBank.Modules.Instruments.Commands.Import;
 
-public record Reprocess(Guid AccountId) : ICommand;
+public record Reprocess(Guid InstrumentId) : ICommand;
 
-internal class ReprocessHandler(IUnitOfWork unitOfWork, IInstitutionAccountRepository institutionAccountRepository, ISecurity security, IImporterFactory importerFactory) : ICommandHandler<Reprocess>
+internal class ReprocessHandler(IUnitOfWork unitOfWork, ISecurity security, IImporterFactory importerFactory) : ICommandHandler<Reprocess>
 {
-    private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly IInstitutionAccountRepository _institutionAccountRepository = institutionAccountRepository;
-    private readonly ISecurity _security = security;
-    private readonly IImporterFactory _importerFactory = importerFactory;
-
     public async ValueTask Handle(Reprocess request, CancellationToken cancellationToken)
     {
-        _security.AssertInstrumentPermission(request.AccountId);
+        security.AssertInstrumentPermission(request.InstrumentId);
 
-        var account = await _institutionAccountRepository.Get(request.AccountId, cancellationToken);
+        var importer = await importerFactory.Create(request.InstrumentId, cancellationToken) ?? throw new ArgumentException("Import is not supported", nameof(request));
 
-        var importer = _importerFactory.Create(account.ImportAccount?.ImporterType.Type);
+        await importer.Reprocess(request.InstrumentId, cancellationToken);
 
-        if (importer == null)
-        {
-            return;
-        }
-
-        await importer.Reprocess(request.AccountId, cancellationToken);
-
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }
