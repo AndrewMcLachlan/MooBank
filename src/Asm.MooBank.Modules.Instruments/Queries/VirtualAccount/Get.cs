@@ -4,7 +4,7 @@ using Asm.MooBank.Services;
 
 namespace Asm.MooBank.Modules.Instruments.Queries.VirtualAccount;
 
-public record Get(Guid InstrumentId, Guid VirtualAccountId) : IQuery<VirtualInstrument>;
+public record Get(Guid InstrumentId, Guid VirtualInstrumentId) : IQuery<VirtualInstrument>;
 
 internal class GetHandler(IQueryable<Domain.Entities.Instrument.Instrument> accounts, ISecurity security, ICurrencyConverter currencyConverter) : IQueryHandler<Get, VirtualInstrument>
 {
@@ -16,7 +16,7 @@ internal class GetHandler(IQueryable<Domain.Entities.Instrument.Instrument> acco
 
         if (account is not Domain.Entities.Account.InstitutionAccount institutionAccount) throw new InvalidOperationException("Virtual accounts are only available for institution accounts.");
 
-        var virtualAccount = institutionAccount.VirtualInstruments.SingleOrDefault(va => va.Id == request.VirtualAccountId) ?? throw new NotFoundException();
+        var virtualAccount = institutionAccount.VirtualInstruments.SingleOrDefault(va => va.Id == request.VirtualInstrumentId) ?? throw new NotFoundException();
 
         return virtualAccount.ToModel(currencyConverter);
 
