@@ -1,17 +1,23 @@
-import { Form, SelectProps } from "@andrewmclachlan/mooapp";
 import React from "react";
+import Select, { Props } from "react-select";
 
-export const CurrencySelector: React.FC<SelectProps> = React.forwardRef(({ value, ...props }, ref) => (
+type Currency = { name: string, code: string };
 
-    <Form.Select value={value} {...props} ref={ref}>
-        {currencies.map((currency) => (
-            <option key={currency.code} value={currency.code}>{currency.name} ({currency.code})</option>
-        ))}
-    </Form.Select>
-));
+interface CurrencySelectorProps extends Omit<Props<Currency>, "value" | "onChange"> {
+    value: string;
+    onChange: (value: string) => void;
+}
 
+export const CurrencySelector = React.forwardRef<any, CurrencySelectorProps>(({ value, onChange, ...props }, ref) => {
 
-const currencies = [
+    const currency = value ? currencies.find(c => c.code === value) : undefined;
+
+    return (
+        <Select onChange={(c: any) => onChange(c.code)} value={currency} options={currencies} getOptionValue={o => o.code} getOptionLabel={o => o.name} formatOptionLabel={o => `${o.name} (${o.code})`} {...props} ref={ref} className="react-select" classNamePrefix="react-select" />
+    );
+});
+
+const currencies: Currency[] = [
     { name: "UAE Dirham", code: "AED", },
     { name: "Afghani", code: "AFN", },
     { name: "Lek", code: "ALL", },

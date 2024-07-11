@@ -1,19 +1,18 @@
-import { Page, emptyGuid } from "@andrewmclachlan/mooapp";
+import { Page } from "@andrewmclachlan/mooapp";
 import { useState } from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-import { Controller, Controllers, AccountType, AccountTypes, ImportAccount, InstitutionAccount, CreateInstitutionAccount } from "models";
-import { useGroups, useCreateAccount, useInstitutions } from "services";
+import { Controller, Controllers, AccountType, AccountTypes, ImportAccount, InstitutionAccount, CreateInstitutionAccount, Institution } from "models";
+import { useGroups, useCreateAccount } from "services";
 import { ImportSettings } from "./ImportSettings";
-import { CurrencySelector } from "components";
+import { CurrencySelector, InstitutionSelector } from "components";
 
 export const CreateAccount: React.FC = () => {
 
     const navigate = useNavigate();
 
     const { data: groups } = useGroups();
-    const { data: institutions } = useInstitutions();
     const createAccount = useCreateAccount();
 
     const [name, setName] = useState("");
@@ -25,7 +24,7 @@ export const CreateAccount: React.FC = () => {
     const [groupId, setgroupId] = useState("");
     const [includeInBudget, setIncludeInBudget] = useState(false);
     const [shareWithFamily, setShareWithFamily] = useState(false);
-    const [institution, setInstitution] = useState(0);
+    const [institutionId, setInstitutionId] = useState<number>(undefined);
     const [currency, setCurrency] = useState("AUD");
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -41,10 +40,9 @@ export const CreateAccount: React.FC = () => {
             controller: accountController,
             groupId: groupId === "" ? undefined : groupId,
             shareWithFamily: shareWithFamily,
-            institutionId: institution,
+            institutionId: institutionId,
             includeInBudget: includeInBudget,
             importerTypeId: accountController === "Import" ? importerTypeId : undefined,
-            virtualInstruments: [],
         };
 
         createAccount(account);
@@ -67,16 +65,11 @@ export const CreateAccount: React.FC = () => {
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Institution</Form.Label>
-                    <Form.Select value={institution.toString()} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setInstitution(Number(e.currentTarget.value))}>
-                        <option value="">Select an institution...</option>
-                        {institutions?.map(a =>
-                            <option value={a.id} key={a.id}>{a.name}</option>
-                        )}
-                    </Form.Select>
+                    <InstitutionSelector value={institutionId} onChange={(id) => setInstitutionId(id)} />
                 </Form.Group>
                 <Form.Group controlId="currency">
                     <Form.Label>Currency</Form.Label>
-                    <CurrencySelector value={currency} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => { console.debug("currency", e.currentTarget.value); setCurrency(e.currentTarget.value);}} />
+                    <CurrencySelector value={currency} onChange={(code) => setCurrency(code)} />
                 </Form.Group>
                 <Form.Group controlId="openingBalance" >
                     <Form.Label>Opening Balance</Form.Label>

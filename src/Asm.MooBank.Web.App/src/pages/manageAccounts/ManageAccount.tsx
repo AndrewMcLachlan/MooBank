@@ -6,12 +6,11 @@ import * as Models from "models";
 import { useGroups, useInstitutions, useReprocessTransactions, useUpdateAccount, useVirtualAccounts } from "services";
 import { useNavigate } from "react-router-dom";
 import { IconButton, Section, useIdParams } from "@andrewmclachlan/mooapp";
-import { AccountPage, CurrencySelector, useAccount } from "components";
+import { AccountPage, CurrencySelector, InstitutionSelector, useAccount } from "components";
 
 export const ManageAccount = () => {
 
     const { data: groups } = useGroups();
-    const { data: institutions } = useInstitutions();
     const reprocessTransactions = useReprocessTransactions();
 
     const navigate = useNavigate();
@@ -81,15 +80,11 @@ export const ManageAccount = () => {
                             </Form.Group>
                             <Form.Group controlId="currency">
                                 <Form.Label>Currency</Form.Label>
-                                <CurrencySelector value={account.currency} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setCurrency(e.currentTarget.value)} />
+                                <CurrencySelector value={account.currency} onChange={code => setCurrency(code)} />
                             </Form.Group>
                             <Form.Group>
                                 <Form.Label>Institution</Form.Label>
-                                <Form.Select value={account.institutionId.toString()} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setInstitution(Number(e.currentTarget.value))}>
-                                    {institutions?.map(a =>
-                                        <option value={a.id} key={a.id}>{a.name}</option>
-                                    )}
-                                </Form.Select>
+                                <InstitutionSelector value={account.institutionId} onChange={id => setInstitution(id)} />
                             </Form.Group>
                             <Form.Group controlId="group" >
                                 <Form.Label>Group</Form.Label>

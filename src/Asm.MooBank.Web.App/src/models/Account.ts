@@ -51,7 +51,6 @@ export interface CreateInstitutionAccount {
     controller: Controller;
     includeInBudget: boolean;
     shareWithFamily: boolean;
-    virtualInstruments: VirtualAccount[];
 }
 
 export const emptyAccount : InstitutionAccount = {

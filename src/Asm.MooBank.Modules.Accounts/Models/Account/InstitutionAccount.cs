@@ -25,6 +25,7 @@ public static class InstitutionAccountExtensions
         Id = account.Id,
         Name = account.Name,
         Description = account.Description,
+        AccountType = account.AccountType,
         Currency = account.Currency,
         CurrentBalance = account.Balance,
         CurrentBalanceLocalCurrency = currencyConverter.Convert(account.Balance, account.Currency),

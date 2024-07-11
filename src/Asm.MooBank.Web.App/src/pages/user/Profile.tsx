@@ -5,7 +5,7 @@ import { SaveIcon } from "components/SaveIcon";
 import { Card, User } from "models/User";
 import React, { useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useAccountsList, useUpdateUser, useUser } from "services";
 
 export const Profile: React.FC = () => {
@@ -57,7 +57,14 @@ export const Profile: React.FC = () => {
                 <Form.Group groupId="currency">
                     <Form.Label>Preferred Currency</Form.Label>
                     {!me && <Form.Select />}
-                    {me && <CurrencySelector {...register("currency")} />}
+                    {me &&
+                    <Controller
+                    control={form.control}
+                    name="currency"
+                        render={({ field: {onChange, value, ref} }) => (
+                            <CurrencySelector value={value} ref={ref} onChange={onChange}   />
+                    )}
+                    />}
                 </Form.Group>
                 <Form.Group groupId="primaryAccount">
                     <Form.Label>Primary Account (for the dashboard)</Form.Label>
