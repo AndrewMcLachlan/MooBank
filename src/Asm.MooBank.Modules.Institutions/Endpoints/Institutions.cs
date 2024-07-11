@@ -2,7 +2,6 @@
 using Asm.MooBank.Modules.Institutions.Commands;
 using Asm.MooBank.Modules.Institutions.Queries;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
 namespace Asm.MooBank.Modules.Institutions.Endpoints;
@@ -14,22 +13,20 @@ internal class Institutions : EndpointGroupBase
 
     public override string Tags => "Institutions";
 
-    public override string AuthorisationPolicy => Policies.Admin;
-
     protected override void MapEndpoints(IEndpointRouteBuilder routeGroupBuilder)
     {
         routeGroupBuilder.MapQuery<GetAll, IEnumerable<Models.Institution>>("/")
-            .WithNames("Get All Institutions")
-            .Produces<IEnumerable<Models.Institution>>();
+            .WithNames("Get All Institutions");
 
         routeGroupBuilder.MapQuery<Get, Models.Institution>("/{id}")
-            .WithNames("Get Institution")
-            .Produces<Models.Institution>();
+            .WithNames("Get Institution");
 
         routeGroupBuilder.MapPostCreate<Create, Models.Institution>("/", "Get Institution".ToMachine(), (i) => new { i.Id })
-            .WithNames("Create Institution");
+            .WithNames("Create Institution")
+            .RequireAuthorization(Policies.Admin);
 
         routeGroupBuilder.MapPatchCommand<Update, Models.Institution>("/{id}")
-            .WithNames("Update Institution");
+            .WithNames("Update Institution")
+            .RequireAuthorization(Policies.Admin);
     }
 }

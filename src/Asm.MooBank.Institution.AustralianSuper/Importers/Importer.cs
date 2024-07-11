@@ -8,7 +8,7 @@ using TransactionType = Asm.MooBank.Models.TransactionType;
 
 namespace Asm.MooBank.Institution.AustralianSuper.Importers;
 
-internal partial class Importer(IQueryable<TransactionRaw> rawTransactions, ITransactionRawRepository transactionRawRepository, ITransactionRepository transactionRepository, ILogger<Importer> logger) : IImporter
+internal partial class Importer(ITransactionRawRepository transactionRawRepository, ITransactionRepository transactionRepository, ILogger<Importer> logger) : IImporter
 {
     private const int Columns = 24;
     private const int DateColumn = 0;
