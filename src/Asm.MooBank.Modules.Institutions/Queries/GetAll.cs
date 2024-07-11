@@ -9,5 +9,5 @@ internal class GetAllHandler(IQueryable<Domain.Entities.Institution.Institution>
 {
 
     public async ValueTask<IEnumerable<Institution>> Handle(GetAll request, CancellationToken cancellationToken) =>
-        await institutions.ToModel().ToListAsync(cancellationToken);
+        await institutions.ToModel().OrderBy(x => x.Name).ToListAsync(cancellationToken);
 }
