@@ -16,6 +16,6 @@ internal class SearchHandler(IQueryable<Transaction> transactions, ISecurity sec
         // Go back 5 days, just in case.
         var startTime = request.Start.AddDays(-5).ToStartOfDay();
 
-        return await transactions.IncludeAll().Where(t => t.AccountId == request.InstrumentId && t.TransactionTime >= startTime && t.TransactionType == request.TransactionType && t.Splits.SelectMany(ts => ts.Tags).Any(tt => request.TagIds.Contains(tt.Id))).ToModel().ToListAsync(cancellationToken);
+        return await transactions.IncludeAll().Where(t => t.AccountId == request.InstrumentId && t.TransactionTime >= startTime && t.TransactionType == request.TransactionType && t.Splits.SelectMany(ts => ts.Tags).Any(tt => request.TagIds.Contains(tt.Id))).OrderBy(t => t.TransactionTime) .ToModel().ToListAsync(cancellationToken);
     }
 }

@@ -3,6 +3,7 @@ import { addYears } from "date-fns/addYears";
 import { endOfMonth } from "date-fns/endOfMonth";
 import { endOfYear } from "date-fns/endOfYear";
 import { format } from "date-fns/format";
+import { parseISO } from "date-fns/parseISO";
 import { startOfMonth } from "date-fns/startOfMonth";
 import { startOfYear } from "date-fns/startOfYear";
 
@@ -27,6 +28,8 @@ export const lastYear: Period = { startDate: startOfYear(addYears(new Date(), -1
 export const allTime: Period = { startDate: startOfYear(addYears(new Date(), -50)), endDate: endOfYear(new Date()) };
 
 export const formatISODate = (date: Date) => format(date, "yyyy-MM-dd");
+
+export const formatDate = (date: string) => format(parseISO(date), "dd/MM/yyyy");
 
 export const isMonthSelected = (months: number, month: number) => (months & (1 << month)) !== 0;
 

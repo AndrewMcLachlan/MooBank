@@ -1,4 +1,5 @@
 import { ValueProps } from "@andrewmclachlan/mooapp";
+import { formatDate } from "helpers/dateFns";
 import { Transaction, TransactionType } from "models";
 import Select from "react-select";
 import { useSearchTransactions } from "services";
@@ -19,7 +20,7 @@ export const TransactionSearch: React.FC<TransactionSearchProps> = ({ transactio
             onChange={props.onChange}
             key={props.value?.id || JSON.stringify(filteredTransactions)}
             formatOptionLabel={(t) =>
-                <><span className="amount">${t.amount}</span> - {t.description}</>
+                <><span className="amount">${t.amount}</span> - {formatDate(t.transactionTime)} - {t.description}</>
             } />
     );
 }
