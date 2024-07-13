@@ -7,22 +7,23 @@ import { Button, Modal, OverlayTrigger, Popover } from "react-bootstrap";
 
 import { ExtraInfo } from "../ExtraInfo";
 import { TransactionSplits } from "./TransactionSplits";
+import { notEquals } from "helpers/equals";
 
 export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => {
 
     const transaction = useMemo(() => props.transaction, [props.transaction]);
-    const [notes, setNotes] = useState(props.transaction.notes ?? "");
-    const [excludeFromReporting, setExcludeFromReporting] = useState(props.transaction.excludeFromReporting ?? false);
-    const [splits, setSplits] = useState<TransactionSplit[]>(transaction.splits ?? []);
+    const [notes, setNotes] = useState(props.transaction?.notes ?? "");
+    const [excludeFromReporting, setExcludeFromReporting] = useState(props.transaction?.excludeFromReporting ?? false);
+    const [splits, setSplits] = useState<TransactionSplit[]>(transaction?.splits ?? []);
 
     useEffect(() => {
-        setNotes(props.transaction.notes ?? "");
-        setExcludeFromReporting(props.transaction.excludeFromReporting ?? false);
+        setNotes(props.transaction?.notes ?? "");
+        setExcludeFromReporting(props.transaction?.excludeFromReporting ?? false);
     }, [transaction]);
 
     if (!transaction) return null;
 
-    const invalidSplits = getSplitTotal(splits) !== Math.abs(transaction.amount);
+    const invalidSplits = notEquals(getSplitTotal(splits), Math.abs(transaction.amount));
 
     return (
         <Modal show={props.show} onHide={props.onHide} size="xl" className="transaction-details">

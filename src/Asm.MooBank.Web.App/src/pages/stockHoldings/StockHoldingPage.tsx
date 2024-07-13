@@ -12,8 +12,6 @@ export const StockHoldingPage: React.FC<PropsWithChildren<AccountPageProps>> = (
 
     if (!stockHolding) return null;
 
-    console.debug("StockHoldingPage", stockHolding, props);
-
     return (
         <Page title={`${stockHolding.name}${props.title && " : "}${props.title}`} actions={props.actions} navItems={getMenuItems(stockHolding, props.navItems ?? [])} breadcrumbs={[{ text: "Accounts", route: "/accounts" }, { text: stockHolding.name, route: `/shares/${stockHolding.id}` }, ...breadcrumbs]}>
             {children}

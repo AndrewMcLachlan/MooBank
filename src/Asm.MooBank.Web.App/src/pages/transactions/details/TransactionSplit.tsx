@@ -60,7 +60,7 @@ export const TransactionSplit: React.FC<TransactionSplitProps> = ({ transaction,
                             <TransactionSearch value={to.transaction} onChange={(v) => offsetChanged({ ...to, transaction: v })} transaction={transaction} />
                         </Col>
                         <Col sm={2}>
-                            <Form.Control type="number" value={to.amount} required max={to.transaction.amount} onChange={e => offsetChanged({ ...to, amount: (e.currentTarget as any).valueAsNumber })} />
+                            <Form.Control type="number" value={to.amount} required max={to.transaction.amount} onChange={e => offsetChanged({ ...to, amount: valueAsNumber(e.currentTarget) })} />
                             <Form.Control.Feedback type="invalid">Please enter an amount</Form.Control.Feedback>
                         </Col>
                         <Col className="delete-offset">

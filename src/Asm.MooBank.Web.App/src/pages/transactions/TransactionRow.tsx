@@ -1,29 +1,16 @@
-﻿import React, { useState } from "react";
-import { format } from "date-fns/format";
+﻿import { format } from "date-fns/format";
 import { parseISO } from "date-fns/parseISO";
+import React from "react";
 
-import { Transaction, TransactionOffset, TransactionSplit } from "models";
-import { TransactionDetails } from "./details/TransactionDetails";
-import { TransactionTagPanel } from "./TransactionTagPanel";
-import { useUpdateTransaction } from "services";
 import { formatCurrency } from "@andrewmclachlan/mooapp";
+import { Transaction } from "models";
+import { TransactionTagPanel } from "./TransactionTagPanel";
 
 export const TransactionRow: React.FC<TransactionRowProps> = (props) => {
 
-    const [showDetails, setShowDetails] = useState(false);
-
-    const updateTransaction = useUpdateTransaction();
-
-    const onSave = (excludeFromReporting: boolean, notes?: string, splits?: TransactionSplit[], _offsetBy?: TransactionOffset[]) => {
-
-        updateTransaction.mutate([{ accountId: props.transaction.accountId, transactionId: props.transaction.id }, { excludeFromReporting, notes, splits}]);
-        setShowDetails(false);
-    }
-
     return (
         <>
-            <TransactionDetails transaction={props.transaction} show={showDetails} onHide={() => setShowDetails(false)} onSave={onSave} />
-            <tr className="clickable transaction-row" onClick={() => setShowDetails(true)} title={props.transaction.notes}>
+            <tr className="clickable transaction-row" onClick={() => props.onClick(props.transaction)} title={props.transaction.notes}>
                 <td>{format(parseISO(props.transaction.transactionTime), "dd/MM/yy")}</td>
                 <td className="description" colSpan={props.colspan}>{props.transaction.description}</td>
                 <td className="d-none d-md-table-cell">{props.transaction.location}</td>
@@ -37,5 +24,6 @@ export const TransactionRow: React.FC<TransactionRowProps> = (props) => {
 
 export interface TransactionRowProps {
     transaction: Transaction;
-    colspan?: number
+    colspan?: number;
+    onClick: (transaction: Transaction) => void;
 }

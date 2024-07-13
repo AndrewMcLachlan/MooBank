@@ -37,6 +37,8 @@
     margin-bottom: 1.5rem;
 }
 
+.splits .row,
+.offsets .row,
 .splits .row:not(:first-child),
 .offsets .row:not(:first-child) {
     margin-bottom: 20px;
