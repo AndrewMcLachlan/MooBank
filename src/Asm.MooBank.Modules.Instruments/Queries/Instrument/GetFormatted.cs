@@ -32,7 +32,10 @@ internal class GetFormattedHandler(IQueryable<Domain.Entities.Account.Institutio
                                                   a.ShareWithFamily && a.Owners.Any(ah => ah.User.FamilyId == user.FamilyId))
                                       .ToListAsync(cancellationToken);
 
-        var allGroups = institutionAccounts1.Select(g => g.GetGroup(userId)).Union(stockHoldings1.Select(g => g.GetGroup(userId))).Distinct(new IIdentifiableEqualityComparer<Domain.Entities.Group.Group, Guid>()!);
+        var allGroups = institutionAccounts1.Select(g => g.GetGroup(userId))
+            .Union(stockHoldings1.Select(g => g.GetGroup(userId)))
+            .Union(assets1.Select(a => a.GetGroup(userId)))
+            .Distinct(new IIdentifiableEqualityComparer<Domain.Entities.Group.Group, Guid>()!);
 
         var groups = allGroups.Where(ag => ag != null).Select(ag =>
         {
