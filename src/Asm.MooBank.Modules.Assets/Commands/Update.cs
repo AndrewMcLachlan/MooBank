@@ -42,7 +42,7 @@ internal class UpdateHandler(IAssetRepository repository, IUnitOfWork unitOfWork
 
         var Asset = await repository.Get(command.AccountId, new IncludeSpecification(), cancellationToken) ?? throw new NotFoundException();
 
-        Asset.Balance = command.CurrentBalance;
+        Asset.Value = command.CurrentBalance;
         Asset.Name = command.Name;
         Asset.Description = command.Description;
         Asset.ShareWithFamily = command.ShareWithFamily;

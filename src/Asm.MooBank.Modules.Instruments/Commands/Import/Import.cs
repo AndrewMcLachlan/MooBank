@@ -23,20 +23,8 @@ internal class ImportHandler(IInstrumentRepository instrumentRepository, IRuleRe
 
         await ApplyRules(instrument, importResult.Transactions, cancellationToken);
 
-        if (importResult.EndBalance is not null)
-        {
-            instrument.Balance = importResult.EndBalance.Value;
-        }
-
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        if (importResult.EndBalance is null && instrument is TransactionInstrument transactionInstrument)
-        {
-            await instrumentRepository.Reload(instrument, cancellationToken);
-            instrument.Balance = transactionInstrument.CalculatedBalance;
-
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-        }
     }
 
     private async Task ApplyRules(Instrument account, IEnumerable<Domain.Entities.Transactions.Transaction> transactions, CancellationToken cancellationToken = default)

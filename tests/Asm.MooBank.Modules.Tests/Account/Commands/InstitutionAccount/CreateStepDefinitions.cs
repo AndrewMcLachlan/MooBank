@@ -28,7 +28,6 @@ internal class CreateStepDefinitions(ScenarioInput<Accounts.Models.Account.Insti
                 AccountType = account.AccountType,
                 Viewers = account.Viewers,
                 Balance = account.Balance,
-                CalculatedBalance = account.Balance,
                 Currency = account.Currency,
                 Description = account.Description,
                 ImportAccount = account.ImportAccount,

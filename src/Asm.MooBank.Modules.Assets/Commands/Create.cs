@@ -25,7 +25,7 @@ internal class CreateHandler(IAssetRepository repository, IUnitOfWork unitOfWork
 
         Domain.Entities.Asset.Asset entity = new(Guid.Empty)
         {
-            Balance = command.CurrentBalance,
+            Value = command.CurrentBalance,
             Name = command.Name,
             Description = command.Description,
             ShareWithFamily = command.ShareWithFamily,

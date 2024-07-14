@@ -49,17 +49,4 @@ public static class StockHoldingExtensions
     {
         return entities.Select(t => t.ToModel(currencyConverter));
     }
-
-    public static Domain.Entities.StockHolding.StockHolding ToEntity(this StockHolding account) => new(account.Id == Guid.Empty ? Guid.NewGuid() : account.Id)
-    {
-        Name = account.Name,
-        Description = account.Description,
-        Balance = account.CurrentBalance,
-        LastUpdated = account.BalanceDate,
-        ShareWithFamily = account.ShareWithFamily,
-        CurrentPrice = account.CurrentPrice,
-        Quantity = account.Quantity,
-
-    };
-
 }

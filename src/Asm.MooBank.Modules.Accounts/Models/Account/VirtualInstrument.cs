@@ -23,7 +23,6 @@ public static class VirtualAccountExtensions
             Controller = account.Controller,
             Currency = account.Currency,
             CurrentBalance = account.Balance,
-            CalculatedBalance = account.CalculatedBalance,
             CurrentBalanceLocalCurrency = currencyConverter.Convert(account.Balance, account.Currency),
             BalanceDate = account.LastUpdated,
             LastTransaction = account.LastTransaction,

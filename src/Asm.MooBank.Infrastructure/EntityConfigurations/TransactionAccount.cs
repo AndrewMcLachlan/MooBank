@@ -9,7 +9,7 @@ internal class TransactionAccountConfiguration : IEntityTypeConfiguration<Transa
         // Required for computed columns
         entity.ToTable(t => t.HasTrigger("ComputedColumns"));
 
-        entity.Property(e => e.CalculatedBalance)
+        entity.Property(e => e.Balance)
             .ValueGeneratedOnAddOrUpdate();
 
         entity.Property(e => e.LastTransaction)

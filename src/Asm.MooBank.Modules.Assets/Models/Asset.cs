@@ -16,12 +16,12 @@ public static class AssetExtensions
         Name = asset.Name,
         Description = asset.Description,
         Controller = asset.Controller,
-        CurrentBalance = asset.Balance,
+        CurrentBalance = asset.Value,
         BalanceDate = asset.LastUpdated,
         PurchasePrice = asset.PurchasePrice,
         InstrumentType = "Asset",
         Currency = asset.Currency,
-        CurrentBalanceLocalCurrency = currencyConverter.Convert(asset.Balance, asset.Currency),
+        CurrentBalanceLocalCurrency = currencyConverter.Convert(asset.Value, asset.Currency),
     };
 
     public static Asset ToModel(this Domain.Entities.Asset.Asset asset, Guid userId, ICurrencyConverter currencyConverter)

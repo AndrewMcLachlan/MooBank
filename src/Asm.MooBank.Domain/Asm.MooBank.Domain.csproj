@@ -24,4 +24,8 @@
     </AssemblyAttribute>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Entities\Account\EventHandlers\" />
+  </ItemGroup>
+
 </Project>

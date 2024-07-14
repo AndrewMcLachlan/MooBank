@@ -22,9 +22,6 @@ public abstract class Instrument(Guid id) : KeyedEntity<Guid>(id)
 
     public string Currency { get; set; } = "AUD";
 
-    [Precision(12,4)]
-    public decimal Balance { get; set; }
-
     public DateTimeOffset LastUpdated { get; set; }
 
     public bool ShareWithFamily { get; set; }

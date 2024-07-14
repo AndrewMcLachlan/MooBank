@@ -1,5 +1,4 @@
-﻿using Asm.Domain.Infrastructure;
-using Asm.MooBank.Domain.Entities.Transactions;
+﻿using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.Transactions.Events;
 using Transaction = Asm.MooBank.Domain.Entities.Transactions.Transaction;
 

@@ -11,4 +11,7 @@ public class Asset(Guid id) : Instrument.Instrument(id)
 
     [Precision(12, 4)]
     public decimal? PurchasePrice { get; set; }
+
+    [Precision(12, 4)]
+    public decimal Value { get; set; }
 }

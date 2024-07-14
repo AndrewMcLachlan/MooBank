@@ -10,6 +10,6 @@ public abstract class TransactionInstrument(Guid id) : Instrument(id)
     public virtual ICollection<Transaction> Transactions { get; set; } = new HashSet<Transaction>();
 
     [Precision(12, 4)]
-    public decimal CalculatedBalance { get; set; }
+    public decimal Balance { get; set; }
 
 }

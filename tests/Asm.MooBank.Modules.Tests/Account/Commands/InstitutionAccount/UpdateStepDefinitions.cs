@@ -28,7 +28,6 @@ internal class UpdateStepDefinitions(ScenarioInput<Accounts.Models.Account.Insti
                 AccountType = Models.Account.AccountType,
                 //AccountViewers = Models.Account.AccountViewers,
                 Balance = Models.Account.CurrentBalance,
-                CalculatedBalance = Models.Account.CurrentBalance,
                 Currency = Models.Account.Currency,
                 Description = Models.Account.Description,
                 //ImportAccount = Models.Account.ImportAccount,

@@ -23,7 +23,7 @@ internal class Accounts : EndpointGroupBase
         builder.MapQuery<Get, InstitutionAccount>("/{id}")
             .WithNames("Get Account");
 
-        builder.MapPostCreate<Create, InstitutionAccount>("/", "Get Account", a => new { a.Id }, CommandBinding.Body)
+        builder.MapPostCreate<Create, InstitutionAccount>("/", "Get Account".ToMachine(), a => new { a.Id }, CommandBinding.Body)
             .WithNames("Create Account");
 
         builder.MapPatchCommand<Update, InstitutionAccount>("/{id}")

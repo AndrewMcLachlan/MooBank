@@ -47,7 +47,6 @@ internal class CreateHandler(IInstitutionAccountRepository institutionAccountRep
             Description = command.Description,
             InstitutionId = command.InstitutionId,
             Currency = command.Currency,
-            Balance = command.Balance,
             AccountType = command.AccountType,
             Controller = command.Controller,
             IncludeInBudget = command.IncludeInBudget,
@@ -57,7 +56,7 @@ internal class CreateHandler(IInstitutionAccountRepository institutionAccountRep
         entity.SetAccountHolder(user.Id);
         entity.SetGroup(command.GroupId, user.Id);
 
-        _accountRepository.Add(entity);
+        entity = _accountRepository.Add(entity, command.Balance);
 
         if (command.ImporterTypeId != null)
         {
@@ -66,6 +65,7 @@ internal class CreateHandler(IInstitutionAccountRepository institutionAccountRep
                 ImporterTypeId = command.ImporterTypeId.Value,
             };
         }
+
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

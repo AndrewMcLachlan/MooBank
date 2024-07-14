@@ -22,7 +22,7 @@ internal class UpdateBalanceHandler(IInstrumentRepository accountRepository, ITr
             throw new InvalidOperationException("Not a transaction account.");
         }
 
-        var amount = command.BalanceUpdate.Amount - transactionAccount.CalculatedBalance;
+        var amount = command.BalanceUpdate.Amount - transactionAccount.Balance;
 
         var transaction = transactionRepository.Add(new Domain.Entities.Transactions.Transaction
         {

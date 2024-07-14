@@ -98,14 +98,12 @@
     <Build Include="dbo\Functions\TransactionNetAmount.sql" />
     <Build Include="dbo\Tables\UserCard.sql" />
     <Build Include="dbo\Tables\BudgetLine.sql" />
-    <Build Include="dbo\Views\OffsetTransactions.sql" />
     <Build Include="dbo\Tables\Budget.sql" />
     <Build Include="dbo\Functions\LastTransaction.sql" />
     <Build Include="dbo\Tables\Family.sql" />
     <Build Include="dbo\Tables\Institution.sql" />
     <Build Include="dbo\Tables\InstitutionType.sql" />
     <Build Include="dbo\Functions\AccountBalance.sql" />
-    <Build Include="dbo\Tables\TransactionOffset.sql" />
     <Build Include="dbo\Functions\CheckOffsetAmount.sql" />
     <Build Include="dbo\Tables\TransactionSplit.sql" />
     <Build Include="dbo\Tables\TransactionSplitTag.sql" />
@@ -118,7 +116,7 @@
     <None Include="Scripts\FillTransactionSplits.sql" />
     <Build Include="dbo\Tables\StockHolding.sql" />
     <Build Include="dbo\Tables\StockTransaction.sql" />
-    <Build Include="dbo\Tables\TransactionAccount.sql" />
+    <Build Include="dbo\Tables\TransactionInstrument.sql" />
     <Build Include="dbo\Functions\StockQuantity.sql" />
     <Build Include="dbo\Functions\StockValue.sql" />
     <Build Include="dbo\Tables\InstrumentViewer.sql" />

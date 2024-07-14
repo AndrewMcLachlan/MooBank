@@ -11,8 +11,8 @@ public static class AssetExtensions
         Description = asset.Description,
         Controller = asset.Controller,
         Currency = asset.Currency,
-        CurrentBalance = asset.Balance,
-        CurrentBalanceLocalCurrency = currencyConverter.Convert(asset.Balance, asset.Currency),
+        CurrentBalance = asset.Value,
+        CurrentBalanceLocalCurrency = currencyConverter.Convert(asset.Value, asset.Currency),
         BalanceDate = asset.LastUpdated,
         InstrumentType = "Asset",
     };

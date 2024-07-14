@@ -37,7 +37,7 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
 
     public TransactionType TransactionType { get; set; }
 
-    public string? Source { get; set; }
+    public required string Source { get; set; }
 
     public object? Extra { get; set; }
     #endregion
