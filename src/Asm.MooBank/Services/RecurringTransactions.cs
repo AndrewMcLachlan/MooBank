@@ -69,7 +69,6 @@ public class RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionRep
 
         transactionRepository.Add(transaction);
 
-        trans.VirtualAccount.Balance += trans.Amount;
         trans.VirtualAccount.LastUpdated = DateTime.UtcNow;
     }
 }
