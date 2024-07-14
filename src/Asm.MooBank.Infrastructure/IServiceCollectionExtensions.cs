@@ -1,43 +1,49 @@
-﻿using System.Reflection;
-using Asm.Domain.Infrastructure;
+﻿using Asm.Domain.Infrastructure;
 using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Domain.Entities.Group;
 using Asm.MooBank.Domain.Entities.Asset;
 using Asm.MooBank.Domain.Entities.Budget;
 using Asm.MooBank.Domain.Entities.Family;
+using Asm.MooBank.Domain.Entities.Group;
 using Asm.MooBank.Domain.Entities.Institution;
+using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Domain.Entities.StockHolding;
 using Asm.MooBank.Domain.Entities.Tag;
-using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Domain.Entities.Transactions;
+using Asm.MooBank.Domain.Entities.User;
 using Asm.MooBank.Importers;
 using Asm.MooBank.Infrastructure;
 using Asm.MooBank.Infrastructure.Repositories;
 using Asm.MooBank.Security;
-using LazyCache;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Asm.MooBank.Domain.Entities.User;
-using Asm.MooBank.Domain.Entities.Instrument;
+using Microsoft.Extensions.Hosting;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
 public static class IServiceCollectionExtensions
 {
 
-    public static IServiceCollection AddMooBankDbContext(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddMooBankDbContext(this IServiceCollection services, IHostEnvironment env,  IConfiguration configuration)
     {
-        services.AddDbContext<MooBankContext>((services, options) => options.UseSqlServer(configuration.GetConnectionString("MooBank"), options =>
+        services.AddDbContext<MooBankContext>((services, options) =>
         {
-            options.UseAzureSqlDefaults();
-            options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
-        }));
+            options.UseSqlServer(configuration.GetConnectionString("MooBank"), options =>
+            {
+                options.UseAzureSqlDefaults();
+                //options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+            });
+            if (env.IsDevelopment())
+            {
+                options.EnableSensitiveDataLogging();
+            }
+        });
 
         //HACK: To be fixed
         services.AddReadOnlyDbContext<IReadOnlyDbContext, MooBankContext>((services, options) => options.UseSqlServer(configuration.GetConnectionString("MooBank"), options =>
         {
             options.UseAzureSqlDefaults();
-            options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+           // options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
         }));
 
         services.AddDomainEvents(typeof(Instrument).Assembly);

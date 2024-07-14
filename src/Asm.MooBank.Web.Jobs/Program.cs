@@ -15,7 +15,7 @@ static void ConfigureWebJobs(IWebJobsBuilder builder)
 
 static void ConfigureServices(HostBuilderContext context, IServiceCollection services)
 {
-    services.AddMooBankDbContext(context.Configuration);
+    services.AddMooBankDbContext(context.HostingEnvironment, context.Configuration);
     services.AddRepositories();
     services.AddEntities();
     services.AddImporterFactory();
