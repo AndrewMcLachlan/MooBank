@@ -16,6 +16,6 @@ export const InstitutionSelector: React.FC<InstitutionSelectorProps> = React.for
     const institution = value ? institutions?.find(c => c.id === value) : undefined;
 
     return (
-        <Select onChange={(c: any) => onChange(c.code)} value={institution} options={institutions} getOptionValue={o => o.id.toString()} getOptionLabel={o => o.name} {...props} ref={ref} className="react-select" classNamePrefix="react-select" />
+        <Select onChange={(c: any) => onChange(c.id)} value={institution} options={institutions} getOptionValue={o => o.id.toString()} getOptionLabel={o => o.name} {...props} ref={ref} className="react-select" classNamePrefix="react-select" />
     );
 });
