@@ -1,8 +1,7 @@
-import { Institution, InstitutionType } from "models";
+import { Institution, InstitutionType, institutionTypeOptions } from "models";
 import { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import Select from "react-select";
-import { useInstitutionTypes } from "services";
 
 export const InstitutionForm: React.FC<InstitutionFormProps> = ({ onSave, buttonText, institution: originalInstitution }) => {
 
@@ -19,7 +18,6 @@ export const InstitutionForm: React.FC<InstitutionFormProps> = ({ onSave, button
         onSave(institution);
     }
 
-    const { data: institutionTypes } = useInstitutionTypes();
 
     return (
         <Form className="section" onSubmit={handleSubmit}>
@@ -30,7 +28,7 @@ export const InstitutionForm: React.FC<InstitutionFormProps> = ({ onSave, button
             </Form.Group>
             <Form.Group controlId="type">
                 <Form.Label>Institution Type</Form.Label>
-                <Select required options={institutionTypes ?? []} value={institutionTypes?.find(i => i.id === institution.institutionTypeId)} getOptionLabel={t => t.name} getOptionValue={t => t.id.toString()} onChange={(v: InstitutionType) => setInstitution({ ...institution, institutionTypeId: v.id })} className="react-select" classNamePrefix="react-select" />
+                <Select required options={institutionTypeOptions} value={institutionTypeOptions?.find(i => i.value === institution.institutionType)} getOptionLabel={t => t.label} getOptionValue={t => t.value} onChange={(v: any) => setInstitution({ ...institution, institutionType: v.value })} className="react-select" classNamePrefix="react-select" />
                 <Form.Control.Feedback type="invalid">Please enter a name</Form.Control.Feedback>
             </Form.Group>
             <Button type="submit" variant="primary">{buttonText}</Button>

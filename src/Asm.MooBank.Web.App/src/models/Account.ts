@@ -1,7 +1,7 @@
 import { VirtualAccount } from "./VirtualAccount";
 
-export const AccountTypes = ["None", "Transaction", "Savings", "Credit", "Mortgage", "Superannuation", "Investment", "Loan"] as AccountType[];
-export type AccountType = "None" | "Transaction" | "Savings" | "Credit" | "Mortgage" | "Superannuation" | "Investment" | "Loan";
+export const AccountTypes = ["None", "Transaction", "Savings", "Credit", "Mortgage", "Superannuation", "Investment", "Loan", "Broker"] as AccountType[];
+export type AccountType = "None" | "Transaction" | "Savings" | "Credit" | "Mortgage" | "Superannuation" | "Investment" | "Loan" | "Broker";
 
 export const Controllers = ["Manual", "Virtual", "Import"] as Controller[];
 export type Controller = "Manual" | "Virtual" | "Import";

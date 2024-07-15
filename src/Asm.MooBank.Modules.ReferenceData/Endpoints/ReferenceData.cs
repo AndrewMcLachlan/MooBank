@@ -17,8 +17,5 @@ internal class ReferenceData : EndpointGroupBase
     {
         builder.MapQuery<GetImporterTypes, IEnumerable<ImporterType>>("importer-types")
             .WithNames("Importer Types");
-
-        builder.MapQuery<GetInstitutionTypes, IEnumerable<InstitutionType>>("institution-types")
-            .WithNames("Institution Types");
     }
 }

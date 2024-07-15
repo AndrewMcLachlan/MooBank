@@ -1,5 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Asm.Domain;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Asm.MooBank.Domain.Entities.Institution;
 
@@ -17,7 +17,6 @@ public class Institution : KeyedEntity<int>
 
     public string Name { get; set; } = null!;
 
-    public int InstitutionTypeId { get; set; }
-
-    public virtual InstitutionType InstitutionType { get; set; } = null!;
+    [Column("InstitutionTypeId")]
+    public virtual InstitutionType InstitutionType { get; set; }
 }

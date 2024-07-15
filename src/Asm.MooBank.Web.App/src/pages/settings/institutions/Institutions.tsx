@@ -3,6 +3,7 @@ import { Table } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useInstitutions } from "services";
 import { SettingsPage } from "../SettingsPage";
+import { institutionTypeOptions } from "models";
 
 export const Institutions = () => {
 
@@ -16,12 +17,14 @@ export const Institutions = () => {
                 <thead>
                     <tr>
                         <th>Name</th>
+                        <th>Type</th>
                     </tr>
                 </thead>
                 <tbody>
                     {institutions && institutions.map((f) => (
                         <tr key={f.id} className="clickable" onClick={() => navigate(`/settings/institutions/${f.id}`)}>
                             <td>{f.name}</td>
+                            <td>{institutionTypeOptions.find(i => i.value === f.institutionType)?.label}</td>
                         </tr>
                     ))}
                 </tbody>

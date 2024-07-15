@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 
 export const ManualAccountRow: React.FC<AccountRowProps> = (props) => {
 
-    const { balanceRef, editingBalance, balanceClick, onRowClick, balanceChange, balance, keyPress } = useComponentState(props);
+    const { balanceRef, editingBalance, balanceClick, onRowClick, balanceChange, balance, keyUp } = useComponentState(props);
 
     const [showVirtualAccounts, setShowVirtualAccounts] = useState<boolean>(localStorage.getItem(`account|${MD5(props.instrument.id)}`) === "true");
 
@@ -31,7 +31,7 @@ export const ManualAccountRow: React.FC<AccountRowProps> = (props) => {
                 <td className="d-none d-sm-table-cell">{props.instrument.instrumentType}</td>
                 <td className={classNames("amount", "number", numberClassName(props.instrument.currentBalance))} onClick={balanceClick}>
                     {!editingBalance && getBalanceString(balance)}
-                    {editingBalance && <input type="number" value={balance} onChange={balanceChange} onKeyPress={keyPress} />}
+                    {editingBalance && <input type="number" value={balance} onChange={balanceChange} onKeyUp={keyUp} />}
                 </td>
                 {/*<td onClick={avBalanceClick} ref={avBalanceRef}> {!editingAvBalance && <span className={props.account.availableBalance < 0 ? " negative" : ""}>{getBalanceString(avBalance)}</span>}
                 {editingAvBalance && <input type="number" value={avBalance} onChange={avBalanceChange} />}
@@ -76,7 +76,7 @@ const useComponentState = (props: AccountRowProps) => {
         setBalance(parseFloat(e.currentTarget.value));
     }
 
-    const keyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const keyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
             doUpdateBalance();
             setEditingBalance(false);
@@ -99,6 +99,6 @@ const useComponentState = (props: AccountRowProps) => {
 
         balance,
 
-        keyPress,
+        keyUp,
     };
 }

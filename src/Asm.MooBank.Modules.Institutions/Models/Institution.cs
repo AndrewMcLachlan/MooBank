@@ -1,4 +1,6 @@
-﻿namespace Asm.MooBank.Modules.Institutions.Models;
+﻿using Asm.MooBank.Models;
+
+namespace Asm.MooBank.Modules.Institutions.Models;
 
 public sealed record Institution
 {
@@ -6,7 +8,7 @@ public sealed record Institution
 
     public required string Name { get; init; }
 
-    public required int InstitutionTypeId { get; init; }
+    public required InstitutionType InstitutionType { get; init; }
 }
 
 public static class InstitutionExtensions
@@ -16,7 +18,7 @@ public static class InstitutionExtensions
         {
             Id = institution.Id,
             Name = institution.Name,
-            InstitutionTypeId = institution.InstitutionTypeId,
+            InstitutionType = institution.InstitutionType,
         };
 
     public static IQueryable<Institution> ToModel(this IQueryable<Domain.Entities.Institution.Institution> query) =>

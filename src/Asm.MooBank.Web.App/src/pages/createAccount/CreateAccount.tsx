@@ -63,9 +63,17 @@ export const CreateAccount: React.FC = () => {
                     <Form.Control type="text" as="textarea" required maxLength={255} value={description} onChange={(e: any) => setDescription(e.currentTarget.value)} />
                     <Form.Control.Feedback type="invalid">Please enter a description</Form.Control.Feedback>
                 </Form.Group>
+                <Form.Group controlId="AccountType" >
+                    <Form.Label>Type</Form.Label>
+                    <Form.Select value={accountType.toString()} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setAccountType(e.currentTarget.value as AccountType)}>
+                        {AccountTypes.map(a =>
+                            <option value={a} key={a}>{a}</option>
+                        )}
+                    </Form.Select>
+                </Form.Group>
                 <Form.Group>
                     <Form.Label>Institution</Form.Label>
-                    <InstitutionSelector value={institutionId} onChange={(id) => setInstitutionId(id)} />
+                    <InstitutionSelector accountType={accountType} value={institutionId} onChange={(id) => setInstitutionId(id)} />
                 </Form.Group>
                 <Form.Group controlId="currency">
                     <Form.Label>Currency</Form.Label>
@@ -84,14 +92,6 @@ export const CreateAccount: React.FC = () => {
                         <option value="">Select a group...</option>
                         {groups?.map(a =>
                             <option value={a.id} key={a.id}>{a.name}</option>
-                        )}
-                    </Form.Select>
-                </Form.Group>
-                <Form.Group controlId="AccountType" >
-                    <Form.Label>Type</Form.Label>
-                    <Form.Select value={accountType.toString()} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setAccountType(e.currentTarget.value as AccountType)}>
-                        {AccountTypes.map(a =>
-                            <option value={a} key={a}>{a}</option>
                         )}
                     </Form.Select>
                 </Form.Group>

@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 
 namespace Asm.MooBank.Modules.Institutions.Commands;
 
-public sealed record Update(int Id, string Name, int InstitutionTypeId) : ICommand<Models.Institution>
+public sealed record Update(int Id, string Name, InstitutionType InstitutionType) : ICommand<Models.Institution>
 {
     public static async Task<Update> BindAsync(HttpContext httpContext)
     {
@@ -31,7 +31,7 @@ internal class UpdateHandler(IInstitutionRepository repository, IUnitOfWork unit
         Domain.Entities.Institution.Institution entity = await repository.Get(command.Id, cancellationToken);
 
         entity.Name = command.Name;
-        entity.InstitutionTypeId = command.InstitutionTypeId;
+        entity.InstitutionType = command.InstitutionType;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

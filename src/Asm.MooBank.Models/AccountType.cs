@@ -10,4 +10,5 @@ public enum AccountType
     Superannuation = 5,
     Investment = 6,
     Loan = 7,
+    Broker = 8,
 }
