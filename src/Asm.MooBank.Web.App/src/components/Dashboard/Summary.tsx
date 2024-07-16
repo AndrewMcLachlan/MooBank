@@ -7,8 +7,9 @@ export const SummaryWidget: React.FC = () => {
 
     const { data: accounts, isLoading } = useFormattedAccounts();
 
-    const totals = accounts?.groups.filter(ag => ag.total);
-    const grandTotal = totals?.reduce((acc, ag) => acc + ag.total, 0);
+    const totals = accounts?.groups.flatMap(g => g.instruments);
+    const grandTotal = totals?.reduce((acc, i) => acc + i.currentBalanceLocalCurrency, 0);
+    const groupTotals = accounts?.groups.filter(ag => ag.total);
 
     return (
         <Widget title="Summary" className="summary" loading={isLoading}>
@@ -17,7 +18,7 @@ export const SummaryWidget: React.FC = () => {
                 <Amount amount={grandTotal} colour plusminus />
             </KeyValue>
             <Section.Subheading>Groups</Section.Subheading>
-            {totals?.map((ag, index) =>
+            {groupTotals?.map((ag, index) =>
                 <KeyValue key={index}>
                     <div>{ag.name}</div>
                     <div className="amount">{ag.total.toLocaleString()}</div>
