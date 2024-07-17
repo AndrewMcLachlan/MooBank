@@ -1,12 +1,9 @@
-﻿using System.Globalization;
-using System.Threading;
-using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Domain.Entities.Transactions;
+﻿using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.User;
 using Asm.MooBank.Importers;
 using Asm.MooBank.Institution.Ing.Domain;
 using Asm.MooBank.Institution.Ing.Models;
-using Asm.MooBank.Models.Extensions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TransactionType = Asm.MooBank.Models.TransactionType;
 
@@ -21,18 +18,21 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
     private const int DebitColumn = 3;
     private const int BalanceColumn = 4;
 
-    private readonly IQueryable<TransactionRaw> _rawTransactions = rawTransactions;
-    private readonly IUserRepository _accountHolderRepository = accountHolderRepository;
-    private readonly ITransactionRawRepository _transactionRawRepository = transactionRawRepository;
-    private readonly ITransactionRepository _transactionRepository = transactionRepository;
-    private readonly ILogger<IngImporter> _logger = logger;
     private readonly Dictionary<short, User> _accountHolders = [];
 
     public async Task<MooBank.Models.TransactionImportResult> Import(Guid accountId, Stream contents, CancellationToken cancellationToken = default)
     {
 
         using var reader = new StreamReader(contents);
-        var rawTransactions = new List<TransactionRaw>();
+        var rawTransactionEntities = new List<TransactionRaw>();
+
+        var checkTransactions = await rawTransactions.Where(t => t.AccountId == accountId).Select(t => new
+        {
+            t.Description,
+            t.Date,
+            t.Credit,
+            t.Debit
+        }).ToListAsync(cancellationToken);
 
         // Throw away header row
         await reader.ReadLineAsync(cancellationToken);
@@ -75,35 +75,35 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
             #region Validation
             if (columns.Count != Columns)
             {
-                _logger.LogWarning("Unrecognised entry at line {lineCount}", lineCount);
+                logger.LogWarning("Unrecognised entry at line {lineCount}", lineCount);
                 continue;
             }
 
             if (!DateOnly.TryParseExact(columns[DateColumn], "dd/MM/yyyy", out transactionTime))
             {
-                _logger.LogWarning("Incorrect date format at line {lineCount}", lineCount);
+                logger.LogWarning("Incorrect date format at line {lineCount}", lineCount);
                 continue;
             }
             if (String.IsNullOrWhiteSpace(columns[DescriptionColumn]))
             {
-                _logger.LogWarning("Description not supplied at line {lineCount}", lineCount);
+                logger.LogWarning("Description not supplied at line {lineCount}", lineCount);
                 continue;
             }
 
             if (String.IsNullOrEmpty(columns[CreditColumn]) && String.IsNullOrEmpty(columns[DebitColumn]) || !String.IsNullOrEmpty(columns[CreditColumn]) && !String.IsNullOrEmpty(columns[DebitColumn]))
             {
-                _logger.LogWarning("Credit or Debit amount not supplied at line {lineCount}", lineCount);
+                logger.LogWarning("Credit or Debit amount not supplied at line {lineCount}", lineCount);
                 continue;
             }
 
             if (!String.IsNullOrEmpty(columns[CreditColumn]) && !Decimal.TryParse(columns[CreditColumn], out credit))
             {
-                _logger.LogWarning("Incorrect credit format at line {lineCount}", lineCount);
+                logger.LogWarning("Incorrect credit format at line {lineCount}", lineCount);
                 continue;
             }
             else if (!String.IsNullOrEmpty(columns[DebitColumn]) && !Decimal.TryParse(columns[DebitColumn], out debit))
             {
-                _logger.LogWarning("Incorrect debit format at line {lineCount}", lineCount);
+                logger.LogWarning("Incorrect debit format at line {lineCount}", lineCount);
                 continue;
             }
 
@@ -111,16 +111,16 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
 
             if (!Decimal.TryParse(columns[BalanceColumn], out decimal balance))
             {
-                _logger.LogWarning("Incorrect balance format at line {lineCount}", lineCount);
+                logger.LogWarning("Incorrect balance format at line {lineCount}", lineCount);
                 continue;
             }
             #endregion
 
             endBalance ??= balance;
 
-            if (_rawTransactions.Any(t => t.Description == columns[DescriptionColumn] && t.Date == transactionTime))
+            if (checkTransactions.Any(t => t.Description == columns[DescriptionColumn] && t.Date == transactionTime && t.Debit == debit && t.Credit == credit))
             {
-                _logger.LogInformation("Duplicate transaction found {description} {date}", columns[DescriptionColumn], transactionTime);
+                logger.LogInformation("Duplicate transaction found {description} {date}", columns[DescriptionColumn], transactionTime);
                 continue;
             }
 
@@ -130,7 +130,7 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
             var transaction = new Transaction
             {
                 AccountId = accountId,
-                User = parsed.Last4Digits != null ? await _accountHolderRepository.GetByCard(parsed.Last4Digits.Value, cancellationToken) : null,
+                User = parsed.Last4Digits != null ? await accountHolderRepository.GetByCard(parsed.Last4Digits.Value, cancellationToken) : null,
                 Amount = transactionType == TransactionType.Credit ? credit : debit,
                 Description = parsed.Description,
                 Location = parsed.Location,
@@ -159,20 +159,20 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
                 Transaction = transaction,
             };
 
-            rawTransactions.Add(transactionRaw);
+            rawTransactionEntities.Add(transactionRaw);
         }
 
-        _transactionRawRepository.AddRange(rawTransactions);
+        transactionRawRepository.AddRange(rawTransactionEntities);
 
-        return new MooBank.Models.TransactionImportResult(rawTransactions.Select(r => r.Transaction), endBalance!.Value);
+        return new MooBank.Models.TransactionImportResult(rawTransactionEntities.Select(r => r.Transaction), endBalance!.Value);
     }
 
     public async Task Reprocess(Guid accountId, CancellationToken cancellationToken = default)
     {
-        var transactions = await _transactionRepository.GetTransactions(accountId, cancellationToken);
+        var transactions = await transactionRepository.GetTransactions(accountId, cancellationToken);
         var transactionIds = transactions.Select(t => t.Id);
 
-        var rawTransactions = await _transactionRawRepository.GetAll(accountId, cancellationToken);
+        var rawTransactions = await transactionRawRepository.GetAll(accountId, cancellationToken);
         var processed = rawTransactions.Where(t => t.TransactionId != null && transactionIds.Contains(t.TransactionId.Value));
         var unprocessed = rawTransactions.Except(processed, new Asm.Domain.IIdentifiableEqualityComparer<TransactionRaw, Guid>());
 
@@ -212,7 +212,7 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
 
         if (!_accountHolders.TryGetValue(last4Digits.Value, out User? user))
         {
-            user = await _accountHolderRepository.GetByCard(last4Digits.Value, cancellationToken);
+            user = await accountHolderRepository.GetByCard(last4Digits.Value, cancellationToken);
             if (user == null) return null;
             _accountHolders.Add(last4Digits.Value, user);
         }

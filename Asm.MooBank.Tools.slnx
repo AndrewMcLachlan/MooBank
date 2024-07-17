@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="tools\Asm.MooBank.Tools.TransactionGenerator\Asm.MooBank.Tools.TransactionGenerator.csproj" />
+  <Properties Name="Visual Studio">
+    <Property Name="OpenWith" Value="17" />
+  </Properties>
+</Solution>

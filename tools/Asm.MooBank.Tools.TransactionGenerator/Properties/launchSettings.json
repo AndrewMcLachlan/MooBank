@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Asm.MooBank.Tools.TransactionGenerator": {
+      "commandName": "Project",
+      "commandLineArgs": ""
+    }
+  }
+}
