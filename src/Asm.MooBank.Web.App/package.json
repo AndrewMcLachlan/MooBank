@@ -29,7 +29,7 @@
     "react-router-dom": "^6.23.1",
     "react-router-redux": "^4.0.8",
     "react-select": "^5.8.0",
-    "semver": "^7.6.2",
+    "semver": "^7.6.3",
     "treeflex": "^2.0.1",
     "use-debounce": "^10.0.1",
     "uuid": "^10.0.0",
