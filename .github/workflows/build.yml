@@ -27,7 +27,7 @@ jobs:
         NUGET_AUTH_TOKEN: ${{secrets.CROSS_REPO_PACKAGE_TOKEN}}
     - name: Set version number
       id: set-version-number
-      uses: andrewmclachlan/actions/set-version-number@master
+      uses: andrewmclachlan/actions/set-version-number@v2
       with:
         project: 'src/Asm.MooBank.Web.Api'
         versionPropertyName: 'Version'
@@ -36,7 +36,7 @@ jobs:
     - name: Setup node and npm
       uses: actions/setup-node@v4
       with:
-        node-version: 16
+        node-version: 20
         cache: npm
         cache-dependency-path: 'src/Asm.MooBank.Web.App/package-lock.json'
         registry-url: "https://npm.pkg.github.com"
