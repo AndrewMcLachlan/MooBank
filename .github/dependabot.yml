@@ -11,6 +11,9 @@ updates:
     registries: "*"
     schedule:
       interval: weekly
+      timezone: Australia/Brisbane
+      day: tuesday
+      time: '06:00'
     reviewers:
       - andrewmcLachlan
 
@@ -18,6 +21,9 @@ updates:
     directory: /
     schedule:
       interval: weekly
+      timezone: Australia/Brisbane
+      day: tuesday
+      time: '06:00'
     reviewers:
       - andrewmcLachlan
 
@@ -25,5 +31,8 @@ updates:
     directory: /
     schedule:
       interval: weekly
+      timezone: Australia/Brisbane
+      day: tuesday
+      time: '06:00'
     reviewers:
       - andrewmcLachlan
