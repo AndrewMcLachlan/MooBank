@@ -3,7 +3,7 @@ registries:
   npm-github:
     type: npm-registry
     url: https://npm.pkg.github.com
-    password: ${{secrets.CROSS_REPO_PACKAGE_TOKEN}}
+    password: ${{ secrets.CROSS_REPO_PACKAGE_TOKEN }}
 
 updates:
   - package-ecosystem: npm
@@ -11,9 +11,9 @@ updates:
     registries: "*"
     schedule:
       interval: weekly
-      timezone: Australia/Brisbane
+      timezone: "Australia/Brisbane"
       day: tuesday
-      time: '06:00'
+      time: "06:00"
     reviewers:
       - andrewmcLachlan
 
@@ -21,9 +21,9 @@ updates:
     directory: /
     schedule:
       interval: weekly
-      timezone: Australia/Brisbane
+      timezone: "Australia/Brisbane"
       day: tuesday
-      time: '06:00'
+      time: "06:00"
     reviewers:
       - andrewmcLachlan
 
@@ -31,8 +31,8 @@ updates:
     directory: /
     schedule:
       interval: weekly
-      timezone: Australia/Brisbane
+      timezone: "Australia/Brisbane"
       day: tuesday
-      time: '06:00'
+      time: "06:00"
     reviewers:
       - andrewmcLachlan

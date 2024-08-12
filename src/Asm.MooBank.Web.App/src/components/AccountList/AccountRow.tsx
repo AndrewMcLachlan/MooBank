@@ -1,4 +1,4 @@
-﻿import { MD5 } from "@andrewmclachlan/mooapp";
+﻿import MD5 from "md5";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import React, { useState } from "react";
