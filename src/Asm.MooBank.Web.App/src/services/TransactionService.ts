@@ -1,12 +1,12 @@
-import { UseMutationResult, UseQueryResult, useQueryClient } from "@tanstack/react-query";
+import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 
+import { PagedResult, SortDirection, useApiDelete, useApiGet, useApiPagedGet, useApiPatch, useApiPost, useApiPutEmpty } from "@andrewmclachlan/mooapp";
+import { format } from "date-fns/format";
+import { parseISO } from "date-fns/parseISO";
 import * as Models from "../models";
-import { Transaction, Tag } from "../models";
+import { Tag, Transaction } from "../models";
 import { State, TransactionsFilter } from "../store/state";
-import { PagedResult, SortDirection, useApiGet, useApiPagedGet, useApiDelete, useApiPutEmpty, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
-import {format} from "date-fns/format";
-import {parseISO} from "date-fns/parseISO";
 import { accountsKey } from "./AccountService";
 
 const transactionKey = "transactions";
@@ -26,7 +26,7 @@ export const useTransactions = (accountId: string, filter: TransactionsFilter, p
     let filterString = filter.description ? `&filter=${filter.description}` : "";
         filterString += filter.start ? `&start=${filter.start}` : "";
         filterString += filter.end ? `&end=${filter.end}` : "";
-        filter.tags && filter.tags.forEach(t => filterString += `&tagids=${t}`);
+        filter.tags?.forEach(t => filterString += `&tagids=${t}`);
 
     let queryString = sortString + filterString;
     queryString = queryString.startsWith("&") ? queryString.substring(1) : queryString;
@@ -77,7 +77,7 @@ export const useUpdateTransaction = () => {
             queryClient.setQueryData<PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection], transactions);
 
         },
-        onSettled: (_data, _error, [variables]) => {
+        onSettled: (_data, _error, [_variables]) => {
             queryClient.invalidateQueries({ queryKey: [transactionKey]});
         }
     });
@@ -102,7 +102,7 @@ export const useAddTransactionTag = () => {
             queryClient.setQueryData<PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection], transactions);
 
         },
-        onSettled: (_data, _error, variables) => {
+        onSettled: (_data, _error, _variables) => {
             queryClient.invalidateQueries({ queryKey: [transactionKey]});
         }
     });
@@ -126,7 +126,7 @@ export const useRemoveTransactionTag = () => {
 
             queryClient.setQueryData<PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection], transactions);
         },
-        onSettled: (_data, _error, variables) => {
+        onSettled: (_data, _error, _variables) => {
             queryClient.invalidateQueries({ queryKey: [transactionKey]});
         }
     });

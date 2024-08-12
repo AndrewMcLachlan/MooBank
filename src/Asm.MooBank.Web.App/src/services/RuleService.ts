@@ -1,6 +1,6 @@
+import { useApiDelete, useApiGet, useApiPatch, useApiPost, useApiPostEmpty, useApiPutEmpty } from "@andrewmclachlan/mooapp";
+import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
 import * as Models from "../models";
-import { useApiGet, useApiPost, useApiDelete, useApiPutEmpty, useApiPostEmpty, useApiPatch } from "@andrewmclachlan/mooapp";
-import {  UseMutationResult, UseQueryResult, useQueryClient } from "@tanstack/react-query";
 import { Tag } from "../models";
 
 const rulesKey = "rules";
@@ -52,7 +52,7 @@ export const useCreateRule = () => {
 
     return useApiPost<Models.Rule, { accountId: string }, Models.Rule>((variables) => `api/accounts/${variables.accountId}/rules`, {
         onMutate: ([variables, data]) => {
-            let allRules = queryClient.getQueryData<Models.Rule[]>([rulesKey, variables.accountId]);
+            const allRules = queryClient.getQueryData<Models.Rule[]>([rulesKey, variables.accountId]);
             if (!allRules) {
                 console.warn("Query Cache is missing Transaction Rules");
                 return;

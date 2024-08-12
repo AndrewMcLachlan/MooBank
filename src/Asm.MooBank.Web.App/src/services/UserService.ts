@@ -10,7 +10,7 @@ export const useUpdateUser = () => {
     const queryClient = useQueryClient();
 
     const { mutate} = useApiPatch<User, null, User>(() => "api/users/me", {
-        onSettled: (_data,_error,[]) => {
+        onSettled: (_data,_error) => {
             queryClient.invalidateQueries({ queryKey: [usersKey]});
         }
     });

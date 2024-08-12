@@ -3,8 +3,8 @@ import { Button, Form, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { NewStockHolding, emptyStockHolding } from "../../models";
 
-import { Page, emptyGuid } from "@andrewmclachlan/mooapp";
-import { useGroups, useCreateStockHolding } from "services";
+import { Page } from "@andrewmclachlan/mooapp";
+import { useCreateStockHolding, useGroups } from "services";
 
 export const CreateStockHolding: React.FC = () => {
 

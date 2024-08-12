@@ -53,7 +53,7 @@ export const BudgetReportYear: React.FC<BudgetReportYearProps> = ({ year, onDril
                 }
             }}
                 onClick={(e) => {
-                    var elements = getElementAtEvent(chartRef.current!, e);
+                    const elements = getElementAtEvent(chartRef.current!, e);
                     if (elements.length !== 1) return;
                     onDrilldown(report.data!.items[elements[0].index].month);
                 }}

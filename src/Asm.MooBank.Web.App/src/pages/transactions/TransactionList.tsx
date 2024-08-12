@@ -13,7 +13,7 @@ import { TransactionDetails } from "./details/TransactionDetails";
 import { TransactionRow } from "./TransactionRow";
 import { TransactionTableHead } from "./TransactionTableHead";
 
-export const TransactionList: React.FC<TransactionListProps> = () => {
+export const TransactionList: React.FC = () => {
 
     const account = useAccount();
 
@@ -64,7 +64,4 @@ export const TransactionList: React.FC<TransactionListProps> = () => {
             </Table>
         </>
     );
-}
-
-export interface TransactionListProps {
 }

@@ -17,6 +17,8 @@ export const CurrencySelector = React.forwardRef<any, CurrencySelectorProps>(({ 
     );
 });
 
+CurrencySelector.displayName = "CurrencySelector";
+
 const currencies: Currency[] = [
     { name: "UAE Dirham", code: "AED", },
     { name: "Afghani", code: "AFN", },

@@ -1,7 +1,6 @@
-import { useMemo } from "react";
-import * as Pages from "./pages";
 import { RouteDefinition } from "@andrewmclachlan/mooapp";
 import App from "App";
+import * as Pages from "./pages";
 
 export const routes: RouteDefinition = {
     layout: {

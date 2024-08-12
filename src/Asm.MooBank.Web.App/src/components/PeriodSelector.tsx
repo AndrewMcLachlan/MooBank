@@ -8,10 +8,10 @@ import { Period, allTime, last12Months, last3Months, last6Months, lastMonth, las
 import { usePeriod } from "hooks";
 import { useLocalStorage } from "@andrewmclachlan/mooapp";
 
-export const PeriodSelector: React.FC<PeriodSelectorProps> = ({instant = false, cacheKey = "period", ...props}) => {
+export const PeriodSelector: React.FC<PeriodSelectorProps> = ({instant = false, cacheKey = "period-id", ...props}) => {
 
     const [customPeriod, setCustomPeriod] = usePeriod();
-    const [selectedPeriod, setSelectedPeriod] = useLocalStorage("period-id", "1");
+    const [selectedPeriod, setSelectedPeriod] = useLocalStorage(cacheKey, "1");
     const [period, setPeriod] = useState<Period>(options.find(o => o.value === selectedPeriod));
     const [customStart, setCustomStart] = useState<Date>(customPeriod.startDate);
     const [customEnd, setCustomEnd] = useState<Date>(customPeriod.endDate);
@@ -57,7 +57,7 @@ export const PeriodSelector: React.FC<PeriodSelectorProps> = ({instant = false, 
     }
 
     useEffect(() => {
-        props.onChange && props.onChange(period);
+        props.onChange?.(period);
     }, [period]);
 
     return (
