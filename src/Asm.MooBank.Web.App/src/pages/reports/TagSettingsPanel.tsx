@@ -7,7 +7,7 @@ export const TagSettingsPanel:React.FC<TagSettingsPanelProps> = ({tag, onChange}
     if (!tag?.settings) return null;
 
     const settingChanged = (settings: TagSettings) => {
-        onChange && onChange(settings);
+        onChange?.(settings);
     }
 
     return (

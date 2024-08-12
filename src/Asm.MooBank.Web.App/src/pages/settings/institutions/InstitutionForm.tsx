@@ -1,4 +1,4 @@
-import { Institution, InstitutionType, institutionTypeOptions } from "models";
+import { Institution, institutionTypeOptions } from "models";
 import { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import Select from "react-select";

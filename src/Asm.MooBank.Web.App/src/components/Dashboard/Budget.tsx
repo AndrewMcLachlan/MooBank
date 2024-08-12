@@ -2,12 +2,12 @@ import { format } from "date-fns/format";
 import { getMonth } from "date-fns/getMonth";
 import { getYear } from "date-fns/getYear";
 
+import { Widget } from "@andrewmclachlan/mooapp";
 import { ChartData } from "chart.js";
-import { getBalanceString, useChartColours } from "helpers";
+import { useChartColours } from "helpers";
 import { lastMonth } from "helpers/dateFns";
 import { Bar } from "react-chartjs-2";
 import { useBudgetReportForMonth } from "services/BudgetService";
-import { Widget } from "@andrewmclachlan/mooapp";
 
 export const BudgetWidget: React.FC = () => {
 

@@ -6,7 +6,7 @@ export const ReportTypeSelector: React.FC<ReportTypeSelectorProps> = ({value, on
 
     const onClick = (reportType: ReportType) => {
         if (value === reportType) return;
-        onChange && onChange(reportType);
+        onChange?.(reportType);
     }
 
     return (

@@ -1,6 +1,5 @@
 import { SectionTable } from "@andrewmclachlan/mooapp";
 import * as Models from "models";
-import { Table } from "react-bootstrap";
 import { BudgetLine } from "./BudgetLine";
 import { NewBudgetLine } from "./NewBudgetLine";
 import { numberOfMonths } from "helpers/dateFns";

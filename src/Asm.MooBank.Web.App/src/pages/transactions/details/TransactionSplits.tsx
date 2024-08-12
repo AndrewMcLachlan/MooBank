@@ -1,4 +1,4 @@
-import { Transaction, TransactionSplit, getSplitTotal } from "models";
+import { Transaction, TransactionSplit } from "models";
 import React, { useEffect, useState } from "react";
 import { Col, Form, Row } from "react-bootstrap";
 import { NewTransactionSplit } from "./NewTransactionSplit";

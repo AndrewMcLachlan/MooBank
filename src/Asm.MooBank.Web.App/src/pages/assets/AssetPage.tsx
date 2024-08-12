@@ -4,7 +4,7 @@ import { NavItem, NavItemDivider, Page, PageProps } from "@andrewmclachlan/mooap
 import { Asset } from "models";
 import { useAsset } from "./AssetProvider";
 
-import { Sliders, Transaction } from "assets";
+import { Sliders } from "assets";
 
 export const AssetPage: React.FC<PropsWithChildren<AccountPageProps>> = ({ children, breadcrumbs =[], ...props }) => {
 

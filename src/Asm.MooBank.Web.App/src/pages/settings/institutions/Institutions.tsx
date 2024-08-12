@@ -1,9 +1,8 @@
 import { IconLinkButton, SectionTable } from "@andrewmclachlan/mooapp";
-import { Table } from "react-bootstrap";
+import { institutionTypeOptions } from "models";
 import { useNavigate } from "react-router-dom";
 import { useInstitutions } from "services";
 import { SettingsPage } from "../SettingsPage";
-import { institutionTypeOptions } from "models";
 
 export const Institutions = () => {
 

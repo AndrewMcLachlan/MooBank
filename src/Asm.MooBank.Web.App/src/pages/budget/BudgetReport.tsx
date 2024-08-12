@@ -1,16 +1,16 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import { Chart as ChartJS, ChartData, registerables } from "chart.js";
+import { Chart as ChartJS, registerables } from "chart.js";
 import chartTrendline from "chartjs-plugin-trendline";
 
-import { Section, useUpdatingState } from "@andrewmclachlan/mooapp";
+import { Section } from "@andrewmclachlan/mooapp";
+import { useBudgetYear } from "hooks/useBudgetYear";
 import { Col, Form, Row } from "react-bootstrap";
+import { useNavigate, useParams } from "react-router-dom";
 import { useBudgetYears } from "services/BudgetService";
 import { BudgetPage } from "./BudgetPage";
-import { BudgetReportYear } from "./BudgetReportYear";
 import { BudgetReportTags } from "./BudgetReportTags";
-import { useBudgetYear } from "hooks/useBudgetYear";
-import { useNavigate, useParams } from "react-router-dom";
+import { BudgetReportYear } from "./BudgetReportYear";
 
 ChartJS.register(...registerables);
 ChartJS.register(chartTrendline);
@@ -23,7 +23,7 @@ export const BudgetReport: React.FC = () => {
 
     const [year, setYear] = useBudgetYear();
     const [selectableYears, setSelectableYears] = useState(next5Years);
-    const [month, setMonth] = useUpdatingState<number | undefined>(pathMonth ? Number(pathMonth) : undefined);
+    const month = pathMonth ? Number(pathMonth) : undefined;
 
     const { data: budgetYears } = useBudgetYears();
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { Col, Row } from "react-bootstrap";
+import { Col } from "react-bootstrap";
 
 import { IconLinkButton, SectionRow } from "@andrewmclachlan/mooapp";
 
@@ -8,9 +8,9 @@ import { AccountPage, AccountSummary } from "../../components";
 import { FilterPanel } from "./FilterPanel";
 import { TransactionList } from "./TransactionList";
 
+import { UpDownArrow } from "assets";
 import { useAccountRoute } from "hooks/useAccountRoute";
 import { InstitutionAccount } from "models";
-import { UpDownArrow } from "assets";
 
 
 export const Transactions: React.FC = () => {

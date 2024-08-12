@@ -93,7 +93,7 @@ export const Profile: React.FC = () => {
                             <tr key={index}>
                                 <EditColumn value={c.name} onChange={t => editCard(index, { ...c, name: t.value })}>{c.name}</EditColumn>
                                 <td>{c.last4Digits}</td>
-                                <td className="row-action"><DeleteIcon onClick={e => deleteCard(c)} /></td>
+                                <td className="row-action"><DeleteIcon onClick={_e => deleteCard(c)} /></td>
                             </tr>
                         )
                         )}

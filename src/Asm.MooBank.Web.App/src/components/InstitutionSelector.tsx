@@ -20,3 +20,5 @@ export const InstitutionSelector: React.FC<InstitutionSelectorProps> = React.for
         <Select onChange={(c: any) => onChange(c.id)} value={institution} options={institutions} getOptionValue={o => o.id.toString()} getOptionLabel={o => o.name} {...props} ref={ref} className="react-select" classNamePrefix="react-select" />
     );
 });
+
+InstitutionSelector.displayName = "InstitutionSelector";

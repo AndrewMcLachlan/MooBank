@@ -2,7 +2,7 @@ import React from "react";
 import { useFormattedAccounts } from "services";
 import { AccountListGroup } from "./AccountListGroup";
 
-export const AccountList: React.FC<AccountListProps> = () => {
+export const AccountList: React.FC = () => {
 
     const { data, isLoading } = useFormattedAccounts();
 
@@ -16,7 +16,3 @@ export const AccountList: React.FC<AccountListProps> = () => {
 };
 
 AccountList.displayName = "AccountList";
-
-export interface AccountListProps {
-
-}

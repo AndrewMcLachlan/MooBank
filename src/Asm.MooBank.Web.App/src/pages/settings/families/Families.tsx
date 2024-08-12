@@ -1,9 +1,8 @@
+import { SectionTable } from "@andrewmclachlan/mooapp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useFamilies } from "services";
 import { SettingsPage } from "../SettingsPage";
-import { SectionTable } from "@andrewmclachlan/mooapp";
 
 export const Families = () => {
 
