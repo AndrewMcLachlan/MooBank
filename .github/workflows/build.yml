@@ -27,7 +27,7 @@ jobs:
         NUGET_AUTH_TOKEN: ${{secrets.CROSS_REPO_PACKAGE_TOKEN}}
     - name: Set version number
       id: set-version-number
-      uses: andrewmclachlan/actions/set-version-number@master
+      uses: andrewmclachlan/actions/set-version-number@v2
       with:
         project: 'src/Asm.MooBank.Web.Api'
         versionPropertyName: 'Version'
