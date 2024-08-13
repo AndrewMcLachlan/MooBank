@@ -105,6 +105,7 @@ void AddApp(WebApplication app)
     app.UseSwagger();
     app.UseSwaggerUI();
 
+
     if (app.Environment.IsDevelopment())
     {
         app.UseDeveloperExceptionPage();
@@ -136,6 +137,8 @@ void AddApp(WebApplication app)
         .WithOpenApi();
 
     builder.MapModuleEndpoints();
+
+    app.UseSecurityHeaders();
 
     app.MapFallbackToFile("/index.html");
 
