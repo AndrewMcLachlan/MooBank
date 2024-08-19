@@ -20,7 +20,7 @@
     "@fortawesome/react-fontawesome": "^0.2.1",
     "@microsoft/applicationinsights-react-js": "^17.3.0",
     "@reduxjs/toolkit": "^2.2.7",
-    "@tanstack/react-query": "^5.51.23",
+    "@tanstack/react-query": "^5.51.24",
     "bootstrap": "^5.3.3",
     "chart.js": "^4.4.3",
     "chartjs-plugin-trendline": "^2.1.2",
