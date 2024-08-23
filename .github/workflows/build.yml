@@ -6,8 +6,6 @@ on:
   push:
     branches:
       - "main"
-    paths-ignore:
-      - ".octopus/**"
   pull_request_target:
     branches:
       - "main"

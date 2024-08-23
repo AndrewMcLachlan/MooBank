@@ -5,6 +5,7 @@
   <ItemGroup>
     <PackageReference Include="Asm.AspNetCore" Version="$(AsmPackageVersion)" />
     <PackageReference Include="Asm.Cqrs.AspNetCore" Version="$(AsmPackageVersion)" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
