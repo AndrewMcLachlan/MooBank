@@ -1,4 +1,4 @@
-﻿using Asm.Cqrs.AspNetCore;
+﻿using Asm.AspNetCore;
 using Asm.MooBank.Modules.Tags.Commands;
 using Asm.MooBank.Modules.Tags.Models;
 using Asm.MooBank.Modules.Tags.Queries;

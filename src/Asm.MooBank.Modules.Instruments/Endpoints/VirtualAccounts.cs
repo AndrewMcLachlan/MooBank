@@ -1,4 +1,4 @@
-﻿using Asm.Cqrs.AspNetCore;
+﻿using Asm.AspNetCore;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Instruments.Commands.VirtualAccount;
 using Asm.MooBank.Modules.Instruments.Queries.VirtualAccount;

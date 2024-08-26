@@ -1,4 +1,4 @@
-﻿using Asm.Cqrs.AspNetCore;
+﻿using Asm.AspNetCore;
 using Asm.MooBank.Modules.ReferenceData.Models;
 using Asm.MooBank.Modules.ReferenceData.Queries;
 using Microsoft.AspNetCore.Builder;
