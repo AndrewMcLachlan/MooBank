@@ -11,7 +11,8 @@ internal class GetAllHandler(IQueryable<DomainInstitutionAccount> institutionAcc
 {
     public async ValueTask<IEnumerable<InstitutionAccount>> Handle(GetAll request, CancellationToken cancellationToken)
     {
-        var accounts = await institutionAccounts.Where(a => a.Owners.Any(ah => ah.UserId == user.Id) || a.ShareWithFamily && a.Owners.Any(ah => ah.User.FamilyId == user.FamilyId)).ToModel(currencyConverter).ToListAsync(cancellationToken);
+        var accounts = await institutionAccounts.Where(a => a.Owners.Any(ah => ah.UserId == user.Id) || a.ShareWithFamily && a.Owners.Any(ah => ah.User.FamilyId == user.FamilyId))
+            .ToModel(currencyConverter).ToListAsync(cancellationToken);
 
         var primary = accounts.SingleOrDefault(a => a.Id == user.PrimaryAccountId);
 
@@ -20,5 +21,4 @@ internal class GetAllHandler(IQueryable<DomainInstitutionAccount> institutionAcc
         return accounts;
 
     }
-
 }

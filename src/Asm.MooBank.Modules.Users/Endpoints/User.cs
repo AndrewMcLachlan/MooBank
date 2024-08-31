@@ -1,4 +1,4 @@
-﻿using Asm.Cqrs.AspNetCore;
+﻿using Asm.AspNetCore;
 using Asm.MooBank.Modules.Users.Commands;
 using Asm.MooBank.Modules.Users.Queries;
 using Microsoft.AspNetCore.Builder;

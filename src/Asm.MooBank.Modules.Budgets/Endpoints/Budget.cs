@@ -1,5 +1,5 @@
 ﻿using System.Net;
-using Asm.Cqrs.AspNetCore;
+using Asm.AspNetCore;
 using Asm.MooBank.Modules.Budgets.Commands;
 using Asm.MooBank.Modules.Budgets.Models;
 using Asm.MooBank.Modules.Budgets.Queries;

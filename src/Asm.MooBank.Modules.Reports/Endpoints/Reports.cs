@@ -1,4 +1,4 @@
-﻿using Asm.Cqrs.AspNetCore;
+﻿using Asm.AspNetCore;
 using Asm.MooBank.Modules.Reports.Models;
 using Asm.MooBank.Modules.Reports.Queries;
 using Microsoft.AspNetCore.Builder;

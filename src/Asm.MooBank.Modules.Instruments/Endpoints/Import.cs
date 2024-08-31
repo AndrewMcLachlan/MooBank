@@ -1,4 +1,4 @@
-﻿using Asm.Cqrs.AspNetCore;
+﻿using Asm.AspNetCore;
 using Asm.MooBank.Modules.Instruments.Commands.Import;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Builder;

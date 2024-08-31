@@ -1,4 +1,4 @@
-﻿using Asm.Cqrs.AspNetCore;
+﻿using Asm.AspNetCore;
 using Asm.MooBank.Modules.Assets.Models;
 using Asm.MooBank.Modules.Assets.Commands;
 using Asm.MooBank.Modules.Assets.Queries;

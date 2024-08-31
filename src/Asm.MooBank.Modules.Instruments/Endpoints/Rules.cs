@@ -1,4 +1,4 @@
-﻿using Asm.Cqrs.AspNetCore;
+﻿using Asm.AspNetCore;
 using Asm.MooBank.Modules.Instruments.Commands.Rule;
 using Asm.MooBank.Modules.Instruments.Queries.Rule;
 using Asm.MooBank.Modules.Instruments.Queries.Rules;

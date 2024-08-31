@@ -1,4 +1,4 @@
-﻿using Asm.Cqrs.AspNetCore;
+﻿using Asm.AspNetCore;
 using Asm.MooBank.Modules.Accounts.Commands;
 using Asm.MooBank.Modules.Accounts.Models.Account;
 using Asm.MooBank.Modules.Accounts.Queries;

@@ -1,4 +1,4 @@
-﻿using Asm.Cqrs.AspNetCore;
+﻿using Asm.AspNetCore;
 using Asm.MooBank.Modules.Budgets.Models;
 using Asm.MooBank.Modules.Budgets.Queries;
 using Microsoft.AspNetCore.Builder;
