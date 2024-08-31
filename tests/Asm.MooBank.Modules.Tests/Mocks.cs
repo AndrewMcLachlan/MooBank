@@ -1,4 +1,6 @@
-﻿using Asm.Domain;
+﻿using System.Collections;
+using System.Linq.Expressions;
+using Asm.Domain;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Modules.Tests.Extensions;
 using Asm.MooBank.Security;
@@ -33,3 +35,20 @@ internal class Mocks
     public Mock<ICurrencyConverter> CurrencyConverterMock { get; private set; }
 }
 
+public class MockAsyncEnumerable<T>(IEnumerable<T> values) : IQueryable<T>, IAsyncEnumerable<T>
+{
+    public Type ElementType => values.AsQueryable().ElementType;
+
+    public Expression Expression => values.AsQueryable().Expression;
+
+    public IQueryProvider Provider => values.AsQueryable().Provider;
+
+    public IAsyncEnumerable<T> AsAsyncEnumerable() => this;
+
+    public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default) =>
+        values.ToAsyncEnumerable().GetAsyncEnumerator(cancellationToken);
+
+    public IEnumerator<T> GetEnumerator() => values.GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => values.GetEnumerator();
+}

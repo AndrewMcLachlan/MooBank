@@ -1,17 +1,18 @@
 using Asm.MooBank.Domain.Entities.Account;
+using Asm.MooBank.Domain.Entities.Account.Specifications;
 using Asm.MooBank.Modules.Accounts.Commands;
 
-namespace Asm.MooBank.Modules.Tests.Account.Commands.InstitutionAccount;
+namespace Asm.MooBank.Modules.Tests.Account.Commands;
 
 [Binding]
-internal class UpdateStepDefinitions(ScenarioInput<Accounts.Models.Account.InstitutionAccount> input, ScenarioResult<Exception> exceptionResult) : StepDefinitionBase
+internal class UpdateStepDefinitions(ScenarioContext context) : StepDefinitionBase
 {
     private Accounts.Models.Account.InstitutionAccount _result;
 
     [Given(@"I have a request to update an institution account")]
     public void GivenIHaveARequestToUpdateAnInstitutionAccount()
     {
-        input.Value = Models.Account;
+        context.Set(Models.Account);
     }
 
     [When(@"I call UpdateHandler\.Handle")]
@@ -19,7 +20,7 @@ internal class UpdateStepDefinitions(ScenarioInput<Accounts.Models.Account.Insti
     {
         Mock<IInstitutionAccountRepository> institutionAccountRepositoryMock = new();
 
-        institutionAccountRepositoryMock.Setup(i => i.Get(Models.AccountId, new())).ReturnsAsync(
+        institutionAccountRepositoryMock.Setup(i => i.Get(Models.AccountId, It.IsAny<AccountDetailsSpecification>(), It.IsAny<CancellationToken>())).ReturnsAsync(
             new Domain.Entities.Account.InstitutionAccount(Models.AccountId)
             {
                 Name = Models.Account.Name,
@@ -45,20 +46,26 @@ internal class UpdateStepDefinitions(ScenarioInput<Accounts.Models.Account.Insti
 
         UpdateHandler updateHandler = new(Mocks.UnitOfWorkMock.Object, institutionAccountRepositoryMock.Object, Models.AccountHolder, Mocks.CurrencyConverterMock.Object, Mocks.SecurityMock.Object);
 
-        Update command = new(input.Value);
+        Update command = new(Models.Account);
 
-        await SpecFlowHelper.CatchExceptionAsync(async () => _result = await updateHandler.Handle(command, new CancellationToken()), exceptionResult);
+        await context.CatchExceptionAsync(async () => _result = await updateHandler.Handle(command, new CancellationToken()));
     }
 
     [Then(@"the account is updated")]
     public void ThenTheAccountIsUpdated()
     {
-        Assert.Fail();
-    }
-
-    [Given(@"I have an invalid account ID")]
-    public void GivenIHaveAnInvalidAccountID()
-    {
-        input.Value.Id = Models.InvalidAccountId;
+        Assert.NotNull(_result);
+        Assert.Equal(Models.Account.Currency, _result.Currency);
+        Assert.Equal(Models.Account.CurrentBalance, _result.CurrentBalance);
+        Assert.Equal(Models.Account.CurrentBalanceLocalCurrency, _result.CurrentBalanceLocalCurrency);
+        Assert.Equal(Models.Account.Id, _result.Id);
+        Assert.Equal(Models.Account.Name, _result.Name);
+        Assert.Equal(Models.Account.Description, _result.Description);
+        Assert.Equal(Models.Account.LastTransaction, _result.LastTransaction);
+        Assert.Equal(Models.Account.InstrumentType, _result.InstrumentType);
+        Assert.Equal(Models.Account.Controller, _result.Controller);
+        Assert.Equal(Models.Account.ImporterTypeId, _result.ImporterTypeId);
+        Assert.Equal(Models.Account.ShareWithFamily, _result.ShareWithFamily);
+        Assert.Equal(Models.Account.IncludeInBudget, _result.IncludeInBudget);
     }
 }
