@@ -12,13 +12,12 @@ internal class GetAllHandler(IQueryable<DomainInstitutionAccount> institutionAcc
     public async ValueTask<IEnumerable<InstitutionAccount>> Handle(GetAll request, CancellationToken cancellationToken)
     {
         var accounts = await institutionAccounts.Where(a => a.Owners.Any(ah => ah.UserId == user.Id) || a.ShareWithFamily && a.Owners.Any(ah => ah.User.FamilyId == user.FamilyId))
-            .ToModel(currencyConverter).ToListAsync(cancellationToken);
+            .ToModelAsync(currencyConverter, cancellationToken);
 
         var primary = accounts.SingleOrDefault(a => a.Id == user.PrimaryAccountId);
 
         if (primary != null) primary.IsPrimary = true;
 
         return accounts;
-
     }
 }
