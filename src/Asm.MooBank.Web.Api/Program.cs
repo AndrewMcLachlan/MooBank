@@ -4,10 +4,10 @@ using Asm.MooBank.Institution.AustralianSuper;
 using Asm.MooBank.Institution.Ing;
 using Asm.MooBank.Security;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.OpenApi.Models;
 using Serilog;
 
 return WebApplicationStart.Run(args, "Asm.MooBank.Web.Api", AddServices, AddApp);
-
 
 void AddServices(WebApplicationBuilder builder)
 {
@@ -43,10 +43,23 @@ void AddServices(WebApplicationBuilder builder)
             Version = fileVersionInfo.FileVersion
         });
 
-        options.CustomSchemaIds(type => type.FullName?
-            //.Replace("Asm.MooBank.Modules", String.Empty)
-            //.Replace("Asm.MooBank.Models", String.Empty)
-            .Replace('+', '.'));
+        options.CustomSchemaIds(type => type.FullName?.Replace('+', '.'));
+
+        options.AddSecurityDefinition("oidc", new()
+        {
+            Type = SecuritySchemeType.OpenIdConnect,
+            OpenIdConnectUrl = new Uri($"{builder.Configuration["OAuth:Domain"]}{builder.Configuration["OAuth:TenantId"]}/v2.0/.well-known/openid-configuration"),
+        });
+
+        options.AddSecurityRequirement(new()
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oidc" }
+                },[]
+            },
+        });
     });
 
     services.AddApplicationInsightsTelemetry();
@@ -103,8 +116,13 @@ void AddApp(WebApplication app)
     app.UseStaticFiles();
 
     app.UseSwagger();
-    app.UseSwaggerUI();
-
+    app.UseSwaggerUI(options =>
+    {
+        options.OAuthClientId(app.Configuration["OAuth:Audience"]);
+        options.OAuthAppName("MooBank");
+        options.OAuthUsePkce();
+        options.OAuthScopes("api://moobank.mclachlan.family/.default");
+    });
 
     if (app.Environment.IsDevelopment())
     {

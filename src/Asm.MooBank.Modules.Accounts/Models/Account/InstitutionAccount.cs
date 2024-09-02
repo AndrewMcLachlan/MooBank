@@ -63,15 +63,10 @@ public static class InstitutionAccountExtensions
         return result;
     }
 
-    public static IEnumerable<InstitutionAccount> ToModel(this IEnumerable<Domain.Entities.Account.InstitutionAccount> entities, ICurrencyConverter currencyConverter)
-    {
-        return entities.Select(t => t.ToModel(currencyConverter));
-    }
 
-    public static IQueryable<InstitutionAccount> ToModel(this IQueryable<Domain.Entities.Account.InstitutionAccount> entities, ICurrencyConverter currencyConverter)
-    {
-        return entities.Select(t => t.ToModel(currencyConverter));
-    }
+    public static async Task<IEnumerable<InstitutionAccount>> ToModelAsync(this IQueryable<Domain.Entities.Account.InstitutionAccount> entities, ICurrencyConverter currencyConverter, CancellationToken cancellationToken) =>
+        (await entities.ToListAsync(cancellationToken)).Select(t => t.ToModel(currencyConverter));
+
 
     private static IEnumerable<VirtualInstrument> Remaining(Domain.Entities.Account.InstitutionAccount account, ICurrencyConverter currencyConverter)
     {
