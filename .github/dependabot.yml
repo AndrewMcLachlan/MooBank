@@ -16,6 +16,7 @@ updates:
       time: "06:00"
     reviewers:
       - andrewmcLachlan
+    open-pull-requests-limit: 10
 
   - package-ecosystem: nuget
     directory: /
