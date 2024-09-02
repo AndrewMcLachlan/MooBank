@@ -1,18 +1,13 @@
 ﻿using Asm.MooBank.Domain.Entities.Account;
+using Asm.MooBank.Domain.Entities.Instrument;
 
 namespace Asm.MooBank.Infrastructure.EntityConfigurations;
 
-public class Rule : IEntityTypeConfiguration<Domain.Entities.Instrument.Rule>
+public class RuleConfiguration : IEntityTypeConfiguration<Rule>
 {
-    public void Configure(EntityTypeBuilder<Domain.Entities.Instrument.Rule> entity)
+    public void Configure(EntityTypeBuilder<Rule> entity)
     {
-        entity.HasKey(t => t.Id);
-
         entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-        entity.Property(e => e.Contains)
-                            .IsRequired()
-                            .HasMaxLength(50);
 
         entity.HasMany(p => p.Tags)
                            .WithMany()
@@ -31,10 +26,6 @@ public class Rule : IEntityTypeConfiguration<Domain.Entities.Instrument.Rule>
                                         e.TagId
                                     });
                                 });
-
-        entity.HasOne(e => e.Account)
-                    .WithMany(e => e.Rules)
-                    .HasForeignKey(e => e.InstrumentId);
 
     }
 }

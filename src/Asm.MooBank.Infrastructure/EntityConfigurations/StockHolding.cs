@@ -8,7 +8,7 @@ internal class StockHoldingConfiguration : IEntityTypeConfiguration<StockHolding
     {
         builder.UseTptMappingStrategy();
 
-        builder.ToTable(t => t.HasTrigger("ComputedColumns"));
+        builder.ToTable(tb => tb.UseSqlOutputClause(false));
 
         builder.OwnsOne(e => e.Symbol,
             b =>
@@ -19,15 +19,6 @@ internal class StockHoldingConfiguration : IEntityTypeConfiguration<StockHolding
 
         builder.HasMany(e => e.Transactions).WithOne(e => e.StockHolding)
                .HasForeignKey(e => e.AccountId);
-
-        builder.Property(e => e.Quantity)
-            .ValueGeneratedOnAddOrUpdate();
-
-        builder.Property(e => e.GainLoss)
-            .ValueGeneratedOnAddOrUpdate();
-
-        builder.Property(e => e.CurrentValue)
-            .ValueGeneratedOnAddOrUpdate();
 
     }
 }

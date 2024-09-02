@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Asm.Domain;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Transactions;
+
+[PrimaryKey(nameof(Id))]
 public class TransactionSplit : KeyedEntity<Guid>
 {
     public TransactionSplit() : base(Guid.Empty)
@@ -20,6 +20,7 @@ public class TransactionSplit : KeyedEntity<Guid>
     public decimal Amount { get; set; }
 
     [Precision(12, 4)]
+    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public decimal NetAmount { get; set; }
 
     public virtual Transaction Transaction { get; set; } = null!;

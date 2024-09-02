@@ -16,11 +16,11 @@ public class InstitutionAccountRepository(MooBankContext dataContext, User user)
 
     protected override IQueryable<InstitutionAccount> GetById(Guid id) => Entities.Include(a => a.Owners).Include(t => t.ImportAccount).ThenInclude(i => i!.ImporterType).Where(a => a.Id == id && a.Owners.Any(ah => ah.UserId == user.Id || (a.ShareWithFamily && ah.User.FamilyId == user.FamilyId)));
 
-    public async Task<IEnumerable<ImporterType>> GetImporterTypes(CancellationToken cancellationToken = default) => await Context.Set<ImporterType>().ToListAsync(cancellationToken);
+    public async Task<IEnumerable<ImporterType>> GetImporterTypes(CancellationToken cancellationToken = default) => await Context.ImporterTypes.ToListAsync(cancellationToken);
 
     public async Task<ImporterType> GetImporterType(int importerTypeId, CancellationToken cancellationToken = default)
     {
-        var entity = await Context.Set<ImporterType>().Where(i => i.ImporterTypeId == importerTypeId).SingleOrDefaultAsync(cancellationToken: cancellationToken);
+        var entity = await Context.ImporterTypes.Where(i => i.ImporterTypeId == importerTypeId).SingleOrDefaultAsync(cancellationToken: cancellationToken);
 
         return entity ?? throw new NotFoundException($"Unknown importer type ID {importerTypeId}");
     }

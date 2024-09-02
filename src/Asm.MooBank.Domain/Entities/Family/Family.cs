@@ -1,9 +1,11 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Asm.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Family;
 
 [AggregateRoot]
+[PrimaryKey(nameof(Id))]
 public class Family : KeyedEntity<Guid>
 {
     public Family() : base(Guid.Empty)

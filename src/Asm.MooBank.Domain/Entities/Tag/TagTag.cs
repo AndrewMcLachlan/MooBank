@@ -1,5 +1,8 @@
-﻿namespace Asm.MooBank.Domain.Entities.Tag;
+﻿using Microsoft.EntityFrameworkCore;
 
+namespace Asm.MooBank.Domain.Entities.Tag;
+
+[PrimaryKey(nameof(PrimaryTagId), nameof(SecondaryTagId))]
 public partial class TagTag
 {
     public int PrimaryTagId { get; set; }

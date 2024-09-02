@@ -1,7 +1,9 @@
 ﻿using Asm.MooBank.Domain.Entities.Instrument;
+using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Account;
 
+[PrimaryKey(nameof(RuleId), nameof(TagId))]
 public class RuleTag
 {
     public int RuleId { get; set; }

@@ -6,13 +6,7 @@ internal class TagConfiguration : IEntityTypeConfiguration<Domain.Entities.Tag.T
 {
     public void Configure(EntityTypeBuilder<Domain.Entities.Tag.Tag> entity)
     {
-        entity.ToTable("Tag");
-
         entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-        entity.Property(e => e.Name)
-            .IsRequired()
-            .HasMaxLength(50);
 
         entity.HasMany(d => d.Tags)
               .WithMany(d => d.TaggedTo)

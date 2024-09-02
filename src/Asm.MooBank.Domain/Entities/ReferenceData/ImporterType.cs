@@ -5,6 +5,7 @@ namespace Asm.MooBank.Domain.Entities.ReferenceData;
 [AggregateRoot]
 public partial class ImporterType
 {
+    [Key]
     public int ImporterTypeId { get; set; }
 
     public string Type { get; set; } = null!;

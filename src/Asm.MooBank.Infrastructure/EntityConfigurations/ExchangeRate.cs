@@ -7,13 +7,6 @@ internal class ExchangeRateConfiguration : IEntityTypeConfiguration<ExchangeRate
     public void Configure(EntityTypeBuilder<ExchangeRate> builder)
     {
         // Required for computed columns
-        builder.ToTable(t => t.HasTrigger("ComputedColumns"));
-
-        builder.HasKey(e => e.Id);
-
-        builder.Property(e => e.Rate).HasColumnType("decimal(12, 4)");
-
-        builder.Property(e => e.ReverseRate)
-            .ValueGeneratedOnAddOrUpdate();
+        builder.ToTable(tb => tb.UseSqlOutputClause(false));
     }
 }

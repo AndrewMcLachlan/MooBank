@@ -1,11 +1,14 @@
-﻿using Asm.Domain;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Transactions;
+
+[Table("TransactionSplitOffset", Schema = "dbo")]
+[PrimaryKey(nameof(TransactionSplitId), nameof(OffsetTransactionId))]
 public class TransactionOffset : Entity
 {
-    public Guid TransactionSplitId { get; set; }
-    public Guid OffsetTransactionId { get; set; }
+     public Guid TransactionSplitId { get; set; }
+
+     public Guid OffsetTransactionId { get; set; }
 
     [Precision(12, 4)]
     public decimal Amount { get; set; }

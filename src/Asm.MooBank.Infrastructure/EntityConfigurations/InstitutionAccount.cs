@@ -4,15 +4,8 @@ public class InstitutionAccount : IEntityTypeConfiguration<Domain.Entities.Accou
 {
     public void Configure(EntityTypeBuilder<Domain.Entities.Account.InstitutionAccount> entity)
     {
-        entity.Property(e => e.LastUpdated)
-            .HasColumnType("datetimeoffset(0)")
-            .HasDefaultValueSql("(sysutcdatetime())");
-
         entity.HasOne(e => e.ImportAccount)
               .WithOne()
             .HasForeignKey<Domain.Entities.Account.ImportAccount>(e => e.AccountId);
-
-        entity.HasOne(e => e.Institution).WithMany().HasForeignKey(e => e.InstitutionId);
-
     }
 }

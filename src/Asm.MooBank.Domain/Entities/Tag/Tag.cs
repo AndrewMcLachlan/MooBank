@@ -1,12 +1,16 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Tag;
 
 [AggregateRoot]
+[PrimaryKey(nameof(Id))]
 public partial class Tag(int id) : KeyedEntity<int>(id), IEquatable<Tag>
 {
     public Tag() : this(default) { }
 
+    [Required]
+    [MaxLength(50)]
     public string Name { get; set; } = null!;
 
     public bool Deleted { get; set; }

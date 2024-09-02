@@ -3,8 +3,11 @@
   <Import Project="..\..\Common.props" />
 
   <ItemGroup>
+    <Compile Remove="Entities\Account\EventHandlers\**" />
     <Compile Remove="Models\**" />
+    <EmbeddedResource Remove="Entities\Account\EventHandlers\**" />
     <EmbeddedResource Remove="Models\**" />
+    <None Remove="Entities\Account\EventHandlers\**" />
     <None Remove="Models\**" />
   </ItemGroup>
 
@@ -25,7 +28,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Entities\Account\EventHandlers\" />
+    <Using Include="System.ComponentModel.DataAnnotations" />
+    <Using Include="System.ComponentModel.DataAnnotations.Schema" />
   </ItemGroup>
 
 </Project>

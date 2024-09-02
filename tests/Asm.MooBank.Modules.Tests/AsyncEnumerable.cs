@@ -20,7 +20,6 @@ public class AsyncEnumerator<T>(IEnumerator<T> enumerator) : IAsyncEnumerator<T>
 
     public ValueTask<bool> MoveNextAsync()
     {
-        var test = 1;
         bool result = enumerator.MoveNext();
         return ValueTask.FromResult(result);
     }

@@ -2,10 +2,11 @@
 using System.Reflection;
 using Asm.Domain.Infrastructure;
 using Asm.MooBank.Domain.Entities.Account;
+using Asm.MooBank.Domain.Entities.Asset;
+using Asm.MooBank.Domain.Entities.Budget;
 using Asm.MooBank.Domain.Entities.Group;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.ReferenceData;
-using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Domain.Entities.User;
 using MediatR;
 
@@ -23,21 +24,29 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
     {
     }
 
+    [AllowNull]
+    public virtual DbSet<BudgetLine> BudgetLines { get; set; }
 
     [AllowNull]
-    public virtual DbSet<InstrumentOwner> InstrumentOwners { get; set; }
-
-    [AllowNull]
-    public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<ExchangeRate> ExchangeRates { get; set; }
 
     [AllowNull]
     public virtual DbSet<Group> Groups { get; set; }
 
     [AllowNull]
-    public virtual DbSet<VirtualInstrument> VirtualAccounts { get; set; }
+    public virtual DbSet<ImporterType> ImporterTypes { get; set; }
 
     [AllowNull]
-    public virtual DbSet<ImporterType> ImporterTypes { get; set; }
+    public virtual DbSet<InstrumentOwner> InstrumentOwners { get; set; }
+
+    [AllowNull]
+    public virtual DbSet<StockPriceHistory> StockPriceHistory{ get; set; }
+
+    [AllowNull]
+    public virtual DbSet<User> Users { get; set; }
+
+    [AllowNull]
+    public virtual DbSet<VirtualInstrument> VirtualAccounts { get; set; }
 
     public static void RegisterAssembly(Assembly assembly) => Assemblies.Add(assembly);
 
@@ -56,22 +65,9 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
 
         Assemblies.ForEach(a => modelBuilder.ApplyConfigurationsFromAssembly(a));
 
+        modelBuilder.Entity<Asset>().UseTptMappingStrategy();
 
-        modelBuilder.Entity<Group>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-        });
-
-        modelBuilder.Entity<RuleTag>(entity =>
-        {
-            entity.HasKey(e => new { e.RuleId, e.TagId });
-        });
-
-
-        modelBuilder.Entity<ImporterType>(entity =>
-        {
-            entity.HasKey(e => e.ImporterTypeId);
-        });
+        modelBuilder.Entity<TransactionInstrument>().ToTable(tb => tb.UseSqlOutputClause(false));
 
     }
 }
