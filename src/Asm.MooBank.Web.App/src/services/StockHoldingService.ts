@@ -2,6 +2,8 @@ import { UseQueryResult, useQueryClient, } from "@tanstack/react-query";
 import { InstitutionAccount, InstrumentId, NewStockHolding, StockHolding } from "../models";
 import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
 import { accountsKey } from "./AccountService";
+import { StockValueReport } from "models/stock-holding/StockValueReport";
+import { formatISODate } from "helpers/dateFns";
 
 export const stockKey = "stock";
 
@@ -40,3 +42,5 @@ export const useUpdateStockHolding = () => {
 
     return update;
 }
+
+export const useStockValueReport = (accountId: string, start?: Date, end?: Date) => useApiGet<StockValueReport>([stockKey, accountId, "value", start, end], `api/stocks/${accountId}/reports/value?start=${start && formatISODate(start)}&end=${start && formatISODate(end)}`, { enabled: (!!start && !!end) });

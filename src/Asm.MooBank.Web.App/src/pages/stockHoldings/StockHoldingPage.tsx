@@ -4,7 +4,7 @@ import { NavItem, NavItemDivider, Page, PageProps } from "@andrewmclachlan/mooap
 import { StockHolding } from "models";
 import { useStockHolding } from "./StockHoldingProvider";
 
-import { Sliders, Transaction } from "assets";
+import { Reports, Sliders, Transaction } from "assets";
 
 export const StockHoldingPage: React.FC<PropsWithChildren<AccountPageProps>> = ({ children, breadcrumbs = [], ...props }) => {
 
@@ -27,6 +27,7 @@ const getMenuItems = (stockHolding: StockHolding, navItems: (ReactNode | NavItem
         { route: `/shares/${stockHolding.id}/transactions`, text: "Transactions", image: <Transaction /> },
     ];
 
+    items.push({ route: `/shares/${stockHolding.id}/reports`, text: "Reports", image: <Reports /> });
     items.push({ route: `/shares/${stockHolding.id}/manage`, text: "Manage", image: <Sliders /> });
 
     if (navItems.length > 0) {
