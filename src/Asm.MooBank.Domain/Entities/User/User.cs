@@ -8,11 +8,20 @@ public partial class User(Guid id) : KeyedEntity<Guid>(id)
 {
     public User() : this(default) { }
 
+    [Required]
+    [MaxLength(255)]
     public required string EmailAddress { get; set; }
+
+    [MaxLength(255)]
     public string? FirstName { get; set; }
+
+    [MaxLength(255)]
     public string? LastName { get; set; }
 
+    [MaxLength(3)]
     public string Currency { get; set; } = "AUD";
+
+    [Required]
     public required Guid FamilyId { get; set; }
 
     public Guid? PrimaryAccountId { get; set; }
@@ -24,5 +33,6 @@ public partial class User(Guid id) : KeyedEntity<Guid>(id)
 
     public virtual ICollection<UserCard> Cards { get; set; } = new HashSet<UserCard>();
 
+    [ForeignKey(nameof(FamilyId))]
     public Family.Family Family { get; set; } = null!;
 }

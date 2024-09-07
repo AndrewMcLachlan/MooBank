@@ -8,24 +8,10 @@ internal class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
     public void Configure(EntityTypeBuilder<Transaction> entity)
     {
         // Required do to computed column savings issues. See https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-7.0/breaking-changes#sqlserver-tables-with-triggers
-        entity.ToTable(t => t.HasTrigger("FakeTrigger"));
+        entity.ToTable(tb => tb.UseSqlOutputClause(false));
 
-        entity.HasKey("Id");
+        //entity.HasKey("Id");
         entity.Property(t => t.Id).HasColumnName("TransactionId");
-
-        entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-        entity.Property(e => e.Amount).HasColumnType("decimal(12, 4)");
-
-        entity.Property(e => e.Description)
-            .HasMaxLength(255)
-            .IsUnicode(false);
-
-        entity.Property(e => e.Amount).HasPrecision(12, 4);
-
-        entity.Property(e => e.NetAmount).HasComputedColumnSql();
-
-        entity.Property(e => e.TransactionTime).HasDefaultValueSql("(sysdatetime())");
 
         entity.HasOne(d => d.Account)
             .WithMany(p => p.Transactions)
@@ -39,7 +25,7 @@ internal class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
             .HasConversion(e => (int)e, e => (Models.TransactionType)e)
             .HasDefaultValue(Models.TransactionType.Debit);
 
-        entity.HasOne(e => e.User).WithMany().HasForeignKey(e => e.AccountHolderId);
+        //entity.HasOne(e => e.User).WithMany().HasForeignKey(e => e.AccountHolderId);
 
         //entity.HasOne(e => e.OffsetBy).WithOne(e => e.Offsets).HasForeignKey<Transaction>(t => t.OffsetByTransactionId);
 

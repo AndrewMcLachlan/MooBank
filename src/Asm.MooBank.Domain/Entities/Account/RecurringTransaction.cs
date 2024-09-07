@@ -1,10 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
-using Asm.Domain;
+﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Account;
 
+[PrimaryKey(nameof(Id))]
 public class RecurringTransaction([DisallowNull] Guid id) : KeyedEntity<Guid>(id)
 {
     public RecurringTransaction() : this(default) { }

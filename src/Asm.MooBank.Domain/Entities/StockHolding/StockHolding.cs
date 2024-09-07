@@ -10,15 +10,18 @@ public class StockHolding(Guid id) : Instrument.Instrument(id)
 {
     public StockSymbol Symbol { get; set; } = null!;
 
+    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public int Quantity { get; set; }
 
     [Precision(12, 4)]
     public decimal CurrentPrice { get; set; }
 
     [Precision(12, 4)]
+    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public decimal CurrentValue { get; set; }
 
     [Precision(12, 4)]
+    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public decimal GainLoss { get; set; }
 
     public new DateTimeOffset LastUpdated { get; set; } = DateTimeOffset.Now;

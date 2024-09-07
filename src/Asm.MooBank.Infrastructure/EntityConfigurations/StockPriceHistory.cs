@@ -5,8 +5,6 @@ internal class StockPriceHistoryConfiguration : IEntityTypeConfiguration<StockPr
 {
     public void Configure(EntityTypeBuilder<StockPriceHistory> builder)
     {
-        builder.HasKey(e => e.Id);
-
         builder.OwnsOne(e => e.Symbol,
             b =>
             {

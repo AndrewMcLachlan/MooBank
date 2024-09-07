@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Group;
 
 [AggregateRoot]
+[PrimaryKey(nameof(Id))]
 public class Group([DisallowNull] Guid id) : KeyedEntity<Guid>(id)
 {
     public Group() : this(default) { }

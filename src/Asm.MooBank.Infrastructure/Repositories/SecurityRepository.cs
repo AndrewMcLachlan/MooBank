@@ -77,7 +77,7 @@ public class SecurityRepository(MooBankContext mooBankContext, IAuthorizationSer
 
     public async Task AssertBudgetLinePermission(Guid id, CancellationToken cancellationToken = default)
     {
-        var budgetLine = await mooBankContext.Set<BudgetLine>().Include(b => b.Budget).FindAsync(id, cancellationToken) ?? throw new NotFoundException("Budget line not found");
+        var budgetLine = await mooBankContext.BudgetLines.Include(b => b.Budget).FindAsync(id, cancellationToken) ?? throw new NotFoundException("Budget line not found");
         var authResult = await authorizationService.AuthorizeAsync(principalProvider.Principal!, budgetLine.Budget.FamilyId, new FamilyMemberRequirement());
 
         if (!authResult.Succeeded)

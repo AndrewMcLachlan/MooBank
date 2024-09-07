@@ -12,6 +12,7 @@ public class TagSettings
         TagId = id;
     }
 
+    [Key]
     internal int TagId { get; set; }
 
     public bool ApplySmoothing { get; set; }

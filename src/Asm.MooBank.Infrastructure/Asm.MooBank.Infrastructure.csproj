@@ -25,4 +25,9 @@
     <ProjectReference Include="..\Asm.MooBank.Security\Asm.MooBank.Security.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Using Include="Asm.Domain" />
+    <Using Include="Asm.Domain.Infrastructure" />
+  </ItemGroup>
+
 </Project>

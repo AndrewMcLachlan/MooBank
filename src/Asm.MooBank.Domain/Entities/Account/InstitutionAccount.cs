@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using Asm.MooBank.Domain.Entities.Instrument;
+﻿using Asm.MooBank.Domain.Entities.Instrument;
 
 namespace Asm.MooBank.Domain.Entities.Account;
 
@@ -10,6 +9,8 @@ public class InstitutionAccount(Guid id) : TransactionInstrument(id)
 
     public int InstitutionId { get; set; }
 
+    [Column(TypeName = "datetimeoffset(0)")]
+    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public new DateTimeOffset LastUpdated { get; set; } = DateTimeOffset.Now;
 
     public bool IncludeInBudget { get; set; }
@@ -19,6 +20,7 @@ public class InstitutionAccount(Guid id) : TransactionInstrument(id)
 
     public virtual ImportAccount? ImportAccount { get; set; }
 
+    [ForeignKey(nameof(InstitutionId))]
     public virtual Institution.Institution Institution { get; set; } = null!;
 
     [NotMapped]

@@ -1,12 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Asm.MooBank.Domain.Entities.Account;
+﻿using Asm.MooBank.Domain.Entities.Account;
 using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Instrument;
 
 [AggregateRoot]
-[Index("Name", IsUnique = true)]
+[PrimaryKey(nameof(Id))]
 public abstract class Instrument(Guid id) : KeyedEntity<Guid>(id)
 {
     public Instrument() : this(Guid.Empty)
@@ -22,6 +20,7 @@ public abstract class Instrument(Guid id) : KeyedEntity<Guid>(id)
 
     public string Currency { get; set; } = "AUD";
 
+    [Column(TypeName = "datetimeoffset(0)")]
     public DateTimeOffset LastUpdated { get; set; }
 
     public bool ShareWithFamily { get; set; }

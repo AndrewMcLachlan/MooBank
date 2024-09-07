@@ -1,152 +1,108 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+﻿<Project DefaultTargets="Build" Sdk="Microsoft.Build.Sql/0.2.0-preview">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <Name>Asm.MooBank.Database</Name>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectVersion>4.1</ProjectVersion>
-    <ProjectGuid>{8f8240c5-b472-4cb6-a115-5578ab3dd0db}</ProjectGuid>
+    <Name>MooBank</Name>
     <DSP>Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider</DSP>
-    <OutputType>Database</OutputType>
-    <RootPath>
-    </RootPath>
     <RootNamespace>Asm.MooBank.Database</RootNamespace>
     <AssemblyName>Asm.MooBank.Database</AssemblyName>
     <ModelCollation>1033, CI</ModelCollation>
-    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
-    <DeployToDatabase>True</DeployToDatabase>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <TargetLanguage>CS</TargetLanguage>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <SqlServerVerification>False</SqlServerVerification>
-    <IncludeCompositeObjects>True</IncludeCompositeObjects>
     <TargetDatabaseSet>True</TargetDatabaseSet>
     <DacApplicationName>MooBank</DacApplicationName>
     <TargetFrameworkProfile />
     <DacVersion>3.0.0.0</DacVersion>
+    <ProjectGuid>{8f8240c5-b472-4cb6-a115-5578ab3dd0db}</ProjectGuid>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>bin\Release\</OutputPath>
-    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineDebug>false</DefineDebug>
-    <DefineTrace>true</DefineTrace>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>bin\Debug\</OutputPath>
-    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineDebug>true</DefineDebug>
-    <DefineTrace>true</DefineTrace>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
-    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
-    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
-    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
-  </PropertyGroup>
-  <Import Condition="'$(NetCoreBuild)' != 'true' AND '$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
-  <Import Condition="'$(NetCoreBuild)' != 'true' AND '$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
-    <Folder Include="dbo\Functions" />
-    <Folder Include="Properties" />
-    <Folder Include="dbo" />
-    <Folder Include="dbo\Tables" />
-    <Folder Include="Security" />
-    <Folder Include="ing" />
-    <Folder Include="ing\Tables" />
-    <Folder Include="dbo\Views" />
-    <Folder Include="Scripts" />
     <Folder Include="aussuper" />
     <Folder Include="aussuper\Tables" />
+    <Folder Include="dbo" />
+    <Folder Include="dbo\Functions" />
+    <Folder Include="dbo\Tables" />
+    <Folder Include="dbo\Views" />
+    <Folder Include="ing" />
+    <Folder Include="ing\Tables" />
+    <Folder Include="Scripts" />
+    <Folder Include="Security" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="dbo\Tables\Instrument.sql" />
-    <Build Include="dbo\Tables\RecurringTransaction.sql" />
-    <Build Include="dbo\Tables\Schedule.sql" />
-    <Build Include="dbo\Tables\Transaction.sql" />
-    <Build Include="dbo\Tables\TransactionType.sql" />
-    <Build Include="dbo\Tables\AccountType.sql" />
-    <Build Include="dbo\Tables\User.sql" />
-    <Build Include="dbo\Tables\InstrumentOwner.sql" />
-    <Build Include="dbo\Tables\Tag.sql" />
-    <Build Include="dbo\Tables\Rule.sql" />
-    <Build Include="dbo\Tables\TagTag.sql" />
-    <Build Include="dbo\Tables\Controller.sql" />
-    <Build Include="dbo\Tables\ImportAccount.sql" />
-    <Build Include="dbo\Tables\ImporterType.sql" />
-    <Build Include="dbo\Tables\VirtualInstrument.sql" />
-    <Build Include="dbo\Tables\RuleTag.sql" />
-    <Build Include="Security\ing.sql" />
-    <Build Include="ing\Tables\TransactionExtra.sql" />
-    <Build Include="dbo\Tables\CardOwner.sql" />
-    <Build Include="dbo\Views\TagRelationships.sql" />
-    <Build Include="dbo\Tables\InstitutionAccount.sql" />
-    <Build Include="dbo\Tables\Group.sql" />
-    <Build Include="dbo\Views\TagHierarchies.sql" />
-    <Build Include="dbo\Tables\TagSettings.sql" />
-    <Build Include="dbo\Functions\TransactionNetAmount.sql" />
-    <Build Include="dbo\Tables\UserCard.sql" />
-    <Build Include="dbo\Tables\BudgetLine.sql" />
-    <Build Include="dbo\Tables\Budget.sql" />
-    <Build Include="dbo\Functions\LastTransaction.sql" />
-    <Build Include="dbo\Tables\Family.sql" />
-    <Build Include="dbo\Tables\Institution.sql" />
-    <Build Include="dbo\Tables\InstitutionType.sql" />
+    <Build Include="aussuper\Tables\TransactionRaw.sql" />
     <Build Include="dbo\Functions\AccountBalance.sql" />
     <Build Include="dbo\Functions\CheckOffsetAmount.sql" />
-    <Build Include="dbo\Tables\TransactionSplit.sql" />
-    <Build Include="dbo\Tables\TransactionSplitTag.sql" />
     <Build Include="dbo\Functions\CheckSplitAmount.sql" />
-    <Build Include="ing\Tables\TransactionRaw.sql" />
+    <Build Include="dbo\Functions\LastTransaction.sql" />
+    <Build Include="dbo\Functions\StockGainLoss.sql" />
+    <Build Include="dbo\Functions\StockQuantity.sql" />
+    <Build Include="dbo\Functions\StockValue.sql" />
+    <Build Include="dbo\Functions\TransactionNetAmount.sql" />
+    <Build Include="dbo\Functions\TransactionSplitNetAmount.sql" />
+    <Build Include="dbo\Tables\AccountType.sql" />
+    <Build Include="dbo\Tables\Asset.sql" />
+    <Build Include="dbo\Tables\Budget.sql" />
+    <Build Include="dbo\Tables\BudgetLine.sql" />
+    <Build Include="dbo\Tables\CardOwner.sql" />
+    <Build Include="dbo\Tables\Controller.sql" />
+    <Build Include="dbo\Tables\ExchangeRates.sql" />
+    <Build Include="dbo\Tables\Family.sql" />
+    <Build Include="dbo\Tables\Group.sql" />
+    <Build Include="dbo\Tables\ImportAccount.sql" />
+    <Build Include="dbo\Tables\ImporterType.sql" />
+    <Build Include="dbo\Tables\Institution.sql" />
+    <Build Include="dbo\Tables\InstitutionAccount.sql" />
+    <Build Include="dbo\Tables\InstitutionType.sql" />
+    <Build Include="dbo\Tables\Instrument.sql" />
+    <Build Include="dbo\Tables\InstrumentOwner.sql" />
+    <Build Include="dbo\Tables\InstrumentViewer.sql" />
+    <Build Include="dbo\Tables\RecurringTransaction.sql" />
+    <Build Include="dbo\Tables\Rule.sql" />
+    <Build Include="dbo\Tables\RuleTag.sql" />
+    <Build Include="dbo\Tables\Schedule.sql" />
+    <Build Include="dbo\Tables\StockHolding.sql" />
+    <Build Include="dbo\Tables\StockPriceHistory.sql" />
+    <Build Include="dbo\Tables\StockTransaction.sql" />
+    <Build Include="dbo\Tables\Tag.sql" />
+    <Build Include="dbo\Tables\TagSettings.sql" />
+    <Build Include="dbo\Tables\TagTag.sql" />
+    <Build Include="dbo\Tables\Transaction.sql" />
+    <Build Include="dbo\Tables\TransactionInstrument.sql" />
+    <Build Include="dbo\Tables\TransactionSplit.sql" />
     <Build Include="dbo\Tables\TransactionSplitOffset.sql" />
+    <Build Include="dbo\Tables\TransactionSplitTag.sql" />
+    <Build Include="dbo\Tables\TransactionType.sql" />
+    <Build Include="dbo\Tables\User.sql" />
+    <Build Include="dbo\Tables\UserCard.sql" />
+    <Build Include="dbo\Tables\VirtualInstrument.sql" />
+    <Build Include="dbo\Views\TagHierarchies.sql" />
+    <Build Include="dbo\Views\TagRelationships.sql" />
+    <Build Include="ing\Tables\TransactionExtra.sql" />
+    <Build Include="ing\Tables\TransactionRaw.sql" />
     <None Include="Scripts\BackfillTransactionRaw.sql" />
     <None Include="Scripts\FillTransactionOffset.sql" />
     <None Include="Scripts\FillTransactionRaw.sql" />
     <None Include="Scripts\FillTransactionSplits.sql" />
-    <Build Include="dbo\Tables\StockHolding.sql" />
-    <Build Include="dbo\Tables\StockTransaction.sql" />
-    <Build Include="dbo\Tables\TransactionInstrument.sql" />
-    <Build Include="dbo\Functions\StockQuantity.sql" />
-    <Build Include="dbo\Functions\StockValue.sql" />
-    <Build Include="dbo\Tables\InstrumentViewer.sql" />
-    <Build Include="dbo\Tables\StockPriceHistory.sql" />
-    <Build Include="dbo\Tables\ExchangeRates.sql" />
-    <Build Include="dbo\Functions\TransactionSplitNetAmount.sql" />
     <Build Include="Security\aussuper.sql" />
-    <Build Include="aussuper\Tables\TransactionRaw.sql" />
-    <Build Include="dbo\Functions\StockGainLoss.sql" />
-    <Build Include="dbo\Tables\Asset.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Azure.publish.xml" />
-    <None Include="Azure.Test.publish.xml" />
-    <None Include="Asm.MooBank.Database.publish.xml" />
-  </ItemGroup>
-  <ItemGroup>
+    <Build Include="Security\ing.sql" />
     <PostDeploy Include="Script.PostDeployment1.sql" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Condition="'$(NetCoreBuild)' == 'true'">
-      <Version>1.0.0</Version>
-      <PrivateAssets>All</PrivateAssets>
-    </PackageReference>
+    <None Include="Asm.MooBank.Database.publish.xml" />
+    <None Include="Azure.publish.xml" />
+    <None Include="Azure.Test.publish.xml" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Asm.MooBank.Database.refactorlog" />
   </ItemGroup>
-  <Import Project="$(NETCoreTargetsPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" Condition="'$(NetCoreBuild)' == 'true'" />
+  <ItemGroup>
+    <PreDeploy Include="Script.PreDeployment.sql" />
+  </ItemGroup>
   <Target Name="BeforeBuild">
     <Delete Files="$(BaseIntermediateOutputPath)\project.assets.json" />
+  </Target>
+  <!--
+    Building through visual studio will fail with `Your project does not reference ".NETFramework,Version=v4.7.2" framework.` if a previous build through the dotnet core cli
+    has run and created the obj/project.assets.json file. This custom target will delete the file before the visual studio build starts.
+  -->
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(MSBuildRuntimeType)' != 'Core'">
+    <Message Importance="high" Text="Ensuring the $(MSBuildThisFileDirectory)\obj\project.assets.json file is removed, if necessary, so that the database project can be built through VisualStudio SSDT without errors" />
+    <Delete Files="$(MSBuildThisFileDirectory)\obj\project.assets.json" />
   </Target>
 </Project>

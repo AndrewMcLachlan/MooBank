@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Asm.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.ReferenceData;
 
 [AggregateRoot]
+[PrimaryKey(nameof(Id))]
 public class StockPriceHistory([DisallowNull] int id) : KeyedEntity<int>(id)
 {
     public StockPriceHistory() : this(default) { }

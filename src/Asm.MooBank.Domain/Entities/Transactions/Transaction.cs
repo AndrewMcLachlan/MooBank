@@ -1,11 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using Asm.MooBank.Domain.Entities.Instrument;
+﻿using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Tag;
 using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Transactions;
 
 [AggregateRoot]
+[PrimaryKey(nameof(Id))]
 public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
 {
     public Transaction() : this(default) { }
@@ -19,8 +19,11 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
     public decimal Amount { get; set; }
 
     [Precision(12, 4)]
+    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public decimal NetAmount { get; set; }
 
+    [MaxLength(255)]
+    [Unicode(false)]
     public string? Description { get; set; }
 
     public string? Location { get; set; }
@@ -47,6 +50,7 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
 
     public virtual TransactionInstrument Account { get; set; } = null!;
 
+    [ForeignKey(nameof(AccountHolderId))]
     public virtual User.User? User { get; set; }
 
     public virtual ICollection<TransactionOffset> OffsetFor { get; set; } = new HashSet<TransactionOffset>();
