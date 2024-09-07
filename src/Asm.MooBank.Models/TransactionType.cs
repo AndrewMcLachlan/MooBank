@@ -4,6 +4,9 @@ namespace Asm.MooBank.Models;
 
 public enum TransactionType
 {
+    [Display(Name = "Not Set")]
+    NotSet = 0,
+
     [Display(Name = "Credit")]
     Credit = 1,
 

@@ -1,4 +1,4 @@
-import { Instrument, TopLevelAccount } from "./Account";
+import { Instrument, TopLevelAccount } from "../Account";
 
 export interface StockHoldingBase extends Instrument, TopLevelAccount {
     symbol: string;

@@ -1,4 +1,4 @@
-import { TransactionType } from "./Transaction";
+import { TransactionType } from "../Transaction";
 
 export interface StockTransaction {
     id: string;

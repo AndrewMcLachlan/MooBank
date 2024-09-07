@@ -38,6 +38,7 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
 
     public bool ExcludeFromReporting { get; set; }
 
+    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public TransactionType TransactionType { get; set; }
 
     public required string Source { get; set; }

@@ -1,6 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 
 namespace Asm.MooBank.Models;
+
 /// <summary>
 /// Note that this is wildly wrong.
 /// https://en.wikipedia.org/wiki/Ticker_symbol

@@ -27,5 +27,8 @@ internal class StockHoldings : EndpointGroupBase
 
         builder.MapQuery<GetStockHoldingReport, StockHoldingReport>("stock-holding")
             .WithNames("Stock Holding Report");
+
+        builder.MapQuery<GetStockValueReport, StockValueReport>("{id}/reports/value")
+            .WithNames("Stock Value Report");
     }
 }

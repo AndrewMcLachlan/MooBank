@@ -21,7 +21,7 @@ public class StockPriceService(IUnitOfWork unitOfWork, IStockHoldingRepository s
 
         var symbols = stocks.Select(s => s.Symbol).Distinct();
 
-        Dictionary<StockSymbol, decimal> prices = [];
+        Dictionary<string, decimal> prices = [];
 
         foreach (var symbol in symbols)
         {
