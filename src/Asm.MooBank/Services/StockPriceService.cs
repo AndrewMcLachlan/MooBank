@@ -19,7 +19,7 @@ public class StockPriceService(IUnitOfWork unitOfWork, IStockHoldingRepository s
 
         var stocks = await stockHoldingRepository.Get();
 
-        var symbols = stocks.Select(s => s.Symbol).Distinct();
+        var symbols = stocks.Select(s => $"{s.Symbol}.{s.Exchange}" ).Distinct();
 
         Dictionary<string, decimal> prices = [];
 
