@@ -1,6 +1,4 @@
-﻿using Asm.Domain;
-
-namespace Asm.MooBank.Domain.Entities.StockHolding;
+﻿namespace Asm.MooBank.Domain.Entities.StockHolding;
 public interface IStockHoldingRepository : IWritableRepository<StockHolding, Guid>
 {
 }
