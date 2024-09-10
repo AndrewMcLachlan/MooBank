@@ -9,8 +9,7 @@ public class StockPriceHistory([DisallowNull] int id) : KeyedEntity<int>(id)
 {
     public StockPriceHistory() : this(default) { }
 
-    [MaxLength(5)]
-    public required string Symbol { get; init; }
+    public required StockSymbolEntity Symbol { get; init; }
 
     public required DateOnly Date { get; init; }
 

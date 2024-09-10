@@ -4,6 +4,10 @@ registries:
     type: npm-registry
     url: https://npm.pkg.github.com
     password: ${{ secrets.CROSS_REPO_PACKAGE_TOKEN }}
+  nuget-github:
+    type: nuget-feed
+    url: https://nuget.pkg.github.com/AndrewMclachlan/index.json
+    password: ${{ secrets.CROSS_REPO_PACKAGE_TOKEN }}
 
 updates:
   - package-ecosystem: npm
@@ -16,10 +20,11 @@ updates:
       time: "06:00"
     reviewers:
       - andrewmcLachlan
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 50
 
   - package-ecosystem: nuget
     directory: /
+    registries: "*"
     schedule:
       interval: weekly
       timezone: "Australia/Brisbane"
@@ -27,6 +32,7 @@ updates:
       time: "06:00"
     reviewers:
       - andrewmcLachlan
+    open-pull-requests-limit: 50
 
   - package-ecosystem: github-actions
     directory: /
@@ -37,3 +43,4 @@ updates:
       time: "06:00"
     reviewers:
       - andrewmcLachlan
+    open-pull-requests-limit: 50

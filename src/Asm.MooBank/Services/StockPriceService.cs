@@ -19,9 +19,9 @@ public class StockPriceService(IUnitOfWork unitOfWork, IStockHoldingRepository s
 
         var stocks = await stockHoldingRepository.Get();
 
-        var symbols = stocks.Select(s => $"{s.Symbol}.{s.Exchange}" ).Distinct();
+        var symbols = stocks.Select(s => s.Symbol/*.{s.Exchange}"*/ ).Distinct();
 
-        Dictionary<string, decimal> prices = [];
+        Dictionary<StockSymbol, decimal> prices = [];
 
         foreach (var symbol in symbols)
         {
@@ -45,7 +45,7 @@ public class StockPriceService(IUnitOfWork unitOfWork, IStockHoldingRepository s
 
         var existingPrices = await referenceDataRepository.GetStockPrices(DateOnlyExtensions.Today().AddDays(-1));
 
-        foreach (var price in prices.Where(p => !existingPrices.Select(e => e.Symbol).Contains(p.Key)))
+        foreach (var price in prices.Where(p => !existingPrices.Select(e => (StockSymbol)e.Symbol).Contains(p.Key)))
         {
             logger.LogInformation("Setting {symbol} to {price}", price.Key, price.Value);
             referenceDataRepository.AddStockPrice(new StockPriceHistory()
