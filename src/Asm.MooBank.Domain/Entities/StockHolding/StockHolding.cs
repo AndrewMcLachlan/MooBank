@@ -8,13 +8,9 @@ namespace Asm.MooBank.Domain.Entities.StockHolding;
 [AggregateRoot]
 public class StockHolding(Guid id) : Instrument.Instrument(id)
 {
-    [MaxLength(5)]
-    public string Symbol { get; set; } = null!;
+    public StockSymbolEntity Symbol { get; set; } = null!;
 
-    [MaxLength(2)]
-    public string Exchange { get; set; } = null!;
-
-    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public int Quantity { get; set; }
 
     [Precision(12, 4)]

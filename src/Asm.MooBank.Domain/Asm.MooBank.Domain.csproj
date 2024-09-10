@@ -12,9 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Asm" Version="$(AsmPackageVersion)" />
-    <PackageReference Include="Asm.Domain" Version="$(AsmPackageVersion)" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(DotNetPackageVersion)" />
+    <PackageReference Include="Asm" Version="3.2.269" />
+    <PackageReference Include="Asm.Domain" Version="3.2.269" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
   </ItemGroup>
 
   <ItemGroup>

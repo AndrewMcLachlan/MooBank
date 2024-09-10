@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using Asm.MooBank.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -6,12 +7,14 @@ namespace Asm.MooBank.Eodhd;
 
 public interface IStockPriceClient
 {
-    Task<decimal?> GetPriceAsync(string symbol);
+    Task<decimal?> GetPriceAsync(StockSymbol symbol);
 }
 
 public class StockPriceClient(IHttpClientFactory httpClientFactory, IOptions<EodhdConfig> config, ILogger<StockPriceClient> logger) : IStockPriceClient
 {
     private const string UrlFormat = "https://eodhd.com/api/eod/{0}?api_token={1}&from={2}&to={3}&fmt=json";
+
+    public Task<decimal?> GetPriceAsync(StockSymbol symbol) => GetPriceAsync(symbol.ToString());
 
     public async Task<decimal?> GetPriceAsync(string symbol)
     {
