@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Asm.AspNetCore" Version="3.2.269" />
+    <PackageReference Include="Asm.AspNetCore" Version="3.2.271" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.Private.Uri" Version="4.3.2" />

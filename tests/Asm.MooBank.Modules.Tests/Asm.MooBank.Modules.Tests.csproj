@@ -12,8 +12,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Asm" Version="3.2.269" />
-    <PackageReference Include="Asm.Testing" Version="3.2.269" />
+    <PackageReference Include="Asm" Version="3.2.271" />
+    <PackageReference Include="Asm.Testing" Version="3.2.271" />
     <PackageReference Include="Bogus" Version="35.6.1" />
     <PackageReference Include="coverlet.collector" Version="6.0.2">
       <PrivateAssets>all</PrivateAssets>
