@@ -49,26 +49,24 @@ public class RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionRep
     /// <summary>
     /// Execute the transaction and update the balance.
     /// </summary>
-    /// <param name="trans">The recurring transaction definition.</param>
-    private void RunTransaction(RecurringTransaction trans)
+    /// <param name="recurring">The recurring transaction definition.</param>
+    private void RunTransaction(RecurringTransaction recurring)
     {
-        TransactionType transactionType = trans.Amount < 0 ?
+        TransactionType transactionType = recurring.Amount < 0 ?
                                   TransactionType.RecurringDebit :
                                   TransactionType.RecurringCredit;
 
         Transaction transaction = new()
         {
-            Amount = trans.Amount,
-            AccountId = trans.VirtualAccountId,
-            Description = trans.Description,
+            Amount = recurring.Amount,
+            AccountId = recurring.VirtualAccountId,
+            Description = recurring.Description,
             Source = "Recurring",
             TransactionTime = DateTime.Now,
-            PurchaseDate = trans.NextRun.ToDateTime(TimeOnly.MinValue),
+            PurchaseDate = recurring.NextRun.ToDateTime(TimeOnly.MinValue),
             TransactionType = transactionType,
         };
 
         transactionRepository.Add(transaction);
-
-        trans.VirtualAccount.LastUpdated = DateTime.UtcNow;
     }
 }
