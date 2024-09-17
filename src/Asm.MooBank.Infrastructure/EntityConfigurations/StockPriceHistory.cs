@@ -5,11 +5,5 @@ internal class StockPriceHistoryConfiguration : IEntityTypeConfiguration<StockPr
 {
     public void Configure(EntityTypeBuilder<StockPriceHistory> builder)
     {
-        builder.OwnsOne(e => e.Symbol,
-            b =>
-            {
-                b.Property(e => e.Symbol).HasColumnName("Symbol").HasMaxLength(3);
-                b.Property(e => e.Exchange).HasColumnName("Exchange").HasMaxLength(2);
-            });
     }
 }

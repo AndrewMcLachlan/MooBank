@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Diagnostics.CodeAnalysis;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Microsoft.EntityFrameworkCore;
@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 namespace Asm.MooBank.Domain.Entities.StockHolding;
 
 [AggregateRoot]
-public class StockHolding(Guid id) : Instrument.Instrument(id)
+public class StockHolding([DisallowNull]Guid id) : Instrument.Instrument(id)
 {
     public StockSymbolEntity Symbol { get; set; } = null!;
 
-     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public int Quantity { get; set; }
 
     [Precision(12, 4)]
