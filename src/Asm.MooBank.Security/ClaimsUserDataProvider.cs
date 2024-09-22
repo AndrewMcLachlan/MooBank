@@ -15,6 +15,8 @@ public class ClaimsUserDataProvider(IPrincipalProvider principalProvider) : IUse
     {
         if (principalProvider.Principal == null) throw new InvalidOperationException("There is no current user");
 
+        if (principalProvider.Principal.Identity?.IsAuthenticated != true) return null!;
+
         return new()
         {
             Id = CurrentUserId,
