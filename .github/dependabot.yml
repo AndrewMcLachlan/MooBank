@@ -14,9 +14,8 @@ updates:
     directory: /src/Asm.MooBank.Web.App
     registries: "*"
     schedule:
-      interval: weekly
+      interval: daily
       timezone: "Australia/Brisbane"
-      day: tuesday
       time: "06:00"
     reviewers:
       - andrewmcLachlan
