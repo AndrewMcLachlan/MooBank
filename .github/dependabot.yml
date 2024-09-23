@@ -20,6 +20,12 @@ updates:
     reviewers:
       - andrewmcLachlan
     open-pull-requests-limit: 50
+    groups:
+      dev-dependences:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        dependency-type: "development"
 
   - package-ecosystem: nuget
     directory: /
