@@ -3,33 +3,32 @@ registries:
   npm-github:
     type: npm-registry
     url: https://npm.pkg.github.com
-    password: ${{ secrets.CROSS_REPO_PACKAGE_TOKEN }}
+    token: ${{ secrets.CROSS_REPO_PACKAGE_TOKEN }}
   nuget-github:
     type: nuget-feed
     url: https://nuget.pkg.github.com/AndrewMclachlan/index.json
-    password: ${{ secrets.CROSS_REPO_PACKAGE_TOKEN }}
+    token: ${{ secrets.CROSS_REPO_PACKAGE_TOKEN }}
 
 updates:
-  - package-ecosystem: npm
-    directory: /src/Asm.MooBank.Web.App
-    registries: "*"
+  - package-ecosystem: "npm"
+    directory: "/src/Asm.MooBank.Web.App"
     schedule:
-      interval: daily
-      timezone: "Australia/Brisbane"
+      interval: "daily"
+      timezone: Australia/Brisbane
       time: "06:00"
     reviewers:
       - andrewmcLachlan
-    open-pull-requests-limit: 50
     groups:
-      dev-dependences:
+      dev-dependencies:
         applies-to: version-updates
         patterns:
           - "*"
         dependency-type: "development"
+    open-pull-requests-limit: 20
+    registries: "*"
 
   - package-ecosystem: nuget
     directory: /
-    registries: "*"
     schedule:
       interval: weekly
       timezone: "Australia/Brisbane"
@@ -37,7 +36,8 @@ updates:
       time: "06:00"
     reviewers:
       - andrewmcLachlan
-    open-pull-requests-limit: 50
+    open-pull-requests-limit: 20
+    registries: "*"
 
   - package-ecosystem: github-actions
     directory: /
@@ -48,4 +48,4 @@ updates:
       time: "06:00"
     reviewers:
       - andrewmcLachlan
-    open-pull-requests-limit: 50
+    open-pull-requests-limit: 20
