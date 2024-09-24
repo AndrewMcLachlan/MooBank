@@ -5,7 +5,7 @@ import { ClickableIcon, EditColumn, useUpdatingState } from "@andrewmclachlan/mo
 import { useDeleteTag, useUpdateTag } from "services";
 import { TransactionTagTransactionTagPanel } from "./TagTagPanel";
 import { TransactionTagDetails } from "./TagDetails";
-import { DeleteIcon } from "components/DeleteIcon";
+import { DeleteIcon } from "@andrewmclachlan/mooapp";
 
 
 export const TransactionTagRow: React.FC<TransactionTagRowProps> = (props) => {

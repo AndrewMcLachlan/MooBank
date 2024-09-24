@@ -1,6 +1,6 @@
 import { EditColumn } from "@andrewmclachlan/mooapp";
 import { MonthSelector } from "components";
-import { DeleteIcon } from "components/DeleteIcon";
+import { DeleteIcon } from "@andrewmclachlan/mooapp";
 import * as Models from "models";
 import { useDeleteBudgetLine, useUpdateBudgetLine } from "services/BudgetService";
 

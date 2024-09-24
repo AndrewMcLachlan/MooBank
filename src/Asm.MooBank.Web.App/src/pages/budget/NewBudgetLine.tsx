@@ -2,7 +2,7 @@ import { emptyGuid } from "@andrewmclachlan/mooapp";
 import Select from "react-select";
 
 import { MonthSelector } from "components";
-import { SaveIcon } from "components/SaveIcon";
+import { SaveIcon } from "@andrewmclachlan/mooapp";
 import { BudgetLineType, Tag } from "models";
 import { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";

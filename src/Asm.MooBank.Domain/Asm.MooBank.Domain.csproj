@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Asm" Version="3.2.271" />
-    <PackageReference Include="Asm.Domain" Version="3.2.271" />
+    <PackageReference Include="Asm" Version="3.2.273" />
+    <PackageReference Include="Asm.Domain" Version="3.2.273" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
   </ItemGroup>
 

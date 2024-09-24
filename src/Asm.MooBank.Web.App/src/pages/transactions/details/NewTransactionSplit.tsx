@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { SaveIcon } from "components/SaveIcon";
+import { SaveIcon } from "@andrewmclachlan/mooapp";
 import { valueAsNumber } from "helpers";
 import { Transaction, TransactionSplit, emptyTransactionSplit } from "models";
 import { Col, Form, Row } from "react-bootstrap";
