@@ -102,14 +102,6 @@ table {
     border-spacing: 0;
 }
 
-thead th {
-    font-weight: 600;
-}
-
-td {
-    vertical-align: middle;
-}
-
 .table {
     tfoot {
         /*border-top: 2px double #000;*/
@@ -149,18 +141,6 @@ table.trasactionHistory {
     width: 100%;
 }
 
-.row-action {
-    vertical-align: middle;
-    text-align: center;
-
-    svg {
-        margin-right: 8px;
-
-        &:last-child {
-            padding-right: 0;
-        }
-    }
-}
 
 /*#endregion*/
 

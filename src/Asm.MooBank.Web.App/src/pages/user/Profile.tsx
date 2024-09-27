@@ -1,7 +1,5 @@
-import { EditColumn, Form, Page, SectionForm } from "@andrewmclachlan/mooapp";
+import { DeleteIcon, EditColumn, Form, Page, SaveIcon, SectionForm } from "@andrewmclachlan/mooapp";
 import { CurrencySelector } from "components";
-import { DeleteIcon } from "components/DeleteIcon";
-import { SaveIcon } from "components/SaveIcon";
 import { Card, User } from "models/User";
 import React, { useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";

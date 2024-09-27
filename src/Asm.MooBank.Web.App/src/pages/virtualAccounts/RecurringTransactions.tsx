@@ -1,6 +1,6 @@
 import { EditColumn } from "@andrewmclachlan/mooapp";
-import { DeleteIcon } from "components/DeleteIcon";
-import { SaveIcon } from "components/SaveIcon";
+import { DeleteIcon } from "@andrewmclachlan/mooapp";
+import { SaveIcon } from "@andrewmclachlan/mooapp";
 import { format } from "date-fns/format";
 import { parse } from "date-fns/parse";
 import { parseISO } from "date-fns/parseISO";

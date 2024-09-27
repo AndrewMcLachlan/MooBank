@@ -3,8 +3,8 @@
   <Import Project="..\..\Common.props" />
 
   <ItemGroup>
-    <PackageReference Include="Asm.AspNetCore" Version="3.2.271" />
-    <PackageReference Include="Asm.Cqrs.AspNetCore" Version="3.2.271" />
+    <PackageReference Include="Asm.AspNetCore" Version="3.2.273" />
+    <PackageReference Include="Asm.Cqrs.AspNetCore" Version="3.2.273" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 

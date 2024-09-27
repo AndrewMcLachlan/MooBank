@@ -4,7 +4,7 @@ import { TagPanel, useAccount } from "components";
 
 import { Tag, emptyRule } from "models";
 
-import { SaveIcon } from "components/SaveIcon";
+import { SaveIcon } from "@andrewmclachlan/mooapp";
 import { useCreateRule, useCreateTag, useTags } from "services";
 
 export const NewRule: React.FC = () => {

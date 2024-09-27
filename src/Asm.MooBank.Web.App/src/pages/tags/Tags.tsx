@@ -4,12 +4,11 @@ import React, { useEffect, useState } from "react";
 
 import { TransactionTagRow } from "./TagRow";
 
-import { changeSortDirection, getNumberOfPages, Pagination, SearchBox, Section, SectionTable, SortDirection } from "@andrewmclachlan/mooapp";
+import { changeSortDirection, getNumberOfPages, Pagination, SaveIcon, SearchBox, Section, SectionTable, SortDirection } from "@andrewmclachlan/mooapp";
 import { TagPanel } from "components";
 import { sortTags, Tag } from "models";
 import { useCreateTag, useTags } from "services";
 import { TagsPage } from "./TagsPage";
-import { SaveIcon } from "components/SaveIcon";
 
 export const TransactionTags: React.FC = () => {
 

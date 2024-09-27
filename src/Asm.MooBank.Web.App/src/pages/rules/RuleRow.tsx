@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 
-import { EditColumn } from "@andrewmclachlan/mooapp";
+import { DeleteIcon, EditColumn } from "@andrewmclachlan/mooapp";
 import { TagPanel } from "components";
-import { DeleteIcon } from "components/DeleteIcon";
 import { Rule, Tag } from "models";
 import { useAddRuleTag, useDeleteRule, useRemoveRuleTag, useUpdateRule } from "services";
 import { useCreateTag, useTags } from "services/TagService";
