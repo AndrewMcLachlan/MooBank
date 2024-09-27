@@ -13,8 +13,9 @@ updates:
   - package-ecosystem: "npm"
     directory: "/src/Asm.MooBank.Web.App"
     schedule:
-      interval: "daily"
+      interval: "weekly"
       timezone: Australia/Brisbane
+      day: tuesday
       time: "06:00"
     reviewers:
       - andrewmcLachlan
@@ -24,6 +25,11 @@ updates:
         patterns:
           - "*"
         dependency-type: "development"
+      prod-dependencies:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        dependency-type: "production"
     open-pull-requests-limit: 20
     registries: "*"
 
