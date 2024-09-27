@@ -14,7 +14,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@andrewmclachlan/mooapp": "^2.1.539",
+    "@andrewmclachlan/mooapp": "^2.1.542",
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.1",
@@ -26,7 +26,7 @@
     "chartjs-plugin-trendline": "^2.1.5",
     "classnames": "^2.5.1",
     "date-fns": "^4.1.0",
-    "eslint-plugin-react": "^7.36.1",
+    "eslint-plugin-react": "^7.37.0",
     "md5": "^2.3.0",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.5",
