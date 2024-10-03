@@ -14,7 +14,8 @@
   },
   "type": "module",
   "dependencies": {
-    "@andrewmclachlan/mooapp": "^2.1.549",
+    "@andrewmclachlan/mooapp": "^2.2.556",
+    "@andrewmclachlan/mooicons": "^2.2.556",
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.1",

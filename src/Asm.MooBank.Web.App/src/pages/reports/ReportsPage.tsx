@@ -4,7 +4,7 @@ import { InstitutionAccount } from "models";
 import { useLocation } from "react-router";
 import { NavItem } from "@andrewmclachlan/mooapp";
 import { AccountPage, useAccount } from "components";
-import { BarChart, LeftRightArrow, PieChart, Tags, Trendline } from "assets";
+import { BarChart, LeftRightArrow, PieChart, Tags, Trendline } from "@andrewmclachlan/mooicons";
 
 export const ReportsPage: React.FC<PropsWithChildren<ReportsHeaderProps>> = ({ children, title }) => {
 
