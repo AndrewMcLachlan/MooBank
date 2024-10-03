@@ -4,7 +4,7 @@ import { NavItem, NavItemDivider, Page, PageProps } from "@andrewmclachlan/mooap
 import { InstitutionAccount, VirtualAccount, isVirtualAccount } from "models";
 import { useAccount } from "./AccountProvider";
 
-import { Import, Reports, Rules, Sliders, Transaction } from "assets";
+import { Import, Reports, Rules, Sliders, Transaction } from "@andrewmclachlan/mooicons";
 
 export const AccountPage: React.FC<PropsWithChildren<AccountPageProps>> = ({ children, breadcrumbs = [], ...props }) => {
 

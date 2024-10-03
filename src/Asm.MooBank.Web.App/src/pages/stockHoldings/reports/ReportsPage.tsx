@@ -4,7 +4,7 @@ import { InstitutionAccount, StockHolding } from "models";
 import { useLocation } from "react-router";
 import { NavItem } from "@andrewmclachlan/mooapp";
 import { AccountPage, useAccount } from "components";
-import { Trendline } from "assets";
+import { Trendline } from "@andrewmclachlan/mooicons";
 import { useStockHolding } from "../StockHoldingProvider";
 import { StockHoldingPage } from "../StockHoldingPage";
 

@@ -1,5 +1,5 @@
 import "./App.scss";
-import * as Icons from "./assets";
+import * as Icons from "@andrewmclachlan/mooicons";
 
 import React from "react";
 import { Link } from "react-router-dom";
