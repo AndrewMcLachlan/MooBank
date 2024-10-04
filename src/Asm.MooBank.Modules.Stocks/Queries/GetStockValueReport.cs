@@ -27,7 +27,7 @@ internal class GetStockValueReportHandler(IQueryable<Domain.Entities.StockHoldin
             .ToListAsync(cancellationToken);
 
         // Limit the number of points shown.
-        var granularity = (int)Math.Round((query.End.ToEndOfDay() - query.Start.ToStartOfDay()).TotalDays / 365d);
+        var granularity = Math.Max(1, (int)Math.Round((query.End.ToEndOfDay() - query.Start.ToStartOfDay()).TotalDays / 30d));
 
         var date = query.Start;
         decimal stockPrice = 0;

@@ -45,6 +45,8 @@ export const StockValueReport: React.FC = () => {
         }]
     };
 
+    const max = dataset.datasets[0].data.reduce((a, b) => Math.max(a, b), 0);
+
     return (
         <ReportsPage title="Value Trend">
             <Section>
@@ -58,7 +60,7 @@ export const StockValueReport: React.FC = () => {
                     maintainAspectRatio: true,
                     scales: {
                         y: {
-                            suggestedMin: yAxisFromZero ? 0 : dataset.datasets[0].data.reduce((a, b) => Math.min(a, b), 1000000000),
+                            suggestedMin: yAxisFromZero ? 0 : dataset.datasets[0].data.reduce((a, b) => Math.min(a, b), max),
                             ticks: {
                                 stepSize: 1000,
                             },
