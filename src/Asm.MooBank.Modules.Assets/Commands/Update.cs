@@ -1,4 +1,5 @@
-﻿using Asm.MooBank.Commands;
+﻿using System.ComponentModel;
+using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.Asset;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Assets.Models;
@@ -9,6 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace Asm.MooBank.Modules.Assets.Commands;
+
+[DisplayName("UpdateAsset")]
 public sealed record Update : ICommand<Models.Asset>
 {
     public Guid AccountId { get; init; }

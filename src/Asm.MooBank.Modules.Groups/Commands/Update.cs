@@ -1,9 +1,11 @@
-﻿using Asm.MooBank.Domain.Entities.Group;
+﻿using System.ComponentModel;
+using Asm.MooBank.Domain.Entities.Group;
 using Asm.MooBank.Modules.Groups.Models;
 
 namespace Asm.MooBank.Modules.Groups.Commands;
 
-public record Update(Models.Group Group) : ICommand<Models.Group>;
+[DisplayName("UpdateGroup")]
+public sealed record Update(Models.Group Group) : ICommand<Models.Group>;
 
 internal class UpdateHandler(IGroupRepository groupRepository, IUnitOfWork unitOfWork, ISecurity security) : ICommandHandler<Update, Models.Group>
 {

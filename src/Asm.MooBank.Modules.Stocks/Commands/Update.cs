@@ -1,4 +1,5 @@
-﻿using Asm.MooBank.Commands;
+﻿using System.ComponentModel;
+using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.StockHolding;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Stocks.Models;
@@ -9,6 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace Asm.MooBank.Modules.Stocks.Commands;
+
+[DisplayName("UpdateStock")]
 public sealed record Update : ICommand<Models.StockHolding>
 {
     public Guid AccountId { get; init; }

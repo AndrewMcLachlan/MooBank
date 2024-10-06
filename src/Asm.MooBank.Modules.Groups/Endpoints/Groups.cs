@@ -19,22 +19,22 @@ public class Groups : EndpointGroupBase
     protected override void MapEndpoints(IEndpointRouteBuilder routeGroupBuilder)
     {
         routeGroupBuilder.MapQuery<GetAll, IEnumerable<Models.Group>>("/")
-            .WithName("Get All Groups")
+            .WithNames("Get All Groups")
             .Produces<IEnumerable<Models.Group>>();
 
         routeGroupBuilder.MapQuery<Get, Models.Group>("/{id}")
-            .WithName("Get Group")
+            .WithNames("Get Group")
             .Produces<Models.Group>();
 
         routeGroupBuilder.MapPostCreate<Create, Models.Group>("/", "Get Group", (group) => new { id = group.Id })
-            .WithName("Create Group")
+            .WithNames("Create Group")
             .Produces<Models.Group>();
 
         routeGroupBuilder.MapPatchCommand<Update, Models.Group>("/{id}")
-            .WithName("Update Group")
+            .WithNames("Update Group")
             .Produces<Models.Group>();
 
         routeGroupBuilder.MapDelete<Delete>("/{id}")
-            .WithName("Delete Group");
+            .WithNames("Delete Group");
     }
 }

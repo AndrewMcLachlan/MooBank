@@ -1,9 +1,12 @@
-﻿using Asm.MooBank.Domain.Entities.Asset;
+﻿using System.ComponentModel;
+using Asm.MooBank.Domain.Entities.Asset;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Assets.Models;
 using Asm.MooBank.Services;
 
 namespace Asm.MooBank.Modules.Assets.Commands;
+
+[DisplayName("CreateAsset")]
 public sealed record Create() : ICommand<Models.Asset>
 {
     public required string Name { get; init; }

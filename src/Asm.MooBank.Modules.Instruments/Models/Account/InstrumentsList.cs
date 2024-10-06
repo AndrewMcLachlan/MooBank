@@ -1,4 +1,5 @@
-﻿using Asm.MooBank.Models;
+﻿using System.ComponentModel;
+using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Modules.Instruments.Models.Account;
 
@@ -10,6 +11,7 @@ public record InstrumentsList
 
 }
 
+[DisplayName("InstrumentGroup")]
 public record Group
 {
     public required string Name { get; init; }

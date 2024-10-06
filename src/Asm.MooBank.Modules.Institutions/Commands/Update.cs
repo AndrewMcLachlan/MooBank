@@ -1,4 +1,5 @@
-﻿using Asm.MooBank.Commands;
+﻿using System.ComponentModel;
+using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.Institution;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Institutions.Models;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Options;
 
 namespace Asm.MooBank.Modules.Institutions.Commands;
 
+[DisplayName("UpdateInstitution")]
 public sealed record Update(int Id, string Name, InstitutionType InstitutionType) : ICommand<Models.Institution>
 {
     public static async Task<Update> BindAsync(HttpContext httpContext)

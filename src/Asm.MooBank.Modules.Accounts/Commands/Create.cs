@@ -1,10 +1,12 @@
-﻿using Asm.MooBank.Models;
+﻿using System.ComponentModel;
+using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Accounts.Models.Account;
 using Asm.MooBank.Services;
 using IInstitutionAccountRepository = Asm.MooBank.Domain.Entities.Account.IInstitutionAccountRepository;
 
 namespace Asm.MooBank.Modules.Accounts.Commands;
 
+[DisplayName("CreateAccount")]
 public record Create() : ICommand<InstitutionAccount>
 {
     public required string Name { get; set; }

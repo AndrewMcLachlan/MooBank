@@ -1,5 +1,8 @@
-﻿namespace Asm.MooBank.Modules.Users.Models;
+﻿using System.ComponentModel;
 
+namespace Asm.MooBank.Modules.Users.Models;
+
+[DisplayName("UserWithCards")]
 public record User : MooBank.Models.User
 {
     public IEnumerable<UserCard> Cards { get; set; } = [];

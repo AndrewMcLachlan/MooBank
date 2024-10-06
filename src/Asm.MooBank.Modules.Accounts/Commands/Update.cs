@@ -1,4 +1,4 @@
-﻿using Asm.MooBank.Commands;
+﻿using System.ComponentModel;
 using Asm.MooBank.Domain.Entities.Account.Specifications;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Accounts.Models.Account;
@@ -7,6 +7,7 @@ using IInstitutionAccountRepository = Asm.MooBank.Domain.Entities.Account.IInsti
 
 namespace Asm.MooBank.Modules.Accounts.Commands;
 
+[DisplayName("UpdateAccount")]
 public record Update(InstitutionAccount Account) : ICommand<InstitutionAccount>;
 
 internal class UpdateHandler(IUnitOfWork unitOfWork, IInstitutionAccountRepository accountRepository, User user, ICurrencyConverter currencyConverter, ISecurity security) : ICommandHandler<Update, InstitutionAccount>

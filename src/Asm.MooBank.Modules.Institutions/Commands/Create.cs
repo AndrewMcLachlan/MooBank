@@ -1,9 +1,11 @@
-﻿using Asm.MooBank.Domain.Entities.Institution;
+﻿using System.ComponentModel;
+using Asm.MooBank.Domain.Entities.Institution;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Institutions.Models;
 
 namespace Asm.MooBank.Modules.Institutions.Commands;
 
+[DisplayName("CreateInstitution")]
 public sealed record Create(string Name, InstitutionType InstitutionType) : ICommand<Models.Institution>;
 
 

@@ -1,3 +1,5 @@
+using System.ComponentModel;
+using System.Reflection;
 using System.Text.Json.Serialization;
 using Asm.AspNetCore.Modules;
 using Asm.MooBank.Institution.AustralianSuper;
@@ -43,7 +45,7 @@ void AddServices(WebApplicationBuilder builder)
             Version = fileVersionInfo.FileVersion
         });
 
-        options.CustomSchemaIds(type => type.FullName?.Replace('+', '.'));
+        options.CustomSchemaIds(type => type.GetCustomAttribute<DisplayNameAttribute>(false)?.DisplayName ?? type.Name);
 
         options.AddSecurityDefinition("oidc", new()
         {

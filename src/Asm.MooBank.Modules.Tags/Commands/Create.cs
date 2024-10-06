@@ -1,9 +1,10 @@
-﻿using Asm.MooBank.Commands;
+﻿using System.ComponentModel;
 using Asm.MooBank.Models;
 using ITagRepository = Asm.MooBank.Domain.Entities.Tag.ITagRepository;
 
 namespace Asm.MooBank.Modules.Tags.Commands;
 
+[DisplayName("CreateTag")]
 public sealed record Create(Tag Tag) : ICommand<Tag>;
 
 internal sealed class CreateHandler(IUnitOfWork unitOfWork, ITagRepository tagRepository, User user) :  ICommandHandler<Create, Tag>

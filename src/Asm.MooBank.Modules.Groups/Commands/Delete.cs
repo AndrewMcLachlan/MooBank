@@ -1,8 +1,10 @@
-﻿using Asm.MooBank.Domain.Entities.Group;
+﻿using System.ComponentModel;
+using Asm.MooBank.Domain.Entities.Group;
 
 namespace Asm.MooBank.Modules.Groups.Commands;
 
-public record Delete(Guid Id) : ICommand;
+[DisplayName("DeleteGroup")]
+public sealed record Delete(Guid Id) : ICommand;
 
 internal class DeleteHandler(IGroupRepository groupRepository, IUnitOfWork unitOfWork, ISecurity security) :  ICommandHandler<Delete>
 {

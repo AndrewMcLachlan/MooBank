@@ -1,10 +1,12 @@
-﻿using Asm.MooBank.Commands;
+﻿using System.ComponentModel;
+using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.Family;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Families.Models;
 
 namespace Asm.MooBank.Modules.Families.Commands;
 
+[DisplayName("CreateFamily")]
 public sealed record Create(string Name) : ICommand<Models.Family>;
 
 

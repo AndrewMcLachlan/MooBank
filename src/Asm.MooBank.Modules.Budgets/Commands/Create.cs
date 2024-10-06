@@ -1,10 +1,11 @@
-﻿using Asm.MooBank.Commands;
+﻿using System.ComponentModel;
 using Asm.MooBank.Domain.Entities.Budget;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Budgets.Models;
 
 namespace Asm.MooBank.Modules.Budgets.Commands;
 
+[DisplayName("CreateBudget")]
 public record Create(short Year) : ICommand<Models.Budget>;
 
 internal class CreateHandler(IBudgetRepository budgetRepository, IUnitOfWork unitOfWork, User user) :  ICommandHandler<Create, Models.Budget>
