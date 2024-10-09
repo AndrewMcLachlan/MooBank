@@ -68,7 +68,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{609F2607-9FFD-4DF1-AB84-5E745FD6395E}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\build.yml = .github\workflows\build.yml
-		.github\workflows\deploy.yml = .github\workflows\deploy.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Eodhd", "src\Asm.MooBank.Eodhd\Asm.MooBank.Eodhd.csproj", "{5EED26F8-2233-49E7-A302-82EF46DACE1A}"
