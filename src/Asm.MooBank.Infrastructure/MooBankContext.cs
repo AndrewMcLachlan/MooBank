@@ -7,6 +7,7 @@ using Asm.MooBank.Domain.Entities.Budget;
 using Asm.MooBank.Domain.Entities.Group;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.ReferenceData;
+using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Domain.Entities.User;
 using MediatR;
 
@@ -69,5 +70,6 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
 
         modelBuilder.Entity<TransactionInstrument>().ToTable(tb => tb.UseSqlOutputClause(false));
 
+        modelBuilder.Entity<TagRelationship>();
     }
 }
