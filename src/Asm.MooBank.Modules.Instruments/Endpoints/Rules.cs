@@ -1,4 +1,5 @@
 ﻿using Asm.AspNetCore;
+using Asm.AspNetCore.Routing;
 using Asm.MooBank.Modules.Instruments.Commands.Rule;
 using Asm.MooBank.Modules.Instruments.Queries.Rule;
 using Asm.MooBank.Modules.Instruments.Queries.Rules;

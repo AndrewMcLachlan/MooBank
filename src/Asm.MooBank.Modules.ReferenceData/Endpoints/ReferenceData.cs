@@ -1,4 +1,5 @@
 ﻿using Asm.AspNetCore;
+using Asm.AspNetCore.Routing;
 using Asm.MooBank.Modules.ReferenceData.Models;
 using Asm.MooBank.Modules.ReferenceData.Queries;
 using Microsoft.AspNetCore.Builder;

@@ -1,4 +1,5 @@
 ﻿using Asm.AspNetCore;
+using Asm.AspNetCore.Routing;
 using Asm.MooBank.Modules.Stocks.Commands.Transactions;
 using Asm.MooBank.Modules.Stocks.Models;
 using Asm.MooBank.Modules.Stocks.Queries.StockTransactions;

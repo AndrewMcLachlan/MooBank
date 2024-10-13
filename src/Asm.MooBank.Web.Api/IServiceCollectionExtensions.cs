@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Asm.MooBank.Infrastructure;
 using Asm.MooBank.Security;
+using Asm.OAuth;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -51,6 +52,7 @@ public static class IServiceCollectionExtensions
             }
         };
 
-        configuration.Bind("OAuth", options.AzureOAuthOptions);
+        AzureOAuthOptions oAuthOptions = configuration.GetSection("OAuth").Get<AzureOAuthOptions>() ?? throw new InvalidOperationException("OAuth config not defined");
+        options.AzureOAuthOptions = oAuthOptions;
     });
 }

@@ -1,4 +1,5 @@
 ﻿using Asm.AspNetCore;
+using Asm.AspNetCore.Routing;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Instruments.Models.Account;
 using Asm.MooBank.Modules.Instruments.Queries.Instrument;
