@@ -26,6 +26,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Config", "Config", "{07F4FB
 		.editorconfig = .editorconfig
 		Common.props = Common.props
 		Directory.Build.targets = Directory.Build.targets
+		Directory.Packages.Props = Directory.Packages.Props
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integrations", "Integrations", "{2754ACBC-340B-4D5C-AEE8-1AC1AD5CF9E0}"

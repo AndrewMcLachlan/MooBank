@@ -4,7 +4,7 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="LazyCache.AspNetCore" Version="2.4.0" />
+    <PackageReference Include="LazyCache.AspNetCore" />
   </ItemGroup>
 
   <ItemGroup>
