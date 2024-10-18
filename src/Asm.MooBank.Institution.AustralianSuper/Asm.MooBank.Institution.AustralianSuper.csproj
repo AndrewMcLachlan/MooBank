@@ -1,7 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\..\Common.props" />
-
   <ItemGroup>
     <ProjectReference Include="..\Asm.MooBank\Asm.MooBank.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Domain\Asm.MooBank.Domain.csproj" />
