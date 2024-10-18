@@ -42,6 +42,11 @@ updates:
       time: "06:00"
     reviewers:
       - andrewmcLachlan
+    groups:
+      version-updates:
+        applies-to: version-updates
+        patterns:
+          - "*"
     open-pull-requests-limit: 20
     registries: "*"
 

@@ -24,7 +24,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Config", "Config", "{07F4FBE0-487C-4F4D-AAAC-6E3DC848D55C}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
-		Common.props = Common.props
+		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
 		Directory.Packages.props = Directory.Packages.props
 	EndProjectSection
