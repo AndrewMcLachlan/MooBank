@@ -11,6 +11,8 @@ BEGIN
 
     SET @OffsetAmount = ISNULL((SELECT SUM(tso.Amount) FROM [TransactionSplitOffset] tso INNER JOIN [TransactionSplit] ts ON ts.Id = tso.TransactionSplitId WHERE ts.TransactionId = @TransactionId), 0)
     SET @NetAmount = @OffsetAmount + @Amount
+    SET @OffsetAmount = ISNULL((SELECT SUM(tso.Amount) FROM [TransactionSplitOffset] tso WHERE tso.OffsetTransactionId = @TransactionId), 0)
+    SET @NetAmount = @NetAmount - @OffsetAmount
 
     IF (@OffsetAmount = 0)
     BEGIN

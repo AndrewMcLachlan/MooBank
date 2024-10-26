@@ -5,8 +5,6 @@ VisualStudioVersion = 17.1.31903.286
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Web.Api", "src\Asm.MooBank.Web.Api\Asm.MooBank.Web.Api.csproj", "{F424AA48-81DB-4D75-A198-7C5AAA9C71B5}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Asm.MooBank.Database", "src\Asm.MooBank.Database\Asm.MooBank.Database.sqlproj", "{8F8240C5-B472-4CB6-A115-5578AB3DD0DB}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank", "src\Asm.MooBank\Asm.MooBank.csproj", "{E1FBF425-DD1A-43D9-B690-9560A950F356}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Models", "src\Asm.MooBank.Models\Asm.MooBank.Models.csproj", "{9B078748-1B3D-4BD5-B749-EE8FB68AD0DC}"
@@ -89,6 +87,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.Assets"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asm.MooBank.Modules.Instruments", "src\Asm.MooBank.Modules.Instruments\Asm.MooBank.Modules.Instruments.csproj", "{E0427C53-3EC8-4D3D-B9EB-8638FB3889A3}"
 EndProject
+Project("{42EA0DBD-9CF1-443E-919E-BE9C484E4577}") = "Asm.MooBank.Database", "src\Asm.MooBank.Database\Asm.MooBank.Database.sqlproj", "{52A21417-36F4-416C-A3D5-86D2DFA5F63C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,10 +99,6 @@ Global
 		{F424AA48-81DB-4D75-A198-7C5AAA9C71B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F424AA48-81DB-4D75-A198-7C5AAA9C71B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F424AA48-81DB-4D75-A198-7C5AAA9C71B5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8F8240C5-B472-4CB6-A115-5578AB3DD0DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8F8240C5-B472-4CB6-A115-5578AB3DD0DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8F8240C5-B472-4CB6-A115-5578AB3DD0DB}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{8F8240C5-B472-4CB6-A115-5578AB3DD0DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E1FBF425-DD1A-43D9-B690-9560A950F356}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E1FBF425-DD1A-43D9-B690-9560A950F356}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E1FBF425-DD1A-43D9-B690-9560A950F356}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -205,6 +201,10 @@ Global
 		{E0427C53-3EC8-4D3D-B9EB-8638FB3889A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0427C53-3EC8-4D3D-B9EB-8638FB3889A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0427C53-3EC8-4D3D-B9EB-8638FB3889A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52A21417-36F4-416C-A3D5-86D2DFA5F63C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52A21417-36F4-416C-A3D5-86D2DFA5F63C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52A21417-36F4-416C-A3D5-86D2DFA5F63C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52A21417-36F4-416C-A3D5-86D2DFA5F63C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

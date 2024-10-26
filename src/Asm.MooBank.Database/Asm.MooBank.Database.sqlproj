@@ -1,17 +1,14 @@
-﻿<Project DefaultTargets="Build" Sdk="Microsoft.Build.Sql/0.2.0-preview">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build">
+  <Sdk Name="Microsoft.Build.Sql" Version="0.2.3-preview" />
   <PropertyGroup>
     <Name>MooBank</Name>
     <DSP>Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider</DSP>
+    <ModelCollation>1033, CI</ModelCollation>
     <RootNamespace>Asm.MooBank.Database</RootNamespace>
     <AssemblyName>Asm.MooBank.Database</AssemblyName>
-    <ModelCollation>1033, CI</ModelCollation>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <TargetDatabaseSet>True</TargetDatabaseSet>
-    <DacApplicationName>MooBank</DacApplicationName>
-    <TargetFrameworkProfile />
-    <DacVersion>3.0.0.0</DacVersion>
-    <ProjectGuid>{8f8240c5-b472-4cb6-a115-5578ab3dd0db}</ProjectGuid>
   </PropertyGroup>
+
   <ItemGroup>
     <Folder Include="aussuper" />
     <Folder Include="aussuper\Tables" />
@@ -21,7 +18,6 @@
     <Folder Include="dbo\Views" />
     <Folder Include="ing" />
     <Folder Include="ing\Tables" />
-    <Folder Include="Scripts" />
     <Folder Include="Security" />
   </ItemGroup>
   <ItemGroup>
@@ -91,18 +87,4 @@
   <ItemGroup>
     <RefactorLog Include="Asm.MooBank.Database.refactorlog" />
   </ItemGroup>
-  <ItemGroup>
-    <PreDeploy Include="Script.PreDeployment.sql" />
-  </ItemGroup>
-  <Target Name="BeforeBuild">
-    <Delete Files="$(BaseIntermediateOutputPath)\project.assets.json" />
-  </Target>
-  <!--
-    Building through visual studio will fail with `Your project does not reference ".NETFramework,Version=v4.7.2" framework.` if a previous build through the dotnet core cli
-    has run and created the obj/project.assets.json file. This custom target will delete the file before the visual studio build starts.
-  -->
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(MSBuildRuntimeType)' != 'Core'">
-    <Message Importance="high" Text="Ensuring the $(MSBuildThisFileDirectory)\obj\project.assets.json file is removed, if necessary, so that the database project can be built through VisualStudio SSDT without errors" />
-    <Delete Files="$(MSBuildThisFileDirectory)\obj\project.assets.json" />
-  </Target>
 </Project>

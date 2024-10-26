@@ -11,7 +11,7 @@
     [Location] NVARCHAR(150) NULL,
     [Reference] NVARCHAR(150) NULL,
     [PurchaseDate] DATE NULL,
-    [TransactionTime] DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
+    [TransactionTime] DATETIME2 NOT NULL CONSTRAINT DF_TransactionTime DEFAULT SYSDATETIME(),
     [Notes] NVARCHAR(512) NULL,
     [Extra] NVARCHAR(4000) NULL,
     [ExcludeFromReporting] BIT NOT NULL CONSTRAINT DF_Transaction_ExcludeFromReporting DEFAULT(0),
