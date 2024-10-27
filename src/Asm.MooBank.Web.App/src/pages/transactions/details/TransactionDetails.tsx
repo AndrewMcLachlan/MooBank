@@ -35,12 +35,12 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
                     <section>
                         <div>Amount</div>
                         <div className="value amount">{formatCurrency(props.transaction.amount)}</div>
-                        {props.transaction.netAmount !== props.transaction.amount &&
+                        {/*props.transaction.netAmount !== props.transaction.amount &&
                             <>
                                 <div>Net Amount</div>
                                 <div className="value amount">{formatCurrency(props.transaction.netAmount)}</div>
                             </>
-                        }
+                        */}
                         <div>Description</div>
                         <div className="value description">{props.transaction.description}</div>
                         <div>Who</div>

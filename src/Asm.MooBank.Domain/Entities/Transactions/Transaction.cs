@@ -18,10 +18,6 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
     [Precision(12, 4)]
     public decimal Amount { get; set; }
 
-    [Precision(12, 4)]
-    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-    public decimal NetAmount { get; set; }
-
     [MaxLength(255)]
     [Unicode(false)]
     public string? Description { get; set; }
@@ -46,14 +42,14 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
     #endregion
 
     #region Navigation Properties
-    public virtual ICollection<TransactionSplit> Splits { get; set; } = new HashSet<TransactionSplit>();
+    public virtual ICollection<TransactionSplit> Splits { get; set; } = [];
 
     public virtual TransactionInstrument Account { get; set; } = null!;
 
     [ForeignKey(nameof(AccountHolderId))]
     public virtual User.User? User { get; set; }
 
-    public virtual ICollection<TransactionOffset> OffsetFor { get; set; } = new HashSet<TransactionOffset>();
+    public virtual ICollection<TransactionOffset> OffsetFor { get; set; } = [];
     #endregion
 
     #region Properties
@@ -105,5 +101,9 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
     {
         Splits.Remove(split);
     }
+    #endregion
+
+    #region Static Methods
+    public static decimal TransactionNetAmount(Guid transactionId, decimal amount) => throw new NotSupportedException();
     #endregion
 }

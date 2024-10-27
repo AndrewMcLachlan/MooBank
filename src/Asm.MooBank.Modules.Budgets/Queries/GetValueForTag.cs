@@ -20,11 +20,11 @@ internal class GetValueForTagHandler(IQueryable<Transaction> transactions, MooBa
 
         var query = transactions.Where(t => accountIds.Contains(t.AccountId) && !t.ExcludeFromReporting && t.Splits.SelectMany(t => t.Tags).Any(tt => tt.Id == request.TagId));
 
-        var sum = await query.Where(t => t.TransactionTime >= start && t.TransactionTime <= end).Select(t => t.NetAmount).SumAsync(cancellationToken);
+        var sum = await query.Where(t => t.TransactionTime >= start && t.TransactionTime <= end).Select(t => t.Amount).SumAsync(cancellationToken);
 
         if (sum != 0) return sum;
 
-        return await query.OrderByDescending(t => t.TransactionTime).Select(t => t.NetAmount).FirstOrDefaultAsync(cancellationToken);
+        return await query.OrderByDescending(t => t.TransactionTime).Select(t => t.Amount).FirstOrDefaultAsync(cancellationToken);
 
     }
 }

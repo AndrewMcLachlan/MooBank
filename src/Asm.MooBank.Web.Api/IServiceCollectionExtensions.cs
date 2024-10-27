@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
+using Asm.AspNetCore.Authentication;
 using Asm.MooBank.Infrastructure;
-using Asm.MooBank.Security;
 using Asm.OAuth;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -12,7 +12,7 @@ namespace Asm.MooBank.Web.Api;
 public static class IServiceCollectionExtensions
 {
     public static AuthenticationBuilder AddAuthentication(this IServiceCollection services, IConfiguration configuration) =>
-    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddAzureADBearer(options =>
+    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddStandardJwtBearer(options =>
     {
         options.Events = new JwtBearerEvents
         {
@@ -53,6 +53,6 @@ public static class IServiceCollectionExtensions
         };
 
         AzureOAuthOptions oAuthOptions = configuration.GetSection("OAuth").Get<AzureOAuthOptions>() ?? throw new InvalidOperationException("OAuth config not defined");
-        options.AzureOAuthOptions = oAuthOptions;
+        options.OAuthOptions = oAuthOptions;
     });
 }

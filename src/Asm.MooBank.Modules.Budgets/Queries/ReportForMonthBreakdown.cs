@@ -1,5 +1,6 @@
 ﻿using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Domain.Entities.TagRelationships;
+using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.Transactions.Specifications;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Budgets.Models;
@@ -50,13 +51,13 @@ internal class ReportForMonthBreakdownHandler(IQueryable<Domain.Entities.Budget.
             lineTagHierarchy.Select(tag =>
                     new BudgetReportValueTag(tag.Name,
                         lines.Where(t => t.TagId == tag.Id).Sum(l => l.Amount),
-                        budgetTransactions.Where(s => s.Tags.Any(t => t.Id == tag.Id) || tag.Descendants.Intersect(s.Tags.Select(t => t.Id)).Any()).Sum(t => Math.Abs(t.NetAmount))
+                        budgetTransactions.Where(s => s.Tags.Any(t => t.Id == tag.Id) || tag.Descendants.Intersect(s.Tags.Select(t => t.Id)).Any()).Sum(t => Math.Abs(Transaction.TransactionNetAmount(t.Id, t.Amount)))
                     )).OrderByDescending(b => b.BudgetedAmount)
                     .ThenByDescending(b => b.Actual)
                     .Append(new(
                         Name: "Other",
                         BudgetedAmount: 0,
-                        Actual: budgetTransactions.Where(s => s.Tags.Any(t => otherTagIds.Contains(t.Id))).Sum(t => Math.Abs(t.NetAmount))
+                        Actual: budgetTransactions.Where(s => s.Tags.Any(t => otherTagIds.Contains(t.Id))).Sum(t => Math.Abs(Transaction.TransactionNetAmount(t.Id, t.Amount)))
                     ))
         );
 

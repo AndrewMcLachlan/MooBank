@@ -1,5 +1,6 @@
 ﻿using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Domain.Entities.TagRelationships;
+using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.Transactions.Specifications;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Budgets.Models;
@@ -36,7 +37,7 @@ internal class ReportForMonthBreakdownUnbudgetedHandler(IQueryable<Domain.Entiti
                     new BudgetReportValueTag(
                         Name: tag.Name,
                         BudgetedAmount: 0,
-                        Actual: budgetTransactions.SelectMany(t => t.Splits).Where(s => s.Tags.Any(t => t.Id == tag.Id)).Sum(t => Math.Abs(t.NetAmount))
+                        Actual: budgetTransactions.SelectMany(t => t.Splits).Where(s => s.Tags.Any(t => t.Id == tag.Id)).Sum(t => TransactionSplit.TransactionSplitNetAmount(t.TransactionId, t.Id, t.Amount))
                     )).OrderByDescending(b => b.Actual)
         );
 

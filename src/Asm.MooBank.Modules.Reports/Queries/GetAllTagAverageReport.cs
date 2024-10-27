@@ -27,7 +27,7 @@ internal class GetAllTagAverageReportHandler(IQueryable<Transaction> transaction
             Tags = Array.Empty<TagValue>(),
         };
 
-        var total = transactions.Sum(t => t.NetAmount);
+        var total = transactions.Sum(t => Transaction.TransactionNetAmount(t.Id, t.Amount));
         decimal months = Math.Max(transactions.Min(t => t.TransactionTime).DifferenceInMonths(transactions.Max(t => t.TransactionTime)), 1);
 
         var tagValuesInterim = transactions
@@ -38,7 +38,7 @@ internal class GetAllTagAverageReportHandler(IQueryable<Transaction> transaction
                 TagId = t.Id,
                 TagName = t.Name,
                 GrossAmount = g.WhereByReportType(request.ReportType).Sum(t => t.Amount),
-                NetAmount = g.Sum(t => t.NetAmount),
+                NetAmount = g.Sum(t => Transaction.TransactionNetAmount(t.Id, t.Amount)),
             }));
 
         var tagValues = tagValuesInterim.GroupBy(t => new { t.TagId, t.TagName }).Select(g => new TagValue

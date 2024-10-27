@@ -43,7 +43,7 @@ internal class GetTagTrendReportHandler(IQueryable<Transaction> transactions, IQ
         {
             Month = g.Key,
             Amount = g.Where(transactionTypeFilter).Sum(t => t.Amount),
-            OffsetAmount = g.Sum(t => t.NetAmount)
+            OffsetAmount = g.Sum(t => Transaction.TransactionNetAmount(t.Id, t.Amount))
         });
 
         if (request.ApplySmoothing ?? false)

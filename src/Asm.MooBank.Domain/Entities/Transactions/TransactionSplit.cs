@@ -19,15 +19,11 @@ public class TransactionSplit : KeyedEntity<Guid>
     [Precision(12, 4)]
     public decimal Amount { get; set; }
 
-    [Precision(12, 4)]
-    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-    public decimal NetAmount { get; set; }
-
     public virtual Transaction Transaction { get; set; } = null!;
 
-    public virtual ICollection<TransactionOffset> OffsetBy { get; set; } = new HashSet<TransactionOffset>();
+    public virtual ICollection<TransactionOffset> OffsetBy { get; set; } = [];
 
-    public virtual ICollection<Tag.Tag> Tags { get; set; } = new HashSet<Tag.Tag>();
+    public virtual ICollection<Tag.Tag> Tags { get; set; } = [];
 
     public void UpdateTags(IEnumerable<Tag.Tag> tags)
     {
@@ -49,4 +45,6 @@ public class TransactionSplit : KeyedEntity<Guid>
     {
         OffsetBy.Remove(offset);
     }
+
+    public static decimal TransactionSplitNetAmount(Guid transactionId, Guid transactionSplitId, decimal amount) => throw new NotSupportedException();
 }
