@@ -110,6 +110,6 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
         return sum;
     }
 
-    public static decimal TransactionNetAmount(Guid transactionId, decimal amount) => throw new NotSupportedException();
+    public static decimal TransactionNetAmount(TransactionType transactionType, Guid transactionId, decimal amount) => throw new NotSupportedException();
     #endregion
 }

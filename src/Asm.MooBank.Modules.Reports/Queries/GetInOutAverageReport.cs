@@ -21,7 +21,7 @@ internal class GetInOutAverageReportHandler(IQueryable<Transaction> transactions
             .Select(g => new
             {
                 TransactionType = g.Key,
-                Amount = g.Sum(t => Transaction.TransactionNetAmount(t.Id, t.Amount))
+                Amount = g.Sum(t => Transaction.TransactionNetAmount(t.TransactionType, t.Id, t.Amount))
             }).ToListAsync(cancellationToken);
 
         return new()
