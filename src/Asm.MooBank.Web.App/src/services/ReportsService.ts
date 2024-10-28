@@ -7,6 +7,8 @@ export const reportsKey = "reports";
 
 export const useInOutReport = (accountId: string, start: Date, end: Date): UseQueryResult<InOutReport> => useApiGet<InOutReport>([reportsKey, accountId, "in-out", start, end], trimEnd("/", `api/accounts/${accountId}/reports/in-out${datesToUrl(start, end)}`), { enabled: (!!start && !!end) });
 
+export const useInOutAverageReport = (accountId: string, start: Date, end: Date): UseQueryResult<InOutReport> => useApiGet<InOutReport>([reportsKey, accountId, "in-out-average", start, end], trimEnd("/", `api/accounts/${accountId}/reports/in-out-average${datesToUrl(start, end)}`), { enabled: (!!start && !!end) });
+
 export const useInOutTrendReport = (accountId: string, start: Date, end: Date) => useApiGet<InOutTrendReport>([reportsKey, accountId, "in-out-trend", start, end], trimEnd("/", `api/accounts/${accountId}/reports/in-out-trend${datesToUrl(start, end)}`), { enabled: (!!start && !!end) });
 
 export const useBreakdownReport = (accountId: string, start: Date, end: Date, reportType: ReportType, tagId?: number) => useApiGet<ByTagReport>([reportsKey, accountId, "breakdown", reportType, start, end, tagId], trimEnd("/", `api/accounts/${accountId}/reports/${ReportType[reportType].toLowerCase()}/breakdown${datesToUrl(start, end)}/${tagId ?? ""}`), { enabled: (!!start && !!end) });
@@ -15,7 +17,7 @@ export const useByTagReport = (accountId: string, start: Date, end: Date, report
 
 export const useTagTrendReport = (accountId: string, start: Date, end: Date, reportType: ReportType, tagId: number, settings: TagTrendReportSettings) => useApiGet<TagTrendReport>([reportsKey, accountId, "tag-trend", reportType, start, end, tagId, settings], trimEnd("/", `api/accounts/${accountId}/reports/${ReportType[reportType].toLowerCase()}/tag-trend${datesToUrl(start, end)}/${tagId}${toQuery(settings)}`));
 
-export const useAllTagAverageReport = (accountId: string, start: Date, end: Date, reportType: ReportType) => useApiGet<AllTagAverageReport>([reportsKey, accountId, "all-tag-average", reportType, start, end], trimEnd("/", `api/accounts/${accountId}/reports/${ReportType[reportType].toLowerCase()}/all-tag-average${datesToUrl(start, end)}`));
+export const useAllTagAverageReport = (accountId: string, start: Date, end: Date, reportType: ReportType, top: number) => useApiGet<AllTagAverageReport>([reportsKey, accountId, "all-tag-average", reportType, start, end], trimEnd("/", `api/accounts/${accountId}/reports/${ReportType[reportType].toLowerCase()}/all-tag-average${datesToUrl(start, end)}?top=${top}`), { enabled: (!!start && !!end) });
 
 const toQuery = (settings: TagTrendReportSettings) => {
 

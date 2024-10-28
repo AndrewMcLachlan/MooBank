@@ -22,6 +22,9 @@ internal class Reports : EndpointGroupBase
         builder.MapQuery<GetInOutTrendReport, InOutTrendReport>("in-out-trend/{start}/{end}")
             .WithNames("In-out Trend Report");
 
+        builder.MapQuery<GetInOutAverageReport, InOutReport>("in-out-average/{start}/{end}")
+            .WithNames("In-out Average Report");
+
         builder.MapQuery<GetByTagReport, ByTagReport>("{reportType}/tags/{start}/{end}/{parentTagId?}")
             .WithNames("By Tag Report");
 

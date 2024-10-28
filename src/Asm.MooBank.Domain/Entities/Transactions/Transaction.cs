@@ -101,9 +101,15 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
     {
         Splits.Remove(split);
     }
-    #endregion
 
-    #region Static Methods
+    public decimal GetNetAmount()
+    {
+        decimal sum = Splits.Sum(s => s.GetNetAmount());
+        sum -= OffsetFor.Sum(o => o.Amount);
+
+        return sum;
+    }
+
     public static decimal TransactionNetAmount(Guid transactionId, decimal amount) => throw new NotSupportedException();
     #endregion
 }

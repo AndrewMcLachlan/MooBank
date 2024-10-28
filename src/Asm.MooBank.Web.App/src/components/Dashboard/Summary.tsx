@@ -12,7 +12,7 @@ export const SummaryWidget: React.FC = () => {
     const groupTotals = accounts?.groups.filter(ag => ag.total);
 
     return (
-        <Widget title="Summary" className="summary" loading={isLoading}>
+        <Widget title="Summary" className="summary" loading={isLoading} size="single">
             <KeyValue className="net-worth">
                 <div>Net Worth</div>
                 <Amount amount={grandTotal} colour plusminus />

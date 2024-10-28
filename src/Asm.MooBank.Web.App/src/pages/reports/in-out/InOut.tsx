@@ -10,13 +10,13 @@ import { Bar } from "react-chartjs-2";
 
 import { useChartColours } from "helpers/chartColours";
 import { Period } from "helpers/dateFns";
-import { useInOutReport } from "services";
+import { useInOutReport as defaultReport } from "services";
 
 ChartJS.register(...registerables);
 ChartJS.register(chartTrendline);
 
-export const InOut: React.FC<InOutProps> = ({ accountId, period }) => {
-
+export const InOut: React.FC<InOutProps> = ({ accountId, period, useInOutReport = defaultReport }) => {
+defaultReport
     const colours = useChartColours();
 
     const report = useInOutReport(accountId!, period?.startDate, period?.endDate);
@@ -85,4 +85,5 @@ const formatPeriod = (start?: Date, end?: Date): string => {
 export interface InOutProps {
     accountId: string;
     period: Period;
+    useInOutReport: (accountId: string, startDate?: Date, endDate?: Date) => any;
 }

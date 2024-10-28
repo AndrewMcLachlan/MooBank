@@ -51,13 +51,13 @@ internal class ReportForMonthBreakdownHandler(IQueryable<Domain.Entities.Budget.
             lineTagHierarchy.Select(tag =>
                     new BudgetReportValueTag(tag.Name,
                         lines.Where(t => t.TagId == tag.Id).Sum(l => l.Amount),
-                        budgetTransactions.Where(s => s.Tags.Any(t => t.Id == tag.Id) || tag.Descendants.Intersect(s.Tags.Select(t => t.Id)).Any()).Sum(t => Math.Abs(Transaction.TransactionNetAmount(t.Id, t.Amount)))
+                        budgetTransactions.Where(s => s.Tags.Any(t => t.Id == tag.Id) || tag.Descendants.Intersect(s.Tags.Select(t => t.Id)).Any()).Sum(t => Math.Abs(t.GetNetAmount()))
                     )).OrderByDescending(b => b.BudgetedAmount)
                     .ThenByDescending(b => b.Actual)
                     .Append(new(
                         Name: "Other",
                         BudgetedAmount: 0,
-                        Actual: budgetTransactions.Where(s => s.Tags.Any(t => otherTagIds.Contains(t.Id))).Sum(t => Math.Abs(Transaction.TransactionNetAmount(t.Id, t.Amount)))
+                        Actual: budgetTransactions.Where(s => s.Tags.Any(t => otherTagIds.Contains(t.Id))).Sum(t => Math.Abs(t.GetNetAmount()))
                     ))
         );
 

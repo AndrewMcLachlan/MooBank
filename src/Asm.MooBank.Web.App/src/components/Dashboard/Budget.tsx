@@ -35,7 +35,7 @@ export const BudgetWidget: React.FC = () => {
     const difference = Math.round((((report?.budgetedAmount ?? 0) - Math.abs(report?.actual ?? 0)) / 10.0)) * 10;
 
     return (
-        <Widget title={`Budget - Last Month`} size={2} className="report budget" loading={isLoading}>
+        <Widget title={`Budget - Last Month`} size="single" className="report budget" loading={isLoading}>
             {report &&
                 <>
                     {difference >= 0 ?

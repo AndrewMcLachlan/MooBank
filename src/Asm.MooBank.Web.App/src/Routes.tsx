@@ -22,7 +22,7 @@ export const routes: RouteDefinition = {
                     reports: {
                         path: "reports", element: <Pages.Reports />, children: {
                             inout: { path: "in-out", element: <Pages.InOutPage /> },
-                            breakdown: { path: "breakdown/:tagId?", element: <Pages.Breakdown /> },
+                            breakdown: { path: "breakdown/:tagId?", element: <Pages.BreakdownPage /> },
                             byTag: { path: "by-tag", element: <Pages.ByTag /> },
                             tagTrend: { path: "tag-trend/:tagId?", element: <Pages.TagTrend /> },
                             allTagAverage: { path: "all-tag-average", element: <Pages.AllTagAverage /> },

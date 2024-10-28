@@ -46,5 +46,11 @@ public class TransactionSplit : KeyedEntity<Guid>
         OffsetBy.Remove(offset);
     }
 
+    /// <summary>
+    /// Mirrors the DB function.
+    /// </summary>
+    /// <returns></returns>
+    public decimal GetNetAmount() => Amount - OffsetBy.Sum(o => o.Amount);
+
     public static decimal TransactionSplitNetAmount(Guid transactionId, Guid transactionSplitId, decimal amount) => throw new NotSupportedException();
 }
