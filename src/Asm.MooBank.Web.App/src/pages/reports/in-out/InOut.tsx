@@ -11,6 +11,7 @@ import { Bar } from "react-chartjs-2";
 import { useChartColours } from "helpers/chartColours";
 import { Period } from "helpers/dateFns";
 import { useInOutReport as defaultReport } from "services";
+import { SpinnerContainer } from "@andrewmclachlan/mooapp";
 
 ChartJS.register(...registerables);
 ChartJS.register(chartTrendline);
@@ -38,14 +39,13 @@ defaultReport
     // Calculate the difference to the nearest $10
     const difference = Math.round((((report.data?.income ?? 0) - Math.abs(report.data?.outgoings ?? 0)) / 10.0)) * 10;
 
-    if (!report.data) return null;
-
     return (
         <>
             {difference >= 0 ?
                 <h4 className="text-success amount">${difference} saved</h4> :
                 <h4 className="text-danger amount">${Math.abs(difference)} overspent</h4>
             }
+            { report.isLoading && <SpinnerContainer />}
             <Bar id="inout" data={dataset} options={{
                 indexAxis: "y",
                 maintainAspectRatio: false,

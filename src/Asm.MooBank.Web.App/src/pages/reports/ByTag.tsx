@@ -32,6 +32,9 @@ export const ByTag = () => {
             label: "",
             data: report.data?.tags.map(t => t.grossAmount) ?? [],
             backgroundColor: chartColours,
+            borderRadius: 10,
+            spacing: 10,
+            borderColor: "transparent",
             //categoryPercentage: 1,
         }],
     };

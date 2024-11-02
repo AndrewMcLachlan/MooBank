@@ -31,8 +31,11 @@ export const Breakdown: React.FC<BreakdownProps> = ({accountId, tagId, period, r
         labels: report.data?.tags.map(t => t.tagName) ?? [],
         datasets: [{
             label: "",
-            data: report.data?.tags.map(t => t.grossAmount) ?? [],
+            data: report.data?.tags.map(t => t.netAmount) ?? [],
             backgroundColor: chartColours,
+            borderRadius: 10,
+            spacing: 10,
+            borderColor: "transparent",
         }],
     };
 

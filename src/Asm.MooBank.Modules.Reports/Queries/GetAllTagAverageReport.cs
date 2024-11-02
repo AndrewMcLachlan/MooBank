@@ -21,7 +21,7 @@ internal class GetAllTagAverageReportHandler(IQueryable<Transaction> transaction
         // Only required by consolidated tag amounts below
         //var relationships = await tagRelationships.Include(t => t.Tag).ThenInclude(t => t.Tags.Where(t => !t.Deleted && !t.Settings.ExcludeFromReporting)).Include(t => t.ParentTag).ThenInclude(t => t.Tags.Where(t => !t.Deleted && !t.Settings.ExcludeFromReporting)).Where(tr => !tr.Tag.Deleted && !tr.Tag.Settings.ExcludeFromReporting).ToListAsync(cancellationToken);
 
-        var transactions = await _transactions.Include(t => t.Splits).ThenInclude(t => t.Tags.Where(t => !t.Deleted && !t.Settings.ExcludeFromReporting)).WhereByReportQuery(query).WhereByReportType(query.ReportType).ToListAsync(cancellationToken);
+        var transactions = await _transactions.IncludeOffsets().Include(t => t.Splits).ThenInclude(t => t.Tags.Where(t => !t.Deleted && !t.Settings.ExcludeFromReporting)).WhereByReportQuery(query).WhereByReportType(query.ReportType).ToListAsync(cancellationToken);
 
         if (transactions.Count == 0) return new()
         {
@@ -37,7 +37,7 @@ internal class GetAllTagAverageReportHandler(IQueryable<Transaction> transaction
 
         var tagValuesInterim = transactions
             .GroupBy(t => t.Tags)
-            .SelectMany(g => g.Key.Select(t =>
+            .SelectMany(g => g.Key.Distinct().Select(t =>
             new TagValue
             {
                 TagId = t.Id,

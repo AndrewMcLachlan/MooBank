@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Modules.Reports.Models;
 

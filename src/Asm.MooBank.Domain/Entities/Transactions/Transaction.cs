@@ -1,4 +1,5 @@
-﻿using Asm.MooBank.Domain.Entities.Instrument;
+﻿using Asm.MooBank;
+using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Tag;
 using Microsoft.EntityFrameworkCore;
 
@@ -106,6 +107,11 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
     {
         decimal sum = Splits.Sum(s => s.GetNetAmount());
         sum -= OffsetFor.Sum(o => o.Amount);
+
+        if (TransactionType.IsDebit())
+        {
+            sum = -sum;
+        }
 
         return sum;
     }

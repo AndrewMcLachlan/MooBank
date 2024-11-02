@@ -47,7 +47,7 @@ internal class GetBreakdownReportHandler(IQueryable<Transaction> transactions, I
         var start = request.Start.ToStartOfDay();
         var end = request.End.ToEndOfDay();
 
-        var transactions = await _transactions.IncludeTagsAndSubTags().WhereByReportQuery(request).Where(t => t.Splits.SelectMany(t => t.Tags).Any(tt => tags.Contains(tt))).ToListAsync(cancellationToken);
+        var transactions = await _transactions.IncludeOffsets().IncludeTagsAndSubTags().WhereByReportQuery(request).Where(t => t.Splits.SelectMany(t => t.Tags).Any(tt => tags.Contains(tt))).ToListAsync(cancellationToken);
 
         var tagValues = transactions
             .GroupBy(t => rootTag != null && t.Tags.Contains(rootTag) ? rootTag : topTags.FirstOrDefault(tag => t.Tags.Contains(tag)) ?? lowerTags.Where(tag => t.Tags.Contains(tag.Tag)).Select(tag => tag.ParentTag).First())
@@ -56,6 +56,7 @@ internal class GetBreakdownReportHandler(IQueryable<Transaction> transactions, I
                 TagId = g.Key.Id,
                 TagName = g.Key.Name,
                 GrossAmount = Math.Abs(g.Sum(t => t.Amount)),
+                NetAmount = Math.Abs(g.Sum(t => t.GetNetAmount())),
                 HasChildren = g.Key.Tags.Any(t => !t.Deleted),
             }).ToList();
 
@@ -63,6 +64,7 @@ internal class GetBreakdownReportHandler(IQueryable<Transaction> transactions, I
         if (parentTagId == null)
         {
             var tagLessAmount = await _transactions.IncludeTags().WhereByReportQuery(request).Where(t => !t.Splits.SelectMany(t => t.Tags).Any()).SumAsync(t => t.Amount, cancellationToken);
+            var talLessNetAmount = await _transactions.IncludeTags().WhereByReportQuery(request).Where(t => !t.Splits.SelectMany(t => t.Tags).Any()).SumAsync(t => Transaction.TransactionNetAmount(t.TransactionType, t.Id, t.Amount), cancellationToken);
             tagValues.Add(new TagValue
             {
                 TagName = "Untagged",

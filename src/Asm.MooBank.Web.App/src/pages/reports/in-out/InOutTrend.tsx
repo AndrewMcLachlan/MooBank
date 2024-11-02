@@ -5,10 +5,11 @@ import { Chart as ChartJS, ChartData, registerables } from "chart.js";
 
 import { Period } from "helpers/dateFns";
 import { useChartColours } from "helpers/chartColours";
+import { SpinnerContainer } from "@andrewmclachlan/mooapp";
 
 ChartJS.register(...registerables);
 
-export const InOutTrend: React.FC<InOutTrendProps> = ({accountId, period}) => {
+export const InOutTrend: React.FC<InOutTrendProps> = ({ accountId, period }) => {
 
     const colours = useChartColours();
 
@@ -45,6 +46,8 @@ export const InOutTrend: React.FC<InOutTrendProps> = ({accountId, period}) => {
     };
 
     return (
+        <>
+            {report.isLoading && <SpinnerContainer />}
             <Line id="inout" data={dataset} options={{
                 maintainAspectRatio: false,
                 scales: {
@@ -64,6 +67,7 @@ export const InOutTrend: React.FC<InOutTrendProps> = ({accountId, period}) => {
                     }
                 }
             }} />
+        </>
     );
 }
 

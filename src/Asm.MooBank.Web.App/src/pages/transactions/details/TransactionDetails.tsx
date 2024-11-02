@@ -3,7 +3,7 @@ import { format } from "date-fns/format";
 import { parseISO } from "date-fns/parseISO";
 import { Transaction, TransactionOffset, TransactionSplit, getSplitTotal, isDebit } from "models";
 import React, { useEffect, useMemo, useState } from "react";
-import { Button, Modal, OverlayTrigger, Popover } from "react-bootstrap";
+import { Button, Col, Modal, OverlayTrigger, Popover, Row } from "react-bootstrap";
 
 import { ExtraInfo } from "../ExtraInfo";
 import { TransactionSplits } from "./TransactionSplits";
@@ -53,12 +53,14 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
                     {props.transaction.extraInfo && <ExtraInfo transaction={transaction} />}
                 </section>
                 <section className="offset-for" hidden={props.transaction.offsetFor?.length === 0}>
+                    <Row>
                     {props.transaction.offsetFor?.map((to) =>
-                        <React.Fragment key={to.transaction.id}>
+                        <Col xl={6}  key={to.transaction.id}>
                             <div>Rebate / refund for</div>
                             <div className="value"><span className="amount">{to.amount}</span> - {to.transaction.description}</div>
-                        </React.Fragment>
+                        </Col>
                     )}
+                    </Row>
                 </section>
                 <section>
                     <label className="form-label">Exclude from reporting</label>
