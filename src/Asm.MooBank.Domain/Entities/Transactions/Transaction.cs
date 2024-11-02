@@ -70,7 +70,7 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
             {
                 Tags = tags.ToList(),
                 TransactionId = Id,
-                Amount = Amount,
+                Amount = Math.Abs(Amount),
             };
             Splits.Add(split);
             return;

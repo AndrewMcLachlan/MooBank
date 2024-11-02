@@ -1,11 +1,11 @@
 import React from "react";
 
 import { Dashboard as DashboardPage, DashboardProps } from "@andrewmclachlan/mooapp";
-import { InOutWidget } from "components/Dashboard";
-import { SummaryWidget } from "components/Dashboard";
-import { BudgetWidget } from "components/Dashboard";
-import { TopTagsWidget } from "components/Dashboard";
-import { BreakdownWidget } from "components/Dashboard";
+import { InOutWidget } from "./widgets";
+import { SummaryWidget } from "./widgets";
+import { BudgetWidget } from "./widgets";
+import { TopTagsWidget } from "./widgets";
+import { BreakdownWidget } from "./widgets";
 
 const props: DashboardProps = {
     title: "Home",

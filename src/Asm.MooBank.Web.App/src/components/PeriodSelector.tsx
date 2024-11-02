@@ -12,7 +12,7 @@ export const PeriodSelector: React.FC<PeriodSelectorProps> = ({instant = false, 
 
     const [customPeriod, setCustomPeriod] = usePeriod();
     const [selectedPeriod, setSelectedPeriod] = useLocalStorage(cacheKey, "1");
-    const [period, setPeriod] = useState<Period>(options.find(o => o.value === selectedPeriod));
+    const [period, setPeriod] = useState<Period>(options.find(o => o.value === selectedPeriod) ?? selectedPeriod === "-1" ? customPeriod : lastMonth);
     const [customStart, setCustomStart] = useState<Date>(customPeriod.startDate);
     const [customEnd, setCustomEnd] = useState<Date>(customPeriod.endDate);
 
