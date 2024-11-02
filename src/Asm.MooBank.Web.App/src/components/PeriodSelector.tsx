@@ -16,9 +16,6 @@ export const PeriodSelector: React.FC<PeriodSelectorProps> = ({instant = false, 
     const [customStart, setCustomStart] = useState<Date>(customPeriod.startDate);
     const [customEnd, setCustomEnd] = useState<Date>(customPeriod.endDate);
 
-    console.debug("Selected period", selectedPeriod);
-    console.debug("Period", period);
-
     const changePeriod = (e: ChangeEvent<HTMLSelectElement>) => {
         const index = e.currentTarget.selectedIndex;
         const option = options[index];
