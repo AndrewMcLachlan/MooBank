@@ -25,7 +25,14 @@ internal partial class Importer(ITransactionRawRepository transactionRawReposito
     public async Task<MooBank.Models.TransactionImportResult> Import(Guid accountId, Stream contents, CancellationToken cancellationToken = default)
     {
         using var reader = new StreamReader(contents);
-        var rawTransactions = new List<TransactionRaw>();
+        var rawTransactionEntities = new List<TransactionRaw>();
+
+        var checkTransactions = (await transactionRawRepository.GetAll(accountId, cancellationToken)).Select(t => new
+        {
+            t.Description,
+            t.Date,
+            t.TotalAmount
+        }).ToList();
 
         // Throw away header row
         await reader.ReadLineAsync(cancellationToken);
@@ -111,7 +118,7 @@ internal partial class Importer(ITransactionRawRepository transactionRawReposito
             }
             #endregion
 
-            if (rawTransactions.Any(t => t.Description == columns[DescriptionColumn] && t.Date == transactionTime && t.TotalAmount == totalAmount))
+            if (checkTransactions.Any(t => t.Description == columns[DescriptionColumn] && t.Date == transactionTime && t.TotalAmount == totalAmount))
             {
                 logger.LogInformation("Duplicate transaction found {description} {date} {totalAmount}", columns[DescriptionColumn], transactionTime, totalAmount);
                 continue;
@@ -152,12 +159,12 @@ internal partial class Importer(ITransactionRawRepository transactionRawReposito
                 Transaction = transaction,
             };
 
-            rawTransactions.Add(transactionRaw);
+            rawTransactionEntities.Add(transactionRaw);
         }
 
-        transactionRawRepository.AddRange(rawTransactions);
+        transactionRawRepository.AddRange(rawTransactionEntities);
 
-        return new MooBank.Models.TransactionImportResult(rawTransactions.Select(r => r.Transaction));
+        return new MooBank.Models.TransactionImportResult(rawTransactionEntities.Select(r => r.Transaction));
     }
 
     public async Task Reprocess(Guid accountId, CancellationToken cancellationToken = default)

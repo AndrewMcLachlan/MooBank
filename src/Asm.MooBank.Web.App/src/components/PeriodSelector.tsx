@@ -16,19 +16,26 @@ export const PeriodSelector: React.FC<PeriodSelectorProps> = ({instant = false, 
     const [customStart, setCustomStart] = useState<Date>(customPeriod.startDate);
     const [customEnd, setCustomEnd] = useState<Date>(customPeriod.endDate);
 
+    console.debug("Selected period", selectedPeriod);
+    console.debug("Period", period);
+
     const changePeriod = (e: ChangeEvent<HTMLSelectElement>) => {
         const index = e.currentTarget.selectedIndex;
         const option = options[index];
         setSelectedPeriod(option?.value ?? "-1");
 
-        if (option) {
-            setPeriod(option);
+    }
+
+    useEffect(() => {
+        if (selectedPeriod !== "-1") {
+            setPeriod(options.find(o => o.value === selectedPeriod) ?? lastMonth);
+            return;
         }
 
-        if (!option && instant) {
+        if (selectedPeriod === "-1" && instant) {
             customPeriodGo();
         }
-    }
+    }, [selectedPeriod]);
 
     useEffect(() => {
         if (selectedPeriod === "-1") {
