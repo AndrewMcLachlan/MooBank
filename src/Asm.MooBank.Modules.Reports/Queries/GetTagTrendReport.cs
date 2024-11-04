@@ -10,12 +10,7 @@ public record GetTagTrendReport : TypedReportQuery, IQuery<TagTrendReport>
     public int TagId { get; init; }
 
     public bool? ApplySmoothing { get; init; } = false;
-
-    // public TagTrendReportSettings Settings { get; init; } = new TagTrendReportSettings();
 }
-
-//public record TagTrendReportSettings(bool ApplySmoothing = false);
-
 
 internal class GetTagTrendReportHandler(IQueryable<Transaction> transactions, IQueryable<Tag> tags, IQueryable<TagRelationship> tagRelationships, ISecurity securityRepository) : IQueryHandler<GetTagTrendReport, TagTrendReport>
 {
@@ -30,12 +25,12 @@ internal class GetTagTrendReportHandler(IQueryable<Transaction> transactions, IQ
 
         var tag = await _tags.SingleAsync(t => t.Id == request.TagId, cancellationToken);
         var tags = await _tags.Include(t => t.Tags).Where(t => !t.Deleted && t.TaggedTo.Any(t2 => t2.Id == request.TagId)).ToListAsync(cancellationToken);
-        var tagHierarchies = await tagRelationships.Include(t => t.Tag).ThenInclude(t => t.Tags).Include(t => t.ParentTag).ThenInclude(t => t.Tags).Where(tr => tr.Ordinal == 1 && tags.Contains(tr.ParentTag)).ToListAsync(cancellationToken);
+        var tagHierarchies = await tagRelationships.Include(t => t.Tag).ThenInclude(t => t.Tags).Include(t => t.ParentTag).ThenInclude(t => t.Tags).Where(tr => tags.Contains(tr.ParentTag)).ToListAsync(cancellationToken);
         var allTags = tags.Union(tagHierarchies.Select(t => t.Tag)).ToList();
         allTags.Add(tag);
 
 
-        var transactions = await _transactions.IncludeTagsAndSubTags()
+        var transactions = await _transactions.IncludeOffsets().IncludeTagsAndSubTags()
             .WhereByReportQuery(request).Where(t => t.Splits.SelectMany(ts => ts.Tags).Any(tt => allTags.Contains(tt)))
             .ToListAsync(cancellationToken);
 
