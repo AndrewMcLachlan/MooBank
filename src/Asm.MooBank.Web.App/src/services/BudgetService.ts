@@ -19,7 +19,7 @@ export const useCreateBudgetLine = () => {
 
     const { mutate } = useApiPost<BudgetLine, BudgetVariables, BudgetLine>((variables) => `api/budget/${variables.year}/lines`, {
         onSettled: (_data, _error, [variables, _line]) => {
-            queryClient.invalidateQueries({ queryKey: [budgetKey, variables.year]});
+            queryClient.invalidateQueries({ queryKey: [budgetKey, variables.year] });
         }
     });
 
@@ -36,7 +36,7 @@ export const useUpdateBudgetLine = () => {
 
     const { mutate } = useApiPatch<BudgetLine, BudgetVariables, BudgetLine>((variables) => `api/budget/${variables.year}/lines/${variables.lineId}`, {
         onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: [budgetKey]});
+            queryClient.invalidateQueries({ queryKey: [budgetKey] });
         }
     });
 
@@ -54,7 +54,7 @@ export const useDeleteBudgetLine = () => {
 
     const { mutate } = useApiDelete<BudgetVariables>((variables) => `api/budget/${variables.year}/lines/${variables.lineId}`, {
         onSuccess: (_data, variables: BudgetVariables) => {
-            queryClient.invalidateQueries({ queryKey: [budgetKey, variables.year]});
+            queryClient.invalidateQueries({ queryKey: [budgetKey, variables.year] });
             /*const budget = queryClient.getQueryData<Budget>([budgetKey, variables.year]);
             if (!budget) return;
             budget.expensesLines = budget.expensesLines.filter(r => r.id !== (variables.lineId));
@@ -76,9 +76,8 @@ export const useGetTagValue = (tagId: number) => useApiGet<number>(["budget", "b
 
 export const useBudgetReport = (year: number) => useApiGet<BudgetReportByMonth>([budgetKey, year, "report"], `api/budget/${year}/report`);
 
-export const useBudgetReportForMonth = (year: number, month: number) => useApiGet<BudgetReportValueMonth>([budgetKey, year, "report", month], `api/budget/${year}/report/${month+1}`);
+export const useBudgetReportForMonth = (year: number, month: number) => useApiGet<BudgetReportValueMonth>([budgetKey, year, "report", month], `api/budget/${year}/report/${month + 1}`);
 
-export const useBudgetReportForMonthBreakdown = (year: number, month: number) => useApiGet<BudgetReportForMonthBreakdown>([budgetKey, year, "report", month], `api/budget/${year}/report/${month+1}/breakdown`);
+export const useBudgetReportForMonthBreakdown = (year: number, month: number) => useApiGet<BudgetReportForMonthBreakdown>([budgetKey, year, "report", month], `api/budget/${year}/report/${month + 1}/breakdown`);
 
-export const useBudgetReportForMonthBreakdownUnbudgeted = (year: number, month: number) => useApiGet<BudgetReportForMonthBreakdown>([budgetKey, year, "report", month, "unbudgeted"], `api/budget/${year}/report/${month+1}/breakdown/unbudgeted`);
-
+export const useBudgetReportForMonthBreakdownUnbudgeted = (year: number, month: number) => useApiGet<BudgetReportForMonthBreakdown>([budgetKey, year, "report", month, "unbudgeted"], `api/budget/${year}/report/${month + 1}/breakdown/unbudgeted`);

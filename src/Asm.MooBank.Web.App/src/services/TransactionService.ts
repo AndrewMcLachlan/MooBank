@@ -8,6 +8,7 @@ import * as Models from "../models";
 import { Tag, Transaction } from "../models";
 import { State, TransactionsFilter } from "../store/state";
 import { accountsKey } from "./AccountService";
+import { toast } from "react-toastify";
 
 const transactionKey = "transactions";
 
@@ -60,7 +61,7 @@ export const useUpdateTransaction = () => {
 
     const { currentPage, pageSize, filter, sortField, sortDirection } = useSelector((state: State) => state.transactions);
 
-    return useApiPatch<Transaction, TransactionVariables, Models.TransactionUpdate>((variables) => `api/accounts/${variables.accountId}/transactions/${variables.transactionId}`, {
+    const { mutateAsync } = useApiPatch<Transaction, TransactionVariables, Models.TransactionUpdate>((variables) => `api/accounts/${variables.accountId}/transactions/${variables.transactionId}`, {
         onMutate: ([variables, data]) => {
 
             const transactions = {...queryClient.getQueryData<PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection])};
@@ -81,6 +82,9 @@ export const useUpdateTransaction = () => {
             queryClient.invalidateQueries({ queryKey: [transactionKey]});
         }
     });
+
+    return (accountId: string, transactionId: string, transaction: Models.TransactionUpdate) =>
+        toast.promise(mutateAsync([{accountId, transactionId}, transaction]), { pending: "Updating transaction", success: "Transaction updated", error: "Failed to update transaction" });
 }
 
 export const useAddTransactionTag = () => {
@@ -136,18 +140,13 @@ export const useCreateTransaction = () => {
 
     const queryClient = useQueryClient();
 
-    const res = useApiPost<Transaction, { accountId: string }, Models.CreateTransaction>((variables) => `api/accounts/${variables.accountId}/transactions`, {
+    const { mutateAsync } = useApiPost<Transaction, { accountId: string }, Models.CreateTransaction>((variables) => `api/accounts/${variables.accountId}/transactions`, {
         onSettled: (_data ,_error ,[variables]) => {
             queryClient.invalidateQueries({ queryKey: [transactionKey]});
             queryClient.refetchQueries({ queryKey: [accountsKey, variables.accountId]});
         }
     });
 
-    const { mutate } = res;
-
-    const create = (accountId:string, transaction: Models.CreateTransaction) => {
-        mutate([{accountId}, transaction]);
-    };
-
-    return create;
+    return (accountId:string, transaction: Models.CreateTransaction) =>
+        toast.promise(mutateAsync([{accountId}, transaction]), { pending: "Creating transaction", success: "Transaction created", error: "Failed to create transaction" });
 }

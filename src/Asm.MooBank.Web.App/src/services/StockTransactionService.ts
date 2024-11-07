@@ -3,6 +3,7 @@ import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
 import * as Models from "../models";
 import { TransactionsFilter } from "../store/state";
 import { PagedResult, SortDirection, useApiPagedGet, useApiPost } from "@andrewmclachlan/mooapp";
+import { toast } from "react-toastify";
 
 const transactionKey = "stock-transactions";
 
@@ -24,16 +25,14 @@ export const useCreateStockTransaction = () => {
 
     const queryClient = useQueryClient();
 
-    const res = useApiPost<Models.StockTransaction, { accountId: string }, Models.CreateStockTransaction>((variables) => `api/stocks/${variables.accountId}/transactions`, {
+    const { mutateAsync } = useApiPost<Models.StockTransaction, { accountId: string }, Models.CreateStockTransaction>((variables) => `api/stocks/${variables.accountId}/transactions`, {
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: [transactionKey]});
         }
     });
 
-    const { mutate } = res;
-
     const create = (accountId:string, transaction: Models.CreateStockTransaction) => {
-        mutate([{accountId}, transaction]);
+        toast.promise(mutateAsync([{accountId}, transaction]), { pending: "Creating transaction", success: "Transaction created", error: "Failed to create transaction" });
     };
 
     return create;

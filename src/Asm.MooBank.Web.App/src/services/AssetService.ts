@@ -2,6 +2,7 @@ import { UseQueryResult, useQueryClient, } from "@tanstack/react-query";
 import { InstitutionAccount, InstrumentId, NewAsset, Asset } from "../models";
 import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
 import { accountsKey } from "./AccountService";
+import { toast } from "react-toastify";
 
 export const assetKey = "asset";
 
@@ -11,32 +12,26 @@ export const useCreateAsset = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutate } = useApiPost<InstitutionAccount, null, NewAsset>(() => `api/assets`, {
+    const { mutateAsync } = useApiPost<InstitutionAccount, null, NewAsset>(() => `api/assets`, {
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: [accountsKey]});
         }
     });
 
-    const create = (account: NewAsset) => {
-        mutate([null, account]);
-    };
-
-    return create;
+    return (asset: NewAsset) =>
+        toast.promise(mutateAsync([null, asset]), { pending: "Creating asset", success: "Asset created", error: "Failed to create asset" });
 }
 
 export const useUpdateAsset = () => {
     const queryClient = useQueryClient();
 
-    const { mutate } = useApiPatch<Asset, InstrumentId, Asset>((accountId) => `api/assets/${accountId}`, {
+    const { mutateAsync } = useApiPatch<Asset, InstrumentId, Asset>((accountId) => `api/assets/${accountId}`, {
         onSettled: (_data,_error,[accountId]) => {
             queryClient.invalidateQueries({ queryKey: [accountsKey]});
             queryClient.invalidateQueries({ queryKey: [assetKey, { accountId }]});
         }
     });
 
-    const update = (account: Asset) => {
-        mutate([account.id, account]);
-    };
-
-    return update;
+    return (account: Asset) =>
+        toast.promise(mutateAsync([account.id, account]), { pending: "Updating asset", success: "Asset updated", error: "Failed to update asset" });
 }

@@ -1,6 +1,7 @@
 import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
 import { useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { CreateInstitutionAccount, CreateTransaction, InstitutionAccount, InstrumentId } from "../models";
+import { toast } from "react-toastify";
 
 export const accountsKey = "accounts";
 
@@ -12,49 +13,39 @@ export const useCreateAccount = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutate} = useApiPost<InstitutionAccount, null, CreateInstitutionAccount>(() => `api/accounts`, {
+    const { mutateAsync } = useApiPost<InstitutionAccount, null, CreateInstitutionAccount>(() => `api/accounts`, {
         onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: [accountsKey]});
+            queryClient.invalidateQueries({ queryKey: [accountsKey] });
         }
     });
 
-    const create = (account: CreateInstitutionAccount) => {
-        mutate([null, account]);
-    };
-
-    return create;
+    return (account: CreateInstitutionAccount) =>
+        toast.promise(mutateAsync([null, account]), { pending: "Creating account", success: "Account created", error: "Failed to create account" });
 }
 
 export const useUpdateAccount = () => {
     const queryClient = useQueryClient();
 
-    const { mutate} = useApiPatch<InstitutionAccount, InstrumentId, InstitutionAccount>((accountId) => `api/accounts/${accountId}`, {
-        onSettled: (_data,_error,[accountId]) => {
-            queryClient.invalidateQueries({ queryKey: [accountsKey]});
-            queryClient.invalidateQueries({ queryKey: [accountsKey, accountId ]});
+    const { mutateAsync } = useApiPatch<InstitutionAccount, InstrumentId, InstitutionAccount>((accountId) => `api/accounts/${accountId}`, {
+        onSettled: (_data, _error, [accountId]) => {
+            queryClient.invalidateQueries({ queryKey: [accountsKey] });
+            queryClient.invalidateQueries({ queryKey: [accountsKey, accountId] });
         }
     });
 
-    const update = (account: InstitutionAccount) => {
-        mutate([account.id, account]);
-    };
-
-    return update;
+    return (account: InstitutionAccount) =>
+        toast.promise(mutateAsync([account.id, account]), { pending: "Updating account", success: "Account updated", error: "Failed to update account" });
 }
 
 export const useUpdateBalance = () => {
     const queryClient = useQueryClient();
 
-    const { mutate} = useApiPost<InstitutionAccount, InstrumentId, CreateTransaction>((accountId) => `api/accounts/${accountId}/transactions/balance-adjustment`, {
+    const { mutateAsync } = useApiPost<InstitutionAccount, InstrumentId, CreateTransaction>((accountId) => `api/accounts/${accountId}/transactions/balance-adjustment`, {
         onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: [accountsKey]});
+            queryClient.invalidateQueries({ queryKey: [accountsKey] });
         },
     });
 
-    const update = (accountId: string, transaction: CreateTransaction) => {
-
-        mutate([accountId, transaction]);
-    };
-
-    return update;
+    return (accountId: string, transaction: CreateTransaction) =>
+        toast.promise(mutateAsync([accountId, transaction]), { pending: "Updating balance", success: "Balance updated", error: "Failed to update balance" });
 }

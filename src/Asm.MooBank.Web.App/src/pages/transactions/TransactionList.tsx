@@ -35,7 +35,7 @@ export const TransactionList: React.FC = () => {
 
     const onSave = (excludeFromReporting: boolean, notes?: string, splits?: TransactionSplit[], _offsetBy?: TransactionOffset[]) => {
 
-        updateTransaction.mutate([{ accountId: selectedTransaction.accountId, transactionId: selectedTransaction.id }, { excludeFromReporting, notes, splits }]);
+        updateTransaction(selectedTransaction.accountId, selectedTransaction.id, { excludeFromReporting, notes, splits });
         setShowDetails(false);
     }
 

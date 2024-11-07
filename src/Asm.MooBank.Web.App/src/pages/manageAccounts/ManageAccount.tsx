@@ -84,7 +84,7 @@ export const ManageAccount = () => {
                             </Form.Group>
                             <Form.Group>
                                 <Form.Label>Institution</Form.Label>
-                                <InstitutionSelector value={account.institutionId} onChange={id => setInstitution(id)} />
+                                <InstitutionSelector accountType={account.accountType} value={account.institutionId} onChange={id => setInstitution(id)} />
                             </Form.Group>
                             <Form.Group controlId="group" >
                                 <Form.Label>Group</Form.Label>

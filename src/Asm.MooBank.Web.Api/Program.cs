@@ -5,6 +5,7 @@ using Asm.AspNetCore.Modules;
 using Asm.MooBank.Institution.AustralianSuper;
 using Asm.MooBank.Institution.Ing;
 using Asm.MooBank.Security;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -64,14 +65,16 @@ void AddServices(WebApplicationBuilder builder)
         });
     });
 
-    services.AddApplicationInsightsTelemetry();
+    if (builder.Environment.IsProduction())
+    {
+        services.AddOpenTelemetry().WithMetrics().UseAzureMonitor();
+    }
 
     services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
         options.SerializerOptions.Converters.Add(new JsonStringEnumConverter())
     );
 
     services.AddProblemDetailsFactory();
-    //services.AddProblemDetails();
 
     services.AddMooBankDbContext(builder.Environment, builder.Configuration);
     services.AddCacheableData();

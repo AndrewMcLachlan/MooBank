@@ -1,10 +1,10 @@
 import React, { PropsWithChildren, ReactNode } from "react";
 
 import { NavItem, NavItemDivider, Page, PageProps } from "@andrewmclachlan/mooapp";
+import { Import, Reports, Rules, Sliders, Transaction } from "@andrewmclachlan/mooicons";
+
 import { InstitutionAccount, VirtualAccount, isVirtualAccount } from "models";
 import { useAccount } from "./AccountProvider";
-
-import { Import, Reports, Rules, Sliders, Transaction } from "@andrewmclachlan/mooicons";
 
 export const AccountPage: React.FC<PropsWithChildren<AccountPageProps>> = ({ children, breadcrumbs = [], ...props }) => {
 
@@ -41,7 +41,7 @@ const getMenuItems = (account: InstitutionAccount | VirtualAccount, navItems: (R
         }
     }
 
-        items.push({ route: `${baseRoute}/manage`, text: "Manage", image: <Sliders /> });
+    items.push({ route: `${baseRoute}/manage`, text: "Manage", image: <Sliders /> });
 
     if (navItems.length > 0) {
         items.push(<NavItemDivider />);

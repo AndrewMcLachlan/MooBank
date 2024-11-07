@@ -9,20 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Asm.AspNetCore" />
-    <PackageReference Include="Asm.Cqrs.AspNetCore" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaProxy" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
+    <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaProxy">
+      <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design">
+      <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
   </ItemGroup>
 
@@ -41,11 +34,10 @@
     <ProjectReference Include="..\Asm.MooBank.Modules.Tags\Asm.MooBank.Modules.Tags.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Modules.Transactions\Asm.MooBank.Modules.Transactions.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Security\Asm.MooBank.Security.csproj" />
-</ItemGroup>
+  </ItemGroup>
 
   <ItemGroup>
     <Folder Include="logs\" />
   </ItemGroup>
-
 
 </Project>
