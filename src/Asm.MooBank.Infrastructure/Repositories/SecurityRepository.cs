@@ -27,7 +27,7 @@ public class SecurityRepository(MooBankContext mooBankContext, IAuthorizationSer
 
     public async Task AssertInstrumentPermissionAsync(Guid instrumentId, CancellationToken cancellationToken = default)
     {
-        var virtualAccount = await mooBankContext.VirtualAccounts.FindAsync(instrumentId, cancellationToken);
+        var virtualAccount = await mooBankContext.VirtualAccounts.FindAsync(instrumentId, cancellationToken: cancellationToken);
 
         var instrumentToCheck = (virtualAccount != null) ? virtualAccount.Id : instrumentId;
 
