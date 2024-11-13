@@ -9,4 +9,5 @@ public enum InstitutionType
     InvestmentFund = 6,
     Government = 7,
     Other = 8,
+    Utility = 9,
 }

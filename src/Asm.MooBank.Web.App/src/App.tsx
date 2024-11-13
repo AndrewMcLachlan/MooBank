@@ -50,6 +50,11 @@ const sideMenu = [
         route: "/accounts"
     },
     {
+        text: "Bills",
+        image: <Icons.TwoCoins />,
+        route: "/bills"
+    },
+    {
         text: "Budget",
         image: <Icons.Budget />,
         route: "/budget"

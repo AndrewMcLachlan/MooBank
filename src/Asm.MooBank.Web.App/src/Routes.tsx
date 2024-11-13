@@ -74,6 +74,7 @@ export const routes: RouteDefinition = {
             groupsManage: { path: "/groups/:id/manage", element: <Pages.ManageGroup /> },
             groupsCreate: { path: "/groups/create", element: <Pages.CreateGroup /> },
             profile: { path: "/profile", element: <Pages.Profile /> },
+            bills: { path: "/bills", element: <Pages.Bills /> },
             fallback: { path: "*", element: <Pages.Error404 /> },
         }
     }

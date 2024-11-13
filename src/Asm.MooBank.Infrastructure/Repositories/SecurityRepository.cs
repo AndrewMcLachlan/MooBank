@@ -11,6 +11,7 @@ namespace Asm.MooBank.Infrastructure.Repositories;
 
 public class SecurityRepository(MooBankContext mooBankContext, IAuthorizationService authorizationService, IPrincipalProvider principalProvider, User user) : ISecurity
 {
+
     public void AssertInstrumentPermission(Guid instrumentId)
     {
         var virtualAccount = mooBankContext.VirtualAccounts.Find(instrumentId);
@@ -19,7 +20,6 @@ public class SecurityRepository(MooBankContext mooBankContext, IAuthorizationSer
         var authResult = authorizationService.AuthorizeAsync(principalProvider.Principal!, instrumentToCheck, Policies.InstrumentViewer).Result;
 
         if (!authResult.Succeeded)
-
         {
             throw new NotAuthorisedException("Not authorised to view this account");
         }

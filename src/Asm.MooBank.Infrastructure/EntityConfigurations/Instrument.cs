@@ -9,6 +9,7 @@ public class InstrumentConfiguration : IEntityTypeConfiguration<Instrument>
         // Required for computed columns
         entity.ToTable(tb => tb.UseSqlOutputClause(false));
 
+        entity.UseTptMappingStrategy();
         entity.ToTable("Instrument", tb => tb.Property(e => e.Id).HasColumnName("Id"));
 
         entity.HasMany(p => p.Owners)

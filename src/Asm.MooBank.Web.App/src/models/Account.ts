@@ -45,6 +45,7 @@ export interface CreateInstitutionAccount {
     institutionId: number;
     currency: string;
     balance: number;
+    openingDate: string;
     groupId: string;
     accountType: AccountType;
     importerTypeId?: number;

@@ -30,7 +30,7 @@ public static class IServiceCollectionExtensions
                     Guid userId = context.Principal!.GetClaimValue<Guid>(Security.ClaimTypes.UserId);
                     var dataContext = context.HttpContext.RequestServices.GetRequiredService<MooBankContext>();
 
-                    var user = await dataContext.Set<Domain.Entities.User.User>().Include(ah => ah.InstrumentOwners).ThenInclude(aah => aah.Instrument).AsNoTracking().SingleOrDefaultAsync(ah => ah.Id == userId);
+                    var user = await dataContext.Users.Include(ah => ah.InstrumentOwners).ThenInclude(aah => aah.Instrument).AsNoTracking().SingleOrDefaultAsync(ah => ah.Id == userId);
 
                     if (user == null)
                     {

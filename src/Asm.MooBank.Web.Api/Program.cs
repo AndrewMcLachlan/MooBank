@@ -17,22 +17,22 @@ void AddServices(WebApplicationBuilder builder)
     var services = builder.Services;
 
     builder.RegisterModules(() =>
-        new IModule[]
-        {
-            new Asm.MooBank.Modules.Accounts.Module(),
-            new Asm.MooBank.Modules.Assets.Module(),
-            new Asm.MooBank.Modules.Budgets.Module(),
-            new Asm.MooBank.Modules.Families.Module(),
-            new Asm.MooBank.Modules.Groups.Module(),
-            new Asm.MooBank.Modules.Institutions.Module(),
-            new Asm.MooBank.Modules.Instruments.Module(),
-            new Asm.MooBank.Modules.ReferenceData.Module(),
-            new Asm.MooBank.Modules.Reports.Module(),
-            new Asm.MooBank.Modules.Stocks.Module(),
-            new Asm.MooBank.Modules.Tags.Module(),
-            new Asm.MooBank.Modules.Transactions.Module(),
-            new Asm.MooBank.Modules.Users.Module(),
-        });
+    [
+        new Asm.MooBank.Modules.Accounts.Module(),
+        new Asm.MooBank.Modules.Assets.Module(),
+        new Asm.MooBank.Modules.Bills.Module(),
+        new Asm.MooBank.Modules.Budgets.Module(),
+        new Asm.MooBank.Modules.Families.Module(),
+        new Asm.MooBank.Modules.Groups.Module(),
+        new Asm.MooBank.Modules.Institutions.Module(),
+        new Asm.MooBank.Modules.Instruments.Module(),
+        new Asm.MooBank.Modules.ReferenceData.Module(),
+        new Asm.MooBank.Modules.Reports.Module(),
+        new Asm.MooBank.Modules.Stocks.Module(),
+        new Asm.MooBank.Modules.Tags.Module(),
+        new Asm.MooBank.Modules.Transactions.Module(),
+        new Asm.MooBank.Modules.Users.Module(),
+    ]);
 
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen(options =>

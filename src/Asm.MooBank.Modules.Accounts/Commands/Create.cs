@@ -19,6 +19,8 @@ public record Create() : ICommand<InstitutionAccount>
 
     public required decimal Balance { get; set; }
 
+    public DateTime? OpeningDate { get; set; }
+
     public Guid? GroupId { get; set; }
 
     public AccountType AccountType { get; set; }
@@ -58,7 +60,7 @@ internal class CreateHandler(IInstitutionAccountRepository institutionAccountRep
         entity.SetAccountHolder(user.Id);
         entity.SetGroup(command.GroupId, user.Id);
 
-        entity = _accountRepository.Add(entity, command.Balance);
+        entity = _accountRepository.Add(entity, command.Balance, command.OpeningDate ?? DateTime.Now);
 
         if (command.ImporterTypeId != null)
         {
