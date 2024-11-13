@@ -28,9 +28,8 @@ public static class IServiceCollectionExtensions
     {
         services.AddDbContext<MooBankContext>((services, options) =>
         {
-            options.UseSqlServer(configuration.GetConnectionString("MooBank"), options =>
+            options.UseAzureSql(configuration.GetConnectionString("MooBank"), options =>
             {
-                options.UseAzureSqlDefaults();
                 //options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
             });
             if (env.IsDevelopment())
@@ -40,9 +39,8 @@ public static class IServiceCollectionExtensions
         });
 
         //HACK: To be fixed
-        services.AddReadOnlyDbContext<IReadOnlyDbContext, MooBankContext>((services, options) => options.UseSqlServer(configuration.GetConnectionString("MooBank"), options =>
+        services.AddReadOnlyDbContext<IReadOnlyDbContext, MooBankContext>((services, options) => options.UseAzureSql(configuration.GetConnectionString("MooBank"), options =>
         {
-            options.UseAzureSqlDefaults();
            // options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
         }));
 

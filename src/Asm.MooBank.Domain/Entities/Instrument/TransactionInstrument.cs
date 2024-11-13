@@ -8,7 +8,7 @@ public abstract class TransactionInstrument(Guid id) : Instrument(id)
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public DateOnly? LastTransaction { get; set; }
 
-    public virtual ICollection<Transaction> Transactions { get; set; } = new HashSet<Transaction>();
+    public virtual ICollection<Transaction> Transactions { get; set; } = [];
 
     [Precision(12, 4)]
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
