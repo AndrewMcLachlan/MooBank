@@ -36,7 +36,7 @@ public abstract class Instrument(Guid id) : KeyedEntity<Guid>(id)
     public virtual ICollection<InstrumentViewer> Viewers { get; set; } = [];
 
 
-    public virtual ICollection<Rule> Rules { get; set; } = new HashSet<Rule>();
+    public virtual ICollection<Rule> Rules { get; set; } = [];
 
     public virtual ICollection<VirtualInstrument> VirtualInstruments { get; set; } = [];
 

@@ -17,8 +17,7 @@ void AddServices(WebApplicationBuilder builder)
     var services = builder.Services;
 
     builder.RegisterModules(() =>
-        new IModule[]
-        {
+        [
             new Asm.MooBank.Modules.Accounts.Module(),
             new Asm.MooBank.Modules.Assets.Module(),
             new Asm.MooBank.Modules.Budgets.Module(),
@@ -32,7 +31,7 @@ void AddServices(WebApplicationBuilder builder)
             new Asm.MooBank.Modules.Tags.Module(),
             new Asm.MooBank.Modules.Transactions.Module(),
             new Asm.MooBank.Modules.Users.Module(),
-        });
+        ]);
 
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen(options =>
