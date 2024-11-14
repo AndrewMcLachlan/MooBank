@@ -1,0 +1,53 @@
+<Solution>
+  <Folder Name="/.github/">
+    <File Path=".github/dependabot.yml" />
+    <Project Path="src/Asm.MooBank.Eodhd/Asm.MooBank.Eodhd.csproj" />
+  </Folder>
+  <Folder Name="/.github/workflows/">
+    <File Path=".github/workflows/build.yml" />
+  </Folder>
+  <Folder Name="/Config/">
+    <File Path=".editorconfig" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Folder Name="/Integrations/">
+    <Project Path="src/Asm.MooBank.ExchangeRateApi/Asm.MooBank.ExchangeRateApi.csproj" />
+    <Project Path="src/Asm.MooBank.Institution.AustralianSuper/Asm.MooBank.Institution.AustralianSuper.csproj" />
+    <Project Path="src/Asm.MooBank.Institution.Ing/Asm.MooBank.Institution.Ing.csproj" />
+    <Project Path="src/Asm.MooBank.Modules.Instruments/Asm.MooBank.Modules.Instruments.csproj" />
+  </Folder>
+  <Folder Name="/Modules/">
+    <Project Path="src/Asm.MooBank.Modules.Accounts/Asm.MooBank.Modules.Accounts.csproj" />
+    <Project Path="src/Asm.MooBank.Modules.Assets/Asm.MooBank.Modules.Assets.csproj" />
+    <Project Path="src/Asm.MooBank.Modules.Bills/Asm.MooBank.Modules.Bills.csproj">
+      <Build Solution="Debug|*" Project="false" />
+    </Project>
+    <Project Path="src/Asm.MooBank.Modules.Budgets/Asm.MooBank.Modules.Budgets.csproj" />
+    <Project Path="src/Asm.MooBank.Modules.Families/Asm.MooBank.Modules.Families.csproj" />
+    <Project Path="src/Asm.MooBank.Modules.Groups/Asm.MooBank.Modules.Groups.csproj" />
+    <Project Path="src/Asm.MooBank.Modules.Institutions/Asm.MooBank.Modules.Institutions.csproj" />
+    <Project Path="src/Asm.MooBank.Modules.ReferenceData/Asm.MooBank.Modules.ReferenceData.csproj" />
+    <Project Path="src/Asm.MooBank.Modules.Reports/Asm.MooBank.Modules.Reports.csproj" />
+    <Project Path="src/Asm.MooBank.Modules.Stocks/Asm.MooBank.Modules.Stocks.csproj" />
+    <Project Path="src/Asm.MooBank.Modules.Tags/Asm.MooBank.Modules.Tags.csproj" />
+    <Project Path="src/Asm.MooBank.Modules.Transactions/Asm.MooBank.Modules.Transactions.csproj" />
+    <Project Path="src/Asm.MooBank.Modules.Users/Asm.MooBank.Modules.Users.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="tests/Asm.MooBank.Modules.Tests/Asm.MooBank.Modules.Tests.csproj" />
+  </Folder>
+  <Project Path="src/Asm.MooBank.Database/Asm.MooBank.Database.sqlproj" Type="42ea0dbd-9cf1-443e-919e-be9c484e4577" />
+  <Project Path="src/Asm.MooBank.Domain/Asm.MooBank.Domain.csproj" />
+  <Project Path="src/Asm.MooBank.Infrastructure/Asm.MooBank.Infrastructure.csproj" />
+  <Project Path="src/Asm.MooBank.Models/Asm.MooBank.Models.csproj" />
+  <Project Path="src/Asm.MooBank.Security/Asm.MooBank.Security.csproj" />
+  <Project Path="src/Asm.MooBank.Web.Api/Asm.MooBank.Web.Api.csproj" />
+  <Project Path="src/Asm.MooBank.Web.App/Asm.MooBank.Web.App.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="src/Asm.MooBank.Web.Jobs/Asm.MooBank.Web.Jobs.csproj" />
+  <Project Path="src/Asm.MooBank/Asm.MooBank.csproj" />
+</Solution>
