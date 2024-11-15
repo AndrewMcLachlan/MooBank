@@ -9,15 +9,27 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Asm.AspNetCore.Api" />
     <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy">
       <TreatAsUsed>true</TreatAsUsed>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.ApiDescription.Server">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design">
       <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <OpenApiGenerateDocuments>true</OpenApiGenerateDocuments>
+    <OpenApiGenerateDocumentsOnBuild>false</OpenApiGenerateDocumentsOnBuild>
+    <OpenApiDocumentsDirectory>$(MSBuildProjectDirectory)</OpenApiDocumentsDirectory>
+  </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Asm.MooBank\Asm.MooBank.csproj" />
@@ -29,6 +41,7 @@
     <ProjectReference Include="..\Asm.MooBank.Modules.*\*.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Modules.Accounts\Asm.MooBank.Modules.Accounts.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Modules.Assets\Asm.MooBank.Modules.Assets.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Modules.Bills\Asm.MooBank.Modules.Bills.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Modules.Instruments\Asm.MooBank.Modules.Instruments.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Modules.Stocks\Asm.MooBank.Modules.Stocks.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Modules.Tags\Asm.MooBank.Modules.Tags.csproj" />

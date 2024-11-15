@@ -1,16 +1,25 @@
 using System.ComponentModel;
 using System.Reflection;
+using System.Text;
 using System.Text.Json.Serialization;
+using Asm.AspNetCore.Api;
 using Asm.AspNetCore.Modules;
 using Asm.MooBank.Institution.AustralianSuper;
 using Asm.MooBank.Institution.Ing;
 using Asm.MooBank.Security;
 using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
-return WebApplicationStart.Run(args, "Asm.MooBank.Web.Api", AddServices, AddApp);
+StringBuilder DebugLog = new();
+
+var result =  WebApplicationStart.Run(args, "Asm.MooBank.Web.Api", AddServices, AddApp);
+
+Console.WriteLine("Debug Log:");
+Console.WriteLine(DebugLog.ToString());
+return result;
 
 void AddServices(WebApplicationBuilder builder)
 {
@@ -65,6 +74,38 @@ void AddServices(WebApplicationBuilder builder)
         });
     });
 
+    services.AddOpenApi("v1", options =>
+    {
+        options.OpenApiVersion = Microsoft.OpenApi.OpenApiSpecVersion.OpenApi3_0;
+        options.AddDocumentTransformer<OidcSecuritySchemeTransformer>();
+        options.AddDocumentTransformer((document, context, cancellationToken) =>
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
+
+            document.Info.Title = "MooBank API";
+            document.Info.Version = fileVersionInfo.FileVersion;
+
+            document.Tags = [.. document.Tags.OrderBy(t => t.Name)];
+
+            return Task.CompletedTask;
+        });
+
+        options.CreateSchemaReferenceId = arg =>
+        {
+            if (arg.Kind == System.Text.Json.Serialization.Metadata.JsonTypeInfoKind.Object)
+            {
+                return arg.Type.GetCustomAttribute<DisplayNameAttribute>(false)?.DisplayName ?? arg.Type.Name;
+            }
+            return OpenApiOptions.CreateDefaultSchemaReferenceId(arg);
+        };
+
+        options.AddSchemaTransformer((schema, context, cancellationToken) =>
+        {
+            return Task.CompletedTask;
+        });
+    });
+
     if (builder.Environment.IsProduction())
     {
         services.AddOpenTelemetry().WithMetrics().UseAzureMonitor();
@@ -114,6 +155,9 @@ void AddServices(WebApplicationBuilder builder)
     services.AddSwaggerGen();
 
     services.AddHealthChecks();
+
+
+    Serilog.Debugging.SelfLog.Enable(message => DebugLog.AppendLine(message));
 }
 
 void AddApp(WebApplication app)
@@ -121,12 +165,16 @@ void AddApp(WebApplication app)
     app.UseStaticFiles();
 
     app.UseSwagger();
+    app.MapOpenApi();
     app.UseSwaggerUI(options =>
     {
+        options.SwaggerEndpoint("/openapi/v1.json", "MooBank API");
         options.OAuthClientId(app.Configuration["OAuth:Audience"]);
         options.OAuthAppName("MooBank");
         options.OAuthUsePkce();
         options.OAuthScopes("api://moobank.mclachlan.family/.default");
+
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "MooBank API (Swashbuckle)");
     });
 
     if (app.Environment.IsDevelopment())
