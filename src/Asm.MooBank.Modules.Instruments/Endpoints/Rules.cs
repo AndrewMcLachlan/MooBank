@@ -11,11 +11,11 @@ namespace Asm.MooBank.Modules.Instruments.Endpoints;
 
 public class RulesEndpoints : EndpointGroupBase
 {
-    public override string Name => "Account Rules";
+    public override string Name => "Rules";
 
     public override string Path => "accounts/{accountId}/rules";
 
-    public override string Tags => "Account Rules";
+    public override string Tags => "Rules";
 
 
     protected override void MapEndpoints(IEndpointRouteBuilder routeGroupBuilder)

@@ -9,5 +9,5 @@ public record TransactionSplit
 
     public required decimal Amount { get; init; }
 
-    public IEnumerable<TransactionOffsetBy> OffsetBy { get; set; } = Enumerable.Empty<TransactionOffsetBy>();
+    public IEnumerable<TransactionOffsetBy> OffsetBy { get; set; } = [];
 }
