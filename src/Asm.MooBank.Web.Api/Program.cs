@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
+Serilog.Debugging.SelfLog.Enable(Console.Out);
+Serilog.Debugging.SelfLog.WriteLine("Serilog debug logging enabled.");
+
 return WebApplicationStart.Run(args, "Asm.MooBank.Web.Api", AddServices, AddApp);
 
 void AddServices(WebApplicationBuilder builder)
