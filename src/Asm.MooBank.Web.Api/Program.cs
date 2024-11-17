@@ -10,11 +10,6 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
-Serilog.Debugging.SelfLog.Enable(Console.Out);
-Serilog.Debugging.SelfLog.WriteLine("Serilog debug logging enabled.");
-Serilog.Debugging.SelfLog.WriteLine(Environment.GetEnvironmentVariable("Seq:Host") ?? "No Seq host");
-Serilog.Debugging.SelfLog.WriteLine(Environment.GetEnvironmentVariable("Seq:APIKey") ?? "No Seq API key");
-
 return WebApplicationStart.Run(args, "Asm.MooBank.Web.Api", AddServices, AddApp);
 
 void AddServices(WebApplicationBuilder builder)
