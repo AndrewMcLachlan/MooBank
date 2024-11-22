@@ -17,19 +17,19 @@ internal class StockHoldings : EndpointGroupBase
 
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {
-        builder.MapQuery<Get, StockHolding>("/{id}")
+        builder.MapQuery<Get, StockHolding>("/{instrumentId}")
             .WithNames("Get Stock Holding");
 
         builder.MapPostCreate<Create, StockHolding>("/", "Get Stock Holding".ToMachine(), a => new { a.Id }, CommandBinding.Body)
             .WithNames("Create Stock Holding");
 
-        builder.MapPatchCommand<Update, StockHolding>("/{id}", CommandBinding.None)
+        builder.MapPatchCommand<Update, StockHolding>("/{instrumentId}", CommandBinding.None)
             .WithNames("Update Stock Holding");
 
         builder.MapQuery<GetStockHoldingReport, StockHoldingReport>("stock-holding")
             .WithNames("Stock Holding Report");
 
-        builder.MapQuery<GetStockValueReport, StockValueReport>("{id}/reports/value")
+        builder.MapQuery<GetStockValueReport, StockValueReport>("{instrumentId}/reports/value")
             .WithNames("Stock Value Report");
     }
 }

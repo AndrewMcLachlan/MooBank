@@ -21,13 +21,13 @@ internal class Accounts : EndpointGroupBase
         builder.MapQuery<GetAll, IEnumerable<InstitutionAccount>>("/")
             .WithNames("Get Accounts");
 
-        builder.MapQuery<Get, InstitutionAccount>("/{id}")
+        builder.MapQuery<Get, InstitutionAccount>("/{instrumentId}")
             .WithNames("Get Account");
 
         builder.MapPostCreate<Create, InstitutionAccount>("/", "Get Account".ToMachine(), a => new { a.Id }, CommandBinding.Body)
             .WithNames("Create Account");
 
-        builder.MapPatchCommand<Update, InstitutionAccount>("/{id}")
+        builder.MapPatchCommand<Update, InstitutionAccount>("/{id}") // TODO: Convert to instrumentId
             .WithNames("Update Account");
     }
 
