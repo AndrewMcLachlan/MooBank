@@ -64,7 +64,7 @@ const useComponentState = () => {
     const [newTag, setNewTag] = useState(blankTag);
     const [tagsList, setTagsList] = useState<Tag[]>([]);
     const [filteredTags, setFilteredTags] = useState<Tag[]>([]);
-    const [pagedTags, setPagedTags] = useState<Tag[] | undefined[]>(Array.from({ length: pageSize }).map(() => undefined));
+    const [pagedTags, setPagedTags] = useState<Tag[] | undefined[]>(Array.from({ length: pageSize }).map(():undefined => undefined));
 
     const [sortDirection, setSortDirection] = useState<SortDirection>("Ascending");
     const [search, setSearch] = useState("");
@@ -90,7 +90,7 @@ const useComponentState = () => {
 
     useEffect(() => {
         if (isLoading) {
-            setPagedTags(Array.from({ length: pageSize }).map(_v => undefined));
+            setPagedTags(Array.from({ length: pageSize }).map(():undefined => undefined));
             return;
         }
         setPagedTags(filteredTags.sort(sortTags(sortDirection)).slice((pageNumber - 1) * pageSize, ((pageNumber - 1) * pageSize) + pageSize));
