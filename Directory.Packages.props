@@ -6,7 +6,7 @@
     <PackageVersion Include="Azure.Identity" Version="1.13.1" />
     <PackageVersion Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.2.0" />
     <PackageVersion Include="Azure.Security.KeyVault.Secrets" Version="4.6.0" />
-    <PackageVersion Include="FluentValidation" Version="11.10.0" />
+    <PackageVersion Include="FluentValidation" Version="11.11.0" />
     <PackageVersion Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
     <PackageVersion Include="LazyCache.AspNetCore" Version="2.4.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="9.0.0" />
@@ -28,24 +28,24 @@
     <PackageVersion Include="Microsoft.Identity.Client" Version="4.66.2" />
     <PackageVersion Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageVersion Include="Swashbuckle.AspNetCore" Version="7.0.0" />
+    <PackageVersion Include="Swashbuckle.AspNetCore" Version="7.1.0" />
     <PackageVersion Include="System.Private.Uri" Version="4.3.2" />
     <PackageVersion Include="System.Formats.Asn1" Version="9.0.0" />
     <PackageVersion Include="System.Text.Json" Version="9.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <PackageVersion Include="Asm" Version="3.4.327" />
-    <PackageVersion Include="Asm.AspNetCore" Version="3.4.327" />
+    <PackageVersion Include="Asm" Version="3.4.334" />
+    <PackageVersion Include="Asm.AspNetCore" Version="3.4.334" />
     <PackageVersion Include="Asm.AspNetCore.Api" Version="3.4.322" />
-    <PackageVersion Include="Asm.Cqrs.AspNetCore" Version="3.4.327" />
-    <PackageVersion Include="Asm.Domain" Version="3.4.327" />
-    <PackageVersion Include="Asm.Domain.Infrastructure" Version="3.4.327" />
-    <PackageVersion Include="Asm.Testing" Version="3.4.327" />
+    <PackageVersion Include="Asm.Cqrs.AspNetCore" Version="3.4.334" />
+    <PackageVersion Include="Asm.Domain" Version="3.4.334" />
+    <PackageVersion Include="Asm.Domain.Infrastructure" Version="3.4.334" />
+    <PackageVersion Include="Asm.Testing" Version="3.4.334" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="Bogus" Version="35.6.1" />
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageVersion Include="Moq" Version="4.20.72" />
     <PackageVersion Include="SpecFlow.Tools.MsBuild.Generation" Version="3.9.74" />
     <PackageVersion Include="SpecFlow.xUnit" Version="3.9.74" />
