@@ -2,22 +2,20 @@ using Asm.MooBank.Modules.Stocks.Models;
 
 namespace Asm.MooBank.Modules.Stocks.Queries;
 
-public record GetStockValueReport(Guid Id, DateOnly Start, DateOnly End) : IQuery<StockValueReport>
+public record GetStockValueReport(Guid InstrumentId, DateOnly Start, DateOnly End) : IQuery<StockValueReport>
 {
 }
 
 internal class GetStockValueReportHandler(IQueryable<Domain.Entities.StockHolding.StockHolding> stockHoldings,
                                           IQueryable<Domain.Entities.Transactions.StockTransaction> transactions,
-                                          IQueryable<Domain.Entities.ReferenceData.StockPriceHistory> stockPriceHistories, ISecurity security)
+                                          IQueryable<Domain.Entities.ReferenceData.StockPriceHistory> stockPriceHistories)
     : IQueryHandler<GetStockValueReport, StockValueReport>
 {
     public async ValueTask<StockValueReport> Handle(GetStockValueReport query, CancellationToken cancellationToken)
     {
-       security.AssertInstrumentPermission(query.Id);
+        var stockHolding = await stockHoldings.SingleAsync(s => s.Id == query.InstrumentId, cancellationToken);
 
-        var stockHolding = await stockHoldings.SingleAsync(s => s.Id == query.Id, cancellationToken);
-
-        var selectedTransactions = await transactions.Where(transaction => transaction.AccountId == query.Id && transaction.TransactionDate < query.End.ToEndOfDay()).ToListAsync(cancellationToken);
+        var selectedTransactions = await transactions.Where(transaction => transaction.AccountId == query.InstrumentId && transaction.TransactionDate < query.End.ToEndOfDay()).ToListAsync(cancellationToken);
 
         //var stocksOnDay1 = selectedTransactions.Where(s => s.TransactionDate <= query.Start.ToStartOfDay()).Sum(s => s.Quantity);
 
@@ -32,7 +30,7 @@ internal class GetStockValueReportHandler(IQueryable<Domain.Entities.StockHoldin
         var date = query.Start;
         decimal stockPrice = 0;
 
-        StockValueReport stockValueReport = new(query.Id, stockHolding.Symbol, query.Start, query.End, granularity);
+        StockValueReport stockValueReport = new(query.InstrumentId, stockHolding.Symbol, query.Start, query.End, granularity);
 
         while (date <= query.End)
         {

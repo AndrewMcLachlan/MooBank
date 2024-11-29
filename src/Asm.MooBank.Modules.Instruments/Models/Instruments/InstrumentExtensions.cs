@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Asm.MooBank.Models;
+﻿using Asm.MooBank.Models;
 
-namespace Asm.MooBank.Modules.Instruments.Models.Account;
+namespace Asm.MooBank.Modules.Instruments.Models.Instruments;
 internal static class InstrumentExtensions
 {
 }

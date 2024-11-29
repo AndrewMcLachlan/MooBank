@@ -15,14 +15,12 @@ public static class AuthorizationOptionsExtensions
 
         options.AddPolicy(Policies.InstrumentOwner, policy =>
         {
-            policy.RequireAuthenticatedUser();
-            policy.Requirements.Add(new InstrumentOwnerRequirement());
+            policy.GetInstrumentOwnerPolicy();
         });
 
         options.AddPolicy(Policies.InstrumentViewer, policy =>
         {
-            policy.RequireAuthenticatedUser();
-            policy.Requirements.Add(new InstrumentViewerRequirement());
+            policy.GetInstrumentViewerPolicy();
         });
 
         options.AddPolicy(Policies.Admin, policy =>

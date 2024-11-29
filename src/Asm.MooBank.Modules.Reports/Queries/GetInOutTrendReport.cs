@@ -7,12 +7,10 @@ namespace Asm.MooBank.Modules.Reports.Queries;
 
 public record GetInOutTrendReport : ReportQuery, IQuery<InOutTrendReport>;
 
-internal class GetInOutTrendReportHandler(IQueryable<Transaction> transactions, ISecurity securityRepository) : IQueryHandler<GetInOutTrendReport, InOutTrendReport>
+internal class GetInOutTrendReportHandler(IQueryable<Transaction> transactions) : IQueryHandler<GetInOutTrendReport, InOutTrendReport>
 {
     public async ValueTask<InOutTrendReport> Handle(GetInOutTrendReport request, CancellationToken cancellationToken)
     {
-        securityRepository.AssertInstrumentPermission(request.AccountId);
-
         var groupedQuery = await transactions.Specify(new IncludeSplitsAndOffsetsSpecification()).WhereByReportQuery(request).GroupBy(t => t.TransactionType).ToListAsync(cancellationToken);
 
         var income = GetTrendPoints(groupedQuery.Where(g => g.Key.IsCredit()).SelectMany(g => g.AsQueryable()));

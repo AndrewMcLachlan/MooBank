@@ -1,7 +1,7 @@
 ﻿using Asm.MooBank.Models;
 using Asm.MooBank.Services;
 
-namespace Asm.MooBank.Modules.Instruments.Models.Account;
+namespace Asm.MooBank.Modules.Instruments.Models.Instruments;
 
 public static class VirtualInstrumentExtensions
 {

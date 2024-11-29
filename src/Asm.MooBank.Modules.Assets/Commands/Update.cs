@@ -37,7 +37,6 @@ internal class UpdateHandler(IAssetRepository repository, IUnitOfWork unitOfWork
 {
     public async ValueTask<Models.Asset> Handle(Update command, CancellationToken cancellationToken)
     {
-        security.AssertInstrumentPermission(command.AccountId);
         if (command.GroupId != null)
         {
             security.AssertGroupPermission(command.GroupId.Value);

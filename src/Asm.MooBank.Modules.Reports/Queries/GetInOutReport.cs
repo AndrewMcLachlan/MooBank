@@ -7,12 +7,10 @@ namespace Asm.MooBank.Modules.Reports.Queries;
 
 public record GetInOutReport : ReportQuery, IQuery<InOutReport>;
 
-internal class GetInOutReportHandler(IQueryable<Transaction> transactions, ISecurity security) : IQueryHandler<GetInOutReport, InOutReport>
+internal class GetInOutReportHandler(IQueryable<Transaction> transactions) : IQueryHandler<GetInOutReport, InOutReport>
 {
     public async ValueTask<InOutReport> Handle(GetInOutReport request, CancellationToken cancellationToken)
     {
-        security.AssertInstrumentPermission(request.AccountId);
-
         var results = await transactions.Specify(new IncludeSplitsAndOffsetsSpecification()).WhereByReportQuery(request)
             .ExcludeOffset()
             .GroupBy(t => t.TransactionType)

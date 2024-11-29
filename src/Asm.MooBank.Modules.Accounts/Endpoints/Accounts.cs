@@ -22,13 +22,15 @@ internal class Accounts : EndpointGroupBase
             .WithNames("Get Accounts");
 
         builder.MapQuery<Get, InstitutionAccount>("/{instrumentId}")
-            .WithNames("Get Account");
+            .WithNames("Get Account")
+            .RequireAuthorization(Policies.GetInstrumentViewerPolicy());
 
         builder.MapPostCreate<Create, InstitutionAccount>("/", "Get Account".ToMachine(), a => new { a.Id }, CommandBinding.Body)
             .WithNames("Create Account");
 
-        builder.MapPatchCommand<Update, InstitutionAccount>("/{id}") // TODO: Convert to instrumentId
-            .WithNames("Update Account");
+        builder.MapPatchCommand<Update, InstitutionAccount>("/{id}")
+            .WithNames("Update Account")
+            .RequireAuthorization(Policies.GetInstrumentViewerPolicy("id"));
     }
 
     internal static Delegate CreateCreateHandler<TRequest, TResult>(string routeName, Func<TResult, object> getRouteParams) where TRequest : ICommand<TResult>

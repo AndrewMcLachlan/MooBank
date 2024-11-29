@@ -1,7 +1,7 @@
-﻿namespace Asm.MooBank.Modules.Instruments.Queries.Rules;
+﻿namespace Asm.MooBank.Modules.Instruments.Models.Rules;
 public record CreateRule
 {
-    public required Guid AccountId { get; set; }
+    public required Guid InstrumentId { get; set; }
 
     public required string Contains { get; set; }
 

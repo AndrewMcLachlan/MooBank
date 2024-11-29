@@ -1,7 +1,6 @@
 ﻿//using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Modules.Reports.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Asm.MooBank.Modules.Reports.Queries;
 
@@ -10,14 +9,12 @@ public record GetAllTagAverageReport() : TypedReportQuery, IQuery<AllTagAverageR
     public int Top { get; init; }
 }
 
-internal class GetAllTagAverageReportHandler(IQueryable<Transaction> transactions, /*IQueryable<TagRelationship> tagRelationships,*/ ISecurity securityRepository) : IQueryHandler<GetAllTagAverageReport, AllTagAverageReport>
+internal class GetAllTagAverageReportHandler(IQueryable<Transaction> transactions/*, IQueryable<TagRelationship> tagRelationships*/) : IQueryHandler<GetAllTagAverageReport, AllTagAverageReport>
 {
     private readonly IQueryable<Transaction> _transactions = transactions;
 
     public async ValueTask<AllTagAverageReport> Handle(GetAllTagAverageReport query, CancellationToken cancellationToken)
     {
-        securityRepository.AssertInstrumentPermission(query.AccountId);
-
         // Only required by consolidated tag amounts below
         //var relationships = await tagRelationships.Include(t => t.Tag).ThenInclude(t => t.Tags.Where(t => !t.Deleted && !t.Settings.ExcludeFromReporting)).Include(t => t.ParentTag).ThenInclude(t => t.Tags.Where(t => !t.Deleted && !t.Settings.ExcludeFromReporting)).Where(tr => !tr.Tag.Deleted && !tr.Tag.Settings.ExcludeFromReporting).ToListAsync(cancellationToken);
 

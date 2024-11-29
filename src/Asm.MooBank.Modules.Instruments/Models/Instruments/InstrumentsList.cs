@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using Asm.MooBank.Models;
 
-namespace Asm.MooBank.Modules.Instruments.Models.Account;
+namespace Asm.MooBank.Modules.Instruments.Models.Instruments;
 
 public record InstrumentsList
 {

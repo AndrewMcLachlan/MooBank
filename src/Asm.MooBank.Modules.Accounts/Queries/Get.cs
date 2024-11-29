@@ -6,7 +6,7 @@ namespace Asm.MooBank.Modules.Accounts.Queries;
 
 public record Get(Guid InstrumentId) : IQuery<Models.Account.InstitutionAccount>;
 
-internal class GetHandler(IQueryable<Domain.Entities.Account.InstitutionAccount> accounts, User user, ISecurity security, ICurrencyConverter currencyConverter) : IQueryHandler<Get, Models.Account.InstitutionAccount>
+internal class GetHandler(IQueryable<Domain.Entities.Account.InstitutionAccount> accounts, User user, ICurrencyConverter currencyConverter) : IQueryHandler<Get, Models.Account.InstitutionAccount>
 {
     public async ValueTask<Models.Account.InstitutionAccount> Handle(Get request, CancellationToken cancellationToken)
     {
@@ -16,8 +16,6 @@ internal class GetHandler(IQueryable<Domain.Entities.Account.InstitutionAccount>
                                    .Include(a => a.Viewers).ThenInclude(ah => ah.User)
                                    .Include(a => a.ImportAccount).Include(a => a.VirtualInstruments).Include(a => a.Institution)
                                    .SingleOrDefaultAsync(a => a.Id == request.InstrumentId, cancellationToken) ?? throw new NotFoundException();
-
-        security.AssertInstrumentPermission(entity);
 
         var account = entity.ToModelWithGroup(user, currencyConverter);
 

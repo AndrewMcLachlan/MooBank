@@ -1,6 +1,6 @@
 ﻿using Asm.MooBank.Models;
 
-namespace Asm.MooBank.Modules.Instruments.Queries.Instrument;
+namespace Asm.MooBank.Modules.Instruments.Queries.Instruments;
 
 public sealed record GetList() : IQuery<IEnumerable<ListItem<Guid>>>;
 

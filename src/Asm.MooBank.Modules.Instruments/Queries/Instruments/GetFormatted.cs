@@ -1,8 +1,8 @@
 ﻿using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Instruments.Models.Account;
+using Asm.MooBank.Modules.Instruments.Models.Instruments;
 using Asm.MooBank.Services;
 
-namespace Asm.MooBank.Modules.Instruments.Queries.Instrument;
+namespace Asm.MooBank.Modules.Instruments.Queries.Instruments;
 
 public sealed record GetFormatted() : IQuery<InstrumentsList>;
 
@@ -39,7 +39,7 @@ internal class GetFormattedHandler(IQueryable<Domain.Entities.Account.Institutio
 
         var groups = allGroups.Where(ag => ag != null).Select(ag =>
         {
-            IEnumerable<MooBank.Models.Instrument> matchingAccounts = [
+            IEnumerable<Instrument> matchingAccounts = [
                 .. institutionAccounts1.Where(a => a.GetGroup(userId)?.Id == ag!.Id).ToModel(currencyConverter),
                 .. stockHoldings1.Where(a => a.GetGroup(userId)?.Id == ag!.Id).ToModel(currencyConverter),
                 .. assets1.Where(a => a.GetGroup(userId)?.Id == ag!.Id).ToModel(currencyConverter),

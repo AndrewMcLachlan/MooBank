@@ -1,17 +1,16 @@
 ﻿using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Instruments.Models.Account;
+using Asm.MooBank.Modules.Instruments.Models.Instruments;
 using Asm.MooBank.Services;
 
-namespace Asm.MooBank.Modules.Instruments.Commands.VirtualAccount;
+namespace Asm.MooBank.Modules.Instruments.Commands.VirtualInstruments;
 
 public record Create(Guid InstrumentId, VirtualInstrument VirtualInstrument) : ICommand<VirtualInstrument>;
 
-internal class CreateHandler(IInstrumentRepository instrumentRepository, Domain.Entities.Transactions.ITransactionRepository transactionRepository, ISecurity security, IUnitOfWork unitOfWork, ICurrencyConverter currencyConverter) : ICommandHandler<Create, VirtualInstrument>
+internal class CreateHandler(IInstrumentRepository instrumentRepository, Domain.Entities.Transactions.ITransactionRepository transactionRepository, IUnitOfWork unitOfWork, ICurrencyConverter currencyConverter) : ICommandHandler<Create, VirtualInstrument>
 {
     public async ValueTask<VirtualInstrument> Handle(Create request, CancellationToken cancellationToken)
     {
-        security.AssertInstrumentPermission(request.InstrumentId);
         var instrument = await instrumentRepository.Get(request.InstrumentId, cancellationToken);
 
         var entity = request.VirtualInstrument.ToEntity(request.InstrumentId);

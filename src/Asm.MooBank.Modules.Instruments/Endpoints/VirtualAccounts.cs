@@ -1,8 +1,8 @@
 ﻿using Asm.AspNetCore;
 using Asm.AspNetCore.Routing;
 using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Instruments.Commands.VirtualAccount;
-using Asm.MooBank.Modules.Instruments.Queries.VirtualAccount;
+using Asm.MooBank.Modules.Instruments.Commands.VirtualInstruments;
+using Asm.MooBank.Modules.Instruments.Queries.VirtualAccounts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 

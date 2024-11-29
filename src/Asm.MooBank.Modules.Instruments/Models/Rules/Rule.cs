@@ -1,7 +1,7 @@
 ﻿using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Instruments.Queries.Rules;
+using Asm.MooBank.Modules.Instruments.Models.Rules;
 
-namespace Asm.MooBank.Modules.Instruments.Queries.Rules;
+namespace Asm.MooBank.Modules.Instruments.Models.Rules;
 
 public partial record Rule
 {

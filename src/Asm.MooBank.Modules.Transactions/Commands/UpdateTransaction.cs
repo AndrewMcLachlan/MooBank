@@ -23,12 +23,10 @@ public record UpdateTransaction(Guid InstrumentId, Guid Id, string? Notes, IEnum
     }
 }
 
-internal class UpdateTransactionHandler(ITransactionRepository transactionRepository, ITagRepository tagRepository, IUnitOfWork unitOfWork, ISecurity security) : ICommandHandler<UpdateTransaction, Models.Transaction>
+internal class UpdateTransactionHandler(ITransactionRepository transactionRepository, ITagRepository tagRepository, IUnitOfWork unitOfWork) : ICommandHandler<UpdateTransaction, Models.Transaction>
 {
     public async ValueTask<Models.Transaction> Handle(UpdateTransaction request, CancellationToken cancellationToken)
     {
-        security.AssertInstrumentPermission(request.InstrumentId);
-
         var entity = await transactionRepository.Get(request.Id, new IncludeSplitsSpecification(), cancellationToken);
 
         #region Splits
