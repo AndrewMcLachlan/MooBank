@@ -21,7 +21,7 @@ internal class StockHoldings : EndpointGroupBase
             .WithNames("Get Stock Holding")
             .RequireAuthorization(Policies.GetInstrumentViewerPolicy());
 
-        builder.MapPostCreate<Create, StockHolding>("/", "Get Stock Holding".ToMachine(), a => new { a.Id }, CommandBinding.Body)
+        builder.MapPostCreate<Create, StockHolding>("/", "Get Stock Holding".ToMachine(), a => new { InstrumentId = a.Id }, CommandBinding.Body)
             .WithNames("Create Stock Holding");
 
         builder.MapPatchCommand<Update, StockHolding>("/{instrumentId}", CommandBinding.None)
