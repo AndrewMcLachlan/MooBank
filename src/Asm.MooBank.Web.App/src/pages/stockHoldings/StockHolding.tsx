@@ -1,6 +1,6 @@
 import { useIdParams } from "@andrewmclachlan/mooapp";
 import { StockHoldingProvider } from "./StockHoldingProvider";
-import { Navigate, Outlet, useMatch } from "react-router-dom";
+import { Navigate, Outlet, useMatch } from "react-router";
 import { useStockHolding } from "services";
 
 export const StockHolding = () => {

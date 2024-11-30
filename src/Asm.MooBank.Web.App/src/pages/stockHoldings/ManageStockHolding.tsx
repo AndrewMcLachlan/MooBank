@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { StockHolding } from "../../models";
 import { StockHoldingPage } from "./StockHoldingPage";
 import { useStockHolding } from "./StockHoldingProvider";

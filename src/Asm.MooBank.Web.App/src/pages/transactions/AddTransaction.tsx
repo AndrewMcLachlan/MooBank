@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import * as Models from "models";
 import { useCreateTransaction } from "services";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { Section } from "@andrewmclachlan/mooapp";
 import { AccountPage, useAccount } from "components";
 import { useAccountRoute } from "hooks/useAccountRoute";

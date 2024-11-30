@@ -1,6 +1,6 @@
 import { SectionTable } from "@andrewmclachlan/mooapp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { useFamilies } from "services";
 import { SettingsPage } from "../SettingsPage";
 

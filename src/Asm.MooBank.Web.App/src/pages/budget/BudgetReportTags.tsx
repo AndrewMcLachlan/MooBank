@@ -7,7 +7,7 @@ import { Bar } from "react-chartjs-2";
 import { Section } from "@andrewmclachlan/mooapp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useChartColours } from "helpers/chartColours";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useBudgetReportForMonthBreakdown, useBudgetReportForMonthBreakdownUnbudgeted } from "services/BudgetService";
 
 ChartJS.register(...registerables);

@@ -3,7 +3,7 @@ import { ChartData, Chart as ChartJS, registerables } from "chart.js";
 import chartTrendline from "chartjs-plugin-trendline";
 import React, { useState } from "react";
 import { Line } from "react-chartjs-2";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
 import { PeriodSelector } from "components/PeriodSelector";
 import { formatDate } from "date-fns/format";

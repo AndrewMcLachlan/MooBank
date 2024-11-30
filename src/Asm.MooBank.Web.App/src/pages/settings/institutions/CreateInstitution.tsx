@@ -1,5 +1,5 @@
 import { emptyInstitution, Institution } from "models";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 import { useCreateInstitution } from "services";
 import { SettingsPage } from "../SettingsPage";

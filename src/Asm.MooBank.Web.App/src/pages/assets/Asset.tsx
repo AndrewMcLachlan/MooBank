@@ -1,6 +1,6 @@
 import { useIdParams } from "@andrewmclachlan/mooapp";
 import { AssetProvider } from "./AssetProvider";
-import { Navigate, Outlet, useMatch } from "react-router-dom";
+import { Navigate, Outlet, useMatch } from "react-router";
 import { useAsset } from "services";
 
 export const Asset = () => {
