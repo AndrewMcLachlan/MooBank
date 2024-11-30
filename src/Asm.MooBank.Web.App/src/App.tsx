@@ -46,7 +46,7 @@ const sideMenu = [
     },
     {
         text: "Accounts",
-        image: <Icons.PiggyBank3 />,
+        image: <Icons.PiggyBank />,
         route: "/accounts"
     },
     {
