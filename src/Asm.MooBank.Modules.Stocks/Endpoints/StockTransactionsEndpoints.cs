@@ -11,7 +11,7 @@ internal class StockTransactionsEndpoints : EndpointGroupBase
 {
     public override string Name => "Stock Transactions";
 
-    public override string Path => "/stocks/{stockHoldingId}/transactions";
+    public override string Path => "/stocks/{instrumentId}/transactions";
 
     public override string Tags => "Transactions";
 

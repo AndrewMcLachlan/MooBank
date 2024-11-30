@@ -1,3 +1,3 @@
-@import "components/accountlist";
-@import "components/summary";
-@import "components/monthselector";
+@forward "components/accountlist";
+@forward "components/summary";
+@forward "components/monthselector";

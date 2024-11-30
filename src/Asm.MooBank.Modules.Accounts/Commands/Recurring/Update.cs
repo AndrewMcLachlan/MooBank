@@ -19,12 +19,10 @@ public record Update(Guid AccountId, Guid VirtualAccountId, Guid RecurringTransa
     }
 }
 
-internal class UpdateHandler(IInstrumentRepository accountRepository, IUnitOfWork unitOfWork, ISecurity security) : ICommandHandler<Update, Models.Recurring.RecurringTransaction>
+internal class UpdateHandler(IInstrumentRepository accountRepository, IUnitOfWork unitOfWork) : ICommandHandler<Update, Models.Recurring.RecurringTransaction>
 {
     public async ValueTask<Models.Recurring.RecurringTransaction> Handle(Update command, CancellationToken cancellationToken)
     {
-        security.AssertInstrumentPermission(command.InstrumentId);
-
         var account = await accountRepository.Get(command.InstrumentId, new RecurringTransactionSpecification(), cancellationToken);
 
         var virtualAccount = account.VirtualInstruments.SingleOrDefault(v => v.Id == command.VirtualAccountId) ?? throw new NotFoundException();

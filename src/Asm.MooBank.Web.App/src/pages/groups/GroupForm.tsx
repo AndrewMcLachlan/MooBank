@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Group } from "models";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useCreateGroup, useUpdateGroup } from "services";
 import { emptyGuid, NavItem, Page, Section } from "@andrewmclachlan/mooapp";
 import { Button, Form } from "react-bootstrap";

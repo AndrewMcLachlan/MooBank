@@ -10,22 +10,17 @@ public static class AuthorizationOptionsExtensions
         options.AddPolicy(Policies.FamilyMember, policy =>
         {
             policy.RequireAuthenticatedUser();
-            policy.RequireClaim(ClaimTypes.FamilyId);
             policy.Requirements.Add(new FamilyMemberRequirement());
         });
 
         options.AddPolicy(Policies.InstrumentOwner, policy =>
         {
-            policy.RequireAuthenticatedUser();
-            policy.RequireClaim(ClaimTypes.AccountId);
-            policy.Requirements.Add(new InstrumentOwnerRequirement());
+            policy.GetInstrumentOwnerPolicy();
         });
 
         options.AddPolicy(Policies.InstrumentViewer, policy =>
         {
-            policy.RequireAuthenticatedUser();
-            policy.RequireClaim(ClaimTypes.AccountId);
-            policy.Requirements.Add(new InstrumentViewerRequirement());
+            policy.GetInstrumentViewerPolicy();
         });
 
         options.AddPolicy(Policies.Admin, policy =>

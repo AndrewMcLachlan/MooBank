@@ -4,7 +4,7 @@ import { IconButton, LoadingTableRows, Page } from "@andrewmclachlan/mooapp";
 import { Table } from "react-bootstrap";
 import { useGroups } from "services";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { GroupRow } from "./GroupRow";
 
 export const ManageGroups = () => {

@@ -11,7 +11,7 @@ import { PeriodSelector } from "components/PeriodSelector";
 import { ReportTypeSelector } from "components/ReportTypeSelector";
 import { Period } from "helpers/dateFns";
 import { ReportType } from "models/reports";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import { chartColours } from "../../../helpers/chartColours";
 import { Breakdown } from "./Breakdown";
 

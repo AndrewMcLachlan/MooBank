@@ -1,8 +1,8 @@
 ﻿using Asm.AspNetCore;
 using Asm.AspNetCore.Routing;
 using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Instruments.Models.Account;
-using Asm.MooBank.Modules.Instruments.Queries.Instrument;
+using Asm.MooBank.Modules.Instruments.Models.Instruments;
+using Asm.MooBank.Modules.Instruments.Queries.Instruments;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;

@@ -8,15 +8,13 @@ namespace Asm.MooBank.Modules.Stocks.Commands.Transactions;
 
 public record Create(Guid InstrumentId, int Quantity, decimal Price, decimal Fees, string Description, DateTime Date) : InstrumentIdCommand(InstrumentId), ICommand<StockTransaction>
 {
-    public static ValueTask<Create> BindAsync(HttpContext httpContext) => BindHelper.BindWithInstrumentIdAsync<Create>("stockHoldingId", httpContext);
+    public static ValueTask<Create> BindAsync(HttpContext httpContext) => BindHelper.BindWithInstrumentIdAsync<Create>("instrumentId", httpContext);
 }
 
-internal class CreateHandler(IStockHoldingRepository stockHoldingRepository, IUnitOfWork unitOfWork, ISecurity security) : ICommandHandler<Create, StockTransaction>
+internal class CreateHandler(IStockHoldingRepository stockHoldingRepository, IUnitOfWork unitOfWork) : ICommandHandler<Create, StockTransaction>
 {
     public async ValueTask<StockTransaction> Handle(Create command, CancellationToken cancellationToken)
     {
-        await security.AssertInstrumentPermissionAsync(command.InstrumentId, cancellationToken);
-
         var stockHolding = await stockHoldingRepository.Get(command.InstrumentId, cancellationToken);
 
         var transaction = new Domain.Entities.Transactions.StockTransaction(Guid.Empty)

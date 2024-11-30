@@ -1,10 +1,10 @@
-﻿@import "~/@andrewmclachlan/mooapp/scss/mooapp.scss";
-@import "~/@andrewmclachlan/mooapp/scss/mixins";
-@import "../scss/budget";
-@import "../scss/rainbow";
-@import "../scss/components";
-@import "../scss/filterPanel";
-@import "../scss/transactions";
+﻿@use "~/bootstrap/scss/bootstrap-utilities" as *;
+@use "~/@andrewmclachlan/mooapp/scss/mooapp.scss";
+@forward "../scss/budget";
+@forward "../scss/rainbow";
+@forward "../scss/components";
+@forward "../scss/filterPanel";
+@forward "../scss/transactions";
 
 @media (prefers-color-scheme: dark) {
     body {
@@ -329,4 +329,28 @@ input.form-control:read-only {
     }
 }
 
-@import "responsive";
+@media (max-width: 767px), (max-device-width: 767px) {
+
+    table.accounts {
+        font-size: 0.8rem;
+
+
+        th:first-child {
+            width: auto;
+        }
+
+        td.account .name, .accountName {
+            font-weight: bold;
+        }
+
+        td.account .description {
+            font-size: 0.9em;
+        }
+    }
+}
+
+@include media-breakpoint-down(md) {
+    .container-fluid.second-header > .actions {
+        display: none;
+    }
+}

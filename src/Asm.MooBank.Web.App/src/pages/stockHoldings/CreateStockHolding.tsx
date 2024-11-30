@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { NewStockHolding, emptyStockHolding } from "../../models";
 
 import { Page } from "@andrewmclachlan/mooapp";

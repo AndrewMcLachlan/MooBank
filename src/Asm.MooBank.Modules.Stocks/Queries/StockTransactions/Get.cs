@@ -8,7 +8,7 @@ namespace Asm.MooBank.Modules.Stocks.Queries.StockTransactions;
 
 public sealed record Get : IQuery<PagedResult>
 {
-    public required Guid StockHoldingId { get; init; }
+    public required Guid InstrumentId { get; init; }
 
     public string? Filter { get; init; }
 
@@ -25,12 +25,10 @@ public sealed record Get : IQuery<PagedResult>
     public SortDirection SortDirection { get; init; } = SortDirection.Ascending;
 }
 
-internal class GetHandler(IQueryable<Domain.Entities.Transactions.StockTransaction> transactions, ISecurity security) : IQueryHandler<Get, PagedResult>
+internal class GetHandler(IQueryable<Domain.Entities.Transactions.StockTransaction> transactions) : IQueryHandler<Get, PagedResult>
 {
     public async ValueTask<PagedResult> Handle(Get query, CancellationToken cancellationToken)
     {
-        security.AssertInstrumentPermission(query.StockHoldingId);
-
         var total = await transactions.Where(query).CountAsync(cancellationToken);
 
         var results = await transactions.Where(query).Sort(query.SortField, query.SortDirection).Page(query.PageSize, query.PageNumber).ToModel().ToListAsync(cancellationToken);
@@ -56,7 +54,7 @@ file static class IQueryableExtensions
 
     public static IQueryable<Domain.Entities.Transactions.StockTransaction> Where(this IQueryable<Domain.Entities.Transactions.StockTransaction> queryable, Get query)
     {
-        var result = queryable.Where(t => t.AccountId == query.StockHoldingId);
+        var result = queryable.Where(t => t.AccountId == query.InstrumentId);
 
         result = result.Where(t => (query.Start == null || t.TransactionDate >= query.Start) && (query.End == null || t.TransactionDate <= query.End));
 

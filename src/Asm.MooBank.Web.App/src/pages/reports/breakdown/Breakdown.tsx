@@ -7,7 +7,7 @@ import { Doughnut, getElementAtEvent } from "react-chartjs-2";
 
 import { Period } from "helpers/dateFns";
 import { ReportType } from "models/reports";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import { chartColours } from "../../../helpers/chartColours";
 
 ChartJS.register(...registerables);

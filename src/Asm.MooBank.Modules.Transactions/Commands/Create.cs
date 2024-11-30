@@ -12,15 +12,13 @@ public record Create(Guid InstrumentId, decimal Amount, string Description, stri
     public static ValueTask<Create> BindAsync(HttpContext httpContext) => BindHelper.BindWithInstrumentIdAsync<Create>(httpContext);
 }
 
-internal class CreateHandler(IInstrumentRepository accountRepository, ITransactionRepository transactionRepository, IUnitOfWork unitOfWork, ISecurity security) :  ICommandHandler<Create, Models.Transaction>
+internal class CreateHandler(IInstrumentRepository accountRepository, ITransactionRepository transactionRepository, IUnitOfWork unitOfWork) :  ICommandHandler<Create, Models.Transaction>
 {
     public async ValueTask<Models.Transaction> Handle(Create command, CancellationToken cancellationToken)
     {
         command.Deconstruct(out var instrumentId, out var amount, out var description, out var reference, out var transactionTime);
 
-        security.AssertInstrumentPermission(instrumentId);
-
-        var account = await accountRepository.Get(command.InstrumentId, cancellationToken);
+        var account = await accountRepository.Get(instrumentId, cancellationToken);
         if (account is not Domain.Entities.Instrument.TransactionInstrument transactionAccount)
         {
             throw new InvalidOperationException("Not a transaction account.");

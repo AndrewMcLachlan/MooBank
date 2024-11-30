@@ -20,6 +20,8 @@ internal sealed class AddSubTagHandler(ITagRepository tagRepository, IEnumerable
 
         await security.AssertFamilyPermission(tag.FamilyId);
 
+        if (tag.FamilyId != subTag.FamilyId) throw new InvalidOperationException("Tags must belong to the same family");
+
         if (tagRelationships.Any(tr => tr.Tag == subTag && tr.ParentTag == tag)) throw new ExistsException($"{subTag.Name} is already a child or grand-child of {tag.Name}");
         if (tagRelationships.Any(tr => tr.Tag == tag && tr.ParentTag == subTag)) throw new ExistsException($"{subTag.Name} is parent or grand-parent of {tag.Name}. Circular relationships are not allowed!");
 

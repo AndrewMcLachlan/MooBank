@@ -16,7 +16,6 @@ internal class UpdateHandler(IUnitOfWork unitOfWork, IInstitutionAccountReposito
     {
         command.Deconstruct(out var account);
 
-        security.AssertInstrumentPermission(account.Id);
         if (account.GroupId != null)
         {
             security.AssertGroupPermission(account.GroupId.Value);

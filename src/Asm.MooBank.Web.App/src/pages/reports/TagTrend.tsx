@@ -4,7 +4,7 @@ import chartTrendline from "chartjs-plugin-trendline";
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { Form, Row } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 
 import { FormGroup, TagSelector } from "components";
 import { PeriodSelector } from "components/PeriodSelector";

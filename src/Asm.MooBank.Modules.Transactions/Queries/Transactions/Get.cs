@@ -35,13 +35,10 @@ public sealed record Get : IQuery<PagedResult>
     public bool? UntaggedOnly { get => _untagged; }
 }
 
-internal class GetHandler(IQueryable<Transaction> transactions, ISecurity security) : IQueryHandler<Get, PagedResult>
+internal class GetHandler(IQueryable<Transaction> transactions) : IQueryHandler<Get, PagedResult>
 {
-
     public async ValueTask<PagedResult> Handle(Get query, CancellationToken cancellationToken)
     {
-        security.AssertInstrumentPermission(query.InstrumentId);
-
         var total = await transactions.Where(query).CountAsync(cancellationToken);
 
         var results = await transactions.IncludeAll().Where(query).Sort(query.SortField, query.SortDirection).Page(query.PageSize, query.PageNumber).ToModel().ToListAsync(cancellationToken);

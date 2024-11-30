@@ -10,15 +10,13 @@ public record GetBreakdownReport : TypedReportQuery, IQuery<BreakdownReport>
     public int? ParentTagId { get; init; } = null;
 }
 
-internal class GetBreakdownReportHandler(IQueryable<Transaction> transactions, IQueryable<Tag> tags, IQueryable<TagRelationship> tagRelationships, ISecurity security) : IQueryHandler<GetBreakdownReport, BreakdownReport>
+internal class GetBreakdownReportHandler(IQueryable<Transaction> transactions, IQueryable<Tag> tags, IQueryable<TagRelationship> tagRelationships) : IQueryHandler<GetBreakdownReport, BreakdownReport>
 {
     private readonly IQueryable<Transaction> _transactions = transactions;
     private readonly IQueryable<Tag> _tags = tags;
 
     public async ValueTask<BreakdownReport> Handle(GetBreakdownReport request, CancellationToken cancellationToken)
     {
-        security.AssertInstrumentPermission(request.AccountId);
-
         var parentTagId = request.ParentTagId;
 
         Tag? rootTag = null;

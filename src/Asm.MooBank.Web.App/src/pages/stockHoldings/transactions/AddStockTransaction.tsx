@@ -2,7 +2,7 @@ import { Section } from "@andrewmclachlan/mooapp";
 import * as Models from "models";
 import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useCreateStockTransaction } from "services";
 import { StockHoldingPage } from "../StockHoldingPage";
 import { useStockHolding } from "../StockHoldingProvider";
