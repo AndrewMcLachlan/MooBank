@@ -64,6 +64,7 @@ const useComponentState = () => {
     const [newTag, setNewTag] = useState(blankTag);
     const [tagsList, setTagsList] = useState<Tag[]>([]);
     const [filteredTags, setFilteredTags] = useState<Tag[]>([]);
+    //@ts-ignore
     const [pagedTags, setPagedTags] = useState<Tag[] | undefined[]>(Array.from({ length: pageSize }).map(():any => undefined));
 
     const [sortDirection, setSortDirection] = useState<SortDirection>("Ascending");
@@ -90,6 +91,7 @@ const useComponentState = () => {
 
     useEffect(() => {
         if (isLoading) {
+            //@ts-ignore
             setPagedTags(Array.from({ length: pageSize }).map(():any => undefined));
             return;
         }
