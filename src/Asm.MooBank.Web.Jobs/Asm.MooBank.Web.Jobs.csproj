@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Asm.AspNetCore" />
+    <PackageReference Include="Asm.AspNetCore.Modules" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="System.Private.Uri" />

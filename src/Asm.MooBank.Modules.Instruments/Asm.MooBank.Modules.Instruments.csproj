@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <PackageReference Include="Asm.AspNetCore" />
+    <PackageReference Include="Asm.AspNetCore.Modules" />
     <PackageReference Include="Asm.Cqrs.AspNetCore" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
     <PackageReference Include="Newtonsoft.Json" />
@@ -15,9 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Asm.MooBank.Modules.Tests</_Parameter1>
-    </AssemblyAttribute>
+    <InternalsVisibleTo Include="Asm.MooBank.Modules.Tests" />
   </ItemGroup>
 
 </Project>

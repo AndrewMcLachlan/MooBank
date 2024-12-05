@@ -8,7 +8,6 @@ using Asm.MooBank.Security;
 using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.OpenApi.Models;
-using Serilog;
 
 return WebApplicationStart.Run(args, "Asm.MooBank.Web.Api", AddServices, AddApp);
 
@@ -140,16 +139,7 @@ void AddApp(WebApplication app)
 
     app.UseStandardExceptionHandler();
 
-    app.UseSerilogRequestLogging(options =>
-    {
-        options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
-        {
-            diagnosticContext.Set("User", httpContext.GetUserName());
-        };
-    });
-
     app.UseAuthentication();
-    app.UseSerilogEnrichWithUser();
     app.UseDefaultFiles();
     app.UseStaticFiles();
 

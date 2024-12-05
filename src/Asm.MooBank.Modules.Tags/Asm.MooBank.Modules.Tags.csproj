@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <PackageReference Include="Asm.AspNetCore" />
+    <PackageReference Include="Asm.AspNetCore.Modules" />
     <PackageReference Include="Asm.Cqrs.AspNetCore" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
     <PackageReference Include="Newtonsoft.Json" />
