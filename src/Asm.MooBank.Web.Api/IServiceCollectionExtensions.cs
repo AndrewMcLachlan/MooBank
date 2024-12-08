@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Linq;
+using System.Security.Claims;
 using Asm.AspNetCore.Authentication;
 using Asm.MooBank.Infrastructure;
 using Asm.OAuth;
@@ -30,7 +31,7 @@ public static class IServiceCollectionExtensions
                     Guid userId = context.Principal!.GetClaimValue<Guid>(Security.ClaimTypes.UserId);
                     var dataContext = context.HttpContext.RequestServices.GetRequiredService<MooBankContext>();
 
-                    var user = await dataContext.Set<Domain.Entities.User.User>().Include(ah => ah.InstrumentOwners).ThenInclude(aah => aah.Instrument).AsNoTracking().SingleOrDefaultAsync(ah => ah.Id == userId);
+                    var user = await dataContext.Set<Domain.Entities.User.User>().Include(ah => ah.InstrumentOwners).ThenInclude(aah => aah.Instrument).ThenInclude(i => i.VirtualInstruments).AsNoTracking().SingleOrDefaultAsync(ah => ah.Id == userId);
 
                     if (user == null)
                     {
@@ -38,10 +39,15 @@ public static class IServiceCollectionExtensions
                         return;
                     }
 
-                    var shared = await dataContext.Set<Domain.Entities.Instrument.Instrument>().Where(a => a.ShareWithFamily && a.Owners.Any(ah => ah.User.FamilyId == user.FamilyId)).Select(a => a.Id).ToListAsync();
+                    var owned = user.Instruments.Select(i => i.Id);
+                    var virtualOwned = user.Instruments.SelectMany(i => i.VirtualInstruments).Select(i => i.Id);
 
-                    var claims = user.Instruments.Select(a => new Claim(Security.ClaimTypes.AccountId, a.Id.ToString())).ToList();
-                    claims.AddRange(shared.Select(a => new Claim(Security.ClaimTypes.SharedAccountId, a.ToString())).ToList());
+                    var sharedInstruments = await dataContext.Set<Domain.Entities.Instrument.Instrument>().Where(a => a.ShareWithFamily && a.Owners.Any(ah => ah.User.FamilyId == user.FamilyId)).Include(i => i.VirtualInstruments).ToListAsync();
+                    var virtualShared = sharedInstruments.SelectMany(i => i.VirtualInstruments).Select(i => i.Id);
+
+                    var instruments = owned.Union(virtualOwned).Union(sharedInstruments.Select(i => i.Id).Union(virtualShared)).ToList();
+
+                    var claims = instruments.Select(a => new Claim(Security.ClaimTypes.AccountId, a.ToString())).ToList();
 
                     if (user.PrimaryAccountId != null) claims.Add(new Claim(Security.ClaimTypes.PrimaryAccountId, user.PrimaryAccountId.Value.ToString()));
                     claims.Add(new Claim(Security.ClaimTypes.FamilyId, user.FamilyId.ToString()));
