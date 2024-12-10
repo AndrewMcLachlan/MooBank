@@ -14,7 +14,7 @@ ChartJS.register(chartTrendline);
 export const BudgetReportYear: React.FC<BudgetReportYearProps> = ({ year, onDrilldown }) => {
 
     const colours = useChartColours();
-    const chartRef = useRef();
+    const chartRef = useRef(null);
 
     const report = useBudgetReport(year);
 

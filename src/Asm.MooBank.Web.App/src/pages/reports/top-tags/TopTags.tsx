@@ -17,7 +17,7 @@ export const TopTags: React.FC<TopTagsProps> = ({ accountId, period, reportType,
 
     const report = useAllTagAverageReport(accountId, period?.startDate, period?.endDate, reportType, top);
 
-    const chartRef = useRef();
+    const chartRef = useRef(null);
 
     const dataset: ChartData<"bar", number[], string> = {
         labels: report.data?.tags.map(t => t.tagName) ?? [],

@@ -16,7 +16,7 @@ ChartJS.register(chartTrendline);
 export const BudgetReportTags: React.FC<BudgetReportTagsProps> = ({year, month}) => {
 
     const colours = useChartColours();
-    const chartRef = useRef();
+    const chartRef = useRef(null);
     const navigate = useNavigate();
 
     const report = useBudgetReportForMonthBreakdown(year, month);

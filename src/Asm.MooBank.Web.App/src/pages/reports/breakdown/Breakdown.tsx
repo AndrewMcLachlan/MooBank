@@ -21,7 +21,7 @@ export const Breakdown: React.FC<BreakdownProps> = ({accountId, tagId, period, r
 
     const report = useBreakdownReport(accountId!, period?.startDate, period?.endDate, reportType, selectedTagId);
 
-    const chartRef = useRef();
+    const chartRef = useRef(null);
 
     useEffect(() => {
         setSelectedTagId(tagId ? Number(tagId) : undefined);

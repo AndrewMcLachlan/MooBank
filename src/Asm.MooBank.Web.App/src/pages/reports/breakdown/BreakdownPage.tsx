@@ -30,7 +30,7 @@ export const BreakdownPage = () => {
 
     const report = useBreakdownReport(accountId!, period?.startDate, period?.endDate, reportType, selectedTagId);
 
-    const chartRef = useRef();
+    const chartRef = useRef(null);
 
     useEffect(() => {
         setSelectedTagId(tagId ? parseInt(tagId) : undefined);
