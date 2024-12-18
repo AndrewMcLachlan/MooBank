@@ -6,14 +6,11 @@ namespace Asm.MooBank.Modules.Instruments.Commands.Import;
 
 public record Import(Guid InstrumentId, Stream Stream) : ICommand;
 
-
-internal class ImportHandler(IInstrumentRepository instrumentRepository, IRuleRepository ruleRepository, IImporterFactory importerFactory, IUnitOfWork unitOfWork, ISecurity security) : ICommandHandler<Import>
+internal class ImportHandler(IInstrumentRepository instrumentRepository, IRuleRepository ruleRepository, IImporterFactory importerFactory, IUnitOfWork unitOfWork) : ICommandHandler<Import>
 {
     public async ValueTask Handle(Import request, CancellationToken cancellationToken)
     {
         request.Deconstruct(out Guid instrumentId, out Stream stream);
-
-        security.AssertInstrumentPermission(instrumentId);
 
         var instrument = await instrumentRepository.Get(instrumentId, cancellationToken) ?? throw new NotFoundException($"Instrument with ID {instrumentId} not found");
 
@@ -27,9 +24,9 @@ internal class ImportHandler(IInstrumentRepository instrumentRepository, IRuleRe
 
     }
 
-    private async Task ApplyRules(Instrument account, IEnumerable<Domain.Entities.Transactions.Transaction> transactions, CancellationToken cancellationToken = default)
+    private async Task ApplyRules(Instrument instrument, IEnumerable<Domain.Entities.Transactions.Transaction> transactions, CancellationToken cancellationToken = default)
     {
-        var rules = await ruleRepository.GetForInstrument(account.Id, cancellationToken);
+        var rules = await ruleRepository.GetForInstrument(instrument.Id, cancellationToken);
 
         foreach (var transaction in transactions)
         {

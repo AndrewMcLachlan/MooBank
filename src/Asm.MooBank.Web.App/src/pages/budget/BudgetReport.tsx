@@ -6,7 +6,7 @@ import chartTrendline from "chartjs-plugin-trendline";
 import { Section } from "@andrewmclachlan/mooapp";
 import { useBudgetYear } from "hooks/useBudgetYear";
 import { Col, Form, Row } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import { useBudgetYears } from "services/BudgetService";
 import { BudgetPage } from "./BudgetPage";
 import { BudgetReportTags } from "./BudgetReportTags";

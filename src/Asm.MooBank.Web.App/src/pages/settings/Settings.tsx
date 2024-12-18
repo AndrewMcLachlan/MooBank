@@ -1,5 +1,5 @@
 import React from "react";
-import { Navigate, Outlet, PathPattern, useMatch } from "react-router-dom";
+import { Navigate, Outlet, PathPattern, useMatch } from "react-router";
 
 export const Settings: React.FC = () => {
 

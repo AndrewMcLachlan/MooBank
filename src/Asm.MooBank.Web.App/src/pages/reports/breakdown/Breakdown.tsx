@@ -7,7 +7,7 @@ import { Doughnut, getElementAtEvent } from "react-chartjs-2";
 
 import { Period } from "helpers/dateFns";
 import { ReportType } from "models/reports";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import { chartColours } from "../../../helpers/chartColours";
 
 ChartJS.register(...registerables);
@@ -21,7 +21,7 @@ export const Breakdown: React.FC<BreakdownProps> = ({accountId, tagId, period, r
 
     const report = useBreakdownReport(accountId!, period?.startDate, period?.endDate, reportType, selectedTagId);
 
-    const chartRef = useRef();
+    const chartRef = useRef(null);
 
     useEffect(() => {
         setSelectedTagId(tagId ? Number(tagId) : undefined);

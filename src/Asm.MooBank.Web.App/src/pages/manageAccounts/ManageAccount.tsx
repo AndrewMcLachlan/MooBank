@@ -4,7 +4,7 @@ import * as Models from "models";
 import { AccountType, Controller } from "models";
 import React, { useEffect, useState } from "react";
 import { Button, Form, Table } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useGroups, useReprocessTransactions, useUpdateAccount, useVirtualAccounts } from "services";
 import { ImportSettings } from "../createAccount/ImportSettings";
 

@@ -11,7 +11,7 @@ import { PeriodSelector } from "components/PeriodSelector";
 import { ReportTypeSelector } from "components/ReportTypeSelector";
 import { Period } from "helpers/dateFns";
 import { ReportType } from "models/reports";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import { chartColours } from "../../../helpers/chartColours";
 import { Breakdown } from "./Breakdown";
 
@@ -30,7 +30,7 @@ export const BreakdownPage = () => {
 
     const report = useBreakdownReport(accountId!, period?.startDate, period?.endDate, reportType, selectedTagId);
 
-    const chartRef = useRef();
+    const chartRef = useRef(null);
 
     useEffect(() => {
         setSelectedTagId(tagId ? parseInt(tagId) : undefined);

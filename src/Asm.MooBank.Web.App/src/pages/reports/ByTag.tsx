@@ -24,7 +24,7 @@ export const ByTag = () => {
 
     const report = useByTagReport(accountId!, period?.startDate, period?.endDate, reportType);
 
-    const chartRef = useRef();
+    const chartRef = useRef(null);
 
     const dataset: ChartData<"doughnut", number[], string> = {
         labels: report.data?.tags.map(t => t.tagName) ?? [],

@@ -13,7 +13,7 @@ public sealed record Get : TransactionFilter, IQuery<PagedResult>
     public required int PageNumber { get; init; }
 }
 
-internal class GetHandler(IQueryable<Transaction> transactions, ISecurity security) : IQueryHandler<Get, PagedResult>
+internal class GetHandler(IQueryable<Transaction> transactions) : IQueryHandler<Get, PagedResult>
 {
     public async ValueTask<PagedResult> Handle(Get query, CancellationToken cancellationToken)
     {

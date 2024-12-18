@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { Asset } from "../../models";
 import { AssetPage } from "./AssetPage";
 import { useAsset } from "./AssetProvider";

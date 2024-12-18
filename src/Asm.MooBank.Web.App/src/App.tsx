@@ -2,7 +2,7 @@ import "./App.scss";
 import * as Icons from "@andrewmclachlan/mooicons";
 
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 import { MooAppLayout, NavItem } from "@andrewmclachlan/mooapp";
 import { useIsAuthenticated } from "@azure/msal-react";
@@ -46,7 +46,7 @@ const sideMenu = [
     },
     {
         text: "Accounts",
-        image: <Icons.PiggyBank3 />,
+        image: <Icons.PiggyBank />,
         route: "/accounts"
     },
     {

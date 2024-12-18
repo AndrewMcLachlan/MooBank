@@ -10,7 +10,7 @@ import * as serviceWorker from "./serviceWorkerRegistration";
 import { MooApp, createMooAppBrowserRouter } from "@andrewmclachlan/mooapp";
 import { AppStore } from "./store/configureStore";
 import { routes } from "Routes";
-import { RouterProvider } from "react-router-dom";
+import { RouterProvider } from "react-router";
 
 library.add(faArrowsRotate, faCheck, faCheckCircle, faTrashAlt, faChevronDown, faChevronUp, faTimesCircle, faArrowLeft, faLongArrowUp, faLongArrowDown, faChevronRight, faCircleChevronLeft, faUpload, faXmark, faFilterCircleXmark, faInfoCircle, faPenToSquare, faPlus);
 

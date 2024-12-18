@@ -5,7 +5,7 @@ import MD5 from "md5";
 import { useClickAway } from "@andrewmclachlan/mooapp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useUpdateBalance } from "services";
 import { AccountRowProps } from "./AccountRow";
 import { VirtualAccountRow } from "./VirtualAccountRow";

@@ -1,4 +1,4 @@
-@import "~/bootstrap/scss/mixins";
+@use "~/bootstrap/scss/bootstrap-utilities" as *;
 
 .month-selector .clear {
     fill: var(--bs-body-color);
@@ -18,7 +18,7 @@
     @include color-mode(dark) {
         background-color: #666;
     }
-    
+
     &:checked {
         background-color: var(--bs-primary);
         color: #FFF;

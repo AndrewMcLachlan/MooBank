@@ -6,7 +6,7 @@ import { emptyGuid, useClickAway } from "@andrewmclachlan/mooapp";
 
 import { InstrumentId, VirtualAccount } from "models";
 import { useUpdateVirtualAccountBalance } from "services";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 export const VirtualAccountRow: React.FC<VirtualAccountRowProps> = (props) => {
     const { balanceRef, editingBalance, balanceClick, balanceChange, balance, keyPress, onRowClick } = useComponentState(props);

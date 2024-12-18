@@ -12,15 +12,13 @@ public record GetTagTrendReport : TypedReportQuery, IQuery<TagTrendReport>
     public bool? ApplySmoothing { get; init; } = false;
 }
 
-internal class GetTagTrendReportHandler(IQueryable<Transaction> transactions, IQueryable<Tag> tags, IQueryable<TagRelationship> tagRelationships, ISecurity securityRepository) : IQueryHandler<GetTagTrendReport, TagTrendReport>
+internal class GetTagTrendReportHandler(IQueryable<Transaction> transactions, IQueryable<Tag> tags, IQueryable<TagRelationship> tagRelationships) : IQueryHandler<GetTagTrendReport, TagTrendReport>
 {
     private readonly IQueryable<Transaction> _transactions = transactions;
     private readonly IQueryable<Tag> _tags = tags;
 
     public async ValueTask<TagTrendReport> Handle(GetTagTrendReport request, CancellationToken cancellationToken)
     {
-        securityRepository.AssertInstrumentPermission(request.AccountId);
-
         var transactionTypeFilter = request.ReportType.ToTransactionFilter();
 
         var tag = await _tags.SingleAsync(t => t.Id == request.TagId, cancellationToken);

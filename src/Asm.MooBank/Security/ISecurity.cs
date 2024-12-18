@@ -5,12 +5,6 @@ namespace Asm.MooBank.Security;
 
 public interface ISecurity
 {
-    void AssertInstrumentPermission(Guid instrumentId);
-
-    Task AssertInstrumentPermissionAsync(Guid instrumentId, CancellationToken cancellationToken);
-
-    void AssertInstrumentPermission(Instrument instrument);
-
     void AssertGroupPermission(Guid groupId);
     void AssertGroupPermission(Group group);
 

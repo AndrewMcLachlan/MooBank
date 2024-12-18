@@ -12,7 +12,10 @@
       "dotnetRunMessages": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy"
+        "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy",
+        //"OTEL_EXPORTER_OTLP_ENDPOINT": "http://localhost:5341/ingest/otlp",
+        //"OTEL_EXPORTER_OTLP_PROTOCOL": "http/protobuf",
+        "APPLICATIONINSIGHTS_CONNECTION_STRING": "InstrumentationKey=ef0936b5-0d6a-47f1-a069-35642ad1f630;IngestionEndpoint=https://australiaeast-1.in.applicationinsights.azure.com/;LiveEndpoint=https://australiaeast.livediagnostics.monitor.azure.com/;ApplicationId=ac9de6b4-8251-4b8c-b8bb-c4f1edf61a26"
       },
       "applicationUrl": "https://localhost:44356;http://localhost:51579"
     },
@@ -20,7 +23,10 @@
       "commandName": "Project",
       "dotnetRunMessages": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        //"OTEL_EXPORTER_OTLP_ENDPOINT": "http://localhost:5341/ingest/otlp",
+        //"OTEL_EXPORTER_OTLP_PROTOCOL": "http/protobuf",
+        "APPLICATIONINSIGHTS_CONNECTION_STRING": "InstrumentationKey=ef0936b5-0d6a-47f1-a069-35642ad1f630;IngestionEndpoint=https://australiaeast-1.in.applicationinsights.azure.com/;LiveEndpoint=https://australiaeast.livediagnostics.monitor.azure.com/;ApplicationId=ac9de6b4-8251-4b8c-b8bb-c4f1edf61a26"
       },
       "applicationUrl": "https://localhost:44356;http://localhost:51579"
     },

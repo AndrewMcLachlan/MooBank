@@ -7,7 +7,7 @@ import { Bar } from "react-chartjs-2";
 import { Section } from "@andrewmclachlan/mooapp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useChartColours } from "helpers/chartColours";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useBudgetReportForMonthBreakdown, useBudgetReportForMonthBreakdownUnbudgeted } from "services/BudgetService";
 
 ChartJS.register(...registerables);
@@ -16,7 +16,7 @@ ChartJS.register(chartTrendline);
 export const BudgetReportTags: React.FC<BudgetReportTagsProps> = ({year, month}) => {
 
     const colours = useChartColours();
-    const chartRef = useRef();
+    const chartRef = useRef(null);
     const navigate = useNavigate();
 
     const report = useBudgetReportForMonthBreakdown(year, month);

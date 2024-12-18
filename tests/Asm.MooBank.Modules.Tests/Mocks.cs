@@ -15,12 +15,9 @@ internal class Mocks
         UnitOfWorkMock.Setup(UnitOfWorkMock => UnitOfWorkMock.SaveChangesAsync(default)).ReturnsAsync(1);
 
         SecurityMock = new Mock<ISecurity>();
-        SecurityMock.Setup(s => s.AssertInstrumentPermission(It.IsAny<Instrument>()));
-        SecurityMock.Setup(s => s.AssertInstrumentPermission(It.IsAny<Guid>()));
         SecurityMock.Setup(s => s.AssertGroupPermission(It.IsAny<Guid>()));
         SecurityMock.Setup(s => s.AssertFamilyPermission(It.IsAny<Guid>()));
 
-        SecurityMock.Fail(s => s.AssertInstrumentPermission(Models.InvalidAccountId));
         SecurityMock.Fail(s => s.AssertGroupPermission(Models.InvalidGroupId));
         SecurityMock.Fail(s => s.AssertFamilyPermission(Models.InvalidAccountFamilyId));
 

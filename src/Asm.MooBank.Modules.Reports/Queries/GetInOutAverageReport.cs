@@ -7,12 +7,10 @@ namespace Asm.MooBank.Modules.Reports.Queries;
 
 public record GetInOutAverageReport : ReportQuery, IQuery<InOutReport>;
 
-internal class GetInOutAverageReportHandler(IQueryable<Transaction> transactions, ISecurity security) : IQueryHandler<GetInOutAverageReport, InOutReport>
+internal class GetInOutAverageReportHandler(IQueryable<Transaction> transactions) : IQueryHandler<GetInOutAverageReport, InOutReport>
 {
     public async ValueTask<InOutReport> Handle(GetInOutAverageReport request, CancellationToken cancellationToken)
     {
-        security.AssertInstrumentPermission(request.AccountId);
-
         var months = request.Start.DifferenceInMonths(request.End);
         months = months == 0 ? 1 : months;
 

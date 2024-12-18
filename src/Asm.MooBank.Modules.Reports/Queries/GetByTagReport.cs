@@ -8,16 +8,12 @@ public record GetByTagReport : TypedReportQuery, IQuery<ByTagReport>
     public int? ParentTagId { get; init; } = null;
 }
 
-internal class GetByTagReportHandler(IQueryable<Transaction> transactions, ISecurity securityRepository) : IQueryHandler<GetByTagReport, ByTagReport>
+internal class GetByTagReportHandler(IQueryable<Transaction> transactions) : IQueryHandler<GetByTagReport, ByTagReport>
 {
     private readonly IQueryable<Transaction> _transactions = transactions;
-    private readonly ISecurity _securityRepository = securityRepository;
 
     public async ValueTask<ByTagReport> Handle(GetByTagReport request, CancellationToken cancellationToken)
     {
-        _securityRepository.AssertInstrumentPermission(request.AccountId);
-
-
         var start = request.Start.ToStartOfDay();
         var end = request.End.ToEndOfDay();
 

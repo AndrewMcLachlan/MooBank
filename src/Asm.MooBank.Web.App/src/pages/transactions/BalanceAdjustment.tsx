@@ -4,7 +4,7 @@ import { useAccountRoute } from "hooks/useAccountRoute";
 import * as Models from "models";
 import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useUpdateBalance } from "services";
 
 export const BalanceAdjustment = () => {

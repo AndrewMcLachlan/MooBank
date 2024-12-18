@@ -1,7 +1,7 @@
 import { Input, Page } from "@andrewmclachlan/mooapp";
 import { useState } from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 import { CurrencySelector, InstitutionSelector } from "components";
 import { AccountType, AccountTypes, Controller, Controllers, CreateInstitutionAccount } from "models";

@@ -11,7 +11,6 @@ using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi.Models;
-using Serilog;
 
 StringBuilder DebugLog = new();
 
@@ -189,16 +188,7 @@ void AddApp(WebApplication app)
 
     app.UseStandardExceptionHandler();
 
-    app.UseSerilogRequestLogging(options =>
-    {
-        options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
-        {
-            diagnosticContext.Set("User", httpContext.GetUserName());
-        };
-    });
-
     app.UseAuthentication();
-    app.UseSerilogEnrichWithUser();
     app.UseDefaultFiles();
     app.UseStaticFiles();
 

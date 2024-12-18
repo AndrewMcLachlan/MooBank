@@ -18,12 +18,14 @@ internal class Assets : EndpointGroupBase
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {
         builder.MapQuery<Get, Asset>("/{id}")
-            .WithNames("Get Asset");
+            .WithNames("Get Asset")
+            .RequireAuthorization(Policies.GetInstrumentViewerPolicy("id"));
 
         builder.MapPostCreate<Create, Asset>("/", "Get Asset".ToMachine(), a => new { a.Id }, CommandBinding.Body)
             .WithNames("Create Asset");
 
         builder.MapPatchCommand<Update, Asset>("/{id}", CommandBinding.None)
-            .WithNames("Update Asset");
+            .WithNames("Update Asset")
+            .RequireAuthorization(Policies.GetInstrumentViewerPolicy("id"));
     }
 }

@@ -14,7 +14,7 @@ namespace Asm.MooBank.Modules.Stocks.Commands;
 [DisplayName("UpdateStock")]
 public sealed record Update : ICommand<Models.StockHolding>
 {
-    public Guid AccountId { get; init; }
+    public Guid InstrumentId { get; init; }
     public required string Name { get; init; }
     public required string Description { get; init; }
     public required bool ShareWithFamily { get; init; }
@@ -25,10 +25,10 @@ public sealed record Update : ICommand<Models.StockHolding>
     {
         var options = httpContext.RequestServices.GetRequiredService<IOptions<JsonOptions>>();
 
-        if (!Guid.TryParse(httpContext.Request.RouteValues["id"] as string, out Guid accountId)) throw new BadHttpRequestException("invalid account ID");
+        if (!Guid.TryParse(httpContext.Request.RouteValues["instrumentId"] as string, out Guid accountId)) throw new BadHttpRequestException("invalid account ID");
 
         var update = await System.Text.Json.JsonSerializer.DeserializeAsync<Update>(httpContext.Request.Body, options.Value.SerializerOptions, cancellationToken: httpContext.RequestAborted);
-        return update! with { AccountId = accountId };
+        return update! with { InstrumentId = accountId };
     }
 }
 
@@ -36,13 +36,12 @@ internal class UpdateHandler(IStockHoldingRepository repository, IUnitOfWork uni
 {
     public async ValueTask<Models.StockHolding> Handle(Update command, CancellationToken cancellationToken)
     {
-        security.AssertInstrumentPermission(command.AccountId);
         if (command.GroupId != null)
         {
             security.AssertGroupPermission(command.GroupId.Value);
         }
 
-        var stockHolding = await repository.Get(command.AccountId, new IncludeSpecification(), cancellationToken) ?? throw new NotFoundException();
+        var stockHolding = await repository.Get(command.InstrumentId, new IncludeSpecification(), cancellationToken) ?? throw new NotFoundException();
 
         stockHolding.Name = command.Name;
         stockHolding.Description = command.Description;

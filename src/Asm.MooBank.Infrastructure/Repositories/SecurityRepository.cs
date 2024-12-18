@@ -1,6 +1,4 @@
-﻿using Asm.Domain.Infrastructure;
-using Asm.MooBank.Domain.Entities.Group;
-using Asm.MooBank.Domain.Entities.Budget;
+﻿using Asm.MooBank.Domain.Entities.Group;
 using Asm.MooBank.Models;
 using Asm.MooBank.Security;
 using Asm.MooBank.Security.Authorisation;
@@ -11,44 +9,6 @@ namespace Asm.MooBank.Infrastructure.Repositories;
 
 public class SecurityRepository(MooBankContext mooBankContext, IAuthorizationService authorizationService, IPrincipalProvider principalProvider, User user) : ISecurity
 {
-
-    public void AssertInstrumentPermission(Guid instrumentId)
-    {
-        var virtualAccount = mooBankContext.VirtualAccounts.Find(instrumentId);
-        var instrumentToCheck = (virtualAccount != null) ? virtualAccount.ParentInstrumentId : instrumentId;
-
-        var authResult = authorizationService.AuthorizeAsync(principalProvider.Principal!, instrumentToCheck, Policies.InstrumentViewer).Result;
-
-        if (!authResult.Succeeded)
-        {
-            throw new NotAuthorisedException("Not authorised to view this account");
-        }
-    }
-
-    public async Task AssertInstrumentPermissionAsync(Guid instrumentId, CancellationToken cancellationToken = default)
-    {
-        var virtualAccount = await mooBankContext.VirtualAccounts.FindAsync(instrumentId, cancellationToken: cancellationToken);
-
-        var instrumentToCheck = (virtualAccount != null) ? virtualAccount.Id : instrumentId;
-
-        var authResult = await authorizationService.AuthorizeAsync(principalProvider.Principal!, instrumentToCheck, Policies.InstrumentViewer);
-
-        if (!authResult.Succeeded)
-        {
-            throw new NotAuthorisedException("Not authorised to view this account");
-        }
-    }
-
-    public void AssertInstrumentPermission(Domain.Entities.Instrument.Instrument instrument)
-    {
-        var authResult = authorizationService.AuthorizeAsync(principalProvider.Principal!, instrument.Id, Policies.InstrumentViewer).Result;
-
-        if (!authResult.Succeeded)
-        {
-            throw new NotAuthorisedException("Not authorised to view this account");
-        }
-    }
-
     public void AssertGroupPermission(Guid accountId)
     {
         if (!mooBankContext.Groups.Any(a => a.Id == accountId && a.OwnerId == user.Id))
