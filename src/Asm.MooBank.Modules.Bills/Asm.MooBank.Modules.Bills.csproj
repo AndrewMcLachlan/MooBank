@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <PackageReference Include="Asm.AspNetCore" />
+    <PackageReference Include="Asm.AspNetCore.Modules" />
     <PackageReference Include="Asm.Cqrs.AspNetCore" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
     <PackageReference Include="Newtonsoft.Json" />
@@ -15,7 +15,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="queries\Bills\" />
+    <Using Include="Asm.Cqrs.Commands" />
+    <Using Include="Asm.Cqrs.Queries" />
+    <Using Include="Microsoft.EntityFrameworkCore" />
   </ItemGroup>
 
 </Project>

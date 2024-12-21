@@ -51,6 +51,16 @@
     "workbox-routing": "^7.1.0",
     "workbox-strategies": "^7.0.0"
   },
+  "overrides": {
+    "@azure/msal-react": {
+      "react": "^19.0.0",
+      "react-dom": "^19.0.0"
+    },
+    "react-chartjs-2": {
+      "react": "^19.0.0",
+      "react-dom": "^19.0.0"
+    }
+  },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.17.0",

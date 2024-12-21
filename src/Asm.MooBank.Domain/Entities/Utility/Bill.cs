@@ -14,7 +14,7 @@ public class Bill
     [StringLength(11)]
     public string? InvoiceNumber { get; set; }
 
-    public required DateTime IssueDate { get; set; }
+    public required DateOnly IssueDate { get; set; }
 
     public int? CurrentReading { get; set; }
 

@@ -12,7 +12,7 @@ internal class GetAllHandler(IQueryable<Domain.Entities.Utility.Account> account
     public async ValueTask<IEnumerable<Account>> Handle(GetAll query, CancellationToken cancellationToken)
     {
         var userId = user.Id;
-        var all = await accounts.Where(a => a.Owners.Any(ah => ah.UserId == userId)).ToListAsync(cancellationToken);
+        var all = await accounts.Where(a => a.Viewers.Any(ah => ah.UserId == userId)).ToListAsync(cancellationToken);
 
         return all.ToModel();
     }

@@ -17,8 +17,6 @@ internal class GetHandler(IQueryable<Transaction> transactions) : IQueryHandler<
 {
     public async ValueTask<PagedResult> Handle(Get query, CancellationToken cancellationToken)
     {
-        security.AssertInstrumentPermission(query.InstrumentId);
-
         var filterSpecification = new FilterSpecification(query);
 
         var total = await transactions.Specify(filterSpecification).CountAsync(cancellationToken);
