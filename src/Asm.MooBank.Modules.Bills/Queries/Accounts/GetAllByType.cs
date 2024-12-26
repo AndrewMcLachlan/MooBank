@@ -5,9 +5,9 @@ namespace Asm.MooBank.Modules.Bills.Queries.Accounts;
 
 public record GetAllByType() : IQuery<IEnumerable<AccountTypeSummary>>;
 
-internal class GetAllByTypeHandler(IQueryable<Domain.Entities.Utility.Account> accounts, User user) : IQueryHandler<GetByType, IEnumerable<AccountTypeSummary>>
+internal class GetAllByTypeHandler(IQueryable<Domain.Entities.Utility.Account> accounts, User user) : IQueryHandler<GetAllByType, IEnumerable<AccountTypeSummary>>
 {
-    public async ValueTask<AccountTypeSummary> Handle(GetByType query, CancellationToken cancellationToken)
+    public async ValueTask<IEnumerable<AccountTypeSummary>> Handle(GetAllByType query, CancellationToken cancellationToken)
     {
         var filteredAccounts = await accounts.Where(a => a.Viewers.Any(v => v.UserId == user.Id))
                               .Include(a => a.Bills)
