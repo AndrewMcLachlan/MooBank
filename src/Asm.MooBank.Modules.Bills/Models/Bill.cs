@@ -12,7 +12,7 @@ public record Bill
 
     public string? InvoiceNumber { get; set; }
 
-    public DateTime IssueDate { get; set; }
+    public DateOnly IssueDate { get; set; }
 
     public int? CurrentReading { get; set; }
 

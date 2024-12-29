@@ -1,8 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Asm.MooBank.Domain.Entities.Utility;
+﻿namespace Asm.MooBank.Domain.Entities.Utility;
 
 [Table("Bill", Schema = "utilities")]
+[AggregateRoot]
 public class Bill
 {
     [Key]

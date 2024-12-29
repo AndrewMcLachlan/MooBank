@@ -38,14 +38,20 @@
     <ProjectReference Include="..\Asm.MooBank.Institution.*\*.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Institution.AustralianSuper\Asm.MooBank.Institution.AustralianSuper.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Models\Asm.MooBank.Models.csproj" />
-    <ProjectReference Include="..\Asm.MooBank.Modules.*\*.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Modules.Accounts\Asm.MooBank.Modules.Accounts.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Modules.Assets\Asm.MooBank.Modules.Assets.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Modules.Bills\Asm.MooBank.Modules.Bills.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Modules.Budgets\Asm.MooBank.Modules.Budgets.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Modules.Families\Asm.MooBank.Modules.Families.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Modules.Groups\Asm.MooBank.Modules.Groups.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Modules.Institutions\Asm.MooBank.Modules.Institutions.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Modules.Instruments\Asm.MooBank.Modules.Instruments.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Modules.ReferenceData\Asm.MooBank.Modules.ReferenceData.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Modules.Reports\Asm.MooBank.Modules.Reports.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Modules.Stocks\Asm.MooBank.Modules.Stocks.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Modules.Tags\Asm.MooBank.Modules.Tags.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Modules.Transactions\Asm.MooBank.Modules.Transactions.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Modules.Users\Asm.MooBank.Modules.Users.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Security\Asm.MooBank.Security.csproj" />
   </ItemGroup>
 
