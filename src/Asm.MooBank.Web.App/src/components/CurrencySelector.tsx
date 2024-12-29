@@ -1,21 +1,20 @@
-import React from "react";
-import Select, { Props } from "react-select";
+import { ComboBox, ComboBoxProps } from "@andrewmclachlan/mooapp";
 
 type Currency = { name: string, code: string };
 
-interface CurrencySelectorProps extends Omit<Props<Currency>, "value" | "onChange"> {
+interface CurrencySelectorProps extends Omit<ComboBoxProps<Currency>, "value" | "onChange" | "valueField" | "labelField"> {
     value: string;
     onChange: (value: string) => void;
 }
 
-export const CurrencySelector = React.forwardRef<any, CurrencySelectorProps>(({ value, onChange, ...props }, ref) => {
+export const CurrencySelector: React.FC<CurrencySelectorProps> = ({ value, onChange, ref, ...props }) => {
 
-    const currency = value ? currencies.find(c => c.code === value) : undefined;
+    const currency = value ? [currencies.find(c => c.code === value)] : undefined;
 
     return (
-        <Select onChange={(c: any) => onChange(c.code)} value={currency} options={currencies} getOptionValue={o => o.code} getOptionLabel={o => o.name} formatOptionLabel={o => `${o.name} (${o.code})`} {...props} ref={ref} className="react-select" classNamePrefix="react-select" />
+        <ComboBox onChange={(c: Currency[]) => onChange(currency[0].code)} selectedItems={currency} items={currencies} valueField={o => o.code} labelField={o => `${o?.name} (${o?.code})`} {...props} ref={ref}  />
     );
-});
+};
 
 CurrencySelector.displayName = "CurrencySelector";
 

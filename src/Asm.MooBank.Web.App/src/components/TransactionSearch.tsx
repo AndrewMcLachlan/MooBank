@@ -1,7 +1,6 @@
-import { ValueProps } from "@andrewmclachlan/mooapp";
+import { ComboBox, ValueProps } from "@andrewmclachlan/mooapp";
 import { formatDate } from "helpers/dateFns";
 import { Transaction, TransactionType } from "models";
-import Select from "react-select";
 import { useSearchTransactions } from "services";
 
 export const TransactionSearch: React.FC<TransactionSearchProps> = ({ transaction, transactionType = "Credit", excludedTransactions = [], ...props }) => {
@@ -11,15 +10,13 @@ export const TransactionSearch: React.FC<TransactionSearchProps> = ({ transactio
     const filteredTransactions = (excludedTransactions && transactions.data?.filter(t => !excludedTransactions.includes(t.id))) ?? [];
 
     return (
-        <Select value={props.value}
-            options={filteredTransactions}
-            getOptionValue={(t) => t.id}
-            className="react-select"
-            classNamePrefix="react-select"
+        <ComboBox selectedItems={[props.value]}
+            items={filteredTransactions}
+            valueField={(t) => t.id}
             placeholder="Select Transaction..."
-            onChange={props.onChange}
+            onChange={t => props.onChange(t.length ? t[0] : null)}
             key={props.value?.id || JSON.stringify(filteredTransactions)}
-            formatOptionLabel={(t) =>
+            labelField={(t) =>
                 <><span className="amount">${t.amount}</span> - {formatDate(t.transactionTime)} - {t.description}</>
             } />
     );

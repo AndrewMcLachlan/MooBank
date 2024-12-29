@@ -75,7 +75,7 @@ export const CreateAccount: React.FC = () => {
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Institution</Form.Label>
-                    <InstitutionSelector accountType={accountType} value={institutionId} onChange={(id) => setInstitutionId(id)} required />
+                    <InstitutionSelector accountType={accountType} value={institutionId} onChange={(id) => setInstitutionId(id)} /> {/* TODO: Required */}
                 </Form.Group>
                 <Form.Group controlId="currency">
                     <Form.Label>Currency</Form.Label>

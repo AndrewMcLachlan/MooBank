@@ -71,7 +71,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
                 </Col>
                 <Col>
                     <Form.Label htmlFor="filter-desc">Tags</Form.Label>
-                    <TagSelector onChange={setFilterTags} multi value={filterTags} />
+                    <TagSelector onChange={setFilterTags} multiSelect value={filterTags} />
                 </Col>
             </Row>
             <PeriodSelector instant onChange={setPeriod} />

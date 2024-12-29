@@ -1,7 +1,7 @@
+import { ComboBox } from "@andrewmclachlan/mooapp";
 import { Institution, institutionTypeOptions } from "models";
 import { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
-import Select from "react-select";
 
 export const InstitutionForm: React.FC<InstitutionFormProps> = ({ onSave, buttonText, institution: originalInstitution }) => {
 
@@ -28,7 +28,7 @@ export const InstitutionForm: React.FC<InstitutionFormProps> = ({ onSave, button
             </Form.Group>
             <Form.Group controlId="type">
                 <Form.Label>Institution Type</Form.Label>
-                <Select required options={institutionTypeOptions} value={institutionTypeOptions?.find(i => i.value === institution.institutionType)} getOptionLabel={t => t.label} getOptionValue={t => t.value} onChange={(v: any) => setInstitution({ ...institution, institutionType: v.value })} className="react-select" classNamePrefix="react-select" />
+                <ComboBox items={institutionTypeOptions} selectedItems={[institutionTypeOptions?.find(i => i.value === institution.institutionType)]} labelField={t => t.label} valueField={t => t.value} onChange={(v: any) => setInstitution({ ...institution, institutionType: v.value })} />
                 <Form.Control.Feedback type="invalid">Please enter a name</Form.Control.Feedback>
             </Form.Group>
             <Button type="submit" variant="primary">{buttonText}</Button>
