@@ -1,10 +1,9 @@
-﻿@use "~/bootstrap/scss/bootstrap-utilities" as *;
-@use "~/@andrewmclachlan/mooapp/scss/mooapp.scss";
-@forward "../scss/budget";
-@forward "../scss/rainbow";
-@forward "../scss/components";
-@forward "../scss/filterPanel";
-@forward "../scss/transactions";
+﻿@import "~/@andrewmclachlan/mooapp/dist/index.css";
+@import "css/budget";
+@import "css/rainbow";
+@import "css/components";
+@import "css/filterPanel";
+@import "css/transactions";
 
 @media (prefers-color-scheme: dark) {
     body {
@@ -51,21 +50,6 @@
 
 .clear {
     clear: both;
-}
-
-.clearable {
-    position: relative;
-
-    svg {
-        position: absolute;
-        right: 0.6rem;
-        top: calc(1rem - 7px);
-        fill: hsl(0, 0%, 40%);
-    }
-
-    input:focus + svg {
-        fill: hsl(0, 0%, 40%);
-    }
 }
 
 th.expander {
@@ -168,7 +152,7 @@ fieldset {
 
     legend {
         display: block;
-        //font-weight: normal;
+
         font-size: 1.5rem;
         padding: 0 5px;
         margin: 0;
@@ -364,8 +348,106 @@ input.form-control:read-only {
     }
 }
 
-@include media-breakpoint-down(md) {
+@media screen and (max-width: 767px) {
     .container-fluid.second-header > .actions {
         display: none;
+    }
+}
+
+
+
+
+
+
+@scope (.combo-box) {
+
+    :scope {
+        background-color: var(--bs-body-bg);
+        position: relative;
+        border-radius: var(--bs-border-radius);
+        border: var(--bs-border-width) solid var(--bs-border-color);
+    }
+
+    &.readonly:scope {
+        background-color: transparent;
+    }
+
+    &.readonly {
+        border: var(--bs-border-width) solid transparent;
+
+        input {
+            background-color: transparent;
+        }
+
+        >div .controls {
+            display: none;
+        }
+    }
+
+    .single-item {
+        position: absolute;
+    }
+
+    >div {
+        padding-left: 8px;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    input {
+        padding: 8px 8px 8px 0px;
+        border: none;
+        width: 100%;
+        z-index: 10;
+        background-color: transparent;
+
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    ol {
+        max-height: 20vh;
+        overflow-y: auto;
+        border-radius: var(--bs-border-radius);
+        border: var(--bs-border-width) solid var(--bs-border-color);
+        list-style: none;
+        padding: 10px 0;
+        margin: 3px 0 0;
+        background-color: var(--bs-body-bg);
+        position: absolute;
+        z-index: 100;
+        width: 100%;
+        border-radius: 5px;
+
+        li {
+            padding: 10px 10px;
+            cursor: pointer;
+
+            &:hover {
+                background-color: var(--hover);
+            }
+        }
+    }
+
+    .controls {
+        display: flex;
+        align-items: center;
+
+        div {
+            margin:8px 0;
+            padding: 0 10px;
+
+            &:last-child {
+                border-left: 1px solid hsl(0, 0%, 80%);
+            }
+        }
+    }
+
+    .cb-arrow {
+        line-height: 24px;
+        height: 100%;
     }
 }

@@ -25,12 +25,84 @@ section.account-list {
     margin: 0 auto 50px;
 }
 
-@for $i from 5 through 100 {
-    @if $i % 5 == 0 {
-        .column-#{$i} {
-            width: $i * 1%;
-        }
-    }
+.column-5 {
+    width: 5%;
+}
+
+.column-10 {
+    width: 10%;
+}
+
+.column-15 {
+    width: 15%;
+}
+
+.column-20 {
+    width: 20%;
+}
+
+.column-25 {
+    width: 25%;
+}
+
+.column-30 {
+    width: 30%;
+}
+
+.column-35 {
+    width: 35%;
+}
+
+.column-40 {
+    width: 40%;
+}
+
+.column-45 {
+    width: 45%;
+}
+
+.column-50 {
+    width: 50%;
+}
+
+.column-55 {
+    width: 55%;
+}
+
+.column-60 {
+    width: 60%;
+}
+
+.column-65 {
+    width: 65%;
+}
+
+.column-70 {
+    width: 70%;
+}
+
+.column-75 {
+    width: 75%;
+}
+
+.column-80 {
+    width: 80%;
+}
+
+.column-85 {
+    width: 85%;
+}
+
+.column-90 {
+    width: 90%;
+}
+
+.column-95 {
+    width: 95%;
+}
+
+.column-100 {
+    width: 100%;
 }
 
 table.accounts {
