@@ -1,4 +1,4 @@
-import "./App.scss";
+import "./App.css";
 import * as Icons from "@andrewmclachlan/mooicons";
 
 import React from "react";
@@ -48,6 +48,11 @@ const sideMenu = [
         text: "Accounts",
         image: <Icons.PiggyBank />,
         route: "/accounts"
+    },
+    {
+        text: "Bills",
+        image: <Icons.TwoCoins />,
+        route: "/bills"
     },
     {
         text: "Budget",

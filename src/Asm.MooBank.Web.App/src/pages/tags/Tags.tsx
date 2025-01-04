@@ -1,4 +1,4 @@
-import "./Tags.scss";
+import "./Tags.css";
 
 import React, { useEffect, useState } from "react";
 

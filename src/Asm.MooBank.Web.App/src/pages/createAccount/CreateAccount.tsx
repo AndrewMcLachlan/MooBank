@@ -1,4 +1,4 @@
-import { Page } from "@andrewmclachlan/mooapp";
+import { Input, Page } from "@andrewmclachlan/mooapp";
 import { useState } from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router";
@@ -18,6 +18,7 @@ export const CreateAccount: React.FC = () => {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [balance, setBalance] = useState(0);
+    const [openingDate, setOpeningDate] = useState(new Date().toISOString().split("T")[0]);
     const [accountType, setAccountType] = useState<AccountType>("Transaction");
     const [accountController, setAccountController] = useState<Controller>("Manual");
     const [importerTypeId, setImporterTypeId] = useState(0);
@@ -36,6 +37,7 @@ export const CreateAccount: React.FC = () => {
             description: description,
             currency: currency,
             balance: balance,
+            openingDate: openingDate,
             accountType: accountType,
             controller: accountController,
             groupId: groupId === "" ? undefined : groupId,
@@ -73,7 +75,7 @@ export const CreateAccount: React.FC = () => {
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Institution</Form.Label>
-                    <InstitutionSelector accountType={accountType} value={institutionId} onChange={(id) => setInstitutionId(id)} required />
+                    <InstitutionSelector accountType={accountType} value={institutionId} onChange={(id) => setInstitutionId(id)} /> {/* TODO: Required */}
                 </Form.Group>
                 <Form.Group controlId="currency">
                     <Form.Label>Currency</Form.Label>
@@ -85,6 +87,10 @@ export const CreateAccount: React.FC = () => {
                         <InputGroup.Text>$</InputGroup.Text>
                         <Form.Control type="number" required value={balance.toString()} onChange={(e: any) => setBalance(e.currentTarget.value)} />
                     </InputGroup>
+                </Form.Group>
+                <Form.Group controlId="openingDate">
+                    <Form.Label>Date Opened</Form.Label>
+                    <Input type="date" required value={openingDate.toString()} onChange={(e) => setOpeningDate(e.currentTarget.value)} />
                 </Form.Group>
                 <Form.Group controlId="group">
                     <Form.Label>Group</Form.Label>

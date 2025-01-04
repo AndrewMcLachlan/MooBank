@@ -35,6 +35,8 @@ public abstract class Instrument(Guid id) : KeyedEntity<Guid>(id)
 
     public virtual ICollection<InstrumentViewer> Viewers { get; set; } = [];
 
+    [NotMapped]
+    public virtual IEnumerable<Guid> PermittedUsers => Owners.Select(aah => aah.UserId).Union(Viewers.Select(av => av.UserId));
 
     public virtual ICollection<Rule> Rules { get; set; } = [];
 
@@ -66,7 +68,6 @@ public abstract class Instrument(Guid id) : KeyedEntity<Guid>(id)
         }
         else
         {
-
             existing.GroupId = groupId;
         }
     }

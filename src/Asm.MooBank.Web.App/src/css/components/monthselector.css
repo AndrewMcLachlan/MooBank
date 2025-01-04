@@ -1,0 +1,93 @@
+.month-selector .clear {
+    fill: var(--bs-body-color);
+}
+
+.month-selector input {
+    border-radius: 80px;
+    height: 20px;
+    width: 20px;
+    color: #EEE;
+    background-color: #CCC;
+    appearance: none;
+    position: relative;
+    vertical-align: middle;
+    transform: translate(0, -5%);
+
+    /*@include color-mode(dark) {
+        background-color: #666;
+    }*/
+
+    &:checked {
+        background-color: var(--bs-primary);
+        color: #FFF;
+    }
+
+    &::before {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 0.8rem;
+        font-weight: bold;
+        font-family: var(--bs-font-sans-serif);
+    }
+
+    &#jan::before,
+    &#jun::before,
+    &#jul::before {
+        content: 'J';
+    }
+
+    &#feb::before {
+        content: 'F';
+    }
+
+    &#mar::before,
+    &#may::before {
+        content: 'M';
+    }
+
+    &#apr::before,
+    &#aug::before {
+        content: 'A';
+    }
+
+    &#sep::before {
+        content: 'S';
+    }
+
+    &#oct::before {
+        content: 'O';
+    }
+
+    &#nov::before {
+        content: 'N';
+    }
+
+    &#dec::before {
+        content: 'D';
+    }
+
+}
+
+.dark .month-selector input {
+    background-color: #666;
+    color: #CCC;
+
+    &:checked {
+        color: #FFF;
+        background-color: var(--bs-primary);
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    .month-selector input {
+        background-color: #666;
+        color: #CCC;
+
+        &:checked {
+            color: #FFF;
+            background-color: var(--bs-primary);
+        }
+    }
+}

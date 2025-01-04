@@ -4,7 +4,7 @@ namespace Asm.MooBank.Domain.Entities.Account;
 
 public interface IInstitutionAccountRepository : IDeletableRepository<InstitutionAccount, Guid>, IWritableRepository<InstitutionAccount, Guid>
 {
-    InstitutionAccount Add(InstitutionAccount entity, decimal openingBalance);
+    InstitutionAccount Add(InstitutionAccount entity, decimal openingBalance, DateTime openingDate);
 
     Task<ImporterType> GetImporterType(int importerTypeId, CancellationToken cancellationToken = default);
     Task<IEnumerable<ImporterType>> GetImporterTypes(CancellationToken cancellationToken = default);

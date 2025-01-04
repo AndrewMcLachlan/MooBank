@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="Asm.AspNetCore.Modules" />
+    <PackageReference Include="Asm.Cqrs.AspNetCore" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
+    <PackageReference Include="Newtonsoft.Json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Asm.MooBank\Asm.MooBank.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Domain\Asm.MooBank.Domain.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Models\Asm.MooBank.Models.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Security\Asm.MooBank.Security.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Asm.Cqrs.Commands" />
+    <Using Include="Asm.Cqrs.Queries" />
+    <Using Include="Microsoft.EntityFrameworkCore" />
+  </ItemGroup>
+
+</Project>

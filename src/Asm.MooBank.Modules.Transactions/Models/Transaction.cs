@@ -24,11 +24,11 @@ public partial record Transaction
 
     public TransactionType TransactionType { get; set; }
 
-    public IEnumerable<Tag> Tags { get; set; } = Enumerable.Empty<Tag>();
+    public IEnumerable<Tag> Tags { get; set; } = [];
 
-    public IEnumerable<TransactionSplit> Splits { get; set; } = Enumerable.Empty<TransactionSplit>();
+    public IEnumerable<TransactionSplit> Splits { get; set; } = [];
 
-    public IEnumerable<TransactionOffsetFor> OffsetFor { get; set; } = Enumerable.Empty<TransactionOffsetFor>();
+    public IEnumerable<TransactionOffsetFor> OffsetFor { get; set; } = [];
 
     public object? ExtraInfo { get; set; }
 }

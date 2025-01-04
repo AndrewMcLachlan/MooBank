@@ -1,4 +1,4 @@
-import "./Reports.scss";
+import "./Reports.css";
 
 export * from "./top-tags";
 export * from "./breakdown";

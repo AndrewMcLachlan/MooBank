@@ -11,7 +11,7 @@ namespace Asm.MooBank.Modules.Instruments.Endpoints;
 
 public class RulesEndpoints : EndpointGroupBase
 {
-    public override string Name => "Instrument Rules";
+    public override string Name => "Rules";
 
     public override string Path => "instruments/{instrumentId}/rules";
 

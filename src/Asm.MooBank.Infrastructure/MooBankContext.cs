@@ -69,6 +69,8 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
 
         modelBuilder.Entity<Asset>().UseTptMappingStrategy();
 
+        modelBuilder.Entity<Domain.Entities.Utility.Account>().UseTptMappingStrategy();
+
         modelBuilder.Entity<TransactionInstrument>().ToTable(tb => tb.UseSqlOutputClause(false));
 
         modelBuilder.Entity<TagRelationship>();

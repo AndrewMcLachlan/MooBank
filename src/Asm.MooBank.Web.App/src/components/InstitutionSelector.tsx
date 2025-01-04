@@ -1,23 +1,23 @@
 import React from "react";
-import Select, { Props } from "react-select";
 
 import { AccountType, Institution } from "models";
 import { useInstitutionsByAccountType } from "services";
+import { ComboBox, ComboBoxProps } from "@andrewmclachlan/mooapp";
 
-interface InstitutionSelectorProps extends Omit<Props<Institution>, "value" | "onChange"> {
+interface InstitutionSelectorProps extends Omit<ComboBoxProps<Institution>, "value" | "onChange"  | "items" | "valueField" | "labelField"> {
     value: number;
     onChange: (value: number) => void;
     accountType?: AccountType;
 }
 
-export const InstitutionSelector: React.FC<InstitutionSelectorProps> = React.forwardRef<any, InstitutionSelectorProps>(({ accountType, value, onChange, ...props }, ref) => {
+export const InstitutionSelector: React.FC<InstitutionSelectorProps> = (({ accountType, value, onChange, ...props }) => {
 
     const { data: institutions } = useInstitutionsByAccountType(accountType);
 
     const institution = value ? institutions?.find(c => c.id === value) : undefined;
 
     return (
-        <Select onChange={(c: any) => onChange(c.id)} value={institution} options={institutions} getOptionValue={o => o.id.toString()} getOptionLabel={o => o.name} {...props} ref={ref} className="react-select" classNamePrefix="react-select" />
+        <ComboBox onChange={(c: any) => onChange(c.id)} selectedItems={[institution]} items={institutions} valueField={o => o.id.toString()} labelField={o => o.name} {...props} />
     );
 });
 

@@ -38,6 +38,9 @@ export const routes: RouteDefinition = {
                     },
                 }
             },
+            billAccountSummaries: { path: "/bills", element: <Pages.BillAccountSummaries /> },
+            billAccountsByType: { path: "/bills/:id", element: <Pages.BillAccounts /> },
+            bills: { path: "/bills/accounts/:id", element: <Pages.Bills /> },
             stockCreate: { path: "/shares/create", element: <Pages.CreateStockHolding /> },
             stock: {
                 path: "/shares/:id", element: <Pages.StockHolding />, children: {

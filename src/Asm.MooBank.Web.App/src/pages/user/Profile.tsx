@@ -1,4 +1,4 @@
-import { DeleteIcon, EditColumn, Form, Page, SaveIcon, SectionForm } from "@andrewmclachlan/mooapp";
+import { ComboBox, DeleteIcon, EditColumn, Form, Page, SaveIcon, SectionForm } from "@andrewmclachlan/mooapp";
 import { CurrencySelector } from "components";
 import { Card, User } from "models/User";
 import React, { useEffect, useState } from "react";
@@ -71,7 +71,6 @@ export const Profile: React.FC = () => {
                         <option value="">Select an account</option>
                         {accounts?.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
                     </Form.Select>}
-                    {/*<Select value={accounts?.find(a => a.id === updatedMe.primaryAccountId)} options={accounts} getOptionValue={o => o.id} getOptionLabel={o => o.name} onChange={v => setUpdatedMe({ ...updatedMe, primaryAccountId: v.id })} className="react-select" classNamePrefix="react-select" />*/}
                 </Form.Group>
                 <Table>
                     <thead>

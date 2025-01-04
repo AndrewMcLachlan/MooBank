@@ -21,7 +21,7 @@ internal class CreateStepDefinitions(ScenarioContext context) : StepDefinitionBa
         Mock<IInstitutionAccountRepository> institutionAccountRepositoryMock = new();
 
         institutionAccountRepositoryMock.Setup(i => i.Add(It.IsAny<InstitutionAccount>())).Returns(NewAccountEntity);
-        institutionAccountRepositoryMock.Setup(i => i.Add(It.IsAny<InstitutionAccount>(), It.IsAny<decimal>()))
+        institutionAccountRepositoryMock.Setup(i => i.Add(It.IsAny<InstitutionAccount>(), It.IsAny<decimal>(), It.IsAny<DateTime>()))
             .Returns((InstitutionAccount account, decimal balance) => NewAccountEntityWithBalance(account, balance));
 
         CreateHandler createHandler = new(institutionAccountRepositoryMock.Object, Mocks.UnitOfWorkMock.Object, Models.AccountHolder, Mocks.CurrencyConverterMock.Object, Mocks.SecurityMock.Object);

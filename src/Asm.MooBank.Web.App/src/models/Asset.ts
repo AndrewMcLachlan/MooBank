@@ -1,4 +1,4 @@
-import { Instrument, TopLevelAccount } from "./Account";
+import { Instrument, TopLevelAccount } from "./Instrument";
 
 export interface AssetBase extends Instrument, TopLevelAccount {
     purchasePrice?: number;
