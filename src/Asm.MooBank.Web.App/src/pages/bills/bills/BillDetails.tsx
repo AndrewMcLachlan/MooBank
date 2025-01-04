@@ -8,11 +8,11 @@ export const BillDetails: React.FC<BillDetailsProps> = ({ bill, onChange, show, 
     if (!bill) return null;
 
     return (
-        <Offcanvas show={show} onHide={onHide} placement="end" className="transaction-details">
-            <Offcanvas.Header closeButton>
+        <Modal show={show} onHide={onHide} placement="end" className="transaction-details">
+            <Modal.Header closeButton>
                 <Offcanvas.Title>Bill</Offcanvas.Title>
-            </Offcanvas.Header>
-            <Offcanvas.Body>
+            </Modal.Header>
+            <Modal.Body>
                 <section className="transaction-info">
                     <section>
                         <div>Account</div>
@@ -36,8 +36,8 @@ export const BillDetails: React.FC<BillDetailsProps> = ({ bill, onChange, show, 
 
                     </section>
                 )}
-            </Offcanvas.Body>
-        </Offcanvas>
+            </Modal.Body>
+        </Modal>
     );
 }
 

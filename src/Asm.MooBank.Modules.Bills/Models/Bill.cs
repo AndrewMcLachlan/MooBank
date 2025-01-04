@@ -2,29 +2,13 @@
 
 namespace Asm.MooBank.Modules.Bills.Models;
 
-public record Bill
+public record Bill : BillBase
 {
     public int Id { get; set; }
 
     public Guid AccountId { get; set; }
 
     public required string AccountName { get; set; }
-
-    public string? InvoiceNumber { get; set; }
-
-    public DateOnly IssueDate { get; set; }
-
-    public int? CurrentReading { get; set; }
-
-    public int? PreviousReading { get; set; }
-
-    public int Total { get; set; } // Computed column
-
-    public bool? CostsIncludeGST { get; set; }
-
-    public decimal Cost { get; set; }
-
-    public IEnumerable<Period> Periods { get; set; } = [];
 }
 
 public static class BillExtensions

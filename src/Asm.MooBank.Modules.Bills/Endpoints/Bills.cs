@@ -33,6 +33,16 @@ internal class Bills : EndpointGroupBase
             .WithNames("Get Bill Account")
             .RequireAuthorization(Policies.InstrumentViewer);
 
-        builder.MapPagedQuery<Queries.Bills.GetForAccount, Models.Bill>("/accounts/{instrumentId}/bills");
+        builder.MapPagedQuery<Queries.Bills.GetForAccount, Models.Bill>("/accounts/{instrumentId}/bills")
+            .WithNames("Get Bills For An Account")
+            .RequireAuthorization(Policies.InstrumentViewer);
+
+        builder.MapQuery<Queries.Bills.Get, Models.Bill>("/accounts/{instrumentId}/bills/{id}")
+            .WithNames("Get Bill")
+            .RequireAuthorization(Policies.InstrumentViewer);
+
+        builder.MapPostCreate<Commands.Bills.Create, Models.Bill>("/accounts/{instrumentId}/bills", "Get Bill".ToMachine(), b => b.Id)
+            .WithNames("Create Bill")
+            .RequireAuthorization(Policies.InstrumentOwner);
     }
 }

@@ -9,8 +9,8 @@ internal class GetByTypeHandler(IQueryable<Domain.Entities.Utility.Account> acco
 {
     public async ValueTask<IEnumerable<Account>> Handle(GetByType query, CancellationToken cancellationToken)
     {
-        var filteredAccounts = await accounts.Where(a => a.UtilityType == query.Type)
-                              .Where(a => a.Viewers.Any(v => v.UserId == user.Id))
+        var filteredAccounts = await accounts.Include(a => a.Bills).Where(a => a.UtilityType == query.Type)
+                              .Where(a => user.Accounts.Contains(a.Id))
                               .Include(a => a.Bills)
                               .ToListAsync(cancellationToken);
 

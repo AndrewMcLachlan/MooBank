@@ -6,6 +6,7 @@ export * from "./Family";
 export * from "./Group";
 export * from "./ImporterType";
 export * from "./Institution";
+export * from "./Instrument";
 export * from "./Layout";
 export * from "./ListItem";
 export * from "./stock-holding/StockHolding";

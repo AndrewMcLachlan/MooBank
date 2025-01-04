@@ -9,16 +9,17 @@ internal class GetAllByTypeHandler(IQueryable<Domain.Entities.Utility.Account> a
 {
     public async ValueTask<IEnumerable<AccountTypeSummary>> Handle(GetAllByType query, CancellationToken cancellationToken)
     {
-        var filteredAccounts = await accounts.Where(a => a.Viewers.Any(v => v.UserId == user.Id))
+        var filteredAccounts = await accounts.Where(a => user.Accounts.Contains(a.Id))
                               .Include(a => a.Bills)
+                              .GroupBy(a => a.UtilityType)
                               .ToListAsync(cancellationToken);
 
         return filteredAccounts.Select(a =>
             new AccountTypeSummary
             {
-                UtilityType = a.UtilityType,
-                From = filteredAccounts.SelectMany(a => a.Bills).Min(b => b.IssueDate),
-                Accounts = filteredAccounts.Select(a => a.Name),
+                UtilityType = a.Key,
+                From = a.SelectMany(a => a.Bills).Min(b => b.IssueDate),
+                Accounts = a.Select(a => a.Name),
             });
     }
 }

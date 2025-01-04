@@ -1,9 +1,6 @@
 import { Period } from "./Period";
 
-export interface Bill {
-    id: number;
-    accountId: string;
-    accountName: string;
+export interface BillBase {
     invoiceNumber: string;
     issueDate: string;
     currentReading?: number;
@@ -12,4 +9,13 @@ export interface Bill {
     costsIncludeGST?: boolean;
     cost: number;
     periods?: Period[];
+}
+
+export interface Bill extends BillBase {
+    id: number;
+    accountId: string;
+    accountName: string;
+}
+
+export interface CreateBill extends BillBase {
 }

@@ -35,7 +35,7 @@ export const NewBudgetLine: React.FC<NewBudgetLineProps> = (props) => {
 
     return (
         <tr>
-            <td><ComboBox<Tag> selectedItems={[tag]} onChange={(t: Tag[]) => setTag(t[0])} items={allTags.data ?? []} labelField={(t) => t.name} valueField={(t) => t.id?.toString()} /></td>
+            <td><ComboBox<Tag> selectedItems={[tag]} onChange={(t: Tag[]) => setTag(t[0])} items={allTags.data ?? []} labelField={(t) => t?.name} valueField={(t) => t.id?.toString()} /></td>
             <td><Form.Control value={notes} onChange={(e) => setNotes(e.currentTarget.value)} /></td>
             <td><Form.Control type="number" min={0} value={amount} onChange={(e) => setAmount((e.currentTarget as any).valueAsNumber)} /></td>
             <MonthSelector as="td" value={month} onChange={setMonth} />

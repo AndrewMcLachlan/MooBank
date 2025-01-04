@@ -1,14 +1,16 @@
 import React, { PropsWithChildren, useState } from "react";
 
-import { getNumberOfPages, Page, Pagination } from "@andrewmclachlan/mooapp";
+import { getNumberOfPages, Page, Pagination, useIdParams } from "@andrewmclachlan/mooapp";
 import { Bill } from "models/bills";
-import { useBills } from "../../services";
+import { useBills } from "services";
 
 import { Table } from "react-bootstrap";
 import { BillDetails } from "./BillDetails";
 import { BillRow } from "./BillRow";
 
 export const Bills: React.FC<PropsWithChildren> = ({ children, ...props }) => {
+
+    const id = useIdParams();
 
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [pageSize, _setPageSize] = useState<number>(20);
@@ -27,9 +29,9 @@ export const Bills: React.FC<PropsWithChildren> = ({ children, ...props }) => {
     }
 
     return (
-        <Page title="Bills" actions={[]} navItems={[]} breadcrumbs={[{ text: "Bills", route: "/biils" }]}>
+        <Page title="Bills" actions={[]} navItems={[]} breadcrumbs={[{ text: "Bills", route: "/bills" }, { text: id, route: `/bills/${id}` }]}>
             <BillDetails bill={selectedBill} show={showDetails} onHide={() => setShowDetails(false)} onChange={() => { }} />
-            <Table striped bordered={false} borderless className="section">
+            <Table striped className="section">
                 <thead>
                     <tr>
                         <th>Account</th>

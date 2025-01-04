@@ -289,11 +289,6 @@ input.form-control {
     height: 38px;
 }
 
-.form-check-input {
-    height: 1.5rem;
-    width: 1.5rem;
-}
-
 input.form-control:read-only {
     background-color: var(--bs-disabled-bg);
     cursor: default;
@@ -351,103 +346,5 @@ input.form-control:read-only {
 @media screen and (max-width: 767px) {
     .container-fluid.second-header > .actions {
         display: none;
-    }
-}
-
-
-
-
-
-
-@scope (.combo-box) {
-
-    :scope {
-        background-color: var(--bs-body-bg);
-        position: relative;
-        border-radius: var(--bs-border-radius);
-        border: var(--bs-border-width) solid var(--bs-border-color);
-    }
-
-    &.readonly:scope {
-        background-color: transparent;
-    }
-
-    &.readonly {
-        border: var(--bs-border-width) solid transparent;
-
-        input {
-            background-color: transparent;
-        }
-
-        >div .controls {
-            display: none;
-        }
-    }
-
-    .single-item {
-        position: absolute;
-    }
-
-    >div {
-        padding-left: 8px;
-        display: flex;
-        gap: 8px;
-        align-items: center;
-    }
-
-    input {
-        padding: 8px 8px 8px 0px;
-        border: none;
-        width: 100%;
-        z-index: 10;
-        background-color: transparent;
-
-
-        &:focus {
-            outline: none;
-        }
-    }
-
-    ol {
-        max-height: 20vh;
-        overflow-y: auto;
-        border-radius: var(--bs-border-radius);
-        border: var(--bs-border-width) solid var(--bs-border-color);
-        list-style: none;
-        padding: 10px 0;
-        margin: 3px 0 0;
-        background-color: var(--bs-body-bg);
-        position: absolute;
-        z-index: 100;
-        width: 100%;
-        border-radius: 5px;
-
-        li {
-            padding: 10px 10px;
-            cursor: pointer;
-
-            &:hover {
-                background-color: var(--hover);
-            }
-        }
-    }
-
-    .controls {
-        display: flex;
-        align-items: center;
-
-        div {
-            margin:8px 0;
-            padding: 0 10px;
-
-            &:last-child {
-                border-left: 1px solid hsl(0, 0%, 80%);
-            }
-        }
-    }
-
-    .cb-arrow {
-        line-height: 24px;
-        height: 100%;
     }
 }

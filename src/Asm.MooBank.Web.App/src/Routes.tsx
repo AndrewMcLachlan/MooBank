@@ -38,6 +38,9 @@ export const routes: RouteDefinition = {
                     },
                 }
             },
+            billAccountSummaries: { path: "/bills", element: <Pages.BillAccountSummaries /> },
+            billAccountsByType: { path: "/bills/:id", element: <Pages.BillAccounts /> },
+            bills: { path: "/bills/accounts/:id", element: <Pages.Bills /> },
             stockCreate: { path: "/shares/create", element: <Pages.CreateStockHolding /> },
             stock: {
                 path: "/shares/:id", element: <Pages.StockHolding />, children: {
@@ -74,7 +77,6 @@ export const routes: RouteDefinition = {
             groupsManage: { path: "/groups/:id/manage", element: <Pages.ManageGroup /> },
             groupsCreate: { path: "/groups/create", element: <Pages.CreateGroup /> },
             profile: { path: "/profile", element: <Pages.Profile /> },
-            bills: { path: "/bills", element: <Pages.Bills /> },
             fallback: { path: "*", element: <Pages.Error404 /> },
         }
     }
