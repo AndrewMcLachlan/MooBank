@@ -11,7 +11,7 @@ export const TopTagsWidget: React.FC = () => {
     const account = accounts?.find(a => a.isPrimary === true) ?? accounts?.[0];
 
     return (
-        <Widget title={(account && `Top Tags - ${account.name} - Last Month`) ?? 'Last Month'} size="single" titleSize={2} className="report" loading={isLoading}>
+        <Widget title={(account && `Top Tags - ${account.name} - Last Month`) ?? 'Last Month'} size="double" titleSize={2} className="report" loading={isLoading}>
             {account && <TopTags accountId={account?.id} period={lastMonth} reportType={ReportType.Expenses} top={10} />}
         </Widget>
     );

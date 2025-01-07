@@ -16,8 +16,10 @@ export const InstitutionSelector: React.FC<InstitutionSelectorProps> = (({ accou
 
     const institution = value ? institutions?.find(c => c.id === value) : undefined;
 
+    if (!institutions) return null;
+
     return (
-        <ComboBox onChange={(c: any) => onChange(c.id)} selectedItems={[institution]} items={institutions} valueField={o => o.id.toString()} labelField={o => o.name} {...props} />
+        <ComboBox onChange={(c: any) => onChange(c.id)} selectedItems={[institution]} items={institutions} valueField={o => o?.id.toString()} labelField={o => o?.name} {...props} />
     );
 });
 

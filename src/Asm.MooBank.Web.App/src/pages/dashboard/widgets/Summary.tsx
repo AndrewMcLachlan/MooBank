@@ -21,7 +21,7 @@ export const SummaryWidget: React.FC = () => {
             {groupTotals?.map((ag, index) =>
                 <KeyValue key={index}>
                     <div>{ag.name}</div>
-                    <div className="amount">{ag.total.toLocaleString()}</div>
+                    <div className="amount">{ag.total?.toLocaleString()}</div>
                 </KeyValue>
             )}
         </Widget>
