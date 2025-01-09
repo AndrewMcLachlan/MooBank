@@ -54,7 +54,7 @@ function useRuleRowEvents(props: RuleRowProps) {
     const createTag = (name: string) => {
         createTransactionTag.mutate({ name }, {
             onSuccess: (data) => {
-                addTransactionTagRuleTag.mutate({ accountId: props.accountId, ruleId: props.rule.id, tag: data});
+                addTransactionTagRuleTag.mutate({ instrumentId: props.accountId, ruleId: props.rule.id, tag: data});
             }
         });
     };
@@ -63,7 +63,7 @@ function useRuleRowEvents(props: RuleRowProps) {
 
         if (!tag.id) return;
 
-        addTransactionTagRuleTag.mutate({ accountId: props.accountId, ruleId: props.rule.id, tag });
+        addTransactionTagRuleTag.mutate({ instrumentId: props.accountId, ruleId: props.rule.id, tag });
         setTags([ ...tags, tag]);
     };
 
@@ -71,7 +71,7 @@ function useRuleRowEvents(props: RuleRowProps) {
 
         if (!tag.id) return;
 
-        removeTransactionTagRuleTag.mutate({ accountId: props.accountId, ruleId: props.rule.id, tag });
+        removeTransactionTagRuleTag.mutate({ instrumentId: props.accountId, ruleId: props.rule.id, tag });
         setTags(tags.filter((t) => t.id !== tag.id));
     };
 
