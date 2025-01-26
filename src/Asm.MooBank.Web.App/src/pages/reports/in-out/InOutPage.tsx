@@ -9,7 +9,7 @@ import chartTrendline from "chartjs-plugin-trendline";
 import { differenceInMonths } from "date-fns";
 
 import { PeriodSelector } from "components/PeriodSelector";
-import { Period } from "helpers/dateFns";
+import { Period, subtractYear } from "helpers/dateFns";
 import { InOut } from "./InOut";
 import { InOutTrend } from "./InOutTrend";
 import { useInOutAverageReport, useInOutReport } from "services";
@@ -25,7 +25,7 @@ export const InOutPage = () => {
     const [period, setPeriod] = useState<Period>({ startDate: null, endDate: null });
 
     const difference = Math.abs(differenceInMonths(period.startDate, period.endDate));
-    const col = difference <= 1 ? 12 : 6;
+    const col = 6;
 
     return (
         <ReportsPage title="Income vs Expenses">
@@ -34,12 +34,19 @@ export const InOutPage = () => {
             </Section>
             <Row>
                 <Col xxl={col} xl={12}>
-                    <Section title="Total Income vs Expenses" titleSize={3} className="report inout">
+                    <Section title="This period" titleSize={3} className="report inout">
                         <InOut accountId={accountId} period={period} useInOutReport={useInOutReport} />
                     </Section>
                 </Col>
-                <Col hidden={difference <= 1} xxl={col} xl={12}>
-                    <Section title="Average Income vs Expenses" titleSize={3} className="report inout">
+                <Col xxl={col} xl={12}>
+                    <Section title="Same Period Last Year" titleSize={3} className="report inout">
+                        <InOut accountId={accountId} period={subtractYear(period)} useInOutReport={useInOutReport} />
+                    </Section>
+                </Col>
+            </Row>
+            <Row hidden={difference <= 1} >
+                <Col xxl={12}>
+                    <Section title="Monthly Average" titleSize={3} className="report inout">
                         <InOut accountId={accountId} period={period} useInOutReport={useInOutAverageReport} />
                     </Section>
                 </Col>

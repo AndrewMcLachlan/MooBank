@@ -7,7 +7,7 @@ import { Chart as ChartJS, registerables } from "chart.js";
 
 import { PeriodSelector } from "components/PeriodSelector";
 import { ReportTypeSelector } from "components/ReportTypeSelector";
-import { Period } from "helpers/dateFns";
+import { Period, subtractYear } from "helpers/dateFns";
 import { ReportType } from "models/reports";
 import { TopTags } from "./TopTags";
 
@@ -29,6 +29,10 @@ export const AllTagAverage = () => {
             <Section className="report">
                 <h3>Average per month Across Top 20 Tags</h3>
                 <TopTags accountId={accountId} period={period} reportType={reportType} />
+            </Section>
+            <Section className="report">
+                <h3>Same Period Last Year</h3>
+                <TopTags accountId={accountId} period={subtractYear(period)} reportType={reportType} />
             </Section>
         </ReportsPage>
     );

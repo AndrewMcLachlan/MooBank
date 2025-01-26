@@ -3,7 +3,6 @@ import React, { PropsWithChildren, useState } from "react";
 import { AccountTypeSummary, Bill } from "models/bills";
 import { useBillAccountSummaries } from "services";
 
-import { Table } from "react-bootstrap";
 import { Page, SectionTable } from "@andrewmclachlan/mooapp";
 import { useNavigate } from "react-router";
 
