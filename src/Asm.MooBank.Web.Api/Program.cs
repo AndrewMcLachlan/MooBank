@@ -10,14 +10,11 @@ using Asm.MooBank.Security;
 using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.OpenApi;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
 
-StringBuilder DebugLog = new();
+var result =  WebApplicationStart.Run(args, "Asm.MooBank.Web.Api", AddServices, AddApp, AddHealthChecks);
 
-var result =  WebApplicationStart.Run(args, "Asm.MooBank.Web.Api", AddServices, AddApp);
-
-Console.WriteLine("Debug Log:");
-Console.WriteLine(DebugLog.ToString());
 return result;
 
 void AddServices(WebApplicationBuilder builder)
@@ -154,9 +151,6 @@ void AddServices(WebApplicationBuilder builder)
     services.AddSwaggerGen();
 
     services.AddHealthChecks();
-
-
-    Serilog.Debugging.SelfLog.Enable(message => DebugLog.AppendLine(message));
 }
 
 void AddApp(WebApplication app)
@@ -203,4 +197,9 @@ void AddApp(WebApplication app)
 
     app.MapFallbackToFile("/index.html");
 
+}
+
+void AddHealthChecks(IHealthChecksBuilder builder, WebApplicationBuilder app)
+{
+    builder.AddCheck("Asm.MooBank.Web.Api", () => HealthCheckResult.Healthy(), tags: ["health"]);
 }
