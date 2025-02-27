@@ -11,6 +11,7 @@ using Asm.MooBank.Domain.Entities.StockHolding;
 using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.User;
+using Asm.MooBank.Domain.Entities.Utility;
 using Asm.MooBank.Importers;
 using Asm.MooBank.Infrastructure;
 using Asm.MooBank.Infrastructure.Repositories;
@@ -82,7 +83,9 @@ public static class IServiceCollectionExtensions
                 .AddScoped<IStockHoldingRepository, StockHoldingRepository>()
                 .AddScoped<ITransactionRepository, TransactionRepository>()
                 .AddScoped<ITagRepository, TagRepository>()
-                .AddScoped<IRuleRepository, RuleRepository>();
+                .AddScoped<IRuleRepository, RuleRepository>()
+                .AddScoped<IAccountRepository, UtilityAccountRepository>()
+        ;
 
     public static IServiceCollection AddEntities(this IServiceCollection services) =>
         services.AddAggregateRoots<MooBankContext>(typeof(IGroupRepository).Assembly);

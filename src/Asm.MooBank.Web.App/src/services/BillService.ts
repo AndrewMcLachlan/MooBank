@@ -12,4 +12,8 @@ export const useBillAccountsByType = (utilityType: string) => useApiGet<BillAcco
 
 export const useBillAccounts = () => useApiGet<BillAccount[]>([accountsKey], "api/bills/accounts");
 
-export const useBills = (pageNumber: number, pageSize: number) => useApiPagedGet<PagedResult<Bill>>([billsKey, pageNumber, pageSize], `api/bills?pageNumber=${pageNumber}&pageSize=${pageSize}`);
+export const useBillAccount = (id: string) => useApiGet<BillAccount>([accountsKey], `api/bills/accounts/${id}`);
+
+export const useAllBills = (pageNumber: number, pageSize: number) => useApiPagedGet<PagedResult<Bill>>([billsKey, pageNumber, pageSize], `api/bills?pageNumber=${pageNumber}&pageSize=${pageSize}`);
+
+export const useBills = (id: string, pageNumber: number, pageSize: number) => useApiPagedGet<PagedResult<Bill>>([billsKey, id, pageNumber, pageSize], `api/bills/accounts/${id}/bills?pageNumber=${pageNumber}&pageSize=${pageSize}`);

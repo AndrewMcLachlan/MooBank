@@ -4,11 +4,8 @@ namespace Asm.MooBank.Modules.Bills.Models;
 
 public record Bill : BillBase
 {
-    public int Id { get; set; }
+    public int Id { get; init; }
 
-    public Guid AccountId { get; set; }
-
-    public required string AccountName { get; set; }
 }
 
 public static class BillExtensions
@@ -18,8 +15,6 @@ public static class BillExtensions
         return new Bill
         {
             Id = entity.Id,
-            AccountId = entity.AccountId,
-            AccountName = entity.Account!.Name,
             InvoiceNumber = entity.InvoiceNumber,
             IssueDate = entity.IssueDate,
             CurrentReading = entity.CurrentReading,

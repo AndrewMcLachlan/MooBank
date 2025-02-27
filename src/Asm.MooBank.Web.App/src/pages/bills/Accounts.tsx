@@ -15,8 +15,8 @@ export const BillAccounts: React.FC<PropsWithChildren> = ({ children, ...props }
 
     const navigate = useNavigate();
 
-    const rowClick = (bill: BillAccount) => {
-        navigate(`/bills/accounts/${bill.id}`);
+    const rowClick = (account: BillAccount) => {
+        navigate(`/bills/accounts/${account.id}`);
     }
 
     return (

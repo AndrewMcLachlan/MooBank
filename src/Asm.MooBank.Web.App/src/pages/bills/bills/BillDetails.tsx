@@ -1,22 +1,22 @@
 import { Page } from "@andrewmclachlan/mooapp";
 import { format, parseISO } from "date-fns";
-import { Bill } from "models/bills";
+import { Bill, BillAccount } from "models/bills";
 import { Modal, Offcanvas } from "react-bootstrap";
 
-export const BillDetails: React.FC<BillDetailsProps> = ({ bill, onChange, show, onHide }) => {
+export const BillDetails: React.FC<BillDetailsProps> = ({ account, bill, onChange, show, onHide }) => {
 
     if (!bill) return null;
 
     return (
-        <Modal show={show} onHide={onHide} placement="end" className="transaction-details">
-            <Modal.Header closeButton>
+        <Offcanvas show={show} onHide={onHide} placement="end" className="transaction-details">
+            <Offcanvas.Header closeButton>
                 <Offcanvas.Title>Bill</Offcanvas.Title>
-            </Modal.Header>
-            <Modal.Body>
+            </Offcanvas.Header>
+            <Offcanvas.Body>
                 <section className="transaction-info">
                     <section>
                         <div>Account</div>
-                        <div className="value">{bill.accountName}</div>
+                        <div className="value">{account.name}</div>
                         <div>Issue Date</div>
                         <div className="value">{bill.issueDate}</div>
                         <div>Cost</div>
@@ -36,12 +36,13 @@ export const BillDetails: React.FC<BillDetailsProps> = ({ bill, onChange, show, 
 
                     </section>
                 )}
-            </Modal.Body>
-        </Modal>
+            </Offcanvas.Body>
+        </Offcanvas>
     );
 }
 
 export interface BillDetailsProps {
+    account: BillAccount;
     show: boolean;
     onHide: () => void;
     bill: Bill;

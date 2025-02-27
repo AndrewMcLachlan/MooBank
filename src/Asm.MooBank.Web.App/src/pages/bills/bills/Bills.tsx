@@ -2,7 +2,7 @@ import React, { PropsWithChildren, useState } from "react";
 
 import { getNumberOfPages, Page, Pagination, useIdParams } from "@andrewmclachlan/mooapp";
 import { Bill } from "models/bills";
-import { useBills } from "services";
+import { useBillAccount, useBills } from "services";
 
 import { Table } from "react-bootstrap";
 import { BillDetails } from "./BillDetails";
@@ -17,7 +17,8 @@ export const Bills: React.FC<PropsWithChildren> = ({ children, ...props }) => {
     const [showDetails, setShowDetails] = useState(false);
     const [selectedBill, setSelectedBill] = useState<Bill>(undefined);
 
-    const pagedBills = useBills(pageNumber, pageSize);
+    const { data: billAccount } = useBillAccount(id);
+    const pagedBills = useBills(id, pageNumber, pageSize);
 
     if (!pagedBills?.data) return null;
 
@@ -29,8 +30,8 @@ export const Bills: React.FC<PropsWithChildren> = ({ children, ...props }) => {
     }
 
     return (
-        <Page title="Bills" actions={[]} navItems={[]} breadcrumbs={[{ text: "Bills", route: "/bills" }, { text: id, route: `/bills/${id}` }]}>
-            <BillDetails bill={selectedBill} show={showDetails} onHide={() => setShowDetails(false)} onChange={() => { }} />
+        <Page title="Bills" actions={[]} navItems={[]} breadcrumbs={[{ text: "Bills", route: "/bills" }, { text: billAccount?.name, route: `/bills/${id}` }]}>
+            <BillDetails account={billAccount} bill={selectedBill} show={showDetails} onHide={() => setShowDetails(false)} onChange={() => { }} />
             <Table striped className="section">
                 <thead>
                     <tr>
@@ -40,7 +41,7 @@ export const Bills: React.FC<PropsWithChildren> = ({ children, ...props }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {pagedBills.data.results.map(b => <BillRow key={b.id} bill={b} onClick={rowClick} />)}
+                    {pagedBills.data.results.map(b => <BillRow key={b.id} account={billAccount} bill={b} onClick={rowClick} />)}
                 </tbody>
                 <tfoot>
                     <tr>

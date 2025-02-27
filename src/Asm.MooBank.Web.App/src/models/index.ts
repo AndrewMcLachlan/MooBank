@@ -1,6 +1,7 @@
 export * from "./Account";
 export * from "./AccountList";
 export * from "./Asset";
+export * from "./bills";
 export * from "./Budget";
 export * from "./Family";
 export * from "./Group";
