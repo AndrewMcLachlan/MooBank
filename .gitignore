@@ -265,3 +265,4 @@ appsettings.Development.json
 serviceDependencies.local.json
 
 *.tsbuildinfo
+src/Asm.MooBank.Web.App/.vscode/settings.json
