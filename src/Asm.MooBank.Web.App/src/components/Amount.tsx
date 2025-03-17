@@ -9,7 +9,7 @@ export const Amount: React.FC<AmountProps> = ({ amount, colour = false, plusminu
     const negativeClass = negative ? "negative" : "";
     const className = classNames("amount", colourClass, negativeClass);
 
-    return (<span className={className}>{`${pl_mi}${amount.toLocaleString()}${cr_dr}`}</span>);
+    return (<span className={className}>{`${pl_mi}${amount?.toLocaleString()}${cr_dr}`}</span>);
 }
 
 export interface AmountProps {
