@@ -54,4 +54,4 @@ Run the command:
 
 Aspire will create a new SQL Server container with a database called `MooBank` and publish the database project into it.
 
-A family and account holder will be creatd automatically.
+A family and account holder will be created automatically.
