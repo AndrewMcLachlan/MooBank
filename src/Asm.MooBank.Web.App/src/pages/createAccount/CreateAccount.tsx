@@ -32,6 +32,12 @@ export const CreateAccount: React.FC = () => {
         e.stopPropagation();
         e.preventDefault();
 
+        // TODO: Remove once proper ComboBox validation is supported
+        if (institutionId === undefined) {
+            window.alert("Please select an institution");
+            return;
+        }
+
         const account: CreateInstitutionAccount = {
             name: name,
             description: description,

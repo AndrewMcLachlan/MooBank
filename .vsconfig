@@ -1,0 +1,33 @@
+{
+  "version": "1.0",
+  "components": [
+    "Microsoft.VisualStudio.Component.Roslyn.Compiler",
+    "Microsoft.Component.MSBuild",
+    "Microsoft.VisualStudio.Component.Roslyn.LanguageServices",
+    "Microsoft.VisualStudio.Component.MSODBC.SQL",
+    "Microsoft.VisualStudio.Component.MSSQL.CMDLnUtils",
+    "Microsoft.VisualStudio.Component.SQL.LocalDB.Runtime",
+    "Microsoft.VisualStudio.Component.SQL.CLR",
+    "Microsoft.VisualStudio.Component.CoreEditor",
+    "Microsoft.VisualStudio.Workload.CoreEditor",
+    "Microsoft.Net.ComponentGroup.DevelopmentPrerequisites",
+    "Microsoft.VisualStudio.Component.NuGet",
+    "Microsoft.VisualStudio.ComponentGroup.Web",
+    "Microsoft.NetCore.Component.Runtime.9.0",
+    "Microsoft.NetCore.Component.SDK",
+    "Microsoft.NetCore.Component.DevelopmentTools",
+    "Microsoft.VisualStudio.Component.DockerTools",
+    "Microsoft.NetCore.Component.Web",
+    "Microsoft.VisualStudio.Component.Web",
+    "Microsoft.VisualStudio.Component.AspNet",
+    "Microsoft.VisualStudio.Component.DiagnosticTools",
+    "Microsoft.VisualStudio.Component.EntityFramework",
+    "aspire",
+    "Microsoft.VisualStudio.Workload.NetWeb",
+    "Microsoft.VisualStudio.Component.Node.Tools",
+    "Microsoft.VisualStudio.Workload.Node",
+    "Microsoft.VisualStudio.Component.SQL.SSDTSDK",
+    "Microsoft.VisualStudio.Workload.Data"
+  ],
+  "extensions": []
+}

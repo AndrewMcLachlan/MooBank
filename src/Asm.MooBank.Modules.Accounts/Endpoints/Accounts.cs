@@ -25,7 +25,7 @@ internal class Accounts : EndpointGroupBase
             .WithNames("Get Account")
             .RequireAuthorization(Policies.GetInstrumentViewerPolicy());
 
-        builder.MapPostCreate<Create, InstitutionAccount>("/", "Get Account".ToMachine(), a => new { a.Id }, CommandBinding.Body)
+        builder.MapPostCreate<Create, InstitutionAccount>("/", "Get Account".ToMachine(), a => new { instrumentId = a.Id }, CommandBinding.Body)
             .WithNames("Create Account");
 
         builder.MapPatchCommand<Update, InstitutionAccount>("/{id}")

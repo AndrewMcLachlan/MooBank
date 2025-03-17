@@ -7,12 +7,20 @@
     <ModelCollation>1033, CI</ModelCollation>
     <RootNamespace>Asm.MooBank.Database</RootNamespace>
     <AssemblyName>Asm.MooBank.Database</AssemblyName>
+    <TargetDatabaseName>MooBank</TargetDatabaseName>
+    <DatabaseName>MooBank</DatabaseName>
   </PropertyGroup>
+  <ItemGroup>
+    <Build Remove="Scripts\Institutions.sql" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="Scripts\BackfillTransactionRaw.sql" />
     <None Include="Scripts\FillTransactionOffset.sql" />
     <None Include="Scripts\FillTransactionRaw.sql" />
     <None Include="Scripts\FillTransactionSplits.sql" />
+    <None Include="Scripts\Institutions.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
     <PostDeploy Include="Script.PostDeployment1.sql" />
   </ItemGroup>
   <ItemGroup>
