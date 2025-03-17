@@ -22,7 +22,7 @@ public partial class User(Guid id) : KeyedEntity<Guid>(id)
     public string Currency { get; set; } = "AUD";
 
     [Required]
-    public required Guid FamilyId { get; set; }
+    public Guid FamilyId { get; set; }
 
     public Guid? PrimaryAccountId { get; set; }
 

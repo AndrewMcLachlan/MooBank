@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using Asm.AspNetCore.Authentication;
 using Asm.MooBank.Infrastructure;
 using Asm.OAuth;
@@ -33,10 +32,27 @@ public static class IServiceCollectionExtensions
 
                     var user = await dataContext.Set<Domain.Entities.User.User>().Include(ah => ah.InstrumentOwners).ThenInclude(aah => aah.Instrument).ThenInclude(i => i.VirtualInstruments).AsNoTracking().SingleOrDefaultAsync(ah => ah.Id == userId);
 
+                    List<Claim> claims = [];
+
                     if (user == null)
                     {
-                        context.Fail("User does not exist in the database.");
-                        return;
+                        Domain.Entities.Family.Family family = new Domain.Entities.Family.Family()
+                        {
+                            Name = "My Family",
+                        };
+
+                        user = new(userId)
+                        {
+                            EmailAddress = principal.GetClaimValue<string>(ClaimTypes.Email)!,
+                            Currency = "AUD",
+                            FirstName = principal.GetClaimValue<string>(System.Security.Claims.ClaimTypes.GivenName),
+                            LastName = principal.GetClaimValue<string>(System.Security.Claims.ClaimTypes.Surname),
+                            Family = family,
+                        };
+
+                        dataContext.Add(user);
+
+                        await dataContext.SaveChangesAsync();
                     }
 
                     var owned = user.Instruments.Select(i => i.Id);
@@ -47,7 +63,7 @@ public static class IServiceCollectionExtensions
 
                     var instruments = owned.Union(virtualOwned).Union(sharedInstruments.Select(i => i.Id).Union(virtualShared)).ToList();
 
-                    var claims = instruments.Select(a => new Claim(Security.ClaimTypes.AccountId, a.ToString())).ToList();
+                    claims = instruments.Select(a => new Claim(Security.ClaimTypes.AccountId, a.ToString())).ToList();
 
                     if (user.PrimaryAccountId != null) claims.Add(new Claim(Security.ClaimTypes.PrimaryAccountId, user.PrimaryAccountId.Value.ToString()));
                     claims.Add(new Claim(Security.ClaimTypes.FamilyId, user.FamilyId.ToString()));
