@@ -2,6 +2,7 @@
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
 name: Build
+
 on:
   push:
     branches:
@@ -10,9 +11,17 @@ on:
     branches:
       - "main"
   workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      packages: read
+      pull-requests: write
     steps:
     - uses: actions/checkout@v4
     - name: Setup .NET
