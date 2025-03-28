@@ -6,12 +6,12 @@ export const useChartColours = () => {
     const themeName = theme.theme === "" ? defaultTheme.theme : theme.theme;
 
     return {
-        income: themeName === "dark" ? "#228b22" : "#4C4",
-        incomeTrend:themeName === "dark" ? "#99fb99" : "#bbfbbb",
-        expenses: themeName === "dark" ? "#800020" : "#e23d28",
-        expensesTrend: themeName === "dark" ? "#FF7790" : "#FFAAC0",
-        neutralTrend: themeName === "dark" ? "#808080" : "#b0b0b0",
-        grid: themeName === "dark" ? "#333" : "#E5E5E5",
+        income: themeName.startsWith("dark") ? "#228b22" : "#4C4",
+        incomeTrend:themeName.startsWith("dark") ? "#99fb99" : "#bbfbbb",
+        expenses: themeName.startsWith("dark") ? "#800020" : "#e23d28",
+        expensesTrend: themeName.startsWith("dark") ? "#FF7790" : "#FFAAC0",
+        neutralTrend: themeName.startsWith("dark") ? "#808080" : "#b0b0b0",
+        grid: themeName.startsWith("dark") ? "#333" : "#E5E5E5",
     };
 }
 

@@ -1,4 +1,4 @@
-import { ComboBox, DeleteIcon, EditColumn, Form, Page, SaveIcon, SectionForm } from "@andrewmclachlan/mooapp";
+import { ComboBox, DeleteIcon, EditColumn, Form, Page, SaveIcon, Section, SectionForm, SectionTable, ThemeSelector } from "@andrewmclachlan/mooapp";
 import { CurrencySelector } from "components";
 import { Card, User } from "models/User";
 import React, { useEffect, useState } from "react";
@@ -8,7 +8,7 @@ import { useAccountsList, useUpdateUser, useUser } from "services";
 
 export const Profile: React.FC = () => {
 
-    const {data: me} = useUser();
+    const { data: me } = useUser();
     const { data: accounts } = useAccountsList();
     const updateMe = useUpdateUser();
 
@@ -39,40 +39,42 @@ export const Profile: React.FC = () => {
         reset(me);
     }, [me, accounts]);
 
-    const { register, setValue, getValues, reset, ...form } = useForm<User>({ defaultValues: me  });
+    const { register, setValue, getValues, reset, ...form } = useForm<User>({ defaultValues: me });
 
     return (
-        <Page title="Profile" breadcrumbs={[{text: "Profile", route: "/profile"}]}>
-            <SectionForm onSubmit={form.handleSubmit(handleSubmit)}>
-                <Form.Group groupId="name">
-                    <Form.Label>Name</Form.Label>
-                    <Form.Input type="text" value={`${me?.firstName ?? ""} ${me?.lastName ?? ""}`} readOnly />
-                </Form.Group>
-                <Form.Group groupId="email">
-                    <Form.Label>Email</Form.Label>
-                    <Form.Input type="text" defaultValue={me?.emailAddress} readOnly />
-                </Form.Group>
-                <Form.Group groupId="currency">
-                    <Form.Label>Preferred Currency</Form.Label>
-                    {!me && <Form.Select />}
-                    {me &&
-                    <Controller
-                    control={form.control}
-                    name="currency"
-                        render={({ field: {onChange, value, ref} }) => (
-                            <CurrencySelector value={value} ref={ref} onChange={onChange}   />
-                    )}
-                    />}
-                </Form.Group>
-                <Form.Group groupId="primaryAccount">
-                    <Form.Label>Primary Account (for the dashboard)</Form.Label>
-                    {!me && <Form.Select />}
-                    {me && <Form.Select {...register("primaryAccountId")} className="form-select">
-                        <option value="">Select an account</option>
-                        {accounts?.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
-                    </Form.Select>}
-                </Form.Group>
-                <Table>
+        <Page title="Profile" breadcrumbs={[{ text: "Profile", route: "/profile" }]}>
+            <Form onSubmit={form.handleSubmit(handleSubmit)}>
+                <Section title="Profile">
+                    <Form.Group groupId="name">
+                        <Form.Label>Name</Form.Label>
+                        <Form.Input type="text" value={`${me?.firstName ?? ""} ${me?.lastName ?? ""}`} readOnly />
+                    </Form.Group>
+                    <Form.Group groupId="email">
+                        <Form.Label>Email</Form.Label>
+                        <Form.Input type="text" defaultValue={me?.emailAddress} readOnly />
+                    </Form.Group>
+                    <Form.Group groupId="currency">
+                        <Form.Label>Preferred Currency</Form.Label>
+                        {!me && <Form.Select />}
+                        {me &&
+                            <Controller
+                                control={form.control}
+                                name="currency"
+                                render={({ field: { onChange, value, ref } }) => (
+                                    <CurrencySelector value={value} ref={ref} onChange={onChange} />
+                                )}
+                            />}
+                    </Form.Group>
+                    <Form.Group groupId="primaryAccount">
+                        <Form.Label>Primary Account (for the dashboard)</Form.Label>
+                        {!me && <Form.Select />}
+                        {me && <Form.Select {...register("primaryAccountId")} className="form-select">
+                            <option value="">Select an account</option>
+                            {accounts?.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
+                        </Form.Select>}
+                    </Form.Group>
+                </Section>
+                <SectionTable title="Cards">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -95,9 +97,14 @@ export const Profile: React.FC = () => {
                         )
                         )}
                     </tbody>
-                </Table>
+                </SectionTable>
+                <Section title="Theme">
+                    <ThemeSelector />
+                </Section>
+                <Section>
                 <Button type="submit" variant="primary">Save</Button>
-            </SectionForm>
+                </Section>
+            </Form>
         </Page>
     );
 };

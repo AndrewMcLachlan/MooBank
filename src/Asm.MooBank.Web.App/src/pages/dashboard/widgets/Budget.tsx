@@ -48,6 +48,7 @@ export const BudgetWidget: React.FC = () => {
                         scales: {
                             y: {
                                 grid: {
+                                    display: false,
                                     color: colours.grid,
                                 },
                             },

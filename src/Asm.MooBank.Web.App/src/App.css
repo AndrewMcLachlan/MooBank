@@ -166,11 +166,6 @@ input[type="checkbox"] {
 table .balance {
     text-align: right;
 }
-
-form > div {
-    margin-bottom: 1rem;
-}
-
 .horizontal-form-controls {
     display: flex;
     align-items: flex-end;

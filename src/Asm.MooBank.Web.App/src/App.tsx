@@ -4,7 +4,7 @@ import * as Icons from "@andrewmclachlan/mooicons";
 import React from "react";
 import { Link } from "react-router";
 
-import { MooAppLayout, NavItem } from "@andrewmclachlan/mooapp";
+import { Icon, MooAppLayout, NavItem } from "@andrewmclachlan/mooapp";
 import { useIsAuthenticated } from "@azure/msal-react";
 import { useHasRole } from "hooks";
 
@@ -24,7 +24,6 @@ const App: React.FC = () => {
         <MooAppLayout
             header={{ menu: menu, userMenu: userMenu }}
             sidebar={{ navItems: sideMenu }}
-            footer={{ copyrightYear: 2013 }}
         />
     );
 };
@@ -34,6 +33,7 @@ export default App;
 const userMenu: NavItem[] = [
     {
         text: "Profile",
+        image: <Icon icon="user" />,
         route: "/profile",
     }
 ];

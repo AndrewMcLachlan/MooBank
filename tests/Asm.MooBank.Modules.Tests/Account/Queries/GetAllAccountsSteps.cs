@@ -1,6 +1,5 @@
 using Asm.MooBank.Modules.Accounts.Models.Account;
 using Asm.MooBank.Modules.Accounts.Queries;
-using TechTalk.SpecFlow.Assist;
 
 namespace Asm.MooBank.Modules.Tests.Account.Queries
 {
