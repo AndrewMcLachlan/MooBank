@@ -7,7 +7,6 @@ export const routes: RouteDefinition = {
         path: "/", element: <App />, children: {
             home: { path: "/", element: <Pages.Dashboard /> },
             accounts: { path: "/accounts", element: <Pages.Accounts /> },
-            accountsManage: { path: "/accounts/manage", element: <Pages.ManageAccounts /> },
             accountsCreate: { path: "/accounts/create", element: <Pages.CreateAccount /> },
             account: {
                 path: "/accounts/:id", element: <Pages.Account />, children: {

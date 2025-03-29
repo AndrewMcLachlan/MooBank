@@ -1,7 +1,10 @@
 import React, { useState } from "react";
-import { Button, Form, InputGroup } from "react-bootstrap";
+import { Button, InputGroup } from "react-bootstrap";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import { Section, emptyGuid } from "@andrewmclachlan/mooapp";
+
+import { SectionForm, Form, emptyGuid } from "@andrewmclachlan/mooapp";
+
 import { VirtualAccount } from "../../models";
 import { useCreateVirtualAccount } from "../../services";
 import { AccountPage, useAccount } from "components";
@@ -12,60 +15,37 @@ export const CreateVirtualAccount = () => {
 
     const parentAccount = useAccount();
 
-    const [name, setName] = useState("");
-    const [description, setDescription] = useState("");
-    const [balance, setBalance] = useState(0);
-
     const createVirtualAccount = useCreateVirtualAccount();
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.stopPropagation();
-        e.preventDefault();
+    const handleSubmit = (data: VirtualAccount) => {
 
-        const account: VirtualAccount = {
-            id: emptyGuid,
-            name: name,
-            description: description,
-            currency: "AUD",
-            currentBalance: balance,
-            currentBalanceLocalCurrency: balance,
-            calculatedBalance: balance,
-            parentId: parentAccount.id,
-            recurringTransactions: [],
-            virtualInstruments: [],
-            controller: "Virtual",
-        };
-
-        createVirtualAccount(parentAccount.id, account);
+        createVirtualAccount(parentAccount.id, data);
 
         navigate(`/accounts/${parentAccount.id}/manage/`);
     }
 
-    return (
-        <AccountPage title="Create Virtual Account" breadcrumbs={[{text: "Create Virtual Account", route: `/accounts/${parentAccount.id}/manage/virtual/create`}]}>
+    const form = useForm<VirtualAccount>();
 
-            <Section>
-                <Form onSubmit={handleSubmit}>
-                    <Form.Group controlId="AccountName" >
-                        <Form.Label>Name</Form.Label>
-                        <Form.Control type="text" required maxLength={50} value={name} onChange={e => setName(e.currentTarget.value)} />
-                        <Form.Control.Feedback type="invalid">Please enter a name</Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group controlId="AccountDescription" >
-                        <Form.Label >Description</Form.Label>
-                        <Form.Control type="text" as="textarea" required maxLength={255} value={description} onChange={e => setDescription(e.currentTarget.value)} />
-                        <Form.Control.Feedback type="invalid">Please enter a description</Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group controlId="OpeningBalance" >
-                        <Form.Label>Opening Balance</Form.Label>
-                        <InputGroup>
-                            <InputGroup.Text>$</InputGroup.Text>
-                            <Form.Control type="number" required value={balance.toString()} onChange={(e: any) => setBalance(e.currentTarget.valueAsNumber)} />
-                        </InputGroup>
-                    </Form.Group>
-                    <Button type="submit" variant="primary">Create</Button>
-                </Form>
-            </Section>
+    return (
+        <AccountPage title="Create Virtual Account" breadcrumbs={[{ text: "Manage", route: `/accounts/${parentAccount?.id}/manage` }, { text: "Create Virtual Account", route: `/accounts/${parentAccount?.id}/manage/virtual/create` }]}>
+            <SectionForm form={form} onSubmit={handleSubmit}>
+                <Form.Group groupId="AccountName" >
+                    <Form.Label>Name</Form.Label>
+                    <Form.Input required maxLength={50} />
+                </Form.Group>
+                <Form.Group groupId="AccountDescription" >
+                    <Form.Label >Description</Form.Label>
+                    <Form.TextArea required maxLength={255} />
+                </Form.Group>
+                <Form.Group groupId="OpeningBalance" >
+                    <Form.Label>Opening Balance</Form.Label>
+                    <InputGroup>
+                        <InputGroup.Text>$</InputGroup.Text>
+                        <Form.Input type="number" required />
+                    </InputGroup>
+                </Form.Group>
+                <Button type="submit" variant="primary">Create</Button>
+            </SectionForm>
         </AccountPage>
     );
 }

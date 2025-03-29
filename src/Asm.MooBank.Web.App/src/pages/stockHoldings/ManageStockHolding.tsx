@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form, InputGroup } from "react-bootstrap";
+import { Button, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import { StockHolding } from "../../models";
 import { StockHoldingPage } from "./StockHoldingPage";
 import { useStockHolding } from "./StockHoldingProvider";
 
+import { Form, SectionForm } from "@andrewmclachlan/mooapp";
+
 import { useGroups, useUpdateStockHolding } from "services";
+import { GroupSelector } from "components/GroupSelector";
+import { useForm } from "react-hook-form";
 
 export const ManageStockHolding: React.FC = () => {
 
@@ -30,47 +34,46 @@ export const ManageStockHolding: React.FC = () => {
         navigate("/accounts");
     }
 
+    const form = useForm({ defaultValues: stockHolding });
+
+    useEffect(() => {
+        form.reset(stockHolding);
+    }, [stockHolding, form]);
+
     if (!stockHolding) return null;
 
     return (
         <StockHoldingPage title="Manage" breadcrumbs={[{ text: "Manage", route: `/shares/${stockHolding.id}/manage` }]}>
-            <Form className="section" onSubmit={handleSubmit}>
-                <Form.Group controlId="accountName" >
+            <SectionForm form={form} onSubmit={handleSubmit}>
+                <Form.Group groupId="name" >
                     <Form.Label>Name</Form.Label>
-                    <Form.Control type="text" required maxLength={50} value={stockHolding.name} onChange={(e: any) => setStockHolding({ ...stockHolding, name: e.currentTarget.value })} />
-                    <Form.Control.Feedback type="invalid">Please enter a name</Form.Control.Feedback>
+                    <Form.Input required maxLength={50} />
                 </Form.Group>
-                <Form.Group controlId="accountDescription" >
+                <Form.Group groupId="description" >
                     <Form.Label>Description</Form.Label>
-                    <Form.Control type="text" as="textarea" required maxLength={255} value={stockHolding.description} onChange={(e: any) => setStockHolding({ ...stockHolding, description: e.currentTarget.value })} />
-                    <Form.Control.Feedback type="invalid">Please enter a description</Form.Control.Feedback>
+                    <Form.TextArea required maxLength={255} />
                 </Form.Group>
-                <Form.Group controlId="symbol" >
+                <Form.Group groupId="symbol" >
                     <Form.Label>Symbol</Form.Label>
-                    <Form.Control type="text" required maxLength={3} value={stockHolding.symbol} readOnly />
+                    <Form.Input required maxLength={3} readOnly />
                 </Form.Group>
-                <Form.Group controlId="price" >
+                <Form.Group groupId="price" >
                     <Form.Label>Current Price</Form.Label>
                     <InputGroup>
                         <InputGroup.Text>$</InputGroup.Text>
-                        <Form.Control type="number" required value={stockHolding.currentPrice?.toString()} onChange={(e: any) => setStockHolding({ ...stockHolding, currentPrice: e.currentTarget.value })} />
+                        <Form.Input type="number" required />
                     </InputGroup>
                 </Form.Group>
-                <Form.Group controlId="group">
+                <Form.Group groupId="groupId">
                     <Form.Label>Group</Form.Label>
-                    <Form.Select value={stockHolding.groupId} onChange={(e: any) => setStockHolding({ ...stockHolding, groupId: e.currentTarget.value })}>
-                        <option value="">Select a group...</option>
-                        {groups?.map(a =>
-                            <option value={a.id} key={a.id}>{a.name}</option>
-                        )}
-                    </Form.Select>
+                    <GroupSelector />
                 </Form.Group>
-                <Form.Group controlId="ShareWithFamily">
+                <Form.Group groupId="ShareWithFamily">
                     <Form.Label>Visible to other family members</Form.Label>
-                    <Form.Check checked={stockHolding.shareWithFamily} onChange={(e: any) => setStockHolding({ ...stockHolding, shareWithFamily: e.currentTarget.checked })} />
+                    <Form.Check />
                 </Form.Group>
                 <Button type="submit" variant="primary">Update</Button>
-            </Form>
+            </SectionForm>
         </StockHoldingPage>
     );
 }

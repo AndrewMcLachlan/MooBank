@@ -17,19 +17,9 @@ export interface InstitutionAccount extends TransactionAccount, TopLevelAccount 
     institutionId: number;
 }
 
-export interface CreateInstitutionAccount {
-    name: string;
-    description?: string;
-    institutionId: number;
-    currency: string;
+export interface CreateInstitutionAccount extends InstitutionAccount {
     balance: number;
     openingDate: string;
-    groupId: string;
-    accountType: AccountType;
-    importerTypeId?: number;
-    controller: Controller;
-    includeInBudget: boolean;
-    shareWithFamily: boolean;
 }
 
 export const emptyAccount : InstitutionAccount = {
