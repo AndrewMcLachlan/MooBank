@@ -1,4 +1,4 @@
-import { EditColumn } from "@andrewmclachlan/mooapp";
+import { EditColumn, SectionTable } from "@andrewmclachlan/mooapp";
 import { DeleteIcon } from "@andrewmclachlan/mooapp";
 import { SaveIcon } from "@andrewmclachlan/mooapp";
 import { format } from "date-fns/format";
@@ -33,7 +33,7 @@ export const RecurringTransactions: React.FC<RecurringTransactionsProps> = ({ ac
     }
 
     return (
-        <Table striped hover>
+        <SectionTable striped hover title="Recurring Transactions">
             <thead>
                 <tr>
                     <th>Description</th>
@@ -70,7 +70,7 @@ export const RecurringTransactions: React.FC<RecurringTransactionsProps> = ({ ac
                     </tr>
                 ))}
             </tbody>
-        </Table>
+        </SectionTable>
     );
 }
 
