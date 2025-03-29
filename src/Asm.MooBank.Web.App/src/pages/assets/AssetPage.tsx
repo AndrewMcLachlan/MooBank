@@ -13,7 +13,7 @@ export const AssetPage: React.FC<PropsWithChildren<AccountPageProps>> = ({ child
     if (!asset) return null;
 
     return (
-        <Page title={`${asset.name}${props.title && " : "}${props.title}`} actions={props.actions} navItems={getMenuItems(asset, props.navItems ?? [])} breadcrumbs={[{ text: "Accounts", route: "/accounts" }, { text: asset.name, route: `/shares/${asset.id}` }, ...breadcrumbs]}>
+        <Page title={`${asset.name}${props.title && " : "}${props.title}`} actions={props.actions} navItems={getMenuItems(asset, props.navItems ?? [])} breadcrumbs={[{ text: "Accounts", route: "/accounts" }, { text: asset.name, route: `/assets/${asset.id}` }, ...breadcrumbs]}>
             {children}
         </Page>
     )

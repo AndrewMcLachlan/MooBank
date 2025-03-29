@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Button, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import { StockHolding } from "../../models";
@@ -7,7 +7,7 @@ import { useStockHolding } from "./StockHoldingProvider";
 
 import { Form, SectionForm } from "@andrewmclachlan/mooapp";
 
-import { useGroups, useUpdateStockHolding } from "services";
+import { useUpdateStockHolding } from "services";
 import { GroupSelector } from "components/GroupSelector";
 import { useForm } from "react-hook-form";
 
@@ -15,21 +15,14 @@ export const ManageStockHolding: React.FC = () => {
 
     const navigate = useNavigate();
 
-    const { data: groups } = useGroups();
     const updateStockHolding = useUpdateStockHolding();
 
-    const currentStockHolding = useStockHolding();
+    const stockHolding = useStockHolding();
 
-    useEffect(() => {
-        setStockHolding(currentStockHolding);
-    }, [currentStockHolding]);
+    const handleSubmit = (data: StockHolding) => {
 
-    const [stockHolding, setStockHolding] = useState<StockHolding>();
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.stopPropagation();
-        e.preventDefault();
 
-        updateStockHolding(stockHolding);
+        updateStockHolding(data);
 
         navigate("/accounts");
     }

@@ -34,7 +34,7 @@ export const ManageAsset: React.FC = () => {
     }, [asset, form]);
 
     return (
-        <AssetPage title="Manage" breadcrumbs={[{ text: "Manage", route: `/shares/${asset?.id}/manage` }]}>
+        <AssetPage title="Manage" breadcrumbs={[{ text: "Manage", route: `/assets/${asset?.id}/manage` }]}>
             <SectionForm form={form} onSubmit={handleSubmit}>
                 <Form.Group groupId="name" >
                     <Form.Label>Name</Form.Label>
