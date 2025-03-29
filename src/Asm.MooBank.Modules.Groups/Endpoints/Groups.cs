@@ -27,7 +27,7 @@ public class Groups : EndpointGroupBase
             .WithNames("Get Group")
             .Produces<Models.Group>();
 
-        routeGroupBuilder.MapPostCreate<Create, Models.Group>("/", "Get Group", (group) => new { id = group.Id })
+        routeGroupBuilder.MapPostCreate<Create, Models.Group>("/", "Get Group".ToMachine(), (group) => new { id = group.Id })
             .WithNames("Create Group")
             .Produces<Models.Group>();
 

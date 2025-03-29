@@ -57,7 +57,7 @@ export const Profile: React.FC = () => {
                     <Form.Group groupId="currency">
                         <Form.Label>Preferred Currency</Form.Label>
                         {!me && <Form.Select />}
-                        {me && <CurrencySelector  />}
+                        {me && <CurrencySelector />}
                     </Form.Group>
                     <Form.Group groupId="primaryAccountId">
                         <Form.Label>Primary Account (for the dashboard)</Form.Label>
@@ -93,7 +93,7 @@ export const Profile: React.FC = () => {
                     <ThemeSelector />
                 </Section>
                 <Section>
-                <Button type="submit" variant="primary">Save</Button>
+                    <Button type="submit" variant="primary">Save</Button>
                 </Section>
             </Form>
         </Page>
