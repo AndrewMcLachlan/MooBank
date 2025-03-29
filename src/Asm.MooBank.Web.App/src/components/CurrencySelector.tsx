@@ -1,18 +1,14 @@
-import { ComboBox, ComboBoxProps } from "@andrewmclachlan/mooapp";
+import { FormComboBox } from "@andrewmclachlan/mooapp";
 
 type Currency = { name: string, code: string };
 
-interface CurrencySelectorProps extends Omit<ComboBoxProps<Currency>, "value" | "onChange" | "valueField" | "labelField"> {
-    value: string;
-    onChange: (value: string) => void;
+interface CurrencySelectorProps {
 }
 
-export const CurrencySelector: React.FC<CurrencySelectorProps> = ({ value, onChange, ref, ...props }) => {
-
-    const currency = value ? [currencies.find(c => c.code === value)] : undefined;
+export const CurrencySelector: React.FC<CurrencySelectorProps> = () => {
 
     return (
-        <ComboBox onChange={(c: Currency[]) => onChange(currency[0].code)} selectedItems={currency} items={currencies} valueField={o => o.code} labelField={o => `${o?.name} (${o?.code})`} {...props} ref={ref}  />
+        <FormComboBox items={currencies} valueField={o => o.code} labelField={o => `${o?.name} (${o?.code})`} />
     );
 };
 

@@ -8,5 +8,6 @@ export interface AccountList {
 export interface AccountListGroup {
     name: string,
     instruments: InstitutionAccount[],
+    showTotal: boolean,
     total?: number
 }

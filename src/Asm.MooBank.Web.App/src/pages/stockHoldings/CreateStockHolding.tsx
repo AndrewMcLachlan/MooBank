@@ -87,12 +87,12 @@ export const CreateStockHolding: React.FC = () => {
                 </Form.Group>
                 <Form.Group controlId="group">
                     <Form.Label>Group</Form.Label>
-                    <Form.Control as="select" value={groupId} onChange={(e: any) => setGroupId(e.currentTarget.value)}>
+                    <Form.Select value={groupId} onChange={(e: any) => setGroupId(e.currentTarget.value)}>
                         <option value="">Select a group...</option>
                         {groups?.map(a =>
                             <option value={a.id} key={a.id}>{a.name}</option>
                         )}
-                    </Form.Control>
+                    </Form.Select>
                 </Form.Group>
                 <Form.Group controlId="ShareWithFamily">
                     <Form.Label>Visible to other family members</Form.Label>

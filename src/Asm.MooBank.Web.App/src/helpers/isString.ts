@@ -1,0 +1,1 @@
+export const isString = (value: unknown): boolean => value && typeof value === "string";

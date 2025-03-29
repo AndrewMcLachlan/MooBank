@@ -49,7 +49,8 @@ internal class GetFormattedHandler(IQueryable<Domain.Entities.Account.Institutio
             {
                 Name = ag!.Name,
                 Instruments = matchingAccounts,
-                Total = ag.ShowPosition ? matchingAccounts.Sum(a => a.CurrentBalanceLocalCurrency) : null,
+                ShowTotal = ag.ShowPosition,
+                Total = matchingAccounts.Sum(a => a.CurrentBalanceLocalCurrency),
             };
         });
 
@@ -63,6 +64,8 @@ internal class GetFormattedHandler(IQueryable<Domain.Entities.Account.Institutio
                     .. assets1.Where(a => a.GetGroup(userId) == null).ToModel(currencyConverter),
                 ],
             };
+
+        otherAccounts.Total = otherAccounts.Instruments.Sum(a => a.CurrentBalanceLocalCurrency);
 
         return new InstrumentsList
         {

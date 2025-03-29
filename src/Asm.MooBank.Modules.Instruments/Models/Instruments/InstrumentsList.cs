@@ -17,5 +17,8 @@ public record Group
     public required string Name { get; init; }
 
     public required IEnumerable<Instrument> Instruments { get; init; }
+
+    public bool ShowTotal { get; set; }
+
     public decimal? Total { get; set; }
 }
