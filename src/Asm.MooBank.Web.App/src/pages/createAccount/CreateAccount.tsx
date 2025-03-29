@@ -1,56 +1,33 @@
-import { Input, Page } from "@andrewmclachlan/mooapp";
+import { Input, Page, Form, SectionForm, FormComboBox } from "@andrewmclachlan/mooapp";
 import { useState } from "react";
-import { Button, Form, InputGroup } from "react-bootstrap";
+import { Button, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router";
 
 import { CurrencySelector, InstitutionSelector } from "components";
-import { AccountType, AccountTypes, Controller, Controllers, CreateInstitutionAccount } from "models";
+import { AccountType, AccountTypes, Controller, Controllers, CreateInstitutionAccount, Group } from "models";
 import { useCreateAccount, useGroups } from "services";
 import { ImportSettings } from "./ImportSettings";
+import { GroupSelectorById as GroupSelector } from "components/GroupSelector";
+import { useForm } from "react-hook-form";
 
 export const CreateAccount: React.FC = () => {
 
     const navigate = useNavigate();
 
-    const { data: groups } = useGroups();
     const createAccount = useCreateAccount();
 
-    const [name, setName] = useState("");
-    const [description, setDescription] = useState("");
-    const [balance, setBalance] = useState(0);
-    const [openingDate, setOpeningDate] = useState(new Date().toISOString().split("T")[0]);
-    const [accountType, setAccountType] = useState<AccountType>("Transaction");
-    const [accountController, setAccountController] = useState<Controller>("Manual");
-    const [importerTypeId, setImporterTypeId] = useState(0);
-    const [groupId, setgroupId] = useState("");
-    const [includeInBudget, setIncludeInBudget] = useState(false);
-    const [shareWithFamily, setShareWithFamily] = useState(false);
-    const [institutionId, setInstitutionId] = useState<number>(undefined);
-    const [currency, setCurrency] = useState("AUD");
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.stopPropagation();
-        e.preventDefault();
+    const handleSubmit = (data: CreateInstitutionAccount) => {
 
         // TODO: Remove once proper ComboBox validation is supported
-        if (institutionId === undefined) {
+        if (data.institutionId === undefined) {
             window.alert("Please select an institution");
             return;
         }
 
-        const account: CreateInstitutionAccount = {
-            name: name,
-            description: description,
-            currency: currency,
-            balance: balance,
-            openingDate: openingDate,
-            accountType: accountType,
-            controller: accountController,
-            groupId: groupId === "" ? undefined : groupId,
-            shareWithFamily: shareWithFamily,
-            institutionId: institutionId,
-            includeInBudget: includeInBudget,
-            importerTypeId: accountController === "Import" ? importerTypeId : undefined,
+        const account: CreateInstitutionAccount = { 
+            ...data,
+            importerTypeId: data.controller === "Import" ? data.importerTypeId : undefined,
         };
 
         createAccount(account);
@@ -58,74 +35,66 @@ export const CreateAccount: React.FC = () => {
         navigate("/accounts");
     }
 
+    const form = useForm<CreateInstitutionAccount>();
+
+    const accountType = form.watch("accountType");
+    const controller = form.watch("controller");
+
     return (
         <Page title="Create Account" breadcrumbs={[{ text: "Accounts", route: "/accounts" }, { text: "Create Account", route: "/accounts/create" }]}>
-            <Form className="section" onSubmit={handleSubmit}>
-                <Form.Group controlId="accountName" >
+            <SectionForm<CreateInstitutionAccount> form={form} onSubmit={handleSubmit}>
+                <Form.Group groupId="accountName" >
                     <Form.Label>Name</Form.Label>
-                    <Form.Control type="text" required maxLength={50} value={name} onChange={(e: any) => setName(e.currentTarget.value)} />
-                    <Form.Control.Feedback type="invalid">Please enter a name</Form.Control.Feedback>
+                    <Form.Input type="text" required maxLength={50} />
                 </Form.Group>
-                <Form.Group controlId="accountDescription" >
+                <Form.Group groupId="accountDescription" >
                     <Form.Label>Description</Form.Label>
-                    <Form.Control type="text" as="textarea" required maxLength={255} value={description} onChange={(e: any) => setDescription(e.currentTarget.value)} />
-                    <Form.Control.Feedback type="invalid">Please enter a description</Form.Control.Feedback>
+                    <Form.TextArea required maxLength={255} />
                 </Form.Group>
-                <Form.Group controlId="AccountType" >
+                <Form.Group groupId="AccountType" >
                     <Form.Label>Type</Form.Label>
-                    <Form.Select value={accountType.toString()} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setAccountType(e.currentTarget.value as AccountType)}>
-                        {AccountTypes.map(a =>
-                            <option value={a} key={a}>{a}</option>
-                        )}
-                    </Form.Select>
+                    <FormComboBox placeholder="Select an account type..." items={AccountTypes} labelField={i => i} valueField={i => i} />
                 </Form.Group>
-                <Form.Group>
+                <Form.Group groupId="institutionId">
                     <Form.Label>Institution</Form.Label>
-                    <InstitutionSelector accountType={accountType} value={institutionId} onChange={(id) => setInstitutionId(id)} /> {/* TODO: Required */}
+                    <InstitutionSelector accountType={accountType} /> {/* TODO: Required */}
                 </Form.Group>
-                <Form.Group controlId="currency">
+                <Form.Group groupId="currency">
                     <Form.Label>Currency</Form.Label>
-                    <CurrencySelector value={currency} onChange={(code) => setCurrency(code)} />
+                    <CurrencySelector />
                 </Form.Group>
-                <Form.Group controlId="openingBalance" >
+                <Form.Group groupId="openingBalance" >
                     <Form.Label>Opening Balance</Form.Label>
                     <InputGroup>
                         <InputGroup.Text>$</InputGroup.Text>
-                        <Form.Control type="number" required value={balance.toString()} onChange={(e: any) => setBalance(e.currentTarget.value)} />
+                        <Form.Input type="number" required />
                     </InputGroup>
                 </Form.Group>
-                <Form.Group controlId="openingDate">
+                <Form.Group groupId="openingDate">
                     <Form.Label>Date Opened</Form.Label>
-                    <Input type="date" required value={openingDate.toString()} onChange={(e) => setOpeningDate(e.currentTarget.value)} />
+                    <Form.Input type="date" required />
                 </Form.Group>
-                <Form.Group controlId="group">
+                <Form.Group groupId="groupId">
                     <Form.Label>Group</Form.Label>
-                    <Form.Select value={groupId} onChange={(e: any) => setgroupId(e.currentTarget.value)}>
-                        <option value="">Select a group...</option>
-                        {groups?.map(a =>
-                            <option value={a.id} key={a.id}>{a.name}</option>
-                        )}
-                    </Form.Select>
+                    <GroupSelector />
                 </Form.Group>
-                <Form.Group controlId="AccountController">
+                <Form.Group groupId="controller">
                     <Form.Label>Controller</Form.Label>
-                    <Form.Select value={accountController.toString()} onChange={(e: any) => setAccountController(e.currentTarget.value as Controller)}>
-                        {Controllers.map(a =>
-                            <option value={a} key={a}>{a}</option>
-                        )}
-                    </Form.Select>
+                    <FormComboBox items={Controllers} labelField={i => i} valueField={i => i} />
                 </Form.Group>
-                <ImportSettings show={accountController === "Import"} selectedId={importerTypeId} onChange={(e) => setImporterTypeId(e)} />
-                <Form.Group controlId="IncludeInBudget">
+                <Form.Group groupId="importerTypeId" hidden={controller !== "Import"}>
+                    <ImportSettings />
+                </Form.Group> 
+                <Form.Group groupId="includeInBudget">
                     <Form.Label>Include this account in the budget</Form.Label>
-                    <Form.Check checked={includeInBudget} onChange={(e: any) => setIncludeInBudget(e.currentTarget.checked)} />
+                    <Form.Check />
                 </Form.Group>
-                <Form.Group controlId="ShareWithFamily">
+                <Form.Group groupId="shareWithFamily">
                     <Form.Label>Visible to other family members</Form.Label>
-                    <Form.Check checked={shareWithFamily} onChange={(e: any) => setShareWithFamily(e.currentTarget.checked)} />
+                    <Form.Check />
                 </Form.Group>
                 <Button type="submit" variant="primary">Create</Button>
-            </Form>
+            </SectionForm>
         </Page>
     );
 }

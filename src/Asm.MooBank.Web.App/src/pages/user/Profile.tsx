@@ -1,4 +1,4 @@
-import { ComboBox, DeleteIcon, EditColumn, Form, Page, SaveIcon, Section, SectionForm, SectionTable, ThemeSelector } from "@andrewmclachlan/mooapp";
+import { ComboBox, ComboBoxProps, DeleteIcon, EditColumn, Form, FormComboBox, Page, SaveIcon, Section, SectionTable, ThemeSelector, useFormGroup } from "@andrewmclachlan/mooapp";
 import { CurrencySelector } from "components";
 import { Card, User } from "models/User";
 import React, { useEffect, useState } from "react";
@@ -39,11 +39,12 @@ export const Profile: React.FC = () => {
         reset(me);
     }, [me, accounts]);
 
-    const { register, setValue, getValues, reset, ...form } = useForm<User>({ defaultValues: me });
+    const form = useForm<User>({ defaultValues: me });
+    const { reset, getValues, setValue } = form;
 
     return (
         <Page title="Profile" breadcrumbs={[{ text: "Profile", route: "/profile" }]}>
-            <Form onSubmit={form.handleSubmit(handleSubmit)}>
+            <Form form={form} onSubmit={form.handleSubmit(handleSubmit)}>
                 <Section title="Profile">
                     <Form.Group groupId="name">
                         <Form.Label>Name</Form.Label>
@@ -56,22 +57,12 @@ export const Profile: React.FC = () => {
                     <Form.Group groupId="currency">
                         <Form.Label>Preferred Currency</Form.Label>
                         {!me && <Form.Select />}
-                        {me &&
-                            <Controller
-                                control={form.control}
-                                name="currency"
-                                render={({ field: { onChange, value, ref } }) => (
-                                    <CurrencySelector value={value} ref={ref} onChange={onChange} />
-                                )}
-                            />}
+                        {me && <CurrencySelector  />}
                     </Form.Group>
-                    <Form.Group groupId="primaryAccount">
+                    <Form.Group groupId="primaryAccountId">
                         <Form.Label>Primary Account (for the dashboard)</Form.Label>
                         {!me && <Form.Select />}
-                        {me && <Form.Select {...register("primaryAccountId")} className="form-select">
-                            <option value="">Select an account</option>
-                            {accounts?.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
-                        </Form.Select>}
+                        {me && <FormComboBox placeholder="Select an account" items={accounts ?? []} labelField={i => i.name} valueField={i => i.id} />}
                     </Form.Group>
                 </Section>
                 <SectionTable title="Cards">
