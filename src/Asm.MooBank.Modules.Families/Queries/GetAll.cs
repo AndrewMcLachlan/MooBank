@@ -11,6 +11,6 @@ internal class GetAllHandler(IQueryable<Domain.Entities.Family.Family> families,
     {
         await security.AssertAdministrator(cancellationToken);
 
-        return await families.Include(f => f.AccountHolders).ToModel().ToListAsync(cancellationToken);
+        return await families.Include(f => f.AccountHolders).OrderBy(f => f.Name).ToModel().ToListAsync(cancellationToken);
     }
 }

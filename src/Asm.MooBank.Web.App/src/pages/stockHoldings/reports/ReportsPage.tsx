@@ -1,10 +1,10 @@
 import React, { PropsWithChildren } from "react";
-
-import { InstitutionAccount, StockHolding } from "models";
 import { useLocation } from "react-router";
+
 import { NavItem } from "@andrewmclachlan/mooapp";
-import { AccountPage, useAccount } from "components";
 import { Trendline } from "@andrewmclachlan/mooicons";
+
+import { StockHolding } from "models";
 import { useStockHolding } from "../StockHoldingProvider";
 import { StockHoldingPage } from "../StockHoldingPage";
 
@@ -14,7 +14,7 @@ export const ReportsPage: React.FC<PropsWithChildren<ReportsHeaderProps>> = ({ c
 
     const location = useLocation();
 
-    if (!account) return  null;
+    if (!account) return null;
 
     return (
         <StockHoldingPage navItems={getMenuItems(account as StockHolding)} breadcrumbs={[{ text: "Reports", route: `/accounts/${account.id}/reports` }, { text: title, route: location.pathname }]} title={title}>
@@ -30,7 +30,7 @@ const getMenuItems = (account: StockHolding) => {
     if (!account) return [];
 
     const items: NavItem[] = [
-        { route: `/shares/${account.id}/reports/value`, text: "Value Trend", image: <Trendline/> },
+        { route: `/shares/${account.id}/reports/value`, text: "Value Trend", image: <Trendline /> },
     ];
 
     return items;

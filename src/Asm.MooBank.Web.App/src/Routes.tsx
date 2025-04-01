@@ -7,7 +7,6 @@ export const routes: RouteDefinition = {
         path: "/", element: <App />, children: {
             home: { path: "/", element: <Pages.Dashboard /> },
             accounts: { path: "/accounts", element: <Pages.Accounts /> },
-            accountsManage: { path: "/accounts/manage", element: <Pages.ManageAccounts /> },
             accountsCreate: { path: "/accounts/create", element: <Pages.CreateAccount /> },
             account: {
                 path: "/accounts/:id", element: <Pages.Account />, children: {
@@ -66,6 +65,7 @@ export const routes: RouteDefinition = {
                 path: "/settings", element: <Pages.Settings />, children: {
                     families: { path: "families", element: <Pages.Families /> },
                     familiesAdd: { path: "families/add", element: <Pages.CreateFamily /> },
+                    family: { path: "families/:id", element: <Pages.ManageFamily /> },
                     institutions: { path: "institutions", element: <Pages.Institutions /> },
                     institutionsAdd: { path: "institutions/add", element: <Pages.CreateInstitution /> },
                     institution: { path: "institutions/:id", element: <Pages.ManageInstitution /> },

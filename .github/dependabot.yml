@@ -6,7 +6,7 @@ registries:
     token: ${{ secrets.CROSS_REPO_PACKAGE_TOKEN }}
   nuget-github:
     type: nuget-feed
-    url: https://nuget.pkg.github.com/AndrewMclachlan/index.json
+    url: https://nuget.pkg.github.com/AndrewMcLachlan/index.json
     token: ${{ secrets.CROSS_REPO_PACKAGE_TOKEN }}
 
 updates:
@@ -18,7 +18,7 @@ updates:
       day: tuesday
       time: "06:00"
     reviewers:
-      - andrewmcLachlan
+      - AndrewMcLachlan
     groups:
       dev-dependencies:
         applies-to: version-updates
@@ -41,7 +41,7 @@ updates:
       day: tuesday
       time: "06:00"
     reviewers:
-      - andrewmcLachlan
+      - AndrewMcLachlan
     groups:
       version-updates:
         applies-to: version-updates
@@ -58,5 +58,5 @@ updates:
       day: tuesday
       time: "06:00"
     reviewers:
-      - andrewmcLachlan
+      - AndrewMcLachlan
     open-pull-requests-limit: 20

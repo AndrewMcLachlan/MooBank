@@ -1,43 +1,38 @@
-import { ComboBox } from "@andrewmclachlan/mooapp";
+import { Form, FormComboBox, SectionForm } from "@andrewmclachlan/mooapp";
 import { Institution, institutionTypeOptions } from "models";
 import { useEffect, useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button } from "react-bootstrap";
+import { useForm } from "react-hook-form";
 
-export const InstitutionForm: React.FC<InstitutionFormProps> = ({ onSave, buttonText, institution: originalInstitution }) => {
+export const InstitutionForm: React.FC<InstitutionFormProps> = ({ onSave, buttonText, institution }) => {
 
-    const [institution, setInstitution] = useState<Institution>(originalInstitution);
-
-    useEffect(() => {
-        setInstitution(originalInstitution);
-    }, [originalInstitution]);
-
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.stopPropagation();
-        e.preventDefault();
-
-        onSave(institution);
+    const handleSubmit = (data: Institution) => {
+        onSave(data);
     }
 
+    const form = useForm<Institution>({ defaultValues: institution });
+
+    useEffect(() => {
+        form.reset(institution);
+    }, [institution, form]);
 
     return (
-        <Form className="section" onSubmit={handleSubmit}>
-            <Form.Group controlId="name">
+        <SectionForm form={form} onSubmit={handleSubmit}>
+            <Form.Group groupId="name">
                 <Form.Label>Name</Form.Label>
-                <Form.Control type="text" required maxLength={50} value={institution.name} onChange={(e: any) => setInstitution({ ...institution, name: e.currentTarget.value })} />
-                <Form.Control.Feedback type="invalid">Please enter a name</Form.Control.Feedback>
+                <Form.Input required maxLength={50} />
             </Form.Group>
-            <Form.Group controlId="type">
+            <Form.Group groupId="institutionType">
                 <Form.Label>Institution Type</Form.Label>
-                <ComboBox items={institutionTypeOptions} selectedItems={[institutionTypeOptions?.find(i => i.value === institution.institutionType)]} labelField={t => t.label} valueField={t => t.value} onChange={(v: any) => setInstitution({ ...institution, institutionType: v.value })} />
-                <Form.Control.Feedback type="invalid">Please enter a name</Form.Control.Feedback>
+                <FormComboBox items={institutionTypeOptions} labelField={t => t.label} valueField={t => t.value} />
             </Form.Group>
             <Button type="submit" variant="primary">{buttonText}</Button>
-        </Form>
+        </SectionForm>
     );
 }
 
 export interface InstitutionFormProps {
-    institution: Institution;
+    institution?: Institution;
     buttonText: "Add" | "Update";
     onSave: (institution: Institution) => void;
 }

@@ -35,7 +35,6 @@ export const GroupForm: React.FC<GroupFormProps> = ({ group }) => {
     const verb = group?.id === emptyGuid ? "Create" : "Manage";
     const breadcrumb: NavItem[] = !group ? [] : group?.id === emptyGuid ? [{ text: "Create Group", route: "/groups/create" }] : [{ text: group?.name, route: `/groups/${group?.id}/manage` }];
 
-    console.log("GroupForm", group, verb, breadcrumb);
     const form = useForm<Group>({ defaultValues: group });
 
     useEffect(() => {

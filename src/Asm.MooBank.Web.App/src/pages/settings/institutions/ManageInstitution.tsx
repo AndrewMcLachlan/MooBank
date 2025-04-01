@@ -26,7 +26,7 @@ export const ManageInstitution: React.FC = () => {
     if (!institution) return null;
 
     return (
-        <SettingsPage title="Institutions" breadcrumbs={[{ text: "Institutions", route: "/settings/institutions" }, { text: "Manage", route: `/settings/institutions/${institution.id}` }]}>
+        <SettingsPage title="Institutions" breadcrumbs={[{ text: "Institutions", route: "/settings/institutions" }, { text: institution?.name, route: `/settings/institutions/${institution.id}` }]}>
             <InstitutionForm buttonText="Update" onSave={handleSave} institution={institution} />
         </SettingsPage>
     );

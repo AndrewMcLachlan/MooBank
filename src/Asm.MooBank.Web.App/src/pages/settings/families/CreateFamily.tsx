@@ -1,10 +1,13 @@
-import React, { useState } from "react";
-import { Form, Button } from "react-bootstrap";
-import { emptyFamily, Family } from "models";
+import React from "react";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 
-import { useCreateFamily } from "services";
+
 import { Page } from "@andrewmclachlan/mooapp";
+
+import { emptyFamily, Family } from "models";
+import { useCreateFamily } from "services";
+import { FamilyForm } from "./FamilyForm";
 
 export const CreateFamily: React.FC = () => {
 
@@ -12,27 +15,18 @@ export const CreateFamily: React.FC = () => {
 
     const createFamily = useCreateFamily();
 
-    const [family, setFamily] = useState<Family>(emptyFamily);
+    const handleSubmit = (data: Family) => {
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.stopPropagation();
-        e.preventDefault();
+        createFamily(data);
 
-        createFamily(family);
-
-        navigate("/settings/family");
+        navigate("/settings/families");
     }
 
+    const form = useForm<Family>({ defaultValues: emptyFamily });
+
     return (
-        <Page title="Create Shares" breadcrumbs={[{ text: "Accounts", route: "/accounts" }, { text: "Create Shares", route: "/shares/create" }]}>
-            <Form className="section" onSubmit={handleSubmit}>
-                <Form.Group controlId="accountName" >
-                    <Form.Label>Name</Form.Label>
-                    <Form.Control type="text" required maxLength={50} value={family.name} onChange={(e: any) => setFamily({ ...family, name: e.currentTarget.value })} />
-                    <Form.Control.Feedback type="invalid">Please enter a name</Form.Control.Feedback>
-                </Form.Group>
-                <Button type="submit" variant="primary">Add</Button>
-            </Form>
+        <Page title="Create Family" breadcrumbs={[{ text: "Families", route: "/settings/families" }, { text: "Create Family", route: "/settings/families/add" }]}>
+            <FamilyForm buttonText="Update" onSave={handleSubmit} />
         </Page>
     );
 }
