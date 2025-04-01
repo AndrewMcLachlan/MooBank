@@ -18,13 +18,20 @@ internal class Families : EndpointGroupBase
     protected override void MapEndpoints(IEndpointRouteBuilder routeGroupBuilder)
     {
         routeGroupBuilder.MapQuery<GetAll, IEnumerable<Models.Family>>("/")
-            .WithName("Get All Families")
+            .WithNames("Get All Families")
             .Produces<IEnumerable<Models.Family>>();
 
         routeGroupBuilder.MapQuery<Get, Models.Family>("/{id}")
-            .WithName("Get Family")
+            .WithNames("Get Family")
             .Produces<Models.Family>();
 
-        routeGroupBuilder.MapPostCreate<Create, Models.Family>("/", "Get Family".ToMachine(), (i) => new { i.Id });
+
+        routeGroupBuilder.MapPostCreate<Create, Models.Family>("/", "Get Family".ToMachine(), (i) => new { id = i.Id }, CommandBinding.Body)
+            .WithNames("Create Family")
+            .RequireAuthorization(Policies.Admin);
+
+        routeGroupBuilder.MapPatchCommand<Update, Models.Family>("/{id}")
+            .WithNames("Update Family")
+            .RequireAuthorization(Policies.Admin);
     }
 }

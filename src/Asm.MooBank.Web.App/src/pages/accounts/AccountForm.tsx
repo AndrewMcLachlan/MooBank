@@ -65,7 +65,7 @@ export const AccountForm: React.FC<{ account?: InstitutionAccount }> = ({ accoun
                 <Form.Label>Currency</Form.Label>
                 <CurrencySelector />
             </Form.Group>
-            <Form.Group groupId="openingBalance" show={!account}>
+            <Form.Group groupId="balance" show={!account}>
                 <Form.Label>Opening Balance</Form.Label>
                 <InputGroup>
                     <InputGroup.Text>$</InputGroup.Text>

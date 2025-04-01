@@ -50,7 +50,7 @@ export const ManageStockHolding: React.FC = () => {
                     <Form.Label>Symbol</Form.Label>
                     <Form.Input required maxLength={3} readOnly />
                 </Form.Group>
-                <Form.Group groupId="price" >
+                <Form.Group groupId="currentPrice" >
                     <Form.Label>Current Price</Form.Label>
                     <InputGroup>
                         <InputGroup.Text>$</InputGroup.Text>

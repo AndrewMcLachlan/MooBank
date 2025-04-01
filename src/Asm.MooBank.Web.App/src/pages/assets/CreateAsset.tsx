@@ -26,22 +26,22 @@ export const CreateAsset: React.FC = () => {
     return (
         <Page title="Create Asset" breadcrumbs={[{ text: "Accounts", route: "/accounts" }, { text: "Create Asset", route: "/assets/create" }]}>
             <SectionForm form={form} onSubmit={handleSubmit}>
-                <Form.Group groupId="accountName" >
+                <Form.Group groupId="accountName">
                     <Form.Label>Name</Form.Label>
                     <Form.Input required maxLength={50} />
                 </Form.Group>
-                <Form.Group groupId="accountDescription" >
+                <Form.Group groupId="accountDescription">
                     <Form.Label>Description</Form.Label>
                     <Form.TextArea required maxLength={255} />
                 </Form.Group>
-                <Form.Group groupId="price" >
+                <Form.Group groupId="purchasePrice">
                     <Form.Label>Purchase Price</Form.Label>
                     <InputGroup>
                         <InputGroup.Text>$</InputGroup.Text>
                         <Form.Input type="number" />
                     </InputGroup>
                 </Form.Group>
-                <Form.Group groupId="value" >
+                <Form.Group groupId="currentBalance">
                     <Form.Label>Current Value</Form.Label>
                     <InputGroup>
                         <InputGroup.Text>$</InputGroup.Text>

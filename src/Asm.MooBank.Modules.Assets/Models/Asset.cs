@@ -22,6 +22,7 @@ public static class AssetExtensions
         InstrumentType = "Asset",
         Currency = asset.Currency,
         CurrentBalanceLocalCurrency = currencyConverter.Convert(asset.Value, asset.Currency),
+        ShareWithFamily = asset.ShareWithFamily,
     };
 
     public static Asset ToModel(this Domain.Entities.Asset.Asset asset, Guid userId, ICurrencyConverter currencyConverter)
