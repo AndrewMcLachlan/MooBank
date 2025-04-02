@@ -2,7 +2,7 @@ import React, { PropsWithChildren, ReactNode } from "react";
 
 import { NavItem, NavItemDivider, Page, PageProps } from "@andrewmclachlan/mooapp";
 
-import { Sliders } from "@andrewmclachlan/mooicons";
+import { Sliders, Users } from "@andrewmclachlan/mooicons";
 
 export const SettingsPage: React.FC<PropsWithChildren<SettingsPageProps>> = ({ children, breadcrumbs = [], ...props }) => {
 
@@ -17,7 +17,7 @@ const getMenuItems = (navItems: (ReactNode | NavItem)[]) => {
 
     const items: (NavItem | ReactNode)[] = [
         { route: `/settings/institutions`, text: "Institutions", image: <Sliders />  },
-        { route: `/settings/families`, text: "Families", image: <Sliders /> }
+        { route: `/settings/families`, text: "Families", image: <Users /> }
     ];
 
     if (navItems.length > 0) {

@@ -16,7 +16,7 @@ export const TagSelector: React.FC<TagSelectorProps> = ({ value, multiSelect = f
     }
 
     return (
-        <ComboBox items={tags.data ?? []} selectedItems={tag} labelField={tag => tag.name} valueField={tag => tag?.id?.toString()} onChange={change} multiSelect={multiSelect} clearable />
+        <ComboBox items={tags.data ?? []} selectedItems={tag} labelField={tag => tag?.name} valueField={tag => tag?.id} onChange={change} multiSelect={multiSelect} clearable />
     )
 }
 
