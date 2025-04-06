@@ -22,10 +22,7 @@ file static class Extensions
     {
         if (!String.IsNullOrWhiteSpace(field))
         {
-            PropertyInfo? property = TransactionProperties.SingleOrDefault(p => p.Name.Equals(field, StringComparison.OrdinalIgnoreCase)) ?? throw new ArgumentException($"Unknown field {field}", nameof(field));
-
-            // Hiding implementation details from the front-end
-            if (field == "UserName") field = "User.FirstName";
+            //PropertyInfo? property = TransactionProperties.SingleOrDefault(p => p.Name.Equals(field, StringComparison.OrdinalIgnoreCase)) ?? throw new ArgumentException($"Unknown field {field}", nameof(field));
 
             ParameterExpression param = Expression.Parameter(typeof(Transaction), String.Empty);
 

@@ -1,5 +1,3 @@
-import "./Tags.css";
-
 import React, { useEffect, useState } from "react";
 
 import { TransactionTagRow } from "./TagRow";

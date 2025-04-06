@@ -13,11 +13,20 @@ export const useImportTransactions = () => {
         },
     });
 
-    const importTransactions = (instrumentId: string, file: File, options: MutationOptions<null, Error, {instrumentId: string, file: File}>) => {
+    const importTransactions = (instrumentId: string, file: File, options: MutationOptions<null, Error, { instrumentId: string, file: File }>) => {
         return toast.promise(mutateAsync({ instrumentId, file }, options), { pending: "Importing transactions", success: "Transactions imported", error: "Failed to import transactions" });
     }
 
     return importTransactions;
 }
 
-export const useReprocessTransactions = () => useApiPostEmpty<unknown, { instrumentId: string }>((variables) => `api/instruments/${variables.instrumentId}/import/reprocess`);
+export const useReprocessTransactions = () => {
+
+    const { mutateAsync } = useApiPostEmpty<unknown, { instrumentId: string }>((variables) => `api/instruments/${variables.instrumentId}/import/reprocess`);
+
+    const reprocessTransactions = (instrumentId: string) => {
+        return toast.promise(mutateAsync({ instrumentId }), { pending: "Requesting reprocessing", success: "Reprocessing started", error: "Failed to reprocess transactions" });
+    }
+
+    return reprocessTransactions;
+}

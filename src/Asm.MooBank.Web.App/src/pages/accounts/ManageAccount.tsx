@@ -1,8 +1,7 @@
-import { Table } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 
-import { IconButton, Section, useIdParams } from "@andrewmclachlan/mooapp";
+import { IconButton, SectionTable, useIdParams } from "@andrewmclachlan/mooapp";
 
 import { AccountPage, useAccount } from "components";
 import * as Models from "models";
@@ -26,7 +25,7 @@ export const ManageAccount = () => {
         const actions = [<IconButton key="nva" onClick={() => navigate(`/accounts/${id}/manage/virtual/create`)} icon="plus">New Virtual Account</IconButton>];
 
         if (accountController === "Import") {
-            actions.push(<IconButton key="rpt" onClick={() => reprocessTransactions.mutate({ instrumentId: id })} icon="arrows-rotate">Reprocess Transactions</IconButton>);
+            actions.push(<IconButton key="rpt" onClick={() => reprocessTransactions(id)} icon="arrows-rotate">Reprocess Transactions</IconButton>);
         }
 
         return actions;
@@ -37,8 +36,7 @@ export const ManageAccount = () => {
     return (
         <AccountPage title="Manage" breadcrumbs={[{ text: "Manage", route: `/accounts/${account?.id}/manage` }]} actions={getActions(account?.controller)}>
             <AccountForm account={account as Models.InstitutionAccount} />
-            <Section title="Virtual Accounts">
-                <Table striped hover>
+            <SectionTable title="Virtual Accounts" striped hover>
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -53,8 +51,7 @@ export const ManageAccount = () => {
                             </tr>
                         ))}
                     </tbody>
-                </Table>
-            </Section>
+                </SectionTable>
         </AccountPage>
     );
 }

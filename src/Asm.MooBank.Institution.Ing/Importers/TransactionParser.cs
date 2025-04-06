@@ -6,13 +6,13 @@ using Asm.MooBank.Domain.Entities.Transactions;
 namespace Asm.MooBank.Institution.Ing.Importers;
 internal partial class TransactionParser
 {
-    [GeneratedRegex("^(.+) - Visa Purchase - Receipt (\\d{4,6})In (.+) Date (.+) Card \\d{6}xxxxxx(\\d{4})")]
+    [GeneratedRegex("^(.+) - Visa Purchase - Receipt (\\d{4,6})In (.*) Date (.+) Card \\d{6}xxxxxx(\\d{4})")]
     private static partial Regex VisaPurchase();
 
-    [GeneratedRegex("^(.+) - Visa Refund - Receipt (\\d{4,6}) In (.+) Date (.+) Card \\d{6}xxxxxx(\\d{4})")]
+    [GeneratedRegex("^(.+) - Visa Refund - Receipt (\\d{4,6}) In (.*) Date (.+) Card \\d{6}xxxxxx(\\d{4})")]
     private static partial Regex VisaRefund();
 
-    [GeneratedRegex("^(.+) - Visa Purchase - Receipt (\\d{4,6})Foreign Currency Amount:(.+)In (.+) Date (.+) Card \\d{6}xxxxxx(\\d{4})")]
+    [GeneratedRegex("^(.+) - Visa Purchase - Receipt (\\d{4,6})Foreign Currency Amount:(.+)In (.*) Date (.+) Card \\d{6}xxxxxx(\\d{4})")]
     private static partial Regex VisaForeignCurrency();
 
     [GeneratedRegex("^(.+) - Direct Debit - Receipt (\\d{4,6}) (.+)")]
@@ -26,6 +26,9 @@ internal partial class TransactionParser
 
     [GeneratedRegex("^([^-]+) - Receipt (\\d{4,6})")]
     private static partial Regex DirectPayment();
+
+    [GeneratedRegex("^(.+) - Receipt (\\d{4,6})In (.*) Date (.+) Time (.+) Card \\d{6}xxxxxx(\\d{4})")]
+    private static partial Regex DirectPayment2();
 
     [GeneratedRegex("^(.+) - Osko Payment( to)?(.*) - Receipt (\\d{4,6})(  - Ref )?(.+)?")]
     private static partial Regex OskoPayment();
@@ -122,6 +125,18 @@ internal partial class TransactionParser
             parsed.Description = match.Groups[1].Value.Trim();
             parsed.PurchaseType = "Direct";
             parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
+            return parsed;
+        }
+
+        match = DirectPayment2().Match(description);
+        if (match.Success)
+        {
+            parsed.Description = match.Groups[1].Value.Trim();
+            parsed.Location = match.Groups[3].Value.Trim();
+            parsed.PurchaseDate = DateTime.ParseExact($"{match.Groups[4].Value} {match.Groups[5].Value}", "dd MMM yyyy h:mmtt", CultureInfo.InvariantCulture);
+            parsed.PurchaseType = "Direct";
+            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
+            parsed.Last4Digits = Int16.Parse(match.Groups[6].Value);
             return parsed;
         }
 

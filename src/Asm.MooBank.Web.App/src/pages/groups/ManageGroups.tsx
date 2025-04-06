@@ -1,6 +1,6 @@
 import React from "react";
 
-import { IconButton, LoadingTableRows, Page } from "@andrewmclachlan/mooapp";
+import { IconButton, LoadingTableRows, Page, SectionTable } from "@andrewmclachlan/mooapp";
 import { Table } from "react-bootstrap";
 import { useGroups } from "services";
 
@@ -19,7 +19,7 @@ export const ManageGroups = () => {
 
     return (
         <Page title="Groups" breadcrumbs={[{ text: "Groups", route: "/groups" }]} actions={[<IconButton key="add" onClick={() => navigate("/groups/create")} icon="plus">Create Group</IconButton>]}>
-            <Table className="accounts section" hover striped>
+            <SectionTable title="Groups" hover striped>
                 <thead>
                     <tr>
                         <th className="column-25">Name</th>
@@ -30,7 +30,7 @@ export const ManageGroups = () => {
                 <tbody>
                     {instrumentRows}
                 </tbody>
-            </Table>
+            </SectionTable>
         </Page>
     );
 }

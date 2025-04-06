@@ -21,6 +21,8 @@ internal class GetHandler(IQueryable<Transaction> transactions) : IQueryHandler<
 
         var total = await transactions.Specify(filterSpecification).CountAsync(cancellationToken);
 
+        query = MapSortFieldNames(query);
+
         var results = await transactions.IncludeAll().Specify(filterSpecification).Specify(new SortSpecification(query)).Page(query.PageSize, query.PageNumber).ToModel().ToListAsync(cancellationToken);
 
         var result = new PagedResult
@@ -31,4 +33,14 @@ internal class GetHandler(IQueryable<Transaction> transactions) : IQueryHandler<
 
         return result;
     }
+
+    private static Get MapSortFieldNames(Get filter)
+    {
+        return filter.SortField switch
+        {
+            "AccountHolderName" => filter with { SortField = "User.FirstName" },
+            _ => filter,
+        };
+    }
+
 }
