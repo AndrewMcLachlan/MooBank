@@ -78,7 +78,7 @@ jobs:
       environment: Staging
       artifact-name: publish
       app-name: moobank
-      app-slot: staging
+      slot-name: staging
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
