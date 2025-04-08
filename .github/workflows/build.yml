@@ -90,7 +90,7 @@ jobs:
       cancel-in-progress: true
     needs: staging
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
-    uses: AndrewMcLachlan/actions/.github/workflows/deploy-azure.yml@feature/swap-slots
+    uses: AndrewMcLachlan/actions/.github/workflows/azure-appservice-swap-slot.yml@feature/swap-slots
     with:
       environment: Production
       app-name: moobank
