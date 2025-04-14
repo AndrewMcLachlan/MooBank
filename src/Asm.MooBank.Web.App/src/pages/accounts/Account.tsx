@@ -12,7 +12,7 @@ export const Account = () => {
     const match = useMatch("/accounts/:id");
 
     if (match) {
-        return <Navigate to={`/accounts/${id}/transactions`} replace />
+        return <Navigate to={`/accounts/${id}/transactions${window.location.search}`} replace />
     }
 
     return (

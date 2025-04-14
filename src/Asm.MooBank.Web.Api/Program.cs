@@ -1,6 +1,5 @@
 using System.ComponentModel;
 using System.Reflection;
-using System.Text;
 using System.Text.Json.Serialization;
 using Asm.AspNetCore.Api;
 using Asm.AspNetCore.Modules;
@@ -155,8 +154,6 @@ void AddServices(WebApplicationBuilder builder)
 
 void AddApp(WebApplication app)
 {
-    app.UseStaticFiles();
-
     app.UseSwagger();
     app.MapOpenApi();
     app.UseSwaggerUI(options =>
