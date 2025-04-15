@@ -21,7 +21,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
     }
 
     useEffect(() => {
-        dispatch(StockTransactionsSlice.actions.setTransactionListFilter({ description: filterDescription, start: period?.startDate?.toISOString(), end: period?.endDate?.toISOString() }));
+        dispatch(StockTransactionsSlice.actions.setTransactionListFilter({ description: filterDescription, transactionType: "", start: period?.startDate?.toISOString(), end: period?.endDate?.toISOString() }));
     }, [period, filterDescription, window.location.search]);
 
     return (
