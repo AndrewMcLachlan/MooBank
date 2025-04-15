@@ -314,3 +314,10 @@
         }
     }
 }
+
+.btn-group-form {
+    display: block;;
+    .btn {
+        height: 42px;
+    }
+}

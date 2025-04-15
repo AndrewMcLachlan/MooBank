@@ -2,7 +2,7 @@ import { useTags } from "services"
 import { ComboBox } from "@andrewmclachlan/mooapp";
 import { Tag } from "models";
 
-export const TagSelector: React.FC<TagSelectorProps> = ({ value, multiSelect = false, onChange }) => {
+export const TagSelector: React.FC<TagSelectorProps> = ({ id, value, multiSelect = false, onChange }) => {
 
     const tags = useTags();
 
@@ -16,11 +16,12 @@ export const TagSelector: React.FC<TagSelectorProps> = ({ value, multiSelect = f
     }
 
     return (
-        <ComboBox items={tags.data ?? []} selectedItems={tag} labelField={tag => tag?.name} valueField={tag => tag?.id} onChange={change} multiSelect={multiSelect} clearable />
+        <ComboBox id={id} items={tags.data ?? []} selectedItems={tag} labelField={tag => tag?.name} valueField={tag => tag?.id} onChange={change} multiSelect={multiSelect} clearable />
     )
 }
 
 export interface TagSelectorProps {
+    id?: string;
     value?: number | Tag | number[],
     multiSelect?: boolean;
     onChange: (value: number | number[]) => void;

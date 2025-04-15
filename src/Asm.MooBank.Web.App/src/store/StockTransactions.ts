@@ -9,6 +9,7 @@ const initialState: Transactions = {
     filter: {
         filterTagged: false,
         tags: null,
+        transactionType: "",
     },
     sortField: "TransactionDate",
     sortDirection: "Descending",
@@ -34,6 +35,7 @@ export const reducers = {
 
         const newFilter: TransactionsFilter = {
             description: action.payload.description ?? state.filter.description,
+            transactionType: "",
             start: action.payload.start ?? state.filter.start,
             end: action.payload.end ?? state.filter.end,
         };
