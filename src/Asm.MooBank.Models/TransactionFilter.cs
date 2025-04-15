@@ -15,6 +15,8 @@ public record TransactionFilter : ISortable
 
     public string? SortField { get; init; }
 
+    public TransactionFilterType? TransactionType { get; init; } = TransactionFilterType.None;
+
     public SortDirection SortDirection { get; init; } = SortDirection.Ascending;
 
     public string Untagged { init => _untagged = value == "untagged"; }

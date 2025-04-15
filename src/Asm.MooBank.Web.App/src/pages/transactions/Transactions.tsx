@@ -28,10 +28,10 @@ export const Transactions: React.FC = () => {
     return (
         <AccountPage title="Transactions" actions={actions}>
             <SectionRow>
-                <Col xxl={2} xl={12} lg={12} md={12} sm={12}>
+                <Col xxl={3} xl={12} lg={12} md={12} sm={12}>
                     <AccountSummary />
                 </Col>
-                <Col xxl={10} xl={12} lg={12} md={12} sm={12}>
+                <Col xxl={9} xl={12} lg={12} md={12} sm={12}>
                     <FilterPanel />
                 </Col>
             </SectionRow>

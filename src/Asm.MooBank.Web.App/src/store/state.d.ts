@@ -22,7 +22,10 @@ export interface Transactions {
 export interface TransactionsFilter {
     filterTagged?: boolean;
     description?: string;
+    transactionType: transactionTypeFilter;
     tags?: number[] | null;
     start?: string;
     end?: string;
 }
+
+export type transactionTypeFilter = "" | "Debit" | "Credit";
