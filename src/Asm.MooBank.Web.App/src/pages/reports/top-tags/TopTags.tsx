@@ -8,7 +8,7 @@ import { Bar, getElementAtEvent } from "react-chartjs-2";
 import { Period } from "helpers/dateFns";
 import { useNavigate } from "react-router";
 import { chartColours, desaturatedChartColours } from "../../../helpers/chartColours";
-import { ReportType } from "models/reports";
+import { transactionTypeFilter } from "store/state";
 
 export const TopTags: React.FC<TopTagsProps> = ({ accountId, period, reportType, top = 20 }) => {
 
@@ -72,6 +72,6 @@ export const TopTags: React.FC<TopTagsProps> = ({ accountId, period, reportType,
 export interface TopTagsProps {
     accountId: string;
     period: Period;
-    reportType: ReportType;
+    reportType: transactionTypeFilter;
     top?: number;
 }

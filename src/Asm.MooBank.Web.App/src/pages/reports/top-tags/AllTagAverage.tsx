@@ -8,8 +8,8 @@ import { Chart as ChartJS, registerables } from "chart.js";
 import { PeriodSelector } from "components/PeriodSelector";
 import { ReportTypeSelector } from "components/ReportTypeSelector";
 import { Period, subtractYear } from "helpers/dateFns";
-import { ReportType } from "models/reports";
 import { TopTags } from "./TopTags";
+import { transactionTypeFilter } from "store/state";
 
 ChartJS.register(...registerables);
 
@@ -17,7 +17,7 @@ export const AllTagAverage = () => {
 
     const accountId = useIdParams();
 
-    const [reportType, setReportType] = useState<ReportType>(ReportType.Expenses);
+    const [reportType, setReportType] = useState<transactionTypeFilter>("Debit");
     const [period, setPeriod] = useState<Period>({ startDate: null, endDate: null });
 
     return (

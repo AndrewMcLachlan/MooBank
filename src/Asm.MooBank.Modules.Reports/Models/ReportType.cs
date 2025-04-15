@@ -5,67 +5,61 @@ namespace Asm.MooBank.Modules.Reports.Models;
 
 public struct ReportType
 {
-    private readonly ReportTypeInner _reportType;
+    private readonly TransactionFilterType _reportType;
 
-    private ReportType(ReportTypeInner reportType) => _reportType = reportType;
+    private ReportType(TransactionFilterType reportType) => _reportType = reportType;
 
-    public const ReportTypeInner Income = ReportTypeInner.Income;
-    public const ReportTypeInner Expenses = ReportTypeInner.Expenses;
+    public const TransactionFilterType Credit = TransactionFilterType.Credit;
+    public const TransactionFilterType Debit = TransactionFilterType.Debit;
 
     public static bool TryParse(string reportType, out ReportType value)
     {
-        value = new ReportType(Income);
+        value = new ReportType(Credit);
         if (String.IsNullOrWhiteSpace(reportType))
         {
             return false;
         }
 
-        if (reportType.Equals("income", StringComparison.OrdinalIgnoreCase))
+        if (reportType.Equals("credit", StringComparison.OrdinalIgnoreCase))
         {
-            value = new ReportType(Income);
+            value = new ReportType(Credit);
             return true;
         }
 
-        if (reportType.Equals("expenses", StringComparison.OrdinalIgnoreCase))
+        if (reportType.Equals("debit", StringComparison.OrdinalIgnoreCase))
         {
-            value = new ReportType(Expenses);
+            value = new ReportType(Debit);
             return true;
         }
 
         return false;
     }
 
-    public static implicit operator ReportTypeInner(ReportType reportType) => reportType._reportType;
-    public static implicit operator ReportType(ReportTypeInner reportType) => reportType switch
+    public static implicit operator TransactionFilterType(ReportType reportType) => reportType._reportType;
+    public static implicit operator ReportType(TransactionFilterType reportType) => reportType switch
     {
-        ReportTypeInner.Income => Income,
-        ReportTypeInner.Expenses => Expenses,
+        TransactionFilterType.Credit => Credit,
+        TransactionFilterType.Debit => Debit,
         _ => throw new ArgumentOutOfRangeException(nameof(reportType))
     };
 }
 
-public enum ReportTypeInner
-{
-    Income = 0,
-    Expenses = 1,
-
-}
 
 public static class ReportTypeExtensions
 {
     public static Expression<Func<Domain.Entities.Transactions.Transaction, bool>> ToTransactionFilterExpression(this ReportType reportType) =>
-        (ReportTypeInner)reportType switch
+        (TransactionFilterType)reportType switch
         {
-            ReportType.Expenses => (t) => TransactionTypes.Debit.Contains(t.TransactionType),
-            ReportType.Income => (t) => TransactionTypes.Credit.Contains(t.TransactionType),
+            ReportType.Debit => (t) => TransactionTypes.Debit.Contains(t.TransactionType),
+            ReportType.Credit => (t) => TransactionTypes.Credit.Contains(t.TransactionType),
             _ => (t) => true
         };
 
     public static Func<Domain.Entities.Transactions.Transaction, bool> ToTransactionFilter(this ReportType reportType) =>
-        (ReportTypeInner)reportType switch
+        (TransactionFilterType)reportType switch
         {
-            ReportType.Expenses => (t) => TransactionTypes.Debit.Contains(t.TransactionType),
-            ReportType.Income => (t) => TransactionTypes.Credit.Contains(t.TransactionType),
+            ReportType.Debit => (t) => TransactionTypes.Debit.Contains(t.TransactionType),
+            ReportType.Credit => (t) => TransactionTypes.Credit.Contains(t.TransactionType),
             _ => (t) => true
         };
 
