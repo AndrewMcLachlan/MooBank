@@ -6,9 +6,9 @@ import { ChartData, Chart as ChartJS, registerables } from "chart.js";
 import { Doughnut, getElementAtEvent } from "react-chartjs-2";
 
 import { Period } from "helpers/dateFns";
-import { ReportType } from "models/reports";
 import { useNavigate, useParams } from "react-router";
 import { chartColours } from "../../../helpers/chartColours";
+import { transactionTypeFilter } from "store/state";
 
 ChartJS.register(...registerables);
 
@@ -60,7 +60,7 @@ export const Breakdown: React.FC<BreakdownProps> = ({accountId, tagId, period, r
                 const tag = report.data!.tags[elements[0].index];
                 if (!tag.hasChildren || tag.tagId === selectedTagId) {
 
-                    const url = !selectedTagId ? `/accounts/${accountId}?untagged=true` : `/accounts/${accountId}?tag=${tag.tagId}`;
+                    const url = !selectedTagId ? `/accounts/${accountId}?untagged=true` : `/accounts/${accountId}?tag=${tag.tagId}&type=${reportType}`;
 
                     navigate(url);
                     return;
@@ -76,5 +76,5 @@ export interface BreakdownProps {
     accountId: string;
     tagId?: string;
     period: Period;
-    reportType: ReportType;
+    reportType: transactionTypeFilter;
 }

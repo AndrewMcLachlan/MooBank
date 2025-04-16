@@ -10,10 +10,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PeriodSelector } from "components/PeriodSelector";
 import { ReportTypeSelector } from "components/ReportTypeSelector";
 import { Period } from "helpers/dateFns";
-import { ReportType } from "models/reports";
 import { useNavigate, useParams } from "react-router";
 import { chartColours } from "../../../helpers/chartColours";
 import { Breakdown } from "./Breakdown";
+import { transactionTypeFilter } from "store/state";
 
 ChartJS.register(...registerables);
 
@@ -23,7 +23,7 @@ export const BreakdownPage = () => {
 
     const { id: accountId, tagId } = useParams<{ id: string, tagId: string }>();
 
-    const [reportType, setReportType] = useState<ReportType>(ReportType.Expenses);
+    const [reportType, setReportType] = useState<transactionTypeFilter>("Debit");
     const [period, setPeriod] = useState<Period>({ startDate: null, endDate: null });
     const [selectedTagId, setSelectedTagId] = useState<number | undefined>(tagId ? Number(tagId) : undefined);
     const tag = useTag(selectedTagId ?? 0);

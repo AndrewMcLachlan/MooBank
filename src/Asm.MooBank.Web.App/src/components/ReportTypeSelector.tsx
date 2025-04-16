@@ -1,10 +1,10 @@
 import React, { HTMLAttributes } from "react";
 import { Button, ButtonGroup, Col, Row } from "react-bootstrap";
-import { ReportType } from "models/reports";
+import { transactionTypeFilter } from "store/state";
 
 export const ReportTypeSelector: React.FC<ReportTypeSelectorProps> = ({value, onChange, ...rest}) => {
 
-    const onClick = (reportType: ReportType) => {
+    const onClick = (reportType: transactionTypeFilter) => {
         if (value === reportType) return;
         onChange?.(reportType);
     }
@@ -13,8 +13,8 @@ export const ReportTypeSelector: React.FC<ReportTypeSelectorProps> = ({value, on
         <Row {...rest}>
             <Col xl="4">
                 <ButtonGroup>
-                    <Button variant={value == ReportType.Income ? "primary" : "secondary"} onClick={() => onClick(ReportType.Income)}>Income</Button>
-                    <Button variant={value == ReportType.Expenses ? "primary" : "secondary"} onClick={() => onClick(ReportType.Expenses)}>Expenses</Button>
+                    <Button variant={value == "Credit" ? "primary" : "secondary"} onClick={() => onClick("Credit")}>Income</Button>
+                    <Button variant={value == "Debit" ? "primary" : "secondary"} onClick={() => onClick("Debit")}>Expense</Button>
                 </ButtonGroup>
             </Col>
         </Row>
@@ -22,6 +22,6 @@ export const ReportTypeSelector: React.FC<ReportTypeSelectorProps> = ({value, on
 }
 
 export interface ReportTypeSelectorProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
-    value?: ReportType;
-    onChange?: (reportType: ReportType) => void;
+    value?: transactionTypeFilter;
+    onChange?: (reportType: transactionTypeFilter) => void;
 }

@@ -15,6 +15,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
     const params = new URLSearchParams(window.location.search);
 
     const tagParams = params.get("tag")?.split(",").map(t => Number(t)) ?? [];
+    const transactionTypeParam: transactionTypeFilter = params.get("type") as transactionTypeFilter ?? "";
 
     const [storedFilterTagged, setStoredFilterTagged] = useLocalStorage("filter-tagged", false);
     const [filterDescription, setFilterDescription] = useLocalStorage("filter-description", "");
@@ -25,6 +26,10 @@ export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
     const [localFilterTagged, setLocalFilterTagged] = useState<boolean>(tagParams.length > 0 ? false : params.get("untagged") ? true : storedFilterTagged);
     const filterTags = localFilterTags ?? storedFilterTags;
     const filterTagged = localFilterTagged ?? storedFilterTagged;
+
+    useEffect(() => {
+        transactionTypeParam && setFilterType(transactionTypeParam);
+    }, []);
 
     const setFilterTags = (tag: number | number[]) => {
         params.delete("tag");

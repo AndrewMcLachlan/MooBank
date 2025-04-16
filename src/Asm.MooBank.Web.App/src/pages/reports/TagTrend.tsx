@@ -11,11 +11,12 @@ import { PeriodSelector } from "components/PeriodSelector";
 import { ReportTypeSelector } from "components/ReportTypeSelector";
 import { Period } from "helpers/dateFns";
 import { TagSettings } from "models";
-import { ReportType, TagTrendReportSettings, defaultSettings } from "models/reports";
+import { TagTrendReportSettings, defaultSettings } from "models/reports";
 import { useTag, useTagTrendReport } from "services";
 import { useChartColours } from "../../helpers/chartColours";
 import { ReportsPage } from "./ReportsPage";
 import { TagSettingsPanel } from "./TagSettingsPanel";
+import { transactionTypeFilter } from "store/state";
 
 ChartJS.register(...registerables);
 ChartJS.register(chartTrendline);
@@ -27,7 +28,7 @@ export const TagTrend: React.FC = () => {
 
     const { id: accountId, tagId } = useParams<{ id: string, tagId: string }>();
 
-    const [reportType, setReportType] = useState<ReportType>(ReportType.Expenses);
+    const [reportType, setReportType] = useState<transactionTypeFilter>("Credit");
     const [period, setPeriod] = useState<Period>({ startDate: null, endDate: null });
     const [selectedTagId, setSelectedTagId] = useState<number>(tagId ? Number(tagId) : 1);
     const [settings, setSettings] = useState<TagTrendReportSettings>(defaultSettings);
