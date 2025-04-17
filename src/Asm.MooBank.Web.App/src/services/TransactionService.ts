@@ -66,7 +66,7 @@ export const useUpdateTransaction = () => {
         onMutate: ([variables, data]) => {
 
             const transactions = {...queryClient.getQueryData<PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection])};
-            if (!transactions) return;
+            if (!transactions?.results) return;
 
             const transaction = transactions.results.find(tr => tr.id === variables.transactionId);
             if (!transaction) return;
@@ -98,7 +98,7 @@ export const useAddTransactionTag = () => {
         onMutate: (variables) => {
 
             const transactions = {...queryClient.getQueryData<PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection])};
-            if (!transactions) return;
+            if (!transactions?.results) return;
 
             const transaction = transactions.results.find(tr => tr.id === variables.transactionId);
             if (!transaction) return;
