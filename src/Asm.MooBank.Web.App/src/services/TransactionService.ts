@@ -34,7 +34,7 @@ export const useTransactions = (accountId: string, filter: TransactionsFilter, p
     queryString = queryString.startsWith("&") ? queryString.substring(1) : queryString;
     queryString = queryString.length > 0 && queryString[0] !== "?" ? `?${queryString}` : queryString;
 
-    return useApiPagedGet<PagedResult<Models.Transaction>>([transactionKey, accountId, filterString, pageSize, pageNumber, sortField, sortDirection],
+    return useApiPagedGet<PagedResult<Models.Transaction>>([transactionKey, accountId, filter, pageSize, pageNumber, sortField, sortDirection],
         `api/accounts/${accountId}/transactions/${filter.filterTagged ? "untagged/" : ""}${pageSize}/${pageNumber}${queryString}`, {
         enabled: !!accountId && !!filter?.start && !!filter?.end,
     });
