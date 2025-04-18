@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Text.Json.Serialization;
 using Asm.AspNetCore.Api;
 using Asm.AspNetCore.Modules;
+using Asm.MooBank.Infrastructure;
 using Asm.MooBank.Institution.AustralianSuper;
 using Asm.MooBank.Institution.Ing;
 using Asm.MooBank.Security;
@@ -193,10 +194,9 @@ void AddApp(WebApplication app)
     app.UseSecurityHeaders();
 
     app.MapFallbackToFile("/index.html");
-
 }
 
 void AddHealthChecks(IHealthChecksBuilder builder, WebApplicationBuilder app)
 {
-    builder.AddCheck("Asm.MooBank.Web.Api", () => HealthCheckResult.Healthy(), tags: ["health"]);
+    builder.AddDbContextCheck<MooBankContext>("MooBankDbContext", tags: ["health", "db"]);
 }

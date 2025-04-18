@@ -16,27 +16,26 @@ export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
 
     const tagParams = params.get("tag")?.split(",").map(t => Number(t)) ?? [];
     const transactionTypeParam: transactionTypeFilter = params.get("type") as transactionTypeFilter ?? "";
+    const unTaggedParam = params.get("untagged");
 
     const [storedFilterTagged, setStoredFilterTagged] = useLocalStorage("filter-tagged", false);
     const [filterDescription, setFilterDescription] = useLocalStorage("filter-description", "");
     const [storedFilterTags, setStoredFilterTags] = useLocalStorage<number[]>("filter-tag", []);
-    const [filterType, setFilterType] = useLocalStorage<transactionTypeFilter>("filter-type", "");
+    const [storedFilterType, setStoredFilterType] = useLocalStorage<transactionTypeFilter>("filter-type", "");
 
     const [localFilterTags, setLocalFilterTags] = useState<number[]>(tagParams ?? storedFilterTags);
-    const [localFilterTagged, setLocalFilterTagged] = useState<boolean>(tagParams.length > 0 ? false : params.get("untagged") ? true : storedFilterTagged);
+    const [localFilterTagged, setLocalFilterTagged] = useState<boolean>(tagParams.length > 0 ? false : unTaggedParam ? true : storedFilterTagged);
+    const [localFilterType, setLocalFilterType] = useState<transactionTypeFilter>(transactionTypeParam ?? storedFilterType);
     const filterTags = localFilterTags ?? storedFilterTags;
     const filterTagged = localFilterTagged ?? storedFilterTagged;
 
     useEffect(() => {
-        transactionTypeParam && setFilterType(transactionTypeParam);
+        // If the URL has filters defined, clear the description filter.
+        transactionTypeParam || tagParams || unTaggedParam && setFilterDescription("");
     }, []);
 
     const setFilterTags = (tag: number | number[]) => {
-        params.delete("tag");
-        const queryString = params.toString();
-        const newUrl = window.location.origin + window.location.pathname + (queryString === "" ? "" : `?${queryString}`);
-
-        window.history.replaceState({ path: newUrl }, "", newUrl);
+        cleanQueryString(params, "tag");
 
         const tagArray = Array.isArray(tag) ? tag : [tag];
 
@@ -45,15 +44,19 @@ export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
     }
 
     const setFilterTagged = (filter: boolean) => {
-        params.delete("untagged");
-        const queryString = params.toString();
-        const newUrl = window.location.origin + window.location.pathname + (queryString === "" ? "" : `?${queryString}`);
-
-        window.history.replaceState({ path: newUrl }, "", newUrl);
-
+        cleanQueryString(params, "untagged");
+        
         setLocalFilterTagged(filter);
         setStoredFilterTagged(filter);
     }
+
+    const setFilterType = (type: transactionTypeFilter) => {
+        cleanQueryString(params, "type");
+        
+        setStoredFilterType(type);
+        setLocalFilterType(type);
+    }
+
 
     const [period, setPeriod] = useState<Period>({ startDate: null, endDate: null });
     const dispatch = useDispatch();
@@ -62,12 +65,12 @@ export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
         setFilterDescription("");
         setFilterTagged(false);
         setFilterTags([]);
-        setFilterType("");
+        setStoredFilterType("");
     }
 
     useEffect(() => {
-        dispatch(TransactionsSlice.actions.setTransactionListFilter({ description: filterDescription, filterTagged, tags: filterTags, transactionType: filterType, start: period?.startDate?.toISOString(), end: period?.endDate?.toISOString() }));
-    }, [period, filterDescription, filterTagged, filterTags, filterType, window.location.search]);
+        dispatch(TransactionsSlice.actions.setTransactionListFilter({ description: filterDescription, filterTagged, tags: filterTags, transactionType: storedFilterType, start: period?.startDate?.toISOString(), end: period?.endDate?.toISOString() }));
+    }, [period, filterDescription, filterTagged, filterTags, storedFilterType, window.location.search]);
 
     return (
         <Section className="filter-panel" title="Filter" {...props}>
@@ -84,9 +87,9 @@ export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
                 <Col lg={3}>
                     <Form.Label htmlFor="filter-type">Type</Form.Label>
                     <ButtonGroup className="btn-group-form" aria-label="Filter by income or expense" id="filter-type">
-                        <Button id="filter-all" variant={filterType === "" ? "primary" : "outline-primary"} onClick={() => setFilterType("")}>All</Button>
-                        <Button id="filter-income" variant={filterType === "Credit" ? "primary" : "outline-primary"} onClick={() => setFilterType("Credit")}>Income</Button>
-                        <Button id="filter-expense" variant={filterType === "Debit" ? "primary" : "outline-primary"} onClick={() => setFilterType("Debit")}>Expense</Button>
+                        <Button id="filter-all" variant={localFilterType === "" ? "primary" : "outline-primary"} onClick={() => setFilterType("")}>All</Button>
+                        <Button id="filter-income" variant={localFilterType === "Credit" ? "primary" : "outline-primary"} onClick={() => setFilterType("Credit")}>Income</Button>
+                        <Button id="filter-expense" variant={localFilterType === "Debit" ? "primary" : "outline-primary"} onClick={() => setFilterType("Debit")}>Expense</Button>
                     </ButtonGroup>
                 </Col>
             </Row>
@@ -101,4 +104,13 @@ export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
 }
 
 export interface FilterPanelProps extends React.HTMLAttributes<HTMLElement> {
+}
+
+const cleanQueryString = (params: URLSearchParams, key: string) =>{
+    
+    params.delete(key);
+    const queryString = params.toString();
+    const newUrl = window.location.origin + window.location.pathname + (queryString === "" ? "" : `?${queryString}`);
+
+    window.history.replaceState({ path: newUrl }, "", newUrl);
 }
