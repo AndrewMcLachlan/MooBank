@@ -1,6 +1,5 @@
-﻿using Asm.MooBank.Domain.Entities.Tag;
-using Asm.MooBank.Domain.Entities.TagRelationships;
-using Asm.MooBank.Domain.Entities.Transactions;
+﻿using Asm.MooBank.Domain.Entities.Reports;
+using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Modules.Reports.Models;
 
 namespace Asm.MooBank.Modules.Reports.Queries;
@@ -12,32 +11,15 @@ public record GetTagTrendReport : TypedReportQuery, IQuery<TagTrendReport>
     public bool? ApplySmoothing { get; init; } = false;
 }
 
-internal class GetTagTrendReportHandler(IQueryable<Transaction> transactions, IQueryable<Tag> tags, IQueryable<TagRelationship> tagRelationships) : IQueryHandler<GetTagTrendReport, TagTrendReport>
+internal class GetTagTrendReportHandler(IReportRepository repository, IQueryable<Tag> tags) : IQueryHandler<GetTagTrendReport, TagTrendReport>
 {
-    private readonly IQueryable<Transaction> _transactions = transactions;
-    private readonly IQueryable<Tag> _tags = tags;
-
     public async ValueTask<TagTrendReport> Handle(GetTagTrendReport request, CancellationToken cancellationToken)
     {
-        var transactionTypeFilter = request.ReportType.ToTransactionFilter();
+        var tagTotals = await repository.GetMonthlyTotalsForTag(request.AccountId, request.Start, request.End, request.ReportType, request.TagId, cancellationToken);
 
-        var tag = await _tags.SingleAsync(t => t.Id == request.TagId, cancellationToken);
-        var tags = await _tags.Include(t => t.Tags).Where(t => !t.Deleted && t.TaggedTo.Any(t2 => t2.Id == request.TagId)).ToListAsync(cancellationToken);
-        var tagHierarchies = await tagRelationships.Include(t => t.Tag).ThenInclude(t => t.Tags).Include(t => t.ParentTag).ThenInclude(t => t.Tags).Where(tr => tags.Contains(tr.ParentTag)).ToListAsync(cancellationToken);
-        var allTags = tags.Union(tagHierarchies.Select(t => t.Tag)).ToList();
-        allTags.Add(tag);
+        var months = tagTotals.ToModel();
 
-
-        var transactions = await _transactions.IncludeOffsets().IncludeTagsAndSubTags()
-            .WhereByReportQuery(request).Where(t => t.Splits.SelectMany(ts => ts.Tags).Any(tt => allTags.Contains(tt)))
-            .ToListAsync(cancellationToken);
-
-        var months = transactions.GroupBy(t => new DateOnly(t.TransactionTime.Year, t.TransactionTime.Month, 1)).OrderBy(g => g.Key).Select(g => new TrendPoint
-        {
-            Month = g.Key,
-            Amount = g.Where(transactionTypeFilter).Sum(t => t.Amount),
-            OffsetAmount = g.Where(transactionTypeFilter).Sum(t => t.GetNetAmount())
-        });
+        var tag = await tags.SingleAsync(t => t.Id == request.TagId, cancellationToken);
 
         if (request.ApplySmoothing ?? false)
         {
@@ -61,6 +43,45 @@ internal class GetTagTrendReportHandler(IQueryable<Transaction> transactions, IQ
     {
         if (!months.Any()) yield break;
 
+        var ordered = months.OrderBy(m => m.Month).ToList();
+        var current = ordered[0].Month;
+
+        for (int i = 1; i < ordered.Count; i++)
+        {
+            var previous = ordered[i - 1];
+            var next = ordered[i];
+
+            var gap = next.Month.DifferenceInMonths(previous.Month);
+
+            if (gap == 1)
+            {
+                yield return previous;
+                current = next.Month;
+                continue;
+            }
+
+            var avgGross = next.GrossAmount / gap;
+            var avgNet = next.NetAmount / gap;
+
+            for (int j = 0; j < gap; j++)
+            {
+                yield return new TrendPoint
+                {
+                    Month = previous.Month.AddMonths(j),
+                    GrossAmount = avgGross,
+                    NetAmount = avgNet,
+                };
+            }
+
+            current = next.Month;
+        }
+
+        // Final point if it wasn't part of smoothing
+        if (ordered.Count == 1 || ordered[^1].Month.DifferenceInMonths(ordered[^2].Month) == 1)
+            yield return ordered[^1];
+
+        /*if (!months.Any()) yield break;
+
         DateOnly current = months.First().Month;
 
         yield return months.First();
@@ -76,21 +97,21 @@ internal class GetTagTrendReportHandler(IQueryable<Transaction> transactions, IQ
                 continue;
             }
 
-            decimal difference = month.Month.Month - current.Month;
-            var averageAmount = month.Amount / difference;
-            var averageOffset = month.OffsetAmount / difference;
+            decimal difference = month.Month.DifferenceInMonths(current);
+            var averageAmount = month.GrossAmount / difference;
+            var averageOffset = month.NetAmount / difference;
 
             for (var i = 0; i < difference; i++)
             {
                 yield return new TrendPoint
                 {
-                    Amount = averageAmount,
+                    GrossAmount = averageAmount,
                     Month = current.AddMonths(i),
-                    OffsetAmount = averageOffset,
+                    NetAmount = averageOffset,
                 };
             }
 
             current = month.Month;
-        }
+        }*/
     }
 }

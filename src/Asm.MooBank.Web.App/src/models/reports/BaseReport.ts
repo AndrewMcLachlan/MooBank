@@ -3,3 +3,5 @@ export interface BaseReport {
     start: string,
     end: string,
 }
+
+export type reportInterval = "Monthly" | "Yearly";

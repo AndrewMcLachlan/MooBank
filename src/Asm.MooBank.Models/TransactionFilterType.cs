@@ -2,7 +2,7 @@
 
 public enum TransactionFilterType
 {
-    None,
-    Credit,
-    Debit,
+    None = 0,
+    Credit = 1,
+    Debit = 2,
 }

@@ -20,7 +20,7 @@ export const InOutTrend: React.FC<InOutTrendProps> = ({ accountId, period }) => 
 
         datasets: [{
             label: "Income",
-            data: report.data?.income.map(i => i.amount) ?? [],
+            data: report.data?.income.map(i => i.grossAmount) ?? [],
             backgroundColor: colours.income,
             borderColor: colours.income,
             // @ts-expect-error Not a known property for some reason
@@ -32,7 +32,7 @@ export const InOutTrend: React.FC<InOutTrendProps> = ({ accountId, period }) => 
             }
         }, {
             label: "Expenses",
-            data: report.data?.expenses.map(i => Math.abs(i.amount)) ?? [],
+            data: report.data?.expenses.map(i => Math.abs(i.grossAmount)) ?? [],
             backgroundColor: colours.expenses,
             borderColor: colours.expenses,
             // @ts-expect-error Not a known property for some reason

@@ -5,14 +5,17 @@ using Asm.MooBank.Modules.Reports.Models;
 
 namespace Asm.MooBank.Modules.Reports.Queries;
 
-public record GetInOutAverageReport : ReportQuery, IQuery<InOutReport>;
+public record GetInOutAverageReport : ReportQuery, IQuery<InOutReport>
+{
+    public ReportInterval Interval { get; init; } = ReportInterval.Monthly;
+}
 
 internal class GetInOutAverageReportHandler(IQueryable<Transaction> transactions) : IQueryHandler<GetInOutAverageReport, InOutReport>
 {
     public async ValueTask<InOutReport> Handle(GetInOutAverageReport request, CancellationToken cancellationToken)
     {
-        var months = request.Start.DifferenceInMonths(request.End);
-        months = months == 0 ? 1 : months;
+        var intervals = request.Interval == ReportInterval.Monthly ? request.Start.DifferenceInMonths(request.End) : request.End.Year - request.Start.Year;
+        intervals = intervals == 0 ? 1 : intervals;
 
         var results = await transactions.Specify(new IncludeSplitsAndOffsetsSpecification()).WhereByReportQuery(request)
             .ExcludeOffset()
@@ -28,8 +31,8 @@ internal class GetInOutAverageReportHandler(IQueryable<Transaction> transactions
             AccountId = request.AccountId,
             Start = request.Start,
             End = request.End,
-            Income = results.Where(t => t.TransactionType.IsCredit()).Sum(t => t.Amount) / months,
-            Outgoings = results.Where(t => t.TransactionType.IsDebit()).Sum(t => t.Amount) / months,
+            Income = results.Where(t => t.TransactionType.IsCredit()).Sum(t => t.Amount) / intervals,
+            Outgoings = results.Where(t => t.TransactionType.IsDebit()).Sum(t => t.Amount) / intervals,
         };
     }
 }
