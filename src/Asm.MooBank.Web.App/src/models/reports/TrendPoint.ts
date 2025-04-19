@@ -1,5 +1,5 @@
 export interface TrendPoint {
     month: string,
-    amount: number,
-    offsetAmount?: number,
+    grossAmount: number,
+    netAmount?: number,
 }

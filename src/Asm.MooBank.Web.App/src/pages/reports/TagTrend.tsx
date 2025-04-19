@@ -11,7 +11,7 @@ import { PeriodSelector } from "components/PeriodSelector";
 import { ReportTypeSelector } from "components/ReportTypeSelector";
 import { Period } from "helpers/dateFns";
 import { TagSettings } from "models";
-import { TagTrendReportSettings, defaultSettings } from "models/reports";
+import { TrendReportSettings, defaultSettings } from "models/reports";
 import { useTag, useTagTrendReport } from "services";
 import { useChartColours } from "../../helpers/chartColours";
 import { ReportsPage } from "./ReportsPage";
@@ -28,10 +28,10 @@ export const TagTrend: React.FC = () => {
 
     const { id: accountId, tagId } = useParams<{ id: string, tagId: string }>();
 
-    const [reportType, setReportType] = useState<transactionTypeFilter>("Credit");
+    const [reportType, setReportType] = useState<transactionTypeFilter>("Debit");
     const [period, setPeriod] = useState<Period>({ startDate: null, endDate: null });
     const [selectedTagId, setSelectedTagId] = useState<number>(tagId ? Number(tagId) : 1);
-    const [settings, setSettings] = useState<TagTrendReportSettings>(defaultSettings);
+    const [settings, setSettings] = useState<TrendReportSettings>(defaultSettings);
     const report = useTagTrendReport(accountId!, period?.startDate, period?.endDate, reportType, selectedTagId, settings);
 
     const { data: selectedTag } = useTag(selectedTagId);
@@ -41,7 +41,7 @@ export const TagTrend: React.FC = () => {
 
         datasets: [{
             label: `${report.data?.tagName} (Net)`,
-            data: report.data?.months.map(i => Math.abs(i.offsetAmount!)) ?? [],
+            data: report.data?.months.map(i => Math.abs(i.netAmount!)) ?? [],
             backgroundColor: colours.income,
             borderColor: colours.income,
             // @ts-expect-error Not a known property for some reason
@@ -53,7 +53,7 @@ export const TagTrend: React.FC = () => {
             }
         }, {
             label: `${report.data?.tagName} (Gross)`,
-            data: report.data?.months.map(i => Math.abs(i.amount)) ?? [],
+            data: report.data?.months.map(i => Math.abs(i.grossAmount)) ?? [],
             backgroundColor: colours.expenses,
             borderColor: colours.expenses,
 
@@ -70,7 +70,7 @@ export const TagTrend: React.FC = () => {
     }
 
     const settingsChanged = (settings: TagSettings) => {
-        setSettings({ applySmoothing: settings.applySmoothing });
+        setSettings({ applySmoothing: settings.applySmoothing, interval: "Monthly" });
     }
 
     return (
@@ -97,7 +97,7 @@ export const TagTrend: React.FC = () => {
                         y: {
                             suggestedMin: 0,
                             ticks: {
-                                stepSize: 1000,
+                                stepSize: getStepSize(dataset.datasets[0].data),
                             },
                             grid: {
                                 color: colours.grid,
@@ -117,4 +117,11 @@ export const TagTrend: React.FC = () => {
             </Section>
         </ReportsPage>
     );
+}
+
+const getStepSize = (values: number[]) => {
+    const max = values.reduce((max, d) => d > max ? d : max, -Infinity);
+    const magnitude = Math.pow(10, Math.floor(Math.log10(max)));
+    const roundedMax = Math.ceil(max / magnitude) * magnitude;
+    return roundedMax / 10;
 }

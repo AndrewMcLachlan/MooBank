@@ -1,5 +1,5 @@
 import { TagSettings } from "../Tag";
-import { BaseReport } from "./BaseReport";
+import { BaseReport, reportInterval } from "./BaseReport";
 import { TrendPoint } from "./TrendPoint";
 
 export interface TagTrendReport extends BaseReport {
@@ -10,10 +10,11 @@ export interface TagTrendReport extends BaseReport {
     offsetAverage: number,
 }
 
-export interface TagTrendReportSettings extends Pick<TagSettings, "applySmoothing"> {
-
+export interface TrendReportSettings extends Pick<TagSettings, "applySmoothing"> {
+    interval: reportInterval,
 }
 
-export const defaultSettings: TagTrendReportSettings = {
+export const defaultSettings: TrendReportSettings = {
     applySmoothing: false,
+    interval: "Monthly",
 }

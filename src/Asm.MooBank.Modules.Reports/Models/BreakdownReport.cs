@@ -17,3 +17,18 @@ public record TagValue
 
     public bool HasChildren { get; init; }
 }
+
+public static class TagValueExtensions
+{
+    public static IEnumerable<TagValue> ToModel(this IEnumerable<Domain.Entities.Reports.TransactionTagTotal> tagValues)
+    {
+        return tagValues.Select(tv => new TagValue
+        {
+            TagId = tv.TagId,
+            TagName = tv.TagName,
+            GrossAmount = tv.GrossAmount,
+            NetAmount = tv.NetAmount,
+            HasChildren = tv.HasChildren,
+        });
+    }
+}

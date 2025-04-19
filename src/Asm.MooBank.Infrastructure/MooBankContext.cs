@@ -1,12 +1,12 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using Asm.Domain.Infrastructure;
 using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Asset;
 using Asm.MooBank.Domain.Entities.Budget;
 using Asm.MooBank.Domain.Entities.Group;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.ReferenceData;
+using Asm.MooBank.Domain.Entities.Reports;
 using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.User;
@@ -42,6 +42,12 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
     public virtual DbSet<InstrumentOwner> InstrumentOwners { get; set; }
 
     [AllowNull]
+    public virtual DbSet<TransactionTagTotal> TransactionTagTotals { get; set; }
+
+    [AllowNull]
+    public virtual DbSet<MonthlyTagTotal> MonthlyTagTotals { get; set; }
+
+    [AllowNull]
     public virtual DbSet<StockPriceHistory> StockPriceHistory{ get; set; }
 
     [AllowNull]
@@ -74,6 +80,9 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
         modelBuilder.Entity<TransactionInstrument>().ToTable(tb => tb.UseSqlOutputClause(false));
 
         modelBuilder.Entity<TagRelationship>();
+
+        modelBuilder.Entity<TransactionTagTotal>().HasNoKey();
+        modelBuilder.Entity<MonthlyTagTotal>().HasNoKey();
 
         modelBuilder.HasDbFunction(typeof(Transaction).GetMethod(nameof(Transaction.TransactionNetAmount), [typeof(Models.TransactionType), typeof(Guid), typeof(decimal)])!);
         modelBuilder.HasDbFunction(typeof(TransactionSplit).GetMethod(nameof(TransactionSplit.TransactionSplitNetAmount), [typeof(Guid), typeof(Guid), typeof(decimal)])!);
