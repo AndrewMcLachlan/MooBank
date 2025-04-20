@@ -8,65 +8,99 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    ;WITH TagClosure AS (
-        SELECT tt.PrimaryTagId AS TagId, tt.SecondaryTagId AS AncestorId
-        FROM   dbo.TagTag tt
+    -- 1. Cache eligible tags
+    SELECT t.Id
+    INTO #EligibleTags
+    FROM dbo.Tag t
+    JOIN dbo.TagSettings ts ON t.Id = ts.TagId
+    WHERE t.Deleted = 0 AND ts.ExcludeFromReporting = 0;
+
+    CREATE INDEX IX_EligibleTags_Id ON #EligibleTags(Id);
+
+    -- 2. Build DAG closure for selected tag only
+    ;WITH Descendants AS (
+        SELECT tt.PrimaryTagId
+        FROM dbo.TagTag tt
+        WHERE tt.SecondaryTagId = @TagId
         UNION ALL
-        SELECT tc.TagId, tt.SecondaryTagId
-        FROM   TagClosure tc
-        JOIN   dbo.TagTag tt ON tt.PrimaryTagId = tc.AncestorId
-    ),
-    TagAndAncestors AS (
-        SELECT Id AS TagId, Id AS AncestorId
-        FROM   dbo.Tag
-        WHERE  Deleted = 0
-        UNION
-        SELECT TagId, AncestorId
-        FROM   TagClosure
-        WHERE  AncestorId IN (SELECT Id FROM dbo.Tag WHERE Deleted = 0)
-    ),
-    ExplicitTaggedSplits AS (
-        SELECT tst.TransactionSplitId, tst.TagId
-        FROM   dbo.TransactionSplitTag tst
-        JOIN   dbo.TagSettings ts ON tst.TagId = ts.TagId
-        JOIN   dbo.Tag tg ON tg.Id = tst.TagId
-        WHERE  ts.ExcludeFromReporting = 0
-          AND  tg.Deleted = 0
-    ),
-    SplitAncestors AS (
-        SELECT
-            ets.TransactionSplitId,
-            ta.AncestorId AS TagId
-        FROM   ExplicitTaggedSplits ets
-        JOIN   TagAndAncestors ta ON ta.TagId = ets.TagId
-        JOIN   dbo.TagSettings ts ON ta.AncestorId = ts.TagId
-        WHERE  ts.ExcludeFromReporting = 0
-          AND  ta.AncestorId = @TagId
-    ),
-    SplitTagAmounts AS (
-        SELECT DISTINCT
-            ts.Id AS TransactionSplitId,
-            ts.Amount,
-            ts.NetAmount,
-            DATEFROMPARTS(YEAR(t.TransactionTime), MONTH(t.TransactionTime), 1) AS Month
-        FROM   dbo.[Transaction] t
-        JOIN   dbo.TransactionSplitNetAmounts ts ON ts.TransactionId = t.TransactionId
-        JOIN   SplitAncestors sa ON sa.TransactionSplitId = ts.Id
-        WHERE  t.TransactionTime >= @StartDate
-          AND  t.TransactionTime <= @EndDate
-          AND  t.ExcludeFromReporting = 0
-          AND  t.AccountId = @AccountId
-          AND (
-                @TransactionType IS NULL
-             OR (@TransactionType = 'Credit' AND t.TransactionTypeId % 2 = 1)
-             OR (@TransactionType = 'Debit'  AND t.TransactionTypeId % 2 = 0)
-          )
+        SELECT tt.PrimaryTagId
+        FROM Descendants d
+        JOIN dbo.TagTag tt ON tt.SecondaryTagId = d.PrimaryTagId
     )
+    SELECT DISTINCT TagId
+    INTO #TagDescendants
+    FROM (
+        SELECT PrimaryTagId AS TagId
+        FROM Descendants
+        UNION
+        SELECT @TagId
+    ) AS Combined
+    WHERE TagId IN (SELECT Id FROM #EligibleTags);
+
+    CREATE UNIQUE CLUSTERED INDEX IX_TagDescendants_TagId ON #TagDescendants(TagId);
+
+    -- 3. Build valid tagged split + ancestor pairs
+    SELECT tst.TransactionSplitId, ta.AncestorId AS TagId
+    INTO #SplitAncestors
+    FROM dbo.TransactionSplitTag tst
+    JOIN (
+        SELECT t.Id AS TagId, t.Id AS AncestorId
+        FROM #EligibleTags t
+        UNION
+        SELECT tc.TagId, tc.AncestorId
+        FROM (
+            SELECT tt.PrimaryTagId AS TagId, tt.SecondaryTagId AS AncestorId
+            FROM dbo.TagTag tt
+            UNION ALL
+            SELECT ttc.PrimaryTagId AS TagId, tt2.SecondaryTagId AS AncestorId
+            FROM dbo.TagTag tt2
+            JOIN dbo.TagTag ttc ON tt2.PrimaryTagId = ttc.SecondaryTagId
+        ) AS tc(TagId, AncestorId)
+        WHERE tc.AncestorId IN (SELECT Id FROM #EligibleTags)
+    ) ta ON ta.TagId = tst.TagId
+    WHERE ta.AncestorId IN (SELECT TagId FROM #TagDescendants);
+
+    CREATE INDEX IX_SplitAncestors_SplitId ON #SplitAncestors(TransactionSplitId);
+
+    -- 4. Join transactions and compute net/gross by month
+    SELECT DISTINCT
+        DATEFROMPARTS(YEAR(t.TransactionTime), MONTH(t.TransactionTime), 1) AS Month,
+        ts.Id AS TransactionSplitId,
+        ts.Amount,
+        ts.Amount
+          - ISNULL(o1.TotalOffset, 0)
+          - ISNULL(o2.TotalOffset, 0) AS NetAmount
+    INTO #SplitTagAmounts
+    FROM dbo.[Transaction] t
+    JOIN dbo.TransactionSplit ts ON ts.TransactionId = t.TransactionId
+    JOIN #SplitAncestors sa ON sa.TransactionSplitId = ts.Id
+    LEFT JOIN (
+        SELECT TransactionSplitId, SUM(Amount) AS TotalOffset
+        FROM dbo.TransactionSplitOffset
+        GROUP BY TransactionSplitId
+    ) o1 ON o1.TransactionSplitId = ts.Id
+    LEFT JOIN (
+        SELECT OffsetTransactionId, SUM(Amount) AS TotalOffset
+        FROM dbo.TransactionSplitOffset
+        GROUP BY OffsetTransactionId
+    ) o2 ON o2.OffsetTransactionId = t.TransactionId
+    WHERE t.AccountId = @AccountId
+      AND t.TransactionTime >= @StartDate AND t.TransactionTime <= @EndDate
+      AND t.ExcludeFromReporting = 0
+      AND (
+            @TransactionType IS NULL
+         OR (@TransactionType = 'Credit' AND t.TransactionTypeId % 2 = 1)
+         OR (@TransactionType = 'Debit'  AND t.TransactionTypeId % 2 = 0)
+      );
+
+    -- 5. Final rollup by month
     SELECT
         sta.Month,
         SUM(sta.Amount) AS GrossAmount,
         SUM(sta.NetAmount) AS NetAmount
-    FROM SplitTagAmounts sta
+    FROM #SplitTagAmounts sta
     GROUP BY sta.Month
     ORDER BY sta.Month;
+
+    DROP TABLE #EligibleTags, #TagDescendants, #SplitAncestors, #SplitTagAmounts;
 END

@@ -8,92 +8,78 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    /* 1. All descendants of a given tag (for filtering) */
-    ;WITH Descendants AS (
-        SELECT tt.PrimaryTagId
-        FROM   dbo.TagTag tt
-        WHERE  tt.SecondaryTagId = @RootTagId
-        UNION ALL
-        SELECT tt.PrimaryTagId
-        FROM   Descendants d
-        JOIN   dbo.TagTag tt ON tt.SecondaryTagId = d.PrimaryTagId
-    ),
-    SubtreeTags AS (
-        SELECT @RootTagId AS TagId
-        WHERE  @RootTagId IS NOT NULL
-        UNION
-        SELECT PrimaryTagId FROM Descendants
-    ),
+    -- 1. Cache eligible tags (non-deleted and not excluded from reporting)
+    SELECT t.Id, t.Name
+    INTO #EligibleTags
+    FROM dbo.Tag t
+    JOIN dbo.TagSettings ts ON t.Id = ts.TagId
+    WHERE t.Deleted = 0 AND ts.ExcludeFromReporting = 0;
 
-    /* 2. DAG ancestor closure */
-    TagClosure AS (
+    CREATE INDEX IX_EligibleTags_Id ON #EligibleTags(Id);
+
+    -- 2. Build tag closure (DAG ancestor map)
+    ;WITH TagClosure AS (
         SELECT tt.PrimaryTagId AS TagId, tt.SecondaryTagId AS AncestorId
-        FROM   dbo.TagTag tt
+        FROM dbo.TagTag tt
         UNION ALL
         SELECT tc.TagId, tt.SecondaryTagId
-        FROM   TagClosure tc
-        JOIN   dbo.TagTag tt ON tt.PrimaryTagId = tc.AncestorId
-    ),
-    TagAndAncestors AS (
-        SELECT Id AS TagId, Id AS AncestorId
-        FROM   dbo.Tag
-        WHERE  Deleted = 0
-        UNION
-        SELECT TagId, AncestorId
-        FROM   TagClosure
-        WHERE  AncestorId IN (SELECT Id FROM dbo.Tag WHERE Deleted = 0)
-    ),
-
-    /* 3. Explicitly tagged splits, only using included + non-deleted tags */
-    ExplicitTaggedSplits AS (
-        SELECT tst.TransactionSplitId, tst.TagId
-        FROM   dbo.TransactionSplitTag tst
-        JOIN   dbo.TagSettings ts ON tst.TagId = ts.TagId
-        JOIN   dbo.Tag tg ON tg.Id = tst.TagId
-        WHERE  ts.ExcludeFromReporting = 0
-          AND  tg.Deleted = 0
-    ),
-
-    /* 4. Ancestors of those tags */
-    SplitAncestors AS (
-        SELECT
-            ets.TransactionSplitId,
-            ta.AncestorId AS TagId
-        FROM   ExplicitTaggedSplits ets
-        JOIN   TagAndAncestors ta ON ta.TagId = ets.TagId
-        JOIN   dbo.TagSettings ts ON ta.AncestorId = ts.TagId
-        WHERE  ts.ExcludeFromReporting = 0
-          AND  ta.AncestorId IN (SELECT Id FROM dbo.Tag WHERE Deleted = 0)
-          AND (
-                @RootTagId IS NULL
-             OR EXISTS (
-                   SELECT 1 FROM SubtreeTags st WHERE st.TagId = ta.AncestorId
-             )
-          )
-    ),
-
-    /* 5. One row per split and ancestor tag */
-    SplitTagAmounts AS (
-        SELECT DISTINCT
-            ta.TagId,
-            ts.Id AS TransactionSplitId,
-            ts.NetAmount,
-            ts.Amount
-        FROM   dbo.[Transaction] t
-        JOIN   dbo.TransactionSplitNetAmounts ts ON ts.TransactionId = t.TransactionId
-        JOIN   SplitAncestors ta ON ta.TransactionSplitId = ts.Id
-        WHERE  t.TransactionTime >= @StartDate
-          AND  t.TransactionTime <= @EndDate
-          AND  t.ExcludeFromReporting = 0
-          AND  t.AccountId = @AccountId
-          AND (
-                @TransactionType IS NULL
-             OR (@TransactionType = 'Credit' AND t.TransactionTypeId % 2 = 1)
-             OR (@TransactionType = 'Debit'  AND t.TransactionTypeId % 2 = 0)
-          )
+        FROM TagClosure tc
+        JOIN dbo.TagTag tt ON tt.PrimaryTagId = tc.AncestorId
     )
+    SELECT t.Id AS TagId, t.Id AS AncestorId
+    INTO #TagAndAncestors
+    FROM #EligibleTags t
+    UNION
+    SELECT tc.TagId, tc.AncestorId
+    FROM TagClosure tc
+    JOIN #EligibleTags et ON tc.AncestorId = et.Id;
 
-    /* 6. Final DAG-safe rollup + filter to top-level or immediate children */
+    CREATE INDEX IX_TagAndAncestors_TagId ON #TagAndAncestors(TagId);
+    CREATE INDEX IX_TagAndAncestors_AncestorId ON #TagAndAncestors(AncestorId);
+
+    -- 3. Build SplitAncestors (only valid split/tag combos)
+    SELECT tst.TransactionSplitId, ta.AncestorId AS TagId
+    INTO #SplitAncestors
+    FROM dbo.TransactionSplitTag tst
+    JOIN #TagAndAncestors ta ON ta.TagId = tst.TagId;
+
+    CREATE INDEX IX_SplitAncestors_SplitId ON #SplitAncestors(TransactionSplitId);
+    CREATE INDEX IX_SplitAncestors_TagId ON #SplitAncestors(TagId);
+
+    -- 4. Join splits with amounts and filter by transaction criteria
+    SELECT DISTINCT
+        sa.TagId,
+        ts.Id AS TransactionSplitId,
+        ts.Amount,
+        ts.Amount
+          - ISNULL(o1.TotalOffset, 0)
+          - ISNULL(o2.TotalOffset, 0) AS NetAmount
+    INTO #SplitTagAmounts
+    FROM dbo.[Transaction] t
+    JOIN dbo.TransactionSplit ts ON ts.TransactionId = t.TransactionId
+    JOIN #SplitAncestors sa ON sa.TransactionSplitId = ts.Id
+    LEFT JOIN (
+        SELECT TransactionSplitId, SUM(Amount) AS TotalOffset
+        FROM dbo.TransactionSplitOffset
+        GROUP BY TransactionSplitId
+    ) o1 ON o1.TransactionSplitId = ts.Id
+    LEFT JOIN (
+        SELECT OffsetTransactionId, SUM(Amount) AS TotalOffset
+        FROM dbo.TransactionSplitOffset
+        GROUP BY OffsetTransactionId
+    ) o2 ON o2.OffsetTransactionId = t.TransactionId
+    WHERE t.AccountId = @AccountId
+      AND t.TransactionTime >= @StartDate AND t.TransactionTime <= @EndDate
+      AND t.ExcludeFromReporting = 0
+      AND (
+            @TransactionType IS NULL
+         OR (@TransactionType = 'Credit' AND t.TransactionTypeId % 2 = 1)
+         OR (@TransactionType = 'Debit'  AND t.TransactionTypeId % 2 = 0)
+      );
+
+    CREATE INDEX IX_SplitTagAmounts_TagId ON #SplitTagAmounts(TagId);
+
+    -- 5. Final rollup with HasChildren logic
     SELECT
         tg.Id AS TagId,
         tg.Name AS TagName,
@@ -101,27 +87,26 @@ BEGIN
             WHEN EXISTS (
                 SELECT 1
                 FROM dbo.TagTag tt
-                JOIN SplitTagAmounts childSta ON childSta.TagId = tt.PrimaryTagId
+                JOIN #SplitTagAmounts staChild ON staChild.TagId = tt.PrimaryTagId
                 WHERE tt.SecondaryTagId = tg.Id
             ) THEN 1 ELSE 0 END AS bit) AS HasChildren,
         SUM(sta.Amount) AS GrossAmount,
         SUM(sta.NetAmount) AS NetAmount
-    FROM   SplitTagAmounts sta
-    JOIN   dbo.Tag tg ON tg.Id = sta.TagId
-    WHERE
-        (
-            @RootTagId IS NULL
-            AND NOT EXISTS (
-                SELECT 1 FROM dbo.TagTag tt
-                WHERE tt.PrimaryTagId = tg.Id
-            )
-        )
-        OR
-        EXISTS (
+    FROM #SplitTagAmounts sta
+    JOIN #EligibleTags tg ON tg.Id = sta.TagId
+    WHERE (
+        @RootTagId IS NULL
+        AND NOT EXISTS (
             SELECT 1 FROM dbo.TagTag tt
             WHERE tt.PrimaryTagId = tg.Id
-              AND tt.SecondaryTagId = @RootTagId
         )
+    )
+    OR EXISTS (
+        SELECT 1 FROM dbo.TagTag tt
+        WHERE tt.PrimaryTagId = tg.Id AND tt.SecondaryTagId = @RootTagId
+    )
     GROUP BY tg.Id, tg.Name
-    ORDER BY NetAmount DESC;
+    ORDER BY GrossAmount DESC;
+
+    DROP TABLE #EligibleTags, #TagAndAncestors, #SplitAncestors, #SplitTagAmounts;
 END

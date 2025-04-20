@@ -23,3 +23,7 @@
 )
 
 GO
+
+CREATE NONCLUSTERED INDEX IX_Transaction_AccountId_TransactionTime
+ON dbo.[Transaction] (AccountId, TransactionTime);
+GO

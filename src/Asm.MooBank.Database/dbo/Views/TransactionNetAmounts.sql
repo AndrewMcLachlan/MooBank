@@ -1,4 +1,5 @@
-CREATE VIEW [dbo].[TransactionNetAmounts] AS
+CREATE VIEW [dbo].[TransactionNetAmounts]
+AS
     SELECT
     [TransactionId],
     [TransactionReference],
@@ -19,3 +20,4 @@ CREATE VIEW [dbo].[TransactionNetAmounts] AS
     [Source]
     FROM
         [dbo].[Transaction] t
+GO

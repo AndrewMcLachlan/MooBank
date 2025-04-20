@@ -66,7 +66,7 @@ export const Breakdown: React.FC<BreakdownProps> = ({ accountId, tagId, period, 
                 const tag = report.data!.tags[elements[0].index];
                 if (!tag.hasChildren || tag.tagId === tagId) {
 
-                    const url = !tagId ? `/accounts/${accountId}?untagged=true` : `/accounts/${accountId}?tag=${tag.tagId}&type=${reportType}`;
+                    const url = !tag.tagId ? `/accounts/${accountId}?untagged=true` : `/accounts/${accountId}?tag=${tag.tagId}&type=${reportType}`;
 
                     navigate(url);
                     return;

@@ -24,14 +24,15 @@ export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
     const [storedFilterType, setStoredFilterType] = useLocalStorage<transactionTypeFilter>("filter-type", "");
 
     const [localFilterTags, setLocalFilterTags] = useState<number[]>(tagParams ?? storedFilterTags);
-    const [localFilterTagged, setLocalFilterTagged] = useState<boolean>(tagParams.length > 0 ? false : unTaggedParam ? true : storedFilterTagged);
+    const [localFilterTagged, setLocalFilterTagged] = useState<boolean>(unTaggedParam ? true : storedFilterTagged);
     const [localFilterType, setLocalFilterType] = useState<transactionTypeFilter>(transactionTypeParam ?? storedFilterType);
     const filterTags = localFilterTags ?? storedFilterTags;
     const filterTagged = localFilterTagged ?? storedFilterTagged;
 
     useEffect(() => {
         // If the URL has filters defined, clear the description filter.
-        transactionTypeParam || tagParams || unTaggedParam && setFilterDescription("");
+        (transactionTypeParam || tagParams || unTaggedParam) && setFilterDescription("");
+        tagParams && setStoredFilterTagged(false);
     }, []);
 
     const setFilterTags = (tag: number | number[]) => {
