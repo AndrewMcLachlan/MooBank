@@ -1,4 +1,4 @@
-﻿namespace Asm.MooBank.Modules.Reports.Queries;
+﻿namespace Asm.MooBank.Models;
 
 public enum ReportInterval
 {

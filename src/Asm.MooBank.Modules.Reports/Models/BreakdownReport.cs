@@ -31,4 +31,16 @@ public static class TagValueExtensions
             HasChildren = tv.HasChildren,
         });
     }
+
+    public static IEnumerable<TagValue> ToModel(this IEnumerable<Domain.Entities.Reports.TagAverage> tagValues)
+    {
+        return tagValues.Select(tv => new TagValue
+        {
+            TagId = tv.TagId,
+            TagName = tv.Name,
+            GrossAmount = 0,
+            NetAmount = tv.Average,
+            HasChildren = false,
+        });
+    }
 }

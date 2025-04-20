@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build">
-  <Sdk Name="Microsoft.Build.Sql" Version="0.2.3-preview" />
+  <Sdk Name="Microsoft.Build.Sql" Version="1.0.0" />
   <PropertyGroup>
     <Name>MooBank</Name>
     <DSP>Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider</DSP>
