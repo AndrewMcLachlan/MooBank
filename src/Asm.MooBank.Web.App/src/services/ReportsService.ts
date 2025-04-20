@@ -22,7 +22,7 @@ export const useByTagReport = (accountId: string, start: Date, end: Date, report
 
 export const useTagTrendReport = (accountId: string, start: Date, end: Date, reportType: transactionTypeFilter, tagId: number, settings: TrendReportSettings) => useApiGet<TagTrendReport>([reportsKey, accountId, "tag-trend", reportType, start, end, tagId, settings], trimEnd("/", `api/accounts/${accountId}/reports/${reportType.toLowerCase()}/tag-trend${datesToUrl(start, end)}/${tagId}${toQuery(settings)}`));
 
-export const useAllTagAverageReport = (accountId: string, start: Date, end: Date, reportType: transactionTypeFilter, top: number) => useApiGet<AllTagAverageReport>([reportsKey, accountId, "all-tag-average", reportType, start, end], trimEnd("/", `api/accounts/${accountId}/reports/${reportType.toLowerCase()}/all-tag-average${datesToUrl(start, end)}?top=${top}`), { enabled: (!!start && !!end) });
+export const useAllTagAverageReport = (accountId: string, start: Date, end: Date, reportType: transactionTypeFilter, top: number = 20, interval: reportInterval = "Monthly") => useApiGet<AllTagAverageReport>([reportsKey, accountId, "all-tag-average", reportType, start, end], trimEnd("/", `api/accounts/${accountId}/reports/${reportType.toLowerCase()}/all-tag-average${datesToUrl(start, end)}?top=${top}&interval=${interval}`), { enabled: (!!start && !!end) });
 
 const toQuery = (settings: TrendReportSettings) => {
 

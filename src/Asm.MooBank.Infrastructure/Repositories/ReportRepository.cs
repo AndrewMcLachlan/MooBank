@@ -1,4 +1,5 @@
-﻿using Asm.MooBank.Domain.Entities.Reports;
+﻿using System.Threading;
+using Asm.MooBank.Domain.Entities.Reports;
 using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
@@ -10,5 +11,13 @@ internal class ReportRepository(MooBankContext mooBankContext) : IReportReposito
     public async Task<IEnumerable<MonthlyTagTotal>> GetMonthlyTotalsForTag(Guid accountId, DateOnly startDate, DateOnly endDate, TransactionFilterType filterType, int? tagId = null, CancellationToken cancellationToken = default) =>
             await mooBankContext.MonthlyTagTotals.FromSqlInterpolated($@"EXEC dbo.GetMonthlyTotalsForTag {accountId}, {startDate}, {endDate}, {tagId}, {filterType.ToString()}").AsNoTracking().ToListAsync(cancellationToken);
 
+    public async Task<IEnumerable<CreditDebitTotal>> GetCreditDebitTotals(Guid accountId, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
+        await mooBankContext.CreditDebitTotals.FromSqlInterpolated($@"EXEC dbo.GetCreditDebitTotals {accountId}, {startDate}, {endDate}").AsNoTracking().ToListAsync(cancellationToken);
+
+    public async Task<IEnumerable<CreditDebitAverage>> GetCreditDebitAverages(Guid accountId, DateOnly startDate, DateOnly endDate, ReportInterval interval, CancellationToken cancellationToken = default) =>
+        await mooBankContext.CreditDebitAverages.FromSqlInterpolated($@"EXEC dbo.GetCreditDebitAverages {accountId}, {startDate}, {endDate}, {interval.ToString()}").AsNoTracking().ToListAsync(cancellationToken);
+
+    public async Task<IEnumerable<TagAverage>> GetTopTagAverages(Guid accountId, DateOnly startDate, DateOnly endDate, ReportInterval interval, CancellationToken cancellationToken = default) =>
+        await mooBankContext.TopTagAverages.FromSqlInterpolated($@"EXEC dbo.GetTopTagAverages {accountId}, {startDate}, {endDate}, {interval.ToString()}").AsNoTracking().ToListAsync(cancellationToken);
 
 }
