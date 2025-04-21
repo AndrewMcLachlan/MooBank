@@ -67,6 +67,6 @@ export const useTagEvents = (tag: Tag) => {
     };
 }
 
-export interface TransactionTagTransactionTagPanelProps extends Partial<Pick<TagPanelProps, "as" | "alwaysShowEditPanel">> {
+export interface TransactionTagTransactionTagPanelProps extends Partial<Pick<TagPanelProps, "id" | "as" | "alwaysShowEditPanel">> {
     tag: Tag;
 }

@@ -61,9 +61,9 @@ export const ManageStockHolding: React.FC = () => {
                     <Form.Label>Group</Form.Label>
                     <GroupSelector />
                 </Form.Group>
-                <Form.Group groupId="ShareWithFamily">
-                    <Form.Label>Visible to other family members</Form.Label>
+                <Form.Group groupId="shareWithFamily" className="form-check">
                     <Form.Check />
+                    <Form.Label className="form-check-label">Visible to other family members</Form.Label>
                 </Form.Group>
                 <Button type="submit" variant="primary">Update</Button>
             </SectionForm>

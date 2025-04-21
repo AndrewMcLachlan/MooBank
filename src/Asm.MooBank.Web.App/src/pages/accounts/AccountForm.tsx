@@ -3,7 +3,7 @@ import { Button, InputGroup } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 
-import {Form, SectionForm, FormComboBox } from "@andrewmclachlan/mooapp";
+import { Form, SectionForm, FormComboBox } from "@andrewmclachlan/mooapp";
 
 import { CurrencySelector, InstitutionSelector } from "components";
 import { GroupSelector } from "components/GroupSelector";
@@ -69,7 +69,7 @@ export const AccountForm: React.FC<{ account?: InstitutionAccount }> = ({ accoun
                 <Form.Label>Opening Balance</Form.Label>
                 <InputGroup>
                     <InputGroup.Text>$</InputGroup.Text>
-                    <Form.Input type="number" required  />
+                    <Form.Input type="number" required />
                 </InputGroup>
             </Form.Group>
             <Form.Group groupId="openingDate" show={!account}>
@@ -88,13 +88,13 @@ export const AccountForm: React.FC<{ account?: InstitutionAccount }> = ({ accoun
                 <Form.Label>Importer Type</Form.Label>
                 <ImportSettings />
             </Form.Group>
-            <Form.Group groupId="includeInBudget">
-                <Form.Label>Include this account in the budget</Form.Label>
+            <Form.Group groupId="includeInBudget" className="form-check">
                 <Form.Check />
+                <Form.Label className="form-check-label">Include this account in the budget</Form.Label>
             </Form.Group>
-            <Form.Group groupId="shareWithFamily">
-                <Form.Label>Visible to other family members</Form.Label>
+            <Form.Group groupId="shareWithFamily" className="form-check">
                 <Form.Check />
+                <Form.Label className="form-check-label">Visible to other family members</Form.Label>
             </Form.Group>
             <Button type="submit" variant="primary">Save</Button>
         </SectionForm>

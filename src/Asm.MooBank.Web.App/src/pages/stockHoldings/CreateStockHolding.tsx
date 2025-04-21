@@ -29,7 +29,7 @@ export const CreateStockHolding: React.FC = () => {
         navigate("/accounts");
     }
 
-    const form = useForm({defaultValues: emptyStockHolding});
+    const form = useForm({ defaultValues: emptyStockHolding });
 
     return (
         <Page title="Create Shares" breadcrumbs={[{ text: "Accounts", route: "/accounts" }, { text: "Create Shares", route: "/stock/create" }]}>
@@ -70,9 +70,9 @@ export const CreateStockHolding: React.FC = () => {
                     <Form.Label>Group</Form.Label>
                     <GroupSelector />
                 </Form.Group>
-                <Form.Group groupId="ShareWithFamily">
-                    <Form.Label>Visible to other family members</Form.Label>
+                <Form.Group groupId="shareWithFamily" className="form-check">
                     <Form.Check />
+                    <Form.Label className="form-check-label">Visible to other family members</Form.Label>
                 </Form.Group>
                 <Button type="submit" variant="primary">Create</Button>
             </SectionForm>

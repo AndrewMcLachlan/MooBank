@@ -29,14 +29,14 @@ export const TransactionTagDetails: React.FC<TransactionTagDetailsProps> = (prop
             </Modal.Header>
             <Modal.Body>
                 <section className="tag-details">
-                    <div>Name</div>
-                    <Form.Control value={name} onChange={(e) => setName(e.currentTarget.value)} onBlur={(e) => updateName(e.currentTarget.value)} onKeyUp={(e) => onKeyLeave(e, updateName)} />
-                    <div>Exclude from Reporting</div>
-                    <Form.Switch checked={tag.settings?.excludeFromReporting} onChange={(e) => updateExcludeFromReporting(e.currentTarget.checked)} />
-                    <div>Allow Smoothing<Tooltip id="smoothing">Provides an option to average non-monthly transactions in trend reports</Tooltip></div>
-                    <Form.Switch checked={tag.settings?.applySmoothing} onChange={(e) => updateAllowSmoothing(e.currentTarget.checked)} />
-                    <div>Tags</div>
-                    <TransactionTagTransactionTagPanel as="div" tag={tag} alwaysShowEditPanel />
+                    <label htmlFor="name">Name</label>
+                    <Form.Control id="name" placeholder="Name" type="text" value={name} onChange={(e) => setName(e.currentTarget.value)} onBlur={(e) => updateName(e.currentTarget.value)} onKeyUp={(e) => onKeyLeave(e, updateName)} />
+                    <label htmlFor="exclude">Exclude from Reporting</label>
+                    <Form.Switch id="exclude" checked={tag.settings?.excludeFromReporting} onChange={(e) => updateExcludeFromReporting(e.currentTarget.checked)} />
+                    <label htmlFor="smooth">Allow Smoothing<Tooltip id="smoothing">Provides an option to average non-monthly transactions in trend reports</Tooltip></label>
+                    <Form.Switch id="smooth" checked={tag.settings?.applySmoothing} onChange={(e) => updateAllowSmoothing(e.currentTarget.checked)} />
+                    <label htmlFor="tags">Tags</label>
+                    <TransactionTagTransactionTagPanel as="div" id="tags" tag={tag} alwaysShowEditPanel />
                 </section>
             </Modal.Body>
             <Modal.Footer>
