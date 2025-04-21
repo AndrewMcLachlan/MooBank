@@ -55,7 +55,7 @@ export const TransactionList: React.FC = () => {
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colSpan={2} className="page-totals">Page {pageNumber} of {numberOfPages} ({totalTransactions} transactions)</td>
+                        <td colSpan={2} className="page-totals d-none d-md-table-cell">Page {pageNumber} of {numberOfPages} ({totalTransactions} transactions)</td>
                         <td colSpan={4}>
                             <Pagination pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={(_current, newPage) => dispatch(TransactionsSlice.actions.setCurrentPage(newPage))} />
                         </td>

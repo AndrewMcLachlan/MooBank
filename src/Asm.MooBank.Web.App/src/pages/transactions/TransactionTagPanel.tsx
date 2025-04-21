@@ -20,7 +20,7 @@ export const TransactionTagPanel: React.FC<TransactionTagPanelProps> = ({alwaysS
     }, [transactionRow.tags, fullTagsListQuery.data]);
 
     return (
-        <TagPanel as={props.as} selectedItems={transactionRow.tags} items={tagsList} onAdd={transactionRow.addTag} onRemove={transactionRow.removeTag} onCreate={transactionRow.createTag} allowCreate={true} alwaysShowEditPanel={alwaysShowEditPanel}  />
+        <TagPanel as={props.as} className={props.className} selectedItems={transactionRow.tags} items={tagsList} onAdd={transactionRow.addTag} onRemove={transactionRow.removeTag} onCreate={transactionRow.createTag} allowCreate={true} alwaysShowEditPanel={alwaysShowEditPanel}  />
     );
 }
 
@@ -74,4 +74,5 @@ export interface TransactionTagPanelProps {
     as?: string;
     alwaysShowEditPanel?: boolean;
     transaction: Transaction;
+    className?: string;
 }

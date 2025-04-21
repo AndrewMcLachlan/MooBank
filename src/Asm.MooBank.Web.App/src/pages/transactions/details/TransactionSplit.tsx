@@ -38,32 +38,29 @@ export const TransactionSplit: React.FC<TransactionSplitProps> = ({ transaction,
         <>
             <Form.Group as={Row}>
                 <Col sm={9}>
+                    <Form.Label>Tags</Form.Label>
                     <TransactionSplitTagPanel as="div" transactionSplit={split} transactionId={transaction.id} alwaysShowEditPanel onChange={(s) => splitChanged({ ...split, tags: s.tags })} />
                 </Col>
-                <Col sm={2}>
-                    <Form.Control type="number" value={split.amount} required max={transaction.amount} onChange={(e) => splitChanged({ ...split, amount: valueAsNumber(e.currentTarget) })} />
-                    <Form.Control.Feedback type="invalid">Please enter an amount</Form.Control.Feedback>
-                </Col>
-                <Col className="delete-offset">
-                    <DeleteIcon onClick={() => removeSplit(split.id)} />
+                <Col sm={3}>
+                    <Form.Label>Amount</Form.Label>
+                    <div className="split-controls">
+                        <Form.Control type="number" value={split.amount} required max={transaction.amount} onChange={(e) => splitChanged({ ...split, amount: valueAsNumber(e.currentTarget) })} />
+                        <Form.Control.Feedback type="invalid">Please enter an amount</Form.Control.Feedback>
+                        <DeleteIcon onClick={() => removeSplit(split.id)} />
+                    </div>
                 </Col>
             </Form.Group>
             <section className="offsets" hidden={isCredit(transaction.transactionType)}>
-                <Row>
-                    <Col xl={9}>
-                        <Form.Label>Corresponding rebate / refund</Form.Label>
-                    </Col>
-                </Row>
+                <Form.Label>Corresponding rebate / refund</Form.Label>
+
                 {offsetBy?.map((to) =>
                     <Form.Group as={Row} key={to.transaction.id}>
                         <Col sm={9}>
                             <TransactionSearch value={to.transaction} onChange={(v) => offsetChanged({ ...to, transaction: v })} transaction={transaction} />
                         </Col>
-                        <Col sm={2}>
+                        <Col sm={3} className="offset-controls">
                             <Form.Control type="number" value={to.amount} required max={to.transaction.amount} onChange={e => offsetChanged({ ...to, amount: valueAsNumber(e.currentTarget) })} />
                             <Form.Control.Feedback type="invalid">Please enter an amount</Form.Control.Feedback>
-                        </Col>
-                        <Col className="delete-offset">
                             <DeleteIcon onClick={() => removeOffset(to.transaction.id)} />
                         </Col>
                     </Form.Group>

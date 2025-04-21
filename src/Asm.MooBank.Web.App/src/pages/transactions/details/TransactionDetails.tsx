@@ -31,7 +31,7 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
                 <Modal.Title>Transaction</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <section className="transaction-info">
+                <section className="transaction-info row">
                     <section>
                         <div>Amount</div>
                         <div className="value amount">{formatCurrency(props.transaction.amount)}</div>
@@ -54,19 +54,17 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
                 </section>
                 <section className="offset-for" hidden={props.transaction.offsetFor?.length === 0}>
                     <Row>
-                    {props.transaction.offsetFor?.map((to) =>
-                        <Col xl={6}  key={to.transaction.id}>
-                            <div>Rebate / refund for</div>
-                            <div className="value"><span className="amount">{to.amount}</span> - {to.transaction.description}</div>
-                        </Col>
-                    )}
+                        {props.transaction.offsetFor?.map((to) =>
+                            <Col xl={6} key={to.transaction.id}>
+                                <div>Rebate / refund for</div>
+                                <div className="value"><span className="amount">{to.amount}</span> - {to.transaction.description}</div>
+                            </Col>
+                        )}
                     </Row>
                 </section>
-                <section>
-                    <label className="form-label">Exclude from reporting</label>
-                    <div>
-                        <input type="checkbox" className="form-check-input" checked={excludeFromReporting} onChange={(e) => setExcludeFromReporting(e.currentTarget.checked)} />
-                    </div>
+                <section className="form-check">
+                    <input id="exclude" type="checkbox" className="form-check-input" checked={excludeFromReporting} onChange={(e) => setExcludeFromReporting(e.currentTarget.checked)} />
+                    <label className="form-check-label" htmlFor="exclude">Exclude from reporting</label>
                 </section>
                 <section className="notes">
                     <label>Notes</label>
@@ -80,9 +78,9 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
             <Modal.Footer>
                 <Button variant="secondary" onClick={props.onHide}>Close</Button>
                 {invalidSplits &&
-                <OverlayTrigger placement="top" overlay={<Popover><Popover.Body>The total of the splits must equal the transaction amount</Popover.Body></Popover>} >
-                    <div><Button variant="primary" disabled>Save</Button></div>
-                </OverlayTrigger>
+                    <OverlayTrigger placement="top" overlay={<Popover><Popover.Body>The total of the splits must equal the transaction amount</Popover.Body></Popover>} >
+                        <div><Button variant="primary" disabled>Save</Button></div>
+                    </OverlayTrigger>
                 }
                 {!invalidSplits && <Button variant="primary" onClick={() => { props.onSave(excludeFromReporting, notes, splits) }}>Save</Button>}
             </Modal.Footer>

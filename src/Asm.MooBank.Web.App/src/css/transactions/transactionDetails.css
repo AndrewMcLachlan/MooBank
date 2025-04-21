@@ -1,51 +1,74 @@
-.transaction-details {
-    h4 {
-        font-weight: bold;
+@scope(.transaction-details) {
+
+    :scope {
+        h4 {
+            font-weight: bold;
+        }
+
+        .value {
+            font-weight: bold;
+        }
     }
 
-    .value {
-        font-weight: bold;
+    .modal-body {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
     }
-}
 
-.transaction-info {
-    display: flex;
-
-    section {
-        flex: 1;
-        display: grid;
-        grid-template-columns: 140px calc(100% - 140px);
+    .transaction-info {
+        display: flex;
         row-gap: 10px;
+
+        section {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 140px calc(100% - 140px);
+            row-gap: 10px;
+        }
     }
 
-    margin-bottom: 1rem;
-}
+    .offset-for {
+        display: flex;
 
-.offset-for {
-    display: flex;
-
-    div {
-        flex: 1;
+        div {
+            flex: 1;
+        }
     }
 
-    margin-bottom: 1rem;
-}
+    .notes,
+    .offsets {
+        padding-bottom: .5rem;
+        border-bottom: 1px solid var(--bs-body-color);
+        margin-bottom: 1.5rem;
+    }
 
-.notes, .offsets {
-    padding-bottom: .5rem;
-    border-bottom: 1px solid var(--bs-body-color);
-    margin-bottom: 1.5rem;
-}
+    .offsets .offset-controls,
+    .split-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: nowrap;
+    }
 
-.splits .row,
-.offsets .row,
-.splits .row:not(:first-child),
-.offsets .row:not(:first-child) {
-    margin-bottom: 20px;
-}
+    .splits .row,
+    .offsets .row,
+    .splits .row:not(:first-child),
+    .offsets .row:not(:first-child) {
+        margin-bottom: 20px;
+        row-gap: 1.5rem;
+    }
 
-.delete-offset {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    .form-check {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-bottom: 0;
+
+        .form-check-input {
+            padding: 0;
+            margin-top: 0;
+        }
+    }
 }

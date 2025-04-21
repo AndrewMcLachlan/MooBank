@@ -136,10 +136,6 @@
         }
     }
 
-    input[type="checkbox"] {
-        margin-right: 5px;
-    }
-
     table .balance {
         text-align: right;
     }
@@ -319,5 +315,17 @@
     display: block;;
     .btn {
         height: 42px;
+    }
+}
+
+h2 {
+    @media screen and (max-width: 768px) {
+        display: none;
+    }
+}
+
+.pagination {
+    @media screen and (max-width: 768px) {
+        justify-content: center;
     }
 }

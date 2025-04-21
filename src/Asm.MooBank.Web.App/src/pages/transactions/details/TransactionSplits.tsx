@@ -33,14 +33,6 @@ export const TransactionSplits: React.FC<TransactionSplitsProps> = ({transaction
 
     return (
         <>
-            <Row>
-                <Col sm={9}>
-                    <Form.Label>Tags</Form.Label>
-                </Col>
-                <Col sm={2}>
-                    <Form.Label>Amount</Form.Label>
-                </Col>
-            </Row>
             <div>
                 {splits?.map((split) =>
                     <React.Fragment key={split.id}>

@@ -25,11 +25,9 @@ export const NewTransactionSplit: React.FC<NewTransactionSplitProps> = ({ transa
             <Col sm={9}>
                 <TransactionSplitTagPanel as="div" transactionId={transaction.id} onChange={(s) => splitChanged({ ...split, tags: s.tags })} alwaysShowEditPanel transactionSplit={split} />
             </Col>
-            <Col sm={2}>
+            <Col sm={3} className="split-controls">
                 <Form.Control type="number" value={split.amount} required min={0} max={transaction.amount} onChange={(s) => splitChanged({ ...split, amount: valueAsNumber(s.currentTarget) })} />
                 <Form.Control.Feedback type="invalid">Please enter an amount</Form.Control.Feedback>
-            </Col>
-            <Col className="delete-offset">
                 <SaveIcon onClick={saveClick} />
             </Col>
         </Form.Group>

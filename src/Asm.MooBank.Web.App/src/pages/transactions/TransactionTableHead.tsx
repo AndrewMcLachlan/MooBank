@@ -30,7 +30,7 @@ export const TransactionTableHead: React.FC = () => {
                 <SortableTh field="Location" sortField={sortField} sortDirection={sortDirection} onSort={sort} className="d-none d-md-table-cell">Location</SortableTh>
                 <SortableTh field="AccountHolderName" sortField={sortField} sortDirection={sortDirection} onSort={sort} className="d-none d-md-table-cell">Who</SortableTh>
                 <SortableTh field="Amount" sortField={sortField} sortDirection={sortDirection} onSort={sort}>Amount</SortableTh>
-                <th>Tags</th>
+                <th className="d-none d-md-table-cell">Tags</th>
             </tr>
         </thead>
     );
