@@ -6,6 +6,7 @@
 @import "css/components" layer(moobank);
 @import "css/filterPanel" layer(moobank);
 @import "css/transactions" layer(moobank);
+@import "css/treeflex";
 
 @layer moobank {
 
@@ -181,63 +182,6 @@
     .report canvas {
         max-height: calc(100vh - 415px);
         max-width: 100%;
-    }
-
-    .tf-tree {
-        overflow: visible;
-
-        .tf-nc {
-            border-color: var(--bs-body-color);
-            border-width: 2px;
-            border-radius: 15px;
-            min-width: 100px;
-            min-height: 75px;
-            display: flex;
-            place-items: center;
-            text-align: center;
-            justify-content: center;
-            line-height: 1.2em;
-            font-weight: 500;
-
-            span {
-                mix-blend-mode: difference;
-            }
-
-            &:after {
-                height: 1.1em;
-                mix-blend-mode: normal;
-            }
-        }
-
-        li {
-            li:before {
-                border-color: var(--bs-body-color);
-                border-width: 2px;
-            }
-
-            li:last-child:before {
-                left: auto;
-                max-width: calc(50% + 0.12em);
-                right: calc(50% - 0.09em);
-            }
-
-            border-color: var(--bs-body-color);
-            border-width: 2px;
-        }
-    }
-
-    .tf-tree .tf-nc:after,
-    .tf-tree .tf-nc:before,
-    .tf-tree .tf-node-content:after,
-    .tf-tree .tf-node-content:before {
-        border-color: var(--bs-body-color);
-        border-width: 2px;
-    }
-
-    .tf-tree li li:only-child>.tf-nc:before,
-    .tf-tree li li:only-child>.tf-node-content:before {
-        height: 1.2625em;
-        top: -1.2625em;
     }
 
     .visualiser {
