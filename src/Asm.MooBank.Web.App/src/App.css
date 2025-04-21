@@ -142,7 +142,18 @@
 
     .horizontal-form-controls {
         display: flex;
-        align-items: flex-end;
+        justify-content: center;
+        flex-direction: column;
+
+        &::before {    
+            content: '';
+            height: 1.5rem;
+            flex: 0 0 auto;
+          }
+
+        button {
+            align-self: start;
+        }
     }
 
     .control-panel {
@@ -312,7 +323,7 @@
 }
 
 .btn-group-form {
-    display: block;;
+    display: block;
     .btn {
         height: 42px;
     }
@@ -327,5 +338,17 @@ h2 {
 .pagination {
     @media screen and (max-width: 768px) {
         justify-content: center;
+    }
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 0;
+
+    .form-check-input {
+        padding: 0;
+        margin-top: 0;
     }
 }

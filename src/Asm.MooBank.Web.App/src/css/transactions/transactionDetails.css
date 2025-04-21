@@ -59,16 +59,4 @@
         margin-bottom: 20px;
         row-gap: 1.5rem;
     }
-
-    .form-check {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        margin-bottom: 0;
-
-        .form-check-input {
-            padding: 0;
-            margin-top: 0;
-        }
-    }
 }

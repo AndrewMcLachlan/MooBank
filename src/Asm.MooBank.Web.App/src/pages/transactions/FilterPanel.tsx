@@ -77,7 +77,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
         <Section className="filter-panel" title="Filter" {...props}>
             <div className="control-panel"><FontAwesomeIcon className="clickable" title="Clear filters" icon="filter-circle-xmark" onClick={clear} size="lg" aria-controls="filter-panel-collapse" /></div>
             <Row>
-                <Col className="description" lg={5}>
+                <Col className="description" lg={4} xl={5}>
                     <Form.Label htmlFor="filter-desc">Description</Form.Label><Tooltip id="filter-desc">Search for multiple terms by separating them with a comma</Tooltip>
                     <Form.Control id="filter-desc" type="search" value={filterDescription} onChange={(e) => setFilterDescription(e.currentTarget.value)} placeholder="Contains..." />
                 </Col>
@@ -85,7 +85,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
                     <Form.Label htmlFor="filter-tags">Tags</Form.Label>
                     <TagSelector id="filter-tags" onChange={setFilterTags} multiSelect value={filterTags} />
                 </Col>
-                <Col lg={3}>
+                <Col lg={4} xl={3}>
                     <Form.Label htmlFor="filter-type">Type</Form.Label>
                     <ButtonGroup className="btn-group-form" aria-label="Filter by income or expense" id="filter-type">
                         <Button id="filter-all" variant={localFilterType === "" ? "primary" : "outline-primary"} onClick={() => setFilterType("")}>All</Button>

@@ -29,7 +29,7 @@ export const InOutPage = () => {
 
     return (
         <ReportsPage title="Income vs Expenses">
-            <Section>
+            <Section className="report-filter-panel">
                 <PeriodSelector onChange={setPeriod} />
             </Section>
             <Row>

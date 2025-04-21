@@ -41,7 +41,7 @@ export const ByTag = () => {
 
     return (
         <ReportsPage title="All Tags">
-            <Section>
+            <Section className="report-filter-panel">
                 <ReportTypeSelector value={reportType} onChange={setReportType} hidden />
                 <PeriodSelector value={period} onChange={setPeriod} />
             </Section>

@@ -49,7 +49,7 @@ export const BreakdownPage = () => {
 
     return (
         <ReportsPage title="Breakdown">
-            <Section>
+            <Section className="report-filter-panel">
                 <ReportTypeSelector value={reportType} onChange={setReportType} />
                 <PeriodSelector onChange={setPeriod} />
             </Section>

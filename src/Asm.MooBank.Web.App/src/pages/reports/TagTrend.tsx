@@ -75,7 +75,7 @@ export const TagTrend: React.FC = () => {
 
     return (
         <ReportsPage title="Tag Trend">
-            <Section>
+            <Section className="report-filter-panel">
                 <ReportTypeSelector value={reportType} onChange={setReportType} hidden />
                 <PeriodSelector onChange={setPeriod} instant />
                 <Row as="section">

@@ -22,7 +22,7 @@ export const AllTagAverage = () => {
 
     return (
         <ReportsPage title="Top Tags">
-            <Section>
+            <Section className="report-filter-panel">
                 <ReportTypeSelector value={reportType} onChange={setReportType} hidden />
                 <PeriodSelector onChange={setPeriod} />
             </Section>

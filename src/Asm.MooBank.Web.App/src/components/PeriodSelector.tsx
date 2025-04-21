@@ -84,7 +84,7 @@ export const PeriodSelector: React.FC<PeriodSelectorProps> = ({instant = false, 
                 <Form.Control disabled={selectedPeriod !== "-1"} id="custom-end" type="date" value={customEnd ? format(customEnd, "yyyy-MM-dd"): ""} onChange={(e) => onCustomEndChange((e.currentTarget as any).valueAsDate)} />
             </FormGroup>
             <FormGroup xl="2" className="horizontal-form-controls" hidden={selectedPeriod !== "-1" || instant}>
-                <Button disabled={selectedPeriod !== "-1"} onClick={customPeriodGo}>Go</Button>
+                <Button aria-label="Apply custom date filter" disabled={selectedPeriod !== "-1"} onClick={customPeriodGo}>Go</Button>
             </FormGroup>
         </Row>
     );

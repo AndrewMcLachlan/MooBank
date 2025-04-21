@@ -13,8 +13,8 @@ export const ReportTypeSelector: React.FC<ReportTypeSelectorProps> = ({value, on
         <Row {...rest}>
             <Col xl="4">
                 <ButtonGroup>
-                    <Button variant={value == "Credit" ? "primary" : "secondary"} onClick={() => onClick("Credit")}>Income</Button>
-                    <Button variant={value == "Debit" ? "primary" : "secondary"} onClick={() => onClick("Debit")}>Expense</Button>
+                    <Button variant={value == "Credit" ? "primary" : "outline-primary"} onClick={() => onClick("Credit")}>Income</Button>
+                    <Button variant={value == "Debit" ? "primary" : "outline-primary"} onClick={() => onClick("Debit")}>Expense</Button>
                 </ButtonGroup>
             </Col>
         </Row>
