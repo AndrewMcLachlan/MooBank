@@ -18,7 +18,7 @@ export const AccountSummary: React.FC<AccountSummaryProps> = ({ className, ...pr
     if (!account) return null;
 
     return (
-        <Section className={classNames("summary", className)} {...props} title={account.name}>
+        <Section className={classNames("summary", className)} {...props} header={account.name}>
             <KeyValue>
                 <div>Balance</div>
                 <div className="balance amount"><AccountBalance balance={account.currentBalanceLocalCurrency} /></div>

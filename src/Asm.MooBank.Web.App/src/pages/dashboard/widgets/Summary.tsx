@@ -12,7 +12,7 @@ export const SummaryWidget: React.FC = () => {
     const groupTotals = accounts?.groups.filter(ag => ag.total);
 
     return (
-        <Widget title="Summary" className="summary" loading={isLoading} size="single">
+        <Widget header="Summary" className="summary" loading={isLoading} size="single">
             <KeyValue className="net-worth">
                 <div>Net Worth</div>
                 <Amount amount={grandTotal} colour plusminus />
@@ -21,7 +21,7 @@ export const SummaryWidget: React.FC = () => {
             {groupTotals?.map((ag, index) =>
                 <KeyValue key={index}>
                     <div>{ag.name}</div>
-                    <div className="amount">{ag.total?.toLocaleString()}</div>
+                    <div><Amount amount={ag.total} colour plusminus /></div>
                 </KeyValue>
             )}
         </Widget>

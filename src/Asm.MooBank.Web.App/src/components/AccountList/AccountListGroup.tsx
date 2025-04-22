@@ -12,7 +12,7 @@ export interface AccountListGroupProps {
 }
 
 export const AccountListGroup: React.FC<AccountListGroupProps> = ({ group, isLoading }) => (
-    <SectionTable className="accounts" hover title={group?.name} titleSize={2} hidden={group.instruments.length === 0}>
+    <SectionTable className="accounts" hover header={group?.name} headerSize={2} hidden={group.instruments.length === 0}>
         <thead>
             <tr>
                 <th className="expander d-none d-sm-table-cell"></th>

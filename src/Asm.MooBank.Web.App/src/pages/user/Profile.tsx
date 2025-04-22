@@ -45,7 +45,7 @@ export const Profile: React.FC = () => {
     return (
         <Page title="Profile" breadcrumbs={[{ text: "Profile", route: "/profile" }]}>
             <Form form={form} onSubmit={form.handleSubmit(handleSubmit)}>
-                <Section title="Profile">
+                <Section header="Profile">
                     <Form.Group groupId="name">
                         <Form.Label>Name</Form.Label>
                         <Form.Input type="text" value={`${me?.firstName ?? ""} ${me?.lastName ?? ""}`} readOnly />
@@ -65,7 +65,7 @@ export const Profile: React.FC = () => {
                         {me && <FormComboBox placeholder="Select an account" items={accounts ?? []} labelField={i => i.name} valueField={i => i.id} />}
                     </Form.Group>
                 </Section>
-                <SectionTable title="Cards">
+                <SectionTable header="Cards">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -83,13 +83,13 @@ export const Profile: React.FC = () => {
                             <tr key={index}>
                                 <EditColumn value={c.name} onChange={t => editCard(index, { ...c, name: t.value })}>{c.name}</EditColumn>
                                 <td>{c.last4Digits}</td>
-                                <td className="row-action"><DeleteIcon onClick={_e => deleteCard(c)} /></td>
+                                <td className="row-action"><DeleteIcon onClick={() => deleteCard(c)} /></td>
                             </tr>
                         )
                         )}
                     </tbody>
                 </SectionTable>
-                <Section title="Theme">
+                <Section header="Theme">
                     <ThemeSelector />
                 </Section>
                 <Section>

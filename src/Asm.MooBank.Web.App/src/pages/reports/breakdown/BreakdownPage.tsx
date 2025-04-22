@@ -10,15 +10,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PeriodSelector } from "components/PeriodSelector";
 import { ReportTypeSelector } from "components/ReportTypeSelector";
 import { Period } from "helpers/dateFns";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { Breakdown } from "./Breakdown";
 import { transactionTypeFilter } from "store/state";
+import { TagValue } from "models/reports";
 
 ChartJS.register(...registerables);
 
 export const BreakdownPage = () => {
 
     const { id: accountId, tagId } = useParams<{ id: string, tagId: string }>();
+
+    const navigate = useNavigate();
 
     const [reportType, setReportType] = useState<transactionTypeFilter>("Debit");
     const [period, setPeriod] = useState<Period>({ startDate: null, endDate: null });
@@ -33,11 +36,23 @@ export const BreakdownPage = () => {
         setSelectedTagId(tagId ? parseInt(tagId) : undefined);
     }, [tagId]);
 
-    const selectedTagChanged = (tagId: number) => {
+    const selectedTagChanged = (tag: TagValue) => {
         if (selectedTagId !== undefined) {
             setPreviousTagIds([...previousTagIds, selectedTagId]);
         }
-        setSelectedTagId(tagId);
+        setSelectedTagId(tag.tagId);
+
+
+        if (!tag.hasChildren || tag.tagId === selectedTagId) {
+
+            const url = !tag.tagId ? `/accounts/${accountId}?untagged=true` : `/accounts/${accountId}?tag=${tag.tagId}&type=${reportType}`;
+
+            navigate(url);
+            return;
+        }
+
+        const newUrl = `/accounts/${accountId}/reports/breakdown/${tagId}`;
+        window.history.replaceState({ path: newUrl }, "", newUrl);
     }
 
     const goBack = () => {

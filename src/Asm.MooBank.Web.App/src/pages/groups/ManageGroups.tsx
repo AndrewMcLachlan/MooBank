@@ -19,7 +19,7 @@ export const ManageGroups = () => {
 
     return (
         <Page title="Groups" breadcrumbs={[{ text: "Groups", route: "/groups" }]} actions={[<IconButton key="add" onClick={() => navigate("/groups/create")} icon="plus">Create Group</IconButton>]}>
-            <SectionTable title="Groups" hover striped>
+            <SectionTable header="Groups" hover striped>
                 <thead>
                     <tr>
                         <th className="column-25">Name</th>

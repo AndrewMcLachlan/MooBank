@@ -36,7 +36,7 @@ export const ManageAccount = () => {
     return (
         <AccountPage title="Manage" breadcrumbs={[{ text: "Manage", route: `/accounts/${account?.id}/manage` }]} actions={getActions(account?.controller)}>
             <AccountForm account={account as Models.InstitutionAccount} />
-            <SectionTable title="Virtual Accounts" striped hover>
+            <SectionTable header="Virtual Accounts" striped hover>
                     <thead>
                         <tr>
                             <th>Name</th>

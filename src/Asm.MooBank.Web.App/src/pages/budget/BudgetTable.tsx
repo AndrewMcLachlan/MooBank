@@ -6,7 +6,7 @@ import { numberOfMonths } from "helpers/dateFns";
 
 export const BudgetTable: React.FC<BudgetTableProps> = ({ title, type, year, lines = [] }) => {
     return (
-        <SectionTable striped className="budget-list" title={title}>
+        <SectionTable striped className="budget-list" header={title}>
             <thead>
                 <tr>
                     <th className="column-20">Tag</th>

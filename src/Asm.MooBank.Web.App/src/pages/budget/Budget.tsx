@@ -70,7 +70,7 @@ export const Budget: React.FC = () => {
             <BudgetTable title="Expenses" year={year} lines={filteredBudget?.expensesLines} type="expenses" />
 
             {/*
-            <Section className="budget" title="Income">
+            <Section className="budget" header="Income">
                 <Table striped className="budget-list">
                     <thead>
                         <tr>
@@ -94,7 +94,7 @@ export const Budget: React.FC = () => {
                     </tfoot>
                 </Table>
             </Section>
-            <Section className="budget" title="Expenses">
+            <Section className="budget" header="Expenses">
                 <Table striped className="budget-list">
                     <thead>
                         <tr>
@@ -120,7 +120,7 @@ export const Budget: React.FC = () => {
                 </Table>
             </Section>
                         */}
-            <SectionTable title="Monthly Budget" striped className="budget-list">
+            <SectionTable header="Monthly Budget" striped className="budget-list">
                 <thead>
                     <tr>
                         <th className="column-15">Month</th>

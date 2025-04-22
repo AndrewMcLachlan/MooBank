@@ -1,5 +1,5 @@
 import { Widget } from "@andrewmclachlan/mooapp";
-import { lastMonth } from "helpers/dateFns";
+import { lastMonth, lastMonthName } from "helpers/dateFns";
 import { Breakdown } from "pages";
 import { useAccounts } from "services";
 
@@ -10,7 +10,7 @@ export const BreakdownWidget: React.FC = () => {
     const account = accounts?.find(a => a.isPrimary === true) ?? accounts?.[0];
 
     return (
-        <Widget title={(account && `Breakdown - ${account.name} - Last Month`) ?? 'Last Month'} size="double" titleSize={2} className="report" loading={isLoading}>
+        <Widget header={(account && `Breakdown - ${account.name} - ${lastMonthName}`) ?? lastMonthName} size="double" headerSize={2} className="report" loading={isLoading}>
             {account && <Breakdown accountId={account?.id} period={lastMonth} reportType={"Debit"} />}
         </Widget>
     );

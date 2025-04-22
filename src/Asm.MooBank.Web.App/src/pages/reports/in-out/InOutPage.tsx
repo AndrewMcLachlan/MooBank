@@ -34,24 +34,24 @@ export const InOutPage = () => {
             </Section>
             <Row>
                 <Col xxl={col} xl={12}>
-                    <Section title="This period" titleSize={3} className="report inout">
+                    <Section header="This period" headerSize={3} className="report inout">
                         <InOut accountId={accountId} period={period} useInOutReport={useInOutReport} />
                     </Section>
                 </Col>
                 <Col xxl={col} xl={12}>
-                    <Section title="Same Period Last Year" titleSize={3} className="report inout">
+                    <Section header="Same Period Last Year" headerSize={3} className="report inout">
                         <InOut accountId={accountId} period={subtractYear(period)} useInOutReport={useInOutReport} />
                     </Section>
                 </Col>
             </Row>
             <Row hidden={difference <= 1} >
                 <Col xxl={12}>
-                    <Section title="Monthly Average" titleSize={3} className="report inout">
+                    <Section header="Monthly Average" headerSize={3} className="report inout">
                         <InOut accountId={accountId} period={period} useInOutReport={useInOutAverageReport} />
                     </Section>
                 </Col>
             </Row>
-            <Section hidden={difference <= 1} title="Income vs Expenses per Month" titleSize={3} className="report inout-trend">
+            <Section hidden={difference <= 1} header="Income vs Expenses per Month" headerSize={3} className="report inout-trend">
                 <InOutTrend accountId={accountId} period={period} />
             </Section>
         </ReportsPage>

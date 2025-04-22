@@ -44,3 +44,5 @@ export const numberOfMonths = (months: number) => {
 }
 
 export const subtractYear = (period: Period) => ({ startDate: addYears(period.startDate, -1), endDate: addYears(period.endDate, -1) });
+
+export const lastMonthName = format(lastMonth.startDate, 'MMMM');

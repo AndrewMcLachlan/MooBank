@@ -52,9 +52,9 @@ export const GroupForm: React.FC<GroupFormProps> = ({ group }) => {
                     <Form.Label>Description</Form.Label>
                     <Form.TextArea maxLength={4000} />
                 </Form.Group>
-                <Form.Group groupId="showPosition">
-                    <Form.Label>Show Total for Group</Form.Label>
+                <Form.Group groupId="showPosition" className="form-check">
                     <Form.Check />
+                    <Form.Label className="form-check-label">Show Total for Group</Form.Label>
                 </Form.Group>
                 <Button type="submit" variant="primary">Save</Button>
             </SectionForm>

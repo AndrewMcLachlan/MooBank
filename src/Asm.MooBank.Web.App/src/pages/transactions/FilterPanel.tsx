@@ -74,7 +74,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
     }, [period, filterDescription, filterTagged, filterTags, storedFilterType, window.location.search]);
 
     return (
-        <Section className="filter-panel" title="Filter" {...props}>
+        <Section className="filter-panel" header="Filter" {...props}>
             <div className="control-panel"><FontAwesomeIcon className="clickable" title="Clear filters" icon="filter-circle-xmark" onClick={clear} size="lg" aria-controls="filter-panel-collapse" /></div>
             <Row>
                 <Col className="description" lg={4} xl={5}>

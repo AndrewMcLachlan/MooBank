@@ -55,7 +55,7 @@ export const StockValueReport: React.FC = () => {
                     <FormCheck type="checkbox" label="Y Axis from 0" onChange={e => setYAxisFromZero(e.currentTarget.checked)} />
                 </FormGroup>
             </Section>
-            <Section className="report" title="Value Trend" titleSize={3}>
+            <Section className="report" header="Value Trend" headerSize={3}>
                 <Line id="inout" data={dataset} options={{
                     maintainAspectRatio: true,
                     scales: {

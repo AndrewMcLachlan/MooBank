@@ -12,7 +12,7 @@ export const StockSummary: React.FC<StockSummaryProps> = ({className, ...props})
     if (!stockHolding) return null;
 
     return (
-        <Section className={classNames("summary", className)} {...props} title={stockHolding.name}>
+        <Section className={classNames("summary", className)} {...props} header={stockHolding.name}>
             <div className="key-value">
                 <div>Balance</div>
                 <div className="balance amount"><AccountBalance balance={stockHolding.currentBalance} /></div>

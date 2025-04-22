@@ -9,12 +9,12 @@ import { Period } from "helpers/dateFns";
 import { useNavigate, useParams } from "react-router";
 import { chartColours } from "../../../helpers/chartColours";
 import { transactionTypeFilter } from "store/state";
+import { Tag } from "models";
+import { TagValue } from "models/reports";
 
 ChartJS.register(...registerables);
 
 export const Breakdown: React.FC<BreakdownProps> = ({ accountId, tagId, period, reportType, selectedTagChanged }) => {
-
-    const navigate = useNavigate();
 
     const report = useBreakdownReport(accountId!, period?.startDate, period?.endDate, reportType, tagId);
 
@@ -64,16 +64,7 @@ export const Breakdown: React.FC<BreakdownProps> = ({ accountId, tagId, period, 
                 const elements = getElementAtEvent(chartRef.current!, e);
                 if (elements.length !== 1) return;
                 const tag = report.data!.tags[elements[0].index];
-                if (!tag.hasChildren || tag.tagId === tagId) {
-
-                    const url = !tag.tagId ? `/accounts/${accountId}?untagged=true` : `/accounts/${accountId}?tag=${tag.tagId}&type=${reportType}`;
-
-                    navigate(url);
-                    return;
-                }
-                selectedTagChanged?.(tag.tagId);
-                const newUrl = `/accounts/${accountId}/reports/breakdown/${tag.tagId}`;
-                window.history.replaceState({ path: newUrl }, "", newUrl);
+                selectedTagChanged?.(tag);
             }} />
     );
 }
@@ -83,7 +74,7 @@ export interface BreakdownProps {
     tagId?: number;
     period: Period;
     reportType: transactionTypeFilter;
-    selectedTagChanged?: (tagId: number) => void;
+    selectedTagChanged?: (tag: TagValue) => void;
 }
 
 Breakdown.displayName = "Breakdown";

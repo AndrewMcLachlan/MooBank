@@ -5,7 +5,7 @@ import { getYear } from "date-fns/getYear";
 import { Widget } from "@andrewmclachlan/mooapp";
 import { ChartData } from "chart.js";
 import { useChartColours } from "helpers";
-import { lastMonth } from "helpers/dateFns";
+import { lastMonth, lastMonthName } from "helpers/dateFns";
 import { Bar } from "react-chartjs-2";
 import { useBudgetReportForMonth } from "services/BudgetService";
 
@@ -35,7 +35,7 @@ export const BudgetWidget: React.FC = () => {
     const difference = Math.round((((report?.budgetedAmount ?? 0) - Math.abs(report?.actual ?? 0)) / 10.0)) * 10;
 
     return (
-        <Widget title={`Budget - Last Month`} size="single" className="report budget" loading={isLoading}>
+        <Widget header={`Budget - ${lastMonthName}`} size="single" className="report budget" loading={isLoading}>
             {report &&
                 <>
                     {difference >= 0 ?

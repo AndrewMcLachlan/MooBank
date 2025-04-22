@@ -33,7 +33,7 @@ export const RecurringTransactions: React.FC<RecurringTransactionsProps> = ({ ac
     }
 
     return (
-        <SectionTable striped hover title="Recurring Transactions">
+        <SectionTable striped hover header="Recurring Transactions">
             <thead>
                 <tr>
                     <th>Description</th>
