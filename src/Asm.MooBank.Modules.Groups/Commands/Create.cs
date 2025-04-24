@@ -5,7 +5,7 @@ using Asm.MooBank.Modules.Groups.Models;
 namespace Asm.MooBank.Modules.Groups.Commands;
 
 [DisplayName("CreateGroup")]
-public record Create(string Name, string Description, bool ShowPosition) : ICommand<Models.Group>;
+public record Create(string Name, string Description, bool ShowTotal) : ICommand<Models.Group>;
 
 internal class CreateHandler(IGroupRepository groupRepository, IUnitOfWork unitOfWork, MooBank.Models.User user) :  ICommandHandler<Create, Models.Group>
 {
@@ -17,7 +17,7 @@ internal class CreateHandler(IGroupRepository groupRepository, IUnitOfWork unitO
         {
             Name = request.Name,
             Description = request.Description,
-            ShowPosition = request.ShowPosition,
+            ShowPosition = request.ShowTotal,
             OwnerId = user.Id
         };
 

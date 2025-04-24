@@ -3,6 +3,7 @@ import React from "react";
 import { useNavigate } from "react-router";
 
 import * as Models from "models";
+import { Icon } from "@andrewmclachlan/mooapp";
 
 export const GroupRow: React.FC<GroupRowProps> = (props) => {
 
@@ -17,7 +18,7 @@ export const GroupRow: React.FC<GroupRowProps> = (props) => {
                 {props.group.description}
             </td>
             <td className="row-action">
-                {props.group.showTotal && <FontAwesomeIcon icon="check-circle" size="lg" />}
+                {!!props.group.showTotal && <FontAwesomeIcon icon="check-circle" size="xl" />}
             </td>
         </tr>
     );

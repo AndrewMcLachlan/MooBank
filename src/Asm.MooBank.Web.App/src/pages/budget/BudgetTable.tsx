@@ -26,7 +26,7 @@ export const BudgetTable: React.FC<BudgetTableProps> = ({ title, type, year, lin
             <tfoot>
                 <tr>
                     <td colSpan={2}>Monthly Average</td>
-                    <td colSpan={3}>{(lines.map(b => b.amount * numberOfMonths(b.month ?? 0)).reduce((total, current) => total + current, 0) / 12).toFixed(2)}</td>
+                    <td colSpan={3}><span className="amount">{(lines.map(b => b.amount * numberOfMonths(b.month ?? 0)).reduce((total, current) => total + current, 0) / 12).toFixed(2)}</span></td>
                 </tr>
             </tfoot>
         </SectionTable>

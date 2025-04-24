@@ -5,9 +5,11 @@ root = true
 [*]
 indent_style = space
 indent_size = 4
+insert_final_newline = true
 
 [*.{config,xml,html,xsd,xsl,xslt,cshtml,html,csproj,sqlproj,sqlprojx,proj,msbuild,vbproj,vstemplate,transform,props,yml,yaml}]
 indent_size = 2
+
 
 [*.json]
 indent_size = 2

@@ -7,6 +7,7 @@ import { emptyGuid, useClickAway } from "@andrewmclachlan/mooapp";
 import { InstrumentId, VirtualAccount } from "models";
 import { useUpdateVirtualAccountBalance } from "services";
 import { useNavigate } from "react-router";
+import { Amount } from "components/Amount";
 
 export const VirtualAccountRow: React.FC<VirtualAccountRowProps> = (props) => {
     const { balanceRef, editingBalance, balanceClick, balanceChange, balance, keyPress, onRowClick } = useComponentState(props);
@@ -18,8 +19,8 @@ export const VirtualAccountRow: React.FC<VirtualAccountRowProps> = (props) => {
             <td></td>
             <td className="name">{props.account.name}</td>
             <td className="d-none d-sm-table-cell">Virtual</td>
-            <td className={classNames("amount", "number", numberClassName(balance))} onClick={clickable ? balanceClick : undefined}>
-                {!editingBalance && getBalanceString(balance)}
+            <td className={classNames("number", numberClassName(balance))} onClick={clickable ? balanceClick : undefined}>
+                {!editingBalance && <Amount amount={balance} creditdebit />}
                 {editingBalance && <input type="number" value={balance} onChange={balanceChange} onKeyUp={keyPress} />}
             </td>
         </tr>

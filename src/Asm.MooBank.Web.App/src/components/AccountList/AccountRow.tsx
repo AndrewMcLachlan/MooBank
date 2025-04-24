@@ -9,6 +9,7 @@ import { getBalanceString, numberClassName } from "helpers";
 import * as Models from "models";
 
 import { VirtualAccountRow } from "./VirtualAccountRow";
+import { Amount } from "components/Amount";
 
 export const AccountRow: React.FC<AccountRowProps> = (props) => {
 
@@ -30,7 +31,7 @@ export const AccountRow: React.FC<AccountRowProps> = (props) => {
                 <td className="d-none d-sm-table-cell" onClick={showVirtualAccountsClick}>{props.instrument.virtualInstruments && props.instrument.virtualInstruments.length > 0 && <FontAwesomeIcon icon={showVirtualAccounts ? "chevron-down" : "chevron-right"} />}</td>
                 <td>{props.instrument.name}</td>
                 <td className="d-none d-sm-table-cell">{props.instrument.instrumentType}</td>
-                <td className={classNames("amount", "number", numberClassName(props.instrument.currentBalance))}>{getBalanceString(props.instrument.currentBalanceLocalCurrency)}</td>
+                <td className={classNames("number", numberClassName(props.instrument.currentBalance))}><Amount amount={props.instrument.currentBalanceLocalCurrency} creditdebit/></td>
             </tr>
             {showVirtualAccounts && props.instrument.virtualInstruments &&
                 props.instrument.virtualInstruments.map(va => <VirtualAccountRow key={va.id} accountId={props.instrument.id} account={va} />)

@@ -5,6 +5,7 @@ import { SectionTable } from "@andrewmclachlan/mooapp";
 import { getBalanceString } from "helpers";
 import { AccountListGroup as Model } from "models";
 import { AccountRow } from "./AccountRow";
+import { Amount } from "components/Amount";
 
 export interface AccountListGroupProps {
     group: Model;
@@ -35,7 +36,7 @@ export const AccountListGroup: React.FC<AccountListGroupProps> = ({ group, isLoa
                 <td className="d-none d-sm-table-cell" />
                 <td colSpan={2} className="d-none d-sm-table-cell">Total</td>
                 <td className="d-table-cell d-sm-none"></td>
-                <td className="amount number">{getBalanceString(group?.total)}</td>
+                <td className="number"><Amount amount={group?.total} creditdebit /></td>
             </tr>
         </tfoot>}
     </SectionTable>

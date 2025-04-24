@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 
-import { getNumberOfPages, Pagination } from "@andrewmclachlan/mooapp";
+import { getNumberOfPages, Pagination, SectionTable } from "@andrewmclachlan/mooapp";
 import { useAccount } from "components";
 import { Transaction, TransactionOffset, TransactionSplit } from "models";
 import { useTransactions, useUpdateTransaction } from "services";
@@ -47,7 +47,7 @@ export const TransactionList: React.FC = () => {
     return (
         <>
             <TransactionDetails transaction={selectedTransaction} show={showDetails} onHide={() => setShowDetails(false)} onSave={onSave} />
-            <Table striped bordered={false} borderless className="transactions">
+            <SectionTable striped className="transactions">
                 <TransactionTableHead />
                 <tbody>
                     {transactions && transactions.map((t) => <TransactionRow key={t.id} transaction={t} onClick={rowClick(t)} />)}
@@ -61,7 +61,7 @@ export const TransactionList: React.FC = () => {
                         </td>
                     </tr>
                 </tfoot>
-            </Table>
+            </SectionTable>
         </>
     );
 }

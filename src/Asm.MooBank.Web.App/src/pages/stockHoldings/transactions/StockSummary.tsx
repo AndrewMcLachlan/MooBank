@@ -19,7 +19,7 @@ export const StockSummary: React.FC<StockSummaryProps> = ({className, ...props})
             </div>
             <div className="key-value">
                 <div>Quantity</div>
-                <div>{stockHolding.quantity}</div>
+                <div className="amount">{stockHolding.quantity}</div>
             </div>
             <div className="key-value">
                 <div>Current Price</div>

@@ -76,7 +76,7 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
                 </section>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={props.onHide}>Close</Button>
+                <Button variant="outline-primary" onClick={props.onHide}>Close</Button>
                 {invalidSplits &&
                     <OverlayTrigger placement="top" overlay={<Popover><Popover.Body>The total of the splits must equal the transaction amount</Popover.Body></Popover>} >
                         <div><Button variant="primary" disabled>Save</Button></div>
