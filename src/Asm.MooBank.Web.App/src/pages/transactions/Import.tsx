@@ -1,18 +1,15 @@
 import React from "react";
 import { useNavigate } from "react-router";
 import { Upload, useIdParams, FilesAddedEvent, Section } from "@andrewmclachlan/mooapp";
-import { useAccount, useImportTransactions } from "../services";
+import { useAccount, useImportTransactions } from "../../services";
 import Button from "react-bootstrap/Button";
 import { useState } from "react";
 import { AccountPage } from "components";
+import { Modal } from "react-bootstrap";
 
-export const Import: React.FC = () => {
+export const Import: React.FC<ImportProps> = ({ show, accountId, onClose }) => {
 
-    const navigate = useNavigate();
-
-    const id = useIdParams();
-
-    const account = useAccount(id);
+    const account = useAccount(accountId);
 
     const importTransactions = useImportTransactions();
 
@@ -28,19 +25,34 @@ export const Import: React.FC = () => {
 
     const submitClick = () => {
         if (!file) return;
-        importTransactions(id, file, {
+        importTransactions(accountId, file, {
             onSuccess: () => {
-                navigate(`/accounts/${id}/transactions`);
+                onClose();
             }
         });
     }
 
     return (
-        <AccountPage title="Import Transactions" breadcrumbs={[{ text: "Import", route: `/accounts/${id}/import` }]}>
-            <Section>
+        <Modal className="import" show={show} onHide={onClose} size="lg" centered>
+            <Modal.Header closeButton>
+                <Modal.Title>Import Transactions</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
                 <Upload onFilesAdded={filesAdded} accept="text/csv" />
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="outline-primary" onClick={onClose}>Close</Button>
                 <Button variant="primary" onClick={submitClick} disabled={!file}>Import</Button>
-            </Section>
-        </AccountPage>
+            </Modal.Footer>
+        </Modal>
     );
+};
+
+Import.displayName = "Import";
+
+
+interface ImportProps {
+    show: boolean;
+    accountId: string;
+    onClose: () => void;
 }

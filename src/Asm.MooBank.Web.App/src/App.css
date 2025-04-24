@@ -10,40 +10,14 @@
 
 @layer moobank {
 
-    @media (prefers-color-scheme: dark) {
-
-        .table {
-            --bs-table-striped-bg: rgba(0, 0, 0, 0.5);
-        }
+.demo {
+    .amount, .badge {
+        filter: blur(8px);
     }
-
-    .light {
-        color-scheme: light;
-        --breadcrumb-background: #1a1919;
-
-        .table {
-            --bs-table-striped-bg: rgba(0, 0, 0, 0.05);
-        }
-    }
-
-    .dark {
-        color-scheme: dark;
-
-        .table {
-            --bs-table-striped-bg: rgba(0, 0, 0, 0.5);
-        }
-    }
+}
 
     .negative {
         color: rgb(204, 0, 0);
-    }
-
-    .mobile {
-        display: none;
-    }
-
-    .desktop {
-        display: inline;
     }
 
     .alert {
@@ -65,33 +39,7 @@
 
     /*#endregion*/
 
-    /*#region Forms*/
-    input,
-    select,
-    textarea {
-        font-family: "Inter", "Open Sans", "Segoe UI", Arial, sans-serif;
-    }
-
-    input.description {
-        width: 500px;
-    }
-
-    input[type="submit"] {
-        color: #fff;
-        background: linear-gradient(to bottom, #111 0%, #3a3a3a 50%, #000 50%, #000 100%);
-        border: none;
-        border-radius: 5px;
-        padding: 5px 20px;
-    }
-
-    /*#endregion*/
-
     /*#region Tables*/
-
-    table {
-        border-spacing: 0;
-    }
-
     .table {
         tfoot {
             /*border-top: 2px double #000;*/
@@ -109,17 +57,6 @@
     }
 
     /*#endregion*/
-
-    section.actions {
-        input[type="submit"] {
-            font-size: 1.1em;
-        }
-    }
-
-    .input-group-prepend {
-        font-size: 1.5rem;
-        margin-right: 0;
-    }
 
     fieldset {
         position: relative;
@@ -146,11 +83,11 @@
         justify-content: center;
         flex-direction: column;
 
-        &::before {    
+        &::before {
             content: '';
             height: 1.5rem;
             flex: 0 0 auto;
-          }
+        }
 
         button {
             align-self: start;
@@ -176,7 +113,7 @@
     }
 
     .empty-row {
-        height: 54px;
+        height: 4rem;
     }
 
     .report canvas {
@@ -194,21 +131,6 @@
         --bs-gutter-y: 1.5rem;
     }
 
-    td {
-        height: 52px;
-    }
-
-    input.form-control:read-only {
-        background-color: var(--bs-disabled-bg);
-        cursor: default;
-
-        &:focus {
-            box-shadow: none;
-            border-color: var(--bs-border-color);
-            background-color: var(--bs-disabled-bg);
-        }
-    }
-
     .net-worth.key-value {
         font-size: 1.2em;
 
@@ -220,21 +142,6 @@
 
             font-weight: 600;
         }
-    }
-
-    .offcanvas-backdrop.show,
-    .modal-backdrop.show {
-        backdrop-filter: blur(1px) grayscale(0.5) brightness(0.5);
-    }
-
-    .offcanvas-backdrop.fade,
-    .modal-backdrop.fade {
-        opacity: 1;
-    }
-
-    .offcanvas-backdrop,
-    .modal-backdrop {
-        background-color: transparent;
     }
 
     @media (max-width: 767px),
@@ -266,12 +173,6 @@
     }
 }
 
-.btn-group-form {
-    display: block;
-    .btn {
-        height: 42px;
-    }
-}
 
 h2 {
     @media screen and (max-width: 768px) {
@@ -285,17 +186,12 @@ h2 {
     }
 }
 
-.form-check {
+section.upload {
     display: flex;
-    align-items: center;
-    gap: 5px;
+    flex-direction: column;
+    justify-content: center;
 
-    .form-label.form-check-label {
-        margin-bottom: 0;
-    }
-
-    .form-check-input {
-        padding: 0;
-        margin-top: 0;
+    .upload-box {
+        width: inherit;
     }
 }

@@ -5,7 +5,7 @@ public record Group
     public required Guid Id { get; init; }
     public required string Name { get; init; }
     public string? Description { get; init; }
-    public required bool ShowPosition { get; init; }
+    public required bool ShowTotal { get; init; }
 }
 
 public static class GroupExtensions
@@ -16,7 +16,7 @@ public static class GroupExtensions
             Id = entity.Id,
             Name = entity.Name,
             Description = entity.Description,
-            ShowPosition = entity.ShowPosition,
+            ShowTotal = entity.ShowPosition,
         };
 
 

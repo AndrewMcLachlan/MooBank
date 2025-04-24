@@ -17,7 +17,6 @@ export const routes: RouteDefinition = {
                     virtualCreate: { path: "manage/virtual/create", element: <Pages.CreateVirtualAccount /> },
                     virtualManage: { path: "manage/virtual/:virtualId", element: <Pages.ManageVirtualAccount /> },
                     rules: { path: "rules", element: <Pages.Rules /> },
-                    import: { path: "import", element: <Pages.Import /> },
                     reports: {
                         path: "reports", element: <Pages.Reports />, children: {
                             inout: { path: "in-out", element: <Pages.InOutPage /> },

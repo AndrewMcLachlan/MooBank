@@ -34,11 +34,6 @@ const getMenuItems = (account: InstitutionAccount | VirtualAccount, navItems: (R
     if (!isVirtual) {
         items.push({ route: `${baseRoute}/reports`, text: "Reports", image: <Reports /> });
         items.push({ route: `${baseRoute}/rules`, text: "Rules", image: <Rules /> });
-
-        switch ((account as InstitutionAccount).controller) {
-            case "Import":
-                items.push({ route: `${baseRoute}/import`, text: "Import", image: <Import /> });
-        }
     }
 
     items.push({ route: `${baseRoute}/manage`, text: "Manage", image: <Sliders /> });

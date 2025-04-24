@@ -5,6 +5,7 @@ import React from "react";
 import { formatCurrency } from "@andrewmclachlan/mooapp";
 import { Transaction } from "models";
 import { TransactionTagPanel } from "./TransactionTagPanel";
+import { Amount } from "components/Amount";
 
 export const TransactionRow: React.FC<TransactionRowProps> = (props) => {
 
@@ -15,7 +16,7 @@ export const TransactionRow: React.FC<TransactionRowProps> = (props) => {
                 <td className="description" colSpan={props.colspan}>{props.transaction.description}</td>
                 <td className="d-none d-md-table-cell">{props.transaction.location}</td>
                 <td className="d-none d-md-table-cell">{props.transaction.accountHolderName}</td>
-                <td className="amount">{formatCurrency(props.transaction.amount)}</td>
+                <td><Amount amount={props.transaction.amount} /></td>
                 <TransactionTagPanel as="td" className="d-none d-md-table-cell" transaction={props.transaction} />
             </tr>
         </>
