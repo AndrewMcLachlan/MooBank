@@ -26,3 +26,29 @@
     flex-direction: column;
     gap: 1rem;
 }
+
+.mini-filter-panel {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+
+    #filter-desc {
+        flex: 1 1 0;
+    }
+
+    #filter-tags {
+        flex: 1.5 1 175px;
+    }
+
+    #period {
+        flex: 0 1 175px;
+    }
+
+    #filter-type {
+        flex: 0 1 125px;
+    }
+
+    #custom-start, #custom-end {
+        flex: 0 1 175px;
+    }
+}

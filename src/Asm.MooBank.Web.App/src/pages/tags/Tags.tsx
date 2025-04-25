@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { TransactionTagRow } from "./TagRow";
 
-import { changeSortDirection, getNumberOfPages, Pagination, SaveIcon, SearchBox, Section, SectionTable, SortDirection } from "@andrewmclachlan/mooapp";
+import { changeSortDirection, getNumberOfPages, Pagination, SaveIcon, SearchBox, Section, SectionTable, SortableTh, SortDirection } from "@andrewmclachlan/mooapp";
 import { TagPanel } from "components";
 import { sortTags, Tag } from "models";
 import { useCreateTag, useTags } from "services";
@@ -20,7 +20,7 @@ export const TransactionTags: React.FC = () => {
             <SectionTable striped className="transaction-tags">
                 <thead>
                     <tr>
-                        <th className={`column-15 sortable ${sortDirection.toLowerCase()}`} onClick={() => setSortDirection(changeSortDirection(sortDirection))}>Name</th>
+                        <SortableTh className={`column-15 sortable ${sortDirection.toLowerCase()}`} sortField="name" sortDirection={sortDirection} onSort={() => setSortDirection(changeSortDirection(sortDirection))} field="name">Name</SortableTh>
                         <th>Tags</th>
                         <th className="column-5"></th>
                     </tr>

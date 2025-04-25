@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
 
-import { IconButton, Pagination, SearchBox, Section, SortDirection, changeSortDirection, getNumberOfPages } from "@andrewmclachlan/mooapp";
+import { IconButton, Pagination, SearchBox, Section, SortDirection, SortableTh, changeSortDirection, getNumberOfPages } from "@andrewmclachlan/mooapp";
 import { AccountPage, useAccount } from "components";
 
 import { Rule, sortRules } from "models";
@@ -65,7 +65,7 @@ export const Rules: React.FC = () => {
             <Table striped bordered={false} borderless className="section">
                 <thead>
                     <tr>
-                        <th className={`column-20 sortable ${sortDirection.toLowerCase()}`} onClick={() => setSortDirection(changeSortDirection(sortDirection))}>When a transaction contains</th>
+                        <SortableTh className={`column-20 sortable ${sortDirection.toLowerCase()}`} onSort={() => setSortDirection(changeSortDirection(sortDirection))} field="description" sortField="description" sortDirection={sortDirection}>When a transaction contains</SortableTh>
                         <th className="column-30">Apply tag(s)</th>
                         <th className="column-35">Notes</th>
                         <th className="column-5"></th>

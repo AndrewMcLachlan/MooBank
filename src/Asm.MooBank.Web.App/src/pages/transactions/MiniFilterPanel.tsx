@@ -1,4 +1,4 @@
-import { Section, Tooltip, useLocalStorage } from "@andrewmclachlan/mooapp";
+import { ComboBox, Section, Tooltip, useLocalStorage } from "@andrewmclachlan/mooapp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { Button, ButtonGroup, Col, Form } from "react-bootstrap";
@@ -9,8 +9,10 @@ import { TransactionsSlice } from "store/Transactions";
 
 import { Period } from "helpers/dateFns";
 import { transactionTypeFilter } from "store/state";
+import { cleanQueryString } from "helpers/queryString";
+import { MiniPeriodSelector } from "components/MiniPeriodSelector";
 
-export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
+export const MiniFilterPanel: React.FC<MiniFilterPanelProps> = (props) => {
 
     const params = new URLSearchParams(window.location.search);
 
@@ -46,14 +48,14 @@ export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
 
     const setFilterTagged = (filter: boolean) => {
         cleanQueryString(params, "untagged");
-        
+
         setLocalFilterTagged(filter);
         setStoredFilterTagged(filter);
     }
 
     const setFilterType = (type: transactionTypeFilter) => {
         cleanQueryString(params, "type");
-        
+
         setStoredFilterType(type);
         setLocalFilterType(type);
     }
@@ -74,44 +76,19 @@ export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
     }, [period, filterDescription, filterTagged, filterTags, storedFilterType, window.location.search]);
 
     return (
-        <Section className="filter-panel" header="Filter" {...props}>
-            <div className="control-panel"><FontAwesomeIcon className="clickable" title="Clear filters" icon="filter-circle-xmark" onClick={clear} size="lg" aria-controls="filter-panel-collapse" /></div>
-            <Row>
-                <Col className="description" lg={4} xl={5}>
-                    <Form.Label htmlFor="filter-desc">Description</Form.Label><Tooltip id="filter-desc">Search for multiple terms by separating them with a comma</Tooltip>
-                    <Form.Control id="filter-desc" type="search" value={filterDescription} onChange={(e) => setFilterDescription(e.currentTarget.value)} placeholder="Contains..." />
-                </Col>
-                <Col lg={4}>
-                    <Form.Label htmlFor="filter-tags">Tags</Form.Label>
-                    <TagSelector id="filter-tags" onChange={setFilterTags} multiSelect value={filterTags} />
-                </Col>
-                <Col lg={4} xl={3}>
-                    <Form.Label htmlFor="filter-type">Type</Form.Label>
-                    <ButtonGroup className="btn-group-form" aria-label="Filter by income or expense" id="filter-type">
-                        <Button id="filter-all" variant={localFilterType === "" ? "primary" : "outline-primary"} onClick={() => setFilterType("")}>All</Button>
-                        <Button id="filter-income" variant={localFilterType === "Credit" ? "primary" : "outline-primary"} onClick={() => setFilterType("Credit")}>Income</Button>
-                        <Button id="filter-expense" variant={localFilterType === "Debit" ? "primary" : "outline-primary"} onClick={() => setFilterType("Debit")}>Expense</Button>
-                    </ButtonGroup>
-                </Col>
-            </Row>
-            <PeriodSelector instant onChange={setPeriod} />
-            <Row>
-                <Form.Group>
-                    <Form.Switch id="filter-tagged" label="Only show transactions without tags" checked={filterTagged} onChange={(e) => setFilterTagged(e.currentTarget.checked)} />
-                </Form.Group>
-            </Row>
+        <Section className="mini-filter-panel" {...props}>
+            <Form.Control id="filter-desc" type="search" value={filterDescription} onChange={(e) => setFilterDescription(e.currentTarget.value)} placeholder="Description contains..." />
+            <TagSelector id="filter-tags" onChange={setFilterTags} multiSelect value={filterTags} />
+            <Form.Select aria-label="Filter by income or expense" id="filter-type">
+                <option id="filter-all">All</option>
+                <option id="filter-income">Income</option>
+                <option id="filter-expense">Expense</option>
+            </Form.Select>
+            <MiniPeriodSelector instant onChange={setPeriod} />
+            <Form.Switch id="filter-tagged" label="Untagged" checked={filterTagged} onChange={(e) => setFilterTagged(e.currentTarget.checked)} />
         </Section>
     );
 }
 
-export interface FilterPanelProps extends React.HTMLAttributes<HTMLElement> {
-}
-
-const cleanQueryString = (params: URLSearchParams, key: string) =>{
-    
-    params.delete(key);
-    const queryString = params.toString();
-    const newUrl = window.location.origin + window.location.pathname + (queryString === "" ? "" : `?${queryString}`);
-
-    window.history.replaceState({ path: newUrl }, "", newUrl);
+export interface MiniFilterPanelProps extends React.HTMLAttributes<HTMLElement> {
 }

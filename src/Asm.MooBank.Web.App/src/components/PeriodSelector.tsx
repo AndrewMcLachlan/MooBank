@@ -99,12 +99,12 @@ export interface PeriodSelectorProps {
 
 export type PeriodType = "thisMonth" | "lastMonth" | "previousMonth" | "last3Months" | "last6Months" | "last12Months" | "lastYear" | "allTime" | "custom";
 
-interface PeriodOption extends Period {
+export interface PeriodOption extends Period {
     value: string,
     label: string,
 }
 
-const options: PeriodOption[] = [
+export const options: PeriodOption[] = [
     { value: "0", label: "This Month", ...thisMonth },
     { value: "1", label: "Last Month", ...lastMonth },
     { value: "2", label: "Previous Month", ...previousMonth },

@@ -48,7 +48,9 @@ function useRuleRowEvents(props: RuleRowProps) {
     }, [props.rule.tags]);
 
     const deleteRule = () => {
-        deleteTransactionTagRule.mutate({accountId: props.accountId, ruleId: props.rule.id});
+        if (confirm("Are you sure you want to delete this rule?")) {
+            deleteTransactionTagRule.mutate({accountId: props.accountId, ruleId: props.rule.id});
+        }
     };
 
     const createTag = (name: string) => {
