@@ -1,43 +1,48 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
 using Asm.MooBank.Domain.Entities.Ing;
-using Asm.MooBank.Domain.Entities.Transactions;
 
 namespace Asm.MooBank.Institution.Ing.Importers;
 internal partial class TransactionParser
 {
-    [GeneratedRegex("^(.+) - Visa Purchase - Receipt (\\d{4,6})In (.*) Date (.+) Card \\d{6}xxxxxx(\\d{4})")]
-    private static partial Regex VisaPurchase();
+    [GeneratedRegex("^(.+) - Visa (?:Purchase|Refund|Purchase Correction) - Receipt (\\d{1,6}) *In (.*) Date (.+) Card \\d{6}xxxxxx(\\d{4})")]
+    private static partial Regex VisaPurchaseRefundCorrection();
 
-    [GeneratedRegex("^(.+) - Visa Refund - Receipt (\\d{4,6}) In (.*) Date (.+) Card \\d{6}xxxxxx(\\d{4})")]
-    private static partial Regex VisaRefund();
-
-    [GeneratedRegex("^(.+) - Visa Purchase - Receipt (\\d{4,6})Foreign Currency Amount:(.+)In (.*) Date (.+) Card \\d{6}xxxxxx(\\d{4})")]
+    [GeneratedRegex("^(.+) - Visa (?:Purchase|Cash Withdrawal) - Receipt (\\d{1,6})Foreign Currency Amount:(.+)In (.*) Date (.+) Card \\d{6}xxxxxx(\\d{4})")]
     private static partial Regex VisaForeignCurrency();
 
-    [GeneratedRegex("^(.+) - Direct Debit - Receipt (\\d{4,6}) (.+)")]
+    [GeneratedRegex("^(.+) - Direct Debit - Receipt (\\d{1,6}) (.+)")]
     private static partial Regex DirectDebit();
 
-    [GeneratedRegex("^(.+) - Internal Transfer - Receipt (\\d{4,6}) (.*)")]
+    [GeneratedRegex("^(.+) - Internal Transfer - Receipt (\\d{1,6}) (.*)")]
     private static partial Regex InternalTransfer();
 
-    [GeneratedRegex("^(.+) - EFTPOS Purchase - Receipt (\\d{4,6})Date (.+) Time (.+) Card \\d{6}xxxxxx(\\d{4})")]
-    private static partial Regex EftposPurchase();
+    [GeneratedRegex("^(.+) - EFTPOS (?:Purchase|Refund|Purchase Correction) - Receipt (\\d{1,6})Date (.+) Time (.+) Card \\d{6}xxxxxx(\\d{4})")]
+    private static partial Regex EftposPurchaseRefund();
 
-    [GeneratedRegex("^([^-]+) - Receipt (\\d{4,6})")]
+    [GeneratedRegex("^^(.+) - EFTPOS Purchase with Cash Out - Receipt (\\d{1,6}) - Cash amount \\$(.*)<BR/>Date (.+) Time (.+) Card \\d{6}xxxxxx(\\d{4})")]
+    private static partial Regex EftposCashOut();
+
+    [GeneratedRegex("^([^-]+) - Receipt (\\d{1,6})")]
     private static partial Regex DirectPayment();
 
-    [GeneratedRegex("^(.+) - Receipt (\\d{4,6})In (.*) Date (.+) Time (.+) Card \\d{6}xxxxxx(\\d{4})")]
+    [GeneratedRegex("^(.+?)\\s*-\\s*\\1 - Receipt (\\d{1,6})In (.*) Date (.+) Time (.+) Card \\d{6}xxxxxx(\\d{4})")]
     private static partial Regex DirectPayment2();
 
-    [GeneratedRegex("^(.+) - Osko Payment( to)?(.*) - Receipt (\\d{4,6})(  - Ref )?(.+)?")]
+    [GeneratedRegex("^(.+) - Receipt (\\d{1,6})In (.*) Date (.+) Time (.+) Card \\d{6}xxxxxx(\\d{4})")]
+    private static partial Regex DirectPayment3();
+
+    [GeneratedRegex("^(.+) - Osko Payment( to)?(.*) - Receipt (\\d{1,6})(  - Ref )?(.+)?")]
     private static partial Regex OskoPayment();
 
-    [GeneratedRegex("^Salary - Salary Deposit - Receipt (\\d{4,6})(.+)")]
+    [GeneratedRegex("^Salary - Salary Deposit - Receipt (\\d{1,6})(.+)")]
     private static partial Regex SalaryDeposit();
 
-    [GeneratedRegex("^(.+) - BPAY Bill Payment - Receipt (\\d{4,6}) To (.+)")]
+    [GeneratedRegex("^(.+) - BPAY Bill Payment - Receipt (\\d{1,6}) To (.+)")]
     private static partial Regex Bpay();
+
+    [GeneratedRegex("^(.+) - Receipt (\\d{1,6})ATM owner fee of \\$(.*) charged by .*Date (.+) Time (.+) Card \\d{6}xxxxxx(\\d{4})")]
+    private static partial Regex Atm();
 
     internal static ParsedTransaction ParseDescription(string? description)
     {
@@ -45,20 +50,7 @@ internal partial class TransactionParser
 
         description = description?.Trim('"') ?? String.Empty;
 
-        var match = VisaPurchase().Match(description);
-
-        if (match.Success)
-        {
-            parsed.Description = match.Groups[1].Value.Trim();
-            parsed.Location = match.Groups[3].Value.Trim();
-            parsed.PurchaseDate = DateTime.Parse(match.Groups[4].Value);
-            parsed.PurchaseType = "Visa";
-            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
-            parsed.Last4Digits = Int16.Parse(match.Groups[5].Value);
-            return parsed;
-        }
-
-        match = VisaRefund().Match(description);
+        var match = VisaPurchaseRefundCorrection().Match(description);
 
         if (match.Success)
         {
@@ -106,7 +98,7 @@ internal partial class TransactionParser
             return parsed;
         }
 
-        match = EftposPurchase().Match(description);
+        match = EftposPurchaseRefund().Match(description);
 
         if (match.Success)
         {
@@ -115,6 +107,17 @@ internal partial class TransactionParser
             parsed.PurchaseType = "EFTPOS";
             parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
             parsed.Last4Digits = Int16.Parse(match.Groups[5].Value);
+            return parsed;
+        }
+
+        match = EftposCashOut().Match(description);
+        if (match.Success)
+        {
+            parsed.Description = $"{match.Groups[1].Value.Trim()} - ${match.Groups[3]} Cash out";
+            parsed.PurchaseDate = DateTime.ParseExact($"{match.Groups[4].Value} {match.Groups[5].Value}", "dd MMM yyyy h:mmtt", CultureInfo.InvariantCulture);
+            parsed.PurchaseType = "EFTPOS";
+            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
+            parsed.Last4Digits = Int16.Parse(match.Groups[6].Value);
             return parsed;
         }
 
@@ -129,6 +132,18 @@ internal partial class TransactionParser
         }
 
         match = DirectPayment2().Match(description);
+        if (match.Success)
+        {
+            parsed.Description = match.Groups[1].Value.Trim();
+            parsed.Location = match.Groups[3].Value.Trim();
+            parsed.PurchaseDate = DateTime.ParseExact($"{match.Groups[4].Value} {match.Groups[5].Value}", "dd MMM yyyy h:mmtt", CultureInfo.InvariantCulture);
+            parsed.PurchaseType = "Direct";
+            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
+            parsed.Last4Digits = Int16.Parse(match.Groups[6].Value);
+            return parsed;
+        }
+
+        match = DirectPayment3().Match(description);
         if (match.Success)
         {
             parsed.Description = match.Groups[1].Value.Trim();
@@ -168,6 +183,17 @@ internal partial class TransactionParser
             parsed.PurchaseType = "BPAY";
             parsed.Description = $"{match.Groups[1].Value.Trim()} - {match.Groups[3].Value.Trim()}";
             parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
+            return parsed;
+        }
+
+        match = Atm().Match(description);
+        if (match.Success)
+        {
+            parsed.Description = $"{match.Groups[1].Value.Trim()} - ${match.Groups[3].Value.Trim()} fee";
+            parsed.PurchaseDate = DateTime.ParseExact($"{match.Groups[4].Value} {match.Groups[5].Value}", "dd MMM yyyy h:mmtt", CultureInfo.InvariantCulture);
+            parsed.PurchaseType = "ATM";
+            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
+            parsed.Last4Digits = Int16.Parse(match.Groups[6].Value);
             return parsed;
         }
 
