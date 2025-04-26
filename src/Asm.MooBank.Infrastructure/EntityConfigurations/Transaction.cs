@@ -26,12 +26,11 @@ internal class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
             .HasDefaultValue(Models.TransactionType.Debit)
             .HasSentinel(Models.TransactionType.NotSet);
 
-        //entity.HasOne(e => e.User).WithMany().HasForeignKey(e => e.AccountHolderId);
+        entity.Property(e => e.TransactionSubType)
+            .HasColumnName($"{nameof(Transaction.TransactionSubType)}Id")
+            .HasConversion(e => (int?)e, e => (Models.TransactionSubType?)e)
+            .HasSentinel(null);
 
-        //entity.HasOne(e => e.OffsetBy).WithOne(e => e.Offsets).HasForeignKey<Transaction>(t => t.OffsetByTransactionId);
-
-        // This transaction is offset by the linked "OffsetTransactionId" transaction
-        //entity.HasMany(e => e.OffsetBy).WithOne(e => e.TransactionSplit).HasForeignKey(t => t.TransactionSplitId);
 
         // This transaction offsets the linked "TransactionId" transaction
         entity.HasMany(e => e.OffsetFor).WithOne(e => e.OffsetByTransaction).HasForeignKey(t => t.OffsetTransactionId);

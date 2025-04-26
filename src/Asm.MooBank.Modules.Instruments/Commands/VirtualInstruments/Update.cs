@@ -46,7 +46,8 @@ internal class UpdateHandler(IInstrumentRepository instrumentRepository, ITransa
             Description = "Balance adjustment",
             Source = "Web",
             TransactionTime = DateTime.Now,
-            TransactionType = amount > 0 ? TransactionType.BalanceAdjustmentCredit : TransactionType.BalanceAdjustmentDebit,
+            TransactionType = amount > 0 ? TransactionType.Credit : TransactionType.Debit,
+            TransactionSubType = TransactionSubType.BalanceAdjustment,
         });
 
         instrument.Balance = command.CurrentBalance;

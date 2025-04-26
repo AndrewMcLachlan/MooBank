@@ -32,7 +32,7 @@ internal sealed class CreateByNameHandler(IUnitOfWork unitOfWork, ITagRepository
         {
             Name = name,
             FamilyId = user.FamilyId,
-            Tags = tagEntities.ToList(),
+            Tags = [.. tagEntities],
         };
         tagRepository.Add(tag);
 

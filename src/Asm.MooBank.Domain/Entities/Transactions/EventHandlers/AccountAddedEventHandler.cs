@@ -11,7 +11,8 @@ internal class AccountAddedEventHandler(Models.User user) : IDomainEventHandler<
             Amount = request.OpeningBalance,
             Description = "Opening Balance",
             TransactionTime = request.OpeningDate,
-            TransactionType = request.OpeningBalance < 0 ? TransactionType.BalanceAdjustmentDebit : TransactionType.BalanceAdjustmentCredit,
+            TransactionType = request.OpeningBalance < 0 ? TransactionType.Debit : TransactionType.Credit,
+            TransactionSubType = TransactionSubType.OpeningBalance,
             Source = "Event",
         });
 

@@ -12,25 +12,13 @@ public enum TransactionType
 
     [Display(Name = "Debit")]
     Debit = 2,
-
-    [Display(Name = "Recurring Credit")]
-    RecurringCredit = 3,
-
-    [Display(Name = "Recurring Debit")]
-    RecurringDebit = 4,
-
-    [Display(Name = "Balance Adjustment Credit")]
-    BalanceAdjustmentCredit = 5,
-
-    [Display(Name = "Balance Adjustment Debit")]
-    BalanceAdjustmentDebit = 6,
 }
 
 public static class TransactionTypes
 {
-    public static readonly IEnumerable<TransactionType> Credit = new[] { TransactionType.Credit, TransactionType.RecurringCredit, TransactionType.BalanceAdjustmentCredit };
+    public static readonly IEnumerable<TransactionType> Credit = [TransactionType.Credit];
 
-    public static readonly IEnumerable<TransactionType> Debit = new[] { TransactionType.Debit, TransactionType.RecurringDebit, TransactionType.BalanceAdjustmentDebit };
+    public static readonly IEnumerable<TransactionType> Debit = [TransactionType.Debit];
 
     public static bool IsCredit(this TransactionType type) => Credit.Contains(type);
 
