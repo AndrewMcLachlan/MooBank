@@ -37,6 +37,8 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
 
     public TransactionType TransactionType { get; set; }
 
+    public TransactionSubType? TransactionSubType { get; set; }
+
     public required string Source { get; set; }
 
     public object? Extra { get; set; }
@@ -59,7 +61,7 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
     #endregion
 
     #region Methods
-    public void AddOrUpdateSplit(Tag.Tag tag) => AddOrUpdateSplit(new[] { tag });
+    public void AddOrUpdateSplit(Tag.Tag tag) => AddOrUpdateSplit([tag]);
 
     public void AddOrUpdateSplit(IEnumerable<Tag.Tag> tags)
     {
@@ -69,7 +71,7 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
         {
             split = new()
             {
-                Tags = tags.ToList(),
+                Tags = [.. tags],
                 TransactionId = Id,
                 Amount = Math.Abs(Amount),
             };
@@ -116,6 +118,6 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
         return sum;
     }
 
-    public static decimal TransactionNetAmount(TransactionType transactionType, Guid transactionId, decimal amount) => throw new NotSupportedException();
+    public static decimal TransactionNetAmount(TransactionType transactionType, Guid? transactionId, decimal amount) => throw new NotSupportedException();
     #endregion
 }

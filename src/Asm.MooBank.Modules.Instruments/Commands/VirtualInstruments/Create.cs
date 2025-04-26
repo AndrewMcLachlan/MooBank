@@ -25,7 +25,8 @@ internal class CreateHandler(IInstrumentRepository instrumentRepository, Domain.
                 Description = "Initial balance",
                 Source = "Web",
                 TransactionTime = DateTime.Now,
-                TransactionType = entity.Balance > 0 ? TransactionType.BalanceAdjustmentCredit : TransactionType.BalanceAdjustmentDebit,
+                TransactionType = entity.Balance > 0 ? TransactionType.Credit : TransactionType.Debit,
+                TransactionSubType = TransactionSubType.OpeningBalance,
             });
         }
 

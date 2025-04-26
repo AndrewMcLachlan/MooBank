@@ -53,8 +53,8 @@ public class RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionRep
     private void RunTransaction(RecurringTransaction recurring)
     {
         TransactionType transactionType = recurring.Amount < 0 ?
-                                  TransactionType.RecurringDebit :
-                                  TransactionType.RecurringCredit;
+                                  TransactionType.Debit :
+                                  TransactionType.Credit;
 
         Transaction transaction = new()
         {
@@ -65,6 +65,7 @@ public class RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionRep
             TransactionTime = DateTime.Now,
             PurchaseDate = recurring.NextRun.ToDateTime(TimeOnly.MinValue),
             TransactionType = transactionType,
+            TransactionSubType = TransactionSubType.Recurring,
         };
 
         transactionRepository.Add(transaction);

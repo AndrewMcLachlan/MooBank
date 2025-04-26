@@ -73,25 +73,22 @@ ON (TARGET.TransactionTypeId = SOURCE.TransactionTypeId)
 WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
 WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.TransactionTypeId, SOURCE.[Description]);
 
-MERGE TransactionType AS TARGET USING (SELECT 3 as TransactionTypeId, 'RecurringCredit' as [Description]) AS SOURCE
-ON (TARGET.TransactionTypeId = SOURCE.TransactionTypeId)
-WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.TransactionTypeId, SOURCE.[Description]);
 
-MERGE TransactionType AS TARGET USING (SELECT 4 as TransactionTypeId, 'RecurringDebit' as [Description]) AS SOURCE
-ON (TARGET.TransactionTypeId = SOURCE.TransactionTypeId)
+MERGE TransactionSubType AS TARGET USING (SELECT 1 as Id, 'Recurring' as [Description]) AS SOURCE
+ON (TARGET.Id = SOURCE.Id)
 WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.TransactionTypeId, SOURCE.[Description]);
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Description]);
 
-MERGE TransactionType AS TARGET USING (SELECT 5 as TransactionTypeId, 'BalanceAdjustmentCredit' as [Description]) AS SOURCE
-ON (TARGET.TransactionTypeId = SOURCE.TransactionTypeId)
+MERGE TransactionSubType AS TARGET USING (SELECT 2 as Id, 'BalanceAdjustment' as [Description]) AS SOURCE
+ON (TARGET.Id = SOURCE.Id)
 WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.TransactionTypeId, SOURCE.[Description]);
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Description]);
 
-MERGE TransactionType AS TARGET USING (SELECT 6 as TransactionTypeId, 'BalanceAdjustmentDebit' as [Description]) AS SOURCE
-ON (TARGET.TransactionTypeId = SOURCE.TransactionTypeId)
+MERGE TransactionSubType AS TARGET USING (SELECT 3 as Id, 'OpeningBalance' as [Description]) AS SOURCE
+ON (TARGET.Id = SOURCE.Id)
 WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.TransactionTypeId, SOURCE.[Description]);
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Description]);
+
 
 
 -- Schedule

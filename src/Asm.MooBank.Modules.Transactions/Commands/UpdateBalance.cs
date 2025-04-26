@@ -2,7 +2,6 @@
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Transactions.Models;
 using Asm.MooBank.Modules.Transactions.Models.Extensions;
-using Asm.MooBank.Services;
 using IInstrumentRepository = Asm.MooBank.Domain.Entities.Instrument.IInstrumentRepository;
 
 namespace Asm.MooBank.Modules.Transactions.Commands;
@@ -29,7 +28,8 @@ internal class UpdateBalanceHandler(IInstrumentRepository accountRepository, ITr
             Description = command.BalanceUpdate.Description ?? "Balance adjustment",
             Source = "Web",
             TransactionTime = command.BalanceUpdate.TransactionTime.LocalDateTime,
-            TransactionType = amount > 0 ? TransactionType.BalanceAdjustmentCredit : TransactionType.BalanceAdjustmentDebit,
+            TransactionType = amount > 0 ? TransactionType.Credit : TransactionType.Debit,
+            TransactionSubType = TransactionSubType.BalanceAdjustment,
         });
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
