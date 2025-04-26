@@ -1,6 +1,6 @@
 {
   "name": "@andrewmclachlan/moobank",
-  "version": "2024.4.0",
+  "version": "2025.4.0",
   "private": true,
   "author": {
     "name": "Andrew McLachlan",
@@ -14,7 +14,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@andrewmclachlan/mooapp": "^2.3.866",
+    "@andrewmclachlan/mooapp": "^2.3.873",
     "@andrewmclachlan/mooicons": "^2.3.862",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",

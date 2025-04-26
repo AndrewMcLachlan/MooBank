@@ -5,7 +5,7 @@ import { Transactions, TransactionsFilter } from "./state";
 
 const initialState: Transactions = {
     currentPage: 1,
-    pageSize: 50,
+    pageSize: Number(localStorage.getItem("transactions-page-size") ?? "50"),
     filter: {
         filterTagged: false,
         tags: null,
@@ -25,6 +25,9 @@ export const reducers = {
     },
 
     setPageSize: (state: Transactions, action: PayloadAction<number>) => {
+
+        localStorage.setItem("transactions-page-size", action.payload.toString());
+
         return {
             ...state,
             pageSize: action.payload,

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 
-import { getNumberOfPages, Pagination, SectionTable } from "@andrewmclachlan/mooapp";
+import { getNumberOfPages, Pagination, PaginationControls, PageSize, SectionTable } from "@andrewmclachlan/mooapp";
 import { useAccount } from "components";
 import { Transaction, TransactionOffset, TransactionSplit } from "models";
 import { useTransactions, useUpdateTransaction } from "services";
@@ -48,16 +47,19 @@ export const TransactionList: React.FC = () => {
         <>
             <TransactionDetails transaction={selectedTransaction} show={showDetails} onHide={() => setShowDetails(false)} onSave={onSave} />
             <SectionTable striped className="transactions">
-                <TransactionTableHead />
+                <TransactionTableHead pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={(_current, newPage) => dispatch(TransactionsSlice.actions.setCurrentPage(newPage))} />
                 <tbody>
                     {transactions && transactions.map((t) => <TransactionRow key={t.id} transaction={t} onClick={rowClick(t)} />)}
-                    {!transactions && Array.from({ length: 50 }, (_value, index) => index).map((i) => <tr key={i}><td colSpan={6}>&nbsp;</td></tr>)}
+                    {!transactions && Array.from({ length: pageSize }, (_value, index) => index).map((i) => <tr key={i}><td colSpan={6}>&nbsp;</td></tr>)}
                 </tbody>
                 <tfoot>
                     <tr>
                         <td colSpan={2} className="page-totals d-none d-md-table-cell">Page {pageNumber} of {numberOfPages} ({totalTransactions} transactions)</td>
                         <td colSpan={4}>
-                            <Pagination pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={(_current, newPage) => dispatch(TransactionsSlice.actions.setCurrentPage(newPage))} />
+                            <PaginationControls>
+                                <PageSize value={pageSize} onChange={(newPageSize) => dispatch(TransactionsSlice.actions.setPageSize(newPageSize))} />
+                                <Pagination pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={(_current, newPage) => dispatch(TransactionsSlice.actions.setCurrentPage(newPage))} />
+                            </PaginationControls>
                         </td>
                     </tr>
                 </tfoot>

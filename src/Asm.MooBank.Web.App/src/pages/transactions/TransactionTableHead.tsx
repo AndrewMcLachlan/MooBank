@@ -1,12 +1,13 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { SortableTh, SortDirection } from "@andrewmclachlan/mooapp";
+import { PaginationProps, PaginationTh, SortableTh, SortDirection } from "@andrewmclachlan/mooapp";
 
 import { State } from "store/state";
 import { TransactionsSlice } from "store/Transactions";
+import { Pagination } from "react-bootstrap";
 
-export const TransactionTableHead: React.FC = () => {
+export const TransactionTableHead: React.FC<PaginationProps> = (props) => {
 
     const dispatch = useDispatch();
     const { sortField, sortDirection } = useSelector((state: State) => state.transactions);
@@ -30,7 +31,7 @@ export const TransactionTableHead: React.FC = () => {
                 <SortableTh field="Location" sortField={sortField} sortDirection={sortDirection} onSort={sort} className="d-none d-md-table-cell">Location</SortableTh>
                 <SortableTh field="AccountHolderName" sortField={sortField} sortDirection={sortDirection} onSort={sort} className="d-none d-md-table-cell">Who</SortableTh>
                 <SortableTh field="Amount" sortField={sortField} sortDirection={sortDirection} onSort={sort}>Amount</SortableTh>
-                <th className="d-none d-md-table-cell">Tags</th>
+                <PaginationTh {...props} className="d-none d-md-table-cell">Tags</PaginationTh>
             </tr>
         </thead>
     );
