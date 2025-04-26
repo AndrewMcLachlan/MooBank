@@ -14,6 +14,7 @@ import { InOutTrend } from "./InOutTrend";
 import { useInOutAverageReport, useInOutReport } from "services";
 import { Col, Row } from "react-bootstrap";
 import { MiniPeriodSelector } from "components/MiniPeriodSelector";
+import { getPeriod } from "hooks";
 
 ChartJS.register(...registerables);
 ChartJS.register(chartTrendline);
