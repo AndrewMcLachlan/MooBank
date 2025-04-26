@@ -59,9 +59,9 @@ export const Institutions = () => {
             <SectionTable striped hover>
                 <thead>
                     <tr>
-                        <SortableTh field="name" onSort={(field) => { setSortField(field); setSortDirection(changeSortDirection(sortDirection)) }} sortField={sortField} sortDirection={sortDirection}>Name</SortableTh>
+                        <SortableTh field="name" onSort={(field) => { setSortField(field as keyof displayInstitution); setSortDirection(changeSortDirection(sortDirection)) }} sortField={sortField} sortDirection={sortDirection}>Name</SortableTh>
                         <SortablePaginationTh
-                            field="type" sortField={sortField} sortDirection={sortDirection} onSort={(field) => { setSortField(field); setSortDirection(changeSortDirection(sortDirection)) }}
+                            field="type" sortField={sortField} sortDirection={sortDirection} onSort={(field) => { setSortField(field as keyof displayInstitution); setSortDirection(changeSortDirection(sortDirection)) }}
                             pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={(_, newPage) => setPageNumber(newPage)}>
                             Type
                         </SortablePaginationTh>
