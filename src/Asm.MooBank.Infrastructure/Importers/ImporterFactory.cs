@@ -1,22 +1,20 @@
 ﻿using Asm.MooBank.Domain.Entities.Account;
-using IInstrumentRepository = Asm.MooBank.Domain.Entities.Instrument.IInstrumentRepository;
+using Asm.MooBank.Importers;
 
-namespace Asm.MooBank.Importers;
+namespace Asm.MooBank.Infrastructure.Importers;
 
-internal class ImporterFactory(IInstrumentRepository accountRepository, IInstitutionAccountRepository institutionAccountRepository, IServiceProvider services) : IImporterFactory
+internal class ImporterFactory(IQueryable<InstitutionAccount> accounts, IServiceProvider services) : IImporterFactory
 {
     public async Task<IImporter?> Create(Guid accountId, CancellationToken cancellationToken = default)
     {
-        var baseAccount = await accountRepository.Get(accountId, cancellationToken);
+        var account = await accounts.Where(a => a.Id == accountId && a.ImportAccount != null).Include(a => a.ImportAccount).ThenInclude(a => a!.ImporterType).SingleOrDefaultAsync(cancellationToken);
 
-        if (baseAccount is not InstitutionAccount account)
+        if (account is null)
         {
             return null;
         }
 
-        await institutionAccountRepository.Load(account, cancellationToken);
-
-        var typeName = account.ImportAccount?.ImporterType.Type;
+        var typeName = account.ImportAccount!.ImporterType.Type;
 
         if (typeName == null)
         {

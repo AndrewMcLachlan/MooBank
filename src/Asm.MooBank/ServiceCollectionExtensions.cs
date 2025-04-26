@@ -9,6 +9,8 @@ public static class ServiceCollectionExtensions
             .AddScoped<ICurrencyConverter, CurrencyConverter>()
             .AddHostedService<PrecacheService>()
             .AddHostedService<RunRulesService>()
+            .AddHostedService<ReprocessTransactionsService>()
             .AddSingleton<IRunRulesQueue, RunRulesQueue>()
+            .AddSingleton<IReprocessTransactionsQueue, ReprocessTransactionsQueue>()
             .AddLazyCache();
 }
