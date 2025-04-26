@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[StockPriceHistory]
 (
-	[Id] INT IDENTITY(1,1),
+    [Id] INT IDENTITY(1,1),
     [Symbol] CHAR(3) NOT NULL,
     [Exchange] CHAR(2) NOT NULL CONSTRAINT DF_StockPriceHistory_Exchange DEFAULT 'AU',
     [Price] DECIMAL(12, 4) NOT NULL,

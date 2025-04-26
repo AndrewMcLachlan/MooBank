@@ -10,6 +10,7 @@ import { ReportTypeSelector } from "components/ReportTypeSelector";
 import { Period, subtractYear } from "helpers/dateFns";
 import { TopTags } from "./TopTags";
 import { transactionTypeFilter } from "store/state";
+import { MiniPeriodSelector } from "components/MiniPeriodSelector";
 
 ChartJS.register(...registerables);
 
@@ -22,9 +23,9 @@ export const AllTagAverage = () => {
 
     return (
         <ReportsPage title="Top Tags">
-            <Section className="report-filter-panel">
+            <Section className="mini-filter-panel">
                 <ReportTypeSelector value={reportType} onChange={setReportType} hidden />
-                <PeriodSelector onChange={setPeriod} />
+                <MiniPeriodSelector onChange={setPeriod} />
             </Section>
             <Section className="report">
                 <h3>Average per month Across Top 20 Tags</h3>

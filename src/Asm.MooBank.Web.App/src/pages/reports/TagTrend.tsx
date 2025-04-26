@@ -17,6 +17,7 @@ import { useChartColours } from "../../helpers/chartColours";
 import { ReportsPage } from "./ReportsPage";
 import { TagSettingsPanel } from "./TagSettingsPanel";
 import { transactionTypeFilter } from "store/state";
+import { MiniPeriodSelector } from "components/MiniPeriodSelector";
 
 ChartJS.register(...registerables);
 ChartJS.register(chartTrendline);
@@ -75,20 +76,11 @@ export const TagTrend: React.FC = () => {
 
     return (
         <ReportsPage title="Tag Trend">
-            <Section className="report-filter-panel">
+            <Section className="mini-filter-panel">
                 <ReportTypeSelector value={reportType} onChange={setReportType} hidden />
-                <PeriodSelector onChange={setPeriod} instant />
-                <Row as="section">
-                    <FormGroup xl="4">
-                        <Form.Label>Tag</Form.Label>
-                        <TagSelector value={selectedTagId} onChange={tagChanged} />
-                    </FormGroup>
-                    <FormGroup xl="4">
-                        <Form.Label></Form.Label>
-                        <TagSettingsPanel tag={selectedTag} onChange={settingsChanged} />
-                    </FormGroup>
-                </Row>
-
+                <MiniPeriodSelector onChange={setPeriod} instant />
+                <TagSelector value={selectedTagId} onChange={tagChanged} id="filter-tags" />
+                <TagSettingsPanel tag={selectedTag} onChange={settingsChanged} />
             </Section>
             <Section className="report" header="Tag Trend" headerSize={3}>
                 <Line id="inout" data={dataset} options={{
@@ -115,7 +107,7 @@ export const TagTrend: React.FC = () => {
                 <p>Average: {report.data?.average}</p>
                 <p>Average (Offset): {report.data?.offsetAverage}</p>
             </Section>
-        </ReportsPage>
+        </ReportsPage >
     );
 }
 

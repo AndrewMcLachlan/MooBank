@@ -7,11 +7,11 @@ import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ChartData, registerables } from "chart.js";
 import { Section, useIdParams } from "@andrewmclachlan/mooapp";
 
-import { PeriodSelector } from "components/PeriodSelector";
 import { Period } from "helpers/dateFns";
 import { ReportTypeSelector } from "components/ReportTypeSelector";
 import { chartColours } from "../../helpers/chartColours";
 import { transactionTypeFilter } from "store/state";
+import { MiniPeriodSelector } from "components/MiniPeriodSelector";
 
 ChartJS.register(...registerables);
 
@@ -41,9 +41,9 @@ export const ByTag = () => {
 
     return (
         <ReportsPage title="All Tags">
-            <Section className="report-filter-panel">
+            <Section className="mini-filter-panel">
                 <ReportTypeSelector value={reportType} onChange={setReportType} hidden />
-                <PeriodSelector value={period} onChange={setPeriod} />
+                <MiniPeriodSelector value={period} onChange={setPeriod} />
             </Section>
             <section className="report doughnut">
                 <h3>All Tags</h3>

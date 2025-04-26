@@ -14,6 +14,7 @@ import { InOut } from "./InOut";
 import { InOutTrend } from "./InOutTrend";
 import { useInOutAverageReport, useInOutReport } from "services";
 import { Col, Row } from "react-bootstrap";
+import { MiniPeriodSelector } from "components/MiniPeriodSelector";
 
 ChartJS.register(...registerables);
 ChartJS.register(chartTrendline);
@@ -29,8 +30,8 @@ export const InOutPage = () => {
 
     return (
         <ReportsPage title="Income vs Expenses">
-            <Section className="report-filter-panel">
-                <PeriodSelector onChange={setPeriod} />
+            <Section className="mini-filter-panel">
+                <MiniPeriodSelector onChange={setPeriod} />
             </Section>
             <Row>
                 <Col xxl={col} xl={12}>

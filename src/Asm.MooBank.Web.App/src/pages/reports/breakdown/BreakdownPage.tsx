@@ -14,6 +14,7 @@ import { useNavigate, useParams } from "react-router";
 import { Breakdown } from "./Breakdown";
 import { transactionTypeFilter } from "store/state";
 import { TagValue } from "models/reports";
+import { MiniPeriodSelector } from "components/MiniPeriodSelector";
 
 ChartJS.register(...registerables);
 
@@ -64,9 +65,9 @@ export const BreakdownPage = () => {
 
     return (
         <ReportsPage title="Breakdown">
-            <Section className="report-filter-panel">
+            <Section className="mini-filter-panel">
                 <ReportTypeSelector value={reportType} onChange={setReportType} />
-                <PeriodSelector onChange={setPeriod} />
+                <MiniPeriodSelector onChange={setPeriod} />
             </Section>
             <Section className="report doughnut">
                 {tag.data?.name && <h3><FontAwesomeIcon className="clickable" icon="circle-chevron-left" size="xs" onClick={goBack} /> {tag.data.name}</h3>}

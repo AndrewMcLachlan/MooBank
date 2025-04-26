@@ -3,7 +3,7 @@ CREATE PROCEDURE dbo.GetTransactionTotalsByTag
     @StartDate date,
     @EndDate date,
     @RootTagId int = NULL,
-    @TransactionType varchar(10) = NULL
+    @TransactionTypeId int = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -71,11 +71,7 @@ BEGIN
     WHERE t.AccountId = @AccountId
       AND t.TransactionTime >= @StartDate AND t.TransactionTime <= @EndDate
       AND t.ExcludeFromReporting = 0
-      AND (
-            @TransactionType IS NULL
-         OR (@TransactionType = 'Credit' AND t.TransactionTypeId % 2 = 1)
-         OR (@TransactionType = 'Debit'  AND t.TransactionTypeId % 2 = 0)
-      );
+      AND (@TransactionTypeId IS NULL OR @TransactionTypeId = 0 OR t.TransactionTypeId  = @TransactionTypeId);
 
     CREATE INDEX IX_SplitTagAmounts_TagId ON #SplitTagAmounts(TagId);
 

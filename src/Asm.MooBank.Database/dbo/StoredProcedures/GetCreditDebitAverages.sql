@@ -8,11 +8,11 @@ BEGIN
     SET NOCOUNT ON;
 
     -- Calculate period span
-    DECLARE @PeriodCount int =
+    DECLARE @PeriodCount int = GREATEST(
         CASE
             WHEN @Period = 'Yearly' THEN DATEDIFF(YEAR, @StartDate, DATEADD(DAY, 1, @EndDate))
             ELSE DATEDIFF(MONTH, @StartDate, DATEADD(DAY, 1, @EndDate))
-        END;
+        END, 1);
 
     -- Use TransactionSplitNetAmounts view to aggregate per transaction
     WITH SplitNet AS (
@@ -21,8 +21,8 @@ BEGIN
     ),
     Aggregated AS (
         SELECT
-            CASE WHEN t.TransactionTypeId % 2 = 0 THEN 2 ELSE 1 END AS TransactionType,
-            SUM(CASE WHEN t.TransactionTypeId % 2 = 0 THEN -sn.NetAmount ELSE sn.NetAmount END) AS Total
+            t.TransactionTypeId AS TransactionType,
+            SUM(CASE WHEN t.TransactionTypeId = 2 THEN -sn.NetAmount ELSE sn.NetAmount END) AS Total
         FROM dbo.[Transaction] t
         JOIN SplitNet sn ON sn.TransactionId = t.TransactionId
         WHERE t.AccountId = @AccountId

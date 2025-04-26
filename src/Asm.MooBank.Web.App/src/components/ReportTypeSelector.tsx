@@ -2,7 +2,7 @@ import React, { HTMLAttributes } from "react";
 import { Button, ButtonGroup, Col, Row } from "react-bootstrap";
 import { transactionTypeFilter } from "store/state";
 
-export const ReportTypeSelector: React.FC<ReportTypeSelectorProps> = ({value, onChange, ...rest}) => {
+export const ReportTypeSelector: React.FC<ReportTypeSelectorProps> = ({ value, onChange, ...rest }) => {
 
     const onClick = (reportType: transactionTypeFilter) => {
         if (value === reportType) return;
@@ -10,14 +10,10 @@ export const ReportTypeSelector: React.FC<ReportTypeSelectorProps> = ({value, on
     }
 
     return (
-        <Row {...rest}>
-            <Col xl="4">
-                <ButtonGroup>
-                    <Button variant={value == "Credit" ? "primary" : "outline-primary"} onClick={() => onClick("Credit")}>Income</Button>
-                    <Button variant={value == "Debit" ? "primary" : "outline-primary"} onClick={() => onClick("Debit")}>Expense</Button>
-                </ButtonGroup>
-            </Col>
-        </Row>
+        <ButtonGroup className="btn-group-form" aria-label="Filter by income or expense">
+            <Button variant={value == "Credit" ? "primary" : "outline-primary"} onClick={() => onClick("Credit")}>Income</Button>
+            <Button variant={value == "Debit" ? "primary" : "outline-primary"} onClick={() => onClick("Debit")}>Expense</Button>
+        </ButtonGroup>
     );
 }
 

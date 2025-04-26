@@ -21,12 +21,6 @@
     }
 }
 
-.report-filter-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
 .mini-filter-panel {
     display: flex;
     flex-direction: row;

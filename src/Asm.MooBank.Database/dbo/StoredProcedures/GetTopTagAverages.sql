@@ -3,16 +3,16 @@ CREATE PROCEDURE dbo.GetTopTagAverages
     @StartDate date,
     @EndDate date,
     @Period varchar(10) = 'Monthly',   -- 'Monthly' or 'Yearly'
-    @TransactionType int = 2         -- 1 = Credit, 2 = Debit, NULL = All
+    @TransactionTypeId int = 2         -- 1 = Credit, 2 = Debit, NULL = All
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    DECLARE @PeriodCount int =
+    DECLARE @PeriodCount int = GREATEST(
         CASE
             WHEN @Period = 'Yearly' THEN DATEDIFF(YEAR, @StartDate, DATEADD(DAY, 1, @EndDate))
             ELSE DATEDIFF(MONTH, @StartDate, DATEADD(DAY, 1, @EndDate))
-        END;
+        END, 1);
 
     -- 1. Get eligible tags
     SELECT t.Id, t.Name
@@ -56,11 +56,7 @@ BEGIN
     WHERE tx.AccountId = @AccountId
       AND tx.TransactionTime >= @StartDate AND tx.TransactionTime <= @EndDate
       AND tx.ExcludeFromReporting = 0
-      AND (
-            @TransactionType IS NULL
-         OR (@TransactionType = 1 AND tx.TransactionTypeId % 2 = 1)
-         OR (@TransactionType = 2 AND tx.TransactionTypeId % 2 = 0)
-      );
+      AND (@TransactionTypeId IS NULL OR @TransactionTypeId = 0 OR tx.TransactionTypeId  = @TransactionTypeId);
 
     -- 4. Aggregate by tag
     SELECT

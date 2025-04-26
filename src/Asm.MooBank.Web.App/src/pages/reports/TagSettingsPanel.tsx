@@ -2,7 +2,7 @@ import React from "react";
 import { Tag, TagSettings } from "models";
 import { Form } from "react-bootstrap";
 
-export const TagSettingsPanel:React.FC<TagSettingsPanelProps> = ({tag, onChange}) => {
+export const TagSettingsPanel: React.FC<TagSettingsPanelProps> = ({ tag, onChange }) => {
 
     if (!tag?.settings) return null;
 
@@ -11,11 +11,11 @@ export const TagSettingsPanel:React.FC<TagSettingsPanelProps> = ({tag, onChange}
     }
 
     return (
-        <section className="tag-settings">
+        <>
             {tag.settings.applySmoothing &&
-                <Form.Check label="Smooth results" onChange={(e) => settingChanged({...tag.settings, applySmoothing: e.currentTarget.checked})} />
+                <Form.Switch label="Smooth results" onChange={(e) => settingChanged({ ...tag.settings, applySmoothing: e.currentTarget.checked })} />
             }
-        </section>
+        </>
     );
 }
 
