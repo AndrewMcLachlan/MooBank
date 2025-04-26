@@ -144,6 +144,7 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
                 PurchaseDate = parsed.PurchaseDate,
                 TransactionTime = transactionTime.ToStartOfDay(),
                 TransactionType = transactionType,
+                TransactionSubType = parsed.TransactionSubType,
                 Source = "ING Import",
             };
 
@@ -191,6 +192,7 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
             };
             raw.Transaction.Reference = parsed.Reference;
             raw.Transaction.PurchaseDate = parsed.PurchaseDate;
+            raw.Transaction.TransactionSubType = parsed.TransactionSubType;
             raw.Transaction.TransactionTime = raw.Date.ToStartOfDay();
 
         }

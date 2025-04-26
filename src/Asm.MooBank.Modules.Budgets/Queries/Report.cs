@@ -14,7 +14,7 @@ internal class ReportHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, 
 
         var budgetAccounts = await accounts.Where(a => a.IncludeInBudget && user.Accounts.Contains(a.Id)).Select(a => a.Id).ToArrayAsync(cancellationToken);
 
-        var budgetTransactions = await transactions.Where(t => budgetAccounts.Contains(t.AccountId) && TransactionTypes.Debit.Contains(t.TransactionType) && !t.ExcludeFromReporting && t.TransactionTime.Year == request.Year).ToArrayAsync(cancellationToken);
+        var budgetTransactions = await transactions.Where(t => budgetAccounts.Contains(t.AccountId) && t.TransactionType == TransactionType.Debit && !t.ExcludeFromReporting && t.TransactionTime.Year == request.Year).ToArrayAsync(cancellationToken);
 
         var months = budget.ToMonths();
 

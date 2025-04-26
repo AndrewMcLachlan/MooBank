@@ -6,13 +6,9 @@ using Microsoft.EntityFrameworkCore;
 namespace Asm.MooBank.Institution.Ing.Domain;
 
 [AggregateRoot]
-internal class TransactionRaw : KeyedEntity<Guid>
+internal class TransactionRaw([DisallowNull] Guid id) : KeyedEntity<Guid>(id)
 {
     public TransactionRaw() : this(Guid.NewGuid())
-    {
-    }
-
-    public TransactionRaw([DisallowNull] Guid id) : base(id)
     {
     }
 
@@ -21,6 +17,7 @@ internal class TransactionRaw : KeyedEntity<Guid>
     public Guid AccountId { get; set; }
 
     public DateOnly Date { get; set; }
+
     public string? Description { get; set; } = null!;
 
     [Precision(12, 4)]

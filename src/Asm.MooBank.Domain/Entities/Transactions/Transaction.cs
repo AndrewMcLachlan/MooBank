@@ -110,7 +110,7 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
         decimal sum = Splits.Sum(s => s.GetNetAmount());
         sum -= OffsetFor.Sum(o => o.Amount);
 
-        if (TransactionType.IsDebit())
+        if (TransactionType == TransactionType.Debit)
         {
             sum = -sum;
         }

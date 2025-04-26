@@ -50,16 +50,16 @@ public static class ReportTypeExtensions
     public static Expression<Func<Domain.Entities.Transactions.Transaction, bool>> ToTransactionFilterExpression(this ReportType reportType) =>
         (TransactionFilterType)reportType switch
         {
-            ReportType.Debit => (t) => TransactionTypes.Debit.Contains(t.TransactionType),
-            ReportType.Credit => (t) => TransactionTypes.Credit.Contains(t.TransactionType),
+            ReportType.Debit => (t) => t.TransactionType == TransactionType.Debit,
+            ReportType.Credit => (t) => t.TransactionType == TransactionType.Credit,
             _ => (t) => true
         };
 
     public static Func<Domain.Entities.Transactions.Transaction, bool> ToTransactionFilter(this ReportType reportType) =>
         (TransactionFilterType)reportType switch
         {
-            ReportType.Debit => (t) => TransactionTypes.Debit.Contains(t.TransactionType),
-            ReportType.Credit => (t) => TransactionTypes.Credit.Contains(t.TransactionType),
+            ReportType.Debit => (t) => t.TransactionType == TransactionType.Debit,
+            ReportType.Credit => (t) => t.TransactionType == TransactionType.Credit,
             _ => (t) => true
         };
 

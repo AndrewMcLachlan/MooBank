@@ -1,5 +1,4 @@
-﻿using Asm.MooBank.Domain.Entities.Transactions;
-using Asm.MooBank.Institution.Ing.Domain;
+﻿using Asm.MooBank.Institution.Ing.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

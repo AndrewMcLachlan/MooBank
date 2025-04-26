@@ -10,6 +10,4 @@ internal class TransactionRawRepository(MooBankContext context) : Asm.Domain.Inf
 
     public async Task<IEnumerable<TransactionRaw>> GetUnprocessed(IEnumerable<Guid> transactionIds, CancellationToken cancellationToken = default) =>
         await Entities.Where(t => !transactionIds.Contains(t.Id)).ToArrayAsync(cancellationToken);
-
-
 }

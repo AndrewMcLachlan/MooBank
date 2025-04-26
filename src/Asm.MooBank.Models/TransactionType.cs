@@ -13,14 +13,3 @@ public enum TransactionType
     [Display(Name = "Debit")]
     Debit = 2,
 }
-
-public static class TransactionTypes
-{
-    public static readonly IEnumerable<TransactionType> Credit = [TransactionType.Credit];
-
-    public static readonly IEnumerable<TransactionType> Debit = [TransactionType.Debit];
-
-    public static bool IsCredit(this TransactionType type) => Credit.Contains(type);
-
-    public static bool IsDebit(this TransactionType type) => Debit.Contains(type);
-}

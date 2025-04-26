@@ -26,7 +26,7 @@ internal class ReportForMonthBreakdownHandler(IQueryable<Domain.Entities.Budget.
         // Get expense transactions for the given year and month.
         var budgetTransactions = await transactions.Specify(new IncludeSplitsSpecification()).Where(t =>
                 budgetAccounts.Contains(t.AccountId) &&
-                TransactionTypes.Debit.Contains(t.TransactionType) &&
+                t.TransactionType == TransactionType.Debit &&
                 !t.ExcludeFromReporting &&
                 t.TransactionTime.Year == query.Year && t.TransactionTime.Month == query.Month
             ).ToArrayAsync(cancellationToken);
@@ -98,7 +98,7 @@ public static class TagExtensions
             yield return new TagHierarchy(tag)
             {
                 Ancestors = relationships.Where(r => r.Id == tag.Id).Select(r => r.ParentId).ToArray(),
-                Descendants = relationships.Where(r => r.ParentId == tag.Id).Select(r => r.Id).ToArray()
+                Descendants = relationships.Where(r => r.ParentId == tag.Id).Select(r => r.Id).ToArray(),
             };
         }
     }

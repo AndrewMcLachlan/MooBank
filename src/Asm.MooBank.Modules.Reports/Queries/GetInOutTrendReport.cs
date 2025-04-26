@@ -16,8 +16,8 @@ internal class GetInOutTrendReportHandler(IQueryable<Transaction> transactions) 
     {
         var groupedQuery = await transactions.Specify(new IncludeSplitsAndOffsetsSpecification()).WhereByReportQuery(request).GroupBy(t => t.TransactionType).ToListAsync(cancellationToken);
 
-        var income = GetTrendPoints(groupedQuery.Where(g => g.Key.IsCredit()).SelectMany(g => g.AsQueryable()));
-        var expenses = GetTrendPoints(groupedQuery.Where(g => g.Key.IsDebit()).SelectMany(g => g.AsQueryable()));
+        var income = GetTrendPoints(groupedQuery.Where(g => g.Key == TransactionType.Credit).SelectMany(g => g.AsQueryable()));
+        var expenses = GetTrendPoints(groupedQuery.Where(g => g.Key == TransactionType.Debit).SelectMany(g => g.AsQueryable()));
 
         return new()
         {

@@ -19,7 +19,7 @@ internal class ReportForMonthBreakdownUnbudgetedHandler(IQueryable<Domain.Entiti
 
         var budgetTransactions = await transactions.Specify(new IncludeSplitsSpecification()).Where(t =>
                 budgetAccounts.Contains(t.AccountId) &&
-                TransactionTypes.Debit.Contains(t.TransactionType) &&
+                t.TransactionType == TransactionType.Debit &&
                 !t.ExcludeFromReporting &&
                 t.TransactionTime.Year == query.Year && t.TransactionTime.Month == query.Month
             ).ToArrayAsync(cancellationToken);

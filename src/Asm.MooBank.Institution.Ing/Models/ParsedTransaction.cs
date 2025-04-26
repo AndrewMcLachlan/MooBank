@@ -1,4 +1,6 @@
-﻿namespace Asm.MooBank.Domain.Entities.Ing;
+﻿using Asm.MooBank.Models;
+
+namespace Asm.MooBank.Institution.Ing.Models;
 
 internal record ParsedTransaction
 {
@@ -18,4 +20,5 @@ internal record ParsedTransaction
 
     public short? Last4Digits { get; set; }
 
+    public TransactionSubType? TransactionSubType { get; set; }
 }

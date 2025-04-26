@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
-using Asm.MooBank.Domain.Entities.Ing;
+using Asm.MooBank.Institution.Ing.Models;
 
 namespace Asm.MooBank.Institution.Ing.Importers;
 internal partial class TransactionParser
@@ -60,6 +60,7 @@ internal partial class TransactionParser
             parsed.PurchaseType = "Visa";
             parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
             parsed.Last4Digits = Int16.Parse(match.Groups[5].Value);
+            parsed.TransactionSubType = MooBank.Models.TransactionSubType.Visa;
             return parsed;
         }
 
@@ -73,6 +74,7 @@ internal partial class TransactionParser
             parsed.PurchaseType = "Visa";
             parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
             parsed.Last4Digits = Int16.Parse(match.Groups[6].Value);
+            parsed.TransactionSubType = MooBank.Models.TransactionSubType.Visa;
             return parsed;
         }
 
@@ -84,6 +86,7 @@ internal partial class TransactionParser
             parsed.PurchaseType = "Direct Debit";
             parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
             parsed.Reference = match.Groups[3].Value.Trim();
+            parsed.TransactionSubType = MooBank.Models.TransactionSubType.DirectDebit;
             return parsed;
         }
 
@@ -95,6 +98,7 @@ internal partial class TransactionParser
             parsed.PurchaseType = "Internal Transfer";
             parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
             parsed.Reference = match.Groups[3].Value.Trim();
+            parsed.TransactionSubType = MooBank.Models.TransactionSubType.Transfer;
             return parsed;
         }
 
@@ -107,6 +111,7 @@ internal partial class TransactionParser
             parsed.PurchaseType = "EFTPOS";
             parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
             parsed.Last4Digits = Int16.Parse(match.Groups[5].Value);
+            parsed.TransactionSubType = MooBank.Models.TransactionSubType.Eftpos;
             return parsed;
         }
 
@@ -118,6 +123,7 @@ internal partial class TransactionParser
             parsed.PurchaseType = "EFTPOS";
             parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
             parsed.Last4Digits = Int16.Parse(match.Groups[6].Value);
+            parsed.TransactionSubType = MooBank.Models.TransactionSubType.Eftpos;
             return parsed;
         }
 
@@ -163,6 +169,7 @@ internal partial class TransactionParser
             parsed.PurchaseType = "Osko";
             parsed.ReceiptNumber = Int32.Parse(match.Groups[4].Value);
             parsed.Reference = match.Groups[6].Value.Trim();
+            parsed.TransactionSubType = MooBank.Models.TransactionSubType.Osko;
             return parsed;
         }
 
@@ -183,6 +190,7 @@ internal partial class TransactionParser
             parsed.PurchaseType = "BPAY";
             parsed.Description = $"{match.Groups[1].Value.Trim()} - {match.Groups[3].Value.Trim()}";
             parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
+            parsed.TransactionSubType = MooBank.Models.TransactionSubType.Bpay;
             return parsed;
         }
 
@@ -194,6 +202,7 @@ internal partial class TransactionParser
             parsed.PurchaseType = "ATM";
             parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
             parsed.Last4Digits = Int16.Parse(match.Groups[6].Value);
+            parsed.TransactionSubType = MooBank.Models.TransactionSubType.Atm;
             return parsed;
         }
 
