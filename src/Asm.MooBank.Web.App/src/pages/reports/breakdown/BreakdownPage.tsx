@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useTag } from "services";
 import { ReportsPage } from "../ReportsPage";
@@ -7,7 +7,6 @@ import { Section } from "@andrewmclachlan/mooapp";
 import { Chart as ChartJS, registerables } from "chart.js";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PeriodSelector } from "components/PeriodSelector";
 import { ReportTypeSelector } from "components/ReportTypeSelector";
 import { Period } from "helpers/dateFns";
 import { useNavigate, useParams } from "react-router";
@@ -15,6 +14,7 @@ import { Breakdown } from "./Breakdown";
 import { transactionTypeFilter } from "store/state";
 import { TagValue } from "models/reports";
 import { MiniPeriodSelector } from "components/MiniPeriodSelector";
+import { getPeriod } from "hooks";
 
 ChartJS.register(...registerables);
 
@@ -25,7 +25,7 @@ export const BreakdownPage = () => {
     const navigate = useNavigate();
 
     const [reportType, setReportType] = useState<transactionTypeFilter>("Debit");
-    const [period, setPeriod] = useState<Period>({ startDate: null, endDate: null });
+    const [period, setPeriod] = useState<Period>(getPeriod());
     const [selectedTagId, setSelectedTagId] = useState<number | undefined>(undefined);
     const [previousTagIds, setPreviousTagIds] = useState<number[]>([]);
     const tag = useTag(selectedTagId ?? 0);

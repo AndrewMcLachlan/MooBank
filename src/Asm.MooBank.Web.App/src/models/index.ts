@@ -10,6 +10,7 @@ export * from "./Institution";
 export * from "./Instrument";
 export * from "./Layout";
 export * from "./ListItem";
+export * from "./PeriodOptions";
 export * from "./stock-holding/StockHolding";
 export * from "./stock-holding/StockTransaction";
 export * from "./Transaction";

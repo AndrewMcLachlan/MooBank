@@ -2,72 +2,18 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 
 import { format } from "date-fns/format";
 
-import { FormGroup, options, PeriodSelectorProps } from ".";
-import { Button, Col, Form, Row } from "react-bootstrap";
-import { Period, allTime, last12Months, last3Months, last6Months, lastMonth, lastYear, previousMonth, thisMonth, thisYear } from "helpers/dateFns";
-import { usePeriod } from "hooks";
-import { useLocalStorage } from "@andrewmclachlan/mooapp";
+import { PeriodSelectorProps, usePeriodSelector } from ".";
+import { Button, Form } from "react-bootstrap";
+import { periodOptions } from "models";
 
 export const MiniPeriodSelector: React.FC<PeriodSelectorProps> = ({ instant = false, cacheKey = "period-id", ...props }) => {
 
-    const [customPeriod, setCustomPeriod] = usePeriod();
-    const [selectedPeriod, setSelectedPeriod] = useLocalStorage(cacheKey, "1");
-    const [period, setPeriod] = useState<Period>(options.find(o => o.value === selectedPeriod) ?? selectedPeriod === "-1" ? customPeriod : lastMonth);
-    const [customStart, setCustomStart] = useState<Date>(customPeriod.startDate);
-    const [customEnd, setCustomEnd] = useState<Date>(customPeriod.endDate);
-
-    const changePeriod = (e: ChangeEvent<HTMLSelectElement>) => {
-        const index = e.currentTarget.selectedIndex;
-        const option = options[index];
-        setSelectedPeriod(option?.value ?? "-1");
-
-    }
-
-    useEffect(() => {
-        if (selectedPeriod !== "-1") {
-            setPeriod(options.find(o => o.value === selectedPeriod) ?? lastMonth);
-            return;
-        }
-
-        if (selectedPeriod === "-1" && instant) {
-            customPeriodGo();
-        }
-    }, [selectedPeriod]);
-
-    useEffect(() => {
-        if (selectedPeriod === "-1") {
-            setPeriod(customPeriod);
-        }
-    }, [customPeriod]);
-
-    const customPeriodGo = () => {
-        setCustomPeriod({ startDate: customStart, endDate: customEnd });
-    }
-
-    const onCustomStartChange = (value: Date) => {
-        setCustomStart(value);
-
-        if (instant) {
-            setCustomPeriod({ startDate: value, endDate: customEnd });
-        }
-    }
-
-    const onCustomEndChange = (value: Date) => {
-        setCustomEnd(value);
-
-        if (instant) {
-            setCustomPeriod({ startDate: customStart, endDate: value });
-        }
-    }
-
-    useEffect(() => {
-        props.onChange?.(period);
-    }, [period]);
+    const {changePeriod, selectedPeriod, customStart, onCustomStartChange, customEnd, onCustomEndChange, customPeriodGo} = usePeriodSelector({instant, cacheKey, ...props});
 
     return (
         <>
             <Form.Select id="period" onChange={changePeriod} value={selectedPeriod}>
-                {options.map((o, index) =>
+                {periodOptions.map((o, index) =>
                     <option value={o.value} key={index}>{o.label}</option>
                 )}
                 <option value="-1">Custom</option>

@@ -12,6 +12,7 @@ import { ReportTypeSelector } from "components/ReportTypeSelector";
 import { chartColours } from "../../helpers/chartColours";
 import { transactionTypeFilter } from "store/state";
 import { MiniPeriodSelector } from "components/MiniPeriodSelector";
+import { getPeriod } from "hooks";
 
 ChartJS.register(...registerables);
 
@@ -20,7 +21,7 @@ export const ByTag = () => {
     const accountId = useIdParams();
 
     const [reportType, setReportType] = useState<transactionTypeFilter>("Debit");
-    const [period, setPeriod] = useState<Period>({ startDate: null, endDate: null });
+    const [period, setPeriod] = useState<Period>(getPeriod());
 
     const report = useByTagReport(accountId!, period?.startDate, period?.endDate, reportType);
 

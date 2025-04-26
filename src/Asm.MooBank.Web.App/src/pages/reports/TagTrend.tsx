@@ -18,6 +18,7 @@ import { ReportsPage } from "./ReportsPage";
 import { TagSettingsPanel } from "./TagSettingsPanel";
 import { transactionTypeFilter } from "store/state";
 import { MiniPeriodSelector } from "components/MiniPeriodSelector";
+import { getPeriod } from "hooks";
 
 ChartJS.register(...registerables);
 ChartJS.register(chartTrendline);
@@ -30,7 +31,7 @@ export const TagTrend: React.FC = () => {
     const { id: accountId, tagId } = useParams<{ id: string, tagId: string }>();
 
     const [reportType, setReportType] = useState<transactionTypeFilter>("Debit");
-    const [period, setPeriod] = useState<Period>({ startDate: null, endDate: null });
+    const [period, setPeriod] = useState<Period>(getPeriod());
     const [selectedTagId, setSelectedTagId] = useState<number>(tagId ? Number(tagId) : 1);
     const [settings, setSettings] = useState<TrendReportSettings>(defaultSettings);
     const report = useTagTrendReport(accountId!, period?.startDate, period?.endDate, reportType, selectedTagId, settings);

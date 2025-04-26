@@ -8,7 +8,6 @@ import chartTrendline from "chartjs-plugin-trendline";
 
 import { differenceInMonths } from "date-fns";
 
-import { PeriodSelector } from "components/PeriodSelector";
 import { Period, subtractYear } from "helpers/dateFns";
 import { InOut } from "./InOut";
 import { InOutTrend } from "./InOutTrend";
@@ -23,7 +22,7 @@ export const InOutPage = () => {
 
     const accountId = useIdParams();
 
-    const [period, setPeriod] = useState<Period>({ startDate: null, endDate: null });
+    const [period, setPeriod] = useState<Period>(getPeriod());
 
     const difference = Math.abs(differenceInMonths(period.startDate, period.endDate));
     const col = 6;
