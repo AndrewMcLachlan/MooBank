@@ -1,66 +1,70 @@
-import React, { useState } from "react";
-import { Form, Button } from "react-bootstrap";
+import React from "react";
+import { Button, Modal } from "react-bootstrap";
+import { useForm } from "react-hook-form";
+
+import { Form, SectionForm, } from "@andrewmclachlan/mooapp";
+
+import { useAccount } from "components";
 import * as Models from "models";
-import { useCreateTransaction } from "services";
-import { useNavigate } from "react-router";
-import { Section } from "@andrewmclachlan/mooapp";
-import { AccountPage, useAccount } from "components";
-import { useAccountRoute } from "hooks/useAccountRoute";
+import { useCreateTransaction, useUpdateBalance } from "services";
 
-export const AddTransaction = () => {
 
-    const navigate = useNavigate();
+export const AddTransaction: React.FC<AddTransactionProps> = ({ show, onClose, balanceUpdate }) => {
 
     const account = useAccount();
-    const route = useAccountRoute();
-
-
-    const [transaction, setTransaction] = useState<Models.CreateTransaction>(Models.emptyTransaction);
 
     const addTransaction = useCreateTransaction();
+    const updateBalance = useUpdateBalance();
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.stopPropagation();
-        e.preventDefault();
+    const handleSubmit = (transaction: Models.Transaction) => {
 
-        addTransaction(account.id, transaction);
+        if (!!balanceUpdate) {
+            updateBalance(account.id, transaction);
+        } else {
+            addTransaction(account.id, transaction);
+        }
 
-        navigate(`${route}/transactions`);
     }
+
+    const form = useForm<Models.Transaction>({ defaultValues: Models.emptyTransaction });
 
     if (!account) return null;
 
     return (
-        <AccountPage title="Add Transaction" breadcrumbs={[{ text: "Add", route: `${route}/transactions/add` }]}>
-            {account &&
-                <>
-                    <Section>
-                        <Form onSubmit={handleSubmit}>
-                            <Form.Group controlId="Amount">
-                                <Form.Label>Amount</Form.Label>
-                                <Form.Control type="number" required maxLength={10} value={transaction.amount} onChange={(e: any) => setTransaction({ ...transaction, amount: e.currentTarget.value })} />
-                                <Form.Control.Feedback type="invalid">Please enter an amount</Form.Control.Feedback>
-                            </Form.Group>
-                            <Form.Group controlId="Date">
-                                <Form.Label>Date</Form.Label>
-                                <Form.Control type="date" required value={transaction.transactionTime} onChange={(e: any) => setTransaction({ ...transaction, transactionTime: e.currentTarget.value })} />
-                                <Form.Control.Feedback type="invalid">Please enter a date</Form.Control.Feedback>
-                            </Form.Group>
-                            <Form.Group controlId="Description">
-                                <Form.Label >Description</Form.Label>
-                                <Form.Control type="text" as="textarea" maxLength={255} value={transaction.description} onChange={(e: any) => setTransaction({ ...transaction, description: e.currentTarget.value })} />
-                                <Form.Control.Feedback type="invalid">Please enter a description</Form.Control.Feedback>
-                            </Form.Group>
-                            <Form.Group controlId="Reference">
-                                <Form.Label>Reference</Form.Label>
-                                <Form.Control type="text" maxLength={150} value={transaction.reference} onChange={(e: any) => setTransaction({ ...transaction, reference: e.currentTarget.value })} />
-                                <Form.Control.Feedback type="invalid">Please enter a description</Form.Control.Feedback>
-                            </Form.Group>
-                            <Button type="submit" variant="primary">Add</Button>
-                        </Form>
-                    </Section>
-                </>
-            }
-        </AccountPage>
+        <Modal show={show} onHide={() => onClose()} size="lg" centered backdrop="static">
+            <Modal.Header closeButton>
+                <Modal.Title>{balanceUpdate ? "Balance Update" : "Add Transaction"}</Modal.Title>
+            </Modal.Header>
+            <Form form={form} onSubmit={handleSubmit}>
+                <Modal.Body>
+                    <Form.Group groupId="amount">
+                        <Form.Label>Amount</Form.Label>
+                        <Form.Input type="number" required maxLength={10} />
+                    </Form.Group>
+                    <Form.Group groupId="transactionTime">
+                        <Form.Label>Date</Form.Label>
+                        <Form.Input type="date" required />
+                    </Form.Group>
+                    <Form.Group groupId="description">
+                        <Form.Label >Description</Form.Label>
+                        <Form.TextArea maxLength={255} />
+                    </Form.Group>
+                    <Form.Group groupId="reference">
+                        <Form.Label>Reference</Form.Label>
+                        <Form.Input type="text" maxLength={150} />
+                    </Form.Group>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="outline-primary" onClick={() => onClose()}>Close</Button>
+                    <Button variant="primary" onClick={form.handleSubmit(handleSubmit)}>Save</Button>
+                </Modal.Footer>
+            </Form>
+        </Modal>
     );
+}
+
+export interface AddTransactionProps {
+    show: boolean;
+    onClose: () => void;
+    balanceUpdate?: boolean;
 }

@@ -1,21 +1,20 @@
 import React from "react";
-import { useNavigate } from "react-router";
-import { Upload, useIdParams, FilesAddedEvent, Section } from "@andrewmclachlan/mooapp";
-import { useAccount, useImportTransactions } from "../../services";
+import { Upload, FilesAddedEvent } from "@andrewmclachlan/mooapp";
+import { useImportTransactions } from "../../services";
 import Button from "react-bootstrap/Button";
 import { useState } from "react";
-import { AccountPage } from "components";
 import { Modal } from "react-bootstrap";
+import { useAccount } from "components";
 
 export const Import: React.FC<ImportProps> = ({ show, accountId, onClose }) => {
 
-    const account = useAccount(accountId);
+    const account = useAccount();
 
     const importTransactions = useImportTransactions();
 
     const [file, setFile] = useState<File>();
 
-    if (!account.data || account.data?.controller !== "Import") {
+    if (account?.controller !== "Import") {
         return null;
     }
 

@@ -12,15 +12,16 @@ import { UpDownArrow } from "@andrewmclachlan/mooicons";
 import { useAccountRoute } from "hooks/useAccountRoute";
 import { Import } from "./Import";
 import { MiniFilterPanel } from "./MiniFilterPanel";
+import { AddTransaction } from "./AddTransaction";
 
 
 export const Transactions: React.FC = () => {
 
     const account = useAccount();
-    const route = useAccountRoute();
 
     const [showImport, setShowImport] = React.useState(false);
     const [compactMode, setCompactMode] = useLocalStorage("compact-mode", false);
+    const [show, setShow] = React.useState(false);
 
     if (!account) return null;
 
@@ -28,10 +29,10 @@ export const Transactions: React.FC = () => {
 
     switch (account.controller) {
         case "Manual":
+        case "Virtual":
             actions = [
                 ...actions,
-                <IconLinkButton key="add" variant="primary" icon="plus" to={`${route}/transactions/add`} relative="route">Add Transaction</IconLinkButton>,
-                <IconLinkButton key="adjust" variant="primary" icon={UpDownArrow as ElementType} to={`${route}/balance`} relative="route">Adjust balance</IconLinkButton>
+                <IconButton key="add" variant="primary" icon="plus" onClick={() => setShow(true)}>Add Transaction</IconButton>,
             ];
             break;
         case "Import":
@@ -46,6 +47,7 @@ export const Transactions: React.FC = () => {
 
     return (
         <AccountPage title="Transactions" actions={actions}>
+            <AddTransaction show={show} onClose={() => setShow(false) } balanceUpdate={false} />
             <SectionRow hidden={compactMode}>
                 <Col xxl={3} xl={12} lg={12} md={12} sm={12}>
                     <AccountSummary />

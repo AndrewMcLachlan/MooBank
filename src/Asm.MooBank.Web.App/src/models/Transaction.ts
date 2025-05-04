@@ -10,8 +10,11 @@ enum TransactionTypesEnum {
     BalanceAdjustment = 5,
 }
 
-export const TransactionTypes = ["Credit", "Debit", "RecurringCredit", "RecurringDebit", "BalanceAdjustment"] as TransactionType[];
-export type TransactionType = "Credit" | "Debit" | "RecurringCredit" | "RecurringDebit" | "BalanceAdjustment";
+//export const TransactionSubTypes = ["Credit", "Debit", "RecurringCredit", "RecurringDebit", "BalanceAdjustment"] as TransactionType[];
+//export type TransactionSubType = "Credit" | "Debit" | "RecurringCredit" | "RecurringDebit" | "BalanceAdjustment";
+
+export const TransactionTypes = ["Credit", "Debit"] as TransactionType[];
+export type TransactionType = "Credit" | "Debit";
 
 
 export const isCredit = (transactionType: TransactionType) => TransactionTypesEnum[transactionType] % 2 === 1;

@@ -12,8 +12,6 @@ export const routes: RouteDefinition = {
                 path: "/accounts/:id", element: <Pages.Account />, children: {
                     manage: { path: "manage", element: <Pages.ManageAccount /> },
                     transactions: { path: "transactions", element: <Pages.Transactions /> },
-                    transactionsAdd: { path: "transactions/add", element: <Pages.AddTransaction /> },
-                    balanceAdjustment: { path: "balance", element: <Pages.BalanceAdjustment /> },
                     virtualCreate: { path: "manage/virtual/create", element: <Pages.CreateVirtualAccount /> },
                     virtualManage: { path: "manage/virtual/:virtualId", element: <Pages.ManageVirtualAccount /> },
                     rules: { path: "rules", element: <Pages.Rules /> },
@@ -29,8 +27,6 @@ export const routes: RouteDefinition = {
                     virtual: {
                         path: "virtual/:virtualId", element: <Pages.VirtualAccount />, children: {
                             transactions: { path: "transactions", element: <Pages.Transactions /> },
-                            transactionsAdd: { path: "transactions/add", element: <Pages.AddTransaction /> },
-                            balanceAdjustment: { path: "balance", element: <Pages.BalanceAdjustment /> },
                             manage: { path: "manage", element: <Pages.ManageVirtualAccount /> },
                         }
                     },
