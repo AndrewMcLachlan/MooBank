@@ -4,7 +4,7 @@ import classNames from "classnames";
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 
-import { getBalanceString, numberClassName } from "helpers";
+import { numberClassName } from "helpers";
 
 import * as Models from "models";
 

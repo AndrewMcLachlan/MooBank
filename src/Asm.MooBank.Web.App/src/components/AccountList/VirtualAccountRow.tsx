@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import React, { useEffect, useRef, useState } from "react";
 
-import { getBalanceString, numberClassName } from "helpers";
+import { numberClassName } from "helpers";
 import { emptyGuid, useClickAway } from "@andrewmclachlan/mooapp";
 
 import { InstrumentId, VirtualAccount } from "models";

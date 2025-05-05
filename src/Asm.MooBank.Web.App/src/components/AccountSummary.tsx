@@ -1,14 +1,14 @@
 import React from "react";
 
-import { AccountBalance } from ".";
-import { useAccount } from "./AccountProvider";
 import { Section } from "@andrewmclachlan/mooapp";
 import classNames from "classnames";
 import { format } from "date-fns/format";
 import { parseISO } from "date-fns/parseISO";
-import { useInstitutions } from "services";
-import { KeyValue } from "./KeyValue";
 import { InstitutionAccount } from "models";
+import { useInstitutions } from "services";
+import { useAccount } from "./AccountProvider";
+import { Amount } from "./Amount";
+import { KeyValue } from "./KeyValue";
 
 export const AccountSummary: React.FC<AccountSummaryProps> = ({ className, ...props }) => {
 
@@ -21,11 +21,11 @@ export const AccountSummary: React.FC<AccountSummaryProps> = ({ className, ...pr
         <Section className={classNames("summary", className)} {...props} header={account.name}>
             <KeyValue>
                 <div>Balance</div>
-                <div className="balance amount"><AccountBalance balance={account.currentBalanceLocalCurrency} /></div>
+                <div className="balance amount"><Amount amount={account.currentBalanceLocalCurrency} /></div>
             </KeyValue>
             <KeyValue hidden={account.currentBalance === account.currentBalanceLocalCurrency || !account.currentBalanceLocalCurrency}>
                 <div>Balance ({account.currency})</div>
-                <div className="balance amount"><AccountBalance balance={account.currentBalance} /></div>
+                <div className="balance amount"><Amount amount={account.currentBalance} /></div>
             </KeyValue>
             <KeyValue className="d-none d-lg-flex">
                 <div>Last Transaction</div>

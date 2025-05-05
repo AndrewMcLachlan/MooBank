@@ -1,4 +1,4 @@
-﻿import { getBalanceString, numberClassName } from "helpers";
+﻿import { numberClassName } from "helpers";
 import React, { useRef, useState } from "react";
 import MD5 from "md5";
 
@@ -9,6 +9,7 @@ import { useNavigate } from "react-router";
 import { useUpdateBalance } from "services";
 import { AccountRowProps } from "./AccountRow";
 import { VirtualAccountRow } from "./VirtualAccountRow";
+import { Amount } from "components/Amount";
 
 export const ManualAccountRow: React.FC<AccountRowProps> = (props) => {
 
@@ -31,12 +32,9 @@ export const ManualAccountRow: React.FC<AccountRowProps> = (props) => {
                 <td className="name">{props.instrument.name}</td>
                 <td className="d-none d-sm-table-cell">{props.instrument.instrumentType}</td>
                 <td className={classNames("amount", "number", numberClassName(props.instrument.currentBalance))} onClick={balanceClick}>
-                    {!editingBalance && getBalanceString(balance)}
+                    {!editingBalance && <Amount amount={balance} />}
                     {editingBalance && <input type="number" value={balance} onChange={balanceChange} onKeyUp={keyUp} />}
                 </td>
-                {/*<td onClick={avBalanceClick} ref={avBalanceRef}> {!editingAvBalance && <span className={props.account.availableBalance < 0 ? " negative" : ""}>{getBalanceString(avBalance)}</span>}
-                {editingAvBalance && <input type="number" value={avBalance} onChange={avBalanceChange} />}
-            </td>*/}
             </tr>
             {props.instrument.virtualInstruments && props.instrument.virtualInstruments.length > 0 && showVirtualAccounts &&
                 props.instrument.virtualInstruments.map(va =>

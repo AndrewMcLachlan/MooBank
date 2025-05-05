@@ -2,7 +2,6 @@ import React from "react";
 import { Spinner } from "react-bootstrap";
 
 import { SectionTable } from "@andrewmclachlan/mooapp";
-import { getBalanceString } from "helpers";
 import { AccountListGroup as Model } from "models";
 import { AccountRow } from "./AccountRow";
 import { Amount } from "components/Amount";
@@ -23,8 +22,6 @@ export const AccountListGroup: React.FC<AccountListGroupProps> = ({ group, isLoa
             </tr>
         </thead>
         <tbody>
-            {//{!isLoading && group && group.instruments.map(a => a.controller === "Manual_BORK" ? <ManualAccountRow key={a.id} instrument={a} /> : <AccountRow key={a.id} instrument={a} />)}
-            }
             {!isLoading && group && group.instruments.map(a => <AccountRow key={a.id} instrument={a} />)}
             {isLoading &&
                 <tr><td colSpan={4} className="spinner">
