@@ -2,7 +2,6 @@ import React from "react";
 import { Section } from "@andrewmclachlan/mooapp";
 import { useStockHolding } from "../StockHoldingProvider"
 import classNames from "classnames";
-import { AccountBalance } from "components";
 import { Amount } from "components/Amount";
 
 export const StockSummary: React.FC<StockSummaryProps> = ({className, ...props}) => {
@@ -15,7 +14,7 @@ export const StockSummary: React.FC<StockSummaryProps> = ({className, ...props})
         <Section className={classNames("summary", className)} {...props} header={stockHolding.name}>
             <div className="key-value">
                 <div>Balance</div>
-                <div className="balance amount"><AccountBalance balance={stockHolding.currentBalance} /></div>
+                <div className="balance amount"><Amount amount={stockHolding.currentBalance} creditdebit /></div>
             </div>
             <div className="key-value">
                 <div>Quantity</div>
