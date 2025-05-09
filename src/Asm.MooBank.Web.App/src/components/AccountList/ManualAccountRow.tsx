@@ -83,7 +83,7 @@ const useComponentState = (props: AccountRowProps) => {
     }
 
     const doUpdateBalance = () => {
-        updateBalance(props.instrument.id, { amount: balance, transactionTime: new Date().toISOString(), description: "Manual Balance Adjustment" });
+        updateBalance.mutateAsync(props.instrument.id, { amount: balance, transactionTime: new Date().toISOString(), description: "Manual Balance Adjustment" });
     }
 
     return {

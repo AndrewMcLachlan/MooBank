@@ -3,13 +3,13 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.2.0" />
-    <PackageVersion Include="Aspire.Hosting.NodeJs" Version="9.2.0" />
-    <PackageVersion Include="Aspire.Hosting.SqlServer" Version="9.2.0" />
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.2.1" />
+    <PackageVersion Include="Aspire.Hosting.NodeJs" Version="9.2.1" />
+    <PackageVersion Include="Aspire.Hosting.SqlServer" Version="9.2.1" />
     <PackageVersion Include="Azure.Identity" Version="1.13.2" />
     <PackageVersion Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.2.0" />
     <PackageVersion Include="Azure.Security.KeyVault.Secrets" Version="4.6.0" />
-    <PackageVersion Include="CommunityToolkit.Aspire.Hosting.SqlDatabaseProjects" Version="9.3.0" />
+    <PackageVersion Include="CommunityToolkit.Aspire.Hosting.SqlDatabaseProjects" Version="9.4.0" />
     <PackageVersion Include="FluentValidation" Version="11.11.0" />
     <PackageVersion Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
     <PackageVersion Include="LazyCache.AspNetCore" Version="2.4.0" />
@@ -31,7 +31,7 @@
     <PackageVersion Include="Microsoft.Extensions.Http" Version="9.0.4" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.4" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Identity.Client" Version="4.70.2" />
+    <PackageVersion Include="Microsoft.Identity.Client" Version="4.71.1" />
     <PackageVersion Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="8.1.1" />
@@ -40,23 +40,23 @@
     <PackageVersion Include="System.Text.Json" Version="9.0.4" />
   </ItemGroup>
   <ItemGroup>
-    <PackageVersion Include="Asm" Version="3.5.460" />
-    <PackageVersion Include="Asm.AspNetCore" Version="3.5.460" />
-    <PackageVersion Include="Asm.AspNetCore.Modules" Version="3.5.460" />
-    <PackageVersion Include="Asm.AspNetCore.Api" Version="3.5.460" />
-    <PackageVersion Include="Asm.Cqrs.AspNetCore" Version="3.5.460" />
-    <PackageVersion Include="Asm.Domain" Version="3.5.460" />
-    <PackageVersion Include="Asm.Domain.Infrastructure" Version="3.5.460" />
-    <PackageVersion Include="Asm.Testing" Version="3.5.460" />
+    <PackageVersion Include="Asm" Version="3.5.468" />
+    <PackageVersion Include="Asm.AspNetCore" Version="3.5.468" />
+    <PackageVersion Include="Asm.AspNetCore.Modules" Version="3.5.468" />
+    <PackageVersion Include="Asm.AspNetCore.Api" Version="3.5.468" />
+    <PackageVersion Include="Asm.Cqrs.AspNetCore" Version="3.5.468" />
+    <PackageVersion Include="Asm.Domain" Version="3.5.468" />
+    <PackageVersion Include="Asm.Domain.Infrastructure" Version="3.5.468" />
+    <PackageVersion Include="Asm.Testing" Version="3.5.468" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="Bogus" Version="35.6.3" />
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
     <PackageVersion Include="Moq" Version="4.20.72" />
-    <PackageVersion Include="Reqnroll.Tools.MsBuild.Generation" Version="2.4.0" />
-    <PackageVersion Include="Reqnroll.xUnit" Version="2.4.0" />
+    <PackageVersion Include="Reqnroll.Tools.MsBuild.Generation" Version="2.4.1" />
+    <PackageVersion Include="Reqnroll.xUnit" Version="2.4.1" />
     <PackageVersion Include="System.Linq.Async" Version="6.0.1" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.2" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.0" />
   </ItemGroup>
 </Project>

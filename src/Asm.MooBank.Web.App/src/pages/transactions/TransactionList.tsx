@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { getNumberOfPages, Pagination, PaginationControls, PageSize, SectionTable } from "@andrewmclachlan/mooapp";
+
 import { useAccount } from "components";
-import { Transaction, TransactionOffset, TransactionSplit } from "models";
-import { useTransactions, useUpdateTransaction } from "services";
+import { Transaction } from "models";
+import { useTransactions } from "services";
 import { State } from "store/state";
 import { TransactionsSlice } from "store/Transactions";
 import { useDebounce } from "use-debounce";
@@ -29,23 +30,15 @@ export const TransactionList: React.FC = () => {
     const totalTransactions = transactionsQuery.data?.total ?? 0;
 
     const numberOfPages = getNumberOfPages(totalTransactions, pageSize);
-
-    const updateTransaction = useUpdateTransaction();
-
-    const onSave = (excludeFromReporting: boolean, notes?: string, splits?: TransactionSplit[], _offsetBy?: TransactionOffset[]) => {
-
-        updateTransaction(selectedTransaction.accountId, selectedTransaction.id, { excludeFromReporting, notes, splits });
-        setShowDetails(false);
-    }
-
+    
     const rowClick = (transaction: Transaction) => () => {
         setSelectedTransaction(transaction);
         setShowDetails(true);
-    }
+    };
 
     return (
         <>
-            <TransactionDetails transaction={selectedTransaction} show={showDetails} onHide={() => setShowDetails(false)} onSave={onSave} />
+            <TransactionDetails transaction={selectedTransaction} show={showDetails} onHide={() => setShowDetails(false)} onSave={() => setShowDetails(false)} />
             <SectionTable striped className="transactions">
                 <TransactionTableHead pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={(_current, newPage) => dispatch(TransactionsSlice.actions.setCurrentPage(newPage))} />
                 <tbody>

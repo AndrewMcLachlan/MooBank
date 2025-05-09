@@ -20,9 +20,9 @@ export const ManageAsset: React.FC = () => {
 
     const asset = useAsset();
 
-    const handleSubmit = (data: Asset) => {
+    const handleSubmit = async (data: Asset) => {
 
-        updateAsset(data);
+        await updateAsset.mutateAsync(data);
 
         navigate("/accounts");
     }
@@ -66,7 +66,7 @@ export const ManageAsset: React.FC = () => {
                     <Form.Check />
                     <Form.Label className="form-check-label">Visible to other family members</Form.Label>
                 </Form.Group>
-                <Button type="submit" variant="primary">Update</Button>
+                <Button type="submit" variant="primary" disabled={updateAsset.isPending}>Save</Button>
             </SectionForm>
         </AssetPage>
     );

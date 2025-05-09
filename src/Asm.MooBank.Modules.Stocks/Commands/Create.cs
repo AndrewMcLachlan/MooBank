@@ -19,7 +19,7 @@ public sealed record Create() : ICommand<Models.StockHolding>
     public Guid? GroupId { get; init; }
 }
 
-internal class CreateHandler(IStockHoldingRepository repository, IUnitOfWork unitOfWork, User user, ISecurity security, ICurrencyConverter currencyConverter) :  ICommandHandler<Create, Models.StockHolding>
+internal class CreateHandler(IStockHoldingRepository repository, IUnitOfWork unitOfWork, User user, ISecurity security, ICurrencyConverter currencyConverter) : ICommandHandler<Create, Models.StockHolding>
 {
     public async ValueTask<Models.StockHolding> Handle(Create command, CancellationToken cancellationToken)
     {
@@ -35,6 +35,7 @@ internal class CreateHandler(IStockHoldingRepository repository, IUnitOfWork uni
             Symbol = command.Symbol,
             ShareWithFamily = command.ShareWithFamily,
             CurrentPrice = command.Price,
+            Controller = Controller.Manual,
         };
 
         entity.SetAccountHolder(user.Id);

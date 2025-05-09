@@ -21,8 +21,7 @@ export const ManageStockHolding: React.FC = () => {
 
     const handleSubmit = (data: StockHolding) => {
 
-
-        updateStockHolding(data);
+        updateStockHolding.mutateAsync(data);
 
         navigate("/accounts");
     }
@@ -65,7 +64,7 @@ export const ManageStockHolding: React.FC = () => {
                     <Form.Check />
                     <Form.Label className="form-check-label">Visible to other family members</Form.Label>
                 </Form.Group>
-                <Button type="submit" variant="primary">Update</Button>
+                <Button type="submit" variant="primary" disabled={updateStockHolding.isPending}>Save</Button>
             </SectionForm>
         </StockHoldingPage>
     );

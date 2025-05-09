@@ -1,15 +1,13 @@
-import React, { ElementType } from "react";
-import { Col, Form, Modal } from "react-bootstrap";
+import React from "react";
+import { Col, Form } from "react-bootstrap";
 
-import { IconButton, IconLinkButton, SectionRow, useLocalStorage } from "@andrewmclachlan/mooapp";
+import { IconButton, SectionRow, useLocalStorage } from "@andrewmclachlan/mooapp";
 
 import { useAccount } from "components";
 import { AccountPage, AccountSummary } from "../../components";
 import { FilterPanel } from "./FilterPanel";
 import { TransactionList } from "./TransactionList";
 
-import { UpDownArrow } from "@andrewmclachlan/mooicons";
-import { useAccountRoute } from "hooks/useAccountRoute";
 import { Import } from "./Import";
 import { MiniFilterPanel } from "./MiniFilterPanel";
 import { AddTransaction } from "./AddTransaction";
@@ -47,7 +45,7 @@ export const Transactions: React.FC = () => {
 
     return (
         <AccountPage title="Transactions" actions={actions}>
-            <AddTransaction show={show} onClose={() => setShow(false) } balanceUpdate={false} />
+            <AddTransaction show={show} onClose={() => setShow(false) } onSave={() => setShow(false) } balanceUpdate={false} />
             <SectionRow hidden={compactMode}>
                 <Col xxl={3} xl={12} lg={12} md={12} sm={12}>
                     <AccountSummary />

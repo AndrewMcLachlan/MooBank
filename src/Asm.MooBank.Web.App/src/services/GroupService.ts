@@ -12,34 +12,32 @@ export const useCreateGroup = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutate} = useApiPost<Group, null, Group>(() => "api/groups", {
+    const { mutateAsync, ...rest } = useApiPost<Group, null, Group>(() => "api/groups", {
         onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: [groupsKey]});
+            queryClient.invalidateQueries({ queryKey: [groupsKey] });
         }
     });
 
-    const create = (group: Group) => {
-        mutate([null, group]);
+    return {
+        mutateAsync: (group: Group) => {
+            mutateAsync([null, group]);
+        }, ...rest
     };
-
-    return create;
 }
-
-
 
 export const useUpdateGroup = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutate} = useApiPatch<Group, string, Group>((id) => `api/groups/${id}`, {
+    const { mutateAsync, ...rest } = useApiPatch<Group, string, Group>((id) => `api/groups/${id}`, {
         onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: [groupsKey]});
+            queryClient.invalidateQueries({ queryKey: [groupsKey] });
         }
     });
 
-    const update = (group: Group) => {
-        mutate([group.id, group]);
+    return {
+        mutateAsync: (group: Group) => {
+            mutateAsync([group.id, group]);
+        }, ...rest
     };
-
-    return update;
 }

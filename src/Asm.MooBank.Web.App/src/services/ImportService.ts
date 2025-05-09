@@ -7,7 +7,7 @@ export const useImportTransactions = () => {
 
     const client = useQueryClient();
 
-    const { mutateAsync } = useApiPostFile<{ instrumentId: string, file: File }>((variables) => `api/instruments/${variables.instrumentId}/import`, {
+    const { mutateAsync, ...rest } = useApiPostFile<{ instrumentId: string, file: File }>((variables) => `api/instruments/${variables.instrumentId}/import`, {
         onSuccess(data, variables, context) {
             client.invalidateQueries({ queryKey: [accountsKey, variables.instrumentId] });
         },
@@ -22,7 +22,7 @@ export const useImportTransactions = () => {
 
 export const useReprocessTransactions = () => {
 
-    const { mutateAsync } = useApiPostEmpty<unknown, { instrumentId: string }>((variables) => `api/instruments/${variables.instrumentId}/import/reprocess`);
+    const { mutateAsync, ...rest } = useApiPostEmpty<unknown, { instrumentId: string }>((variables) => `api/instruments/${variables.instrumentId}/import/reprocess`);
 
     const reprocessTransactions = (instrumentId: string) => {
         return toast.promise(mutateAsync({ instrumentId }), { pending: "Requesting reprocessing", success: "Reprocessing started", error: "Failed to reprocess transactions" });

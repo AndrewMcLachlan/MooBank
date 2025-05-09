@@ -18,17 +18,17 @@ interface TransactionVariables {
 }
 
 interface TransactionTagVariables extends TransactionVariables {
-     tag: Tag,
+    tag: Tag,
 }
 
 export const useTransactions = (accountId: string, filter: TransactionsFilter, pageSize: number, pageNumber: number, sortField: string, sortDirection: SortDirection): UseQueryResult<PagedResult<Models.Transaction>> => {
 
     const sortString = sortField && sortField !== null && sortField !== "" ? `sortField=${sortField}&sortDirection=${sortDirection}` : "";
     let filterString = filter.description ? `&filter=${filter.description}` : "";
-        filterString += filter.start ? `&start=${filter.start}` : "";
-        filterString += filter.end ? `&end=${filter.end}` : "";
-        filterString += filter.transactionType ? `&transactionType=${filter.transactionType}` : "";
-        filter.tags?.forEach(t => filterString += `&tagids=${t}`);
+    filterString += filter.start ? `&start=${filter.start}` : "";
+    filterString += filter.end ? `&end=${filter.end}` : "";
+    filterString += filter.transactionType ? `&transactionType=${filter.transactionType}` : "";
+    filter.tags?.forEach(t => filterString += `&tagids=${t}`);
 
     let queryString = sortString + filterString;
     queryString = queryString.startsWith("&") ? queryString.substring(1) : queryString;
@@ -53,7 +53,7 @@ export const useInvalidateSearch = (transactionId: string) => {
 
     const queryClient = useQueryClient();
 
-    return () => queryClient.invalidateQueries({ queryKey: [transactionKey, transactionId]});
+    return () => queryClient.invalidateQueries({ queryKey: [transactionKey, transactionId] });
 }
 
 export const useUpdateTransaction = () => {
@@ -62,10 +62,10 @@ export const useUpdateTransaction = () => {
 
     const { currentPage, pageSize, filter, sortField, sortDirection } = useSelector((state: State) => state.transactions);
 
-    const { mutateAsync } = useApiPatch<Transaction, TransactionVariables, Models.TransactionUpdate>((variables) => `api/accounts/${variables.accountId}/transactions/${variables.transactionId}`, {
+    const { mutateAsync, ...rest } = useApiPatch<Transaction, TransactionVariables, Models.TransactionUpdate>((variables) => `api/accounts/${variables.accountId}/transactions/${variables.transactionId}`, {
         onMutate: ([variables, data]) => {
 
-            const transactions = {...queryClient.getQueryData<PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection])};
+            const transactions = { ...queryClient.getQueryData<PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection]) };
             if (!transactions?.results) return;
 
             const transaction = transactions.results.find(tr => tr.id === variables.transactionId);
@@ -80,13 +80,18 @@ export const useUpdateTransaction = () => {
 
         },
         onSettled: (_data, _error, [_variables]) => {
-            queryClient.invalidateQueries({ queryKey: [transactionKey]});
+            queryClient.invalidateQueries({ queryKey: [transactionKey] });
         }
     });
 
-    return (accountId: string, transactionId: string, transaction: Models.TransactionUpdate) =>
-        toast.promise(mutateAsync([{accountId, transactionId}, transaction]), { pending: "Updating transaction", success: "Transaction updated", error: "Failed to update transaction" });
-}
+
+
+    return {
+        mutateAsync: (accountId: string, transactionId: string, transaction: Models.TransactionUpdate) =>
+            toast.promise(mutateAsync([{ accountId, transactionId }, transaction]), { pending: "Updating transaction", success: "Transaction updated", error: "Failed to update transaction" }),
+        ...rest,
+    };
+};
 
 export const useAddTransactionTag = () => {
 
@@ -97,7 +102,7 @@ export const useAddTransactionTag = () => {
     return useApiPutEmpty<Models.Transaction, TransactionTagVariables>((variables) => `api/accounts/${variables.accountId}/transactions/${variables.transactionId}/tag/${variables.tag.id}`, {
         onMutate: (variables) => {
 
-            const transactions = {...queryClient.getQueryData<PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection])};
+            const transactions = { ...queryClient.getQueryData<PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection]) };
             if (!transactions?.results) return;
 
             const transaction = transactions.results.find(tr => tr.id === variables.transactionId);
@@ -108,7 +113,7 @@ export const useAddTransactionTag = () => {
 
         },
         onSettled: (_data, _error, _variables) => {
-            queryClient.invalidateQueries({ queryKey: [transactionKey]});
+            queryClient.invalidateQueries({ queryKey: [transactionKey] });
         }
     });
 }
@@ -122,7 +127,7 @@ export const useRemoveTransactionTag = () => {
     return useApiDelete<TransactionTagVariables>((variables) => `api/accounts/${variables.accountId}/transactions/${variables.transactionId}/tag/${variables.tag.id}`, {
         onMutate: (variables) => {
 
-            const transactions = {...queryClient.getQueryData<PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection])};
+            const transactions = { ...queryClient.getQueryData<PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection]) };
             if (!transactions) return;
 
             const transaction = transactions.results.find(tr => tr.id === variables.transactionId);
@@ -132,7 +137,7 @@ export const useRemoveTransactionTag = () => {
             queryClient.setQueryData<PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection], transactions);
         },
         onSettled: (_data, _error, _variables) => {
-            queryClient.invalidateQueries({ queryKey: [transactionKey]});
+            queryClient.invalidateQueries({ queryKey: [transactionKey] });
         }
     });
 }
@@ -141,13 +146,19 @@ export const useCreateTransaction = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutateAsync } = useApiPost<Transaction, { accountId: string }, Models.CreateTransaction>((variables) => `api/accounts/${variables.accountId}/transactions`, {
-        onSettled: (_data ,_error ,[variables]) => {
-            queryClient.invalidateQueries({ queryKey: [transactionKey]});
-            queryClient.refetchQueries({ queryKey: [accountsKey, variables.accountId]});
+    const { mutateAsync, ...rest } = useApiPost<Transaction, { accountId: string }, Models.CreateTransaction>((variables) => `api/accounts/${variables.accountId}/transactions`, {
+        onSettled: (_data, _error, [variables]) => {
+            console.debug("Transaction created", variables);
+            queryClient.invalidateQueries({ queryKey: [transactionKey] });
+
+            // TODO: Fix because this is a virtual account Id, and the query key is for the parent account.
+            queryClient.refetchQueries({ queryKey: [accountsKey, variables.accountId] });
         }
     });
 
-    return (accountId:string, transaction: Models.CreateTransaction) =>
-        toast.promise(mutateAsync([{accountId}, transaction]), { pending: "Creating transaction", success: "Transaction created", error: "Failed to create transaction" });
+    return {
+        mutateAsync: (accountId: string, transaction: Models.CreateTransaction) =>
+            toast.promise(mutateAsync([{ accountId }, transaction]), { pending: "Creating transaction", success: "Transaction created", error: "Failed to create transaction" }),
+        ...rest,
+    };
 }

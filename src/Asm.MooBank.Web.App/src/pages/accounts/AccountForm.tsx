@@ -18,6 +18,7 @@ export const AccountForm: React.FC<{ account?: InstitutionAccount }> = ({ accoun
     const createAccount = useCreateAccount();
     const updateAccount = useUpdateAccount();
 
+    const isPending = createAccount.isPending || updateAccount.isPending;
 
     const handleSubmit = (data: CreateInstitutionAccount) => {
 
@@ -27,10 +28,10 @@ export const AccountForm: React.FC<{ account?: InstitutionAccount }> = ({ accoun
         }
 
         if (!account) {
-            createAccount(data);
+            createAccount.mutateAsync(data);
             navigate("/accounts");
         } else {
-            updateAccount(data);
+            updateAccount.mutateAsync(data);
         }
     }
 
@@ -96,7 +97,7 @@ export const AccountForm: React.FC<{ account?: InstitutionAccount }> = ({ accoun
                 <Form.Check />
                 <Form.Label className="form-check-label">Visible to other family members</Form.Label>
             </Form.Group>
-            <Button type="submit" variant="primary">Save</Button>
+            <Button type="submit" variant="primary" disabled={isPending}>Save</Button>
         </SectionForm>
     );
 };

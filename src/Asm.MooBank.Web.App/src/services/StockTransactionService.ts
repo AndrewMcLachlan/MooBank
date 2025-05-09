@@ -25,7 +25,7 @@ export const useCreateStockTransaction = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutateAsync } = useApiPost<Models.StockTransaction, { accountId: string }, Models.CreateStockTransaction>((variables) => `api/stocks/${variables.accountId}/transactions`, {
+    const { mutateAsync, ...rest } = useApiPost<Models.StockTransaction, { accountId: string }, Models.CreateStockTransaction>((variables) => `api/stocks/${variables.accountId}/transactions`, {
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: [transactionKey]});
         }

@@ -14,7 +14,7 @@ export const useCreateFamily = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutateAsync } = useApiPost<Family, null, Family>(() => "api/families", {
+    const { mutateAsync, ...rest } = useApiPost<Family, null, Family>(() => "api/families", {
         onMutate: ([_variables, data]) => {
             let allFamilies = queryClient.getQueryData<Family[]>([familyKey]);
             if (!allFamilies) {
@@ -39,7 +39,7 @@ export const useUpdateFamily = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutateAsync } = useApiPatch<Family, string, Family>((id) => `api/families/${id}`, {
+    const { mutateAsync, ...rest } = useApiPatch<Family, string, Family>((id) => `api/families/${id}`, {
         onMutate: ([_variables, data]) => {
             let allFamilies = queryClient.getQueryData<Family[]>([familyKey]);
             if (!allFamilies) {

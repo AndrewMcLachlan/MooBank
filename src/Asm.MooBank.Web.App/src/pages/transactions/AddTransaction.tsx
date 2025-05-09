@@ -9,21 +9,24 @@ import * as Models from "models";
 import { useCreateTransaction, useUpdateBalance } from "services";
 
 
-export const AddTransaction: React.FC<AddTransactionProps> = ({ show, onClose, balanceUpdate }) => {
+export const AddTransaction: React.FC<AddTransactionProps> = ({ show, onClose, onSave, balanceUpdate }) => {
 
     const account = useAccount();
 
     const addTransaction = useCreateTransaction();
     const updateBalance = useUpdateBalance();
 
+    const isPending = addTransaction.isPending || updateBalance.isPending;
+
     const handleSubmit = (transaction: Models.Transaction) => {
 
         if (!!balanceUpdate) {
-            updateBalance(account.id, transaction);
+            updateBalance.mutateAsync(account.id, transaction);
         } else {
-            addTransaction(account.id, transaction);
+            addTransaction.mutateAsync(account.id, transaction);
         }
 
+        onSave();
     }
 
     const form = useForm<Models.Transaction>({ defaultValues: Models.emptyTransaction });
@@ -35,7 +38,7 @@ export const AddTransaction: React.FC<AddTransactionProps> = ({ show, onClose, b
             <Modal.Header closeButton>
                 <Modal.Title>{balanceUpdate ? "Balance Update" : "Add Transaction"}</Modal.Title>
             </Modal.Header>
-            <Form form={form} onSubmit={handleSubmit}>
+            <Form form={form} onSubmit={handleSubmit} layout="horizontal">
                 <Modal.Body>
                     <Form.Group groupId="amount">
                         <Form.Label>Amount</Form.Label>
@@ -56,7 +59,7 @@ export const AddTransaction: React.FC<AddTransactionProps> = ({ show, onClose, b
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="outline-primary" onClick={() => onClose()}>Close</Button>
-                    <Button variant="primary" onClick={form.handleSubmit(handleSubmit)}>Save</Button>
+                    <Button variant="primary" type="submit" disabled={isPending}>Save</Button>
                 </Modal.Footer>
             </Form>
         </Modal>
@@ -66,5 +69,6 @@ export const AddTransaction: React.FC<AddTransactionProps> = ({ show, onClose, b
 export interface AddTransactionProps {
     show: boolean;
     onClose: () => void;
+    onSave?: () => void;
     balanceUpdate?: boolean;
 }
