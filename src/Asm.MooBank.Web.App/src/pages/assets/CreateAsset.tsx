@@ -14,9 +14,9 @@ export const CreateAsset: React.FC = () => {
 
     const createAsset = useCreateAsset();
 
-    const handleSubmit = (data: NewAsset) => {
+    const handleSubmit = async (data: NewAsset) => {
 
-        createAsset(data);
+        await createAsset.mutateAsync(data);
 
         navigate("/accounts");
     }
@@ -26,11 +26,11 @@ export const CreateAsset: React.FC = () => {
     return (
         <Page title="Create Asset" breadcrumbs={[{ text: "Accounts", route: "/accounts" }, { text: "Create Asset", route: "/assets/create" }]}>
             <SectionForm form={form} onSubmit={handleSubmit}>
-                <Form.Group groupId="accountName">
+                <Form.Group groupId="name">
                     <Form.Label>Name</Form.Label>
                     <Form.Input required maxLength={50} />
                 </Form.Group>
-                <Form.Group groupId="accountDescription">
+                <Form.Group groupId="description">
                     <Form.Label>Description</Form.Label>
                     <Form.TextArea required maxLength={255} />
                 </Form.Group>
@@ -48,7 +48,7 @@ export const CreateAsset: React.FC = () => {
                         <Form.Input type="number" required />
                     </InputGroup>
                 </Form.Group>
-                <Form.Group groupId="group">
+                <Form.Group groupId="groupId">
                     <Form.Label>Group</Form.Label>
                     <GroupSelector />
                 </Form.Group>
@@ -56,7 +56,7 @@ export const CreateAsset: React.FC = () => {
                     <Form.Check />
                     <Form.Label className="form-check-label">Visible to other family members</Form.Label>
                 </Form.Group>
-                <Button type="submit" variant="primary">Create</Button>
+                <Button type="submit" variant="primary" disabled={createAsset.isPending}>Save</Button>
             </SectionForm>
         </Page>
     );

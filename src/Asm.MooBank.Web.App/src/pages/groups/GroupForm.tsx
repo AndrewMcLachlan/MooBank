@@ -16,6 +16,8 @@ export const GroupForm: React.FC<GroupFormProps> = ({ group }) => {
     const createGroup = useCreateGroup();
     const updateGroup = useUpdateGroup();
 
+    const isPending = createGroup.isPending || updateGroup.isPending;
+
     const handleSubmit = (data: Group) => {
 
         const newGroup: Group = { 
@@ -24,9 +26,9 @@ export const GroupForm: React.FC<GroupFormProps> = ({ group }) => {
         };
 
         if (newGroup.id === emptyGuid) {
-            createGroup(newGroup);
+            createGroup.mutateAsync(newGroup);
         } else {
-            updateGroup(newGroup);
+            updateGroup.mutateAsync(newGroup);
         }
 
         navigate("/groups");
@@ -56,7 +58,7 @@ export const GroupForm: React.FC<GroupFormProps> = ({ group }) => {
                     <Form.Check />
                     <Form.Label className="form-check-label">Show Total for Group</Form.Label>
                 </Form.Group>
-                <Button type="submit" variant="primary">Save</Button>
+                <Button type="submit" variant="primary" disabled={isPending}>Save</Button>
             </SectionForm>
         </Page>
     );

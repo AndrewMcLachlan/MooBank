@@ -19,8 +19,12 @@ export const NewRule: React.FC = () => {
     const createTag = useCreateTag();
     const createRule = useCreateRule();
 
-    const save = () => {
-        createRule.mutate([{ accountId: account.id }, newRule]);
+    const save = async () => {
+
+        if(newRule.contains === "") return;
+        if(newRule.tags.length === 0) return;
+
+        await createRule.mutateAsync([{ accountId: account.id }, newRule]);
         setNewRule(emptyRule);
     }
 
@@ -32,8 +36,8 @@ export const NewRule: React.FC = () => {
         setNewRule({ ...newRule, description: e.currentTarget.value });
     }
 
-    const tagCreateHandler = (name: string) => {
-        createTag.mutate({ name });
+    const tagCreateHandler = async (name: string) => {
+        await createTag.mutateAsync({ name });
     }
 
     const addTag = (tag: Tag) => {

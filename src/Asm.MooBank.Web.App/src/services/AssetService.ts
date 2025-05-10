@@ -12,26 +12,32 @@ export const useCreateAsset = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutateAsync } = useApiPost<InstitutionAccount, null, NewAsset>(() => `api/assets`, {
+    const { mutateAsync, ...rest } = useApiPost<InstitutionAccount, null, NewAsset>(() => `api/assets`, {
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: [accountsKey]});
         }
     });
 
-    return (asset: NewAsset) =>
-        toast.promise(mutateAsync([null, asset]), { pending: "Creating asset", success: "Asset created", error: "Failed to create asset" });
+    return {
+        mutateAsync: (asset: NewAsset) =>
+            toast.promise(mutateAsync([null, asset]), { pending: "Creating asset", success: "Asset created", error: "Failed to create asset" }),
+        ...rest,
+    };
 }
 
 export const useUpdateAsset = () => {
     const queryClient = useQueryClient();
 
-    const { mutateAsync } = useApiPatch<Asset, InstrumentId, Asset>((accountId) => `api/assets/${accountId}`, {
+    const { mutateAsync, ...rest } = useApiPatch<Asset, InstrumentId, Asset>((accountId) => `api/assets/${accountId}`, {
         onSettled: (_data,_error,[accountId]) => {
             queryClient.invalidateQueries({ queryKey: [accountsKey]});
             queryClient.invalidateQueries({ queryKey: [assetKey, { accountId }]});
         }
     });
 
-    return (account: Asset) =>
-        toast.promise(mutateAsync([account.id, account]), { pending: "Updating asset", success: "Asset updated", error: "Failed to update asset" });
+    return {
+        mutateAsync: (account: Asset) =>
+            toast.promise(mutateAsync([account.id, account]), { pending: "Updating asset", success: "Asset updated", error: "Failed to update asset" }),
+        ...rest,
+    };
 }

@@ -14,28 +14,34 @@ export const useCreateStockHolding = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutateAsync } = useApiPost<InstitutionAccount, null, NewStockHolding>(() => `api/stocks`, {
+    const { mutateAsync, ...rest } = useApiPost<InstitutionAccount, null, NewStockHolding>(() => `api/stocks`, {
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: [accountsKey]});
         }
     });
 
-    return (account: NewStockHolding) =>
-        toast.promise(mutateAsync([null, account]), { pending: "Creating shares", success: "Shares created", error: "Failed to create shares" });
+    return {
+        mutateAsync: (account: NewStockHolding) =>
+            toast.promise(mutateAsync([null, account]), { pending: "Creating shares", success: "Shares created", error: "Failed to create shares" }),
+        ...rest
+    };
 }
 
 export const useUpdateStockHolding = () => {
     const queryClient = useQueryClient();
 
-    const { mutateAsync } = useApiPatch<StockHolding, InstrumentId, StockHolding>((accountId) => `api/stocks/${accountId}`, {
+    const { mutateAsync, ...rest } = useApiPatch<StockHolding, InstrumentId, StockHolding>((accountId) => `api/stocks/${accountId}`, {
         onSettled: (_data,_error,[accountId]) => {
             queryClient.invalidateQueries({ queryKey: [accountsKey]});
             queryClient.invalidateQueries({ queryKey: [stockKey, { accountId }]});
         }
     });
 
-    return (account: StockHolding) =>
-        toast.promise(mutateAsync([account.id, account]), { pending: "Updating shares", success: "Shares updated", error: "Failed to update shares" });
+    return {
+        mutateAsync: (account: StockHolding) =>
+            toast.promise(mutateAsync([account.id, account]), { pending: "Updating shares", success: "Shares updated", error: "Failed to update shares" }),
+        ...rest
+    };
 }
 
 export const useStockValueReport = (accountId: string, start?: Date, end?: Date) => useApiGet<StockValueReport>([stockKey, accountId, "value", start, end], `api/stocks/${accountId}/reports/value?start=${start && formatISODate(start)}&end=${start && formatISODate(end)}`, { enabled: (!!start && !!end) });

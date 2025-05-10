@@ -10,15 +10,13 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
+using Reqnroll;
 namespace Asm.MooBank.Modules.Tests.Account.Commands
 {
-    using Reqnroll;
-    using System;
-    using System.Linq;
     
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "2.0.0.0")]
-    [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "2.0.0.0")]
+    [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public partial class CreateAccountFeature : object, Xunit.IClassFixture<CreateAccountFeature.FixtureData>, Xunit.IAsyncLifetime
     {
         
@@ -26,7 +24,7 @@ namespace Asm.MooBank.Modules.Tests.Account.Commands
         
         private static string[] featureTags = ((string[])(null));
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Account/Commands", "Create Account", "As a user,I want to create an account so that I can manage my money.", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags);
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Account/Commands", "Create Account", "As a user,I want to create an account so that I can manage my money.", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags);
         
         private Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
@@ -38,32 +36,54 @@ namespace Asm.MooBank.Modules.Tests.Account.Commands
             this._testOutputHelper = testOutputHelper;
         }
         
-        public static async System.Threading.Tasks.Task FeatureSetupAsync()
+        public static async global::System.Threading.Tasks.Task FeatureSetupAsync()
         {
         }
         
-        public static async System.Threading.Tasks.Task FeatureTearDownAsync()
+        public static async global::System.Threading.Tasks.Task FeatureTearDownAsync()
         {
         }
         
-        public async System.Threading.Tasks.Task TestInitializeAsync()
+        public async global::System.Threading.Tasks.Task TestInitializeAsync()
         {
             testRunner = global::Reqnroll.TestRunnerManager.GetTestRunnerForAssembly(featureHint: featureInfo);
-            if (((testRunner.FeatureContext != null) 
-                        && (testRunner.FeatureContext.FeatureInfo.Equals(featureInfo) == false)))
+            try
             {
-                await testRunner.OnFeatureEndAsync();
+                if (((testRunner.FeatureContext != null) 
+                            && (testRunner.FeatureContext.FeatureInfo.Equals(featureInfo) == false)))
+                {
+                    await testRunner.OnFeatureEndAsync();
+                }
             }
-            if ((testRunner.FeatureContext == null))
+            finally
             {
-                await testRunner.OnFeatureStartAsync(featureInfo);
+                if (((testRunner.FeatureContext != null) 
+                            && testRunner.FeatureContext.BeforeFeatureHookFailed))
+                {
+                    throw new global::Reqnroll.ReqnrollException("Scenario skipped because of previous before feature hook error");
+                }
+                if ((testRunner.FeatureContext == null))
+                {
+                    await testRunner.OnFeatureStartAsync(featureInfo);
+                }
             }
         }
         
-        public async System.Threading.Tasks.Task TestTearDownAsync()
+        public async global::System.Threading.Tasks.Task TestTearDownAsync()
         {
-            await testRunner.OnScenarioEndAsync();
-            global::Reqnroll.TestRunnerManager.ReleaseTestRunner(testRunner);
+            if ((testRunner == null))
+            {
+                return;
+            }
+            try
+            {
+                await testRunner.OnScenarioEndAsync();
+            }
+            finally
+            {
+                global::Reqnroll.TestRunnerManager.ReleaseTestRunner(testRunner);
+                testRunner = null;
+            }
         }
         
         public void ScenarioInitialize(global::Reqnroll.ScenarioInfo scenarioInfo)
@@ -72,22 +92,37 @@ namespace Asm.MooBank.Modules.Tests.Account.Commands
             testRunner.ScenarioContext.ScenarioContainer.RegisterInstanceAs<Xunit.Abstractions.ITestOutputHelper>(_testOutputHelper);
         }
         
-        public async System.Threading.Tasks.Task ScenarioStartAsync()
+        public async global::System.Threading.Tasks.Task ScenarioStartAsync()
         {
             await testRunner.OnScenarioStartAsync();
         }
         
-        public async System.Threading.Tasks.Task ScenarioCleanupAsync()
+        public async global::System.Threading.Tasks.Task ScenarioCleanupAsync()
         {
             await testRunner.CollectScenarioErrorsAsync();
         }
         
-        async System.Threading.Tasks.Task Xunit.IAsyncLifetime.InitializeAsync()
+        async global::System.Threading.Tasks.Task Xunit.IAsyncLifetime.InitializeAsync()
         {
-            await this.TestInitializeAsync();
+            try
+            {
+                await this.TestInitializeAsync();
+            }
+            catch (System.Exception e1)
+            {
+                try
+                {
+                    ((Xunit.IAsyncLifetime)(this)).DisposeAsync();
+                }
+                catch (System.Exception e2)
+                {
+                    throw new System.AggregateException("Test initialization failed", e1, e2);
+                }
+                throw;
+            }
         }
         
-        async System.Threading.Tasks.Task Xunit.IAsyncLifetime.DisposeAsync()
+        async global::System.Threading.Tasks.Task Xunit.IAsyncLifetime.DisposeAsync()
         {
             await this.TestTearDownAsync();
         }
@@ -95,10 +130,10 @@ namespace Asm.MooBank.Modules.Tests.Account.Commands
         [Xunit.SkippableFactAttribute(DisplayName="Create Account")]
         [Xunit.TraitAttribute("FeatureTitle", "Create Account")]
         [Xunit.TraitAttribute("Description", "Create Account")]
-        public async System.Threading.Tasks.Task CreateAccount()
+        public async global::System.Threading.Tasks.Task CreateAccount()
         {
             string[] tagsOfScenario = ((string[])(null));
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Create Account", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 5
 this.ScenarioInitialize(scenarioInfo);
@@ -129,10 +164,10 @@ this.ScenarioInitialize(scenarioInfo);
         [Xunit.SkippableFactAttribute(DisplayName="Create Account with invalid account group ID")]
         [Xunit.TraitAttribute("FeatureTitle", "Create Account")]
         [Xunit.TraitAttribute("Description", "Create Account with invalid account group ID")]
-        public async System.Threading.Tasks.Task CreateAccountWithInvalidAccountGroupID()
+        public async global::System.Threading.Tasks.Task CreateAccountWithInvalidAccountGroupID()
         {
             string[] tagsOfScenario = ((string[])(null));
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Create Account with invalid account group ID", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 11
 this.ScenarioInitialize(scenarioInfo);
@@ -160,17 +195,17 @@ this.ScenarioInitialize(scenarioInfo);
             await this.ScenarioCleanupAsync();
         }
         
-        [System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "2.0.0.0")]
-        [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "2.0.0.0")]
+        [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
         public class FixtureData : object, Xunit.IAsyncLifetime
         {
             
-            async System.Threading.Tasks.Task Xunit.IAsyncLifetime.InitializeAsync()
+            async global::System.Threading.Tasks.Task Xunit.IAsyncLifetime.InitializeAsync()
             {
                 await CreateAccountFeature.FeatureSetupAsync();
             }
             
-            async System.Threading.Tasks.Task Xunit.IAsyncLifetime.DisposeAsync()
+            async global::System.Threading.Tasks.Task Xunit.IAsyncLifetime.DisposeAsync()
             {
                 await CreateAccountFeature.FeatureTearDownAsync();
             }

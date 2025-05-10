@@ -32,7 +32,7 @@ internal class CreateHandler(IInstrumentRepository instrumentRepository, ITagRep
             InstrumentId = request.InstrumentId,
             Contains = request.Contains,
             Description = request.Description,
-            Tags = (await tagRepository.Get(request.Tags.Select(t => t.Id), cancellationToken)).ToList(),
+            Tags = [.. (await tagRepository.Get(request.Tags.Select(t => t.Id), cancellationToken))],
         };
 
 
