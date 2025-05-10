@@ -26,7 +26,7 @@ export const AddTransaction: React.FC<AddTransactionProps> = ({ show, onClose, o
             addTransaction.mutateAsync(account.id, transaction);
         }
 
-        onSave();
+        onSave?.();
     }
 
     const form = useForm<Models.Transaction>({ defaultValues: Models.emptyTransaction });
