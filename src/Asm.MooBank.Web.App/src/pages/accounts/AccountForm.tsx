@@ -10,6 +10,7 @@ import { GroupSelector } from "components/GroupSelector";
 import { AccountTypes, Controllers, CreateInstitutionAccount, InstitutionAccount } from "models";
 import { useCreateAccount, useUpdateAccount, } from "services";
 import { ImportSettings } from "./ImportSettings";
+import { CurrencyInput } from "components/CurrencyInput";
 
 export const AccountForm: React.FC<{ account?: InstitutionAccount }> = ({ account = null }) => {
 
@@ -68,10 +69,7 @@ export const AccountForm: React.FC<{ account?: InstitutionAccount }> = ({ accoun
             </Form.Group>
             <Form.Group groupId="balance" show={!account}>
                 <Form.Label>Opening Balance</Form.Label>
-                <InputGroup>
-                    <InputGroup.Text>$</InputGroup.Text>
-                    <Form.Input type="number" required />
-                </InputGroup>
+                <CurrencyInput />
             </Form.Group>
             <Form.Group groupId="openingDate" show={!account}>
                 <Form.Label>Date Opened</Form.Label>

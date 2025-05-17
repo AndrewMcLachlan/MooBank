@@ -1,8 +1,9 @@
 import { useQueryClient, UseQueryResult } from "@tanstack/react-query";
-import { InstitutionAccount, InstrumentId, AccountList, VirtualAccount } from "../models";
+import { InstitutionAccount, InstrumentId, AccountList, VirtualAccount, CreateVirtualInstrument } from "../models";
 import { accountsKey } from "./AccountService";
 import { formattedAccountsKey } from "./InstrumentsService";
 import { emptyGuid, useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
+import { toast } from "react-toastify";
 
 interface VirtualAccountVariables {
     accountId: InstrumentId;
@@ -17,17 +18,17 @@ export const useCreateVirtualAccount = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutate } = useApiPost<VirtualAccount, InstrumentId, VirtualAccount>((accountId) => `api/instruments/${accountId}/virtual`, {
+    const { mutateAsync, ...rest } = useApiPost<VirtualAccount, InstrumentId, CreateVirtualInstrument>((accountId) => `api/instruments/${accountId}/virtual`, {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [accountsKey] });
         }
     });
 
-    const create = (accountId: InstrumentId, virtualAccount: VirtualAccount) => {
-        mutate([accountId, virtualAccount]);
+    return {
+        mutateAsync: (accountId: InstrumentId, virtualAccount: CreateVirtualInstrument) =>
+            toast.promise(mutateAsync([accountId, virtualAccount]), { pending: "Creating virtual account", success: "Virtual account created", error: "Failed to create virtual account" }),
+        ...rest,
     };
-
-    return create;
 }
 
 export const useUpdateVirtualAccount = () => {
@@ -67,14 +68,12 @@ export const useUpdateVirtualAccountBalance = () => {
             if (!vAccount) return;
             const remaining = account.virtualInstruments.find(a => a.id === emptyGuid);
             if (!remaining) return;
-            //const others = account.virtualInstruments.filter(a => a.id !== emptyGuid);
 
             const difference = vAccount.currentBalance - balance;
 
             vAccount.currentBalance = balance;
             remaining.currentBalance += difference;
             account.virtualAccountRemainingBalance = remaining.currentBalance;
-            //instruments.accounts = [];
             accounts.total = 0;
 
             queryClient.setQueryData<AccountList>([formattedAccountsKey], { ...accounts });

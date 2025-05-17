@@ -1,4 +1,5 @@
 ﻿using Asm.MooBank.Domain.Entities.Account;
+using Asm.MooBank.Domain.Entities.Account.Events;
 using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Instrument;
@@ -7,9 +8,12 @@ namespace Asm.MooBank.Domain.Entities.Instrument;
 [PrimaryKey(nameof(Id))]
 public abstract class Instrument(Guid id) : KeyedEntity<Guid>(id)
 {
+    private readonly List<VirtualInstrument> _virtualInstruments = [];
+
     public Instrument() : this(Guid.Empty)
     {
     }
+
 
     [Required]
     [StringLength(50)]
@@ -40,7 +44,7 @@ public abstract class Instrument(Guid id) : KeyedEntity<Guid>(id)
 
     public virtual ICollection<Rule> Rules { get; set; } = [];
 
-    public virtual ICollection<VirtualInstrument> VirtualInstruments { get; set; } = [];
+    public IReadOnlyCollection<VirtualInstrument> VirtualInstruments { get => _virtualInstruments; internal init => _virtualInstruments = [.. value]; }
 
     public virtual Group.Group? GetGroup(Guid accountHolderId) =>
         Owners.Where(a => a.UserId == accountHolderId).Select(aah => aah.Group).SingleOrDefault();
@@ -82,5 +86,17 @@ public abstract class Instrument(Guid id) : KeyedEntity<Guid>(id)
         {
             UserId = currentUserId,
         });
+    }
+
+    public void AddVirtualInstrument(VirtualInstrument virtualInstrument, decimal openingBalance)
+    {
+        _virtualInstruments.Add(virtualInstrument);
+        Events.Add(new VirtualInstrumentAddedEvent(virtualInstrument, openingBalance));
+    }
+
+    public void RemoveVirtualInstrument(Guid virtualInstrumentId)
+    {
+        var virtualInstrument = _virtualInstruments.SingleOrDefault(a => a.Id == virtualInstrumentId) ?? throw new NotFoundException("Virtual instrument not found");
+        _virtualInstruments.Remove(virtualInstrument);
     }
 }

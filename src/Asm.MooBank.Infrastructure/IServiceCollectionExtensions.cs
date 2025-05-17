@@ -33,7 +33,7 @@ public static class IServiceCollectionExtensions
         {
             options.UseAzureSql(configuration.GetConnectionString("MooBank"), options =>
             {
-                //options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
             });
             if (env.IsDevelopment())
             {
@@ -44,7 +44,7 @@ public static class IServiceCollectionExtensions
         //HACK: To be fixed
         services.AddReadOnlyDbContext<IReadOnlyDbContext, MooBankContext>((services, options) => options.UseAzureSql(configuration.GetConnectionString("MooBank"), options =>
         {
-           // options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+            options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
         }));
 
         services.AddDomainEvents(typeof(Instrument).Assembly);

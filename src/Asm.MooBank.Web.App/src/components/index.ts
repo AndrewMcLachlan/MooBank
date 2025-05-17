@@ -2,6 +2,7 @@ export * from "./AccountList";
 export * from "./AccountPage";
 export * from "./AccountProvider";
 export * from "./AccountSummary";
+export * from "./CurrencyInput";
 export * from "./CurrencySelector";
 export * from "./InstitutionSelector";
 export * from "./FormGroup";

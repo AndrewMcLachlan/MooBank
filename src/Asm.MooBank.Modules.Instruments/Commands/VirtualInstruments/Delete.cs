@@ -9,18 +9,16 @@ internal class DeleteHandler(IInstrumentRepository accountRepository, IUnitOfWor
 {
     private readonly IInstrumentRepository _accountRepository = accountRepository;
 
-    public async ValueTask Handle(Delete request, CancellationToken cancellationToken)
+    public async ValueTask Handle(Delete command, CancellationToken cancellationToken)
     {
-        var account = await _accountRepository.Get(request.InstrumentId, cancellationToken);
+        var account = await _accountRepository.Get(command.InstrumentId, cancellationToken);
 
         if (account is not Domain.Entities.Account.InstitutionAccount institutionAccount)
         {
             throw new InvalidOperationException("Cannot delete virtual account on non-institution account.");
         }
 
-        var virtualAccount = institutionAccount.VirtualInstruments.SingleOrDefault(va => va.Id == request.VirtualAccountId) ?? throw new NotFoundException("Virtual Account not found");
-
-        institutionAccount.VirtualInstruments.Remove(virtualAccount);
+        institutionAccount.RemoveVirtualInstrument(command.VirtualAccountId);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
