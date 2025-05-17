@@ -101,11 +101,6 @@ void AddServices(WebApplicationBuilder builder)
         });
     });
 
-    if (builder.Environment.IsProduction())
-    {
-        services.AddOpenTelemetry().WithMetrics().UseAzureMonitor();
-    }
-
     services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
         options.SerializerOptions.Converters.Add(new JsonStringEnumConverter())
     );
