@@ -69,7 +69,7 @@ export const AccountForm: React.FC<{ account?: InstitutionAccount }> = ({ accoun
             </Form.Group>
             <Form.Group groupId="balance" show={!account}>
                 <Form.Label>Opening Balance</Form.Label>
-                <CurrencyInput />
+                <CurrencyInput required />
             </Form.Group>
             <Form.Group groupId="openingDate" show={!account}>
                 <Form.Label>Date Opened</Form.Label>
