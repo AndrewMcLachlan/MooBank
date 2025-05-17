@@ -7,10 +7,11 @@ import { parseISO } from "date-fns/parseISO";
 import { VirtualAccount } from "models";
 import { RecurringTransaction, Schedule, Schedules, emptyRecurringTransaction } from "models/RecurringTransaction";
 import React, { useState } from "react";
-import { Table } from "react-bootstrap";
-import { useCreateRecurringTransaction, useDeleteRecurringTransaction, useUpdateRecurringTransaction } from "services/RecurringTransactionService";
+import { useCreateRecurringTransaction, useDeleteRecurringTransaction, useGetRecurringTransactions, useUpdateRecurringTransaction } from "services/RecurringTransactionService";
 
 export const RecurringTransactions: React.FC<RecurringTransactionsProps> = ({ account }) => {
+
+    const {data: recurringTransactions } = useGetRecurringTransactions(account.parentId, account.id);
 
     const createRecurringTransaction = useCreateRecurringTransaction();
     const updateRecurringTransaction = useUpdateRecurringTransaction();
@@ -57,7 +58,7 @@ export const RecurringTransactions: React.FC<RecurringTransactionsProps> = ({ ac
                     <td><input type="date" className="form-control" placeholder="Next Run" value={newRT.nextRun} onChange={e => setNewRT({ ...newRT, nextRun: e.currentTarget.value })} /></td>
                     <td className="row-action"><SaveIcon onClick={create} /></td>
                 </tr>
-                {account.recurringTransactions && account.recurringTransactions.map(a => (
+                {recurringTransactions && recurringTransactions.map(a => (
                     <tr key={a.id}>
                         <EditColumn value={a.description} onChange={target => updateRecurringTransaction(accountId, virtualId, { ...a, description: target.value })} />
                         <EditColumn type="number" value={a.amount.toString()} onChange={value => updateRecurringTransaction(accountId, virtualId, { ...a, amount: Number(value) })} />

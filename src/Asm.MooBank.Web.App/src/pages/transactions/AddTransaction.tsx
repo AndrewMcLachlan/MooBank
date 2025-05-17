@@ -2,11 +2,12 @@ import React from "react";
 import { Button, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 
-import { Form, SectionForm, } from "@andrewmclachlan/mooapp";
+import { Form } from "@andrewmclachlan/mooapp";
 
 import { useAccount } from "components";
 import * as Models from "models";
 import { useCreateTransaction, useUpdateBalance } from "services";
+import { CurrencyInput } from "components";
 
 
 export const AddTransaction: React.FC<AddTransactionProps> = ({ show, onClose, onSave, balanceUpdate }) => {
@@ -20,7 +21,7 @@ export const AddTransaction: React.FC<AddTransactionProps> = ({ show, onClose, o
 
     const handleSubmit = (transaction: Models.Transaction) => {
 
-        if (!!balanceUpdate) {
+        if (balanceUpdate) {
             updateBalance.mutateAsync(account.id, transaction);
         } else {
             addTransaction.mutateAsync(account.id, transaction);
@@ -42,7 +43,7 @@ export const AddTransaction: React.FC<AddTransactionProps> = ({ show, onClose, o
                 <Modal.Body>
                     <Form.Group groupId="amount">
                         <Form.Label>Amount</Form.Label>
-                        <Form.Input type="number" required maxLength={10} />
+                        <CurrencyInput />
                     </Form.Group>
                     <Form.Group groupId="transactionTime">
                         <Form.Label>Date</Form.Label>

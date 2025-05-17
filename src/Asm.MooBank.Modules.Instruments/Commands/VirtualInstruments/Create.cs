@@ -1,36 +1,30 @@
 ﻿using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Instruments.Models.Instruments;
+using Asm.MooBank.Modules.Instruments.Models.Virtual;
 using Asm.MooBank.Services;
+using Microsoft.AspNetCore.Mvc;
+using Controller = Asm.MooBank.Models.Controller;
 
 namespace Asm.MooBank.Modules.Instruments.Commands.VirtualInstruments;
 
-public record Create(Guid InstrumentId, VirtualInstrument VirtualInstrument) : ICommand<VirtualInstrument>;
+public record Create(Guid InstrumentId, [FromBody]CreateVirtualInstrument VirtualInstrument) : ICommand<VirtualInstrument>;
 
-internal class CreateHandler(IInstrumentRepository instrumentRepository, Domain.Entities.Transactions.ITransactionRepository transactionRepository, IUnitOfWork unitOfWork, ICurrencyConverter currencyConverter) : ICommandHandler<Create, VirtualInstrument>
+internal class CreateHandler(IInstrumentRepository instrumentRepository, IUnitOfWork unitOfWork, ICurrencyConverter currencyConverter) : ICommandHandler<Create, VirtualInstrument>
 {
-    public async ValueTask<VirtualInstrument> Handle(Create request, CancellationToken cancellationToken)
+    public async ValueTask<VirtualInstrument> Handle(Create command, CancellationToken cancellationToken)
     {
-        var instrument = await instrumentRepository.Get(request.InstrumentId, cancellationToken);
+        var instrument = await instrumentRepository.Get(command.InstrumentId, cancellationToken);
 
-        var entity = request.VirtualInstrument.ToEntity(request.InstrumentId);
-
-        // TODO: Should use domain events here.
-        if (entity.Balance != 0)
+        var entity = new Domain.Entities.Account.VirtualInstrument()
         {
-            transactionRepository.Add(new Domain.Entities.Transactions.Transaction
-            {
-                Account = entity,
-                Amount = entity.Balance,
-                Description = "Initial balance",
-                Source = "Web",
-                TransactionTime = DateTime.Now,
-                TransactionType = entity.Balance > 0 ? TransactionType.Credit : TransactionType.Debit,
-                TransactionSubType = TransactionSubType.OpeningBalance,
-            });
-        }
+            Name = command.VirtualInstrument.Name,
+            Description = command.VirtualInstrument.Description,
+            Controller = Controller.Virtual,
+            Currency = instrument.Currency,
+        };
 
-        instrument.VirtualInstruments.Add(entity);
+        instrument.AddVirtualInstrument(entity, command.VirtualInstrument.OpeningBalance);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

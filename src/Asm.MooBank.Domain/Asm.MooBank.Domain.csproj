@@ -21,9 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Asm.MooBank.Infrastructure</_Parameter1>
-    </AssemblyAttribute>
+    <InternalsVisibleTo Include="Asm.MooBank.Infrastructure" />
+    <InternalsVisibleTo Include="Asm.MooBank.Modules.Tests" />
   </ItemGroup>
 
   <ItemGroup>

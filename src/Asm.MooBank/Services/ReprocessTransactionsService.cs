@@ -17,29 +17,40 @@ public class ReprocessTransactionsService(IReprocessTransactionsQueue taskQueue,
     {
         _logger.LogInformation("Reprocess Service is starting.");
 
-        while (!cancellationToken.IsCancellationRequested)
+        try
         {
-            var accountId = await _taskQueue.DequeueAsync(cancellationToken);
-
-            try
+            while (!cancellationToken.IsCancellationRequested)
             {
-                using var scope = _serviceScopeFactory.CreateScope();
-                var importerFactory = scope.ServiceProvider.GetRequiredService<IImporterFactory>();
-                var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+                var accountId = await _taskQueue.DequeueAsync(cancellationToken);
 
-                var importer = await importerFactory.Create(accountId, cancellationToken) ?? throw new InvalidOperationException($"Import is not supported for account with ID: {accountId}");
+                try
+                {
+                    using var scope = _serviceScopeFactory.CreateScope();
+                    var importerFactory = scope.ServiceProvider.GetRequiredService<IImporterFactory>();
+                    var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
-                await importer.Reprocess(accountId, cancellationToken);
+                    var importer = await importerFactory.Create(accountId, cancellationToken) ?? throw new InvalidOperationException($"Import is not supported for account with ID: {accountId}");
 
-                await unitOfWork.SaveChangesAsync(cancellationToken);
+                    await importer.Reprocess(accountId, cancellationToken);
+
+                    await unitOfWork.SaveChangesAsync(cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error occurred reprocessing transactions for account {AccountId}.", nameof(accountId));
+                }
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred reprocessing transactions for account {AccountId}.", nameof(accountId));
-            }
+
+            _logger.LogInformation("Reprocess Service is stopping.");
         }
-
-        _logger.LogInformation("Reprocess Service is stopping.");
+        catch (TaskCanceledException tcex)
+        {
+            _logger.LogWarning(tcex, "Reprocess Service is stopping due to cancellation.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Reprocess Service encountered an error: {Message}", ex.Message);
+        }
     }
 }
 

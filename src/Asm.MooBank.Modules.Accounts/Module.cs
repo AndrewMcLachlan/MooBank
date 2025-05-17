@@ -13,6 +13,7 @@ public class Module : IModule
     {
         new Endpoints.Accounts().MapGroup(endpoints);
         new Endpoints.RecurringEndpoints().MapGroup(endpoints).RequireAuthorization(Policies.GetInstrumentViewerPolicy("accountId"));
+        new Endpoints.VirtualRecurringEndpoints().MapGroup(endpoints).RequireAuthorization(Policies.GetInstrumentViewerPolicy("accountId"));
 
         return endpoints;
     }

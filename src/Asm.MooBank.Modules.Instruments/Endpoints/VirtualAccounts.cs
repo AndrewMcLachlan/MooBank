@@ -2,6 +2,7 @@
 using Asm.AspNetCore.Routing;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Instruments.Commands.VirtualInstruments;
+using Asm.MooBank.Modules.Instruments.Models.Virtual;
 using Asm.MooBank.Modules.Instruments.Queries.VirtualAccounts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
@@ -23,7 +24,7 @@ internal class VirtualAccounts : EndpointGroupBase
         builder.MapQuery<Get, VirtualInstrument>("/{virtualInstrumentId}")
             .WithNames("Get Virtual Instrument");
 
-        builder.MapPostCreate<Create, VirtualInstrument>("/", "Get Virtual Instrument".ToMachine(), a => new { VirtualAccountId = a.Id }, CommandBinding.Parameters)
+        builder.MapPostCreate<Create, VirtualInstrument>("/", "Get Virtual Instrument".ToMachine(), a => new { VirtualInstrumentId = a.Id }, CommandBinding.Parameters)
             .WithNames("Create Virtual Instrument");
 
         builder.MapPatchCommand<Update, VirtualInstrument>("/{virtualInstrumentId}", CommandBinding.None)
