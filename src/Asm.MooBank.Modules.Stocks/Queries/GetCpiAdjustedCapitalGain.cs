@@ -14,14 +14,15 @@ internal class GetCpiAdjustedCapitalGainHandler(IQueryable<StockHolding> stockHo
 
         decimal totalAdjustedGain = 0;
 
-        foreach (var transaction in stockHolding.Transactions)
+        var adjustmentTasks = stockHolding.Transactions.Select(async transaction =>
         {
             var amount = transaction.Quantity * transaction.Price;
-
             amount = transaction.TransactionType == MooBank.Models.TransactionType.Debit ? -amount : amount;
+            return await cpiService.CalculateAdjustedValue(amount, transaction.TransactionDate, cancellationToken);
+        }).ToList();
 
-            totalAdjustedGain += await cpiService.CalculateAdjustedValue(amount, transaction.TransactionDate, cancellationToken);
-        }
+        var adjustedValues = await Task.WhenAll(adjustmentTasks);
+        totalAdjustedGain = adjustedValues.Sum();
 
         return stockHolding.CurrentValue - totalAdjustedGain;
     }
