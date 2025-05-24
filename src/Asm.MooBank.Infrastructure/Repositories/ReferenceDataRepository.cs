@@ -29,4 +29,10 @@ public class ReferenceDataRepository(MooBankContext dataContext) : IReferenceDat
 
     public async Task<IEnumerable<ExchangeRate>> GetExchangeRates() =>
         await dataContext.ExchangeRates.ToListAsync();
+
+    public async Task<IEnumerable<CpiChange>> GetCpiChanges(CancellationToken cancellationToken = default) =>
+        await dataContext.CpiChanges.ToListAsync(cancellationToken);
+
+    public CpiChange AddCpiChange(CpiChange cpiChange) =>
+        dataContext.CpiChanges.Add(cpiChange).Entity;
 }

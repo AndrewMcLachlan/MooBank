@@ -31,7 +31,7 @@ internal class TestAsyncQueryProvider<TEntity> : IAsyncQueryProvider
         return _inner.Execute<TResult>(expression);
     }
 
-    public Task<object> ExecuteAsync(Expression expression, CancellationToken cancellationToken)
+    public Task<object> ExecuteAsync(Expression expression, CancellationToken cancellationToken = default)
     {
         return Task.FromResult(Execute(expression));
     }

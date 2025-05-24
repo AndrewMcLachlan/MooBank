@@ -3,10 +3,12 @@ import { Section } from "@andrewmclachlan/mooapp";
 import { useStockHolding } from "../StockHoldingProvider"
 import classNames from "classnames";
 import { Amount } from "components/Amount";
+import { useStockHoldingAdjustedGainLoss } from "services";
 
 export const StockSummary: React.FC<StockSummaryProps> = ({className, ...props}) => {
 
     const stockHolding = useStockHolding();
+    const {data: adjustedGainLoss} = useStockHoldingAdjustedGainLoss(stockHolding?.id);
 
     if (!stockHolding) return null;
 
@@ -28,6 +30,11 @@ export const StockSummary: React.FC<StockSummaryProps> = ({className, ...props})
                 <div>Capital Gain</div>
                 <div><Amount amount={stockHolding.gainLoss} colour plusminus /></div>
             </div>
+            <div className="key-value">
+                <div>Adjusted Gain</div>
+                <div><Amount amount={adjustedGainLoss} colour plusminus /></div>
+            </div>
+            
             <hr/>
             <div className="key-value">
                 <div>Type</div>

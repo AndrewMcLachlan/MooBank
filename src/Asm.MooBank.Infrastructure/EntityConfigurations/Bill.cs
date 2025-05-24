@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Asm.MooBank.Domain.Entities.Utility;
-using Microsoft.EntityFrameworkCore;
+﻿using Asm.MooBank.Domain.Entities.Utility;
 
 namespace Asm.MooBank.Infrastructure.EntityConfigurations;
 
