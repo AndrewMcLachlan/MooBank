@@ -21,6 +21,10 @@ internal class StockHoldings : EndpointGroupBase
             .WithNames("Get Stock Holding")
             .RequireAuthorization(Policies.GetInstrumentViewerPolicy());
 
+        builder.MapQuery<GetCpiAdjustedCapitalGain, decimal>("/{instrumentId}/cpi-adjusted-gain-loss")
+            .WithNames("Get Stock Holding CPI adjusted gain/loss")
+            .RequireAuthorization(Policies.GetInstrumentViewerPolicy());
+
         builder.MapPostCreate<Create, StockHolding>("/", "Get Stock Holding".ToMachine(), a => new { InstrumentId = a.Id }, CommandBinding.Body)
             .WithNames("Create Stock Holding");
 

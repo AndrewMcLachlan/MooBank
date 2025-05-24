@@ -10,6 +10,8 @@ export const stockKey = "stock";
 
 export const useStockHolding = (accountId: string): UseQueryResult<StockHolding> => useApiGet<StockHolding>([stockKey, { accountId }], `api/stocks/${accountId}`);
 
+export const useStockHoldingAdjustedGainLoss = (accountId: string): UseQueryResult<number> => useApiGet<number>([stockKey, { accountId }, "adjusted-gain-loss"], `api/stocks/${accountId}/cpi-adjusted-gain-loss`);
+
 export const useCreateStockHolding = () => {
 
     const queryClient = useQueryClient();

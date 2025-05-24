@@ -5,7 +5,7 @@ namespace Asm.MooBank.Web.Jobs;
 public class StockPrices(IStockPriceService stockPriceService)
 {
 #if DEBUG
-    private const bool RunOnStartup = true;
+    private const bool RunOnStartup = false;
 #else
     private const bool RunOnStartup = false;
 #endif

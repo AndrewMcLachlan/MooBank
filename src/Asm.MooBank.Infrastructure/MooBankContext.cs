@@ -65,6 +65,9 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
     [AllowNull]
     public virtual DbSet<VirtualInstrument> VirtualAccounts { get; set; }
 
+    [AllowNull]
+    public virtual DbSet<CpiChange> CpiChanges { get; set; }
+
     public static void RegisterAssembly(Assembly assembly) => Assemblies.Add(assembly);
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

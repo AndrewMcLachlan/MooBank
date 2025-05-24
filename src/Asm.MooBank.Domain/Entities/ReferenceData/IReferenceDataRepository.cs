@@ -8,9 +8,13 @@ public interface IReferenceDataRepository
 
     Task<IEnumerable<StockPriceHistory>> GetStockPrices(StockSymbol symbol, CancellationToken cancellationToken = default);
 
+    Task<IEnumerable<ExchangeRate>> GetExchangeRates();
+
+    Task<IEnumerable<CpiChange>> GetCpiChanges(CancellationToken cancellationToken = default);
+
     StockPriceHistory AddStockPrice(StockPriceHistory stockPrice);
 
     ExchangeRate AddExchangeRate(ExchangeRate exchangeRate);
 
-    Task<IEnumerable<ExchangeRate>> GetExchangeRates();
+    CpiChange AddCpiChange(CpiChange cpiChange);
 }

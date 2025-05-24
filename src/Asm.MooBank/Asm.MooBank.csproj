@@ -2,11 +2,14 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <None Include="Services\CpiChangeService.cs" />
+    <PackageReference Include="Asm" />
     <PackageReference Include="LazyCache.AspNetCore" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Asm.MooBank.Abs\Asm.MooBank.Abs.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Domain\Asm.MooBank.Domain.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Eodhd\Asm.MooBank.Eodhd.csproj" />
     <ProjectReference Include="..\Asm.MooBank.ExchangeRateApi\Asm.MooBank.ExchangeRateApi.csproj" />
