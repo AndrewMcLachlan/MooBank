@@ -16,7 +16,7 @@ export const TransactionRow: React.FC<TransactionRowProps> = (props) => {
                 <td className="description" colSpan={props.colspan}>{props.transaction.description}</td>
                 <td className="d-none d-md-table-cell">{props.transaction.location}</td>
                 <td className="d-none d-md-table-cell">{props.transaction.accountHolderName}</td>
-                <td><Amount amount={props.transaction.amount} /></td>
+                <td><Amount amount={props.transaction.amount} minus /></td>
                 <TransactionTagPanel as="td" className="d-none d-md-table-cell" transaction={props.transaction} />
             </tr>
         </>

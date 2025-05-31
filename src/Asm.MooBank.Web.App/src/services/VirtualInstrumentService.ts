@@ -66,14 +66,12 @@ export const useUpdateVirtualAccountBalance = () => {
             if (!account) return;
             const vAccount = account.virtualInstruments.find(a => a.id === virtualAccountId);
             if (!vAccount) return;
-            const remaining = account.virtualInstruments.find(a => a.id === emptyGuid);
-            if (!remaining) return;
 
             const difference = vAccount.currentBalance - balance;
 
             vAccount.currentBalance = balance;
-            remaining.currentBalance += difference;
-            account.virtualAccountRemainingBalance = remaining.currentBalance;
+            account.remainingBalance += difference;
+            // TODO: Update the local currency balance if needed
             accounts.total = 0;
 
             queryClient.setQueryData<AccountList>([formattedAccountsKey], { ...accounts });

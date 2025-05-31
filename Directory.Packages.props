@@ -40,7 +40,7 @@
     <PackageVersion Include="System.Text.Json" Version="9.0.5" />
   </ItemGroup>
   <ItemGroup>
-    <PackageVersion Include="Asm" Version="3.5.470" />
+    <PackageVersion Include="Asm" Version="3.5.472" />
     <PackageVersion Include="Asm.AspNetCore" Version="3.5.470" />
     <PackageVersion Include="Asm.AspNetCore.Modules" Version="3.5.470" />
     <PackageVersion Include="Asm.AspNetCore.Api" Version="3.5.470" />

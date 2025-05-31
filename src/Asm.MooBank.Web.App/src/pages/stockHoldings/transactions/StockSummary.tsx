@@ -28,11 +28,11 @@ export const StockSummary: React.FC<StockSummaryProps> = ({className, ...props})
             </div>
             <div className="key-value">
                 <div>Capital Gain</div>
-                <div><Amount amount={stockHolding.gainLoss} colour plusminus /></div>
+                <div><Amount amount={stockHolding.gainLoss} negativeColour plus minus /></div>
             </div>
             <div className="key-value">
                 <div>Adjusted Gain</div>
-                <div><Amount amount={adjustedGainLoss} colour plusminus /></div>
+                <div><Amount amount={adjustedGainLoss} negativeColour plus minus /></div>
             </div>
             
             <hr/>

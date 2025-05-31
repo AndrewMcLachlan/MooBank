@@ -40,7 +40,7 @@ else
 
 var api = builder.AddProject<Projects.Asm_MooBank_Web_Api>("moobank-api", "API Only")
     .WithReference(mooBankDb)
-    .WithHttpsHealthCheck("/health");
+    .WithHttpHealthCheck("/health");
 
 if (sqlConfig.Enabled)
 {

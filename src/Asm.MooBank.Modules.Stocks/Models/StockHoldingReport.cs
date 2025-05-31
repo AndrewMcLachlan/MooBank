@@ -6,4 +6,6 @@ public record StockHoldingReport
     public decimal CurrentValue { get; set; }
 
     public decimal ProfitLoss { get; set; }
+
+    public decimal AdjustedProfitLoss { get; set; }
 }

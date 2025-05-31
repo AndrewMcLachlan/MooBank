@@ -31,10 +31,19 @@ export const AccountRow: React.FC<AccountRowProps> = (props) => {
                 <td className="d-none d-sm-table-cell" onClick={showVirtualAccountsClick}>{props.instrument.virtualInstruments && props.instrument.virtualInstruments.length > 0 && <FontAwesomeIcon icon={showVirtualAccounts ? "chevron-down" : "chevron-right"} />}</td>
                 <td>{props.instrument.name}</td>
                 <td className="d-none d-sm-table-cell">{props.instrument.instrumentType}</td>
-                <td className={classNames("number", numberClassName(props.instrument.currentBalance))}><Amount amount={props.instrument.currentBalanceLocalCurrency} creditdebit/></td>
+                <td className={classNames("number", numberClassName(props.instrument.currentBalance))}><Amount amount={props.instrument.currentBalanceLocalCurrency} creditdebit /></td>
             </tr>
-            {showVirtualAccounts && props.instrument.virtualInstruments &&
-                props.instrument.virtualInstruments.map(va => <VirtualAccountRow key={va.id} accountId={props.instrument.id} account={va} />)
+            {showVirtualAccounts && props.instrument.virtualInstruments && (
+                <>
+                    {props.instrument.virtualInstruments.map(va => <VirtualAccountRow key={va.id} accountId={props.instrument.id} account={va} />)}
+                    <tr className="virtual total d-none d-sm-table-row">
+                        <td className="d-none d-sm-table-cell" />
+                        <td colSpan={2} className="d-none d-sm-table-cell name">Remaining</td>
+                        <td className="d-table-cell d-sm-none"></td>
+                        <td className="number"><Amount amount={props.instrument.remainingBalance} creditdebit /></td>
+                    </tr>
+                </>
+            )
             }
         </>
     );

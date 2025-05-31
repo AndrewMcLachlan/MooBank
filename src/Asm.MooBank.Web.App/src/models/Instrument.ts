@@ -15,6 +15,8 @@ export interface Instrument {
     currency: string;
     instrumentType?: string;
     virtualInstruments: VirtualAccount[];
+    remainingBalance?: number;
+    remainingBalanceLocalCurrency?: number;
 }
 
 export interface TopLevelAccount {

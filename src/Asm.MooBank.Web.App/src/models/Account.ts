@@ -11,7 +11,6 @@ export interface InstitutionAccount extends TransactionAccount, TopLevelAccount 
     balanceDate: Date;
     accountType: AccountType;
     importerTypeId?: number;
-    virtualAccountRemainingBalance?: number;
     isPrimary?: boolean;
     includeInBudget: boolean;
     institutionId: number;

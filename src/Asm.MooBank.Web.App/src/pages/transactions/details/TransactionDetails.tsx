@@ -9,6 +9,7 @@ import { ExtraInfo } from "../ExtraInfo";
 import { TransactionSplits } from "./TransactionSplits";
 import { notEquals } from "helpers/equals";
 import { useUpdateTransaction } from "services";
+import { Amount } from "components/Amount";
 
 export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => {
 
@@ -43,7 +44,7 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
                 <section className="transaction-info row">
                     <section>
                         <div>Amount</div>
-                        <div className="value amount">{formatCurrency(props.transaction.amount)}</div>
+                        <div className="value amount"><Amount amount={props.transaction.amount} minus /></div>
                         {/*props.transaction.netAmount !== props.transaction.amount &&
                             <>
                                 <div>Net Amount</div>

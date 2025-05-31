@@ -22,5 +22,15 @@ public abstract record Instrument
 
     public Guid? GroupId { get; set; }
 
-    public virtual ICollection<VirtualInstrument> VirtualInstruments { get; set; } = [];
+    public virtual ICollection<VirtualInstrument> VirtualInstruments { get; init; } = [];
+
+    /// <summary>
+    /// Gets the remaining balance once virtual instruments are accounted for.
+    /// </summary>
+    public decimal? RemainingBalance { get; init; }
+
+    /// <summary>
+    /// Gets the remaining balance once virtual instruments are accounted for.
+    /// </summary>
+    public decimal? RemainingBalanceLocalCurrency { get; init; }
 }

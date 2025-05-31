@@ -17,8 +17,9 @@ public static class InstitutionAccountExtensions
         CurrentBalanceLocalCurrency = currencyConverter.Convert(account.Balance, account.Currency),
         BalanceDate = ((Domain.Entities.Instrument.Instrument)account).LastUpdated,
         VirtualInstruments = account.VirtualInstruments != null && account.VirtualInstruments.Count != 0 ?
-                          account.VirtualInstruments.OrderBy(v => v.Name).Select(v => v.ToModel(currencyConverter))
-                                                 .Union(Remaining(account, currencyConverter)).ToArray() : [],
+                             account.VirtualInstruments.OrderBy(v => v.Name).Select(v => v.ToModel(currencyConverter)).ToArray() : [],
+        RemainingBalance = Remaining(account, currencyConverter).RemainingBalance,
+        RemainingBalanceLocalCurrency = Remaining(account, currencyConverter).RemainingBalanceLocalCurrency,
     };
 
     public static IEnumerable<InstrumentSummary> ToModel(this IEnumerable<Domain.Entities.Account.InstitutionAccount> entities, ICurrencyConverter currencyConverter)
@@ -26,18 +27,17 @@ public static class InstitutionAccountExtensions
         return entities.Select(t => t.ToModel(currencyConverter));
     }
 
-    private static IEnumerable<VirtualInstrument> Remaining(Domain.Entities.Account.InstitutionAccount account, ICurrencyConverter currencyConverter)
+    private static (decimal? RemainingBalance, decimal? RemainingBalanceLocalCurrency) Remaining(Domain.Entities.Account.InstitutionAccount account, ICurrencyConverter currencyConverter)
     {
+        if (account.VirtualInstruments == null || account.VirtualInstruments.Count == 0)
+        {
+            return (null, null);
+        }
+
         var remainingBalance = account.Balance - account.VirtualInstruments.Sum(v => v.Balance);
 
-        yield return new VirtualInstrument
-        {
-            Id = Guid.Empty,
-            Name = "Remaining",
-            Controller = account.Controller,
-            Currency = account.Currency,
-            CurrentBalance = remainingBalance,
-            CurrentBalanceLocalCurrency = currencyConverter.Convert(remainingBalance, account.Currency)
-        };
+        var remainingBalanceLocalCurrency = currencyConverter.Convert(remainingBalance, account.Currency);
+
+        return (remainingBalance, remainingBalanceLocalCurrency);
     }
 }

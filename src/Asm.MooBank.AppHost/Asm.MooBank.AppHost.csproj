@@ -4,9 +4,6 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <IsAspireHost>true</IsAspireHost>
     <UserSecretsId>d9845e9f-a6b0-4518-ae8c-20d3be0d039f</UserSecretsId>
   </PropertyGroup>

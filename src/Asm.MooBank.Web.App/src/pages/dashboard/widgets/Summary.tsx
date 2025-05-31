@@ -15,13 +15,13 @@ export const SummaryWidget: React.FC = () => {
         <Widget header="Summary" className="summary" loading={isLoading} size="single">
             <KeyValue className="net-worth">
                 <div>Net Worth</div>
-                <Amount amount={grandTotal} colour plusminus />
+                <Amount amount={grandTotal} positiveColour negativeColour plus minus />
             </KeyValue>
             <Section.Subheading>Groups</Section.Subheading>
             {groupTotals?.map((ag, index) =>
                 <KeyValue key={index}>
                     <div>{ag.name}</div>
-                    <div><Amount amount={ag.total} colour plusminus /></div>
+                    <div><Amount amount={ag.total} positiveColour negativeColour plus minus /></div>
                 </KeyValue>
             )}
         </Widget>
