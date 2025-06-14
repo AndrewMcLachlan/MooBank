@@ -7,11 +7,20 @@
   </Folder>
   <Folder Name="/Config/">
     <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path=".npmrc" />
+    <File Path="Asm.MooBank.lutconfig" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Build.targets" />
     <File Path="Directory.Packages.props" />
+    <File Path="NuGet.config" />
+  </Folder>
+  <Folder Name="/Documentation/">
+    <File Path="LICENSE" />
+    <File Path="README.md" />
   </Folder>
   <Folder Name="/Integrations/">
+    <Project Path="src/Asm.MooBank.Abs/Asm.MooBank.Abs.csproj" />
     <Project Path="src/Asm.MooBank.Eodhd/Asm.MooBank.Eodhd.csproj" />
     <Project Path="src/Asm.MooBank.ExchangeRateApi/Asm.MooBank.ExchangeRateApi.csproj" />
     <Project Path="src/Asm.MooBank.Institution.AustralianSuper/Asm.MooBank.Institution.AustralianSuper.csproj" />
@@ -34,6 +43,7 @@
     <Project Path="src/Asm.MooBank.Modules.Users/Asm.MooBank.Modules.Users.csproj" />
   </Folder>
   <Folder Name="/Tests/">
+    <Project Path="tests/Asm.MooBank.Abs.Tests/Asm.MooBank.Abs.Tests.csproj" />
     <Project Path="tests/Asm.MooBank.Modules.Tests/Asm.MooBank.Modules.Tests.csproj" />
   </Folder>
   <Project Path="src/Asm.MooBank.AppHost/Asm.MooBank.AppHost.csproj" />
