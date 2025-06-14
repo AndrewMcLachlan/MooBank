@@ -39,7 +39,7 @@ jobs:
         project: 'src/Asm.MooBank.Web.Api'
         versionPropertyName: 'Version'
     - name: Restore dependencies
-      run: dotnet restore Asm.MooBank.sln
+      run: dotnet restore Asm.MooBank.slnx
     - name: Setup node and npm
       uses: actions/setup-node@v4
       with:
