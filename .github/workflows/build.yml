@@ -34,10 +34,10 @@ jobs:
         NUGET_AUTH_TOKEN: ${{secrets.CROSS_REPO_PACKAGE_TOKEN}}
     - name: Set version number
       id: set-version-number
-      uses: andrewmclachlan/actions/set-version-number@v3
+      uses: andrewmclachlan/actions/set-version-number@v4
       with:
         project: 'src/Asm.MooBank.Web.Api'
-        versionPropertyName: 'Version'
+        version-property-name: 'Version'
     - name: Restore dependencies
       run: dotnet restore Asm.MooBank.slnx
     - name: Setup node and npm
@@ -73,7 +73,7 @@ jobs:
       cancel-in-progress: true
     needs: build
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
-    uses: AndrewMcLachlan/actions/.github/workflows/deploy-azure.yml@v3
+    uses: AndrewMcLachlan/actions/.github/workflows/deploy-azure.yml@v4
     with:
       environment: Staging
       artifact-name: publish
@@ -90,7 +90,7 @@ jobs:
       cancel-in-progress: true
     needs: staging
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
-    uses: AndrewMcLachlan/actions/.github/workflows/azure-appservice-swap-slot.yml@v3
+    uses: AndrewMcLachlan/actions/.github/workflows/azure-appservice-swap-slot.yml@v4
     with:
       environment: Production
       app-name: moobank
@@ -107,7 +107,7 @@ jobs:
       cancel-in-progress: true
     needs: production
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
-    uses: AndrewMcLachlan/actions/.github/workflows/deploy-azure.yml@v3
+    uses: AndrewMcLachlan/actions/.github/workflows/deploy-azure.yml@v4
     with:
       environment: Post-Production
       artifact-name: publish
