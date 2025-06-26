@@ -37,7 +37,7 @@ jobs:
       uses: andrewmclachlan/actions/set-version-number@v4
       with:
         project: 'src/Asm.MooBank.Web.Api'
-        versionPropertyName: 'Version'
+        version-property-name: 'Version'
     - name: Restore dependencies
       run: dotnet restore Asm.MooBank.slnx
     - name: Setup node and npm
