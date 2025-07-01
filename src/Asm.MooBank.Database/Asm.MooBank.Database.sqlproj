@@ -11,7 +11,7 @@
     <DatabaseName>MooBank</DatabaseName>
   </PropertyGroup>
   <ItemGroup>
-    <Build Remove="Scripts\Institutions.sql" />
+    <Build Remove="Scripts\.sql" />
     <Build Remove="Scripts\UpdateTransactionTypes.sql" />
   </ItemGroup>
   <ItemGroup>
@@ -19,9 +19,6 @@
     <None Include="Scripts\FillTransactionOffset.sql" />
     <None Include="Scripts\FillTransactionRaw.sql" />
     <None Include="Scripts\FillTransactionSplits.sql" />
-    <None Include="Scripts\Institutions.sql">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
     <None Include="Scripts\UpdateTransactionTypes.sql" />
     <PostDeploy Include="Script.PostDeployment1.sql" />
   </ItemGroup>

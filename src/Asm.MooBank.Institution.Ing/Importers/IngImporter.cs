@@ -118,12 +118,13 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
 
             endBalance ??= balance;
 
-            if (checkTransactions.Any(t => t.Description == columns[DescriptionColumn] && t.Date == transactionTime && t.Debit == debit && t.Credit == credit))
+            if (checkTransactions.Any(t => (t.Description == columns[DescriptionColumn] ||
+                TransactionParser.ParseDescription(t.Description).ReceiptNumber == TransactionParser.ParseDescription(columns[DescriptionColumn]).ReceiptNumber) &&
+                t.Date == transactionTime && t.Debit == debit && t.Credit == credit))
             {
                 logger.LogInformation("Duplicate transaction found {description} {date}", columns[DescriptionColumn], transactionTime);
                 continue;
             }
-
 
             var parsed = TransactionParser.ParseDescription(columns[DescriptionColumn]);
 
