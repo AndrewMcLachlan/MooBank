@@ -55,7 +55,7 @@ export type PeriodType = "thisMonth" | "lastMonth" | "previousMonth" | "last3Mon
 export const usePeriodSelector = ({instant, cacheKey, ...props}: PeriodSelectorProps) => {
     const [customPeriod, setCustomPeriod] = useCustomPeriod();
     const [selectedPeriod, setSelectedPeriod] = useLocalStorage(cacheKey, "1");
-    const [period, setPeriod] = useState<Period>(periodOptions.find(o => o.value === selectedPeriod) ?? selectedPeriod === "-1" ? customPeriod : lastMonth);
+    const [period, setPeriod] = useState<Period>(periodOptions.find(o => o.value === selectedPeriod) ?? (selectedPeriod === "-1" ? customPeriod : lastMonth));
     const [customStart, setCustomStart] = useState<Date>(customPeriod.startDate);
     const [customEnd, setCustomEnd] = useState<Date>(customPeriod.endDate);
 
@@ -63,7 +63,6 @@ export const usePeriodSelector = ({instant, cacheKey, ...props}: PeriodSelectorP
         const index = e.currentTarget.selectedIndex;
         const option = periodOptions[index];
         setSelectedPeriod(option?.value ?? "-1");
-
     }
 
     useEffect(() => {

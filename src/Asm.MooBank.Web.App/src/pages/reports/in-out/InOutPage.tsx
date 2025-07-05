@@ -26,7 +26,7 @@ export const InOutPage = () => {
     const [period, setPeriod] = useState<Period>(getPeriod());
 
     const difference = Math.abs(differenceInMonths(period.startDate, period.endDate));
-    const col = 6;
+    const col = difference > 12 ? 12 : 6;
 
     return (
         <ReportsPage title="Income vs Expenses">
@@ -39,7 +39,7 @@ export const InOutPage = () => {
                         <InOut accountId={accountId} period={period} useInOutReport={useInOutReport} />
                     </Section>
                 </Col>
-                <Col xxl={col} xl={12}>
+                <Col xxl={col} xl={12} hidden={difference > 12}>
                     <Section header="Same Period Last Year" headerSize={3} className="report inout">
                         <InOut accountId={accountId} period={subtractYear(period)} useInOutReport={useInOutReport} />
                     </Section>

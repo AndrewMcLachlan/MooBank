@@ -11,6 +11,7 @@ import { TopTags } from "./TopTags";
 import { transactionTypeFilter } from "store/state";
 import { MiniPeriodSelector } from "components/MiniPeriodSelector";
 import { getPeriod } from "hooks";
+import { differenceInMonths } from "date-fns";
 
 ChartJS.register(...registerables);
 
@@ -20,6 +21,8 @@ export const AllTagAverage = () => {
 
     const [reportType, setReportType] = useState<transactionTypeFilter>("Debit");
     const [period, setPeriod] = useState<Period>(getPeriod());
+
+const difference = Math.abs(differenceInMonths(period.startDate, period.endDate));
 
     return (
         <ReportsPage title="Top Tags">
@@ -31,7 +34,7 @@ export const AllTagAverage = () => {
                 <h3>Average per month Across Top 20 Tags</h3>
                 <TopTags accountId={accountId} period={period} reportType={reportType} />
             </Section>
-            <Section className="report">
+            <Section className="report" hidden={difference > 12}>
                 <h3>Same Period Last Year</h3>
                 <TopTags accountId={accountId} period={subtractYear(period)} reportType={reportType} />
             </Section>

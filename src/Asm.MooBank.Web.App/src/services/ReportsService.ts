@@ -1,6 +1,6 @@
 import { UseQueryResult } from "@tanstack/react-query";
 import { trimEnd, useApiGet } from "@andrewmclachlan/mooapp";
-import { AllTagAverageReport, ByTagReport, defaultSettings, InOutReport, InOutTrendReport, reportInterval, TagTrendReport, TrendReportSettings } from "../models/reports";
+import { AllTagAverageReport, ByTagReport, defaultSettings, InOutReport, InOutTrendReport, MonthlyBalancesReport, reportInterval, TagTrendReport, TrendReportSettings } from "../models/reports";
 import { formatISODate } from "../helpers/dateFns";
 import { transactionTypeFilter } from "store/state";
 
@@ -23,6 +23,8 @@ export const useByTagReport = (accountId: string, start: Date, end: Date, report
 export const useTagTrendReport = (accountId: string, start: Date, end: Date, reportType: transactionTypeFilter, tagId: number, settings: TrendReportSettings) => useApiGet<TagTrendReport>([reportsKey, accountId, "tag-trend", reportType, start, end, tagId, settings], trimEnd("/", `api/accounts/${accountId}/reports/${reportType.toLowerCase()}/tag-trend${datesToUrl(start, end)}/${tagId}${toQuery(settings)}`));
 
 export const useAllTagAverageReport = (accountId: string, start: Date, end: Date, reportType: transactionTypeFilter, top: number = 20, interval: reportInterval = "Monthly") => useApiGet<AllTagAverageReport>([reportsKey, accountId, "all-tag-average", reportType, start, end], trimEnd("/", `api/accounts/${accountId}/reports/${reportType.toLowerCase()}/all-tag-average${datesToUrl(start, end)}?top=${top}&interval=${interval}`), { enabled: (!!start && !!end) });
+
+export const useMonthlyBalancesReport = (accountId: string, start: Date, end: Date) => useApiGet<MonthlyBalancesReport>([reportsKey, accountId, "monthly-balances", start, end], trimEnd("/", `api/accounts/${accountId}/reports/monthly-balances${datesToUrl(start, end)}`), { enabled: (!!start && !!end) });
 
 const toQuery = (settings: TrendReportSettings) => {
 

@@ -4,9 +4,9 @@ public abstract record ReportQuery
 {
     public required Guid AccountId { get; init; }
 
-    public required DateOnly Start { get; init; }
+    public DateOnly Start { get; init; } = DateOnly.MinValue;
 
-    public required DateOnly End { get; init; }
+    public DateOnly End { get; init; } = DateOnlyExtensions.Today();
 }
 
 public static class ReportQueryExtensions
@@ -16,7 +16,7 @@ public static class ReportQueryExtensions
         var start = query.Start.ToStartOfDay();
         var end = query.End.ToEndOfDay();
 
-        return transactions.Where(t => t.AccountId == query.AccountId && !t.ExcludeFromReporting && t.TransactionTime >= start && t.TransactionTime <= end);
+        return transactions.Where(t => t.AccountId == query.AccountId && !t.ExcludeFromReporting && (start == DateTime.MinValue || t.TransactionTime >= start) && t.TransactionTime <= end);
     }
 
     public static IQueryable<Domain.Entities.Transactions.Transaction> ExcludeOffset(this IQueryable<Domain.Entities.Transactions.Transaction> transactions) =>

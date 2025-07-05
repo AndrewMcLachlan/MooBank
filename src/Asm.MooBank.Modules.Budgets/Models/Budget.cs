@@ -4,11 +4,11 @@ public sealed record Budget
 {
     public required short Year { get; set; }
 
-    public required IEnumerable<BudgetLine> IncomeLines { get; init; } = Enumerable.Empty<BudgetLine>();
+    public required IEnumerable<BudgetLine> IncomeLines { get; init; } = [];
 
-    public required IEnumerable<BudgetLine> ExpensesLines { get; init; } = Enumerable.Empty<BudgetLine>();
+    public required IEnumerable<BudgetLine> ExpensesLines { get; init; } = [];
 
-    public required IEnumerable<BudgetMonth> Months { get; init; } = Enumerable.Empty<BudgetMonth>();
+    public required IEnumerable<BudgetMonth> Months { get; init; } = [];
 }
 
 public static class BudgetExtensions
@@ -45,7 +45,7 @@ public static class BudgetExtensions
 
     public static IEnumerable<BudgetMonth> ToMonths(this Domain.Entities.Budget.Budget budget)
     {
-        List<BudgetMonth> months = new();
+        List<BudgetMonth> months = [];
         for (int i = 0; i < 12; i++)
         {
             var mask = 1 << i;

@@ -36,5 +36,8 @@ internal class Reports : EndpointGroupBase
 
         builder.MapQuery<GetAllTagAverageReport, AllTagAverageReport>("{reportType}/all-tag-average/{start}/{end}")
             .WithNames("All Tag Average Report");
+
+        builder.MapQuery<GetMonthlyBalancesReport, MonthlyBalancesReport>("monthly-balances/{start?}/{end?}")
+            .WithNames("Monthly Balances Report");
     }
 }
