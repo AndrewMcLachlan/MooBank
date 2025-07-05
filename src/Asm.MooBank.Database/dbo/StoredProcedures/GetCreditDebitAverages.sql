@@ -7,6 +7,9 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
+    SELECT @StartDate = GREATEST(@StartDate, (SELECT Min(TransactionTime) FROM [Transaction] WHERE AccountId = @AccountId))
+    SELECT @EndDate = LEAST(@EndDate, CAST(GETDATE() as DATE));
+
     -- Calculate period span
     DECLARE @PeriodCount int = GREATEST(
         CASE

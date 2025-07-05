@@ -57,6 +57,9 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
     public virtual DbSet<TagAverage> TopTagAverages { get; set; }
 
     [AllowNull]
+    public virtual DbSet<MonthlyBalance> MonthlyBalances { get; set; }
+
+    [AllowNull]
     public virtual DbSet<StockPriceHistory> StockPriceHistory{ get; set; }
 
     [AllowNull]
@@ -98,6 +101,7 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
         modelBuilder.Entity<CreditDebitTotal>().HasNoKey();
         modelBuilder.Entity<CreditDebitAverage>().HasNoKey();
         modelBuilder.Entity<TagAverage>().HasNoKey();
+        modelBuilder.Entity<MonthlyBalance>().HasNoKey();
 
         modelBuilder.HasDbFunction(typeof(Transaction).GetMethod(nameof(Transaction.TransactionNetAmount), [typeof(Models.TransactionType), typeof(Guid), typeof(decimal)])!);
         modelBuilder.HasDbFunction(typeof(TransactionSplit).GetMethod(nameof(TransactionSplit.TransactionSplitNetAmount), [typeof(Guid), typeof(Guid), typeof(decimal)])!);

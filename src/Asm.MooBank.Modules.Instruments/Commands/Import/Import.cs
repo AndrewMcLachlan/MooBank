@@ -21,7 +21,6 @@ internal class ImportHandler(IInstrumentRepository instrumentRepository, IRuleRe
         await ApplyRules(instrument, importResult.Transactions, cancellationToken);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
-
     }
 
     private async Task ApplyRules(Instrument instrument, IEnumerable<Domain.Entities.Transactions.Transaction> transactions, CancellationToken cancellationToken = default)
@@ -35,5 +34,4 @@ internal class ImportHandler(IInstrumentRepository instrumentRepository, IRuleRe
             transaction.AddOrUpdateSplit(applicableTags);
         }
     }
-
 }

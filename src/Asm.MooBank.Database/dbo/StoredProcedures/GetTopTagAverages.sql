@@ -8,6 +8,9 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
+    SELECT @StartDate = GREATEST(@StartDate, (SELECT Min(TransactionTime) FROM [Transaction] WHERE AccountId = @AccountId))
+    SELECT @EndDate = LEAST(@EndDate, CAST(GETDATE() as DATE));
+
     DECLARE @PeriodCount int = GREATEST(
         CASE
             WHEN @Period = 'Yearly' THEN DATEDIFF(YEAR, @StartDate, DATEADD(DAY, 1, @EndDate))

@@ -8,6 +8,9 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
+    SELECT @StartDate = GREATEST(@StartDate, (SELECT Min(TransactionTime) FROM [Transaction] WHERE AccountId = @AccountId))
+    SELECT @EndDate = LEAST(@EndDate, CAST(GETDATE() as DATE));
+
     -- 1. Cache eligible tags (non-deleted and not excluded from reporting)
     SELECT t.Id, t.Name
     INTO #EligibleTags

@@ -33,6 +33,7 @@ const getMenuItems = (account: InstitutionAccount) => {
         { route: `/accounts/${account.id}/reports/breakdown`, text: "Breakdown", image: <PieChart /> },
         { route: `/accounts/${account.id}/reports/tag-trend`, text: "Tag Trend", image: <Trendline /> },
         { route: `/accounts/${account.id}/reports/by-tag`, text: "All Tags", image: <Tags /> },
+        { route: `/accounts/${account.id}/reports/monthly-balances`, text: "Monthly Balances", image: <Trendline /> },
     ];
 
     return items;

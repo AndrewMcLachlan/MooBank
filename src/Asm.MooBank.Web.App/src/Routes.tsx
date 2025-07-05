@@ -1,6 +1,7 @@
 import { RouteDefinition } from "@andrewmclachlan/mooapp";
 import App from "App";
 import * as Pages from "./pages";
+import { MonthlyBalances } from "pages/reports/MonthlyBalances";
 
 export const routes: RouteDefinition = {
     layout: {
@@ -22,6 +23,7 @@ export const routes: RouteDefinition = {
                             byTag: { path: "by-tag", element: <Pages.ByTag /> },
                             tagTrend: { path: "tag-trend/:tagId?", element: <Pages.TagTrend /> },
                             allTagAverage: { path: "all-tag-average", element: <Pages.AllTagAverage /> },
+                            MonthlyBalances: {path: "monthly-balances", element: <MonthlyBalances /> },
                         }
                     },
                     virtual: {
