@@ -12,7 +12,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="ReqnRoll.Tools.MsBuild.Generation" />
     <PackageReference Include="ReqnRoll.xUnit" />
-    <PackageReference Include="xunit.runner.visualstudio"/>
+    <PackageReference Include="xunit.runner.visualstudio" />
   </ItemGroup>
 
   <ItemGroup>

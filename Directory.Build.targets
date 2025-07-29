@@ -16,10 +16,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ObjFiles Include="$(ObjFolder)/*.*"
-                Exclude="$(ObjFolder)/project.assets.json" />
-      <ObjSubFolders
-                Include="$([System.IO.Directory]::GetDirectories('$(ObjFolder)'))" />
+      <ObjFiles Include="$(ObjFolder)/*.*" Exclude="$(ObjFolder)/project.assets.json" />
+      <ObjSubFolders Include="$([System.IO.Directory]::GetDirectories('$(ObjFolder)'))" />
     </ItemGroup>
 
     <!-- Remove "obj" sub folders -->
