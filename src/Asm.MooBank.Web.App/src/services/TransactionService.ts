@@ -28,6 +28,7 @@ export const useTransactions = (accountId: string, filter: TransactionsFilter, p
     filterString += filter.start ? `&start=${filter.start}` : "";
     filterString += filter.end ? `&end=${filter.end}` : "";
     filterString += filter.transactionType ? `&transactionType=${filter.transactionType}` : "";
+    filterString += filter.filterNetZero ? `&excludeNetZero=${filter.filterNetZero}` : "";
     filter.tags?.forEach(t => filterString += `&tagids=${t}`);
 
     let queryString = sortString + filterString;

@@ -6,11 +6,14 @@ import { PaginationProps, PaginationTh, SortableTh, SortDirection } from "@andre
 import { State } from "store/state";
 import { TransactionsSlice } from "store/Transactions";
 import { Pagination } from "react-bootstrap";
+import { useTransactionList } from "components/TransactionListProvider";
 
 export const TransactionTableHead: React.FC<PaginationProps> = (props) => {
 
     const dispatch = useDispatch();
     const { sortField, sortDirection } = useSelector((state: State) => state.transactions);
+
+    const { showNet } = useTransactionList();
 
     const sort = (newSortField: string) => {
 

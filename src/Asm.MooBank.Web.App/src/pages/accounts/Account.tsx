@@ -1,5 +1,6 @@
 import { useIdParams } from "@andrewmclachlan/mooapp";
 import { AccountProvider } from "components";
+import { TransactionListProvider } from "components";
 import { Navigate, Outlet, useMatch } from "react-router";
 import { useAccount } from "services";
 
@@ -17,7 +18,9 @@ export const Account = () => {
 
     return (
         <AccountProvider account={account.data}>
-            <Outlet />
+            <TransactionListProvider>
+                <Outlet />
+            </TransactionListProvider>
         </AccountProvider>
     );
 }

@@ -13,13 +13,13 @@ import { cleanQueryString } from "helpers/queryString";
 
 export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
 
-    const { filterDescription, filterTagged, filterTags, filterType, storedFilterType, period, clear, setFilterDescription, setFilterTagged, setFilterTags, setFilterType, setPeriod } = useFilterPanel();
+    const { filterDescription, filterTagged, filterTags, filterNetZero, filterType, storedFilterType, period, clear, setFilterDescription, setFilterTagged, setFilterNetZero, setFilterTags, setFilterType, setPeriod } = useFilterPanel();
 
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(TransactionsSlice.actions.setTransactionListFilter({ description: filterDescription, filterTagged, tags: filterTags, transactionType: storedFilterType, start: period?.startDate?.toISOString(), end: period?.endDate?.toISOString() }));
-    }, [period, filterDescription, filterTagged, filterTags, storedFilterType, window.location.search]);
+        dispatch(TransactionsSlice.actions.setTransactionListFilter({ description: filterDescription, filterTagged, filterNetZero, tags: filterTags, transactionType: storedFilterType, start: period?.startDate?.toISOString(), end: period?.endDate?.toISOString() }));
+    }, [period, filterDescription, filterTagged, filterNetZero, filterTags, storedFilterType, window.location.search]);
 
     return (
         <Section className="filter-panel" header="Filter" {...props}>
@@ -47,6 +47,9 @@ export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
                 <Form.Group>
                     <Form.Switch id="filter-tagged" label="Only show transactions without tags" checked={filterTagged} onChange={(e) => setFilterTagged(e.currentTarget.checked)} />
                 </Form.Group>
+                <Form.Group>
+                    <Form.Switch id="filter-netzero" label="Exclude transactions with a net amount of 0" checked={filterNetZero} onChange={(e) => setFilterNetZero(e.currentTarget.checked)} />
+                </Form.Group>
             </Row>
         </Section>
     );
@@ -64,17 +67,21 @@ export const useFilterPanel = () => {
     const tagParams = params.get("tag")?.split(",").map(t => Number(t)) ?? [];
     const transactionTypeParam: transactionTypeFilter = params.get("type") as transactionTypeFilter ?? "";
     const unTaggedParam = params.get("untagged");
+    const netZeroParam = params.get("netzero");
 
     const [storedFilterTagged, setStoredFilterTagged] = useLocalStorage("filter-tagged", false);
+    const [storedFilterNetZero, setStoredFilterNetZero] = useLocalStorage("filter-netzero", false);
     const [filterDescription, setFilterDescription] = useLocalStorage("filter-description", "");
     const [storedFilterTags, setStoredFilterTags] = useLocalStorage<number[]>("filter-tag", []);
     const [storedFilterType, setStoredFilterType] = useLocalStorage<transactionTypeFilter>("filter-type", "");
 
     const [localFilterTags, setLocalFilterTags] = useState<number[]>(tagParams ?? storedFilterTags);
     const [localFilterTagged, setLocalFilterTagged] = useState<boolean>(unTaggedParam ? true : storedFilterTagged);
+    const [localFilterNetZero, setLocalFilterNetZero] = useState<boolean>(netZeroParam ? true : storedFilterNetZero);
     const [localFilterType, setLocalFilterType] = useState<transactionTypeFilter>(transactionTypeParam ?? storedFilterType);
     const filterTags = localFilterTags ?? storedFilterTags;
     const filterTagged = localFilterTagged ?? storedFilterTagged;
+    const filterNetZero = localFilterNetZero ?? storedFilterNetZero;
 
     useEffect(() => {
         // If the URL has filters defined, clear the description filter.
@@ -98,6 +105,13 @@ export const useFilterPanel = () => {
         setStoredFilterTagged(filter);
     }
 
+    const setFilterNetZero = (filter: boolean) => {
+        cleanQueryString(params, "netzero");
+
+        setLocalFilterNetZero(filter);
+        setStoredFilterNetZero(filter);
+    }
+
     const setFilterType = (type: transactionTypeFilter) => {
         cleanQueryString(params, "type");
 
@@ -111,6 +125,7 @@ export const useFilterPanel = () => {
     const clear = () => {
         setFilterDescription("");
         setFilterTagged(false);
+        setFilterNetZero(false);
         setFilterTags([]);
         setStoredFilterType("");
     }
@@ -118,6 +133,7 @@ export const useFilterPanel = () => {
     return {
         filterDescription,
         filterTagged,
+        filterNetZero,
         filterTags,
         filterType: localFilterType,
         storedFilterType,
@@ -125,6 +141,7 @@ export const useFilterPanel = () => {
         clear,
         setFilterDescription,
         setFilterTagged,
+        setFilterNetZero,
         setFilterTags,
         setFilterType,
         setPeriod,

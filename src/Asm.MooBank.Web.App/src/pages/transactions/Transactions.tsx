@@ -11,6 +11,7 @@ import { TransactionList } from "./TransactionList";
 import { Import } from "./Import";
 import { MiniFilterPanel } from "./MiniFilterPanel";
 import { AddTransaction } from "./AddTransaction";
+import { useTransactionList } from "../../components";
 
 
 export const Transactions: React.FC = () => {
@@ -19,11 +20,15 @@ export const Transactions: React.FC = () => {
 
     const [showImport, setShowImport] = React.useState(false);
     const [compactMode, setCompactMode] = useLocalStorage("compact-mode", false);
+    const { showNet, setShowNet } = useTransactionList();
     const [show, setShow] = React.useState(false);
 
     if (!account) return null;
 
-    let actions: React.ReactNode[] = [<Form.Switch key="compact" id="compact-mode" checked={compactMode} onChange={() => setCompactMode(!compactMode)} label="Compact" />,];
+    let actions: React.ReactNode[] = [
+        <Form.Switch key="show-net" id="show-net-amount" checked={showNet} onChange={() => setShowNet(!showNet)} label="Show Net Amount" />,
+        <Form.Switch key="compact" id="compact-mode" checked={compactMode} onChange={() => setCompactMode(!compactMode)} label="Compact" />,
+    ];
 
     switch (account.controller) {
         case "Manual":
@@ -45,7 +50,7 @@ export const Transactions: React.FC = () => {
 
     return (
         <AccountPage title="Transactions" actions={actions}>
-            <AddTransaction show={show} onClose={() => setShow(false) } onSave={() => setShow(false) } balanceUpdate={false} />
+            <AddTransaction show={show} onClose={() => setShow(false)} onSave={() => setShow(false)} balanceUpdate={false} />
             <SectionRow hidden={compactMode}>
                 <Col xxl={3} xl={12} lg={12} md={12} sm={12}>
                     <AccountSummary />

@@ -34,7 +34,7 @@ internal class GetInOutTrendReportHandler(IQueryable<Transaction> transactions) 
         return transactions.GroupBy(t => new DateOnly(t.TransactionTime.Year, t.TransactionTime.Month, 1)).OrderBy(g => g.Key).Select(g => new TrendPoint
         {
             Month = g.Key,
-            GrossAmount = g.Sum(t => t.GetNetAmount())
+            GrossAmount = g.Sum(t => t.NetAmount)
         });
     }
 }
