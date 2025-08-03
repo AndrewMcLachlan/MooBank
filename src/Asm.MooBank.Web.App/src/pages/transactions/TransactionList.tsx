@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { getNumberOfPages, Pagination, PaginationControls, PageSize, SectionTable } from "@andrewmclachlan/mooapp";
+import { getNumberOfPages, Pagination, PaginationControls, PageSize, SectionTable, MiniPagination } from "@andrewmclachlan/mooapp";
 
 import { useAccount } from "components";
 import { Transaction } from "models";
@@ -51,10 +51,19 @@ export const TransactionList: React.FC = () => {
                 <tfoot>
                     <tr>
                         <td colSpan={2} className="page-totals d-none d-md-table-cell">Page {pageNumber} of {numberOfPages} ({totalTransactions} transactions)</td>
-                        <td colSpan={4}>
+                        <td colSpan={4} className="d-none d-md-table-cell">
                             <PaginationControls>
                                 <PageSize value={pageSize} onChange={(newPageSize) => dispatch(TransactionsSlice.actions.setPageSize(newPageSize))} />
                                 <Pagination pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={(_current, newPage) => dispatch(TransactionsSlice.actions.setCurrentPage(newPage))} />
+                            </PaginationControls>
+                        </td>
+                        <td colSpan={2} className="d-md-none d-table-cell">
+                            <PaginationControls>
+                                <PageSize value={pageSize} onChange={(newPageSize) => dispatch(TransactionsSlice.actions.setPageSize(newPageSize))} />
+                                <MiniPagination
+                                    pageNumber={pageNumber}
+                                    numberOfPages={numberOfPages}
+                                    onChange={(_current, newPage) => dispatch(TransactionsSlice.actions.setCurrentPage(newPage))} />
                             </PaginationControls>
                         </td>
                     </tr>

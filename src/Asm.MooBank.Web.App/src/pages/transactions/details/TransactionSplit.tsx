@@ -12,11 +12,12 @@ export const TransactionSplit: React.FC<TransactionSplitProps> = ({ transaction,
     const [offsetBy, setOffsetBy] = useState<TransactionOffset[]>(split.offsetBy);
     const invalidateSearch = useInvalidateSearch(transaction.id);
 
-    const offsetChanged = (offset: TransactionOffset) => {
+    const offsetChanged = (offset: TransactionOffset, oldOffset?: Transaction) => {
         if (offset.amount > offset.transaction.amount || offset.amount <= 0) offset.amount = offset.transaction.amount;
 
         const newOffsetBy = [...offsetBy];
-        const index = newOffsetBy.findIndex(o => o.transaction.id === offset.transaction.id);
+        let index = newOffsetBy.findIndex(o => o.transaction.id === oldOffset?.id)
+        index = index == -1 ? newOffsetBy.findIndex(o => o.transaction.id === offset.transaction.id) : index;
         if (index === -1) {
             newOffsetBy.push(offset);
         } else {
@@ -53,10 +54,10 @@ export const TransactionSplit: React.FC<TransactionSplitProps> = ({ transaction,
             <section className="offsets" hidden={isCredit(transaction.transactionType)}>
                 <Form.Label>Corresponding rebate / refund</Form.Label>
 
-                {offsetBy?.map((to) =>
+                {offsetBy?.map((to, index) =>
                     <Form.Group as={Row} key={to.transaction.id}>
                         <Col sm={9}>
-                            <TransactionSearch value={to.transaction} onChange={(v) => offsetChanged({ ...to, transaction: v })} transaction={transaction} />
+                            <TransactionSearch value={to.transaction} onChange={(v) => offsetChanged({ ...to, transaction: v }, to.transaction)} transaction={transaction} excludedTransactions={offsetBy.map(ob => ob.transaction.id)} />
                         </Col>
                         <Col sm={3} className="offset-controls">
                             <Form.Control type="number" value={to.amount} required max={to.transaction.amount} onChange={e => offsetChanged({ ...to, amount: valueAsNumber(e.currentTarget) })} />

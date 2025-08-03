@@ -16,7 +16,10 @@ export const TransactionRow: React.FC<TransactionRowProps> = ({transaction, onCl
         <>
         { ((!previousDate || !isSameDay(previousDate, transaction.transactionTime)) &&
             <tr className="group-row transaction-date-row">
-                <td colSpan={6}>
+                <td colSpan={2} className="d-table-cell d-md-none">
+                    {format(parseISO(transaction.transactionTime), "dd MMM yyyy")}
+                </td>
+                <td colSpan={6} className="d-none d-md-table-cell">
                     {format(parseISO(transaction.transactionTime), "dd MMM yyyy")}
                 </td>
             </tr>
