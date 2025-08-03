@@ -45,7 +45,7 @@ export default defineConfig({
         proxy: {
             "/api": {
                 // Use environment variable for proxy target to avoid hard-coding IP addresses
-                target: env.VITE_API_PROXY_TARGET || "https://localhost:7005",
+                target: env.VITE_API_PROXY_TARGET || "http://localhost:5005",
                 changeOrigin: true,
                 secure: false,
             }

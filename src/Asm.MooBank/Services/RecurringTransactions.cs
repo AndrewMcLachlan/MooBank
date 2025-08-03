@@ -52,21 +52,17 @@ public class RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionRep
     /// <param name="recurring">The recurring transaction definition.</param>
     private void RunTransaction(RecurringTransaction recurring)
     {
-        TransactionType transactionType = recurring.Amount < 0 ?
-                                  TransactionType.Debit :
-                                  TransactionType.Credit;
+        var transaction = Domain.Entities.Transactions.Transaction.Create(
+            recurring.VirtualAccountId,
+            null,
+            recurring.Amount,
+            recurring.Description,
+            DateTime.Now,
+            TransactionSubType.Recurring,
+            "Recurring"
+        );
 
-        Transaction transaction = new()
-        {
-            Amount = recurring.Amount,
-            AccountId = recurring.VirtualAccountId,
-            Description = recurring.Description,
-            Source = "Recurring",
-            TransactionTime = DateTime.Now,
-            PurchaseDate = recurring.NextRun.ToDateTime(TimeOnly.MinValue),
-            TransactionType = transactionType,
-            TransactionSubType = TransactionSubType.Recurring,
-        };
+        transaction.PurchaseDate = recurring.NextRun.ToDateTime(TimeOnly.MinValue);
 
         transactionRepository.Add(transaction);
     }

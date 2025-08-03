@@ -1,6 +1,4 @@
-﻿using Asm.MooBank.Models;
-
-namespace Asm.MooBank.Modules.Transactions.Models;
+﻿namespace Asm.MooBank.Models;
 
 public partial record Transaction
 {

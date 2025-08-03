@@ -34,7 +34,10 @@ public class RunRulesService(IRunRulesQueue taskQueue, ILoggerFactory loggerFact
 
                 var rules = await transactionTagRuleRepository.GetForInstrument(accountId, cancellationToken);
 
-                foreach (var transaction in transactions)
+                Parallel.ForEach(transactions, new ParallelOptions
+                {
+                    MaxDegreeOfParallelism = 100,
+                }, (transaction) =>
                 {
                     var applicableRules = rules.Where(r => transaction.Description?.Contains(r.Contains, StringComparison.OrdinalIgnoreCase) ?? false);
                     var applicableTags = applicableRules.SelectMany(r => r.Tags).Distinct();
@@ -44,7 +47,7 @@ public class RunRulesService(IRunRulesQueue taskQueue, ILoggerFactory loggerFact
                     {
                         transaction.Notes = String.Join(". ", applicableRules.Select(r => r.Description));
                     }
-                }
+                });
 
                 await unitOfWork.SaveChangesAsync(cancellationToken);
             }

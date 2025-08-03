@@ -1,5 +1,4 @@
-﻿using Asm.MooBank.Commands;
-using Asm.MooBank.Domain.Entities.Tag;
+﻿using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.Transactions.Specifications;
 using Asm.MooBank.Models;
@@ -7,11 +6,11 @@ using Asm.MooBank.Modules.Transactions.Models.Extensions;
 
 namespace Asm.MooBank.Modules.Transactions.Commands;
 
-internal record AddTag(Guid InstrumentId, Guid Id, int TagId) : ICommand<Models.Transaction>;
+internal record AddTag(Guid InstrumentId, Guid Id, int TagId) : ICommand<MooBank.Models.Transaction>;
 
-internal class AddTagHandler(ITransactionRepository transactionRepository, ITagRepository tagRepository, IUnitOfWork unitOfWork) :  ICommandHandler<AddTag, Models.Transaction>
+internal class AddTagHandler(ITransactionRepository transactionRepository, ITagRepository tagRepository, IUnitOfWork unitOfWork) :  ICommandHandler<AddTag, MooBank.Models.Transaction>
 {
-    public async ValueTask<Models.Transaction> Handle(AddTag request, CancellationToken cancellationToken)
+    public async ValueTask<MooBank.Models.Transaction> Handle(AddTag request, CancellationToken cancellationToken)
     {
         var entity = await transactionRepository.Get(request.Id, new IncludeSplitsSpecification(), cancellationToken);
 

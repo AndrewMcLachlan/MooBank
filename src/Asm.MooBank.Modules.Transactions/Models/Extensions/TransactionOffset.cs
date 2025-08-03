@@ -1,5 +1,7 @@
 ﻿namespace Asm.MooBank.Modules.Transactions.Models.Extensions;
 
+using Asm.MooBank.Models;
+
 public static class TransactionOffsetExtensions
 {
     public static TransactionOffsetBy ToOffsetByModel(this Domain.Entities.Transactions.TransactionOffset transactionOffset) =>

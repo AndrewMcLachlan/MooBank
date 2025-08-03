@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Asm.MooBank.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities;
 

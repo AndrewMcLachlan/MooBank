@@ -4,7 +4,6 @@ using Asm.MooBank.Importers;
 using Asm.MooBank.Institution.AustralianSuper.Domain;
 using Asm.MooBank.Institution.AustralianSuper.Models;
 using Microsoft.Extensions.Logging;
-using TransactionType = Asm.MooBank.Models.TransactionType;
 
 namespace Asm.MooBank.Institution.AustralianSuper.Importers;
 
@@ -124,22 +123,23 @@ internal partial class Importer(ITransactionRawRepository transactionRawReposito
                 continue;
             }
 
-            var transaction = new Transaction
+            Transaction transaction = Transaction.Create(
+                accountId,
+                null, // No account holder ID in this context
+                totalAmount,
+                $"{columns[TitleColumn].Trim()} {columns[DescriptionColumn]?.Trim()}".Trim(),
+                transactionTime.ToStartOfDay(),
+                null, // No sub-type in this context
+                "AustralianSuper Import"
+            );
+
+            transaction.Extra = isContribution ? new TransactionExtra
             {
-                AccountId = accountId,
-                Amount = totalAmount,
-                Description = $"{columns[TitleColumn].Trim()} {columns[DescriptionColumn]?.Trim()}".Trim(),
-                Extra = isContribution ? new TransactionExtra
-                {
-                    SGContributions = sgContributions,
-                    EmployerAdditional = employerAdditional,
-                    SalarySacrifice = salarySacrifice,
-                    MemberAdditional = memberAdditional,
-                } : null,
-                TransactionTime = transactionTime.ToStartOfDay(),
-                TransactionType = totalAmount < 0 ? TransactionType.Debit : TransactionType.Credit,
-                Source = "AustralianSuper Import",
-            };
+                SGContributions = sgContributions,
+                EmployerAdditional = employerAdditional,
+                SalarySacrifice = salarySacrifice,
+                MemberAdditional = memberAdditional,
+            } : null;
 
             var transactionRaw = new TransactionRaw
             {

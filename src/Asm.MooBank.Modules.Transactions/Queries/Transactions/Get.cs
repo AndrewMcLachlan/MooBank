@@ -2,7 +2,7 @@
 using Asm.MooBank.Domain.Entities.Transactions.Specifications;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Transactions.Models.Extensions;
-using PagedResult = Asm.PagedResult<Asm.MooBank.Modules.Transactions.Models.Transaction>;
+using PagedResult = Asm.PagedResult<Asm.MooBank.Models.Transaction>;
 
 namespace Asm.MooBank.Modules.Transactions.Queries.Transactions;
 
@@ -13,7 +13,7 @@ public sealed record Get : TransactionFilter, IQuery<PagedResult>
     public required int PageNumber { get; init; }
 }
 
-internal class GetHandler(IQueryable<Transaction> transactions) : IQueryHandler<Get, PagedResult>
+internal class GetHandler(IQueryable<Domain.Entities.Transactions.Transaction> transactions) : IQueryHandler<Get, PagedResult>
 {
     public async ValueTask<PagedResult> Handle(Get query, CancellationToken cancellationToken)
     {

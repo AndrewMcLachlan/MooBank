@@ -1,4 +1,6 @@
-﻿namespace Asm.MooBank.Domain.Entities.Reports;
+﻿using Asm.MooBank.Models;
+
+namespace Asm.MooBank.Domain.Entities.Reports;
 
 public class CreditDebitAverage
 {

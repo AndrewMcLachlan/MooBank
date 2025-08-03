@@ -31,10 +31,8 @@ internal class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
             .HasConversion(e => (int?)e, e => (Models.TransactionSubType?)e)
             .HasSentinel(null);
 
-
         // This transaction offsets the linked "TransactionId" transaction
         entity.HasMany(e => e.OffsetFor).WithOne(e => e.OffsetByTransaction).HasForeignKey(t => t.OffsetTransactionId);
-
 
         entity.Property(e => e.Extra).HasConversion(
                        v => JsonSerializer.Serialize(v, JsonSerializerOptions.Default),

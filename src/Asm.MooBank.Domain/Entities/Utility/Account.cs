@@ -1,4 +1,6 @@
-﻿namespace Asm.MooBank.Domain.Entities.Utility;
+﻿using Asm.MooBank.Models;
+
+namespace Asm.MooBank.Domain.Entities.Utility;
 
 [Table("Account", Schema = "utilities")]
 [AggregateRoot]

@@ -1,4 +1,5 @@
 ﻿using Asm.MooBank.Domain.Entities.Account.Specifications;
+using Asm.MooBank.Domain.Entities.Instrument.Events;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Instruments.Models.Instruments;
@@ -25,7 +26,7 @@ public record Update(Guid InstrumentId, Guid VirtualAccountId, string Name, stri
     }
 }
 
-internal class UpdateHandler(IInstrumentRepository instrumentRepository, ITransactionRepository transactionRepository, IUnitOfWork unitOfWork, ICurrencyConverter currencyConverter) : ICommandHandler<Update, VirtualInstrument>
+internal class UpdateHandler(IInstrumentRepository instrumentRepository, IUnitOfWork unitOfWork, ICurrencyConverter currencyConverter) : ICommandHandler<Update, VirtualInstrument>
 {
     public async ValueTask<VirtualInstrument> Handle(Update command, CancellationToken cancellationToken)
     {
@@ -38,20 +39,9 @@ internal class UpdateHandler(IInstrumentRepository instrumentRepository, ITransa
 
         var amount = instrument.Balance - command.CurrentBalance;
 
-        //TODO: Should be done via domain event
-        transactionRepository.Add(new Transaction
-        {
-            Account = instrument,
-            Amount = amount,
-            Description = "Balance adjustment",
-            Source = "Web",
-            TransactionTime = DateTime.Now,
-            TransactionType = amount > 0 ? TransactionType.Credit : TransactionType.Debit,
-            TransactionSubType = TransactionSubType.BalanceAdjustment,
-        });
-
         instrument.Balance = command.CurrentBalance;
 
+        instrument.Events.Add(new BalanceAdjustmentEvent(instrument, amount, "Web"));
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return instrument.ToModel(currencyConverter);

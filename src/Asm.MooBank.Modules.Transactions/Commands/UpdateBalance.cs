@@ -6,11 +6,11 @@ using IInstrumentRepository = Asm.MooBank.Domain.Entities.Instrument.IInstrument
 
 namespace Asm.MooBank.Modules.Transactions.Commands;
 
-public record UpdateBalance(Guid InstrumentId, CreateTransaction BalanceUpdate) : ICommand<Models.Transaction>;
+public record UpdateBalance(Guid InstrumentId, CreateTransaction BalanceUpdate) : ICommand<MooBank.Models.Transaction>;
 
-internal class UpdateBalanceHandler(IInstrumentRepository accountRepository, ITransactionRepository transactionRepository, IUnitOfWork unitOfWork) :  ICommandHandler<UpdateBalance, Models.Transaction>
+internal class UpdateBalanceHandler(IInstrumentRepository accountRepository, ITransactionRepository transactionRepository, IUserIdProvider userIdProvider, IUnitOfWork unitOfWork) :  ICommandHandler<UpdateBalance, MooBank.Models.Transaction>
 {
-    public async ValueTask<Models.Transaction> Handle(UpdateBalance command, CancellationToken cancellationToken)
+    public async ValueTask<MooBank.Models.Transaction> Handle(UpdateBalance command, CancellationToken cancellationToken)
     {
         var account = await accountRepository.Get(command.InstrumentId, cancellationToken);
 
@@ -21,16 +21,17 @@ internal class UpdateBalanceHandler(IInstrumentRepository accountRepository, ITr
 
         var amount = command.BalanceUpdate.Amount - transactionAccount.Balance;
 
-        var transaction = transactionRepository.Add(new Domain.Entities.Transactions.Transaction
-        {
-            Account = transactionAccount,
-            Amount = amount,
-            Description = command.BalanceUpdate.Description ?? "Balance adjustment",
-            Source = "Web",
-            TransactionTime = command.BalanceUpdate.TransactionTime.LocalDateTime,
-            TransactionType = amount > 0 ? TransactionType.Credit : TransactionType.Debit,
-            TransactionSubType = TransactionSubType.BalanceAdjustment,
-        });
+        var transaction = Domain.Entities.Transactions.Transaction.Create(
+            transactionAccount,
+            userIdProvider.CurrentUserId,
+            amount,
+            command.BalanceUpdate.Description ?? "Balance adjustment",
+            command.BalanceUpdate.TransactionTime.LocalDateTime,
+            TransactionSubType.BalanceAdjustment,
+            "Web"
+        );
+
+        transactionRepository.Add(transaction);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

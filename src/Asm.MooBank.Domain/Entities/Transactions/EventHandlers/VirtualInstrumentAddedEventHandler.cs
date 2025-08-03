@@ -1,23 +1,22 @@
 ﻿using Asm.MooBank.Domain.Entities.Account.Events;
+using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Domain.Entities.Transactions.EventHandlers;
-internal class VirtualInstrumentAddedEventHandler(Models.User user) : IDomainEventHandler<VirtualInstrumentAddedEvent>
+internal class VirtualInstrumentAddedEventHandler(Models.User user, ITransactionRepository transactionRepository) : IDomainEventHandler<VirtualInstrumentAddedEvent>
 {
-    public Task Handle(VirtualInstrumentAddedEvent request, CancellationToken cancellationToken)
+    public ValueTask Handle(VirtualInstrumentAddedEvent request, CancellationToken cancellationToken)
     {
-        if (request.OpeningBalance == 0) return Task.CompletedTask;
+        if (request.OpeningBalance == 0) return ValueTask.CompletedTask;
+        transactionRepository.Add(Transaction.Create(
+            request.Instrument,
+            user.Id,
+            request.OpeningBalance,
+            "Opening Balance",
+            DateTime.Now.Date, // TODO: Local date time
+            TransactionSubType.OpeningBalance,
+            "Event"
+        ));
 
-        request.Instrument.Transactions.Add(new Transaction
-        {
-            AccountHolderId = user.Id,
-            Amount = request.OpeningBalance,
-            Description = "Opening Balance",
-            TransactionTime = DateTime.Now.Date, // TODO: Local date time
-            TransactionType = request.OpeningBalance < 0 ? TransactionType.Debit : TransactionType.Credit,
-            TransactionSubType = TransactionSubType.OpeningBalance,
-            Source = "Event",
-        });
-
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 }
