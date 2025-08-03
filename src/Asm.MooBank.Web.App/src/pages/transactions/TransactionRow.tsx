@@ -6,7 +6,7 @@ import { Transaction } from "models";
 import { TransactionTagPanel } from "./TransactionTagPanel";
 import { Amount } from "components/Amount";
 import { useTransactionList } from "components/TransactionListProvider";
-import { isEqual } from "date-fns";
+import { isSameDay } from "date-fns";
 
 export const TransactionRow: React.FC<TransactionRowProps> = ({transaction, onClick, previousDate}) => {
 
@@ -14,7 +14,7 @@ export const TransactionRow: React.FC<TransactionRowProps> = ({transaction, onCl
 
     return (
         <>
-        { ((!previousDate || !isEqual(previousDate, transaction.transactionTime)) &&
+        { ((!previousDate || !isSameDay(previousDate, transaction.transactionTime)) &&
             <tr className="group-row transaction-date-row">
                 <td colSpan={6}>
                     {format(parseISO(transaction.transactionTime), "dd MMM yyyy")}
