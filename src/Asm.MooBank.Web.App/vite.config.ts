@@ -44,7 +44,8 @@ export default defineConfig({
         port: 3005,
         proxy: {
             "/api": {
-                target: "https://10.31.8.75:7005",
+                // Use environment variable for proxy target to avoid hard-coding IP addresses
+                target: env.VITE_API_PROXY_TARGET || "https://localhost:7005",
                 changeOrigin: true,
                 secure: false,
             }
