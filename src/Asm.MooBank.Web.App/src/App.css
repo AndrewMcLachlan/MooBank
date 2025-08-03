@@ -1,6 +1,7 @@
-﻿@layer mooapp, moobank;
+﻿@layer mooapp, layout, moobank;
 
 @import "~/@andrewmclachlan/mooapp/dist/index.css" layer(mooapp);
+@import "css/layout" layer(layout);
 @import "css/budget" layer(moobank);
 @import "css/rainbow" layer(moobank);
 @import "css/components" layer(moobank);
@@ -148,8 +149,6 @@
     (max-device-width: 767px) {
 
         table.accounts {
-            font-size: 0.8rem;
-
 
             th:first-child {
                 width: auto;
@@ -176,7 +175,7 @@
 
 h2 {
     @media screen and (max-width: 768px) {
-        display: none;
+
     }
 }
 

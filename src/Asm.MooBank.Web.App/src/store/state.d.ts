@@ -21,6 +21,7 @@ export interface Transactions {
 
 export interface TransactionsFilter {
     filterTagged?: boolean;
+    filterNetZero?: boolean;
     description?: string;
     transactionType: transactionTypeFilter;
     tags?: number[] | null;

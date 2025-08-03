@@ -16,11 +16,11 @@ internal class GetMonthlyBalancesReportHandler(IReportRepository repository) : I
             AccountId = query.AccountId,
             Start = query.Start,
             End = query.End,
-            Balances = results.Select(b => new TrendPoint()
+            Balances = [.. results.Select(b => new TrendPoint()
             {
                 Month = b.PeriodEnd,
                 GrossAmount = b.Balance,
-            }).ToList(),
+            })],
         };
     }
 }

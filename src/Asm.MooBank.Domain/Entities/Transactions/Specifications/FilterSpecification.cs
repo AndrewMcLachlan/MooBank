@@ -30,6 +30,7 @@ file static class Extensions
 
         result = result.Where(t => (filter.Start == null || t.TransactionTime >= filter.Start) && (filter.End == null || t.TransactionTime <= filter.End));
         result = result.Where(t => !(filter.UntaggedOnly ?? false) || !t.Splits.SelectMany(ts => ts.Tags).Any());
+        result = result.Where(t => !(filter.ExcludeNetZero ?? false) || Transaction.TransactionNetAmount(t.TransactionType, t.Id, t.Amount) != 0);
         result = result.Where(t => filter.TagIds.IsNullOrEmpty() || t.Splits.SelectMany(ts => ts.Tags).Any(t => filter.TagIds!.Contains(t.Id)));
 
         return result;

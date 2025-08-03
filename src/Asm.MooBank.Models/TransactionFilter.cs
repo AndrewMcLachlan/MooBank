@@ -22,4 +22,6 @@ public record TransactionFilter : ISortable
     public string Untagged { init => _untagged = value == "untagged"; }
 
     public bool? UntaggedOnly => _untagged;
+
+    public bool? ExcludeNetZero { get; init; }
 }

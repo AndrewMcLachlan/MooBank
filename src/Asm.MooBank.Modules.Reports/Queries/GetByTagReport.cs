@@ -26,7 +26,7 @@ internal class GetByTagReportHandler(IQueryable<Transaction> transactions) : IQu
             {
                 TagId = t.Id,
                 TagName = t.Name,
-                GrossAmount = Math.Abs(g.Sum(t => t.GetNetAmount())), // This looks weird, but is correct
+                GrossAmount = Math.Abs(g.Sum(t => t.NetAmount)), // This looks weird, but is correct
             })).ToList();
 
         var tagValues = tagValuesInterim.GroupBy(t => new { t.TagId, t.TagName }).Select(g => new TagValue

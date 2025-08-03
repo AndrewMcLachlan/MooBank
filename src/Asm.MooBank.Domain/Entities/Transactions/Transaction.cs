@@ -1,5 +1,4 @@
-﻿using Asm.MooBank;
-using Asm.MooBank.Domain.Entities.Instrument;
+﻿using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Tag;
 using Microsoft.EntityFrameworkCore;
 
@@ -58,6 +57,23 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
     #region Properties
     [NotMapped]
     public IEnumerable<Tag.Tag> Tags => Splits.SelectMany(ts => ts.Tags);
+
+    [NotMapped]
+    public decimal NetAmount
+    {
+        get
+        {
+            decimal sum = Splits.Sum(s => s.GetNetAmount());
+            sum -= OffsetFor.Sum(o => o.Amount);
+
+            if (TransactionType == TransactionType.Debit)
+            {
+                sum = -sum;
+            }
+
+            return sum;
+        }
+    }
     #endregion
 
     #region Methods
@@ -105,19 +121,7 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
         Splits.Remove(split);
     }
 
-    public decimal GetNetAmount()
-    {
-        decimal sum = Splits.Sum(s => s.GetNetAmount());
-        sum -= OffsetFor.Sum(o => o.Amount);
-
-        if (TransactionType == TransactionType.Debit)
-        {
-            sum = -sum;
-        }
-
-        return sum;
-    }
-
+    [DbFunction("TransactionNetAmount", "dbo")]
     public static decimal TransactionNetAmount(TransactionType transactionType, Guid? transactionId, decimal amount) => throw new NotSupportedException();
     #endregion
 }

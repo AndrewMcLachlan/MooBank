@@ -16,7 +16,7 @@ export const StockSummary: React.FC<StockSummaryProps> = ({className, ...props})
         <Section className={classNames("summary", className)} {...props} header={stockHolding.name}>
             <div className="key-value">
                 <div>Balance</div>
-                <div className="balance amount"><Amount amount={stockHolding.currentBalance} creditdebit /></div>
+                <div className="balance amount"><Amount amount={stockHolding.currentBalance} /></div>
             </div>
             <div className="key-value">
                 <div>Quantity</div>
@@ -34,7 +34,6 @@ export const StockSummary: React.FC<StockSummaryProps> = ({className, ...props})
                 <div>Adjusted Gain</div>
                 <div><Amount amount={adjustedGainLoss} negativeColour plus minus /></div>
             </div>
-            
             <hr/>
             <div className="key-value">
                 <div>Type</div>

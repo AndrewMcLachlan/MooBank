@@ -7,12 +7,12 @@ import { TagSelector } from "components";
 import { TransactionsSlice } from "store/Transactions";
 
 import { MiniPeriodSelector } from "components/MiniPeriodSelector";
-import { useFilterPanel } from "./FilterPanel";
+import { useFilterPanel } from "./hooks/useFilterPanel";
 import { transactionTypeFilter } from "store/state";
 
 export const MiniFilterPanel: React.FC<MiniFilterPanelProps> = (props) => {
 
-    const { filterDescription, filterTagged, filterTags, filterType, storedFilterType, period, setFilterDescription, setFilterTagged, setFilterTags, setFilterType, setPeriod } = useFilterPanel();
+    const { filterDescription, filterTagged, filterNetZero, filterTags, filterType, storedFilterType, period, setFilterDescription, setFilterTagged, setFilterNetZero, setFilterTags, setFilterType, setPeriod } = useFilterPanel();
     const dispatch = useDispatch();
 
 
@@ -31,6 +31,7 @@ export const MiniFilterPanel: React.FC<MiniFilterPanelProps> = (props) => {
             </Form.Select>
             <MiniPeriodSelector instant onChange={setPeriod} />
             <Form.Switch id="filter-tagged" label="Untagged" checked={filterTagged} onChange={(e) => setFilterTagged(e.currentTarget.checked)} />
+                <Form.Switch id="filter-netzero" label="Exclude offset" checked={filterNetZero} onChange={(e) => setFilterNetZero(e.currentTarget.checked)} />
         </Section>
     );
 }

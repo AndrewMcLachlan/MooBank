@@ -10,5 +10,6 @@ export * from "./FormRow";
 export * from "./MonthSelector";
 export * from "./PeriodSelector";
 export * from "./TransactionSearch";
+export * from "./TransactionListProvider";
 export * from "./TagPanel";
 export * from "./TagSelector";

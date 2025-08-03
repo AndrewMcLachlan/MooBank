@@ -1,4 +1,4 @@
-import { AccountProvider } from "components";
+import { AccountProvider, TransactionListProvider } from "components";
 import { Navigate, Outlet, useMatch, useParams } from "react-router";
 import { useVirtualAccount } from "services";
 
@@ -10,14 +10,15 @@ export const VirtualAccount = () => {
 
     const match = useMatch("/accounts/:id/virtual/:virtualId");
 
-    if (match)
-    {
+    if (match) {
         return <Navigate to={`/accounts/${id}/virtual/${virtualId}/transactions`} replace />
     }
 
     return (
         <AccountProvider account={account.data}>
-            <Outlet />
+            <TransactionListProvider>
+                <Outlet />
+            </TransactionListProvider>
         </AccountProvider>
     );
 }

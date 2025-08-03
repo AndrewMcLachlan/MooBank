@@ -51,13 +51,13 @@ internal class ReportForMonthBreakdownHandler(IQueryable<Domain.Entities.Budget.
             lineTagHierarchy.Select(tag =>
                     new BudgetReportValueTag(tag.Name,
                         lines.Where(t => t.TagId == tag.Id).Sum(l => l.Amount),
-                        budgetTransactions.Where(s => s.Tags.Any(t => t.Id == tag.Id) || tag.Descendants.Intersect(s.Tags.Select(t => t.Id)).Any()).Sum(t => Math.Abs(t.GetNetAmount()))
+                        budgetTransactions.Where(s => s.Tags.Any(t => t.Id == tag.Id) || tag.Descendants.Intersect(s.Tags.Select(t => t.Id)).Any()).Sum(t => Math.Abs(t.NetAmount))
                     )).OrderByDescending(b => b.BudgetedAmount)
                     .ThenByDescending(b => b.Actual)
                     .Append(new(
                         Name: "Other",
                         BudgetedAmount: 0,
-                        Actual: budgetTransactions.Where(s => s.Tags.Any(t => otherTagIds.Contains(t.Id))).Sum(t => Math.Abs(t.GetNetAmount()))
+                        Actual: budgetTransactions.Where(s => s.Tags.Any(t => otherTagIds.Contains(t.Id))).Sum(t => Math.Abs(t.NetAmount))
                     ))
         );
 
@@ -97,8 +97,8 @@ public static class TagExtensions
         {
             yield return new TagHierarchy(tag)
             {
-                Ancestors = relationships.Where(r => r.Id == tag.Id).Select(r => r.ParentId).ToArray(),
-                Descendants = relationships.Where(r => r.ParentId == tag.Id).Select(r => r.Id).ToArray(),
+                Ancestors = [.. relationships.Where(r => r.Id == tag.Id).Select(r => r.ParentId)],
+                Descendants = [.. relationships.Where(r => r.ParentId == tag.Id).Select(r => r.Id)],
             };
         }
     }

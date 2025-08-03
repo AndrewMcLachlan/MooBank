@@ -12,6 +12,7 @@ import { useDebounce } from "use-debounce";
 import { TransactionDetails } from "./details/TransactionDetails";
 import { TransactionRow } from "./TransactionRow";
 import { TransactionTableHead } from "./TransactionTableHead";
+import { parseISO } from "date-fns";
 
 export const TransactionList: React.FC = () => {
 
@@ -30,7 +31,7 @@ export const TransactionList: React.FC = () => {
     const totalTransactions = transactionsQuery.data?.total ?? 0;
 
     const numberOfPages = getNumberOfPages(totalTransactions, pageSize);
-    
+
     const rowClick = (transaction: Transaction) => () => {
         setSelectedTransaction(transaction);
         setShowDetails(true);
@@ -39,10 +40,12 @@ export const TransactionList: React.FC = () => {
     return (
         <>
             <TransactionDetails transaction={selectedTransaction} show={showDetails} onHide={() => setShowDetails(false)} onSave={() => setShowDetails(false)} />
-            <SectionTable striped className="transactions">
+            <SectionTable className="transactions">
                 <TransactionTableHead pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={(_current, newPage) => dispatch(TransactionsSlice.actions.setCurrentPage(newPage))} />
                 <tbody>
-                    {transactions && transactions.map((t) => <TransactionRow key={t.id} transaction={t} onClick={rowClick(t)} />)}
+                    {transactions?.map((t, index) =>
+                        <TransactionRow key={t.id} transaction={t} onClick={rowClick(t)} previousDate={index > 0 ? parseISO(transactions[index - 1].transactionTime) : undefined} />
+                    )}
                     {!transactions && Array.from({ length: pageSize }, (_value, index) => index).map((i) => <tr key={i}><td colSpan={6}>&nbsp;</td></tr>)}
                 </tbody>
                 <tfoot>

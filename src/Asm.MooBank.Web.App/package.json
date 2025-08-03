@@ -14,7 +14,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@andrewmclachlan/mooapp": "^2.3.964",
+    "@andrewmclachlan/mooapp": "^2.3.965",
     "@andrewmclachlan/mooicons": "^2.3.964",
     "@fortawesome/fontawesome-svg-core": "^7.0.0",
     "@fortawesome/free-solid-svg-icons": "^7.0.0",
@@ -84,7 +84,7 @@
     "vite-tsconfig-paths": "^5.1.4"
   },
   "scripts": {
-    "start": "vite",
+    "start": "vite --host",
     "build": "tsc && vite build",
     "lint": "eslint ./src/**/*.ts ./src/**/*.tsx",
     "lint-fix": "eslint ./src/**/*.ts ./src/**/*.tsx --fix",
@@ -107,5 +107,5 @@
       "not op_mini all"
     ]
   },
-  "proxy": "http://localhost:51579"
+  "proxy": "https://10.31.8.75:7005"
 }

@@ -39,6 +39,7 @@ export const reducers = {
         const newFilter: TransactionsFilter = {
             description: action.payload.description ?? state.filter.description,
             filterTagged: action.payload.filterTagged ?? state.filter.filterTagged,
+            filterNetZero: action.payload.filterNetZero ?? state.filter.filterNetZero,
             tags: action.payload.tags === undefined ? state.filter.tags : action.payload.tags,
             transactionType: action.payload.transactionType ?? state.filter.transactionType,
             start: action.payload.start ?? state.filter.start,

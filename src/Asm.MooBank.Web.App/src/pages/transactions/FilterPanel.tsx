@@ -1,25 +1,22 @@
-import { Section, Tooltip, useLocalStorage } from "@andrewmclachlan/mooapp";
+import { Section, Tooltip } from "@andrewmclachlan/mooapp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Button, ButtonGroup, Col, Form } from "react-bootstrap";
 import { useDispatch, } from "react-redux";
 
 import { PeriodSelector, FormRow as Row, TagSelector } from "components";
 import { TransactionsSlice } from "store/Transactions";
-
-import { Period } from "helpers/dateFns";
-import { transactionTypeFilter } from "store/state";
-import { cleanQueryString } from "helpers/queryString";
+import { useFilterPanel } from "./hooks/useFilterPanel";
 
 export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
 
-    const { filterDescription, filterTagged, filterTags, filterType, storedFilterType, period, clear, setFilterDescription, setFilterTagged, setFilterTags, setFilterType, setPeriod } = useFilterPanel();
+    const { filterDescription, filterTagged, filterTags, filterNetZero, filterType, storedFilterType, period, clear, setFilterDescription, setFilterTagged, setFilterNetZero, setFilterTags, setFilterType, setPeriod } = useFilterPanel();
 
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(TransactionsSlice.actions.setTransactionListFilter({ description: filterDescription, filterTagged, tags: filterTags, transactionType: storedFilterType, start: period?.startDate?.toISOString(), end: period?.endDate?.toISOString() }));
-    }, [period, filterDescription, filterTagged, filterTags, storedFilterType, window.location.search]);
+        dispatch(TransactionsSlice.actions.setTransactionListFilter({ description: filterDescription, filterTagged, filterNetZero, tags: filterTags, transactionType: storedFilterType, start: period?.startDate?.toISOString(), end: period?.endDate?.toISOString() }));
+    }, [period, filterDescription, filterTagged, filterNetZero, filterTags, storedFilterType, window.location.search]);
 
     return (
         <Section className="filter-panel" header="Filter" {...props}>
@@ -44,8 +41,11 @@ export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
             </Row>
             <PeriodSelector instant onChange={setPeriod} />
             <Row>
-                <Form.Group>
+                <Form.Group as={Col} lg={6} xl={4}>
                     <Form.Switch id="filter-tagged" label="Only show transactions without tags" checked={filterTagged} onChange={(e) => setFilterTagged(e.currentTarget.checked)} />
+                </Form.Group>
+                <Form.Group as={Col} lg={6} xl={4}>
+                    <Form.Switch id="filter-netzero" label="Exclude fully offset transactions" checked={filterNetZero} onChange={(e) => setFilterNetZero(e.currentTarget.checked)} />
                 </Form.Group>
             </Row>
         </Section>
@@ -56,77 +56,3 @@ FilterPanel.displayName = "FilterPanel";
 
 export interface FilterPanelProps extends React.HTMLAttributes<HTMLElement> {
 }
-
-export const useFilterPanel = () => {
-
-    const params = new URLSearchParams(window.location.search);
-
-    const tagParams = params.get("tag")?.split(",").map(t => Number(t)) ?? [];
-    const transactionTypeParam: transactionTypeFilter = params.get("type") as transactionTypeFilter ?? "";
-    const unTaggedParam = params.get("untagged");
-
-    const [storedFilterTagged, setStoredFilterTagged] = useLocalStorage("filter-tagged", false);
-    const [filterDescription, setFilterDescription] = useLocalStorage("filter-description", "");
-    const [storedFilterTags, setStoredFilterTags] = useLocalStorage<number[]>("filter-tag", []);
-    const [storedFilterType, setStoredFilterType] = useLocalStorage<transactionTypeFilter>("filter-type", "");
-
-    const [localFilterTags, setLocalFilterTags] = useState<number[]>(tagParams ?? storedFilterTags);
-    const [localFilterTagged, setLocalFilterTagged] = useState<boolean>(unTaggedParam ? true : storedFilterTagged);
-    const [localFilterType, setLocalFilterType] = useState<transactionTypeFilter>(transactionTypeParam ?? storedFilterType);
-    const filterTags = localFilterTags ?? storedFilterTags;
-    const filterTagged = localFilterTagged ?? storedFilterTagged;
-
-    useEffect(() => {
-        // If the URL has filters defined, clear the description filter.
-        (transactionTypeParam || tagParams.length > 0 || unTaggedParam) && setFilterDescription("");
-        tagParams.length > 0 && setStoredFilterTagged(false);
-    }, []);
-
-    const setFilterTags = (tag: number | number[]) => {
-        cleanQueryString(params, "tag");
-
-        const tagArray = Array.isArray(tag) ? tag : [tag];
-
-        setLocalFilterTags(tagArray);
-        setStoredFilterTags(tagArray);
-    }
-
-    const setFilterTagged = (filter: boolean) => {
-        cleanQueryString(params, "untagged");
-
-        setLocalFilterTagged(filter);
-        setStoredFilterTagged(filter);
-    }
-
-    const setFilterType = (type: transactionTypeFilter) => {
-        cleanQueryString(params, "type");
-
-        setStoredFilterType(type);
-        setLocalFilterType(type);
-    }
-
-
-    const [period, setPeriod] = useState<Period>({ startDate: null, endDate: null });
-
-    const clear = () => {
-        setFilterDescription("");
-        setFilterTagged(false);
-        setFilterTags([]);
-        setStoredFilterType("");
-    }
-
-    return {
-        filterDescription,
-        filterTagged,
-        filterTags,
-        filterType: localFilterType,
-        storedFilterType,
-        period,
-        clear,
-        setFilterDescription,
-        setFilterTagged,
-        setFilterTags,
-        setFilterType,
-        setPeriod,
-    };
-};

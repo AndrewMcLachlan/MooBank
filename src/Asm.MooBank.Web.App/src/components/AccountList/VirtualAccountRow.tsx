@@ -20,7 +20,7 @@ export const VirtualAccountRow: React.FC<VirtualAccountRowProps> = (props) => {
             <td className="name">{props.account.name}</td>
             <td className="d-none d-sm-table-cell">Virtual</td>
             <td className={classNames("number", numberClassName(balance))} onClick={clickable ? balanceClick : undefined}>
-                {!editingBalance && <Amount amount={balance} creditdebit />}
+                {!editingBalance && <Amount amount={balance} negativeColour minus />}
                 {editingBalance && <input type="number" value={balance} onChange={balanceChange} onKeyUp={keyPress} />}
             </td>
         </tr>

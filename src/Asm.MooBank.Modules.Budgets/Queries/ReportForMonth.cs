@@ -19,7 +19,7 @@ internal class ReportForMonthHandler(IQueryable<Domain.Entities.Budget.Budget> b
 
         var month = budget.ToMonths()
             .Where(m => m.Month == request.Month)
-            .Select(m => new BudgetReportValueMonth(m.Expenses, Math.Abs(budgetTransactions.Where(t => t.TransactionTime.Month == m.Month).Sum(t => t.GetNetAmount())), m.Month))
+            .Select(m => new BudgetReportValueMonth(m.Expenses, Math.Abs(budgetTransactions.Where(t => t.TransactionTime.Month == m.Month).Sum(t => t.NetAmount)), m.Month))
             .SingleOrDefault();
 
         return month;

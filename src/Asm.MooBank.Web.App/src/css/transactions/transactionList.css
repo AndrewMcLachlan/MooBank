@@ -51,3 +51,9 @@
     th:nth-child(6) { width: 10%; }
     th:nth-child(7) { width: 20%; }
 }
+
+.net-amount {
+    opacity: 0.7;
+    font-size: 0.8em;
+    margin-left: 0.5em;
+}

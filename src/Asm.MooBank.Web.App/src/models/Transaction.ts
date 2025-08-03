@@ -25,6 +25,7 @@ export interface Transaction {
     id: string;
     accountId: string;
     amount: number;
+    netAmount: number;
     description: string;
     location?: string;
     reference?: string;
