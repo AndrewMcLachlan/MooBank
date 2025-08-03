@@ -1,6 +1,5 @@
-﻿using Asm.MooBank.Models;
+﻿namespace Asm.MooBank.Models;
 
-namespace Asm.MooBank.Modules.Transactions.Models;
 public record TransactionSplit
 {
     public required Guid Id { get; init; }

@@ -26,6 +26,7 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
         using var reader = new StreamReader(contents);
         var rawTransactionEntities = new List<TransactionRaw>();
 
+        // TODO: Get the first and last transaction dates from the import first, to reduce the amount of data we need to check against existing transactions.
         var checkTransactions = await rawTransactions.Where(t => t.AccountId == accountId).Select(t => new
         {
             t.Description,
@@ -128,26 +129,25 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
 
             var parsed = TransactionParser.ParseDescription(columns[DescriptionColumn]);
 
-            var transaction = new Transaction
+            Transaction transaction = Transaction.Create(
+                accountId,
+                parsed.Last4Digits != null ? (await accountHolderRepository.GetByCard(parsed.Last4Digits.Value, cancellationToken))?.Id : null,
+                transactionType == TransactionType.Credit ? credit : debit,
+                parsed.Description,
+                transactionTime.ToStartOfDay(),
+                parsed.TransactionSubType,
+                "ING Import"
+            );
+
+            transaction.Location = parsed.Location;
+            transaction.Extra = new TransactionExtra
             {
-                AccountId = accountId,
-                User = parsed.Last4Digits != null ? await accountHolderRepository.GetByCard(parsed.Last4Digits.Value, cancellationToken) : null,
-                Amount = transactionType == TransactionType.Credit ? credit : debit,
-                Description = parsed.Description,
-                Location = parsed.Location,
-                Extra = new TransactionExtra
-                {
-                    ReceiptNumber = parsed.ReceiptNumber,
-                    ProcessedDate = transactionTime,
-                    PurchaseType = parsed.PurchaseType,
-                },
-                Reference = parsed.Reference,
-                PurchaseDate = parsed.PurchaseDate,
-                TransactionTime = transactionTime.ToStartOfDay(),
-                TransactionType = transactionType,
-                TransactionSubType = parsed.TransactionSubType,
-                Source = "ING Import",
+                ReceiptNumber = parsed.ReceiptNumber,
+                ProcessedDate = transactionTime,
+                PurchaseType = parsed.PurchaseType,
             };
+            transaction.Reference = parsed.Reference;
+            transaction.PurchaseDate = parsed.PurchaseDate;
 
             var transactionRaw = new TransactionRaw
             {

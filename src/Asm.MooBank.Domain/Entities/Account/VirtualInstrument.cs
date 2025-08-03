@@ -1,4 +1,5 @@
 ﻿using Asm.MooBank.Domain.Entities.Instrument;
+using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Domain.Entities.Account;
 

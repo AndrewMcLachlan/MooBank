@@ -28,6 +28,7 @@
   <ItemGroup>
     <Using Include="System.ComponentModel.DataAnnotations" />
     <Using Include="System.ComponentModel.DataAnnotations.Schema" />
+    <Using Include="Asm.Domain"/>
   </ItemGroup>
 
 </Project>

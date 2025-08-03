@@ -37,7 +37,7 @@ internal class ReportForMonthBreakdownUnbudgetedHandler(IQueryable<Domain.Entiti
                     new BudgetReportValueTag(
                         Name: tag.Name,
                         BudgetedAmount: 0,
-                        Actual: budgetTransactions.SelectMany(t => t.Splits).Where(s => s.Tags.Any(t => t.Id == tag.Id)).Sum(t => TransactionSplit.TransactionSplitNetAmount(t.TransactionId, t.Id, t.Amount))
+                        Actual: budgetTransactions.SelectMany(t => t.Splits).Where(s => s.Tags.Any(t => t.Id == tag.Id)).Sum(t => Domain.Entities.Transactions.TransactionSplit.TransactionSplitNetAmount(t.TransactionId, t.Id, t.Amount))
                     )).OrderByDescending(b => b.Actual)
         );
 

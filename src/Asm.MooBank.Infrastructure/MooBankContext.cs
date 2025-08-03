@@ -10,7 +10,6 @@ using Asm.MooBank.Domain.Entities.Reports;
 using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.User;
-using MediatR;
 
 namespace Asm.MooBank.Infrastructure;
 
@@ -18,11 +17,11 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
 {
     private static readonly List<Assembly> Assemblies = [];
 
-    public MooBankContext(IMediator mediator) : base(mediator)
+    public MooBankContext(IPublisher publisher) : base(publisher)
     {
     }
 
-    public MooBankContext(DbContextOptions<MooBankContext> options, IMediator mediator) : base(options, mediator)
+    public MooBankContext(DbContextOptions<MooBankContext> options, IPublisher publisher) : base(options, publisher)
     {
     }
 

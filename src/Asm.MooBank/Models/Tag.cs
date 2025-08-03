@@ -1,32 +1,5 @@
 ﻿namespace Asm.MooBank.Models;
 
-public sealed record Tag
-{
-    private readonly TagSettings _settings = new();
-
-    public int Id { get; set; }
-
-    public required string Name { get; set; }
-
-    public IEnumerable<Tag> Tags { get; set; } = Enumerable.Empty<Tag>();
-
-    public TagSettings Settings
-    {
-        get => _settings;
-        init
-        {
-            _settings = value ?? new();
-        }
-    }
-
-    public partial record TagSettings
-    {
-        public bool ApplySmoothing { get; init; }
-
-        public bool ExcludeFromReporting { get; init; }
-    }
-}
-
 public static class TagExtensions
 {
     public static Tag ToModel(this Domain.Entities.Tag.Tag entity)
@@ -49,7 +22,7 @@ public static class TagExtensions
         new(tag.Id)
         {
             Name = tag.Name,
-            Tags = tag.Tags.Select(t => t.ToEntity()).ToList(),
+            Tags = [.. tag.Tags.Select(t => t.ToEntity())],
             Settings = new Domain.Entities.Tag.TagSettings
             {
                 ApplySmoothing = tag.Settings.ApplySmoothing,
@@ -57,7 +30,7 @@ public static class TagExtensions
             }
         };
     public static ICollection<Domain.Entities.Tag.Tag> ToEntities(this IEnumerable<Tag> tags) =>
-        tags.Select(t => t.ToEntity()).ToArray();
+        [.. tags.Select(t => t.ToEntity())];
 
     public static IEnumerable<Tag> ToModel(this IEnumerable<Domain.Entities.Tag.Tag> entities) =>
         entities.Select(t => t.ToModel());
@@ -82,6 +55,6 @@ public static class TagExtensions
         {
             Id = entity.Id,
             Name = entity.Name,
-            Tags = entity.Tags?.Select(t => t.ToHierarchyModel()) ?? Enumerable.Empty<Tag>(),
+            Tags = entity.Tags?.Select(t => t.ToHierarchyModel()) ?? [],
         };
 }

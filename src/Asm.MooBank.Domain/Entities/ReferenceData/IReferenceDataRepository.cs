@@ -1,4 +1,6 @@
-﻿namespace Asm.MooBank.Domain.Entities.ReferenceData;
+﻿using Asm.MooBank.Models;
+
+namespace Asm.MooBank.Domain.Entities.ReferenceData;
 
 public interface IReferenceDataRepository
 {

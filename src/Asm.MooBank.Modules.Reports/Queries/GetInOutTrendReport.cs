@@ -10,7 +10,7 @@ public record GetInOutTrendReport : ReportQuery, IQuery<InOutTrendReport>
     public ReportInterval Interval { get; init; } = ReportInterval.Monthly;
 }
 
-internal class GetInOutTrendReportHandler(IQueryable<Transaction> transactions) : IQueryHandler<GetInOutTrendReport, InOutTrendReport>
+internal class GetInOutTrendReportHandler(IQueryable<Domain.Entities.Transactions.Transaction> transactions) : IQueryHandler<GetInOutTrendReport, InOutTrendReport>
 {
     public async ValueTask<InOutTrendReport> Handle(GetInOutTrendReport request, CancellationToken cancellationToken)
     {
@@ -29,7 +29,7 @@ internal class GetInOutTrendReportHandler(IQueryable<Transaction> transactions) 
         };
     }
 
-    private static IEnumerable<TrendPoint> GetTrendPoints(IEnumerable<Transaction> transactions)
+    private static IEnumerable<TrendPoint> GetTrendPoints(IEnumerable<Domain.Entities.Transactions.Transaction> transactions)
     {
         return transactions.GroupBy(t => new DateOnly(t.TransactionTime.Year, t.TransactionTime.Month, 1)).OrderBy(g => g.Key).Select(g => new TrendPoint
         {

@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using Asm.MooBank.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Transactions.Specifications;
