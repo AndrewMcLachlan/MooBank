@@ -34,10 +34,7 @@ public class RunRulesService(IRunRulesQueue taskQueue, ILoggerFactory loggerFact
 
                 var rules = await transactionTagRuleRepository.GetForInstrument(accountId, cancellationToken);
 
-                Parallel.ForEach(transactions, new ParallelOptions
-                {
-                    MaxDegreeOfParallelism = 100,
-                }, (transaction) =>
+                Parallel.ForEach(transactions, (transaction) =>
                 {
                     var applicableRules = rules.Where(r => transaction.Description?.Contains(r.Contains, StringComparison.OrdinalIgnoreCase) ?? false);
                     var applicableTags = applicableRules.SelectMany(r => r.Tags).Distinct();

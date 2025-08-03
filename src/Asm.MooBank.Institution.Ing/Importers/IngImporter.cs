@@ -26,6 +26,7 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
         using var reader = new StreamReader(contents);
         var rawTransactionEntities = new List<TransactionRaw>();
 
+        // TODO: Get the first and last transaction dates from the import first, to reduce the amount of data we need to check against existing transactions.
         var checkTransactions = await rawTransactions.Where(t => t.AccountId == accountId).Select(t => new
         {
             t.Description,
