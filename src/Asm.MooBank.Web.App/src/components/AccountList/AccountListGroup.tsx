@@ -31,9 +31,9 @@ export const AccountListGroup: React.FC<AccountListGroupProps> = ({ group, isLoa
         {group.total !== undefined && group.total !== null && <tfoot>
             <tr className="total">
                 <td className="d-none d-sm-table-cell" />
-                <td colSpan={2} className="d-none d-sm-table-cell">Total</td>
-                <td className="d-table-cell d-sm-none"></td>
-                <td className="number"><Amount amount={group?.total} creditdebit /></td>
+                <td>Total</td>
+                <td className="d-none d-sm-table-cell"></td>
+                <td className="number"><Amount amount={group?.total} negativeColour minus /></td>
             </tr>
         </tfoot>}
     </SectionTable>

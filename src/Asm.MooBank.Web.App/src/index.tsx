@@ -4,7 +4,7 @@ import { createRoot } from "react-dom/client";
 import { Provider as ReduxProvider } from "react-redux";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faArrowsRotate, faCheck, faCheckCircle, faTrashAlt, faChevronDown, faChevronUp, faTimesCircle, faArrowLeft, faChevronRight, faCircleChevronLeft, faLongArrowUp, faLongArrowDown, faUpload, faXmark, faFilterCircleXmark, faInfoCircle, faPenToSquare, faPlus, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faArrowsRotate, faCheck, faCheckCircle, faTrashAlt, faChevronDown, faChevronUp, faArrowLeft, faChevronRight, faCircleChevronLeft, faLongArrowUp, faLongArrowDown, faUpload, faXmark, faFilterCircleXmark, faInfoCircle, faPenToSquare, faPlus, faUser } from "@fortawesome/free-solid-svg-icons";
 
 import * as serviceWorker from "./serviceWorkerRegistration";
 import { MooApp, createMooAppBrowserRouter } from "@andrewmclachlan/mooapp";

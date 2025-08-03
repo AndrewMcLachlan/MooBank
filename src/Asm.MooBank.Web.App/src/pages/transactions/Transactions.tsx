@@ -35,13 +35,13 @@ export const Transactions: React.FC = () => {
         case "Virtual":
             actions = [
                 ...actions,
-                <IconButton key="add" variant="primary" icon="plus" onClick={() => setShow(true)}>Add Transaction</IconButton>,
+                <IconButton key="add" variant="primary" icon="plus" onClick={() => setShow(true)}>Add</IconButton>,
             ];
             break;
         case "Import":
             actions = [
                 ...actions,
-                <IconButton key="import" variant="primary" icon="upload" onClick={() => setShowImport(true)}>Import Transactions</IconButton>,
+                <IconButton key="import" variant="primary" icon="upload" onClick={() => setShowImport(true)}>Import</IconButton>,
             ];
             break;
         default:
@@ -50,7 +50,7 @@ export const Transactions: React.FC = () => {
 
     return (
         <AccountPage title="Transactions" actions={actions}>
-            <AddTransaction show={show} onClose={() => setShow(false)} onSave={() => setShow(false)} balanceUpdate={false} />
+           <AddTransaction show={show} onClose={() => setShow(false)} onSave={() => setShow(false)} balanceUpdate={false} />
             <SectionRow hidden={compactMode}>
                 <Col xxl={3} xl={12} lg={12} md={12} sm={12}>
                     <AccountSummary />

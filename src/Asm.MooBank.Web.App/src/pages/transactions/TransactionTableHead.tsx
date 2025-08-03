@@ -5,15 +5,11 @@ import { PaginationProps, PaginationTh, SortableTh, SortDirection } from "@andre
 
 import { State } from "store/state";
 import { TransactionsSlice } from "store/Transactions";
-import { Pagination } from "react-bootstrap";
-import { useTransactionList } from "components/TransactionListProvider";
 
 export const TransactionTableHead: React.FC<PaginationProps> = (props) => {
 
     const dispatch = useDispatch();
     const { sortField, sortDirection } = useSelector((state: State) => state.transactions);
-
-    const { showNet } = useTransactionList();
 
     const sort = (newSortField: string) => {
 
@@ -29,7 +25,7 @@ export const TransactionTableHead: React.FC<PaginationProps> = (props) => {
     return (
         <thead>
             <tr className="transaction-head">
-                <SortableTh field="TransactionTime" sortField={sortField} sortDirection={sortDirection} onSort={sort}>Date</SortableTh>
+                <SortableTh field="TransactionTime" sortField={sortField} sortDirection={sortDirection} onSort={sort} className="d-none d-md-table-cell">Date</SortableTh>
                 <SortableTh field="Description" sortField={sortField} sortDirection={sortDirection} onSort={sort}>Description</SortableTh>
                 <SortableTh field="Location" sortField={sortField} sortDirection={sortDirection} onSort={sort} className="d-none d-md-table-cell">Location</SortableTh>
                 <SortableTh field="AccountHolderName" sortField={sortField} sortDirection={sortDirection} onSort={sort} className="d-none d-md-table-cell">Who</SortableTh>
