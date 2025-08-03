@@ -1,5 +1,5 @@
     @media screen and (max-width: 767px) {
-        .row, main {
+        main {
             overflow-x: hidden; /* Temporary fix for Bootstrap row on mobile */
         }
     }
