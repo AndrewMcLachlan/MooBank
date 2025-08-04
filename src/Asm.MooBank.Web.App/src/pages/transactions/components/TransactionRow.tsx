@@ -16,7 +16,7 @@ export const TransactionRow: React.FC<TransactionRowProps> = ({ transaction, onC
     return (
         <>
             {(!previousDate || !isSameDay(previousDate, transaction.transactionTime)) &&
-                <TransactionDateRow colspan={6} date={format(parseISO(transaction.transactionTime), "dd MMM yyyy")} />
+                <TransactionDateRow colspan={compact ? 2 : 6} date={format(parseISO(transaction.transactionTime), "dd MMM yyyy")} />
             }
             <tr className="clickable transaction-row" onClick={() => onClick(transaction)} title={transaction.notes}>
                 <td className="description" colSpan={compact ? 1 : 2}>{transaction.description}</td>
