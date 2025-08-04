@@ -5,12 +5,12 @@ import { IconButton, SectionRow, useLocalStorage } from "@andrewmclachlan/mooapp
 
 import { useAccount } from "components";
 import { AccountPage, AccountSummary } from "../../components";
-import { FilterPanel } from "./FilterPanel";
-import { TransactionList } from "./TransactionList";
+import { FilterPanel } from "./components/FilterPanel";
+import { TransactionList } from "./components/TransactionList";
 
-import { Import } from "./Import";
-import { MiniFilterPanel } from "./MiniFilterPanel";
-import { AddTransaction } from "./AddTransaction";
+import { Import } from "./components/Import";
+import { MiniFilterPanel } from "./components/MiniFilterPanel";
+import { AddTransaction } from "./components/AddTransaction";
 import { useTransactionList } from "../../components";
 
 
@@ -61,6 +61,7 @@ export const Transactions: React.FC = () => {
             </SectionRow>
             <MiniFilterPanel hidden={!compactMode} />
             <TransactionList />
+            <TransactionList compact />
             <Import show={showImport} accountId={account.id} onClose={() => setShowImport(false)} />
         </AccountPage>
     );

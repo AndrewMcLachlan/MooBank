@@ -1,2 +1,2 @@
-export * from "./AddTransaction";
+export * from "./components/AddTransaction";
 export * from "./Transactions";

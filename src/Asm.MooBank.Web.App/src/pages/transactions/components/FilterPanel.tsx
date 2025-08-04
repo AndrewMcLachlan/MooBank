@@ -6,7 +6,7 @@ import { useDispatch, } from "react-redux";
 
 import { PeriodSelector, FormRow as Row, TagSelector } from "components";
 import { TransactionsSlice } from "store/Transactions";
-import { useFilterPanel } from "./hooks/useFilterPanel";
+import { useFilterPanel } from "../hooks/useFilterPanel";
 
 export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
 
