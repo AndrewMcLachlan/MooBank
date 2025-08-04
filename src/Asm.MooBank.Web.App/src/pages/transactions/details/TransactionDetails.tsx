@@ -5,7 +5,7 @@ import { Transaction, TransactionOffset, TransactionSplit, getSplitTotal, isDebi
 import React, { useEffect, useMemo, useState } from "react";
 import { Button, Col, Modal, OverlayTrigger, Popover, Row } from "react-bootstrap";
 
-import { ExtraInfo } from "../ExtraInfo";
+import { ExtraInfo } from "./ExtraInfo";
 import { TransactionSplits } from "./TransactionSplits";
 import { notEquals } from "helpers/equals";
 import { useUpdateTransaction } from "services";

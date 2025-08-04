@@ -1,6 +1,6 @@
 import React from "react";
 import { Upload, FilesAddedEvent } from "@andrewmclachlan/mooapp";
-import { useImportTransactions } from "../../services";
+import { useImportTransactions } from "../../../services";
 import Button from "react-bootstrap/Button";
 import { useState } from "react";
 import { Modal } from "react-bootstrap";

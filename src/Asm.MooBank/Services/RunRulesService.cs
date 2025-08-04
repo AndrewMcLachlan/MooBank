@@ -42,7 +42,7 @@ public class RunRulesService(IRunRulesQueue taskQueue, ILoggerFactory loggerFact
                     transaction.AddOrUpdateSplit(applicableTags);
                     if (String.IsNullOrEmpty(transaction.Notes))
                     {
-                        transaction.Notes = String.Join(". ", applicableRules.Select(r => r.Description));
+                        transaction.Notes = String.Join(". ", applicableRules.Where(r => !String.IsNullOrWhiteSpace(r.Description)).Select(r => r.Description));
                     }
                 });
 

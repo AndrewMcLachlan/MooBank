@@ -9,12 +9,12 @@ import { useTransactions } from "services";
 import { State } from "store/state";
 import { TransactionsSlice } from "store/Transactions";
 import { useDebounce } from "use-debounce";
-import { TransactionDetails } from "./details/TransactionDetails";
+import { TransactionDetails } from "../details/TransactionDetails";
 import { TransactionRow } from "./TransactionRow";
 import { TransactionTableHead } from "./TransactionTableHead";
 import { parseISO } from "date-fns";
 
-export const TransactionList: React.FC = () => {
+export const TransactionList: React.FC<TransactionListProps> = ({compact = false}) => {
 
     const account = useAccount();
 
@@ -37,38 +37,38 @@ export const TransactionList: React.FC = () => {
         setShowDetails(true);
     };
 
+    const PaginationControl = compact ? MiniPagination : Pagination;
+
+    const className = compact ? "transactions-mobile d-table d-md-none" : "transactions d-none d-md-table";
+
     return (
         <>
             <TransactionDetails transaction={selectedTransaction} show={showDetails} onHide={() => setShowDetails(false)} onSave={() => setShowDetails(false)} />
-            <SectionTable className="transactions">
-                <TransactionTableHead pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={(_current, newPage) => dispatch(TransactionsSlice.actions.setCurrentPage(newPage))} />
+            <SectionTable className={className}>
+                <TransactionTableHead compact={compact} pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={(_current, newPage) => dispatch(TransactionsSlice.actions.setCurrentPage(newPage))} />
                 <tbody>
                     {transactions?.map((t, index) =>
-                        <TransactionRow key={t.id} transaction={t} onClick={rowClick(t)} previousDate={index > 0 ? parseISO(transactions[index - 1].transactionTime) : undefined} />
+                        <TransactionRow compact={compact} key={t.id} transaction={t} onClick={rowClick(t)} previousDate={index > 0 ? parseISO(transactions[index - 1].transactionTime) : undefined} />
                     )}
                     {!transactions && Array.from({ length: pageSize }, (_value, index) => index).map((i) => <tr key={i}><td colSpan={6}>&nbsp;</td></tr>)}
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colSpan={2} className="page-totals d-none d-md-table-cell">Page {pageNumber} of {numberOfPages} ({totalTransactions} transactions)</td>
-                        <td colSpan={4} className="d-none d-md-table-cell">
+                        <td hidden={compact} colSpan={2} className="page-totals">Page {pageNumber} of {numberOfPages} ({totalTransactions} transactions)</td>
+                        <td colSpan={compact ? 2 : 4}>
                             <PaginationControls>
                                 <PageSize value={pageSize} onChange={(newPageSize) => dispatch(TransactionsSlice.actions.setPageSize(newPageSize))} />
-                                <Pagination pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={(_current, newPage) => dispatch(TransactionsSlice.actions.setCurrentPage(newPage))} />
+                                <PaginationControl pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={(_current, newPage) => dispatch(TransactionsSlice.actions.setCurrentPage(newPage))} />
                             </PaginationControls>
                         </td>
-                        <td colSpan={2} className="d-md-none d-table-cell">
-                            <PaginationControls>
-                                <PageSize value={pageSize} onChange={(newPageSize) => dispatch(TransactionsSlice.actions.setPageSize(newPageSize))} />
-                                <MiniPagination
-                                    pageNumber={pageNumber}
-                                    numberOfPages={numberOfPages}
-                                    onChange={(_current, newPage) => dispatch(TransactionsSlice.actions.setCurrentPage(newPage))} />
-                            </PaginationControls>
-                        </td>
+                    
                     </tr>
                 </tfoot>
             </SectionTable>
         </>
     );
+}
+
+export interface TransactionListProps {
+    compact?: boolean;
 }

@@ -11,11 +11,11 @@
 
 @layer moobank {
 
-.demo {
-    .amount, .badge {
-        filter: blur(8px);
+    .demo {
+        .amount, .badge {
+            filter: blur(8px);
+        }
     }
-}
 
     .negative {
         color: rgb(204, 0, 0);
@@ -172,7 +172,6 @@
     }
 }
 
-
 h2 {
     @media screen and (max-width: 768px) {
 
@@ -192,5 +191,33 @@ section.upload {
 
     .upload-box {
         width: inherit;
+    }
+}
+
+.section.table {
+
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 2px;
+    padding: 0;
+
+    thead th {
+        border-top-left-radius: 2px;
+    }
+
+    thead th {
+        border-top-right-radius: 2px;
+    }
+
+    tfoot td {
+        border-width: 0;
+    }
+
+    tfoot td {
+        border-bottom-left-radius: 2px;
+    }
+
+    tfoot td {
+        border-bottom-right-radius: 2px;
     }
 }

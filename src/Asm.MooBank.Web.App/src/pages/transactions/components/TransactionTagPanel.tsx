@@ -19,6 +19,8 @@ export const TransactionTagPanel: React.FC<TransactionTagPanelProps> = ({alwaysS
         setTagsList(fullTagsListQuery.data.filter((t) => !transactionRow.tags.some((tt) => t.id === tt.id)));
     }, [transactionRow.tags, fullTagsListQuery.data]);
 
+    if (props.hidden) return null;
+
     return (
         <TagPanel as={props.as} className={props.className} selectedItems={transactionRow.tags} items={tagsList} onAdd={transactionRow.addTag} onRemove={transactionRow.removeTag} onCreate={transactionRow.createTag} allowCreate={true} alwaysShowEditPanel={alwaysShowEditPanel}  />
     );
@@ -75,4 +77,5 @@ export interface TransactionTagPanelProps {
     alwaysShowEditPanel?: boolean;
     transaction: Transaction;
     className?: string;
+    hidden?: boolean;
 }

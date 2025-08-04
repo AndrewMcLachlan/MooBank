@@ -7,7 +7,7 @@ import { TagSelector } from "components";
 import { TransactionsSlice } from "store/Transactions";
 
 import { MiniPeriodSelector } from "components/MiniPeriodSelector";
-import { useFilterPanel } from "./hooks/useFilterPanel";
+import { useFilterPanel } from "../hooks/useFilterPanel";
 import { transactionTypeFilter } from "store/state";
 
 export const MiniFilterPanel: React.FC<MiniFilterPanelProps> = (props) => {
