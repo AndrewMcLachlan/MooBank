@@ -211,13 +211,7 @@ section.upload {
 
     tfoot td {
         border-width: 0;
-    }
-
-    tfoot td {
         border-bottom-left-radius: 2px;
-    }
-
-    tfoot td {
         border-bottom-right-radius: 2px;
     }
 }
