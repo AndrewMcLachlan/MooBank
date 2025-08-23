@@ -1,7 +1,7 @@
 import React from "react";
 
-import { IconButton, LoadingTableRows, Page, SectionTable } from "@andrewmclachlan/mooapp";
-import { Table } from "react-bootstrap";
+import { Page } from "@andrewmclachlan/moo-app";
+import { IconButton, LoadingTableRows, SectionTable } from "@andrewmclachlan/moo-ds";
 import { useGroups } from "services";
 
 import { useNavigate } from "react-router";

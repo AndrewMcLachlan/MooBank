@@ -1,4 +1,4 @@
-import { Page } from "@andrewmclachlan/mooapp";
+import { Page } from "@andrewmclachlan/moo-app";
 import { AccountForm } from "./AccountForm";
 
 export const CreateAccount: React.FC = () => {

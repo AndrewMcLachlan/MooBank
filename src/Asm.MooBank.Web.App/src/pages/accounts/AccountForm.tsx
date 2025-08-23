@@ -3,7 +3,7 @@ import { Button, InputGroup } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 
-import { Form, SectionForm, FormComboBox } from "@andrewmclachlan/mooapp";
+import { Form, SectionForm, FormComboBox } from "@andrewmclachlan/moo-ds";
 
 import { CurrencySelector, InstitutionSelector } from "components";
 import { GroupSelector } from "components/GroupSelector";

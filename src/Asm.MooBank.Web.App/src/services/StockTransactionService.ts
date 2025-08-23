@@ -2,7 +2,8 @@ import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
 
 import * as Models from "../models";
 import { TransactionsFilter } from "../store/state";
-import { PagedResult, SortDirection, useApiPagedGet, useApiPost } from "@andrewmclachlan/mooapp";
+import { useApiPagedGet, useApiPost } from "@andrewmclachlan/moo-app";
+import { PagedResult, SortDirection } from "@andrewmclachlan/moo-ds";
 import { toast } from "react-toastify";
 
 const transactionKey = "stock-transactions";

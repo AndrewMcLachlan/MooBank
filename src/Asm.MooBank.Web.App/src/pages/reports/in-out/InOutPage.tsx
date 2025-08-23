@@ -2,7 +2,8 @@ import { useState } from "react";
 
 import { ReportsPage } from "../ReportsPage";
 
-import { Section, useIdParams } from "@andrewmclachlan/mooapp";
+import { useIdParams } from "@andrewmclachlan/moo-app";
+import { Section } from "@andrewmclachlan/moo-ds";
 import { Chart as ChartJS, registerables } from "chart.js";
 import chartTrendline from "chartjs-plugin-trendline";
 

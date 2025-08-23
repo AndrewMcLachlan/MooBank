@@ -1,5 +1,5 @@
 import { AccountList } from "../models";
-import { useApiGet } from "@andrewmclachlan/mooapp";
+import { useApiGet } from "@andrewmclachlan/moo-app";
 import { ListItem } from "models/ListItem";
 
 export const formattedAccountsKey = "formatted-accounts";

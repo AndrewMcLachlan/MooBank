@@ -8,7 +8,7 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import { Period, lastMonth } from "helpers/dateFns";
 
 import { useCustomPeriod } from "hooks";
-import { useLocalStorage } from "@andrewmclachlan/mooapp";
+import { useLocalStorage } from "@andrewmclachlan/moo-ds";
 import { periodOptions } from "models";
 
 

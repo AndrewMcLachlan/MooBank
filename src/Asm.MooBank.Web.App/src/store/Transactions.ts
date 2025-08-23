@@ -1,6 +1,6 @@
 ﻿import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { SortDirection } from "@andrewmclachlan/mooapp";
+import { SortDirection } from "@andrewmclachlan/moo-ds";
 import { Transactions, TransactionsFilter } from "./state";
 
 const initialState: Transactions = {

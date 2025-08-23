@@ -4,7 +4,7 @@ import { ChartData, Chart as ChartJS, registerables } from "chart.js";
 import chartTrendline from "chartjs-plugin-trendline";
 import { Bar } from "react-chartjs-2";
 
-import { Section } from "@andrewmclachlan/mooapp";
+import { Section } from "@andrewmclachlan/moo-ds";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useChartColours } from "helpers/chartColours";
 import { useNavigate } from "react-router";

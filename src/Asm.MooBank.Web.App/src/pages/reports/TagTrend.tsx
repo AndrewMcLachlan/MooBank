@@ -1,4 +1,4 @@
-import { Section } from "@andrewmclachlan/mooapp";
+import { Section } from "@andrewmclachlan/moo-ds";
 import { ChartData, Chart as ChartJS, registerables } from "chart.js";
 import chartTrendline from "chartjs-plugin-trendline";
 import React, { useEffect, useState } from "react";

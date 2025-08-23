@@ -3,7 +3,8 @@ import { Button, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import { NewAsset, emptyAsset } from "../../models";
 
-import { Form, Page, SectionForm } from "@andrewmclachlan/mooapp";
+import { Page } from "@andrewmclachlan/moo-app";
+import { Form, SectionForm } from "@andrewmclachlan/moo-ds";
 import { useCreateAsset } from "services";
 import { useForm } from "react-hook-form";
 import { GroupSelector } from "components/GroupSelector";

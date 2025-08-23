@@ -1,4 +1,4 @@
-import { Section, SectionTable } from "@andrewmclachlan/mooapp";
+import { Section, SectionTable } from "@andrewmclachlan/moo-ds";
 import { format } from "date-fns/format";
 import { isMonthSelected } from "helpers/dateFns";
 import { useBudgetYear } from "hooks/useBudgetYear";

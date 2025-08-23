@@ -5,7 +5,7 @@ import { Chart as ChartJS, ChartData, registerables } from "chart.js";
 
 import { Period } from "helpers/dateFns";
 import { useChartColours } from "helpers/chartColours";
-import { SpinnerContainer } from "@andrewmclachlan/mooapp";
+import { SpinnerContainer } from "@andrewmclachlan/moo-ds";
 
 ChartJS.register(...registerables);
 

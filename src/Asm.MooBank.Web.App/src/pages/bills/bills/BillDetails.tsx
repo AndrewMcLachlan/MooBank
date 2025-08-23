@@ -1,4 +1,3 @@
-import { Page } from "@andrewmclachlan/mooapp";
 import { format, parseISO } from "date-fns";
 import { Bill, BillAccount } from "models/bills";
 import { Modal, Offcanvas } from "react-bootstrap";

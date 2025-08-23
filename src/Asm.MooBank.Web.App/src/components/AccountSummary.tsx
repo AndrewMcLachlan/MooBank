@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Section } from "@andrewmclachlan/mooapp";
+import { Section } from "@andrewmclachlan/moo-ds";
 import classNames from "classnames";
 import { format } from "date-fns/format";
 import { parseISO } from "date-fns/parseISO";

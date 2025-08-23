@@ -1,4 +1,4 @@
-import { Section } from "@andrewmclachlan/mooapp";
+import { Section } from "@andrewmclachlan/moo-ds";
 import React, { useEffect } from "react";
 import { Form } from "react-bootstrap";
 import { useDispatch, } from "react-redux";

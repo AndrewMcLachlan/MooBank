@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 
-import { Form } from "@andrewmclachlan/mooapp";
+import { Form } from "@andrewmclachlan/moo-ds";
 
 import { useAccount } from "components";
 import * as Models from "models";

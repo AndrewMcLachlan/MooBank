@@ -1,7 +1,7 @@
 import React from "react";
 import { Spinner } from "react-bootstrap";
 
-import { SectionTable } from "@andrewmclachlan/mooapp";
+import { SectionTable } from "@andrewmclachlan/moo-ds";
 import { AccountListGroup as Model } from "models";
 import { AccountRow } from "./AccountRow";
 import { Amount } from "components/Amount";

@@ -2,7 +2,7 @@ import React from "react";
 
 import { AccountType } from "models";
 import { useInstitutionsByAccountType } from "services";
-import { FormComboBox } from "@andrewmclachlan/mooapp";
+import { FormComboBox } from "@andrewmclachlan/moo-ds";
 
 interface InstitutionSelectorProps {
     accountType?: AccountType;

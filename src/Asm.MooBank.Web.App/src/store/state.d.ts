@@ -1,4 +1,4 @@
-import { SortDirection } from "@andrewmclachlan/mooapp";
+import { SortDirection } from "@andrewmclachlan/moo-ds";
 
 export interface State {
     app: App,

@@ -1,4 +1,4 @@
-import { ComboBox, ValueProps } from "@andrewmclachlan/mooapp";
+import { ComboBox, ValueProps } from "@andrewmclachlan/moo-ds";
 import { formatDate } from "helpers/dateFns";
 import { Transaction, TransactionType } from "models";
 import { useSearchTransactions } from "services";

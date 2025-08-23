@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { useApiGet, useApiPatch } from "@andrewmclachlan/mooapp";
+import { useApiGet, useApiPatch } from "@andrewmclachlan/moo-app";
 import { User } from "models/User";
 import { toast } from "react-toastify";
 

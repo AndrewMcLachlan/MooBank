@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { getNumberOfPages, Pagination, PaginationControls, PageSize, SectionTable, MiniPagination } from "@andrewmclachlan/mooapp";
+import { getNumberOfPages, Pagination, PaginationControls, PageSize, SectionTable, MiniPagination } from "@andrewmclachlan/moo-ds";
 
 import { useAccount } from "components";
 import { Transaction } from "models";

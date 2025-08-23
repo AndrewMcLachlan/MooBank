@@ -1,6 +1,6 @@
-import { EditColumn, SectionTable } from "@andrewmclachlan/mooapp";
-import { DeleteIcon } from "@andrewmclachlan/mooapp";
-import { SaveIcon } from "@andrewmclachlan/mooapp";
+import { EditColumn, SectionTable } from "@andrewmclachlan/moo-ds";
+import { DeleteIcon } from "@andrewmclachlan/moo-ds";
+import { SaveIcon } from "@andrewmclachlan/moo-ds";
 import { format } from "date-fns/format";
 import { parse } from "date-fns/parse";
 import { parseISO } from "date-fns/parseISO";

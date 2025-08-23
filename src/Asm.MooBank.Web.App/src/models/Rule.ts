@@ -1,4 +1,4 @@
-import { SortDirection } from "@andrewmclachlan/mooapp";
+import { SortDirection } from "@andrewmclachlan/moo-ds";
 import { Tag } from ".";
 
 export interface Rule {

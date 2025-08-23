@@ -1,5 +1,5 @@
 import { useFormattedAccounts } from "services";
-import { Section, Widget } from "@andrewmclachlan/mooapp";
+import { Section, Widget } from "@andrewmclachlan/moo-ds";
 import { KeyValue } from "components/KeyValue";
 import { Amount } from "components/Amount";
 

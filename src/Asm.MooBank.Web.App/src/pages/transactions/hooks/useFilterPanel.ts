@@ -1,4 +1,4 @@
-import { useLocalStorage } from "@andrewmclachlan/mooapp";
+import { useLocalStorage } from "@andrewmclachlan/moo-ds";
 import { useEffect, useState } from "react";
 
 import { Period } from "helpers/dateFns";

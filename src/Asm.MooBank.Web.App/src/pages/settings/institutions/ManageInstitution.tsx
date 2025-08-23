@@ -2,7 +2,7 @@
 import { useInstitution } from "services";
 import { SettingsPage } from "../SettingsPage";
 import { InstitutionForm } from "./InstitutionForm";
-import { useIdParams } from "@andrewmclachlan/mooapp";
+import { useIdParams } from "@andrewmclachlan/moo-app";
 
 export const ManageInstitution: React.FC = () => {
 

@@ -1,4 +1,4 @@
-import {  FormComboBox } from "@andrewmclachlan/mooapp";
+import {  FormComboBox } from "@andrewmclachlan/moo-ds";
 import React from "react";
 import { useGroups } from "services";
 

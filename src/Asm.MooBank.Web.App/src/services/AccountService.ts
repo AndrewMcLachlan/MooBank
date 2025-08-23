@@ -1,4 +1,4 @@
-import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
+import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/moo-app";
 import { useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { CreateInstitutionAccount, CreateTransaction, InstitutionAccount, InstrumentId } from "../models";
 import { toast } from "react-toastify";

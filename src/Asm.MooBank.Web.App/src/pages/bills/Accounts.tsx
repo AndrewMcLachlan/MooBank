@@ -3,7 +3,8 @@ import React, { PropsWithChildren } from "react";
 import { AccountTypeSummary, BillAccount } from "models/bills";
 import { useBillAccountsByType } from "services";
 
-import { Page, SectionTable, useIdParams } from "@andrewmclachlan/mooapp";
+import { Page, useIdParams } from "@andrewmclachlan/moo-app";
+import { SectionTable } from "@andrewmclachlan/moo-ds";
 import { useNavigate } from "react-router";
 
 

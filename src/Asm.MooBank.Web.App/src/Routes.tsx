@@ -1,4 +1,4 @@
-import { RouteDefinition } from "@andrewmclachlan/mooapp";
+import { RouteDefinition } from "@andrewmclachlan/moo-app";
 import App from "App";
 import * as Pages from "./pages";
 import { MonthlyBalances } from "pages/reports/MonthlyBalances";

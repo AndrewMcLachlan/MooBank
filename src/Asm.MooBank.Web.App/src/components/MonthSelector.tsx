@@ -1,4 +1,4 @@
-import { ValueProps } from "@andrewmclachlan/mooapp";
+import { ValueProps } from "@andrewmclachlan/moo-ds";
 import classNames from "classnames";
 import { isMonthSelected } from "helpers/dateFns";
 import { ElementType, useState } from "react";

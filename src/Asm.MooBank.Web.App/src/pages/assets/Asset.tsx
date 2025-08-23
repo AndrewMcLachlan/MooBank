@@ -1,4 +1,4 @@
-import { useIdParams } from "@andrewmclachlan/mooapp";
+import { useIdParams } from "@andrewmclachlan/moo-app";
 import { AssetProvider } from "./AssetProvider";
 import { Navigate, Outlet, useMatch } from "react-router";
 import { useAsset } from "services";

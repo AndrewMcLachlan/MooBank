@@ -1,6 +1,6 @@
 import { UseQueryResult, useQueryClient, } from "@tanstack/react-query";
 import { InstitutionAccount, InstrumentId, NewStockHolding, StockHolding } from "../models";
-import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
+import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/moo-app";
 import { accountsKey } from "./AccountService";
 import { StockValueReport } from "models/stock-holding/StockValueReport";
 import { formatISODate } from "helpers/dateFns";

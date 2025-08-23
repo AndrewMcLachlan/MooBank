@@ -1,4 +1,4 @@
-import { Section } from "@andrewmclachlan/mooapp";
+import { Section } from "@andrewmclachlan/moo-ds";
 import * as Models from "models";
 import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";

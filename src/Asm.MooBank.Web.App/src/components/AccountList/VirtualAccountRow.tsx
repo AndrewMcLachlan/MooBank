@@ -2,7 +2,7 @@ import classNames from "classnames";
 import React, { useEffect, useRef, useState } from "react";
 
 import { numberClassName } from "helpers";
-import { emptyGuid, useClickAway } from "@andrewmclachlan/mooapp";
+import { emptyGuid, useClickAway } from "@andrewmclachlan/moo-ds";
 
 import { InstrumentId, VirtualAccount } from "models";
 import { useUpdateVirtualAccountBalance } from "services";

@@ -1,6 +1,6 @@
 import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
 import { Budget, BudgetLine, BudgetReportByMonth, BudgetReportForMonthBreakdown, BudgetReportValueMonth } from "../models";
-import { useApiDelete, useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
+import { useApiDelete, useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/moo-app";
 
 interface BudgetVariables {
     year: number,

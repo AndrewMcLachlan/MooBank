@@ -1,5 +1,5 @@
 import React, { createContext, useContext, ReactNode } from "react";
-import { useLocalStorage } from "@andrewmclachlan/mooapp";
+import { useLocalStorage } from "@andrewmclachlan/moo-ds";
 
 interface TransactionListContextType {
   showNet: boolean;

@@ -7,7 +7,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faArrowsRotate, faCheck, faCheckCircle, faTrashAlt, faChevronDown, faChevronUp, faArrowLeft, faChevronRight, faCircleChevronLeft, faLongArrowUp, faLongArrowDown, faUpload, faXmark, faFilterCircleXmark, faInfoCircle, faPenToSquare, faPlus, faUser } from "@fortawesome/free-solid-svg-icons";
 
 import * as serviceWorker from "./serviceWorkerRegistration";
-import { MooApp, createMooAppBrowserRouter } from "@andrewmclachlan/mooapp";
+import { MooApp, createMooAppBrowserRouter } from "@andrewmclachlan/moo-app";
 import { AppStore } from "./store/configureStore";
 import { routes } from "Routes";
 import { RouterProvider } from "react-router";
@@ -22,11 +22,9 @@ versionMeta.content = import.meta.env.VITE_REACT_APP_VERSION;
 const router = createMooAppBrowserRouter(routes);
 
 root.render(
-    <MooApp clientId="045f8afa-70f2-4700-ab75-77ac41b306f7" scopes={["api://moobank.mclachlan.family/api.read"]} name="MooBank" version={import.meta.env.VITE_REACT_APP_VERSION} copyrightYear={2013}>
-        <ReduxProvider store={AppStore}>
-            <RouterProvider router={router} />
-        </ReduxProvider>
-    </MooApp>
+    <ReduxProvider store={AppStore}>
+        <MooApp clientId="045f8afa-70f2-4700-ab75-77ac41b306f7" scopes={["api://moobank.mclachlan.family/api.read"]} name="MooBank" version={import.meta.env.VITE_REACT_APP_VERSION} copyrightYear={2013} router={router} />
+    </ReduxProvider>
 );
 
 

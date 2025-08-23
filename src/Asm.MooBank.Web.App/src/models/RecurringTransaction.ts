@@ -1,4 +1,4 @@
-import { emptyGuid } from "@andrewmclachlan/mooapp";
+import { emptyGuid } from "@andrewmclachlan/moo-ds";
 
 export interface RecurringTransaction {
     id: string;

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Chart as ChartJS, registerables } from "chart.js";
 import chartTrendline from "chartjs-plugin-trendline";
 
-import { Section } from "@andrewmclachlan/mooapp";
+import { Section } from "@andrewmclachlan/moo-ds";
 import { useBudgetYear } from "hooks/useBudgetYear";
 import { Col, Form, Row } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router";

@@ -11,7 +11,7 @@ import { Bar } from "react-chartjs-2";
 import { useChartColours } from "helpers/chartColours";
 import { Period } from "helpers/dateFns";
 import { useInOutReport as defaultReport } from "services";
-import { SpinnerContainer } from "@andrewmclachlan/mooapp";
+import { SpinnerContainer } from "@andrewmclachlan/moo-ds";
 
 ChartJS.register(...registerables);
 ChartJS.register(chartTrendline);

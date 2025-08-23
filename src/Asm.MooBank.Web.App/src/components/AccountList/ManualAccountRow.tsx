@@ -2,7 +2,7 @@
 import React, { useRef, useState } from "react";
 import MD5 from "md5";
 
-import { useClickAway } from "@andrewmclachlan/mooapp";
+import { useClickAway } from "@andrewmclachlan/moo-ds";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { useNavigate } from "react-router";
