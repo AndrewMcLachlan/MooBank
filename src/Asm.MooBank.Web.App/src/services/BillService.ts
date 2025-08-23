@@ -1,4 +1,5 @@
-import { PagedResult, useApiGet, useApiPagedGet } from "@andrewmclachlan/mooapp";
+import { useApiGet, useApiPagedGet } from "@andrewmclachlan/moo-app";
+import { PagedResult } from "@andrewmclachlan/moo-ds";
 import { Bill, BillAccount } from "models/bills";
 import { AccountTypeSummary } from "models/bills";
 

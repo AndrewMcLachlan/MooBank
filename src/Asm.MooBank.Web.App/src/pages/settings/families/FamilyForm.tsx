@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Button } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 
-import { Form, SectionForm } from "@andrewmclachlan/mooapp";
+import { Form, SectionForm } from "@andrewmclachlan/moo-ds";
 
 import { Family } from "models";
 

@@ -1,7 +1,7 @@
-import { emptyGuid } from "@andrewmclachlan/mooapp";
+import { emptyGuid } from "@andrewmclachlan/moo-ds";
 
 import { MonthSelector } from "components";
-import { ComboBox, SaveIcon } from "@andrewmclachlan/mooapp";
+import { ComboBox, SaveIcon } from "@andrewmclachlan/moo-ds";
 import { BudgetLineType, Tag } from "models";
 import { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";

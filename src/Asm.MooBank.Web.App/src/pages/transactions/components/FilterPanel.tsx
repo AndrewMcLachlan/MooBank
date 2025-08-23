@@ -1,4 +1,4 @@
-import { Section, Tooltip } from "@andrewmclachlan/mooapp";
+import { Section, Tooltip } from "@andrewmclachlan/moo-ds";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect } from "react";
 import { Button, ButtonGroup, Col, Form } from "react-bootstrap";

@@ -1,6 +1,7 @@
 import React, { PropsWithChildren, useState } from "react";
 
-import { getNumberOfPages, Page, Pagination, useIdParams } from "@andrewmclachlan/mooapp";
+import { Page, useIdParams } from "@andrewmclachlan/moo-app";
+import { getNumberOfPages, Pagination } from "@andrewmclachlan/moo-ds";
 import { Bill } from "models/bills";
 import { useBillAccount, useBills } from "services";
 

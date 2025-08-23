@@ -1,4 +1,4 @@
-import { useTheme } from "@andrewmclachlan/mooapp"
+import { useTheme } from "@andrewmclachlan/moo-ds"
 
 export const useChartColours = () => {
 

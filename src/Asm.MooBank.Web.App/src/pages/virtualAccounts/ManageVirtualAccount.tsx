@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, InputGroup } from "react-bootstrap";
 import { useMatch, useNavigate, useParams } from "react-router";
-import { Form, Section, SectionForm } from "@andrewmclachlan/mooapp";
+import { Form, Section, SectionForm } from "@andrewmclachlan/moo-ds";
 import { VirtualAccount } from "../../models";
 import { useUpdateVirtualAccount, useVirtualAccount } from "../../services";
 import { AccountPage } from "components";

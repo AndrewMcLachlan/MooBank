@@ -1,4 +1,4 @@
-import { IconLinkButton, SectionTable } from "@andrewmclachlan/mooapp";
+import { IconLinkButton, SectionTable } from "@andrewmclachlan/moo-ds";
 import { useFamilies } from "services";
 import { SettingsPage } from "../SettingsPage";
 import { useNavigate } from "react-router";

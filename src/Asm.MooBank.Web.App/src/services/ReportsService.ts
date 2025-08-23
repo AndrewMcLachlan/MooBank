@@ -1,5 +1,6 @@
 import { UseQueryResult } from "@tanstack/react-query";
-import { trimEnd, useApiGet } from "@andrewmclachlan/mooapp";
+import { useApiGet } from "@andrewmclachlan/moo-app";
+import { trimEnd } from "@andrewmclachlan/moo-ds";
 import { AllTagAverageReport, ByTagReport, defaultSettings, InOutReport, InOutTrendReport, MonthlyBalancesReport, reportInterval, TagTrendReport, TrendReportSettings } from "../models/reports";
 import { formatISODate } from "../helpers/dateFns";
 import { transactionTypeFilter } from "store/state";

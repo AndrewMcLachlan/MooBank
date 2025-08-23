@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Dashboard as DashboardPage, DashboardProps } from "@andrewmclachlan/mooapp";
+import { Dashboard as DashboardPage, DashboardProps } from "@andrewmclachlan/moo-app";
 import { InOutWidget } from "./widgets";
 import { SummaryWidget } from "./widgets";
 import { BudgetWidget } from "./widgets";

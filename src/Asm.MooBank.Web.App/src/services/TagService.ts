@@ -1,5 +1,5 @@
 import * as Models from "../models";
-import { useApiGet, useApiDelete, useApiPutEmpty, useHttpClient } from "@andrewmclachlan/mooapp";
+import { useApiGet, useApiDelete, useApiPutEmpty, useHttpClient } from "@andrewmclachlan/moo-app";
 import { UseMutationResult, UseQueryResult, useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface TagVariables {

@@ -1,5 +1,5 @@
 import React from "react";
-import { Page, PageProps } from "@andrewmclachlan/mooapp";
+import { Page, PageProps } from "@andrewmclachlan/moo-app";
 import { Hierarchy } from "@andrewmclachlan/mooicons";
 import { PropsWithChildren } from "react";
 

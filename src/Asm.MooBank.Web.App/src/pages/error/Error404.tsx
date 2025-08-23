@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Page  } from "@andrewmclachlan/mooapp";
+import { Page  } from "@andrewmclachlan/moo-app";
 
 export const Error404: React.FC = () => {
 

@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from "react";
 import { useLocation } from "react-router";
 
-import { NavItem } from "@andrewmclachlan/mooapp";
+import { NavItem } from "@andrewmclachlan/moo-ds";
 import { Trendline } from "@andrewmclachlan/mooicons";
 
 import { StockHolding } from "models";

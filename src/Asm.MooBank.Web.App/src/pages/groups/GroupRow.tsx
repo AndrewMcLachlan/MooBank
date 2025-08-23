@@ -3,7 +3,7 @@ import React from "react";
 import { useNavigate } from "react-router";
 
 import * as Models from "models";
-import { Icon } from "@andrewmclachlan/mooapp";
+import { Icon } from "@andrewmclachlan/moo-ds";
 
 export const GroupRow: React.FC<GroupRowProps> = (props) => {
 

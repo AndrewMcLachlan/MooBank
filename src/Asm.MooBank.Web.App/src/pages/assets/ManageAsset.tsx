@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router";
 
-import { Form, SectionForm } from "@andrewmclachlan/mooapp";
+import { Form, SectionForm } from "@andrewmclachlan/moo-ds";
 
 import { Asset } from "../../models";
 import { AssetPage } from "./AssetPage";

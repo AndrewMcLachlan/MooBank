@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 
 
-import { Page } from "@andrewmclachlan/mooapp";
+import { Page } from "@andrewmclachlan/moo-app";
 
 import { emptyFamily, Family } from "models";
 import { useCreateFamily } from "services";

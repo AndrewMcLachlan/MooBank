@@ -4,7 +4,8 @@ import * as Icons from "@andrewmclachlan/mooicons";
 import React from "react";
 import { Link } from "react-router";
 
-import { Icon, MooAppLayout, NavItem } from "@andrewmclachlan/mooapp";
+import { MooAppLayout } from "@andrewmclachlan/moo-app";
+import { Icon, NavItem } from "@andrewmclachlan/moo-ds";
 import { useIsAuthenticated } from "@azure/msal-react";
 import { useHasRole } from "hooks";
 

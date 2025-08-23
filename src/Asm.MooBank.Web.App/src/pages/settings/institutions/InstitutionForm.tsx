@@ -1,4 +1,4 @@
-import { Form, FormComboBox, SectionForm } from "@andrewmclachlan/mooapp";
+import { Form, FormComboBox, SectionForm } from "@andrewmclachlan/moo-ds";
 import { Institution, institutionTypeOptions } from "models";
 import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";

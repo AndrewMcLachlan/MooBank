@@ -1,4 +1,4 @@
-import { useLocalStorage } from "@andrewmclachlan/mooapp";
+import { useLocalStorage } from "@andrewmclachlan/moo-ds";
 import { parseISO } from "date-fns/parseISO";
 import { Period, lastMonth } from "helpers/dateFns";
 import { periodOptions } from "models";

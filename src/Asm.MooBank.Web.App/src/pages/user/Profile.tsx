@@ -1,4 +1,5 @@
-import { DeleteIcon, EditColumn, Form, FormComboBox, Page, SaveIcon, Section, SectionTable, ThemeSelector } from "@andrewmclachlan/mooapp";
+import { Page } from "@andrewmclachlan/moo-app";
+import { DeleteIcon, EditColumn, Form, FormComboBox, SaveIcon, Section, SectionTable, ThemeSelector } from "@andrewmclachlan/moo-ds";
 import { CurrencySelector } from "components";
 import { Card, User } from "models/User";
 import React, { useEffect, useState } from "react";

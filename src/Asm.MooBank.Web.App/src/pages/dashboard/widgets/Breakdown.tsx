@@ -1,4 +1,4 @@
-import { Widget } from "@andrewmclachlan/mooapp";
+import { Widget } from "@andrewmclachlan/moo-ds";
 import { lastMonth, lastMonthName } from "helpers/dateFns";
 import { Breakdown } from "pages";
 import { useAccounts } from "services";

@@ -1,4 +1,4 @@
-import { useApiPostEmpty, useApiPostFile } from "@andrewmclachlan/mooapp";
+import { useApiPostEmpty, useApiPostFile } from "@andrewmclachlan/moo-app";
 import { MutationOptions, useQueryClient } from "@tanstack/react-query";
 import { accountsKey } from "./AccountService";
 import { toast } from "react-toastify";

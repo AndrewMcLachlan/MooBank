@@ -2,7 +2,7 @@ import { Button } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 
-import { SectionForm, Form } from "@andrewmclachlan/mooapp";
+import { SectionForm, Form } from "@andrewmclachlan/moo-ds";
 
 import { CreateVirtualInstrument, VirtualAccount } from "../../models";
 import { useCreateVirtualAccount } from "../../services";

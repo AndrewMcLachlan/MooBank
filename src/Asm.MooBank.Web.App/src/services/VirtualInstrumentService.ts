@@ -2,7 +2,7 @@ import { useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { InstitutionAccount, InstrumentId, AccountList, VirtualAccount, CreateVirtualInstrument } from "../models";
 import { accountsKey } from "./AccountService";
 import { formattedAccountsKey } from "./InstrumentsService";
-import { emptyGuid, useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
+import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/moo-app";
 import { toast } from "react-toastify";
 
 interface VirtualAccountVariables {

@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { PaginationProps, PaginationTh, SortableTh, SortDirection } from "@andrewmclachlan/mooapp";
+import { PaginationProps, PaginationTh, SortableTh, SortDirection } from "@andrewmclachlan/moo-ds";
 
 import { State } from "store/state";
 import { TransactionsSlice } from "store/Transactions";

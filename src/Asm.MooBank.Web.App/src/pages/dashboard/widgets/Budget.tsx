@@ -2,7 +2,7 @@ import { format } from "date-fns/format";
 import { getMonth } from "date-fns/getMonth";
 import { getYear } from "date-fns/getYear";
 
-import { Widget } from "@andrewmclachlan/mooapp";
+import { Widget } from "@andrewmclachlan/moo-ds";
 import { ChartData } from "chart.js";
 import { useChartColours } from "helpers";
 import { lastMonth, lastMonthName } from "helpers/dateFns";

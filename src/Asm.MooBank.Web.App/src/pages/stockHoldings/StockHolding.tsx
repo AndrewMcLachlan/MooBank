@@ -1,4 +1,4 @@
-import { useIdParams } from "@andrewmclachlan/mooapp";
+import { useIdParams } from "@andrewmclachlan/moo-app";
 import { StockHoldingProvider } from "./StockHoldingProvider";
 import { Navigate, Outlet, useMatch } from "react-router";
 import { useStockHolding } from "services";

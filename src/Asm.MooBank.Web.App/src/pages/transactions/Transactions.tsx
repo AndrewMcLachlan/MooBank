@@ -1,7 +1,7 @@
 import React from "react";
 import { Col, Form } from "react-bootstrap";
 
-import { IconButton, SectionRow, useLocalStorage } from "@andrewmclachlan/mooapp";
+import { IconButton, SectionRow, useLocalStorage } from "@andrewmclachlan/moo-ds";
 
 import { useAccount } from "components";
 import { AccountPage, AccountSummary } from "../../components";

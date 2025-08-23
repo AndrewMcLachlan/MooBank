@@ -1,7 +1,8 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 
-import { IconButton, SectionTable, useIdParams } from "@andrewmclachlan/mooapp";
+import { useIdParams } from "@andrewmclachlan/moo-app";
+import { IconButton, SectionTable } from "@andrewmclachlan/moo-ds";
 
 import { AccountPage, useAccount } from "components";
 import * as Models from "models";

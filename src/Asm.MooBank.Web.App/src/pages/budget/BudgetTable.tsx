@@ -1,4 +1,4 @@
-import { SectionTable } from "@andrewmclachlan/mooapp";
+import { SectionTable } from "@andrewmclachlan/moo-ds";
 import * as Models from "models";
 import { BudgetLine } from "./BudgetLine";
 import { NewBudgetLine } from "./NewBudgetLine";

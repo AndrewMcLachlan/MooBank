@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { Table } from "react-bootstrap";
 
-import { getNumberOfPages, Pagination } from "@andrewmclachlan/mooapp";
+import { getNumberOfPages, Pagination } from "@andrewmclachlan/moo-ds";
 import { useStockTransactions } from "services";
 import { StockTransactionsSlice } from "store";
 import { State } from "store/state";

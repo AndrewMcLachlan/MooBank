@@ -1,4 +1,4 @@
-import { useApiDelete, useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
+import { useApiDelete, useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/moo-app";
 import { useQueryClient } from "@tanstack/react-query";
 import { VirtualAccount } from "models";
 import { RecurringTransaction } from "models/RecurringTransaction";

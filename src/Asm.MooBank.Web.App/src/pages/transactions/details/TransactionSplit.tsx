@@ -1,5 +1,5 @@
 import { TransactionSearch } from "components";
-import { DeleteIcon } from "@andrewmclachlan/mooapp";
+import { DeleteIcon } from "@andrewmclachlan/moo-ds";
 import { valueAsNumber } from "helpers";
 import { Transaction, TransactionOffset, TransactionSplit as TransactionSplitModel, isCredit } from "models";
 import React, { useState } from "react";

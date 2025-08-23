@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { TransactionTagRow } from "./TagRow";
 
-import { changeSortDirection, getNumberOfPages, PageSize, Pagination, PaginationControls, PaginationTh, SaveIcon, SearchBox, Section, SectionTable, SortableTh, SortDirection, useLocalStorage } from "@andrewmclachlan/mooapp";
+import { changeSortDirection, getNumberOfPages, PageSize, Pagination, PaginationControls, PaginationTh, SaveIcon, SearchBox, Section, SectionTable, SortableTh, SortDirection, useLocalStorage } from "@andrewmclachlan/moo-ds";
 import { TagPanel } from "components";
 import { sortTags, Tag } from "models";
 import { useCreateTag, useTags } from "services";

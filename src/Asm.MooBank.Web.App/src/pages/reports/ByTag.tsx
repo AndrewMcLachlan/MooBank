@@ -5,7 +5,8 @@ import { useByTagReport } from "services";
 
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ChartData, registerables } from "chart.js";
-import { Section, useIdParams } from "@andrewmclachlan/mooapp";
+import { useIdParams } from "@andrewmclachlan/moo-app";
+import { Section} from "@andrewmclachlan/moo-ds";
 
 import { Period } from "helpers/dateFns";
 import { ReportTypeSelector } from "components/ReportTypeSelector";

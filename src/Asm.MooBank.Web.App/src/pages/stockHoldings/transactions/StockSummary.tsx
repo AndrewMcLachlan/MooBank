@@ -1,5 +1,5 @@
 import React from "react";
-import { Section } from "@andrewmclachlan/mooapp";
+import { Section } from "@andrewmclachlan/moo-ds";
 import { useStockHolding } from "../StockHoldingProvider"
 import classNames from "classnames";
 import { Amount } from "components/Amount";

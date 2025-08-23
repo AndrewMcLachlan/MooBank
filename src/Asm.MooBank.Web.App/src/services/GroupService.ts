@@ -1,4 +1,4 @@
-import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/mooapp";
+import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/moo-app";
 import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
 import { Group } from "../models";
 

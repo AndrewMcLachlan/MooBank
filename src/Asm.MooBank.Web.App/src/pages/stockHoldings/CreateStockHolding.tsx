@@ -3,7 +3,8 @@ import { Button, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import { NewStockHolding, emptyStockHolding } from "../../models";
 
-import { Form, Page, SectionForm, useFormGroup } from "@andrewmclachlan/mooapp";
+import { Page } from "@andrewmclachlan/moo-app";
+import { Form, SectionForm, useFormGroup } from "@andrewmclachlan/moo-ds";
 import { useCreateStockHolding, useGroups } from "services";
 import { useForm, useFormContext } from "react-hook-form";
 import { GroupSelector } from "components/GroupSelector";

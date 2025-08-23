@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useTag } from "services";
 import { ReportsPage } from "../ReportsPage";
 
-import { Section } from "@andrewmclachlan/mooapp";
+import { Section } from "@andrewmclachlan/moo-ds";
 import { Chart as ChartJS, registerables } from "chart.js";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

@@ -1,4 +1,4 @@
-import { changeSortDirection, IconLinkButton, Input, MiniPagination, PageSize, Pagination, PaginationControls, SortablePaginationTh, Section, SectionTable, SortableTh, SortDirection, useLocalStorage } from "@andrewmclachlan/mooapp";
+import { changeSortDirection, IconLinkButton, Input, MiniPagination, PageSize, Pagination, PaginationControls, SortablePaginationTh, Section, SectionTable, SortableTh, SortDirection, useLocalStorage } from "@andrewmclachlan/moo-ds";
 import { institutionTypeOptions } from "models";
 import { useNavigate } from "react-router";
 import { useInstitutions } from "services";

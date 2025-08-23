@@ -1,4 +1,4 @@
-import { formatCurrency } from "@andrewmclachlan/mooapp";
+import { formatCurrency } from "@andrewmclachlan/moo-ds";
 import { format } from "date-fns/format";
 import { parseISO } from "date-fns/parseISO";
 import { Transaction, TransactionSplit, getSplitTotal, isDebit } from "models";

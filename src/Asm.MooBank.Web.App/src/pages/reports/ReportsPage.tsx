@@ -2,7 +2,7 @@ import React, { PropsWithChildren } from "react";
 
 import { InstitutionAccount } from "models";
 import { useLocation } from "react-router";
-import { NavItem } from "@andrewmclachlan/mooapp";
+import { NavItem } from "@andrewmclachlan/moo-ds";
 import { AccountPage, useAccount } from "components";
 import { BarChart, LeftRightArrow, PieChart, Tags, Trendline } from "@andrewmclachlan/mooicons";
 

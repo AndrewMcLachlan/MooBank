@@ -1,7 +1,8 @@
 import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 
-import { PagedResult, SortDirection, useApiDelete, useApiGet, useApiPagedGet, useApiPatch, useApiPost, useApiPutEmpty } from "@andrewmclachlan/mooapp";
+import { useApiDelete, useApiGet, useApiPagedGet, useApiPatch, useApiPost, useApiPutEmpty } from "@andrewmclachlan/moo-app";
+import { PagedResult, SortDirection } from "@andrewmclachlan/moo-ds";
 import { format } from "date-fns/format";
 import { parseISO } from "date-fns/parseISO";
 import * as Models from "../models";

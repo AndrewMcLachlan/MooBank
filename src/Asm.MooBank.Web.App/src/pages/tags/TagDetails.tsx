@@ -1,5 +1,5 @@
 import React from "react";
-import { Tooltip, useUpdatingState } from "@andrewmclachlan/mooapp";
+import { Tooltip, useUpdatingState } from "@andrewmclachlan/moo-ds";
 import { Tag } from "models";
 import { Button, Form, Modal } from "react-bootstrap";
 import { useUpdateTag } from "services";

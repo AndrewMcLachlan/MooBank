@@ -1,6 +1,7 @@
 import React, { PropsWithChildren, ReactNode } from "react";
 
-import { NavItem, NavItemDivider, Page, PageProps } from "@andrewmclachlan/mooapp";
+import { Page, PageProps } from "@andrewmclachlan/moo-app";
+import { NavItem, NavItemDivider } from "@andrewmclachlan/moo-ds";
 import { StockHolding } from "models";
 import { useStockHolding } from "./StockHoldingProvider";
 

@@ -5,7 +5,7 @@ import { StockHolding } from "../../models";
 import { StockHoldingPage } from "./StockHoldingPage";
 import { useStockHolding } from "./StockHoldingProvider";
 
-import { Form, SectionForm } from "@andrewmclachlan/mooapp";
+import { Form, SectionForm } from "@andrewmclachlan/moo-ds";
 
 import { useUpdateStockHolding } from "services";
 import { GroupSelector } from "components/GroupSelector";

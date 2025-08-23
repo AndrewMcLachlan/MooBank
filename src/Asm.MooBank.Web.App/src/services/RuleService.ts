@@ -1,4 +1,4 @@
-import { useApiDelete, useApiGet, useApiPatch, useApiPost, useApiPostEmpty, useApiPutEmpty } from "@andrewmclachlan/mooapp";
+import { useApiDelete, useApiGet, useApiPatch, useApiPost, useApiPostEmpty, useApiPutEmpty } from "@andrewmclachlan/moo-app";
 import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
 import * as Models from "../models";
 import { Tag } from "../models";

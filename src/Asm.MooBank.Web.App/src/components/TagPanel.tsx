@@ -1,4 +1,4 @@
-import { TagPanel as MTagPanel, TagPanelProps as MTagPanelProps } from "@andrewmclachlan/mooapp";
+import { TagPanel as MTagPanel, TagPanelProps as MTagPanelProps } from "@andrewmclachlan/moo-ds";
 import { Tag } from "models";
 import { ElementType } from "react";
 

@@ -1,4 +1,4 @@
-import { useIdParams } from "@andrewmclachlan/mooapp";
+import { useIdParams } from "@andrewmclachlan/moo-app";
 import { AccountProvider } from "components";
 import { TransactionListProvider } from "components";
 import { Navigate, Outlet, useMatch } from "react-router";
