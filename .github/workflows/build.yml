@@ -41,7 +41,7 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore Asm.MooBank.slnx
     - name: Setup node and npm
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v5
       with:
         node-version: 22
         cache: npm
