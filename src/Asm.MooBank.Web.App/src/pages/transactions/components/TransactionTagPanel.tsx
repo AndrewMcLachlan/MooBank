@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect, useMemo } from "react";
 
 import { TagPanel } from "components";
 
@@ -19,10 +19,15 @@ export const TransactionTagPanel: React.FC<TransactionTagPanelProps> = ({alwaysS
         setTagsList(fullTagsListQuery.data.filter((t) => !transactionRow.tags.some((tt) => t.id === tt.id)));
     }, [transactionRow.tags, fullTagsListQuery.data]);
 
+    const selectedTags = useMemo(() => {
+        if (!fullTagsListQuery.data) return [];
+        return fullTagsListQuery.data.filter((t) => transactionRow.tags.some((tt) => t.id === tt.id));
+    }, [transactionRow.tags, fullTagsListQuery.data]);
+
     if (props.hidden) return null;
 
     return (
-        <TagPanel as={props.as} className={props.className} selectedItems={transactionRow.tags} items={tagsList} onAdd={transactionRow.addTag} onRemove={transactionRow.removeTag} onCreate={transactionRow.createTag} allowCreate={true} alwaysShowEditPanel={alwaysShowEditPanel}  />
+        <TagPanel as={props.as} className={props.className} selectedItems={selectedTags} items={tagsList} onAdd={transactionRow.addTag} onRemove={transactionRow.removeTag} onCreate={transactionRow.createTag} allowCreate={true} alwaysShowEditPanel={alwaysShowEditPanel}  />
     );
 }
 

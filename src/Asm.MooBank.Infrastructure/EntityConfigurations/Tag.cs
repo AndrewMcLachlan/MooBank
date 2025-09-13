@@ -1,4 +1,5 @@
 ﻿using Asm.MooBank.Domain.Entities.Tag;
+using Asm.MooBank.Infrastructure.ValueConverters;
 
 namespace Asm.MooBank.Infrastructure.EntityConfigurations;
 
@@ -7,6 +8,12 @@ internal class TagConfiguration : IEntityTypeConfiguration<Domain.Entities.Tag.T
     public void Configure(EntityTypeBuilder<Domain.Entities.Tag.Tag> entity)
     {
         entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+        // Configure HexColour conversion using dedicated converter
+        entity.Property(e => e.Colour)
+            .HasConversion<HexColourConverter>()
+            .HasColumnType("char(7)")
+            .HasMaxLength(7);
 
         entity.HasMany(d => d.Tags)
               .WithMany(d => d.TaggedTo)
@@ -22,7 +29,6 @@ internal class TagConfiguration : IEntityTypeConfiguration<Domain.Entities.Tag.T
                     t4.HasKey(e => new { e.PrimaryTagId, e.SecondaryTagId });
                 });
 
-        //entity.OwnsOne(e => e.Settings).WithOwner().HasForeignKey("TagId");
         entity.HasOne(e => e.Settings).WithOne().HasForeignKey<TagSettings>(e => e.TagId);
     }
 }

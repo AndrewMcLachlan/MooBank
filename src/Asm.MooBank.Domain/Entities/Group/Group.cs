@@ -10,7 +10,8 @@ public class Group([DisallowNull] Guid id) : KeyedEntity<Guid>(id)
 {
     public Group() : this(default) { }
 
-    public string Name { get; set; } = null!;
+    [Required]
+    public required string Name { get; set; }
 
     public string? Description { get; set; }
 

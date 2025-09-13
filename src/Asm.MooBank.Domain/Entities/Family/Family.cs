@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Asm.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Family;
@@ -16,7 +15,7 @@ public class Family : KeyedEntity<Guid>
     {
     }
 
-    public string Name { get; set; } = null!;
+    public required string Name { get; set; }
 
-    public virtual ICollection<User.User> AccountHolders { get; set; } = new List<User.User>();
+    public virtual ICollection<User.User> AccountHolders { get; set; } = [];
 }

@@ -5,7 +5,6 @@
     <None Include="Services\CpiChangeService.cs" />
     <PackageReference Include="Asm" />
     <PackageReference Include="LazyCache.AspNetCore" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
   </ItemGroup>
 
   <ItemGroup>

@@ -12,14 +12,19 @@ public partial class VirtualInstrument(Guid id) : TransactionInstrument(id)
     public ICollection<RecurringTransaction> RecurringTransactions { get; set; } = new HashSet<RecurringTransaction>();
 
 
-    public void AddRecurringTransaction(string? description, decimal amount, ScheduleFrequency schedule)
+    public RecurringTransaction AddRecurringTransaction(string? description, decimal amount, ScheduleFrequency schedule, DateOnly nextRun)
     {
-        RecurringTransactions.Add(new()
+        var recurringTransaction = new RecurringTransaction
         {
             Amount = amount,
             Description = description,
             VirtualAccountId = Id,
             Schedule = schedule,
-        });
+            NextRun = nextRun
+        };
+
+        RecurringTransactions.Add(recurringTransaction);
+
+        return recurringTransaction;
     }
 }

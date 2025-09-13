@@ -12,8 +12,8 @@ namespace Asm.MooBank.Domain.Entities.Transactions;
 [PrimaryKey(nameof(Id))]
 public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
 {
-    private List<TransactionSplit> _splits = [];
-    private List<TransactionOffset> _offsetFor = [];
+    private readonly List<TransactionSplit> _splits = [];
+    private readonly List<TransactionOffset> _offsetFor = [];
 
     public Transaction() : this(default) { }
 

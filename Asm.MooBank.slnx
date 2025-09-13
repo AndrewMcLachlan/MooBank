@@ -47,7 +47,9 @@
     <Project Path="tests/Asm.MooBank.Modules.Tests/Asm.MooBank.Modules.Tests.csproj" />
   </Folder>
   <Project Path="src/Asm.MooBank.AppHost/Asm.MooBank.AppHost.csproj" />
-  <Project Path="src/Asm.MooBank.Database/Asm.MooBank.Database.sqlproj" Type="42ea0dbd-9cf1-443e-919e-be9c484e4577" />
+  <Project Path="src/Asm.MooBank.Database/Asm.MooBank.Database.sqlproj" Id="692a95bf-a4d2-4f37-af63-a3b5a2c04fc7">
+    <Build />
+  </Project>
   <Project Path="src/Asm.MooBank.Domain/Asm.MooBank.Domain.csproj" />
   <Project Path="src/Asm.MooBank.Infrastructure/Asm.MooBank.Infrastructure.csproj" />
   <Project Path="src/Asm.MooBank.Models/Asm.MooBank.Models.csproj" />

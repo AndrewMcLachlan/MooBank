@@ -13,9 +13,9 @@ export const TransactionTagDetails: React.FC<TransactionTagDetailsProps> = (prop
 
     const updateTag = useUpdateTag();
 
-    const updateExcludeFromReporting = (excludeFromReporting: boolean) => save({...tag, settings: {...tag.settings, excludeFromReporting}});
-    const updateAllowSmoothing = (allowSmoothing: boolean) => save({...tag, settings: {...tag.settings, applySmoothing: allowSmoothing}});
-    const updateName = (name: string) => save({...tag, name});
+    const updateExcludeFromReporting = (excludeFromReporting: boolean) => save({ ...tag, settings: { ...tag.settings, excludeFromReporting } });
+    const updateAllowSmoothing = (allowSmoothing: boolean) => save({ ...tag, settings: { ...tag.settings, applySmoothing: allowSmoothing } });
+    const updateName = (name: string) => save({ ...tag, name });
 
     const save = (newTag: Tag) => {
         updateTag.mutate(newTag);
@@ -31,6 +31,8 @@ export const TransactionTagDetails: React.FC<TransactionTagDetailsProps> = (prop
                 <section className="tag-details">
                     <label htmlFor="name">Name</label>
                     <Form.Control id="name" placeholder="Name" type="text" value={name} onChange={(e) => setName(e.currentTarget.value)} onBlur={(e) => updateName(e.currentTarget.value)} onKeyUp={(e) => onKeyLeave(e, updateName)} />
+                    <label htmlFor="colour">Colour</label>
+                    <Form.Control id="colour" type="color" value={tag.colour ?? ""} onChange={(e) => save({ ...tag, colour: e.target.value })} />
                     <label htmlFor="exclude">Exclude from Reporting</label>
                     <Form.Switch id="exclude" checked={tag.settings?.excludeFromReporting} onChange={(e) => updateExcludeFromReporting(e.currentTarget.checked)} />
                     <label htmlFor="smooth">Allow Smoothing<Tooltip id="smoothing">Provides an option to average non-monthly transactions in trend reports</Tooltip></label>

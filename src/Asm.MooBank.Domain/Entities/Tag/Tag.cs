@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Asm.Drawing;
 using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Tag;
@@ -11,11 +12,14 @@ public partial class Tag(int id) : KeyedEntity<int>(id), IEquatable<Tag>
 
     [Required]
     [MaxLength(50)]
-    public string Name { get; set; } = null!;
+    [AllowNull]
+    public string Name { get; set; }
 
     public bool Deleted { get; set; }
 
     public Guid FamilyId { get; set; }
+
+    public HexColour? Colour { get; set; }
 
     public virtual ICollection<Tag> TaggedTo { get; set; } = new HashSet<Tag>();
 

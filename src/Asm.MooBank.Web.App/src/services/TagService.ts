@@ -46,7 +46,7 @@ export const useUpdateTag = (): UseMutationResult<Models.Tag, null, Models.Tag, 
                 const name = variables.name?.trim() ?? (variables.name).trim();
                 const id = variables.id;
 
-                return (await httpClient.patch<Models.Tag>(`api/tags/${id}`, { name, excludeFromReporting: variables.settings?.excludeFromReporting, applySmoothing: variables.settings?.applySmoothing })).data;
+                return (await httpClient.patch<Models.Tag>(`api/tags/${id}`, { name, colour: variables.colour, excludeFromReporting: variables.settings?.excludeFromReporting, applySmoothing: variables.settings?.applySmoothing })).data;
             },
             onSuccess: (data: Models.Tag) => {
                 queryClient.setQueryData<Models.Tag>(["tags", { id: data.id }], data);

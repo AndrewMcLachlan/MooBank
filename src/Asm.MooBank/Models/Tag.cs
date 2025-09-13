@@ -9,6 +9,7 @@ public static class TagExtensions
         {
             Id = entity.Id,
             Name = entity.Name,
+            Colour = entity.Colour,
             Tags = entity.Tags.Where(t => t != null).Select(t => t.ToModel()).OrderBy(t => t.Name),
             Settings = new Tag.TagSettings
             {
@@ -22,6 +23,7 @@ public static class TagExtensions
         new(tag.Id)
         {
             Name = tag.Name,
+            Colour = tag.Colour,
             Tags = [.. tag.Tags.Select(t => t.ToEntity())],
             Settings = new Domain.Entities.Tag.TagSettings
             {
@@ -55,6 +57,7 @@ public static class TagExtensions
         {
             Id = entity.Id,
             Name = entity.Name,
+            Colour = entity.Colour,
             Tags = entity.Tags?.Select(t => t.ToHierarchyModel()) ?? [],
         };
 }
