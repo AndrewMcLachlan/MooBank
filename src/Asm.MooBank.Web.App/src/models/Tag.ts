@@ -3,6 +3,7 @@ import { SortDirection } from "@andrewmclachlan/moo-ds";
 export interface Tag {
     id: number;
     name: string;
+    colour?: string;
     tags: Tag[];
     settings?: TagSettings;
 }

@@ -18,6 +18,7 @@ internal sealed class UpdateHandler(ITagRepository tagRepository, IUnitOfWork un
         await security.AssertFamilyPermission(tag.FamilyId);
 
         tag.Name = request.Tag.Name;
+        tag.Colour = request.Tag.Colour;
         tag.Settings.ExcludeFromReporting = request.Tag.ExcludeFromReporting;
         tag.Settings.ApplySmoothing = request.Tag.ApplySmoothing;
 

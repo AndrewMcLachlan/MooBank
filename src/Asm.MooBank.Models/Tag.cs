@@ -1,4 +1,6 @@
-﻿namespace Asm.MooBank.Models;
+﻿using Asm.Drawing;
+
+namespace Asm.MooBank.Models;
 
 public sealed record Tag
 {
@@ -7,6 +9,8 @@ public sealed record Tag
     public int Id { get; set; }
 
     public required string Name { get; set; }
+
+    public HexColour? Colour { get; set; }
 
     public IEnumerable<Tag> Tags { get; set; } = [];
 
