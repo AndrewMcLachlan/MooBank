@@ -32,7 +32,7 @@ export const TransactionTagDetails: React.FC<TransactionTagDetailsProps> = (prop
                     <label htmlFor="name">Name</label>
                     <Form.Control id="name" placeholder="Name" type="text" value={name} onChange={(e) => setName(e.currentTarget.value)} onBlur={(e) => updateName(e.currentTarget.value)} onKeyUp={(e) => onKeyLeave(e, updateName)} />
                     <label htmlFor="colour">Colour</label>
-                    <Form.Control id="colour" type="color" value={tag.colour ?? ""} onChange={(e) => { console.log("event", e.target.value); save({ ...tag, colour: e.target.value })}} />
+                    <Form.Control id="colour" type="color" value={tag.colour ?? ""} onChange={(e) => save({ ...tag, colour: e.target.value })} />
                     <label htmlFor="exclude">Exclude from Reporting</label>
                     <Form.Switch id="exclude" checked={tag.settings?.excludeFromReporting} onChange={(e) => updateExcludeFromReporting(e.currentTarget.checked)} />
                     <label htmlFor="smooth">Allow Smoothing<Tooltip id="smoothing">Provides an option to average non-monthly transactions in trend reports</Tooltip></label>
