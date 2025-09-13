@@ -1,4 +1,5 @@
-﻿using Asm.MooBank.Domain.Entities.ReferenceData;
+﻿using System.Diagnostics.CodeAnalysis;
+using Asm.MooBank.Domain.Entities.ReferenceData;
 
 namespace Asm.MooBank.Domain.Entities.Account;
 
@@ -10,5 +11,6 @@ public partial class ImportAccount
     public required int ImporterTypeId { get; set; }
 
     [ForeignKey(nameof(ImporterTypeId))]
-    public ImporterType ImporterType { get; set; } = null!;
+    [AllowNull]
+    public ImporterType ImporterType { get; set; }
 }

@@ -8,9 +8,11 @@ public class ExchangeRate([DisallowNull] int id) : KeyedEntity<int>(id)
 {
     public ExchangeRate() : this(default) { }
 
-    public string From { get; set; } = null!;
+    [Required]
+    public required string From { get; set; }
 
-    public string To { get; set; } = null!;
+    [Required]
+    public required string To { get; set; }
 
     [Precision(12, 4)]
     public decimal Rate { get; set; }

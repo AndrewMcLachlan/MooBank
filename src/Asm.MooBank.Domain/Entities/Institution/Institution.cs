@@ -17,7 +17,8 @@ public class Institution : KeyedEntity<int>
     {
     }
 
-    public string Name { get; set; } = null!;
+    [Required]
+    public required string Name { get; set; }
 
     [Column("InstitutionTypeId")]
     public virtual InstitutionType InstitutionType { get; set; }

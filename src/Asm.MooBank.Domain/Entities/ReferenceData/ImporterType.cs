@@ -1,4 +1,4 @@
-﻿using Asm.Domain;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace Asm.MooBank.Domain.Entities.ReferenceData;
 
@@ -8,11 +8,11 @@ public partial class ImporterType
     [Key]
     public int ImporterTypeId { get; set; }
 
-    public string Type { get; set; } = null!;
+    [Required]
+    public required string Type { get; set; }
 
-    public string Name { get; set; } = null!;
+    [Required]
+    public required string Name { get; set; }
 
     public Type AsType() => System.Type.GetType(Type) ?? throw new InvalidOperationException($"Invalid type name {Type}");
-
-    //public virtual ICollection<ImportAccount> ImportAccounts { get; set; }
 }

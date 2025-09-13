@@ -30,9 +30,9 @@ public partial class StockSymbol(string symbol, string? exchange) : IEquatable<S
         return new StockSymbol(split[0], split.Length > 1 ? split[1] : null);
     }
 
-    public static bool TryParse(string symbol, out StockSymbol result)
+    public static bool TryParse(string symbol, out StockSymbol? result)
     {
-        result = null!;
+        result = null;
         var split = symbol.Split(".");
         if (split.Length > 2 || split[1].Length != 2) return false;
         if (!AlphaNumeric().IsMatch(split[0])) return false;

@@ -36,7 +36,7 @@ public static class IServiceCollectionExtensions
 
                     if (user == null)
                     {
-                        Domain.Entities.Family.Family family = new Domain.Entities.Family.Family()
+                        Domain.Entities.Family.Family family = new()
                         {
                             Name = "My Family",
                         };
@@ -63,7 +63,7 @@ public static class IServiceCollectionExtensions
 
                     var instruments = owned.Union(virtualOwned).Union(sharedInstruments.Select(i => i.Id).Union(virtualShared)).ToList();
 
-                    claims = instruments.Select(a => new Claim(Security.ClaimTypes.AccountId, a.ToString())).ToList();
+                    claims = [.. instruments.Select(a => new Claim(Security.ClaimTypes.AccountId, a.ToString()))];
 
                     if (user.PrimaryAccountId != null) claims.Add(new Claim(Security.ClaimTypes.PrimaryAccountId, user.PrimaryAccountId.Value.ToString()));
                     claims.Add(new Claim(Security.ClaimTypes.FamilyId, user.FamilyId.ToString()));
