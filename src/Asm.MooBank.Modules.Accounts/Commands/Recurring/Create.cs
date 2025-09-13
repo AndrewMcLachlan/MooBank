@@ -20,16 +20,7 @@ internal class CreateHandler(IInstrumentRepository accountRepository, IUnitOfWor
 
         var virtualAccount = account.VirtualInstruments.SingleOrDefault(v => v.Id == command.VirtualAccountId) ?? throw new NotFoundException();
 
-        var recurringTransaction = new Domain.Entities.Account.RecurringTransaction
-        {
-            VirtualAccountId = command.VirtualAccountId,
-            Amount = command.Amount,
-            Description = command.Description,
-            Schedule = command.Schedule,
-            NextRun = command.NextRun,
-        };
-
-        virtualAccount.RecurringTransactions.Add(recurringTransaction);
+        var recurringTransaction = virtualAccount.AddRecurringTransaction(command.Description, command.Amount, command.Schedule, command.NextRun);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
