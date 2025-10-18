@@ -12,6 +12,7 @@ DECLARE @res DECIMAL(12,4)
 ;WITH GandL AS (
   SELECT CASE WHEN TransactionTypeId = 1 THEN SUM(Quantity*Price) ELSE 0 END as bought, CASE WHEN TransactionTypeId = 2 THEN SUM(Quantity*Price) ELSE 0 END as sold
     FROM StockTransaction
+    WHERE AccountId = @AccountId
     GROUP BY TransactionTypeId
 )
 
