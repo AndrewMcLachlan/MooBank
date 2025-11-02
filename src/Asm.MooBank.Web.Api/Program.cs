@@ -6,6 +6,7 @@ using Asm.AspNetCore.Modules;
 using Asm.MooBank.Infrastructure;
 using Asm.MooBank.Institution.AustralianSuper;
 using Asm.MooBank.Institution.Ing;
+using Asm.MooBank.Institution.Macquarie;
 using Asm.MooBank.Security;
 using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -140,6 +141,7 @@ void AddServices(WebApplicationBuilder builder)
 
     services.AddIng();
     services.AddAustralianSuper();
+    services.AddMacquarie();
 
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen();

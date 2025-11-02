@@ -39,6 +39,7 @@
     <ProjectReference Include="..\Asm.MooBank.Infrastructure\Asm.MooBank.Infrastructure.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Institution.Ing\Asm.MooBank.Institution.Ing.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Institution.AustralianSuper\Asm.MooBank.Institution.AustralianSuper.csproj" />
+    <ProjectReference Include="..\Asm.MooBank.Institution.Macquarie\Asm.MooBank.Institution.Macquarie.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Models\Asm.MooBank.Models.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Modules.Accounts\Asm.MooBank.Modules.Accounts.csproj" />
     <ProjectReference Include="..\Asm.MooBank.Modules.Assets\Asm.MooBank.Modules.Assets.csproj" />
