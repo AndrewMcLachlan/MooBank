@@ -150,6 +150,9 @@ MERGE ImporterType AS TARGET USING (SELECT 'Asm.MooBank.Institution.AustralianSu
 ON (TARGET.[Type] = SOURCE.[Type])
 WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.[Type], SOURCE.[Name]);
 
+MERGE ImporterType AS TARGET USING (SELECT 'Asm.MooBank.Institution.Macquarie.Importers.MacquarieImporter, Asm.MooBank.Institution.Macquarie' as [Type], 'Macquarie' as [Name]) AS SOURCE
+ON (TARGET.[Type] = SOURCE.[Type])
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.[Type], SOURCE.[Name]);
 
 -- Institution Type
 MERGE InstitutionType AS TARGET USING (SELECT 1 as Id, 'Bank' as [Name]) AS SOURCE
