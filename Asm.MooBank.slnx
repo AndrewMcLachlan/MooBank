@@ -25,6 +25,7 @@
     <Project Path="src/Asm.MooBank.ExchangeRateApi/Asm.MooBank.ExchangeRateApi.csproj" />
     <Project Path="src/Asm.MooBank.Institution.AustralianSuper/Asm.MooBank.Institution.AustralianSuper.csproj" />
     <Project Path="src/Asm.MooBank.Institution.Ing/Asm.MooBank.Institution.Ing.csproj" />
+    <Project Path="src/Asm.MooBank.Institution.Macquarie/Asm.MooBank.Institution.Macquarie.csproj" />
   </Folder>
   <Folder Name="/Modules/">
     <Project Path="src/Asm.MooBank.Modules.Accounts/Asm.MooBank.Modules.Accounts.csproj" />

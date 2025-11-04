@@ -16,6 +16,8 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" VersionOverride="9.0.10" />
     <Using Include="Asm.Domain" />
     <Using Include="Asm.Domain.Infrastructure" />
+    <Using Include="Microsoft.EntityFrameworkCore" />
+    <Using Include="Microsoft.EntityFrameworkCore.Metadata.Builders" />
   </ItemGroup>
 
 </Project>
