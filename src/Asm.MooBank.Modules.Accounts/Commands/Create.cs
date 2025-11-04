@@ -13,7 +13,9 @@ public record Create() : ICommand<LogicalAccount>
 
     public string? Description { get; init; }
 
-    public required Models.Account.InstitutionAccount InstitutionAccount { get; init; }
+    public int? ImporterTypeId { get; init; }
+    
+    public required int InstitutionId { get; init; }
 
     public required string Currency { get; init; }
 
@@ -54,7 +56,11 @@ internal class CreateHandler(ILogicalAccountRepository institutionAccountReposit
             ShareWithFamily = command.ShareWithFamily,
         };
 
-        entity.AddInstitutionAccount(command.InstitutionAccount.ToEntity());
+        entity.AddInstitutionAccount(new()
+        {
+            InstitutionId = command.InstitutionId,
+            ImporterTypeId = command.ImporterTypeId,
+        });
         entity.SetAccountHolder(user.Id);
         entity.SetGroup(command.GroupId, user.Id);
 
