@@ -6,7 +6,7 @@ namespace Asm.MooBank.Modules.Instruments.Queries.Instruments;
 
 public sealed record GetFormatted() : IQuery<InstrumentsList>;
 
-internal class GetFormattedHandler(IQueryable<Domain.Entities.Account.InstitutionAccount> institutionAccounts, IQueryable<Domain.Entities.StockHolding.StockHolding> stockHoldings, IQueryable<Domain.Entities.Asset.Asset> assets, User user, ICurrencyConverter currencyConverter) : IQueryHandler<GetFormatted, InstrumentsList>
+internal class GetFormattedHandler(IQueryable<Domain.Entities.Account.LogicalAccount> institutionAccounts, IQueryable<Domain.Entities.StockHolding.StockHolding> stockHoldings, IQueryable<Domain.Entities.Asset.Asset> assets, User user, ICurrencyConverter currencyConverter) : IQueryHandler<GetFormatted, InstrumentsList>
 {
 
     public async ValueTask<InstrumentsList> Handle(GetFormatted request, CancellationToken cancellationToken = default)

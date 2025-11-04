@@ -6,7 +6,7 @@ namespace Asm.MooBank.Modules.Tests.Account.Queries
     [Binding]
     internal class GetAllAccountsSteps : StepDefinitionBase
     {
-        private IEnumerable<InstitutionAccount> _result;
+        private IEnumerable<LogicalAccount> _result;
 
         [Given(@"I have the set of generated accounts")]
         public void GivenIHaveTheSetOfGeneratedAccounts()
@@ -25,7 +25,7 @@ namespace Asm.MooBank.Modules.Tests.Account.Queries
         {
             var ids = table.Rows.Select(r => Guid.Parse(r[0]));
 
-            var inspectors = ids.Select<Guid, Action<InstitutionAccount>>(i => ia => Assert.Equal(i, ia.Id)).ToArray();
+            var inspectors = ids.Select<Guid, Action<LogicalAccount>>(i => ia => Assert.Equal(i, ia.Id)).ToArray();
 
             Assert.Collection(_result, inspectors);
         }

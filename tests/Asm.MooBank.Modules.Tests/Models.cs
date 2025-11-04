@@ -16,7 +16,7 @@ internal class Models
     public static readonly Guid InvalidAccountFamilyId = new("35462a0c-d902-41cb-bbee-de7acb943739");
 
 
-    public readonly InstitutionAccount Account = new()
+    public readonly LogicalAccount Account = new()
     {
         Controller = Controller.Manual,
         Currency = "AUD",

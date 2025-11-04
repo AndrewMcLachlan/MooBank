@@ -21,7 +21,7 @@ public class ReprocessTransactionsService(IReprocessTransactionsQueue taskQueue,
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                var accountId = await _taskQueue.DequeueAsync(cancellationToken);
+                var (instrumentId, accountId) = await _taskQueue.DequeueAsync(cancellationToken);
 
                 try
                 {
@@ -29,7 +29,7 @@ public class ReprocessTransactionsService(IReprocessTransactionsQueue taskQueue,
                     var importerFactory = scope.ServiceProvider.GetRequiredService<IImporterFactory>();
                     var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
-                    var importer = await importerFactory.Create(accountId, cancellationToken) ?? throw new InvalidOperationException($"Import is not supported for account with ID: {accountId}");
+                    var importer = await importerFactory.Create(instrumentId, accountId, cancellationToken) ?? throw new InvalidOperationException($"Import is not supported for account with ID: {accountId}");
 
                     await importer.Reprocess(accountId, cancellationToken);
 
@@ -56,23 +56,23 @@ public class ReprocessTransactionsService(IReprocessTransactionsQueue taskQueue,
 
 public interface IReprocessTransactionsQueue
 {
-    void QueueReprocessTransactions(Guid accountId);
+    void QueueReprocessTransactions(Guid instrumentId, Guid accountId);
 
-    Task<Guid> DequeueAsync(CancellationToken cancellationToken);
+    Task<(Guid InstrumentId, Guid AccountId)> DequeueAsync(CancellationToken cancellationToken);
 }
 
 public class ReprocessTransactionsQueue : IReprocessTransactionsQueue
 {
-    private readonly ConcurrentQueue<Guid> _workItems = new();
+    private readonly ConcurrentQueue<(Guid, Guid)> _workItems = new();
     private readonly SemaphoreSlim _signal = new(0);
 
-    public void QueueReprocessTransactions(Guid accountId)
+    public void QueueReprocessTransactions(Guid instrumentId, Guid accountId)
     {
-        _workItems.Enqueue(accountId);
+        _workItems.Enqueue((instrumentId, accountId));
         _signal.Release();
     }
 
-    public async Task<Guid> DequeueAsync(CancellationToken cancellationToken)
+    public async Task<(Guid, Guid)> DequeueAsync(CancellationToken cancellationToken)
     {
         await _signal.WaitAsync(cancellationToken);
         _workItems.TryDequeue(out var workItem);

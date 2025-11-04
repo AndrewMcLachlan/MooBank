@@ -6,7 +6,7 @@ namespace Asm.MooBank.Modules.Tests.Account.Commands;
 [Binding]
 internal class CreateStepDefinitions(ScenarioContext context) : StepDefinitionBase
 {
-    private Accounts.Models.Account.InstitutionAccount _result;
+    private Accounts.Models.Account.LogicalAccount _result;
 
     [Given(@"I have a request to create an institution account")]
     public void GivenIHaveARequestToCreateAnInstitutionAccount()
@@ -17,11 +17,11 @@ internal class CreateStepDefinitions(ScenarioContext context) : StepDefinitionBa
     [When(@"I call CreateHandler\.Handle")]
     public async Task WhenICallCreateHandler_Handle()
     {
-        Mock<IInstitutionAccountRepository> institutionAccountRepositoryMock = new();
+        Mock<ILogicalAccountRepository> institutionAccountRepositoryMock = new();
 
-        institutionAccountRepositoryMock.Setup(i => i.Add(It.IsAny<InstitutionAccount>())).Returns(NewAccountEntity);
-        institutionAccountRepositoryMock.Setup(i => i.Add(It.IsAny<InstitutionAccount>(), It.IsAny<decimal>(), It.IsAny<DateTime>()))
-            .Returns((InstitutionAccount account, decimal balance) => NewAccountEntityWithBalance(account, balance));
+        institutionAccountRepositoryMock.Setup(i => i.Add(It.IsAny<LogicalAccount>())).Returns(NewAccountEntity);
+        institutionAccountRepositoryMock.Setup(i => i.Add(It.IsAny<LogicalAccount>(), It.IsAny<decimal>(), It.IsAny<DateTime>()))
+            .Returns((LogicalAccount account, decimal balance) => NewAccountEntityWithBalance(account, balance));
 
         CreateHandler createHandler = new(institutionAccountRepositoryMock.Object, Mocks.UnitOfWorkMock.Object, Models.AccountHolder, Mocks.CurrencyConverterMock.Object, Mocks.SecurityMock.Object);
 
@@ -35,9 +35,8 @@ internal class CreateStepDefinitions(ScenarioContext context) : StepDefinitionBa
             Controller = Models.Account.Controller,
             ShareWithFamily = Models.Account.ShareWithFamily,
             GroupId = Models.Account.GroupId,
-            ImporterTypeId = Models.Account.ImporterTypeId,
             IncludeInBudget = Models.Account.IncludeInBudget,
-            InstitutionId = Models.Account.InstitutionId,
+            InstitutionAccount = Models.Account.InstitutionAccounts.First(),
         };
 
         await context.CatchExceptionAsync(async () => _result = await createHandler.Handle(command, new CancellationToken()));
@@ -56,14 +55,13 @@ internal class CreateStepDefinitions(ScenarioContext context) : StepDefinitionBa
         Assert.Equal(Models.Account.LastTransaction, _result.LastTransaction);
         Assert.Equal(Models.Account.InstrumentType, _result.InstrumentType);
         Assert.Equal(Models.Account.Controller, _result.Controller);
-        Assert.Equal(Models.Account.ImporterTypeId, _result.ImporterTypeId);
         Assert.Equal(Models.Account.ShareWithFamily, _result.ShareWithFamily);
         Assert.Equal(Models.Account.IncludeInBudget, _result.IncludeInBudget);
     }
 
-    private static InstitutionAccount NewAccountEntity(InstitutionAccount account) => NewAccountEntityWithBalance(account);
-    private static InstitutionAccount NewAccountEntityWithBalance(InstitutionAccount account, decimal balance = 0) =>
-         new(Models.AccountId)
+    private static LogicalAccount NewAccountEntity(LogicalAccount account) => NewAccountEntityWithBalance(account);
+    private static LogicalAccount NewAccountEntityWithBalance(LogicalAccount account, decimal balance = 0) =>
+         new(Models.AccountId, [])
          {
              Name = account.Name,
              Controller = account.Controller,
@@ -73,10 +71,7 @@ internal class CreateStepDefinitions(ScenarioContext context) : StepDefinitionBa
              Balance = balance,
              Currency = account.Currency,
              Description = account.Description,
-             ImportAccount = account.ImportAccount,
              IncludeInBudget = account.IncludeInBudget,
-             Institution = account.Institution,
-             InstitutionId = account.InstitutionId,
              LastTransaction = account.LastTransaction,
              LastUpdated = account.LastUpdated,
              Rules = account.Rules,

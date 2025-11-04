@@ -14,11 +14,11 @@ public class InstrumentRepository(MooBankContext dataContext) : Asm.Domain.Infra
     public override Task<Instrument> Get(Guid id, CancellationToken cancellationToken = default) =>
         (Entities.Include(a => a.Rules).ThenInclude(a => a.Tags).FindAsync(id, cancellationToken) ?? throw new NotFoundException())!;
 
-    public async Task<InstitutionAccount> GetInstitutionAccount(Guid accountId, CancellationToken cancellationToken)
+    public async Task<LogicalAccount> GetInstitutionAccount(Guid accountId, CancellationToken cancellationToken)
     {
         var account = await GetById(accountId).Include("VirtualAccounts").SingleOrDefaultAsync(cancellationToken) ?? throw new NotFoundException();
 
-        if (account is not InstitutionAccount institutionAccount)
+        if (account is not LogicalAccount institutionAccount)
             throw new InvalidOperationException("Cannot update virtual account on non-institution account.");
 
         return institutionAccount;

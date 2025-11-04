@@ -1,12 +1,13 @@
 CREATE TABLE dbo.[InstitutionAccount]
 (
+    [Id] UNIQUEIDENTIFIER NOT NULL,
     [InstrumentId] UNIQUEIDENTIFIER NOT NULL,
-    [AccountTypeId] INT NOT NULL,
     [InstitutionId] INT NOT NULL,
-    [IncludeInBudget] BIT NOT NULL CONSTRAINT DF_InstitutionAccount_IncludeInBudget DEFAULT 0,
+    [ImporterTypeId] INT NULL,
+    [OpenedDate] DATETIMEOFFSET(0) NOT NULL CONSTRAINT DF_InstitutionAccount_OpenedDate DEFAULT SYSUTCDATETIME(),
+    [ClosedDate] DATETIMEOFFSET(0) NULL,
     [LastUpdated] DATETIMEOFFSET(0) NOT NULL CONSTRAINT DF_InstitutionAccount_LastUpdated DEFAULT SYSUTCDATETIME(),
-    CONSTRAINT PK_InstitutionAccount PRIMARY KEY CLUSTERED ([InstrumentId]),
-    CONSTRAINT FK_InstitutionAccount_TransactionAccount FOREIGN KEY ([InstrumentId]) REFERENCES [TransactionInstrument]([InstrumentId]),
-    CONSTRAINT FK_InstitutionAccount_AccountType FOREIGN KEY (AccountTypeId) REFERENCES [AccountType]([Id]),
+    CONSTRAINT PK_InstitutionAccount PRIMARY KEY CLUSTERED ([Id]),
+    CONSTRAINT FK_InstitutionAccount_LogicalAccount FOREIGN KEY ([InstrumentId]) REFERENCES [LogicalAccount]([InstrumentId]),
     CONSTRAINT FK_InstitutionAccount_Institution FOREIGN KEY (InstitutionId) REFERENCES Institution(Id)
 )

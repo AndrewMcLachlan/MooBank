@@ -9,7 +9,7 @@
     [PrimaryAccountId] UNIQUEIDENTIFIER NULL,
     CONSTRAINT PK_User PRIMARY KEY ([Id]),
     CONSTRAINT FK_User_Family FOREIGN KEY (FamilyId) REFERENCES Family(Id),
-    CONSTRAINT FK_User_PrimaryAccount FOREIGN KEY (PrimaryAccountId) REFERENCES InstitutionAccount([InstrumentId]),
+    CONSTRAINT FK_User_PrimaryAccount FOREIGN KEY (PrimaryAccountId) REFERENCES LogicalAccount([InstrumentId]),
 )
 
 GO

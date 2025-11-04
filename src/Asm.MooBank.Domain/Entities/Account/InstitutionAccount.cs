@@ -1,41 +1,29 @@
-﻿using Asm.MooBank.Domain.Entities.Instrument;
-using Asm.MooBank.Models;
+﻿using System.Diagnostics.CodeAnalysis;
+using Asm.MooBank.Domain.Entities.ReferenceData;
+using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Account;
 
-[AggregateRoot]
-public class InstitutionAccount(Guid id) : TransactionInstrument(id)
+[PrimaryKey(nameof(Id))]
+public class InstitutionAccount(Guid id) : KeyedEntity<Guid>(id)
 {
     public InstitutionAccount() : this(Guid.Empty) { }
 
+    public Guid InstrumentId { get; set; }
+
     public int InstitutionId { get; set; }
 
-    [Column(TypeName = "datetimeoffset(0)")]
-    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-    public new DateTimeOffset LastUpdated { get; set; } = DateTimeOffset.Now;
-
-    public bool IncludeInBudget { get; set; }
-
-    [Column("AccountTypeId")]
-    public AccountType AccountType { get; set; }
-
-    public virtual ImportAccount? ImportAccount { get; set; }
+    public int? ImporterTypeId { get; set; }
 
     [ForeignKey(nameof(InstitutionId))]
-    public virtual Institution.Institution Institution { get; set; } = null!;
+    [AllowNull]
+    public virtual Institution.Institution Institution { get; set; }
 
-    [NotMapped]
-    public IEnumerable<InstrumentViewer> ValidViewers
-    {
-        get
-        {
-            if (!ShareWithFamily) return [];
-            var familyIds = Owners.Select(a => a.User.FamilyId).Distinct();
-            return Viewers.Where(a => familyIds.Contains(a.User.FamilyId));
-        }
-    }
+    [ForeignKey(nameof(InstrumentId))]
+    [AllowNull]
+    public virtual LogicalAccount LogicalAccount { get; set; }
 
-    public override Group.Group? GetGroup(Guid user) =>
-        base.GetGroup(user) ??
-        ValidViewers.Where(a => a.UserId == user).Select(aah => aah.Group).SingleOrDefault();
+    [ForeignKey(nameof(ImporterTypeId))]
+    [AllowNull]
+    public ImporterType ImporterType { get; set; }
 }

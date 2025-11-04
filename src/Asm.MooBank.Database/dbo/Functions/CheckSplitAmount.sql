@@ -2,14 +2,14 @@ CREATE FUNCTION [dbo].[CheckSplitAmount]
 (
     @Id UNIQUEIDENTIFIER,
     @TransactionId UNIQUEIDENTIFIER,
-    @Amount DECIMAL(19,4)
+    @Amount DECIMAL(12,4)
 )
 RETURNS BIT
 AS
 BEGIN
 
-    DECLARE @TransactionAmount DECIMAL(10,2)
-    DECLARE @TotalSplit DECIMAL(10,2)
+    DECLARE @TransactionAmount DECIMAL(12,4)
+    DECLARE @TotalSplit DECIMAL(12,4)
 
     SELECT @TransactionAmount = Amount FROM [Transaction] WHERE TransactionId = @TransactionId
 

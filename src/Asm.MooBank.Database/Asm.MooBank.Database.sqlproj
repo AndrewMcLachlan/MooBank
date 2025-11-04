@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build">
-  <Sdk Name="Microsoft.Build.Sql" Version="1.0.0" />
+<Project DefaultTargets="Build" Sdk="Microsoft.Build.Sql/2.0.0">
   <PropertyGroup>
     <Name>MooBank</Name>
     <DSP>Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider</DSP>
@@ -9,6 +8,7 @@
     <AssemblyName>Asm.MooBank.Database</AssemblyName>
     <TargetDatabaseName>MooBank</TargetDatabaseName>
     <DatabaseName>MooBank</DatabaseName>
+    <ProjectGuid>{00000000-0000-0000-0000-000000000000}</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
     <Build Remove="Scripts\.sql" />
@@ -20,6 +20,8 @@
     <None Include="Scripts\FillTransactionRaw.sql" />
     <None Include="Scripts\FillTransactionSplits.sql" />
     <None Include="Scripts\UpdateTransactionTypes.sql" />
+    <None Include="Scripts\LogicalAccount.sql" />
+    <None Include="Scripts\RollbackLogicalAccount.sql" />
     <PostDeploy Include="Script.PostDeployment1.sql" />
   </ItemGroup>
   <ItemGroup>
