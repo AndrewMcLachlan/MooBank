@@ -29,6 +29,14 @@ internal class Models
         InstrumentType = AccountType.Transaction.ToString(),
         BalanceDate = DateTime.UtcNow,
         Description = "Test Account Description",
+        InstitutionAccounts =
+        [
+            new()
+            {
+                InstitutionId = 1,
+                ImporterTypeId =1 ,
+            }
+        ],
     };
 
     public static readonly User AccountHolder = new()

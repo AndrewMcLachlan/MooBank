@@ -36,7 +36,8 @@ internal class CreateStepDefinitions(ScenarioContext context) : StepDefinitionBa
             ShareWithFamily = Models.Account.ShareWithFamily,
             GroupId = Models.Account.GroupId,
             IncludeInBudget = Models.Account.IncludeInBudget,
-            InstitutionAccount = Models.Account.InstitutionAccounts.First(),
+            ImporterTypeId = Models.Account.InstitutionAccounts!.First().ImporterTypeId,
+            InstitutionId = Models.Account.InstitutionAccounts!.First().InstitutionId,
         };
 
         await context.CatchExceptionAsync(async () => _result = await createHandler.Handle(command, new CancellationToken()));
