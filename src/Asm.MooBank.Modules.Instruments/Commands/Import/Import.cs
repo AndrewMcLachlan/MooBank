@@ -16,7 +16,7 @@ internal class ImportHandler(IInstrumentRepository instrumentRepository, IRuleRe
 
         IImporter importer = await importerFactory.Create(instrumentId, accountId, cancellationToken) ?? throw new ArgumentException("Import is not supported", nameof(request));
 
-        var importResult = await importer.Import(instrument.Id, stream, cancellationToken);
+        var importResult = await importer.Import(instrumentId, accountId, stream, cancellationToken);
 
         await ApplyRules(instrument, importResult.Transactions, cancellationToken);
 

@@ -1,5 +1,5 @@
 import { UseQueryResult, useQueryClient, } from "@tanstack/react-query";
-import { InstitutionAccount, InstrumentId, NewAsset, Asset } from "../models";
+import { LogicalAccount, InstrumentId, NewAsset, Asset } from "../models";
 import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/moo-app";
 import { accountsKey } from "./AccountService";
 import { toast } from "react-toastify";
@@ -12,7 +12,7 @@ export const useCreateAsset = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutateAsync, ...rest } = useApiPost<InstitutionAccount, null, NewAsset>(() => `api/assets`, {
+    const { mutateAsync, ...rest } = useApiPost<LogicalAccount, null, NewAsset>(() => `api/assets`, {
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: [accountsKey]});
         }

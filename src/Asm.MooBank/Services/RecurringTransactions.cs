@@ -59,7 +59,8 @@ public class RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionRep
             recurring.Description,
             DateTime.Now,
             TransactionSubType.Recurring,
-            "Recurring"
+            "Recurring",
+            null
         );
 
         transaction.PurchaseDate = recurring.NextRun.ToDateTime(TimeOnly.MinValue);

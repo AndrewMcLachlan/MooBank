@@ -11,9 +11,16 @@ public class InstitutionAccount(Guid id) : KeyedEntity<Guid>(id)
 
     public Guid InstrumentId { get; set; }
 
+    [StringLength(255)]
+    public string Name { get; set; } = String.Empty;
+
     public int InstitutionId { get; set; }
 
     public int? ImporterTypeId { get; set; }
+
+    public DateOnly OpenedDate { get; set; }
+
+    public DateOnly? ClosedDate { get; set; }
 
     [ForeignKey(nameof(InstitutionId))]
     [AllowNull]

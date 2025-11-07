@@ -4,11 +4,12 @@ import { Section } from "@andrewmclachlan/moo-ds";
 import classNames from "classnames";
 import { format } from "date-fns/format";
 import { parseISO } from "date-fns/parseISO";
-import { InstitutionAccount } from "models";
+import { LogicalAccount } from "models";
 import { useInstitutions } from "services";
 import { useAccount } from "./AccountProvider";
 import { Amount } from "./Amount";
 import { KeyValue } from "./KeyValue";
+import { formatDate } from "helpers/dateFns";
 
 export const AccountSummary: React.FC<AccountSummaryProps> = ({ className, ...props }) => {
 
@@ -29,16 +30,12 @@ export const AccountSummary: React.FC<AccountSummaryProps> = ({ className, ...pr
             </KeyValue>
             <KeyValue className="d-none d-lg-flex">
                 <div>Last Transaction</div>
-                <div>{account.lastTransaction ? format(parseISO(account.lastTransaction), "dd/MM/yyyy") : "-"}</div>
+                <div>{formatDate(account.lastTransaction)}</div>
             </KeyValue>
             <hr className="d-none d-lg-block" />
             <KeyValue className="d-none d-lg-flex">
                 <div>Type</div>
-                <div>{(account as InstitutionAccount).instrumentType ?? "Virtual"}</div>
-            </KeyValue>
-            <KeyValue hidden={!(account as InstitutionAccount).institutionId} className="d-none d-lg-flex">
-                <div>Institution</div>
-                <div>{institutions?.find(i => i.id === (account as InstitutionAccount).institutionId)?.name}</div>
+                <div>{(account as LogicalAccount).instrumentType ?? "Virtual"}</div>
             </KeyValue>
         </Section>
     )

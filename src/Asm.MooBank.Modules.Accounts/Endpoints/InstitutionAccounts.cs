@@ -19,16 +19,17 @@ internal class InstitutionAccounts : EndpointGroupBase
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {
         builder.MapQuery<Get, InstitutionAccount>("/{id}")
-            .WithNames("Get Institution Account")
-            .RequireAuthorization(Policies.GetInstrumentViewerPolicy());
+            .WithNames("Get Institution Account");
         
 
-        builder.MapPostCreate<Create, InstitutionAccount>("/", "Get Account".ToMachine(), a => new { instrumentId = a.Id }, CommandBinding.Body)
+        builder.MapPostCreate<Create, InstitutionAccount>("/", "Get Institution Account".ToMachine(), a => new { id = a.Id }, CommandBinding.Parameters)
             .WithNames("Create Institution Account");
 
         builder.MapPatchCommand<Update, InstitutionAccount>("/{id}")
-            .WithNames("Update Institution Account")
-            .RequireAuthorization(Policies.GetInstrumentViewerPolicy("id"));
+            .WithNames("Update Institution Account");
+
+        builder.MapCommand<Close, InstitutionAccount>("/{id}/close")
+            .WithNames("Close Institution Account");
     }
 
     internal static Delegate CreateCreateHandler<TRequest, TResult>(string routeName, Func<TResult, object> getRouteParams) where TRequest : ICommand<TResult>

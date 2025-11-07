@@ -1,73 +1,19 @@
-import "./App.css";
-import * as Icons from "@andrewmclachlan/mooicons";
+import "~/treeflex/dist/css/treeflex.css";
 
-import React from "react";
-import { Link } from "react-router";
+import { Provider as ReduxProvider } from "react-redux";
 
-import { MooAppLayout } from "@andrewmclachlan/moo-app";
-import { Icon, NavItem } from "@andrewmclachlan/moo-ds";
-import { useIsAuthenticated } from "@azure/msal-react";
-import { useHasRole } from "hooks";
+import { MooApp, createMooAppBrowserRouter } from "@andrewmclachlan/moo-app";
+import { AppStore } from "./store/configureStore";
+import { routes } from "Routes";
+import { client } from "./api/client.gen";
 
-const App: React.FC = () => {
+export const App = () => {
 
-    const isAuthenticated = useIsAuthenticated();
-
-    const hasRole = useHasRole();
-
-    if (!isAuthenticated) return null;
-
-    const menu = hasRole("Admin") ?
-        [(<Link key="settings" to="/settings" aria-label="Settings"><Icons.Cog /></Link>)] :
-        [];
+    const router = createMooAppBrowserRouter(routes);
 
     return (
-        <MooAppLayout
-            header={{ menu: menu, userMenu: userMenu }}
-            sidebar={{ navItems: sideMenu }}
-        />
+        <ReduxProvider store={AppStore}>
+            <MooApp clientId="045f8afa-70f2-4700-ab75-77ac41b306f7" scopes={["api://moobank.mclachlan.family/api.read"]} name="MooBank" version={import.meta.env.VITE_REACT_APP_VERSION} copyrightYear={2013} router={router} />
+        </ReduxProvider>
     );
-};
-
-export default App;
-
-const userMenu: NavItem[] = [
-    {
-        text: "Profile",
-        image: <Icon icon="user" />,
-        route: "/profile",
-    }
-];
-
-const sideMenu = [
-    {
-        text: "Dashboard",
-        image: <Icons.Dashboard />,
-        route: "/"
-    },
-    {
-        text: "Accounts",
-        image: <Icons.PiggyBank />,
-        route: "/accounts"
-    },
-    {
-        text: "Bills",
-        image: <Icons.TwoCoins />,
-        route: "/bills"
-    },
-    {
-        text: "Budget",
-        image: <Icons.Budget />,
-        route: "/budget"
-    },
-    {
-        text: "Groups",
-        image: <Icons.Stack />,
-        route: "/groups"
-    },
-    {
-        text: "Tags",
-        image: <Icons.Tags />,
-        route: "/tags"
-    },
-];
+}

@@ -8,9 +8,10 @@ using Asm.MooBank.Institution.AustralianSuper;
 using Asm.MooBank.Institution.Ing;
 using Asm.MooBank.Institution.Macquarie;
 using Asm.MooBank.Security;
-using Azure.Monitor.OpenTelemetry.AspNetCore;
+using Asm.OAuth;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.OpenApi;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 
 var result =  WebApplicationStart.Run(args, "Asm.MooBank.Web.Api", AddServices, AddApp, AddHealthChecks);
@@ -69,6 +70,8 @@ void AddServices(WebApplicationBuilder builder)
             },
         });
     });
+
+    services.AddAzureOAuthOptions("OAuth");
 
     services.AddOpenApi("v1", options =>
     {
@@ -196,3 +199,4 @@ void AddHealthChecks(IHealthChecksBuilder builder, WebApplicationBuilder app)
 {
     builder.AddDbContextCheck<MooBankContext>("MooBankDbContext", tags: ["health", "db"]);
 }
+

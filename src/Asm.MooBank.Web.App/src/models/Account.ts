@@ -7,21 +7,22 @@ export interface TransactionAccount extends Instrument {
     lastTransaction?: string;
     calculatedBalance: number;
 }
-export interface InstitutionAccount extends TransactionAccount, TopLevelAccount {
+export interface LogicalAccount extends TransactionAccount, TopLevelAccount {
     balanceDate: Date;
     accountType: AccountType;
-    importerTypeId?: number;
     isPrimary?: boolean;
     includeInBudget: boolean;
-    institutionId: number;
+    institutionAccounts: InstitutionAccount[],
 }
 
-export interface CreateInstitutionAccount extends InstitutionAccount {
+export interface CreateLogicalAccount extends LogicalAccount {
     balance: number;
     openingDate: string;
+    institutionId: number;
+    importerTypeId?: number;
 }
 
-export const emptyAccount : InstitutionAccount = {
+export const emptyAccount: LogicalAccount = {
     id: "",
     name: "",
     currentBalance: 0,
@@ -34,10 +35,27 @@ export const emptyAccount : InstitutionAccount = {
     currency: "",
     shareWithFamily: false,
     includeInBudget: false,
-    institutionId: 0,
+    institutionAccounts: [],
     virtualInstruments: [],
 }
 
-export interface ImportAccount {
-    importerTypeId: number;
+
+export interface BaseInstitutionAccount {
+    institutionId: number;
+    importerTypeId?: number;
+    name: string;
+}
+
+export interface InstitutionAccount extends BaseInstitutionAccount {
+    id: string;
+    openedDate: string;
+    closedDate?: string;
+}
+
+export interface CreateInstitutionAccount extends BaseInstitutionAccount {
+    openedDate: string;
+ }
+
+export interface UpdateInstitutionAccount extends BaseInstitutionAccount { 
+
 }

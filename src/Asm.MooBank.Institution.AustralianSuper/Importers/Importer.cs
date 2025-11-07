@@ -21,12 +21,12 @@ internal partial class Importer(ITransactionRawRepository transactionRawReposito
     private const int MemberAdditionalColumn = 8;
     private const int TotalAmountColumn = 23;
 
-    public async Task<MooBank.Models.TransactionImportResult> Import(Guid accountId, Stream contents, CancellationToken cancellationToken = default)
+    public async Task<MooBank.Models.TransactionImportResult> Import(Guid instrumentId, Guid? institutionAccountId, Stream contents, CancellationToken cancellationToken = default)
     {
         using var reader = new StreamReader(contents);
         var rawTransactionEntities = new List<TransactionRaw>();
 
-        var checkTransactions = (await transactionRawRepository.GetAll(accountId, cancellationToken)).Select(t => new
+        var checkTransactions = (await transactionRawRepository.GetAll(instrumentId, cancellationToken)).Select(t => new
         {
             t.Description,
             t.Date,
@@ -124,13 +124,14 @@ internal partial class Importer(ITransactionRawRepository transactionRawReposito
             }
 
             Transaction transaction = Transaction.Create(
-                accountId,
+                instrumentId,
                 null, // No account holder ID in this context
                 totalAmount,
                 $"{columns[TitleColumn].Trim()} {columns[DescriptionColumn]?.Trim()}".Trim(),
                 transactionTime.ToStartOfDay(),
                 null, // No sub-type in this context
-                "AustralianSuper Import"
+                "AustralianSuper Import",
+                institutionAccountId
             );
 
             transaction.Extra = isContribution ? new TransactionExtra
@@ -143,7 +144,7 @@ internal partial class Importer(ITransactionRawRepository transactionRawReposito
 
             var transactionRaw = new TransactionRaw
             {
-                AccountId = accountId,
+                AccountId = instrumentId,
                 Category = columns[CategoryColumn]?.Trim(),
                 Date = transactionTime,
                 Description = columns[DescriptionColumn],
@@ -167,12 +168,12 @@ internal partial class Importer(ITransactionRawRepository transactionRawReposito
         return new MooBank.Models.TransactionImportResult(rawTransactionEntities.Select(r => r.Transaction));
     }
 
-    public async Task Reprocess(Guid accountId, CancellationToken cancellationToken = default)
+    public async Task Reprocess(Guid instrumentId, CancellationToken cancellationToken = default)
     {
-        var transactions = await transactionRepository.GetTransactions(accountId, cancellationToken);
+        var transactions = await transactionRepository.GetTransactions(instrumentId, cancellationToken);
         var transactionIds = transactions.Select(t => t.Id);
 
-        var rawTransactions = await transactionRawRepository.GetAll(accountId, cancellationToken);
+        var rawTransactions = await transactionRawRepository.GetAll(instrumentId, cancellationToken);
         var processed = rawTransactions.Where(t => t.TransactionId != null && transactionIds.Contains(t.TransactionId.Value));
         var unprocessed = rawTransactions.Except(processed, new Asm.Domain.IIdentifiableEqualityComparer<TransactionRaw, Guid>());
 

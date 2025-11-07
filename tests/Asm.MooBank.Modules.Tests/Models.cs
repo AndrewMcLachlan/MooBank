@@ -1,8 +1,8 @@
 ﻿using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Accounts.Models.Account;
-using Bogus;
 
 namespace Asm.MooBank.Modules.Tests;
+
 internal class Models
 {
     public static readonly Guid InstitutionId = new("841abac9-db4e-4a7a-81d1-561b04c2f5c4");
@@ -34,7 +34,8 @@ internal class Models
             new()
             {
                 InstitutionId = 1,
-                ImporterTypeId =1 ,
+                ImporterTypeId = 1,
+                Name = "Test"
             }
         ],
     };

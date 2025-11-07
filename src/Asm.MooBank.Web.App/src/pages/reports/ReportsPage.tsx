@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from "react";
 
-import { InstitutionAccount } from "models";
+import { LogicalAccount } from "models";
 import { useLocation } from "react-router";
 import { NavItem } from "@andrewmclachlan/moo-ds";
 import { AccountPage, useAccount } from "components";
@@ -15,7 +15,7 @@ export const ReportsPage: React.FC<PropsWithChildren<ReportsHeaderProps>> = ({ c
     if (!account) return  null;
 
     return (
-        <AccountPage navItems={getMenuItems(account as InstitutionAccount)} breadcrumbs={[{ text: "Reports", route: `/accounts/${account.id}/reports` }, { text: title, route: location.pathname }]} title={title}>
+        <AccountPage navItems={getMenuItems(account as LogicalAccount)} breadcrumbs={[{ text: "Reports", route: `/accounts/${account.id}/reports` }, { text: title, route: location.pathname }]} title={title}>
             {children}
         </AccountPage>
     )
@@ -23,7 +23,7 @@ export const ReportsPage: React.FC<PropsWithChildren<ReportsHeaderProps>> = ({ c
 
 ReportsPage.displayName = "ReportsHeader";
 
-const getMenuItems = (account: InstitutionAccount) => {
+const getMenuItems = (account: LogicalAccount) => {
 
     if (!account) return [];
 

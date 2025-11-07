@@ -1,4 +1,4 @@
-import { InstitutionAccount } from ".";
+import { LogicalAccount } from ".";
 
 export interface AccountList {
     groups: AccountListGroup[],
@@ -7,7 +7,7 @@ export interface AccountList {
 
 export interface AccountListGroup {
     name: string,
-    instruments: InstitutionAccount[],
+    instruments: LogicalAccount[],
     showTotal: boolean,
     total?: number
 }

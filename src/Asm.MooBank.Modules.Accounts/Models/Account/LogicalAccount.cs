@@ -33,7 +33,7 @@ public static class LogicalAccountExtensions
         Controller = account.Controller,
         ShareWithFamily = account.ShareWithFamily,
         IncludeInBudget = account.IncludeInBudget,
-        InstitutionAccounts = account.InstitutionAccounts.ToModel(),
+        InstitutionAccounts = account.InstitutionAccounts?.ToModel() ?? [],
         VirtualInstruments = account.VirtualInstruments != null && account.VirtualInstruments.Count != 0 ?
                              account.VirtualInstruments.OrderBy(v => v.Name).Select(v => v.ToModel(currencyConverter)).ToArray() : [],
         RemainingBalance = Remaining(account, currencyConverter).RemainingBalance,
