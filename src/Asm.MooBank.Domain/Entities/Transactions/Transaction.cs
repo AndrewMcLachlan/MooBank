@@ -55,7 +55,8 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
         string? description,
         DateTime transactionTime,
         TransactionSubType? transactionSubType,
-        string source)
+        string source,
+        Guid? institutionAccountId)
     {
         var transactionType = amount < 0 ? TransactionType.Debit : TransactionType.Credit;
 
@@ -68,7 +69,8 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
             TransactionTime = transactionTime,
             TransactionType = transactionType,
             TransactionSubType = transactionSubType,
-            Source = source
+            Source = source,
+            InstitutionAccountId = institutionAccountId,
         };
 
         transaction.EnsureMinimumSplit();
@@ -110,6 +112,8 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
     public required string Source { get; set; }
 
     public object? Extra { get; set; }
+
+    public Guid? InstitutionAccountId { get; set; }
     #endregion
 
     #region Navigation Properties

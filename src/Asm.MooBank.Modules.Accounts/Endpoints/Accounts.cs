@@ -18,17 +18,17 @@ internal class Accounts : EndpointGroupBase
 
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {
-        builder.MapQuery<GetAll, IEnumerable<InstitutionAccount>>("/")
+        builder.MapQuery<GetAll, IEnumerable<LogicalAccount>>("/")
             .WithNames("Get Accounts");
 
-        builder.MapQuery<Get, InstitutionAccount>("/{instrumentId}")
+        builder.MapQuery<Get, LogicalAccount>("/{instrumentId}")
             .WithNames("Get Account")
             .RequireAuthorization(Policies.GetInstrumentViewerPolicy());
 
-        builder.MapPostCreate<Create, InstitutionAccount>("/", "Get Account".ToMachine(), a => new { instrumentId = a.Id }, CommandBinding.Body)
+        builder.MapPostCreate<Create, LogicalAccount>("/", "Get Account".ToMachine(), a => new { instrumentId = a.Id }, CommandBinding.Body)
             .WithNames("Create Account");
 
-        builder.MapPatchCommand<Update, InstitutionAccount>("/{id}")
+        builder.MapPatchCommand<Update, LogicalAccount>("/{id}")
             .WithNames("Update Account")
             .RequireAuthorization(Policies.GetInstrumentViewerPolicy("id"));
     }

@@ -32,7 +32,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({compact = false
 
     const numberOfPages = getNumberOfPages(totalTransactions, pageSize);
 
-    const rowClick = (transaction: Transaction) => () => {
+    const rowClick = (transaction: Transaction) => {
         setSelectedTransaction(transaction);
         setShowDetails(true);
     };
@@ -48,7 +48,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({compact = false
                 <TransactionTableHead compact={compact} pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={(_current, newPage) => dispatch(TransactionsSlice.actions.setCurrentPage(newPage))} />
                 <tbody>
                     {transactions?.map((t, index) =>
-                        <TransactionRow compact={compact} key={t.id} transaction={t} onClick={rowClick(t)} previousDate={index > 0 ? parseISO(transactions[index - 1].transactionTime) : undefined} />
+                        <TransactionRow compact={compact} key={t.id} transaction={t} onClick={rowClick} previousDate={index > 0 ? parseISO(transactions[index - 1].transactionTime) : undefined} />
                     )}
                     {!transactions && Array.from({ length: pageSize }, (_value, index) => index).map((i) => <tr key={i}><td colSpan={6}>&nbsp;</td></tr>)}
                 </tbody>

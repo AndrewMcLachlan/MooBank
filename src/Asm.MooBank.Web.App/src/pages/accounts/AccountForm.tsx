@@ -7,12 +7,12 @@ import { Form, SectionForm, FormComboBox } from "@andrewmclachlan/moo-ds";
 
 import { CurrencySelector, InstitutionSelector } from "components";
 import { GroupSelector } from "components/GroupSelector";
-import { AccountTypes, Controllers, CreateInstitutionAccount, InstitutionAccount } from "models";
+import { AccountTypes, Controllers, CreateLogicalAccount, LogicalAccount } from "models";
 import { useCreateAccount, useUpdateAccount, } from "services";
 import { ImportSettings } from "./ImportSettings";
 import { CurrencyInput } from "components/CurrencyInput";
 
-export const AccountForm: React.FC<{ account?: InstitutionAccount }> = ({ account = null }) => {
+export const AccountForm: React.FC<{ account?: LogicalAccount }> = ({ account = null }) => {
 
     const navigate = useNavigate();
 
@@ -21,7 +21,7 @@ export const AccountForm: React.FC<{ account?: InstitutionAccount }> = ({ accoun
 
     const isPending = createAccount.isPending || updateAccount.isPending;
 
-    const handleSubmit = (data: CreateInstitutionAccount) => {
+    const handleSubmit = (data: CreateLogicalAccount) => {
 
         if (data.institutionId === undefined) {
             window.alert("Please select an institution");
@@ -36,7 +36,7 @@ export const AccountForm: React.FC<{ account?: InstitutionAccount }> = ({ accoun
         }
     }
 
-    const form = useForm<CreateInstitutionAccount>({ defaultValues: account });
+    const form = useForm<CreateLogicalAccount>({ defaultValues: account });
 
     useEffect(() => {
         form.reset(account);
@@ -59,10 +59,6 @@ export const AccountForm: React.FC<{ account?: InstitutionAccount }> = ({ accoun
                 <Form.Label>Type</Form.Label>
                 <FormComboBox placeholder="Select an account type..." items={AccountTypes} labelField={i => i} valueField={i => i} />
             </Form.Group>
-            <Form.Group groupId="institutionId">
-                <Form.Label>Institution</Form.Label>
-                <InstitutionSelector accountType={accountType} /> {/* TODO: Required */}
-            </Form.Group>
             <Form.Group groupId="currency">
                 <Form.Label>Currency</Form.Label>
                 <CurrencySelector />
@@ -82,10 +78,6 @@ export const AccountForm: React.FC<{ account?: InstitutionAccount }> = ({ accoun
             <Form.Group groupId="controller">
                 <Form.Label>Controller</Form.Label>
                 <FormComboBox items={Controllers} labelField={i => i} valueField={i => i} />
-            </Form.Group>
-            <Form.Group groupId="importerTypeId" hidden={controller !== "Import"}>
-                <Form.Label>Importer Type</Form.Label>
-                <ImportSettings />
             </Form.Group>
             <Form.Group groupId="includeInBudget" className="form-check">
                 <Form.Check />

@@ -1,8 +1,8 @@
 ﻿using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Accounts.Models.Account;
-using Bogus;
 
 namespace Asm.MooBank.Modules.Tests;
+
 internal class Models
 {
     public static readonly Guid InstitutionId = new("841abac9-db4e-4a7a-81d1-561b04c2f5c4");
@@ -16,7 +16,7 @@ internal class Models
     public static readonly Guid InvalidAccountFamilyId = new("35462a0c-d902-41cb-bbee-de7acb943739");
 
 
-    public readonly InstitutionAccount Account = new()
+    public readonly LogicalAccount Account = new()
     {
         Controller = Controller.Manual,
         Currency = "AUD",
@@ -29,6 +29,15 @@ internal class Models
         InstrumentType = AccountType.Transaction.ToString(),
         BalanceDate = DateTime.UtcNow,
         Description = "Test Account Description",
+        InstitutionAccounts =
+        [
+            new()
+            {
+                InstitutionId = 1,
+                ImporterTypeId = 1,
+                Name = "Test"
+            }
+        ],
     };
 
     public static readonly User AccountHolder = new()

@@ -2,28 +2,35 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 
 import { useIdParams } from "@andrewmclachlan/moo-app";
-import { IconButton, SectionTable } from "@andrewmclachlan/moo-ds";
+import { DeleteIcon, EditColumn, Icon, IconButton, SectionTable } from "@andrewmclachlan/moo-ds";
 
 import { AccountPage, useAccount } from "components";
 import * as Models from "models";
 import { Controller } from "models";
-import { useReprocessTransactions, useVirtualAccounts } from "services";
+import { useImporterTypes, useInstitutionsByAccountType, useReprocessTransactions, useVirtualAccounts } from "services";
 import { AccountForm } from "./AccountForm";
+import { InstitutionAccountRow } from "./bank/InstitutionAccountRow";
+import { useState } from "react";
+import { InstitutionAccountEdit } from "./bank";
 
 export const ManageAccount = () => {
 
     const reprocessTransactions = useReprocessTransactions();
-
     const navigate = useNavigate();
-
     const id = useIdParams();
 
-    const account = useAccount();
+        const [showDetails, setShowDetails] = useState(false);
+        const [selectedInstitutionAccount, setSelectedInstitutionAccount] = useState<Models.InstitutionAccount>(undefined);
+
+    const account = useAccount() as Models.LogicalAccount;
     const { data: virtualAccounts } = useVirtualAccounts(account?.id ?? id);
-  
+
     const getActions = (accountController: Controller) => {
 
-        const actions = [<IconButton key="nva" onClick={() => navigate(`/accounts/${id}/manage/virtual/create`)} icon="plus">New Virtual Account</IconButton>];
+        const actions = [
+            <IconButton key="aba" onClick={() => navigate(`/accounts/${id}/manage/bank/create`)} icon="plus">Add Bank Account</IconButton>,
+            <IconButton key="ava" onClick={() => navigate(`/accounts/${id}/manage/virtual/create`)} icon="plus">Add Virtual Account</IconButton>,
+        ];
 
         if (accountController === "Import") {
             actions.push(<IconButton key="rpt" onClick={() => reprocessTransactions(id)} icon="arrows-rotate">Reprocess Transactions</IconButton>);
@@ -32,31 +39,54 @@ export const ManageAccount = () => {
         return actions;
     }
 
-    const form = useForm<Models.InstitutionAccount>({ defaultValues: account });
+    const institutionAccountClick = (institutionAccount: Models.InstitutionAccount) => {
+        setSelectedInstitutionAccount(institutionAccount);
+        setShowDetails(true);
+    }
+
+    const form = useForm<Models.LogicalAccount>({ defaultValues: account });
 
     return (
         <AccountPage title="Manage" breadcrumbs={[{ text: "Manage", route: `/accounts/${account?.id}/manage` }]} actions={getActions(account?.controller)}>
-            <AccountForm account={account as Models.InstitutionAccount} />
+            <AccountForm account={account as Models.LogicalAccount} />
+            <SectionTable header="Bank Accounts" striped hover>
+                <thead>
+                    <tr>
+                        <th>Bank</th>
+                        <th>Name</th>
+                        <th>Opened Date</th>
+                        <th>Closed Date</th>
+                        {account?.controller === "Import" && <th>Importer Type</th>}
+                        <th className="actions"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <InstitutionAccountEdit institutionAccount={selectedInstitutionAccount} show={showDetails} onHide={() => setShowDetails(false)} onSave={() => setShowDetails(false)} />
+                    {account?.institutionAccounts.map(a => (
+                        <InstitutionAccountRow key={a.id} institutionAccount={a} onClick={institutionAccountClick} />
+                    ))}
+                </tbody>
+            </SectionTable>
             <SectionTable header="Virtual Accounts" striped hover>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Description</th>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {virtualAccounts && virtualAccounts.map(a => (
+                        <tr key={a.id} className="clickable" onClick={() => navigate(`/accounts/${account?.id}/manage/virtual/${a.id}`)}>
+                            <td>{a.name}</td>
+                            <td>{a.description}</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {virtualAccounts && virtualAccounts.map(a => (
-                            <tr key={a.id} className="clickable" onClick={() => navigate(`/accounts/${account?.id}/manage/virtual/${a.id}`)}>
-                                <td>{a.name}</td>
-                                <td>{a.description}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </SectionTable>
+                    ))}
+                </tbody>
+            </SectionTable>
         </AccountPage>
     );
 }
 
 export interface ManageAccountProps {
-    account: Models.InstitutionAccount;
+    account: Models.LogicalAccount;
 }

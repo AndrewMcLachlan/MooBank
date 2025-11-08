@@ -3,18 +3,20 @@ using Asm.MooBank.Importers;
 
 namespace Asm.MooBank.Infrastructure.Importers;
 
-internal class ImporterFactory(IQueryable<InstitutionAccount> accounts, IServiceProvider services) : IImporterFactory
+internal class ImporterFactory(IQueryable<LogicalAccount> logicalAccounts, IServiceProvider services) : IImporterFactory
 {
-    public async Task<IImporter?> Create(Guid accountId, CancellationToken cancellationToken = default)
+    public async Task<IImporter?> Create(Guid instrumentId, Guid accountId, CancellationToken cancellationToken = default)
     {
-        var account = await accounts.Where(a => a.Id == accountId && a.ImportAccount != null).Include(a => a.ImportAccount).ThenInclude(a => a!.ImporterType).SingleOrDefaultAsync(cancellationToken);
+        var logicalAccount = await logicalAccounts.Where(a => a.Id == instrumentId).Include(a => a.InstitutionAccounts).ThenInclude(a => a!.ImporterType).SingleOrDefaultAsync(cancellationToken);
 
-        if (account is null)
+        if (logicalAccount is null)
         {
             return null;
         }
 
-        var typeName = account.ImportAccount!.ImporterType.Type;
+        var institutionAccount = logicalAccount.InstitutionAccounts.FirstOrDefault(a => a.Id == accountId);
+
+        var typeName = institutionAccount?.ImporterType.Type;
 
         if (typeName == null)
         {

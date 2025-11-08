@@ -29,7 +29,7 @@ export const allTime: Period = { startDate: startOfYear(addYears(new Date(), -50
 
 export const formatISODate = (date: Date) => format(date, "yyyy-MM-dd");
 
-export const formatDate = (date: string) => format(parseISO(date), "dd/MM/yyyy");
+export const formatDate = (date?: string) => date ? format(parseISO(date), "dd/MM/yyyy") : "-";
 
 export const isMonthSelected = (months: number, month: number) => (months & (1 << month)) !== 0;
 

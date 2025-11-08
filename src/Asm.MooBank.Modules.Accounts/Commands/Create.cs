@@ -2,54 +2,53 @@
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Accounts.Models.Account;
 using Asm.MooBank.Services;
-using IInstitutionAccountRepository = Asm.MooBank.Domain.Entities.Account.IInstitutionAccountRepository;
+using ILogicalAccountRepository = Asm.MooBank.Domain.Entities.Account.ILogicalAccountRepository;
 
 namespace Asm.MooBank.Modules.Accounts.Commands;
 
 [DisplayName("CreateAccount")]
-public record Create() : ICommand<InstitutionAccount>
+public record Create() : ICommand<LogicalAccount>
 {
-    public required string Name { get; set; }
+    public required string Name { get; init; }
 
-    public string? Description { get; set; }
+    public string? Description { get; init; }
 
-    public int InstitutionId { get; set; }
+    public int? ImporterTypeId { get; init; }
+    
+    public required int InstitutionId { get; init; }
 
-    public required string Currency { get; set; }
+    public required string Currency { get; init; }
 
-    public required decimal Balance { get; set; }
+    public required decimal Balance { get; init; }
 
-    public DateTime? OpeningDate { get; set; }
+    public DateTime? OpeningDate { get; init; }
 
-    public Guid? GroupId { get; set; }
+    public Guid? GroupId { get; init; }
 
-    public AccountType AccountType { get; set; }
+    public AccountType AccountType { get; init; }
 
-    public Controller Controller { get; set; }
-
-    public int? ImporterTypeId { get; set; }
+    public Controller Controller { get; init; }
 
     public bool IncludeInBudget { get; init; }
 
-    public bool ShareWithFamily { get; set; }
+    public bool ShareWithFamily { get; init; }
 }
 
-internal class CreateHandler(IInstitutionAccountRepository institutionAccountRepository, IUnitOfWork unitOfWork, User user, ICurrencyConverter currencyConverter, ISecurity security) : ICommandHandler<Create, InstitutionAccount>
+internal class CreateHandler(ILogicalAccountRepository institutionAccountRepository, IUnitOfWork unitOfWork, User user, ICurrencyConverter currencyConverter, ISecurity security) : ICommandHandler<Create, LogicalAccount>
 {
-    private readonly IInstitutionAccountRepository _accountRepository = institutionAccountRepository;
+    private readonly ILogicalAccountRepository _accountRepository = institutionAccountRepository;
 
-    public async ValueTask<InstitutionAccount> Handle(Create command, CancellationToken cancellationToken)
+    public async ValueTask<LogicalAccount> Handle(Create command, CancellationToken cancellationToken)
     {
         if (command.GroupId != null)
         {
             security.AssertGroupPermission(command.GroupId.Value);
         }
 
-        Domain.Entities.Account.InstitutionAccount entity = new()
+        Domain.Entities.Account.LogicalAccount entity = new()
         {
             Name = command.Name,
             Description = command.Description,
-            InstitutionId = command.InstitutionId,
             Currency = command.Currency,
             AccountType = command.AccountType,
             Controller = command.Controller,
@@ -57,19 +56,15 @@ internal class CreateHandler(IInstitutionAccountRepository institutionAccountRep
             ShareWithFamily = command.ShareWithFamily,
         };
 
+        entity.AddInstitutionAccount(new()
+        {
+            InstitutionId = command.InstitutionId,
+            ImporterTypeId = command.ImporterTypeId,
+        });
         entity.SetAccountHolder(user.Id);
         entity.SetGroup(command.GroupId, user.Id);
 
         entity = _accountRepository.Add(entity, command.Balance, command.OpeningDate ?? DateTime.Now);
-
-        if (command.ImporterTypeId != null)
-        {
-            entity.ImportAccount = new Domain.Entities.Account.ImportAccount
-            {
-                ImporterTypeId = command.ImporterTypeId.Value,
-            };
-        }
-
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

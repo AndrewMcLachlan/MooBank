@@ -4,7 +4,7 @@ import { Page, PageProps } from "@andrewmclachlan/moo-app";
 import { NavItem, NavItemDivider } from "@andrewmclachlan/moo-ds";
 import { Import, Reports, Rules, Sliders, Transaction } from "@andrewmclachlan/mooicons";
 
-import { InstitutionAccount, VirtualAccount, isVirtualAccount } from "models";
+import { LogicalAccount, VirtualAccount, isVirtualAccount } from "models";
 import { useAccount } from "./AccountProvider";
 
 export const AccountPage: React.FC<PropsWithChildren<AccountPageProps>> = ({ children, breadcrumbs = [], ...props }) => {
@@ -20,7 +20,7 @@ export const AccountPage: React.FC<PropsWithChildren<AccountPageProps>> = ({ chi
     )
 }
 
-const getMenuItems = (account: InstitutionAccount | VirtualAccount, navItems: (ReactNode | NavItem)[]) => {
+const getMenuItems = (account: LogicalAccount | VirtualAccount, navItems: (ReactNode | NavItem)[]) => {
 
     if (!account) return [];
 
@@ -46,7 +46,7 @@ const getMenuItems = (account: InstitutionAccount | VirtualAccount, navItems: (R
     return items.concat(navItems);
 }
 
-const getBreadcrumbs = (account: InstitutionAccount | VirtualAccount): NavItem[] => {
+const getBreadcrumbs = (account: LogicalAccount | VirtualAccount): NavItem[] => {
 
     const isVirtual = isVirtualAccount(account);
     const route = isVirtual ? `/accounts/${(account as VirtualAccount).parentId}/virtual/${account.id}` : `/accounts/${account.id}`;

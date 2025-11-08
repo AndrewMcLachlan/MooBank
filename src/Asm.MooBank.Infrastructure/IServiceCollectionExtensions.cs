@@ -71,7 +71,7 @@ public static class IServiceCollectionExtensions
     });*/
 
     public static IServiceCollection AddRepositories(this IServiceCollection services) =>
-        services.AddScoped<IInstitutionAccountRepository, InstitutionAccountRepository>()
+        services.AddScoped<ILogicalAccountRepository, LogicalAccountRepository>()
                 .AddScoped<IInstrumentRepository, InstrumentRepository>()
                 .AddScoped<IGroupRepository, GroupRepository>()
                 .AddScoped<IUserRepository, UserRepository>()

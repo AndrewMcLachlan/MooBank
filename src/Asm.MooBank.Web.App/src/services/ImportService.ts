@@ -7,14 +7,14 @@ export const useImportTransactions = () => {
 
     const client = useQueryClient();
 
-    const { mutateAsync, ...rest } = useApiPostFile<{ instrumentId: string, file: File }>((variables) => `api/instruments/${variables.instrumentId}/import`, {
+    const { mutateAsync, ...rest } = useApiPostFile<{ instrumentId: string, institutionAccountId: string, file: File }>((variables) => `api/instruments/${variables.instrumentId}/accounts/${variables.institutionAccountId}/import`, {
         onSuccess(data, variables, context) {
             client.invalidateQueries({ queryKey: [accountsKey, variables.instrumentId] });
         },
     });
 
-    const importTransactions = (instrumentId: string, file: File, options: MutationOptions<null, Error, { instrumentId: string, file: File }>) => {
-        return toast.promise(mutateAsync({ instrumentId, file }, options), { pending: "Importing transactions", success: "Transactions imported", error: "Failed to import transactions" });
+    const importTransactions = (instrumentId: string, institutionAccountId: string, file: File, options: MutationOptions<null, Error, { instrumentId: string, institutionAccountId: string, file: File }>) => {
+        return toast.promise(mutateAsync({ instrumentId, institutionAccountId, file }, options), { pending: "Importing transactions", success: "Transactions imported", error: "Failed to import transactions" });
     }
 
     return importTransactions;

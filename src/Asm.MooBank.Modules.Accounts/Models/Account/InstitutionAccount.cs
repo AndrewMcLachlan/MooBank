@@ -1,85 +1,42 @@
-﻿using Asm.MooBank.Models;
-using Asm.MooBank.Services;
+﻿namespace Asm.MooBank.Modules.Accounts.Models.Account;
 
-namespace Asm.MooBank.Modules.Accounts.Models.Account;
-
-public partial record InstitutionAccount : TransactionInstrument
+public partial record InstitutionAccount
 {
-    public AccountType AccountType { get; set; }
+    public Guid Id { get; init; }
 
-    public int? ImporterTypeId { get; set; }
+    public int? ImporterTypeId { get; init; }
 
-    public bool IsPrimary { get; set; }
+    public int InstitutionId { get; init; }
 
-    public bool ShareWithFamily { get; set; }
+    public required string Name { get; init; }
 
-    public int InstitutionId { get; set; }
+    public DateOnly OpenedDate { get; set; }
 
-    public bool IncludeInBudget { get; init; }
+    public DateOnly? ClosedDate { get; set; }
 }
 
 public static class InstitutionAccountExtensions
 {
-    public static InstitutionAccount ToModel(this Domain.Entities.Account.InstitutionAccount account, ICurrencyConverter currencyConverter) => new()
+    public static InstitutionAccount ToModel(this Domain.Entities.Account.InstitutionAccount account) => new()
     {
         Id = account.Id,
+        ImporterTypeId = account.ImporterTypeId,
         Name = account.Name,
-        Description = account.Description,
-        AccountType = account.AccountType,
-        Currency = account.Currency,
-        CurrentBalance = account.Balance,
-        CurrentBalanceLocalCurrency = currencyConverter.Convert(account.Balance, account.Currency),
-        BalanceDate = ((Domain.Entities.Instrument.Instrument)account).LastUpdated,
-        LastTransaction = account.LastTransaction,
-        InstrumentType = account.AccountType.ToString(),
-        Controller = account.Controller,
-        ImporterTypeId = account.ImportAccount?.ImporterTypeId,
-        ShareWithFamily = account.ShareWithFamily,
-        IncludeInBudget = account.IncludeInBudget,
         InstitutionId = account.InstitutionId,
-        VirtualInstruments = account.VirtualInstruments != null && account.VirtualInstruments.Count != 0 ?
-                             account.VirtualInstruments.OrderBy(v => v.Name).Select(v => v.ToModel(currencyConverter)).ToArray() : [],
-        RemainingBalance = Remaining(account, currencyConverter).RemainingBalance,
-        RemainingBalanceLocalCurrency = Remaining(account, currencyConverter).RemainingBalanceLocalCurrency,
+        OpenedDate = account.OpenedDate,
+        ClosedDate = account.ClosedDate,
     };
 
     public static Domain.Entities.Account.InstitutionAccount ToEntity(this InstitutionAccount account) => new(account.Id == Guid.Empty ? Guid.NewGuid() : account.Id)
     {
-        Name = account.Name,
-        Description = account.Description,
-        LastUpdated = account.BalanceDate,
-        AccountType = account.AccountType,
-        Controller = account.Controller,
-        ShareWithFamily = account.ShareWithFamily,
-        IncludeInBudget = account.IncludeInBudget,
         InstitutionId = account.InstitutionId,
-        ImportAccount = account.ImporterTypeId == null ? null : new Domain.Entities.Account.ImportAccount { ImporterTypeId = account.ImporterTypeId.Value, AccountId = account.Id },
+        Name = account.Name,
+        ImporterTypeId = account.ImporterTypeId,
+        OpenedDate = account.OpenedDate,
+        ClosedDate = account.ClosedDate,
     };
 
-    public static InstitutionAccount ToModelWithGroup(this Domain.Entities.Account.InstitutionAccount entity, User user, ICurrencyConverter currencyConverter)
-    {
-        var result = entity.ToModel(currencyConverter);
-        result.GroupId = entity.GetGroup(user.Id)?.Id;
+    public static IEnumerable<InstitutionAccount> ToModel(this IReadOnlyCollection<Domain.Entities.Account.InstitutionAccount> entities) => entities.Select(ToModel);
 
-        return result;
-    }
-
-
-    public static async Task<IEnumerable<InstitutionAccount>> ToModelAsync(this IQueryable<Domain.Entities.Account.InstitutionAccount> entities, ICurrencyConverter currencyConverter, CancellationToken cancellationToken) =>
-        (await entities.ToListAsync(cancellationToken)).Select(t => t.ToModel(currencyConverter));
-
-
-    private static (decimal? RemainingBalance, decimal? RemainingBalanceLocalCurrency) Remaining(Domain.Entities.Account.InstitutionAccount account, ICurrencyConverter currencyConverter)
-    {
-        if (account.VirtualInstruments == null || account.VirtualInstruments.Count == 0)
-        {
-            return (null, null);
-        }
-
-        var remainingBalance = account.Balance - account.VirtualInstruments.Sum(v => v.Balance);
-
-        var remainingBalanceLocalCurrency = currencyConverter.Convert(remainingBalance, account.Currency);
-
-        return (remainingBalance, remainingBalanceLocalCurrency);
-    }
+    public static IReadOnlyCollection<Domain.Entities.Account.InstitutionAccount> ToEntity(this IEnumerable<InstitutionAccount> models) => [.. models.Select(ToEntity)];
 }

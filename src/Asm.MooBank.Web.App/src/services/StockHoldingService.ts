@@ -1,5 +1,5 @@
 import { UseQueryResult, useQueryClient, } from "@tanstack/react-query";
-import { InstitutionAccount, InstrumentId, NewStockHolding, StockHolding } from "../models";
+import { LogicalAccount, InstrumentId, NewStockHolding, StockHolding } from "../models";
 import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/moo-app";
 import { accountsKey } from "./AccountService";
 import { StockValueReport } from "models/stock-holding/StockValueReport";
@@ -16,7 +16,7 @@ export const useCreateStockHolding = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutateAsync, ...rest } = useApiPost<InstitutionAccount, null, NewStockHolding>(() => `api/stocks`, {
+    const { mutateAsync, ...rest } = useApiPost<LogicalAccount, null, NewStockHolding>(() => `api/stocks`, {
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: [accountsKey]});
         }

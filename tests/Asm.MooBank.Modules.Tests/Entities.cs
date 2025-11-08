@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore;
 namespace Asm.MooBank.Modules.Tests;
 public class Entities
 {
-    public readonly Faker<InstitutionAccount> InstitutionAccountsFaker = new();
+    public readonly Faker<LogicalAccount> InstitutionAccountsFaker = new();
 
-    public readonly IQueryable<InstitutionAccount> InstitutionAccounts;
+    public readonly IQueryable<LogicalAccount> InstitutionAccounts;
 
-    public readonly InstitutionAccount Account = new(Models.AccountId)
+    public readonly LogicalAccount Account = new(Models.AccountId, [])
     {
         Controller = MooBank.Models.Controller.Manual,
         Currency = "AUD",
@@ -56,7 +56,7 @@ public class Entities
     public Entities()
     {
         InstitutionAccountsFaker
-            .CustomInstantiator(f => new InstitutionAccount(f.Random.Guid()) { Name = ""})
+            .CustomInstantiator(f => new LogicalAccount(f.Random.Guid(), []) { Name = ""})
             .RuleFor(a => a.Owners, f => f.IndexFaker < 5 ? [new() { UserId = Models.UserId, User = User }] : [new() { UserId = FamilyUser.Id, User = FamilyUser }])
             .RuleFor(a => a.ShareWithFamily, f => f.IndexFaker == 5)
             ;

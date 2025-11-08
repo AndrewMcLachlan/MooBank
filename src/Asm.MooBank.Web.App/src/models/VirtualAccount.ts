@@ -1,5 +1,5 @@
 
-import { InstitutionAccount, TransactionAccount } from ".";
+import { LogicalAccount, TransactionAccount } from ".";
 import { RecurringTransaction } from "./RecurringTransaction";
 
 export interface CreateVirtualInstrument {
@@ -13,5 +13,5 @@ export interface VirtualAccount extends TransactionAccount {
     recurringTransactions: RecurringTransaction[];
 }
 
-export const isVirtualAccount = (account: InstitutionAccount | VirtualAccount): boolean =>
+export const isVirtualAccount = (account: LogicalAccount | VirtualAccount): boolean =>
     !!(account as VirtualAccount).parentId;

@@ -1,3 +1,4 @@
+using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Importers;
 using Asm.MooBank.Institution.Macquarie.Domain;
@@ -22,12 +23,12 @@ internal partial class MacquarieImporter(IQueryable<TransactionRaw> rawTransacti
     private const int BalanceColumn = 9;
     private const int OriginalDescriptionColumn = 10;
 
-    public async Task<MooBank.Models.TransactionImportResult> Import(Guid accountId, Stream contents, CancellationToken cancellationToken = default)
+    public async Task<MooBank.Models.TransactionImportResult> Import(Guid instrumentId, Guid? institutionAccountId, Stream contents, CancellationToken cancellationToken = default)
     {
         using var reader = new StreamReader(contents);
         var rawTransactionEntities = new List<TransactionRaw>();
 
-        var checkTransactions = await rawTransactions.Where(t => t.AccountId == accountId).Select(t => new
+        var checkTransactions = await rawTransactions.Where(t => t.AccountId == instrumentId).Select(t => new
         {
             t.Details,
             t.Date,
@@ -114,18 +115,19 @@ internal partial class MacquarieImporter(IQueryable<TransactionRaw> rawTransacti
             }
 
             Transaction transaction = Transaction.Create(
-                accountId,
+                instrumentId,
                 null, // No card holder info available yet
                 transactionType == TransactionType.Credit ? credit : debit,
                 columns[DetailsColumn],
                 transactionTime.ToStartOfDay(),
                 null, // No sub-type yet
-                "Macquarie Import"
+                "Macquarie Import",
+                institutionAccountId
            );
 
             var transactionRaw = new TransactionRaw
             {
-                AccountId = accountId,
+                AccountId = instrumentId,
                 Balance = balance,
                 Credit = credit,
                 Date = transactionTime,

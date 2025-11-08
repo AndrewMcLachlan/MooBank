@@ -7,7 +7,7 @@ namespace Asm.MooBank.Modules.Tests.Account.Commands;
 [Binding]
 internal class UpdateStepDefinitions(ScenarioContext context) : StepDefinitionBase
 {
-    private Accounts.Models.Account.InstitutionAccount _result;
+    private Accounts.Models.Account.LogicalAccount _result;
 
     [Given(@"I have a request to update an institution account")]
     public void GivenIHaveARequestToUpdateAnInstitutionAccount()
@@ -18,10 +18,10 @@ internal class UpdateStepDefinitions(ScenarioContext context) : StepDefinitionBa
     [When(@"I call UpdateHandler\.Handle")]
     public async Task WhenICallUpdateHandler_Handle()
     {
-        Mock<IInstitutionAccountRepository> institutionAccountRepositoryMock = new();
+        Mock<ILogicalAccountRepository> institutionAccountRepositoryMock = new();
 
         institutionAccountRepositoryMock.Setup(i => i.Get(Models.AccountId, It.IsAny<AccountDetailsSpecification>(), It.IsAny<CancellationToken>())).ReturnsAsync(
-            new Domain.Entities.Account.InstitutionAccount(Models.AccountId)
+            new Domain.Entities.Account.LogicalAccount(Models.AccountId, [])
             {
                 Name = Models.Account.Name,
                 //AccountController = Models.Account.AccountController,
@@ -31,10 +31,7 @@ internal class UpdateStepDefinitions(ScenarioContext context) : StepDefinitionBa
                 Balance = Models.Account.CurrentBalance,
                 Currency = Models.Account.Currency,
                 Description = Models.Account.Description,
-                //ImportAccount = Models.Account.ImportAccount,
                 IncludeInBudget = Models.Account.IncludeInBudget,
-                //Institution = Models.Account.Institution,
-                InstitutionId = Models.Account.InstitutionId,
                 LastTransaction = Models.Account.LastTransaction,
                 //LastUpdated = Models.Account.LastUpdated,
                 //Rules = Models.Account.Rules,
@@ -64,7 +61,6 @@ internal class UpdateStepDefinitions(ScenarioContext context) : StepDefinitionBa
         Assert.Equal(Models.Account.LastTransaction, _result.LastTransaction);
         Assert.Equal(Models.Account.InstrumentType, _result.InstrumentType);
         Assert.Equal(Models.Account.Controller, _result.Controller);
-        Assert.Equal(Models.Account.ImporterTypeId, _result.ImporterTypeId);
         Assert.Equal(Models.Account.ShareWithFamily, _result.ShareWithFamily);
         Assert.Equal(Models.Account.IncludeInBudget, _result.IncludeInBudget);
     }

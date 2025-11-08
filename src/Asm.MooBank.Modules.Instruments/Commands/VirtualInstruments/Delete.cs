@@ -13,7 +13,7 @@ internal class DeleteHandler(IInstrumentRepository accountRepository, IUnitOfWor
     {
         var account = await _accountRepository.Get(command.InstrumentId, cancellationToken);
 
-        if (account is not Domain.Entities.Account.InstitutionAccount institutionAccount)
+        if (account is not Domain.Entities.Account.LogicalAccount institutionAccount)
         {
             throw new InvalidOperationException("Cannot delete virtual account on non-institution account.");
         }

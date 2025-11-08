@@ -5,7 +5,7 @@ namespace Asm.MooBank.Modules.Instruments.Models.Instruments;
 
 public static class InstitutionAccountExtensions
 {
-    public static InstrumentSummary ToModel(this Domain.Entities.Account.InstitutionAccount account, ICurrencyConverter currencyConverter) => new()
+    public static InstrumentSummary ToModel(this Domain.Entities.Account.LogicalAccount account, ICurrencyConverter currencyConverter) => new()
     {
         Id = account.Id,
         Name = account.Name,
@@ -22,12 +22,12 @@ public static class InstitutionAccountExtensions
         RemainingBalanceLocalCurrency = Remaining(account, currencyConverter).RemainingBalanceLocalCurrency,
     };
 
-    public static IEnumerable<InstrumentSummary> ToModel(this IEnumerable<Domain.Entities.Account.InstitutionAccount> entities, ICurrencyConverter currencyConverter)
+    public static IEnumerable<InstrumentSummary> ToModel(this IEnumerable<Domain.Entities.Account.LogicalAccount> entities, ICurrencyConverter currencyConverter)
     {
         return entities.Select(t => t.ToModel(currencyConverter));
     }
 
-    private static (decimal? RemainingBalance, decimal? RemainingBalanceLocalCurrency) Remaining(Domain.Entities.Account.InstitutionAccount account, ICurrencyConverter currencyConverter)
+    private static (decimal? RemainingBalance, decimal? RemainingBalanceLocalCurrency) Remaining(Domain.Entities.Account.LogicalAccount account, ICurrencyConverter currencyConverter)
     {
         if (account.VirtualInstruments == null || account.VirtualInstruments.Count == 0)
         {

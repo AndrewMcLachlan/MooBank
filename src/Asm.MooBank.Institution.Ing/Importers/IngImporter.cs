@@ -20,14 +20,14 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
 
     private readonly Dictionary<short, User> _accountHolders = [];
 
-    public async Task<MooBank.Models.TransactionImportResult> Import(Guid accountId, Stream contents, CancellationToken cancellationToken = default)
+    public async Task<MooBank.Models.TransactionImportResult> Import(Guid instrumentId, Guid? institutionAccountId, Stream contents, CancellationToken cancellationToken = default)
     {
 
         using var reader = new StreamReader(contents);
         var rawTransactionEntities = new List<TransactionRaw>();
 
         // TODO: Get the first and last transaction dates from the import first, to reduce the amount of data we need to check against existing transactions.
-        var checkTransactions = await rawTransactions.Where(t => t.AccountId == accountId).Select(t => new
+        var checkTransactions = await rawTransactions.Where(t => t.AccountId == instrumentId).Select(t => new
         {
             t.Description,
             t.Date,
@@ -130,13 +130,14 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
             var parsed = TransactionParser.ParseDescription(columns[DescriptionColumn]);
 
             Transaction transaction = Transaction.Create(
-                accountId,
+                instrumentId,
                 parsed.Last4Digits != null ? (await accountHolderRepository.GetByCard(parsed.Last4Digits.Value, cancellationToken))?.Id : null,
                 transactionType == TransactionType.Credit ? credit : debit,
                 parsed.Description,
                 transactionTime.ToStartOfDay(),
                 parsed.TransactionSubType,
-                "ING Import"
+                "ING Import",
+                institutionAccountId
             );
 
             transaction.Location = parsed.Location;
@@ -151,7 +152,7 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
 
             var transactionRaw = new TransactionRaw
             {
-                AccountId = accountId,
+                AccountId = instrumentId,
                 Balance = balance,
                 Credit = credit,
                 Date = transactionTime,
@@ -169,12 +170,12 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
         return new MooBank.Models.TransactionImportResult(rawTransactionEntities.Select(r => r.Transaction), endBalance!.Value);
     }
 
-    public async Task Reprocess(Guid accountId, CancellationToken cancellationToken = default)
+    public async Task Reprocess(Guid instrumentId, CancellationToken cancellationToken = default)
     {
-        var transactions = await transactionRepository.GetTransactions(accountId, cancellationToken);
+        var transactions = await transactionRepository.GetTransactions(instrumentId, cancellationToken);
         var transactionIds = transactions.Select(t => t.Id);
 
-        var rawTransactions = await transactionRawRepository.GetAll(accountId, cancellationToken);
+        var rawTransactions = await transactionRawRepository.GetAll(instrumentId, cancellationToken);
         var processed = rawTransactions.Where(t => t.TransactionId != null && transactionIds.Contains(t.TransactionId.Value));
         var unprocessed = rawTransactions.Except(processed, new Asm.Domain.IIdentifiableEqualityComparer<TransactionRaw, Guid>());
 

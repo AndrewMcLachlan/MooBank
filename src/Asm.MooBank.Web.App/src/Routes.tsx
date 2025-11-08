@@ -1,11 +1,11 @@
 import { RouteDefinition } from "@andrewmclachlan/moo-app";
-import App from "App";
+import Layout from "Layout";
 import * as Pages from "./pages";
 import { MonthlyBalances } from "pages/reports/MonthlyBalances";
 
 export const routes: RouteDefinition = {
     layout: {
-        path: "/", element: <App />, children: {
+        path: "/", element: <Layout />, children: {
             home: { path: "/", element: <Pages.Dashboard /> },
             accounts: { path: "/accounts", element: <Pages.Accounts /> },
             accountsCreate: { path: "/accounts/create", element: <Pages.CreateAccount /> },
@@ -13,6 +13,7 @@ export const routes: RouteDefinition = {
                 path: "/accounts/:id", element: <Pages.Account />, children: {
                     manage: { path: "manage", element: <Pages.ManageAccount /> },
                     transactions: { path: "transactions", element: <Pages.Transactions /> },
+                    bankCreate: { path: "manage/bank/create", element: <Pages.CreateInstitutionAccount /> },
                     virtualCreate: { path: "manage/virtual/create", element: <Pages.CreateVirtualAccount /> },
                     virtualManage: { path: "manage/virtual/:virtualId", element: <Pages.ManageVirtualAccount /> },
                     rules: { path: "rules", element: <Pages.Rules /> },

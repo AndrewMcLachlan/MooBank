@@ -3,16 +3,16 @@ using Asm.MooBank.Domain.Entities.Account.Specifications;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Accounts.Models.Account;
 using Asm.MooBank.Services;
-using IInstitutionAccountRepository = Asm.MooBank.Domain.Entities.Account.IInstitutionAccountRepository;
+using ILogicalAccountRepository = Asm.MooBank.Domain.Entities.Account.ILogicalAccountRepository;
 
 namespace Asm.MooBank.Modules.Accounts.Commands;
 
 [DisplayName("UpdateAccount")]
-public record Update(InstitutionAccount Account) : ICommand<InstitutionAccount>;
+public record Update(LogicalAccount Account) : ICommand<LogicalAccount>;
 
-internal class UpdateHandler(IUnitOfWork unitOfWork, IInstitutionAccountRepository accountRepository, User user, ICurrencyConverter currencyConverter, ISecurity security) : ICommandHandler<Update, InstitutionAccount>
+internal class UpdateHandler(IUnitOfWork unitOfWork, ILogicalAccountRepository accountRepository, User user, ICurrencyConverter currencyConverter, ISecurity security) : ICommandHandler<Update, LogicalAccount>
 {
-    public async ValueTask<InstitutionAccount> Handle(Update command, CancellationToken cancellationToken)
+    public async ValueTask<LogicalAccount> Handle(Update command, CancellationToken cancellationToken)
     {
         command.Deconstruct(out var account);
 
@@ -25,30 +25,13 @@ internal class UpdateHandler(IUnitOfWork unitOfWork, IInstitutionAccountReposito
 
         entity.Name = account.Name;
         entity.Description = account.Description;
+        entity.SetController(account.Controller);
         entity.SetGroup(account.GroupId, user.Id);
         entity.AccountType = account.AccountType;
         entity.ShareWithFamily = account.ShareWithFamily;
-        entity.InstitutionId = account.InstitutionId;
         entity.IncludeInBudget = account.IncludeInBudget;
 
-        if (account.Controller != entity.Controller)
-        {
-            entity.Controller = account.Controller;
-            if (account.Controller == Controller.Import)
-            {
-                _ = await accountRepository.GetImporterType(account.ImporterTypeId ?? throw new InvalidOperationException("Import account without importer type"), cancellationToken) ?? throw new NotFoundException("Unknown importer type ID " + account.ImporterTypeId);
-
-                entity.ImportAccount = new Domain.Entities.Account.ImportAccount
-                {
-                    AccountId = entity.Id,
-                    ImporterTypeId = account.ImporterTypeId!.Value,
-                };
-            }
-            else if (entity.ImportAccount != null)
-            {
-                accountRepository.RemoveImportAccount(entity.ImportAccount);
-            }
-        }
+        
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

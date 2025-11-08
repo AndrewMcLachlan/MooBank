@@ -9,7 +9,7 @@ namespace Asm.MooBank.Modules.Accounts.Commands.Recurring;
 
 public record Create(Guid AccountId, Guid VirtualAccountId, string? Description, decimal Amount, ScheduleFrequency Schedule, DateOnly NextRun) : InstrumentIdCommand(AccountId), ICommand<Models.Recurring.RecurringTransaction>
 {
-    public static ValueTask<Create> BindAsync(HttpContext context) => BindHelper.BindWithInstrumentIdAsync<Create>(context);
+    public static ValueTask<Create> BindAsync(HttpContext context) => BindHelper.BindWithInstrumentIdAsync<Create>("accountId", context);
 }
 
 internal class CreateHandler(IInstrumentRepository accountRepository, IUnitOfWork unitOfWork) : ICommandHandler<Create, Models.Recurring.RecurringTransaction>
