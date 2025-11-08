@@ -43,6 +43,7 @@ public class LogicalAccount(Guid id, IEnumerable<InstitutionAccount> institution
 
     public void SetController(Controller controller)
     {
+        Controller = controller;
         if (controller != Controller.Import)
         {
             foreach (var ia in InstitutionAccounts.Where(ia => ia.ImporterTypeId != null))

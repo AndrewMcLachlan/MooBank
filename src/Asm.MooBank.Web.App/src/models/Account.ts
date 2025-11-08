@@ -17,7 +17,7 @@ export interface LogicalAccount extends TransactionAccount, TopLevelAccount {
 
 export interface CreateLogicalAccount extends LogicalAccount {
     balance: number;
-    openingDate: string;
+    openedDate: string;
     institutionId: number;
     importerTypeId?: number;
 }

@@ -14,7 +14,7 @@ internal class AccountAddedEventHandler(Models.User user, ITransactionRepository
             user.Id,
             request.OpeningBalance,
             "Opening Balance",
-            request.OpeningDate,
+            request.OpenedDate.ToDateTime(TimeOnly.MinValue),
             TransactionSubType.OpeningBalance,
             "Event"));
 

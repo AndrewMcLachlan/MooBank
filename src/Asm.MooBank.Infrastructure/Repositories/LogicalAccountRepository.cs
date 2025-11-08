@@ -7,10 +7,10 @@ namespace Asm.MooBank.Infrastructure.Repositories;
 
 public class LogicalAccountRepository(MooBankContext dataContext, User user) : RepositoryDeleteBase<LogicalAccount, Guid>(dataContext), ILogicalAccountRepository
 {
-    public LogicalAccount Add(LogicalAccount entity, decimal openingBalance, DateTime openingDate)
+    public LogicalAccount Add(LogicalAccount entity, decimal openingBalance, DateOnly openedDate)
     {
         var tracked = base.Add(entity);
-        tracked.Events.Add(new AccountAddedEvent(tracked, openingBalance, openingDate));
+        tracked.Events.Add(new AccountAddedEvent(tracked, openingBalance, openedDate));
         return tracked;
     }
 

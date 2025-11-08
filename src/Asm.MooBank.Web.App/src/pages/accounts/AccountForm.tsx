@@ -8,9 +8,10 @@ import { Form, SectionForm, FormComboBox } from "@andrewmclachlan/moo-ds";
 import { CurrencySelector, InstitutionSelector } from "components";
 import { GroupSelector } from "components/GroupSelector";
 import { AccountTypes, Controllers, CreateLogicalAccount, LogicalAccount } from "models";
-import { useCreateAccount, useUpdateAccount, } from "services";
+import { useCreateAccount, useUpdateAccount, useUser, } from "services";
 import { ImportSettings } from "./ImportSettings";
 import { CurrencyInput } from "components/CurrencyInput";
+import { formatDate, formatISO } from "date-fns";
 
 export const AccountForm: React.FC<{ account?: LogicalAccount }> = ({ account = null }) => {
 
@@ -18,17 +19,19 @@ export const AccountForm: React.FC<{ account?: LogicalAccount }> = ({ account = 
 
     const createAccount = useCreateAccount();
     const updateAccount = useUpdateAccount();
+    const { data: user } = useUser();
 
     const isPending = createAccount.isPending || updateAccount.isPending;
 
     const handleSubmit = (data: CreateLogicalAccount) => {
 
-        if (data.institutionId === undefined) {
-            window.alert("Please select an institution");
-            return;
-        }
-
         if (!account) {
+
+            if (data.institutionId === undefined) {
+                window.alert("Please select an institution");
+                return;
+            }
+
             createAccount.mutateAsync(data);
             navigate("/accounts");
         } else {
@@ -36,11 +39,17 @@ export const AccountForm: React.FC<{ account?: LogicalAccount }> = ({ account = 
         }
     }
 
-    const form = useForm<CreateLogicalAccount>({ defaultValues: account });
+    const form = useForm<CreateLogicalAccount>({
+        defaultValues: account ?? {
+            currency: user?.currency,
+        }
+    });
 
     useEffect(() => {
-        form.reset(account);
-    }, [account, form]);
+        form.reset(account ?? {
+            currency: user?.currency,
+        });
+    }, [account, form, user]);
 
     const accountType = form.watch("accountType");
     const controller = form.watch("controller");
@@ -59,17 +68,21 @@ export const AccountForm: React.FC<{ account?: LogicalAccount }> = ({ account = 
                 <Form.Label>Type</Form.Label>
                 <FormComboBox placeholder="Select an account type..." items={AccountTypes} labelField={i => i} valueField={i => i} />
             </Form.Group>
+            <Form.Group groupId="institutionId" show={!account}>
+                <Form.Label>Institution</Form.Label>
+                <InstitutionSelector accountType={accountType} /> {/* TODO: Required */}
+            </Form.Group>
             <Form.Group groupId="currency">
                 <Form.Label>Currency</Form.Label>
                 <CurrencySelector />
             </Form.Group>
             <Form.Group groupId="balance" show={!account}>
                 <Form.Label>Opening Balance</Form.Label>
-                <CurrencyInput required />
+                <CurrencyInput required  defaultValue={0}/>
             </Form.Group>
-            <Form.Group groupId="openingDate" show={!account}>
+            <Form.Group groupId="openedDate" show={!account}>
                 <Form.Label>Date Opened</Form.Label>
-                <Form.Input type="date" required />
+                <Form.Input type="date" required defaultValue={formatDate(new Date(), 'yyyy-MM-dd')} />
             </Form.Group>
             <Form.Group groupId="groupId">
                 <Form.Label>Group</Form.Label>
@@ -78,6 +91,10 @@ export const AccountForm: React.FC<{ account?: LogicalAccount }> = ({ account = 
             <Form.Group groupId="controller">
                 <Form.Label>Controller</Form.Label>
                 <FormComboBox items={Controllers} labelField={i => i} valueField={i => i} />
+            </Form.Group>
+            <Form.Group groupId="importerTypeId" show={!account && controller === "Import"}>
+                <Form.Label>Importer Type</Form.Label>
+                <ImportSettings />
             </Form.Group>
             <Form.Group groupId="includeInBudget" className="form-check">
                 <Form.Check />

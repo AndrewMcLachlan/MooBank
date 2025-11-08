@@ -21,7 +21,7 @@ public record Create() : ICommand<LogicalAccount>
 
     public required decimal Balance { get; init; }
 
-    public DateTime? OpeningDate { get; init; }
+    public DateOnly? OpenedDate { get; init; }
 
     public Guid? GroupId { get; init; }
 
@@ -58,13 +58,15 @@ internal class CreateHandler(ILogicalAccountRepository institutionAccountReposit
 
         entity.AddInstitutionAccount(new()
         {
+            Name = command.Name,
+            OpenedDate = command.OpenedDate ?? DateOnly.FromDateTime(DateTime.UtcNow),
             InstitutionId = command.InstitutionId,
             ImporterTypeId = command.ImporterTypeId,
         });
         entity.SetAccountHolder(user.Id);
         entity.SetGroup(command.GroupId, user.Id);
 
-        entity = _accountRepository.Add(entity, command.Balance, command.OpeningDate ?? DateTime.Now);
+        entity = _accountRepository.Add(entity, command.Balance, command.OpenedDate ?? DateOnly.FromDateTime(DateTime.UtcNow));
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

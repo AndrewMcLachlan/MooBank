@@ -4339,9 +4339,9 @@
             "type": "number",
             "format": "double"
           },
-          "openingDate": {
+          "openedDate": {
             "type": "string",
-            "format": "date-time",
+            "format": "date",
             "nullable": true
           },
           "groupId": {
