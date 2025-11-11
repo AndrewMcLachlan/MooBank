@@ -42,13 +42,13 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
 
         decimal? endBalance = null;
 
-        while (!reader.EndOfStream)
+        string? line;
+        while ((line = await reader.ReadLineAsync(cancellationToken)) is not null)
         {
             DateOnly transactionTime = DateOnly.MinValue;
             decimal credit = 0;
             decimal debit = 0;
 
-            string line = (await reader.ReadLineAsync(cancellationToken))!;
             lineCount++;
 
             string[] prelimColumns = line.Split(",");

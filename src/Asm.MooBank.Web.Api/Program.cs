@@ -10,6 +10,7 @@ using Asm.MooBank.Institution.Macquarie;
 using Asm.MooBank.Security;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.OpenApi;
+using Microsoft.OpenApi;
 
 var result = WebApplicationStart.Run(args, "Asm.MooBank.Web.Api", AddServices, AddApp, AddHealthChecks);
 
@@ -52,7 +53,8 @@ void AddServices(WebApplicationBuilder builder)
             document.Info.Title = "MooBank API";
             document.Info.Version = fileVersionInfo.FileVersion;
 
-            document.Tags = [.. document.Tags.OrderBy(t => t.Name)];
+            document.Tags ??= new HashSet<OpenApiTag>();
+            document.Tags.AddRange(document.Tags.OrderBy(t => t.Name));
 
             return Task.CompletedTask;
         });
@@ -82,7 +84,6 @@ void AddServices(WebApplicationBuilder builder)
     services.AddCacheableData();
 
     services.AddHttpContextAccessor();
-    services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
     services.AddHsts(options =>
     {
@@ -151,8 +152,7 @@ void AddApp(WebApplication app)
 
     app.UseAuthorization();
 
-    IEndpointRouteBuilder builder = app.MapGroup("/api")
-        .WithOpenApi();
+    IEndpointRouteBuilder builder = app.MapGroup("/api");
 
     builder.MapModuleEndpoints();
 
