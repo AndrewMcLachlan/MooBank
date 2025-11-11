@@ -1,5 +1,5 @@
 {
-  "openapi": "3.0.1",
+  "openapi": "3.1.1",
   "info": {
     "title": "MooBank API",
     "version": "2025.11.0"
@@ -25,7 +25,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -53,7 +58,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/accounts/{instrumentId}": {
@@ -84,7 +94,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/accounts/{id}": {
@@ -114,7 +129,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/accounts/{instrumentId}/institution-accounts/{id}": {
@@ -154,7 +174,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "patch": {
         "tags": [
@@ -202,7 +227,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/accounts/{instrumentId}/institution-accounts": {
@@ -243,7 +273,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/accounts/{instrumentId}/institution-accounts/{id}/close": {
@@ -283,7 +318,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/accounts/{accountId}/recurring": {
@@ -317,7 +357,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -345,7 +390,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/accounts/{accountId}/recurring/{recurringTransactionId}": {
@@ -385,7 +435,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "patch": {
         "tags": [
@@ -403,7 +458,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -434,7 +494,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/accounts/{accountId}/virtual/{virtualAccountId}/recurring": {
@@ -477,7 +542,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/assets/{id}": {
@@ -508,7 +578,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "patch": {
         "tags": [
@@ -526,7 +601,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/assets": {
@@ -556,7 +636,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/bills": {
@@ -571,7 +656,11 @@
             "in": "query",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -580,7 +669,11 @@
             "in": "query",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -596,7 +689,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/bills/accounts/types": {
@@ -619,7 +717,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/bills/accounts/types/{type}": {
@@ -652,7 +755,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/bills/accounts": {
@@ -675,7 +783,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/bills/accounts/{instrumentId}": {
@@ -706,7 +819,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/bills/accounts/{instrumentId}/bills": {
@@ -729,7 +847,11 @@
             "name": "PageSize",
             "in": "query",
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32",
               "default": 20
             }
@@ -738,7 +860,11 @@
             "name": "PageNumber",
             "in": "query",
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32",
               "default": 1
             }
@@ -755,7 +881,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -783,7 +914,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/bills/accounts/{instrumentId}/bills/{id}": {
@@ -807,7 +943,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -823,7 +963,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/budget": {
@@ -840,14 +985,23 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "type": "integer",
+                    "pattern": "^-?(?:0|[1-9]\\d*)$",
+                    "type": [
+                      "integer",
+                      "string"
+                    ],
                     "format": "int16"
                   }
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/budget/{year}": {
@@ -862,7 +1016,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int16"
             }
           }
@@ -878,7 +1036,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/budget/{year}/lines/{id}": {
@@ -893,7 +1056,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int16"
             }
           },
@@ -918,7 +1085,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "patch": {
         "tags": [
@@ -931,7 +1103,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int16"
             }
           },
@@ -966,7 +1142,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -979,7 +1160,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int16"
             }
           },
@@ -997,7 +1182,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/budget/{year}/lines": {
@@ -1012,7 +1202,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int16"
             }
           }
@@ -1048,7 +1242,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/budget/tag/{tagId}": {
@@ -1063,7 +1262,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -1074,13 +1277,22 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "number",
+                  "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+                  "type": [
+                    "number",
+                    "string"
+                  ],
                   "format": "double"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/budget/{year}/report": {
@@ -1095,7 +1307,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int16"
             }
           }
@@ -1111,7 +1327,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/budget/{year}/report/{month}": {
@@ -1126,7 +1347,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int16"
             }
           },
@@ -1135,7 +1360,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int16"
             }
           }
@@ -1151,7 +1380,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/budget/{year}/report/{month}/breakdown": {
@@ -1166,7 +1400,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int16"
             }
           },
@@ -1175,7 +1413,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int16"
             }
           }
@@ -1191,7 +1433,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/budget/{year}/report/{month}/breakdown/unbudgeted": {
@@ -1206,7 +1453,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int16"
             }
           },
@@ -1215,7 +1466,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int16"
             }
           }
@@ -1231,7 +1486,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/families": {
@@ -1254,7 +1514,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -1282,7 +1547,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/families/{id}": {
@@ -1313,7 +1583,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "patch": {
         "tags": [
@@ -1352,7 +1627,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/groups": {
@@ -1375,7 +1655,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -1413,7 +1698,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/groups/{id}": {
@@ -1444,7 +1734,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "patch": {
         "tags": [
@@ -1472,7 +1767,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -1494,7 +1794,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/institutions": {
@@ -1508,18 +1813,7 @@
             "name": "AccountType",
             "in": "query",
             "schema": {
-              "enum": [
-                "NotSet",
-                "Transaction",
-                "Savings",
-                "Credit",
-                "Mortgage",
-                "Superannuation",
-                "Investment",
-                "Loan",
-                "Broker",
-                null
-              ]
+              "$ref": "#/components/schemas/AccountType"
             }
           }
         ],
@@ -1537,7 +1831,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -1565,7 +1864,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/institutions/{id}": {
@@ -1580,7 +1884,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -1596,7 +1904,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "patch": {
         "tags": [
@@ -1609,7 +1922,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -1641,7 +1958,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/instruments/summary": {
@@ -1661,7 +1983,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/instruments/list": {
@@ -1684,7 +2011,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/instruments/{instrumentId}/accounts/{accountId}/import": {
@@ -1723,8 +2055,7 @@
                 "type": "object",
                 "properties": {
                   "file": {
-                    "type": "string",
-                    "format": "binary"
+                    "$ref": "#/components/schemas/IFormFile"
                   }
                 }
               }
@@ -1736,7 +2067,12 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/instruments/{instrumentId}/accounts/{accountId}/import/reprocess": {
@@ -1769,7 +2105,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/instruments/{instrumentId}/rules": {
@@ -1803,7 +2144,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -1831,7 +2177,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/instruments/{instrumentId}/rules/{ruleId}": {
@@ -1855,7 +2206,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -1871,7 +2226,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "patch": {
         "tags": [
@@ -1893,7 +2253,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -1919,7 +2283,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -1941,7 +2310,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -1950,7 +2323,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/instruments/{instrumentId}/rules/{ruleId}/tag/{tagId}": {
@@ -1974,7 +2352,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -1983,7 +2365,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -1999,7 +2385,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -2021,7 +2412,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -2030,7 +2425,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -2039,7 +2438,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/instruments/{instrumentId}/rules/run": {
@@ -2063,7 +2467,12 @@
           "202": {
             "description": "Accepted"
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/instruments/{instrumentId}/virtual": {
@@ -2097,7 +2506,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -2131,12 +2545,17 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/VirtualInstrument2"
+                  "$ref": "#/components/schemas/VirtualInstrument"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/instruments/{instrumentId}/virtual/{virtualInstrumentId}": {
@@ -2171,12 +2590,17 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/VirtualInstrument2"
+                  "$ref": "#/components/schemas/VirtualInstrument"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "patch": {
         "tags": [
@@ -2189,12 +2613,17 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/VirtualInstrument2"
+                  "$ref": "#/components/schemas/VirtualInstrument"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -2225,7 +2654,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/reference-data/importer-types": {
@@ -2248,7 +2682,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/accounts/{accountId}/reports/in-out/{start}/{end}": {
@@ -2297,7 +2736,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/accounts/{accountId}/reports/in-out-trend/{start}/{end}": {
@@ -2354,7 +2798,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/accounts/{accountId}/reports/in-out-average/{start}/{end}": {
@@ -2411,7 +2860,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/accounts/{accountId}/reports/{reportType}/tags/{start}/{end}/{parentTagId}": {
@@ -2426,7 +2880,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -2477,7 +2935,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/accounts/{accountId}/reports/{reportType}/breakdown/{start}/{end}/{parentTagId}": {
@@ -2492,7 +2955,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -2543,7 +3010,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/accounts/{accountId}/reports/{reportType}/tag-trend/{start}/{end}/{tagId}": {
@@ -2558,7 +3030,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -2616,7 +3092,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/accounts/{accountId}/reports/{reportType}/all-tag-average/{start}/{end}": {
@@ -2631,7 +3112,11 @@
             "in": "query",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -2690,7 +3175,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/accounts/{accountId}/reports/monthly-balances/{start}/{end}": {
@@ -2739,7 +3229,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/stocks/{instrumentId}": {
@@ -2770,7 +3265,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "patch": {
         "tags": [
@@ -2788,7 +3288,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/stocks/{instrumentId}/cpi-adjusted-gain-loss": {
@@ -2814,13 +3319,22 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "number",
+                  "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+                  "type": [
+                    "number",
+                    "string"
+                  ],
                   "format": "double"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/stocks": {
@@ -2850,7 +3364,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/stocks/{instrumentId}/reports/holding": {
@@ -2881,7 +3400,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/stocks/{instrumentId}/reports/value": {
@@ -2930,7 +3454,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/stocks/{instrumentId}/transactions/{pageSize}/{pageNumber}": {
@@ -2977,7 +3506,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -2986,7 +3519,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -3017,7 +3554,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/stocks/{instrumentId}/transactions": {
@@ -3037,7 +3579,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/tags": {
@@ -3060,7 +3607,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -3083,12 +3635,17 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Tag2"
+                  "$ref": "#/components/schemas/Tag"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/tags/hierarchy": {
@@ -3108,7 +3665,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/tags/{id}": {
@@ -3123,7 +3685,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -3134,12 +3700,17 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Tag2"
+                  "$ref": "#/components/schemas/Tag"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "patch": {
         "tags": [
@@ -3152,7 +3723,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -3173,12 +3748,17 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Tag2"
+                  "$ref": "#/components/schemas/Tag"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -3191,7 +3771,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -3200,7 +3784,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/tags/{name}": {
@@ -3216,12 +3805,17 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Tag2"
+                  "$ref": "#/components/schemas/Tag"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/tags/{id}/tags/{subTagId}": {
@@ -3236,7 +3830,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -3245,7 +3843,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -3256,12 +3858,17 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Tag2"
+                  "$ref": "#/components/schemas/Tag"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -3274,7 +3881,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -3283,7 +3894,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -3292,7 +3907,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/accounts/{instrumentId}/transactions/{pageSize}/{pageNumber}": {
@@ -3307,7 +3927,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -3316,7 +3940,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -3358,7 +3986,11 @@
             "schema": {
               "type": "array",
               "items": {
-                "type": "integer",
+                "pattern": "^-?(?:0|[1-9]\\d*)$",
+                "type": [
+                  "integer",
+                  "string"
+                ],
                 "format": "int32"
               }
             }
@@ -3374,7 +4006,7 @@
             "name": "TransactionType",
             "in": "query",
             "schema": {
-              "$ref": "#/components/schemas/NullableOfTransactionFilterType"
+              "$ref": "#/components/schemas/TransactionFilterType"
             }
           },
           {
@@ -3411,7 +4043,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/accounts/{instrumentId}/transactions/{untagged}/{pageSize}/{pageNumber}": {
@@ -3426,7 +4063,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -3435,7 +4076,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -3477,7 +4122,11 @@
             "schema": {
               "type": "array",
               "items": {
-                "type": "integer",
+                "pattern": "^-?(?:0|[1-9]\\d*)$",
+                "type": [
+                  "integer",
+                  "string"
+                ],
                 "format": "int32"
               }
             }
@@ -3493,7 +4142,7 @@
             "name": "TransactionType",
             "in": "query",
             "schema": {
-              "$ref": "#/components/schemas/NullableOfTransactionFilterType"
+              "$ref": "#/components/schemas/TransactionFilterType"
             }
           },
           {
@@ -3531,7 +4180,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/accounts/{instrumentId}/transactions": {
@@ -3574,7 +4228,11 @@
             "schema": {
               "type": "array",
               "items": {
-                "type": "integer",
+                "pattern": "^-?(?:0|[1-9]\\d*)$",
+                "type": [
+                  "integer",
+                  "string"
+                ],
                 "format": "int32"
               }
             }
@@ -3594,7 +4252,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -3612,7 +4275,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/accounts/{instrumentId}/transactions/balance-adjustment": {
@@ -3653,7 +4321,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/accounts/{instrumentId}/transactions/{id}": {
@@ -3673,7 +4346,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/accounts/{instrumentId}/transactions/{id}/tag/{tagId}": {
@@ -3706,7 +4384,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -3722,7 +4404,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -3753,7 +4440,11 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -3769,7 +4460,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     },
     "/api/users/me": {
@@ -3789,7 +4485,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       },
       "patch": {
         "tags": [
@@ -3817,7 +4518,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oidc": [ ]
+          }
+        ]
       }
     }
   },
@@ -3838,14 +4544,18 @@
             "$ref": "#/components/schemas/UtilityType"
           },
           "firstBill": {
-            "type": "string",
-            "format": "date",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
           },
           "latestBill": {
-            "type": "string",
-            "format": "date",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
           },
           "id": {
             "type": "string",
@@ -3855,21 +4565,31 @@
             "type": "string"
           },
           "description": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "balanceDate": {
             "type": "string",
             "format": "date-time"
           },
           "currentBalance": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "currentBalanceLocalCurrency": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           },
           "currency": {
             "type": "string"
@@ -3878,13 +4598,17 @@
             "$ref": "#/components/schemas/Controller"
           },
           "instrumentType": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "groupId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
           },
           "virtualInstruments": {
             "type": "array",
@@ -3893,14 +4617,22 @@
             }
           },
           "remainingBalance": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           },
           "remainingBalanceLocalCurrency": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           }
         }
       },
@@ -3914,7 +4646,8 @@
           "Superannuation",
           "Investment",
           "Loan",
-          "Broker"
+          "Broker",
+          null
         ]
       },
       "AccountTypeSummary": {
@@ -3980,9 +4713,13 @@
         "type": "object",
         "properties": {
           "purchasePrice": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           },
           "shareWithFamily": {
             "type": "boolean"
@@ -3995,21 +4732,31 @@
             "type": "string"
           },
           "description": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "balanceDate": {
             "type": "string",
             "format": "date-time"
           },
           "currentBalance": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "currentBalanceLocalCurrency": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           },
           "currency": {
             "type": "string"
@@ -4018,13 +4765,17 @@
             "$ref": "#/components/schemas/Controller"
           },
           "instrumentType": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "groupId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
           },
           "virtualInstruments": {
             "type": "array",
@@ -4033,14 +4784,22 @@
             }
           },
           "remainingBalance": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           },
           "remainingBalanceLocalCurrency": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           }
         }
       },
@@ -4048,37 +4807,61 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "invoiceNumber": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "issueDate": {
             "type": "string",
             "format": "date"
           },
           "currentReading": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           },
           "previousReading": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           },
           "total": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "costsIncludeGST": {
-            "type": "boolean",
-            "nullable": true
+            "type": [
+              "null",
+              "boolean"
+            ]
           },
           "cost": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "periods": {
@@ -4128,20 +4911,28 @@
         "type": "object",
         "properties": {
           "name": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "path": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "tags": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "authorisationPolicy": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -4159,19 +4950,33 @@
             "type": "string"
           },
           "tagId": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "notes": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "amount": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "month": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int16"
           },
           "type": {
@@ -4219,17 +5024,29 @@
         "type": "object",
         "properties": {
           "month": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "budgetedAmount": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "actual": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           }
         }
       },
@@ -4245,13 +5062,21 @@
             "type": "string"
           },
           "budgetedAmount": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "actual": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           }
         }
       },
@@ -4320,34 +5145,52 @@
             "type": "string"
           },
           "description": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "importerTypeId": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           },
           "institutionId": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "currency": {
             "type": "string"
           },
           "balance": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "openedDate": {
-            "type": "string",
-            "format": "date",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
           },
           "groupId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
           },
           "accountType": {
             "$ref": "#/components/schemas/AccountType"
@@ -4378,21 +5221,31 @@
             "type": "string"
           },
           "purchasePrice": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           },
           "currentBalance": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "shareWithFamily": {
             "type": "boolean"
           },
           "groupId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
           }
         }
       },
@@ -4400,33 +5253,53 @@
         "type": "object",
         "properties": {
           "invoiceNumber": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "issueDate": {
             "type": "string",
             "format": "date"
           },
           "currentReading": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           },
           "previousReading": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           },
           "total": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "costsIncludeGST": {
-            "type": "boolean",
-            "nullable": true
+            "type": [
+              "null",
+              "boolean"
+            ]
           },
           "cost": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "periods": {
@@ -4495,13 +5368,21 @@
         "type": "object",
         "properties": {
           "institutionId": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "importerTypeId": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           },
           "name": {
             "type": "string"
@@ -4534,24 +5415,38 @@
             "type": "string"
           },
           "price": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "quantity": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "fees": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "shareWithFamily": {
             "type": "boolean"
           },
           "groupId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
           }
         }
       },
@@ -4562,7 +5457,7 @@
         "type": "object",
         "properties": {
           "tag": {
-            "$ref": "#/components/schemas/Tag2"
+            "$ref": "#/components/schemas/Tag"
           }
         }
       },
@@ -4576,15 +5471,21 @@
         "type": "object",
         "properties": {
           "amount": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "description": {
             "type": "string"
           },
           "reference": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "transactionTime": {
             "type": "string",
@@ -4602,11 +5503,17 @@
             "type": "string"
           },
           "description": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "openingBalance": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           }
         }
@@ -4615,18 +5522,28 @@
         "type": "object",
         "properties": {
           "discountPercent": {
-            "type": "integer",
-            "format": "uint8",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "uint8"
           },
           "discountAmount": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           },
           "reason": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -4667,8 +5584,10 @@
             "type": "string"
           },
           "description": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "showTotal": {
             "type": "boolean"
@@ -4676,6 +5595,10 @@
         }
       },
       "HexColour": { },
+      "IFormFile": {
+        "type": "string",
+        "format": "binary"
+      },
       "ImporterType": {
         "required": [
           "type",
@@ -4684,7 +5607,11 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "type": {
@@ -4706,11 +5633,19 @@
         "type": "object",
         "properties": {
           "income": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "outgoings": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "accountId": {
@@ -4745,7 +5680,9 @@
           },
           "expenses": {
             "type": "array",
-            "items": { }
+            "items": {
+              "$ref": "#/components/schemas/TrendPoint"
+            }
           },
           "accountId": {
             "type": "string",
@@ -4770,7 +5707,11 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "name": {
@@ -4792,12 +5733,20 @@
             "format": "uuid"
           },
           "importerTypeId": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           },
           "institutionId": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "name": {
@@ -4808,9 +5757,11 @@
             "format": "date"
           },
           "closedDate": {
-            "type": "string",
-            "format": "date",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
           }
         }
       },
@@ -4846,21 +5797,31 @@
             "type": "string"
           },
           "description": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "balanceDate": {
             "type": "string",
             "format": "date-time"
           },
           "currentBalance": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "currentBalanceLocalCurrency": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           },
           "currency": {
             "type": "string"
@@ -4869,13 +5830,17 @@
             "$ref": "#/components/schemas/Controller"
           },
           "instrumentType": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "groupId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
           },
           "virtualInstruments": {
             "type": "array",
@@ -4884,14 +5849,22 @@
             }
           },
           "remainingBalance": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           },
           "remainingBalanceLocalCurrency": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           }
         }
       },
@@ -4915,9 +5888,13 @@
             "type": "boolean"
           },
           "total": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           }
         }
       },
@@ -4934,7 +5911,11 @@
             }
           },
           "total": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           }
         }
@@ -4985,9 +5966,11 @@
             }
           },
           "lastTransaction": {
-            "type": "string",
-            "format": "date",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
           },
           "id": {
             "type": "string",
@@ -4997,21 +5980,31 @@
             "type": "string"
           },
           "description": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "balanceDate": {
             "type": "string",
             "format": "date-time"
           },
           "currentBalance": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "currentBalanceLocalCurrency": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           },
           "currency": {
             "type": "string"
@@ -5020,13 +6013,17 @@
             "$ref": "#/components/schemas/Controller"
           },
           "instrumentType": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "groupId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
           },
           "virtualInstruments": {
             "type": "array",
@@ -5035,14 +6032,22 @@
             }
           },
           "remainingBalance": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           },
           "remainingBalanceLocalCurrency": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           }
         }
       },
@@ -5075,17 +6080,6 @@
           }
         }
       },
-      "NullableOfHexColour": {
-        "nullable": true
-      },
-      "NullableOfTransactionFilterType": {
-        "enum": [
-          "None",
-          "Credit",
-          "Debit",
-          null
-        ]
-      },
       "Period": {
         "type": "object",
         "properties": {
@@ -5098,27 +6092,51 @@
             "format": "date-time"
           },
           "daysInclusive": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "days": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "pricePerUnit": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "totalUsage": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "cost": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "chargePerDay": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           }
         }
@@ -5135,17 +6153,25 @@
             "format": "uuid"
           },
           "description": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "amount": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "lastRun": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
           },
           "nextRun": {
             "type": "string",
@@ -5174,15 +6200,21 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "contains": {
             "type": "string"
           },
           "description": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "tags": {
             "type": "array",
@@ -5221,19 +6253,35 @@
             "type": "string"
           },
           "quantity": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "currentPrice": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "currentValue": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "gainLoss": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "shareWithFamily": {
@@ -5247,21 +6295,31 @@
             "type": "string"
           },
           "description": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "balanceDate": {
             "type": "string",
             "format": "date-time"
           },
           "currentBalance": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "currentBalanceLocalCurrency": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           },
           "currency": {
             "type": "string"
@@ -5270,13 +6328,17 @@
             "$ref": "#/components/schemas/Controller"
           },
           "instrumentType": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "groupId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
           },
           "virtualInstruments": {
             "type": "array",
@@ -5285,14 +6347,22 @@
             }
           },
           "remainingBalance": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           },
           "remainingBalanceLocalCurrency": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           }
         }
       },
@@ -5304,15 +6374,27 @@
             "format": "uuid"
           },
           "currentValue": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "profitLoss": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "adjustedProfitLoss": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           }
         }
@@ -5329,24 +6411,40 @@
             "format": "uuid"
           },
           "price": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "quantity": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "description": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "fees": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "accountHolderName": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "transactionDate": {
             "type": "string",
@@ -5383,7 +6481,11 @@
             "format": "date"
           },
           "granularity": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "points": {
@@ -5394,7 +6496,9 @@
           },
           "investment": {
             "type": "array",
-            "items": { }
+            "items": {
+              "$ref": "#/components/schemas/StockValueReportPoint"
+            }
           }
         }
       },
@@ -5406,7 +6510,11 @@
             "format": "date"
           },
           "value": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           }
         }
@@ -5418,39 +6526,25 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "name": {
             "type": "string"
           },
           "colour": {
-            "$ref": "#/components/schemas/NullableOfHexColour"
-          },
-          "tags": {
-            "type": "array",
-            "items": { }
-          },
-          "settings": {
-            "$ref": "#/components/schemas/TagSettings"
-          }
-        }
-      },
-      "Tag2": {
-        "required": [
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "name": {
-            "type": "string"
-          },
-          "colour": {
-            "$ref": "#/components/schemas/NullableOfHexColour"
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/HexColour"
+              }
+            ]
           },
           "tags": {
             "type": "array",
@@ -5473,7 +6567,11 @@
           "levels": {
             "type": "object",
             "additionalProperties": {
-              "type": "integer",
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -5508,7 +6606,11 @@
         "type": "object",
         "properties": {
           "tagId": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "tagName": {
@@ -5521,13 +6623,21 @@
             }
           },
           "average": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "offsetAverage": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           },
           "accountId": {
             "type": "string",
@@ -5550,22 +6660,36 @@
         "type": "object",
         "properties": {
           "tagId": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           },
           "tagName": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "grossAmount": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "netAmount": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           },
           "hasChildren": {
             "type": "boolean"
@@ -5584,32 +6708,50 @@
             "format": "uuid"
           },
           "amount": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "netAmount": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "description": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "location": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "accountHolderName": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "reference": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "notes": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "excludeFromReporting": {
             "type": "boolean"
@@ -5619,9 +6761,11 @@
             "format": "date-time"
           },
           "purchaseDate": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
           },
           "transactionType": {
             "$ref": "#/components/schemas/TransactionType"
@@ -5647,6 +6791,14 @@
           "extraInfo": { }
         }
       },
+      "TransactionFilterType": {
+        "enum": [
+          "None",
+          "Credit",
+          "Debit",
+          null
+        ]
+      },
       "TransactionOffsetBy": {
         "required": [
           "transaction",
@@ -5658,7 +6810,11 @@
             "$ref": "#/components/schemas/Transaction"
           },
           "amount": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           }
         }
@@ -5674,7 +6830,11 @@
             "$ref": "#/components/schemas/Transaction"
           },
           "amount": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           }
         }
@@ -5693,10 +6853,16 @@
           },
           "tags": {
             "type": "array",
-            "items": { }
+            "items": {
+              "$ref": "#/components/schemas/Tag"
+            }
           },
           "amount": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "offsetBy": {
@@ -5726,13 +6892,21 @@
             "format": "date"
           },
           "grossAmount": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "netAmount": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           }
         }
       },
@@ -5754,13 +6928,21 @@
         "type": "object",
         "properties": {
           "institutionId": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "importerTypeId": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           },
           "name": {
             "type": "string"
@@ -5778,8 +6960,10 @@
             "type": "string"
           },
           "description": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "tags": {
             "type": "array",
@@ -5816,9 +7000,11 @@
         "type": "object",
         "properties": {
           "primaryAccountId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
           },
           "currency": {
             "type": "string"
@@ -5846,12 +7032,16 @@
             "type": "string"
           },
           "firstName": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "lastName": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "currency": {
             "type": "string"
@@ -5861,9 +7051,11 @@
             "format": "uuid"
           },
           "primaryAccountId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
           },
           "accounts": {
             "type": "array",
@@ -5892,11 +7084,17 @@
             "format": "uuid"
           },
           "name": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "last4Digits": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int16"
           }
         }
@@ -5922,12 +7120,16 @@
             "type": "string"
           },
           "firstName": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "lastName": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "currency": {
             "type": "string"
@@ -5937,9 +7139,11 @@
             "format": "uuid"
           },
           "primaryAccountId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
           },
           "accounts": {
             "type": "array",
@@ -5983,9 +7187,11 @@
             "format": "uuid"
           },
           "lastTransaction": {
-            "type": "string",
-            "format": "date",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
           },
           "id": {
             "type": "string",
@@ -5995,21 +7201,31 @@
             "type": "string"
           },
           "description": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "balanceDate": {
             "type": "string",
             "format": "date-time"
           },
           "currentBalance": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "currentBalanceLocalCurrency": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           },
           "currency": {
             "type": "string"
@@ -6018,88 +7234,17 @@
             "$ref": "#/components/schemas/Controller"
           },
           "instrumentType": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "groupId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
-          },
-          "virtualInstruments": {
-            "type": "array",
-            "items": { }
-          },
-          "remainingBalance": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "remainingBalanceLocalCurrency": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          }
-        }
-      },
-      "VirtualInstrument2": {
-        "required": [
-          "id",
-          "name",
-          "currentBalance",
-          "currentBalanceLocalCurrency",
-          "currency",
-          "controller"
-        ],
-        "type": "object",
-        "properties": {
-          "parentId": {
-            "type": "string",
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "uuid"
-          },
-          "lastTransaction": {
-            "type": "string",
-            "format": "date",
-            "nullable": true
-          },
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "name": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string",
-            "nullable": true
-          },
-          "balanceDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "currentBalance": {
-            "type": "number",
-            "format": "double"
-          },
-          "currentBalanceLocalCurrency": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "currency": {
-            "type": "string"
-          },
-          "controller": {
-            "$ref": "#/components/schemas/Controller"
-          },
-          "instrumentType": {
-            "type": "string",
-            "nullable": true
-          },
-          "groupId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
           },
           "virtualInstruments": {
             "type": "array",
@@ -6108,14 +7253,22 @@
             }
           },
           "remainingBalance": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           },
           "remainingBalanceLocalCurrency": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           }
         }
       }
@@ -6128,14 +7281,12 @@
       }
     }
   },
-  "security": [
-    {
-      "oidc": [ ]
-    }
-  ],
   "tags": [
     {
       "name": "Accounts"
+    },
+    {
+      "name": "Recurring Transactions"
     },
     {
       "name": "Assets"
@@ -6156,16 +7307,19 @@
       "name": "Groups"
     },
     {
-      "name": "Import"
-    },
-    {
       "name": "Institutions"
     },
     {
       "name": "Instruments"
     },
     {
-      "name": "Recurring Transactions"
+      "name": "Import"
+    },
+    {
+      "name": "Rules"
+    },
+    {
+      "name": "Virtual Instruments"
     },
     {
       "name": "Reference Data"
@@ -6174,22 +7328,16 @@
       "name": "Reports"
     },
     {
-      "name": "Rules"
-    },
-    {
       "name": "Stock Holding"
-    },
-    {
-      "name": "Tags"
     },
     {
       "name": "Transactions"
     },
     {
-      "name": "User"
+      "name": "Tags"
     },
     {
-      "name": "Virtual Instruments"
+      "name": "User"
     }
   ]
 }

@@ -38,11 +38,11 @@ internal partial class Importer(ITransactionRawRepository transactionRawReposito
 
         int lineCount = 1;
 
-        while (!reader.EndOfStream)
+        string? line;
+        while ((line = await reader.ReadLineAsync(cancellationToken)) is not null)
         {
             DateOnly transactionTime = DateOnly.MinValue;
 
-            string line = (await reader.ReadLineAsync(cancellationToken))!;
             lineCount++;
 
             string[] prelimColumns = line.Split(",");

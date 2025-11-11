@@ -13,47 +13,47 @@
     <PackageVersion Include="FluentValidation" Version="12.0.0" />
     <PackageVersion Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
     <PackageVersion Include="LazyCache.AspNetCore" Version="2.4.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="9.0.10" />
-    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="9.0.10" />
-    <PackageVersion Include="Microsoft.AspNetCore.SpaProxy" Version="9.0.10" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.10" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.SpaProxy" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.10" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.10" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.10" />
-    <PackageVersion Include="Microsoft.Extensions.ApiDescription.Server" Version="9.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.ApiDescription.Server" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Azure" Version="1.7.6" />
-    <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="9.0.10" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.10" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.10" />
-    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="9.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.7" />
-    <PackageVersion Include="Microsoft.Extensions.Http" Version="9.0.10" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.10" />
-    <PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.10" />
-    <PackageVersion Include="Microsoft.Identity.Client" Version="4.78.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Identity.Client" Version="4.79.0" />
     <PackageVersion Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="9.0.6" />
-    <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="9.0.6" />
+    <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.0.0" />
     <PackageVersion Include="System.Private.Uri" Version="4.3.2" />
     <PackageVersion Include="System.Formats.Asn1" Version="9.0.7" />
     <PackageVersion Include="System.Text.Json" Version="9.0.8" />
   </ItemGroup>
   <ItemGroup>
-    <PackageVersion Include="Asm" Version="3.6.585" />
-    <PackageVersion Include="Asm.AspNetCore" Version="3.6.585" />
-    <PackageVersion Include="Asm.AspNetCore.Modules" Version="3.6.585" />
-    <PackageVersion Include="Asm.AspNetCore.Api" Version="3.6.585" />
-    <PackageVersion Include="Asm.Cqrs.AspNetCore" Version="3.6.585" />
-    <PackageVersion Include="Asm.Domain" Version="3.6.585" />
-    <PackageVersion Include="Asm.Domain.Infrastructure" Version="3.6.585" />
-    <PackageVersion Include="Asm.Testing" Version="3.6.585" />
+    <PackageVersion Include="Asm" Version="3.6.598" />
+    <PackageVersion Include="Asm.AspNetCore" Version="3.6.598" />
+    <PackageVersion Include="Asm.AspNetCore.Modules" Version="3.6.598" />
+    <PackageVersion Include="Asm.AspNetCore.Api" Version="3.6.598" />
+    <PackageVersion Include="Asm.Cqrs.AspNetCore" Version="3.6.598" />
+    <PackageVersion Include="Asm.Domain" Version="3.6.598" />
+    <PackageVersion Include="Asm.Domain.Infrastructure" Version="3.6.598" />
+    <PackageVersion Include="Asm.Testing" Version="3.6.598" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="Bogus" Version="35.6.5" />
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageVersion Include="Moq" Version="4.20.72" />
     <PackageVersion Include="Reqnroll.Tools.MsBuild.Generation" Version="3.2.1" />
     <PackageVersion Include="Reqnroll.xUnit" Version="3.2.1" />

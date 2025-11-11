@@ -16,9 +16,7 @@ updates:
       interval: "weekly"
       timezone: Australia/Brisbane
       day: tuesday
-      time: "06:00"
-    reviewers:
-      - AndrewMcLachlan
+      time: "08:00"
     groups:
       dev-dependencies:
         applies-to: version-updates
@@ -39,9 +37,7 @@ updates:
       interval: weekly
       timezone: "Australia/Brisbane"
       day: tuesday
-      time: "06:00"
-    reviewers:
-      - AndrewMcLachlan
+      time: "08:00"
     groups:
       version-updates:
         applies-to: version-updates
@@ -56,7 +52,5 @@ updates:
       interval: weekly
       timezone: "Australia/Brisbane"
       day: tuesday
-      time: "06:00"
-    reviewers:
-      - AndrewMcLachlan
+      time: "08:00"
     open-pull-requests-limit: 20
