@@ -3,3 +3,15 @@
             overflow-x: hidden; /* Temporary fix for Bootstrap row on mobile */
         }
     }
+
+    .section-table header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--bs-border-color);
+        padding: 0 1rem 0 0;
+
+        h3 {
+            border: none;
+        }
+    }

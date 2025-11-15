@@ -19,6 +19,8 @@ public partial record User
     public IEnumerable<Guid> Accounts { get; set; } = [];
 
     public IEnumerable<Guid> SharedAccounts { get; set; } = [];
+
+    public IEnumerable<Guid> Groups { get; set; } = [];
 }
 
 

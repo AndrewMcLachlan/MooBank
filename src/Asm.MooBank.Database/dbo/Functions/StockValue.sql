@@ -6,5 +6,5 @@ CREATE FUNCTION [dbo].[StockValue]
 RETURNS DECIMAL(12,4)
 AS
 BEGIN
-    RETURN [dbo].[StockQuantity](@AccountId) * @CurrentPrice
+    RETURN CAST([dbo].[StockQuantity](@AccountId) AS DECIMAL(12,4)) * @CurrentPrice
 END

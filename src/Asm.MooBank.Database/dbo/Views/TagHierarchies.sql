@@ -1,16 +1,14 @@
 CREATE VIEW [dbo].[TagHierarchies] AS
 
 WITH  cte AS (
-    SELECT tt.[Id] as OGID, NULL as ChildId, tt.*, CAST(tt.Name as VARCHAR(MAX)) as ChildName, CAST(tt.[Id] as VARCHAR(MAX)) as TagIds
-    FROM [Tag] tt
-    INNER JOIN [TagTag] tttt ON tt.[Id] = tttt.[PrimaryTagId]
-    --LEFT  JOIN TransactionTagTransactionTag tttt2 ON tt.TransactionTagId = tttt2.SecondaryTransactionTagId
-    --WHERE tttt2.SecondaryTransactionTagId IS NULL
+    SELECT t.[Id] as OGID, NULL as ChildId, t.Id, t.Name, CAST(t.Name as VARCHAR(MAX)) as ChildName, CAST(t.[Id] as VARCHAR(MAX)) as TagIds
+    FROM [Tag] t
+    INNER JOIN [TagTag] tt ON t.[Id] = tt.[PrimaryTagId]
     UNION ALL
-    SELECT cte.OGID, cte.Id as ChildId, tt.*, CAST(tt.Name + ', ' + cte.ChildName as VARCHAR(MAX)), CAST(tt.[Id] as VARCHAR(MAX)) +',' + cte.TagIds
-    FROM [Tag] tt
-    INNER JOIN [TagTag] tttt ON tt.[Id] = tttt.[SecondaryTagId]
-    INNER JOIN cte ON cte.Id = tttt.[PrimaryTagId]
+    SELECT cte.OGID, cte.Id as ChildId, t.Id, t.Name, CAST(t.Name + ', ' + cte.ChildName as VARCHAR(MAX)), CAST(t.[Id] as VARCHAR(MAX)) +',' + cte.TagIds
+    FROM [Tag] t
+    INNER JOIN [TagTag] tt ON t.[Id] = tt.[SecondaryTagId]
+    INNER JOIN cte ON cte.Id = tt.[PrimaryTagId]
   ),
   cte2 AS (
     SELECT DISTINCT cte.OGID as ID, cte.TagIds FROM cte
@@ -18,7 +16,7 @@ WITH  cte AS (
     WHERE cte2.[Id] IS NULL
   ),
   cte3 AS (
-    SELECT ID, CAST(splitTags.value as int) as ParentID, splitTags.ordinal as Ordinal FROM cte2
-    CROSS APPLY STRING_SPLIT(cte2.TagIds, ',', 1) splitTags
+    SELECT ID, CAST(splitags.value as int) as ParentID, splitags.ordinal as Ordinal FROM cte2
+    CROSS APPLY STRING_SPLIT(cte2.TagIds, ',', 1) splitags
   )
-  SELECT * FROM cte3 WHERE ID <> ParentID
+  SELECT ID, ParentID, Ordinal FROM cte3 WHERE ID <> ParentID

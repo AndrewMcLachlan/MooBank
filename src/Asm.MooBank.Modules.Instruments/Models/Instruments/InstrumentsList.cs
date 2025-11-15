@@ -14,6 +14,8 @@ public record InstrumentsList
 [DisplayName("InstrumentGroup")]
 public record Group
 {
+    public Guid? Id { get; init; }
+    
     public required string Name { get; init; }
 
     public required IEnumerable<Instrument> Instruments { get; init; }

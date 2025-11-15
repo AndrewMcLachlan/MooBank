@@ -14,6 +14,8 @@ public static class Policies
 
     public const string InstrumentViewer = nameof(InstrumentViewer);
 
+    public const string GroupOwner = nameof(GroupOwner);
+
     public const string BudgetLine = nameof(BudgetLine);
 
     public static AuthorizationPolicy GetInstrumentOwnerPolicy(string routeParam = "instrumentId") =>
@@ -34,6 +36,17 @@ public static class Policies
     {
         policyBuilder.RequireAuthenticatedUser();
         policyBuilder.AddRequirements(new InstrumentViewerRequirement(routeParam));
+
+        return policyBuilder.Build();
+    }
+
+    public static AuthorizationPolicy GetGroupOwnerPolicy(string routeParam = "groupId") =>
+        new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme).GetGroupOwnerPolicy(routeParam);
+
+    public static AuthorizationPolicy GetGroupOwnerPolicy(this AuthorizationPolicyBuilder policyBuilder, string routeParam = "groupId")
+    {
+        policyBuilder.RequireAuthenticatedUser();
+        policyBuilder.AddRequirements(new GroupOwnerRequirement(routeParam));
 
         return policyBuilder.Build();
     }

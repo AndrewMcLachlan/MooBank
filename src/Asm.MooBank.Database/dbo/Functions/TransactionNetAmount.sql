@@ -10,7 +10,7 @@ BEGIN
     DECLARE @AbsAmount DECIMAL(12,4) = ISNULL((SELECT SUM([dbo].[TransactionSplitNetAmount](@TransactionId, ts.Id,  ts.Amount)) FROM [TransactionSplitNetAmounts] ts WHERE ts.TransactionId = @TransactionId), @Amount)
 
     IF @TransactionTypeId % 2 = 0
-    SET @AbsAmount = -@AbsAmount
+    SET @AbsAmount = (CAST(-@AbsAmount as DECIMAL(12, 4)))
 
     RETURN @AbsAmount
 END

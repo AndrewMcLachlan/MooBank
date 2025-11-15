@@ -25,7 +25,8 @@ public class Groups : EndpointGroupBase
 
         routeGroupBuilder.MapQuery<Get, Models.Group>("/{id}")
             .WithNames("Get Group")
-            .Produces<Models.Group>();
+            .Produces<Models.Group>()
+            .RequireAuthorization(Policies.GetGroupOwnerPolicy("id"));
 
         routeGroupBuilder.MapPostCreate<Create, Models.Group>("/", "Get Group".ToMachine(), (group) => new { id = group.Id })
             .WithNames("Create Group")
@@ -33,9 +34,11 @@ public class Groups : EndpointGroupBase
 
         routeGroupBuilder.MapPatchCommand<Update, Models.Group>("/{id}")
             .WithNames("Update Group")
-            .Produces<Models.Group>();
+            .Produces<Models.Group>()
+            .RequireAuthorization(Policies.GetGroupOwnerPolicy("id"));
 
         routeGroupBuilder.MapDelete<Delete>("/{id}")
-            .WithNames("Delete Group");
+            .WithNames("Delete Group")
+            .RequireAuthorization(Policies.GetGroupOwnerPolicy("id"));
     }
 }

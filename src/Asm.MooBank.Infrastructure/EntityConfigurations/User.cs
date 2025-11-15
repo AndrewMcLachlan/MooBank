@@ -10,5 +10,10 @@ public class AccountHolderConfiguration : IEntityTypeConfiguration<User>
             .WithOne(e => e.User)
             .HasPrincipalKey(e => e.Id)
             .HasForeignKey(p => p.UserId);
+
+        entity.HasMany(p => p.Groups)
+            .WithOne(e => e.Owner)
+            .HasPrincipalKey(e => e.Id)
+            .HasForeignKey(p => p.OwnerId);
     }
 }
