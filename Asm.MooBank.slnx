@@ -9,6 +9,7 @@
     <File Path=".editorconfig" />
     <File Path=".gitignore" />
     <File Path=".npmrc" />
+    <File Path="AGENTS.md" />
     <File Path="Asm.MooBank.lutconfig" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Build.targets" />
