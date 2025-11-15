@@ -7,7 +7,7 @@ on:
   push:
     branches:
       - "main"
-  pull_request_target:
+  pull_request: 
     branches:
       - "main"
   workflow_dispatch:
@@ -21,7 +21,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       packages: read
-      pull-requests: write
     steps:
     - uses: actions/checkout@v5
     - name: Setup .NET
@@ -66,6 +65,22 @@ jobs:
       with:
         name: publish
         path: ${{ github.workspace }}/publish
+    - name: Log in to GitHub Container Registry
+      if: github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main'
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ./src/Asm.MooBank.Web.Api/Dockerfile
+        push: ${{ github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main' }}
+        tags: |
+          ghcr.io/andrewmclachlan/moobank:${{steps.set-version-number.outputs.version}}
+          ghcr.io/andrewmclachlan/moobank:latest
 
   staging:
     concurrency:
@@ -84,7 +99,7 @@ jobs:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-  production:
+  production: 
     concurrency:
       group: moobank-deploy-group
       cancel-in-progress: true
