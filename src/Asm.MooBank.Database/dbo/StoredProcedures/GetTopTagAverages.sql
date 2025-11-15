@@ -65,7 +65,7 @@ BEGIN
     SELECT
         TagId,
         Name,
-        CAST(SUM(NetAmount) / NULLIF(@PeriodCount, 0) AS decimal(18,4)) AS Average
+        CAST(SUM(NetAmount) / NULLIF(@PeriodCount, 0) AS decimal(12,4)) AS Average
     FROM #TagAmounts
     GROUP BY TagId, Name
     ORDER BY Average DESC;

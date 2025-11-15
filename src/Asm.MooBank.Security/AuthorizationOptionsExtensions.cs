@@ -23,6 +23,11 @@ public static class AuthorizationOptionsExtensions
             policy.GetInstrumentViewerPolicy();
         });
 
+        options.AddPolicy(Policies.GroupOwner, policy =>
+        {
+            policy.GetGroupOwnerPolicy();
+        });
+
         options.AddPolicy(Policies.Admin, policy =>
         {
             policy.RequireAuthenticatedUser();

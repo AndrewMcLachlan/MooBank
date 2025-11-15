@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Asm.AspNetCore.Modules;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 

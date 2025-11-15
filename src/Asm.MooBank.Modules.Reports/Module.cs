@@ -12,6 +12,7 @@ public class Module : IModule
     public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
     {
         new Endpoints.Reports().MapGroup(endpoints).RequireAuthorization(Policies.GetInstrumentViewerPolicy("accountId"));
+        new Endpoints.GroupReports().MapGroup(endpoints).RequireAuthorization(Policies.GetGroupOwnerPolicy("groupId"));
 
         return endpoints;
     }

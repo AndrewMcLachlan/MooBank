@@ -1,7 +1,6 @@
 import { RouteDefinition } from "@andrewmclachlan/moo-app";
 import Layout from "Layout";
 import * as Pages from "./pages";
-import { MonthlyBalances } from "pages/reports/MonthlyBalances";
 
 export const routes: RouteDefinition = {
     layout: {
@@ -24,7 +23,7 @@ export const routes: RouteDefinition = {
                             byTag: { path: "by-tag", element: <Pages.ByTag /> },
                             tagTrend: { path: "tag-trend/:tagId?", element: <Pages.TagTrend /> },
                             allTagAverage: { path: "all-tag-average", element: <Pages.AllTagAverage /> },
-                            MonthlyBalances: {path: "monthly-balances", element: <MonthlyBalances /> },
+                            MonthlyBalances: {path: "monthly-balances", element: <Pages.GroupMonthlyBalances /> },
                         }
                     },
                     virtual: {
@@ -74,6 +73,7 @@ export const routes: RouteDefinition = {
             groups: { path: "/groups", element: <Pages.ManageGroups /> },
             groupsManage: { path: "/groups/:id/manage", element: <Pages.ManageGroup /> },
             groupsCreate: { path: "/groups/create", element: <Pages.CreateGroup /> },
+            groupReportMonthlyBalances: { path: "/groups/:id/reports/monthly-balances", element: <Pages.GroupMonthlyBalances /> },
             profile: { path: "/profile", element: <Pages.Profile /> },
             fallback: { path: "*", element: <Pages.Error404 /> },
         }

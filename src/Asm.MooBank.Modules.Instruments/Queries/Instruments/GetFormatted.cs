@@ -47,6 +47,7 @@ internal class GetFormattedHandler(IQueryable<Domain.Entities.Account.LogicalAcc
 
             return new Group
             {
+                Id = ag!.Id,
                 Name = ag!.Name,
                 Instruments = matchingAccounts,
                 ShowTotal = ag.ShowPosition,
@@ -57,6 +58,7 @@ internal class GetFormattedHandler(IQueryable<Domain.Entities.Account.LogicalAcc
         Group otherAccounts =
             new()
             {
+                Id = null,
                 Name = "Other Accounts",
                 Instruments = [
                     .. institutionAccounts1.Where(a => a.GetGroup(userId) == null).ToModel(currencyConverter),

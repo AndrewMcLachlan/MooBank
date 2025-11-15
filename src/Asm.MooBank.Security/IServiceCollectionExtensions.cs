@@ -15,6 +15,7 @@ public static class IServiceCollectionExtensions
         services.AddScoped<IAuthorizationHandler, InstrumentOwnerAuthorisationHandler>();
         services.AddScoped<IAuthorizationHandler, InstrumentViewerAuthorisationHandler>();
         services.AddScoped<IAuthorizationHandler, FamilyMemberAuthorisationHandler>();
+        services.AddScoped<IAuthorizationHandler, GroupOwnerAuthorisationHandler>();
 
         return services;
     }

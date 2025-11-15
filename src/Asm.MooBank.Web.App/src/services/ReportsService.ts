@@ -27,6 +27,8 @@ export const useAllTagAverageReport = (accountId: string, start: Date, end: Date
 
 export const useMonthlyBalancesReport = (accountId: string, start: Date, end: Date) => useApiGet<MonthlyBalancesReport>([reportsKey, accountId, "monthly-balances", start, end], trimEnd("/", `api/accounts/${accountId}/reports/monthly-balances${datesToUrl(start, end)}`), { enabled: (!!start && !!end) });
 
+export const useGroupMonthlyBalancesReport = (groupId: string, start: Date, end: Date) => useApiGet<MonthlyBalancesReport>([reportsKey, "group", groupId, "monthly-balances", start, end], trimEnd("/", `api/groups/${groupId}/reports/monthly-balances${datesToUrl(start, end)}`), { enabled: (!!groupId && !!start && !!end) });
+
 const toQuery = (settings: TrendReportSettings) => {
 
     if (!settings) return "";

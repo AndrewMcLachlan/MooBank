@@ -12,6 +12,7 @@ MooBank is a browser-based application designed to enable an individual to manag
 - **Tagging** - A way to categorize and organize transactions for better tracking and reporting.
 - **Transaction Splits** - Allows a single transaction to be allocated across multiple categories or tags.
 - **Recurring Transactions** - Scheduled transactions that are automatically created on Virtual Instruments.
+- **Groups** - The ability to group instruments together and see a total balance for all instruments in the group
 
 # Architecture
 
@@ -34,7 +35,7 @@ The software design patterns employed in MooBank include:
 - **Specification Pattern** - Used for composable query logic in repositories.
 - **Domain Events** - For decoupled communication between aggregates.
 
-## Code Layout
+## Code Layout (Backend)
 
 The codebase is organized into the following main projects:
 
@@ -75,6 +76,7 @@ The codebase is organized into the following main projects:
 ### Database
 - **Asm.MooBank.Database**: SQL Server Database Project (SDK-style) containing schemas, tables, functions, and stored procedures.
 
+
 ## Libraries and Frameworks
 
 ### Backend
@@ -99,7 +101,16 @@ The codebase is organized into the following main projects:
 - **React Router**: A library for routing in React applications.
 - **MSAL (Microsoft Authentication Library)**: For handling authentication and authorization with Azure AD.
 - **React Query (TanStack Query)**: For server state management and API calls.
-- **MooApp**: A set of custom packages of React components and hooks to simplify application development. The code for MooApp is available at: https://github.com/AndrewMcLachlan/MooApp
+- **MooApp**: A set of custom packages of React components and hooks to simplify application development.
+    - **@andrewmclachlan/moo-ds** - An opinionated component library, based on Bootstrap and React-Bootstrap
+    - **@andrewmclachlan/moo-app** - Provides app-level components such as:
+        - An application bootstrapper
+        - A layout
+        - Authentication with MSAL
+        - API management with React Query and Axios, with custom React Query hooks for different HTTP verbs
+    
+
+The code for MooApp is available at: https://github.com/AndrewMcLachlan/MooApp
 
 ## CQRS Implementation Guidelines
 

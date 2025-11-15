@@ -30,7 +30,7 @@ public static class IServiceCollectionExtensions
                     Guid userId = context.Principal!.GetClaimValue<Guid>(Security.ClaimTypes.UserId);
                     var dataContext = context.HttpContext.RequestServices.GetRequiredService<MooBankContext>();
 
-                    var user = await dataContext.Set<Domain.Entities.User.User>().Include(ah => ah.InstrumentOwners).ThenInclude(aah => aah.Instrument).ThenInclude(i => i.VirtualInstruments).AsNoTracking().SingleOrDefaultAsync(ah => ah.Id == userId);
+                    var user = await dataContext.Set<Domain.Entities.User.User>().Include(ah => ah.InstrumentOwners).ThenInclude(aah => aah.Instrument).ThenInclude(i => i.VirtualInstruments).Include(u => u.Groups).AsNoTracking().SingleOrDefaultAsync(ah => ah.Id == userId);
 
                     List<Claim> claims = [];
 
@@ -61,9 +61,17 @@ public static class IServiceCollectionExtensions
                     var sharedInstruments = await dataContext.Set<Domain.Entities.Instrument.Instrument>().Where(a => a.ShareWithFamily && a.Owners.Any(ah => ah.User.FamilyId == user.FamilyId)).Include(i => i.VirtualInstruments).ToListAsync();
                     var virtualShared = sharedInstruments.SelectMany(i => i.VirtualInstruments).Select(i => i.Id);
 
-                    var instruments = owned.Union(virtualOwned).Union(sharedInstruments.Select(i => i.Id).Union(virtualShared)).ToList();
+                    var instruments = owned.Union(virtualOwned);
 
                     claims = [.. instruments.Select(a => new Claim(Security.ClaimTypes.AccountId, a.ToString()))];
+
+                    var allShared = sharedInstruments.Select(i => i.Id).Union(virtualShared).Except(owned);
+
+                    claims.AddRange(allShared.Select(a => new Claim(Security.ClaimTypes.SharedAccountId, a.ToString())));
+
+                    var groups = user.Groups.Select(i => i.Id);
+
+                    claims.AddRange(groups.Select(a => new Claim(Security.ClaimTypes.GroupId, a.ToString())));
 
                     if (user.PrimaryAccountId != null) claims.Add(new Claim(Security.ClaimTypes.PrimaryAccountId, user.PrimaryAccountId.Value.ToString()));
                     claims.Add(new Claim(Security.ClaimTypes.FamilyId, user.FamilyId.ToString()));

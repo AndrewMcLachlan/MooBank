@@ -21,4 +21,7 @@ internal class ReportRepository(MooBankContext mooBankContext) : IReportReposito
 
     public async Task<IEnumerable<MonthlyBalance>> GetMonthlyBalances(Guid accountId, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
         await mooBankContext.MonthlyBalances.FromSqlInterpolated($@"EXEC dbo.GetMonthlyBalances {accountId}, {startDate}, {endDate}").AsNoTracking().ToListAsync(cancellationToken);
+
+    public async Task<IEnumerable<MonthlyBalance>> GetGroupMonthlyBalances(Guid groupId, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
+        await mooBankContext.MonthlyBalances.FromSqlInterpolated($@"EXEC dbo.GetGroupMonthlyBalances {groupId}, {startDate}, {endDate}").AsNoTracking().ToListAsync(cancellationToken);
 }

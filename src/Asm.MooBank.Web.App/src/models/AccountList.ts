@@ -6,6 +6,7 @@ export interface AccountList {
 }
 
 export interface AccountListGroup {
+    id?: string,
     name: string,
     instruments: LogicalAccount[],
     showTotal: boolean,

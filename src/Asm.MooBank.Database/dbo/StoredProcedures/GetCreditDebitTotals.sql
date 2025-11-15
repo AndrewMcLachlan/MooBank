@@ -16,7 +16,7 @@ BEGIN
     )
     SELECT
         t.TransactionTypeId AS TransactionType,
-        SUM(CASE WHEN t.TransactionTypeId = 2 THEN -sn.NetAmount ELSE sn.NetAmount END) AS Total
+        SUM(CASE WHEN t.TransactionTypeId = 2 THEN -CAST(sn.NetAmount AS DECIMAL(12,4)) ELSE CAST(sn.NetAmount AS DECIMAL(12,4)) END) AS Total
     FROM dbo.[Transaction] t
     JOIN SplitNet sn ON sn.TransactionId = t.TransactionId
     WHERE t.AccountId = @AccountId
