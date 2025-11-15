@@ -47,7 +47,7 @@ if (sqlConfig.Enabled)
     api.WaitFor(mooBankDb);
 }
 
-builder.AddNpmApp("moobank-app", "../Asm.MooBank.Web.App", "start")
+builder.AddJavaScriptApp("moobank-app", "../Asm.MooBank.Web.App", "start")
     .WithReference(api)
     .WaitFor(api)
     .WithHttpEndpoint(port: 3005, isProxied: false);
