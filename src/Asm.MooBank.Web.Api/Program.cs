@@ -53,7 +53,7 @@ void AddServices(WebApplicationBuilder builder)
             document.Info.Title = "MooBank API";
             document.Info.Version = fileVersionInfo.FileVersion;
 
-            document.Tags ??= new HashSet<OpenApiTag>();
+            document.Tags ??= []; // new HashSet<OpenApiTag>();
             document.Tags.AddRange(document.Tags.OrderBy(t => t.Name));
 
             return Task.CompletedTask;
