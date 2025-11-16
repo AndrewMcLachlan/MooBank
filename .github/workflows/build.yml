@@ -138,8 +138,7 @@ jobs:
       environment: Production
       app-name: moobank
       resource-group: MooBank
-      container-image: ghcr.io/andrewmclachlan/moobank:${{needs.build.outputs.version}}
-      container-name: main
+      slot-name: staging
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
@@ -158,6 +157,7 @@ jobs:
       app-name: moobank
       slot-name: staging
       container-image: ghcr.io/andrewmclachlan/moobank:${{needs.build.outputs.version}}
+      container-name: moobank-staging
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
