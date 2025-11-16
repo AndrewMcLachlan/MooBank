@@ -155,6 +155,7 @@ jobs:
       environment: Post-Production
       artifact-name: publish
       app-name: moobank
+      resource-group: MooBank
       slot-name: staging
       container-image: ghcr.io/andrewmclachlan/moobank:${{needs.build.outputs.version}}
       container-name: moobank-staging
