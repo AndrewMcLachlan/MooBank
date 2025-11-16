@@ -61,6 +61,5 @@
     <Build />
     <Deploy />
   </Project>
-  <Project Path="src/Asm.MooBank.Web.Jobs/Asm.MooBank.Web.Jobs.csproj" />
   <Project Path="src/Asm.MooBank/Asm.MooBank.csproj" />
 </Solution>
