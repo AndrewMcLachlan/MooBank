@@ -113,7 +113,7 @@ jobs:
       cancel-in-progress: true
     needs: [build, docker-push]
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
-    uses: AndrewMcLachlan/actions/.github/workflows/deploy-azure.yml@feature/azure-app-container-deployment
+    uses: AndrewMcLachlan/actions/.github/workflows/deploy-azure.yml@v4
     with:
       environment: Staging
       artifact-name: publish
@@ -150,7 +150,7 @@ jobs:
       cancel-in-progress: true
     needs: production
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
-    uses: AndrewMcLachlan/actions/.github/workflows/deploy-azure.yml@feature/azure-app-container-deployment
+    uses: AndrewMcLachlan/actions/.github/workflows/deploy-azure.yml@v4
     with:
       environment: Post-Production
       artifact-name: publish
