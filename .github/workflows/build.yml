@@ -21,6 +21,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       packages: read
+    outputs:
+      version: ${{ steps.set-version-number.outputs.version }}
     steps:
     - uses: actions/checkout@v5
     - name: Setup .NET
@@ -65,8 +67,31 @@ jobs:
       with:
         name: publish
         path: ${{ github.workspace }}/publish
+    - name: Build Docker image (validation only)
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ./src/Asm.MooBank.Web.Api/Dockerfile
+        push: false
+        tags: |
+          ghcr.io/andrewmclachlan/moobank:${{steps.set-version-number.outputs.version}}
+          ghcr.io/andrewmclachlan/moobank:latest
+
+  docker-push:
+    runs-on: ubuntu-latest
+    needs: build
+    if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
+    permissions:
+      packages: write
+      contents: read
+    steps:
+    - uses: actions/checkout@v5
+    - name: Download publish artifact
+      uses: actions/download-artifact@v5
+      with:
+        name: publish
+        path: ${{ github.workspace }}/publish
     - name: Log in to GitHub Container Registry
-      if: github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main'
       uses: docker/login-action@v3
       with:
         registry: ghcr.io
@@ -77,16 +102,18 @@ jobs:
       with:
         context: .
         file: ./src/Asm.MooBank.Web.Api/Dockerfile
-        push: ${{ github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main' }}
+        push: true
         tags: |
-          ghcr.io/andrewmclachlan/moobank:${{steps.set-version-number.outputs.version}}
+          ghcr.io/andrewmclachlan/moobank:${{needs.build.outputs.version}}
           ghcr.io/andrewmclachlan/moobank:latest
+        cache-from: type=registry,ref=ghcr.io/andrewmclachlan/moobank:latest
+        cache-to: type=inline
 
   staging:
     concurrency:
       group: moobank-deploy-group
       cancel-in-progress: true
-    needs: build
+    needs: [build, docker-push]
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
     uses: AndrewMcLachlan/actions/.github/workflows/deploy-azure.yml@v4
     with:
