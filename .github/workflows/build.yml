@@ -113,12 +113,13 @@ jobs:
       cancel-in-progress: true
     needs: [build, docker-push]
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
-    uses: AndrewMcLachlan/actions/.github/workflows/deploy-azure.yml@v4
+    uses: AndrewMcLachlan/actions/.github/workflows/deploy-azure.yml@feature/azure-app-container-deployment
     with:
       environment: Staging
       artifact-name: publish
       app-name: moobank
       slot-name: staging
+      container-image: ghcr.io/andrewmclachlan/moobank:${{needs.build.outputs.version}}
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
@@ -147,12 +148,13 @@ jobs:
       cancel-in-progress: true
     needs: production
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
-    uses: AndrewMcLachlan/actions/.github/workflows/deploy-azure.yml@v4
+    uses: AndrewMcLachlan/actions/.github/workflows/deploy-azure.yml@feature/azure-app-container-deployment
     with:
       environment: Post-Production
       artifact-name: publish
       app-name: moobank
       slot-name: staging
+      container-image: ghcr.io/andrewmclachlan/moobank:${{needs.build.outputs.version}}
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
