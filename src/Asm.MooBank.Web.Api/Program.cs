@@ -10,6 +10,7 @@ using Asm.MooBank.Institution.Macquarie;
 using Asm.MooBank.Security;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.OpenApi;
+using Microsoft.Azure.WebJobs;
 using Microsoft.OpenApi;
 
 var result = WebApplicationStart.Run(args, "Asm.MooBank.Web.Api", AddServices, AddApp, AddHealthChecks);
@@ -115,6 +116,23 @@ void AddServices(WebApplicationBuilder builder)
     services.AddMacquarie();
 
     services.AddHealthChecks();
+
+    // Register WebJobs SDK for in-process background jobs
+    builder.Host.ConfigureWebJobs(webJobsBuilder =>
+    {
+        webJobsBuilder.AddTimers();
+    });
+    
+    // Ensure WebJobs host has access to all services
+    builder.Host.ConfigureServices((context, webJobServices) =>
+    {
+        // Register all necessary services for WebJobs
+        webJobServices.AddMooBankDbContext(builder.Environment, builder.Configuration);
+        webJobServices.AddRepositories();
+        webJobServices.AddEntities();
+        webJobServices.AddServices();
+        webJobServices.AddIntegrations(context.Configuration);
+    });
 }
 
 void AddApp(WebApplication app)
