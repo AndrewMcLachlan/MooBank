@@ -33,7 +33,7 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <OpenApiGenerateDocuments>false</OpenApiGenerateDocuments>
+    <OpenApiGenerateDocuments>true</OpenApiGenerateDocuments>
     <OpenApiDocumentsDirectory>.</OpenApiDocumentsDirectory>
     <OpenApiGenerateDocumentsOptions>--file-name openapi-v1</OpenApiGenerateDocumentsOptions>
   </PropertyGroup>

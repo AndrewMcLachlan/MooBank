@@ -44,7 +44,7 @@ void AddServices(WebApplicationBuilder builder)
 
     services.AddOpenApi("v1", options =>
     {
-        options.OpenApiVersion = Microsoft.OpenApi.OpenApiSpecVersion.OpenApi3_0;
+        options.OpenApiVersion = OpenApiSpecVersion.OpenApi3_1;
         options.AddDocumentTransformer<OidcSecuritySchemeTransformer>();
         options.AddDocumentTransformer((document, context, cancellationToken) =>
         {
