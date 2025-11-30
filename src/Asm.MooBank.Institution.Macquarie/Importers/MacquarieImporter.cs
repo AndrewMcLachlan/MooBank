@@ -122,7 +122,8 @@ internal partial class MacquarieImporter(IQueryable<TransactionRaw> rawTransacti
                 transactionTime.ToStartOfDay(),
                 null, // No sub-type yet
                 "Macquarie Import",
-                institutionAccountId
+                institutionAccountId,
+                transactionType: transactionType
            );
 
             var transactionRaw = new TransactionRaw

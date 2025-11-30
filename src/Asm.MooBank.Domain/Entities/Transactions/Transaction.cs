@@ -56,9 +56,10 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
         DateTime transactionTime,
         TransactionSubType? transactionSubType,
         string source,
-        Guid? institutionAccountId)
+        Guid? institutionAccountId,
+        TransactionType? transactionType = null)
     {
-        var transactionType = amount < 0 ? TransactionType.Debit : TransactionType.Credit;
+        transactionType ??= amount < 0 ? TransactionType.Debit : TransactionType.Credit;
 
         Transaction transaction = new()
         {
@@ -67,7 +68,7 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
             Amount = amount,
             Description = description,
             TransactionTime = transactionTime,
-            TransactionType = transactionType,
+            TransactionType = transactionType.Value,
             TransactionSubType = transactionSubType,
             Source = source,
             InstitutionAccountId = institutionAccountId,

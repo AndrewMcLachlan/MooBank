@@ -31,7 +31,7 @@ public static class TransactionExtensions
         {
             Id = transaction.Id,
             Reference = transaction.Reference,
-            Amount = transaction.Amount,
+            Amount = transaction.TransactionType == TransactionType.Debit ? -Math.Abs(transaction.Amount) : transaction.Amount, // Forces display of debit amounts as negative, regardless of how they are stored
             NetAmount = transaction.NetAmount,
             TransactionTime = transaction.TransactionTime,
             TransactionType = transaction.TransactionType,
