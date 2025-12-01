@@ -22,10 +22,16 @@ export const useImportTransactions = () => {
 
 export const useReprocessTransactions = () => {
 
-    const { mutateAsync, ...rest } = useApiPostEmpty<unknown, { instrumentId: string }>((variables) => `api/instruments/${variables.instrumentId}/import/reprocess`);
+    const client = useQueryClient();
 
-    const reprocessTransactions = (instrumentId: string) => {
-        return toast.promise(mutateAsync({ instrumentId }), { pending: "Requesting reprocessing", success: "Reprocessing started", error: "Failed to reprocess transactions" });
+    const { mutateAsync, ...rest } = useApiPostEmpty<unknown, { instrumentId: string, institutionAccountId: string }>((variables) => `api/instruments/${variables.instrumentId}/accounts/${variables.institutionAccountId}/import/reprocess`, {
+        onSuccess(data, variables, context) {
+            client.invalidateQueries({ queryKey: [accountsKey, variables.instrumentId] });
+        },
+    });
+
+    const reprocessTransactions = (instrumentId: string, institutionAccountId: string, options?: MutationOptions<unknown, Error, { instrumentId: string, institutionAccountId: string }>) => {
+        return toast.promise(mutateAsync({ instrumentId, institutionAccountId }, options), { pending: "Requesting reprocessing", success: "Reprocessing started", error: "Failed to reprocess transactions" });
     }
 
     return reprocessTransactions;

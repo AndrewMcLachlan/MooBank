@@ -37,7 +37,7 @@ public class ReprocessTransactionsService(IReprocessTransactionsQueue taskQueue,
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error occurred reprocessing transactions for account {AccountId}.", nameof(accountId));
+                    _logger.LogError(ex, "Error occurred reprocessing transactions for account {AccountId}.", accountId);
                 }
             }
 
