@@ -12,5 +12,5 @@ public interface IImporter
     /// <param name="account">The account to process</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task Reprocess(Guid instrumentId, CancellationToken cancellationToken = default);
+    Task Reprocess(Guid instrumentId, Guid accountId, CancellationToken cancellationToken = default);
 }

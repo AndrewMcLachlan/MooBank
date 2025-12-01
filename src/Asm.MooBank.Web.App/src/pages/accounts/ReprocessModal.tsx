@@ -27,12 +27,13 @@ export const ReprocessModal: React.FC<ReprocessModalProps> = ({ show, instrument
     const submitClick = () => {
         if (!institutionAccountId) return;
         reprocessTransactions(instrumentId, institutionAccountId);
+        onClose();
     }
 
     return (
         <Modal className="import" show={show} onHide={onClose} size="lg" centered>
             <Modal.Header closeButton>
-                <Modal.Title>Import Transactions</Modal.Title>
+                <Modal.Title>Reprocess Imported Transactions</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <div>

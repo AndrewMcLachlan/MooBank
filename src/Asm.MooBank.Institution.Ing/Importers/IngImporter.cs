@@ -170,7 +170,7 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
         return new MooBank.Models.TransactionImportResult(rawTransactionEntities.Select(r => r.Transaction), endBalance!.Value);
     }
 
-    public async Task Reprocess(Guid instrumentId, CancellationToken cancellationToken = default)
+    public async Task Reprocess(Guid instrumentId, Guid institutionAccountId, CancellationToken cancellationToken = default)
     {
         var transactions = await transactionRepository.GetTransactions(instrumentId, cancellationToken);
         var transactionIds = transactions.Select(t => t.Id);

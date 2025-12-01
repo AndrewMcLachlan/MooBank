@@ -31,7 +31,7 @@ public class ReprocessTransactionsService(IReprocessTransactionsQueue taskQueue,
 
                     var importer = await importerFactory.Create(instrumentId, accountId, cancellationToken) ?? throw new InvalidOperationException($"Import is not supported for account with ID: {accountId}");
 
-                    await importer.Reprocess(accountId, cancellationToken);
+                    await importer.Reprocess(instrumentId, accountId, cancellationToken);
 
                     await unitOfWork.SaveChangesAsync(cancellationToken);
                 }

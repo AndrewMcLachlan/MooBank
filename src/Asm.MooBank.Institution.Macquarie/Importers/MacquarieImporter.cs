@@ -1,4 +1,4 @@
-using Asm.MooBank.Domain.Entities.Account;
+using System.Diagnostics;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Importers;
 using Asm.MooBank.Institution.Macquarie.Domain;
@@ -33,7 +33,8 @@ internal partial class MacquarieImporter(IQueryable<TransactionRaw> rawTransacti
             t.Details,
             t.Date,
             t.Credit,
-            t.Debit
+            t.Debit,
+            t.Balance,
         }).ToListAsync(cancellationToken);
 
         // Throw away header row
@@ -108,8 +109,16 @@ internal partial class MacquarieImporter(IQueryable<TransactionRaw> rawTransacti
 
             endBalance ??= balance;
 
-            if (checkTransactions.Any(t => t.Details == columns[DetailsColumn] && t.Date == transactionTime && t.Debit == debit && t.Credit == credit))
+            if (checkTransactions.Any(t => t.Details == columns[DetailsColumn] && t.Date == transactionTime && t.Debit == debit && t.Credit == credit && t.Balance == balance))
             {
+                logger.LogInformation("Duplicate transaction found {details} {date}", columns[DetailsColumn], transactionTime);
+                continue;
+            }
+            else if (checkTransactions.Any(t => t.Details == columns[DetailsColumn] && t.Date == transactionTime && t.Debit == debit && t.Credit == credit))
+            {
+                var existing = rawTransactions.Single(t => t.Details == columns[DetailsColumn] && t.Date == transactionTime && t.Debit == debit && t.Credit == credit);
+                existing.Balance = balance;
+
                 logger.LogInformation("Duplicate transaction found {details} {date}", columns[DetailsColumn], transactionTime);
                 continue;
             }
@@ -117,7 +126,7 @@ internal partial class MacquarieImporter(IQueryable<TransactionRaw> rawTransacti
             Transaction transaction = Transaction.Create(
                 instrumentId,
                 null, // No card holder info available yet
-                transactionType == TransactionType.Credit ? credit : debit,
+                transactionType == TransactionType.Credit ? credit : -Math.Abs(debit),
                 columns[DetailsColumn],
                 transactionTime.ToStartOfDay(),
                 null, // No sub-type yet
@@ -152,16 +161,18 @@ internal partial class MacquarieImporter(IQueryable<TransactionRaw> rawTransacti
         return new MooBank.Models.TransactionImportResult(rawTransactionEntities.Select(r => r.Transaction), endBalance!.Value);
     }
 
-    public async Task Reprocess(Guid accountId, CancellationToken cancellationToken = default)
+    public async Task Reprocess(Guid instrumentId, Guid institutionAccountId, CancellationToken cancellationToken = default)
     {
-        var transactions = await transactionRepository.GetTransactions(accountId, cancellationToken);
+        var transactions = await transactionRepository.GetTransactions(instrumentId, institutionAccountId, cancellationToken);
         var transactionIds = transactions.Select(t => t.Id);
 
-        var rawTransactions = await transactionRawRepository.GetAll(accountId, cancellationToken);
+        var rawTransactions = await transactionRawRepository.GetAll(instrumentId, cancellationToken);
         var processed = rawTransactions.Where(t => t.TransactionId != null && transactionIds.Contains(t.TransactionId.Value));
 
         foreach (var raw in processed)
         {
+            raw.Transaction.TransactionType = raw.Credit > 0 ? TransactionType.Credit : TransactionType.Debit;
+            raw.Transaction.Amount = raw.Credit > 0 ? raw.Transaction.Amount : -Math.Abs(raw.Debit!.Value);
             raw.Transaction.Description = raw.Details;
             raw.Transaction.TransactionTime = raw.Date.ToStartOfDay();
         }

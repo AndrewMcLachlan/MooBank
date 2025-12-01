@@ -36,7 +36,7 @@ internal class TransactionRaw([DisallowNull] Guid id) : KeyedEntity<Guid>(id)
     [Precision(12, 4)]
     public decimal? Credit { get; set; }
 
-  [Precision(12, 4)]
+    [Precision(12, 4)]
     public decimal? Balance { get; set; }
 
     public string? OriginalDescription { get; set; }

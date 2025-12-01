@@ -5,8 +5,11 @@ namespace Asm.MooBank.Infrastructure.Repositories;
 
 public class TransactionRepository(MooBankContext dataContext) : Asm.Domain.Infrastructure.RepositoryWriteBase<MooBankContext, Transaction, Guid>(dataContext), ITransactionRepository
 {
-    public async Task<IEnumerable<Transaction>> GetTransactions(Guid accountId, CancellationToken cancellationToken = default) =>
-        await GetTransactionsQuery(accountId).ToListAsync(cancellationToken);
+    public async Task<IEnumerable<Transaction>> GetTransactions(Guid instrumentId, CancellationToken cancellationToken = default) =>
+        await GetTransactionsQuery(instrumentId).ToListAsync(cancellationToken);
+
+    public async Task<IEnumerable<Transaction>> GetTransactions(Guid instrumentId, Guid institutionAccountId, CancellationToken cancellationToken = default) =>
+        await Entities.Include(t => t.Splits).ThenInclude(t => t.Tags).Where(t => t.AccountId == instrumentId && t.InstitutionAccountId == institutionAccountId).ToListAsync(cancellationToken);
 
     private IQueryable<Transaction> GetTransactionsQuery(Guid accountId) =>
         Entities.Include(t => t.Splits).ThenInclude(t => t.Tags).Where(t => t.AccountId == accountId);
