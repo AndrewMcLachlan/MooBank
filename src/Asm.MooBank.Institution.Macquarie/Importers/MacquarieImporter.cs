@@ -1,7 +1,7 @@
-using System.Diagnostics;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Importers;
 using Asm.MooBank.Institution.Macquarie.Domain;
+using Asm.MooBank.Institution.Macquarie.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TransactionType = Asm.MooBank.Models.TransactionType;
@@ -100,10 +100,15 @@ internal partial class MacquarieImporter(IQueryable<TransactionRaw> rawTransacti
 
             TransactionType transactionType = !String.IsNullOrEmpty(columns[CreditColumn]) ? TransactionType.Credit : TransactionType.Debit;
 
-            if (!Decimal.TryParse(columns[BalanceColumn], out decimal balance))
+            // Allow pending transactions
+            if (!String.IsNullOrEmpty(columns[BalanceColumn]) && !Decimal.TryParse(columns[BalanceColumn], out decimal balance))
             {
                 logger.LogWarning("Incorrect balance format at line {lineCount}: {balance}", lineCount, columns[BalanceColumn]);
                 continue;
+            }
+            else
+            {
+                balance = 0;
             }
             #endregion
 
@@ -119,7 +124,7 @@ internal partial class MacquarieImporter(IQueryable<TransactionRaw> rawTransacti
                 var existing = rawTransactions.Single(t => t.Details == columns[DetailsColumn] && t.Date == transactionTime && t.Debit == debit && t.Credit == credit);
                 existing.Balance = balance;
 
-                logger.LogInformation("Duplicate transaction found {details} {date}", columns[DetailsColumn], transactionTime);
+                logger.LogInformation("Pending Transaction found and updated {details} {date}", columns[DetailsColumn], transactionTime);
                 continue;
             }
 
@@ -127,13 +132,22 @@ internal partial class MacquarieImporter(IQueryable<TransactionRaw> rawTransacti
                 instrumentId,
                 null, // No card holder info available yet
                 transactionType == TransactionType.Credit ? credit : -Math.Abs(debit),
-                columns[DetailsColumn],
+                GetDetails(columns[DetailsColumn], columns[SubcategoryColumn]),
                 transactionTime.ToStartOfDay(),
-                null, // No sub-type yet
+                columns[SubcategoryColumn] == "Transfers" ? MooBank.Models.TransactionSubType.Transfer : null, // No sub-type yet
                 "Macquarie Import",
                 institutionAccountId,
                 transactionType: transactionType
            );
+
+            transaction.Extra = new TransactionExtra
+            {
+                Category = columns[CategoryColumn],
+                Subcategory = columns[SubcategoryColumn],
+                Tags = columns[TagsColumn],
+                Notes = columns[NotesColumn],
+                OriginalDescription = columns[OriginalDescriptionColumn],
+            };
 
             var transactionRaw = new TransactionRaw
             {
@@ -173,8 +187,23 @@ internal partial class MacquarieImporter(IQueryable<TransactionRaw> rawTransacti
         {
             raw.Transaction.TransactionType = raw.Credit > 0 ? TransactionType.Credit : TransactionType.Debit;
             raw.Transaction.Amount = raw.Credit > 0 ? raw.Transaction.Amount : -Math.Abs(raw.Debit!.Value);
-            raw.Transaction.Description = raw.Details;
+            raw.Transaction.Description = GetDetails(raw.Details, raw.Subcategory);
             raw.Transaction.TransactionTime = raw.Date.ToStartOfDay();
+            raw.Transaction.Extra = new TransactionExtra
+            {
+                Category = raw.Category,
+                Subcategory = raw.Subcategory,
+                Tags = raw.Tags,
+                Notes = raw.Notes,
+                OriginalDescription = raw.OriginalDescription,
+            };
         }
     }
+
+    private static string? GetDetails(string? details, string? subcategory) =>
+        details switch
+        {
+            "Payment" => $"{details} - {subcategory}",
+            _ => details,
+        };
 }
