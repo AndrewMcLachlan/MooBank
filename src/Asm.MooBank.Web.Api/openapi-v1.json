@@ -3540,6 +3540,7 @@
           {
             "name": "instrumentId",
             "in": "path",
+            "description": "The ID of the instrument (account) to filter transactions for.",
             "required": true,
             "schema": {
               "type": "string",
@@ -3549,6 +3550,7 @@
           {
             "name": "Filter",
             "in": "query",
+            "description": "The search filter string to apply to transaction descriptions or references.",
             "schema": {
               "type": "string"
             }
@@ -3556,6 +3558,7 @@
           {
             "name": "Start",
             "in": "query",
+            "description": "The date and time to start filtering transactions from.",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -3564,6 +3567,7 @@
           {
             "name": "End",
             "in": "query",
+            "description": "The date and time to end filtering transactions at.",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -3572,6 +3576,7 @@
           {
             "name": "TagIds",
             "in": "query",
+            "description": "The integer IDs of the tags to filter by.",
             "schema": {
               "type": "array",
               "items": {
@@ -3587,6 +3592,7 @@
           {
             "name": "SortField",
             "in": "query",
+            "description": "The field to sort the results by.",
             "schema": {
               "type": "string"
             }
@@ -3594,6 +3600,7 @@
           {
             "name": "TransactionType",
             "in": "query",
+            "description": "The type of transactions to include.",
             "schema": {
               "$ref": "#/components/schemas/TransactionFilterType"
             }
@@ -3601,6 +3608,7 @@
           {
             "name": "SortDirection",
             "in": "query",
+            "description": "The direction to sort the results.",
             "required": true,
             "schema": {
               "$ref": "#/components/schemas/SortDirection"
@@ -3609,6 +3617,7 @@
           {
             "name": "Untagged",
             "in": "query",
+            "description": "Converts the 'untagged' route parameter to a boolean.",
             "schema": {
               "type": "string"
             }
@@ -3616,6 +3625,7 @@
           {
             "name": "ExcludeNetZero",
             "in": "query",
+            "description": "Exclude transactions where the amount has been offset to zero.",
             "schema": {
               "type": "boolean"
             }
@@ -3671,6 +3681,7 @@
           {
             "name": "instrumentId",
             "in": "path",
+            "description": "The ID of the instrument (account) to filter transactions for.",
             "required": true,
             "schema": {
               "type": "string",
@@ -3680,6 +3691,7 @@
           {
             "name": "Filter",
             "in": "query",
+            "description": "The search filter string to apply to transaction descriptions or references.",
             "schema": {
               "type": "string"
             }
@@ -3687,6 +3699,7 @@
           {
             "name": "Start",
             "in": "query",
+            "description": "The date and time to start filtering transactions from.",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -3695,6 +3708,7 @@
           {
             "name": "End",
             "in": "query",
+            "description": "The date and time to end filtering transactions at.",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -3703,6 +3717,7 @@
           {
             "name": "TagIds",
             "in": "query",
+            "description": "The integer IDs of the tags to filter by.",
             "schema": {
               "type": "array",
               "items": {
@@ -3718,6 +3733,7 @@
           {
             "name": "SortField",
             "in": "query",
+            "description": "The field to sort the results by.",
             "schema": {
               "type": "string"
             }
@@ -3725,6 +3741,7 @@
           {
             "name": "TransactionType",
             "in": "query",
+            "description": "The type of transactions to include.",
             "schema": {
               "$ref": "#/components/schemas/TransactionFilterType"
             }
@@ -3732,6 +3749,7 @@
           {
             "name": "SortDirection",
             "in": "query",
+            "description": "The direction to sort the results.",
             "required": true,
             "schema": {
               "$ref": "#/components/schemas/SortDirection"
@@ -3740,6 +3758,7 @@
           {
             "name": "untagged",
             "in": "path",
+            "description": "Converts the 'untagged' route parameter to a boolean.",
             "required": true,
             "schema": {
               "type": "string"
@@ -3748,6 +3767,7 @@
           {
             "name": "ExcludeNetZero",
             "in": "query",
+            "description": "Exclude transactions where the amount has been offset to zero.",
             "schema": {
               "type": "boolean"
             }
@@ -6837,7 +6857,7 @@
       "oidc": {
         "type": "openIdConnect",
         "description": "OIDC",
-        "openIdConnectUrl": "https://login.microsoftonline.com//00000000-0000-0000-0000-000000000000/v2.0/.well-known/openid-configuration"
+        "openIdConnectUrl": "https://login.microsoftonline.com/00000000-0000-0000-0000-000000000000/v2.0/.well-known/openid-configuration"
       }
     }
   },

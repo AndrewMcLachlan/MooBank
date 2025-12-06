@@ -4,6 +4,7 @@
     <PackageReference Include="Asm.AspNetCore.Modules" />
     <PackageReference Include="Asm.Cqrs.AspNetCore" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
+    <PackageReference Include="ModelContextProtocol" />
   </ItemGroup>
 
   <ItemGroup>

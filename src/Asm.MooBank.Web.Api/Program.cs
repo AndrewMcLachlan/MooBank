@@ -8,9 +8,8 @@ using Asm.MooBank.Institution.AustralianSuper;
 using Asm.MooBank.Institution.Ing;
 using Asm.MooBank.Institution.Macquarie;
 using Asm.MooBank.Security;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Asm.OAuth;
 using Microsoft.AspNetCore.OpenApi;
-using Microsoft.Azure.WebJobs;
 using Microsoft.OpenApi;
 
 var result = WebApplicationStart.Run(args, "Asm.MooBank.Web.Api", AddServices, AddApp, AddHealthChecks);
@@ -94,7 +93,18 @@ void AddServices(WebApplicationBuilder builder)
 
     services.AddPrincipalProvider();
 
-    services.AddAuthentication(builder.Configuration);
+    AzureOAuthOptions oAuthOptions = builder.Configuration.GetSection("OAuth").Get<AzureOAuthOptions>() ?? throw new InvalidOperationException("OAuth config not defined");
+
+    services.AddAuthentication(builder.Configuration)
+        .AddMcp(options =>
+        {
+            options.ResourceMetadata = new()
+            {
+                Resource = new Uri("api://moobank.mclachlan.family"),
+                AuthorizationServers = { new Uri(oAuthOptions.Authority) },
+                ScopesSupported = ["api://moobank.mclachlan.family/api.read"],
+            };
+        });
 
     services.AddAuthorization(options =>
     {
@@ -117,12 +127,31 @@ void AddServices(WebApplicationBuilder builder)
 
     services.AddHealthChecks();
 
+    services.AddMcpServer(options =>
+    {
+        options.ServerInfo = new()
+        {
+            Name = "MooBank",
+            Version = "0.1",
+            Icons =
+            [
+                new()
+                {
+                    MimeType = "image/svg+xml",
+                    Source = "https://cdn.mclachlan.family/images/moo/logo.svg",
+                }
+            ],
+        };
+    })
+        .WithHttpTransport()
+        .WithToolFromAssemblies("Asm.MooBank.Modules");
+
     // Register WebJobs SDK for in-process background jobs
     builder.Host.ConfigureWebJobs(webJobsBuilder =>
     {
         webJobsBuilder.AddTimers();
     });
-    
+
     // Ensure WebJobs host has access to all services
     builder.Host.ConfigureServices((context, webJobServices) =>
     {
@@ -169,6 +198,8 @@ void AddApp(WebApplication app)
     app.UseStaticFiles();
 
     app.UseAuthorization();
+
+    app.MapMcp("mcp").RequireAuthorization();
 
     IEndpointRouteBuilder builder = app.MapGroup("/api");
 
