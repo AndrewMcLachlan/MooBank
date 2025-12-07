@@ -18,8 +18,8 @@ public record UpdateBalance(Guid InstrumentId, Guid VirtualInstrumentId, decimal
     {
         var options = httpContext.RequestServices.GetRequiredService<IOptions<JsonOptions>>();
 
-        if (!Guid.TryParse(httpContext.Request.RouteValues["instrumentId"] as string, out Guid instrumentId)) throw new BadHttpRequestException("invalid instrument ID");
-        if (!Guid.TryParse(httpContext.Request.RouteValues["virtualInstrumentId"] as string, out Guid virtualInstrumentId)) throw new BadHttpRequestException("invalid virtual account ID");
+        if (!Guid.TryParse(httpContext.Request.RouteValues["instrumentId"] as string, out Guid instrumentId)) throw new BadHttpRequestException("Invalid Instrument ID");
+        if (!Guid.TryParse(httpContext.Request.RouteValues["virtualInstrumentId"] as string, out Guid virtualInstrumentId)) throw new BadHttpRequestException("Invalid Virtual Account ID");
 
         var update = await System.Text.Json.JsonSerializer.DeserializeAsync<UpdateBalance>(httpContext.Request.Body, options.Value.SerializerOptions, cancellationToken: httpContext.RequestAborted);
         return update! with { InstrumentId = instrumentId, VirtualInstrumentId = virtualInstrumentId };
