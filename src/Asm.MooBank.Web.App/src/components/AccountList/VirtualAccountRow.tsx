@@ -2,7 +2,7 @@ import classNames from "classnames";
 import React, { useEffect, useRef, useState } from "react";
 
 import { numberClassName } from "helpers";
-import { emptyGuid, useClickAway } from "@andrewmclachlan/moo-ds";
+import { EditColumn, emptyGuid, useClickAway } from "@andrewmclachlan/moo-ds";
 
 import { InstrumentId, VirtualAccount } from "models";
 import { useUpdateVirtualAccountBalance } from "services";
@@ -13,16 +13,16 @@ export const VirtualAccountRow: React.FC<VirtualAccountRowProps> = (props) => {
     const { balanceRef, editingBalance, balanceClick, balanceChange, balance, keyPress, onRowClick } = useComponentState(props);
 
     const clickable = props.account.id !== emptyGuid && props.account.controller === "Virtual";
-    const canEditBalance = props.account.id !== emptyGuid;
+    const canEditBalance = props.account.id !== emptyGuid && props.account.controller === "Manual";
 
     return (
-        <tr onClick={clickable ? onRowClick : undefined} className={classNames("virtual", clickable && "clickable", "d-none", "d-sm-table-row")} ref={balanceRef}>
+        <tr onClick={clickable ? onRowClick : undefined} className={classNames("virtual", clickable && "clickable", "d-none", "d-sm-table-row")}>
             <td></td>
             <td className="name">{props.account.name}</td>
-            <td className="d-none d-sm-table-cell">{props.account.controller == "Virtual" ? "Virtual" : "Reserved Sum"}</td>
+            <td className="d-none d-sm-table-cell">{props.account.controller === "Virtual" ? "Virtual" : "Reserved Sum"}</td>
             <td className={classNames("number", numberClassName(balance))} onClick={canEditBalance ? balanceClick : undefined}>
                 {!editingBalance && <Amount amount={balance} negativeColour minus />}
-                {editingBalance && <input type="number" value={balance} onChange={balanceChange} onKeyUp={keyPress} />}
+                {editingBalance && <input autoFocus type="number" className="form-control" value={balance} onChange={balanceChange} onKeyUp={keyPress} ref={balanceRef} />}
             </td>
         </tr>
     );

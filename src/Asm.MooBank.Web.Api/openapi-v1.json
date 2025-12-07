@@ -2332,7 +2332,7 @@
         }
       }
     },
-    "/api/instruments/{instrumentId}/virtual/{virtualAccountId}/balance": {
+    "/api/instruments/{instrumentId}/virtual/{virtualInstrumentId}/balance": {
       "patch": {
         "tags": [
           "Virtual Instruments"
