@@ -12,14 +12,15 @@ import { Amount } from "components/Amount";
 export const VirtualAccountRow: React.FC<VirtualAccountRowProps> = (props) => {
     const { balanceRef, editingBalance, balanceClick, balanceChange, balance, keyPress, onRowClick } = useComponentState(props);
 
-    const clickable = props.account.id !== emptyGuid;
+    const clickable = props.account.id !== emptyGuid && props.account.controller === "Virtual";
+    const canEditBalance = props.account.id !== emptyGuid;
 
     return (
         <tr onClick={clickable ? onRowClick : undefined} className={classNames("virtual", clickable && "clickable", "d-none", "d-sm-table-row")} ref={balanceRef}>
             <td></td>
             <td className="name">{props.account.name}</td>
-            <td className="d-none d-sm-table-cell">Virtual</td>
-            <td className={classNames("number", numberClassName(balance))} onClick={clickable ? balanceClick : undefined}>
+            <td className="d-none d-sm-table-cell">{props.account.controller == "Virtual" ? "Virtual" : "Reserved Sum"}</td>
+            <td className={classNames("number", numberClassName(balance))} onClick={canEditBalance ? balanceClick : undefined}>
                 {!editingBalance && <Amount amount={balance} negativeColour minus />}
                 {editingBalance && <input type="number" value={balance} onChange={balanceChange} onKeyUp={keyPress} />}
             </td>

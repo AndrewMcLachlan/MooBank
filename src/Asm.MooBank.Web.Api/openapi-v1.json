@@ -2332,6 +2332,26 @@
         }
       }
     },
+    "/api/instruments/{instrumentId}/virtual/{virtualAccountId}/balance": {
+      "patch": {
+        "tags": [
+          "Virtual Instruments"
+        ],
+        "operationId": "update-virtual-instrument-balance",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VirtualInstrument"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/reference-data/importer-types": {
       "get": {
         "tags": [
@@ -4156,6 +4176,13 @@
           "controller": {
             "$ref": "#/components/schemas/Controller"
           },
+          "closedDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
           "instrumentType": {
             "type": [
               "null",
@@ -4322,6 +4349,13 @@
           },
           "controller": {
             "$ref": "#/components/schemas/Controller"
+          },
+          "closedDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
           },
           "instrumentType": {
             "type": [
@@ -5074,6 +5108,9 @@
               "string"
             ],
             "format": "double"
+          },
+          "controller": {
+            "$ref": "#/components/schemas/Controller"
           }
         }
       },
@@ -5388,6 +5425,13 @@
           "controller": {
             "$ref": "#/components/schemas/Controller"
           },
+          "closedDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
           "instrumentType": {
             "type": [
               "null",
@@ -5577,6 +5621,13 @@
           },
           "controller": {
             "$ref": "#/components/schemas/Controller"
+          },
+          "closedDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
           },
           "instrumentType": {
             "type": [
@@ -5892,6 +5943,13 @@
           },
           "controller": {
             "$ref": "#/components/schemas/Controller"
+          },
+          "closedDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
           },
           "instrumentType": {
             "type": [
@@ -6812,6 +6870,13 @@
           },
           "controller": {
             "$ref": "#/components/schemas/Controller"
+          },
+          "closedDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
           },
           "instrumentType": {
             "type": [

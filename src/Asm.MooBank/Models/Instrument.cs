@@ -18,6 +18,8 @@ public abstract record Instrument
 
     public required Controller Controller { get; init; }
 
+    public DateOnly? ClosedDate { get; set; }
+
     public string? InstrumentType { get; set; }
 
     public Guid? GroupId { get; set; }

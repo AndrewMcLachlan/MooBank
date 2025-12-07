@@ -26,6 +26,7 @@ public static class VirtualAccountExtensions
             CurrentBalanceLocalCurrency = currencyConverter.Convert(account.Balance, account.Currency),
             BalanceDate = account.LastUpdated,
             LastTransaction = account.LastTransaction,
+            ClosedDate = account.ClosedDate,
             RecurringTransactions = account.RecurringTransactions.ToModel(),
         };
     }
@@ -39,5 +40,6 @@ public static class VirtualAccountExtensions
         Name = account.Name,
         Description = account.Description,
         Balance = account.CurrentBalance,
+        ClosedDate = account.ClosedDate,
     };
 }
