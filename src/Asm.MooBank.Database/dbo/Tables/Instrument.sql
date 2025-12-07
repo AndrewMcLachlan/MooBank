@@ -8,6 +8,7 @@
     [ShareWithFamily] BIT NOT NULL CONSTRAINT DF_Instrument_ShareWithFamily DEFAULT 0,
     [Slug] VARCHAR(50) NULL,
     [LastUpdated] DATETIMEOFFSET(0) NOT NULL CONSTRAINT DF_LastUpdated DEFAULT SYSUTCDATETIME(),
+    [ClosedDate] DATE NULL,
     CONSTRAINT PK_Instrument PRIMARY KEY CLUSTERED ([Id]),
     CONSTRAINT FK_Instrument_Controller FOREIGN KEY (ControllerId) REFERENCES [Controller]([Id]),
 )

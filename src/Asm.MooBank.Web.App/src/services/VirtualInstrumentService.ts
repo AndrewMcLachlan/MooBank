@@ -2,7 +2,7 @@ import { useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { LogicalAccount, InstrumentId, AccountList, VirtualAccount, CreateVirtualInstrument } from "../models";
 import { accountsKey } from "./AccountService";
 import { formattedAccountsKey } from "./InstrumentsService";
-import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/moo-app";
+import { useApiDelete, useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/moo-app";
 import { toast } from "react-toastify";
 
 interface VirtualAccountVariables {
@@ -95,4 +95,22 @@ export const useUpdateVirtualAccountBalance = () => {
     };
 
     return update;
+}
+
+export const useCloseVirtualAccount = () => {
+    const queryClient = useQueryClient();
+
+    const { mutateAsync, ...rest } = useApiDelete<VirtualAccountVariables>(({ accountId, virtualAccountId }) => `api/instruments/${accountId}/virtual/${virtualAccountId}`, {
+        onSuccess: (_data, { accountId }) => {
+            queryClient.invalidateQueries({ queryKey: [accountsKey] });
+            queryClient.invalidateQueries({ queryKey: [formattedAccountsKey] });
+            queryClient.invalidateQueries({ queryKey: ["virtualaccount", accountId] });
+        }
+    });
+
+    return {
+        mutateAsync: (accountId: InstrumentId, virtualAccountId: InstrumentId) =>
+            toast.promise(mutateAsync({ accountId, virtualAccountId }), { pending: "Closing virtual account", success: "Virtual account closed", error: "Failed to close virtual account" }),
+        ...rest,
+    };
 }

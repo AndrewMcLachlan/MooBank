@@ -146,21 +146,12 @@ void AddServices(WebApplicationBuilder builder)
         .WithHttpTransport()
         .WithToolFromAssemblies("Asm.MooBank.Modules");
 
+    services.AddIntegrations(builder.Configuration);
+
     // Register WebJobs SDK for in-process background jobs
     builder.Host.ConfigureWebJobs(webJobsBuilder =>
     {
         webJobsBuilder.AddTimers();
-    });
-
-    // Ensure WebJobs host has access to all services
-    builder.Host.ConfigureServices((context, webJobServices) =>
-    {
-        // Register all necessary services for WebJobs
-        webJobServices.AddMooBankDbContext(builder.Environment, builder.Configuration);
-        webJobServices.AddRepositories();
-        webJobServices.AddEntities();
-        webJobServices.AddServices();
-        webJobServices.AddIntegrations(context.Configuration);
     });
 }
 

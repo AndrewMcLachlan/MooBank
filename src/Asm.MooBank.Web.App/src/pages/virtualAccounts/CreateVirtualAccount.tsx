@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 
 import { SectionForm, Form } from "@andrewmclachlan/moo-ds";
 
-import { CreateVirtualInstrument, VirtualAccount } from "../../models";
+import { CreateVirtualInstrument } from "../../models";
 import { useCreateVirtualAccount } from "../../services";
 import { AccountPage, CurrencyInput, useAccount } from "components";
 
@@ -23,7 +23,9 @@ export const CreateVirtualAccount = () => {
         navigate(`/accounts/${parentAccount.id}/manage/`);
     }
 
-    const form = useForm<CreateVirtualInstrument>();
+    const form = useForm<CreateVirtualInstrument>({ defaultValues: { controller: "Virtual" } });
+
+    const selectedController = form.watch("controller");
 
     return (
         <AccountPage title="Create Virtual Account" breadcrumbs={[{ text: "Manage", route: `/accounts/${parentAccount?.id}/manage` }, { text: "Create Virtual Account", route: `/accounts/${parentAccount?.id}/manage/virtual/create` }]}>
@@ -39,6 +41,21 @@ export const CreateVirtualAccount = () => {
                 <Form.Group groupId="openingBalance" >
                     <Form.Label>Opening Balance</Form.Label>
                     <CurrencyInput />
+                </Form.Group>
+                <Form.Group groupId="controller">
+                    <Form.Label>Type</Form.Label>
+                    <div>
+                        <div className="btn-group" role="group" aria-label="Controller selection">
+                            <input type="radio" id="virtual" value="Virtual" className="btn-check" {...form.register("controller")} defaultChecked />
+                            <label htmlFor="virtual" className="btn btn-outline-primary">Virtual</label>
+                            <input type="radio" id="manual" value="Manual" className="btn-check" {...form.register("controller")} />
+                            <label htmlFor="manual" className="btn btn-outline-primary">Reserved Sum</label>
+                        </div>
+                        <div>
+                            <span className="small" hidden={selectedController !== "Virtual"}>A virtual transaction account. Use recurring transactions for regular top-ups</span>
+                            <span className="small" hidden={selectedController !== "Manual"}>Simply reserve a sum of money for a future purpose</span>
+                        </div>
+                    </div>
                 </Form.Group>
                 <Button type="submit" variant="primary">Save</Button>
             </SectionForm>

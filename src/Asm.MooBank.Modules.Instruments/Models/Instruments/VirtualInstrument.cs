@@ -19,6 +19,7 @@ public static class VirtualInstrumentExtensions
             CurrentBalanceLocalCurrency = currencyConverter.Convert(account.Balance, account.Currency),
             BalanceDate = account.LastUpdated,
             LastTransaction = account.LastTransaction,
+            ClosedDate = account.ClosedDate,
         };
     }
 
@@ -31,5 +32,6 @@ public static class VirtualInstrumentExtensions
         Name = account.Name,
         Description = account.Description,
         Balance = account.CurrentBalance,
+        ClosedDate = account.ClosedDate,
     };
 }

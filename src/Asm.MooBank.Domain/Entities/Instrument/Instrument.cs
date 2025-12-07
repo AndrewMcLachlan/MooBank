@@ -33,6 +33,8 @@ public abstract class Instrument(Guid id) : KeyedEntity<Guid>(id)
     [Column("ControllerId")]
     public Controller Controller { get; set; }
 
+    public DateOnly? ClosedDate { get; set; }
+
     [NotMapped]
     public string? Slug { get; set; }
 

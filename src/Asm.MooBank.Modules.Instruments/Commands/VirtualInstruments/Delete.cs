@@ -5,20 +5,11 @@ namespace Asm.MooBank.Modules.Instruments.Commands.VirtualInstruments;
 
 public record Delete(Guid InstrumentId, Guid VirtualAccountId) : ICommand;
 
-internal class DeleteHandler(IInstrumentRepository accountRepository, IUnitOfWork unitOfWork) : ICommandHandler<Delete>
+internal class DeleteHandler(IInstrumentRepository instrumentRepository, IUnitOfWork unitOfWork) : ICommandHandler<Delete>
 {
-    private readonly IInstrumentRepository _accountRepository = accountRepository;
-
     public async ValueTask Handle(Delete command, CancellationToken cancellationToken)
     {
-        var account = await _accountRepository.Get(command.InstrumentId, cancellationToken);
-
-        if (account is not Domain.Entities.Account.LogicalAccount institutionAccount)
-        {
-            throw new InvalidOperationException("Cannot delete virtual account on non-institution account.");
-        }
-
-        institutionAccount.RemoveVirtualInstrument(command.VirtualAccountId);
+        instrumentRepository.Delete(command.VirtualAccountId);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }

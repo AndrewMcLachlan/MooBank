@@ -50,7 +50,7 @@ export const ManageVirtualAccount = () => {
                 </Form.Group>
                 <Button type="submit" variant="primary">Save</Button>
             </SectionForm>
-            { account &&
+            { account && account.controller === "Virtual" &&
             <RecurringTransactions account={account} />
 }
         </AccountPage>

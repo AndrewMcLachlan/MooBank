@@ -35,7 +35,7 @@ public static class LogicalAccountExtensions
         IncludeInBudget = account.IncludeInBudget,
         InstitutionAccounts = account.InstitutionAccounts?.ToModel() ?? [],
         VirtualInstruments = account.VirtualInstruments != null && account.VirtualInstruments.Count != 0 ?
-                             account.VirtualInstruments.OrderBy(v => v.Name).Select(v => v.ToModel(currencyConverter)).ToArray() : [],
+                             account.VirtualInstruments.Where(v => v.ClosedDate == null).OrderBy(v => v.Name).Select(v => v.ToModel(currencyConverter)).ToArray() : [],
         RemainingBalance = Remaining(account, currencyConverter).RemainingBalance,
         RemainingBalanceLocalCurrency = Remaining(account, currencyConverter).RemainingBalanceLocalCurrency,
     };
@@ -71,7 +71,14 @@ public static class LogicalAccountExtensions
             return (null, null);
         }
 
-        var remainingBalance = account.Balance - account.VirtualInstruments.Sum(v => v.Balance);
+        var openVirtualInstruments = account.VirtualInstruments.Where(v => v.ClosedDate == null);
+
+        if (!openVirtualInstruments.Any())
+        {
+            return (null, null);
+        }
+
+        var remainingBalance = account.Balance - openVirtualInstruments.Sum(v => v.Balance);
 
         var remainingBalanceLocalCurrency = currencyConverter.Convert(remainingBalance, account.Currency);
 

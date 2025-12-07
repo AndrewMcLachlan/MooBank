@@ -8,7 +8,8 @@ public class InstrumentRepository(MooBankContext dataContext) : Asm.Domain.Infra
 {
     public override void Delete(Guid id)
     {
-        throw new NotImplementedException();
+        var instrument = Entities.Find(id) ?? throw new NotFoundException();
+        instrument.ClosedDate = DateOnly.FromDateTime(DateTime.UtcNow);
     }
 
     public override Task<Instrument> Get(Guid id, CancellationToken cancellationToken = default) =>
@@ -27,5 +28,5 @@ public class InstrumentRepository(MooBankContext dataContext) : Asm.Domain.Infra
     protected IQueryable<Instrument> GetById(Guid id) => Entities.Where(a => a.Id == id);
 
     public Task Reload(Instrument instrument, CancellationToken cancellationToken) =>
-    Context.Entry(instrument).ReloadAsync(cancellationToken);
+        Context.Entry(instrument).ReloadAsync(cancellationToken);
 }

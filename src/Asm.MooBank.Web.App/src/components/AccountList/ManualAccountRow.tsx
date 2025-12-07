@@ -33,7 +33,7 @@ export const ManualAccountRow: React.FC<AccountRowProps> = (props) => {
                 <td className="d-none d-sm-table-cell">{props.instrument.instrumentType}</td>
                 <td className={classNames("amount", "number", numberClassName(props.instrument.currentBalance))} onClick={balanceClick}>
                     {!editingBalance && <Amount amount={balance} />}
-                    {editingBalance && <input type="number" value={balance} onChange={balanceChange} onKeyUp={keyUp} />}
+                    {editingBalance && <input type="number" className="form-input" value={balance} onChange={balanceChange} onKeyUp={keyUp} />}
                 </td>
             </tr>
             {props.instrument.virtualInstruments && props.instrument.virtualInstruments.length > 0 && showVirtualAccounts &&

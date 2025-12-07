@@ -7,7 +7,7 @@ import { DeleteIcon, EditColumn, Icon, IconButton, SectionTable } from "@andrewm
 import { AccountPage, useAccount } from "components";
 import * as Models from "models";
 import { Controller } from "models";
-import { useReprocessTransactions, useVirtualAccounts } from "services";
+import { useCloseVirtualAccount, useReprocessTransactions, useVirtualAccounts } from "services";
 import { AccountForm } from "./AccountForm";
 import { InstitutionAccountRow } from "./bank/InstitutionAccountRow";
 import { useState } from "react";
@@ -17,6 +17,7 @@ import { ReprocessModal } from "./ReprocessModal";
 export const ManageAccount = () => {
 
     const reprocessTransactions = useReprocessTransactions();
+    const closeVirtualAccount = useCloseVirtualAccount();
     const [showReprocessModal, setShowReprocessModal] = useState(false);
     const navigate = useNavigate();
     const id = useIdParams();
@@ -58,6 +59,16 @@ export const ManageAccount = () => {
         setShowDetails(true);
     }
 
+    const handleEditVirtualAccount = (virtualAccountId: string) => {
+        navigate(`/accounts/${account?.id}/manage/virtual/${virtualAccountId}`);
+    }
+
+    const handleCloseVirtualAccount = async (virtualAccountId: string) => {
+        if (confirm("Are you sure you want to close this virtual account?")) {
+            await closeVirtualAccount.mutateAsync(account?.id ?? id, virtualAccountId);
+        }
+    }
+
     const form = useForm<Models.LogicalAccount>({ defaultValues: account });
 
     return (
@@ -72,7 +83,7 @@ export const ManageAccount = () => {
                         <th>Opened Date</th>
                         <th>Closed Date</th>
                         {account?.controller === "Import" && <th>Importer Type</th>}
-                        <th className="actions"></th>
+                        <th className="row-action column-5"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -87,13 +98,20 @@ export const ManageAccount = () => {
                     <tr>
                         <th>Name</th>
                         <th>Description</th>
+                        <th>Type</th>
+                        <th className="row-action column-5"></th>
                     </tr>
                 </thead>
                 <tbody>
                     {virtualAccounts && virtualAccounts.map(a => (
-                        <tr key={a.id} className="clickable" onClick={() => navigate(`/accounts/${account?.id}/manage/virtual/${a.id}`)}>
+                        <tr key={a.id}>
                             <td>{a.name}</td>
                             <td>{a.description}</td>
+                            <td>{a.controller === "Virtual" ? "Virtual" : "Reserved Sum"}</td>
+                            <td className="row-action">
+                                <Icon icon="pen-to-square" title="Edit" onClick={() => handleEditVirtualAccount(a.id)} />
+                                <Icon icon="door-closed" title="Close" onClick={() => handleCloseVirtualAccount(a.id)} />
+                            </td>
                         </tr>
                     ))}
                 </tbody>

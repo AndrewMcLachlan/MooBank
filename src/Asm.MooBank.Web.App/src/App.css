@@ -6,6 +6,7 @@
 @import "css/rainbow" layer(moobank);
 @import "css/components" layer(moobank);
 @import "css/filterPanel" layer(moobank);
+@import "css/form" layer(moobank);
 @import "css/transactions" layer(moobank);
 @import "css/treeflex";
 
@@ -31,6 +32,10 @@
 
     th.expander {
         width: 32px;
+    }
+
+    th.row-action {
+        min-width: 75px;
     }
 
     /*#region Headings*/

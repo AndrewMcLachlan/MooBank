@@ -20,7 +20,7 @@ internal class CreateHandler(IInstrumentRepository instrumentRepository, IUnitOf
         {
             Name = command.VirtualInstrument.Name,
             Description = command.VirtualInstrument.Description,
-            Controller = Controller.Virtual,
+            Controller = command.VirtualInstrument.Controller,
             Currency = instrument.Currency,
         };
 

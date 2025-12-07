@@ -62,7 +62,7 @@ export const Transactions: React.FC = () => {
             <MiniFilterPanel hidden={!compactMode} />
             <TransactionList />
             <TransactionList compact />
-            <Import show={showImport} accountId={account.id} onClose={() => setShowImport(false)} />
+            {account.controller === "Import" && <Import show={showImport} accountId={account.id} onClose={() => setShowImport(false)} />}   
         </AccountPage>
     );
 }

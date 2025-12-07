@@ -8,21 +8,21 @@ namespace Asm.MooBank.Modules.Transactions.Commands;
 
 public record UpdateBalance(Guid InstrumentId, CreateTransaction BalanceUpdate) : ICommand<MooBank.Models.Transaction>;
 
-internal class UpdateBalanceHandler(IInstrumentRepository accountRepository, ITransactionRepository transactionRepository, IUserIdProvider userIdProvider, IUnitOfWork unitOfWork) :  ICommandHandler<UpdateBalance, MooBank.Models.Transaction>
+internal class UpdateBalanceHandler(IInstrumentRepository instrumentRepository, ITransactionRepository transactionRepository, IUserIdProvider userIdProvider, IUnitOfWork unitOfWork) :  ICommandHandler<UpdateBalance, MooBank.Models.Transaction>
 {
     public async ValueTask<MooBank.Models.Transaction> Handle(UpdateBalance command, CancellationToken cancellationToken)
     {
-        var account = await accountRepository.Get(command.InstrumentId, cancellationToken);
+        var instrument = await instrumentRepository.Get(command.InstrumentId, cancellationToken);
 
-        if (account is not Domain.Entities.Instrument.TransactionInstrument transactionAccount)
+        if (instrument is not Domain.Entities.Instrument.TransactionInstrument transactionInstrument)
         {
             throw new InvalidOperationException("Not a transaction account.");
         }
 
-        var amount = command.BalanceUpdate.Amount - transactionAccount.Balance;
+        var amount = command.BalanceUpdate.Amount - transactionInstrument.Balance;
 
         var transaction = Domain.Entities.Transactions.Transaction.Create(
-            transactionAccount,
+            transactionInstrument,
             userIdProvider.CurrentUserId,
             amount,
             command.BalanceUpdate.Description ?? "Balance adjustment",
