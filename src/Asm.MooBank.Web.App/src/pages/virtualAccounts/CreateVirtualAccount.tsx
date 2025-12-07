@@ -52,7 +52,7 @@ export const CreateVirtualAccount = () => {
                             <label htmlFor="manual" className="btn btn-outline-primary">Reserved Sum</label>
                         </div>
                         <div>
-                            <span className="small" hidden={selectedController !== "Virtual"}>A virtual transaction account. Use recurring transactions for regularly top-ups</span>
+                            <span className="small" hidden={selectedController !== "Virtual"}>A virtual transaction account. Use recurring transactions for regular top-ups</span>
                             <span className="small" hidden={selectedController !== "Manual"}>Simply reserve a sum of money for a future purpose</span>
                         </div>
                     </div>
