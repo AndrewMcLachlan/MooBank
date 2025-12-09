@@ -10,6 +10,7 @@ using Asm.MooBank.Institution.Macquarie;
 using Asm.MooBank.Security;
 using Asm.OAuth;
 using Microsoft.AspNetCore.OpenApi;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi;
 
 var result = WebApplicationStart.Run(args, "Asm.MooBank.Web.Api", AddServices, AddApp, AddHealthChecks);
@@ -144,7 +145,7 @@ void AddServices(WebApplicationBuilder builder)
         };
     })
         .WithHttpTransport()
-        .WithToolFromAssemblies("Asm.MooBank.Modules");
+        .WithToolsFromAssemblies("Asm.MooBank.Modules");
 
     services.AddIntegrations(builder.Configuration);
 
