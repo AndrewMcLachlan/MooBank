@@ -1,6 +1,5 @@
 ﻿using Asm.MooBank.Domain.Entities.Account.Specifications;
 using Asm.MooBank.Domain.Entities.Instrument.Events;
-using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Instruments.Models.Instruments;
 using Asm.MooBank.Services;
@@ -12,17 +11,17 @@ using IInstrumentRepository = Asm.MooBank.Domain.Entities.Instrument.IInstrument
 
 namespace Asm.MooBank.Modules.Instruments.Commands.VirtualInstruments;
 
-public record Update(Guid InstrumentId, Guid VirtualAccountId, string Name, string Description, decimal CurrentBalance) : ICommand<VirtualInstrument>
+public record Update(Guid InstrumentId, Guid VirtualInstrumentId, string Name, string Description, decimal CurrentBalance) : ICommand<VirtualInstrument>
 {
     public static async ValueTask<Update?> BindAsync(HttpContext httpContext)
     {
         var options = httpContext.RequestServices.GetRequiredService<IOptions<JsonOptions>>();
 
-        if (!Guid.TryParse(httpContext.Request.RouteValues["accountId"] as string, out Guid accountId)) throw new BadHttpRequestException("invalid account ID");
-        if (!Guid.TryParse(httpContext.Request.RouteValues["virtualAccountId"] as string, out Guid virtualAccountId)) throw new BadHttpRequestException("invalid account ID");
+        if (!Guid.TryParse(httpContext.Request.RouteValues["instrumentId"] as string, out Guid instrumentId)) throw new BadHttpRequestException("invalid account ID");
+        if (!Guid.TryParse(httpContext.Request.RouteValues["virtualInstrumentId"] as string, out Guid virtualInstrumentId)) throw new BadHttpRequestException("invalid account ID");
 
         var update = await System.Text.Json.JsonSerializer.DeserializeAsync<Update>(httpContext.Request.Body, options.Value.SerializerOptions, cancellationToken: httpContext.RequestAborted);
-        return update! with { InstrumentId = accountId, VirtualAccountId = virtualAccountId };
+        return update! with { InstrumentId = instrumentId, VirtualInstrumentId = virtualInstrumentId };
     }
 }
 
@@ -32,16 +31,19 @@ internal class UpdateHandler(IInstrumentRepository instrumentRepository, IUnitOf
     {
         var parentInstrument = await instrumentRepository.Get(command.InstrumentId, new VirtualAccountSpecification(), cancellationToken);
 
-        var instrument = parentInstrument.VirtualInstruments.SingleOrDefault(a => a.Id == command.VirtualAccountId) ?? throw new NotFoundException();
+        var instrument = parentInstrument.VirtualInstruments.SingleOrDefault(a => a.Id == command.VirtualInstrumentId) ?? throw new NotFoundException();
 
         instrument.Name = command.Name;
         instrument.Description = command.Description;
 
         var amount = instrument.Balance - command.CurrentBalance;
 
-        instrument.Balance = command.CurrentBalance;
+        if (amount > 0)
+        {
+            instrument.Balance = command.CurrentBalance;
 
-        instrument.Events.Add(new BalanceAdjustmentEvent(instrument, amount, "Web"));
+            instrument.Events.Add(new BalanceAdjustmentEvent(instrument, amount, "Web"));
+        }
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return instrument.ToModel(currencyConverter);

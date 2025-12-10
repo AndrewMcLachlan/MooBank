@@ -14,7 +14,7 @@ public class Module : IModule
         new Endpoints.Instruments().MapGroup(endpoints);
         new Endpoints.Import().MapGroup(endpoints).RequireAuthorization(Policies.InstrumentViewer);
         new Endpoints.RulesEndpoints().MapGroup(endpoints).RequireAuthorization(Policies.InstrumentViewer);
-        new Endpoints.VirtualAccounts().MapGroup(endpoints).RequireAuthorization(Policies.InstrumentViewer);
+        new Endpoints.VirtualInstruments().MapGroup(endpoints).RequireAuthorization(Policies.InstrumentViewer);
 
         return endpoints;
     }

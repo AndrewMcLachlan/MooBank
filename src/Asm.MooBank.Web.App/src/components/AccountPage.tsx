@@ -4,7 +4,7 @@ import { Page, PageProps } from "@andrewmclachlan/moo-app";
 import { NavItem, NavItemDivider } from "@andrewmclachlan/moo-ds";
 import { Import, Reports, Rules, Sliders, Transaction } from "@andrewmclachlan/mooicons";
 
-import { LogicalAccount, VirtualAccount, isVirtualAccount } from "models";
+import { LogicalAccount, VirtualInstrument, isVirtualInstrument } from "models";
 import { useAccount } from "./AccountProvider";
 
 export const AccountPage: React.FC<PropsWithChildren<AccountPageProps>> = ({ children, breadcrumbs = [], ...props }) => {
@@ -20,13 +20,13 @@ export const AccountPage: React.FC<PropsWithChildren<AccountPageProps>> = ({ chi
     )
 }
 
-const getMenuItems = (account: LogicalAccount | VirtualAccount, navItems: (ReactNode | NavItem)[]) => {
+const getMenuItems = (account: LogicalAccount | VirtualInstrument, navItems: (ReactNode | NavItem)[]) => {
 
     if (!account) return [];
 
-    const isVirtual = isVirtualAccount(account);
+    const isVirtual = isVirtualInstrument(account);
 
-    const baseRoute = isVirtual ? `/accounts/${(account as VirtualAccount).parentId}/virtual/${account.id}` : `/accounts/${account.id}`;
+    const baseRoute = isVirtual ? `/accounts/${(account as VirtualInstrument).parentId}/virtual/${account.id}` : `/accounts/${account.id}`;
 
     const items: (NavItem | ReactNode)[] = [
         { route: `${baseRoute}/transactions`, text: "Transactions", image: <Transaction /> },
@@ -46,10 +46,10 @@ const getMenuItems = (account: LogicalAccount | VirtualAccount, navItems: (React
     return items.concat(navItems);
 }
 
-const getBreadcrumbs = (account: LogicalAccount | VirtualAccount): NavItem[] => {
+const getBreadcrumbs = (account: LogicalAccount | VirtualInstrument): NavItem[] => {
 
-    const isVirtual = isVirtualAccount(account);
-    const route = isVirtual ? `/accounts/${(account as VirtualAccount).parentId}/virtual/${account.id}` : `/accounts/${account.id}`;
+    const isVirtual = isVirtualInstrument(account);
+    const route = isVirtual ? `/accounts/${(account as VirtualInstrument).parentId}/virtual/${account.id}` : `/accounts/${account.id}`;
 
     return [
         { text: "Accounts", route: "/accounts" },

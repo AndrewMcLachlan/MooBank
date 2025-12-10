@@ -1,4 +1,4 @@
-import { VirtualAccount } from "./VirtualAccount";
+import { VirtualInstrument } from "./VirtualAccount";
 
 export const Controllers = ["Manual", "Virtual", "Import"] as Controller[];
 export type Controller = "Manual" | "Virtual" | "Import";
@@ -14,7 +14,7 @@ export interface Instrument {
     currentBalanceLocalCurrency: number;
     currency: string;
     instrumentType?: string;
-    virtualInstruments: VirtualAccount[];
+    virtualInstruments: VirtualInstrument[];
     remainingBalance?: number;
     remainingBalanceLocalCurrency?: number;
 }

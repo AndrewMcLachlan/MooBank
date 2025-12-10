@@ -9,11 +9,17 @@ export interface CreateVirtualInstrument {
     controller: Controller;
 }
 
-export interface VirtualAccount extends TransactionAccount {
+export interface VirtualInstrument extends TransactionAccount {
     parentId: string;
     recurringTransactions: RecurringTransaction[];
     closedDate?: string;
 }
 
-export const isVirtualAccount = (account: LogicalAccount | VirtualAccount): boolean =>
-    !!(account as VirtualAccount).parentId;
+export interface UpdateVirtualInstrument
+{
+    name?: string;
+    description?: string;
+}
+
+export const isVirtualInstrument = (account: LogicalAccount | VirtualInstrument): boolean =>
+    !!(account as VirtualInstrument).parentId;

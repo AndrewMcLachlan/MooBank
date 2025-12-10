@@ -2316,8 +2316,8 @@
             }
           },
           {
-            "name": "VirtualAccountId",
-            "in": "query",
+            "name": "virtualInstrumentId",
+            "in": "path",
             "required": true,
             "schema": {
               "type": "string",

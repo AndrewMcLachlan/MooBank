@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 import { SectionForm, Form } from "@andrewmclachlan/moo-ds";
 
 import { CreateVirtualInstrument } from "../../models";
-import { useCreateVirtualAccount } from "../../services";
+import { useCreateVirtualInstrument } from "../../services";
 import { AccountPage, CurrencyInput, useAccount } from "components";
 
 export const CreateVirtualAccount = () => {
@@ -14,7 +14,7 @@ export const CreateVirtualAccount = () => {
 
     const parentAccount = useAccount();
 
-    const createVirtualAccount = useCreateVirtualAccount();
+    const createVirtualAccount = useCreateVirtualInstrument();
 
     const handleSubmit = async (data: CreateVirtualInstrument) => {
 

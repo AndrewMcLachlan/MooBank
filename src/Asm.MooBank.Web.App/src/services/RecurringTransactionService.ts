@@ -1,6 +1,6 @@
 import { useApiDelete, useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/moo-app";
 import { useQueryClient } from "@tanstack/react-query";
-import { VirtualAccount } from "models";
+import { VirtualInstrument } from "models";
 import { RecurringTransaction } from "models/RecurringTransaction";
 
 export const useGetRecurringTransactions = (accountId: string, virtualAccountId: string) => 

@@ -4,7 +4,7 @@ import { SaveIcon } from "@andrewmclachlan/moo-ds";
 import { format } from "date-fns/format";
 import { parse } from "date-fns/parse";
 import { parseISO } from "date-fns/parseISO";
-import { VirtualAccount } from "models";
+import { VirtualInstrument } from "models";
 import { RecurringTransaction, Schedule, Schedules, emptyRecurringTransaction } from "models/RecurringTransaction";
 import React, { useState } from "react";
 import { useCreateRecurringTransaction, useDeleteRecurringTransaction, useGetRecurringTransactions, useUpdateRecurringTransaction } from "services/RecurringTransactionService";
@@ -76,5 +76,5 @@ export const RecurringTransactions: React.FC<RecurringTransactionsProps> = ({ ac
 }
 
 export interface RecurringTransactionsProps {
-    account: VirtualAccount;
+    account: VirtualInstrument;
 }

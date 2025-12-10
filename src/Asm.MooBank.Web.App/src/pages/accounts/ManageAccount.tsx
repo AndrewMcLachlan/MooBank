@@ -7,7 +7,7 @@ import { DeleteIcon, EditColumn, Icon, IconButton, SectionTable } from "@andrewm
 import { AccountPage, useAccount } from "components";
 import * as Models from "models";
 import { Controller } from "models";
-import { useCloseVirtualAccount, useReprocessTransactions, useVirtualAccounts } from "services";
+import { useCloseVirtualAccount, useReprocessTransactions, useVirtualInstruments } from "services";
 import { AccountForm } from "./AccountForm";
 import { InstitutionAccountRow } from "./bank/InstitutionAccountRow";
 import { useState } from "react";
@@ -26,7 +26,7 @@ export const ManageAccount = () => {
     const [selectedInstitutionAccount, setSelectedInstitutionAccount] = useState<Models.InstitutionAccount>(undefined);
 
     const account = useAccount() as Models.LogicalAccount;
-    const { data: virtualAccounts } = useVirtualAccounts(account?.id ?? id);
+    const { data: virtualAccounts } = useVirtualInstruments(account?.id ?? id);
 
     const reprocessClick = (instrumentId: string) => {
         if (!account) return;

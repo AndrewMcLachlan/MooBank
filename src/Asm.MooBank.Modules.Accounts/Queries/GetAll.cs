@@ -16,7 +16,7 @@ internal class GetAllHandler(IQueryable<DomainInstitutionAccount> institutionAcc
 
         var primary = accounts.SingleOrDefault(a => a.Id == user.PrimaryAccountId);
 
-        if (primary != null) primary.IsPrimary = true;
+        primary?.IsPrimary = true;
 
         return accounts;
     }

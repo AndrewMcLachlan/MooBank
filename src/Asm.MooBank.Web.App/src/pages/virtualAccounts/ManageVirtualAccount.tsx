@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Button, InputGroup } from "react-bootstrap";
 import { useMatch, useNavigate, useParams } from "react-router";
 import { Form, Section, SectionForm } from "@andrewmclachlan/moo-ds";
-import { VirtualAccount } from "../../models";
-import { useUpdateVirtualAccount, useVirtualAccount } from "../../services";
+import { VirtualInstrument } from "../../models";
+import { useUpdateVirtualInstrument, useVirtualInstrument } from "../../services";
 import { AccountPage } from "components";
 import { RecurringTransactions } from "./RecurringTransactions";
 import { useForm } from "react-hook-form";
@@ -14,15 +14,15 @@ export const ManageVirtualAccount = () => {
 
     const { id, virtualId } = useParams<{ id: string, virtualId: string }>();
 
-    const { data: account } = useVirtualAccount(id, virtualId);
+    const { data: account } = useVirtualInstrument(id, virtualId);
 
     const isDirect = useMatch("/accounts/:id/virtual/:virtualId/manage");
 
-    const updateVirtualAccount = useUpdateVirtualAccount();
+    const updateVirtualInstrument = useUpdateVirtualInstrument();
 
-    const handleSubmit = (data: VirtualAccount) => {
+    const handleSubmit = (data: VirtualInstrument) => {
 
-        updateVirtualAccount(id, data);
+        updateVirtualInstrument(id, data);
 
         navigate(`/accounts/${id}/manage/`);
     }

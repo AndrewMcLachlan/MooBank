@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 
 namespace Asm.MooBank.Modules.Instruments.Endpoints;
-internal class VirtualAccounts : EndpointGroupBase
+internal class VirtualInstruments : EndpointGroupBase
 {
     public override string Name => "Virtual Instruments";
 

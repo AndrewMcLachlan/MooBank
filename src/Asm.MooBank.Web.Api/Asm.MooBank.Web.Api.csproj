@@ -66,9 +66,4 @@
     <ProjectReference Include="..\Asm.MooBank.Security\Asm.MooBank.Security.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Authentication\" />
-    <Folder Include="logs\" />
-  </ItemGroup>
-
 </Project>

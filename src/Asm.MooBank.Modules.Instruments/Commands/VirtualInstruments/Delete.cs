@@ -9,7 +9,7 @@ internal class DeleteHandler(IInstrumentRepository instrumentRepository, IUnitOf
 {
     public async ValueTask Handle(Delete command, CancellationToken cancellationToken)
     {
-        var instrument = await instrumentRepository.Get(command.InstrumentId, new VirtualAccountSpecification(), cancellationToken);
+        var instrument = await instrumentRepository.Get(command.InstrumentId, new VirtualInstrumentSpecification(), cancellationToken);
 
         if (!instrument.VirtualInstruments.Any(a => a.Id == command.VirtualInstrumentId)) throw new NotFoundException();
 
