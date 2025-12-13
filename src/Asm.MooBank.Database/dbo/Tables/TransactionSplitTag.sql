@@ -6,3 +6,9 @@ CREATE TABLE [dbo].[TransactionSplitTag]
     CONSTRAINT [FK_TransactionSplitTag_TransactionSplit] FOREIGN KEY ([TransactionSplitId]) REFERENCES [TransactionSplit]([Id]) ON DELETE CASCADE,
     CONSTRAINT [FK_TransactionSplitTag_Tag] FOREIGN KEY ([TagId]) REFERENCES [Tag]([Id])
 )
+
+GO
+
+CREATE NONCLUSTERED INDEX [IX_TransactionSplitTag_TagId]
+ON [dbo].[TransactionSplitTag] ([TagId]);
+GO
