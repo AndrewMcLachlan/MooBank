@@ -1,4 +1,4 @@
-﻿CREATE FUNCTION [dbo].[TransactionSplitNetAmount]
+ALTER FUNCTION [dbo].[TransactionSplitNetAmount]
 (
     @TransactionId UNIQUEIDENTIFIER NULL,
     @TransactionSplitId INT NULL,
@@ -14,3 +14,4 @@ BEGIN
 
     RETURN @OffsetAmount
 END
+GO

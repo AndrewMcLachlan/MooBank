@@ -198,6 +198,7 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
         {
             split = new()
             {
+                Id = 1,
                 Tags = [.. tags],
                 TransactionId = Id,
                 Amount = Math.Abs(Amount),
@@ -243,7 +244,8 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
 
     private void AddSplit(Models.TransactionSplit splitModel)
     {
-        var newSplit = new TransactionSplit(splitModel.Id)
+        int nextId = _splits.Count > 0 ? _splits.Max(s => s.Id) + 1 : 1;
+        var newSplit = new TransactionSplit(nextId)
         {
             Amount = splitModel.Amount,
             TransactionId = Id,
@@ -257,7 +259,8 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
             newSplit.OffsetBy.Add(new TransactionOffset
             {
                 Amount = offsetModel.Amount,
-                TransactionSplitId = splitModel.Id,
+                TransactionId = Id,
+                TransactionSplitId = nextId,
                 OffsetTransactionId = offsetModel.Transaction.Id,
             });
         }
@@ -297,6 +300,7 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
             split.OffsetBy.Add(new TransactionOffset
             {
                 Amount = offsetModel.Amount,
+                TransactionId = Id,
                 TransactionSplitId = split.Id,
                 OffsetTransactionId = offsetModel.Transaction.Id,
             });
@@ -317,6 +321,7 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
         {
             _splits.Add(new TransactionSplit
             {
+                Id = 1,
                 Amount = Math.Abs(Amount),
                 TransactionId = Id
             });

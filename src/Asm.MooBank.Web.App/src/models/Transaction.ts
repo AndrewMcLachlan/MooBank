@@ -58,14 +58,14 @@ export interface TransactionOffset {
 }
 
 export interface TransactionSplit {
-    id: string;
+    id: number;
     amount: number;
     offsetBy: TransactionOffset[];
     tags: Tag[];
 }
 
 export const emptyTransactionSplit: TransactionSplit = {
-    id: emptyGuid,
+    id: 0,
     amount: 0,
     offsetBy: [],
     tags: [],

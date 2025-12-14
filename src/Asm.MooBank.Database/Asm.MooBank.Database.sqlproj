@@ -15,13 +15,9 @@
     <Build Remove="Scripts\UpdateTransactionTypes.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Scripts\BackfillTransactionRaw.sql" />
-    <None Include="Scripts\FillTransactionOffset.sql" />
-    <None Include="Scripts\FillTransactionRaw.sql" />
-    <None Include="Scripts\FillTransactionSplits.sql" />
-    <None Include="Scripts\UpdateTransactionTypes.sql" />
-    <None Include="Scripts\LogicalAccount.sql" />
-    <None Include="Scripts\RollbackLogicalAccount.sql" />
+    <None Include="Scripts\25-12-TransactionSplitCompositeKey.sql" />
+    <None Include="Scripts\25-12-UpdateTransactionInstrumentBalanceAndTransactionDate.sql" />
+    <None Include="Scripts\25-12-UpdateTransactionSplitNetAmount.sql" />
     <PostDeploy Include="Script.PostDeployment1.sql" />
   </ItemGroup>
   <ItemGroup>

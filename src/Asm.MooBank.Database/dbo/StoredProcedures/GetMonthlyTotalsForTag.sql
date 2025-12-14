@@ -43,7 +43,7 @@ BEGIN
     CREATE UNIQUE CLUSTERED INDEX IX_TagDescendants_TagId ON #TagDescendants(TagId);
 
     -- 3. Build valid tagged split + ancestor pairs
-    SELECT tst.TransactionSplitId, ta.AncestorId AS TagId
+    SELECT tst.TransactionId, tst.TransactionSplitId, ta.AncestorId AS TagId
     INTO #SplitAncestors
     FROM dbo.TransactionSplitTag tst
     JOIN (
@@ -63,11 +63,12 @@ BEGIN
     ) ta ON ta.TagId = tst.TagId
     WHERE ta.AncestorId IN (SELECT TagId FROM #TagDescendants);
 
-    CREATE INDEX IX_SplitAncestors_SplitId ON #SplitAncestors(TransactionSplitId);
+    CREATE INDEX IX_SplitAncestors_SplitId ON #SplitAncestors(TransactionId, TransactionSplitId);
 
     -- 4. Join transactions and compute net/gross by month
     SELECT DISTINCT
         DATEFROMPARTS(YEAR(t.TransactionTime), MONTH(t.TransactionTime), 1) AS Month,
+        ts.TransactionId,
         ts.Id AS TransactionSplitId,
         ts.Amount,
         ts.Amount
@@ -76,12 +77,12 @@ BEGIN
     INTO #SplitTagAmounts
     FROM dbo.[Transaction] t
     JOIN dbo.TransactionSplit ts ON ts.TransactionId = t.TransactionId
-    JOIN #SplitAncestors sa ON sa.TransactionSplitId = ts.Id
+    JOIN #SplitAncestors sa ON sa.TransactionId = ts.TransactionId AND sa.TransactionSplitId = ts.Id
     LEFT JOIN (
-        SELECT TransactionSplitId, SUM(Amount) AS TotalOffset
+        SELECT TransactionId, TransactionSplitId, SUM(Amount) AS TotalOffset
         FROM dbo.TransactionSplitOffset
-        GROUP BY TransactionSplitId
-    ) o1 ON o1.TransactionSplitId = ts.Id
+        GROUP BY TransactionId, TransactionSplitId
+    ) o1 ON o1.TransactionId = ts.TransactionId AND o1.TransactionSplitId = ts.Id
     LEFT JOIN (
         SELECT OffsetTransactionId, SUM(Amount) AS TotalOffset
         FROM dbo.TransactionSplitOffset

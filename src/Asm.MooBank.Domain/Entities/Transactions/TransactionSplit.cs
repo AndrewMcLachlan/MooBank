@@ -3,16 +3,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Transactions;
 
-[PrimaryKey(nameof(Id))]
-public class TransactionSplit : KeyedEntity<Guid>
+[PrimaryKey(nameof(TransactionId), nameof(Id))]
+public class TransactionSplit : Entity
 {
-    public TransactionSplit() : base(Guid.Empty)
+    public TransactionSplit()
     {
     }
 
-    public TransactionSplit([DisallowNull] Guid id) : base(id)
+    public TransactionSplit(int id)
     {
+        Id = id;
     }
+
+    public int Id { get; set; }
 
     public Guid TransactionId { get; set; }
 
@@ -52,5 +55,5 @@ public class TransactionSplit : KeyedEntity<Guid>
     /// <returns></returns>
     public decimal GetNetAmount() => Amount - OffsetBy.Sum(o => o.Amount);
 
-    public static decimal TransactionSplitNetAmount(Guid transactionId, Guid transactionSplitId, decimal amount) => throw new NotSupportedException();
+    public static decimal TransactionSplitNetAmount(Guid transactionId, int transactionSplitId, decimal amount) => throw new NotSupportedException();
 }

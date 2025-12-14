@@ -19,10 +19,10 @@ internal class TransactionSplitConfiguration : IEntityTypeConfiguration<Transact
                   .HasForeignKey(tst2 => tst2.TagId),
         tst => tst.HasOne(tst2 => tst2.TransactionSplit)
                   .WithMany()
-                  .HasForeignKey(tst2 => tst2.TransactionSplitId),
+                  .HasForeignKey(tst2 => new { tst2.TransactionId, tst2.TransactionSplitId }),
         tst =>
         {
-            tst.HasKey(e => new { e.TransactionSplitId, e.TagId });
+            tst.HasKey(e => new { e.TransactionId, e.TransactionSplitId, e.TagId });
         });
 
 

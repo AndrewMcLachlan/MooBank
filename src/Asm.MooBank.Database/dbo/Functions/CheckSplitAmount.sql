@@ -1,6 +1,6 @@
 CREATE FUNCTION [dbo].[CheckSplitAmount]
 (
-    @Id UNIQUEIDENTIFIER,
+    @Id INT,
     @TransactionId UNIQUEIDENTIFIER,
     @Amount DECIMAL(12,4)
 )

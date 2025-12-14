@@ -41,17 +41,18 @@ BEGIN
     CREATE INDEX IX_TagAndAncestors_AncestorId ON #TagAndAncestors(AncestorId);
 
     -- 3. Build SplitAncestors (only valid split/tag combos)
-    SELECT tst.TransactionSplitId, ta.AncestorId AS TagId
+    SELECT tst.TransactionId, tst.TransactionSplitId, ta.AncestorId AS TagId
     INTO #SplitAncestors
     FROM dbo.TransactionSplitTag tst
     JOIN #TagAndAncestors ta ON ta.TagId = tst.TagId;
 
-    CREATE INDEX IX_SplitAncestors_SplitId ON #SplitAncestors(TransactionSplitId);
+    CREATE INDEX IX_SplitAncestors_SplitId ON #SplitAncestors(TransactionId, TransactionSplitId);
     CREATE INDEX IX_SplitAncestors_TagId ON #SplitAncestors(TagId);
 
     -- 4. Join splits with amounts and filter by transaction criteria
     SELECT DISTINCT
         sa.TagId,
+        ts.TransactionId,
         ts.Id AS TransactionSplitId,
         ts.Amount,
         ts.Amount
@@ -60,12 +61,12 @@ BEGIN
     INTO #SplitTagAmounts
     FROM dbo.[Transaction] t
     JOIN dbo.TransactionSplit ts ON ts.TransactionId = t.TransactionId
-    JOIN #SplitAncestors sa ON sa.TransactionSplitId = ts.Id
+    JOIN #SplitAncestors sa ON sa.TransactionId = ts.TransactionId AND sa.TransactionSplitId = ts.Id
     LEFT JOIN (
-        SELECT TransactionSplitId, SUM(Amount) AS TotalOffset
+        SELECT TransactionId, TransactionSplitId, SUM(Amount) AS TotalOffset
         FROM dbo.TransactionSplitOffset
-        GROUP BY TransactionSplitId
-    ) o1 ON o1.TransactionSplitId = ts.Id
+        GROUP BY TransactionId, TransactionSplitId
+    ) o1 ON o1.TransactionId = ts.TransactionId AND o1.TransactionSplitId = ts.Id
     LEFT JOIN (
         SELECT OffsetTransactionId, SUM(Amount) AS TotalOffset
         FROM dbo.TransactionSplitOffset

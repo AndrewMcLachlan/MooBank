@@ -27,12 +27,12 @@ BEGIN
     CREATE INDEX IX_Tags_Id ON #Tags(Id);
 
     -- 2. Get assigned tag splits
-    SELECT tst.TransactionSplitId, tst.TagId
+    SELECT tst.TransactionId, tst.TransactionSplitId, tst.TagId
     INTO #SplitTags
     FROM dbo.TransactionSplitTag tst
     JOIN #Tags t ON t.Id = tst.TagId;
 
-    CREATE INDEX IX_SplitTags_SplitId ON #SplitTags(TransactionSplitId);
+    CREATE INDEX IX_SplitTags_SplitId ON #SplitTags(TransactionId, TransactionSplitId);
 
     -- 3. Join transactions, calculate net amount (as absolute value)
     SELECT
@@ -43,14 +43,14 @@ BEGIN
                   - ISNULL(so2.TotalOffset, 0)
     INTO #TagAmounts
     FROM #SplitTags st
-    JOIN dbo.TransactionSplit ts ON ts.Id = st.TransactionSplitId
+    JOIN dbo.TransactionSplit ts ON ts.TransactionId = st.TransactionId AND ts.Id = st.TransactionSplitId
     JOIN dbo.[Transaction] tx ON tx.TransactionId = ts.TransactionId
     JOIN #Tags t ON t.Id = st.TagId
     LEFT JOIN (
-        SELECT TransactionSplitId, SUM(Amount) AS TotalOffset
+        SELECT TransactionId, TransactionSplitId, SUM(Amount) AS TotalOffset
         FROM dbo.TransactionSplitOffset
-        GROUP BY TransactionSplitId
-    ) so1 ON so1.TransactionSplitId = ts.Id
+        GROUP BY TransactionId, TransactionSplitId
+    ) so1 ON so1.TransactionId = ts.TransactionId AND so1.TransactionSplitId = ts.Id
     LEFT JOIN (
         SELECT OffsetTransactionId, SUM(Amount) AS TotalOffset
         FROM dbo.TransactionSplitOffset
