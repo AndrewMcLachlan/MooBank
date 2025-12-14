@@ -11,5 +11,5 @@ CREATE TABLE [dbo].[TransactionSplitOffset] (
 GO
 
 CREATE NONCLUSTERED INDEX [IX_TransactionSplitOffset_OffsetTransactionId]
-ON [dbo].[TransactionSplitOffset] ([OffsetTransactionId]);
+ON [dbo].[TransactionSplitOffset] ([OffsetTransactionId]) INCLUDE ([Amount]);
 GO
