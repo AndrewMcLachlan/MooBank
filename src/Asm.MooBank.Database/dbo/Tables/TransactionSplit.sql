@@ -8,3 +8,9 @@ CREATE TABLE [dbo].[TransactionSplit]
     CONSTRAINT [FK_TransactionSplit_Transaction] FOREIGN KEY (TransactionId) REFERENCES [Transaction](TransactionId) ON DELETE CASCADE,
     CONSTRAINT [CK_TransactionSplit_Amount] CHECK([dbo].[CheckSplitAmount](Id, TransactionId, Amount) = 1)
 )
+
+GO
+
+CREATE NONCLUSTERED INDEX [IX_TransactionSplit_TransactionId]
+ON [dbo].[TransactionSplit] ([TransactionId]) INCLUDE ([Amount]);
+GO

@@ -3,7 +3,7 @@ using Transaction = Asm.MooBank.Domain.Entities.Transactions.Transaction;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
-public class TransactionRepository(MooBankContext dataContext) : Asm.Domain.Infrastructure.RepositoryWriteBase<MooBankContext, Transaction, Guid>(dataContext), ITransactionRepository
+public class TransactionRepository(MooBankContext dataContext) : RepositoryWriteBase<MooBankContext, Transaction, Guid>(dataContext), ITransactionRepository
 {
     public async Task<IEnumerable<Transaction>> GetTransactions(Guid instrumentId, CancellationToken cancellationToken = default) =>
         await GetTransactionsQuery(instrumentId).ToListAsync(cancellationToken);
