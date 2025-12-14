@@ -11,8 +11,7 @@
     <ProjectGuid>{00000000-0000-0000-0000-000000000000}</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
-    <Build Remove="Scripts\.sql" />
-    <Build Remove="Scripts\UpdateTransactionTypes.sql" />
+    <Build Remove="Scripts\*.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Scripts\BackfillTransactionRaw.sql" />
@@ -22,6 +21,7 @@
     <None Include="Scripts\UpdateTransactionTypes.sql" />
     <None Include="Scripts\LogicalAccount.sql" />
     <None Include="Scripts\RollbackLogicalAccount.sql" />
+    <None Include="Scripts\25-12-UpdateTransactionInstrumentBalanceAndTransactionDate.sql" />
     <PostDeploy Include="Script.PostDeployment1.sql" />
   </ItemGroup>
   <ItemGroup>
