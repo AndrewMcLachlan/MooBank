@@ -15,3 +15,4 @@ export * from "./TagService";
 export * from "./TransactionService";
 export * from "./UserService";
 export * from "./VirtualInstrumentService";
+export * from "./ForecastService";

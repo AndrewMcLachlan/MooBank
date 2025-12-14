@@ -1,0 +1,49 @@
+.forecast-summary {
+    .summary-card {
+        padding: 1rem;
+        text-align: center;
+    }
+
+    .summary-label {
+        font-size: 0.875rem;
+        color: var(--bs-secondary);
+        margin-bottom: 0.25rem;
+    }
+
+    .summary-value {
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    .summary-sublabel {
+        font-size: 0.75rem;
+        color: var(--bs-secondary);
+        margin-top: 0.25rem;
+    }
+}
+
+.forecast-chart {
+    .section-content {
+        padding: 1rem;
+    }
+}
+
+.settings-item {
+    .settings-label {
+        font-size: 0.75rem;
+        color: var(--bs-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .settings-value {
+        font-size: 1rem;
+        font-weight: 500;
+    }
+}
+
+.new-planned-item {
+    input, select {
+        font-size: 0.875rem;
+    }
+}

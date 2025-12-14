@@ -14,3 +14,4 @@ export * from "./tags";
 export * from "./transactions";
 export * from "./user";
 export * from "./virtualAccounts";
+export * from "./forecast";

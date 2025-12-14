@@ -34,6 +34,7 @@
     <Project Path="src/Asm.MooBank.Modules.Bills/Asm.MooBank.Modules.Bills.csproj" />
     <Project Path="src/Asm.MooBank.Modules.Budgets/Asm.MooBank.Modules.Budgets.csproj" />
     <Project Path="src/Asm.MooBank.Modules.Families/Asm.MooBank.Modules.Families.csproj" />
+    <Project Path="src/Asm.MooBank.Modules.Forecast/Asm.MooBank.Modules.Forecast.csproj" />
     <Project Path="src/Asm.MooBank.Modules.Groups/Asm.MooBank.Modules.Groups.csproj" />
     <Project Path="src/Asm.MooBank.Modules.Institutions/Asm.MooBank.Modules.Institutions.csproj" />
     <Project Path="src/Asm.MooBank.Modules.Instruments/Asm.MooBank.Modules.Instruments.csproj" />

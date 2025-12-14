@@ -12,4 +12,7 @@ public enum ScheduleFrequency
 
     [Display(Name = "Monthly")]
     Monthly = 3,
+
+    [Display(Name = "Yearly")]
+    Yearly = 4,
 }

@@ -479,3 +479,52 @@ INSERT [dbo].[Institution] ([Id], [Name], [InstitutionTypeId]) VALUES (399, N'Wo
 INSERT [dbo].[Institution] ([Id], [Name], [InstitutionTypeId]) VALUES (401, N'Other', 8)
 SET IDENTITY_INSERT [dbo].[Institution] OFF
 END
+
+-- Account Scope Mode (for Forecast Plans)
+MERGE [AccountScopeMode] AS TARGET USING (SELECT 0 as Id, 'AllAccounts' as [Description]) AS SOURCE
+ON (TARGET.[Id] = SOURCE.Id)
+WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Description]);
+
+MERGE [AccountScopeMode] AS TARGET USING (SELECT 1 as Id, 'SelectedAccounts' as [Description]) AS SOURCE
+ON (TARGET.[Id] = SOURCE.Id)
+WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Description]);
+
+-- Starting Balance Mode (for Forecast Plans)
+MERGE [StartingBalanceMode] AS TARGET USING (SELECT 0 as Id, 'CalculatedCurrent' as [Description]) AS SOURCE
+ON (TARGET.[Id] = SOURCE.Id)
+WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Description]);
+
+MERGE [StartingBalanceMode] AS TARGET USING (SELECT 1 as Id, 'ManualAmount' as [Description]) AS SOURCE
+ON (TARGET.[Id] = SOURCE.Id)
+WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Description]);
+
+-- Planned Item Type (for Forecast Plans)
+MERGE [PlannedItemType] AS TARGET USING (SELECT 0 as Id, 'Expense' as [Description]) AS SOURCE
+ON (TARGET.[Id] = SOURCE.Id)
+WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Description]);
+
+MERGE [PlannedItemType] AS TARGET USING (SELECT 1 as Id, 'Income' as [Description]) AS SOURCE
+ON (TARGET.[Id] = SOURCE.Id)
+WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Description]);
+
+-- Planned Item Date Mode (for Forecast Plans)
+MERGE [PlannedItemDateMode] AS TARGET USING (SELECT 0 as Id, 'FixedDate' as [Description]) AS SOURCE
+ON (TARGET.[Id] = SOURCE.Id)
+WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Description]);
+
+MERGE [PlannedItemDateMode] AS TARGET USING (SELECT 1 as Id, 'Schedule' as [Description]) AS SOURCE
+ON (TARGET.[Id] = SOURCE.Id)
+WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Description]);
+
+MERGE [PlannedItemDateMode] AS TARGET USING (SELECT 2 as Id, 'FlexibleWindow' as [Description]) AS SOURCE
+ON (TARGET.[Id] = SOURCE.Id)
+WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Description]);
