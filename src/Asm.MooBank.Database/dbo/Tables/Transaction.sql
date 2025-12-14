@@ -18,7 +18,7 @@
     [Created] DATETIME2 NOT NULL CONSTRAINT [DF_Transaction_Created] DEFAULT SYSDATETIME(),
     [Source] NVARCHAR(50) NOT NULL CONSTRAINT [DF_Transaction_Source] DEFAULT 'Unknown',
     [InstitutionAccountId] UNIQUEIDENTIFIER NULL,
-    CONSTRAINT [PK_Transaction] PRIMARY KEY CLUSTERED (TransactionId),
+    CONSTRAINT [PK_Transaction] PRIMARY KEY NONCLUSTERED (TransactionId),
     CONSTRAINT [FK_Transaction_Account] FOREIGN KEY ([AccountId]) REFERENCES [Instrument]([Id]),
     CONSTRAINT [FK_Transaction_AccountHolder] FOREIGN KEY ([AccountHolderId]) REFERENCES [User]([Id]),
     CONSTRAINT [FK_Transaction_TransactionType] FOREIGN KEY ([TransactionTypeId]) REFERENCES [TransactionType]([TransactionTypeId]),
@@ -27,6 +27,15 @@
 
 GO
 
-CREATE NONCLUSTERED INDEX IX_Transaction_AccountId_TransactionTime
+CREATE CLUSTERED INDEX [CX_Transaction_AccountId_TransactionTime]
 ON dbo.[Transaction] (AccountId, TransactionTime);
 GO
+
+CREATE NONCLUSTERED INDEX [IX_Transaction_AccountHolderId]
+ON [dbo].[Transaction] ([AccountHolderId]);
+GO
+
+CREATE NONCLUSTERED INDEX [IX_Transaction_InstitutionAccountId]
+ON [dbo].[Transaction] ([InstitutionAccountId]);
+GO
+

@@ -16,6 +16,7 @@ using Asm.MooBank.Domain.Entities.Utility;
 using Asm.MooBank.Importers;
 using Asm.MooBank.Infrastructure;
 using Asm.MooBank.Infrastructure.Importers;
+using Asm.MooBank.Infrastructure.Interceptors;
 using Asm.MooBank.Infrastructure.Repositories;
 using Asm.MooBank.Security;
 using Microsoft.AspNetCore.Hosting;
@@ -29,8 +30,12 @@ public static class IServiceCollectionExtensions
 
     public static IServiceCollection AddMooBankDbContext(this IServiceCollection services, IHostEnvironment env,  IConfiguration configuration)
     {
+        services.AddSingleton<ExistingTagByIdInterceptor>();
+
         services.AddDbContext<MooBankContext>((services, options) =>
         {
+            options.AddInterceptors(services.GetRequiredService<ExistingTagByIdInterceptor>());
+
             options.UseAzureSql(configuration.GetConnectionString("MooBank"), options =>
             {
                 options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);

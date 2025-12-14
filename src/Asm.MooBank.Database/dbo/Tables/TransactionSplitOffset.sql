@@ -8,3 +8,9 @@ CREATE TABLE [dbo].[TransactionSplitOffset] (
     CONSTRAINT [FK_TransactionSplitOffset_OffsetTransaction] FOREIGN KEY (OffsetTransactionId) REFERENCES [Transaction]([TransactionId]),
     --CONSTRAINT [CK_TransactionSplitOffset_Amount] CHECK([dbo].[CheckOffsetAmount](TransactionId, OffsetTransactionId, Amount) = 1)
 )
+
+GO
+
+CREATE NONCLUSTERED INDEX [IX_TransactionSplitOffset_OffsetTransactionId]
+ON [dbo].[TransactionSplitOffset] ([OffsetTransactionId]) INCLUDE ([Amount]);
+GO
