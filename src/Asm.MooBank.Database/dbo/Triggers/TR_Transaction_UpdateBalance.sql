@@ -35,7 +35,7 @@ BEGIN
     -- Apply changes
     UPDATE ti
     SET 
-        Balance = ISNULL(ti.Balance, 0) + bc.NetChange,
+        Balance = ti.Balance + bc.NetChange,
         -- Finding MAX on a Clustered Index (AccountId, TransactionTime) is extremely fast (Seek)
         LastTransaction = (
             SELECT MAX(TransactionTime) 
