@@ -38,7 +38,7 @@ BEGIN
         Balance = ti.Balance + bc.NetChange,
         -- Finding MAX on a Clustered Index (AccountId, TransactionTime) is extremely fast (Seek)
         LastTransaction = (
-            SELECT MAX(TransactionTime) 
+            SELECT CAST(MAX(TransactionTime) AS DATE)
             FROM [dbo].[Transaction] t 
             WHERE t.AccountId = ti.InstrumentId
         )
