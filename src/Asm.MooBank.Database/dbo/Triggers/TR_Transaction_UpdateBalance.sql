@@ -36,12 +36,14 @@ BEGIN
     UPDATE ti
     SET 
         Balance = ti.Balance + bc.NetChange,
-        -- Finding MAX on a Clustered Index (AccountId, TransactionTime) is extremely fast (Seek)
-        LastTransaction = (
-            SELECT CAST(MAX(TransactionTime) AS DATE)
+        -- Get the latest transaction time.
+        -- While not O(1), the Clustered Index on (AccountId, TransactionTime) allows for an efficient reverse-ordered seek (O(log N)).
+        LastTransaction = CAST((
+            SELECT TOP 1 TransactionTime 
             FROM [dbo].[Transaction] t 
             WHERE t.AccountId = ti.InstrumentId
-        )
+            ORDER BY TransactionTime DESC
+        ) AS DATE)
     FROM [dbo].[TransactionInstrument] ti
     INNER JOIN @BalanceChanges bc ON ti.InstrumentId = bc.AccountId;
 END
