@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[Transaction]
 (
-    [TransactionId] UNIQUEIDENTIFIER CONSTRAINT DF_TransactionId DEFAULT NEWSEQUENTIALID(),
+    [TransactionId] UNIQUEIDENTIFIER CONSTRAINT DF_TransactionId DEFAULT NEWID(),
     [TransactionReference] UNIQUEIDENTIFIER NULL,
     [AccountId] UNIQUEIDENTIFIER NOT NULL,
     [AccountHolderId] UNIQUEIDENTIFIER NULL,
