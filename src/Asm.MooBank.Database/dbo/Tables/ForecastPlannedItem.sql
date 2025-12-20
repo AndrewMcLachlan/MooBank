@@ -9,21 +9,11 @@ CREATE TABLE [dbo].[ForecastPlannedItem]
     [VirtualInstrumentId] UNIQUEIDENTIFIER NULL,
     [IsIncluded] BIT NOT NULL CONSTRAINT DF_ForecastPlannedItem_IsIncluded DEFAULT 1,
     [DateMode] TINYINT NOT NULL,
-    -- Fixed date fields
-    [FixedDate] DATE NULL,
-    -- Schedule fields
-    [ScheduleFrequency] TINYINT NULL,
-    [ScheduleAnchorDate] DATE NULL,
-    [ScheduleInterval] INT NULL,
-    [ScheduleDayOfMonth] INT NULL,
-    [ScheduleEndDate] DATE NULL,
-    -- Flexible window fields (V1)
-    [WindowStartDate] DATE NULL,
-    [WindowEndDate] DATE NULL,
-    [AllocationMode] TINYINT NULL,
     [Notes] NVARCHAR(MAX) NULL,
     CONSTRAINT [PK_ForecastPlannedItem] PRIMARY KEY CLUSTERED ([Id]),
     CONSTRAINT [FK_ForecastPlannedItem_ForecastPlan] FOREIGN KEY ([ForecastPlanId]) REFERENCES [ForecastPlan]([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_ForecastPlannedItem_ItemType] FOREIGN KEY ([ItemType]) REFERENCES [PlannedItemType]([Id]),
+    CONSTRAINT [FK_ForecastPlannedItem_DateMode] FOREIGN KEY ([DateMode]) REFERENCES [PlannedItemDateMode]([Id]),
     CONSTRAINT [FK_ForecastPlannedItem_Tag] FOREIGN KEY ([TagId]) REFERENCES [Tag]([Id]),
     CONSTRAINT [FK_ForecastPlannedItem_VirtualInstrument] FOREIGN KEY ([VirtualInstrumentId]) REFERENCES [VirtualInstrument]([InstrumentId])
 )

@@ -1,8 +1,8 @@
 using System.ComponentModel;
 using Asm.MooBank.Domain.Entities.Forecast;
 using Asm.MooBank.Domain.Entities.Forecast.Specifications;
+using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Forecast.Models;
-using DomainEntities = Asm.MooBank.Domain.Entities.Forecast;
 
 namespace Asm.MooBank.Modules.Forecast.Commands;
 
@@ -21,22 +21,52 @@ internal class UpdatePlannedItemHandler(IForecastRepository forecastRepository, 
             ?? throw new NotFoundException("Planned item not found");
 
         entity.Name = request.Item.Name;
-        entity.ItemType = (DomainEntities.PlannedItemType)request.Item.ItemType;
+        entity.ItemType = request.Item.ItemType;
         entity.Amount = request.Item.Amount;
         entity.TagId = request.Item.TagId;
         entity.VirtualInstrumentId = request.Item.VirtualInstrumentId;
         entity.IsIncluded = request.Item.IsIncluded;
-        entity.DateMode = (DomainEntities.PlannedItemDateMode)request.Item.DateMode;
-        entity.FixedDate = request.Item.FixedDate;
-        entity.ScheduleFrequency = request.Item.ScheduleFrequency;
-        entity.ScheduleAnchorDate = request.Item.ScheduleAnchorDate;
-        entity.ScheduleInterval = request.Item.ScheduleInterval;
-        entity.ScheduleDayOfMonth = request.Item.ScheduleDayOfMonth;
-        entity.ScheduleEndDate = request.Item.ScheduleEndDate;
-        entity.WindowStartDate = request.Item.WindowStartDate;
-        entity.WindowEndDate = request.Item.WindowEndDate;
-        entity.AllocationMode = request.Item.AllocationMode.HasValue ? (DomainEntities.AllocationMode)request.Item.AllocationMode : null;
+        entity.DateMode = request.Item.DateMode;
         entity.Notes = request.Item.Notes;
+
+        // Update navigation properties based on DateMode
+        // Clear existing configurations
+        entity.FixedDate = null;
+        entity.Schedule = null;
+        entity.FlexibleWindow = null;
+
+        switch (request.Item.DateMode)
+        {
+            case PlannedItemDateMode.FixedDate when request.Item.FixedDate.HasValue:
+                entity.FixedDate = new PlannedItemFixedDate
+                {
+                    PlannedItemId = entity.Id,
+                    FixedDate = request.Item.FixedDate.Value
+                };
+                break;
+
+            case PlannedItemDateMode.Schedule when request.Item.ScheduleAnchorDate.HasValue:
+                entity.Schedule = new PlannedItemSchedule
+                {
+                    PlannedItemId = entity.Id,
+                    Frequency = request.Item.ScheduleFrequency ?? ScheduleFrequency.Monthly,
+                    AnchorDate = request.Item.ScheduleAnchorDate.Value,
+                    Interval = request.Item.ScheduleInterval ?? 1,
+                    DayOfMonth = request.Item.ScheduleDayOfMonth,
+                    EndDate = request.Item.ScheduleEndDate
+                };
+                break;
+
+            case PlannedItemDateMode.FlexibleWindow when request.Item.WindowStartDate.HasValue && request.Item.WindowEndDate.HasValue:
+                entity.FlexibleWindow = new PlannedItemFlexibleWindow
+                {
+                    PlannedItemId = entity.Id,
+                    StartDate = request.Item.WindowStartDate.Value,
+                    EndDate = request.Item.WindowEndDate.Value,
+                    AllocationMode = request.Item.AllocationMode ?? AllocationMode.EvenlySpread
+                };
+                break;
+        }
 
         plan.UpdatedUtc = DateTime.UtcNow;
 

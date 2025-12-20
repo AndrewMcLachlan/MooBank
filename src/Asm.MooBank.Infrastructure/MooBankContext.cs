@@ -80,6 +80,15 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
     [AllowNull]
     public virtual DbSet<ForecastPlannedItem> ForecastPlannedItems { get; set; }
 
+    [AllowNull]
+    public virtual DbSet<PlannedItemFixedDate> PlannedItemFixedDates { get; set; }
+
+    [AllowNull]
+    public virtual DbSet<PlannedItemSchedule> PlannedItemSchedules { get; set; }
+
+    [AllowNull]
+    public virtual DbSet<PlannedItemFlexibleWindow> PlannedItemFlexibleWindows { get; set; }
+
     public static void RegisterAssembly(Assembly assembly) => Assemblies.Add(assembly);
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

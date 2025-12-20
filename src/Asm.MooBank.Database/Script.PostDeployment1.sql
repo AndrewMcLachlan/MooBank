@@ -528,3 +528,40 @@ MERGE [PlannedItemDateMode] AS TARGET USING (SELECT 2 as Id, 'FlexibleWindow' as
 ON (TARGET.[Id] = SOURCE.Id)
 WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
 WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Description]);
+
+-- Allocation Mode (for Forecast Plans - Flexible Window)
+MERGE [AllocationMode] AS TARGET USING (SELECT 0 as Id, 'EvenlySpread' as [Description]) AS SOURCE
+ON (TARGET.[Id] = SOURCE.Id)
+WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Description]);
+
+MERGE [AllocationMode] AS TARGET USING (SELECT 1 as Id, 'AllAtEnd' as [Description]) AS SOURCE
+ON (TARGET.[Id] = SOURCE.Id)
+WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Description]);
+
+-- Schedule Frequency (for Forecast Plans - Schedule)
+MERGE [ScheduleFrequency] AS TARGET USING (SELECT 1 as Id, 'Daily' as [Description]) AS SOURCE
+ON (TARGET.[Id] = SOURCE.Id)
+WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Description]);
+
+MERGE [ScheduleFrequency] AS TARGET USING (SELECT 2 as Id, 'Weekly' as [Description]) AS SOURCE
+ON (TARGET.[Id] = SOURCE.Id)
+WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Description]);
+
+MERGE [ScheduleFrequency] AS TARGET USING (SELECT 3 as Id, 'Monthly' as [Description]) AS SOURCE
+ON (TARGET.[Id] = SOURCE.Id)
+WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Description]);
+
+MERGE [ScheduleFrequency] AS TARGET USING (SELECT 4 as Id, 'Yearly' as [Description]) AS SOURCE
+ON (TARGET.[Id] = SOURCE.Id)
+WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Description]);
+
+MERGE [ScheduleFrequency] AS TARGET USING (SELECT 5 as Id, 'Fortnightly' as [Description]) AS SOURCE
+ON (TARGET.[Id] = SOURCE.Id)
+WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Description]);

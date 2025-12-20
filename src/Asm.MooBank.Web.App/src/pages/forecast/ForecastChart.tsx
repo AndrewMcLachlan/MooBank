@@ -6,7 +6,6 @@ import {
     LinearScale,
     PointElement,
     LineElement,
-    BarElement,
     Title,
     Tooltip,
     Legend,
@@ -20,7 +19,6 @@ ChartJS.register(
     LinearScale,
     PointElement,
     LineElement,
-    BarElement,
     Title,
     Tooltip,
     Legend
@@ -37,27 +35,19 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({ months }) => {
         labels,
         datasets: [
             {
-                label: "Closing Balance",
-                data: months.map(m => m.closingBalance),
+                label: "Projected Balance",
+                data: months.map(m => m.openingBalance),
                 borderColor: "rgb(53, 162, 235)",
                 backgroundColor: "rgba(53, 162, 235, 0.5)",
                 tension: 0.1
             },
             {
-                label: "Income",
-                data: months.map(m => m.incomeTotal),
-                borderColor: "rgb(75, 192, 92)",
-                backgroundColor: "rgba(75, 192, 92, 0.5)",
+                label: "Actual Balance",
+                data: months.map(m => m.actualBalance ?? null),
+                borderColor: "rgb(34, 197, 94)",
+                backgroundColor: "rgba(34, 197, 94, 0.5)",
                 tension: 0.1,
-                hidden: true
-            },
-            {
-                label: "Baseline Outgoings",
-                data: months.map(m => m.baselineOutgoingsTotal),
-                borderColor: "rgb(255, 99, 132)",
-                backgroundColor: "rgba(255, 99, 132, 0.5)",
-                tension: 0.1,
-                hidden: true
+                spanGaps: false
             }
         ]
     };

@@ -35,10 +35,11 @@ const PlannedItemsSection: React.FC<PlannedItemsSectionProps> = ({ planId, title
         <SectionTable header={title} striped>
             <thead>
                 <tr>
-                    <th className="column-25">Name</th>
-                    <th className="column-15">Amount</th>
-                    <th className="column-15">When</th>
-                    <th className="column-15">Frequency</th>
+                    <th className="column-20">Name</th>
+                    <th className="column-10">Amount</th>
+                    <th className="column-12">Start Date</th>
+                    <th className="column-12">End Date</th>
+                    <th className="column-12">Frequency</th>
                     <th className="column-20">Notes</th>
                     <th className="row-action"></th>
                 </tr>
@@ -53,7 +54,7 @@ const PlannedItemsSection: React.FC<PlannedItemsSectionProps> = ({ planId, title
                 <tr>
                     <td>Total</td>
                     <td className="amount">${items.reduce((sum, i) => sum + (i.isIncluded ? i.amount : 0), 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
-                    <td colSpan={4}></td>
+                    <td colSpan={5}></td>
                 </tr>
             </tfoot>
         </SectionTable>
@@ -79,8 +80,17 @@ const PlannedItemRow: React.FC<PlannedItemRowProps> = ({ planId, item: propItem 
 
     const handleUpdate = (changes: Partial<PlannedItem>) => {
         const updated = { ...item, ...changes };
-        setItem(updated);
-        update(planId, item.id, updated);
+        // Clean up empty string dates to undefined for proper JSON serialization
+        const cleaned: Partial<PlannedItem> = {
+            ...updated,
+            fixedDate: updated.fixedDate || undefined,
+            scheduleAnchorDate: updated.scheduleAnchorDate || undefined,
+            scheduleEndDate: updated.scheduleEndDate || undefined,
+            windowStartDate: updated.windowStartDate || undefined,
+            windowEndDate: updated.windowEndDate || undefined,
+        };
+        setItem(cleaned as PlannedItem);
+        update(planId, item.id, cleaned);
     };
 
     const getDateValue = (): string => {
@@ -96,25 +106,54 @@ const PlannedItemRow: React.FC<PlannedItemRowProps> = ({ planId, item: propItem 
 
     const handleDateChange = (value: string) => {
         if (item.dateMode === "FixedDate") {
-            handleUpdate({ fixedDate: value });
+            handleUpdate({ fixedDate: value || undefined });
         } else if (item.dateMode === "Schedule") {
-            handleUpdate({ scheduleAnchorDate: value });
+            handleUpdate({ scheduleAnchorDate: value || undefined });
         }
     };
 
-    const formatDateDisplay = (): string => {
+    const formatStartDateDisplay = (): string => {
         switch (item.dateMode) {
             case "FixedDate":
                 return item.fixedDate ? format(parseISO(item.fixedDate), "dd MMM yyyy") : "-";
             case "Schedule":
                 return item.scheduleAnchorDate ? format(parseISO(item.scheduleAnchorDate), "dd MMM yyyy") : "-";
             case "FlexibleWindow":
-                if (item.windowStartDate && item.windowEndDate) {
-                    return `${format(parseISO(item.windowStartDate), "MMM yy")} - ${format(parseISO(item.windowEndDate), "MMM yy")}`;
-                }
-                return "-";
+                return item.windowStartDate ? format(parseISO(item.windowStartDate), "dd MMM yyyy") : "-";
             default:
                 return "-";
+        }
+    };
+
+    const formatEndDateDisplay = (): string => {
+        switch (item.dateMode) {
+            case "FixedDate":
+                return "-";
+            case "Schedule":
+                return item.scheduleEndDate ? format(parseISO(item.scheduleEndDate), "dd MMM yyyy") : "Ongoing";
+            case "FlexibleWindow":
+                return item.windowEndDate ? format(parseISO(item.windowEndDate), "dd MMM yyyy") : "-";
+            default:
+                return "-";
+        }
+    };
+
+    const getEndDateValue = (): string => {
+        switch (item.dateMode) {
+            case "Schedule":
+                return item.scheduleEndDate ?? "";
+            case "FlexibleWindow":
+                return item.windowEndDate ?? "";
+            default:
+                return "";
+        }
+    };
+
+    const handleEndDateChange = (value: string) => {
+        if (item.dateMode === "Schedule") {
+            handleUpdate({ scheduleEndDate: value || undefined });
+        } else if (item.dateMode === "FlexibleWindow") {
+            handleUpdate({ windowEndDate: value || undefined });
         }
     };
 
@@ -165,16 +204,23 @@ const PlannedItemRow: React.FC<PlannedItemRowProps> = ({ planId, item: propItem 
                 value={item.amount.toFixed(2)}
                 onChange={(v) => handleUpdate({ amount: parseFloat(v.value) || 0 })}
             />
-            {item.dateMode !== "FlexibleWindow" ? (
+            <EditColumn
+                type="date"
+                value={getDateValue()}
+                onChange={(v) => handleDateChange(v.value)}
+            >
+                {formatStartDateDisplay()}
+            </EditColumn>
+            {item.dateMode === "FixedDate" ? (
+                <td className="text-muted">-</td>
+            ) : (
                 <EditColumn
                     type="date"
-                    value={getDateValue()}
-                    onChange={(v) => handleDateChange(v.value)}
+                    value={getEndDateValue()}
+                    onChange={(v) => handleEndDateChange(v.value)}
                 >
-                    {formatDateDisplay()}
+                    {formatEndDateDisplay()}
                 </EditColumn>
-            ) : (
-                <td>{formatDateDisplay()}</td>
             )}
             <td onClick={() => !isEditingFrequency && setIsEditingFrequency(true)}>
                 {isEditingFrequency ? (

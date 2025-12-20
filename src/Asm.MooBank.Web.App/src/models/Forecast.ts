@@ -118,6 +118,7 @@ export interface ForecastMonth {
     baselineOutgoingsTotal: number;
     plannedItemsTotal: number;
     closingBalance: number;
+    actualBalance?: number;
 }
 
 export interface ForecastSummary {
@@ -127,6 +128,7 @@ export interface ForecastSummary {
     monthsBelowZero: number;
     totalIncome: number;
     totalOutgoings: number;
+    monthlyBaselineOutgoings: number;
 }
 
 export interface CreateForecastPlan {

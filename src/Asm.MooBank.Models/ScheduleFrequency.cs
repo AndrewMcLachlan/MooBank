@@ -10,6 +10,9 @@ public enum ScheduleFrequency
     [Display(Name = "Weekly")]
     Weekly = 2,
 
+    [Display(Name = "Fortnightly")]
+    Fortnightly = 5,
+
     [Display(Name = "Monthly")]
     Monthly = 3,
 

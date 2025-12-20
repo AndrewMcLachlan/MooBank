@@ -19,6 +19,7 @@ export const NewPlannedItem: React.FC<NewPlannedItemProps> = ({ planId, itemType
     const [fixedDate, setFixedDate] = useState(format(new Date(), "yyyy-MM-dd"));
     const [scheduleFrequency, setScheduleFrequency] = useState<ScheduleFrequency>("Monthly");
     const [scheduleAnchorDate, setScheduleAnchorDate] = useState(format(new Date(), "yyyy-MM-dd"));
+    const [scheduleEndDate, setScheduleEndDate] = useState("");
     const [notes, setNotes] = useState("");
 
     const handleAdd = () => {
@@ -34,12 +35,14 @@ export const NewPlannedItem: React.FC<NewPlannedItemProps> = ({ planId, itemType
             scheduleFrequency: dateMode === "Schedule" ? scheduleFrequency : undefined,
             scheduleAnchorDate: dateMode === "Schedule" ? scheduleAnchorDate : undefined,
             scheduleInterval: dateMode === "Schedule" ? 1 : undefined,
+            scheduleEndDate: dateMode === "Schedule" && scheduleEndDate ? scheduleEndDate : undefined,
             notes: notes || undefined
         });
 
         // Reset form
         setName("");
         setAmount(0);
+        setScheduleEndDate("");
         setNotes("");
     };
 
@@ -85,6 +88,18 @@ export const NewPlannedItem: React.FC<NewPlannedItemProps> = ({ planId, itemType
                         }
                     }}
                 />
+            </td>
+            <td>
+                {dateMode === "FixedDate" ? (
+                    <span className="text-muted">-</span>
+                ) : (
+                    <Form.Control
+                        type="date"
+                        placeholder="Ongoing"
+                        value={scheduleEndDate}
+                        onChange={(e) => setScheduleEndDate(e.target.value)}
+                    />
+                )}
             </td>
             <td>
                 <Form.Select

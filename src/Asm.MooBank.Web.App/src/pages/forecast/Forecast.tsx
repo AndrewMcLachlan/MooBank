@@ -31,12 +31,12 @@ export const Forecast: React.FC = () => {
     const { data: plan, isLoading: planLoading } = useForecastPlan(planId);
     const { run: runForecast, result, isPending: resultLoading } = useRunForecast();
 
-    // Run forecast when plan is loaded
+    // Run forecast when plan is loaded or updated
     useEffect(() => {
-        if (planId) {
+        if (planId && plan) {
             runForecast(planId);
         }
-    }, [planId]);
+    }, [planId, plan?.updatedUtc]);
 
     const handleAccountToggle = (accountId: string) => {
         setSelectedAccountIds(prev =>
@@ -170,16 +170,34 @@ export const Forecast: React.FC = () => {
         <ForecastPage>
             {plan && (
                 <>
-                    <ForecastSettings plan={plan} />
+                    <ForecastSettings plan={plan} monthlyExpenses={result?.summary.monthlyBaselineOutgoings} />
 
                     {result && (
                         <>
                             <ForecastSummaryPanel summary={result.summary} />
-                            <ForecastChart months={result.months} />
+                            <div style={{ position: "relative" }}>
+                                <ForecastChart months={result.months} />
+                                {resultLoading && (
+                                    <div style={{
+                                        position: "absolute",
+                                        top: 0,
+                                        left: 0,
+                                        right: 0,
+                                        bottom: 0,
+                                        backgroundColor: "rgba(255, 255, 255, 0.7)",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        zIndex: 10
+                                    }}>
+                                        <Spinner animation="border" size="sm" /> <span className="ms-2">Updating...</span>
+                                    </div>
+                                )}
+                            </div>
                         </>
                     )}
 
-                    {resultLoading && (
+                    {resultLoading && !result && (
                         <Section>
                             <div className="text-center py-4">
                                 <Spinner animation="border" size="sm" /> Calculating forecast...

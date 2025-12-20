@@ -3,8 +3,9 @@ using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Reports;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Forecast.Models;
-using DomainEntities = Asm.MooBank.Domain.Entities.Forecast;
 using DomainForecastPlan = Asm.MooBank.Domain.Entities.Forecast.ForecastPlan;
+using DomainForecastPlannedItem = Asm.MooBank.Domain.Entities.Forecast.ForecastPlannedItem;
+using DomainLogicalAccount = Asm.MooBank.Domain.Entities.Account.LogicalAccount;
 using DomainTransactionInstrument = Asm.MooBank.Domain.Entities.Instrument.TransactionInstrument;
 
 namespace Asm.MooBank.Modules.Forecast.Services;
@@ -21,10 +22,13 @@ internal class ForecastEngine(
         // Resolve account IDs based on scope mode
         var accountIds = GetAccountIds(plan);
 
-        // 1. Determine starting balance
+        // 1. Determine starting balance (uses all selected accounts)
         var startingBalance = await CalculateStartingBalance(plan, accountIds, cancellationToken);
 
-        // 2. Parse strategies
+        // 2. Get account IDs excluding Savings accounts for historical calculations
+        var accountIdsForHistoricalAnalysis = await FilterAccountsForHistoricalAnalysis(accountIds, cancellationToken);
+
+        // 3. Parse strategies
         var incomeStrategy = String.IsNullOrEmpty(plan.IncomeStrategySerialized)
             ? new IncomeStrategy()
             : JsonSerializer.Deserialize<IncomeStrategy>(plan.IncomeStrategySerialized, JsonOptions)!;
@@ -33,16 +37,19 @@ internal class ForecastEngine(
             ? new OutgoingStrategy()
             : JsonSerializer.Deserialize<OutgoingStrategy>(plan.OutgoingStrategySerialized, JsonOptions)!;
 
-        // 3. Calculate baseline outgoings from historical data
-        var baselineOutgoings = await CalculateBaselineOutgoings(accountIds, outgoingStrategy, plan.StartDate, cancellationToken);
+        // 4. Calculate baseline outgoings from historical data (excluding Savings accounts)
+        var baselineOutgoings = await CalculateBaselineOutgoings(accountIdsForHistoricalAnalysis, outgoingStrategy, plan.StartDate, cancellationToken);
 
-        // 4. Expand planned items into monthly allocations
+        // 5. Expand planned items into monthly allocations
         var plannedItemsByMonth = ExpandPlannedItems(plan);
 
-        // 5. Calculate income by month (use historical if no manual amount or amount is 0)
-        var incomeByMonth = await CalculateIncomeByMonth(plan, incomeStrategy, accountIds, cancellationToken);
+        // 6. Calculate income by month (excluding Savings accounts for historical calculation)
+        var incomeByMonth = await CalculateIncomeByMonth(plan, incomeStrategy, accountIdsForHistoricalAnalysis, cancellationToken);
 
-        // 6. Generate forecast months
+        // 7. Fetch historical actual balances for comparison
+        var actualBalancesByMonth = await GetActualBalancesByMonth(accountIds, plan.StartDate, plan.EndDate, cancellationToken);
+
+        // 8. Generate forecast months
         var months = new List<ForecastMonth>();
         var currentBalance = startingBalance;
         var currentDate = new DateOnly(plan.StartDate.Year, plan.StartDate.Month, 1);
@@ -53,6 +60,7 @@ internal class ForecastEngine(
             var monthKey = currentDate.ToString("yyyy-MM");
             var monthIncome = incomeByMonth.GetValueOrDefault(monthKey, 0m);
             var monthPlanned = plannedItemsByMonth.GetValueOrDefault(monthKey, 0m);
+            var actualBalance = actualBalancesByMonth.GetValueOrDefault(monthKey);
 
             var forecastMonth = new ForecastMonth
             {
@@ -61,7 +69,9 @@ internal class ForecastEngine(
                 IncomeTotal = monthIncome,
                 BaselineOutgoingsTotal = baselineOutgoings,
                 PlannedItemsTotal = monthPlanned,
-                ClosingBalance = currentBalance + monthIncome - (Math.Abs(baselineOutgoings) + Math.Abs(monthPlanned))
+                // monthPlanned already has correct sign: positive for income, negative for expenses
+                ClosingBalance = currentBalance + monthIncome - Math.Abs(baselineOutgoings) + monthPlanned,
+                ActualBalance = actualBalance
             };
 
             months.Add(forecastMonth);
@@ -69,8 +79,8 @@ internal class ForecastEngine(
             currentDate = currentDate.AddMonths(1);
         }
 
-        // 7. Calculate summary metrics
-        var summary = CalculateSummary(months);
+        // 9. Calculate summary metrics
+        var summary = CalculateSummary(months, baselineOutgoings);
 
         return new ForecastResult
         {
@@ -85,7 +95,7 @@ internal class ForecastEngine(
     /// </summary>
     private List<Guid> GetAccountIds(DomainForecastPlan plan)
     {
-        if (plan.AccountScopeMode == DomainEntities.AccountScopeMode.SelectedAccounts)
+        if (plan.AccountScopeMode == AccountScopeMode.SelectedAccounts)
         {
             return plan.Accounts.Select(a => a.InstrumentId).ToList();
         }
@@ -94,9 +104,37 @@ internal class ForecastEngine(
         return user.Accounts.Concat(user.SharedAccounts).ToList();
     }
 
+    /// <summary>
+    /// Filters account IDs to exclude Savings accounts for historical analysis.
+    /// Savings accounts often have large transfers that skew income/expense averages.
+    /// </summary>
+    private async Task<List<Guid>> FilterAccountsForHistoricalAnalysis(List<Guid> accountIds, CancellationToken cancellationToken)
+    {
+        var filteredIds = new List<Guid>();
+
+        foreach (var accountId in accountIds)
+        {
+            try
+            {
+                var instrument = await instrumentRepository.Get(accountId, cancellationToken);
+                if (instrument is DomainLogicalAccount logicalAccount &&
+                    logicalAccount.AccountType != AccountType.Savings)
+                {
+                    filteredIds.Add(accountId);
+                }
+            }
+            catch (NotFoundException)
+            {
+                // Skip accounts that don't exist
+            }
+        }
+
+        return filteredIds;
+    }
+
     private async Task<decimal> CalculateStartingBalance(DomainForecastPlan plan, List<Guid> accountIds, CancellationToken cancellationToken)
     {
-        if (plan.StartingBalanceMode == DomainEntities.StartingBalanceMode.ManualAmount)
+        if (plan.StartingBalanceMode == StartingBalanceMode.ManualAmount)
         {
             return plan.StartingBalanceAmount ?? 0m;
         }
@@ -106,6 +144,17 @@ internal class ForecastEngine(
             return 0m;
         }
 
+        var today = DateOnly.FromDateTime(DateTime.Today);
+        var planStartMonth = new DateOnly(plan.StartDate.Year, plan.StartDate.Month, 1);
+        var currentMonth = new DateOnly(today.Year, today.Month, 1);
+
+        // If plan starts in the past, use historical balance from that month
+        if (planStartMonth < currentMonth)
+        {
+            return await CalculateHistoricalStartingBalance(accountIds, plan.StartDate, cancellationToken);
+        }
+
+        // Plan starts this month or in the future - use current balances
         decimal totalBalance = 0m;
         foreach (var accountId in accountIds)
         {
@@ -120,6 +169,35 @@ internal class ForecastEngine(
             catch (NotFoundException)
             {
                 // Skip accounts that don't exist
+            }
+        }
+
+        return totalBalance;
+    }
+
+    private async Task<decimal> CalculateHistoricalStartingBalance(List<Guid> accountIds, DateOnly startDate, CancellationToken cancellationToken)
+    {
+        decimal totalBalance = 0m;
+
+        // Get the closing balance of the month before the start date
+        // This becomes the opening balance for the start month
+        var previousMonth = new DateOnly(startDate.Year, startDate.Month, 1).AddMonths(-1);
+        var previousMonthEnd = previousMonth.AddMonths(1).AddDays(-1);
+
+        foreach (var accountId in accountIds)
+        {
+            try
+            {
+                var balances = await reportRepository.GetMonthlyBalances(accountId, previousMonth, previousMonthEnd, cancellationToken);
+                var balance = balances.FirstOrDefault();
+                if (balance != null)
+                {
+                    totalBalance += balance.Balance;
+                }
+            }
+            catch (Exception)
+            {
+                // Skip accounts with errors
             }
         }
 
@@ -187,27 +265,84 @@ internal class ForecastEngine(
         return totalIncome / lookbackMonths;
     }
 
+    /// <summary>
+    /// Gets actual historical opening balances for each month.
+    /// The opening balance for a month is the closing balance of the previous month.
+    /// Returns a dictionary keyed by month (yyyy-MM) with aggregated balances.
+    /// Only includes months up to the current month.
+    /// </summary>
+    private async Task<Dictionary<string, decimal?>> GetActualBalancesByMonth(List<Guid> accountIds, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
+    {
+        var result = new Dictionary<string, decimal?>();
+
+        if (!accountIds.Any())
+        {
+            return result;
+        }
+
+        // Only fetch balances up to current month
+        var today = DateOnly.FromDateTime(DateTime.Today);
+        var effectiveEndDate = endDate > today ? today : endDate;
+
+        // If start date is in the future, no actual balances to fetch
+        if (startDate > today)
+        {
+            return result;
+        }
+
+        // Fetch from the month before start date to get opening balance for start month
+        var fetchStart = new DateOnly(startDate.Year, startDate.Month, 1).AddMonths(-1);
+
+        foreach (var accountId in accountIds)
+        {
+            try
+            {
+                var balances = await reportRepository.GetMonthlyBalances(accountId, fetchStart, effectiveEndDate, cancellationToken);
+                foreach (var balance in balances)
+                {
+                    // The closing balance of this month becomes the opening balance of next month
+                    var nextMonth = new DateOnly(balance.PeriodEnd.Year, balance.PeriodEnd.Month, 1).AddMonths(1);
+                    var monthKey = nextMonth.ToString("yyyy-MM");
+
+                    // Only include if within our forecast range
+                    if (nextMonth >= new DateOnly(startDate.Year, startDate.Month, 1) &&
+                        nextMonth <= new DateOnly(effectiveEndDate.Year, effectiveEndDate.Month, 1))
+                    {
+                        result[monthKey] = result.GetValueOrDefault(monthKey, 0m) + balance.Balance;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Skip accounts with errors
+            }
+        }
+
+        return result;
+    }
+
     private Dictionary<string, decimal> ExpandPlannedItems(DomainForecastPlan plan)
     {
         var result = new Dictionary<string, decimal>();
 
         foreach (var item in plan.PlannedItems.Where(i => i.IsIncluded))
         {
-            var sign = item.ItemType == DomainEntities.PlannedItemType.Income ? 1m : -1m;
+            var sign = item.ItemType == PlannedItemType.Income ? 1m : -1m;
 
             switch (item.DateMode)
             {
-                case DomainEntities.PlannedItemDateMode.FixedDate when item.FixedDate.HasValue:
+                case PlannedItemDateMode.FixedDate when item.FixedDate != null:
                     {
-                        var monthKey = new DateOnly(item.FixedDate.Value.Year, item.FixedDate.Value.Month, 1).ToString("yyyy-MM");
-                        if (item.FixedDate.Value >= plan.StartDate && item.FixedDate.Value <= plan.EndDate)
+                        var fixedDate = item.FixedDate.FixedDate;
+                        var monthKey = new DateOnly(fixedDate.Year, fixedDate.Month, 1).ToString("yyyy-MM");
+                        if (fixedDate >= plan.StartDate && fixedDate <= plan.EndDate)
                         {
                             result[monthKey] = result.GetValueOrDefault(monthKey, 0m) + (item.Amount * sign);
                         }
                         break;
                     }
 
-                case DomainEntities.PlannedItemDateMode.Schedule when item.ScheduleAnchorDate.HasValue:
+                case PlannedItemDateMode.Schedule when item.Schedule != null:
                     {
                         var occurrences = GenerateScheduleOccurrences(item, plan.StartDate, plan.EndDate);
                         foreach (var occurrence in occurrences)
@@ -218,12 +353,12 @@ internal class ForecastEngine(
                         break;
                     }
 
-                case DomainEntities.PlannedItemDateMode.FlexibleWindow when item.WindowStartDate.HasValue && item.WindowEndDate.HasValue:
+                case PlannedItemDateMode.FlexibleWindow when item.FlexibleWindow != null:
                     {
-                        var windowStart = item.WindowStartDate.Value < plan.StartDate ? plan.StartDate : item.WindowStartDate.Value;
-                        var windowEnd = item.WindowEndDate.Value > plan.EndDate ? plan.EndDate : item.WindowEndDate.Value;
+                        var windowStart = item.FlexibleWindow.StartDate < plan.StartDate ? plan.StartDate : item.FlexibleWindow.StartDate;
+                        var windowEnd = item.FlexibleWindow.EndDate > plan.EndDate ? plan.EndDate : item.FlexibleWindow.EndDate;
 
-                        if (item.AllocationMode == DomainEntities.AllocationMode.AllAtEnd)
+                        if (item.FlexibleWindow.AllocationMode == AllocationMode.AllAtEnd)
                         {
                             var endKey = new DateOnly(windowEnd.Year, windowEnd.Month, 1).ToString("yyyy-MM");
                             result[endKey] = result.GetValueOrDefault(endKey, 0m) + (item.Amount * sign);
@@ -257,11 +392,12 @@ internal class ForecastEngine(
         return ((end.Year - start.Year) * 12) + end.Month - start.Month + 1;
     }
 
-    private IEnumerable<DateOnly> GenerateScheduleOccurrences(DomainEntities.ForecastPlannedItem item, DateOnly planStart, DateOnly planEnd)
+    private IEnumerable<DateOnly> GenerateScheduleOccurrences(DomainForecastPlannedItem item, DateOnly planStart, DateOnly planEnd)
     {
         var occurrences = new List<DateOnly>();
-        var current = item.ScheduleAnchorDate!.Value;
-        var endDate = item.ScheduleEndDate ?? planEnd;
+        var schedule = item.Schedule!;
+        var current = schedule.AnchorDate;
+        var endDate = schedule.EndDate ?? planEnd;
         if (endDate > planEnd) endDate = planEnd;
 
         while (current <= endDate)
@@ -271,12 +407,13 @@ internal class ForecastEngine(
                 occurrences.Add(current);
             }
 
-            current = item.ScheduleFrequency switch
+            current = schedule.Frequency switch
             {
-                ScheduleFrequency.Daily => current.AddDays(item.ScheduleInterval ?? 1),
-                ScheduleFrequency.Weekly => current.AddDays(7 * (item.ScheduleInterval ?? 1)),
-                ScheduleFrequency.Monthly => AddMonthsWithDay(current, item.ScheduleInterval ?? 1, item.ScheduleDayOfMonth),
-                ScheduleFrequency.Yearly => current.AddYears(item.ScheduleInterval ?? 1),
+                ScheduleFrequency.Daily => current.AddDays(schedule.Interval),
+                ScheduleFrequency.Weekly => current.AddDays(7 * schedule.Interval),
+                ScheduleFrequency.Fortnightly => current.AddDays(14 * schedule.Interval),
+                ScheduleFrequency.Monthly => AddMonthsWithDay(current, schedule.Interval, schedule.DayOfMonth),
+                ScheduleFrequency.Yearly => current.AddYears(schedule.Interval),
                 _ => current.AddMonths(1)
             };
         }
@@ -348,7 +485,7 @@ internal class ForecastEngine(
         return result;
     }
 
-    private static ForecastSummary CalculateSummary(List<ForecastMonth> months)
+    private static ForecastSummary CalculateSummary(List<ForecastMonth> months, decimal monthlyBaselineOutgoings)
     {
         if (!months.Any())
         {
@@ -359,7 +496,8 @@ internal class ForecastEngine(
                 RequiredMonthlyUplift = 0m,
                 MonthsBelowZero = 0,
                 TotalIncome = 0m,
-                TotalOutgoings = 0m
+                TotalOutgoings = 0m,
+                MonthlyBaselineOutgoings = 0m
             };
         }
 
@@ -370,14 +508,19 @@ internal class ForecastEngine(
             ? Math.Abs(lowestMonth.ClosingBalance) / monthsUntilLow
             : 0m;
 
+        // Calculate total outgoings (baseline + planned expenses only, not planned income)
+        var totalPlannedExpenses = months.Sum(m => m.PlannedItemsTotal < 0 ? Math.Abs(m.PlannedItemsTotal) : 0);
+        var totalPlannedIncome = months.Sum(m => m.PlannedItemsTotal > 0 ? m.PlannedItemsTotal : 0);
+
         return new ForecastSummary
         {
             LowestBalance = lowestMonth.ClosingBalance,
             LowestBalanceMonth = lowestMonth.MonthStart,
             RequiredMonthlyUplift = Math.Ceiling(requiredUplift * 100) / 100, // Round up to nearest cent
             MonthsBelowZero = months.Count(m => m.ClosingBalance < 0),
-            TotalIncome = months.Sum(m => m.IncomeTotal),
-            TotalOutgoings = months.Sum(m => m.BaselineOutgoingsTotal + Math.Abs(m.PlannedItemsTotal))
+            TotalIncome = months.Sum(m => m.IncomeTotal) + totalPlannedIncome,
+            TotalOutgoings = months.Sum(m => Math.Abs(m.BaselineOutgoingsTotal)) + totalPlannedExpenses,
+            MonthlyBaselineOutgoings = monthlyBaselineOutgoings
         };
     }
 }

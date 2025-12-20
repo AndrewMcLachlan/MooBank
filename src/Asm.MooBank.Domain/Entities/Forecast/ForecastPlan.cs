@@ -1,3 +1,4 @@
+using Asm.MooBank.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Forecast;
@@ -92,16 +93,4 @@ public class ForecastPlan(Guid id) : KeyedEntity<Guid>(id)
         IsArchived = false;
         UpdatedUtc = DateTime.UtcNow;
     }
-}
-
-public enum AccountScopeMode : byte
-{
-    AllAccounts = 0,
-    SelectedAccounts = 1
-}
-
-public enum StartingBalanceMode : byte
-{
-    CalculatedCurrent = 0,
-    ManualAmount = 1
 }

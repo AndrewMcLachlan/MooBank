@@ -75,6 +75,7 @@ export const useUpdateForecastPlan = () => {
         {
             onSettled: (_data, _error, [variables]) => {
                 queryClient.invalidateQueries({ queryKey: [forecastKey] });
+                queryClient.invalidateQueries({ queryKey: [forecastKey, variables.planId, "result"] });
             }
         }
     );

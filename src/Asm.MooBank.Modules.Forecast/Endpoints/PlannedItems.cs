@@ -20,18 +20,16 @@ public class PlannedItems : EndpointGroupBase
 
     protected override void MapEndpoints(IEndpointRouteBuilder routeGroupBuilder)
     {
-        routeGroupBuilder.MapQuery<GetPlannedItem, PlannedItem>("/{itemId}");
+        routeGroupBuilder.MapQuery<GetPlannedItem, PlannedItem>("/{itemId}")
+            .WithNames("Get Planned Item");
 
         routeGroupBuilder.MapPostCreate<CreatePlannedItem, PlannedItem>("/", "Get Planned Item".ToMachine(), (item) => new { planId = Guid.Empty, itemId = item.Id }, CommandBinding.Parameters)
-            .WithNames("Create Planned Item")
-            .Produces<PlannedItem>();
+            .WithNames("Create Planned Item");
 
         routeGroupBuilder.MapPutCommand<UpdatePlannedItem, PlannedItem>("/{itemId}")
-            .WithNames("Update Planned Item")
-            .Produces<PlannedItem>();
+            .WithNames("Update Planned Item");
 
         routeGroupBuilder.MapDelete<DeletePlannedItem>("/{itemId}")
-            .WithNames("Delete Planned Item")
-            .Produces((int)HttpStatusCode.NoContent);
+            .WithNames("Delete Planned Item");
     }
 }

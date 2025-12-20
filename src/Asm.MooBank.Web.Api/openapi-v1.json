@@ -1492,16 +1492,6 @@
                 }
               }
             }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ForecastPlan"
-                }
-              }
-            }
           }
         }
       }
@@ -1665,7 +1655,7 @@
         "tags": [
           "Forecast"
         ],
-        "operationId": "Planned Items",
+        "operationId": "get-planned-item",
         "parameters": [
           {
             "name": "planId",
@@ -1809,16 +1799,6 @@
         "responses": {
           "201": {
             "description": "Created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PlannedItem"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
@@ -5654,6 +5634,15 @@
               "string"
             ],
             "format": "double"
+          },
+          "actualBalance": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           }
         }
       },
@@ -5817,6 +5806,14 @@
             "format": "double"
           },
           "totalOutgoings": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "monthlyBaselineOutgoings": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "number",
@@ -6857,6 +6854,7 @@
           "Weekly",
           "Monthly",
           "Yearly",
+          "Fortnightly",
           null
         ]
       },

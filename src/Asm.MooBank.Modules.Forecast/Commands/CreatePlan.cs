@@ -35,7 +35,7 @@ internal class CreatePlanHandler(
 
         // Calculate starting balance if using calculated mode
         decimal? startingBalance = request.Plan.StartingBalanceAmount;
-        if (request.Plan.StartingBalanceMode == Models.StartingBalanceMode.CalculatedCurrent && !startingBalance.HasValue)
+        if (request.Plan.StartingBalanceMode == StartingBalanceMode.CalculatedCurrent && !startingBalance.HasValue)
         {
             startingBalance = await CalculateCurrentBalance(accountIds, cancellationToken);
         }
@@ -68,8 +68,8 @@ internal class CreatePlanHandler(
             Name = request.Plan.Name,
             StartDate = request.Plan.StartDate,
             EndDate = request.Plan.EndDate,
-            AccountScopeMode = (Domain.Entities.Forecast.AccountScopeMode)request.Plan.AccountScopeMode,
-            StartingBalanceMode = (Domain.Entities.Forecast.StartingBalanceMode)request.Plan.StartingBalanceMode,
+            AccountScopeMode = request.Plan.AccountScopeMode,
+            StartingBalanceMode = request.Plan.StartingBalanceMode,
             StartingBalanceAmount = startingBalance,
             CurrencyCode = request.Plan.CurrencyCode ?? user.Currency,
             IncomeStrategySerialized = JsonSerializer.Serialize(incomeStrategy, JsonOptions),

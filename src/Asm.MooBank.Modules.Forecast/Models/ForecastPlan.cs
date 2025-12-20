@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Modules.Forecast.Models;
 
@@ -21,16 +22,4 @@ public sealed record ForecastPlan
     public DateTime UpdatedUtc { get; init; }
     public IEnumerable<Guid> AccountIds { get; init; } = [];
     public IEnumerable<PlannedItem> PlannedItems { get; init; } = [];
-}
-
-public enum AccountScopeMode : byte
-{
-    AllAccounts = 0,
-    SelectedAccounts = 1
-}
-
-public enum StartingBalanceMode : byte
-{
-    CalculatedCurrent = 0,
-    ManualAmount = 1
 }

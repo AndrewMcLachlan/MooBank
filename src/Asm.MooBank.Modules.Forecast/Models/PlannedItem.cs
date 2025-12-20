@@ -33,22 +33,3 @@ public sealed record PlannedItem
 
     public string? Notes { get; init; }
 }
-
-public enum PlannedItemType : byte
-{
-    Expense = 0,
-    Income = 1
-}
-
-public enum PlannedItemDateMode : byte
-{
-    FixedDate = 0,
-    Schedule = 1,
-    FlexibleWindow = 2
-}
-
-public enum AllocationMode : byte
-{
-    EvenlySpread = 0,
-    AllAtEnd = 1
-}

@@ -35,39 +35,10 @@ public class ForecastPlannedItem(Guid id) : KeyedEntity<Guid>(id)
 
     public PlannedItemDateMode DateMode { get; set; }
 
-    // Fixed date fields
-    public DateOnly? FixedDate { get; set; }
-
-    // Schedule fields
-    public ScheduleFrequency? ScheduleFrequency { get; set; }
-    public DateOnly? ScheduleAnchorDate { get; set; }
-    public int? ScheduleInterval { get; set; }
-    public int? ScheduleDayOfMonth { get; set; }
-    public DateOnly? ScheduleEndDate { get; set; }
-
-    // Flexible window fields (V1)
-    public DateOnly? WindowStartDate { get; set; }
-    public DateOnly? WindowEndDate { get; set; }
-    public AllocationMode? AllocationMode { get; set; }
-
     public string? Notes { get; set; }
-}
 
-public enum PlannedItemType : byte
-{
-    Expense = 0,
-    Income = 1
-}
-
-public enum PlannedItemDateMode : byte
-{
-    FixedDate = 0,
-    Schedule = 1,
-    FlexibleWindow = 2
-}
-
-public enum AllocationMode : byte
-{
-    EvenlySpread = 0,
-    AllAtEnd = 1
+    // Navigation properties for schedule configurations (0-1 relationship)
+    public virtual PlannedItemFixedDate? FixedDate { get; set; }
+    public virtual PlannedItemSchedule? Schedule { get; set; }
+    public virtual PlannedItemFlexibleWindow? FlexibleWindow { get; set; }
 }

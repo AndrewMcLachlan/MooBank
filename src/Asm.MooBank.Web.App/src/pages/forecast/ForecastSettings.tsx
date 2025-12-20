@@ -8,9 +8,10 @@ import { useAccounts } from "services/AccountService";
 
 interface ForecastSettingsProps {
     plan: ForecastPlan;
+    monthlyExpenses?: number;
 }
 
-export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan }) => {
+export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthlyExpenses }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [name, setName] = useState(plan.name);
     const [startDate, setStartDate] = useState(plan.startDate);
@@ -98,7 +99,18 @@ export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan }) => {
                             </div>
                         </div>
                     </Col>
-                    <Col md={4}>
+                    <Col md={2}>
+                        <div className="settings-item">
+                            <div className="settings-label">Monthly Expenses</div>
+                            <div className="settings-value">
+                                ${(monthlyExpenses ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                            </div>
+                            <div className="settings-sublabel text-muted" style={{ fontSize: "0.75rem" }}>
+                                (calculated from history)
+                            </div>
+                        </div>
+                    </Col>
+                    <Col md={2}>
                         <div className="settings-item">
                             <div className="settings-label">Accounts</div>
                             <div className="settings-value">{getAccountsDisplay()}</div>

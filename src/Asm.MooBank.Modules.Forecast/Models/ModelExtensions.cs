@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Asm.MooBank.Models;
 using DomainEntities = Asm.MooBank.Domain.Entities.Forecast;
 
 namespace Asm.MooBank.Modules.Forecast.Models;
@@ -13,8 +14,8 @@ public static class ModelExtensions
         Name = plan.Name,
         StartDate = plan.StartDate,
         EndDate = plan.EndDate,
-        AccountScopeMode = (AccountScopeMode)plan.AccountScopeMode,
-        StartingBalanceMode = (StartingBalanceMode)plan.StartingBalanceMode,
+        AccountScopeMode = plan.AccountScopeMode,
+        StartingBalanceMode = plan.StartingBalanceMode,
         StartingBalanceAmount = plan.StartingBalanceAmount,
         CurrencyCode = plan.CurrencyCode,
         IncomeStrategy = string.IsNullOrEmpty(plan.IncomeStrategySerialized) ? null : JsonSerializer.Deserialize<IncomeStrategy>(plan.IncomeStrategySerialized, JsonOptions),
@@ -30,45 +31,76 @@ public static class ModelExtensions
     public static PlannedItem ToModel(this DomainEntities.ForecastPlannedItem item) => new()
     {
         Id = item.Id,
-        ItemType = (PlannedItemType)item.ItemType,
+        ItemType = item.ItemType,
         Name = item.Name,
         Amount = item.Amount,
         TagId = item.TagId,
         TagName = item.Tag?.Name,
         VirtualInstrumentId = item.VirtualInstrumentId,
         IsIncluded = item.IsIncluded,
-        DateMode = (PlannedItemDateMode)item.DateMode,
-        FixedDate = item.FixedDate,
-        ScheduleFrequency = item.ScheduleFrequency,
-        ScheduleAnchorDate = item.ScheduleAnchorDate,
-        ScheduleInterval = item.ScheduleInterval,
-        ScheduleDayOfMonth = item.ScheduleDayOfMonth,
-        ScheduleEndDate = item.ScheduleEndDate,
-        WindowStartDate = item.WindowStartDate,
-        WindowEndDate = item.WindowEndDate,
-        AllocationMode = item.AllocationMode.HasValue ? (AllocationMode)item.AllocationMode : null,
+        DateMode = item.DateMode,
+        // Map from navigation properties
+        FixedDate = item.FixedDate?.FixedDate,
+        ScheduleFrequency = item.Schedule?.Frequency,
+        ScheduleAnchorDate = item.Schedule?.AnchorDate,
+        ScheduleInterval = item.Schedule?.Interval,
+        ScheduleDayOfMonth = item.Schedule?.DayOfMonth,
+        ScheduleEndDate = item.Schedule?.EndDate,
+        WindowStartDate = item.FlexibleWindow?.StartDate,
+        WindowEndDate = item.FlexibleWindow?.EndDate,
+        AllocationMode = item.FlexibleWindow?.AllocationMode,
         Notes = item.Notes
     };
 
-    public static DomainEntities.ForecastPlannedItem ToDomain(this PlannedItem item, Guid planId) => new(item.Id == Guid.Empty ? Guid.NewGuid() : item.Id)
+    public static DomainEntities.ForecastPlannedItem ToDomain(this PlannedItem item, Guid planId)
     {
-        ForecastPlanId = planId,
-        ItemType = (DomainEntities.PlannedItemType)item.ItemType,
-        Name = item.Name,
-        Amount = item.Amount,
-        TagId = item.TagId,
-        VirtualInstrumentId = item.VirtualInstrumentId,
-        IsIncluded = item.IsIncluded,
-        DateMode = (DomainEntities.PlannedItemDateMode)item.DateMode,
-        FixedDate = item.FixedDate,
-        ScheduleFrequency = item.ScheduleFrequency,
-        ScheduleAnchorDate = item.ScheduleAnchorDate,
-        ScheduleInterval = item.ScheduleInterval,
-        ScheduleDayOfMonth = item.ScheduleDayOfMonth,
-        ScheduleEndDate = item.ScheduleEndDate,
-        WindowStartDate = item.WindowStartDate,
-        WindowEndDate = item.WindowEndDate,
-        AllocationMode = item.AllocationMode.HasValue ? (DomainEntities.AllocationMode)item.AllocationMode : null,
-        Notes = item.Notes
-    };
+        var entity = new DomainEntities.ForecastPlannedItem(item.Id)
+        {
+            ForecastPlanId = planId,
+            ItemType = item.ItemType,
+            Name = item.Name,
+            Amount = item.Amount,
+            TagId = item.TagId,
+            VirtualInstrumentId = item.VirtualInstrumentId,
+            IsIncluded = item.IsIncluded,
+            DateMode = item.DateMode,
+            Notes = item.Notes
+        };
+
+        // Set navigation properties based on DateMode
+        switch (item.DateMode)
+        {
+            case PlannedItemDateMode.FixedDate when item.FixedDate.HasValue:
+                entity.FixedDate = new DomainEntities.PlannedItemFixedDate
+                {
+                    PlannedItemId = item.Id,
+                    FixedDate = item.FixedDate.Value
+                };
+                break;
+
+            case PlannedItemDateMode.Schedule when item.ScheduleAnchorDate.HasValue:
+                entity.Schedule = new DomainEntities.PlannedItemSchedule
+                {
+                    PlannedItemId = item.Id,
+                    Frequency = item.ScheduleFrequency ?? ScheduleFrequency.Monthly,
+                    AnchorDate = item.ScheduleAnchorDate.Value,
+                    Interval = item.ScheduleInterval ?? 1,
+                    DayOfMonth = item.ScheduleDayOfMonth,
+                    EndDate = item.ScheduleEndDate
+                };
+                break;
+
+            case PlannedItemDateMode.FlexibleWindow when item.WindowStartDate.HasValue && item.WindowEndDate.HasValue:
+                entity.FlexibleWindow = new DomainEntities.PlannedItemFlexibleWindow
+                {
+                    PlannedItemId = item.Id,
+                    StartDate = item.WindowStartDate.Value,
+                    EndDate = item.WindowEndDate.Value,
+                    AllocationMode = item.AllocationMode ?? AllocationMode.EvenlySpread
+                };
+                break;
+        }
+
+        return entity;
+    }
 }

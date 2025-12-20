@@ -21,31 +21,24 @@ public class ForecastPlans : EndpointGroupBase
     protected override void MapEndpoints(IEndpointRouteBuilder routeGroupBuilder)
     {
         routeGroupBuilder.MapQuery<GetPlans, IEnumerable<ForecastPlan>>("/")
-            .WithNames("Get All Forecast Plans")
-            .Produces<IEnumerable<ForecastPlan>>();
+            .WithNames("Get All Forecast Plans");
 
         routeGroupBuilder.MapQuery<GetPlan, ForecastPlan>("/{id}")
-            .WithNames("Get Forecast Plan")
-            .Produces<ForecastPlan>();
+            .WithNames("Get Forecast Plan");
 
         routeGroupBuilder.MapPostCreate<CreatePlan, ForecastPlan>("/", "Get Forecast Plan".ToMachine(), (plan) => new { id = plan.Id }, CommandBinding.Parameters)
-            .WithNames("Create Forecast Plan")
-            .Produces<ForecastPlan>();
+            .WithNames("Create Forecast Plan");
 
         routeGroupBuilder.MapPutCommand<UpdatePlan, ForecastPlan>("/{id}")
-            .WithNames("Update Forecast Plan")
-            .Produces<ForecastPlan>();
+            .WithNames("Update Forecast Plan");
 
         routeGroupBuilder.MapDelete<DeletePlan>("/{id}")
-            .WithNames("Delete Forecast Plan")
-            .Produces((int)HttpStatusCode.NoContent);
+            .WithNames("Delete Forecast Plan");
 
         routeGroupBuilder.MapPatchCommand<ArchivePlan, ForecastPlan>("/{id}/archive")
-            .WithNames("Archive Forecast Plan")
-            .Produces<ForecastPlan>();
+            .WithNames("Archive Forecast Plan");
 
         routeGroupBuilder.MapCommand<RunForecast, ForecastResult>("/{planId}/run")
-            .WithNames("Run Forecast")
-            .Produces<ForecastResult>();
+            .WithNames("Run Forecast");
     }
 }

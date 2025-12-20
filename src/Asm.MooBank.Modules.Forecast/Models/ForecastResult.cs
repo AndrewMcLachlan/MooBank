@@ -19,6 +19,10 @@ public sealed record ForecastMonth
     public decimal BaselineOutgoingsTotal { get; init; }
     public decimal PlannedItemsTotal { get; init; }
     public decimal ClosingBalance { get; init; }
+    /// <summary>
+    /// The actual historical balance for this month, if available (null for future months).
+    /// </summary>
+    public decimal? ActualBalance { get; init; }
 }
 
 [DisplayName("ForecastSummary")]
@@ -30,4 +34,5 @@ public sealed record ForecastSummary
     public int MonthsBelowZero { get; init; }
     public decimal TotalIncome { get; init; }
     public decimal TotalOutgoings { get; init; }
+    public decimal MonthlyBaselineOutgoings { get; init; }
 }
