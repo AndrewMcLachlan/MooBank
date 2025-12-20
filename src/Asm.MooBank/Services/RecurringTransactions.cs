@@ -11,7 +11,7 @@ namespace Asm.MooBank.Services;
 /// </summary>
 public interface IRecurringTransactionService
 {
-    Task Process();
+    Task Process(CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -22,15 +22,18 @@ public class RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionRep
     /// <summary>
     /// Get all recurring transactions and process them.
     /// </summary>
+    /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A task.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the schedule type is unrecognised.</exception>
-    public async Task Process()
+    public async Task Process(CancellationToken cancellationToken = default)
     {
-        foreach (var trans in await recurringTransactionRepository.Get())
+        foreach (var trans in await recurringTransactionRepository.Get(cancellationToken))
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             while (trans.NextRun <= DateTime.UtcNow.ToDateOnly())
             {
-                logger.LogInformation("Running recurring transaction for {accountId}.", trans.VirtualAccountId);
+                logger.LogInformation("Running recurring transaction for {AccountId}.", trans.VirtualAccountId);
                 RunTransaction(trans);
                 trans.LastRun = DateTime.UtcNow;
                 trans.NextRun = trans.Schedule switch
@@ -43,7 +46,7 @@ public class RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionRep
             }
         }
 
-        await unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
     /// <summary>
