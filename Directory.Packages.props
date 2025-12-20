@@ -12,24 +12,24 @@
     <PackageVersion Include="FluentValidation" Version="12.0.0" />
     <PackageVersion Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
     <PackageVersion Include="LazyCache.AspNetCore" Version="2.4.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="10.0.1" />
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.1" />
     <PackageVersion Include="Microsoft.AspNetCore.SpaProxy" Version="10.0.1" />
     <PackageVersion Include="Microsoft.Azure.WebJobs.Extensions" Version="5.2.1" />
     <PackageVersion Include="Microsoft.Build" Version="18.0.2" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.0" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.ApiDescription.Server" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.ApiDescription.Server" Version="10.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Azure" Version="1.7.6" />
     <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.1" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.1" />
     <PackageVersion Include="Microsoft.Identity.Client" Version="4.79.2" />
     <PackageVersion Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
     <PackageVersion Include="ModelContextProtocol" Version="0.4.1-preview.1" />
