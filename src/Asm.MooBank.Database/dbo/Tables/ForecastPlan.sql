@@ -17,7 +17,7 @@ CREATE TABLE [dbo].[ForecastPlan]
     [UpdatedUtc] DATETIME2 NOT NULL CONSTRAINT DF_ForecastPlan_UpdatedUtc DEFAULT SYSUTCDATETIME(),
     CONSTRAINT [PK_ForecastPlan] PRIMARY KEY CLUSTERED ([Id]),
     CONSTRAINT [FK_ForecastPlan_Family] FOREIGN KEY ([FamilyId]) REFERENCES [Family]([Id]),
-    CONSTRAINT [CK_ForecastPlan_EndDate] CHECK ([EndDate] <= DATEADD(YEAR, 10, [StartDate]))
+    CONSTRAINT [CK_ForecastPlan_DateRange] CHECK ([EndDate] <= DATEADD(YEAR, 10, [StartDate]))
 )
 GO
 
