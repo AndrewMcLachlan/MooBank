@@ -61,7 +61,7 @@ jobs:
     - name: Copy App
       run: cp -r src/Asm.MooBank.Web.App/dist ${{ github.workspace }}/publish/wwwroot
     - name: Upload Artifact
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: publish
         path: ${{ github.workspace }}/publish
@@ -85,7 +85,7 @@ jobs:
     steps:
     - uses: actions/checkout@v6
     - name: Download publish artifact
-      uses: actions/download-artifact@v6
+      uses: actions/download-artifact@v7
       with:
         name: publish
         path: ${{ github.workspace }}/publish
