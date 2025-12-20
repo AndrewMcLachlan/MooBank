@@ -4,12 +4,18 @@ using Asm.MooBank.Domain.Entities.Instrument;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
-public class InstrumentRepository(MooBankContext dataContext) : Asm.Domain.Infrastructure.RepositoryDeleteBase<MooBankContext, Instrument, Guid>(dataContext), IInstrumentRepository
+public class InstrumentRepository(MooBankContext dataContext, Models.User user) : RepositoryDeleteBase<MooBankContext, Instrument, Guid>(dataContext), IInstrumentRepository
 {
     public override void Delete(Guid id)
     {
         var instrument = Entities.Find(id) ?? throw new NotFoundException();
         instrument.ClosedDate = DateOnly.FromDateTime(DateTime.UtcNow);
+    }
+
+    public override async Task<IEnumerable<Instrument>> Get(CancellationToken cancellationToken = default)
+    {
+        var userAccounts = user.Accounts.Concat(user.SharedAccounts);
+        return await Entities.Where(i => userAccounts.Contains(i.Id)).ToListAsync(cancellationToken);
     }
 
     public override Task<Instrument> Get(Guid id, CancellationToken cancellationToken = default) =>

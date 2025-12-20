@@ -8,6 +8,7 @@
 @import "css/filterPanel" layer(moobank);
 @import "css/form" layer(moobank);
 @import "css/transactions" layer(moobank);
+@import "css/forecast" layer(moobank);
 @import "css/treeflex";
 
 @layer moobank {

@@ -112,6 +112,13 @@ The codebase is organized into the following main projects:
 
 The code for MooApp is available at: https://github.com/AndrewMcLachlan/MooApp
 
+## Database Design
+The database schema is defined in the `Asm.MooBank.Database` project using a SQL Server Database Project. Key design principles include:
+- **Normalization**: The schema is normalized to reduce redundancy and improve data integrity.
+- **Enums as Tables**:100: C# Enums are represented as lookup tables for flexibility.
+- **Primary Keys**: The ID of a table is typically a GUID, but can be an INT for lookup tables or performance-sensitive tables. The name of the ID column is always `Id`.
+- **Seed Data**: Lookup tables are seeded with initial data using post-deployment scripts. These scripts use MERGE statements to avoid duplication.
+
 ## CQRS Implementation Guidelines
 
 ### Commands
@@ -269,6 +276,54 @@ Background jobs are implemented as Azure WebJobs in `Asm.MooBank.Web.Jobs`:
 - Navigation properties should be explicitly loaded via specifications.
 - Avoid N+1 query problems by using `.Include()` or specifications.
 
+### IQueryable vs Repository
+
+The infrastructure layer provides two ways to access entities:
+
+1. **`IQueryable<TEntity>`** - Injected directly for **read-only queries**
+   - Configured with `AsNoTracking()` for optimal performance
+   - Entities retrieved this way are **not tracked** by EF Core's change tracker
+   - **Use in Query handlers only** - perfect for fast, read-only operations
+   - Cannot be used to update entities (changes won't be persisted)
+   - Example: `IQueryable<ForecastPlan> plans`
+
+2. **`IRepository<TEntity>`** - Injected for **commands that modify data**
+   - Entities are tracked by EF Core's change tracker
+   - Changes to entities will be persisted when `IUnitOfWork.SaveChangesAsync()` is called
+   - **Use in Command handlers** that create, update, or delete entities
+   - Supports specifications for eager loading: `repository.Get(id, specification, cancellationToken)`
+   - Example: `IForecastRepository forecastRepository`
+
+**Rule of thumb:**
+- **Queries** (read operations) → Use `IQueryable<TEntity>`
+- **Commands** (write operations) → Use `IRepository<TEntity>`
+
+```csharp
+// Query handler - uses IQueryable (no tracking, read-only)
+internal class GetPlanHandler(IQueryable<ForecastPlan> plans, ...) : IQueryHandler<GetPlan, ForecastPlan>
+{
+    public async ValueTask<ForecastPlan> Handle(GetPlan query, ...)
+    {
+        var plan = await plans
+            .Apply(new ForecastPlanDetailsSpecification())
+            .SingleAsync(p => p.Id == query.Id, cancellationToken);
+        return plan.ToModel();
+    }
+}
+
+// Command handler - uses Repository (tracked, can modify)
+internal class UpdatePlanHandler(IForecastRepository forecastRepository, ...) : ICommandHandler<UpdatePlan, ForecastPlan>
+{
+    public async ValueTask<ForecastPlan> Handle(UpdatePlan request, ...)
+    {
+        var entity = await forecastRepository.Get(request.Id, new ForecastPlanDetailsSpecification(), cancellationToken);
+        entity.Name = request.Plan.Name; // Changes will be tracked
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+        return entity.ToModel();
+    }
+}
+```
+
 ## Domain Events
 - Raised within aggregate roots during state changes.
 - Handled by event handlers in the infrastructure layer.
@@ -288,12 +343,14 @@ When contributing to the MooBank codebase:
 7. **Use domain-driven language** that matches the business concepts.
 8. **Add appropriate tests** for new features (BDD tests for features, unit tests for complex logic).
 9. **Follow C# coding conventions** as defined in `.editorconfig`.
-10. **Document API endpoints** with OpenAPI attributes.
-11. **Handle errors appropriately** using domain exceptions and HTTP exceptions.
-12. **Consider security** and apply authorization policies where appropriate.
-13. **Think about the full stack**: Consider both backend and frontend implications.
-14. **Avoid breaking changes**: Maintain backward compatibility in APIs when possible.
-15. **Use TypeScript strictly** in the frontend for type safety.
+    - **Use Framework types correctly** (e.g. `string` for declarations and `String` for static methods).
+10. **No Warnings**: Ensure code compiles without warnings.
+11. **Document API endpoints** with OpenAPI attributes.
+12. **Handle errors appropriately** using domain exceptions and HTTP exceptions.
+13. **Consider security** and apply authorization policies where appropriate.
+14. **Think about the full stack**: Consider both backend and frontend implications.
+15. **Avoid breaking changes**: Maintain backward compatibility in APIs when possible.
+16. **Use TypeScript strictly** in the frontend for type safety.
 
 When making changes:
 - Search for similar existing patterns before implementing new ones.

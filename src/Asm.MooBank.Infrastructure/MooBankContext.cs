@@ -3,6 +3,7 @@ using System.Reflection;
 using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Asset;
 using Asm.MooBank.Domain.Entities.Budget;
+using Asm.MooBank.Domain.Entities.Forecast;
 using Asm.MooBank.Domain.Entities.Group;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.ReferenceData;
@@ -69,6 +70,24 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
 
     [AllowNull]
     public virtual DbSet<CpiChange> CpiChanges { get; set; }
+
+    [AllowNull]
+    public virtual DbSet<ForecastPlan> ForecastPlans { get; set; }
+
+    [AllowNull]
+    public virtual DbSet<ForecastPlanAccount> ForecastPlanAccounts { get; set; }
+
+    [AllowNull]
+    public virtual DbSet<ForecastPlannedItem> ForecastPlannedItems { get; set; }
+
+    [AllowNull]
+    public virtual DbSet<PlannedItemFixedDate> PlannedItemFixedDates { get; set; }
+
+    [AllowNull]
+    public virtual DbSet<PlannedItemSchedule> PlannedItemSchedules { get; set; }
+
+    [AllowNull]
+    public virtual DbSet<PlannedItemFlexibleWindow> PlannedItemFlexibleWindows { get; set; }
 
     public static void RegisterAssembly(Assembly assembly) => Assemblies.Add(assembly);
 

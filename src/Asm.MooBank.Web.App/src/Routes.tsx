@@ -58,6 +58,7 @@ export const routes: RouteDefinition = {
             },
             budget: { path: "/budget", element: <Pages.Budget /> },
             budgetReport: { path: "/budget/report/:year?/:month?", element: <Pages.BudgetReport /> },
+            forecast: { path: "/forecast", element: <Pages.Forecast /> },
             settings: {
                 path: "/settings", element: <Pages.Settings />, children: {
                     families: { path: "families", element: <Pages.Families /> },

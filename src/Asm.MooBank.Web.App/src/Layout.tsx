@@ -61,6 +61,11 @@ const sideMenu = [
         route: "/budget"
     },
     {
+        text: "Forecast",
+        image: <Icons.Trendline />,
+        route: "/forecast"
+    },
+    {
         text: "Groups",
         image: <Icons.Stack />,
         route: "/groups"
