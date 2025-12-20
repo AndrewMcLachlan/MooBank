@@ -12,9 +12,9 @@ public class Module : IModule
     public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
     {
         new Endpoints.Instruments().MapGroup(endpoints);
-        new Endpoints.Import().MapGroup(endpoints).RequireAuthorization(Policies.InstrumentViewer);
-        new Endpoints.RulesEndpoints().MapGroup(endpoints).RequireAuthorization(Policies.InstrumentViewer);
-        new Endpoints.VirtualInstruments().MapGroup(endpoints).RequireAuthorization(Policies.InstrumentViewer);
+        new Endpoints.Import().MapGroup(endpoints).RequireAuthorization(Policies.GetInstrumentViewerPolicy());
+        new Endpoints.RulesEndpoints().MapGroup(endpoints).RequireAuthorization(Policies.GetInstrumentViewerPolicy());
+        new Endpoints.VirtualInstruments().MapGroup(endpoints).RequireAuthorization(Policies.GetInstrumentViewerPolicy());
 
         return endpoints;
     }

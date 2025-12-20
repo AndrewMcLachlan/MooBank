@@ -31,18 +31,18 @@ internal class Bills : EndpointGroupBase
 
         builder.MapQuery<Queries.Accounts.Get, Models.Account>("/accounts/{instrumentId}")
             .WithNames("Get Bill Account")
-            .RequireAuthorization(Policies.InstrumentViewer);
+            .RequireAuthorization(Policies.GetInstrumentViewerPolicy());
 
         builder.MapPagedQuery<Queries.Bills.GetForAccount, Models.Bill>("/accounts/{instrumentId}/bills")
             .WithNames("Get Bills For An Account")
-            .RequireAuthorization(Policies.InstrumentViewer);
+            .RequireAuthorization(Policies.GetInstrumentViewerPolicy());
 
         builder.MapQuery<Queries.Bills.Get, Models.Bill>("/accounts/{instrumentId}/bills/{id}")
             .WithNames("Get Bill")
-            .RequireAuthorization(Policies.InstrumentViewer);
+            .RequireAuthorization(Policies.GetInstrumentViewerPolicy());
 
         builder.MapPostCreate<Commands.Bills.Create, Models.Bill>("/accounts/{instrumentId}/bills", "Get Bill".ToMachine(), b => b.Id)
             .WithNames("Create Bill")
-            .RequireAuthorization(Policies.InstrumentOwner);
+            .RequireAuthorization(Policies.GetInstrumentOwnerPolicy());
     }
 }
