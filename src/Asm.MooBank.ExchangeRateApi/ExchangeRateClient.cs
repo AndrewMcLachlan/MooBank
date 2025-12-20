@@ -13,15 +13,17 @@ public interface IExchangeRateClient
 
 internal class ExchangeRateClient(IHttpClientFactory httpClientFactory, IOptions<ExchangeRateApiConfig> config, ILogger<ExchangeRateClient> logger) : IExchangeRateClient
 {
-    private const string UrlFormat = "https://v6.exchangerate-api.com/v6/{0}/latest/{1}";
+    private const string UrlFormat = "https://v6.exchangerate-api.com/v6/latest/{0}";
 
     public async Task<IDictionary<string, decimal>> GetExchangeRates(string from, CancellationToken cancellationToken = default)
     {
-        string url = String.Format(UrlFormat, config.Value.ApiKey, from);
+        string url = String.Format(UrlFormat, from);
 
         try
         {
             var httpClient = httpClientFactory.CreateClient("ExchangeRateApi");
+
+            httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", config.Value.ApiKey);
 
             ExchangeRateApiResponse? rates = await httpClient.GetFromJsonAsync<ExchangeRateApiResponse>(url, cancellationToken);
 
