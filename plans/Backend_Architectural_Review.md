@@ -245,13 +245,10 @@ public Task<User> GetCurrentUserAsync() => Task.FromResult(GetCurrentUser());
 
 This creates unnecessary Task allocations.
 
-**Fix:** Use `ValueTask<User>` for synchronous completion paths:
-```csharp
-public ValueTask<User> GetCurrentUserAsync() => new(GetCurrentUser());
-```
+**Fix:** Remove the async code, it's not used.
 
 **Effort:** Low
-**Risk if not fixed:** Minor performance overhead
+**Risk if not fixed:** None, it's not used.
 
 ---
 
@@ -259,23 +256,10 @@ public ValueTask<User> GetCurrentUserAsync() => new(GetCurrentUser());
 
 **Problem:** No `AddCors()` or `UseCors()` calls found. While the default is restrictive, explicit configuration is preferred for clarity and maintainability.
 
-**Fix:** Add explicit CORS policy:
+**Fix:** Do nothing. Effort is not low (configuration per environment, either hard-coded or through new keys) for 0 advantage.
 
-```csharp
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("Production", policy =>
-    {
-        policy.WithOrigins("https://moobank.app")
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials();
-    });
-});
-```
-
-**Effort:** Low
-**Risk if not fixed:** Potential issues with frontend deployments
+**Effort:** Medium
+**Risk if not fixed:** None whatsoever. The default (same origin) is correct and secure.
 
 ---
 
@@ -303,11 +287,7 @@ builder.Services.AddCors(options =>
 
 #### 17. Security Headers Audit
 
-**Problem:** `UseSecurityHeaders()` is called but implementation is in external Asm.AspNetCore library. Cannot verify CSP, X-Frame-Options, etc.
-
-**Fix:** Audit the external library or add explicit header configuration.
-
-**Effort:** Low
+**Problem:** No problem, this works just fine.
 
 ---
 
