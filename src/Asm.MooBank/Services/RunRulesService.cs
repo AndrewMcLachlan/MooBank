@@ -34,23 +34,30 @@ public class RunRulesService(IRunRulesQueue taskQueue, ILoggerFactory loggerFact
 
                 var rules = await transactionTagRuleRepository.GetForInstrument(accountId, cancellationToken);
 
-                Parallel.ForEach(transactions, (transaction) =>
+                // Parallel: compute rule matches (read-only, thread-safe)
+                var ruleMatches = transactions.AsParallel().Select(transaction =>
                 {
-                    var applicableRules = rules.Where(r => transaction.Description?.Contains(r.Contains, StringComparison.OrdinalIgnoreCase) ?? false);
-                    var applicableTags = applicableRules.SelectMany(r => r.Tags).Distinct();
+                    var applicableRules = rules.Where(r => transaction.Description?.Contains(r.Contains, StringComparison.OrdinalIgnoreCase) ?? false).ToList();
+                    var tags = applicableRules.SelectMany(r => r.Tags).Distinct().ToList();
+                    var notes = String.Join(". ", applicableRules.Where(r => !String.IsNullOrWhiteSpace(r.Description)).Select(r => r.Description));
+                    return (transaction, tags, notes);
+                }).ToList();
 
-                    transaction.AddOrUpdateSplit(applicableTags);
+                // Sequential: apply mutations to tracked entities
+                foreach (var (transaction, tags, notes) in ruleMatches)
+                {
+                    transaction.AddOrUpdateSplit(tags);
                     if (String.IsNullOrEmpty(transaction.Notes))
                     {
-                        transaction.Notes = String.Join(". ", applicableRules.Where(r => !String.IsNullOrWhiteSpace(r.Description)).Select(r => r.Description));
+                        transaction.Notes = notes;
                     }
-                });
+                }
 
                 await unitOfWork.SaveChangesAsync(cancellationToken);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred running rules for account {AccountId}.", nameof(accountId));
+                _logger.LogError(ex, "Error occurred running rules for account {AccountId}.", accountId);
             }
         }
 
@@ -65,22 +72,43 @@ public interface IRunRulesQueue
     Task<Guid> DequeueAsync(CancellationToken cancellationToken);
 }
 
-public class RunRulesQueue : IRunRulesQueue
+public class RunRulesQueue : IRunRulesQueue, IDisposable
 {
     private readonly ConcurrentQueue<Guid> _workItems = new();
     private readonly SemaphoreSlim _signal = new(0);
+    private bool _disposed;
 
     public void QueueRunRules(Guid accountId)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
         _workItems.Enqueue(accountId);
         _signal.Release();
     }
 
     public async Task<Guid> DequeueAsync(CancellationToken cancellationToken)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
         await _signal.WaitAsync(cancellationToken);
         _workItems.TryDequeue(out var workItem);
 
         return workItem;
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_disposed) return;
+
+        if (disposing)
+        {
+            _signal.Dispose();
+        }
+
+        _disposed = true;
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 }

@@ -173,6 +173,26 @@ The database schema is defined in the `Asm.MooBank.Database` project using a SQL
   - Applied at the endpoint level.
 - **Multi-tenancy**: Users are grouped into Families and Groups for data isolation.
 
+### Authorization Policy Pattern
+
+When applying authorization to endpoints that involve instruments, **always use parameterized/dynamic policies** that extract the instrument ID from the route parameter. This ensures consistent security enforcement across all endpoints.
+
+**Always use:**
+```csharp
+// Dynamic policy - extracts instrumentId from route and validates ownership/access
+.RequireAuthorization(Policies.GetInstrumentViewerPolicy("instrumentId"));
+.RequireAuthorization(Policies.GetInstrumentOwnerPolicy("instrumentId"));
+```
+
+**Never use static policies for instrument-based authorization:**
+```csharp
+// WRONG - Static policies don't validate against the specific instrument in the route
+.RequireAuthorization(Policies.InstrumentViewer);
+.RequireAuthorization(Policies.InstrumentOwner);
+```
+
+The parameterized policies ensure that the authorization handler can extract the instrument ID from the route (e.g., `/instruments/{instrumentId}/...`) and verify the current user has the appropriate access level (viewer or owner) for that specific instrument.
+
 ## Hosting
 
 The application is hosted on Microsoft Azure using the following services:

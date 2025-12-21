@@ -28,14 +28,16 @@ internal class TagsEndpoints : EndpointGroupBase
             .WithNames("Get Tag");
 
         builder.MapPostCreate<Create, MooBank.Models.Tag>("", "get-tag", t => new { t.Id }, CommandBinding.Body)
-            .WithNames("Create Tag");
+            .WithNames("Create Tag")
+            .WithValidation<Create>();
 
         builder.MapPutCreate<CreateByName, MooBank.Models.Tag>("{name}", "get-tag", t => new { t.Id })
             .WithNames("Create Tag by Name")
             .WithSummary("Create a tag by name");
 
         builder.MapPatchCommand<Update, MooBank.Models.Tag>("{id}")
-            .WithNames("Update Tag");
+            .WithNames("Update Tag")
+            .WithValidation<Update>();
 
         builder.MapDelete<Delete>("{id}")
             .WithNames("Delete Tag");

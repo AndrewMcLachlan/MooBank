@@ -1,4 +1,4 @@
-﻿using Asm.AspNetCore;
+using Asm.AspNetCore;
 using Asm.AspNetCore.Routing;
 using Asm.MooBank.Modules.Accounts.Commands;
 using Asm.MooBank.Modules.Accounts.Models.Account;
@@ -26,11 +26,13 @@ internal class Accounts : EndpointGroupBase
             .RequireAuthorization(Policies.GetInstrumentViewerPolicy());
 
         builder.MapPostCreate<Create, LogicalAccount>("/", "Get Account".ToMachine(), a => new { instrumentId = a.Id }, CommandBinding.Body)
-            .WithNames("Create Account");
+            .WithNames("Create Account")
+            .WithValidation<Create>();
 
         builder.MapPatchCommand<Update, LogicalAccount>("/{id}")
             .WithNames("Update Account")
-            .RequireAuthorization(Policies.GetInstrumentViewerPolicy("id"));
+            .RequireAuthorization(Policies.GetInstrumentViewerPolicy("id"))
+            .WithValidation<Update>();
     }
 
     internal static Delegate CreateCreateHandler<TRequest, TResult>(string routeName, Func<TResult, object> getRouteParams) where TRequest : ICommand<TResult>

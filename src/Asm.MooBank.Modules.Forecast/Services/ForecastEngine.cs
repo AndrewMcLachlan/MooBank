@@ -5,6 +5,7 @@ using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Forecast.Models;
 using DomainForecastPlan = Asm.MooBank.Domain.Entities.Forecast.ForecastPlan;
 using DomainForecastPlannedItem = Asm.MooBank.Domain.Entities.Forecast.ForecastPlannedItem;
+using DomainInstrument = Asm.MooBank.Domain.Entities.Instrument.Instrument;
 using DomainLogicalAccount = Asm.MooBank.Domain.Entities.Account.LogicalAccount;
 using DomainTransactionInstrument = Asm.MooBank.Domain.Entities.Instrument.TransactionInstrument;
 
@@ -22,11 +23,11 @@ internal class ForecastEngine(
         // Resolve account IDs based on scope mode
         var accountIds = GetAccountIds(plan);
 
-        // 1. Determine starting balance (uses all selected accounts)
-        var startingBalance = await CalculateStartingBalance(plan, accountIds, cancellationToken);
+        // Pre-load all instruments in a single query to avoid N+1
+        var allInstruments = (await instrumentRepository.Get(accountIds, cancellationToken)).ToList();
 
         // 2. Get account IDs excluding Savings accounts for historical calculations
-        var accountIdsForHistoricalAnalysis = await FilterAccountsForHistoricalAnalysis(accountIds, cancellationToken);
+        var accountIdsForHistoricalAnalysis = FilterAccountsForHistoricalAnalysis(allInstruments);
 
         // 3. Parse strategies
         var incomeStrategy = String.IsNullOrEmpty(plan.IncomeStrategySerialized)
@@ -36,6 +37,9 @@ internal class ForecastEngine(
         var outgoingStrategy = String.IsNullOrEmpty(plan.OutgoingStrategySerialized)
             ? new OutgoingStrategy()
             : JsonSerializer.Deserialize<OutgoingStrategy>(plan.OutgoingStrategySerialized, JsonOptions)!;
+
+        // 1. Determine starting balance (uses all selected accounts)
+        var startingBalance = await CalculateStartingBalance(plan, allInstruments, accountIds, cancellationToken);
 
         // 4. Calculate baseline outgoings from historical data (excluding Savings accounts)
         var baselineOutgoings = await CalculateBaselineOutgoings(accountIdsForHistoricalAnalysis, outgoingStrategy, plan.StartDate, cancellationToken);
@@ -108,38 +112,21 @@ internal class ForecastEngine(
     /// Filters account IDs to exclude Savings accounts for historical analysis.
     /// Savings accounts often have large transfers that skew income/expense averages.
     /// </summary>
-    private async Task<List<Guid>> FilterAccountsForHistoricalAnalysis(List<Guid> accountIds, CancellationToken cancellationToken)
-    {
-        var filteredIds = new List<Guid>();
+    private static List<Guid> FilterAccountsForHistoricalAnalysis(List<DomainInstrument> instruments) =>
+        instruments
+            .OfType<DomainLogicalAccount>()
+            .Where(a => a.AccountType != AccountType.Savings)
+            .Select(a => a.Id)
+            .ToList();
 
-        foreach (var accountId in accountIds)
-        {
-            try
-            {
-                var instrument = await instrumentRepository.Get(accountId, cancellationToken);
-                if (instrument is DomainLogicalAccount logicalAccount &&
-                    logicalAccount.AccountType != AccountType.Savings)
-                {
-                    filteredIds.Add(accountId);
-                }
-            }
-            catch (NotFoundException)
-            {
-                // Skip accounts that don't exist
-            }
-        }
-
-        return filteredIds;
-    }
-
-    private async Task<decimal> CalculateStartingBalance(DomainForecastPlan plan, List<Guid> accountIds, CancellationToken cancellationToken)
+    private async Task<decimal> CalculateStartingBalance(DomainForecastPlan plan, List<DomainInstrument> instruments, List<Guid> accountIds, CancellationToken cancellationToken)
     {
         if (plan.StartingBalanceMode == StartingBalanceMode.ManualAmount)
         {
             return plan.StartingBalanceAmount ?? 0m;
         }
 
-        if (!accountIds.Any())
+        if (instruments.Count == 0)
         {
             return 0m;
         }
@@ -148,65 +135,41 @@ internal class ForecastEngine(
         var planStartMonth = new DateOnly(plan.StartDate.Year, plan.StartDate.Month, 1);
         var currentMonth = new DateOnly(today.Year, today.Month, 1);
 
-        // If plan starts in the past, use historical balance from that month
+        // If plan starts in the past, use historical balance from that month (batch query)
         if (planStartMonth < currentMonth)
         {
             return await CalculateHistoricalStartingBalance(accountIds, plan.StartDate, cancellationToken);
         }
 
-        // Plan starts this month or in the future - use current balances
-        decimal totalBalance = 0m;
-        foreach (var accountId in accountIds)
-        {
-            try
-            {
-                var instrument = await instrumentRepository.Get(accountId, cancellationToken);
-                if (instrument is DomainTransactionInstrument transactionInstrument)
-                {
-                    totalBalance += transactionInstrument.Balance;
-                }
-            }
-            catch (NotFoundException)
-            {
-                // Skip accounts that don't exist
-            }
-        }
-
-        return totalBalance;
+        // Plan starts this month or in the future - use current balances from pre-loaded instruments
+        return instruments
+            .OfType<DomainTransactionInstrument>()
+            .Sum(i => i.Balance);
     }
 
     private async Task<decimal> CalculateHistoricalStartingBalance(List<Guid> accountIds, DateOnly startDate, CancellationToken cancellationToken)
     {
-        decimal totalBalance = 0m;
+        if (accountIds.Count == 0)
+        {
+            return 0m;
+        }
 
         // Get the closing balance of the month before the start date
         // This becomes the opening balance for the start month
         var previousMonth = new DateOnly(startDate.Year, startDate.Month, 1).AddMonths(-1);
         var previousMonthEnd = previousMonth.AddMonths(1).AddDays(-1);
 
-        foreach (var accountId in accountIds)
-        {
-            try
-            {
-                var balances = await reportRepository.GetMonthlyBalances(accountId, previousMonth, previousMonthEnd, cancellationToken);
-                var balance = balances.FirstOrDefault();
-                if (balance != null)
-                {
-                    totalBalance += balance.Balance;
-                }
-            }
-            catch (Exception)
-            {
-                // Skip accounts with errors
-            }
-        }
+        // Batch query all accounts in parallel
+        var allBalances = await reportRepository.GetMonthlyBalancesForAccounts(accountIds, previousMonth, previousMonthEnd, cancellationToken);
 
-        return totalBalance;
+        return allBalances.Values
+            .SelectMany(b => b)
+            .Sum(b => b.Balance);
     }
 
     private async Task<decimal> CalculateBaselineOutgoings(List<Guid> accountIds, OutgoingStrategy strategy, DateOnly planStartDate, CancellationToken cancellationToken)
     {
-        if (!accountIds.Any() || strategy.LookbackMonths <= 0)
+        if (accountIds.Count == 0 || strategy.LookbackMonths <= 0)
         {
             return 0m;
         }
@@ -214,20 +177,13 @@ internal class ForecastEngine(
         var lookbackEnd = planStartDate.AddDays(-1);
         var lookbackStart = lookbackEnd.AddMonths(-strategy.LookbackMonths);
 
-        decimal totalOutgoings = 0m;
+        // Batch query all accounts in parallel
+        var allTotals = await reportRepository.GetCreditDebitTotalsForAccounts(accountIds, lookbackStart, lookbackEnd, cancellationToken);
 
-        foreach (var accountId in accountIds)
-        {
-            try
-            {
-                var totals = await reportRepository.GetCreditDebitTotals(accountId, lookbackStart, lookbackEnd, cancellationToken);
-                totalOutgoings += totals.Where(t => t.TransactionType == TransactionFilterType.Debit).Sum(t => t.Total);
-            }
-            catch (Exception)
-            {
-                // Skip accounts with errors
-            }
-        }
+        var totalOutgoings = allTotals.Values
+            .SelectMany(t => t)
+            .Where(t => t.TransactionType == TransactionFilterType.Debit)
+            .Sum(t => t.Total);
 
         // Calculate monthly average
         return totalOutgoings / strategy.LookbackMonths;
@@ -238,7 +194,7 @@ internal class ForecastEngine(
     /// </summary>
     private async Task<decimal> CalculateHistoricalIncome(List<Guid> accountIds, int lookbackMonths, DateOnly planStartDate, CancellationToken cancellationToken)
     {
-        if (!accountIds.Any() || lookbackMonths <= 0)
+        if (accountIds.Count == 0 || lookbackMonths <= 0)
         {
             return 0m;
         }
@@ -246,20 +202,13 @@ internal class ForecastEngine(
         var lookbackEnd = planStartDate.AddDays(-1);
         var lookbackStart = lookbackEnd.AddMonths(-lookbackMonths);
 
-        decimal totalIncome = 0m;
+        // Batch query all accounts in parallel
+        var allTotals = await reportRepository.GetCreditDebitTotalsForAccounts(accountIds, lookbackStart, lookbackEnd, cancellationToken);
 
-        foreach (var accountId in accountIds)
-        {
-            try
-            {
-                var totals = await reportRepository.GetCreditDebitTotals(accountId, lookbackStart, lookbackEnd, cancellationToken);
-                totalIncome += totals.Where(t => t.TransactionType == TransactionFilterType.Credit).Sum(t => t.Total);
-            }
-            catch (Exception)
-            {
-                // Skip accounts with errors
-            }
-        }
+        var totalIncome = allTotals.Values
+            .SelectMany(t => t)
+            .Where(t => t.TransactionType == TransactionFilterType.Credit)
+            .Sum(t => t.Total);
 
         // Calculate monthly average
         return totalIncome / lookbackMonths;
@@ -275,7 +224,7 @@ internal class ForecastEngine(
     {
         var result = new Dictionary<string, decimal?>();
 
-        if (!accountIds.Any())
+        if (accountIds.Count == 0)
         {
             return result;
         }
@@ -293,28 +242,25 @@ internal class ForecastEngine(
         // Fetch from the month before start date to get opening balance for start month
         var fetchStart = new DateOnly(startDate.Year, startDate.Month, 1).AddMonths(-1);
 
-        foreach (var accountId in accountIds)
-        {
-            try
-            {
-                var balances = await reportRepository.GetMonthlyBalances(accountId, fetchStart, effectiveEndDate, cancellationToken);
-                foreach (var balance in balances)
-                {
-                    // The closing balance of this month becomes the opening balance of next month
-                    var nextMonth = new DateOnly(balance.PeriodEnd.Year, balance.PeriodEnd.Month, 1).AddMonths(1);
-                    var monthKey = nextMonth.ToString("yyyy-MM");
+        // Batch query all accounts in parallel
+        var allBalances = await reportRepository.GetMonthlyBalancesForAccounts(accountIds, fetchStart, effectiveEndDate, cancellationToken);
 
-                    // Only include if within our forecast range
-                    if (nextMonth >= new DateOnly(startDate.Year, startDate.Month, 1) &&
-                        nextMonth <= new DateOnly(effectiveEndDate.Year, effectiveEndDate.Month, 1))
-                    {
-                        result[monthKey] = result.GetValueOrDefault(monthKey, 0m) + balance.Balance;
-                    }
-                }
-            }
-            catch (Exception)
+        var startMonth = new DateOnly(startDate.Year, startDate.Month, 1);
+        var endMonth = new DateOnly(effectiveEndDate.Year, effectiveEndDate.Month, 1);
+
+        foreach (var (_, balances) in allBalances)
+        {
+            foreach (var balance in balances)
             {
-                // Skip accounts with errors
+                // The closing balance of this month becomes the opening balance of next month
+                var nextMonth = new DateOnly(balance.PeriodEnd.Year, balance.PeriodEnd.Month, 1).AddMonths(1);
+                var monthKey = nextMonth.ToString("yyyy-MM");
+
+                // Only include if within our forecast range
+                if (nextMonth >= startMonth && nextMonth <= endMonth)
+                {
+                    result[monthKey] = result.GetValueOrDefault(monthKey, 0m) + balance.Balance;
+                }
             }
         }
 

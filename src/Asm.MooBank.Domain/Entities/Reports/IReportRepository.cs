@@ -17,5 +17,9 @@ public interface IReportRepository
     Task<IEnumerable<MonthlyBalance>> GetMonthlyBalances(Guid accountId, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default);
 
     Task<IEnumerable<MonthlyBalance>> GetGroupMonthlyBalances(Guid groupId, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default);
+
+    Task<Dictionary<Guid, IEnumerable<CreditDebitTotal>>> GetCreditDebitTotalsForAccounts(IEnumerable<Guid> accountIds, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default);
+
+    Task<Dictionary<Guid, IEnumerable<MonthlyBalance>>> GetMonthlyBalancesForAccounts(IEnumerable<Guid> accountIds, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default);
 }
 

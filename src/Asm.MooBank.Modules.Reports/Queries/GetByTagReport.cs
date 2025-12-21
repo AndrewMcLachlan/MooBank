@@ -1,4 +1,5 @@
-﻿using Asm.MooBank.Domain.Entities.Transactions;
+using Asm.MooBank.Domain.Entities.Transactions;
+using Asm.MooBank.Domain.Entities.Transactions.Specifications;
 using Asm.MooBank.Modules.Reports.Models;
 
 namespace Asm.MooBank.Modules.Reports.Queries;
@@ -17,7 +18,7 @@ internal class GetByTagReportHandler(IQueryable<Transaction> transactions) : IQu
         var start = request.Start.ToStartOfDay();
         var end = request.End.ToEndOfDay();
 
-        var transactions = await _transactions.IncludeTags().WhereByReportQuery(request).ToListAsync(cancellationToken);
+        var transactions = await _transactions.Specify(new IncludeTagsSpecification()).WhereByReportQuery(request).ToListAsync(cancellationToken);
 
         var tagValuesInterim = transactions
             .GroupBy(t => t.Tags)
@@ -38,7 +39,7 @@ internal class GetByTagReportHandler(IQueryable<Transaction> transactions) : IQu
 
         if (request.ParentTagId == null)
         {
-            var tagLessAmount = await _transactions.IncludeTags().WhereByReportQuery(request).Where(t => !t.Splits.SelectMany(ts => ts.Tags).Any()).SumAsync(t => t.Amount, cancellationToken);
+            var tagLessAmount = await _transactions.Specify(new IncludeTagsSpecification()).WhereByReportQuery(request).Where(t => !t.Splits.SelectMany(ts => ts.Tags).Any()).SumAsync(t => t.Amount, cancellationToken);
             tagValues.Add(new TagValue
             {
                 TagName = "Untagged",

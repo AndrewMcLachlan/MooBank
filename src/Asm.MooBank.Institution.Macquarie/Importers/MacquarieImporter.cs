@@ -22,6 +22,7 @@ internal partial class MacquarieImporter(IQueryable<TransactionRaw> rawTransacti
     private const int CreditColumn = 8;
     private const int BalanceColumn = 9;
     private const int OriginalDescriptionColumn = 10;
+    private const string DateFormat = "dd MMM yyyy";
 
     public async Task<MooBank.Models.TransactionImportResult> Import(Guid instrumentId, Guid? institutionAccountId, Stream contents, CancellationToken cancellationToken = default)
     {
@@ -69,7 +70,7 @@ internal partial class MacquarieImporter(IQueryable<TransactionRaw> rawTransacti
                 continue;
             }
 
-            if (!DateOnly.TryParseExact(columns[TransactionDateColumn], "dd MMM yyyy", out transactionTime))
+            if (!DateOnly.TryParseExact(columns[TransactionDateColumn], DateFormat, out transactionTime))
             {
                 logger.LogWarning("Incorrect date format at line {lineCount}: {date}", lineCount, columns[TransactionDateColumn]);
                 continue;

@@ -35,4 +35,15 @@ public class InstrumentRepository(MooBankContext dataContext, Models.User user) 
 
     public Task Reload(Instrument instrument, CancellationToken cancellationToken) =>
         Context.Entry(instrument).ReloadAsync(cancellationToken);
+
+    public async Task<IEnumerable<Instrument>> Get(IEnumerable<Guid> ids, CancellationToken cancellationToken = default)
+    {
+        var idList = ids.ToList();
+        if (idList.Count == 0)
+        {
+            return [];
+        }
+
+        return await Entities.Where(i => idList.Contains(i.Id)).ToListAsync(cancellationToken);
+    }
 }

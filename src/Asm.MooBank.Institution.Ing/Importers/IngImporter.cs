@@ -17,6 +17,7 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
     private const int CreditColumn = 2;
     private const int DebitColumn = 3;
     private const int BalanceColumn = 4;
+    private const string DateFormat = "dd/MM/yyyy";
 
     private readonly Dictionary<short, User> _accountHolders = [];
 
@@ -80,7 +81,7 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
                 continue;
             }
 
-            if (!DateOnly.TryParseExact(columns[DateColumn], "dd/MM/yyyy", out transactionTime))
+            if (!DateOnly.TryParseExact(columns[DateColumn], DateFormat, out transactionTime))
             {
                 logger.LogWarning("Incorrect date format at line {lineCount}", lineCount);
                 continue;

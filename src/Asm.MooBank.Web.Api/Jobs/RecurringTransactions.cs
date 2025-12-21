@@ -12,10 +12,10 @@ public class RecurringTransactions(IServiceScopeFactory serviceScopeFactory)
 #endif
 
     [FunctionName("RecurringTransactions")]
-    public async Task Run([TimerTrigger("0 0 14 * * *", RunOnStartup = RunOnStartup)] TimerInfo _)
+    public async Task Run([TimerTrigger("0 0 14 * * *", RunOnStartup = RunOnStartup)] TimerInfo _, CancellationToken cancellationToken)
     {
         using var scope = serviceScopeFactory.CreateScope();
         var service = scope.ServiceProvider.GetRequiredService<IRecurringTransactionService>();
-        await service.Process();
+        await service.Process(cancellationToken);
     }
 }

@@ -24,10 +24,12 @@ internal class Institutions : EndpointGroupBase
 
         routeGroupBuilder.MapPostCreate<Create, Models.Institution>("/", "Get Institution".ToMachine(), (i) => new { i.Id })
             .WithNames("Create Institution")
-            .RequireAuthorization(Policies.Admin);
+            .RequireAuthorization(Policies.Admin)
+            .WithValidation<Create>();
 
         routeGroupBuilder.MapPatchCommand<Update, Models.Institution>("/{id}")
             .WithNames("Update Institution")
-            .RequireAuthorization(Policies.Admin);
+            .RequireAuthorization(Policies.Admin)
+            .WithValidation<Update>();
     }
 }

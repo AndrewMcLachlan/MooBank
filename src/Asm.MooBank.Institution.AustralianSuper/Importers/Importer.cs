@@ -20,6 +20,8 @@ internal partial class Importer(ITransactionRawRepository transactionRawReposito
     private const int SalarySacrificeColumn = 7;
     private const int MemberAdditionalColumn = 8;
     private const int TotalAmountColumn = 23;
+    private const string DateFormat = "yyyy-MM-dd";
+    private const string ContributionsCategory = "CONTRIBUTIONS";
 
     public async Task<MooBank.Models.TransactionImportResult> Import(Guid instrumentId, Guid? institutionAccountId, Stream contents, CancellationToken cancellationToken = default)
     {
@@ -79,7 +81,7 @@ internal partial class Importer(ITransactionRawRepository transactionRawReposito
                 continue;
             }
 
-            if (!DateOnly.TryParseExact(columns[DateColumn], "yyyy-MM-dd", out transactionTime))
+            if (!DateOnly.TryParseExact(columns[DateColumn], DateFormat, out transactionTime))
             {
                 logger.LogWarning("Incorrect date format at line {lineCount}", lineCount);
                 continue;
@@ -96,7 +98,7 @@ internal partial class Importer(ITransactionRawRepository transactionRawReposito
                 continue;
             }
 
-            bool isContribution = columns[CategoryColumn]?.Trim() == "CONTRIBUTIONS";
+            bool isContribution = columns[CategoryColumn]?.Trim() == ContributionsCategory;
 
             if (isContribution &&
                 String.IsNullOrWhiteSpace(columns[PaymentPeriodColumn]) &&
@@ -150,8 +152,8 @@ internal partial class Importer(ITransactionRawRepository transactionRawReposito
                 Description = columns[DescriptionColumn],
                 EmployerAdditional = isContribution ? employerAdditional : null,
                 MemberAdditional = isContribution ? memberAdditional : null,
-                PaymentPeriodEnd = isContribution ? DateOnly.ParseExact(columns[PaymentPeriodColumn].Split('/')[0], "yyyy-MM-dd", CultureInfo.InvariantCulture) : null,
-                PaymentPeriodStart = isContribution ? DateOnly.ParseExact(columns[PaymentPeriodColumn].Split('/')[1], "yyyy-MM-dd", CultureInfo.InvariantCulture) : null,
+                PaymentPeriodEnd = isContribution ? DateOnly.ParseExact(columns[PaymentPeriodColumn].Split('/')[0], DateFormat, CultureInfo.InvariantCulture) : null,
+                PaymentPeriodStart = isContribution ? DateOnly.ParseExact(columns[PaymentPeriodColumn].Split('/')[1], DateFormat, CultureInfo.InvariantCulture) : null,
                 SalarySacrifice = isContribution ? salarySacrifice : null,
                 SGContributions = isContribution ? sgContributions : null,
                 Title = columns[TitleColumn].Trim(),
@@ -179,7 +181,7 @@ internal partial class Importer(ITransactionRawRepository transactionRawReposito
 
         foreach (var raw in processed)
         {
-            bool isContribution = raw.Category == "CONTRIBUTIONS";
+            bool isContribution = raw.Category == ContributionsCategory;
 
             raw.Transaction.Description = raw.Description;
             raw.Transaction.Extra = isContribution ? new TransactionExtra
