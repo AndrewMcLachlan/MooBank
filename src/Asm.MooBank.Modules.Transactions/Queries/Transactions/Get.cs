@@ -23,7 +23,7 @@ internal class GetHandler(IQueryable<Domain.Entities.Transactions.Transaction> t
 
         query = MapSortFieldNames(query);
 
-        var results = await transactions.IncludeAll().Specify(filterSpecification).Specify(new SortSpecification(query)).Page(query.PageSize, query.PageNumber).ToModel().ToListAsync(cancellationToken);
+        var results = await transactions.Specify(new IncludeAllSpecification()).Specify(filterSpecification).Specify(new SortSpecification(query)).Page(query.PageSize, query.PageNumber).ToModel().ToListAsync(cancellationToken);
 
         var result = new PagedResult
         {

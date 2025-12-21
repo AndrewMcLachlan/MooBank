@@ -1,6 +1,6 @@
-﻿using Asm.MooBank.Domain.Entities.Transactions;
+using Asm.MooBank.Domain.Entities.Transactions;
+using Asm.MooBank.Domain.Entities.Transactions.Specifications;
 using Asm.MooBank.Modules.Transactions.Models.Extensions;
-using Asm.MooBank.Modules.Transactions.Queries.Transactions;
 
 namespace Asm.MooBank.Modules.Transactions.Queries.Transactions;
 
@@ -14,6 +14,6 @@ internal class SearchHandler(IQueryable<Transaction> transactions) : IQueryHandl
         // Go back 5 days, just in case.
         var startTime = request.Start.AddDays(-5).ToStartOfDay();
 
-        return await transactions.IncludeAll().Where(t => t.AccountId == request.InstrumentId && t.TransactionTime >= startTime && t.TransactionType == request.TransactionType && t.Splits.SelectMany(ts => ts.Tags).Any(tt => request.TagIds.Contains(tt.Id))).OrderBy(t => t.TransactionTime) .ToModel().ToListAsync(cancellationToken);
+        return await transactions.Specify(new IncludeAllSpecification()).Where(t => t.AccountId == request.InstrumentId && t.TransactionTime >= startTime && t.TransactionType == request.TransactionType && t.Splits.SelectMany(ts => ts.Tags).Any(tt => request.TagIds.Contains(tt.Id))).OrderBy(t => t.TransactionTime).ToModel().ToListAsync(cancellationToken);
     }
 }
