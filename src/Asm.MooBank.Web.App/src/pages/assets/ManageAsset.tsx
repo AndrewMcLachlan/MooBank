@@ -11,6 +11,7 @@ import { useAsset } from "./AssetProvider";
 import { useUpdateAsset } from "services";
 import { GroupSelector } from "components/GroupSelector";
 import { useForm } from "react-hook-form";
+import { CurrencyInput } from "components";
 
 export const ManageAsset: React.FC = () => {
 
@@ -46,17 +47,11 @@ export const ManageAsset: React.FC = () => {
                 </Form.Group>
                 <Form.Group groupId="purchasePrice" >
                     <Form.Label>Purchase Price</Form.Label>
-                    <InputGroup>
-                        <InputGroup.Text>$</InputGroup.Text>
-                        <Form.Input type="number" required />
-                    </InputGroup>
+                    <CurrencyInput required />
                 </Form.Group>
                 <Form.Group groupId="currentBalance" >
                     <Form.Label>Current Value</Form.Label>
-                    <InputGroup>
-                        <InputGroup.Text>$</InputGroup.Text>
-                        <Form.Input type="number" required />
-                    </InputGroup>
+                    <CurrencyInput required />
                 </Form.Group>
                 <Form.Group groupId="groupId">
                     <Form.Label>Group</Form.Label>

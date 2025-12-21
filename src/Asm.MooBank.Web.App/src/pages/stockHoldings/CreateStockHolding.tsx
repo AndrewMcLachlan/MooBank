@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router";
-import { NewStockHolding, emptyStockHolding } from "../../models";
 
 import { Page } from "@andrewmclachlan/moo-app";
-import { Form, SectionForm, useFormGroup } from "@andrewmclachlan/moo-ds";
-import { useCreateStockHolding, useGroups } from "services";
-import { useForm, useFormContext } from "react-hook-form";
+import { Form, SectionForm } from "@andrewmclachlan/moo-ds";
+
+import { CurrencyInput } from "components";
 import { GroupSelector } from "components/GroupSelector";
-import classNames from "classnames";
+import { useForm } from "react-hook-form";
+import { useCreateStockHolding } from "services";
+import { NewStockHolding } from "../../models";
 
 export const CreateStockHolding: React.FC = () => {
 
@@ -50,22 +51,16 @@ export const CreateStockHolding: React.FC = () => {
                 <Form.Group groupId="quantity" >
                     <Form.Label>Opening Quantity</Form.Label>
                     <InputGroup>
-                        <Input2 type="number" required />
+                        <Form.Input type="number" required />
                     </InputGroup>
                 </Form.Group>
                 <Form.Group groupId="price" >
                     <Form.Label>Purchase Price</Form.Label>
-                    <InputGroup>
-                        <InputGroup.Text>$</InputGroup.Text>
-                        <Input2 type="number" required />
-                    </InputGroup>
+                    <CurrencyInput required />
                 </Form.Group>
                 <Form.Group groupId="fees" >
                     <Form.Label>Brokerage Fees</Form.Label>
-                    <InputGroup>
-                        <InputGroup.Text>$</InputGroup.Text>
-                        <Input2 type="number" required />
-                    </InputGroup>
+                    <CurrencyInput required />
                 </Form.Group>
                 <Form.Group groupId="groupId">
                     <Form.Label>Group</Form.Label>
@@ -81,27 +76,4 @@ export const CreateStockHolding: React.FC = () => {
     );
 }
 
-
-export const Input2: React.FC<Input2Props> = ({ className, id, ...rest }) => {
-
-    const group = useFormGroup();
-    const { register } = useFormContext();
-    id = id ?? group.groupId;
-    const innerClass = rest.type === "checkbox" ? "form-check-input" : "form-control";
-
-    return (
-        <input id={id} className={classNames(innerClass, className)} {...rest} {...register(id, {
-            setValueAs(value) {
-                if (rest.type === "number") {
-                    return value ? Number(value) : undefined;
-                }
-                return value;
-            },
-        })} />
-    );
-};
-
-
-export interface Input2Props extends React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
-    clearable?: boolean;
-}
+CreateStockHolding.displayName = "CreateStockHolding";
