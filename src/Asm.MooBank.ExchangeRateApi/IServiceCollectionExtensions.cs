@@ -7,7 +7,8 @@ public static class IServiceCollectionExtensions
     {
         services.Configure(options);
 
-        services.AddHttpClient("ExchangeRateApi");
+        services.AddHttpClient("ExchangeRateApi")
+            .AddStandardResilienceHandler();
         services.AddScoped<IExchangeRateClient, ExchangeRateClient>();
 
         return services;
