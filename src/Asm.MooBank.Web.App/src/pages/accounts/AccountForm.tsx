@@ -78,7 +78,7 @@ export const AccountForm: React.FC<{ account?: LogicalAccount }> = ({ account = 
             </Form.Group>
             <Form.Group groupId="balance" show={!account}>
                 <Form.Label>Opening Balance</Form.Label>
-                <CurrencyInput required  defaultValue={0}/>
+                <CurrencyInput required defaultValue={0} />
             </Form.Group>
             <Form.Group groupId="openedDate" show={!account}>
                 <Form.Label>Date Opened</Form.Label>

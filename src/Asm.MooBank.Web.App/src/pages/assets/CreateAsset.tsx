@@ -8,6 +8,7 @@ import { Form, SectionForm } from "@andrewmclachlan/moo-ds";
 import { useCreateAsset } from "services";
 import { useForm } from "react-hook-form";
 import { GroupSelector } from "components/GroupSelector";
+import { CurrencyInput } from "components";
 
 export const CreateAsset: React.FC = () => {
 
@@ -37,17 +38,11 @@ export const CreateAsset: React.FC = () => {
                 </Form.Group>
                 <Form.Group groupId="purchasePrice">
                     <Form.Label>Purchase Price</Form.Label>
-                    <InputGroup>
-                        <InputGroup.Text>$</InputGroup.Text>
-                        <Form.Input type="number" />
-                    </InputGroup>
+                    <CurrencyInput required />
                 </Form.Group>
                 <Form.Group groupId="currentBalance">
                     <Form.Label>Current Value</Form.Label>
-                    <InputGroup>
-                        <InputGroup.Text>$</InputGroup.Text>
-                        <Form.Input type="number" required />
-                    </InputGroup>
+                    <CurrencyInput required />
                 </Form.Group>
                 <Form.Group groupId="groupId">
                     <Form.Label>Group</Form.Label>

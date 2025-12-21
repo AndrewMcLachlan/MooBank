@@ -10,6 +10,7 @@ import { Form, SectionForm } from "@andrewmclachlan/moo-ds";
 import { useUpdateStockHolding } from "services";
 import { GroupSelector } from "components/GroupSelector";
 import { useForm } from "react-hook-form";
+import { CurrencyInput } from "components";
 
 export const ManageStockHolding: React.FC = () => {
 
@@ -37,24 +38,21 @@ export const ManageStockHolding: React.FC = () => {
     return (
         <StockHoldingPage title="Manage" breadcrumbs={[{ text: "Manage", route: `/shares/${stockHolding.id}/manage` }]}>
             <SectionForm form={form} onSubmit={handleSubmit}>
-                <Form.Group groupId="name" >
+                <Form.Group groupId="name">
                     <Form.Label>Name</Form.Label>
                     <Form.Input required maxLength={50} />
                 </Form.Group>
-                <Form.Group groupId="description" >
+                <Form.Group groupId="description">
                     <Form.Label>Description</Form.Label>
                     <Form.TextArea required maxLength={255} />
                 </Form.Group>
-                <Form.Group groupId="symbol" >
+                <Form.Group groupId="symbol">
                     <Form.Label>Symbol</Form.Label>
                     <Form.Input required maxLength={3} readOnly />
                 </Form.Group>
-                <Form.Group groupId="currentPrice" >
+                <Form.Group groupId="currentPrice">
                     <Form.Label>Current Price</Form.Label>
-                    <InputGroup>
-                        <InputGroup.Text>$</InputGroup.Text>
-                        <Form.Input type="number" required />
-                    </InputGroup>
+                    <CurrencyInput required />
                 </Form.Group>
                 <Form.Group groupId="groupId">
                     <Form.Label>Group</Form.Label>
