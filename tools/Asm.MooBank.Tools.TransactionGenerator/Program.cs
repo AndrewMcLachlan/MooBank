@@ -1,162 +1,139 @@
-﻿using Asm.MooBank.Tools.TransactionGenerator;
+using Asm.MooBank.Tools.TransactionGenerator;
 
-List<Transaction> TransactionTypes =
-[
-    new() { Debit = -200, Description = "Supermarket", Frequency = 7 },
-    new() { Debit = -20, Description = "Supermarket", Frequency = 3 },
-    new() { Debit = -50, Description = "Bottle Shop", Frequency = 14 },
-    new() { Debit = -5, Description = "Coffee Shop", Frequency = 2, FixedAmount = true, },
-    new() { Debit = -15, Description = "Coffee Shop", Frequency = 7 },
-    new() { Debit = -70, Description = "Restaurant", Frequency = 14 },
-    new() { Debit = -100, Description = "Clothes Shop", Frequency = 14 },
-    new() { Debit = -30, Description = "Takeaway", Frequency = 14 },
-    new() { Debit = -500, Description = "Electricity Bill", Frequency = 90 },
-    new() { Debit = -400, Description = "Rates", Frequency = 90 },
-    new() { Debit = -400, Description = "Water Bill", Frequency = 90 },
-    new() { Debit = -50, Description = "Pharmacy", Frequency = 30 },
-    new() { Debit = -90, Description = "Doctor", Frequency = 60 },
-    new() { Credit = 30, Description = "Medicare Rebate", Frequency = 60 },
-    new() { Debit = -100, Description = "Fuel", Frequency = 14 },
-    new() { Debit = -50, Description = "Haircut", Frequency = 42, FixedFrequency = true, FixedAmount = true },
-    new() { Debit = -60, Description = "General Shopping", Frequency = 7 },
-    new() { Debit = -50, Description = "Gifts", Frequency = 90 },
-    new() { Debit = -200, Description = "Dentist", Frequency = 90 },
-    new() { Debit = -500, Description = "Car Service", Frequency = 180 },
-];
-
-
-
-decimal startingBalance = 5000;
-
-DateTime startDate = args.Length > 0 ? DateTime.Parse(args[0]) : new(DateTime.Now.Date.Year - 10, 1, 1);
-
+// Parse command line arguments
+decimal transactionBalance = 5000m;
+decimal savingsBalance = 10000m;
+DateTime startDate = new(DateTime.Now.Year - 10, 1, 1);
 DateTime endDate = DateTime.Today;
+string outputPrefix = "Transactions";
+bool generateSavings = true;
 
-
-
-List<Transaction> transactions = [];
-
-decimal balance = startingBalance;
-DateTime current = startDate;
-
-while (current <= endDate)
+for (int i = 0; i < args.Length; i++)
 {
-
-    Random frequencyRng = new(Guid.NewGuid().GetHashCode());
-
-    int frequency = frequencyRng.Next(1, 365);
-
-    List<string> completedTransactions = [];
-
-    foreach (var transaction in TransactionTypes)
+    switch (args[i])
     {
-        if (completedTransactions.Contains(transaction.Description))
-        {
-            continue;
-        }
-
-        if (transaction.FixedFrequency && transaction.LastDate != null && transaction.LastDate.Value.AddDays(transaction.Frequency) <= current)
-        {
-            transactions.Add(GenerateTransaction(transaction, current, ref balance));
-        }
-        else if (frequency % transaction.Frequency == 0)
-        {
-            transactions.Add(GenerateTransaction(transaction, current, ref balance));
-        }
-
-        transaction.LastDate = current;
-        completedTransactions.Add(transaction.Description);
-    }
-
-    // Salary
-    if (current.Day == 1)
-    {
-        const int salary = 5100;
-        balance += salary;
-        transactions.Add(new Transaction { Date = current, Credit = salary, Description = "Salary", Balance = balance });
-    }
-
-    if (current.Day == 3)
-    {
-        transactions.Add(GenerateTransaction(new() { Debit = -400, Description = "Health Insurance", FixedAmount = true, }, current, ref balance));
-    }
-
-        if (current.Day == 10)
-    {
-        transactions.Add(GenerateTransaction(new() { Debit = -100, Description = "Gym", FixedAmount = true, }, current, ref balance));
-    }
-    if (current.Day == 20)
-    {
-        transactions.Add(GenerateTransaction(new() { Debit = -20, Description = "Netflix", FixedAmount = true, }, current, ref balance));
-    }
-
-    if (current.Day == 28)
-    {
-        transactions.Add(GenerateTransaction(new() { Debit = -20, Description = "Spotify", FixedAmount = true, }, current, ref balance));
-        transactions.Add(GenerateTransaction(new() { Debit = -1000, Description = "Mortgage", FixedAmount = true, }, current, ref balance));
-
-        if (balance > 5000)
-        {
-            transactions.Add(GenerateTransaction(new() { Debit = -1000, Description = "Transfer to savings", FixedAmount = true, }, current, ref balance));
-        }
-    }
-    if (current.Day == 15)
-    {
-        transactions.Add(GenerateTransaction(new() { Debit = -40, Description = "Mobile", FixedAmount = true, }, current, ref balance));
-        transactions.Add(GenerateTransaction(new() { Debit = -70, Description = "Internet", FixedAmount = true }, current, ref balance));
-    }
-
-    current = current.AddDays(1);
-
-    if (current.Day == 15 && current.Month == 3)
-    {
-        transactions.Add(GenerateTransaction(new() { Debit = -765, Description = "Rego", FixedAmount = true, }, current, ref balance));
-    }
-
-    // Holiday every year
-    if (current.Day == 10 && current.Month == 5)
-    {
-        transactions.Add(GenerateTransaction(new() { Debit = -2000, Description = "Flights" }, current, ref balance));
-    }
-
-    if (current.Day == 12 && current.Month == 5)
-    {
-        transactions.Add(GenerateTransaction(new() { Debit = -1000, Description = "Hotel" }, current, ref balance));
+        case "--start" or "-s" when i + 1 < args.Length:
+            startDate = DateTime.Parse(args[++i]);
+            break;
+        case "--end" or "-e" when i + 1 < args.Length:
+            endDate = DateTime.Parse(args[++i]);
+            break;
+        case "--balance" or "-b" when i + 1 < args.Length:
+            transactionBalance = Decimal.Parse(args[++i]);
+            break;
+        case "--savings-balance" when i + 1 < args.Length:
+            savingsBalance = Decimal.Parse(args[++i]);
+            break;
+        case "--output" or "-o" when i + 1 < args.Length:
+            outputPrefix = args[++i];
+            break;
+        case "--no-savings":
+            generateSavings = false;
+            break;
+        case "--help" or "-h":
+            PrintHelp();
+            return;
     }
 }
 
-
-using var csv = File.CreateText(@".\Transactions.csv");
-csv.WriteLine("Date,Description,Credit,Debit,Balance");
-foreach (var t in transactions)
+Console.WriteLine("Transaction Generator for MooBank");
+Console.WriteLine("==================================");
+Console.WriteLine($"Start Date:         {startDate:dd/MM/yyyy}");
+Console.WriteLine($"End Date:           {endDate:dd/MM/yyyy}");
+Console.WriteLine($"Transaction Balance: ${transactionBalance:N2}");
+if (generateSavings)
 {
-    Console.WriteLine($"{t.Date:yyyy-MM-dd}, {t.Description}, {t.Credit}, {t.Debit}, {t.Balance}");
-    csv.WriteLine($"{t.Date:dd/MM/yyyy},{t.Description},{(t.Credit == 0 ? String.Empty : t.Credit)},{(t.Debit == 0 ? String.Empty : t.Debit)},{t.Balance}");
+    Console.WriteLine($"Savings Balance:     ${savingsBalance:N2}");
+}
+Console.WriteLine($"Output Prefix:       {outputPrefix}");
+Console.WriteLine();
+
+// Generate transaction account
+Console.WriteLine("Generating transaction account...");
+var transactionGenerator = new TransactionAccountGenerator(transactionBalance, startDate, endDate);
+var transactions = transactionGenerator.Generate();
+
+Console.WriteLine($"Generated {transactions.Count} transactions");
+PrintStatistics(transactions, transactionBalance);
+
+// Write transaction account CSV
+var transactionFile = generateSavings ? $"{outputPrefix}_Transaction.csv" : $"{outputPrefix}.csv";
+WriteCsv(transactionFile, transactions);
+
+// Generate savings account if requested
+if (generateSavings)
+{
+    Console.WriteLine();
+    Console.WriteLine("Generating savings account...");
+
+    // Get the transfers from transaction account to savings
+    var transfersToSavings = transactions
+        .Where(t => t.Category == "Transfer" && t.Debit.HasValue)
+        .Select(t => (t.Date, Amount: t.Debit!.Value))
+        .ToList();
+
+    var savingsGenerator = new SavingsAccountGenerator(savingsBalance, startDate, endDate, transfersToSavings);
+    var savingsTransactions = savingsGenerator.Generate();
+
+    Console.WriteLine($"Generated {savingsTransactions.Count} transactions");
+    PrintStatistics(savingsTransactions, savingsBalance);
+
+    // Write savings account CSV
+    var savingsFile = $"{outputPrefix}_Savings.csv";
+    WriteCsv(savingsFile, savingsTransactions);
 }
 
-static Transaction GenerateTransaction(Transaction transactionType, DateTime date, ref decimal balance)
+Console.WriteLine();
+Console.WriteLine("Done!");
+
+static void PrintStatistics(List<Transaction> transactions, decimal startingBalance)
 {
-    Random amountRng = new(Guid.NewGuid().GetHashCode());
+    var credits = transactions.Where(t => t.Credit.HasValue).Sum(t => t.Credit!.Value);
+    var debits = transactions.Where(t => t.Debit.HasValue).Sum(t => t.Debit!.Value);
+    var finalBalance = transactions.LastOrDefault()?.Balance ?? startingBalance;
 
-    Transaction transaction = (Transaction)transactionType.Clone();
+    Console.WriteLine($"  Total Credits:  ${credits:N2}");
+    Console.WriteLine($"  Total Debits:   ${debits:N2}");
+    Console.WriteLine($"  Net Flow:       ${credits - debits:N2}");
+    Console.WriteLine($"  Final Balance:  ${finalBalance:N2}");
+}
 
-    var range = Convert.ToInt32(transactionType.Amount * 0.1m);
+static void WriteCsv(string filename, List<Transaction> transactions)
+{
+    Console.WriteLine($"Writing to {filename}...");
+    using var csv = File.CreateText(filename);
+    csv.WriteLine("Date,Description,Credit,Debit,Balance");
 
-    decimal transactionAmountModifier = transactionType.FixedAmount ? 0 : Convert.ToDecimal(amountRng.Next(-range, range) + Math.Round(amountRng.NextDouble(), 2));
-
-    if (transaction.Debit.HasValue)
+    foreach (var t in transactions)
     {
-        transaction.Debit += transactionAmountModifier;
-        balance -= transaction.Debit.Value;
+        csv.WriteLine(t.ToCsv());
     }
-    else if (transaction.Credit.HasValue)
-    {
-        transaction.Credit += transactionAmountModifier;
-        balance += transaction.Credit.Value;
-    }
+}
 
-    transaction.Date = date;
-    transaction.Balance = balance;
-
-    return transaction;
+static void PrintHelp()
+{
+    Console.WriteLine("Transaction Generator for MooBank");
+    Console.WriteLine();
+    Console.WriteLine("Generates realistic Australian bank transaction data for demo purposes.");
+    Console.WriteLine("Creates ING-compatible CSV files for transaction and savings accounts.");
+    Console.WriteLine();
+    Console.WriteLine("Usage: TransactionGenerator [options]");
+    Console.WriteLine();
+    Console.WriteLine("Options:");
+    Console.WriteLine("  -s, --start <date>       Start date (default: 10 years ago)");
+    Console.WriteLine("  -e, --end <date>         End date (default: today)");
+    Console.WriteLine("  -b, --balance <amt>      Transaction account starting balance (default: 5000)");
+    Console.WriteLine("      --savings-balance    Savings account starting balance (default: 10000)");
+    Console.WriteLine("  -o, --output <prefix>    Output file prefix (default: Transactions)");
+    Console.WriteLine("      --no-savings         Don't generate savings account");
+    Console.WriteLine("  -h, --help               Show this help");
+    Console.WriteLine();
+    Console.WriteLine("Output Files:");
+    Console.WriteLine("  {prefix}_Transaction.csv  - Everyday transaction account");
+    Console.WriteLine("  {prefix}_Savings.csv      - Savings account with interest");
+    Console.WriteLine();
+    Console.WriteLine("Examples:");
+    Console.WriteLine("  TransactionGenerator -s 2020-01-01 -e 2024-12-31");
+    Console.WriteLine("  TransactionGenerator -b 10000 --savings-balance 25000");
+    Console.WriteLine("  TransactionGenerator --no-savings -o MyTransactions");
 }
