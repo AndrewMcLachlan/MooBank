@@ -14,7 +14,7 @@ export const useImportTransactions = () => {
     });
 
     const importTransactions = (instrumentId: string, institutionAccountId: string, file: File, options: MutationOptions<null, Error, { instrumentId: string, institutionAccountId: string, file: File }>) => {
-        return toast.promise(mutateAsync({ instrumentId, institutionAccountId, file }, options), { pending: "Importing transactions", success: "Transactions imported", error: "Failed to import transactions" });
+        return toast.promise(mutateAsync({ instrumentId, institutionAccountId, file }, options), { pending: "Uploading transactions", success: "Import started", error: "Failed to import transactions" });
     }
 
     return importTransactions;

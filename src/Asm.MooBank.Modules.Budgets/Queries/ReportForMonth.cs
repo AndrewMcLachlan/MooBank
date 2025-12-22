@@ -1,5 +1,4 @@
-﻿using Asm.MooBank.Domain.Entities.Transactions;
-using Asm.MooBank.Domain.Entities.Transactions.Specifications;
+﻿using Asm.MooBank.Domain.Entities.Transactions.Specifications;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Budgets.Models;
 

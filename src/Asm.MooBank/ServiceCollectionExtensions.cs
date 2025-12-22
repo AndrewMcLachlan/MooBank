@@ -1,4 +1,5 @@
-﻿using Asm.MooBank.Services;
+﻿using Asm.MooBank.Security;
+using Asm.MooBank.Services;
 using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -12,8 +13,10 @@ public static class ServiceCollectionExtensions
             .AddHostedService<PrecacheService>()
             .AddHostedService<RunRulesService>()
             .AddHostedService<ReprocessTransactionsService>()
+            .AddHostedService<ImportTransactionsService>()
             .AddSingleton<IRunRulesQueue, RunRulesQueue>()
             .AddSingleton<IReprocessTransactionsQueue, ReprocessTransactionsQueue>()
+            .AddSingleton<IImportTransactionsQueue, ImportTransactionsQueue>()
             .AddLazyCache();
 
 
