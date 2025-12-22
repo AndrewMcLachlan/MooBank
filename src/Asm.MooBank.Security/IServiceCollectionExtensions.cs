@@ -7,8 +7,10 @@ namespace Asm.MooBank.Security;
 public static class IServiceCollectionExtensions
 {
     public static IServiceCollection AddUserDataProvider(this IServiceCollection services) =>
-         services.AddScoped<IUserIdProvider, ClaimsUserDataProvider>()
-                 .AddScoped<IUserDataProvider, ClaimsUserDataProvider>();
+         services.AddScoped<SettableUserDataProvider>()
+                 .AddScoped<IUserIdProvider>(sp => sp.GetRequiredService<SettableUserDataProvider>())
+                 .AddScoped<IUserDataProvider>(sp => sp.GetRequiredService<SettableUserDataProvider>())
+                 .AddScoped<ISettableUserDataProvider>(sp => sp.GetRequiredService<SettableUserDataProvider>());
 
     public static IServiceCollection AddAuthorisationHandlers(this IServiceCollection services)
     {
