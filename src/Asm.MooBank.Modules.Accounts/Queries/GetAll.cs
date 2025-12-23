@@ -13,9 +13,9 @@ internal class GetAllHandler(IQueryable<DomainLogicalAccount> logicalAccounts, U
 {
     public async ValueTask<IEnumerable<LogicalAccount>> Handle(GetAll request, CancellationToken cancellationToken)
     {
-        var accounts = await logicalAccounts
+        var accounts = (await logicalAccounts
             .Apply(new OpenAccessibleSpecification<DomainLogicalAccount>(user.Id, user.FamilyId))
-            .ToModelAsync(currencyConverter, cancellationToken);
+            .ToModelAsync(currencyConverter, cancellationToken)).ToList();
 
         var primary = accounts.SingleOrDefault(a => a.Id == user.PrimaryAccountId);
 
