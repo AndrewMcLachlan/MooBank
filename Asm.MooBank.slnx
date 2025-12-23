@@ -46,6 +46,7 @@
     <Project Path="src/Asm.MooBank.Modules.Users/Asm.MooBank.Modules.Users.csproj" />
   </Folder>
   <Folder Name="/Tests/">
+    <File Path="tests/Directory.Build.props" />
     <Project Path="tests/Asm.MooBank.Abs.Tests/Asm.MooBank.Abs.Tests.csproj" />
     <Project Path="tests/Asm.MooBank.Modules.Tests/Asm.MooBank.Modules.Tests.csproj" />
   </Folder>

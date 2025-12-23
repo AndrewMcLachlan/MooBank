@@ -17,21 +17,21 @@ namespace Asm.MooBank.Modules.Tests.Account.Commands
     
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "3.0.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public partial class UpdateAccountFeature : object, global::Xunit.IClassFixture<UpdateAccountFeature.FixtureData>, global::Xunit.IAsyncLifetime
+    public partial class UpdateAccountFeature : object, Xunit.IClassFixture<UpdateAccountFeature.FixtureData>, Xunit.IAsyncLifetime
     {
         
         private global::Reqnroll.ITestRunner testRunner;
+        
+        private Xunit.ITestOutputHelper _testOutputHelper;
         
         private static string[] featureTags = ((string[])(null));
         
         private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Account/Commands", "Update Account", "As a user, I want to update an account so that I can manage my money.", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
-        private global::Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
-        
 #line 1 "Update.feature"
 #line hidden
         
-        public UpdateAccountFeature(UpdateAccountFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public UpdateAccountFeature(UpdateAccountFeature.FixtureData fixtureData, Xunit.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
         }
@@ -90,7 +90,7 @@ namespace Asm.MooBank.Modules.Tests.Account.Commands
         public void ScenarioInitialize(global::Reqnroll.ScenarioInfo scenarioInfo, global::Reqnroll.RuleInfo ruleInfo)
         {
             testRunner.OnScenarioInitialize(scenarioInfo, ruleInfo);
-            testRunner.ScenarioContext.ScenarioContainer.RegisterInstanceAs<global::Xunit.Abstractions.ITestOutputHelper>(_testOutputHelper);
+            testRunner.ScenarioContext.ScenarioContainer.RegisterInstanceAs<Xunit.ITestOutputHelper>(_testOutputHelper);
         }
         
         public async global::System.Threading.Tasks.Task ScenarioStartAsync()
@@ -108,7 +108,7 @@ namespace Asm.MooBank.Modules.Tests.Account.Commands
             return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Account/Commands/Update.feature.ndjson", 5);
         }
         
-        async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
+        async System.Threading.Tasks.ValueTask Xunit.IAsyncLifetime.InitializeAsync()
         {
             try
             {
@@ -118,7 +118,7 @@ namespace Asm.MooBank.Modules.Tests.Account.Commands
             {
                 try
                 {
-                    ((global::Xunit.IAsyncLifetime)(this)).DisposeAsync();
+                    ((Xunit.IAsyncLifetime)(this)).DisposeAsync();
                 }
                 catch (System.Exception e2)
                 {
@@ -128,12 +128,12 @@ namespace Asm.MooBank.Modules.Tests.Account.Commands
             }
         }
         
-        async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.DisposeAsync()
+        async System.Threading.Tasks.ValueTask System.IAsyncDisposable.DisposeAsync()
         {
             await this.TestTearDownAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Update Account")]
+        [global::Xunit.FactAttribute(DisplayName="Update Account")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Update Account")]
         [global::Xunit.TraitAttribute("Description", "Update Account")]
         public async global::System.Threading.Tasks.Task UpdateAccount()
@@ -170,7 +170,7 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Update Account with invalid account ID")]
+        [global::Xunit.FactAttribute(DisplayName="Update Account with invalid account ID")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Update Account")]
         [global::Xunit.TraitAttribute("Description", "Update Account with invalid account ID")]
         public async global::System.Threading.Tasks.Task UpdateAccountWithInvalidAccountID()
@@ -207,7 +207,7 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Update Account with invalid account group ID")]
+        [global::Xunit.FactAttribute(DisplayName="Update Account with invalid account group ID")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Update Account")]
         [global::Xunit.TraitAttribute("Description", "Update Account with invalid account group ID")]
         public async global::System.Threading.Tasks.Task UpdateAccountWithInvalidAccountGroupID()
@@ -246,15 +246,15 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "3.0.0.0")]
         [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-        public class FixtureData : object, global::Xunit.IAsyncLifetime
+        public class FixtureData : object, Xunit.IAsyncLifetime
         {
             
-            async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
+            async System.Threading.Tasks.ValueTask Xunit.IAsyncLifetime.InitializeAsync()
             {
                 await UpdateAccountFeature.FeatureSetupAsync();
             }
             
-            async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.DisposeAsync()
+            async System.Threading.Tasks.ValueTask System.IAsyncDisposable.DisposeAsync()
             {
                 await UpdateAccountFeature.FeatureTearDownAsync();
             }
