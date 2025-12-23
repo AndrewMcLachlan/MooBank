@@ -4,17 +4,17 @@ import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
 import { Family } from "models";
 import { toast } from "react-toastify";
 
-const familyKey = "families";
+const familyKey = "families-admin";
 
-export const useFamilies = (): UseQueryResult<Family[]> => useApiGet<Family[]>([familyKey], "api/families", { staleTime: 1000 * 60 * 5 });
+export const useFamilies = (): UseQueryResult<Family[]> => useApiGet<Family[]>([familyKey], "api/families/admin", { staleTime: 1000 * 60 * 5 });
 
-export const useFamily = (id: string): UseQueryResult<Family> => useApiGet<Family>([familyKey, id], `api/families/${id}`, { enabled: !!id });
+export const useFamily = (id: string): UseQueryResult<Family> => useApiGet<Family>([familyKey, id], `api/families/admin/${id}`, { enabled: !!id });
 
 export const useCreateFamily = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutateAsync, ...rest } = useApiPost<Family, null, Family>(() => "api/families", {
+    const { mutateAsync, ...rest } = useApiPost<Family, null, Family>(() => "api/families/admin", {
         onMutate: ([_variables, data]) => {
             let allFamilies = queryClient.getQueryData<Family[]>([familyKey]);
             if (!allFamilies) {
@@ -39,7 +39,7 @@ export const useUpdateFamily = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutateAsync, ...rest } = useApiPatch<Family, string, Family>((id) => `api/families/${id}`, {
+    const { mutateAsync, ...rest } = useApiPatch<Family, string, Family>((id) => `api/families/admin/${id}`, {
         onMutate: ([_variables, data]) => {
             let allFamilies = queryClient.getQueryData<Family[]>([familyKey]);
             if (!allFamilies) {

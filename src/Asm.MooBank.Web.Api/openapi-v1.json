@@ -1319,6 +1319,78 @@
         "tags": [
           "Families"
         ],
+        "operationId": "get-my-family",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Family"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Families"
+        ],
+        "operationId": "update-my-family",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFamily"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Family"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/families/members/{userId}": {
+      "delete": {
+        "tags": [
+          "Families"
+        ],
+        "operationId": "remove-family-member",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/families/admin": {
+      "get": {
+        "tags": [
+          "Families"
+        ],
         "operationId": "get-all-families",
         "responses": {
           "200": {
@@ -1365,7 +1437,7 @@
         }
       }
     },
-    "/api/families/{id}": {
+    "/api/families/admin/{id}": {
       "get": {
         "tags": [
           "Families"

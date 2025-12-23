@@ -2,6 +2,7 @@ export * from "./AccountService";
 export * from "./AssetService";
 export * from "./BillService";
 export * from "./FamilyService";
+export * from "./MyFamilyService";
 export * from "./GroupService";
 export * from "./ImportService";
 export * from "./InstitutionService";
