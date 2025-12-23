@@ -7696,7 +7696,14 @@
             "type": "string"
           },
           "colour": {
-            "$ref": "#/components/schemas/HexColour"
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/HexColour"
+              }
+            ]
           },
           "excludeFromReporting": {
             "type": "boolean"
