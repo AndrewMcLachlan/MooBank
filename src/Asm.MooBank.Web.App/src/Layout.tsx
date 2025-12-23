@@ -34,8 +34,13 @@ export default Layout;
 const userMenu: NavItem[] = [
     {
         text: "Profile",
-        image: <Icon icon="user" />,
+        image: <Icon icon={Icons.User} />,
         route: "/profile",
+    },
+    {
+        text: "My Family",
+        image: <Icon icon={Icons.Users} />,
+        route: "/family",
     }
 ];
 
