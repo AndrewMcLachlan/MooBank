@@ -32,7 +32,7 @@ public static class IServiceCollectionExtensions
 
                     var cache = context.HttpContext.RequestServices.GetService<IAppCache>();
 
-                    var claims = await cache.GetOrAddAsync($"User_{userId}_Claims", async () =>
+                    var claims = await cache.GetOrAddAsync(CacheKeys.UserCacheKey(userId), async () =>
                     {
                         var dataContext = context.HttpContext.RequestServices.GetRequiredService<MooBankContext>();
 
