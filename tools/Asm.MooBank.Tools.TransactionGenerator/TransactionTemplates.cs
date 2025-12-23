@@ -339,7 +339,7 @@ public static class TransactionTemplates
         {
             Category = "Income",
             Merchants = Merchants.Employers,
-            BaseAmount = 6800m,
+            BaseAmount = 7000m,
             PaymentMethod = PaymentMethod.DirectCredit,
             ScheduleType = ScheduleType.MonthlyOnDay,
             DayOfMonth = 1,
