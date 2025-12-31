@@ -42,18 +42,20 @@ internal class UpdateHandler(IAssetRepository repository, IUnitOfWork unitOfWork
             security.AssertGroupPermission(command.GroupId.Value);
         }
 
-        var Asset = await repository.Get(command.AccountId, new IncludeSpecification(), cancellationToken) ?? throw new NotFoundException();
+        var entity = await repository.Get(command.AccountId, new IncludeSpecification(), cancellationToken) ?? throw new NotFoundException();
 
-        Asset.Value = command.CurrentBalance;
-        Asset.Name = command.Name;
-        Asset.Description = command.Description;
-        Asset.ShareWithFamily = command.ShareWithFamily;
-        Asset.PurchasePrice = command.PurchasePrice;
+        entity.Value = command.CurrentBalance;
+        entity.Name = command.Name;
+        entity.Description = command.Description;
+        entity.ShareWithFamily = command.ShareWithFamily;
+        entity.PurchasePrice = command.PurchasePrice;
 
-        Asset.SetGroup(command.GroupId, user.Id);
+        entity.SetGroup(command.GroupId, user.Id);
+
+        repository.Update(entity);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return Asset.ToModel(currencyConverter);
+        return entity.ToModel(currencyConverter);
     }
 }

@@ -31,7 +31,7 @@ internal class UpdateHandler(IUnitOfWork unitOfWork, ILogicalAccountRepository a
         entity.ShareWithFamily = account.ShareWithFamily;
         entity.IncludeInBudget = account.IncludeInBudget;
 
-        
+        accountRepository.Update(entity);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

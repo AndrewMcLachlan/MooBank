@@ -24,8 +24,6 @@ public class StockHolding([DisallowNull]Guid id) : Instrument.Instrument(id)
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public decimal GainLoss { get; set; }
 
-    public new DateTimeOffset LastUpdated { get; set; } = DateTimeOffset.Now;
-
     public ICollection<StockTransaction> Transactions { get; set; } = [];
 
     [NotMapped]

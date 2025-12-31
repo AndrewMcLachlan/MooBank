@@ -54,6 +54,7 @@ public static class IServiceCollectionExtensions
         }));
 
         services.AddDomainEvents(typeof(Instrument).Assembly);
+        services.AddDomainEvents(typeof(MooBankContext).Assembly);
 
         return services.AddUnitOfWork<MooBankContext>();
     }
