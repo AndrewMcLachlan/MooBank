@@ -41,7 +41,6 @@ internal class CreateHandler(IAssetRepository repository, IUnitOfWork unitOfWork
 
         repository.Add(entity);
 
-
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return entity.ToModel(currencyConverter);

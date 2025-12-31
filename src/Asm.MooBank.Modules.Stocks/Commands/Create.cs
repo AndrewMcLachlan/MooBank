@@ -43,6 +43,7 @@ internal class CreateHandler(IStockHoldingRepository repository, IUnitOfWork uni
 
         repository.Add(entity);
 
+        // TODO: Move to domain event
         entity.Transactions.Add(new()
         {
             Quantity = command.Quantity,

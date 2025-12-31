@@ -33,6 +33,11 @@ internal sealed class CreateByNameHandler(IUnitOfWork unitOfWork, ITagRepository
             Name = name,
             FamilyId = user.FamilyId,
             Tags = [.. tagEntities],
+            Settings = new()
+            {
+                ApplySmoothing = false,
+                ExcludeFromReporting = false,
+            }
         };
         tagRepository.Add(tag);
 

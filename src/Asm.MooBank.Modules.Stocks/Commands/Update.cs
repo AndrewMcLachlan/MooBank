@@ -50,6 +50,8 @@ internal class UpdateHandler(IStockHoldingRepository repository, IUnitOfWork uni
 
         stockHolding.SetGroup(command.GroupId, user.Id);
 
+        repository.Update(stockHolding);
+
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return stockHolding.ToModel(currencyConverter);

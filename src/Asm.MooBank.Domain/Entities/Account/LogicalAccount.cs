@@ -10,10 +10,6 @@ public class LogicalAccount(Guid id, IEnumerable<InstitutionAccount> institution
 
     public LogicalAccount() : this(Guid.Empty, []) { }
 
-    [Column(TypeName = "datetimeoffset(0)")]
-    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-    public new DateTimeOffset LastUpdated { get; set; } = DateTimeOffset.Now;
-
     public bool IncludeInBudget { get; set; }
 
     [Column("AccountTypeId")]
