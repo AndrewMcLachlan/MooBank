@@ -6,6 +6,8 @@ internal class BillConfiguration : IEntityTypeConfiguration<Bill>
 {
     public void Configure(EntityTypeBuilder<Bill> builder)
     {
+        builder.ToTable(tb => tb.UseSqlOutputClause(false));
+
         builder
             .HasMany(b => b.Discounts)
             .WithMany(d => d.Bills)

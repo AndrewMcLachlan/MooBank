@@ -10,11 +10,11 @@ public abstract record BillBase
 
     public int? PreviousReading { get; set; }
 
-    public int Total { get; set; } // Computed column
+    public int? Total { get; set; } // Computed column
 
     public bool? CostsIncludeGST { get; set; }
 
-    public decimal Cost { get; set; }
+    public decimal? Cost { get; set; }
 
     public IEnumerable<Period> Periods { get; set; } = [];
 

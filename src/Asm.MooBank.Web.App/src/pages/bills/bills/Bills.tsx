@@ -1,11 +1,12 @@
 import React, { PropsWithChildren, useState } from "react";
 
 import { Page, useIdParams } from "@andrewmclachlan/moo-app";
-import { getNumberOfPages, Pagination } from "@andrewmclachlan/moo-ds";
+import { getNumberOfPages, IconButton, Pagination } from "@andrewmclachlan/moo-ds";
 import { Bill } from "models/bills";
 import { useBillAccount, useBills } from "services";
 
-import { Table } from "react-bootstrap";
+import { Button, Table } from "react-bootstrap";
+import { AddBill } from "./AddBill";
 import { BillDetails } from "./BillDetails";
 import { BillRow } from "./BillRow";
 
@@ -16,6 +17,7 @@ export const Bills: React.FC<PropsWithChildren> = ({ children, ...props }) => {
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [pageSize, _setPageSize] = useState<number>(20);
     const [showDetails, setShowDetails] = useState(false);
+    const [showAddBill, setShowAddBill] = useState(false);
     const [selectedBill, setSelectedBill] = useState<Bill>(undefined);
 
     const { data: billAccount } = useBillAccount(id);
@@ -31,8 +33,9 @@ export const Bills: React.FC<PropsWithChildren> = ({ children, ...props }) => {
     }
 
     return (
-        <Page title="Bills" actions={[]} navItems={[]} breadcrumbs={[{ text: "Bills", route: "/bills" }, { text: billAccount?.name, route: `/bills/${id}` }]}>
-            <BillDetails account={billAccount} bill={selectedBill} show={showDetails} onHide={() => setShowDetails(false)} onChange={() => { }} />
+        <Page title="Bills" actions={[<IconButton key="add" onClick={() => setShowAddBill(true)} icon="plus">Add Bill</IconButton>]} navItems={[]} breadcrumbs={[{ text: "Bills", route: "/bills" }, { text: "Accounts", route: "/bills/accounts" }, { text: billAccount?.name, route: `/bills/accounts/${id}` }]}>
+            <AddBill accountId={id} show={showAddBill} onHide={() => setShowAddBill(false)} />
+            <BillDetails account={billAccount} bill={selectedBill} show={showDetails} onHide={() => setShowDetails(false)} />
             <Table striped className="section">
                 <thead>
                     <tr>

@@ -1,6 +1,7 @@
-﻿using System.Net;
-using System.Reflection;
+﻿using System.Reflection;
 using Asm.AspNetCore.Modules;
+using Asm.MooBank.Security;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,7 +13,9 @@ public class Module : IModule
 
     public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
     {
-        new Endpoints.Bills().MapGroup(endpoints);
+        new Endpoints.Bills().MapGroup(endpoints).RequireAuthorization();
+        new Endpoints.BillAccounts().MapGroup(endpoints).RequireAuthorization(Policies.GetInstrumentViewerPolicy());
+        new Endpoints.BillReports().MapGroup(endpoints).RequireAuthorization();
 
         return endpoints;
     }

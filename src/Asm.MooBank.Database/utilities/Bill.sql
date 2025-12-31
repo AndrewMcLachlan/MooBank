@@ -1,7 +1,7 @@
 CREATE TABLE [utilities].[Bill](
     [Id] [int] IDENTITY(1,1) NOT NULL,
     [AccountId] UNIQUEIDENTIFIER NOT NULL,
-    [InvoiceNumber] CHAR(11) NULL,
+    [InvoiceNumber] VARCHAR(15) NULL,
     [IssueDate] DATE NOT NULL,
     [CurrentReading] INT NULL,
     [PreviousReading] INT NULL,

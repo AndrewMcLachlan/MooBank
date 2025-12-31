@@ -2,4 +2,4 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with this codebase.
 
-For detailed project documentation, architecture guidelines, and development patterns, see [AGENTS.md](./AGENTS.md).
+**You MUST read [AGENTS.md](./AGENTS.md) before writing any code.** It contains mandatory coding conventions and architectural patterns that must be followed.

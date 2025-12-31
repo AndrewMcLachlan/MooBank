@@ -36,6 +36,8 @@ export const routes: RouteDefinition = {
             },
             billAccountSummaries: { path: "/bills", element: <Pages.BillAccountSummaries /> },
             billAccountsByType: { path: "/bills/:id", element: <Pages.BillAccounts /> },
+            allBillAccounts: { path: "/bills/accounts", element: <Pages.AllBillAccounts /> },
+            billAccountCreate: { path: "/bills/accounts/create", element: <Pages.CreateBillAccount /> },
             bills: { path: "/bills/accounts/:id", element: <Pages.Bills /> },
             stockCreate: { path: "/shares/create", element: <Pages.CreateStockHolding /> },
             stock: {

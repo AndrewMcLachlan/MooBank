@@ -1,10 +1,9 @@
 ﻿using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Models;
-using LazyCache;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
-public class ReferenceDataRepository(MooBankContext dataContext) : IReferenceDataRepository
+internal class ReferenceDataRepository(MooBankContext dataContext) : IReferenceDataRepository
 {
     public async Task<IEnumerable<ImporterType>> GetImporterTypes(CancellationToken cancellationToken = default) =>
         await dataContext.ImporterTypes.ToListAsync(cancellationToken);
@@ -17,6 +16,12 @@ public class ReferenceDataRepository(MooBankContext dataContext) : IReferenceDat
 
     public StockPriceHistory AddStockPrice(StockPriceHistory stockPrice)
     {
+        // Do not attempt to re-add existing data
+        if (dataContext.StockPriceHistory.Any(sp => sp.Symbol == stockPrice.Symbol && sp.Date == stockPrice.Date))
+        {
+            return stockPrice;
+        }
+
         dataContext.StockPriceHistory.Add(stockPrice);
         return stockPrice;
     }
