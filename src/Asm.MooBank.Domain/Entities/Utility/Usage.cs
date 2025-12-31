@@ -19,7 +19,7 @@ public class Usage
     public decimal TotalUsage { get; set; }
 
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-    public decimal Cost { get; set; } // Computed column
+    public decimal? Cost { get; set; }
 
     [ForeignKey("PeriodId")]
     public virtual Period? Period { get; set; }

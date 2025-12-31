@@ -1,6 +1,5 @@
-﻿using Asm.AspNetCore;
+using Asm.AspNetCore;
 using Asm.AspNetCore.Routing;
-using Asm.MooBank.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 
@@ -13,7 +12,6 @@ internal class Bills : EndpointGroupBase
     public override string Path => "/bills";
 
     public override string Tags => "Bills";
-
 
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {
@@ -29,20 +27,13 @@ internal class Bills : EndpointGroupBase
         builder.MapQuery<Queries.Accounts.GetAll, IEnumerable<Models.Account>>("/accounts")
             .WithNames("Get Bill Accounts");
 
-        builder.MapQuery<Queries.Accounts.Get, Models.Account>("/accounts/{instrumentId}")
-            .WithNames("Get Bill Account")
-            .RequireAuthorization(Policies.GetInstrumentViewerPolicy());
+        builder.MapPostCreate<Commands.Accounts.Create, Models.Account>("/accounts", "Get Bill Account".ToMachine(), a => new { InstrumentId = a.Id })
+            .WithNames("Create Bill Account");
 
-        builder.MapPagedQuery<Queries.Bills.GetForAccount, Models.Bill>("/accounts/{instrumentId}/bills")
-            .WithNames("Get Bills For An Account")
-            .RequireAuthorization(Policies.GetInstrumentViewerPolicy());
+        builder.MapPagedQuery<Queries.Bills.GetByUtilityType, Models.Bill>("/types/{utilityType}/bills")
+            .WithNames("Get Bills By Utility Type");
 
-        builder.MapQuery<Queries.Bills.Get, Models.Bill>("/accounts/{instrumentId}/bills/{id}")
-            .WithNames("Get Bill")
-            .RequireAuthorization(Policies.GetInstrumentViewerPolicy());
-
-        builder.MapPostCreate<Commands.Bills.Create, Models.Bill>("/accounts/{instrumentId}/bills", "Get Bill".ToMachine(), b => b.Id)
-            .WithNames("Create Bill")
-            .RequireAuthorization(Policies.GetInstrumentOwnerPolicy());
+        builder.MapCommand<Commands.Bills.Import, Models.ImportResult>("/import", CommandBinding.Body)
+            .WithNames("Import Bills");
     }
 }

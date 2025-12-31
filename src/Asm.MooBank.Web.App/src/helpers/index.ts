@@ -4,3 +4,4 @@ export * from "./getCachedPeriod";
 export * from "./isString";
 export * from "./onKeyLeave";
 export * from "./valueAsNumber";
+export * from "./units";

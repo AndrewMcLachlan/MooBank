@@ -9,6 +9,7 @@
 @import "css/form" layer(moobank);
 @import "css/transactions" layer(moobank);
 @import "css/forecast" layer(moobank);
+@import "css/bills" layer(moobank);
 @import "css/treeflex";
 
 @layer moobank {

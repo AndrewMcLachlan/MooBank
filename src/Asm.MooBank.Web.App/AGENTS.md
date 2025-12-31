@@ -330,12 +330,40 @@ From `@andrewmclachlan/mooicons`:
 
 ## CSS Conventions
 
+### Critical Rules
+
+**NEVER use Bootstrap's utility CSS classes** such as:
+- `d-flex`, `d-block`, `d-none`, etc.
+- `justify-content-*`, `align-items-*`, `flex-*`
+- `m-*`, `mb-*`, `mt-*`, `mx-*`, `my-*` (margin utilities)
+- `p-*`, `pb-*`, `pt-*`, `px-*`, `py-*` (padding utilities)
+- `text-center`, `text-muted`, `text-*`
+- `w-*`, `h-*` (width/height utilities)
+- `row`, `col`, `col-*` (grid utilities outside of proper layouts)
+
+**Instead, use proper CSS with reusable classes:**
+- Create semantic class names that describe the purpose (e.g., `filter-row`, `chart-container`, `tab-header`)
+- Define layout using CSS Grid or Flexbox in stylesheet files
+- Place styles in feature-specific CSS files under `src/css/`
+- Import CSS files in `App.css` using `@import "css/featurename" layer(moobank);`
+
+### Component Usage
+
+**Use existing components from `@andrewmclachlan/moo-ds`:**
+- Use `Section` with a header instead of Bootstrap's `Card` component
+- Use `SectionTable` for tables with headers
+- Use `SectionForm` for forms within sections
+
+### General Guidelines
+
 - Use CSS layers: `@layer mooapp, layout, moobank;`
 - Feature styles go in `layer(moobank)`
 - Column width classes: `column-15`, `column-20`, `column-25`, `column-50`
 - Action columns: `row-action`
 - Negative values: `negative` class
 - Amount formatting: `amount` class
+- Use nested CSS for component-scoped styles
+- Prefer CSS Grid over Bootstrap's grid system for layouts
 
 ## State Management Philosophy
 

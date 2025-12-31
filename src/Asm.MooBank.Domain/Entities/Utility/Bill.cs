@@ -1,4 +1,6 @@
-﻿namespace Asm.MooBank.Domain.Entities.Utility;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Asm.MooBank.Domain.Entities.Utility;
 
 [Table("Bill", Schema = "utilities")]
 public class Bill
@@ -19,16 +21,17 @@ public class Bill
     public int? PreviousReading { get; set; }
 
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-    public int Total { get; set; } // Computed column
+    public int? Total { get; set; } // Computed column
 
     [Column(TypeName = "bit")]
     public bool? CostsIncludeGST { get; set; }
 
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-    public decimal Cost { get; set; } // Computed column
+    public decimal? Cost { get; set; } // Computed column
 
     [ForeignKey("AccountId")]
-    public virtual Account? Account { get; set; }
+    [AllowNull]
+    public virtual Account Account { get; set; }
 
     public virtual ICollection<Discount> Discounts { get; set; } = [];
 

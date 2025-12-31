@@ -1,0 +1,179 @@
+/* Bills Module Styles */
+
+.bill-details {
+    width: 450px;
+
+    .offcanvas-body {
+        display: flex;
+        gap: 1rem;
+        flex-direction: column;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+    }
+
+    .summary-label {
+        color: var(--bs-secondary-color);
+    }
+
+    .summary-value {
+        font-weight: bold;
+    }
+
+    .summary-value-large {
+        font-weight: bold;
+        font-size: 1.25rem;
+    }
+
+    .gst-note {
+        color: var(--bs-secondary-color);
+        font-size: 0.875rem;
+        text-align: right;
+    }
+
+    .period-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+    }
+
+    .period-dates {
+        font-weight: bold;
+    }
+
+    .period-details {
+        font-size: 0.875rem;
+    }
+
+    .period-line {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.25rem;
+    }
+
+    .period-line-label {
+        color: var(--bs-secondary-color);
+    }
+
+    .period-total {
+        display: flex;
+        justify-content: space-between;
+        font-weight: bold;
+    }
+
+    .period-item {
+        padding: 1rem;
+    }
+
+    .period-item:not(:last-child) {
+        border-bottom: 1px solid var(--bs-border-color);
+    }
+}
+
+.bill-form {
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .form-row-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .period-entry,
+    .discount-entry {
+        padding-bottom: 1rem;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid var(--bs-border-color);
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .empty-message {
+        color: var(--bs-secondary-color);
+        margin-bottom: 0;
+    }
+
+    .remove-button {
+        margin-top: 0.5rem;
+    }
+}
+
+.bill-filter-panel {
+    margin-bottom: 1rem;
+
+    .filter-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 2fr auto;
+        gap: 1rem;
+        align-items: end;
+    }
+
+    .filter-actions {
+        display: flex;
+        align-items: end;
+    }
+}
+
+.bill-chart {
+    margin-bottom: 1rem;
+
+    .chart-filters {
+        display: grid;
+        grid-template-columns: 1fr 1fr 2fr;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .chart-container {
+        height: 300px;
+    }
+}
+
+.utility-bills-tab {
+    .tab-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .charts-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .no-bills {
+        color: var(--bs-secondary-color);
+        text-align: center;
+    }
+}
+
+.bills-page {
+    .empty-state {
+        color: var(--bs-secondary-color);
+    }
+
+    .reports-section {
+        margin-top: 1.5rem;
+    }
+}

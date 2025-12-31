@@ -1,11 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
 namespace Asm.MooBank.Modules.Bills.Models;
 
 public record Bill : BillBase
 {
     public int Id { get; init; }
 
+    public Guid AccountId { get; init; }
+
+    public string AccountName { get; init; } = String.Empty;
 }
 
 public static class BillExtensions
@@ -15,6 +16,8 @@ public static class BillExtensions
         return new Bill
         {
             Id = entity.Id,
+            AccountId = entity.AccountId,
+            AccountName = entity.Account?.Name ?? String.Empty,
             InvoiceNumber = entity.InvoiceNumber,
             IssueDate = entity.IssueDate,
             CurrentReading = entity.CurrentReading,
@@ -23,6 +26,7 @@ public static class BillExtensions
             CostsIncludeGST = entity.CostsIncludeGST,
             Cost = entity.Cost,
             Periods = entity.Periods.ToModel(),
+            Discounts = entity.Discounts.ToModel(),
         };
     }
 

@@ -61,7 +61,7 @@ export const useCreateRule = () => {
             const newRules  = [data, ...allRules].sort((t1, t2) => t1.contains.localeCompare(t2.contains));
             queryClient.setQueryData<Models.Rule[]>([rulesKey, variables.accountId], newRules);
         },
-        onError: (_error, [variables]) => {
+        onSettled: (_data, _error, [variables]) => {
             queryClient.invalidateQueries({ queryKey: [rulesKey, variables.accountId]});
         }
     });
@@ -87,7 +87,7 @@ export const useUpdateRule = () => {
             allRules = allRules.sort((t1, t2) => t1.contains.localeCompare(t2.contains));
             queryClient.setQueryData<Models.Rule[]>([rulesKey, variables.accountId], allRules);
         },
-        onError: (_error, [variables]) => {
+        onSettled: (_data, _error, [variables]) => {
             queryClient.invalidateQueries({ queryKey: [[rulesKey, variables.accountId]]});
         }
     });

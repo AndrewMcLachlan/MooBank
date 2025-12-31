@@ -19,10 +19,10 @@ public class Period : Entity
     public DateTime PeriodEnd { get; set; }
 
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-    public int DaysInclusive { get; set; } // Computed column
+    public int? DaysInclusive { get; set; }
 
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-    public int Days { get; set; } // Computed column
+    public int? Days { get; set; }
 
     [AllowNull]
     public virtual ServiceCharge ServiceCharge { get; set; }
