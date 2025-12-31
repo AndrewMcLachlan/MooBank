@@ -1,17 +1,20 @@
 import { SectionTable, DeleteIcon, EditColumn, useUpdatingState } from "@andrewmclachlan/moo-ds";
 import { format, parseISO } from "date-fns";
-import { PlannedItem, ScheduleFrequency } from "models";
+import { ForecastPlan, PlannedItem, ScheduleFrequency } from "models";
 import { useState } from "react";
 import { Form } from "react-bootstrap";
 import { useDeletePlannedItem, useUpdatePlannedItem } from "services/ForecastService";
 import { NewPlannedItem } from "./NewPlannedItem";
 
 interface PlannedItemsTableProps {
-    planId: string;
-    items: PlannedItem[];
+    plan?: ForecastPlan;
 }
 
-export const PlannedItemsTable: React.FC<PlannedItemsTableProps> = ({ planId, items }) => {
+export const PlannedItemsTable: React.FC<PlannedItemsTableProps> = ({ plan }) => {
+
+    const items = plan?.plannedItems ?? [];
+    const planId = plan?.id;
+
     const incomeItems = items.filter(i => i.itemType === "Income");
     const expenseItems = items.filter(i => i.itemType === "Expense");
 

@@ -29,6 +29,7 @@ interface ForecastChartProps {
 }
 
 export const ForecastChart: React.FC<ForecastChartProps> = ({ months }) => {
+
     const labels = months.map(m => format(parseISO(m.monthStart), "MMM yy"));
 
     const data = {

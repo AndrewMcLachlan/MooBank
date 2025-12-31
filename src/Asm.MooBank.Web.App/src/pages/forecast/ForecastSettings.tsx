@@ -7,18 +7,18 @@ import { useUpdateForecastPlan } from "services/ForecastService";
 import { useAccounts } from "services/AccountService";
 
 interface ForecastSettingsProps {
-    plan: ForecastPlan;
+    plan?: ForecastPlan;
     monthlyExpenses?: number;
 }
 
 export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthlyExpenses }) => {
     const [isEditing, setIsEditing] = useState(false);
-    const [name, setName] = useState(plan.name);
-    const [startDate, setStartDate] = useState(plan.startDate);
-    const [endDate, setEndDate] = useState(plan.endDate);
-    const [monthlyIncome, setMonthlyIncome] = useState(plan.incomeStrategy?.manualRecurring?.amount ?? 0);
-    const [accountScopeMode, setAccountScopeMode] = useState<AccountScopeMode>(plan.accountScopeMode);
-    const [selectedAccountIds, setSelectedAccountIds] = useState<string[]>(plan.accountIds ?? []);
+    const [name, setName] = useState(plan?.name);
+    const [startDate, setStartDate] = useState(plan?.startDate);
+    const [endDate, setEndDate] = useState(plan?.endDate);
+    const [monthlyIncome, setMonthlyIncome] = useState(plan?.incomeStrategy?.manualRecurring?.amount ?? 0);
+    const [accountScopeMode, setAccountScopeMode] = useState<AccountScopeMode>(plan?.accountScopeMode);
+    const [selectedAccountIds, setSelectedAccountIds] = useState<string[]>(plan?.accountIds ?? []);
 
     const { data: accounts } = useAccounts();
     const { update, isPending } = useUpdateForecastPlan();
@@ -61,10 +61,10 @@ export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthl
     };
 
     const getAccountsDisplay = () => {
-        if (plan.accountScopeMode === "AllAccounts") {
+        if (plan?.accountScopeMode === "AllAccounts") {
             return "All Accounts";
         }
-        if (!plan.accountIds?.length) {
+        if (!plan?.accountIds?.length) {
             return "No accounts selected";
         }
         const selectedNames = accounts?.filter(a => plan.accountIds.includes(a.id)).map(a => a.name) ?? [];
@@ -80,14 +80,14 @@ export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthl
                     <Col md={2}>
                         <div className="settings-item">
                             <div className="settings-label">Plan Name</div>
-                            <div className="settings-value">{plan.name}</div>
+                            <div className="settings-value">{plan?.name}</div>
                         </div>
                     </Col>
                     <Col md={2}>
                         <div className="settings-item">
                             <div className="settings-label">Period</div>
                             <div className="settings-value">
-                                {format(parseISO(plan.startDate), "MMM yyyy")} - {format(parseISO(plan.endDate), "MMM yyyy")}
+                                {plan && (`${format(parseISO(plan.startDate), "MMM yyyy")} - ${format(parseISO(plan.endDate), "MMM yyyy")}`)}
                             </div>
                         </div>
                     </Col>
@@ -95,7 +95,7 @@ export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthl
                         <div className="settings-item">
                             <div className="settings-label">Monthly Income</div>
                             <div className="settings-value">
-                                ${(plan.incomeStrategy?.manualRecurring?.amount ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                ${(plan?.incomeStrategy?.manualRecurring?.amount ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                             </div>
                         </div>
                     </Col>
