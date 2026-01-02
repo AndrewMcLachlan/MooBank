@@ -1,7 +1,10 @@
+using System.Globalization;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Importers;
 using Asm.MooBank.Institution.Macquarie.Domain;
 using Asm.MooBank.Institution.Macquarie.Models;
+using CsvHelper;
+using CsvHelper.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TransactionType = Asm.MooBank.Models.TransactionType;
@@ -10,23 +13,19 @@ namespace Asm.MooBank.Institution.Macquarie.Importers;
 
 internal partial class MacquarieImporter(IQueryable<TransactionRaw> rawTransactions, ITransactionRawRepository transactionRawRepository, ITransactionRepository transactionRepository, ILogger<MacquarieImporter> logger) : IImporter
 {
-    private const int Columns = 11;
-    private const int TransactionDateColumn = 0;
-    private const int DetailsColumn = 1;
-    private const int AccountColumn = 2;
-    private const int CategoryColumn = 3;
-    private const int SubcategoryColumn = 4;
-    private const int TagsColumn = 5;
-    private const int NotesColumn = 6;
-    private const int DebitColumn = 7;
-    private const int CreditColumn = 8;
-    private const int BalanceColumn = 9;
-    private const int OriginalDescriptionColumn = 10;
     private const string DateFormat = "dd MMM yyyy";
 
     public async Task<MooBank.Models.TransactionImportResult> Import(Guid instrumentId, Guid? institutionAccountId, Stream contents, CancellationToken cancellationToken = default)
     {
         using var reader = new StreamReader(contents);
+        var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+            HasHeaderRecord = true,
+        };
+
+        using var csv = new CsvReader(reader, config);
+        var records = csv.GetRecords<MacquarieCsvRecord>();
+
         var rawTransactionEntities = new List<TransactionRaw>();
 
         var checkTransactions = await rawTransactions.Where(t => t.AccountId == instrumentId).Select(t => new
@@ -38,94 +37,75 @@ internal partial class MacquarieImporter(IQueryable<TransactionRaw> rawTransacti
             t.Balance,
         }).ToListAsync(cancellationToken);
 
-        // Throw away header row
-        await reader.ReadLineAsync(cancellationToken);
-
         int lineCount = 1;
-
         decimal? endBalance = null;
 
-        string? line;
-        while ((line = await reader.ReadLineAsync(cancellationToken)) is not null)
+        foreach (var record in records)
         {
-            DateOnly transactionTime = DateOnly.MinValue;
-            decimal credit = 0;
-            decimal debit = 0;
-
             lineCount++;
 
-            string[] prelimColumns = line.Split(",");
-
-            List<string> columns = [];
-
-            foreach (string str in prelimColumns)
-            {
-                columns.Add(str.Trim('"'));
-            }
-
             #region Validation
-            if (columns.Count != Columns)
+            if (!DateOnly.TryParseExact(record.TransactionDate, DateFormat, out DateOnly transactionTime))
             {
-                logger.LogWarning("Unrecognised entry at line {lineCount} - expected {expected} columns but got {actual}", lineCount, Columns, columns.Count);
+                logger.LogWarning("Incorrect date format at line {lineCount}: {date}", lineCount, record.TransactionDate);
                 continue;
             }
 
-            if (!DateOnly.TryParseExact(columns[TransactionDateColumn], DateFormat, out transactionTime))
-            {
-                logger.LogWarning("Incorrect date format at line {lineCount}: {date}", lineCount, columns[TransactionDateColumn]);
-                continue;
-            }
-
-            if (String.IsNullOrWhiteSpace(columns[DetailsColumn]))
+            if (String.IsNullOrWhiteSpace(record.Details))
             {
                 logger.LogWarning("Details not supplied at line {lineCount}", lineCount);
                 continue;
             }
 
-            if ((String.IsNullOrEmpty(columns[CreditColumn]) && String.IsNullOrEmpty(columns[DebitColumn])) || (!String.IsNullOrEmpty(columns[CreditColumn]) && !String.IsNullOrEmpty(columns[DebitColumn])))
+            if ((String.IsNullOrEmpty(record.Credit) && String.IsNullOrEmpty(record.Debit)) || (!String.IsNullOrEmpty(record.Credit) && !String.IsNullOrEmpty(record.Debit)))
             {
                 logger.LogWarning("Credit or Debit amount not supplied at line {lineCount}", lineCount);
                 continue;
             }
 
-            if (!String.IsNullOrEmpty(columns[CreditColumn]) && !Decimal.TryParse(columns[CreditColumn], out credit))
+            decimal credit = 0;
+            decimal debit = 0;
+
+            if (!String.IsNullOrEmpty(record.Credit) && !Decimal.TryParse(record.Credit, out credit))
             {
-                logger.LogWarning("Incorrect credit format at line {lineCount}: {credit}", lineCount, columns[CreditColumn]);
+                logger.LogWarning("Incorrect credit format at line {lineCount}: {credit}", lineCount, record.Credit);
                 continue;
             }
-            else if (!String.IsNullOrEmpty(columns[DebitColumn]) && !Decimal.TryParse(columns[DebitColumn], out debit))
+            else if (!String.IsNullOrEmpty(record.Debit) && !Decimal.TryParse(record.Debit, out debit))
             {
-                logger.LogWarning("Incorrect debit format at line {lineCount}: {debit}", lineCount, columns[DebitColumn]);
+                logger.LogWarning("Incorrect debit format at line {lineCount}: {debit}", lineCount, record.Debit);
                 continue;
             }
 
-            TransactionType transactionType = !String.IsNullOrEmpty(columns[CreditColumn]) ? TransactionType.Credit : TransactionType.Debit;
+            TransactionType transactionType = !String.IsNullOrEmpty(record.Credit) ? TransactionType.Credit : TransactionType.Debit;
 
-            // Allow pending transactions
-            if (!String.IsNullOrEmpty(columns[BalanceColumn]) && !Decimal.TryParse(columns[BalanceColumn], out decimal balance))
+            if (String.IsNullOrEmpty(record.Balance))
             {
-                logger.LogWarning("Incorrect balance format at line {lineCount}: {balance}", lineCount, columns[BalanceColumn]);
+                // Assume this is a pending transaction and ignore.
                 continue;
             }
-            else
+            if (!Decimal.TryParse(record.Balance, out decimal balance))
             {
-                balance = 0;
+                logger.LogWarning("Incorrect balance format at line {lineCount}: {balance}", lineCount, record.Balance);
+                continue;
             }
+
             #endregion
 
             endBalance ??= balance;
 
-            if (checkTransactions.Any(t => t.Details == columns[DetailsColumn] && t.Date == transactionTime && t.Debit == debit && t.Credit == credit && t.Balance == balance))
+            if (checkTransactions.Any(t => t.Details == record.Details && t.Date == transactionTime && t.Debit == debit && t.Credit == credit && t.Balance == balance))
             {
-                logger.LogInformation("Duplicate transaction found {details} {date}", columns[DetailsColumn], transactionTime);
+                logger.LogInformation("Duplicate transaction found {details} {date}", record.Details, transactionTime);
                 continue;
             }
-            else if (checkTransactions.Any(t => t.Details == columns[DetailsColumn] && t.Date == transactionTime && t.Debit == debit && t.Credit == credit))
+            else if (checkTransactions.Any(t => t.Details == record.Details && t.Date == transactionTime && t.Debit == debit && t.Credit == credit))
             {
-                var existing = rawTransactions.Single(t => t.Details == columns[DetailsColumn] && t.Date == transactionTime && t.Debit == debit && t.Credit == credit);
+                var existing = await transactionRawRepository.GetZeroBalance(record.Details, transactionTime, debit, credit, cancellationToken);
+
                 existing.Balance = balance;
 
-                logger.LogInformation("Pending Transaction found and updated {details} {date}", columns[DetailsColumn], transactionTime);
+                logger.LogInformation("Pending Transaction found and updated {details} {date}", record.Details, transactionTime);
                 continue;
             }
 
@@ -133,9 +113,9 @@ internal partial class MacquarieImporter(IQueryable<TransactionRaw> rawTransacti
                 instrumentId,
                 null, // No card holder info available yet
                 transactionType == TransactionType.Credit ? credit : -Math.Abs(debit),
-                GetDetails(columns[DetailsColumn], columns[SubcategoryColumn]),
+                GetDetails(record.Details, record.Subcategory),
                 transactionTime.ToStartOfDay(),
-                columns[SubcategoryColumn] == "Transfers" ? MooBank.Models.TransactionSubType.Transfer : null, // No sub-type yet
+                record.Subcategory == "Transfers" ? MooBank.Models.TransactionSubType.Transfer : null, // No sub-type yet
                 "Macquarie Import",
                 institutionAccountId,
                 transactionType: transactionType
@@ -143,11 +123,11 @@ internal partial class MacquarieImporter(IQueryable<TransactionRaw> rawTransacti
 
             transaction.Extra = new TransactionExtra
             {
-                Category = columns[CategoryColumn],
-                Subcategory = columns[SubcategoryColumn],
-                Tags = columns[TagsColumn],
-                Notes = columns[NotesColumn],
-                OriginalDescription = columns[OriginalDescriptionColumn],
+                Category = record.Category,
+                Subcategory = record.Subcategory,
+                Tags = record.Tags,
+                Notes = record.Notes,
+                OriginalDescription = record.OriginalDescription,
             };
 
             var transactionRaw = new TransactionRaw
@@ -157,13 +137,13 @@ internal partial class MacquarieImporter(IQueryable<TransactionRaw> rawTransacti
                 Credit = credit,
                 Date = transactionTime,
                 Debit = debit,
-                Details = columns[DetailsColumn],
-                Account = columns[AccountColumn],
-                Category = columns[CategoryColumn],
-                Subcategory = columns[SubcategoryColumn],
-                Tags = columns[TagsColumn],
-                Notes = columns[NotesColumn],
-                OriginalDescription = columns[OriginalDescriptionColumn],
+                Details = record.Details,
+                Account = record.Account,
+                Category = record.Category,
+                Subcategory = record.Subcategory,
+                Tags = record.Tags,
+                Notes = record.Notes,
+                OriginalDescription = record.OriginalDescription,
                 Imported = DateTime.Now,
                 Transaction = transaction,
             };
