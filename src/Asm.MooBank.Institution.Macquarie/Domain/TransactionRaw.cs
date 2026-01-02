@@ -41,6 +41,8 @@ internal class TransactionRaw([DisallowNull] Guid id) : KeyedEntity<Guid>(id)
 
     public string? OriginalDescription { get; set; }
 
+    public int? SequenceNumber { get; set; }
+
     public DateTime Imported { get; set; }
 
     public Transaction Transaction { get; set; } = null!;
