@@ -14,6 +14,7 @@ CREATE TABLE [macquarie].[TransactionRaw]
     [Credit] DECIMAL(12, 4) NULL,
     [Balance] DECIMAL(12, 4) NULL,
     [OriginalDescription] NVARCHAR(500) NULL,
+    [SequenceNumber] INT NULL,
     [Imported] DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
     CONSTRAINT [PK_Macquarie_TransactionRaw] PRIMARY KEY CLUSTERED (Id),
 )

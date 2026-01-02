@@ -39,6 +39,8 @@ internal partial class MacquarieImporter(IQueryable<TransactionRaw> rawTransacti
 
         int lineCount = 1;
         decimal? endBalance = null;
+        DateOnly? previousDate = null;
+        int sequenceNumber = 1;
 
         foreach (var record in records)
         {
@@ -109,6 +111,15 @@ internal partial class MacquarieImporter(IQueryable<TransactionRaw> rawTransacti
                 continue;
             }
 
+            // Track sequence within each date - reset when date changes
+            // CSV is descending, so we subtract from 59 to preserve order when sorted ascending
+            if (previousDate != transactionTime)
+            {
+                sequenceNumber = 1;
+                previousDate = transactionTime;
+            }
+            sequenceNumber++;
+
             Transaction transaction = Transaction.Create(
                 instrumentId,
                 null, // No card holder info available yet
@@ -144,6 +155,7 @@ internal partial class MacquarieImporter(IQueryable<TransactionRaw> rawTransacti
                 Tags = record.Tags,
                 Notes = record.Notes,
                 OriginalDescription = record.OriginalDescription,
+                SequenceNumber = sequenceNumber,
                 Imported = DateTime.Now,
                 Transaction = transaction,
             };
