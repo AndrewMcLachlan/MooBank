@@ -10,11 +10,11 @@ Please note that this project, including this readme, is a work in progress.
 
 * Docker Desktop
 * Node JS
-* .NET SDK 9.x
+* .NET SDK 10.x
 
 ### Authentication & Authorisation
 
-Setup an application registration in Azure AD.
+Set up an application registration in Azure AD.
 
 Edit the `appsettings.json` file in the `Asm.MooBank.Web.Api` project and add the following configuration:
 ```json

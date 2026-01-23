@@ -11,10 +11,13 @@
     <File Path=".npmrc" />
     <File Path="AGENTS.md" />
     <File Path="Asm.MooBank.lutconfig" />
+    <File Path="CLAUDE.md" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Build.targets" />
     <File Path="Directory.Packages.props" />
+    <File Path="LICENSE" />
     <File Path="NuGet.config" />
+    <File Path="README.md" />
   </Folder>
   <Folder Name="/Documentation/">
     <File Path="LICENSE" />

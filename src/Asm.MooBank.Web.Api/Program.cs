@@ -10,7 +10,6 @@ using Asm.MooBank.Institution.Macquarie;
 using Asm.MooBank.Security;
 using Asm.OAuth;
 using Microsoft.AspNetCore.OpenApi;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi;
 
 var result = WebApplicationStart.Run(args, "Asm.MooBank.Web.Api", AddServices, AddApp, AddHealthChecks);
@@ -69,11 +68,6 @@ void AddServices(WebApplicationBuilder builder)
             }
             return OpenApiOptions.CreateDefaultSchemaReferenceId(arg);
         };
-
-        options.AddSchemaTransformer((schema, context, cancellationToken) =>
-        {
-            return Task.CompletedTask;
-        });
     });
 
     services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
@@ -169,19 +163,17 @@ void AddApp(WebApplication app)
             options.OAuthAppName("MooBank");
             options.OAuthUsePkce();
             options.OAuthScopes("api://moobank.mclachlan.family/.default");
-
-            options.SwaggerEndpoint("/swagger/v1/swagger.json", "MooBank API (Swashbuckle)");
         });
+    }
 
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseDeveloperExceptionPage();
-        }
-        else
-        {
-            app.UseHsts();
-            app.UseHttpsRedirection();
-        }
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseDeveloperExceptionPage();
+    }
+    else
+    {
+        app.UseHsts();
+        app.UseHttpsRedirection();
     }
 
     app.UseStandardExceptionHandler();
