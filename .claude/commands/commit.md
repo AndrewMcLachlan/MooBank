@@ -32,17 +32,18 @@ Common scopes for this project:
 
 - Keep description under 72 characters
 - Use imperative mood ("add" not "added")
+- Use proper capitalisation and grammar
 - Reference issue numbers if applicable: `fix(api): resolve null reference (#123)`
 - For breaking changes, add `!` after scope: `feat(api)!: change auth flow`
 
 ## Examples
 
 ```
-feat(modules/budget): add monthly budget comparison view
-fix(domain): correct balance calculation for splits
-refactor(web): migrate account list to SectionTable component
-chore: update npm dependencies
-docs: add CQRS pattern documentation
+feat(modules/budget): Add monthly budget comparison view
+fix(domain): Correct balance calculation for splits
+refactor(web): Migrate account list to SectionTable component
+chore: Update npm dependencies
+docs: Add CQRS pattern documentation
 ```
 
 ## Commit Message Format
@@ -52,8 +53,6 @@ git commit -m "$(cat <<'EOF'
 <type>(<scope>): <description>
 
 <optional body with more details>
-
-Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
 EOF
 )"
 ```
