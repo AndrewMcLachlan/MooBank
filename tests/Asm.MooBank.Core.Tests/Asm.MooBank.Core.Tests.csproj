@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
     <PackageReference Include="Asm" />
@@ -8,11 +8,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="LazyCache.AspNetCore" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Moq" />
-    <PackageReference Include="ReqnRoll.Tools.MsBuild.Generation" />
-    <PackageReference Include="ReqnRoll.xUnit.v3" />
     <PackageReference Include="xunit.v3" />
     <PackageReference Include="xunit.runner.visualstudio">
       <PrivateAssets>all</PrivateAssets>
@@ -21,13 +20,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Asm.MooBank.Modules.Accounts\Asm.MooBank.Modules.Accounts.csproj" />
+    <ProjectReference Include="..\..\src\Asm.MooBank\Asm.MooBank.csproj" />
+    <ProjectReference Include="..\..\src\Asm.MooBank.Domain\Asm.MooBank.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Asm.MooBank.Infrastructure\Asm.MooBank.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Asm.MooBank.Security\Asm.MooBank.Security.csproj" />
+    <ProjectReference Include="..\..\src\Asm.MooBank.Models\Asm.MooBank.Models.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="Asm.Testing" />
     <Using Include="Moq" />
-    <Using Include="Reqnroll" />
     <Using Include="Xunit" />
   </ItemGroup>
 

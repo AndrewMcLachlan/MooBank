@@ -442,7 +442,7 @@ The application successfully enables users to consolidate financial data, catego
 ## 15. Appendix
 
 ### Related Documents
-- `AGENTS.md` - Developer coding conventions and patterns
+- `CLAUDE.md` - Developer coding conventions and patterns
 - `.claude/reference/*.md` - Technology-specific guidelines
 
 ### Key Dependencies
@@ -462,7 +462,6 @@ MooBank/
 │   ├── reference/          # Technology guides
 │   └── PRD.md              # This document
 ├── .agents/plans/          # Implementation plans
-├── AGENTS.md               # Developer guidelines
 ├── CLAUDE.md               # Claude Code entry point
 └── README.md               # Project overview
 ```

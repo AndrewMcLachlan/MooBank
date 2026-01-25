@@ -5009,8 +5009,7 @@
           "Superannuation",
           "Investment",
           "Loan",
-          "Broker",
-          null
+          "Broker"
         ]
       },
       "AccountTypeSummary": {
@@ -5587,17 +5586,41 @@
       },
       "Create": {
         "required": [
-          "instrumentId",
-          "bill"
+          "name",
+          "utilityType",
+          "accountNumber"
         ],
         "type": "object",
         "properties": {
-          "instrumentId": {
-            "type": "string",
-            "format": "uuid"
+          "name": {
+            "type": "string"
           },
-          "bill": {
-            "$ref": "#/components/schemas/CreateBill"
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "utilityType": {
+            "$ref": "#/components/schemas/UtilityType"
+          },
+          "accountNumber": {
+            "type": "string"
+          },
+          "institutionId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "shareWithFamily": {
+            "type": "boolean"
           }
         }
       },
@@ -5715,75 +5738,6 @@
               "string"
             ],
             "format": "uuid"
-          }
-        }
-      },
-      "CreateBill": {
-        "type": "object",
-        "properties": {
-          "invoiceNumber": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "issueDate": {
-            "type": "string",
-            "format": "date"
-          },
-          "currentReading": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "null",
-              "integer",
-              "string"
-            ],
-            "format": "int32"
-          },
-          "previousReading": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "null",
-              "integer",
-              "string"
-            ],
-            "format": "int32"
-          },
-          "total": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "null",
-              "integer",
-              "string"
-            ],
-            "format": "int32"
-          },
-          "costsIncludeGST": {
-            "type": [
-              "null",
-              "boolean"
-            ]
-          },
-          "cost": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "null",
-              "number",
-              "string"
-            ],
-            "format": "double"
-          },
-          "periods": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Period"
-            }
-          },
-          "discounts": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Discount"
-            }
           }
         }
       },
@@ -7427,8 +7381,7 @@
           "Weekly",
           "Monthly",
           "Yearly",
-          "Fortnightly",
-          null
+          "Fortnightly"
         ]
       },
       "SeasonalitySettings": {

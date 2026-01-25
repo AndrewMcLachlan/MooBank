@@ -141,7 +141,7 @@ Parallel.ForEach(transactions, (transaction) => {
 **Fix:**
 - Standardize on parameterized policy approach for resource-based authorization
 - Remove duplicate authorization checks in handlers
-- Document the authorization pattern in AGENTS.md
+- Document the authorization pattern in CLAUDE.md
 
 **Effort:** Medium
 **Risk if not fixed:** Maintenance confusion, potential security gaps
@@ -347,7 +347,7 @@ This creates unnecessary Task allocations.
 
 ## References
 
-- [AGENTS.md](../AGENTS.md) - Architecture guidelines
+- [CLAUDE.md](../CLAUDE.md) - Architecture guidelines
 - [ASM Library](https://github.com/AndrewMcLachlan/ASM) - Custom infrastructure library
 - [Microsoft Rate Limiting](https://learn.microsoft.com/en-us/aspnet/core/performance/rate-limit) - Rate limiting documentation
 - [Polly](https://github.com/App-vNext/Polly) - Resilience library for .NET
