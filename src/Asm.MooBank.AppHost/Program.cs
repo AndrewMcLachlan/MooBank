@@ -25,8 +25,8 @@ if (sqlConfig.Enabled)
 
     mooBankDb = sql.AddDatabase("MooBank");
 
-    builder.AddSqlProject<Projects.Asm_MooBank_Database>("moobank-database-project")
-        .WithReference(mooBankDb);
+    //builder.AddSqlProject<Projects.Asm_MooBank_Database>("moobank-database-project")
+        //.WithReference(mooBankDb);
 }
 else
 {
@@ -34,8 +34,8 @@ else
 
     mooBankDb = builder.AddConnectionString("MooBank");
 
-    builder.AddSqlProject<Projects.Asm_MooBank_Database>("moobank-database-project")
-        .WithReference(mooBankDb);
+    //builder.AddSqlProject<Projects.Asm_MooBank_Database>("moobank-database-project")
+        //.WithReference(mooBankDb);
 }
 
 var api = builder.AddProject<Projects.Asm_MooBank_Web_Api>("moobank-api", "API Only")

@@ -13,6 +13,7 @@
     <PackageReference Include="Moq" />
     <PackageReference Include="ReqnRoll.Tools.MsBuild.Generation" />
     <PackageReference Include="ReqnRoll.xUnit.v3" />
+    <PackageReference Include="xunit.v3" />
     <PackageReference Include="xunit.runner.visualstudio">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

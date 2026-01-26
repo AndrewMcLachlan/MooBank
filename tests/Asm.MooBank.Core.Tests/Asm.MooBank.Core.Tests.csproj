@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="Asm" />
+    <PackageReference Include="Bogus" />
+    <PackageReference Include="coverlet.collector">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Caching.Hybrid" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Moq" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Asm.MooBank\Asm.MooBank.csproj" />
+    <ProjectReference Include="..\..\src\Asm.MooBank.Domain\Asm.MooBank.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Asm.MooBank.Infrastructure\Asm.MooBank.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Asm.MooBank.Security\Asm.MooBank.Security.csproj" />
+    <ProjectReference Include="..\..\src\Asm.MooBank.Models\Asm.MooBank.Models.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Moq" />
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+</Project>

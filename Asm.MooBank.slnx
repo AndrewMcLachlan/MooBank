@@ -9,9 +9,9 @@
     <File Path=".editorconfig" />
     <File Path=".gitignore" />
     <File Path=".npmrc" />
-    <File Path="AGENTS.md" />
     <File Path="Asm.MooBank.lutconfig" />
     <File Path="CLAUDE.md" />
+    <File Path="coverlet.runsettings" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Build.targets" />
     <File Path="Directory.Packages.props" />
@@ -51,6 +51,8 @@
   <Folder Name="/Tests/">
     <File Path="tests/Directory.Build.props" />
     <Project Path="tests/Asm.MooBank.Abs.Tests/Asm.MooBank.Abs.Tests.csproj" />
+    <Project Path="tests/Asm.MooBank.Core.Tests/Asm.MooBank.Core.Tests.csproj" />
+    <Project Path="tests/Asm.MooBank.Domain.Tests/Asm.MooBank.Domain.Tests.csproj" />
     <Project Path="tests/Asm.MooBank.Modules.Tests/Asm.MooBank.Modules.Tests.csproj" />
   </Folder>
   <Project Path="src/Asm.MooBank.AppHost/Asm.MooBank.AppHost.csproj" />

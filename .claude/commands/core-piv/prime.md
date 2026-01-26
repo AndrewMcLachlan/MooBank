@@ -76,10 +76,9 @@ Provide a concise summary covering:
 ## Instructions
 
 1. Read the root CLAUDE.md file
-2. Read the root AGENTS.md file
-4. Read `.claude/PRD.md` for product requirements overview
-5. Identify the key files relevant to the current task using grep/find
-6. Summarize your understanding and confirm with the user before proceeding
+2. Read `.claude/PRD.md` for product requirements overview
+3. Identify the key files relevant to the current task using grep/find
+4. Summarize your understanding and confirm with the user before proceeding
 
 ## Key Project Areas
 

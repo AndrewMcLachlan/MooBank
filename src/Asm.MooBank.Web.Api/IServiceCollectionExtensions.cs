@@ -2,16 +2,21 @@
 using Asm.AspNetCore.Authentication;
 using Asm.MooBank.Infrastructure;
 using Asm.OAuth;
-using LazyCache;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Hybrid;
 using Serilog;
 
 namespace Asm.MooBank.Web.Api;
 
 public static class IServiceCollectionExtensions
 {
+    private readonly static HybridCacheEntryOptions CacheOptions = new()
+    {
+        Expiration = TimeSpan.FromMinutes(5),
+    };
+
     public static AuthenticationBuilder AddAuthentication(this IServiceCollection services, IConfiguration configuration) =>
     services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddStandardJwtBearer(options =>
     {
@@ -30,13 +35,13 @@ public static class IServiceCollectionExtensions
                 {
                     Guid userId = context.Principal!.GetClaimValue<Guid>(Security.ClaimTypes.UserId);
 
-                    var cache = context.HttpContext.RequestServices.GetService<IAppCache>();
+                    var cache = context.HttpContext.RequestServices.GetRequiredService<HybridCache>();
 
-                    var claims = await cache.GetOrAddAsync(CacheKeys.UserCacheKey(userId), async () =>
+                    var claims = await cache.GetOrCreateAsync(CacheKeys.UserCacheKey(userId), async ct =>
                     {
                         var dataContext = context.HttpContext.RequestServices.GetRequiredService<MooBankContext>();
 
-                        var user = await dataContext.Set<Domain.Entities.User.User>().Include(ah => ah.InstrumentOwners).ThenInclude(aah => aah.Instrument).ThenInclude(i => i.VirtualInstruments).Include(u => u.Groups).AsNoTracking().SingleOrDefaultAsync(ah => ah.Id == userId);
+                        var user = await dataContext.Set<Domain.Entities.User.User>().Include(ah => ah.InstrumentOwners).ThenInclude(aah => aah.Instrument).ThenInclude(i => i.VirtualInstruments).Include(u => u.Groups).AsNoTracking().SingleOrDefaultAsync(ah => ah.Id == userId, cancellationToken: ct);
 
                         List<Claim> claims = [];
 
@@ -58,13 +63,13 @@ public static class IServiceCollectionExtensions
 
                             dataContext.Add(user);
 
-                            await dataContext.SaveChangesAsync();
+                            await dataContext.SaveChangesAsync(ct);
                         }
 
                         var owned = user.Instruments.Select(i => i.Id);
                         var virtualOwned = user.Instruments.SelectMany(i => i.VirtualInstruments).Select(i => i.Id);
 
-                        var sharedInstruments = await dataContext.Set<Domain.Entities.Instrument.Instrument>().Where(a => a.ShareWithFamily && a.Owners.Any(ah => ah.User.FamilyId == user.FamilyId)).Include(i => i.VirtualInstruments).ToListAsync();
+                        var sharedInstruments = await dataContext.Set<Domain.Entities.Instrument.Instrument>().Where(a => a.ShareWithFamily && a.Owners.Any(ah => ah.User.FamilyId == user.FamilyId)).Include(i => i.VirtualInstruments).ToListAsync(cancellationToken: ct);
                         var virtualShared = sharedInstruments.SelectMany(i => i.VirtualInstruments).Select(i => i.Id);
 
                         var instruments = owned.Union(virtualOwned);
@@ -84,7 +89,7 @@ public static class IServiceCollectionExtensions
                         claims.Add(new Claim(Security.ClaimTypes.Currency, user.Currency));
 
                         return claims;
-                    }, DateTimeOffset.Now.AddMinutes(5));
+                    }, CacheOptions, cancellationToken: CancellationToken.None);
 
                     principal.AddIdentity(new(claims));
                 }

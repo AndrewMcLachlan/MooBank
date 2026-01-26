@@ -2,157 +2,73 @@
 
 ## Overview
 
-Backend testing uses ReqnRoll (BDD) for both unit and integration tests:
+Backend testing uses xUnit with XML documentation comments in Gherkin style:
 - **Unit Tests** - Domain logic, handlers, specifications
 - **Integration Tests** - Authorization policy testing only
 
-## Unit Tests with ReqnRoll
+## Unit Tests
 
 ### Location
 ```
-tests/Asm.MooBank.Tests/
+tests/
 ```
 
 ### Framework
-- **ReqnRoll** - BDD test framework (Gherkin syntax)
-- **xUnit** - Underlying test runner
-- **Moq** or **NSubstitute** - Mocking
+- **Asm.Testing.Domain** - Extensions for mocking DbSet
+- **Microsoft.Testing.Platform** - Test host and utilities (as opposed to VSTest)
+- **xUnit** - Underlying test runner (xUnit.v3)
+- **Moq** - Mocking
 
 ### What to Test
 - Domain entity business logic and invariants
 - Specification logic
-- Command/Query handlers (with mocked repositories)
+- Command/Query handlers (with mocked repositories and IQueryables)
 - Complex calculations (e.g., balance computations, streak calculations)
 
-### Feature File Structure
+### Test File Structure
+
+Example of a module test structure:
 ```
-tests/Asm.MooBank.Tests/
-├── Features/
-│   ├── Transactions/
-│   │   ├── TransactionSplitting.feature
-│   │   └── TransactionTagging.feature
-│   ├── Budgets/
-│   │   └── BudgetCalculation.feature
-│   └── Instruments/
-│       └── BalanceCalculation.feature
-├── StepDefinitions/
-│   ├── TransactionSteps.cs
-│   ├── BudgetSteps.cs
-│   └── InstrumentSteps.cs
-└── Hooks/
-    └── TestHooks.cs
+tests/Asm.MooBank.Modules.Accounts.Tests/
+├── Commands/
+│   ├── CreateTests.cs
+│   └── UpdateTests.cs
+└── Queries/
+    ├── GetTests.cs
+    └── GetAllTests.cs
 ```
 
-### Example Feature File
-```gherkin
-# Features/Transactions/TransactionSplitting.feature
-Feature: Transaction Splitting
-    As a user
-    I want to split a transaction across multiple categories
-    So that I can accurately categorize mixed purchases
+### Example Test
 
-Scenario: Split transaction with valid amounts
-    Given a transaction of $100.00 with description "Costco Shopping"
-    When I split the transaction into:
-        | Amount | Tag       |
-        | 60.00  | Groceries |
-        | 40.00  | Household |
-    Then the transaction should have 2 splits
-    And the split amounts should total $100.00
+Tests MUST be properly documented with Gherkin-style comments.
 
-Scenario: Split transaction with amounts exceeding total
-    Given a transaction of $100.00 with description "Shopping"
-    When I attempt to split the transaction into:
-        | Amount | Tag       |
-        | 80.00  | Groceries |
-        | 50.00  | Household |
-    Then the split should fail with error "Split amounts exceed transaction total"
-
-Scenario: Split transaction with partial amount
-    Given a transaction of $100.00 with description "Mixed Purchase"
-    When I split the transaction into:
-        | Amount | Tag       |
-        | 60.00  | Groceries |
-    Then the transaction should have 2 splits
-    And there should be an unallocated split of $40.00
-```
-
-### Example Step Definitions
 ```csharp
-// StepDefinitions/TransactionSteps.cs
-using ReqnRoll;
-
-[Binding]
-public class TransactionSteps
+/// <summary>
+/// Unit tests for the <see cref="Calculator"/> class.
+/// </summary>
+public class CalculatorTests
 {
-    private Transaction _transaction;
-    private Exception _exception;
-
-    [Given(@"a transaction of \$(.+) with description ""(.+)""")]
-    public void GivenATransaction(decimal amount, string description)
+    /// <summary>
+    /// Given two numbers
+    /// When the Add method is called
+    /// Then the result should be their sum
+    /// </summary>
+    [Theory]
+    [InlineData(2, 3, 5)]
+    [InlineData(-1, 1, 0)]
+    [Trait("Category", "Unit")]
+    public void ShouldAddTwoNumbersCorrectly(int left, int right, int expected)
     {
-        _transaction = new Transaction(amount, description);
-    }
-
-    [When(@"I split the transaction into:")]
-    public void WhenISplitTheTransactionInto(Table table)
-    {
-        var splits = table.Rows.Select(row => new SplitRequest(
-            decimal.Parse(row["Amount"]),
-            row["Tag"]
-        )).ToList();
-
-        try
-        {
-            _transaction.Split(splits);
-        }
-        catch (Exception ex)
-        {
-            _exception = ex;
-        }
-    }
-
-    [Then(@"the transaction should have (\d+) splits")]
-    public void ThenTheTransactionShouldHaveSplits(int count)
-    {
-        Assert.Equal(count, _transaction.Splits.Count);
-    }
-
-    [Then(@"the split amounts should total \$(.+)")]
-    public void ThenTheSplitAmountsShouldTotal(decimal total)
-    {
-        Assert.Equal(total, _transaction.Splits.Sum(s => s.Amount));
-    }
-
-    [Then(@"the split should fail with error ""(.+)""")]
-    public void ThenTheSplitShouldFailWithError(string errorMessage)
-    {
-        Assert.NotNull(_exception);
-        Assert.Contains(errorMessage, _exception.Message);
+        // Arrange
+        var calculator = new Calculator();
+        
+        // Act
+        var result = calculator.Add(left, right);
+        
+        // Assert
+        Assert.Equal(expected, result);
     }
 }
-```
-
-### Handler Testing with ReqnRoll
-```gherkin
-# Features/Transactions/CreateTransaction.feature
-Feature: Create Transaction Handler
-    As a system
-    I want to create transactions via the handler
-    So that transactions are persisted correctly
-
-Scenario: Successfully create a transaction
-    Given a valid instrument exists with ID "abc-123"
-    And a create transaction command with amount $50.00
-    When the create transaction handler is executed
-    Then the transaction should be added to the repository
-    And the unit of work should be saved
-
-Scenario: Create transaction for non-existent instrument
-    Given no instrument exists with ID "invalid-id"
-    And a create transaction command for instrument "invalid-id"
-    When the create transaction handler is executed
-    Then a NotFoundException should be thrown
 ```
 
 ## API Integration Tests (Authorization Only)
@@ -175,56 +91,23 @@ API integration tests are **specifically for testing authorization policies**. T
 - ❌ Data transformation (use unit tests)
 - ❌ Happy-path CRUD operations (use E2E tests)
 
-### Example Authorization Feature
-```gherkin
-# Features/Authorization/InstrumentAuthorization.feature
-Feature: Instrument Authorization
-    As a system
-    I want to enforce instrument access policies
-    So that users can only access their own instruments
+### Authorization Test Example
 
-Scenario: User can access their own instrument
-    Given I am authenticated as user "user-1"
-    And user "user-1" owns instrument "instrument-abc"
-    When I request GET "/api/instruments/instrument-abc"
-    Then the response status should be 200 OK
-
-Scenario: User cannot access another user's instrument
-    Given I am authenticated as user "user-1"
-    And user "user-2" owns instrument "instrument-xyz"
-    When I request GET "/api/instruments/instrument-xyz"
-    Then the response status should be 403 Forbidden
-
-Scenario: Unauthenticated user cannot access instruments
-    Given I am not authenticated
-    When I request GET "/api/instruments/instrument-abc"
-    Then the response status should be 401 Unauthorized
-
-Scenario: Family member can view shared instrument
-    Given I am authenticated as user "user-1"
-    And user "user-1" is in family "family-a"
-    And instrument "shared-instrument" is shared with family "family-a"
-    When I request GET "/api/instruments/shared-instrument"
-    Then the response status should be 200 OK
-
-Scenario: User cannot modify instrument they can only view
-    Given I am authenticated as user "user-1"
-    And user "user-1" has viewer access to instrument "view-only-instrument"
-    When I request PATCH "/api/instruments/view-only-instrument"
-    Then the response status should be 403 Forbidden
-```
-
-### Authorization Step Definitions
 ```csharp
-// StepDefinitions/AuthorizationSteps.cs
-[Binding]
-public class AuthorizationSteps
+/// <summary>
+/// Integration tests for instrument authorization policies.
+/// Verifies that users can only access instruments they own or have been shared with.
+/// </summary>
+public class InstrumentAuthorizationTests : IClassFixture<WebApplicationFactory<Program>>
 {
     private readonly HttpClient _client;
     private readonly TestAuthHandler _authHandler;
-    private HttpResponseMessage _response;
 
-    public AuthorizationSteps(WebApplicationFactory<Program> factory)
+    private static readonly Guid OwnedInstrumentId = new("11111111-1111-1111-1111-111111111111");
+    private static readonly Guid SharedInstrumentId = new("22222222-2222-2222-2222-222222222222");
+    private static readonly Guid UnauthorizedInstrumentId = new("33333333-3333-3333-3333-333333333333");
+
+    public InstrumentAuthorizationTests(WebApplicationFactory<Program> factory)
     {
         _authHandler = new TestAuthHandler();
         _client = factory.WithWebHostBuilder(builder =>
@@ -237,29 +120,80 @@ public class AuthorizationSteps
         }).CreateClient();
     }
 
-    [Given(@"I am authenticated as user ""(.+)""")]
-    public void GivenIAmAuthenticatedAsUser(string userId)
+    /// <summary>
+    /// Given I am authenticated as the instrument owner
+    /// When I request GET for my owned instrument
+    /// Then the response status should be 200 OK
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Integration")]
+    public async Task Owner_CanAccessOwnedInstrument()
     {
-        _authHandler.SetUser(userId);
+        // Arrange
+        _authHandler.SetUser(TestModels.UserId, accounts: [OwnedInstrumentId]);
+
+        // Act
+        var response = await _client.GetAsync($"/api/v1/accounts/{OwnedInstrumentId}", TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
-    [Given(@"I am not authenticated")]
-    public void GivenIAmNotAuthenticated()
+    /// <summary>
+    /// Given I am authenticated as a family member with shared access
+    /// When I request GET for a shared instrument
+    /// Then the response status should be 200 OK
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Integration")]
+    public async Task FamilyMember_CanAccessSharedInstrument()
     {
+        // Arrange
+        _authHandler.SetUser(TestModels.FamilyUserId, sharedAccounts: [SharedInstrumentId]);
+
+        // Act
+        var response = await _client.GetAsync($"/api/v1/accounts/{SharedInstrumentId}");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    /// <summary>
+    /// Given I am authenticated but do not own or have access to the instrument
+    /// When I request GET for an unauthorized instrument
+    /// Then the response status should be 403 Forbidden
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Integration")]
+    public async Task User_CannotAccessUnauthorizedInstrument()
+    {
+        // Arrange
+        _authHandler.SetUser(TestModels.UserId, accounts: [OwnedInstrumentId]);
+
+        // Act
+        var response = await _client.GetAsync($"/api/v1/accounts/{UnauthorizedInstrumentId}");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+    }
+
+    /// <summary>
+    /// Given I am not authenticated
+    /// When I request GET for any instrument
+    /// Then the response status should be 401 Unauthorized
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Integration")]
+    public async Task Unauthenticated_ReceivesUnauthorized()
+    {
+        // Arrange
         _authHandler.SetUnauthenticated();
-    }
 
-    [When(@"I request (GET|POST|PATCH|DELETE) ""(.+)""")]
-    public async Task WhenIRequest(string method, string path)
-    {
-        var request = new HttpRequestMessage(new HttpMethod(method), path);
-        _response = await _client.SendAsync(request);
-    }
+        // Act
+        var response = await _client.GetAsync($"/api/v1/accounts/{OwnedInstrumentId}");
 
-    [Then(@"the response status should be (\d+) (.+)")]
-    public void ThenTheResponseStatusShouldBe(int statusCode, string statusName)
-    {
-        Assert.Equal(statusCode, (int)_response.StatusCode);
+        // Assert
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 }
 ```
@@ -270,11 +204,12 @@ public class AuthorizationSteps
 # Run all tests
 dotnet test tests/
 
-# Run specific feature
-dotnet test tests/ --filter "FullyQualifiedName~TransactionSplitting"
+# Run unit tests only
+dotnet test --filter /[Category=Unit]
 
-# Run authorization tests only
-dotnet test tests/ --filter "FullyQualifiedName~Authorization"
+# Run integration tests only
+dotnet test --filter /[Category=Integration]
+
 
 # Run with coverage
 dotnet test tests/ --collect:"XPlat Code Coverage"

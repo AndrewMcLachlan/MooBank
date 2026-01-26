@@ -1,20 +1,19 @@
 ﻿using Asm.MooBank.Domain.Entities.Instrument.Events;
 using Asm.MooBank.Models;
-using LazyCache;
+using Microsoft.Extensions.Caching.Hybrid;
 
 namespace Asm.MooBank.Infrastructure.EventHandlers;
 
-internal class InstrumentChangedEventHandler(IAppCache cache, User user) : IDomainEventHandler<InstrumentCreatedEvent>, IDomainEventHandler<InstrumentUpdatedEvent>
+internal class InstrumentChangedEventHandler(HybridCache cache, User user) : IDomainEventHandler<InstrumentCreatedEvent>, IDomainEventHandler<InstrumentUpdatedEvent>
 {
-    public ValueTask Handle(InstrumentCreatedEvent domainEvent, CancellationToken cancellationToken = default) =>
-        ClearCache();
+    public async ValueTask Handle(InstrumentCreatedEvent domainEvent, CancellationToken cancellationToken = default) =>
+        await ClearCache(cancellationToken);
 
-    public ValueTask Handle(InstrumentUpdatedEvent domainEvent, CancellationToken cancellationToken = default) =>
-        ClearCache();
+    public async ValueTask Handle(InstrumentUpdatedEvent domainEvent, CancellationToken cancellationToken = default) =>
+        await ClearCache(cancellationToken);
 
-    private ValueTask ClearCache()
+    private async ValueTask ClearCache(CancellationToken cancellationToken)
     {
-        cache.Remove(CacheKeys.UserCacheKey(user.Id));
-        return ValueTask.CompletedTask;
+        await cache.RemoveAsync(CacheKeys.UserCacheKey(user.Id), cancellationToken);
     }
 }

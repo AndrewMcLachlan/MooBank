@@ -26,8 +26,8 @@ internal class CreatePlanHandler(
     {
         // Determine which accounts to use for calculations
         var accountIds = request.Plan.AccountIds.Any()
-            ? request.Plan.AccountIds.ToList()
-            : user.Accounts.Concat(user.SharedAccounts).ToList();
+            ? request.Plan.AccountIds
+            : user.Accounts.Concat(user.SharedAccounts);
 
         // Pre-calculate historical values if not provided
         var incomeStrategy = request.Plan.IncomeStrategy ?? new IncomeStrategy();
@@ -54,11 +54,11 @@ internal class CreatePlanHandler(
         // Calculate historical outgoings if using default lookback
         if (outgoingStrategy.LookbackMonths == 0)
         {
-            var historicalOutgoings = await CalculateHistoricalAverage(accountIds, request.Plan.StartDate, DefaultLookbackMonths, TransactionFilterType.Debit, cancellationToken);
+            //var historicalOutgoings = await CalculateHistoricalAverage(accountIds, request.Plan.StartDate, DefaultLookbackMonths, TransactionFilterType.Debit, cancellationToken);
             outgoingStrategy = outgoingStrategy with
             {
                 LookbackMonths = DefaultLookbackMonths,
-                Mode = "HistoricalAverage"
+                Mode = "HistoricalAverage",
             };
         }
 

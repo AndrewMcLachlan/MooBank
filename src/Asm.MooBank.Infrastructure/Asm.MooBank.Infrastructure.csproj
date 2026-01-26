@@ -1,6 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <InternalsVisibleTo Include="Asm.MooBank.Domain.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Asm.Domain.Infrastructure" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />

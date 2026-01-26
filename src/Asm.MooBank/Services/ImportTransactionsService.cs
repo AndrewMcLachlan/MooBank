@@ -1,78 +1,46 @@
-using System.Collections.Concurrent;
 using Asm.Domain;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Importers;
 using Asm.MooBank.Models;
-using Asm.MooBank.Security;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace Asm.MooBank.Services;
 
-public class ImportTransactionsService(IImportTransactionsQueue taskQueue, ILoggerFactory loggerFactory, IServiceScopeFactory serviceScopeFactory) : BackgroundService
+public interface IImportTransactionsService
 {
-    private readonly ILogger _logger = loggerFactory.CreateLogger<ImportTransactionsService>();
-    private readonly IServiceScopeFactory _serviceScopeFactory = serviceScopeFactory;
-    private readonly IImportTransactionsQueue _taskQueue = taskQueue;
+    Task Import(ImportWorkItem import, CancellationToken cancellationToken = default);
+}
 
-    protected async override Task ExecuteAsync(CancellationToken cancellationToken)
+internal class ImportTransactionsService(IInstrumentRepository instrumentRepository, IRuleRepository ruleRepository, IImporterFactory importerFactory, IUnitOfWork unitOfWork, ILogger<ImportTransactionsService> logger) : IImportTransactionsService
+{
+    public async Task Import(ImportWorkItem workItem, CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("Import Transactions Service is starting.");
+        logger.LogInformation("Import Transactions Service is starting.");
 
         try
         {
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                var workItem = await _taskQueue.DequeueAsync(cancellationToken);
+            logger.LogInformation("Processing import for instrument {InstrumentId}, account {AccountId}, user {UserId}", workItem.InstrumentId, workItem.AccountId, workItem.User.Id);
 
-                try
-                {
-                    _logger.LogInformation("Processing import for instrument {InstrumentId}, account {AccountId}, user {UserId}", workItem.InstrumentId, workItem.AccountId, workItem.User.Id);
+            var instrument = await instrumentRepository.Get(workItem.InstrumentId, cancellationToken)
+                ?? throw new InvalidOperationException($"Instrument with ID {workItem.InstrumentId} not found");
 
-                    using var scope = _serviceScopeFactory.CreateScope();
+            var importer = await importerFactory.Create(workItem.InstrumentId, workItem.AccountId, cancellationToken)
+                ?? throw new InvalidOperationException($"Import is not supported for account with ID: {workItem.AccountId}");
 
-                    // Set the user context for this scope
-                    var userDataProvider = scope.ServiceProvider.GetRequiredService<ISettableUserDataProvider>();
-                    userDataProvider.SetUser(workItem.User);
+            using var stream = new MemoryStream(workItem.FileData);
+            var importResult = await importer.Import(workItem.InstrumentId, workItem.AccountId, stream, cancellationToken);
 
-                    var instrumentRepository = scope.ServiceProvider.GetRequiredService<IInstrumentRepository>();
-                    var ruleRepository = scope.ServiceProvider.GetRequiredService<IRuleRepository>();
-                    var importerFactory = scope.ServiceProvider.GetRequiredService<IImporterFactory>();
-                    var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+            await ApplyRules(ruleRepository, instrument, importResult.Transactions, cancellationToken);
 
-                    var instrument = await instrumentRepository.Get(workItem.InstrumentId, cancellationToken)
-                        ?? throw new InvalidOperationException($"Instrument with ID {workItem.InstrumentId} not found");
+            await unitOfWork.SaveChangesAsync(cancellationToken);
 
-                    var importer = await importerFactory.Create(workItem.InstrumentId, workItem.AccountId, cancellationToken)
-                        ?? throw new InvalidOperationException($"Import is not supported for account with ID: {workItem.AccountId}");
-
-                    using var stream = new MemoryStream(workItem.FileData);
-                    var importResult = await importer.Import(workItem.InstrumentId, workItem.AccountId, stream, cancellationToken);
-
-                    await ApplyRules(ruleRepository, instrument, importResult.Transactions, cancellationToken);
-
-                    await unitOfWork.SaveChangesAsync(cancellationToken);
-
-                    _logger.LogInformation("Import completed for instrument {InstrumentId}, account {AccountId}. {Count} transactions imported.",
-                        workItem.InstrumentId, workItem.AccountId, importResult.Transactions.Count());
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Error occurred importing transactions for account {AccountId}.", workItem.AccountId);
-                }
-            }
-
-            _logger.LogInformation("Import Transactions Service is stopping.");
-        }
-        catch (TaskCanceledException tcex)
-        {
-            _logger.LogWarning(tcex, "Import Transactions Service is stopping due to cancellation.");
+            logger.LogInformation("Import completed for instrument {InstrumentId}, account {AccountId}. {Count} transactions imported.",
+                workItem.InstrumentId, workItem.AccountId, importResult.Transactions.Count());
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Import Transactions Service encountered an error: {Message}", ex.Message);
+            logger.LogError(ex, "Error occurred importing transactions for account {AccountId}.", workItem.AccountId);
         }
     }
 
@@ -90,55 +58,5 @@ public class ImportTransactionsService(IImportTransactionsQueue taskQueue, ILogg
 
             transaction.AddOrUpdateSplit(applicableTags);
         }
-    }
-}
-
-public record ImportWorkItem(Guid InstrumentId, Guid AccountId, User User, byte[] FileData);
-
-public interface IImportTransactionsQueue
-{
-    void QueueImport(Guid instrumentId, Guid accountId, User user, byte[] fileData);
-
-    Task<ImportWorkItem> DequeueAsync(CancellationToken cancellationToken);
-}
-
-public class ImportTransactionsQueue : IImportTransactionsQueue, IDisposable
-{
-    private readonly ConcurrentQueue<ImportWorkItem> _workItems = new();
-    private readonly SemaphoreSlim _signal = new(0);
-    private bool _disposed;
-
-    public void QueueImport(Guid instrumentId, Guid accountId, User user, byte[] fileData)
-    {
-        ObjectDisposedException.ThrowIf(_disposed, this);
-        _workItems.Enqueue(new ImportWorkItem(instrumentId, accountId, user, fileData));
-        _signal.Release();
-    }
-
-    public async Task<ImportWorkItem> DequeueAsync(CancellationToken cancellationToken)
-    {
-        ObjectDisposedException.ThrowIf(_disposed, this);
-        await _signal.WaitAsync(cancellationToken);
-        _workItems.TryDequeue(out var workItem);
-
-        return workItem!;
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (_disposed) return;
-
-        if (disposing)
-        {
-            _signal.Dispose();
-        }
-
-        _disposed = true;
-    }
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
     }
 }
