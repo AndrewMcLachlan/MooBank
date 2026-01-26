@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat code coverage">
+        <Configuration>
+          <Format>cobertura</Format>
+          <!-- Exclude test assemblies and common testing utilities -->
+          <Exclude>[*.Tests]*</Exclude>
+          <!-- Exclude files that shouldn't be covered -->
+          <ExcludeByFile>**/bin/**/*,**/obj/**/*,**/Migrations/**/*,**/Program.cs,**/Startup.cs</ExcludeByFile>
+          <!-- Exclude auto-generated code -->
+          <ExcludeByAttribute>System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute,System.CodeDom.Compiler.GeneratedCodeAttribute,System.Diagnostics.DebuggerNonUserCodeAttribute</ExcludeByAttribute>
+          <!-- Coverage thresholds - build fails if coverage falls below these values -->
+          <!-- 60% line, 80% branch, 80% method -->
+          <Threshold>60,80,80</Threshold>
+          <ThresholdType>line,branch,method</ThresholdType>
+          <ThresholdStat>total</ThresholdStat>
+          <!-- Use source link for mapping to original source files -->
+          <UseSourceLink>true</UseSourceLink>
+          <!-- Ensure deterministic coverage collection -->
+          <DeterministicReport>true</DeterministicReport>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>
