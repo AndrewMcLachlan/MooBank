@@ -1,10 +1,7 @@
-using Asm.MooBank.Core.Tests.Support;
 using Asm.MooBank.Domain.Entities.ReferenceData;
-using Asm.MooBank.Models;
 using Asm.MooBank.Services;
-using LazyCache;
-using LazyCache.Providers;
-using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Caching.Hybrid;
+using Microsoft.Extensions.DependencyInjection;
 using QuarterEntity = Asm.MooBank.Domain.Entities.QuarterEntity;
 
 namespace Asm.MooBank.Core.Tests.Services;
@@ -245,10 +242,13 @@ public class CpiServiceTests
 
     private static CpiService CreateService(IReferenceDataRepository repository)
     {
-        var memoryCache = new MemoryCache(new MemoryCacheOptions());
-        var cacheProvider = new MemoryCacheProvider(memoryCache);
-        var appCache = new CachingService(new Lazy<ICacheProvider>(() => cacheProvider));
+        // Create HybridCache using DI
+        var services = new ServiceCollection();
+        services.AddMemoryCache();
+        services.AddHybridCache();
+        var serviceProvider = services.BuildServiceProvider();
+        var cache = serviceProvider.GetRequiredService<HybridCache>();
 
-        return new CpiService(repository, appCache);
+        return new CpiService(repository, cache);
     }
 }

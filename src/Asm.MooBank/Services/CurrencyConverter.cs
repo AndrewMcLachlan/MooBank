@@ -1,7 +1,6 @@
 ﻿using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Models;
-using LazyCache;
-using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Hybrid;
 
 namespace Asm.MooBank.Services;
 
@@ -10,24 +9,34 @@ public interface ICurrencyConverter
     decimal? Convert(decimal amount, string from);
 }
 
-public class CurrencyConverter(IReferenceDataRepository referenceDataRepository, User user, IAppCache appCache) : ICurrencyConverter
+public class CurrencyConverter(IReferenceDataRepository referenceDataRepository, User user, HybridCache cache) : ICurrencyConverter
 {
+    private readonly static HybridCacheEntryOptions CacheOptions = new()
+    {
+        Expiration = TimeSpan.FromHours(12),
+    };
+
     public decimal? Convert(decimal amount, string from)
     {
         var to = user.Currency;
 
-        var rate = GetExchangeRate(from, to);
+        var rate = GetExchangeRate(from, to).Result;
 
         if (rate == null) return null;
 
         return amount * rate.Value;
     }
 
-    private decimal? GetExchangeRate(string from, string to)
+    private async Task<decimal?> GetExchangeRate(string from, string to)
     {
         if (from.Equals(to, StringComparison.OrdinalIgnoreCase)) return 1;
 
-        var rates = appCache.GetOrAdd("IReferenceDataRepository-GetExchangeRates", () => referenceDataRepository.GetExchangeRates(CancellationToken.None).Result, DateTimeOffset.Now.AddHours(12));
+        var rates = await cache.GetOrCreateAsync(
+            CacheKeys.ReferenceData.ExchangeRates, 
+            async ct => await referenceDataRepository.GetExchangeRates(ct),
+            CacheOptions,
+            [CacheKeys.ReferenceData.CacheTag],
+            CancellationToken.None);
 
         var rate = rates?.Where(er => er.From == from && er.To == to).SingleOrDefault();
 

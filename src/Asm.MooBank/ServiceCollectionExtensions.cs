@@ -7,8 +7,9 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddServices(this IServiceCollection services) =>
-    services.AddScoped<IRecurringTransactionService, RecurringTransactionService>()
+    public static IServiceCollection AddServices(this IServiceCollection services)
+    {
+        services.AddScoped<IRecurringTransactionService, RecurringTransactionService>()
             .AddScoped<ICurrencyConverter, CurrencyConverter>()
             .AddScoped<ICpiService, CpiService>()
             .AddScoped<IRunRulesService, RunRulesService>()
@@ -20,8 +21,12 @@ public static class ServiceCollectionExtensions
             .AddHostedService<ImportTransactionsBackgroundService>()
             .AddSingleton<IRunRulesQueue, RunRulesQueue>()
             .AddSingleton<IReprocessTransactionsQueue, ReprocessTransactionsQueue>()
-            .AddSingleton<IImportTransactionsQueue, ImportTransactionsQueue>()
-            .AddLazyCache();
+            .AddSingleton<IImportTransactionsQueue, ImportTransactionsQueue>();
+
+        services.AddHybridCache();
+
+        return services;
+    }
 
 
     public static IServiceCollection AddIntegrations(this IServiceCollection services, IConfiguration configuration) =>

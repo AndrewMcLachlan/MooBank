@@ -1,6 +1,6 @@
 using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Services.Background;
-using LazyCache;
+using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Asm.MooBank.Core.Tests.Services;
@@ -76,9 +76,9 @@ public class PrecacheServiceTests
 
     #endregion
 
-    private static (PrecacheService service, Mock<IAppCache> cacheMock, Mock<IServiceScopeFactory> scopeFactoryMock) CreateService()
+    private static (PrecacheService service, Mock<HybridCache> cacheMock, Mock<IServiceScopeFactory> scopeFactoryMock) CreateService()
     {
-        var cacheMock = new Mock<IAppCache>();
+        var cacheMock = new Mock<HybridCache>();
         var scopeFactoryMock = new Mock<IServiceScopeFactory>();
         var scopeMock = new Mock<IServiceScope>();
         var serviceProviderMock = new Mock<IServiceProvider>();
@@ -88,7 +88,7 @@ public class PrecacheServiceTests
         scopeMock.Setup(s => s.ServiceProvider).Returns(serviceProviderMock.Object);
         serviceProviderMock.Setup(p => p.GetService(typeof(IReferenceDataRepository))).Returns(repositoryMock.Object);
 
-        repositoryMock.Setup(r => r.GetExchangeRates())
+        repositoryMock.Setup(r => r.GetExchangeRates(It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<ExchangeRate>());
 
         var service = new PrecacheService(cacheMock.Object, scopeFactoryMock.Object);

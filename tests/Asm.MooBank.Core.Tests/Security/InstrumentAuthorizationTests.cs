@@ -1,4 +1,5 @@
 using Asm.MooBank.Core.Tests.Support;
+using Asm.MooBank.Domain.Entities.Budget;
 using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Core.Tests.Security;
@@ -367,4 +368,106 @@ public class FamilyMemberAuthorizationTests
             FamilyId = familyId,
             Currency = "AUD",
         };
+}
+
+/// <summary>
+/// Unit tests for budget line authorization logic.
+/// Tests verify family-based authorization checks used by BudgetLineAuthorisationHandler.
+/// </summary>
+public class BudgetLineAuthorizationTests
+{
+    private static readonly Guid TestFamilyId = new("cb0a08af-2054-4873-9add-c259916d2d43");
+    private static readonly Guid OtherFamilyId = new("1e658c80-3c5c-4cd0-95dd-fa09f6edb9e1");
+
+    /// <summary>
+    /// Given a budget line belonging to the user's family
+    /// When budget line authorization is checked
+    /// Then authorization should succeed
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void BudgetLineAuthorization_ForOwnFamily_Succeeds()
+    {
+        // Arrange
+        var user = CreateUser(TestFamilyId);
+        var budgetLine = CreateBudgetLine(TestFamilyId);
+
+        // Act
+        var isAuthorized = IsBudgetLineAuthorized(user, budgetLine);
+
+        // Assert
+        Assert.True(isAuthorized);
+    }
+
+    /// <summary>
+    /// Given a budget line belonging to a different family
+    /// When budget line authorization is checked
+    /// Then authorization should fail
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void BudgetLineAuthorization_ForDifferentFamily_Fails()
+    {
+        // Arrange
+        var user = CreateUser(TestFamilyId);
+        var budgetLine = CreateBudgetLine(OtherFamilyId);
+
+        // Act
+        var isAuthorized = IsBudgetLineAuthorized(user, budgetLine);
+
+        // Assert
+        Assert.False(isAuthorized);
+    }
+
+    /// <summary>
+    /// Given a budget line with a null budget
+    /// When budget line authorization is checked
+    /// Then authorization should fail gracefully
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void BudgetLineAuthorization_WithNullBudget_FailsGracefully()
+    {
+        // Arrange
+        var user = CreateUser(TestFamilyId);
+        var budgetLine = new BudgetLine(Guid.NewGuid())
+        {
+            Budget = null!
+        };
+
+        // Act & Assert - should throw NullReferenceException when accessing Budget.FamilyId
+        Assert.Throws<NullReferenceException>(() => IsBudgetLineAuthorized(user, budgetLine));
+    }
+
+    /// <summary>
+    /// Replicates BudgetLineAuthorisationHandler logic.
+    /// </summary>
+    private static bool IsBudgetLineAuthorized(User user, BudgetLine budgetLine) =>
+        budgetLine.Budget.FamilyId == user.FamilyId;
+
+    private static User CreateUser(Guid familyId) =>
+        new()
+        {
+            Id = Guid.NewGuid(),
+            EmailAddress = "test@test.com",
+            FamilyId = familyId,
+            Currency = "AUD",
+        };
+
+    private static BudgetLine CreateBudgetLine(Guid familyId)
+    {
+        var budget = new Budget(Guid.NewGuid())
+        {
+            FamilyId = familyId,
+            Year = 2024
+        };
+
+        return new BudgetLine(Guid.NewGuid())
+        {
+            Budget = budget,
+            BudgetId = budget.Id,
+            Amount = 100m,
+            TagId = 1
+        };
+    }
 }

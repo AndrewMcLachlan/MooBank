@@ -5,8 +5,8 @@ using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Models;
 using Asm.MooBank.Security;
 using Asm.MooBank.Services;
-using LazyCache;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Hybrid;
 
 namespace Asm.MooBank.Core.Tests.Support;
 
@@ -30,21 +30,14 @@ public class Mocks
         HttpContextAccessorMock.Setup(h => h.HttpContext).Returns(httpContext);
 
         ReferenceDataRepositoryMock = new Mock<IReferenceDataRepository>();
-        ReferenceDataRepositoryMock.Setup(r => r.GetExchangeRates())
+        ReferenceDataRepositoryMock.Setup(r => r.GetExchangeRates(It.IsAny<CancellationToken>()))
             .ReturnsAsync([
                 new ExchangeRate { From = "AUD", To = "USD", Rate = 0.65m },
                 new ExchangeRate { From = "AUD", To = "EUR", Rate = 0.60m },
                 new ExchangeRate { From = "GBP", To = "AUD", Rate = 1.90m },
             ]);
 
-        AppCacheMock = new Mock<IAppCache>();
-        // Set up AppCache to bypass caching and directly execute the factory
-        AppCacheMock.Setup(c => c.GetOrAddAsync(
-            It.IsAny<string>(),
-            It.IsAny<Func<Task<IEnumerable<ExchangeRate>>>>(),
-            It.IsAny<DateTimeOffset>()))
-            .Returns<string, Func<Task<IEnumerable<ExchangeRate>>>, DateTimeOffset>(
-                (key, factory, offset) => factory());
+        HybridCacheMock = new Mock<HybridCache>();
     }
 
     public Mock<IUnitOfWork> UnitOfWorkMock { get; }
@@ -57,7 +50,7 @@ public class Mocks
 
     public Mock<IReferenceDataRepository> ReferenceDataRepositoryMock { get; }
 
-    public Mock<IAppCache> AppCacheMock { get; }
+    public Mock<HybridCache> HybridCacheMock { get; }
 
     // Helper to configure security to fail for specific operations
     public void SecurityFail(Expression<Action<ISecurity>> expression)

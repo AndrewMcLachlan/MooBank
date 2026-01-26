@@ -179,7 +179,7 @@ public class InstrumentRepositoryTests : IDisposable
         var repository = new InstrumentRepository(_context, _user);
 
         // Act
-        var result = await repository.Get(Array.Empty<Guid>(), TestContext.Current.CancellationToken);
+        var result = await repository.Get([], TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(result);

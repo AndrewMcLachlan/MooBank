@@ -2,9 +2,8 @@ using Asm.MooBank.Core.Tests.Support;
 using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Models;
 using Asm.MooBank.Services;
-using LazyCache;
-using LazyCache.Providers;
-using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Caching.Hybrid;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Asm.MooBank.Core.Tests.Services;
 
@@ -101,13 +100,15 @@ public class CurrencyConverterTests
     private static CurrencyConverter CreateConverter(string userCurrency, List<ExchangeRate> exchangeRates)
     {
         var referenceDataRepositoryMock = new Mock<IReferenceDataRepository>();
-        referenceDataRepositoryMock.Setup(r => r.GetExchangeRates())
+        referenceDataRepositoryMock.Setup(r => r.GetExchangeRates(It.IsAny<CancellationToken>()))
             .ReturnsAsync(exchangeRates);
 
-        // Create an isolated CachingService per test to avoid shared cache issues
-        var memoryCache = new MemoryCache(new MemoryCacheOptions());
-        var cacheProvider = new MemoryCacheProvider(memoryCache);
-        var appCache = new CachingService(new Lazy<ICacheProvider>(() => cacheProvider));
+        // Create HybridCache using DI
+        var services = new ServiceCollection();
+        services.AddMemoryCache();
+        services.AddHybridCache();
+        var serviceProvider = services.BuildServiceProvider();
+        var cache = serviceProvider.GetRequiredService<HybridCache>();
 
         var user = new User
         {
@@ -117,6 +118,6 @@ public class CurrencyConverterTests
             FamilyId = TestModels.FamilyId,
         };
 
-        return new CurrencyConverter(referenceDataRepositoryMock.Object, user, appCache);
+        return new CurrencyConverter(referenceDataRepositoryMock.Object, user, cache);
     }
 }

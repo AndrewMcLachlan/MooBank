@@ -77,7 +77,6 @@ void AddServices(WebApplicationBuilder builder)
     services.AddProblemDetailsFactory();
 
     services.AddMooBankDbContext(builder.Environment, builder.Configuration);
-    services.AddCacheableData();
 
     services.AddHttpContextAccessor();
 

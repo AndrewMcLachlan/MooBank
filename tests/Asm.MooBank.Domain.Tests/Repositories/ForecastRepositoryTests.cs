@@ -204,6 +204,259 @@ public class ForecastRepositoryTests : IDisposable
 
     #endregion
 
+    #region AddPlannedItem
+
+    /// <summary>
+    /// Given a forecast plan
+    /// When AddPlannedItem is called
+    /// Then the item should be added to the collection
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void AddPlannedItem_NewItem_AddsToCollection()
+    {
+        // Arrange
+        var planId = Guid.NewGuid();
+        var plan = CreateForecastPlan(planId, "Test Plan");
+        var item = new ForecastPlannedItem(Guid.NewGuid())
+        {
+            Name = "Salary",
+            Amount = 5000m,
+            ItemType = PlannedItemType.Income,
+            DateMode = PlannedItemDateMode.FixedDate,
+        };
+
+        // Act
+        var result = plan.AddPlannedItem(item);
+
+        // Assert
+        Assert.Single(plan.PlannedItems);
+        Assert.Equal("Salary", plan.PlannedItems.First().Name);
+        Assert.Equal(planId, plan.PlannedItems.First().ForecastPlanId);
+        Assert.Same(item, result);
+    }
+
+    /// <summary>
+    /// Given a forecast plan with existing items
+    /// When AddPlannedItem is called multiple times
+    /// Then all items should be added
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void AddPlannedItem_MultipleItems_AddsAllToCollection()
+    {
+        // Arrange
+        var planId = Guid.NewGuid();
+        var plan = CreateForecastPlan(planId, "Test Plan");
+
+        var item1 = new ForecastPlannedItem(Guid.NewGuid())
+        {
+            Name = "Salary",
+            Amount = 5000m,
+            ItemType = PlannedItemType.Income,
+            DateMode = PlannedItemDateMode.FixedDate,
+        };
+        var item2 = new ForecastPlannedItem(Guid.NewGuid())
+        {
+            Name = "Rent",
+            Amount = 2000m,
+            ItemType = PlannedItemType.Expense,
+            DateMode = PlannedItemDateMode.FixedDate,
+        };
+
+        // Act
+        plan.AddPlannedItem(item1);
+        plan.AddPlannedItem(item2);
+
+        // Assert
+        Assert.Equal(2, plan.PlannedItems.Count);
+        Assert.Contains(plan.PlannedItems, i => i.Name == "Salary");
+        Assert.Contains(plan.PlannedItems, i => i.Name == "Rent");
+    }
+
+    /// <summary>
+    /// Given a forecast plan
+    /// When AddPlannedItem is called
+    /// Then UpdatedUtc should be updated
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void AddPlannedItem_UpdatesUpdatedUtc()
+    {
+        // Arrange
+        var plan = CreateForecastPlan(Guid.NewGuid(), "Test Plan");
+        var originalUpdated = plan.UpdatedUtc;
+        var item = new ForecastPlannedItem(Guid.NewGuid())
+        {
+            Name = "Test",
+            Amount = 100m,
+            ItemType = PlannedItemType.Income,
+            DateMode = PlannedItemDateMode.FixedDate,
+        };
+
+        // Small delay to ensure timestamp difference
+        Thread.Sleep(10);
+
+        // Act
+        plan.AddPlannedItem(item);
+
+        // Assert
+        Assert.True(plan.UpdatedUtc > originalUpdated);
+    }
+
+    #endregion
+
+    #region RemovePlannedItem
+
+    /// <summary>
+    /// Given a forecast plan with items
+    /// When RemovePlannedItem is called
+    /// Then the item should be removed
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Integration")]
+    public async Task RemovePlannedItem_ExistingItem_RemovesFromCollection()
+    {
+        // Arrange
+        var planId = Guid.NewGuid();
+        var itemId = Guid.NewGuid();
+        var plan = CreateForecastPlan(planId, "Test Plan");
+        var item = new ForecastPlannedItem(itemId)
+        {
+            Name = "Salary",
+            Amount = 5000m,
+            ForecastPlanId = planId,
+            ItemType = PlannedItemType.Income,
+            DateMode = PlannedItemDateMode.FixedDate,
+        };
+        plan.PlannedItems.Add(item);
+        _context.Set<ForecastPlan>().Add(plan);
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var repository = new ForecastRepository(_context);
+
+        // Act
+        plan.RemovePlannedItem(itemId);
+        repository.Update(plan);
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        // Assert
+        var savedPlan = await _context.Set<ForecastPlan>()
+            .Include(p => p.PlannedItems)
+            .FirstAsync(p => p.Id == planId, TestContext.Current.CancellationToken);
+        Assert.Empty(savedPlan.PlannedItems);
+    }
+
+    /// <summary>
+    /// Given a forecast plan
+    /// When RemovePlannedItem is called with non-existent id
+    /// Then nothing should happen
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Integration")]
+    public async Task RemovePlannedItem_NonExistentItem_DoesNothing()
+    {
+        // Arrange
+        var planId = Guid.NewGuid();
+        var plan = CreateForecastPlan(planId, "Test Plan");
+        var item = new ForecastPlannedItem(Guid.NewGuid())
+        {
+            Name = "Salary",
+            Amount = 5000m,
+            ForecastPlanId = planId,
+            ItemType = PlannedItemType.Income,
+            DateMode = PlannedItemDateMode.FixedDate,
+        };
+        plan.PlannedItems.Add(item);
+        _context.Set<ForecastPlan>().Add(plan);
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        // Act
+        plan.RemovePlannedItem(Guid.NewGuid()); // Non-existent ID
+
+        // Assert - item should still exist
+        Assert.Single(plan.PlannedItems);
+    }
+
+    #endregion
+
+    #region SetAccounts
+
+    /// <summary>
+    /// Given a forecast plan
+    /// When SetAccounts is called
+    /// Then the in-memory collection should have the accounts
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void SetAccounts_WithInstrumentIds_SetsAccountsInMemory()
+    {
+        // Arrange
+        var planId = Guid.NewGuid();
+        var plan = CreateForecastPlan(planId, "Test Plan");
+
+        var instrumentId1 = Guid.NewGuid();
+        var instrumentId2 = Guid.NewGuid();
+
+        // Act
+        plan.SetAccounts([instrumentId1, instrumentId2]);
+
+        // Assert
+        Assert.Equal(2, plan.Accounts.Count);
+        Assert.Contains(plan.Accounts, a => a.InstrumentId == instrumentId1);
+        Assert.Contains(plan.Accounts, a => a.InstrumentId == instrumentId2);
+        Assert.All(plan.Accounts, a => Assert.Equal(planId, a.ForecastPlanId));
+    }
+
+    /// <summary>
+    /// Given a forecast plan with existing accounts
+    /// When SetAccounts is called with new ids
+    /// Then the in-memory collection should be replaced
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void SetAccounts_ReplacesExistingAccountsInMemory()
+    {
+        // Arrange
+        var planId = Guid.NewGuid();
+        var oldInstrumentId = Guid.NewGuid();
+        var plan = CreateForecastPlan(planId, "Test Plan");
+        plan.Accounts.Add(new ForecastPlanAccount { ForecastPlanId = planId, InstrumentId = oldInstrumentId });
+
+        var newInstrumentId = Guid.NewGuid();
+
+        // Act
+        plan.SetAccounts([newInstrumentId]);
+
+        // Assert
+        Assert.Single(plan.Accounts);
+        Assert.Equal(newInstrumentId, plan.Accounts.First().InstrumentId);
+        Assert.DoesNotContain(plan.Accounts, a => a.InstrumentId == oldInstrumentId);
+    }
+
+    /// <summary>
+    /// Given a forecast plan
+    /// When SetAccounts is called with empty list
+    /// Then the accounts collection should be cleared
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void SetAccounts_WithEmptyList_ClearsAccounts()
+    {
+        // Arrange
+        var planId = Guid.NewGuid();
+        var plan = CreateForecastPlan(planId, "Test Plan");
+        plan.Accounts.Add(new ForecastPlanAccount { ForecastPlanId = planId, InstrumentId = Guid.NewGuid() });
+
+        // Act
+        plan.SetAccounts([]);
+
+        // Assert
+        Assert.Empty(plan.Accounts);
+    }
+
+    #endregion
+
     private ForecastPlan CreateForecastPlan(Guid id, string name) =>
         new(id)
         {

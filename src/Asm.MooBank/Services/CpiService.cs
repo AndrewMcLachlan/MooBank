@@ -1,6 +1,6 @@
 ﻿using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Models;
-using LazyCache;
+using Microsoft.Extensions.Caching.Hybrid;
 
 namespace Asm.MooBank.Services;
 
@@ -13,8 +13,13 @@ public interface ICpiService
     Task<decimal> CalculateAdjustedValue(decimal value, DateOnly startDate, CancellationToken cancellationToken = default);
 }
 
-internal class CpiService(IReferenceDataRepository referenceDataRepository, IAppCache cache) : ICpiService
+internal class CpiService(IReferenceDataRepository referenceDataRepository, HybridCache cache) : ICpiService
 {
+    private readonly static HybridCacheEntryOptions CacheOptions = new()
+    {
+        Expiration = TimeSpan.FromDays(1),
+    };
+
     public Task<decimal> CalculateAdjustedValue(decimal value, DateTimeOffset startDate, CancellationToken cancellationToken = default) =>
         CalculateAdjustedValue(value, DateOnly.FromDateTime(startDate.Date), cancellationToken);
 
@@ -23,7 +28,7 @@ internal class CpiService(IReferenceDataRepository referenceDataRepository, IApp
 
     public async Task<decimal> CalculateAdjustedValue(decimal value, DateOnly startDate, CancellationToken cancellationToken = default)
     {
-        var changes = await cache.GetOrAddAsync("CpiChanges", () => referenceDataRepository.GetCpiChanges(cancellationToken), TimeSpan.FromDays(1));
+        var changes = await cache.GetOrCreateAsync(CacheKeys.ReferenceData.CpiChanges, async ct => await referenceDataRepository.GetCpiChanges(ct), CacheOptions, [CacheKeys.ReferenceData.CacheTag], cancellationToken);
 
         var startQuarter = Quarter.FromDate(startDate);
         decimal adjustedValue = value;

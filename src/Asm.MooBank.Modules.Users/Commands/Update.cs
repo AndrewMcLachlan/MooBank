@@ -1,13 +1,13 @@
 ﻿using Asm.MooBank.Domain.Entities.User;
 using Asm.MooBank.Domain.Entities.User.Specifications;
 using Asm.MooBank.Modules.Users.Models;
-using LazyCache;
+using Microsoft.Extensions.Caching.Hybrid;
 
 namespace Asm.MooBank.Modules.Users.Commands;
 
 internal record Update(UpdateUser User) : ICommand<Models.User>;
 
-internal class UpdateHandler(IUnitOfWork unitOfWork, IUserRepository repository, MooBank.Models.User user, IAppCache cache) : ICommandHandler<Update, Models.User>
+internal class UpdateHandler(IUnitOfWork unitOfWork, IUserRepository repository, MooBank.Models.User user, HybridCache cache) : ICommandHandler<Update, Models.User>
 {
     public async ValueTask<Models.User> Handle(Update command, CancellationToken cancellationToken)
     {
@@ -48,7 +48,7 @@ internal class UpdateHandler(IUnitOfWork unitOfWork, IUserRepository repository,
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        cache.Remove(CacheKeys.UserCacheKey(user.Id));
+        await cache.RemoveAsync(CacheKeys.UserCacheKey(user.Id), cancellationToken);
 
         return entity.ToModel();
     }
