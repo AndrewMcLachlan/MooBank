@@ -32,8 +32,8 @@ internal class ReferenceDataRepository(MooBankContext dataContext) : IReferenceD
         return exchangeRate;
     }
 
-    public async Task<IEnumerable<ExchangeRate>> GetExchangeRates() =>
-        await dataContext.ExchangeRates.ToListAsync();
+    public async Task<IEnumerable<ExchangeRate>> GetExchangeRates(CancellationToken cancellationToken = default) =>
+        await dataContext.ExchangeRates.ToListAsync(cancellationToken);
 
     public async Task<IEnumerable<CpiChange>> GetCpiChanges(CancellationToken cancellationToken = default) =>
         await dataContext.CpiChanges.ToListAsync(cancellationToken);

@@ -37,7 +37,7 @@ public class CpiChangeServiceTests
         var (service, repositoryMock, _) = CreateService(existingChanges, absChanges);
 
         // Act
-        await service.UpdateWithCpiChanges();
+        await service.UpdateWithCpiChanges(TestContext.Current.CancellationToken);
 
         // Assert
         repositoryMock.Verify(r => r.AddCpiChange(It.IsAny<DomainCpiChange>()), Times.Exactly(2));
@@ -67,7 +67,7 @@ public class CpiChangeServiceTests
         var (service, repositoryMock, _) = CreateService(existingChanges, absChanges);
 
         // Act
-        await service.UpdateWithCpiChanges();
+        await service.UpdateWithCpiChanges(TestContext.Current.CancellationToken);
 
         // Assert
         repositoryMock.Verify(r => r.AddCpiChange(It.IsAny<DomainCpiChange>()), Times.Never);
@@ -97,7 +97,7 @@ public class CpiChangeServiceTests
         var (service, repositoryMock, _) = CreateService(existingChanges, absChanges);
 
         // Act
-        await service.UpdateWithCpiChanges();
+        await service.UpdateWithCpiChanges(TestContext.Current.CancellationToken);
 
         // Assert - Only 2 new changes added
         repositoryMock.Verify(r => r.AddCpiChange(It.IsAny<DomainCpiChange>()), Times.Exactly(2));
@@ -116,10 +116,10 @@ public class CpiChangeServiceTests
         var (service, _, unitOfWorkMock) = CreateService([], []);
 
         // Act
-        await service.UpdateWithCpiChanges();
+        await service.UpdateWithCpiChanges(TestContext.Current.CancellationToken);
 
         // Assert
-        unitOfWorkMock.Verify(u => u.SaveChangesAsync(default), Times.Once);
+        unitOfWorkMock.Verify(u => u.SaveChangesAsync(TestContext.Current.CancellationToken), Times.Once);
     }
 
     /// <summary>
@@ -141,11 +141,11 @@ public class CpiChangeServiceTests
         var (service, repositoryMock, unitOfWorkMock) = CreateService(existingChanges, absChanges);
 
         // Act
-        await service.UpdateWithCpiChanges();
+        await service.UpdateWithCpiChanges(TestContext.Current.CancellationToken);
 
         // Assert
         repositoryMock.Verify(r => r.AddCpiChange(It.IsAny<DomainCpiChange>()), Times.Never);
-        unitOfWorkMock.Verify(u => u.SaveChangesAsync(default), Times.Once);
+        unitOfWorkMock.Verify(u => u.SaveChangesAsync(TestContext.Current.CancellationToken), Times.Once);
     }
 
     #endregion

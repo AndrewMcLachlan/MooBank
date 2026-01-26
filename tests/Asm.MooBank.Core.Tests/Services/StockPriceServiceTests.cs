@@ -32,7 +32,7 @@ public class StockPriceServiceTests
         var (service, stockPriceClientMock, _) = CreateService([], []);
 
         // Act
-        await service.Update();
+        await service.Update(TestContext.Current.CancellationToken);
 
         // Assert
         stockPriceClientMock.Verify(c => c.GetPriceAsync(It.IsAny<StockSymbol>()), Times.Never);
@@ -55,11 +55,10 @@ public class StockPriceServiceTests
         var (service, _, _) = CreateService([holding], prices);
 
         // Act
-        await service.Update();
+        await service.Update(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(150m, holding.CurrentPrice);
-        Assert.NotNull(holding.LastUpdated);
     }
 
     /// <summary>
@@ -88,7 +87,7 @@ public class StockPriceServiceTests
         var (service, stockPriceClientMock, _) = CreateService(holdings, prices);
 
         // Act
-        await service.Update();
+        await service.Update(TestContext.Current.CancellationToken);
 
         // Assert
         stockPriceClientMock.Verify(c => c.GetPriceAsync(symbol1), Times.Once);
@@ -112,7 +111,7 @@ public class StockPriceServiceTests
         var (service, _, _) = CreateService([holding], prices);
 
         // Act
-        await service.Update();
+        await service.Update(TestContext.Current.CancellationToken);
 
         // Assert - Price should remain unchanged
         Assert.Equal(100m, holding.CurrentPrice);
@@ -131,10 +130,10 @@ public class StockPriceServiceTests
         var (service, _, unitOfWorkMock) = CreateService([], []);
 
         // Act
-        await service.Update();
+        await service.Update(TestContext.Current.CancellationToken);
 
         // Assert
-        unitOfWorkMock.Verify(u => u.SaveChangesAsync(default), Times.Once);
+        unitOfWorkMock.Verify(u => u.SaveChangesAsync(TestContext.Current.CancellationToken), Times.Once);
     }
 
     /// <summary>
@@ -154,7 +153,7 @@ public class StockPriceServiceTests
         var (service, _, _, repositoryMock) = CreateServiceWithRepository([holding], prices, []);
 
         // Act
-        await service.Update();
+        await service.Update(TestContext.Current.CancellationToken);
 
         // Assert
         repositoryMock.Verify(r => r.AddStockPrice(It.Is<StockPriceHistory>(
@@ -182,7 +181,7 @@ public class StockPriceServiceTests
         var (service, _, _, repositoryMock) = CreateServiceWithRepository([holding], prices, existingHistory);
 
         // Act
-        await service.Update();
+        await service.Update(TestContext.Current.CancellationToken);
 
         // Assert - Should not add duplicate
         repositoryMock.Verify(r => r.AddStockPrice(It.IsAny<StockPriceHistory>()), Times.Never);

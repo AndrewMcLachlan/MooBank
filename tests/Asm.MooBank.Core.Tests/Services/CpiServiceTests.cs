@@ -35,7 +35,7 @@ public class CpiServiceTests
         var service = CreateService(cpiChanges);
 
         // Act - Start date is after all CPI changes
-        var result = await service.CalculateAdjustedValue(1000m, new DateOnly(2024, 1, 1));
+        var result = await service.CalculateAdjustedValue(1000m, new DateOnly(2024, 1, 1), TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(1000m, result);
@@ -58,7 +58,7 @@ public class CpiServiceTests
         var service = CreateService(cpiChanges);
 
         // Act - Start date is Q1 2024, so Q2 change applies
-        var result = await service.CalculateAdjustedValue(1000m, new DateOnly(2024, 1, 15));
+        var result = await service.CalculateAdjustedValue(1000m, new DateOnly(2024, 1, 15), TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(1020m, result);
@@ -82,7 +82,7 @@ public class CpiServiceTests
         var service = CreateService(cpiChanges);
 
         // Act - Start date is Q1 2024
-        var result = await service.CalculateAdjustedValue(1000m, new DateOnly(2024, 1, 15));
+        var result = await service.CalculateAdjustedValue(1000m, new DateOnly(2024, 1, 15), TestContext.Current.CancellationToken);
 
         // Assert - 1000 * 1.02 * 1.02 = 1040.4
         Assert.Equal(1040.4m, result);
@@ -107,7 +107,7 @@ public class CpiServiceTests
         var service = CreateService(cpiChanges);
 
         // Act - Start date is in Q1 2024
-        var result = await service.CalculateAdjustedValue(1000m, new DateOnly(2024, 2, 15));
+        var result = await service.CalculateAdjustedValue(1000m, new DateOnly(2024, 2, 15), TestContext.Current.CancellationToken);
 
         // Assert - Only Q2 2024 change applies: 1000 * 1.02 = 1020
         Assert.Equal(1020m, result);
@@ -130,7 +130,7 @@ public class CpiServiceTests
         var service = CreateService(cpiChanges);
 
         // Act
-        var result = await service.CalculateAdjustedValue(1000m, new DateOnly(2024, 1, 15));
+        var result = await service.CalculateAdjustedValue(1000m, new DateOnly(2024, 1, 15), TestContext.Current.CancellationToken);
 
         // Assert - 1000 * 0.99 = 990
         Assert.Equal(990m, result);
@@ -159,8 +159,8 @@ public class CpiServiceTests
         var dateOnly = new DateOnly(2024, 1, 15);
 
         // Act
-        var resultDateTime = await service.CalculateAdjustedValue(1000m, dateTime);
-        var resultDateOnly = await service.CalculateAdjustedValue(1000m, dateOnly);
+        var resultDateTime = await service.CalculateAdjustedValue(1000m, dateTime, TestContext.Current.CancellationToken);
+        var resultDateOnly = await service.CalculateAdjustedValue(1000m, dateOnly, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(resultDateOnly, resultDateTime);
@@ -185,8 +185,8 @@ public class CpiServiceTests
         var dateOnly = new DateOnly(2024, 1, 15);
 
         // Act
-        var resultDateTimeOffset = await service.CalculateAdjustedValue(1000m, dateTimeOffset);
-        var resultDateOnly = await service.CalculateAdjustedValue(1000m, dateOnly);
+        var resultDateTimeOffset = await service.CalculateAdjustedValue(1000m, dateTimeOffset, TestContext.Current.CancellationToken);
+        var resultDateOnly = await service.CalculateAdjustedValue(1000m, dateOnly, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(resultDateOnly, resultDateTimeOffset);
@@ -217,9 +217,9 @@ public class CpiServiceTests
         var service = CreateService(repositoryMock.Object);
 
         // Act - Call multiple times
-        await service.CalculateAdjustedValue(1000m, new DateOnly(2024, 1, 15));
-        await service.CalculateAdjustedValue(2000m, new DateOnly(2024, 1, 15));
-        await service.CalculateAdjustedValue(3000m, new DateOnly(2024, 1, 15));
+        await service.CalculateAdjustedValue(1000m, new DateOnly(2024, 1, 15), TestContext.Current.CancellationToken);
+        await service.CalculateAdjustedValue(2000m, new DateOnly(2024, 1, 15), TestContext.Current.CancellationToken);
+        await service.CalculateAdjustedValue(3000m, new DateOnly(2024, 1, 15), TestContext.Current.CancellationToken);
 
         // Assert - Repository should only be called once
         repositoryMock.Verify(r => r.GetCpiChanges(It.IsAny<CancellationToken>()), Times.Once);
@@ -234,7 +234,7 @@ public class CpiServiceTests
             ChangePercent = changePercent,
         };
 
-    private static ICpiService CreateService(List<CpiChange> cpiChanges)
+    private static CpiService CreateService(List<CpiChange> cpiChanges)
     {
         var repositoryMock = new Mock<IReferenceDataRepository>();
         repositoryMock.Setup(r => r.GetCpiChanges(It.IsAny<CancellationToken>()))
@@ -243,7 +243,7 @@ public class CpiServiceTests
         return CreateService(repositoryMock.Object);
     }
 
-    private static ICpiService CreateService(IReferenceDataRepository repository)
+    private static CpiService CreateService(IReferenceDataRepository repository)
     {
         var memoryCache = new MemoryCache(new MemoryCacheOptions());
         var cacheProvider = new MemoryCacheProvider(memoryCache);

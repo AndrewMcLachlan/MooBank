@@ -2,13 +2,12 @@
 
   <ItemGroup>
     <PackageReference Include="Asm" />
-    <PackageReference Include="Bogus" />
+    <PackageReference Include="Asm.Domain.Infrastructure" />
     <PackageReference Include="coverlet.collector">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="LazyCache.AspNetCore" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Moq" />
     <PackageReference Include="xunit.v3" />
@@ -19,10 +18,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Asm.MooBank\Asm.MooBank.csproj" />
+    <Using Include="Asm.Domain" />
+    <Using Include="Microsoft.EntityFrameworkCore" />
+    <Using Include="Moq" />
+    <Using Include="Xunit=" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <ProjectReference Include="..\..\src\Asm.MooBank.Domain\Asm.MooBank.Domain.csproj" />
     <ProjectReference Include="..\..\src\Asm.MooBank.Infrastructure\Asm.MooBank.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\src\Asm.MooBank.Security\Asm.MooBank.Security.csproj" />
     <ProjectReference Include="..\..\src\Asm.MooBank.Models\Asm.MooBank.Models.csproj" />
   </ItemGroup>
 

@@ -16,7 +16,7 @@ internal class CpiChangeService(IUnitOfWork unitOfWork, IAbsClient absClient, IR
     {
         var existingChanges = await referenceDataRepository.GetCpiChanges(cancellationToken);
 
-        var changes = await absClient.GetCpiChanges(DateOnlyExtensions.Today().AddMonths(-6), null, cancellationToken);
+        var changes = await absClient.GetCpiChanges(DateOnly.Today.AddMonths(-6), null, cancellationToken);
 
         foreach (var change in changes)
         {
@@ -31,7 +31,7 @@ internal class CpiChangeService(IUnitOfWork unitOfWork, IAbsClient absClient, IR
             }
         }
 
-        await unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
 }

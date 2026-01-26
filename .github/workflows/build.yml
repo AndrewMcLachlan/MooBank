@@ -75,9 +75,71 @@ jobs:
           ghcr.io/andrewmclachlan/moobank:${{steps.set-version-number.outputs.version}}
           ghcr.io/andrewmclachlan/moobank:latest
 
-  docker-push:
+  test:
     runs-on: ubuntu-latest
     needs: build
+    permissions:
+      packages: write
+      contents: read
+      pull-requests: write
+    strategy:
+      fail-fast: false
+      matrix:
+        test-project:
+          - { name: "Asm.MooBank.Core.Tests", path: "tests/Asm.MooBank.Core.Tests" }
+          - { name: "Asm.MooBank.Domain.Tests", path: "tests/Asm.MooBank.Domain.Tests" }
+    steps:
+    - uses: actions/checkout@v6.0.1
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v5
+      with:
+        dotnet-version: 10.x
+
+    - name: Test ${{ matrix.test-project.name }}
+      run: dotnet test ${{ matrix.test-project.path }}/${{ matrix.test-project.name }}.csproj --filter '(Category=Unit|Category=Integration)&FullyQualifiedName!~Testing' --verbosity normal --collect:"XPlat Code Coverage" --results-directory:./testresults/${{ matrix.test-project.name }} --configuration Release --settings coverlet.runsettings
+
+    - name: Upload coverage for ${{ matrix.test-project.name }}
+      uses: actions/upload-artifact@v6.0.0
+      with:
+        name: coverage-${{ matrix.test-project.name }}
+        path: testresults/${{ matrix.test-project.name }}/**/coverage.cobertura.xml
+
+  coverage-report:
+    runs-on: ubuntu-latest
+    needs: test
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+    - uses: actions/checkout@v6.0.1
+    
+    - name: Download all coverage reports
+      uses: actions/download-artifact@v7
+      with:
+        pattern: coverage-*
+        path: ./all-coverage
+        merge-multiple: true
+
+    - name: ReportGenerator
+      uses: danielpalme/ReportGenerator-GitHub-Action@5.5.1
+      with:
+        reports: './all-coverage/**/coverage.cobertura.xml'
+        targetdir: './coverage-report'
+        reporttypes: 'MarkdownAssembliesSummary;Cobertura;'
+
+    - name: Add Coverage PR Comment
+      uses: marocchino/sticky-pull-request-comment@v2
+      if: (github.event_name == 'pull_request' || github.event_name == 'pull_request_target')
+      with:
+        recreate: true
+        path: coverage-report/Summary.md
+
+    - name: Write Coverage to Job Summary
+      run: cat coverage-report/Summary.md >> $GITHUB_STEP_SUMMARY
+
+  docker-push:
+    runs-on: ubuntu-latest
+    needs: [build, test]
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
     permissions:
       packages: write
@@ -111,7 +173,7 @@ jobs:
     concurrency:
       group: moobank-deploy-group
       cancel-in-progress: true
-    needs: [build, docker-push]
+    needs: [build, test, docker-push]
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
     uses: AndrewMcLachlan/actions/.github/workflows/deploy-azure.yml@v4
     with:

@@ -1,6 +1,7 @@
 ﻿using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Models;
 using LazyCache;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace Asm.MooBank.Services;
 
@@ -26,7 +27,7 @@ public class CurrencyConverter(IReferenceDataRepository referenceDataRepository,
     {
         if (from.Equals(to, StringComparison.OrdinalIgnoreCase)) return 1;
 
-        var rates = appCache.GetOrAddAsync("IReferenceDataRepository-GetExchangeRates", referenceDataRepository.GetExchangeRates, DateTimeOffset.Now.AddHours(12)).Result;
+        var rates = appCache.GetOrAdd("IReferenceDataRepository-GetExchangeRates", () => referenceDataRepository.GetExchangeRates(CancellationToken.None).Result, DateTimeOffset.Now.AddHours(12));
 
         var rate = rates?.Where(er => er.From == from && er.To == to).SingleOrDefault();
 

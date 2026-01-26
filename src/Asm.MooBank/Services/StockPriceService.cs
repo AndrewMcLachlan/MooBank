@@ -8,16 +8,16 @@ using Microsoft.Extensions.Logging;
 namespace Asm.MooBank.Services;
 public interface IStockPriceService
 {
-    Task Update();
+    Task Update(CancellationToken cancellationToken = default);
 }
 
 public class StockPriceService(IUnitOfWork unitOfWork, IStockHoldingRepository stockHoldingRepository, IReferenceDataRepository referenceDataRepository, IStockPriceClient stockPriceClient, ILogger<StockPriceService> logger) : IStockPriceService
 {
-    public async Task Update()
+    public async Task Update(CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Updating stock prices...");
 
-        var stocks = await stockHoldingRepository.Get();
+        var stocks = await stockHoldingRepository.Get(cancellationToken);
 
         var symbols = stocks.Select(s => s.Symbol/*.{s.Exchange}"*/ ).Distinct();
 
@@ -43,7 +43,7 @@ public class StockPriceService(IUnitOfWork unitOfWork, IStockHoldingRepository s
             stock.LastUpdated = DateTimeOffset.UtcNow;
         }
 
-        var existingPrices = await referenceDataRepository.GetStockPrices(DateOnlyExtensions.Today().AddDays(-1));
+        var existingPrices = await referenceDataRepository.GetStockPrices(DateOnlyExtensions.Today().AddDays(-1), cancellationToken);
 
         foreach (var price in prices.Where(p => !existingPrices.Select(e => new StockSymbol(e.Symbol, e.Exchange)).Contains(p.Key)))
         {
@@ -57,7 +57,7 @@ public class StockPriceService(IUnitOfWork unitOfWork, IStockHoldingRepository s
             });
         }
 
-        await unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Completed stock price update");
     }

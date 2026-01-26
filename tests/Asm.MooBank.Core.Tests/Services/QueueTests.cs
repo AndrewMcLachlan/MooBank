@@ -1,6 +1,7 @@
 #nullable enable
 
 using Asm.MooBank.Models;
+using Asm.MooBank.Queues;
 using Asm.MooBank.Services;
 
 namespace Asm.MooBank.Core.Tests.Services;
@@ -13,7 +14,11 @@ public class ImportTransactionsQueueTests : IDisposable
 {
     private readonly ImportTransactionsQueue _queue = new();
 
-    public void Dispose() => _queue.Dispose();
+    public void Dispose()
+    {
+        _queue.Dispose();
+        GC.SuppressFinalize(this);
+    }
 
     #region QueueImport
 
@@ -153,7 +158,11 @@ public class RunRulesQueueTests : IDisposable
 {
     private readonly RunRulesQueue _queue = new();
 
-    public void Dispose() => _queue.Dispose();
+    public void Dispose()
+    {
+        _queue.Dispose();
+        GC.SuppressFinalize(this);
+    }
 
     #region QueueRunRules
 
@@ -274,7 +283,11 @@ public class ReprocessTransactionsQueueTests : IDisposable
 {
     private readonly ReprocessTransactionsQueue _queue = new();
 
-    public void Dispose() => _queue.Dispose();
+    public void Dispose()
+    {
+        _queue.Dispose();
+        GC.SuppressFinalize(this);
+    }
 
     #region QueueReprocessTransactions
 

@@ -1,6 +1,4 @@
-﻿using Asm.Domain;
-using Asm.MooBank.Abs;
-using Asm.MooBank.Domain.Entities.ReferenceData;
+﻿using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Models;
 using LazyCache;
 
@@ -25,7 +23,7 @@ internal class CpiService(IReferenceDataRepository referenceDataRepository, IApp
 
     public async Task<decimal> CalculateAdjustedValue(decimal value, DateOnly startDate, CancellationToken cancellationToken = default)
     {
-        var changes = await cache.GetOrAdd("CpiChanges", async () => await referenceDataRepository.GetCpiChanges(cancellationToken), TimeSpan.FromDays(1));
+        var changes = await cache.GetOrAddAsync("CpiChanges", () => referenceDataRepository.GetCpiChanges(cancellationToken), TimeSpan.FromDays(1));
 
         var startQuarter = Quarter.FromDate(startDate);
         decimal adjustedValue = value;

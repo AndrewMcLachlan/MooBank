@@ -15,7 +15,8 @@ tests/
 
 ### Framework
 - **Asm.Testing.Domain** - Extensions for mocking DbSet
-- **xUnit** - Underlying test runner
+- **Microsoft.Testing.Platform** - Test host and utilities (as opposed to VSTest)
+- **xUnit** - Underlying test runner (xUnit.v3)
 - **Moq** - Mocking
 
 ### What to Test
@@ -132,7 +133,7 @@ public class InstrumentAuthorizationTests : IClassFixture<WebApplicationFactory<
         _authHandler.SetUser(TestModels.UserId, accounts: [OwnedInstrumentId]);
 
         // Act
-        var response = await _client.GetAsync($"/api/v1/accounts/{OwnedInstrumentId}");
+        var response = await _client.GetAsync($"/api/v1/accounts/{OwnedInstrumentId}", TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -204,10 +205,10 @@ public class InstrumentAuthorizationTests : IClassFixture<WebApplicationFactory<
 dotnet test tests/
 
 # Run unit tests only
-dotnet run -- -filter /[Category=Unit]
+dotnet test --filter /[Category=Unit]
 
 # Run integration tests only
-dotnet run -- -filter /[Category=Integration]
+dotnet test --filter /[Category=Integration]
 
 
 # Run with coverage

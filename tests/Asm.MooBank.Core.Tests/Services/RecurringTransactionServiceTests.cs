@@ -31,7 +31,7 @@ public class RecurringTransactionServiceTests
         var (service, transactionRepoMock, _) = CreateService([]);
 
         // Act
-        await service.Process();
+        await service.Process(TestContext.Current.CancellationToken);
 
         // Assert
         transactionRepoMock.Verify(r => r.Add(It.IsAny<DomainTransaction>()), Times.Never);
@@ -53,7 +53,7 @@ public class RecurringTransactionServiceTests
         var (service, transactionRepoMock, _) = CreateService([recurring]);
 
         // Act
-        await service.Process();
+        await service.Process(TestContext.Current.CancellationToken);
 
         // Assert
         transactionRepoMock.Verify(r => r.Add(It.Is<DomainTransaction>(t => t.Amount == 100m)), Times.Once);
@@ -77,7 +77,7 @@ public class RecurringTransactionServiceTests
         var (service, _, _) = CreateService([recurring]);
 
         // Act
-        await service.Process();
+        await service.Process(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(today.AddDays(7), recurring.NextRun);
@@ -99,7 +99,7 @@ public class RecurringTransactionServiceTests
         var (service, _, _) = CreateService([recurring]);
 
         // Act
-        await service.Process();
+        await service.Process(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(today.AddMonths(1), recurring.NextRun);
@@ -121,7 +121,7 @@ public class RecurringTransactionServiceTests
         var (service, transactionRepoMock, _) = CreateService([recurring]);
 
         // Act
-        await service.Process();
+        await service.Process(TestContext.Current.CancellationToken);
 
         // Assert
         transactionRepoMock.Verify(r => r.Add(It.IsAny<DomainTransaction>()), Times.Never);
@@ -143,7 +143,7 @@ public class RecurringTransactionServiceTests
         var (service, transactionRepoMock, _) = CreateService([recurring]);
 
         // Act
-        await service.Process();
+        await service.Process(TestContext.Current.CancellationToken);
 
         // Assert - Should create 4 transactions (3 days ago, 2 days ago, yesterday, today)
         transactionRepoMock.Verify(r => r.Add(It.IsAny<DomainTransaction>()), Times.Exactly(4));
@@ -171,7 +171,7 @@ public class RecurringTransactionServiceTests
         var (service, transactionRepoMock, _) = CreateService(transactions);
 
         // Act
-        await service.Process();
+        await service.Process(TestContext.Current.CancellationToken);
 
         // Assert - Only 2 transactions should be created (the ones due today)
         transactionRepoMock.Verify(r => r.Add(It.IsAny<DomainTransaction>()), Times.Exactly(2));
@@ -190,10 +190,10 @@ public class RecurringTransactionServiceTests
         var (service, _, unitOfWorkMock) = CreateService([]);
 
         // Act
-        await service.Process();
+        await service.Process(TestContext.Current.CancellationToken);
 
         // Assert
-        unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        unitOfWorkMock.Verify(u => u.SaveChangesAsync(TestContext.Current.CancellationToken), Times.Once);
     }
 
     /// <summary>
@@ -212,7 +212,7 @@ public class RecurringTransactionServiceTests
         var (service, transactionRepoMock, _) = CreateService([recurring]);
 
         // Act
-        await service.Process();
+        await service.Process(TestContext.Current.CancellationToken);
 
         // Assert
         transactionRepoMock.Verify(r => r.Add(It.IsAny<DomainTransaction>()), Times.Once);

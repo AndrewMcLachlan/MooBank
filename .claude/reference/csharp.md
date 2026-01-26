@@ -28,6 +28,10 @@
 - Write clear, descriptive names for classes, methods, and variables
 - Use domain-driven language that matches the business concepts
 
+## Global Usings and Assembly Attributes
+
+- Place global usings and assembly attributes in the relevant CSProj file, not code files
+
 ## File Organization
 
 - Group related files by feature/entity, not by type
