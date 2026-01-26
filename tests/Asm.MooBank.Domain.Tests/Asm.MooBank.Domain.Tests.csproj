@@ -21,7 +21,7 @@
     <Using Include="Asm.Domain" />
     <Using Include="Microsoft.EntityFrameworkCore" />
     <Using Include="Moq" />
-    <Using Include="Xunit=" />
+    <Using Include="Xunit" />
   </ItemGroup>
   
   <ItemGroup>

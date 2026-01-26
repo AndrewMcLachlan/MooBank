@@ -94,6 +94,9 @@ jobs:
       uses: actions/setup-dotnet@v5
       with:
         dotnet-version: 10.x
+        source-url: https://nuget.pkg.github.com/AndrewMcLachlan/index.json
+      env:
+        NUGET_AUTH_TOKEN: ${{secrets.CROSS_REPO_PACKAGE_TOKEN}}
 
     - name: Test ${{ matrix.test-project.name }}
       run: dotnet test ${{ matrix.test-project.path }}/${{ matrix.test-project.name }}.csproj --filter '(Category=Unit|Category=Integration)&FullyQualifiedName!~Testing' --verbosity normal --collect:"XPlat Code Coverage" --results-directory:./testresults/${{ matrix.test-project.name }} --configuration Release --settings coverlet.runsettings
