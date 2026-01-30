@@ -41,14 +41,14 @@
     <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.1.0" />
   </ItemGroup>
   <ItemGroup>
-    <PackageVersion Include="Asm" Version="3.6.737" />
-    <PackageVersion Include="Asm.AspNetCore" Version="3.6.737" />
+    <PackageVersion Include="Asm" Version="3.6.754" />
+    <PackageVersion Include="Asm.AspNetCore" Version="3.6.754" />
     <PackageVersion Include="Asm.AspNetCore.Modules" Version="3.6.641" />
-    <PackageVersion Include="Asm.AspNetCore.Api" Version="3.6.737" />
-    <PackageVersion Include="Asm.Cqrs.AspNetCore" Version="3.6.737" />
-    <PackageVersion Include="Asm.Domain" Version="3.6.737" />
-    <PackageVersion Include="Asm.Domain.Infrastructure" Version="3.6.737" />
-    <PackageVersion Include="Asm.ModelContextProtocol" Version="3.6.737" />
+    <PackageVersion Include="Asm.AspNetCore.Api" Version="3.6.754" />
+    <PackageVersion Include="Asm.Cqrs.AspNetCore" Version="3.6.754" />
+    <PackageVersion Include="Asm.Domain" Version="3.6.754" />
+    <PackageVersion Include="Asm.Domain.Infrastructure" Version="3.6.754" />
+    <PackageVersion Include="Asm.ModelContextProtocol" Version="3.6.754" />
     <PackageVersion Include="Asm.Testing" Version="3.6.737" />
   </ItemGroup>
   <ItemGroup>
@@ -58,7 +58,7 @@
     <PackageVersion Include="Moq" Version="4.20.72" />
     <PackageVersion Include="Reqnroll.Tools.MsBuild.Generation" Version="3.3.2" />
     <PackageVersion Include="Reqnroll.xUnit.v3" Version="3.3.2" />
-    <PackageVersion Include="xunit.v3" Version="3.2.1" />
+    <PackageVersion Include="xunit.v3" Version="3.2.2" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
   </ItemGroup>
 </Project>
