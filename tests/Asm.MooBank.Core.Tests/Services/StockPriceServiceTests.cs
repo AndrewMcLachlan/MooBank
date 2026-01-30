@@ -175,7 +175,7 @@ public class StockPriceServiceTests
         var prices = new Dictionary<StockSymbol, decimal?> { { symbol, 150m } };
         var existingHistory = new List<StockPriceHistory>
         {
-            new() { Symbol = "AAPL", Exchange = "US", Price = 145m, Date = DateOnlyExtensions.Today().AddDays(-1) }
+            new() { Symbol = "AAPL", Exchange = "US", Price = 145m, Date = DateOnly.Today.AddDays(-1) }
         };
 
         var (service, _, _, repositoryMock) = CreateServiceWithRepository([holding], prices, existingHistory);
