@@ -43,7 +43,7 @@ public class StockPriceService(IUnitOfWork unitOfWork, IStockHoldingRepository s
             stock.LastUpdated = DateTimeOffset.UtcNow;
         }
 
-        var existingPrices = await referenceDataRepository.GetStockPrices(DateOnlyExtensions.Today().AddDays(-1), cancellationToken);
+        var existingPrices = await referenceDataRepository.GetStockPrices(DateOnly.Today.AddDays(-1), cancellationToken);
 
         foreach (var price in prices.Where(p => !existingPrices.Select(e => new StockSymbol(e.Symbol, e.Exchange)).Contains(p.Key)))
         {
@@ -52,7 +52,7 @@ public class StockPriceService(IUnitOfWork unitOfWork, IStockHoldingRepository s
             {
                 Symbol = price.Key.Symbol,
                 Exchange = price.Key.Exchange,
-                Date = DateOnlyExtensions.Today().AddDays(-1),
+                Date = DateOnly.Today.AddDays(-1),
                 Price = price.Value,
             });
         }

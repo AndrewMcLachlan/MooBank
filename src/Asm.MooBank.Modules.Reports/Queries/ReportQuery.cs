@@ -6,7 +6,7 @@ public abstract record ReportQuery
 
     public DateOnly Start { get; init; } = DateOnly.MinValue;
 
-    public DateOnly End { get; init; } = DateOnlyExtensions.Today();
+    public DateOnly End { get; init; } = DateOnly.Today;
 }
 
 public static class ReportQueryExtensions
