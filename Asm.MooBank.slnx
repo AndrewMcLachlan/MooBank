@@ -2,8 +2,15 @@
   <Folder Name="/.github/">
     <File Path=".github/dependabot.yml" />
   </Folder>
+  <Folder Name="/.github/codeql/">
+    <File Path=".github/codeql/codeql-config.yml" />
+  </Folder>
+  <Folder Name="/.github/codeql/extensions/">
+    <File Path=".github/codeql/extensions/non-sensitive-data.yml" />
+  </Folder>
   <Folder Name="/.github/workflows/">
     <File Path=".github/workflows/build.yml" />
+    <File Path=".github/workflows/codeql.yml" />
   </Folder>
   <Folder Name="/Config/">
     <File Path=".editorconfig" />

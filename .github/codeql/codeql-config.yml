@@ -1,0 +1,26 @@
+# CodeQL configuration file for MooBank
+# See: https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/customizing-your-advanced-setup-for-code-scanning
+
+name: "MooBank CodeQL Config"
+
+# Use the default security queries
+queries:
+  - uses: security-and-quality
+
+# Paths to ignore
+paths-ignore:
+  - '**/node_modules/**'
+  - '**/bin/**'
+  - '**/obj/**'
+  - '**/*.Designer.cs'
+
+# Threat model configuration
+# Mark database identifiers as non-sensitive
+threat-models:
+  # Disable treating all data as potentially sensitive
+  # Only enable the default threat model
+  - threat-model: default
+
+# Data extensions directory for custom configurations
+data-extensions:
+  - .github/codeql/extensions/*.yml

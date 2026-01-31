@@ -1,0 +1,30 @@
+# CodeQL Model Extension for MooBank
+# Customizes sensitivity classification for database identifiers
+# See: https://codeql.github.com/docs/codeql-cli/using-data-extensions/
+
+extensions:
+  # Override sensitive variable name detection
+  # These are database primary keys, not sensitive credentials
+  - addsTo:
+      pack: codeql/csharp-all
+      extensible: sensitiveVariableExemptions
+    data:
+      # Format: [variable_name_pattern]
+      - ["accountId"]
+      - ["AccountId"]
+      - ["instrumentId"]
+      - ["InstrumentId"]
+      - ["userId"]
+      - ["UserId"]
+      - ["familyId"]
+      - ["FamilyId"]
+      - ["groupId"]
+      - ["GroupId"]
+      - ["transactionId"]
+      - ["TransactionId"]
+      - ["tagId"]
+      - ["TagId"]
+      - ["ruleId"]
+      - ["RuleId"]
+      - ["budgetId"]
+      - ["BudgetId"]
