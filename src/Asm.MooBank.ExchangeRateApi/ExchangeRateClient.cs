@@ -13,11 +13,10 @@ public interface IExchangeRateClient
 
 internal class ExchangeRateClient(IHttpClientFactory httpClientFactory, IOptions<ExchangeRateApiConfig> config, ILogger<ExchangeRateClient> logger) : IExchangeRateClient
 {
-    private const string UrlFormat = "https://v6.exchangerate-api.com/v6/latest/{0}";
 
     public async Task<IDictionary<string, decimal>> GetExchangeRates(string from, CancellationToken cancellationToken = default)
     {
-        string url = String.Format(UrlFormat, from);
+        string url = from;
 
         try
         {
@@ -38,7 +37,7 @@ internal class ExchangeRateClient(IHttpClientFactory httpClientFactory, IOptions
 
     public async Task<decimal?> GetExchangeRate(string from, string to, CancellationToken cancellationToken = default)
     {
-        string url = String.Format(UrlFormat, config.Value.ApiKey, from);
+        string url = from;
 
         try
         {

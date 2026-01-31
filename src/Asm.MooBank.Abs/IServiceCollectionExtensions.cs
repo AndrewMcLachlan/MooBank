@@ -1,4 +1,5 @@
 ﻿using Asm.MooBank.Abs;
+using Microsoft.Net.Http.Headers;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -9,8 +10,8 @@ public static class IServiceCollectionExtensions
         services.AddHttpClient("abs", options =>
         {
             options.BaseAddress = new Uri("https://data.api.abs.gov.au/rest/data/");
-            options.DefaultRequestHeaders.Add("Accept", "application/xml");
-            options.DefaultRequestHeaders.Add("User-Agent", "Asm.MooBank/3.0");
+            options.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/xml");
+            options.DefaultRequestHeaders.Add(HeaderNames.UserAgent, "Asm.MooBank/3.0");
         })
         .AddStandardResilienceHandler();
 

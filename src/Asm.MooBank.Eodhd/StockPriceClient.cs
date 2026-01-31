@@ -12,7 +12,7 @@ public interface IStockPriceClient
 
 public class StockPriceClient(IHttpClientFactory httpClientFactory, IOptions<EodhdConfig> config, ILogger<StockPriceClient> logger) : IStockPriceClient
 {
-    private const string UrlFormat = "https://eodhd.com/api/eod/{0}?api_token={1}&from={2}&to={3}&fmt=json";
+    private const string UrlFormat = "{0}?api_token={1}&from={2}&to={3}&fmt=json";
 
     public Task<decimal?> GetPriceAsync(StockSymbol symbol) => GetPriceAsync(symbol.ToString());
 
