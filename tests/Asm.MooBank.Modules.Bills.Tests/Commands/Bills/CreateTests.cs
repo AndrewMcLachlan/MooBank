@@ -7,14 +7,9 @@ using DomainAccount = Asm.MooBank.Domain.Entities.Utility.Account;
 namespace Asm.MooBank.Modules.Bills.Tests.Commands.Bills;
 
 [Trait("Category", "Unit")]
-public class CreateTests
+public class CreateTests()
 {
-    private readonly TestMocks _mocks;
-
-    public CreateTests()
-    {
-        _mocks = new TestMocks();
-    }
+    private readonly TestMocks _mocks = new();
 
     [Fact]
     public async Task Handle_ValidCommand_CreatesAndReturnsBill()

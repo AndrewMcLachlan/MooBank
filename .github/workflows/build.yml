@@ -86,8 +86,12 @@ jobs:
       fail-fast: false
       matrix:
         test-project:
-          - { name: "Asm.MooBank.Core.Tests", path: "tests/Asm.MooBank.Core.Tests" }
-          - { name: "Asm.MooBank.Domain.Tests", path: "tests/Asm.MooBank.Domain.Tests" }
+          - { name: "Asm.MooBank.Core.Tests" }
+          - { name: "Asm.MooBank.Domain.Tests" }
+          - { name: "Asm.MooBank.Modules.Accounts.Tests" }
+          - { name: "Asm.MooBank.Modules.Assets.Tests" }
+          - { name: "Asm.MooBank.Modules.Bills.Tests" }
+          - { name: "Asm.MooBank.Modules.Institutions.Tests" }
     steps:
     - uses: actions/checkout@v6.0.1
     - name: Setup .NET
@@ -99,7 +103,7 @@ jobs:
         NUGET_AUTH_TOKEN: ${{secrets.CROSS_REPO_PACKAGE_TOKEN}}
 
     - name: Test ${{ matrix.test-project.name }}
-      run: dotnet test ${{ matrix.test-project.path }}/${{ matrix.test-project.name }}.csproj --filter '(Category=Unit|Category=Integration)&FullyQualifiedName!~Testing' --verbosity normal --collect:"XPlat Code Coverage" --results-directory:./testresults/${{ matrix.test-project.name }} --configuration Release --settings coverlet.runsettings
+      run: dotnet test tests/${{ matrix.test-project.name }}/${{ matrix.test-project.name }}.csproj --filter '(Category=Unit|Category=Integration)&FullyQualifiedName!~Testing' --verbosity normal --collect:"XPlat Code Coverage" --results-directory:./testresults/${{ matrix.test-project.name }} --configuration Release --settings coverlet.runsettings
 
     - name: Upload coverage for ${{ matrix.test-project.name }}
       uses: actions/upload-artifact@v6.0.0
