@@ -20,4 +20,8 @@
     <Folder Include="Endpoints\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="Asm.MooBank.Modules.Tags.Tests" />
+  </ItemGroup>
+
 </Project>

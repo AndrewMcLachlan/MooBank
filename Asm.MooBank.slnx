@@ -57,8 +57,14 @@
     <Project Path="tests/Asm.MooBank.Modules.Accounts.Tests/Asm.MooBank.Modules.Accounts.Tests.csproj" />
     <Project Path="tests/Asm.MooBank.Modules.Assets.Tests/Asm.MooBank.Modules.Assets.Tests.csproj" />
     <Project Path="tests/Asm.MooBank.Modules.Bills.Tests/Asm.MooBank.Modules.Bills.Tests.csproj" />
+    <Project Path="tests/Asm.MooBank.Modules.Budgets.Tests/Asm.MooBank.Modules.Budgets.Tests.csproj" />
     <Project Path="tests/Asm.MooBank.Modules.Institutions.Tests/Asm.MooBank.Modules.Institutions.Tests.csproj" />
     <Project Path="tests/Asm.MooBank.Modules.Tests/Asm.MooBank.Modules.Tests.csproj" />
+    <Project Path="tests/Asm.MooBank.Modules.Tags.Tests/Asm.MooBank.Modules.Tags.Tests.csproj" />
+    <Project Path="tests/Asm.MooBank.Modules.Transactions.Tests/Asm.MooBank.Modules.Transactions.Tests.csproj" />
+    <Project Path="tests/Asm.MooBank.Modules.Families.Tests/Asm.MooBank.Modules.Families.Tests.csproj" />
+    <Project Path="tests/Asm.MooBank.Modules.Forecast.Tests/Asm.MooBank.Modules.Forecast.Tests.csproj" />
+    <Project Path="tests/Asm.MooBank.Modules.Groups.Tests/Asm.MooBank.Modules.Groups.Tests.csproj" />
   </Folder>
   <Project Path="src/Asm.MooBank.AppHost/Asm.MooBank.AppHost.csproj" />
   <Project Path="src/Asm.MooBank.Database/Asm.MooBank.Database.sqlproj" Id="692a95bf-a4d2-4f37-af63-a3b5a2c04fc7">

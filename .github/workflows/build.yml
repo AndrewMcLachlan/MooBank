@@ -91,7 +91,13 @@ jobs:
           - { name: "Asm.MooBank.Modules.Accounts.Tests" }
           - { name: "Asm.MooBank.Modules.Assets.Tests" }
           - { name: "Asm.MooBank.Modules.Bills.Tests" }
+          - { name: "Asm.MooBank.Modules.Budget.Tests" }
+          - { name: "Asm.MooBank.Modules.Families.Tests" }
+          - { name: "Asm.MooBank.Modules.Forecast.Tests" }
+          - { name: "Asm.MooBank.Modules.Groups.Tests" }
           - { name: "Asm.MooBank.Modules.Institutions.Tests" }
+          - { name: "Asm.MooBank.Modules.Tags.Tests" }
+          - { name: "Asm.MooBank.Modules.Transactions.Tests" }
     steps:
     - uses: actions/checkout@v6.0.1
     - name: Setup .NET
