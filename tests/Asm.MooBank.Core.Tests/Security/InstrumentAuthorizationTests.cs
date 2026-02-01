@@ -65,7 +65,7 @@ public class InstrumentAuthorizationTests
     public void OwnerAuthorization_ForNullUser_Fails()
     {
         // Arrange
-        User user = null;
+        User? user = null;
 
         // Act
         var isAuthorized = IsOwnerAuthorized(user, OwnedInstrumentId);
@@ -145,7 +145,7 @@ public class InstrumentAuthorizationTests
     public void ViewerAuthorization_ForNullUser_Fails()
     {
         // Arrange
-        User user = null;
+        User? user = null;
 
         // Act
         var isAuthorized = IsViewerAuthorized(user, SharedInstrumentId);
@@ -183,16 +183,16 @@ public class InstrumentAuthorizationTests
     /// <summary>
     /// Replicates InstrumentOwnerAuthorisationHandler.IsAuthorised logic.
     /// </summary>
-    private static bool IsOwnerAuthorized(User user, Guid instrumentId) =>
+    private static bool IsOwnerAuthorized(User? user, Guid instrumentId) =>
         user is not null && user.Accounts.Contains(instrumentId);
 
     /// <summary>
     /// Replicates InstrumentViewerAuthorisationHandler.IsAuthorised logic.
     /// </summary>
-    private static bool IsViewerAuthorized(User user, Guid instrumentId) =>
+    private static bool IsViewerAuthorized(User? user, Guid instrumentId) =>
         user is not null && (user.Accounts.Contains(instrumentId) || user.SharedAccounts.Contains(instrumentId));
 
-    private static User CreateUser(Guid[] accounts = null, Guid[] sharedAccounts = null) =>
+    private static User CreateUser(Guid[]? accounts = null, Guid[]? sharedAccounts = null) =>
         new()
         {
             Id = TestModels.UserId,
@@ -261,7 +261,7 @@ public class GroupOwnerAuthorizationTests
     public void GroupOwnerAuthorization_ForNullUser_Fails()
     {
         // Arrange
-        User user = null;
+        User? user = null;
 
         // Act
         var isAuthorized = IsGroupOwnerAuthorized(user, OwnedGroupId);
@@ -293,10 +293,10 @@ public class GroupOwnerAuthorizationTests
     /// <summary>
     /// Replicates GroupOwnerAuthorisationHandler.IsAuthorised logic.
     /// </summary>
-    private static bool IsGroupOwnerAuthorized(User user, Guid groupId) =>
+    private static bool IsGroupOwnerAuthorized(User? user, Guid groupId) =>
         user is not null && user.Groups.Contains(groupId);
 
-    private static User CreateUser(Guid[] groups = null) =>
+    private static User CreateUser(Guid[]? groups = null) =>
         new()
         {
             Id = Guid.NewGuid(),

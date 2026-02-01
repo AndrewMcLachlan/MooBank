@@ -71,7 +71,7 @@ public class TestEntities
     // Transaction Factories
     public Transaction CreateTransaction(
         decimal amount = -50m,
-        string description = null,
+        string? description = null,
         DateTime transactionTime = default,
         Guid accountId = default)
     {
@@ -86,14 +86,14 @@ public class TestEntities
             null);
     }
 
-    public Transaction CreateDebitTransaction(decimal amount = 50m, string description = null) =>
+    public Transaction CreateDebitTransaction(decimal amount = 50m, string? description = null) =>
         CreateTransaction(-Math.Abs(amount), description);
 
-    public Transaction CreateCreditTransaction(decimal amount = 50m, string description = null) =>
+    public Transaction CreateCreditTransaction(decimal amount = 50m, string? description = null) =>
         CreateTransaction(Math.Abs(amount), description);
 
     // Tag Factory
-    public Asm.MooBank.Domain.Entities.Tag.Tag CreateTag(int id = 0, string name = null) =>
+    public Asm.MooBank.Domain.Entities.Tag.Tag CreateTag(int id = 0, string? name = null) =>
         new(id == 0 ? Faker.Random.Int(1, 1000) : id)
         {
             Name = name ?? Faker.Commerce.Categories(1)[0],
@@ -110,7 +110,7 @@ public class TestEntities
         };
 
     // ForecastPlan Factory
-    public ForecastPlan CreateForecastPlan(Guid id = default, string name = null) =>
+    public ForecastPlan CreateForecastPlan(Guid id = default, string? name = null) =>
         new(id == default ? TestModels.ForecastPlanId : id)
         {
             FamilyId = TestModels.FamilyId,
@@ -122,7 +122,7 @@ public class TestEntities
         };
 
     // ForecastPlannedItem Factory
-    public ForecastPlannedItem CreatePlannedItem(Guid id = default, string name = null, decimal amount = 100m) =>
+    public ForecastPlannedItem CreatePlannedItem(Guid id = default, string? name = null, decimal amount = 100m) =>
         new(id == default ? Guid.NewGuid() : id)
         {
             Name = name ?? "Test Item",
@@ -133,7 +133,7 @@ public class TestEntities
         };
 
     // VirtualInstrument Factory
-    public DomainVirtualInstrument CreateVirtualInstrument(Guid id = default, string name = null, Guid parentId = default) =>
+    public DomainVirtualInstrument CreateVirtualInstrument(Guid id = default, string? name = null, Guid parentId = default) =>
         new(id == default ? TestModels.VirtualInstrumentId : id)
         {
             Name = name ?? "Virtual Account",

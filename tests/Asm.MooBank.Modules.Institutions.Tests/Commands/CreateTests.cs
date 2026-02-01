@@ -39,7 +39,7 @@ public class CreateTests
     public async Task Handle_ValidCommand_AddsToRepository()
     {
         // Arrange
-        Institution capturedEntity = null;
+        Institution? capturedEntity = null;
         _mocks.InstitutionRepositoryMock
             .Setup(r => r.Add(It.IsAny<Institution>()))
             .Callback<Institution>(e => capturedEntity = e);
@@ -87,7 +87,7 @@ public class CreateTests
     public async Task Handle_DifferentInstitutionTypes_SetsCorrectType(InstitutionType expectedType)
     {
         // Arrange
-        Institution capturedEntity = null;
+        Institution? capturedEntity = null;
         _mocks.InstitutionRepositoryMock
             .Setup(r => r.Add(It.IsAny<Institution>()))
             .Callback<Institution>(e => capturedEntity = e);
@@ -102,6 +102,7 @@ public class CreateTests
         var result = await handler.Handle(command, CancellationToken.None);
 
         // Assert
+        Assert.NotNull(capturedEntity);
         Assert.Equal(expectedType, result.InstitutionType);
         Assert.Equal(expectedType, capturedEntity.InstitutionType);
     }

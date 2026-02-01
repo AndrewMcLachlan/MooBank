@@ -10,7 +10,7 @@ internal static class TestEntities
 
     public static Institution CreateInstitution(
         int id = 1,
-        string name = null,
+        string? name = null,
         InstitutionType institutionType = InstitutionType.Bank)
     {
         return new Institution(id)
