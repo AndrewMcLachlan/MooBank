@@ -48,11 +48,16 @@
     <Project Path="src/Asm.MooBank.Modules.Transactions/Asm.MooBank.Modules.Transactions.csproj" />
     <Project Path="src/Asm.MooBank.Modules.Users/Asm.MooBank.Modules.Users.csproj" />
   </Folder>
+  <Folder Name="/src/" />
   <Folder Name="/Tests/">
     <File Path="tests/Directory.Build.props" />
     <Project Path="tests/Asm.MooBank.Abs.Tests/Asm.MooBank.Abs.Tests.csproj" />
     <Project Path="tests/Asm.MooBank.Core.Tests/Asm.MooBank.Core.Tests.csproj" />
     <Project Path="tests/Asm.MooBank.Domain.Tests/Asm.MooBank.Domain.Tests.csproj" />
+    <Project Path="tests/Asm.MooBank.Modules.Accounts.Tests/Asm.MooBank.Modules.Accounts.Tests.csproj" />
+    <Project Path="tests/Asm.MooBank.Modules.Assets.Tests/Asm.MooBank.Modules.Assets.Tests.csproj" />
+    <Project Path="tests/Asm.MooBank.Modules.Bills.Tests/Asm.MooBank.Modules.Bills.Tests.csproj" />
+    <Project Path="tests/Asm.MooBank.Modules.Institutions.Tests/Asm.MooBank.Modules.Institutions.Tests.csproj" />
     <Project Path="tests/Asm.MooBank.Modules.Tests/Asm.MooBank.Modules.Tests.csproj" />
   </Folder>
   <Project Path="src/Asm.MooBank.AppHost/Asm.MooBank.AppHost.csproj" />

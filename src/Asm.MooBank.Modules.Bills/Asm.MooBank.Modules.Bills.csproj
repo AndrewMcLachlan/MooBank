@@ -18,4 +18,8 @@
     <Using Include="Microsoft.EntityFrameworkCore" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="Asm.MooBank.Modules.Bills.Tests" />
+  </ItemGroup>
+
 </Project>

@@ -12,4 +12,8 @@
     <ProjectReference Include="..\Asm.MooBank.Security\Asm.MooBank.Security.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="Asm.MooBank.Modules.Assets.Tests" />
+  </ItemGroup>
+
 </Project>
