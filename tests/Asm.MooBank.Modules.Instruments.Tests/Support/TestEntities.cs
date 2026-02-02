@@ -154,12 +154,12 @@ internal static class TestEntities
         };
     }
 
-    public static Models.Rules.UpdateRule CreateUpdateRule(
+    public static Instruments.Models.Rules.UpdateRule CreateUpdateRule(
         string? contains = null,
         string? description = null,
         IEnumerable<MooBank.Models.Tag>? tags = null)
     {
-        return new Models.Rules.UpdateRule
+        return new Instruments.Models.Rules.UpdateRule
         {
             Contains = contains ?? Faker.Commerce.ProductName(),
             Description = description ?? Faker.Lorem.Sentence(),

@@ -163,7 +163,7 @@ public class CreateTests
             _mocks.CurrencyConverterMock.Object);
 
         // Create model directly to ensure null description
-        var createModel = new Models.Virtual.CreateVirtualInstrument
+        var createModel = new Instruments.Models.Virtual.CreateVirtualInstrument
         {
             Name = "No Description",
             Description = null,

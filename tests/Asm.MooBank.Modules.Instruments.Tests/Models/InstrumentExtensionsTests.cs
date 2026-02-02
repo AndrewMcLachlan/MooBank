@@ -422,10 +422,13 @@ public class InstrumentExtensionsTests
             Id = Guid.NewGuid(),
             Name = "Test",
             CurrentBalance = 1000m,
+            CurrentBalanceLocalCurrency = 1000m,
+            Controller = Controller.Manual,
+            Currency = "AUD",
             VirtualInstruments = new[]
             {
-                new VirtualInstrument { Id = Guid.NewGuid(), Name = "A", CurrentBalance = 300m },
-                new VirtualInstrument { Id = Guid.NewGuid(), Name = "B", CurrentBalance = 200m }
+                new MooBank.Models.VirtualInstrument { Id = Guid.NewGuid(), Name = "A", CurrentBalance = 300m, CurrentBalanceLocalCurrency = 300m, Controller = Controller.Virtual,Currency = "AUD", },
+                new MooBank.Models.VirtualInstrument { Id = Guid.NewGuid(), Name = "B", CurrentBalance = 200m, CurrentBalanceLocalCurrency = 300m, Controller = Controller.Virtual,Currency = "AUD", }
             }
         };
 
@@ -445,7 +448,10 @@ public class InstrumentExtensionsTests
             Id = Guid.NewGuid(),
             Name = "Test",
             CurrentBalance = 1000m,
-            VirtualInstruments = null
+            CurrentBalanceLocalCurrency = 1000m,
+            Controller = Controller.Manual,
+            Currency = "AUD",
+            VirtualInstruments = null!
         };
 
         // Act
@@ -464,6 +470,9 @@ public class InstrumentExtensionsTests
             Id = Guid.NewGuid(),
             Name = "Test",
             CurrentBalance = 1000m,
+            CurrentBalanceLocalCurrency = 1000m,
+            Controller = Controller.Manual,
+            Currency = "AUD",
             VirtualInstruments = []
         };
 
