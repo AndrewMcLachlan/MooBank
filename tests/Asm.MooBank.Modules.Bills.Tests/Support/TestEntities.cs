@@ -40,6 +40,7 @@ internal static class TestEntities
             foreach (var bill in bills)
             {
                 bill.AccountId = accountId;
+                bill.Account = account; // Set navigation property
                 account.Bills.Add(bill);
             }
         }
@@ -164,5 +165,84 @@ internal static class TestEntities
     public static IQueryable<DomainAccount> CreateAccountQueryable(params DomainAccount[] accounts)
     {
         return CreateAccountQueryable(accounts.AsEnumerable());
+    }
+
+    public static DomainAccount CreateAccountWithOwner(
+        Guid? id = null,
+        string? name = null,
+        UtilityType utilityType = UtilityType.Electricity,
+        Guid? ownerId = null,
+        IEnumerable<Bill>? bills = null)
+    {
+        var accountId = id ?? Guid.NewGuid();
+        var account = CreateAccount(
+            id: accountId,
+            name: name,
+            utilityType: utilityType,
+            bills: bills);
+
+        var owner = new Domain.Entities.Instrument.InstrumentOwner
+        {
+            UserId = ownerId ?? Guid.NewGuid(),
+            InstrumentId = accountId,
+        };
+        account.Owners.Add(owner);
+
+        return account;
+    }
+
+    public static Models.ImportBill CreateImportBill(
+        string accountName = "Test Account",
+        DateOnly? issueDate = null,
+        string? invoiceNumber = null,
+        decimal cost = 100m,
+        bool costsIncludeGST = true,
+        int? currentReading = null,
+        int? previousReading = null,
+        IEnumerable<Models.Period>? periods = null,
+        IEnumerable<Models.Discount>? discounts = null)
+    {
+        return new Models.ImportBill
+        {
+            AccountName = accountName,
+            IssueDate = issueDate ?? DateOnly.FromDateTime(DateTime.UtcNow),
+            InvoiceNumber = invoiceNumber ?? Faker.Random.AlphaNumeric(10),
+            Cost = cost,
+            CostsIncludeGST = costsIncludeGST,
+            CurrentReading = currentReading,
+            PreviousReading = previousReading,
+            Periods = periods ?? [],
+            Discounts = discounts ?? [],
+        };
+    }
+
+    public static Models.Period CreateModelPeriod(
+        DateTime? periodStart = null,
+        DateTime? periodEnd = null,
+        decimal chargePerDay = 1.0m,
+        decimal pricePerUnit = 0.25m,
+        int totalUsage = 500)
+    {
+        return new Models.Period
+        {
+            PeriodStart = periodStart ?? DateTime.UtcNow.AddMonths(-1),
+            PeriodEnd = periodEnd ?? DateTime.UtcNow,
+            ChargePerDay = chargePerDay,
+            PricePerUnit = pricePerUnit,
+            TotalUsage = totalUsage,
+        };
+    }
+
+    public static Models.Discount CreateModelDiscount(
+        byte? discountPercent = null,
+        decimal? discountAmount = null,
+        string reason = "Discount")
+    {
+        return new Models.Discount
+        {
+            DiscountPercent = discountPercent,
+            DiscountAmount = discountAmount,
+            Reason = reason,
+        };
     }
 }

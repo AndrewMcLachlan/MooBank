@@ -1,5 +1,6 @@
 using Asm.Domain;
 using Asm.MooBank.Domain.Entities.Account;
+using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Models;
 using Asm.MooBank.Security;
 using Asm.MooBank.Services;
@@ -19,6 +20,8 @@ public class TestMocks
 
         LogicalAccountRepositoryMock = new Mock<ILogicalAccountRepository>();
 
+        InstrumentRepositoryMock = new Mock<IInstrumentRepository>();
+
         CurrencyConverterMock = new Mock<ICurrencyConverter>();
         CurrencyConverterMock.Setup(c => c.Convert(It.IsAny<decimal>(), It.IsAny<string>()))
             .Returns<decimal, string>((amount, _) => amount);
@@ -31,6 +34,8 @@ public class TestMocks
     public Mock<ISecurity> SecurityMock { get; }
 
     public Mock<ILogicalAccountRepository> LogicalAccountRepositoryMock { get; }
+
+    public Mock<IInstrumentRepository> InstrumentRepositoryMock { get; }
 
     public Mock<ICurrencyConverter> CurrencyConverterMock { get; }
 
