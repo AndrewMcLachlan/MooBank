@@ -1,10 +1,12 @@
 #nullable enable
 using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Models;
+using Asm.MooBank.Modules.Instruments.Models.Virtual;
 using Bogus;
 using DomainInstrument = Asm.MooBank.Domain.Entities.Instrument.Instrument;
 using DomainRule = Asm.MooBank.Domain.Entities.Instrument.Rule;
 using DomainTag = Asm.MooBank.Domain.Entities.Tag.Tag;
+using DomainVirtualInstrument = Asm.MooBank.Domain.Entities.Account.VirtualInstrument;
 
 namespace Asm.MooBank.Modules.Instruments.Tests.Support;
 
@@ -18,7 +20,8 @@ internal static class TestEntities
         string? description = null,
         string currency = "AUD",
         AccountType accountType = AccountType.Transaction,
-        IEnumerable<DomainRule>? rules = null)
+        IEnumerable<DomainRule>? rules = null,
+        IEnumerable<DomainVirtualInstrument>? virtualInstruments = null)
     {
         var instrumentId = id ?? Guid.NewGuid();
         var instrument = new LogicalAccount(instrumentId, [])
@@ -38,7 +41,63 @@ internal static class TestEntities
             }
         }
 
+        if (virtualInstruments != null)
+        {
+            foreach (var vi in virtualInstruments)
+            {
+                vi.ParentInstrumentId = instrumentId;
+                instrument.AddVirtualInstrument(vi, 0m);
+            }
+            // Clear events raised by AddVirtualInstrument so tests start clean
+            instrument.Events.Clear();
+        }
+
         return instrument;
+    }
+
+    public static DomainVirtualInstrument CreateVirtualInstrument(
+        Guid? id = null,
+        Guid? parentId = null,
+        string? name = null,
+        string? description = null,
+        string currency = "AUD",
+        decimal balance = 0m,
+        Controller controller = Controller.Virtual)
+    {
+        return new DomainVirtualInstrument(id ?? Guid.NewGuid())
+        {
+            ParentInstrumentId = parentId ?? Guid.NewGuid(),
+            Name = name ?? Faker.Finance.AccountName(),
+            Description = description ?? Faker.Lorem.Sentence(),
+            Currency = currency,
+            Balance = balance,
+            Controller = controller,
+        };
+    }
+
+    public static CreateVirtualInstrument CreateVirtualInstrumentModel(
+        string? name = null,
+        string? description = null,
+        decimal openingBalance = 0m,
+        Controller controller = Controller.Virtual)
+    {
+        return new CreateVirtualInstrument
+        {
+            Name = name ?? Faker.Finance.AccountName(),
+            Description = description ?? Faker.Lorem.Sentence(),
+            OpeningBalance = openingBalance,
+            Controller = controller,
+        };
+    }
+
+    public static IQueryable<LogicalAccount> CreateLogicalAccountQueryable(IEnumerable<LogicalAccount> accounts)
+    {
+        return QueryableHelper.CreateAsyncQueryable(accounts);
+    }
+
+    public static IQueryable<LogicalAccount> CreateLogicalAccountQueryable(params LogicalAccount[] accounts)
+    {
+        return CreateLogicalAccountQueryable(accounts.AsEnumerable());
     }
 
     public static DomainRule CreateRule(
