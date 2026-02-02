@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="Asm.MooBank.Modules.Accounts.Tests" />
     <InternalsVisibleTo Include="Asm.MooBank.Modules.Tests" />
   </ItemGroup>
 

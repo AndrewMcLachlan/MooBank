@@ -12,7 +12,7 @@ public static class TestDbContextFactory
     /// <summary>
     /// Creates a new in-memory MooBankContext for testing.
     /// </summary>
-    public static MooBankContext Create(string databaseName = null)
+    public static MooBankContext Create(string? databaseName = null)
     {
         databaseName ??= Guid.NewGuid().ToString();
 
