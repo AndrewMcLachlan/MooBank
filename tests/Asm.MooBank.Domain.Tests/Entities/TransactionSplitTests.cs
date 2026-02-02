@@ -1,90 +1,32 @@
+using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Domain.Entities.Transactions;
-using Asm.MooBank.Domain.Tests.Support;
 
 namespace Asm.MooBank.Domain.Tests.Entities;
 
 /// <summary>
-/// Unit tests for the <see cref="TransactionSplit"/> domain entity.
-/// Tests cover tag management, offset handling, and net amount calculations.
+/// Unit tests for the <see cref="TransactionSplit"/> entity.
+/// Tests verify tag management and net amount calculations.
 /// </summary>
 public class TransactionSplitTests
 {
-    private readonly TestEntities _entities = new();
-
-    #region UpdateTags
-
-    /// <summary>
-    /// Given a TransactionSplit with no tags
-    /// When UpdateTags is called with two tags
-    /// Then the split should have two tags
-    /// </summary>
-    [Fact]
-    [Trait("Category", "Unit")]
-    public void UpdateTags_AddingNewTags_AddsTagsToCollection()
-    {
-        // Arrange
-        var split = new TransactionSplit(Guid.NewGuid())
-        {
-            TransactionId = TestModels.TransactionId,
-            Amount = 100m,
-            Tags = [],
-        };
-        var tags = new[] { _entities.CreateTag(1, "Groceries"), _entities.CreateTag(2, "Food") };
-
-        // Act
-        split.UpdateTags(tags);
-
-        // Assert
-        Assert.Equal(2, split.Tags.Count);
-    }
-
-    /// <summary>
-    /// Given a TransactionSplit with tags "Groceries", "Food", "Shopping"
-    /// When UpdateTags is called with only "Groceries"
-    /// Then the split should have only one tag
-    /// </summary>
-    [Fact]
-    [Trait("Category", "Unit")]
-    public void UpdateTags_RemovingTags_RemovesTagsNotInUpdate()
-    {
-        // Arrange
-        var split = new TransactionSplit(Guid.NewGuid())
-        {
-            TransactionId = TestModels.TransactionId,
-            Amount = 100m,
-            Tags = [
-                _entities.CreateTag(1, "Groceries"),
-                _entities.CreateTag(2, "Food"),
-                _entities.CreateTag(3, "Shopping"),
-            ],
-        };
-
-        // Act
-        split.UpdateTags([_entities.CreateTag(1, "Groceries")]);
-
-        // Assert
-        Assert.Single(split.Tags);
-        Assert.Equal("Groceries", split.Tags.First().Name);
-    }
-
-    #endregion
+    private static readonly Guid FamilyId = Guid.NewGuid();
 
     #region GetNetAmount
 
     /// <summary>
-    /// Given a TransactionSplit with amount 100 and no offsets
+    /// Given a split with no offsets
     /// When GetNetAmount is called
-    /// Then it should return 100
+    /// Then it should return the full amount
     /// </summary>
     [Fact]
     [Trait("Category", "Unit")]
-    public void GetNetAmount_WithNoOffsets_ReturnsFullAmount()
+    public void GetNetAmount_NoOffsets_ReturnsFullAmount()
     {
         // Arrange
-        var split = new TransactionSplit(Guid.NewGuid())
+        var split = new TransactionSplit
         {
-            TransactionId = TestModels.TransactionId,
             Amount = 100m,
+            OffsetBy = []
         };
 
         // Act
@@ -95,26 +37,23 @@ public class TransactionSplitTests
     }
 
     /// <summary>
-    /// Given a TransactionSplit with amount 100 and an offset of 25
+    /// Given a split with one offset
     /// When GetNetAmount is called
-    /// Then it should return 75
+    /// Then it should return amount minus offset
     /// </summary>
     [Fact]
     [Trait("Category", "Unit")]
-    public void GetNetAmount_WithOffset_ReturnsAmountMinusOffset()
+    public void GetNetAmount_WithOneOffset_SubtractsOffset()
     {
         // Arrange
-        var split = new TransactionSplit(Guid.NewGuid())
+        var split = new TransactionSplit
         {
-            TransactionId = TestModels.TransactionId,
             Amount = 100m,
+            OffsetBy =
+            [
+                new TransactionOffset { Amount = 25m }
+            ]
         };
-        split.OffsetBy.Add(new TransactionOffset
-        {
-            TransactionSplitId = split.Id,
-            OffsetTransactionId = Guid.NewGuid(),
-            Amount = 25m,
-        });
 
         // Act
         var netAmount = split.GetNetAmount();
@@ -123,32 +62,338 @@ public class TransactionSplitTests
         Assert.Equal(75m, netAmount);
     }
 
+    /// <summary>
+    /// Given a split with multiple offsets
+    /// When GetNetAmount is called
+    /// Then it should return amount minus sum of all offsets
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void GetNetAmount_WithMultipleOffsets_SubtractsAllOffsets()
+    {
+        // Arrange
+        var split = new TransactionSplit
+        {
+            Amount = 100m,
+            OffsetBy =
+            [
+                new TransactionOffset { Amount = 20m },
+                new TransactionOffset { Amount = 30m },
+                new TransactionOffset { Amount = 10m }
+            ]
+        };
+
+        // Act
+        var netAmount = split.GetNetAmount();
+
+        // Assert
+        Assert.Equal(40m, netAmount); // 100 - 20 - 30 - 10
+    }
+
+    /// <summary>
+    /// Given a split with offsets totaling the full amount
+    /// When GetNetAmount is called
+    /// Then it should return zero
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void GetNetAmount_OffsetsEqualAmount_ReturnsZero()
+    {
+        // Arrange
+        var split = new TransactionSplit
+        {
+            Amount = 100m,
+            OffsetBy =
+            [
+                new TransactionOffset { Amount = 100m }
+            ]
+        };
+
+        // Act
+        var netAmount = split.GetNetAmount();
+
+        // Assert
+        Assert.Equal(0m, netAmount);
+    }
+
+    /// <summary>
+    /// Given a split with offsets exceeding the amount
+    /// When GetNetAmount is called
+    /// Then it should return a negative value
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void GetNetAmount_OffsetsExceedAmount_ReturnsNegative()
+    {
+        // Arrange
+        var split = new TransactionSplit
+        {
+            Amount = 50m,
+            OffsetBy =
+            [
+                new TransactionOffset { Amount = 75m }
+            ]
+        };
+
+        // Act
+        var netAmount = split.GetNetAmount();
+
+        // Assert
+        Assert.Equal(-25m, netAmount);
+    }
+
+    /// <summary>
+    /// Given a split with zero amount and no offsets
+    /// When GetNetAmount is called
+    /// Then it should return zero
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void GetNetAmount_ZeroAmount_ReturnsZero()
+    {
+        // Arrange
+        var split = new TransactionSplit
+        {
+            Amount = 0m,
+            OffsetBy = []
+        };
+
+        // Act
+        var netAmount = split.GetNetAmount();
+
+        // Assert
+        Assert.Equal(0m, netAmount);
+    }
+
+    #endregion
+
+    #region UpdateTags - Adding Tags
+
+    /// <summary>
+    /// Given a split with no tags
+    /// When UpdateTags is called with new tags
+    /// Then those tags should be added
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void UpdateTags_EmptySplit_AddsNewTags()
+    {
+        // Arrange
+        var split = new TransactionSplit { Tags = [] };
+        var newTags = new List<Tag>
+        {
+            CreateTag(1, "Groceries"),
+            CreateTag(2, "Food"),
+        };
+
+        // Act
+        split.UpdateTags(newTags);
+
+        // Assert
+        Assert.Equal(2, split.Tags.Count);
+        Assert.Contains(split.Tags, t => t.Id == 1);
+        Assert.Contains(split.Tags, t => t.Id == 2);
+    }
+
+    /// <summary>
+    /// Given a split with existing tags
+    /// When UpdateTags is called with additional tags
+    /// Then only new tags should be added
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void UpdateTags_ExistingTags_AddsOnlyNewTags()
+    {
+        // Arrange
+        var existingTag = CreateTag(1, "Groceries");
+        var split = new TransactionSplit { Tags = [existingTag] };
+        var newTags = new List<Tag>
+        {
+            CreateTag(1, "Groceries"), // Already exists
+            CreateTag(2, "Food"),       // New
+        };
+
+        // Act
+        split.UpdateTags(newTags);
+
+        // Assert
+        Assert.Equal(2, split.Tags.Count);
+    }
+
+    #endregion
+
+    #region UpdateTags - Removing Tags
+
+    /// <summary>
+    /// Given a split with tags
+    /// When UpdateTags is called without some tags
+    /// Then missing tags should be removed
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void UpdateTags_MissingTags_RemovesTags()
+    {
+        // Arrange
+        var split = new TransactionSplit
+        {
+            Tags =
+            [
+                CreateTag(1, "Groceries"),
+                CreateTag(2, "Food"),
+                CreateTag(3, "Shopping"),
+            ]
+        };
+        var remainingTags = new List<Tag>
+        {
+            CreateTag(1, "Groceries"), // Keep
+            CreateTag(3, "Shopping"),  // Keep
+        };
+
+        // Act
+        split.UpdateTags(remainingTags);
+
+        // Assert
+        Assert.Equal(2, split.Tags.Count);
+        Assert.DoesNotContain(split.Tags, t => t.Id == 2);
+    }
+
+    /// <summary>
+    /// Given a split with tags
+    /// When UpdateTags is called with empty list
+    /// Then all tags should be removed
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void UpdateTags_EmptyList_RemovesAllTags()
+    {
+        // Arrange
+        var split = new TransactionSplit
+        {
+            Tags =
+            [
+                CreateTag(1, "Groceries"),
+                CreateTag(2, "Food"),
+            ]
+        };
+
+        // Act
+        split.UpdateTags([]);
+
+        // Assert
+        Assert.Empty(split.Tags);
+    }
+
+    #endregion
+
+    #region UpdateTags - Mixed Operations
+
+    /// <summary>
+    /// Given a split with tags
+    /// When UpdateTags is called with some new and some removed
+    /// Then tags should be correctly added and removed
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void UpdateTags_MixedChanges_AddAndRemoveCorrectly()
+    {
+        // Arrange
+        var split = new TransactionSplit
+        {
+            Tags =
+            [
+                CreateTag(1, "Groceries"),   // Keep
+                CreateTag(2, "OldTag"),      // Remove
+            ]
+        };
+        var updatedTags = new List<Tag>
+        {
+            CreateTag(1, "Groceries"), // Keep
+            CreateTag(3, "NewTag"),    // Add
+        };
+
+        // Act
+        split.UpdateTags(updatedTags);
+
+        // Assert
+        Assert.Equal(2, split.Tags.Count);
+        Assert.Contains(split.Tags, t => t.Id == 1);
+        Assert.Contains(split.Tags, t => t.Id == 3);
+        Assert.DoesNotContain(split.Tags, t => t.Id == 2);
+    }
+
+    /// <summary>
+    /// Given a split with tags
+    /// When UpdateTags is called with same tags
+    /// Then no changes should occur
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void UpdateTags_SameTags_NoChanges()
+    {
+        // Arrange
+        var tag1 = CreateTag(1, "Groceries");
+        var tag2 = CreateTag(2, "Food");
+        var split = new TransactionSplit { Tags = [tag1, tag2] };
+        var sameTags = new List<Tag>
+        {
+            CreateTag(1, "Groceries"),
+            CreateTag(2, "Food"),
+        };
+
+        // Act
+        split.UpdateTags(sameTags);
+
+        // Assert
+        Assert.Equal(2, split.Tags.Count);
+    }
+
     #endregion
 
     #region RemoveOffset
 
     /// <summary>
-    /// Given a TransactionSplit with one offset
-    /// When RemoveOffset is called with that offset
-    /// Then the OffsetBy collection should be empty
+    /// Given a split with offsets
+    /// When RemoveOffset is called
+    /// Then the specified offset should be removed
     /// </summary>
     [Fact]
     [Trait("Category", "Unit")]
-    public void RemoveOffset_WithExistingOffset_RemovesFromCollection()
+    public void RemoveOffset_RemovesSpecifiedOffset()
     {
         // Arrange
-        var split = new TransactionSplit(Guid.NewGuid())
+        var offset1 = new TransactionOffset { OffsetTransactionId = Guid.NewGuid(), Amount = 25m };
+        var offset2 = new TransactionOffset { OffsetTransactionId = Guid.NewGuid(), Amount = 50m };
+        var split = new TransactionSplit
         {
-            TransactionId = TestModels.TransactionId,
             Amount = 100m,
+            OffsetBy = [offset1, offset2]
         };
-        var offset = new TransactionOffset
+
+        // Act
+        split.RemoveOffset(offset1);
+
+        // Assert
+        Assert.Single(split.OffsetBy);
+        Assert.Contains(offset2, split.OffsetBy);
+        Assert.DoesNotContain(offset1, split.OffsetBy);
+    }
+
+    /// <summary>
+    /// Given a split with one offset
+    /// When RemoveOffset is called
+    /// Then the offsets collection should be empty
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void RemoveOffset_LastOffset_CollectionEmpty()
+    {
+        // Arrange
+        var offset = new TransactionOffset { OffsetTransactionId = Guid.NewGuid(), Amount = 25m };
+        var split = new TransactionSplit
         {
-            TransactionSplitId = split.Id,
-            OffsetTransactionId = Guid.NewGuid(),
-            Amount = 25m,
+            Amount = 100m,
+            OffsetBy = [offset]
         };
-        split.OffsetBy.Add(offset);
 
         // Act
         split.RemoveOffset(offset);
@@ -159,97 +404,12 @@ public class TransactionSplitTests
 
     #endregion
 
-    #region Multiple Offsets
-
-    /// <summary>
-    /// Given a TransactionSplit with amount 100 and multiple offsets totaling 40
-    /// When GetNetAmount is called
-    /// Then it should return 60
-    /// </summary>
-    [Fact]
-    [Trait("Category", "Unit")]
-    public void GetNetAmount_WithMultipleOffsets_ReturnsAmountMinusTotalOffsets()
+    private Tag CreateTag(int id, string name)
     {
-        // Arrange
-        var split = new TransactionSplit(Guid.NewGuid())
+        return new Tag(id)
         {
-            TransactionId = TestModels.TransactionId,
-            Amount = 100m,
+            Name = name,
+            FamilyId = FamilyId,
         };
-        split.OffsetBy.Add(new TransactionOffset
-        {
-            TransactionSplitId = split.Id,
-            OffsetTransactionId = Guid.NewGuid(),
-            Amount = 25m,
-        });
-        split.OffsetBy.Add(new TransactionOffset
-        {
-            TransactionSplitId = split.Id,
-            OffsetTransactionId = Guid.NewGuid(),
-            Amount = 15m,
-        });
-
-        // Act
-        var netAmount = split.GetNetAmount();
-
-        // Assert
-        Assert.Equal(60m, netAmount);
     }
-
-    #endregion
-
-    #region UpdateTags Edge Cases
-
-    /// <summary>
-    /// Given a TransactionSplit with no tags
-    /// When UpdateTags is called with empty collection
-    /// Then Tags should remain empty
-    /// </summary>
-    [Fact]
-    [Trait("Category", "Unit")]
-    public void UpdateTags_WithEmptyCollection_KeepsTagsEmpty()
-    {
-        // Arrange
-        var split = new TransactionSplit(Guid.NewGuid())
-        {
-            TransactionId = TestModels.TransactionId,
-            Amount = 100m,
-            Tags = [],
-        };
-
-        // Act
-        split.UpdateTags([]);
-
-        // Assert
-        Assert.Empty(split.Tags);
-    }
-
-    /// <summary>
-    /// Given a TransactionSplit with tags
-    /// When UpdateTags is called with an empty collection
-    /// Then all tags should be removed
-    /// </summary>
-    [Fact]
-    [Trait("Category", "Unit")]
-    public void UpdateTags_WithEmptyCollectionFromTags_RemovesAllTags()
-    {
-        // Arrange
-        var split = new TransactionSplit(Guid.NewGuid())
-        {
-            TransactionId = TestModels.TransactionId,
-            Amount = 100m,
-            Tags = [
-                _entities.CreateTag(1, "Groceries"),
-                _entities.CreateTag(2, "Food"),
-            ],
-        };
-
-        // Act
-        split.UpdateTags([]);
-
-        // Assert
-        Assert.Empty(split.Tags);
-    }
-
-    #endregion
 }

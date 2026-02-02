@@ -1,22 +1,134 @@
 using Asm.MooBank.Domain.Entities.Transactions;
+using Asm.MooBank.Domain.Entities.Transactions.Events;
 using Asm.MooBank.Domain.Tests.Support;
 using Asm.MooBank.Models;
-using Transaction = Asm.MooBank.Domain.Entities.Transactions.Transaction;
+using DomainTransaction = Asm.MooBank.Domain.Entities.Transactions.Transaction;
 
 namespace Asm.MooBank.Domain.Tests.Entities;
 
 /// <summary>
-/// Unit tests for the <see cref="Transaction"/> domain entity.
-/// Tests cover creation, type determination, split management, and net amount calculations.
+/// Unit tests for the <see cref="DomainTransaction"/> entity.
+/// Tests verify factory methods, type determination, split management, and property calculations.
 /// </summary>
 public class TransactionTests
 {
+    private static readonly Guid AccountId = Guid.NewGuid();
+    private static readonly Guid UserId = Guid.NewGuid();
     private readonly TestEntities _entities = new();
 
-    #region Transaction.Create
+    #region Transaction.Create - Type Determination
 
     /// <summary>
     /// Given a negative amount
+    /// When Transaction.Create is called
+    /// Then the transaction type should be Debit
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void Create_WithNegativeAmount_SetsTypeToDebit()
+    {
+        // Arrange
+        var amount = -50m;
+
+        // Act
+        var transaction = DomainTransaction.Create(
+            AccountId,
+            UserId,
+            amount,
+            "Test",
+            DateTime.UtcNow,
+            null,
+            "Test",
+            null);
+
+        // Assert
+        Assert.Equal(TransactionType.Debit, transaction.TransactionType);
+    }
+
+    /// <summary>
+    /// Given a positive amount
+    /// When Transaction.Create is called
+    /// Then the transaction type should be Credit
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void Create_WithPositiveAmount_SetsTypeToCredit()
+    {
+        // Arrange
+        var amount = 100m;
+
+        // Act
+        var transaction = DomainTransaction.Create(
+            AccountId,
+            UserId,
+            amount,
+            "Test",
+            DateTime.UtcNow,
+            null,
+            "Test",
+            null);
+
+        // Assert
+        Assert.Equal(TransactionType.Credit, transaction.TransactionType);
+    }
+
+    /// <summary>
+    /// Given a zero amount
+    /// When Transaction.Create is called
+    /// Then the transaction type should be Credit (not negative)
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void Create_WithZeroAmount_SetsTypeToCredit()
+    {
+        // Arrange
+        var amount = 0m;
+
+        // Act
+        var transaction = DomainTransaction.Create(
+            AccountId,
+            UserId,
+            amount,
+            "Test",
+            DateTime.UtcNow,
+            null,
+            "Test",
+            null);
+
+        // Assert
+        Assert.Equal(TransactionType.Credit, transaction.TransactionType);
+    }
+
+    /// <summary>
+    /// Given an explicit transaction type override
+    /// When Transaction.Create is called with transactionType parameter
+    /// Then the specified type should be used
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void Create_WithExplicitType_UsesSpecifiedType()
+    {
+        // Arrange
+        var amount = -50m; // Would normally be Debit
+
+        // Act
+        var transaction = DomainTransaction.Create(
+            AccountId,
+            UserId,
+            amount,
+            "Test",
+            DateTime.UtcNow,
+            null,
+            "Test",
+            null,
+            TransactionType.Credit); // Override to Credit
+
+        // Assert
+        Assert.Equal(TransactionType.Credit, transaction.TransactionType);
+    }
+
+    /// <summary>
+    /// Given various negative amounts
     /// When Transaction.Create is called
     /// Then TransactionType should be Debit
     /// </summary>
@@ -25,7 +137,7 @@ public class TransactionTests
     [InlineData(-0.01)]
     [InlineData(-1000.00)]
     [Trait("Category", "Unit")]
-    public void Create_WithNegativeAmount_SetsTransactionTypeToDebit(decimal amount)
+    public void Create_WithVariousNegativeAmounts_SetsTransactionTypeToDebit(decimal amount)
     {
         // Act
         var transaction = _entities.CreateTransaction(amount);
@@ -35,7 +147,7 @@ public class TransactionTests
     }
 
     /// <summary>
-    /// Given a positive amount
+    /// Given various positive amounts
     /// When Transaction.Create is called
     /// Then TransactionType should be Credit
     /// </summary>
@@ -44,13 +156,214 @@ public class TransactionTests
     [InlineData(0.01)]
     [InlineData(1000.00)]
     [Trait("Category", "Unit")]
-    public void Create_WithPositiveAmount_SetsTransactionTypeToCredit(decimal amount)
+    public void Create_WithVariousPositiveAmounts_SetsTransactionTypeToCredit(decimal amount)
     {
         // Act
         var transaction = _entities.CreateTransaction(amount);
 
         // Assert
         Assert.Equal(TransactionType.Credit, transaction.TransactionType);
+    }
+
+    #endregion
+
+    #region Transaction.Create - Property Assignment
+
+    /// <summary>
+    /// Given transaction parameters
+    /// When Transaction.Create is called
+    /// Then all properties should be correctly assigned
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void Create_AssignsAllProperties()
+    {
+        // Arrange
+        var amount = -75.50m;
+        var description = "Test Transaction";
+        var transactionTime = new DateTime(2024, 6, 15, 10, 30, 0);
+        var subType = TransactionSubType.OpeningBalance;
+        var source = "Import";
+        var institutionAccountId = Guid.NewGuid();
+
+        // Act
+        var transaction = DomainTransaction.Create(
+            AccountId,
+            UserId,
+            amount,
+            description,
+            transactionTime,
+            subType,
+            source,
+            institutionAccountId);
+
+        // Assert
+        Assert.Equal(AccountId, transaction.AccountId);
+        Assert.Equal(UserId, transaction.AccountHolderId);
+        Assert.Equal(amount, transaction.Amount);
+        Assert.Equal(description, transaction.Description);
+        Assert.Equal(transactionTime, transaction.TransactionTime);
+        Assert.Equal(subType, transaction.TransactionSubType);
+        Assert.Equal(source, transaction.Source);
+        Assert.Equal(institutionAccountId, transaction.InstitutionAccountId);
+    }
+
+    /// <summary>
+    /// Given null description
+    /// When Transaction.Create is called
+    /// Then description should be null
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void Create_WithNullDescription_AllowsNull()
+    {
+        // Act
+        var transaction = DomainTransaction.Create(
+            AccountId,
+            UserId,
+            -50m,
+            null,
+            DateTime.UtcNow,
+            null,
+            "Test",
+            null);
+
+        // Assert
+        Assert.Null(transaction.Description);
+    }
+
+    /// <summary>
+    /// Given null account holder ID
+    /// When Transaction.Create is called
+    /// Then account holder ID should be null
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void Create_WithNullAccountHolder_AllowsNull()
+    {
+        // Act
+        var transaction = DomainTransaction.Create(
+            AccountId,
+            null,
+            -50m,
+            "Test",
+            DateTime.UtcNow,
+            null,
+            "Test",
+            null);
+
+        // Assert
+        Assert.Null(transaction.AccountHolderId);
+    }
+
+    #endregion
+
+    #region Transaction.Create - Events
+
+    /// <summary>
+    /// Given valid parameters
+    /// When Transaction.Create is called
+    /// Then a TransactionAddedEvent should be raised
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void Create_RaisesTransactionAddedEvent()
+    {
+        // Act
+        var transaction = DomainTransaction.Create(
+            AccountId,
+            UserId,
+            -50m,
+            "Test",
+            DateTime.UtcNow,
+            null,
+            "Test",
+            null);
+
+        // Assert
+        Assert.Single(transaction.Events);
+        Assert.IsType<TransactionAddedEvent>(transaction.Events.First());
+    }
+
+    /// <summary>
+    /// Given valid parameters
+    /// When Transaction.Create is called
+    /// Then the event should contain the created transaction
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void Create_EventContainsTransaction()
+    {
+        // Act
+        var transaction = DomainTransaction.Create(
+            AccountId,
+            UserId,
+            -50m,
+            "Test",
+            DateTime.UtcNow,
+            null,
+            "Test",
+            null);
+
+        // Assert
+        var addedEvent = transaction.Events.First() as TransactionAddedEvent;
+        Assert.NotNull(addedEvent);
+        Assert.Same(transaction, addedEvent.Transaction);
+    }
+
+    #endregion
+
+    #region Transaction.Create - Minimum Split
+
+    /// <summary>
+    /// Given valid parameters
+    /// When Transaction.Create is called
+    /// Then at least one split should be created
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void Create_CreatesMinimumSplit()
+    {
+        // Act
+        var transaction = DomainTransaction.Create(
+            AccountId,
+            UserId,
+            -50m,
+            "Test",
+            DateTime.UtcNow,
+            null,
+            "Test",
+            null);
+
+        // Assert
+        Assert.Single(transaction.Splits);
+    }
+
+    /// <summary>
+    /// Given a transaction amount
+    /// When Transaction.Create is called
+    /// Then the split amount should be the absolute value of the transaction amount
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void Create_SplitHasAbsoluteAmount()
+    {
+        // Arrange
+        var amount = -75.50m;
+
+        // Act
+        var transaction = DomainTransaction.Create(
+            AccountId,
+            UserId,
+            amount,
+            "Test",
+            DateTime.UtcNow,
+            null,
+            "Test",
+            null);
+
+        // Assert
+        Assert.Equal(75.50m, transaction.Splits.First().Amount);
     }
 
     /// <summary>
@@ -72,37 +385,29 @@ public class TransactionTests
         Assert.Equal(expectedSplitAmount, transaction.Splits.First().Amount);
     }
 
-    /// <summary>
-    /// Given any amount
-    /// When Transaction.Create is called
-    /// Then a TransactionAddedEvent domain event should be raised
-    /// </summary>
-    [Fact]
-    [Trait("Category", "Unit")]
-    public void Create_Always_RaisesTransactionAddedEvent()
-    {
-        // Act
-        var transaction = _entities.CreateTransaction(-25.00m);
-
-        // Assert
-        Assert.Contains(transaction.Events, e => e.GetType().Name == "TransactionAddedEvent");
-    }
-
     #endregion
 
-    #region NetAmount
+    #region Transaction.NetAmount
 
     /// <summary>
     /// Given a debit transaction with no offsets
-    /// When NetAmount is accessed
-    /// Then it should return the negated split amount (debits are negative)
+    /// When NetAmount is calculated
+    /// Then it should return the negative of the split amount
     /// </summary>
     [Fact]
     [Trait("Category", "Unit")]
-    public void NetAmount_DebitWithNoOffsets_ReturnsNegatedSplitAmount()
+    public void NetAmount_DebitNoOffsets_ReturnsNegativeSplitAmount()
     {
         // Arrange
-        var transaction = _entities.CreateDebitTransaction(100m);
+        var transaction = DomainTransaction.Create(
+            AccountId,
+            UserId,
+            -100m,
+            "Test",
+            DateTime.UtcNow,
+            null,
+            "Test",
+            null);
 
         // Act
         var netAmount = transaction.NetAmount;
@@ -113,21 +418,29 @@ public class TransactionTests
 
     /// <summary>
     /// Given a credit transaction with no offsets
-    /// When NetAmount is accessed
+    /// When NetAmount is calculated
     /// Then it should return the split amount
     /// </summary>
     [Fact]
     [Trait("Category", "Unit")]
-    public void NetAmount_CreditWithNoOffsets_ReturnsSplitAmount()
+    public void NetAmount_CreditNoOffsets_ReturnsSplitAmount()
     {
         // Arrange
-        var transaction = _entities.CreateCreditTransaction(200m);
+        var transaction = DomainTransaction.Create(
+            AccountId,
+            UserId,
+            100m,
+            "Test",
+            DateTime.UtcNow,
+            null,
+            "Test",
+            null);
 
         // Act
         var netAmount = transaction.NetAmount;
 
         // Assert
-        Assert.Equal(200m, netAmount);
+        Assert.Equal(100m, netAmount);
     }
 
     /// <summary>
@@ -154,6 +467,66 @@ public class TransactionTests
 
         // Assert
         Assert.Equal(-75m, netAmount);
+    }
+
+    #endregion
+
+    #region Transaction.UpdateProperties
+
+    /// <summary>
+    /// Given a transaction
+    /// When UpdateProperties is called
+    /// Then Notes and ExcludeFromReporting should be updated
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void UpdateProperties_UpdatesNotesAndExcludeFromReporting()
+    {
+        // Arrange
+        var transaction = DomainTransaction.Create(
+            AccountId,
+            UserId,
+            -50m,
+            "Test",
+            DateTime.UtcNow,
+            null,
+            "Test",
+            null);
+
+        // Act
+        transaction.UpdateProperties("New notes", true);
+
+        // Assert
+        Assert.Equal("New notes", transaction.Notes);
+        Assert.True(transaction.ExcludeFromReporting);
+    }
+
+    /// <summary>
+    /// Given a transaction with existing notes
+    /// When UpdateProperties is called with null notes
+    /// Then Notes should be set to null
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void UpdateProperties_WithNullNotes_ClearsNotes()
+    {
+        // Arrange
+        var transaction = DomainTransaction.Create(
+            AccountId,
+            UserId,
+            -50m,
+            "Test",
+            DateTime.UtcNow,
+            null,
+            "Test",
+            null);
+        transaction.UpdateProperties("Original notes", false);
+
+        // Act
+        transaction.UpdateProperties(null, false);
+
+        // Assert
+        Assert.Null(transaction.Notes);
     }
 
     #endregion
@@ -228,217 +601,40 @@ public class TransactionTests
         Assert.Equal(75m, transaction.Splits.First().Amount);
     }
 
-    #endregion
-
-    #region AddOrUpdateSplit
-
     /// <summary>
-    /// Given a transaction with no tags on its split
-    /// When AddOrUpdateSplit is called with a tag
-    /// Then the split should contain the tag
+    /// Given a transaction with two splits
+    /// When UpdateSplits removes one split
+    /// Then only one split should remain
     /// </summary>
     [Fact]
     [Trait("Category", "Unit")]
-    public void AddOrUpdateSplit_WithNewTag_AddsTagToFirstSplit()
+    public void UpdateSplits_RemovingSplit_DecreasesSplitCount()
     {
         // Arrange
-        var transaction = _entities.CreateDebitTransaction(50m);
-        var tag = _entities.CreateTag(1, "Groceries");
+        var transaction = _entities.CreateDebitTransaction(100m);
+        var existingSplit = transaction.Splits.First();
+
+        // Add a second split first
+        var splitId2 = Guid.NewGuid();
+        var splitsWithTwo = new List<Models.TransactionSplit>
+        {
+            new() { Id = existingSplit.Id, Amount = 70m, Tags = [], OffsetBy = [] },
+            new() { Id = splitId2, Amount = 30m, Tags = [], OffsetBy = [] },
+        };
+        transaction.UpdateSplits(splitsWithTwo);
+        Assert.Equal(2, transaction.Splits.Count);
+
+        // Now remove one
+        var splitsWithOne = new List<Models.TransactionSplit>
+        {
+            new() { Id = existingSplit.Id, Amount = 100m, Tags = [], OffsetBy = [] },
+        };
 
         // Act
-        transaction.AddOrUpdateSplit(tag);
-
-        // Assert
-        Assert.Contains(transaction.Tags, t => t.Id == tag.Id);
-    }
-
-    /// <summary>
-    /// Given a transaction with an existing tag on its split
-    /// When AddOrUpdateSplit is called with a different tag
-    /// Then both tags should be present
-    /// </summary>
-    [Fact]
-    [Trait("Category", "Unit")]
-    public void AddOrUpdateSplit_WithMultipleTags_AddsBothTags()
-    {
-        // Arrange
-        var transaction = _entities.CreateDebitTransaction(50m);
-        var tag1 = _entities.CreateTag(1, "Groceries");
-        var tag2 = _entities.CreateTag(2, "Food");
-
-        // Act
-        transaction.AddOrUpdateSplit(tag1);
-        transaction.AddOrUpdateSplit(tag2);
-
-        // Assert
-        Assert.Equal(2, transaction.Tags.Count());
-    }
-
-    /// <summary>
-    /// Given a transaction with existing tags
-    /// When AddOrUpdateSplit is called with the same tag
-    /// Then no duplicates should be added
-    /// </summary>
-    [Fact]
-    [Trait("Category", "Unit")]
-    public void AddOrUpdateSplit_WithDuplicateTag_DoesNotAddDuplicate()
-    {
-        // Arrange
-        var transaction = _entities.CreateDebitTransaction(50m);
-        var tag = _entities.CreateTag(1, "Groceries");
-
-        // Act
-        transaction.AddOrUpdateSplit(tag);
-        transaction.AddOrUpdateSplit(tag); // Add same tag again
-
-        // Assert
-        Assert.Single(transaction.Tags);
-    }
-
-    #endregion
-
-    #region UpdateOrRemoveSplit
-
-    /// <summary>
-    /// Given a transaction with a tag on its split
-    /// When UpdateOrRemoveSplit is called with that tag
-    /// Then the tag should be removed
-    /// </summary>
-    [Fact]
-    [Trait("Category", "Unit")]
-    public void UpdateOrRemoveSplit_WithExistingTag_RemovesTag()
-    {
-        // Arrange
-        var transaction = _entities.CreateDebitTransaction(50m);
-        var tag1 = _entities.CreateTag(1, "Groceries");
-        var tag2 = _entities.CreateTag(2, "Food");
-        transaction.AddOrUpdateSplit([tag1, tag2]);
-
-        // Act
-        transaction.UpdateOrRemoveSplit(tag1);
-
-        // Assert
-        Assert.Single(transaction.Tags);
-        Assert.DoesNotContain(transaction.Tags, t => t.Id == tag1.Id);
-    }
-
-    /// <summary>
-    /// Given a transaction with only one tag
-    /// When UpdateOrRemoveSplit is called with that tag
-    /// Then the split should remain but be empty (minimum one split rule)
-    /// </summary>
-    [Fact]
-    [Trait("Category", "Unit")]
-    public void UpdateOrRemoveSplit_LastTag_KeepsSplitButRemovesTag()
-    {
-        // Arrange
-        var transaction = _entities.CreateDebitTransaction(50m);
-        var tag = _entities.CreateTag(1, "Groceries");
-        transaction.AddOrUpdateSplit(tag);
-
-        // Act
-        transaction.UpdateOrRemoveSplit(tag);
+        transaction.UpdateSplits(splitsWithOne);
 
         // Assert
         Assert.Single(transaction.Splits);
-        Assert.Empty(transaction.Tags);
-    }
-
-    #endregion
-
-    #region UpdateProperties
-
-    /// <summary>
-    /// Given a transaction with no notes
-    /// When UpdateProperties is called with notes and excludeFromReporting true
-    /// Then both properties should be updated
-    /// </summary>
-    [Fact]
-    [Trait("Category", "Unit")]
-    public void UpdateProperties_SetsNotesAndExcludeFromReporting()
-    {
-        // Arrange
-        var transaction = _entities.CreateDebitTransaction(50m);
-
-        // Act
-        transaction.UpdateProperties("Test notes", true);
-
-        // Assert
-        Assert.Equal("Test notes", transaction.Notes);
-        Assert.True(transaction.ExcludeFromReporting);
-    }
-
-    #endregion
-
-    #region EnsureMinimumSplit
-
-    /// <summary>
-    /// Given a transaction
-    /// When created via factory
-    /// Then it should always have at least one split
-    /// </summary>
-    [Fact]
-    [Trait("Category", "Unit")]
-    public void EnsureMinimumSplit_Always_HasAtLeastOneSplit()
-    {
-        // Arrange & Act
-        var transaction = _entities.CreateDebitTransaction(100m);
-
-        // Assert
-        Assert.NotEmpty(transaction.Splits);
-    }
-
-    #endregion
-
-    #region Create with AccountId
-
-    /// <summary>
-    /// Given a negative amount and explicit transaction type of Credit
-    /// When Transaction.Create with AccountId is called
-    /// Then TransactionType should use the explicit type
-    /// </summary>
-    [Fact]
-    [Trait("Category", "Unit")]
-    public void Create_WithExplicitTransactionType_UsesExplicitType()
-    {
-        // Act
-        var transaction = Transaction.Create(
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            -50m,
-            "Test",
-            DateTime.UtcNow,
-            null,
-            "Test",
-            null,
-            TransactionType.Credit);
-
-        // Assert - Uses explicit type even though amount is negative
-        Assert.Equal(TransactionType.Credit, transaction.TransactionType);
-    }
-
-    /// <summary>
-    /// Given an amount with no explicit type
-    /// When Transaction.Create with AccountId is called
-    /// Then TransactionType should be determined by amount sign
-    /// </summary>
-    [Fact]
-    [Trait("Category", "Unit")]
-    public void Create_WithoutExplicitType_DeterminesFromAmount()
-    {
-        // Act
-        var transaction = Transaction.Create(
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            100m,
-            "Test",
-            DateTime.UtcNow,
-            null,
-            "Test",
-            Guid.NewGuid());
-
-        // Assert
-        Assert.Equal(TransactionType.Credit, transaction.TransactionType);
     }
 
     #endregion
@@ -524,45 +720,72 @@ public class TransactionTests
         Assert.Empty(transaction.Splits.First().OffsetBy);
     }
 
+    #endregion
+
+    #region AddOrUpdateSplit
+
     /// <summary>
-    /// Given a transaction with two splits
-    /// When UpdateSplits removes one split
-    /// Then only one split should remain
+    /// Given a transaction with no tags on its split
+    /// When AddOrUpdateSplit is called with a tag
+    /// Then the split should contain the tag
     /// </summary>
     [Fact]
     [Trait("Category", "Unit")]
-    public void UpdateSplits_RemovingSplit_DecreasesSplitCount()
+    public void AddOrUpdateSplit_WithNewTag_AddsTagToFirstSplit()
     {
         // Arrange
-        var transaction = _entities.CreateDebitTransaction(100m);
-        var existingSplit = transaction.Splits.First();
-
-        // Add a second split first
-        var splitId2 = Guid.NewGuid();
-        var splitsWithTwo = new List<Models.TransactionSplit>
-        {
-            new() { Id = existingSplit.Id, Amount = 70m, Tags = [], OffsetBy = [] },
-            new() { Id = splitId2, Amount = 30m, Tags = [], OffsetBy = [] },
-        };
-        transaction.UpdateSplits(splitsWithTwo);
-        Assert.Equal(2, transaction.Splits.Count);
-
-        // Now remove one
-        var splitsWithOne = new List<Models.TransactionSplit>
-        {
-            new() { Id = existingSplit.Id, Amount = 100m, Tags = [], OffsetBy = [] },
-        };
+        var transaction = _entities.CreateDebitTransaction(50m);
+        var tag = _entities.CreateTag(1, "Groceries");
 
         // Act
-        transaction.UpdateSplits(splitsWithOne);
+        transaction.AddOrUpdateSplit(tag);
 
         // Assert
-        Assert.Single(transaction.Splits);
+        Assert.Contains(transaction.Tags, t => t.Id == tag.Id);
     }
 
-    #endregion
+    /// <summary>
+    /// Given a transaction with an existing tag on its split
+    /// When AddOrUpdateSplit is called with a different tag
+    /// Then both tags should be present
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void AddOrUpdateSplit_WithMultipleTags_AddsBothTags()
+    {
+        // Arrange
+        var transaction = _entities.CreateDebitTransaction(50m);
+        var tag1 = _entities.CreateTag(1, "Groceries");
+        var tag2 = _entities.CreateTag(2, "Food");
 
-    #region AddOrUpdateSplit with no existing split
+        // Act
+        transaction.AddOrUpdateSplit(tag1);
+        transaction.AddOrUpdateSplit(tag2);
+
+        // Assert
+        Assert.Equal(2, transaction.Tags.Count());
+    }
+
+    /// <summary>
+    /// Given a transaction with existing tags
+    /// When AddOrUpdateSplit is called with the same tag
+    /// Then no duplicates should be added
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void AddOrUpdateSplit_WithDuplicateTag_DoesNotAddDuplicate()
+    {
+        // Arrange
+        var transaction = _entities.CreateDebitTransaction(50m);
+        var tag = _entities.CreateTag(1, "Groceries");
+
+        // Act
+        transaction.AddOrUpdateSplit(tag);
+        transaction.AddOrUpdateSplit(tag); // Add same tag again
+
+        // Assert
+        Assert.Single(transaction.Tags);
+    }
 
     /// <summary>
     /// Given a manually created transaction with no splits
@@ -574,7 +797,7 @@ public class TransactionTests
     public void AddOrUpdateSplit_WhenNoSplitExists_CreatesNewSplit()
     {
         // Arrange - Create a transaction manually without factory (no splits)
-        var transaction = new Transaction
+        var transaction = new DomainTransaction
         {
             Amount = 50m,
             Source = "Test",
@@ -587,6 +810,75 @@ public class TransactionTests
         // Assert
         Assert.Single(transaction.Splits);
         Assert.Contains(transaction.Tags, t => t.Id == tag.Id);
+    }
+
+    #endregion
+
+    #region UpdateOrRemoveSplit
+
+    /// <summary>
+    /// Given a transaction with a tag on its split
+    /// When UpdateOrRemoveSplit is called with that tag
+    /// Then the tag should be removed
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void UpdateOrRemoveSplit_WithExistingTag_RemovesTag()
+    {
+        // Arrange
+        var transaction = _entities.CreateDebitTransaction(50m);
+        var tag1 = _entities.CreateTag(1, "Groceries");
+        var tag2 = _entities.CreateTag(2, "Food");
+        transaction.AddOrUpdateSplit([tag1, tag2]);
+
+        // Act
+        transaction.UpdateOrRemoveSplit(tag1);
+
+        // Assert
+        Assert.Single(transaction.Tags);
+        Assert.DoesNotContain(transaction.Tags, t => t.Id == tag1.Id);
+    }
+
+    /// <summary>
+    /// Given a transaction with only one tag
+    /// When UpdateOrRemoveSplit is called with that tag
+    /// Then the split should remain but be empty (minimum one split rule)
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void UpdateOrRemoveSplit_LastTag_KeepsSplitButRemovesTag()
+    {
+        // Arrange
+        var transaction = _entities.CreateDebitTransaction(50m);
+        var tag = _entities.CreateTag(1, "Groceries");
+        transaction.AddOrUpdateSplit(tag);
+
+        // Act
+        transaction.UpdateOrRemoveSplit(tag);
+
+        // Assert
+        Assert.Single(transaction.Splits);
+        Assert.Empty(transaction.Tags);
+    }
+
+    #endregion
+
+    #region EnsureMinimumSplit
+
+    /// <summary>
+    /// Given a transaction
+    /// When created via factory
+    /// Then it should always have at least one split
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void EnsureMinimumSplit_Always_HasAtLeastOneSplit()
+    {
+        // Arrange & Act
+        var transaction = _entities.CreateDebitTransaction(100m);
+
+        // Assert
+        Assert.NotEmpty(transaction.Splits);
     }
 
     #endregion
@@ -605,8 +897,6 @@ public class TransactionTests
         // Arrange
         var transaction = _entities.CreateDebitTransaction(100m);
         var existingSplit = transaction.Splits.First();
-        var tag1 = _entities.CreateTag(1, "Tag1");
-        var tag2 = _entities.CreateTag(2, "Tag2");
 
         // Add another split with different tag
         var updatedSplits = new List<Models.TransactionSplit>
