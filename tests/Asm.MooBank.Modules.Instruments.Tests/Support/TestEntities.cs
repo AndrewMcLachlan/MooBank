@@ -1,10 +1,13 @@
 #nullable enable
 using Asm.MooBank.Domain.Entities.Account;
+using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Instruments.Models.Virtual;
 using Bogus;
+using DomainAsset = Asm.MooBank.Domain.Entities.Asset.Asset;
 using DomainInstrument = Asm.MooBank.Domain.Entities.Instrument.Instrument;
 using DomainRule = Asm.MooBank.Domain.Entities.Instrument.Rule;
+using DomainStockHolding = Asm.MooBank.Domain.Entities.StockHolding.StockHolding;
 using DomainTag = Asm.MooBank.Domain.Entities.Tag.Tag;
 using DomainVirtualInstrument = Asm.MooBank.Domain.Entities.Account.VirtualInstrument;
 
@@ -183,5 +186,98 @@ internal static class TestEntities
     public static IQueryable<DomainInstrument> CreateInstrumentQueryable(params DomainInstrument[] instruments)
     {
         return CreateInstrumentQueryable(instruments.AsEnumerable());
+    }
+
+    public static DomainStockHolding CreateStockHolding(
+        Guid? id = null,
+        string? name = null,
+        string? description = null,
+        string currency = "AUD",
+        decimal currentValue = 0m,
+        Guid? ownerId = null)
+    {
+        var holding = new DomainStockHolding(id ?? Guid.NewGuid())
+        {
+            Name = name ?? Faker.Company.CompanyName() + " Shares",
+            Description = description ?? Faker.Lorem.Sentence(),
+            Currency = currency,
+            CurrentValue = currentValue,
+        };
+
+        if (ownerId.HasValue)
+        {
+            holding.Owners.Add(new InstrumentOwner { UserId = ownerId.Value, InstrumentId = holding.Id });
+        }
+
+        return holding;
+    }
+
+    public static IQueryable<DomainStockHolding> CreateStockHoldingQueryable(IEnumerable<DomainStockHolding> holdings)
+    {
+        return QueryableHelper.CreateAsyncQueryable(holdings);
+    }
+
+    public static IQueryable<DomainStockHolding> CreateStockHoldingQueryable(params DomainStockHolding[] holdings)
+    {
+        return CreateStockHoldingQueryable(holdings.AsEnumerable());
+    }
+
+    public static DomainAsset CreateAsset(
+        Guid? id = null,
+        string? name = null,
+        string? description = null,
+        string currency = "AUD",
+        decimal value = 0m,
+        Guid? ownerId = null)
+    {
+        var asset = new DomainAsset(id ?? Guid.NewGuid())
+        {
+            Name = name ?? Faker.Commerce.ProductName(),
+            Description = description ?? Faker.Lorem.Sentence(),
+            Currency = currency,
+            Value = value,
+        };
+
+        if (ownerId.HasValue)
+        {
+            asset.Owners.Add(new InstrumentOwner { UserId = ownerId.Value, InstrumentId = asset.Id });
+        }
+
+        return asset;
+    }
+
+    public static IQueryable<DomainAsset> CreateAssetQueryable(IEnumerable<DomainAsset> assets)
+    {
+        return QueryableHelper.CreateAsyncQueryable(assets);
+    }
+
+    public static IQueryable<DomainAsset> CreateAssetQueryable(params DomainAsset[] assets)
+    {
+        return CreateAssetQueryable(assets.AsEnumerable());
+    }
+
+    public static LogicalAccount CreateInstrumentWithOwner(
+        Guid? id = null,
+        string? name = null,
+        string currency = "AUD",
+        decimal balance = 0m,
+        Guid? ownerId = null,
+        Guid? familyId = null)
+    {
+        var instrumentId = id ?? Guid.NewGuid();
+        var instrument = new LogicalAccount(instrumentId, [])
+        {
+            Name = name ?? Faker.Finance.AccountName(),
+            Currency = currency,
+            Balance = balance,
+            AccountType = AccountType.Transaction,
+        };
+
+        if (ownerId.HasValue)
+        {
+            instrument.Owners.Add(new InstrumentOwner { UserId = ownerId.Value, InstrumentId = instrumentId });
+        }
+
+        return instrument;
     }
 }
