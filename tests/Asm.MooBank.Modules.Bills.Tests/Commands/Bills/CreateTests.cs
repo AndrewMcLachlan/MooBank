@@ -122,7 +122,7 @@ public class CreateTests()
         var accountId = Guid.NewGuid();
         _mocks.AccountRepositoryMock
             .Setup(r => r.Get(accountId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((DomainAccount?)null);
+            .Returns(Task.FromResult<DomainAccount>(null!));
 
         var handler = new CreateHandler(
             _mocks.UnitOfWorkMock.Object,

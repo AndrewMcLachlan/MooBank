@@ -18,8 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Asm.MooBank.Modules.Groups\Asm.MooBank.Modules.Groups.csproj" />
-    <ProjectReference Include="..\Asm.MooBank.Modules.Institutions.Tests\Asm.MooBank.Modules.Institutions.Tests.csproj" />
+    <ProjectReference Include="..\..\src\Asm.MooBank.Modules.Stocks\Asm.MooBank.Modules.Stocks.csproj" />
   </ItemGroup>
 
   <ItemGroup>

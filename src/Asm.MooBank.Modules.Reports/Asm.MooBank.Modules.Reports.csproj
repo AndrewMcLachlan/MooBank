@@ -1,6 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <InternalsVisibleTo Include="Asm.MooBank.Modules.Reports.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Asm.Cqrs.AspNetCore" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
   </ItemGroup>

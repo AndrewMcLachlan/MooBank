@@ -259,7 +259,7 @@ public class UpdateTests
             .ReturnsAsync(logicalAccount);
         _mocks.LogicalAccountRepositoryMock
             .Setup(r => r.GetImporterType(999, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((ImporterType?)null);
+            .Returns(Task.FromResult<ImporterType>(null!));
 
         var handler = new UpdateHandler(
             _mocks.UnitOfWorkMock.Object,

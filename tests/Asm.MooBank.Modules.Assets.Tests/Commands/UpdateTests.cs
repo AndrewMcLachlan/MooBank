@@ -327,7 +327,7 @@ public class UpdateTests
         var assetId = Guid.NewGuid();
         _mocks.AssetRepositoryMock
             .Setup(r => r.Get(assetId, It.IsAny<IncludeSpecification>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Asset?)null);
+            .Returns(Task.FromResult<Asset>(null!));
 
         var handler = new UpdateHandler(
             _mocks.AssetRepositoryMock.Object,

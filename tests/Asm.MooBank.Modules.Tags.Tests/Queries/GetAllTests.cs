@@ -75,7 +75,7 @@ public class GetAllTests
 
         // Assert
         Assert.Equal(2, result.Count());
-        Assert.All(result, t => Assert.True(t.Name.StartsWith("User Tag")));
+        Assert.All(result, t => Assert.StartsWith("User Tag", t.Name));
     }
 
     [Fact]
