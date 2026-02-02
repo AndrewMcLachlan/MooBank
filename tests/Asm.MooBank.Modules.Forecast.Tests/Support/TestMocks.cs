@@ -1,6 +1,8 @@
 #nullable enable
 using Asm.Domain;
 using Asm.MooBank.Domain.Entities.Forecast;
+using Asm.MooBank.Domain.Entities.Instrument;
+using Asm.MooBank.Domain.Entities.Reports;
 using Asm.MooBank.Modules.Forecast.Services;
 using Asm.MooBank.Security;
 using User = Asm.MooBank.Models.User;
@@ -17,6 +19,8 @@ public class TestMocks
         ForecastRepositoryMock = new Mock<IForecastRepository>();
         SecurityMock = new Mock<ISecurity>();
         ForecastEngineMock = new Mock<IForecastEngine>();
+        ReportRepositoryMock = new Mock<IReportRepository>();
+        InstrumentRepositoryMock = new Mock<IInstrumentRepository>();
 
         User = CreateTestUser();
     }
@@ -28,6 +32,10 @@ public class TestMocks
     public Mock<ISecurity> SecurityMock { get; }
 
     public Mock<IForecastEngine> ForecastEngineMock { get; }
+
+    public Mock<IReportRepository> ReportRepositoryMock { get; }
+
+    public Mock<IInstrumentRepository> InstrumentRepositoryMock { get; }
 
     public User User { get; private set; }
 
