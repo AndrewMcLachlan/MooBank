@@ -174,7 +174,8 @@ public class ImportTests
         // Assert
         Assert.Equal(0, result.Imported);
         Assert.Equal(1, result.Failed);
-        Assert.Contains(result.Errors, e => e.Contains("01/2024") && e.Contains("already exists"));
+        var expectedDate = new DateOnly(2024, 1, 15).ToString("d");
+        Assert.Contains(result.Errors, e => e.Contains(expectedDate) && e.Contains("already exists"));
     }
 
     [Fact]
