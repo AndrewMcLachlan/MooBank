@@ -1,9 +1,15 @@
 #nullable enable
+using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Budget;
 using Asm.MooBank.Domain.Entities.Tag;
+using Asm.MooBank.Domain.Entities.TagRelationships;
+using Asm.MooBank.Models;
 using Bogus;
 using DomainBudget = Asm.MooBank.Domain.Entities.Budget.Budget;
 using DomainBudgetLine = Asm.MooBank.Domain.Entities.Budget.BudgetLine;
+using DomainTag = Asm.MooBank.Domain.Entities.Tag.Tag;
+using DomainTransaction = Asm.MooBank.Domain.Entities.Transactions.Transaction;
+using DomainTransactionSplit = Asm.MooBank.Domain.Entities.Transactions.TransactionSplit;
 
 namespace Asm.MooBank.Modules.Budgets.Tests.Support;
 
@@ -59,15 +65,6 @@ internal static class TestEntities
         };
     }
 
-    public static Tag CreateTag(int id = 1, string name = "Test Tag")
-    {
-        return new Tag(id)
-        {
-            Name = name,
-            FamilyId = Guid.NewGuid(),
-        };
-    }
-
     public static Models.BudgetLine CreateBudgetLineModel(
         Guid? id = null,
         int tagId = 1,
@@ -107,5 +104,146 @@ internal static class TestEntities
     public static IQueryable<DomainBudgetLine> CreateBudgetLineQueryable(params DomainBudgetLine[] lines)
     {
         return CreateBudgetLineQueryable(lines.AsEnumerable());
+    }
+
+    public static DomainTag CreateTag(
+        int id = 1,
+        string name = "Test Tag",
+        Guid? familyId = null,
+        TagSettings? settings = null)
+    {
+        return new DomainTag(id)
+        {
+            Name = name,
+            FamilyId = familyId ?? Guid.NewGuid(),
+            Settings = settings ?? new TagSettings(id),
+        };
+    }
+
+    public static DomainTransaction CreateTransaction(
+        Guid? id = null,
+        Guid? accountId = null,
+        decimal amount = -100m,
+        DateTime? transactionTime = null,
+        TransactionType? transactionType = null,
+        bool excludeFromReporting = false,
+        IEnumerable<DomainTransactionSplit>? splits = null)
+    {
+        var txnId = id ?? Guid.NewGuid();
+        var txnType = transactionType ?? (amount < 0 ? TransactionType.Debit : TransactionType.Credit);
+
+        var transaction = new DomainTransaction(txnId)
+        {
+            AccountId = accountId ?? Guid.NewGuid(),
+            Amount = amount,
+            TransactionTime = transactionTime ?? DateTime.UtcNow,
+            TransactionType = txnType,
+            ExcludeFromReporting = excludeFromReporting,
+            Source = "Test",
+        };
+
+        if (splits != null)
+        {
+            foreach (var split in splits)
+            {
+                split.TransactionId = txnId;
+                var splitsField = typeof(DomainTransaction).GetField("_splits", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                var splitsList = splitsField?.GetValue(transaction) as List<DomainTransactionSplit>;
+                splitsList?.Add(split);
+            }
+        }
+        else
+        {
+            // Add default split
+            var defaultSplit = new DomainTransactionSplit(Guid.NewGuid())
+            {
+                TransactionId = txnId,
+                Amount = Math.Abs(amount),
+            };
+            var splitsField = typeof(DomainTransaction).GetField("_splits", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var splitsList = splitsField?.GetValue(transaction) as List<DomainTransactionSplit>;
+            splitsList?.Add(defaultSplit);
+        }
+
+        return transaction;
+    }
+
+    public static DomainTransactionSplit CreateTransactionSplit(
+        Guid? id = null,
+        Guid? transactionId = null,
+        decimal amount = 100m,
+        IEnumerable<DomainTag>? tags = null)
+    {
+        var split = new DomainTransactionSplit(id ?? Guid.NewGuid())
+        {
+            TransactionId = transactionId ?? Guid.NewGuid(),
+            Amount = amount,
+        };
+
+        if (tags != null)
+        {
+            foreach (var tag in tags)
+            {
+                split.Tags.Add(tag);
+            }
+        }
+
+        return split;
+    }
+
+    public static LogicalAccount CreateLogicalAccount(
+        Guid? id = null,
+        string? name = null,
+        bool includeInBudget = true)
+    {
+        var accountId = id ?? Guid.NewGuid();
+        return new LogicalAccount(accountId, [])
+        {
+            Name = name ?? Faker.Company.CompanyName(),
+            IncludeInBudget = includeInBudget,
+        };
+    }
+
+    public static TagRelationship CreateTagRelationship(
+        int tagId,
+        int parentTagId,
+        long ordinal = 0)
+    {
+        return new TagRelationship
+        {
+            Id = tagId,
+            ParentId = parentTagId,
+            Ordinal = ordinal,
+        };
+    }
+
+    public static IQueryable<DomainTransaction> CreateTransactionQueryable(IEnumerable<DomainTransaction> transactions)
+    {
+        return QueryableHelper.CreateAsyncQueryable(transactions);
+    }
+
+    public static IQueryable<DomainTransaction> CreateTransactionQueryable(params DomainTransaction[] transactions)
+    {
+        return CreateTransactionQueryable(transactions.AsEnumerable());
+    }
+
+    public static IQueryable<LogicalAccount> CreateLogicalAccountQueryable(IEnumerable<LogicalAccount> accounts)
+    {
+        return QueryableHelper.CreateAsyncQueryable(accounts);
+    }
+
+    public static IQueryable<LogicalAccount> CreateLogicalAccountQueryable(params LogicalAccount[] accounts)
+    {
+        return CreateLogicalAccountQueryable(accounts.AsEnumerable());
+    }
+
+    public static IQueryable<TagRelationship> CreateTagRelationshipQueryable(IEnumerable<TagRelationship> relationships)
+    {
+        return QueryableHelper.CreateAsyncQueryable(relationships);
+    }
+
+    public static IQueryable<TagRelationship> CreateTagRelationshipQueryable(params TagRelationship[] relationships)
+    {
+        return CreateTagRelationshipQueryable(relationships.AsEnumerable());
     }
 }

@@ -109,7 +109,7 @@ public class UpdateTests
             _mocks.UnitOfWorkMock.Object);
 
         // Create UpdateRule directly to explicitly set null description
-        var updateRule = new Models.Rules.UpdateRule
+        var updateRule = new Instruments.Models.Rules.UpdateRule
         {
             Contains = "VALUE",
             Description = null,
