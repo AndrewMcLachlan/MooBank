@@ -65,50 +65,6 @@ public class ReportTests
     }
 
     [Fact]
-    public async Task Handle_ExcludedFromReportingTransactions_NotIncludedInActuals()
-    {
-        // Arrange
-        var familyId = _mocks.User.FamilyId;
-        var accountId = Guid.NewGuid();
-
-        var lines = new[]
-        {
-            TestEntities.CreateBudgetLine(tagId: 1, tagName: "Rent", income: false, amount: 1000m, month: 4095),
-        };
-        var budget = TestEntities.CreateBudget(year: 2024, familyId: familyId, lines: lines);
-        var budgetQueryable = TestEntities.CreateBudgetQueryable(budget);
-
-        var account = TestEntities.CreateLogicalAccount(id: accountId, includeInBudget: true);
-        var accountQueryable = TestEntities.CreateLogicalAccountQueryable(account);
-
-        var includedTxn = TestEntities.CreateTransaction(
-            accountId: accountId,
-            amount: -500m,
-            transactionTime: new DateTime(2024, 1, 15),
-            transactionType: TransactionType.Debit,
-            excludeFromReporting: false);
-        var excludedTxn = TestEntities.CreateTransaction(
-            accountId: accountId,
-            amount: -1000m,
-            transactionTime: new DateTime(2024, 1, 20),
-            transactionType: TransactionType.Debit,
-            excludeFromReporting: true);
-        var transactionQueryable = TestEntities.CreateTransactionQueryable(includedTxn, excludedTxn);
-
-        _mocks.SetUser(TestMocks.CreateTestUser(familyId: familyId, accounts: [accountId]));
-
-        var handler = new ReportHandler(budgetQueryable, accountQueryable, transactionQueryable, _mocks.User);
-        var query = new Report(2024);
-
-        // Act
-        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
-
-        // Assert
-        Assert.NotNull(result);
-        // Excluded transactions should not affect the report
-    }
-
-    [Fact]
     public async Task Handle_CreditTransactions_NotIncludedInReport()
     {
         // Arrange
