@@ -1,5 +1,4 @@
-﻿using Asm.MooBank.Domain.Entities.Transactions.Specifications;
-using Asm.MooBank.Models;
+﻿using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Budgets.Models;
 
 namespace Asm.MooBank.Modules.Budgets.Queries;
@@ -14,11 +13,17 @@ internal class ReportForMonthHandler(IQueryable<Domain.Entities.Budget.Budget> b
 
         var budgetAccounts = await accounts.Where(a => a.IncludeInBudget && user.Accounts.Contains(a.Id)).Select(a => a.Id).ToArrayAsync(cancellationToken);
 
-        var budgetTransactions = await transactions.Specify(new IncludeSplitsAndOffsetsSpecification()).Where(t => budgetAccounts.Contains(t.AccountId) && t.TransactionType == TransactionType.Debit && !t.ExcludeFromReporting && t.TransactionTime.Year == request.Year).ToArrayAsync(cancellationToken);
+        var monthTotal = await transactions
+            .Where(t => budgetAccounts.Contains(t.AccountId) &&
+                        t.TransactionType == TransactionType.Debit &&
+                        !t.ExcludeFromReporting &&
+                        t.TransactionTime.Year == request.Year &&
+                        t.TransactionTime.Month == request.Month)
+            .SumAsync(t => Domain.Entities.Transactions.Transaction.TransactionNetAmount(t.TransactionType, t.Id, t.Amount), cancellationToken);
 
         var month = budget.ToMonths()
             .Where(m => m.Month == request.Month)
-            .Select(m => new BudgetReportValueMonth(m.Expenses, Math.Abs(budgetTransactions.Where(t => t.TransactionTime.Month == m.Month).Sum(t => t.NetAmount)), m.Month))
+            .Select(m => new BudgetReportValueMonth(m.Expenses, Math.Abs(monthTotal), m.Month))
             .SingleOrDefault();
 
         return month;

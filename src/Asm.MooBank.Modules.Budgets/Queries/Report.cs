@@ -13,13 +13,20 @@ internal class ReportHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, 
 
         var budgetAccounts = await accounts.Where(a => a.IncludeInBudget && user.Accounts.Contains(a.Id)).Select(a => a.Id).ToArrayAsync(cancellationToken);
 
-        var budgetTransactions = await transactions.Where(t => budgetAccounts.Contains(t.AccountId) && t.TransactionType == MooBank.Models.TransactionType.Debit && !t.ExcludeFromReporting && t.TransactionTime.Year == request.Year).ToArrayAsync(cancellationToken);
+        var monthlyTotals = await transactions
+            .Where(t => budgetAccounts.Contains(t.AccountId) &&
+                        t.TransactionType == MooBank.Models.TransactionType.Debit &&
+                        !t.ExcludeFromReporting &&
+                        t.TransactionTime.Year == request.Year)
+            .GroupBy(t => t.TransactionTime.Month)
+            .Select(g => new { Month = g.Key, Total = g.Sum(t => Transaction.TransactionNetAmount(t.TransactionType, t.Id, t.Amount)) })
+            .ToDictionaryAsync(x => x.Month, x => x.Total, cancellationToken);
 
         var months = budget.ToMonths();
 
         return new BudgetReportByMonth
         {
-            Items = months.Select(m => new BudgetReportValueMonth(m.Expenses, Math.Abs(budgetTransactions.Where(t => t.TransactionTime.Month == m.Month).Sum(t => Transaction.TransactionNetAmount(t.TransactionType, t.Id, t.Amount))), m.Month))
+            Items = months.Select(m => new BudgetReportValueMonth(m.Expenses, Math.Abs(monthlyTotals.GetValueOrDefault(m.Month, 0)), m.Month))
         };
     }
 }
