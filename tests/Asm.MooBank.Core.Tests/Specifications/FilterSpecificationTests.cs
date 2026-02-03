@@ -9,6 +9,7 @@ namespace Asm.MooBank.Core.Tests.Specifications;
 /// Unit tests for the <see cref="FilterSpecification"/> specification.
 /// Tests verify transaction filtering logic for description, type, date range, tags, and more.
 /// </summary>
+[Collection("DbFunction Tests")]
 public class FilterSpecificationTests
 {
     private readonly TestEntities _entities = new();
@@ -780,6 +781,237 @@ public class FilterSpecificationTests
 
         // Assert
         Assert.Equal(2, result.Count());
+    }
+
+    #endregion
+
+    #region ExcludeNetZero Filter
+
+    /// <summary>
+    /// Given transactions with various net amounts
+    /// When FilterSpecification is applied with ExcludeNetZero
+    /// Then only transactions with non-zero net amounts should be returned
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void Apply_WithExcludeNetZero_ExcludesZeroNetAmountTransactions()
+    {
+        // Arrange - Set up the delegate to calculate net amounts
+        DomainTransaction.SetTransactionNetAmountOverride((type, id, amount) =>
+        {
+            // Simulate a transaction that has been fully offset (net zero)
+            if (amount == 100m) return 0m; // This one is fully offset
+            return amount; // Others return their full amount
+        });
+
+        try
+        {
+            var transactions = new List<DomainTransaction>
+            {
+                CreateTransaction(TestModels.AccountId, -50m, "Normal Debit"),
+                CreateTransaction(TestModels.AccountId, 100m, "Fully Offset"), // Will have net amount of 0
+                CreateTransaction(TestModels.AccountId, -30m, "Another Debit"),
+            };
+
+            var filter = new TransactionFilter
+            {
+                InstrumentId = TestModels.AccountId,
+                ExcludeNetZero = true,
+            };
+            var spec = new FilterSpecification(filter);
+
+            // Act
+            var result = spec.Apply(transactions.AsQueryable()).ToList();
+
+            // Assert
+            Assert.Equal(2, result.Count);
+            Assert.DoesNotContain(result, t => t.Description == "Fully Offset");
+        }
+        finally
+        {
+            DomainTransaction.ResetTransactionNetAmountOverride();
+        }
+    }
+
+    /// <summary>
+    /// Given transactions with various net amounts
+    /// When FilterSpecification is applied without ExcludeNetZero
+    /// Then all transactions should be returned including zero net amounts
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void Apply_WithoutExcludeNetZero_IncludesAllTransactions()
+    {
+        // Arrange - Set up the delegate (even though it shouldn't be called with ExcludeNetZero=false)
+        DomainTransaction.SetTransactionNetAmountOverride((type, id, amount) => 0m);
+
+        try
+        {
+            var transactions = new List<DomainTransaction>
+            {
+                CreateTransaction(TestModels.AccountId, -50m, "Transaction 1"),
+                CreateTransaction(TestModels.AccountId, 100m, "Transaction 2"),
+                CreateTransaction(TestModels.AccountId, -30m, "Transaction 3"),
+            };
+
+            var filter = new TransactionFilter
+            {
+                InstrumentId = TestModels.AccountId,
+                ExcludeNetZero = false,
+            };
+            var spec = new FilterSpecification(filter);
+
+            // Act
+            var result = spec.Apply(transactions.AsQueryable()).ToList();
+
+            // Assert
+            Assert.Equal(3, result.Count);
+        }
+        finally
+        {
+            DomainTransaction.ResetTransactionNetAmountOverride();
+        }
+    }
+
+    /// <summary>
+    /// Given transactions with various net amounts
+    /// When FilterSpecification is applied with ExcludeNetZero=null
+    /// Then all transactions should be returned (null treated as false)
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void Apply_WithNullExcludeNetZero_IncludesAllTransactions()
+    {
+        // Arrange - The override shouldn't be invoked when ExcludeNetZero is null
+        DomainTransaction.SetTransactionNetAmountOverride((type, id, amount) =>
+            throw new InvalidOperationException("Should not be called"));
+
+        try
+        {
+            var transactions = new List<DomainTransaction>
+            {
+                CreateTransaction(TestModels.AccountId, -50m, "Transaction 1"),
+                CreateTransaction(TestModels.AccountId, 100m, "Transaction 2"),
+            };
+
+            var filter = new TransactionFilter
+            {
+                InstrumentId = TestModels.AccountId,
+                ExcludeNetZero = null,
+            };
+            var spec = new FilterSpecification(filter);
+
+            // Act
+            var result = spec.Apply(transactions.AsQueryable()).ToList();
+
+            // Assert
+            Assert.Equal(2, result.Count);
+        }
+        finally
+        {
+            DomainTransaction.ResetTransactionNetAmountOverride();
+        }
+    }
+
+    /// <summary>
+    /// Given debit transactions where net amount depends on transaction type
+    /// When FilterSpecification is applied with ExcludeNetZero
+    /// Then net amount calculation considers transaction type
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void Apply_WithExcludeNetZero_ConsidersTransactionType()
+    {
+        // Arrange - The override receives transaction type
+        var capturedTypes = new List<MooBank.Models.TransactionType>();
+        DomainTransaction.SetTransactionNetAmountOverride((type, id, amount) =>
+        {
+            capturedTypes.Add(type);
+            return amount; // Return non-zero so nothing is excluded
+        });
+
+        try
+        {
+            var transactions = new List<DomainTransaction>
+            {
+                CreateTransaction(TestModels.AccountId, -50m, "Debit"),
+                CreateTransaction(TestModels.AccountId, 100m, "Credit"),
+            };
+
+            var filter = new TransactionFilter
+            {
+                InstrumentId = TestModels.AccountId,
+                ExcludeNetZero = true,
+            };
+            var spec = new FilterSpecification(filter);
+
+            // Act
+            var result = spec.Apply(transactions.AsQueryable()).ToList();
+
+            // Assert
+            Assert.Equal(2, result.Count);
+            Assert.Contains(MooBank.Models.TransactionType.Debit, capturedTypes);
+            Assert.Contains(MooBank.Models.TransactionType.Credit, capturedTypes);
+        }
+        finally
+        {
+            DomainTransaction.ResetTransactionNetAmountOverride();
+        }
+    }
+
+    /// <summary>
+    /// Given ExcludeNetZero combined with other filters
+    /// When FilterSpecification is applied
+    /// Then all filters work together correctly
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void Apply_WithExcludeNetZeroAndOtherFilters_CombinesCorrectly()
+    {
+        // Arrange
+        var tag = _entities.CreateTag(1, "Groceries");
+        DomainTransaction.SetTransactionNetAmountOverride((type, id, amount) =>
+        {
+            // Make the 30m transaction have zero net amount
+            return Math.Abs(amount) == 30m ? 0m : amount;
+        });
+
+        try
+        {
+            var matchingTransaction = CreateTransaction(TestModels.AccountId, -50m, "Tagged Non-Zero");
+            matchingTransaction.Splits.First().Tags.Add(tag);
+
+            var zeroNetTransaction = CreateTransaction(TestModels.AccountId, -30m, "Tagged Zero Net");
+            zeroNetTransaction.Splits.First().Tags.Add(tag);
+
+            var untaggedTransaction = CreateTransaction(TestModels.AccountId, -40m, "Untagged");
+
+            var transactions = new List<DomainTransaction>
+            {
+                matchingTransaction,
+                zeroNetTransaction,
+                untaggedTransaction,
+            };
+
+            var filter = new TransactionFilter
+            {
+                InstrumentId = TestModels.AccountId,
+                TagIds = [1],
+                ExcludeNetZero = true,
+            };
+            var spec = new FilterSpecification(filter);
+
+            // Act
+            var result = spec.Apply(transactions.AsQueryable()).ToList();
+
+            // Assert - Should only get the tagged transaction with non-zero net amount
+            Assert.Single(result);
+            Assert.Equal("Tagged Non-Zero", result.First().Description);
+        }
+        finally
+        {
+            DomainTransaction.ResetTransactionNetAmountOverride();
+        }
     }
 
     #endregion

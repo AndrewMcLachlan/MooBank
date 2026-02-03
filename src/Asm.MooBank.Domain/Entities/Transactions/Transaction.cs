@@ -323,6 +323,21 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
         }
     }
 
+    #region Database Functions
+    private static Func<TransactionType, Guid?, decimal, decimal>? _transactionNetAmountOverride;
+
+    /// <summary>
+    /// Sets the override function for <see cref="TransactionNetAmount"/> for unit testing purposes.
+    /// </summary>
+    internal static void SetTransactionNetAmountOverride(Func<TransactionType, Guid?, decimal, decimal> func)
+        => _transactionNetAmountOverride = func;
+
+    /// <summary>
+    /// Resets the override function for <see cref="TransactionNetAmount"/>.
+    /// </summary>
+    internal static void ResetTransactionNetAmountOverride()
+        => _transactionNetAmountOverride = null;
+
     /// <summary>
     /// Database function to calculate the net amount of a transaction.
     /// </summary>
@@ -330,8 +345,10 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
     /// <param name="transactionId">Transaction ID.</param>
     /// <param name="amount">Transaction amount.</param>
     /// <returns>The net amount of the transaction.</returns>
-    /// <exception cref="NotSupportedException">Thrown if called outside of a database context operation.</exception>
+    /// <exception cref="NotSupportedException">Thrown if called outside of a database context operation and no override is set.</exception>
     [DbFunction("TransactionNetAmount", "dbo")]
-    public static decimal TransactionNetAmount(TransactionType transactionType, Guid? transactionId, decimal amount) => throw new NotSupportedException();
+    public static decimal TransactionNetAmount(TransactionType transactionType, Guid? transactionId, decimal amount)
+        => _transactionNetAmountOverride?.Invoke(transactionType, transactionId, amount) ?? throw new NotSupportedException();
+    #endregion
     #endregion
 }

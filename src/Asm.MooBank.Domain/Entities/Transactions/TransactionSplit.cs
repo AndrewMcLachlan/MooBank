@@ -52,5 +52,31 @@ public class TransactionSplit : KeyedEntity<Guid>
     /// <returns></returns>
     public decimal GetNetAmount() => Amount - OffsetBy.Sum(o => o.Amount);
 
-    public static decimal TransactionSplitNetAmount(Guid transactionId, Guid transactionSplitId, decimal amount) => throw new NotSupportedException();
+    #region Database Functions
+    private static Func<Guid, Guid, decimal, decimal>? _transactionSplitNetAmountOverride;
+
+    /// <summary>
+    /// Sets the override function for <see cref="TransactionSplitNetAmount"/> for unit testing purposes.
+    /// </summary>
+    internal static void SetTransactionSplitNetAmountOverride(Func<Guid, Guid, decimal, decimal> func)
+        => _transactionSplitNetAmountOverride = func;
+
+    /// <summary>
+    /// Resets the override function for <see cref="TransactionSplitNetAmount"/>.
+    /// </summary>
+    internal static void ResetTransactionSplitNetAmountOverride()
+        => _transactionSplitNetAmountOverride = null;
+
+    /// <summary>
+    /// Database function to calculate the net amount of a transaction split.
+    /// </summary>
+    /// <param name="transactionId">Transaction ID.</param>
+    /// <param name="transactionSplitId">Transaction split ID.</param>
+    /// <param name="amount">Split amount.</param>
+    /// <returns>The net amount of the transaction split.</returns>
+    /// <exception cref="NotSupportedException">Thrown if called outside of a database context operation and no override is set.</exception>
+    [DbFunction("TransactionSplitNetAmount", "dbo")]
+    public static decimal TransactionSplitNetAmount(Guid transactionId, Guid transactionSplitId, decimal amount)
+        => _transactionSplitNetAmountOverride?.Invoke(transactionId, transactionSplitId, amount) ?? throw new NotSupportedException();
+    #endregion
 }
