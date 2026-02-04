@@ -137,11 +137,76 @@ public class ReportTypeTests
 
     #endregion
 
-    // Note: Implicit conversion tests are not included because the production code
-    // has a recursive pattern that works in normal usage but causes stack overflow
-    // when the conversion is invoked directly. The implicit conversion from
-    // TransactionFilterType to ReportType returns Credit/Debit constants which are
-    // TransactionFilterType values, triggering another implicit conversion.
+    #region Implicit Conversion Tests
+
+    [Fact]
+    public void ImplicitConversion_FromCredit_ReturnsCorrectReportType()
+    {
+        // Arrange
+        TransactionFilterType filterType = TransactionFilterType.Credit;
+
+        // Act
+        ReportType reportType = filterType;
+
+        // Assert
+        Assert.Equal(TransactionFilterType.Credit, (TransactionFilterType)reportType);
+    }
+
+    [Fact]
+    public void ImplicitConversion_FromDebit_ReturnsCorrectReportType()
+    {
+        // Arrange
+        TransactionFilterType filterType = TransactionFilterType.Debit;
+
+        // Act
+        ReportType reportType = filterType;
+
+        // Assert
+        Assert.Equal(TransactionFilterType.Debit, (TransactionFilterType)reportType);
+    }
+
+    [Fact]
+    public void ImplicitConversion_ToTransactionFilterType_ReturnsCorrectValue()
+    {
+        // Arrange
+        ReportType.TryParse("debit", out var reportType);
+
+        // Act
+        TransactionFilterType filterType = reportType;
+
+        // Assert
+        Assert.Equal(TransactionFilterType.Debit, filterType);
+    }
+
+    [Fact]
+    public void ImplicitConversion_InvalidFilterType_ThrowsArgumentOutOfRangeException()
+    {
+        // Arrange
+        TransactionFilterType filterType = (TransactionFilterType)999;
+
+        // Act & Assert
+        var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
+        {
+            ReportType _ = filterType;
+        });
+        Assert.Equal("reportType", exception.ParamName);
+    }
+
+    [Fact]
+    public void ImplicitConversion_RoundTrip_PreservesValue()
+    {
+        // Arrange
+        TransactionFilterType original = TransactionFilterType.Credit;
+
+        // Act - convert to ReportType and back
+        ReportType reportType = original;
+        TransactionFilterType roundTripped = reportType;
+
+        // Assert
+        Assert.Equal(original, roundTripped);
+    }
+
+    #endregion
 }
 
 // Note: ReportTypeExtensions tests require complex domain entity setup.
