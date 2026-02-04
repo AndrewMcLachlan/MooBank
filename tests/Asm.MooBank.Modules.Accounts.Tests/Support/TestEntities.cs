@@ -135,11 +135,11 @@ internal static class TestEntities
         return new ModelLogicalAccount
         {
             Id = id ?? Guid.NewGuid(),
-            Name = name,
+            Name = name!,
             Description = description,
             AccountType = accountType,
             Controller = controller,
-            Currency = currency,
+            Currency = currency!,
             CurrentBalance = currentBalance,
             CurrentBalanceLocalCurrency = currentBalance,
             IncludeInBudget = includeInBudget,

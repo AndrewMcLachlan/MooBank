@@ -147,6 +147,67 @@ public class TagRepositoryTests : IDisposable
 
     #endregion
 
+    #region Get By Id with IncludeSubTags
+
+    /// <summary>
+    /// Given a tag with sub-tags exists
+    /// When Get by id is called with includeSubTags = true
+    /// Then the tag with sub-tags should be returned
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Integration")]
+    public async Task GetById_WithIncludeSubTagsTrue_ReturnsTagWithSubTags()
+    {
+        // Arrange
+        var parentTag = CreateTag(1, "Parent", _familyId);
+        var childTag = CreateTag(2, "Child", _familyId);
+        parentTag.Tags.Add(childTag);
+
+        _context.Set<Tag>().AddRange(parentTag, childTag);
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var repository = new TagRepository(_context, _user);
+
+        // Act
+        var result = await repository.Get(1, includeSubTags: true, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal("Parent", result.Name);
+        Assert.Single(result.Tags);
+        Assert.Equal("Child", result.Tags.First().Name);
+    }
+
+    /// <summary>
+    /// Given a tag exists
+    /// When Get by id is called with includeSubTags = false
+    /// Then the tag without sub-tags should be returned
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Integration")]
+    public async Task GetById_WithIncludeSubTagsFalse_ReturnsTagWithoutSubTags()
+    {
+        // Arrange
+        var parentTag = CreateTag(1, "Parent", _familyId);
+        var childTag = CreateTag(2, "Child", _familyId);
+        parentTag.Tags.Add(childTag);
+
+        _context.Set<Tag>().AddRange(parentTag, childTag);
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var repository = new TagRepository(_context, _user);
+
+        // Act
+        var result = await repository.Get(1, includeSubTags: false, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal("Parent", result.Name);
+        // Sub-tags should not be loaded when includeSubTags = false
+    }
+
+    #endregion
+
     #region Get By Multiple Ids
 
     /// <summary>

@@ -298,5 +298,290 @@ public class ClaimsUserDataProviderTests
         Assert.Throws<InvalidOperationException>(() => provider.GetCurrentUser());
     }
 
+    /// <summary>
+    /// Given an authenticated principal without currency
+    /// When GetCurrentUser is called
+    /// Then InvalidOperationException should be thrown
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void GetCurrentUser_MissingCurrency_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var claims = new List<Claim>
+        {
+            new(MooBank.Security.ClaimTypes.UserId, TestUserId.ToString()),
+            new(System.Security.Claims.ClaimTypes.Email, "test@test.com"),
+        };
+        var identity = new ClaimsIdentity(claims, "TestAuth");
+        var principal = new ClaimsPrincipal(identity);
+        var principalProviderMock = new Mock<IPrincipalProvider>();
+        principalProviderMock.Setup(p => p.Principal).Returns(principal);
+        var provider = new ClaimsUserDataProvider(principalProviderMock.Object);
+
+        // Act & Assert
+        Assert.Throws<InvalidOperationException>(() => provider.GetCurrentUser());
+    }
+
+    /// <summary>
+    /// Given an authenticated principal with multiple account claims
+    /// When GetCurrentUser is called
+    /// Then all accounts should be included in the user's Accounts collection
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void GetCurrentUser_MultipleAccountClaims_ReturnsAllAccounts()
+    {
+        // Arrange
+        var account1 = Guid.NewGuid();
+        var account2 = Guid.NewGuid();
+        var account3 = Guid.NewGuid();
+        var claims = new List<Claim>
+        {
+            new(MooBank.Security.ClaimTypes.UserId, TestUserId.ToString()),
+            new(System.Security.Claims.ClaimTypes.Email, "test@test.com"),
+            new(MooBank.Security.ClaimTypes.Currency, "AUD"),
+            new(MooBank.Security.ClaimTypes.FamilyId, TestFamilyId.ToString()),
+            new(MooBank.Security.ClaimTypes.AccountId, account1.ToString()),
+            new(MooBank.Security.ClaimTypes.AccountId, account2.ToString()),
+            new(MooBank.Security.ClaimTypes.AccountId, account3.ToString()),
+        };
+        var identity = new ClaimsIdentity(claims, "TestAuth");
+        var principal = new ClaimsPrincipal(identity);
+        var principalProviderMock = new Mock<IPrincipalProvider>();
+        principalProviderMock.Setup(p => p.Principal).Returns(principal);
+        var provider = new ClaimsUserDataProvider(principalProviderMock.Object);
+
+        // Act
+        var result = provider.GetCurrentUser();
+
+        // Assert
+        Assert.Equal(3, result.Accounts.Count());
+        Assert.Contains(account1, result.Accounts);
+        Assert.Contains(account2, result.Accounts);
+        Assert.Contains(account3, result.Accounts);
+    }
+
+    /// <summary>
+    /// Given an authenticated principal with shared account claims
+    /// When GetCurrentUser is called
+    /// Then all shared accounts should be included in the user's SharedAccounts collection
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void GetCurrentUser_SharedAccountClaims_ReturnsSharedAccounts()
+    {
+        // Arrange
+        var sharedAccount1 = Guid.NewGuid();
+        var sharedAccount2 = Guid.NewGuid();
+        var claims = new List<Claim>
+        {
+            new(MooBank.Security.ClaimTypes.UserId, TestUserId.ToString()),
+            new(System.Security.Claims.ClaimTypes.Email, "test@test.com"),
+            new(MooBank.Security.ClaimTypes.Currency, "AUD"),
+            new(MooBank.Security.ClaimTypes.FamilyId, TestFamilyId.ToString()),
+            new(MooBank.Security.ClaimTypes.SharedAccountId, sharedAccount1.ToString()),
+            new(MooBank.Security.ClaimTypes.SharedAccountId, sharedAccount2.ToString()),
+        };
+        var identity = new ClaimsIdentity(claims, "TestAuth");
+        var principal = new ClaimsPrincipal(identity);
+        var principalProviderMock = new Mock<IPrincipalProvider>();
+        principalProviderMock.Setup(p => p.Principal).Returns(principal);
+        var provider = new ClaimsUserDataProvider(principalProviderMock.Object);
+
+        // Act
+        var result = provider.GetCurrentUser();
+
+        // Assert
+        Assert.Equal(2, result.SharedAccounts.Count());
+        Assert.Contains(sharedAccount1, result.SharedAccounts);
+        Assert.Contains(sharedAccount2, result.SharedAccounts);
+    }
+
+    /// <summary>
+    /// Given an authenticated principal with group claims
+    /// When GetCurrentUser is called
+    /// Then all groups should be included in the user's Groups collection
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void GetCurrentUser_GroupClaims_ReturnsGroups()
+    {
+        // Arrange
+        var group1 = Guid.NewGuid();
+        var group2 = Guid.NewGuid();
+        var claims = new List<Claim>
+        {
+            new(MooBank.Security.ClaimTypes.UserId, TestUserId.ToString()),
+            new(System.Security.Claims.ClaimTypes.Email, "test@test.com"),
+            new(MooBank.Security.ClaimTypes.Currency, "AUD"),
+            new(MooBank.Security.ClaimTypes.FamilyId, TestFamilyId.ToString()),
+            new(MooBank.Security.ClaimTypes.GroupId, group1.ToString()),
+            new(MooBank.Security.ClaimTypes.GroupId, group2.ToString()),
+        };
+        var identity = new ClaimsIdentity(claims, "TestAuth");
+        var principal = new ClaimsPrincipal(identity);
+        var principalProviderMock = new Mock<IPrincipalProvider>();
+        principalProviderMock.Setup(p => p.Principal).Returns(principal);
+        var provider = new ClaimsUserDataProvider(principalProviderMock.Object);
+
+        // Act
+        var result = provider.GetCurrentUser();
+
+        // Assert
+        Assert.Equal(2, result.Groups.Count());
+        Assert.Contains(group1, result.Groups);
+        Assert.Contains(group2, result.Groups);
+    }
+
+    /// <summary>
+    /// Given an authenticated principal with primary account claim
+    /// When GetCurrentUser is called
+    /// Then PrimaryAccountId should be set correctly
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void GetCurrentUser_PrimaryAccountClaim_ReturnsPrimaryAccountId()
+    {
+        // Arrange
+        var primaryAccountId = Guid.NewGuid();
+        var claims = new List<Claim>
+        {
+            new(MooBank.Security.ClaimTypes.UserId, TestUserId.ToString()),
+            new(System.Security.Claims.ClaimTypes.Email, "test@test.com"),
+            new(MooBank.Security.ClaimTypes.Currency, "AUD"),
+            new(MooBank.Security.ClaimTypes.FamilyId, TestFamilyId.ToString()),
+            new(MooBank.Security.ClaimTypes.PrimaryAccountId, primaryAccountId.ToString()),
+        };
+        var identity = new ClaimsIdentity(claims, "TestAuth");
+        var principal = new ClaimsPrincipal(identity);
+        var principalProviderMock = new Mock<IPrincipalProvider>();
+        principalProviderMock.Setup(p => p.Principal).Returns(principal);
+        var provider = new ClaimsUserDataProvider(principalProviderMock.Object);
+
+        // Act
+        var result = provider.GetCurrentUser();
+
+        // Assert
+        Assert.Equal(primaryAccountId, result.PrimaryAccountId);
+    }
+
+    /// <summary>
+    /// Given an authenticated principal without primary account claim
+    /// When GetCurrentUser is called
+    /// Then PrimaryAccountId should be null
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void GetCurrentUser_NoPrimaryAccountClaim_ReturnsNullPrimaryAccountId()
+    {
+        // Arrange
+        var claims = new List<Claim>
+        {
+            new(MooBank.Security.ClaimTypes.UserId, TestUserId.ToString()),
+            new(System.Security.Claims.ClaimTypes.Email, "test@test.com"),
+            new(MooBank.Security.ClaimTypes.Currency, "AUD"),
+            new(MooBank.Security.ClaimTypes.FamilyId, TestFamilyId.ToString()),
+        };
+        var identity = new ClaimsIdentity(claims, "TestAuth");
+        var principal = new ClaimsPrincipal(identity);
+        var principalProviderMock = new Mock<IPrincipalProvider>();
+        principalProviderMock.Setup(p => p.Principal).Returns(principal);
+        var provider = new ClaimsUserDataProvider(principalProviderMock.Object);
+
+        // Act
+        var result = provider.GetCurrentUser();
+
+        // Assert
+        Assert.Null(result.PrimaryAccountId);
+    }
+
+    /// <summary>
+    /// Given an authenticated principal with valid UserId claim
+    /// When CurrentUserId is accessed
+    /// Then the correct UserId should be returned
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void CurrentUserId_WithValidClaim_ReturnsUserId()
+    {
+        // Arrange
+        var claims = new List<Claim>
+        {
+            new(MooBank.Security.ClaimTypes.UserId, TestUserId.ToString()),
+        };
+        var identity = new ClaimsIdentity(claims, "TestAuth");
+        var principal = new ClaimsPrincipal(identity);
+        var principalProviderMock = new Mock<IPrincipalProvider>();
+        principalProviderMock.Setup(p => p.Principal).Returns(principal);
+        var provider = new ClaimsUserDataProvider(principalProviderMock.Object);
+
+        // Act & Assert
+        Assert.Equal(TestUserId, provider.CurrentUserId);
+    }
+
+    /// <summary>
+    /// Given an authenticated principal without name claims
+    /// When GetCurrentUser is called
+    /// Then FirstName and LastName should be null
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void GetCurrentUser_NoNameClaims_ReturnsNullNames()
+    {
+        // Arrange
+        var claims = new List<Claim>
+        {
+            new(MooBank.Security.ClaimTypes.UserId, TestUserId.ToString()),
+            new(System.Security.Claims.ClaimTypes.Email, "test@test.com"),
+            new(MooBank.Security.ClaimTypes.Currency, "AUD"),
+            new(MooBank.Security.ClaimTypes.FamilyId, TestFamilyId.ToString()),
+        };
+        var identity = new ClaimsIdentity(claims, "TestAuth");
+        var principal = new ClaimsPrincipal(identity);
+        var principalProviderMock = new Mock<IPrincipalProvider>();
+        principalProviderMock.Setup(p => p.Principal).Returns(principal);
+        var provider = new ClaimsUserDataProvider(principalProviderMock.Object);
+
+        // Act
+        var result = provider.GetCurrentUser();
+
+        // Assert
+        Assert.Null(result.FirstName);
+        Assert.Null(result.LastName);
+    }
+
+    /// <summary>
+    /// Given an authenticated principal with no account, shared account, or group claims
+    /// When GetCurrentUser is called
+    /// Then collections should be empty
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void GetCurrentUser_NoCollectionClaims_ReturnsEmptyCollections()
+    {
+        // Arrange
+        var claims = new List<Claim>
+        {
+            new(MooBank.Security.ClaimTypes.UserId, TestUserId.ToString()),
+            new(System.Security.Claims.ClaimTypes.Email, "test@test.com"),
+            new(MooBank.Security.ClaimTypes.Currency, "AUD"),
+            new(MooBank.Security.ClaimTypes.FamilyId, TestFamilyId.ToString()),
+        };
+        var identity = new ClaimsIdentity(claims, "TestAuth");
+        var principal = new ClaimsPrincipal(identity);
+        var principalProviderMock = new Mock<IPrincipalProvider>();
+        principalProviderMock.Setup(p => p.Principal).Returns(principal);
+        var provider = new ClaimsUserDataProvider(principalProviderMock.Object);
+
+        // Act
+        var result = provider.GetCurrentUser();
+
+        // Assert
+        Assert.Empty(result.Accounts);
+        Assert.Empty(result.SharedAccounts);
+        Assert.Empty(result.Groups);
+    }
+
     #endregion
 }

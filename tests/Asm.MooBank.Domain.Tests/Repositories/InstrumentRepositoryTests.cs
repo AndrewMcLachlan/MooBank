@@ -290,6 +290,10 @@ public class InstrumentRepositoryTests : IDisposable
 
     #endregion
 
+    // Note: GetInstitutionAccount uses string-based Include("VirtualAccounts") which causes
+    // InvalidIncludePathError with in-memory provider. The type-check branch (line 42) that
+    // throws InvalidOperationException should be covered by integration tests.
+
     private static LogicalAccount CreateInstrument(Guid id, string name) =>
         new(id, [])
         {

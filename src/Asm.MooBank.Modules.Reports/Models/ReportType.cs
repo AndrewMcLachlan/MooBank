@@ -38,8 +38,8 @@ public struct ReportType
     public static implicit operator TransactionFilterType(ReportType reportType) => reportType._reportType;
     public static implicit operator ReportType(TransactionFilterType reportType) => reportType switch
     {
-        TransactionFilterType.Credit => Credit,
-        TransactionFilterType.Debit => Debit,
+        TransactionFilterType.Credit => new ReportType(TransactionFilterType.Credit),
+        TransactionFilterType.Debit => new ReportType(TransactionFilterType.Debit),
         _ => throw new ArgumentOutOfRangeException(nameof(reportType))
     };
 }
