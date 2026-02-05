@@ -160,4 +160,29 @@ public class TestUser
             Roles = ["Admin"],
         };
     }
+
+    /// <summary>
+    /// Creates a user who owns the specified group.
+    /// </summary>
+    public static TestUser WithGroup(Guid groupId, Guid? familyId = null)
+    {
+        return new TestUser
+        {
+            GroupIds = [groupId],
+            FamilyId = familyId ?? Guid.NewGuid(),
+        };
+    }
+
+    /// <summary>
+    /// Creates a user who owns both an account and a group.
+    /// </summary>
+    public static TestUser WithAccountAndGroup(Guid accountId, Guid groupId, Guid? familyId = null)
+    {
+        return new TestUser
+        {
+            AccountIds = [accountId],
+            GroupIds = [groupId],
+            FamilyId = familyId ?? Guid.NewGuid(),
+        };
+    }
 }

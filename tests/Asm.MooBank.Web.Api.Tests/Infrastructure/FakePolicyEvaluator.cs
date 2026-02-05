@@ -96,8 +96,9 @@ public class FakePolicyEvaluator : IPolicyEvaluator
             }
             else if (requirementType.Contains("Group"))
             {
-                // Get the group ID from the route
-                var groupId = GetRouteValue(context, "groupId");
+                // Get the group ID from the route (can be "groupId" or "id" depending on the endpoint)
+                var groupId = GetRouteValue(context, "groupId")
+                    ?? GetRouteValue(context, "id");
 
                 if (groupId == null)
                     continue;
