@@ -60,7 +60,7 @@ public class ImportTransactionsServiceTests
         var service = CreateService();
 
         // Act
-        await service.Import(workItem);
+        await service.Import(workItem, TestContext.Current.CancellationToken);
 
         // Assert
         _importerMock.Verify(
@@ -84,7 +84,7 @@ public class ImportTransactionsServiceTests
         var service = CreateService();
 
         // Act
-        await service.Import(workItem);
+        await service.Import(workItem, TestContext.Current.CancellationToken);
 
         // Assert
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -121,7 +121,7 @@ public class ImportTransactionsServiceTests
         var service = CreateService();
 
         // Act
-        await service.Import(workItem);
+        await service.Import(workItem, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(fileData, capturedStreamData);
@@ -155,7 +155,7 @@ public class ImportTransactionsServiceTests
         var service = CreateService();
 
         // Act
-        await service.Import(workItem);
+        await service.Import(workItem, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Contains(transaction.Tags, t => t.Id == tag.Id);
@@ -185,7 +185,7 @@ public class ImportTransactionsServiceTests
         var service = CreateService();
 
         // Act
-        await service.Import(workItem);
+        await service.Import(workItem, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(transaction.Tags);
@@ -215,7 +215,7 @@ public class ImportTransactionsServiceTests
         var service = CreateService();
 
         // Act
-        await service.Import(workItem);
+        await service.Import(workItem, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Contains(transaction.Tags, t => t.Id == tag.Id);
@@ -248,7 +248,7 @@ public class ImportTransactionsServiceTests
         var service = CreateService();
 
         // Act
-        await service.Import(workItem);
+        await service.Import(workItem, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(transaction.Tags);
@@ -281,7 +281,7 @@ public class ImportTransactionsServiceTests
         var service = CreateService();
 
         // Act
-        await service.Import(workItem);
+        await service.Import(workItem, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, transaction.Tags.Count());
@@ -313,7 +313,7 @@ public class ImportTransactionsServiceTests
         var service = CreateService();
 
         // Act
-        await service.Import(workItem);
+        await service.Import(workItem, TestContext.Current.CancellationToken);
 
         // Assert - Should complete without error and no tags applied
         Assert.Empty(transaction.Tags);
@@ -334,14 +334,16 @@ public class ImportTransactionsServiceTests
     {
         // Arrange
         var workItem = CreateWorkItem();
+#pragma warning disable CS8620 // Nullability mismatch in Moq setup for nullable return type
         _instrumentRepositoryMock
             .Setup(r => r.Get(workItem.InstrumentId, It.IsAny<CancellationToken>()))
             .ReturnsAsync((DomainInstrument?)null);
+#pragma warning restore CS8620
 
         var service = CreateService();
 
         // Act - Should complete without throwing
-        await service.Import(workItem);
+        await service.Import(workItem, TestContext.Current.CancellationToken);
 
         // Assert - Save should not be called since we hit an error
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
@@ -368,7 +370,7 @@ public class ImportTransactionsServiceTests
         var service = CreateService();
 
         // Act - Should complete without throwing
-        await service.Import(workItem);
+        await service.Import(workItem, TestContext.Current.CancellationToken);
 
         // Assert - Save should not be called since we hit an error
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
@@ -396,7 +398,7 @@ public class ImportTransactionsServiceTests
         var service = CreateService();
 
         // Act - Should complete without throwing
-        await service.Import(workItem);
+        await service.Import(workItem, TestContext.Current.CancellationToken);
 
         // Assert - Save should not be called since we hit an error
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
@@ -422,7 +424,7 @@ public class ImportTransactionsServiceTests
         var service = CreateService();
 
         // Act
-        await service.Import(workItem);
+        await service.Import(workItem, TestContext.Current.CancellationToken);
 
         // Assert
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -446,7 +448,7 @@ public class ImportTransactionsServiceTests
         var service = CreateService();
 
         // Act
-        await service.Import(workItem);
+        await service.Import(workItem, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(transaction.Tags);
@@ -474,9 +476,11 @@ public class ImportTransactionsServiceTests
 
     private void SetupInstrumentRepository(Guid instrumentId, DomainInstrument? instrument)
     {
+#pragma warning disable CS8620 // Nullability mismatch in Moq setup for nullable return type
         _instrumentRepositoryMock
             .Setup(r => r.Get(instrumentId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(instrument);
+#pragma warning restore CS8620
     }
 
     private void SetupImporterFactory(ImportWorkItem workItem, IImporter importer)

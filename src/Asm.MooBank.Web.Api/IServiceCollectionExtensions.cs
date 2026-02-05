@@ -12,7 +12,7 @@ namespace Asm.MooBank.Web.Api;
 
 public static class IServiceCollectionExtensions
 {
-    private readonly static HybridCacheEntryOptions CacheOptions = new()
+    private static readonly HybridCacheEntryOptions CacheOptions = new()
     {
         Expiration = TimeSpan.FromMinutes(5),
     };

@@ -7,7 +7,7 @@ namespace Asm.MooBank.Services.Background;
 
 public class PrecacheService(HybridCache cache, IServiceScopeFactory serviceScopeFactory) : BackgroundService
 {
-    private readonly static HybridCacheEntryOptions CacheOptions = new()
+    private static readonly HybridCacheEntryOptions CacheOptions = new()
     {
         Expiration = TimeSpan.FromHours(12),
     };

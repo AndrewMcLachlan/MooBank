@@ -15,7 +15,7 @@ public interface ICpiService
 
 internal class CpiService(IReferenceDataRepository referenceDataRepository, HybridCache cache) : ICpiService
 {
-    private readonly static HybridCacheEntryOptions CacheOptions = new()
+    private static readonly HybridCacheEntryOptions CacheOptions = new()
     {
         Expiration = TimeSpan.FromDays(1),
     };

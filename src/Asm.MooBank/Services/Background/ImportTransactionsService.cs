@@ -12,7 +12,7 @@ internal class ImportTransactionsBackgroundService(IImportTransactionsQueue task
     private readonly IServiceScopeFactory _serviceScopeFactory = serviceScopeFactory;
     private readonly IImportTransactionsQueue _taskQueue = taskQueue;
 
-    protected async override Task ExecuteAsync(CancellationToken cancellationToken)
+    protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation("Import Transactions Service is starting.");
 

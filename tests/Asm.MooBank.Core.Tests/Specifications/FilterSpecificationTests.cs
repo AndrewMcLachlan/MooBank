@@ -772,7 +772,7 @@ public class FilterSpecificationTests
         var filter = new TransactionFilter
         {
             InstrumentId = TestModels.AccountId,
-            Untagged = null, // Not filtering by untagged
+            // Not filtering by untagged - leave Untagged unset
         };
         var spec = new FilterSpecification(filter);
 

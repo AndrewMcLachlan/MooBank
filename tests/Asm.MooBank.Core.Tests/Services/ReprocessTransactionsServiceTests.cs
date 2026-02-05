@@ -46,7 +46,7 @@ public class ReprocessTransactionsServiceTests
         var service = CreateService();
 
         // Act
-        await service.Reprocess(workItem);
+        await service.Reprocess(workItem, TestContext.Current.CancellationToken);
 
         // Assert
         _importerMock.Verify(i => i.Reprocess(workItem.InstrumentId, workItem.AccountId, It.IsAny<CancellationToken>()), Times.Once);
@@ -67,7 +67,7 @@ public class ReprocessTransactionsServiceTests
         var service = CreateService();
 
         // Act
-        await service.Reprocess(workItem);
+        await service.Reprocess(workItem, TestContext.Current.CancellationToken);
 
         // Assert
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -107,7 +107,7 @@ public class ReprocessTransactionsServiceTests
         var service = CreateService();
 
         // Act
-        await service.Reprocess(workItem);
+        await service.Reprocess(workItem, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(["Factory", "Reprocess", "Save"], callOrder);
@@ -135,7 +135,7 @@ public class ReprocessTransactionsServiceTests
         var service = CreateService();
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => service.Reprocess(workItem));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => service.Reprocess(workItem, TestContext.Current.CancellationToken));
         Assert.Contains(workItem.AccountId.ToString(), exception.Message);
     }
 
@@ -159,7 +159,7 @@ public class ReprocessTransactionsServiceTests
         var service = CreateService();
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => service.Reprocess(workItem));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => service.Reprocess(workItem, TestContext.Current.CancellationToken));
         Assert.Equal("Importer error", exception.Message);
     }
 
@@ -185,7 +185,7 @@ public class ReprocessTransactionsServiceTests
         // Act
         try
         {
-            await service.Reprocess(workItem);
+            await service.Reprocess(workItem, TestContext.Current.CancellationToken);
         }
         catch
         {
@@ -216,7 +216,7 @@ public class ReprocessTransactionsServiceTests
         var service = CreateService();
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => service.Reprocess(workItem));
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => service.Reprocess(workItem, TestContext.Current.CancellationToken));
         Assert.Equal("Database error", exception.Message);
     }
 

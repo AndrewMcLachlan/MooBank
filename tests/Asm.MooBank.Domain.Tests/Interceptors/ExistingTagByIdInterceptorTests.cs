@@ -54,7 +54,7 @@ public class ExistingTagByIdInterceptorTests : IDisposable
         await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Assert - Family should be saved, no exceptions from interceptor
-        var saved = await _context.Set<Domain.Entities.Family.Family>().FindAsync(family.Id);
+        var saved = await _context.Set<Domain.Entities.Family.Family>().FindAsync([family.Id], TestContext.Current.CancellationToken);
         Assert.NotNull(saved);
     }
 
