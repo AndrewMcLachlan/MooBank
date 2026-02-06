@@ -223,4 +223,56 @@ public class SearchTests
         // Assert
         Assert.Equal(2, result.Count());
     }
+
+    [Fact]
+    public async Task Handle_TransactionExactlyAtGracePeriodBoundary_IncludesTransaction()
+    {
+        // Arrange - Transaction exactly 5 days before start date (boundary of grace period)
+        var instrumentId = Guid.NewGuid();
+        var tag = TestEntities.CreateTag(id: 1, name: "Groceries");
+        var transactions = new[]
+        {
+            TestEntities.CreateTransaction(
+                accountId: instrumentId,
+                transactionTime: new DateTime(2024, 2, 25), // Exactly 5 days before March 1
+                transactionType: TransactionType.Debit,
+                tags: [tag]),
+        };
+        var queryable = TestEntities.CreateTransactionQueryable(transactions);
+
+        var handler = new SearchHandler(queryable);
+        var query = new Search(instrumentId, new DateOnly(2024, 3, 1), TransactionType.Debit, [1]);
+
+        // Act
+        var result = await handler.Handle(query, CancellationToken.None);
+
+        // Assert
+        Assert.Single(result);
+    }
+
+    [Fact]
+    public async Task Handle_TransactionJustOutsideGracePeriod_ExcludesTransaction()
+    {
+        // Arrange - Transaction 6 days before start date (outside grace period)
+        var instrumentId = Guid.NewGuid();
+        var tag = TestEntities.CreateTag(id: 1, name: "Groceries");
+        var transactions = new[]
+        {
+            TestEntities.CreateTransaction(
+                accountId: instrumentId,
+                transactionTime: new DateTime(2024, 2, 24), // 6 days before March 1 (outside 5-day grace)
+                transactionType: TransactionType.Debit,
+                tags: [tag]),
+        };
+        var queryable = TestEntities.CreateTransactionQueryable(transactions);
+
+        var handler = new SearchHandler(queryable);
+        var query = new Search(instrumentId, new DateOnly(2024, 3, 1), TransactionType.Debit, [1]);
+
+        // Act
+        var result = await handler.Handle(query, CancellationToken.None);
+
+        // Assert
+        Assert.Empty(result);
+    }
 }

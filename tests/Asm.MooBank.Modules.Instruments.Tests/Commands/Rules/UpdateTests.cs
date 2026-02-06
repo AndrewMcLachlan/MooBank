@@ -123,4 +123,26 @@ public class UpdateTests
         // Assert
         Assert.Null(existingRule.Description);
     }
+
+    [Fact]
+    public async Task Handle_RuleNotFound_ThrowsNotFoundException()
+    {
+        // Arrange
+        var instrumentId = Guid.NewGuid();
+        var nonExistentRuleId = 999;
+
+        _mocks.RuleRepositoryMock
+            .Setup(r => r.Get(instrumentId, nonExistentRuleId, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new NotFoundException());
+
+        var handler = new UpdateRuleHandler(
+            _mocks.RuleRepositoryMock.Object,
+            _mocks.UnitOfWorkMock.Object);
+
+        var updateRule = TestEntities.CreateUpdateRule(contains: "NEW_VALUE");
+        var command = new Update(instrumentId, nonExistentRuleId, updateRule);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+    }
 }

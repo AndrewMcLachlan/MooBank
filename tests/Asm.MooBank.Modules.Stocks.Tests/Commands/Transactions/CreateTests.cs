@@ -232,4 +232,30 @@ public class CreateTests
         // Assert
         Assert.Equal(transactionDate, result.TransactionDate.DateTime);
     }
+
+    [Fact]
+    public async Task Handle_StockHoldingNotFound_ThrowsNotFoundException()
+    {
+        // Arrange
+        var instrumentId = Guid.NewGuid();
+
+        _mocks.StockHoldingRepositoryMock
+            .Setup(r => r.Get(instrumentId, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new NotFoundException());
+
+        var handler = new CreateHandler(
+            _mocks.StockHoldingRepositoryMock.Object,
+            _mocks.UnitOfWorkMock.Object);
+
+        var command = new Create(
+            InstrumentId: instrumentId,
+            Quantity: 5,
+            Price: 150m,
+            Fees: 9.95m,
+            Description: "Purchase shares",
+            Date: DateTime.UtcNow);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+    }
 }

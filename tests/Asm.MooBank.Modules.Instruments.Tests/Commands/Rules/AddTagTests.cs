@@ -233,4 +233,33 @@ public class AddTagTests
         // Assert
         Assert.Equal(2, rule.Tags.Count);
     }
+
+    [Fact]
+    public async Task Handle_TagNotFound_ThrowsNotFoundException()
+    {
+        // Arrange
+        var instrumentId = Guid.NewGuid();
+        var ruleId = 1;
+        var nonExistentTagId = 999;
+        var rule = TestEntities.CreateRule(id: ruleId, instrumentId: instrumentId);
+        var instrument = TestEntities.CreateInstrument(id: instrumentId, rules: [rule]);
+
+        _mocks.InstrumentRepositoryMock
+            .Setup(r => r.Get(instrumentId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(instrument);
+
+        _mocks.TagRepositoryMock
+            .Setup(r => r.Get(nonExistentTagId, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new NotFoundException());
+
+        var handler = new AddTagHandler(
+            _mocks.InstrumentRepositoryMock.Object,
+            _mocks.TagRepositoryMock.Object,
+            _mocks.UnitOfWorkMock.Object);
+
+        var command = new AddTag(instrumentId, ruleId, nonExistentTagId);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+    }
 }

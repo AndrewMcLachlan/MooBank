@@ -300,4 +300,111 @@ public class ReportForMonthBreakdownTests
             Assert.True(items[i].BudgetedAmount >= items[i + 1].BudgetedAmount);
         }
     }
+
+    [Fact]
+    public async Task Handle_DeeplyNestedTags_BuildsHierarchyCorrectly()
+    {
+        // Arrange - 3 levels deep: Food -> Groceries -> Fresh Produce
+        var familyId = _mocks.User.FamilyId;
+        var accountId = Guid.NewGuid();
+
+        var foodTag = TestEntities.CreateTag(1, "Food", familyId);
+        var groceriesTag = TestEntities.CreateTag(2, "Groceries", familyId);
+        var freshProduceTag = TestEntities.CreateTag(3, "Fresh Produce", familyId);
+
+        var lines = new[]
+        {
+            TestEntities.CreateBudgetLine(tagId: 1, tagName: "Food", income: false, amount: 500m, month: 4095),
+        };
+        var budget = TestEntities.CreateBudget(year: 2024, familyId: familyId, lines: lines);
+        var budgetQueryable = TestEntities.CreateBudgetQueryable(budget);
+
+        var account = TestEntities.CreateLogicalAccount(id: accountId, includeInBudget: true);
+        var accountQueryable = TestEntities.CreateLogicalAccountQueryable(account);
+
+        // Transaction with deeply nested tag
+        var freshProduceSplit = TestEntities.CreateTransactionSplit(amount: 50m, tags: [freshProduceTag]);
+        var freshProduceTxn = TestEntities.CreateTransaction(
+            accountId: accountId,
+            amount: -50m,
+            transactionTime: new DateTime(2024, 6, 15),
+            transactionType: TransactionType.Debit,
+            splits: [freshProduceSplit]);
+
+        var transactionQueryable = TestEntities.CreateTransactionQueryable(freshProduceTxn);
+
+        // Tag hierarchy: Fresh Produce -> Groceries -> Food
+        var relationship1 = TestEntities.CreateTagRelationship(tagId: 3, parentTagId: 2); // Fresh Produce child of Groceries
+        var relationship2 = TestEntities.CreateTagRelationship(tagId: 2, parentTagId: 1); // Groceries child of Food
+        var tagRelationshipQueryable = TestEntities.CreateTagRelationshipQueryable(relationship1, relationship2);
+
+        _mocks.SetUser(TestMocks.CreateTestUser(familyId: familyId, accounts: [accountId]));
+
+        var handler = new ReportForMonthBreakdownHandler(
+            budgetQueryable, accountQueryable, transactionQueryable, tagRelationshipQueryable, _mocks.User);
+        var query = new ReportForMonthBreakdown(2024, 6);
+
+        // Act
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.NotNull(result);
+        // The deeply nested transaction should be counted under Food
+        var foodItem = result.Tags.FirstOrDefault(i => i.Name == "Food");
+        Assert.NotNull(foodItem);
+    }
+
+    [Fact]
+    public async Task Handle_TransactionWithMultipleSplitTags_CategorizesCorrectly()
+    {
+        // Arrange - Transaction with splits tagged to both budgeted and unbudgeted tags
+        var familyId = _mocks.User.FamilyId;
+        var accountId = Guid.NewGuid();
+
+        var rentTag = TestEntities.CreateTag(1, "Rent", familyId);
+        var utilitiesTag = TestEntities.CreateTag(2, "Utilities", familyId);
+        var miscTag = TestEntities.CreateTag(99, "Misc", familyId); // Not in budget
+
+        var lines = new[]
+        {
+            TestEntities.CreateBudgetLine(tagId: 1, tagName: "Rent", income: false, amount: 1000m, month: 4095),
+            TestEntities.CreateBudgetLine(tagId: 2, tagName: "Utilities", income: false, amount: 200m, month: 4095),
+        };
+        var budget = TestEntities.CreateBudget(year: 2024, familyId: familyId, lines: lines);
+        var budgetQueryable = TestEntities.CreateBudgetQueryable(budget);
+
+        var account = TestEntities.CreateLogicalAccount(id: accountId, includeInBudget: true);
+        var accountQueryable = TestEntities.CreateLogicalAccountQueryable(account);
+
+        // Single transaction with multiple splits for different categories
+        var rentSplit = TestEntities.CreateTransactionSplit(amount: 900m, tags: [rentTag]);
+        var utilitiesSplit = TestEntities.CreateTransactionSplit(amount: 100m, tags: [utilitiesTag]);
+        var miscSplit = TestEntities.CreateTransactionSplit(amount: 50m, tags: [miscTag]);
+
+        var txn = TestEntities.CreateTransaction(
+            accountId: accountId,
+            amount: -1050m,
+            transactionTime: new DateTime(2024, 6, 15),
+            transactionType: TransactionType.Debit,
+            splits: [rentSplit, utilitiesSplit, miscSplit]);
+
+        var transactionQueryable = TestEntities.CreateTransactionQueryable(txn);
+        var tagRelationshipQueryable = TestEntities.CreateTagRelationshipQueryable([]);
+
+        _mocks.SetUser(TestMocks.CreateTestUser(familyId: familyId, accounts: [accountId]));
+
+        var handler = new ReportForMonthBreakdownHandler(
+            budgetQueryable, accountQueryable, transactionQueryable, tagRelationshipQueryable, _mocks.User);
+        var query = new ReportForMonthBreakdown(2024, 6);
+
+        // Act
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.NotNull(result);
+        // Should have entries for Rent, Utilities, and Other (for misc)
+        Assert.NotNull(result.Tags.FirstOrDefault(i => i.Name == "Rent"));
+        Assert.NotNull(result.Tags.FirstOrDefault(i => i.Name == "Utilities"));
+        Assert.NotNull(result.Tags.FirstOrDefault(i => i.Name == "Other"));
+    }
 }

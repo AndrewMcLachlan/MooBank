@@ -469,6 +469,98 @@ public class TransactionTests
         Assert.Equal(-75m, netAmount);
     }
 
+    /// <summary>
+    /// Given a debit transaction with multiple splits and offsets
+    /// When NetAmount is calculated
+    /// Then it should sum all splits and subtract all offsets correctly
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void NetAmount_MultipleSplitsWithOffsets_CalculatesCorrectly()
+    {
+        // Arrange - Create transaction with multiple splits
+        var transaction = _entities.CreateDebitTransaction(100m);
+        var firstSplit = transaction.Splits.First();
+        firstSplit.Amount = 60m;
+        firstSplit.OffsetBy.Add(new TransactionOffset
+        {
+            TransactionSplitId = firstSplit.Id,
+            OffsetTransactionId = Guid.NewGuid(),
+            Amount = 10m,
+        });
+
+        // Add a second split using UpdateSplits
+        var updatedSplits = new List<Models.TransactionSplit>
+        {
+            new() { Id = firstSplit.Id, Amount = 60m, Tags = [], OffsetBy = [new TransactionOffsetBy { Amount = 10m, Transaction = new Models.Transaction { Id = Guid.NewGuid() } }] },
+            new() { Id = Guid.NewGuid(), Amount = 40m, Tags = [], OffsetBy = [new TransactionOffsetBy { Amount = 5m, Transaction = new Models.Transaction { Id = Guid.NewGuid() } }] },
+        };
+        transaction.UpdateSplits(updatedSplits);
+
+        // Act
+        var netAmount = transaction.NetAmount;
+
+        // Assert
+        // Split 1: 60 - 10 = 50
+        // Split 2: 40 - 5 = 35
+        // Total: 50 + 35 = 85
+        // Debit negates: -85
+        Assert.Equal(-85m, netAmount);
+    }
+
+    /// <summary>
+    /// Given a debit transaction with an offset that equals the split amount
+    /// When NetAmount is calculated
+    /// Then it should return zero for that split's contribution
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void NetAmount_OffsetEqualsSplitAmount_ReturnsZeroContribution()
+    {
+        // Arrange
+        var transaction = _entities.CreateDebitTransaction(100m);
+        var split = transaction.Splits.First();
+        split.OffsetBy.Add(new TransactionOffset
+        {
+            TransactionSplitId = split.Id,
+            OffsetTransactionId = Guid.NewGuid(),
+            Amount = 100m, // Equals split amount
+        });
+
+        // Act
+        var netAmount = transaction.NetAmount;
+
+        // Assert
+        Assert.Equal(0m, netAmount);
+    }
+
+    /// <summary>
+    /// Given a transaction with very small decimal amounts
+    /// When NetAmount is calculated
+    /// Then precision should be maintained
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void NetAmount_VerySmallDecimals_MaintainsPrecision()
+    {
+        // Arrange
+        var transaction = DomainTransaction.Create(
+            AccountId,
+            UserId,
+            -0.0001m,
+            "Test",
+            DateTime.UtcNow,
+            null,
+            "Test",
+            null);
+
+        // Act
+        var netAmount = transaction.NetAmount;
+
+        // Assert
+        Assert.Equal(-0.0001m, netAmount);
+    }
+
     #endregion
 
     #region Transaction.UpdateProperties

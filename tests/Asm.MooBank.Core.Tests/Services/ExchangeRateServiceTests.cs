@@ -157,6 +157,68 @@ public class ExchangeRateServiceTests
         unitOfWorkMock.Verify(u => u.SaveChangesAsync(default), Times.Once);
     }
 
+    /// <summary>
+    /// Given the API returns rates for some currencies but not others
+    /// When UpdateExchangeRates is called
+    /// Then only available rates should be processed
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public async Task UpdateExchangeRates_PartialApiResponse_HandlesGracefully()
+    {
+        // Arrange - Multiple user currencies, but API only returns one
+        var accounts = CreateAccounts("AUD").AsQueryable();
+        var users = CreateUsers("USD", "EUR", "GBP").AsQueryable();
+        // API only returns USD rate, not EUR or GBP
+        var apiRates = new Dictionary<string, decimal> { { "USD", 0.65m } };
+
+        var (service, repositoryMock, _) = CreateService(accounts, users, [], apiRates);
+
+        // Act
+        await service.UpdateExchangeRates();
+
+        // Assert - Only USD rate should be added
+        repositoryMock.Verify(r => r.AddExchangeRate(It.Is<ExchangeRate>(
+            e => e.From == "AUD" && e.To == "USD")), Times.Once);
+        // EUR and GBP should not be added since they weren't in the API response
+        repositoryMock.Verify(r => r.AddExchangeRate(It.Is<ExchangeRate>(
+            e => e.To == "EUR")), Times.Never);
+        repositoryMock.Verify(r => r.AddExchangeRate(It.Is<ExchangeRate>(
+            e => e.To == "GBP")), Times.Never);
+    }
+
+    /// <summary>
+    /// Given an existing rate is updated
+    /// When UpdateExchangeRates completes
+    /// Then LastUpdated timestamp should be set
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public async Task UpdateExchangeRates_ExistingRate_SetsLastUpdatedTimestamp()
+    {
+        // Arrange
+        var accounts = CreateAccounts("AUD").AsQueryable();
+        var users = CreateUsers("USD").AsQueryable();
+        var existingRate = new ExchangeRate
+        {
+            From = "AUD",
+            To = "USD",
+            Rate = 0.60m,
+            LastUpdated = DateTime.UtcNow.AddDays(-1) // Old timestamp
+        };
+        var oldTimestamp = existingRate.LastUpdated;
+        var apiRates = new Dictionary<string, decimal> { { "USD", 0.65m } };
+
+        var (service, _, _) = CreateService(accounts, users, [existingRate], apiRates);
+
+        // Act
+        await service.UpdateExchangeRates();
+
+        // Assert
+        Assert.NotEqual(oldTimestamp, existingRate.LastUpdated);
+        Assert.True(existingRate.LastUpdated > oldTimestamp);
+    }
+
     #endregion
 
     private static Instrument[] CreateAccounts(params string[] currencies) =>

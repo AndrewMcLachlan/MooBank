@@ -97,6 +97,75 @@ public class CurrencyConverterTests
         Assert.Null(result);
     }
 
+    /// <summary>
+    /// Given an extreme exchange rate (very high)
+    /// When CurrencyConverter.Convert is called
+    /// Then the conversion should handle large numbers correctly
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void Convert_ExtremeHighRate_HandlesCorrectly()
+    {
+        // Arrange - Very high rate like JPY
+        var exchangeRates = new List<ExchangeRate>
+        {
+            new() { From = "USD", To = "JPY", Rate = 150.5m },
+        };
+        var converter = CreateConverter("JPY", exchangeRates);
+
+        // Act
+        var result = converter.Convert(1000m, "USD");
+
+        // Assert
+        Assert.Equal(150500m, result);
+    }
+
+    /// <summary>
+    /// Given an extreme exchange rate (very low)
+    /// When CurrencyConverter.Convert is called
+    /// Then the conversion should maintain precision
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void Convert_ExtremeLowRate_MaintainsPrecision()
+    {
+        // Arrange - Very low rate
+        var exchangeRates = new List<ExchangeRate>
+        {
+            new() { From = "BTC", To = "USD", Rate = 0.000025m },
+        };
+        var converter = CreateConverter("USD", exchangeRates);
+
+        // Act
+        var result = converter.Convert(40000m, "BTC");
+
+        // Assert
+        Assert.Equal(1m, result);
+    }
+
+    /// <summary>
+    /// Given a reverse rate lookup is required
+    /// When CurrencyConverter.Convert is called
+    /// Then it should use the reverse rate correctly
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void Convert_WithReverseRateLookup_UsesReverseRate()
+    {
+        // Arrange - Only have USD->AUD rate, but need AUD->USD
+        var exchangeRates = new List<ExchangeRate>
+        {
+            new() { From = "USD", To = "AUD", Rate = 1.55m, ReverseRate = 0.645m },
+        };
+        var converter = CreateConverter("USD", exchangeRates);
+
+        // Act - Converting AUD to USD should use reverse rate
+        var result = converter.Convert(100m, "AUD");
+
+        // Assert
+        Assert.Equal(64.5m, result);
+    }
+
     private static CurrencyConverter CreateConverter(string userCurrency, List<ExchangeRate> exchangeRates)
     {
         var referenceDataRepositoryMock = new Mock<IReferenceDataRepository>();
