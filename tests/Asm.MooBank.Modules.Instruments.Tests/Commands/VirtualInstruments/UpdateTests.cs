@@ -199,4 +199,38 @@ public class UpdateTests
         // Assert
         Assert.Empty(virtualInstrument.Events);
     }
+
+    [Fact]
+    public async Task Handle_BalanceIncrease_DoesNotUpdateBalanceOrRaiseEvent()
+    {
+        // Arrange - When new balance is higher than existing (amount is negative),
+        // the balance is NOT updated and no event is raised (intentional behavior)
+        var instrumentId = Guid.NewGuid();
+        var virtualInstrumentId = Guid.NewGuid();
+        var virtualInstrument = TestEntities.CreateVirtualInstrument(
+            id: virtualInstrumentId,
+            balance: 500m);
+        var instrument = TestEntities.CreateInstrument(
+            id: instrumentId,
+            virtualInstruments: [virtualInstrument]);
+
+        _mocks.InstrumentRepositoryMock
+            .Setup(r => r.Get(instrumentId, It.IsAny<ISpecification<Domain.Entities.Instrument.Instrument>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(instrument);
+
+        var handler = new UpdateHandler(
+            _mocks.InstrumentRepositoryMock.Object,
+            _mocks.UnitOfWorkMock.Object,
+            _mocks.CurrencyConverterMock.Object);
+
+        // Higher balance requested - amount = 500 - 800 = -300 (negative, so condition fails)
+        var command = new Update(instrumentId, virtualInstrumentId, "Name", "Desc", 800m);
+
+        // Act
+        await handler.Handle(command, CancellationToken.None);
+
+        // Assert - Balance should remain unchanged when trying to increase
+        Assert.Equal(500m, virtualInstrument.Balance);
+        Assert.Empty(virtualInstrument.Events);
+    }
 }

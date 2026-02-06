@@ -159,4 +159,23 @@ public class GetTests
         Assert.Equal(100m, result.CurrentBalance);
         Assert.Equal(150m, result.CurrentBalanceLocalCurrency);
     }
+
+    [Fact]
+    public async Task Handle_NonLogicalAccountInstrument_ThrowsInvalidOperationException()
+    {
+        // Arrange - StockHolding is not a LogicalAccount, so virtual accounts are not supported
+        var instrumentId = Guid.NewGuid();
+        var stockHolding = TestEntities.CreateStockHolding(id: instrumentId);
+
+        var queryable = TestEntities.CreateStockHoldingQueryable(stockHolding)
+            .Cast<Domain.Entities.Instrument.Instrument>();
+
+        var handler = new GetHandler(queryable, _mocks.CurrencyConverterMock.Object);
+        var query = new Get(instrumentId, Guid.NewGuid());
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+            () => handler.Handle(query, CancellationToken.None).AsTask());
+        Assert.Contains("Virtual accounts are only available for institution accounts", exception.Message);
+    }
 }
