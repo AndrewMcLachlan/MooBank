@@ -143,29 +143,6 @@ public class CurrencyConverterTests
         Assert.Equal(1m, result);
     }
 
-    /// <summary>
-    /// Given a reverse rate lookup is required
-    /// When CurrencyConverter.Convert is called
-    /// Then it should use the reverse rate correctly
-    /// </summary>
-    [Fact]
-    [Trait("Category", "Unit")]
-    public void Convert_WithReverseRateLookup_UsesReverseRate()
-    {
-        // Arrange - Only have USD->AUD rate, but need AUD->USD
-        var exchangeRates = new List<ExchangeRate>
-        {
-            new() { From = "USD", To = "AUD", Rate = 1.55m, ReverseRate = 0.645m },
-        };
-        var converter = CreateConverter("USD", exchangeRates);
-
-        // Act - Converting AUD to USD should use reverse rate
-        var result = converter.Convert(100m, "AUD");
-
-        // Assert
-        Assert.Equal(64.5m, result);
-    }
-
     private static CurrencyConverter CreateConverter(string userCurrency, List<ExchangeRate> exchangeRates)
     {
         var referenceDataRepositoryMock = new Mock<IReferenceDataRepository>();

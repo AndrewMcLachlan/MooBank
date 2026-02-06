@@ -294,7 +294,7 @@ public class GetAllTagAverageReportTests
         // Assert
         var tags = result.Tags.ToList();
         Assert.Equal(2, tags.Count);
-        Assert.Equal("First", tags[0].Name);
-        Assert.Equal("Second", tags[1].Name);
+        Assert.Equal("First", tags[0].TagName);
+        Assert.Equal("Second", tags[1].TagName);
     }
 }
