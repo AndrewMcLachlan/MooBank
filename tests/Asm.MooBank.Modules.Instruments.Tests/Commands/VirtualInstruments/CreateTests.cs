@@ -203,4 +203,26 @@ public class CreateTests
         // AddVirtualInstrument raises VirtualInstrumentAddedEvent on the parent instrument
         Assert.NotEmpty(instrument.Events);
     }
+
+    [Fact]
+    public async Task Handle_InstrumentNotFound_ThrowsNotFoundException()
+    {
+        // Arrange
+        var instrumentId = Guid.NewGuid();
+
+        _mocks.InstrumentRepositoryMock
+            .Setup(r => r.Get(instrumentId, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new NotFoundException());
+
+        var handler = new CreateHandler(
+            _mocks.InstrumentRepositoryMock.Object,
+            _mocks.UnitOfWorkMock.Object,
+            _mocks.CurrencyConverterMock.Object);
+
+        var createModel = TestEntities.CreateVirtualInstrumentModel(name: "Test");
+        var command = new Create(instrumentId, createModel);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+    }
 }

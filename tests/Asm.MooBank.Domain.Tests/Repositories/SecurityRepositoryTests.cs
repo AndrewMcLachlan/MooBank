@@ -172,7 +172,7 @@ public class SecurityRepositoryTests : IDisposable
 
         // Act & Assert
         await Assert.ThrowsAsync<NotFoundException>(() =>
-            repository.AssertBudgetLinePermission(Guid.NewGuid()));
+            repository.AssertBudgetLinePermission(Guid.NewGuid(), TestContext.Current.CancellationToken));
     }
 
     #endregion

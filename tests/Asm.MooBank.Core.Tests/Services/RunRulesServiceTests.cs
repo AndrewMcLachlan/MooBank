@@ -54,7 +54,7 @@ public class RunRulesServiceTests
         var service = CreateService();
 
         // Act
-        await service.RunRules(accountId);
+        await service.RunRules(accountId, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Contains(transaction.Tags, t => t.Id == tag.Id);
@@ -81,7 +81,7 @@ public class RunRulesServiceTests
         var service = CreateService();
 
         // Act
-        await service.RunRules(accountId);
+        await service.RunRules(accountId, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(transaction.Tags);
@@ -109,7 +109,7 @@ public class RunRulesServiceTests
         var service = CreateService();
 
         // Act
-        await service.RunRules(accountId);
+        await service.RunRules(accountId, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, transaction.Tags.Count());
@@ -139,7 +139,7 @@ public class RunRulesServiceTests
         var service = CreateService();
 
         // Act
-        await service.RunRules(accountId);
+        await service.RunRules(accountId, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(3, transaction.Tags.Count());
@@ -165,7 +165,7 @@ public class RunRulesServiceTests
         var service = CreateService();
 
         // Act
-        await service.RunRules(accountId);
+        await service.RunRules(accountId, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Contains(transaction.Tags, t => t.Id == tag.Id);
@@ -193,7 +193,7 @@ public class RunRulesServiceTests
         var service = CreateService();
 
         // Act
-        await service.RunRules(accountId);
+        await service.RunRules(accountId, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Contains(matchingTransaction.Tags, t => t.Id == tag.Id);
@@ -226,7 +226,7 @@ public class RunRulesServiceTests
         var service = CreateService();
 
         // Act
-        await service.RunRules(accountId);
+        await service.RunRules(accountId, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal("Costco grocery shopping", transaction.Notes);
@@ -254,7 +254,7 @@ public class RunRulesServiceTests
         var service = CreateService();
 
         // Act
-        await service.RunRules(accountId);
+        await service.RunRules(accountId, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal("My existing notes", transaction.Notes);
@@ -283,7 +283,7 @@ public class RunRulesServiceTests
         var service = CreateService();
 
         // Act
-        await service.RunRules(accountId);
+        await service.RunRules(accountId, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Contains("Costco shopping", transaction.Notes);
@@ -314,7 +314,7 @@ public class RunRulesServiceTests
         var service = CreateService();
 
         // Act
-        await service.RunRules(accountId);
+        await service.RunRules(accountId, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal("Has description", transaction.Notes);
@@ -342,7 +342,7 @@ public class RunRulesServiceTests
         var service = CreateService();
 
         // Act
-        await service.RunRules(accountId);
+        await service.RunRules(accountId, TestContext.Current.CancellationToken);
 
         // Assert
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -365,7 +365,7 @@ public class RunRulesServiceTests
         var service = CreateService();
 
         // Act
-        await service.RunRules(accountId);
+        await service.RunRules(accountId, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(transaction.Tags);
@@ -392,7 +392,7 @@ public class RunRulesServiceTests
         var service = CreateService();
 
         // Act
-        await service.RunRules(accountId);
+        await service.RunRules(accountId, TestContext.Current.CancellationToken);
 
         // Assert - Should not throw and should not match
         Assert.Empty(transaction.Tags);
@@ -421,7 +421,7 @@ public class RunRulesServiceTests
         var service = CreateService();
 
         // Act
-        await service.RunRules(accountId);
+        await service.RunRules(accountId, TestContext.Current.CancellationToken);
 
         // Assert - Tag should only appear once
         Assert.Single(transaction.Tags);
@@ -449,7 +449,7 @@ public class RunRulesServiceTests
         var service = CreateService();
 
         // Act & Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(() => service.RunRules(accountId));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => service.RunRules(accountId, TestContext.Current.CancellationToken));
     }
 
     #endregion
@@ -534,7 +534,7 @@ public class RunRulesServiceTests
                 {
                     var applicableRules = rules.Where(r => transaction.Description?.Contains(r.Contains, StringComparison.OrdinalIgnoreCase) ?? false).ToList();
                     var tags = applicableRules.SelectMany(r => r.Tags).Distinct().ToList();
-                    var notes = string.Join(". ", applicableRules.Where(r => !string.IsNullOrWhiteSpace(r.Description)).Select(r => r.Description));
+                    var notes = String.Join(". ", applicableRules.Where(r => !String.IsNullOrWhiteSpace(r.Description)).Select(r => r.Description));
                     return (transaction, tags, notes);
                 }).ToList();
 
@@ -542,7 +542,7 @@ public class RunRulesServiceTests
                 foreach (var (transaction, tags, notes) in ruleMatches)
                 {
                     transaction.AddOrUpdateSplit(tags);
-                    if (string.IsNullOrEmpty(transaction.Notes))
+                    if (String.IsNullOrEmpty(transaction.Notes))
                     {
                         transaction.Notes = notes;
                     }

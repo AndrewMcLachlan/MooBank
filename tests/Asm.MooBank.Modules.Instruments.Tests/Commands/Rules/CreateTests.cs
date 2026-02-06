@@ -195,4 +195,25 @@ public class CreateTests
         // Assert
         Assert.Null(result.Description);
     }
+
+    [Fact]
+    public async Task Handle_InstrumentNotFound_ThrowsNotFoundException()
+    {
+        // Arrange
+        var instrumentId = Guid.NewGuid();
+
+        _mocks.InstrumentRepositoryMock
+            .Setup(r => r.Get(instrumentId, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new NotFoundException());
+
+        var handler = new CreateHandler(
+            _mocks.InstrumentRepositoryMock.Object,
+            _mocks.TagRepositoryMock.Object,
+            _mocks.UnitOfWorkMock.Object);
+
+        var command = new Create(instrumentId, "WOOLWORTHS", "Description", []);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+    }
 }

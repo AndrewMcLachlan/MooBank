@@ -60,7 +60,7 @@ public class ImportTransactionsServiceTests
         var service = CreateService();
 
         // Act
-        await service.Import(workItem);
+        await service.Import(workItem, TestContext.Current.CancellationToken);
 
         // Assert
         _importerMock.Verify(
@@ -84,7 +84,7 @@ public class ImportTransactionsServiceTests
         var service = CreateService();
 
         // Act
-        await service.Import(workItem);
+        await service.Import(workItem, TestContext.Current.CancellationToken);
 
         // Assert
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -121,7 +121,7 @@ public class ImportTransactionsServiceTests
         var service = CreateService();
 
         // Act
-        await service.Import(workItem);
+        await service.Import(workItem, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(fileData, capturedStreamData);
@@ -155,7 +155,7 @@ public class ImportTransactionsServiceTests
         var service = CreateService();
 
         // Act
-        await service.Import(workItem);
+        await service.Import(workItem, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Contains(transaction.Tags, t => t.Id == tag.Id);
@@ -185,7 +185,7 @@ public class ImportTransactionsServiceTests
         var service = CreateService();
 
         // Act
-        await service.Import(workItem);
+        await service.Import(workItem, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(transaction.Tags);
@@ -215,7 +215,7 @@ public class ImportTransactionsServiceTests
         var service = CreateService();
 
         // Act
-        await service.Import(workItem);
+        await service.Import(workItem, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Contains(transaction.Tags, t => t.Id == tag.Id);
@@ -248,7 +248,7 @@ public class ImportTransactionsServiceTests
         var service = CreateService();
 
         // Act
-        await service.Import(workItem);
+        await service.Import(workItem, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(transaction.Tags);
@@ -281,7 +281,7 @@ public class ImportTransactionsServiceTests
         var service = CreateService();
 
         // Act
-        await service.Import(workItem);
+        await service.Import(workItem, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, transaction.Tags.Count());
@@ -313,7 +313,7 @@ public class ImportTransactionsServiceTests
         var service = CreateService();
 
         // Act
-        await service.Import(workItem);
+        await service.Import(workItem, TestContext.Current.CancellationToken);
 
         // Assert - Should complete without error and no tags applied
         Assert.Empty(transaction.Tags);
@@ -334,14 +334,16 @@ public class ImportTransactionsServiceTests
     {
         // Arrange
         var workItem = CreateWorkItem();
+#pragma warning disable CS8620 // Nullability mismatch in Moq setup for nullable return type
         _instrumentRepositoryMock
             .Setup(r => r.Get(workItem.InstrumentId, It.IsAny<CancellationToken>()))
             .ReturnsAsync((DomainInstrument?)null);
+#pragma warning restore CS8620
 
         var service = CreateService();
 
         // Act - Should complete without throwing
-        await service.Import(workItem);
+        await service.Import(workItem, TestContext.Current.CancellationToken);
 
         // Assert - Save should not be called since we hit an error
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
@@ -368,7 +370,7 @@ public class ImportTransactionsServiceTests
         var service = CreateService();
 
         // Act - Should complete without throwing
-        await service.Import(workItem);
+        await service.Import(workItem, TestContext.Current.CancellationToken);
 
         // Assert - Save should not be called since we hit an error
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
@@ -396,7 +398,7 @@ public class ImportTransactionsServiceTests
         var service = CreateService();
 
         // Act - Should complete without throwing
-        await service.Import(workItem);
+        await service.Import(workItem, TestContext.Current.CancellationToken);
 
         // Assert - Save should not be called since we hit an error
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
@@ -422,7 +424,7 @@ public class ImportTransactionsServiceTests
         var service = CreateService();
 
         // Act
-        await service.Import(workItem);
+        await service.Import(workItem, TestContext.Current.CancellationToken);
 
         // Assert
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -446,11 +448,110 @@ public class ImportTransactionsServiceTests
         var service = CreateService();
 
         // Act
-        await service.Import(workItem);
+        await service.Import(workItem, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(transaction.Tags);
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    /// <summary>
+    /// Given a transaction description with special regex characters
+    /// When rules are applied
+    /// Then the rule should match using simple contains (not regex)
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public async Task Import_DescriptionWithSpecialCharacters_MatchesCorrectly()
+    {
+        // Arrange
+        var workItem = CreateWorkItem();
+        var instrument = CreateInstrument(workItem.InstrumentId);
+        var tag = _entities.CreateTag(1, "Fuel");
+        // Description with characters that would be special in regex
+        var transaction = CreateTransaction("SHELL (SERVICE STATION) $50.00");
+        var rule = CreateRule(1, "SHELL", workItem.InstrumentId, [tag]);
+
+        SetupInstrumentRepository(workItem.InstrumentId, instrument);
+        SetupImporterFactory(workItem, _importerMock.Object);
+        SetupImporterImport(workItem, [transaction]);
+        SetupRuleRepository(workItem.InstrumentId, [rule]);
+
+        var service = CreateService();
+
+        // Act
+        await service.Import(workItem, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Contains(transaction.Tags, t => t.Id == tag.Id);
+    }
+
+    /// <summary>
+    /// Given a transaction matching 3+ rules with different tags
+    /// When Import is called
+    /// Then all tags from all rules should be applied
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public async Task Import_ThreeOrMoreMatchingRules_AppliesAllTags()
+    {
+        // Arrange
+        var workItem = CreateWorkItem();
+        var instrument = CreateInstrument(workItem.InstrumentId);
+        var groceriesTag = _entities.CreateTag(1, "Groceries");
+        var wholesaleTag = _entities.CreateTag(2, "Wholesale");
+        var shoppingTag = _entities.CreateTag(3, "Shopping");
+        var transaction = CreateTransaction("Costco Wholesale Shopping Centre");
+
+        var rule1 = CreateRule(1, "Costco", workItem.InstrumentId, [groceriesTag]);
+        var rule2 = CreateRule(2, "Wholesale", workItem.InstrumentId, [wholesaleTag]);
+        var rule3 = CreateRule(3, "Shopping", workItem.InstrumentId, [shoppingTag]);
+
+        SetupInstrumentRepository(workItem.InstrumentId, instrument);
+        SetupImporterFactory(workItem, _importerMock.Object);
+        SetupImporterImport(workItem, [transaction]);
+        SetupRuleRepository(workItem.InstrumentId, [rule1, rule2, rule3]);
+
+        var service = CreateService();
+
+        // Act
+        await service.Import(workItem, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(3, transaction.Tags.Count());
+        Assert.Contains(transaction.Tags, t => t.Id == groceriesTag.Id);
+        Assert.Contains(transaction.Tags, t => t.Id == wholesaleTag.Id);
+        Assert.Contains(transaction.Tags, t => t.Id == shoppingTag.Id);
+    }
+
+    /// <summary>
+    /// Given a transaction with empty string description
+    /// When rules are applied
+    /// Then no errors should occur
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public async Task Import_WithEmptyDescription_HandlesGracefully()
+    {
+        // Arrange
+        var workItem = CreateWorkItem();
+        var instrument = CreateInstrument(workItem.InstrumentId);
+        var tag = _entities.CreateTag(1, "Groceries");
+        var transaction = CreateTransaction("");
+        var rule = CreateRule(1, "Costco", workItem.InstrumentId, [tag]);
+
+        SetupInstrumentRepository(workItem.InstrumentId, instrument);
+        SetupImporterFactory(workItem, _importerMock.Object);
+        SetupImporterImport(workItem, [transaction]);
+        SetupRuleRepository(workItem.InstrumentId, [rule]);
+
+        var service = CreateService();
+
+        // Act
+        await service.Import(workItem, TestContext.Current.CancellationToken);
+
+        // Assert - Should complete without error and no tags applied
+        Assert.Empty(transaction.Tags);
     }
 
     #endregion
@@ -474,9 +575,11 @@ public class ImportTransactionsServiceTests
 
     private void SetupInstrumentRepository(Guid instrumentId, DomainInstrument? instrument)
     {
+#pragma warning disable CS8620 // Nullability mismatch in Moq setup for nullable return type
         _instrumentRepositoryMock
             .Setup(r => r.Get(instrumentId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(instrument);
+#pragma warning restore CS8620
     }
 
     private void SetupImporterFactory(ImportWorkItem workItem, IImporter importer)

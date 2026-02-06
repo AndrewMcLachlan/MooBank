@@ -224,6 +224,64 @@ public class CpiServiceTests
 
     #endregion
 
+    #region Leap Year and Fiscal Year Handling
+
+    /// <summary>
+    /// Given a start date of February 29 in a leap year
+    /// When CalculateAdjustedValue is called
+    /// Then it should correctly determine the quarter (Q1)
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public async Task CalculateAdjustedValue_LeapYear_CalculatesCorrectQuarter()
+    {
+        // Arrange - Feb 29, 2024 is a leap year date in Q1
+        var cpiChanges = new List<CpiChange>
+        {
+            CreateCpiChange(2024, 2, 3.0m), // Q2 change should apply
+        };
+        var service = CreateService(cpiChanges);
+
+        // Act - Feb 29 is in Q1, so Q2 change should apply
+        var result = await service.CalculateAdjustedValue(1000m, new DateOnly(2024, 2, 29), TestContext.Current.CancellationToken);
+
+        // Assert - 1000 * 1.03 = 1030
+        Assert.Equal(1030m, result);
+    }
+
+    /// <summary>
+    /// Given many quarters of CPI changes
+    /// When CalculateAdjustedValue is called
+    /// Then decimal precision should be maintained across cumulative calculations
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public async Task CalculateAdjustedValue_ManyQuarters_MaintainsPrecision()
+    {
+        // Arrange - 8 quarters of small changes
+        var cpiChanges = new List<CpiChange>
+        {
+            CreateCpiChange(2023, 2, 0.5m),
+            CreateCpiChange(2023, 3, 0.5m),
+            CreateCpiChange(2023, 4, 0.5m),
+            CreateCpiChange(2024, 1, 0.5m),
+            CreateCpiChange(2024, 2, 0.5m),
+            CreateCpiChange(2024, 3, 0.5m),
+            CreateCpiChange(2024, 4, 0.5m),
+            CreateCpiChange(2025, 1, 0.5m),
+        };
+        var service = CreateService(cpiChanges);
+
+        // Act - Start in Q1 2023
+        var result = await service.CalculateAdjustedValue(10000m, new DateOnly(2023, 1, 15), TestContext.Current.CancellationToken);
+
+        // Assert - 10000 * (1.005)^8 = 10407.07...
+        // Should maintain precision throughout
+        Assert.True(result > 10407m && result < 10408m);
+    }
+
+    #endregion
+
     private static CpiChange CreateCpiChange(int year, int quarter, decimal changePercent) =>
         new()
         {

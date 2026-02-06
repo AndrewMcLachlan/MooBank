@@ -11,7 +11,7 @@ internal class ReprocessTransactionsBackgroundService(IReprocessTransactionsQueu
     private readonly IServiceScopeFactory _serviceScopeFactory = serviceScopeFactory;
     private readonly IReprocessTransactionsQueue _taskQueue = taskQueue;
 
-    protected async override Task ExecuteAsync(CancellationToken cancellationToken)
+    protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation("Reprocess Transactions Service is starting.");
 

@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="Asm.MooBank.Domain.Tests" />
+    <InternalsVisibleTo Include="Asm.MooBank.Infrastructure.Tests" />
   </ItemGroup>
 
   <ItemGroup>

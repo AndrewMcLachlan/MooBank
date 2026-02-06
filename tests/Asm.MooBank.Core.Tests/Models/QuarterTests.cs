@@ -481,6 +481,104 @@ public class QuarterTests
         Assert.Equal(2, quarter.QuarterNumber);
     }
 
+    /// <summary>
+    /// Given February 29 in a leap year
+    /// When FromDate is called
+    /// Then QuarterNumber should be 1 (Q1 for calendar year)
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void FromDate_LeapYearFebruary_ReturnsCorrectQuarter()
+    {
+        // Arrange - Feb 29, 2024 is a leap year date
+        var date = new DateTime(2024, 2, 29);
+
+        // Act
+        var quarter = Quarter.FromDate(date);
+
+        // Assert
+        Assert.Equal(2024, quarter.Year);
+        Assert.Equal(1, quarter.QuarterNumber); // Feb is Q1 for calendar year
+    }
+
+    /// <summary>
+    /// Given all possible fiscal year start months
+    /// When FromDate is called for January 15
+    /// Then the correct quarter should be returned for each
+    /// </summary>
+    [Theory]
+    [InlineData(1, 2024, 1)]  // Calendar year: Jan = Q1
+    [InlineData(2, 2023, 4)]  // Feb start: Jan = Q4 of previous year
+    [InlineData(3, 2023, 4)]  // Mar start: Jan = Q4 of previous year
+    [InlineData(4, 2023, 4)]  // Apr start: Jan = Q4 of previous year
+    [InlineData(5, 2023, 3)]  // May start: Jan = Q3 of previous year
+    [InlineData(6, 2023, 3)]  // Jun start: Jan = Q3 of previous year
+    [InlineData(7, 2023, 3)]  // Jul start: Jan = Q3 of previous year
+    [InlineData(8, 2023, 2)]  // Aug start: Jan = Q2 of previous year
+    [InlineData(9, 2023, 2)]  // Sep start: Jan = Q2 of previous year
+    [InlineData(10, 2023, 2)] // Oct start: Jan = Q2 of previous year
+    [InlineData(11, 2023, 1)] // Nov start: Jan = Q1 of previous year
+    [InlineData(12, 2023, 1)] // Dec start: Jan = Q1 of previous year
+    [Trait("Category", "Unit")]
+    public void FromDate_AllFiscalYearStarts_ReturnsCorrectQuarter(int startMonth, int expectedYear, int expectedQuarter)
+    {
+        // Arrange
+        var date = new DateTime(2024, 1, 15);
+
+        // Act
+        var quarter = Quarter.FromDate(date, startMonth);
+
+        // Assert
+        Assert.Equal(expectedYear, quarter.Year);
+        Assert.Equal(expectedQuarter, quarter.QuarterNumber);
+    }
+
+    #endregion
+
+    #region Comparison Operators - Compound Conditions
+
+    /// <summary>
+    /// Given quarters that require both year and quarter comparison
+    /// When compared with less than operator
+    /// Then the compound condition should evaluate correctly
+    /// </summary>
+    [Theory]
+    [InlineData(2023, 4, 2024, 1, true)]   // Q4 2023 < Q1 2024
+    [InlineData(2024, 1, 2023, 4, false)]  // Q1 2024 is NOT < Q4 2023
+    [InlineData(2024, 2, 2024, 2, false)]  // Same quarter is NOT < itself
+    [InlineData(2024, 1, 2024, 4, true)]   // Q1 < Q4 same year
+    [Trait("Category", "Unit")]
+    public void LessThan_CompoundCondition_EvaluatesCorrectly(int year1, int q1, int year2, int q2, bool expected)
+    {
+        // Arrange
+        var quarter1 = new Quarter(year1, q1);
+        var quarter2 = new Quarter(year2, q2);
+
+        // Act & Assert
+        Assert.Equal(expected, quarter1 < quarter2);
+    }
+
+    /// <summary>
+    /// Given quarters that require both year and quarter comparison
+    /// When compared with greater than operator
+    /// Then the compound condition should evaluate correctly
+    /// </summary>
+    [Theory]
+    [InlineData(2024, 1, 2023, 4, true)]   // Q1 2024 > Q4 2023
+    [InlineData(2023, 4, 2024, 1, false)]  // Q4 2023 is NOT > Q1 2024
+    [InlineData(2024, 2, 2024, 2, false)]  // Same quarter is NOT > itself
+    [InlineData(2024, 4, 2024, 1, true)]   // Q4 > Q1 same year
+    [Trait("Category", "Unit")]
+    public void GreaterThan_CompoundCondition_EvaluatesCorrectly(int year1, int q1, int year2, int q2, bool expected)
+    {
+        // Arrange
+        var quarter1 = new Quarter(year1, q1);
+        var quarter2 = new Quarter(year2, q2);
+
+        // Act & Assert
+        Assert.Equal(expected, quarter1 > quarter2);
+    }
+
     #endregion
 
     #region LessThanOrEqual / GreaterThanOrEqual

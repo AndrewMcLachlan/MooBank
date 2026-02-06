@@ -271,3 +271,4 @@ src/Asm.MooBank.Web.App/.vscode/settings.json
 tests/coverage*/**
 /coverage/**
 /coverage-core/**
+/tmp/**

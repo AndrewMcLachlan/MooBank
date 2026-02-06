@@ -232,4 +232,61 @@ public class CreateTests
         // Assert
         Assert.Equal(transactionDate, result.TransactionDate.DateTime);
     }
+
+    [Fact]
+    public async Task Handle_StockHoldingNotFound_ThrowsNotFoundException()
+    {
+        // Arrange
+        var instrumentId = Guid.NewGuid();
+
+        _mocks.StockHoldingRepositoryMock
+            .Setup(r => r.Get(instrumentId, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new NotFoundException());
+
+        var handler = new CreateHandler(
+            _mocks.StockHoldingRepositoryMock.Object,
+            _mocks.UnitOfWorkMock.Object);
+
+        var command = new Create(
+            InstrumentId: instrumentId,
+            Quantity: 5,
+            Price: 150m,
+            Fees: 9.95m,
+            Description: "Purchase shares",
+            Date: DateTime.UtcNow);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+    }
+
+    [Fact]
+    public async Task Handle_ZeroQuantity_SetsDebitTransactionType()
+    {
+        // Arrange - Quantity=0 is edge case where it becomes Debit (0 > 0 is false)
+        var instrumentId = Guid.NewGuid();
+        var stockHolding = TestEntities.CreateStockHolding(id: instrumentId);
+
+        _mocks.StockHoldingRepositoryMock
+            .Setup(r => r.Get(instrumentId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(stockHolding);
+
+        var handler = new CreateHandler(
+            _mocks.StockHoldingRepositoryMock.Object,
+            _mocks.UnitOfWorkMock.Object);
+
+        var command = new Create(
+            InstrumentId: instrumentId,
+            Quantity: 0,
+            Price: 150m,
+            Fees: 0m,
+            Description: "Zero quantity edge case",
+            Date: DateTime.UtcNow);
+
+        // Act
+        var result = await handler.Handle(command, CancellationToken.None);
+
+        // Assert - 0 > 0 is false, so TransactionType should be Debit
+        Assert.Equal(TransactionType.Debit, result.TransactionType);
+        Assert.Equal(0, result.Quantity);
+    }
 }

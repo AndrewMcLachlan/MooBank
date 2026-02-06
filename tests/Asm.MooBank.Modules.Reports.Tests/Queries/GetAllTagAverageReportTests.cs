@@ -221,4 +221,80 @@ public class GetAllTagAverageReportTests
         // Assert
         Assert.Equal(TransactionFilterType.Credit, (TransactionFilterType)result.ReportType);
     }
+
+    [Fact]
+    public async Task Handle_TopIsZero_ReturnsEmpty()
+    {
+        // Arrange
+        var accountId = Guid.NewGuid();
+        var start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-6));
+        var end = DateOnly.FromDateTime(DateTime.Today);
+
+        var tagAverages = TestEntities.CreateSampleTagAverages();
+
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetTopTagAverages(accountId, start, end, ReportInterval.Monthly, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(tagAverages);
+
+        var handler = new GetAllTagAverageReportHandler(_mocks.ReportRepositoryMock.Object);
+
+        var query = new GetAllTagAverageReport
+        {
+            AccountId = accountId,
+            Start = start,
+            End = end,
+            ReportType = TestEntities.CreateDebitReportType(),
+            Interval = ReportInterval.Monthly,
+            Top = 0, // Edge case: zero top
+        };
+
+        // Act
+        var result = await handler.Handle(query, CancellationToken.None);
+
+        // Assert
+        Assert.Empty(result.Tags);
+    }
+
+    [Fact]
+    public async Task Handle_ResultOrderingWithTake_ReturnsFirstNResults()
+    {
+        // Arrange
+        var accountId = Guid.NewGuid();
+        var start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-6));
+        var end = DateOnly.FromDateTime(DateTime.Today);
+
+        // Repository returns tags in a specific order
+        var tagAverages = new[]
+        {
+            TestEntities.CreateTagAverage(1, "First", 1000m),
+            TestEntities.CreateTagAverage(2, "Second", 500m),
+            TestEntities.CreateTagAverage(3, "Third", 250m),
+            TestEntities.CreateTagAverage(4, "Fourth", 100m),
+        };
+
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetTopTagAverages(accountId, start, end, ReportInterval.Monthly, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(tagAverages);
+
+        var handler = new GetAllTagAverageReportHandler(_mocks.ReportRepositoryMock.Object);
+
+        var query = new GetAllTagAverageReport
+        {
+            AccountId = accountId,
+            Start = start,
+            End = end,
+            ReportType = TestEntities.CreateDebitReportType(),
+            Interval = ReportInterval.Monthly,
+            Top = 2, // Only take first 2
+        };
+
+        // Act
+        var result = await handler.Handle(query, CancellationToken.None);
+
+        // Assert
+        var tags = result.Tags.ToList();
+        Assert.Equal(2, tags.Count);
+        Assert.Equal("First", tags[0].TagName);
+        Assert.Equal("Second", tags[1].TagName);
+    }
 }

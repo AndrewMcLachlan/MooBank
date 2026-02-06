@@ -11,7 +11,7 @@ internal class RunRulesBackgroundService(IRunRulesQueue taskQueue, ILoggerFactor
     private readonly IServiceScopeFactory _serviceScopeFactory = serviceScopeFactory;
     private readonly IRunRulesQueue _taskQueue = taskQueue;
 
-    protected async override Task ExecuteAsync(CancellationToken cancellationToken)
+    protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation("Run Rules Service is starting.");
 

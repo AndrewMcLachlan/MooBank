@@ -10,6 +10,8 @@ using DomainBudgetLine = Asm.MooBank.Domain.Entities.Budget.BudgetLine;
 using DomainTag = Asm.MooBank.Domain.Entities.Tag.Tag;
 using DomainTransaction = Asm.MooBank.Domain.Entities.Transactions.Transaction;
 using DomainTransactionSplit = Asm.MooBank.Domain.Entities.Transactions.TransactionSplit;
+using ModelBudgetLine = Asm.MooBank.Modules.Budgets.Models.BudgetLine;
+using ModelBudgetLineType = Asm.MooBank.Modules.Budgets.Models.BudgetLineType;
 
 namespace Asm.MooBank.Modules.Budgets.Tests.Support;
 
@@ -65,16 +67,16 @@ internal static class TestEntities
         };
     }
 
-    public static Models.BudgetLine CreateBudgetLineModel(
+    public static ModelBudgetLine CreateBudgetLineModel(
         Guid? id = null,
         int tagId = 1,
         string name = "Test Tag",
         string? notes = null,
         decimal amount = 100m,
         short month = 4095,
-        Models.BudgetLineType type = Models.BudgetLineType.Expenses)
+        ModelBudgetLineType type = ModelBudgetLineType.Expenses)
     {
-        return new Models.BudgetLine
+        return new ModelBudgetLine
         {
             Id = id ?? Guid.NewGuid(),
             TagId = tagId,

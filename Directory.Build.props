@@ -16,5 +16,7 @@
     <RepositoryUrl>https://github.com/AndrewMcLachlan/MooBank</RepositoryUrl>
     <RestorePackagesWithLockFile>false</RestorePackagesWithLockFile>
     <NoWarn>$(NoWarn);CS1873</NoWarn>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <AnalysisLevel>latest</AnalysisLevel>
   </PropertyGroup>
 </Project>

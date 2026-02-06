@@ -36,7 +36,7 @@ public class InstrumentChangedEventHandlerTests
         var domainEvent = new InstrumentCreatedEvent(instrument);
 
         // Act
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
         var afterHandle = DateTimeOffset.UtcNow;
 
         // Assert
@@ -60,7 +60,7 @@ public class InstrumentChangedEventHandlerTests
         var domainEvent = new InstrumentCreatedEvent(instrument);
 
         // Act
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotEqual(default, instrument.LastUpdated);
@@ -87,7 +87,7 @@ public class InstrumentChangedEventHandlerTests
         var domainEvent = new InstrumentUpdatedEvent(instrument);
 
         // Act
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
         var afterHandle = DateTimeOffset.UtcNow;
 
         // Assert
@@ -112,8 +112,8 @@ public class InstrumentChangedEventHandlerTests
         var domainEvent = new InstrumentUpdatedEvent(instrument);
 
         // Act
-        await Task.Delay(10); // Small delay to ensure time difference
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await Task.Delay(10, TestContext.Current.CancellationToken); // Small delay to ensure time difference
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(instrument.LastUpdated >= previousLastUpdated);
@@ -137,13 +137,13 @@ public class InstrumentChangedEventHandlerTests
         var domainEvent = new InstrumentUpdatedEvent(instrument);
 
         // Act - First update
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
         var firstUpdate = instrument.LastUpdated;
 
-        await Task.Delay(10);
+        await Task.Delay(10, TestContext.Current.CancellationToken);
 
         // Act - Second update
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
         var secondUpdate = instrument.LastUpdated;
 
         // Assert
@@ -168,7 +168,7 @@ public class InstrumentChangedEventHandlerTests
         var domainEvent = new InstrumentCreatedEvent(instrument);
 
         // Act
-        var task = _handler.Handle(domainEvent, CancellationToken.None);
+        var task = _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(task.IsCompleted);
@@ -189,7 +189,7 @@ public class InstrumentChangedEventHandlerTests
         var domainEvent = new InstrumentUpdatedEvent(instrument);
 
         // Act
-        var task = _handler.Handle(domainEvent, CancellationToken.None);
+        var task = _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(task.IsCompleted);

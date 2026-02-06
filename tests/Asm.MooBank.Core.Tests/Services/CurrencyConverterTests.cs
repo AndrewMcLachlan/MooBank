@@ -97,6 +97,52 @@ public class CurrencyConverterTests
         Assert.Null(result);
     }
 
+    /// <summary>
+    /// Given an extreme exchange rate (very high)
+    /// When CurrencyConverter.Convert is called
+    /// Then the conversion should handle large numbers correctly
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void Convert_ExtremeHighRate_HandlesCorrectly()
+    {
+        // Arrange - Very high rate like JPY
+        var exchangeRates = new List<ExchangeRate>
+        {
+            new() { From = "USD", To = "JPY", Rate = 150.5m },
+        };
+        var converter = CreateConverter("JPY", exchangeRates);
+
+        // Act
+        var result = converter.Convert(1000m, "USD");
+
+        // Assert
+        Assert.Equal(150500m, result);
+    }
+
+    /// <summary>
+    /// Given an extreme exchange rate (very low)
+    /// When CurrencyConverter.Convert is called
+    /// Then the conversion should maintain precision
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void Convert_ExtremeLowRate_MaintainsPrecision()
+    {
+        // Arrange - Very low rate
+        var exchangeRates = new List<ExchangeRate>
+        {
+            new() { From = "BTC", To = "USD", Rate = 0.000025m },
+        };
+        var converter = CreateConverter("USD", exchangeRates);
+
+        // Act
+        var result = converter.Convert(40000m, "BTC");
+
+        // Assert
+        Assert.Equal(1m, result);
+    }
+
     private static CurrencyConverter CreateConverter(string userCurrency, List<ExchangeRate> exchangeRates)
     {
         var referenceDataRepositoryMock = new Mock<IReferenceDataRepository>();

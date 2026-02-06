@@ -11,7 +11,7 @@ public interface ICurrencyConverter
 
 public class CurrencyConverter(IReferenceDataRepository referenceDataRepository, User user, HybridCache cache) : ICurrencyConverter
 {
-    private readonly static HybridCacheEntryOptions CacheOptions = new()
+    private static readonly HybridCacheEntryOptions CacheOptions = new()
     {
         Expiration = TimeSpan.FromHours(12),
     };
