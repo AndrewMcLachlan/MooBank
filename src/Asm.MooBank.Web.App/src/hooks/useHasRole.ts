@@ -4,5 +4,5 @@ export const useHasRole = () => {
 
     const msal = useMsal();
 
-    return (role: string) => (msal.instance.getActiveAccount()?.idTokenClaims["roles"]?.includes(role)) ?? false;
+    return (role: string) => (msal.instance.getActiveAccount()?.idTokenClaims?.["roles"]?.includes(role)) ?? false;
 };

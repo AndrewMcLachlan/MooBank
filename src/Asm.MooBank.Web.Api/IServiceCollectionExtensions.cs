@@ -37,11 +37,11 @@ public static class IServiceCollectionExtensions
 
                     var cache = context.HttpContext.RequestServices.GetRequiredService<HybridCache>();
 
-                    var claims = await cache.GetOrCreateAsync(CacheKeys.UserCacheKey(userId), async ct =>
-                    {
+                    //var claims = await cache.GetOrCreateAsync(CacheKeys.UserCacheKey(userId), async ct =>
+                    //{
                         var dataContext = context.HttpContext.RequestServices.GetRequiredService<MooBankContext>();
 
-                        var user = await dataContext.Set<Domain.Entities.User.User>().Include(ah => ah.InstrumentOwners).ThenInclude(aah => aah.Instrument).ThenInclude(i => i.VirtualInstruments).Include(u => u.Groups).AsNoTracking().SingleOrDefaultAsync(ah => ah.Id == userId, cancellationToken: ct);
+                        var user = await dataContext.Set<Domain.Entities.User.User>().Include(ah => ah.InstrumentOwners).ThenInclude(aah => aah.Instrument).ThenInclude(i => i.VirtualInstruments).Include(u => u.Groups).AsNoTracking().SingleOrDefaultAsync(ah => ah.Id == userId);
 
                         List<Claim> claims = [];
 
@@ -63,13 +63,13 @@ public static class IServiceCollectionExtensions
 
                             dataContext.Add(user);
 
-                            await dataContext.SaveChangesAsync(ct);
+                            await dataContext.SaveChangesAsync();
                         }
 
                         var owned = user.Instruments.Select(i => i.Id);
                         var virtualOwned = user.Instruments.SelectMany(i => i.VirtualInstruments).Select(i => i.Id);
 
-                        var sharedInstruments = await dataContext.Set<Domain.Entities.Instrument.Instrument>().Where(a => a.ShareWithFamily && a.Owners.Any(ah => ah.User.FamilyId == user.FamilyId)).Include(i => i.VirtualInstruments).ToListAsync(cancellationToken: ct);
+                        var sharedInstruments = await dataContext.Set<Domain.Entities.Instrument.Instrument>().Where(a => a.ShareWithFamily && a.Owners.Any(ah => ah.User.FamilyId == user.FamilyId)).Include(i => i.VirtualInstruments).ToListAsync();
                         var virtualShared = sharedInstruments.SelectMany(i => i.VirtualInstruments).Select(i => i.Id);
 
                         var instruments = owned.Union(virtualOwned);
@@ -88,8 +88,8 @@ public static class IServiceCollectionExtensions
                         claims.Add(new Claim(Security.ClaimTypes.FamilyId, user.FamilyId.ToString()));
                         claims.Add(new Claim(Security.ClaimTypes.Currency, user.Currency));
 
-                        return claims;
-                    }, CacheOptions, cancellationToken: CancellationToken.None);
+                      //  return claims;
+                    //}, CacheOptions, cancellationToken: CancellationToken.None);
 
                     principal.AddIdentity(new(claims));
                 }
