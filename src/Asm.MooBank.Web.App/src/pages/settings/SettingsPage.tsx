@@ -3,7 +3,7 @@ import React, { PropsWithChildren, ReactNode } from "react";
 import { Page, PageProps } from "@andrewmclachlan/moo-app";
 import { NavItem, NavItemDivider } from "@andrewmclachlan/moo-ds";
 
-import { Sliders, Users } from "@andrewmclachlan/mooicons";
+import { Sliders, Users } from "@andrewmclachlan/moo-icons";
 
 export const SettingsPage: React.FC<PropsWithChildren<SettingsPageProps>> = ({ children, breadcrumbs = [], ...props }) => {
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { Page, PageProps } from "@andrewmclachlan/moo-app";
-import { Hierarchy } from "@andrewmclachlan/mooicons";
+import { Hierarchy } from "@andrewmclachlan/moo-icons";
 import { PropsWithChildren } from "react";
 
 export const TagsPage: React.FC<PropsWithChildren<Pick<PageProps, "className">>> = ({ children, ...props }) => (

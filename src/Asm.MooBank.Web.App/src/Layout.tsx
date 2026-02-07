@@ -1,5 +1,5 @@
 import "./App.css";
-import * as Icons from "@andrewmclachlan/mooicons";
+import * as Icons from "@andrewmclachlan/moo-icons";
 
 import React from "react";
 import { Link } from "react-router";

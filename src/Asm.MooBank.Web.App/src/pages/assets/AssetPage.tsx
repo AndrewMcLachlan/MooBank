@@ -5,7 +5,7 @@ import { NavItem, NavItemDivider } from "@andrewmclachlan/moo-ds";
 import { Asset } from "models";
 import { useAsset } from "./AssetProvider";
 
-import { Sliders } from "@andrewmclachlan/mooicons";
+import { Sliders } from "@andrewmclachlan/moo-icons";
 
 export const AssetPage: React.FC<PropsWithChildren<AccountPageProps>> = ({ children, breadcrumbs =[], ...props }) => {
 

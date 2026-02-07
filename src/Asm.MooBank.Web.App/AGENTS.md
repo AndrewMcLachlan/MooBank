@@ -15,7 +15,7 @@ This document provides guidance for AI agents working on the MooBank React front
 - **date-fns** - Date manipulation
 - **@andrewmclachlan/moo-ds** - Custom design system components
 - **@andrewmclachlan/moo-app** - Application framework wrapper
-- **@andrewmclachlan/mooicons** - Custom icon library
+- **@andrewmclachlan/moo-icons** - Custom icon library
 
 ## Project Structure
 
@@ -322,7 +322,7 @@ import { Section, SectionTable } from "@andrewmclachlan/moo-ds";
 
 ## Available Icons
 
-From `@andrewmclachlan/mooicons`:
+From `@andrewmclachlan/moo-icons`:
 - `Dashboard`, `PiggyBank`, `TwoCoins`, `Budget`, `Stack`, `Tags`
 - `Cog`, `Sliders`, `Reports`, `Rules`, `Transaction`, `Import`
 - `Trendline`, `BarChart`, `PieChart`, `Hierarchy`

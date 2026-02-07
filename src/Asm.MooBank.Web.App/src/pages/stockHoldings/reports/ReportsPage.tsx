@@ -2,7 +2,7 @@ import React, { PropsWithChildren } from "react";
 import { useLocation } from "react-router";
 
 import { NavItem } from "@andrewmclachlan/moo-ds";
-import { Trendline } from "@andrewmclachlan/mooicons";
+import { Trendline } from "@andrewmclachlan/moo-icons";
 
 import { StockHolding } from "models";
 import { useStockHolding } from "../StockHoldingProvider";

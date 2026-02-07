@@ -5,7 +5,7 @@ import { NavItem, NavItemDivider } from "@andrewmclachlan/moo-ds";
 import { StockHolding } from "models";
 import { useStockHolding } from "./StockHoldingProvider";
 
-import { Reports, Sliders, Transaction } from "@andrewmclachlan/mooicons";
+import { Reports, Sliders, Transaction } from "@andrewmclachlan/moo-icons";
 
 export const StockHoldingPage: React.FC<PropsWithChildren<AccountPageProps>> = ({ children, breadcrumbs = [], ...props }) => {
 

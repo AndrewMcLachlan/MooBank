@@ -2,7 +2,7 @@ import React, { PropsWithChildren, ReactNode } from "react";
 
 import { Page, PageProps } from "@andrewmclachlan/moo-app";
 import { NavItem, NavItemDivider } from "@andrewmclachlan/moo-ds";
-import { Import, Reports, Rules, Sliders, Transaction } from "@andrewmclachlan/mooicons";
+import { Import, Reports, Rules, Sliders, Transaction } from "@andrewmclachlan/moo-icons";
 
 import { LogicalAccount, VirtualInstrument, isVirtualInstrument } from "models";
 import { useAccount } from "./AccountProvider";

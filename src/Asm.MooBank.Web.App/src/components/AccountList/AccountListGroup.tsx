@@ -3,7 +3,7 @@ import { Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router";
 
 import { Icon, SectionTable } from "@andrewmclachlan/moo-ds";
-import { Reports } from "@andrewmclachlan/mooicons";
+import { Reports } from "@andrewmclachlan/moo-icons";
 import { AccountListGroup as Model } from "models";
 import { AccountRow } from "./AccountRow";
 import { Amount } from "components/Amount";

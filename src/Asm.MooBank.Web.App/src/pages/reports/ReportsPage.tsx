@@ -4,7 +4,7 @@ import { LogicalAccount } from "models";
 import { useLocation } from "react-router";
 import { NavItem } from "@andrewmclachlan/moo-ds";
 import { AccountPage, useAccount } from "components";
-import { BarChart, LeftRightArrow, PieChart, Tags, Trendline } from "@andrewmclachlan/mooicons";
+import { BarChart, LeftRightArrow, PieChart, Tags, Trendline } from "@andrewmclachlan/moo-icons";
 
 export const ReportsPage: React.FC<PropsWithChildren<ReportsHeaderProps>> = ({ children, title }) => {
 
