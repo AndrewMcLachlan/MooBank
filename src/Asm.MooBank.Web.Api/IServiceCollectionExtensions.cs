@@ -37,13 +37,13 @@ public static class IServiceCollectionExtensions
 
                     var cache = context.HttpContext.RequestServices.GetRequiredService<HybridCache>();
 
-                    //var claims = await cache.GetOrCreateAsync(CacheKeys.UserCacheKey(userId), async ct =>
-                    //{
+                    var claims = await cache.GetOrCreateAsync(CacheKeys.UserCacheKey(userId), async ct =>
+                    {
                         var dataContext = context.HttpContext.RequestServices.GetRequiredService<MooBankContext>();
 
-                        var user = await dataContext.Set<Domain.Entities.User.User>().Include(ah => ah.InstrumentOwners).ThenInclude(aah => aah.Instrument).ThenInclude(i => i.VirtualInstruments).Include(u => u.Groups).AsNoTracking().SingleOrDefaultAsync(ah => ah.Id == userId);
+                        var user = await dataContext.Set<Domain.Entities.User.User>().Include(ah => ah.InstrumentOwners).ThenInclude(aah => aah.Instrument).ThenInclude(i => i.VirtualInstruments).Include(u => u.Groups).AsNoTracking().SingleOrDefaultAsync(ah => ah.Id == userId, cancellationToken: ct);
 
-                        List<Claim> claims = [];
+                        List<(string, string)> claims = [];
 
                         if (user == null)
                         {
@@ -63,35 +63,34 @@ public static class IServiceCollectionExtensions
 
                             dataContext.Add(user);
 
-                            await dataContext.SaveChangesAsync();
+                            await dataContext.SaveChangesAsync(ct);
                         }
 
                         var owned = user.Instruments.Select(i => i.Id);
                         var virtualOwned = user.Instruments.SelectMany(i => i.VirtualInstruments).Select(i => i.Id);
 
-                        var sharedInstruments = await dataContext.Set<Domain.Entities.Instrument.Instrument>().Where(a => a.ShareWithFamily && a.Owners.Any(ah => ah.User.FamilyId == user.FamilyId)).Include(i => i.VirtualInstruments).ToListAsync();
+                        var sharedInstruments = await dataContext.Set<Domain.Entities.Instrument.Instrument>().Where(a => a.ShareWithFamily && a.Owners.Any(ah => ah.User.FamilyId == user.FamilyId)).Include(i => i.VirtualInstruments).ToListAsync(cancellationToken: ct);
                         var virtualShared = sharedInstruments.SelectMany(i => i.VirtualInstruments).Select(i => i.Id);
 
                         var instruments = owned.Union(virtualOwned);
 
-                        claims = [.. instruments.Select(a => new Claim(Security.ClaimTypes.AccountId, a.ToString()))];
+                        claims = instruments.Select(a => (Security.ClaimTypes.AccountId, a.ToString())).ToList();
 
                         var allShared = sharedInstruments.Select(i => i.Id).Union(virtualShared).Except(owned);
 
-                        claims.AddRange(allShared.Select(a => new Claim(Security.ClaimTypes.SharedAccountId, a.ToString())));
+                        claims.AddRange(allShared.Select(a => (Security.ClaimTypes.SharedAccountId, a.ToString())));
 
                         var groups = user.Groups.Select(i => i.Id);
 
-                        claims.AddRange(groups.Select(a => new Claim(Security.ClaimTypes.GroupId, a.ToString())));
+                        claims.AddRange(groups.Select(a => (Security.ClaimTypes.GroupId, a.ToString())));
+                        if (user.PrimaryAccountId != null) claims.Add((Security.ClaimTypes.PrimaryAccountId, user.PrimaryAccountId.Value.ToString()));
+                        claims.Add((Security.ClaimTypes.FamilyId, user.FamilyId.ToString()));
+                        claims.Add((Security.ClaimTypes.Currency, user.Currency));
 
-                        if (user.PrimaryAccountId != null) claims.Add(new Claim(Security.ClaimTypes.PrimaryAccountId, user.PrimaryAccountId.Value.ToString()));
-                        claims.Add(new Claim(Security.ClaimTypes.FamilyId, user.FamilyId.ToString()));
-                        claims.Add(new Claim(Security.ClaimTypes.Currency, user.Currency));
+                        return claims;
+                    }, CacheOptions, cancellationToken: CancellationToken.None);
 
-                      //  return claims;
-                    //}, CacheOptions, cancellationToken: CancellationToken.None);
-
-                    principal.AddIdentity(new(claims));
+                    principal.AddIdentity(new(claims.Select(c => new Claim(c.Item1, c.Item2))));
                 }
             }
         };
