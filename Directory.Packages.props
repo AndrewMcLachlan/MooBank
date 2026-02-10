@@ -35,24 +35,24 @@
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.2.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.2" />
-    <PackageVersion Include="Microsoft.Identity.Client" Version="4.82.0" />
+    <PackageVersion Include="Microsoft.Identity.Client" Version="4.82.1" />
     <PackageVersion Include="Microsoft.Net.Http" Version="2.2.29" />
     <PackageVersion Include="Microsoft.Net.Http.Headers" Version="10.0.2" />
     <PackageVersion Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.2" />
     <PackageVersion Include="ModelContextProtocol" Version="0.4.1-preview.1" />
     <PackageVersion Include="ModelContextProtocol.AspNetCore" Version="0.4.1-preview.1" />
-    <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.1.1" />
+    <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.1.2" />
   </ItemGroup>
   <ItemGroup>
-    <PackageVersion Include="Asm" Version="3.6.756" />
-    <PackageVersion Include="Asm.AspNetCore" Version="3.6.756" />
-    <PackageVersion Include="Asm.AspNetCore.Api" Version="3.6.756" />
-    <PackageVersion Include="Asm.Cqrs.AspNetCore" Version="3.6.756" />
-    <PackageVersion Include="Asm.Domain" Version="3.6.756" />
-    <PackageVersion Include="Asm.Domain.Infrastructure" Version="3.6.756" />
-    <PackageVersion Include="Asm.ModelContextProtocol" Version="3.6.756" />
+    <PackageVersion Include="Asm" Version="3.6.764" />
+    <PackageVersion Include="Asm.AspNetCore" Version="3.6.764" />
+    <PackageVersion Include="Asm.AspNetCore.Api" Version="3.6.764" />
+    <PackageVersion Include="Asm.Cqrs.AspNetCore" Version="3.6.764" />
+    <PackageVersion Include="Asm.Domain" Version="3.6.764" />
+    <PackageVersion Include="Asm.Domain.Infrastructure" Version="3.6.764" />
+    <PackageVersion Include="Asm.ModelContextProtocol" Version="3.6.764" />
     <PackageVersion Include="Asm.Reqnroll" Version="3.6.756" />
-    <PackageVersion Include="Asm.Testing.Domain" Version="3.6.756" />
+    <PackageVersion Include="Asm.Testing.Domain" Version="3.6.764" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="Bogus" Version="35.6.5" />
