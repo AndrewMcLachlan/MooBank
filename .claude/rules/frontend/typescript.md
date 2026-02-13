@@ -1,8 +1,9 @@
+---
+paths:
+  - "src/Asm.MooBank.Web.App/**/*.{ts,tsx}"
+---
+
 # TypeScript / React Conventions
-
-## Overview
-
-The frontend is a React 19 single-page application using TypeScript, located in `src/Asm.MooBank.Web.App`.
 
 ## Technology Stack
 
@@ -42,25 +43,6 @@ Storybook (for moo-ds): https://storybook.mclachlan.family
 - Use React Query for all API calls
 - API types are generated from OpenAPI spec via `@hey-api/openapi-ts`
 - Run `npm run generate` to regenerate API types after backend changes
-
-## Build Commands
-
-```bash
-# Development server
-npm run start
-
-# Production build
-npm run build
-
-# Lint code
-npm run lint
-
-# Fix lint errors
-npm run lint-fix
-
-# Regenerate API types
-npm run generate
-```
 
 ## Project Structure
 

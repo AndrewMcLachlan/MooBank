@@ -1,3 +1,9 @@
+---
+paths:
+  - "src/Asm.MooBank.Web.Api/**"
+  - "src/Asm.MooBank.Modules*/Endpoints/**"
+---
+
 # REST API Design & Authorization
 
 ## API Design Principles
@@ -29,12 +35,6 @@
 - Security schemes (OIDC) must handle null configuration gracefully for build-time generation
 - Do not use `.WithOpenApi()` as this is deprecated in .NET 10
 
-## Authentication
-
-- **OAuth 2.0 / OpenID Connect** via Azure AD for secure user authentication
-- Uses MSAL on the frontend for token acquisition
-- Backend validates JWT tokens from Azure AD
-
 ## Authorization
 
 ### Policy-Based Authorization
@@ -59,20 +59,8 @@ When applying authorization to endpoints that involve instruments, **always use 
 .RequireAuthorization(Policies.InstrumentOwner);
 ```
 
-The parameterized policies ensure that the authorization handler can extract the instrument ID from the route (e.g., `/instruments/{instrumentId}/...`) and verify the current user has the appropriate access level (viewer or owner) for that specific instrument.
-
 ## Multi-tenancy
 
 - Users are grouped into Families for data isolation
 - Authorization policies enforce data access boundaries
 - Always consider tenant context when designing new endpoints
-
-## Minimal API Endpoints
-
-Endpoints are defined using ASP.NET Core Minimal APIs:
-
-```csharp
-// Example endpoint definition
-group.MapGet("/{id}", async (Guid id, ...) => ...)
-    .RequireAuthorization(Policies.GetInstrumentViewerPolicy("id"));
-```

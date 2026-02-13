@@ -1,3 +1,8 @@
+---
+paths:
+  - "src/**/*.cs"
+---
+
 # C# Coding Conventions
 
 ## Naming Conventions
