@@ -787,6 +787,266 @@ public class ForecastEngineTests
         };
     }
 
+    /// <summary>
+    /// Given actual balance data exists for consecutive past months
+    /// When the forecast is calculated
+    /// Then the baseline outgoings should be recalculated from actual spending
+    /// and the projected line should remain a consistent chain from starting balance
+    /// </summary>
+    [Fact]
+    public async Task Calculate_WithActualBalances_RecalculatesBaselineOutgoings()
+    {
+        // Arrange
+        var accountId = Guid.NewGuid();
+        _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId]));
+
+        // Plan: 3 months, income 5000/month, no historical baseline
+        var plan = CreatePlanWithStrategies(
+            startDate: new DateOnly(2024, 1, 1),
+            endDate: new DateOnly(2024, 3, 31),
+            startingBalance: 10000m,
+            monthlyIncome: 5000m,
+            lookbackMonths: 0);
+
+        _mocks.InstrumentRepositoryMock
+            .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<DomainInstrument>());
+
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(),
+                It.IsAny<DateOnly>(),
+                It.IsAny<DateOnly>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>());
+
+        // Actual balances for Jan and Feb:
+        // Dec closing = 10000 (opening for Jan), Jan closing = 12000 (opening for Feb)
+        // Actual outgoings for Jan: 10000 + 5000 + 0 - 12000 = 3000
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetMonthlyBalancesForAccounts(
+                It.IsAny<IEnumerable<Guid>>(),
+                It.IsAny<DateOnly>(),
+                It.IsAny<DateOnly>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyBalance>>
+            {
+                [accountId] =
+                [
+                    new MonthlyBalance { PeriodEnd = new DateOnly(2023, 12, 31), Balance = 10000m },
+                    new MonthlyBalance { PeriodEnd = new DateOnly(2024, 1, 31), Balance = 12000m },
+                ]
+            });
+
+        var engine = new ForecastEngine(
+            _mocks.ReportRepositoryMock.Object,
+            _mocks.InstrumentRepositoryMock.Object,
+            _mocks.User);
+
+        // Act
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
+
+        // Assert
+        var months = result.Months.ToList();
+
+        // Baseline should be recalculated to 3000 (derived from actual balance change)
+        Assert.All(months, m => Assert.Equal(3000m, m.BaselineOutgoingsTotal));
+
+        // Projected line chains from starting balance with updated baseline:
+        // Jan: 10000 + 5000 - 3000 = 12000
+        // Feb: 12000 + 5000 - 3000 = 14000
+        // Mar: 14000 + 5000 - 3000 = 16000
+        Assert.Equal(10000m, months[0].OpeningBalance);
+        Assert.Equal(12000m, months[0].ClosingBalance);
+        Assert.Equal(12000m, months[1].OpeningBalance);
+        Assert.Equal(14000m, months[1].ClosingBalance);
+        Assert.Equal(14000m, months[2].OpeningBalance);
+        Assert.Equal(16000m, months[2].ClosingBalance);
+
+        // Summary also reflects updated baseline
+        Assert.Equal(3000m, result.Summary.MonthlyBaselineOutgoings);
+    }
+
+    /// <summary>
+    /// Given actual balance data exists for multiple consecutive months
+    /// When the forecast is calculated
+    /// Then the baseline should be the average of actual outgoings across those months
+    /// </summary>
+    [Fact]
+    public async Task Calculate_MultipleActualMonths_AveragesActualOutgoings()
+    {
+        // Arrange
+        var accountId = Guid.NewGuid();
+        _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId]));
+
+        var plan = CreatePlanWithStrategies(
+            startDate: new DateOnly(2024, 1, 1),
+            endDate: new DateOnly(2024, 4, 30),
+            startingBalance: 10000m,
+            monthlyIncome: 5000m,
+            lookbackMonths: 0);
+
+        _mocks.InstrumentRepositoryMock
+            .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<DomainInstrument>());
+
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(),
+                It.IsAny<DateOnly>(),
+                It.IsAny<DateOnly>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>());
+
+        // Actual balances for Jan, Feb, Mar:
+        // Dec closing = 10000, Jan closing = 13000, Feb closing = 14000
+        // Jan actual outgoings: 10000 + 5000 - 13000 = 2000
+        // Feb actual outgoings: 13000 + 5000 - 14000 = 4000
+        // Average = (2000 + 4000) / 2 = 3000
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetMonthlyBalancesForAccounts(
+                It.IsAny<IEnumerable<Guid>>(),
+                It.IsAny<DateOnly>(),
+                It.IsAny<DateOnly>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyBalance>>
+            {
+                [accountId] =
+                [
+                    new MonthlyBalance { PeriodEnd = new DateOnly(2023, 12, 31), Balance = 10000m },
+                    new MonthlyBalance { PeriodEnd = new DateOnly(2024, 1, 31), Balance = 13000m },
+                    new MonthlyBalance { PeriodEnd = new DateOnly(2024, 2, 29), Balance = 14000m },
+                ]
+            });
+
+        var engine = new ForecastEngine(
+            _mocks.ReportRepositoryMock.Object,
+            _mocks.InstrumentRepositoryMock.Object,
+            _mocks.User);
+
+        // Act
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
+
+        // Assert
+        var months = result.Months.ToList();
+
+        // Baseline should be average of actual outgoings: (2000 + 4000) / 2 = 3000
+        Assert.All(months, m => Assert.Equal(3000m, m.BaselineOutgoingsTotal));
+    }
+
+    /// <summary>
+    /// Given no actual balance data exists
+    /// When the forecast is calculated
+    /// Then the historical baseline should be used (existing behavior preserved)
+    /// </summary>
+    [Fact]
+    public async Task Calculate_NoActualBalances_UsesHistoricalBaseline()
+    {
+        // Arrange
+        var accountId = Guid.NewGuid();
+        _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId]));
+
+        var plan = CreatePlanWithStrategies(
+            startDate: new DateOnly(2024, 1, 1),
+            endDate: new DateOnly(2024, 3, 31),
+            startingBalance: 10000m,
+            monthlyIncome: 5000m,
+            lookbackMonths: 0);
+
+        SetupEmptyRepositoryMocks();
+
+        var engine = new ForecastEngine(
+            _mocks.ReportRepositoryMock.Object,
+            _mocks.InstrumentRepositoryMock.Object,
+            _mocks.User);
+
+        // Act
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
+
+        // Assert
+        var months = result.Months.ToList();
+
+        // All months should use predicted chain from starting balance with 0 baseline
+        Assert.Equal(10000m, months[0].OpeningBalance);
+        Assert.Equal(15000m, months[0].ClosingBalance); // 10000 + 5000
+        Assert.Equal(15000m, months[1].OpeningBalance);
+        Assert.Equal(20000m, months[1].ClosingBalance); // 15000 + 5000
+        Assert.Equal(20000m, months[2].OpeningBalance);
+        Assert.Equal(25000m, months[2].ClosingBalance); // 20000 + 5000
+
+        // No actual balances
+        Assert.All(months, m => Assert.Null(m.ActualBalance));
+    }
+
+    /// <summary>
+    /// Given actual balance grows faster than income + planned can explain (e.g. unexpected deposit)
+    /// When the forecast is calculated
+    /// Then the anomalous month should be skipped and the historical baseline used as fallback
+    /// </summary>
+    [Fact]
+    public async Task Calculate_NegativeDerivedOutgoings_SkipsAnomalousMonth()
+    {
+        // Arrange
+        var accountId = Guid.NewGuid();
+        _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId]));
+
+        var plan = CreatePlanWithStrategies(
+            startDate: new DateOnly(2024, 1, 1),
+            endDate: new DateOnly(2024, 3, 31),
+            startingBalance: 10000m,
+            monthlyIncome: 5000m,
+            lookbackMonths: 0); // fallback baseline = 0
+
+        _mocks.InstrumentRepositoryMock
+            .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<DomainInstrument>());
+
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(),
+                It.IsAny<DateOnly>(),
+                It.IsAny<DateOnly>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>());
+
+        // Actual balances: Dec closing = 10000, Jan closing = 20000
+        // Derived outgoings for Jan: 10000 + 5000 + 0 - 20000 = -5000 (negative - anomalous)
+        // Should be skipped, falling back to historical baseline (0)
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetMonthlyBalancesForAccounts(
+                It.IsAny<IEnumerable<Guid>>(),
+                It.IsAny<DateOnly>(),
+                It.IsAny<DateOnly>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyBalance>>
+            {
+                [accountId] =
+                [
+                    new MonthlyBalance { PeriodEnd = new DateOnly(2023, 12, 31), Balance = 10000m },
+                    new MonthlyBalance { PeriodEnd = new DateOnly(2024, 1, 31), Balance = 20000m },
+                ]
+            });
+
+        var engine = new ForecastEngine(
+            _mocks.ReportRepositoryMock.Object,
+            _mocks.InstrumentRepositoryMock.Object,
+            _mocks.User);
+
+        // Act
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
+
+        // Assert
+        var months = result.Months.ToList();
+
+        // Anomalous month skipped, so baseline falls back to 0 (historical)
+        Assert.All(months, m => Assert.Equal(0m, m.BaselineOutgoingsTotal));
+
+        // Projected line: 10000 + 5000 = 15000, 15000 + 5000 = 20000, etc.
+        Assert.Equal(15000m, months[0].ClosingBalance);
+        Assert.Equal(20000m, months[1].ClosingBalance);
+        Assert.Equal(25000m, months[2].ClosingBalance);
+    }
+
     private void SetupEmptyRepositoryMocks()
     {
         _mocks.InstrumentRepositoryMock
