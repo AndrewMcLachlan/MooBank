@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with th
 
 MooBank is a browser-based application designed to enable an individual to manage their personal finances effectively.
 
-See `.claude/PRD.md` for detailed product requirements and domain concepts.
+See @.claude/PRD.md for detailed product requirements and domain concepts.
 
 ## Architecture
 
@@ -60,33 +60,57 @@ tests/
   - `@andrewmclachlan/moo-ds` - Component library (Storybook: https://storybook.mclachlan.family)
   - `@andrewmclachlan/moo-app` - App framework with MSAL auth, React Query hooks
 
-## Claude Code Commands
+## Build & Test Commands
+
+```bash
+# Backend
+dotnet build Asm.MooBank.slnx              # Build solution
+dotnet test tests/                          # Run all tests
+dotnet test --filter /[Category=Unit]       # Unit tests only
+
+# Frontend (from src/Asm.MooBank.Web.App/)
+npm run build                               # Build (includes tsc type checking)
+npm run lint                                # Lint
+npm run generate                            # Regenerate API types from OpenAPI spec
+npm test                                    # Run Vitest component tests
+```
+
+## Skills (Slash Commands)
+
+### PIV Loop (Plan → Implement → Validate)
 
 | Command | Description |
 |---------|-------------|
-| `/project:core-piv/prime` | Load project context before implementation |
-| `/project:core-piv/plan-feature <desc>` | Create implementation plan for a feature |
-| `/project:core-piv/execute <plan-file>` | Execute a plan step-by-step |
-| `/project:validation/validate` | Run full validation suite |
-| `/project:validation/code-review` | Review changed files |
-| `/project:validation/test` | Run test suite |
-| `/project:commit` | Create conventional commit |
-| `/project:init-project` | First-time project setup |
+| `/plan-feature <description>` | Create implementation plan (runs in isolated subagent) |
+| `/execute <plan-file>` | Execute a plan step-by-step |
+| `/validate` | Run full validation suite (build, lint, test) |
+| `/code-review` | Review changed files for bugs and quality |
+| `/code-review-fix <review-file>` | Fix issues found in a code review |
+| `/review-implementation <plan-file>` | Analyze implementation vs plan, suggest process improvements |
 
-## Technology References
+### Utilities
 
-Read these when working on specific areas:
+| Command | Description |
+|---------|-------------|
+| `/commit` | Create conventional commit |
+| `/test` | Run test suite |
+| `/init-project` | First-time project setup |
+| `/create-prd <filename>` | Generate Product Requirements Document |
 
-| Reference | Path | When to Read |
-|-----------|------|--------------|
-| C# | `.claude/reference/csharp.md` | Backend code, domain entities, handlers |
-| TypeScript | `.claude/reference/typescript.md` | React frontend |
-| SQL / Database | `.claude/reference/sql-database.md` | Schema changes, migrations |
-| REST API | `.claude/reference/rest-api.md` | Endpoints, authorization, OpenAPI |
-| Entity Framework | `.claude/reference/entity-framework.md` | Data access, repositories, specifications |
-| CQRS | `.claude/reference/cqrs.md` | Commands, queries, endpoint mappings |
-| Backend Testing | `.claude/reference/testing-backend.md` | ReqnRoll unit tests, authorization integration tests |
-| Frontend Testing | `.claude/reference/testing-frontend.md` | Vitest component tests, Playwright E2E tests |
+## Technology Rules
+
+Path-scoped rules in `.claude/rules/` auto-load when working on matching files:
+
+| Rule | Auto-loads for |
+|------|---------------|
+| `backend/csharp.md` | `src/**/*.cs` |
+| `backend/cqrs.md` | `src/Asm.MooBank.Modules*/**` |
+| `backend/entity-framework.md` | `src/Asm.MooBank.Infrastructure/**`, `src/Asm.MooBank.Domain/**` |
+| `backend/rest-api.md` | `src/Asm.MooBank.Web.Api/**`, `src/Asm.MooBank.Modules*/Endpoints/**` |
+| `backend/sql-database.md` | `src/Asm.MooBank.Database/**` |
+| `frontend/typescript.md` | `src/Asm.MooBank.Web.App/**/*.{ts,tsx}` |
+| `testing/backend.md` | `tests/**/*.cs` |
+| `testing/frontend.md` | `tests/e2e/**`, `src/Asm.MooBank.Web.App/**/__tests__/**` |
 
 ## Instructions for AI Agents
 
@@ -108,6 +132,7 @@ Read these when working on specific areas:
 - Use TypeScript strictly in the frontend
 - Handle errors with domain exceptions and HTTP exceptions
 - Document API endpoints with OpenAPI attributes
+- Do not use `.WithOpenApi()` - it is deprecated in .NET 10
 
 ### When Making Changes
 

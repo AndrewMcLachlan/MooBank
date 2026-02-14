@@ -1,8 +1,9 @@
+---
+paths:
+  - "src/Asm.MooBank.Database/**"
+---
+
 # SQL Server / Database Design
-
-## Overview
-
-The database schema is defined in the `Asm.MooBank.Database` project using a SQL Server Database Project (SDK-style format).
 
 ## Design Principles
 
@@ -35,7 +36,6 @@ Asm.MooBank.Database/
 │   └── Views/              # Views
 ├── Scripts/                # Ad hoc scripts for complex refactoring or filling new tables
 └── Script.PostDeployment1/ # Seed data scripts
-
 ```
 
 ## Migrations
@@ -43,7 +43,6 @@ Asm.MooBank.Database/
 - Database schema is defined in the Database Project
 - Changes should be made to SQL files, not generated via EF migrations
 - Use database project deployment for schema updates
-- Migrations are applied automatically during deployment
 
 ## Best Practices
 

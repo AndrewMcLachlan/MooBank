@@ -1,3 +1,8 @@
+---
+paths:
+  - "src/Asm.MooBank.Modules*/**"
+---
+
 # CQRS Implementation
 
 ## Overview
@@ -89,19 +94,16 @@ public static void MapTransactionEndpoints(this IEndpointRouteBuilder endpoints)
 
     // Map a query
     group.MapQuery<GetTransaction, Transaction>("/{id}")
-        .WithOpenApi()
         .RequireAuthorization(Policies.GetInstrumentViewerPolicy("instrumentId"));
 
     // Map a command
     group.MapCommand<CreateTransaction, Transaction>("/")
-        .WithOpenApi()
         .RequireAuthorization(Policies.GetInstrumentOwnerPolicy("instrumentId"));
 }
 ```
 
 ### Endpoint Guidelines
 - Use `.MapCommand()` and `.MapQuery()` extensions from `Asm.Cqrs.AspNetCore`
-- Apply `.WithOpenApi()` for API documentation
 - Apply authorization policies using `.RequireAuthorization()`
 
 ## Module Structure

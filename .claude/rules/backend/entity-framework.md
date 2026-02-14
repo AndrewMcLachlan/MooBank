@@ -1,8 +1,10 @@
+---
+paths:
+  - "src/Asm.MooBank.Infrastructure/**"
+  - "src/Asm.MooBank.Domain/**"
+---
+
 # Entity Framework Core
-
-## Overview
-
-Entity Framework Core is used as the ORM for database access in MooBank.
 
 ## Data Access Patterns
 
@@ -17,8 +19,6 @@ Entity Framework Core is used as the ORM for database access in MooBank.
 - Implementation in `Asm.MooBank.Infrastructure/Repositories/`
 
 ## IQueryable vs Repository
-
-The infrastructure layer provides two ways to access entities:
 
 ### 1. IQueryable<TEntity> - For Read Operations
 
