@@ -53,7 +53,12 @@ internal class ForecastEngine(
         // 7. Fetch historical actual balances for comparison
         var actualBalancesByMonth = await GetActualBalancesByMonth(accountIds, plan.StartDate, plan.EndDate, cancellationToken);
 
-        // 8. Generate forecast months
+        // 8. Recalculate baseline outgoings from actual balance data if available
+        var effectiveBaselineOutgoings = RecalculateBaselineFromActuals(
+            actualBalancesByMonth, incomeByMonth, plannedItemsByMonth,
+            plan.StartDate, plan.EndDate, baselineOutgoings);
+
+        // 9. Generate forecast months
         var months = new List<ForecastMonth>();
         var currentBalance = startingBalance;
         var currentDate = new DateOnly(plan.StartDate.Year, plan.StartDate.Month, 1);
@@ -71,10 +76,10 @@ internal class ForecastEngine(
                 MonthStart = currentDate,
                 OpeningBalance = currentBalance,
                 IncomeTotal = monthIncome,
-                BaselineOutgoingsTotal = baselineOutgoings,
+                BaselineOutgoingsTotal = effectiveBaselineOutgoings,
                 PlannedItemsTotal = monthPlanned,
                 // monthPlanned already has correct sign: positive for income, negative for expenses
-                ClosingBalance = currentBalance + monthIncome - Math.Abs(baselineOutgoings) + monthPlanned,
+                ClosingBalance = currentBalance + monthIncome - Math.Abs(effectiveBaselineOutgoings) + monthPlanned,
                 ActualBalance = actualBalance
             };
 
@@ -83,8 +88,8 @@ internal class ForecastEngine(
             currentDate = currentDate.AddMonths(1);
         }
 
-        // 9. Calculate summary metrics
-        var summary = CalculateSummary(months, baselineOutgoings);
+        // 10. Calculate summary metrics
+        var summary = CalculateSummary(months, effectiveBaselineOutgoings);
 
         return new ForecastResult
         {
@@ -101,11 +106,11 @@ internal class ForecastEngine(
     {
         if (plan.AccountScopeMode == AccountScopeMode.SelectedAccounts)
         {
-            return plan.Accounts.Select(a => a.InstrumentId).ToList();
+            return [.. plan.Accounts.Select(a => a.InstrumentId)];
         }
 
         // AllAccounts mode - use all user's accounts and shared accounts
-        return user.Accounts.Concat(user.SharedAccounts).ToList();
+        return [.. user.Accounts, .. user.SharedAccounts];
     }
 
     /// <summary>
@@ -265,6 +270,59 @@ internal class ForecastEngine(
         }
 
         return result;
+    }
+
+    /// <summary>
+    /// Recalculates baseline outgoings using actual balance data from past months.
+    /// For each past month where we have consecutive actual balances, we can derive
+    /// what the actual outgoings were: actual_outgoings = opening + income + planned - closing.
+    /// The average of these actuals replaces the historical baseline for the forecast.
+    /// Falls back to the original baseline if no actual data is available.
+    /// Note: uses predicted income since actual income data is not separately available.
+    /// Inaccuracies in income prediction will be reflected in the derived outgoings.
+    /// </summary>
+    private static decimal RecalculateBaselineFromActuals(
+        Dictionary<string, decimal?> actualBalancesByMonth,
+        Dictionary<string, decimal> incomeByMonth,
+        Dictionary<string, decimal> plannedItemsByMonth,
+        DateOnly startDate, DateOnly endDate,
+        decimal fallbackBaseline)
+    {
+        var actualOutgoings = new List<decimal>();
+        var currentDate = new DateOnly(startDate.Year, startDate.Month, 1);
+        var lastDate = new DateOnly(endDate.Year, endDate.Month, 1);
+
+        while (currentDate <= lastDate)
+        {
+            var monthKey = currentDate.ToString("yyyy-MM");
+            var nextMonthKey = currentDate.AddMonths(1).ToString("yyyy-MM");
+
+            var opening = actualBalancesByMonth.GetValueOrDefault(monthKey);
+            var closing = actualBalancesByMonth.GetValueOrDefault(nextMonthKey);
+
+            if (opening.HasValue && closing.HasValue)
+            {
+                var income = incomeByMonth.GetValueOrDefault(monthKey, 0m);
+                var planned = plannedItemsByMonth.GetValueOrDefault(monthKey, 0m);
+
+                // Derive actual outgoings from balance change:
+                // closing = opening + income - outgoings + planned
+                // outgoings = opening + income + planned - closing
+                var derived = opening.Value + income + planned - closing.Value;
+
+                // Skip months where derived outgoings are negative — this indicates
+                // unexplained balance growth (e.g. transfers in, windfalls) that would
+                // distort the baseline average.
+                if (derived >= 0)
+                {
+                    actualOutgoings.Add(derived);
+                }
+            }
+
+            currentDate = currentDate.AddMonths(1);
+        }
+
+        return actualOutgoings.Count > 0 ? actualOutgoings.Average() : fallbackBaseline;
     }
 
     private Dictionary<string, decimal> ExpandPlannedItems(DomainForecastPlan plan)
