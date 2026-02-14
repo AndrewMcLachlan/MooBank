@@ -44,7 +44,7 @@ public class UpdateBalanceTests
         var command = new UpdateBalance(instrumentId, balanceUpdate);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -77,7 +77,7 @@ public class UpdateBalanceTests
         var command = new UpdateBalance(instrumentId, balanceUpdate);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -110,7 +110,7 @@ public class UpdateBalanceTests
         var command = new UpdateBalance(instrumentId, balanceUpdate);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedTransaction);
@@ -144,7 +144,7 @@ public class UpdateBalanceTests
         var command = new UpdateBalance(instrumentId, balanceUpdate);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedTransaction);
@@ -178,7 +178,7 @@ public class UpdateBalanceTests
         var command = new UpdateBalance(instrumentId, balanceUpdate);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedTransaction);
@@ -206,7 +206,7 @@ public class UpdateBalanceTests
         var command = new UpdateBalance(instrumentId, balanceUpdate);
 
         // Act & Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<InvalidOperationException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -236,7 +236,7 @@ public class UpdateBalanceTests
         var command = new UpdateBalance(instrumentId, balanceUpdate);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedTransaction);

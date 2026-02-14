@@ -53,7 +53,7 @@ public class UpdateTests
         var command = new Update(accountId, virtualId, rtId, "New Description", 200m, ScheduleFrequency.Monthly, newNextRun);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal("New Description", result.Description);
@@ -91,7 +91,7 @@ public class UpdateTests
         var command = new Update(accountId, virtualId, rtId, "Updated", 150m, ScheduleFrequency.Weekly, nextRun);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -128,7 +128,7 @@ public class UpdateTests
 
         // Act & Assert
         await Assert.ThrowsAsync<NotFoundException>(
-            () => handler.Handle(command, CancellationToken.None).AsTask());
+            () => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -162,7 +162,7 @@ public class UpdateTests
 
         // Act & Assert
         await Assert.ThrowsAsync<NotFoundException>(
-            () => handler.Handle(command, CancellationToken.None).AsTask());
+            () => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -198,7 +198,7 @@ public class UpdateTests
         var command = new Update(accountId, virtualId, rtId, null, 100m, ScheduleFrequency.Monthly, nextRun);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Null(result.Description);
@@ -237,7 +237,7 @@ public class UpdateTests
         var command = new Update(accountId, virtualId, rtId, "Test", 999.99m, ScheduleFrequency.Monthly, nextRun);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         var updatedRt = account.VirtualInstruments

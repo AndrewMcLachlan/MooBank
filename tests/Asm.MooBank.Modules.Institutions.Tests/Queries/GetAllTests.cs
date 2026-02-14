@@ -17,7 +17,7 @@ public class GetAllTests
         var query = new GetAll(null);
 
         // Act
-        var result = (await handler.Handle(query, CancellationToken.None)).ToList();
+        var result = (await handler.Handle(query, TestContext.Current.CancellationToken)).ToList();
 
         // Assert
         Assert.Equal(6, result.Count);
@@ -38,7 +38,7 @@ public class GetAllTests
         var query = new GetAll(null);
 
         // Act
-        var result = (await handler.Handle(query, CancellationToken.None)).ToList();
+        var result = (await handler.Handle(query, TestContext.Current.CancellationToken)).ToList();
 
         // Assert
         Assert.Empty(result);
@@ -54,7 +54,7 @@ public class GetAllTests
         var query = new GetAll(AccountType.Superannuation);
 
         // Act
-        var result = (await handler.Handle(query, CancellationToken.None)).ToList();
+        var result = (await handler.Handle(query, TestContext.Current.CancellationToken)).ToList();
 
         // Assert
         Assert.Single(result);
@@ -72,7 +72,7 @@ public class GetAllTests
         var query = new GetAll(AccountType.Investment);
 
         // Act
-        var result = (await handler.Handle(query, CancellationToken.None)).ToList();
+        var result = (await handler.Handle(query, TestContext.Current.CancellationToken)).ToList();
 
         // Assert
         Assert.Single(result);
@@ -90,7 +90,7 @@ public class GetAllTests
         var query = new GetAll(AccountType.Transaction);
 
         // Act
-        var result = (await handler.Handle(query, CancellationToken.None)).ToList();
+        var result = (await handler.Handle(query, TestContext.Current.CancellationToken)).ToList();
 
         // Assert
         Assert.Equal(4, result.Count);
@@ -115,7 +115,7 @@ public class GetAllTests
         var query = new GetAll(accountType);
 
         // Act
-        var result = (await handler.Handle(query, CancellationToken.None)).ToList();
+        var result = (await handler.Handle(query, TestContext.Current.CancellationToken)).ToList();
 
         // Assert
         Assert.Equal(4, result.Count);
@@ -140,7 +140,7 @@ public class GetAllTests
         var query = new GetAll(AccountType.Superannuation);
 
         // Act
-        var result = (await handler.Handle(query, CancellationToken.None)).ToList();
+        var result = (await handler.Handle(query, TestContext.Current.CancellationToken)).ToList();
 
         // Assert
         Assert.Empty(result);

@@ -43,7 +43,7 @@ public class UpdateTests
         var command = new Update(instrumentId, virtualInstrumentId, "New Name", "New Description", 500m);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal("New Name", virtualInstrument.Name);
@@ -75,7 +75,7 @@ public class UpdateTests
         var command = new Update(instrumentId, virtualInstrumentId, "Updated Name", "Updated Desc", 500m);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -106,7 +106,7 @@ public class UpdateTests
         var command = new Update(instrumentId, virtualInstrumentId, "Name", "Desc", 100m);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -132,7 +132,7 @@ public class UpdateTests
         var command = new Update(instrumentId, nonExistentId, "Name", "Desc", 0m);
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -161,7 +161,7 @@ public class UpdateTests
         var command = new Update(instrumentId, virtualInstrumentId, "Name", "Desc", 800m);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotEmpty(virtualInstrument.Events);
@@ -194,7 +194,7 @@ public class UpdateTests
         var command = new Update(instrumentId, virtualInstrumentId, "Name", "Desc", 500m);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(virtualInstrument.Events);
@@ -227,7 +227,7 @@ public class UpdateTests
         var command = new Update(instrumentId, virtualInstrumentId, "Name", "Desc", 800m);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert - Balance should remain unchanged when trying to increase
         Assert.Equal(500m, virtualInstrument.Balance);

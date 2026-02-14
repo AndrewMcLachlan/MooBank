@@ -35,7 +35,7 @@ public class UpdateMineTests
         var command = new UpdateMine(updateFamily);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -62,7 +62,7 @@ public class UpdateMineTests
         var command = new UpdateMine(updateFamily);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal("New Name", existingFamily.Name);
@@ -88,7 +88,7 @@ public class UpdateMineTests
         var command = new UpdateMine(updateFamily);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -114,7 +114,7 @@ public class UpdateMineTests
         var command = new UpdateMine(updateFamily);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.FamilyRepositoryMock.Verify(r => r.Get(familyId, It.IsAny<CancellationToken>()), Times.Once);
@@ -143,7 +143,7 @@ public class UpdateMineTests
         var command = new UpdateMine(updateFamily);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal("Different Family Name", result.Name);

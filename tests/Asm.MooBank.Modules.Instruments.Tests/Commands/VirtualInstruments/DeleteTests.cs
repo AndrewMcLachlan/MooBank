@@ -37,7 +37,7 @@ public class DeleteTests
         var command = new Delete(instrumentId, virtualInstrumentId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.InstrumentRepositoryMock.Verify(r => r.Delete(virtualInstrumentId), Times.Once);
@@ -65,7 +65,7 @@ public class DeleteTests
         var command = new Delete(instrumentId, virtualInstrumentId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -90,7 +90,7 @@ public class DeleteTests
         var command = new Delete(instrumentId, nonExistentId);
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -114,7 +114,7 @@ public class DeleteTests
         // Act
         try
         {
-            await handler.Handle(command, CancellationToken.None);
+            await handler.Handle(command, TestContext.Current.CancellationToken);
         }
         catch (NotFoundException)
         {
@@ -149,7 +149,7 @@ public class DeleteTests
         var command = new Delete(instrumentId, virtualInstrumentId1);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.InstrumentRepositoryMock.Verify(r => r.Delete(virtualInstrumentId1), Times.Once);

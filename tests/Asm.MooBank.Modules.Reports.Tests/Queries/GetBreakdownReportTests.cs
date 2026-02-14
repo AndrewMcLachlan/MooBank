@@ -42,7 +42,7 @@ public class GetBreakdownReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -77,7 +77,7 @@ public class GetBreakdownReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(3, result.Tags.Count());
@@ -109,7 +109,7 @@ public class GetBreakdownReportTests
         };
 
         // Act
-        await handler.Handle(query, CancellationToken.None);
+        await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.ReportRepositoryMock.Verify(
@@ -142,7 +142,7 @@ public class GetBreakdownReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(result.Tags);
@@ -172,7 +172,7 @@ public class GetBreakdownReportTests
         };
 
         // Act
-        await handler.Handle(query, CancellationToken.None);
+        await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.ReportRepositoryMock.Verify(
@@ -205,7 +205,7 @@ public class GetBreakdownReportTests
         };
 
         // Act
-        await handler.Handle(query, CancellationToken.None);
+        await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.ReportRepositoryMock.Verify(

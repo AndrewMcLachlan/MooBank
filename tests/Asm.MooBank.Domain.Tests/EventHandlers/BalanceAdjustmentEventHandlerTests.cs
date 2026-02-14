@@ -41,7 +41,7 @@ public class BalanceAdjustmentEventHandlerTests
         var domainEvent = new BalanceAdjustmentEvent(instrument, 100m, "Test");
 
         // Act
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
 
         // Assert
         _mockRepository.Verify(r => r.Add(It.IsAny<DomainTransaction>()), Times.Once);
@@ -61,7 +61,7 @@ public class BalanceAdjustmentEventHandlerTests
         var domainEvent = new BalanceAdjustmentEvent(instrument, 100m, "Test");
 
         // Act
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
 
         // Assert
         _mockRepository.Verify(r => r.Add(It.IsAny<DomainTransaction>()), Times.Never);
@@ -84,7 +84,7 @@ public class BalanceAdjustmentEventHandlerTests
             .Callback<DomainTransaction>(t => capturedTransaction = t);
 
         // Act
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedTransaction);
@@ -108,7 +108,7 @@ public class BalanceAdjustmentEventHandlerTests
             .Callback<DomainTransaction>(t => capturedTransaction = t);
 
         // Act
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedTransaction);
@@ -136,7 +136,7 @@ public class BalanceAdjustmentEventHandlerTests
             .Callback<DomainTransaction>(t => capturedTransaction = t);
 
         // Act
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedTransaction);
@@ -160,7 +160,7 @@ public class BalanceAdjustmentEventHandlerTests
             .Callback<DomainTransaction>(t => capturedTransaction = t);
 
         // Act
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedTransaction);
@@ -185,7 +185,7 @@ public class BalanceAdjustmentEventHandlerTests
             .Callback<DomainTransaction>(t => capturedTransaction = t);
 
         // Act
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedTransaction);
@@ -209,7 +209,7 @@ public class BalanceAdjustmentEventHandlerTests
             .Callback<DomainTransaction>(t => capturedTransaction = t);
 
         // Act
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedTransaction);
@@ -234,7 +234,7 @@ public class BalanceAdjustmentEventHandlerTests
         var domainEvent = new BalanceAdjustmentEvent(instrument, 0m, "Test");
 
         // Act
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
 
         // Assert
         _mockRepository.Verify(r => r.Add(It.IsAny<DomainTransaction>()), Times.Once);

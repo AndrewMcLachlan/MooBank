@@ -36,7 +36,7 @@ public class GetByTypeTests
         var query = new GetByType(UtilityType.Electricity);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var resultList = result.ToList();
@@ -67,7 +67,7 @@ public class GetByTypeTests
         var query = new GetByType(UtilityType.Electricity);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, result.Count());
@@ -91,7 +91,7 @@ public class GetByTypeTests
         var query = new GetByType(UtilityType.Water);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(result);
@@ -118,7 +118,7 @@ public class GetByTypeTests
         var query = new GetByType(UtilityType.Electricity);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var resultList = result.ToList();
@@ -151,7 +151,7 @@ public class GetByTypeTests
         var query = new GetByType(type);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var resultList = result.ToList();

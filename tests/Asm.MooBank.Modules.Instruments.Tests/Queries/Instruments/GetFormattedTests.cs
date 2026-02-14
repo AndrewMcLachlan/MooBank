@@ -32,7 +32,7 @@ public class GetFormattedTests
         var query = new GetFormatted();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -60,7 +60,7 @@ public class GetFormattedTests
         var query = new GetFormatted();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(result.Groups);
@@ -91,7 +91,7 @@ public class GetFormattedTests
         var query = new GetFormatted();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var group = result.Groups.First();
@@ -121,7 +121,7 @@ public class GetFormattedTests
         var query = new GetFormatted();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var group = result.Groups.First();
@@ -150,7 +150,7 @@ public class GetFormattedTests
         var query = new GetFormatted();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var group = result.Groups.First();
@@ -182,7 +182,7 @@ public class GetFormattedTests
         var query = new GetFormatted();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var instrument = result.Groups.First().Instruments.First();
@@ -216,7 +216,7 @@ public class GetFormattedTests
         var query = new GetFormatted();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var instrument = result.Groups.First().Instruments.First();
@@ -245,7 +245,7 @@ public class GetFormattedTests
         var query = new GetFormatted();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var instrument = result.Groups.First().Instruments.First();
@@ -274,7 +274,7 @@ public class GetFormattedTests
         var query = new GetFormatted();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var instrument = result.Groups.First().Instruments.First();
@@ -319,7 +319,7 @@ public class GetFormattedTests
         var query = new GetFormatted();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(result.Groups);
@@ -367,7 +367,7 @@ public class GetFormattedTests
         var query = new GetFormatted();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, result.Groups.Count());
@@ -425,7 +425,7 @@ public class GetFormattedTests
         var query = new GetFormatted();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(result.Groups);

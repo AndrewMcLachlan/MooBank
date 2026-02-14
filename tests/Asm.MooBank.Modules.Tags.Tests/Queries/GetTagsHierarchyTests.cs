@@ -32,7 +32,7 @@ public class GetTagsHierarchyTests
         var query = new GetTagsHierarchy();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -61,7 +61,7 @@ public class GetTagsHierarchyTests
         var query = new GetTagsHierarchy();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -93,7 +93,7 @@ public class GetTagsHierarchyTests
         var query = new GetTagsHierarchy();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(result.Tags);
@@ -123,7 +123,7 @@ public class GetTagsHierarchyTests
         var query = new GetTagsHierarchy();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(result.Tags);
@@ -147,7 +147,7 @@ public class GetTagsHierarchyTests
         var query = new GetTagsHierarchy();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(result.Tags);
@@ -170,7 +170,7 @@ public class GetTagsHierarchyTests
         var query = new GetTagsHierarchy();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         // The handler creates levels 1-5 regardless of actual depth
@@ -204,7 +204,7 @@ public class GetTagsHierarchyTests
         var query = new GetTagsHierarchy();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, result.Tags.Count());
@@ -234,7 +234,7 @@ public class GetTagsHierarchyTests
         var query = new GetTagsHierarchy();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(result.Tags);
@@ -260,7 +260,7 @@ public class GetTagsHierarchyTests
         var query = new GetTagsHierarchy();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var resultTag = result.Tags.First();
@@ -290,7 +290,7 @@ public class GetTagsHierarchyTests
         var query = new GetTagsHierarchy();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         // Level 1 should count the sub-tags of the main tag (2)

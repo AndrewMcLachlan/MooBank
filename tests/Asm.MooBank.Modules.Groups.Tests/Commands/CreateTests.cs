@@ -27,7 +27,7 @@ public class CreateTests
         var command = new Create("New Group", "A test group", true);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -54,7 +54,7 @@ public class CreateTests
         var command = new Create("New Group", "A test group", false);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.GroupRepositoryMock.Verify(r => r.Add(It.IsAny<DomainGroup>()), Times.Once);
@@ -82,7 +82,7 @@ public class CreateTests
         var command = new Create("New Group", "A test group", false);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedGroup);
@@ -101,7 +101,7 @@ public class CreateTests
         var command = new Create("New Group", "A test group", false);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -125,7 +125,7 @@ public class CreateTests
         var command = new Create("New Group", "A test group", true);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedGroup);
@@ -154,7 +154,7 @@ public class CreateTests
         var command = new Create("New Group", "A test group", false);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedGroup);

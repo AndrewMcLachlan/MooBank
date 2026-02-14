@@ -38,7 +38,7 @@ public class DeletePlanTests
         var command = new DeletePlan(planId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(plan.IsArchived);
@@ -68,7 +68,7 @@ public class DeletePlanTests
         var command = new DeletePlan(planId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -98,7 +98,7 @@ public class DeletePlanTests
         var command = new DeletePlan(planId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.SecurityMock.Verify(s => s.AssertFamilyPermission(familyId), Times.Once);
@@ -128,6 +128,6 @@ public class DeletePlanTests
         var command = new DeletePlan(planId);
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 }

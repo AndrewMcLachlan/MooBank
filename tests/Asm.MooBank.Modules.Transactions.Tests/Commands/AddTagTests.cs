@@ -44,7 +44,7 @@ public class AddTagTests
         var command = new AddTag(instrumentId, transactionId, tagId);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -78,7 +78,7 @@ public class AddTagTests
         var command = new AddTag(instrumentId, transactionId, tagId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -107,7 +107,7 @@ public class AddTagTests
         var command = new AddTag(instrumentId, transactionId, tagId);
 
         // Act & Assert
-        await Assert.ThrowsAsync<ExistsException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<ExistsException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -135,7 +135,7 @@ public class AddTagTests
         // Act
         try
         {
-            await handler.Handle(command, CancellationToken.None);
+            await handler.Handle(command, TestContext.Current.CancellationToken);
         }
         catch (ExistsException)
         {
@@ -173,7 +173,7 @@ public class AddTagTests
         var command = new AddTag(instrumentId, transactionId, tagId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.TagRepositoryMock.Verify(r => r.Get(tagId, It.IsAny<CancellationToken>()), Times.Once);

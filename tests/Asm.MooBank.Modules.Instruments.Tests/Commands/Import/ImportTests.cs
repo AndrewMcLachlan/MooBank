@@ -28,7 +28,7 @@ public class ImportTests
         var command = new ImportCommand(instrumentId, accountId, stream);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.ImportQueueMock.Verify(
@@ -54,7 +54,7 @@ public class ImportTests
         var command = new ImportCommand(instrumentId, accountId, stream);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedData);
@@ -78,7 +78,7 @@ public class ImportTests
         var command = new ImportCommand(instrumentId, accountId, stream);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(instrumentId, capturedInstrumentId);
@@ -101,7 +101,7 @@ public class ImportTests
         var command = new ImportCommand(instrumentId, accountId, stream);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(accountId, capturedAccountId);
@@ -124,7 +124,7 @@ public class ImportTests
         var command = new ImportCommand(instrumentId, accountId, stream);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Same(_mocks.User, capturedUser);
@@ -147,7 +147,7 @@ public class ImportTests
         var command = new ImportCommand(instrumentId, accountId, stream);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedData);
@@ -173,7 +173,7 @@ public class ImportTests
         var command = new ImportCommand(instrumentId, accountId, stream);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedData);

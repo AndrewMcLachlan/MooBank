@@ -39,7 +39,7 @@ public class ArchivePlanTests
         var command = new ArchivePlan(planId);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(plan.IsArchived);
@@ -70,7 +70,7 @@ public class ArchivePlanTests
         var command = new ArchivePlan(planId);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(planId, result.Id);
@@ -101,7 +101,7 @@ public class ArchivePlanTests
         var command = new ArchivePlan(planId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -131,7 +131,7 @@ public class ArchivePlanTests
         var command = new ArchivePlan(planId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.SecurityMock.Verify(s => s.AssertFamilyPermission(familyId), Times.Once);
@@ -161,6 +161,6 @@ public class ArchivePlanTests
         var command = new ArchivePlan(planId);
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 }

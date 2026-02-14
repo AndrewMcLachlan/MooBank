@@ -29,7 +29,7 @@ public class CreateTests
         var command = new Create(2024);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -50,7 +50,7 @@ public class CreateTests
         var command = new Create(2024);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.BudgetRepositoryMock.Verify(r => r.Add(It.IsAny<DomainBudget>()), Times.Once);
@@ -71,7 +71,7 @@ public class CreateTests
         var command = new Create(2024);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -95,7 +95,7 @@ public class CreateTests
         var command = new Create(2024);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedEntity);
@@ -119,7 +119,7 @@ public class CreateTests
         var command = new Create(year);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(year, result.Year);
@@ -138,7 +138,7 @@ public class CreateTests
         var command = new Create(2024);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(result.IncomeLines);

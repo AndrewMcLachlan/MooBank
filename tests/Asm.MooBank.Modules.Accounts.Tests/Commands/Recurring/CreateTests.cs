@@ -40,7 +40,7 @@ public class CreateTests
         var command = new Create(accountId, virtualId, "Monthly Bills", 500m, ScheduleFrequency.Monthly, nextRun);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -72,7 +72,7 @@ public class CreateTests
         var command = new Create(accountId, virtualId, "Test", 100m, ScheduleFrequency.Weekly, nextRun);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         var virtualInstrument = account.VirtualInstruments.Single(v => v.Id == virtualId);
@@ -102,7 +102,7 @@ public class CreateTests
         var command = new Create(accountId, virtualId, "Test", 100m, ScheduleFrequency.Weekly, nextRun);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -133,7 +133,7 @@ public class CreateTests
 
         // Act & Assert
         await Assert.ThrowsAsync<NotFoundException>(
-            () => handler.Handle(command, CancellationToken.None).AsTask());
+            () => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -159,7 +159,7 @@ public class CreateTests
         var command = new Create(accountId, virtualId, null, 100m, ScheduleFrequency.Monthly, nextRun);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Null(result.Description);
@@ -193,7 +193,7 @@ public class CreateTests
         var command = new Create(accountId, virtualId, "Test", 100m, schedule, nextRun);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(schedule, result.Schedule);
@@ -222,7 +222,7 @@ public class CreateTests
         var command = new Create(accountId, virtualId, "Test", 100m, ScheduleFrequency.Monthly, nextRun);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(virtualId, result.VirtualAccountId);

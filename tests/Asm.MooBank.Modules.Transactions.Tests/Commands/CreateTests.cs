@@ -42,7 +42,7 @@ public class CreateTests
         var command = new Create(instrumentId, -50m, "Test purchase", "REF001", DateTimeOffset.Now);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -76,7 +76,7 @@ public class CreateTests
         var command = new Create(instrumentId, -100m, "Groceries", null, DateTimeOffset.Now);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.TransactionRepositoryMock.Verify(r => r.Add(It.IsAny<DomainTransaction>()), Times.Once);
@@ -109,7 +109,7 @@ public class CreateTests
         var command = new Create(instrumentId, -50m, "Test", null, DateTimeOffset.Now);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -144,7 +144,7 @@ public class CreateTests
         var command = new Create(instrumentId, -50m, "Test", null, DateTimeOffset.Now);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedTransaction);
@@ -177,7 +177,7 @@ public class CreateTests
         var command = new Create(instrumentId, -50m, "Test", "REF123", DateTimeOffset.Now);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedTransaction);
@@ -204,7 +204,7 @@ public class CreateTests
         var command = new Create(instrumentId, -50m, "Test", null, DateTimeOffset.Now);
 
         // Act & Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<InvalidOperationException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Theory]
@@ -237,7 +237,7 @@ public class CreateTests
         var command = new Create(instrumentId, amount, "Test", null, DateTimeOffset.Now);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedTransaction);

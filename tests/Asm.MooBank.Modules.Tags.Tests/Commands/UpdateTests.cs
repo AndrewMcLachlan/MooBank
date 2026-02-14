@@ -39,7 +39,7 @@ public class UpdateTests
         var command = new Update(1, updateTag);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -70,7 +70,7 @@ public class UpdateTests
         var command = new Update(1, updateTag);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal("Updated Name", existingTag.Name);
@@ -100,7 +100,7 @@ public class UpdateTests
         var command = new Update(1, updateTag);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -130,7 +130,7 @@ public class UpdateTests
         var command = new Update(1, updateTag);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.SecurityMock.Verify(s => s.AssertFamilyPermission(familyId), Times.Once);
@@ -161,7 +161,7 @@ public class UpdateTests
         var command = new Update(1, updateTag);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(newColour, existingTag.Colour);
@@ -194,7 +194,7 @@ public class UpdateTests
         var command = new Update(1, updateTag);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(existingTag.Settings.ApplySmoothing);

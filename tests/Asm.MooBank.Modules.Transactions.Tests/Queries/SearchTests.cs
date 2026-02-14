@@ -28,7 +28,7 @@ public class SearchTests
         var query = new Search(instrumentId, new DateOnly(2024, 3, 1), TransactionType.Debit, [1]);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(result);
@@ -54,7 +54,7 @@ public class SearchTests
         var query = new Search(instrumentId, new DateOnly(2024, 3, 1), TransactionType.Debit, [99]); // Non-matching tag ID
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(result);
@@ -80,7 +80,7 @@ public class SearchTests
         var query = new Search(instrumentId, new DateOnly(2024, 3, 1), TransactionType.Debit, [1]);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(result);
@@ -106,7 +106,7 @@ public class SearchTests
         var query = new Search(instrumentId, new DateOnly(2024, 3, 1), TransactionType.Debit, [1]);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(result);
@@ -132,7 +132,7 @@ public class SearchTests
         var query = new Search(instrumentId, new DateOnly(2024, 3, 1), TransactionType.Debit, [1]);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(result);
@@ -159,7 +159,7 @@ public class SearchTests
         var query = new Search(instrumentId, new DateOnly(2024, 3, 1), TransactionType.Debit, [1]);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(result);
@@ -186,7 +186,7 @@ public class SearchTests
         var query = new Search(instrumentId, new DateOnly(2024, 3, 1), TransactionType.Debit, [2]);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(result);
@@ -218,7 +218,7 @@ public class SearchTests
         var query = new Search(instrumentId, new DateOnly(2024, 3, 1), TransactionType.Debit, [1, 2]);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, result.Count());
@@ -244,7 +244,7 @@ public class SearchTests
         var query = new Search(instrumentId, new DateOnly(2024, 3, 1), TransactionType.Debit, [1]);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(result);
@@ -270,7 +270,7 @@ public class SearchTests
         var query = new Search(instrumentId, new DateOnly(2024, 3, 1), TransactionType.Debit, [1]);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(result);

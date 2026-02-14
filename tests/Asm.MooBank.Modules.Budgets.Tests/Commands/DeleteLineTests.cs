@@ -27,7 +27,7 @@ public class DeleteLineTests
         var command = new DeleteLine(2024, lineId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.BudgetRepositoryMock.Verify(r => r.DeleteLine(lineId), Times.Once);
@@ -46,7 +46,7 @@ public class DeleteLineTests
         var command = new DeleteLine(2024, lineId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -65,7 +65,7 @@ public class DeleteLineTests
         var command = new DeleteLine(2024, lineId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.SecurityMock.Verify(s => s.AssertBudgetLinePermission(lineId, It.IsAny<CancellationToken>()), Times.Once);
@@ -91,7 +91,7 @@ public class DeleteLineTests
         var command = new DeleteLine(2024, lineId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, callOrder.Count);
@@ -112,8 +112,8 @@ public class DeleteLineTests
         var handler = new DeleteLineHandler(_mocks.BudgetRepositoryMock.Object, _mocks.UnitOfWorkMock.Object, _mocks.SecurityMock.Object);
 
         // Act
-        await handler.Handle(new DeleteLine(2024, lineId1), CancellationToken.None);
-        await handler.Handle(new DeleteLine(2024, lineId2), CancellationToken.None);
+        await handler.Handle(new DeleteLine(2024, lineId1), TestContext.Current.CancellationToken);
+        await handler.Handle(new DeleteLine(2024, lineId2), TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.BudgetRepositoryMock.Verify(r => r.DeleteLine(lineId1), Times.Once);

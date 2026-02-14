@@ -32,7 +32,7 @@ public class GetStockHoldingReportTests
         var query = new GetStockHoldingReport(instrumentId);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -62,7 +62,7 @@ public class GetStockHoldingReportTests
         var query = new GetStockHoldingReport(instrumentId);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(expectedCurrentValue, result.CurrentValue);
@@ -85,7 +85,7 @@ public class GetStockHoldingReportTests
         var query = new GetStockHoldingReport(instrumentId);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(expectedGainLoss, result.ProfitLoss);
@@ -113,7 +113,7 @@ public class GetStockHoldingReportTests
         var query = new GetStockHoldingReport(instrumentId);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(adjustedValue, result.AdjustedProfitLoss);
@@ -132,7 +132,7 @@ public class GetStockHoldingReportTests
 
         // Act & Assert
         // The async query provider wraps the exception in TargetInvocationException
-        var exception = await Assert.ThrowsAnyAsync<Exception>(() => handler.Handle(query, CancellationToken.None).AsTask());
+        var exception = await Assert.ThrowsAnyAsync<Exception>(() => handler.Handle(query, TestContext.Current.CancellationToken).AsTask());
         Assert.True(
             exception is InvalidOperationException ||
             (exception.InnerException is InvalidOperationException),

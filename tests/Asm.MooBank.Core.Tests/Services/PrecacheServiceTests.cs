@@ -26,13 +26,13 @@ public class PrecacheServiceTests
         var (service, _, _) = CreateService();
 
         // Act - should not throw
-        await service.StartAsync(CancellationToken.None);
+        await service.StartAsync(TestContext.Current.CancellationToken);
 
         // Assert - if we got here without exception, it worked
         Assert.True(true);
 
         // Cleanup
-        await service.StopAsync(CancellationToken.None);
+        await service.StopAsync(TestContext.Current.CancellationToken);
     }
 
     /// <summary>
@@ -46,10 +46,10 @@ public class PrecacheServiceTests
     {
         // Arrange
         var (service, _, _) = CreateService();
-        await service.StartAsync(CancellationToken.None);
+        await service.StartAsync(TestContext.Current.CancellationToken);
 
         // Act - should not throw
-        await service.StopAsync(CancellationToken.None);
+        await service.StopAsync(TestContext.Current.CancellationToken);
 
         // Assert - if we got here without exception, it worked
         Assert.True(true);
@@ -68,7 +68,7 @@ public class PrecacheServiceTests
         var (service, _, _) = CreateService();
 
         // Act - should not throw
-        await service.StopAsync(CancellationToken.None);
+        await service.StopAsync(TestContext.Current.CancellationToken);
 
         // Assert - if we got here without exception, it worked
         Assert.True(true);

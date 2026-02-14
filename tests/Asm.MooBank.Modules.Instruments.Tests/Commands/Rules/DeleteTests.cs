@@ -27,7 +27,7 @@ public class DeleteTests
         var command = new Delete(instrumentId, 1);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.RuleRepositoryMock.Verify(r => r.Delete(instrumentId, 1, It.IsAny<CancellationToken>()), Times.Once);
@@ -46,7 +46,7 @@ public class DeleteTests
         var command = new Delete(instrumentId, 1);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -66,7 +66,7 @@ public class DeleteTests
         var command = new Delete(instrumentId, ruleId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.RuleRepositoryMock.Verify(r => r.Delete(instrumentId, ruleId, It.IsAny<CancellationToken>()), Times.Once);

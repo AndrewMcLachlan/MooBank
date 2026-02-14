@@ -27,7 +27,7 @@ public class GetAllTests
         var query = new GetAll(instrumentId);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(3, result.Count());
@@ -45,7 +45,7 @@ public class GetAllTests
         var query = new GetAll(instrumentId);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(result);
@@ -61,7 +61,7 @@ public class GetAllTests
         var query = new GetAll(Guid.NewGuid());
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(query, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(query, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -78,7 +78,7 @@ public class GetAllTests
         var query = new GetAll(instrumentId);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var ruleResult = result.First();

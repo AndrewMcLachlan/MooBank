@@ -38,7 +38,7 @@ public class GetAllTests
         var query = new GetAll();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var resultList = result.ToList();
@@ -69,7 +69,7 @@ public class GetAllTests
         var query = new GetAll();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var resultList = result.ToList();
@@ -92,7 +92,7 @@ public class GetAllTests
         var query = new GetAll();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(result);
@@ -110,7 +110,7 @@ public class GetAllTests
         var query = new GetAll();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(result);
@@ -136,7 +136,7 @@ public class GetAllTests
         var query = new GetAll();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var resultAccount = result.Single();

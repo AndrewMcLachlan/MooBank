@@ -31,7 +31,7 @@ public class ImportTests
         var command = new Import(bills);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, result.Imported);
@@ -59,7 +59,7 @@ public class ImportTests
         var command = new Import(bills);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(account.Bills);
@@ -85,7 +85,7 @@ public class ImportTests
         var command = new Import(bills);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -111,7 +111,7 @@ public class ImportTests
         var command = new Import(bills);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, result.Imported);
@@ -140,7 +140,7 @@ public class ImportTests
         var command = new Import(bills);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, result.Imported);
@@ -169,7 +169,7 @@ public class ImportTests
         var command = new Import(bills);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, result.Imported);
@@ -202,7 +202,7 @@ public class ImportTests
         var command = new Import(bills);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, result.Imported);
@@ -235,7 +235,7 @@ public class ImportTests
         var command = new Import(bills);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         var addedBill = account.Bills.First();
@@ -267,7 +267,7 @@ public class ImportTests
         var command = new Import(bills);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         var addedBill = account.Bills.First();
@@ -294,7 +294,7 @@ public class ImportTests
         var command = new Import(bills);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(1, result.Imported);
@@ -317,7 +317,7 @@ public class ImportTests
         var command = new Import([]);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, result.Imported);

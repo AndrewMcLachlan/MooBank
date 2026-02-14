@@ -32,7 +32,7 @@ public class GetTests
         var query = new Get();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -58,7 +58,7 @@ public class GetTests
         var query = new Get();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal("USD", result.Currency);
@@ -81,7 +81,7 @@ public class GetTests
         var query = new Get();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(familyId, result.FamilyId);
@@ -104,7 +104,7 @@ public class GetTests
         var query = new Get();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(primaryAccountId, result.PrimaryAccountId);
@@ -131,7 +131,7 @@ public class GetTests
         var query = new Get();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, result.Cards.Count());
@@ -153,7 +153,7 @@ public class GetTests
         var query = new Get();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(result.Cards);
@@ -176,7 +176,7 @@ public class GetTests
         var query = new Get();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, result.Accounts.Count());
@@ -201,7 +201,7 @@ public class GetTests
         var query = new Get();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, result.SharedAccounts.Count());

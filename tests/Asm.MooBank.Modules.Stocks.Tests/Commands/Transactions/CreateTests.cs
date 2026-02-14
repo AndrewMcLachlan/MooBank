@@ -39,7 +39,7 @@ public class CreateTests
             Date: DateTime.UtcNow);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -73,7 +73,7 @@ public class CreateTests
             Date: DateTime.UtcNow);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(stockHolding.Transactions);
@@ -106,7 +106,7 @@ public class CreateTests
             Date: DateTime.UtcNow);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -136,7 +136,7 @@ public class CreateTests
             Date: DateTime.UtcNow);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(TransactionType.Credit, result.TransactionType);
@@ -166,7 +166,7 @@ public class CreateTests
             Date: DateTime.UtcNow);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(TransactionType.Debit, result.TransactionType);
@@ -196,7 +196,7 @@ public class CreateTests
             Date: DateTime.UtcNow);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(instrumentId, result.AccountId);
@@ -227,7 +227,7 @@ public class CreateTests
             Date: transactionDate);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(transactionDate, result.TransactionDate.DateTime);
@@ -256,7 +256,7 @@ public class CreateTests
             Date: DateTime.UtcNow);
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -283,7 +283,7 @@ public class CreateTests
             Date: DateTime.UtcNow);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert - 0 > 0 is false, so TransactionType should be Debit
         Assert.Equal(TransactionType.Debit, result.TransactionType);

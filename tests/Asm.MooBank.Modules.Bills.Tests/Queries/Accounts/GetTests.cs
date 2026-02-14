@@ -24,7 +24,7 @@ public class GetTests
         var query = new Get(accountId);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -54,7 +54,7 @@ public class GetTests
         var query = new Get(accountId);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(new DateOnly(2024, 1, 15), result.FirstBill);
@@ -73,7 +73,7 @@ public class GetTests
         var query = new Get(accountId);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Null(result.FirstBill);
@@ -97,7 +97,7 @@ public class GetTests
         var query = new Get(targetId);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(targetId, result.Id);
@@ -116,7 +116,7 @@ public class GetTests
         var query = new Get(Guid.NewGuid());
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(query, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(query, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -129,6 +129,6 @@ public class GetTests
         var query = new Get(Guid.NewGuid());
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(query, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(query, TestContext.Current.CancellationToken).AsTask());
     }
 }

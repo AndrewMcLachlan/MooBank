@@ -38,7 +38,7 @@ public class CreateTests
         var command = new Create(instrumentId, "WOOLWORTHS", "Grocery store", []);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(instrument.Rules);
@@ -68,7 +68,7 @@ public class CreateTests
         var command = new Create(instrumentId, "WOOLWORTHS", "Grocery store", []);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -99,7 +99,7 @@ public class CreateTests
         var command = new Create(instrumentId, "WOOLWORTHS", "Grocery store", []);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -131,7 +131,7 @@ public class CreateTests
         var command = new Create(instrumentId, "WOOLWORTHS", "Grocery store", tags);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, instrument.Rules.First().Tags.Count);
@@ -161,7 +161,7 @@ public class CreateTests
         var command = new Create(instrumentId, "WOOLWORTHS", "Grocery store", tags);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.TagRepositoryMock.Verify(r => r.Get(It.Is<IEnumerable<int>>(ids => ids.Count() == 2), It.IsAny<CancellationToken>()), Times.Once);
@@ -190,7 +190,7 @@ public class CreateTests
         var command = new Create(instrumentId, "WOOLWORTHS", null, []);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Null(result.Description);
@@ -214,6 +214,6 @@ public class CreateTests
         var command = new Create(instrumentId, "WOOLWORTHS", "Description", []);
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 }

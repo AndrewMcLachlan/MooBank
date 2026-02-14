@@ -39,7 +39,7 @@ public class GetPlanTests
         var query = new GetPlan(planId);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -71,7 +71,7 @@ public class GetPlanTests
         var query = new GetPlan(planId);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(startDate, result.StartDate);
@@ -100,7 +100,7 @@ public class GetPlanTests
         var query = new GetPlan(planId);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(StartingBalanceMode.ManualAmount, result.StartingBalanceMode);
@@ -125,7 +125,7 @@ public class GetPlanTests
         var query = new GetPlan(planId);
 
         // Act
-        await handler.Handle(query, CancellationToken.None);
+        await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.SecurityMock.Verify(s => s.AssertFamilyPermission(familyId), Times.Once);
@@ -149,7 +149,7 @@ public class GetPlanTests
         var query = new GetPlan(planId);
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(query, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(query, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -166,7 +166,7 @@ public class GetPlanTests
         var query = new GetPlan(nonExistentPlanId);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAnyAsync<Exception>(() => handler.Handle(query, CancellationToken.None).AsTask());
+        var exception = await Assert.ThrowsAnyAsync<Exception>(() => handler.Handle(query, TestContext.Current.CancellationToken).AsTask());
         Assert.True(
             exception is InvalidOperationException ||
             (exception.InnerException is InvalidOperationException),
@@ -199,7 +199,7 @@ public class GetPlanTests
         var query = new GetPlan(planId);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, result.PlannedItems.Count());

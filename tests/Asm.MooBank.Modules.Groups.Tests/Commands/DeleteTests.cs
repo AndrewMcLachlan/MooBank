@@ -34,7 +34,7 @@ public class DeleteTests
         var command = new Delete(groupId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.GroupRepositoryMock.Verify(r => r.Delete(group), Times.Once);
@@ -59,7 +59,7 @@ public class DeleteTests
         var command = new Delete(groupId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -84,7 +84,7 @@ public class DeleteTests
         var command = new Delete(groupId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.SecurityMock.Verify(s => s.AssertGroupPermission(group), Times.Once);
@@ -113,7 +113,7 @@ public class DeleteTests
         var command = new Delete(groupId);
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -141,7 +141,7 @@ public class DeleteTests
         // Act
         try
         {
-            await handler.Handle(command, CancellationToken.None);
+            await handler.Handle(command, TestContext.Current.CancellationToken);
         }
         catch (NotAuthorisedException)
         {

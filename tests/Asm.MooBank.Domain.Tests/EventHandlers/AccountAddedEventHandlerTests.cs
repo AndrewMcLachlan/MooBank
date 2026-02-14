@@ -54,7 +54,7 @@ public class AccountAddedEventHandlerTests
         var domainEvent = new AccountAddedEvent(account, openingBalance, openedDate);
 
         // Act
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
 
         // Assert
         _mockRepository.Verify(r => r.Add(It.IsAny<DomainTransaction>()), Times.Once);
@@ -76,7 +76,7 @@ public class AccountAddedEventHandlerTests
         var domainEvent = new AccountAddedEvent(account, openingBalance, openedDate);
 
         // Act
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
 
         // Assert
         _mockRepository.Verify(r => r.Add(It.IsAny<DomainTransaction>()), Times.Once);
@@ -98,7 +98,7 @@ public class AccountAddedEventHandlerTests
         var domainEvent = new AccountAddedEvent(account, openingBalance, openedDate);
 
         // Act
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
 
         // Assert
         _mockRepository.Verify(r => r.Add(It.IsAny<DomainTransaction>()), Times.Never);
@@ -127,7 +127,7 @@ public class AccountAddedEventHandlerTests
             .Callback<DomainTransaction>(t => capturedDomainTransaction = t);
 
         // Act
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedDomainTransaction);
@@ -153,7 +153,7 @@ public class AccountAddedEventHandlerTests
             .Callback<DomainTransaction>(t => capturedDomainTransaction = t);
 
         // Act
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedDomainTransaction);
@@ -179,7 +179,7 @@ public class AccountAddedEventHandlerTests
             .Callback<DomainTransaction>(t => capturedDomainTransaction = t);
 
         // Act
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedDomainTransaction);
@@ -205,7 +205,7 @@ public class AccountAddedEventHandlerTests
             .Callback<DomainTransaction>(t => capturedDomainTransaction = t);
 
         // Act
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedDomainTransaction);
@@ -231,7 +231,7 @@ public class AccountAddedEventHandlerTests
             .Callback<DomainTransaction>(t => capturedDomainTransaction = t);
 
         // Act
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedDomainTransaction);

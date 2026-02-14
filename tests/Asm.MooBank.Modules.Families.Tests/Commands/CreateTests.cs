@@ -31,7 +31,7 @@ public class CreateTests
         var command = new Create("New Family");
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -60,7 +60,7 @@ public class CreateTests
         var command = new Create("New Family");
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.FamilyRepositoryMock.Verify(r => r.Add(It.IsAny<DomainFamily>()), Times.Once);
@@ -84,7 +84,7 @@ public class CreateTests
         var command = new Create("New Family");
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -106,7 +106,7 @@ public class CreateTests
         var command = new Create("New Family");
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.SecurityMock.Verify(s => s.AssertAdministrator(It.IsAny<CancellationToken>()), Times.Once);
@@ -128,7 +128,7 @@ public class CreateTests
         var command = new Create("New Family");
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -149,7 +149,7 @@ public class CreateTests
         // Act
         try
         {
-            await handler.Handle(command, CancellationToken.None);
+            await handler.Handle(command, TestContext.Current.CancellationToken);
         }
         catch (NotAuthorisedException)
         {

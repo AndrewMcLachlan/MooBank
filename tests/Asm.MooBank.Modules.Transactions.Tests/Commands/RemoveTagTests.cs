@@ -37,7 +37,7 @@ public class RemoveTagTests
         var command = new RemoveTag(instrumentId, transactionId, tagId);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -66,7 +66,7 @@ public class RemoveTagTests
         var command = new RemoveTag(instrumentId, transactionId, tagId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -95,7 +95,7 @@ public class RemoveTagTests
         var command = new RemoveTag(instrumentId, transactionId, nonExistentTagId);
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -123,7 +123,7 @@ public class RemoveTagTests
         // Act
         try
         {
-            await handler.Handle(command, CancellationToken.None);
+            await handler.Handle(command, TestContext.Current.CancellationToken);
         }
         catch (NotFoundException)
         {
@@ -155,6 +155,6 @@ public class RemoveTagTests
         var command = new RemoveTag(instrumentId, transactionId, tagId);
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 }

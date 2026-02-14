@@ -32,7 +32,7 @@ public class GetTests
         var query = new Get(2024);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -58,7 +58,7 @@ public class GetTests
         var query = new Get(2024);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -88,7 +88,7 @@ public class GetTests
         var query = new Get(2024);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -110,7 +110,7 @@ public class GetTests
         var query = new Get(2024);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -141,7 +141,7 @@ public class GetTests
         var query = new Get(2024);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.CommandDispatcherMock.Verify(d => d.Dispatch(It.IsAny<Create>(), It.IsAny<CancellationToken>()), Times.Once);
@@ -163,7 +163,7 @@ public class GetTests
         var query = new Get(2024);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);

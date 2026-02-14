@@ -36,7 +36,7 @@ public class RemoveTagTests
         var command = new RemoveTag(instrumentId, ruleId, tagId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(rule.Tags);
@@ -64,7 +64,7 @@ public class RemoveTagTests
         var command = new RemoveTag(instrumentId, ruleId, tagId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -90,7 +90,7 @@ public class RemoveTagTests
         var command = new RemoveTag(instrumentId, nonExistentRuleId, tagId);
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -115,7 +115,7 @@ public class RemoveTagTests
         var command = new RemoveTag(instrumentId, ruleId, nonExistentTagId);
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -141,7 +141,7 @@ public class RemoveTagTests
         var command = new RemoveTag(instrumentId, ruleId, 2);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, rule.Tags.Count);
@@ -172,7 +172,7 @@ public class RemoveTagTests
         var command = new RemoveTag(instrumentId, ruleId, tagId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(rule.Tags);

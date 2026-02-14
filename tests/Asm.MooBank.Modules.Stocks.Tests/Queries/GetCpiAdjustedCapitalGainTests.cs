@@ -44,7 +44,7 @@ public class GetCpiAdjustedCapitalGainTests
         var query = new GetCpiAdjustedCapitalGain(instrumentId);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         // CurrentValue (1500) - Investment (10 * 100 = 1000) = 500
@@ -84,7 +84,7 @@ public class GetCpiAdjustedCapitalGainTests
         var query = new GetCpiAdjustedCapitalGain(instrumentId);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         // CurrentValue (2000) - TotalInvestment (10*100 + 5*110 = 1550) = 450
@@ -123,7 +123,7 @@ public class GetCpiAdjustedCapitalGainTests
         var query = new GetCpiAdjustedCapitalGain(instrumentId);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         // CurrentValue (700) - AdjustedInvestment (10*100 - 3*120 = 1000 - 360 = 640) = 60
@@ -142,7 +142,7 @@ public class GetCpiAdjustedCapitalGainTests
         var query = new GetCpiAdjustedCapitalGain(instrumentId);
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(query, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(query, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -165,7 +165,7 @@ public class GetCpiAdjustedCapitalGainTests
         var query = new GetCpiAdjustedCapitalGain(instrumentId);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(currentValue, result);

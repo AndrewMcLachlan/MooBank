@@ -39,7 +39,7 @@ public class UpdateTests
         var command = new Update(updateUser);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -69,7 +69,7 @@ public class UpdateTests
         var command = new Update(updateUser);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal("EUR", existingUser.Currency);
@@ -99,7 +99,7 @@ public class UpdateTests
         var command = new Update(updateUser);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(newPrimaryAccountId, existingUser.PrimaryAccountId);
@@ -126,7 +126,7 @@ public class UpdateTests
         var command = new Update(updateUser);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -153,7 +153,7 @@ public class UpdateTests
         var command = new Update(updateUser);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.HybridCacheMock.Verify(
@@ -183,7 +183,7 @@ public class UpdateTests
         var command = new Update(updateUser);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(existingUser.Cards);
@@ -215,7 +215,7 @@ public class UpdateTests
         var command = new Update(updateUser);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(existingUser.Cards);
@@ -247,7 +247,7 @@ public class UpdateTests
         var command = new Update(updateUser);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(existingUser.Cards);
@@ -290,7 +290,7 @@ public class UpdateTests
         var command = new Update(updateUser);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, existingUser.Cards.Count);

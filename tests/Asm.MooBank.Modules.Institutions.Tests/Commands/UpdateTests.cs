@@ -32,7 +32,7 @@ public class UpdateTests
         var command = new Update(1, "New Name", InstitutionType.CreditUnion);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -57,7 +57,7 @@ public class UpdateTests
         var command = new Update(1, "Updated Name", InstitutionType.BuildingSociety);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal("Updated Name", existingInstitution.Name);
@@ -80,7 +80,7 @@ public class UpdateTests
         var command = new Update(1, "New Name", InstitutionType.CreditUnion);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -99,7 +99,7 @@ public class UpdateTests
         var command = new Update(1, "New Name", InstitutionType.Bank);
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -117,7 +117,7 @@ public class UpdateTests
         // Act
         try
         {
-            await handler.Handle(command, CancellationToken.None);
+            await handler.Handle(command, TestContext.Current.CancellationToken);
         }
         catch (NotAuthorisedException)
         {
@@ -144,6 +144,6 @@ public class UpdateTests
         var command = new Update(999, "New Name", InstitutionType.Bank);
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 }

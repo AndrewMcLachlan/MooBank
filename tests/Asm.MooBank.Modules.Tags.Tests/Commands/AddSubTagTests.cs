@@ -46,7 +46,7 @@ public class AddSubTagTests
         var command = new AddSubTag(1, 2);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -83,7 +83,7 @@ public class AddSubTagTests
         var command = new AddSubTag(1, 2);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -104,7 +104,7 @@ public class AddSubTagTests
         var command = new AddSubTag(1, 1);
 
         // Act & Assert
-        await Assert.ThrowsAsync<ExistsException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<ExistsException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -138,7 +138,7 @@ public class AddSubTagTests
         var command = new AddSubTag(1, 2);
 
         // Act & Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<InvalidOperationException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -176,7 +176,7 @@ public class AddSubTagTests
         var command = new AddSubTag(1, 2);
 
         // Act & Assert
-        await Assert.ThrowsAsync<ExistsException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<ExistsException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -214,7 +214,7 @@ public class AddSubTagTests
         var command = new AddSubTag(1, 2);
 
         // Act & Assert
-        await Assert.ThrowsAsync<ExistsException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<ExistsException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -247,7 +247,7 @@ public class AddSubTagTests
         var command = new AddSubTag(1, 2);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.SecurityMock.Verify(s => s.AssertFamilyPermission(familyId), Times.Once);

@@ -30,7 +30,7 @@ public class GetPlansTests
         var query = new GetPlans();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, result.Count());
@@ -46,7 +46,7 @@ public class GetPlansTests
         var query = new GetPlans();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(result);
@@ -70,7 +70,7 @@ public class GetPlansTests
         var query = new GetPlans();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, result.Count());
@@ -93,7 +93,7 @@ public class GetPlansTests
         var query = new GetPlans(IncludeArchived: false);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(result);
@@ -116,7 +116,7 @@ public class GetPlansTests
         var query = new GetPlans(IncludeArchived: true);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, result.Count());
@@ -143,7 +143,7 @@ public class GetPlansTests
         var query = new GetPlans();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var resultList = result.ToList();

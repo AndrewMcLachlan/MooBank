@@ -35,7 +35,7 @@ public class CreateTests
         var command = new Create(instrumentId, createModel);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(instrument.VirtualInstruments);
@@ -62,7 +62,7 @@ public class CreateTests
         var command = new Create(instrumentId, createModel);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -89,7 +89,7 @@ public class CreateTests
         var command = new Create(instrumentId, TestEntities.CreateVirtualInstrumentModel());
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -114,7 +114,7 @@ public class CreateTests
         var command = new Create(instrumentId, TestEntities.CreateVirtualInstrumentModel());
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal("USD", instrument.VirtualInstruments.First().Currency);
@@ -140,7 +140,7 @@ public class CreateTests
         var command = new Create(instrumentId, createModel);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(Controller.Virtual, instrument.VirtualInstruments.First().Controller);
@@ -171,7 +171,7 @@ public class CreateTests
         var command = new Create(instrumentId, createModel);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Null(result.Description);
@@ -197,7 +197,7 @@ public class CreateTests
         var command = new Create(instrumentId, createModel);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         // AddVirtualInstrument raises VirtualInstrumentAddedEvent on the parent instrument
@@ -223,6 +223,6 @@ public class CreateTests
         var command = new Create(instrumentId, createModel);
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 }

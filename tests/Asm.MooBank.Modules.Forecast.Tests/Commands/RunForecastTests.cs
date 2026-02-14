@@ -57,7 +57,7 @@ public class RunForecastTests
         var command = new RunForecast(planId);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -97,7 +97,7 @@ public class RunForecastTests
         var command = new RunForecast(planId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.ForecastEngineMock.Verify(
@@ -137,7 +137,7 @@ public class RunForecastTests
         var command = new RunForecast(planId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.SecurityMock.Verify(s => s.AssertFamilyPermission(familyId), Times.Once);
@@ -164,7 +164,7 @@ public class RunForecastTests
         var command = new RunForecast(planId);
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -184,7 +184,7 @@ public class RunForecastTests
         var command = new RunForecast(nonExistentPlanId);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAnyAsync<Exception>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        var exception = await Assert.ThrowsAnyAsync<Exception>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
         Assert.True(
             exception is InvalidOperationException ||
             (exception.InnerException is InvalidOperationException),
@@ -234,7 +234,7 @@ public class RunForecastTests
         var command = new RunForecast(planId);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(3, result.Months.Count());

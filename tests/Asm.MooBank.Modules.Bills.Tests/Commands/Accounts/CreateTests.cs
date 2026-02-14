@@ -36,7 +36,7 @@ public class CreateTests
         };
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -70,7 +70,7 @@ public class CreateTests
         };
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.AccountRepositoryMock.Verify(r => r.Add(It.IsAny<DomainAccount>()), Times.Once);
@@ -100,7 +100,7 @@ public class CreateTests
         };
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -128,7 +128,7 @@ public class CreateTests
         };
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedEntity);
@@ -158,7 +158,7 @@ public class CreateTests
         };
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedEntity);
@@ -193,7 +193,7 @@ public class CreateTests
         };
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(expectedType, result.UtilityType);
@@ -223,7 +223,7 @@ public class CreateTests
         };
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Null(capturedEntity!.InstitutionId);
@@ -252,7 +252,7 @@ public class CreateTests
         };
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal("AUD", capturedEntity!.Currency);

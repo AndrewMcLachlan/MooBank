@@ -24,7 +24,7 @@ public class RunTests
         var command = new Run(instrumentId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.RunRulesQueueMock.Verify(
@@ -47,7 +47,7 @@ public class RunTests
         var command = new Run(instrumentId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(instrumentId, capturedInstrumentId);
@@ -61,7 +61,7 @@ public class RunTests
         var command = new Run(Guid.NewGuid());
 
         // Act
-        var task = handler.Handle(command, CancellationToken.None);
+        var task = handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert - Handler returns completed ValueTask
         Assert.True(task.IsCompleted);
@@ -82,8 +82,8 @@ public class RunTests
         var handler = new RunHandler(_mocks.RunRulesQueueMock.Object);
 
         // Act
-        await handler.Handle(new Run(instrumentId1), CancellationToken.None);
-        await handler.Handle(new Run(instrumentId2), CancellationToken.None);
+        await handler.Handle(new Run(instrumentId1), TestContext.Current.CancellationToken);
+        await handler.Handle(new Run(instrumentId2), TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, queuedIds.Count);

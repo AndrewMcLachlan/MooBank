@@ -38,7 +38,7 @@ public class GetMonthlyBalancesReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -71,7 +71,7 @@ public class GetMonthlyBalancesReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(3, result.Balances.Count());
@@ -105,7 +105,7 @@ public class GetMonthlyBalancesReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var trendPoint = result.Balances.Single();
@@ -140,7 +140,7 @@ public class GetMonthlyBalancesReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var trendPoint = result.Balances.Single();
@@ -169,7 +169,7 @@ public class GetMonthlyBalancesReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(result.Balances);

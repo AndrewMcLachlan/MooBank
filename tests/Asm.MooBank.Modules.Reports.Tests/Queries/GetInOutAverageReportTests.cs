@@ -40,7 +40,7 @@ public class GetInOutAverageReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -79,7 +79,7 @@ public class GetInOutAverageReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2500m, result.Income);
@@ -115,7 +115,7 @@ public class GetInOutAverageReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(1300m, result.Outgoings);
@@ -144,7 +144,7 @@ public class GetInOutAverageReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0m, result.Income);
@@ -176,7 +176,7 @@ public class GetInOutAverageReportTests
         };
 
         // Act
-        await handler.Handle(query, CancellationToken.None);
+        await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.ReportRepositoryMock.Verify(

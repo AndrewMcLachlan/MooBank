@@ -52,7 +52,7 @@ public class VirtualInstrumentAddedEventHandlerTests
         var domainEvent = new VirtualInstrumentAddedEvent(virtualInstrument, 500m);
 
         // Act
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
 
         // Assert
         _mockRepository.Verify(r => r.Add(It.IsAny<DomainTransaction>()), Times.Once);
@@ -72,7 +72,7 @@ public class VirtualInstrumentAddedEventHandlerTests
         var domainEvent = new VirtualInstrumentAddedEvent(virtualInstrument, -200m);
 
         // Act
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
 
         // Assert
         _mockRepository.Verify(r => r.Add(It.IsAny<DomainTransaction>()), Times.Once);
@@ -92,7 +92,7 @@ public class VirtualInstrumentAddedEventHandlerTests
         var domainEvent = new VirtualInstrumentAddedEvent(virtualInstrument, 0m);
 
         // Act
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
 
         // Assert
         _mockRepository.Verify(r => r.Add(It.IsAny<DomainTransaction>()), Times.Never);
@@ -120,7 +120,7 @@ public class VirtualInstrumentAddedEventHandlerTests
             .Callback<DomainTransaction>(t => capturedTransaction = t);
 
         // Act
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedTransaction);
@@ -144,7 +144,7 @@ public class VirtualInstrumentAddedEventHandlerTests
             .Callback<DomainTransaction>(t => capturedTransaction = t);
 
         // Act
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedTransaction);
@@ -168,7 +168,7 @@ public class VirtualInstrumentAddedEventHandlerTests
             .Callback<DomainTransaction>(t => capturedTransaction = t);
 
         // Act
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedTransaction);
@@ -192,7 +192,7 @@ public class VirtualInstrumentAddedEventHandlerTests
             .Callback<DomainTransaction>(t => capturedTransaction = t);
 
         // Act
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedTransaction);
@@ -216,7 +216,7 @@ public class VirtualInstrumentAddedEventHandlerTests
             .Callback<DomainTransaction>(t => capturedTransaction = t);
 
         // Act
-        await _handler.Handle(domainEvent, CancellationToken.None);
+        await _handler.Handle(domainEvent, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedTransaction);

@@ -42,7 +42,7 @@ public class CreatePlannedItemTests
         var command = new CreatePlannedItem(planId, item);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(plan.PlannedItems);
@@ -73,7 +73,7 @@ public class CreatePlannedItemTests
         var command = new CreatePlannedItem(planId, item);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal("New Item", result.Name);
@@ -106,7 +106,7 @@ public class CreatePlannedItemTests
         var command = new CreatePlannedItem(planId, item);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -137,7 +137,7 @@ public class CreatePlannedItemTests
         var command = new CreatePlannedItem(planId, item);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.SecurityMock.Verify(s => s.AssertFamilyPermission(familyId), Times.Once);
@@ -168,7 +168,7 @@ public class CreatePlannedItemTests
         var command = new CreatePlannedItem(planId, item);
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -200,7 +200,7 @@ public class CreatePlannedItemTests
         var command = new CreatePlannedItem(planId, item);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(PlannedItemDateMode.FixedDate, result.DateMode);

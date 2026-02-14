@@ -30,7 +30,7 @@ public class GetListTests
         var query = new GetList();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, result.Count());
@@ -53,7 +53,7 @@ public class GetListTests
         var query = new GetList();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(result);
@@ -75,7 +75,7 @@ public class GetListTests
         var query = new GetList();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(result);
@@ -99,7 +99,7 @@ public class GetListTests
         var query = new GetList();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(3, result.Count());
@@ -117,7 +117,7 @@ public class GetListTests
         var query = new GetList();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(result);
@@ -140,7 +140,7 @@ public class GetListTests
         var query = new GetList();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var names = result.Select(r => r.Name).ToList();
@@ -165,7 +165,7 @@ public class GetListTests
         var query = new GetList();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var item = result.First();

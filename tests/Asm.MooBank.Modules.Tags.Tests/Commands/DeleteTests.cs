@@ -38,7 +38,7 @@ public class DeleteTests
         var command = new Delete(1);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.TagRepositoryMock.Verify(r => r.Delete(existingTag), Times.Once);
@@ -67,7 +67,7 @@ public class DeleteTests
         var command = new Delete(1);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -96,7 +96,7 @@ public class DeleteTests
         var command = new Delete(1);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.SecurityMock.Verify(s => s.AssertFamilyPermission(familyId), Times.Once);
@@ -131,7 +131,7 @@ public class DeleteTests
         var command = new Delete(1);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, callOrder.Count);

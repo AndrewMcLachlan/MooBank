@@ -47,7 +47,7 @@ public class ForecastEngineTests
             _mocks.User);
 
         // Act
-        var result = await engine.Calculate(plan, CancellationToken.None);
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -78,7 +78,7 @@ public class ForecastEngineTests
             _mocks.User);
 
         // Act
-        var result = await engine.Calculate(plan, CancellationToken.None);
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert
         var firstMonth = result.Months.First();
@@ -119,7 +119,7 @@ public class ForecastEngineTests
             _mocks.User);
 
         // Act
-        var result = await engine.Calculate(plan, CancellationToken.None);
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert
         var firstMonth = result.Months.First();
@@ -180,7 +180,7 @@ public class ForecastEngineTests
             _mocks.User);
 
         // Act
-        var result = await engine.Calculate(plan, CancellationToken.None);
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert
         var firstMonth = result.Months.First();
@@ -227,7 +227,7 @@ public class ForecastEngineTests
             _mocks.User);
 
         // Act
-        var result = await engine.Calculate(plan, CancellationToken.None);
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert
         var firstMonth = result.Months.First();
@@ -274,7 +274,7 @@ public class ForecastEngineTests
             _mocks.User);
 
         // Act
-        var result = await engine.Calculate(plan, CancellationToken.None);
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert
         var firstMonth = result.Months.First();
@@ -323,7 +323,7 @@ public class ForecastEngineTests
             _mocks.User);
 
         // Act
-        var result = await engine.Calculate(plan, CancellationToken.None);
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(3, result.Months.Count());
@@ -372,7 +372,7 @@ public class ForecastEngineTests
             _mocks.User);
 
         // Act
-        var result = await engine.Calculate(plan, CancellationToken.None);
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(3, result.Months.Count());
@@ -421,7 +421,7 @@ public class ForecastEngineTests
             _mocks.User);
 
         // Act
-        var result = await engine.Calculate(plan, CancellationToken.None);
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert
         var months = result.Months.ToList();
@@ -470,7 +470,7 @@ public class ForecastEngineTests
             _mocks.User);
 
         // Act
-        var result = await engine.Calculate(plan, CancellationToken.None);
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert
         var firstMonth = result.Months.First();
@@ -517,7 +517,7 @@ public class ForecastEngineTests
             _mocks.User);
 
         // Act
-        var result = await engine.Calculate(plan, CancellationToken.None);
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(new DateOnly(2024, 2, 1), result.Summary.LowestBalanceMonth);
@@ -565,7 +565,7 @@ public class ForecastEngineTests
             _mocks.User);
 
         // Act
-        var result = await engine.Calculate(plan, CancellationToken.None);
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert
         // Month 1: 1000 + 500 - 2000 = -500 (below zero)
@@ -598,7 +598,7 @@ public class ForecastEngineTests
             _mocks.User);
 
         // Act
-        var result = await engine.Calculate(plan, CancellationToken.None);
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(15000m, result.Summary.TotalIncome); // 5000 * 3 months
@@ -631,7 +631,7 @@ public class ForecastEngineTests
             _mocks.User);
 
         // Act
-        var result = await engine.Calculate(plan, CancellationToken.None);
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(result.Months);
@@ -674,7 +674,7 @@ public class ForecastEngineTests
             _mocks.User);
 
         // Act
-        var result = await engine.Calculate(plan, CancellationToken.None);
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -740,7 +740,7 @@ public class ForecastEngineTests
             _mocks.User);
 
         // Act
-        var result = await engine.Calculate(plan, CancellationToken.None);
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert
         // Starting balance should include both accounts

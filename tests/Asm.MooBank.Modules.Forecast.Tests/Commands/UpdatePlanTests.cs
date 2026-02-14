@@ -54,7 +54,7 @@ public class UpdatePlanTests
         var command = new UpdatePlan(planId, updateModel);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal("New Name", result.Name);
@@ -100,7 +100,7 @@ public class UpdatePlanTests
         var command = new UpdatePlan(planId, updateModel);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(newStartDate, result.StartDate);
@@ -147,7 +147,7 @@ public class UpdatePlanTests
         var command = new UpdatePlan(planId, updateModel);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(StartingBalanceMode.CalculatedCurrent, result.StartingBalanceMode);
@@ -200,7 +200,7 @@ public class UpdatePlanTests
         var command = new UpdatePlan(planId, updateModel);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(existingPlan.IncomeStrategySerialized);
@@ -242,7 +242,7 @@ public class UpdatePlanTests
         var command = new UpdatePlan(planId, updateModel);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -281,7 +281,7 @@ public class UpdatePlanTests
         var command = new UpdatePlan(planId, updateModel);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.SecurityMock.Verify(s => s.AssertFamilyPermission(familyId), Times.Once);
@@ -320,7 +320,7 @@ public class UpdatePlanTests
         var command = new UpdatePlan(planId, updateModel);
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -358,7 +358,7 @@ public class UpdatePlanTests
         var command = new UpdatePlan(planId, updateModel);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(existingPlan.UpdatedUtc > originalTime);

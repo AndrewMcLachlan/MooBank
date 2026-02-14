@@ -33,7 +33,7 @@ public class GetByTagReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -68,7 +68,7 @@ public class GetByTagReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var tagsList = result.Tags.ToList();
@@ -100,7 +100,7 @@ public class GetByTagReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var tagsList = result.Tags.ToList();
@@ -133,7 +133,7 @@ public class GetByTagReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var untagged = result.Tags.FirstOrDefault(t => t.TagName == "Untagged");
@@ -165,7 +165,7 @@ public class GetByTagReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var untagged = result.Tags.FirstOrDefault(t => t.TagName == "Untagged");
@@ -196,7 +196,7 @@ public class GetByTagReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var groceriesTag = result.Tags.FirstOrDefault(t => t.TagName == "Groceries");
@@ -235,7 +235,7 @@ public class GetByTagReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var tagsList = result.Tags.ToList();
@@ -268,7 +268,7 @@ public class GetByTagReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var inRangeTag = result.Tags.FirstOrDefault(t => t.TagName == "InRange");
@@ -301,7 +301,7 @@ public class GetByTagReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var testTag = result.Tags.FirstOrDefault(t => t.TagName == "TestTag");
@@ -333,7 +333,7 @@ public class GetByTagReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var testTag = result.Tags.FirstOrDefault(t => t.TagName == "TestTag");
@@ -365,7 +365,7 @@ public class GetByTagReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var testTag = result.Tags.FirstOrDefault(t => t.TagName == "TestTag");
@@ -397,7 +397,7 @@ public class GetByTagReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var testTag = result.Tags.FirstOrDefault(t => t.TagName == "TestTag");
@@ -434,7 +434,7 @@ public class GetByTagReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert - Common tag should sum both transactions (100 + 50 = 150)
         var commonTag = result.Tags.FirstOrDefault(t => t.TagName == "Common");
@@ -476,7 +476,7 @@ public class GetByTagReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var testTag = result.Tags.FirstOrDefault(t => t.TagName == "TestTag");
@@ -509,7 +509,7 @@ public class GetByTagReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var testTag = result.Tags.FirstOrDefault(t => t.TagName == "TestTag");
@@ -542,7 +542,7 @@ public class GetByTagReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert - Should include both old and recent transactions
         var testTag = result.Tags.FirstOrDefault(t => t.TagName == "OldTag");
@@ -574,7 +574,7 @@ public class GetByTagReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert - GrossAmount should be positive (absolute value)
         var testTag = result.Tags.FirstOrDefault(t => t.TagName == "TestTag");
@@ -606,7 +606,7 @@ public class GetByTagReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var zeroTag = result.Tags.FirstOrDefault(t => t.TagName == "ZeroTag");
@@ -641,7 +641,7 @@ public class GetByTagReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert - Both tags should appear with transaction net amount
         var split1Tag = result.Tags.FirstOrDefault(t => t.TagName == "Split1Tag");
@@ -674,7 +674,7 @@ public class GetByTagReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert - Should have 21 tags (20 + Untagged)
         Assert.Equal(21, result.Tags.Count());
@@ -712,7 +712,7 @@ public class GetByTagReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert - Should have one entry for Recurring with total 500
         var recurringTags = result.Tags.Where(t => t.TagName == "Recurring").ToList();

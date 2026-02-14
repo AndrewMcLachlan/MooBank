@@ -55,7 +55,7 @@ public class UpdatePlannedItemTests
         var command = new UpdatePlannedItem(planId, itemId, updateModel);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal("New Name", result.Name);
@@ -98,7 +98,7 @@ public class UpdatePlannedItemTests
         var command = new UpdatePlannedItem(planId, itemId, updateModel);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(500m, result.Amount);
@@ -141,7 +141,7 @@ public class UpdatePlannedItemTests
         var command = new UpdatePlannedItem(planId, itemId, updateModel);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(PlannedItemType.Income, result.ItemType);
@@ -185,7 +185,7 @@ public class UpdatePlannedItemTests
         var command = new UpdatePlannedItem(planId, itemId, updateModel);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(PlannedItemDateMode.FixedDate, existingItem.DateMode);
@@ -235,7 +235,7 @@ public class UpdatePlannedItemTests
         var command = new UpdatePlannedItem(planId, itemId, updateModel);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(PlannedItemDateMode.Schedule, existingItem.DateMode);
@@ -288,7 +288,7 @@ public class UpdatePlannedItemTests
         var command = new UpdatePlannedItem(planId, itemId, updateModel);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(PlannedItemDateMode.FlexibleWindow, existingItem.DateMode);
@@ -336,7 +336,7 @@ public class UpdatePlannedItemTests
         var command = new UpdatePlannedItem(planId, itemId, updateModel);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result.IsIncluded);
@@ -379,7 +379,7 @@ public class UpdatePlannedItemTests
         var command = new UpdatePlannedItem(planId, itemId, updateModel);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -422,7 +422,7 @@ public class UpdatePlannedItemTests
         var command = new UpdatePlannedItem(planId, nonExistentItemId, updateModel);
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -461,7 +461,7 @@ public class UpdatePlannedItemTests
         var command = new UpdatePlannedItem(planId, itemId, updateModel);
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -502,7 +502,7 @@ public class UpdatePlannedItemTests
         var command = new UpdatePlannedItem(planId, itemId, updateModel);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(plan.UpdatedUtc > originalTime);

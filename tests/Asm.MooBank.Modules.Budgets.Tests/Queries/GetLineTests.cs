@@ -31,7 +31,7 @@ public class GetLineTests
         var query = new GetLine(2024, lineId);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -60,7 +60,7 @@ public class GetLineTests
         var query = new GetLine(2024, lineId2);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(lineId2, result.Id);
@@ -85,7 +85,7 @@ public class GetLineTests
         var query = new GetLine(2024, nonExistentId);
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(query, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(query, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -105,7 +105,7 @@ public class GetLineTests
         var query = new GetLine(2023, lineId); // Wrong year
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(query, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(query, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -125,7 +125,7 @@ public class GetLineTests
         var query = new GetLine(2024, lineId);
 
         // Act
-        await handler.Handle(query, CancellationToken.None);
+        await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.SecurityMock.Verify(s => s.AssertBudgetLinePermission(lineId, It.IsAny<CancellationToken>()), Times.Once);
@@ -148,7 +148,7 @@ public class GetLineTests
         var query = new GetLine(2024, lineId);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(Models.BudgetLineType.Income, result.Type);

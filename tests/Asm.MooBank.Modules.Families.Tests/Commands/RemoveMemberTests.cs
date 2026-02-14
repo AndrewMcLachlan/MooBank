@@ -42,7 +42,7 @@ public class RemoveMemberTests
         var command = new RemoveMember(memberToRemove.Id);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotEqual(familyId, memberToRemove.FamilyId);
@@ -80,7 +80,7 @@ public class RemoveMemberTests
         var command = new RemoveMember(memberToRemove.Id);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.FamilyRepositoryMock.Verify(r => r.Add(It.IsAny<DomainFamily>()), Times.Once);
@@ -114,7 +114,7 @@ public class RemoveMemberTests
         var command = new RemoveMember(memberToRemove.Id);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -134,7 +134,7 @@ public class RemoveMemberTests
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(
-            () => handler.Handle(command, CancellationToken.None).AsTask());
+            () => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
         Assert.Contains("cannot remove yourself", exception.Message);
     }
 
@@ -163,7 +163,7 @@ public class RemoveMemberTests
         var command = new RemoveMember(Guid.NewGuid());
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -194,7 +194,7 @@ public class RemoveMemberTests
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(
-            () => handler.Handle(command, CancellationToken.None).AsTask());
+            () => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
         Assert.Contains("not a member of your family", exception.Message);
     }
 
@@ -224,7 +224,7 @@ public class RemoveMemberTests
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(
-            () => handler.Handle(command, CancellationToken.None).AsTask());
+            () => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
         Assert.Contains("last member", exception.Message);
     }
 
@@ -263,7 +263,7 @@ public class RemoveMemberTests
         var command = new RemoveMember(memberToRemove.Id);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedFamily);

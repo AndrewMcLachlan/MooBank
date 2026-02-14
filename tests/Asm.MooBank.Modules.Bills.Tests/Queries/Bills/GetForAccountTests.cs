@@ -22,7 +22,7 @@ public class GetForAccountTests
         var query = new GetForAccount(accountId);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(5, result.Total);
@@ -44,7 +44,7 @@ public class GetForAccountTests
         var query = new GetForAccount(accountId, PageSize: 10, PageNumber: 1);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(25, result.Total);
@@ -66,7 +66,7 @@ public class GetForAccountTests
         var query = new GetForAccount(accountId, PageSize: 10, PageNumber: 2);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(25, result.Total);
@@ -88,7 +88,7 @@ public class GetForAccountTests
         var query = new GetForAccount(accountId, PageSize: 10, PageNumber: 3);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(25, result.Total);
@@ -107,7 +107,7 @@ public class GetForAccountTests
         var query = new GetForAccount(accountId);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, result.Total);
@@ -125,7 +125,7 @@ public class GetForAccountTests
         var query = new GetForAccount(Guid.NewGuid());
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(query, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(query, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -143,7 +143,7 @@ public class GetForAccountTests
         var query = new GetForAccount(accountId); // Default: PageSize=20, PageNumber=1
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(30, result.Total);

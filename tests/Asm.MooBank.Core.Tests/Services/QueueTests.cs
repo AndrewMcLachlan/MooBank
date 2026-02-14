@@ -64,9 +64,9 @@ public class ImportTransactionsQueueTests : IDisposable
         _queue.QueueImport(id3, Guid.NewGuid(), user, []);
 
         // Act
-        var item1 = await _queue.DequeueAsync(CancellationToken.None);
-        var item2 = await _queue.DequeueAsync(CancellationToken.None);
-        var item3 = await _queue.DequeueAsync(CancellationToken.None);
+        var item1 = await _queue.DequeueAsync(TestContext.Current.CancellationToken);
+        var item2 = await _queue.DequeueAsync(TestContext.Current.CancellationToken);
+        var item3 = await _queue.DequeueAsync(TestContext.Current.CancellationToken);
 
         // Assert - FIFO order
         Assert.Equal(id1, item1.InstrumentId);
@@ -96,7 +96,7 @@ public class ImportTransactionsQueueTests : IDisposable
         _queue.QueueImport(instrumentId, accountId, user, fileData);
 
         // Act
-        var item = await _queue.DequeueAsync(CancellationToken.None);
+        var item = await _queue.DequeueAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(instrumentId, item.InstrumentId);
@@ -138,7 +138,7 @@ public class ImportTransactionsQueueTests : IDisposable
 
         // Act & Assert
         await Assert.ThrowsAsync<ObjectDisposedException>(() =>
-            queue.DequeueAsync(CancellationToken.None));
+            queue.DequeueAsync(TestContext.Current.CancellationToken));
     }
 
     #endregion
@@ -204,9 +204,9 @@ public class RunRulesQueueTests : IDisposable
         _queue.QueueRunRules(id3);
 
         // Act
-        var item1 = await _queue.DequeueAsync(CancellationToken.None);
-        var item2 = await _queue.DequeueAsync(CancellationToken.None);
-        var item3 = await _queue.DequeueAsync(CancellationToken.None);
+        var item1 = await _queue.DequeueAsync(TestContext.Current.CancellationToken);
+        var item2 = await _queue.DequeueAsync(TestContext.Current.CancellationToken);
+        var item3 = await _queue.DequeueAsync(TestContext.Current.CancellationToken);
 
         // Assert - FIFO order
         Assert.Equal(id1, item1);
@@ -232,7 +232,7 @@ public class RunRulesQueueTests : IDisposable
         _queue.QueueRunRules(accountId);
 
         // Act
-        var result = await _queue.DequeueAsync(CancellationToken.None);
+        var result = await _queue.DequeueAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(accountId, result);
@@ -270,7 +270,7 @@ public class RunRulesQueueTests : IDisposable
 
         // Act & Assert
         await Assert.ThrowsAsync<ObjectDisposedException>(() =>
-            queue.DequeueAsync(CancellationToken.None));
+            queue.DequeueAsync(TestContext.Current.CancellationToken));
     }
 
     #endregion
@@ -330,9 +330,9 @@ public class ReprocessTransactionsQueueTests : IDisposable
         _queue.QueueReprocessTransactions(inst3, Guid.NewGuid());
 
         // Act
-        var (instId1, _) = await _queue.DequeueAsync(CancellationToken.None);
-        var (instId2, _) = await _queue.DequeueAsync(CancellationToken.None);
-        var (instId3, _) = await _queue.DequeueAsync(CancellationToken.None);
+        var (instId1, _) = await _queue.DequeueAsync(TestContext.Current.CancellationToken);
+        var (instId2, _) = await _queue.DequeueAsync(TestContext.Current.CancellationToken);
+        var (instId3, _) = await _queue.DequeueAsync(TestContext.Current.CancellationToken);
 
         // Assert - FIFO order
         Assert.Equal(inst1, instId1);
@@ -359,7 +359,7 @@ public class ReprocessTransactionsQueueTests : IDisposable
         _queue.QueueReprocessTransactions(instrumentId, accountId);
 
         // Act
-        var (resultInstrumentId, resultAccountId) = await _queue.DequeueAsync(CancellationToken.None);
+        var (resultInstrumentId, resultAccountId) = await _queue.DequeueAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(instrumentId, resultInstrumentId);
@@ -399,7 +399,7 @@ public class ReprocessTransactionsQueueTests : IDisposable
 
         // Act & Assert
         await Assert.ThrowsAsync<ObjectDisposedException>(() =>
-            queue.DequeueAsync(CancellationToken.None));
+            queue.DequeueAsync(TestContext.Current.CancellationToken));
     }
 
     #endregion

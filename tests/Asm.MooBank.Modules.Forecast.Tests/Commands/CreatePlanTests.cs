@@ -57,7 +57,7 @@ public class CreatePlanTests
         var command = new CreatePlan(planModel);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -102,7 +102,7 @@ public class CreatePlanTests
         var command = new CreatePlan(planModel);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedPlan);
@@ -146,7 +146,7 @@ public class CreatePlanTests
         var command = new CreatePlan(planModel);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(startDate, result.StartDate);
@@ -186,7 +186,7 @@ public class CreatePlanTests
         var command = new CreatePlan(planModel);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -222,7 +222,7 @@ public class CreatePlanTests
         var command = new CreatePlan(planModel);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.ForecastRepositoryMock.Verify(r => r.Add(It.IsAny<DomainForecastPlan>()), Times.Once);
@@ -269,7 +269,7 @@ public class CreatePlanTests
         var command = new CreatePlan(planModel);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedPlan);
@@ -312,7 +312,7 @@ public class CreatePlanTests
         var command = new CreatePlan(planModel);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedPlan);
@@ -369,7 +369,7 @@ public class CreatePlanTests
         var command = new CreatePlan(planModel);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedPlan);
@@ -415,7 +415,7 @@ public class CreatePlanTests
         var command = new CreatePlan(planModel);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedPlan);
@@ -460,7 +460,7 @@ public class CreatePlanTests
         var command = new CreatePlan(planModel);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedPlan);
@@ -504,7 +504,7 @@ public class CreatePlanTests
         var command = new CreatePlan(planModel);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         var afterCreate = DateTime.UtcNow;
 
@@ -545,7 +545,7 @@ public class CreatePlanTests
         var command = new CreatePlan(planModel);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotEqual(Guid.Empty, result.Id);

@@ -33,7 +33,7 @@ public class GetTests
         var query = new Get(instrumentId, virtualInstrumentId);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -52,7 +52,7 @@ public class GetTests
         var query = new Get(nonExistentId, Guid.NewGuid());
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(query, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(query, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -69,7 +69,7 @@ public class GetTests
         var query = new Get(instrumentId, nonExistentVirtualId);
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(query, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(query, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -91,7 +91,7 @@ public class GetTests
         var query = new Get(instrumentId, virtualInstrumentId2);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal("Second", result.Name);
@@ -120,7 +120,7 @@ public class GetTests
         var query = new Get(instrumentId, virtualInstrumentId);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal("Emergency Fund", result.Name);
@@ -153,7 +153,7 @@ public class GetTests
         var query = new Get(instrumentId, virtualInstrumentId);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(100m, result.CurrentBalance);
@@ -175,7 +175,7 @@ public class GetTests
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(
-            () => handler.Handle(query, CancellationToken.None).AsTask());
+            () => handler.Handle(query, TestContext.Current.CancellationToken).AsTask());
         Assert.Contains("Virtual accounts are only available for institution accounts", exception.Message);
     }
 }

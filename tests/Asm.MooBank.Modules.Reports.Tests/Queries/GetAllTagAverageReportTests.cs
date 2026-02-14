@@ -43,7 +43,7 @@ public class GetAllTagAverageReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -79,7 +79,7 @@ public class GetAllTagAverageReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(3, result.Tags.Count());
@@ -119,7 +119,7 @@ public class GetAllTagAverageReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(3, result.Tags.Count());
@@ -150,7 +150,7 @@ public class GetAllTagAverageReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(result.Tags);
@@ -183,7 +183,7 @@ public class GetAllTagAverageReportTests
         };
 
         // Act
-        await handler.Handle(query, CancellationToken.None);
+        await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.ReportRepositoryMock.Verify(
@@ -216,7 +216,7 @@ public class GetAllTagAverageReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(TransactionFilterType.Credit, (TransactionFilterType)result.ReportType);
@@ -249,7 +249,7 @@ public class GetAllTagAverageReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(result.Tags);
@@ -289,7 +289,7 @@ public class GetAllTagAverageReportTests
         };
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var tags = result.Tags.ToList();

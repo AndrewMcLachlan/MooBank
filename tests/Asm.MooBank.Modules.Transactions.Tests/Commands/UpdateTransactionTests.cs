@@ -36,7 +36,7 @@ public class UpdateTransactionTests
         var command = new UpdateTransaction(instrumentId, transactionId, "Updated notes", splits, true);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -64,7 +64,7 @@ public class UpdateTransactionTests
         var command = new UpdateTransaction(instrumentId, transactionId, "New notes", splits, false);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal("New notes", existingTransaction.Notes);
@@ -91,7 +91,7 @@ public class UpdateTransactionTests
         var command = new UpdateTransaction(instrumentId, transactionId, null, splits, true);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(existingTransaction.ExcludeFromReporting);
@@ -118,7 +118,7 @@ public class UpdateTransactionTests
         var command = new UpdateTransaction(instrumentId, transactionId, "Notes", splits, false);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -145,7 +145,7 @@ public class UpdateTransactionTests
         var command = new UpdateTransaction(instrumentId, transactionId, null, splits, false);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Null(existingTransaction.Notes);
@@ -174,7 +174,7 @@ public class UpdateTransactionTests
         var command = new UpdateTransaction(instrumentId, transactionId, null, updatedSplits, false);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert - verify the transaction was updated (splits are updated internally)
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);

@@ -34,7 +34,7 @@ public class UpdateTests
         var command = new Update(instrumentId, 1, updateRule);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -61,7 +61,7 @@ public class UpdateTests
         var command = new Update(instrumentId, 1, updateRule);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal("NEW_VALUE", existingRule.Contains);
@@ -87,7 +87,7 @@ public class UpdateTests
         var command = new Update(instrumentId, 1, updateRule);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -118,7 +118,7 @@ public class UpdateTests
         var command = new Update(instrumentId, 1, updateRule);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Null(existingRule.Description);
@@ -143,6 +143,6 @@ public class UpdateTests
         var command = new Update(instrumentId, nonExistentRuleId, updateRule);
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 }

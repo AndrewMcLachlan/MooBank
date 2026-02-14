@@ -29,7 +29,7 @@ public class GetAllTests
         var query = new GetAll();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(3, result.Count());
@@ -49,7 +49,7 @@ public class GetAllTests
         var query = new GetAll();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(result);
@@ -75,7 +75,7 @@ public class GetAllTests
         var query = new GetAll();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var resultList = result.ToList();
@@ -101,7 +101,7 @@ public class GetAllTests
         var query = new GetAll();
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var familyResult = result.First();
@@ -123,7 +123,7 @@ public class GetAllTests
         var query = new GetAll();
 
         // Act
-        await handler.Handle(query, CancellationToken.None);
+        await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.SecurityMock.Verify(s => s.AssertAdministrator(It.IsAny<CancellationToken>()), Times.Once);

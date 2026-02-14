@@ -31,7 +31,7 @@ public class GetStockValueReportTests
         var query = new GetStockValueReport(TestInstrumentId, start, end);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -58,7 +58,7 @@ public class GetStockValueReportTests
         var query = new GetStockValueReport(TestInstrumentId, start, end);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(result.Points);
@@ -93,7 +93,7 @@ public class GetStockValueReportTests
         var query = new GetStockValueReport(TestInstrumentId, start, end);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotEmpty(result.Points);
@@ -126,7 +126,7 @@ public class GetStockValueReportTests
         var query = new GetStockValueReport(TestInstrumentId, start, end);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, result.Granularity);
@@ -150,7 +150,7 @@ public class GetStockValueReportTests
         var query = new GetStockValueReport(TestInstrumentId, start, end);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(1, result.Granularity);
@@ -181,7 +181,7 @@ public class GetStockValueReportTests
         var query = new GetStockValueReport(TestInstrumentId, start, end);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotEmpty(result.Points);
@@ -218,7 +218,7 @@ public class GetStockValueReportTests
         var query = new GetStockValueReport(TestInstrumentId, start, end);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(result.Points);
@@ -247,7 +247,7 @@ public class GetStockValueReportTests
         var query = new GetStockValueReport(TestInstrumentId, start, end);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotEmpty(result.Points);
@@ -285,7 +285,7 @@ public class GetStockValueReportTests
         var query = new GetStockValueReport(TestInstrumentId, start, end);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotEmpty(result.Points);
@@ -319,7 +319,7 @@ public class GetStockValueReportTests
         var query = new GetStockValueReport(TestInstrumentId, start, end);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotEmpty(result.Points);
@@ -353,7 +353,7 @@ public class GetStockValueReportTests
         var query = new GetStockValueReport(TestInstrumentId, start, end);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotEmpty(result.Points);
@@ -387,7 +387,7 @@ public class GetStockValueReportTests
         var query = new GetStockValueReport(TestInstrumentId, start, end);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotEmpty(result.Points);
@@ -431,7 +431,7 @@ public class GetStockValueReportTests
         var query = new GetStockValueReport(TestInstrumentId, start, end);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(5, result.Points.Count); // One point per day with granularity 1
@@ -462,7 +462,7 @@ public class GetStockValueReportTests
         var query = new GetStockValueReport(TestInstrumentId, singleDay, singleDay);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(result.Points);
@@ -487,7 +487,7 @@ public class GetStockValueReportTests
         var query = new GetStockValueReport(TestInstrumentId, start, end);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(3, result.Granularity);
@@ -519,7 +519,7 @@ public class GetStockValueReportTests
         var query = new GetStockValueReport(TestInstrumentId, start, end);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotEmpty(result.Points);
@@ -555,7 +555,7 @@ public class GetStockValueReportTests
         var query = new GetStockValueReport(TestInstrumentId, start, end);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         // Points before price is available should not be added (stockValue = 0)
@@ -593,7 +593,7 @@ public class GetStockValueReportTests
         var query = new GetStockValueReport(TestInstrumentId, start, end);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotEmpty(result.Points);
@@ -627,7 +627,7 @@ public class GetStockValueReportTests
         var query = new GetStockValueReport(TestInstrumentId, start, end);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         // Quantity is 0 after sell, so stockValue is 0, no points should be added
@@ -662,7 +662,7 @@ public class GetStockValueReportTests
         var query = new GetStockValueReport(TestInstrumentId, start, end);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotEmpty(result.Points);
@@ -697,7 +697,7 @@ public class GetStockValueReportTests
         var query = new GetStockValueReport(TestInstrumentId, start, end);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotEmpty(result.Points);
@@ -732,7 +732,7 @@ public class GetStockValueReportTests
         var query = new GetStockValueReport(TestInstrumentId, start, end);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotEmpty(result.Investment);
@@ -765,7 +765,7 @@ public class GetStockValueReportTests
         var query = new GetStockValueReport(TestInstrumentId, start, end);
 
         // Act
-        var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(result.Points.Count, result.Investment.Count);

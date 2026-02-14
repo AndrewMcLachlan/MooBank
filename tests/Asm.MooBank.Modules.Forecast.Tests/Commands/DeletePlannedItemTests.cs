@@ -41,7 +41,7 @@ public class DeletePlannedItemTests
         var command = new DeletePlannedItem(planId, itemId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(plan.PlannedItems);
@@ -73,7 +73,7 @@ public class DeletePlannedItemTests
         var command = new DeletePlannedItem(planId, itemId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -105,7 +105,7 @@ public class DeletePlannedItemTests
         var command = new DeletePlannedItem(planId, itemId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.SecurityMock.Verify(s => s.AssertFamilyPermission(familyId), Times.Once);
@@ -135,7 +135,7 @@ public class DeletePlannedItemTests
         var command = new DeletePlannedItem(planId, Guid.NewGuid());
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -162,7 +162,7 @@ public class DeletePlannedItemTests
         var command = new DeletePlannedItem(planId, Guid.NewGuid());
 
         // Act - Should not throw, RemovePlannedItem handles missing items gracefully
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -199,7 +199,7 @@ public class DeletePlannedItemTests
         var command = new DeletePlannedItem(planId, targetItemId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, plan.PlannedItems.Count);

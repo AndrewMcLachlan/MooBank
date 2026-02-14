@@ -40,7 +40,7 @@ public class UpdateBalanceTests
         var command = new UpdateBalance(instrumentId, virtualInstrumentId, 750m);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotEmpty(virtualInstrument.Events);
@@ -72,7 +72,7 @@ public class UpdateBalanceTests
         var command = new UpdateBalance(instrumentId, virtualInstrumentId, 200m);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -102,7 +102,7 @@ public class UpdateBalanceTests
         var command = new UpdateBalance(instrumentId, virtualInstrumentId, 300m);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -128,7 +128,7 @@ public class UpdateBalanceTests
         var command = new UpdateBalance(instrumentId, nonExistentId, 500m);
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -157,7 +157,7 @@ public class UpdateBalanceTests
         var command = new UpdateBalance(instrumentId, virtualInstrumentId, 250m);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(virtualInstrument.Events);
@@ -189,7 +189,7 @@ public class UpdateBalanceTests
         var command = new UpdateBalance(instrumentId, virtualInstrumentId, 200m);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(virtualInstrument.Events);
@@ -221,7 +221,7 @@ public class UpdateBalanceTests
         var command = new UpdateBalance(instrumentId, virtualInstrumentId, 100m);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert - UpdateBalance always raises event, even for 0 adjustment
         Assert.Single(virtualInstrument.Events);

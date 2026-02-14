@@ -25,7 +25,7 @@ public class ReprocessTests
         var command = new Reprocess(instrumentId, accountId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.ReprocessQueueMock.Verify(
@@ -49,7 +49,7 @@ public class ReprocessTests
         var command = new Reprocess(instrumentId, accountId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(instrumentId, capturedInstrumentId);
@@ -71,7 +71,7 @@ public class ReprocessTests
         var command = new Reprocess(instrumentId, accountId);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(accountId, capturedAccountId);
@@ -85,7 +85,7 @@ public class ReprocessTests
         var command = new Reprocess(Guid.NewGuid(), Guid.NewGuid());
 
         // Act
-        var task = handler.Handle(command, CancellationToken.None);
+        var task = handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert - Handler returns completed ValueTask
         Assert.True(task.IsCompleted);

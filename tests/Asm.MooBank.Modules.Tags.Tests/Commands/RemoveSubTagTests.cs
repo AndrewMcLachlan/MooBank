@@ -43,7 +43,7 @@ public class RemoveSubTagTests
         var command = new RemoveSubTag(1, 2);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.DoesNotContain(parentTag.Tags, t => t.Id == 2);
@@ -77,7 +77,7 @@ public class RemoveSubTagTests
         var command = new RemoveSubTag(1, 2);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -112,7 +112,7 @@ public class RemoveSubTagTests
         var command = new RemoveSubTag(1, 2);
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -143,7 +143,7 @@ public class RemoveSubTagTests
         var command = new RemoveSubTag(1, 2);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.SecurityMock.Verify(s => s.AssertFamilyPermission(familyId), Times.Once);
@@ -177,6 +177,6 @@ public class RemoveSubTagTests
         var command = new RemoveSubTag(1, 2);
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, CancellationToken.None).AsTask());
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 }

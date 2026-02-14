@@ -23,7 +23,7 @@ public class TagRepositoryTests : IDisposable
     {
         // Arrange
         var tag = TestEntities.CreateTag(id: 1, familyId: _user.FamilyId);
-        tag.Settings = null;
+        tag.Settings = null!;
 
         _context.Add(tag);
         _context.SaveChanges();
@@ -74,12 +74,12 @@ public class TagRepositoryTests : IDisposable
         parentTag.Tags.Add(childTag);
 
         _context.AddRange(parentTag, childTag);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var repository = CreateRepository();
 
         // Act
-        var result = await repository.Get(parentTag.Id, includeSubTags: true);
+        var result = await repository.Get(parentTag.Id, includeSubTags: true, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -98,7 +98,7 @@ public class TagRepositoryTests : IDisposable
         parentTag.Tags.Add(childTag);
 
         _context.AddRange(parentTag, childTag);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Clear tracker to ensure fresh query
         _context.ChangeTracker.Clear();
@@ -106,7 +106,7 @@ public class TagRepositoryTests : IDisposable
         var repository = CreateRepository();
 
         // Act
-        var result = await repository.Get(parentTag.Id, includeSubTags: false);
+        var result = await repository.Get(parentTag.Id, includeSubTags: false, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -120,7 +120,7 @@ public class TagRepositoryTests : IDisposable
         var repository = CreateRepository();
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => repository.Get(999));
+        await Assert.ThrowsAsync<NotFoundException>(() => repository.Get(999, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -132,12 +132,12 @@ public class TagRepositoryTests : IDisposable
         tag.Settings = TestEntities.CreateTagSettings(tag.Id);
 
         _context.Add(tag);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var repository = CreateRepository();
 
         // Act & Assert - tag exists but belongs to different family
-        await Assert.ThrowsAsync<NotFoundException>(() => repository.Get(tag.Id));
+        await Assert.ThrowsAsync<NotFoundException>(() => repository.Get(tag.Id, TestContext.Current.CancellationToken));
     }
 
     #endregion
@@ -153,12 +153,12 @@ public class TagRepositoryTests : IDisposable
         var otherFamilyTag = TestEntities.CreateTag(id: 3, name: "OtherTag", familyId: Guid.NewGuid());
 
         _context.AddRange(userTag1, userTag2, otherFamilyTag);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var repository = CreateRepository();
 
         // Act
-        var result = await repository.Get();
+        var result = await repository.Get(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, result.Count());
@@ -173,12 +173,12 @@ public class TagRepositoryTests : IDisposable
         var deletedTag = TestEntities.CreateTag(id: 2, name: "Deleted", familyId: _user.FamilyId, deleted: true);
 
         _context.AddRange(activeTag, deletedTag);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var repository = CreateRepository();
 
         // Act
-        var result = await repository.Get();
+        var result = await repository.Get(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(result);
@@ -217,12 +217,12 @@ public class TagRepositoryTests : IDisposable
         var tag3 = TestEntities.CreateTag(id: 3, name: "Tag3", familyId: _user.FamilyId);
 
         _context.AddRange(tag1, tag2, tag3);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var repository = CreateRepository();
 
         // Act
-        var result = await repository.Get([1, 3]);
+        var result = await repository.Get([1, 3], TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, result.Count());
@@ -238,12 +238,12 @@ public class TagRepositoryTests : IDisposable
         var otherTag = TestEntities.CreateTag(id: 2, name: "OtherTag", familyId: Guid.NewGuid());
 
         _context.AddRange(userTag, otherTag);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var repository = CreateRepository();
 
         // Act
-        var result = await repository.Get([1, 2]);
+        var result = await repository.Get([1, 2], TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(result);

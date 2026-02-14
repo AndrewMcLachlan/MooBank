@@ -42,7 +42,7 @@ public class CreateLineTests
         var command = new CreateLine(2024, budgetLine);
 
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -76,7 +76,7 @@ public class CreateLineTests
         var command = new CreateLine(2024, budgetLine);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.BudgetRepositoryMock.Verify(r => r.AddLine(It.IsAny<DomainBudgetLine>()), Times.Once);
@@ -108,7 +108,7 @@ public class CreateLineTests
         var command = new CreateLine(2024, budgetLine);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -139,7 +139,7 @@ public class CreateLineTests
         var command = new CreateLine(2024, budgetLine);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedLine);
@@ -171,7 +171,7 @@ public class CreateLineTests
         var command = new CreateLine(2024, budgetLine);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedLine);
@@ -203,7 +203,7 @@ public class CreateLineTests
         var command = new CreateLine(2024, budgetLine);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedLine);
@@ -236,7 +236,7 @@ public class CreateLineTests
         var command = new CreateLine(2024, budgetLine);
 
         // Act
-        await handler.Handle(command, CancellationToken.None);
+        await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(capturedLine);
