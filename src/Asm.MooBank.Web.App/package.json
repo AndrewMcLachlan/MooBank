@@ -52,6 +52,10 @@
     "workbox-routing": "^7.1.0",
     "workbox-strategies": "^7.0.0"
   },
+  "optionalDependencies": {
+    "@esbuild/linux-arm64": "0.27.3",
+    "@rollup/rollup-linux-arm64-gnu": "4.57.1"
+  },
   "overrides": {
     "react-chartjs-2": {
       "react": "^19.0.0",
