@@ -4,7 +4,7 @@ import { Tag } from "../../models";
 
 import { useTagsHierarchy } from "../../services";
 import { TagsPage } from "./TagsPage";
-import { Container } from "react-bootstrap";
+import { Container } from "@andrewmclachlan/moo-ds";
 import classNames from "classnames";
 
 export const Visualiser = () => {

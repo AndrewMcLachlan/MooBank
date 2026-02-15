@@ -3,7 +3,7 @@ import { DeleteIcon, EditColumn, Form, FormComboBox, SaveIcon, Section, SectionT
 import { CurrencySelector } from "components";
 import { Card, User } from "models/User";
 import React, { useEffect, useState } from "react";
-import { Button } from "react-bootstrap";
+import { Button } from "@andrewmclachlan/moo-ds";
 import { useForm } from "react-hook-form";
 import { useAccountsList, useUpdateUser, useUser } from "services";
 

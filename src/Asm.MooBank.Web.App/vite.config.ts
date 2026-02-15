@@ -58,7 +58,8 @@ export default defineConfig({
     resolve: {
         alias: {
             "~": fileURLToPath(new URL("node_modules/", import.meta.url)),
-        }
+        },
+        dedupe: ["react", "react-dom"],
     },
     build: {
         rollupOptions: {

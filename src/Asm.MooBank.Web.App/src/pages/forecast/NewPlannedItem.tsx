@@ -2,7 +2,7 @@ import { emptyGuid, SaveIcon } from "@andrewmclachlan/moo-ds";
 import { format } from "date-fns";
 import { PlannedItemDateMode, PlannedItemType, ScheduleFrequency } from "models";
 import { useState } from "react";
-import { Form } from "react-bootstrap";
+import { Form, Input } from "@andrewmclachlan/moo-ds";
 import { useCreatePlannedItem } from "services/ForecastService";
 
 interface NewPlannedItemProps {
@@ -60,7 +60,7 @@ export const NewPlannedItem: React.FC<NewPlannedItemProps> = ({ planId, itemType
     return (
         <tr className="new-planned-item">
             <td>
-                <Form.Control
+                <Input
                     type="text"
                     placeholder="Item name"
                     value={name}
@@ -68,7 +68,7 @@ export const NewPlannedItem: React.FC<NewPlannedItemProps> = ({ planId, itemType
                 />
             </td>
             <td>
-                <Form.Control
+                <Input
                     type="number"
                     min={0}
                     step={0.01}
@@ -77,7 +77,7 @@ export const NewPlannedItem: React.FC<NewPlannedItemProps> = ({ planId, itemType
                 />
             </td>
             <td>
-                <Form.Control
+                <Input
                     type="date"
                     value={dateMode === "FixedDate" ? fixedDate : scheduleAnchorDate}
                     onChange={(e) => {
@@ -93,7 +93,7 @@ export const NewPlannedItem: React.FC<NewPlannedItemProps> = ({ planId, itemType
                 {dateMode === "FixedDate" ? (
                     <span className="text-muted">-</span>
                 ) : (
-                    <Form.Control
+                    <Input
                         type="date"
                         placeholder="Ongoing"
                         value={scheduleEndDate}
@@ -102,7 +102,7 @@ export const NewPlannedItem: React.FC<NewPlannedItemProps> = ({ planId, itemType
                 )}
             </td>
             <td>
-                <Form.Select
+                <Input.Select
                     value={dateMode === "FixedDate" ? "FixedDate" : scheduleFrequency}
                     onChange={(e) => {
                         if (e.target.value === "FixedDate") {
@@ -118,10 +118,10 @@ export const NewPlannedItem: React.FC<NewPlannedItemProps> = ({ planId, itemType
                     <option value="Fortnightly">Fortnightly</option>
                     <option value="Monthly">Monthly</option>
                     <option value="Yearly">Yearly</option>
-                </Form.Select>
+                </Input.Select>
             </td>
             <td>
-                <Form.Control
+                <Input
                     type="text"
                     placeholder="Notes (optional)"
                     value={notes}

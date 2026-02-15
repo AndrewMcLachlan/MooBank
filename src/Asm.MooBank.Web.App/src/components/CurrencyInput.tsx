@@ -1,5 +1,5 @@
 import { Form, InputProps } from "@andrewmclachlan/moo-ds";
-import { InputGroup } from "react-bootstrap";
+import { InputGroup } from "@andrewmclachlan/moo-ds";
 
 export const CurrencyInput: React.FC<Omit<InputProps, "type">> = (props) => (
 

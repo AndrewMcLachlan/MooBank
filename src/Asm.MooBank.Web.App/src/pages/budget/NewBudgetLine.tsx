@@ -4,7 +4,7 @@ import { MonthSelector } from "components";
 import { ComboBox, SaveIcon } from "@andrewmclachlan/moo-ds";
 import { BudgetLineType, Tag } from "models";
 import { useEffect, useState } from "react";
-import { Form } from "react-bootstrap";
+import { Input } from "@andrewmclachlan/moo-ds";
 import { useTags } from "services";
 import { useCreateBudgetLine, useGetTagValue } from "services/BudgetService";
 
@@ -36,8 +36,8 @@ export const NewBudgetLine: React.FC<NewBudgetLineProps> = (props) => {
     return (
         <tr>
             <td><ComboBox<Tag> selectedItems={[tag]} onChange={(t: Tag[]) => setTag(t[0])} items={allTags.data ?? []} labelField={(t) => t?.name} valueField={(t) => t.id?.toString()} /></td>
-            <td><Form.Control value={notes} onChange={(e) => setNotes(e.currentTarget.value)} /></td>
-            <td><Form.Control type="number" min={0} value={amount} onChange={(e) => setAmount((e.currentTarget as any).valueAsNumber)} /></td>
+            <td><Input value={notes} onChange={(e) => setNotes(e.currentTarget.value)} /></td>
+            <td><Input type="number" min={0} value={amount} onChange={(e) => setAmount((e.currentTarget as any).valueAsNumber)} /></td>
             <MonthSelector as="td" value={month} onChange={setMonth} />
             <td className="row-action"><SaveIcon onClick={add} /></td>
         </tr>

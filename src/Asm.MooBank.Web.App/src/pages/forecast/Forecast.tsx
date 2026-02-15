@@ -1,6 +1,6 @@
 import { Section, SpinnerContainer } from "@andrewmclachlan/moo-ds";
 import { useEffect, useState } from "react";
-import { Spinner } from "react-bootstrap";
+import { Spinner } from "@andrewmclachlan/moo-ds";
 import { useForecastPlans, useForecastPlan, useRunForecast } from "services/ForecastService";
 import { useAccounts } from "services/AccountService";
 import { ForecastPage } from "./ForecastPage";

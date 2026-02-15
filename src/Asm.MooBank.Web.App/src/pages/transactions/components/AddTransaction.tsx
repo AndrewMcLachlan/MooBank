@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Modal } from "react-bootstrap";
+import { Button, Modal } from "@andrewmclachlan/moo-ds";
 import { useForm } from "react-hook-form";
 
 import { Form } from "@andrewmclachlan/moo-ds";
@@ -35,7 +35,7 @@ export const AddTransaction: React.FC<AddTransactionProps> = ({ show, onClose, o
     if (!account) return null;
 
     return (
-        <Modal show={show} onHide={() => onClose()} size="lg" centered backdrop="static">
+        <Modal show={show} onHide={() => onClose()} size="lg">
             <Modal.Header closeButton>
                 <Modal.Title>{balanceUpdate ? "Balance Update" : "Add Transaction"}</Modal.Title>
             </Modal.Header>

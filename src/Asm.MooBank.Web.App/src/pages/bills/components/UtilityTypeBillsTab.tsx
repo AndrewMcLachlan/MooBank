@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Table } from "react-bootstrap";
+import { Table } from "@andrewmclachlan/moo-ds";
 import { format, parseISO, subYears } from "date-fns";
 import { getNumberOfPages, Pagination, useLocalStorage } from "@andrewmclachlan/moo-ds";
 

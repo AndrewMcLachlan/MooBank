@@ -1,7 +1,7 @@
 import { Section, Tooltip } from "@andrewmclachlan/moo-ds";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect } from "react";
-import { Button, ButtonGroup, Col, Form } from "react-bootstrap";
+import { Button, ButtonGroup, Col, Form, Input } from "@andrewmclachlan/moo-ds";
 import { useDispatch, } from "react-redux";
 
 import { PeriodSelector, FormRow as Row, TagSelector } from "components";
@@ -24,7 +24,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
             <Row>
                 <Col className="description" lg={4} xl={5}>
                     <Form.Label htmlFor="filter-desc">Description</Form.Label><Tooltip id="filter-desc">Search for multiple terms by separating them with a comma</Tooltip>
-                    <Form.Control id="filter-desc" type="search" value={filterDescription} onChange={(e) => setFilterDescription(e.currentTarget.value)} placeholder="Contains..." />
+                    <Input id="filter-desc" type="search" value={filterDescription} onChange={(e) => setFilterDescription(e.currentTarget.value)} placeholder="Contains..." />
                 </Col>
                 <Col lg={4}>
                     <Form.Label htmlFor="filter-tags">Tags</Form.Label>
@@ -41,12 +41,12 @@ export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
             </Row>
             <PeriodSelector instant onChange={setPeriod} />
             <Row>
-                <Form.Group as={Col} lg={6} xl={4}>
-                    <Form.Switch id="filter-tagged" label="Only show transactions without tags" checked={filterTagged} onChange={(e) => setFilterTagged(e.currentTarget.checked)} />
-                </Form.Group>
-                <Form.Group as={Col} lg={6} xl={4}>
-                    <Form.Switch id="filter-netzero" label="Exclude fully offset transactions" checked={filterNetZero} onChange={(e) => setFilterNetZero(e.currentTarget.checked)} />
-                </Form.Group>
+                <Col lg={6} xl={4}>
+                    <Input.Switch id="filter-tagged" label="Only show transactions without tags" checked={filterTagged} onChange={(e) => setFilterTagged(e.currentTarget.checked)} />
+                </Col>
+                <Col lg={6} xl={4}>
+                    <Input.Switch id="filter-netzero" label="Exclude fully offset transactions" checked={filterNetZero} onChange={(e) => setFilterNetZero(e.currentTarget.checked)} />
+                </Col>
             </Row>
         </Section>
     );

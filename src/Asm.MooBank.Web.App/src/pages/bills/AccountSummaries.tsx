@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Nav, Tab } from "react-bootstrap";
+import { Nav, Tab } from "@andrewmclachlan/moo-ds";
 import { useNavigate } from "react-router";
 
 import { IconButton, Section } from "@andrewmclachlan/moo-ds";
@@ -40,17 +40,17 @@ export const BillAccountSummaries: React.FC = () => {
                     <IconButton onClick={() => navigate("/bills/accounts/create")} icon="plus">Add Account</IconButton>
                 </Section>
             ) : (
-                <Tab.Container activeKey={activeTab} onSelect={(k) => setActiveTab(k as UtilityType)}>
-                    <Nav variant="tabs">
+                <Tab.Container activeKey={activeTab} onSelect={(k) => setActiveTab(k as UtilityType)} >
+                    {/* <Nav variant="tabs">
                         {UtilityTypes.filter(type => availableTypes.includes(type)).map(type => (
                             <Nav.Item key={type}>
                                 <Nav.Link eventKey={type}>{type}</Nav.Link>
                             </Nav.Item>
                         ))}
-                    </Nav>
+                    </Nav> */}
                     <Tab.Content>
                         {UtilityTypes.filter(type => availableTypes.includes(type)).map(type => (
-                            <Tab.Pane key={type} eventKey={type}>
+                            <Tab.Pane key={type} eventKey={type} title={type}>
                                 <UtilityTypeBillsTab utilityType={type} />
                             </Tab.Pane>
                         ))}

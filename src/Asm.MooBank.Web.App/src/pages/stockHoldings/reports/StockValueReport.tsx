@@ -1,4 +1,4 @@
-import { Section } from "@andrewmclachlan/moo-ds";
+import { Input, Section } from "@andrewmclachlan/moo-ds";
 import { ChartData, Chart as ChartJS, registerables } from "chart.js";
 import chartTrendline from "chartjs-plugin-trendline";
 import React, { useState } from "react";
@@ -11,7 +11,6 @@ import { Period } from "helpers/dateFns";
 import { useStockValueReport } from "services";
 import { useChartColours } from "../../../helpers/chartColours";
 import { ReportsPage } from "./ReportsPage";
-import { FormCheck, FormGroup } from "react-bootstrap";
 
 ChartJS.register(...registerables);
 ChartJS.register(chartTrendline);
@@ -50,10 +49,10 @@ export const StockValueReport: React.FC = () => {
     return (
         <ReportsPage title="Value Trend">
             <Section>
-                <FormGroup>
+                <div>
                     <PeriodSelector onChange={setPeriod} instant />
-                    <FormCheck type="checkbox" label="Y Axis from 0" onChange={e => setYAxisFromZero(e.currentTarget.checked)} />
-                </FormGroup>
+                    <Input.Check type="checkbox" label="Y Axis from 0" onChange={e => setYAxisFromZero(e.currentTarget.checked)} />
+                </div>
             </Section>
             <Section className="report" header="Value Trend" headerSize={3}>
                 <Line id="inout" data={dataset} options={{

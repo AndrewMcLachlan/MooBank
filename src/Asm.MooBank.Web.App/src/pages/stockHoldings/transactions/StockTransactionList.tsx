@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { Table } from "react-bootstrap";
+import { Table } from "@andrewmclachlan/moo-ds";
 
 import { getNumberOfPages, Pagination } from "@andrewmclachlan/moo-ds";
 import { useStockTransactions } from "services";

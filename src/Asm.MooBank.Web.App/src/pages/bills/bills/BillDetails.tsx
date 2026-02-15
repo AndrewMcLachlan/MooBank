@@ -1,6 +1,6 @@
 import { format, parseISO } from "date-fns";
 import { Bill, BillAccount } from "models/bills";
-import { Offcanvas } from "react-bootstrap";
+import { Drawer } from "@andrewmclachlan/moo-ds";
 import { Section } from "@andrewmclachlan/moo-ds";
 import { getUnit } from "helpers";
 
@@ -19,13 +19,13 @@ export const BillDetails: React.FC<BillDetailsProps> = ({ account, bill, show, o
     if (!bill) return null;
 
     return (
-        <Offcanvas show={show} onHide={onHide} placement="end" className="bill-details">
-            <Offcanvas.Header closeButton>
-                <Offcanvas.Title>
+        <Drawer show={show} onHide={onHide} placement="end" className="bill-details">
+            <Drawer.Header closeButton>
+                
                     {bill.invoiceNumber ? `Bill #${bill.invoiceNumber}` : "Bill Details"}
-                </Offcanvas.Title>
-            </Offcanvas.Header>
-            <Offcanvas.Body>
+                
+            </Drawer.Header>
+            <Drawer.Body>
                 <Section header="Summary">
                     <div className="summary-row">
                         <span className="summary-label">Account</span>
@@ -101,8 +101,8 @@ export const BillDetails: React.FC<BillDetailsProps> = ({ account, bill, show, o
                         </div>
                     </Section>
                 )}
-            </Offcanvas.Body>
-        </Offcanvas>
+            </Drawer.Body>
+        </Drawer>
     );
 };
 

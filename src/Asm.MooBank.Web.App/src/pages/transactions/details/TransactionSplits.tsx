@@ -1,6 +1,6 @@
 import { Transaction, TransactionSplit } from "models";
 import React, { useEffect, useState } from "react";
-import { Col, Form, Row } from "react-bootstrap";
+import { Col, Form, Row } from "@andrewmclachlan/moo-ds";
 import { NewTransactionSplit } from "./NewTransactionSplit";
 import { TransactionSplit as TransactionSplitPanel } from "./TransactionSplit";
 

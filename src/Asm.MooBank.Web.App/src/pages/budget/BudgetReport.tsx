@@ -5,7 +5,7 @@ import chartTrendline from "chartjs-plugin-trendline";
 
 import { Section } from "@andrewmclachlan/moo-ds";
 import { useBudgetYear } from "hooks/useBudgetYear";
-import { Col, Form, Row } from "react-bootstrap";
+import { Col, Input, Row } from "@andrewmclachlan/moo-ds";
 import { useNavigate, useParams } from "react-router";
 import { useBudgetYears } from "services/BudgetService";
 import { BudgetPage } from "./BudgetPage";
@@ -62,11 +62,11 @@ export const BudgetReport: React.FC = () => {
             <Section>
                 <Row>
                     <Col>
-                        <Form.Select value={year} onChange={e => yearChange(Number(e.currentTarget.value))}>
+                        <Input.Select value={year} onChange={e => yearChange(Number(e.currentTarget.value))}>
                             {selectableYears.map((y) =>
                                 <option value={y} key={y}>{y}</option>
                             )}
-                        </Form.Select>
+                        </Input.Select>
                     </Col>
                 </Row>
             </Section>

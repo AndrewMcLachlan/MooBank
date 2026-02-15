@@ -1,5 +1,5 @@
 import React from "react";
-import { Col, Form } from "react-bootstrap";
+import { Col, Input } from "@andrewmclachlan/moo-ds";
 
 import { IconButton, SectionRow, useLocalStorage } from "@andrewmclachlan/moo-ds";
 
@@ -26,8 +26,8 @@ export const Transactions: React.FC = () => {
     if (!account) return null;
 
     let actions: React.ReactNode[] = [
-        <Form.Switch key="show-net" id="show-net-amount" checked={showNet} onChange={() => setShowNet(!showNet)} label="Show Net Amount" />,
-        <Form.Switch key="compact" id="compact-mode" checked={compactMode} onChange={() => setCompactMode(!compactMode)} label="Compact" />,
+        <Input.Switch key="show-net" id="show-net-amount" checked={showNet} onChange={() => setShowNet(!showNet)} label="Show Net Amount" />,
+        <Input.Switch key="compact" id="compact-mode" checked={compactMode} onChange={() => setCompactMode(!compactMode)} label="Compact" />,
     ];
 
     switch (account.controller) {

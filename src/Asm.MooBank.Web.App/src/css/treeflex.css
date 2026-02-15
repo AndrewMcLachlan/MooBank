@@ -2,7 +2,7 @@
     overflow: visible;
 
     .tf-nc {
-        border-color: var(--bs-body-color);
+        border-color: var(--body-color);
         border-width: 2px;
         border-radius: 15px;
         min-width: 100px;
@@ -26,7 +26,7 @@
 
     li {
         li:before {
-            border-color: var(--bs-body-color);
+            border-color: var(--body-color);
             border-width: 2px;
         }
 
@@ -36,7 +36,7 @@
             right: calc(50% - 0.09em);
         }
 
-        border-color: var(--bs-body-color);
+        border-color: var(--body-color);
         border-width: 2px;
     }
 }
@@ -45,7 +45,7 @@
 .tf-tree .tf-nc:before,
 .tf-tree .tf-node-content:after,
 .tf-tree .tf-node-content:before {
-    border-color: var(--bs-body-color);
+    border-color: var(--body-color);
     border-width: 2px;
 }
 

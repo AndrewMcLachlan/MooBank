@@ -21,7 +21,7 @@ paths:
 ### MooApp
 A set of custom packages for React development:
 
-- **@andrewmclachlan/moo-ds** - An opinionated component library based on Bootstrap and React-Bootstrap
+- **@andrewmclachlan/moo-ds** - An opinionated component library inspired by, but not dependent on, Bootstrap and React-Bootstrap
 - **@andrewmclachlan/moo-app** - Provides app-level components:
   - Application bootstrapper
   - Layout components

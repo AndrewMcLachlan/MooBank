@@ -1,5 +1,5 @@
 import React from "react";
-import { Spinner } from "react-bootstrap";
+import { Spinner } from "@andrewmclachlan/moo-ds";
 import { useNavigate } from "react-router";
 
 import { Icon, SectionTable } from "@andrewmclachlan/moo-ds";

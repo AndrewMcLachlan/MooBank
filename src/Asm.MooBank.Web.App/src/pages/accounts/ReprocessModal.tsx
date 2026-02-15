@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
-import Button from "react-bootstrap/Button";
 import { useState } from "react";
-import { Modal } from "react-bootstrap";
+import { Button, Modal } from "@andrewmclachlan/moo-ds";
 import { useAccount } from "components";
 import { LogicalAccount } from "models";
 import { useReprocessTransactions } from "services";
@@ -31,7 +30,7 @@ export const ReprocessModal: React.FC<ReprocessModalProps> = ({ show, instrument
     }
 
     return (
-        <Modal className="import" show={show} onHide={onClose} size="lg" centered>
+        <Modal className="import" show={show} onHide={onClose} size="lg">
             <Modal.Header closeButton>
                 <Modal.Title>Reprocess Imported Transactions</Modal.Title>
             </Modal.Header>

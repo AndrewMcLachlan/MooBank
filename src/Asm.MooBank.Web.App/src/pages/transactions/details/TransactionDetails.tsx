@@ -3,7 +3,7 @@ import { format } from "date-fns/format";
 import { parseISO } from "date-fns/parseISO";
 import { Transaction, TransactionSplit, getSplitTotal, isDebit } from "models";
 import React, { useEffect, useMemo, useState } from "react";
-import { Button, Col, Modal, OverlayTrigger, Popover, Row } from "react-bootstrap";
+import { Button, Col, Modal, OverlayTrigger, Popover, Row } from "@andrewmclachlan/moo-ds";
 
 import { ExtraInfo } from "./ExtraInfo";
 import { TransactionSplits } from "./TransactionSplits";
@@ -88,7 +88,7 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
             <Modal.Footer>
                 <Button variant="outline-primary" onClick={props.onHide}>Close</Button>
                 {invalidSplits &&
-                    <OverlayTrigger placement="top" overlay={<Popover><Popover.Body>The total of the splits must equal the transaction amount</Popover.Body></Popover>} >
+                    <OverlayTrigger placement="top" overlay={<Popover id="splits-popover"><Popover.Body>The total of the splits must equal the transaction amount</Popover.Body></Popover>} >
                         <div><Button variant="primary" disabled>Save</Button></div>
                     </OverlayTrigger>
                 }

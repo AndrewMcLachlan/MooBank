@@ -294,11 +294,11 @@ import { DeleteIcon, SaveIcon, EditColumn } from "@andrewmclachlan/moo-ds";
 Use React Bootstrap Form components:
 
 ```typescript
-import { Form, Button, Row, Col } from "react-bootstrap";
+import { Form, Button, Row, Col } from "@andrewmclachlan/moo-ds";
 
 <Form.Group>
     <Form.Label>Name</Form.Label>
-    <Form.Control
+    <Input
         type="text"
         value={name}
         onChange={(e) => setName(e.target.value)}

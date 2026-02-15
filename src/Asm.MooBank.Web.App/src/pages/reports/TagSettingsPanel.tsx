@@ -1,6 +1,6 @@
 import React from "react";
 import { Tag, TagSettings } from "models";
-import { Form } from "react-bootstrap";
+import { Input } from "@andrewmclachlan/moo-ds";
 
 export const TagSettingsPanel: React.FC<TagSettingsPanelProps> = ({ tag, onChange }) => {
 
@@ -13,7 +13,7 @@ export const TagSettingsPanel: React.FC<TagSettingsPanelProps> = ({ tag, onChang
     return (
         <>
             {tag.settings.applySmoothing &&
-                <Form.Switch label="Smooth results" onChange={(e) => settingChanged({ ...tag.settings, applySmoothing: e.currentTarget.checked })} />
+                <Input.Switch label="Smooth results" onChange={(e) => settingChanged({ ...tag.settings, applySmoothing: e.currentTarget.checked })} />
             }
         </>
     );

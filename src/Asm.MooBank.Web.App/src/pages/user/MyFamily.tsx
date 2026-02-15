@@ -2,7 +2,7 @@ import { Page } from "@andrewmclachlan/moo-app";
 import { DeleteIcon, Form, Section, SectionTable } from "@andrewmclachlan/moo-ds";
 import { Family } from "models";
 import React, { useEffect } from "react";
-import { Button } from "react-bootstrap";
+import { Button } from "@andrewmclachlan/moo-ds";
 import { useForm } from "react-hook-form";
 import { useMyFamily, useRemoveFamilyMember, useUpdateMyFamily, useUser } from "services";
 

@@ -5,7 +5,7 @@ import { StockTransactionList } from "./StockTransactionList";
 import { StockSummary } from "./StockSummary";
 import { StockHoldingPage } from "../StockHoldingPage";
 import { IconLinkButton, SectionRow } from "@andrewmclachlan/moo-ds";
-import { Col } from "react-bootstrap";
+import { Col } from "@andrewmclachlan/moo-ds";
 import { useStockHolding } from "../StockHoldingProvider";
 
 export const StockTransactions: React.FC = () => {

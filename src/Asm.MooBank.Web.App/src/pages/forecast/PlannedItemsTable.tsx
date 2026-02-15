@@ -2,7 +2,7 @@ import { SectionTable, DeleteIcon, EditColumn, useUpdatingState } from "@andrewm
 import { format, parseISO } from "date-fns";
 import { ForecastPlan, PlannedItem, ScheduleFrequency } from "models";
 import { useState } from "react";
-import { Form } from "react-bootstrap";
+import { Input } from "@andrewmclachlan/moo-ds";
 import { useDeletePlannedItem, useUpdatePlannedItem } from "services/ForecastService";
 import { NewPlannedItem } from "./NewPlannedItem";
 
@@ -227,8 +227,7 @@ const PlannedItemRow: React.FC<PlannedItemRowProps> = ({ planId, item: propItem 
             )}
             <td onClick={() => !isEditingFrequency && setIsEditingFrequency(true)}>
                 {isEditingFrequency ? (
-                    <Form.Select
-                        size="sm"
+                    <Input.Select
                         autoFocus
                         value={getFrequencyValue()}
                         onChange={(e) => handleFrequencyChange(e.target.value)}
@@ -239,7 +238,7 @@ const PlannedItemRow: React.FC<PlannedItemRowProps> = ({ planId, item: propItem 
                         <option value="Fortnightly">Fortnightly</option>
                         <option value="Monthly">Monthly</option>
                         <option value="Yearly">Yearly</option>
-                    </Form.Select>
+                    </Input.Select>
                 ) : (
                     <span className="clickable">{getFrequencyDisplay()}</span>
                 )}
