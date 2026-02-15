@@ -1,5 +1,5 @@
 import React from "react";
-import { Form } from "react-bootstrap";
+import { Form, Input } from "@andrewmclachlan/moo-ds";
 import { Section } from "@andrewmclachlan/moo-ds";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -44,7 +44,7 @@ export const BillFilterPanel: React.FC<BillFilterPanelProps> = ({ accounts, filt
             <div className="filter-row">
                 <div className="filter-field">
                     <Form.Label htmlFor="filter-start">From</Form.Label>
-                    <Form.Control
+                    <Input
                         id="filter-start"
                         type="date"
                         value={filter.startDate ?? ""}
@@ -53,7 +53,7 @@ export const BillFilterPanel: React.FC<BillFilterPanelProps> = ({ accounts, filt
                 </div>
                 <div className="filter-field">
                     <Form.Label htmlFor="filter-end">To</Form.Label>
-                    <Form.Control
+                    <Input
                         id="filter-end"
                         type="date"
                         value={filter.endDate ?? ""}
@@ -63,7 +63,7 @@ export const BillFilterPanel: React.FC<BillFilterPanelProps> = ({ accounts, filt
                 {accounts && accounts.length > 0 && (
                     <div className="filter-field">
                         <Form.Label htmlFor="filter-account">Account</Form.Label>
-                        <Form.Select
+                        <Input.Select
                             id="filter-account"
                             value={filter.accountId ?? ""}
                             onChange={(e) => handleAccountChange(e.target.value)}
@@ -74,7 +74,7 @@ export const BillFilterPanel: React.FC<BillFilterPanelProps> = ({ accounts, filt
                                     {account.name}
                                 </option>
                             ))}
-                        </Form.Select>
+                        </Input.Select>
                     </div>
                 )}
             </div>

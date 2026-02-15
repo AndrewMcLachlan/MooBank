@@ -14,9 +14,10 @@
   },
   "type": "module",
   "dependencies": {
-    "@andrewmclachlan/moo-app": "^3.0.1183",
-    "@andrewmclachlan/moo-ds": "^3.0.1183",
-    "@andrewmclachlan/moo-icons": "^3.0.1183",
+    "@andrewmclachlan/moo-app": "^4.0.16",
+    "@andrewmclachlan/moo-ds": "^4.0.16",
+    "@andrewmclachlan/moo-icons": "^4.0.16",
+    "@azure/msal-react": "^5.0.4",
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
     "@fortawesome/free-solid-svg-icons": "^7.1.0",
     "@fortawesome/react-fontawesome": "^3.2.0",
@@ -32,7 +33,6 @@
     "eslint-plugin-react": "^7.37.5",
     "md5": "^2.3.0",
     "react": "^19.2.4",
-    "react-bootstrap": "^2.10.10",
     "react-chartjs-2": "^5.3.1",
     "react-dev-utils": "^12.0.1",
     "react-dom": "^19.2.4",
@@ -52,6 +52,10 @@
     "workbox-routing": "^7.1.0",
     "workbox-strategies": "^7.0.0"
   },
+  "optionalDependencies": {
+    "@esbuild/linux-arm64": "0.27.3",
+    "@rollup/rollup-linux-arm64-gnu": "4.57.1"
+  },
   "overrides": {
     "react-chartjs-2": {
       "react": "^19.0.0",
@@ -63,6 +67,7 @@
     "@eslint/js": "^9.39.2",
     "@hey-api/client-axios": "^0.9.1",
     "@hey-api/openapi-ts": "^0.92.3",
+    "@svgr/plugin-svgo": "^8.1.0",
     "@types/chartjs-plugin-trendline": "^1.0.1",
     "@types/md5": "^2.3.6",
     "@types/node": "^25.2.2",

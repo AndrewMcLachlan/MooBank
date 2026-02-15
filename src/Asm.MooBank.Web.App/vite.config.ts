@@ -39,7 +39,20 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [tsconfigpaths(), svgr(), react(), visualizer() as any],
+    plugins: [tsconfigpaths(),   
+        svgr({
+            svgrOptions: {
+            plugins: ["@svgr/plugin-svgo", "@svgr/plugin-jsx"],
+            svgoConfig: {
+                plugins: [{
+                name: "preset-default",
+                params: { overrides: { removeViewBox: false, cleanupIds: false } },
+                }],
+            },
+            },
+            include: "**/*.svg",
+        }), 
+        react(), visualizer() as any],
     server: {
         port: 3005,
         proxy: {
@@ -58,7 +71,11 @@ export default defineConfig({
     resolve: {
         alias: {
             "~": fileURLToPath(new URL("node_modules/", import.meta.url)),
-        }
+        },
+        dedupe: [
+            'react',
+            'react-dom',
+        ]
     },
     build: {
         rollupOptions: {

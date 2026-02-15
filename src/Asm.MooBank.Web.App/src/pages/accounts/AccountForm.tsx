@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Button, InputGroup } from "react-bootstrap";
+import { Button, InputGroup } from "@andrewmclachlan/moo-ds";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 

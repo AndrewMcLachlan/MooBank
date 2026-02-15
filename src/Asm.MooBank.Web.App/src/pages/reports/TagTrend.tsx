@@ -3,10 +3,10 @@ import { ChartData, Chart as ChartJS, registerables } from "chart.js";
 import chartTrendline from "chartjs-plugin-trendline";
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
-import { Form, Row } from "react-bootstrap";
+import { Form, Row } from "@andrewmclachlan/moo-ds";
 import { useNavigate, useParams } from "react-router";
 
-import { FormGroup, TagSelector } from "components";
+import { TagSelector } from "components";
 import { PeriodSelector } from "components/PeriodSelector";
 import { ReportTypeSelector } from "components/ReportTypeSelector";
 import { Period } from "helpers/dateFns";

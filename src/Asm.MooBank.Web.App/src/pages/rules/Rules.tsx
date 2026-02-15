@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table } from "react-bootstrap";
+import { Table } from "@andrewmclachlan/moo-ds";
 
 import { IconButton, PageSize, Pagination, PaginationControls, PaginationTh, SearchBox, Section, SortDirection, SortableTh, changeSortDirection, getNumberOfPages, useLocalStorage } from "@andrewmclachlan/moo-ds";
 import { AccountPage, useAccount } from "components";

@@ -16,7 +16,7 @@
     }
 
     .summary-label {
-        color: var(--bs-secondary-color);
+        color: var(--secondary-color);
     }
 
     .summary-value {
@@ -29,7 +29,7 @@
     }
 
     .gst-note {
-        color: var(--bs-secondary-color);
+        color: var(--secondary-color);
         font-size: 0.875rem;
         text-align: right;
     }
@@ -55,7 +55,7 @@
     }
 
     .period-line-label {
-        color: var(--bs-secondary-color);
+        color: var(--secondary-color);
     }
 
     .period-total {
@@ -69,7 +69,7 @@
     }
 
     .period-item:not(:last-child) {
-        border-bottom: 1px solid var(--bs-border-color);
+        border-bottom: 1px solid var(--border-color);
     }
 }
 
@@ -97,7 +97,7 @@
     .discount-entry {
         padding-bottom: 1rem;
         margin-bottom: 1rem;
-        border-bottom: 1px solid var(--bs-border-color);
+        border-bottom: 1px solid var(--border-color);
     }
 
     .section-header {
@@ -107,7 +107,7 @@
     }
 
     .empty-message {
-        color: var(--bs-secondary-color);
+        color: var(--secondary-color);
         margin-bottom: 0;
     }
 
@@ -148,12 +148,12 @@
 }
 
 .utility-bills-tab {
-    .tab-header {
+    /*.tab-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 1rem;
-    }
+    }*/
 
     .charts-row {
         display: grid;
@@ -163,14 +163,14 @@
     }
 
     .no-bills {
-        color: var(--bs-secondary-color);
+        color: var(--secondary-color);
         text-align: center;
     }
 }
 
 .bills-page {
     .empty-state {
-        color: var(--bs-secondary-color);
+        color: var(--secondary-color);
     }
 
     .reports-section {

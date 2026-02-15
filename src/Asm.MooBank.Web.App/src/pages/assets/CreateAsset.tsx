@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, InputGroup } from "react-bootstrap";
+import { Button, InputGroup } from "@andrewmclachlan/moo-ds";
 import { useNavigate } from "react-router";
 import { NewAsset, emptyAsset } from "../../models";
 

@@ -5,7 +5,6 @@ export * from "./AccountSummary";
 export * from "./CurrencyInput";
 export * from "./CurrencySelector";
 export * from "./InstitutionSelector";
-export * from "./FormGroup";
 export * from "./FormRow";
 export * from "./MonthSelector";
 export * from "./PeriodSelector";

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 import { useCreateGroup, useUpdateGroup } from "services";
 import { Page } from "@andrewmclachlan/moo-app";
 import { emptyGuid, Form, NavItem, SectionForm } from "@andrewmclachlan/moo-ds";
-import { Button, } from "react-bootstrap";
+import { Button, } from "@andrewmclachlan/moo-ds";
 import { useForm } from "react-hook-form";
 
 export interface GroupFormProps {

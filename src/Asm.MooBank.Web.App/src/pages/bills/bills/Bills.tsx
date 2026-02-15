@@ -5,7 +5,7 @@ import { getNumberOfPages, IconButton, Pagination } from "@andrewmclachlan/moo-d
 import { Bill } from "models/bills";
 import { useBillAccount, useBills } from "services";
 
-import { Button, Table } from "react-bootstrap";
+import { Button, Table } from "@andrewmclachlan/moo-ds";
 import { AddBill } from "./AddBill";
 import { BillDetails } from "./BillDetails";
 import { BillRow } from "./BillRow";

@@ -4,7 +4,7 @@ import { isMonthSelected } from "helpers/dateFns";
 import { useBudgetYear } from "hooks/useBudgetYear";
 import * as Models from "models";
 import { useEffect, useState } from "react";
-import { Col, Form, Row } from "react-bootstrap";
+import { Col, Input, Row } from "@andrewmclachlan/moo-ds";
 import { useBudget, useBudgetYears } from "services/BudgetService";
 import { BudgetPage } from "./BudgetPage";
 import { BudgetTable } from "./BudgetTable";
@@ -50,19 +50,19 @@ export const Budget: React.FC = () => {
             <Section>
                 <Row>
                     <Col>
-                        <Form.Select value={year} onChange={e => setYear(Number(e.currentTarget.value))}>
+                        <Input.Select value={year} onChange={e => setYear(Number(e.currentTarget.value))}>
                             {selectableYears.map((y) =>
                                 <option value={y} key={y}>{y}</option>
                             )}
-                        </Form.Select>
+                        </Input.Select>
                     </Col>
                     <Col>
-                        <Form.Select value={month} onChange={e => setMonth(Number(e.currentTarget.value))}>
+                        <Input.Select value={month} onChange={e => setMonth(Number(e.currentTarget.value))}>
                             <option value={-1}>All Months</option>
                             {[...Array(12).keys()].map((y) =>
                                 <option value={y} key={y}>{format(new Date(1, y), 'MMMM')}</option>
                             )}
-                        </Form.Select>
+                        </Input.Select>
                     </Col>
                 </Row>
             </Section>

@@ -1,7 +1,7 @@
 import { Section } from "@andrewmclachlan/moo-ds";
 import { format, parseISO } from "date-fns";
 import { useState } from "react";
-import { Button, Col, Form, Row } from "react-bootstrap";
+import { Button, Col, Form, Input, Row } from "@andrewmclachlan/moo-ds";
 import { AccountScopeMode, ForecastPlan } from "models";
 import { useUpdateForecastPlan } from "services/ForecastService";
 import { useAccounts } from "services/AccountService";
@@ -130,46 +130,38 @@ export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthl
         <Section header="Forecast Settings">
             <Row className="g-3">
                 <Col md={3}>
-                    <Form.Group>
                         <Form.Label>Plan Name</Form.Label>
-                        <Form.Control
+                        <Input
                             type="text"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                         />
-                    </Form.Group>
                 </Col>
                 <Col md={2}>
-                    <Form.Group>
                         <Form.Label>Start Date</Form.Label>
-                        <Form.Control
+                        <Input
                             type="date"
                             value={startDate}
                             onChange={(e) => setStartDate(e.target.value)}
                         />
-                    </Form.Group>
                 </Col>
                 <Col md={2}>
-                    <Form.Group>
                         <Form.Label>End Date</Form.Label>
-                        <Form.Control
+                        <Input
                             type="date"
                             value={endDate}
                             onChange={(e) => setEndDate(e.target.value)}
                         />
-                    </Form.Group>
                 </Col>
                 <Col md={2}>
-                    <Form.Group>
                         <Form.Label>Monthly Income</Form.Label>
-                        <Form.Control
+                        <Input
                             type="number"
                             min={0}
                             step={0.01}
                             value={monthlyIncome}
                             onChange={(e) => setMonthlyIncome(parseFloat(e.target.value) || 0)}
                         />
-                    </Form.Group>
                 </Col>
                 <Col md={3} className="d-flex align-items-end gap-2">
                     <Button variant="primary" size="sm" onClick={handleSave} disabled={isPending}>
@@ -182,43 +174,41 @@ export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthl
             </Row>
             <Row className="g-3 mt-2">
                 <Col md={12}>
-                    <Form.Group>
-                        <Form.Label>Accounts</Form.Label>
-                        <div className="mb-2">
-                            <Form.Check
-                                type="radio"
-                                id="scope-all"
-                                name="accountScope"
-                                label="Use all accounts"
-                                checked={accountScopeMode === "AllAccounts"}
-                                onChange={() => setAccountScopeMode("AllAccounts")}
-                                inline
-                            />
-                            <Form.Check
-                                type="radio"
-                                id="scope-selected"
-                                name="accountScope"
-                                label="Select specific accounts"
-                                checked={accountScopeMode === "SelectedAccounts"}
-                                onChange={() => setAccountScopeMode("SelectedAccounts")}
-                                inline
-                            />
+                    <Form.Label>Accounts</Form.Label>
+                    <div className="mb-2">
+                        <Input.Check
+                            type="radio"
+                            id="scope-all"
+                            name="accountScope"
+                            label="Use all accounts"
+                            checked={accountScopeMode === "AllAccounts"}
+                            onChange={() => setAccountScopeMode("AllAccounts")}
+                            inline
+                        />
+                        <Input.Check
+                            type="radio"
+                            id="scope-selected"
+                            name="accountScope"
+                            label="Select specific accounts"
+                            checked={accountScopeMode === "SelectedAccounts"}
+                            onChange={() => setAccountScopeMode("SelectedAccounts")}
+                            inline
+                        />
+                    </div>
+                    {accountScopeMode === "SelectedAccounts" && accounts && (
+                        <div className="border rounded p-2" style={{ maxHeight: "200px", overflowY: "auto" }}>
+                            {accounts.map(account => (
+                                <Input.Check
+                                    key={account.id}
+                                    type="checkbox"
+                                    id={`account-${account.id}`}
+                                    label={account.name}
+                                    checked={selectedAccountIds.includes(account.id)}
+                                    onChange={() => handleAccountToggle(account.id)}
+                                />
+                            ))}
                         </div>
-                        {accountScopeMode === "SelectedAccounts" && accounts && (
-                            <div className="border rounded p-2" style={{ maxHeight: "200px", overflowY: "auto" }}>
-                                {accounts.map(account => (
-                                    <Form.Check
-                                        key={account.id}
-                                        type="checkbox"
-                                        id={`account-${account.id}`}
-                                        label={account.name}
-                                        checked={selectedAccountIds.includes(account.id)}
-                                        onChange={() => handleAccountToggle(account.id)}
-                                    />
-                                ))}
-                            </div>
-                        )}
-                    </Form.Group>
+                    )}
                 </Col>
             </Row>
         </Section>

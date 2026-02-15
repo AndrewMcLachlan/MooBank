@@ -68,7 +68,7 @@
 
     fieldset {
         position: relative;
-        border: 1px solid var(--bs-border-color);
+        border: 1px solid var(--border-color);
         padding: 20px;
         padding-top: 15px;
         border-radius: 6px;
@@ -136,7 +136,7 @@
     }
 
     .section-row {
-        --bs-gutter-y: 1.5rem;
+        --gutter-y: 1.5rem;
     }
 
     .net-worth.key-value {

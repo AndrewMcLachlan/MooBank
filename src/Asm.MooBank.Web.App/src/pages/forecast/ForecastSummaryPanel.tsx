@@ -1,6 +1,6 @@
 import { Section } from "@andrewmclachlan/moo-ds";
 import { format, parseISO } from "date-fns";
-import { Col, Row } from "react-bootstrap";
+import { Col, Row } from "@andrewmclachlan/moo-ds";
 import { ForecastSummary } from "models";
 
 interface ForecastSummaryPanelProps {

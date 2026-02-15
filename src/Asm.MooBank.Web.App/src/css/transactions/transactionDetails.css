@@ -39,7 +39,7 @@
     .notes,
     .offsets {
         padding-bottom: .5rem;
-        border-bottom: 1px solid var(--bs-body-color);
+        border-bottom: 1px solid var(--body-color);
         margin-bottom: 1.5rem;
     }
 

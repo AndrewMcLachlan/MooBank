@@ -1,5 +1,5 @@
 .month-selector .clear {
-    fill: var(--bs-body-color);
+    fill: var(--body-color);
 }
 
 .month-selector input {
@@ -18,7 +18,7 @@
     }*/
 
     &:checked {
-        background-color: var(--bs-primary);
+        background-color: var(--primary);
         color: #FFF;
     }
 
@@ -29,7 +29,7 @@
         transform: translate(-50%, -50%);
         font-size: 0.8rem;
         font-weight: bold;
-        font-family: var(--bs-font-sans-serif);
+        font-family: var(--font-sans-serif);
     }
 
     &#jan::before,
@@ -76,7 +76,7 @@
 
     &:checked {
         color: #FFF;
-        background-color: var(--bs-primary);
+        background-color: var(--primary);
     }
 }
 
@@ -87,7 +87,7 @@
 
         &:checked {
             color: #FFF;
-            background-color: var(--bs-primary);
+            background-color: var(--primary);
         }
     }
 }

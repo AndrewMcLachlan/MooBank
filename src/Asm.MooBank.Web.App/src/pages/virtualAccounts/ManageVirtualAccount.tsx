@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, InputGroup } from "react-bootstrap";
+import { Button, InputGroup } from "@andrewmclachlan/moo-ds";
 import { useMatch, useNavigate, useParams } from "react-router";
 import { Form, Section, SectionForm } from "@andrewmclachlan/moo-ds";
 import { VirtualInstrument } from "../../models";

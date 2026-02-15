@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { SaveIcon } from "@andrewmclachlan/moo-ds";
 import { valueAsNumber } from "helpers";
 import { Transaction, TransactionSplit, emptyTransactionSplit } from "models";
-import { Col, Form, Row } from "react-bootstrap";
+import { Col, Input, Row } from "@andrewmclachlan/moo-ds";
 import { TransactionSplitTagPanel } from "./TransactionSplitTagPanel";
 
 
@@ -21,16 +21,16 @@ export const NewTransactionSplit: React.FC<NewTransactionSplitProps> = ({ transa
     }
 
     return (
-        <Form.Group as={Row}>
+        <Row>
             <Col sm={9}>
                 <TransactionSplitTagPanel as="div" transactionId={transaction.id} onChange={(s) => splitChanged({ ...split, tags: s.tags })} alwaysShowEditPanel transactionSplit={split} />
             </Col>
             <Col sm={3} className="split-controls">
-                <Form.Control type="number" value={split.amount} required min={0} max={transaction.amount} onChange={(s) => splitChanged({ ...split, amount: valueAsNumber(s.currentTarget) })} />
-                <Form.Control.Feedback type="invalid">Please enter an amount</Form.Control.Feedback>
+                <Input type="number" value={split.amount} required min={0} max={transaction.amount} onChange={(s) => splitChanged({ ...split, amount: valueAsNumber(s.currentTarget) })} />
+                {/*<Input.Feedback type="invalid">Please enter an amount</Input.Feedback>*/}
                 <SaveIcon onClick={saveClick} />
             </Col>
-        </Form.Group>
+        </Row>
     );
 }
 

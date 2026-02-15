@@ -1,7 +1,7 @@
 import { Section } from "@andrewmclachlan/moo-ds";
 import { format, addYears } from "date-fns";
 import { useState } from "react";
-import { Button, Form, Spinner } from "react-bootstrap";
+import { Button, Input, Spinner } from "@andrewmclachlan/moo-ds";
 import { useCreateForecastPlan } from "services/ForecastService";
 import { LogicalAccount } from "models";
 
@@ -90,7 +90,7 @@ export const CreateForecastPlan: React.FC<CreateForecastPlanProps> = ({ accounts
 
             <div className="border rounded p-3 mb-4" style={{ maxHeight: "300px", overflowY: "auto" }}>
                 {accounts.map(account => (
-                    <Form.Check
+                    <Input.Check
                         key={account.id}
                         type="checkbox"
                         id={`account-${account.id}`}

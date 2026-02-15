@@ -1,7 +1,7 @@
 import { Section, Tooltip, useLocalStorage } from "@andrewmclachlan/moo-ds";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
-import { Col, Form } from "react-bootstrap";
+import { Col, Form, Input } from "@andrewmclachlan/moo-ds";
 import { useDispatch, } from "react-redux";
 
 import { PeriodSelector, FormRow as Row } from "components";
@@ -30,7 +30,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
             <Row>
                 <Col className="description">
                     <Form.Label htmlFor="filter-desc">Description</Form.Label><Tooltip id="filter-desc">Search for multiple terms by separating them with a comma</Tooltip>
-                    <Form.Control id="filter-desc" type="search" value={filterDescription} onChange={(e) => setFilterDescription(e.currentTarget.value)} placeholder="Contains..." />
+                    <Input id="filter-desc" type="search" value={filterDescription} onChange={(e) => setFilterDescription(e.currentTarget.value)} placeholder="Contains..." />
                 </Col>
             </Row>
             <PeriodSelector instant onChange={setPeriod} />

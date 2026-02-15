@@ -1,5 +1,5 @@
 import React, { HTMLAttributes } from "react";
-import { Button, ButtonGroup, Col, Row } from "react-bootstrap";
+import { Button, ButtonGroup, Col, Row } from "@andrewmclachlan/moo-ds";
 import { transactionTypeFilter } from "store/state";
 
 export const ReportTypeSelector: React.FC<ReportTypeSelectorProps> = ({ value, onChange, ...rest }) => {

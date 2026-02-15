@@ -13,7 +13,7 @@ import { Period, subtractYear } from "helpers/dateFns";
 import { InOut } from "./InOut";
 import { InOutTrend } from "./InOutTrend";
 import { useInOutAverageReport, useInOutReport } from "services";
-import { Col, Row } from "react-bootstrap";
+import { Col, Row } from "@andrewmclachlan/moo-ds";
 import { MiniPeriodSelector } from "components/MiniPeriodSelector";
 import { getPeriod } from "hooks";
 
