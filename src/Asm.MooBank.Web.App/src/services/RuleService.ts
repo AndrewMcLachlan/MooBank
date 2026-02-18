@@ -1,69 +1,91 @@
-import { useApiDelete, useApiGet, useApiPatch, useApiPost, useApiPostEmpty, useApiPutEmpty } from "@andrewmclachlan/moo-app";
-import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, UseQueryResult } from "@tanstack/react-query";
+import {
+    getAllInstrumentRulesOptions,
+    getAllInstrumentRulesQueryKey,
+    runRulesMutation,
+    addTagToInstrumentRuleMutation,
+    removeTagFromInstrumentRuleMutation,
+    createInstrumentRuleMutation,
+    updateInstrumentRuleMutation,
+    deleteInstrumentRuleMutation,
+} from "api/@tanstack/react-query.gen";
 import * as Models from "../models";
 import { Tag } from "../models";
 
-const rulesKey = "rules";
+export const useRules = (accountId: string): UseQueryResult<Models.Rule[]> => useQuery({
+    ...getAllInstrumentRulesOptions({ path: { instrumentId: accountId } }),
+    select: (data) => data as unknown as Models.Rule[],
+    enabled: !!accountId,
+});
 
-interface RuleVariables {
-    instrumentId: string, ruleId: number, tag: Tag,
-}
-
-export const useRules = (accountId: string): UseQueryResult<Models.Rule[]> => useApiGet<Models.Rule[]>([rulesKey, accountId], `api/instruments/${accountId}/rules`, { enabled: !!accountId });
-
-export const useRunRules = () => useApiPostEmpty<null, { accountId: string }>((variables) => `api/instruments/${variables.accountId}/rules/run`);
+export const useRunRules = () => useMutation({ ...runRulesMutation() });
 
 export const useAddRuleTag = () => {
 
     const queryClient = useQueryClient();
 
-    return useApiPutEmpty<Models.Rule, RuleVariables>((variables) => `api/instruments/${variables.instrumentId}/rules/${variables.ruleId}/tag/${variables.tag.id}`, {
-        onMutate: (variables) => {
-            const rules = queryClient.getQueryData<Models.Rule[]>([rulesKey, variables.instrumentId]);
-            if (!rules) return;
+    const { mutate: rawMutate, ...rest } = useMutation({ ...addTagToInstrumentRuleMutation() });
+
+    const mutate = (variables: { instrumentId: string, ruleId: number, tag: Tag }) => {
+        const rules = queryClient.getQueryData<Models.Rule[]>(getAllInstrumentRulesQueryKey({ path: { instrumentId: variables.instrumentId } }));
+        if (rules) {
             const data = rules.find(t => t.id === variables.ruleId);
-            if (!data) return;
-            data.tags.push(variables.tag);
-            queryClient.setQueryData<Models.Rule[]>([rulesKey, variables.instrumentId], rules);
-        },
-    });
+            if (data) {
+                data.tags.push(variables.tag);
+                queryClient.setQueryData<Models.Rule[]>(getAllInstrumentRulesQueryKey({ path: { instrumentId: variables.instrumentId } }), rules);
+            }
+        }
+        rawMutate({ path: { instrumentId: variables.instrumentId, ruleId: variables.ruleId, tagId: variables.tag.id } });
+    };
+
+    return { mutate, ...rest };
 }
 
 export const useRemoveRuleTag = () => {
 
     const queryClient = useQueryClient();
 
-    return useApiDelete<RuleVariables>((variables) => `api/instruments/${variables.instrumentId}/rules/${variables.ruleId}/tag/${variables.tag.id}`, {
-        onMutate: (variables) => {
-            const rules = queryClient.getQueryData<Models.Rule[]>([rulesKey, variables.instrumentId]);
-            if (!rules) return;
+    const { mutate: rawMutate, ...rest } = useMutation({ ...removeTagFromInstrumentRuleMutation() });
+
+    const mutate = (variables: { instrumentId: string, ruleId: number, tag: Tag }) => {
+        const rules = queryClient.getQueryData<Models.Rule[]>(getAllInstrumentRulesQueryKey({ path: { instrumentId: variables.instrumentId } }));
+        if (rules) {
             const data = rules.find(t => t.id === variables.ruleId);
-            if (!data) return;
-            const tagIndex = data.tags.findIndex(t => t.id === variables.tag.id);
-            data.tags.splice(tagIndex, 1);
-            queryClient.setQueryData<Models.Rule[]>([rulesKey, variables.instrumentId], rules);
-        },
-    });
+            if (data) {
+                const tagIndex = data.tags.findIndex(t => t.id === variables.tag.id);
+                data.tags.splice(tagIndex, 1);
+                queryClient.setQueryData<Models.Rule[]>(getAllInstrumentRulesQueryKey({ path: { instrumentId: variables.instrumentId } }), rules);
+            }
+        }
+        rawMutate({ path: { instrumentId: variables.instrumentId, ruleId: variables.ruleId, tagId: variables.tag.id } });
+    };
+
+    return { mutate, ...rest };
 }
 
 export const useCreateRule = () => {
 
     const queryClient = useQueryClient();
 
-    return useApiPost<Models.Rule, { accountId: string }, Models.Rule>((variables) => `api/instruments/${variables.accountId}/rules`, {
-        onMutate: ([variables, data]) => {
-            const allRules = queryClient.getQueryData<Models.Rule[]>([rulesKey, variables.accountId]);
+    return useMutation({
+        ...createInstrumentRuleMutation(),
+        onMutate: (variables) => {
+            const accountId = variables.body?.instrumentId;
+            if (!accountId) return;
+            const allRules = queryClient.getQueryData<Models.Rule[]>(getAllInstrumentRulesQueryKey({ path: { instrumentId: accountId } }));
             if (!allRules) {
                 console.warn("Query Cache is missing Transaction Rules");
                 return;
             }
 
-            const newRules  = [data, ...allRules].sort((t1, t2) => t1.contains.localeCompare(t2.contains));
-            queryClient.setQueryData<Models.Rule[]>([rulesKey, variables.accountId], newRules);
+            const newRules = [variables.body as unknown as Models.Rule, ...allRules].sort((t1, t2) => t1.contains.localeCompare(t2.contains));
+            queryClient.setQueryData<Models.Rule[]>(getAllInstrumentRulesQueryKey({ path: { instrumentId: accountId } }), newRules);
         },
-        onSettled: (_data, _error, [variables]) => {
-            queryClient.invalidateQueries({ queryKey: [rulesKey, variables.accountId]});
-        }
+        onSettled: (_data, _error, variables) => {
+            const accountId = variables.body?.instrumentId;
+            if (!accountId) return;
+            queryClient.invalidateQueries({ queryKey: getAllInstrumentRulesQueryKey({ path: { instrumentId: accountId } }) });
+        },
     });
 }
 
@@ -71,25 +93,29 @@ export const useUpdateRule = () => {
 
     const queryClient = useQueryClient();
 
-    return useApiPatch<Models.Rule, { accountId: string, id: number }, Models.Rule>((variables) => `api/instruments/${variables.accountId}/rules/${variables.id}`, {
-
-        onMutate: ([variables, data]) => {
-            let allRules = queryClient.getQueryData<Models.Rule[]>([rulesKey, variables.accountId]);
+    return useMutation({
+        ...updateInstrumentRuleMutation(),
+        onMutate: (variables) => {
+            const accountId = variables.path?.instrumentId;
+            if (!accountId) return;
+            let allRules = queryClient.getQueryData<Models.Rule[]>(getAllInstrumentRulesQueryKey({ path: { instrumentId: accountId } }));
             if (!allRules) {
                 console.warn("Query Cache is missing Transaction Rules");
                 return;
             }
 
-            const ruleIndex = allRules.findIndex(r => r.id === variables.id);
+            const ruleIndex = allRules.findIndex(r => r.id === variables.path?.ruleId);
 
-            allRules.splice(ruleIndex, 1, data);
+            allRules.splice(ruleIndex, 1, variables.body as unknown as Models.Rule);
 
             allRules = allRules.sort((t1, t2) => t1.contains.localeCompare(t2.contains));
-            queryClient.setQueryData<Models.Rule[]>([rulesKey, variables.accountId], allRules);
+            queryClient.setQueryData<Models.Rule[]>(getAllInstrumentRulesQueryKey({ path: { instrumentId: accountId } }), allRules);
         },
-        onSettled: (_data, _error, [variables]) => {
-            queryClient.invalidateQueries({ queryKey: [[rulesKey, variables.accountId]]});
-        }
+        onSettled: (_data, _error, variables) => {
+            const accountId = variables.path?.instrumentId;
+            if (!accountId) return;
+            queryClient.invalidateQueries({ queryKey: getAllInstrumentRulesQueryKey({ path: { instrumentId: accountId } }) });
+        },
     });
 }
 
@@ -97,13 +123,17 @@ export const useDeleteRule = () => {
 
     const queryClient = useQueryClient();
 
-    return useApiDelete<{ accountId: string; ruleId: number }>((variables) => `api/instruments/${variables.accountId}/rules/${variables.ruleId}`, {
-        onSuccess: (_data, variables: { accountId: string; ruleId: number }) => {
-            let allRules = queryClient.getQueryData<Models.Rule[]>([rulesKey, variables.accountId]);
+    return useMutation({
+        ...deleteInstrumentRuleMutation(),
+        onSuccess: (_data, variables) => {
+            const accountId = variables.path?.instrumentId;
+            const ruleId = variables.path?.ruleId;
+            if (!accountId) return;
+            let allRules = queryClient.getQueryData<Models.Rule[]>(getAllInstrumentRulesQueryKey({ path: { instrumentId: accountId } }));
             if (!allRules) return;
-            allRules = allRules.filter(r => r.id !== (variables.ruleId));
+            allRules = allRules.filter(r => r.id !== ruleId);
             allRules = allRules.sort((t1, t2) => t1.contains.localeCompare(t2.contains));
-            queryClient.setQueryData<Models.Rule[]>([rulesKey, variables.accountId], allRules);
-        }
+            queryClient.setQueryData<Models.Rule[]>(getAllInstrumentRulesQueryKey({ path: { instrumentId: accountId } }), allRules);
+        },
     });
 }

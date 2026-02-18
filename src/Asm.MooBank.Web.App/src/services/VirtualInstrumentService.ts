@@ -1,33 +1,46 @@
-import { useQueryClient, UseQueryResult } from "@tanstack/react-query";
-import { LogicalAccount, InstrumentId, AccountList, VirtualInstrument, CreateVirtualInstrument, UpdateVirtualInstrument } from "../models";
-import { accountsKey } from "./AccountService";
-import { formattedAccountsKey } from "./InstrumentsService";
-import { useApiDelete, useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/moo-app";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AccountList, InstrumentId, VirtualInstrument, CreateVirtualInstrument } from "../models";
+import { accountsQueryKey } from "./AccountService";
+import { formattedAccountsQueryKey } from "./InstrumentsService";
+import {
+    getVirtualInstrumentsOptions,
+    getVirtualInstrumentsQueryKey,
+    getVirtualInstrumentOptions,
+    createVirtualInstrumentMutation,
+    updateVirtualInstrumentMutation,
+    updateVirtualInstrumentBalanceMutation,
+    deleteVirtualInstrumentMutation,
+} from "api/@tanstack/react-query.gen";
+import {
+    CreateVirtualInstrument as GenCreateVirtualInstrument,
+    UpdateVirtualInstrumentData,
+} from "api/types.gen";
 import { toast } from "react-toastify";
 
-interface VirtualInstrumentVariables {
-    accountId: InstrumentId;
-    virtualInstrumentId: InstrumentId;
-}
+export const useVirtualInstruments = (accountId: InstrumentId) => useQuery({
+    ...getVirtualInstrumentsOptions({ path: { instrumentId: accountId } }),
+    select: (data) => data as unknown as VirtualInstrument[],
+});
 
-const virtualInstrumentsKey = "virtualinstruments";
+export const useVirtualInstrument = (accountId: InstrumentId, virtualInstrumentId: InstrumentId) => useQuery({
+    ...getVirtualInstrumentOptions({ path: { instrumentId: accountId, virtualInstrumentId } }),
+    select: (data) => data as unknown as VirtualInstrument,
+});
 
-export const useVirtualInstruments = (accountId: InstrumentId): UseQueryResult<VirtualInstrument[]> => useApiGet<VirtualInstrument[]>([virtualInstrumentsKey, accountId], `api/instruments/${accountId}/virtual`);
-
-export const useVirtualInstrument = (accountId: InstrumentId, virtualInstrumentId: InstrumentId) => useApiGet<VirtualInstrument>([virtualInstrumentsKey, accountId, virtualInstrumentId], `api/instruments/${accountId}/virtual/${virtualInstrumentId}`);
 export const useCreateVirtualInstrument = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutateAsync, ...rest } = useApiPost<VirtualInstrument, InstrumentId, CreateVirtualInstrument>((accountId) => `api/instruments/${accountId}/virtual`, {
+    const { mutateAsync, ...rest } = useMutation({
+        ...createVirtualInstrumentMutation(),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: [accountsKey] });
+            queryClient.invalidateQueries({ queryKey: accountsQueryKey() });
         }
     });
 
     return {
         mutateAsync: (accountId: InstrumentId, virtualAccount: CreateVirtualInstrument) =>
-            toast.promise(mutateAsync([accountId, virtualAccount]), { pending: "Creating virtual account", success: "Virtual account created", error: "Failed to create virtual account" }),
+            toast.promise(mutateAsync({ body: virtualAccount as unknown as GenCreateVirtualInstrument, path: { instrumentId: accountId } }), { pending: "Creating virtual account", success: "Virtual account created", error: "Failed to create virtual account" }),
         ...rest,
     };
 }
@@ -35,15 +48,16 @@ export const useCreateVirtualInstrument = () => {
 export const useUpdateVirtualInstrument = () => {
     const queryClient = useQueryClient();
 
-    const { mutate } = useApiPatch<LogicalAccount, VirtualInstrumentVariables, UpdateVirtualInstrument>(({ accountId, virtualInstrumentId }) => `api/instruments/${accountId}/virtual/${virtualInstrumentId}`, {
-        onSettled: (_data, _error, [{ accountId }]) => {
-            queryClient.invalidateQueries({ queryKey: [accountsKey] });
-            queryClient.invalidateQueries({ queryKey: [virtualInstrumentsKey, accountId] });
+    const { mutate } = useMutation({
+        ...updateVirtualInstrumentMutation(),
+        onSettled: (_data, _error, variables) => {
+            queryClient.invalidateQueries({ queryKey: accountsQueryKey() });
+            queryClient.invalidateQueries({ queryKey: getVirtualInstrumentsQueryKey({ path: { instrumentId: variables.path!.instrumentId } }) });
         }
     });
 
     const update = (accountId: InstrumentId, virtualInstrument: VirtualInstrument) => {
-        mutate([{ accountId, virtualInstrumentId: virtualInstrument.id }, virtualInstrument]);
+        mutate({ body: virtualInstrument as unknown as UpdateVirtualInstrumentData["body"], path: { instrumentId: accountId, virtualInstrumentId: virtualInstrument.id } });
     };
 
     return update;
@@ -52,30 +66,31 @@ export const useUpdateVirtualInstrument = () => {
 export const useUpdateVirtualInstrumentBalance = () => {
     const queryClient = useQueryClient();
 
-    const { mutate } = useApiPatch<VirtualInstrument, VirtualInstrumentVariables, { balance: number }>(({ accountId, virtualInstrumentId }) => `api/instruments/${accountId}/virtual/${virtualInstrumentId}/balance`, {
+    const { mutate } = useMutation({
+        ...updateVirtualInstrumentBalanceMutation(),
 
-        onMutate: async ([{ accountId, virtualInstrumentId }, { balance }]) => {
+        onMutate: async (variables) => {
 
-            await queryClient.cancelQueries({ queryKey: [accountsKey] });
-            await queryClient.cancelQueries({ queryKey: [formattedAccountsKey] });
+            await queryClient.cancelQueries({ queryKey: accountsQueryKey() });
+            await queryClient.cancelQueries({ queryKey: formattedAccountsQueryKey() });
 
-            const accounts = queryClient.getQueryData<AccountList>([formattedAccountsKey]);
+            const accounts = queryClient.getQueryData<AccountList>(formattedAccountsQueryKey());
 
             if (!accounts) return;
 
-            const account = accounts.groups.flatMap(g => g.instruments).find(a => a.id === accountId);
+            const account = accounts.groups.flatMap(g => g.instruments).find(a => a.id === variables.path!.instrumentId);
             if (!account) return;
-            const vAccount = account.virtualInstruments.find(a => a.id === virtualInstrumentId);
+            const vAccount = account.virtualInstruments.find(a => a.id === variables.path!.virtualInstrumentId);
             if (!vAccount) return;
 
-            const difference = vAccount.currentBalance - balance;
+            const difference = vAccount.currentBalance - variables.body.balance;
 
-            vAccount.currentBalance = balance;
+            vAccount.currentBalance = variables.body.balance;
             account.remainingBalance += difference;
             // TODO: Update the local currency balance if needed
             accounts.total = 0;
 
-            queryClient.setQueryData<AccountList>([formattedAccountsKey], { ...accounts });
+            queryClient.setQueryData<AccountList>(formattedAccountsQueryKey(), { ...accounts });
 
             return accounts;
         },
@@ -84,16 +99,16 @@ export const useUpdateVirtualInstrumentBalance = () => {
             console.error(e);
         },
 
-        onSettled: (_data, _error, [{ accountId }]) => {
-            queryClient.invalidateQueries({ queryKey: [accountsKey] });
-            queryClient.invalidateQueries({ queryKey: [formattedAccountsKey] });
-            queryClient.invalidateQueries({ queryKey: [virtualInstrumentsKey, accountId] });
+        onSettled: (_data, _error, variables) => {
+            queryClient.invalidateQueries({ queryKey: accountsQueryKey() });
+            queryClient.invalidateQueries({ queryKey: formattedAccountsQueryKey() });
+            queryClient.invalidateQueries({ queryKey: getVirtualInstrumentsQueryKey({ path: { instrumentId: variables.path!.instrumentId } }) });
         },
     });
 
     const update = (accountId: string, virtualInstrumentId: InstrumentId, balance: number) => {
 
-        mutate([{ accountId, virtualInstrumentId }, { balance }]);
+        mutate({ body: { balance }, path: { instrumentId: accountId, virtualInstrumentId } });
     };
 
     return update;
@@ -102,17 +117,18 @@ export const useUpdateVirtualInstrumentBalance = () => {
 export const useCloseVirtualAccount = () => {
     const queryClient = useQueryClient();
 
-    const { mutateAsync, ...rest } = useApiDelete<VirtualInstrumentVariables>(({ accountId, virtualInstrumentId }) => `api/instruments/${accountId}/virtual/${virtualInstrumentId}`, {
-        onSuccess: (_data, { accountId }) => {
-            queryClient.invalidateQueries({ queryKey: [accountsKey] });
-            queryClient.invalidateQueries({ queryKey: [formattedAccountsKey] });
-            queryClient.invalidateQueries({ queryKey: ["virtualaccount", accountId] });
+    const { mutateAsync, ...rest } = useMutation({
+        ...deleteVirtualInstrumentMutation(),
+        onSuccess: (_data, variables) => {
+            queryClient.invalidateQueries({ queryKey: accountsQueryKey() });
+            queryClient.invalidateQueries({ queryKey: formattedAccountsQueryKey() });
+            queryClient.invalidateQueries({ queryKey: getVirtualInstrumentsQueryKey({ path: { instrumentId: variables.path!.instrumentId } }) });
         }
     });
 
     return {
         mutateAsync: (accountId: InstrumentId, virtualInstrumentId: InstrumentId) =>
-            toast.promise(mutateAsync({ accountId, virtualInstrumentId }), { pending: "Closing virtual account", success: "Virtual account closed", error: "Failed to close virtual account" }),
+            toast.promise(mutateAsync({ path: { instrumentId: accountId, virtualInstrumentId } }), { pending: "Closing virtual account", success: "Virtual account closed", error: "Failed to close virtual account" }),
         ...rest,
     };
 }

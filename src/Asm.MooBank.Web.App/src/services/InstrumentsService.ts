@@ -1,11 +1,14 @@
+import { useQuery } from "@tanstack/react-query";
+import { getFormattedInstrumentsListOptions, getFormattedInstrumentsListQueryKey, getInstrumentsListOptions } from "api/@tanstack/react-query.gen";
 import { AccountList } from "../models";
-import { useApiGet } from "@andrewmclachlan/moo-app";
-import { ListItem } from "models/ListItem";
 
-export const formattedAccountsKey = "formatted-accounts";
-export const accountListKey = "account-list";
+export const formattedAccountsQueryKey = getFormattedInstrumentsListQueryKey;
 
+// The generated Instrument type is the base class; the API actually returns LogicalAccount objects.
+// Cast to AccountList until the full model migration aligns consumer types with generated types.
+export const useFormattedAccounts = () => useQuery({
+    ...getFormattedInstrumentsListOptions(),
+    select: (data) => data as unknown as AccountList,
+});
 
-export const useFormattedAccounts = () => useApiGet<AccountList>([formattedAccountsKey], "api/instruments/summary");
-
-export const useAccountsList = () => useApiGet<ListItem<string>[]>([accountListKey], "api/instruments/list");
+export const useAccountsList = () => useQuery({ ...getInstrumentsListOptions() });

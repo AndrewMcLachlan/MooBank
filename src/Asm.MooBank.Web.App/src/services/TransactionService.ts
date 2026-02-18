@@ -1,61 +1,118 @@
-import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
-
-import { useApiDelete, useApiGet, useApiPagedGet, useApiPatch, useApiPost, useApiPutEmpty } from "@andrewmclachlan/moo-app";
 import { PagedResult, SortDirection } from "@andrewmclachlan/moo-ds";
 import { format } from "date-fns/format";
 import { parseISO } from "date-fns/parseISO";
 import * as Models from "../models";
-import { Tag, Transaction } from "../models";
+import { Tag } from "../models";
 import { State, TransactionsFilter } from "../store/state";
-import { accountsKey } from "./AccountService";
+import { accountsQueryKey } from "./AccountService";
 import { toast } from "react-toastify";
+import {
+    getTransactionsOptions,
+    getTransactionsQueryKey,
+    getUntaggedTransactionsOptions,
+    getUntaggedTransactionsQueryKey,
+    searchTransactionsOptions,
+    updateTransactionMutation,
+    addTagMutation,
+    removeTagMutation,
+    createTransactionMutation,
+} from "api/@tanstack/react-query.gen";
+import {
+    TransactionFilterType,
+    SortDirection as GenSortDirection,
+    TransactionType,
+    CreateTransactionData,
+} from "api/types.gen";
 
-const transactionKey = "transactions";
-
-interface TransactionVariables {
-    accountId: string,
-    transactionId: string,
-}
-
-interface TransactionTagVariables extends TransactionVariables {
-    tag: Tag,
-}
-
-export const useTransactions = (accountId: string, filter: TransactionsFilter, pageSize: number, pageNumber: number, sortField: string, sortDirection: SortDirection): UseQueryResult<PagedResult<Models.Transaction>> => {
-
-    const sortString = sortField && sortField !== null && sortField !== "" ? `sortField=${sortField}&sortDirection=${sortDirection}` : "";
-    let filterString = filter.description ? `&filter=${filter.description}` : "";
-    filterString += filter.start ? `&start=${filter.start}` : "";
-    filterString += filter.end ? `&end=${filter.end}` : "";
-    filterString += filter.transactionType ? `&transactionType=${filter.transactionType}` : "";
-    filterString += filter.filterNetZero ? `&excludeNetZero=${filter.filterNetZero}` : "";
-    filter.tags?.forEach(t => filterString += `&tagids=${t}`);
-
-    let queryString = sortString + filterString;
-    queryString = queryString.startsWith("&") ? queryString.substring(1) : queryString;
-    queryString = queryString.length > 0 && queryString[0] !== "?" ? `?${queryString}` : queryString;
-
-    return useApiPagedGet<PagedResult<Models.Transaction>>([transactionKey, accountId, filter, pageSize, pageNumber, sortField, sortDirection],
-        `api/accounts/${accountId}/transactions/${filter.filterTagged ? "untagged/" : ""}${pageSize}/${pageNumber}${queryString}`, {
-        enabled: !!accountId && !!filter?.start && !!filter?.end,
+const buildTransactionsQueryKey = (accountId: string, filter: TransactionsFilter, pageSize: number, pageNumber: number, sortField: string, sortDirection: SortDirection) => {
+    if (filter.filterTagged) {
+        return getUntaggedTransactionsQueryKey({
+            path: { instrumentId: accountId, pageSize, pageNumber, untagged: "untagged" },
+            query: {
+                Filter: filter.description || undefined,
+                Start: filter.start || undefined,
+                End: filter.end || undefined,
+                TagIds: filter.tags,
+                SortField: sortField || undefined,
+                TransactionType: (filter.transactionType || undefined) as TransactionFilterType | undefined,
+                SortDirection: (sortDirection || "Descending") as GenSortDirection,
+                ExcludeNetZero: filter.filterNetZero || undefined,
+            },
+        });
+    }
+    return getTransactionsQueryKey({
+        path: { instrumentId: accountId, pageSize, pageNumber },
+        query: {
+            Filter: filter.description || undefined,
+            Start: filter.start || undefined,
+            End: filter.end || undefined,
+            TagIds: filter.tags,
+            SortField: sortField || undefined,
+            TransactionType: (filter.transactionType || undefined) as TransactionFilterType | undefined,
+            SortDirection: (sortDirection || "Descending") as GenSortDirection,
+            ExcludeNetZero: filter.filterNetZero || undefined,
+        },
     });
+};
+
+export const useTransactions = (accountId: string, filter: TransactionsFilter, pageSize: number, pageNumber: number, sortField: string, sortDirection: SortDirection) => {
+
+    const queryParams = {
+        Filter: filter.description || undefined,
+        Start: filter.start || undefined,
+        End: filter.end || undefined,
+        TagIds: filter.tags,
+        SortField: sortField || undefined,
+        TransactionType: (filter.transactionType || undefined) as TransactionFilterType | undefined,
+        SortDirection: (sortDirection || "Descending") as GenSortDirection,
+        ExcludeNetZero: filter.filterNetZero || undefined,
+    };
+
+    const tagged = filter.filterTagged;
+
+    const untaggedResult = useQuery({
+        ...getUntaggedTransactionsOptions({
+            path: { instrumentId: accountId, pageSize, pageNumber, untagged: "untagged" },
+            query: queryParams,
+        }),
+        select: (data) => data as unknown as PagedResult<Models.Transaction>,
+        enabled: !!accountId && !!filter?.start && !!filter?.end && tagged,
+    });
+
+    const regularResult = useQuery({
+        ...getTransactionsOptions({
+            path: { instrumentId: accountId, pageSize, pageNumber },
+            query: queryParams,
+        }),
+        select: (data) => data as unknown as PagedResult<Models.Transaction>,
+        enabled: !!accountId && !!filter?.start && !!filter?.end && !tagged,
+    });
+
+    return tagged ? untaggedResult : regularResult;
 }
 
 export const useSearchTransactions = (transaction: Models.Transaction, searchType: Models.TransactionType) => {
 
-    let queryString = `?start=${format(parseISO(transaction.transactionTime), 'yyyy-MM-dd')}&transactionType=${searchType}&`;
-
-    queryString += transaction.tags.map(t => `tagIds=${t.id}`).join(`&`);
-
-    return useApiGet<Models.Transaction[]>([transactionKey, transaction.id], `api/accounts/${transaction.accountId}/transactions${queryString}`)
+    return useQuery({
+        ...searchTransactionsOptions({
+            path: { instrumentId: transaction.accountId },
+            query: {
+                Start: format(parseISO(transaction.transactionTime), 'yyyy-MM-dd'),
+                TransactionType: searchType as TransactionType,
+                TagIds: transaction.tags.map(t => t.id),
+            },
+        }),
+        select: (data) => data as unknown as Models.Transaction[],
+    });
 }
 
 export const useInvalidateSearch = (transactionId: string) => {
 
     const queryClient = useQueryClient();
 
-    return () => queryClient.invalidateQueries({ queryKey: [transactionKey, transactionId] });
+    return () => queryClient.invalidateQueries({ queryKey: searchTransactionsOptions({ path: { instrumentId: transactionId } } as any).queryKey });
 }
 
 export const useUpdateTransaction = () => {
@@ -64,33 +121,34 @@ export const useUpdateTransaction = () => {
 
     const { currentPage, pageSize, filter, sortField, sortDirection } = useSelector((state: State) => state.transactions);
 
-    const { mutateAsync, ...rest } = useApiPatch<Transaction, TransactionVariables, Models.TransactionUpdate>((variables) => `api/accounts/${variables.accountId}/transactions/${variables.transactionId}`, {
-        onMutate: ([variables, data]) => {
+    const { mutateAsync, ...rest } = useMutation({
+        ...updateTransactionMutation(),
+        onMutate: (variables) => {
 
-            const transactions = { ...queryClient.getQueryData<PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection]) };
+            const queryKey = buildTransactionsQueryKey(variables.path!.instrumentId, filter, pageSize, currentPage, sortField, sortDirection);
+            const transactions = { ...queryClient.getQueryData<PagedResult<Models.Transaction>>(queryKey) };
             if (!transactions?.results) return;
 
-            const transaction = transactions.results.find(tr => tr.id === variables.transactionId);
+            const transaction = transactions.results.find(tr => tr.id === variables.path!.id);
             if (!transaction) return;
 
-            transaction.notes = data.notes;
-            transaction.splits = data.splits;
-            transaction.excludeFromReporting = data.excludeFromReporting;
-            transaction.tags = data.splits.flatMap(s => s.tags);
+            const body = variables.body as Models.TransactionUpdate;
+            transaction.notes = body.notes;
+            transaction.splits = body.splits;
+            transaction.excludeFromReporting = body.excludeFromReporting;
+            transaction.tags = body.splits.flatMap(s => s.tags);
 
-            queryClient.setQueryData<PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection], transactions);
+            queryClient.setQueryData<PagedResult<Models.Transaction>>(queryKey, transactions);
 
         },
-        onSettled: (_data, _error, [_variables]) => {
-            queryClient.invalidateQueries({ queryKey: [transactionKey] });
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: getTransactionsQueryKey({ path: { instrumentId: "", pageSize: 0, pageNumber: 0 } } as any) });
         }
     });
 
-
-
     return {
         mutateAsync: (accountId: string, transactionId: string, transaction: Models.TransactionUpdate) =>
-            toast.promise(mutateAsync([{ accountId, transactionId }, transaction]), { pending: "Updating transaction", success: "Transaction updated", error: "Failed to update transaction" }),
+            toast.promise(mutateAsync({ body: transaction as any, path: { instrumentId: accountId, id: transactionId } }), { pending: "Updating transaction", success: "Transaction updated", error: "Failed to update transaction" }),
         ...rest,
     };
 };
@@ -101,23 +159,29 @@ export const useAddTransactionTag = () => {
 
     const { currentPage, pageSize, filter, sortField, sortDirection } = useSelector((state: State) => state.transactions);
 
-    return useApiPutEmpty<Models.Transaction, TransactionTagVariables>((variables) => `api/accounts/${variables.accountId}/transactions/${variables.transactionId}/tag/${variables.tag.id}`, {
-        onMutate: (variables) => {
-
-            const transactions = { ...queryClient.getQueryData<PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection]) };
-            if (!transactions?.results) return;
-
-            const transaction = transactions.results.find(tr => tr.id === variables.transactionId);
-            if (!transaction) return;
-            transaction.tags.push(variables.tag);
-
-            queryClient.setQueryData<PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection], transactions);
-
-        },
-        onSettled: (_data, _error, _variables) => {
-            queryClient.invalidateQueries({ queryKey: [transactionKey] });
+    const { mutate: rawMutate } = useMutation({
+        ...addTagMutation(),
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: getTransactionsQueryKey({ path: { instrumentId: "", pageSize: 0, pageNumber: 0 } } as any) });
         }
     });
+
+    const mutate = (variables: { accountId: string, transactionId: string, tag: Tag }) => {
+
+        const queryKey = buildTransactionsQueryKey(variables.accountId, filter, pageSize, currentPage, sortField, sortDirection);
+        const transactions = { ...queryClient.getQueryData<PagedResult<Models.Transaction>>(queryKey) };
+        if (transactions?.results) {
+            const transaction = transactions.results.find(tr => tr.id === variables.transactionId);
+            if (transaction) {
+                transaction.tags.push(variables.tag);
+                queryClient.setQueryData<PagedResult<Models.Transaction>>(queryKey, transactions);
+            }
+        }
+
+        rawMutate({ path: { instrumentId: variables.accountId, id: variables.transactionId, tagId: variables.tag.id } });
+    };
+
+    return { mutate };
 }
 
 export const useRemoveTransactionTag = () => {
@@ -126,41 +190,46 @@ export const useRemoveTransactionTag = () => {
 
     const { currentPage, pageSize, filter, sortField, sortDirection } = useSelector((state: State) => state.transactions);
 
-    return useApiDelete<TransactionTagVariables>((variables) => `api/accounts/${variables.accountId}/transactions/${variables.transactionId}/tag/${variables.tag.id}`, {
-        onMutate: (variables) => {
-
-            const transactions = { ...queryClient.getQueryData<PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection]) };
-            if (!transactions) return;
-
-            const transaction = transactions.results.find(tr => tr.id === variables.transactionId);
-            if (!transaction) return;
-            transaction.tags = transaction.tags.filter(t => t.id !== variables.tag.id);
-
-            queryClient.setQueryData<PagedResult<Models.Transaction>>([transactionKey, variables.accountId, filter, pageSize, currentPage, sortField, sortDirection], transactions);
-        },
-        onSettled: (_data, _error, _variables) => {
-            queryClient.invalidateQueries({ queryKey: [transactionKey] });
+    const { mutate: rawMutate } = useMutation({
+        ...removeTagMutation(),
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: getTransactionsQueryKey({ path: { instrumentId: "", pageSize: 0, pageNumber: 0 } } as any) });
         }
     });
+
+    const mutate = (variables: { accountId: string, transactionId: string, tag: Tag }) => {
+
+        const queryKey = buildTransactionsQueryKey(variables.accountId, filter, pageSize, currentPage, sortField, sortDirection);
+        const transactions = { ...queryClient.getQueryData<PagedResult<Models.Transaction>>(queryKey) };
+        if (transactions?.results) {
+            const transaction = transactions.results.find(tr => tr.id === variables.transactionId);
+            if (transaction) {
+                transaction.tags = transaction.tags.filter(t => t.id !== variables.tag.id);
+                queryClient.setQueryData<PagedResult<Models.Transaction>>(queryKey, transactions);
+            }
+        }
+
+        rawMutate({ path: { instrumentId: variables.accountId, id: variables.transactionId, tagId: variables.tag.id } });
+    };
+
+    return { mutate };
 }
 
 export const useCreateTransaction = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutateAsync, ...rest } = useApiPost<Transaction, { accountId: string }, Models.CreateTransaction>((variables) => `api/accounts/${variables.accountId}/transactions`, {
-        onSettled: (_data, _error, [variables]) => {
-            console.debug("Transaction created", variables);
-            queryClient.invalidateQueries({ queryKey: [transactionKey] });
-
-            // TODO: Fix because this is a virtual account Id, and the query key is for the parent account.
-            queryClient.refetchQueries({ queryKey: [accountsKey, variables.accountId] });
+    const { mutateAsync, ...rest } = useMutation({
+        ...createTransactionMutation(),
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: getTransactionsQueryKey({ path: { instrumentId: "", pageSize: 0, pageNumber: 0 } } as any) });
+            queryClient.refetchQueries({ queryKey: accountsQueryKey() });
         }
     });
 
     return {
         mutateAsync: (accountId: string, transaction: Models.CreateTransaction) =>
-            toast.promise(mutateAsync([{ accountId }, transaction]), { pending: "Creating transaction", success: "Transaction created", error: "Failed to create transaction" }),
+            toast.promise(mutateAsync({ body: transaction as unknown as CreateTransactionData["body"], path: { instrumentId: accountId } }), { pending: "Creating transaction", success: "Transaction created", error: "Failed to create transaction" }),
         ...rest,
     };
 }

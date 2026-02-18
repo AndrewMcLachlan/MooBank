@@ -324,6 +324,16 @@
           "Recurring Transactions"
         ],
         "operationId": "create-recurring-transaction",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Create"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "201": {
             "description": "Created",
@@ -392,6 +402,16 @@
           "Recurring Transactions"
         ],
         "operationId": "update-recurring-transaction",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Update"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -515,6 +535,16 @@
           "Assets"
         ],
         "operationId": "update-asset",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAsset"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -2478,6 +2508,16 @@
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateInstitution"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -2657,6 +2697,16 @@
           "Rules"
         ],
         "operationId": "create-instrument-rule",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Create"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "201": {
             "description": "Created",
@@ -3058,6 +3108,16 @@
           "Virtual Instruments"
         ],
         "operationId": "update-virtual-instrument",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Update"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -3109,6 +3169,16 @@
           "Virtual Instruments"
         ],
         "operationId": "update-virtual-instrument-balance",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBalance"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -3737,6 +3807,16 @@
           "Stock Holding"
         ],
         "operationId": "update-stock-holding",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateStock"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -3998,6 +4078,16 @@
           "Transactions"
         ],
         "operationId": "create-stock-transaction",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Create"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -4194,6 +4284,16 @@
         ],
         "summary": "Create a tag by name",
         "operationId": "create-tag-by-name",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateByName"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "201": {
             "description": "Created",
@@ -4649,6 +4749,16 @@
           "Transactions"
         ],
         "operationId": "create-transaction",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Create"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -4710,6 +4820,16 @@
           "Transactions"
         ],
         "operationId": "update-transaction",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTransaction"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -5586,14 +5706,22 @@
       },
       "Create": {
         "required": [
-          "name",
-          "utilityType",
-          "accountNumber"
+          "accountId",
+          "virtualAccountId",
+          "description",
+          "amount",
+          "schedule",
+          "nextRun"
         ],
         "type": "object",
         "properties": {
-          "name": {
-            "type": "string"
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "virtualAccountId": {
+            "type": "string",
+            "format": "uuid"
           },
           "description": {
             "type": [
@@ -5601,26 +5729,24 @@
               "string"
             ]
           },
-          "utilityType": {
-            "$ref": "#/components/schemas/UtilityType"
-          },
-          "accountNumber": {
-            "type": "string"
-          },
-          "institutionId": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
+          "amount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
-              "null",
-              "integer",
+              "number",
               "string"
             ],
-            "format": "int32"
+            "format": "double"
           },
-          "currency": {
-            "type": "string"
+          "schedule": {
+            "$ref": "#/components/schemas/ScheduleFrequency"
           },
-          "shareWithFamily": {
-            "type": "boolean"
+          "nextRun": {
+            "type": "string",
+            "format": "date"
+          },
+          "instrumentId": {
+            "type": "string",
+            "format": "uuid"
           }
         }
       },
@@ -5738,6 +5864,29 @@
               "string"
             ],
             "format": "uuid"
+          }
+        }
+      },
+      "CreateByName": {
+        "required": [
+          "name",
+          "tags"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
           }
         }
       },
@@ -8123,6 +8272,130 @@
           }
         }
       },
+      "Update": {
+        "required": [
+          "accountId",
+          "virtualAccountId",
+          "recurringTransactionId",
+          "description",
+          "amount",
+          "schedule",
+          "nextRun"
+        ],
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "virtualAccountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "recurringTransactionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "amount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "schedule": {
+            "$ref": "#/components/schemas/ScheduleFrequency"
+          },
+          "nextRun": {
+            "type": "string",
+            "format": "date"
+          },
+          "instrumentId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "UpdateAsset": {
+        "required": [
+          "name",
+          "description",
+          "shareWithFamily"
+        ],
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "shareWithFamily": {
+            "type": "boolean"
+          },
+          "purchasePrice": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "currentBalance": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "groupId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          }
+        }
+      },
+      "UpdateBalance": {
+        "required": [
+          "instrumentId",
+          "virtualInstrumentId",
+          "balance"
+        ],
+        "type": "object",
+        "properties": {
+          "instrumentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "virtualInstrumentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "balance": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          }
+        }
+      },
       "UpdateFamily": {
         "required": [
           "name"
@@ -8131,6 +8404,30 @@
         "properties": {
           "name": {
             "type": "string"
+          }
+        }
+      },
+      "UpdateInstitution": {
+        "required": [
+          "id",
+          "name",
+          "institutionType"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "institutionType": {
+            "$ref": "#/components/schemas/InstitutionType"
           }
         }
       },
@@ -8186,6 +8483,45 @@
           }
         }
       },
+      "UpdateStock": {
+        "required": [
+          "name",
+          "description",
+          "shareWithFamily",
+          "currentPrice"
+        ],
+        "type": "object",
+        "properties": {
+          "instrumentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "shareWithFamily": {
+            "type": "boolean"
+          },
+          "currentPrice": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "groupId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          }
+        }
+      },
       "UpdateTag": {
         "required": [
           "name",
@@ -8213,6 +8549,41 @@
           },
           "applySmoothing": {
             "type": "boolean"
+          }
+        }
+      },
+      "UpdateTransaction": {
+        "required": [
+          "instrumentId",
+          "id",
+          "notes",
+          "splits"
+        ],
+        "type": "object",
+        "properties": {
+          "instrumentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "splits": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TransactionSplit"
+            }
+          },
+          "excludeFromReporting": {
+            "type": "boolean",
+            "default": false
           }
         }
       },

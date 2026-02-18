@@ -24,7 +24,7 @@ export const NewRule: React.FC = () => {
         if(newRule.contains === "") return;
         if(newRule.tags.length === 0) return;
 
-        await createRule.mutateAsync([{ accountId: account.id }, newRule]);
+        await createRule.mutateAsync({ body: { ...newRule, instrumentId: account.id } as any, path: { instrumentId: account.id } });
         setNewRule(emptyRule);
     }
 
@@ -36,8 +36,8 @@ export const NewRule: React.FC = () => {
         setNewRule({ ...newRule, description: e.currentTarget.value });
     }
 
-    const tagCreateHandler = async (name: string) => {
-        await createTag.mutateAsync({ name });
+    const tagCreateHandler = (name: string) => {
+        createTag.mutate({ name });
     }
 
     const addTag = (tag: Tag) => {

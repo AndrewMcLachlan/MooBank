@@ -10,7 +10,7 @@ import { useNavigate, useParams } from "react-router";
 import { chartColours } from "../../../helpers/chartColours";
 import { transactionTypeFilter } from "store/state";
 import { Tag } from "models";
-import { TagValue } from "models/reports";
+import { TagValue } from "api/types.gen";
 
 ChartJS.register(...registerables);
 

@@ -43,7 +43,7 @@ function useTagRowEvents(props: TransactionTagRowProps) {
     const deleteTag = () => {
 
         if (window.confirm("Deleting this tag will remove it from all rules and transactions. Are you sure?")) {
-            deleteTransactionTag.mutate({ id: props.tag.id });
+            deleteTransactionTag.mutate({ path: { id: props.tag.id } });
         }
     }
 

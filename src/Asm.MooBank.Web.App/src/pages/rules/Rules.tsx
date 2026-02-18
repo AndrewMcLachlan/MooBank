@@ -20,7 +20,7 @@ export const Rules: React.FC = () => {
     const runTransactionTagRules = useRunRules();
 
     const runRules = () => {
-        runTransactionTagRules.mutate({ accountId: account.id });
+        runTransactionTagRules.mutate({ path: { instrumentId: account.id } });
     };
 
     const { data: rules } = useRules(account?.id);

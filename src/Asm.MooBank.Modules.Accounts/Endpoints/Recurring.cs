@@ -28,11 +28,13 @@ internal class RecurringEndpoints : EndpointGroupBase
 
         routeGroupBuilder.MapPostCreate<Create, RecurringTransaction>("", "Get Recurring Transaction".ToMachine(), (recurring) => new { recurringTransactionId = recurring.Id }, CommandBinding.None)
             .WithNames("Create Recurring Transaction")
+            .Accepts<Create>("application/json")
             .Produces<RecurringTransaction>();
 
 
         routeGroupBuilder.MapPatchCommand<Update, RecurringTransaction>("/{recurringTransactionId}", CommandBinding.None)
             .WithNames("Update Recurring Transaction")
+            .Accepts<Update>("application/json")
             .Produces<RecurringTransaction>();
 
         routeGroupBuilder.MapDelete<Delete>("/{recurringTransactionId}")

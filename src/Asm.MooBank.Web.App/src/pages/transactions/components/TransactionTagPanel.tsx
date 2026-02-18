@@ -45,12 +45,9 @@ export const useTransactionRowEvents = (props: TransactionTagPanelProps) => {
         setTags(props.transaction.tags);
     }, [props.transaction.tags]);
 
-    const createTag = (name: string) => {
-        createTransactionTag.mutate({ name }, {
-            onSuccess: (data) => {
-                addTransactionTag.mutate({ accountId: account.id, transactionId: props.transaction.id, tag: data });
-            }
-        });
+    const createTag = async (name: string) => {
+        const data = await createTransactionTag.mutateAsync({ name });
+        addTransactionTag.mutate({ accountId: account.id, transactionId: props.transaction.id, tag: data });
     }
 
     const addTag = (tag: Tag) => {

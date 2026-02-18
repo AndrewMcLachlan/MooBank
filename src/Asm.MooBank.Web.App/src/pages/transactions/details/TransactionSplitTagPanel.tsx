@@ -15,14 +15,11 @@ export const TransactionSplitTagPanel: React.FC<TransactionSplitPanelProps> = ({
 
     const createTransactionTag = useCreateTag();
 
-    const createTag = (name: string) => {
-        createTransactionTag.mutate({ name }, {
-            onSuccess: (data) => {
-                const newSplit = { ...transactionSplit, tags: [...transactionSplit.tags, data]};
-                setTransactionSplit(newSplit);
-                props.onChange(newSplit);
-            }
-        });
+    const createTag = async (name: string) => {
+        const data = await createTransactionTag.mutateAsync({ name });
+        const newSplit = { ...transactionSplit, tags: [...transactionSplit.tags, data]};
+        setTransactionSplit(newSplit);
+        props.onChange(newSplit);
     }
 
     const addTag = (tag: Tag) => {
