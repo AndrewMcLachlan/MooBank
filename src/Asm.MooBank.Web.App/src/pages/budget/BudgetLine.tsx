@@ -1,7 +1,7 @@
 import { EditColumn } from "@andrewmclachlan/moo-ds";
 import { MonthSelector } from "components";
 import { DeleteIcon } from "@andrewmclachlan/moo-ds";
-import * as Models from "models";
+import type { BudgetLine as BudgetLineModel } from "api/types.gen";
 import { useDeleteBudgetLine, useUpdateBudgetLine } from "services/BudgetService";
 
 export const BudgetLine: React.FC<BudgetLineProps> = ({year, budgetLine}) => {
@@ -26,5 +26,5 @@ export const BudgetLine: React.FC<BudgetLineProps> = ({year, budgetLine}) => {
 
 export interface BudgetLineProps {
     year: number;
-    budgetLine: Models.BudgetLine;
+    budgetLine: BudgetLineModel;
 }

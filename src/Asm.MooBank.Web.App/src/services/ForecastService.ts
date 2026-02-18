@@ -12,25 +12,19 @@ import {
     updatePlannedItemMutation,
     deletePlannedItemMutation,
 } from "api/@tanstack/react-query.gen";
-import {
-    ForecastPlan as GenForecastPlan,
-    PlannedItem as GenPlannedItem,
-} from "api/types.gen";
-import { CreateForecastPlan, CreatePlannedItem, ForecastPlan, ForecastResult, PlannedItem } from "../models";
+import type { ForecastPlan, ForecastResult, PlannedItem } from "api/types.gen";
 
 export const forecastKey = ["forecast"];
 
 export const useForecastPlans = (includeArchived: boolean = false) =>
     useQuery({
         ...getAllForecastPlansOptions({ query: { IncludeArchived: includeArchived } }),
-        select: (data) => data as unknown as ForecastPlan[],
     });
 
 export const useForecastPlan = (planId: string) =>
     useQuery({
         ...getForecastPlanOptions({ path: { id: planId } }),
         enabled: !!planId,
-        select: (data) => data as unknown as ForecastPlan,
     });
 
 export const useRunForecast = () => {
@@ -58,7 +52,7 @@ export const useRunForecast = () => {
         return mutateAsync({ path: { planId } });
     };
 
-    return { run, runAsync, result: data as unknown as ForecastResult | undefined, isPending };
+    return { run, runAsync, result: data as ForecastResult | undefined, isPending };
 };
 
 export const useCreateForecastPlan = () => {
@@ -71,12 +65,12 @@ export const useCreateForecastPlan = () => {
         },
     });
 
-    const create = (plan: CreateForecastPlan) => {
-        mutate({ body: plan as unknown as GenForecastPlan });
+    const create = (plan: Partial<ForecastPlan>) => {
+        mutate({ body: plan as any });
     };
 
-    const createAsync = (plan: CreateForecastPlan) => {
-        return mutateAsync({ body: plan as unknown as GenForecastPlan });
+    const createAsync = (plan: Partial<ForecastPlan>) => {
+        return mutateAsync({ body: plan as any });
     };
 
     return { create, createAsync, isPending };
@@ -94,7 +88,7 @@ export const useUpdateForecastPlan = () => {
     });
 
     const update = (planId: string, plan: Partial<ForecastPlan>) => {
-        mutate({ body: plan as unknown as GenForecastPlan, path: { id: planId } });
+        mutate({ body: plan as any, path: { id: planId } });
     };
 
     return { update, isPending };
@@ -128,8 +122,8 @@ export const useCreatePlannedItem = () => {
         },
     });
 
-    const create = (planId: string, item: CreatePlannedItem) => {
-        mutate({ body: item as unknown as GenPlannedItem, path: { planId } });
+    const create = (planId: string, item: Partial<PlannedItem>) => {
+        mutate({ body: item as any, path: { planId } });
     };
 
     return { create, isPending };
@@ -147,7 +141,7 @@ export const useUpdatePlannedItem = () => {
     });
 
     const update = (planId: string, itemId: string, item: Partial<PlannedItem>) => {
-        mutate({ body: item as unknown as GenPlannedItem, path: { planId, itemId } });
+        mutate({ body: item as any, path: { planId, itemId } });
     };
 
     return { update, isPending };

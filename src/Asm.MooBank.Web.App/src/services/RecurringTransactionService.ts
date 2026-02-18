@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { RecurringTransaction } from "models/RecurringTransaction";
+import type { RecurringTransaction } from "api/types.gen";
 import {
     getRecurringTransactionsForAVirtualAccountOptions,
     getRecurringTransactionsForAVirtualAccountQueryKey,
@@ -7,12 +7,10 @@ import {
     updateRecurringTransactionMutation,
     deleteRecurringTransactionMutation,
 } from "api/@tanstack/react-query.gen";
-import { CreateRecurringTransactionData, UpdateRecurringTransactionData } from "api/types.gen";
 
 export const useGetRecurringTransactions = (accountId: string, virtualAccountId: string) =>
     useQuery({
         ...getRecurringTransactionsForAVirtualAccountOptions({ path: { accountId, virtualAccountId } }),
-        select: (data) => data as unknown as RecurringTransaction[],
     });
 
 export const useCreateRecurringTransaction = (accountId: string, virtualAccountId: string) => {
@@ -43,7 +41,7 @@ export const useCreateRecurringTransaction = (accountId: string, virtualAccountI
 
     const create = (recurringTransaction: RecurringTransaction) => {
 
-        mutate({ body: recurringTransaction as unknown as CreateRecurringTransactionData["body"], path: { accountId } });
+        mutate({ body: recurringTransaction as any, path: { accountId } } as any);
     };
 
     return create;
@@ -79,7 +77,7 @@ export const useUpdateRecurringTransaction = (accountId: string, virtualAccountI
 
     const update = (recurringTransaction: RecurringTransaction) => {
 
-        mutate({ body: recurringTransaction as unknown as UpdateRecurringTransactionData["body"], path: { accountId, recurringTransactionId: recurringTransaction.id } });
+        mutate({ body: recurringTransaction as any, path: { accountId, recurringTransactionId: recurringTransaction.id } } as any);
     };
 
     return update;

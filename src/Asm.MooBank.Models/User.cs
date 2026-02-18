@@ -1,8 +1,8 @@
-﻿namespace Asm.MooBank.Models;
+namespace Asm.MooBank.Models;
 
 public partial record User
 {
-    public Guid Id { get; set; }
+    public required Guid Id { get; set; }
 
     public required string EmailAddress { get; set; }
 
@@ -12,7 +12,7 @@ public partial record User
 
     public required string Currency { get; set; }
 
-    public Guid FamilyId { get; set; }
+    public required Guid FamilyId { get; set; }
 
     public Guid? PrimaryAccountId { get; set; }
 
@@ -22,5 +22,4 @@ public partial record User
 
     public IEnumerable<Guid> Groups { get; set; } = [];
 }
-
 

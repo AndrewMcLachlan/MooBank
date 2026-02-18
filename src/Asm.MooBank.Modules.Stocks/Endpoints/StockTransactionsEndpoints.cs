@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
 namespace Asm.MooBank.Modules.Stocks.Endpoints;
+
 internal class StockTransactionsEndpoints : EndpointGroupBase
 {
     public override string Name => "Stock Transactions";

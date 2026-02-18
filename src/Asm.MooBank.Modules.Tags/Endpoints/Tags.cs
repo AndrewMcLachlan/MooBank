@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
 namespace Asm.MooBank.Modules.Tags.Endpoints;
+
 internal class TagsEndpoints : EndpointGroupBase
 {
     public override string Name => "Tags";

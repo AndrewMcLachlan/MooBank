@@ -1,4 +1,4 @@
-import { Transaction, TransactionSplit } from "models";
+import type { Transaction, TransactionSplit } from "api/types.gen";
 import React, { useEffect, useState } from "react";
 import { Col, Form, Row } from "@andrewmclachlan/moo-ds";
 import { NewTransactionSplit } from "./NewTransactionSplit";

@@ -328,7 +328,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Create"
+                "$ref": "#/components/schemas/CreateRecurringTransaction"
               }
             }
           },
@@ -406,7 +406,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Update"
+                "$ref": "#/components/schemas/UpdateRecurringTransaction"
               }
             }
           },
@@ -601,11 +601,7 @@
             "in": "query",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           },
@@ -614,11 +610,7 @@
             "in": "query",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           },
@@ -755,7 +747,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Create"
+                "$ref": "#/components/schemas/CreateBillAccount"
               }
             }
           },
@@ -795,11 +787,7 @@
             "in": "query",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           },
@@ -808,11 +796,7 @@
             "in": "query",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           },
@@ -936,11 +920,7 @@
             "name": "PageSize",
             "in": "query",
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32",
               "default": 20
             }
@@ -949,11 +929,7 @@
             "name": "PageNumber",
             "in": "query",
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32",
               "default": 1
             }
@@ -977,11 +953,22 @@
           "Bills"
         ],
         "operationId": "create-bill",
+        "parameters": [
+          {
+            "name": "instrumentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Create"
+                "$ref": "#/components/schemas/CreateBill"
               }
             }
           },
@@ -1022,11 +1009,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           }
@@ -1224,11 +1207,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "pattern": "^-?(?:0|[1-9]\\d*)$",
-                    "type": [
-                      "integer",
-                      "string"
-                    ],
+                    "type": "integer",
                     "format": "int16"
                   }
                 }
@@ -1250,11 +1229,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int16"
             }
           }
@@ -1285,11 +1260,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int16"
             }
           },
@@ -1327,11 +1298,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int16"
             }
           },
@@ -1349,7 +1316,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/BudgetLine"
+                "$ref": "#/components/schemas/SimpleBudgetLine"
               }
             }
           },
@@ -1379,11 +1346,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int16"
             }
           },
@@ -1416,11 +1379,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int16"
             }
           }
@@ -1429,7 +1388,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/BudgetLine"
+                "$ref": "#/components/schemas/SimpleBudgetLine"
               }
             }
           },
@@ -1471,11 +1430,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           }
@@ -1486,11 +1441,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-                  "type": [
-                    "number",
-                    "string"
-                  ],
+                  "type": "number",
                   "format": "double"
                 }
               }
@@ -1511,11 +1462,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int16"
             }
           }
@@ -1546,11 +1493,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int16"
             }
           },
@@ -1559,11 +1502,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int16"
             }
           }
@@ -1594,11 +1533,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int16"
             }
           },
@@ -1607,11 +1542,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int16"
             }
           }
@@ -1642,11 +1573,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int16"
             }
           },
@@ -1655,11 +1582,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int16"
             }
           }
@@ -1982,7 +1905,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ForecastPlan"
+                "$ref": "#/components/schemas/SimpleForecastPlan"
               }
             }
           },
@@ -2154,7 +2077,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PlannedItem"
+                "$ref": "#/components/schemas/SimplePlannedItem"
               }
             }
           },
@@ -2226,7 +2149,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PlannedItem"
+                "$ref": "#/components/schemas/SimplePlannedItem"
               }
             }
           },
@@ -2450,11 +2373,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           }
@@ -2483,11 +2402,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           },
@@ -2701,7 +2616,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Create"
+                "$ref": "#/components/schemas/CreateRule"
               }
             }
           },
@@ -2752,11 +2667,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           }
@@ -2794,11 +2705,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           }
@@ -2846,11 +2753,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           }
@@ -2883,11 +2786,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           },
@@ -2896,11 +2795,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           }
@@ -2938,11 +2833,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           },
@@ -2951,11 +2842,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           }
@@ -3112,7 +2999,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Update"
+                "$ref": "#/components/schemas/UpdateVirtualInstrument"
               }
             }
           },
@@ -3391,11 +3278,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           },
@@ -3461,11 +3344,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           },
@@ -3531,11 +3410,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           },
@@ -3608,11 +3483,7 @@
             "in": "query",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           },
@@ -3854,11 +3725,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-                  "type": [
-                    "number",
-                    "string"
-                  ],
+                  "type": "number",
                   "format": "double"
                 }
               }
@@ -4021,11 +3888,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           },
@@ -4034,11 +3897,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           },
@@ -4082,7 +3941,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Create"
+                "$ref": "#/components/schemas/CreateStockTransaction"
               }
             }
           },
@@ -4185,11 +4044,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           }
@@ -4218,11 +4073,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           }
@@ -4261,11 +4112,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           }
@@ -4320,11 +4167,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           },
@@ -4333,11 +4176,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           }
@@ -4366,11 +4205,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           },
@@ -4379,11 +4214,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           }
@@ -4407,11 +4238,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           },
@@ -4420,11 +4247,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           },
@@ -4471,11 +4294,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "pattern": "^-?(?:0|[1-9]\\d*)$",
-                "type": [
-                  "integer",
-                  "string"
-                ],
+                "type": "integer",
                 "format": "int32"
               }
             }
@@ -4548,11 +4367,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           },
@@ -4561,11 +4376,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           },
@@ -4612,11 +4423,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "pattern": "^-?(?:0|[1-9]\\d*)$",
-                "type": [
-                  "integer",
-                  "string"
-                ],
+                "type": "integer",
                 "format": "int32"
               }
             }
@@ -4718,11 +4525,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "pattern": "^-?(?:0|[1-9]\\d*)$",
-                "type": [
-                  "integer",
-                  "string"
-                ],
+                "type": "integer",
                 "format": "int32"
               }
             }
@@ -4749,11 +4552,22 @@
           "Transactions"
         ],
         "operationId": "create-transaction",
+        "parameters": [
+          {
+            "name": "instrumentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Create"
+                "$ref": "#/components/schemas/CreateTransaction"
               }
             }
           },
@@ -4874,11 +4688,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           }
@@ -4925,11 +4735,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           }
@@ -5004,9 +4810,11 @@
           "id",
           "name",
           "currentBalance",
-          "currentBalanceLocalCurrency",
           "currency",
-          "controller"
+          "controller",
+          "utilityType",
+          "balanceDate",
+          "virtualInstruments"
         ],
         "type": "object",
         "properties": {
@@ -5045,19 +4853,13 @@
             "format": "date-time"
           },
           "currentBalance": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "currentBalanceLocalCurrency": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           },
@@ -5094,20 +4896,16 @@
             }
           },
           "remainingBalance": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           },
           "remainingBalanceLocalCurrency": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           }
@@ -5133,6 +4931,11 @@
         ]
       },
       "AccountTypeSummary": {
+        "required": [
+          "utilityType",
+          "from",
+          "accounts"
+        ],
         "type": "object",
         "properties": {
           "utilityType": {
@@ -5195,18 +4998,18 @@
           "id",
           "name",
           "currentBalance",
-          "currentBalanceLocalCurrency",
           "currency",
-          "controller"
+          "controller",
+          "shareWithFamily",
+          "balanceDate",
+          "virtualInstruments"
         ],
         "type": "object",
         "properties": {
           "purchasePrice": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           },
@@ -5231,19 +5034,13 @@
             "format": "date-time"
           },
           "currentBalance": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "currentBalanceLocalCurrency": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           },
@@ -5280,42 +5077,38 @@
             }
           },
           "remainingBalance": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           },
           "remainingBalanceLocalCurrency": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           }
         }
       },
       "Assumptions": {
+        "required": [
+          "version",
+          "applyInflationToBaseline",
+          "applyInflationToPlanned",
+          "safetyBuffer"
+        ],
         "type": "object",
         "properties": {
           "version": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
+            "type": "integer",
             "format": "int32"
           },
           "inflationRateAnnual": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           },
@@ -5326,24 +5119,24 @@
             "type": "boolean"
           },
           "safetyBuffer": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           }
         }
       },
       "Bill": {
+        "required": [
+          "id",
+          "accountId",
+          "accountName",
+          "issueDate",
+          "periods",
+          "discounts"
+        ],
         "type": "object",
         "properties": {
           "id": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
+            "type": "integer",
             "format": "int32"
           },
           "accountId": {
@@ -5364,29 +5157,23 @@
             "format": "date"
           },
           "currentReading": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "null",
-              "integer",
-              "string"
+              "integer"
             ],
             "format": "int32"
           },
           "previousReading": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "null",
-              "integer",
-              "string"
+              "integer"
             ],
             "format": "int32"
           },
           "total": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "null",
-              "integer",
-              "string"
+              "integer"
             ],
             "format": "int32"
           },
@@ -5397,11 +5184,9 @@
             ]
           },
           "cost": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           },
@@ -5449,37 +5234,46 @@
         }
       },
       "Budget": {
+        "required": [
+          "year",
+          "incomeLines",
+          "expensesLines",
+          "months"
+        ],
         "type": "object",
         "properties": {
-          "name": {
-            "type": [
-              "null",
-              "string"
-            ]
+          "year": {
+            "type": "integer",
+            "format": "int16"
           },
-          "path": {
-            "type": [
-              "null",
-              "string"
-            ]
+          "incomeLines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BudgetLine"
+            }
           },
-          "tags": {
-            "type": [
-              "null",
-              "string"
-            ]
+          "expensesLines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BudgetLine"
+            }
           },
-          "authorisationPolicy": {
-            "type": [
-              "null",
-              "string"
-            ]
+          "months": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BudgetMonth"
+            }
           }
         }
       },
       "BudgetLine": {
         "required": [
-          "name"
+          "name",
+          "id",
+          "tagId",
+          "amount",
+          "month",
+          "type"
         ],
         "type": "object",
         "properties": {
@@ -5491,11 +5285,7 @@
             "type": "string"
           },
           "tagId": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
+            "type": "integer",
             "format": "int32"
           },
           "notes": {
@@ -5505,19 +5295,11 @@
             ]
           },
           "amount": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "month": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
+            "type": "integer",
             "format": "int16"
           },
           "type": {
@@ -5531,7 +5313,37 @@
           "Expenses"
         ]
       },
+      "BudgetMonth": {
+        "required": [
+          "month",
+          "income",
+          "expenses",
+          "remainder"
+        ],
+        "type": "object",
+        "properties": {
+          "month": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "income": {
+            "type": "number",
+            "format": "double"
+          },
+          "expenses": {
+            "type": "number",
+            "format": "double"
+          },
+          "remainder": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
       "BudgetReportByMonth": {
+        "required": [
+          "items"
+        ],
         "type": "object",
         "properties": {
           "items": {
@@ -5565,27 +5377,17 @@
         "type": "object",
         "properties": {
           "month": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
+            "type": "integer",
             "format": "int32"
           },
           "budgetedAmount": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "actual": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           }
@@ -5603,19 +5405,13 @@
             "type": "string"
           },
           "budgetedAmount": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "actual": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           }
@@ -5658,6 +5454,12 @@
         ]
       },
       "CostDataPoint": {
+        "required": [
+          "date",
+          "accountName",
+          "averagePricePerUnit",
+          "totalUsage"
+        ],
         "type": "object",
         "properties": {
           "date": {
@@ -5668,24 +5470,21 @@
             "type": "string"
           },
           "averagePricePerUnit": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "totalUsage": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           }
         }
       },
       "CostPerUnitReport": {
+        "required": [
+          "start",
+          "end",
+          "dataPoints"
+        ],
         "type": "object",
         "properties": {
           "start": {
@@ -5704,58 +5503,16 @@
           }
         }
       },
-      "Create": {
-        "required": [
-          "accountId",
-          "virtualAccountId",
-          "description",
-          "amount",
-          "schedule",
-          "nextRun"
-        ],
-        "type": "object",
-        "properties": {
-          "accountId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "virtualAccountId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "description": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "amount": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
-            "format": "double"
-          },
-          "schedule": {
-            "$ref": "#/components/schemas/ScheduleFrequency"
-          },
-          "nextRun": {
-            "type": "string",
-            "format": "date"
-          },
-          "instrumentId": {
-            "type": "string",
-            "format": "uuid"
-          }
-        }
-      },
       "CreateAccount": {
         "required": [
           "name",
           "institutionId",
           "currency",
-          "balance"
+          "balance",
+          "accountType",
+          "controller",
+          "includeInBudget",
+          "shareWithFamily"
         ],
         "type": "object",
         "properties": {
@@ -5769,31 +5526,21 @@
             ]
           },
           "importerTypeId": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "null",
-              "integer",
-              "string"
+              "integer"
             ],
             "format": "int32"
           },
           "institutionId": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
+            "type": "integer",
             "format": "int32"
           },
           "currency": {
             "type": "string"
           },
           "balance": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "openedDate": {
@@ -5828,7 +5575,8 @@
         "required": [
           "name",
           "description",
-          "shareWithFamily"
+          "shareWithFamily",
+          "currentBalance"
         ],
         "type": "object",
         "properties": {
@@ -5839,20 +5587,14 @@
             "type": "string"
           },
           "purchasePrice": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           },
           "currentBalance": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "shareWithFamily": {
@@ -5864,6 +5606,112 @@
               "string"
             ],
             "format": "uuid"
+          }
+        }
+      },
+      "CreateBill": {
+        "required": [
+          "issueDate",
+          "periods",
+          "discounts"
+        ],
+        "type": "object",
+        "properties": {
+          "invoiceNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "issueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "currentReading": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "previousReading": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "total": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "costsIncludeGST": {
+            "type": [
+              "null",
+              "boolean"
+            ]
+          },
+          "cost": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "periods": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Period"
+            }
+          },
+          "discounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Discount"
+            }
+          }
+        }
+      },
+      "CreateBillAccount": {
+        "required": [
+          "name",
+          "utilityType",
+          "accountNumber",
+          "currency",
+          "shareWithFamily"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "utilityType": {
+            "$ref": "#/components/schemas/UtilityType"
+          },
+          "accountNumber": {
+            "type": "string"
+          },
+          "institutionId": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "shareWithFamily": {
+            "type": "boolean"
           }
         }
       },
@@ -5880,11 +5728,7 @@
           "tags": {
             "type": "array",
             "items": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           }
@@ -5937,24 +5781,20 @@
       },
       "CreateInstitutionAccount": {
         "required": [
-          "name"
+          "name",
+          "institutionId",
+          "openedDate"
         ],
         "type": "object",
         "properties": {
           "institutionId": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
+            "type": "integer",
             "format": "int32"
           },
           "importerTypeId": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "null",
-              "integer",
-              "string"
+              "integer"
             ],
             "format": "int32"
           },
@@ -5964,6 +5804,79 @@
           "openedDate": {
             "type": "string",
             "format": "date"
+          }
+        }
+      },
+      "CreateRecurringTransaction": {
+        "required": [
+          "accountId",
+          "virtualAccountId",
+          "description",
+          "amount",
+          "schedule",
+          "nextRun",
+          "instrumentId"
+        ],
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "virtualAccountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "schedule": {
+            "$ref": "#/components/schemas/ScheduleFrequency"
+          },
+          "nextRun": {
+            "type": "string",
+            "format": "date"
+          },
+          "instrumentId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "CreateRule": {
+        "required": [
+          "instrumentId",
+          "contains",
+          "description",
+          "tags"
+        ],
+        "type": "object",
+        "properties": {
+          "instrumentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "contains": {
+            "type": "string"
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tag"
+            }
           }
         }
       },
@@ -5989,27 +5902,15 @@
             "type": "string"
           },
           "price": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "quantity": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
+            "type": "integer",
             "format": "int32"
           },
           "fees": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "shareWithFamily": {
@@ -6020,6 +5921,42 @@
               "null",
               "string"
             ],
+            "format": "uuid"
+          }
+        }
+      },
+      "CreateStockTransaction": {
+        "required": [
+          "quantity",
+          "price",
+          "fees",
+          "description",
+          "date",
+          "instrumentId"
+        ],
+        "type": "object",
+        "properties": {
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "fees": {
+            "type": "number",
+            "format": "double"
+          },
+          "description": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "instrumentId": {
+            "type": "string",
             "format": "uuid"
           }
         }
@@ -6045,11 +5982,7 @@
         "type": "object",
         "properties": {
           "amount": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "description": {
@@ -6069,7 +6002,9 @@
       },
       "CreateVirtualInstrument": {
         "required": [
-          "name"
+          "name",
+          "openingBalance",
+          "controller"
         ],
         "type": "object",
         "properties": {
@@ -6083,11 +6018,7 @@
             ]
           },
           "openingBalance": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "controller": {
@@ -6099,20 +6030,16 @@
         "type": "object",
         "properties": {
           "discountPercent": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "null",
-              "integer",
-              "string"
+              "integer"
             ],
             "format": "uint8"
           },
           "discountAmount": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           },
@@ -6126,7 +6053,9 @@
       },
       "Family": {
         "required": [
-          "name"
+          "name",
+          "id",
+          "members"
         ],
         "type": "object",
         "properties": {
@@ -6146,6 +6075,14 @@
         }
       },
       "ForecastMonth": {
+        "required": [
+          "monthStart",
+          "openingBalance",
+          "incomeTotal",
+          "baselineOutgoingsTotal",
+          "plannedItemsTotal",
+          "closingBalance"
+        ],
         "type": "object",
         "properties": {
           "monthStart": {
@@ -6153,51 +6090,29 @@
             "format": "date"
           },
           "openingBalance": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "incomeTotal": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "baselineOutgoingsTotal": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "plannedItemsTotal": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "closingBalance": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "actualBalance": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           }
@@ -6205,13 +6120,34 @@
       },
       "ForecastPlan": {
         "required": [
-          "name"
+          "name",
+          "id",
+          "isArchived",
+          "createdUtc",
+          "updatedUtc",
+          "startDate",
+          "endDate",
+          "accountScopeMode",
+          "startingBalanceMode",
+          "accountIds",
+          "plannedItems"
         ],
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
             "format": "uuid"
+          },
+          "isArchived": {
+            "type": "boolean"
+          },
+          "createdUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedUtc": {
+            "type": "string",
+            "format": "date-time"
           },
           "name": {
             "type": "string"
@@ -6231,11 +6167,9 @@
             "$ref": "#/components/schemas/StartingBalanceMode"
           },
           "startingBalanceAmount": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           },
@@ -6275,17 +6209,6 @@
               }
             ]
           },
-          "isArchived": {
-            "type": "boolean"
-          },
-          "createdUtc": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedUtc": {
-            "type": "string",
-            "format": "date-time"
-          },
           "accountIds": {
             "type": "array",
             "items": {
@@ -6304,7 +6227,8 @@
       "ForecastResult": {
         "required": [
           "months",
-          "summary"
+          "summary",
+          "planId"
         ],
         "type": "object",
         "properties": {
@@ -6324,14 +6248,19 @@
         }
       },
       "ForecastSummary": {
+        "required": [
+          "lowestBalance",
+          "lowestBalanceMonth",
+          "requiredMonthlyUplift",
+          "monthsBelowZero",
+          "totalIncome",
+          "totalOutgoings",
+          "monthlyBaselineOutgoings"
+        ],
         "type": "object",
         "properties": {
           "lowestBalance": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "lowestBalanceMonth": {
@@ -6339,43 +6268,23 @@
             "format": "date"
           },
           "requiredMonthlyUplift": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "monthsBelowZero": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
+            "type": "integer",
             "format": "int32"
           },
           "totalIncome": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "totalOutgoings": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "monthlyBaselineOutgoings": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           }
         }
@@ -6408,14 +6317,15 @@
       },
       "HexColour": { },
       "HistoricalIncomeSettings": {
+        "required": [
+          "lookbackMonths",
+          "excludeTransfers",
+          "excludeOffsets"
+        ],
         "type": "object",
         "properties": {
           "lookbackMonths": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
+            "type": "integer",
             "format": "int32"
           },
           "includeTagIds": {
@@ -6424,11 +6334,7 @@
               "array"
             ],
             "items": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           },
@@ -6438,11 +6344,7 @@
               "array"
             ],
             "items": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           },
@@ -6455,6 +6357,14 @@
         }
       },
       "IFormFile": {
+        "required": [
+          "contentType",
+          "contentDisposition",
+          "headers",
+          "length",
+          "name",
+          "fileName"
+        ],
         "type": "string",
         "format": "binary"
       },
@@ -6474,7 +6384,10 @@
       },
       "ImportBill": {
         "required": [
-          "accountName"
+          "accountName",
+          "issueDate",
+          "periods",
+          "discounts"
         ],
         "type": "object",
         "properties": {
@@ -6492,29 +6405,23 @@
             "format": "date"
           },
           "currentReading": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "null",
-              "integer",
-              "string"
+              "integer"
             ],
             "format": "int32"
           },
           "previousReading": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "null",
-              "integer",
-              "string"
+              "integer"
             ],
             "format": "int32"
           },
           "total": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "null",
-              "integer",
-              "string"
+              "integer"
             ],
             "format": "int32"
           },
@@ -6525,11 +6432,9 @@
             ]
           },
           "cost": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           },
@@ -6550,16 +6455,13 @@
       "ImporterType": {
         "required": [
           "type",
-          "name"
+          "name",
+          "id"
         ],
         "type": "object",
         "properties": {
           "id": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
+            "type": "integer",
             "format": "int32"
           },
           "type": {
@@ -6571,22 +6473,19 @@
         }
       },
       "ImportResult": {
+        "required": [
+          "imported",
+          "failed",
+          "errors"
+        ],
         "type": "object",
         "properties": {
           "imported": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
+            "type": "integer",
             "format": "int32"
           },
           "failed": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
+            "type": "integer",
             "format": "int32"
           },
           "errors": {
@@ -6598,14 +6497,14 @@
         }
       },
       "IncomeStrategy": {
+        "required": [
+          "version",
+          "mode"
+        ],
         "type": "object",
         "properties": {
           "version": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
+            "type": "integer",
             "format": "int32"
           },
           "mode": {
@@ -6653,19 +6552,11 @@
         "type": "object",
         "properties": {
           "income": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "outgoings": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "accountId": {
@@ -6727,11 +6618,7 @@
         "type": "object",
         "properties": {
           "id": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
+            "type": "integer",
             "format": "int32"
           },
           "name": {
@@ -6744,7 +6631,10 @@
       },
       "InstitutionAccount": {
         "required": [
-          "name"
+          "name",
+          "id",
+          "institutionId",
+          "openedDate"
         ],
         "type": "object",
         "properties": {
@@ -6753,20 +6643,14 @@
             "format": "uuid"
           },
           "importerTypeId": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "null",
-              "integer",
-              "string"
+              "integer"
             ],
             "format": "int32"
           },
           "institutionId": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
+            "type": "integer",
             "format": "int32"
           },
           "name": {
@@ -6803,9 +6687,10 @@
           "id",
           "name",
           "currentBalance",
-          "currentBalanceLocalCurrency",
           "currency",
-          "controller"
+          "controller",
+          "balanceDate",
+          "virtualInstruments"
         ],
         "type": "object",
         "properties": {
@@ -6827,19 +6712,13 @@
             "format": "date-time"
           },
           "currentBalance": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "currentBalanceLocalCurrency": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           },
@@ -6876,20 +6755,16 @@
             }
           },
           "remainingBalance": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           },
           "remainingBalanceLocalCurrency": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           }
@@ -6898,7 +6773,8 @@
       "InstrumentGroup": {
         "required": [
           "name",
-          "instruments"
+          "instruments",
+          "showTotal"
         ],
         "type": "object",
         "properties": {
@@ -6922,11 +6798,9 @@
             "type": "boolean"
           },
           "total": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           }
@@ -6934,7 +6808,8 @@
       },
       "InstrumentsList": {
         "required": [
-          "groups"
+          "groups",
+          "total"
         ],
         "type": "object",
         "properties": {
@@ -6945,11 +6820,7 @@
             }
           },
           "total": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           }
         }
@@ -6975,9 +6846,15 @@
           "id",
           "name",
           "currentBalance",
-          "currentBalanceLocalCurrency",
           "currency",
-          "controller"
+          "controller",
+          "accountType",
+          "isPrimary",
+          "shareWithFamily",
+          "includeInBudget",
+          "institutionAccounts",
+          "balanceDate",
+          "virtualInstruments"
         ],
         "type": "object",
         "properties": {
@@ -7024,19 +6901,13 @@
             "format": "date-time"
           },
           "currentBalance": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "currentBalanceLocalCurrency": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           },
@@ -7073,26 +6944,26 @@
             }
           },
           "remainingBalance": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           },
           "remainingBalanceLocalCurrency": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           }
         }
       },
       "ManualAdjustment": {
+        "required": [
+          "date",
+          "deltaAmount"
+        ],
         "type": "object",
         "properties": {
           "date": {
@@ -7100,24 +6971,20 @@
             "format": "date"
           },
           "deltaAmount": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           }
         }
       },
       "ManualRecurringIncome": {
+        "required": [
+          "amount",
+          "frequency"
+        ],
         "type": "object",
         "properties": {
           "amount": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "frequency": {
@@ -7169,25 +7036,22 @@
         }
       },
       "OutgoingStrategy": {
+        "required": [
+          "version",
+          "mode",
+          "lookbackMonths"
+        ],
         "type": "object",
         "properties": {
           "version": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
+            "type": "integer",
             "format": "int32"
           },
           "mode": {
             "type": "string"
           },
           "lookbackMonths": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
+            "type": "integer",
             "format": "int32"
           },
           "excludeTagIds": {
@@ -7196,26 +7060,14 @@
               "array"
             ],
             "items": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           },
-          "excludeTransfers": {
-            "type": "boolean"
-          },
-          "excludeOffsets": {
-            "type": "boolean"
-          },
           "excludeAboveAmount": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           },
@@ -7232,6 +7084,13 @@
         }
       },
       "Period": {
+        "required": [
+          "periodStart",
+          "periodEnd",
+          "pricePerUnit",
+          "totalUsage",
+          "chargePerDay"
+        ],
         "type": "object",
         "properties": {
           "periodStart": {
@@ -7243,61 +7102,48 @@
             "format": "date-time"
           },
           "daysInclusive": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "null",
-              "integer",
-              "string"
+              "integer"
             ],
             "format": "int32"
           },
           "days": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "null",
-              "integer",
-              "string"
+              "integer"
             ],
             "format": "int32"
           },
           "pricePerUnit": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "totalUsage": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "cost": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           },
           "chargePerDay": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           }
         }
       },
       "PlannedItem": {
         "required": [
-          "name"
+          "name",
+          "id",
+          "itemType",
+          "amount",
+          "isIncluded",
+          "dateMode"
         ],
         "type": "object",
         "properties": {
@@ -7312,19 +7158,13 @@
             "type": "string"
           },
           "amount": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "tagId": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "null",
-              "integer",
-              "string"
+              "integer"
             ],
             "format": "int32"
           },
@@ -7372,20 +7212,16 @@
             "format": "date"
           },
           "scheduleInterval": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "null",
-              "integer",
-              "string"
+              "integer"
             ],
             "format": "int32"
           },
           "scheduleDayOfMonth": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "null",
-              "integer",
-              "string"
+              "integer"
             ],
             "format": "int32"
           },
@@ -7442,6 +7278,13 @@
         ]
       },
       "RecurringTransaction": {
+        "required": [
+          "id",
+          "virtualAccountId",
+          "amount",
+          "nextRun",
+          "schedule"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -7459,11 +7302,7 @@
             ]
           },
           "amount": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "lastRun": {
@@ -7500,11 +7339,7 @@
         "type": "object",
         "properties": {
           "id": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
+            "type": "integer",
             "format": "int32"
           },
           "contains": {
@@ -7534,6 +7369,9 @@
         ]
       },
       "SeasonalitySettings": {
+        "required": [
+          "enabled"
+        ],
         "type": "object",
         "properties": {
           "enabled": {
@@ -7542,6 +7380,11 @@
         }
       },
       "ServiceChargeDataPoint": {
+        "required": [
+          "date",
+          "accountName",
+          "averageChargePerDay"
+        ],
         "type": "object",
         "properties": {
           "date": {
@@ -7552,16 +7395,17 @@
             "type": "string"
           },
           "averageChargePerDay": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           }
         }
       },
       "ServiceChargeReport": {
+        "required": [
+          "start",
+          "end",
+          "dataPoints"
+        ],
         "type": "object",
         "properties": {
           "start": {
@@ -7577,6 +7421,264 @@
             "items": {
               "$ref": "#/components/schemas/ServiceChargeDataPoint"
             }
+          }
+        }
+      },
+      "SimpleBudgetLine": {
+        "required": [
+          "tagId",
+          "amount",
+          "month",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "tagId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "month": {
+            "type": "integer",
+            "format": "int16"
+          },
+          "type": {
+            "$ref": "#/components/schemas/BudgetLineType"
+          }
+        }
+      },
+      "SimpleForecastPlan": {
+        "required": [
+          "name",
+          "startDate",
+          "endDate",
+          "accountScopeMode",
+          "startingBalanceMode",
+          "accountIds",
+          "plannedItems"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "accountScopeMode": {
+            "$ref": "#/components/schemas/AccountScopeMode"
+          },
+          "startingBalanceMode": {
+            "$ref": "#/components/schemas/StartingBalanceMode"
+          },
+          "startingBalanceAmount": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "currencyCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "incomeStrategy": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/IncomeStrategy"
+              }
+            ]
+          },
+          "outgoingStrategy": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/OutgoingStrategy"
+              }
+            ]
+          },
+          "assumptions": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Assumptions"
+              }
+            ]
+          },
+          "accountIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "plannedItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PlannedItem"
+            }
+          }
+        }
+      },
+      "SimplePlannedItem": {
+        "required": [
+          "name",
+          "itemType",
+          "amount",
+          "isIncluded",
+          "dateMode"
+        ],
+        "type": "object",
+        "properties": {
+          "itemType": {
+            "$ref": "#/components/schemas/PlannedItemType"
+          },
+          "name": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "tagId": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "tagName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "virtualInstrumentId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "isIncluded": {
+            "type": "boolean"
+          },
+          "dateMode": {
+            "$ref": "#/components/schemas/PlannedItemDateMode"
+          },
+          "fixedDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "scheduleFrequency": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ScheduleFrequency"
+              }
+            ]
+          },
+          "scheduleAnchorDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "scheduleInterval": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "scheduleDayOfMonth": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "scheduleEndDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "windowStartDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "windowEndDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "allocationMode": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/AllocationMode"
+              }
+            ]
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "SimpleTag": {
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
           }
         }
       },
@@ -7598,9 +7700,15 @@
           "id",
           "name",
           "currentBalance",
-          "currentBalanceLocalCurrency",
           "currency",
-          "controller"
+          "controller",
+          "quantity",
+          "currentPrice",
+          "currentValue",
+          "gainLoss",
+          "shareWithFamily",
+          "balanceDate",
+          "virtualInstruments"
         ],
         "type": "object",
         "properties": {
@@ -7608,35 +7716,19 @@
             "type": "string"
           },
           "quantity": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
+            "type": "integer",
             "format": "int32"
           },
           "currentPrice": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "currentValue": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "gainLoss": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "shareWithFamily": {
@@ -7660,19 +7752,13 @@
             "format": "date-time"
           },
           "currentBalance": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "currentBalanceLocalCurrency": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           },
@@ -7709,26 +7795,28 @@
             }
           },
           "remainingBalance": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           },
           "remainingBalanceLocalCurrency": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           }
         }
       },
       "StockHoldingReport": {
+        "required": [
+          "accountId",
+          "currentValue",
+          "profitLoss",
+          "adjustedProfitLoss"
+        ],
         "type": "object",
         "properties": {
           "accountId": {
@@ -7736,32 +7824,29 @@
             "format": "uuid"
           },
           "currentValue": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "profitLoss": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "adjustedProfitLoss": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           }
         }
       },
       "StockTransaction": {
+        "required": [
+          "id",
+          "accountId",
+          "price",
+          "quantity",
+          "fees",
+          "transactionDate",
+          "transactionType"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -7773,19 +7858,11 @@
             "format": "uuid"
           },
           "price": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "quantity": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
+            "type": "integer",
             "format": "int32"
           },
           "description": {
@@ -7795,11 +7872,7 @@
             ]
           },
           "fees": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "accountHolderName": {
@@ -7823,7 +7896,9 @@
           "symbol",
           "start",
           "end",
-          "granularity"
+          "granularity",
+          "points",
+          "investment"
         ],
         "type": "object",
         "properties": {
@@ -7843,11 +7918,7 @@
             "format": "date"
           },
           "granularity": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
+            "type": "integer",
             "format": "int32"
           },
           "points": {
@@ -7865,6 +7936,10 @@
         }
       },
       "StockValueReportPoint": {
+        "required": [
+          "date",
+          "value"
+        ],
         "type": "object",
         "properties": {
           "date": {
@@ -7872,32 +7947,20 @@
             "format": "date"
           },
           "value": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           }
         }
       },
       "Tag": {
         "required": [
-          "name"
+          "id",
+          "name",
+          "tags",
+          "settings"
         ],
         "type": "object",
         "properties": {
-          "id": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
-            "format": "int32"
-          },
-          "name": {
-            "type": "string"
-          },
           "colour": {
             "oneOf": [
               {
@@ -7916,6 +7979,13 @@
           },
           "settings": {
             "$ref": "#/components/schemas/TagSettings"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
           }
         }
       },
@@ -7929,11 +7999,7 @@
           "levels": {
             "type": "object",
             "additionalProperties": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           },
@@ -7946,6 +8012,10 @@
         }
       },
       "TagSettings": {
+        "required": [
+          "applySmoothing",
+          "excludeFromReporting"
+        ],
         "type": "object",
         "properties": {
           "applySmoothing": {
@@ -7963,16 +8033,13 @@
           "months",
           "accountId",
           "start",
-          "end"
+          "end",
+          "average"
         ],
         "type": "object",
         "properties": {
           "tagId": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
+            "type": "integer",
             "format": "int32"
           },
           "tagName": {
@@ -7985,19 +8052,13 @@
             }
           },
           "average": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "offsetAverage": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           },
@@ -8017,16 +8078,15 @@
       },
       "TagValue": {
         "required": [
-          "grossAmount"
+          "grossAmount",
+          "hasChildren"
         ],
         "type": "object",
         "properties": {
           "tagId": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "null",
-              "integer",
-              "string"
+              "integer"
             ],
             "format": "int32"
           },
@@ -8037,19 +8097,13 @@
             ]
           },
           "grossAmount": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "netAmount": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           },
@@ -8059,6 +8113,18 @@
         }
       },
       "Transaction": {
+        "required": [
+          "id",
+          "accountId",
+          "amount",
+          "netAmount",
+          "excludeFromReporting",
+          "transactionTime",
+          "transactionType",
+          "tags",
+          "splits",
+          "offsetFor"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -8070,19 +8136,11 @@
             "format": "uuid"
           },
           "amount": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "netAmount": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "description": {
@@ -8135,7 +8193,7 @@
           "tags": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Tag"
+              "$ref": "#/components/schemas/SimpleTag"
             }
           },
           "splits": {
@@ -8172,11 +8230,7 @@
             "$ref": "#/components/schemas/Transaction"
           },
           "amount": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           }
         }
@@ -8192,11 +8246,7 @@
             "$ref": "#/components/schemas/Transaction"
           },
           "amount": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           }
         }
@@ -8205,7 +8255,8 @@
         "required": [
           "id",
           "tags",
-          "amount"
+          "amount",
+          "offsetBy"
         ],
         "type": "object",
         "properties": {
@@ -8216,15 +8267,11 @@
           "tags": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Tag"
+              "$ref": "#/components/schemas/SimpleTag"
             }
           },
           "amount": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "offsetBy": {
@@ -8254,72 +8301,15 @@
             "format": "date"
           },
           "grossAmount": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "netAmount": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
-          }
-        }
-      },
-      "Update": {
-        "required": [
-          "accountId",
-          "virtualAccountId",
-          "recurringTransactionId",
-          "description",
-          "amount",
-          "schedule",
-          "nextRun"
-        ],
-        "type": "object",
-        "properties": {
-          "accountId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "virtualAccountId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "recurringTransactionId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "description": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "amount": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
-            "format": "double"
-          },
-          "schedule": {
-            "$ref": "#/components/schemas/ScheduleFrequency"
-          },
-          "nextRun": {
-            "type": "string",
-            "format": "date"
-          },
-          "instrumentId": {
-            "type": "string",
-            "format": "uuid"
           }
         }
       },
@@ -8327,7 +8317,9 @@
         "required": [
           "name",
           "description",
-          "shareWithFamily"
+          "shareWithFamily",
+          "accountId",
+          "currentBalance"
         ],
         "type": "object",
         "properties": {
@@ -8345,20 +8337,14 @@
             "type": "boolean"
           },
           "purchasePrice": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           },
           "currentBalance": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "groupId": {
@@ -8387,11 +8373,7 @@
             "format": "uuid"
           },
           "balance": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           }
         }
@@ -8416,11 +8398,7 @@
         "type": "object",
         "properties": {
           "id": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
+            "type": "integer",
             "format": "int32"
           },
           "name": {
@@ -8433,29 +8411,72 @@
       },
       "UpdateInstitutionAccount": {
         "required": [
-          "name"
+          "name",
+          "institutionId"
         ],
         "type": "object",
         "properties": {
           "institutionId": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
+            "type": "integer",
             "format": "int32"
           },
           "importerTypeId": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "null",
-              "integer",
-              "string"
+              "integer"
             ],
             "format": "int32"
           },
           "name": {
             "type": "string"
+          }
+        }
+      },
+      "UpdateRecurringTransaction": {
+        "required": [
+          "accountId",
+          "virtualAccountId",
+          "recurringTransactionId",
+          "description",
+          "amount",
+          "schedule",
+          "nextRun",
+          "instrumentId"
+        ],
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "virtualAccountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "recurringTransactionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "schedule": {
+            "$ref": "#/components/schemas/ScheduleFrequency"
+          },
+          "nextRun": {
+            "type": "string",
+            "format": "date"
+          },
+          "instrumentId": {
+            "type": "string",
+            "format": "uuid"
           }
         }
       },
@@ -8488,7 +8509,8 @@
           "name",
           "description",
           "shareWithFamily",
-          "currentPrice"
+          "currentPrice",
+          "instrumentId"
         ],
         "type": "object",
         "properties": {
@@ -8506,11 +8528,7 @@
             "type": "boolean"
           },
           "currentPrice": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "groupId": {
@@ -8557,7 +8575,8 @@
           "instrumentId",
           "id",
           "notes",
-          "splits"
+          "splits",
+          "excludeFromReporting"
         ],
         "type": "object",
         "properties": {
@@ -8588,6 +8607,10 @@
         }
       },
       "UpdateUser": {
+        "required": [
+          "currency",
+          "cards"
+        ],
         "type": "object",
         "properties": {
           "primaryAccountId": {
@@ -8608,7 +8631,42 @@
           }
         }
       },
+      "UpdateVirtualInstrument": {
+        "required": [
+          "instrumentId",
+          "virtualInstrumentId",
+          "name",
+          "description",
+          "currentBalance"
+        ],
+        "type": "object",
+        "properties": {
+          "instrumentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "virtualInstrumentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "currentBalance": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
       "UsageDataPoint": {
+        "required": [
+          "date",
+          "accountName",
+          "usagePerDay"
+        ],
         "type": "object",
         "properties": {
           "date": {
@@ -8619,16 +8677,17 @@
             "type": "string"
           },
           "usagePerDay": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           }
         }
       },
       "UsageReport": {
+        "required": [
+          "start",
+          "end",
+          "dataPoints"
+        ],
         "type": "object",
         "properties": {
           "start": {
@@ -8649,8 +8708,13 @@
       },
       "User": {
         "required": [
+          "id",
           "emailAddress",
-          "currency"
+          "currency",
+          "familyId",
+          "accounts",
+          "sharedAccounts",
+          "groups"
         ],
         "type": "object",
         "properties": {
@@ -8716,10 +8780,6 @@
         ],
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
           "name": {
             "type": [
               "null",
@@ -8727,19 +8787,21 @@
             ]
           },
           "last4Digits": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
+            "type": "integer",
             "format": "int16"
           }
         }
       },
       "UserWithCards": {
         "required": [
+          "id",
           "emailAddress",
-          "currency"
+          "currency",
+          "familyId",
+          "cards",
+          "accounts",
+          "sharedAccounts",
+          "groups"
         ],
         "type": "object",
         "properties": {
@@ -8821,9 +8883,11 @@
           "id",
           "name",
           "currentBalance",
-          "currentBalanceLocalCurrency",
           "currency",
-          "controller"
+          "controller",
+          "parentId",
+          "balanceDate",
+          "virtualInstruments"
         ],
         "type": "object",
         "properties": {
@@ -8856,19 +8920,13 @@
             "format": "date-time"
           },
           "currentBalance": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
+            "type": "number",
             "format": "double"
           },
           "currentBalanceLocalCurrency": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           },
@@ -8905,20 +8963,16 @@
             }
           },
           "remainingBalance": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           },
           "remainingBalanceLocalCurrency": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "null",
-              "number",
-              "string"
+              "number"
             ],
             "format": "double"
           }

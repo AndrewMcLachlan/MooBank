@@ -3,7 +3,7 @@ import { Table } from "@andrewmclachlan/moo-ds";
 import { format, parseISO, subYears } from "date-fns";
 import { getNumberOfPages, Pagination, useLocalStorage } from "@andrewmclachlan/moo-ds";
 
-import { Bill, BillAccount, UtilityType } from "models/bills";
+import type { Bill, UtilityType, Account } from "api/types.gen";
 import { useBillsByUtilityType, useBillAccountsByType, BillFilter } from "services/BillService";
 import { BillDetails } from "../bills/BillDetails";
 import { BillFilterPanel } from "./BillFilterPanel";
@@ -29,7 +29,7 @@ export const UtilityTypeBillsTab: React.FC<UtilityTypeBillsTabProps> = ({ utilit
     const [filter, setFilter] = useLocalStorage<BillFilter>("bills-filter", getDefaultFilter());
     const [showDetails, setShowDetails] = useState(false);
     const [selectedBill, setSelectedBill] = useState<Bill | undefined>(undefined);
-    const [selectedAccount, setSelectedAccount] = useState<BillAccount | undefined>(undefined);
+    const [selectedAccount, setSelectedAccount] = useState<Account | undefined>(undefined);
 
     const { data: accounts } = useBillAccountsByType(utilityType);
     const { data: pagedBills } = useBillsByUtilityType(utilityType, pageNumber, pageSize, filter);

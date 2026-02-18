@@ -1,4 +1,5 @@
 #nullable enable
+using System.Security.Claims;
 using Asm.MooBank.Domain.Entities.Budget;
 using Asm.MooBank.Domain.Entities.Group;
 using Asm.MooBank.Infrastructure.Repositories;
@@ -7,7 +8,6 @@ using Asm.MooBank.Security;
 using Asm.MooBank.Security.Authorisation;
 using Asm.Security;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
 
 namespace Asm.MooBank.Infrastructure.Tests.Repositories;
 
@@ -155,7 +155,7 @@ public class SecurityRepositoryTests : IDisposable
         var repository = CreateRepository();
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => repository.AssertBudgetLinePermission(nonExistentId));
+        await Assert.ThrowsAsync<NotFoundException>(() => repository.AssertBudgetLinePermission(nonExistentId, TestContext.Current.CancellationToken));
     }
 
     // Note: Full integration tests for AssertBudgetLinePermission with authorization
@@ -177,7 +177,7 @@ public class SecurityRepositoryTests : IDisposable
         var repository = CreateRepository();
 
         // Act & Assert - should not throw
-        await repository.AssertAdministrator();
+        await repository.AssertAdministrator(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -191,7 +191,7 @@ public class SecurityRepositoryTests : IDisposable
         var repository = CreateRepository();
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotAuthorisedException>(() => repository.AssertAdministrator());
+        await Assert.ThrowsAsync<NotAuthorisedException>(() => repository.AssertAdministrator(TestContext.Current.CancellationToken));
     }
 
     #endregion
@@ -212,7 +212,7 @@ public class SecurityRepositoryTests : IDisposable
         var repository = CreateRepository();
 
         // Act
-        var result = await repository.GetInstrumentIds();
+        var result = await repository.GetInstrumentIds(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, result.Count());
@@ -227,7 +227,7 @@ public class SecurityRepositoryTests : IDisposable
         var repository = CreateRepository();
 
         // Act
-        var result = await repository.GetInstrumentIds();
+        var result = await repository.GetInstrumentIds(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(result);

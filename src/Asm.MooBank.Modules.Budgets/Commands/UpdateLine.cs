@@ -5,9 +5,9 @@ using Asm.MooBank.Modules.Budgets.Models;
 
 namespace Asm.MooBank.Modules.Budgets.Commands;
 
-public record UpdateLine(short Year, Guid Id, Models.BudgetLine BudgetLine) : ICommand<Models.BudgetLine>;
+public record UpdateLine(short Year, Guid Id, Models.BudgetLineBase BudgetLine) : ICommand<Models.BudgetLine>;
 
-internal class UpdateLineHandler(IUnitOfWork unitOfWork, IBudgetRepository budgetRepository, User user, ISecurity security) :  ICommandHandler<UpdateLine, Models.BudgetLine>
+internal class UpdateLineHandler(IUnitOfWork unitOfWork, IBudgetRepository budgetRepository, User user, ISecurity security) : ICommandHandler<UpdateLine, Models.BudgetLine>
 {
     public async ValueTask<Models.BudgetLine> Handle(UpdateLine request, CancellationToken cancellationToken)
     {

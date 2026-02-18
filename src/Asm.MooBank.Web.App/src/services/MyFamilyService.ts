@@ -1,8 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getMyFamilyOptions, getMyFamilyQueryKey, updateMyFamilyMutation, removeFamilyMemberMutation } from "api/@tanstack/react-query.gen";
-import { UpdateFamily, Family as GenFamily } from "api/types.gen";
-
-import { Family } from "models";
+import type { Family } from "api/types.gen";
 import { toast } from "react-toastify";
 
 export const useMyFamily = () => useQuery({ ...getMyFamilyOptions() });
@@ -14,7 +12,7 @@ export const useUpdateMyFamily = () => {
     const { mutateAsync } = useMutation({
         ...updateMyFamilyMutation(),
         onSuccess: (data) => {
-            queryClient.setQueryData<GenFamily>(getMyFamilyQueryKey(), data);
+            queryClient.setQueryData<Family>(getMyFamilyQueryKey(), data);
         },
         onError: () => {
             queryClient.invalidateQueries({ queryKey: getMyFamilyQueryKey() });
@@ -22,7 +20,7 @@ export const useUpdateMyFamily = () => {
     });
 
     return (family: Family) =>
-        toast.promise(mutateAsync({ body: family as unknown as UpdateFamily }), { pending: "Updating family", success: "Family updated", error: "Failed to update family" });
+        toast.promise(mutateAsync({ body: family as any }), { pending: "Updating family", success: "Family updated", error: "Failed to update family" });
 }
 
 export const useRemoveFamilyMember = () => {
@@ -32,9 +30,9 @@ export const useRemoveFamilyMember = () => {
     const { mutateAsync } = useMutation({
         ...removeFamilyMemberMutation(),
         onSuccess: (_data, variables) => {
-            const family = queryClient.getQueryData<GenFamily>(getMyFamilyQueryKey());
+            const family = queryClient.getQueryData<Family>(getMyFamilyQueryKey());
             if (family) {
-                queryClient.setQueryData<GenFamily>(getMyFamilyQueryKey(), {
+                queryClient.setQueryData<Family>(getMyFamilyQueryKey(), {
                     ...family,
                     members: family.members?.filter(m => m.id !== variables.path!.userId)
                 });

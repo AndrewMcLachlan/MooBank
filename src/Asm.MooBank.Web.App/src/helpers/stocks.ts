@@ -1,4 +1,4 @@
-import { StockHolding } from "api/types.gen";
+import type { StockHolding } from "api/types.gen";
 
 export const emptyStockHolding: Partial<StockHolding> & { price: number; fees: number } = {
     id: "",

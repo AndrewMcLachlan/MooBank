@@ -32,12 +32,12 @@ public class BudgetRepositoryTests : IDisposable
         var existingBudget = TestEntities.CreateBudget(familyId: familyId, year: year);
 
         _context.Add(existingBudget);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var repository = CreateRepository();
 
         // Act
-        var result = await repository.GetOrCreate(familyId, year);
+        var result = await repository.GetOrCreate(familyId, year, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -56,7 +56,7 @@ public class BudgetRepositoryTests : IDisposable
         var repository = CreateRepository();
 
         // Act
-        var result = await repository.GetOrCreate(familyId, year);
+        var result = await repository.GetOrCreate(familyId, year, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -74,7 +74,7 @@ public class BudgetRepositoryTests : IDisposable
         var repository = CreateRepository();
 
         // Act
-        var result = await repository.GetOrCreate(familyId, year);
+        var result = await repository.GetOrCreate(familyId, year, TestContext.Current.CancellationToken);
 
         // Assert - budget should be tracked for insertion
         var trackedEntry = _context.ChangeTracker.Entries<Budget>()
@@ -94,12 +94,12 @@ public class BudgetRepositoryTests : IDisposable
         var existingBudget = TestEntities.CreateBudget(familyId: familyId, year: existingYear);
 
         _context.Add(existingBudget);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var repository = CreateRepository();
 
         // Act
-        var result = await repository.GetOrCreate(familyId, requestedYear);
+        var result = await repository.GetOrCreate(familyId, requestedYear, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotEqual(existingBudget.Id, result.Id);
@@ -116,12 +116,12 @@ public class BudgetRepositoryTests : IDisposable
         var existingBudget = TestEntities.CreateBudget(familyId: existingFamilyId, year: year);
 
         _context.Add(existingBudget);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var repository = CreateRepository();
 
         // Act
-        var result = await repository.GetOrCreate(requestedFamilyId, year);
+        var result = await repository.GetOrCreate(requestedFamilyId, year, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotEqual(existingBudget.Id, result.Id);
@@ -241,12 +241,12 @@ public class BudgetRepositoryTests : IDisposable
         var budget = TestEntities.CreateBudget(familyId: familyId, year: year);
 
         _context.Add(budget);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var repository = CreateRepository();
 
         // Act
-        var result = await repository.GetByYear(familyId, year);
+        var result = await repository.GetByYear(familyId, year, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -263,7 +263,7 @@ public class BudgetRepositoryTests : IDisposable
         var repository = CreateRepository();
 
         // Act & Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(() => repository.GetByYear(familyId, year));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => repository.GetByYear(familyId, year, TestContext.Current.CancellationToken));
     }
 
     #endregion

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 
 namespace Asm.MooBank.Modules.Reports.Endpoints;
+
 internal class GroupReports : EndpointGroupBase
 {
     public override string Name => "Group Reports";

@@ -7,6 +7,6 @@ internal interface ITransactionRawRepository : Asm.Domain.IRepository<Transactio
     Task<IEnumerable<TransactionRaw>> GetAll(Guid instrumentId, CancellationToken cancellationToken = default);
 
     void AddRange(IEnumerable<TransactionRaw> transactions);
-    
+
     Task<TransactionRaw> GetZeroBalance(string details, DateOnly transactionTime, decimal debit, decimal credit, CancellationToken cancellationToken = default);
 }

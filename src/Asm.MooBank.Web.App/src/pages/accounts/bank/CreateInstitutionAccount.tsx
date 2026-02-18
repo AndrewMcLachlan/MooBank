@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 
 import { SectionForm, Form } from "@andrewmclachlan/moo-ds";
 
-import { CreateInstitutionAccount as Create, InstitutionAccount, LogicalAccount } from "models";
+import type { CreateInstitutionAccount as Create, InstitutionAccount, LogicalAccount } from "api/types.gen";
 import { useCreateInstitutionAccount } from "services";
 import { AccountPage, InstitutionSelector, useAccount } from "components";
 import { ImportSettings } from "../ImportSettings";

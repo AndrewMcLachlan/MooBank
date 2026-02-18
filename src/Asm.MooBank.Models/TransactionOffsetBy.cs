@@ -1,4 +1,4 @@
-﻿namespace Asm.MooBank.Models;
+namespace Asm.MooBank.Models;
 
 public partial record TransactionOffsetBy
 {

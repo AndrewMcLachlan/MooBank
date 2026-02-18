@@ -1,7 +1,8 @@
 import { TransactionSearch } from "components";
 import { DeleteIcon } from "@andrewmclachlan/moo-ds";
 import { valueAsNumber } from "helpers";
-import { Transaction, TransactionOffset, TransactionSplit as TransactionSplitModel, isCredit } from "models";
+import type { Transaction, TransactionSplit as TransactionSplitModel, TransactionOffsetFor } from "api/types.gen";
+import { isCredit } from "helpers/transactions";
 import React, { useState } from "react";
 import { Col, Form, Input, Row } from "@andrewmclachlan/moo-ds";
 import { useInvalidateSearch } from "services";
@@ -9,10 +10,10 @@ import { TransactionSplitTagPanel } from "./TransactionSplitTagPanel";
 
 export const TransactionSplit: React.FC<TransactionSplitProps> = ({ transaction, split, splitChanged, removeSplit }) => {
 
-    const [offsetBy, setOffsetBy] = useState<TransactionOffset[]>(split.offsetBy);
+    const [offsetBy, setOffsetBy] = useState<TransactionOffsetFor[]>(split.offsetBy);
     const invalidateSearch = useInvalidateSearch(transaction.id);
 
-    const offsetChanged = (offset: TransactionOffset, oldOffset?: Transaction) => {
+    const offsetChanged = (offset: TransactionOffsetFor, oldOffset?: Transaction) => {
         if (offset.amount > offset.transaction.amount || offset.amount <= 0) offset.amount = offset.transaction.amount;
 
         const newOffsetBy = [...offsetBy];

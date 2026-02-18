@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, InputGroup } from "@andrewmclachlan/moo-ds";
 import { useMatch, useNavigate, useParams } from "react-router";
 import { Form, Section, SectionForm } from "@andrewmclachlan/moo-ds";
-import { VirtualInstrument } from "../../models";
+import type { VirtualInstrument } from "api/types.gen";
 import { useUpdateVirtualInstrument, useVirtualInstrument } from "../../services";
 import { AccountPage } from "components";
 import { RecurringTransactions } from "./RecurringTransactions";

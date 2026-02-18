@@ -2,7 +2,7 @@
 import { parseISO } from "date-fns/parseISO";
 import React from "react";
 
-import { Transaction } from "models";
+import type { Transaction } from "api/types.gen";
 import { TransactionTagPanel } from "./TransactionTagPanel";
 import { Amount } from "components/Amount";
 import { useTransactionList } from "components/TransactionListProvider";

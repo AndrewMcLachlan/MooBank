@@ -24,7 +24,7 @@ public partial record Transaction
 
     public TransactionType TransactionType { get; set; }
 
-    public IEnumerable<Tag> Tags { get; set; } = [];
+    public IEnumerable<TagBase> Tags { get; set; } = [];
 
     public IEnumerable<TransactionSplit> Splits { get; set; } = [];
 

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 
 namespace Asm.MooBank.Modules.ReferenceData.Endpoints;
+
 internal class ReferenceData : EndpointGroupBase
 {
     public override string Name => "Reference Data";

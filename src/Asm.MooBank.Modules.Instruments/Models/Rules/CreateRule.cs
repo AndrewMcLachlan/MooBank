@@ -1,4 +1,5 @@
 ﻿namespace Asm.MooBank.Modules.Instruments.Models.Rules;
+
 public record CreateRule
 {
     public required Guid InstrumentId { get; set; }

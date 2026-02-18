@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Asm.MooBank.Modules.Families.Commands;
 
 [DisplayName("UpdateFamily")]
-public sealed record Update([FromRoute]Guid Id, [FromBody]UpdateFamily Family) : ICommand<Models.Family>
+public sealed record Update([FromRoute] Guid Id, [FromBody] UpdateFamily Family) : ICommand<Models.Family>
 {
 }
 

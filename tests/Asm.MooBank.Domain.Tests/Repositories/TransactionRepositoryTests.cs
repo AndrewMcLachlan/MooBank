@@ -5,9 +5,9 @@ using Asm.MooBank.Domain.Entities.Transactions.Specifications;
 using Asm.MooBank.Domain.Tests.Support;
 using Asm.MooBank.Infrastructure.Repositories;
 using Asm.MooBank.Models;
-using Transaction = Asm.MooBank.Domain.Entities.Transactions.Transaction;
-using DomainTransactionSplit = Asm.MooBank.Domain.Entities.Transactions.TransactionSplit;
 using DomainTag = Asm.MooBank.Domain.Entities.Tag.Tag;
+using DomainTransactionSplit = Asm.MooBank.Domain.Entities.Transactions.TransactionSplit;
+using Transaction = Asm.MooBank.Domain.Entities.Transactions.Transaction;
 
 namespace Asm.MooBank.Domain.Tests.Repositories;
 

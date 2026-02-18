@@ -5,7 +5,8 @@ import { useForm } from "react-hook-form";
 import { Form } from "@andrewmclachlan/moo-ds";
 
 import { useAccount } from "components";
-import * as Models from "models";
+import type { Transaction } from "api/types.gen";
+import { CreateTransaction, emptyTransaction } from "helpers/transactions";
 import { useCreateTransaction, useUpdateBalance } from "services";
 import { CurrencyInput } from "components";
 
@@ -19,7 +20,7 @@ export const AddTransaction: React.FC<AddTransactionProps> = ({ show, onClose, o
 
     const isPending = addTransaction.isPending || updateBalance.isPending;
 
-    const handleSubmit = (transaction: Models.Transaction) => {
+    const handleSubmit = (transaction: CreateTransaction) => {
 
         if (balanceUpdate) {
             updateBalance.mutateAsync(account.id, transaction);
@@ -30,7 +31,7 @@ export const AddTransaction: React.FC<AddTransactionProps> = ({ show, onClose, o
         onSave?.();
     }
 
-    const form = useForm<Models.Transaction>({ defaultValues: Models.emptyTransaction });
+    const form = useForm<CreateTransaction>({ defaultValues: emptyTransaction });
 
     if (!account) return null;
 

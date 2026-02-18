@@ -1,5 +1,5 @@
 import { emptyGuid } from "@andrewmclachlan/moo-ds";
-import { RecurringTransaction, ScheduleFrequency } from "api/types.gen";
+import type { RecurringTransaction, ScheduleFrequency } from "api/types.gen";
 
 export const Schedules: ScheduleFrequency[] = ["Daily", "Weekly", "Monthly", "Yearly"];
 

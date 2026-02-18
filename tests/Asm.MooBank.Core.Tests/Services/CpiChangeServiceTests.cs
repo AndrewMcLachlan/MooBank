@@ -2,8 +2,8 @@ using Asm.Domain;
 using Asm.MooBank.Abs;
 using Asm.MooBank.Models;
 using Asm.MooBank.Services;
-using DomainCpiChange = Asm.MooBank.Domain.Entities.ReferenceData.CpiChange;
 using AbsCpiChange = Asm.MooBank.Abs.CpiChange;
+using DomainCpiChange = Asm.MooBank.Domain.Entities.ReferenceData.CpiChange;
 using IReferenceDataRepository = Asm.MooBank.Domain.Entities.ReferenceData.IReferenceDataRepository;
 using QuarterEntity = Asm.MooBank.Domain.Entities.QuarterEntity;
 

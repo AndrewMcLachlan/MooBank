@@ -1,6 +1,6 @@
 import { emptyGuid } from "@andrewmclachlan/moo-ds";
 import { format } from "date-fns/format";
-import { TransactionType, TransactionSplit } from "api/types.gen";
+import type { TransactionType, TransactionSplit } from "api/types.gen";
 
 enum TransactionTypesEnum {
     Credit = 1,

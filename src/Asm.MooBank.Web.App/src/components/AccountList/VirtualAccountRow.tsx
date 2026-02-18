@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { numberClassName } from "helpers";
 import { EditColumn, emptyGuid, useClickAway } from "@andrewmclachlan/moo-ds";
 
-import { InstrumentId, VirtualInstrument } from "models";
+import type { VirtualInstrument } from "api/types.gen";
 import { useUpdateVirtualInstrumentBalance } from "services";
 import { useNavigate } from "react-router";
 import { Amount } from "components/Amount";
@@ -30,7 +30,7 @@ export const VirtualAccountRow: React.FC<VirtualAccountRowProps> = (props) => {
 
 interface VirtualAccountRowProps {
     account: VirtualInstrument;
-    accountId: InstrumentId;
+    accountId: string;
 }
 
 VirtualAccountRow.displayName = "VirtualAccountRow";

@@ -11,7 +11,7 @@ public record TagValue
 
     public string? TagName { get; init; }
 
-    public required decimal GrossAmount { get; init; }
+    public decimal GrossAmount { get; init; }
 
     public decimal? NetAmount { get; init; }
 

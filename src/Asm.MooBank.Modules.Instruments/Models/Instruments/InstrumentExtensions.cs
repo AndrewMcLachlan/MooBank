@@ -1,6 +1,7 @@
 ﻿using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Modules.Instruments.Models.Instruments;
+
 internal static class InstrumentExtensions
 {
 }

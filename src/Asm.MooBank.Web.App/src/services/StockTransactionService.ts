@@ -1,23 +1,23 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import * as Models from "../models";
+import type { StockTransaction } from "api/types.gen";
+import type { CreateStockTransaction } from "helpers/stocks";
 import { TransactionsFilter } from "../store/state";
 import { PagedResult, SortDirection } from "@andrewmclachlan/moo-ds";
 import { toast } from "react-toastify";
 import {
-    getStockTransactionsOptions,
     getStockTransactionsQueryKey,
     createStockTransactionMutation,
 } from "api/@tanstack/react-query.gen";
+import { getStockTransactions } from "api/sdk.gen";
 import {
     SortDirection as GenSortDirection,
-    CreateStockTransactionData,
 } from "api/types.gen";
 
 export const useStockTransactions = (accountId: string, filter: TransactionsFilter, pageSize: number, pageNumber: number, sortField: string, sortDirection: SortDirection) => {
 
     return useQuery({
-        ...getStockTransactionsOptions({
+        queryKey: getStockTransactionsQueryKey({
             path: { instrumentId: accountId, pageSize, pageNumber },
             query: {
                 Filter: filter.description || undefined,
@@ -27,7 +27,21 @@ export const useStockTransactions = (accountId: string, filter: TransactionsFilt
                 SortDirection: (sortDirection || "Descending") as GenSortDirection,
             },
         }),
-        select: (data) => data as unknown as PagedResult<Models.StockTransaction>,
+        queryFn: async ({ signal }) => {
+            const { data, headers } = await getStockTransactions({
+                path: { instrumentId: accountId, pageSize, pageNumber },
+                query: {
+                    Filter: filter.description || undefined,
+                    Start: filter.start || undefined,
+                    End: filter.end || undefined,
+                    SortField: sortField || undefined,
+                    SortDirection: (sortDirection || "Descending") as GenSortDirection,
+                },
+                signal,
+                throwOnError: true,
+            });
+            return { results: data, total: Number(headers['x-total-count'] ?? 0) } as PagedResult<StockTransaction>;
+        },
     });
 }
 
@@ -42,8 +56,8 @@ export const useCreateStockTransaction = () => {
         }
     });
 
-    const create = (accountId: string, transaction: Models.CreateStockTransaction) => {
-        toast.promise(mutateAsync({ body: transaction as unknown as CreateStockTransactionData["body"], path: { instrumentId: accountId } }), { pending: "Creating transaction", success: "Transaction created", error: "Failed to create transaction" });
+    const create = (accountId: string, transaction: CreateStockTransaction) => {
+        toast.promise(mutateAsync({ body: transaction as any, path: { instrumentId: accountId } } as any), { pending: "Creating transaction", success: "Transaction created", error: "Failed to create transaction" });
     };
 
     return create;

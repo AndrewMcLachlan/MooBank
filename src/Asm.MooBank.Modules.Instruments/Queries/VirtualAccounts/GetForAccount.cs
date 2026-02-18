@@ -3,6 +3,7 @@ using Asm.MooBank.Modules.Instruments.Models.Instruments;
 using Asm.MooBank.Services;
 
 namespace Asm.MooBank.Modules.Instruments.Queries.VirtualAccounts;
+
 public record GetForAccount(Guid InstrumentId) : IQuery<IEnumerable<VirtualInstrument>>;
 
 internal class GetForAccountHandler(IQueryable<Domain.Entities.Account.LogicalAccount> accounts, ICurrencyConverter currencyConverter) : IQueryHandler<GetForAccount, IEnumerable<VirtualInstrument>>

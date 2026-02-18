@@ -5,7 +5,7 @@ namespace Asm.MooBank.Modules.Bills.Queries.Accounts;
 
 public record GetAll() : IQuery<IEnumerable<Account>>;
 
-internal class GetAllHandler(IQueryable<Domain.Entities.Utility.Account> accounts, User user)  : IQueryHandler<GetAll, IEnumerable<Account>>
+internal class GetAllHandler(IQueryable<Domain.Entities.Utility.Account> accounts, User user) : IQueryHandler<GetAll, IEnumerable<Account>>
 {
     public async ValueTask<IEnumerable<Account>> Handle(GetAll query, CancellationToken cancellationToken)
     {

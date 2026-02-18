@@ -1,4 +1,4 @@
-import { LogicalAccount, VirtualInstrument } from "api/types.gen";
+import type { LogicalAccount, VirtualInstrument } from "api/types.gen";
 
 export interface UpdateVirtualInstrument {
     name?: string;

@@ -2,7 +2,7 @@ import { emptyGuid } from "@andrewmclachlan/moo-ds";
 
 import { MonthSelector } from "components";
 import { ComboBox, SaveIcon } from "@andrewmclachlan/moo-ds";
-import { BudgetLineType, Tag } from "models";
+import type { BudgetLineType, Tag } from "api/types.gen";
 import { useEffect, useState } from "react";
 import { Input } from "@andrewmclachlan/moo-ds";
 import { useTags } from "services";

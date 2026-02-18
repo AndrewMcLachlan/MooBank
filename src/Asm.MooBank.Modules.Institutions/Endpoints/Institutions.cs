@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
 namespace Asm.MooBank.Modules.Institutions.Endpoints;
+
 internal class Institutions : EndpointGroupBase
 {
     public override string Name => "Institutions";

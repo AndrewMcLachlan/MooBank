@@ -1,4 +1,4 @@
-import { UtilityType } from "api/types.gen";
+import type { UtilityType } from "api/types.gen";
 
 export const UtilityTypes: UtilityType[] = ["Electricity", "Gas", "Water", "Phone", "Internet", "Other"];
 

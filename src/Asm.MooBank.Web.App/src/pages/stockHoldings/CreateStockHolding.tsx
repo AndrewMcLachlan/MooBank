@@ -9,7 +9,7 @@ import { CurrencyInput } from "components";
 import { GroupSelector } from "components/GroupSelector";
 import { useForm } from "react-hook-form";
 import { useCreateStockHolding } from "services";
-import { NewStockHolding } from "../../models";
+import type { CreateStock } from "api/types.gen";
 
 export const CreateStockHolding: React.FC = () => {
 
@@ -17,21 +17,21 @@ export const CreateStockHolding: React.FC = () => {
 
     const createStockHolding = useCreateStockHolding();
 
-    const handleSubmit = (data: NewStockHolding) => {
+    const handleSubmit = (data: CreateStock) => {
 
-        const stockHolding: NewStockHolding = {
+        const stockHolding = {
             ...data,
             controller: "Manual",
             currency: "AUD",
             currentBalance: 0,
-        };
+        } as CreateStock;
 
         createStockHolding.mutateAsync(stockHolding);
 
         navigate("/accounts");
     }
 
-    const form = useForm<NewStockHolding>();
+    const form = useForm<CreateStock>();
 
     return (
         <Page title="Create Shares" breadcrumbs={[{ text: "Accounts", route: "/accounts" }, { text: "Create Shares", route: "/stock/create" }]}>

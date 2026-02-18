@@ -1,24 +1,21 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAllInstitutionsOptions, getAllInstitutionsQueryKey, getInstitutionOptions, getInstitutionQueryKey, createInstitutionMutation, updateInstitutionMutation } from "api/@tanstack/react-query.gen";
 
-import { AccountType, Institution } from "models";
+import type { AccountType, Institution } from "api/types.gen";
 
 export const useInstitutions = () => useQuery({
     ...getAllInstitutionsOptions(),
-    select: (data) => data as unknown as Institution[],
     staleTime: 1000 * 60 * 60 * 24 * 7,
 });
 
 export const useInstitutionsByAccountType = (accountType?: AccountType) => useQuery({
     ...getAllInstitutionsOptions({ query: { AccountType: accountType as Exclude<AccountType, "None"> } }),
-    select: (data) => data as unknown as Institution[],
     staleTime: 1000 * 60 * 60 * 24 * 7,
-    enabled: accountType !== "None" && accountType !== undefined,
+    enabled: (accountType as string) !== "None" && accountType !== undefined,
 });
 
 export const useInstitution = (id: number) => useQuery({
     ...getInstitutionOptions({ path: { id } }),
-    select: (data) => data as unknown as Institution,
     staleTime: 1000 * 60 * 60 * 24 * 7,
 });
 
@@ -35,7 +32,7 @@ export const useCreateInstitution = () => {
                 return;
             }
 
-            allInstitutions.push(variables.body as unknown as Institution);
+            allInstitutions.push(variables.body as Institution);
             allInstitutions = allInstitutions.sort((t1, t2) => t1.name.localeCompare(t2.name));
             queryClient.setQueryData<Institution[]>(getAllInstitutionsQueryKey(), allInstitutions);
         },
@@ -46,7 +43,7 @@ export const useCreateInstitution = () => {
 
     return {
         mutateAsync: (institution: Institution) =>
-            mutateAsync({ body: institution as unknown as Parameters<typeof mutateAsync>[0]["body"] }),
+            mutateAsync({ body: institution as any }),
         ...rest,
     };
 }
@@ -65,7 +62,7 @@ export const useUpdateInstitution = () => {
             }
 
             allInstitutions = allInstitutions.filter(t => t.id !== variables.path.id);
-            allInstitutions.push(variables.body as unknown as Institution);
+            allInstitutions.push(variables.body as Institution);
 
             allInstitutions = allInstitutions.sort((t1, t2) => t1.name.localeCompare(t2.name));
             queryClient.setQueryData<Institution[]>(getAllInstitutionsQueryKey(), allInstitutions);
@@ -78,7 +75,7 @@ export const useUpdateInstitution = () => {
 
     return {
         mutateAsync: (institution: Institution) =>
-            mutateAsync({ body: institution as unknown as Parameters<typeof mutateAsync>[0]["body"], path: { id: institution.id }, query: { Name: institution.name, InstitutionType: institution.institutionType } } as Parameters<typeof mutateAsync>[0]),
+            mutateAsync({ body: institution as any, path: { id: institution.id }, query: { Name: institution.name, InstitutionType: institution.institutionType } } as any),
         ...rest,
     };
 }

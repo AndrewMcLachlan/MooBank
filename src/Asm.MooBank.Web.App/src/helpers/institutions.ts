@@ -1,4 +1,4 @@
-import { Institution, InstitutionType } from "api/types.gen";
+import type { Institution, InstitutionType } from "api/types.gen";
 
 export const InstitutionTypes: InstitutionType[] = ["Bank", "SuperannuationFund", "Broker", "CreditUnion", "BuildingSociety", "InvestmentFund", "Government", "Other"];
 

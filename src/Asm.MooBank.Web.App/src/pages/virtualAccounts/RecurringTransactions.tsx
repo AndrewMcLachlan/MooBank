@@ -4,8 +4,8 @@ import { SaveIcon } from "@andrewmclachlan/moo-ds";
 import { format } from "date-fns/format";
 import { parse } from "date-fns/parse";
 import { parseISO } from "date-fns/parseISO";
-import { VirtualInstrument } from "models";
-import { RecurringTransaction, Schedule, Schedules, emptyRecurringTransaction } from "models/RecurringTransaction";
+import type { VirtualInstrument, RecurringTransaction, ScheduleFrequency } from "api/types.gen";
+import { Schedules, emptyRecurringTransaction } from "helpers/recurringTransactions";
 import React, { useState } from "react";
 import { useCreateRecurringTransaction, useDeleteRecurringTransaction, useGetRecurringTransactions, useUpdateRecurringTransaction } from "services/RecurringTransactionService";
 
@@ -50,7 +50,7 @@ export const RecurringTransactions: React.FC<RecurringTransactionsProps> = ({ ac
                     <td><input type="text" className="form-control" placeholder="Description" value={newRT.description} onChange={e => setNewRT({ ...newRT, description: e.currentTarget.value })} /></td>
                     <td><input type="number" className="form-control" placeholder="Amount" value={newRT.amount} onChange={e => setNewRT({ ...newRT, amount: e.currentTarget.valueAsNumber })} /></td>
                     <td>
-                        <select className="form-control" value={newRT.schedule} onChange={e => setNewRT({ ...newRT, schedule: e.currentTarget.value as Schedule })}>
+                        <select className="form-control" value={newRT.schedule} onChange={e => setNewRT({ ...newRT, schedule: e.currentTarget.value as ScheduleFrequency })}>
                             {Schedules.map(s => <option key={s}>{s}</option>)}
                         </select>
                     </td>

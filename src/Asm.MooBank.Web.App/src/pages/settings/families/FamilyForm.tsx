@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 
 import { Form, SectionForm } from "@andrewmclachlan/moo-ds";
 
-import { Family } from "models";
+import type { Family } from "api/types.gen";
 
 
 export const FamilyForm: React.FC<FamilyFormProps> = ({ family, buttonText, onSave }) => {

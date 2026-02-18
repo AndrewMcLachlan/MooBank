@@ -33,7 +33,7 @@ public sealed record Update : ICommand<Models.Asset>
     }
 }
 
-internal class UpdateHandler(IAssetRepository repository, IUnitOfWork unitOfWork, User user, ISecurity security, ICurrencyConverter currencyConverter) :  ICommandHandler<Update, Models.Asset>
+internal class UpdateHandler(IAssetRepository repository, IUnitOfWork unitOfWork, User user, ISecurity security, ICurrencyConverter currencyConverter) : ICommandHandler<Update, Models.Asset>
 {
     public async ValueTask<Models.Asset> Handle(Update command, CancellationToken cancellationToken)
     {

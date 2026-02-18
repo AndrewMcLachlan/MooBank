@@ -1,4 +1,4 @@
-import { emptyInstitution } from "models";
+import { emptyInstitution } from "helpers/institutions";
 
 import { SettingsPage } from "../SettingsPage";
 import { InstitutionForm } from "./InstitutionForm";

@@ -2,7 +2,8 @@ import React, { useState } from "react";
 
 import { SaveIcon } from "@andrewmclachlan/moo-ds";
 import { valueAsNumber } from "helpers";
-import { Transaction, TransactionSplit, emptyTransactionSplit } from "models";
+import type { Transaction, TransactionSplit } from "api/types.gen";
+import { emptyTransactionSplit } from "helpers/transactions";
 import { Col, Input, Row } from "@andrewmclachlan/moo-ds";
 import { TransactionSplitTagPanel } from "./TransactionSplitTagPanel";
 

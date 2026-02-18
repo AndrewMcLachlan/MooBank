@@ -1,6 +1,7 @@
 ﻿using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Modules.Accounts.Models.Recurring;
+
 public record RecurringTransaction
 {
     public Guid Id { get; init; }

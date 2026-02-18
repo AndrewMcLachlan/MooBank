@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Asm.MooBank.Security;
+
 public static class Policies
 {
     public const string Admin = nameof(Admin);

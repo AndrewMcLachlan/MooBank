@@ -1,5 +1,5 @@
 import { SortDirection } from "@andrewmclachlan/moo-ds";
-import { Tag } from "api/types.gen";
+import type { Tag } from "api/types.gen";
 
 export const compareTags = (left: Tag, right: Tag): boolean => {
     if (!left && !right) return true;

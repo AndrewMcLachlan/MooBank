@@ -7,7 +7,7 @@ namespace Asm.MooBank.Modules.Groups.Commands;
 [DisplayName("CreateGroup")]
 public record Create(string Name, string Description, bool ShowTotal) : ICommand<Models.Group>;
 
-internal class CreateHandler(IGroupRepository groupRepository, IUnitOfWork unitOfWork, MooBank.Models.User user) :  ICommandHandler<Create, Models.Group>
+internal class CreateHandler(IGroupRepository groupRepository, IUnitOfWork unitOfWork, MooBank.Models.User user) : ICommandHandler<Create, Models.Group>
 {
     public async ValueTask<Models.Group> Handle(Create request, CancellationToken cancellationToken)
     {

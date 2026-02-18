@@ -28,7 +28,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 public static class IServiceCollectionExtensions
 {
 
-    public static IServiceCollection AddMooBankDbContext(this IServiceCollection services, IHostEnvironment env,  IConfiguration configuration)
+    public static IServiceCollection AddMooBankDbContext(this IServiceCollection services, IHostEnvironment env, IConfiguration configuration)
     {
         services.AddSingleton<ExistingTagByIdInterceptor>();
 

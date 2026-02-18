@@ -1,6 +1,7 @@
 ﻿using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Modules.Bills.Models;
+
 public record Account : Instrument
 {
     public UtilityType UtilityType { get; internal set; }

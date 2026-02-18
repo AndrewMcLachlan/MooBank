@@ -1,13 +1,14 @@
 ﻿using Asm.AspNetCore;
 using Asm.AspNetCore.Routing;
 using Asm.MooBank.Modules.Accounts.Commands.Recurring;
-using Asm.MooBank.Modules.Accounts.Queries.Recurring;
 using Asm.MooBank.Modules.Accounts.Models.Recurring;
+using Asm.MooBank.Modules.Accounts.Queries.Recurring;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
 namespace Asm.MooBank.Modules.Accounts.Endpoints;
+
 internal class RecurringEndpoints : EndpointGroupBase
 {
     public override string Name => "Recurring Transactions";

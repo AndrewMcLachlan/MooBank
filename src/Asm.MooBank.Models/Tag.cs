@@ -1,14 +1,19 @@
-﻿using Asm.Drawing;
+﻿using System.ComponentModel;
+using Asm.Drawing;
 
 namespace Asm.MooBank.Models;
 
-public sealed record Tag
+[DisplayName("SimpleTag")]
+public record TagBase
 {
-    private readonly TagSettings _settings = new();
-
-    public int Id { get; set; }
+    public required int Id { get; set; }
 
     public required string Name { get; set; }
+}
+
+public sealed record Tag : TagBase
+{
+    private readonly TagSettings _settings = new();
 
     public HexColour? Colour { get; set; }
 

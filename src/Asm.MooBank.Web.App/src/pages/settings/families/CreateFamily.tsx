@@ -5,7 +5,8 @@ import { useNavigate } from "react-router";
 
 import { Page } from "@andrewmclachlan/moo-app";
 
-import { emptyFamily, Family } from "models";
+import type { Family } from "api/types.gen";
+import { emptyFamily } from "helpers/families";
 import { useCreateFamily } from "services";
 import { FamilyForm } from "./FamilyForm";
 

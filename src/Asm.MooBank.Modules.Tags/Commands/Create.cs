@@ -7,7 +7,7 @@ namespace Asm.MooBank.Modules.Tags.Commands;
 [DisplayName("CreateTag")]
 public sealed record Create(Tag Tag) : ICommand<Tag>;
 
-internal sealed class CreateHandler(IUnitOfWork unitOfWork, ITagRepository tagRepository, User user) :  ICommandHandler<Create, Tag>
+internal sealed class CreateHandler(IUnitOfWork unitOfWork, ITagRepository tagRepository, User user) : ICommandHandler<Create, Tag>
 {
     public async ValueTask<Tag> Handle(Create request, CancellationToken cancellationToken)
     {

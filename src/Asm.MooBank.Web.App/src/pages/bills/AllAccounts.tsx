@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 
 import { IconButton, SectionTable } from "@andrewmclachlan/moo-ds";
 
-import { BillAccount } from "models/bills";
+import type { Account } from "api/types.gen";
 import { useBillAccounts } from "services";
 import { BillsPage } from "./BillsPage";
 
@@ -11,7 +11,7 @@ export const AllBillAccounts: React.FC = () => {
     const navigate = useNavigate();
     const { data: accounts } = useBillAccounts();
 
-    const rowClick = (account: BillAccount) => {
+    const rowClick = (account: Account) => {
         navigate(`/bills/accounts/${account.id}`);
     }
 

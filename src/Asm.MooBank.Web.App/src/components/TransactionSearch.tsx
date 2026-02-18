@@ -1,6 +1,6 @@
 import { ComboBox, ValueProps } from "@andrewmclachlan/moo-ds";
 import { formatDate } from "helpers/dateFns";
-import { Transaction, TransactionType } from "models";
+import type { Transaction, TransactionType } from "api/types.gen";
 import { useSearchTransactions } from "services";
 
 export const TransactionSearch: React.FC<TransactionSearchProps> = ({ transaction, transactionType = "Credit", excludedTransactions = [], ...props }) => {

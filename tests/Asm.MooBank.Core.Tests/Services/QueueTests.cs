@@ -148,6 +148,7 @@ public class ImportTransactionsQueueTests : IDisposable
         Id = Guid.NewGuid(),
         EmailAddress = "test@test.com",
         Currency = "AUD",
+        FamilyId = Guid.NewGuid(),
     };
 }
 

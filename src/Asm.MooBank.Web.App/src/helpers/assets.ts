@@ -1,4 +1,4 @@
-import { Asset } from "api/types.gen";
+import type { Asset } from "api/types.gen";
 
 export const emptyAsset: Partial<Asset> = {
     id: "",

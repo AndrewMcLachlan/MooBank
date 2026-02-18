@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
 namespace Asm.MooBank.Modules.Transactions.Endpoints;
+
 internal class TransactionsEndpoints : EndpointGroupBase
 {
     public override string Name => "Transactions";
@@ -27,7 +28,7 @@ internal class TransactionsEndpoints : EndpointGroupBase
         builder.MapQuery<Search, IEnumerable<Transaction>>("")
             .WithNames("Search Transactions");
 
-        builder.MapCommand<Create, Transaction>("", CommandBinding.None)
+        builder.MapCommand<Create, Transaction>("", CommandBinding.Parameters)
             .WithNames("Create Transaction")
             .Accepts<Create>("application/json");
 

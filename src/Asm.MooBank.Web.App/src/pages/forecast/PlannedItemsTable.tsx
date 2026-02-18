@@ -1,6 +1,6 @@
 import { SectionTable, DeleteIcon, EditColumn, useUpdatingState } from "@andrewmclachlan/moo-ds";
 import { format, parseISO } from "date-fns";
-import { ForecastPlan, PlannedItem, ScheduleFrequency } from "models";
+import type { ForecastPlan, PlannedItem, ScheduleFrequency } from "api/types.gen";
 import { useState } from "react";
 import { Input } from "@andrewmclachlan/moo-ds";
 import { useDeletePlannedItem, useUpdatePlannedItem } from "services/ForecastService";

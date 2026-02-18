@@ -1,4 +1,5 @@
 ﻿namespace Asm.MooBank.Institution.Ing.Domain;
+
 internal interface ITransactionRawRepository : Asm.Domain.IRepository<TransactionRaw, Guid>
 {
     Task<IEnumerable<TransactionRaw>> GetUnprocessed(IEnumerable<Guid> transactionIds, CancellationToken cancellationToken = default);

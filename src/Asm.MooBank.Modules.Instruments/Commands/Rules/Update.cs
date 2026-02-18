@@ -1,8 +1,10 @@
-﻿using Asm.MooBank.Domain.Entities.Instrument;
+﻿using System.ComponentModel;
+using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Modules.Instruments.Models.Rules;
 
 namespace Asm.MooBank.Modules.Instruments.Commands.Rules;
 
+[DisplayName("UpdateRule")]
 public record Update(Guid InstrumentId, int RuleId, UpdateRule Rule) : ICommand<Models.Rules.Rule>;
 
 internal sealed class UpdateRuleHandler(IRuleRepository ruleRepository, IUnitOfWork unitOfWork) : ICommandHandler<Update, Models.Rules.Rule>

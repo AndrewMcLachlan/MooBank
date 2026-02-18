@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAllGroupsOptions, getAllGroupsQueryKey, getGroupOptions, createGroupMutation, updateGroupMutation } from "api/@tanstack/react-query.gen";
-import { Group } from "../models";
+import type { Group } from "api/types.gen";
 
 export const useGroups = () => useQuery({ ...getAllGroupsOptions() });
 
@@ -35,7 +35,7 @@ export const useUpdateGroup = () => {
 
     return {
         mutateAsync: (group: Group) => {
-            mutateAsync({ body: group, path: { id: group.id } });
+            mutateAsync({ body: group, path: { id: group.id } } as any);
         }, ...rest,
     };
 };

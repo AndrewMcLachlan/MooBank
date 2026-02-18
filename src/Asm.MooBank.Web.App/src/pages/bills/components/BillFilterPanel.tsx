@@ -3,11 +3,11 @@ import { Form, Input } from "@andrewmclachlan/moo-ds";
 import { Section } from "@andrewmclachlan/moo-ds";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { BillAccount } from "models/bills";
+import type { Account } from "api/types.gen";
 import { BillFilter } from "services/BillService";
 
 export interface BillFilterPanelProps {
-    accounts?: BillAccount[];
+    accounts?: Account[];
     filter: BillFilter;
     onFilterChange: (filter: BillFilter) => void;
 }

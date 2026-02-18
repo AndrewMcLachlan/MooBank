@@ -2,7 +2,7 @@ import React, { PropsWithChildren, ReactNode } from "react";
 
 import { Page, PageProps } from "@andrewmclachlan/moo-app";
 import { NavItem, NavItemDivider } from "@andrewmclachlan/moo-ds";
-import { StockHolding } from "models";
+import type { StockHolding } from "api/types.gen";
 import { useStockHolding } from "./StockHoldingProvider";
 
 import { Reports, Sliders, Transaction } from "@andrewmclachlan/moo-icons";

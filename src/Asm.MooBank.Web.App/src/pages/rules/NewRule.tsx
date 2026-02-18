@@ -2,7 +2,8 @@ import React, { useState } from "react";
 
 import { TagPanel, useAccount } from "components";
 
-import { Tag, emptyRule } from "models";
+import type { Tag } from "api/types.gen";
+import { emptyRule } from "helpers/rules";
 
 import { SaveIcon } from "@andrewmclachlan/moo-ds";
 import { useCreateRule, useCreateTag, useTags } from "services";
@@ -24,7 +25,7 @@ export const NewRule: React.FC = () => {
         if(newRule.contains === "") return;
         if(newRule.tags.length === 0) return;
 
-        await createRule.mutateAsync({ body: { ...newRule, instrumentId: account.id } as any, path: { instrumentId: account.id } });
+        await createRule.mutateAsync({ body: { ...newRule, instrumentId: account.id }, path: { instrumentId: account.id } } as any);
         setNewRule(emptyRule);
     }
 

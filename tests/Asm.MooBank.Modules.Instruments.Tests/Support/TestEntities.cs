@@ -151,6 +151,7 @@ internal static class TestEntities
             Id = id,
             Name = name ?? Faker.Commerce.Department(),
             Tags = [],
+            Settings = new() { ApplySmoothing = false, ExcludeFromReporting = false },
         };
     }
 

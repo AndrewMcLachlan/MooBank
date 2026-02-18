@@ -2,7 +2,7 @@
 
 import { TagPanel } from "components";
 
-import { Transaction, Tag } from "models";
+import type { Transaction, Tag } from "api/types.gen";
 import { useAccount } from "components";
 import { useAddTransactionTag, useCreateTag, useRemoveTransactionTag, useTags } from "services";
 

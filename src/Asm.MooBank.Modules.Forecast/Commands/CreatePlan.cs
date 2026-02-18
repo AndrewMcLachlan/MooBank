@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Asm.MooBank.Modules.Forecast.Commands;
 
 [DisplayName("CreateForecastPlan")]
-public record CreatePlan([FromBody]Models.ForecastPlan Plan) : ICommand<Models.ForecastPlan>;
+public record CreatePlan([FromBody] Models.ForecastPlan Plan) : ICommand<Models.ForecastPlan>;
 
 internal class CreatePlanHandler(
     IForecastRepository forecastRepository,

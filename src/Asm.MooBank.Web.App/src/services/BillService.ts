@@ -6,22 +6,23 @@ import {
     getBillAccountsOptions,
     getBillAccountsQueryKey,
     getBillAccountOptions,
-    getAllBillsOptions,
     getAllBillsQueryKey,
-    getBillsByUtilityTypeOptions,
-    getBillsForAnAccountOptions,
     getBillsForAnAccountQueryKey,
+    getBillsByUtilityTypeQueryKey,
     createBillAccountMutation,
     createBillMutation,
     getCostPerUnitReportOptions,
     getServiceChargeReportOptions,
     getUsageReportOptions,
 } from "api/@tanstack/react-query.gen";
-import {
-    Create,
+import { getAllBills, getBillsForAnAccount, getBillsByUtilityType } from "api/sdk.gen";
+import type {
     UtilityType,
+    Bill,
+    CreateBillAccount,
 } from "api/types.gen";
-import { BillAccount, CreateBillAccount, CreateBill, Bill } from "models/bills";
+import { PagedResult } from "@andrewmclachlan/moo-ds";
+import type { CreateBill } from "helpers/bills";
 import { toast } from "react-toastify";
 
 // Re-export generated types that consumers import from this file
@@ -38,17 +39,14 @@ export const useBillAccountSummaries = () => useQuery({ ...getBillAccountSummari
 
 export const useBillAccountsByType = (utilityType: string) => useQuery({
     ...getBillAccountsByTypeOptions({ path: { type: utilityType as UtilityType } }),
-    select: (data) => data as unknown as BillAccount[],
 });
 
 export const useBillAccounts = () => useQuery({
     ...getBillAccountsOptions(),
-    select: (data) => data as unknown as BillAccount[],
 });
 
 export const useBillAccount = (id: string) => useQuery({
     ...getBillAccountOptions({ path: { instrumentId: id } }),
-    select: (data) => data as unknown as BillAccount,
 });
 
 export const useCreateBillAccount = () => {
@@ -64,14 +62,14 @@ export const useCreateBillAccount = () => {
 
     return {
         mutateAsync: (account: CreateBillAccount) =>
-            toast.promise(mutateAsync({ body: account as unknown as Create }), { pending: "Creating account", success: "Account created", error: "Failed to create account" }),
+            toast.promise(mutateAsync({ body: account }), { pending: "Creating account", success: "Account created", error: "Failed to create account" }),
         ...rest,
     };
 };
 
 export const useAllBills = (pageNumber: number, pageSize: number, filter?: BillFilter) =>
     useQuery({
-        ...getAllBillsOptions({
+        queryKey: getAllBillsQueryKey({
             query: {
                 PageNumber: pageNumber,
                 PageSize: pageSize,
@@ -81,19 +79,41 @@ export const useAllBills = (pageNumber: number, pageSize: number, filter?: BillF
                 UtilityType: filter?.utilityType as UtilityType | undefined,
             },
         }),
-        select: (data) => data as unknown as { results: Bill[], total: number },
+        queryFn: async ({ signal }) => {
+            const { data, headers } = await getAllBills({
+                query: {
+                    PageNumber: pageNumber,
+                    PageSize: pageSize,
+                    StartDate: filter?.startDate,
+                    EndDate: filter?.endDate,
+                    AccountId: filter?.accountId,
+                    UtilityType: filter?.utilityType as UtilityType | undefined,
+                },
+                signal,
+                throwOnError: true,
+            });
+            return { results: data, total: Number(headers['x-total-count'] ?? 0) } as PagedResult<Bill>;
+        },
     });
 
 export const useBills = (id: string, pageNumber: number, pageSize: number) => useQuery({
-    ...getBillsForAnAccountOptions({
+    queryKey: getBillsForAnAccountQueryKey({
         path: { instrumentId: id },
         query: { PageNumber: pageNumber, PageSize: pageSize },
     }),
-    select: (data) => data as unknown as { results: Bill[], total: number },
+    queryFn: async ({ signal }) => {
+        const { data, headers } = await getBillsForAnAccount({
+            path: { instrumentId: id },
+            query: { PageNumber: pageNumber, PageSize: pageSize },
+            signal,
+            throwOnError: true,
+        });
+        return { results: data, total: Number(headers['x-total-count'] ?? 0) } as PagedResult<Bill>;
+    },
 });
 
 export const useBillsByUtilityType = (utilityType: string, pageNumber: number, pageSize: number, filter?: BillFilter) => useQuery({
-    ...getBillsByUtilityTypeOptions({
+    queryKey: getBillsByUtilityTypeQueryKey({
         path: { utilityType: utilityType as UtilityType },
         query: {
             PageNumber: pageNumber,
@@ -103,8 +123,22 @@ export const useBillsByUtilityType = (utilityType: string, pageNumber: number, p
             AccountId: filter?.accountId,
         },
     }),
+    queryFn: async ({ signal }) => {
+        const { data, headers } = await getBillsByUtilityType({
+            path: { utilityType: utilityType as UtilityType },
+            query: {
+                PageNumber: pageNumber,
+                PageSize: pageSize,
+                StartDate: filter?.startDate,
+                EndDate: filter?.endDate,
+                AccountId: filter?.accountId,
+            },
+            signal,
+            throwOnError: true,
+        });
+        return { results: data, total: Number(headers['x-total-count'] ?? 0) } as PagedResult<Bill>;
+    },
     enabled: !!utilityType,
-    select: (data) => data as unknown as { results: Bill[], total: number },
 });
 
 export const useCostPerUnitReport = (start: string, end: string, accountId?: string, utilityType?: string) => useQuery({
@@ -150,14 +184,14 @@ export const useCreateBill = () => {
         ...createBillMutation(),
         onSettled: (_data, _error, variables) => {
             queryClient.invalidateQueries({ queryKey: getAllBillsQueryKey({ query: {} as any }) });
-            queryClient.invalidateQueries({ queryKey: getBillsForAnAccountQueryKey({ path: { instrumentId: variables.path!.instrumentId } }) });
+            queryClient.invalidateQueries({ queryKey: getBillsForAnAccountQueryKey({ path: { instrumentId: (variables as any).path!.instrumentId } }) });
             queryClient.invalidateQueries({ queryKey: getBillAccountsQueryKey() });
         },
     });
 
     return {
         mutateAsync: (accountId: string, bill: CreateBill) =>
-            toast.promise(mutateAsync({ body: bill as unknown as Create, path: { instrumentId: accountId } }), { pending: "Creating bill", success: "Bill created", error: "Failed to create bill" }),
+            toast.promise(mutateAsync({ body: bill as any, path: { instrumentId: accountId } } as any), { pending: "Creating bill", success: "Bill created", error: "Failed to create bill" }),
         ...rest,
     };
 };

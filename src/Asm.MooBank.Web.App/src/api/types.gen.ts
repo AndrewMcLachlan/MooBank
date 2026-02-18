@@ -5,21 +5,21 @@ export type ClientOptions = {
 };
 
 export type Account = {
-    utilityType?: UtilityType;
+    utilityType: UtilityType;
     firstBill?: null | string;
     latestBill?: null | string;
     id: string;
     name: string;
     description?: null | string;
-    balanceDate?: string;
+    balanceDate: string;
     currentBalance: number;
-    currentBalanceLocalCurrency: null | number;
+    currentBalanceLocalCurrency?: null | number;
     currency: string;
     controller: Controller;
     closedDate?: null | string;
     instrumentType?: null | string;
     groupId?: null | string;
-    virtualInstruments?: Array<VirtualInstrument>;
+    virtualInstruments: Array<VirtualInstrument>;
     remainingBalance?: null | number;
     remainingBalanceLocalCurrency?: null | number;
 };
@@ -29,9 +29,9 @@ export type AccountScopeMode = 'AllAccounts' | 'SelectedAccounts';
 export type AccountType = 'NotSet' | 'Transaction' | 'Savings' | 'Credit' | 'Mortgage' | 'Superannuation' | 'Investment' | 'Loan' | 'Broker';
 
 export type AccountTypeSummary = {
-    utilityType?: UtilityType;
-    from?: string;
-    accounts?: Array<string>;
+    utilityType: UtilityType;
+    from: string;
+    accounts: Array<string>;
 };
 
 export type AllocationMode = 'EvenlySpread' | 'AllAtEnd';
@@ -46,59 +46,44 @@ export type AllTagAverageReport = {
 
 export type Asset = {
     purchasePrice?: null | number;
-    shareWithFamily?: boolean;
+    shareWithFamily: boolean;
     id: string;
     name: string;
     description?: null | string;
-    balanceDate?: string;
+    balanceDate: string;
     currentBalance: number;
-    currentBalanceLocalCurrency: null | number;
+    currentBalanceLocalCurrency?: null | number;
     currency: string;
     controller: Controller;
     closedDate?: null | string;
     instrumentType?: null | string;
     groupId?: null | string;
-    virtualInstruments?: Array<VirtualInstrument>;
+    virtualInstruments: Array<VirtualInstrument>;
     remainingBalance?: null | number;
     remainingBalanceLocalCurrency?: null | number;
 };
 
 export type Assumptions = {
-    version?: number;
+    version: number;
     inflationRateAnnual?: null | number;
-    applyInflationToBaseline?: boolean;
-    applyInflationToPlanned?: boolean;
-    safetyBuffer?: number;
+    applyInflationToBaseline: boolean;
+    applyInflationToPlanned: boolean;
+    safetyBuffer: number;
 };
 
 export type Bill = {
-    id?: number;
-    accountId?: string;
-    accountName?: string;
+    id: number;
+    accountId: string;
+    accountName: string;
     invoiceNumber?: null | string;
-    issueDate?: string;
+    issueDate: string;
     currentReading?: null | number;
     previousReading?: null | number;
     total?: null | number;
     costsIncludeGST?: null | boolean;
     cost?: null | number;
-    periods?: Array<Period>;
-    discounts?: Array<Discount>;
-};
-
-export type PagedResultOfBill = {
-    results: Array<Bill>;
-    total: number;
-};
-
-export type PagedResultOfTransaction = {
-    results: Array<Transaction>;
-    total: number;
-};
-
-export type PagedResultOfStockTransaction = {
-    results: Array<StockTransaction>;
-    total: number;
+    periods: Array<Period>;
+    discounts: Array<Discount>;
 };
 
 export type BreakdownReport = {
@@ -115,6 +100,18 @@ export type Budget = {
     months: Array<BudgetMonth>;
 };
 
+export type BudgetLine = {
+    id: string;
+    name: string;
+    tagId: number;
+    notes?: null | string;
+    amount: number;
+    month: number;
+    type: BudgetLineType;
+};
+
+export type BudgetLineType = 'Income' | 'Expenses';
+
 export type BudgetMonth = {
     month: number;
     income: number;
@@ -122,20 +119,8 @@ export type BudgetMonth = {
     remainder: number;
 };
 
-export type BudgetLine = {
-    id?: string;
-    name: string;
-    tagId?: number;
-    notes?: null | string;
-    amount?: number;
-    month?: number;
-    type?: BudgetLineType;
-};
-
-export type BudgetLineType = 'Income' | 'Expenses';
-
 export type BudgetReportByMonth = {
-    items?: Array<BudgetReportValueMonth>;
+    items: Array<BudgetReportValueMonth>;
 };
 
 export type BudgetReportByMonthBreakdown = {
@@ -164,26 +149,16 @@ export type ByTagReport = {
 export type Controller = 'Manual' | 'Virtual' | 'Import';
 
 export type CostDataPoint = {
-    date?: string;
-    accountName?: string;
-    averagePricePerUnit?: number;
-    totalUsage?: number;
+    date: string;
+    accountName: string;
+    averagePricePerUnit: number;
+    totalUsage: number;
 };
 
 export type CostPerUnitReport = {
-    start?: string;
-    end?: string;
-    dataPoints?: Array<CostDataPoint>;
-};
-
-export type Create = {
-    name: string;
-    description?: null | string;
-    utilityType: UtilityType;
-    accountNumber: string;
-    institutionId?: null | number;
-    currency?: string;
-    shareWithFamily?: boolean;
+    start: string;
+    end: string;
+    dataPoints: Array<CostDataPoint>;
 };
 
 export type CreateAccount = {
@@ -195,19 +170,46 @@ export type CreateAccount = {
     balance: number;
     openedDate?: null | string;
     groupId?: null | string;
-    accountType?: AccountType;
-    controller?: Controller;
-    includeInBudget?: boolean;
-    shareWithFamily?: boolean;
+    accountType: AccountType;
+    controller: Controller;
+    includeInBudget: boolean;
+    shareWithFamily: boolean;
 };
 
 export type CreateAsset = {
     name: string;
     description: string;
     purchasePrice?: null | number;
-    currentBalance?: number;
+    currentBalance: number;
     shareWithFamily: boolean;
     groupId?: null | string;
+};
+
+export type CreateBill = {
+    invoiceNumber?: null | string;
+    issueDate: string;
+    currentReading?: null | number;
+    previousReading?: null | number;
+    total?: null | number;
+    costsIncludeGST?: null | boolean;
+    cost?: null | number;
+    periods: Array<Period>;
+    discounts: Array<Discount>;
+};
+
+export type CreateBillAccount = {
+    name: string;
+    description?: null | string;
+    utilityType: UtilityType;
+    accountNumber: string;
+    institutionId?: null | number;
+    currency: string;
+    shareWithFamily: boolean;
+};
+
+export type CreateByName = {
+    name: string;
+    tags: Array<number>;
 };
 
 export type CreateFamily = {
@@ -226,10 +228,27 @@ export type CreateInstitution = {
 };
 
 export type CreateInstitutionAccount = {
-    institutionId?: number;
+    institutionId: number;
     importerTypeId?: null | number;
     name: string;
-    openedDate?: string;
+    openedDate: string;
+};
+
+export type CreateRecurringTransaction = {
+    accountId: string;
+    virtualAccountId: string;
+    description: null | string;
+    amount: number;
+    schedule: ScheduleFrequency;
+    nextRun: string;
+    instrumentId: string;
+};
+
+export type CreateRule = {
+    instrumentId: string;
+    contains: string;
+    description: null | string;
+    tags: Array<Tag>;
 };
 
 export type CreateStock = {
@@ -241,6 +260,15 @@ export type CreateStock = {
     fees: number;
     shareWithFamily: boolean;
     groupId?: null | string;
+};
+
+export type CreateStockTransaction = {
+    quantity: number;
+    price: number;
+    fees: number;
+    description: string;
+    date: string;
+    instrumentId: string;
 };
 
 export type CreateTag = {
@@ -257,8 +285,8 @@ export type CreateTransaction = {
 export type CreateVirtualInstrument = {
     name: string;
     description?: null | string;
-    openingBalance?: number;
-    controller?: Controller;
+    openingBalance: number;
+    controller: Controller;
 };
 
 export type Discount = {
@@ -268,54 +296,54 @@ export type Discount = {
 };
 
 export type Family = {
-    id?: string;
+    id: string;
     name: string;
-    members?: Array<User>;
+    members: Array<User>;
 };
 
 export type ForecastMonth = {
-    monthStart?: string;
-    openingBalance?: number;
-    incomeTotal?: number;
-    baselineOutgoingsTotal?: number;
-    plannedItemsTotal?: number;
-    closingBalance?: number;
+    monthStart: string;
+    openingBalance: number;
+    incomeTotal: number;
+    baselineOutgoingsTotal: number;
+    plannedItemsTotal: number;
+    closingBalance: number;
     actualBalance?: null | number;
 };
 
 export type ForecastPlan = {
-    id?: string;
+    id: string;
+    isArchived: boolean;
+    createdUtc: string;
+    updatedUtc: string;
     name: string;
-    startDate?: string;
-    endDate?: string;
-    accountScopeMode?: AccountScopeMode;
-    startingBalanceMode?: StartingBalanceMode;
+    startDate: string;
+    endDate: string;
+    accountScopeMode: AccountScopeMode;
+    startingBalanceMode: StartingBalanceMode;
     startingBalanceAmount?: null | number;
     currencyCode?: null | string;
     incomeStrategy?: null | IncomeStrategy;
     outgoingStrategy?: null | OutgoingStrategy;
     assumptions?: null | Assumptions;
-    isArchived?: boolean;
-    createdUtc?: string;
-    updatedUtc?: string;
-    accountIds?: Array<string>;
-    plannedItems?: Array<PlannedItem>;
+    accountIds: Array<string>;
+    plannedItems: Array<PlannedItem>;
 };
 
 export type ForecastResult = {
-    planId?: string;
+    planId: string;
     months: Array<ForecastMonth>;
     summary: ForecastSummary;
 };
 
 export type ForecastSummary = {
-    lowestBalance?: number;
-    lowestBalanceMonth?: string;
-    requiredMonthlyUplift?: number;
-    monthsBelowZero?: number;
-    totalIncome?: number;
-    totalOutgoings?: number;
-    monthlyBaselineOutgoings?: number;
+    lowestBalance: number;
+    lowestBalanceMonth: string;
+    requiredMonthlyUplift: number;
+    monthsBelowZero: number;
+    totalIncome: number;
+    totalOutgoings: number;
+    monthlyBaselineOutgoings: number;
 };
 
 export type Group = {
@@ -328,11 +356,11 @@ export type Group = {
 export type HexColour = unknown;
 
 export type HistoricalIncomeSettings = {
-    lookbackMonths?: number;
+    lookbackMonths: number;
     includeTagIds?: null | Array<number>;
     excludeTagIds?: null | Array<number>;
-    excludeTransfers?: boolean;
-    excludeOffsets?: boolean;
+    excludeTransfers: boolean;
+    excludeOffsets: boolean;
 };
 
 export type IFormFile = Blob | File;
@@ -344,31 +372,31 @@ export type Import = {
 export type ImportBill = {
     accountName: string;
     invoiceNumber?: null | string;
-    issueDate?: string;
+    issueDate: string;
     currentReading?: null | number;
     previousReading?: null | number;
     total?: null | number;
     costsIncludeGST?: null | boolean;
     cost?: null | number;
-    periods?: Array<Period>;
-    discounts?: Array<Discount>;
+    periods: Array<Period>;
+    discounts: Array<Discount>;
 };
 
 export type ImporterType = {
-    id?: number;
+    id: number;
     type: string;
     name: string;
 };
 
 export type ImportResult = {
-    imported?: number;
-    failed?: number;
-    errors?: Array<string>;
+    imported: number;
+    failed: number;
+    errors: Array<string>;
 };
 
 export type IncomeStrategy = {
-    version?: number;
-    mode?: string;
+    version: number;
+    mode: string;
     manualRecurring?: null | ManualRecurringIncome;
     manualAdjustments?: null | Array<ManualAdjustment>;
     historical?: null | HistoricalIncomeSettings;
@@ -397,11 +425,11 @@ export type Institution = {
 };
 
 export type InstitutionAccount = {
-    id?: string;
+    id: string;
     importerTypeId?: null | number;
-    institutionId?: number;
+    institutionId: number;
     name: string;
-    openedDate?: string;
+    openedDate: string;
     closedDate?: null | string;
 };
 
@@ -411,15 +439,15 @@ export type Instrument = {
     id: string;
     name: string;
     description?: null | string;
-    balanceDate?: string;
+    balanceDate: string;
     currentBalance: number;
-    currentBalanceLocalCurrency: null | number;
+    currentBalanceLocalCurrency?: null | number;
     currency: string;
     controller: Controller;
     closedDate?: null | string;
     instrumentType?: null | string;
     groupId?: null | string;
-    virtualInstruments?: Array<VirtualInstrument>;
+    virtualInstruments: Array<VirtualInstrument>;
     remainingBalance?: null | number;
     remainingBalanceLocalCurrency?: null | number;
 };
@@ -428,13 +456,13 @@ export type InstrumentGroup = {
     id?: null | string;
     name: string;
     instruments: Array<Instrument>;
-    showTotal?: boolean;
+    showTotal: boolean;
     total?: null | number;
 };
 
 export type InstrumentsList = {
     groups: Array<InstrumentGroup>;
-    total?: number;
+    total: number;
 };
 
 export type ListItem = {
@@ -443,36 +471,36 @@ export type ListItem = {
 };
 
 export type LogicalAccount = {
-    accountType?: AccountType;
-    isPrimary?: boolean;
-    shareWithFamily?: boolean;
-    includeInBudget?: boolean;
-    institutionAccounts?: Array<InstitutionAccount>;
+    accountType: AccountType;
+    isPrimary: boolean;
+    shareWithFamily: boolean;
+    includeInBudget: boolean;
+    institutionAccounts: Array<InstitutionAccount>;
     lastTransaction?: null | string;
     id: string;
     name: string;
     description?: null | string;
-    balanceDate?: string;
+    balanceDate: string;
     currentBalance: number;
-    currentBalanceLocalCurrency: null | number;
+    currentBalanceLocalCurrency?: null | number;
     currency: string;
     controller: Controller;
     closedDate?: null | string;
     instrumentType?: null | string;
     groupId?: null | string;
-    virtualInstruments?: Array<VirtualInstrument>;
+    virtualInstruments: Array<VirtualInstrument>;
     remainingBalance?: null | number;
     remainingBalanceLocalCurrency?: null | number;
 };
 
 export type ManualAdjustment = {
-    date?: string;
-    deltaAmount?: number;
+    date: string;
+    deltaAmount: number;
 };
 
 export type ManualRecurringIncome = {
-    amount?: number;
-    frequency?: string;
+    amount: number;
+    frequency: string;
     startDate?: null | string;
     endDate?: null | string;
 };
@@ -485,37 +513,35 @@ export type MonthlyBalancesReport = {
 };
 
 export type OutgoingStrategy = {
-    version?: number;
-    mode?: string;
-    lookbackMonths?: number;
+    version: number;
+    mode: string;
+    lookbackMonths: number;
     excludeTagIds?: null | Array<number>;
-    excludeTransfers?: boolean;
-    excludeOffsets?: boolean;
     excludeAboveAmount?: null | number;
     seasonality?: null | SeasonalitySettings;
 };
 
 export type Period = {
-    periodStart?: string;
-    periodEnd?: string;
+    periodStart: string;
+    periodEnd: string;
     daysInclusive?: null | number;
     days?: null | number;
-    pricePerUnit?: number;
-    totalUsage?: number;
+    pricePerUnit: number;
+    totalUsage: number;
     cost?: null | number;
-    chargePerDay?: number;
+    chargePerDay: number;
 };
 
 export type PlannedItem = {
-    id?: string;
-    itemType?: PlannedItemType;
+    id: string;
+    itemType: PlannedItemType;
     name: string;
-    amount?: number;
+    amount: number;
     tagId?: null | number;
     tagName?: null | string;
     virtualInstrumentId?: null | string;
-    isIncluded?: boolean;
-    dateMode?: PlannedItemDateMode;
+    isIncluded: boolean;
+    dateMode: PlannedItemDateMode;
     fixedDate?: null | string;
     scheduleFrequency?: null | ScheduleFrequency;
     scheduleAnchorDate?: null | string;
@@ -533,18 +559,20 @@ export type PlannedItemDateMode = 'FixedDate' | 'Schedule' | 'FlexibleWindow';
 export type PlannedItemType = 'Expense' | 'Income';
 
 export type RecurringTransaction = {
-    id?: string;
-    virtualAccountId?: string;
+    id: string;
+    virtualAccountId: string;
     description?: null | string;
-    amount?: number;
+    amount: number;
     lastRun?: null | string;
-    nextRun?: string;
-    schedule?: ScheduleFrequency;
+    nextRun: string;
+    schedule: ScheduleFrequency;
 };
 
 export type ReportInterval = 'Monthly' | 'Yearly';
 
-export type ReportType = string;
+export type ReportType = {
+    [key: string]: unknown;
+};
 
 export type Rule = {
     id: number;
@@ -556,19 +584,68 @@ export type Rule = {
 export type ScheduleFrequency = 'Daily' | 'Weekly' | 'Monthly' | 'Yearly' | 'Fortnightly';
 
 export type SeasonalitySettings = {
-    enabled?: boolean;
+    enabled: boolean;
 };
 
 export type ServiceChargeDataPoint = {
-    date?: string;
-    accountName?: string;
-    averageChargePerDay?: number;
+    date: string;
+    accountName: string;
+    averageChargePerDay: number;
 };
 
 export type ServiceChargeReport = {
-    start?: string;
-    end?: string;
-    dataPoints?: Array<ServiceChargeDataPoint>;
+    start: string;
+    end: string;
+    dataPoints: Array<ServiceChargeDataPoint>;
+};
+
+export type SimpleBudgetLine = {
+    tagId: number;
+    notes?: null | string;
+    amount: number;
+    month: number;
+    type: BudgetLineType;
+};
+
+export type SimpleForecastPlan = {
+    name: string;
+    startDate: string;
+    endDate: string;
+    accountScopeMode: AccountScopeMode;
+    startingBalanceMode: StartingBalanceMode;
+    startingBalanceAmount?: null | number;
+    currencyCode?: null | string;
+    incomeStrategy?: null | IncomeStrategy;
+    outgoingStrategy?: null | OutgoingStrategy;
+    assumptions?: null | Assumptions;
+    accountIds: Array<string>;
+    plannedItems: Array<PlannedItem>;
+};
+
+export type SimplePlannedItem = {
+    itemType: PlannedItemType;
+    name: string;
+    amount: number;
+    tagId?: null | number;
+    tagName?: null | string;
+    virtualInstrumentId?: null | string;
+    isIncluded: boolean;
+    dateMode: PlannedItemDateMode;
+    fixedDate?: null | string;
+    scheduleFrequency?: null | ScheduleFrequency;
+    scheduleAnchorDate?: null | string;
+    scheduleInterval?: null | number;
+    scheduleDayOfMonth?: null | number;
+    scheduleEndDate?: null | string;
+    windowStartDate?: null | string;
+    windowEndDate?: null | string;
+    allocationMode?: null | AllocationMode;
+    notes?: null | string;
+};
+
+export type SimpleTag = {
+    id: number;
+    name: string;
 };
 
 export type SortDirection = 'Ascending' | 'Descending';
@@ -577,44 +654,44 @@ export type StartingBalanceMode = 'CalculatedCurrent' | 'ManualAmount';
 
 export type StockHolding = {
     symbol: string;
-    quantity?: number;
-    currentPrice?: number;
-    currentValue?: number;
-    gainLoss?: number;
-    shareWithFamily?: boolean;
+    quantity: number;
+    currentPrice: number;
+    currentValue: number;
+    gainLoss: number;
+    shareWithFamily: boolean;
     id: string;
     name: string;
     description?: null | string;
-    balanceDate?: string;
+    balanceDate: string;
     currentBalance: number;
-    currentBalanceLocalCurrency: null | number;
+    currentBalanceLocalCurrency?: null | number;
     currency: string;
     controller: Controller;
     closedDate?: null | string;
     instrumentType?: null | string;
     groupId?: null | string;
-    virtualInstruments?: Array<VirtualInstrument>;
+    virtualInstruments: Array<VirtualInstrument>;
     remainingBalance?: null | number;
     remainingBalanceLocalCurrency?: null | number;
 };
 
 export type StockHoldingReport = {
-    accountId?: string;
-    currentValue?: number;
-    profitLoss?: number;
-    adjustedProfitLoss?: number;
+    accountId: string;
+    currentValue: number;
+    profitLoss: number;
+    adjustedProfitLoss: number;
 };
 
 export type StockTransaction = {
-    id?: string;
-    accountId?: string;
-    price?: number;
-    quantity?: number;
+    id: string;
+    accountId: string;
+    price: number;
+    quantity: number;
     description?: null | string;
-    fees?: number;
+    fees: number;
     accountHolderName?: null | string;
-    transactionDate?: string;
-    transactionType?: TransactionType;
+    transactionDate: string;
+    transactionType: TransactionType;
 };
 
 export type StockValueReport = {
@@ -623,21 +700,21 @@ export type StockValueReport = {
     start: string;
     end: string;
     granularity: number;
-    points?: Array<StockValueReportPoint>;
-    investment?: Array<StockValueReportPoint>;
+    points: Array<StockValueReportPoint>;
+    investment: Array<StockValueReportPoint>;
 };
 
 export type StockValueReportPoint = {
-    date?: string;
-    value?: number;
+    date: string;
+    value: number;
 };
 
 export type Tag = {
-    id?: number;
-    name: string;
     colour?: null | HexColour;
-    tags?: Array<Tag>;
-    settings?: TagSettings;
+    tags: Array<Tag>;
+    settings: TagSettings;
+    id: number;
+    name: string;
 };
 
 export type TagHierarchy = {
@@ -648,15 +725,15 @@ export type TagHierarchy = {
 };
 
 export type TagSettings = {
-    applySmoothing?: boolean;
-    excludeFromReporting?: boolean;
+    applySmoothing: boolean;
+    excludeFromReporting: boolean;
 };
 
 export type TagTrendReport = {
     tagId: number;
     tagName: string;
     months: Array<TrendPoint>;
-    average?: number;
+    average: number;
     offsetAverage?: null | number;
     accountId: string;
     start: string;
@@ -668,26 +745,26 @@ export type TagValue = {
     tagName?: null | string;
     grossAmount: number;
     netAmount?: null | number;
-    hasChildren?: boolean;
+    hasChildren: boolean;
 };
 
 export type Transaction = {
-    id?: string;
-    accountId?: string;
-    amount?: number;
-    netAmount?: number;
+    id: string;
+    accountId: string;
+    amount: number;
+    netAmount: number;
     description?: null | string;
     location?: null | string;
     accountHolderName?: null | string;
     reference?: null | string;
     notes?: null | string;
-    excludeFromReporting?: boolean;
-    transactionTime?: string;
+    excludeFromReporting: boolean;
+    transactionTime: string;
     purchaseDate?: null | string;
-    transactionType?: TransactionType;
-    tags?: Array<Tag>;
-    splits?: Array<TransactionSplit>;
-    offsetFor?: Array<TransactionOffsetFor>;
+    transactionType: TransactionType;
+    tags: Array<SimpleTag>;
+    splits: Array<TransactionSplit>;
+    offsetFor: Array<TransactionOffsetFor>;
     extraInfo?: unknown;
 };
 
@@ -705,9 +782,9 @@ export type TransactionOffsetFor = {
 
 export type TransactionSplit = {
     id: string;
-    tags: Array<Tag>;
+    tags: Array<SimpleTag>;
     amount: number;
-    offsetBy?: Array<TransactionOffsetBy>;
+    offsetBy: Array<TransactionOffsetBy>;
 };
 
 export type TransactionType = 'NotSet' | 'Credit' | 'Debit';
@@ -718,20 +795,62 @@ export type TrendPoint = {
     netAmount?: null | number;
 };
 
+export type UpdateAsset = {
+    accountId: string;
+    name: string;
+    description: string;
+    shareWithFamily: boolean;
+    purchasePrice?: null | number;
+    currentBalance: number;
+    groupId?: null | string;
+};
+
+export type UpdateBalance = {
+    instrumentId: string;
+    virtualInstrumentId: string;
+    balance: number;
+};
+
 export type UpdateFamily = {
     name: string;
 };
 
+export type UpdateInstitution = {
+    id: number;
+    name: string;
+    institutionType: InstitutionType;
+};
+
 export type UpdateInstitutionAccount = {
-    institutionId?: number;
+    institutionId: number;
     importerTypeId?: null | number;
     name: string;
+};
+
+export type UpdateRecurringTransaction = {
+    accountId: string;
+    virtualAccountId: string;
+    recurringTransactionId: string;
+    description: null | string;
+    amount: number;
+    schedule: ScheduleFrequency;
+    nextRun: string;
+    instrumentId: string;
 };
 
 export type UpdateRule = {
     contains: string;
     description?: null | string;
     tags: Array<Tag>;
+};
+
+export type UpdateStock = {
+    instrumentId: string;
+    name: string;
+    description: string;
+    shareWithFamily: boolean;
+    currentPrice: number;
+    groupId?: null | string;
 };
 
 export type UpdateTag = {
@@ -741,74 +860,89 @@ export type UpdateTag = {
     applySmoothing: boolean;
 };
 
+export type UpdateTransaction = {
+    instrumentId: string;
+    id: string;
+    notes: null | string;
+    splits: Array<TransactionSplit>;
+    excludeFromReporting: boolean;
+};
+
 export type UpdateUser = {
     primaryAccountId?: null | string;
-    currency?: string;
-    cards?: Array<UserCard>;
+    currency: string;
+    cards: Array<UserCard>;
+};
+
+export type UpdateVirtualInstrument = {
+    instrumentId: string;
+    virtualInstrumentId: string;
+    name: string;
+    description: string;
+    currentBalance: number;
 };
 
 export type UsageDataPoint = {
-    date?: string;
-    accountName?: string;
-    usagePerDay?: number;
+    date: string;
+    accountName: string;
+    usagePerDay: number;
 };
 
 export type UsageReport = {
-    start?: string;
-    end?: string;
-    dataPoints?: Array<UsageDataPoint>;
+    start: string;
+    end: string;
+    dataPoints: Array<UsageDataPoint>;
 };
 
 export type User = {
-    id?: string;
+    id: string;
     emailAddress: string;
     firstName?: null | string;
     lastName?: null | string;
     currency: string;
-    familyId?: string;
+    familyId: string;
     primaryAccountId?: null | string;
-    accounts?: Array<string>;
-    sharedAccounts?: Array<string>;
-    groups?: Array<string>;
+    accounts: Array<string>;
+    sharedAccounts: Array<string>;
+    groups: Array<string>;
 };
 
 export type UserCard = {
-    id?: string;
     name?: null | string;
     last4Digits: number;
 };
 
 export type UserWithCards = {
-    cards?: Array<UserCard>;
-    id?: string;
+    cards: Array<UserCard>;
+    id: string;
     emailAddress: string;
     firstName?: null | string;
     lastName?: null | string;
     currency: string;
-    familyId?: string;
+    familyId: string;
     primaryAccountId?: null | string;
-    accounts?: Array<string>;
-    sharedAccounts?: Array<string>;
-    groups?: Array<string>;
+    accounts: Array<string>;
+    sharedAccounts: Array<string>;
+    groups: Array<string>;
 };
 
 export type UtilityType = 'Electricity' | 'Gas' | 'Water' | 'Phone' | 'Internet' | 'Other';
 
 export type VirtualInstrument = {
-    parentId?: string;
+    parentId: string;
     lastTransaction?: null | string;
     id: string;
     name: string;
     description?: null | string;
-    balanceDate?: string;
+    balanceDate: string;
     currentBalance: number;
-    currentBalanceLocalCurrency: null | number;
+    currentBalanceLocalCurrency?: null | number;
     currency: string;
     controller: Controller;
     closedDate?: null | string;
     instrumentType?: null | string;
     groupId?: null | string;
-    virtualInstruments?: Array<VirtualInstrument>;
+    virtualInstruments: Array<VirtualInstrument>;
     remainingBalance?: null | number;
     remainingBalanceLocalCurrency?: null | number;
 };
@@ -865,9 +999,7 @@ export type GetAccountResponse = GetAccountResponses[keyof GetAccountResponses];
 
 export type UpdateAccountData = {
     body: LogicalAccount;
-    path: {
-        id: string;
-    };
+    path?: never;
     query?: never;
     url: '/api/accounts/{id}';
 };
@@ -975,17 +1107,8 @@ export type GetAllRecurringTransactionsResponses = {
 export type GetAllRecurringTransactionsResponse = GetAllRecurringTransactionsResponses[keyof GetAllRecurringTransactionsResponses];
 
 export type CreateRecurringTransactionData = {
-    body: {
-        accountId?: string;
-        virtualAccountId: string;
-        description?: null | string;
-        amount: number;
-        schedule: ScheduleFrequency;
-        nextRun: string;
-    };
-    path: {
-        accountId: string;
-    };
+    body: CreateRecurringTransaction;
+    path?: never;
     query?: never;
     url: '/api/accounts/{accountId}/recurring';
 };
@@ -1042,19 +1165,8 @@ export type GetRecurringTransactionResponses = {
 export type GetRecurringTransactionResponse = GetRecurringTransactionResponses[keyof GetRecurringTransactionResponses];
 
 export type UpdateRecurringTransactionData = {
-    body: {
-        accountId?: string;
-        virtualAccountId: string;
-        recurringTransactionId?: string;
-        description?: null | string;
-        amount: number;
-        schedule: ScheduleFrequency;
-        nextRun: string;
-    };
-    path: {
-        accountId: string;
-        recurringTransactionId: string;
-    };
+    body: UpdateRecurringTransaction;
+    path?: never;
     query?: never;
     url: '/api/accounts/{accountId}/recurring/{recurringTransactionId}';
 };
@@ -1106,18 +1218,8 @@ export type GetAssetResponses = {
 export type GetAssetResponse = GetAssetResponses[keyof GetAssetResponses];
 
 export type UpdateAssetData = {
-    body: {
-        accountId?: string;
-        name: string;
-        description: string;
-        shareWithFamily: boolean;
-        purchasePrice?: null | number;
-        currentBalance: number;
-        groupId?: null | string;
-    };
-    path: {
-        id: string;
-    };
+    body: UpdateAsset;
+    path?: never;
     query?: never;
     url: '/api/assets/{id}';
 };
@@ -1165,7 +1267,7 @@ export type GetAllBillsResponses = {
     /**
      * OK
      */
-    200: PagedResultOfBill;
+    200: Bill;
 };
 
 export type GetAllBillsResponse = GetAllBillsResponses[keyof GetAllBillsResponses];
@@ -1221,7 +1323,7 @@ export type GetBillAccountsResponses = {
 export type GetBillAccountsResponse = GetBillAccountsResponses[keyof GetBillAccountsResponses];
 
 export type CreateBillAccountData = {
-    body: Create;
+    body: CreateBillAccount;
     path?: never;
     query?: never;
     url: '/api/bills/accounts';
@@ -1255,7 +1357,7 @@ export type GetBillsByUtilityTypeResponses = {
     /**
      * OK
      */
-    200: PagedResultOfBill;
+    200: Bill;
 };
 
 export type GetBillsByUtilityTypeResponse = GetBillsByUtilityTypeResponses[keyof GetBillsByUtilityTypeResponses];
@@ -1310,13 +1412,13 @@ export type GetBillsForAnAccountResponses = {
     /**
      * OK
      */
-    200: PagedResultOfBill;
+    200: Bill;
 };
 
 export type GetBillsForAnAccountResponse = GetBillsForAnAccountResponses[keyof GetBillsForAnAccountResponses];
 
 export type CreateBillData = {
-    body: Create;
+    body: CreateBill;
     path: {
         instrumentId: string;
     };
@@ -1488,7 +1590,7 @@ export type GetBudgetLineResponses = {
 export type GetBudgetLineResponse = GetBudgetLineResponses[keyof GetBudgetLineResponses];
 
 export type UpdateBudgetLineData = {
-    body: BudgetLine;
+    body: SimpleBudgetLine;
     path: {
         year: number;
         id: string;
@@ -1507,7 +1609,7 @@ export type UpdateBudgetLineResponses = {
 export type UpdateBudgetLineResponse = UpdateBudgetLineResponses[keyof UpdateBudgetLineResponses];
 
 export type CreateBudgetLineData = {
-    body: BudgetLine;
+    body: SimpleBudgetLine;
     path: {
         year: number;
     };
@@ -1810,7 +1912,7 @@ export type GetForecastPlanResponses = {
 export type GetForecastPlanResponse = GetForecastPlanResponses[keyof GetForecastPlanResponses];
 
 export type UpdateForecastPlanData = {
-    body: ForecastPlan;
+    body: SimpleForecastPlan;
     path: {
         id: string;
     };
@@ -1902,7 +2004,7 @@ export type GetPlannedItemResponses = {
 export type GetPlannedItemResponse = GetPlannedItemResponses[keyof GetPlannedItemResponses];
 
 export type UpdatePlannedItemData = {
-    body: PlannedItem;
+    body: SimplePlannedItem;
     path: {
         planId: string;
         itemId: string;
@@ -1921,7 +2023,7 @@ export type UpdatePlannedItemResponses = {
 export type UpdatePlannedItemResponse = UpdatePlannedItemResponses[keyof UpdatePlannedItemResponses];
 
 export type CreatePlannedItemData = {
-    body: PlannedItem;
+    body: SimplePlannedItem;
     path: {
         planId: string;
     };
@@ -2008,9 +2110,7 @@ export type GetGroupResponse = GetGroupResponses[keyof GetGroupResponses];
 
 export type UpdateGroupData = {
     body: Group;
-    path: {
-        id: string;
-    };
+    path?: never;
     query?: never;
     url: '/api/groups/{id}';
 };
@@ -2077,11 +2177,7 @@ export type GetInstitutionResponses = {
 export type GetInstitutionResponse = GetInstitutionResponses[keyof GetInstitutionResponses];
 
 export type UpdateInstitutionData = {
-    body: {
-        id?: number;
-        name: string;
-        institutionType: InstitutionType;
-    };
+    body: UpdateInstitution;
     path: {
         id: number;
     };
@@ -2190,15 +2286,8 @@ export type GetAllInstrumentRulesResponses = {
 export type GetAllInstrumentRulesResponse = GetAllInstrumentRulesResponses[keyof GetAllInstrumentRulesResponses];
 
 export type CreateInstrumentRuleData = {
-    body: {
-        instrumentId?: string;
-        contains: string;
-        description?: null | string;
-        tags?: Array<Tag>;
-    };
-    path: {
-        instrumentId: string;
-    };
+    body: CreateRule;
+    path?: never;
     query?: never;
     url: '/api/instruments/{instrumentId}/rules';
 };
@@ -2404,17 +2493,8 @@ export type GetVirtualInstrumentResponses = {
 export type GetVirtualInstrumentResponse = GetVirtualInstrumentResponses[keyof GetVirtualInstrumentResponses];
 
 export type UpdateVirtualInstrumentData = {
-    body: {
-        instrumentId?: string;
-        virtualInstrumentId?: string;
-        name: string;
-        description: string;
-        currentBalance: number;
-    };
-    path: {
-        instrumentId: string;
-        virtualInstrumentId: string;
-    };
+    body: UpdateVirtualInstrument;
+    path?: never;
     query?: never;
     url: '/api/instruments/{instrumentId}/virtual/{virtualInstrumentId}';
 };
@@ -2429,15 +2509,8 @@ export type UpdateVirtualInstrumentResponses = {
 export type UpdateVirtualInstrumentResponse = UpdateVirtualInstrumentResponses[keyof UpdateVirtualInstrumentResponses];
 
 export type UpdateVirtualInstrumentBalanceData = {
-    body: {
-        instrumentId?: string;
-        virtualInstrumentId?: string;
-        balance: number;
-    };
-    path: {
-        instrumentId: string;
-        virtualInstrumentId: string;
-    };
+    body: UpdateBalance;
+    path?: never;
     query?: never;
     url: '/api/instruments/{instrumentId}/virtual/{virtualInstrumentId}/balance';
 };
@@ -2682,17 +2755,8 @@ export type GetStockHoldingResponses = {
 export type GetStockHoldingResponse = GetStockHoldingResponses[keyof GetStockHoldingResponses];
 
 export type UpdateStockHoldingData = {
-    body: {
-        instrumentId?: string;
-        name: string;
-        description: string;
-        shareWithFamily: boolean;
-        currentPrice: number;
-        groupId?: null | string;
-    };
-    path: {
-        instrumentId: string;
-    };
+    body: UpdateStock;
+    path?: never;
     query?: never;
     url: '/api/stocks/{instrumentId}';
 };
@@ -2800,23 +2864,14 @@ export type GetStockTransactionsResponses = {
     /**
      * OK
      */
-    200: PagedResultOfStockTransaction;
+    200: StockTransaction;
 };
 
 export type GetStockTransactionsResponse = GetStockTransactionsResponses[keyof GetStockTransactionsResponses];
 
 export type CreateStockTransactionData = {
-    body: {
-        instrumentId?: string;
-        quantity: number;
-        price: number;
-        fees: number;
-        description: string;
-        date: string;
-    };
-    path: {
-        instrumentId: string;
-    };
+    body: CreateStockTransaction;
+    path?: never;
     query?: never;
     url: '/api/stocks/{instrumentId}/transactions';
 };
@@ -2933,12 +2988,8 @@ export type UpdateTagResponses = {
 export type UpdateTagResponse = UpdateTagResponses[keyof UpdateTagResponses];
 
 export type CreateTagByNameData = {
-    body: {
-        tags?: Array<number>;
-    };
-    path: {
-        name: string;
-    };
+    body: CreateByName;
+    path?: never;
     query?: never;
     url: '/api/tags/{name}';
 };
@@ -3045,7 +3096,7 @@ export type GetTransactionsResponses = {
     /**
      * OK
      */
-    200: PagedResultOfTransaction;
+    200: Transaction;
 };
 
 export type GetTransactionsResponse = GetTransactionsResponses[keyof GetTransactionsResponses];
@@ -3105,7 +3156,7 @@ export type GetUntaggedTransactionsResponses = {
     /**
      * OK
      */
-    200: PagedResultOfTransaction;
+    200: Transaction;
 };
 
 export type GetUntaggedTransactionsResponse = GetUntaggedTransactionsResponses[keyof GetUntaggedTransactionsResponses];
@@ -3133,13 +3184,7 @@ export type SearchTransactionsResponses = {
 export type SearchTransactionsResponse = SearchTransactionsResponses[keyof SearchTransactionsResponses];
 
 export type CreateTransactionData = {
-    body: {
-        instrumentId?: string;
-        amount: number;
-        description: string;
-        reference?: null | string;
-        transactionTime: string;
-    };
+    body: CreateTransaction;
     path: {
         instrumentId: string;
     };
@@ -3175,15 +3220,8 @@ export type SetBalanceResponses = {
 export type SetBalanceResponse = SetBalanceResponses[keyof SetBalanceResponses];
 
 export type UpdateTransactionData = {
-    body: {
-        notes?: null | string;
-        splits?: Array<TransactionSplit>;
-        excludeFromReporting?: boolean;
-    };
-    path: {
-        instrumentId: string;
-        id: string;
-    };
+    body: UpdateTransaction;
+    path?: never;
     query?: never;
     url: '/api/accounts/{instrumentId}/transactions/{id}';
 };

@@ -6,7 +6,7 @@ using Asm.MooBank.Modules.Forecast.Models;
 namespace Asm.MooBank.Modules.Forecast.Commands;
 
 [DisplayName("CreatePlannedItem")]
-public record CreatePlannedItem(Guid PlanId, PlannedItem Item) : ICommand<PlannedItem>;
+public record CreatePlannedItem(Guid PlanId, PlannedItemBase Item) : ICommand<PlannedItem>;
 
 internal class CreatePlannedItemHandler(IForecastRepository forecastRepository, IUnitOfWork unitOfWork, ISecurity security) : ICommandHandler<CreatePlannedItem, PlannedItem>
 {

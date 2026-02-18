@@ -3,15 +3,13 @@ import { useSelector } from "react-redux";
 import { PagedResult, SortDirection } from "@andrewmclachlan/moo-ds";
 import { format } from "date-fns/format";
 import { parseISO } from "date-fns/parseISO";
-import * as Models from "../models";
-import { Tag } from "../models";
+import type { Transaction, Tag, TransactionType, TransactionFilterType, SortDirection as GenSortDirection } from "api/types.gen";
+import type { TransactionUpdate, CreateTransaction } from "helpers/transactions";
 import { State, TransactionsFilter } from "../store/state";
 import { accountsQueryKey } from "./AccountService";
 import { toast } from "react-toastify";
 import {
-    getTransactionsOptions,
     getTransactionsQueryKey,
-    getUntaggedTransactionsOptions,
     getUntaggedTransactionsQueryKey,
     searchTransactionsOptions,
     updateTransactionMutation,
@@ -19,12 +17,7 @@ import {
     removeTagMutation,
     createTransactionMutation,
 } from "api/@tanstack/react-query.gen";
-import {
-    TransactionFilterType,
-    SortDirection as GenSortDirection,
-    TransactionType,
-    CreateTransactionData,
-} from "api/types.gen";
+import { getTransactions, getUntaggedTransactions } from "api/sdk.gen";
 
 const buildTransactionsQueryKey = (accountId: string, filter: TransactionsFilter, pageSize: number, pageNumber: number, sortField: string, sortDirection: SortDirection) => {
     if (filter.filterTagged) {
@@ -73,38 +66,53 @@ export const useTransactions = (accountId: string, filter: TransactionsFilter, p
     const tagged = filter.filterTagged;
 
     const untaggedResult = useQuery({
-        ...getUntaggedTransactionsOptions({
+        queryKey: getUntaggedTransactionsQueryKey({
             path: { instrumentId: accountId, pageSize, pageNumber, untagged: "untagged" },
             query: queryParams,
         }),
-        select: (data) => data as unknown as PagedResult<Models.Transaction>,
+        queryFn: async ({ signal }) => {
+            const { data, headers } = await getUntaggedTransactions({
+                path: { instrumentId: accountId, pageSize, pageNumber, untagged: "untagged" },
+                query: queryParams,
+                signal,
+                throwOnError: true,
+            });
+            return { results: data, total: Number(headers['x-total-count'] ?? 0) } as PagedResult<Transaction>;
+        },
         enabled: !!accountId && !!filter?.start && !!filter?.end && tagged,
     });
 
     const regularResult = useQuery({
-        ...getTransactionsOptions({
+        queryKey: getTransactionsQueryKey({
             path: { instrumentId: accountId, pageSize, pageNumber },
             query: queryParams,
         }),
-        select: (data) => data as unknown as PagedResult<Models.Transaction>,
+        queryFn: async ({ signal }) => {
+            const { data, headers } = await getTransactions({
+                path: { instrumentId: accountId, pageSize, pageNumber },
+                query: queryParams,
+                signal,
+                throwOnError: true,
+            });
+            return { results: data, total: Number(headers['x-total-count'] ?? 0) } as PagedResult<Transaction>;
+        },
         enabled: !!accountId && !!filter?.start && !!filter?.end && !tagged,
     });
 
     return tagged ? untaggedResult : regularResult;
 }
 
-export const useSearchTransactions = (transaction: Models.Transaction, searchType: Models.TransactionType) => {
+export const useSearchTransactions = (transaction: Transaction, searchType: TransactionType) => {
 
     return useQuery({
         ...searchTransactionsOptions({
             path: { instrumentId: transaction.accountId },
             query: {
                 Start: format(parseISO(transaction.transactionTime), 'yyyy-MM-dd'),
-                TransactionType: searchType as TransactionType,
+                TransactionType: searchType,
                 TagIds: transaction.tags.map(t => t.id),
             },
         }),
-        select: (data) => data as unknown as Models.Transaction[],
     });
 }
 
@@ -125,20 +133,20 @@ export const useUpdateTransaction = () => {
         ...updateTransactionMutation(),
         onMutate: (variables) => {
 
-            const queryKey = buildTransactionsQueryKey(variables.path!.instrumentId, filter, pageSize, currentPage, sortField, sortDirection);
-            const transactions = { ...queryClient.getQueryData<PagedResult<Models.Transaction>>(queryKey) };
+            const queryKey = buildTransactionsQueryKey((variables as any).path!.instrumentId, filter, pageSize, currentPage, sortField, sortDirection);
+            const transactions = { ...queryClient.getQueryData<PagedResult<Transaction>>(queryKey) };
             if (!transactions?.results) return;
 
-            const transaction = transactions.results.find(tr => tr.id === variables.path!.id);
+            const transaction = transactions.results.find(tr => tr.id === (variables as any).path!.id);
             if (!transaction) return;
 
-            const body = variables.body as Models.TransactionUpdate;
+            const body = variables.body as TransactionUpdate;
             transaction.notes = body.notes;
             transaction.splits = body.splits;
             transaction.excludeFromReporting = body.excludeFromReporting;
             transaction.tags = body.splits.flatMap(s => s.tags);
 
-            queryClient.setQueryData<PagedResult<Models.Transaction>>(queryKey, transactions);
+            queryClient.setQueryData<PagedResult<Transaction>>(queryKey, transactions);
 
         },
         onSettled: () => {
@@ -147,8 +155,8 @@ export const useUpdateTransaction = () => {
     });
 
     return {
-        mutateAsync: (accountId: string, transactionId: string, transaction: Models.TransactionUpdate) =>
-            toast.promise(mutateAsync({ body: transaction as any, path: { instrumentId: accountId, id: transactionId } }), { pending: "Updating transaction", success: "Transaction updated", error: "Failed to update transaction" }),
+        mutateAsync: (accountId: string, transactionId: string, transaction: TransactionUpdate) =>
+            toast.promise(mutateAsync({ body: transaction as any, path: { instrumentId: accountId, id: transactionId } } as any), { pending: "Updating transaction", success: "Transaction updated", error: "Failed to update transaction" }),
         ...rest,
     };
 };
@@ -169,12 +177,12 @@ export const useAddTransactionTag = () => {
     const mutate = (variables: { accountId: string, transactionId: string, tag: Tag }) => {
 
         const queryKey = buildTransactionsQueryKey(variables.accountId, filter, pageSize, currentPage, sortField, sortDirection);
-        const transactions = { ...queryClient.getQueryData<PagedResult<Models.Transaction>>(queryKey) };
+        const transactions = { ...queryClient.getQueryData<PagedResult<Transaction>>(queryKey) };
         if (transactions?.results) {
             const transaction = transactions.results.find(tr => tr.id === variables.transactionId);
             if (transaction) {
                 transaction.tags.push(variables.tag);
-                queryClient.setQueryData<PagedResult<Models.Transaction>>(queryKey, transactions);
+                queryClient.setQueryData<PagedResult<Transaction>>(queryKey, transactions);
             }
         }
 
@@ -200,12 +208,12 @@ export const useRemoveTransactionTag = () => {
     const mutate = (variables: { accountId: string, transactionId: string, tag: Tag }) => {
 
         const queryKey = buildTransactionsQueryKey(variables.accountId, filter, pageSize, currentPage, sortField, sortDirection);
-        const transactions = { ...queryClient.getQueryData<PagedResult<Models.Transaction>>(queryKey) };
+        const transactions = { ...queryClient.getQueryData<PagedResult<Transaction>>(queryKey) };
         if (transactions?.results) {
             const transaction = transactions.results.find(tr => tr.id === variables.transactionId);
             if (transaction) {
                 transaction.tags = transaction.tags.filter(t => t.id !== variables.tag.id);
-                queryClient.setQueryData<PagedResult<Models.Transaction>>(queryKey, transactions);
+                queryClient.setQueryData<PagedResult<Transaction>>(queryKey, transactions);
             }
         }
 
@@ -228,8 +236,8 @@ export const useCreateTransaction = () => {
     });
 
     return {
-        mutateAsync: (accountId: string, transaction: Models.CreateTransaction) =>
-            toast.promise(mutateAsync({ body: transaction as unknown as CreateTransactionData["body"], path: { instrumentId: accountId } }), { pending: "Creating transaction", success: "Transaction created", error: "Failed to create transaction" }),
+        mutateAsync: (accountId: string, transaction: CreateTransaction) =>
+            toast.promise(mutateAsync({ body: transaction as any, path: { instrumentId: accountId } } as any), { pending: "Creating transaction", success: "Transaction created", error: "Failed to create transaction" }),
         ...rest,
     };
 }

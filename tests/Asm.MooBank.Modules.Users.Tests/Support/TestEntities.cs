@@ -2,8 +2,8 @@
 using Bogus;
 using DomainUser = Asm.MooBank.Domain.Entities.User.User;
 using DomainUserCard = Asm.MooBank.Domain.Entities.User.UserCard;
-using ModelUserCard = Asm.MooBank.Modules.Users.Models.UserCard;
 using ModelUpdateUser = Asm.MooBank.Modules.Users.Models.UpdateUser;
+using ModelUserCard = Asm.MooBank.Modules.Users.Models.UserCard;
 
 namespace Asm.MooBank.Modules.Users.Tests.Support;
 

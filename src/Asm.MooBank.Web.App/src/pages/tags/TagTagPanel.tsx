@@ -2,7 +2,7 @@
 
 import { TagPanel, TagPanelProps } from "components";
 
-import { Tag } from "models";
+import type { Tag } from "api/types.gen";
 import { useAddSubTag, useCreateTag, useRemoveSubTag, useTags } from "../../services";
 
 export const TransactionTagTransactionTagPanel: React.FC<TransactionTagTransactionTagPanelProps> = ({tag, ...rest}) => {

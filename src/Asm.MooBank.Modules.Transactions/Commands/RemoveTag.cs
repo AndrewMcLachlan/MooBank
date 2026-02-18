@@ -8,7 +8,7 @@ namespace Asm.MooBank.Modules.Transactions.Commands;
 
 internal record RemoveTag(Guid InstrumentId, Guid Id, int TagId) : ICommand<MooBank.Models.Transaction>;
 
-internal class RemoveTagHandler(ITransactionRepository transactionRepository, IUnitOfWork unitOfWork) :  ICommandHandler<RemoveTag, MooBank.Models.Transaction>
+internal class RemoveTagHandler(ITransactionRepository transactionRepository, IUnitOfWork unitOfWork) : ICommandHandler<RemoveTag, MooBank.Models.Transaction>
 {
     public async ValueTask<MooBank.Models.Transaction> Handle(RemoveTag request, CancellationToken cancellationToken)
     {

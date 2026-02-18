@@ -1,4 +1,5 @@
 ﻿namespace Asm.MooBank.Infrastructure;
+
 internal static class DbSetExtensions
 {
     /// <summary>

@@ -1,4 +1,4 @@
-import { TagSettings } from "api/types.gen";
+import type { TagSettings } from "api/types.gen";
 
 export interface BaseReport {
     accountId: string;

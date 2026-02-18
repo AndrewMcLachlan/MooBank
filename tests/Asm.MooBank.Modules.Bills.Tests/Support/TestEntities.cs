@@ -207,6 +207,7 @@ internal static class TestEntities
             AccountName = accountName,
             IssueDate = issueDate ?? DateOnly.FromDateTime(DateTime.UtcNow),
             InvoiceNumber = invoiceNumber ?? Faker.Random.AlphaNumeric(10),
+            Total = null,
             Cost = cost,
             CostsIncludeGST = costsIncludeGST,
             CurrentReading = currentReading,

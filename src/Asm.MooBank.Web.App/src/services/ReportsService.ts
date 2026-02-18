@@ -34,24 +34,24 @@ export const useInOutTrendReport = (accountId: string, start: Date, end: Date, s
 
 export const useBreakdownReport = (accountId: string, start: Date, end: Date, reportType: transactionTypeFilter, tagId?: number) =>
     useQuery({
-        ...tagBreakdownReportOptions({ path: { accountId, start: formatISODate(start), end: formatISODate(end), reportType: reportType.toLowerCase(), parentTagId: tagId ?? 0 } }),
+        ...tagBreakdownReportOptions({ path: { accountId, start: formatISODate(start), end: formatISODate(end), reportType: reportType.toLowerCase() as any, parentTagId: tagId ?? 0 } }),
         enabled: !!start && !!end,
     });
 
 export const useByTagReport = (accountId: string, start: Date, end: Date, reportType: transactionTypeFilter) =>
     useQuery({
-        ...byTagReportOptions({ path: { accountId, start: formatISODate(start), end: formatISODate(end), reportType: reportType.toLowerCase(), parentTagId: 0 } }),
+        ...byTagReportOptions({ path: { accountId, start: formatISODate(start), end: formatISODate(end), reportType: reportType.toLowerCase() as any, parentTagId: 0 } }),
         enabled: !!start && !!end,
     });
 
 export const useTagTrendReport = (accountId: string, start: Date, end: Date, reportType: transactionTypeFilter, tagId: number, settings: TrendReportSettings) =>
     useQuery({
-        ...tagTrendReportOptions({ path: { accountId, start: formatISODate(start), end: formatISODate(end), reportType: reportType.toLowerCase(), tagId }, query: { ApplySmoothing: settings.applySmoothing } }),
+        ...tagTrendReportOptions({ path: { accountId, start: formatISODate(start), end: formatISODate(end), reportType: reportType.toLowerCase() as any, tagId }, query: { ApplySmoothing: settings.applySmoothing } }),
     });
 
 export const useAllTagAverageReport = (accountId: string, start: Date, end: Date, reportType: transactionTypeFilter, top: number = 20, interval: reportInterval = "Monthly") =>
     useQuery({
-        ...allTagAverageReportOptions({ path: { accountId, start: formatISODate(start), end: formatISODate(end), reportType: reportType.toLowerCase() }, query: { Top: top, Interval: interval } }),
+        ...allTagAverageReportOptions({ path: { accountId, start: formatISODate(start), end: formatISODate(end), reportType: reportType.toLowerCase() as any }, query: { Top: top, Interval: interval } }),
         enabled: !!start && !!end,
     });
 

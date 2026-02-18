@@ -9,8 +9,8 @@ using Asm.MooBank.Modules.Forecast.Models;
 using Asm.MooBank.Modules.Forecast.Services;
 using Asm.MooBank.Modules.Forecast.Tests.Support;
 using DomainForecastPlan = Asm.MooBank.Domain.Entities.Forecast.ForecastPlan;
-using DomainPlannedItem = Asm.MooBank.Domain.Entities.Forecast.ForecastPlannedItem;
 using DomainInstrument = Asm.MooBank.Domain.Entities.Instrument.Instrument;
+using DomainPlannedItem = Asm.MooBank.Domain.Entities.Forecast.ForecastPlannedItem;
 
 namespace Asm.MooBank.Modules.Forecast.Tests.Services;
 

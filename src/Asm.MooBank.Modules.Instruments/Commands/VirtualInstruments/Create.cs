@@ -8,7 +8,7 @@ using Controller = Asm.MooBank.Models.Controller;
 
 namespace Asm.MooBank.Modules.Instruments.Commands.VirtualInstruments;
 
-public record Create(Guid InstrumentId, [FromBody]CreateVirtualInstrument VirtualInstrument) : ICommand<VirtualInstrument>;
+public record Create(Guid InstrumentId, [FromBody] CreateVirtualInstrument VirtualInstrument) : ICommand<VirtualInstrument>;
 
 internal class CreateHandler(IInstrumentRepository instrumentRepository, IUnitOfWork unitOfWork, ICurrencyConverter currencyConverter) : ICommandHandler<Create, VirtualInstrument>
 {

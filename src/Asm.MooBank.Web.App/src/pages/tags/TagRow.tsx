@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Tag } from "models";
+import type { Tag } from "api/types.gen";
 import { ClickableIcon, EditColumn, Icon, useUpdatingState } from "@andrewmclachlan/moo-ds";
 import { useDeleteTag, useUpdateTag } from "services";
 import { TransactionTagTransactionTagPanel } from "./TagTagPanel";

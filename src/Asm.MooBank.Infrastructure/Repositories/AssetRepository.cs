@@ -2,6 +2,7 @@
 using Asm.MooBank.Domain.Entities.Instrument.Events;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
+
 internal class AssetRepository(MooBankContext context) : RepositoryWriteBase<MooBankContext, Asset, Guid>(context), IAssetRepository
 {
     public override Asset Add(Asset entity)

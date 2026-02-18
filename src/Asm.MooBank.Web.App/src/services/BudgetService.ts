@@ -13,15 +13,12 @@ import {
     getBudgetReportBreakdownForMonthOptions,
     getBudgetReportBreakdownForMonthForUnbudgetedItemsOptions,
 } from "api/@tanstack/react-query.gen";
-import { Budget, BudgetLine } from "../models";
-import { BudgetLine as GenBudgetLine } from "api/types.gen";
+import type { Budget, BudgetLine } from "api/types.gen";
 
 export const useBudgetYears = () => useQuery({ ...getAllBudgetYearsOptions() });
 
-// Cast to hand-written Budget type until full model migration (generated BudgetLine has optional fields that are required in hand-written type)
 export const useBudget = (year: number) => useQuery({
     ...getBudgetOptions({ path: { year } }),
-    select: (data) => data as unknown as Budget,
 });
 
 export const useCreateBudgetLine = () => {
@@ -35,7 +32,7 @@ export const useCreateBudgetLine = () => {
     });
 
     const create = (year: number, budgetLine: BudgetLine) => {
-        mutate({ body: budgetLine as unknown as GenBudgetLine, path: { year } });
+        mutate({ body: budgetLine, path: { year } });
     };
 
     return create;
@@ -52,7 +49,7 @@ export const useUpdateBudgetLine = () => {
     });
 
     const update = (year: number, budget: BudgetLine) => {
-        mutate({ body: budget as unknown as GenBudgetLine, path: { year, id: budget.id } });
+        mutate({ body: budget, path: { year, id: budget.id } });
     };
 
     return update;

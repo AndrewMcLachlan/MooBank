@@ -174,12 +174,12 @@ public class ReferenceDataRepositoryTests : IDisposable
         var rate2 = new ExchangeRate { From = "AUD", To = "EUR", Rate = 0.60m };
 
         _context.ExchangeRates.AddRange(rate1, rate2);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var repository = CreateRepository();
 
         // Act
-        var result = await repository.GetExchangeRates();
+        var result = await repository.GetExchangeRates(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, result.Count());
@@ -192,7 +192,7 @@ public class ReferenceDataRepositoryTests : IDisposable
         var repository = CreateRepository();
 
         // Act
-        var result = await repository.GetExchangeRates();
+        var result = await repository.GetExchangeRates(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(result);
@@ -214,12 +214,12 @@ public class ReferenceDataRepositoryTests : IDisposable
         var price3 = TestEntities.CreateStockPriceHistory(symbol: "MSFT", date: otherDate, price: 400m);
 
         _context.StockPriceHistory.AddRange(price1, price2, price3);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var repository = CreateRepository();
 
         // Act
-        var result = await repository.GetStockPrices(targetDate);
+        var result = await repository.GetStockPrices(targetDate, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, result.Count());
@@ -238,12 +238,12 @@ public class ReferenceDataRepositoryTests : IDisposable
         var importerType2 = TestEntities.CreateImporterType(id: 2, name: "OFX Importer");
 
         _context.ImporterTypes.AddRange(importerType1, importerType2);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var repository = CreateRepository();
 
         // Act
-        var result = await repository.GetImporterTypes();
+        var result = await repository.GetImporterTypes(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, result.Count());
@@ -290,12 +290,12 @@ public class ReferenceDataRepositoryTests : IDisposable
         var cpi2 = new CpiChange { Quarter = new QuarterEntity(2024, 2), ChangePercent = 1.2m };
 
         _context.CpiChanges.AddRange(cpi1, cpi2);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var repository = CreateRepository();
 
         // Act
-        var result = await repository.GetCpiChanges();
+        var result = await repository.GetCpiChanges(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, result.Count());
