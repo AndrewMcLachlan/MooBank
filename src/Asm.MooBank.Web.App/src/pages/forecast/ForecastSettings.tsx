@@ -2,7 +2,7 @@ import { Section } from "@andrewmclachlan/moo-ds";
 import { format, parseISO } from "date-fns";
 import { useState } from "react";
 import { Button, Col, Form, Input, Row } from "@andrewmclachlan/moo-ds";
-import { AccountScopeMode, ForecastPlan } from "models";
+import type { AccountScopeMode, ForecastPlan } from "api/types.gen";
 import { useUpdateForecastPlan } from "services/ForecastService";
 import { useAccounts } from "services/AccountService";
 

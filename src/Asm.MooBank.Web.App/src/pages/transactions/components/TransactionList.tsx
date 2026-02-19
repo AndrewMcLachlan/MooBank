@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getNumberOfPages, Pagination, PaginationControls, PageSize, SectionTable, MiniPagination } from "@andrewmclachlan/moo-ds";
 
 import { useAccount } from "components";
-import { Transaction } from "models";
+import type { Transaction } from "api/types.gen";
 import { useTransactions } from "services";
 import { State } from "store/state";
 import { TransactionsSlice } from "store/Transactions";

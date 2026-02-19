@@ -1,30 +1,42 @@
-import { UseQueryResult, useQueryClient, } from "@tanstack/react-query";
-import { LogicalAccount, InstrumentId, NewStockHolding, StockHolding } from "../models";
-import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/moo-app";
-import { accountsKey } from "./AccountService";
-import { StockValueReport } from "models/stock-holding/StockValueReport";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+    getStockHoldingOptions,
+    getStockHoldingQueryKey,
+    getStockHoldingCpiAdjustedGainLossOptions,
+    stockValueReportOptions,
+    createStockHoldingMutation,
+    updateStockHoldingMutation,
+} from "api/@tanstack/react-query.gen";
+import type { StockHolding, CreateStock } from "api/types.gen";
+import { accountsQueryKey } from "./AccountService";
 import { formatISODate } from "helpers/dateFns";
 import { toast } from "react-toastify";
 
+export const stockQueryKey = getStockHoldingQueryKey;
+
+// Preserve old export name for cross-service consumers
 export const stockKey = "stock";
 
-export const useStockHolding = (accountId: string): UseQueryResult<StockHolding> => useApiGet<StockHolding>([stockKey, { accountId }], `api/stocks/${accountId}`);
+export const useStockHolding = (accountId: string) => useQuery({
+    ...getStockHoldingOptions({ path: { instrumentId: accountId } }),
+});
 
-export const useStockHoldingAdjustedGainLoss = (accountId: string): UseQueryResult<number> => useApiGet<number>([stockKey, { accountId }, "adjusted-gain-loss"], `api/stocks/${accountId}/cpi-adjusted-gain-loss`);
+export const useStockHoldingAdjustedGainLoss = (accountId: string) => useQuery({ ...getStockHoldingCpiAdjustedGainLossOptions({ path: { instrumentId: accountId } }) });
 
 export const useCreateStockHolding = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutateAsync, ...rest } = useApiPost<LogicalAccount, null, NewStockHolding>(() => `api/stocks`, {
+    const { mutateAsync, ...rest } = useMutation({
+        ...createStockHoldingMutation(),
         onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: [accountsKey]});
-        }
+            queryClient.invalidateQueries({ queryKey: accountsQueryKey() });
+        },
     });
 
     return {
-        mutateAsync: (account: NewStockHolding) =>
-            toast.promise(mutateAsync([null, account]), { pending: "Creating shares", success: "Shares created", error: "Failed to create shares" }),
+        mutateAsync: (account: CreateStock) =>
+            toast.promise(mutateAsync({ body: account }), { pending: "Creating shares", success: "Shares created", error: "Failed to create shares" }),
         ...rest
     };
 }
@@ -32,18 +44,22 @@ export const useCreateStockHolding = () => {
 export const useUpdateStockHolding = () => {
     const queryClient = useQueryClient();
 
-    const { mutateAsync, ...rest } = useApiPatch<StockHolding, InstrumentId, StockHolding>((accountId) => `api/stocks/${accountId}`, {
-        onSettled: (_data,_error,[accountId]) => {
-            queryClient.invalidateQueries({ queryKey: [accountsKey]});
-            queryClient.invalidateQueries({ queryKey: [stockKey, { accountId }]});
-        }
+    const { mutateAsync, ...rest } = useMutation({
+        ...updateStockHoldingMutation(),
+        onSettled: (_data, _error, variables) => {
+            queryClient.invalidateQueries({ queryKey: accountsQueryKey() });
+            queryClient.invalidateQueries({ queryKey: getStockHoldingQueryKey({ path: { instrumentId: (variables as any).path!.instrumentId } }) });
+        },
     });
 
     return {
         mutateAsync: (account: StockHolding) =>
-            toast.promise(mutateAsync([account.id, account]), { pending: "Updating shares", success: "Shares updated", error: "Failed to update shares" }),
+            toast.promise(mutateAsync({ body: account as any, path: { instrumentId: account.id } } as any), { pending: "Updating shares", success: "Shares updated", error: "Failed to update shares" }),
         ...rest
     };
 }
 
-export const useStockValueReport = (accountId: string, start?: Date, end?: Date) => useApiGet<StockValueReport>([stockKey, accountId, "value", start, end], `api/stocks/${accountId}/reports/value?start=${start && formatISODate(start)}&end=${start && formatISODate(end)}`, { enabled: (!!start && !!end) });
+export const useStockValueReport = (accountId: string, start?: Date, end?: Date) => useQuery({
+    ...stockValueReportOptions({ path: { instrumentId: accountId }, query: { Start: start ? formatISODate(start) : "", End: end ? formatISODate(end) : "" } }),
+    enabled: (!!start && !!end),
+});

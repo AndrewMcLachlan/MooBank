@@ -4,7 +4,7 @@ import { useImportTransactions } from "../../../services";
 import { useState } from "react";
 import { Modal } from "@andrewmclachlan/moo-ds";
 import { useAccount } from "components";
-import { LogicalAccount } from "models";
+import type { LogicalAccount } from "api/types.gen";
 
 export const Import: React.FC<ImportProps> = ({ show, accountId, onClose }) => {
 

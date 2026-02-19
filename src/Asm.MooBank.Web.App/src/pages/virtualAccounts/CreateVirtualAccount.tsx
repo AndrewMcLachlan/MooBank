@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 
 import { SectionForm, Form } from "@andrewmclachlan/moo-ds";
 
-import { CreateVirtualInstrument } from "../../models";
+import type { CreateVirtualInstrument } from "api/types.gen";
 import { useCreateVirtualInstrument } from "../../services";
 import { AccountPage, CurrencyInput, useAccount } from "components";
 

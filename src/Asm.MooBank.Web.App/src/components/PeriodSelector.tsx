@@ -7,7 +7,7 @@ import { Period, lastMonth } from "helpers/dateFns";
 
 import { useCustomPeriod } from "hooks";
 import { useLocalStorage } from "@andrewmclachlan/moo-ds";
-import { periodOptions } from "models";
+import { periodOptions } from "helpers/periodOptions";
 
 
 export const PeriodSelector: React.FC<PeriodSelectorProps> = ({instant = false, cacheKey = "period-id", ...props}) => {

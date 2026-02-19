@@ -32,7 +32,7 @@ public class CurrencyConverter(IReferenceDataRepository referenceDataRepository,
         if (from.Equals(to, StringComparison.OrdinalIgnoreCase)) return 1;
 
         var rates = await cache.GetOrCreateAsync(
-            CacheKeys.ReferenceData.ExchangeRates, 
+            CacheKeys.ReferenceData.ExchangeRates,
             async ct => await referenceDataRepository.GetExchangeRates(ct),
             CacheOptions,
             [CacheKeys.ReferenceData.CacheTag],

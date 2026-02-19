@@ -5,7 +5,7 @@ import { format } from "date-fns";
 
 import { Form, Section, SectionForm } from "@andrewmclachlan/moo-ds";
 
-import { CreateBill } from "models/bills";
+import type { CreateBill } from "helpers/bills";
 import { useCreateBill, useBillAccounts } from "services/BillService";
 
 export interface AddBillProps {

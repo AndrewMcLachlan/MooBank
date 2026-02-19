@@ -5,6 +5,7 @@ using Asm.MooBank.Institution.Ing.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Asm.MooBank.Institution.Ing;
+
 public static class IServiceCollectionExtensions
 {
     public static IServiceCollection AddIng(this IServiceCollection services)

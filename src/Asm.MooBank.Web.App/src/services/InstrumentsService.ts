@@ -1,11 +1,10 @@
-import { AccountList } from "../models";
-import { useApiGet } from "@andrewmclachlan/moo-app";
-import { ListItem } from "models/ListItem";
+import { useQuery } from "@tanstack/react-query";
+import { getFormattedInstrumentsListOptions, getFormattedInstrumentsListQueryKey, getInstrumentsListOptions } from "api/@tanstack/react-query.gen";
 
-export const formattedAccountsKey = "formatted-accounts";
-export const accountListKey = "account-list";
+export const formattedAccountsQueryKey = getFormattedInstrumentsListQueryKey;
 
+export const useFormattedAccounts = () => useQuery({
+    ...getFormattedInstrumentsListOptions(),
+});
 
-export const useFormattedAccounts = () => useApiGet<AccountList>([formattedAccountsKey], "api/instruments/summary");
-
-export const useAccountsList = () => useApiGet<ListItem<string>[]>([accountListKey], "api/instruments/list");
+export const useAccountsList = () => useQuery({ ...getInstrumentsListOptions() });

@@ -1,4 +1,5 @@
-﻿using Asm.MooBank.Commands;
+﻿using System.ComponentModel;
+using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.StockHolding;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Stocks.Models;
@@ -6,7 +7,8 @@ using Microsoft.AspNetCore.Http;
 
 namespace Asm.MooBank.Modules.Stocks.Commands.Transactions;
 
-public record Create(Guid InstrumentId, int Quantity, decimal Price, decimal Fees, string Description, DateTime Date) : InstrumentIdCommand(InstrumentId), ICommand<StockTransaction>
+[DisplayName("CreateStockTransaction")]
+public sealed record Create(Guid InstrumentId, int Quantity, decimal Price, decimal Fees, string Description, DateTime Date) : InstrumentIdCommand(InstrumentId), ICommand<StockTransaction>
 {
     public static ValueTask<Create> BindAsync(HttpContext httpContext) => BindHelper.BindWithInstrumentIdAsync<Create>("instrumentId", httpContext);
 }

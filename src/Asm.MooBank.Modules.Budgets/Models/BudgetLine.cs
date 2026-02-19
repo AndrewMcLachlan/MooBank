@@ -1,11 +1,10 @@
-﻿namespace Asm.MooBank.Modules.Budgets.Models;
+using System.ComponentModel;
 
-public sealed record BudgetLine
+namespace Asm.MooBank.Modules.Budgets.Models;
+
+[DisplayName("SimpleBudgetLine")]
+public record BudgetLineBase
 {
-    public Guid Id { get; init; }
-
-    public required string Name { get; init; }
-
     public int TagId { get; init; }
 
     public string? Notes { get; init; }
@@ -15,6 +14,13 @@ public sealed record BudgetLine
     public short Month { get; init; }
 
     public BudgetLineType Type { get; init; }
+}
+
+public sealed record BudgetLine : BudgetLineBase
+{
+    public Guid Id { get; init; }
+
+    public required string Name { get; init; }
 }
 
 public static class BudgetLineExtensions
@@ -31,8 +37,8 @@ public static class BudgetLineExtensions
             Type = budgetLine.Income ? BudgetLineType.Income : BudgetLineType.Expenses,
         };
 
-    public static Domain.Entities.Budget.BudgetLine ToDomain(this BudgetLine budgetLine, Guid budgetId) =>
-        new(budgetLine.Id)
+    public static Domain.Entities.Budget.BudgetLine ToDomain(this BudgetLineBase budgetLine, Guid budgetId) =>
+        new(Guid.NewGuid())
         {
             BudgetId = budgetId,
             TagId = budgetLine.TagId,

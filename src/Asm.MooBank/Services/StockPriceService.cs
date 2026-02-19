@@ -6,6 +6,7 @@ using Asm.MooBank.Models;
 using Microsoft.Extensions.Logging;
 
 namespace Asm.MooBank.Services;
+
 public interface IStockPriceService
 {
     Task Update(CancellationToken cancellationToken = default);

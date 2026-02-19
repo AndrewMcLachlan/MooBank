@@ -14,7 +14,7 @@ public class LogicalAccount(Guid id, IEnumerable<InstitutionAccount> institution
 
     [Column("AccountTypeId")]
     public AccountType AccountType { get; set; }
-    
+
     public IReadOnlyCollection<InstitutionAccount> InstitutionAccounts { get => _institutionAccounts; internal init => _institutionAccounts = [.. value]; }
 
     [NotMapped]

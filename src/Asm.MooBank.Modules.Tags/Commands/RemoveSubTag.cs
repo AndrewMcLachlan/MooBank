@@ -6,7 +6,7 @@ namespace Asm.MooBank.Modules.Tags.Commands;
 
 internal sealed record RemoveSubTag(int Id, int SubTagId) : ICommand;
 
-internal class RemoveSubTagHandler(ITagRepository tagRepository, IUnitOfWork unitOfWork, ISecurity security) :  ICommandHandler<RemoveSubTag>
+internal class RemoveSubTagHandler(ITagRepository tagRepository, IUnitOfWork unitOfWork, ISecurity security) : ICommandHandler<RemoveSubTag>
 {
     private readonly ITagRepository _tagRepository = tagRepository;
 

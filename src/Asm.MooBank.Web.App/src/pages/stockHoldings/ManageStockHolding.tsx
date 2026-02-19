@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Button, InputGroup } from "@andrewmclachlan/moo-ds";
 import { useNavigate } from "react-router";
-import { StockHolding } from "../../models";
+import type { StockHolding } from "api/types.gen";
 import { StockHoldingPage } from "./StockHoldingPage";
 import { useStockHolding } from "./StockHoldingProvider";
 

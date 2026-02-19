@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
 namespace Asm.MooBank.Modules.Instruments.Endpoints;
+
 internal class Import : EndpointGroupBase
 {
     public override string Name => "Import";

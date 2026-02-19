@@ -1,9 +1,11 @@
+using System.ComponentModel;
 using Asm.Domain;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Bills.Models;
 
 namespace Asm.MooBank.Modules.Bills.Commands.Accounts;
 
+[DisplayName("CreateBillAccount")]
 public record Create : ICommand<Account>
 {
     public required string Name { get; init; }

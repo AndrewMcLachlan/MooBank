@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 
-import { Asset } from "models";
+import type { Asset } from "api/types.gen";
 
 export interface AssetProviderProps {
     asset: Asset;

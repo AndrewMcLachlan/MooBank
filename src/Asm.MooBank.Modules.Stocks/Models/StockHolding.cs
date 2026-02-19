@@ -2,6 +2,7 @@
 using Asm.MooBank.Services;
 
 namespace Asm.MooBank.Modules.Stocks.Models;
+
 public record StockHolding : MooBank.Models.Instrument
 {
     public required string Symbol { get; init; }

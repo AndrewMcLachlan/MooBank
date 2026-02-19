@@ -73,25 +73,25 @@ public class MooBankWebApplicationFactory : WebApplicationFactory<Program>
         if (user.AccountIds.Count > 0)
         {
             client.DefaultRequestHeaders.Add(TestAuthHandler.AccountIdsHeader,
-                string.Join(",", user.AccountIds));
+                String.Join(",", user.AccountIds));
         }
 
         if (user.SharedAccountIds.Count > 0)
         {
             client.DefaultRequestHeaders.Add(TestAuthHandler.SharedAccountIdsHeader,
-                string.Join(",", user.SharedAccountIds));
+                String.Join(",", user.SharedAccountIds));
         }
 
         if (user.GroupIds.Count > 0)
         {
             client.DefaultRequestHeaders.Add(TestAuthHandler.GroupIdsHeader,
-                string.Join(",", user.GroupIds));
+                String.Join(",", user.GroupIds));
         }
 
         if (user.Roles.Count > 0)
         {
             client.DefaultRequestHeaders.Add(TestAuthHandler.RolesHeader,
-                string.Join(",", user.Roles));
+                String.Join(",", user.Roles));
         }
     }
 

@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from "react";
 
-import { LogicalAccount } from "models";
+import type { LogicalAccount } from "api/types.gen";
 import { useLocation } from "react-router";
 import { NavItem } from "@andrewmclachlan/moo-ds";
 import { AccountPage, useAccount } from "components";

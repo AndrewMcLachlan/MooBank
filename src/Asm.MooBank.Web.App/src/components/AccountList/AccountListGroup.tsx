@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 
 import { Icon, SectionTable } from "@andrewmclachlan/moo-ds";
 import { Reports } from "@andrewmclachlan/moo-icons";
-import { AccountListGroup as Model } from "models";
+import type { InstrumentGroup as Model } from "api/types.gen";
 import { AccountRow } from "./AccountRow";
 import { Amount } from "components/Amount";
 

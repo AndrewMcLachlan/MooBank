@@ -7,6 +7,6 @@ public interface ILogicalAccountRepository : IDeletableRepository<LogicalAccount
     LogicalAccount Add(LogicalAccount entity, decimal openingBalance, DateOnly openedDate);
 
     Task<ImporterType> GetImporterType(int importerTypeId, CancellationToken cancellationToken = default);
-    
+
     void RemoveImportAccount(ImportAccount entity);
 }

@@ -1,6 +1,7 @@
 ﻿using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Modules.Stocks.Models;
+
 public record StockTransaction
 {
     public Guid Id { get; set; } = new Guid();

@@ -50,6 +50,11 @@ public class UpdatePlanTests
             EndDate = existingPlan.EndDate,
             AccountScopeMode = existingPlan.AccountScopeMode,
             StartingBalanceMode = existingPlan.StartingBalanceMode,
+            IsArchived = false,
+            CreatedUtc = DateTime.UtcNow,
+            UpdatedUtc = DateTime.UtcNow,
+            AccountIds = [],
+            PlannedItems = [],
         };
         var command = new UpdatePlan(planId, updateModel);
 
@@ -96,6 +101,11 @@ public class UpdatePlanTests
             EndDate = newEndDate,
             AccountScopeMode = existingPlan.AccountScopeMode,
             StartingBalanceMode = existingPlan.StartingBalanceMode,
+            IsArchived = false,
+            CreatedUtc = DateTime.UtcNow,
+            UpdatedUtc = DateTime.UtcNow,
+            AccountIds = [],
+            PlannedItems = [],
         };
         var command = new UpdatePlan(planId, updateModel);
 
@@ -143,6 +153,11 @@ public class UpdatePlanTests
             AccountScopeMode = existingPlan.AccountScopeMode,
             StartingBalanceMode = StartingBalanceMode.CalculatedCurrent,
             StartingBalanceAmount = 5000m,
+            IsArchived = false,
+            CreatedUtc = DateTime.UtcNow,
+            UpdatedUtc = DateTime.UtcNow,
+            AccountIds = [],
+            PlannedItems = [],
         };
         var command = new UpdatePlan(planId, updateModel);
 
@@ -194,6 +209,11 @@ public class UpdatePlanTests
             EndDate = existingPlan.EndDate,
             AccountScopeMode = existingPlan.AccountScopeMode,
             StartingBalanceMode = existingPlan.StartingBalanceMode,
+            IsArchived = false,
+            CreatedUtc = DateTime.UtcNow,
+            UpdatedUtc = DateTime.UtcNow,
+            AccountIds = [],
+            PlannedItems = [],
             IncomeStrategy = incomeStrategy,
             OutgoingStrategy = outgoingStrategy,
         };
@@ -238,6 +258,11 @@ public class UpdatePlanTests
             EndDate = existingPlan.EndDate,
             AccountScopeMode = existingPlan.AccountScopeMode,
             StartingBalanceMode = existingPlan.StartingBalanceMode,
+            IsArchived = false,
+            CreatedUtc = DateTime.UtcNow,
+            UpdatedUtc = DateTime.UtcNow,
+            AccountIds = [],
+            PlannedItems = [],
         };
         var command = new UpdatePlan(planId, updateModel);
 
@@ -277,6 +302,11 @@ public class UpdatePlanTests
             EndDate = existingPlan.EndDate,
             AccountScopeMode = existingPlan.AccountScopeMode,
             StartingBalanceMode = existingPlan.StartingBalanceMode,
+            IsArchived = false,
+            CreatedUtc = DateTime.UtcNow,
+            UpdatedUtc = DateTime.UtcNow,
+            AccountIds = [],
+            PlannedItems = [],
         };
         var command = new UpdatePlan(planId, updateModel);
 
@@ -316,6 +346,11 @@ public class UpdatePlanTests
             EndDate = existingPlan.EndDate,
             AccountScopeMode = existingPlan.AccountScopeMode,
             StartingBalanceMode = existingPlan.StartingBalanceMode,
+            IsArchived = false,
+            CreatedUtc = DateTime.UtcNow,
+            UpdatedUtc = DateTime.UtcNow,
+            AccountIds = [],
+            PlannedItems = [],
         };
         var command = new UpdatePlan(planId, updateModel);
 
@@ -354,6 +389,11 @@ public class UpdatePlanTests
             EndDate = existingPlan.EndDate,
             AccountScopeMode = existingPlan.AccountScopeMode,
             StartingBalanceMode = existingPlan.StartingBalanceMode,
+            IsArchived = false,
+            CreatedUtc = DateTime.UtcNow,
+            UpdatedUtc = DateTime.UtcNow,
+            AccountIds = [],
+            PlannedItems = [],
         };
         var command = new UpdatePlan(planId, updateModel);
 

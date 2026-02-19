@@ -1,5 +1,5 @@
 import { format, parseISO } from "date-fns";
-import { Bill, BillAccount } from "models/bills";
+import type { Bill, Account } from "api/types.gen";
 import { Drawer } from "@andrewmclachlan/moo-ds";
 import { Section } from "@andrewmclachlan/moo-ds";
 import { getUnit } from "helpers";
@@ -107,7 +107,7 @@ export const BillDetails: React.FC<BillDetailsProps> = ({ account, bill, show, o
 };
 
 export interface BillDetailsProps {
-    account: BillAccount;
+    account: Account;
     show: boolean;
     onHide: () => void;
     bill: Bill;

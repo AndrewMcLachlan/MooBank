@@ -1,4 +1,5 @@
 ﻿namespace Asm.MooBank.Modules.Stocks.Models;
+
 public record StockHoldingReport
 {
     public Guid AccountId { get; set; }

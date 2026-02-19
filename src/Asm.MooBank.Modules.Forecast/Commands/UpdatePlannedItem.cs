@@ -7,7 +7,7 @@ using Asm.MooBank.Modules.Forecast.Models;
 namespace Asm.MooBank.Modules.Forecast.Commands;
 
 [DisplayName("UpdatePlannedItem")]
-public record UpdatePlannedItem(Guid PlanId, Guid ItemId, PlannedItem Item) : ICommand<PlannedItem>;
+public record UpdatePlannedItem(Guid PlanId, Guid ItemId, PlannedItemBase Item) : ICommand<PlannedItem>;
 
 internal class UpdatePlannedItemHandler(IForecastRepository forecastRepository, IUnitOfWork unitOfWork, ISecurity security) : ICommandHandler<UpdatePlannedItem, PlannedItem>
 {

@@ -2,6 +2,7 @@
 using Microsoft.Net.Http.Headers;
 
 namespace Microsoft.Extensions.DependencyInjection;
+
 public static class IServiceCollectionExtensions
 {
     public static IServiceCollection AddExchangeRateApi(this IServiceCollection services, Action<ExchangeRateApiConfig> options)

@@ -12,7 +12,7 @@ import { Period } from "helpers/dateFns";
 import { useNavigate, useParams } from "react-router";
 import { Breakdown } from "./Breakdown";
 import { transactionTypeFilter } from "store/state";
-import { TagValue } from "models/reports";
+import { TagValue } from "api/types.gen";
 import { MiniPeriodSelector } from "components/MiniPeriodSelector";
 import { getPeriod } from "hooks";
 
@@ -41,7 +41,7 @@ export const BreakdownPage = () => {
         if (selectedTagId !== undefined) {
             setPreviousTagIds([...previousTagIds, selectedTagId]);
         }
-        setSelectedTagId(tag.tagId);
+        setSelectedTagId(tag.tagId ?? undefined);
 
 
         if (!tag.hasChildren || tag.tagId === selectedTagId) {

@@ -3,7 +3,7 @@ import { format, addYears } from "date-fns";
 import { useState } from "react";
 import { Button, Input, Spinner } from "@andrewmclachlan/moo-ds";
 import { useCreateForecastPlan } from "services/ForecastService";
-import { LogicalAccount } from "models";
+import type { LogicalAccount } from "api/types.gen";
 
 const formatDate = (date: Date) => format(date, "yyyy-MM-dd");
 

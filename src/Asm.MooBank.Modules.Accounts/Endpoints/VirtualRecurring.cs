@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 
 namespace Asm.MooBank.Modules.Accounts.Endpoints;
+
 internal class VirtualRecurringEndpoints : EndpointGroupBase
 {
     public override string Name => "Recurring Transactions";

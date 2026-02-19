@@ -1,43 +1,41 @@
-import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/moo-app";
-import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
-import { Group } from "../models";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getAllGroupsOptions, getAllGroupsQueryKey, getGroupOptions, createGroupMutation, updateGroupMutation } from "api/@tanstack/react-query.gen";
+import type { Group } from "api/types.gen";
 
-export const groupsKey = "groups";
+export const useGroups = () => useQuery({ ...getAllGroupsOptions() });
 
-export const useGroups = (): UseQueryResult<Group[]> => useApiGet<Group[]>([groupsKey], "api/groups");
-
-export const useGroup = (id: string) => useApiGet<Group>([groupsKey, id], `api/groups/${id}`);
+export const useGroup = (id: string) => useQuery({ ...getGroupOptions({ path: { id } }) });
 
 export const useCreateGroup = () => {
-
     const queryClient = useQueryClient();
 
-    const { mutateAsync, ...rest } = useApiPost<Group, null, Group>(() => "api/groups", {
+    const { mutateAsync, ...rest } = useMutation({
+        ...createGroupMutation(),
         onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: [groupsKey] });
-        }
+            queryClient.invalidateQueries({ queryKey: getAllGroupsQueryKey() });
+        },
     });
 
     return {
         mutateAsync: (group: Group) => {
-            mutateAsync([null, group]);
-        }, ...rest
+            mutateAsync({ body: { name: group.name, description: group.description ?? "", showTotal: group.showTotal } });
+        }, ...rest,
     };
-}
+};
 
 export const useUpdateGroup = () => {
-
     const queryClient = useQueryClient();
 
-    const { mutateAsync, ...rest } = useApiPatch<Group, string, Group>((id) => `api/groups/${id}`, {
+    const { mutateAsync, ...rest } = useMutation({
+        ...updateGroupMutation(),
         onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: [groupsKey] });
-        }
+            queryClient.invalidateQueries({ queryKey: getAllGroupsQueryKey() });
+        },
     });
 
     return {
         mutateAsync: (group: Group) => {
-            mutateAsync([group.id, group]);
-        }, ...rest
+            mutateAsync({ body: group, path: { id: group.id } } as any);
+        }, ...rest,
     };
-}
+};

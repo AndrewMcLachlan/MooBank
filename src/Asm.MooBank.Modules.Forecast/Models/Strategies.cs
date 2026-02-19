@@ -38,8 +38,6 @@ public sealed record OutgoingStrategy
     public string Mode { get; init; } = "HistoricalAverageByTag";
     public int LookbackMonths { get; init; } = 12;
     public IEnumerable<int>? ExcludeTagIds { get; init; }
-    public bool ExcludeTransfers { get; init; } = true;
-    public bool ExcludeOffsets { get; init; } = true;
     public decimal? ExcludeAboveAmount { get; init; }
     public SeasonalitySettings? Seasonality { get; init; }
 }

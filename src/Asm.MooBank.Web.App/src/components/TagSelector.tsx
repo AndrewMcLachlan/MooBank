@@ -1,6 +1,6 @@
 import { useTags } from "services"
 import { ComboBox } from "@andrewmclachlan/moo-ds";
-import { Tag } from "models";
+import type { Tag } from "api/types.gen";
 
 export const TagSelector: React.FC<TagSelectorProps> = ({ id, value, multiSelect = false, onChange }) => {
 

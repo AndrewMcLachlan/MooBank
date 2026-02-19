@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using Asm.MooBank.Institution.Ing.Models;
 
 namespace Asm.MooBank.Institution.Ing.Importers;
+
 internal partial class TransactionParser
 {
     [GeneratedRegex("^(.+) - Visa (?:Purchase|Refund|Purchase Correction) - Receipt (\\d{1,6}) *In (.*) Date (.+) Card \\d{6}xxxxxx(\\d{4})")]

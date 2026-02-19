@@ -1,5 +1,4 @@
-import { UseQueryResult } from "@tanstack/react-query";
-import * as Models from "../models";
-import { useApiGet } from "@andrewmclachlan/moo-app";
+import { useQuery } from "@tanstack/react-query";
+import { importerTypesOptions } from "api/@tanstack/react-query.gen";
 
-export const useImporterTypes = (): UseQueryResult<Models.ImporterType[]> => useApiGet<Models.ImporterType[]>(["importertypes"], `api/reference-data/importer-types`);
+export const useImporterTypes = () => useQuery({ ...importerTypesOptions() });

@@ -7,7 +7,7 @@ public readonly struct Quarter : IEquatable<Quarter>, IComparable<Quarter>, ICom
 
     public Quarter()
     {
-        var q =FromDate(DateTime.Now);
+        var q = FromDate(DateTime.Now);
         Year = q.Year;
         QuarterNumber = q.QuarterNumber;
     }

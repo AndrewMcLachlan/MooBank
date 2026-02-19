@@ -1,4 +1,4 @@
-import * as Models from "models";
+import type { BudgetMonth } from "api/types.gen";
 import { format } from "date-fns/format";
 
 export const MonthLine: React.FC<MonthLineProps> = ({ month }) => (
@@ -12,5 +12,5 @@ export const MonthLine: React.FC<MonthLineProps> = ({ month }) => (
 );
 
 export interface MonthLineProps {
-    month: Models.BudgetMonth;
+    month: BudgetMonth;
 }

@@ -27,6 +27,7 @@ public class CreatePlanTests
         // Arrange
         var planModel = new ForecastPlan
         {
+            Id = Guid.Empty,
             Name = "Test Plan",
             StartDate = new DateOnly(2024, 1, 1),
             EndDate = new DateOnly(2024, 12, 31),
@@ -34,6 +35,11 @@ public class CreatePlanTests
             StartingBalanceMode = StartingBalanceMode.ManualAmount,
             StartingBalanceAmount = 10000m,
             CurrencyCode = "AUD",
+            IsArchived = false,
+            CreatedUtc = DateTime.UtcNow,
+            UpdatedUtc = DateTime.UtcNow,
+            AccountIds = [],
+            PlannedItems = [],
             IncomeStrategy = new IncomeStrategy
             {
                 Mode = "ManualRecurring",
@@ -73,12 +79,18 @@ public class CreatePlanTests
         var familyId = _mocks.User.FamilyId;
         var planModel = new ForecastPlan
         {
+            Id = Guid.Empty,
             Name = "Test Plan",
             StartDate = new DateOnly(2024, 1, 1),
             EndDate = new DateOnly(2024, 12, 31),
             AccountScopeMode = AccountScopeMode.AllAccounts,
             StartingBalanceMode = StartingBalanceMode.ManualAmount,
             StartingBalanceAmount = 10000m,
+            IsArchived = false,
+            CreatedUtc = DateTime.UtcNow,
+            UpdatedUtc = DateTime.UtcNow,
+            AccountIds = [],
+            PlannedItems = [],
             IncomeStrategy = new IncomeStrategy
             {
                 Mode = "ManualRecurring",
@@ -117,12 +129,18 @@ public class CreatePlanTests
         var endDate = new DateOnly(2025, 2, 28);
         var planModel = new ForecastPlan
         {
+            Id = Guid.Empty,
             Name = "Test Plan",
             StartDate = startDate,
             EndDate = endDate,
             AccountScopeMode = AccountScopeMode.AllAccounts,
             StartingBalanceMode = StartingBalanceMode.ManualAmount,
             StartingBalanceAmount = 10000m,
+            IsArchived = false,
+            CreatedUtc = DateTime.UtcNow,
+            UpdatedUtc = DateTime.UtcNow,
+            AccountIds = [],
+            PlannedItems = [],
             IncomeStrategy = new IncomeStrategy
             {
                 Mode = "ManualRecurring",
@@ -162,12 +180,18 @@ public class CreatePlanTests
         // Arrange
         var planModel = new ForecastPlan
         {
+            Id = Guid.Empty,
             Name = "Test Plan",
             StartDate = new DateOnly(2024, 1, 1),
             EndDate = new DateOnly(2024, 12, 31),
             AccountScopeMode = AccountScopeMode.AllAccounts,
             StartingBalanceMode = StartingBalanceMode.ManualAmount,
             StartingBalanceAmount = 10000m,
+            IsArchived = false,
+            CreatedUtc = DateTime.UtcNow,
+            UpdatedUtc = DateTime.UtcNow,
+            AccountIds = [],
+            PlannedItems = [],
             IncomeStrategy = new IncomeStrategy
             {
                 Mode = "ManualRecurring",
@@ -198,12 +222,18 @@ public class CreatePlanTests
         // Arrange
         var planModel = new ForecastPlan
         {
+            Id = Guid.Empty,
             Name = "Test Plan",
             StartDate = new DateOnly(2024, 1, 1),
             EndDate = new DateOnly(2024, 12, 31),
             AccountScopeMode = AccountScopeMode.AllAccounts,
             StartingBalanceMode = StartingBalanceMode.ManualAmount,
             StartingBalanceAmount = 10000m,
+            IsArchived = false,
+            CreatedUtc = DateTime.UtcNow,
+            UpdatedUtc = DateTime.UtcNow,
+            AccountIds = [],
+            PlannedItems = [],
             IncomeStrategy = new IncomeStrategy
             {
                 Mode = "ManualRecurring",
@@ -237,12 +267,18 @@ public class CreatePlanTests
 
         var planModel = new ForecastPlan
         {
+            Id = Guid.Empty,
             Name = "Test Plan",
             StartDate = new DateOnly(2024, 6, 1),
             EndDate = new DateOnly(2024, 12, 31),
             AccountScopeMode = AccountScopeMode.AllAccounts,
             StartingBalanceMode = StartingBalanceMode.ManualAmount,
             StartingBalanceAmount = 10000m,
+            IsArchived = false,
+            CreatedUtc = DateTime.UtcNow,
+            UpdatedUtc = DateTime.UtcNow,
+            AccountIds = [],
+            PlannedItems = [],
             // No income strategy - should calculate from history
             OutgoingStrategy = new OutgoingStrategy { LookbackMonths = 12 },
         };
@@ -283,12 +319,18 @@ public class CreatePlanTests
         // Arrange
         var planModel = new ForecastPlan
         {
+            Id = Guid.Empty,
             Name = "Test Plan",
             StartDate = new DateOnly(2024, 1, 1),
             EndDate = new DateOnly(2024, 12, 31),
             AccountScopeMode = AccountScopeMode.AllAccounts,
             StartingBalanceMode = StartingBalanceMode.ManualAmount,
             StartingBalanceAmount = 10000m,
+            IsArchived = false,
+            CreatedUtc = DateTime.UtcNow,
+            UpdatedUtc = DateTime.UtcNow,
+            AccountIds = [],
+            PlannedItems = [],
             IncomeStrategy = new IncomeStrategy
             {
                 Mode = "ManualRecurring",
@@ -329,11 +371,17 @@ public class CreatePlanTests
 
         var planModel = new ForecastPlan
         {
+            Id = Guid.Empty,
             Name = "Test Plan",
             StartDate = new DateOnly(2024, 1, 1),
             EndDate = new DateOnly(2024, 12, 31),
             AccountScopeMode = AccountScopeMode.AllAccounts,
             StartingBalanceMode = StartingBalanceMode.CalculatedCurrent,
+            IsArchived = false,
+            CreatedUtc = DateTime.UtcNow,
+            UpdatedUtc = DateTime.UtcNow,
+            AccountIds = [],
+            PlannedItems = [],
             // No starting balance amount - should calculate from accounts
             IncomeStrategy = new IncomeStrategy
             {
@@ -385,13 +433,18 @@ public class CreatePlanTests
 
         var planModel = new ForecastPlan
         {
+            Id = Guid.Empty,
             Name = "Test Plan",
             StartDate = new DateOnly(2024, 1, 1),
             EndDate = new DateOnly(2024, 12, 31),
             AccountScopeMode = AccountScopeMode.SelectedAccounts,
             StartingBalanceMode = StartingBalanceMode.ManualAmount,
             StartingBalanceAmount = 10000m,
+            IsArchived = false,
+            CreatedUtc = DateTime.UtcNow,
+            UpdatedUtc = DateTime.UtcNow,
             AccountIds = [accountId1, accountId2],
+            PlannedItems = [],
             IncomeStrategy = new IncomeStrategy
             {
                 Mode = "ManualRecurring",
@@ -430,12 +483,18 @@ public class CreatePlanTests
 
         var planModel = new ForecastPlan
         {
+            Id = Guid.Empty,
             Name = "Test Plan",
             StartDate = new DateOnly(2024, 1, 1),
             EndDate = new DateOnly(2024, 12, 31),
             AccountScopeMode = AccountScopeMode.AllAccounts,
             StartingBalanceMode = StartingBalanceMode.ManualAmount,
             StartingBalanceAmount = 10000m,
+            IsArchived = false,
+            CreatedUtc = DateTime.UtcNow,
+            UpdatedUtc = DateTime.UtcNow,
+            AccountIds = [],
+            PlannedItems = [],
             // No currency code - should use user's currency
             IncomeStrategy = new IncomeStrategy
             {
@@ -473,12 +532,18 @@ public class CreatePlanTests
         // Arrange
         var planModel = new ForecastPlan
         {
+            Id = Guid.Empty,
             Name = "Test Plan",
             StartDate = new DateOnly(2024, 1, 1),
             EndDate = new DateOnly(2024, 12, 31),
             AccountScopeMode = AccountScopeMode.AllAccounts,
             StartingBalanceMode = StartingBalanceMode.ManualAmount,
             StartingBalanceAmount = 10000m,
+            IsArchived = false,
+            CreatedUtc = DateTime.UtcNow,
+            UpdatedUtc = DateTime.UtcNow,
+            AccountIds = [],
+            PlannedItems = [],
             IncomeStrategy = new IncomeStrategy
             {
                 Mode = "ManualRecurring",
@@ -520,6 +585,7 @@ public class CreatePlanTests
         // Arrange
         var planModel = new ForecastPlan
         {
+            Id = Guid.Empty,
             Name = "My New Plan",
             StartDate = new DateOnly(2024, 1, 1),
             EndDate = new DateOnly(2024, 12, 31),
@@ -527,6 +593,11 @@ public class CreatePlanTests
             StartingBalanceMode = StartingBalanceMode.ManualAmount,
             StartingBalanceAmount = 10000m,
             CurrencyCode = "AUD",
+            IsArchived = false,
+            CreatedUtc = DateTime.UtcNow,
+            UpdatedUtc = DateTime.UtcNow,
+            AccountIds = [],
+            PlannedItems = [],
             IncomeStrategy = new IncomeStrategy
             {
                 Mode = "ManualRecurring",

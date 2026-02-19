@@ -7,8 +7,8 @@ using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Models;
 using Bogus;
 using DomainTag = Asm.MooBank.Domain.Entities.Tag.Tag;
-using DomainUser = Asm.MooBank.Domain.Entities.User.User;
 using DomainTagSettings = Asm.MooBank.Domain.Entities.Tag.TagSettings;
+using DomainUser = Asm.MooBank.Domain.Entities.User.User;
 
 namespace Asm.MooBank.Infrastructure.Tests.Support;
 

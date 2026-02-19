@@ -5,6 +5,7 @@ using Asm.MooBank.Institution.AustralianSuper.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Asm.MooBank.Institution.AustralianSuper;
+
 public static class IServiceCollectionExtensions
 {
     public static IServiceCollection AddAustralianSuper(this IServiceCollection services)

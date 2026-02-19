@@ -1,37 +1,32 @@
-import { useApiGet, useApiPagedGet, useApiPost } from "@andrewmclachlan/moo-app";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+    getBillAccountSummariesByTypeOptions,
+    getBillAccountSummariesByTypeQueryKey,
+    getBillAccountsByTypeOptions,
+    getBillAccountsOptions,
+    getBillAccountsQueryKey,
+    getBillAccountOptions,
+    getAllBillsQueryKey,
+    getBillsForAnAccountQueryKey,
+    getBillsByUtilityTypeQueryKey,
+    createBillAccountMutation,
+    createBillMutation,
+    getCostPerUnitReportOptions,
+    getServiceChargeReportOptions,
+    getUsageReportOptions,
+} from "api/@tanstack/react-query.gen";
+import { getAllBills, getBillsForAnAccount, getBillsByUtilityType } from "api/sdk.gen";
+import type {
+    UtilityType,
+    Bill,
+    CreateBillAccount,
+} from "api/types.gen";
 import { PagedResult } from "@andrewmclachlan/moo-ds";
-import { useQueryClient } from "@tanstack/react-query";
-import { AccountTypeSummary, Bill, BillAccount, CreateBill, CreateBillAccount } from "models/bills";
+import type { CreateBill } from "helpers/bills";
 import { toast } from "react-toastify";
 
-const billsKey = "bills";
-const summariesKey = "bills-account-summaries";
-const accountsKey = "bills-accounts";
-
-export const useBillAccountSummaries = () => useApiGet<AccountTypeSummary[]>([summariesKey], "api/bills/accounts/types");
-
-export const useBillAccountsByType = (utilityType: string) => useApiGet<BillAccount[]>([accountsKey, utilityType], `api/bills/accounts/types/${utilityType}`);
-
-export const useBillAccounts = () => useApiGet<BillAccount[]>([accountsKey], "api/bills/accounts");
-
-export const useBillAccount = (id: string) => useApiGet<BillAccount>([accountsKey, id], `api/bills/accounts/${id}`);
-
-export const useCreateBillAccount = () => {
-    const queryClient = useQueryClient();
-
-    const { mutateAsync, ...rest } = useApiPost<BillAccount, null, CreateBillAccount>(() => `api/bills/accounts`, {
-        onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: [accountsKey] });
-            queryClient.invalidateQueries({ queryKey: [summariesKey] });
-        }
-    });
-
-    return {
-        mutateAsync: (account: CreateBillAccount) =>
-            toast.promise(mutateAsync([null, account]), { pending: "Creating account", success: "Account created", error: "Failed to create account" }),
-        ...rest,
-    };
-};
+// Re-export generated types that consumers import from this file
+export type { CostPerUnitReport, CostDataPoint, ServiceChargeReport, ServiceChargeDataPoint, UsageReport, UsageDataPoint } from "api/types.gen";
 
 export interface BillFilter {
     startDate?: string;
@@ -40,127 +35,163 @@ export interface BillFilter {
     utilityType?: string;
 }
 
-const buildFilterQueryString = (filter?: BillFilter): string => {
-    if (!filter) return "";
-    const params = new URLSearchParams();
-    if (filter.startDate) params.append("startDate", filter.startDate);
-    if (filter.endDate) params.append("endDate", filter.endDate);
-    if (filter.accountId) params.append("accountId", filter.accountId);
-    if (filter.utilityType) params.append("utilityType", filter.utilityType);
-    const queryString = params.toString();
-    return queryString ? `&${queryString}` : "";
+export const useBillAccountSummaries = () => useQuery({ ...getBillAccountSummariesByTypeOptions() });
+
+export const useBillAccountsByType = (utilityType: string) => useQuery({
+    ...getBillAccountsByTypeOptions({ path: { type: utilityType as UtilityType } }),
+});
+
+export const useBillAccounts = () => useQuery({
+    ...getBillAccountsOptions(),
+});
+
+export const useBillAccount = (id: string) => useQuery({
+    ...getBillAccountOptions({ path: { instrumentId: id } }),
+});
+
+export const useCreateBillAccount = () => {
+    const queryClient = useQueryClient();
+
+    const { mutateAsync, ...rest } = useMutation({
+        ...createBillAccountMutation(),
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: getBillAccountsQueryKey() });
+            queryClient.invalidateQueries({ queryKey: getBillAccountSummariesByTypeQueryKey() });
+        },
+    });
+
+    return {
+        mutateAsync: (account: CreateBillAccount) =>
+            toast.promise(mutateAsync({ body: account }), { pending: "Creating account", success: "Account created", error: "Failed to create account" }),
+        ...rest,
+    };
 };
 
 export const useAllBills = (pageNumber: number, pageSize: number, filter?: BillFilter) =>
-    useApiPagedGet<PagedResult<Bill>>(
-        [billsKey, pageNumber, pageSize, filter],
-        `api/bills?pageNumber=${pageNumber}&pageSize=${pageSize}${buildFilterQueryString(filter)}`
-    );
+    useQuery({
+        queryKey: getAllBillsQueryKey({
+            query: {
+                PageNumber: pageNumber,
+                PageSize: pageSize,
+                StartDate: filter?.startDate,
+                EndDate: filter?.endDate,
+                AccountId: filter?.accountId,
+                UtilityType: filter?.utilityType as UtilityType | undefined,
+            },
+        }),
+        queryFn: async ({ signal }) => {
+            const { data, headers } = await getAllBills({
+                query: {
+                    PageNumber: pageNumber,
+                    PageSize: pageSize,
+                    StartDate: filter?.startDate,
+                    EndDate: filter?.endDate,
+                    AccountId: filter?.accountId,
+                    UtilityType: filter?.utilityType as UtilityType | undefined,
+                },
+                signal,
+                throwOnError: true,
+            });
+            return { results: data, total: Number(headers['x-total-count'] ?? 0) } as PagedResult<Bill>;
+        },
+    });
 
-export const useBills = (id: string, pageNumber: number, pageSize: number) => useApiPagedGet<PagedResult<Bill>>([billsKey, id, pageNumber, pageSize], `api/bills/accounts/${id}/bills?pageNumber=${pageNumber}&pageSize=${pageSize}`);
+export const useBills = (id: string, pageNumber: number, pageSize: number) => useQuery({
+    queryKey: getBillsForAnAccountQueryKey({
+        path: { instrumentId: id },
+        query: { PageNumber: pageNumber, PageSize: pageSize },
+    }),
+    queryFn: async ({ signal }) => {
+        const { data, headers } = await getBillsForAnAccount({
+            path: { instrumentId: id },
+            query: { PageNumber: pageNumber, PageSize: pageSize },
+            signal,
+            throwOnError: true,
+        });
+        return { results: data, total: Number(headers['x-total-count'] ?? 0) } as PagedResult<Bill>;
+    },
+});
 
-export const useBillsByUtilityType = (utilityType: string, pageNumber: number, pageSize: number, filter?: BillFilter) => {
-    const filterParams = buildFilterQueryString(filter);
-    return useApiPagedGet<PagedResult<Bill>>(
-        [billsKey, "byType", utilityType, pageNumber, pageSize, filter],
-        `api/bills/types/${utilityType}/bills?pageNumber=${pageNumber}&pageSize=${pageSize}${filterParams}`,
-        { enabled: !!utilityType }
-    );
-};
+export const useBillsByUtilityType = (utilityType: string, pageNumber: number, pageSize: number, filter?: BillFilter) => useQuery({
+    queryKey: getBillsByUtilityTypeQueryKey({
+        path: { utilityType: utilityType as UtilityType },
+        query: {
+            PageNumber: pageNumber,
+            PageSize: pageSize,
+            StartDate: filter?.startDate,
+            EndDate: filter?.endDate,
+            AccountId: filter?.accountId,
+        },
+    }),
+    queryFn: async ({ signal }) => {
+        const { data, headers } = await getBillsByUtilityType({
+            path: { utilityType: utilityType as UtilityType },
+            query: {
+                PageNumber: pageNumber,
+                PageSize: pageSize,
+                StartDate: filter?.startDate,
+                EndDate: filter?.endDate,
+                AccountId: filter?.accountId,
+            },
+            signal,
+            throwOnError: true,
+        });
+        return { results: data, total: Number(headers['x-total-count'] ?? 0) } as PagedResult<Bill>;
+    },
+    enabled: !!utilityType,
+});
 
-export interface CostPerUnitReport {
-    start: string;
-    end: string;
-    dataPoints: CostDataPoint[];
-}
+export const useCostPerUnitReport = (start: string, end: string, accountId?: string, utilityType?: string) => useQuery({
+    ...getCostPerUnitReportOptions({
+        query: {
+            Start: start,
+            End: end,
+            AccountId: accountId,
+            UtilityType: utilityType as UtilityType | undefined,
+        },
+    }),
+    enabled: !!start && !!end,
+});
 
-export interface CostDataPoint {
-    date: string;
-    accountName: string;
-    averagePricePerUnit: number;
-    totalUsage: number;
-}
+export const useServiceChargeReport = (start: string, end: string, accountId?: string, utilityType?: string) => useQuery({
+    ...getServiceChargeReportOptions({
+        query: {
+            Start: start,
+            End: end,
+            AccountId: accountId,
+            UtilityType: utilityType as UtilityType | undefined,
+        },
+    }),
+    enabled: !!start && !!end,
+});
 
-export interface ServiceChargeReport {
-    start: string;
-    end: string;
-    dataPoints: ServiceChargeDataPoint[];
-}
-
-export interface ServiceChargeDataPoint {
-    date: string;
-    accountName: string;
-    averageChargePerDay: number;
-}
-
-export interface UsageReport {
-    start: string;
-    end: string;
-    dataPoints: UsageDataPoint[];
-}
-
-export interface UsageDataPoint {
-    date: string;
-    accountName: string;
-    usagePerDay: number;
-}
-
-export const useCostPerUnitReport = (start: string, end: string, accountId?: string, utilityType?: string) => {
-    const params = new URLSearchParams();
-    params.append("start", start);
-    params.append("end", end);
-    if (accountId) params.append("accountId", accountId);
-    if (utilityType) params.append("utilityType", utilityType);
-
-    return useApiGet<CostPerUnitReport>(
-        [billsKey, "reports", "cost-per-unit", start, end, accountId, utilityType],
-        `api/bills/reports/cost-per-unit?${params.toString()}`,
-        { enabled: !!start && !!end }
-    );
-};
-
-export const useServiceChargeReport = (start: string, end: string, accountId?: string, utilityType?: string) => {
-    const params = new URLSearchParams();
-    params.append("start", start);
-    params.append("end", end);
-    if (accountId) params.append("accountId", accountId);
-    if (utilityType) params.append("utilityType", utilityType);
-
-    return useApiGet<ServiceChargeReport>(
-        [billsKey, "reports", "service-charge", start, end, accountId, utilityType],
-        `api/bills/reports/service-charge?${params.toString()}`,
-        { enabled: !!start && !!end }
-    );
-};
-
-export const useUsageReport = (start: string, end: string, accountId?: string, utilityType?: string) => {
-    const params = new URLSearchParams();
-    params.append("start", start);
-    params.append("end", end);
-    if (accountId) params.append("accountId", accountId);
-    if (utilityType) params.append("utilityType", utilityType);
-
-    return useApiGet<UsageReport>(
-        [billsKey, "reports", "usage", start, end, accountId, utilityType],
-        `api/bills/reports/usage?${params.toString()}`,
-        { enabled: !!start && !!end }
-    );
-};
+export const useUsageReport = (start: string, end: string, accountId?: string, utilityType?: string) => useQuery({
+    ...getUsageReportOptions({
+        query: {
+            Start: start,
+            End: end,
+            AccountId: accountId,
+            UtilityType: utilityType as UtilityType | undefined,
+        },
+    }),
+    enabled: !!start && !!end,
+});
 
 export const useCreateBill = () => {
     const queryClient = useQueryClient();
 
-    const { mutateAsync, ...rest } = useApiPost<Bill, string, CreateBill>((accountId) => `api/bills/accounts/${accountId}/bills`, {
-        onSettled: (_data, _error, [accountId]) => {
-            queryClient.invalidateQueries({ queryKey: [billsKey] });
-            queryClient.invalidateQueries({ queryKey: [billsKey, accountId] });
-            queryClient.invalidateQueries({ queryKey: [accountsKey] });
-        }
+    const { mutateAsync, ...rest } = useMutation({
+        ...createBillMutation(),
+        onSettled: (_data, _error, variables) => {
+            queryClient.invalidateQueries({ queryKey: getAllBillsQueryKey({ query: {} as any }) });
+            queryClient.invalidateQueries({ queryKey: getBillsForAnAccountQueryKey({ path: { instrumentId: (variables as any).path!.instrumentId } }) });
+            queryClient.invalidateQueries({ queryKey: getBillAccountsQueryKey() });
+        },
     });
 
     return {
         mutateAsync: (accountId: string, bill: CreateBill) =>
-            toast.promise(mutateAsync([accountId, bill]), { pending: "Creating bill", success: "Bill created", error: "Failed to create bill" }),
+            toast.promise(mutateAsync({ body: bill as any, path: { instrumentId: accountId } } as any), { pending: "Creating bill", success: "Bill created", error: "Failed to create bill" }),
         ...rest,
     };
 };

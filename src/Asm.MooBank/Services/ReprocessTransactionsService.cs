@@ -14,12 +14,12 @@ internal class ReprocessTransactionsService(IImporterFactory importerFactory, IU
 {
     public async Task Reprocess(ReprocessWorkItem workItem, CancellationToken cancellationToken = default)
     {
-        logger.LogInformation("Reprocess Transactions Service is processing instrument {InstrumentId}, account {AccountId}.", 
+        logger.LogInformation("Reprocess Transactions Service is processing instrument {InstrumentId}, account {AccountId}.",
             workItem.InstrumentId, workItem.AccountId);
 
         try
         {
-            var importer = await importerFactory.Create(workItem.InstrumentId, workItem.AccountId, cancellationToken) 
+            var importer = await importerFactory.Create(workItem.InstrumentId, workItem.AccountId, cancellationToken)
                 ?? throw new InvalidOperationException($"Import is not supported for account with ID: {workItem.AccountId}");
 
             await importer.Reprocess(workItem.InstrumentId, workItem.AccountId, cancellationToken);

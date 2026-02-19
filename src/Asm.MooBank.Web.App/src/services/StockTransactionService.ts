@@ -1,39 +1,63 @@
-import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import * as Models from "../models";
+import type { StockTransaction } from "api/types.gen";
+import type { CreateStockTransaction } from "helpers/stocks";
 import { TransactionsFilter } from "../store/state";
-import { useApiPagedGet, useApiPost } from "@andrewmclachlan/moo-app";
 import { PagedResult, SortDirection } from "@andrewmclachlan/moo-ds";
 import { toast } from "react-toastify";
+import {
+    getStockTransactionsQueryKey,
+    createStockTransactionMutation,
+} from "api/@tanstack/react-query.gen";
+import { getStockTransactions } from "api/sdk.gen";
+import {
+    SortDirection as GenSortDirection,
+} from "api/types.gen";
 
-const transactionKey = "stock-transactions";
+export const useStockTransactions = (accountId: string, filter: TransactionsFilter, pageSize: number, pageNumber: number, sortField: string, sortDirection: SortDirection) => {
 
-export const useStockTransactions = (accountId: string, filter: TransactionsFilter, pageSize: number, pageNumber: number, sortField: string, sortDirection: SortDirection): UseQueryResult<PagedResult<Models.StockTransaction>> => {
-
-    const sortString = sortField && sortField !== null && sortField !== "" ? `sortField=${sortField}&sortDirection=${sortDirection}` : "";
-    let filterString = filter.description ? `&filter=${filter.description}` : "";
-        filterString += filter.start ? `&start=${filter.start}` : "";
-        filterString += filter.end ? `&end=${filter.end}` : "";
-
-    let queryString = sortString + filterString;
-    queryString = queryString.startsWith("&") ? queryString.substring(1) : queryString;
-    queryString = queryString.length > 0 && queryString[0] !== "?" ? `?${queryString}` : queryString;
-
-    return useApiPagedGet<PagedResult<Models.StockTransaction>>([transactionKey, accountId, filter, pageSize, pageNumber, sortField, sortDirection], `api/stocks/${accountId}/transactions/${filter.filterTagged ? "untagged/" : ""}${pageSize}/${pageNumber}${queryString}`);
+    return useQuery({
+        queryKey: getStockTransactionsQueryKey({
+            path: { instrumentId: accountId, pageSize, pageNumber },
+            query: {
+                Filter: filter.description || undefined,
+                Start: filter.start || undefined,
+                End: filter.end || undefined,
+                SortField: sortField || undefined,
+                SortDirection: (sortDirection || "Descending") as GenSortDirection,
+            },
+        }),
+        queryFn: async ({ signal }) => {
+            const { data, headers } = await getStockTransactions({
+                path: { instrumentId: accountId, pageSize, pageNumber },
+                query: {
+                    Filter: filter.description || undefined,
+                    Start: filter.start || undefined,
+                    End: filter.end || undefined,
+                    SortField: sortField || undefined,
+                    SortDirection: (sortDirection || "Descending") as GenSortDirection,
+                },
+                signal,
+                throwOnError: true,
+            });
+            return { results: data, total: Number(headers['x-total-count'] ?? 0) } as PagedResult<StockTransaction>;
+        },
+    });
 }
 
 export const useCreateStockTransaction = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutateAsync, ...rest } = useApiPost<Models.StockTransaction, { accountId: string }, Models.CreateStockTransaction>((variables) => `api/stocks/${variables.accountId}/transactions`, {
+    const { mutateAsync } = useMutation({
+        ...createStockTransactionMutation(),
         onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: [transactionKey]});
+            queryClient.invalidateQueries({ queryKey: getStockTransactionsQueryKey({ path: { instrumentId: "", pageSize: 0, pageNumber: 0 } } as any) });
         }
     });
 
-    const create = (accountId:string, transaction: Models.CreateStockTransaction) => {
-        toast.promise(mutateAsync([{accountId}, transaction]), { pending: "Creating transaction", success: "Transaction created", error: "Failed to create transaction" });
+    const create = (accountId: string, transaction: CreateStockTransaction) => {
+        toast.promise(mutateAsync({ body: transaction as any, path: { instrumentId: accountId } } as any), { pending: "Creating transaction", success: "Transaction created", error: "Failed to create transaction" });
     };
 
     return create;

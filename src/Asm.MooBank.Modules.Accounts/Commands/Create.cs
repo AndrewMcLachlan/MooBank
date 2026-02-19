@@ -14,7 +14,7 @@ public record Create() : ICommand<LogicalAccount>
     public string? Description { get; init; }
 
     public int? ImporterTypeId { get; init; }
-    
+
     public required int InstitutionId { get; init; }
 
     public required string Currency { get; init; }

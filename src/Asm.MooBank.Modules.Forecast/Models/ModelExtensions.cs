@@ -18,9 +18,9 @@ public static class ModelExtensions
         StartingBalanceMode = plan.StartingBalanceMode,
         StartingBalanceAmount = plan.StartingBalanceAmount,
         CurrencyCode = plan.CurrencyCode,
-        IncomeStrategy = string.IsNullOrEmpty(plan.IncomeStrategySerialized) ? null : JsonSerializer.Deserialize<IncomeStrategy>(plan.IncomeStrategySerialized, JsonOptions),
-        OutgoingStrategy = string.IsNullOrEmpty(plan.OutgoingStrategySerialized) ? null : JsonSerializer.Deserialize<OutgoingStrategy>(plan.OutgoingStrategySerialized, JsonOptions),
-        Assumptions = string.IsNullOrEmpty(plan.AssumptionsSerialized) ? null : JsonSerializer.Deserialize<Assumptions>(plan.AssumptionsSerialized, JsonOptions),
+        IncomeStrategy = String.IsNullOrEmpty(plan.IncomeStrategySerialized) ? null : JsonSerializer.Deserialize<IncomeStrategy>(plan.IncomeStrategySerialized, JsonOptions),
+        OutgoingStrategy = String.IsNullOrEmpty(plan.OutgoingStrategySerialized) ? null : JsonSerializer.Deserialize<OutgoingStrategy>(plan.OutgoingStrategySerialized, JsonOptions),
+        Assumptions = String.IsNullOrEmpty(plan.AssumptionsSerialized) ? null : JsonSerializer.Deserialize<Assumptions>(plan.AssumptionsSerialized, JsonOptions),
         IsArchived = plan.IsArchived,
         CreatedUtc = plan.CreatedUtc,
         UpdatedUtc = plan.UpdatedUtc,
@@ -52,9 +52,11 @@ public static class ModelExtensions
         Notes = item.Notes
     };
 
-    public static DomainEntities.ForecastPlannedItem ToDomain(this PlannedItem item, Guid planId)
+    public static DomainEntities.ForecastPlannedItem ToDomain(this PlannedItemBase item, Guid planId)
     {
-        var entity = new DomainEntities.ForecastPlannedItem(item.Id)
+        var id = Guid.NewGuid();
+
+        var entity = new DomainEntities.ForecastPlannedItem(id)
         {
             ForecastPlanId = planId,
             ItemType = item.ItemType,
@@ -73,7 +75,7 @@ public static class ModelExtensions
             case PlannedItemDateMode.FixedDate when item.FixedDate.HasValue:
                 entity.FixedDate = new DomainEntities.PlannedItemFixedDate
                 {
-                    PlannedItemId = item.Id,
+                    PlannedItemId = id,
                     FixedDate = item.FixedDate.Value
                 };
                 break;
@@ -81,7 +83,7 @@ public static class ModelExtensions
             case PlannedItemDateMode.Schedule when item.ScheduleAnchorDate.HasValue:
                 entity.Schedule = new DomainEntities.PlannedItemSchedule
                 {
-                    PlannedItemId = item.Id,
+                    PlannedItemId = id,
                     Frequency = item.ScheduleFrequency ?? ScheduleFrequency.Monthly,
                     AnchorDate = item.ScheduleAnchorDate.Value,
                     Interval = item.ScheduleInterval ?? 1,
@@ -93,7 +95,7 @@ public static class ModelExtensions
             case PlannedItemDateMode.FlexibleWindow when item.WindowStartDate.HasValue && item.WindowEndDate.HasValue:
                 entity.FlexibleWindow = new DomainEntities.PlannedItemFlexibleWindow
                 {
-                    PlannedItemId = item.Id,
+                    PlannedItemId = id,
                     StartDate = item.WindowStartDate.Value,
                     EndDate = item.WindowEndDate.Value,
                     AllocationMode = item.AllocationMode ?? AllocationMode.EvenlySpread

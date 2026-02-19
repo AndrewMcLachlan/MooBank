@@ -25,7 +25,7 @@ internal class BillAccounts : EndpointGroupBase
         builder.MapQuery<Queries.Bills.Get, Models.Bill>("/bills/{id}")
             .WithNames("Get Bill");
 
-        builder.MapPostCreate<Commands.Bills.Create, Models.Bill>("/bills", "Get Bill".ToMachine(), b => b.Id)
+        builder.MapPostCreate<Commands.Bills.Create, Models.Bill>("/bills", "Get Bill".ToMachine(), b => b.Id, CommandBinding.Parameters)
             .WithNames("Create Bill")
             .RequireAuthorization(Policies.GetInstrumentOwnerPolicy());
     }

@@ -37,7 +37,7 @@ internal class AbsClient(IHttpClientFactory httpClientFactory, ILogger<AbsClient
             string endDateQuery = endDate.HasValue ? $"endPeriod={endDate.Value:yyyy-MM-dd}" : String.Empty;
 
 
-            string query = $"?{startDateQuery}&{endDateQuery}".TrimEnd('&','?');
+            string query = $"?{startDateQuery}&{endDateQuery}".TrimEnd('&', '?');
 
 
             var response = await httpClient.GetAsync(url + query, cancellationToken);

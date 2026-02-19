@@ -1,4 +1,4 @@
-import { UtilityType } from "models";
+import type { UtilityType } from "api/types.gen";
 
 export const getUnit = (accountType: UtilityType): string => {
     switch (accountType) {

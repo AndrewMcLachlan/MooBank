@@ -1,4 +1,4 @@
-﻿namespace Asm.MooBank.Models;
+namespace Asm.MooBank.Models;
 
 public abstract record Instrument
 {
@@ -12,7 +12,7 @@ public abstract record Instrument
 
     public required decimal CurrentBalance { get; set; }
 
-    public required decimal? CurrentBalanceLocalCurrency { get; set; }
+    public decimal? CurrentBalanceLocalCurrency { get; set; }
 
     public required string Currency { get; set; }
 

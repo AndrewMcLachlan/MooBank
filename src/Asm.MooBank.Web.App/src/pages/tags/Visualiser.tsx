@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-import { Tag } from "../../models";
+import type { Tag } from "api/types.gen";
 
 import { useTagsHierarchy } from "../../services";
 import { TagsPage } from "./TagsPage";

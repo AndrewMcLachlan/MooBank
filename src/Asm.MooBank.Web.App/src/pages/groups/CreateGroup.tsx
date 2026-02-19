@@ -1,4 +1,4 @@
-import { emptyGroup } from "models";
+import { emptyGroup } from "helpers/groups";
 import { GroupForm } from "./GroupForm";
 
 export const CreateGroup = () => (

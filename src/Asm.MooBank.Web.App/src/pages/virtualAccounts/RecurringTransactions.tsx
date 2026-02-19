@@ -4,8 +4,8 @@ import { SaveIcon } from "@andrewmclachlan/moo-ds";
 import { format } from "date-fns/format";
 import { parse } from "date-fns/parse";
 import { parseISO } from "date-fns/parseISO";
-import { VirtualInstrument } from "models";
-import { RecurringTransaction, Schedule, Schedules, emptyRecurringTransaction } from "models/RecurringTransaction";
+import type { VirtualInstrument, RecurringTransaction, ScheduleFrequency } from "api/types.gen";
+import { Schedules, emptyRecurringTransaction } from "helpers/recurringTransactions";
 import React, { useState } from "react";
 import { useCreateRecurringTransaction, useDeleteRecurringTransaction, useGetRecurringTransactions, useUpdateRecurringTransaction } from "services/RecurringTransactionService";
 
@@ -13,15 +13,15 @@ export const RecurringTransactions: React.FC<RecurringTransactionsProps> = ({ ac
 
     const {data: recurringTransactions } = useGetRecurringTransactions(account.parentId, account.id);
 
-    const createRecurringTransaction = useCreateRecurringTransaction();
-    const updateRecurringTransaction = useUpdateRecurringTransaction();
-    const deleteRecurringTransaction = useDeleteRecurringTransaction();
-
     const accountId = account.parentId;
     const virtualId = account.id;
 
+    const createRecurringTransaction = useCreateRecurringTransaction(accountId, virtualId);
+    const updateRecurringTransaction = useUpdateRecurringTransaction(accountId, virtualId);
+    const deleteRecurringTransaction = useDeleteRecurringTransaction(accountId, virtualId);
+
     const create = () => {
-        createRecurringTransaction(account.parentId, account.id, newRT);
+        createRecurringTransaction(newRT);
         setNewRT(emptyRecurringTransaction(virtualId));
     }
 
@@ -29,7 +29,7 @@ export const RecurringTransactions: React.FC<RecurringTransactionsProps> = ({ ac
 
     const onDelete = (id: string) => {
         if (confirm("Are you sure you want to delete this recurring transaction?")) {
-            deleteRecurringTransaction(accountId, virtualId, id);
+            deleteRecurringTransaction(id);
         }
     }
 
@@ -50,7 +50,7 @@ export const RecurringTransactions: React.FC<RecurringTransactionsProps> = ({ ac
                     <td><input type="text" className="form-control" placeholder="Description" value={newRT.description} onChange={e => setNewRT({ ...newRT, description: e.currentTarget.value })} /></td>
                     <td><input type="number" className="form-control" placeholder="Amount" value={newRT.amount} onChange={e => setNewRT({ ...newRT, amount: e.currentTarget.valueAsNumber })} /></td>
                     <td>
-                        <select className="form-control" value={newRT.schedule} onChange={e => setNewRT({ ...newRT, schedule: e.currentTarget.value as Schedule })}>
+                        <select className="form-control" value={newRT.schedule} onChange={e => setNewRT({ ...newRT, schedule: e.currentTarget.value as ScheduleFrequency })}>
                             {Schedules.map(s => <option key={s}>{s}</option>)}
                         </select>
                     </td>
@@ -60,11 +60,11 @@ export const RecurringTransactions: React.FC<RecurringTransactionsProps> = ({ ac
                 </tr>
                 {recurringTransactions && recurringTransactions.map(a => (
                     <tr key={a.id}>
-                        <EditColumn value={a.description} onChange={target => updateRecurringTransaction(accountId, virtualId, { ...a, description: target.value })} />
-                        <EditColumn type="number" value={a.amount.toString()} onChange={value => updateRecurringTransaction(accountId, virtualId, { ...a, amount: Number(value) })} />
+                        <EditColumn value={a.description} onChange={target => updateRecurringTransaction({ ...a, description: target.value })} />
+                        <EditColumn type="number" value={a.amount.toString()} onChange={value => updateRecurringTransaction({ ...a, amount: Number(value) })} />
                         <td>{a.schedule}</td>
                         <td>{a.lastRun && format(parseISO(a.lastRun), "dd/MM/yyyy HH:mm")}</td>
-                        <EditColumn value={a.nextRun} onChange={target => updateRecurringTransaction(accountId, virtualId, { ...a, nextRun: target.value })} type="date">
+                        <EditColumn value={a.nextRun} onChange={target => updateRecurringTransaction({ ...a, nextRun: target.value })} type="date">
                             {format(parse(a.nextRun, "yyyy-MM-dd", new Date()), "dd/MM/yyyy")}
                         </EditColumn>
                         <td className="row-action"><DeleteIcon onClick={() => onDelete(a.id)} /></td>

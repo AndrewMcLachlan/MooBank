@@ -2,6 +2,7 @@
 using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Domain.Entities.Transactions.EventHandlers;
+
 internal class VirtualInstrumentAddedEventHandler(Models.User user, ITransactionRepository transactionRepository) : IDomainEventHandler<VirtualInstrumentAddedEvent>
 {
     public ValueTask Handle(VirtualInstrumentAddedEvent request, CancellationToken cancellationToken)

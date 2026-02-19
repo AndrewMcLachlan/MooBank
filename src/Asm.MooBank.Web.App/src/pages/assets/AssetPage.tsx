@@ -2,7 +2,7 @@ import React, { PropsWithChildren, ReactNode } from "react";
 
 import { Page, PageProps } from "@andrewmclachlan/moo-app";
 import { NavItem, NavItemDivider } from "@andrewmclachlan/moo-ds";
-import { Asset } from "models";
+import type { Asset } from "api/types.gen";
 import { useAsset } from "./AssetProvider";
 
 import { Sliders } from "@andrewmclachlan/moo-icons";

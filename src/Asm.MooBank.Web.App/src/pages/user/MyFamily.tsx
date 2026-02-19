@@ -1,6 +1,6 @@
 import { Page } from "@andrewmclachlan/moo-app";
 import { DeleteIcon, Form, Section, SectionTable } from "@andrewmclachlan/moo-ds";
-import { Family } from "models";
+import type { Family } from "api/types.gen";
 import React, { useEffect } from "react";
 import { Button } from "@andrewmclachlan/moo-ds";
 import { useForm } from "react-hook-form";

@@ -78,7 +78,16 @@ public class RunForecastTests
         {
             PlanId = planId,
             Months = [],
-            Summary = new ForecastSummary()
+            Summary = new ForecastSummary
+            {
+                LowestBalance = 0m,
+                LowestBalanceMonth = DateOnly.MinValue,
+                RequiredMonthlyUplift = 0m,
+                MonthsBelowZero = 0,
+                TotalIncome = 0m,
+                TotalOutgoings = 0m,
+                MonthlyBaselineOutgoings = 0m,
+            }
         };
 
         _mocks.SecurityMock
@@ -118,7 +127,16 @@ public class RunForecastTests
         {
             PlanId = planId,
             Months = [],
-            Summary = new ForecastSummary()
+            Summary = new ForecastSummary
+            {
+                LowestBalance = 0m,
+                LowestBalanceMonth = DateOnly.MinValue,
+                RequiredMonthlyUplift = 0m,
+                MonthsBelowZero = 0,
+                TotalIncome = 0m,
+                TotalOutgoings = 0m,
+                MonthlyBaselineOutgoings = 0m,
+            }
         };
 
         _mocks.SecurityMock
@@ -202,9 +220,9 @@ public class RunForecastTests
 
         var months = new List<ForecastMonth>
         {
-            new() { MonthStart = new DateOnly(2024, 1, 1), OpeningBalance = 10000m, ClosingBalance = 8000m },
-            new() { MonthStart = new DateOnly(2024, 2, 1), OpeningBalance = 8000m, ClosingBalance = 6000m },
-            new() { MonthStart = new DateOnly(2024, 3, 1), OpeningBalance = 6000m, ClosingBalance = 4000m },
+            new() { MonthStart = new DateOnly(2024, 1, 1), OpeningBalance = 10000m, IncomeTotal = 0m, BaselineOutgoingsTotal = 0m, PlannedItemsTotal = 0m, ClosingBalance = 8000m },
+            new() { MonthStart = new DateOnly(2024, 2, 1), OpeningBalance = 8000m, IncomeTotal = 0m, BaselineOutgoingsTotal = 0m, PlannedItemsTotal = 0m, ClosingBalance = 6000m },
+            new() { MonthStart = new DateOnly(2024, 3, 1), OpeningBalance = 6000m, IncomeTotal = 0m, BaselineOutgoingsTotal = 0m, PlannedItemsTotal = 0m, ClosingBalance = 4000m },
         };
 
         var expectedResult = new ForecastResult
@@ -215,6 +233,11 @@ public class RunForecastTests
             {
                 LowestBalance = 4000m,
                 LowestBalanceMonth = new DateOnly(2024, 3, 1),
+                RequiredMonthlyUplift = 0m,
+                MonthsBelowZero = 0,
+                TotalIncome = 0m,
+                TotalOutgoings = 0m,
+                MonthlyBaselineOutgoings = 0m,
             }
         };
 

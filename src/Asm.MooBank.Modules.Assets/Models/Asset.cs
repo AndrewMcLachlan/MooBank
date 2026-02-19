@@ -1,6 +1,7 @@
 ﻿using Asm.MooBank.Services;
 
 namespace Asm.MooBank.Modules.Assets.Models;
+
 public record Asset : MooBank.Models.Instrument
 {
     public decimal? PurchasePrice { get; init; }

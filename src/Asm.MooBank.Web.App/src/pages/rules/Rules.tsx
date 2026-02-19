@@ -4,7 +4,8 @@ import { Table } from "@andrewmclachlan/moo-ds";
 import { IconButton, PageSize, Pagination, PaginationControls, PaginationTh, SearchBox, Section, SortDirection, SortableTh, changeSortDirection, getNumberOfPages, useLocalStorage } from "@andrewmclachlan/moo-ds";
 import { AccountPage, useAccount } from "components";
 
-import { Rule, sortRules } from "models";
+import type { Rule } from "api/types.gen";
+import { sortRules } from "helpers/rules";
 
 import { useRules, useRunRules, useTags } from "services";
 import { NewRule } from "./NewRule";
@@ -20,7 +21,7 @@ export const Rules: React.FC = () => {
     const runTransactionTagRules = useRunRules();
 
     const runRules = () => {
-        runTransactionTagRules.mutate({ accountId: account.id });
+        runTransactionTagRules.mutate({ path: { instrumentId: account.id } });
     };
 
     const { data: rules } = useRules(account?.id);

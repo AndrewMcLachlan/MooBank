@@ -1,6 +1,6 @@
 import React from "react";
 
-import { AccountType } from "models";
+import type { AccountType } from "api/types.gen";
 import { useInstitutionsByAccountType } from "services";
 import { FormComboBox } from "@andrewmclachlan/moo-ds";
 

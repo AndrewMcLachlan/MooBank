@@ -2,7 +2,7 @@
 
 import { TagPanel, TagPanelProps } from "components";
 
-import { Tag } from "models";
+import type { Tag } from "api/types.gen";
 import { useAddSubTag, useCreateTag, useRemoveSubTag, useTags } from "../../services";
 
 export const TransactionTagTransactionTagPanel: React.FC<TransactionTagTransactionTagPanelProps> = ({tag, ...rest}) => {
@@ -35,27 +35,24 @@ export const useTagEvents = (tag: Tag) => {
         setTags(tag.tags);
     }, [tag.tags]);
 
-    const createTag = (name: string) => {
-        createTransactionTag.mutate({ name }, {
-            onSuccess: (data) => {
-                addSubTag.mutate({ tagId: tag.id, subTagId: data.id });
-            }
-        });
+    const createTag = async (name: string) => {
+        const data = await createTransactionTag.mutateAsync({ name });
+        addSubTag.mutate({ path: { id: tag.id, subTagId: data.id } });
     }
 
     const addTag = (subTag: Tag) => {
 
         if (!subTag.id) return;
 
-        addSubTag.mutate({ tagId: tag.id, subTagId: subTag.id });
+        addSubTag.mutate({ path: { id: tag.id, subTagId: subTag.id } });
         setTags(tags.concat([subTag]));
     }
 
     const removeTag = (subTag: Tag) => {
 
-        if (!subTag.id) return;   
+        if (!subTag.id) return;
 
-        removeSubTag.mutate({ tagId: tag.id, subTagId: subTag.id });
+        removeSubTag.mutate({ path: { id: tag.id, subTagId: subTag.id } });
         setTags(tags.filter((t) => t.id !== subTag.id));
     }
 

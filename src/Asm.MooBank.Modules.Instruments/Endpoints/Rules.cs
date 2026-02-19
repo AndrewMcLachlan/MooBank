@@ -30,6 +30,7 @@ public class RulesEndpoints : EndpointGroupBase
 
         routeGroupBuilder.MapPostCreate<Create, Rule>("", "Get Instrument Rule".ToMachine(), (rule) => new { ruleId = rule.Id }, CommandBinding.None)
             .WithNames("Create Instrument Rule")
+            .Accepts<Create>("application/json")
             .Produces<Rule>();
 
 

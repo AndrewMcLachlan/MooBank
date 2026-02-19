@@ -1,6 +1,6 @@
 import { emptyGuid, SaveIcon } from "@andrewmclachlan/moo-ds";
 import { format } from "date-fns";
-import { PlannedItemDateMode, PlannedItemType, ScheduleFrequency } from "models";
+import type { PlannedItemDateMode, PlannedItemType, ScheduleFrequency } from "api/types.gen";
 import { useState } from "react";
 import { Form, Input } from "@andrewmclachlan/moo-ds";
 import { useCreatePlannedItem } from "services/ForecastService";
