@@ -1267,7 +1267,7 @@ export type GetAllBillsResponses = {
     /**
      * OK
      */
-    200: Bill;
+    200: Array<Bill>;
 };
 
 export type GetAllBillsResponse = GetAllBillsResponses[keyof GetAllBillsResponses];
@@ -1357,7 +1357,7 @@ export type GetBillsByUtilityTypeResponses = {
     /**
      * OK
      */
-    200: Bill;
+    200: Array<Bill>;
 };
 
 export type GetBillsByUtilityTypeResponse = GetBillsByUtilityTypeResponses[keyof GetBillsByUtilityTypeResponses];
@@ -1412,7 +1412,7 @@ export type GetBillsForAnAccountResponses = {
     /**
      * OK
      */
-    200: Bill;
+    200: Array<Bill>;
 };
 
 export type GetBillsForAnAccountResponse = GetBillsForAnAccountResponses[keyof GetBillsForAnAccountResponses];
@@ -2864,7 +2864,7 @@ export type GetStockTransactionsResponses = {
     /**
      * OK
      */
-    200: StockTransaction;
+    200: Array<StockTransaction>;
 };
 
 export type GetStockTransactionsResponse = GetStockTransactionsResponses[keyof GetStockTransactionsResponses];
@@ -3096,7 +3096,7 @@ export type GetTransactionsResponses = {
     /**
      * OK
      */
-    200: Transaction;
+    200: Array<Transaction>;
 };
 
 export type GetTransactionsResponse = GetTransactionsResponses[keyof GetTransactionsResponses];
@@ -3156,7 +3156,7 @@ export type GetUntaggedTransactionsResponses = {
     /**
      * OK
      */
-    200: Transaction;
+    200: Array<Transaction>;
 };
 
 export type GetUntaggedTransactionsResponse = GetUntaggedTransactionsResponses[keyof GetUntaggedTransactionsResponses];

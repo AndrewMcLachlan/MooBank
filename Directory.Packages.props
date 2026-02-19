@@ -45,15 +45,15 @@
     <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.1.4" />
   </ItemGroup>
   <ItemGroup>
-    <PackageVersion Include="Asm" Version="3.6.778" />
-    <PackageVersion Include="Asm.AspNetCore" Version="3.6.778" />
-    <PackageVersion Include="Asm.AspNetCore.Api" Version="3.6.778" />
-    <PackageVersion Include="Asm.Cqrs.AspNetCore" Version="3.6.778" />
-    <PackageVersion Include="Asm.Domain" Version="3.6.778" />
-    <PackageVersion Include="Asm.Domain.Infrastructure" Version="3.6.778" />
-    <PackageVersion Include="Asm.ModelContextProtocol" Version="3.6.778" />
+    <PackageVersion Include="Asm" Version="3.6.780" />
+    <PackageVersion Include="Asm.AspNetCore" Version="3.6.780" />
+    <PackageVersion Include="Asm.AspNetCore.Api" Version="3.6.780" />
+    <PackageVersion Include="Asm.Cqrs.AspNetCore" Version="3.6.780" />
+    <PackageVersion Include="Asm.Domain" Version="3.6.780" />
+    <PackageVersion Include="Asm.Domain.Infrastructure" Version="3.6.780" />
+    <PackageVersion Include="Asm.ModelContextProtocol" Version="3.6.780" />
     <PackageVersion Include="Asm.Reqnroll" Version="3.6.756" />
-    <PackageVersion Include="Asm.Testing.Domain" Version="3.6.778" />
+    <PackageVersion Include="Asm.Testing.Domain" Version="3.6.780" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="Bogus" Version="35.6.5" />
