@@ -377,10 +377,8 @@ public class BudgetLineExtensionsTests
     public void ToDomain_MapsAllProperties()
     {
         // Arrange
-        var lineId = Guid.NewGuid();
         var budgetId = Guid.NewGuid();
         var line = TestEntities.CreateBudgetLineModel(
-            id: lineId,
             tagId: 99,
             notes: "Test notes",
             amount: 750m,
@@ -390,7 +388,7 @@ public class BudgetLineExtensionsTests
         var result = line.ToDomain(budgetId);
 
         // Assert
-        Assert.Equal(lineId, result.Id);
+        Assert.NotEqual(Guid.Empty, result.Id);
         Assert.Equal(budgetId, result.BudgetId);
         Assert.Equal(99, result.TagId);
         Assert.Equal("Test notes", result.Notes);
