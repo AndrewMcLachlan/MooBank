@@ -4,9 +4,7 @@ using Asm.MooBank.Domain.Entities.Reports;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Forecast.Models;
 using DomainForecastPlan = Asm.MooBank.Domain.Entities.Forecast.ForecastPlan;
-using DomainForecastPlannedItem = Asm.MooBank.Domain.Entities.Forecast.ForecastPlannedItem;
 using DomainInstrument = Asm.MooBank.Domain.Entities.Instrument.Instrument;
-using DomainLogicalAccount = Asm.MooBank.Domain.Entities.Account.LogicalAccount;
 using DomainTransactionInstrument = Asm.MooBank.Domain.Entities.Instrument.TransactionInstrument;
 
 namespace Asm.MooBank.Modules.Forecast.Services;
@@ -18,20 +16,25 @@ internal class ForecastEngine(
 {
     private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
-    private sealed record RegressionModel(decimal Intercept, decimal Slope, decimal RSquared, bool Valid, decimal AvgHistoricalIncome);
-
     public async Task<ForecastResult> Calculate(DomainForecastPlan plan, CancellationToken cancellationToken = default)
     {
-        // Resolve account IDs based on scope mode
+        // 1. Resolve account IDs based on scope mode
         var accountIds = GetAccountIds(plan);
 
-        // Pre-load all instruments in a single query to avoid N+1
+        // 2. Pre-load all instruments in a single query to avoid N+1
         var allInstruments = (await instrumentRepository.Get(accountIds, cancellationToken)).ToList();
 
-        // 2. Get account IDs excluding Savings accounts for historical calculations
-        var accountIdsForHistoricalAnalysis = FilterAccountsForHistoricalAnalysis(allInstruments);
+        // 3. Determine the latest transaction date across all accounts (data freshness boundary)
+        var latestTransactionDate = allInstruments
+            .OfType<DomainTransactionInstrument>()
+            .Select(i => i.LastTransaction)
+            .Where(d => d.HasValue)
+            .Max() ?? DateOnly.FromDateTime(DateTime.Today);
 
-        // 3. Parse strategies
+        // 4. Get account IDs excluding Savings accounts for historical calculations
+        var accountIdsForHistoricalAnalysis = ForecastCalculations.FilterAccountsForHistoricalAnalysis(allInstruments);
+
+        // 5. Parse strategies
         var incomeStrategy = String.IsNullOrEmpty(plan.IncomeStrategySerialized)
             ? new IncomeStrategy()
             : JsonSerializer.Deserialize<IncomeStrategy>(plan.IncomeStrategySerialized, JsonOptions)!;
@@ -40,49 +43,44 @@ internal class ForecastEngine(
             ? new OutgoingStrategy()
             : JsonSerializer.Deserialize<OutgoingStrategy>(plan.OutgoingStrategySerialized, JsonOptions)!;
 
-        // 1. Determine starting balance (uses all selected accounts)
+        // 6. Determine starting balance (uses all selected accounts)
         var startingBalance = await CalculateStartingBalance(plan, allInstruments, accountIds, cancellationToken);
 
-        // 4. Calculate baseline outgoings from historical data (excluding Savings accounts)
+        // 7. Calculate baseline outgoings from historical data (excluding Savings accounts)
         var baselineOutgoings = await CalculateBaselineOutgoings(accountIdsForHistoricalAnalysis, outgoingStrategy, plan.StartDate, cancellationToken);
 
-        // 5. Expand planned items into monthly allocations
-        var plannedItemsByMonth = ExpandPlannedItems(plan);
+        // 8. Expand planned items into monthly allocations
+        var plannedItemsByMonth = PlannedItemExpander.ExpandPlannedItems(plan);
 
-        // 6. Calculate income by month (excluding Savings accounts for historical calculation)
+        // 9. Calculate income by month (excluding Savings accounts for historical calculation)
         var (incomeByMonth, planBaseIncome) = await CalculateIncomeByMonth(plan, incomeStrategy, accountIdsForHistoricalAnalysis, cancellationToken);
 
-        // 7. Fetch historical actual balances for comparison
-        var actualBalancesByMonth = await GetActualBalancesByMonth(accountIds, plan.StartDate, plan.EndDate, cancellationToken);
+        // 10. Fetch historical actual balances for comparison
+        var actualBalancesByMonth = await GetActualBalancesByMonth(accountIds, plan.StartDate, plan.EndDate, latestTransactionDate, cancellationToken);
 
-        // 8. Fit income-expense regression if mode is IncomeCorrelated
+        // 11. Fit income-expense regression if mode is IncomeCorrelated
         RegressionModel? regressionModel = null;
         var useRegression = false;
-        // Offset between the regression's training income (total credits) and the plan's
-        // income (typically salary only). Ensures the regression input is on the same scale.
         var regressionIncomeOffset = 0m;
 
         if (outgoingStrategy.Mode == "IncomeCorrelated")
         {
-            var (regression, flatAvg) = await FitIncomeExpenseRegression(
-                accountIdsForHistoricalAnalysis, outgoingStrategy, plan.StartDate, cancellationToken);
+            regressionModel = await FitIncomeExpenseRegression(
+                accountIdsForHistoricalAnalysis, outgoingStrategy, latestTransactionDate, cancellationToken);
 
-            regressionModel = regression;
-            useRegression = regression.Valid;
+            useRegression = regressionModel.Valid;
 
             if (useRegression)
             {
-                regressionIncomeOffset = regression.AvgHistoricalIncome - planBaseIncome;
+                // Offset between the regression's training income (total credits) and the plan's
+                // income (typically salary only). Ensures the regression input is on the same scale.
+                regressionIncomeOffset = regressionModel.AvgHistoricalIncome - planBaseIncome;
             }
-            else
-            {
-                // Fall back to flat average from historical data
-                baselineOutgoings = flatAvg;
-            }
+            // If regression is invalid, baselineOutgoings from step 7 is used as-is
         }
 
-        // 9. Recalculate baseline outgoings from actual balance data if available
-        //    (skip when using valid regression — outgoings vary per month)
+        // 12. Recalculate baseline outgoings from actual balance data if available
+        //     (skip when using valid regression — outgoings vary per month)
         decimal effectiveBaselineOutgoings;
         if (useRegression)
         {
@@ -90,12 +88,12 @@ internal class ForecastEngine(
         }
         else
         {
-            effectiveBaselineOutgoings = RecalculateBaselineFromActuals(
+            effectiveBaselineOutgoings = ForecastCalculations.RecalculateBaselineFromActuals(
                 actualBalancesByMonth, incomeByMonth, plannedItemsByMonth,
                 plan.StartDate, plan.EndDate, baselineOutgoings);
         }
 
-        // 10. Generate forecast months
+        // 13. Generate forecast months
         var months = new List<ForecastMonth>();
         var currentBalance = startingBalance;
         var currentDate = new DateOnly(plan.StartDate.Year, plan.StartDate.Month, 1);
@@ -129,8 +127,8 @@ internal class ForecastEngine(
             currentDate = currentDate.AddMonths(1);
         }
 
-        // 11. Calculate summary metrics
-        var summary = CalculateSummary(months, effectiveBaselineOutgoings, regressionModel);
+        // 14. Calculate summary metrics
+        var summary = ForecastCalculations.CalculateSummary(months, effectiveBaselineOutgoings, regressionModel);
 
         return new ForecastResult
         {
@@ -153,17 +151,6 @@ internal class ForecastEngine(
         // AllAccounts mode - use all user's accounts and shared accounts
         return [.. user.Accounts, .. user.SharedAccounts];
     }
-
-    /// <summary>
-    /// Filters account IDs to exclude Savings accounts for historical analysis.
-    /// Savings accounts often have large transfers that skew income/expense averages.
-    /// </summary>
-    private static List<Guid> FilterAccountsForHistoricalAnalysis(List<DomainInstrument> instruments) =>
-        instruments
-            .OfType<DomainLogicalAccount>()
-            .Where(a => a.AccountType != AccountType.Savings)
-            .Select(a => a.Id)
-            .ToList();
 
     private async Task<decimal> CalculateStartingBalance(DomainForecastPlan plan, List<DomainInstrument> instruments, List<Guid> accountIds, CancellationToken cancellationToken)
     {
@@ -266,7 +253,7 @@ internal class ForecastEngine(
     /// Returns a dictionary keyed by month (yyyy-MM) with aggregated balances.
     /// Only includes months up to the current month.
     /// </summary>
-    private async Task<Dictionary<string, decimal?>> GetActualBalancesByMonth(List<Guid> accountIds, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
+    private async Task<Dictionary<string, decimal?>> GetActualBalancesByMonth(List<Guid> accountIds, DateOnly startDate, DateOnly endDate, DateOnly latestTransactionDate, CancellationToken cancellationToken)
     {
         var result = new Dictionary<string, decimal?>();
 
@@ -275,12 +262,11 @@ internal class ForecastEngine(
             return result;
         }
 
-        // Only fetch balances up to current month
-        var today = DateOnly.FromDateTime(DateTime.Today);
-        var effectiveEndDate = endDate > today ? today : endDate;
+        // Only fetch balances up to the latest transaction date
+        var effectiveEndDate = endDate > latestTransactionDate ? latestTransactionDate : endDate;
 
-        // If start date is in the future, no actual balances to fetch
-        if (startDate > today)
+        // If start date is beyond latest data, no actual balances to fetch
+        if (startDate > latestTransactionDate)
         {
             return result;
         }
@@ -311,171 +297,6 @@ internal class ForecastEngine(
         }
 
         return result;
-    }
-
-    /// <summary>
-    /// Recalculates baseline outgoings using actual balance data from past months.
-    /// For each past month where we have consecutive actual balances, we can derive
-    /// what the actual outgoings were: actual_outgoings = opening + income + planned - closing.
-    /// The average of these actuals replaces the historical baseline for the forecast.
-    /// Falls back to the original baseline if no actual data is available.
-    /// Note: uses predicted income since actual income data is not separately available.
-    /// Inaccuracies in income prediction will be reflected in the derived outgoings.
-    /// </summary>
-    private static decimal RecalculateBaselineFromActuals(
-        Dictionary<string, decimal?> actualBalancesByMonth,
-        Dictionary<string, decimal> incomeByMonth,
-        Dictionary<string, decimal> plannedItemsByMonth,
-        DateOnly startDate, DateOnly endDate,
-        decimal fallbackBaseline)
-    {
-        var actualOutgoings = new List<decimal>();
-        var currentDate = new DateOnly(startDate.Year, startDate.Month, 1);
-        var lastDate = new DateOnly(endDate.Year, endDate.Month, 1);
-
-        while (currentDate <= lastDate)
-        {
-            var monthKey = currentDate.ToString("yyyy-MM");
-            var nextMonthKey = currentDate.AddMonths(1).ToString("yyyy-MM");
-
-            var opening = actualBalancesByMonth.GetValueOrDefault(monthKey);
-            var closing = actualBalancesByMonth.GetValueOrDefault(nextMonthKey);
-
-            if (opening.HasValue && closing.HasValue)
-            {
-                var income = incomeByMonth.GetValueOrDefault(monthKey, 0m);
-                var planned = plannedItemsByMonth.GetValueOrDefault(monthKey, 0m);
-
-                // Derive actual outgoings from balance change:
-                // closing = opening + income - outgoings + planned
-                // outgoings = opening + income + planned - closing
-                var derived = opening.Value + income + planned - closing.Value;
-
-                // Skip months where derived outgoings are negative — this indicates
-                // unexplained balance growth (e.g. transfers in, windfalls) that would
-                // distort the baseline average.
-                if (derived >= 0)
-                {
-                    actualOutgoings.Add(derived);
-                }
-            }
-
-            currentDate = currentDate.AddMonths(1);
-        }
-
-        return actualOutgoings.Count > 0 ? actualOutgoings.Average() : fallbackBaseline;
-    }
-
-    private Dictionary<string, decimal> ExpandPlannedItems(DomainForecastPlan plan)
-    {
-        var result = new Dictionary<string, decimal>();
-
-        foreach (var item in plan.PlannedItems.Where(i => i.IsIncluded))
-        {
-            var sign = item.ItemType == PlannedItemType.Income ? 1m : -1m;
-
-            switch (item.DateMode)
-            {
-                case PlannedItemDateMode.FixedDate when item.FixedDate != null:
-                    {
-                        var fixedDate = item.FixedDate.FixedDate;
-                        var monthKey = new DateOnly(fixedDate.Year, fixedDate.Month, 1).ToString("yyyy-MM");
-                        if (fixedDate >= plan.StartDate && fixedDate <= plan.EndDate)
-                        {
-                            result[monthKey] = result.GetValueOrDefault(monthKey, 0m) + (item.Amount * sign);
-                        }
-                        break;
-                    }
-
-                case PlannedItemDateMode.Schedule when item.Schedule != null:
-                    {
-                        var occurrences = GenerateScheduleOccurrences(item, plan.StartDate, plan.EndDate);
-                        foreach (var occurrence in occurrences)
-                        {
-                            var key = new DateOnly(occurrence.Year, occurrence.Month, 1).ToString("yyyy-MM");
-                            result[key] = result.GetValueOrDefault(key, 0m) + (item.Amount * sign);
-                        }
-                        break;
-                    }
-
-                case PlannedItemDateMode.FlexibleWindow when item.FlexibleWindow != null:
-                    {
-                        var windowStart = item.FlexibleWindow.StartDate < plan.StartDate ? plan.StartDate : item.FlexibleWindow.StartDate;
-                        var windowEnd = item.FlexibleWindow.EndDate > plan.EndDate ? plan.EndDate : item.FlexibleWindow.EndDate;
-
-                        if (item.FlexibleWindow.AllocationMode == AllocationMode.AllAtEnd)
-                        {
-                            var endKey = new DateOnly(windowEnd.Year, windowEnd.Month, 1).ToString("yyyy-MM");
-                            result[endKey] = result.GetValueOrDefault(endKey, 0m) + (item.Amount * sign);
-                        }
-                        else // EvenlySpread
-                        {
-                            var months = CountMonths(windowStart, windowEnd);
-                            if (months > 0)
-                            {
-                                var amountPerMonth = item.Amount / months;
-                                var current = new DateOnly(windowStart.Year, windowStart.Month, 1);
-                                var end = new DateOnly(windowEnd.Year, windowEnd.Month, 1);
-                                while (current <= end)
-                                {
-                                    var key = current.ToString("yyyy-MM");
-                                    result[key] = result.GetValueOrDefault(key, 0m) + (amountPerMonth * sign);
-                                    current = current.AddMonths(1);
-                                }
-                            }
-                        }
-                        break;
-                    }
-            }
-        }
-
-        return result;
-    }
-
-    private static int CountMonths(DateOnly start, DateOnly end)
-    {
-        return ((end.Year - start.Year) * 12) + end.Month - start.Month + 1;
-    }
-
-    private IEnumerable<DateOnly> GenerateScheduleOccurrences(DomainForecastPlannedItem item, DateOnly planStart, DateOnly planEnd)
-    {
-        var occurrences = new List<DateOnly>();
-        var schedule = item.Schedule!;
-        var current = schedule.AnchorDate;
-        var endDate = schedule.EndDate ?? planEnd;
-        if (endDate > planEnd) endDate = planEnd;
-
-        while (current <= endDate)
-        {
-            if (current >= planStart)
-            {
-                occurrences.Add(current);
-            }
-
-            current = schedule.Frequency switch
-            {
-                ScheduleFrequency.Daily => current.AddDays(schedule.Interval),
-                ScheduleFrequency.Weekly => current.AddDays(7 * schedule.Interval),
-                ScheduleFrequency.Fortnightly => current.AddDays(14 * schedule.Interval),
-                ScheduleFrequency.Monthly => AddMonthsWithDay(current, schedule.Interval, schedule.DayOfMonth),
-                ScheduleFrequency.Yearly => current.AddYears(schedule.Interval),
-                _ => current.AddMonths(1)
-            };
-        }
-
-        return occurrences;
-    }
-
-    private static DateOnly AddMonthsWithDay(DateOnly date, int months, int? dayOfMonth)
-    {
-        var newDate = date.AddMonths(months);
-        if (dayOfMonth.HasValue)
-        {
-            var maxDay = DateTime.DaysInMonth(newDate.Year, newDate.Month);
-            var day = Math.Min(dayOfMonth.Value, maxDay);
-            newDate = new DateOnly(newDate.Year, newDate.Month, day);
-        }
-        return newDate;
     }
 
     private async Task<(Dictionary<string, decimal> ByMonth, decimal BaseIncome)> CalculateIncomeByMonth(DomainForecastPlan plan, IncomeStrategy strategy, List<Guid> accountIds, CancellationToken cancellationToken)
@@ -531,18 +352,28 @@ internal class ForecastEngine(
     }
 
     /// <summary>
-    /// Fits a linear regression of expense = intercept + slope * income using monthly historical data.
-    /// Returns the regression model and a flat average fallback.
+    /// Fetches monthly credit/debit data and fits a linear regression of expense vs income.
     /// </summary>
-    private async Task<(RegressionModel Regression, decimal FlatAverage)> FitIncomeExpenseRegression(
-        List<Guid> accountIds, OutgoingStrategy strategy, DateOnly planStartDate, CancellationToken cancellationToken)
+    private async Task<RegressionModel> FitIncomeExpenseRegression(
+        List<Guid> accountIds, OutgoingStrategy strategy, DateOnly latestTransactionDate, CancellationToken cancellationToken)
     {
-        var lookbackEnd = DateOnly.FromDateTime(DateTime.Today);
+        var lookbackEnd = latestTransactionDate;
         var lookbackStart = lookbackEnd.AddMonths(-strategy.LookbackMonths);
 
         var allTotals = await reportRepository.GetMonthlyCreditDebitTotalsForAccounts(accountIds, lookbackStart, lookbackEnd, cancellationToken);
 
-        // Aggregate across accounts into per-month (income, expense) pairs
+        var monthlyData = AggregateMonthlyData(allTotals);
+        var settings = strategy.IncomeCorrelated ?? new IncomeCorrelatedSettings();
+
+        return ForecastCalculations.FitRegression(monthlyData, settings);
+    }
+
+    /// <summary>
+    /// Aggregates monthly credit/debit totals across multiple accounts into per-month (income, expense) pairs.
+    /// </summary>
+    private static Dictionary<DateOnly, (decimal Income, decimal Expense)> AggregateMonthlyData(
+        Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>> allTotals)
+    {
         var monthlyData = new Dictionary<DateOnly, (decimal Income, decimal Expense)>();
 
         foreach (var totals in allTotals.Values)
@@ -566,101 +397,6 @@ internal class ForecastEngine(
             }
         }
 
-        var settings = strategy.IncomeCorrelated ?? new IncomeCorrelatedSettings();
-        var points = monthlyData.Values.ToList();
-
-        // Calculate flat average for fallback
-        var flatAverage = points.Count > 0 ? points.Average(p => p.Expense) : 0m;
-        var avgIncome = points.Count > 0 ? points.Average(p => p.Income) : 0m;
-
-        // Validate minimum data points
-        if (points.Count < settings.MinDataPoints)
-        {
-            return (new RegressionModel(0m, 0m, 0m, false, avgIncome), flatAverage);
-        }
-
-        // Fit simple linear regression: expense = intercept + slope * income
-        var n = (decimal)points.Count;
-        var sumX = points.Sum(p => p.Income);
-        var sumY = points.Sum(p => p.Expense);
-        var sumXY = points.Sum(p => p.Income * p.Expense);
-        var sumXX = points.Sum(p => p.Income * p.Income);
-
-        var denominator = n * sumXX - sumX * sumX;
-
-        // Zero variance in income — cannot fit regression
-        if (denominator == 0m)
-        {
-            return (new RegressionModel(0m, 0m, 0m, false, avgIncome), flatAverage);
-        }
-
-        var slope = (n * sumXY - sumX * sumY) / denominator;
-        var intercept = (sumY - slope * sumX) / n;
-
-        // Compute R-squared
-        var meanY = sumY / n;
-        var ssTotal = points.Sum(p => (p.Expense - meanY) * (p.Expense - meanY));
-        var ssResidual = points.Sum(p =>
-        {
-            var predicted = intercept + slope * p.Income;
-            return (p.Expense - predicted) * (p.Expense - predicted);
-        });
-
-        var rSquared = ssTotal == 0m ? 0m : 1m - ssResidual / ssTotal;
-
-        // Reject if R-squared below threshold or negative slope (nonsensical)
-        var valid = rSquared >= settings.RSquaredThreshold && slope >= 0m;
-
-        return (new RegressionModel(intercept, slope, rSquared, valid, avgIncome), flatAverage);
-    }
-
-    private static ForecastSummary CalculateSummary(List<ForecastMonth> months, decimal monthlyBaselineOutgoings, RegressionModel? regression = null)
-    {
-        if (!months.Any())
-        {
-            return new ForecastSummary
-            {
-                LowestBalance = 0m,
-                LowestBalanceMonth = DateOnly.FromDateTime(DateTime.Today),
-                RequiredMonthlyUplift = 0m,
-                MonthsBelowZero = 0,
-                TotalIncome = 0m,
-                TotalOutgoings = 0m,
-                MonthlyBaselineOutgoings = 0m
-            };
-        }
-
-        var lowestMonth = months.MinBy(m => m.ClosingBalance)!;
-        var monthsUntilLow = months.TakeWhile(m => m != lowestMonth).Count() + 1;
-
-        var requiredUplift = lowestMonth.ClosingBalance < 0 && monthsUntilLow > 0
-            ? Math.Abs(lowestMonth.ClosingBalance) / monthsUntilLow
-            : 0m;
-
-        // Calculate total outgoings (baseline + planned expenses only, not planned income)
-        var totalPlannedExpenses = months.Sum(m => m.PlannedItemsTotal < 0 ? Math.Abs(m.PlannedItemsTotal) : 0);
-        var totalPlannedIncome = months.Sum(m => m.PlannedItemsTotal > 0 ? m.PlannedItemsTotal : 0);
-
-        var effectiveBaseline = regression is { Valid: true }
-            ? months.Average(m => Math.Abs(m.BaselineOutgoingsTotal))
-            : monthlyBaselineOutgoings;
-
-        return new ForecastSummary
-        {
-            LowestBalance = lowestMonth.ClosingBalance,
-            LowestBalanceMonth = lowestMonth.MonthStart,
-            RequiredMonthlyUplift = Math.Ceiling(requiredUplift * 100) / 100, // Round up to nearest cent
-            MonthsBelowZero = months.Count(m => m.ClosingBalance < 0),
-            TotalIncome = months.Sum(m => m.IncomeTotal) + totalPlannedIncome,
-            TotalOutgoings = months.Sum(m => Math.Abs(m.BaselineOutgoingsTotal)) + totalPlannedExpenses,
-            MonthlyBaselineOutgoings = effectiveBaseline,
-            Regression = regression is not null ? new RegressionDiagnostics
-            {
-                FixedComponent = regression.Intercept,
-                VariableComponent = regression.Slope,
-                RSquared = regression.RSquared,
-                FellBackToFlatAverage = !regression.Valid,
-            } : null,
-        };
+        return monthlyData;
     }
 }
