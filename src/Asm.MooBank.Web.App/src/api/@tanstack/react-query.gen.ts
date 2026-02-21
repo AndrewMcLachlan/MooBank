@@ -4,8 +4,8 @@ import { type DefaultError, type InfiniteData, infiniteQueryOptions, queryOption
 import type { AxiosError } from 'axios';
 
 import { client } from '../client.gen';
-import { addSubTag, addTag, addTagToInstrumentRule, allTagAverageReport, byTagReport, closeInstitutionAccount, createAccount, createAsset, createBill, createBudgetLine, createFamily, createGroup, createInstitution, createInstitutionAccount, createInstrumentRule, createRecurringTransaction, createStockHolding, createStockTransaction, createTag, createTagByName, createTransaction, createVirtualInstrument, deleteBudgetLine, deleteGroup, deleteInstrumentRule, deleteRecurringTransaction, deleteTag, deleteVirtualInstrument, getAccount, getAccounts, getAllBills, getAllBudgetYears, getAllFamilies, getAllGroups, getAllInstitutions, getAllInstrumentRules, getAllRecurringTransactions, getAsset, getBill, getBillAccount, getBillAccounts, getBillAccountsByType, getBillAccountSummariesByType, getBillsForAnAccount, getBudget, getBudgetAmountForTag, getBudgetLine, getBudgetReport, getBudgetReportBreakdownForMonth, getBudgetReportBreakdownForMonthForUnbudgetedItems, getBudgetReportForMonth, getFamily, getFormattedInstrumentsList, getGroup, getInstitution, getInstitutionAccount, getInstrumentRule, getInstrumentsList, getRecurringTransaction, getRecurringTransactionsForAVirtualAccount, getStockHolding, getStockHoldingCpiAdjustedGainLoss, getStockTransactions, getTag, getTagHierarchy, getTags, getTransactions, getUntaggedTransactions, getUser, getVirtualInstrument, getVirtualInstruments, import_, importerTypes, inOutAverageReport, inOutReport, inOutTrendReport, monthlyBalancesReport, type Options, removeSubTag, removeTag, removeTagFromInstrumentRule, reprocess, runRules, searchTransactions, setBalance, stockHoldingReport, stockValueReport, tagBreakdownReport, tagTrendReport, updateAccount, updateAsset, updateBudgetLine, updateFamily, updateGroup, updateInstitution, updateInstitutionAccount, updateInstrumentRule, updateRecurringTransaction, updateStockHolding, updateTag, updateTransaction, updateUser, updateVirtualInstrument } from '../sdk.gen';
-import type { AddSubTagData, AddSubTagResponse, AddTagData, AddTagResponse, AddTagToInstrumentRuleData, AddTagToInstrumentRuleResponse, AllTagAverageReportData, AllTagAverageReportResponse, ByTagReportData, ByTagReportResponse, CloseInstitutionAccountData, CloseInstitutionAccountResponse, CreateAccountData, CreateAccountResponse, CreateAssetData, CreateAssetResponse, CreateBillData, CreateBillResponse, CreateBudgetLineData, CreateBudgetLineResponse, CreateFamilyData, CreateFamilyResponse, CreateGroupData, CreateGroupResponse, CreateInstitutionAccountData, CreateInstitutionAccountResponse, CreateInstitutionData, CreateInstitutionResponse, CreateInstrumentRuleData, CreateInstrumentRuleResponse, CreateRecurringTransactionData, CreateRecurringTransactionResponse, CreateStockHoldingData, CreateStockHoldingResponse, CreateStockTransactionData, CreateStockTransactionResponse, CreateTagByNameData, CreateTagByNameResponse, CreateTagData, CreateTagResponse, CreateTransactionData, CreateTransactionResponse, CreateVirtualInstrumentData, CreateVirtualInstrumentResponse, DeleteBudgetLineData, DeleteBudgetLineResponse, DeleteGroupData, DeleteGroupResponse, DeleteInstrumentRuleData, DeleteInstrumentRuleResponse, DeleteRecurringTransactionData, DeleteRecurringTransactionResponse, DeleteTagData, DeleteTagResponse, DeleteVirtualInstrumentData, DeleteVirtualInstrumentResponse, GetAccountData, GetAccountsData, GetAllBillsData, GetAllBudgetYearsData, GetAllFamiliesData, GetAllGroupsData, GetAllInstitutionsData, GetAllInstrumentRulesData, GetAllRecurringTransactionsData, GetAssetData, GetBillAccountData, GetBillAccountsByTypeData, GetBillAccountsData, GetBillAccountSummariesByTypeData, GetBillData, GetBillsForAnAccountData, GetBudgetAmountForTagData, GetBudgetData, GetBudgetLineData, GetBudgetReportBreakdownForMonthData, GetBudgetReportBreakdownForMonthForUnbudgetedItemsData, GetBudgetReportData, GetBudgetReportForMonthData, GetFamilyData, GetFormattedInstrumentsListData, GetGroupData, GetInstitutionAccountData, GetInstitutionData, GetInstrumentRuleData, GetInstrumentsListData, GetRecurringTransactionData, GetRecurringTransactionsForAVirtualAccountData, GetStockHoldingCpiAdjustedGainLossData, GetStockHoldingData, GetStockTransactionsData, GetTagData, GetTagHierarchyData, GetTagsData, GetTransactionsData, GetUntaggedTransactionsData, GetUserData, GetVirtualInstrumentData, GetVirtualInstrumentsData, ImportData, ImporterTypesData, InOutAverageReportData, InOutAverageReportResponse, InOutReportData, InOutReportResponse, InOutTrendReportData, InOutTrendReportResponse, MonthlyBalancesReportData, MonthlyBalancesReportResponse, RemoveSubTagData, RemoveSubTagResponse, RemoveTagData, RemoveTagFromInstrumentRuleData, RemoveTagFromInstrumentRuleResponse, RemoveTagResponse, ReprocessData, ReprocessResponse, RunRulesData, SearchTransactionsData, SetBalanceData, SetBalanceResponse, StockHoldingReportData, StockValueReportData, TagBreakdownReportData, TagBreakdownReportResponse, TagTrendReportData, TagTrendReportResponse, UpdateAccountData, UpdateAccountResponse, UpdateAssetData, UpdateAssetResponse, UpdateBudgetLineData, UpdateBudgetLineResponse, UpdateFamilyData, UpdateFamilyResponse, UpdateGroupData, UpdateGroupResponse, UpdateInstitutionAccountData, UpdateInstitutionAccountResponse, UpdateInstitutionData, UpdateInstitutionResponse, UpdateInstrumentRuleData, UpdateInstrumentRuleResponse, UpdateRecurringTransactionData, UpdateRecurringTransactionResponse, UpdateStockHoldingData, UpdateStockHoldingResponse, UpdateTagData, UpdateTagResponse, UpdateTransactionData, UpdateTransactionResponse, UpdateUserData, UpdateUserResponse, UpdateVirtualInstrumentData, UpdateVirtualInstrumentResponse } from '../types.gen';
+import { addSubTag, addTag, addTagToInstrumentRule, allTagAverageReport, archiveForecastPlan, byTagReport, closeInstitutionAccount, createAccount, createAsset, createBill, createBillAccount, createBudgetLine, createFamily, createForecastPlan, createGroup, createInstitution, createInstitutionAccount, createInstrumentRule, createPlannedItem, createRecurringTransaction, createStockHolding, createStockTransaction, createTag, createTagByName, createTransaction, createVirtualInstrument, deleteBudgetLine, deleteForecastPlan, deleteGroup, deleteInstrumentRule, deletePlannedItem, deleteRecurringTransaction, deleteTag, deleteVirtualInstrument, getAccount, getAccounts, getAllBills, getAllBudgetYears, getAllFamilies, getAllForecastPlans, getAllGroups, getAllInstitutions, getAllInstrumentRules, getAllRecurringTransactions, getAsset, getBill, getBillAccount, getBillAccounts, getBillAccountsByType, getBillAccountSummariesByType, getBillsByUtilityType, getBillsForAnAccount, getBudget, getBudgetAmountForTag, getBudgetLine, getBudgetReport, getBudgetReportBreakdownForMonth, getBudgetReportBreakdownForMonthForUnbudgetedItems, getBudgetReportForMonth, getCostPerUnitReport, getFamily, getForecastPlan, getFormattedInstrumentsList, getGroup, getInstitution, getInstitutionAccount, getInstrumentRule, getInstrumentsList, getMyFamily, getPlannedItem, getRecurringTransaction, getRecurringTransactionsForAVirtualAccount, getServiceChargeReport, getStockHolding, getStockHoldingCpiAdjustedGainLoss, getStockTransactions, getTag, getTagHierarchy, getTags, getTransactions, getUntaggedTransactions, getUsageReport, getUser, getVirtualInstrument, getVirtualInstruments, groupMonthlyBalancesReport, import_, importBills, importerTypes, inOutAverageReport, inOutReport, inOutTrendReport, monthlyBalancesReport, type Options, removeFamilyMember, removeSubTag, removeTag, removeTagFromInstrumentRule, reprocess, runForecast, runRules, searchTransactions, setBalance, stockHoldingReport, stockValueReport, tagBreakdownReport, tagTrendReport, updateAccount, updateAsset, updateBudgetLine, updateFamily, updateForecastPlan, updateGroup, updateInstitution, updateInstitutionAccount, updateInstrumentRule, updateMyFamily, updatePlannedItem, updateRecurringTransaction, updateStockHolding, updateTag, updateTransaction, updateUser, updateVirtualInstrument, updateVirtualInstrumentBalance } from '../sdk.gen';
+import type { AddSubTagData, AddSubTagResponse, AddTagData, AddTagResponse, AddTagToInstrumentRuleData, AddTagToInstrumentRuleResponse, AllTagAverageReportData, AllTagAverageReportResponse, ArchiveForecastPlanData, ArchiveForecastPlanResponse, ByTagReportData, ByTagReportResponse, CloseInstitutionAccountData, CloseInstitutionAccountResponse, CreateAccountData, CreateAccountResponse, CreateAssetData, CreateAssetResponse, CreateBillAccountData, CreateBillAccountResponse, CreateBillData, CreateBillResponse, CreateBudgetLineData, CreateBudgetLineResponse, CreateFamilyData, CreateFamilyResponse, CreateForecastPlanData, CreateForecastPlanResponse, CreateGroupData, CreateGroupResponse, CreateInstitutionAccountData, CreateInstitutionAccountResponse, CreateInstitutionData, CreateInstitutionResponse, CreateInstrumentRuleData, CreateInstrumentRuleResponse, CreatePlannedItemData, CreatePlannedItemResponse, CreateRecurringTransactionData, CreateRecurringTransactionResponse, CreateStockHoldingData, CreateStockHoldingResponse, CreateStockTransactionData, CreateStockTransactionResponse, CreateTagByNameData, CreateTagByNameResponse, CreateTagData, CreateTagResponse, CreateTransactionData, CreateTransactionResponse, CreateVirtualInstrumentData, CreateVirtualInstrumentResponse, DeleteBudgetLineData, DeleteBudgetLineResponse, DeleteForecastPlanData, DeleteForecastPlanResponse, DeleteGroupData, DeleteGroupResponse, DeleteInstrumentRuleData, DeleteInstrumentRuleResponse, DeletePlannedItemData, DeletePlannedItemResponse, DeleteRecurringTransactionData, DeleteRecurringTransactionResponse, DeleteTagData, DeleteTagResponse, DeleteVirtualInstrumentData, DeleteVirtualInstrumentResponse, GetAccountData, GetAccountResponse, GetAccountsData, GetAccountsResponse, GetAllBillsData, GetAllBillsResponse, GetAllBudgetYearsData, GetAllBudgetYearsResponse, GetAllFamiliesData, GetAllFamiliesResponse, GetAllForecastPlansData, GetAllForecastPlansResponse, GetAllGroupsData, GetAllGroupsResponse, GetAllInstitutionsData, GetAllInstitutionsResponse, GetAllInstrumentRulesData, GetAllInstrumentRulesResponse, GetAllRecurringTransactionsData, GetAllRecurringTransactionsResponse, GetAssetData, GetAssetResponse, GetBillAccountData, GetBillAccountResponse, GetBillAccountsByTypeData, GetBillAccountsByTypeResponse, GetBillAccountsData, GetBillAccountsResponse, GetBillAccountSummariesByTypeData, GetBillAccountSummariesByTypeResponse, GetBillData, GetBillResponse, GetBillsByUtilityTypeData, GetBillsByUtilityTypeResponse, GetBillsForAnAccountData, GetBillsForAnAccountResponse, GetBudgetAmountForTagData, GetBudgetAmountForTagResponse, GetBudgetData, GetBudgetLineData, GetBudgetLineResponse, GetBudgetReportBreakdownForMonthData, GetBudgetReportBreakdownForMonthForUnbudgetedItemsData, GetBudgetReportBreakdownForMonthForUnbudgetedItemsResponse, GetBudgetReportBreakdownForMonthResponse, GetBudgetReportData, GetBudgetReportForMonthData, GetBudgetReportForMonthResponse, GetBudgetReportResponse, GetBudgetResponse, GetCostPerUnitReportData, GetCostPerUnitReportResponse, GetFamilyData, GetFamilyResponse, GetForecastPlanData, GetForecastPlanResponse, GetFormattedInstrumentsListData, GetFormattedInstrumentsListResponse, GetGroupData, GetGroupResponse, GetInstitutionAccountData, GetInstitutionAccountResponse, GetInstitutionData, GetInstitutionResponse, GetInstrumentRuleData, GetInstrumentRuleResponse, GetInstrumentsListData, GetInstrumentsListResponse, GetMyFamilyData, GetMyFamilyResponse, GetPlannedItemData, GetPlannedItemResponse, GetRecurringTransactionData, GetRecurringTransactionResponse, GetRecurringTransactionsForAVirtualAccountData, GetRecurringTransactionsForAVirtualAccountResponse, GetServiceChargeReportData, GetServiceChargeReportResponse, GetStockHoldingCpiAdjustedGainLossData, GetStockHoldingCpiAdjustedGainLossResponse, GetStockHoldingData, GetStockHoldingResponse, GetStockTransactionsData, GetStockTransactionsResponse, GetTagData, GetTagHierarchyData, GetTagHierarchyResponse, GetTagResponse, GetTagsData, GetTagsResponse, GetTransactionsData, GetTransactionsResponse, GetUntaggedTransactionsData, GetUntaggedTransactionsResponse, GetUsageReportData, GetUsageReportResponse, GetUserData, GetUserResponse, GetVirtualInstrumentData, GetVirtualInstrumentResponse, GetVirtualInstrumentsData, GetVirtualInstrumentsResponse, GroupMonthlyBalancesReportData, GroupMonthlyBalancesReportResponse, ImportBillsData, ImportBillsResponse, ImportData, ImporterTypesData, ImporterTypesResponse, InOutAverageReportData, InOutAverageReportResponse, InOutReportData, InOutReportResponse, InOutTrendReportData, InOutTrendReportResponse, MonthlyBalancesReportData, MonthlyBalancesReportResponse, RemoveFamilyMemberData, RemoveFamilyMemberResponse, RemoveSubTagData, RemoveSubTagResponse, RemoveTagData, RemoveTagFromInstrumentRuleData, RemoveTagFromInstrumentRuleResponse, RemoveTagResponse, ReprocessData, ReprocessResponse, RunForecastData, RunForecastResponse, RunRulesData, SearchTransactionsData, SearchTransactionsResponse, SetBalanceData, SetBalanceResponse, StockHoldingReportData, StockHoldingReportResponse, StockValueReportData, StockValueReportResponse, TagBreakdownReportData, TagBreakdownReportResponse, TagTrendReportData, TagTrendReportResponse, UpdateAccountData, UpdateAccountResponse, UpdateAssetData, UpdateAssetResponse, UpdateBudgetLineData, UpdateBudgetLineResponse, UpdateFamilyData, UpdateFamilyResponse, UpdateForecastPlanData, UpdateForecastPlanResponse, UpdateGroupData, UpdateGroupResponse, UpdateInstitutionAccountData, UpdateInstitutionAccountResponse, UpdateInstitutionData, UpdateInstitutionResponse, UpdateInstrumentRuleData, UpdateInstrumentRuleResponse, UpdateMyFamilyData, UpdateMyFamilyResponse, UpdatePlannedItemData, UpdatePlannedItemResponse, UpdateRecurringTransactionData, UpdateRecurringTransactionResponse, UpdateStockHoldingData, UpdateStockHoldingResponse, UpdateTagData, UpdateTagResponse, UpdateTransactionData, UpdateTransactionResponse, UpdateUserData, UpdateUserResponse, UpdateVirtualInstrumentBalanceData, UpdateVirtualInstrumentBalanceResponse, UpdateVirtualInstrumentData, UpdateVirtualInstrumentResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseURL' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -37,27 +37,23 @@ const createQueryKey = <TOptions extends Options>(id: string, options?: TOptions
     if (options?.query) {
         params.query = options.query;
     }
-    return [
-        params
-    ];
+    return [params];
 };
 
 export const getAccountsQueryKey = (options?: Options<GetAccountsData>) => createQueryKey('getAccounts', options);
 
-export const getAccountsOptions = (options?: Options<GetAccountsData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getAccounts({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getAccountsQueryKey(options)
-    });
-};
+export const getAccountsOptions = (options?: Options<GetAccountsData>) => queryOptions<GetAccountsResponse, AxiosError<DefaultError>, GetAccountsResponse, ReturnType<typeof getAccountsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getAccounts({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getAccountsQueryKey(options)
+});
 
 export const createAccountMutation = (options?: Partial<Options<CreateAccountData>>): UseMutationOptions<CreateAccountResponse, AxiosError<DefaultError>, Options<CreateAccountData>> => {
     const mutationOptions: UseMutationOptions<CreateAccountResponse, AxiosError<DefaultError>, Options<CreateAccountData>> = {
@@ -75,20 +71,18 @@ export const createAccountMutation = (options?: Partial<Options<CreateAccountDat
 
 export const getAccountQueryKey = (options: Options<GetAccountData>) => createQueryKey('getAccount', options);
 
-export const getAccountOptions = (options: Options<GetAccountData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getAccount({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getAccountQueryKey(options)
-    });
-};
+export const getAccountOptions = (options: Options<GetAccountData>) => queryOptions<GetAccountResponse, AxiosError<DefaultError>, GetAccountResponse, ReturnType<typeof getAccountQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getAccount({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getAccountQueryKey(options)
+});
 
 export const updateAccountMutation = (options?: Partial<Options<UpdateAccountData>>): UseMutationOptions<UpdateAccountResponse, AxiosError<DefaultError>, Options<UpdateAccountData>> => {
     const mutationOptions: UseMutationOptions<UpdateAccountResponse, AxiosError<DefaultError>, Options<UpdateAccountData>> = {
@@ -106,20 +100,18 @@ export const updateAccountMutation = (options?: Partial<Options<UpdateAccountDat
 
 export const getInstitutionAccountQueryKey = (options: Options<GetInstitutionAccountData>) => createQueryKey('getInstitutionAccount', options);
 
-export const getInstitutionAccountOptions = (options: Options<GetInstitutionAccountData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getInstitutionAccount({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getInstitutionAccountQueryKey(options)
-    });
-};
+export const getInstitutionAccountOptions = (options: Options<GetInstitutionAccountData>) => queryOptions<GetInstitutionAccountResponse, AxiosError<DefaultError>, GetInstitutionAccountResponse, ReturnType<typeof getInstitutionAccountQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getInstitutionAccount({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getInstitutionAccountQueryKey(options)
+});
 
 export const updateInstitutionAccountMutation = (options?: Partial<Options<UpdateInstitutionAccountData>>): UseMutationOptions<UpdateInstitutionAccountResponse, AxiosError<DefaultError>, Options<UpdateInstitutionAccountData>> => {
     const mutationOptions: UseMutationOptions<UpdateInstitutionAccountResponse, AxiosError<DefaultError>, Options<UpdateInstitutionAccountData>> = {
@@ -165,20 +157,18 @@ export const closeInstitutionAccountMutation = (options?: Partial<Options<CloseI
 
 export const getAllRecurringTransactionsQueryKey = (options: Options<GetAllRecurringTransactionsData>) => createQueryKey('getAllRecurringTransactions', options);
 
-export const getAllRecurringTransactionsOptions = (options: Options<GetAllRecurringTransactionsData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getAllRecurringTransactions({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getAllRecurringTransactionsQueryKey(options)
-    });
-};
+export const getAllRecurringTransactionsOptions = (options: Options<GetAllRecurringTransactionsData>) => queryOptions<GetAllRecurringTransactionsResponse, AxiosError<DefaultError>, GetAllRecurringTransactionsResponse, ReturnType<typeof getAllRecurringTransactionsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getAllRecurringTransactions({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getAllRecurringTransactionsQueryKey(options)
+});
 
 export const createRecurringTransactionMutation = (options?: Partial<Options<CreateRecurringTransactionData>>): UseMutationOptions<CreateRecurringTransactionResponse, AxiosError<DefaultError>, Options<CreateRecurringTransactionData>> => {
     const mutationOptions: UseMutationOptions<CreateRecurringTransactionResponse, AxiosError<DefaultError>, Options<CreateRecurringTransactionData>> = {
@@ -210,20 +200,18 @@ export const deleteRecurringTransactionMutation = (options?: Partial<Options<Del
 
 export const getRecurringTransactionQueryKey = (options: Options<GetRecurringTransactionData>) => createQueryKey('getRecurringTransaction', options);
 
-export const getRecurringTransactionOptions = (options: Options<GetRecurringTransactionData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getRecurringTransaction({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getRecurringTransactionQueryKey(options)
-    });
-};
+export const getRecurringTransactionOptions = (options: Options<GetRecurringTransactionData>) => queryOptions<GetRecurringTransactionResponse, AxiosError<DefaultError>, GetRecurringTransactionResponse, ReturnType<typeof getRecurringTransactionQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getRecurringTransaction({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getRecurringTransactionQueryKey(options)
+});
 
 export const updateRecurringTransactionMutation = (options?: Partial<Options<UpdateRecurringTransactionData>>): UseMutationOptions<UpdateRecurringTransactionResponse, AxiosError<DefaultError>, Options<UpdateRecurringTransactionData>> => {
     const mutationOptions: UseMutationOptions<UpdateRecurringTransactionResponse, AxiosError<DefaultError>, Options<UpdateRecurringTransactionData>> = {
@@ -241,37 +229,33 @@ export const updateRecurringTransactionMutation = (options?: Partial<Options<Upd
 
 export const getRecurringTransactionsForAVirtualAccountQueryKey = (options: Options<GetRecurringTransactionsForAVirtualAccountData>) => createQueryKey('getRecurringTransactionsForAVirtualAccount', options);
 
-export const getRecurringTransactionsForAVirtualAccountOptions = (options: Options<GetRecurringTransactionsForAVirtualAccountData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getRecurringTransactionsForAVirtualAccount({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getRecurringTransactionsForAVirtualAccountQueryKey(options)
-    });
-};
+export const getRecurringTransactionsForAVirtualAccountOptions = (options: Options<GetRecurringTransactionsForAVirtualAccountData>) => queryOptions<GetRecurringTransactionsForAVirtualAccountResponse, AxiosError<DefaultError>, GetRecurringTransactionsForAVirtualAccountResponse, ReturnType<typeof getRecurringTransactionsForAVirtualAccountQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getRecurringTransactionsForAVirtualAccount({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getRecurringTransactionsForAVirtualAccountQueryKey(options)
+});
 
 export const getAssetQueryKey = (options: Options<GetAssetData>) => createQueryKey('getAsset', options);
 
-export const getAssetOptions = (options: Options<GetAssetData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getAsset({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getAssetQueryKey(options)
-    });
-};
+export const getAssetOptions = (options: Options<GetAssetData>) => queryOptions<GetAssetResponse, AxiosError<DefaultError>, GetAssetResponse, ReturnType<typeof getAssetQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getAsset({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getAssetQueryKey(options)
+});
 
 export const updateAssetMutation = (options?: Partial<Options<UpdateAssetData>>): UseMutationOptions<UpdateAssetResponse, AxiosError<DefaultError>, Options<UpdateAssetData>> => {
     const mutationOptions: UseMutationOptions<UpdateAssetResponse, AxiosError<DefaultError>, Options<UpdateAssetData>> = {
@@ -303,105 +287,136 @@ export const createAssetMutation = (options?: Partial<Options<CreateAssetData>>)
 
 export const getAllBillsQueryKey = (options: Options<GetAllBillsData>) => createQueryKey('getAllBills', options);
 
-export const getAllBillsOptions = (options: Options<GetAllBillsData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getAllBills({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getAllBillsQueryKey(options)
-    });
-};
+export const getAllBillsOptions = (options: Options<GetAllBillsData>) => queryOptions<GetAllBillsResponse, AxiosError<DefaultError>, GetAllBillsResponse, ReturnType<typeof getAllBillsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getAllBills({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getAllBillsQueryKey(options)
+});
 
 export const getBillAccountSummariesByTypeQueryKey = (options?: Options<GetBillAccountSummariesByTypeData>) => createQueryKey('getBillAccountSummariesByType', options);
 
-export const getBillAccountSummariesByTypeOptions = (options?: Options<GetBillAccountSummariesByTypeData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getBillAccountSummariesByType({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getBillAccountSummariesByTypeQueryKey(options)
-    });
-};
+export const getBillAccountSummariesByTypeOptions = (options?: Options<GetBillAccountSummariesByTypeData>) => queryOptions<GetBillAccountSummariesByTypeResponse, AxiosError<DefaultError>, GetBillAccountSummariesByTypeResponse, ReturnType<typeof getBillAccountSummariesByTypeQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getBillAccountSummariesByType({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getBillAccountSummariesByTypeQueryKey(options)
+});
 
 export const getBillAccountsByTypeQueryKey = (options: Options<GetBillAccountsByTypeData>) => createQueryKey('getBillAccountsByType', options);
 
-export const getBillAccountsByTypeOptions = (options: Options<GetBillAccountsByTypeData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getBillAccountsByType({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getBillAccountsByTypeQueryKey(options)
-    });
-};
+export const getBillAccountsByTypeOptions = (options: Options<GetBillAccountsByTypeData>) => queryOptions<GetBillAccountsByTypeResponse, AxiosError<DefaultError>, GetBillAccountsByTypeResponse, ReturnType<typeof getBillAccountsByTypeQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getBillAccountsByType({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getBillAccountsByTypeQueryKey(options)
+});
 
 export const getBillAccountsQueryKey = (options?: Options<GetBillAccountsData>) => createQueryKey('getBillAccounts', options);
 
-export const getBillAccountsOptions = (options?: Options<GetBillAccountsData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getBillAccounts({
+export const getBillAccountsOptions = (options?: Options<GetBillAccountsData>) => queryOptions<GetBillAccountsResponse, AxiosError<DefaultError>, GetBillAccountsResponse, ReturnType<typeof getBillAccountsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getBillAccounts({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getBillAccountsQueryKey(options)
+});
+
+export const createBillAccountMutation = (options?: Partial<Options<CreateBillAccountData>>): UseMutationOptions<CreateBillAccountResponse, AxiosError<DefaultError>, Options<CreateBillAccountData>> => {
+    const mutationOptions: UseMutationOptions<CreateBillAccountResponse, AxiosError<DefaultError>, Options<CreateBillAccountData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await createBillAccount({
                 ...options,
-                ...queryKey[0],
-                signal,
+                ...fnOptions,
                 throwOnError: true
             });
             return data;
-        },
-        queryKey: getBillAccountsQueryKey(options)
-    });
+        }
+    };
+    return mutationOptions;
+};
+
+export const getBillsByUtilityTypeQueryKey = (options: Options<GetBillsByUtilityTypeData>) => createQueryKey('getBillsByUtilityType', options);
+
+export const getBillsByUtilityTypeOptions = (options: Options<GetBillsByUtilityTypeData>) => queryOptions<GetBillsByUtilityTypeResponse, AxiosError<DefaultError>, GetBillsByUtilityTypeResponse, ReturnType<typeof getBillsByUtilityTypeQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getBillsByUtilityType({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getBillsByUtilityTypeQueryKey(options)
+});
+
+export const importBillsMutation = (options?: Partial<Options<ImportBillsData>>): UseMutationOptions<ImportBillsResponse, AxiosError<DefaultError>, Options<ImportBillsData>> => {
+    const mutationOptions: UseMutationOptions<ImportBillsResponse, AxiosError<DefaultError>, Options<ImportBillsData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await importBills({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
 };
 
 export const getBillAccountQueryKey = (options: Options<GetBillAccountData>) => createQueryKey('getBillAccount', options);
 
-export const getBillAccountOptions = (options: Options<GetBillAccountData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getBillAccount({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getBillAccountQueryKey(options)
-    });
-};
+export const getBillAccountOptions = (options: Options<GetBillAccountData>) => queryOptions<GetBillAccountResponse, AxiosError<DefaultError>, GetBillAccountResponse, ReturnType<typeof getBillAccountQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getBillAccount({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getBillAccountQueryKey(options)
+});
 
 export const getBillsForAnAccountQueryKey = (options: Options<GetBillsForAnAccountData>) => createQueryKey('getBillsForAnAccount', options);
 
-export const getBillsForAnAccountOptions = (options: Options<GetBillsForAnAccountData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getBillsForAnAccount({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getBillsForAnAccountQueryKey(options)
-    });
-};
+export const getBillsForAnAccountOptions = (options: Options<GetBillsForAnAccountData>) => queryOptions<GetBillsForAnAccountResponse, AxiosError<DefaultError>, GetBillsForAnAccountResponse, ReturnType<typeof getBillsForAnAccountQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getBillsForAnAccount({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getBillsForAnAccountQueryKey(options)
+});
 
 export const createBillMutation = (options?: Partial<Options<CreateBillData>>): UseMutationOptions<CreateBillResponse, AxiosError<DefaultError>, Options<CreateBillData>> => {
     const mutationOptions: UseMutationOptions<CreateBillResponse, AxiosError<DefaultError>, Options<CreateBillData>> = {
@@ -419,54 +434,93 @@ export const createBillMutation = (options?: Partial<Options<CreateBillData>>): 
 
 export const getBillQueryKey = (options: Options<GetBillData>) => createQueryKey('getBill', options);
 
-export const getBillOptions = (options: Options<GetBillData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getBill({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getBillQueryKey(options)
-    });
-};
+export const getBillOptions = (options: Options<GetBillData>) => queryOptions<GetBillResponse, AxiosError<DefaultError>, GetBillResponse, ReturnType<typeof getBillQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getBill({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getBillQueryKey(options)
+});
+
+export const getCostPerUnitReportQueryKey = (options: Options<GetCostPerUnitReportData>) => createQueryKey('getCostPerUnitReport', options);
+
+export const getCostPerUnitReportOptions = (options: Options<GetCostPerUnitReportData>) => queryOptions<GetCostPerUnitReportResponse, AxiosError<DefaultError>, GetCostPerUnitReportResponse, ReturnType<typeof getCostPerUnitReportQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getCostPerUnitReport({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCostPerUnitReportQueryKey(options)
+});
+
+export const getServiceChargeReportQueryKey = (options: Options<GetServiceChargeReportData>) => createQueryKey('getServiceChargeReport', options);
+
+export const getServiceChargeReportOptions = (options: Options<GetServiceChargeReportData>) => queryOptions<GetServiceChargeReportResponse, AxiosError<DefaultError>, GetServiceChargeReportResponse, ReturnType<typeof getServiceChargeReportQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getServiceChargeReport({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getServiceChargeReportQueryKey(options)
+});
+
+export const getUsageReportQueryKey = (options: Options<GetUsageReportData>) => createQueryKey('getUsageReport', options);
+
+export const getUsageReportOptions = (options: Options<GetUsageReportData>) => queryOptions<GetUsageReportResponse, AxiosError<DefaultError>, GetUsageReportResponse, ReturnType<typeof getUsageReportQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getUsageReport({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getUsageReportQueryKey(options)
+});
 
 export const getAllBudgetYearsQueryKey = (options?: Options<GetAllBudgetYearsData>) => createQueryKey('getAllBudgetYears', options);
 
-export const getAllBudgetYearsOptions = (options?: Options<GetAllBudgetYearsData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getAllBudgetYears({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getAllBudgetYearsQueryKey(options)
-    });
-};
+export const getAllBudgetYearsOptions = (options?: Options<GetAllBudgetYearsData>) => queryOptions<GetAllBudgetYearsResponse, AxiosError<DefaultError>, GetAllBudgetYearsResponse, ReturnType<typeof getAllBudgetYearsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getAllBudgetYears({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getAllBudgetYearsQueryKey(options)
+});
 
 export const getBudgetQueryKey = (options: Options<GetBudgetData>) => createQueryKey('getBudget', options);
 
-export const getBudgetOptions = (options: Options<GetBudgetData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getBudget({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getBudgetQueryKey(options)
-    });
-};
+export const getBudgetOptions = (options: Options<GetBudgetData>) => queryOptions<GetBudgetResponse, AxiosError<DefaultError>, GetBudgetResponse, ReturnType<typeof getBudgetQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getBudget({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getBudgetQueryKey(options)
+});
 
 export const deleteBudgetLineMutation = (options?: Partial<Options<DeleteBudgetLineData>>): UseMutationOptions<DeleteBudgetLineResponse, AxiosError<DefaultError>, Options<DeleteBudgetLineData>> => {
     const mutationOptions: UseMutationOptions<DeleteBudgetLineResponse, AxiosError<DefaultError>, Options<DeleteBudgetLineData>> = {
@@ -484,20 +538,18 @@ export const deleteBudgetLineMutation = (options?: Partial<Options<DeleteBudgetL
 
 export const getBudgetLineQueryKey = (options: Options<GetBudgetLineData>) => createQueryKey('getBudgetLine', options);
 
-export const getBudgetLineOptions = (options: Options<GetBudgetLineData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getBudgetLine({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getBudgetLineQueryKey(options)
-    });
-};
+export const getBudgetLineOptions = (options: Options<GetBudgetLineData>) => queryOptions<GetBudgetLineResponse, AxiosError<DefaultError>, GetBudgetLineResponse, ReturnType<typeof getBudgetLineQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getBudgetLine({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getBudgetLineQueryKey(options)
+});
 
 export const updateBudgetLineMutation = (options?: Partial<Options<UpdateBudgetLineData>>): UseMutationOptions<UpdateBudgetLineResponse, AxiosError<DefaultError>, Options<UpdateBudgetLineData>> => {
     const mutationOptions: UseMutationOptions<UpdateBudgetLineResponse, AxiosError<DefaultError>, Options<UpdateBudgetLineData>> = {
@@ -529,105 +581,136 @@ export const createBudgetLineMutation = (options?: Partial<Options<CreateBudgetL
 
 export const getBudgetAmountForTagQueryKey = (options: Options<GetBudgetAmountForTagData>) => createQueryKey('getBudgetAmountForTag', options);
 
-export const getBudgetAmountForTagOptions = (options: Options<GetBudgetAmountForTagData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getBudgetAmountForTag({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getBudgetAmountForTagQueryKey(options)
-    });
-};
+export const getBudgetAmountForTagOptions = (options: Options<GetBudgetAmountForTagData>) => queryOptions<GetBudgetAmountForTagResponse, AxiosError<DefaultError>, GetBudgetAmountForTagResponse, ReturnType<typeof getBudgetAmountForTagQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getBudgetAmountForTag({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getBudgetAmountForTagQueryKey(options)
+});
 
 export const getBudgetReportQueryKey = (options: Options<GetBudgetReportData>) => createQueryKey('getBudgetReport', options);
 
-export const getBudgetReportOptions = (options: Options<GetBudgetReportData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getBudgetReport({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getBudgetReportQueryKey(options)
-    });
-};
+export const getBudgetReportOptions = (options: Options<GetBudgetReportData>) => queryOptions<GetBudgetReportResponse, AxiosError<DefaultError>, GetBudgetReportResponse, ReturnType<typeof getBudgetReportQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getBudgetReport({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getBudgetReportQueryKey(options)
+});
 
 export const getBudgetReportForMonthQueryKey = (options: Options<GetBudgetReportForMonthData>) => createQueryKey('getBudgetReportForMonth', options);
 
-export const getBudgetReportForMonthOptions = (options: Options<GetBudgetReportForMonthData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getBudgetReportForMonth({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getBudgetReportForMonthQueryKey(options)
-    });
-};
+export const getBudgetReportForMonthOptions = (options: Options<GetBudgetReportForMonthData>) => queryOptions<GetBudgetReportForMonthResponse, AxiosError<DefaultError>, GetBudgetReportForMonthResponse, ReturnType<typeof getBudgetReportForMonthQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getBudgetReportForMonth({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getBudgetReportForMonthQueryKey(options)
+});
 
 export const getBudgetReportBreakdownForMonthQueryKey = (options: Options<GetBudgetReportBreakdownForMonthData>) => createQueryKey('getBudgetReportBreakdownForMonth', options);
 
-export const getBudgetReportBreakdownForMonthOptions = (options: Options<GetBudgetReportBreakdownForMonthData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getBudgetReportBreakdownForMonth({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getBudgetReportBreakdownForMonthQueryKey(options)
-    });
-};
+export const getBudgetReportBreakdownForMonthOptions = (options: Options<GetBudgetReportBreakdownForMonthData>) => queryOptions<GetBudgetReportBreakdownForMonthResponse, AxiosError<DefaultError>, GetBudgetReportBreakdownForMonthResponse, ReturnType<typeof getBudgetReportBreakdownForMonthQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getBudgetReportBreakdownForMonth({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getBudgetReportBreakdownForMonthQueryKey(options)
+});
 
 export const getBudgetReportBreakdownForMonthForUnbudgetedItemsQueryKey = (options: Options<GetBudgetReportBreakdownForMonthForUnbudgetedItemsData>) => createQueryKey('getBudgetReportBreakdownForMonthForUnbudgetedItems', options);
 
-export const getBudgetReportBreakdownForMonthForUnbudgetedItemsOptions = (options: Options<GetBudgetReportBreakdownForMonthForUnbudgetedItemsData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getBudgetReportBreakdownForMonthForUnbudgetedItems({
+export const getBudgetReportBreakdownForMonthForUnbudgetedItemsOptions = (options: Options<GetBudgetReportBreakdownForMonthForUnbudgetedItemsData>) => queryOptions<GetBudgetReportBreakdownForMonthForUnbudgetedItemsResponse, AxiosError<DefaultError>, GetBudgetReportBreakdownForMonthForUnbudgetedItemsResponse, ReturnType<typeof getBudgetReportBreakdownForMonthForUnbudgetedItemsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getBudgetReportBreakdownForMonthForUnbudgetedItems({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getBudgetReportBreakdownForMonthForUnbudgetedItemsQueryKey(options)
+});
+
+export const getMyFamilyQueryKey = (options?: Options<GetMyFamilyData>) => createQueryKey('getMyFamily', options);
+
+export const getMyFamilyOptions = (options?: Options<GetMyFamilyData>) => queryOptions<GetMyFamilyResponse, AxiosError<DefaultError>, GetMyFamilyResponse, ReturnType<typeof getMyFamilyQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getMyFamily({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getMyFamilyQueryKey(options)
+});
+
+export const updateMyFamilyMutation = (options?: Partial<Options<UpdateMyFamilyData>>): UseMutationOptions<UpdateMyFamilyResponse, AxiosError<DefaultError>, Options<UpdateMyFamilyData>> => {
+    const mutationOptions: UseMutationOptions<UpdateMyFamilyResponse, AxiosError<DefaultError>, Options<UpdateMyFamilyData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await updateMyFamily({
                 ...options,
-                ...queryKey[0],
-                signal,
+                ...fnOptions,
                 throwOnError: true
             });
             return data;
-        },
-        queryKey: getBudgetReportBreakdownForMonthForUnbudgetedItemsQueryKey(options)
-    });
+        }
+    };
+    return mutationOptions;
+};
+
+export const removeFamilyMemberMutation = (options?: Partial<Options<RemoveFamilyMemberData>>): UseMutationOptions<RemoveFamilyMemberResponse, AxiosError<DefaultError>, Options<RemoveFamilyMemberData>> => {
+    const mutationOptions: UseMutationOptions<RemoveFamilyMemberResponse, AxiosError<DefaultError>, Options<RemoveFamilyMemberData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await removeFamilyMember({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
 };
 
 export const getAllFamiliesQueryKey = (options?: Options<GetAllFamiliesData>) => createQueryKey('getAllFamilies', options);
 
-export const getAllFamiliesOptions = (options?: Options<GetAllFamiliesData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getAllFamilies({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getAllFamiliesQueryKey(options)
-    });
-};
+export const getAllFamiliesOptions = (options?: Options<GetAllFamiliesData>) => queryOptions<GetAllFamiliesResponse, AxiosError<DefaultError>, GetAllFamiliesResponse, ReturnType<typeof getAllFamiliesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getAllFamilies({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getAllFamiliesQueryKey(options)
+});
 
 export const createFamilyMutation = (options?: Partial<Options<CreateFamilyData>>): UseMutationOptions<CreateFamilyResponse, AxiosError<DefaultError>, Options<CreateFamilyData>> => {
     const mutationOptions: UseMutationOptions<CreateFamilyResponse, AxiosError<DefaultError>, Options<CreateFamilyData>> = {
@@ -645,20 +728,18 @@ export const createFamilyMutation = (options?: Partial<Options<CreateFamilyData>
 
 export const getFamilyQueryKey = (options: Options<GetFamilyData>) => createQueryKey('getFamily', options);
 
-export const getFamilyOptions = (options: Options<GetFamilyData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getFamily({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getFamilyQueryKey(options)
-    });
-};
+export const getFamilyOptions = (options: Options<GetFamilyData>) => queryOptions<GetFamilyResponse, AxiosError<DefaultError>, GetFamilyResponse, ReturnType<typeof getFamilyQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getFamily({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getFamilyQueryKey(options)
+});
 
 export const updateFamilyMutation = (options?: Partial<Options<UpdateFamilyData>>): UseMutationOptions<UpdateFamilyResponse, AxiosError<DefaultError>, Options<UpdateFamilyData>> => {
     const mutationOptions: UseMutationOptions<UpdateFamilyResponse, AxiosError<DefaultError>, Options<UpdateFamilyData>> = {
@@ -674,22 +755,177 @@ export const updateFamilyMutation = (options?: Partial<Options<UpdateFamilyData>
     return mutationOptions;
 };
 
-export const getAllGroupsQueryKey = (options?: Options<GetAllGroupsData>) => createQueryKey('getAllGroups', options);
+export const getAllForecastPlansQueryKey = (options?: Options<GetAllForecastPlansData>) => createQueryKey('getAllForecastPlans', options);
 
-export const getAllGroupsOptions = (options?: Options<GetAllGroupsData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getAllGroups({
+export const getAllForecastPlansOptions = (options?: Options<GetAllForecastPlansData>) => queryOptions<GetAllForecastPlansResponse, AxiosError<DefaultError>, GetAllForecastPlansResponse, ReturnType<typeof getAllForecastPlansQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getAllForecastPlans({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getAllForecastPlansQueryKey(options)
+});
+
+export const createForecastPlanMutation = (options?: Partial<Options<CreateForecastPlanData>>): UseMutationOptions<CreateForecastPlanResponse, AxiosError<DefaultError>, Options<CreateForecastPlanData>> => {
+    const mutationOptions: UseMutationOptions<CreateForecastPlanResponse, AxiosError<DefaultError>, Options<CreateForecastPlanData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await createForecastPlan({
                 ...options,
-                ...queryKey[0],
-                signal,
+                ...fnOptions,
                 throwOnError: true
             });
             return data;
-        },
-        queryKey: getAllGroupsQueryKey(options)
-    });
+        }
+    };
+    return mutationOptions;
 };
+
+export const deleteForecastPlanMutation = (options?: Partial<Options<DeleteForecastPlanData>>): UseMutationOptions<DeleteForecastPlanResponse, AxiosError<DefaultError>, Options<DeleteForecastPlanData>> => {
+    const mutationOptions: UseMutationOptions<DeleteForecastPlanResponse, AxiosError<DefaultError>, Options<DeleteForecastPlanData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await deleteForecastPlan({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getForecastPlanQueryKey = (options: Options<GetForecastPlanData>) => createQueryKey('getForecastPlan', options);
+
+export const getForecastPlanOptions = (options: Options<GetForecastPlanData>) => queryOptions<GetForecastPlanResponse, AxiosError<DefaultError>, GetForecastPlanResponse, ReturnType<typeof getForecastPlanQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getForecastPlan({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getForecastPlanQueryKey(options)
+});
+
+export const updateForecastPlanMutation = (options?: Partial<Options<UpdateForecastPlanData>>): UseMutationOptions<UpdateForecastPlanResponse, AxiosError<DefaultError>, Options<UpdateForecastPlanData>> => {
+    const mutationOptions: UseMutationOptions<UpdateForecastPlanResponse, AxiosError<DefaultError>, Options<UpdateForecastPlanData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await updateForecastPlan({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const archiveForecastPlanMutation = (options?: Partial<Options<ArchiveForecastPlanData>>): UseMutationOptions<ArchiveForecastPlanResponse, AxiosError<DefaultError>, Options<ArchiveForecastPlanData>> => {
+    const mutationOptions: UseMutationOptions<ArchiveForecastPlanResponse, AxiosError<DefaultError>, Options<ArchiveForecastPlanData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await archiveForecastPlan({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const runForecastMutation = (options?: Partial<Options<RunForecastData>>): UseMutationOptions<RunForecastResponse, AxiosError<DefaultError>, Options<RunForecastData>> => {
+    const mutationOptions: UseMutationOptions<RunForecastResponse, AxiosError<DefaultError>, Options<RunForecastData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await runForecast({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const deletePlannedItemMutation = (options?: Partial<Options<DeletePlannedItemData>>): UseMutationOptions<DeletePlannedItemResponse, AxiosError<DefaultError>, Options<DeletePlannedItemData>> => {
+    const mutationOptions: UseMutationOptions<DeletePlannedItemResponse, AxiosError<DefaultError>, Options<DeletePlannedItemData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await deletePlannedItem({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getPlannedItemQueryKey = (options: Options<GetPlannedItemData>) => createQueryKey('getPlannedItem', options);
+
+export const getPlannedItemOptions = (options: Options<GetPlannedItemData>) => queryOptions<GetPlannedItemResponse, AxiosError<DefaultError>, GetPlannedItemResponse, ReturnType<typeof getPlannedItemQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getPlannedItem({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getPlannedItemQueryKey(options)
+});
+
+export const updatePlannedItemMutation = (options?: Partial<Options<UpdatePlannedItemData>>): UseMutationOptions<UpdatePlannedItemResponse, AxiosError<DefaultError>, Options<UpdatePlannedItemData>> => {
+    const mutationOptions: UseMutationOptions<UpdatePlannedItemResponse, AxiosError<DefaultError>, Options<UpdatePlannedItemData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await updatePlannedItem({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const createPlannedItemMutation = (options?: Partial<Options<CreatePlannedItemData>>): UseMutationOptions<CreatePlannedItemResponse, AxiosError<DefaultError>, Options<CreatePlannedItemData>> => {
+    const mutationOptions: UseMutationOptions<CreatePlannedItemResponse, AxiosError<DefaultError>, Options<CreatePlannedItemData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await createPlannedItem({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getAllGroupsQueryKey = (options?: Options<GetAllGroupsData>) => createQueryKey('getAllGroups', options);
+
+export const getAllGroupsOptions = (options?: Options<GetAllGroupsData>) => queryOptions<GetAllGroupsResponse, AxiosError<DefaultError>, GetAllGroupsResponse, ReturnType<typeof getAllGroupsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getAllGroups({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getAllGroupsQueryKey(options)
+});
 
 export const createGroupMutation = (options?: Partial<Options<CreateGroupData>>): UseMutationOptions<CreateGroupResponse, AxiosError<DefaultError>, Options<CreateGroupData>> => {
     const mutationOptions: UseMutationOptions<CreateGroupResponse, AxiosError<DefaultError>, Options<CreateGroupData>> = {
@@ -721,20 +957,18 @@ export const deleteGroupMutation = (options?: Partial<Options<DeleteGroupData>>)
 
 export const getGroupQueryKey = (options: Options<GetGroupData>) => createQueryKey('getGroup', options);
 
-export const getGroupOptions = (options: Options<GetGroupData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getGroup({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getGroupQueryKey(options)
-    });
-};
+export const getGroupOptions = (options: Options<GetGroupData>) => queryOptions<GetGroupResponse, AxiosError<DefaultError>, GetGroupResponse, ReturnType<typeof getGroupQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getGroup({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getGroupQueryKey(options)
+});
 
 export const updateGroupMutation = (options?: Partial<Options<UpdateGroupData>>): UseMutationOptions<UpdateGroupResponse, AxiosError<DefaultError>, Options<UpdateGroupData>> => {
     const mutationOptions: UseMutationOptions<UpdateGroupResponse, AxiosError<DefaultError>, Options<UpdateGroupData>> = {
@@ -752,20 +986,18 @@ export const updateGroupMutation = (options?: Partial<Options<UpdateGroupData>>)
 
 export const getAllInstitutionsQueryKey = (options?: Options<GetAllInstitutionsData>) => createQueryKey('getAllInstitutions', options);
 
-export const getAllInstitutionsOptions = (options?: Options<GetAllInstitutionsData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getAllInstitutions({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getAllInstitutionsQueryKey(options)
-    });
-};
+export const getAllInstitutionsOptions = (options?: Options<GetAllInstitutionsData>) => queryOptions<GetAllInstitutionsResponse, AxiosError<DefaultError>, GetAllInstitutionsResponse, ReturnType<typeof getAllInstitutionsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getAllInstitutions({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getAllInstitutionsQueryKey(options)
+});
 
 export const createInstitutionMutation = (options?: Partial<Options<CreateInstitutionData>>): UseMutationOptions<CreateInstitutionResponse, AxiosError<DefaultError>, Options<CreateInstitutionData>> => {
     const mutationOptions: UseMutationOptions<CreateInstitutionResponse, AxiosError<DefaultError>, Options<CreateInstitutionData>> = {
@@ -783,20 +1015,18 @@ export const createInstitutionMutation = (options?: Partial<Options<CreateInstit
 
 export const getInstitutionQueryKey = (options: Options<GetInstitutionData>) => createQueryKey('getInstitution', options);
 
-export const getInstitutionOptions = (options: Options<GetInstitutionData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getInstitution({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getInstitutionQueryKey(options)
-    });
-};
+export const getInstitutionOptions = (options: Options<GetInstitutionData>) => queryOptions<GetInstitutionResponse, AxiosError<DefaultError>, GetInstitutionResponse, ReturnType<typeof getInstitutionQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getInstitution({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getInstitutionQueryKey(options)
+});
 
 export const updateInstitutionMutation = (options?: Partial<Options<UpdateInstitutionData>>): UseMutationOptions<UpdateInstitutionResponse, AxiosError<DefaultError>, Options<UpdateInstitutionData>> => {
     const mutationOptions: UseMutationOptions<UpdateInstitutionResponse, AxiosError<DefaultError>, Options<UpdateInstitutionData>> = {
@@ -814,37 +1044,33 @@ export const updateInstitutionMutation = (options?: Partial<Options<UpdateInstit
 
 export const getFormattedInstrumentsListQueryKey = (options?: Options<GetFormattedInstrumentsListData>) => createQueryKey('getFormattedInstrumentsList', options);
 
-export const getFormattedInstrumentsListOptions = (options?: Options<GetFormattedInstrumentsListData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getFormattedInstrumentsList({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getFormattedInstrumentsListQueryKey(options)
-    });
-};
+export const getFormattedInstrumentsListOptions = (options?: Options<GetFormattedInstrumentsListData>) => queryOptions<GetFormattedInstrumentsListResponse, AxiosError<DefaultError>, GetFormattedInstrumentsListResponse, ReturnType<typeof getFormattedInstrumentsListQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getFormattedInstrumentsList({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getFormattedInstrumentsListQueryKey(options)
+});
 
 export const getInstrumentsListQueryKey = (options?: Options<GetInstrumentsListData>) => createQueryKey('getInstrumentsList', options);
 
-export const getInstrumentsListOptions = (options?: Options<GetInstrumentsListData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getInstrumentsList({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getInstrumentsListQueryKey(options)
-    });
-};
+export const getInstrumentsListOptions = (options?: Options<GetInstrumentsListData>) => queryOptions<GetInstrumentsListResponse, AxiosError<DefaultError>, GetInstrumentsListResponse, ReturnType<typeof getInstrumentsListQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getInstrumentsList({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getInstrumentsListQueryKey(options)
+});
 
 export const importMutation = (options?: Partial<Options<ImportData>>): UseMutationOptions<unknown, AxiosError<DefaultError>, Options<ImportData>> => {
     const mutationOptions: UseMutationOptions<unknown, AxiosError<DefaultError>, Options<ImportData>> = {
@@ -876,20 +1102,18 @@ export const reprocessMutation = (options?: Partial<Options<ReprocessData>>): Us
 
 export const getAllInstrumentRulesQueryKey = (options: Options<GetAllInstrumentRulesData>) => createQueryKey('getAllInstrumentRules', options);
 
-export const getAllInstrumentRulesOptions = (options: Options<GetAllInstrumentRulesData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getAllInstrumentRules({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getAllInstrumentRulesQueryKey(options)
-    });
-};
+export const getAllInstrumentRulesOptions = (options: Options<GetAllInstrumentRulesData>) => queryOptions<GetAllInstrumentRulesResponse, AxiosError<DefaultError>, GetAllInstrumentRulesResponse, ReturnType<typeof getAllInstrumentRulesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getAllInstrumentRules({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getAllInstrumentRulesQueryKey(options)
+});
 
 export const createInstrumentRuleMutation = (options?: Partial<Options<CreateInstrumentRuleData>>): UseMutationOptions<CreateInstrumentRuleResponse, AxiosError<DefaultError>, Options<CreateInstrumentRuleData>> => {
     const mutationOptions: UseMutationOptions<CreateInstrumentRuleResponse, AxiosError<DefaultError>, Options<CreateInstrumentRuleData>> = {
@@ -921,20 +1145,18 @@ export const deleteInstrumentRuleMutation = (options?: Partial<Options<DeleteIns
 
 export const getInstrumentRuleQueryKey = (options: Options<GetInstrumentRuleData>) => createQueryKey('getInstrumentRule', options);
 
-export const getInstrumentRuleOptions = (options: Options<GetInstrumentRuleData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getInstrumentRule({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getInstrumentRuleQueryKey(options)
-    });
-};
+export const getInstrumentRuleOptions = (options: Options<GetInstrumentRuleData>) => queryOptions<GetInstrumentRuleResponse, AxiosError<DefaultError>, GetInstrumentRuleResponse, ReturnType<typeof getInstrumentRuleQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getInstrumentRule({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getInstrumentRuleQueryKey(options)
+});
 
 export const updateInstrumentRuleMutation = (options?: Partial<Options<UpdateInstrumentRuleData>>): UseMutationOptions<UpdateInstrumentRuleResponse, AxiosError<DefaultError>, Options<UpdateInstrumentRuleData>> => {
     const mutationOptions: UseMutationOptions<UpdateInstrumentRuleResponse, AxiosError<DefaultError>, Options<UpdateInstrumentRuleData>> = {
@@ -994,20 +1216,18 @@ export const runRulesMutation = (options?: Partial<Options<RunRulesData>>): UseM
 
 export const getVirtualInstrumentsQueryKey = (options: Options<GetVirtualInstrumentsData>) => createQueryKey('getVirtualInstruments', options);
 
-export const getVirtualInstrumentsOptions = (options: Options<GetVirtualInstrumentsData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getVirtualInstruments({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getVirtualInstrumentsQueryKey(options)
-    });
-};
+export const getVirtualInstrumentsOptions = (options: Options<GetVirtualInstrumentsData>) => queryOptions<GetVirtualInstrumentsResponse, AxiosError<DefaultError>, GetVirtualInstrumentsResponse, ReturnType<typeof getVirtualInstrumentsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getVirtualInstruments({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getVirtualInstrumentsQueryKey(options)
+});
 
 export const createVirtualInstrumentMutation = (options?: Partial<Options<CreateVirtualInstrumentData>>): UseMutationOptions<CreateVirtualInstrumentResponse, AxiosError<DefaultError>, Options<CreateVirtualInstrumentData>> => {
     const mutationOptions: UseMutationOptions<CreateVirtualInstrumentResponse, AxiosError<DefaultError>, Options<CreateVirtualInstrumentData>> = {
@@ -1039,20 +1259,18 @@ export const deleteVirtualInstrumentMutation = (options?: Partial<Options<Delete
 
 export const getVirtualInstrumentQueryKey = (options: Options<GetVirtualInstrumentData>) => createQueryKey('getVirtualInstrument', options);
 
-export const getVirtualInstrumentOptions = (options: Options<GetVirtualInstrumentData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getVirtualInstrument({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getVirtualInstrumentQueryKey(options)
-    });
-};
+export const getVirtualInstrumentOptions = (options: Options<GetVirtualInstrumentData>) => queryOptions<GetVirtualInstrumentResponse, AxiosError<DefaultError>, GetVirtualInstrumentResponse, ReturnType<typeof getVirtualInstrumentQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getVirtualInstrument({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getVirtualInstrumentQueryKey(options)
+});
 
 export const updateVirtualInstrumentMutation = (options?: Partial<Options<UpdateVirtualInstrumentData>>): UseMutationOptions<UpdateVirtualInstrumentResponse, AxiosError<DefaultError>, Options<UpdateVirtualInstrumentData>> => {
     const mutationOptions: UseMutationOptions<UpdateVirtualInstrumentResponse, AxiosError<DefaultError>, Options<UpdateVirtualInstrumentData>> = {
@@ -1068,44 +1286,52 @@ export const updateVirtualInstrumentMutation = (options?: Partial<Options<Update
     return mutationOptions;
 };
 
-export const importerTypesQueryKey = (options?: Options<ImporterTypesData>) => createQueryKey('importerTypes', options);
-
-export const importerTypesOptions = (options?: Options<ImporterTypesData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await importerTypes({
+export const updateVirtualInstrumentBalanceMutation = (options?: Partial<Options<UpdateVirtualInstrumentBalanceData>>): UseMutationOptions<UpdateVirtualInstrumentBalanceResponse, AxiosError<DefaultError>, Options<UpdateVirtualInstrumentBalanceData>> => {
+    const mutationOptions: UseMutationOptions<UpdateVirtualInstrumentBalanceResponse, AxiosError<DefaultError>, Options<UpdateVirtualInstrumentBalanceData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await updateVirtualInstrumentBalance({
                 ...options,
-                ...queryKey[0],
-                signal,
+                ...fnOptions,
                 throwOnError: true
             });
             return data;
-        },
-        queryKey: importerTypesQueryKey(options)
-    });
+        }
+    };
+    return mutationOptions;
 };
+
+export const importerTypesQueryKey = (options?: Options<ImporterTypesData>) => createQueryKey('importerTypes', options);
+
+export const importerTypesOptions = (options?: Options<ImporterTypesData>) => queryOptions<ImporterTypesResponse, AxiosError<DefaultError>, ImporterTypesResponse, ReturnType<typeof importerTypesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await importerTypes({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: importerTypesQueryKey(options)
+});
 
 export const inOutReportQueryKey = (options: Options<InOutReportData>) => createQueryKey('inOutReport', options);
 
-export const inOutReportOptions = (options: Options<InOutReportData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await inOutReport({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: inOutReportQueryKey(options)
-    });
-};
+export const inOutReportOptions = (options: Options<InOutReportData>) => queryOptions<InOutReportResponse, AxiosError<DefaultError>, InOutReportResponse, ReturnType<typeof inOutReportQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await inOutReport({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: inOutReportQueryKey(options)
+});
 
 const createInfiniteParams = <K extends Pick<QueryKey<Options>[0], 'body' | 'headers' | 'path' | 'query'>>(queryKey: QueryKey<Options>, page: K) => {
-    const params = {
-        ...queryKey[0]
-    };
+    const params = { ...queryKey[0] };
     if (page.body) {
         params.body = {
             ...queryKey[0].body as any,
@@ -1135,347 +1361,354 @@ const createInfiniteParams = <K extends Pick<QueryKey<Options>[0], 'body' | 'hea
 
 export const inOutReportInfiniteQueryKey = (options: Options<InOutReportData>): QueryKey<Options<InOutReportData>> => createQueryKey('inOutReport', options, true);
 
-export const inOutReportInfiniteOptions = (options: Options<InOutReportData>) => {
-    return infiniteQueryOptions<InOutReportResponse, AxiosError<DefaultError>, InfiniteData<InOutReportResponse>, QueryKey<Options<InOutReportData>>, string | Pick<QueryKey<Options<InOutReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-    // @ts-ignore
-    {
-        queryFn: async ({ pageParam, queryKey, signal }) => {
-            // @ts-ignore
-            const page: Pick<QueryKey<Options<InOutReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-                path: {
-                    start: pageParam
-                }
-            };
-            const params = createInfiniteParams(queryKey, page);
-            const { data } = await inOutReport({
-                ...options,
-                ...params,
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: inOutReportInfiniteQueryKey(options)
-    });
-};
+export const inOutReportInfiniteOptions = (options: Options<InOutReportData>) => infiniteQueryOptions<InOutReportResponse, AxiosError<DefaultError>, InfiniteData<InOutReportResponse>, QueryKey<Options<InOutReportData>>, string | Pick<QueryKey<Options<InOutReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<InOutReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            path: {
+                start: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await inOutReport({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: inOutReportInfiniteQueryKey(options)
+});
 
 export const inOutTrendReportQueryKey = (options: Options<InOutTrendReportData>) => createQueryKey('inOutTrendReport', options);
 
-export const inOutTrendReportOptions = (options: Options<InOutTrendReportData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await inOutTrendReport({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: inOutTrendReportQueryKey(options)
-    });
-};
+export const inOutTrendReportOptions = (options: Options<InOutTrendReportData>) => queryOptions<InOutTrendReportResponse, AxiosError<DefaultError>, InOutTrendReportResponse, ReturnType<typeof inOutTrendReportQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await inOutTrendReport({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: inOutTrendReportQueryKey(options)
+});
 
 export const inOutTrendReportInfiniteQueryKey = (options: Options<InOutTrendReportData>): QueryKey<Options<InOutTrendReportData>> => createQueryKey('inOutTrendReport', options, true);
 
-export const inOutTrendReportInfiniteOptions = (options: Options<InOutTrendReportData>) => {
-    return infiniteQueryOptions<InOutTrendReportResponse, AxiosError<DefaultError>, InfiniteData<InOutTrendReportResponse>, QueryKey<Options<InOutTrendReportData>>, string | Pick<QueryKey<Options<InOutTrendReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-    // @ts-ignore
-    {
-        queryFn: async ({ pageParam, queryKey, signal }) => {
-            // @ts-ignore
-            const page: Pick<QueryKey<Options<InOutTrendReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-                path: {
-                    start: pageParam
-                }
-            };
-            const params = createInfiniteParams(queryKey, page);
-            const { data } = await inOutTrendReport({
-                ...options,
-                ...params,
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: inOutTrendReportInfiniteQueryKey(options)
-    });
-};
+export const inOutTrendReportInfiniteOptions = (options: Options<InOutTrendReportData>) => infiniteQueryOptions<InOutTrendReportResponse, AxiosError<DefaultError>, InfiniteData<InOutTrendReportResponse>, QueryKey<Options<InOutTrendReportData>>, string | Pick<QueryKey<Options<InOutTrendReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<InOutTrendReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            path: {
+                start: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await inOutTrendReport({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: inOutTrendReportInfiniteQueryKey(options)
+});
 
 export const inOutAverageReportQueryKey = (options: Options<InOutAverageReportData>) => createQueryKey('inOutAverageReport', options);
 
-export const inOutAverageReportOptions = (options: Options<InOutAverageReportData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await inOutAverageReport({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: inOutAverageReportQueryKey(options)
-    });
-};
+export const inOutAverageReportOptions = (options: Options<InOutAverageReportData>) => queryOptions<InOutAverageReportResponse, AxiosError<DefaultError>, InOutAverageReportResponse, ReturnType<typeof inOutAverageReportQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await inOutAverageReport({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: inOutAverageReportQueryKey(options)
+});
 
 export const inOutAverageReportInfiniteQueryKey = (options: Options<InOutAverageReportData>): QueryKey<Options<InOutAverageReportData>> => createQueryKey('inOutAverageReport', options, true);
 
-export const inOutAverageReportInfiniteOptions = (options: Options<InOutAverageReportData>) => {
-    return infiniteQueryOptions<InOutAverageReportResponse, AxiosError<DefaultError>, InfiniteData<InOutAverageReportResponse>, QueryKey<Options<InOutAverageReportData>>, string | Pick<QueryKey<Options<InOutAverageReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-    // @ts-ignore
-    {
-        queryFn: async ({ pageParam, queryKey, signal }) => {
-            // @ts-ignore
-            const page: Pick<QueryKey<Options<InOutAverageReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-                path: {
-                    start: pageParam
-                }
-            };
-            const params = createInfiniteParams(queryKey, page);
-            const { data } = await inOutAverageReport({
-                ...options,
-                ...params,
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: inOutAverageReportInfiniteQueryKey(options)
-    });
-};
+export const inOutAverageReportInfiniteOptions = (options: Options<InOutAverageReportData>) => infiniteQueryOptions<InOutAverageReportResponse, AxiosError<DefaultError>, InfiniteData<InOutAverageReportResponse>, QueryKey<Options<InOutAverageReportData>>, string | Pick<QueryKey<Options<InOutAverageReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<InOutAverageReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            path: {
+                start: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await inOutAverageReport({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: inOutAverageReportInfiniteQueryKey(options)
+});
 
 export const byTagReportQueryKey = (options: Options<ByTagReportData>) => createQueryKey('byTagReport', options);
 
-export const byTagReportOptions = (options: Options<ByTagReportData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await byTagReport({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: byTagReportQueryKey(options)
-    });
-};
+export const byTagReportOptions = (options: Options<ByTagReportData>) => queryOptions<ByTagReportResponse, AxiosError<DefaultError>, ByTagReportResponse, ReturnType<typeof byTagReportQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await byTagReport({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: byTagReportQueryKey(options)
+});
 
 export const byTagReportInfiniteQueryKey = (options: Options<ByTagReportData>): QueryKey<Options<ByTagReportData>> => createQueryKey('byTagReport', options, true);
 
-export const byTagReportInfiniteOptions = (options: Options<ByTagReportData>) => {
-    return infiniteQueryOptions<ByTagReportResponse, AxiosError<DefaultError>, InfiniteData<ByTagReportResponse>, QueryKey<Options<ByTagReportData>>, string | Pick<QueryKey<Options<ByTagReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-    // @ts-ignore
-    {
-        queryFn: async ({ pageParam, queryKey, signal }) => {
-            // @ts-ignore
-            const page: Pick<QueryKey<Options<ByTagReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-                path: {
-                    start: pageParam
-                }
-            };
-            const params = createInfiniteParams(queryKey, page);
-            const { data } = await byTagReport({
-                ...options,
-                ...params,
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: byTagReportInfiniteQueryKey(options)
-    });
-};
+export const byTagReportInfiniteOptions = (options: Options<ByTagReportData>) => infiniteQueryOptions<ByTagReportResponse, AxiosError<DefaultError>, InfiniteData<ByTagReportResponse>, QueryKey<Options<ByTagReportData>>, string | Pick<QueryKey<Options<ByTagReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<ByTagReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            path: {
+                start: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await byTagReport({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: byTagReportInfiniteQueryKey(options)
+});
 
 export const tagBreakdownReportQueryKey = (options: Options<TagBreakdownReportData>) => createQueryKey('tagBreakdownReport', options);
 
-export const tagBreakdownReportOptions = (options: Options<TagBreakdownReportData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await tagBreakdownReport({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: tagBreakdownReportQueryKey(options)
-    });
-};
+export const tagBreakdownReportOptions = (options: Options<TagBreakdownReportData>) => queryOptions<TagBreakdownReportResponse, AxiosError<DefaultError>, TagBreakdownReportResponse, ReturnType<typeof tagBreakdownReportQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await tagBreakdownReport({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: tagBreakdownReportQueryKey(options)
+});
 
 export const tagBreakdownReportInfiniteQueryKey = (options: Options<TagBreakdownReportData>): QueryKey<Options<TagBreakdownReportData>> => createQueryKey('tagBreakdownReport', options, true);
 
-export const tagBreakdownReportInfiniteOptions = (options: Options<TagBreakdownReportData>) => {
-    return infiniteQueryOptions<TagBreakdownReportResponse, AxiosError<DefaultError>, InfiniteData<TagBreakdownReportResponse>, QueryKey<Options<TagBreakdownReportData>>, string | Pick<QueryKey<Options<TagBreakdownReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-    // @ts-ignore
-    {
-        queryFn: async ({ pageParam, queryKey, signal }) => {
-            // @ts-ignore
-            const page: Pick<QueryKey<Options<TagBreakdownReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-                path: {
-                    start: pageParam
-                }
-            };
-            const params = createInfiniteParams(queryKey, page);
-            const { data } = await tagBreakdownReport({
-                ...options,
-                ...params,
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: tagBreakdownReportInfiniteQueryKey(options)
-    });
-};
+export const tagBreakdownReportInfiniteOptions = (options: Options<TagBreakdownReportData>) => infiniteQueryOptions<TagBreakdownReportResponse, AxiosError<DefaultError>, InfiniteData<TagBreakdownReportResponse>, QueryKey<Options<TagBreakdownReportData>>, string | Pick<QueryKey<Options<TagBreakdownReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<TagBreakdownReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            path: {
+                start: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await tagBreakdownReport({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: tagBreakdownReportInfiniteQueryKey(options)
+});
 
 export const tagTrendReportQueryKey = (options: Options<TagTrendReportData>) => createQueryKey('tagTrendReport', options);
 
-export const tagTrendReportOptions = (options: Options<TagTrendReportData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await tagTrendReport({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: tagTrendReportQueryKey(options)
-    });
-};
+export const tagTrendReportOptions = (options: Options<TagTrendReportData>) => queryOptions<TagTrendReportResponse, AxiosError<DefaultError>, TagTrendReportResponse, ReturnType<typeof tagTrendReportQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await tagTrendReport({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: tagTrendReportQueryKey(options)
+});
 
 export const tagTrendReportInfiniteQueryKey = (options: Options<TagTrendReportData>): QueryKey<Options<TagTrendReportData>> => createQueryKey('tagTrendReport', options, true);
 
-export const tagTrendReportInfiniteOptions = (options: Options<TagTrendReportData>) => {
-    return infiniteQueryOptions<TagTrendReportResponse, AxiosError<DefaultError>, InfiniteData<TagTrendReportResponse>, QueryKey<Options<TagTrendReportData>>, string | Pick<QueryKey<Options<TagTrendReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-    // @ts-ignore
-    {
-        queryFn: async ({ pageParam, queryKey, signal }) => {
-            // @ts-ignore
-            const page: Pick<QueryKey<Options<TagTrendReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-                path: {
-                    start: pageParam
-                }
-            };
-            const params = createInfiniteParams(queryKey, page);
-            const { data } = await tagTrendReport({
-                ...options,
-                ...params,
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: tagTrendReportInfiniteQueryKey(options)
-    });
-};
+export const tagTrendReportInfiniteOptions = (options: Options<TagTrendReportData>) => infiniteQueryOptions<TagTrendReportResponse, AxiosError<DefaultError>, InfiniteData<TagTrendReportResponse>, QueryKey<Options<TagTrendReportData>>, string | Pick<QueryKey<Options<TagTrendReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<TagTrendReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            path: {
+                start: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await tagTrendReport({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: tagTrendReportInfiniteQueryKey(options)
+});
 
 export const allTagAverageReportQueryKey = (options: Options<AllTagAverageReportData>) => createQueryKey('allTagAverageReport', options);
 
-export const allTagAverageReportOptions = (options: Options<AllTagAverageReportData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await allTagAverageReport({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: allTagAverageReportQueryKey(options)
-    });
-};
+export const allTagAverageReportOptions = (options: Options<AllTagAverageReportData>) => queryOptions<AllTagAverageReportResponse, AxiosError<DefaultError>, AllTagAverageReportResponse, ReturnType<typeof allTagAverageReportQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await allTagAverageReport({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: allTagAverageReportQueryKey(options)
+});
 
 export const allTagAverageReportInfiniteQueryKey = (options: Options<AllTagAverageReportData>): QueryKey<Options<AllTagAverageReportData>> => createQueryKey('allTagAverageReport', options, true);
 
-export const allTagAverageReportInfiniteOptions = (options: Options<AllTagAverageReportData>) => {
-    return infiniteQueryOptions<AllTagAverageReportResponse, AxiosError<DefaultError>, InfiniteData<AllTagAverageReportResponse>, QueryKey<Options<AllTagAverageReportData>>, string | Pick<QueryKey<Options<AllTagAverageReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-    // @ts-ignore
-    {
-        queryFn: async ({ pageParam, queryKey, signal }) => {
-            // @ts-ignore
-            const page: Pick<QueryKey<Options<AllTagAverageReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-                path: {
-                    start: pageParam
-                }
-            };
-            const params = createInfiniteParams(queryKey, page);
-            const { data } = await allTagAverageReport({
-                ...options,
-                ...params,
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: allTagAverageReportInfiniteQueryKey(options)
-    });
-};
+export const allTagAverageReportInfiniteOptions = (options: Options<AllTagAverageReportData>) => infiniteQueryOptions<AllTagAverageReportResponse, AxiosError<DefaultError>, InfiniteData<AllTagAverageReportResponse>, QueryKey<Options<AllTagAverageReportData>>, string | Pick<QueryKey<Options<AllTagAverageReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<AllTagAverageReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            path: {
+                start: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await allTagAverageReport({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: allTagAverageReportInfiniteQueryKey(options)
+});
 
 export const monthlyBalancesReportQueryKey = (options: Options<MonthlyBalancesReportData>) => createQueryKey('monthlyBalancesReport', options);
 
-export const monthlyBalancesReportOptions = (options: Options<MonthlyBalancesReportData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await monthlyBalancesReport({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: monthlyBalancesReportQueryKey(options)
-    });
-};
+export const monthlyBalancesReportOptions = (options: Options<MonthlyBalancesReportData>) => queryOptions<MonthlyBalancesReportResponse, AxiosError<DefaultError>, MonthlyBalancesReportResponse, ReturnType<typeof monthlyBalancesReportQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await monthlyBalancesReport({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: monthlyBalancesReportQueryKey(options)
+});
 
 export const monthlyBalancesReportInfiniteQueryKey = (options: Options<MonthlyBalancesReportData>): QueryKey<Options<MonthlyBalancesReportData>> => createQueryKey('monthlyBalancesReport', options, true);
 
-export const monthlyBalancesReportInfiniteOptions = (options: Options<MonthlyBalancesReportData>) => {
-    return infiniteQueryOptions<MonthlyBalancesReportResponse, AxiosError<DefaultError>, InfiniteData<MonthlyBalancesReportResponse>, QueryKey<Options<MonthlyBalancesReportData>>, string | Pick<QueryKey<Options<MonthlyBalancesReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-    // @ts-ignore
-    {
-        queryFn: async ({ pageParam, queryKey, signal }) => {
-            // @ts-ignore
-            const page: Pick<QueryKey<Options<MonthlyBalancesReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-                path: {
-                    start: pageParam
-                }
-            };
-            const params = createInfiniteParams(queryKey, page);
-            const { data } = await monthlyBalancesReport({
-                ...options,
-                ...params,
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: monthlyBalancesReportInfiniteQueryKey(options)
-    });
-};
+export const monthlyBalancesReportInfiniteOptions = (options: Options<MonthlyBalancesReportData>) => infiniteQueryOptions<MonthlyBalancesReportResponse, AxiosError<DefaultError>, InfiniteData<MonthlyBalancesReportResponse>, QueryKey<Options<MonthlyBalancesReportData>>, string | Pick<QueryKey<Options<MonthlyBalancesReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<MonthlyBalancesReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            path: {
+                start: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await monthlyBalancesReport({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: monthlyBalancesReportInfiniteQueryKey(options)
+});
+
+export const groupMonthlyBalancesReportQueryKey = (options: Options<GroupMonthlyBalancesReportData>) => createQueryKey('groupMonthlyBalancesReport', options);
+
+export const groupMonthlyBalancesReportOptions = (options: Options<GroupMonthlyBalancesReportData>) => queryOptions<GroupMonthlyBalancesReportResponse, AxiosError<DefaultError>, GroupMonthlyBalancesReportResponse, ReturnType<typeof groupMonthlyBalancesReportQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await groupMonthlyBalancesReport({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: groupMonthlyBalancesReportQueryKey(options)
+});
+
+export const groupMonthlyBalancesReportInfiniteQueryKey = (options: Options<GroupMonthlyBalancesReportData>): QueryKey<Options<GroupMonthlyBalancesReportData>> => createQueryKey('groupMonthlyBalancesReport', options, true);
+
+export const groupMonthlyBalancesReportInfiniteOptions = (options: Options<GroupMonthlyBalancesReportData>) => infiniteQueryOptions<GroupMonthlyBalancesReportResponse, AxiosError<DefaultError>, InfiniteData<GroupMonthlyBalancesReportResponse>, QueryKey<Options<GroupMonthlyBalancesReportData>>, string | Pick<QueryKey<Options<GroupMonthlyBalancesReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<GroupMonthlyBalancesReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            path: {
+                start: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await groupMonthlyBalancesReport({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: groupMonthlyBalancesReportInfiniteQueryKey(options)
+});
 
 export const getStockHoldingQueryKey = (options: Options<GetStockHoldingData>) => createQueryKey('getStockHolding', options);
 
-export const getStockHoldingOptions = (options: Options<GetStockHoldingData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getStockHolding({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getStockHoldingQueryKey(options)
-    });
-};
+export const getStockHoldingOptions = (options: Options<GetStockHoldingData>) => queryOptions<GetStockHoldingResponse, AxiosError<DefaultError>, GetStockHoldingResponse, ReturnType<typeof getStockHoldingQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getStockHolding({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getStockHoldingQueryKey(options)
+});
 
 export const updateStockHoldingMutation = (options?: Partial<Options<UpdateStockHoldingData>>): UseMutationOptions<UpdateStockHoldingResponse, AxiosError<DefaultError>, Options<UpdateStockHoldingData>> => {
     const mutationOptions: UseMutationOptions<UpdateStockHoldingResponse, AxiosError<DefaultError>, Options<UpdateStockHoldingData>> = {
@@ -1493,20 +1726,18 @@ export const updateStockHoldingMutation = (options?: Partial<Options<UpdateStock
 
 export const getStockHoldingCpiAdjustedGainLossQueryKey = (options: Options<GetStockHoldingCpiAdjustedGainLossData>) => createQueryKey('getStockHoldingCpiAdjustedGainLoss', options);
 
-export const getStockHoldingCpiAdjustedGainLossOptions = (options: Options<GetStockHoldingCpiAdjustedGainLossData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getStockHoldingCpiAdjustedGainLoss({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getStockHoldingCpiAdjustedGainLossQueryKey(options)
-    });
-};
+export const getStockHoldingCpiAdjustedGainLossOptions = (options: Options<GetStockHoldingCpiAdjustedGainLossData>) => queryOptions<GetStockHoldingCpiAdjustedGainLossResponse, AxiosError<DefaultError>, GetStockHoldingCpiAdjustedGainLossResponse, ReturnType<typeof getStockHoldingCpiAdjustedGainLossQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getStockHoldingCpiAdjustedGainLoss({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getStockHoldingCpiAdjustedGainLossQueryKey(options)
+});
 
 export const createStockHoldingMutation = (options?: Partial<Options<CreateStockHoldingData>>): UseMutationOptions<CreateStockHoldingResponse, AxiosError<DefaultError>, Options<CreateStockHoldingData>> => {
     const mutationOptions: UseMutationOptions<CreateStockHoldingResponse, AxiosError<DefaultError>, Options<CreateStockHoldingData>> = {
@@ -1524,54 +1755,48 @@ export const createStockHoldingMutation = (options?: Partial<Options<CreateStock
 
 export const stockHoldingReportQueryKey = (options: Options<StockHoldingReportData>) => createQueryKey('stockHoldingReport', options);
 
-export const stockHoldingReportOptions = (options: Options<StockHoldingReportData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await stockHoldingReport({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: stockHoldingReportQueryKey(options)
-    });
-};
+export const stockHoldingReportOptions = (options: Options<StockHoldingReportData>) => queryOptions<StockHoldingReportResponse, AxiosError<DefaultError>, StockHoldingReportResponse, ReturnType<typeof stockHoldingReportQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await stockHoldingReport({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: stockHoldingReportQueryKey(options)
+});
 
 export const stockValueReportQueryKey = (options: Options<StockValueReportData>) => createQueryKey('stockValueReport', options);
 
-export const stockValueReportOptions = (options: Options<StockValueReportData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await stockValueReport({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: stockValueReportQueryKey(options)
-    });
-};
+export const stockValueReportOptions = (options: Options<StockValueReportData>) => queryOptions<StockValueReportResponse, AxiosError<DefaultError>, StockValueReportResponse, ReturnType<typeof stockValueReportQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await stockValueReport({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: stockValueReportQueryKey(options)
+});
 
 export const getStockTransactionsQueryKey = (options: Options<GetStockTransactionsData>) => createQueryKey('getStockTransactions', options);
 
-export const getStockTransactionsOptions = (options: Options<GetStockTransactionsData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getStockTransactions({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getStockTransactionsQueryKey(options)
-    });
-};
+export const getStockTransactionsOptions = (options: Options<GetStockTransactionsData>) => queryOptions<GetStockTransactionsResponse, AxiosError<DefaultError>, GetStockTransactionsResponse, ReturnType<typeof getStockTransactionsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getStockTransactions({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getStockTransactionsQueryKey(options)
+});
 
 export const createStockTransactionMutation = (options?: Partial<Options<CreateStockTransactionData>>): UseMutationOptions<CreateStockTransactionResponse, AxiosError<DefaultError>, Options<CreateStockTransactionData>> => {
     const mutationOptions: UseMutationOptions<CreateStockTransactionResponse, AxiosError<DefaultError>, Options<CreateStockTransactionData>> = {
@@ -1589,20 +1814,18 @@ export const createStockTransactionMutation = (options?: Partial<Options<CreateS
 
 export const getTagsQueryKey = (options?: Options<GetTagsData>) => createQueryKey('getTags', options);
 
-export const getTagsOptions = (options?: Options<GetTagsData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getTags({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getTagsQueryKey(options)
-    });
-};
+export const getTagsOptions = (options?: Options<GetTagsData>) => queryOptions<GetTagsResponse, AxiosError<DefaultError>, GetTagsResponse, ReturnType<typeof getTagsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getTags({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getTagsQueryKey(options)
+});
 
 export const createTagMutation = (options?: Partial<Options<CreateTagData>>): UseMutationOptions<CreateTagResponse, AxiosError<DefaultError>, Options<CreateTagData>> => {
     const mutationOptions: UseMutationOptions<CreateTagResponse, AxiosError<DefaultError>, Options<CreateTagData>> = {
@@ -1620,20 +1843,18 @@ export const createTagMutation = (options?: Partial<Options<CreateTagData>>): Us
 
 export const getTagHierarchyQueryKey = (options?: Options<GetTagHierarchyData>) => createQueryKey('getTagHierarchy', options);
 
-export const getTagHierarchyOptions = (options?: Options<GetTagHierarchyData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getTagHierarchy({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getTagHierarchyQueryKey(options)
-    });
-};
+export const getTagHierarchyOptions = (options?: Options<GetTagHierarchyData>) => queryOptions<GetTagHierarchyResponse, AxiosError<DefaultError>, GetTagHierarchyResponse, ReturnType<typeof getTagHierarchyQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getTagHierarchy({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getTagHierarchyQueryKey(options)
+});
 
 export const deleteTagMutation = (options?: Partial<Options<DeleteTagData>>): UseMutationOptions<DeleteTagResponse, AxiosError<DefaultError>, Options<DeleteTagData>> => {
     const mutationOptions: UseMutationOptions<DeleteTagResponse, AxiosError<DefaultError>, Options<DeleteTagData>> = {
@@ -1651,20 +1872,18 @@ export const deleteTagMutation = (options?: Partial<Options<DeleteTagData>>): Us
 
 export const getTagQueryKey = (options: Options<GetTagData>) => createQueryKey('getTag', options);
 
-export const getTagOptions = (options: Options<GetTagData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getTag({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getTagQueryKey(options)
-    });
-};
+export const getTagOptions = (options: Options<GetTagData>) => queryOptions<GetTagResponse, AxiosError<DefaultError>, GetTagResponse, ReturnType<typeof getTagQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getTag({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getTagQueryKey(options)
+});
 
 export const updateTagMutation = (options?: Partial<Options<UpdateTagData>>): UseMutationOptions<UpdateTagResponse, AxiosError<DefaultError>, Options<UpdateTagData>> => {
     const mutationOptions: UseMutationOptions<UpdateTagResponse, AxiosError<DefaultError>, Options<UpdateTagData>> = {
@@ -1727,54 +1946,48 @@ export const addSubTagMutation = (options?: Partial<Options<AddSubTagData>>): Us
 
 export const getTransactionsQueryKey = (options: Options<GetTransactionsData>) => createQueryKey('getTransactions', options);
 
-export const getTransactionsOptions = (options: Options<GetTransactionsData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getTransactions({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getTransactionsQueryKey(options)
-    });
-};
+export const getTransactionsOptions = (options: Options<GetTransactionsData>) => queryOptions<GetTransactionsResponse, AxiosError<DefaultError>, GetTransactionsResponse, ReturnType<typeof getTransactionsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getTransactions({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getTransactionsQueryKey(options)
+});
 
 export const getUntaggedTransactionsQueryKey = (options: Options<GetUntaggedTransactionsData>) => createQueryKey('getUntaggedTransactions', options);
 
-export const getUntaggedTransactionsOptions = (options: Options<GetUntaggedTransactionsData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getUntaggedTransactions({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getUntaggedTransactionsQueryKey(options)
-    });
-};
+export const getUntaggedTransactionsOptions = (options: Options<GetUntaggedTransactionsData>) => queryOptions<GetUntaggedTransactionsResponse, AxiosError<DefaultError>, GetUntaggedTransactionsResponse, ReturnType<typeof getUntaggedTransactionsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getUntaggedTransactions({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getUntaggedTransactionsQueryKey(options)
+});
 
 export const searchTransactionsQueryKey = (options: Options<SearchTransactionsData>) => createQueryKey('searchTransactions', options);
 
-export const searchTransactionsOptions = (options: Options<SearchTransactionsData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await searchTransactions({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: searchTransactionsQueryKey(options)
-    });
-};
+export const searchTransactionsOptions = (options: Options<SearchTransactionsData>) => queryOptions<SearchTransactionsResponse, AxiosError<DefaultError>, SearchTransactionsResponse, ReturnType<typeof searchTransactionsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await searchTransactions({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: searchTransactionsQueryKey(options)
+});
 
 export const createTransactionMutation = (options?: Partial<Options<CreateTransactionData>>): UseMutationOptions<CreateTransactionResponse, AxiosError<DefaultError>, Options<CreateTransactionData>> => {
     const mutationOptions: UseMutationOptions<CreateTransactionResponse, AxiosError<DefaultError>, Options<CreateTransactionData>> = {
@@ -1848,20 +2061,18 @@ export const addTagMutation = (options?: Partial<Options<AddTagData>>): UseMutat
 
 export const getUserQueryKey = (options?: Options<GetUserData>) => createQueryKey('getUser', options);
 
-export const getUserOptions = (options?: Options<GetUserData>) => {
-    return queryOptions({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getUser({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            });
-            return data;
-        },
-        queryKey: getUserQueryKey(options)
-    });
-};
+export const getUserOptions = (options?: Options<GetUserData>) => queryOptions<GetUserResponse, AxiosError<DefaultError>, GetUserResponse, ReturnType<typeof getUserQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getUser({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getUserQueryKey(options)
+});
 
 export const updateUserMutation = (options?: Partial<Options<UpdateUserData>>): UseMutationOptions<UpdateUserResponse, AxiosError<DefaultError>, Options<UpdateUserData>> => {
     const mutationOptions: UseMutationOptions<UpdateUserResponse, AxiosError<DefaultError>, Options<UpdateUserData>> = {

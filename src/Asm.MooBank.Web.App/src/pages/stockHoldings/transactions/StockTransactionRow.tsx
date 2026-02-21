@@ -3,7 +3,7 @@ import { parseISO } from "date-fns/parseISO";
 import React from "react";
 
 import { formatCurrency } from "@andrewmclachlan/moo-ds";
-import { StockTransaction } from "models";
+import type { StockTransaction } from "api/types.gen";
 
 export const StockTransactionRow: React.FC<StockTransactionRowProps> = (props) => {
 

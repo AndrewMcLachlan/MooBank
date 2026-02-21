@@ -1,7 +1,7 @@
 import { Section } from "@andrewmclachlan/moo-ds";
 import { format, parseISO } from "date-fns";
 import { Col, Row } from "@andrewmclachlan/moo-ds";
-import { ForecastSummary } from "models";
+import type { ForecastSummary } from "api/types.gen";
 
 interface ForecastSummaryPanelProps {
     summary: ForecastSummary;

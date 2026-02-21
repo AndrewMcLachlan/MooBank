@@ -132,6 +132,8 @@ internal static class TestEntities
         {
             Id = id,
             Name = name,
+            Tags = [],
+            Settings = new() { ApplySmoothing = false, ExcludeFromReporting = false },
         };
     }
 

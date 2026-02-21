@@ -35,7 +35,7 @@ public class PrecacheService(HybridCache cache, IServiceScopeFactory serviceScop
         var referenceDataRepository = scope.ServiceProvider.GetRequiredService<IReferenceDataRepository>();
 
         var _ = await cache.GetOrCreateAsync(
-            CacheKeys.ReferenceData.ExchangeRates, 
+            CacheKeys.ReferenceData.ExchangeRates,
             async ct => await referenceDataRepository.GetExchangeRates(ct), CacheOptions,
             [CacheKeys.ReferenceData.CacheTag],
             cancellationToken);

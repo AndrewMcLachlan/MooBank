@@ -5,8 +5,7 @@ import { useIdParams } from "@andrewmclachlan/moo-app";
 import { DeleteIcon, EditColumn, Icon, IconButton, SectionTable } from "@andrewmclachlan/moo-ds";
 
 import { AccountPage, useAccount } from "components";
-import * as Models from "models";
-import { Controller } from "models";
+import type { Controller, InstitutionAccount, LogicalAccount } from "api/types.gen";
 import { useCloseVirtualAccount, useReprocessTransactions, useVirtualInstruments } from "services";
 import { AccountForm } from "./AccountForm";
 import { InstitutionAccountRow } from "./bank/InstitutionAccountRow";
@@ -23,9 +22,9 @@ export const ManageAccount = () => {
     const id = useIdParams();
 
     const [showDetails, setShowDetails] = useState(false);
-    const [selectedInstitutionAccount, setSelectedInstitutionAccount] = useState<Models.InstitutionAccount>(undefined);
+    const [selectedInstitutionAccount, setSelectedInstitutionAccount] = useState<InstitutionAccount>(undefined);
 
-    const account = useAccount() as Models.LogicalAccount;
+    const account = useAccount() as LogicalAccount;
     const { data: virtualAccounts } = useVirtualInstruments(account?.id ?? id);
 
     const reprocessClick = (instrumentId: string) => {
@@ -54,7 +53,7 @@ export const ManageAccount = () => {
         return actions;
     }
 
-    const institutionAccountClick = (institutionAccount: Models.InstitutionAccount) => {
+    const institutionAccountClick = (institutionAccount: InstitutionAccount) => {
         setSelectedInstitutionAccount(institutionAccount);
         setShowDetails(true);
     }
@@ -69,11 +68,11 @@ export const ManageAccount = () => {
         }
     }
 
-    const form = useForm<Models.LogicalAccount>({ defaultValues: account });
+    const form = useForm<LogicalAccount>({ defaultValues: account });
 
     return (
         <AccountPage title="Manage" breadcrumbs={[{ text: "Manage", route: `/accounts/${account?.id}/manage` }]} actions={getActions(account?.controller)}>
-            <AccountForm account={account as Models.LogicalAccount} />
+            <AccountForm account={account as LogicalAccount} />
             <ReprocessModal show={showReprocessModal} instrumentId={account?.id ?? id} onClose={() => setShowReprocessModal(false)} />
             <SectionTable header="Bank Accounts" striped hover>
                 <thead>
@@ -121,5 +120,5 @@ export const ManageAccount = () => {
 }
 
 export interface ManageAccountProps {
-    account: Models.LogicalAccount;
+    account: LogicalAccount;
 }

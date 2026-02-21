@@ -1,5 +1,5 @@
 import { changeSortDirection, IconLinkButton, Input, MiniPagination, PageSize, Pagination, PaginationControls, SortablePaginationTh, Section, SectionTable, SortableTh, SortDirection, useLocalStorage } from "@andrewmclachlan/moo-ds";
-import { institutionTypeOptions } from "models";
+import { institutionTypeOptions } from "helpers/institutions";
 import { useNavigate } from "react-router";
 import { useInstitutions } from "services";
 import { SettingsPage } from "../SettingsPage";

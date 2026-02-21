@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from "react";
 
-import { AccountTypeSummary, BillAccount } from "models/bills";
+import type { AccountTypeSummary, Account } from "api/types.gen";
 import { useBillAccountsByType } from "services";
 
 import { Page, useIdParams } from "@andrewmclachlan/moo-app";
@@ -16,7 +16,7 @@ export const BillAccounts: React.FC<PropsWithChildren> = ({ children, ...props }
 
     const navigate = useNavigate();
 
-    const rowClick = (account: BillAccount) => {
+    const rowClick = (account: Account) => {
         navigate(`/bills/accounts/${account.id}`);
     }
 

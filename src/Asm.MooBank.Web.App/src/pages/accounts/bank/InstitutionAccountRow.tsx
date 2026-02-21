@@ -1,7 +1,7 @@
 import { DeleteIcon, Icon } from "@andrewmclachlan/moo-ds";
 import { useAccount } from "components";
 import { formatDate } from "helpers/dateFns";
-import { InstitutionAccount, LogicalAccount } from "models";
+import type { InstitutionAccount, LogicalAccount } from "api/types.gen";
 import React from "react";
 import { useCloseInstitutionAccount, useImporterTypes, useInstitutions, useInstitutionsByAccountType } from "services";
 

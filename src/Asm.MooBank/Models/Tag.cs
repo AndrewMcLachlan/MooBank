@@ -40,9 +40,9 @@ public static class TagExtensions
     public static IQueryable<Tag> ToModel(this IQueryable<Domain.Entities.Tag.Tag> query) =>
         query.Select(t => t.ToModel());
 
-    public static IEnumerable<Tag> ToSimpleModel(this IEnumerable<Domain.Entities.Tag.Tag> entities)
+    public static IEnumerable<TagBase> ToSimpleModel(this IEnumerable<Domain.Entities.Tag.Tag> entities)
     {
-        return entities.Select(t => new Tag()
+        return entities.Select(t => new TagBase()
         {
             Id = t.Id,
             Name = t.Name,

@@ -1,4 +1,5 @@
-﻿using Asm.MooBank.Commands;
+﻿using System.ComponentModel;
+using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Instrument.Specifications;
 using Asm.MooBank.Models;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Asm.MooBank.Modules.Accounts.Commands.Recurring;
 
+[DisplayName("CreateRecurringTransaction")]
 public record Create(Guid AccountId, Guid VirtualAccountId, string? Description, decimal Amount, ScheduleFrequency Schedule, DateOnly NextRun) : InstrumentIdCommand(AccountId), ICommand<Models.Recurring.RecurringTransaction>
 {
     public static ValueTask<Create> BindAsync(HttpContext context) => BindHelper.BindWithInstrumentIdAsync<Create>("accountId", context);

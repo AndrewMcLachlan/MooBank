@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
 namespace Asm.MooBank.Eodhd;
+
 internal record StockPrice
 {
     public DateOnly Date { get; set; }

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { DeleteIcon, EditColumn } from "@andrewmclachlan/moo-ds";
 import { TagPanel } from "components";
-import { Rule, Tag } from "models";
+import type { Rule, Tag } from "api/types.gen";
 import { useAddRuleTag, useDeleteRule, useRemoveRuleTag, useUpdateRule } from "services";
 import { useCreateTag, useTags } from "services/TagService";
 
@@ -49,16 +49,13 @@ function useRuleRowEvents(props: RuleRowProps) {
 
     const deleteRule = () => {
         if (confirm("Are you sure you want to delete this rule?")) {
-            deleteTransactionTagRule.mutate({accountId: props.accountId, ruleId: props.rule.id});
+            deleteTransactionTagRule.mutate({ path: { instrumentId: props.accountId, ruleId: props.rule.id } });
         }
     };
 
-    const createTag = (name: string) => {
-        createTransactionTag.mutate({ name }, {
-            onSuccess: (data) => {
-                addTransactionTagRuleTag.mutate({ instrumentId: props.accountId, ruleId: props.rule.id, tag: data});
-            }
-        });
+    const createTag = async (name: string) => {
+        const data = await createTransactionTag.mutateAsync({ name });
+        addTransactionTagRuleTag.mutate({ instrumentId: props.accountId, ruleId: props.rule.id, tag: data });
     };
 
     const addTag = (tag: Tag) => {
@@ -78,7 +75,7 @@ function useRuleRowEvents(props: RuleRowProps) {
     };
 
     const updateRule = (rule: Rule) => {
-        updateTransctionTagRule.mutate([{accountId: props.accountId, id: props.rule.id, }, rule]);
+        updateTransctionTagRule.mutate({ body: rule as any, path: { instrumentId: props.accountId, ruleId: props.rule.id } });
     }
 
     return {

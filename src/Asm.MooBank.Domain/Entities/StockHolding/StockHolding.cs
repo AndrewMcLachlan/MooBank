@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Asm.MooBank.Domain.Entities.StockHolding;
 
 [AggregateRoot]
-public class StockHolding([DisallowNull]Guid id) : Instrument.Instrument(id)
+public class StockHolding([DisallowNull] Guid id) : Instrument.Instrument(id)
 {
     public StockSymbolEntity Symbol { get; set; } = null!;
 

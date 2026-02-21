@@ -1,7 +1,8 @@
 import React from "react";
 import { Button, InputGroup } from "@andrewmclachlan/moo-ds";
 import { useNavigate } from "react-router";
-import { NewAsset, emptyAsset } from "../../models";
+import type { CreateAsset as NewAsset } from "api/types.gen";
+import { emptyAsset } from "helpers/assets";
 
 import { Page } from "@andrewmclachlan/moo-app";
 import { Form, SectionForm } from "@andrewmclachlan/moo-ds";

@@ -1,4 +1,5 @@
 ﻿namespace Asm.MooBank.Modules.Users.Models;
+
 public record UpdateUser
 {
     public Guid? PrimaryAccountId { get; set; }

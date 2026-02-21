@@ -1,5 +1,5 @@
 import { format, parseISO } from "date-fns";
-import { Bill, BillAccount } from "models/bills";
+import type { Bill, Account } from "api/types.gen";
 
 export const BillRow: React.FC<BillRowProps> = ({ account, bill, onClick }) =>
     <tr className="clickable" onClick={() => onClick(bill)}>
@@ -10,7 +10,7 @@ export const BillRow: React.FC<BillRowProps> = ({ account, bill, onClick }) =>
 ;
 
 export interface BillRowProps {
-    account: BillAccount;
+    account: Account;
     bill: Bill;
     onClick: (bill: Bill) => void;
 }

@@ -1,7 +1,8 @@
 import { formatCurrency } from "@andrewmclachlan/moo-ds";
 import { format } from "date-fns/format";
 import { parseISO } from "date-fns/parseISO";
-import { Transaction, TransactionSplit, getSplitTotal, isDebit } from "models";
+import type { Transaction, TransactionSplit } from "api/types.gen";
+import { getSplitTotal, isDebit } from "helpers/transactions";
 import React, { useEffect, useMemo, useState } from "react";
 import { Button, Col, Modal, OverlayTrigger, Popover, Row } from "@andrewmclachlan/moo-ds";
 

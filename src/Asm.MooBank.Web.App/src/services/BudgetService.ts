@@ -1,83 +1,92 @@
-import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
-import { Budget, BudgetLine, BudgetReportByMonth, BudgetReportForMonthBreakdown, BudgetReportValueMonth } from "../models";
-import { useApiDelete, useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/moo-app";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+    getAllBudgetYearsOptions,
+    getBudgetOptions,
+    getBudgetQueryKey,
+    getAllBudgetYearsQueryKey,
+    createBudgetLineMutation,
+    updateBudgetLineMutation,
+    deleteBudgetLineMutation,
+    getBudgetAmountForTagOptions,
+    getBudgetReportOptions,
+    getBudgetReportForMonthOptions,
+    getBudgetReportBreakdownForMonthOptions,
+    getBudgetReportBreakdownForMonthForUnbudgetedItemsOptions,
+} from "api/@tanstack/react-query.gen";
+import type { Budget, BudgetLine } from "api/types.gen";
 
-interface BudgetVariables {
-    year: number,
-    lineId?: string,
-}
+export const useBudgetYears = () => useQuery({ ...getAllBudgetYearsOptions() });
 
-export const budgetKey = ["budget"];
-
-export const useBudgetYears = (): UseQueryResult<number[]> => useApiGet<number[]>([budgetKey], `api/budget`);
-
-export const useBudget = (year: number) => useApiGet<Budget>([budgetKey, year], `api/budget/${year}`);
+export const useBudget = (year: number) => useQuery({
+    ...getBudgetOptions({ path: { year } }),
+});
 
 export const useCreateBudgetLine = () => {
-
     const queryClient = useQueryClient();
 
-    const { mutate } = useApiPost<BudgetLine, BudgetVariables, BudgetLine>((variables) => `api/budget/${variables.year}/lines`, {
-        onSettled: (_data, _error, [variables, _line]) => {
-            queryClient.invalidateQueries({ queryKey: [budgetKey, variables.year] });
-        }
+    const { mutate } = useMutation({
+        ...createBudgetLineMutation(),
+        onSettled: (_data, _error, variables) => {
+            queryClient.invalidateQueries({ queryKey: getBudgetQueryKey({ path: { year: variables.path!.year } }) });
+        },
     });
 
     const create = (year: number, budgetLine: BudgetLine) => {
-        mutate([{ year }, budgetLine]);
+        mutate({ body: budgetLine, path: { year } });
     };
 
     return create;
-}
+};
 
 export const useUpdateBudgetLine = () => {
-
     const queryClient = useQueryClient();
 
-    const { mutate } = useApiPatch<BudgetLine, BudgetVariables, BudgetLine>((variables) => `api/budget/${variables.year}/lines/${variables.lineId}`, {
+    const { mutate } = useMutation({
+        ...updateBudgetLineMutation(),
         onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: [budgetKey] });
-        }
+            queryClient.invalidateQueries({ queryKey: getAllBudgetYearsQueryKey() });
+        },
     });
 
     const update = (year: number, budget: BudgetLine) => {
-        mutate([{ year, lineId: budget.id }, budget]);
+        mutate({ body: budget, path: { year, id: budget.id } });
     };
 
     return update;
-}
-
+};
 
 export const useDeleteBudgetLine = () => {
-
     const queryClient = useQueryClient();
 
-    const { mutate } = useApiDelete<BudgetVariables>((variables) => `api/budget/${variables.year}/lines/${variables.lineId}`, {
-        onSuccess: (_data, variables: BudgetVariables) => {
-            queryClient.invalidateQueries({ queryKey: [budgetKey, variables.year] });
-            /*const budget = queryClient.getQueryData<Budget>([budgetKey, variables.year]);
-            if (!budget) return;
-            budget.expensesLines = budget.expensesLines.filter(r => r.id !== (variables.lineId));
-            budget.incomeLines = budget.incomeLines.filter(r => r.id !== (variables.lineId));
-            queryClient.setQueryData<Budget>([budgetKey, variables.year], {...budget});*/
-        }
+    const { mutate } = useMutation({
+        ...deleteBudgetLineMutation(),
+        onSuccess: (_data, variables) => {
+            queryClient.invalidateQueries({ queryKey: getBudgetQueryKey({ path: { year: variables.path!.year } }) });
+        },
     });
 
     const deleteBudgetLine = (year: number, lineId: string) => {
-        mutate({ year, lineId });
-    }
+        mutate({ path: { year, id: lineId } });
+    };
 
     return deleteBudgetLine;
-}
+};
 
-export const useGetTagValue = (tagId: number) => useApiGet<number>(["budget", "by-tag", tagId], `api/budget/tag/${tagId}`, {
-    enabled: !!tagId
+export const useGetTagValue = (tagId: number) => useQuery({
+    ...getBudgetAmountForTagOptions({ path: { tagId } }),
+    enabled: !!tagId,
 });
 
-export const useBudgetReport = (year: number) => useApiGet<BudgetReportByMonth>([budgetKey, year, "report"], `api/budget/${year}/report`);
+export const useBudgetReport = (year: number) => useQuery({ ...getBudgetReportOptions({ path: { year } }) });
 
-export const useBudgetReportForMonth = (year: number, month: number) => useApiGet<BudgetReportValueMonth>([budgetKey, year, "report", month], `api/budget/${year}/report/${month + 1}`);
+export const useBudgetReportForMonth = (year: number, month: number) => useQuery({
+    ...getBudgetReportForMonthOptions({ path: { year, month: month + 1 } }),
+});
 
-export const useBudgetReportForMonthBreakdown = (year: number, month: number) => useApiGet<BudgetReportForMonthBreakdown>([budgetKey, year, "report", month], `api/budget/${year}/report/${month + 1}/breakdown`);
+export const useBudgetReportForMonthBreakdown = (year: number, month: number) => useQuery({
+    ...getBudgetReportBreakdownForMonthOptions({ path: { year, month: month + 1 } }),
+});
 
-export const useBudgetReportForMonthBreakdownUnbudgeted = (year: number, month: number) => useApiGet<BudgetReportForMonthBreakdown>([budgetKey, year, "report", month, "unbudgeted"], `api/budget/${year}/report/${month + 1}/breakdown/unbudgeted`);
+export const useBudgetReportForMonthBreakdownUnbudgeted = (year: number, month: number) => useQuery({
+    ...getBudgetReportBreakdownForMonthForUnbudgetedItemsOptions({ path: { year, month: month + 1 } }),
+});

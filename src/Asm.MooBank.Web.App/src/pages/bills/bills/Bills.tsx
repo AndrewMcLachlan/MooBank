@@ -2,7 +2,7 @@ import React, { PropsWithChildren, useState } from "react";
 
 import { Page, useIdParams } from "@andrewmclachlan/moo-app";
 import { getNumberOfPages, IconButton, Pagination } from "@andrewmclachlan/moo-ds";
-import { Bill } from "models/bills";
+import type { Bill } from "api/types.gen";
 import { useBillAccount, useBills } from "services";
 
 import { Button, Table } from "@andrewmclachlan/moo-ds";

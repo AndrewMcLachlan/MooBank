@@ -12,7 +12,7 @@ import {
     ChartOptions
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import { ForecastMonth } from "models";
+import type { ForecastMonth } from "api/types.gen";
 
 ChartJS.register(
     CategoryScale,

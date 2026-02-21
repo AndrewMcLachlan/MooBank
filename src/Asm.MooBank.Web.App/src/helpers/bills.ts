@@ -1,21 +1,6 @@
-import { Period } from "./Period";
+import type { UtilityType } from "api/types.gen";
 
-export interface BillBase {
-    invoiceNumber: string;
-    issueDate: string;
-    currentReading?: number;
-    previousReading?: number;
-    total: number;
-    costsIncludeGST?: boolean;
-    cost: number;
-    periods?: Period[];
-}
-
-export interface Bill extends BillBase {
-    id: number;
-    accountId: string;
-    accountName: string;
-}
+export const UtilityTypes: UtilityType[] = ["Electricity", "Gas", "Water", "Phone", "Internet", "Other"];
 
 export interface CreatePeriod {
     periodStart: string;

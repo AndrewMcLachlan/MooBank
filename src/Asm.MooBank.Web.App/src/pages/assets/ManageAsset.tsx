@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 
 import { Form, SectionForm } from "@andrewmclachlan/moo-ds";
 
-import { Asset } from "../../models";
+import type { Asset } from "api/types.gen";
 import { AssetPage } from "./AssetPage";
 import { useAsset } from "./AssetProvider";
 

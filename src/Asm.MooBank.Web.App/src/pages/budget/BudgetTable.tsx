@@ -1,5 +1,5 @@
 import { SectionTable } from "@andrewmclachlan/moo-ds";
-import * as Models from "models";
+import type { BudgetLine as BudgetLineModel, BudgetLineType } from "api/types.gen";
 import { BudgetLine } from "./BudgetLine";
 import { NewBudgetLine } from "./NewBudgetLine";
 import { numberOfMonths } from "helpers/dateFns";
@@ -34,8 +34,8 @@ export const BudgetTable: React.FC<BudgetTableProps> = ({ title, type, year, lin
 }
 
 export interface BudgetTableProps {
-    type: Models.BudgetLineType;
-    lines?: Models.BudgetLine[];
+    type: BudgetLineType;
+    lines?: BudgetLineModel[];
     title: string;
     year: number;
 }

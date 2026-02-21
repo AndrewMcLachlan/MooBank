@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
 namespace Asm.MooBank.Modules.Accounts.Endpoints;
+
 internal class InstitutionAccounts : EndpointGroupBase
 {
     public override string Name => "Accounts";
@@ -20,7 +21,7 @@ internal class InstitutionAccounts : EndpointGroupBase
     {
         builder.MapQuery<Get, InstitutionAccount>("/{id}")
             .WithNames("Get Institution Account");
-        
+
 
         builder.MapPostCreate<Create, InstitutionAccount>("/", "Get Institution Account".ToMachine(), a => new { id = a.Id }, CommandBinding.Parameters)
             .WithNames("Create Institution Account");

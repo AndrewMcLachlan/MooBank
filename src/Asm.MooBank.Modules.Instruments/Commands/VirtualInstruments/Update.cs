@@ -1,4 +1,5 @@
-﻿using Asm.MooBank.Domain.Entities.Account.Specifications;
+﻿using System.ComponentModel;
+using Asm.MooBank.Domain.Entities.Account.Specifications;
 using Asm.MooBank.Domain.Entities.Instrument.Events;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Instruments.Models.Instruments;
@@ -11,6 +12,7 @@ using IInstrumentRepository = Asm.MooBank.Domain.Entities.Instrument.IInstrument
 
 namespace Asm.MooBank.Modules.Instruments.Commands.VirtualInstruments;
 
+[DisplayName("UpdateVirtualInstrument")]
 public record Update(Guid InstrumentId, Guid VirtualInstrumentId, string Name, string Description, decimal CurrentBalance) : ICommand<VirtualInstrument>
 {
     public static async ValueTask<Update?> BindAsync(HttpContext httpContext)

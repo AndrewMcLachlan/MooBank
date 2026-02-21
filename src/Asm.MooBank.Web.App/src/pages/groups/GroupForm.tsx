@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Group } from "models";
+import type { Group } from "api/types.gen";
 import { useNavigate } from "react-router";
 import { useCreateGroup, useUpdateGroup } from "services";
 import { Page } from "@andrewmclachlan/moo-app";

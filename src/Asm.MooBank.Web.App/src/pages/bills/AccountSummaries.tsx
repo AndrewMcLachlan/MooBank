@@ -4,7 +4,8 @@ import { useNavigate } from "react-router";
 
 import { IconButton, Section } from "@andrewmclachlan/moo-ds";
 
-import { UtilityType, UtilityTypes } from "models/bills";
+import type { UtilityType } from "api/types.gen";
+import { UtilityTypes } from "helpers/bills";
 import { useBillAccountSummaries } from "services";
 import { UtilityTypeBillsTab } from "./components/UtilityTypeBillsTab";
 import { BillsPage } from "./BillsPage";

@@ -1,6 +1,6 @@
 import { Form } from "@andrewmclachlan/moo-ds";
 import { InstitutionSelector, useAccount } from "components";
-import { InstitutionAccount, LogicalAccount } from "models";
+import type { InstitutionAccount, LogicalAccount } from "api/types.gen";
 import { Button, Modal } from "@andrewmclachlan/moo-ds";
 import { useForm } from "react-hook-form";
 import { useUpdateInstitutionAccount } from "services";

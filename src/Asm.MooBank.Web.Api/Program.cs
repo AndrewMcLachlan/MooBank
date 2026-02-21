@@ -60,19 +60,45 @@ void AddServices(WebApplicationBuilder builder)
             return Task.CompletedTask;
         });
 
+        options.AddSchemaTransformer((schema, context, cancellationToken) =>
+        {
+            if (context.JsonTypeInfo.Kind != System.Text.Json.Serialization.Metadata.JsonTypeInfoKind.Object)
+                return Task.CompletedTask;
+
+            var nullabilityContext = new NullabilityInfoContext();
+
+            foreach (var jsonProperty in context.JsonTypeInfo.Properties)
+            {
+                if (jsonProperty.AttributeProvider is not PropertyInfo propertyInfo)
+                    continue;
+
+                var nullabilityInfo = nullabilityContext.Create(propertyInfo);
+
+                if (nullabilityInfo.WriteState != NullabilityState.Nullable)
+                {
+                    schema.Required ??= new HashSet<string>();
+                    schema.Required.Add(jsonProperty.Name);
+                }
+            }
+
+            return Task.CompletedTask;
+        });
+
         options.CreateSchemaReferenceId = arg =>
         {
             if (arg.Kind == System.Text.Json.Serialization.Metadata.JsonTypeInfoKind.Object)
             {
-                return arg.Type.GetCustomAttribute<DisplayNameAttribute>(false)?.DisplayName ?? arg.Type.Name;
+                return arg.Type.GetCustomAttribute<DisplayNameAttribute>(false)?.DisplayName ?? OpenApiOptions.CreateDefaultSchemaReferenceId(arg);
             }
             return OpenApiOptions.CreateDefaultSchemaReferenceId(arg);
         };
     });
 
     services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
-        options.SerializerOptions.Converters.Add(new JsonStringEnumConverter())
-    );
+    {
+        options.SerializerOptions.NumberHandling = JsonNumberHandling.Strict;
+        options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
     services.AddProblemDetailsFactory();
 

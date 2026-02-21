@@ -3,10 +3,9 @@ using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Modules.Forecast.Models;
 
-[DisplayName("PlannedItem")]
-public sealed record PlannedItem
+[DisplayName("SimplePlannedItem")]
+public record PlannedItemBase
 {
-    public Guid Id { get; init; }
     public PlannedItemType ItemType { get; init; }
     public required string Name { get; init; }
     public decimal Amount { get; init; }
@@ -32,4 +31,10 @@ public sealed record PlannedItem
     public AllocationMode? AllocationMode { get; init; }
 
     public string? Notes { get; init; }
+}
+
+[DisplayName("PlannedItem")]
+public sealed record PlannedItem : PlannedItemBase
+{
+    public Guid Id { get; init; }
 }

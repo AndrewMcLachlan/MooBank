@@ -3,6 +3,7 @@ using Asm.MooBank.Institution.Ing.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Institution.Ing.Infrastructure;
+
 internal class TransactionRawRepository(MooBankContext context) : Asm.Domain.Infrastructure.RepositoryWriteBase<MooBankContext, TransactionRaw, Guid>(context), ITransactionRawRepository
 {
     public async Task<IEnumerable<TransactionRaw>> GetAll(Guid accountId, CancellationToken cancellationToken = default) =>

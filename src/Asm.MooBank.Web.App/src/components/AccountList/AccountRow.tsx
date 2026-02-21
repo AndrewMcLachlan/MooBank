@@ -6,7 +6,7 @@ import { useNavigate } from "react-router";
 
 import { numberClassName } from "helpers";
 
-import * as Models from "models";
+import type { Instrument } from "api/types.gen";
 
 import { VirtualAccountRow } from "./VirtualAccountRow";
 import { Amount } from "components/Amount";
@@ -52,7 +52,7 @@ export const AccountRow: React.FC<AccountRowProps> = (props) => {
 AccountRow.displayName = "AccountRow";
 
 export interface AccountRowProps {
-    instrument: Models.Instrument;
+    instrument: Instrument;
 }
 
 export const useAccountRowCommonState = (props: AccountRowProps) => {

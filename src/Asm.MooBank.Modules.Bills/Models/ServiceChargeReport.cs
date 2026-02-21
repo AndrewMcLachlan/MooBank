@@ -13,7 +13,7 @@ public record ServiceChargeDataPoint
 {
     public DateOnly Date { get; init; }
 
-    public string AccountName { get; init; } = string.Empty;
+    public string AccountName { get; init; } = String.Empty;
 
     public decimal AverageChargePerDay { get; init; }
 }

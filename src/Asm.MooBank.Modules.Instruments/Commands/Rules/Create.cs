@@ -1,4 +1,5 @@
-﻿using Asm.MooBank.Domain.Entities.Instrument;
+﻿using System.ComponentModel;
+using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Modules.Instruments.Models.Rules;
 using Microsoft.AspNetCore.Http;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Options;
 
 namespace Asm.MooBank.Modules.Instruments.Commands.Rules;
 
+[DisplayName("CreateRule")]
 public record Create(Guid InstrumentId, string Contains, string? Description, IEnumerable<MooBank.Models.Tag> Tags) : ICommand<Models.Rules.Rule>
 {
     public static async ValueTask<Create?> BindAsync(HttpContext httpContext)

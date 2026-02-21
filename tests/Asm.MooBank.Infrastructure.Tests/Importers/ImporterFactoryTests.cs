@@ -41,7 +41,7 @@ public class ImporterFactoryTests : IDisposable
         var factory = CreateFactory();
 
         // Act
-        var result = await factory.Create(nonExistentInstrumentId, accountId);
+        var result = await factory.Create(nonExistentInstrumentId, accountId, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Null(result);
@@ -56,12 +56,12 @@ public class ImporterFactoryTests : IDisposable
 
         var logicalAccount = TestEntities.CreateLogicalAccount(id: instrumentId);
         _context.Add(logicalAccount);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var factory = CreateFactory();
 
         // Act
-        var result = await factory.Create(instrumentId, nonExistentAccountId);
+        var result = await factory.Create(instrumentId, nonExistentAccountId, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Null(result);
@@ -83,14 +83,14 @@ public class ImporterFactoryTests : IDisposable
         logicalAccount.AddInstitutionAccount(institutionAccount);
 
         _context.Add(logicalAccount);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var factory = CreateFactory();
 
         // Act & Assert
         // Note: The code throws NullReferenceException because it accesses ImporterType.Type
         // when ImporterType is null (the null-conditional doesn't cover this case)
-        await Assert.ThrowsAsync<NullReferenceException>(() => factory.Create(instrumentId, accountId));
+        await Assert.ThrowsAsync<NullReferenceException>(() => factory.Create(instrumentId, accountId, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -112,12 +112,12 @@ public class ImporterFactoryTests : IDisposable
 
         _context.Add(logicalAccount);
         _context.Add(importerType);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var factory = CreateFactory();
 
         // Act & Assert - Empty string type name causes Type.GetType to return null, which throws
-        await Assert.ThrowsAsync<InvalidOperationException>(() => factory.Create(instrumentId, accountId));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => factory.Create(instrumentId, accountId, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -138,12 +138,12 @@ public class ImporterFactoryTests : IDisposable
 
         _context.Add(logicalAccount);
         _context.Add(importerType);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var factory = CreateFactory();
 
         // Act & Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(() => factory.Create(instrumentId, accountId));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => factory.Create(instrumentId, accountId, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -167,13 +167,13 @@ public class ImporterFactoryTests : IDisposable
 
         _context.Add(logicalAccount);
         _context.Add(importerType);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Don't register the TestImporter in DI
         var factory = CreateFactory();
 
         // Act & Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(() => factory.Create(instrumentId, accountId));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => factory.Create(instrumentId, accountId, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -196,14 +196,14 @@ public class ImporterFactoryTests : IDisposable
 
         _context.Add(logicalAccount);
         _context.Add(importerType);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Register TestImporter in DI
         _services.AddSingleton<TestImporter>();
         var factory = CreateFactory();
 
         // Act
-        var result = await factory.Create(instrumentId, accountId);
+        var result = await factory.Create(instrumentId, accountId, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);

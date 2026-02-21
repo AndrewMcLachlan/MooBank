@@ -1,85 +1,112 @@
-import { useApiDelete, useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/moo-app";
-import { useQueryClient } from "@tanstack/react-query";
-import { VirtualInstrument } from "models";
-import { RecurringTransaction } from "models/RecurringTransaction";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import type { RecurringTransaction } from "api/types.gen";
+import {
+    getRecurringTransactionsForAVirtualAccountOptions,
+    getRecurringTransactionsForAVirtualAccountQueryKey,
+    createRecurringTransactionMutation,
+    updateRecurringTransactionMutation,
+    deleteRecurringTransactionMutation,
+} from "api/@tanstack/react-query.gen";
 
-export const useGetRecurringTransactions = (accountId: string, virtualAccountId: string) => 
-    useApiGet<RecurringTransaction[]>(["virtualaccount", {accountId, virtualAccountId}, "recurring"], `api/accounts/${accountId}/virtual/${virtualAccountId}/recurring`);
+export const useGetRecurringTransactions = (accountId: string, virtualAccountId: string) =>
+    useQuery({
+        ...getRecurringTransactionsForAVirtualAccountOptions({ path: { accountId, virtualAccountId } }),
+    });
 
-export const useCreateRecurringTransaction = () => {
+export const useCreateRecurringTransaction = (accountId: string, virtualAccountId: string) => {
 
     const queryClient = useQueryClient();
 
-    
-    const useResult = useApiPost<RecurringTransaction, { accountId: string, virtualAccountId: string }, RecurringTransaction>(({ accountId }) => `api/accounts/${accountId}/recurring`, {
-        onMutate: async ([{ accountId, virtualAccountId }, recurringTransaction]) => {
+    const { mutate } = useMutation({
+        ...createRecurringTransactionMutation(),
+        onMutate: async (variables) => {
 
-            const recurringTransactions = queryClient.getQueryData<RecurringTransaction[]>(["virtualaccount", { accountId, virtualAccountId }, "recurring"]);
+            const recurringTransactions = queryClient.getQueryData<RecurringTransaction[]>(
+                getRecurringTransactionsForAVirtualAccountQueryKey({ path: { accountId, virtualAccountId } })
+            );
 
-            recurringTransactions.push(recurringTransaction);
+            recurringTransactions.push(variables.body as unknown as RecurringTransaction);
 
-            queryClient.setQueryData<RecurringTransaction[]>(["virtualaccount", { accountId, virtualAccountId }, "recurring"], recurringTransactions);
-
+            queryClient.setQueryData<RecurringTransaction[]>(
+                getRecurringTransactionsForAVirtualAccountQueryKey({ path: { accountId, virtualAccountId } }),
+                recurringTransactions
+            );
         },
-        onSuccess: async (_responseData, [{ accountId, virtualAccountId }]) => {
-            queryClient.invalidateQueries({ queryKey: ["virtualaccount", { accountId, virtualAccountId }, "recurring"] });
-        }
+        onSuccess: async () => {
+            queryClient.invalidateQueries({
+                queryKey: getRecurringTransactionsForAVirtualAccountQueryKey({ path: { accountId, virtualAccountId } }),
+            });
+        },
     });
 
-    const create = (accountId: string, virtualAccountId: string, recurringTransaction: RecurringTransaction) => {
+    const create = (recurringTransaction: RecurringTransaction) => {
 
-        useResult.mutate([{ accountId, virtualAccountId }, recurringTransaction]);
+        mutate({ body: recurringTransaction as any, path: { accountId } } as any);
     };
 
     return create;
 
 }
 
-export const useUpdateRecurringTransaction = () => {
+export const useUpdateRecurringTransaction = (accountId: string, virtualAccountId: string) => {
 
     const queryClient = useQueryClient();
 
-    const useResult = useApiPatch<RecurringTransaction, { accountId: string, virtualAccountId: string, recurringTransactionId: string }, RecurringTransaction>(({ accountId, recurringTransactionId }) => `api/accounts/${accountId}/recurring/${recurringTransactionId}`, {
-        onMutate: async ([{ accountId, virtualAccountId, recurringTransactionId }, recurringTransaction]) => {
+    const { mutate } = useMutation({
+        ...updateRecurringTransactionMutation(),
+        onMutate: async (variables) => {
 
-            const recurringTransactions = queryClient.getQueryData<RecurringTransaction[]>(["virtualaccount", { accountId, virtualAccountId }, "recurring"]);
+            const recurringTransactions = queryClient.getQueryData<RecurringTransaction[]>(
+                getRecurringTransactionsForAVirtualAccountQueryKey({ path: { accountId, virtualAccountId } })
+            );
 
-            const newRecurringTransactions = recurringTransactions.map(rt => rt.id === recurringTransactionId ? recurringTransaction : rt);
+            const updatedTransaction = variables.body as unknown as RecurringTransaction;
+            const newRecurringTransactions = recurringTransactions.map(rt => rt.id === updatedTransaction.id ? updatedTransaction : rt);
 
-            queryClient.setQueryData<RecurringTransaction[]>(["virtualaccount", { accountId, virtualAccountId }, "recurring"], newRecurringTransactions);
-
+            queryClient.setQueryData<RecurringTransaction[]>(
+                getRecurringTransactionsForAVirtualAccountQueryKey({ path: { accountId, virtualAccountId } }),
+                newRecurringTransactions
+            );
         },
-        onSuccess: async (_responseData, [{ accountId, virtualAccountId }]) => {
-            queryClient.invalidateQueries({ queryKey: ["virtualaccount", { accountId, virtualAccountId }, "recurring"] });
-        }
+        onSuccess: async () => {
+            queryClient.invalidateQueries({
+                queryKey: getRecurringTransactionsForAVirtualAccountQueryKey({ path: { accountId, virtualAccountId } }),
+            });
+        },
     });
 
-    const update = (accountId: string, virtualAccountId: string, recurringTransaction: RecurringTransaction) => {
+    const update = (recurringTransaction: RecurringTransaction) => {
 
-        useResult.mutate([{ accountId, virtualAccountId, recurringTransactionId: recurringTransaction.id }, recurringTransaction]);
+        mutate({ body: recurringTransaction as any, path: { accountId, recurringTransactionId: recurringTransaction.id } } as any);
     };
 
     return update;
 
 }
 
-export const useDeleteRecurringTransaction = () => {
+export const useDeleteRecurringTransaction = (accountId: string, virtualAccountId: string) => {
 
     const queryClient = useQueryClient();
 
-    const useResult = useApiDelete<{ accountId: string; virtualAccountId: string, recurringTransactionId: string }>(({ accountId, recurringTransactionId }) => `api/accounts/${accountId}/recurring/${recurringTransactionId}`, {
-        onSuccess: (_data, { accountId, virtualAccountId, recurringTransactionId }) => {
-            
-            const recurringTransactions = queryClient.getQueryData<RecurringTransaction[]>(["virtualaccount", { accountId, virtualAccountId }]);
+    const { mutate } = useMutation({
+        ...deleteRecurringTransactionMutation(),
+        onSuccess: (_data, variables) => {
 
-            const newRecurringTransactions = recurringTransactions.filter(rt => rt.id !== recurringTransactionId);
-            queryClient.setQueryData<RecurringTransaction[]>(["virtualaccount", { accountId, virtualAccountId }], newRecurringTransactions);
-        }
+            const recurringTransactions = queryClient.getQueryData<RecurringTransaction[]>(
+                getRecurringTransactionsForAVirtualAccountQueryKey({ path: { accountId, virtualAccountId } })
+            );
+
+            const newRecurringTransactions = recurringTransactions.filter(rt => rt.id !== variables.path.recurringTransactionId);
+            queryClient.setQueryData<RecurringTransaction[]>(
+                getRecurringTransactionsForAVirtualAccountQueryKey({ path: { accountId, virtualAccountId } }),
+                newRecurringTransactions
+            );
+        },
     });
 
-    const deleteRecurringTransaction = (accountId: string, virtualAccountId: string, recurringTransactionId: string) => {
-            
-            useResult.mutate({ accountId, virtualAccountId, recurringTransactionId });
+    const deleteRecurringTransaction = (recurringTransactionId: string) => {
+
+        mutate({ path: { accountId, recurringTransactionId } });
     }
 
     return deleteRecurringTransaction;

@@ -5,9 +5,11 @@ using Asm.MooBank.Modules.Instruments.Commands.VirtualInstruments;
 using Asm.MooBank.Modules.Instruments.Models.Virtual;
 using Asm.MooBank.Modules.Instruments.Queries.VirtualAccounts;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
 namespace Asm.MooBank.Modules.Instruments.Endpoints;
+
 internal class VirtualInstruments : EndpointGroupBase
 {
     public override string Name => "Virtual Instruments";
@@ -28,10 +30,12 @@ internal class VirtualInstruments : EndpointGroupBase
             .WithNames("Create Virtual Instrument");
 
         builder.MapPatchCommand<Update, VirtualInstrument>("/{virtualInstrumentId}", CommandBinding.None)
-            .WithNames("Update Virtual Instrument");
+            .WithNames("Update Virtual Instrument")
+            .Accepts<Update>("application/json");
 
         builder.MapPatchCommand<UpdateBalance, VirtualInstrument>("/{virtualInstrumentId}/balance", CommandBinding.None)
-            .WithNames("Update Virtual Instrument Balance");
+            .WithNames("Update Virtual Instrument Balance")
+            .Accepts<UpdateBalance>("application/json");
 
         builder.MapDelete<Delete>("/{virtualInstrumentId}")
             .WithNames("Delete Virtual Instrument");

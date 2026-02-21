@@ -1,11 +1,11 @@
-import { Transaction } from "models";
+import type { Transaction } from "api/types.gen";
 import React from "react";
 
 export const ExtraInfo: React.FC<ExtraInfoProps> = ({ transaction }) => {
 
     if (!transaction?.extraInfo) return null;
 
-    const extraInfo = transaction.extraInfo;
+    const extraInfo = transaction.extraInfo as Record<string, string>;
 
     return (
         <section className="transaction-details-extra">

@@ -70,6 +70,8 @@ public class CreateTests()
         {
             InvoiceNumber = "INV002",
             IssueDate = new DateOnly(2024, 7, 1),
+            Total = null,
+            Cost = null,
             Periods = [],
             Discounts = [],
         };
@@ -102,7 +104,10 @@ public class CreateTests()
 
         var createBill = new CreateBill
         {
+            InvoiceNumber = null,
             IssueDate = new DateOnly(2024, 1, 1),
+            Total = null,
+            Cost = null,
             Periods = [],
             Discounts = [],
         };
@@ -130,7 +135,10 @@ public class CreateTests()
 
         var createBill = new CreateBill
         {
+            InvoiceNumber = null,
             IssueDate = new DateOnly(2024, 1, 1),
+            Total = null,
+            Cost = null,
             Periods = [],
             Discounts = [],
         };
@@ -157,7 +165,10 @@ public class CreateTests()
 
         var createBill = new CreateBill
         {
+            InvoiceNumber = null,
             IssueDate = new DateOnly(2024, 6, 1),
+            Total = null,
+            Cost = null,
             Periods =
             [
                 new Period
@@ -206,7 +217,10 @@ public class CreateTests()
 
         var createBill = new CreateBill
         {
+            InvoiceNumber = null,
             IssueDate = new DateOnly(2024, 6, 1),
+            Total = null,
+            Cost = null,
             Periods = [],
             Discounts =
             [

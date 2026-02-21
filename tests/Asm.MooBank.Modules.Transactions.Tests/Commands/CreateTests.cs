@@ -39,7 +39,7 @@ public class CreateTests
             _mocks.UserIdProviderMock.Object,
             _mocks.UnitOfWorkMock.Object);
 
-        var command = new Create(instrumentId, -50m, "Test purchase", "REF001", DateTimeOffset.Now);
+        var command = new Create(instrumentId, new(-50m, "Test purchase", "REF001", DateTimeOffset.Now));
 
         // Act
         var result = await handler.Handle(command, TestContext.Current.CancellationToken);
@@ -73,7 +73,7 @@ public class CreateTests
             _mocks.UserIdProviderMock.Object,
             _mocks.UnitOfWorkMock.Object);
 
-        var command = new Create(instrumentId, -100m, "Groceries", null, DateTimeOffset.Now);
+        var command = new Create(instrumentId, new(-100m, "Groceries", null, DateTimeOffset.Now));
 
         // Act
         await handler.Handle(command, TestContext.Current.CancellationToken);
@@ -106,7 +106,7 @@ public class CreateTests
             _mocks.UserIdProviderMock.Object,
             _mocks.UnitOfWorkMock.Object);
 
-        var command = new Create(instrumentId, -50m, "Test", null, DateTimeOffset.Now);
+        var command = new Create(instrumentId, new(-50m, "Test", null, DateTimeOffset.Now));
 
         // Act
         await handler.Handle(command, TestContext.Current.CancellationToken);
@@ -141,7 +141,7 @@ public class CreateTests
             _mocks.UserIdProviderMock.Object,
             _mocks.UnitOfWorkMock.Object);
 
-        var command = new Create(instrumentId, -50m, "Test", null, DateTimeOffset.Now);
+        var command = new Create(instrumentId, new(-50m, "Test", null, DateTimeOffset.Now));
 
         // Act
         await handler.Handle(command, TestContext.Current.CancellationToken);
@@ -174,7 +174,7 @@ public class CreateTests
             _mocks.UserIdProviderMock.Object,
             _mocks.UnitOfWorkMock.Object);
 
-        var command = new Create(instrumentId, -50m, "Test", "REF123", DateTimeOffset.Now);
+        var command = new Create(instrumentId, new(-50m, "Test", "REF123", DateTimeOffset.Now));
 
         // Act
         await handler.Handle(command, TestContext.Current.CancellationToken);
@@ -201,7 +201,7 @@ public class CreateTests
             _mocks.UserIdProviderMock.Object,
             _mocks.UnitOfWorkMock.Object);
 
-        var command = new Create(instrumentId, -50m, "Test", null, DateTimeOffset.Now);
+        var command = new Create(instrumentId, new(-50m, "Test", null, DateTimeOffset.Now));
 
         // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
@@ -234,7 +234,7 @@ public class CreateTests
             _mocks.UserIdProviderMock.Object,
             _mocks.UnitOfWorkMock.Object);
 
-        var command = new Create(instrumentId, amount, "Test", null, DateTimeOffset.Now);
+        var command = new Create(instrumentId, new(amount, "Test", null, DateTimeOffset.Now));
 
         // Act
         await handler.Handle(command, TestContext.Current.CancellationToken);

@@ -1,6 +1,7 @@
 ﻿using Asm.MooBank.Domain.Entities.ReferenceData;
 
 namespace Asm.MooBank.Infrastructure.EntityConfigurations;
+
 internal class CpiChangeConfiguration : IEntityTypeConfiguration<CpiChange>
 {
     public void Configure(EntityTypeBuilder<CpiChange> builder)

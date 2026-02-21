@@ -4,9 +4,11 @@ using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Transactions.Commands;
 using Asm.MooBank.Modules.Transactions.Queries.Transactions;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
 namespace Asm.MooBank.Modules.Transactions.Endpoints;
+
 internal class TransactionsEndpoints : EndpointGroupBase
 {
     public override string Name => "Transactions";
@@ -26,14 +28,16 @@ internal class TransactionsEndpoints : EndpointGroupBase
         builder.MapQuery<Search, IEnumerable<Transaction>>("")
             .WithNames("Search Transactions");
 
-        builder.MapCommand<Create, Transaction>("", CommandBinding.None)
-            .WithNames("Create Transaction");
+        builder.MapCommand<Create, Transaction>("", CommandBinding.Parameters)
+            .WithNames("Create Transaction")
+            .Accepts<Create>("application/json");
 
         builder.MapCommand<UpdateBalance, Transaction>("/balance-adjustment", CommandBinding.Parameters)
             .WithNames("Set Balance");
 
         builder.MapPatchCommand<UpdateTransaction, Transaction>("{id}", CommandBinding.None)
-            .WithNames("Update Transaction");
+            .WithNames("Update Transaction")
+            .Accepts<UpdateTransaction>("application/json");
 
         builder.MapPutCommand<AddTag, Transaction>("{id}/tag/{tagId}")
             .WithNames("Add Tag");

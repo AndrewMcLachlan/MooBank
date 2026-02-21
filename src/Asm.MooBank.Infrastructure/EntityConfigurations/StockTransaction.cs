@@ -1,6 +1,7 @@
 ﻿using Asm.MooBank.Domain.Entities.Transactions;
 
 namespace Asm.MooBank.Infrastructure.EntityConfigurations;
+
 internal class StockTransactionConfiguration : IEntityTypeConfiguration<StockTransaction>
 {
     public void Configure(EntityTypeBuilder<StockTransaction> builder)

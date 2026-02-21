@@ -6,9 +6,18 @@ import { useNavigate } from "react-router";
 import { Form, SectionForm, FormComboBox } from "@andrewmclachlan/moo-ds";
 
 import { CurrencySelector } from "components";
-import { CreateBillAccount, UtilityTypes } from "models/bills";
+import { UtilityTypes } from "helpers/bills";
 import { useCreateBillAccount } from "services/BillService";
 import { useUser } from "services";
+
+interface CreateBillAccountForm {
+    name: string;
+    description?: string;
+    utilityType?: string;
+    accountNumber?: string;
+    currency: string;
+    shareWithFamily: boolean;
+}
 
 export const BillAccountForm: React.FC = () => {
 
@@ -17,12 +26,12 @@ export const BillAccountForm: React.FC = () => {
     const createAccount = useCreateBillAccount();
     const { data: user } = useUser();
 
-    const handleSubmit = async (data: CreateBillAccount) => {
-        await createAccount.mutateAsync(data);
+    const handleSubmit = async (data: CreateBillAccountForm) => {
+        await createAccount.mutateAsync(data as any);
         navigate("/bills");
     };
 
-    const form = useForm<CreateBillAccount>({
+    const form = useForm<CreateBillAccountForm>({
         defaultValues: {
             currency: user?.currency ?? "AUD",
             shareWithFamily: true,

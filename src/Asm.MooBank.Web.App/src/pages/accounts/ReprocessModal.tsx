@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { Button, Modal } from "@andrewmclachlan/moo-ds";
 import { useAccount } from "components";
-import { LogicalAccount } from "models";
+import type { LogicalAccount } from "api/types.gen";
 import { useReprocessTransactions } from "services";
 
 export const ReprocessModal: React.FC<ReprocessModalProps> = ({ show, instrumentId, onClose }) => {

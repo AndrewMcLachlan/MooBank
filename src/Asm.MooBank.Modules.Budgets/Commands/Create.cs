@@ -8,7 +8,7 @@ namespace Asm.MooBank.Modules.Budgets.Commands;
 [DisplayName("CreateBudget")]
 public record Create(short Year) : ICommand<Models.Budget>;
 
-internal class CreateHandler(IBudgetRepository budgetRepository, IUnitOfWork unitOfWork, User user) :  ICommandHandler<Create, Models.Budget>
+internal class CreateHandler(IBudgetRepository budgetRepository, IUnitOfWork unitOfWork, User user) : ICommandHandler<Create, Models.Budget>
 {
     public async ValueTask<Models.Budget> Handle(Create request, CancellationToken cancellationToken)
     {

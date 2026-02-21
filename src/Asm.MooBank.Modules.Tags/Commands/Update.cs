@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace Asm.MooBank.Modules.Tags.Commands;
 
 [DisplayName("UpdateTag")]
-public sealed record Update([FromRoute] int Id, [FromBody]UpdateTag Tag) : ICommand<MooBank.Models.Tag>;
+public sealed record Update([FromRoute] int Id, [FromBody] UpdateTag Tag) : ICommand<MooBank.Models.Tag>;
 
-internal sealed class UpdateHandler(ITagRepository tagRepository, IUnitOfWork unitOfWork, ISecurity security) :  ICommandHandler<Update, MooBank.Models.Tag>
+internal sealed class UpdateHandler(ITagRepository tagRepository, IUnitOfWork unitOfWork, ISecurity security) : ICommandHandler<Update, MooBank.Models.Tag>
 {
     public async ValueTask<MooBank.Models.Tag> Handle(Update request, CancellationToken cancellationToken)
     {

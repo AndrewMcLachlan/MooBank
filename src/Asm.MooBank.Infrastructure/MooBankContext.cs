@@ -60,7 +60,7 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
     public virtual DbSet<MonthlyBalance> MonthlyBalances { get; set; }
 
     [AllowNull]
-    public virtual DbSet<StockPriceHistory> StockPriceHistory{ get; set; }
+    public virtual DbSet<StockPriceHistory> StockPriceHistory { get; set; }
 
     [AllowNull]
     public virtual DbSet<User> Users { get; set; }

@@ -1,5 +1,5 @@
 import React from "react";
-import { Tag, TagSettings } from "models";
+import type { Tag, TagSettings } from "api/types.gen";
 import { Input } from "@andrewmclachlan/moo-ds";
 
 export const TagSettingsPanel: React.FC<TagSettingsPanelProps> = ({ tag, onChange }) => {

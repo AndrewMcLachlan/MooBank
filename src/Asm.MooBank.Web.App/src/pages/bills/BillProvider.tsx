@@ -1,12 +1,12 @@
 import React, { useContext } from "react";
 
-import { BillAccount } from "models";
+import type { Account } from "api/types.gen";
 
 export interface BillProviderProps {
-    BillAccount: BillAccount;
+    BillAccount: Account;
 }
 
-export const BillContext = React.createContext<BillAccount>(null);
+export const BillContext = React.createContext<Account>(null);
 export const BillProvider: React.FC<React.PropsWithChildren<BillProviderProps>> = ({ BillAccount, children }) => {
 
     return (

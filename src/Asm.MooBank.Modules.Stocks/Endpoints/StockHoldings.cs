@@ -4,9 +4,11 @@ using Asm.MooBank.Modules.Stocks.Commands;
 using Asm.MooBank.Modules.Stocks.Models;
 using Asm.MooBank.Modules.Stocks.Queries;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
 namespace Asm.MooBank.Modules.Stocks.Endpoints;
+
 internal class StockHoldings : EndpointGroupBase
 {
     public override string Name => "Stock Holdings";
@@ -30,6 +32,7 @@ internal class StockHoldings : EndpointGroupBase
 
         builder.MapPatchCommand<Update, StockHolding>("/{instrumentId}", CommandBinding.None)
             .WithNames("Update Stock Holding")
+            .Accepts<Update>("application/json")
             .RequireAuthorization(Policies.GetInstrumentViewerPolicy());
 
         builder.MapQuery<GetStockHoldingReport, StockHoldingReport>("{instrumentId}/reports/holding")

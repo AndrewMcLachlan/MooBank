@@ -76,7 +76,7 @@ public class HexColourConverterTests
     public void ConvertFromProvider_WithEmptyString_ReturnsNull()
     {
         // Arrange
-        var hexString = string.Empty;
+        var hexString = String.Empty;
         var convertFromProvider = _converter.ConvertFromProviderExpression.Compile();
 
         // Act

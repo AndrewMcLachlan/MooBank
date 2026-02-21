@@ -1,8 +1,10 @@
-﻿using Asm.Domain;
+﻿using System.ComponentModel;
+using Asm.Domain;
 using Asm.MooBank.Modules.Bills.Models;
 
 namespace Asm.MooBank.Modules.Bills.Commands.Bills;
 
+[DisplayName("CreateBill")]
 public record Create(Guid InstrumentId, CreateBill Bill) : ICommand<Bill>;
 
 

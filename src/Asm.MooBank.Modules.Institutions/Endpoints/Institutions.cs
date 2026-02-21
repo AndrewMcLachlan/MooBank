@@ -3,9 +3,11 @@ using Asm.AspNetCore.Routing;
 using Asm.MooBank.Modules.Institutions.Commands;
 using Asm.MooBank.Modules.Institutions.Queries;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
 namespace Asm.MooBank.Modules.Institutions.Endpoints;
+
 internal class Institutions : EndpointGroupBase
 {
     public override string Name => "Institutions";
@@ -29,6 +31,7 @@ internal class Institutions : EndpointGroupBase
 
         routeGroupBuilder.MapPatchCommand<Update, Models.Institution>("/{id}")
             .WithNames("Update Institution")
+            .Accepts<Update>("application/json")
             .RequireAuthorization(Policies.Admin)
             .WithValidation<Update>();
     }

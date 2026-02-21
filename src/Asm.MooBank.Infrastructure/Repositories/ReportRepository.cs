@@ -2,6 +2,7 @@
 using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
+
 internal class ReportRepository(MooBankContext mooBankContext) : IReportRepository
 {
     public async Task<IEnumerable<TransactionTagTotal>> GetTransactionTagTotals(Guid accountId, DateOnly startDate, DateOnly endDate, TransactionFilterType filterType, int? rootTagId = null, CancellationToken cancellationToken = default) =>

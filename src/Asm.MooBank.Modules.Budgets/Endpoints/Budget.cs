@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
 namespace Asm.MooBank.Modules.Budgets.Endpoints;
+
 public class Budget : EndpointGroupBase
 {
     public override string Name => "Budget";
@@ -26,7 +27,7 @@ public class Budget : EndpointGroupBase
 
         routeGroupBuilder.MapQuery<Get, Models.Budget?>("/{year}")
             .WithNames("Get Budget")
-            .Produces<Budget>();
+            .Produces<Models.Budget>();
 
         routeGroupBuilder.MapQuery<GetLine, BudgetLine>("/{year}/lines/{id}")
             .WithNames("Get Budget Line")

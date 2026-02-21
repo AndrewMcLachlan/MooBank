@@ -37,7 +37,7 @@ public class TestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions
     {
         // Check if test headers are present (UserId is required for auth)
         if (!Request.Headers.TryGetValue(UserIdHeader, out var userIdValues) ||
-            string.IsNullOrEmpty(userIdValues.FirstOrDefault()))
+            String.IsNullOrEmpty(userIdValues.FirstOrDefault()))
         {
             return Task.FromResult(AuthenticateResult.NoResult());
         }
@@ -85,7 +85,7 @@ public class TestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions
 
     private string GetHeaderValue(string header, string defaultValue)
     {
-        return Request.Headers.TryGetValue(header, out var values) && !string.IsNullOrEmpty(values.FirstOrDefault())
+        return Request.Headers.TryGetValue(header, out var values) && !String.IsNullOrEmpty(values.FirstOrDefault())
             ? values.First()!
             : defaultValue;
     }

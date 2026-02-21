@@ -4,7 +4,7 @@ import { Section } from "@andrewmclachlan/moo-ds";
 import classNames from "classnames";
 import { format } from "date-fns/format";
 import { parseISO } from "date-fns/parseISO";
-import { LogicalAccount } from "models";
+import type { LogicalAccount } from "api/types.gen";
 import { useInstitutions } from "services";
 import { useAccount } from "./AccountProvider";
 import { Amount } from "./Amount";

@@ -2,7 +2,7 @@ import { Section, SectionTable } from "@andrewmclachlan/moo-ds";
 import { format } from "date-fns/format";
 import { isMonthSelected } from "helpers/dateFns";
 import { useBudgetYear } from "hooks/useBudgetYear";
-import * as Models from "models";
+import type { Budget as BudgetModel } from "api/types.gen";
 import { useEffect, useState } from "react";
 import { Col, Input, Row } from "@andrewmclachlan/moo-ds";
 import { useBudget, useBudgetYears } from "services/BudgetService";
@@ -17,7 +17,7 @@ export const Budget: React.FC = () => {
     const [year, setYear] = useBudgetYear();
     const [month, setMonth] = useState(-1);
     const [selectableYears, setSelectableYears] = useState(next5Years);
-    const [filteredBudget, setFilteredBudget] = useState<Models.Budget>();
+    const [filteredBudget, setFilteredBudget] = useState<BudgetModel>();
 
     const title = `Budget${year && ` - ${year}`}`;
 
@@ -66,8 +66,8 @@ export const Budget: React.FC = () => {
                     </Col>
                 </Row>
             </Section>
-            <BudgetTable title="Income" year={year} lines={filteredBudget?.incomeLines} type="income" />
-            <BudgetTable title="Expenses" year={year} lines={filteredBudget?.expensesLines} type="expenses" />
+            <BudgetTable title="Income" year={year} lines={filteredBudget?.incomeLines} type="Income" />
+            <BudgetTable title="Expenses" year={year} lines={filteredBudget?.expensesLines} type="Expenses" />
 
             {/*
             <Section className="budget" header="Income">

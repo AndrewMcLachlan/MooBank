@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 
-import { StockHolding } from "models";
+import type { StockHolding } from "api/types.gen";
 
 export interface StockHoldingProviderProps {
     stockHolding: StockHolding;

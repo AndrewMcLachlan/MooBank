@@ -7,7 +7,9 @@ import { Form, SectionForm, FormComboBox } from "@andrewmclachlan/moo-ds";
 
 import { CurrencySelector, InstitutionSelector } from "components";
 import { GroupSelector } from "components/GroupSelector";
-import { AccountTypes, Controllers, CreateLogicalAccount, LogicalAccount } from "models";
+import type { LogicalAccount, CreateAccount } from "api/types.gen";
+import { AccountTypes } from "helpers/accounts";
+import { Controllers } from "helpers/instruments";
 import { useCreateAccount, useUpdateAccount, useUser, } from "services";
 import { ImportSettings } from "./ImportSettings";
 import { CurrencyInput } from "components/CurrencyInput";
@@ -23,7 +25,7 @@ export const AccountForm: React.FC<{ account?: LogicalAccount }> = ({ account = 
 
     const isPending = createAccount.isPending || updateAccount.isPending;
 
-    const handleSubmit = (data: CreateLogicalAccount) => {
+    const handleSubmit = (data: CreateAccount) => {
 
         if (!account) {
 
@@ -35,11 +37,11 @@ export const AccountForm: React.FC<{ account?: LogicalAccount }> = ({ account = 
             createAccount.mutateAsync(data);
             navigate("/accounts");
         } else {
-            updateAccount.mutateAsync(data);
+            updateAccount.mutateAsync(data as any);
         }
     }
 
-    const form = useForm<CreateLogicalAccount>({
+    const form = useForm<CreateAccount>({
         defaultValues: account ?? {
             currency: user?.currency,
         }

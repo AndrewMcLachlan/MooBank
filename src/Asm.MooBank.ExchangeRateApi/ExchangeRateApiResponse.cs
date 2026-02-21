@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Asm.MooBank.ExchangeRateApi;
+
 internal record ExchangeRateApiResponse
 {
     public required string Result { get; init; }

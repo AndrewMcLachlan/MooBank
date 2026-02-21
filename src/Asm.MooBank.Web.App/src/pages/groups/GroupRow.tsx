@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { useNavigate } from "react-router";
 
-import * as Models from "models";
+import type { Group } from "api/types.gen";
 import { Icon } from "@andrewmclachlan/moo-ds";
 
 export const GroupRow: React.FC<GroupRowProps> = (props) => {
@@ -25,7 +25,7 @@ export const GroupRow: React.FC<GroupRowProps> = (props) => {
 }
 
 export interface GroupRowProps {
-    group: Models.Group;
+    group: Group;
 }
 
 export const useAccountRowCommonState = (props: GroupRowProps) => {

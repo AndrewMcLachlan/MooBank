@@ -4,7 +4,7 @@ import { useLocation } from "react-router";
 import { NavItem } from "@andrewmclachlan/moo-ds";
 import { Trendline } from "@andrewmclachlan/moo-icons";
 
-import { StockHolding } from "models";
+import type { StockHolding } from "api/types.gen";
 import { useStockHolding } from "../StockHoldingProvider";
 import { StockHoldingPage } from "../StockHoldingPage";
 

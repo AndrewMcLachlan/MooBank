@@ -1,47 +1,47 @@
-import { useApiGet, useApiPatch, useApiPost } from "@andrewmclachlan/moo-app";
-import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
-
-import { Family } from "models";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getAllFamiliesOptions, getAllFamiliesQueryKey, getFamilyOptions, getFamilyQueryKey, createFamilyMutation, updateFamilyMutation } from "api/@tanstack/react-query.gen";
+import type { Family } from "api/types.gen";
 import { toast } from "react-toastify";
 
-const familyKey = "families-admin";
+export const useFamilies = () => useQuery({ ...getAllFamiliesOptions(), staleTime: 1000 * 60 * 5 });
 
-export const useFamilies = (): UseQueryResult<Family[]> => useApiGet<Family[]>([familyKey], "api/families/admin", { staleTime: 1000 * 60 * 5 });
-
-export const useFamily = (id: string): UseQueryResult<Family> => useApiGet<Family>([familyKey, id], `api/families/admin/${id}`, { enabled: !!id });
+export const useFamily = (id: string) => useQuery({ ...getFamilyOptions({ path: { id } }), enabled: !!id });
 
 export const useCreateFamily = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutateAsync, ...rest } = useApiPost<Family, null, Family>(() => "api/families/admin", {
-        onMutate: ([_variables, data]) => {
-            let allFamilies = queryClient.getQueryData<Family[]>([familyKey]);
+    const { mutateAsync } = useMutation({
+        ...createFamilyMutation(),
+        onMutate: (variables) => {
+            let allFamilies = queryClient.getQueryData<Family[]>(getAllFamiliesQueryKey());
             if (!allFamilies) {
                 console.warn("Query Cache is missing Families");
                 return;
             }
 
-            allFamilies.push(data);
+            allFamilies.push(variables.body as Family);
             allFamilies = allFamilies.sort((t1, t2) => t1.name.localeCompare(t2.name));
-            queryClient.setQueryData<Family[]>([familyKey], allFamilies);
+            queryClient.setQueryData<Family[]>(getAllFamiliesQueryKey(), allFamilies);
         },
-        onError: (_error, [_variables, _data]) => {
-            queryClient.invalidateQueries({ queryKey: [familyKey] });
+        onError: () => {
+            queryClient.invalidateQueries({ queryKey: getAllFamiliesQueryKey() });
         }
     });
 
     return (family: Family) =>
-        toast.promise(mutateAsync([null, family]), { pending: "Creating family", success: "Family created", error: "Failed to create family" });
+        toast.promise(mutateAsync({ body: family }), { pending: "Creating family", success: "Family created", error: "Failed to create family" });
 }
 
 export const useUpdateFamily = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutateAsync, ...rest } = useApiPatch<Family, string, Family>((id) => `api/families/admin/${id}`, {
-        onMutate: ([_variables, data]) => {
-            let allFamilies = queryClient.getQueryData<Family[]>([familyKey]);
+    const { mutateAsync } = useMutation({
+        ...updateFamilyMutation(),
+        onMutate: (variables) => {
+            const data = variables.body as Family;
+            let allFamilies = queryClient.getQueryData<Family[]>(getAllFamiliesQueryKey());
             if (!allFamilies) {
                 console.warn("Query Cache is missing Families");
                 return;
@@ -49,16 +49,16 @@ export const useUpdateFamily = () => {
 
             allFamilies = allFamilies.map((family) => family.id === data.id ? data : family);
             allFamilies = allFamilies.sort((t1, t2) => t1.name.localeCompare(t2.name));
-            queryClient.setQueryData<Family[]>([familyKey], allFamilies);
+            queryClient.setQueryData<Family[]>(getAllFamiliesQueryKey(), allFamilies);
 
-            queryClient.setQueryData<Family>([familyKey, data.id], data);
+            queryClient.setQueryData<Family>(getFamilyQueryKey({ path: { id: data.id } }), data);
         },
-        onError: (_error, [id, _data]) => {
-            queryClient.invalidateQueries({ queryKey: [familyKey] });
-            queryClient.invalidateQueries({ queryKey: [familyKey, id] });
+        onError: (_error, variables) => {
+            queryClient.invalidateQueries({ queryKey: getAllFamiliesQueryKey() });
+            queryClient.invalidateQueries({ queryKey: getFamilyQueryKey({ path: { id: variables.path!.id } }) });
         }
     });
 
     return (family: Family) =>
-        toast.promise(mutateAsync([family.id, family]), { pending: "Updating family", success: "Family updated", error: "Failed to update family" });
+        toast.promise(mutateAsync({ body: family, path: { id: family.id } }), { pending: "Updating family", success: "Family updated", error: "Failed to update family" });
 }
