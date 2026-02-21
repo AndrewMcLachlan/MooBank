@@ -17,6 +17,7 @@ import { Route as TagsIndexRouteImport } from "./routes/tags/index"
 import { Route as SettingsIndexRouteImport } from "./routes/settings/index"
 import { Route as GroupsIndexRouteImport } from "./routes/groups/index"
 import { Route as ForecastIndexRouteImport } from "./routes/forecast/index"
+import { Route as FamilyIndexRouteImport } from "./routes/family/index"
 import { Route as BudgetIndexRouteImport } from "./routes/budget/index"
 import { Route as BillsIndexRouteImport } from "./routes/bills/index"
 import { Route as AccountsIndexRouteImport } from "./routes/accounts/index"
@@ -112,6 +113,11 @@ const GroupsIndexRoute = GroupsIndexRouteImport.update({
 const ForecastIndexRoute = ForecastIndexRouteImport.update({
   id: "/forecast/",
   path: "/forecast/",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FamilyIndexRoute = FamilyIndexRouteImport.update({
+  id: "/family/",
+  path: "/family/",
   getParentRoute: () => rootRouteImport,
 } as any)
 const BudgetIndexRoute = BudgetIndexRouteImport.update({
@@ -428,6 +434,7 @@ export interface FileRoutesByFullPath {
   "/accounts/": typeof AccountsIndexRoute
   "/bills/": typeof BillsIndexRoute
   "/budget/": typeof BudgetIndexRoute
+  "/family/": typeof FamilyIndexRoute
   "/forecast/": typeof ForecastIndexRoute
   "/groups/": typeof GroupsIndexRoute
   "/settings/": typeof SettingsIndexRoute
@@ -490,6 +497,7 @@ export interface FileRoutesByTo {
   "/accounts": typeof AccountsIndexRoute
   "/bills": typeof BillsIndexRoute
   "/budget": typeof BudgetIndexRoute
+  "/family": typeof FamilyIndexRoute
   "/forecast": typeof ForecastIndexRoute
   "/groups": typeof GroupsIndexRoute
   "/settings": typeof SettingsIndexRoute
@@ -554,6 +562,7 @@ export interface FileRoutesById {
   "/accounts/": typeof AccountsIndexRoute
   "/bills/": typeof BillsIndexRoute
   "/budget/": typeof BudgetIndexRoute
+  "/family/": typeof FamilyIndexRoute
   "/forecast/": typeof ForecastIndexRoute
   "/groups/": typeof GroupsIndexRoute
   "/settings/": typeof SettingsIndexRoute
@@ -622,6 +631,7 @@ export interface FileRouteTypes {
     | "/accounts/"
     | "/bills/"
     | "/budget/"
+    | "/family/"
     | "/forecast/"
     | "/groups/"
     | "/settings/"
@@ -684,6 +694,7 @@ export interface FileRouteTypes {
     | "/accounts"
     | "/bills"
     | "/budget"
+    | "/family"
     | "/forecast"
     | "/groups"
     | "/settings"
@@ -747,6 +758,7 @@ export interface FileRouteTypes {
     | "/accounts/"
     | "/bills/"
     | "/budget/"
+    | "/family/"
     | "/forecast/"
     | "/groups/"
     | "/settings/"
@@ -814,6 +826,7 @@ export interface RootRouteChildren {
   AccountsIndexRoute: typeof AccountsIndexRoute
   BillsIndexRoute: typeof BillsIndexRoute
   BudgetIndexRoute: typeof BudgetIndexRoute
+  FamilyIndexRoute: typeof FamilyIndexRoute
   ForecastIndexRoute: typeof ForecastIndexRoute
   GroupsIndexRoute: typeof GroupsIndexRoute
   TagsIndexRoute: typeof TagsIndexRoute
@@ -883,6 +896,13 @@ declare module "@tanstack/react-router" {
       path: "/forecast"
       fullPath: "/forecast/"
       preLoaderRoute: typeof ForecastIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/family/": {
+      id: "/family/"
+      path: "/family"
+      fullPath: "/family/"
+      preLoaderRoute: typeof FamilyIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     "/budget/": {
@@ -1448,6 +1468,7 @@ const rootRouteChildren: RootRouteChildren = {
   AccountsIndexRoute: AccountsIndexRoute,
   BillsIndexRoute: BillsIndexRoute,
   BudgetIndexRoute: BudgetIndexRoute,
+  FamilyIndexRoute: FamilyIndexRoute,
   ForecastIndexRoute: ForecastIndexRoute,
   GroupsIndexRoute: GroupsIndexRoute,
   TagsIndexRoute: TagsIndexRoute,

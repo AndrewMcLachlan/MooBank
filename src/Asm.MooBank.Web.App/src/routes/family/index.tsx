@@ -11,7 +11,7 @@ export const Route = createFileRoute("/family/")({
     component: MyFamily,
 });
 
-const MyFamily = () => {
+function MyFamily() {
 
     const { data: me } = useUser();
     const { data: family } = useMyFamily();
