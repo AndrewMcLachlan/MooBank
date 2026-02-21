@@ -6304,6 +6304,16 @@
           "monthlyBaselineOutgoings": {
             "type": "number",
             "format": "double"
+          },
+          "regression": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/RegressionDiagnostics"
+              }
+            ]
           }
         }
       },
@@ -6511,6 +6521,23 @@
             "items": {
               "type": "string"
             }
+          }
+        }
+      },
+      "IncomeCorrelatedSettings": {
+        "required": [
+          "rSquaredThreshold",
+          "minDataPoints"
+        ],
+        "type": "object",
+        "properties": {
+          "rSquaredThreshold": {
+            "type": "number",
+            "format": "double"
+          },
+          "minDataPoints": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
@@ -7098,6 +7125,16 @@
                 "$ref": "#/components/schemas/SeasonalitySettings"
               }
             ]
+          },
+          "incomeCorrelated": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/IncomeCorrelatedSettings"
+              }
+            ]
           }
         }
       },
@@ -7336,6 +7373,32 @@
           },
           "schedule": {
             "$ref": "#/components/schemas/ScheduleFrequency"
+          }
+        }
+      },
+      "RegressionDiagnostics": {
+        "required": [
+          "fixedComponent",
+          "variableComponent",
+          "rSquared",
+          "fellBackToFlatAverage"
+        ],
+        "type": "object",
+        "properties": {
+          "fixedComponent": {
+            "type": "number",
+            "format": "double"
+          },
+          "variableComponent": {
+            "type": "number",
+            "format": "double"
+          },
+          "rSquared": {
+            "type": "number",
+            "format": "double"
+          },
+          "fellBackToFlatAverage": {
+            "type": "boolean"
           }
         }
       },

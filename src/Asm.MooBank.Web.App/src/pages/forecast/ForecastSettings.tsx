@@ -1,17 +1,18 @@
 import { Section } from "@andrewmclachlan/moo-ds";
 import { format, parseISO } from "date-fns";
 import { useState } from "react";
-import { Button, Col, Form, Input, Row } from "@andrewmclachlan/moo-ds";
-import type { AccountScopeMode, ForecastPlan } from "api/types.gen";
+import { Button, Col, Form, Input, OverlayTrigger, Popover, Row } from "@andrewmclachlan/moo-ds";
+import type { AccountScopeMode, ForecastPlan, RegressionDiagnostics } from "api/types.gen";
 import { useUpdateForecastPlan } from "services/ForecastService";
 import { useAccounts } from "services/AccountService";
 
 interface ForecastSettingsProps {
     plan?: ForecastPlan;
     monthlyExpenses?: number;
+    regression?: RegressionDiagnostics;
 }
 
-export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthlyExpenses }) => {
+export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthlyExpenses, regression }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [name, setName] = useState(plan?.name);
     const [startDate, setStartDate] = useState(plan?.startDate);
@@ -19,6 +20,7 @@ export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthl
     const [monthlyIncome, setMonthlyIncome] = useState(plan?.incomeStrategy?.manualRecurring?.amount ?? 0);
     const [accountScopeMode, setAccountScopeMode] = useState<AccountScopeMode>(plan?.accountScopeMode);
     const [selectedAccountIds, setSelectedAccountIds] = useState<string[]>(plan?.accountIds ?? []);
+    const [outgoingMode, setOutgoingMode] = useState(plan?.outgoingStrategy?.mode ?? "HistoricalAverageByTag");
 
     const { data: accounts } = useAccounts();
     const { update, isPending } = useUpdateForecastPlan();
@@ -37,6 +39,10 @@ export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthl
                     amount: monthlyIncome,
                     frequency: "Monthly"
                 }
+            },
+            outgoingStrategy: {
+                ...plan.outgoingStrategy,
+                mode: outgoingMode,
             }
         });
         setIsEditing(false);
@@ -57,6 +63,7 @@ export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthl
         setMonthlyIncome(plan.incomeStrategy?.manualRecurring?.amount ?? 0);
         setAccountScopeMode(plan.accountScopeMode);
         setSelectedAccountIds(plan.accountIds ?? []);
+        setOutgoingMode(plan.outgoingStrategy?.mode ?? "HistoricalAverageByTag");
         setIsEditing(false);
     };
 
@@ -105,8 +112,22 @@ export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthl
                             <div className="settings-value">
                                 ${(monthlyExpenses ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                             </div>
-                            <div className="settings-sublabel text-muted" style={{ fontSize: "0.75rem" }}>
-                                (calculated from history)
+                            <div className="settings-sublabel">
+                                {plan?.outgoingStrategy?.mode === "IncomeCorrelated" && regression && !regression.fellBackToFlatAverage ? (
+                                    <OverlayTrigger placement="bottom" overlay={
+                                        <Popover id="regression-popover">
+                                            <Popover.Body>
+                                                <div className="regression-popover">
+                                                    <div>Fixed expenses: ${regression.fixedComponent.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/mo</div>
+                                                    <div>Variable rate: {(regression.variableComponent * 100).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}% of income</div>
+                                                    <div>Model fit: {(regression.rSquared * 100).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}% R²</div>
+                                                </div>
+                                            </Popover.Body>
+                                        </Popover>
+                                    }>
+                                        <span className="regression-hint">(average, income-correlated)</span>
+                                    </OverlayTrigger>
+                                ) : plan?.outgoingStrategy?.mode === "IncomeCorrelated" ? "(income-correlated, using flat average)" : "(calculated from history)"}
                             </div>
                         </div>
                     </Col>
@@ -116,8 +137,17 @@ export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthl
                             <div className="settings-value">{getAccountsDisplay()}</div>
                         </div>
                     </Col>
-                    <Col md={2} className="d-flex align-items-center">
-                        <Button variant="outline-primary" size="sm" onClick={() => setIsEditing(true)}>
+                    <Col md={2} className="settings-actions">
+                        <Button variant="outline-primary" size="sm" onClick={() => {
+                            setName(plan?.name);
+                            setStartDate(plan?.startDate);
+                            setEndDate(plan?.endDate);
+                            setMonthlyIncome(plan?.incomeStrategy?.manualRecurring?.amount ?? 0);
+                            setAccountScopeMode(plan?.accountScopeMode);
+                            setSelectedAccountIds(plan?.accountIds ?? []);
+                            setOutgoingMode(plan?.outgoingStrategy?.mode ?? "HistoricalAverageByTag");
+                            setIsEditing(true);
+                        }}>
                             Edit Settings
                         </Button>
                     </Col>
@@ -163,7 +193,33 @@ export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthl
                             onChange={(e) => setMonthlyIncome(parseFloat(e.target.value) || 0)}
                         />
                 </Col>
-                <Col md={3} className="d-flex align-items-end gap-2">
+                <Col md={3}>
+                    <Form.Label>Expense Calculation</Form.Label>
+                    <div>
+                        <Input.Check
+                            type="radio"
+                            id="outgoing-historical"
+                            name="outgoingMode"
+                            label="Historical average"
+                            checked={outgoingMode === "HistoricalAverageByTag"}
+                            onChange={() => setOutgoingMode("HistoricalAverageByTag")}
+                            inline
+                        />
+                        <Input.Check
+                            type="radio"
+                            id="outgoing-correlated"
+                            name="outgoingMode"
+                            label="Income-correlated"
+                            checked={outgoingMode === "IncomeCorrelated"}
+                            onChange={() => setOutgoingMode("IncomeCorrelated")}
+                            inline
+                        />
+                    </div>
+                </Col>
+            </Row>
+            <Row className="g-3 mt-2">
+                <Col md={9} />
+                <Col md={3} className="settings-actions">
                     <Button variant="primary" size="sm" onClick={handleSave} disabled={isPending}>
                         {isPending ? "Saving..." : "Save"}
                     </Button>

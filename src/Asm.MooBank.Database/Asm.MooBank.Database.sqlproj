@@ -8,7 +8,8 @@
     <AssemblyName>Asm.MooBank.Database</AssemblyName>
     <TargetDatabaseName>MooBank</TargetDatabaseName>
     <DatabaseName>MooBank</DatabaseName>
-    <ProjectGuid>{00000000-0000-0000-0000-000000000000}</ProjectGuid>
+    <ProjectGuid>{692a95bf-a4d2-4f37-af63-a3b5a2c04fc7}</ProjectGuid>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
   </PropertyGroup>
   <ItemGroup>
     <Build Remove="Scripts\.sql" />
@@ -22,6 +23,7 @@
     <None Include="Scripts\UpdateTransactionTypes.sql" />
     <None Include="Scripts\LogicalAccount.sql" />
     <None Include="Scripts\RollbackLogicalAccount.sql" />
+    <None Include="Scripts\UpdateOutgoingStrategy.sql" />
     <PostDeploy Include="Script.PostDeployment1.sql" />
   </ItemGroup>
   <ItemGroup>
@@ -31,5 +33,8 @@
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Asm.MooBank.Database.refactorlog" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Scripts\" />
   </ItemGroup>
 </Project>

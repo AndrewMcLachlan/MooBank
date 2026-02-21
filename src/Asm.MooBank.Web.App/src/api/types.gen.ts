@@ -344,6 +344,7 @@ export type ForecastSummary = {
     totalIncome: number;
     totalOutgoings: number;
     monthlyBaselineOutgoings: number;
+    regression?: null | RegressionDiagnostics;
 };
 
 export type Group = {
@@ -392,6 +393,11 @@ export type ImportResult = {
     imported: number;
     failed: number;
     errors: Array<string>;
+};
+
+export type IncomeCorrelatedSettings = {
+    rSquaredThreshold: number;
+    minDataPoints: number;
 };
 
 export type IncomeStrategy = {
@@ -519,6 +525,7 @@ export type OutgoingStrategy = {
     excludeTagIds?: null | Array<number>;
     excludeAboveAmount?: null | number;
     seasonality?: null | SeasonalitySettings;
+    incomeCorrelated?: null | IncomeCorrelatedSettings;
 };
 
 export type Period = {
@@ -566,6 +573,13 @@ export type RecurringTransaction = {
     lastRun?: null | string;
     nextRun: string;
     schedule: ScheduleFrequency;
+};
+
+export type RegressionDiagnostics = {
+    fixedComponent: number;
+    variableComponent: number;
+    rSquared: number;
+    fellBackToFlatAverage: boolean;
 };
 
 export type ReportInterval = 'Monthly' | 'Yearly';

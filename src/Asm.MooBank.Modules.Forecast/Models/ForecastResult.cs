@@ -35,4 +35,14 @@ public sealed record ForecastSummary
     public decimal TotalIncome { get; init; }
     public decimal TotalOutgoings { get; init; }
     public decimal MonthlyBaselineOutgoings { get; init; }
+    public RegressionDiagnostics? Regression { get; init; }
+}
+
+[DisplayName("RegressionDiagnostics")]
+public sealed record RegressionDiagnostics
+{
+    public decimal FixedComponent { get; init; }
+    public decimal VariableComponent { get; init; }
+    public decimal RSquared { get; init; }
+    public bool FellBackToFlatAverage { get; init; }
 }
