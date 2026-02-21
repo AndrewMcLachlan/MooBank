@@ -292,7 +292,7 @@ Use `createLazyFileRoute` for non-critical routes to enable code splitting (not 
 
 ## Phase 3: Co-locate Hooks with Components
 
-**Goal**: Move custom hooks (service wrappers with toast/optimistic updates/invalidation) to live alongside their consuming components in `src/routes/`. Generated hooks stay in `src/api/`.
+**Goal**: Move custom hooks (service wrappers with toast/optimistic updates/invalidation) to live alongside their consuming components in `src/routes/`. Generated hooks stay in `src/api/`. One hook per file, organized in `-hooks/` directories.
 
 ### Current State (after Phases 1 & 2)
 - `src/services/` — 22 wrapper hook files (using generated hey-api hooks internally)
@@ -302,44 +302,44 @@ Use `createLazyFileRoute` for non-critical routes to enable code splitting (not 
 
 ### Step 3.1: Classify hooks by usage scope
 
-**Single-feature hooks** (move to feature directory):
-- Budget hooks → `src/routes/budget/-hooks.ts`
-- Forecast hooks → `src/routes/forecast/-hooks.ts`
-- Rule hooks → `src/routes/accounts/$id/-hooks.rules.ts`
-- Stock transaction hooks → `src/routes/shares/$id/-hooks.ts`
-- Recurring transaction hooks → `src/routes/accounts/$id/virtual.$virtualId/-hooks.ts`
-- Bill hooks → `src/routes/bills/-hooks.ts`
-- Family hooks → `src/routes/settings/families/-hooks.ts`
-- Institution hooks → `src/routes/settings/institutions/-hooks.ts`
-- User hooks → `src/routes/profile/-hooks.ts` or `src/routes/family/-hooks.ts`
-- Asset hooks → `src/routes/assets/$id/-hooks.ts`
-- Stock holding hooks → `src/routes/shares/$id/-hooks.ts`
-- Import hooks → used by accounts → co-locate there
+**Single-feature hooks** (move to feature's `-hooks/` directory, one file per hook):
+- Budget hooks → `src/routes/budget/-hooks/useBudgetReport.ts`, `useCreateBudgetLine.ts`, etc.
+- Forecast hooks → `src/routes/forecast/-hooks/useForecastPlans.ts`, `useRunForecast.ts`, etc.
+- Rule hooks → `src/routes/accounts/$id/-hooks/useRules.ts`, `useCreateRule.ts`, etc.
+- Stock transaction hooks → `src/routes/shares/$id/transactions/-hooks/useStockTransactions.ts`, etc.
+- Recurring transaction hooks → `src/routes/accounts/$id/virtual.$virtualId/-hooks/useRecurringTransactions.ts`, etc.
+- Bill hooks → `src/routes/bills/-hooks/useBills.ts`, `useCreateBill.ts`, etc.
+- Family hooks → `src/routes/settings/families/-hooks/useFamilies.ts`, etc.
+- Institution hooks → `src/routes/settings/institutions/-hooks/useInstitutions.ts`, etc.
+- User hooks → `src/routes/profile/-hooks/useUser.ts`, `useUpdateUser.ts`, etc.
+- Asset hooks → `src/routes/assets/-hooks/useAsset.ts`, `useCreateAsset.ts`, etc.
+- Stock holding hooks → `src/routes/shares/-hooks/useStockHolding.ts`, etc.
+- Import hooks → `src/routes/accounts/$id/-hooks/useImport.ts`
 
-**Multi-feature hooks** (keep in shared location `src/hooks/api/`):
-- `useTags`, `useCreateTag`, `useUpdateTag`, `useDeleteTag` → used by Tags page, TransactionTagPanel, TagSelector, reports
-- `useAccounts`, `useAccount`, `useFormattedAccounts` → used by Accounts, Dashboard, AccountProvider
-- Report hooks → used by Reports pages AND Dashboard widgets
-- `useGroups`, `useGroup` → used by Groups pages AND GroupSelector
-- `useImporterTypes` → used by CreateInstitutionAccount, InstitutionAccountEdit
+**Multi-feature hooks** (keep in shared location `src/hooks/`, one file per hook):
+- `useTags.ts`, `useCreateTag.ts`, `useUpdateTag.ts`, `useDeleteTag.ts` → used by Tags page, TransactionTagPanel, TagSelector, reports
+- `useAccounts.ts`, `useAccount.ts`, `useFormattedAccounts.ts` → used by Accounts, Dashboard, AccountProvider
+- Report hooks (`useInOutReport.ts`, `useBreakdownReport.ts`, etc.) → used by Reports pages AND Dashboard widgets
+- `useGroups.ts`, `useGroup.ts` → used by Groups pages AND GroupSelector
+- `useImporterTypes.ts` → used by CreateInstitutionAccount, InstitutionAccountEdit
 
 ### Step 3.2: Move single-feature hooks
-For each feature, create a `-hooks.ts` file (TanStack Router `-` prefix = excluded from route generation):
-1. Move relevant hooks from `src/services/XxxService.ts` into the feature's `-hooks.ts`
-2. Update imports in the consuming route components (now co-located, so relative imports)
-3. Remove the emptied service file
+For each feature, create a `-hooks/` directory (TanStack Router `-` prefix = excluded from route generation):
+1. Split hooks from `src/services/XxxService.ts` into individual files in the feature's `-hooks/` directory
+2. One hook per file, named after the hook (e.g., `useCreateBudgetLine.ts`)
+3. Update imports in the consuming route components (now co-located, so relative imports)
+4. Remove the emptied service file
 
 ### Step 3.3: Consolidate shared hooks
-Create `src/hooks/api/` with:
-- `accounts.ts` — useAccounts, useAccount, useFormattedAccounts, mutations
-- `tags.ts` — useTags, useCreateTag, useUpdateTag, useDeleteTag
-- `reports.ts` — all report query hooks
-- `groups.ts` — useGroups, useGroup, mutations
-- `reference-data.ts` — useImporterTypes
-- `index.ts` — barrel export
+Move multi-feature hooks to `src/hooks/`, one file per hook:
+- `useAccounts.ts`, `useAccount.ts`, `useFormattedAccounts.ts`, `useCreateAccount.ts`, etc.
+- `useTags.ts`, `useCreateTag.ts`, `useUpdateTag.ts`, `useDeleteTag.ts`
+- `useInOutReport.ts`, `useBreakdownReport.ts`, `useTopTagsReport.ts`, etc.
+- `useGroups.ts`, `useGroup.ts`, `useCreateGroup.ts`, etc.
+- `useImporterTypes.ts`
 
 ### Step 3.4: Move non-API custom hooks
-- `useBudgetYear.ts` → `src/routes/budget/-hooks.ts` (single feature)
+- `useBudgetYear.ts` → `src/routes/budget/-hooks/useBudgetYear.ts` (single feature)
 - `period.ts` → keep in `src/hooks/` (used by multiple report components)
 - `useHasRole.ts` → keep in `src/hooks/` (used by Layout)
 - `useStateEffect.ts` → keep in `src/hooks/` if shared
@@ -355,11 +355,12 @@ Create `src/hooks/api/` with:
 - `npm run lint` passes
 - `src/services/` directory deleted
 - No circular imports between route directories
-- Each feature directory is self-contained (imports from `src/hooks/api/` for shared, `./-hooks` for local)
-- Shared hooks in `src/hooks/api/` are genuinely shared (used by 2+ features)
+- Each feature directory is self-contained (imports from `src/hooks/` for shared, `./-hooks/` for local)
+- Shared hooks in `src/hooks/` are genuinely shared (used by 2+ features)
+- Every hook file contains exactly one hook
 
 ### Phase 3 File Impact
-- **Created**: ~15 `-hooks.ts` files in route directories, ~5 files in `src/hooks/api/`
+- **Created**: ~60 hook files in `-hooks/` directories across routes, ~20 files in `src/hooks/`
 - **Modified**: ~90 files (import path changes)
 - **Deleted**: `src/services/` (22 files + index)
 
