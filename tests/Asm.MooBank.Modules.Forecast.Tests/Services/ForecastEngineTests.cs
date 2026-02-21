@@ -1126,10 +1126,10 @@ public class ForecastEngineTests
     /// <summary>
     /// Given fewer historical data points than the minimum required
     /// When the forecast is calculated with IncomeCorrelated mode
-    /// Then the regression should fall back to flat average
+    /// Then the regression should fall back to the standard historical baseline
     /// </summary>
     [Fact]
-    public async Task Calculate_IncomeCorrelatedTooFewDataPoints_FallsBackToFlatAverage()
+    public async Task Calculate_IncomeCorrelatedTooFewDataPoints_FallsBackToHistoricalBaseline()
     {
         // Arrange
         var accountId = Guid.NewGuid();
@@ -1144,14 +1144,24 @@ public class ForecastEngineTests
             outgoingMode: "IncomeCorrelated",
             incomeCorrelatedSettings: new IncomeCorrelatedSettings { MinDataPoints = 6 });
 
+        var mockAccount = new LogicalAccount(accountId, [])
+        {
+            Name = "Test Account",
+            AccountType = AccountType.Transaction,
+        };
+
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<DomainInstrument>());
+            .ReturnsAsync(new List<DomainInstrument> { mockAccount });
 
+        // Historical baseline: 42000 total debits / 12 months = 3500/month
         _mocks.ReportRepositoryMock
             .Setup(r => r.GetCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>());
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>
+            {
+                [accountId] = [new() { TransactionType = TransactionFilterType.Debit, Total = 42000m }]
+            });
 
         _mocks.ReportRepositoryMock
             .Setup(r => r.GetMonthlyBalancesForAccounts(
@@ -1177,13 +1187,9 @@ public class ForecastEngineTests
         // Act
         var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
-        // Assert
-        var months = result.Months.ToList();
+        // Assert — falls back to historical baseline (42000 / 12 = 3500)
+        Assert.All(result.Months, m => Assert.Equal(3500m, m.BaselineOutgoingsTotal));
 
-        // All months should have the flat average: (3000 + 3500 + 4000) / 3 = 3500
-        Assert.All(months, m => Assert.Equal(3500m, m.BaselineOutgoingsTotal));
-
-        // Regression diagnostics should show fallback
         Assert.NotNull(result.Summary.Regression);
         Assert.True(result.Summary.Regression.FellBackToFlatAverage);
     }
@@ -1191,10 +1197,10 @@ public class ForecastEngineTests
     /// <summary>
     /// Given historical data with a weak correlation between income and expenses
     /// When the forecast is calculated with IncomeCorrelated mode
-    /// Then the regression should fall back to flat average because R² is too low
+    /// Then the regression should fall back to the standard historical baseline because R² is too low
     /// </summary>
     [Fact]
-    public async Task Calculate_IncomeCorrelatedLowRSquared_FallsBackToFlatAverage()
+    public async Task Calculate_IncomeCorrelatedLowRSquared_FallsBackToHistoricalBaseline()
     {
         // Arrange
         var accountId = Guid.NewGuid();
@@ -1208,14 +1214,24 @@ public class ForecastEngineTests
             lookbackMonths: 12,
             outgoingMode: "IncomeCorrelated");
 
+        var mockAccount = new LogicalAccount(accountId, [])
+        {
+            Name = "Test Account",
+            AccountType = AccountType.Transaction,
+        };
+
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<DomainInstrument>());
+            .ReturnsAsync(new List<DomainInstrument> { mockAccount });
 
+        // Historical baseline: 60000 total debits / 12 months = 5000/month
         _mocks.ReportRepositoryMock
             .Setup(r => r.GetCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>());
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>
+            {
+                [accountId] = [new() { TransactionType = TransactionFilterType.Debit, Total = 60000m }]
+            });
 
         _mocks.ReportRepositoryMock
             .Setup(r => r.GetMonthlyBalancesForAccounts(
@@ -1241,8 +1257,7 @@ public class ForecastEngineTests
         // Act
         var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
-        // Assert
-        // Flat average = (8000 + 2000 + 9000 + 1000 + 7000 + 3000) / 6 = 5000
+        // Assert — falls back to historical baseline (60000 / 12 = 5000)
         Assert.All(result.Months, m => Assert.Equal(5000m, m.BaselineOutgoingsTotal));
 
         Assert.NotNull(result.Summary.Regression);
@@ -1253,10 +1268,10 @@ public class ForecastEngineTests
     /// <summary>
     /// Given historical data where expenses decrease as income increases (negative slope)
     /// When the forecast is calculated with IncomeCorrelated mode
-    /// Then the regression should fall back to flat average because negative slope is nonsensical
+    /// Then the regression should fall back to the standard historical baseline because negative slope is nonsensical
     /// </summary>
     [Fact]
-    public async Task Calculate_IncomeCorrelatedNegativeSlope_FallsBackToFlatAverage()
+    public async Task Calculate_IncomeCorrelatedNegativeSlope_FallsBackToHistoricalBaseline()
     {
         // Arrange
         var accountId = Guid.NewGuid();
@@ -1270,14 +1285,24 @@ public class ForecastEngineTests
             lookbackMonths: 12,
             outgoingMode: "IncomeCorrelated");
 
+        var mockAccount = new LogicalAccount(accountId, [])
+        {
+            Name = "Test Account",
+            AccountType = AccountType.Transaction,
+        };
+
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<DomainInstrument>());
+            .ReturnsAsync(new List<DomainInstrument> { mockAccount });
 
+        // Historical baseline: 57000 total debits / 12 months = 4750/month
         _mocks.ReportRepositoryMock
             .Setup(r => r.GetCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>());
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>
+            {
+                [accountId] = [new() { TransactionType = TransactionFilterType.Debit, Total = 57000m }]
+            });
 
         _mocks.ReportRepositoryMock
             .Setup(r => r.GetMonthlyBalancesForAccounts(
@@ -1303,8 +1328,7 @@ public class ForecastEngineTests
         // Act
         var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
-        // Assert
-        // Flat average = (6000 + 5500 + 5000 + 4500 + 4000 + 3500) / 6 = 4750
+        // Assert — falls back to historical baseline (57000 / 12 = 4750)
         Assert.All(result.Months, m => Assert.Equal(4750m, m.BaselineOutgoingsTotal));
 
         Assert.NotNull(result.Summary.Regression);
@@ -1521,10 +1545,10 @@ public class ForecastEngineTests
     /// <summary>
     /// Given historical data with zero variance in income (all months identical)
     /// When the forecast is calculated with IncomeCorrelated mode
-    /// Then the regression should fall back to flat average because regression cannot be fitted
+    /// Then the regression should fall back to the standard historical baseline because regression cannot be fitted
     /// </summary>
     [Fact]
-    public async Task Calculate_IncomeCorrelatedZeroVariance_FallsBackToFlatAverage()
+    public async Task Calculate_IncomeCorrelatedZeroVariance_FallsBackToHistoricalBaseline()
     {
         // Arrange
         var accountId = Guid.NewGuid();
@@ -1538,14 +1562,24 @@ public class ForecastEngineTests
             lookbackMonths: 12,
             outgoingMode: "IncomeCorrelated");
 
+        var mockAccount = new LogicalAccount(accountId, [])
+        {
+            Name = "Test Account",
+            AccountType = AccountType.Transaction,
+        };
+
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<DomainInstrument>());
+            .ReturnsAsync(new List<DomainInstrument> { mockAccount });
 
+        // Historical baseline: 36000 total debits / 12 months = 3000/month
         _mocks.ReportRepositoryMock
             .Setup(r => r.GetCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>());
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>
+            {
+                [accountId] = [new() { TransactionType = TransactionFilterType.Debit, Total = 36000m }]
+            });
 
         _mocks.ReportRepositoryMock
             .Setup(r => r.GetMonthlyBalancesForAccounts(
@@ -1571,8 +1605,7 @@ public class ForecastEngineTests
         // Act
         var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
-        // Assert
-        // Flat average = (3000 + 3200 + 2800 + 3100 + 2900 + 3000) / 6 = 3000
+        // Assert — falls back to historical baseline (36000 / 12 = 3000)
         Assert.All(result.Months, m => Assert.Equal(3000m, m.BaselineOutgoingsTotal));
 
         Assert.NotNull(result.Summary.Regression);
