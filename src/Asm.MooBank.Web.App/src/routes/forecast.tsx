@@ -60,7 +60,7 @@ function Forecast() {
         <ForecastPage>
             {(
                 <>
-                    <ForecastSettings plan={plan} monthlyExpenses={result?.summary.monthlyBaselineOutgoings} />
+                    <ForecastSettings plan={plan} monthlyExpenses={result?.summary.monthlyBaselineOutgoings} regression={result?.summary.regression} />
 
                     <ForecastSummaryPanel summary={result?.summary} />
                     <div>

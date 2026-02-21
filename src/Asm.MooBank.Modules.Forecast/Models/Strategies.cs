@@ -40,6 +40,13 @@ public sealed record OutgoingStrategy
     public IEnumerable<int>? ExcludeTagIds { get; init; }
     public decimal? ExcludeAboveAmount { get; init; }
     public SeasonalitySettings? Seasonality { get; init; }
+    public IncomeCorrelatedSettings? IncomeCorrelated { get; init; }
+}
+
+public sealed record IncomeCorrelatedSettings
+{
+    public decimal RSquaredThreshold { get; init; } = 0.5m;
+    public int MinDataPoints { get; init; } = 6;
 }
 
 public sealed record SeasonalitySettings
