@@ -756,7 +756,9 @@ public class ForecastEngineTests
         StartingBalanceMode startingBalanceMode = StartingBalanceMode.ManualAmount,
         decimal monthlyIncome = 0m,
         int lookbackMonths = 12,
-        AccountScopeMode accountScopeMode = AccountScopeMode.AllAccounts)
+        AccountScopeMode accountScopeMode = AccountScopeMode.AllAccounts,
+        string outgoingMode = "HistoricalAverage",
+        IncomeCorrelatedSettings? incomeCorrelatedSettings = null)
     {
         var incomeStrategy = new IncomeStrategy
         {
@@ -766,8 +768,9 @@ public class ForecastEngineTests
 
         var outgoingStrategy = new OutgoingStrategy
         {
-            Mode = "HistoricalAverage",
-            LookbackMonths = lookbackMonths
+            Mode = outgoingMode,
+            LookbackMonths = lookbackMonths,
+            IncomeCorrelated = incomeCorrelatedSettings,
         };
 
         return new DomainForecastPlan(id ?? Guid.NewGuid())
@@ -1047,6 +1050,654 @@ public class ForecastEngineTests
         Assert.Equal(25000m, months[2].ClosingBalance);
     }
 
+    #region Income-Correlated Regression Tests
+
+    /// <summary>
+    /// Given historical data with a strong linear relationship between income and expenses
+    /// When the forecast is calculated with IncomeCorrelated mode
+    /// Then the outgoings should vary per month based on projected income
+    /// </summary>
+    [Fact]
+    public async Task Calculate_IncomeCorrelatedValidRegression_VariesOutgoingsPerMonth()
+    {
+        // Arrange
+        var accountId = Guid.NewGuid();
+        _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId]));
+
+        var plan = CreatePlanWithStrategies(
+            startDate: new DateOnly(2024, 7, 1),
+            endDate: new DateOnly(2024, 9, 30),
+            startingBalance: 20000m,
+            monthlyIncome: 6000m,
+            lookbackMonths: 6,
+            outgoingMode: "IncomeCorrelated");
+
+        _mocks.InstrumentRepositoryMock
+            .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<DomainInstrument>());
+
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>());
+
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetMonthlyBalancesForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyBalance>>());
+
+        // Historical monthly data: strong positive correlation between income and expenses
+        // Income: 5000, 6000, 7000, 8000, 9000, 10000
+        // Expense: 3000, 3500, 4000, 4500, 5000, 5500
+        // Regression: expense = 500 + 0.5 * income, R² = 1.0
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>
+            {
+                [accountId] = CreateMonthlyData(
+                    new DateOnly(2024, 1, 1),
+                    [(5000m, 3000m), (6000m, 3500m), (7000m, 4000m), (8000m, 4500m), (9000m, 5000m), (10000m, 5500m)])
+            });
+
+        var engine = new ForecastEngine(
+            _mocks.ReportRepositoryMock.Object,
+            _mocks.InstrumentRepositoryMock.Object,
+            _mocks.User);
+
+        // Act
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
+
+        // Assert
+        var months = result.Months.ToList();
+        Assert.Equal(3, months.Count);
+
+        // All months have same income (6000) but regression adjusts outgoings based on
+        // income + offset. Avg historical income = 7500, plan income = 6000, offset = 1500
+        // Predicted outgoings = 500 + 0.5 * (6000 + 1500) = 500 + 3750 = 4250
+        Assert.All(months, m => Assert.Equal(4250m, m.BaselineOutgoingsTotal));
+
+        // Regression diagnostics should be populated
+        Assert.NotNull(result.Summary.Regression);
+        Assert.False(result.Summary.Regression.FellBackToFlatAverage);
+        Assert.True(result.Summary.Regression.RSquared >= 0.99m);
+    }
+
+    /// <summary>
+    /// Given fewer historical data points than the minimum required
+    /// When the forecast is calculated with IncomeCorrelated mode
+    /// Then the regression should fall back to flat average
+    /// </summary>
+    [Fact]
+    public async Task Calculate_IncomeCorrelatedTooFewDataPoints_FallsBackToFlatAverage()
+    {
+        // Arrange
+        var accountId = Guid.NewGuid();
+        _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId]));
+
+        var plan = CreatePlanWithStrategies(
+            startDate: new DateOnly(2024, 7, 1),
+            endDate: new DateOnly(2024, 9, 30),
+            startingBalance: 10000m,
+            monthlyIncome: 5000m,
+            lookbackMonths: 12,
+            outgoingMode: "IncomeCorrelated",
+            incomeCorrelatedSettings: new IncomeCorrelatedSettings { MinDataPoints = 6 });
+
+        _mocks.InstrumentRepositoryMock
+            .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<DomainInstrument>());
+
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>());
+
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetMonthlyBalancesForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyBalance>>());
+
+        // Only 3 months of data — below the MinDataPoints threshold of 6
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>
+            {
+                [accountId] = CreateMonthlyData(
+                    new DateOnly(2024, 1, 1),
+                    [(5000m, 3000m), (6000m, 3500m), (7000m, 4000m)])
+            });
+
+        var engine = new ForecastEngine(
+            _mocks.ReportRepositoryMock.Object,
+            _mocks.InstrumentRepositoryMock.Object,
+            _mocks.User);
+
+        // Act
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
+
+        // Assert
+        var months = result.Months.ToList();
+
+        // All months should have the flat average: (3000 + 3500 + 4000) / 3 = 3500
+        Assert.All(months, m => Assert.Equal(3500m, m.BaselineOutgoingsTotal));
+
+        // Regression diagnostics should show fallback
+        Assert.NotNull(result.Summary.Regression);
+        Assert.True(result.Summary.Regression.FellBackToFlatAverage);
+    }
+
+    /// <summary>
+    /// Given historical data with a weak correlation between income and expenses
+    /// When the forecast is calculated with IncomeCorrelated mode
+    /// Then the regression should fall back to flat average because R² is too low
+    /// </summary>
+    [Fact]
+    public async Task Calculate_IncomeCorrelatedLowRSquared_FallsBackToFlatAverage()
+    {
+        // Arrange
+        var accountId = Guid.NewGuid();
+        _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId]));
+
+        var plan = CreatePlanWithStrategies(
+            startDate: new DateOnly(2024, 7, 1),
+            endDate: new DateOnly(2024, 9, 30),
+            startingBalance: 10000m,
+            monthlyIncome: 5000m,
+            lookbackMonths: 12,
+            outgoingMode: "IncomeCorrelated");
+
+        _mocks.InstrumentRepositoryMock
+            .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<DomainInstrument>());
+
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>());
+
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetMonthlyBalancesForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyBalance>>());
+
+        // Scatter data with essentially no correlation — expenses are random relative to income
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>
+            {
+                [accountId] = CreateMonthlyData(
+                    new DateOnly(2024, 1, 1),
+                    [(5000m, 8000m), (6000m, 2000m), (7000m, 9000m), (8000m, 1000m), (9000m, 7000m), (10000m, 3000m)])
+            });
+
+        var engine = new ForecastEngine(
+            _mocks.ReportRepositoryMock.Object,
+            _mocks.InstrumentRepositoryMock.Object,
+            _mocks.User);
+
+        // Act
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
+
+        // Assert
+        // Flat average = (8000 + 2000 + 9000 + 1000 + 7000 + 3000) / 6 = 5000
+        Assert.All(result.Months, m => Assert.Equal(5000m, m.BaselineOutgoingsTotal));
+
+        Assert.NotNull(result.Summary.Regression);
+        Assert.True(result.Summary.Regression.FellBackToFlatAverage);
+        Assert.True(result.Summary.Regression.RSquared < 0.5m);
+    }
+
+    /// <summary>
+    /// Given historical data where expenses decrease as income increases (negative slope)
+    /// When the forecast is calculated with IncomeCorrelated mode
+    /// Then the regression should fall back to flat average because negative slope is nonsensical
+    /// </summary>
+    [Fact]
+    public async Task Calculate_IncomeCorrelatedNegativeSlope_FallsBackToFlatAverage()
+    {
+        // Arrange
+        var accountId = Guid.NewGuid();
+        _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId]));
+
+        var plan = CreatePlanWithStrategies(
+            startDate: new DateOnly(2024, 7, 1),
+            endDate: new DateOnly(2024, 9, 30),
+            startingBalance: 10000m,
+            monthlyIncome: 5000m,
+            lookbackMonths: 12,
+            outgoingMode: "IncomeCorrelated");
+
+        _mocks.InstrumentRepositoryMock
+            .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<DomainInstrument>());
+
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>());
+
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetMonthlyBalancesForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyBalance>>());
+
+        // Inverse relationship: as income goes up, expenses go down (negative slope)
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>
+            {
+                [accountId] = CreateMonthlyData(
+                    new DateOnly(2024, 1, 1),
+                    [(5000m, 6000m), (6000m, 5500m), (7000m, 5000m), (8000m, 4500m), (9000m, 4000m), (10000m, 3500m)])
+            });
+
+        var engine = new ForecastEngine(
+            _mocks.ReportRepositoryMock.Object,
+            _mocks.InstrumentRepositoryMock.Object,
+            _mocks.User);
+
+        // Act
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
+
+        // Assert
+        // Flat average = (6000 + 5500 + 5000 + 4500 + 4000 + 3500) / 6 = 4750
+        Assert.All(result.Months, m => Assert.Equal(4750m, m.BaselineOutgoingsTotal));
+
+        Assert.NotNull(result.Summary.Regression);
+        Assert.True(result.Summary.Regression.FellBackToFlatAverage);
+    }
+
+    /// <summary>
+    /// Given a valid regression and income that drops between months
+    /// When the forecast is calculated with IncomeCorrelated mode
+    /// Then the outgoings should decrease proportionally with lower income
+    /// </summary>
+    [Fact]
+    public async Task Calculate_IncomeCorrelatedWithIncomeAdjustment_OutgoingsFollowIncome()
+    {
+        // Arrange
+        var accountId = Guid.NewGuid();
+        _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId]));
+
+        // Plan with income starting at 8000, then dropping by 3000 in month 2
+        var incomeStrategy = new IncomeStrategy
+        {
+            Mode = "ManualRecurring",
+            ManualRecurring = new ManualRecurringIncome { Amount = 8000m, Frequency = "Monthly" },
+            ManualAdjustments =
+            [
+                new ManualAdjustment { Date = new DateOnly(2024, 8, 1), DeltaAmount = -3000m }
+            ],
+        };
+
+        var outgoingStrategy = new OutgoingStrategy
+        {
+            Mode = "IncomeCorrelated",
+            LookbackMonths = 6,
+        };
+
+        var plan = new DomainForecastPlan(Guid.NewGuid())
+        {
+            FamilyId = _mocks.User.FamilyId,
+            Name = "Test Plan",
+            StartDate = new DateOnly(2024, 7, 1),
+            EndDate = new DateOnly(2024, 9, 30),
+            StartingBalanceMode = StartingBalanceMode.ManualAmount,
+            StartingBalanceAmount = 20000m,
+            AccountScopeMode = AccountScopeMode.AllAccounts,
+            CurrencyCode = "AUD",
+            IncomeStrategySerialized = JsonSerializer.Serialize(incomeStrategy, JsonOptions),
+            OutgoingStrategySerialized = JsonSerializer.Serialize(outgoingStrategy, JsonOptions),
+            CreatedUtc = DateTime.UtcNow,
+            UpdatedUtc = DateTime.UtcNow,
+        };
+
+        _mocks.InstrumentRepositoryMock
+            .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<DomainInstrument>());
+
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>());
+
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetMonthlyBalancesForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyBalance>>());
+
+        // Perfect linear relationship: expense = 1000 + 0.5 * income
+        // Historical avg income = 7500
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>
+            {
+                [accountId] = CreateMonthlyData(
+                    new DateOnly(2024, 1, 1),
+                    [(5000m, 3500m), (6000m, 4000m), (7000m, 4500m), (8000m, 5000m), (9000m, 5500m), (10000m, 6000m)])
+            });
+
+        var engine = new ForecastEngine(
+            _mocks.ReportRepositoryMock.Object,
+            _mocks.InstrumentRepositoryMock.Object,
+            _mocks.User);
+
+        // Act
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
+
+        // Assert
+        var months = result.Months.ToList();
+
+        // Regression: expense = 1000 + 0.5 * income
+        // Historical avg income = 7500, plan base income = 8000, offset = -500
+        // Month 1 (income 8000): 1000 + 0.5 * (8000 + (-500)) = 1000 + 3750 = 4750
+        // Month 2 (income 5000): 1000 + 0.5 * (5000 + (-500)) = 1000 + 2250 = 3250
+        // Month 3 (income 5000): same as month 2 = 3250
+        Assert.Equal(4750m, months[0].BaselineOutgoingsTotal);
+        Assert.Equal(3250m, months[1].BaselineOutgoingsTotal);
+        Assert.Equal(3250m, months[2].BaselineOutgoingsTotal);
+
+        // Outgoings should be lower in months with lower income
+        Assert.True(months[1].BaselineOutgoingsTotal < months[0].BaselineOutgoingsTotal);
+    }
+
+    /// <summary>
+    /// Given valid regression data from multiple accounts
+    /// When the forecast is calculated with IncomeCorrelated mode
+    /// Then the regression should aggregate across all accounts
+    /// </summary>
+    [Fact]
+    public async Task Calculate_IncomeCorrelatedMultipleAccounts_AggregatesAcrossAccounts()
+    {
+        // Arrange
+        var accountId1 = Guid.NewGuid();
+        var accountId2 = Guid.NewGuid();
+        _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId1, accountId2]));
+
+        var plan = CreatePlanWithStrategies(
+            startDate: new DateOnly(2024, 7, 1),
+            endDate: new DateOnly(2024, 7, 31),
+            startingBalance: 20000m,
+            monthlyIncome: 6000m,
+            lookbackMonths: 6,
+            outgoingMode: "IncomeCorrelated");
+
+        var account1 = new LogicalAccount(accountId1, [])
+        {
+            Name = "Transaction Account",
+            Balance = 15000m,
+            AccountType = AccountType.Transaction,
+        };
+        var account2 = new LogicalAccount(accountId2, [])
+        {
+            Name = "Credit Card",
+            Balance = 5000m,
+            AccountType = AccountType.Transaction,
+        };
+
+        _mocks.InstrumentRepositoryMock
+            .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<DomainInstrument> { account1, account2 });
+
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>());
+
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetMonthlyBalancesForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyBalance>>());
+
+        // Account 1: income 4000/month, expenses 2000/month (half of income through each account)
+        // Account 2: income 1000/month, expenses 1000/month
+        // Combined per month: income = 5000..10000, expense = 3000..5500
+        // This is equivalent to the single-account test data
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>
+            {
+                [accountId1] = CreateMonthlyData(
+                    new DateOnly(2024, 1, 1),
+                    [(4000m, 2000m), (5000m, 2500m), (6000m, 3000m), (7000m, 3500m), (8000m, 4000m), (9000m, 4500m)]),
+                [accountId2] = CreateMonthlyData(
+                    new DateOnly(2024, 1, 1),
+                    [(1000m, 1000m), (1000m, 1000m), (1000m, 1000m), (1000m, 1000m), (1000m, 1000m), (1000m, 1000m)])
+            });
+
+        var engine = new ForecastEngine(
+            _mocks.ReportRepositoryMock.Object,
+            _mocks.InstrumentRepositoryMock.Object,
+            _mocks.User);
+
+        // Act
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.NotNull(result.Summary.Regression);
+        Assert.False(result.Summary.Regression.FellBackToFlatAverage);
+        Assert.True(result.Summary.Regression.RSquared > 0.5m);
+    }
+
+    /// <summary>
+    /// Given the HistoricalAverage outgoing mode (default)
+    /// When the forecast is calculated
+    /// Then no regression diagnostics should be present in the summary
+    /// </summary>
+    [Fact]
+    public async Task Calculate_HistoricalAverageMode_NoRegressionDiagnostics()
+    {
+        // Arrange
+        var accountId = Guid.NewGuid();
+        _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId]));
+
+        var plan = CreatePlanWithStrategies(
+            startDate: new DateOnly(2024, 1, 1),
+            endDate: new DateOnly(2024, 3, 31),
+            startingBalance: 10000m,
+            monthlyIncome: 5000m,
+            lookbackMonths: 0);
+
+        SetupEmptyRepositoryMocks();
+
+        var engine = new ForecastEngine(
+            _mocks.ReportRepositoryMock.Object,
+            _mocks.InstrumentRepositoryMock.Object,
+            _mocks.User);
+
+        // Act
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Null(result.Summary.Regression);
+    }
+
+    /// <summary>
+    /// Given historical data with zero variance in income (all months identical)
+    /// When the forecast is calculated with IncomeCorrelated mode
+    /// Then the regression should fall back to flat average because regression cannot be fitted
+    /// </summary>
+    [Fact]
+    public async Task Calculate_IncomeCorrelatedZeroVariance_FallsBackToFlatAverage()
+    {
+        // Arrange
+        var accountId = Guid.NewGuid();
+        _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId]));
+
+        var plan = CreatePlanWithStrategies(
+            startDate: new DateOnly(2024, 7, 1),
+            endDate: new DateOnly(2024, 9, 30),
+            startingBalance: 10000m,
+            monthlyIncome: 5000m,
+            lookbackMonths: 12,
+            outgoingMode: "IncomeCorrelated");
+
+        _mocks.InstrumentRepositoryMock
+            .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<DomainInstrument>());
+
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>());
+
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetMonthlyBalancesForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyBalance>>());
+
+        // All months have identical income — zero variance, regression denominator = 0
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>
+            {
+                [accountId] = CreateMonthlyData(
+                    new DateOnly(2024, 1, 1),
+                    [(5000m, 3000m), (5000m, 3200m), (5000m, 2800m), (5000m, 3100m), (5000m, 2900m), (5000m, 3000m)])
+            });
+
+        var engine = new ForecastEngine(
+            _mocks.ReportRepositoryMock.Object,
+            _mocks.InstrumentRepositoryMock.Object,
+            _mocks.User);
+
+        // Act
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
+
+        // Assert
+        // Flat average = (3000 + 3200 + 2800 + 3100 + 2900 + 3000) / 6 = 3000
+        Assert.All(result.Months, m => Assert.Equal(3000m, m.BaselineOutgoingsTotal));
+
+        Assert.NotNull(result.Summary.Regression);
+        Assert.True(result.Summary.Regression.FellBackToFlatAverage);
+    }
+
+    /// <summary>
+    /// Given a valid regression where an income adjustment drops income far below the base
+    /// When the forecast is calculated with IncomeCorrelated mode
+    /// Then the outgoings should be floored at zero (not go negative)
+    /// </summary>
+    [Fact]
+    public async Task Calculate_IncomeCorrelatedNegativePrediction_FloorsAtZero()
+    {
+        // Arrange
+        var accountId = Guid.NewGuid();
+        _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId]));
+
+        // Plan with base income 8000, then a -10000 adjustment in month 1 → effective month income = -2000
+        // The offset is computed from planBaseIncome (8000), so the regression input will be:
+        //   monthIncome + offset = -2000 + (avgHistorical - 8000)
+        // With avgHistorical = 7500, offset = -500, effective = -2500
+        // Regression: 1000 + 0.5 * (-2500) = -250 → floored to 0
+        var incomeStrategy = new IncomeStrategy
+        {
+            Mode = "ManualRecurring",
+            ManualRecurring = new ManualRecurringIncome { Amount = 8000m, Frequency = "Monthly" },
+            ManualAdjustments =
+            [
+                new ManualAdjustment { Date = new DateOnly(2024, 7, 1), DeltaAmount = -10000m }
+            ],
+        };
+
+        var outgoingStrategy = new OutgoingStrategy
+        {
+            Mode = "IncomeCorrelated",
+            LookbackMonths = 6,
+        };
+
+        var plan = new DomainForecastPlan(Guid.NewGuid())
+        {
+            FamilyId = _mocks.User.FamilyId,
+            Name = "Test Plan",
+            StartDate = new DateOnly(2024, 7, 1),
+            EndDate = new DateOnly(2024, 7, 31),
+            StartingBalanceMode = StartingBalanceMode.ManualAmount,
+            StartingBalanceAmount = 10000m,
+            AccountScopeMode = AccountScopeMode.AllAccounts,
+            CurrencyCode = "AUD",
+            IncomeStrategySerialized = JsonSerializer.Serialize(incomeStrategy, JsonOptions),
+            OutgoingStrategySerialized = JsonSerializer.Serialize(outgoingStrategy, JsonOptions),
+            CreatedUtc = DateTime.UtcNow,
+            UpdatedUtc = DateTime.UtcNow,
+        };
+
+        _mocks.InstrumentRepositoryMock
+            .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<DomainInstrument>());
+
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>());
+
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetMonthlyBalancesForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyBalance>>());
+
+        // Regression: expense = 1000 + 0.5 * income, avg income = 7500
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>
+            {
+                [accountId] = CreateMonthlyData(
+                    new DateOnly(2024, 1, 1),
+                    [(5000m, 3500m), (6000m, 4000m), (7000m, 4500m), (8000m, 5000m), (9000m, 5500m), (10000m, 6000m)])
+            });
+
+        var engine = new ForecastEngine(
+            _mocks.ReportRepositoryMock.Object,
+            _mocks.InstrumentRepositoryMock.Object,
+            _mocks.User);
+
+        // Act
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
+
+        // Assert
+        var month = result.Months.First();
+        Assert.Equal(0m, month.BaselineOutgoingsTotal); // Floored at zero
+    }
+
+    #endregion
+
+    /// <summary>
+    /// Creates monthly credit/debit total data for testing regression.
+    /// Each tuple is (income, expense). Debit totals are stored as negative values
+    /// to match the SP sign convention.
+    /// </summary>
+    private static List<MonthlyCreditDebitTotal> CreateMonthlyData(DateOnly startMonth, IEnumerable<(decimal Income, decimal Expense)> data)
+    {
+        var result = new List<MonthlyCreditDebitTotal>();
+        var currentMonth = startMonth;
+
+        foreach (var (income, expense) in data)
+        {
+            result.Add(new MonthlyCreditDebitTotal
+            {
+                Month = currentMonth,
+                TransactionType = TransactionFilterType.Credit,
+                Total = income,
+            });
+            result.Add(new MonthlyCreditDebitTotal
+            {
+                Month = currentMonth,
+                TransactionType = TransactionFilterType.Debit,
+                Total = -expense, // Negative to match SP sign convention
+            });
+            currentMonth = currentMonth.AddMonths(1);
+        }
+
+        return result;
+    }
+
     private void SetupEmptyRepositoryMocks()
     {
         _mocks.InstrumentRepositoryMock
@@ -1073,5 +1724,13 @@ public class ForecastEngineTests
                 It.IsAny<DateOnly>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyBalance>>());
+
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(),
+                It.IsAny<DateOnly>(),
+                It.IsAny<DateOnly>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>());
     }
 }
