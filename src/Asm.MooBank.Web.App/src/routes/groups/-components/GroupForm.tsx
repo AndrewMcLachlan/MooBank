@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import type { Group } from "api/types.gen";
 import { useNavigate } from "@tanstack/react-router";
-import { useCreateGroup, useUpdateGroup } from "services";
+import { useCreateGroup } from "../-hooks/useCreateGroup";
+import { useUpdateGroup } from "../-hooks/useUpdateGroup";
 import { Page } from "@andrewmclachlan/moo-app";
 import { emptyGuid, Form, NavItem, SectionForm } from "@andrewmclachlan/moo-ds";
 import { Button, } from "@andrewmclachlan/moo-ds";

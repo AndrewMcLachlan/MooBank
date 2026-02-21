@@ -4,7 +4,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Page, useIdParams } from "@andrewmclachlan/moo-app";
 import { getNumberOfPages, IconButton, Pagination } from "@andrewmclachlan/moo-ds";
 import type { Bill } from "api/types.gen";
-import { useBillAccount, useBills } from "services";
+import { useBillAccount } from "../-hooks/useBillAccount";
+import { useBills } from "../-hooks/useBills";
 
 import { Button, Table } from "@andrewmclachlan/moo-ds";
 import { AddBill } from "../-components/AddBill";

@@ -1,4 +1,4 @@
-import { useInOutTrendReport } from "services";
+import { useInOutTrendReport } from "../../../-hooks/useInOutTrendReport";
 
 import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, ChartData, registerables } from "chart.js";

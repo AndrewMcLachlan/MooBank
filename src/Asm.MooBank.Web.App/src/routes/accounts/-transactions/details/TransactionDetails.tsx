@@ -9,7 +9,7 @@ import { Button, Col, Modal, OverlayTrigger, Popover, Row } from "@andrewmclachl
 import { ExtraInfo } from "./ExtraInfo";
 import { TransactionSplits } from "./TransactionSplits";
 import { notEquals } from "helpers/equals";
-import { useUpdateTransaction } from "services";
+import { useUpdateTransaction } from "routes/accounts/-hooks/useUpdateTransaction";
 import { Amount } from "components/Amount";
 
 export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => {

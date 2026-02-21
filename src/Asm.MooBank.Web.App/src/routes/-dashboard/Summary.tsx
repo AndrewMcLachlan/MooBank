@@ -1,4 +1,4 @@
-import { useFormattedAccounts } from "services";
+import { useFormattedAccounts } from "hooks/useFormattedAccounts";
 import { Section, Widget } from "@andrewmclachlan/moo-ds";
 import { KeyValue } from "components/KeyValue";
 import { Amount } from "components/Amount";

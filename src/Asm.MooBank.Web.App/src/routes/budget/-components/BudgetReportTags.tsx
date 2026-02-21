@@ -7,7 +7,8 @@ import { Bar } from "react-chartjs-2";
 import { Section } from "@andrewmclachlan/moo-ds";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useChartColours } from "helpers/chartColours";
-import { useBudgetReportForMonthBreakdown, useBudgetReportForMonthBreakdownUnbudgeted } from "services/BudgetService";
+import { useBudgetReportForMonthBreakdown } from "../-hooks/useBudgetReportForMonthBreakdown";
+import { useBudgetReportForMonthBreakdownUnbudgeted } from "../-hooks/useBudgetReportForMonthBreakdownUnbudgeted";
 
 ChartJS.register(...registerables);
 ChartJS.register(chartTrendline);

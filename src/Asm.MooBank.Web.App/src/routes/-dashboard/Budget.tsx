@@ -7,7 +7,7 @@ import { ChartData } from "chart.js";
 import { useChartColours } from "helpers";
 import { lastMonth, lastMonthName } from "helpers/dateFns";
 import { Bar } from "react-chartjs-2";
-import { useBudgetReportForMonth } from "services/BudgetService";
+import { useBudgetReportForMonth } from "./-hooks/useBudgetReportForMonth";
 
 export const BudgetWidget: React.FC = () => {
 

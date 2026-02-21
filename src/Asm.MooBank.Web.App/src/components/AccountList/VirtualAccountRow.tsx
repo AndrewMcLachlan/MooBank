@@ -5,7 +5,7 @@ import { numberClassName } from "helpers";
 import { EditColumn, emptyGuid, useClickAway } from "@andrewmclachlan/moo-ds";
 
 import type { VirtualInstrument } from "api/types.gen";
-import { useUpdateVirtualInstrumentBalance } from "services";
+import { useUpdateVirtualInstrumentBalance } from "routes/accounts/-hooks/useUpdateVirtualInstrumentBalance";
 import { useNavigate } from "@tanstack/react-router";
 import { Amount } from "components/Amount";
 

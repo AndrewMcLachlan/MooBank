@@ -5,7 +5,7 @@ import type { Transaction, TransactionSplit as TransactionSplitModel, Transactio
 import { isCredit } from "helpers/transactions";
 import React, { useState } from "react";
 import { Col, Form, Input, Row } from "@andrewmclachlan/moo-ds";
-import { useInvalidateSearch } from "services";
+import { useInvalidateSearch } from "routes/accounts/-hooks/useInvalidateSearch";
 import { TransactionSplitTagPanel } from "./TransactionSplitTagPanel";
 
 export const TransactionSplit: React.FC<TransactionSplitProps> = ({ transaction, split, splitChanged, removeSplit }) => {

@@ -3,7 +3,7 @@ import { format } from "date-fns";
 import type { PlannedItemDateMode, PlannedItemType, ScheduleFrequency } from "api/types.gen";
 import { useState } from "react";
 import { Form, Input } from "@andrewmclachlan/moo-ds";
-import { useCreatePlannedItem } from "services/ForecastService";
+import { useCreatePlannedItem } from "../-hooks/useCreatePlannedItem";
 
 interface NewPlannedItemProps {
     planId: string;

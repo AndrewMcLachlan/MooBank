@@ -3,7 +3,8 @@ import { format, parseISO } from "date-fns";
 import type { ForecastPlan, PlannedItem, ScheduleFrequency } from "api/types.gen";
 import { useState } from "react";
 import { Input } from "@andrewmclachlan/moo-ds";
-import { useDeletePlannedItem, useUpdatePlannedItem } from "services/ForecastService";
+import { useUpdatePlannedItem } from "../-hooks/useUpdatePlannedItem";
+import { useDeletePlannedItem } from "../-hooks/useDeletePlannedItem";
 import { NewPlannedItem } from "./NewPlannedItem";
 
 interface PlannedItemsTableProps {

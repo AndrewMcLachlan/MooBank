@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Upload, FilesAddedEvent } from "@andrewmclachlan/moo-ds";
-import { useImportTransactions } from "services";
+import { useImportTransactions } from "routes/accounts/-hooks/useImportTransactions";
 import { useState } from "react";
 import { Modal } from "@andrewmclachlan/moo-ds";
 import { useAccount } from "components";

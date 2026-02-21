@@ -6,7 +6,8 @@ import { useNavigate } from "@tanstack/react-router";
 import { Page, useIdParams } from "@andrewmclachlan/moo-app";
 
 import type { Family } from "api/types.gen";
-import { useFamily, useUpdateFamily } from "services";
+import { useFamily } from "./-hooks/useFamily";
+import { useUpdateFamily } from "./-hooks/useUpdateFamily";
 import { FamilyForm } from "./-components/FamilyForm";
 
 export const Route = createFileRoute("/settings/families/$id")({

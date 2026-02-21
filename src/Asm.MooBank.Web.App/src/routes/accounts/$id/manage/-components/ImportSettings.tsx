@@ -1,7 +1,7 @@
 import React from "react";
 
 import { FormComboBox } from "@andrewmclachlan/moo-ds";
-import { useImporterTypes } from "services";
+import { useImporterTypes } from "routes/accounts/-hooks/useImporterTypes";
 
 export const ImportSettings: React.FC = () => {
 

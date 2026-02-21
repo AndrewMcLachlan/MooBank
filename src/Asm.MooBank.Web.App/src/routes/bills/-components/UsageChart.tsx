@@ -4,7 +4,8 @@ import annotationPlugin, { AnnotationOptions } from "chartjs-plugin-annotation";
 import { Line } from "react-chartjs-2";
 import { Section } from "@andrewmclachlan/moo-ds";
 
-import { BillFilter, useUsageReport } from "services/BillService";
+import type { BillFilter } from "../-hooks/types";
+import { useUsageReport } from "../-hooks/useUsageReport";
 import { chartColours, useChartColours } from "helpers/chartColours";
 
 ChartJS.register(...registerables, annotationPlugin);

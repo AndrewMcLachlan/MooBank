@@ -3,7 +3,8 @@ import { ChartData, Chart as ChartJS, registerables } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { Section } from "@andrewmclachlan/moo-ds";
 
-import { BillFilter, useServiceChargeReport } from "services/BillService";
+import type { BillFilter } from "../-hooks/types";
+import { useServiceChargeReport } from "../-hooks/useServiceChargeReport";
 import { chartColours, useChartColours } from "helpers/chartColours";
 
 ChartJS.register(...registerables);

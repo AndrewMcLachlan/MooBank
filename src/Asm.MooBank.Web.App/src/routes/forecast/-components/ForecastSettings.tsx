@@ -3,8 +3,8 @@ import { format, parseISO } from "date-fns";
 import { useState } from "react";
 import { Button, Col, Form, Input, OverlayTrigger, Popover, Row } from "@andrewmclachlan/moo-ds";
 import type { AccountScopeMode, ForecastPlan, RegressionDiagnostics } from "api/types.gen";
-import { useUpdateForecastPlan } from "services/ForecastService";
-import { useAccounts } from "services/AccountService";
+import { useUpdateForecastPlan } from "../-hooks/useUpdateForecastPlan";
+import { useAccounts } from "hooks/useAccounts";
 
 interface ForecastSettingsProps {
     plan?: ForecastPlan;

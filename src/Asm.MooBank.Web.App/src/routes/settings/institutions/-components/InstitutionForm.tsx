@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 import { Button } from "@andrewmclachlan/moo-ds";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "@tanstack/react-router";
-import { useCreateInstitution, useUpdateInstitution } from "services";
+import { useCreateInstitution } from "../-hooks/useCreateInstitution";
+import { useUpdateInstitution } from "../-hooks/useUpdateInstitution";
 
 export const InstitutionForm: React.FC<InstitutionFormProps> = ({ institution = null }) => {
 

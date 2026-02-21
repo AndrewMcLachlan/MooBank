@@ -3,7 +3,8 @@ import React, { useState, useEffect, useMemo } from "react";
 import { TagPanel } from "components";
 
 import type { Tag, TransactionSplit } from "api/types.gen";
-import { useCreateTag, useTags } from "services";
+import { useCreateTag } from "hooks/useCreateTag";
+import { useTags } from "hooks/useTags";
 
 export const TransactionSplitTagPanel: React.FC<TransactionSplitPanelProps> = ({ alwaysShowEditPanel = false, ...props }) => {
 

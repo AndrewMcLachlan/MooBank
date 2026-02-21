@@ -7,7 +7,9 @@ import { DeleteIcon, EditColumn, Icon, IconButton, SectionTable } from "@andrewm
 
 import { AccountPage, useAccount } from "components";
 import type { Controller, InstitutionAccount, LogicalAccount } from "api/types.gen";
-import { useCloseVirtualAccount, useReprocessTransactions, useVirtualInstruments } from "services";
+import { useCloseVirtualAccount } from "routes/accounts/-hooks/useCloseVirtualAccount";
+import { useReprocessTransactions } from "routes/accounts/-hooks/useReprocessTransactions";
+import { useVirtualInstruments } from "routes/accounts/-hooks/useVirtualInstruments";
 import { AccountForm } from "../../-components/AccountForm";
 import { InstitutionAccountRow } from "./-components/InstitutionAccountRow";
 import { useState } from "react";

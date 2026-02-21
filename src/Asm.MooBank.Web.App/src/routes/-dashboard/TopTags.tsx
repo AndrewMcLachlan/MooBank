@@ -1,7 +1,7 @@
 import { Widget } from "@andrewmclachlan/moo-ds";
 import { lastMonth, lastMonthName } from "helpers/dateFns";
 import { TopTags } from "../accounts/$id/reports/-components/TopTags";
-import { useAccounts } from "services";
+import { useAccounts } from "hooks/useAccounts";
 
 export const TopTagsWidget: React.FC = () => {
 

@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 
 import type { Tag } from "api/types.gen";
 
-import { useTagsHierarchy } from "services";
+import { useTagsHierarchy } from "./-hooks/useTagsHierarchy";
 import { TagsPage } from "./-components/TagsPage";
 import { Container } from "@andrewmclachlan/moo-ds";
 import classNames from "classnames";

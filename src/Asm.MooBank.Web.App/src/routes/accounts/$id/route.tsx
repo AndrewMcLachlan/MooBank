@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { AccountProvider, TransactionListProvider } from "../../../components";
-import { useAccount } from "../../../services";
+import { useAccount } from "../-hooks/useAccount";
 
 function AccountLayout() {
     const { id } = Route.useParams();

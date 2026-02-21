@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
-import { useBreakdownReport, useTag } from "services";
+import { useBreakdownReport } from "../../../-hooks/useBreakdownReport";
+import { useTag } from "../../../-hooks/useTag";
 
 import { ChartData, Chart as ChartJS, LegendItem, registerables } from "chart.js";
 import { Doughnut, getElementAtEvent } from "react-chartjs-2";

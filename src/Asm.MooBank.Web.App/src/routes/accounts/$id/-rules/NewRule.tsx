@@ -6,7 +6,9 @@ import type { Tag } from "api/types.gen";
 import { emptyRule } from "helpers/rules";
 
 import { SaveIcon } from "@andrewmclachlan/moo-ds";
-import { useCreateRule, useCreateTag, useTags } from "services";
+import { useCreateTag } from "hooks/useCreateTag";
+import { useTags } from "hooks/useTags";
+import { useCreateRule } from "routes/accounts/-hooks/useCreateRule";
 
 export const NewRule: React.FC = () => {
 

@@ -5,7 +5,7 @@ import { getNumberOfPages, Pagination, PaginationControls, PageSize, SectionTabl
 
 import { useAccount } from "components";
 import type { Transaction } from "api/types.gen";
-import { useTransactions } from "services";
+import { useTransactions } from "routes/accounts/-hooks/useTransactions";
 import { State } from "store/state";
 import { TransactionsSlice } from "store/Transactions";
 import { useDebounce } from "use-debounce";

@@ -7,7 +7,7 @@ import { Page } from "@andrewmclachlan/moo-app";
 
 import type { Family } from "api/types.gen";
 import { emptyFamily } from "helpers/families";
-import { useCreateFamily } from "services";
+import { useCreateFamily } from "./-hooks/useCreateFamily";
 import { FamilyForm } from "./-components/FamilyForm";
 
 export const Route = createFileRoute("/settings/families/add")({

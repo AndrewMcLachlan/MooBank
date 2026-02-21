@@ -1,6 +1,6 @@
 import {  FormComboBox } from "@andrewmclachlan/moo-ds";
 import React from "react";
-import { useGroups } from "services";
+import { useGroups } from "routes/groups/-hooks/useGroups";
 
 export const GroupSelector: React.FC = () => {
 

@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { AccountProvider, TransactionListProvider } from "../../../../components";
-import { useVirtualInstrument } from "../../../../services";
+import { useVirtualInstrument } from "routes/accounts/-hooks/useVirtualInstrument";
 
 function VirtualAccountLayout() {
     const { id, virtualId } = Route.useParams();

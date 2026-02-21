@@ -2,7 +2,7 @@ import React, { PropsWithChildren } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 
 import type { AccountTypeSummary, Account } from "api/types.gen";
-import { useBillAccountsByType } from "services";
+import { useBillAccountsByType } from "./-hooks/useBillAccountsByType";
 
 import { Page, useIdParams } from "@andrewmclachlan/moo-app";
 import { SectionTable } from "@andrewmclachlan/moo-ds";

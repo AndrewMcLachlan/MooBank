@@ -6,7 +6,7 @@ import { useClickAway } from "@andrewmclachlan/moo-ds";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { useNavigate } from "@tanstack/react-router";
-import { useUpdateBalance } from "services";
+import { useUpdateBalance } from "hooks/useUpdateBalance";
 import { AccountRowProps } from "./AccountRow";
 import { VirtualAccountRow } from "./VirtualAccountRow";
 import { Amount } from "components/Amount";

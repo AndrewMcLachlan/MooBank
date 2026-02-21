@@ -9,7 +9,7 @@ import { Form, SectionForm } from "@andrewmclachlan/moo-ds";
 import { CurrencyInput } from "components";
 import { GroupSelector } from "components/GroupSelector";
 import { useForm } from "react-hook-form";
-import { useCreateStockHolding } from "services";
+import { useCreateStockHolding } from "./-hooks/useCreateStockHolding";
 import type { CreateStock } from "api/types.gen";
 
 export const Route = createFileRoute("/shares/create")({

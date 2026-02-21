@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useParams } from "@tanstack/react-router";
-import { useGroup } from "services";
+import { useGroup } from "../-hooks/useGroup";
 import { GroupForm } from "../-components/GroupForm";
 
 export const Route = createFileRoute("/groups/$id/manage")({

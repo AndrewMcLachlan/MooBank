@@ -10,7 +10,7 @@ import { Bar } from "react-chartjs-2";
 
 import { useChartColours } from "helpers/chartColours";
 import { Period } from "helpers/dateFns";
-import { useInOutReport as defaultReport } from "services";
+import { useInOutReport as defaultReport } from "hooks/useInOutReport";
 import { SpinnerContainer } from "@andrewmclachlan/moo-ds";
 
 ChartJS.register(...registerables);

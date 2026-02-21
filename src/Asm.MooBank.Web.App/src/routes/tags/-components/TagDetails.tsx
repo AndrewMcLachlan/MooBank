@@ -2,7 +2,7 @@ import React from "react";
 import { Tooltip, useUpdatingState } from "@andrewmclachlan/moo-ds";
 import type { Tag } from "api/types.gen";
 import { Button, Input, Modal } from "@andrewmclachlan/moo-ds";
-import { useUpdateTag } from "services";
+import { useUpdateTag } from "../-hooks/useUpdateTag";
 import { TransactionTagTransactionTagPanel } from "./TagTagPanel";
 import { onKeyLeave } from "helpers";
 

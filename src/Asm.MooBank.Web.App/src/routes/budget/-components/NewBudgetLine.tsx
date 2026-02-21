@@ -5,8 +5,9 @@ import { ComboBox, SaveIcon } from "@andrewmclachlan/moo-ds";
 import type { BudgetLineType, Tag } from "api/types.gen";
 import { useEffect, useState } from "react";
 import { Input } from "@andrewmclachlan/moo-ds";
-import { useTags } from "services";
-import { useCreateBudgetLine, useGetTagValue } from "services/BudgetService";
+import { useTags } from "hooks/useTags";
+import { useCreateBudgetLine } from "../-hooks/useCreateBudgetLine";
+import { useGetTagValue } from "../-hooks/useGetTagValue";
 
 export const NewBudgetLine: React.FC<NewBudgetLineProps> = (props) => {
 

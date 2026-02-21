@@ -6,7 +6,9 @@ import type { UserWithCards, UserCard } from "api/types.gen";
 import React, { useEffect, useState } from "react";
 import { Button } from "@andrewmclachlan/moo-ds";
 import { useForm } from "react-hook-form";
-import { useAccountsList, useUpdateUser, useUser } from "services";
+import { useAccountsList } from "hooks/useAccountsList";
+import { useUpdateUser } from "hooks/useUpdateUser";
+import { useUser } from "hooks/useUser";
 
 export const Route = createFileRoute("/profile")({
     component: Profile,

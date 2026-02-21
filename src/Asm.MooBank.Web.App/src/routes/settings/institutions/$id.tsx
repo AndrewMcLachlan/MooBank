@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useInstitution } from "services";
+import { useInstitution } from "./-hooks/useInstitution";
 import { SettingsPage } from "../-components/SettingsPage";
 import { InstitutionForm } from "./-components/InstitutionForm";
 import { useIdParams } from "@andrewmclachlan/moo-app";

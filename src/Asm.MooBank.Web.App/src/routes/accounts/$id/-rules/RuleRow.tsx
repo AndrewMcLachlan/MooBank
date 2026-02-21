@@ -3,8 +3,12 @@ import React, { useEffect, useState } from "react";
 import { DeleteIcon, EditColumn } from "@andrewmclachlan/moo-ds";
 import { TagPanel } from "components";
 import type { Rule, Tag } from "api/types.gen";
-import { useAddRuleTag, useDeleteRule, useRemoveRuleTag, useUpdateRule } from "services";
-import { useCreateTag, useTags } from "services/TagService";
+import { useAddRuleTag } from "routes/accounts/-hooks/useAddRuleTag";
+import { useDeleteRule } from "routes/accounts/-hooks/useDeleteRule";
+import { useRemoveRuleTag } from "routes/accounts/-hooks/useRemoveRuleTag";
+import { useUpdateRule } from "routes/accounts/-hooks/useUpdateRule";
+import { useCreateTag } from "hooks/useCreateTag";
+import { useTags } from "hooks/useTags";
 
 export const RuleRow: React.FC<RuleRowProps> = (props) => {
 

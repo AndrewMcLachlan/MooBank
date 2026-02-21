@@ -8,7 +8,7 @@ import { useStockHolding } from "../-components/StockHoldingProvider";
 
 import { Form, SectionForm } from "@andrewmclachlan/moo-ds";
 
-import { useUpdateStockHolding } from "services";
+import { useUpdateStockHolding } from "../-hooks/useUpdateStockHolding";
 import { GroupSelector } from "components/GroupSelector";
 import { useForm } from "react-hook-form";
 import { CurrencyInput } from "components";

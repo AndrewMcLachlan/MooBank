@@ -4,10 +4,10 @@ import { Chart as ChartJS, registerables } from "chart.js";
 import chartTrendline from "chartjs-plugin-trendline";
 
 import { Section } from "@andrewmclachlan/moo-ds";
-import { useBudgetYear } from "hooks/useBudgetYear";
+import { useBudgetYear } from "../-hooks/useBudgetYear";
 import { Col, Input, Row } from "@andrewmclachlan/moo-ds";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import { useBudgetYears } from "services/BudgetService";
+import { useBudgetYears } from "../-hooks/useBudgetYears";
 import { BudgetPage } from "./BudgetPage";
 import { BudgetReportTags } from "./BudgetReportTags";
 import { BudgetReportYear } from "./BudgetReportYear";

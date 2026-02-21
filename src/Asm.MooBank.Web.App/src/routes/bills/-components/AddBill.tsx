@@ -6,7 +6,8 @@ import { format } from "date-fns";
 import { Form, Section, SectionForm } from "@andrewmclachlan/moo-ds";
 
 import type { CreateBill } from "helpers/bills";
-import { useCreateBill, useBillAccounts } from "services/BillService";
+import { useCreateBill } from "../-hooks/useCreateBill";
+import { useBillAccounts } from "../-hooks/useBillAccounts";
 
 export interface AddBillProps {
     accountId?: string;

@@ -4,7 +4,7 @@ import { Section } from "@andrewmclachlan/moo-ds";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import type { Account } from "api/types.gen";
-import { BillFilter } from "services/BillService";
+import type { BillFilter } from "../-hooks/types";
 
 export interface BillFilterPanelProps {
     accounts?: Account[];

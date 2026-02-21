@@ -6,7 +6,7 @@ import { emptyAsset } from "helpers/assets";
 
 import { Page } from "@andrewmclachlan/moo-app";
 import { Form, SectionForm } from "@andrewmclachlan/moo-ds";
-import { useCreateAsset } from "services";
+import { useCreateAsset } from "./-hooks/useCreateAsset";
 import { useForm } from "react-hook-form";
 import { GroupSelector } from "components/GroupSelector";
 import { CurrencyInput } from "components";
