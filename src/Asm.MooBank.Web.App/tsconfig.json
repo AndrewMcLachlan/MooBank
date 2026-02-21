@@ -19,7 +19,7 @@
     //"noUnusedLocals": true,
     //"noUnusedParameters": true,
     "importsNotUsedAsValues": "remove",
-    "strictNullChecks": false,
+    "strictNullChecks": true,
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": "src",

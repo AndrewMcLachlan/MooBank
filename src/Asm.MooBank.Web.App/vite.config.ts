@@ -1,6 +1,7 @@
 import { defineConfig } from "vite"
 import { visualizer } from "rollup-plugin-visualizer";
 import react from "@vitejs/plugin-react"
+import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import svgr from "vite-plugin-svgr";
 import tsconfigpaths from "vite-tsconfig-paths";
 import { fileURLToPath } from "url"
@@ -39,7 +40,12 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [tsconfigpaths(),   
+    plugins: [tsconfigpaths(),
+        tanstackRouter({
+            target: "react",
+            routesDirectory: "./src/routes",
+            generatedRouteTree: "./src/routes.gen.ts",
+        }),
         svgr({
             svgrOptions: {
             plugins: ["@svgr/plugin-svgo", "@svgr/plugin-jsx"],
@@ -51,7 +57,7 @@ export default defineConfig({
             },
             },
             include: "**/*.svg",
-        }), 
+        }),
         react(), visualizer() as any],
     server: {
         port: 3005,
@@ -84,8 +90,8 @@ export default defineConfig({
                     if (id.includes("msal")) {
                         return "@msal";
                     }
-                    if (id.includes("react-router") || id.includes("@remix-run")) {
-                        return "@react-router";
+                    if (id.includes("@tanstack/react-router") || id.includes("@tanstack/router")) {
+                        return "@tanstack-router";
                     }
                     if (id.includes("chart.js")) {
                         return "@chart.js";

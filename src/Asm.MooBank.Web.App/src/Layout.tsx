@@ -2,7 +2,7 @@ import "./App.css";
 import * as Icons from "@andrewmclachlan/moo-icons";
 
 import React from "react";
-import { Link } from "react-router";
+import { Link } from "@tanstack/react-router";
 
 import { MooAppLayout } from "@andrewmclachlan/moo-app";
 import { Icon, NavItem } from "@andrewmclachlan/moo-ds";

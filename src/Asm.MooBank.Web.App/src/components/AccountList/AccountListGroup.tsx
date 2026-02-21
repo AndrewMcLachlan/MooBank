@@ -1,6 +1,6 @@
 import React from "react";
 import { Spinner } from "@andrewmclachlan/moo-ds";
-import { useNavigate } from "react-router";
+import { useNavigate } from "@tanstack/react-router";
 
 import { Icon, SectionTable } from "@andrewmclachlan/moo-ds";
 import { Reports } from "@andrewmclachlan/moo-icons";
@@ -18,7 +18,7 @@ export const AccountListGroup: React.FC<AccountListGroupProps> = ({ group, isLoa
     
     const handleReportClick = () => {
         if (group.id) {
-            navigate(`/groups/${group.id}/reports/monthly-balances`);
+            navigate({ to: `/groups/${group.id}/reports/monthly-balances` });
         }
     };
 

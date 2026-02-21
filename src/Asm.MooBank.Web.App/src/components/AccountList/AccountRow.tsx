@@ -2,7 +2,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import React, { useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate } from "@tanstack/react-router";
 
 import { numberClassName } from "helpers";
 
@@ -63,13 +63,13 @@ export const useAccountRowCommonState = (props: AccountRowProps) => {
 
         switch (props.instrument.instrumentType) {
             case "Asset":
-                navigate(`/assets/${props.instrument.id}`);
+                navigate({ to: `/assets/${props.instrument.id}` });
                 break;
             case "Shares":
-                navigate(`/shares/${props.instrument.id}`);
+                navigate({ to: `/shares/${props.instrument.id}` });
                 break;
             default:
-                navigate(`/accounts/${props.instrument.id}`);
+                navigate({ to: `/accounts/${props.instrument.id}` });
                 break;
         }
     };
