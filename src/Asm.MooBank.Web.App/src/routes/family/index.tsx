@@ -7,11 +7,11 @@ import { Button } from "@andrewmclachlan/moo-ds";
 import { useForm } from "react-hook-form";
 import { useMyFamily, useRemoveFamilyMember, useUpdateMyFamily, useUser } from "services";
 
-export const Route = createFileRoute("/family")({
+export const Route = createFileRoute("/family/")({
     component: MyFamily,
 });
 
-function MyFamily() {
+const MyFamily = () => {
 
     const { data: me } = useUser();
     const { data: family } = useMyFamily();

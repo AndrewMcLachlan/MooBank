@@ -43,8 +43,8 @@ export default defineConfig({
     plugins: [tsconfigpaths(),
         tanstackRouter({
             target: "react",
-            routesDirectory: "./src/routes",
-            generatedRouteTree: "./src/routes.gen.ts",
+            autoCodeSplitting: true,
+            quoteStyle: "double",
         }),
         svgr({
             svgrOptions: {

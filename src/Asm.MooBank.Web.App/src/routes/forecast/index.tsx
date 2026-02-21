@@ -4,14 +4,14 @@ import { useEffect, useState } from "react";
 import { Spinner } from "@andrewmclachlan/moo-ds";
 import { useForecastPlans, useForecastPlan, useRunForecast } from "services/ForecastService";
 import { useAccounts } from "services/AccountService";
-import { ForecastPage } from "./-forecast/ForecastPage";
-import { ForecastChart } from "./-forecast/ForecastChart";
-import { ForecastSummaryPanel } from "./-forecast/ForecastSummaryPanel";
-import { PlannedItemsTable } from "./-forecast/PlannedItemsTable";
-import { ForecastSettings } from "./-forecast/ForecastSettings";
-import { CreateForecastPlan } from "./-forecast/CreateForecastPlan";
+import { ForecastPage } from "./-components/ForecastPage";
+import { ForecastChart } from "./-components/ForecastChart";
+import { ForecastSummaryPanel } from "./-components/ForecastSummaryPanel";
+import { PlannedItemsTable } from "./-components/PlannedItemsTable";
+import { ForecastSettings } from "./-components/ForecastSettings";
+import { CreateForecastPlan } from "./-components/CreateForecastPlan";
 
-export const Route = createFileRoute("/forecast")({
+export const Route = createFileRoute("/forecast/")({
     component: Forecast,
 });
 

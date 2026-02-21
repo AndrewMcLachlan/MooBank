@@ -6,7 +6,7 @@ import { MooApp } from "@andrewmclachlan/moo-app";
 import { createRouter } from "@tanstack/react-router";
 import { Spinner } from "@andrewmclachlan/moo-ds";
 import { AppStore } from "./store/configureStore";
-import { routeTree } from "./routes.gen.ts";
+import { routeTree } from "./routeTree.gen.ts";
 import { client } from "./api/client.gen";
 
 export const App = () => {
