@@ -2,14 +2,23 @@ import "~/treeflex/dist/css/treeflex.css";
 
 import { Provider as ReduxProvider } from "react-redux";
 
-import { MooApp, createMooAppBrowserRouter } from "@andrewmclachlan/moo-app";
+import { MooApp } from "@andrewmclachlan/moo-app";
+import { createRouter } from "@tanstack/react-router";
+import { Spinner } from "@andrewmclachlan/moo-ds";
 import { AppStore } from "./store/configureStore";
-import { routes } from "Routes";
+import { routeTree } from "./routeTree.gen.ts";
 import { client } from "./api/client.gen";
 
 export const App = () => {
 
-    const router = createMooAppBrowserRouter(routes);
+    // @ts-expect-error strictNullChecks is false — TanStack Router requires it for full type safety
+    const router = createRouter({
+        routeTree,
+        defaultPreload: "intent",
+        defaultPreloadStaleTime: 0,
+        scrollRestoration: true,
+        defaultPendingComponent: Spinner,
+    })
 
     return (
         <ReduxProvider store={AppStore}>

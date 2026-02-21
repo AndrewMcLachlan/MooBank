@@ -6,7 +6,7 @@ import { EditColumn, emptyGuid, useClickAway } from "@andrewmclachlan/moo-ds";
 
 import type { VirtualInstrument } from "api/types.gen";
 import { useUpdateVirtualInstrumentBalance } from "services";
-import { useNavigate } from "react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { Amount } from "components/Amount";
 
 export const VirtualAccountRow: React.FC<VirtualAccountRowProps> = (props) => {
@@ -70,7 +70,7 @@ const useComponentState = (props: VirtualAccountRowProps) => {
     }
 
     const onRowClick = () => {
-        navigate(`/accounts/${props.accountId}/virtual/${props.account.id}`);
+        navigate({ to: `/accounts/${props.accountId}/virtual/${props.account.id}` });
     };
 
     return {

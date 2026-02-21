@@ -14,9 +14,9 @@
   },
   "type": "module",
   "dependencies": {
-    "@andrewmclachlan/moo-app": "^4.0.29",
-    "@andrewmclachlan/moo-ds": "^4.0.29",
-    "@andrewmclachlan/moo-icons": "^4.0.29",
+    "@andrewmclachlan/moo-app": "^5.0.36",
+    "@andrewmclachlan/moo-ds": "^5.0.36",
+    "@andrewmclachlan/moo-icons": "^5.0.36",
     "@azure/msal-react": "^5.0.4",
     "@fortawesome/fontawesome-svg-core": "^7.2.0",
     "@fortawesome/free-solid-svg-icons": "^7.2.0",
@@ -24,6 +24,7 @@
     "@microsoft/applicationinsights-react-js": "^19.3.8",
     "@reduxjs/toolkit": "^2.11.2",
     "@tanstack/react-query": "^5.90.21",
+    "@tanstack/react-router": "^1.161.3",
     "bootstrap": "^5.3.7",
     "chart.js": "^4.5.1",
     "chartjs-plugin-annotation": "^3.1.0",
@@ -37,9 +38,6 @@
     "react-dom": "^19.2.4",
     "react-hook-form": "^7.71.1",
     "react-redux": "^9.2.0",
-    "react-router": "^7.13.0",
-    "react-router-bootstrap": "^0.26.3",
-    "react-router-redux": "^4.0.8",
     "react-toastify": "^11.0.5",
     "semver": "^7.7.4",
     "treeflex": "^2.0.1",
@@ -59,7 +57,8 @@
     "react-chartjs-2": {
       "react": "^19.0.0",
       "react-dom": "^19.0.0"
-    }
+    },
+    "eslint": "$eslint"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.3",
@@ -67,13 +66,12 @@
     "@hey-api/client-axios": "^0.9.1",
     "@hey-api/openapi-ts": "^0.92.4",
     "@svgr/plugin-svgo": "^8.1.0",
+    "@tanstack/router-plugin": "^1.161.3",
     "@types/chartjs-plugin-trendline": "^1.0.1",
     "@types/md5": "^2.3.6",
     "@types/node": "^25.2.2",
     "@types/react": "^19.2.13",
     "@types/react-dom": "^19.2.3",
-    "@types/react-router-bootstrap": "^0.26.8",
-    "@types/react-router-redux": "^5.0.27",
     "@types/uuid": "^11.0.0",
     "@typescript-eslint/eslint-plugin": "^8.56.0",
     "@typescript-eslint/parser": "^8.32.1",
@@ -92,7 +90,8 @@
     "lint": "eslint ./src/**/*.ts ./src/**/*.tsx",
     "lint-fix": "eslint ./src/**/*.ts ./src/**/*.tsx --fix",
     "trace": "tsc --traceresolution",
-    "generate": "openapi-ts"
+    "generate": "openapi-ts",
+    "update-moo": "npm install @andrewmclachlan/moo-app@latest @andrewmclachlan/moo-ds@latest @andrewmclachlan/moo-icons@latest"
   },
   "browserslist": {
     "production": [

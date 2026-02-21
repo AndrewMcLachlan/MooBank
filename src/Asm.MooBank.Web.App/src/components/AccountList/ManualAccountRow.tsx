@@ -5,7 +5,7 @@ import MD5 from "md5";
 import { useClickAway } from "@andrewmclachlan/moo-ds";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import { useNavigate } from "react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { useUpdateBalance } from "services";
 import { AccountRowProps } from "./AccountRow";
 import { VirtualAccountRow } from "./VirtualAccountRow";
@@ -68,7 +68,7 @@ const useComponentState = (props: AccountRowProps) => {
     };
 
     const onRowClick = () => {
-        navigate(`/accounts/${props.instrument.id}`);
+        navigate({ to: `/accounts/${props.instrument.id}` });
     };
 
     const balanceChange = (e: React.ChangeEvent<HTMLInputElement>) => {

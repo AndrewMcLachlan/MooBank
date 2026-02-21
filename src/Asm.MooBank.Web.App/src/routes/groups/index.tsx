@@ -1,0 +1,41 @@
+import { createFileRoute } from "@tanstack/react-router";
+import React from "react";
+
+import { Page } from "@andrewmclachlan/moo-app";
+import { IconButton, LoadingTableRows, SectionTable } from "@andrewmclachlan/moo-ds";
+import { useGroups } from "services";
+
+import { useNavigate } from "@tanstack/react-router";
+import { GroupRow } from "./-components/GroupRow";
+
+export const Route = createFileRoute("/groups/")({
+    component: ManageGroups,
+});
+
+function ManageGroups() {
+
+    const navigate = useNavigate();
+
+    const groupsQuery = useGroups();
+
+    const { data } = groupsQuery;
+
+    const groupRows: React.ReactNode[] = data?.map(a => <GroupRow key={a.id} group={a} />) ?? [<LoadingTableRows key={1} rows={2} cols={3} />];
+
+    return (
+        <Page title="Groups" breadcrumbs={[{ text: "Groups", route: "/groups" }]} actions={[<IconButton key="add" onClick={() => navigate({ to: "/groups/create" })} icon="plus">Create Group</IconButton>]}>
+            <SectionTable hover striped>
+                <thead>
+                    <tr>
+                        <th className="column-25">Name</th>
+                        <th>Description</th>
+                        <th className="column-10 row-action">Show Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {groupRows}
+                </tbody>
+            </SectionTable>
+        </Page>
+    );
+}
