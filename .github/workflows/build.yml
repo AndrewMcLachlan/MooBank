@@ -42,6 +42,7 @@ jobs:
         project: 'src/Asm.MooBank.Web.Api'
         version-property-name: 'Version'
         patch-version-type: 'commits-this-month'
+    - run: echo "::notice::Version ${{ steps.set-version-number.outputs.version }}"
     - name: Restore dependencies
       run: dotnet restore Asm.MooBank.slnx
     - name: Setup node and npm
