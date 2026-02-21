@@ -25,6 +25,8 @@ jobs:
       version: ${{ steps.set-version-number.outputs.version }}
     steps:
     - uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
     - name: Setup .NET
       uses: actions/setup-dotnet@v5
 
@@ -35,10 +37,11 @@ jobs:
         NUGET_AUTH_TOKEN: ${{secrets.CROSS_REPO_PACKAGE_TOKEN}}
     - name: Set version number
       id: set-version-number
-      uses: andrewmclachlan/actions/set-version-number@v4
+      uses: andrewmclachlan/actions/set-version-number@feature/commits-this-month
       with:
         project: 'src/Asm.MooBank.Web.Api'
         version-property-name: 'Version'
+        patch-version-type: 'commits-this-month'
     - name: Restore dependencies
       run: dotnet restore Asm.MooBank.slnx
     - name: Setup node and npm
