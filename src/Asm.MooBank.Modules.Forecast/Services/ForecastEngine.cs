@@ -18,6 +18,8 @@ internal class ForecastEngine(
 {
     private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
+    private sealed record RegressionModel(decimal Intercept, decimal Slope, decimal RSquared, bool Valid, decimal AvgHistoricalIncome);
+
     public async Task<ForecastResult> Calculate(DomainForecastPlan plan, CancellationToken cancellationToken = default)
     {
         // Resolve account IDs based on scope mode
@@ -48,17 +50,52 @@ internal class ForecastEngine(
         var plannedItemsByMonth = ExpandPlannedItems(plan);
 
         // 6. Calculate income by month (excluding Savings accounts for historical calculation)
-        var incomeByMonth = await CalculateIncomeByMonth(plan, incomeStrategy, accountIdsForHistoricalAnalysis, cancellationToken);
+        var (incomeByMonth, planBaseIncome) = await CalculateIncomeByMonth(plan, incomeStrategy, accountIdsForHistoricalAnalysis, cancellationToken);
 
         // 7. Fetch historical actual balances for comparison
         var actualBalancesByMonth = await GetActualBalancesByMonth(accountIds, plan.StartDate, plan.EndDate, cancellationToken);
 
-        // 8. Recalculate baseline outgoings from actual balance data if available
-        var effectiveBaselineOutgoings = RecalculateBaselineFromActuals(
-            actualBalancesByMonth, incomeByMonth, plannedItemsByMonth,
-            plan.StartDate, plan.EndDate, baselineOutgoings);
+        // 8. Fit income-expense regression if mode is IncomeCorrelated
+        RegressionModel? regressionModel = null;
+        var useRegression = false;
+        // Offset between the regression's training income (total credits) and the plan's
+        // income (typically salary only). Ensures the regression input is on the same scale.
+        var regressionIncomeOffset = 0m;
 
-        // 9. Generate forecast months
+        if (outgoingStrategy.Mode == "IncomeCorrelated")
+        {
+            var (regression, flatAvg) = await FitIncomeExpenseRegression(
+                accountIdsForHistoricalAnalysis, outgoingStrategy, plan.StartDate, cancellationToken);
+
+            regressionModel = regression;
+            useRegression = regression.Valid;
+
+            if (useRegression)
+            {
+                regressionIncomeOffset = regression.AvgHistoricalIncome - planBaseIncome;
+            }
+            else
+            {
+                // Fall back to flat average from historical data
+                baselineOutgoings = flatAvg;
+            }
+        }
+
+        // 9. Recalculate baseline outgoings from actual balance data if available
+        //    (skip when using valid regression — outgoings vary per month)
+        decimal effectiveBaselineOutgoings;
+        if (useRegression)
+        {
+            effectiveBaselineOutgoings = baselineOutgoings; // unused per-month, but kept for summary fallback
+        }
+        else
+        {
+            effectiveBaselineOutgoings = RecalculateBaselineFromActuals(
+                actualBalancesByMonth, incomeByMonth, plannedItemsByMonth,
+                plan.StartDate, plan.EndDate, baselineOutgoings);
+        }
+
+        // 10. Generate forecast months
         var months = new List<ForecastMonth>();
         var currentBalance = startingBalance;
         var currentDate = new DateOnly(plan.StartDate.Year, plan.StartDate.Month, 1);
@@ -71,15 +108,19 @@ internal class ForecastEngine(
             var monthPlanned = plannedItemsByMonth.GetValueOrDefault(monthKey, 0m);
             var actualBalance = actualBalancesByMonth.GetValueOrDefault(monthKey);
 
+            var monthOutgoings = useRegression
+                ? Math.Max(0m, regressionModel!.Intercept + regressionModel.Slope * (monthIncome + regressionIncomeOffset))
+                : effectiveBaselineOutgoings;
+
             var forecastMonth = new ForecastMonth
             {
                 MonthStart = currentDate,
                 OpeningBalance = currentBalance,
                 IncomeTotal = monthIncome,
-                BaselineOutgoingsTotal = effectiveBaselineOutgoings,
+                BaselineOutgoingsTotal = monthOutgoings,
                 PlannedItemsTotal = monthPlanned,
                 // monthPlanned already has correct sign: positive for income, negative for expenses
-                ClosingBalance = currentBalance + monthIncome - Math.Abs(effectiveBaselineOutgoings) + monthPlanned,
+                ClosingBalance = currentBalance + monthIncome - Math.Abs(monthOutgoings) + monthPlanned,
                 ActualBalance = actualBalance
             };
 
@@ -88,8 +129,8 @@ internal class ForecastEngine(
             currentDate = currentDate.AddMonths(1);
         }
 
-        // 10. Calculate summary metrics
-        var summary = CalculateSummary(months, effectiveBaselineOutgoings);
+        // 11. Calculate summary metrics
+        var summary = CalculateSummary(months, effectiveBaselineOutgoings, regressionModel);
 
         return new ForecastResult
         {
@@ -437,7 +478,7 @@ internal class ForecastEngine(
         return newDate;
     }
 
-    private async Task<Dictionary<string, decimal>> CalculateIncomeByMonth(DomainForecastPlan plan, IncomeStrategy strategy, List<Guid> accountIds, CancellationToken cancellationToken)
+    private async Task<(Dictionary<string, decimal> ByMonth, decimal BaseIncome)> CalculateIncomeByMonth(DomainForecastPlan plan, IncomeStrategy strategy, List<Guid> accountIds, CancellationToken cancellationToken)
     {
         var result = new Dictionary<string, decimal>();
 
@@ -486,10 +527,94 @@ internal class ForecastEngine(
             currentDate = currentDate.AddMonths(1);
         }
 
-        return result;
+        return (result, baseMonthlyIncome);
     }
 
-    private static ForecastSummary CalculateSummary(List<ForecastMonth> months, decimal monthlyBaselineOutgoings)
+    /// <summary>
+    /// Fits a linear regression of expense = intercept + slope * income using monthly historical data.
+    /// Returns the regression model and a flat average fallback.
+    /// </summary>
+    private async Task<(RegressionModel Regression, decimal FlatAverage)> FitIncomeExpenseRegression(
+        List<Guid> accountIds, OutgoingStrategy strategy, DateOnly planStartDate, CancellationToken cancellationToken)
+    {
+        var lookbackEnd = DateOnly.FromDateTime(DateTime.Today);
+        var lookbackStart = lookbackEnd.AddMonths(-strategy.LookbackMonths);
+
+        var allTotals = await reportRepository.GetMonthlyCreditDebitTotalsForAccounts(accountIds, lookbackStart, lookbackEnd, cancellationToken);
+
+        // Aggregate across accounts into per-month (income, expense) pairs
+        var monthlyData = new Dictionary<DateOnly, (decimal Income, decimal Expense)>();
+
+        foreach (var totals in allTotals.Values)
+        {
+            foreach (var total in totals)
+            {
+                if (!monthlyData.TryGetValue(total.Month, out var existing))
+                {
+                    existing = (0m, 0m);
+                }
+
+                if (total.TransactionType == TransactionFilterType.Credit)
+                {
+                    monthlyData[total.Month] = (existing.Income + total.Total, existing.Expense);
+                }
+                else if (total.TransactionType == TransactionFilterType.Debit)
+                {
+                    // Debit totals come back negative from the SP; use Abs so expenses are positive for regression
+                    monthlyData[total.Month] = (existing.Income, existing.Expense + Math.Abs(total.Total));
+                }
+            }
+        }
+
+        var settings = strategy.IncomeCorrelated ?? new IncomeCorrelatedSettings();
+        var points = monthlyData.Values.ToList();
+
+        // Calculate flat average for fallback
+        var flatAverage = points.Count > 0 ? points.Average(p => p.Expense) : 0m;
+        var avgIncome = points.Count > 0 ? points.Average(p => p.Income) : 0m;
+
+        // Validate minimum data points
+        if (points.Count < settings.MinDataPoints)
+        {
+            return (new RegressionModel(0m, 0m, 0m, false, avgIncome), flatAverage);
+        }
+
+        // Fit simple linear regression: expense = intercept + slope * income
+        var n = (decimal)points.Count;
+        var sumX = points.Sum(p => p.Income);
+        var sumY = points.Sum(p => p.Expense);
+        var sumXY = points.Sum(p => p.Income * p.Expense);
+        var sumXX = points.Sum(p => p.Income * p.Income);
+
+        var denominator = n * sumXX - sumX * sumX;
+
+        // Zero variance in income — cannot fit regression
+        if (denominator == 0m)
+        {
+            return (new RegressionModel(0m, 0m, 0m, false, avgIncome), flatAverage);
+        }
+
+        var slope = (n * sumXY - sumX * sumY) / denominator;
+        var intercept = (sumY - slope * sumX) / n;
+
+        // Compute R-squared
+        var meanY = sumY / n;
+        var ssTotal = points.Sum(p => (p.Expense - meanY) * (p.Expense - meanY));
+        var ssResidual = points.Sum(p =>
+        {
+            var predicted = intercept + slope * p.Income;
+            return (p.Expense - predicted) * (p.Expense - predicted);
+        });
+
+        var rSquared = ssTotal == 0m ? 0m : 1m - ssResidual / ssTotal;
+
+        // Reject if R-squared below threshold or negative slope (nonsensical)
+        var valid = rSquared >= settings.RSquaredThreshold && slope >= 0m;
+
+        return (new RegressionModel(intercept, slope, rSquared, valid, avgIncome), flatAverage);
+    }
+
+    private static ForecastSummary CalculateSummary(List<ForecastMonth> months, decimal monthlyBaselineOutgoings, RegressionModel? regression = null)
     {
         if (!months.Any())
         {
@@ -516,6 +641,10 @@ internal class ForecastEngine(
         var totalPlannedExpenses = months.Sum(m => m.PlannedItemsTotal < 0 ? Math.Abs(m.PlannedItemsTotal) : 0);
         var totalPlannedIncome = months.Sum(m => m.PlannedItemsTotal > 0 ? m.PlannedItemsTotal : 0);
 
+        var effectiveBaseline = regression is { Valid: true }
+            ? months.Average(m => Math.Abs(m.BaselineOutgoingsTotal))
+            : monthlyBaselineOutgoings;
+
         return new ForecastSummary
         {
             LowestBalance = lowestMonth.ClosingBalance,
@@ -524,7 +653,14 @@ internal class ForecastEngine(
             MonthsBelowZero = months.Count(m => m.ClosingBalance < 0),
             TotalIncome = months.Sum(m => m.IncomeTotal) + totalPlannedIncome,
             TotalOutgoings = months.Sum(m => Math.Abs(m.BaselineOutgoingsTotal)) + totalPlannedExpenses,
-            MonthlyBaselineOutgoings = monthlyBaselineOutgoings
+            MonthlyBaselineOutgoings = effectiveBaseline,
+            Regression = regression is not null ? new RegressionDiagnostics
+            {
+                FixedComponent = regression.Intercept,
+                VariableComponent = regression.Slope,
+                RSquared = regression.RSquared,
+                FellBackToFlatAverage = !regression.Valid,
+            } : null,
         };
     }
 }

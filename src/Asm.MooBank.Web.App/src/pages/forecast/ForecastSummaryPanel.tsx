@@ -65,6 +65,17 @@ export const ForecastSummaryPanel: React.FC<ForecastSummaryPanelProps> = ({ summ
                     </div>
                 </Col>
             </Row>
+            {summary?.regression?.fellBackToFlatAverage && (
+                <Row className="forecast-summary mt-3">
+                    <Col md={12}>
+                        <div className="summary-card regression-fallback">
+                            <div className="summary-sublabel">
+                                Income-expense correlation was too weak (R² = {(summary.regression.rSquared * 100).toLocaleString(undefined, { maximumFractionDigits: 1 })}%) — using flat historical average instead.
+                            </div>
+                        </div>
+                    </Col>
+                </Row>
+            )}
         </Section>
     );
 };
