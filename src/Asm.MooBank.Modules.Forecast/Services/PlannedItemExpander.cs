@@ -105,6 +105,110 @@ internal static class PlannedItemExpander
         return occurrences;
     }
 
+    /// <summary>
+    /// Returns positive expense amounts for non-baseline planned items whose occurrence
+    /// dates are on or before the <paramref name="realizedBefore"/> cutoff. These represent
+    /// expenses that have been realized as actual transactions and should be excluded from
+    /// historical training data to prevent double-counting.
+    /// </summary>
+    public static Dictionary<string, decimal> ExpandRealizedNonBaselineExpenses(
+        DomainForecastPlan plan, DateOnly realizedBefore)
+    {
+        var result = new Dictionary<string, decimal>();
+
+        foreach (var item in plan.PlannedItems.Where(i => i.IsIncluded && i.ItemType == PlannedItemType.Expense))
+        {
+            if (IsBaselineFrequency(item)) continue;
+
+            switch (item.DateMode)
+            {
+                case PlannedItemDateMode.FixedDate when item.FixedDate != null:
+                    {
+                        var fixedDate = item.FixedDate.FixedDate;
+                        if (fixedDate >= plan.StartDate && fixedDate <= plan.EndDate && fixedDate <= realizedBefore)
+                        {
+                            var monthKey = new DateOnly(fixedDate.Year, fixedDate.Month, 1).ToString("yyyy-MM");
+                            result[monthKey] = result.GetValueOrDefault(monthKey, 0m) + item.Amount;
+                        }
+                        break;
+                    }
+
+                case PlannedItemDateMode.Schedule when item.Schedule != null:
+                    {
+                        var occurrences = GenerateScheduleOccurrences(item, plan.StartDate, plan.EndDate);
+                        foreach (var occurrence in occurrences)
+                        {
+                            if (occurrence <= realizedBefore)
+                            {
+                                var key = new DateOnly(occurrence.Year, occurrence.Month, 1).ToString("yyyy-MM");
+                                result[key] = result.GetValueOrDefault(key, 0m) + item.Amount;
+                            }
+                        }
+                        break;
+                    }
+
+                case PlannedItemDateMode.FlexibleWindow when item.FlexibleWindow != null:
+                    {
+                        var windowStart = item.FlexibleWindow.StartDate < plan.StartDate ? plan.StartDate : item.FlexibleWindow.StartDate;
+                        var windowEnd = item.FlexibleWindow.EndDate > plan.EndDate ? plan.EndDate : item.FlexibleWindow.EndDate;
+
+                        if (item.FlexibleWindow.AllocationMode == AllocationMode.AllAtEnd)
+                        {
+                            if (windowEnd <= realizedBefore)
+                            {
+                                var endKey = new DateOnly(windowEnd.Year, windowEnd.Month, 1).ToString("yyyy-MM");
+                                result[endKey] = result.GetValueOrDefault(endKey, 0m) + item.Amount;
+                            }
+                        }
+                        else // EvenlySpread
+                        {
+                            var months = CountMonths(windowStart, windowEnd);
+                            if (months > 0)
+                            {
+                                var amountPerMonth = item.Amount / months;
+                                var current = new DateOnly(windowStart.Year, windowStart.Month, 1);
+                                var end = new DateOnly(windowEnd.Year, windowEnd.Month, 1);
+                                while (current <= end)
+                                {
+                                    // A month's allocation is realized if the month has fully passed
+                                    var monthEnd = current.AddMonths(1).AddDays(-1);
+                                    if (monthEnd <= realizedBefore)
+                                    {
+                                        var key = current.ToString("yyyy-MM");
+                                        result[key] = result.GetValueOrDefault(key, 0m) + amountPerMonth;
+                                    }
+                                    current = current.AddMonths(1);
+                                }
+                            }
+                        }
+                        break;
+                    }
+            }
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Determines whether a planned item occurs at a baseline frequency (monthly or more often).
+    /// Baseline items are consistent across all months and don't create outlier spikes in
+    /// historical data.
+    /// </summary>
+    internal static bool IsBaselineFrequency(DomainForecastPlannedItem item)
+    {
+        if (item.DateMode != PlannedItemDateMode.Schedule || item.Schedule == null)
+            return false;
+
+        return item.Schedule.Frequency switch
+        {
+            ScheduleFrequency.Daily => true,
+            ScheduleFrequency.Weekly => true,
+            ScheduleFrequency.Fortnightly => true,
+            ScheduleFrequency.Monthly => item.Schedule.Interval <= 1,
+            _ => false,
+        };
+    }
+
     internal static int CountMonths(DateOnly start, DateOnly end)
     {
         return ((end.Year - start.Year) * 12) + end.Month - start.Month + 1;
