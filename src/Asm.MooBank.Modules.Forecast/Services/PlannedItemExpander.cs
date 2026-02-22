@@ -6,41 +6,27 @@ using DomainForecastPlannedItem = Asm.MooBank.Domain.Entities.Forecast.ForecastP
 namespace Asm.MooBank.Modules.Forecast.Services;
 
 /// <summary>
-/// Per-month breakdown of planned items with both net and gross components.
-/// </summary>
-internal sealed record PlannedItemsBreakdown(
-    /// <summary>Net amount per month (negative for expenses, positive for income). Used for balance calculations.</summary>
-    Dictionary<string, decimal> Net,
-    /// <summary>Gross planned expenses per month (positive values). Used for excluding known expenses from historical data.</summary>
-    Dictionary<string, decimal> GrossExpenses,
-    /// <summary>Gross planned income per month (positive values). Used for excluding known income from historical data.</summary>
-    Dictionary<string, decimal> GrossIncome);
-
-/// <summary>
 /// Expands planned items from a forecast plan into monthly monetary allocations.
 /// </summary>
 internal static class PlannedItemExpander
 {
-    public static PlannedItemsBreakdown ExpandPlannedItems(DomainForecastPlan plan)
+    public static Dictionary<string, decimal> ExpandPlannedItems(DomainForecastPlan plan)
     {
-        var net = new Dictionary<string, decimal>();
-        var grossExpenses = new Dictionary<string, decimal>();
-        var grossIncome = new Dictionary<string, decimal>();
+        var result = new Dictionary<string, decimal>();
 
         foreach (var item in plan.PlannedItems.Where(i => i.IsIncluded))
         {
             var sign = item.ItemType == PlannedItemType.Income ? 1m : -1m;
-            var isIncome = item.ItemType == PlannedItemType.Income;
 
             switch (item.DateMode)
             {
                 case PlannedItemDateMode.FixedDate when item.FixedDate != null:
                     {
                         var fixedDate = item.FixedDate.FixedDate;
+                        var monthKey = new DateOnly(fixedDate.Year, fixedDate.Month, 1).ToString("yyyy-MM");
                         if (fixedDate >= plan.StartDate && fixedDate <= plan.EndDate)
                         {
-                            var monthKey = new DateOnly(fixedDate.Year, fixedDate.Month, 1).ToString("yyyy-MM");
-                            AddToMonth(net, grossExpenses, grossIncome, monthKey, item.Amount, sign, isIncome);
+                            result[monthKey] = result.GetValueOrDefault(monthKey, 0m) + (item.Amount * sign);
                         }
                         break;
                     }
@@ -51,7 +37,7 @@ internal static class PlannedItemExpander
                         foreach (var occurrence in occurrences)
                         {
                             var key = new DateOnly(occurrence.Year, occurrence.Month, 1).ToString("yyyy-MM");
-                            AddToMonth(net, grossExpenses, grossIncome, key, item.Amount, sign, isIncome);
+                            result[key] = result.GetValueOrDefault(key, 0m) + (item.Amount * sign);
                         }
                         break;
                     }
@@ -64,7 +50,7 @@ internal static class PlannedItemExpander
                         if (item.FlexibleWindow.AllocationMode == AllocationMode.AllAtEnd)
                         {
                             var endKey = new DateOnly(windowEnd.Year, windowEnd.Month, 1).ToString("yyyy-MM");
-                            AddToMonth(net, grossExpenses, grossIncome, endKey, item.Amount, sign, isIncome);
+                            result[endKey] = result.GetValueOrDefault(endKey, 0m) + (item.Amount * sign);
                         }
                         else // EvenlySpread
                         {
@@ -77,7 +63,7 @@ internal static class PlannedItemExpander
                                 while (current <= end)
                                 {
                                     var key = current.ToString("yyyy-MM");
-                                    AddToMonth(net, grossExpenses, grossIncome, key, amountPerMonth, sign, isIncome);
+                                    result[key] = result.GetValueOrDefault(key, 0m) + (amountPerMonth * sign);
                                     current = current.AddMonths(1);
                                 }
                             }
@@ -87,21 +73,7 @@ internal static class PlannedItemExpander
             }
         }
 
-        return new PlannedItemsBreakdown(net, grossExpenses, grossIncome);
-    }
-
-    private static void AddToMonth(Dictionary<string, decimal> net, Dictionary<string, decimal> grossExpenses, Dictionary<string, decimal> grossIncome, string monthKey, decimal amount, decimal sign, bool isIncome)
-    {
-        net[monthKey] = net.GetValueOrDefault(monthKey, 0m) + (amount * sign);
-
-        if (isIncome)
-        {
-            grossIncome[monthKey] = grossIncome.GetValueOrDefault(monthKey, 0m) + amount;
-        }
-        else
-        {
-            grossExpenses[monthKey] = grossExpenses.GetValueOrDefault(monthKey, 0m) + amount;
-        }
+        return result;
     }
 
     internal static IEnumerable<DateOnly> GenerateScheduleOccurrences(DomainForecastPlannedItem item, DateOnly planStart, DateOnly planEnd)

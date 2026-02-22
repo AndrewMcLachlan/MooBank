@@ -47,7 +47,7 @@ internal class ForecastEngine(
         var startingBalance = await CalculateStartingBalance(plan, allInstruments, accountIds, cancellationToken);
 
         // 7. Expand planned items into monthly allocations
-        var plannedItems = PlannedItemExpander.ExpandPlannedItems(plan);
+        var plannedItemsByMonth = PlannedItemExpander.ExpandPlannedItems(plan);
 
         // 8. Calculate baseline outgoings from historical data (excluding Savings accounts)
         var baselineOutgoings = await CalculateBaselineOutgoings(accountIdsForHistoricalAnalysis, outgoingStrategy, latestTransactionDate, cancellationToken);
@@ -89,7 +89,7 @@ internal class ForecastEngine(
         else
         {
             effectiveBaselineOutgoings = ForecastCalculations.RecalculateBaselineFromActuals(
-                actualBalancesByMonth, incomeByMonth, plannedItems.Net,
+                actualBalancesByMonth, incomeByMonth, plannedItemsByMonth,
                 plan.StartDate, plan.EndDate, baselineOutgoings);
         }
 
@@ -103,15 +103,11 @@ internal class ForecastEngine(
         {
             var monthKey = currentDate.ToString("yyyy-MM");
             var monthIncome = incomeByMonth.GetValueOrDefault(monthKey, 0m);
-            var monthPlanned = plannedItems.Net.GetValueOrDefault(monthKey, 0m);
+            var monthPlanned = plannedItemsByMonth.GetValueOrDefault(monthKey, 0m);
             var actualBalance = actualBalancesByMonth.GetValueOrDefault(monthKey);
 
-            // The regression predicts total outgoings (including planned expenses).
-            // Subtract gross planned expenses from the prediction so they're only counted
-            // once via PlannedItemsTotal, not twice.
-            var monthGrossPlannedExpenses = plannedItems.GrossExpenses.GetValueOrDefault(monthKey, 0m);
             var monthOutgoings = useRegression
-                ? Math.Max(0m, regressionModel!.Intercept + regressionModel.Slope * (monthIncome + regressionIncomeOffset) - monthGrossPlannedExpenses)
+                ? Math.Max(0m, regressionModel!.Intercept + regressionModel.Slope * (monthIncome + regressionIncomeOffset))
                 : effectiveBaselineOutgoings;
 
             var forecastMonth = new ForecastMonth
