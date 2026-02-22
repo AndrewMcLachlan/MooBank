@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 
 import { TagPanel } from "components";
 
@@ -9,10 +9,6 @@ import { useTags } from "hooks/useTags";
 export const TransactionSplitTagPanel: React.FC<TransactionSplitPanelProps> = ({ alwaysShowEditPanel = false, ...props }) => {
 
     const [transactionSplit, setTransactionSplit] = useState<TransactionSplit>(props.transactionSplit);
-
-    useEffect(() => {
-        setTransactionSplit(props.transactionSplit);
-    }, [props.transactionSplit]);
 
     const createTransactionTag = useCreateTag();
 
@@ -43,11 +39,9 @@ export const TransactionSplitTagPanel: React.FC<TransactionSplitPanelProps> = ({
 
     const fullTagsListQuery = useTags();
 
-    const [tagsList, setTagsList] = useState<Tag[]>([]);
-
-    useEffect(() => {
-        if (!fullTagsListQuery.data) return;
-        setTagsList(fullTagsListQuery.data.filter((t) => !transactionSplit.tags.some((tt) => t.id === tt.id)));
+    const tagsList = useMemo(() => {
+        if (!fullTagsListQuery.data) return [];
+        return fullTagsListQuery.data.filter((t) => !transactionSplit.tags.some((tt) => t.id === tt.id));
     }, [transactionSplit.tags, fullTagsListQuery.data]);
 
     const selectedTags = useMemo(() => {

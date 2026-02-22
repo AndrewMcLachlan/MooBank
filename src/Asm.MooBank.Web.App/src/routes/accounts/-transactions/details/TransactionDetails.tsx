@@ -3,7 +3,7 @@ import { format } from "date-fns/format";
 import { parseISO } from "date-fns/parseISO";
 import type { Transaction, TransactionSplit } from "api/types.gen";
 import { getSplitTotal, isDebit } from "helpers/transactions";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useState } from "react";
 import { Button, Col, Modal, OverlayTrigger, Popover, Row } from "@andrewmclachlan/moo-ds";
 
 import { ExtraInfo } from "./ExtraInfo";
@@ -14,16 +14,10 @@ import { Amount } from "components/Amount";
 
 export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => {
 
-    // This looks odd.
-    const transaction = useMemo(() => props.transaction, [props.transaction]);
-    const [notes, setNotes] = useState(props.transaction?.notes ?? "");
-    const [excludeFromReporting, setExcludeFromReporting] = useState(props.transaction?.excludeFromReporting ?? false);
+    const transaction = props.transaction;
+    const [notes, setNotes] = useState(transaction?.notes ?? "");
+    const [excludeFromReporting, setExcludeFromReporting] = useState(transaction?.excludeFromReporting ?? false);
     const [splits, setSplits] = useState<TransactionSplit[]>(transaction?.splits ?? []);
-
-    useEffect(() => {
-        setNotes(props.transaction?.notes ?? "");
-        setExcludeFromReporting(props.transaction?.excludeFromReporting ?? false);
-    }, [transaction]);
 
     const updateTransaction = useUpdateTransaction();
 

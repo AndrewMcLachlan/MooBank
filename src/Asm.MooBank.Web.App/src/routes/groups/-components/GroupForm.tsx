@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import type { Group } from "api/types.gen";
 import { useNavigate } from "@tanstack/react-router";
 import { useCreateGroup } from "../-hooks/useCreateGroup";
@@ -40,10 +40,6 @@ export const GroupForm: React.FC<GroupFormProps> = ({ group }) => {
     const breadcrumb: NavItem[] = !group ? [] : group?.id === emptyGuid ? [{ text: "Create Group", route: "/groups/create" }] : [{ text: group?.name, route: `/groups/${group?.id}/manage` }];
 
     const form = useForm<Group>({ defaultValues: group });
-
-    useEffect(() => {
-        form.reset(group);
-    }, [group, form]);
 
     return (
         <Page title={`${verb} Group`} breadcrumbs={[{ text: "Groups", route: "/groups" }, ...breadcrumb]}>

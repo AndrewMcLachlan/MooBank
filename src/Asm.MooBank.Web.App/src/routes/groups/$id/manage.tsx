@@ -13,6 +13,6 @@ function ManageGroup() {
     const { data: group } = useGroup(id!);
 
     return (
-        <GroupForm group={group} />
+        <GroupForm key={group?.id} group={group} />
     );
 }

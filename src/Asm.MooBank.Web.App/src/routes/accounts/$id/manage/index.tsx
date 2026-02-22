@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useForm } from "react-hook-form";
 import { useNavigate } from "@tanstack/react-router";
 
 import { useIdParams } from "@andrewmclachlan/moo-app";
@@ -75,12 +74,10 @@ function ManageAccount() {
         }
     }
 
-    const form = useForm<LogicalAccount>({ defaultValues: account });
-
     return (
         <AccountPage title="Manage" breadcrumbs={[{ text: "Manage", route: `/accounts/${account?.id}/manage` }]} actions={getActions(account?.controller)}>
-            <AccountForm account={account as LogicalAccount} />
-            <ReprocessModal show={showReprocessModal} instrumentId={account?.id ?? id} onClose={() => setShowReprocessModal(false)} />
+            <AccountForm key={account?.id} account={account as LogicalAccount} />
+            {showReprocessModal && <ReprocessModal instrumentId={account?.id ?? id} onClose={() => setShowReprocessModal(false)} />}
             <SectionTable header="Bank Accounts" striped hover>
                 <thead>
                     <tr>
@@ -93,7 +90,7 @@ function ManageAccount() {
                     </tr>
                 </thead>
                 <tbody>
-                    <InstitutionAccountEdit institutionAccount={selectedInstitutionAccount} show={showDetails} onHide={() => setShowDetails(false)} onSave={() => setShowDetails(false)} />
+                    <InstitutionAccountEdit key={selectedInstitutionAccount?.id} institutionAccount={selectedInstitutionAccount} show={showDetails} onHide={() => setShowDetails(false)} onSave={() => setShowDetails(false)} />
                     {account?.institutionAccounts.map(a => (
                         <InstitutionAccountRow key={a.id} institutionAccount={a} onClick={institutionAccountClick} />
                     ))}

@@ -19,7 +19,7 @@ function ManageInstitution() {
 
     return (
         <SettingsPage title="Institutions" breadcrumbs={[{ text: "Institutions", route: "/settings/institutions" }, { text: institution?.name, route: `/settings/institutions/${institution.id}` }]}>
-            <InstitutionForm institution={institution} />
+            <InstitutionForm key={institution?.id} institution={institution} />
         </SettingsPage>
     );
 }
