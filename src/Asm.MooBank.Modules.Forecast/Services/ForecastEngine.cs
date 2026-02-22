@@ -46,14 +46,14 @@ internal class ForecastEngine(
         // 6. Determine starting balance (uses all selected accounts)
         var startingBalance = await CalculateStartingBalance(plan, allInstruments, accountIds, cancellationToken);
 
-        // 7. Expand planned items into monthly allocations (needed before baseline/regression to exclude known expenses)
+        // 7. Expand planned items into monthly allocations
         var plannedItems = PlannedItemExpander.ExpandPlannedItems(plan);
 
         // 8. Calculate baseline outgoings from historical data (excluding Savings accounts)
-        var baselineOutgoings = await CalculateBaselineOutgoings(accountIdsForHistoricalAnalysis, outgoingStrategy, latestTransactionDate, plannedItems, cancellationToken);
+        var baselineOutgoings = await CalculateBaselineOutgoings(accountIdsForHistoricalAnalysis, outgoingStrategy, latestTransactionDate, cancellationToken);
 
         // 9. Calculate income by month (excluding Savings accounts for historical calculation)
-        var (incomeByMonth, planBaseIncome) = await CalculateIncomeByMonth(plan, incomeStrategy, accountIdsForHistoricalAnalysis, latestTransactionDate, plannedItems, cancellationToken);
+        var (incomeByMonth, planBaseIncome) = await CalculateIncomeByMonth(plan, incomeStrategy, accountIdsForHistoricalAnalysis, latestTransactionDate, cancellationToken);
 
         // 10. Fetch historical actual balances for comparison
         var actualBalancesByMonth = await GetActualBalancesByMonth(accountIds, plan.StartDate, plan.EndDate, latestTransactionDate, cancellationToken);
@@ -66,7 +66,7 @@ internal class ForecastEngine(
         if (outgoingStrategy.Mode == "IncomeCorrelated")
         {
             regressionModel = await FitIncomeExpenseRegression(
-                accountIdsForHistoricalAnalysis, outgoingStrategy, latestTransactionDate, plannedItems, cancellationToken);
+                accountIdsForHistoricalAnalysis, outgoingStrategy, latestTransactionDate, cancellationToken);
 
             useRegression = regressionModel.Valid;
 
@@ -106,8 +106,12 @@ internal class ForecastEngine(
             var monthPlanned = plannedItems.Net.GetValueOrDefault(monthKey, 0m);
             var actualBalance = actualBalancesByMonth.GetValueOrDefault(monthKey);
 
+            // The regression predicts total outgoings (including planned expenses).
+            // Subtract gross planned expenses from the prediction so they're only counted
+            // once via PlannedItemsTotal, not twice.
+            var monthGrossPlannedExpenses = plannedItems.GrossExpenses.GetValueOrDefault(monthKey, 0m);
             var monthOutgoings = useRegression
-                ? Math.Max(0m, regressionModel!.Intercept + regressionModel.Slope * (monthIncome + regressionIncomeOffset))
+                ? Math.Max(0m, regressionModel!.Intercept + regressionModel.Slope * (monthIncome + regressionIncomeOffset) - monthGrossPlannedExpenses)
                 : effectiveBaselineOutgoings;
 
             var forecastMonth = new ForecastMonth
@@ -200,7 +204,7 @@ internal class ForecastEngine(
             .Sum(b => b.Balance);
     }
 
-    private async Task<decimal> CalculateBaselineOutgoings(List<Guid> accountIds, OutgoingStrategy strategy, DateOnly latestTransactionDate, PlannedItemsBreakdown plannedItems, CancellationToken cancellationToken)
+    private async Task<decimal> CalculateBaselineOutgoings(List<Guid> accountIds, OutgoingStrategy strategy, DateOnly latestTransactionDate, CancellationToken cancellationToken)
     {
         if (accountIds.Count == 0 || strategy.LookbackMonths <= 0)
         {
@@ -218,29 +222,14 @@ internal class ForecastEngine(
             .Where(t => t.TransactionType == TransactionFilterType.Debit)
             .Sum(t => t.Total);
 
-        // Subtract known planned expenses that fall within the lookback window so they
-        // aren't double-counted (once in raw data, once as explicit planned items).
-        var lookbackStartMonth = new DateOnly(lookbackStart.Year, lookbackStart.Month, 1);
-        var lookbackEndMonth = new DateOnly(lookbackEnd.Year, lookbackEnd.Month, 1);
-
-        foreach (var (monthKey, grossExpense) in plannedItems.GrossExpenses)
-        {
-            var monthDate = DateOnly.ParseExact(monthKey, "yyyy-MM");
-            if (monthDate >= lookbackStartMonth && monthDate <= lookbackEndMonth)
-            {
-                totalOutgoings -= grossExpense;
-            }
-        }
-
         // Calculate monthly average
-        return Math.Max(totalOutgoings, 0m) / strategy.LookbackMonths;
+        return totalOutgoings / strategy.LookbackMonths;
     }
 
     /// <summary>
     /// Calculates average monthly income from historical transaction data.
-    /// Known planned income is subtracted from overlapping months to avoid double-counting.
     /// </summary>
-    private async Task<decimal> CalculateHistoricalIncome(List<Guid> accountIds, int lookbackMonths, DateOnly latestTransactionDate, PlannedItemsBreakdown plannedItems, CancellationToken cancellationToken)
+    private async Task<decimal> CalculateHistoricalIncome(List<Guid> accountIds, int lookbackMonths, DateOnly latestTransactionDate, CancellationToken cancellationToken)
     {
         if (accountIds.Count == 0 || lookbackMonths <= 0)
         {
@@ -258,21 +247,8 @@ internal class ForecastEngine(
             .Where(t => t.TransactionType == TransactionFilterType.Credit)
             .Sum(t => t.Total);
 
-        // Subtract known planned income that falls within the lookback window
-        var lookbackStartMonth = new DateOnly(lookbackStart.Year, lookbackStart.Month, 1);
-        var lookbackEndMonth = new DateOnly(lookbackEnd.Year, lookbackEnd.Month, 1);
-
-        foreach (var (monthKey, grossIncome) in plannedItems.GrossIncome)
-        {
-            var monthDate = DateOnly.ParseExact(monthKey, "yyyy-MM");
-            if (monthDate >= lookbackStartMonth && monthDate <= lookbackEndMonth)
-            {
-                totalIncome -= grossIncome;
-            }
-        }
-
         // Calculate monthly average
-        return Math.Max(totalIncome, 0m) / lookbackMonths;
+        return totalIncome / lookbackMonths;
     }
 
     /// <summary>
@@ -327,7 +303,7 @@ internal class ForecastEngine(
         return result;
     }
 
-    private async Task<(Dictionary<string, decimal> ByMonth, decimal BaseIncome)> CalculateIncomeByMonth(DomainForecastPlan plan, IncomeStrategy strategy, List<Guid> accountIds, DateOnly latestTransactionDate, PlannedItemsBreakdown plannedItems, CancellationToken cancellationToken)
+    private async Task<(Dictionary<string, decimal> ByMonth, decimal BaseIncome)> CalculateIncomeByMonth(DomainForecastPlan plan, IncomeStrategy strategy, List<Guid> accountIds, DateOnly latestTransactionDate, CancellationToken cancellationToken)
     {
         var result = new Dictionary<string, decimal>();
 
@@ -346,7 +322,7 @@ internal class ForecastEngine(
         {
             // Calculate from historical data (default to 12 months lookback)
             var lookbackMonths = strategy.Historical?.LookbackMonths ?? 12;
-            baseMonthlyIncome = await CalculateHistoricalIncome(accountIds, lookbackMonths, latestTransactionDate, plannedItems, cancellationToken);
+            baseMonthlyIncome = await CalculateHistoricalIncome(accountIds, lookbackMonths, latestTransactionDate, cancellationToken);
         }
 
         // Get date range for income (from manual settings or plan dates)
@@ -381,10 +357,9 @@ internal class ForecastEngine(
 
     /// <summary>
     /// Fetches monthly credit/debit data and fits a linear regression of expense vs income.
-    /// Known planned items are subtracted from overlapping months to avoid double-counting.
     /// </summary>
     private async Task<RegressionModel> FitIncomeExpenseRegression(
-        List<Guid> accountIds, OutgoingStrategy strategy, DateOnly latestTransactionDate, PlannedItemsBreakdown plannedItems, CancellationToken cancellationToken)
+        List<Guid> accountIds, OutgoingStrategy strategy, DateOnly latestTransactionDate, CancellationToken cancellationToken)
     {
         var lookbackEnd = latestTransactionDate;
         var lookbackStart = lookbackEnd.AddMonths(-strategy.LookbackMonths);
@@ -392,26 +367,6 @@ internal class ForecastEngine(
         var allTotals = await reportRepository.GetMonthlyCreditDebitTotalsForAccounts(accountIds, lookbackStart, lookbackEnd, cancellationToken);
 
         var monthlyData = AggregateMonthlyData(allTotals);
-
-        // Subtract known planned items from months that overlap with the plan so the
-        // regression trains on baseline spending only, not one-off planned expenses/income.
-        foreach (var monthDate in monthlyData.Keys.ToList())
-        {
-            var monthKey = monthDate.ToString("yyyy-MM");
-            var hasExpense = plannedItems.GrossExpenses.TryGetValue(monthKey, out var grossExpense);
-            var hasIncome = plannedItems.GrossIncome.TryGetValue(monthKey, out var grossIncome);
-
-            if (hasExpense || hasIncome)
-            {
-                var (income, expense) = monthlyData[monthDate];
-
-                var adjustedExpense = hasExpense ? expense - grossExpense : expense;
-                var adjustedIncome = hasIncome ? income - grossIncome : income;
-
-                monthlyData[monthDate] = (Math.Max(adjustedIncome, 0m), Math.Max(adjustedExpense, 0m));
-            }
-        }
-
         var settings = strategy.IncomeCorrelated ?? new IncomeCorrelatedSettings();
 
         return ForecastCalculations.FitRegression(monthlyData, settings);
