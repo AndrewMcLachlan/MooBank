@@ -1,9 +1,9 @@
 import { useLocalStorage } from "@andrewmclachlan/moo-ds";
 import { useEffect, useState } from "react";
 
-import { Period } from "helpers/dateFns";
+import type { Period } from "models/dateFns";
 import { transactionTypeFilter } from "store/state";
-import { cleanQueryString } from "helpers/queryString";
+import { cleanQueryString } from "utils/queryString";
 
 export const useFilterPanel = () => {
 

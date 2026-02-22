@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 
 import type { LogicalAccount, VirtualInstrument } from "api/types.gen";
-import { emptyAccount } from "helpers/accounts";
+import { emptyAccount } from "models/accounts";
 
 export interface AccountProviderProps {
     account: LogicalAccount | VirtualInstrument;

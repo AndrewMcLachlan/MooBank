@@ -6,7 +6,7 @@ import { TransactionTagRow } from "./-components/TagRow";
 import { changeSortDirection, getNumberOfPages, PageSize, Pagination, PaginationControls, PaginationTh, SaveIcon, SearchBox, Section, SectionTable, SortableTh, SortDirection, useLocalStorage } from "@andrewmclachlan/moo-ds";
 import { TagPanel } from "components";
 import type { Tag } from "api/types.gen";
-import { sortTags } from "helpers/tags";
+import { sortTags } from "utils/tags";
 import { useCreateTag } from "hooks/useCreateTag";
 import { useTags } from "hooks/useTags";
 import { TagsPage } from "./-components/TagsPage";

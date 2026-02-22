@@ -6,7 +6,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { Form, SectionForm, FormComboBox } from "@andrewmclachlan/moo-ds";
 
 import { CurrencySelector } from "components";
-import { UtilityTypes } from "helpers/bills";
+import { UtilityTypes } from "models/bills";
 import { useCreateBillAccount } from "../-hooks/useCreateBillAccount";
 import { useUser } from "hooks/useUser";
 

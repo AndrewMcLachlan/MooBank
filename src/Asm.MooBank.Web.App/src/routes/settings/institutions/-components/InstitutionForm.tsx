@@ -1,6 +1,6 @@
 import { Form, FormComboBox, SectionForm } from "@andrewmclachlan/moo-ds";
 import type { Institution } from "api/types.gen";
-import { institutionTypeOptions } from "helpers/institutions";
+import { institutionTypeOptions } from "models/institutions";
 import React from "react";
 import { Button } from "@andrewmclachlan/moo-ds";
 import { useForm } from "react-hook-form";

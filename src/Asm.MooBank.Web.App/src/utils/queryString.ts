@@ -9,7 +9,7 @@ export const addOrReplaceQueryString = (params: URLSearchParams, key: string, va
 }
 
 export const cleanQueryString = (params: URLSearchParams, key: string) =>{
-    
+
     params.delete(key);
     const queryString = params.toString();
     const newUrl = window.location.origin + window.location.pathname + (queryString === "" ? "" : `?${queryString}`);

@@ -6,9 +6,9 @@ import { useTag } from "../../../-hooks/useTag";
 import { ChartData, Chart as ChartJS, LegendItem, registerables } from "chart.js";
 import { Doughnut, getElementAtEvent } from "react-chartjs-2";
 
-import { Period } from "helpers/dateFns";
+import type { Period } from "models/dateFns";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import { chartColours } from "helpers/chartColours";
+import { chartColours } from "utils/chartColours";
 import { transactionTypeFilter } from "store/state";
 import type { Tag, TagValue } from "api/types.gen";
 

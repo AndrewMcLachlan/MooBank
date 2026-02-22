@@ -7,7 +7,7 @@ import { Section } from "@andrewmclachlan/moo-ds";
 import type { BillFilter, CostDataPoint } from "../-hooks/types";
 import { useCostPerUnitReport } from "../-hooks/useCostPerUnitReport";
 import { useServiceChargeReport } from "../-hooks/useServiceChargeReport";
-import { chartColours, useChartColours } from "helpers/chartColours";
+import { chartColours, useChartColours } from "utils/chartColours";
 
 ChartJS.register(...registerables, annotationPlugin);
 

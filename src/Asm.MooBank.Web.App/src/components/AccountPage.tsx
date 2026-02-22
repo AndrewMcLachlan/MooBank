@@ -5,7 +5,7 @@ import { NavItem, NavItemDivider } from "@andrewmclachlan/moo-ds";
 import { Import, Reports, Rules, Sliders, Transaction } from "@andrewmclachlan/moo-icons";
 
 import type { LogicalAccount, VirtualInstrument } from "api/types.gen";
-import { isVirtualInstrument } from "helpers/virtualAccounts";
+import { isVirtualInstrument } from "utils/virtualAccounts";
 import { useAccount } from "./AccountProvider";
 
 export const AccountPage: React.FC<PropsWithChildren<AccountPageProps>> = ({ children, breadcrumbs = [], ...props }) => {

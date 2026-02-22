@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Section, SectionTable } from "@andrewmclachlan/moo-ds";
 import { format } from "date-fns/format";
-import { isMonthSelected } from "helpers/dateFns";
+import { isMonthSelected } from "utils/dateFns";
 import { useBudgetYear } from "./-hooks/useBudgetYear";
 import type { Budget as BudgetModel } from "api/types.gen";
 import { useEffect, useState } from "react";

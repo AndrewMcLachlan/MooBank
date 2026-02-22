@@ -11,7 +11,7 @@ import { BillDetails } from "./BillDetails";
 import { BillFilterPanel } from "./BillFilterPanel";
 import { BillsChart } from "./BillsChart";
 import { UsageChart } from "./UsageChart";
-import { getUnit } from "helpers/units";
+import { getUnit } from "utils/units";
 
 export interface UtilityTypeBillsTabProps {
     utilityType: UtilityType;

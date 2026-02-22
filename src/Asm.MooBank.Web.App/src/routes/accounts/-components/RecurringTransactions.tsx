@@ -5,7 +5,7 @@ import { format } from "date-fns/format";
 import { parse } from "date-fns/parse";
 import { parseISO } from "date-fns/parseISO";
 import type { VirtualInstrument, RecurringTransaction, ScheduleFrequency } from "api/types.gen";
-import { Schedules, emptyRecurringTransaction } from "helpers/recurringTransactions";
+import { Schedules, emptyRecurringTransaction } from "models/recurringTransactions";
 import React, { useState } from "react";
 import { useGetRecurringTransactions } from "routes/accounts/-hooks/useGetRecurringTransactions";
 import { useCreateRecurringTransaction } from "routes/accounts/-hooks/useCreateRecurringTransaction";

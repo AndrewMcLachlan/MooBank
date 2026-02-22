@@ -6,10 +6,10 @@ import { Line } from "react-chartjs-2";
 import { useParams } from "@tanstack/react-router";
 
 import { MiniPeriodSelector } from "components/MiniPeriodSelector";
-import { Period } from "helpers/dateFns";
+import type { Period } from "models/dateFns";
 import { getPeriod } from "hooks";
 import { useMonthlyBalancesReport } from "../../../-hooks/useMonthlyBalancesReport";
-import { useChartColours } from "helpers/chartColours";
+import { useChartColours } from "utils/chartColours";
 import { ReportsPage } from "./ReportsPage";
 
 ChartJS.register(...registerables);

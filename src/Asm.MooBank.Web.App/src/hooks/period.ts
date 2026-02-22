@@ -1,7 +1,8 @@
 import { useLocalStorage } from "@andrewmclachlan/moo-ds";
 import { parseISO } from "date-fns/parseISO";
-import { Period, lastMonth } from "helpers/dateFns";
-import { periodOptions } from "helpers/periodOptions";
+import type { Period } from "models/dateFns";
+import { lastMonth } from "utils/dateFns";
+import { periodOptions } from "models/periodOptions";
 
 export const useCustomPeriod = (): [period: Period, setPeriod: (value: Period) => void] => {
     const [period, setPeriod] = useLocalStorage("period", lastMonth);

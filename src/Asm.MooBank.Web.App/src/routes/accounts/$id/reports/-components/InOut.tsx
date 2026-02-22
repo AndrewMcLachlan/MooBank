@@ -8,8 +8,8 @@ import { ChartData, Chart as ChartJS, registerables } from "chart.js";
 import chartTrendline from "chartjs-plugin-trendline";
 import { Bar } from "react-chartjs-2";
 
-import { useChartColours } from "helpers/chartColours";
-import { Period } from "helpers/dateFns";
+import { useChartColours } from "utils/chartColours";
+import type { Period } from "models/dateFns";
 import { useInOutReport as defaultReport } from "hooks/useInOutReport";
 import { SpinnerContainer } from "@andrewmclachlan/moo-ds";
 

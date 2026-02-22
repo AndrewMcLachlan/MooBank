@@ -1,4 +1,4 @@
-﻿import { numberClassName } from "helpers";
+﻿import { numberClassName } from "utils/classNameHelpers";
 import React, { useRef, useState } from "react";
 import MD5 from "md5";
 

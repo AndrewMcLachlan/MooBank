@@ -9,7 +9,7 @@ import { useInstitutions } from "hooks/useInstitutions";
 import { useAccount } from "./AccountProvider";
 import { Amount } from "./Amount";
 import { KeyValue } from "./KeyValue";
-import { formatDate } from "helpers/dateFns";
+import { formatDate } from "utils/dateFns";
 
 export const AccountSummary: React.FC<AccountSummaryProps> = ({ className, ...props }) => {
 

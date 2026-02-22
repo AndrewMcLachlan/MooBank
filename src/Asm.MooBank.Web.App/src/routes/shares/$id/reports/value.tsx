@@ -8,9 +8,9 @@ import { useParams } from "@tanstack/react-router";
 
 import { PeriodSelector } from "components/PeriodSelector";
 import { formatDate } from "date-fns/format";
-import { Period } from "helpers/dateFns";
+import type { Period } from "models/dateFns";
 import { useStockValueReport } from "routes/shares/-hooks/useStockValueReport";
-import { useChartColours } from "helpers/chartColours";
+import { useChartColours } from "utils/chartColours";
 import { ReportsPage } from "./-components/ReportsPage";
 
 ChartJS.register(...registerables);

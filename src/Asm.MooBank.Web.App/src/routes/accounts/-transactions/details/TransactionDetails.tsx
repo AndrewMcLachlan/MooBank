@@ -2,13 +2,13 @@ import { formatCurrency } from "@andrewmclachlan/moo-ds";
 import { format } from "date-fns/format";
 import { parseISO } from "date-fns/parseISO";
 import type { Transaction, TransactionSplit } from "api/types.gen";
-import { getSplitTotal, isDebit } from "helpers/transactions";
+import { getSplitTotal, isDebit } from "utils/transactions";
 import React, { useState } from "react";
 import { Button, Col, Modal, OverlayTrigger, Popover, Row } from "@andrewmclachlan/moo-ds";
 
 import { ExtraInfo } from "./ExtraInfo";
 import { TransactionSplits } from "./TransactionSplits";
-import { notEquals } from "helpers/equals";
+import { notEquals } from "utils/equals";
 import { useUpdateTransaction } from "routes/accounts/-hooks/useUpdateTransaction";
 import { Amount } from "components/Amount";
 
