@@ -5,7 +5,7 @@ import { Section } from "@andrewmclachlan/moo-ds";
 
 import type { BillFilter } from "../-hooks/types";
 import { useServiceChargeReport } from "../-hooks/useServiceChargeReport";
-import { chartColours, useChartColours } from "helpers/chartColours";
+import { chartColours, useChartColours } from "utils/chartColours";
 
 ChartJS.register(...registerables);
 

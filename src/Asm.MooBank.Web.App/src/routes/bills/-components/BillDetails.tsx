@@ -2,7 +2,7 @@ import { format, parseISO } from "date-fns";
 import type { Bill, Account } from "api/types.gen";
 import { Drawer } from "@andrewmclachlan/moo-ds";
 import { Section } from "@andrewmclachlan/moo-ds";
-import { getUnit } from "helpers";
+import { getUnit } from "utils/units";
 
 const formatCurrency = (value: number | undefined) => {
     if (value === undefined || value === null) return "-";

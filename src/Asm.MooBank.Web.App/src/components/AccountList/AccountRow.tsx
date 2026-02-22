@@ -4,7 +4,7 @@ import classNames from "classnames";
 import React, { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 
-import { numberClassName } from "helpers";
+import { numberClassName } from "utils/classNameHelpers";
 
 import type { Instrument } from "api/types.gen";
 

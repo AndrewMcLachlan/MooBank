@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import React, { useEffect, useRef, useState } from "react";
 
-import { numberClassName } from "helpers";
+import { numberClassName } from "utils/classNameHelpers";
 import { EditColumn, emptyGuid, useClickAway } from "@andrewmclachlan/moo-ds";
 
 import type { VirtualInstrument } from "api/types.gen";

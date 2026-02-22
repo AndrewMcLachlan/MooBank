@@ -1,4 +1,4 @@
-import { lastMonth, lastMonthName } from "helpers/dateFns";
+import { lastMonth, lastMonthName } from "utils/dateFns";
 import { InOut } from "../accounts/$id/reports/-components/InOut";
 import { useAccounts } from "hooks/useAccounts";
 import { useInOutReport } from "hooks/useInOutReport";

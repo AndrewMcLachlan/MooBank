@@ -6,11 +6,7 @@ import { format } from "date-fns/format";
 import { parseISO } from "date-fns/parseISO";
 import { startOfMonth } from "date-fns/startOfMonth";
 import { startOfYear } from "date-fns/startOfYear";
-
-export interface Period {
-    startDate: Date;
-    endDate: Date;
-}
+import type { Period } from "models/dateFns";
 
 export const periodEquals = (a?: Period, b?: Period) => a?.startDate?.getTime() === b?.startDate?.getTime() && a?.endDate?.getTime() === b?.endDate?.getTime();
 

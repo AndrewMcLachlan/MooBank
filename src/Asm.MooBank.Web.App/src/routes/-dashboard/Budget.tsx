@@ -4,8 +4,8 @@ import { getYear } from "date-fns/getYear";
 
 import { Widget } from "@andrewmclachlan/moo-ds";
 import { ChartData } from "chart.js";
-import { useChartColours } from "helpers";
-import { lastMonth, lastMonthName } from "helpers/dateFns";
+import { useChartColours } from "utils/chartColours";
+import { lastMonth, lastMonthName } from "utils/dateFns";
 import { Bar } from "react-chartjs-2";
 import { useBudgetReportForMonth } from "./-hooks/useBudgetReportForMonth";
 

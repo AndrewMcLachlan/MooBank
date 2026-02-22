@@ -6,7 +6,7 @@ import { IconButton, PageSize, Pagination, PaginationControls, PaginationTh, Sea
 import { AccountPage, useAccount } from "components";
 
 import type { Rule } from "api/types.gen";
-import { sortRules } from "helpers/rules";
+import { sortRules } from "utils/rules";
 
 import { useTags } from "hooks/useTags";
 import { useRules } from "routes/accounts/-hooks/useRules";

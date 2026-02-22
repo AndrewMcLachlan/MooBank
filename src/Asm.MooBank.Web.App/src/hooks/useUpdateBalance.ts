@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { setBalanceMutation, getAccountsQueryKey } from "api/@tanstack/react-query.gen";
-import type { CreateTransaction } from "helpers/transactions";
+import type { CreateTransaction } from "models/transactions";
 import { toast } from "react-toastify";
 
 export const useUpdateBalance = () => {

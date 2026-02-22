@@ -12,10 +12,3 @@ export const sortRules = (sortDirection: SortDirection) => (a: Rule, b: Rule) =>
     if (aName < bName) return -retVal;
     return 0;
 };
-
-export const emptyRule: Rule = {
-    id: 0,
-    contains: "",
-    description: "",
-    tags: []
-};

@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Button, Form, SectionForm } from "@andrewmclachlan/moo-ds";
-import type { CreateStockTransaction } from "helpers/stocks";
-import { emptyStockTransaction } from "helpers/stocks";
+import { type CreateStockTransaction, emptyStockTransaction } from "models/stocks";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "@tanstack/react-router";
 import { useCreateStockTransaction } from "routes/shares/-hooks/useCreateStockTransaction";

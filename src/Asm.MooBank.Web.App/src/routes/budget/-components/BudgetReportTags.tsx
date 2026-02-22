@@ -6,7 +6,7 @@ import { Bar } from "react-chartjs-2";
 
 import { Section } from "@andrewmclachlan/moo-ds";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useChartColours } from "helpers/chartColours";
+import { useChartColours } from "utils/chartColours";
 import { useBudgetReportForMonthBreakdown } from "../-hooks/useBudgetReportForMonthBreakdown";
 import { useBudgetReportForMonthBreakdownUnbudgeted } from "../-hooks/useBudgetReportForMonthBreakdownUnbudgeted";
 

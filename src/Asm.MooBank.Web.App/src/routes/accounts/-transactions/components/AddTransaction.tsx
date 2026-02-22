@@ -6,7 +6,7 @@ import { Form } from "@andrewmclachlan/moo-ds";
 
 import { useAccount } from "components";
 import type { Transaction } from "api/types.gen";
-import { CreateTransaction, emptyTransaction } from "helpers/transactions";
+import { CreateTransaction, emptyTransaction } from "models/transactions";
 import { useUpdateBalance } from "hooks/useUpdateBalance";
 import { useCreateTransaction } from "routes/accounts/-hooks/useCreateTransaction";
 import { CurrencyInput } from "components";

@@ -7,11 +7,11 @@ import { Line } from "react-chartjs-2";
 import { useParams } from "@tanstack/react-router";
 
 import { MiniPeriodSelector } from "components/MiniPeriodSelector";
-import { Period } from "helpers/dateFns";
+import type { Period } from "models/dateFns";
 import { getPeriod } from "hooks";
 import { useGroupMonthlyBalancesReport } from "../-hooks/useGroupMonthlyBalancesReport";
 import { useGroup } from "../-hooks/useGroup";
-import { useChartColours } from "helpers/chartColours";
+import { useChartColours } from "utils/chartColours";
 
 ChartJS.register(...registerables);
 ChartJS.register(chartTrendline);

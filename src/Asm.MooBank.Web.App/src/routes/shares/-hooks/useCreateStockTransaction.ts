@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { CreateStockTransaction } from "helpers/stocks";
+import type { CreateStockTransaction } from "models/stocks";
 import { toast } from "react-toastify";
 import {
     getStockTransactionsQueryKey,

@@ -1,5 +1,5 @@
 import { Widget } from "@andrewmclachlan/moo-ds";
-import { lastMonth, lastMonthName } from "helpers/dateFns";
+import { lastMonth, lastMonthName } from "utils/dateFns";
 import { Breakdown } from "../accounts/$id/reports/-components/Breakdown";
 import { useAccounts } from "hooks/useAccounts";
 

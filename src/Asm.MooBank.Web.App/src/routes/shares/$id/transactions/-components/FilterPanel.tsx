@@ -7,7 +7,7 @@ import { useDispatch, } from "react-redux";
 import { PeriodSelector, FormRow as Row } from "components";
 import { StockTransactionsSlice } from "store";
 
-import { Period } from "helpers/dateFns";
+import type { Period } from "models/dateFns";
 
 export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
 

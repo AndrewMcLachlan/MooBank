@@ -1,4 +1,5 @@
-import { last12Months, last3Months, last6Months, lastMonth, lastYear, thisMonth, thisYear, allTime, previousMonth, Period } from "helpers/dateFns";
+import { last12Months, last3Months, last6Months, lastMonth, lastYear, thisMonth, thisYear, allTime, previousMonth } from "utils/dateFns";
+import type { Period } from "models/dateFns";
 
 export interface PeriodOption extends Period {
     value: string,
