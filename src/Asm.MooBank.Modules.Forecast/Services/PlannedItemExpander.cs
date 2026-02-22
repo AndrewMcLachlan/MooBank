@@ -6,27 +6,47 @@ using DomainForecastPlannedItem = Asm.MooBank.Domain.Entities.Forecast.ForecastP
 namespace Asm.MooBank.Modules.Forecast.Services;
 
 /// <summary>
+/// Per-month breakdown of planned items with net totals and non-baseline expense spikes.
+/// </summary>
+/// <param name="Net">Net amount per month (negative for expenses, positive for income). Used for balance calculations.</param>
+/// <param name="NonBaselineExpenses">
+/// Gross non-baseline planned expenses per month (positive values).
+/// These are expenses that don't occur every month (annual, quarterly, one-off) and
+/// would create outliers in historical data when realized. Used to clean training data
+/// for regression and baseline calculations.
+/// </param>
+internal sealed record PlannedItemsBreakdown(
+    Dictionary<string, decimal> Net,
+    Dictionary<string, decimal> NonBaselineExpenses);
+
+/// <summary>
 /// Expands planned items from a forecast plan into monthly monetary allocations.
 /// </summary>
 internal static class PlannedItemExpander
 {
-    public static Dictionary<string, decimal> ExpandPlannedItems(DomainForecastPlan plan)
+    public static PlannedItemsBreakdown ExpandPlannedItems(DomainForecastPlan plan)
     {
-        var result = new Dictionary<string, decimal>();
+        var net = new Dictionary<string, decimal>();
+        var nonBaselineExpenses = new Dictionary<string, decimal>();
 
         foreach (var item in plan.PlannedItems.Where(i => i.IsIncluded))
         {
             var sign = item.ItemType == PlannedItemType.Income ? 1m : -1m;
+            var isNonBaselineExpense = item.ItemType == PlannedItemType.Expense && !IsBaselineFrequency(item);
 
             switch (item.DateMode)
             {
                 case PlannedItemDateMode.FixedDate when item.FixedDate != null:
                     {
                         var fixedDate = item.FixedDate.FixedDate;
-                        var monthKey = new DateOnly(fixedDate.Year, fixedDate.Month, 1).ToString("yyyy-MM");
                         if (fixedDate >= plan.StartDate && fixedDate <= plan.EndDate)
                         {
-                            result[monthKey] = result.GetValueOrDefault(monthKey, 0m) + (item.Amount * sign);
+                            var monthKey = new DateOnly(fixedDate.Year, fixedDate.Month, 1).ToString("yyyy-MM");
+                            net[monthKey] = net.GetValueOrDefault(monthKey, 0m) + (item.Amount * sign);
+                            if (isNonBaselineExpense)
+                            {
+                                nonBaselineExpenses[monthKey] = nonBaselineExpenses.GetValueOrDefault(monthKey, 0m) + item.Amount;
+                            }
                         }
                         break;
                     }
@@ -37,7 +57,11 @@ internal static class PlannedItemExpander
                         foreach (var occurrence in occurrences)
                         {
                             var key = new DateOnly(occurrence.Year, occurrence.Month, 1).ToString("yyyy-MM");
-                            result[key] = result.GetValueOrDefault(key, 0m) + (item.Amount * sign);
+                            net[key] = net.GetValueOrDefault(key, 0m) + (item.Amount * sign);
+                            if (isNonBaselineExpense)
+                            {
+                                nonBaselineExpenses[key] = nonBaselineExpenses.GetValueOrDefault(key, 0m) + item.Amount;
+                            }
                         }
                         break;
                     }
@@ -50,7 +74,11 @@ internal static class PlannedItemExpander
                         if (item.FlexibleWindow.AllocationMode == AllocationMode.AllAtEnd)
                         {
                             var endKey = new DateOnly(windowEnd.Year, windowEnd.Month, 1).ToString("yyyy-MM");
-                            result[endKey] = result.GetValueOrDefault(endKey, 0m) + (item.Amount * sign);
+                            net[endKey] = net.GetValueOrDefault(endKey, 0m) + (item.Amount * sign);
+                            if (isNonBaselineExpense)
+                            {
+                                nonBaselineExpenses[endKey] = nonBaselineExpenses.GetValueOrDefault(endKey, 0m) + item.Amount;
+                            }
                         }
                         else // EvenlySpread
                         {
@@ -63,7 +91,11 @@ internal static class PlannedItemExpander
                                 while (current <= end)
                                 {
                                     var key = current.ToString("yyyy-MM");
-                                    result[key] = result.GetValueOrDefault(key, 0m) + (amountPerMonth * sign);
+                                    net[key] = net.GetValueOrDefault(key, 0m) + (amountPerMonth * sign);
+                                    if (isNonBaselineExpense)
+                                    {
+                                        nonBaselineExpenses[key] = nonBaselineExpenses.GetValueOrDefault(key, 0m) + amountPerMonth;
+                                    }
                                     current = current.AddMonths(1);
                                 }
                             }
@@ -73,8 +105,25 @@ internal static class PlannedItemExpander
             }
         }
 
-        return result;
+        return new PlannedItemsBreakdown(net, nonBaselineExpenses);
     }
+
+    /// <summary>
+    /// Determines whether a planned item occurs frequently enough to be part of the
+    /// baseline spending pattern. Items that occur every month (or more often) are baseline;
+    /// less frequent items (quarterly, annual, one-off) create outlier spikes.
+    /// </summary>
+    private static bool IsBaselineFrequency(DomainForecastPlannedItem item) =>
+        item.DateMode == PlannedItemDateMode.Schedule &&
+        item.Schedule is { } schedule &&
+        schedule.Frequency switch
+        {
+            ScheduleFrequency.Daily => true,
+            ScheduleFrequency.Weekly => true,
+            ScheduleFrequency.Fortnightly => true,
+            ScheduleFrequency.Monthly => schedule.Interval <= 1,
+            _ => false,
+        };
 
     internal static IEnumerable<DateOnly> GenerateScheduleOccurrences(DomainForecastPlannedItem item, DateOnly planStart, DateOnly planEnd)
     {

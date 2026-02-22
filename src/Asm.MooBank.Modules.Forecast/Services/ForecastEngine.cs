@@ -47,10 +47,10 @@ internal class ForecastEngine(
         var startingBalance = await CalculateStartingBalance(plan, allInstruments, accountIds, cancellationToken);
 
         // 7. Expand planned items into monthly allocations
-        var plannedItemsByMonth = PlannedItemExpander.ExpandPlannedItems(plan);
+        var plannedItems = PlannedItemExpander.ExpandPlannedItems(plan);
 
         // 8. Calculate baseline outgoings from historical data (excluding Savings accounts)
-        var baselineOutgoings = await CalculateBaselineOutgoings(accountIdsForHistoricalAnalysis, outgoingStrategy, latestTransactionDate, cancellationToken);
+        var baselineOutgoings = await CalculateBaselineOutgoings(accountIdsForHistoricalAnalysis, outgoingStrategy, latestTransactionDate, plannedItems.NonBaselineExpenses, cancellationToken);
 
         // 9. Calculate income by month (excluding Savings accounts for historical calculation)
         var (incomeByMonth, planBaseIncome) = await CalculateIncomeByMonth(plan, incomeStrategy, accountIdsForHistoricalAnalysis, latestTransactionDate, cancellationToken);
@@ -66,7 +66,7 @@ internal class ForecastEngine(
         if (outgoingStrategy.Mode == "IncomeCorrelated")
         {
             regressionModel = await FitIncomeExpenseRegression(
-                accountIdsForHistoricalAnalysis, outgoingStrategy, latestTransactionDate, cancellationToken);
+                accountIdsForHistoricalAnalysis, outgoingStrategy, latestTransactionDate, plannedItems.NonBaselineExpenses, cancellationToken);
 
             useRegression = regressionModel.Valid;
 
@@ -89,7 +89,7 @@ internal class ForecastEngine(
         else
         {
             effectiveBaselineOutgoings = ForecastCalculations.RecalculateBaselineFromActuals(
-                actualBalancesByMonth, incomeByMonth, plannedItemsByMonth,
+                actualBalancesByMonth, incomeByMonth, plannedItems.Net,
                 plan.StartDate, plan.EndDate, baselineOutgoings);
         }
 
@@ -103,7 +103,7 @@ internal class ForecastEngine(
         {
             var monthKey = currentDate.ToString("yyyy-MM");
             var monthIncome = incomeByMonth.GetValueOrDefault(monthKey, 0m);
-            var monthPlanned = plannedItemsByMonth.GetValueOrDefault(monthKey, 0m);
+            var monthPlanned = plannedItems.Net.GetValueOrDefault(monthKey, 0m);
             var actualBalance = actualBalancesByMonth.GetValueOrDefault(monthKey);
 
             var monthOutgoings = useRegression
@@ -200,7 +200,7 @@ internal class ForecastEngine(
             .Sum(b => b.Balance);
     }
 
-    private async Task<decimal> CalculateBaselineOutgoings(List<Guid> accountIds, OutgoingStrategy strategy, DateOnly latestTransactionDate, CancellationToken cancellationToken)
+    private async Task<decimal> CalculateBaselineOutgoings(List<Guid> accountIds, OutgoingStrategy strategy, DateOnly latestTransactionDate, Dictionary<string, decimal> nonBaselineExpenses, CancellationToken cancellationToken)
     {
         if (accountIds.Count == 0 || strategy.LookbackMonths <= 0)
         {
@@ -218,8 +218,22 @@ internal class ForecastEngine(
             .Where(t => t.TransactionType == TransactionFilterType.Debit)
             .Sum(t => t.Total);
 
+        // Subtract non-baseline expense spikes (annual, quarterly, one-off) that have been
+        // realized within the lookback window. These are outliers that would inflate the
+        // baseline average; they're already tracked separately as planned items.
+        var lookbackStartMonth = new DateOnly(lookbackStart.Year, lookbackStart.Month, 1);
+
+        foreach (var (monthKey, spikeAmount) in nonBaselineExpenses)
+        {
+            var monthDate = DateOnly.ParseExact(monthKey, "yyyy-MM");
+            if (monthDate >= lookbackStartMonth && monthDate <= latestTransactionDate)
+            {
+                totalOutgoings -= spikeAmount;
+            }
+        }
+
         // Calculate monthly average
-        return totalOutgoings / strategy.LookbackMonths;
+        return Math.Max(totalOutgoings, 0m) / strategy.LookbackMonths;
     }
 
     /// <summary>
@@ -353,9 +367,11 @@ internal class ForecastEngine(
 
     /// <summary>
     /// Fetches monthly credit/debit data and fits a linear regression of expense vs income.
+    /// Non-baseline expense spikes (annual, quarterly, one-off) are removed from realized
+    /// months to prevent outliers from distorting the regression model.
     /// </summary>
     private async Task<RegressionModel> FitIncomeExpenseRegression(
-        List<Guid> accountIds, OutgoingStrategy strategy, DateOnly latestTransactionDate, CancellationToken cancellationToken)
+        List<Guid> accountIds, OutgoingStrategy strategy, DateOnly latestTransactionDate, Dictionary<string, decimal> nonBaselineExpenses, CancellationToken cancellationToken)
     {
         var lookbackEnd = latestTransactionDate;
         var lookbackStart = lookbackEnd.AddMonths(-strategy.LookbackMonths);
@@ -363,6 +379,21 @@ internal class ForecastEngine(
         var allTotals = await reportRepository.GetMonthlyCreditDebitTotalsForAccounts(accountIds, lookbackStart, lookbackEnd, cancellationToken);
 
         var monthlyData = AggregateMonthlyData(allTotals);
+
+        // Remove non-baseline expense spikes from months where they've been realized.
+        // These are outliers (annual bills, one-off purchases) that would distort the
+        // income-expense correlation. Baseline items (monthly bills) are left in because
+        // they're consistent across all months and don't create outliers.
+        foreach (var monthDate in monthlyData.Keys.ToList())
+        {
+            var monthKey = monthDate.ToString("yyyy-MM");
+            if (nonBaselineExpenses.TryGetValue(monthKey, out var spikeAmount) && spikeAmount > 0)
+            {
+                var (income, expense) = monthlyData[monthDate];
+                monthlyData[monthDate] = (income, Math.Max(expense - spikeAmount, 0m));
+            }
+        }
+
         var settings = strategy.IncomeCorrelated ?? new IncomeCorrelatedSettings();
 
         return ForecastCalculations.FitRegression(monthlyData, settings);
