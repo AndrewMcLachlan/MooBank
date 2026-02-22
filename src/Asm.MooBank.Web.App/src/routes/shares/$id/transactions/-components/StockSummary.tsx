@@ -3,7 +3,7 @@ import { Section } from "@andrewmclachlan/moo-ds";
 import { useStockHolding } from "../../../-components/StockHoldingProvider"
 import classNames from "classnames";
 import { Amount } from "components/Amount";
-import { useStockHoldingAdjustedGainLoss } from "services";
+import { useStockHoldingAdjustedGainLoss } from "routes/shares/-hooks/useStockHoldingAdjustedGainLoss";
 
 export const StockSummary: React.FC<StockSummaryProps> = ({className, ...props}) => {
 

@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 
-import { useAllTagAverageReport } from "services";
+import { useAllTagAverageReport } from "../../../-hooks/useAllTagAverageReport";
 
 import { ChartData } from "chart.js";
 import { Bar, getElementAtEvent } from "react-chartjs-2";

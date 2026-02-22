@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { IconLinkButton, SectionTable } from "@andrewmclachlan/moo-ds";
-import { useFamilies } from "services";
+import { useFamilies } from "./-hooks/useFamilies";
 import { SettingsPage } from "../-components/SettingsPage";
 import { useNavigate } from "@tanstack/react-router";
 

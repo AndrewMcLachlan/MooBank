@@ -9,7 +9,8 @@ import { useParams } from "@tanstack/react-router";
 import { MiniPeriodSelector } from "components/MiniPeriodSelector";
 import { Period } from "helpers/dateFns";
 import { getPeriod } from "hooks";
-import { useGroup, useGroupMonthlyBalancesReport } from "services";
+import { useGroupMonthlyBalancesReport } from "../-hooks/useGroupMonthlyBalancesReport";
+import { useGroup } from "../-hooks/useGroup";
 import { useChartColours } from "helpers/chartColours";
 
 ChartJS.register(...registerables);

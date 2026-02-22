@@ -1,6 +1,7 @@
 import { lastMonth, lastMonthName } from "helpers/dateFns";
 import { InOut } from "../accounts/$id/reports/-components/InOut";
-import { useAccounts, useInOutReport } from "services";
+import { useAccounts } from "hooks/useAccounts";
+import { useInOutReport } from "hooks/useInOutReport";
 import { Widget } from "@andrewmclachlan/moo-ds";
 
 export const InOutWidget: React.FC = () => {

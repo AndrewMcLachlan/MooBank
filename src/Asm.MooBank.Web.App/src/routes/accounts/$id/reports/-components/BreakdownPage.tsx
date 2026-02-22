@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { useTag } from "services";
+import { useTag } from "../../../-hooks/useTag";
 import { ReportsPage } from "./ReportsPage";
 
 import { Section } from "@andrewmclachlan/moo-ds";

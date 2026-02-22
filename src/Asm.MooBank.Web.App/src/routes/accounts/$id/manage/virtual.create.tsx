@@ -6,7 +6,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { SectionForm, Form } from "@andrewmclachlan/moo-ds";
 
 import type { CreateVirtualInstrument } from "api/types.gen";
-import { useCreateVirtualInstrument } from "services";
+import { useCreateVirtualInstrument } from "routes/accounts/-hooks/useCreateVirtualInstrument";
 import { AccountPage, CurrencyInput, useAccount } from "components";
 
 export const Route = createFileRoute("/accounts/$id/manage/virtual/create")({

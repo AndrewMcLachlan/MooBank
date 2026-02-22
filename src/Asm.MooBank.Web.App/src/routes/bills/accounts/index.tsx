@@ -5,7 +5,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { IconButton, SectionTable } from "@andrewmclachlan/moo-ds";
 
 import type { Account } from "api/types.gen";
-import { useBillAccounts } from "services";
+import { useBillAccounts } from "../-hooks/useBillAccounts";
 import { BillsPage } from "../-components/BillsPage";
 
 export const Route = createFileRoute("/bills/accounts/")({

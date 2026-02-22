@@ -5,7 +5,7 @@ import { getNumberOfPages, Pagination, PaginationControls, PageSize, SectionTabl
 
 import { useAccount } from "components";
 import type { Transaction } from "api/types.gen";
-import { useTransactions } from "services";
+import { useTransactions } from "routes/accounts/-hooks/useTransactions";
 import { State } from "store/state";
 import { TransactionsSlice } from "store/Transactions";
 import { useDebounce } from "use-debounce";
@@ -43,7 +43,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({compact = false
 
     return (
         <>
-            <TransactionDetails transaction={selectedTransaction} show={showDetails} onHide={() => setShowDetails(false)} onSave={() => setShowDetails(false)} />
+            <TransactionDetails key={selectedTransaction?.id} transaction={selectedTransaction} show={showDetails} onHide={() => setShowDetails(false)} onSave={() => setShowDetails(false)} />
             <SectionTable className={className}>
                 <TransactionTableHead compact={compact} pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={(_current, newPage) => dispatch(TransactionsSlice.actions.setCurrentPage(newPage))} />
                 <tbody>

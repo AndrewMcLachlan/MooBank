@@ -12,10 +12,6 @@ export const TransactionSplits: React.FC<TransactionSplitsProps> = ({transaction
         onChange(splits);
     },[splits]);
 
-    useEffect(() => {
-        setSplits(transaction.splits ?? []);
-    }, [transaction]);
-
     const addSplit = (split: TransactionSplit) => {
         setSplits([...splits, split]);
     }

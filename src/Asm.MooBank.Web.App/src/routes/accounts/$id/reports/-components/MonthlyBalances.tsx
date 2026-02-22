@@ -8,7 +8,7 @@ import { useParams } from "@tanstack/react-router";
 import { MiniPeriodSelector } from "components/MiniPeriodSelector";
 import { Period } from "helpers/dateFns";
 import { getPeriod } from "hooks";
-import { useMonthlyBalancesReport } from "services";
+import { useMonthlyBalancesReport } from "../../../-hooks/useMonthlyBalancesReport";
 import { useChartColours } from "helpers/chartColours";
 import { ReportsPage } from "./ReportsPage";
 

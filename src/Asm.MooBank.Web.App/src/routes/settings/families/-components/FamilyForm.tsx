@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Button } from "@andrewmclachlan/moo-ds";
 import { useForm } from "react-hook-form";
 
@@ -14,10 +13,6 @@ export const FamilyForm: React.FC<FamilyFormProps> = ({ family, buttonText, onSa
     }
 
     const form = useForm<Family>({ defaultValues: family });
-
-    useEffect(() => {
-        form.reset(family);
-    }, [family, form]);
 
     return (
         <SectionForm form={form} onSubmit={handleSubmit}>

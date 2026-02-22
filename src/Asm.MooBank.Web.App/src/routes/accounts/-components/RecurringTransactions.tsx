@@ -7,7 +7,10 @@ import { parseISO } from "date-fns/parseISO";
 import type { VirtualInstrument, RecurringTransaction, ScheduleFrequency } from "api/types.gen";
 import { Schedules, emptyRecurringTransaction } from "helpers/recurringTransactions";
 import React, { useState } from "react";
-import { useCreateRecurringTransaction, useDeleteRecurringTransaction, useGetRecurringTransactions, useUpdateRecurringTransaction } from "services/RecurringTransactionService";
+import { useGetRecurringTransactions } from "routes/accounts/-hooks/useGetRecurringTransactions";
+import { useCreateRecurringTransaction } from "routes/accounts/-hooks/useCreateRecurringTransaction";
+import { useUpdateRecurringTransaction } from "routes/accounts/-hooks/useUpdateRecurringTransaction";
+import { useDeleteRecurringTransaction } from "routes/accounts/-hooks/useDeleteRecurringTransaction";
 
 export const RecurringTransactions: React.FC<RecurringTransactionsProps> = ({ account }) => {
 

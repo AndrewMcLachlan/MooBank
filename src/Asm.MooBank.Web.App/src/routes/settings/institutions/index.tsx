@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { changeSortDirection, IconLinkButton, Input, MiniPagination, PageSize, Pagination, PaginationControls, SortablePaginationTh, Section, SectionTable, SortableTh, SortDirection, useLocalStorage } from "@andrewmclachlan/moo-ds";
 import { institutionTypeOptions } from "helpers/institutions";
 import { useNavigate } from "@tanstack/react-router";
-import { useInstitutions } from "services";
+import { useInstitutions } from "hooks/useInstitutions";
 import { SettingsPage } from "../-components/SettingsPage";
 import { use, useEffect, useState } from "react";
 

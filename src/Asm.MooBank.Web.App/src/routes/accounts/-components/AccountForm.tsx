@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Button, InputGroup } from "@andrewmclachlan/moo-ds";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "@tanstack/react-router";
@@ -10,7 +10,9 @@ import { GroupSelector } from "components/GroupSelector";
 import type { LogicalAccount, CreateAccount } from "api/types.gen";
 import { AccountTypes } from "helpers/accounts";
 import { Controllers } from "helpers/instruments";
-import { useCreateAccount, useUpdateAccount, useUser, } from "services";
+import { useCreateAccount } from "../-hooks/useCreateAccount";
+import { useUpdateAccount } from "../-hooks/useUpdateAccount";
+import { useUser } from "hooks/useUser";
 import { ImportSettings } from "../$id/manage/-components/ImportSettings";
 import { CurrencyInput } from "components/CurrencyInput";
 import { formatDate, formatISO } from "date-fns";
@@ -46,12 +48,6 @@ export const AccountForm: React.FC<{ account?: LogicalAccount }> = ({ account = 
             currency: user?.currency,
         }
     });
-
-    useEffect(() => {
-        form.reset(account ?? {
-            currency: user?.currency,
-        });
-    }, [account, form, user]);
 
     const accountType = form.watch("accountType");
     const controller = form.watch("controller");

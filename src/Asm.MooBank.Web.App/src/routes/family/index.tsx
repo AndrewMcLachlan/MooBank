@@ -5,7 +5,10 @@ import type { Family } from "api/types.gen";
 import React, { useEffect } from "react";
 import { Button } from "@andrewmclachlan/moo-ds";
 import { useForm } from "react-hook-form";
-import { useMyFamily, useRemoveFamilyMember, useUpdateMyFamily, useUser } from "services";
+import { useMyFamily } from "./-hooks/useMyFamily";
+import { useRemoveFamilyMember } from "./-hooks/useRemoveFamilyMember";
+import { useUpdateMyFamily } from "./-hooks/useUpdateMyFamily";
+import { useUser } from "hooks/useUser";
 
 export const Route = createFileRoute("/family/")({
     component: MyFamily,

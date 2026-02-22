@@ -3,7 +3,10 @@ import React, { useState, useEffect } from "react";
 import { TagPanel, TagPanelProps } from "components";
 
 import type { Tag } from "api/types.gen";
-import { useAddSubTag, useCreateTag, useRemoveSubTag, useTags } from "services";
+import { useAddSubTag } from "../-hooks/useAddSubTag";
+import { useCreateTag } from "hooks/useCreateTag";
+import { useRemoveSubTag } from "../-hooks/useRemoveSubTag";
+import { useTags } from "hooks/useTags";
 
 export const TransactionTagTransactionTagPanel: React.FC<TransactionTagTransactionTagPanelProps> = ({tag, ...rest}) => {
 

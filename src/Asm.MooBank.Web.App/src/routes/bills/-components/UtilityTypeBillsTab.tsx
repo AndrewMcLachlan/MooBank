@@ -4,7 +4,9 @@ import { format, parseISO, subYears } from "date-fns";
 import { getNumberOfPages, Pagination, useLocalStorage } from "@andrewmclachlan/moo-ds";
 
 import type { Bill, UtilityType, Account } from "api/types.gen";
-import { useBillsByUtilityType, useBillAccountsByType, BillFilter } from "services/BillService";
+import type { BillFilter } from "../-hooks/types";
+import { useBillsByUtilityType } from "../-hooks/useBillsByUtilityType";
+import { useBillAccountsByType } from "../-hooks/useBillAccountsByType";
 import { BillDetails } from "./BillDetails";
 import { BillFilterPanel } from "./BillFilterPanel";
 import { BillsChart } from "./BillsChart";

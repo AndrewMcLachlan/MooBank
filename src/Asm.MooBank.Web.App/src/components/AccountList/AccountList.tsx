@@ -1,5 +1,5 @@
 import React from "react";
-import { useFormattedAccounts } from "services";
+import { useFormattedAccounts } from "hooks/useFormattedAccounts";
 import { AccountListGroup } from "./AccountListGroup";
 
 export const AccountList: React.FC = () => {

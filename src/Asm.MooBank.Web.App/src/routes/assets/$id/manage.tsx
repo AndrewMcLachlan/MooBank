@@ -8,7 +8,7 @@ import type { Asset } from "api/types.gen";
 import { AssetPage } from "../-components/AssetPage";
 import { useAsset } from "../-components/AssetProvider";
 
-import { useUpdateAsset } from "services";
+import { useUpdateAsset } from "../-hooks/useUpdateAsset";
 import { GroupSelector } from "components/GroupSelector";
 import { useForm } from "react-hook-form";
 import { CurrencyInput } from "components";

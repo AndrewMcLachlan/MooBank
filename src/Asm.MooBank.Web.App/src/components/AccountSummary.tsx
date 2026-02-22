@@ -5,7 +5,7 @@ import classNames from "classnames";
 import { format } from "date-fns/format";
 import { parseISO } from "date-fns/parseISO";
 import type { LogicalAccount } from "api/types.gen";
-import { useInstitutions } from "services";
+import { useInstitutions } from "hooks/useInstitutions";
 import { useAccount } from "./AccountProvider";
 import { Amount } from "./Amount";
 import { KeyValue } from "./KeyValue";

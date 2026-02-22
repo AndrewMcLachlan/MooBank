@@ -9,7 +9,7 @@ import { useParams } from "@tanstack/react-router";
 import { PeriodSelector } from "components/PeriodSelector";
 import { formatDate } from "date-fns/format";
 import { Period } from "helpers/dateFns";
-import { useStockValueReport } from "services";
+import { useStockValueReport } from "routes/shares/-hooks/useStockValueReport";
 import { useChartColours } from "helpers/chartColours";
 import { ReportsPage } from "./-components/ReportsPage";
 

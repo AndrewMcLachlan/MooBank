@@ -4,7 +4,10 @@ import { TagPanel } from "components";
 
 import type { Transaction, Tag } from "api/types.gen";
 import { useAccount } from "components";
-import { useAddTransactionTag, useCreateTag, useRemoveTransactionTag, useTags } from "services";
+import { useCreateTag } from "hooks/useCreateTag";
+import { useTags } from "hooks/useTags";
+import { useAddTransactionTag } from "routes/accounts/-hooks/useAddTransactionTag";
+import { useRemoveTransactionTag } from "routes/accounts/-hooks/useRemoveTransactionTag";
 
 export const TransactionTagPanel: React.FC<TransactionTagPanelProps> = ({alwaysShowEditPanel = false, ...props}) => {
 

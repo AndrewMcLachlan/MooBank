@@ -3,7 +3,10 @@ import { useAccount } from "components";
 import { formatDate } from "helpers/dateFns";
 import type { InstitutionAccount, LogicalAccount } from "api/types.gen";
 import React from "react";
-import { useCloseInstitutionAccount, useImporterTypes, useInstitutions, useInstitutionsByAccountType } from "services";
+import { useCloseInstitutionAccount } from "../../../-hooks/useCloseInstitutionAccount";
+import { useInstitutions } from "hooks/useInstitutions";
+import { useInstitutionsByAccountType } from "hooks/useInstitutionsByAccountType";
+import { useImporterTypes } from "routes/accounts/-hooks/useImporterTypes";
 
 export const InstitutionAccountRow: React.FC<InstitutionAccountRowProps> = ({ institutionAccount, onClick }) => {
 

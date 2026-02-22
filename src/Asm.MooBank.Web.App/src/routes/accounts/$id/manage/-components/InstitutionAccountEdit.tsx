@@ -3,21 +3,14 @@ import { InstitutionSelector, useAccount } from "components";
 import type { InstitutionAccount, LogicalAccount } from "api/types.gen";
 import { Button, Modal } from "@andrewmclachlan/moo-ds";
 import { useForm } from "react-hook-form";
-import { useUpdateInstitutionAccount } from "services";
+import { useUpdateInstitutionAccount } from "../../../-hooks/useUpdateInstitutionAccount";
 import { ImportSettings } from "./ImportSettings";
-import { useEffect } from "react";
-
 export const InstitutionAccountEdit: React.FC<InstitutionAccountEditProps> = ({ institutionAccount, show, onHide, onSave }) => {
 
     const account = useAccount() as LogicalAccount;
     const updateInstitutionAccount = useUpdateInstitutionAccount();
 
     const form = useForm<InstitutionAccount>({ defaultValues: institutionAccount });
-
-    useEffect(() => {
-        form.reset(institutionAccount);
-    }, [institutionAccount, form]);
-
 
     const handleSubmit = (data: InstitutionAccount) => {
 

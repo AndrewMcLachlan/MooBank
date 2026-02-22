@@ -8,7 +8,9 @@ import { AccountPage, useAccount } from "components";
 import type { Rule } from "api/types.gen";
 import { sortRules } from "helpers/rules";
 
-import { useRules, useRunRules, useTags } from "services";
+import { useTags } from "hooks/useTags";
+import { useRules } from "routes/accounts/-hooks/useRules";
+import { useRunRules } from "routes/accounts/-hooks/useRunRules";
 import { NewRule } from "./-rules/NewRule";
 import { RuleRow } from "./-rules/RuleRow";
 

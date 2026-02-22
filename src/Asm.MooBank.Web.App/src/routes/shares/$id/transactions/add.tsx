@@ -4,7 +4,7 @@ import type { CreateStockTransaction } from "helpers/stocks";
 import { emptyStockTransaction } from "helpers/stocks";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "@tanstack/react-router";
-import { useCreateStockTransaction } from "services";
+import { useCreateStockTransaction } from "routes/shares/-hooks/useCreateStockTransaction";
 import { StockHoldingPage } from "../../-components/StockHoldingPage";
 import { useStockHolding } from "../../-components/StockHoldingProvider";
 

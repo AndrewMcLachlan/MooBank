@@ -2,7 +2,8 @@ import React, { useState } from "react";
 
 import type { Tag } from "api/types.gen";
 import { ClickableIcon, EditColumn, Icon, useUpdatingState } from "@andrewmclachlan/moo-ds";
-import { useDeleteTag, useUpdateTag } from "services";
+import { useDeleteTag } from "../-hooks/useDeleteTag";
+import { useUpdateTag } from "../-hooks/useUpdateTag";
 import { TransactionTagTransactionTagPanel } from "./TagTagPanel";
 import { TransactionTagDetails } from "./TagDetails";
 import { DeleteIcon } from "@andrewmclachlan/moo-ds";

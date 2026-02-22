@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { StockHoldingProvider } from "../-components/StockHoldingProvider";
-import { useStockHolding } from "../../../services";
+import { useStockHolding } from "../-hooks/useStockHolding";
 
 function StockHoldingLayout() {
     const { id } = Route.useParams();

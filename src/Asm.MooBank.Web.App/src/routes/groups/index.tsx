@@ -3,7 +3,7 @@ import React from "react";
 
 import { Page } from "@andrewmclachlan/moo-app";
 import { IconButton, LoadingTableRows, SectionTable } from "@andrewmclachlan/moo-ds";
-import { useGroups } from "services";
+import { useGroups } from "./-hooks/useGroups";
 
 import { useNavigate } from "@tanstack/react-router";
 import { GroupRow } from "./-components/GroupRow";

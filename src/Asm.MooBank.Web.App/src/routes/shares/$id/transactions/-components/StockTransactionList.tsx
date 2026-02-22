@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Table } from "@andrewmclachlan/moo-ds";
 
 import { getNumberOfPages, Pagination } from "@andrewmclachlan/moo-ds";
-import { useStockTransactions } from "services";
+import { useStockTransactions } from "routes/shares/-hooks/useStockTransactions";
 import { StockTransactionsSlice } from "store";
 import { State } from "store/state";
 import { useDebounce } from "use-debounce";

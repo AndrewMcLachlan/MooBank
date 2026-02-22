@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { AssetProvider } from "../-components/AssetProvider";
-import { useAsset } from "services";
+import { useAsset } from "../-hooks/useAsset";
 
 function AssetLayout() {
     const { id } = Route.useParams();

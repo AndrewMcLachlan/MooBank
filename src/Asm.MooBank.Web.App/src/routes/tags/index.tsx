@@ -7,7 +7,8 @@ import { changeSortDirection, getNumberOfPages, PageSize, Pagination, Pagination
 import { TagPanel } from "components";
 import type { Tag } from "api/types.gen";
 import { sortTags } from "helpers/tags";
-import { useCreateTag, useTags } from "services";
+import { useCreateTag } from "hooks/useCreateTag";
+import { useTags } from "hooks/useTags";
 import { TagsPage } from "./-components/TagsPage";
 
 export const Route = createFileRoute("/tags/")({

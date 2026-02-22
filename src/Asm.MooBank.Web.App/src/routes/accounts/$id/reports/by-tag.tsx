@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { ReportsPage } from "./-components/ReportsPage";
-import { useByTagReport } from "services";
+import { useByTagReport } from "../../-hooks/useByTagReport";
 
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ChartData, registerables } from "chart.js";

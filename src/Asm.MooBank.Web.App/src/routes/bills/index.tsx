@@ -7,7 +7,7 @@ import { IconButton, Section } from "@andrewmclachlan/moo-ds";
 
 import type { UtilityType } from "api/types.gen";
 import { UtilityTypes } from "helpers/bills";
-import { useBillAccountSummaries } from "services";
+import { useBillAccountSummaries } from "./-hooks/useBillAccountSummaries";
 import { UtilityTypeBillsTab } from "./-components/UtilityTypeBillsTab";
 import { BillsPage } from "./-components/BillsPage";
 import { AddBill } from "./-components/AddBill";

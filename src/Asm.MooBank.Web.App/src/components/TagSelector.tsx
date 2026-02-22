@@ -1,4 +1,4 @@
-import { useTags } from "services"
+import { useTags } from "hooks/useTags"
 import { ComboBox } from "@andrewmclachlan/moo-ds";
 import type { Tag } from "api/types.gen";
 
