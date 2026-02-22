@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { TagPanel, useAccount } from "components";
 
 import type { Tag } from "api/types.gen";
-import { emptyRule } from "helpers/rules";
+import { emptyRule } from "models/rules";
 
 import { SaveIcon } from "@andrewmclachlan/moo-ds";
 import { useCreateTag } from "hooks/useCreateTag";

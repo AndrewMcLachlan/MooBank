@@ -9,9 +9,9 @@ import { Chart as ChartJS, ChartData, registerables } from "chart.js";
 import { useIdParams } from "@andrewmclachlan/moo-app";
 import { Section} from "@andrewmclachlan/moo-ds";
 
-import { Period } from "helpers/dateFns";
+import type { Period } from "models/dateFns";
 import { ReportTypeSelector } from "components/ReportTypeSelector";
-import { chartColours } from "helpers/chartColours";
+import { chartColours } from "utils/chartColours";
 import { transactionTypeFilter } from "store/state";
 import { MiniPeriodSelector } from "components/MiniPeriodSelector";
 import { getPeriod } from "hooks";

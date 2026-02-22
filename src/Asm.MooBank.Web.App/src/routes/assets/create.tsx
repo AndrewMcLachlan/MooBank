@@ -2,7 +2,7 @@ import React from "react";
 import { Button, InputGroup } from "@andrewmclachlan/moo-ds";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { CreateAsset as NewAsset } from "api/types.gen";
-import { emptyAsset } from "helpers/assets";
+import { emptyAsset } from "models/assets";
 
 import { Page } from "@andrewmclachlan/moo-app";
 import { Form, SectionForm } from "@andrewmclachlan/moo-ds";

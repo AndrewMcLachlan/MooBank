@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { emptyInstitution } from "helpers/institutions";
+import { emptyInstitution } from "models/institutions";
 
 import { SettingsPage } from "../-components/SettingsPage";
 import { InstitutionForm } from "./-components/InstitutionForm";

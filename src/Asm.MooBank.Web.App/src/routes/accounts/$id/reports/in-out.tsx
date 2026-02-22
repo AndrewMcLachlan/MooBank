@@ -11,7 +11,8 @@ import chartTrendline from "chartjs-plugin-trendline";
 
 import { differenceInMonths } from "date-fns";
 
-import { Period, subtractYear } from "helpers/dateFns";
+import type { Period } from "models/dateFns";
+import { subtractYear } from "utils/dateFns";
 import { InOut } from "./-components/InOut";
 import { InOutTrend } from "./-components/InOutTrend";
 import { useInOutAverageReport } from "../../-hooks/useInOutAverageReport";

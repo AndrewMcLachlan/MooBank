@@ -3,11 +3,12 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import { format } from "date-fns/format";
 
 import { Button, Col, Input, Form, Row } from "@andrewmclachlan/moo-ds";
-import { Period, lastMonth } from "helpers/dateFns";
+import type { Period } from "models/dateFns";
+import { lastMonth } from "utils/dateFns";
 
 import { useCustomPeriod } from "hooks";
 import { useLocalStorage } from "@andrewmclachlan/moo-ds";
-import { periodOptions } from "helpers/periodOptions";
+import { periodOptions } from "models/periodOptions";
 
 
 export const PeriodSelector: React.FC<PeriodSelectorProps> = ({instant = false, cacheKey = "period-id", ...props}) => {

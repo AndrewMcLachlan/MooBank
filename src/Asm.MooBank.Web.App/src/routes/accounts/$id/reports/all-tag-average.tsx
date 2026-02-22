@@ -8,7 +8,8 @@ import { Section } from "@andrewmclachlan/moo-ds";
 import { Chart as ChartJS, registerables } from "chart.js";
 
 import { ReportTypeSelector } from "components/ReportTypeSelector";
-import { Period, subtractYear } from "helpers/dateFns";
+import type { Period } from "models/dateFns";
+import { subtractYear } from "utils/dateFns";
 import { TopTags } from "./-components/TopTags";
 import { transactionTypeFilter } from "store/state";
 import { MiniPeriodSelector } from "components/MiniPeriodSelector";

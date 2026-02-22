@@ -5,7 +5,7 @@ import chartTrendline from "chartjs-plugin-trendline";
 import { Bar, getElementAtEvent } from "react-chartjs-2";
 
 import { Section } from "@andrewmclachlan/moo-ds";
-import { useChartColours } from "helpers/chartColours";
+import { useChartColours } from "utils/chartColours";
 import { useBudgetReport } from "../-hooks/useBudgetReport";
 
 ChartJS.register(...registerables);

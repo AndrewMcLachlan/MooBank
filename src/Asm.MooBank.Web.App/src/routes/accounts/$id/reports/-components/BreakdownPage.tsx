@@ -8,7 +8,7 @@ import { Chart as ChartJS, registerables } from "chart.js";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ReportTypeSelector } from "components/ReportTypeSelector";
-import { Period } from "helpers/dateFns";
+import type { Period } from "models/dateFns";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { Breakdown } from "./Breakdown";
 import { transactionTypeFilter } from "store/state";

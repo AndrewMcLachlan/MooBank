@@ -4,7 +4,7 @@ import type { Tag } from "api/types.gen";
 import { Button, Input, Modal } from "@andrewmclachlan/moo-ds";
 import { useUpdateTag } from "../-hooks/useUpdateTag";
 import { TransactionTagTransactionTagPanel } from "./TagTagPanel";
-import { onKeyLeave } from "helpers";
+import { onKeyLeave } from "utils/onKeyLeave";
 
 export const TransactionTagDetails: React.FC<TransactionTagDetailsProps> = (props) => {
 

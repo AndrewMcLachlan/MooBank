@@ -1,5 +1,5 @@
 import { ComboBox, ValueProps } from "@andrewmclachlan/moo-ds";
-import { formatDate } from "helpers/dateFns";
+import { formatDate } from "utils/dateFns";
 import type { Transaction, TransactionType } from "api/types.gen";
 import { useSearchTransactions } from "routes/accounts/-hooks/useSearchTransactions";
 

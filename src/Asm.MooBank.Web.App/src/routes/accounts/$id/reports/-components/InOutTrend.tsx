@@ -3,8 +3,8 @@ import { useInOutTrendReport } from "../../../-hooks/useInOutTrendReport";
 import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, ChartData, registerables } from "chart.js";
 
-import { Period } from "helpers/dateFns";
-import { useChartColours } from "helpers/chartColours";
+import type { Period } from "models/dateFns";
+import { useChartColours } from "utils/chartColours";
 import { SpinnerContainer } from "@andrewmclachlan/moo-ds";
 
 ChartJS.register(...registerables);

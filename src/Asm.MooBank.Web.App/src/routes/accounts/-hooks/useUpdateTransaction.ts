@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { PagedResult } from "@andrewmclachlan/moo-ds";
 import type { Transaction } from "api/types.gen";
-import type { TransactionUpdate } from "helpers/transactions";
+import type { TransactionUpdate } from "models/transactions";
 import { State } from "store/state";
 import { toast } from "react-toastify";
 import {

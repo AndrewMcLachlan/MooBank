@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { CreateTransaction } from "helpers/transactions";
+import type { CreateTransaction } from "models/transactions";
 import { toast } from "react-toastify";
 import {
     getTransactionsQueryKey,
