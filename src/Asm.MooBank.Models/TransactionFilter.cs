@@ -8,8 +8,6 @@ namespace Asm.MooBank.Models;
 [Description("Filter specification for querying transactions.")]
 public record TransactionFilter : ISortable
 {
-    private bool _untagged;
-
     /// <summary>
     /// The ID of the instrument (account) to filter transactions for.
     /// </summary>
@@ -59,16 +57,10 @@ public record TransactionFilter : ISortable
     public SortDirection SortDirection { get; init; } = SortDirection.Ascending;
 
     /// <summary>
-    /// Converts the "untagged" route parameter to a boolean.
-    /// </summary>
-    [Description("Converts the 'untagged' route parameter to a boolean.")]
-    public string Untagged { init => _untagged = value == "untagged"; }
-
-    /// <summary>
     /// Only include untagged transactions.
     /// </summary>
     [Description("Only include untagged transactions.")]
-    public bool? UntaggedOnly => _untagged;
+    public bool? UntaggedOnly { get; init; }
 
     /// <summary>
     /// Exclude transactions where the amount has been offset to zero.

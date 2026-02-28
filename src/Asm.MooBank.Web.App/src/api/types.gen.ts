@@ -2621,14 +2621,15 @@ export type InOutAverageReportResponse = InOutAverageReportResponses[keyof InOut
 export type ByTagReportData = {
     body?: never;
     path: {
-        parentTagId: number;
         reportType: ReportType;
         accountId: string;
         start: string;
         end: string;
     };
-    query?: never;
-    url: '/api/accounts/{accountId}/reports/{reportType}/tags/{start}/{end}/{parentTagId}';
+    query?: {
+        ParentTagId?: number;
+    };
+    url: '/api/accounts/{accountId}/reports/{reportType}/tags/{start}/{end}';
 };
 
 export type ByTagReportResponses = {
@@ -2640,7 +2641,52 @@ export type ByTagReportResponses = {
 
 export type ByTagReportResponse = ByTagReportResponses[keyof ByTagReportResponses];
 
+export type ByTagReportForTagData = {
+    body?: never;
+    path: {
+        parentTagId: number;
+        reportType: ReportType;
+        accountId: string;
+        start: string;
+        end: string;
+    };
+    query?: never;
+    url: '/api/accounts/{accountId}/reports/{reportType}/tags/{start}/{end}/{parentTagId}';
+};
+
+export type ByTagReportForTagResponses = {
+    /**
+     * OK
+     */
+    200: ByTagReport;
+};
+
+export type ByTagReportForTagResponse = ByTagReportForTagResponses[keyof ByTagReportForTagResponses];
+
 export type TagBreakdownReportData = {
+    body?: never;
+    path: {
+        reportType: ReportType;
+        accountId: string;
+        start: string;
+        end: string;
+    };
+    query?: {
+        ParentTagId?: number;
+    };
+    url: '/api/accounts/{accountId}/reports/{reportType}/breakdown/{start}/{end}';
+};
+
+export type TagBreakdownReportResponses = {
+    /**
+     * OK
+     */
+    200: BreakdownReport;
+};
+
+export type TagBreakdownReportResponse = TagBreakdownReportResponses[keyof TagBreakdownReportResponses];
+
+export type TagBreakdownReportForTagData = {
     body?: never;
     path: {
         parentTagId: number;
@@ -2653,14 +2699,14 @@ export type TagBreakdownReportData = {
     url: '/api/accounts/{accountId}/reports/{reportType}/breakdown/{start}/{end}/{parentTagId}';
 };
 
-export type TagBreakdownReportResponses = {
+export type TagBreakdownReportForTagResponses = {
     /**
      * OK
      */
     200: BreakdownReport;
 };
 
-export type TagBreakdownReportResponse = TagBreakdownReportResponses[keyof TagBreakdownReportResponses];
+export type TagBreakdownReportForTagResponse = TagBreakdownReportForTagResponses[keyof TagBreakdownReportForTagResponses];
 
 export type TagTrendReportData = {
     body?: never;
@@ -2714,11 +2760,12 @@ export type MonthlyBalancesReportData = {
     body?: never;
     path: {
         accountId: string;
-        start: string;
-        end: string;
     };
-    query?: never;
-    url: '/api/accounts/{accountId}/reports/monthly-balances/{start}/{end}';
+    query: {
+        Start: string;
+        End: string;
+    };
+    url: '/api/accounts/{accountId}/reports/monthly-balances';
 };
 
 export type MonthlyBalancesReportResponses = {
@@ -2729,6 +2776,47 @@ export type MonthlyBalancesReportResponses = {
 };
 
 export type MonthlyBalancesReportResponse = MonthlyBalancesReportResponses[keyof MonthlyBalancesReportResponses];
+
+export type MonthlyBalancesReportFromData = {
+    body?: never;
+    path: {
+        accountId: string;
+        start: string;
+    };
+    query: {
+        End: string;
+    };
+    url: '/api/accounts/{accountId}/reports/monthly-balances/{start}';
+};
+
+export type MonthlyBalancesReportFromResponses = {
+    /**
+     * OK
+     */
+    200: MonthlyBalancesReport;
+};
+
+export type MonthlyBalancesReportFromResponse = MonthlyBalancesReportFromResponses[keyof MonthlyBalancesReportFromResponses];
+
+export type MonthlyBalancesReportForPeriodData = {
+    body?: never;
+    path: {
+        accountId: string;
+        start: string;
+        end: string;
+    };
+    query?: never;
+    url: '/api/accounts/{accountId}/reports/monthly-balances/{start}/{end}';
+};
+
+export type MonthlyBalancesReportForPeriodResponses = {
+    /**
+     * OK
+     */
+    200: MonthlyBalancesReport;
+};
+
+export type MonthlyBalancesReportForPeriodResponse = MonthlyBalancesReportForPeriodResponses[keyof MonthlyBalancesReportForPeriodResponses];
 
 export type GroupMonthlyBalancesReportData = {
     body?: never;

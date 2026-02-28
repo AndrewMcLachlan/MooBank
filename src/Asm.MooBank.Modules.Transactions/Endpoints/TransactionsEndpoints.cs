@@ -22,7 +22,7 @@ internal class TransactionsEndpoints : EndpointGroupBase
         builder.MapPagedQuery<Get, Transaction>("{pageSize}/{pageNumber}")
             .WithNames("Get Transactions");
 
-        builder.MapPagedQuery<Get, Transaction>("{untagged:alpha?}/{pageSize?}/{pageNumber?}")
+        builder.MapPagedQuery<GetUntagged, Transaction>("untagged/{pageSize}/{pageNumber}")
             .WithNames("Get Untagged Transactions");
 
         builder.MapQuery<Search, IEnumerable<Transaction>>("")
