@@ -17,7 +17,7 @@
     "@andrewmclachlan/moo-app": "^5.0.57",
     "@andrewmclachlan/moo-ds": "^5.0.57",
     "@andrewmclachlan/moo-icons": "^5.0.57",
-    "@azure/msal-react": "^5.0.4",
+    "@azure/msal-react": "^5.0.5",
     "@fortawesome/fontawesome-svg-core": "^7.2.0",
     "@fortawesome/free-solid-svg-icons": "^7.2.0",
     "@fortawesome/react-fontawesome": "^3.2.0",
