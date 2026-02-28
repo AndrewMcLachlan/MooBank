@@ -61,7 +61,7 @@ jobs:
     - name: Copy App
       run: cp -r src/Asm.MooBank.Web.App/dist ${{ github.workspace }}/publish/wwwroot
     - name: Upload Artifact
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7.0.0
       with:
         name: publish
         path: ${{ github.workspace }}/publish
@@ -117,7 +117,7 @@ jobs:
       run: dotnet test tests/${{ matrix.test-project.name }}/${{ matrix.test-project.name }}.csproj --filter '(Category=Unit|Category=Integration)&FullyQualifiedName!~Testing' --verbosity normal --collect:"XPlat Code Coverage" --results-directory:./testresults/${{ matrix.test-project.name }} --configuration Release --settings coverlet.runsettings
 
     - name: Upload coverage for ${{ matrix.test-project.name }}
-      uses: actions/upload-artifact@v6.0.0
+      uses: actions/upload-artifact@v7.0.0
       with:
         name: coverage-${{ matrix.test-project.name }}
         path: testresults/${{ matrix.test-project.name }}/**/coverage.cobertura.xml
