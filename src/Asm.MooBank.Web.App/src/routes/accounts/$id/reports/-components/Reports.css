@@ -29,3 +29,7 @@
 
     padding-bottom: calc(50px + 2rem);
 }
+
+.dashboard .section canvas {
+    flex: none;
+}

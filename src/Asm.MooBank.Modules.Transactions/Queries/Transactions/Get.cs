@@ -6,7 +6,7 @@ using PagedResult = Asm.PagedResult<Asm.MooBank.Models.Transaction>;
 
 namespace Asm.MooBank.Modules.Transactions.Queries.Transactions;
 
-public sealed record Get : TransactionFilter, IQuery<PagedResult>
+public record Get : TransactionFilter, IQuery<PagedResult>
 {
     public required int PageSize { get; init; }
 

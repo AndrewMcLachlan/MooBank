@@ -3275,12 +3275,77 @@
         }
       }
     },
-    "/api/accounts/{accountId}/reports/{reportType}/tags/{start}/{end}/{parentTagId}": {
+    "/api/accounts/{accountId}/reports/{reportType}/tags/{start}/{end}": {
       "get": {
         "tags": [
           "Reports"
         ],
         "operationId": "by-tag-report",
+        "parameters": [
+          {
+            "name": "ParentTagId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "reportType",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ReportType"
+            }
+          },
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "start",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ByTagReport"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accounts/{accountId}/reports/{reportType}/tags/{start}/{end}/{parentTagId}": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "operationId": "by-tag-report-for-tag",
         "parameters": [
           {
             "name": "parentTagId",
@@ -3341,12 +3406,77 @@
         }
       }
     },
-    "/api/accounts/{accountId}/reports/{reportType}/breakdown/{start}/{end}/{parentTagId}": {
+    "/api/accounts/{accountId}/reports/{reportType}/breakdown/{start}/{end}": {
       "get": {
         "tags": [
           "Reports"
         ],
         "operationId": "tag-breakdown-report",
+        "parameters": [
+          {
+            "name": "ParentTagId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "reportType",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ReportType"
+            }
+          },
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "start",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BreakdownReport"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accounts/{accountId}/reports/{reportType}/breakdown/{start}/{end}/{parentTagId}": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "operationId": "tag-breakdown-report-for-tag",
         "parameters": [
           {
             "name": "parentTagId",
@@ -3554,12 +3684,110 @@
         }
       }
     },
-    "/api/accounts/{accountId}/reports/monthly-balances/{start}/{end}": {
+    "/api/accounts/{accountId}/reports/monthly-balances": {
       "get": {
         "tags": [
           "Reports"
         ],
         "operationId": "monthly-balances-report",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Start",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "End",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonthlyBalancesReport"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accounts/{accountId}/reports/monthly-balances/{start}": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "operationId": "monthly-balances-report-from",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "start",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "End",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonthlyBalancesReport"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accounts/{accountId}/reports/monthly-balances/{start}/{end}": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "operationId": "monthly-balances-report-for-period",
         "parameters": [
           {
             "name": "accountId",
@@ -4337,11 +4565,11 @@
             }
           },
           {
-            "name": "Untagged",
+            "name": "UntaggedOnly",
             "in": "query",
-            "description": "Converts the 'untagged' route parameter to a boolean.",
+            "description": "Only include untagged transactions.",
             "schema": {
-              "type": "string"
+              "type": "boolean"
             }
           },
           {
@@ -4370,7 +4598,7 @@
         }
       }
     },
-    "/api/accounts/{instrumentId}/transactions/{untagged}/{pageSize}/{pageNumber}": {
+    "/api/accounts/{instrumentId}/transactions/untagged/{pageSize}/{pageNumber}": {
       "get": {
         "tags": [
           "Transactions"
@@ -4469,12 +4697,11 @@
             }
           },
           {
-            "name": "untagged",
-            "in": "path",
-            "description": "Converts the 'untagged' route parameter to a boolean.",
-            "required": true,
+            "name": "UntaggedOnly",
+            "in": "query",
+            "description": "Only include untagged transactions.",
             "schema": {
-              "type": "string"
+              "type": "boolean"
             }
           },
           {

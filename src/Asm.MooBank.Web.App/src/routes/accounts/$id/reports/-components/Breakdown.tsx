@@ -44,7 +44,7 @@ export const Breakdown: React.FC<BreakdownProps> = ({ accountId, tagId, period, 
     }, [report.data, accountId, period?.startDate, period?.endDate, reportType, tagId]);
 
     return (
-        <Doughnut id="bytag" className="bob" ref={chartRef} data={dataset} options={{
+        <Doughnut id="bytag" ref={chartRef} data={dataset} options={{
             maintainAspectRatio: false,
             plugins: {
                 legend: {

@@ -50,6 +50,6 @@ if (sqlConfig.Enabled)
 builder.AddJavaScriptApp("moobank-app", "../Asm.MooBank.Web.App", "start")
     .WithReference(api)
     .WaitFor(api)
-    .WithHttpEndpoint(port: 3005, isProxied: false);
+    .WithHttpsEndpoint(port: 3005, isProxied: false);
 
 builder.Build().Run();

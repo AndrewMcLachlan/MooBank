@@ -26,11 +26,17 @@ internal class Reports : EndpointGroupBase
         builder.MapQuery<GetInOutAverageReport, InOutReport>("in-out-average/{start}/{end}")
             .WithNames("In-out Average Report");
 
-        builder.MapQuery<GetByTagReport, ByTagReport>("{reportType}/tags/{start}/{end}/{parentTagId?}")
+        builder.MapQuery<GetByTagReport, ByTagReport>("{reportType}/tags/{start}/{end}")
             .WithNames("By Tag Report");
 
-        builder.MapQuery<GetBreakdownReport, BreakdownReport>("{reportType}/breakdown/{start}/{end}/{parentTagId?}")
+        builder.MapQuery<GetByTagReport, ByTagReport>("{reportType}/tags/{start}/{end}/{parentTagId}")
+            .WithNames("By Tag Report For Tag");
+
+        builder.MapQuery<GetBreakdownReport, BreakdownReport>("{reportType}/breakdown/{start}/{end}")
             .WithNames("Tag Breakdown Report");
+
+        builder.MapQuery<GetBreakdownReport, BreakdownReport>("{reportType}/breakdown/{start}/{end}/{parentTagId}")
+            .WithNames("Tag Breakdown Report For Tag");
 
         builder.MapQuery<GetTagTrendReport, TagTrendReport>("{reportType}/tag-trend/{start}/{end}/{tagId}")
             .WithNames("Tag Trend Report");
@@ -38,7 +44,13 @@ internal class Reports : EndpointGroupBase
         builder.MapQuery<GetAllTagAverageReport, AllTagAverageReport>("{reportType}/all-tag-average/{start}/{end}")
             .WithNames("All Tag Average Report");
 
-        builder.MapQuery<GetMonthlyBalancesReport, MonthlyBalancesReport>("monthly-balances/{start?}/{end?}")
+        builder.MapQuery<GetMonthlyBalancesReport, MonthlyBalancesReport>("monthly-balances")
             .WithNames("Monthly Balances Report");
+
+        builder.MapQuery<GetMonthlyBalancesReport, MonthlyBalancesReport>("monthly-balances/{start}")
+            .WithNames("Monthly Balances Report From");
+
+        builder.MapQuery<GetMonthlyBalancesReport, MonthlyBalancesReport>("monthly-balances/{start}/{end}")
+            .WithNames("Monthly Balances Report For Period");
     }
 }
