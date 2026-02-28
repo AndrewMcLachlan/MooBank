@@ -121,8 +121,8 @@ void AddServices(WebApplicationBuilder builder)
         {
             options.ResourceMetadata = new()
             {
-                Resource = new Uri("api://moobank.mclachlan.family"),
-                AuthorizationServers = { new Uri(oAuthOptions.Authority) },
+                Resource = "api://moobank.mclachlan.family",
+                AuthorizationServers = { oAuthOptions.Authority },
                 ScopesSupported = ["api://moobank.mclachlan.family/api.read"],
             };
         });

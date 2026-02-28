@@ -2,7 +2,7 @@
   "openapi": "3.1.1",
   "info": {
     "title": "MooBank API",
-    "version": "2026.2.0"
+    "version": "2026.3.0"
   },
   "paths": {
     "/api/accounts": {
