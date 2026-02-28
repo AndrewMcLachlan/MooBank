@@ -1,15 +1,12 @@
 import React, { useRef } from "react";
 
-import { ChartData, Chart as ChartJS, registerables } from "chart.js";
-import chartTrendline from "chartjs-plugin-trendline";
+import { ChartData } from "chart.js";
 import { Bar, getElementAtEvent } from "react-chartjs-2";
 
 import { Section } from "@andrewmclachlan/moo-ds";
 import { useChartColours } from "utils/chartColours";
 import { useBudgetReport } from "../-hooks/useBudgetReport";
 
-ChartJS.register(...registerables);
-ChartJS.register(chartTrendline);
 
 export const BudgetReportYear: React.FC<BudgetReportYearProps> = ({ year, onDrilldown }) => {
 

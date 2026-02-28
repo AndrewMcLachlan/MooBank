@@ -1,7 +1,6 @@
 import { Input, Section } from "@andrewmclachlan/moo-ds";
 import { createFileRoute } from "@tanstack/react-router";
-import { ChartData, Chart as ChartJS, registerables } from "chart.js";
-import chartTrendline from "chartjs-plugin-trendline";
+import { ChartData } from "chart.js";
 import React, { useState } from "react";
 import { Line } from "react-chartjs-2";
 import { useParams } from "@tanstack/react-router";
@@ -13,8 +12,6 @@ import { useStockValueReport } from "routes/shares/-hooks/useStockValueReport";
 import { useChartColours } from "utils/chartColours";
 import { ReportsPage } from "./-components/ReportsPage";
 
-ChartJS.register(...registerables);
-ChartJS.register(chartTrendline);
 
 export const Route = createFileRoute("/shares/$id/reports/value")({
     component: StockValueReport,

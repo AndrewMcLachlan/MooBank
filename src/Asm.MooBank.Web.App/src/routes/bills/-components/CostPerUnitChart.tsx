@@ -1,5 +1,5 @@
 import React from "react";
-import { ChartData, Chart as ChartJS, registerables } from "chart.js";
+import { ChartData } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { Section } from "@andrewmclachlan/moo-ds";
 
@@ -7,7 +7,6 @@ import type { BillFilter } from "../-hooks/types";
 import { useCostPerUnitReport } from "../-hooks/useCostPerUnitReport";
 import { chartColours, useChartColours } from "utils/chartColours";
 
-ChartJS.register(...registerables);
 
 export interface CostPerUnitChartProps {
     utilityType?: string;

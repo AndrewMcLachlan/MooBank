@@ -1,28 +1,11 @@
 import { Section } from "@andrewmclachlan/moo-ds";
 import { format, parseISO } from "date-fns";
 import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
     ChartOptions
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import type { ForecastMonth } from "api/types.gen";
 
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend
-);
 
 interface ForecastChartProps {
     months: ForecastMonth[];

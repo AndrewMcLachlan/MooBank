@@ -1,6 +1,5 @@
 import { Section } from "@andrewmclachlan/moo-ds";
-import { ChartData, Chart as ChartJS, registerables } from "chart.js";
-import chartTrendline from "chartjs-plugin-trendline";
+import { ChartData } from "chart.js";
 import React, { useState } from "react";
 import { Line } from "react-chartjs-2";
 import { useParams } from "@tanstack/react-router";
@@ -12,8 +11,6 @@ import { useMonthlyBalancesReport } from "../../../-hooks/useMonthlyBalancesRepo
 import { useChartColours } from "utils/chartColours";
 import { ReportsPage } from "./ReportsPage";
 
-ChartJS.register(...registerables);
-ChartJS.register(chartTrendline);
 
 export const MonthlyBalances: React.FC = () => {
 

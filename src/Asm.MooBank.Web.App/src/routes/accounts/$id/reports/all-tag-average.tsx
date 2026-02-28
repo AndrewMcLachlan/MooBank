@@ -5,7 +5,7 @@ import { ReportsPage } from "./-components/ReportsPage";
 
 import { useIdParams } from "@andrewmclachlan/moo-app";
 import { Section } from "@andrewmclachlan/moo-ds";
-import { Chart as ChartJS, registerables } from "chart.js";
+
 
 import { ReportTypeSelector } from "components/ReportTypeSelector";
 import type { Period } from "models/dateFns";
@@ -16,7 +16,6 @@ import { MiniPeriodSelector } from "components/MiniPeriodSelector";
 import { getPeriod } from "hooks";
 import { differenceInMonths } from "date-fns";
 
-ChartJS.register(...registerables);
 
 export const Route = createFileRoute("/accounts/$id/reports/all-tag-average")({
     component: AllTagAverage,

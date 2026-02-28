@@ -4,8 +4,7 @@ import { format } from "date-fns/format";
 import { getMonth } from "date-fns/getMonth";
 import { getYear } from "date-fns/getYear";
 
-import { ChartData, Chart as ChartJS, registerables } from "chart.js";
-import chartTrendline from "chartjs-plugin-trendline";
+import { ChartData } from "chart.js";
 import { Bar } from "react-chartjs-2";
 
 import { useChartColours } from "utils/chartColours";
@@ -13,8 +12,6 @@ import type { Period } from "models/dateFns";
 import { useInOutReport as defaultReport } from "hooks/useInOutReport";
 import { SpinnerContainer } from "@andrewmclachlan/moo-ds";
 
-ChartJS.register(...registerables);
-ChartJS.register(chartTrendline);
 
 export const InOut: React.FC<InOutProps> = ({ accountId, period, useInOutReport = defaultReport }) => {
 defaultReport

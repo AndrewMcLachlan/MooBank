@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useBreakdownReport } from "../../../-hooks/useBreakdownReport";
 import { useTag } from "../../../-hooks/useTag";
 
-import { ChartData, Chart as ChartJS, LegendItem, registerables } from "chart.js";
+import { ChartData, LegendItem } from "chart.js";
 import { Doughnut, getElementAtEvent } from "react-chartjs-2";
 
 import type { Period } from "models/dateFns";
@@ -12,7 +12,6 @@ import { chartColours } from "utils/chartColours";
 import { transactionTypeFilter } from "store/state";
 import type { Tag, TagValue } from "api/types.gen";
 
-ChartJS.register(...registerables);
 
 export const Breakdown: React.FC<BreakdownProps> = ({ accountId, tagId, period, reportType, selectedTagChanged }) => {
 

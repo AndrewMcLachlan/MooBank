@@ -6,8 +6,6 @@ import "./-components/Reports.css";
 
 import { useIdParams } from "@andrewmclachlan/moo-app";
 import { Section } from "@andrewmclachlan/moo-ds";
-import { Chart as ChartJS, registerables } from "chart.js";
-import chartTrendline from "chartjs-plugin-trendline";
 
 import { differenceInMonths } from "date-fns";
 
@@ -21,8 +19,6 @@ import { Col, Row } from "@andrewmclachlan/moo-ds";
 import { MiniPeriodSelector } from "components/MiniPeriodSelector";
 import { getPeriod } from "hooks";
 
-ChartJS.register(...registerables);
-ChartJS.register(chartTrendline);
 
 export const Route = createFileRoute("/accounts/$id/reports/in-out")({
     component: InOutPage,

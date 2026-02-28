@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
-import { ChartData, Chart as ChartJS, registerables } from "chart.js";
-import annotationPlugin, { AnnotationOptions } from "chartjs-plugin-annotation";
+import { ChartData } from "chart.js";
+import { AnnotationOptions } from "chartjs-plugin-annotation";
 import { Line } from "react-chartjs-2";
 import { Section } from "@andrewmclachlan/moo-ds";
 
@@ -9,7 +9,6 @@ import { useCostPerUnitReport } from "../-hooks/useCostPerUnitReport";
 import { useServiceChargeReport } from "../-hooks/useServiceChargeReport";
 import { chartColours, useChartColours } from "utils/chartColours";
 
-ChartJS.register(...registerables, annotationPlugin);
 
 export interface BillsChartProps {
     utilityType?: string;

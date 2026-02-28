@@ -1,4 +1,5 @@
 import "~/treeflex/dist/css/treeflex.css";
+import "utils/chartSetup";
 
 import { Provider as ReduxProvider } from "react-redux";
 

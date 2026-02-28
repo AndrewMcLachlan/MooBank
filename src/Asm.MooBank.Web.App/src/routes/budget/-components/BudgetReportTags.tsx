@@ -1,7 +1,6 @@
 import React, { useRef } from "react";
 
-import { ChartData, Chart as ChartJS, registerables } from "chart.js";
-import chartTrendline from "chartjs-plugin-trendline";
+import { ChartData } from "chart.js";
 import { Bar } from "react-chartjs-2";
 
 import { Section } from "@andrewmclachlan/moo-ds";
@@ -10,8 +9,6 @@ import { useChartColours } from "utils/chartColours";
 import { useBudgetReportForMonthBreakdown } from "../-hooks/useBudgetReportForMonthBreakdown";
 import { useBudgetReportForMonthBreakdownUnbudgeted } from "../-hooks/useBudgetReportForMonthBreakdownUnbudgeted";
 
-ChartJS.register(...registerables);
-ChartJS.register(chartTrendline);
 
 export const BudgetReportTags: React.FC<BudgetReportTagsProps> = ({year, month}) => {
 

@@ -1,13 +1,12 @@
 import { useInOutTrendReport } from "../../../-hooks/useInOutTrendReport";
 
 import { Line } from "react-chartjs-2";
-import { Chart as ChartJS, ChartData, registerables } from "chart.js";
+import { ChartData } from "chart.js";
 
 import type { Period } from "models/dateFns";
 import { useChartColours } from "utils/chartColours";
 import { SpinnerContainer } from "@andrewmclachlan/moo-ds";
 
-ChartJS.register(...registerables);
 
 export const InOutTrend: React.FC<InOutTrendProps> = ({ accountId, period }) => {
 

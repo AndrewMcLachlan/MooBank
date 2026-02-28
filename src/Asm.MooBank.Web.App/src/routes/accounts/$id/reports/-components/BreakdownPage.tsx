@@ -4,7 +4,7 @@ import { useTag } from "../../../-hooks/useTag";
 import { ReportsPage } from "./ReportsPage";
 
 import { Section } from "@andrewmclachlan/moo-ds";
-import { Chart as ChartJS, registerables } from "chart.js";
+
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ReportTypeSelector } from "components/ReportTypeSelector";
@@ -16,7 +16,6 @@ import { TagValue } from "api/types.gen";
 import { MiniPeriodSelector } from "components/MiniPeriodSelector";
 import { getPeriod } from "hooks";
 
-ChartJS.register(...registerables);
 
 export const BreakdownPage = () => {
 

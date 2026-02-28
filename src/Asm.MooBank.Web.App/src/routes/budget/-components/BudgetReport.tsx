@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Chart as ChartJS, registerables } from "chart.js";
-import chartTrendline from "chartjs-plugin-trendline";
+
 
 import { Section } from "@andrewmclachlan/moo-ds";
 import { useBudgetYear } from "../-hooks/useBudgetYear";
@@ -12,8 +11,6 @@ import { BudgetPage } from "./BudgetPage";
 import { BudgetReportTags } from "./BudgetReportTags";
 import { BudgetReportYear } from "./BudgetReportYear";
 
-ChartJS.register(...registerables);
-ChartJS.register(chartTrendline);
 
 export const BudgetReport: React.FC = () => {
 

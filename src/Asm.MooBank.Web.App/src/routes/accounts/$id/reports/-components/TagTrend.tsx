@@ -1,6 +1,5 @@
 import { Section } from "@andrewmclachlan/moo-ds";
-import { ChartData, Chart as ChartJS, registerables } from "chart.js";
-import chartTrendline from "chartjs-plugin-trendline";
+import { ChartData } from "chart.js";
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { Form, Row } from "@andrewmclachlan/moo-ds";
@@ -21,8 +20,6 @@ import { transactionTypeFilter } from "store/state";
 import { MiniPeriodSelector } from "components/MiniPeriodSelector";
 import { getPeriod } from "hooks";
 
-ChartJS.register(...registerables);
-ChartJS.register(chartTrendline);
 
 export const TagTrend: React.FC = () => {
 

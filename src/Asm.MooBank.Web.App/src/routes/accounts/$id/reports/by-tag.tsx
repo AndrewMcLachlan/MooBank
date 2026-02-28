@@ -5,7 +5,7 @@ import { ReportsPage } from "./-components/ReportsPage";
 import { useByTagReport } from "../../-hooks/useByTagReport";
 
 import { Doughnut } from "react-chartjs-2";
-import { Chart as ChartJS, ChartData, registerables } from "chart.js";
+import { ChartData } from "chart.js";
 import { useIdParams } from "@andrewmclachlan/moo-app";
 import { Section} from "@andrewmclachlan/moo-ds";
 
@@ -16,7 +16,6 @@ import { transactionTypeFilter } from "store/state";
 import { MiniPeriodSelector } from "components/MiniPeriodSelector";
 import { getPeriod } from "hooks";
 
-ChartJS.register(...registerables);
 
 export const Route = createFileRoute("/accounts/$id/reports/by-tag")({
     component: ByTag,
