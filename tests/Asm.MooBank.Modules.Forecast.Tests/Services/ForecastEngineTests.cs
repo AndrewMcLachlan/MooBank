@@ -841,6 +841,21 @@ public class ForecastEngineTests
                 ]
             });
 
+        // Actual monthly credits used to derive outgoings from balance changes
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(),
+                It.IsAny<DateOnly>(),
+                It.IsAny<DateOnly>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>
+            {
+                [accountId] =
+                [
+                    new MonthlyCreditDebitTotal { Month = new DateOnly(2024, 1, 1), TransactionType = TransactionFilterType.Credit, Total = 5000m },
+                ]
+            });
+
         var engine = new ForecastEngine(
             _mocks.ReportRepositoryMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
@@ -919,6 +934,22 @@ public class ForecastEngineTests
                     new MonthlyBalance { PeriodEnd = new DateOnly(2023, 12, 31), Balance = 10000m },
                     new MonthlyBalance { PeriodEnd = new DateOnly(2024, 1, 31), Balance = 13000m },
                     new MonthlyBalance { PeriodEnd = new DateOnly(2024, 2, 29), Balance = 14000m },
+                ]
+            });
+
+        // Actual monthly credits used to derive outgoings from balance changes
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(),
+                It.IsAny<DateOnly>(),
+                It.IsAny<DateOnly>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>
+            {
+                [accountId] =
+                [
+                    new MonthlyCreditDebitTotal { Month = new DateOnly(2024, 1, 1), TransactionType = TransactionFilterType.Credit, Total = 5000m },
+                    new MonthlyCreditDebitTotal { Month = new DateOnly(2024, 2, 1), TransactionType = TransactionFilterType.Credit, Total = 5000m },
                 ]
             });
 

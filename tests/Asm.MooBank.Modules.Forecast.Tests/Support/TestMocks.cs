@@ -20,6 +20,13 @@ public class TestMocks
         SecurityMock = new Mock<ISecurity>();
         ForecastEngineMock = new Mock<IForecastEngine>();
         ReportRepositoryMock = new Mock<IReportRepository>();
+        ReportRepositoryMock
+            .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(),
+                It.IsAny<DateOnly>(),
+                It.IsAny<DateOnly>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>());
         InstrumentRepositoryMock = new Mock<IInstrumentRepository>();
 
         User = CreateTestUser();

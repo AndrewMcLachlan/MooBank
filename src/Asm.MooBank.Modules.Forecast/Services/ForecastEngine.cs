@@ -76,11 +76,7 @@ internal class ForecastEngine(
 
         if (outgoingStrategy.Mode == "IncomeCorrelated")
         {
-            regressionModel = realizedNonBaselineExpenses.Count > 0
-                ? await FitIncomeExpenseRegressionExcluding(
-                    accountIdsForHistoricalAnalysis, outgoingStrategy, latestTransactionDate,
-                    realizedNonBaselineExpenses, cancellationToken)
-                : await FitIncomeExpenseRegression(
+            regressionModel = await FitIncomeExpenseRegression(
                     accountIdsForHistoricalAnalysis, outgoingStrategy, latestTransactionDate, cancellationToken);
 
             useRegression = regressionModel.Valid;
@@ -103,8 +99,15 @@ internal class ForecastEngine(
         }
         else
         {
+            // Use actual monthly credits (not predicted income) when deriving outgoings
+            // from balance changes. Predicted income only captures salary, but actual credits
+            // include refunds, cashback, interest, etc. — using predicted income underestimates
+            // derived outgoings by the difference.
+            var actualIncomeByMonth = await GetActualMonthlyCredits(
+                accountIds, plan.StartDate, latestTransactionDate, cancellationToken);
+
             effectiveBaselineOutgoings = ForecastCalculations.RecalculateBaselineFromActuals(
-                actualBalancesByMonth, incomeByMonth, plannedItemsByMonth,
+                actualBalancesByMonth, actualIncomeByMonth, plannedItemsByMonth,
                 plan.StartDate, plan.EndDate, baselineOutgoings);
         }
 
@@ -293,7 +296,7 @@ internal class ForecastEngine(
         var allBalances = await reportRepository.GetMonthlyBalancesForAccounts(accountIds, fetchStart, effectiveEndDate, cancellationToken);
 
         var startMonth = new DateOnly(startDate.Year, startDate.Month, 1);
-        var endMonth = new DateOnly(effectiveEndDate.Year, effectiveEndDate.Month, 1);
+        var endMonth = new DateOnly(effectiveEndDate.Year, effectiveEndDate.Month, 1).AddMonths(1);
 
         foreach (var (_, balances) in allBalances)
         {
@@ -411,33 +414,35 @@ internal class ForecastEngine(
     }
 
     /// <summary>
-    /// Fetches monthly credit/debit data, removes realized non-baseline expense spikes,
-    /// and fits a linear regression of expense vs income.
+    /// Gets actual monthly credit totals (all income sources) for the given date range.
+    /// Used to derive accurate outgoings from actual balance changes, avoiding the bias
+    /// that occurs when using predicted salary-only income.
     /// </summary>
-    private async Task<RegressionModel> FitIncomeExpenseRegressionExcluding(
-        List<Guid> accountIds, OutgoingStrategy strategy, DateOnly latestTransactionDate,
-        Dictionary<string, decimal> realizedNonBaselineExpenses, CancellationToken cancellationToken)
+    private async Task<Dictionary<string, decimal>> GetActualMonthlyCredits(
+        List<Guid> accountIds, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
     {
-        var lookbackEnd = latestTransactionDate;
-        var lookbackStart = lookbackEnd.AddMonths(-strategy.LookbackMonths);
+        var result = new Dictionary<string, decimal>();
 
-        var allTotals = await reportRepository.GetMonthlyCreditDebitTotalsForAccounts(accountIds, lookbackStart, lookbackEnd, cancellationToken);
-
-        var monthlyData = AggregateMonthlyData(allTotals);
-
-        foreach (var monthDate in monthlyData.Keys.ToList())
+        if (accountIds.Count == 0 || startDate > endDate)
         {
-            var monthKey = monthDate.ToString("yyyy-MM");
-            if (realizedNonBaselineExpenses.TryGetValue(monthKey, out var spikeAmount) && spikeAmount > 0)
+            return result;
+        }
+
+        var allTotals = await reportRepository.GetMonthlyCreditDebitTotalsForAccounts(accountIds, startDate, endDate, cancellationToken);
+
+        foreach (var totals in allTotals.Values)
+        {
+            foreach (var total in totals)
             {
-                var (income, expense) = monthlyData[monthDate];
-                monthlyData[monthDate] = (income, Math.Max(expense - spikeAmount, 0m));
+                if (total.TransactionType == TransactionFilterType.Credit)
+                {
+                    var monthKey = total.Month.ToString("yyyy-MM");
+                    result[monthKey] = result.GetValueOrDefault(monthKey, 0m) + total.Total;
+                }
             }
         }
 
-        var settings = strategy.IncomeCorrelated ?? new IncomeCorrelatedSettings();
-
-        return ForecastCalculations.FitRegression(monthlyData, settings);
+        return result;
     }
 
     /// <summary>
