@@ -39,7 +39,7 @@ jobs:
       id: set-version-number
       uses: andrewmclachlan/actions/set-version-number@v4
       with:
-        project: 'src/MooBank.Web.Api'
+        project: 'src/MooBank.Api'
         version-property-name: 'Version'
         patch-version-type: 'commits-this-month'
     - run: echo "::notice::Version ${{ steps.set-version-number.outputs.version }}"
@@ -53,7 +53,7 @@ jobs:
         cache-dependency-path: 'src/MooBank.Web.App/package-lock.json'
         registry-url: "https://npm.pkg.github.com"
     - name: Publish
-      run: dotnet publish src/MooBank.Web.Api/MooBank.Web.Api.csproj --output ${{ github.workspace }}/publish --configuration Release --p:Version=${{ steps.set-version-number.outputs.version }} --p:FileVersion=${{ steps.set-version-number.outputs.version }} --no-restore
+      run: dotnet publish src/MooBank.Api/MooBank.Api.csproj --output ${{ github.workspace }}/publish --configuration Release --p:Version=${{ steps.set-version-number.outputs.version }} --p:FileVersion=${{ steps.set-version-number.outputs.version }} --no-restore
     - name: Install App dependencies
       env:
         NODE_AUTH_TOKEN: ${{ secrets.CROSS_REPO_PACKAGE_TOKEN }}
@@ -70,10 +70,10 @@ jobs:
         name: publish
         path: ${{ github.workspace }}/publish
     - name: Build Docker image (validation only)
-      uses: docker/build-push-action@v6
+      uses: docker/build-push-action@v7
       with:
         context: .
-        file: ./src/MooBank.Web.Api/Dockerfile
+        file: ./src/MooBank.Api/Dockerfile
         push: false
         tags: |
           ghcr.io/andrewmclachlan/moobank:${{steps.set-version-number.outputs.version}}
@@ -180,10 +180,10 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Build and push Docker image
-      uses: docker/build-push-action@v6
+      uses: docker/build-push-action@v7
       with:
         context: .
-        file: ./src/MooBank.Web.Api/Dockerfile
+        file: ./src/MooBank.Api/Dockerfile
         push: true
         tags: |
           ghcr.io/andrewmclachlan/moobank:${{needs.build.outputs.version}}

@@ -1,7 +1,7 @@
 using Asm.MooBank.Services;
 using Microsoft.Azure.WebJobs;
 
-namespace Asm.MooBank.Web.Api.Jobs;
+namespace Asm.MooBank.Api.Jobs;
 
 public class RecurringTransactions(IServiceScopeFactory serviceScopeFactory)
 {

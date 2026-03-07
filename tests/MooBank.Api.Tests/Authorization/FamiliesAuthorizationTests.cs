@@ -1,7 +1,7 @@
 #nullable enable
-using Asm.MooBank.Web.Api.Tests.Infrastructure;
+using Asm.MooBank.Api.Tests.Infrastructure;
 
-namespace Asm.MooBank.Web.Api.Tests.Authorization;
+namespace Asm.MooBank.Api.Tests.Authorization;
 
 /// <summary>
 /// Integration tests for families admin authorization.
