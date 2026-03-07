@@ -2,7 +2,6 @@ import { defineConfig } from "vite"
 import { visualizer } from "rollup-plugin-visualizer";
 import react from "@vitejs/plugin-react"
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
-import svgr from "vite-plugin-svgr";
 import tsconfigpaths from "vite-tsconfig-paths";
 import { fileURLToPath } from "url"
 
@@ -45,18 +44,6 @@ export default defineConfig({
             target: "react",
             autoCodeSplitting: true,
             quoteStyle: "double",
-        }),
-        svgr({
-            svgrOptions: {
-            plugins: ["@svgr/plugin-svgo", "@svgr/plugin-jsx"],
-            svgoConfig: {
-                plugins: [{
-                name: "preset-default",
-                params: { overrides: { removeViewBox: false, cleanupIds: false } },
-                }],
-            },
-            },
-            include: "**/*.svg",
         }),
         react(), visualizer() as any],
     server: {

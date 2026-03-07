@@ -107,6 +107,7 @@
   <Folder Name="/src/" />
   <Folder Name="/Tests/">
     <File Path="tests/Directory.Build.props" />
+    <Project Path="tests/MooBank.Api.Tests/MooBank.Api.Tests.csproj" />
     <Project Path="tests/MooBank.Core.Tests/MooBank.Core.Tests.csproj" />
     <Project Path="tests/MooBank.Domain.Tests/MooBank.Domain.Tests.csproj" />
     <Project Path="tests/MooBank.Infrastructure.Tests/MooBank.Infrastructure.Tests.csproj" />
@@ -124,7 +125,6 @@
     <Project Path="tests/MooBank.Modules.Tags.Tests/MooBank.Modules.Tags.Tests.csproj" />
     <Project Path="tests/MooBank.Modules.Transactions.Tests/MooBank.Modules.Transactions.Tests.csproj" />
     <Project Path="tests/MooBank.Modules.Users.Tests/MooBank.Modules.Users.Tests.csproj" />
-    <Project Path="tests/MooBank.Web.Api.Tests/MooBank.Web.Api.Tests.csproj" />
   </Folder>
   <Project Path="src/MooBank.AppHost/MooBank.AppHost.csproj" />
   <Project Path="src/MooBank.Database/MooBank.Database.sqlproj" Id="692a95bf-a4d2-4f37-af63-a3b5a2c04fc7">
@@ -134,7 +134,7 @@
   <Project Path="src/MooBank.Infrastructure/MooBank.Infrastructure.csproj" />
   <Project Path="src/MooBank.Models/MooBank.Models.csproj" />
   <Project Path="src/MooBank.Security/MooBank.Security.csproj" />
-  <Project Path="src/MooBank.Web.Api/MooBank.Web.Api.csproj" />
+  <Project Path="src/MooBank.Api/MooBank.Api.csproj" />
   <Project Path="src/MooBank.Web.App/MooBank.Web.App.esproj">
     <Build />
     <Deploy />

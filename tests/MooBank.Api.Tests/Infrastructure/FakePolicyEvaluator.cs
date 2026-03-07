@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Http;
 using MooBankClaimTypes = Asm.MooBank.Security.ClaimTypes;
 
-namespace Asm.MooBank.Web.Api.Tests.Infrastructure;
+namespace Asm.MooBank.Api.Tests.Infrastructure;
 
 /// <summary>
 /// A fake policy evaluator for integration tests that authenticates using test headers
