@@ -29,8 +29,6 @@ internal static class ForecastCalculations
     /// what the actual outgoings were: actual_outgoings = opening + income + planned - closing.
     /// The average of these actuals replaces the historical baseline for the forecast.
     /// Falls back to the original baseline if no actual data is available.
-    /// Note: uses predicted income since actual income data is not separately available.
-    /// Inaccuracies in income prediction will be reflected in the derived outgoings.
     /// </summary>
     public static decimal RecalculateBaselineFromActuals(
         Dictionary<string, decimal?> actualBalancesByMonth,

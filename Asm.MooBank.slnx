@@ -1,9 +1,65 @@
 <Solution>
+  <Folder Name="/.claude/">
+    <File Path=".claude/PRD.md" />
+    <File Path=".claude/settings.json" />
+  </Folder>
+  <Folder Name="/.claude/rules/" />
+  <Folder Name="/.claude/rules/backend/">
+    <File Path=".claude/rules/backend/cqrs.md" />
+    <File Path=".claude/rules/backend/csharp.md" />
+    <File Path=".claude/rules/backend/entity-framework.md" />
+    <File Path=".claude/rules/backend/rest-api.md" />
+    <File Path=".claude/rules/backend/sql-database.md" />
+  </Folder>
+  <Folder Name="/.claude/rules/frontend/">
+    <File Path=".claude/rules/frontend/typescript.md" />
+  </Folder>
+  <Folder Name="/.claude/rules/testing/">
+    <File Path=".claude/rules/testing/backend.md" />
+    <File Path=".claude/rules/testing/frontend.md" />
+  </Folder>
+  <Folder Name="/.claude/skills/" />
+  <Folder Name="/.claude/skills/code-review/">
+    <File Path=".claude/skills/code-review/SKILL.md" />
+  </Folder>
+  <Folder Name="/.claude/skills/code-review-fix/">
+    <File Path=".claude/skills/code-review-fix/SKILL.md" />
+  </Folder>
+  <Folder Name="/.claude/skills/commit/">
+    <File Path=".claude/skills/commit/SKILL.md" />
+  </Folder>
+  <Folder Name="/.claude/skills/create-prd/">
+    <File Path=".claude/skills/create-prd/SKILL.md" />
+  </Folder>
+  <Folder Name="/.claude/skills/execute/">
+    <File Path=".claude/skills/execute/SKILL.md" />
+  </Folder>
+  <Folder Name="/.claude/skills/init-project/">
+    <File Path=".claude/skills/init-project/SKILL.md" />
+  </Folder>
+  <Folder Name="/.claude/skills/plan-feature/">
+    <File Path=".claude/skills/plan-feature/SKILL.md" />
+    <File Path=".claude/skills/plan-feature/template.md" />
+  </Folder>
+  <Folder Name="/.claude/skills/review-implementation/">
+    <File Path=".claude/skills/review-implementation/SKILL.md" />
+  </Folder>
+  <Folder Name="/.claude/skills/test/">
+    <File Path=".claude/skills/test/SKILL.md" />
+  </Folder>
+  <Folder Name="/.claude/skills/validate/">
+    <File Path=".claude/skills/validate/SKILL.md" />
+  </Folder>
+  <Folder Name="/.claude/plans/">
+    <File Path=".claude/plans/frontend-refactoring-3-phase.md" />
+  </Folder>
   <Folder Name="/.github/">
+    <File Path=".github/CODEOWNERS" />
     <File Path=".github/dependabot.yml" />
   </Folder>
   <Folder Name="/.github/workflows/">
     <File Path=".github/workflows/build.yml" />
+    <File Path=".github/workflows/dependabot-automerge.yml" />
   </Folder>
   <Folder Name="/Config/">
     <File Path=".editorconfig" />
