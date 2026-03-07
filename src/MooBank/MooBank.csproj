@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <InternalsVisibleTo Include="Asm.MooBank.Core.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Asm" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Hybrid" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MooBank.Abs\MooBank.Abs.csproj" />
+    <ProjectReference Include="..\MooBank.Domain\MooBank.Domain.csproj" />
+    <ProjectReference Include="..\MooBank.Eodhd\MooBank.Eodhd.csproj" />
+    <ProjectReference Include="..\MooBank.ExchangeRateApi\MooBank.ExchangeRateApi.csproj" />
+    <ProjectReference Include="..\MooBank.Models\MooBank.Models.csproj" />
+  </ItemGroup>
+
+</Project>

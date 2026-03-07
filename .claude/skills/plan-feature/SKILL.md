@@ -45,10 +45,10 @@ Use parallel searches and file reads to gather intelligence efficiently:
 5. **Review test patterns** - Find similar test examples to follow
 
 Key areas to investigate:
-- `src/Asm.MooBank.Domain/` - Domain entities, aggregates, specifications
-- `src/Asm.MooBank.Modules.*/` - Existing CQRS command/query/endpoint patterns
-- `src/Asm.MooBank.Infrastructure/` - Repository implementations
-- `src/Asm.MooBank.Web.App/src/` - Frontend components, pages, hooks, services
+- `src/MooBank.Domain/` - Domain entities, aggregates, specifications
+- `src/MooBank.Modules.*/` - Existing CQRS command/query/endpoint patterns
+- `src/MooBank.Infrastructure/` - Repository implementations
+- `src/MooBank.Web.App/src/` - Frontend components, pages, hooks, services
 - `tests/` - Test structure and conventions
 
 **Extract actual code examples** from similar features. Include file paths and line numbers so the execution agent can reference them directly.

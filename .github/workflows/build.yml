@@ -39,31 +39,31 @@ jobs:
       id: set-version-number
       uses: andrewmclachlan/actions/set-version-number@v4
       with:
-        project: 'src/Asm.MooBank.Web.Api'
+        project: 'src/MooBank.Web.Api'
         version-property-name: 'Version'
         patch-version-type: 'commits-this-month'
     - run: echo "::notice::Version ${{ steps.set-version-number.outputs.version }}"
     - name: Restore dependencies
-      run: dotnet restore Asm.MooBank.slnx
+      run: dotnet restore MooBank.slnx
     - name: Setup node and npm
       uses: actions/setup-node@v6
       with:
         node-version: 22
         cache: npm
-        cache-dependency-path: 'src/Asm.MooBank.Web.App/package-lock.json'
+        cache-dependency-path: 'src/MooBank.Web.App/package-lock.json'
         registry-url: "https://npm.pkg.github.com"
     - name: Publish
-      run: dotnet publish src/Asm.MooBank.Web.Api/Asm.MooBank.Web.Api.csproj --output ${{ github.workspace }}/publish --configuration Release --p:Version=${{ steps.set-version-number.outputs.version }} --p:FileVersion=${{ steps.set-version-number.outputs.version }} --no-restore
+      run: dotnet publish src/MooBank.Web.Api/MooBank.Web.Api.csproj --output ${{ github.workspace }}/publish --configuration Release --p:Version=${{ steps.set-version-number.outputs.version }} --p:FileVersion=${{ steps.set-version-number.outputs.version }} --no-restore
     - name: Install App dependencies
       env:
         NODE_AUTH_TOKEN: ${{ secrets.CROSS_REPO_PACKAGE_TOKEN }}
-      run: npm ci --prefix src/Asm.MooBank.Web.App --force
+      run: npm ci --prefix src/MooBank.Web.App --force
     - name: Version App
-      run: npm version ${{ steps.set-version-number.outputs.version }} --prefix src/Asm.MooBank.Web.App --force
+      run: npm version ${{ steps.set-version-number.outputs.version }} --prefix src/MooBank.Web.App --force
     - name: Build App
-      run: npm run build --prefix src/Asm.MooBank.Web.App
+      run: npm run build --prefix src/MooBank.Web.App
     - name: Copy App
-      run: cp -r src/Asm.MooBank.Web.App/dist ${{ github.workspace }}/publish/wwwroot
+      run: cp -r src/MooBank.Web.App/dist ${{ github.workspace }}/publish/wwwroot
     - name: Upload Artifact
       uses: actions/upload-artifact@v7.0.0
       with:
@@ -73,7 +73,7 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         context: .
-        file: ./src/Asm.MooBank.Web.Api/Dockerfile
+        file: ./src/MooBank.Web.Api/Dockerfile
         push: false
         tags: |
           ghcr.io/andrewmclachlan/moobank:${{steps.set-version-number.outputs.version}}
@@ -90,23 +90,23 @@ jobs:
       fail-fast: false
       matrix:
         test-project:
-          - { name: "Asm.MooBank.Core.Tests" }
-          - { name: "Asm.MooBank.Domain.Tests" }
-          - { name: "Asm.MooBank.Infrastructure.Tests" }
-          - { name: "Asm.MooBank.Modules.Accounts.Tests" }
-          - { name: "Asm.MooBank.Modules.Assets.Tests" }
-          - { name: "Asm.MooBank.Modules.Bills.Tests" }
-          - { name: "Asm.MooBank.Modules.Budgets.Tests" }
-          - { name: "Asm.MooBank.Modules.Families.Tests" }
-          - { name: "Asm.MooBank.Modules.Forecast.Tests" }
-          - { name: "Asm.MooBank.Modules.Groups.Tests" }
-          - { name: "Asm.MooBank.Modules.Institutions.Tests" }
-          - { name: "Asm.MooBank.Modules.Instruments.Tests" }
-          - { name: "Asm.MooBank.Modules.Reports.Tests" }
-          - { name: "Asm.MooBank.Modules.Stocks.Tests" }
-          - { name: "Asm.MooBank.Modules.Tags.Tests" }
-          - { name: "Asm.MooBank.Modules.Transactions.Tests" }
-          - { name: "Asm.MooBank.Modules.Users.Tests" }
+          - { name: "MooBank.Core.Tests" }
+          - { name: "MooBank.Domain.Tests" }
+          - { name: "MooBank.Infrastructure.Tests" }
+          - { name: "MooBank.Modules.Accounts.Tests" }
+          - { name: "MooBank.Modules.Assets.Tests" }
+          - { name: "MooBank.Modules.Bills.Tests" }
+          - { name: "MooBank.Modules.Budgets.Tests" }
+          - { name: "MooBank.Modules.Families.Tests" }
+          - { name: "MooBank.Modules.Forecast.Tests" }
+          - { name: "MooBank.Modules.Groups.Tests" }
+          - { name: "MooBank.Modules.Institutions.Tests" }
+          - { name: "MooBank.Modules.Instruments.Tests" }
+          - { name: "MooBank.Modules.Reports.Tests" }
+          - { name: "MooBank.Modules.Stocks.Tests" }
+          - { name: "MooBank.Modules.Tags.Tests" }
+          - { name: "MooBank.Modules.Transactions.Tests" }
+          - { name: "MooBank.Modules.Users.Tests" }
     steps:
     - uses: actions/checkout@v6.0.1
     - name: Setup .NET
@@ -183,7 +183,7 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         context: .
-        file: ./src/Asm.MooBank.Web.Api/Dockerfile
+        file: ./src/MooBank.Web.Api/Dockerfile
         push: true
         tags: |
           ghcr.io/andrewmclachlan/moobank:${{needs.build.outputs.version}}

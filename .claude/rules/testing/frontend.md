@@ -1,7 +1,7 @@
 ---
 paths:
-  - "src/Asm.MooBank.Web.App/**/__tests__/**"
-  - "src/Asm.MooBank.Web.App/**/*.test.{ts,tsx}"
+  - "src/MooBank.Web.App/**/__tests__/**"
+  - "src/MooBank.Web.App/**/*.test.{ts,tsx}"
   - "tests/e2e/**"
 ---
 
@@ -28,7 +28,7 @@ paths:
 
 ### Running Component Tests
 ```bash
-cd src/Asm.MooBank.Web.App
+cd src/MooBank.Web.App
 
 # Run tests
 npm test

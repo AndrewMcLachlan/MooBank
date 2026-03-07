@@ -1,6 +1,6 @@
 ---
 paths:
-  - "src/Asm.MooBank.Modules*/**"
+  - "src/MooBank.Modules*/**"
 ---
 
 # CQRS Implementation
@@ -108,7 +108,7 @@ public static void MapTransactionEndpoints(this IEndpointRouteBuilder endpoints)
 
 ## Module Structure
 
-Each module in `Asm.MooBank.Modules.*` follows this structure:
+Each module in `MooBank.Modules.*` follows this structure:
 
 ```
 Modules.{Feature}/

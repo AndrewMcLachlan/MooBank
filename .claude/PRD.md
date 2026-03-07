@@ -138,16 +138,16 @@ MooBank is a mature application with an established feature set. The current MVP
 
 ```
 src/
-├── Asm.MooBank.Web.Api/           # API entry point (minimal)
-├── Asm.MooBank.Domain/            # Entities, aggregates, specifications
-├── Asm.MooBank.Infrastructure/    # EF Core, repository implementations
-├── Asm.MooBank.Modules.*/         # Feature modules (CQRS)
-├── Asm.MooBank.Models/            # Shared DTOs
-├── Asm.MooBank.Security/          # Auth policies
-├── Asm.MooBank.Web.App/           # React frontend
-├── Asm.MooBank.Web.Jobs/          # Background jobs
-├── Asm.MooBank.Database/          # SQL database project
-└── Asm.MooBank.Institution.*/     # Bank importers
+├── MooBank.Web.Api/           # API entry point (minimal)
+├── MooBank.Domain/            # Entities, aggregates, specifications
+├── MooBank.Infrastructure/    # EF Core, repository implementations
+├── MooBank.Modules.*/         # Feature modules (CQRS)
+├── MooBank.Models/            # Shared DTOs
+├── MooBank.Security/          # Auth policies
+├── MooBank.Web.App/           # React frontend
+├── MooBank.Web.Jobs/          # Background jobs
+├── MooBank.Database/          # SQL database project
+└── MooBank.Institution.*/     # Bank importers
 ```
 
 ### Module Structure

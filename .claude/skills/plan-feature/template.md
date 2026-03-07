@@ -111,21 +111,21 @@ Task keywords:
 ### Level 1: Build
 
 ```bash
-dotnet build Asm.MooBank.slnx
-cd src/Asm.MooBank.Web.App && npm run build
+dotnet build MooBank.slnx
+cd src/MooBank.Web.App && npm run build
 ```
 
 ### Level 2: Tests
 
 ```bash
 dotnet test tests/
-cd src/Asm.MooBank.Web.App && npm test
+cd src/MooBank.Web.App && npm test
 ```
 
 ### Level 3: Lint
 
 ```bash
-cd src/Asm.MooBank.Web.App && npm run lint
+cd src/MooBank.Web.App && npm run lint
 ```
 
 ---

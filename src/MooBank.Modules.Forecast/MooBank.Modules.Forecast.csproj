@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="Asm.Cqrs.AspNetCore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MooBank\MooBank.csproj" />
+    <ProjectReference Include="..\MooBank.Domain\MooBank.Domain.csproj" />
+    <ProjectReference Include="..\MooBank.Models\MooBank.Models.csproj" />
+    <ProjectReference Include="..\MooBank.Security\MooBank.Security.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Asm.MooBank.Modules.Forecast.Tests" />
+  </ItemGroup>
+
+</Project>

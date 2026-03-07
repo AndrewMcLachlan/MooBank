@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="Asm.Cqrs.AspNetCore" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MooBank\MooBank.csproj" />
+    <ProjectReference Include="..\MooBank.Domain\MooBank.Domain.csproj" />
+    <ProjectReference Include="..\MooBank.Models\MooBank.Models.csproj" />
+    <ProjectReference Include="..\MooBank.Security\MooBank.Security.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Asm.Cqrs.Commands" />
+    <Using Include="Asm.Cqrs.Queries" />
+    <Using Include="Microsoft.EntityFrameworkCore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Asm.MooBank.Modules.Bills.Tests" />
+  </ItemGroup>
+
+</Project>

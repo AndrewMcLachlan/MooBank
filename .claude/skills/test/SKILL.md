@@ -28,7 +28,7 @@ dotnet test tests/ --filter "FullyQualifiedName~YourTestName"
 ## Frontend Tests
 
 ```bash
-cd src/Asm.MooBank.Web.App && npm test
+cd src/MooBank.Web.App && npm test
 ```
 
 ## Report

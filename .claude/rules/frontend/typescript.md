@@ -1,6 +1,6 @@
 ---
 paths:
-  - "src/Asm.MooBank.Web.App/**/*.{ts,tsx}"
+  - "src/MooBank.Web.App/**/*.{ts,tsx}"
 ---
 
 # TypeScript / React Conventions
@@ -47,7 +47,7 @@ Storybook (for moo-ds): https://storybook.mclachlan.family
 ## Project Structure
 
 ```
-src/Asm.MooBank.Web.App/
+src/MooBank.Web.App/
 ├── src/
 │   ├── components/     # Reusable UI components
 │   ├── pages/          # Route-level components

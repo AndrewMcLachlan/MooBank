@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="CsvHelper" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MooBank\MooBank.csproj" />
+    <ProjectReference Include="..\MooBank.Domain\MooBank.Domain.csproj" />
+    <ProjectReference Include="..\MooBank.Infrastructure\MooBank.Infrastructure.csproj" />
+    <ProjectReference Include="..\MooBank.Models\MooBank.Models.csproj" />
+  </ItemGroup>
+
+</Project>

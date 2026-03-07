@@ -41,12 +41,12 @@ paths:
 
 - Group related files by feature/entity, not by type
 - Commands, Queries, and Models specific to a feature should be in that feature's folder
-- Shared models belong in `Asm.MooBank.Models`
+- Shared models belong in `MooBank.Models`
 
 ## Domain Model Guidelines
 
 ### Entities
-- Located in `Asm.MooBank.Domain/Entities/`
+- Located in `MooBank.Domain/Entities/`
 - Should inherit from appropriate base classes (`Entity<TId>`, `AggregateRoot<TId>`)
 - Contain business logic and invariants
 - Use domain events for cross-aggregate communication
@@ -60,8 +60,8 @@ paths:
 - Common examples: `FilterSpecification`, `IncludeXxxSpecification`, `SortSpecification`
 
 ### Repositories
-- Interface defined in `Asm.MooBank.Domain/Entities/`
-- Implementation in `Asm.MooBank.Infrastructure/Repositories/`
+- Interface defined in `MooBank.Domain/Entities/`
+- Implementation in `MooBank.Infrastructure/Repositories/`
 - Should work with aggregate roots, not individual entities
 - Use specifications for complex queries
 

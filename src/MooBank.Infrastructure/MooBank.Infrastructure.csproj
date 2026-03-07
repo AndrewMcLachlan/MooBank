@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Asm.MooBank.Domain.Tests" />
+    <InternalsVisibleTo Include="Asm.MooBank.Infrastructure.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Asm.Domain.Infrastructure" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MooBank\MooBank.csproj" />
+    <ProjectReference Include="..\MooBank.Domain\MooBank.Domain.csproj" />
+    <ProjectReference Include="..\MooBank.Security\MooBank.Security.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Asm.Domain" />
+    <Using Include="Asm.Domain.Infrastructure" />
+    <Using Include="Microsoft.EntityFrameworkCore" />
+    <Using Include="Microsoft.EntityFrameworkCore.Metadata.Builders" />
+  </ItemGroup>
+
+</Project>

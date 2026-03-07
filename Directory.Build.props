@@ -19,5 +19,7 @@
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <AnalysisLevel>latest</AnalysisLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RootNamespace>Asm.$(MSBuildProjectName)</RootNamespace>
+    <AssemblyName>Asm.$(MSBuildProjectName)</AssemblyName>
   </PropertyGroup>
 </Project>

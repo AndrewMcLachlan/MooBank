@@ -28,7 +28,7 @@ Backend testing uses xUnit with XML documentation comments in Gherkin style:
 ### Test File Structure
 
 ```
-tests/Asm.MooBank.Modules.Accounts.Tests/
+tests/MooBank.Modules.Accounts.Tests/
 ├── Commands/
 │   ├── CreateTests.cs
 │   └── UpdateTests.cs

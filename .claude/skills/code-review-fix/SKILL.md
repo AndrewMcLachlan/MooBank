@@ -23,7 +23,7 @@ For each issue:
 Run full validation to confirm no regressions:
 
 ```bash
-dotnet build Asm.MooBank.slnx --no-restore
-cd src/Asm.MooBank.Web.App && npm run build
+dotnet build MooBank.slnx --no-restore
+cd src/MooBank.Web.App && npm run build
 dotnet test tests/ --no-build
 ```

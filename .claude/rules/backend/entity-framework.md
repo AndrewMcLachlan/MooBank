@@ -1,7 +1,7 @@
 ---
 paths:
-  - "src/Asm.MooBank.Infrastructure/**"
-  - "src/Asm.MooBank.Domain/**"
+  - "src/MooBank.Infrastructure/**"
+  - "src/MooBank.Domain/**"
 ---
 
 # Entity Framework Core
@@ -15,8 +15,8 @@ paths:
 ### Repositories
 - Repositories should only be used for aggregate roots
 - Use specifications for complex queries
-- Interface defined in `Asm.MooBank.Domain/Entities/`
-- Implementation in `Asm.MooBank.Infrastructure/Repositories/`
+- Interface defined in `MooBank.Domain/Entities/`
+- Implementation in `MooBank.Infrastructure/Repositories/`
 
 ## IQueryable vs Repository
 

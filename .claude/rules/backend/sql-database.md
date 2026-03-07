@@ -1,6 +1,6 @@
 ---
 paths:
-  - "src/Asm.MooBank.Database/**"
+  - "src/MooBank.Database/**"
 ---
 
 # SQL Server / Database Design
@@ -27,7 +27,7 @@ paths:
 ## Database Project Structure
 
 ```
-Asm.MooBank.Database/
+MooBank.Database/
 ├── Security/               # Schema definitions
 ├── {schema-name}/          # The name of a schema, one folder for each
 │   ├── Tables/             # Table definitions

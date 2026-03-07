@@ -30,19 +30,18 @@ See @.claude/PRD.md for detailed product requirements and domain concepts.
 
 ```
 src/
-├── Asm.MooBank.Web.Api/           # ASP.NET Core Web API (minimal, delegates to modules)
-├── Asm.MooBank.Domain/            # Domain entities, aggregates, specifications, events
-├── Asm.MooBank.Infrastructure/    # EF Core, repository implementations
-├── Asm.MooBank.Models/            # Shared DTOs
-├── Asm.MooBank.Modules.*/         # Feature modules (CQRS commands/queries/endpoints)
-├── Asm.MooBank.Security/          # Auth policies
-├── Asm.MooBank.Institution.*/     # Bank importers (ING, Macquarie, AustralianSuper)
-├── Asm.MooBank.Web.App/           # React/TypeScript SPA
-├── Asm.MooBank.Web.Jobs/          # Azure WebJobs (background processing)
-├── Asm.MooBank.Database/          # SQL Server Database Project
-└── Asm.MooBank.AppHost/           # Aspire AppHost for local dev
+├── MooBank.Web.Api/           # ASP.NET Core Web API (minimal, delegates to modules)
+├── MooBank.Domain/            # Domain entities, aggregates, specifications, events
+├── MooBank.Infrastructure/    # EF Core, repository implementations
+├── MooBank.Models/            # Shared DTOs
+├── MooBank.Modules.*/         # Feature modules (CQRS commands/queries/endpoints)
+├── MooBank.Security/          # Auth policies
+├── MooBank.Institution.*/     # Bank importers (ING, Macquarie, AustralianSuper)
+├── MooBank.Web.App/           # React/TypeScript SPA
+├── MooBank.Database/          # SQL Server Database Project
+└── MooBank.AppHost/           # Aspire AppHost for local dev
 tests/
-└── Asm.MooBank.Tests/             # Unit and integration tests
+└── MooBank.*.Tests/           # Unit and integration tests
 ```
 
 ### Libraries and Frameworks
@@ -64,11 +63,11 @@ tests/
 
 ```bash
 # Backend
-dotnet build Asm.MooBank.slnx              # Build solution
+dotnet build MooBank.slnx                   # Build solution
 dotnet test tests/                          # Run all tests
 dotnet test --filter /[Category=Unit]       # Unit tests only
 
-# Frontend (from src/Asm.MooBank.Web.App/)
+# Frontend (from src/MooBank.Web.App/)
 npm run build                               # Build (includes tsc type checking)
 npm run lint                                # Lint
 npm run generate                            # Regenerate API types from OpenAPI spec
@@ -104,13 +103,13 @@ Path-scoped rules in `.claude/rules/` auto-load when working on matching files:
 | Rule | Auto-loads for |
 |------|---------------|
 | `backend/csharp.md` | `src/**/*.cs` |
-| `backend/cqrs.md` | `src/Asm.MooBank.Modules*/**` |
-| `backend/entity-framework.md` | `src/Asm.MooBank.Infrastructure/**`, `src/Asm.MooBank.Domain/**` |
-| `backend/rest-api.md` | `src/Asm.MooBank.Web.Api/**`, `src/Asm.MooBank.Modules*/Endpoints/**` |
-| `backend/sql-database.md` | `src/Asm.MooBank.Database/**` |
-| `frontend/typescript.md` | `src/Asm.MooBank.Web.App/**/*.{ts,tsx}` |
+| `backend/cqrs.md` | `src/MooBank.Modules*/**` |
+| `backend/entity-framework.md` | `src/MooBank.Infrastructure/**`, `src/MooBank.Domain/**` |
+| `backend/rest-api.md` | `src/MooBank.Web.Api/**`, `src/MooBank.Modules*/Endpoints/**` |
+| `backend/sql-database.md` | `src/MooBank.Database/**` |
+| `frontend/typescript.md` | `src/MooBank.Web.App/**/*.{ts,tsx}` |
 | `testing/backend.md` | `tests/**/*.cs` |
-| `testing/frontend.md` | `tests/e2e/**`, `src/Asm.MooBank.Web.App/**/__tests__/**` |
+| `testing/frontend.md` | `tests/e2e/**`, `src/MooBank.Web.App/**/__tests__/**` |
 
 ## Instructions for AI Agents
 

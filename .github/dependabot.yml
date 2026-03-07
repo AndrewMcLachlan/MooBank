@@ -11,7 +11,7 @@ registries:
 
 updates:
   - package-ecosystem: "npm"
-    directory: "/src/Asm.MooBank.Web.App"
+    directory: "/src/MooBank.Web.App"
     schedule:
       interval: "weekly"
       timezone: Australia/Brisbane

@@ -1,7 +1,7 @@
 ---
 paths:
-  - "src/Asm.MooBank.Web.Api/**"
-  - "src/Asm.MooBank.Modules*/Endpoints/**"
+  - "src/MooBank.Web.Api/**"
+  - "src/MooBank.Modules*/Endpoints/**"
 ---
 
 # REST API Design & Authorization
@@ -38,7 +38,7 @@ paths:
 ## Authorization
 
 ### Policy-Based Authorization
-- Policies are defined in `Asm.MooBank.Security`
+- Policies are defined in `MooBank.Security`
 - Applied at the endpoint level using `.RequireAuthorization()`
 
 ### Instrument Authorization Pattern

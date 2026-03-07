@@ -19,8 +19,8 @@ npm --version
 ## Step 2: Restore & Build Backend
 
 ```bash
-dotnet restore Asm.MooBank.slnx
-dotnet build Asm.MooBank.slnx --no-restore
+dotnet restore MooBank.slnx
+dotnet build MooBank.slnx --no-restore
 ```
 
 **If restore fails** (401 Unauthorized for GitHub Packages):
@@ -35,13 +35,13 @@ ASM library packages are hosted on GitHub Packages. Instruct the user to:
      --password YOUR_GITHUB_PAT \
      --store-password-in-clear-text
    ```
-3. Retry: `dotnet restore Asm.MooBank.slnx`
+3. Retry: `dotnet restore MooBank.slnx`
 
 ## Step 3: Install & Build Frontend
 
 ```bash
-cd src/Asm.MooBank.Web.App && npm install
-cd src/Asm.MooBank.Web.App && npm run build
+cd src/MooBank.Web.App && npm install
+cd src/MooBank.Web.App && npm run build
 ```
 
 **If npm install fails** (401/403 for @andrewmclachlan packages):
@@ -55,10 +55,10 @@ MooApp packages are hosted on GitHub Packages. Instruct the user to:
 
 ```bash
 # Backend
-dotnet run --project src/Asm.MooBank.Web.Api/Asm.MooBank.Web.Api.csproj
+dotnet run --project src/MooBank.Web.Api/MooBank.Web.Api.csproj
 
 # Frontend (separate terminal)
-cd src/Asm.MooBank.Web.App && npm start
+cd src/MooBank.Web.App && npm start
 ```
 
 ## Step 5: Confirm

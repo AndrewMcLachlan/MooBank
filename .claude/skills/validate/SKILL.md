@@ -13,19 +13,19 @@ Run full validation suite on the codebase. Execute in order, stopping on first f
 ### 1. Backend Build
 
 ```bash
-dotnet build Asm.MooBank.slnx --no-restore
+dotnet build MooBank.slnx --no-restore
 ```
 
 ### 2. Frontend Lint
 
 ```bash
-cd src/Asm.MooBank.Web.App && npm run lint
+cd src/MooBank.Web.App && npm run lint
 ```
 
 ### 3. Frontend Build (includes type checking)
 
 ```bash
-cd src/Asm.MooBank.Web.App && npm run build
+cd src/MooBank.Web.App && npm run build
 ```
 
 ### 4. Backend Tests
