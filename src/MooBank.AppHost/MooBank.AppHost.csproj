@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!--<ProjectReference Include="..\MooBank.Database\MooBank.Database.sqlproj" />-->
+    <!--<ProjectReference Include="..\MooBank.Database\MooBank.Database.sqlproj" ReferenceOutputAssembly="false" />-->
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
     <PackageReference Include="Microsoft.Extensions.Http" />
     <ProjectReference Include="..\MooBank.Web.Api\MooBank.Web.Api.csproj" />
