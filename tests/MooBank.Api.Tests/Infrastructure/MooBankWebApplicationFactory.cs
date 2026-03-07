@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace Asm.MooBank.Web.Api.Tests.Infrastructure;
+namespace Asm.MooBank.Api.Tests.Infrastructure;
 
 /// <summary>
 /// Custom WebApplicationFactory for integration testing with fake authentication and in-memory database.

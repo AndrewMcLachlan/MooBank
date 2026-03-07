@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Hybrid;
 using Serilog;
 
-namespace Asm.MooBank.Web.Api;
+namespace Asm.MooBank.Api;
 
 public static class IServiceCollectionExtensions
 {

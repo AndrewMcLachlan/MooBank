@@ -23,7 +23,7 @@ const Layout: React.FC = () => {
 
     return (
         <MooAppLayout
-            header={{ menu: menu, userMenu: userMenu }}
+            header={{ menu: menu, userMenu: userMenu, showAppInfo: true }}
             sidebar={{ navItems: sideMenu }}
         />
     );

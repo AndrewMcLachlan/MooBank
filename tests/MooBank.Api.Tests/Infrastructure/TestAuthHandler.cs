@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MooBankClaimTypes = Asm.MooBank.Security.ClaimTypes;
 
-namespace Asm.MooBank.Web.Api.Tests.Infrastructure;
+namespace Asm.MooBank.Api.Tests.Infrastructure;
 
 /// <summary>
 /// A fake authentication handler for integration tests that creates claims from test headers.

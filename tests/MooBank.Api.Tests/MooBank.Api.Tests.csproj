@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\MooBank.Web.Api\MooBank.Web.Api.csproj" />
+    <ProjectReference Include="..\..\src\MooBank.Api\MooBank.Api.csproj" />
   </ItemGroup>
 
 </Project>
