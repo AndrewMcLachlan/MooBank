@@ -38,7 +38,7 @@ else
     //.WithReference(mooBankDb);
 }
 
-var api = builder.AddProject<Projects.MooBank_Web_Api>("moobank-api", "API Only")
+var api = builder.AddProject<Projects.MooBank_Api>("moobank-api", "API Only")
     .WithReference(mooBankDb)
     .WithHttpHealthCheck("/healthz");
 
