@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Asm.AspNetCore.Modules;
 using Asm.MooBank.Security;
+using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +25,7 @@ public class Module : IModule
     {
         services.AddCommandHandlers(Assembly);
         services.AddQueryHandlers(Assembly);
+        services.AddValidatorsFromAssembly(Assembly);
 
         return services;
     }

@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
 using Asm.AspNetCore.Modules;
+using FluentValidation;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,8 +13,8 @@ public class Module : IModule
 
     public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
     {
-        new Endpoints.Budget().MapGroup(endpoints);
-        new Endpoints.ReportEndpoint().MapGroup(endpoints);
+        new Endpoints.Budget().MapGroup(endpoints).RequireAuthorization();
+        new Endpoints.ReportEndpoint().MapGroup(endpoints).RequireAuthorization();
 
         return endpoints;
     }
@@ -21,6 +23,7 @@ public class Module : IModule
     {
         services.AddCommandHandlers(Assembly);
         services.AddQueryHandlers(Assembly);
+        services.AddValidatorsFromAssembly(Assembly);
 
         return services;
     }

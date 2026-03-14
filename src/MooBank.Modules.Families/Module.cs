@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Asm.AspNetCore.Modules;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,8 +12,8 @@ public class Module : IModule
 
     public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
     {
-        new Endpoints.Families().MapGroup(endpoints);
-        new Endpoints.FamiliesAdmin().MapGroup(endpoints);
+        new Endpoints.Families().MapGroup(endpoints).RequireAuthorization();
+        new Endpoints.FamiliesAdmin().MapGroup(endpoints).RequireAuthorization(Policies.Admin);
 
         return endpoints;
     }

@@ -13,7 +13,7 @@ public class Module : IModule
 
     public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
     {
-        new Endpoints.Accounts().MapGroup(endpoints);
+        new Endpoints.Accounts().MapGroup(endpoints).RequireAuthorization();
         new Endpoints.InstitutionAccounts().MapGroup(endpoints).RequireAuthorization(Policies.GetInstrumentViewerPolicy("instrumentId"));
         new Endpoints.RecurringEndpoints().MapGroup(endpoints).RequireAuthorization(Policies.GetInstrumentViewerPolicy("accountId"));
         new Endpoints.VirtualRecurringEndpoints().MapGroup(endpoints).RequireAuthorization(Policies.GetInstrumentViewerPolicy("accountId"));

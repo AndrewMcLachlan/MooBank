@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
 using Asm.AspNetCore.Modules;
+using FluentValidation;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,11 +13,12 @@ public class Module : IModule
 
     public IServiceCollection AddServices(IServiceCollection services) =>
         services.AddCommandHandlers(Assembly)
-                .AddQueryHandlers(Assembly);
+                .AddQueryHandlers(Assembly)
+                .AddValidatorsFromAssembly(Assembly);
 
     public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
     {
-        new Endpoints.User().MapGroup(endpoints);
+        new Endpoints.User().MapGroup(endpoints).RequireAuthorization();
         return endpoints;
     }
 }
