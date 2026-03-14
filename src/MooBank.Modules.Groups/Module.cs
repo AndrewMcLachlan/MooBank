@@ -13,7 +13,7 @@ public class Module : IModule
 
     public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
     {
-        new Endpoints.Groups().MapGroup(endpoints);
+        new Endpoints.Groups().MapGroup(endpoints).RequireAuthorization();
 
         return endpoints;
     }

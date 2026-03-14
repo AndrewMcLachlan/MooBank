@@ -10,6 +10,7 @@ using Asm.MooBank.Institution.Macquarie;
 using Asm.MooBank.Security;
 using Asm.OAuth;
 using Microsoft.AspNetCore.OpenApi;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi;
 
 var result = WebApplicationStart.Run(args, "Asm.MooBank.Web.Api", AddServices, AddApp, AddHealthChecks);
@@ -130,6 +131,9 @@ void AddServices(WebApplicationBuilder builder)
     services.AddAuthorization(options =>
     {
         options.AddPolicies();
+        options.FallbackPolicy = new AuthorizationPolicyBuilder()
+            .RequireAuthenticatedUser()
+            .Build();
     });
 
     services.AddAuthorisationHandlers();

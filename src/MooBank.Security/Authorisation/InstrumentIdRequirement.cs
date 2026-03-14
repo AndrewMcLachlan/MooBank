@@ -2,7 +2,7 @@
 
 namespace Asm.MooBank.Security.Authorisation;
 
-internal class InstrumentIdRequirement : RouteParamAuthorisationRequirement
+public class InstrumentIdRequirement : RouteParamAuthorisationRequirement
 {
     public InstrumentIdRequirement() : base("instrumentId")
     {
@@ -14,7 +14,7 @@ internal class InstrumentIdRequirement : RouteParamAuthorisationRequirement
 }
 
 
-internal class InstrumentOwnerRequirement : InstrumentIdRequirement
+public class InstrumentOwnerRequirement : InstrumentIdRequirement
 {
     public InstrumentOwnerRequirement() : base()
     {
@@ -25,7 +25,7 @@ internal class InstrumentOwnerRequirement : InstrumentIdRequirement
     }
 }
 
-internal class InstrumentViewerRequirement : InstrumentIdRequirement
+public class InstrumentViewerRequirement : InstrumentIdRequirement
 {
     public InstrumentViewerRequirement() : base()
     {

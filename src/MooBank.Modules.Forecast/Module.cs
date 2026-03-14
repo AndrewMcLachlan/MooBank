@@ -1,6 +1,8 @@
 using System.Reflection;
 using Asm.AspNetCore.Modules;
 using Asm.MooBank.Modules.Forecast.Services;
+using FluentValidation;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,8 +14,8 @@ public class Module : IModule
 
     public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
     {
-        new Endpoints.ForecastPlans().MapGroup(endpoints);
-        new Endpoints.PlannedItems().MapGroup(endpoints);
+        new Endpoints.ForecastPlans().MapGroup(endpoints).RequireAuthorization();
+        new Endpoints.PlannedItems().MapGroup(endpoints).RequireAuthorization();
 
         return endpoints;
     }
@@ -22,6 +24,7 @@ public class Module : IModule
     {
         services.AddCommandHandlers(Assembly);
         services.AddQueryHandlers(Assembly);
+        services.AddValidatorsFromAssembly(Assembly);
         services.AddScoped<IForecastEngine, ForecastEngine>();
 
         return services;
