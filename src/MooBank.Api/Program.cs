@@ -221,7 +221,7 @@ void AddApp(WebApplication app)
 
     app.UseSecurityHeaders();
 
-    app.MapFallbackToFile("/index.html");
+    app.MapFallbackToFile("/index.html").AllowAnonymous();
 }
 
 void AddHealthChecks(IHealthChecksBuilder builder, WebApplicationBuilder app)
