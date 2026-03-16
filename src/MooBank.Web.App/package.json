@@ -14,10 +14,10 @@
   },
   "type": "module",
   "dependencies": {
-    "@andrewmclachlan/moo-app": "^5.1.27",
-    "@andrewmclachlan/moo-ds": "^5.1.27",
-    "@andrewmclachlan/moo-icons": "^5.1.27",
-    "@azure/msal-react": "^5.0.6",
+    "@andrewmclachlan/moo-app": "^5.1.50",
+    "@andrewmclachlan/moo-ds": "^5.1.50",
+    "@andrewmclachlan/moo-icons": "^5.1.50",
+    "@azure/msal-react": "^5.0.7",
     "@fortawesome/fontawesome-svg-core": "^7.2.0",
     "@fortawesome/free-solid-svg-icons": "^7.2.0",
     "@fortawesome/react-fontawesome": "^3.2.0",
@@ -50,7 +50,7 @@
     "workbox-strategies": "^7.0.0"
   },
   "optionalDependencies": {
-    "@esbuild/linux-arm64": "0.27.3",
+    "@esbuild/linux-arm64": "0.27.4",
     "@rollup/rollup-linux-arm64-gnu": "4.59.0"
   },
   "overrides": {
