@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getBillsByUtilityTypeQueryKey } from "api/@tanstack/react-query.gen";
 import { getBillsByUtilityType } from "api/sdk.gen";
 import type { UtilityType, Bill } from "api/types.gen";
-import { PagedResult } from "@andrewmclachlan/moo-ds";
+import type { PagedResult } from "@andrewmclachlan/moo-ds";
 import type { BillFilter } from "./types";
 
 export const useBillsByUtilityType = (utilityType: string, pageNumber: number, pageSize: number, filter?: BillFilter) => useQuery({

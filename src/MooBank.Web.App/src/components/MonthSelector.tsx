@@ -1,7 +1,7 @@
-import { ValueProps } from "@andrewmclachlan/moo-ds";
+import type { ValueProps } from "@andrewmclachlan/moo-ds";
 import classNames from "classnames";
 import { isMonthSelected } from "utils/dateFns";
-import { ElementType } from "react";
+import type { ElementType } from "react";
 
 export const MonthSelector: React.FC<MonthSelectorProps<any>> = ({ className, as = "div", value = 4095, ...props }) => {
 

@@ -1,4 +1,5 @@
-import React, { PropsWithChildren, useState } from "react";
+import React, { useState } from "react";
+import type { PropsWithChildren } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { Page, useIdParams } from "@andrewmclachlan/moo-app";

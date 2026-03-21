@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import type { Tag } from "api/types.gen";
 

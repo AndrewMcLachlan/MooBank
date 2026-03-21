@@ -1,6 +1,7 @@
 import { format } from "date-fns/format";
 
-import { PeriodSelectorProps, usePeriodSelector } from ".";
+import { usePeriodSelector } from ".";
+import type { PeriodSelectorProps } from ".";
 import { Button, Form, Input } from "@andrewmclachlan/moo-ds";
 import { periodOptions } from "models/periodOptions";
 

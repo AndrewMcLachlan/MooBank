@@ -1,6 +1,6 @@
-import { SortDirection } from "@andrewmclachlan/moo-ds";
+import type { SortDirection } from "@andrewmclachlan/moo-ds";
 import type { TransactionFilterType, SortDirection as GenSortDirection } from "api/types.gen";
-import { TransactionsFilter } from "store/state";
+import type { TransactionsFilter } from "store/state";
 import {
     getTransactionsQueryKey,
     getUntaggedTransactionsQueryKey,

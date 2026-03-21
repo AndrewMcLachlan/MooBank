@@ -1,9 +1,10 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { PaginationProps, PaginationTh, SortableTh, SortDirection } from "@andrewmclachlan/moo-ds";
+import { PaginationTh, SortableTh } from "@andrewmclachlan/moo-ds";
+import type { PaginationProps, SortDirection } from "@andrewmclachlan/moo-ds";
 
-import { State } from "store/state";
+import type { State } from "store/state";
 import { TransactionsSlice } from "store/Transactions";
 
 export const TransactionTableHead: React.FC<TransactionTableHeadProps> = ({ compact, ...props }) => {

@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 
-import { ChartData } from "chart.js";
+import type { ChartData } from "chart.js";
 import { Bar, getElementAtEvent } from "react-chartjs-2";
 
 import { Section } from "@andrewmclachlan/moo-ds";

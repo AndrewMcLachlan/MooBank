@@ -4,7 +4,7 @@ import { format } from "date-fns/format";
 import { getMonth } from "date-fns/getMonth";
 import { getYear } from "date-fns/getYear";
 
-import { ChartData } from "chart.js";
+import type { ChartData } from "chart.js";
 import { Bar } from "react-chartjs-2";
 
 import { useChartColours } from "utils/chartColours";

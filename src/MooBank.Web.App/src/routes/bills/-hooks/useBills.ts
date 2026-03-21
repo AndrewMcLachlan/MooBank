@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getBillsForAnAccountQueryKey } from "api/@tanstack/react-query.gen";
 import { getBillsForAnAccount } from "api/sdk.gen";
 import type { Bill } from "api/types.gen";
-import { PagedResult } from "@andrewmclachlan/moo-ds";
+import type { PagedResult } from "@andrewmclachlan/moo-ds";
 
 export const useBills = (id: string, pageNumber: number, pageSize: number) => useQuery({
     queryKey: getBillsForAnAccountQueryKey({

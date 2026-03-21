@@ -7,7 +7,7 @@ import { Table } from "@andrewmclachlan/moo-ds";
 import { getNumberOfPages, Pagination } from "@andrewmclachlan/moo-ds";
 import { useStockTransactions } from "routes/shares/-hooks/useStockTransactions";
 import { StockTransactionsSlice } from "store";
-import { State } from "store/state";
+import type { State } from "store/state";
 import { useDebounce } from "use-debounce";
 import { useStockHolding } from "../../../-components/StockHoldingProvider";
 import { StockTransactionRow } from "./StockTransactionRow";

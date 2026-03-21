@@ -3,7 +3,7 @@ import { getMonth } from "date-fns/getMonth";
 import { getYear } from "date-fns/getYear";
 
 import { Widget } from "@andrewmclachlan/moo-ds";
-import { ChartData } from "chart.js";
+import type { ChartData } from "chart.js";
 import { useChartColours } from "utils/chartColours";
 import { lastMonth, lastMonthName } from "utils/dateFns";
 import { Bar } from "react-chartjs-2";

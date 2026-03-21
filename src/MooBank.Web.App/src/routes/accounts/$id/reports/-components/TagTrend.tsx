@@ -1,5 +1,5 @@
 import { Section } from "@andrewmclachlan/moo-ds";
-import { ChartData } from "chart.js";
+import type { ChartData } from "chart.js";
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { Form, Row } from "@andrewmclachlan/moo-ds";
@@ -10,13 +10,14 @@ import { PeriodSelector } from "components/PeriodSelector";
 import { ReportTypeSelector } from "components/ReportTypeSelector";
 import type { Period } from "models/dateFns";
 import type { TagSettings } from "api/types.gen";
-import { TrendReportSettings, defaultSettings } from "models/reports";
+import { defaultSettings } from "models/reports";
+import type { TrendReportSettings } from "models/reports";
 import { useTag } from "../../../-hooks/useTag";
 import { useTagTrendReport } from "../../../-hooks/useTagTrendReport";
 import { useChartColours } from "utils/chartColours";
 import { ReportsPage } from "./ReportsPage";
 import { TagSettingsPanel } from "./TagSettingsPanel";
-import { transactionTypeFilter } from "store/state";
+import type { transactionTypeFilter } from "store/state";
 import { MiniPeriodSelector } from "components/MiniPeriodSelector";
 import { getPeriod } from "hooks";
 

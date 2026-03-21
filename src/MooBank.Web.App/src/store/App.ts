@@ -1,5 +1,6 @@
-import { App } from "./state";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import type { App } from "./state";
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 
 export const initialState: App = {
     baseUrl: "/",

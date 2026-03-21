@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
-import { ChartData } from "chart.js";
-import { AnnotationOptions } from "chartjs-plugin-annotation";
+import type { ChartData } from "chart.js";
+import type { AnnotationOptions } from "chartjs-plugin-annotation";
 import { Line } from "react-chartjs-2";
 import { Section } from "@andrewmclachlan/moo-ds";
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 
-import { TagPanel, TagPanelProps } from "components";
+import { TagPanel } from "components";
+import type { TagPanelProps } from "components";
 
 import type { Tag } from "api/types.gen";
 import { useAddSubTag } from "../-hooks/useAddSubTag";

@@ -2,7 +2,6 @@ import { defineConfig } from "vite"
 import { visualizer } from "rollup-plugin-visualizer";
 import react from "@vitejs/plugin-react"
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
-import tsconfigpaths from "vite-tsconfig-paths";
 import { fileURLToPath } from "url"
 
 import fs from 'fs';
@@ -39,13 +38,13 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [tsconfigpaths(),
-        tanstackRouter({
-            target: "react",
-            autoCodeSplitting: true,
-            quoteStyle: "double",
-        }),
-        react(), visualizer() as any],
+    plugins: [
+    tanstackRouter({
+        target: "react",
+        autoCodeSplitting: true,
+        quoteStyle: "double",
+    }),
+    react(), visualizer() as any],
     server: {
         port: 3005,
         proxy: {
@@ -68,9 +67,11 @@ export default defineConfig({
         dedupe: [
             'react',
             'react-dom',
-        ]
+        ],
+        tsconfigPaths: true
     },
     build: {
+        cssMinify: "esbuild",
         rollupOptions: {
             output: {
                 manualChunks(id: string) {

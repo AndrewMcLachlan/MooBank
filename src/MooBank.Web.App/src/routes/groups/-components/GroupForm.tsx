@@ -4,7 +4,8 @@ import { useNavigate } from "@tanstack/react-router";
 import { useCreateGroup } from "../-hooks/useCreateGroup";
 import { useUpdateGroup } from "../-hooks/useUpdateGroup";
 import { Page } from "@andrewmclachlan/moo-app";
-import { emptyGuid, Form, NavItem, SectionForm } from "@andrewmclachlan/moo-ds";
+import { emptyGuid, Form, SectionForm } from "@andrewmclachlan/moo-ds";
+import type { NavItem } from "@andrewmclachlan/moo-ds";
 import { Button, } from "@andrewmclachlan/moo-ds";
 import { useForm } from "react-hook-form";
 

@@ -1,6 +1,8 @@
-import React, { PropsWithChildren, } from "react";
+import React from "react";
+import type { PropsWithChildren } from "react";
 
-import { Page, PageProps } from "@andrewmclachlan/moo-app";
+import { Page } from "@andrewmclachlan/moo-app";
+import type { PageProps } from "@andrewmclachlan/moo-app";
 import { TwoCoins } from "@andrewmclachlan/moo-icons";
 
 export const BudgetPage: React.FC<PropsWithChildren<BudgetPageProps>> = ({ children, breadcrumbs = [] }) => (

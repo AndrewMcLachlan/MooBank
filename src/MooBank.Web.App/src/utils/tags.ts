@@ -1,4 +1,4 @@
-import { SortDirection } from "@andrewmclachlan/moo-ds";
+import type { SortDirection } from "@andrewmclachlan/moo-ds";
 import type { Tag } from "api/types.gen";
 
 export const compareTags = (left: Tag, right: Tag): boolean => {

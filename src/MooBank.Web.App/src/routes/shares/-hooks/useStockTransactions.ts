@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import type { StockTransaction } from "api/types.gen";
-import { TransactionsFilter } from "store/state";
-import { PagedResult, SortDirection } from "@andrewmclachlan/moo-ds";
+import type { TransactionsFilter } from "store/state";
+import type { PagedResult, SortDirection } from "@andrewmclachlan/moo-ds";
 import {
     getStockTransactionsQueryKey,
 } from "api/@tanstack/react-query.gen";
 import { getStockTransactions } from "api/sdk.gen";
-import {
+import type {
     SortDirection as GenSortDirection,
 } from "api/types.gen";
 

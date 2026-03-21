@@ -1,7 +1,7 @@
 import { useInOutTrendReport } from "../../../-hooks/useInOutTrendReport";
 
 import { Line } from "react-chartjs-2";
-import { ChartData } from "chart.js";
+import type { ChartData } from "chart.js";
 
 import type { Period } from "models/dateFns";
 import { useChartColours } from "utils/chartColours";

@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
-import { PagedResult } from "@andrewmclachlan/moo-ds";
+import type { PagedResult } from "@andrewmclachlan/moo-ds";
 import type { Transaction, Tag } from "api/types.gen";
-import { State } from "store/state";
+import type { State } from "store/state";
 import {
     getTransactionsQueryKey,
     removeTagMutation,

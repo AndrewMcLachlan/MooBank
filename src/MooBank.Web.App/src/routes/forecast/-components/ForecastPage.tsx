@@ -1,4 +1,5 @@
-import React, { PropsWithChildren } from "react";
+import React from "react";
+import type { PropsWithChildren } from "react";
 import { Page } from "@andrewmclachlan/moo-app";
 
 export const ForecastPage: React.FC<PropsWithChildren<ForecastPageProps>> = ({ children, breadcrumbs = [] }) => (

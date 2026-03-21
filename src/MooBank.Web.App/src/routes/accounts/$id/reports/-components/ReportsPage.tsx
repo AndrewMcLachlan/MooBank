@@ -1,8 +1,9 @@
-import React, { PropsWithChildren } from "react";
+import React from "react";
+import type { PropsWithChildren } from "react";
 
 import type { LogicalAccount } from "api/types.gen";
 import { useLocation } from "@tanstack/react-router";
-import { NavItem } from "@andrewmclachlan/moo-ds";
+import type { NavItem } from "@andrewmclachlan/moo-ds";
 import { AccountPage, useAccount } from "components";
 import { BarChart, LeftRightArrow, PieChart, Tags, Trendline } from "@andrewmclachlan/moo-icons";
 

@@ -2,13 +2,13 @@ import { useRef, useState } from "react";
 
 import { useAllTagAverageReport } from "../../../-hooks/useAllTagAverageReport";
 
-import { ChartData } from "chart.js";
+import type { ChartData } from "chart.js";
 import { Bar, getElementAtEvent } from "react-chartjs-2";
 
 import type { Period } from "models/dateFns";
 import { useNavigate } from "@tanstack/react-router";
 import { chartColours, desaturatedChartColours } from "utils/chartColours";
-import { transactionTypeFilter } from "store/state";
+import type { transactionTypeFilter } from "store/state";
 
 export const TopTags: React.FC<TopTagsProps> = ({ accountId, period, reportType, top = 20 }) => {
 

@@ -2,7 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import React, { useEffect, useState } from "react";
 import { Table } from "@andrewmclachlan/moo-ds";
 
-import { IconButton, PageSize, Pagination, PaginationControls, PaginationTh, SearchBox, Section, SortDirection, SortableTh, changeSortDirection, getNumberOfPages, useLocalStorage } from "@andrewmclachlan/moo-ds";
+import { IconButton, PageSize, Pagination, PaginationControls, PaginationTh, SearchBox, Section, SortableTh, changeSortDirection, getNumberOfPages, useLocalStorage } from "@andrewmclachlan/moo-ds";
+import type { SortDirection } from "@andrewmclachlan/moo-ds";
 import { AccountPage, useAccount } from "components";
 
 import type { Rule } from "api/types.gen";

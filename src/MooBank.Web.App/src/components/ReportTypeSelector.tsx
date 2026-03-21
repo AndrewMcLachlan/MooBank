@@ -1,6 +1,7 @@
-import React, { HTMLAttributes } from "react";
+import React from "react";
+import type { HTMLAttributes } from "react";
 import { Button, ButtonGroup, Col, Row } from "@andrewmclachlan/moo-ds";
-import { transactionTypeFilter } from "store/state";
+import type { transactionTypeFilter } from "store/state";
 
 export const ReportTypeSelector: React.FC<ReportTypeSelectorProps> = ({ value, onChange, ...rest }) => {
 

@@ -5,7 +5,8 @@ import React from "react";
 import { Link } from "@tanstack/react-router";
 
 import { MooAppLayout } from "@andrewmclachlan/moo-app";
-import { Icon, NavItem } from "@andrewmclachlan/moo-ds";
+import { Icon } from "@andrewmclachlan/moo-ds";
+import type { NavItem } from "@andrewmclachlan/moo-ds";
 import { useIsAuthenticated } from "@azure/msal-react";
 import { useHasRole } from "hooks";
 

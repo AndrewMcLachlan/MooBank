@@ -1,6 +1,9 @@
-import React, { PropsWithChildren, ReactNode } from "react";
-import { Page, PageProps } from "@andrewmclachlan/moo-app";
-import { NavItem, NavItemDivider } from "@andrewmclachlan/moo-ds";
+import React from "react";
+import type { PropsWithChildren, ReactNode } from "react";
+import { Page } from "@andrewmclachlan/moo-app";
+import type { PageProps } from "@andrewmclachlan/moo-app";
+import { NavItemDivider } from "@andrewmclachlan/moo-ds";
+import type { NavItem } from "@andrewmclachlan/moo-ds";
 import { Users } from "@andrewmclachlan/moo-icons";
 
 export const BillsPage: React.FC<PropsWithChildren<BillsPageProps>> = ({ children, breadcrumbs = [], ...props }) => {

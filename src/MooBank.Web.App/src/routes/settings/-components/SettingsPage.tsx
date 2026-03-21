@@ -1,7 +1,10 @@
-import React, { PropsWithChildren, ReactNode } from "react";
+import React from "react";
+import type { PropsWithChildren, ReactNode } from "react";
 
-import { Page, PageProps } from "@andrewmclachlan/moo-app";
-import { NavItem, NavItemDivider } from "@andrewmclachlan/moo-ds";
+import { Page } from "@andrewmclachlan/moo-app";
+import type { PageProps } from "@andrewmclachlan/moo-app";
+import { NavItemDivider } from "@andrewmclachlan/moo-ds";
+import type { NavItem } from "@andrewmclachlan/moo-ds";
 
 import { Sliders, Users } from "@andrewmclachlan/moo-icons";
 

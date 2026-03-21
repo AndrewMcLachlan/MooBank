@@ -1,7 +1,8 @@
-import React, { PropsWithChildren } from "react";
+import React from "react";
+import type { PropsWithChildren } from "react";
 import { useLocation } from "@tanstack/react-router";
 
-import { NavItem } from "@andrewmclachlan/moo-ds";
+import type { NavItem } from "@andrewmclachlan/moo-ds";
 import { Trendline } from "@andrewmclachlan/moo-icons";
 
 import type { StockHolding } from "api/types.gen";

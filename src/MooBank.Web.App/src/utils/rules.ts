@@ -1,4 +1,4 @@
-import { SortDirection } from "@andrewmclachlan/moo-ds";
+import type { SortDirection } from "@andrewmclachlan/moo-ds";
 import type { Rule } from "api/types.gen";
 
 export const sortRules = (sortDirection: SortDirection) => (a: Rule, b: Rule) => {

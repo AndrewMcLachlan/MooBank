@@ -1,7 +1,7 @@
 import type { Tag } from "api/types.gen";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateTagMutation, getTagsQueryKey } from "api/@tanstack/react-query.gen";
-import { UpdateTag } from "api/types.gen";
+import type { UpdateTag } from "api/types.gen";
 
 export const useUpdateTag = () => {
 

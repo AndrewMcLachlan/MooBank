@@ -1,6 +1,7 @@
-import { TagPanel as MTagPanel, TagPanelProps as MTagPanelProps } from "@andrewmclachlan/moo-ds";
+import { TagPanel as MTagPanel } from "@andrewmclachlan/moo-ds";
+import type { TagPanelProps as MTagPanelProps } from "@andrewmclachlan/moo-ds";
 import type { Tag } from "api/types.gen";
-import { ElementType } from "react";
+import type { ElementType } from "react";
 
 export const TagPanel: React.FC<TagPanelProps> = ({ as = "div", allowCreate = false, readonly = false, alwaysShowEditPanel = false, ...props }) => {
     

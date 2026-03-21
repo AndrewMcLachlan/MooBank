@@ -1,4 +1,5 @@
-import { useMutation, MutationOptions, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { MutationOptions } from "@tanstack/react-query";
 import {
     reprocessMutation,
     getAccountsQueryKey,

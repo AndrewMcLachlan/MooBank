@@ -1,4 +1,5 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import type { ChangeEvent } from "react";
 
 import { format } from "date-fns/format";
 

@@ -1,9 +1,9 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { SortDirection} from "@andrewmclachlan/moo-ds";
+import type { SortDirection } from "@andrewmclachlan/moo-ds";
 
-import { State } from "store/state";
+import type { State } from "store/state";
 import { StockTransactionsSlice } from "store/StockTransactions";
 
 export const StockTransactionTableHead: React.FC = () => {

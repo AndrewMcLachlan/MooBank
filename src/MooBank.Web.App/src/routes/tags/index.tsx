@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react";
 
 import { TransactionTagRow } from "./-components/TagRow";
 
-import { changeSortDirection, getNumberOfPages, PageSize, Pagination, PaginationControls, PaginationTh, SaveIcon, SearchBox, Section, SectionTable, SortableTh, SortDirection, useLocalStorage } from "@andrewmclachlan/moo-ds";
+import { changeSortDirection, getNumberOfPages, PageSize, Pagination, PaginationControls, PaginationTh, SaveIcon, SearchBox, Section, SectionTable, SortableTh, useLocalStorage } from "@andrewmclachlan/moo-ds";
+import type { SortDirection } from "@andrewmclachlan/moo-ds";
 import { TagPanel } from "components";
 import type { Tag } from "api/types.gen";
 import { sortTags } from "utils/tags";

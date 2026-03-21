@@ -1,6 +1,6 @@
 import { Section } from "@andrewmclachlan/moo-ds";
 import { format, parseISO } from "date-fns";
-import {
+import type {
     ChartOptions
 } from "chart.js";
 import { Line } from "react-chartjs-2";
