@@ -1,6 +1,6 @@
 ﻿@layer mooapp, layout, moobank;
 
-@import "~/@andrewmclachlan/moo-ds/dist/index.css" layer(mooapp);
+@import "@andrewmclachlan/moo-ds/css" layer(mooapp);
 @import "css/layout" layer(layout);
 @import "css/budget" layer(moobank);
 @import "css/rainbow" layer(moobank);
