@@ -22,7 +22,9 @@
     "strictNullChecks": false,
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
-    "baseUrl": "src",
+    "paths": {
+      "*": ["./src/*"]
+    },
     "composite": true,
     "types": ["node", "vite/client"]
   },
