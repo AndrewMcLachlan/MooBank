@@ -64,9 +64,9 @@
     "@eslint/eslintrc": "^3.3.5",
     "@eslint/js": "^10.0.1",
     "@hey-api/client-axios": "^0.9.1",
-    "@hey-api/openapi-ts": "^0.94.4",
+    "@hey-api/openapi-ts": "^0.94.5",
     "@svgr/plugin-svgo": "^8.1.0",
-    "@tanstack/router-plugin": "^1.167.4",
+    "@tanstack/router-plugin": "^1.167.11",
     "@types/chartjs-plugin-trendline": "^1.0.1",
     "@types/md5": "^2.3.6",
     "@types/node": "^25.2.2",
@@ -79,7 +79,7 @@
     "globals": "^17.4.0",
     "rollup-plugin-visualizer": "^7.0.1",
     "typescript": "^6.0.2",
-    "vite": "^8.0.2",
+    "vite": "^8.0.3",
     "vite-plugin-svgr": "^4.5.0"
   },
   "scripts": {
