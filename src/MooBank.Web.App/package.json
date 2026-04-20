@@ -42,7 +42,7 @@
     "semver": "^7.7.4",
     "treeflex": "^2.0.1",
     "use-debounce": "^10.1.1",
-    "uuid": "^13.0.0",
+    "uuid": "^14.0.0",
     "workbox-core": "^7.4.0",
     "workbox-expiration": "^7.4.0",
     "workbox-precaching": "^7.4.0",
