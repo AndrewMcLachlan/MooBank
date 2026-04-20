@@ -5,6 +5,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <ProjectReference Include="..\MooBank\MooBank.csproj" />
     <ProjectReference Include="..\MooBank.Domain\MooBank.Domain.csproj" />
     <ProjectReference Include="..\MooBank.Models\MooBank.Models.csproj" />

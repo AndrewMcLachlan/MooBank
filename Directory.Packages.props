@@ -14,9 +14,9 @@
     <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageVersion Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="10.0.6" />
-    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.5" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.5" />
-    <PackageVersion Include="Microsoft.AspNetCore.SpaProxy" Version="10.0.5" />
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.6" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.6" />
+    <PackageVersion Include="Microsoft.AspNetCore.SpaProxy" Version="10.0.6" />
     <PackageVersion Include="Microsoft.Azure.WebJobs.Extensions" Version="5.2.1" />
     <PackageVersion Include="Microsoft.Build" Version="18.4.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="5.0.0" />
@@ -24,13 +24,13 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.6" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.6" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.6" />
-    <PackageVersion Include="Microsoft.Extensions.ApiDescription.Server" Version="10.0.5" />
+    <PackageVersion Include="Microsoft.Extensions.ApiDescription.Server" Version="10.0.6" />
     <PackageVersion Include="Microsoft.Extensions.Azure" Version="1.7.6" />
     <PackageVersion Include="Microsoft.Extensions.Caching.Hybrid" Version="10.5.0" />
     <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="10.0.6" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.1" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.6" />
-    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.5" />
+    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.6" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.6" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.5.0" />
@@ -47,11 +47,11 @@
   <ItemGroup>
     <PackageVersion Include="Asm" Version="3.7.67" />
     <PackageVersion Include="Asm.AspNetCore" Version="3.7.67" />
-    <PackageVersion Include="Asm.AspNetCore.Api" Version="3.7.54" />
+    <PackageVersion Include="Asm.AspNetCore.Api" Version="3.7.67" />
     <PackageVersion Include="Asm.Cqrs.AspNetCore" Version="3.7.67" />
     <PackageVersion Include="Asm.Domain" Version="3.7.67" />
     <PackageVersion Include="Asm.Domain.Infrastructure" Version="3.7.67" />
-    <PackageVersion Include="Asm.ModelContextProtocol" Version="3.7.54" />
+    <PackageVersion Include="Asm.ModelContextProtocol" Version="3.7.67" />
     <PackageVersion Include="Asm.Reqnroll" Version="3.6.756" />
     <PackageVersion Include="Asm.Testing.Domain" Version="3.7.67" />
   </ItemGroup>

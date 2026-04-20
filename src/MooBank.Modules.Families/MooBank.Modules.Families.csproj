@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <InternalsVisibleTo Include="Asm.MooBank.Modules.Families.Tests" />
   </ItemGroup>
 
