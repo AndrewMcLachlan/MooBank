@@ -66,7 +66,7 @@
     "@hey-api/client-axios": "^0.9.1",
     "@hey-api/openapi-ts": "^0.96.1",
     "@svgr/plugin-svgo": "^8.1.0",
-    "@tanstack/router-plugin": "^1.167.22",
+    "@tanstack/router-plugin": "^1.167.28",
     "@types/chartjs-plugin-trendline": "^1.0.1",
     "@types/md5": "^2.3.6",
     "@types/node": "^25.2.2",
@@ -79,7 +79,7 @@
     "globals": "^17.5.0",
     "rollup-plugin-visualizer": "^7.0.1",
     "typescript": "^6.0.3",
-    "vite": "^8.0.9",
+    "vite": "^8.0.10",
     "vite-plugin-svgr": "^5.2.0"
   },
   "scripts": {
