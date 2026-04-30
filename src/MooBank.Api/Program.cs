@@ -173,6 +173,15 @@ void AddServices(WebApplicationBuilder builder)
 
     services.AddIntegrations(builder.Configuration);
 
+    services.AddStandardSecurityHeaders().AddContentSecurityPolicy(options =>
+    {
+        options.AddDefaultSrc().Self();
+        options.AddImgSrc().Self().Data().From("https://cdn.mclachlan.family");
+        options.AddFontSrc().Self().From("https://cdn.mclachlan.family");
+        options.AddStyleSrc().Self().UnsafeInline();
+        options.AddScriptSrc().Self().UnsafeInline();
+    });
+
     // Register WebJobs SDK for in-process background jobs
     builder.Host.ConfigureWebJobs(webJobsBuilder =>
     {
@@ -219,7 +228,7 @@ void AddApp(WebApplication app)
 
     builder.MapModuleEndpoints();
 
-    app.UseSecurityHeaders();
+    app.UseStandardSecurityHeaders();
 
     app.MapFallbackToFile("/index.html").AllowAnonymous();
 }
