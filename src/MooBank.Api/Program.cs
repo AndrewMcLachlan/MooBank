@@ -9,8 +9,8 @@ using Asm.MooBank.Institution.Ing;
 using Asm.MooBank.Institution.Macquarie;
 using Asm.MooBank.Security;
 using Asm.OAuth;
-using Microsoft.AspNetCore.OpenApi;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
 
 var result = WebApplicationStart.Run(args, "Asm.MooBank.Web.Api", AddServices, AddApp, AddHealthChecks);
@@ -180,7 +180,8 @@ void AddServices(WebApplicationBuilder builder)
         options.AddFontSrc().Self().From("https://cdn.mclachlan.family");
         options.AddStyleSrc().Self().UnsafeInline();
         options.AddScriptSrc().Self().UnsafeInline();
-    });
+    })
+    .AddPermissionsPolicyWithDefaultSecureDirectives();
 
     // Register WebJobs SDK for in-process background jobs
     builder.Host.ConfigureWebJobs(webJobsBuilder =>
