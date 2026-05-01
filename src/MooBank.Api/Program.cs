@@ -176,7 +176,10 @@ void AddServices(WebApplicationBuilder builder)
     services.AddStandardSecurityHeaders().AddContentSecurityPolicy(options =>
     {
         options.AddDefaultSrc().Self();
-        options.AddImgSrc().Self().Data().From("https://cdn.mclachlan.family");
+        options.AddConnectSrc().Self().From("https://login.microsoftonline.com").From("https://graph.microsoft.com");
+        options.AddFrameSrc().Self().From("https://login.microsoftonline.com");
+        options.AddFormAction().Self().From("https://login.microsoftonline.com");
+        options.AddImgSrc().Self().Data().Blob().From("https://cdn.mclachlan.family");
         options.AddFontSrc().Self().From("https://cdn.mclachlan.family");
         options.AddStyleSrc().Self().UnsafeInline();
         options.AddScriptSrc().Self().UnsafeInline();
