@@ -6,7 +6,7 @@ import {
     getBillAccountsQueryKey,
 } from "api/@tanstack/react-query.gen";
 import type { CreateBill } from "models/bills";
-import { toast } from "react-toastify";
+import { toast } from "@andrewmclachlan/moo-ds";
 
 export const useCreateBill = () => {
     const queryClient = useQueryClient();

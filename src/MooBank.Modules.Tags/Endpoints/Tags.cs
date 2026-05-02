@@ -34,7 +34,7 @@ internal class TagsEndpoints : EndpointGroupBase
 
         builder.MapPutCreate<CreateByName, MooBank.Models.Tag>("{name}", "get-tag", t => new { t.Id })
             .WithNames("Create Tag by Name")
-            .Accepts<CreateByName>("application/json")
+            .Accepts<IEnumerable<int>>("application/json")
             .WithSummary("Create a tag by name");
 
         builder.MapPatchCommand<Update, MooBank.Models.Tag>("{id}")

@@ -7,7 +7,7 @@ using ITagRepository = Asm.MooBank.Domain.Entities.Tag.ITagRepository;
 
 namespace Asm.MooBank.Modules.Tags.Commands;
 
-public sealed record CreateByName(string Name, IEnumerable<int> Tags) : ICommand<Tag>
+public sealed record CreateByName([Microsoft.AspNetCore.Mvc.FromRoute]string Name, IEnumerable<int> Tags) : ICommand<Tag>
 {
     public static async ValueTask<CreateByName?> BindAsync(HttpContext httpContext)
     {

@@ -4375,7 +4375,11 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateByName"
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "format": "int32"
+                }
               }
             }
           },
@@ -5957,25 +5961,6 @@
           },
           "shareWithFamily": {
             "type": "boolean"
-          }
-        }
-      },
-      "CreateByName": {
-        "required": [
-          "name",
-          "tags"
-        ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "tags": {
-            "type": "array",
-            "items": {
-              "type": "integer",
-              "format": "int32"
-            }
           }
         }
       },

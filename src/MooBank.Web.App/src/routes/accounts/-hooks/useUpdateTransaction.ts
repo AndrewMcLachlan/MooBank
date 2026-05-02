@@ -4,7 +4,7 @@ import type { PagedResult } from "@andrewmclachlan/moo-ds";
 import type { Transaction } from "api/types.gen";
 import type { TransactionUpdate } from "models/transactions";
 import type { State } from "store/state";
-import { toast } from "react-toastify";
+import { toast } from "@andrewmclachlan/moo-ds";
 import {
     getTransactionsQueryKey,
     updateTransactionMutation,

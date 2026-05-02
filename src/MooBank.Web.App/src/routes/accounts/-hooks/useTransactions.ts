@@ -25,12 +25,12 @@ export const useTransactions = (accountId: string, filter: TransactionsFilter, p
 
     const untaggedResult = useQuery({
         queryKey: getUntaggedTransactionsQueryKey({
-            path: { instrumentId: accountId, pageSize, pageNumber, untagged: "untagged" },
+            path: { instrumentId: accountId, pageSize, pageNumber },
             query: queryParams,
         }),
         queryFn: async ({ signal }) => {
             const { data, headers } = await getUntaggedTransactions({
-                path: { instrumentId: accountId, pageSize, pageNumber, untagged: "untagged" },
+                path: { instrumentId: accountId, pageSize, pageNumber },
                 query: queryParams,
                 signal,
                 throwOnError: true,

@@ -5,7 +5,7 @@ import {
     getAccountsQueryKey,
     getFormattedInstrumentsListQueryKey,
 } from "api/@tanstack/react-query.gen";
-import { toast } from "react-toastify";
+import { toast } from "@andrewmclachlan/moo-ds";
 
 export const useCloseVirtualAccount = () => {
     const queryClient = useQueryClient();

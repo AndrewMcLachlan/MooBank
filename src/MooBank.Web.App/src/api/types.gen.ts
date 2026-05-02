@@ -207,11 +207,6 @@ export type CreateBillAccount = {
     shareWithFamily: boolean;
 };
 
-export type CreateByName = {
-    name: string;
-    tags: Array<number>;
-};
-
 export type CreateFamily = {
     name: string;
 };
@@ -3090,7 +3085,7 @@ export type UpdateTagResponses = {
 export type UpdateTagResponse = UpdateTagResponses[keyof UpdateTagResponses];
 
 export type CreateTagByNameData = {
-    body: CreateByName;
+    body: Array<number>;
     path?: never;
     query?: never;
     url: '/api/tags/{name}';
@@ -3183,9 +3178,9 @@ export type GetTransactionsData = {
          */
         SortDirection: SortDirection;
         /**
-         * Converts the 'untagged' route parameter to a boolean.
+         * Only include untagged transactions.
          */
-        Untagged?: string;
+        UntaggedOnly?: boolean;
         /**
          * Exclude transactions where the amount has been offset to zero.
          */
@@ -3212,10 +3207,6 @@ export type GetUntaggedTransactionsData = {
          * The ID of the instrument (account) to filter transactions for.
          */
         instrumentId: string;
-        /**
-         * Converts the 'untagged' route parameter to a boolean.
-         */
-        untagged: string;
     };
     query: {
         /**
@@ -3247,11 +3238,15 @@ export type GetUntaggedTransactionsData = {
          */
         SortDirection: SortDirection;
         /**
+         * Only include untagged transactions.
+         */
+        UntaggedOnly?: boolean;
+        /**
          * Exclude transactions where the amount has been offset to zero.
          */
         ExcludeNetZero?: boolean;
     };
-    url: '/api/accounts/{instrumentId}/transactions/{untagged}/{pageSize}/{pageNumber}';
+    url: '/api/accounts/{instrumentId}/transactions/untagged/{pageSize}/{pageNumber}';
 };
 
 export type GetUntaggedTransactionsResponses = {

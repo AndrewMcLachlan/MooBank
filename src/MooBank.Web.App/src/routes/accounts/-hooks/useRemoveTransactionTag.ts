@@ -30,6 +30,17 @@ export const useRemoveTransactionTag = () => {
             const transaction = transactions.results.find(tr => tr.id === variables.transactionId);
             if (transaction) {
                 transaction.tags = transaction.tags.filter(t => t.id !== variables.tag.id);
+                // Mirror backend Transaction.UpdateOrRemoveSplit: drop the tag from the split that holds
+                // it; if that empties the split and there's more than one, drop the split.
+                const splits = transaction.splits ?? [];
+                const splitIndex = splits.findIndex(s => s.tags.some(t => t.id === variables.tag.id));
+                if (splitIndex !== -1) {
+                    const split = splits[splitIndex];
+                    split.tags = split.tags.filter(t => t.id !== variables.tag.id);
+                    if (split.tags.length === 0 && splits.length > 1) {
+                        transaction.splits = splits.filter((_, i) => i !== splitIndex);
+                    }
+                }
                 queryClient.setQueryData<PagedResult<Transaction>>(queryKey, transactions);
             }
         }
