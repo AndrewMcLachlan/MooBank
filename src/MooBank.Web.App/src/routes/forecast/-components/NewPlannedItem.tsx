@@ -1,8 +1,7 @@
-import { emptyGuid, SaveIcon } from "@andrewmclachlan/moo-ds";
+import { SaveIcon, Input } from "@andrewmclachlan/moo-ds";
 import { format } from "date-fns";
 import type { PlannedItemDateMode, PlannedItemType, ScheduleFrequency } from "api/types.gen";
 import { useState } from "react";
-import { Form, Input } from "@andrewmclachlan/moo-ds";
 import { useCreatePlannedItem } from "../-hooks/useCreatePlannedItem";
 
 interface NewPlannedItemProps {
@@ -16,10 +15,9 @@ export const NewPlannedItem: React.FC<NewPlannedItemProps> = ({ planId, itemType
     const [name, setName] = useState("");
     const [amount, setAmount] = useState(0);
     const [dateMode, setDateMode] = useState<PlannedItemDateMode>("Schedule");
-    const [fixedDate, setFixedDate] = useState(format(new Date(), "yyyy-MM-dd"));
+    const [startDate, setStartDate] = useState(format(new Date(), "yyyy-MM-dd"));
     const [scheduleFrequency, setScheduleFrequency] = useState<ScheduleFrequency>("Monthly");
-    const [scheduleAnchorDate, setScheduleAnchorDate] = useState(format(new Date(), "yyyy-MM-dd"));
-    const [scheduleEndDate, setScheduleEndDate] = useState("");
+    const [endDate, setEndDate] = useState("");
     const [notes, setNotes] = useState("");
 
     const handleAdd = () => {
@@ -31,30 +29,19 @@ export const NewPlannedItem: React.FC<NewPlannedItemProps> = ({ planId, itemType
             amount,
             isIncluded: true,
             dateMode,
-            fixedDate: dateMode === "FixedDate" ? fixedDate : undefined,
+            fixedDate: dateMode === "FixedDate" ? startDate : undefined,
             scheduleFrequency: dateMode === "Schedule" ? scheduleFrequency : undefined,
-            scheduleAnchorDate: dateMode === "Schedule" ? scheduleAnchorDate : undefined,
+            scheduleAnchorDate: dateMode === "Schedule" ? startDate : undefined,
             scheduleInterval: dateMode === "Schedule" ? 1 : undefined,
-            scheduleEndDate: dateMode === "Schedule" && scheduleEndDate ? scheduleEndDate : undefined,
+            scheduleEndDate: dateMode === "Schedule" && endDate ? endDate : undefined,
             notes: notes || undefined
         });
 
         // Reset form
         setName("");
         setAmount(0);
-        setScheduleEndDate("");
+        setEndDate("");
         setNotes("");
-    };
-
-    const formatWhenDisplay = () => {
-        switch (dateMode) {
-            case "FixedDate":
-                return fixedDate;
-            case "Schedule":
-                return scheduleAnchorDate;
-            default:
-                return "-";
-        }
     };
 
     return (
@@ -79,14 +66,8 @@ export const NewPlannedItem: React.FC<NewPlannedItemProps> = ({ planId, itemType
             <td>
                 <Input
                     type="date"
-                    value={dateMode === "FixedDate" ? fixedDate : scheduleAnchorDate}
-                    onChange={(e) => {
-                        if (dateMode === "FixedDate") {
-                            setFixedDate(e.target.value);
-                        } else {
-                            setScheduleAnchorDate(e.target.value);
-                        }
-                    }}
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
                 />
             </td>
             <td>
@@ -96,8 +77,8 @@ export const NewPlannedItem: React.FC<NewPlannedItemProps> = ({ planId, itemType
                     <Input
                         type="date"
                         placeholder="Ongoing"
-                        value={scheduleEndDate}
-                        onChange={(e) => setScheduleEndDate(e.target.value)}
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
                     />
                 )}
             </td>

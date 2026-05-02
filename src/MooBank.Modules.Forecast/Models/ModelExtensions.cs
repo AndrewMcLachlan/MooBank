@@ -54,9 +54,7 @@ public static class ModelExtensions
 
     public static DomainEntities.ForecastPlannedItem ToDomain(this PlannedItemBase item, Guid planId)
     {
-        var id = Guid.NewGuid();
-
-        var entity = new DomainEntities.ForecastPlannedItem(id)
+        var entity = new DomainEntities.ForecastPlannedItem()
         {
             ForecastPlanId = planId,
             ItemType = item.ItemType,
@@ -75,7 +73,6 @@ public static class ModelExtensions
             case PlannedItemDateMode.FixedDate when item.FixedDate.HasValue:
                 entity.FixedDate = new DomainEntities.PlannedItemFixedDate
                 {
-                    PlannedItemId = id,
                     FixedDate = item.FixedDate.Value
                 };
                 break;
@@ -83,7 +80,6 @@ public static class ModelExtensions
             case PlannedItemDateMode.Schedule when item.ScheduleAnchorDate.HasValue:
                 entity.Schedule = new DomainEntities.PlannedItemSchedule
                 {
-                    PlannedItemId = id,
                     Frequency = item.ScheduleFrequency ?? ScheduleFrequency.Monthly,
                     AnchorDate = item.ScheduleAnchorDate.Value,
                     Interval = item.ScheduleInterval ?? 1,
@@ -95,7 +91,6 @@ public static class ModelExtensions
             case PlannedItemDateMode.FlexibleWindow when item.WindowStartDate.HasValue && item.WindowEndDate.HasValue:
                 entity.FlexibleWindow = new DomainEntities.PlannedItemFlexibleWindow
                 {
-                    PlannedItemId = id,
                     StartDate = item.WindowStartDate.Value,
                     EndDate = item.WindowEndDate.Value,
                     AllocationMode = item.AllocationMode ?? AllocationMode.EvenlySpread
