@@ -19,13 +19,13 @@ export const useCreateTag = () => {
     const wrappedMutate = (variables: { name: string } | Tag) => {
         const name = (variables as Tag).name?.trim() ?? (variables as { name: string }).name.trim();
         const tags = (variables as Tag).tags?.map(t => t.id) ?? [];
-        mutate({ body: { tags }, path: { name: encodeURIComponent(name) } } as any);
+        mutate({ body: tags, path: { name: encodeURIComponent(name) } } as any);
     };
 
     const wrappedMutateAsync = async (variables: { name: string } | Tag): Promise<Tag> => {
         const name = (variables as Tag).name?.trim() ?? (variables as { name: string }).name.trim();
         const tags = (variables as Tag).tags?.map(t => t.id) ?? [];
-        const result = await mutateAsync({ body: { tags }, path: { name: encodeURIComponent(name) } } as any);
+        const result = await mutateAsync({ body: tags, path: { name: encodeURIComponent(name) } } as any);
         return result as Tag;
     };
 

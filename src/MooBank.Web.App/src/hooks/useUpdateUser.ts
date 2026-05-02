@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { getUserQueryKey, updateUserMutation } from "api/@tanstack/react-query.gen";
 import type { User } from "api/types.gen";
-import { toast } from "react-toastify";
+import { toast } from "@andrewmclachlan/moo-ds";
 
 export const useUpdateUser = () => {
     const queryClient = useQueryClient();

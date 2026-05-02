@@ -5,7 +5,7 @@ import {
     getBillAccountSummariesByTypeQueryKey,
 } from "api/@tanstack/react-query.gen";
 import type { CreateBillAccount } from "api/types.gen";
-import { toast } from "react-toastify";
+import { toast } from "@andrewmclachlan/moo-ds";
 
 export const useCreateBillAccount = () => {
     const queryClient = useQueryClient();

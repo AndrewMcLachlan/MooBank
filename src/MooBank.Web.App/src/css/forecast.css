@@ -6,7 +6,7 @@
 
     .summary-label {
         font-size: 0.875rem;
-        color: var(--secondary-color);
+        color: var(--secondary-colour);
         margin-bottom: 0.25rem;
     }
 
@@ -17,7 +17,7 @@
 
     .summary-sublabel {
         font-size: 0.75rem;
-        color: var(--secondary-color);
+        color: var(--secondary-colour);
         margin-top: 0.25rem;
     }
 }
@@ -31,7 +31,7 @@
 .settings-item {
     .settings-label {
         font-size: 0.75rem;
-        color: var(--secondary-color);
+        color: var(--secondary-colour);
         text-transform: uppercase;
         letter-spacing: 0.05em;
     }
@@ -43,7 +43,7 @@
 
     .settings-sublabel {
         font-size: 0.75rem;
-        color: var(--secondary-color);
+        color: var(--secondary-colour);
     }
 }
 

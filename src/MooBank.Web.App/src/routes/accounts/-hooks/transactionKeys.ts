@@ -9,7 +9,7 @@ import {
 export const buildTransactionsQueryKey = (accountId: string, filter: TransactionsFilter, pageSize: number, pageNumber: number, sortField: string, sortDirection: SortDirection) => {
     if (filter.filterTagged) {
         return getUntaggedTransactionsQueryKey({
-            path: { instrumentId: accountId, pageSize, pageNumber, untagged: "untagged" },
+            path: { instrumentId: accountId, pageSize, pageNumber },
             query: {
                 Filter: filter.description || undefined,
                 Start: filter.start || undefined,

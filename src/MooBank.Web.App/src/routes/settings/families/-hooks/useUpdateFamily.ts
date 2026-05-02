@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateFamilyMutation, getAllFamiliesQueryKey, getFamilyQueryKey } from "api/@tanstack/react-query.gen";
 import type { Family } from "api/types.gen";
-import { toast } from "react-toastify";
+import { toast } from "@andrewmclachlan/moo-ds";
 
 export const useUpdateFamily = () => {
 

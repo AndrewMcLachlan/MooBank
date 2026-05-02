@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { closeInstitutionAccountMutation, getAccountsQueryKey } from "api/@tanstack/react-query.gen";
-import { toast } from "react-toastify";
+import { toast } from "@andrewmclachlan/moo-ds";
 
 export const useCloseInstitutionAccount = () => {
     const queryClient = useQueryClient();
