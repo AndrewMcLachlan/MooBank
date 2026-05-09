@@ -272,3 +272,5 @@ tests/coverage*/**
 /coverage/**
 /coverage-core/**
 /tmp/**
+.superpowers/
+
