@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import type { TagsGraphIndex } from "../-hooks/useTagsGraphIndex";
 
-const TRANSITION_MS = 220;
+const TRANSITION_MS = 400;
 
 interface Props {
     index: TagsGraphIndex;
