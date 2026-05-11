@@ -1,6 +1,6 @@
 .visualiser-page {
     display: grid;
-    grid-template-columns: minmax(320px, 45%) 1fr;
+    grid-template-columns: minmax(260px, 360px) 1fr;
     grid-template-rows: auto 1fr;
     grid-template-areas:
         "search graph"
@@ -136,7 +136,7 @@
 
 .visualiser-graph-node text {
     fill: #fff;
-    font-size: 13px;
+    font-size: 10px;
     pointer-events: none;
 }
 
