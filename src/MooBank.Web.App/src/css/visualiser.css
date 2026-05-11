@@ -1,0 +1,161 @@
+.visualiser-page {
+    display: grid;
+    grid-template-columns: minmax(320px, 45%) 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+        "search graph"
+        "outline graph";
+    gap: 12px;
+    height: calc(100vh - 220px);
+    min-height: 480px;
+}
+
+.visualiser-search {
+    grid-area: search;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.visualiser-search-input {
+    flex: 1;
+    padding: 6px 10px;
+    background: var(--input-background, #1d1d1d);
+    color: var(--input-text, inherit);
+    border: 1px solid var(--border-colour, #333);
+    border-radius: 4px;
+    font: inherit;
+}
+
+.visualiser-search-count {
+    font-size: 0.85em;
+    color: var(--muted-text, #888);
+    min-width: 80px;
+    text-align: right;
+}
+
+.visualiser-outline {
+    grid-area: outline;
+    overflow: auto;
+    padding: 8px 4px;
+    background: var(--surface, #141414);
+    border: 1px solid var(--border-colour, #2a2a2a);
+    border-radius: 6px;
+}
+
+.visualiser-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 0;
+    line-height: 1.6;
+}
+
+.visualiser-row.focused .visualiser-chip {
+    outline: 2px solid var(--accent, #ffd84a);
+    outline-offset: 1px;
+}
+
+.visualiser-twirl {
+    width: 18px;
+    background: transparent;
+    border: 0;
+    color: var(--muted-text, #888);
+    cursor: pointer;
+    font-size: 0.75em;
+    padding: 0;
+}
+
+.visualiser-twirl:disabled {
+    cursor: default;
+    visibility: hidden;
+}
+
+.visualiser-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: transparent;
+    border: 0;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+}
+
+.visualiser-chip:hover {
+    background: var(--hover-surface, #222);
+}
+
+.visualiser-chip-swatch {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--visualiser-chip-fallback, #3b5b88);
+    flex: 0 0 10px;
+}
+
+.visualiser-chip-name mark {
+    background: var(--accent, #ffd84a);
+    color: #000;
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+.visualiser-cycle {
+    margin-left: 4px;
+    color: var(--muted-text, #888);
+    font-size: 0.85em;
+}
+
+.visualiser-graph {
+    grid-area: graph;
+    background: var(--surface, #141414);
+    border: 1px solid var(--border-colour, #2a2a2a);
+    border-radius: 6px;
+    width: 100%;
+    height: 100%;
+}
+
+.visualiser-graph-empty {
+    grid-area: graph;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted-text, #888);
+    background: var(--surface, #141414);
+    border: 1px solid var(--border-colour, #2a2a2a);
+    border-radius: 6px;
+}
+
+.visualiser-graph-edges line {
+    stroke: var(--muted-text, #555);
+    stroke-width: 1;
+}
+
+.visualiser-graph-node text {
+    fill: #fff;
+    font-size: 13px;
+    pointer-events: none;
+}
+
+.visualiser-graph-node.focus rect:first-child {
+    stroke: var(--accent, #ffd84a);
+    stroke-width: 2;
+}
+
+@media (max-width: 991px) {
+    .visualiser-page {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr 1fr;
+        grid-template-areas:
+            "search"
+            "graph"
+            "outline";
+        height: auto;
+    }
+    .visualiser-graph {
+        min-height: 300px;
+    }
+}
