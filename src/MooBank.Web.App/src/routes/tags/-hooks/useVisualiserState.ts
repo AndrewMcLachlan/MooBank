@@ -56,6 +56,15 @@ export const useVisualiserState = (options: UseVisualiserStateOptions = {}): Vis
     const [focusId, setFocusIdState] = useState<number | null>(() => loadPersisted().focusId);
     const [search, setSearch] = useState<string>("");
 
+    // First-visit seeding: when initialExpanded becomes non-empty for the first time and
+    // we have nothing expanded yet, apply it. Returning visitors (who restored a non-empty
+    // set from localStorage) are untouched.
+    useEffect(() => {
+        const seed = options.initialExpanded;
+        if (!seed || seed.length === 0) return;
+        setExpanded((prev) => (prev.size === 0 ? new Set(seed) : prev));
+    }, [options.initialExpanded]);
+
     useEffect(() => {
         persist({ expanded: Array.from(expanded), focusId });
     }, [expanded, focusId]);

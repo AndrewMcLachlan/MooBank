@@ -36,10 +36,6 @@ export const VisualiserOutlineRow: React.FC<Props> = ({
 
     return (
         <div
-            role="treeitem"
-            aria-level={level + 1}
-            aria-expanded={hasChildren ? isExpanded : undefined}
-            aria-selected={isFocused}
             className={classNames("visualiser-row", { focused: isFocused })}
             style={{ paddingLeft: `${level * 18 + 8}px` }}
         >

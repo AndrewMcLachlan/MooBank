@@ -72,7 +72,7 @@ export const VisualiserOutline: React.FC<Props> = ({
         nextAncestors.add(id);
 
         return (
-            <div key={pathKey} role="group">
+            <div key={pathKey} role="listitem">
                 <VisualiserOutlineRow
                     node={node}
                     pathKey={pathKey}
@@ -91,7 +91,7 @@ export const VisualiserOutline: React.FC<Props> = ({
     };
 
     return (
-        <div role="tree" aria-label="Tag hierarchy" className="visualiser-outline">
+        <div role="list" aria-label="Tag hierarchy" className="visualiser-outline">
             {index.roots.map((rid) => renderNode(rid, new Set(), "", 0))}
         </div>
     );

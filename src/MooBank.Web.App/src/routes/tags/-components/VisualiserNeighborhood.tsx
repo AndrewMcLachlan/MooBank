@@ -26,9 +26,9 @@ const NODE_H = 30;
 
 const layoutRow = (ids: number[], y: number, index: TagsGraphIndex): Positioned[] => {
     if (ids.length === 0) return [];
-    const padding = 24;
+    const padding = NODE_W / 2;
     const usable = VIEW_W - padding * 2;
-    const step = ids.length === 1 ? usable / 2 : usable / (ids.length - 1);
+    const step = ids.length === 1 ? 0 : usable / (ids.length - 1);
     return ids.map((id, i) => {
         const node = index.byId.get(id)!;
         const x = ids.length === 1 ? VIEW_W / 2 : padding + step * i;
