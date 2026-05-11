@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 import type { TagsGraphIndex } from "../-hooks/useTagsGraphIndex";
 import { VisualiserOutlineRow } from "./VisualiserOutlineRow";
@@ -49,7 +49,9 @@ export const VisualiserOutline: React.FC<Props> = ({
     const visible = useMemo(() => buildPathToMatchSet(index, matches), [index, matches]);
     const isFiltering = search.length > 0;
 
-    if (onMatchCountChange) onMatchCountChange(matches.size);
+    useEffect(() => {
+        onMatchCountChange?.(matches.size);
+    }, [matches.size, onMatchCountChange]);
 
     const renderNode = (id: number, ancestors: ReadonlySet<number>, parentPath: string, level: number): React.ReactNode => {
         if (level >= MAX_DEPTH) return null;
