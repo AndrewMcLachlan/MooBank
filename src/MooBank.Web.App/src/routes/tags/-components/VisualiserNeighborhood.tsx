@@ -262,8 +262,7 @@ export const VisualiserNeighborhood: React.FC<Props> = ({ index, focusId, onFocu
                     />
                 ))}
             </g>
-            {nodes.filter(n => n.kind !== "focus").map(n => renderChip(n))}
-            {nodes.filter(n => n.kind === "focus").map(n => renderChip(n))}
+            {nodes.map(n => renderChip(n))}
         </svg>
     );
 };
