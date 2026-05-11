@@ -726,6 +726,28 @@ export type Tag = {
     name: string;
 };
 
+export type TagGraph = {
+    nodes: Array<TagGraphNode>;
+    edges: Array<TagGraphEdge>;
+};
+
+export type TagGraphEdge = {
+    parentId: number;
+    childId: number;
+};
+
+export type TagGraphNode = {
+    id: number;
+    name: string;
+    colour?: null | HexColour;
+    settings: TagGraphNodeSettings;
+};
+
+export type TagGraphNodeSettings = {
+    applySmoothing: boolean;
+    excludeFromReporting: boolean;
+};
+
 export type TagHierarchy = {
     levels: {
         [key: string]: number;
@@ -3029,6 +3051,22 @@ export type GetTagHierarchyResponses = {
 };
 
 export type GetTagHierarchyResponse = GetTagHierarchyResponses[keyof GetTagHierarchyResponses];
+
+export type GetTagGraphData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/tags/graph';
+};
+
+export type GetTagGraphResponses = {
+    /**
+     * OK
+     */
+    200: TagGraph;
+};
+
+export type GetTagGraphResponse = GetTagGraphResponses[keyof GetTagGraphResponses];
 
 export type DeleteTagData = {
     body?: never;
