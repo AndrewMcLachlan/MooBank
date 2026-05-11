@@ -118,19 +118,31 @@ export const VisualiserNeighborhood: React.FC<Props> = ({ index, focusId, onFocu
         colour: focused.colour as string | null,
     };
 
-    const renderChip = (p: Positioned, kind: "parent" | "focus" | "child") => (
-        <g key={`${kind}-${p.id}`} className={classNames("visualiser-graph-node", kind)}
-           transform={`translate(${p.x - NODE_W / 2} ${p.y - NODE_H / 2})`}>
-            <rect width={NODE_W} height={NODE_H} rx={NODE_H / 2} ry={NODE_H / 2}
-                  fill={p.colour ?? "var(--primary)"} />
-            <text x={NODE_W / 2} y={NODE_H / 2 + 3} textAnchor="middle">{p.label}</text>
-            <rect width={NODE_W} height={NODE_H} rx={NODE_H / 2} ry={NODE_H / 2}
-                  fill="transparent" role="button" tabIndex={0}
-                  aria-label={`${kind === "focus" ? "Focused tag" : kind === "parent" ? "Parent tag" : "Child tag"}: ${p.label}`}
-                  onClick={() => onFocus(p.id)}
-                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onFocus(p.id); } }} />
-        </g>
-    );
+    const renderChip = (p: Positioned, kind: "parent" | "focus" | "child") => {
+        const maxTextWidth = NODE_W - 8;
+        const approxCharWidth = 5.5;
+        const naturalWidth = p.label.length * approxCharWidth;
+        const shrink = naturalWidth > maxTextWidth;
+        return (
+            <g key={`${kind}-${p.id}`} className={classNames("visualiser-graph-node", kind)}
+               transform={`translate(${p.x - NODE_W / 2} ${p.y - NODE_H / 2})`}>
+                <rect width={NODE_W} height={NODE_H} rx={NODE_H / 2} ry={NODE_H / 2}
+                      fill={p.colour ?? "var(--primary)"} />
+                <text x={NODE_W / 2} y={NODE_H / 2 + 3} textAnchor="middle"
+                      textLength={shrink ? maxTextWidth : undefined}
+                      lengthAdjust={shrink ? "spacingAndGlyphs" : undefined}>
+                    {p.label}
+                </text>
+                <rect width={NODE_W} height={NODE_H} rx={NODE_H / 2} ry={NODE_H / 2}
+                      fill="transparent" role="button" tabIndex={0}
+                      aria-label={`${kind === "focus" ? "Focused tag" : kind === "parent" ? "Parent tag" : "Child tag"}: ${p.label}`}
+                      onClick={() => onFocus(p.id)}
+                      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onFocus(p.id); } }}>
+                    <title>{p.label}</title>
+                </rect>
+            </g>
+        );
+    };
 
     return (
         <svg className="visualiser-graph" viewBox={`0 0 ${VIEW_W} ${viewH}`} preserveAspectRatio="xMidYMid meet" role="img" aria-label={`Neighborhood of ${focused.name}`}>
