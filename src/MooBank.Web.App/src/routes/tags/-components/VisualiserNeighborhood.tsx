@@ -122,7 +122,7 @@ export const VisualiserNeighborhood: React.FC<Props> = ({ index, focusId, onFocu
         <g key={`${kind}-${p.id}`} className={classNames("visualiser-graph-node", kind)}
            transform={`translate(${p.x - NODE_W / 2} ${p.y - NODE_H / 2})`}>
             <rect width={NODE_W} height={NODE_H} rx={NODE_H / 2} ry={NODE_H / 2}
-                  fill={p.colour ?? "var(--visualiser-chip-fallback, #3b5b88)"} />
+                  fill={p.colour ?? "var(--primary)"} />
             <text x={NODE_W / 2} y={NODE_H / 2 + 3} textAnchor="middle">{p.label}</text>
             <rect width={NODE_W} height={NODE_H} rx={NODE_H / 2} ry={NODE_H / 2}
                   fill="transparent" role="button" tabIndex={0}
