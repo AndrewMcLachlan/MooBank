@@ -112,10 +112,15 @@
     height: 100%;
     max-width: 900px;
     justify-self: center;
-    transition: opacity 140ms ease;
 }
 
-.visualiser-graph.is-fading {
+.visualiser-graph-node {
+    transition: transform 220ms cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 220ms ease;
+}
+
+.visualiser-graph-node.is-leaving,
+.visualiser-graph-node.is-entering {
     opacity: 0;
 }
 
@@ -130,6 +135,12 @@
 .visualiser-graph-edges line {
     stroke: var(--muted-text, #555);
     stroke-width: 1;
+    transition: opacity 220ms ease;
+}
+
+.visualiser-graph-edges line.is-leaving,
+.visualiser-graph-edges line.is-entering {
+    opacity: 0;
 }
 
 .visualiser-graph-node text {
