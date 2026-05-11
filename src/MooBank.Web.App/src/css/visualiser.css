@@ -38,9 +38,6 @@
     grid-area: outline;
     overflow: auto;
     padding: 8px 4px;
-    background: var(--surface, #141414);
-    border: 1px solid var(--border-colour, #2a2a2a);
-    border-radius: 6px;
 }
 
 .visualiser-row {
@@ -111,13 +108,15 @@
 
 .visualiser-graph {
     grid-area: graph;
-    background: var(--surface, #141414);
-    border: 1px solid var(--border-colour, #2a2a2a);
-    border-radius: 6px;
     width: 100%;
     height: 100%;
     max-width: 900px;
     justify-self: center;
+    transition: opacity 140ms ease;
+}
+
+.visualiser-graph.is-fading {
+    opacity: 0;
 }
 
 .visualiser-graph-empty {
@@ -126,9 +125,6 @@
     align-items: center;
     justify-content: center;
     color: var(--muted-text, #888);
-    background: var(--surface, #141414);
-    border: 1px solid var(--border-colour, #2a2a2a);
-    border-radius: 6px;
 }
 
 .visualiser-graph-edges line {

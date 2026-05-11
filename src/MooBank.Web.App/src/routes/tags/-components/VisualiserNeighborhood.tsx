@@ -1,6 +1,9 @@
 import classNames from "classnames";
+import { useEffect, useState } from "react";
 
 import type { TagsGraphIndex } from "../-hooks/useTagsGraphIndex";
+
+const FADE_MS = 140;
 
 interface Props {
     index: TagsGraphIndex;
@@ -84,16 +87,29 @@ const layoutGroup = (
 };
 
 export const VisualiserNeighborhood: React.FC<Props> = ({ index, focusId, onFocus }) => {
-    if (focusId === null) {
+    const [displayId, setDisplayId] = useState<number | null>(focusId);
+    const [fading, setFading] = useState(false);
+
+    useEffect(() => {
+        if (focusId === displayId) return;
+        setFading(true);
+        const t = setTimeout(() => {
+            setDisplayId(focusId);
+            setFading(false);
+        }, FADE_MS);
+        return () => clearTimeout(t);
+    }, [focusId, displayId]);
+
+    if (displayId === null) {
         return <div className="visualiser-graph-empty">Select a tag to see its neighborhood.</div>;
     }
-    const focused = index.byId.get(focusId);
+    const focused = index.byId.get(displayId);
     if (!focused) {
         return <div className="visualiser-graph-empty">Tag not found.</div>;
     }
 
-    const parentIds = index.parentsOf.get(focusId) ?? [];
-    const childIds = index.childrenOf.get(focusId) ?? [];
+    const parentIds = index.parentsOf.get(displayId) ?? [];
+    const childIds = index.childrenOf.get(displayId) ?? [];
 
     // First pass: figure out total height so we can position the focus chip
     const parentRows = Math.max(1, Math.ceil(parentIds.length / chipsPerRow()));
@@ -111,7 +127,7 @@ export const VisualiserNeighborhood: React.FC<Props> = ({ index, focusId, onFocu
     const parents = layoutGroup(parentIds, focusY, -1, index);
     const children = layoutGroup(childIds, focusY, 1, index);
     const focus: Positioned = {
-        id: focusId,
+        id: displayId,
         x: VIEW_W / 2,
         y: focusY,
         label: focused.name,
@@ -145,7 +161,7 @@ export const VisualiserNeighborhood: React.FC<Props> = ({ index, focusId, onFocu
     };
 
     return (
-        <svg className="visualiser-graph" viewBox={`0 0 ${VIEW_W} ${viewH}`} preserveAspectRatio="xMidYMid meet" role="img" aria-label={`Neighborhood of ${focused.name}`}>
+        <svg className={classNames("visualiser-graph", { "is-fading": fading })} viewBox={`0 0 ${VIEW_W} ${viewH}`} preserveAspectRatio="xMidYMid meet" role="img" aria-label={`Neighborhood of ${focused.name}`}>
             <g className="visualiser-graph-edges">
                 {parents.rows.flat().map((p) => (
                     <line key={`pe-${p.id}`} x1={p.x} y1={p.y + NODE_H / 2} x2={focus.x} y2={focus.y - NODE_H / 2} />
