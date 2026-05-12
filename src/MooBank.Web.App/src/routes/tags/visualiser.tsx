@@ -68,20 +68,22 @@ function Visualiser() {
     return (
         <TagsPage>
             <div className="visualiser-page">
-                <VisualiserSearch
-                    value={state.search}
-                    onChange={state.setSearch}
-                    matchCount={state.search.length > 0 ? matchCount : undefined}
-                />
-                <VisualiserOutline
-                    index={index}
-                    expanded={state.expanded}
-                    focusId={state.focusId}
-                    search={state.search}
-                    onToggle={state.toggleExpand}
-                    onFocus={handleFocus}
-                    onMatchCountChange={setMatchCount}
-                />
+                <aside className="visualiser-sidebar" aria-label="Tag list">
+                    <VisualiserSearch
+                        value={state.search}
+                        onChange={state.setSearch}
+                        matchCount={state.search.length > 0 ? matchCount : undefined}
+                    />
+                    <VisualiserOutline
+                        index={index}
+                        expanded={state.expanded}
+                        focusId={state.focusId}
+                        search={state.search}
+                        onToggle={state.toggleExpand}
+                        onFocus={handleFocus}
+                        onMatchCountChange={setMatchCount}
+                    />
+                </aside>
                 <VisualiserNeighborhood
                     index={index}
                     focusId={state.focusId}

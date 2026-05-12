@@ -1,32 +1,43 @@
 /* Make the page's <main> element a flex container ONLY when it contains
-   our visualiser, so .visualiser-page can grow into whatever vertical
-   space moo-ds's Layout has given to <main>. Falls back to a viewport
-   calc on browsers without :has() support. */
+   our visualiser. Also strip its horizontal padding so the outline column
+   sits flush against the app frame (the left sidebar's right edge),
+   acting as a secondary sidebar. The graph keeps its visual gutter via
+   padding on the grid container below. */
 main.container-fluid:has(> .visualiser-page) {
     display: flex;
     flex-direction: column;
     min-height: calc(100dvh - 140px);
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .visualiser-page {
     display: grid;
     grid-template-columns: minmax(260px, 360px) 1fr;
-    grid-template-rows: auto 1fr;
-    grid-template-areas:
-        "search graph"
-        "outline graph";
-    gap: 12px;
+    gap: 1rem;
     flex: 1;
     min-height: 480px;
     /* min-height: 0 inside grid lets the outline scroll instead of overflowing */
     min-block-size: 0;
+    /* Graph side gets a gutter; the sidebar stays flush with the frame. */
+    padding-right: 1rem;
+}
+
+.visualiser-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px 12px;
+    border-right: 1px solid var(--border-colour, #2a2a2a);
+    /* allow the outline child to scroll instead of overflowing the sidebar */
+    min-block-size: 0;
 }
 
 .visualiser-search {
-    grid-area: search;
     display: flex;
     align-items: center;
     gap: 8px;
+    flex: 0 0 auto;
 }
 
 .visualiser-search-input {
@@ -54,9 +65,9 @@ main.container-fluid:has(> .visualiser-page) {
 }
 
 .visualiser-outline {
-    grid-area: outline;
     overflow: auto;
-    padding: 8px 4px;
+    flex: 1 1 auto;
+    min-block-size: 0;
 }
 
 .visualiser-outline li {
@@ -152,7 +163,6 @@ main.container-fluid:has(> .visualiser-page) {
 }
 
 .visualiser-graph {
-    grid-area: graph;
     width: 100%;
     height: 100%;
     max-width: 900px;
@@ -170,7 +180,6 @@ main.container-fluid:has(> .visualiser-page) {
 }
 
 .visualiser-graph-empty {
-    grid-area: graph;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -219,14 +228,17 @@ main.container-fluid:has(> .visualiser-page) {
 @media (max-width: 991px) {
     .visualiser-page {
         grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr 1fr;
-        grid-template-areas:
-            "search"
-            "graph"
-            "outline";
+        grid-template-rows: 1fr auto;
         height: auto;
+        padding-right: 0;
+    }
+    .visualiser-sidebar {
+        order: 2;
+        border-right: 0;
+        border-top: 1px solid var(--border-colour, #2a2a2a);
     }
     .visualiser-graph {
+        order: 1;
         min-height: 300px;
     }
 }
