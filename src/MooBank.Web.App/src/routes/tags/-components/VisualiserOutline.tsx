@@ -72,27 +72,30 @@ export const VisualiserOutline: React.FC<Props> = ({
         nextAncestors.add(id);
 
         return (
-            <div key={pathKey} role="listitem">
-                <VisualiserOutlineRow
-                    node={node}
-                    pathKey={pathKey}
-                    level={level}
-                    isFocused={focusId === node.id}
-                    isExpanded={isOpen}
-                    hasChildren={hasChildren}
-                    isCycle={isCycle}
-                    searchTerm={search}
-                    onToggle={onToggle}
-                    onFocus={onFocus}
-                />
-                {hasChildren && isOpen && children.map((cid) => renderNode(cid, nextAncestors, pathKey, level + 1))}
-            </div>
+            <VisualiserOutlineRow
+                key={pathKey}
+                node={node}
+                pathKey={pathKey}
+                isFocused={focusId === node.id}
+                isExpanded={isOpen}
+                hasChildren={hasChildren}
+                isCycle={isCycle}
+                searchTerm={search}
+                onToggle={onToggle}
+                onFocus={onFocus}
+            >
+                {hasChildren && isOpen && (
+                    <ul>
+                        {children.map((cid) => renderNode(cid, nextAncestors, pathKey, level + 1))}
+                    </ul>
+                )}
+            </VisualiserOutlineRow>
         );
     };
 
     return (
-        <div role="list" aria-label="Tag hierarchy" className="visualiser-outline">
+        <ul className="visualiser-outline" aria-label="Tag hierarchy">
             {index.roots.map((rid) => renderNode(rid, new Set(), "", 0))}
-        </div>
+        </ul>
     );
 };

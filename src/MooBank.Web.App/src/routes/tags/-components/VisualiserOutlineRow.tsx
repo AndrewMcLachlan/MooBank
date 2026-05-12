@@ -1,10 +1,11 @@
 import classNames from "classnames";
+import type { PropsWithChildren } from "react";
+
 import type { TagGraphNode } from "api/types.gen";
 
 interface Props {
     node: TagGraphNode;
     pathKey: string;
-    level: number;
     isFocused: boolean;
     isExpanded: boolean;
     hasChildren: boolean;
@@ -29,15 +30,15 @@ const highlightMatch = (text: string, term: string): React.ReactNode => {
     );
 };
 
-export const VisualiserOutlineRow: React.FC<Props> = ({
-    node, pathKey, level, isFocused, isExpanded, hasChildren, isCycle, searchTerm, onToggle, onFocus,
+export const VisualiserOutlineRow: React.FC<PropsWithChildren<Props>> = ({
+    node, pathKey, isFocused, isExpanded, hasChildren, isCycle, searchTerm, onToggle, onFocus, children,
 }) => {
     const swatchStyle = node.colour ? { backgroundColor: String(node.colour) } : undefined;
 
     return (
-        <div
+        <li
             className={classNames("visualiser-row", { focused: isFocused })}
-            style={{ paddingLeft: `${level * 18 + 8}px` }}
+            aria-current={isFocused ? "true" : undefined}
         >
             <button
                 type="button"
@@ -58,6 +59,7 @@ export const VisualiserOutlineRow: React.FC<Props> = ({
                 <span className="visualiser-chip-name">{highlightMatch(node.name, searchTerm)}</span>
                 {isCycle && <span className="visualiser-cycle" title="Cycle in tag graph — not expanded">↺</span>}
             </button>
-        </div>
+            {children}
+        </li>
     );
 };
