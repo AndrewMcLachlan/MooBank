@@ -34,6 +34,7 @@ interface DisplayNode {
     label: string;
     colour: string | null;
     kind: "parent" | "focus" | "child";
+    childCount: number;
     state: NodeState;
 }
 
@@ -79,6 +80,7 @@ const buildLayout = (forFocusId: number, index: TagsGraphIndex): Layout => {
         label: focused.name,
         colour: focused.colour as string | null,
         kind: "focus",
+        childCount: index.childrenOf.get(forFocusId)?.length ?? 0,
     });
 
     // Layout helper for a group of ids in rows above (-1) or below (+1) the focus
@@ -96,7 +98,13 @@ const buildLayout = (forFocusId: number, index: TagsGraphIndex): Layout => {
                 const node = index.byId.get(id);
                 if (!node) continue;
                 const x = rowStartX + i * (NODE_W + COL_GAP) + NODE_W / 2;
-                nodes.push({ id, x, y, label: node.name, colour: node.colour as string | null, kind });
+                nodes.push({
+                    id, x, y,
+                    label: node.name,
+                    colour: node.colour as string | null,
+                    kind,
+                    childCount: index.childrenOf.get(id)?.length ?? 0,
+                });
                 // Edge between focus and this node
                 const edgeId = kind === "parent" ? `${id}-${forFocusId}` : `${forFocusId}-${id}`;
                 const x1 = kind === "parent" ? x : focusX;
@@ -241,6 +249,12 @@ export const VisualiserNeighborhood: React.FC<Props> = ({ index, focusId, onFocu
                       lengthAdjust={shrink ? "spacingAndGlyphs" : undefined}>
                     {n.label}
                 </text>
+                {n.childCount > 0 && (
+                    <g className="visualiser-graph-childcount" transform={`translate(${NODE_W - 3} -3)`}>
+                        <circle r={7} />
+                        <text textAnchor="middle" y={3}>{n.childCount}</text>
+                    </g>
+                )}
                 <rect width={NODE_W} height={NODE_H} rx={NODE_H / 2} ry={NODE_H / 2}
                       fill="transparent" role="button" tabIndex={0}
                       aria-label={`${n.kind === "focus" ? "Focused tag" : n.kind === "parent" ? "Parent tag" : "Child tag"}: ${n.label}`}

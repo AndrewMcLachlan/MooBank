@@ -156,6 +156,21 @@
     stroke-width: 2;
 }
 
+.visualiser-graph-childcount {
+    pointer-events: none;
+}
+
+.visualiser-graph-childcount circle {
+    fill: var(--surface, #1a1a1a);
+    stroke: var(--muted-text, #888);
+    stroke-width: 0.5;
+}
+
+.visualiser-graph-childcount text {
+    font-size: 8px;
+    fill: var(--muted-text, #ccc);
+}
+
 @media (max-width: 991px) {
     .visualiser-page {
         grid-template-columns: 1fr;
