@@ -9,6 +9,7 @@
 @import "css/form" layer(moobank);
 @import "css/transactions" layer(moobank);
 @import "css/forecast" layer(moobank);
+@import "css/visualiser" layer(moobank);
 @import "css/bills" layer(moobank);
 @import "css/treeflex";
 
@@ -127,12 +128,6 @@
     .report canvas {
         max-height: calc(100vh - 415px);
         max-width: 100%;
-    }
-
-    .visualiser {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
     }
 
     .section-row {

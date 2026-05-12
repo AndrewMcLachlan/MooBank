@@ -1,0 +1,237 @@
+/* Make the page's <main> element a flex container ONLY when it contains
+   our visualiser. Also strip its horizontal padding so the outline column
+   sits flush against the app frame (the left sidebar's right edge),
+   acting as a secondary sidebar. The graph keeps its visual gutter via
+   padding on the grid container below. */
+main.container-fluid:has(> .visualiser-page) {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100dvh - 140px);
+    padding: 0;
+}
+
+.visualiser-page {
+    display: grid;
+    grid-template-columns: minmax(260px, 360px) 1fr;
+    gap: 1rem;
+    flex: 1;
+    min-height: 480px;
+    /* min-height: 0 inside grid lets the outline scroll instead of overflowing */
+    min-block-size: 0;
+    /* Graph side gets a gutter; the sidebar stays flush with the frame. */
+    padding-right: 1rem;
+}
+
+.visualiser-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 20px 0 20px 20px;
+    background-color: var(--section-bg);
+    border-right: 1px solid var(--border-colour, #2a2a2a);
+    /* allow the outline child to scroll instead of overflowing the sidebar */
+    min-block-size: 0;
+}
+
+.visualiser-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
+}
+
+.visualiser-search input {
+    flex: 1;
+}
+
+.visualiser-search-count {
+    font-size: 0.85em;
+    color: var(--muted-text, #888);
+    min-width: 80px;
+    text-align: right;
+}
+
+.visualiser-outline,
+.visualiser-outline ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.visualiser-outline {
+    overflow: auto;
+    flex: 1 1 auto;
+    min-block-size: 0;
+}
+
+.visualiser-outline li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 0;
+    line-height: 1.6;
+}
+
+.visualiser-outline li > ul {
+    flex: 0 0 100%;
+    padding-left: 18px;
+}
+
+.visualiser-outline li[aria-current="true"] > .visualiser-chip {
+    outline: 2px solid var(--accent, #ffd84a);
+    outline-offset: 1px;
+}
+
+.visualiser-twirl {
+    width: 18px;
+    background: transparent;
+    border: 0;
+    color: var(--muted-text, #888);
+    cursor: pointer;
+    font-size: 0.75em;
+    padding: 0;
+    outline: none;
+}
+
+.visualiser-twirl:disabled {
+    cursor: default;
+    visibility: hidden;
+}
+
+.visualiser-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: transparent;
+    border: 0;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    outline: none;
+}
+
+.visualiser-chip:focus-visible {
+    outline: 2px solid var(--accent, #ffd84a);
+    outline-offset: 1px;
+}
+
+.visualiser-chip:hover {
+    background: var(--hover-surface, #222);
+}
+
+.visualiser-twirl:focus-visible {
+    outline: 1px solid var(--accent, #ffd84a);
+}
+
+.visualiser-graph-node rect:focus {
+    outline: none;
+}
+
+.visualiser-graph-node rect:focus-visible {
+    outline: 2px solid var(--accent, #ffd84a);
+    outline-offset: 1px;
+}
+
+.visualiser-chip-swatch {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--primary);
+    flex: 0 0 10px;
+}
+
+.visualiser-chip-name mark {
+    background: var(--accent, #ffd84a);
+    color: #000;
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+.visualiser-cycle {
+    margin-left: 4px;
+    color: var(--muted-text, #888);
+    font-size: 0.85em;
+}
+
+.visualiser-graph {
+    width: 100%;
+    height: 100%;
+    justify-self: center;
+}
+
+.visualiser-graph-node {
+    transition: transform 400ms cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 200ms ease;
+}
+
+.visualiser-graph-node.is-leaving,
+.visualiser-graph-node.is-entering {
+    opacity: 0;
+}
+
+.visualiser-graph-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted-text, #888);
+}
+
+.visualiser-graph-edges path {
+    stroke: var(--muted-text, #555);
+    stroke-width: 1;
+    fill: none;
+    transition: d 400ms cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 200ms ease;
+}
+
+.visualiser-graph-edges path.is-leaving,
+.visualiser-graph-edges path.is-entering {
+    opacity: 0;
+}
+
+.visualiser-graph-node text {
+    fill: #fff;
+    font-size: 13px;
+    pointer-events: none;
+}
+
+.visualiser-graph-node.focus rect:first-child {
+    stroke: var(--accent, #ffd84a);
+    stroke-width: 2;
+}
+
+.visualiser-graph-childcount {
+    pointer-events: none;
+}
+
+.visualiser-graph-childcount circle {
+    fill: var(--surface, #1a1a1a);
+    stroke: var(--muted-text, #888);
+    stroke-width: 0.5;
+}
+
+.visualiser-graph-childcount text {
+    font-size: 9px;
+    fill: var(--muted-text, #ccc);
+}
+
+@media (max-width: 991px) {
+    .visualiser-page {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr auto;
+        height: auto;
+        padding-right: 0;
+    }
+    .visualiser-sidebar {
+        order: 2;
+        border-right: 0;
+        border-top: 1px solid var(--border-colour, #2a2a2a);
+    }
+    .visualiser-graph {
+        order: 1;
+        min-height: 300px;
+    }
+}

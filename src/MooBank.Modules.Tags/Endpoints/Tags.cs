@@ -25,6 +25,9 @@ internal class TagsEndpoints : EndpointGroupBase
         builder.MapQuery<GetTagsHierarchy, TagHierarchy>("hierarchy")
             .WithNames("Get Tag Hierarchy");
 
+        builder.MapQuery<GetTagsGraph, TagGraph>("graph")
+            .WithNames("Get Tag Graph");
+
         builder.MapQuery<Get, MooBank.Models.Tag>("{id}")
             .WithNames("Get Tag");
 
