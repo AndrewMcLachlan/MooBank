@@ -1,3 +1,13 @@
+/* Make the page's <main> element a flex container ONLY when it contains
+   our visualiser, so .visualiser-page can grow into whatever vertical
+   space moo-ds's Layout has given to <main>. Falls back to a viewport
+   calc on browsers without :has() support. */
+main.container-fluid:has(> .visualiser-page) {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100dvh - 140px);
+}
+
 .visualiser-page {
     display: grid;
     grid-template-columns: minmax(260px, 360px) 1fr;
@@ -6,8 +16,10 @@
         "search graph"
         "outline graph";
     gap: 12px;
-    height: calc(100dvh - 140px);
+    flex: 1;
     min-height: 480px;
+    /* min-height: 0 inside grid lets the outline scroll instead of overflowing */
+    min-block-size: 0;
 }
 
 .visualiser-search {
