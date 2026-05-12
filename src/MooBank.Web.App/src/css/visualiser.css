@@ -167,7 +167,7 @@
 }
 
 .visualiser-graph-childcount text {
-    font-size: 8px;
+    font-size: 7px;
     fill: var(--muted-text, #ccc);
 }
 
