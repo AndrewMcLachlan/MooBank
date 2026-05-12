@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import type { TagsGraphIndex } from "../-hooks/useTagsGraphIndex";
 
@@ -11,7 +11,8 @@ interface Props {
     onFocus: (id: number) => void;
 }
 
-const VIEW_W = 800;
+const VIEW_W_MIN = 600;
+const VIEW_W_DEFAULT = 1000;
 const VIEW_H = 600;
 const NODE_W = 100;
 const NODE_H = 28;
@@ -52,27 +53,27 @@ interface Layout {
     edges: Omit<DisplayEdge, "state">[];
 }
 
-const chipsPerRow = (): number => {
-    const usable = VIEW_W - PAD_X * 2;
+const chipsPerRow = (viewW: number): number => {
+    const usable = viewW - PAD_X * 2;
     const slot = NODE_W + COL_GAP;
     return Math.max(1, Math.floor((usable + COL_GAP) / slot));
 };
 
-const buildLayout = (forFocusId: number, index: TagsGraphIndex): Layout => {
+const buildLayout = (forFocusId: number, index: TagsGraphIndex, viewW: number): Layout => {
     const focused = index.byId.get(forFocusId);
     if (!focused) return { nodes: [], edges: [] };
 
     const parentIds = index.parentsOf.get(forFocusId) ?? [];
     const childIds = index.childrenOf.get(forFocusId) ?? [];
 
-    const perRow = chipsPerRow();
+    const perRow = chipsPerRow(viewW);
     const focusY = FOCUS_Y;
 
     const nodes: Omit<DisplayNode, "state">[] = [];
     const edges: Omit<DisplayEdge, "state">[] = [];
 
     // Focus node
-    const focusX = VIEW_W / 2;
+    const focusX = viewW / 2;
     nodes.push({
         id: forFocusId,
         x: focusX,
@@ -91,7 +92,7 @@ const buildLayout = (forFocusId: number, index: TagsGraphIndex): Layout => {
             const end = Math.min(start + perRow, ids.length);
             const inThisRow = end - start;
             const totalWidth = inThisRow * NODE_W + (inThisRow - 1) * COL_GAP;
-            const rowStartX = (VIEW_W - totalWidth) / 2;
+            const rowStartX = (viewW - totalWidth) / 2;
             const y = focusY + direction * (FOCUS_GAP_Y + r * (NODE_H + ROW_GAP) + NODE_H / 2);
             for (let i = 0; i < inThisRow; i++) {
                 const id = ids[start + i];
@@ -126,13 +127,35 @@ export const VisualiserNeighborhood: React.FC<Props> = ({ index, focusId, onFocu
     const [nodes, setNodes] = useState<DisplayNode[]>([]);
     const [edges, setEdges] = useState<DisplayEdge[]>([]);
     const [activeFocusId, setActiveFocusId] = useState<number | null>(null);
+    const [viewW, setViewW] = useState<number>(VIEW_W_DEFAULT);
+    const svgRef = useRef<SVGSVGElement>(null);
+
+    // Track the SVG's actual rendered width so the viewBox can be 1:1 with
+    // screen pixels. This lets us fit more chips per row on wide screens
+    // without scaling content down.
+    useEffect(() => {
+        if (!svgRef.current) return;
+        let raf = 0;
+        const observer = new ResizeObserver((entries) => {
+            cancelAnimationFrame(raf);
+            raf = requestAnimationFrame(() => {
+                const w = entries[0]?.contentRect?.width ?? 0;
+                if (w > 0) setViewW(Math.max(VIEW_W_MIN, Math.floor(w)));
+            });
+        });
+        observer.observe(svgRef.current);
+        return () => {
+            cancelAnimationFrame(raf);
+            observer.disconnect();
+        };
+    }, []);
 
     useEffect(() => {
         if (focusId === null) return;
 
         // Initial mount: no transition needed
         if (nodes.length === 0 || activeFocusId === null) {
-            const next = buildLayout(focusId, index);
+            const next = buildLayout(focusId, index, viewW);
             setNodes(next.nodes.map(n => ({ ...n, state: "visible" })));
             setEdges(next.edges.map(e => ({ ...e, state: "visible" })));
             setActiveFocusId(focusId);
@@ -141,7 +164,7 @@ export const VisualiserNeighborhood: React.FC<Props> = ({ index, focusId, onFocu
 
         if (focusId === activeFocusId) return;
 
-        const next = buildLayout(focusId, index);
+        const next = buildLayout(focusId, index, viewW);
         const nextIds = new Set(next.nodes.map(n => n.id));
         const nextEdgeIds = new Set(next.edges.map(e => e.id));
 
@@ -218,6 +241,24 @@ export const VisualiserNeighborhood: React.FC<Props> = ({ index, focusId, onFocu
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [focusId, index]);
 
+    // On viewport resize (viewW changes), snap existing nodes and edges to
+    // new positions without going through the leaver/enterer choreography.
+    // CSS transition on transform/d still animates the move smoothly.
+    useEffect(() => {
+        if (activeFocusId === null) return;
+        const next = buildLayout(activeFocusId, index, viewW);
+        const nodeMap = new Map(next.nodes.map(n => [n.id, n]));
+        const edgeMap = new Map(next.edges.map(e => [e.id, e]));
+        setNodes(prev => prev.map((n) => {
+            const target = nodeMap.get(n.id);
+            return target ? { ...n, x: target.x, y: target.y } : n;
+        }));
+        setEdges(prev => prev.map((e) => {
+            const target = edgeMap.get(e.id);
+            return target ? { ...e, x1: target.x1, y1: target.y1, x2: target.x2, y2: target.y2 } : e;
+        }));
+    }, [viewW, activeFocusId, index]);
+
     if (focusId === null) {
         return <div className="visualiser-graph-empty">Select a tag to see its neighborhood.</div>;
     }
@@ -267,7 +308,7 @@ export const VisualiserNeighborhood: React.FC<Props> = ({ index, focusId, onFocu
     };
 
     return (
-        <svg className="visualiser-graph" viewBox={`0 0 ${VIEW_W} ${VIEW_H}`} preserveAspectRatio="xMidYMid meet" role="img" aria-label={`Neighborhood of ${focusedName}`}>
+        <svg ref={svgRef} className="visualiser-graph" viewBox={`0 0 ${viewW} ${VIEW_H}`} preserveAspectRatio="xMidYMid meet" role="img" aria-label={`Neighborhood of ${focusedName}`}>
             <g className="visualiser-graph-edges">
                 {edges.map((e) => (
                     <path

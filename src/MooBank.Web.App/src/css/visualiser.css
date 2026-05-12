@@ -26,7 +26,7 @@ main.container-fluid:has(> .visualiser-page) {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    padding: 20px;
+    padding: 20px 0 20px 20px;
     background-color: var(--section-bg);
     border-right: 1px solid var(--border-colour, #2a2a2a);
     /* allow the outline child to scroll instead of overflowing the sidebar */
@@ -40,14 +40,8 @@ main.container-fluid:has(> .visualiser-page) {
     flex: 0 0 auto;
 }
 
-.visualiser-search-input {
+.visualiser-search input {
     flex: 1;
-    padding: 6px 10px;
-    background: var(--input-background, #1d1d1d);
-    color: var(--input-text, inherit);
-    border: 1px solid var(--border-colour, #333);
-    border-radius: 4px;
-    font: inherit;
 }
 
 .visualiser-search-count {
@@ -165,7 +159,6 @@ main.container-fluid:has(> .visualiser-page) {
 .visualiser-graph {
     width: 100%;
     height: 100%;
-    max-width: 900px;
     justify-self: center;
 }
 
