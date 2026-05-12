@@ -7,8 +7,7 @@ main.container-fluid:has(> .visualiser-page) {
     display: flex;
     flex-direction: column;
     min-height: calc(100dvh - 140px);
-    padding-left: 0;
-    padding-right: 0;
+    padding: 0;
 }
 
 .visualiser-page {
