@@ -27,6 +27,7 @@ main.container-fluid:has(> .visualiser-page) {
     flex-direction: column;
     gap: 8px;
     padding: 20px;
+    background-color: var(--section-bg);
     border-right: 1px solid var(--border-colour, #2a2a2a);
     /* allow the outline child to scroll instead of overflowing the sidebar */
     min-block-size: 0;
