@@ -11,14 +11,19 @@ interface Props {
     onFocus: (id: number) => void;
 }
 
-const VIEW_W = 600;
+const VIEW_W = 800;
+const VIEW_H = 600;
 const NODE_W = 84;
 const NODE_H = 22;
 const COL_GAP = 8;
 const ROW_GAP = 8;
 const PAD_X = 12;
-const FOCUS_GAP_Y = 28;     // vertical gap between focus and the nearest parent/child row
-const OUTER_PAD_Y = 12;
+const FOCUS_GAP_Y = 28;
+// Focus position is fixed in viewBox coordinates so chips render at a
+// stable screen size regardless of how many parents/children exist.
+// 40% from the top leaves more vertical space below for children
+// (typically more numerous than parents).
+const FOCUS_Y = VIEW_H * 0.40;
 
 type NodeState = "visible" | "leaving" | "entering";
 
@@ -44,7 +49,6 @@ interface DisplayEdge {
 interface Layout {
     nodes: Omit<DisplayNode, "state">[];
     edges: Omit<DisplayEdge, "state">[];
-    viewH: number;
 }
 
 const chipsPerRow = (): number => {
@@ -55,24 +59,13 @@ const chipsPerRow = (): number => {
 
 const buildLayout = (forFocusId: number, index: TagsGraphIndex): Layout => {
     const focused = index.byId.get(forFocusId);
-    if (!focused) return { nodes: [], edges: [], viewH: 0 };
+    if (!focused) return { nodes: [], edges: [] };
 
     const parentIds = index.parentsOf.get(forFocusId) ?? [];
     const childIds = index.childrenOf.get(forFocusId) ?? [];
 
     const perRow = chipsPerRow();
-
-    const parentRows = Math.max(1, Math.ceil(parentIds.length / perRow));
-    const childRows = Math.max(1, Math.ceil(childIds.length / perRow));
-    const parentHeight = parentIds.length === 0
-        ? 0
-        : FOCUS_GAP_Y + parentRows * NODE_H + (parentRows - 1) * ROW_GAP;
-    const childHeight = childIds.length === 0
-        ? 0
-        : FOCUS_GAP_Y + childRows * NODE_H + (childRows - 1) * ROW_GAP;
-
-    const focusY = OUTER_PAD_Y + parentHeight + NODE_H / 2;
-    const viewH = OUTER_PAD_Y + parentHeight + NODE_H + childHeight + OUTER_PAD_Y;
+    const focusY = FOCUS_Y;
 
     const nodes: Omit<DisplayNode, "state">[] = [];
     const edges: Omit<DisplayEdge, "state">[] = [];
@@ -118,14 +111,13 @@ const buildLayout = (forFocusId: number, index: TagsGraphIndex): Layout => {
     layoutGroup(parentIds, -1, "parent");
     layoutGroup(childIds, 1, "child");
 
-    return { nodes, edges, viewH };
+    return { nodes, edges };
 };
 
 export const VisualiserNeighborhood: React.FC<Props> = ({ index, focusId, onFocus }) => {
     const [nodes, setNodes] = useState<DisplayNode[]>([]);
     const [edges, setEdges] = useState<DisplayEdge[]>([]);
     const [activeFocusId, setActiveFocusId] = useState<number | null>(null);
-    const [viewH, setViewH] = useState(0);
 
     useEffect(() => {
         if (focusId === null) return;
@@ -135,7 +127,6 @@ export const VisualiserNeighborhood: React.FC<Props> = ({ index, focusId, onFocu
             const next = buildLayout(focusId, index);
             setNodes(next.nodes.map(n => ({ ...n, state: "visible" })));
             setEdges(next.edges.map(e => ({ ...e, state: "visible" })));
-            setViewH(next.viewH);
             setActiveFocusId(focusId);
             return;
         }
@@ -146,66 +137,76 @@ export const VisualiserNeighborhood: React.FC<Props> = ({ index, focusId, onFocu
         const nextIds = new Set(next.nodes.map(n => n.id));
         const nextEdgeIds = new Set(next.edges.map(e => e.id));
 
-        // Stage 1: classify current nodes
-        const stage1: DisplayNode[] = [];
-        const seen = new Set<number>();
+        // STAGE 1 (t=0 → TRANSITION_MS): old layout transitioning to new.
+        //   - Stayers: switch to new position (CSS transitions transform/d smoothly).
+        //   - Leavers: hold old position, fade opacity → 0.
+        //   - Enterers: NOT in the DOM yet, so the user only sees the stayers
+        //     moving and the leavers fading out — no premature lines/chips
+        //     at the destination.
+        const stage1Nodes: DisplayNode[] = [];
+        const seenNodes = new Set<number>();
         for (const n of nodes) {
             if (nextIds.has(n.id)) {
-                // Stayer: move to new position, update kind for new role
                 const target = next.nodes.find(t => t.id === n.id)!;
-                stage1.push({ ...target, state: "visible" });
-                seen.add(n.id);
+                stage1Nodes.push({ ...target, state: "visible" });
+                seenNodes.add(n.id);
             } else {
-                // Leaver: hold position, fade out
-                stage1.push({ ...n, state: "leaving" });
-            }
-        }
-        // Enterers: in new but not in old — mount at target position with opacity 0
-        for (const t of next.nodes) {
-            if (!seen.has(t.id)) {
-                stage1.push({ ...t, state: "entering" });
+                stage1Nodes.push({ ...n, state: "leaving" });
             }
         }
 
-        // Stage 1: classify current edges
         const stage1Edges: DisplayEdge[] = [];
-        const edgeSeen = new Set<string>();
+        const seenEdges = new Set<string>();
         for (const e of edges) {
             if (nextEdgeIds.has(e.id)) {
                 const target = next.edges.find(t => t.id === e.id)!;
                 stage1Edges.push({ ...target, state: "visible" });
-                edgeSeen.add(e.id);
+                seenEdges.add(e.id);
             } else {
                 stage1Edges.push({ ...e, state: "leaving" });
             }
         }
-        for (const t of next.edges) {
-            if (!edgeSeen.has(t.id)) {
-                stage1Edges.push({ ...t, state: "entering" });
-            }
-        }
 
-        // Update viewH to new layout immediately so new nodes fit
-        setViewH(next.viewH);
-        setNodes(stage1);
+        setNodes(stage1Nodes);
         setEdges(stage1Edges);
 
-        // After TRANSITION_MS: drop leavers and promote enterers to visible
-        // Enterers were mounted at opacity 0; by this point the browser has painted
-        // them, so changing to visible triggers the CSS transition to opacity 1.
+        let t2: ReturnType<typeof setTimeout> | null = null;
+
+        // STAGE 2 (t=TRANSITION_MS): movement complete. Drop leavers, mount
+        // enterers with opacity 0 (CSS hides them via .is-entering).
         const t1 = setTimeout(() => {
-            setNodes(prev => prev
+            const stage2Nodes: DisplayNode[] = stage1Nodes
                 .filter(n => n.state !== "leaving")
-                .map(n => ({ ...n, state: "visible" })),
-            );
-            setEdges(prev => prev
+                .map(n => ({ ...n, state: "visible" as const }));
+            for (const t of next.nodes) {
+                if (!seenNodes.has(t.id)) {
+                    stage2Nodes.push({ ...t, state: "entering" });
+                }
+            }
+            const stage2Edges: DisplayEdge[] = stage1Edges
                 .filter(e => e.state !== "leaving")
-                .map(e => ({ ...e, state: "visible" })),
-            );
-            setActiveFocusId(focusId);
+                .map(e => ({ ...e, state: "visible" as const }));
+            for (const t of next.edges) {
+                if (!seenEdges.has(t.id)) {
+                    stage2Edges.push({ ...t, state: "entering" });
+                }
+            }
+            setNodes(stage2Nodes);
+            setEdges(stage2Edges);
+
+            // STAGE 3 (one frame later): flip enterers to visible. The browser
+            // has painted them at opacity 0, so this triggers the fade-in.
+            t2 = setTimeout(() => {
+                setNodes(prev => prev.map(n => ({ ...n, state: "visible" as const })));
+                setEdges(prev => prev.map(e => ({ ...e, state: "visible" as const })));
+                setActiveFocusId(focusId);
+            }, 20);
         }, TRANSITION_MS);
 
-        return () => clearTimeout(t1);
+        return () => {
+            clearTimeout(t1);
+            if (t2) clearTimeout(t2);
+        };
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [focusId, index]);
 
@@ -252,13 +253,13 @@ export const VisualiserNeighborhood: React.FC<Props> = ({ index, focusId, onFocu
     };
 
     return (
-        <svg className="visualiser-graph" viewBox={`0 0 ${VIEW_W} ${viewH}`} preserveAspectRatio="xMidYMid meet" role="img" aria-label={`Neighborhood of ${focusedName}`}>
+        <svg className="visualiser-graph" viewBox={`0 0 ${VIEW_W} ${VIEW_H}`} preserveAspectRatio="xMidYMid meet" role="img" aria-label={`Neighborhood of ${focusedName}`}>
             <g className="visualiser-graph-edges">
                 {edges.map((e) => (
-                    <line
+                    <path
                         key={e.id}
                         className={classNames({ "is-leaving": e.state === "leaving", "is-entering": e.state === "entering" })}
-                        x1={e.x1} y1={e.y1} x2={e.x2} y2={e.y2}
+                        d={`M ${e.x1} ${e.y1} L ${e.x2} ${e.y2}`}
                     />
                 ))}
             </g>
