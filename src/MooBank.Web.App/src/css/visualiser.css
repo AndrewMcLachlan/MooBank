@@ -61,6 +61,7 @@
     cursor: pointer;
     font-size: 0.75em;
     padding: 0;
+    outline: none;
 }
 
 .visualiser-twirl:disabled {
@@ -79,10 +80,29 @@
     color: inherit;
     cursor: pointer;
     font: inherit;
+    outline: none;
+}
+
+.visualiser-chip:focus-visible {
+    outline: 2px solid var(--accent, #ffd84a);
+    outline-offset: 1px;
 }
 
 .visualiser-chip:hover {
     background: var(--hover-surface, #222);
+}
+
+.visualiser-twirl:focus-visible {
+    outline: 1px solid var(--accent, #ffd84a);
+}
+
+.visualiser-graph-node rect:focus {
+    outline: none;
+}
+
+.visualiser-graph-node rect:focus-visible {
+    outline: 2px solid var(--accent, #ffd84a);
+    outline-offset: 1px;
 }
 
 .visualiser-chip-swatch {
