@@ -250,8 +250,8 @@ export const VisualiserNeighborhood: React.FC<Props> = ({ index, focusId, onFocu
                     {n.label}
                 </text>
                 {n.childCount > 0 && (
-                    <g className="visualiser-graph-childcount" transform={`translate(${NODE_W - 8} 2)`}>
-                        <circle r={5.5} />
+                    <g className="visualiser-graph-childcount" transform={`translate(${NODE_W - 5} 5)`}>
+                        <circle r={5} />
                         <text textAnchor="middle" y={2.5}>{n.childCount}</text>
                     </g>
                 )}
