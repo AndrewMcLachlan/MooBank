@@ -1,4 +1,3 @@
-import classNames from "classnames";
 import type { PropsWithChildren } from "react";
 
 import type { TagGraphNode } from "api/types.gen";
@@ -36,10 +35,7 @@ export const VisualiserOutlineRow: React.FC<PropsWithChildren<Props>> = ({
     const swatchStyle = node.colour ? { backgroundColor: String(node.colour) } : undefined;
 
     return (
-        <li
-            className={classNames("visualiser-row", { focused: isFocused })}
-            aria-current={isFocused ? "true" : undefined}
-        >
+        <li aria-current={isFocused ? "true" : undefined}>
             <button
                 type="button"
                 className="visualiser-twirl"

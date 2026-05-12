@@ -59,7 +59,7 @@ main.container-fluid:has(> .visualiser-page) {
     padding: 8px 4px;
 }
 
-.visualiser-row {
+.visualiser-outline li {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -68,12 +68,12 @@ main.container-fluid:has(> .visualiser-page) {
     line-height: 1.6;
 }
 
-.visualiser-row > ul {
+.visualiser-outline li > ul {
     flex: 0 0 100%;
     padding-left: 18px;
 }
 
-.visualiser-row.focused .visualiser-chip {
+.visualiser-outline li[aria-current="true"] > .visualiser-chip {
     outline: 2px solid var(--accent, #ffd84a);
     outline-offset: 1px;
 }
