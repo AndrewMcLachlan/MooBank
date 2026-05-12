@@ -1377,23 +1377,23 @@ git commit -m "feat(visualiser): wire outline + neighborhood + search + URL focu
 
 ## Task 13 — Manual smoke test + close-out
 
-- [ ] **Step 1: Run the dev server**
+- [x] **Step 1: Run the dev server**
 
 Run from `src/MooBank.AppHost` or wherever the app's local stack starts (per `dotnet run --project src/MooBank.AppHost`).
 Once running, in another terminal: `cd src/MooBank.Web.App && npm start`. Open the browser and navigate to `/tags/visualiser`.
 
-- [ ] **Step 2: Verify the goldens manually**
+- [x] **Step 2: Verify the goldens manually**
 
 Tick each:
-- [ ] No horizontal scrollbar appears at viewport widths 1024px, 1440px, and 1920px.
-- [ ] Outline shows true roots (tags with no parents) on first paint.
-- [ ] Clicking a chevron toggles its subtree.
-- [ ] Clicking a chip focuses the tag: outline border highlights it, neighborhood renders parents above + children below, URL gains `?focus=<id>`.
-- [ ] A multi-parent tag (e.g., "Sport" if your data has it) appears in the outline under each parent and the neighborhood shows both parents.
-- [ ] Reload the page — focus and expand state are restored from `localStorage`.
-- [ ] Search "med" filters the outline to tags whose name contains "med", with their ancestor paths kept open and `<mark>` highlights inside chip names.
-- [ ] Clearing search restores the previous view.
-- [ ] At viewport < 992px the layout stacks (graph above outline).
+- [x] No horizontal scrollbar appears at viewport widths 1024px, 1440px, and 1920px.
+- [x] Outline shows true roots (tags with no parents) on first paint.
+- [x] Clicking a chevron toggles its subtree.
+- [x] Clicking a chip focuses the tag: outline border highlights it, neighborhood renders parents above + children below, URL gains `?focus=<id>`.
+- [x] A multi-parent tag (e.g., "Sport" if your data has it) appears in the outline under each parent and the neighborhood shows both parents.
+- [x] Reload the page — focus and expand state are restored from `localStorage`.
+- [x] Search "med" filters the outline to tags whose name contains "med", with their ancestor paths kept open and `<mark>` highlights inside chip names.
+- [x] Clearing search restores the previous view.
+- [x] At viewport < 992px the layout stacks (graph above outline).
 
 - [ ] **Step 3: Run full validations**
 

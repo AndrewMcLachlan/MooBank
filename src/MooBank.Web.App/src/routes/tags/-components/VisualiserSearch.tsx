@@ -20,7 +20,7 @@ export const VisualiserSearch: React.FC<Props> = ({ value, onChange, placeholder
             <input
                 type="search"
                 role="searchbox"
-                className="visualiser-search-input"
+                className="form-control search-box"
                 value={local}
                 onChange={(e) => {
                     setLocal(e.target.value);
