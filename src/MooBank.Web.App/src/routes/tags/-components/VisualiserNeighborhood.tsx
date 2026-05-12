@@ -13,12 +13,12 @@ interface Props {
 
 const VIEW_W = 800;
 const VIEW_H = 600;
-const NODE_W = 84;
-const NODE_H = 22;
-const COL_GAP = 8;
-const ROW_GAP = 8;
+const NODE_W = 100;
+const NODE_H = 28;
+const COL_GAP = 14;
+const ROW_GAP = 18;
 const PAD_X = 12;
-const FOCUS_GAP_Y = 28;
+const FOCUS_GAP_Y = 32;
 // Focus position is fixed in viewBox coordinates so chips render at a
 // stable screen size regardless of how many parents/children exist.
 // 40% from the top leaves more vertical space below for children
@@ -229,8 +229,8 @@ export const VisualiserNeighborhood: React.FC<Props> = ({ index, focusId, onFocu
     const focusedName = focusNode?.label ?? "";
 
     const renderChip = (n: DisplayNode) => {
-        const maxTextWidth = NODE_W - 8;
-        const approxCharWidth = 5.5;
+        const maxTextWidth = NODE_W - 10;
+        const approxCharWidth = 6.8;
         const naturalWidth = n.label.length * approxCharWidth;
         const shrink = naturalWidth > maxTextWidth;
         return (
@@ -244,15 +244,15 @@ export const VisualiserNeighborhood: React.FC<Props> = ({ index, focusId, onFocu
             >
                 <rect width={NODE_W} height={NODE_H} rx={NODE_H / 2} ry={NODE_H / 2}
                       fill={n.colour ?? "var(--primary)"} />
-                <text x={NODE_W / 2} y={NODE_H / 2 + 3} textAnchor="middle"
+                <text x={NODE_W / 2} y={NODE_H / 2 + 4} textAnchor="middle"
                       textLength={shrink ? maxTextWidth : undefined}
                       lengthAdjust={shrink ? "spacingAndGlyphs" : undefined}>
                     {n.label}
                 </text>
                 {n.childCount > 0 && (
-                    <g className="visualiser-graph-childcount" transform={`translate(${NODE_W - 5} 5)`}>
-                        <circle r={5} />
-                        <text textAnchor="middle" y={2.5}>{n.childCount}</text>
+                    <g className="visualiser-graph-childcount" transform={`translate(${NODE_W / 2} ${NODE_H})`}>
+                        <circle r={7} />
+                        <text textAnchor="middle" y={3}>{n.childCount}</text>
                     </g>
                 )}
                 <rect width={NODE_W} height={NODE_H} rx={NODE_H / 2} ry={NODE_H / 2}

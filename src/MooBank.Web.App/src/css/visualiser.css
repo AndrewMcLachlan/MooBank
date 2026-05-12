@@ -167,7 +167,7 @@
 
 .visualiser-graph-node text {
     fill: #fff;
-    font-size: 10px;
+    font-size: 13px;
     pointer-events: none;
 }
 
@@ -187,7 +187,7 @@
 }
 
 .visualiser-graph-childcount text {
-    font-size: 7px;
+    font-size: 9px;
     fill: var(--muted-text, #ccc);
 }
 
