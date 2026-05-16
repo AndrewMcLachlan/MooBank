@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, InputGroup } from "@andrewmclachlan/moo-ds";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "@tanstack/react-router";
@@ -48,6 +48,12 @@ export const AccountForm: React.FC<{ account?: LogicalAccount }> = ({ account = 
             currency: user?.currency,
         }
     });
+
+    useEffect(() => {
+        if (!account && user?.currency && !form.getValues("currency")) {
+            form.setValue("currency", user.currency);
+        }
+    }, [user?.currency, account]);
 
     const accountType = form.watch("accountType");
     const controller = form.watch("controller");

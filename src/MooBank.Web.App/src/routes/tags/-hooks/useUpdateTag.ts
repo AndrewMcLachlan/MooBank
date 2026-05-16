@@ -10,15 +10,15 @@ export const useUpdateTag = () => {
     const { mutate, ...rest } = useMutation({
         ...updateTagMutation(),
         onSuccess: (data) => {
-            queryClient.setQueryData<Tag>(getTagsQueryKey(), data);
             const allTags = queryClient.getQueryData<Tag[]>(getTagsQueryKey());
             if (!allTags) return;
 
             const tagIndex = allTags.findIndex(r => r.id === data.id);
+            if (tagIndex === -1) return;
 
-            allTags.splice(tagIndex, 1, data);
-
-            const newTags = allTags.sort((t1, t2) => t1.name.localeCompare(t2.name));
+            const newTags = [...allTags];
+            newTags.splice(tagIndex, 1, data);
+            newTags.sort((t1, t2) => t1.name.localeCompare(t2.name));
             queryClient.setQueryData<Tag[]>(getTagsQueryKey(), newTags);
             queryClient.invalidateQueries({ queryKey: getTagsQueryKey() });
         }
