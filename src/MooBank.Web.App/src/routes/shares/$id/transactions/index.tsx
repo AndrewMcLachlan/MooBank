@@ -18,7 +18,7 @@ function StockTransactions() {
     const stockHolding = useStockHolding();
 
     const actions = stockHolding?.controller === "Manual" ? [
-        <IconLinkButton key="add" variant="primary" icon="plus" to={`shares/${stockHolding.id}/transactions/add`}>Add Transaction</IconLinkButton>,
+        <IconLinkButton key="add" variant="primary" icon="plus" to={`/shares/${stockHolding.id}/transactions/add`}>Add Transaction</IconLinkButton>,
     ] : [];
 
     return (
