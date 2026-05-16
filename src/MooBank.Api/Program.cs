@@ -184,7 +184,8 @@ void AddServices(WebApplicationBuilder builder)
         options.AddStyleSrc().Self().UnsafeInline();
         options.AddScriptSrc().Self().UnsafeInline();
     })
-    .AddPermissionsPolicyWithDefaultSecureDirectives();
+    .AddPermissionsPolicyWithDefaultSecureDirectives()
+    .AddCrossOriginEmbedderPolicy(builder => builder.UnsafeNone());
 
     // Register WebJobs SDK for in-process background jobs
     builder.Host.ConfigureWebJobs(webJobsBuilder =>
