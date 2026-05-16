@@ -117,7 +117,7 @@ static void PrintHelp()
     Console.WriteLine("Generates realistic Australian bank transaction data for demo purposes.");
     Console.WriteLine("Creates ING-compatible CSV files for transaction and savings accounts.");
     Console.WriteLine();
-    Console.WriteLine("Usage: TransactionGenerator [options]");
+    Console.WriteLine("Usage: trangen [options]");
     Console.WriteLine();
     Console.WriteLine("Options:");
     Console.WriteLine("  -s, --start <date>       Start date (default: 10 years ago)");
@@ -133,7 +133,7 @@ static void PrintHelp()
     Console.WriteLine("  {prefix}_Savings.csv      - Savings account with interest");
     Console.WriteLine();
     Console.WriteLine("Examples:");
-    Console.WriteLine("  TransactionGenerator -s 2020-01-01 -e 2024-12-31");
-    Console.WriteLine("  TransactionGenerator -b 10000 --savings-balance 25000");
-    Console.WriteLine("  TransactionGenerator --no-savings -o MyTransactions");
+    Console.WriteLine("  trangen -s 2020-01-01 -e 2024-12-31");
+    Console.WriteLine("  trangen -b 10000 --savings-balance 25000");
+    Console.WriteLine("  trangen --no-savings -o MyTransactions");
 }
