@@ -10,6 +10,7 @@ import { useUpdateBalance } from "hooks/useUpdateBalance";
 import type { AccountRowProps } from "./AccountRow";
 import { VirtualAccountRow } from "./VirtualAccountRow";
 import { Amount } from "components/Amount";
+import { AccountTypeBadge } from "components/AccountTypeBadge";
 
 export const ManualAccountRow: React.FC<AccountRowProps> = (props) => {
 
@@ -30,7 +31,7 @@ export const ManualAccountRow: React.FC<AccountRowProps> = (props) => {
             <tr onClick={onRowClick} className="clickable" ref={balanceRef}>
                 <td className="d-none d-sm-table-cell" onClick={showVirtualAccountsClick}>{props.instrument.virtualInstruments && props.instrument.virtualInstruments.length > 0 && <FontAwesomeIcon icon={showVirtualAccounts ? "chevron-down" : "chevron-right"} />}</td>
                 <td className="name">{props.instrument.name}</td>
-                <td className="d-none d-sm-table-cell">{props.instrument.instrumentType}</td>
+                <td className="d-none d-sm-table-cell"><AccountTypeBadge type={props.instrument.instrumentType} /></td>
                 <td className={classNames("amount", "number", numberClassName(props.instrument.currentBalance))} onClick={balanceClick}>
                     {!editingBalance && <Amount amount={balance} />}
                     {editingBalance && <input type="number" className="form-input" value={balance} onChange={balanceChange} onKeyUp={keyUp} />}

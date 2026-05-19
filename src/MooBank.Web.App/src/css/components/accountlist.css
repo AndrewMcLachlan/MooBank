@@ -1,23 +1,24 @@
 :root {
-    --virtual-colour: rgba(33, 37, 41, 0.8);
-    --virtual-background-color: rgba(0, 0, 0, 0.03);
+    --virtual-colour: rgba(33, 37, 41, 0.55);
+    --virtual-mix-pct: 97%;
+    --virtual-background-color: color-mix(in srgb, var(--table-bg) var(--virtual-mix-pct), light-dark(#000, #fff));
 }
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --virtual-colour: rgba(220, 216, 213, 1);
-        --virtual-background-color: rgba(255, 255, 255, 0.06);
+        --virtual-colour: rgba(255, 255, 255, 0.55);
+        --virtual-mix-pct: 96%;
     }
 }
 
 .light {
-    --virtual-colour: rgba(33, 37, 41, 0.8);
-    --virtual-background-color: rgba(0, 0, 0, 0.03);
+    --virtual-colour: rgba(33, 37, 41, 0.55);
+    --virtual-mix-pct: 97%;
 }
 
 .dark {
-    --virtual-colour: rgba(180, 176, 173, 1);
-    --virtual-background-color: rgba(255, 255, 255, 0.03);
+    --virtual-colour: rgba(255, 255, 255, 0.55);
+    --virtual-mix-pct: 96%;
 }
 
 section.account-list {
@@ -171,20 +172,27 @@ table.accounts {
     }
 
     tr.virtual {
-        background-color: var(--virtual-background-color);
         font-size: 0.9rem;
-        color: var(--virtual-colour);
 
-        &:hover {
+        > td {
+            background-color: var(--virtual-background-color);
+            color: var(--virtual-colour);
+        }
+
+        &:hover > td {
             background-color: rgba(0, 0, 0, 0.075);
         }
 
         td.name {
-            padding-left: 20px;
+            padding-left: 40px;
         }
     }
 
     tr.total {
         font-weight: 600;
+    }
+
+    tbody tr.virtual:has(+ tr.virtual.total) > td {
+        border-bottom-color: color-mix(in srgb, var(--border-colour) 80%, light-dark(#000, #fff));
     }
 }

@@ -10,6 +10,7 @@ import type { Instrument } from "api/types.gen";
 
 import { VirtualAccountRow } from "./VirtualAccountRow";
 import { Amount } from "components/Amount";
+import { AccountTypeBadge } from "components/AccountTypeBadge";
 
 export const AccountRow: React.FC<AccountRowProps> = (props) => {
 
@@ -30,7 +31,7 @@ export const AccountRow: React.FC<AccountRowProps> = (props) => {
             <tr onClick={onRowClick} className="clickable">
                 <td className="d-none d-sm-table-cell" onClick={showVirtualAccountsClick}>{props.instrument.virtualInstruments && props.instrument.virtualInstruments.length > 0 && <FontAwesomeIcon icon={showVirtualAccounts ? "chevron-down" : "chevron-right"} />}</td>
                 <td>{props.instrument.name}</td>
-                <td className="d-none d-sm-table-cell">{props.instrument.instrumentType}</td>
+                <td className="d-none d-sm-table-cell"><AccountTypeBadge type={props.instrument.instrumentType} /></td>
                 <td className={classNames("number", numberClassName(props.instrument.currentBalance))}><Amount amount={props.instrument.currentBalanceLocalCurrency} negativeColour /></td>
             </tr>
             {showVirtualAccounts && props.instrument.virtualInstruments && (
