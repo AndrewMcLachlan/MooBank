@@ -9,9 +9,11 @@ using Asm.MooBank.Institution.Ing;
 using Asm.MooBank.Institution.Macquarie;
 using Asm.MooBank.Security;
 using Asm.OAuth;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
+using ModelContextProtocol.AspNetCore.Authentication;
 
 var result = WebApplicationStart.Run(args, "Asm.MooBank.Web.Api", AddServices, AddApp, AddHealthChecks);
 
@@ -120,13 +122,50 @@ void AddServices(WebApplicationBuilder builder)
     services.AddAuthentication(builder.Configuration)
         .AddMcp(options =>
         {
+            // Validate tokens via the existing JwtBearer pipeline; the MCP scheme
+            // keeps ownership of the 401 challenge so it can emit the
+            // resource_metadata pointer the MCP spec requires.
+            options.ForwardAuthenticate = JwtBearerDefaults.AuthenticationScheme;
+            options.ForwardForbid = JwtBearerDefaults.AuthenticationScheme;
+            // The MCP spec / Claude Desktop's Custom Connector require the `resource`
+            // field in the Protected Resource Metadata document to match the MCP
+            // server URL exactly as the user enters it in the client, INCLUDING the
+            // path component. Using the App ID URI ("api://...") here makes Claude
+            // reject the metadata document and fall back to treating MooBank as the
+            // authorization server. Token audience validation is unaffected because
+            // it's driven by JwtBearer config, not this value.
+            //
+            // Entra v2's /authorize endpoint also requires the `scope` parameter and
+            // the `resource` parameter to point at the same App ID URI, or it
+            // rejects with AADSTS9010010 ("resource parameter doesn't match requested
+            // scopes"). The scope advertised here must therefore live under the same
+            // App ID URI as the Resource value above — i.e. an Entra app whose App
+            // ID URI is https://moobank.mclachlan.family/mcp, with `api.read`
+            // exposed under it.
             options.ResourceMetadata = new()
             {
-                Resource = "api://moobank.mclachlan.family",
+                Resource = "https://moobank.mclachlan.family/mcp",
                 AuthorizationServers = { oAuthOptions.Authority },
-                ScopesSupported = ["api://moobank.mclachlan.family/api.read"],
+                ScopesSupported = ["https://moobank.mclachlan.family/mcp/api.read"],
             };
         });
+
+    // The SPA's MSAL config requests tokens for api://moobank.mclachlan.family
+    // (the original resource app's App ID URI). The MCP connector's tokens come
+    // from a separate Entra app with App ID URI https://moobank.mclachlan.family/mcp.
+    // Accept both audiences on the JwtBearer pipeline so a single MooBank instance
+    // serves both surfaces without splitting the API.
+    services.PostConfigure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
+    {
+        var existing = options.TokenValidationParameters.ValidAudiences?.ToList() ?? [];
+        if (options.TokenValidationParameters.ValidAudience is { Length: > 0 } single)
+        {
+            existing.Add(single);
+        }
+        existing.Add("api://moobank.mclachlan.family");
+        existing.Add("https://moobank.mclachlan.family/mcp");
+        options.TokenValidationParameters.ValidAudiences = existing.Distinct().ToList();
+    });
 
     services.AddAuthorization(options =>
     {
@@ -173,19 +212,25 @@ void AddServices(WebApplicationBuilder builder)
 
     services.AddIntegrations(builder.Configuration);
 
-    services.AddStandardSecurityHeaders().AddContentSecurityPolicy(options =>
-    {
-        options.AddDefaultSrc().Self();
-        options.AddConnectSrc().Self().From("https://login.microsoftonline.com").From("https://graph.microsoft.com");
-        options.AddFrameSrc().Self().From("https://login.microsoftonline.com");
-        options.AddFormAction().Self().From("https://login.microsoftonline.com");
-        options.AddImgSrc().Self().Data().Blob().From("https://cdn.mclachlan.family");
-        options.AddFontSrc().Self().From("https://cdn.mclachlan.family");
-        options.AddStyleSrc().Self().UnsafeInline();
-        options.AddScriptSrc().Self().UnsafeInline();
-    })
-    .AddPermissionsPolicyWithDefaultSecureDirectives()
-    .AddCrossOriginEmbedderPolicy(builder => builder.UnsafeNone());
+    var headerPolicies = services.AddStandardSecurityHeaders()
+        .AddContentSecurityPolicy(options =>
+        {
+            options.AddDefaultSrc().Self();
+            options.AddConnectSrc().Self().From("https://login.microsoftonline.com").From("https://graph.microsoft.com");
+            options.AddFrameSrc().Self().From("https://login.microsoftonline.com");
+            options.AddFormAction().Self().From("https://login.microsoftonline.com");
+            options.AddImgSrc().Self().Data().Blob().From("https://cdn.mclachlan.family");
+            options.AddFontSrc().Self().From("https://cdn.mclachlan.family");
+            options.AddStyleSrc().Self().UnsafeInline();
+            options.AddScriptSrc().Self().UnsafeInline();
+        })
+        .AddPermissionsPolicyWithDefaultSecureDirectives();
+
+    // MSAL loads Microsoft's authorize endpoint in a hidden iframe and that response
+    // does not include Cross-Origin-Resource-Policy. With COEP=require-corp the browser
+    // blocks it. We don't use SharedArrayBuffer or any other COEP-gated feature, so
+    // remove the header entirely rather than relying on UnsafeNone overriding the default.
+    headerPolicies.Remove("Cross-Origin-Embedder-Policy");
 
     // Register WebJobs SDK for in-process background jobs
     builder.Host.ConfigureWebJobs(webJobsBuilder =>
@@ -196,6 +241,20 @@ void AddServices(WebApplicationBuilder builder)
 
 void AddApp(WebApplication app)
 {
+    // MooBank is always served over HTTPS in production but the App Service /
+    // Cloudflare hop terminates TLS, so the app sees the inbound scheme as http.
+    // Force it back to https so URL generation (e.g. the resource_metadata URL in
+    // the MCP WWW-Authenticate header) emits the correct scheme. Skipped in dev
+    // where the SPA proxy may use http://localhost.
+    if (!app.Environment.IsDevelopment())
+    {
+        app.Use((ctx, next) =>
+        {
+            ctx.Request.Scheme = "https";
+            return next();
+        });
+    }
+
     if (app.Environment.IsDevelopment())
     {
         app.MapOpenApi();
@@ -227,7 +286,10 @@ void AddApp(WebApplication app)
 
     app.UseAuthorization();
 
-    app.MapMcp("mcp").RequireAuthorization();
+    app.MapMcp("mcp").RequireAuthorization(new AuthorizationPolicyBuilder()
+        .AddAuthenticationSchemes(McpAuthenticationDefaults.AuthenticationScheme)
+        .RequireAuthenticatedUser()
+        .Build());
 
     IEndpointRouteBuilder builder = app.MapGroup("/api");
 
