@@ -1,5 +1,4 @@
 import { Section, Tooltip } from "@andrewmclachlan/moo-ds";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect } from "react";
 import { Button, ButtonGroup, Col, Form, Input } from "@andrewmclachlan/moo-ds";
 import { useDispatch, } from "react-redux";
@@ -19,8 +18,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
     }, [period, filterDescription, filterTagged, filterNetZero, filterTags, storedFilterType, window.location.search]);
 
     return (
-        <Section className="filter-panel" header="Filter" {...props}>
-            <div className="control-panel"><FontAwesomeIcon className="clickable" title="Clear filters" icon="filter-circle-xmark" onClick={clear} size="lg" aria-controls="filter-panel-collapse" /></div>
+        <Section className="filter-panel" {...props}>
             <Row>
                 <Col className="description" lg={4} xl={5}>
                     <Form.Label htmlFor="filter-desc">Description</Form.Label><Tooltip id="filter-desc">Search for multiple terms by separating them with a comma</Tooltip>
@@ -48,6 +46,9 @@ export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
                     <Input.Switch id="filter-netzero" label="Exclude fully offset transactions" checked={filterNetZero} onChange={(e) => setFilterNetZero(e.currentTarget.checked)} />
                 </Col>
             </Row>
+            <div className="filter-actions">
+                <button type="button" className="filter-reset" title="Clear filters" onClick={clear}>Reset</button>
+            </div>
         </Section>
     );
 };

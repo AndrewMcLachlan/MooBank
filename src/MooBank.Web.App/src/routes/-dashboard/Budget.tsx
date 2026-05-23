@@ -8,6 +8,7 @@ import { useChartColours } from "utils/chartColours";
 import { lastMonth, lastMonthName } from "utils/dateFns";
 import { Bar } from "react-chartjs-2";
 import { useBudgetReportForMonth } from "./-hooks/useBudgetReportForMonth";
+import { Amount } from "components";
 
 export const BudgetWidget: React.FC = () => {
 
@@ -39,8 +40,8 @@ export const BudgetWidget: React.FC = () => {
             {report &&
                 <>
                     {difference >= 0 ?
-                        <h4 className="text-success amount">${difference} saved</h4> :
-                        <h4 className="text-danger amount">${Math.abs(difference)} overspent</h4>
+                        <h4><Amount amount={difference} prefix="$" suffix=" saved" decimalPlaces={0} positiveColour negativeColour /></h4> :
+                        <h4><Amount amount={difference} prefix="$" suffix=" overspent" decimalPlaces={0} positiveColour negativeColour /></h4>
                     }
                     <Bar id="inout" data={dataset} options={{
                         indexAxis: "y",

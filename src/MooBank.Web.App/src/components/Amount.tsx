@@ -1,16 +1,36 @@
 import classNames from "classnames";
 
-export const Amount: React.FC<AmountProps> = ({ amount, positiveColour = false, negativeColour = false, plus = false, minus = false, creditdebit = false }) => {
+import { getCurrencySymbol } from "utils/currency";
+
+const calculateColourClass = (amount: number, positiveColour: boolean, negativeColour: boolean, zeroShowsAs: "positive" | "negative" | "neutral") => {
+
+    if (amount !== 0) {
+        const negative = amount < 0;
+        return positiveColour && !negative ? "positive" :
+            negativeColour && negative ? "negative" : "";
+    }
+
+    switch (zeroShowsAs) {
+        case "positive":
+            return "positive";
+        case "negative":
+            return "negative";
+        case "neutral":
+        default:
+            return "";
+    }
+}
+
+export const Amount: React.FC<AmountProps> = ({ amount, positiveColour = false, negativeColour = false, plus = false, minus = false, creditdebit = false, prefix = "", suffix = "", decimalPlaces = 2, zeroShowsAs = "positive", currencyCode }) => {
 
     const negative = amount < 0;
     const cr_dr = creditdebit ? (negative ? "DR" : "CR") : "";
     const pl_mi = minus && negative ? "-" : plus && !negative ? "+" : "";
-    const colourClass = positiveColour && !negative ? "text-success" : 
-                        negativeColour && negative ? "text-danger" : "";
-    const negativeClass = negativeColour ? negative ? "negative" : "" : "";
-    const className = classNames("amount", colourClass, negativeClass);
+    const symbol = getCurrencySymbol(currencyCode);
+    const colourClass = calculateColourClass(amount, positiveColour, negativeColour, zeroShowsAs);
+    const className = classNames("amount", colourClass);
 
-    return (<span className={className}>{`${pl_mi}${(Math.abs(amount) ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}${cr_dr}`}</span>);
+    return (<span className={className}>{`${prefix}${pl_mi}${symbol}${(Math.abs(amount) ?? 0).toLocaleString(undefined, { minimumFractionDigits: decimalPlaces, maximumFractionDigits: decimalPlaces })}${cr_dr}${suffix}`}</span>);
 }
 
 export interface AmountProps {
@@ -20,4 +40,9 @@ export interface AmountProps {
     minus?: boolean;
     plus?: boolean;
     creditdebit?: boolean;
+    prefix?: string;
+    suffix?: string;
+    decimalPlaces?: number;
+    zeroShowsAs?: "positive" | "negative" | "neutral";
+    currencyCode?: string;
 }

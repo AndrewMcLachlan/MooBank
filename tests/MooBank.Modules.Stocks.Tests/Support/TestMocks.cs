@@ -1,6 +1,8 @@
 #nullable enable
 using Asm.Domain;
+using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Domain.Entities.StockHolding;
+using Asm.MooBank.Models;
 using Asm.MooBank.Security;
 using Asm.MooBank.Services;
 using User = Asm.MooBank.Models.User;
@@ -18,6 +20,12 @@ public class TestMocks
         SecurityMock = new Mock<ISecurity>();
         CurrencyConverterMock = new Mock<ICurrencyConverter>();
         CpiServiceMock = new Mock<ICpiService>();
+        ReferenceDataRepositoryMock = new Mock<IReferenceDataRepository>();
+
+        // Default reference data behaviour - no price history
+        ReferenceDataRepositoryMock
+            .Setup(r => r.GetStockPrices(It.IsAny<StockSymbol>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync([]);
 
         // Default currency converter behavior - pass through
         CurrencyConverterMock
@@ -44,6 +52,8 @@ public class TestMocks
     public Mock<ICurrencyConverter> CurrencyConverterMock { get; }
 
     public Mock<ICpiService> CpiServiceMock { get; }
+
+    public Mock<IReferenceDataRepository> ReferenceDataRepositoryMock { get; }
 
     public User User { get; private set; }
 

@@ -665,6 +665,8 @@ export type StockHolding = {
     symbol: string;
     quantity: number;
     currentPrice: number;
+    previousPrice?: null | number;
+    previousPriceDate?: null | string;
     currentValue: number;
     gainLoss: number;
     shareWithFamily: boolean;

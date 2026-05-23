@@ -27,6 +27,8 @@ export const formatISODate = (date: Date) => format(date, "yyyy-MM-dd");
 
 export const formatDate = (date?: string) => date ? format(parseISO(date), "dd/MM/yyyy") : "-";
 
+export const formatDateShort = (date?: string) => date ? format(parseISO(date), "dd MMM yy") : "-";
+
 export const isMonthSelected = (months: number, month: number) => (months & (1 << month)) !== 0;
 
 export const numberOfMonths = (months: number) => {

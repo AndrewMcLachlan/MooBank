@@ -8,6 +8,7 @@ import type { LogicalAccount } from "api/types.gen";
 import { useInstitutions } from "hooks/useInstitutions";
 import { useAccount } from "./AccountProvider";
 import { Amount } from "./Amount";
+import { AccountTypeBadge } from "./AccountTypeBadge";
 import { KeyValue } from "./KeyValue";
 import { formatDate } from "utils/dateFns";
 
@@ -35,7 +36,7 @@ export const AccountSummary: React.FC<AccountSummaryProps> = ({ className, ...pr
             <hr className="d-none d-lg-block" />
             <KeyValue className="d-none d-lg-flex">
                 <div>Type</div>
-                <div>{(account as LogicalAccount).instrumentType ?? "Virtual"}</div>
+                <div><AccountTypeBadge type={(account as LogicalAccount).instrumentType ?? "Virtual"} /></div>
             </KeyValue>
         </Section>
     )

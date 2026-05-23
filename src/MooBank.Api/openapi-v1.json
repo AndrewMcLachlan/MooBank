@@ -8036,6 +8036,20 @@
             "type": "number",
             "format": "double"
           },
+          "previousPrice": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "previousPriceDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
           "currentValue": {
             "type": "number",
             "format": "double"

@@ -11,10 +11,11 @@ import { useChartColours } from "utils/chartColours";
 import type { Period } from "models/dateFns";
 import { useInOutReport as defaultReport } from "hooks/useInOutReport";
 import { SpinnerContainer } from "@andrewmclachlan/moo-ds";
+import { Amount } from "components";
 
 
 export const InOut: React.FC<InOutProps> = ({ accountId, period, useInOutReport = defaultReport }) => {
-defaultReport
+    defaultReport
     const colours = useChartColours();
 
     const report = useInOutReport(accountId!, period?.startDate, period?.endDate);
@@ -39,10 +40,10 @@ defaultReport
     return (
         <>
             {difference >= 0 ?
-                <h4 className="text-success amount">${difference} saved</h4> :
-                <h4 className="text-danger amount">${Math.abs(difference)} overspent</h4>
+                <h4><Amount amount={difference} prefix="$" suffix=" saved" decimalPlaces={0} positiveColour negativeColour /></h4> :
+                <h4><Amount amount={difference} prefix="$" suffix=" overspent" decimalPlaces={0} positiveColour negativeColour /></h4>
             }
-            { report.isLoading && <SpinnerContainer />}
+            {report.isLoading && <SpinnerContainer />}
             <Bar id="inout" data={dataset} options={{
                 indexAxis: "y",
                 maintainAspectRatio: false,

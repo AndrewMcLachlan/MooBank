@@ -2,6 +2,8 @@ export * from "./AccountList";
 export * from "./AccountPage";
 export * from "./AccountProvider";
 export * from "./AccountSummary";
+export * from "./AccountTypeBadge";
+export * from "./Amount";
 export * from "./CurrencyInput";
 export * from "./CurrencySelector";
 export * from "./InstitutionSelector";

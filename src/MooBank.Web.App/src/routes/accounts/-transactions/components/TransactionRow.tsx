@@ -23,7 +23,7 @@ export const TransactionRow: React.FC<TransactionRowProps> = ({ transaction, onC
                 <td hidden={compact}>{transaction.location}</td>
                 <td hidden={compact}>{transaction.accountHolderName}</td>
                 <td className="transaction-amount">
-                    <Amount amount={transaction.amount} minus />
+                    <Amount amount={transaction.amount} minus negativeColour />
                     {showNet && transaction.amount !== transaction.netAmount &&
                         <span className="net-amount">(<Amount amount={transaction.netAmount} minus />)</span>
                     }

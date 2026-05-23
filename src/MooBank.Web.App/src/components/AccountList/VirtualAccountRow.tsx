@@ -8,6 +8,7 @@ import type { VirtualInstrument } from "api/types.gen";
 import { useUpdateVirtualInstrumentBalance } from "routes/accounts/-hooks/useUpdateVirtualInstrumentBalance";
 import { useNavigate } from "@tanstack/react-router";
 import { Amount } from "components/Amount";
+import { AccountTypeBadge } from "components/AccountTypeBadge";
 
 export const VirtualAccountRow: React.FC<VirtualAccountRowProps> = (props) => {
     const { balanceRef, editingBalance, balanceClick, balanceChange, balance, keyPress, onRowClick } = useComponentState(props);
@@ -19,7 +20,7 @@ export const VirtualAccountRow: React.FC<VirtualAccountRowProps> = (props) => {
         <tr onClick={clickable ? onRowClick : undefined} className={classNames("virtual", clickable && "clickable", "d-none", "d-sm-table-row")}>
             <td></td>
             <td className="name">{props.account.name}</td>
-            <td className="d-none d-sm-table-cell">{props.account.controller === "Virtual" ? "Virtual" : "Reserved Sum"}</td>
+            <td className="d-none d-sm-table-cell"><AccountTypeBadge type={props.account.controller === "Virtual" ? "Virtual" : "Reserved Sum"} /></td>
             <td className={classNames("number", numberClassName(balance))} onClick={canEditBalance ? balanceClick : undefined}>
                 {!editingBalance && <Amount amount={balance} negativeColour minus />}
                 {editingBalance && <input autoFocus type="number" className="form-control" value={balance} onChange={balanceChange} onKeyUp={keyPress} ref={balanceRef} />}

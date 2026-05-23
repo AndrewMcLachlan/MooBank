@@ -8,6 +8,7 @@
 @import "css/filterPanel" layer(moobank);
 @import "css/form" layer(moobank);
 @import "css/transactions" layer(moobank);
+@import "css/transactions/transactionsHeader" layer(moobank);
 @import "css/forecast" layer(moobank);
 @import "css/visualiser" layer(moobank);
 @import "css/bills" layer(moobank);
@@ -22,7 +23,11 @@
     }
 
     .negative {
-        color: rgb(204, 0, 0);
+        color: var(--expense-fg);
+    }
+
+    .positive {
+        color: var(--income-fg);
     }
 
     .alert {
