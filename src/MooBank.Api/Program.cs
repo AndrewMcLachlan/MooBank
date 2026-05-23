@@ -209,6 +209,20 @@ void AddServices(WebApplicationBuilder builder)
 
 void AddApp(WebApplication app)
 {
+    // MooBank is always served over HTTPS in production but the App Service /
+    // Cloudflare hop terminates TLS, so the app sees the inbound scheme as http.
+    // Force it back to https so URL generation (e.g. the resource_metadata URL in
+    // the MCP WWW-Authenticate header) emits the correct scheme. Skipped in dev
+    // where the SPA proxy may use http://localhost.
+    if (!app.Environment.IsDevelopment())
+    {
+        app.Use((ctx, next) =>
+        {
+            ctx.Request.Scheme = "https";
+            return next();
+        });
+    }
+
     if (app.Environment.IsDevelopment())
     {
         app.MapOpenApi();
