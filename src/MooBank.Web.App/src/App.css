@@ -12,6 +12,7 @@
 @import "css/forecast" layer(moobank);
 @import "css/visualiser" layer(moobank);
 @import "css/bills" layer(moobank);
+@import "css/tags" layer(moobank);
 @import "css/treeflex";
 
 @layer moobank {
@@ -219,3 +220,23 @@ section.upload {
         border-bottom-right-radius: 2px;
     }
 }
+
+input[type="color"].form-control {
+     width: 3rem;                                                                                                                                                                                                                                                         
+     height: calc(1.5em + 0.75rem + calc(var(--border-width, 1px) * 2));
+     padding: 0.375rem;
+ 
+     &:not(:disabled):not([readonly]) {
+         cursor: pointer;
+     }
+ 
+     &::-moz-color-swatch {
+         border: 0 !important;
+         border-radius: var(--border-radius, 0.375rem);
+     }
+ 
+     &::-webkit-color-swatch {
+         border: 0 !important;
+         border-radius: var(--border-radius, 0.375rem);
+     }
+ }

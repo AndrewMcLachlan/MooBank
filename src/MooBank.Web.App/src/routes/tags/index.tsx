@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import React, { useEffect, useState } from "react";
 
 import { TransactionTagRow } from "./-components/TagRow";
+import { TransactionTagDetails } from "./-components/TagDetails";
 
 import { changeSortDirection, getNumberOfPages, PageSize, Pagination, PaginationControls, PaginationTh, SaveIcon, SearchBox, Section, SectionTable, SortableTh, useLocalStorage } from "@andrewmclachlan/moo-ds";
 import type { SortDirection } from "@andrewmclachlan/moo-ds";
@@ -34,15 +35,19 @@ function TransactionTags() {
 
     const [sortDirection, setSortDirection] = useState<SortDirection>("Ascending");
     const [search, setSearch] = useState("");
+    const [editingTagId, setEditingTagId] = useState<number | null>(null);
 
     const numberOfPages = getNumberOfPages(filteredTags.length, pageSize);
     const totalTags = filteredTags.length;
     const pageChange = (_current: number, newPage: number) => setPageNumber(newPage);
 
+    const editingTag = editingTagId !== null ? allTags?.find(t => t.id === editingTagId) : undefined;
+
     useEffect(() => {
-
         setPageNumber(1);
+    }, [search]);
 
+    useEffect(() => {
         const searchTerm = search.toLocaleLowerCase();
         if (searchTerm === "") {
             setFilteredTags(allTags ?? []);
@@ -122,7 +127,7 @@ function TransactionTags() {
                         <TagPanel as="td" selectedItems={newTag.tags} items={tagsList} onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} onKeyUp={keyUp} />
                         <td className="row-action column-5"><span onClick={createTag}><SaveIcon /></span></td>
                     </tr>
-                    {pagedTags.map((t, i) => <TransactionTagRow key={`${i}${(t?.id ?? "")}`} tag={t} />)}
+                    {pagedTags.map((t, i) => <TransactionTagRow key={t?.id ?? `empty-${i}`} tag={t} onEdit={(tag) => setEditingTagId(tag.id)} />)}
                 </tbody>
                 {!isLoading &&
                     <tfoot>
@@ -138,6 +143,13 @@ function TransactionTags() {
                     </tfoot>
                 }
             </SectionTable>
+            {editingTag && (
+                <TransactionTagDetails
+                    tag={editingTag}
+                    show={editingTagId !== null}
+                    onHide={() => setEditingTagId(null)}
+                />
+            )}
         </TagsPage>
     );
 }
