@@ -9,9 +9,11 @@ using Asm.MooBank.Institution.Ing;
 using Asm.MooBank.Institution.Macquarie;
 using Asm.MooBank.Security;
 using Asm.OAuth;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
+using ModelContextProtocol.AspNetCore.Authentication;
 
 var result = WebApplicationStart.Run(args, "Asm.MooBank.Web.Api", AddServices, AddApp, AddHealthChecks);
 
@@ -120,6 +122,11 @@ void AddServices(WebApplicationBuilder builder)
     services.AddAuthentication(builder.Configuration)
         .AddMcp(options =>
         {
+            // Validate tokens via the existing JwtBearer pipeline; the MCP scheme
+            // keeps ownership of the 401 challenge so it can emit the
+            // resource_metadata pointer the MCP spec requires.
+            options.ForwardAuthenticate = JwtBearerDefaults.AuthenticationScheme;
+            options.ForwardForbid = JwtBearerDefaults.AuthenticationScheme;
             options.ResourceMetadata = new()
             {
                 Resource = "api://moobank.mclachlan.family",
@@ -233,7 +240,10 @@ void AddApp(WebApplication app)
 
     app.UseAuthorization();
 
-    app.MapMcp("mcp").RequireAuthorization();
+    app.MapMcp("mcp").RequireAuthorization(new AuthorizationPolicyBuilder()
+        .AddAuthenticationSchemes(McpAuthenticationDefaults.AuthenticationScheme)
+        .RequireAuthenticatedUser()
+        .Build());
 
     IEndpointRouteBuilder builder = app.MapGroup("/api");
 
