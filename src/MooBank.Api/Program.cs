@@ -150,22 +150,13 @@ void AddServices(WebApplicationBuilder builder)
             };
         });
 
-    // Accept tokens minted for any of MooBank's surfaces:
-    // - api://moobank.mclachlan.family — original resource app, used by the SPA.
-    // - https://moobank.mclachlan.family/mcp — MCP resource app's App ID URI.
-    // - be1a8a0d-... — the Anthropic-clients app's client_id, which is the aud
-    //   on tokens minted via the MCP OAuth flow.
+    // SPA tokens carry the SPA app's client_id as aud (configured by Asm.OAuth
+    // via the ValidAudience set from OAuth config). MCP tokens carry the
+    // Anthropic-clients app's client_id. Add the latter to the accepted set.
     services.PostConfigure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
     {
-        var existing = options.TokenValidationParameters.ValidAudiences?.ToList() ?? [];
-        if (options.TokenValidationParameters.ValidAudience is { Length: > 0 } single)
-        {
-            existing.Add(single);
-        }
-        existing.Add("api://moobank.mclachlan.family");
-        existing.Add("https://moobank.mclachlan.family/mcp");
-        existing.Add("be1a8a0d-d7ce-4252-8ca6-b797d697a80d");
-        options.TokenValidationParameters.ValidAudiences = existing.Distinct().ToList();
+        options.TokenValidationParameters.ValidAudiences =
+            (options.TokenValidationParameters.ValidAudiences ?? []).Append("be1a8a0d-d7ce-4252-8ca6-b797d697a80d").ToList();
     });
 
     services.AddAuthorization(options =>
