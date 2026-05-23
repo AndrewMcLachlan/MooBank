@@ -127,9 +127,16 @@ void AddServices(WebApplicationBuilder builder)
             // resource_metadata pointer the MCP spec requires.
             options.ForwardAuthenticate = JwtBearerDefaults.AuthenticationScheme;
             options.ForwardForbid = JwtBearerDefaults.AuthenticationScheme;
+            // The MCP spec / Claude Desktop's Custom Connector require the `resource`
+            // field in the Protected Resource Metadata document to match the MCP
+            // server URL exactly as the user enters it in the client, INCLUDING the
+            // path component. Using the App ID URI ("api://...") here makes Claude
+            // reject the metadata document and fall back to treating MooBank as the
+            // authorization server. Token audience validation is unaffected because
+            // it's driven by JwtBearer config, not this value.
             options.ResourceMetadata = new()
             {
-                Resource = "api://moobank.mclachlan.family",
+                Resource = "https://moobank.mclachlan.family/mcp",
                 AuthorizationServers = { oAuthOptions.Authority },
                 ScopesSupported = ["api://moobank.mclachlan.family/api.read"],
             };
