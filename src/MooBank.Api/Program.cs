@@ -150,6 +150,23 @@ void AddServices(WebApplicationBuilder builder)
             };
         });
 
+    // The SPA's MSAL config requests tokens for api://moobank.mclachlan.family
+    // (the original resource app's App ID URI). The MCP connector's tokens come
+    // from a separate Entra app with App ID URI https://moobank.mclachlan.family/mcp.
+    // Accept both audiences on the JwtBearer pipeline so a single MooBank instance
+    // serves both surfaces without splitting the API.
+    services.PostConfigure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
+    {
+        var existing = options.TokenValidationParameters.ValidAudiences?.ToList() ?? [];
+        if (options.TokenValidationParameters.ValidAudience is { Length: > 0 } single)
+        {
+            existing.Add(single);
+        }
+        existing.Add("api://moobank.mclachlan.family");
+        existing.Add("https://moobank.mclachlan.family/mcp");
+        options.TokenValidationParameters.ValidAudiences = existing.Distinct().ToList();
+    });
+
     services.AddAuthorization(options =>
     {
         options.AddPolicies();
