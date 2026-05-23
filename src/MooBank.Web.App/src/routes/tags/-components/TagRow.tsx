@@ -1,17 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 
 import type { Tag } from "api/types.gen";
-import { ClickableIcon, EditColumn, Icon, useUpdatingState } from "@andrewmclachlan/moo-ds";
+import { EditColumn, Icon, useUpdatingState } from "@andrewmclachlan/moo-ds";
 import { useDeleteTag } from "../-hooks/useDeleteTag";
 import { useUpdateTag } from "../-hooks/useUpdateTag";
 import { TransactionTagTransactionTagPanel } from "./TagTagPanel";
-import { TransactionTagDetails } from "./TagDetails";
 import { DeleteIcon } from "@andrewmclachlan/moo-ds";
 
 
 export const TransactionTagRow: React.FC<TransactionTagRowProps> = (props) => {
-
-    const [showDetails, setShowDetails] = useState(false);
 
     const { tag, ...tagRow } = useTagRowEvents(props);
 
@@ -20,17 +17,19 @@ export const TransactionTagRow: React.FC<TransactionTagRowProps> = (props) => {
     );
 
     return (
-        <>
-            <TransactionTagDetails tag={tag} show={showDetails} onHide={() => setShowDetails(false)} />
-            <tr>
-                <EditColumn value={tag.name} onChange={t => tagRow.updateTag(t.value)} />
-                <TransactionTagTransactionTagPanel as="td" tag={tag} />
-                <td className="row-action">
-                    <span onClick={() => setShowDetails(true)}><Icon className="clickable" icon="pen-to-square" title="Edit Details" /></span>
-                    <span onClick={tagRow.deleteTag}><DeleteIcon /></span>
-                </td>
-            </tr>
-        </>
+        <tr>
+            <EditColumn value={tag.name} onChange={t => tagRow.updateTag(t.value)}>
+                <span className="tag-name-cell">
+                    <span className="tag-swatch" style={{ background: (tag.colour as string) || "var(--primary)" }} aria-hidden="true" />
+                    {tag.name}
+                </span>
+            </EditColumn>
+            <TransactionTagTransactionTagPanel as="td" tag={tag} />
+            <td className="row-action">
+                <span onClick={() => props.onEdit?.(tag)}><Icon className="clickable" icon="pen-to-square" title="Edit Details" /></span>
+                <span onClick={tagRow.deleteTag}><DeleteIcon /></span>
+            </td>
+        </tr>
     );
 }
 
@@ -62,4 +61,5 @@ function useTagRowEvents(props: TransactionTagRowProps) {
 
 export interface TransactionTagRowProps {
     tag?: Tag;
+    onEdit?: (tag: Tag) => void;
 }
