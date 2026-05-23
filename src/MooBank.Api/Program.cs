@@ -134,11 +134,19 @@ void AddServices(WebApplicationBuilder builder)
             // reject the metadata document and fall back to treating MooBank as the
             // authorization server. Token audience validation is unaffected because
             // it's driven by JwtBearer config, not this value.
+            //
+            // Entra v2's /authorize endpoint also requires the `scope` parameter and
+            // the `resource` parameter to point at the same App ID URI, or it
+            // rejects with AADSTS9010010 ("resource parameter doesn't match requested
+            // scopes"). The scope advertised here must therefore live under the same
+            // App ID URI as the Resource value above — i.e. an Entra app whose App
+            // ID URI is https://moobank.mclachlan.family/mcp, with `api.read`
+            // exposed under it.
             options.ResourceMetadata = new()
             {
                 Resource = "https://moobank.mclachlan.family/mcp",
                 AuthorizationServers = { oAuthOptions.Authority },
-                ScopesSupported = ["api://moobank.mclachlan.family/api.read"],
+                ScopesSupported = ["https://moobank.mclachlan.family/mcp/api.read"],
             };
         });
 
