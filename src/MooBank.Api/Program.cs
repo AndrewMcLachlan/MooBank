@@ -153,8 +153,10 @@ void AddServices(WebApplicationBuilder builder)
     // The SPA's MSAL config requests tokens for api://moobank.mclachlan.family
     // (the original resource app's App ID URI). The MCP connector's tokens come
     // from a separate Entra app with App ID URI https://moobank.mclachlan.family/mcp.
-    // Accept both audiences on the JwtBearer pipeline so a single MooBank instance
-    // serves both surfaces without splitting the API.
+    // Accept both audiences (with and without trailing slash, since Anthropic's
+    // OAuth client has a known habit of normalising URIs with a trailing slash)
+    // on the JwtBearer pipeline so a single MooBank instance serves both surfaces
+    // without splitting the API.
     services.PostConfigure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
     {
         var existing = options.TokenValidationParameters.ValidAudiences?.ToList() ?? [];
@@ -164,7 +166,24 @@ void AddServices(WebApplicationBuilder builder)
         }
         existing.Add("api://moobank.mclachlan.family");
         existing.Add("https://moobank.mclachlan.family/mcp");
+        existing.Add("https://moobank.mclachlan.family/mcp/");
         options.TokenValidationParameters.ValidAudiences = existing.Distinct().ToList();
+
+        // Diagnostic: log the exact reason when token validation fails. Remove once
+        // MCP authn is confirmed working end-to-end.
+        var existingFail = options.Events?.OnAuthenticationFailed;
+        options.Events ??= new();
+        options.Events.OnAuthenticationFailed = async ctx =>
+        {
+            var logger = ctx.HttpContext.RequestServices.GetRequiredService<ILoggerFactory>()
+                .CreateLogger("MooBank.JwtBearer");
+            logger.LogWarning(ctx.Exception,
+                "JwtBearer auth failed on {Path}. Accepted audiences: [{Audiences}]. Exception type: {Type}",
+                ctx.HttpContext.Request.Path,
+                string.Join(", ", ctx.Options.TokenValidationParameters.ValidAudiences ?? []),
+                ctx.Exception?.GetType().FullName);
+            if (existingFail != null) await existingFail(ctx);
+        };
     });
 
     services.AddAuthorization(options =>
