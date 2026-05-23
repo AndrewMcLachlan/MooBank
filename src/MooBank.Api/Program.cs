@@ -125,7 +125,8 @@ void AddServices(WebApplicationBuilder builder)
             // Validate tokens via the existing JwtBearer pipeline; the MCP scheme
             // keeps ownership of the 401 challenge so it can emit the
             // resource_metadata pointer the MCP spec requires.
-            options.ForwardDefaultSelector = _ => JwtBearerDefaults.AuthenticationScheme;
+            options.ForwardAuthenticate = JwtBearerDefaults.AuthenticationScheme;
+            options.ForwardForbid = JwtBearerDefaults.AuthenticationScheme;
             options.ResourceMetadata = new()
             {
                 Resource = "api://moobank.mclachlan.family",
