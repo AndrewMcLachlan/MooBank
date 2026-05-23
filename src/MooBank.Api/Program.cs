@@ -150,15 +150,6 @@ void AddServices(WebApplicationBuilder builder)
             };
         });
 
-    // SPA tokens carry the SPA app's client_id as aud (configured by Asm.OAuth
-    // via the ValidAudience set from OAuth config). MCP tokens carry the
-    // Anthropic-clients app's client_id. Add the latter to the accepted set.
-    services.PostConfigure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
-    {
-        options.TokenValidationParameters.ValidAudiences =
-            (options.TokenValidationParameters.ValidAudiences ?? []).Append("be1a8a0d-d7ce-4252-8ca6-b797d697a80d").ToList();
-    });
-
     services.AddAuthorization(options =>
     {
         options.AddPolicies();
