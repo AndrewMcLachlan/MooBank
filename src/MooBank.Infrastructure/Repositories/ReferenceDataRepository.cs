@@ -12,7 +12,7 @@ internal class ReferenceDataRepository(MooBankContext dataContext) : IReferenceD
         await dataContext.StockPriceHistory.Where(s => s.Date == date).ToListAsync(cancellationToken);
 
     public async Task<IEnumerable<StockPriceHistory>> GetStockPrices(StockSymbol symbol, CancellationToken cancellationToken = default) =>
-       await dataContext.StockPriceHistory.Where(s => s.Symbol == symbol).ToListAsync(cancellationToken);
+       await dataContext.StockPriceHistory.Where(s => s.Symbol == symbol.Symbol && s.Exchange == symbol.Exchange).ToListAsync(cancellationToken);
 
     public StockPriceHistory AddStockPrice(StockPriceHistory stockPrice)
     {

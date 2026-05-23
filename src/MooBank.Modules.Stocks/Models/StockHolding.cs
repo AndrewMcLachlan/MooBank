@@ -11,6 +11,10 @@ public record StockHolding : MooBank.Models.Instrument
 
     public decimal CurrentPrice { get; init; }
 
+    public decimal? PreviousPrice { get; init; }
+
+    public DateOnly? PreviousPriceDate { get; init; }
+
     public decimal CurrentValue { get; init; }
 
     public decimal GainLoss { get; init; }

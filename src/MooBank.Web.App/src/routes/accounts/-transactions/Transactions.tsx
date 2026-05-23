@@ -4,16 +4,16 @@ import { Col, Input } from "@andrewmclachlan/moo-ds";
 import { IconButton, SectionRow, useLocalStorage } from "@andrewmclachlan/moo-ds";
 
 import { useAccount } from "components";
-import { AccountPage, AccountSummary } from "components";
+import { AccountPage } from "components";
 import { FilterPanel } from "./components/FilterPanel";
 import { TransactionList } from "./components/TransactionList";
 
 import { Import } from "./components/Import";
 import { MiniFilterPanel } from "./components/MiniFilterPanel";
 import { AddTransaction } from "./components/AddTransaction";
+import { TransactionsAccountCard } from "./components/TransactionsAccountCard";
+import { TransactionsCompactWidgets } from "./components/TransactionsCompactWidgets";
 import { useTransactionList } from "components";
-import { toast } from "@andrewmclachlan/moo-ds";
-
 
 export const Transactions: React.FC = () => {
 
@@ -52,15 +52,22 @@ export const Transactions: React.FC = () => {
     return (
         <AccountPage title="Transactions" actions={actions}>
             <AddTransaction show={show} onClose={() => setShow(false)} onSave={() => setShow(false)} balanceUpdate={false} />
-            <SectionRow hidden={compactMode}>
-                <Col xxl={3} xl={12} lg={12} md={12} sm={12}>
-                    <AccountSummary />
-                </Col>
-                <Col xxl={9} xl={12} lg={12} md={12} sm={12}>
-                    <FilterPanel />
-                </Col>
-            </SectionRow>
-            <MiniFilterPanel hidden={!compactMode} />
+            {!compactMode && (
+                <SectionRow>
+                    <Col xxl={5} xl={12} lg={12} md={12} sm={12}>
+                        <TransactionsAccountCard />
+                    </Col>
+                    <Col xxl={7} xl={12} lg={12} md={12} sm={12}>
+                        <FilterPanel />
+                    </Col>
+                </SectionRow>
+            )}
+            {compactMode && (
+                <>
+                    <TransactionsCompactWidgets />
+                    <MiniFilterPanel />
+                </>
+            )}
             <TransactionList />
             <TransactionList compact />
             {account.controller === "Import" && <Import show={showImport} accountId={account.id} onClose={() => setShowImport(false)} />}
