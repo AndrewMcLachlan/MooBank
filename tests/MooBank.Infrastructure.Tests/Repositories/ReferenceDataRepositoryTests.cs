@@ -3,6 +3,7 @@ using Asm.MooBank.Domain.Entities;
 using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Infrastructure.Repositories;
 using Asm.MooBank.Infrastructure.Tests.Support;
+using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Infrastructure.Tests.Repositories;
 
@@ -224,6 +225,76 @@ public class ReferenceDataRepositoryTests : IDisposable
         // Assert
         Assert.Equal(2, result.Count());
         Assert.All(result, p => Assert.Equal(targetDate, p.Date));
+    }
+
+    #endregion
+
+    #region GetStockPrices by Symbol
+
+    [Fact]
+    public async Task GetStockPrices_BySymbol_ReturnsOnlyMatchingSymbolAndExchange()
+    {
+        // Arrange
+        var date1 = DateOnly.FromDateTime(DateTime.Today.AddDays(-2));
+        var date2 = DateOnly.FromDateTime(DateTime.Today.AddDays(-1));
+
+        var aaplYesterday = TestEntities.CreateStockPriceHistory(symbol: "AAPL", exchange: null, date: date2, price: 150m);
+        var aaplDayBefore = TestEntities.CreateStockPriceHistory(symbol: "AAPL", exchange: null, date: date1, price: 148m);
+        var googl = TestEntities.CreateStockPriceHistory(symbol: "GOOGL", exchange: null, date: date2, price: 2800m);
+        var aaplOnDifferentExchange = TestEntities.CreateStockPriceHistory(symbol: "AAPL", exchange: "AU", date: date2, price: 200m);
+
+        _context.StockPriceHistory.AddRange(aaplYesterday, aaplDayBefore, googl, aaplOnDifferentExchange);
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var repository = CreateRepository();
+
+        // Act
+        var result = (await repository.GetStockPrices(new StockSymbol("AAPL", null), TestContext.Current.CancellationToken)).ToList();
+
+        // Assert
+        Assert.Equal(2, result.Count);
+        Assert.All(result, p => Assert.Equal("AAPL", p.Symbol));
+        Assert.All(result, p => Assert.Null(p.Exchange));
+    }
+
+    [Fact]
+    public async Task GetStockPrices_BySymbol_MatchesNullExchangeOnly()
+    {
+        // Arrange - a symbol with a non-null exchange should not match when querying by null exchange
+        var date = DateOnly.FromDateTime(DateTime.Today);
+        var withoutExchange = TestEntities.CreateStockPriceHistory(symbol: "VAS", exchange: null, date: date, price: 100m);
+        var withExchange = TestEntities.CreateStockPriceHistory(symbol: "VAS", exchange: "AU", date: date, price: 105m);
+
+        _context.StockPriceHistory.AddRange(withoutExchange, withExchange);
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var repository = CreateRepository();
+
+        // Act
+        var result = (await repository.GetStockPrices(new StockSymbol("VAS", "AU"), TestContext.Current.CancellationToken)).ToList();
+
+        // Assert
+        Assert.Single(result);
+        Assert.Equal(105m, result[0].Price);
+        Assert.Equal("AU", result[0].Exchange);
+    }
+
+    [Fact]
+    public async Task GetStockPrices_BySymbol_NoMatch_ReturnsEmpty()
+    {
+        // Arrange
+        var date = DateOnly.FromDateTime(DateTime.Today);
+        var existing = TestEntities.CreateStockPriceHistory(symbol: "AAPL", exchange: null, date: date, price: 150m);
+        _context.StockPriceHistory.Add(existing);
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var repository = CreateRepository();
+
+        // Act
+        var result = await repository.GetStockPrices(new StockSymbol("NOTHERE", null), TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Empty(result);
     }
 
     #endregion

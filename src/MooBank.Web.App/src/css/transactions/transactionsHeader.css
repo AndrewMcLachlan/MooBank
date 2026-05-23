@@ -206,3 +206,22 @@
     opacity: 0.85;
 }
 
+/* ===========================================
+   Mobile — keep cards usable below 768px
+   =========================================== */
+@media (max-width: 768px) {
+    .section.tx-account-card {
+        padding: 14px 16px;
+    }
+
+    .section.tx-account-card .hero-balance {
+        font-size: 2.25rem;
+        letter-spacing: -1px;
+    }
+
+    .section.tx-account-card .stat-grid,
+    .section.tx-account-card .stat-grid.stat-grid-4 {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+

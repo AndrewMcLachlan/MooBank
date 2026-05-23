@@ -1,5 +1,7 @@
 #nullable enable
 using Asm.MooBank.Domain.Entities.Instrument;
+using Asm.MooBank.Domain.Entities.ReferenceData;
+using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Stocks.Queries;
 using Asm.MooBank.Modules.Stocks.Tests.Support;
 using DomainStockHolding = Asm.MooBank.Domain.Entities.StockHolding.StockHolding;
@@ -30,7 +32,7 @@ public class GetTests
 
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
 
-        var handler = new GetHandler(stockHoldings, _mocks.User, _mocks.CurrencyConverterMock.Object);
+        var handler = new GetHandler(stockHoldings, _mocks.User, _mocks.CurrencyConverterMock.Object, _mocks.ReferenceDataRepositoryMock.Object);
 
         var query = new Get(instrumentId);
 
@@ -51,7 +53,7 @@ public class GetTests
         var nonExistentId = Guid.NewGuid();
         var stockHoldings = CreateStockHoldingQueryable([]);
 
-        var handler = new GetHandler(stockHoldings, _mocks.User, _mocks.CurrencyConverterMock.Object);
+        var handler = new GetHandler(stockHoldings, _mocks.User, _mocks.CurrencyConverterMock.Object, _mocks.ReferenceDataRepositoryMock.Object);
 
         var query = new Get(nonExistentId);
 
@@ -72,7 +74,7 @@ public class GetTests
 
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
 
-        var handler = new GetHandler(stockHoldings, _mocks.User, _mocks.CurrencyConverterMock.Object);
+        var handler = new GetHandler(stockHoldings, _mocks.User, _mocks.CurrencyConverterMock.Object, _mocks.ReferenceDataRepositoryMock.Object);
 
         var query = new Get(instrumentId);
 
@@ -99,7 +101,7 @@ public class GetTests
 
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
 
-        var handler = new GetHandler(stockHoldings, _mocks.User, _mocks.CurrencyConverterMock.Object);
+        var handler = new GetHandler(stockHoldings, _mocks.User, _mocks.CurrencyConverterMock.Object, _mocks.ReferenceDataRepositoryMock.Object);
 
         var query = new Get(instrumentId);
 
@@ -129,7 +131,7 @@ public class GetTests
 
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
 
-        var handler = new GetHandler(stockHoldings, _mocks.User, _mocks.CurrencyConverterMock.Object);
+        var handler = new GetHandler(stockHoldings, _mocks.User, _mocks.CurrencyConverterMock.Object, _mocks.ReferenceDataRepositoryMock.Object);
 
         var query = new Get(instrumentId);
 
@@ -153,7 +155,7 @@ public class GetTests
 
         var stockHoldings = CreateStockHoldingQueryable([targetHolding, otherHolding]);
 
-        var handler = new GetHandler(stockHoldings, _mocks.User, _mocks.CurrencyConverterMock.Object);
+        var handler = new GetHandler(stockHoldings, _mocks.User, _mocks.CurrencyConverterMock.Object, _mocks.ReferenceDataRepositoryMock.Object);
 
         var query = new Get(targetId);
 
@@ -175,7 +177,7 @@ public class GetTests
 
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
 
-        var handler = new GetHandler(stockHoldings, _mocks.User, _mocks.CurrencyConverterMock.Object);
+        var handler = new GetHandler(stockHoldings, _mocks.User, _mocks.CurrencyConverterMock.Object, _mocks.ReferenceDataRepositoryMock.Object);
 
         var query = new Get(instrumentId);
 
@@ -213,7 +215,7 @@ public class GetTests
 
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
 
-        var handler = new GetHandler(stockHoldings, _mocks.User, _mocks.CurrencyConverterMock.Object);
+        var handler = new GetHandler(stockHoldings, _mocks.User, _mocks.CurrencyConverterMock.Object, _mocks.ReferenceDataRepositoryMock.Object);
 
         var query = new Get(instrumentId);
 
@@ -236,7 +238,7 @@ public class GetTests
 
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
 
-        var handler = new GetHandler(stockHoldings, _mocks.User, _mocks.CurrencyConverterMock.Object);
+        var handler = new GetHandler(stockHoldings, _mocks.User, _mocks.CurrencyConverterMock.Object, _mocks.ReferenceDataRepositoryMock.Object);
 
         var query = new Get(instrumentId);
 
@@ -246,6 +248,79 @@ public class GetTests
         // Assert
         Assert.NotNull(result);
         Assert.Null(result.GroupId);
+    }
+
+    [Fact]
+    public async Task Handle_NoPriceHistory_ReturnsNullPreviousPrice()
+    {
+        // Arrange
+        var instrumentId = Guid.NewGuid();
+        var stockHolding = TestEntities.CreateStockHolding(id: instrumentId, symbol: "AAPL");
+        var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
+        // Default mock returns no history
+
+        var handler = new GetHandler(stockHoldings, _mocks.User, _mocks.CurrencyConverterMock.Object, _mocks.ReferenceDataRepositoryMock.Object);
+        var query = new Get(instrumentId);
+
+        // Act
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Null(result.PreviousPrice);
+        Assert.Null(result.PreviousPriceDate);
+    }
+
+    [Fact]
+    public async Task Handle_SingleHistoryEntry_ReturnsNullPreviousPrice()
+    {
+        // Arrange - only one history row means there's no "previous" to compare
+        var instrumentId = Guid.NewGuid();
+        var stockHolding = TestEntities.CreateStockHolding(id: instrumentId, symbol: "AAPL");
+        var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
+
+        _mocks.ReferenceDataRepositoryMock
+            .Setup(r => r.GetStockPrices(It.IsAny<StockSymbol>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync([
+                new StockPriceHistory { Symbol = "AAPL", Exchange = null, Date = new DateOnly(2026, 5, 22), Price = 150m },
+            ]);
+
+        var handler = new GetHandler(stockHoldings, _mocks.User, _mocks.CurrencyConverterMock.Object, _mocks.ReferenceDataRepositoryMock.Object);
+        var query = new Get(instrumentId);
+
+        // Act
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Null(result.PreviousPrice);
+        Assert.Null(result.PreviousPriceDate);
+    }
+
+    [Fact]
+    public async Task Handle_MultipleHistoryEntries_ReturnsSecondMostRecentAsPreviousPrice()
+    {
+        // Arrange - the most recent history entry mirrors CurrentPrice, so the
+        // second-most-recent is the meaningful "previous" price.
+        var instrumentId = Guid.NewGuid();
+        var stockHolding = TestEntities.CreateStockHolding(id: instrumentId, symbol: "AAPL", currentPrice: 150m);
+        var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
+
+        _mocks.ReferenceDataRepositoryMock
+            .Setup(r => r.GetStockPrices(It.IsAny<StockSymbol>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync([
+                new StockPriceHistory { Symbol = "AAPL", Exchange = null, Date = new DateOnly(2026, 5, 20), Price = 145m },
+                new StockPriceHistory { Symbol = "AAPL", Exchange = null, Date = new DateOnly(2026, 5, 21), Price = 148m },
+                new StockPriceHistory { Symbol = "AAPL", Exchange = null, Date = new DateOnly(2026, 5, 22), Price = 150m },
+            ]);
+
+        var handler = new GetHandler(stockHoldings, _mocks.User, _mocks.CurrencyConverterMock.Object, _mocks.ReferenceDataRepositoryMock.Object);
+        var query = new Get(instrumentId);
+
+        // Act
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(148m, result.PreviousPrice);
+        Assert.Equal(new DateOnly(2026, 5, 21), result.PreviousPriceDate);
     }
 
     #region Helper Methods
