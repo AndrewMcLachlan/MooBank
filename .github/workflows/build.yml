@@ -7,7 +7,7 @@ on:
   push:
     branches:
       - "main"
-  pull_request: 
+  pull_request:
     branches:
       - "main"
   workflow_dispatch:
@@ -48,7 +48,7 @@ jobs:
     - name: Setup node and npm
       uses: actions/setup-node@v6
       with:
-        node-version: 22
+        node-version: 24
         cache: npm
         cache-dependency-path: 'src/MooBank.Web.App/package-lock.json'
         registry-url: "https://npm.pkg.github.com"
@@ -134,7 +134,7 @@ jobs:
       pull-requests: write
     steps:
     - uses: actions/checkout@v6.0.1
-    
+
     - name: Download all coverage reports
       uses: actions/download-artifact@v8
       with:
@@ -211,7 +211,7 @@ jobs:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-  production: 
+  production:
     concurrency:
       group: moobank-deploy-group
       cancel-in-progress: true
