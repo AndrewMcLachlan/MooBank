@@ -1,13 +1,6 @@
 {
   "profiles": {
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy"
-      }
-    },
-    "Asm.MooBank.Web": {
+    "Full App": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "environmentVariables": {
@@ -29,37 +22,6 @@
         "APPLICATIONINSIGHTS_CONNECTION_STRING": "InstrumentationKey=ef0936b5-0d6a-47f1-a069-35642ad1f630;IngestionEndpoint=https://australiaeast-1.in.applicationinsights.azure.com/;LiveEndpoint=https://australiaeast.livediagnostics.monitor.azure.com/;ApplicationId=ac9de6b4-8251-4b8c-b8bb-c4f1edf61a26"
       },
       "applicationUrl": "https://0.0.0.0:7005;http://localhost:5005"
-    },
-    "IIS": {
-      "commandName": "IIS",
-      "commandLineArgs": ".\\bin\\debug\\net8.0\\Asm.MooBank.Web.dll",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy"
-      },
-      "ancmHostingModel": "InProcess"
-    },
-    "WSL": {
-      "commandName": "WSL2",
-      "launchUrl": "https://localhost:7005",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "https://localhost:7005;http://localhost:5005",
-        "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy"
-      },
-      "distributionName": ""
-    }
-  },
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iis": {
-      "applicationUrl": "https://moobank-dev.mclachlan.family",
-      "sslPort": 443
-    },
-    "iisExpress": {
-      "applicationUrl": "http://localhost:5005",
-      "sslPort": 7005
     }
   }
 }
