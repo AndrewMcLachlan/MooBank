@@ -75,3 +75,8 @@
         font-size: 0.875rem;
     }
 }
+
+.forecast-widget-chart {
+    height: 100%;
+    min-height: 300px;
+}

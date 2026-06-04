@@ -8,7 +8,7 @@ import { useChartColours } from "utils/chartColours";
 import { lastMonth, lastMonthName } from "utils/dateFns";
 import { Bar } from "react-chartjs-2";
 import { useBudgetReportForMonth } from "./-hooks/useBudgetReportForMonth";
-import { Amount } from "components";
+import { Amount, WidgetError } from "components";
 
 export const BudgetWidget: React.FC = () => {
 
@@ -16,7 +16,7 @@ export const BudgetWidget: React.FC = () => {
 
     const period = lastMonth;
 
-    const { data: report, isLoading } = useBudgetReportForMonth(lastMonth.startDate.getFullYear(), lastMonth.startDate.getMonth());
+    const { data: report, isLoading, isError } = useBudgetReportForMonth(lastMonth.startDate.getFullYear(), lastMonth.startDate.getMonth());
 
     const dataset: ChartData<"bar", number[], string> = {
         labels: [formatPeriod(period?.startDate, period?.endDate)],
@@ -37,7 +37,8 @@ export const BudgetWidget: React.FC = () => {
 
     return (
         <Widget header={`Budget - ${lastMonthName}`} size="single" className="report budget" loading={isLoading}>
-            {report &&
+            {isError && <WidgetError />}
+            {!isError && report &&
                 <>
                     {difference >= 0 ?
                         <h4><Amount amount={difference} prefix="$" suffix=" saved" decimalPlaces={0} positiveColour negativeColour /></h4> :

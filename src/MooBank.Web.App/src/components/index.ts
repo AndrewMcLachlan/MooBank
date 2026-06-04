@@ -14,3 +14,4 @@ export * from "./TransactionSearch";
 export * from "./TransactionListProvider";
 export * from "./TagPanel";
 export * from "./TagSelector";
+export * from "./WidgetError";
