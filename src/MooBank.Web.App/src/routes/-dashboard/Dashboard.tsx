@@ -7,6 +7,7 @@ import { SummaryWidget } from "./Summary";
 import { BudgetWidget } from "./Budget";
 import { TopTagsWidget } from "./TopTags";
 import { BreakdownWidget } from "./Breakdown";
+import { ForecastWidget } from "./Forecast";
 
 const props: DashboardProps = {
     title: "Home",
@@ -20,6 +21,7 @@ export function Dashboard() {
             <SummaryWidget />
             <BreakdownWidget />
             <TopTagsWidget />
+            <ForecastWidget />
         </DashboardPage>
     );
 }
