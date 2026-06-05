@@ -20,7 +20,6 @@ internal class CreateHandler(ILogicalAccountRepository accountRepository, IUnitO
         var entity = new Domain.Entities.Account.InstitutionAccount
         {
             InstitutionId = command.InstitutionAccount.InstitutionId,
-            ImporterTypeId = command.InstitutionAccount.ImporterTypeId,
             Name = command.InstitutionAccount.Name,
             OpenedDate = command.InstitutionAccount.OpenedDate,
         };

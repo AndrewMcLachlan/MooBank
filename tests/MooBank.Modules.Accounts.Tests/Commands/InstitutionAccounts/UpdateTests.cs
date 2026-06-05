@@ -1,7 +1,5 @@
 #nullable enable
-using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Account.Specifications;
-using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Accounts.Commands.InstitutionAccounts;
 using Asm.MooBank.Modules.Accounts.Models.InstitutionAccount;
@@ -47,7 +45,6 @@ public class UpdateTests
         {
             Name = "Updated Name",
             InstitutionId = 2,
-            ImporterTypeId = null,
         };
         var command = new Update(logicalAccountId, institutionAccountId, updateModel);
 
@@ -164,116 +161,4 @@ public class UpdateTests
         await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
-    [Fact]
-    public async Task Handle_ImportControllerWithImporterType_UpdatesImporterType()
-    {
-        // Arrange
-        var logicalAccountId = Guid.NewGuid();
-        var institutionAccountId = Guid.NewGuid();
-        var institutionAccount = TestEntities.CreateInstitutionAccount(
-            id: institutionAccountId,
-            instrumentId: logicalAccountId,
-            importerTypeId: 1);
-        var logicalAccount = TestEntities.CreateLogicalAccount(
-            id: logicalAccountId,
-            controller: Controller.Import,
-            institutionAccounts: [institutionAccount]);
-
-        _mocks.LogicalAccountRepositoryMock
-            .Setup(r => r.Get(logicalAccountId, It.IsAny<AccountDetailsSpecification>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(logicalAccount);
-        _mocks.LogicalAccountRepositoryMock
-            .Setup(r => r.GetImporterType(5, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new ImporterType { ImporterTypeId = 5, Name = "Test Importer", Type = "TestType" });
-
-        var handler = new UpdateHandler(
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.LogicalAccountRepositoryMock.Object);
-
-        var updateModel = new UpdateInstitutionAccount
-        {
-            Name = "Import Account",
-            InstitutionId = 1,
-            ImporterTypeId = 5,
-        };
-        var command = new Update(logicalAccountId, institutionAccountId, updateModel);
-
-        // Act
-        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
-
-        // Assert
-        Assert.Equal(5, result.ImporterTypeId);
-        Assert.Equal(5, institutionAccount.ImporterTypeId);
-    }
-
-    [Fact]
-    public async Task Handle_ImportControllerWithoutImporterType_ThrowsInvalidOperationException()
-    {
-        // Arrange
-        var logicalAccountId = Guid.NewGuid();
-        var institutionAccountId = Guid.NewGuid();
-        var institutionAccount = TestEntities.CreateInstitutionAccount(
-            id: institutionAccountId,
-            instrumentId: logicalAccountId);
-        var logicalAccount = TestEntities.CreateLogicalAccount(
-            id: logicalAccountId,
-            controller: Controller.Import,
-            institutionAccounts: [institutionAccount]);
-
-        _mocks.LogicalAccountRepositoryMock
-            .Setup(r => r.Get(logicalAccountId, It.IsAny<AccountDetailsSpecification>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(logicalAccount);
-
-        var handler = new UpdateHandler(
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.LogicalAccountRepositoryMock.Object);
-
-        var updateModel = new UpdateInstitutionAccount
-        {
-            Name = "Import Account",
-            InstitutionId = 1,
-            ImporterTypeId = null,
-        };
-        var command = new Update(logicalAccountId, institutionAccountId, updateModel);
-
-        // Act & Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
-    }
-
-    [Fact]
-    public async Task Handle_ImportControllerWithUnknownImporterType_ThrowsNotFoundException()
-    {
-        // Arrange
-        var logicalAccountId = Guid.NewGuid();
-        var institutionAccountId = Guid.NewGuid();
-        var institutionAccount = TestEntities.CreateInstitutionAccount(
-            id: institutionAccountId,
-            instrumentId: logicalAccountId);
-        var logicalAccount = TestEntities.CreateLogicalAccount(
-            id: logicalAccountId,
-            controller: Controller.Import,
-            institutionAccounts: [institutionAccount]);
-
-        _mocks.LogicalAccountRepositoryMock
-            .Setup(r => r.Get(logicalAccountId, It.IsAny<AccountDetailsSpecification>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(logicalAccount);
-        _mocks.LogicalAccountRepositoryMock
-            .Setup(r => r.GetImporterType(999, It.IsAny<CancellationToken>()))
-            .Returns(Task.FromResult<ImporterType>(null!));
-
-        var handler = new UpdateHandler(
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.LogicalAccountRepositoryMock.Object);
-
-        var updateModel = new UpdateInstitutionAccount
-        {
-            Name = "Import Account",
-            InstitutionId = 1,
-            ImporterTypeId = 999,
-        };
-        var command = new Update(logicalAccountId, institutionAccountId, updateModel);
-
-        // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
-    }
 }

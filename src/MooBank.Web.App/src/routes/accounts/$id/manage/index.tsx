@@ -85,7 +85,6 @@ function ManageAccount() {
                         <th>Name</th>
                         <th>Opened Date</th>
                         <th>Closed Date</th>
-                        {account?.controller === "Import" && <th>Importer Type</th>}
                         <th className="row-action column-5"></th>
                     </tr>
                 </thead>

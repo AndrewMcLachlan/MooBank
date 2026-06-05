@@ -55,7 +55,6 @@ internal static class TestEntities
         Guid? instrumentId = null,
         string? name = null,
         int institutionId = 1,
-        int? importerTypeId = null,
         DateOnly? openedDate = null,
         DateOnly? closedDate = null)
     {
@@ -64,7 +63,6 @@ internal static class TestEntities
             InstrumentId = instrumentId ?? Guid.NewGuid(),
             Name = name ?? Faker.Finance.AccountName(),
             InstitutionId = institutionId,
-            ImporterTypeId = importerTypeId,
             OpenedDate = openedDate ?? DateOnly.FromDateTime(DateTime.UtcNow.AddYears(-1)),
             ClosedDate = closedDate,
         };

@@ -8,9 +8,9 @@ $profileFile = "$Environment.publish.xml"
 
 Write-Host "Building database project..."
 
-dotnet build src\Asm.MooBank.Database\Asm.MooBank.Database.sqlproj -c Release -v m
+dotnet build src\MooBank.Database\MooBank.Database.sqlproj -c Release -v m
 
 Write-Host "Using environment: $Environment"
 Write-Host "Using publish profile: $profileFile"
 
-sqlpackage /Action:Publish /Profile:src\Asm.MooBank.Database\$profileFile /SourceFile:src\Asm.MooBank.Database\bin\Release\Asm.MooBank.Database.dacpac
+sqlpackage /Action:Publish /Profile:src\MooBank.Database\$profileFile /SourceFile:src\MooBank.Database\bin\Release\MooBank.Database.dacpac

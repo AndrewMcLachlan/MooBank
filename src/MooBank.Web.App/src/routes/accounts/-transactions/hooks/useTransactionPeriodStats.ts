@@ -30,7 +30,7 @@ export const useTransactionPeriodStats = (accountId: string): PeriodStats => {
     return {
         income,
         expenses,
-        net: income - expenses,
+        net: income + expenses,
         total: data?.total ?? 0,
     };
 };

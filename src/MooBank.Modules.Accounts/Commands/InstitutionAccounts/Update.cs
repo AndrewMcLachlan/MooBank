@@ -21,13 +21,6 @@ internal class UpdateHandler(IUnitOfWork unitOfWork, ILogicalAccountRepository a
         var entity = logicalAccount.InstitutionAccounts.FirstOrDefault(a => a.Id == id)
             ?? throw new NotFoundException($"Institution account with ID {id} not found in logical account {instrumentId}");
 
-        if (logicalAccount.Controller == Controller.Import)
-        {
-            _ = await accountRepository.GetImporterType(account.ImporterTypeId ?? throw new InvalidOperationException("Import account without importer type"), cancellationToken) ?? throw new NotFoundException("Unknown importer type ID " + account.ImporterTypeId);
-
-            entity.ImporterTypeId = account.ImporterTypeId!.Value;
-        }
-
         entity.Name = account.Name;
         entity.InstitutionId = account.InstitutionId;
 
