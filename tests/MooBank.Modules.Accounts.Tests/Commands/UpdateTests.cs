@@ -301,41 +301,4 @@ public class UpdateTests
         await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
-    [Fact]
-    public async Task Handle_ChangeControllerToManual_ClearsImporterTypes()
-    {
-        // Arrange
-        var accountId = Guid.NewGuid();
-        var institutionAccount = TestEntities.CreateInstitutionAccount(
-            instrumentId: accountId,
-            importerTypeId: 5);
-        var existingEntity = TestEntities.CreateLogicalAccount(
-            id: accountId,
-            controller: Controller.Import,
-            institutionAccounts: [institutionAccount]);
-
-        _mocks.LogicalAccountRepositoryMock
-            .Setup(r => r.Get(accountId, It.IsAny<AccountDetailsSpecification>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existingEntity);
-
-        var handler = new UpdateHandler(
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.LogicalAccountRepositoryMock.Object,
-            _mocks.User,
-            _mocks.CurrencyConverterMock.Object,
-            _mocks.SecurityMock.Object);
-
-        var updateModel = TestEntities.CreateLogicalAccountModel(
-            id: accountId,
-            name: "Now Manual",
-            controller: Controller.Manual);
-        var command = new Update(updateModel);
-
-        // Act
-        await handler.Handle(command, TestContext.Current.CancellationToken);
-
-        // Assert
-        Assert.Equal(Controller.Manual, existingEntity.Controller);
-        Assert.Null(institutionAccount.ImporterTypeId);
-    }
 }

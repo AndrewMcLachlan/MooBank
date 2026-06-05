@@ -232,6 +232,24 @@ ON (TARGET.Id = SOURCE.Id)
 WHEN MATCHED AND TARGET.[Name] <> SOURCE.[Name] THEN UPDATE SET Target.[Name] = SOURCE.[Name]
 WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.[Id], SOURCE.[Name]);
 
+-- Apply the importer-type → institution migration captured in the pre-deployment script.
+IF OBJECT_ID('dbo.__InstitutionImporterMigration', 'U') IS NOT NULL
+BEGIN
+    UPDATE i
+    SET i.ImporterTypeId = m.ImporterTypeId
+    FROM dbo.Institution i
+    INNER JOIN dbo.__InstitutionImporterMigration m ON m.InstitutionId = i.Id
+    WHERE i.ImporterTypeId IS NULL;
+
+    DROP TABLE dbo.__InstitutionImporterMigration;
+END
+
+-- Ensure the default institutions are linked to their importer type for fresh databases
+-- and any environment that previously had no institution-level mapping.
+DECLARE @IngImporterTypeId INT = (SELECT ImporterTypeId FROM ImporterType WHERE [Name] = 'ING');
+DECLARE @AusSuperImporterTypeId INT = (SELECT ImporterTypeId FROM ImporterType WHERE [Name] = 'AustralianSuper');
+DECLARE @MacquarieImporterTypeId INT = (SELECT ImporterTypeId FROM ImporterType WHERE [Name] = 'Macquarie');
+
 -- Set some default institutions
 IF ((SELECT COUNT(*) FROM [dbo].[Institution]) = 0)
 BEGIN
@@ -479,6 +497,11 @@ INSERT [dbo].[Institution] ([Id], [Name], [InstitutionTypeId]) VALUES (399, N'Wo
 INSERT [dbo].[Institution] ([Id], [Name], [InstitutionTypeId]) VALUES (401, N'Other', 8)
 SET IDENTITY_INSERT [dbo].[Institution] OFF
 END
+
+-- Link the known institutions to their importer type when not already set.
+UPDATE [dbo].[Institution] SET ImporterTypeId = @IngImporterTypeId WHERE Id = 1 AND ImporterTypeId IS NULL AND @IngImporterTypeId IS NOT NULL;
+UPDATE [dbo].[Institution] SET ImporterTypeId = @AusSuperImporterTypeId WHERE Id = 2 AND ImporterTypeId IS NULL AND @AusSuperImporterTypeId IS NOT NULL;
+UPDATE [dbo].[Institution] SET ImporterTypeId = @MacquarieImporterTypeId WHERE Id = 196 AND ImporterTypeId IS NULL AND @MacquarieImporterTypeId IS NOT NULL;
 
 -- Account Scope Mode (for Forecast Plans)
 MERGE [AccountScopeMode] AS TARGET USING (SELECT 0 as Id, 'AllAccounts' as [Description]) AS SOURCE

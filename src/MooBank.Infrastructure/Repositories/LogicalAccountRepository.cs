@@ -1,7 +1,6 @@
 ﻿using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Account.Events;
 using Asm.MooBank.Domain.Entities.Instrument.Events;
-using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
@@ -23,14 +22,7 @@ public class LogicalAccountRepository(MooBankContext dataContext, User user) : R
         return tracked;
     }
 
-    protected override IQueryable<LogicalAccount> GetById(Guid id) => Entities.Include(a => a.Owners).Include(t => t.InstitutionAccounts).ThenInclude(i => i!.ImporterType).Where(a => a.Id == id && a.Owners.Any(ah => ah.UserId == user.Id || (a.ShareWithFamily && ah.User.FamilyId == user.FamilyId)));
-
-    public async Task<ImporterType> GetImporterType(int importerTypeId, CancellationToken cancellationToken = default)
-    {
-        var entity = await Context.ImporterTypes.Where(i => i.ImporterTypeId == importerTypeId).SingleOrDefaultAsync(cancellationToken: cancellationToken);
-
-        return entity ?? throw new NotFoundException($"Unknown importer type ID {importerTypeId}");
-    }
+    protected override IQueryable<LogicalAccount> GetById(Guid id) => Entities.Include(a => a.Owners).Include(t => t.InstitutionAccounts).ThenInclude(i => i!.Institution).Where(a => a.Id == id && a.Owners.Any(ah => ah.UserId == user.Id || (a.ShareWithFamily && ah.User.FamilyId == user.FamilyId)));
 
     public void RemoveImportAccount(ImportAccount importAccount)
     {

@@ -108,22 +108,16 @@ public class LogicalAccountTests
     }
 
     /// <summary>
-    /// Given a LogicalAccount with Import controller and institution accounts with ImporterTypeId
+    /// Given a LogicalAccount with Import controller
     /// When SetController is called with Manual
-    /// Then ImporterTypeId should be cleared on all institution accounts
+    /// Then Controller should be Manual
     /// </summary>
     [Fact]
     [Trait("Category", "Unit")]
-    public void SetController_FromImportToManual_ClearsImporterTypeIds()
+    public void SetController_FromImportToManual_SetsController()
     {
         // Arrange
-        var institutionAccount = new InstitutionAccount(Guid.NewGuid())
-        {
-            Name = "Bank",
-            InstrumentId = TestModels.AccountId,
-            ImporterTypeId = 1, // Has an importer set
-        };
-        var account = new LogicalAccount(TestModels.AccountId, [institutionAccount])
+        var account = new LogicalAccount(TestModels.AccountId, [])
         {
             Name = "Test Account",
             Currency = "AUD",
@@ -136,38 +130,6 @@ public class LogicalAccountTests
 
         // Assert
         Assert.Equal(Controller.Manual, account.Controller);
-        Assert.Null(account.InstitutionAccounts.First().ImporterTypeId);
-    }
-
-    /// <summary>
-    /// Given a LogicalAccount with Import controller
-    /// When SetController is called with Import again
-    /// Then ImporterTypeId should NOT be cleared
-    /// </summary>
-    [Fact]
-    [Trait("Category", "Unit")]
-    public void SetController_ToImport_KeepsImporterTypeIds()
-    {
-        // Arrange
-        var institutionAccount = new InstitutionAccount(Guid.NewGuid())
-        {
-            Name = "Bank",
-            InstrumentId = TestModels.AccountId,
-            ImporterTypeId = 1,
-        };
-        var account = new LogicalAccount(TestModels.AccountId, [institutionAccount])
-        {
-            Name = "Test Account",
-            Currency = "AUD",
-            Controller = Controller.Manual,
-            Owners = [new InstrumentOwner { UserId = TestModels.UserId, User = _entities.Owner }],
-        };
-
-        // Act
-        account.SetController(Controller.Import);
-
-        // Assert
-        Assert.Equal(1, account.InstitutionAccounts.First().ImporterTypeId);
     }
 
     #endregion

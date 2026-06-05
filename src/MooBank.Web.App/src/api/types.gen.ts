@@ -164,7 +164,6 @@ export type CostPerUnitReport = {
 export type CreateAccount = {
     name: string;
     description?: null | string;
-    importerTypeId?: null | number;
     institutionId: number;
     currency: string;
     balance: number;
@@ -220,11 +219,11 @@ export type CreateGroup = {
 export type CreateInstitution = {
     name: string;
     institutionType: InstitutionType;
+    importerTypeId?: null | number;
 };
 
 export type CreateInstitutionAccount = {
     institutionId: number;
-    importerTypeId?: null | number;
     name: string;
     openedDate: string;
 };
@@ -423,11 +422,11 @@ export type Institution = {
     id: number;
     name: string;
     institutionType: InstitutionType;
+    importerTypeId?: null | number;
 };
 
 export type InstitutionAccount = {
     id: string;
-    importerTypeId?: null | number;
     institutionId: number;
     name: string;
     openedDate: string;
@@ -852,11 +851,11 @@ export type UpdateInstitution = {
     id: number;
     name: string;
     institutionType: InstitutionType;
+    importerTypeId?: null | number;
 };
 
 export type UpdateInstitutionAccount = {
     institutionId: number;
-    importerTypeId?: null | number;
     name: string;
 };
 
@@ -2217,6 +2216,7 @@ export type UpdateInstitutionData = {
     query: {
         Name: string;
         InstitutionType: InstitutionType;
+        ImporterTypeId?: number;
     };
     url: '/api/institutions/{id}';
 };

@@ -29,7 +29,7 @@ export const useUpdateInstitution = () => {
 
     return {
         mutateAsync: (institution: Institution) =>
-            mutateAsync({ body: institution as any, path: { id: institution.id }, query: { Name: institution.name, InstitutionType: institution.institutionType } } as any),
+            mutateAsync({ body: institution as any, path: { id: institution.id }, query: { Name: institution.name, InstitutionType: institution.institutionType, ImporterTypeId: institution.importerTypeId } } as any),
         ...rest,
     };
 }

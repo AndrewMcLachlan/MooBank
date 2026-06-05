@@ -4,7 +4,6 @@ CREATE TABLE dbo.[InstitutionAccount]
     [InstrumentId] UNIQUEIDENTIFIER NOT NULL,
     [Name] NVARCHAR(255) NOT NULL CONSTRAINT DF_InstitutionAccount_Name DEFAULT '',
     [InstitutionId] INT NOT NULL,
-    [ImporterTypeId] INT NULL,
     [BSB] CHAR(6) NULL,
     [AccountNumber] VARCHAR(20) NULL,
     [OpenedDate] DATE NOT NULL CONSTRAINT DF_InstitutionAccount_OpenedDate DEFAULT SYSUTCDATETIME(),

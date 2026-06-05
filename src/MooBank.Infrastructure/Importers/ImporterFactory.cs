@@ -7,7 +7,7 @@ internal class ImporterFactory(IQueryable<LogicalAccount> logicalAccounts, IServ
 {
     public async Task<IImporter?> Create(Guid instrumentId, Guid accountId, CancellationToken cancellationToken = default)
     {
-        var logicalAccount = await logicalAccounts.Where(a => a.Id == instrumentId).Include(a => a.InstitutionAccounts).ThenInclude(a => a!.ImporterType).SingleOrDefaultAsync(cancellationToken);
+        var logicalAccount = await logicalAccounts.Where(a => a.Id == instrumentId).Include(a => a.InstitutionAccounts).ThenInclude(a => a!.Institution).ThenInclude(i => i!.ImporterType).SingleOrDefaultAsync(cancellationToken);
 
         if (logicalAccount is null)
         {
@@ -16,7 +16,7 @@ internal class ImporterFactory(IQueryable<LogicalAccount> logicalAccounts, IServ
 
         var institutionAccount = logicalAccount.InstitutionAccounts.FirstOrDefault(a => a.Id == accountId);
 
-        var typeName = institutionAccount?.ImporterType.Type;
+        var typeName = institutionAccount?.Institution?.ImporterType?.Type;
 
         if (typeName == null)
         {
