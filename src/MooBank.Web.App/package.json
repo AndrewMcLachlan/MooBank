@@ -60,11 +60,14 @@
     "eslint": "$eslint"
   },
   "devDependencies": {
+    "@emnapi/core": "1.10.0",
+    "@emnapi/runtime": "1.10.0",
     "@eslint/eslintrc": "^3.3.5",
     "@eslint/js": "^10.0.1",
     "@hey-api/openapi-ts": "^0.98.1",
     "@svgr/plugin-svgo": "^8.1.0",
     "@tanstack/router-plugin": "^1.168.14",
+    "@tybys/wasm-util": "0.10.2",
     "@types/chartjs-plugin-trendline": "^1.0.1",
     "@types/md5": "^2.3.6",
     "@types/node": "^25.2.2",
