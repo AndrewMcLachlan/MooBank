@@ -64,6 +64,7 @@ import { Route as AccountsIdReportsInOutRouteImport } from "./routes/accounts/$i
 import { Route as AccountsIdReportsByTagRouteImport } from "./routes/accounts/$id/reports/by-tag"
 import { Route as AccountsIdReportsAllTagAverageRouteImport } from "./routes/accounts/$id/reports/all-tag-average"
 import { Route as AccountsIdVirtualVirtualIdRouteRouteImport } from "./routes/accounts/$id/virtual.$virtualId/route"
+import { Route as AccountsIdReportsBreakdownRouteRouteImport } from "./routes/accounts/$id/reports/breakdown/route"
 import { Route as AccountsIdVirtualVirtualIdIndexRouteImport } from "./routes/accounts/$id/virtual.$virtualId/index"
 import { Route as AccountsIdReportsTagTrendIndexRouteImport } from "./routes/accounts/$id/reports/tag-trend/index"
 import { Route as AccountsIdReportsBreakdownIndexRouteImport } from "./routes/accounts/$id/reports/breakdown/index"
@@ -356,6 +357,12 @@ const AccountsIdVirtualVirtualIdRouteRoute =
     path: "/virtual/$virtualId",
     getParentRoute: () => AccountsIdRouteRoute,
   } as any)
+const AccountsIdReportsBreakdownRouteRoute =
+  AccountsIdReportsBreakdownRouteRouteImport.update({
+    id: "/breakdown",
+    path: "/breakdown",
+    getParentRoute: () => AccountsIdReportsRouteRoute,
+  } as any)
 const AccountsIdVirtualVirtualIdIndexRoute =
   AccountsIdVirtualVirtualIdIndexRouteImport.update({
     id: "/",
@@ -370,9 +377,9 @@ const AccountsIdReportsTagTrendIndexRoute =
   } as any)
 const AccountsIdReportsBreakdownIndexRoute =
   AccountsIdReportsBreakdownIndexRouteImport.update({
-    id: "/breakdown/",
-    path: "/breakdown/",
-    getParentRoute: () => AccountsIdReportsRouteRoute,
+    id: "/",
+    path: "/",
+    getParentRoute: () => AccountsIdReportsBreakdownRouteRoute,
   } as any)
 const AccountsIdVirtualVirtualIdTransactionsRoute =
   AccountsIdVirtualVirtualIdTransactionsRouteImport.update({
@@ -394,9 +401,9 @@ const AccountsIdReportsTagTrendTagIdRoute =
   } as any)
 const AccountsIdReportsBreakdownTagIdRoute =
   AccountsIdReportsBreakdownTagIdRouteImport.update({
-    id: "/breakdown/$tagId",
-    path: "/breakdown/$tagId",
-    getParentRoute: () => AccountsIdReportsRouteRoute,
+    id: "/$tagId",
+    path: "/$tagId",
+    getParentRoute: () => AccountsIdReportsBreakdownRouteRoute,
   } as any)
 const AccountsIdManageVirtualCreateRoute =
   AccountsIdManageVirtualCreateRouteImport.update({
@@ -459,6 +466,7 @@ export interface FileRoutesByFullPath {
   "/settings/families/": typeof SettingsFamiliesIndexRoute
   "/settings/institutions/": typeof SettingsInstitutionsIndexRoute
   "/shares/$id/": typeof SharesIdIndexRoute
+  "/accounts/$id/reports/breakdown": typeof AccountsIdReportsBreakdownRouteRouteWithChildren
   "/accounts/$id/virtual/$virtualId": typeof AccountsIdVirtualVirtualIdRouteRouteWithChildren
   "/accounts/$id/reports/all-tag-average": typeof AccountsIdReportsAllTagAverageRoute
   "/accounts/$id/reports/by-tag": typeof AccountsIdReportsByTagRoute
@@ -587,6 +595,7 @@ export interface FileRoutesById {
   "/settings/families/": typeof SettingsFamiliesIndexRoute
   "/settings/institutions/": typeof SettingsInstitutionsIndexRoute
   "/shares/$id/": typeof SharesIdIndexRoute
+  "/accounts/$id/reports/breakdown": typeof AccountsIdReportsBreakdownRouteRouteWithChildren
   "/accounts/$id/virtual/$virtualId": typeof AccountsIdVirtualVirtualIdRouteRouteWithChildren
   "/accounts/$id/reports/all-tag-average": typeof AccountsIdReportsAllTagAverageRoute
   "/accounts/$id/reports/by-tag": typeof AccountsIdReportsByTagRoute
@@ -656,6 +665,7 @@ export interface FileRouteTypes {
     | "/settings/families/"
     | "/settings/institutions/"
     | "/shares/$id/"
+    | "/accounts/$id/reports/breakdown"
     | "/accounts/$id/virtual/$virtualId"
     | "/accounts/$id/reports/all-tag-average"
     | "/accounts/$id/reports/by-tag"
@@ -783,6 +793,7 @@ export interface FileRouteTypes {
     | "/settings/families/"
     | "/settings/institutions/"
     | "/shares/$id/"
+    | "/accounts/$id/reports/breakdown"
     | "/accounts/$id/virtual/$virtualId"
     | "/accounts/$id/reports/all-tag-average"
     | "/accounts/$id/reports/by-tag"
@@ -1227,6 +1238,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AccountsIdVirtualVirtualIdRouteRouteImport
       parentRoute: typeof AccountsIdRouteRoute
     }
+    "/accounts/$id/reports/breakdown": {
+      id: "/accounts/$id/reports/breakdown"
+      path: "/breakdown"
+      fullPath: "/accounts/$id/reports/breakdown"
+      preLoaderRoute: typeof AccountsIdReportsBreakdownRouteRouteImport
+      parentRoute: typeof AccountsIdReportsRouteRoute
+    }
     "/accounts/$id/virtual/$virtualId/": {
       id: "/accounts/$id/virtual/$virtualId/"
       path: "/"
@@ -1243,10 +1261,10 @@ declare module "@tanstack/react-router" {
     }
     "/accounts/$id/reports/breakdown/": {
       id: "/accounts/$id/reports/breakdown/"
-      path: "/breakdown"
+      path: "/"
       fullPath: "/accounts/$id/reports/breakdown/"
       preLoaderRoute: typeof AccountsIdReportsBreakdownIndexRouteImport
-      parentRoute: typeof AccountsIdReportsRouteRoute
+      parentRoute: typeof AccountsIdReportsBreakdownRouteRoute
     }
     "/accounts/$id/virtual/$virtualId/transactions": {
       id: "/accounts/$id/virtual/$virtualId/transactions"
@@ -1271,10 +1289,10 @@ declare module "@tanstack/react-router" {
     }
     "/accounts/$id/reports/breakdown/$tagId": {
       id: "/accounts/$id/reports/breakdown/$tagId"
-      path: "/breakdown/$tagId"
+      path: "/$tagId"
       fullPath: "/accounts/$id/reports/breakdown/$tagId"
       preLoaderRoute: typeof AccountsIdReportsBreakdownTagIdRouteImport
-      parentRoute: typeof AccountsIdReportsRouteRoute
+      parentRoute: typeof AccountsIdReportsBreakdownRouteRoute
     }
     "/accounts/$id/manage/virtual/create": {
       id: "/accounts/$id/manage/virtual/create"
@@ -1324,29 +1342,44 @@ const SettingsRouteRouteWithChildren = SettingsRouteRoute._addFileChildren(
   SettingsRouteRouteChildren,
 )
 
+interface AccountsIdReportsBreakdownRouteRouteChildren {
+  AccountsIdReportsBreakdownTagIdRoute: typeof AccountsIdReportsBreakdownTagIdRoute
+  AccountsIdReportsBreakdownIndexRoute: typeof AccountsIdReportsBreakdownIndexRoute
+}
+
+const AccountsIdReportsBreakdownRouteRouteChildren: AccountsIdReportsBreakdownRouteRouteChildren =
+  {
+    AccountsIdReportsBreakdownTagIdRoute: AccountsIdReportsBreakdownTagIdRoute,
+    AccountsIdReportsBreakdownIndexRoute: AccountsIdReportsBreakdownIndexRoute,
+  }
+
+const AccountsIdReportsBreakdownRouteRouteWithChildren =
+  AccountsIdReportsBreakdownRouteRoute._addFileChildren(
+    AccountsIdReportsBreakdownRouteRouteChildren,
+  )
+
 interface AccountsIdReportsRouteRouteChildren {
+  AccountsIdReportsBreakdownRouteRoute: typeof AccountsIdReportsBreakdownRouteRouteWithChildren
   AccountsIdReportsAllTagAverageRoute: typeof AccountsIdReportsAllTagAverageRoute
   AccountsIdReportsByTagRoute: typeof AccountsIdReportsByTagRoute
   AccountsIdReportsInOutRoute: typeof AccountsIdReportsInOutRoute
   AccountsIdReportsMonthlyBalancesRoute: typeof AccountsIdReportsMonthlyBalancesRoute
   AccountsIdReportsIndexRoute: typeof AccountsIdReportsIndexRoute
-  AccountsIdReportsBreakdownTagIdRoute: typeof AccountsIdReportsBreakdownTagIdRoute
   AccountsIdReportsTagTrendTagIdRoute: typeof AccountsIdReportsTagTrendTagIdRoute
-  AccountsIdReportsBreakdownIndexRoute: typeof AccountsIdReportsBreakdownIndexRoute
   AccountsIdReportsTagTrendIndexRoute: typeof AccountsIdReportsTagTrendIndexRoute
 }
 
 const AccountsIdReportsRouteRouteChildren: AccountsIdReportsRouteRouteChildren =
   {
+    AccountsIdReportsBreakdownRouteRoute:
+      AccountsIdReportsBreakdownRouteRouteWithChildren,
     AccountsIdReportsAllTagAverageRoute: AccountsIdReportsAllTagAverageRoute,
     AccountsIdReportsByTagRoute: AccountsIdReportsByTagRoute,
     AccountsIdReportsInOutRoute: AccountsIdReportsInOutRoute,
     AccountsIdReportsMonthlyBalancesRoute:
       AccountsIdReportsMonthlyBalancesRoute,
     AccountsIdReportsIndexRoute: AccountsIdReportsIndexRoute,
-    AccountsIdReportsBreakdownTagIdRoute: AccountsIdReportsBreakdownTagIdRoute,
     AccountsIdReportsTagTrendTagIdRoute: AccountsIdReportsTagTrendTagIdRoute,
-    AccountsIdReportsBreakdownIndexRoute: AccountsIdReportsBreakdownIndexRoute,
     AccountsIdReportsTagTrendIndexRoute: AccountsIdReportsTagTrendIndexRoute,
   }
 

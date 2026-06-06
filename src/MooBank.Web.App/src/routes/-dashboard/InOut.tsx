@@ -12,7 +12,7 @@ export const InOutWidget: React.FC = () => {
     const account = accounts?.find(a => a.isPrimary === true) ?? accounts?.[0];
 
     return (
-        <Widget header={(account && `${account.name} - ${lastMonthName}`) ?? lastMonthName} size="single" headerSize={2} className="report inout" loading={isLoading}>
+        <Widget header={(account && `${account.name} - ${lastMonthName}`) ?? lastMonthName} size="single" headerSize={2} className="report inout" loading={isLoading} to={account ? `/accounts/${account.id}/reports/in-out?period=1` : undefined}>
             {isError ? <WidgetError /> : account && <InOut accountId={account?.id} period={lastMonth} useInOutReport={useInOutReport} />}
         </Widget>
     );

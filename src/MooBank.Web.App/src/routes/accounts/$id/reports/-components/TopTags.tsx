@@ -1,9 +1,9 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 import { useAllTagAverageReport } from "../../../-hooks/useAllTagAverageReport";
 
 import type { ChartData } from "chart.js";
-import { Bar, getElementAtEvent } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 
 import type { Period } from "models/dateFns";
 import { useNavigate } from "@tanstack/react-router";
@@ -16,8 +16,6 @@ export const TopTags: React.FC<TopTagsProps> = ({ accountId, period, reportType,
     const [showGross] = useState<boolean>(false); //TODO: may make this an option
 
     const report = useAllTagAverageReport(accountId, period?.startDate, period?.endDate, reportType, top);
-
-    const chartRef = useRef(null);
 
     const dataset: ChartData<"bar", number[], string> = {
         labels: report.data?.tags.map(t => t.tagName) ?? [],
@@ -37,7 +35,7 @@ export const TopTags: React.FC<TopTagsProps> = ({ accountId, period, reportType,
     }
 
     return (
-        <Bar id="alltagaverage" ref={chartRef} data={dataset} options={{
+        <Bar id="alltagaverage" data={dataset} options={{
             plugins: {
                 legend: {
                     display: false,
@@ -58,13 +56,13 @@ export const TopTags: React.FC<TopTagsProps> = ({ accountId, period, reportType,
                 }
             },
             maintainAspectRatio: false,
-        }}
-            onClick={(e) => {
-                const elements = getElementAtEvent(chartRef.current!, e);
+            onClick: (_event, elements) => {
                 if (elements.length !== 1) return;
-                if (!report.data!.tags[elements[0].index].hasChildren) return;
-                navigate({ to: `/accounts/${accountId}/reports/breakdown/${report.data!.tags[elements[0].index].tagId}` });
-            }}
+                const tag = report.data!.tags[elements[0].index];
+                const url = !tag.tagId ? `/accounts/${accountId}?untagged=true` : `/accounts/${accountId}?tag=${tag.tagId}&type=${reportType}`;
+                navigate({ to: url });
+            },
+        }}
         />
     );
 }

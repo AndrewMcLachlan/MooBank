@@ -1,7 +1,7 @@
-import React, { useRef } from "react";
+import React from "react";
 
 import type { ChartData } from "chart.js";
-import { Bar, getElementAtEvent } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 
 import { Section } from "@andrewmclachlan/moo-ds";
 import { useChartColours } from "utils/chartColours";
@@ -11,7 +11,6 @@ import { useBudgetReport } from "../-hooks/useBudgetReport";
 export const BudgetReportYear: React.FC<BudgetReportYearProps> = ({ year, onDrilldown }) => {
 
     const colours = useChartColours();
-    const chartRef = useRef(null);
 
     const report = useBudgetReport(year);
 
@@ -32,7 +31,7 @@ export const BudgetReportYear: React.FC<BudgetReportYearProps> = ({ year, onDril
     return (
         <Section className="report" style={{ width: "2000px ! important" }}>
             <h3>Budget Report</h3>
-            <Bar id="budget-report" ref={chartRef} data={dataset} options={{
+            <Bar id="budget-report" data={dataset} options={{
                 plugins: {
                     tooltip: {
                         mode: "point",
@@ -47,13 +46,12 @@ export const BudgetReportYear: React.FC<BudgetReportYearProps> = ({ year, onDril
                     x: {
                         stacked: false
                     }
-                }
-            }}
-                onClick={(e) => {
-                    const elements = getElementAtEvent(chartRef.current!, e);
+                },
+                onClick: (_event, elements) => {
                     if (elements.length !== 1) return;
                     onDrilldown(report.data!.items[elements[0].index].month);
-                }}
+                },
+            }}
             />
         </Section>
     );

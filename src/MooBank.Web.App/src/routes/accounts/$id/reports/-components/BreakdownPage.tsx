@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { useTag } from "../../../-hooks/useTag";
 import { ReportsPage } from "./ReportsPage";
@@ -19,47 +19,42 @@ import { getPeriod } from "hooks";
 
 export const BreakdownPage = () => {
 
-    const { id: accountId, tagId } = useParams({ strict: false });
+    const { id: accountId, tagId: tagIdParam } = useParams({ strict: false });
+    const tagId = tagIdParam ? parseInt(tagIdParam) : undefined;
 
     const navigate = useNavigate();
 
     const [reportType, setReportType] = useState<transactionTypeFilter>("Debit");
     const [period, setPeriod] = useState<Period>(getPeriod());
-    const [selectedTagId, setSelectedTagId] = useState<number | undefined>(undefined);
     const [previousTagIds, setPreviousTagIds] = useState<number[]>([]);
-    const tag = useTag(selectedTagId ?? 0);
+    const tag = useTag(tagId);
 
-    useEffect(() => {
-        if (selectedTagId !== undefined) {
-            setPreviousTagIds([...previousTagIds, selectedTagId]);
-        }
-        setSelectedTagId(tagId ? parseInt(tagId) : undefined);
-    }, [tagId]);
-
-    const selectedTagChanged = (tag: TagValue) => {
-        if (selectedTagId !== undefined) {
-            setPreviousTagIds([...previousTagIds, selectedTagId]);
-        }
-        setSelectedTagId(tag.tagId ?? undefined);
-
-
-        if (!tag.hasChildren || tag.tagId === selectedTagId) {
-
-            const url = !tag.tagId ? `/accounts/${accountId}?untagged=true` : `/accounts/${accountId}?tag=${tag.tagId}&type=${reportType}`;
-
+    const selectedTagChanged = (clickedTag: TagValue) => {
+        if (!clickedTag.hasChildren || clickedTag.tagId === tagId) {
+            const url = !clickedTag.tagId
+                ? `/accounts/${accountId}?untagged=true`
+                : `/accounts/${accountId}?tag=${clickedTag.tagId}&type=${reportType}`;
             navigate({ to: url });
             return;
         }
 
-        const newUrl = `/accounts/${accountId}/reports/breakdown/${tagId}`;
-        window.history.replaceState({ path: newUrl }, "", newUrl);
-    }
+        if (tagId !== undefined) {
+            setPreviousTagIds([...previousTagIds, tagId]);
+        }
+        navigate({
+            to: `/accounts/${accountId}/reports/breakdown/${clickedTag.tagId}`,
+            replace: true,
+        });
+    };
 
     const goBack = () => {
-        console.debug("Previous Tag IDs: ", previousTagIds);
-        setSelectedTagId(previousTagIds.pop());
-        setPreviousTagIds([...previousTagIds]);
-    }
+        const previous = previousTagIds[previousTagIds.length - 1];
+        setPreviousTagIds(previousTagIds.slice(0, -1));
+        const url = previous !== undefined
+            ? `/accounts/${accountId}/reports/breakdown/${previous}`
+            : `/accounts/${accountId}/reports/breakdown`;
+        navigate({ to: url, replace: true });
+    };
 
 
     return (
@@ -71,7 +66,7 @@ export const BreakdownPage = () => {
             <Section className="report doughnut">
                 {tag.data?.name && <h3><FontAwesomeIcon className="clickable" icon="circle-chevron-left" size="xs" onClick={goBack} /> {tag.data.name}</h3>}
                 {!tag.data && <h3>Top-Level Tags</h3>}
-                <Breakdown accountId={accountId} tagId={selectedTagId} period={period} reportType={reportType} selectedTagChanged={selectedTagChanged} />
+                <Breakdown accountId={accountId} tagId={tagId} period={period} reportType={reportType} selectedTagChanged={selectedTagChanged} />
             </Section>
         </ReportsPage>
     );

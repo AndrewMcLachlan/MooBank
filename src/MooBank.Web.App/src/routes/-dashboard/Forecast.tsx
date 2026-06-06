@@ -39,7 +39,7 @@ export const ForecastWidget: React.FC = () => {
 
     if (hasError) {
         return (
-            <Widget header={header} size="double" headerSize={2} className="report forecast-widget">
+            <Widget header={header} size="double" headerSize={2} className="report forecast-widget" to="/forecast">
                 <WidgetError />
             </Widget>
         );
@@ -105,7 +105,7 @@ export const ForecastWidget: React.FC = () => {
     };
 
     return (
-        <Widget header={header} size="double" headerSize={2} className="report forecast-widget" loading={plansLoading || isPending}>
+        <Widget header={header} size="double" headerSize={2} className="report forecast-widget" loading={plansLoading || isPending} to="/forecast">
             <div className="forecast-widget-chart">
                 <Line data={data} options={options} />
             </div>
