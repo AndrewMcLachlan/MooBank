@@ -1,4 +1,5 @@
 #nullable enable
+using Asm.Drawing;
 using Asm.MooBank.Modules.Groups.Commands;
 using Asm.MooBank.Modules.Groups.Tests.Support;
 using DomainGroup = Asm.MooBank.Domain.Entities.Group.Group;
@@ -70,6 +71,71 @@ public class UpdateTests
         Assert.Equal("New Name", existingGroup.Name);
         Assert.Equal("New Description", existingGroup.Description);
         Assert.True(existingGroup.ShowPosition);
+    }
+
+    /// <summary>
+    /// Given an existing group without a colour
+    /// When the handler is invoked with a model that has a colour
+    /// Then the entity's colour should be updated to the model's colour
+    /// </summary>
+    [Fact]
+    public async Task Handle_ModelWithColour_UpdatesEntityColour()
+    {
+        // Arrange
+        var groupId = Guid.NewGuid();
+        var existingGroup = TestEntities.CreateGroup(id: groupId, ownerId: _mocks.User.Id);
+
+        _mocks.GroupRepositoryMock
+            .Setup(r => r.Get(groupId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(existingGroup);
+
+        var handler = new UpdateHandler(
+            _mocks.GroupRepositoryMock.Object,
+            _mocks.UnitOfWorkMock.Object,
+            _mocks.SecurityMock.Object);
+
+        var colour = new HexColour("#2f4b7c");
+        var groupModel = TestEntities.CreateGroupModel(id: groupId, name: "New Name", colour: colour);
+        var command = new Update(groupModel);
+
+        // Act
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(colour, existingGroup.Colour);
+        Assert.Equal(colour, result.Colour);
+    }
+
+    /// <summary>
+    /// Given an existing group with a colour
+    /// When the handler is invoked with a model that has no colour
+    /// Then the entity's colour should be cleared
+    /// </summary>
+    [Fact]
+    public async Task Handle_ModelWithoutColour_ClearsEntityColour()
+    {
+        // Arrange
+        var groupId = Guid.NewGuid();
+        var existingGroup = TestEntities.CreateGroup(id: groupId, ownerId: _mocks.User.Id, colour: new HexColour("#d45087"));
+
+        _mocks.GroupRepositoryMock
+            .Setup(r => r.Get(groupId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(existingGroup);
+
+        var handler = new UpdateHandler(
+            _mocks.GroupRepositoryMock.Object,
+            _mocks.UnitOfWorkMock.Object,
+            _mocks.SecurityMock.Object);
+
+        var groupModel = TestEntities.CreateGroupModel(id: groupId, name: "New Name");
+        var command = new Update(groupModel);
+
+        // Act
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Null(existingGroup.Colour);
+        Assert.Null(result.Colour);
     }
 
     [Fact]

@@ -1,4 +1,6 @@
-﻿namespace Asm.MooBank.Modules.Groups.Models;
+﻿using Asm.Drawing;
+
+namespace Asm.MooBank.Modules.Groups.Models;
 
 public record Group
 {
@@ -6,6 +8,7 @@ public record Group
     public required string Name { get; init; }
     public string? Description { get; init; }
     public required bool ShowTotal { get; init; }
+    public HexColour? Colour { get; init; }
 }
 
 public static class GroupExtensions
@@ -17,6 +20,7 @@ public static class GroupExtensions
             Name = entity.Name,
             Description = entity.Description,
             ShowTotal = entity.ShowPosition,
+            Colour = entity.Colour,
         };
 
 

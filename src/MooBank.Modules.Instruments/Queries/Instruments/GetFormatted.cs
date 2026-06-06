@@ -48,6 +48,7 @@ internal class GetFormattedHandler(IQueryable<Domain.Entities.Account.LogicalAcc
             {
                 Id = ag!.Id,
                 Name = ag!.Name,
+                Colour = ag.Colour,
                 Instruments = matchingAccounts,
                 ShowTotal = ag.ShowPosition,
                 Total = matchingAccounts.Sum(a => a.CurrentBalanceLocalCurrency),
