@@ -31,7 +31,7 @@ export const BillFilterPanel: React.FC<BillFilterPanelProps> = ({ accounts, filt
     };
 
     return (
-        <Section className="bill-filter-panel" header="Filter">
+        <Section className="bill-filter-panel">
             <div className="control-panel">
                 <FontAwesomeIcon
                     className="clickable"
