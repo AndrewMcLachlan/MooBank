@@ -12,14 +12,12 @@ import { BillFilterPanel } from "./BillFilterPanel";
 import { BillsChart } from "./BillsChart";
 import { UsageChart } from "./UsageChart";
 import { getUnit } from "utils/units";
+import { formatDateShort } from "utils/dateFns";
+import { Amount } from "components";
 
 export interface UtilityTypeBillsTabProps {
     utilityType: UtilityType;
 }
-
-const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD" }).format(value);
-};
 
 const getDefaultFilter = (): BillFilter => ({
     startDate: format(subYears(new Date(), 2), "yyyy-MM-dd"),
@@ -76,8 +74,8 @@ export const UtilityTypeBillsTab: React.FC<UtilityTypeBillsTabProps> = ({ utilit
                     {pagedBills?.results.map(bill => (
                         <tr key={bill.id} onClick={() => rowClick(bill)} className="clickable">
                             <td>{bill.accountName}</td>
-                            <td>{format(parseISO(bill.issueDate), "dd/MM/yy")}</td>
-                            <td>{formatCurrency(bill.cost)}</td>
+                            <td>{formatDateShort(bill.issueDate)}</td>
+                            <td><Amount amount={bill.cost} currencyCode="AUD" /></td>
                             <td>{bill.periods?.reduce((sum, p) => sum + p.totalUsage, 0).toLocaleString() ?? "-"}</td>
                         </tr>
                     ))}
