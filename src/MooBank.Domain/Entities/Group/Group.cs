@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+using Asm.Drawing;
 using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Group;
@@ -18,6 +19,8 @@ public class Group([DisallowNull] Guid id) : KeyedEntity<Guid>(id)
     public Guid OwnerId { get; set; }
 
     public bool ShowPosition { get; set; }
+
+    public HexColour? Colour { get; set; }
 
     public virtual User.User Owner { get; set; } = null!;
 

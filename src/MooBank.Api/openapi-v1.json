@@ -6012,7 +6012,8 @@
           },
           "showTotal": {
             "type": "boolean"
-          }
+          },
+          "colour": { }
         }
       },
       "CreateInstitution": {
@@ -6573,6 +6574,16 @@
           },
           "showTotal": {
             "type": "boolean"
+          },
+          "colour": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/HexColour"
+              }
+            ]
           }
         }
       },
@@ -7065,6 +7076,16 @@
           },
           "name": {
             "type": "string"
+          },
+          "colour": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/HexColour"
+              }
+            ]
           },
           "instruments": {
             "type": "array",

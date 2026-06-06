@@ -5,6 +5,7 @@ import { Button, Input, Modal } from "@andrewmclachlan/moo-ds";
 import { useUpdateTag } from "../-hooks/useUpdateTag";
 import { TransactionTagTransactionTagPanel } from "./TagTagPanel";
 import { onKeyLeave } from "utils/onKeyLeave";
+import { ColourPicker } from "components/ColourPicker";
 
 export const TransactionTagDetails: React.FC<TransactionTagDetailsProps> = (props) => {
 
@@ -32,7 +33,7 @@ export const TransactionTagDetails: React.FC<TransactionTagDetailsProps> = (prop
                     <label htmlFor="name">Name</label>
                     <Input id="name" placeholder="Name" type="text" value={name} onChange={(e) => setName(e.currentTarget.value)} onBlur={(e) => updateName(e.currentTarget.value)} onKeyUp={(e) => onKeyLeave(e, updateName)} />
                     <label htmlFor="colour">Colour</label>
-                    <Input id="colour" type="color" className="form-control-color" value={(tag.colour as string) ?? ""} onChange={(e) => save({ ...tag, colour: e.target.value })} />
+                    <ColourPicker id="colour" value={(tag.colour as string) ?? null} onChange={(colour) => save({ ...tag, colour })} />
                     <label htmlFor="exclude">Exclude from Reporting</label>
                     <Input.Switch id="exclude" checked={tag.settings?.excludeFromReporting} onChange={(e) => updateExcludeFromReporting(e.currentTarget.checked)} />
                     <label htmlFor="smooth">Allow Smoothing<Tooltip id="smoothing">Provides an option to average non-monthly transactions in trend reports</Tooltip></label>

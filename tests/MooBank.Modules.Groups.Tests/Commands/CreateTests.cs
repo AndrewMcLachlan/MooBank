@@ -1,4 +1,5 @@
 #nullable enable
+using Asm.Drawing;
 using Asm.MooBank.Modules.Groups.Commands;
 using Asm.MooBank.Modules.Groups.Tests.Support;
 using DomainGroup = Asm.MooBank.Domain.Entities.Group.Group;
@@ -130,6 +131,69 @@ public class CreateTests
         // Assert
         Assert.NotNull(capturedGroup);
         Assert.True(capturedGroup.ShowPosition);
+    }
+
+    /// <summary>
+    /// Given a create command with a colour
+    /// When the handler is invoked
+    /// Then the created entity and returned model should carry the supplied colour
+    /// </summary>
+    [Fact]
+    public async Task Handle_CommandWithColour_SetsColour()
+    {
+        // Arrange
+        DomainGroup? capturedGroup = null;
+
+        _mocks.GroupRepositoryMock
+            .Setup(r => r.Add(It.IsAny<DomainGroup>()))
+            .Callback<DomainGroup>(g => capturedGroup = g);
+
+        var handler = new CreateHandler(
+            _mocks.GroupRepositoryMock.Object,
+            _mocks.UnitOfWorkMock.Object,
+            _mocks.User);
+
+        var colour = new HexColour("#ff7c43");
+        var command = new Create("New Group", "A test group", false, colour);
+
+        // Act
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.NotNull(capturedGroup);
+        Assert.Equal(colour, capturedGroup.Colour);
+        Assert.Equal(colour, result.Colour);
+    }
+
+    /// <summary>
+    /// Given a create command without a colour
+    /// When the handler is invoked
+    /// Then the created entity should have no colour
+    /// </summary>
+    [Fact]
+    public async Task Handle_CommandWithoutColour_LeavesColourNull()
+    {
+        // Arrange
+        DomainGroup? capturedGroup = null;
+
+        _mocks.GroupRepositoryMock
+            .Setup(r => r.Add(It.IsAny<DomainGroup>()))
+            .Callback<DomainGroup>(g => capturedGroup = g);
+
+        var handler = new CreateHandler(
+            _mocks.GroupRepositoryMock.Object,
+            _mocks.UnitOfWorkMock.Object,
+            _mocks.User);
+
+        var command = new Create("New Group", "A test group", false);
+
+        // Act
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.NotNull(capturedGroup);
+        Assert.Null(capturedGroup.Colour);
+        Assert.Null(result.Colour);
     }
 
     [Fact]

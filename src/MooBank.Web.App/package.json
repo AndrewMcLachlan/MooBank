@@ -14,9 +14,9 @@
   },
   "type": "module",
   "dependencies": {
-    "@andrewmclachlan/moo-app": "^5.1.160",
-    "@andrewmclachlan/moo-ds": "^5.1.160",
-    "@andrewmclachlan/moo-icons": "^5.1.160",
+    "@andrewmclachlan/moo-app": "^5.1.174",
+    "@andrewmclachlan/moo-ds": "^5.1.174",
+    "@andrewmclachlan/moo-icons": "^5.1.174",
     "@azure/msal-react": "^5.4.2",
     "@fortawesome/fontawesome-svg-core": "^7.2.0",
     "@fortawesome/free-solid-svg-icons": "^7.2.0",
@@ -60,11 +60,14 @@
     "eslint": "$eslint"
   },
   "devDependencies": {
+    "@emnapi/core": "1.10.0",
+    "@emnapi/runtime": "1.10.0",
     "@eslint/eslintrc": "^3.3.5",
     "@eslint/js": "^10.0.1",
     "@hey-api/openapi-ts": "^0.98.1",
     "@svgr/plugin-svgo": "^8.1.0",
     "@tanstack/router-plugin": "^1.168.14",
+    "@tybys/wasm-util": "0.10.2",
     "@types/chartjs-plugin-trendline": "^1.0.1",
     "@types/md5": "^2.3.6",
     "@types/node": "^25.2.2",

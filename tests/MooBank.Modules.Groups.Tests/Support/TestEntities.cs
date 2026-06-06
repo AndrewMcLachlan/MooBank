@@ -1,4 +1,5 @@
 #nullable enable
+using Asm.Drawing;
 using Bogus;
 using DomainGroup = Asm.MooBank.Domain.Entities.Group.Group;
 using ModelGroup = Asm.MooBank.Modules.Groups.Models.Group;
@@ -14,7 +15,8 @@ internal static class TestEntities
         string? name = null,
         string? description = null,
         Guid? ownerId = null,
-        bool showPosition = false)
+        bool showPosition = false,
+        HexColour? colour = null)
     {
         return new DomainGroup(id ?? Guid.NewGuid())
         {
@@ -22,6 +24,7 @@ internal static class TestEntities
             Description = description ?? Faker.Lorem.Sentence(),
             OwnerId = ownerId ?? Guid.NewGuid(),
             ShowPosition = showPosition,
+            Colour = colour,
         };
     }
 
@@ -29,7 +32,8 @@ internal static class TestEntities
         Guid? id = null,
         string? name = null,
         string? description = null,
-        bool showTotal = false)
+        bool showTotal = false,
+        HexColour? colour = null)
     {
         return new ModelGroup
         {
@@ -37,6 +41,7 @@ internal static class TestEntities
             Name = name ?? Faker.Commerce.Department(),
             Description = description ?? Faker.Lorem.Sentence(),
             ShowTotal = showTotal,
+            Colour = colour,
         };
     }
 

@@ -214,6 +214,7 @@ export type CreateGroup = {
     name: string;
     description: string;
     showTotal: boolean;
+    colour?: unknown;
 };
 
 export type CreateInstitution = {
@@ -346,6 +347,7 @@ export type Group = {
     name: string;
     description?: null | string;
     showTotal: boolean;
+    colour?: null | HexColour;
 };
 
 export type HexColour = unknown;
@@ -455,6 +457,7 @@ export type Instrument = {
 export type InstrumentGroup = {
     id?: null | string;
     name: string;
+    colour?: null | HexColour;
     instruments: Array<Instrument>;
     showTotal: boolean;
     total?: null | number;

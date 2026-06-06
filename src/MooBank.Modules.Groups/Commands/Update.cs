@@ -18,6 +18,7 @@ internal class UpdateHandler(IGroupRepository groupRepository, IUnitOfWork unitO
         entity.Name = request.Group.Name;
         entity.Description = request.Group.Description;
         entity.ShowPosition = request.Group.ShowTotal;
+        entity.Colour = request.Group.Colour;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

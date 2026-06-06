@@ -14,7 +14,7 @@ export const useCreateGroup = () => {
 
     return {
         mutateAsync: (group: Group) => {
-            mutateAsync({ body: { name: group.name, description: group.description ?? "", showTotal: group.showTotal } });
+            mutateAsync({ body: { name: group.name, description: group.description ?? "", showTotal: group.showTotal, colour: group.colour } });
         }, ...rest,
     };
 };

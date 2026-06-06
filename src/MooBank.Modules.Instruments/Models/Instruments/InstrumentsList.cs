@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Asm.Drawing;
 using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Modules.Instruments.Models.Instruments;
@@ -17,6 +18,8 @@ public record Group
     public Guid? Id { get; init; }
 
     public required string Name { get; init; }
+
+    public HexColour? Colour { get; init; }
 
     public required IEnumerable<Instrument> Instruments { get; init; }
 
