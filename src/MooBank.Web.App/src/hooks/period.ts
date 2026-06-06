@@ -14,7 +14,13 @@ export const useCustomPeriod = (): [period: Period, setPeriod: (value: Period) =
 }
 
 export const getPeriod = (): Period => {
-    
+
+    const urlPeriodId = new URLSearchParams(window.location.search).get("period");
+    if (urlPeriodId) {
+        const match = periodOptions.find(o => o.value === urlPeriodId);
+        if (match) return match;
+    }
+
     const periodId = JSON.parse(localStorage.getItem("period-id")) ?? "1";
 
     if (periodId !== "-1") {

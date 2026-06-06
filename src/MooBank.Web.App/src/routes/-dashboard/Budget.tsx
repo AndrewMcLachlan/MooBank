@@ -36,7 +36,7 @@ export const BudgetWidget: React.FC = () => {
     const difference = Math.round((((report?.budgetedAmount ?? 0) - Math.abs(report?.actual ?? 0)) / 10.0)) * 10;
 
     return (
-        <Widget header={`Budget - ${lastMonthName}`} size="single" className="report budget" loading={isLoading}>
+        <Widget header={`Budget - ${lastMonthName}`} size="single" className="report budget" loading={isLoading} to={`/budget/report/${lastMonth.startDate.getFullYear()}/${lastMonth.startDate.getMonth()}`}>
             {isError && <WidgetError />}
             {!isError && report &&
                 <>

@@ -11,7 +11,7 @@ export const BreakdownWidget: React.FC = () => {
     const account = accounts?.find(a => a.isPrimary === true) ?? accounts?.[0];
 
     return (
-        <Widget header={(account && `Breakdown - ${account.name} - ${lastMonthName}`) ?? lastMonthName} size="double" headerSize={2} className="report" loading={isLoading}>
+        <Widget header={(account && `Breakdown - ${account.name} - ${lastMonthName}`) ?? lastMonthName} size="double" headerSize={2} className="report" loading={isLoading} to={account ? `/accounts/${account.id}/reports/breakdown?period=1` : undefined}>
             {isError ? <WidgetError /> : account && <Breakdown accountId={account?.id} period={lastMonth} reportType={"Debit"} />}
         </Widget>
     );

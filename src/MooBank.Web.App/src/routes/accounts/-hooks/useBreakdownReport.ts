@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { tagBreakdownReportForTagOptions, tagBreakdownReportOptions } from "api/@tanstack/react-query.gen";
 import { formatISODate } from "utils/dateFns";
 import type { transactionTypeFilter } from "store/state";
@@ -11,5 +11,6 @@ export const useBreakdownReport = (accountId: string, start: Date, end: Date, re
     return useQuery({
         ...(options as ReturnType<typeof tagBreakdownReportOptions>),
         enabled: !!start && !!end,
+        placeholderData: keepPreviousData,
     });
 };
