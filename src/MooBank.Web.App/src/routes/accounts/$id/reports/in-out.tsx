@@ -34,7 +34,7 @@ function InOutPage() {
     const col = difference > 12 ? 12 : 6;
 
     return (
-        <ReportsPage title="Income vs Expenses">
+        <ReportsPage title="Income vs Expenses" kind="InOut">
             <Section className="mini-filter-panel">
                 <MiniPeriodSelector onChange={setPeriod} />
             </Section>

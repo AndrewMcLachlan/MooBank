@@ -7152,6 +7152,7 @@
           "shareWithFamily",
           "includeInBudget",
           "institutionAccounts",
+          "availableReports",
           "balanceDate",
           "virtualInstruments"
         ],
@@ -7173,6 +7174,12 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/InstitutionAccount"
+            }
+          },
+          "availableReports": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReportKind"
             }
           },
           "lastTransaction": {
@@ -7660,6 +7667,20 @@
         "enum": [
           "Monthly",
           "Yearly"
+        ]
+      },
+      "ReportKind": {
+        "enum": [
+          "InOut",
+          "TopTags",
+          "Breakdown",
+          "TagTrend",
+          "AllTags",
+          "MonthlyBalances",
+          "SavingsInterest",
+          "SuperContributions",
+          "SuperReturns",
+          "PrincipalVsInterest"
         ]
       },
       "ReportType": {
