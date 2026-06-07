@@ -58,7 +58,7 @@ export const BreakdownPage = () => {
 
 
     return (
-        <ReportsPage title="Breakdown">
+        <ReportsPage title="Breakdown" kind="Breakdown">
             <Section className="mini-filter-panel">
                 <ReportTypeSelector value={reportType} onChange={setReportType} />
                 <MiniPeriodSelector onChange={setPeriod} />

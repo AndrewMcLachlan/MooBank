@@ -479,6 +479,7 @@ export type LogicalAccount = {
     shareWithFamily: boolean;
     includeInBudget: boolean;
     institutionAccounts: Array<InstitutionAccount>;
+    availableReports: Array<ReportKind>;
     lastTransaction?: null | string;
     id: string;
     name: string;
@@ -580,6 +581,8 @@ export type RegressionDiagnostics = {
 };
 
 export type ReportInterval = 'Monthly' | 'Yearly';
+
+export type ReportKind = 'InOut' | 'TopTags' | 'Breakdown' | 'TagTrend' | 'AllTags' | 'MonthlyBalances' | 'SavingsInterest' | 'SuperContributions' | 'SuperReturns' | 'PrincipalVsInterest';
 
 export type ReportType = {
     [key: string]: unknown;
