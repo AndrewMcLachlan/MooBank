@@ -59,6 +59,7 @@ import { Route as SharesIdTransactionsAddRouteImport } from "./routes/shares/$id
 import { Route as SharesIdReportsValueRouteImport } from "./routes/shares/$id/reports/value"
 import { Route as GroupsIdReportsMonthlyBalancesRouteImport } from "./routes/groups/$id/reports.monthly-balances"
 import { Route as BudgetReportYearMonthRouteImport } from "./routes/budget/report/$year/$month"
+import { Route as AccountsIdReportsSavingsInterestRouteImport } from "./routes/accounts/$id/reports/savings-interest"
 import { Route as AccountsIdReportsMonthlyBalancesRouteImport } from "./routes/accounts/$id/reports/monthly-balances"
 import { Route as AccountsIdReportsInOutRouteImport } from "./routes/accounts/$id/reports/in-out"
 import { Route as AccountsIdReportsByTagRouteImport } from "./routes/accounts/$id/reports/by-tag"
@@ -329,6 +330,12 @@ const BudgetReportYearMonthRoute = BudgetReportYearMonthRouteImport.update({
   path: "/budget/report/$year/$month",
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccountsIdReportsSavingsInterestRoute =
+  AccountsIdReportsSavingsInterestRouteImport.update({
+    id: "/savings-interest",
+    path: "/savings-interest",
+    getParentRoute: () => AccountsIdReportsRouteRoute,
+  } as any)
 const AccountsIdReportsMonthlyBalancesRoute =
   AccountsIdReportsMonthlyBalancesRouteImport.update({
     id: "/monthly-balances",
@@ -472,6 +479,7 @@ export interface FileRoutesByFullPath {
   "/accounts/$id/reports/by-tag": typeof AccountsIdReportsByTagRoute
   "/accounts/$id/reports/in-out": typeof AccountsIdReportsInOutRoute
   "/accounts/$id/reports/monthly-balances": typeof AccountsIdReportsMonthlyBalancesRoute
+  "/accounts/$id/reports/savings-interest": typeof AccountsIdReportsSavingsInterestRoute
   "/budget/report/$year/$month": typeof BudgetReportYearMonthRoute
   "/groups/$id/reports/monthly-balances": typeof GroupsIdReportsMonthlyBalancesRoute
   "/shares/$id/reports/value": typeof SharesIdReportsValueRoute
@@ -532,6 +540,7 @@ export interface FileRoutesByTo {
   "/accounts/$id/reports/by-tag": typeof AccountsIdReportsByTagRoute
   "/accounts/$id/reports/in-out": typeof AccountsIdReportsInOutRoute
   "/accounts/$id/reports/monthly-balances": typeof AccountsIdReportsMonthlyBalancesRoute
+  "/accounts/$id/reports/savings-interest": typeof AccountsIdReportsSavingsInterestRoute
   "/budget/report/$year/$month": typeof BudgetReportYearMonthRoute
   "/groups/$id/reports/monthly-balances": typeof GroupsIdReportsMonthlyBalancesRoute
   "/shares/$id/reports/value": typeof SharesIdReportsValueRoute
@@ -601,6 +610,7 @@ export interface FileRoutesById {
   "/accounts/$id/reports/by-tag": typeof AccountsIdReportsByTagRoute
   "/accounts/$id/reports/in-out": typeof AccountsIdReportsInOutRoute
   "/accounts/$id/reports/monthly-balances": typeof AccountsIdReportsMonthlyBalancesRoute
+  "/accounts/$id/reports/savings-interest": typeof AccountsIdReportsSavingsInterestRoute
   "/budget/report/$year/$month": typeof BudgetReportYearMonthRoute
   "/groups/$id/reports/monthly-balances": typeof GroupsIdReportsMonthlyBalancesRoute
   "/shares/$id/reports/value": typeof SharesIdReportsValueRoute
@@ -671,6 +681,7 @@ export interface FileRouteTypes {
     | "/accounts/$id/reports/by-tag"
     | "/accounts/$id/reports/in-out"
     | "/accounts/$id/reports/monthly-balances"
+    | "/accounts/$id/reports/savings-interest"
     | "/budget/report/$year/$month"
     | "/groups/$id/reports/monthly-balances"
     | "/shares/$id/reports/value"
@@ -731,6 +742,7 @@ export interface FileRouteTypes {
     | "/accounts/$id/reports/by-tag"
     | "/accounts/$id/reports/in-out"
     | "/accounts/$id/reports/monthly-balances"
+    | "/accounts/$id/reports/savings-interest"
     | "/budget/report/$year/$month"
     | "/groups/$id/reports/monthly-balances"
     | "/shares/$id/reports/value"
@@ -799,6 +811,7 @@ export interface FileRouteTypes {
     | "/accounts/$id/reports/by-tag"
     | "/accounts/$id/reports/in-out"
     | "/accounts/$id/reports/monthly-balances"
+    | "/accounts/$id/reports/savings-interest"
     | "/budget/report/$year/$month"
     | "/groups/$id/reports/monthly-balances"
     | "/shares/$id/reports/value"
@@ -1203,6 +1216,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof BudgetReportYearMonthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    "/accounts/$id/reports/savings-interest": {
+      id: "/accounts/$id/reports/savings-interest"
+      path: "/savings-interest"
+      fullPath: "/accounts/$id/reports/savings-interest"
+      preLoaderRoute: typeof AccountsIdReportsSavingsInterestRouteImport
+      parentRoute: typeof AccountsIdReportsRouteRoute
+    }
     "/accounts/$id/reports/monthly-balances": {
       id: "/accounts/$id/reports/monthly-balances"
       path: "/monthly-balances"
@@ -1364,6 +1384,7 @@ interface AccountsIdReportsRouteRouteChildren {
   AccountsIdReportsByTagRoute: typeof AccountsIdReportsByTagRoute
   AccountsIdReportsInOutRoute: typeof AccountsIdReportsInOutRoute
   AccountsIdReportsMonthlyBalancesRoute: typeof AccountsIdReportsMonthlyBalancesRoute
+  AccountsIdReportsSavingsInterestRoute: typeof AccountsIdReportsSavingsInterestRoute
   AccountsIdReportsIndexRoute: typeof AccountsIdReportsIndexRoute
   AccountsIdReportsTagTrendTagIdRoute: typeof AccountsIdReportsTagTrendTagIdRoute
   AccountsIdReportsTagTrendIndexRoute: typeof AccountsIdReportsTagTrendIndexRoute
@@ -1378,6 +1399,8 @@ const AccountsIdReportsRouteRouteChildren: AccountsIdReportsRouteRouteChildren =
     AccountsIdReportsInOutRoute: AccountsIdReportsInOutRoute,
     AccountsIdReportsMonthlyBalancesRoute:
       AccountsIdReportsMonthlyBalancesRoute,
+    AccountsIdReportsSavingsInterestRoute:
+      AccountsIdReportsSavingsInterestRoute,
     AccountsIdReportsIndexRoute: AccountsIdReportsIndexRoute,
     AccountsIdReportsTagTrendTagIdRoute: AccountsIdReportsTagTrendTagIdRoute,
     AccountsIdReportsTagTrendIndexRoute: AccountsIdReportsTagTrendIndexRoute,

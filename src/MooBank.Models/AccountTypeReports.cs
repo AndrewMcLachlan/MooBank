@@ -15,6 +15,7 @@ public static class AccountTypeReports
     private static readonly IReadOnlyList<ReportKind> Savings =
     [
         ReportKind.MonthlyBalances,
+        ReportKind.SavingsInterest,
         ReportKind.TagTrend,
         ReportKind.AllTags,
         ReportKind.InOut,

@@ -595,6 +595,17 @@ export type Rule = {
     tags: Array<Tag>;
 };
 
+export type SavingsInterestReport = {
+    tagId: number;
+    tagName: string;
+    months: Array<TrendPoint>;
+    total: number;
+    monthlyAverage: number;
+    accountId: string;
+    start: string;
+    end: string;
+};
+
 export type ScheduleFrequency = 'Daily' | 'Weekly' | 'Monthly' | 'Yearly' | 'Fortnightly';
 
 export type SeasonalitySettings = {
@@ -2780,6 +2791,27 @@ export type AllTagAverageReportResponses = {
 };
 
 export type AllTagAverageReportResponse = AllTagAverageReportResponses[keyof AllTagAverageReportResponses];
+
+export type SavingsInterestReportData = {
+    body?: never;
+    path: {
+        tagId: number;
+        accountId: string;
+        start: string;
+        end: string;
+    };
+    query?: never;
+    url: '/api/accounts/{accountId}/reports/savings-interest/{start}/{end}/{tagId}';
+};
+
+export type SavingsInterestReportResponses = {
+    /**
+     * OK
+     */
+    200: SavingsInterestReport;
+};
+
+export type SavingsInterestReportResponse = SavingsInterestReportResponses[keyof SavingsInterestReportResponses];
 
 export type MonthlyBalancesReportData = {
     body?: never;
