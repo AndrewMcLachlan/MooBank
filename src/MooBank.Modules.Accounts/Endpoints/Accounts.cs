@@ -37,7 +37,7 @@ internal class Accounts : EndpointGroupBase
 
         builder.MapPutCommand<SetTagPurpose, LogicalAccount>("/{instrumentId}/tag-purposes/{purpose}")
             .WithNames("Set Account Tag Purpose")
-            .RequireAuthorization(Policies.GetInstrumentViewerPolicy("instrumentId"));
+            .RequireAuthorization(Policies.GetInstrumentOwnerPolicy("instrumentId"));
     }
 
     internal static Delegate CreateCreateHandler<TRequest, TResult>(string routeName, Func<TResult, object> getRouteParams) where TRequest : ICommand<TResult>
