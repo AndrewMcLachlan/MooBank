@@ -1816,30 +1816,6 @@ export const superReturnsReportOptions = (options: Options<SuperReturnsReportDat
     queryKey: superReturnsReportQueryKey(options)
 });
 
-export const superReturnsReportInfiniteQueryKey = (options: Options<SuperReturnsReportData>): QueryKey<Options<SuperReturnsReportData>> => createQueryKey('superReturnsReport', options, true);
-
-export const superReturnsReportInfiniteOptions = (options: Options<SuperReturnsReportData>) => infiniteQueryOptions<SuperReturnsReportResponse, AxiosError<DefaultError>, InfiniteData<SuperReturnsReportResponse>, QueryKey<Options<SuperReturnsReportData>>, string | Pick<QueryKey<Options<SuperReturnsReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-// @ts-ignore
-{
-    queryFn: async ({ pageParam, queryKey, signal }) => {
-        // @ts-ignore
-        const page: Pick<QueryKey<Options<SuperReturnsReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-            path: {
-                start: pageParam
-            }
-        };
-        const params = createInfiniteParams(queryKey, page);
-        const { data } = await superReturnsReport({
-            ...options,
-            ...params,
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: superReturnsReportInfiniteQueryKey(options)
-});
-
 export const monthlyBalancesReportQueryKey = (options: Options<MonthlyBalancesReportData>) => createQueryKey('monthlyBalancesReport', options);
 
 export const monthlyBalancesReportOptions = (options: Options<MonthlyBalancesReportData>) => queryOptions<MonthlyBalancesReportResponse, AxiosError<DefaultError>, MonthlyBalancesReportResponse, ReturnType<typeof monthlyBalancesReportQueryKey>>({

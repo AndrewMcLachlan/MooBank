@@ -837,7 +837,7 @@ export const superContributionsReport = <ThrowOnError extends boolean = false>(o
 export const superReturnsReport = <ThrowOnError extends boolean = false>(options: Options<SuperReturnsReportData, ThrowOnError>): RequestResult<SuperReturnsReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<SuperReturnsReportResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{accountId}/reports/super-returns/{start}/{end}',
+    url: '/api/accounts/{accountId}/reports/super-returns',
     ...options
 });
 

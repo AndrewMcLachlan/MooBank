@@ -5,7 +5,15 @@ using Asm.MooBank.Modules.Reports.Models;
 
 namespace Asm.MooBank.Modules.Reports.Queries;
 
-public record GetSuperReturnsReport : ReportQuery, IQuery<SuperReturnsReport>;
+/// <summary>
+/// Annual returns are derived from the account's own balance history rather
+/// than a user-selected period — the chart starts at the earliest FY for
+/// which a return can be computed and ends no later than the current FY.
+/// </summary>
+public record GetSuperReturnsReport : IQuery<SuperReturnsReport>
+{
+    public required Guid AccountId { get; init; }
+}
 
 internal class GetSuperReturnsReportHandler(
     IReportRepository repository,
@@ -20,20 +28,42 @@ internal class GetSuperReturnsReportHandler(
             .Select(t => t.TagId)
             .ToListAsync(cancellationToken);
 
-        var balances = (await repository.GetMonthlyBalances(request.AccountId, request.Start, request.End, cancellationToken))
-            .ToDictionary(b => b.PeriodEnd, b => b.Balance);
+        var today = DateOnly.FromDateTime(DateTime.Today);
+        var rawBalances = (await repository.GetMonthlyBalances(request.AccountId, DateOnly.MinValue, today, cancellationToken)).ToList();
+
+        if (rawBalances.Count == 0)
+        {
+            return Empty(request.AccountId, today);
+        }
+
+        var balances = rawBalances.ToDictionary(b => b.PeriodEnd, b => b.Balance);
+        var earliest = rawBalances.Min(b => b.PeriodEnd);
+        var latest = rawBalances.Max(b => b.PeriodEnd);
+
+        // We need a prior balance to use as opening, so the first computable FY
+        // is the one after the FY containing the earliest balance entry.
+        var firstFy = FinancialYear.For(earliest).Year + 1;
+        var lastFy = Math.Min(FinancialYear.For(latest).Year, FinancialYear.For(today).Year);
+
+        if (firstFy > lastFy)
+        {
+            return Empty(request.AccountId, today);
+        }
 
         var years = new List<SuperReturnsYear>();
 
-        foreach (var fy in FinancialYear.Range(request.Start, request.End))
+        for (var year = firstFy; year <= lastFy; year++)
         {
-            var opening = FindOpeningBalance(balances, fy.Start);
-            var closing = FindClosingBalance(balances, fy.End);
+            var fyStart = new DateOnly(year - 1, 7, 1);
+            var fyEnd = new DateOnly(year, 6, 30);
+
+            var opening = FindOpeningBalance(balances, fyStart);
+            var closing = FindClosingBalance(balances, fyEnd);
 
             var contributions = 0m;
             foreach (var tagId in configured)
             {
-                var totals = await repository.GetMonthlyTotalsForTag(request.AccountId, fy.Start, fy.End, TransactionFilterType.Credit, tagId, cancellationToken);
+                var totals = await repository.GetMonthlyTotalsForTag(request.AccountId, fyStart, fyEnd, TransactionFilterType.Credit, tagId, cancellationToken);
                 contributions += totals.Sum(t => t.GrossAmount);
             }
 
@@ -42,9 +72,9 @@ internal class GetSuperReturnsReportHandler(
 
             years.Add(new SuperReturnsYear
             {
-                FinancialYear = fy.Year,
-                Start = fy.Start,
-                End = fy.End,
+                FinancialYear = year,
+                Start = fyStart,
+                End = fyEnd,
                 OpeningBalance = opening,
                 ClosingBalance = closing,
                 Contributions = contributions,
@@ -56,11 +86,19 @@ internal class GetSuperReturnsReportHandler(
         return new()
         {
             AccountId = request.AccountId,
-            Start = request.Start,
-            End = request.End,
+            Start = years[0].Start,
+            End = years[^1].End,
             Years = years,
         };
     }
+
+    private static SuperReturnsReport Empty(Guid accountId, DateOnly today) => new()
+    {
+        AccountId = accountId,
+        Start = today,
+        End = today,
+        Years = [],
+    };
 
     private static decimal FindOpeningBalance(IReadOnlyDictionary<DateOnly, decimal> balances, DateOnly fyStart)
     {

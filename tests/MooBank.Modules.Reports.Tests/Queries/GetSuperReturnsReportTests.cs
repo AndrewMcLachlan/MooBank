@@ -28,42 +28,43 @@ public class GetSuperReturnsReportTests
         return account;
     }
 
+    private static MonthlyBalance Balance(DateOnly periodEnd, decimal balance) =>
+        new() { PeriodEnd = periodEnd, Balance = balance };
+
     /// <summary>
-    /// Given a single FY range with known opening/closing balances and contributions
+    /// Given two balance entries at consecutive FY ends and an Employer contribution tag
     /// When the handler runs
-    /// Then the implied return is closing − opening − contributions.
+    /// Then a single FY row is returned with implied return = closing − opening − contributions.
     /// </summary>
     [Fact]
-    public async Task Handle_SingleFy_ComputesImpliedReturn()
+    public async Task Handle_TwoAnnualBalances_ReturnsOneFy()
     {
         // Arrange
         var accountId = Guid.NewGuid();
-        var start = new DateOnly(2025, 7, 1);
-        var end = new DateOnly(2026, 6, 30);
         var employerTagId = 10;
 
         var accounts = QueryableHelper.CreateAsyncQueryable([CreateAccount(accountId, employerTagId: employerTagId)]);
 
         _mocks.ReportRepositoryMock
-            .Setup(r => r.GetMonthlyBalances(accountId, start, end, It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetMonthlyBalances(accountId, DateOnly.MinValue, It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new[]
             {
-                new MonthlyBalance { PeriodEnd = new DateOnly(2025, 6, 30), Balance = 100000m },
-                new MonthlyBalance { PeriodEnd = new DateOnly(2026, 6, 30), Balance = 130000m },
+                Balance(new DateOnly(2024, 6, 30), 100000m),
+                Balance(new DateOnly(2025, 6, 30), 130000m),
             });
         _mocks.ReportRepositoryMock
-            .Setup(r => r.GetMonthlyTotalsForTag(accountId, new DateOnly(2025, 7, 1), new DateOnly(2026, 6, 30), TransactionFilterType.Credit, employerTagId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new[] { TestEntities.CreateMonthlyTagTotal(new DateOnly(2026, 1, 1), 20000m, 20000m) });
+            .Setup(r => r.GetMonthlyTotalsForTag(accountId, new DateOnly(2024, 7, 1), new DateOnly(2025, 6, 30), TransactionFilterType.Credit, employerTagId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new[] { TestEntities.CreateMonthlyTagTotal(new DateOnly(2025, 1, 1), 20000m, 20000m) });
 
         var handler = new GetSuperReturnsReportHandler(_mocks.ReportRepositoryMock.Object, accounts);
-        var query = new GetSuperReturnsReport { AccountId = accountId, Start = start, End = end };
+        var query = new GetSuperReturnsReport { AccountId = accountId };
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         var year = Assert.Single(result.Years);
-        Assert.Equal(2026, year.FinancialYear);
+        Assert.Equal(2025, year.FinancialYear);
         Assert.Equal(100000m, year.OpeningBalance);
         Assert.Equal(130000m, year.ClosingBalance);
         Assert.Equal(20000m, year.Contributions);
@@ -72,68 +73,87 @@ public class GetSuperReturnsReportTests
     }
 
     /// <summary>
-    /// Given a range spanning two AU FYs
+    /// Given four annual balance entries
     /// When the handler runs
-    /// Then two rows are returned, one per FY, in chronological order.
+    /// Then three FY rows are returned, one per FY transition.
     /// </summary>
     [Fact]
-    public async Task Handle_TwoFyRange_ReturnsRowPerFy()
+    public async Task Handle_FourAnnualBalances_ReturnsThreeFys()
     {
         // Arrange
         var accountId = Guid.NewGuid();
-        var start = new DateOnly(2025, 1, 1);
-        var end = new DateOnly(2026, 3, 1);
-
         var accounts = QueryableHelper.CreateAsyncQueryable([CreateAccount(accountId)]);
 
         _mocks.ReportRepositoryMock
-            .Setup(r => r.GetMonthlyBalances(accountId, start, end, It.IsAny<CancellationToken>()))
-            .ReturnsAsync([]);
-
-        var handler = new GetSuperReturnsReportHandler(_mocks.ReportRepositoryMock.Object, accounts);
-        var query = new GetSuperReturnsReport { AccountId = accountId, Start = start, End = end };
-
-        // Act
-        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
-
-        // Assert
-        Assert.Equal(2, result.Years.Count());
-        Assert.Equal(2025, result.Years.First().FinancialYear);
-        Assert.Equal(2026, result.Years.Last().FinancialYear);
-    }
-
-    /// <summary>
-    /// Given an FY where the opening balance is zero
-    /// When the handler runs
-    /// Then ReturnPercent is null rather than producing a divide-by-zero.
-    /// </summary>
-    [Fact]
-    public async Task Handle_ZeroOpening_LeavesReturnPercentNull()
-    {
-        // Arrange
-        var accountId = Guid.NewGuid();
-        var start = new DateOnly(2025, 7, 1);
-        var end = new DateOnly(2026, 6, 30);
-
-        var accounts = QueryableHelper.CreateAsyncQueryable([CreateAccount(accountId)]);
-
-        _mocks.ReportRepositoryMock
-            .Setup(r => r.GetMonthlyBalances(accountId, start, end, It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetMonthlyBalances(accountId, DateOnly.MinValue, It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new[]
             {
-                new MonthlyBalance { PeriodEnd = new DateOnly(2026, 6, 30), Balance = 5000m },
+                Balance(new DateOnly(2022, 6, 30), 50000m),
+                Balance(new DateOnly(2023, 6, 30), 60000m),
+                Balance(new DateOnly(2024, 6, 30), 70000m),
+                Balance(new DateOnly(2025, 6, 30), 80000m),
             });
 
         var handler = new GetSuperReturnsReportHandler(_mocks.ReportRepositoryMock.Object, accounts);
-        var query = new GetSuperReturnsReport { AccountId = accountId, Start = start, End = end };
+        var query = new GetSuperReturnsReport { AccountId = accountId };
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
-        var year = Assert.Single(result.Years);
-        Assert.Equal(0m, year.OpeningBalance);
-        Assert.Equal(5000m, year.ClosingBalance);
-        Assert.Null(year.ReturnPercent);
+        var fys = result.Years.Select(y => y.FinancialYear).ToList();
+        Assert.Equal(new[] { 2023, 2024, 2025 }, fys);
+    }
+
+    /// <summary>
+    /// Given no balance entries
+    /// When the handler runs
+    /// Then an empty report is returned.
+    /// </summary>
+    [Fact]
+    public async Task Handle_NoBalances_ReturnsEmpty()
+    {
+        // Arrange
+        var accountId = Guid.NewGuid();
+        var accounts = QueryableHelper.CreateAsyncQueryable([CreateAccount(accountId)]);
+
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetMonthlyBalances(accountId, DateOnly.MinValue, It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync([]);
+
+        var handler = new GetSuperReturnsReportHandler(_mocks.ReportRepositoryMock.Object, accounts);
+        var query = new GetSuperReturnsReport { AccountId = accountId };
+
+        // Act
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Empty(result.Years);
+    }
+
+    /// <summary>
+    /// Given a single balance entry
+    /// When the handler runs
+    /// Then no FYs are returned (the first computable FY needs a prior opening balance).
+    /// </summary>
+    [Fact]
+    public async Task Handle_SingleBalance_ReturnsEmpty()
+    {
+        // Arrange
+        var accountId = Guid.NewGuid();
+        var accounts = QueryableHelper.CreateAsyncQueryable([CreateAccount(accountId)]);
+
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetMonthlyBalances(accountId, DateOnly.MinValue, It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new[] { Balance(new DateOnly(2025, 6, 30), 100000m) });
+
+        var handler = new GetSuperReturnsReportHandler(_mocks.ReportRepositoryMock.Object, accounts);
+        var query = new GetSuperReturnsReport { AccountId = accountId };
+
+        // Act
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Empty(result.Years);
     }
 }

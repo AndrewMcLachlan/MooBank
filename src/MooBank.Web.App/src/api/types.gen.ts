@@ -2916,11 +2916,9 @@ export type SuperReturnsReportData = {
     body?: never;
     path: {
         accountId: string;
-        start: string;
-        end: string;
     };
     query?: never;
-    url: '/api/accounts/{accountId}/reports/super-returns/{start}/{end}';
+    url: '/api/accounts/{accountId}/reports/super-returns';
 };
 
 export type SuperReturnsReportResponses = {

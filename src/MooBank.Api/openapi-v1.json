@@ -3877,7 +3877,7 @@
         }
       }
     },
-    "/api/accounts/{accountId}/reports/super-returns/{start}/{end}": {
+    "/api/accounts/{accountId}/reports/super-returns": {
       "get": {
         "tags": [
           "Reports"
@@ -3891,24 +3891,6 @@
             "schema": {
               "type": "string",
               "format": "uuid"
-            }
-          },
-          {
-            "name": "start",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "date"
-            }
-          },
-          {
-            "name": "end",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "date"
             }
           }
         ],

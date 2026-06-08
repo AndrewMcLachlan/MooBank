@@ -50,7 +50,7 @@ internal class Reports : EndpointGroupBase
         builder.MapQuery<GetSuperContributionsReport, SuperContributionsReport>("super-contributions/{start}/{end}")
             .WithNames("Super Contributions Report");
 
-        builder.MapQuery<GetSuperReturnsReport, SuperReturnsReport>("super-returns/{start}/{end}")
+        builder.MapQuery<GetSuperReturnsReport, SuperReturnsReport>("super-returns")
             .WithNames("Super Returns Report");
 
         builder.MapQuery<GetMonthlyBalancesReport, MonthlyBalancesReport>("monthly-balances")

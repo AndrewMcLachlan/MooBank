@@ -1,37 +1,56 @@
-import React, { useState } from "react";
+import React from "react";
+
+import type { ChartData } from "chart.js";
+import { Bar } from "react-chartjs-2";
 
 import { Section } from "@andrewmclachlan/moo-ds";
 
 import type { LogicalAccount } from "api/types.gen";
 import { Amount } from "components";
 import { useAccount } from "components/AccountProvider";
-import { MiniPeriodSelector } from "components/MiniPeriodSelector";
-import { getPeriod } from "hooks";
-import type { Period } from "models/dateFns";
+import { useChartColours } from "utils/chartColours";
 import { useSuperReturnsReport } from "../../../-hooks/useSuperReturnsReport";
 import { ReportsPage } from "./ReportsPage";
 
 
 export const SuperReturns: React.FC = () => {
 
+    const colours = useChartColours();
+
     const account = useAccount() as LogicalAccount;
     const employerTagId = account?.tagPurposes?.find(t => t.purpose === "EmployerContribution")?.tagId;
     const personalTagId = account?.tagPurposes?.find(t => t.purpose === "PersonalContribution")?.tagId;
     const anyConfigured = !!employerTagId || !!personalTagId;
 
-    const [period, setPeriod] = useState<Period>(getPeriod());
-    const report = useSuperReturnsReport(account?.id ?? "", period?.startDate, period?.endDate, anyConfigured);
-
+    const report = useSuperReturnsReport(account?.id ?? "", anyConfigured);
     const years = report.data?.years ?? [];
+
+    const chartData: ChartData<"bar", number[], string> = {
+        labels: years.map(y => `FY${y.financialYear}`),
+        datasets: [{
+            label: "Return",
+            data: years.map(y => y.return),
+            backgroundColor: years.map(y => y.return >= 0 ? colours.income : colours.expenses),
+        }],
+    };
 
     return (
         <ReportsPage title="Annual Returns" kind="SuperReturns">
-            <Section className="mini-filter-panel">
-                <MiniPeriodSelector onChange={setPeriod} instant />
-            </Section>
             {!anyConfigured &&
                 <Section className="report" header="Annual Returns" headerSize={3}>
                     <p>No contribution tags are configured. Set the Employer and/or Personal contribution tags in <a href={`/accounts/${account?.id}/manage`}>account settings</a> so contributions can be excluded from the implied return.</p>
+                </Section>
+            }
+            {anyConfigured && years.length > 0 &&
+                <Section className="report" header="Return by Financial Year" headerSize={3}>
+                    <Bar id="super-returns-chart" data={chartData} options={{
+                        maintainAspectRatio: true,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { grid: { color: colours.grid } },
+                            y: { grid: { color: colours.grid } },
+                        },
+                    }} />
                 </Section>
             }
             {anyConfigured &&
@@ -59,7 +78,7 @@ export const SuperReturns: React.FC = () => {
                                 </tr>
                             ))}
                             {years.length === 0 && (
-                                <tr><td colSpan={6}>No data for the selected period.</td></tr>
+                                <tr><td colSpan={6}>Not enough balance history yet — needs at least two annual entries.</td></tr>
                             )}
                         </tbody>
                     </table>
