@@ -41,6 +41,8 @@ public static class AccountTypeReports
     private static readonly IReadOnlyList<ReportKind> Superannuation =
     [
         ReportKind.MonthlyBalances,
+        ReportKind.SuperContributions,
+        ReportKind.SuperReturns,
         ReportKind.TagTrend,
         ReportKind.AllTags,
     ];

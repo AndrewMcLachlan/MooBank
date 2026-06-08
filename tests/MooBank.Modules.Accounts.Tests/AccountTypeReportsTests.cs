@@ -16,7 +16,7 @@ public class AccountTypeReportsTests
     [Theory]
     [InlineData(AccountType.Transaction, new[] { ReportKind.InOut, ReportKind.TopTags, ReportKind.Breakdown, ReportKind.TagTrend, ReportKind.AllTags, ReportKind.MonthlyBalances })]
     [InlineData(AccountType.Savings, new[] { ReportKind.MonthlyBalances, ReportKind.SavingsInterest, ReportKind.TagTrend, ReportKind.AllTags, ReportKind.InOut })]
-    [InlineData(AccountType.Superannuation, new[] { ReportKind.MonthlyBalances, ReportKind.TagTrend, ReportKind.AllTags })]
+    [InlineData(AccountType.Superannuation, new[] { ReportKind.MonthlyBalances, ReportKind.SuperContributions, ReportKind.SuperReturns, ReportKind.TagTrend, ReportKind.AllTags })]
     [InlineData(AccountType.Mortgage, new[] { ReportKind.MonthlyBalances, ReportKind.TagTrend, ReportKind.AllTags })]
     [Trait("Category", "Unit")]
     public void For_KnownAccountType_ReturnsExpectedReports(AccountType accountType, ReportKind[] expected)

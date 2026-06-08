@@ -59,6 +59,8 @@ import { Route as SharesIdTransactionsAddRouteImport } from "./routes/shares/$id
 import { Route as SharesIdReportsValueRouteImport } from "./routes/shares/$id/reports/value"
 import { Route as GroupsIdReportsMonthlyBalancesRouteImport } from "./routes/groups/$id/reports.monthly-balances"
 import { Route as BudgetReportYearMonthRouteImport } from "./routes/budget/report/$year/$month"
+import { Route as AccountsIdReportsSuperReturnsRouteImport } from "./routes/accounts/$id/reports/super-returns"
+import { Route as AccountsIdReportsSuperContributionsRouteImport } from "./routes/accounts/$id/reports/super-contributions"
 import { Route as AccountsIdReportsSavingsInterestRouteImport } from "./routes/accounts/$id/reports/savings-interest"
 import { Route as AccountsIdReportsMonthlyBalancesRouteImport } from "./routes/accounts/$id/reports/monthly-balances"
 import { Route as AccountsIdReportsInOutRouteImport } from "./routes/accounts/$id/reports/in-out"
@@ -330,6 +332,18 @@ const BudgetReportYearMonthRoute = BudgetReportYearMonthRouteImport.update({
   path: "/budget/report/$year/$month",
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccountsIdReportsSuperReturnsRoute =
+  AccountsIdReportsSuperReturnsRouteImport.update({
+    id: "/super-returns",
+    path: "/super-returns",
+    getParentRoute: () => AccountsIdReportsRouteRoute,
+  } as any)
+const AccountsIdReportsSuperContributionsRoute =
+  AccountsIdReportsSuperContributionsRouteImport.update({
+    id: "/super-contributions",
+    path: "/super-contributions",
+    getParentRoute: () => AccountsIdReportsRouteRoute,
+  } as any)
 const AccountsIdReportsSavingsInterestRoute =
   AccountsIdReportsSavingsInterestRouteImport.update({
     id: "/savings-interest",
@@ -480,6 +494,8 @@ export interface FileRoutesByFullPath {
   "/accounts/$id/reports/in-out": typeof AccountsIdReportsInOutRoute
   "/accounts/$id/reports/monthly-balances": typeof AccountsIdReportsMonthlyBalancesRoute
   "/accounts/$id/reports/savings-interest": typeof AccountsIdReportsSavingsInterestRoute
+  "/accounts/$id/reports/super-contributions": typeof AccountsIdReportsSuperContributionsRoute
+  "/accounts/$id/reports/super-returns": typeof AccountsIdReportsSuperReturnsRoute
   "/budget/report/$year/$month": typeof BudgetReportYearMonthRoute
   "/groups/$id/reports/monthly-balances": typeof GroupsIdReportsMonthlyBalancesRoute
   "/shares/$id/reports/value": typeof SharesIdReportsValueRoute
@@ -541,6 +557,8 @@ export interface FileRoutesByTo {
   "/accounts/$id/reports/in-out": typeof AccountsIdReportsInOutRoute
   "/accounts/$id/reports/monthly-balances": typeof AccountsIdReportsMonthlyBalancesRoute
   "/accounts/$id/reports/savings-interest": typeof AccountsIdReportsSavingsInterestRoute
+  "/accounts/$id/reports/super-contributions": typeof AccountsIdReportsSuperContributionsRoute
+  "/accounts/$id/reports/super-returns": typeof AccountsIdReportsSuperReturnsRoute
   "/budget/report/$year/$month": typeof BudgetReportYearMonthRoute
   "/groups/$id/reports/monthly-balances": typeof GroupsIdReportsMonthlyBalancesRoute
   "/shares/$id/reports/value": typeof SharesIdReportsValueRoute
@@ -611,6 +629,8 @@ export interface FileRoutesById {
   "/accounts/$id/reports/in-out": typeof AccountsIdReportsInOutRoute
   "/accounts/$id/reports/monthly-balances": typeof AccountsIdReportsMonthlyBalancesRoute
   "/accounts/$id/reports/savings-interest": typeof AccountsIdReportsSavingsInterestRoute
+  "/accounts/$id/reports/super-contributions": typeof AccountsIdReportsSuperContributionsRoute
+  "/accounts/$id/reports/super-returns": typeof AccountsIdReportsSuperReturnsRoute
   "/budget/report/$year/$month": typeof BudgetReportYearMonthRoute
   "/groups/$id/reports/monthly-balances": typeof GroupsIdReportsMonthlyBalancesRoute
   "/shares/$id/reports/value": typeof SharesIdReportsValueRoute
@@ -682,6 +702,8 @@ export interface FileRouteTypes {
     | "/accounts/$id/reports/in-out"
     | "/accounts/$id/reports/monthly-balances"
     | "/accounts/$id/reports/savings-interest"
+    | "/accounts/$id/reports/super-contributions"
+    | "/accounts/$id/reports/super-returns"
     | "/budget/report/$year/$month"
     | "/groups/$id/reports/monthly-balances"
     | "/shares/$id/reports/value"
@@ -743,6 +765,8 @@ export interface FileRouteTypes {
     | "/accounts/$id/reports/in-out"
     | "/accounts/$id/reports/monthly-balances"
     | "/accounts/$id/reports/savings-interest"
+    | "/accounts/$id/reports/super-contributions"
+    | "/accounts/$id/reports/super-returns"
     | "/budget/report/$year/$month"
     | "/groups/$id/reports/monthly-balances"
     | "/shares/$id/reports/value"
@@ -812,6 +836,8 @@ export interface FileRouteTypes {
     | "/accounts/$id/reports/in-out"
     | "/accounts/$id/reports/monthly-balances"
     | "/accounts/$id/reports/savings-interest"
+    | "/accounts/$id/reports/super-contributions"
+    | "/accounts/$id/reports/super-returns"
     | "/budget/report/$year/$month"
     | "/groups/$id/reports/monthly-balances"
     | "/shares/$id/reports/value"
@@ -1216,6 +1242,20 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof BudgetReportYearMonthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    "/accounts/$id/reports/super-returns": {
+      id: "/accounts/$id/reports/super-returns"
+      path: "/super-returns"
+      fullPath: "/accounts/$id/reports/super-returns"
+      preLoaderRoute: typeof AccountsIdReportsSuperReturnsRouteImport
+      parentRoute: typeof AccountsIdReportsRouteRoute
+    }
+    "/accounts/$id/reports/super-contributions": {
+      id: "/accounts/$id/reports/super-contributions"
+      path: "/super-contributions"
+      fullPath: "/accounts/$id/reports/super-contributions"
+      preLoaderRoute: typeof AccountsIdReportsSuperContributionsRouteImport
+      parentRoute: typeof AccountsIdReportsRouteRoute
+    }
     "/accounts/$id/reports/savings-interest": {
       id: "/accounts/$id/reports/savings-interest"
       path: "/savings-interest"
@@ -1385,6 +1425,8 @@ interface AccountsIdReportsRouteRouteChildren {
   AccountsIdReportsInOutRoute: typeof AccountsIdReportsInOutRoute
   AccountsIdReportsMonthlyBalancesRoute: typeof AccountsIdReportsMonthlyBalancesRoute
   AccountsIdReportsSavingsInterestRoute: typeof AccountsIdReportsSavingsInterestRoute
+  AccountsIdReportsSuperContributionsRoute: typeof AccountsIdReportsSuperContributionsRoute
+  AccountsIdReportsSuperReturnsRoute: typeof AccountsIdReportsSuperReturnsRoute
   AccountsIdReportsIndexRoute: typeof AccountsIdReportsIndexRoute
   AccountsIdReportsTagTrendTagIdRoute: typeof AccountsIdReportsTagTrendTagIdRoute
   AccountsIdReportsTagTrendIndexRoute: typeof AccountsIdReportsTagTrendIndexRoute
@@ -1401,6 +1443,9 @@ const AccountsIdReportsRouteRouteChildren: AccountsIdReportsRouteRouteChildren =
       AccountsIdReportsMonthlyBalancesRoute,
     AccountsIdReportsSavingsInterestRoute:
       AccountsIdReportsSavingsInterestRoute,
+    AccountsIdReportsSuperContributionsRoute:
+      AccountsIdReportsSuperContributionsRoute,
+    AccountsIdReportsSuperReturnsRoute: AccountsIdReportsSuperReturnsRoute,
     AccountsIdReportsIndexRoute: AccountsIdReportsIndexRoute,
     AccountsIdReportsTagTrendTagIdRoute: AccountsIdReportsTagTrendTagIdRoute,
     AccountsIdReportsTagTrendIndexRoute: AccountsIdReportsTagTrendIndexRoute,

@@ -738,6 +738,38 @@ export type StockValueReportPoint = {
     value: number;
 };
 
+export type SuperContributionsReport = {
+    employerTagId?: null | number;
+    employerTagName?: null | string;
+    personalTagId?: null | number;
+    personalTagName?: null | string;
+    employer: Array<TrendPoint>;
+    personal: Array<TrendPoint>;
+    employerTotal: number;
+    personalTotal: number;
+    accountId: string;
+    start: string;
+    end: string;
+};
+
+export type SuperReturnsReport = {
+    years: Array<SuperReturnsYear>;
+    accountId: string;
+    start: string;
+    end: string;
+};
+
+export type SuperReturnsYear = {
+    financialYear: number;
+    start: string;
+    end: string;
+    openingBalance: number;
+    closingBalance: number;
+    contributions: number;
+    return: number;
+    returnPercent?: null | number;
+};
+
 export type Tag = {
     colour?: null | HexColour;
     tags: Array<Tag>;
@@ -2859,6 +2891,46 @@ export type SavingsInterestReportResponses = {
 };
 
 export type SavingsInterestReportResponse = SavingsInterestReportResponses[keyof SavingsInterestReportResponses];
+
+export type SuperContributionsReportData = {
+    body?: never;
+    path: {
+        accountId: string;
+        start: string;
+        end: string;
+    };
+    query?: never;
+    url: '/api/accounts/{accountId}/reports/super-contributions/{start}/{end}';
+};
+
+export type SuperContributionsReportResponses = {
+    /**
+     * OK
+     */
+    200: SuperContributionsReport;
+};
+
+export type SuperContributionsReportResponse = SuperContributionsReportResponses[keyof SuperContributionsReportResponses];
+
+export type SuperReturnsReportData = {
+    body?: never;
+    path: {
+        accountId: string;
+        start: string;
+        end: string;
+    };
+    query?: never;
+    url: '/api/accounts/{accountId}/reports/super-returns/{start}/{end}';
+};
+
+export type SuperReturnsReportResponses = {
+    /**
+     * OK
+     */
+    200: SuperReturnsReport;
+};
+
+export type SuperReturnsReportResponse = SuperReturnsReportResponses[keyof SuperReturnsReportResponses];
 
 export type MonthlyBalancesReportData = {
     body?: never;

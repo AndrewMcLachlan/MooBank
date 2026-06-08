@@ -3828,6 +3828,104 @@
         }
       }
     },
+    "/api/accounts/{accountId}/reports/super-contributions/{start}/{end}": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "operationId": "super-contributions-report",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "start",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuperContributionsReport"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accounts/{accountId}/reports/super-returns/{start}/{end}": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "operationId": "super-returns-report",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "start",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuperReturnsReport"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/accounts/{accountId}/reports/monthly-balances": {
       "get": {
         "tags": [
@@ -8520,6 +8618,156 @@
           },
           "value": {
             "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "SuperContributionsReport": {
+        "required": [
+          "employer",
+          "personal",
+          "employerTotal",
+          "personalTotal",
+          "accountId",
+          "start",
+          "end"
+        ],
+        "type": "object",
+        "properties": {
+          "employerTagId": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "employerTagName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "personalTagId": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "personalTagName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "employer": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrendPoint"
+            }
+          },
+          "personal": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrendPoint"
+            }
+          },
+          "employerTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "personalTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "start": {
+            "type": "string",
+            "format": "date"
+          },
+          "end": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "SuperReturnsReport": {
+        "required": [
+          "years",
+          "accountId",
+          "start",
+          "end"
+        ],
+        "type": "object",
+        "properties": {
+          "years": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SuperReturnsYear"
+            }
+          },
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "start": {
+            "type": "string",
+            "format": "date"
+          },
+          "end": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "SuperReturnsYear": {
+        "required": [
+          "financialYear",
+          "start",
+          "end",
+          "openingBalance",
+          "closingBalance",
+          "contributions",
+          "return"
+        ],
+        "type": "object",
+        "properties": {
+          "financialYear": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "start": {
+            "type": "string",
+            "format": "date"
+          },
+          "end": {
+            "type": "string",
+            "format": "date"
+          },
+          "openingBalance": {
+            "type": "number",
+            "format": "double"
+          },
+          "closingBalance": {
+            "type": "number",
+            "format": "double"
+          },
+          "contributions": {
+            "type": "number",
+            "format": "double"
+          },
+          "return": {
+            "type": "number",
+            "format": "double"
+          },
+          "returnPercent": {
+            "type": [
+              "null",
+              "number"
+            ],
             "format": "double"
           }
         }
