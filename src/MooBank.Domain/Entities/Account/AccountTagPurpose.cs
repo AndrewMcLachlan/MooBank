@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Asm.MooBank.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,5 +13,11 @@ public class AccountTagPurpose
 
     public int TagId { get; set; }
 
-    public Tag.Tag Tag { get; set; } = null!;
+    [ForeignKey(nameof(TagId))]
+    [AllowNull]
+    public virtual Tag.Tag Tag { get; set; }
+
+    [ForeignKey(nameof(InstrumentId))]
+    [AllowNull]
+    public virtual LogicalAccount LogicalAccount { get; set; }
 }
