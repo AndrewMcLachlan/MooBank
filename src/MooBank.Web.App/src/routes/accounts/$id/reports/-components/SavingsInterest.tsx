@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "@tanstack/react-router";
 
 import type { ChartData } from "chart.js";
@@ -10,6 +10,7 @@ import { Amount } from "components";
 import { TagSelector } from "components/TagSelector";
 import { MiniPeriodSelector } from "components/MiniPeriodSelector";
 import { getPeriod } from "hooks";
+import { useTags } from "hooks/useTags";
 import type { Period } from "models/dateFns";
 import { useChartColours } from "utils/chartColours";
 import { useSavingsInterestReport } from "../../../-hooks/useSavingsInterestReport";
@@ -24,6 +25,14 @@ export const SavingsInterest: React.FC = () => {
 
     const [tagId, setTagId] = useLocalStorage<number | null>(`report-tag-${accountId}-interest`, null);
     const [period, setPeriod] = useState<Period>(getPeriod());
+
+    const tags = useTags();
+
+    useEffect(() => {
+        if (tagId !== null || !tags.data) return;
+        const interestTag = tags.data.find(t => t.name.trim().toLowerCase() === "interest");
+        if (interestTag) setTagId(interestTag.id);
+    }, [tagId, tags.data, setTagId]);
 
     const report = useSavingsInterestReport(accountId!, period?.startDate, period?.endDate, tagId ?? undefined);
 
