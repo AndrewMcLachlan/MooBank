@@ -34,6 +34,10 @@ internal class Accounts : EndpointGroupBase
             .WithNames("Update Account")
             .RequireAuthorization(Policies.GetInstrumentViewerPolicy("id"))
             .WithValidation<Update>();
+
+        builder.MapPutCommand<SetTagPurpose, LogicalAccount>("/{instrumentId}/tag-purposes/{purpose}")
+            .WithNames("Set Account Tag Purpose")
+            .RequireAuthorization(Policies.GetInstrumentOwnerPolicy("instrumentId"));
     }
 
     internal static Delegate CreateCreateHandler<TRequest, TResult>(string routeName, Func<TResult, object> getRouteParams) where TRequest : ICommand<TResult>

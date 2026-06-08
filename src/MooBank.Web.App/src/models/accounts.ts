@@ -17,6 +17,8 @@ export const emptyAccount: LogicalAccount = {
     includeInBudget: false,
     institutionAccounts: [],
     availableReports: [],
+    availableTagPurposes: [],
+    tagPurposes: [],
     isPrimary: false,
     virtualInstruments: [],
 };

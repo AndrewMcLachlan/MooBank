@@ -480,6 +480,8 @@ export type LogicalAccount = {
     includeInBudget: boolean;
     institutionAccounts: Array<InstitutionAccount>;
     availableReports: Array<ReportKind>;
+    availableTagPurposes: Array<TagPurpose>;
+    tagPurposes: Array<TagPurposeAssignment>;
     lastTransaction?: null | string;
     id: string;
     name: string;
@@ -596,8 +598,8 @@ export type Rule = {
 };
 
 export type SavingsInterestReport = {
-    tagId: number;
-    tagName: string;
+    tagId?: null | number;
+    tagName?: null | string;
     months: Array<TrendPoint>;
     total: number;
     monthlyAverage: number;
@@ -771,6 +773,13 @@ export type TagHierarchy = {
         [key: string]: number;
     };
     tags: Array<Tag>;
+};
+
+export type TagPurpose = 'Interest' | 'EmployerContribution' | 'PersonalContribution' | 'MortgageInterest';
+
+export type TagPurposeAssignment = {
+    purpose: TagPurpose;
+    tagId: number;
 };
 
 export type TagSettings = {
@@ -1061,6 +1070,27 @@ export type UpdateAccountResponses = {
 };
 
 export type UpdateAccountResponse = UpdateAccountResponses[keyof UpdateAccountResponses];
+
+export type SetAccountTagPurposeData = {
+    body?: never;
+    path: {
+        instrumentId: string;
+        purpose: TagPurpose;
+    };
+    query?: {
+        TagId?: number;
+    };
+    url: '/api/accounts/{instrumentId}/tag-purposes/{purpose}';
+};
+
+export type SetAccountTagPurposeResponses = {
+    /**
+     * OK
+     */
+    200: LogicalAccount;
+};
+
+export type SetAccountTagPurposeResponse = SetAccountTagPurposeResponses[keyof SetAccountTagPurposeResponses];
 
 export type GetInstitutionAccountData = {
     body?: never;
@@ -2795,13 +2825,12 @@ export type AllTagAverageReportResponse = AllTagAverageReportResponses[keyof All
 export type SavingsInterestReportData = {
     body?: never;
     path: {
-        tagId: number;
         accountId: string;
         start: string;
         end: string;
     };
     query?: never;
-    url: '/api/accounts/{accountId}/reports/savings-interest/{start}/{end}/{tagId}';
+    url: '/api/accounts/{accountId}/reports/savings-interest/{start}/{end}';
 };
 
 export type SavingsInterestReportResponses = {

@@ -13,6 +13,7 @@ import { AccountForm } from "../../-components/AccountForm";
 import { InstitutionAccountRow } from "./-components/InstitutionAccountRow";
 import { useState } from "react";
 import { InstitutionAccountEdit } from "./-components/InstitutionAccountEdit";
+import { ReportTagSettings } from "./-components/ReportTagSettings";
 import { ReprocessModal } from "./-components/ReprocessModal";
 
 export const Route = createFileRoute("/accounts/$id/manage/")({
@@ -77,6 +78,7 @@ function ManageAccount() {
     return (
         <AccountPage title="Manage" breadcrumbs={[{ text: "Manage", route: `/accounts/${account?.id}/manage` }]} actions={getActions(account?.controller)}>
             <AccountForm key={account?.id} account={account as LogicalAccount} />
+            <ReportTagSettings account={account as LogicalAccount} />
             {showReprocessModal && <ReprocessModal instrumentId={account?.id ?? id} onClose={() => setShowReprocessModal(false)} />}
             <SectionTable header="Bank Accounts" striped hover>
                 <thead>
