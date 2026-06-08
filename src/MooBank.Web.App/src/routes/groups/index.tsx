@@ -23,7 +23,7 @@ function ManageGroups() {
     const groupRows: React.ReactNode[] = data?.map(a => <GroupRow key={a.id} group={a} />) ?? [<LoadingTableRows key={1} rows={2} cols={3} />];
 
     return (
-        <Page title="Groups" breadcrumbs={[{ text: "Groups", route: "/groups" }]} actions={[<IconButton key="add" onClick={() => navigate({ to: "/groups/create" })} icon="plus">Create Group</IconButton>]}>
+        <Page title="Groups" breadcrumbs={[{ text: "Groups", route: "/groups" }]} actions={[<IconButton badge key="add" onClick={() => navigate({ to: "/groups/create" })} icon="plus">Create Group</IconButton>]}>
             <SectionTable hover striped>
                 <thead>
                     <tr>

@@ -49,12 +49,12 @@ function ManageAccount() {
     const getActions = (accountController: Controller) => {
 
         const actions = [
-            <IconButton key="aba" onClick={() => navigate({ to: `/accounts/${id}/manage/bank/create` })} icon="plus">Add Bank Account</IconButton>,
-            <IconButton key="ava" onClick={() => navigate({ to: `/accounts/${id}/manage/virtual/create` })} icon="plus">Add Virtual Account</IconButton>,
+            <IconButton badge key="aba" onClick={() => navigate({ to: `/accounts/${id}/manage/bank/create` })} icon="plus">Add Bank Account</IconButton>,
+            <IconButton badge key="ava" onClick={() => navigate({ to: `/accounts/${id}/manage/virtual/create` })} icon="plus">Add Virtual Account</IconButton>,
         ];
 
         if (accountController === "Import") {
-            actions.push(<IconButton key="rpt" onClick={() => reprocessClick(id)} icon="arrows-rotate">Reprocess Transactions</IconButton>);
+            actions.push(<IconButton badge key="rpt" onClick={() => reprocessClick(id)} icon="arrows-rotate">Reprocess Transactions</IconButton>);
         }
 
         return actions;
