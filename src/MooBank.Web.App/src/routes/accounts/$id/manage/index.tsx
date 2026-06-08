@@ -13,6 +13,7 @@ import { AccountForm } from "../../-components/AccountForm";
 import { InstitutionAccountRow } from "./-components/InstitutionAccountRow";
 import { useState } from "react";
 import { InstitutionAccountEdit } from "./-components/InstitutionAccountEdit";
+import { ReportTagSettings } from "./-components/ReportTagSettings";
 import { ReprocessModal } from "./-components/ReprocessModal";
 
 export const Route = createFileRoute("/accounts/$id/manage/")({
@@ -48,12 +49,12 @@ function ManageAccount() {
     const getActions = (accountController: Controller) => {
 
         const actions = [
-            <IconButton key="aba" onClick={() => navigate({ to: `/accounts/${id}/manage/bank/create` })} icon="plus">Add Bank Account</IconButton>,
-            <IconButton key="ava" onClick={() => navigate({ to: `/accounts/${id}/manage/virtual/create` })} icon="plus">Add Virtual Account</IconButton>,
+            <IconButton badge key="aba" onClick={() => navigate({ to: `/accounts/${id}/manage/bank/create` })} icon="plus">Add Bank Account</IconButton>,
+            <IconButton badge key="ava" onClick={() => navigate({ to: `/accounts/${id}/manage/virtual/create` })} icon="plus">Add Virtual Account</IconButton>,
         ];
 
         if (accountController === "Import") {
-            actions.push(<IconButton key="rpt" onClick={() => reprocessClick(id)} icon="arrows-rotate">Reprocess Transactions</IconButton>);
+            actions.push(<IconButton badge key="rpt" onClick={() => reprocessClick(id)} icon="arrows-rotate">Reprocess Transactions</IconButton>);
         }
 
         return actions;
@@ -77,6 +78,7 @@ function ManageAccount() {
     return (
         <AccountPage title="Manage" breadcrumbs={[{ text: "Manage", route: `/accounts/${account?.id}/manage` }]} actions={getActions(account?.controller)}>
             <AccountForm key={account?.id} account={account as LogicalAccount} />
+            <ReportTagSettings account={account as LogicalAccount} />
             {showReprocessModal && <ReprocessModal instrumentId={account?.id ?? id} onClose={() => setShowReprocessModal(false)} />}
             <SectionTable header="Bank Accounts" striped hover>
                 <thead>

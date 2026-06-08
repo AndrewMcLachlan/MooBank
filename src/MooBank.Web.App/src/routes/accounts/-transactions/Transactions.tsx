@@ -36,13 +36,13 @@ export const Transactions: React.FC = () => {
         case "Virtual":
             actions = [
                 ...actions,
-                <IconButton key="add" variant="primary" icon="plus" onClick={() => setShow(true)}>Add</IconButton>,
+                <IconButton badge key="add" variant="primary" icon="plus" onClick={() => setShow(true)}>Add</IconButton>,
             ];
             break;
         case "Import":
             actions = [
                 ...actions,
-                <IconButton key="import" variant="primary" icon="upload" onClick={() => setShowImport(true)}>Import</IconButton>,
+                <IconButton badge key="import" variant="primary" icon="upload" onClick={() => setShowImport(true)}>Import</IconButton>,
             ];
             break;
         default:

@@ -117,6 +117,93 @@
         }
       }
     },
+    "/api/accounts/{instrumentId}/tag-purposes/{purpose}/{tagId}": {
+      "put": {
+        "tags": [
+          "Accounts"
+        ],
+        "operationId": "set-account-tag-purpose",
+        "parameters": [
+          {
+            "name": "instrumentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "purpose",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TagPurpose"
+            }
+          },
+          {
+            "name": "tagId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogicalAccount"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accounts/{instrumentId}/tag-purposes/{purpose}": {
+      "delete": {
+        "tags": [
+          "Accounts"
+        ],
+        "operationId": "delete-account-tag-purpose",
+        "parameters": [
+          {
+            "name": "instrumentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "purpose",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TagPurpose"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogicalAccount"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/accounts/{instrumentId}/institution-accounts/{id}": {
       "get": {
         "tags": [
@@ -3692,6 +3779,55 @@
         }
       }
     },
+    "/api/accounts/{accountId}/reports/savings-interest/{start}/{end}": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "operationId": "savings-interest-report",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "start",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavingsInterestReport"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/accounts/{accountId}/reports/monthly-balances": {
       "get": {
         "tags": [
@@ -7153,6 +7289,8 @@
           "includeInBudget",
           "institutionAccounts",
           "availableReports",
+          "availableTagPurposes",
+          "tagPurposes",
           "balanceDate",
           "virtualInstruments"
         ],
@@ -7180,6 +7318,18 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ReportKind"
+            }
+          },
+          "availableTagPurposes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagPurpose"
+            }
+          },
+          "tagPurposes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagPurposeAssignment"
             }
           },
           "lastTransaction": {
@@ -7712,6 +7862,58 @@
             "items": {
               "$ref": "#/components/schemas/Tag"
             }
+          }
+        }
+      },
+      "SavingsInterestReport": {
+        "required": [
+          "months",
+          "total",
+          "monthlyAverage",
+          "accountId",
+          "start",
+          "end"
+        ],
+        "type": "object",
+        "properties": {
+          "tagId": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "tagName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "months": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrendPoint"
+            }
+          },
+          "total": {
+            "type": "number",
+            "format": "double"
+          },
+          "monthlyAverage": {
+            "type": "number",
+            "format": "double"
+          },
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "start": {
+            "type": "string",
+            "format": "date"
+          },
+          "end": {
+            "type": "string",
+            "format": "date"
           }
         }
       },
@@ -8461,6 +8663,30 @@
             "items": {
               "$ref": "#/components/schemas/Tag"
             }
+          }
+        }
+      },
+      "TagPurpose": {
+        "enum": [
+          "Interest",
+          "EmployerContribution",
+          "PersonalContribution",
+          "MortgageInterest"
+        ]
+      },
+      "TagPurposeAssignment": {
+        "required": [
+          "purpose",
+          "tagId"
+        ],
+        "type": "object",
+        "properties": {
+          "purpose": {
+            "$ref": "#/components/schemas/TagPurpose"
+          },
+          "tagId": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },

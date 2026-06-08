@@ -13,15 +13,15 @@ export const ReportsPage: React.FC<PropsWithChildren<ReportsPageProps>> = ({ chi
     const location = useLocation();
     const navigate = useNavigate();
 
-    const available = "availableReports" in account ? account.availableReports : undefined;
+    const available = account && "availableReports" in account ? account.availableReports : undefined;
     const isAllowed = kind === undefined || !available || available.length === 0 || available.includes(kind);
 
     useEffect(() => {
-        if (kind === undefined || !available || available.length === 0) return;
+        if (kind === undefined || !account || !available || available.length === 0) return;
         if (!available.includes(kind)) {
             navigate({ to: getDefaultReportRoute(account.id, available), replace: true });
         }
-    }, [kind, account.id, available, navigate]);
+    }, [kind, account, available, navigate]);
 
     if (!account) return null;
     if (!isAllowed) return null;

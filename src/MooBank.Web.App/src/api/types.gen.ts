@@ -480,6 +480,8 @@ export type LogicalAccount = {
     includeInBudget: boolean;
     institutionAccounts: Array<InstitutionAccount>;
     availableReports: Array<ReportKind>;
+    availableTagPurposes: Array<TagPurpose>;
+    tagPurposes: Array<TagPurposeAssignment>;
     lastTransaction?: null | string;
     id: string;
     name: string;
@@ -593,6 +595,17 @@ export type Rule = {
     contains: string;
     description?: null | string;
     tags: Array<Tag>;
+};
+
+export type SavingsInterestReport = {
+    tagId?: null | number;
+    tagName?: null | string;
+    months: Array<TrendPoint>;
+    total: number;
+    monthlyAverage: number;
+    accountId: string;
+    start: string;
+    end: string;
 };
 
 export type ScheduleFrequency = 'Daily' | 'Weekly' | 'Monthly' | 'Yearly' | 'Fortnightly';
@@ -760,6 +773,13 @@ export type TagHierarchy = {
         [key: string]: number;
     };
     tags: Array<Tag>;
+};
+
+export type TagPurpose = 'Interest' | 'EmployerContribution' | 'PersonalContribution' | 'MortgageInterest';
+
+export type TagPurposeAssignment = {
+    purpose: TagPurpose;
+    tagId: number;
 };
 
 export type TagSettings = {
@@ -1050,6 +1070,45 @@ export type UpdateAccountResponses = {
 };
 
 export type UpdateAccountResponse = UpdateAccountResponses[keyof UpdateAccountResponses];
+
+export type SetAccountTagPurposeData = {
+    body?: never;
+    path: {
+        instrumentId: string;
+        purpose: TagPurpose;
+        tagId: number;
+    };
+    query?: never;
+    url: '/api/accounts/{instrumentId}/tag-purposes/{purpose}/{tagId}';
+};
+
+export type SetAccountTagPurposeResponses = {
+    /**
+     * OK
+     */
+    200: LogicalAccount;
+};
+
+export type SetAccountTagPurposeResponse = SetAccountTagPurposeResponses[keyof SetAccountTagPurposeResponses];
+
+export type DeleteAccountTagPurposeData = {
+    body?: never;
+    path: {
+        instrumentId: string;
+        purpose: TagPurpose;
+    };
+    query?: never;
+    url: '/api/accounts/{instrumentId}/tag-purposes/{purpose}';
+};
+
+export type DeleteAccountTagPurposeResponses = {
+    /**
+     * OK
+     */
+    200: LogicalAccount;
+};
+
+export type DeleteAccountTagPurposeResponse = DeleteAccountTagPurposeResponses[keyof DeleteAccountTagPurposeResponses];
 
 export type GetInstitutionAccountData = {
     body?: never;
@@ -2780,6 +2839,26 @@ export type AllTagAverageReportResponses = {
 };
 
 export type AllTagAverageReportResponse = AllTagAverageReportResponses[keyof AllTagAverageReportResponses];
+
+export type SavingsInterestReportData = {
+    body?: never;
+    path: {
+        accountId: string;
+        start: string;
+        end: string;
+    };
+    query?: never;
+    url: '/api/accounts/{accountId}/reports/savings-interest/{start}/{end}';
+};
+
+export type SavingsInterestReportResponses = {
+    /**
+     * OK
+     */
+    200: SavingsInterestReport;
+};
+
+export type SavingsInterestReportResponse = SavingsInterestReportResponses[keyof SavingsInterestReportResponses];
 
 export type MonthlyBalancesReportData = {
     body?: never;
