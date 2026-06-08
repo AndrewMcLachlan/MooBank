@@ -84,37 +84,6 @@ public class SetTagPurposeTests
     }
 
     /// <summary>
-    /// Given an account with an existing purpose assignment
-    /// When TagId is null
-    /// Then the assignment is removed.
-    /// </summary>
-    [Fact]
-    public async Task Handle_NullTagId_RemovesAssignment()
-    {
-        // Arrange
-        var accountId = Guid.NewGuid();
-        var entity = TestEntities.CreateLogicalAccount(id: accountId);
-        entity.SetTagPurpose(TagPurpose.Interest, 7);
-
-        _mocks.LogicalAccountRepositoryMock
-            .Setup(r => r.Get(accountId, It.IsAny<AccountDetailsSpecification>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(entity);
-
-        var handler = new SetTagPurposeHandler(
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.LogicalAccountRepositoryMock.Object,
-            _mocks.CurrencyConverterMock.Object);
-
-        var command = new SetTagPurpose { InstrumentId = accountId, Purpose = TagPurpose.Interest, TagId = null };
-
-        // Act
-        await handler.Handle(command, TestContext.Current.CancellationToken);
-
-        // Assert
-        Assert.Empty(entity.TagPurposes);
-    }
-
-    /// <summary>
     /// Given a valid command
     /// When the handler runs
     /// Then SaveChanges is invoked exactly once.

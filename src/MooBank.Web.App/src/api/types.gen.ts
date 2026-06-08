@@ -1076,11 +1076,10 @@ export type SetAccountTagPurposeData = {
     path: {
         instrumentId: string;
         purpose: TagPurpose;
+        tagId: number;
     };
-    query?: {
-        TagId?: number;
-    };
-    url: '/api/accounts/{instrumentId}/tag-purposes/{purpose}';
+    query?: never;
+    url: '/api/accounts/{instrumentId}/tag-purposes/{purpose}/{tagId}';
 };
 
 export type SetAccountTagPurposeResponses = {
@@ -1091,6 +1090,25 @@ export type SetAccountTagPurposeResponses = {
 };
 
 export type SetAccountTagPurposeResponse = SetAccountTagPurposeResponses[keyof SetAccountTagPurposeResponses];
+
+export type DeleteAccountTagPurposeData = {
+    body?: never;
+    path: {
+        instrumentId: string;
+        purpose: TagPurpose;
+    };
+    query?: never;
+    url: '/api/accounts/{instrumentId}/tag-purposes/{purpose}';
+};
+
+export type DeleteAccountTagPurposeResponses = {
+    /**
+     * OK
+     */
+    200: LogicalAccount;
+};
+
+export type DeleteAccountTagPurposeResponse = DeleteAccountTagPurposeResponses[keyof DeleteAccountTagPurposeResponses];
 
 export type GetInstitutionAccountData = {
     body?: never;

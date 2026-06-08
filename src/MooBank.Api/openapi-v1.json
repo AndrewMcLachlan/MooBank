@@ -117,7 +117,7 @@
         }
       }
     },
-    "/api/accounts/{instrumentId}/tag-purposes/{purpose}": {
+    "/api/accounts/{instrumentId}/tag-purposes/{purpose}/{tagId}": {
       "put": {
         "tags": [
           "Accounts"
@@ -142,11 +142,51 @@
             }
           },
           {
-            "name": "TagId",
-            "in": "query",
+            "name": "tagId",
+            "in": "path",
+            "required": true,
             "schema": {
               "type": "integer",
               "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogicalAccount"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accounts/{instrumentId}/tag-purposes/{purpose}": {
+      "delete": {
+        "tags": [
+          "Accounts"
+        ],
+        "operationId": "delete-account-tag-purpose",
+        "parameters": [
+          {
+            "name": "instrumentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "purpose",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TagPurpose"
             }
           }
         ],

@@ -62,7 +62,13 @@ public class LogicalAccount(Guid id, IEnumerable<InstitutionAccount> institution
         }
         else
         {
-            _tagPurposes.Add(new AccountTagPurpose { InstrumentId = Id, Purpose = purpose, TagId = tagId.Value });
+            _tagPurposes.Add(new AccountTagPurpose
+            {
+                InstrumentId = Id,
+                Purpose = purpose,
+                TagId = tagId.Value,
+                LogicalAccount = this,
+            });
         }
     }
 }

@@ -35,8 +35,12 @@ internal class Accounts : EndpointGroupBase
             .RequireAuthorization(Policies.GetInstrumentViewerPolicy("id"))
             .WithValidation<Update>();
 
-        builder.MapPutCommand<SetTagPurpose, LogicalAccount>("/{instrumentId}/tag-purposes/{purpose}")
+        builder.MapPutCommand<SetTagPurpose, LogicalAccount>("/{instrumentId}/tag-purposes/{purpose}/{tagId}")
             .WithNames("Set Account Tag Purpose")
+            .RequireAuthorization(Policies.GetInstrumentViewerPolicy("instrumentId"));
+
+        builder.MapDelete<DeleteTagPurpose, LogicalAccount>("/{instrumentId}/tag-purposes/{purpose}")
+            .WithNames("Delete Account Tag Purpose")
             .RequireAuthorization(Policies.GetInstrumentViewerPolicy("instrumentId"));
     }
 
