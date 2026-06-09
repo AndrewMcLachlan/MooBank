@@ -21,7 +21,7 @@ const calculateColourClass = (amount: number, positiveColour: boolean, negativeC
     }
 }
 
-export const Amount: React.FC<AmountProps> = ({ amount, positiveColour = false, negativeColour = false, plus = false, minus = false, creditdebit = false, prefix = "", suffix = "", decimalPlaces = 2, zeroShowsAs = "positive", currencyCode }) => {
+export const Amount: React.FC<AmountProps> = ({ amount, positiveColour = false, negativeColour = false, plus = false, minus = false, creditdebit = false, prefix = "", suffix = "", decimalPlaces = 2, zeroShowsAs = "neutral", currencyCode }) => {
 
     const negative = amount < 0;
     const cr_dr = creditdebit ? (negative ? "DR" : "CR") : "";
