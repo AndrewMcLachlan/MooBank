@@ -3908,6 +3908,55 @@
         }
       }
     },
+    "/api/accounts/{accountId}/reports/principal-vs-interest/{start}/{end}": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "operationId": "principal-vs-interest-report",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "start",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrincipalVsInterestReport"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/accounts/{accountId}/reports/monthly-balances": {
       "get": {
         "tags": [
@@ -7822,6 +7871,65 @@
           "Expense",
           "Income"
         ]
+      },
+      "PrincipalVsInterestReport": {
+        "required": [
+          "interest",
+          "principal",
+          "interestTotal",
+          "principalTotal",
+          "accountId",
+          "start",
+          "end"
+        ],
+        "type": "object",
+        "properties": {
+          "interestTagId": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "interestTagName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "interest": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrendPoint"
+            }
+          },
+          "principal": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrendPoint"
+            }
+          },
+          "interestTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "principalTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "start": {
+            "type": "string",
+            "format": "date"
+          },
+          "end": {
+            "type": "string",
+            "format": "date"
+          }
+        }
       },
       "RecurringTransaction": {
         "required": [

@@ -34,6 +34,7 @@ public static class AccountTypeReports
     private static readonly IReadOnlyList<ReportKind> Mortgage =
     [
         ReportKind.MonthlyBalances,
+        ReportKind.PrincipalVsInterest,
         ReportKind.TagTrend,
         ReportKind.AllTags,
     ];
@@ -57,6 +58,7 @@ public static class AccountTypeReports
     private static readonly IReadOnlyList<ReportKind> Loan =
     [
         ReportKind.MonthlyBalances,
+        ReportKind.PrincipalVsInterest,
         ReportKind.TagTrend,
         ReportKind.AllTags,
     ];

@@ -565,6 +565,18 @@ export type PlannedItemDateMode = 'FixedDate' | 'Schedule' | 'FlexibleWindow';
 
 export type PlannedItemType = 'Expense' | 'Income';
 
+export type PrincipalVsInterestReport = {
+    interestTagId?: null | number;
+    interestTagName?: null | string;
+    interest: Array<TrendPoint>;
+    principal: Array<TrendPoint>;
+    interestTotal: number;
+    principalTotal: number;
+    accountId: string;
+    start: string;
+    end: string;
+};
+
 export type RecurringTransaction = {
     id: string;
     virtualAccountId: string;
@@ -2929,6 +2941,26 @@ export type SuperReturnsReportResponses = {
 };
 
 export type SuperReturnsReportResponse = SuperReturnsReportResponses[keyof SuperReturnsReportResponses];
+
+export type PrincipalVsInterestReportData = {
+    body?: never;
+    path: {
+        accountId: string;
+        start: string;
+        end: string;
+    };
+    query?: never;
+    url: '/api/accounts/{accountId}/reports/principal-vs-interest/{start}/{end}';
+};
+
+export type PrincipalVsInterestReportResponses = {
+    /**
+     * OK
+     */
+    200: PrincipalVsInterestReport;
+};
+
+export type PrincipalVsInterestReportResponse = PrincipalVsInterestReportResponses[keyof PrincipalVsInterestReportResponses];
 
 export type MonthlyBalancesReportData = {
     body?: never;

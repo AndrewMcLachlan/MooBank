@@ -18,6 +18,7 @@ const descriptors: Partial<Record<ReportKind, ReportDescriptor>> = {
     SavingsInterest: { text: "Interest Received", image: <Trendline />, path: "savings-interest" },
     SuperContributions: { text: "Contributions", image: <BarChart />, path: "super-contributions" },
     SuperReturns: { text: "Annual Returns", image: <Trendline />, path: "super-returns" },
+    PrincipalVsInterest: { text: "Principal vs Interest", image: <BarChart />, path: "principal-vs-interest" },
 };
 
 export const getReportNavItems = (accountId: string, availableReports: ReportKind[] | undefined): NavItem[] => {
