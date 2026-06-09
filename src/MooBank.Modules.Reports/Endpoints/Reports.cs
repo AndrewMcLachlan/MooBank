@@ -47,6 +47,12 @@ internal class Reports : EndpointGroupBase
         builder.MapQuery<GetSavingsInterestReport, SavingsInterestReport>("savings-interest/{start}/{end}")
             .WithNames("Savings Interest Report");
 
+        builder.MapQuery<GetSuperContributionsReport, SuperContributionsReport>("super-contributions/{start}/{end}")
+            .WithNames("Super Contributions Report");
+
+        builder.MapQuery<GetSuperReturnsReport, SuperReturnsReport>("super-returns")
+            .WithNames("Super Returns Report");
+
         builder.MapQuery<GetMonthlyBalancesReport, MonthlyBalancesReport>("monthly-balances")
             .WithNames("Monthly Balances Report");
 
