@@ -12,10 +12,14 @@ public static class AccountTagPurposes
         TagPurpose.PersonalContribution,
     ];
 
+    private static readonly IReadOnlyList<TagPurpose> MortgageOrLoan = [TagPurpose.MortgageInterest];
+
     public static IReadOnlyList<TagPurpose> For(AccountType accountType) => accountType switch
     {
         AccountType.Savings => Savings,
         AccountType.Superannuation => Superannuation,
+        AccountType.Mortgage => MortgageOrLoan,
+        AccountType.Loan => MortgageOrLoan,
         _ => Empty,
     };
 }
