@@ -3,7 +3,7 @@ import React from "react";
 import type { ChartData } from "chart.js";
 import { Bar } from "react-chartjs-2";
 
-import { Section } from "@andrewmclachlan/moo-ds";
+import { Section, SectionTable } from "@andrewmclachlan/moo-ds";
 
 import type { LogicalAccount } from "api/types.gen";
 import { Amount } from "components";
@@ -54,35 +54,33 @@ export const SuperReturns: React.FC = () => {
                 </Section>
             }
             {anyConfigured &&
-                <Section className="report" header="By Financial Year" headerSize={3}>
-                    <table className="returns-table">
-                        <thead>
-                            <tr>
-                                <th>FY</th>
-                                <th>Opening</th>
-                                <th>Contributions</th>
-                                <th>Closing</th>
-                                <th>Return</th>
-                                <th>Return %</th>
+                <SectionTable header="By Financial Year" striped>
+                    <thead>
+                        <tr>
+                            <th>FY</th>
+                            <th>Opening</th>
+                            <th>Contributions</th>
+                            <th>Closing</th>
+                            <th>Return</th>
+                            <th>Return %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {years.map(y => (
+                            <tr key={y.financialYear}>
+                                <td>FY{y.financialYear}</td>
+                                <td><Amount amount={y.openingBalance} prefix="$" /></td>
+                                <td><Amount amount={y.contributions} prefix="$" /></td>
+                                <td><Amount amount={y.closingBalance} prefix="$" /></td>
+                                <td><Amount amount={y.return} prefix="$" positiveColour negativeColour /></td>
+                                <td>{y.returnPercent !== null && y.returnPercent !== undefined ? `${y.returnPercent}%` : "—"}</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {years.map(y => (
-                                <tr key={y.financialYear}>
-                                    <td>FY{y.financialYear}</td>
-                                    <td><Amount amount={y.openingBalance} prefix="$" /></td>
-                                    <td><Amount amount={y.contributions} prefix="$" /></td>
-                                    <td><Amount amount={y.closingBalance} prefix="$" /></td>
-                                    <td><Amount amount={y.return} prefix="$" positiveColour negativeColour /></td>
-                                    <td>{y.returnPercent !== null && y.returnPercent !== undefined ? `${y.returnPercent}%` : "—"}</td>
-                                </tr>
-                            ))}
-                            {years.length === 0 && (
-                                <tr><td colSpan={6}>Not enough balance history yet — needs at least two annual entries.</td></tr>
-                            )}
-                        </tbody>
-                    </table>
-                </Section>
+                        ))}
+                        {years.length === 0 && (
+                            <tr><td colSpan={6}>Not enough balance history yet — needs at least two annual entries.</td></tr>
+                        )}
+                    </tbody>
+                </SectionTable>
             }
         </ReportsPage>
     );
