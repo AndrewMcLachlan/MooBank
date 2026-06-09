@@ -69,10 +69,10 @@ export const SuperReturns: React.FC = () => {
                         {years.map(y => (
                             <tr key={y.financialYear}>
                                 <td>FY{y.financialYear}</td>
-                                <td><Amount amount={y.openingBalance} prefix="$" /></td>
-                                <td><Amount amount={y.contributions} prefix="$" /></td>
-                                <td><Amount amount={y.closingBalance} prefix="$" /></td>
-                                <td><Amount amount={y.return} prefix="$" positiveColour negativeColour /></td>
+                                <td><Amount amount={y.openingBalance} currencyCode={account?.currency} /></td>
+                                <td><Amount amount={y.contributions} currencyCode={account?.currency} /></td>
+                                <td><Amount amount={y.closingBalance} currencyCode={account?.currency} /></td>
+                                <td><Amount amount={y.return} currencyCode={account?.currency} positiveColour negativeColour /></td>
                                 <td>{y.returnPercent !== null && y.returnPercent !== undefined ? `${y.returnPercent}%` : "—"}</td>
                             </tr>
                         ))}

@@ -74,8 +74,8 @@ export const SuperContributions: React.FC = () => {
                         }} />
                     </Section>
                     <Section className="averages">
-                        <p>Employer total: <Amount amount={report.data?.employerTotal ?? 0} prefix="$" /></p>
-                        <p>Personal total: <Amount amount={report.data?.personalTotal ?? 0} prefix="$" /></p>
+                        <p>Employer total: <Amount amount={report.data?.employerTotal ?? 0} currencyCode={account?.currency} /></p>
+                        <p>Personal total: <Amount amount={report.data?.personalTotal ?? 0} currencyCode={account?.currency} /></p>
                     </Section>
                 </>
             }
