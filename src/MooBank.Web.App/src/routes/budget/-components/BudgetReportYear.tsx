@@ -4,7 +4,7 @@ import type { ChartData } from "chart.js";
 import { Bar } from "react-chartjs-2";
 
 import { Section } from "@andrewmclachlan/moo-ds";
-import { useChartColours } from "utils/chartColours";
+import { overUnderBudgetColours, useChartColours } from "utils/chartColours";
 import { useBudgetReport } from "../-hooks/useBudgetReport";
 
 
@@ -14,25 +14,31 @@ export const BudgetReportYear: React.FC<BudgetReportYearProps> = ({ year, onDril
 
     const report = useBudgetReport(year);
 
+    const budgeted = report.data?.items.map(i => i.budgetedAmount) ?? [];
+    const actual = report.data?.items.map(i => i.actual ?? 0) ?? [];
+
     const dataset: ChartData<"bar", number[], string> = {
         labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
 
         datasets: [{
             label: "Budgeted",
-            data: report.data?.items.map(i => i.budgetedAmount) ?? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            backgroundColor: colours.income,
+            data: budgeted,
+            backgroundColor: colours.neutralTrend,
         }, {
             label: "Actual",
-            data: report.data?.items.map(i => i.actual ?? 0) ?? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            backgroundColor: colours.expenses,
+            data: actual,
+            backgroundColor: overUnderBudgetColours(actual, budgeted, colours),
         }]
     };
 
     return (
-        <Section className="report" style={{ width: "2000px ! important" }}>
+        <Section className="report budget-report">
             <h3>Budget Report</h3>
+            <div className="budget-report-chart">
             <Bar id="budget-report" data={dataset} options={{
+                maintainAspectRatio: false,
                 plugins: {
+                    legend: { position: "bottom" },
                     tooltip: {
                         mode: "point",
                         intersect: false,
@@ -44,8 +50,12 @@ export const BudgetReportYear: React.FC<BudgetReportYearProps> = ({ year, onDril
                 },
                 scales: {
                     x: {
-                        stacked: false
-                    }
+                        stacked: false,
+                        grid: { color: colours.grid },
+                    },
+                    y: {
+                        grid: { color: colours.grid },
+                    },
                 },
                 onClick: (_event, elements) => {
                     if (elements.length !== 1) return;
@@ -53,6 +63,7 @@ export const BudgetReportYear: React.FC<BudgetReportYearProps> = ({ year, onDril
                 },
             }}
             />
+            </div>
         </Section>
     );
 };

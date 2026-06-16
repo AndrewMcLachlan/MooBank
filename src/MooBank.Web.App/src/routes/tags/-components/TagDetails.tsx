@@ -16,6 +16,7 @@ export const TransactionTagDetails: React.FC<TransactionTagDetailsProps> = (prop
 
     const updateExcludeFromReporting = (excludeFromReporting: boolean) => save({ ...tag, settings: { ...tag.settings, excludeFromReporting } });
     const updateAllowSmoothing = (allowSmoothing: boolean) => save({ ...tag, settings: { ...tag.settings, applySmoothing: allowSmoothing } });
+    const updateBudgetCategory = (budgetCategory: boolean) => save({ ...tag, settings: { ...tag.settings, budgetCategory } });
     const updateName = (name: string) => save({ ...tag, name });
 
     const save = (newTag: Tag) => {
@@ -38,6 +39,8 @@ export const TransactionTagDetails: React.FC<TransactionTagDetailsProps> = (prop
                     <Input.Switch id="exclude" checked={tag.settings?.excludeFromReporting} onChange={(e) => updateExcludeFromReporting(e.currentTarget.checked)} />
                     <label htmlFor="smooth">Allow Smoothing<Tooltip id="smoothing">Provides an option to average non-monthly transactions in trend reports</Tooltip></label>
                     <Input.Switch id="smooth" checked={tag.settings?.applySmoothing} onChange={(e) => updateAllowSmoothing(e.currentTarget.checked)} />
+                    <label htmlFor="budget-category">Budget Category<Tooltip id="budget-category-tip">When generating a budget, spending from child tags rolls up into this tag</Tooltip></label>
+                    <Input.Switch id="budget-category" checked={tag.settings?.budgetCategory} onChange={(e) => updateBudgetCategory(e.currentTarget.checked)} />
                     <label htmlFor="tags">Tags</label>
                     <TransactionTagTransactionTagPanel as="div" id="tags" tag={tag} alwaysShowEditPanel />
                 </section>

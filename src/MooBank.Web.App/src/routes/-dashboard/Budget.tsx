@@ -18,17 +18,20 @@ export const BudgetWidget: React.FC = () => {
 
     const { data: report, isLoading, isError } = useBudgetReportForMonth(lastMonth.startDate.getFullYear(), lastMonth.startDate.getMonth());
 
+    const budgeted = report?.budgetedAmount ?? 0;
+    const actual = Math.abs(report?.actual ?? 0);
+
     const dataset: ChartData<"bar", number[], string> = {
         labels: [formatPeriod(period?.startDate, period?.endDate)],
 
         datasets: [{
             label: "Budget",
-            data: [report?.budgetedAmount ?? 0],
-            backgroundColor: colours.income,
+            data: [budgeted],
+            backgroundColor: colours.neutralTrend,
         }, {
             label: "Actual",
-            data: [Math.abs(report?.actual ?? 0)],
-            backgroundColor: colours.expenses,
+            data: [actual],
+            backgroundColor: actual > budgeted ? colours.expenses : colours.income,
         }]
     };
 
