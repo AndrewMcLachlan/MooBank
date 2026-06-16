@@ -38,6 +38,10 @@ public class Budget : EndpointGroupBase
             .WithNames("Create Budget Line")
             .Produces<BudgetLine>();
 
+        routeGroupBuilder.MapCommand<GenerateBudget, Models.Budget>("/{year}/generate")
+            .WithNames("Generate Budget")
+            .Produces<Models.Budget>();
+
         routeGroupBuilder.MapPatchCommand<UpdateLine, BudgetLine>("/{year}/lines/{id}")
             .WithNames("Update Budget Line");
 

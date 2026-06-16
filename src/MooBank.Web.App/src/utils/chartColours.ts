@@ -15,6 +15,16 @@ export const useChartColours = () => {
     };
 }
 
+/**
+ * Per-bar colours for an "Actual" series compared against a "Budgeted" series:
+ * over budget shows as the expense colour, on/under budget as the income colour.
+ */
+export const overUnderBudgetColours = (
+    actuals: readonly number[],
+    budgeted: readonly number[],
+    colours: { income: string; expenses: string },
+) => actuals.map((actual, i) => Math.abs(actual) > (budgeted[i] ?? 0) ? colours.expenses : colours.income);
+
 export const chartColours = [
     "#003f5c",
     "#2f4b7c",

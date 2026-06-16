@@ -829,6 +829,7 @@ export type TagPurposeAssignment = {
 export type TagSettings = {
     applySmoothing: boolean;
     excludeFromReporting: boolean;
+    budgetCategory: boolean;
 };
 
 export type TagTrendReport = {
@@ -960,6 +961,7 @@ export type UpdateTag = {
     colour: null | HexColour;
     excludeFromReporting: boolean;
     applySmoothing: boolean;
+    budgetCategory?: boolean;
 };
 
 export type UpdateTransaction = {
@@ -1770,6 +1772,24 @@ export type CreateBudgetLineResponses = {
 };
 
 export type CreateBudgetLineResponse = CreateBudgetLineResponses[keyof CreateBudgetLineResponses];
+
+export type GenerateBudgetData = {
+    body?: never;
+    path: {
+        year: number;
+    };
+    query?: never;
+    url: '/api/budget/{year}/generate';
+};
+
+export type GenerateBudgetResponses = {
+    /**
+     * OK
+     */
+    200: Budget;
+};
+
+export type GenerateBudgetResponse = GenerateBudgetResponses[keyof GenerateBudgetResponses];
 
 export type GetBudgetAmountForTagData = {
     body?: never;

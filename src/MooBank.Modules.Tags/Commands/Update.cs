@@ -21,6 +21,7 @@ internal sealed class UpdateHandler(ITagRepository tagRepository, IUnitOfWork un
         tag.Colour = request.Tag.Colour;
         tag.Settings.ExcludeFromReporting = request.Tag.ExcludeFromReporting;
         tag.Settings.ApplySmoothing = request.Tag.ApplySmoothing;
+        tag.Settings.BudgetCategory = request.Tag.BudgetCategory;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

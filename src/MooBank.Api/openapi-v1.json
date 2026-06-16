@@ -1514,6 +1514,37 @@
         }
       }
     },
+    "/api/budget/{year}/generate": {
+      "post": {
+        "tags": [
+          "Budget"
+        ],
+        "operationId": "generate-budget",
+        "parameters": [
+          {
+            "name": "year",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int16"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Budget"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/budget/tag/{tagId}": {
       "get": {
         "tags": [
@@ -9031,7 +9062,8 @@
       "TagSettings": {
         "required": [
           "applySmoothing",
-          "excludeFromReporting"
+          "excludeFromReporting",
+          "budgetCategory"
         ],
         "type": "object",
         "properties": {
@@ -9039,6 +9071,9 @@
             "type": "boolean"
           },
           "excludeFromReporting": {
+            "type": "boolean"
+          },
+          "budgetCategory": {
             "type": "boolean"
           }
         }
@@ -9562,7 +9597,8 @@
           "name",
           "colour",
           "excludeFromReporting",
-          "applySmoothing"
+          "applySmoothing",
+          "budgetCategory"
         ],
         "type": "object",
         "properties": {
@@ -9584,6 +9620,10 @@
           },
           "applySmoothing": {
             "type": "boolean"
+          },
+          "budgetCategory": {
+            "type": "boolean",
+            "default": false
           }
         }
       },
