@@ -17,11 +17,7 @@
     "@andrewmclachlan/moo-app": "^5.1.194",
     "@andrewmclachlan/moo-ds": "^5.1.194",
     "@andrewmclachlan/moo-icons": "^5.1.194",
-<<<<<<< feature/budget-improvements
-    "@azure/msal-react": "^5.4.3",
-=======
     "@azure/msal-react": "^5.4.4",
->>>>>>> main
     "@fortawesome/fontawesome-svg-core": "^7.2.0",
     "@fortawesome/free-solid-svg-icons": "^7.2.0",
     "@fortawesome/react-fontawesome": "^3.3.1",
