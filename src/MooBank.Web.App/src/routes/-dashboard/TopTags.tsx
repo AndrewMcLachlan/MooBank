@@ -12,7 +12,7 @@ export const TopTagsWidget: React.FC = () => {
 
     return (
         <Widget header={(account && `Top Tags - ${account.name} - ${lastMonthName}`) ?? lastMonthName} size="double" headerSize={2} className="report" loading={isLoading} to={account ? `/accounts/${account.id}/reports/all-tag-average?period=1` : undefined}>
-            {isError ? <WidgetError /> : account && <TopTags accountId={account?.id} period={lastMonth} reportType={"Debit"} top={10} />}
+            {isError ? <WidgetError /> : account && <TopTags accountId={account?.id} period={lastMonth} reportType={"Debit"} top={10} periodId="1" />}
         </Widget>
     );
 };
