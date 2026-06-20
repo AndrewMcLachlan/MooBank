@@ -18,7 +18,7 @@ export function Dashboard() {
     const account = accounts?.find(a => a.isPrimary === true) ?? accounts?.[0];
 
     const actions = account ? [
-        <IconLinkButton key="primary-account" variant="primary" to={`/accounts/${account.id}/transactions`} icon={PiggyBank}>{account.name}</IconLinkButton>
+        <IconLinkButton badge key="primary-account" variant="primary" to={`/accounts/${account.id}/transactions`} icon={PiggyBank}>{account.name}</IconLinkButton>
     ] : [];
 
     return (
