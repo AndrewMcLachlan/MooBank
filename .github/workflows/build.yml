@@ -24,7 +24,7 @@ jobs:
     outputs:
       version: ${{ steps.set-version-number.outputs.version }}
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with:
         fetch-depth: 0
     - name: Setup .NET
@@ -108,7 +108,7 @@ jobs:
           - { name: "MooBank.Modules.Transactions.Tests" }
           - { name: "MooBank.Modules.Users.Tests" }
     steps:
-    - uses: actions/checkout@v6.0.1
+    - uses: actions/checkout@v7
     - name: Setup .NET
       uses: actions/setup-dotnet@v5
       with:
@@ -133,7 +133,7 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-    - uses: actions/checkout@v6.0.1
+    - uses: actions/checkout@v7
 
     - name: Download all coverage reports
       uses: actions/download-artifact@v8
@@ -167,7 +167,7 @@ jobs:
       packages: write
       contents: read
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Download publish artifact
       uses: actions/download-artifact@v8
       with:
