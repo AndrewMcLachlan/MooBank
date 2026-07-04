@@ -47,7 +47,7 @@ internal class AuditLogger(ILogger<AuditLogger> logger) : IAuditLogger
         logger.LogInformation("CSV import completed by {UserId} for instrument {InstrumentId}, account {AccountId}: {TransactionCount} transactions", user.Id, instrumentId, accountId, transactionCount);
     }
 
-    public void DataChanged(User user, string action, string entityType, Guid? entityId)
+    public void DataChanged(User user, string action, string entityType, object? entityId)
     {
         using var scope = AuditScope("DataChange");
         logger.LogInformation("{Action} {EntityType} {EntityId} by {UserId}", action, entityType, entityId, user.Id);

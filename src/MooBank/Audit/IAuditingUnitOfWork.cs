@@ -5,12 +5,12 @@ namespace Asm.MooBank.Audit;
 
 public interface IAuditingUnitOfWork
 {
-    Task SaveChangesAsync(string action, string entityType, Guid? entityId = null, CancellationToken cancellationToken = default);
+    Task SaveChangesAsync(string action, string entityType, object? entityId = null, CancellationToken cancellationToken = default);
 }
 
 internal class AuditingUnitOfWork(IUnitOfWork unitOfWork, IAuditLogger audit, User user) : IAuditingUnitOfWork
 {
-    public async Task SaveChangesAsync(string action, string entityType, Guid? entityId = null, CancellationToken cancellationToken = default)
+    public async Task SaveChangesAsync(string action, string entityType, object? entityId = null, CancellationToken cancellationToken = default)
     {
         await unitOfWork.SaveChangesAsync(cancellationToken);
         audit.DataChanged(user, action, entityType, entityId);

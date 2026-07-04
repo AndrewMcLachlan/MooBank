@@ -19,6 +19,6 @@ internal class DeleteHandler(ITagRepository tagRepository, IAuditingUnitOfWork u
 
         _tagRepository.Delete(entity);
 
-        await unitOfWork.SaveChangesAsync("Deleted", "Tag", null, cancellationToken);
+        await unitOfWork.SaveChangesAsync("Deleted", "Tag", command.Id, cancellationToken);
     }
 }

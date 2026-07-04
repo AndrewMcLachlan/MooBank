@@ -268,9 +268,9 @@ void AddApp(WebApplication app)
     app.UseDefaultFiles();
     app.UseStaticFiles();
 
-    app.UseAuthorization();
-
     app.UseMiddleware<AuditMiddleware>();
+
+    app.UseAuthorization();
 
     app.MapMcp("mcp").RequireAuthorization(new AuthorizationPolicyBuilder()
         .AddAuthenticationSchemes(McpAuthenticationDefaults.AuthenticationScheme)

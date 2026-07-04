@@ -17,7 +17,7 @@ public class TestMocks
         UnitOfWorkMock.Setup(uow => uow.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         AuditingUnitOfWorkMock = new Mock<IAuditingUnitOfWork>();
-        AuditingUnitOfWorkMock.Setup(uow => uow.SaveChangesAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+        AuditingUnitOfWorkMock.Setup(uow => uow.SaveChangesAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object?>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
         SecurityMock = new Mock<ISecurity>();
         SecurityMock.Setup(s => s.AssertGroupPermission(It.IsAny<Guid>()));

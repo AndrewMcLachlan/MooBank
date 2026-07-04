@@ -31,12 +31,13 @@ internal class ImportTransactionsService(IInstrumentRepository instrumentReposit
 
             using var stream = new MemoryStream(workItem.FileData);
             var importResult = await importer.Import(workItem.InstrumentId, workItem.AccountId, stream, cancellationToken);
+            var transactions = importResult.Transactions as IReadOnlyCollection<Domain.Entities.Transactions.Transaction> ?? importResult.Transactions.ToList();
 
-            await ApplyRules(ruleRepository, instrument, importResult.Transactions, cancellationToken);
+            await ApplyRules(ruleRepository, instrument, transactions, cancellationToken);
 
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            audit.ImportCompleted(workItem.User, workItem.InstrumentId, workItem.AccountId, importResult.Transactions.Count());
+            audit.ImportCompleted(workItem.User, workItem.InstrumentId, workItem.AccountId, transactions.Count);
         }
         catch (Exception ex)
         {
@@ -44,7 +45,7 @@ internal class ImportTransactionsService(IInstrumentRepository instrumentReposit
         }
     }
 
-    private static async Task ApplyRules(IRuleRepository ruleRepository, Domain.Entities.Instrument.Instrument instrument, IEnumerable<Domain.Entities.Transactions.Transaction> transactions, CancellationToken cancellationToken)
+    private static async Task ApplyRules(IRuleRepository ruleRepository, Domain.Entities.Instrument.Instrument instrument, IReadOnlyCollection<Domain.Entities.Transactions.Transaction> transactions, CancellationToken cancellationToken)
     {
         var rules = await ruleRepository.GetForInstrument(instrument.Id, cancellationToken);
 

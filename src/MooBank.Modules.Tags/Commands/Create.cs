@@ -19,7 +19,7 @@ internal sealed class CreateHandler(IAuditingUnitOfWork unitOfWork, ITagReposito
 
         tagRepository.Add(tag);
 
-        await unitOfWork.SaveChangesAsync("Created", "Tag", null, cancellationToken);
+        await unitOfWork.SaveChangesAsync("Created", "Tag", tag.Id, cancellationToken);
 
         return tag.ToModel();
     }

@@ -15,5 +15,5 @@ public interface IAuditLogger
     void ImportStarted(User user, Guid instrumentId, Guid accountId);
     void ImportCompleted(User user, Guid instrumentId, Guid accountId, int transactionCount);
 
-    void DataChanged(User user, string action, string entityType, Guid? entityId);
+    void DataChanged(User user, string action, string entityType, object? entityId);
 }
