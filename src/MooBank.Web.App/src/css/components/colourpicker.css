@@ -1,0 +1,25 @@
+.colour-picker {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .no-colour {
+        width: 2rem;
+        height: 2rem;
+        border: 1px solid var(--border-colour);
+        border-radius: 0.25rem;
+        padding: 0;
+        cursor: pointer;
+        background:
+            linear-gradient(to top left,
+                transparent calc(50% - 1px),
+                red calc(50% - 1px),
+                red calc(50% + 1px),
+                transparent calc(50% + 1px));
+
+        &.selected {
+            outline: 2px solid var(--body-colour);
+            outline-offset: 2px;
+        }
+    }
+}

@@ -1,5 +1,16 @@
+.month-selector {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+}
+
 .month-selector .clear {
     fill: var(--body-colour);
+}
+
+/* Quarter separators — a little extra space before Apr, Jul and Oct. */
+.month-selector input:nth-of-type(3n+1):not(:first-of-type) {
+    margin-left: 7px;
 }
 
 .month-selector input {
@@ -12,10 +23,16 @@
     position: relative;
     vertical-align: middle;
     transform: translate(0, -5%);
+    cursor: pointer;
 
     /*@include color-mode(dark) {
         background-color: #666;
     }*/
+
+    &:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 2px;
+    }
 
     &:checked {
         background-color: var(--primary);
@@ -68,6 +85,35 @@
         content: 'D';
     }
 
+}
+
+/* Quick presets (All / Quarterly). */
+.month-selector .month-presets {
+    display: inline-flex;
+    gap: 4px;
+    margin-left: 8px;
+}
+
+.month-selector .month-preset {
+    appearance: none;
+    border: 1px solid var(--border-colour);
+    border-radius: 80px;
+    background: transparent;
+    color: var(--muted-colour);
+    font-size: 0.7rem;
+    line-height: 1;
+    padding: 3px 7px;
+    cursor: pointer;
+
+    &:hover {
+        color: var(--body-colour);
+        border-color: var(--primary);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 2px;
+    }
 }
 
 .dark .month-selector input {

@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 namespace Asm.MooBank.Modules.Institutions.Commands;
 
 [DisplayName("UpdateInstitution")]
-public sealed record Update(int Id, string Name, InstitutionType InstitutionType) : ICommand<Models.Institution>
+public sealed record Update(int Id, string Name, InstitutionType InstitutionType, int? ImporterTypeId = null) : ICommand<Models.Institution>
 {
     public static async Task<Update> BindAsync(HttpContext httpContext)
     {
@@ -34,6 +34,7 @@ internal class UpdateHandler(IInstitutionRepository repository, IUnitOfWork unit
 
         entity.Name = command.Name;
         entity.InstitutionType = command.InstitutionType;
+        entity.ImporterTypeId = command.ImporterTypeId;
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

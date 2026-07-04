@@ -29,6 +29,14 @@ export const formatDate = (date?: string) => date ? format(parseISO(date), "dd/M
 
 export const formatDateShort = (date?: string) => date ? format(parseISO(date), "dd MMM yy") : "-";
 
+export const formatDateRange = (start?: string, end?: string) => {
+    if (!start || !end) return "-";
+    const startDate = parseISO(start);
+    const endDate = parseISO(end);
+    const startFormat = startDate.getFullYear() === endDate.getFullYear() ? "dd MMM" : "dd MMM yyyy";
+    return `${format(startDate, startFormat)} - ${format(endDate, "dd MMM yyyy")}`;
+};
+
 export const isMonthSelected = (months: number, month: number) => (months & (1 << month)) !== 0;
 
 export const numberOfMonths = (months: number) => {

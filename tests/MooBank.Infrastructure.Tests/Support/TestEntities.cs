@@ -9,6 +9,7 @@ using Bogus;
 using DomainTag = Asm.MooBank.Domain.Entities.Tag.Tag;
 using DomainTagSettings = Asm.MooBank.Domain.Entities.Tag.TagSettings;
 using DomainUser = Asm.MooBank.Domain.Entities.User.User;
+using Institution = Asm.MooBank.Domain.Entities.Institution.Institution;
 
 namespace Asm.MooBank.Infrastructure.Tests.Support;
 
@@ -168,24 +169,45 @@ internal static class TestEntities
     public static InstitutionAccount CreateInstitutionAccount(
         Guid? id = null,
         Guid? instrumentId = null,
-        int? importerTypeId = 1,
-        ImporterType? importerType = null)
+        int institutionId = 1,
+        Institution? institution = null)
     {
         var account = new InstitutionAccount(id ?? Guid.NewGuid())
         {
             InstrumentId = instrumentId ?? Guid.NewGuid(),
-            ImporterTypeId = importerTypeId,
             Name = "Test Account",
-            InstitutionId = 1,
+            InstitutionId = institutionId,
             OpenedDate = DateOnly.FromDateTime(DateTime.Today.AddYears(-1)),
+        };
+
+        if (institution != null)
+        {
+            account.Institution = institution;
+        }
+
+        return account;
+    }
+
+    public static Institution CreateInstitution(
+        int id = 1,
+        string? name = null,
+        InstitutionType institutionType = InstitutionType.Bank,
+        int? importerTypeId = null,
+        ImporterType? importerType = null)
+    {
+        var institution = new Institution(id)
+        {
+            Name = name ?? Faker.Company.CompanyName(),
+            InstitutionType = institutionType,
+            ImporterTypeId = importerTypeId,
         };
 
         if (importerType != null)
         {
-            account.ImporterType = importerType;
+            institution.ImporterType = importerType;
         }
 
-        return account;
+        return institution;
     }
 
     public static StockPriceHistory CreateStockPriceHistory(

@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "@tanstack/react-router";
 import { useCreateInstitution } from "../-hooks/useCreateInstitution";
 import { useUpdateInstitution } from "../-hooks/useUpdateInstitution";
+import { useImporterTypes } from "hooks/useImporterTypes";
 
 export const InstitutionForm: React.FC<InstitutionFormProps> = ({ institution = null }) => {
 
@@ -14,6 +15,7 @@ export const InstitutionForm: React.FC<InstitutionFormProps> = ({ institution = 
 
     const createInstitution = useCreateInstitution();
     const updateInstitution = useUpdateInstitution();
+    const { data: importerTypes } = useImporterTypes();
 
     const isPending = createInstitution.isPending || updateInstitution.isPending;
 
@@ -40,6 +42,10 @@ export const InstitutionForm: React.FC<InstitutionFormProps> = ({ institution = 
             <Form.Group groupId="institutionType">
                 <Form.Label>Institution Type</Form.Label>
                 <FormComboBox items={institutionTypeOptions} labelField={t => t.label} valueField={t => t.value} />
+            </Form.Group>
+            <Form.Group groupId="importerTypeId">
+                <Form.Label>Importer</Form.Label>
+                <FormComboBox items={importerTypes ?? []} labelField={t => t?.name} valueField={t => t?.id} placeholder="(none)" />
             </Form.Group>
             <Button type="submit" variant="primary" disabled={isPending}>Save</Button>
         </SectionForm>

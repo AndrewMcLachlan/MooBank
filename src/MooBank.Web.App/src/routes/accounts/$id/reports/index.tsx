@@ -1,10 +1,24 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useAccount } from "../../-hooks/useAccount";
+import { getDefaultReportRoute } from "./-utils/reports";
 
 export const Route = createFileRoute("/accounts/$id/reports/")({
-    beforeLoad: ({ params }) => {
-        throw redirect({
-            to: "/accounts/$id/reports/in-out",
-            params: { id: params.id },
-        } as any);
-    },
+    component: ReportsIndex,
 });
+
+function ReportsIndex() {
+    const { id } = Route.useParams();
+    const account = useAccount(id);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!account.data) return;
+        navigate({
+            to: getDefaultReportRoute(account.data.id, account.data.availableReports),
+            replace: true,
+        });
+    }, [account.data, navigate]);
+
+    return null;
+}

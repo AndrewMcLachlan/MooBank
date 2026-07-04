@@ -67,7 +67,7 @@ function Rules() {
     if (!account) return (null);
 
     return (
-        <AccountPage title="Rules" breadcrumbs={[{ text: "Rules", route: `/accounts/${account.id}/rules` }]} actions={[<IconButton key="run" icon="check" onClick={runRules}>Run Rules</IconButton>]}>
+        <AccountPage title="Rules" breadcrumbs={[{ text: "Rules", route: `/accounts/${account.id}/rules` }]} actions={[<IconButton badge key="run" icon="check" onClick={runRules}>Run Rules</IconButton>]}>
             <Section>
                 <SearchBox value={search} onChange={(v: string) => setSearch(v)} />
             </Section>

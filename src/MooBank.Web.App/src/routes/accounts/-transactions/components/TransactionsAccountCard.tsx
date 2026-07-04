@@ -42,7 +42,7 @@ export const TransactionsAccountCard: React.FC = () => {
                     </div>
                     <div className="stat-block">
                         <div className="lbl">Expenses</div>
-                        <div className="val"><Amount amount={-stats.expenses} currencyCode={account.currency} negativeColour zeroShowsAs="negative" /></div>
+                        <div className="val"><Amount amount={stats.expenses} currencyCode={account.currency} negativeColour zeroShowsAs="negative" /></div>
                     </div>
                     <div className="stat-block">
                         <div className="lbl">Net</div>

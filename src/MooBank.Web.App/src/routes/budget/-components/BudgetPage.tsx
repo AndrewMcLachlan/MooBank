@@ -7,7 +7,7 @@ import { TwoCoins } from "@andrewmclachlan/moo-icons";
 
 export const BudgetPage: React.FC<PropsWithChildren<BudgetPageProps>> = ({ children, breadcrumbs = [] }) => (
 
-    <Page title="Budget" breadcrumbs={[{ text: "Budget", route: `/budget` }, ...breadcrumbs]} navItems={[{ text: "Report", route: `budget/report`, image: <TwoCoins /> }]}>
+    <Page title="Budget" breadcrumbs={[{ text: "Budget", route: `/budget` }, ...breadcrumbs]} navItems={[{ text: "Report", route: `/budget/report`, image: <TwoCoins /> }]}>
         {children}
     </Page>
 );

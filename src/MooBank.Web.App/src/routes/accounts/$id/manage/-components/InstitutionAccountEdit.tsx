@@ -4,7 +4,7 @@ import type { InstitutionAccount, LogicalAccount } from "api/types.gen";
 import { Button, Modal } from "@andrewmclachlan/moo-ds";
 import { useForm } from "react-hook-form";
 import { useUpdateInstitutionAccount } from "../../../-hooks/useUpdateInstitutionAccount";
-import { ImportSettings } from "./ImportSettings";
+
 export const InstitutionAccountEdit: React.FC<InstitutionAccountEditProps> = ({ institutionAccount, show, onHide, onSave }) => {
 
     const account = useAccount() as LogicalAccount;
@@ -21,7 +21,6 @@ export const InstitutionAccountEdit: React.FC<InstitutionAccountEditProps> = ({ 
 
         updateInstitutionAccount.mutateAsync(account.id, institutionAccount.id, {
             institutionId: data.institutionId,
-            importerTypeId: data.importerTypeId,
             name: data.name,
         });
     }
@@ -40,10 +39,6 @@ export const InstitutionAccountEdit: React.FC<InstitutionAccountEditProps> = ({ 
                     <Form.Group groupId="institutionId">
                         <Form.Label>Institution</Form.Label>
                         <InstitutionSelector accountType={account?.accountType} />
-                    </Form.Group>
-                    <Form.Group groupId="importerTypeId" hidden={account.controller !== "Import"}>
-                        <Form.Label>Importer Type</Form.Label>
-                        <ImportSettings />
                     </Form.Group>
                 </Modal.Body>
                 <Modal.Footer>

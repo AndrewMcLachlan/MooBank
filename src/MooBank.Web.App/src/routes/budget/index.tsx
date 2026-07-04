@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Section, SectionTable } from "@andrewmclachlan/moo-ds";
+import { IconButton, Section, SectionTable } from "@andrewmclachlan/moo-ds";
+import { Sparkle } from "@andrewmclachlan/moo-icons";
 import { format } from "date-fns/format";
 import { isMonthSelected } from "utils/dateFns";
 import { useBudgetYear } from "./-hooks/useBudgetYear";
@@ -8,7 +9,9 @@ import { useEffect, useState } from "react";
 import { Col, Input, Row } from "@andrewmclachlan/moo-ds";
 import { useBudget } from "./-hooks/useBudget";
 import { useBudgetYears } from "./-hooks/useBudgetYears";
+import { useGenerateBudget } from "./-hooks/useGenerateBudget";
 import { BudgetPage } from "./-components/BudgetPage";
+import { BudgetSummary } from "./-components/BudgetSummary";
 import { BudgetTable } from "./-components/BudgetTable";
 import { MonthLine } from "./-components/MonthLine";
 
@@ -30,6 +33,14 @@ function Budget() {
     const { data: budget } = useBudget(year);
 
     const { data: budgetYears } = useBudgetYears();
+
+    const { generate, isPending: isGenerating } = useGenerateBudget();
+
+    const onGenerate = () => {
+        const hasLines = (budget?.incomeLines.length ?? 0) + (budget?.expensesLines.length ?? 0) > 0;
+        if (hasLines && !window.confirm("Adds budget lines for tags you haven't budgeted yet. Existing lines are left untouched. Continue?")) return;
+        generate(year);
+    };
 
     useEffect(() => {
         if (!budgetYears) return;
@@ -53,7 +64,7 @@ function Budget() {
 
     return (
         <BudgetPage title={title}>
-            <Section>
+            <Section className="budget-toolbar">
                 <Row>
                     <Col>
                         <Input.Select value={year} onChange={e => setYear(Number(e.currentTarget.value))}>
@@ -70,8 +81,14 @@ function Budget() {
                             )}
                         </Input.Select>
                     </Col>
+                    <Col className="budget-toolbar-actions">
+                        <IconButton variant="primary" icon={Sparkle} badge onClick={onGenerate} disabled={isGenerating} title="Build budget lines from your transaction history">
+                            {isGenerating ? "Generating…" : "Generate from history"}
+                        </IconButton>
+                    </Col>
                 </Row>
             </Section>
+            <BudgetSummary budget={budget} />
             <BudgetTable title="Income" year={year} lines={filteredBudget?.incomeLines} type="Income" />
             <BudgetTable title="Expenses" year={year} lines={filteredBudget?.expensesLines} type="Expenses" />
 

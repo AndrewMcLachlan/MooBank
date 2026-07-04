@@ -5,6 +5,7 @@ import { Button, Input, Modal } from "@andrewmclachlan/moo-ds";
 import { useUpdateTag } from "../-hooks/useUpdateTag";
 import { TransactionTagTransactionTagPanel } from "./TagTagPanel";
 import { onKeyLeave } from "utils/onKeyLeave";
+import { ColourPicker } from "components/ColourPicker";
 
 export const TransactionTagDetails: React.FC<TransactionTagDetailsProps> = (props) => {
 
@@ -15,6 +16,7 @@ export const TransactionTagDetails: React.FC<TransactionTagDetailsProps> = (prop
 
     const updateExcludeFromReporting = (excludeFromReporting: boolean) => save({ ...tag, settings: { ...tag.settings, excludeFromReporting } });
     const updateAllowSmoothing = (allowSmoothing: boolean) => save({ ...tag, settings: { ...tag.settings, applySmoothing: allowSmoothing } });
+    const updateBudgetCategory = (budgetCategory: boolean) => save({ ...tag, settings: { ...tag.settings, budgetCategory } });
     const updateName = (name: string) => save({ ...tag, name });
 
     const save = (newTag: Tag) => {
@@ -32,11 +34,13 @@ export const TransactionTagDetails: React.FC<TransactionTagDetailsProps> = (prop
                     <label htmlFor="name">Name</label>
                     <Input id="name" placeholder="Name" type="text" value={name} onChange={(e) => setName(e.currentTarget.value)} onBlur={(e) => updateName(e.currentTarget.value)} onKeyUp={(e) => onKeyLeave(e, updateName)} />
                     <label htmlFor="colour">Colour</label>
-                    <Input id="colour" type="color" className="form-control-color" value={(tag.colour as string) ?? ""} onChange={(e) => save({ ...tag, colour: e.target.value })} />
+                    <ColourPicker id="colour" value={(tag.colour as string) ?? null} onChange={(colour) => save({ ...tag, colour })} />
                     <label htmlFor="exclude">Exclude from Reporting</label>
                     <Input.Switch id="exclude" checked={tag.settings?.excludeFromReporting} onChange={(e) => updateExcludeFromReporting(e.currentTarget.checked)} />
                     <label htmlFor="smooth">Allow Smoothing<Tooltip id="smoothing">Provides an option to average non-monthly transactions in trend reports</Tooltip></label>
                     <Input.Switch id="smooth" checked={tag.settings?.applySmoothing} onChange={(e) => updateAllowSmoothing(e.currentTarget.checked)} />
+                    <label htmlFor="budget-category">Budget Category<Tooltip id="budget-category-tip">When generating a budget, spending from child tags rolls up into this tag</Tooltip></label>
+                    <Input.Switch id="budget-category" checked={tag.settings?.budgetCategory} onChange={(e) => updateBudgetCategory(e.currentTarget.checked)} />
                     <label htmlFor="tags">Tags</label>
                     <TransactionTagTransactionTagPanel as="div" id="tags" tag={tag} alwaysShowEditPanel />
                 </section>

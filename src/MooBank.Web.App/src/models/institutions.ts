@@ -8,4 +8,5 @@ export const emptyInstitution: Institution = {
     id: 0,
     name: "",
     institutionType: "Bank",
+    importerTypeId: null,
 };

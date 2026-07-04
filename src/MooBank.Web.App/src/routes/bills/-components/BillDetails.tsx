@@ -1,13 +1,9 @@
-import { format, parseISO } from "date-fns";
 import type { Bill, Account } from "api/types.gen";
 import { Drawer } from "@andrewmclachlan/moo-ds";
 import { Section } from "@andrewmclachlan/moo-ds";
 import { getUnit } from "utils/units";
-
-const formatCurrency = (value: number | undefined) => {
-    if (value === undefined || value === null) return "-";
-    return new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD" }).format(value);
-};
+import { Amount } from "components";
+import { formatDateShort, formatDateRange } from "utils/dateFns";
 
 const formatNumber = (value: number | undefined, decimals = 2) => {
     if (value === undefined || value === null) return "-";
@@ -22,7 +18,7 @@ export const BillDetails: React.FC<BillDetailsProps> = ({ account, bill, show, o
         <Drawer show={show} onHide={onHide} placement="end" className="bill-details">
             <Drawer.Header closeButton>
 
-                    {bill.invoiceNumber ? `Bill #${bill.invoiceNumber}` : "Bill Details"}
+                {bill.invoiceNumber ? `Bill #${bill.invoiceNumber}` : "Bill Details"}
 
             </Drawer.Header>
             <Drawer.Body>
@@ -33,7 +29,7 @@ export const BillDetails: React.FC<BillDetailsProps> = ({ account, bill, show, o
                     </div>
                     <div className="summary-row">
                         <span className="summary-label">Issue Date</span>
-                        <span>{format(parseISO(bill.issueDate), "dd MMM yyyy")}</span>
+                        <span>{formatDateShort(bill.issueDate)}</span>
                     </div>
                     {bill.previousReading !== undefined && bill.currentReading !== undefined && (
                         <div className="summary-row">
@@ -49,7 +45,7 @@ export const BillDetails: React.FC<BillDetailsProps> = ({ account, bill, show, o
                     )}
                     <div className="summary-row">
                         <span className="summary-label">Total Cost</span>
-                        <span className="summary-value-large">{formatCurrency(bill.cost)}</span>
+                        <span className="summary-value-large"><Amount amount={bill.cost} currencyCode="AUD" /></span>
                     </div>
                     {bill.costsIncludeGST && (
                         <div className="gst-note">Includes GST</div>
@@ -62,26 +58,26 @@ export const BillDetails: React.FC<BillDetailsProps> = ({ account, bill, show, o
                             <div key={index} className="period-item">
                                 <div className="period-header">
                                     <span className="period-dates">
-                                        {format(parseISO(period.periodStart), "dd MMM")} - {format(parseISO(period.periodEnd), "dd MMM yyyy")}
+                                        {formatDateRange(period.periodStart, period.periodEnd)}
                                     </span>
                                     <span className="badge bg-secondary">{period.daysInclusive} days</span>
                                 </div>
                                 <div className="period-details">
                                     <div className="period-line">
                                         <span className="period-line-label">Usage</span>
-                                        <span>{formatNumber(period.totalUsage, 3)} {getUnit(account?.utilityType)} @ {formatCurrency(period.pricePerUnit)}/{getUnit(account?.utilityType)}</span>
+                                        <span>{formatNumber(period.totalUsage, 3)} {getUnit(account?.utilityType)} @ <Amount amount={period.pricePerUnit} currencyCode="AUD" />/{getUnit(account?.utilityType)}</span>
                                     </div>
                                     <div className="period-line">
                                         <span></span>
-                                        <span className="summary-value">{formatCurrency(period.cost)}</span>
+                                        <span className="summary-value"><Amount amount={period.cost} currencyCode="AUD" /></span>
                                     </div>
                                     <div className="period-line">
                                         <span className="period-line-label">Service Charge</span>
-                                        <span>{period.days} days @ {formatCurrency(period.chargePerDay)}/day</span>
+                                        <span>{period.days} days @ <Amount amount={period.chargePerDay} currencyCode="AUD" />/day</span>
                                     </div>
                                     <div className="period-line">
                                         <span></span>
-                                        <span className="summary-value">{formatCurrency(period.days * period.chargePerDay)}</span>
+                                        <span className="summary-value"><Amount amount={period.days * period.chargePerDay} currencyCode="AUD" /></span>
                                     </div>
                                 </div>
                             </div>
@@ -94,9 +90,7 @@ export const BillDetails: React.FC<BillDetailsProps> = ({ account, bill, show, o
                         <div className="period-total">
                             <span>Period Total</span>
                             <span>
-                                {formatCurrency(
-                                    bill.periods.reduce((sum, p) => sum + p.cost + (p.days * p.chargePerDay), 0)
-                                )}
+                                <Amount amount={bill.periods.reduce((sum, p) => sum + p.cost + (p.days * p.chargePerDay), 0)} currencyCode="AUD" />
                             </span>
                         </div>
                     </Section>

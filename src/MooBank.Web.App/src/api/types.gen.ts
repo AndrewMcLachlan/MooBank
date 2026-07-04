@@ -164,7 +164,6 @@ export type CostPerUnitReport = {
 export type CreateAccount = {
     name: string;
     description?: null | string;
-    importerTypeId?: null | number;
     institutionId: number;
     currency: string;
     balance: number;
@@ -215,16 +214,17 @@ export type CreateGroup = {
     name: string;
     description: string;
     showTotal: boolean;
+    colour?: unknown;
 };
 
 export type CreateInstitution = {
     name: string;
     institutionType: InstitutionType;
+    importerTypeId?: null | number;
 };
 
 export type CreateInstitutionAccount = {
     institutionId: number;
-    importerTypeId?: null | number;
     name: string;
     openedDate: string;
 };
@@ -347,6 +347,7 @@ export type Group = {
     name: string;
     description?: null | string;
     showTotal: boolean;
+    colour?: null | HexColour;
 };
 
 export type HexColour = unknown;
@@ -423,11 +424,11 @@ export type Institution = {
     id: number;
     name: string;
     institutionType: InstitutionType;
+    importerTypeId?: null | number;
 };
 
 export type InstitutionAccount = {
     id: string;
-    importerTypeId?: null | number;
     institutionId: number;
     name: string;
     openedDate: string;
@@ -456,6 +457,7 @@ export type Instrument = {
 export type InstrumentGroup = {
     id?: null | string;
     name: string;
+    colour?: null | HexColour;
     instruments: Array<Instrument>;
     showTotal: boolean;
     total?: null | number;
@@ -477,6 +479,9 @@ export type LogicalAccount = {
     shareWithFamily: boolean;
     includeInBudget: boolean;
     institutionAccounts: Array<InstitutionAccount>;
+    availableReports: Array<ReportKind>;
+    availableTagPurposes: Array<TagPurpose>;
+    tagPurposes: Array<TagPurposeAssignment>;
     lastTransaction?: null | string;
     id: string;
     name: string;
@@ -560,6 +565,18 @@ export type PlannedItemDateMode = 'FixedDate' | 'Schedule' | 'FlexibleWindow';
 
 export type PlannedItemType = 'Expense' | 'Income';
 
+export type PrincipalVsInterestReport = {
+    interestTagId?: null | number;
+    interestTagName?: null | string;
+    interest: Array<TrendPoint>;
+    principal: Array<TrendPoint>;
+    interestTotal: number;
+    principalTotal: number;
+    accountId: string;
+    start: string;
+    end: string;
+};
+
 export type RecurringTransaction = {
     id: string;
     virtualAccountId: string;
@@ -579,6 +596,8 @@ export type RegressionDiagnostics = {
 
 export type ReportInterval = 'Monthly' | 'Yearly';
 
+export type ReportKind = 'InOut' | 'TopTags' | 'Breakdown' | 'TagTrend' | 'AllTags' | 'MonthlyBalances' | 'SavingsInterest' | 'SuperContributions' | 'SuperReturns' | 'PrincipalVsInterest';
+
 export type ReportType = {
     [key: string]: unknown;
 };
@@ -588,6 +607,17 @@ export type Rule = {
     contains: string;
     description?: null | string;
     tags: Array<Tag>;
+};
+
+export type SavingsInterestReport = {
+    tagId?: null | number;
+    tagName?: null | string;
+    months: Array<TrendPoint>;
+    total: number;
+    monthlyAverage: number;
+    accountId: string;
+    start: string;
+    end: string;
 };
 
 export type ScheduleFrequency = 'Daily' | 'Weekly' | 'Monthly' | 'Yearly' | 'Fortnightly';
@@ -720,6 +750,38 @@ export type StockValueReportPoint = {
     value: number;
 };
 
+export type SuperContributionsReport = {
+    employerTagId?: null | number;
+    employerTagName?: null | string;
+    personalTagId?: null | number;
+    personalTagName?: null | string;
+    employer: Array<TrendPoint>;
+    personal: Array<TrendPoint>;
+    employerTotal: number;
+    personalTotal: number;
+    accountId: string;
+    start: string;
+    end: string;
+};
+
+export type SuperReturnsReport = {
+    years: Array<SuperReturnsYear>;
+    accountId: string;
+    start: string;
+    end: string;
+};
+
+export type SuperReturnsYear = {
+    financialYear: number;
+    start: string;
+    end: string;
+    openingBalance: number;
+    closingBalance: number;
+    contributions: number;
+    return: number;
+    returnPercent?: null | number;
+};
+
 export type Tag = {
     colour?: null | HexColour;
     tags: Array<Tag>;
@@ -757,9 +819,17 @@ export type TagHierarchy = {
     tags: Array<Tag>;
 };
 
+export type TagPurpose = 'Interest' | 'EmployerContribution' | 'PersonalContribution' | 'MortgageInterest';
+
+export type TagPurposeAssignment = {
+    purpose: TagPurpose;
+    tagId: number;
+};
+
 export type TagSettings = {
     applySmoothing: boolean;
     excludeFromReporting: boolean;
+    budgetCategory: boolean;
 };
 
 export type TagTrendReport = {
@@ -852,11 +922,11 @@ export type UpdateInstitution = {
     id: number;
     name: string;
     institutionType: InstitutionType;
+    importerTypeId?: null | number;
 };
 
 export type UpdateInstitutionAccount = {
     institutionId: number;
-    importerTypeId?: null | number;
     name: string;
 };
 
@@ -891,6 +961,7 @@ export type UpdateTag = {
     colour: null | HexColour;
     excludeFromReporting: boolean;
     applySmoothing: boolean;
+    budgetCategory?: boolean;
 };
 
 export type UpdateTransaction = {
@@ -1045,6 +1116,45 @@ export type UpdateAccountResponses = {
 };
 
 export type UpdateAccountResponse = UpdateAccountResponses[keyof UpdateAccountResponses];
+
+export type SetAccountTagPurposeData = {
+    body?: never;
+    path: {
+        instrumentId: string;
+        purpose: TagPurpose;
+        tagId: number;
+    };
+    query?: never;
+    url: '/api/accounts/{instrumentId}/tag-purposes/{purpose}/{tagId}';
+};
+
+export type SetAccountTagPurposeResponses = {
+    /**
+     * OK
+     */
+    200: LogicalAccount;
+};
+
+export type SetAccountTagPurposeResponse = SetAccountTagPurposeResponses[keyof SetAccountTagPurposeResponses];
+
+export type DeleteAccountTagPurposeData = {
+    body?: never;
+    path: {
+        instrumentId: string;
+        purpose: TagPurpose;
+    };
+    query?: never;
+    url: '/api/accounts/{instrumentId}/tag-purposes/{purpose}';
+};
+
+export type DeleteAccountTagPurposeResponses = {
+    /**
+     * OK
+     */
+    200: LogicalAccount;
+};
+
+export type DeleteAccountTagPurposeResponse = DeleteAccountTagPurposeResponses[keyof DeleteAccountTagPurposeResponses];
 
 export type GetInstitutionAccountData = {
     body?: never;
@@ -1663,6 +1773,24 @@ export type CreateBudgetLineResponses = {
 
 export type CreateBudgetLineResponse = CreateBudgetLineResponses[keyof CreateBudgetLineResponses];
 
+export type GenerateBudgetData = {
+    body?: never;
+    path: {
+        year: number;
+    };
+    query?: never;
+    url: '/api/budget/{year}/generate';
+};
+
+export type GenerateBudgetResponses = {
+    /**
+     * OK
+     */
+    200: Budget;
+};
+
+export type GenerateBudgetResponse = GenerateBudgetResponses[keyof GenerateBudgetResponses];
+
 export type GetBudgetAmountForTagData = {
     body?: never;
     path: {
@@ -2217,6 +2345,7 @@ export type UpdateInstitutionData = {
     query: {
         Name: string;
         InstitutionType: InstitutionType;
+        ImporterTypeId?: number;
     };
     url: '/api/institutions/{id}';
 };
@@ -2774,6 +2903,84 @@ export type AllTagAverageReportResponses = {
 };
 
 export type AllTagAverageReportResponse = AllTagAverageReportResponses[keyof AllTagAverageReportResponses];
+
+export type SavingsInterestReportData = {
+    body?: never;
+    path: {
+        accountId: string;
+        start: string;
+        end: string;
+    };
+    query?: never;
+    url: '/api/accounts/{accountId}/reports/savings-interest/{start}/{end}';
+};
+
+export type SavingsInterestReportResponses = {
+    /**
+     * OK
+     */
+    200: SavingsInterestReport;
+};
+
+export type SavingsInterestReportResponse = SavingsInterestReportResponses[keyof SavingsInterestReportResponses];
+
+export type SuperContributionsReportData = {
+    body?: never;
+    path: {
+        accountId: string;
+        start: string;
+        end: string;
+    };
+    query?: never;
+    url: '/api/accounts/{accountId}/reports/super-contributions/{start}/{end}';
+};
+
+export type SuperContributionsReportResponses = {
+    /**
+     * OK
+     */
+    200: SuperContributionsReport;
+};
+
+export type SuperContributionsReportResponse = SuperContributionsReportResponses[keyof SuperContributionsReportResponses];
+
+export type SuperReturnsReportData = {
+    body?: never;
+    path: {
+        accountId: string;
+    };
+    query?: never;
+    url: '/api/accounts/{accountId}/reports/super-returns';
+};
+
+export type SuperReturnsReportResponses = {
+    /**
+     * OK
+     */
+    200: SuperReturnsReport;
+};
+
+export type SuperReturnsReportResponse = SuperReturnsReportResponses[keyof SuperReturnsReportResponses];
+
+export type PrincipalVsInterestReportData = {
+    body?: never;
+    path: {
+        accountId: string;
+        start: string;
+        end: string;
+    };
+    query?: never;
+    url: '/api/accounts/{accountId}/reports/principal-vs-interest/{start}/{end}';
+};
+
+export type PrincipalVsInterestReportResponses = {
+    /**
+     * OK
+     */
+    200: PrincipalVsInterestReport;
+};
+
+export type PrincipalVsInterestReportResponse = PrincipalVsInterestReportResponses[keyof PrincipalVsInterestReportResponses];
 
 export type MonthlyBalancesReportData = {
     body?: never;

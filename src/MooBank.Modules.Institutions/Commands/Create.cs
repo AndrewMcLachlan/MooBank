@@ -6,7 +6,7 @@ using Asm.MooBank.Modules.Institutions.Models;
 namespace Asm.MooBank.Modules.Institutions.Commands;
 
 [DisplayName("CreateInstitution")]
-public sealed record Create(string Name, InstitutionType InstitutionType) : ICommand<Models.Institution>;
+public sealed record Create(string Name, InstitutionType InstitutionType, int? ImporterTypeId = null) : ICommand<Models.Institution>;
 
 
 internal class CreateHandler(IInstitutionRepository repository, IUnitOfWork unitOfWork, ISecurity security) : ICommandHandler<Create, Models.Institution>
@@ -19,6 +19,7 @@ internal class CreateHandler(IInstitutionRepository repository, IUnitOfWork unit
         {
             Name = command.Name,
             InstitutionType = command.InstitutionType,
+            ImporterTypeId = command.ImporterTypeId,
         };
 
         repository.Add(entity);

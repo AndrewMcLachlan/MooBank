@@ -14,6 +14,15 @@ public class CreateLineValidator : AbstractValidator<CreateLine>
     }
 }
 
+public class GenerateBudgetValidator : AbstractValidator<GenerateBudget>
+{
+    public GenerateBudgetValidator()
+    {
+        RuleFor(x => x.Year)
+            .InclusiveBetween((short)2000, (short)2100).WithMessage("Year must be between 2000 and 2100");
+    }
+}
+
 public class UpdateLineValidator : AbstractValidator<UpdateLine>
 {
     public UpdateLineValidator()

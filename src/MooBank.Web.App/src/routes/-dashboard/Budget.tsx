@@ -8,7 +8,7 @@ import { useChartColours } from "utils/chartColours";
 import { lastMonth, lastMonthName } from "utils/dateFns";
 import { Bar } from "react-chartjs-2";
 import { useBudgetReportForMonth } from "./-hooks/useBudgetReportForMonth";
-import { Amount } from "components";
+import { Amount, WidgetError } from "components";
 
 export const BudgetWidget: React.FC = () => {
 
@@ -16,19 +16,22 @@ export const BudgetWidget: React.FC = () => {
 
     const period = lastMonth;
 
-    const { data: report, isLoading } = useBudgetReportForMonth(lastMonth.startDate.getFullYear(), lastMonth.startDate.getMonth());
+    const { data: report, isLoading, isError } = useBudgetReportForMonth(lastMonth.startDate.getFullYear(), lastMonth.startDate.getMonth());
+
+    const budgeted = report?.budgetedAmount ?? 0;
+    const actual = Math.abs(report?.actual ?? 0);
 
     const dataset: ChartData<"bar", number[], string> = {
         labels: [formatPeriod(period?.startDate, period?.endDate)],
 
         datasets: [{
             label: "Budget",
-            data: [report?.budgetedAmount ?? 0],
-            backgroundColor: colours.income,
+            data: [budgeted],
+            backgroundColor: colours.neutralTrend,
         }, {
             label: "Actual",
-            data: [Math.abs(report?.actual ?? 0)],
-            backgroundColor: colours.expenses,
+            data: [actual],
+            backgroundColor: actual > budgeted ? colours.expenses : colours.income,
         }]
     };
 
@@ -36,8 +39,9 @@ export const BudgetWidget: React.FC = () => {
     const difference = Math.round((((report?.budgetedAmount ?? 0) - Math.abs(report?.actual ?? 0)) / 10.0)) * 10;
 
     return (
-        <Widget header={`Budget - ${lastMonthName}`} size="single" className="report budget" loading={isLoading}>
-            {report &&
+        <Widget header={`Budget - ${lastMonthName}`} size="single" className="report budget" loading={isLoading} to={`/budget/report/${lastMonth.startDate.getFullYear()}/${lastMonth.startDate.getMonth()}`}>
+            {isError && <WidgetError />}
+            {!isError && report &&
                 <>
                     {difference >= 0 ?
                         <h4><Amount amount={difference} prefix="$" suffix=" saved" decimalPlaces={0} positiveColour negativeColour /></h4> :

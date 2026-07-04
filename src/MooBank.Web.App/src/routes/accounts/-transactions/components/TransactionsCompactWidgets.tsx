@@ -33,7 +33,7 @@ export const TransactionsCompactWidgets: React.FC = () => {
             </Section>
             <Section className="widget" data-tone="expense">
                 <div className="eyebrow">Expenses</div>
-                <div className="widget-value"><Amount amount={-stats.expenses} currencyCode={account.currency} negativeColour zeroShowsAs="negative" /></div>
+                <div className="widget-value"><Amount amount={stats.expenses} currencyCode={account.currency} negativeColour zeroShowsAs="negative" /></div>
                 <div className="widget-sub">{periodLabel}</div>
             </Section>
             <Section className="widget" data-tone={netTone}>

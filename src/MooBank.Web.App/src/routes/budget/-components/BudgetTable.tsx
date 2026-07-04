@@ -3,8 +3,13 @@ import type { BudgetLine as BudgetLineModel, BudgetLineType } from "api/types.ge
 import { BudgetLine } from "./BudgetLine";
 import { NewBudgetLine } from "./NewBudgetLine";
 import { numberOfMonths } from "utils/dateFns";
+import { useTags } from "hooks/useTags";
 
 export const BudgetTable: React.FC<BudgetTableProps> = ({ title, type, year, lines = [] }) => {
+
+    const { data: tags } = useTags();
+    const colourFor = (tagId: number) => tags?.find(t => t.id === tagId)?.colour as string | undefined;
+
     return (
         <SectionTable striped className="budget-list" header={title}>
             <thead>
@@ -18,7 +23,7 @@ export const BudgetTable: React.FC<BudgetTableProps> = ({ title, type, year, lin
             </thead>
             <tbody>
                 {lines.map((b) =>
-                    <BudgetLine year={year} budgetLine={b} key={b.id} />
+                    <BudgetLine year={year} budgetLine={b} colour={colourFor(b.tagId)} key={b.id} />
                 )}
 
                 <NewBudgetLine year={year} type={type} />

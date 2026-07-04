@@ -4,6 +4,7 @@ CREATE TABLE [Group] (
     [Description] NVARCHAR(4000) NOT NULL,
     [OwnerId] UNIQUEIDENTIFIER NOT NULL,
     [ShowPosition] BIT NOT NULL,
+    [Colour] CHAR(7) NULL,
 
     CONSTRAINT PK_Group PRIMARY KEY CLUSTERED (Id),
     CONSTRAINT FK_Group_AccountHolder FOREIGN KEY ([OwnerId]) REFERENCES [dbo].[User]([Id])

@@ -54,7 +54,22 @@ export type PeriodType = "thisMonth" | "lastMonth" | "previousMonth" | "last3Mon
 
 export const usePeriodSelector = ({instant, cacheKey, ...props}: PeriodSelectorProps) => {
     const [customPeriod, setCustomPeriod] = useCustomPeriod();
-    const [selectedPeriod, setSelectedPeriod] = useLocalStorage(cacheKey, "1");
+    const [storedPeriod, setStoredPeriod] = useLocalStorage(cacheKey, "1");
+
+    // ?period=X in the URL overrides the stored value as the initial state.
+    // Set once on mount; user interaction with the dropdown still writes to localStorage as normal.
+    const [selectedPeriod, setSelectedPeriodState] = useState<string>(() => {
+        const urlPeriodId = new URLSearchParams(window.location.search).get("period");
+        if (urlPeriodId && periodOptions.some(o => o.value === urlPeriodId)) {
+            return urlPeriodId;
+        }
+        return storedPeriod;
+    });
+    const setSelectedPeriod = (value: string) => {
+        setSelectedPeriodState(value);
+        setStoredPeriod(value);
+    };
+
     const [period, setPeriod] = useState<Period>(periodOptions.find(o => o.value === selectedPeriod) ?? (selectedPeriod === "-1" ? customPeriod : lastMonth));
     const [customStart, setCustomStart] = useState<Date>(customPeriod.startDate);
     const [customEnd, setCustomEnd] = useState<Date>(customPeriod.endDate);

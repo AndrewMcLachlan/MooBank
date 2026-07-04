@@ -6,7 +6,7 @@ import { forecastKey } from "./keys";
 export const useRunForecast = () => {
     const queryClient = useQueryClient();
 
-    const { mutate, mutateAsync, data, isPending } = useMutation({
+    const { mutate, mutateAsync, data, isPending, isError } = useMutation({
         ...runForecastMutation(),
         onSuccess: (_data, variables) => {
             queryClient.setQueryData(
@@ -28,5 +28,5 @@ export const useRunForecast = () => {
         return mutateAsync({ path: { planId } });
     };
 
-    return { run, runAsync, result: data as ForecastResult | undefined, isPending };
+    return { run, runAsync, result: data as ForecastResult | undefined, isPending, isError };
 };

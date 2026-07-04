@@ -1,13 +1,25 @@
 #nullable enable
+using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Budgets.Queries;
 using Asm.MooBank.Modules.Budgets.Tests.Support;
+using DomainTransaction = Asm.MooBank.Domain.Entities.Transactions.Transaction;
 
 namespace Asm.MooBank.Modules.Budgets.Tests.Queries;
 
 [Trait("Category", "Unit")]
-public class GetValueForTagTests
+[Collection("DbFunction Tests")]
+public class GetValueForTagTests : IDisposable
 {
     private readonly TestMocks _mocks = new();
+
+    public GetValueForTagTests()
+    {
+        // Net equals the signed amount when there are no offsets (debits negative, credits positive).
+        DomainTransaction.SetTransactionNetAmountOverride((type, id, amount) =>
+            type == TransactionType.Debit ? -Math.Abs(amount) : Math.Abs(amount));
+    }
+
+    public void Dispose() => DomainTransaction.ResetTransactionNetAmountOverride();
 
     [Fact]
     public async Task Handle_TransactionsWithTag_ReturnsSumOfAmounts()

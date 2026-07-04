@@ -75,7 +75,7 @@ export const TagTrend: React.FC = () => {
     }
 
     return (
-        <ReportsPage title="Tag Trend">
+        <ReportsPage title="Tag Trend" kind="TagTrend">
             <Section className="mini-filter-panel">
                 <ReportTypeSelector value={reportType} onChange={setReportType} hidden />
                 <MiniPeriodSelector onChange={setPeriod} instant />

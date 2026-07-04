@@ -15,6 +15,7 @@ internal class GetHandler(IQueryable<Domain.Entities.Account.LogicalAccount> acc
                                    .Include(a => a.Viewers).ThenInclude(ah => ah.Group)
                                    .Include(a => a.Viewers).ThenInclude(ah => ah.User)
                                    .Include(a => a.InstitutionAccounts)
+                                   .Include(a => a.TagPurposes)
                                    .SingleOrDefaultAsync(a => a.Id == request.InstrumentId, cancellationToken) ?? throw new NotFoundException();
 
         var account = entity.ToModelWithGroup(user, currencyConverter);

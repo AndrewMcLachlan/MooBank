@@ -8,6 +8,7 @@ import { emptyGuid, Form, SectionForm } from "@andrewmclachlan/moo-ds";
 import type { NavItem } from "@andrewmclachlan/moo-ds";
 import { Button, } from "@andrewmclachlan/moo-ds";
 import { useForm } from "react-hook-form";
+import { ColourPicker } from "components/ColourPicker";
 
 export interface GroupFormProps {
     group?: Group
@@ -42,6 +43,9 @@ export const GroupForm: React.FC<GroupFormProps> = ({ group }) => {
 
     const form = useForm<Group>({ defaultValues: group });
 
+    const colour = form.watch("colour") as string | null | undefined;
+    const setColour = (value: string | null) => form.setValue("colour", value, { shouldDirty: true });
+
     return (
         <Page title={`${verb} Group`} breadcrumbs={[{ text: "Groups", route: "/groups" }, ...breadcrumb]}>
             <SectionForm form={form} onSubmit={handleSubmit}>
@@ -56,6 +60,10 @@ export const GroupForm: React.FC<GroupFormProps> = ({ group }) => {
                 <Form.Group groupId="showTotal" className="form-check">
                     <Form.Check />
                     <Form.Label className="form-check-label">Show Total for Group</Form.Label>
+                </Form.Group>
+                <Form.Group groupId="colour">
+                    <Form.Label>Colour</Form.Label>
+                    <ColourPicker id="colour" value={colour} onChange={setColour} />
                 </Form.Group>
                 <Button type="submit" variant="primary" disabled={isPending}>Save</Button>
             </SectionForm>

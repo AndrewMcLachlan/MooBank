@@ -40,7 +40,7 @@ function Bills() {
     }
 
     return (
-        <Page title="Bills" actions={[<IconButton key="add" onClick={() => setShowAddBill(true)} icon="plus">Add Bill</IconButton>]} navItems={[]} breadcrumbs={[{ text: "Bills", route: "/bills" }, { text: "Accounts", route: "/bills/accounts" }, { text: billAccount?.name, route: `/bills/accounts/${id}` }]}>
+        <Page title="Bills" actions={[<IconButton badge key="add" onClick={() => setShowAddBill(true)} icon="plus">Add Bill</IconButton>]} navItems={[]} breadcrumbs={[{ text: "Bills", route: "/bills" }, { text: "Accounts", route: "/bills/accounts" }, { text: billAccount?.name, route: `/bills/accounts/${id}` }]}>
             <AddBill accountId={id} show={showAddBill} onHide={() => setShowAddBill(false)} />
             <BillDetails account={billAccount} bill={selectedBill} show={showDetails} onHide={() => setShowDetails(false)} />
             <Table striped className="section">

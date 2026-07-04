@@ -40,7 +40,7 @@ export const MonthlyBalances: React.FC = () => {
     };
 
     return (
-        <ReportsPage title="Tag Trend">
+        <ReportsPage title="Tag Trend" kind="MonthlyBalances">
             <Section className="mini-filter-panel">
                 <MiniPeriodSelector onChange={setPeriod} instant />
             </Section>

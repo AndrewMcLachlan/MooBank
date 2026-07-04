@@ -14,6 +14,12 @@ public partial record LogicalAccount : TransactionInstrument
     public bool IncludeInBudget { get; init; }
 
     public IEnumerable<InstitutionAccount> InstitutionAccounts { get; init; } = [];
+
+    public IReadOnlyList<ReportKind> AvailableReports { get; init; } = [];
+
+    public IReadOnlyList<TagPurpose> AvailableTagPurposes { get; init; } = [];
+
+    public IReadOnlyList<TagPurposeAssignment> TagPurposes { get; init; } = [];
 }
 
 public static class LogicalAccountExtensions
@@ -38,6 +44,9 @@ public static class LogicalAccountExtensions
                              account.VirtualInstruments.Where(v => v.ClosedDate == null).OrderBy(v => v.Name).Select(v => v.ToModel(currencyConverter)).ToArray() : [],
         RemainingBalance = Remaining(account, currencyConverter).RemainingBalance,
         RemainingBalanceLocalCurrency = Remaining(account, currencyConverter).RemainingBalanceLocalCurrency,
+        AvailableReports = AccountTypeReports.For(account.AccountType),
+        AvailableTagPurposes = AccountTagPurposes.For(account.AccountType),
+        TagPurposes = [.. account.TagPurposes.Select(t => new TagPurposeAssignment { Purpose = t.Purpose, TagId = t.TagId })],
     };
 
     public static Domain.Entities.Account.LogicalAccount ToEntity(this LogicalAccount account) => new(account.Id == Guid.Empty ? Guid.NewGuid() : account.Id, account.InstitutionAccounts.ToEntity())

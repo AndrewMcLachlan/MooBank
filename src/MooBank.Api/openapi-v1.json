@@ -2,7 +2,7 @@
   "openapi": "3.1.1",
   "info": {
     "title": "MooBank API",
-    "version": "2026.5.0"
+    "version": "2026.6.0"
   },
   "paths": {
     "/api/accounts": {
@@ -103,6 +103,93 @@
           },
           "required": true
         },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogicalAccount"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accounts/{instrumentId}/tag-purposes/{purpose}/{tagId}": {
+      "put": {
+        "tags": [
+          "Accounts"
+        ],
+        "operationId": "set-account-tag-purpose",
+        "parameters": [
+          {
+            "name": "instrumentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "purpose",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TagPurpose"
+            }
+          },
+          {
+            "name": "tagId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogicalAccount"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accounts/{instrumentId}/tag-purposes/{purpose}": {
+      "delete": {
+        "tags": [
+          "Accounts"
+        ],
+        "operationId": "delete-account-tag-purpose",
+        "parameters": [
+          {
+            "name": "instrumentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "purpose",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TagPurpose"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -1427,6 +1514,37 @@
         }
       }
     },
+    "/api/budget/{year}/generate": {
+      "post": {
+        "tags": [
+          "Budget"
+        ],
+        "operationId": "generate-budget",
+        "parameters": [
+          {
+            "name": "year",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int16"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Budget"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/budget/tag/{tagId}": {
       "get": {
         "tags": [
@@ -2429,6 +2547,14 @@
             "required": true,
             "schema": {
               "$ref": "#/components/schemas/InstitutionType"
+            }
+          },
+          {
+            "name": "ImporterTypeId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
@@ -3677,6 +3803,184 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AllTagAverageReport"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accounts/{accountId}/reports/savings-interest/{start}/{end}": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "operationId": "savings-interest-report",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "start",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavingsInterestReport"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accounts/{accountId}/reports/super-contributions/{start}/{end}": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "operationId": "super-contributions-report",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "start",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuperContributionsReport"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accounts/{accountId}/reports/super-returns": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "operationId": "super-returns-report",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuperReturnsReport"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accounts/{accountId}/reports/principal-vs-interest/{start}/{end}": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "operationId": "principal-vs-interest-report",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "start",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrincipalVsInterestReport"
                 }
               }
             }
@@ -5794,13 +6098,6 @@
               "string"
             ]
           },
-          "importerTypeId": {
-            "type": [
-              "null",
-              "integer"
-            ],
-            "format": "int32"
-          },
           "institutionId": {
             "type": "integer",
             "format": "int32"
@@ -6011,7 +6308,8 @@
           },
           "showTotal": {
             "type": "boolean"
-          }
+          },
+          "colour": { }
         }
       },
       "CreateInstitution": {
@@ -6026,6 +6324,13 @@
           },
           "institutionType": {
             "$ref": "#/components/schemas/InstitutionType"
+          },
+          "importerTypeId": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
           }
         }
       },
@@ -6039,13 +6344,6 @@
         "properties": {
           "institutionId": {
             "type": "integer",
-            "format": "int32"
-          },
-          "importerTypeId": {
-            "type": [
-              "null",
-              "integer"
-            ],
             "format": "int32"
           },
           "name": {
@@ -6572,6 +6870,16 @@
           },
           "showTotal": {
             "type": "boolean"
+          },
+          "colour": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/HexColour"
+              }
+            ]
           }
         }
       },
@@ -6903,6 +7211,13 @@
           },
           "institutionType": {
             "$ref": "#/components/schemas/InstitutionType"
+          },
+          "importerTypeId": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
           }
         }
       },
@@ -6918,13 +7233,6 @@
           "id": {
             "type": "string",
             "format": "uuid"
-          },
-          "importerTypeId": {
-            "type": [
-              "null",
-              "integer"
-            ],
-            "format": "int32"
           },
           "institutionId": {
             "type": "integer",
@@ -7065,6 +7373,16 @@
           "name": {
             "type": "string"
           },
+          "colour": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/HexColour"
+              }
+            ]
+          },
           "instruments": {
             "type": "array",
             "items": {
@@ -7130,6 +7448,9 @@
           "shareWithFamily",
           "includeInBudget",
           "institutionAccounts",
+          "availableReports",
+          "availableTagPurposes",
+          "tagPurposes",
           "balanceDate",
           "virtualInstruments"
         ],
@@ -7151,6 +7472,24 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/InstitutionAccount"
+            }
+          },
+          "availableReports": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReportKind"
+            }
+          },
+          "availableTagPurposes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagPurpose"
+            }
+          },
+          "tagPurposes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagPurposeAssignment"
             }
           },
           "lastTransaction": {
@@ -7564,6 +7903,65 @@
           "Income"
         ]
       },
+      "PrincipalVsInterestReport": {
+        "required": [
+          "interest",
+          "principal",
+          "interestTotal",
+          "principalTotal",
+          "accountId",
+          "start",
+          "end"
+        ],
+        "type": "object",
+        "properties": {
+          "interestTagId": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "interestTagName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "interest": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrendPoint"
+            }
+          },
+          "principal": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrendPoint"
+            }
+          },
+          "interestTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "principalTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "start": {
+            "type": "string",
+            "format": "date"
+          },
+          "end": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
       "RecurringTransaction": {
         "required": [
           "id",
@@ -7640,6 +8038,20 @@
           "Yearly"
         ]
       },
+      "ReportKind": {
+        "enum": [
+          "InOut",
+          "TopTags",
+          "Breakdown",
+          "TagTrend",
+          "AllTags",
+          "MonthlyBalances",
+          "SavingsInterest",
+          "SuperContributions",
+          "SuperReturns",
+          "PrincipalVsInterest"
+        ]
+      },
       "ReportType": {
         "type": "object"
       },
@@ -7669,6 +8081,58 @@
             "items": {
               "$ref": "#/components/schemas/Tag"
             }
+          }
+        }
+      },
+      "SavingsInterestReport": {
+        "required": [
+          "months",
+          "total",
+          "monthlyAverage",
+          "accountId",
+          "start",
+          "end"
+        ],
+        "type": "object",
+        "properties": {
+          "tagId": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "tagName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "months": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrendPoint"
+            }
+          },
+          "total": {
+            "type": "number",
+            "format": "double"
+          },
+          "monthlyAverage": {
+            "type": "number",
+            "format": "double"
+          },
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "start": {
+            "type": "string",
+            "format": "date"
+          },
+          "end": {
+            "type": "string",
+            "format": "date"
           }
         }
       },
@@ -8279,6 +8743,156 @@
           }
         }
       },
+      "SuperContributionsReport": {
+        "required": [
+          "employer",
+          "personal",
+          "employerTotal",
+          "personalTotal",
+          "accountId",
+          "start",
+          "end"
+        ],
+        "type": "object",
+        "properties": {
+          "employerTagId": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "employerTagName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "personalTagId": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "personalTagName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "employer": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrendPoint"
+            }
+          },
+          "personal": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrendPoint"
+            }
+          },
+          "employerTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "personalTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "start": {
+            "type": "string",
+            "format": "date"
+          },
+          "end": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "SuperReturnsReport": {
+        "required": [
+          "years",
+          "accountId",
+          "start",
+          "end"
+        ],
+        "type": "object",
+        "properties": {
+          "years": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SuperReturnsYear"
+            }
+          },
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "start": {
+            "type": "string",
+            "format": "date"
+          },
+          "end": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "SuperReturnsYear": {
+        "required": [
+          "financialYear",
+          "start",
+          "end",
+          "openingBalance",
+          "closingBalance",
+          "contributions",
+          "return"
+        ],
+        "type": "object",
+        "properties": {
+          "financialYear": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "start": {
+            "type": "string",
+            "format": "date"
+          },
+          "end": {
+            "type": "string",
+            "format": "date"
+          },
+          "openingBalance": {
+            "type": "number",
+            "format": "double"
+          },
+          "closingBalance": {
+            "type": "number",
+            "format": "double"
+          },
+          "contributions": {
+            "type": "number",
+            "format": "double"
+          },
+          "return": {
+            "type": "number",
+            "format": "double"
+          },
+          "returnPercent": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          }
+        }
+      },
       "Tag": {
         "required": [
           "id",
@@ -8421,10 +9035,35 @@
           }
         }
       },
+      "TagPurpose": {
+        "enum": [
+          "Interest",
+          "EmployerContribution",
+          "PersonalContribution",
+          "MortgageInterest"
+        ]
+      },
+      "TagPurposeAssignment": {
+        "required": [
+          "purpose",
+          "tagId"
+        ],
+        "type": "object",
+        "properties": {
+          "purpose": {
+            "$ref": "#/components/schemas/TagPurpose"
+          },
+          "tagId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
       "TagSettings": {
         "required": [
           "applySmoothing",
-          "excludeFromReporting"
+          "excludeFromReporting",
+          "budgetCategory"
         ],
         "type": "object",
         "properties": {
@@ -8432,6 +9071,9 @@
             "type": "boolean"
           },
           "excludeFromReporting": {
+            "type": "boolean"
+          },
+          "budgetCategory": {
             "type": "boolean"
           }
         }
@@ -8816,6 +9458,13 @@
           },
           "institutionType": {
             "$ref": "#/components/schemas/InstitutionType"
+          },
+          "importerTypeId": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
           }
         }
       },
@@ -8828,13 +9477,6 @@
         "properties": {
           "institutionId": {
             "type": "integer",
-            "format": "int32"
-          },
-          "importerTypeId": {
-            "type": [
-              "null",
-              "integer"
-            ],
             "format": "int32"
           },
           "name": {
@@ -8955,7 +9597,8 @@
           "name",
           "colour",
           "excludeFromReporting",
-          "applySmoothing"
+          "applySmoothing",
+          "budgetCategory"
         ],
         "type": "object",
         "properties": {
@@ -8977,6 +9620,10 @@
           },
           "applySmoothing": {
             "type": "boolean"
+          },
+          "budgetCategory": {
+            "type": "boolean",
+            "default": false
           }
         }
       },

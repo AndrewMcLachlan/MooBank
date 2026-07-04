@@ -68,50 +68,54 @@ public class ImporterFactoryTests : IDisposable
     }
 
     [Fact]
-    public async Task Create_ImporterTypeIsNull_ThrowsNullReferenceException()
+    public async Task Create_ImporterTypeIsNull_ReturnsNull()
     {
         // Arrange
         var instrumentId = Guid.NewGuid();
         var accountId = Guid.NewGuid();
 
+        var institution = TestEntities.CreateInstitution(id: 1, importerTypeId: null);
         var logicalAccount = TestEntities.CreateLogicalAccount(id: instrumentId);
         var institutionAccount = TestEntities.CreateInstitutionAccount(
             id: accountId,
             instrumentId: instrumentId,
-            importerTypeId: null,
-            importerType: null);
+            institutionId: institution.Id,
+            institution: institution);
         logicalAccount.AddInstitutionAccount(institutionAccount);
 
+        _context.Add(institution);
         _context.Add(logicalAccount);
         await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var factory = CreateFactory();
 
-        // Act & Assert
-        // Note: The code throws NullReferenceException because it accesses ImporterType.Type
-        // when ImporterType is null (the null-conditional doesn't cover this case)
-        await Assert.ThrowsAsync<NullReferenceException>(() => factory.Create(instrumentId, accountId, TestContext.Current.CancellationToken));
+        // Act
+        var result = await factory.Create(instrumentId, accountId, TestContext.Current.CancellationToken);
+
+        // Assert - no importer mapping for the institution → returns null
+        Assert.Null(result);
     }
 
     [Fact]
-    public async Task Create_ImporterTypeNameIsEmpty_ReturnsNull()
+    public async Task Create_ImporterTypeNameIsEmpty_ThrowsInvalidOperationException()
     {
         // Arrange
         var instrumentId = Guid.NewGuid();
         var accountId = Guid.NewGuid();
 
-        // Use an empty string which Type.GetType will treat as invalid
         var importerType = TestEntities.CreateImporterType(id: 1, typeName: "");
+        var institution = TestEntities.CreateInstitution(id: 1, importerTypeId: 1, importerType: importerType);
         var logicalAccount = TestEntities.CreateLogicalAccount(id: instrumentId);
         var institutionAccount = TestEntities.CreateInstitutionAccount(
             id: accountId,
             instrumentId: instrumentId,
-            importerTypeId: 1,
-            importerType: importerType);
+            institutionId: institution.Id,
+            institution: institution);
         logicalAccount.AddInstitutionAccount(institutionAccount);
 
-        _context.Add(logicalAccount);
         _context.Add(importerType);
+        _context.Add(institution);
+        _context.Add(logicalAccount);
         await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var factory = CreateFactory();
@@ -128,16 +132,18 @@ public class ImporterFactoryTests : IDisposable
         var accountId = Guid.NewGuid();
 
         var importerType = TestEntities.CreateImporterType(id: 1, typeName: "Invalid.Type.Name, NonExistentAssembly");
+        var institution = TestEntities.CreateInstitution(id: 1, importerTypeId: 1, importerType: importerType);
         var logicalAccount = TestEntities.CreateLogicalAccount(id: instrumentId);
         var institutionAccount = TestEntities.CreateInstitutionAccount(
             id: accountId,
             instrumentId: instrumentId,
-            importerTypeId: 1,
-            importerType: importerType);
+            institutionId: institution.Id,
+            institution: institution);
         logicalAccount.AddInstitutionAccount(institutionAccount);
 
-        _context.Add(logicalAccount);
         _context.Add(importerType);
+        _context.Add(institution);
+        _context.Add(logicalAccount);
         await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var factory = CreateFactory();
@@ -157,16 +163,18 @@ public class ImporterFactoryTests : IDisposable
         var importerType = TestEntities.CreateImporterType(
             id: 1,
             typeName: typeof(TestImporter).AssemblyQualifiedName);
+        var institution = TestEntities.CreateInstitution(id: 1, importerTypeId: 1, importerType: importerType);
         var logicalAccount = TestEntities.CreateLogicalAccount(id: instrumentId);
         var institutionAccount = TestEntities.CreateInstitutionAccount(
             id: accountId,
             instrumentId: instrumentId,
-            importerTypeId: 1,
-            importerType: importerType);
+            institutionId: institution.Id,
+            institution: institution);
         logicalAccount.AddInstitutionAccount(institutionAccount);
 
-        _context.Add(logicalAccount);
         _context.Add(importerType);
+        _context.Add(institution);
+        _context.Add(logicalAccount);
         await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Don't register the TestImporter in DI
@@ -186,16 +194,18 @@ public class ImporterFactoryTests : IDisposable
         var importerType = TestEntities.CreateImporterType(
             id: 1,
             typeName: typeof(TestImporter).AssemblyQualifiedName);
+        var institution = TestEntities.CreateInstitution(id: 1, importerTypeId: 1, importerType: importerType);
         var logicalAccount = TestEntities.CreateLogicalAccount(id: instrumentId);
         var institutionAccount = TestEntities.CreateInstitutionAccount(
             id: accountId,
             instrumentId: instrumentId,
-            importerTypeId: 1,
-            importerType: importerType);
+            institutionId: institution.Id,
+            institution: institution);
         logicalAccount.AddInstitutionAccount(institutionAccount);
 
-        _context.Add(logicalAccount);
         _context.Add(importerType);
+        _context.Add(institution);
+        _context.Add(logicalAccount);
         await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Register TestImporter in DI

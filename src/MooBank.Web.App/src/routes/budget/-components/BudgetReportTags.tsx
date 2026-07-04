@@ -5,7 +5,7 @@ import { Bar } from "react-chartjs-2";
 
 import { Section } from "@andrewmclachlan/moo-ds";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useChartColours } from "utils/chartColours";
+import { overUnderBudgetColours, useChartColours } from "utils/chartColours";
 import { useBudgetReportForMonthBreakdown } from "../-hooks/useBudgetReportForMonthBreakdown";
 import { useBudgetReportForMonthBreakdownUnbudgeted } from "../-hooks/useBudgetReportForMonthBreakdownUnbudgeted";
 
@@ -20,17 +20,20 @@ export const BudgetReportTags: React.FC<BudgetReportTagsProps> = ({year, month})
 
     if (!report.data) return null;
 
+    const budgeted = report.data?.tags.map(i => i.budgetedAmount) ?? [];
+    const actual = report.data?.tags.map(i => i.actual ?? 0) ?? [];
+
     const dataset: ChartData<"bar", number[], string> = {
         labels: report.data?.tags.map(t => t.name) ?? [],
 
         datasets: [{
             label: "Budgeted",
-            data: report.data?.tags.map(i => i.budgetedAmount),
-            backgroundColor: colours.income,
+            data: budgeted,
+            backgroundColor: colours.neutralTrend,
         }, {
             label: "Actual",
-            data: report.data?.tags.map(i => i.actual ?? 0),
-            backgroundColor: colours.expenses,
+            data: actual,
+            backgroundColor: overUnderBudgetColours(actual, budgeted, colours),
         }]
     };
 
@@ -46,39 +49,45 @@ export const BudgetReportTags: React.FC<BudgetReportTagsProps> = ({year, month})
 
     return (
         <>
-            <Section className="report" style={{ width: "2000px ! important"}}>
+            <Section className="report budget-report">
                 <h3><FontAwesomeIcon className="clickable" icon="circle-chevron-left" size="xs" onClick={() => window.history.back()} /> Budget Details - {Intl.DateTimeFormat('en', { month: 'long' }).format(new Date(year, month-1))} </h3>
-                <Bar id="budget-report" ref={chartRef} data={dataset} options={{
+                <div className="budget-report-chart">
+                <Bar id="budget-report-tags" ref={chartRef} data={dataset} options={{
+                    maintainAspectRatio: false,
                     plugins: {
+                        legend: { position: "bottom" },
                         tooltip: {
                             mode: "point",
                             intersect: false,
                         } as any,
                     },
                     scales: {
-                        x: {
-                            stacked: false
-                        }
+                        x: { stacked: false, grid: { color: colours.grid } },
+                        y: { grid: { color: colours.grid } },
                     }
                 }}
                 />
+                </div>
             </Section>
-            <Section className="report" style={{ width: "2000px ! important"}}>
+            <Section className="report budget-report">
                 <h3>Unbudgeted Items - {Intl.DateTimeFormat('en', { month: 'long' }).format(new Date(year, month-1))} </h3>
-                <Bar id="budget-report" ref={chartRef} data={datasetUnbudgeted} options={{
+                <div className="budget-report-chart">
+                <Bar id="budget-report-unbudgeted" data={datasetUnbudgeted} options={{
+                    maintainAspectRatio: false,
                     plugins: {
+                        legend: { position: "bottom" },
                         tooltip: {
                             mode: "point",
                             intersect: false,
                         } as any,
                     },
                     scales: {
-                        x: {
-                            stacked: false
-                        }
+                        x: { stacked: false, grid: { color: colours.grid } },
+                        y: { grid: { color: colours.grid } },
                     }
                 }}
                 />
+                </div>
             </Section>
             </>
     );

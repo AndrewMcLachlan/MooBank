@@ -1,3 +1,87 @@
 .budget {
     position: relative;
 }
+
+/* Toolbar: year / month filters on the left, generate action on the right. */
+.budget-toolbar .budget-toolbar-actions {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+/* Annual summary strip (income / expenses / surplus). */
+.budget-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.budget-summary .kpi {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--border-colour);
+    border-radius: 0.5rem;
+    background: var(--surface);
+}
+
+.budget-summary .kpi-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted-colour);
+}
+
+.budget-summary .kpi-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.budget-summary .kpi-value.income .amount {
+    color: var(--income-fg);
+}
+
+.budget-summary .kpi-value.expense .amount {
+    color: var(--expense-fg);
+}
+
+/* Tag colour chips in the budget tables. */
+.budget-list .tag-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.budget-list .tag-swatch {
+    display: inline-block;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    background: var(--border-colour);
+    flex: 0 0 auto;
+}
+
+/* Provenance hint shown on auto-generated lines' notes. */
+.budget-list .provenance {
+    color: var(--muted-colour);
+    font-style: italic;
+}
+
+/* Report chart containers — responsive, with a sensible fixed height so the
+   bars don't collapse (replaces the old hard-coded 2000px inline width). */
+.budget-report {
+    width: 100%;
+}
+
+.budget-report-chart {
+    position: relative;
+    height: 24rem;
+}
+
+@media (max-width: 768px) {
+    .budget-summary {
+        grid-template-columns: 1fr;
+    }
+}

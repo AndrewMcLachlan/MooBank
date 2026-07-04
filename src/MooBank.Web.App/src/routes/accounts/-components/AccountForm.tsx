@@ -13,7 +13,6 @@ import { Controllers } from "models/instruments";
 import { useCreateAccount } from "../-hooks/useCreateAccount";
 import { useUpdateAccount } from "../-hooks/useUpdateAccount";
 import { useUser } from "hooks/useUser";
-import { ImportSettings } from "../$id/manage/-components/ImportSettings";
 import { CurrencyInput } from "components/CurrencyInput";
 import { formatDate, formatISO } from "date-fns";
 
@@ -56,7 +55,6 @@ export const AccountForm: React.FC<{ account?: LogicalAccount }> = ({ account = 
     }, [user?.currency, account]);
 
     const accountType = form.watch("accountType");
-    const controller = form.watch("controller");
 
     return (
         <SectionForm form={form} onSubmit={handleSubmit}>
@@ -95,10 +93,6 @@ export const AccountForm: React.FC<{ account?: LogicalAccount }> = ({ account = 
             <Form.Group groupId="controller">
                 <Form.Label>Controller</Form.Label>
                 <FormComboBox items={Controllers} labelField={i => i} valueField={i => i} />
-            </Form.Group>
-            <Form.Group groupId="importerTypeId" show={!account && controller === "Import"}>
-                <Form.Label>Importer Type</Form.Label>
-                <ImportSettings />
             </Form.Group>
             <Form.Group groupId="includeInBudget" className="form-check">
                 <Form.Check />

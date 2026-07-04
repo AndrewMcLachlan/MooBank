@@ -33,5 +33,7 @@ public sealed record Tag : TagBase
         public bool ApplySmoothing { get; init; }
 
         public bool ExcludeFromReporting { get; init; }
+
+        public bool BudgetCategory { get; init; }
     }
 }

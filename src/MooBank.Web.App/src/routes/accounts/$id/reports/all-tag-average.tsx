@@ -31,7 +31,7 @@ function AllTagAverage() {
 const difference = Math.abs(differenceInMonths(period.startDate, period.endDate));
 
     return (
-        <ReportsPage title="Top Tags">
+        <ReportsPage title="Top Tags" kind="TopTags">
             <Section className="mini-filter-panel">
                 <ReportTypeSelector value={reportType} onChange={setReportType} hidden />
                 <MiniPeriodSelector onChange={setPeriod} />

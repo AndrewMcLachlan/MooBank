@@ -22,8 +22,12 @@ export const AccountListGroup: React.FC<AccountListGroupProps> = ({ group, isLoa
         }
     };
 
+    const colourStyle = group.colour
+        ? ({ "--group-colour": group.colour as string } as React.CSSProperties)
+        : undefined;
+
     const headerContent = (
-        <header>
+        <header className={group.colour ? "has-colour" : undefined} style={colourStyle}>
             <h3>{group?.name}</h3>
             {group.id && (
                 <Icon 
@@ -38,7 +42,7 @@ export const AccountListGroup: React.FC<AccountListGroupProps> = ({ group, isLoa
     );
 
     return (
-        <SectionTable className="accounts" hover header={headerContent} headerSize={2} hidden={group.instruments.length === 0}>
+        <SectionTable className={`accounts${group.colour ? " has-colour" : ""}`} style={colourStyle} hover header={headerContent} headerSize={2} hidden={group.instruments.length === 0}>
             <thead>
                 <tr>
                     <th className="expander d-none d-sm-table-cell"></th>

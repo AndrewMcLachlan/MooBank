@@ -9,7 +9,7 @@
    Shared eyebrow label
    =========================================== */
 .eyebrow {
-    font-size: 10.5px;
+    font-size: 0.75rem;
     font-weight: 600;
     letter-spacing: 0.7px;
     text-transform: uppercase;
@@ -98,7 +98,7 @@
 
     .stat-block {
         .lbl {
-            font-size: 10.5px;
+            font-size: 0.75rem;
             font-weight: 600;
             letter-spacing: 0.5px;
             text-transform: uppercase;
@@ -165,7 +165,7 @@
     .widget .widget-value.strong { color: var(--body-colour-bold); font-size: 22px; }
 
     .widget-sub {
-        font-size: 10.5px;
+        font-size: 0.75rem;
         color: var(--body-colour-dim);
         margin-top: 2px;
     }

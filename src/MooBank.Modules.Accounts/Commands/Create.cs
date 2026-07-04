@@ -14,8 +14,6 @@ public record Create() : ICommand<LogicalAccount>
 
     public string? Description { get; init; }
 
-    public int? ImporterTypeId { get; init; }
-
     public required int InstitutionId { get; init; }
 
     public required string Currency { get; init; }
@@ -62,7 +60,6 @@ internal class CreateHandler(ILogicalAccountRepository institutionAccountReposit
             Name = command.Name,
             OpenedDate = command.OpenedDate ?? DateOnly.FromDateTime(DateTime.UtcNow),
             InstitutionId = command.InstitutionId,
-            ImporterTypeId = command.ImporterTypeId,
         });
         entity.SetAccountHolder(user.Id);
         entity.SetGroup(command.GroupId, user.Id);

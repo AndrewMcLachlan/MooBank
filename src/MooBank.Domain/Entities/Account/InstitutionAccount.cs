@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Asm.MooBank.Domain.Entities.ReferenceData;
 using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Account;
@@ -16,8 +15,6 @@ public class InstitutionAccount(Guid id) : KeyedEntity<Guid>(id)
 
     public int InstitutionId { get; set; }
 
-    public int? ImporterTypeId { get; set; }
-
     public DateOnly OpenedDate { get; set; }
 
     public DateOnly? ClosedDate { get; set; }
@@ -29,8 +26,4 @@ public class InstitutionAccount(Guid id) : KeyedEntity<Guid>(id)
     [ForeignKey(nameof(InstrumentId))]
     [AllowNull]
     public virtual LogicalAccount LogicalAccount { get; set; }
-
-    [ForeignKey(nameof(ImporterTypeId))]
-    [AllowNull]
-    public ImporterType ImporterType { get; set; }
 }

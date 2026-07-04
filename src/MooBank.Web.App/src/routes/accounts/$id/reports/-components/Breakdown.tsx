@@ -1,16 +1,14 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 
 import { useBreakdownReport } from "../../../-hooks/useBreakdownReport";
-import { useTag } from "../../../-hooks/useTag";
 
-import type { ChartData, LegendItem } from "chart.js";
-import { Doughnut, getElementAtEvent } from "react-chartjs-2";
+import type { ChartData } from "chart.js";
+import { Doughnut } from "react-chartjs-2";
 
 import type { Period } from "models/dateFns";
-import { useNavigate, useParams } from "@tanstack/react-router";
 import { chartColours } from "utils/chartColours";
 import type { transactionTypeFilter } from "store/state";
-import type { Tag, TagValue } from "api/types.gen";
+import type { TagValue } from "api/types.gen";
 
 
 export const Breakdown: React.FC<BreakdownProps> = ({ accountId, tagId, period, reportType, selectedTagChanged }) => {
@@ -58,13 +56,13 @@ export const Breakdown: React.FC<BreakdownProps> = ({ accountId, tagId, period, 
                 mode: "point",
                 intersect: true,
             },
-        }}
-            onClick={(e) => {
-                const elements = getElementAtEvent(chartRef.current!, e);
+            onClick: (_event, elements) => {
                 if (elements.length !== 1) return;
                 const tag = report.data!.tags[elements[0].index];
                 selectedTagChanged?.(tag);
-            }} />
+            },
+        }}
+        />
     );
 }
 

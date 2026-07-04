@@ -25,7 +25,7 @@ function AllBillAccounts() {
             title="Accounts"
             breadcrumbs={[{ text: "Accounts", route: "/bills/accounts" }]}
             actions={[
-                <IconButton key="create" onClick={() => navigate({ to: "/bills/accounts/create" })} icon="plus">Add Account</IconButton>
+                <IconButton badge key="create" onClick={() => navigate({ to: "/bills/accounts/create" })} icon="plus">Add Account</IconButton>
             ]}
         >
             <SectionTable striped>

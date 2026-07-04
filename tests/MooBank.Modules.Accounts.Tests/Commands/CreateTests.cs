@@ -165,7 +165,6 @@ public class CreateTests
             Currency = "AUD",
             Balance = 1000m,
             InstitutionId = 5,
-            ImporterTypeId = 3,
             AccountType = AccountType.Transaction,
             Controller = Controller.Import,
             IncludeInBudget = true,
@@ -182,7 +181,6 @@ public class CreateTests
         var institutionAccount = capturedEntity.InstitutionAccounts.First();
         Assert.Equal("Account with Institution", institutionAccount.Name);
         Assert.Equal(5, institutionAccount.InstitutionId);
-        Assert.Equal(3, institutionAccount.ImporterTypeId);
         Assert.Equal(new DateOnly(2024, 6, 1), institutionAccount.OpenedDate);
     }
 

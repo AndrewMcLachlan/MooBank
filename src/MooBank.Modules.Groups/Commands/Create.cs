@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel;
+using Asm.Drawing;
 using Asm.MooBank.Domain.Entities.Group;
 using Asm.MooBank.Modules.Groups.Models;
 
 namespace Asm.MooBank.Modules.Groups.Commands;
 
 [DisplayName("CreateGroup")]
-public record Create(string Name, string Description, bool ShowTotal) : ICommand<Models.Group>;
+public record Create(string Name, string Description, bool ShowTotal, HexColour? Colour = null) : ICommand<Models.Group>;
 
 internal class CreateHandler(IGroupRepository groupRepository, IUnitOfWork unitOfWork, MooBank.Models.User user) : ICommandHandler<Create, Models.Group>
 {
@@ -18,6 +19,7 @@ internal class CreateHandler(IGroupRepository groupRepository, IUnitOfWork unitO
             Name = request.Name,
             Description = request.Description,
             ShowPosition = request.ShowTotal,
+            Colour = request.Colour,
             OwnerId = user.Id
         };
 

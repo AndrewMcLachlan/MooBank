@@ -32,6 +32,7 @@ export const useUpdateTag = () => {
                     colour: variables.colour as UpdateTag["colour"],
                     excludeFromReporting: variables.settings?.excludeFromReporting ?? false,
                     applySmoothing: variables.settings?.applySmoothing ?? false,
+                    budgetCategory: variables.settings?.budgetCategory ?? false,
                 },
                 path: { id: variables.id },
             });

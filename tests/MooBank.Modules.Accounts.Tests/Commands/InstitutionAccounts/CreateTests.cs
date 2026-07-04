@@ -34,7 +34,6 @@ public class CreateTests
         {
             Name = "New Institution Account",
             InstitutionId = 1,
-            ImporterTypeId = null,
             OpenedDate = new DateOnly(2024, 1, 1),
         };
         var command = new Create(logicalAccountId, createModel);
@@ -67,7 +66,6 @@ public class CreateTests
         {
             Name = "New Institution Account",
             InstitutionId = 2,
-            ImporterTypeId = 1,
             OpenedDate = new DateOnly(2024, 6, 15),
         };
         var command = new Create(logicalAccountId, createModel);
@@ -80,7 +78,6 @@ public class CreateTests
         var added = logicalAccount.InstitutionAccounts.First();
         Assert.Equal("New Institution Account", added.Name);
         Assert.Equal(2, added.InstitutionId);
-        Assert.Equal(1, added.ImporterTypeId);
         Assert.Equal(new DateOnly(2024, 6, 15), added.OpenedDate);
     }
 
@@ -138,34 +135,4 @@ public class CreateTests
         await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
-    [Fact]
-    public async Task Handle_WithImporterType_SetsImporterTypeId()
-    {
-        // Arrange
-        var logicalAccountId = Guid.NewGuid();
-        var logicalAccount = TestEntities.CreateLogicalAccount(id: logicalAccountId);
-        _mocks.LogicalAccountRepositoryMock
-            .Setup(r => r.Get(logicalAccountId, It.IsAny<AccountDetailsSpecification>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(logicalAccount);
-
-        var handler = new CreateHandler(
-            _mocks.LogicalAccountRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object);
-
-        var createModel = new CreateInstitutionAccount
-        {
-            Name = "Import Account",
-            InstitutionId = 1,
-            ImporterTypeId = 5,
-            OpenedDate = new DateOnly(2024, 1, 1),
-        };
-        var command = new Create(logicalAccountId, createModel);
-
-        // Act
-        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
-
-        // Assert
-        Assert.Equal(5, result.ImporterTypeId);
-        Assert.Equal(5, logicalAccount.InstitutionAccounts.First().ImporterTypeId);
-    }
 }

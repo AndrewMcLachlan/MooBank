@@ -4,8 +4,8 @@ import { type DefaultError, type InfiniteData, infiniteQueryOptions, queryOption
 import type { AxiosError } from 'axios';
 
 import { client } from '../client.gen';
-import { addSubTag, addTag, addTagToInstrumentRule, allTagAverageReport, archiveForecastPlan, byTagReport, byTagReportForTag, closeInstitutionAccount, createAccount, createAsset, createBill, createBillAccount, createBudgetLine, createFamily, createForecastPlan, createGroup, createInstitution, createInstitutionAccount, createInstrumentRule, createPlannedItem, createRecurringTransaction, createStockHolding, createStockTransaction, createTag, createTagByName, createTransaction, createVirtualInstrument, deleteBudgetLine, deleteForecastPlan, deleteGroup, deleteInstrumentRule, deletePlannedItem, deleteRecurringTransaction, deleteTag, deleteVirtualInstrument, getAccount, getAccounts, getAllBills, getAllBudgetYears, getAllFamilies, getAllForecastPlans, getAllGroups, getAllInstitutions, getAllInstrumentRules, getAllRecurringTransactions, getAsset, getBill, getBillAccount, getBillAccounts, getBillAccountsByType, getBillAccountSummariesByType, getBillsByUtilityType, getBillsForAnAccount, getBudget, getBudgetAmountForTag, getBudgetLine, getBudgetReport, getBudgetReportBreakdownForMonth, getBudgetReportBreakdownForMonthForUnbudgetedItems, getBudgetReportForMonth, getCostPerUnitReport, getFamily, getForecastPlan, getFormattedInstrumentsList, getGroup, getInstitution, getInstitutionAccount, getInstrumentRule, getInstrumentsList, getMyFamily, getPlannedItem, getRecurringTransaction, getRecurringTransactionsForAVirtualAccount, getServiceChargeReport, getStockHolding, getStockHoldingCpiAdjustedGainLoss, getStockTransactions, getTag, getTagGraph, getTagHierarchy, getTags, getTransactions, getUntaggedTransactions, getUsageReport, getUser, getVirtualInstrument, getVirtualInstruments, groupMonthlyBalancesReport, import_, importBills, importerTypes, inOutAverageReport, inOutReport, inOutTrendReport, monthlyBalancesReport, monthlyBalancesReportForPeriod, monthlyBalancesReportFrom, type Options, removeFamilyMember, removeSubTag, removeTag, removeTagFromInstrumentRule, reprocess, runForecast, runRules, searchTransactions, setBalance, stockHoldingReport, stockValueReport, tagBreakdownReport, tagBreakdownReportForTag, tagTrendReport, updateAccount, updateAsset, updateBudgetLine, updateFamily, updateForecastPlan, updateGroup, updateInstitution, updateInstitutionAccount, updateInstrumentRule, updateMyFamily, updatePlannedItem, updateRecurringTransaction, updateStockHolding, updateTag, updateTransaction, updateUser, updateVirtualInstrument, updateVirtualInstrumentBalance } from '../sdk.gen';
-import type { AddSubTagData, AddSubTagResponse, AddTagData, AddTagResponse, AddTagToInstrumentRuleData, AddTagToInstrumentRuleResponse, AllTagAverageReportData, AllTagAverageReportResponse, ArchiveForecastPlanData, ArchiveForecastPlanResponse, ByTagReportData, ByTagReportForTagData, ByTagReportForTagResponse, ByTagReportResponse, CloseInstitutionAccountData, CloseInstitutionAccountResponse, CreateAccountData, CreateAccountResponse, CreateAssetData, CreateAssetResponse, CreateBillAccountData, CreateBillAccountResponse, CreateBillData, CreateBillResponse, CreateBudgetLineData, CreateBudgetLineResponse, CreateFamilyData, CreateFamilyResponse, CreateForecastPlanData, CreateForecastPlanResponse, CreateGroupData, CreateGroupResponse, CreateInstitutionAccountData, CreateInstitutionAccountResponse, CreateInstitutionData, CreateInstitutionResponse, CreateInstrumentRuleData, CreateInstrumentRuleResponse, CreatePlannedItemData, CreatePlannedItemResponse, CreateRecurringTransactionData, CreateRecurringTransactionResponse, CreateStockHoldingData, CreateStockHoldingResponse, CreateStockTransactionData, CreateStockTransactionResponse, CreateTagByNameData, CreateTagByNameResponse, CreateTagData, CreateTagResponse, CreateTransactionData, CreateTransactionResponse, CreateVirtualInstrumentData, CreateVirtualInstrumentResponse, DeleteBudgetLineData, DeleteBudgetLineResponse, DeleteForecastPlanData, DeleteForecastPlanResponse, DeleteGroupData, DeleteGroupResponse, DeleteInstrumentRuleData, DeleteInstrumentRuleResponse, DeletePlannedItemData, DeletePlannedItemResponse, DeleteRecurringTransactionData, DeleteRecurringTransactionResponse, DeleteTagData, DeleteTagResponse, DeleteVirtualInstrumentData, DeleteVirtualInstrumentResponse, GetAccountData, GetAccountResponse, GetAccountsData, GetAccountsResponse, GetAllBillsData, GetAllBillsResponse, GetAllBudgetYearsData, GetAllBudgetYearsResponse, GetAllFamiliesData, GetAllFamiliesResponse, GetAllForecastPlansData, GetAllForecastPlansResponse, GetAllGroupsData, GetAllGroupsResponse, GetAllInstitutionsData, GetAllInstitutionsResponse, GetAllInstrumentRulesData, GetAllInstrumentRulesResponse, GetAllRecurringTransactionsData, GetAllRecurringTransactionsResponse, GetAssetData, GetAssetResponse, GetBillAccountData, GetBillAccountResponse, GetBillAccountsByTypeData, GetBillAccountsByTypeResponse, GetBillAccountsData, GetBillAccountsResponse, GetBillAccountSummariesByTypeData, GetBillAccountSummariesByTypeResponse, GetBillData, GetBillResponse, GetBillsByUtilityTypeData, GetBillsByUtilityTypeResponse, GetBillsForAnAccountData, GetBillsForAnAccountResponse, GetBudgetAmountForTagData, GetBudgetAmountForTagResponse, GetBudgetData, GetBudgetLineData, GetBudgetLineResponse, GetBudgetReportBreakdownForMonthData, GetBudgetReportBreakdownForMonthForUnbudgetedItemsData, GetBudgetReportBreakdownForMonthForUnbudgetedItemsResponse, GetBudgetReportBreakdownForMonthResponse, GetBudgetReportData, GetBudgetReportForMonthData, GetBudgetReportForMonthResponse, GetBudgetReportResponse, GetBudgetResponse, GetCostPerUnitReportData, GetCostPerUnitReportResponse, GetFamilyData, GetFamilyResponse, GetForecastPlanData, GetForecastPlanResponse, GetFormattedInstrumentsListData, GetFormattedInstrumentsListResponse, GetGroupData, GetGroupResponse, GetInstitutionAccountData, GetInstitutionAccountResponse, GetInstitutionData, GetInstitutionResponse, GetInstrumentRuleData, GetInstrumentRuleResponse, GetInstrumentsListData, GetInstrumentsListResponse, GetMyFamilyData, GetMyFamilyResponse, GetPlannedItemData, GetPlannedItemResponse, GetRecurringTransactionData, GetRecurringTransactionResponse, GetRecurringTransactionsForAVirtualAccountData, GetRecurringTransactionsForAVirtualAccountResponse, GetServiceChargeReportData, GetServiceChargeReportResponse, GetStockHoldingCpiAdjustedGainLossData, GetStockHoldingCpiAdjustedGainLossResponse, GetStockHoldingData, GetStockHoldingResponse, GetStockTransactionsData, GetStockTransactionsResponse, GetTagData, GetTagGraphData, GetTagGraphResponse, GetTagHierarchyData, GetTagHierarchyResponse, GetTagResponse, GetTagsData, GetTagsResponse, GetTransactionsData, GetTransactionsResponse, GetUntaggedTransactionsData, GetUntaggedTransactionsResponse, GetUsageReportData, GetUsageReportResponse, GetUserData, GetUserResponse, GetVirtualInstrumentData, GetVirtualInstrumentResponse, GetVirtualInstrumentsData, GetVirtualInstrumentsResponse, GroupMonthlyBalancesReportData, GroupMonthlyBalancesReportResponse, ImportBillsData, ImportBillsResponse, ImportData, ImporterTypesData, ImporterTypesResponse, InOutAverageReportData, InOutAverageReportResponse, InOutReportData, InOutReportResponse, InOutTrendReportData, InOutTrendReportResponse, MonthlyBalancesReportData, MonthlyBalancesReportForPeriodData, MonthlyBalancesReportForPeriodResponse, MonthlyBalancesReportFromData, MonthlyBalancesReportFromResponse, MonthlyBalancesReportResponse, RemoveFamilyMemberData, RemoveFamilyMemberResponse, RemoveSubTagData, RemoveSubTagResponse, RemoveTagData, RemoveTagFromInstrumentRuleData, RemoveTagFromInstrumentRuleResponse, RemoveTagResponse, ReprocessData, ReprocessResponse, RunForecastData, RunForecastResponse, RunRulesData, SearchTransactionsData, SearchTransactionsResponse, SetBalanceData, SetBalanceResponse, StockHoldingReportData, StockHoldingReportResponse, StockValueReportData, StockValueReportResponse, TagBreakdownReportData, TagBreakdownReportForTagData, TagBreakdownReportForTagResponse, TagBreakdownReportResponse, TagTrendReportData, TagTrendReportResponse, UpdateAccountData, UpdateAccountResponse, UpdateAssetData, UpdateAssetResponse, UpdateBudgetLineData, UpdateBudgetLineResponse, UpdateFamilyData, UpdateFamilyResponse, UpdateForecastPlanData, UpdateForecastPlanResponse, UpdateGroupData, UpdateGroupResponse, UpdateInstitutionAccountData, UpdateInstitutionAccountResponse, UpdateInstitutionData, UpdateInstitutionResponse, UpdateInstrumentRuleData, UpdateInstrumentRuleResponse, UpdateMyFamilyData, UpdateMyFamilyResponse, UpdatePlannedItemData, UpdatePlannedItemResponse, UpdateRecurringTransactionData, UpdateRecurringTransactionResponse, UpdateStockHoldingData, UpdateStockHoldingResponse, UpdateTagData, UpdateTagResponse, UpdateTransactionData, UpdateTransactionResponse, UpdateUserData, UpdateUserResponse, UpdateVirtualInstrumentBalanceData, UpdateVirtualInstrumentBalanceResponse, UpdateVirtualInstrumentData, UpdateVirtualInstrumentResponse } from '../types.gen';
+import { addSubTag, addTag, addTagToInstrumentRule, allTagAverageReport, archiveForecastPlan, byTagReport, byTagReportForTag, closeInstitutionAccount, createAccount, createAsset, createBill, createBillAccount, createBudgetLine, createFamily, createForecastPlan, createGroup, createInstitution, createInstitutionAccount, createInstrumentRule, createPlannedItem, createRecurringTransaction, createStockHolding, createStockTransaction, createTag, createTagByName, createTransaction, createVirtualInstrument, deleteAccountTagPurpose, deleteBudgetLine, deleteForecastPlan, deleteGroup, deleteInstrumentRule, deletePlannedItem, deleteRecurringTransaction, deleteTag, deleteVirtualInstrument, generateBudget, getAccount, getAccounts, getAllBills, getAllBudgetYears, getAllFamilies, getAllForecastPlans, getAllGroups, getAllInstitutions, getAllInstrumentRules, getAllRecurringTransactions, getAsset, getBill, getBillAccount, getBillAccounts, getBillAccountsByType, getBillAccountSummariesByType, getBillsByUtilityType, getBillsForAnAccount, getBudget, getBudgetAmountForTag, getBudgetLine, getBudgetReport, getBudgetReportBreakdownForMonth, getBudgetReportBreakdownForMonthForUnbudgetedItems, getBudgetReportForMonth, getCostPerUnitReport, getFamily, getForecastPlan, getFormattedInstrumentsList, getGroup, getInstitution, getInstitutionAccount, getInstrumentRule, getInstrumentsList, getMyFamily, getPlannedItem, getRecurringTransaction, getRecurringTransactionsForAVirtualAccount, getServiceChargeReport, getStockHolding, getStockHoldingCpiAdjustedGainLoss, getStockTransactions, getTag, getTagGraph, getTagHierarchy, getTags, getTransactions, getUntaggedTransactions, getUsageReport, getUser, getVirtualInstrument, getVirtualInstruments, groupMonthlyBalancesReport, import_, importBills, importerTypes, inOutAverageReport, inOutReport, inOutTrendReport, monthlyBalancesReport, monthlyBalancesReportForPeriod, monthlyBalancesReportFrom, type Options, principalVsInterestReport, removeFamilyMember, removeSubTag, removeTag, removeTagFromInstrumentRule, reprocess, runForecast, runRules, savingsInterestReport, searchTransactions, setAccountTagPurpose, setBalance, stockHoldingReport, stockValueReport, superContributionsReport, superReturnsReport, tagBreakdownReport, tagBreakdownReportForTag, tagTrendReport, updateAccount, updateAsset, updateBudgetLine, updateFamily, updateForecastPlan, updateGroup, updateInstitution, updateInstitutionAccount, updateInstrumentRule, updateMyFamily, updatePlannedItem, updateRecurringTransaction, updateStockHolding, updateTag, updateTransaction, updateUser, updateVirtualInstrument, updateVirtualInstrumentBalance } from '../sdk.gen';
+import type { AddSubTagData, AddSubTagResponse, AddTagData, AddTagResponse, AddTagToInstrumentRuleData, AddTagToInstrumentRuleResponse, AllTagAverageReportData, AllTagAverageReportResponse, ArchiveForecastPlanData, ArchiveForecastPlanResponse, ByTagReportData, ByTagReportForTagData, ByTagReportForTagResponse, ByTagReportResponse, CloseInstitutionAccountData, CloseInstitutionAccountResponse, CreateAccountData, CreateAccountResponse, CreateAssetData, CreateAssetResponse, CreateBillAccountData, CreateBillAccountResponse, CreateBillData, CreateBillResponse, CreateBudgetLineData, CreateBudgetLineResponse, CreateFamilyData, CreateFamilyResponse, CreateForecastPlanData, CreateForecastPlanResponse, CreateGroupData, CreateGroupResponse, CreateInstitutionAccountData, CreateInstitutionAccountResponse, CreateInstitutionData, CreateInstitutionResponse, CreateInstrumentRuleData, CreateInstrumentRuleResponse, CreatePlannedItemData, CreatePlannedItemResponse, CreateRecurringTransactionData, CreateRecurringTransactionResponse, CreateStockHoldingData, CreateStockHoldingResponse, CreateStockTransactionData, CreateStockTransactionResponse, CreateTagByNameData, CreateTagByNameResponse, CreateTagData, CreateTagResponse, CreateTransactionData, CreateTransactionResponse, CreateVirtualInstrumentData, CreateVirtualInstrumentResponse, DeleteAccountTagPurposeData, DeleteAccountTagPurposeResponse, DeleteBudgetLineData, DeleteBudgetLineResponse, DeleteForecastPlanData, DeleteForecastPlanResponse, DeleteGroupData, DeleteGroupResponse, DeleteInstrumentRuleData, DeleteInstrumentRuleResponse, DeletePlannedItemData, DeletePlannedItemResponse, DeleteRecurringTransactionData, DeleteRecurringTransactionResponse, DeleteTagData, DeleteTagResponse, DeleteVirtualInstrumentData, DeleteVirtualInstrumentResponse, GenerateBudgetData, GenerateBudgetResponse, GetAccountData, GetAccountResponse, GetAccountsData, GetAccountsResponse, GetAllBillsData, GetAllBillsResponse, GetAllBudgetYearsData, GetAllBudgetYearsResponse, GetAllFamiliesData, GetAllFamiliesResponse, GetAllForecastPlansData, GetAllForecastPlansResponse, GetAllGroupsData, GetAllGroupsResponse, GetAllInstitutionsData, GetAllInstitutionsResponse, GetAllInstrumentRulesData, GetAllInstrumentRulesResponse, GetAllRecurringTransactionsData, GetAllRecurringTransactionsResponse, GetAssetData, GetAssetResponse, GetBillAccountData, GetBillAccountResponse, GetBillAccountsByTypeData, GetBillAccountsByTypeResponse, GetBillAccountsData, GetBillAccountsResponse, GetBillAccountSummariesByTypeData, GetBillAccountSummariesByTypeResponse, GetBillData, GetBillResponse, GetBillsByUtilityTypeData, GetBillsByUtilityTypeResponse, GetBillsForAnAccountData, GetBillsForAnAccountResponse, GetBudgetAmountForTagData, GetBudgetAmountForTagResponse, GetBudgetData, GetBudgetLineData, GetBudgetLineResponse, GetBudgetReportBreakdownForMonthData, GetBudgetReportBreakdownForMonthForUnbudgetedItemsData, GetBudgetReportBreakdownForMonthForUnbudgetedItemsResponse, GetBudgetReportBreakdownForMonthResponse, GetBudgetReportData, GetBudgetReportForMonthData, GetBudgetReportForMonthResponse, GetBudgetReportResponse, GetBudgetResponse, GetCostPerUnitReportData, GetCostPerUnitReportResponse, GetFamilyData, GetFamilyResponse, GetForecastPlanData, GetForecastPlanResponse, GetFormattedInstrumentsListData, GetFormattedInstrumentsListResponse, GetGroupData, GetGroupResponse, GetInstitutionAccountData, GetInstitutionAccountResponse, GetInstitutionData, GetInstitutionResponse, GetInstrumentRuleData, GetInstrumentRuleResponse, GetInstrumentsListData, GetInstrumentsListResponse, GetMyFamilyData, GetMyFamilyResponse, GetPlannedItemData, GetPlannedItemResponse, GetRecurringTransactionData, GetRecurringTransactionResponse, GetRecurringTransactionsForAVirtualAccountData, GetRecurringTransactionsForAVirtualAccountResponse, GetServiceChargeReportData, GetServiceChargeReportResponse, GetStockHoldingCpiAdjustedGainLossData, GetStockHoldingCpiAdjustedGainLossResponse, GetStockHoldingData, GetStockHoldingResponse, GetStockTransactionsData, GetStockTransactionsResponse, GetTagData, GetTagGraphData, GetTagGraphResponse, GetTagHierarchyData, GetTagHierarchyResponse, GetTagResponse, GetTagsData, GetTagsResponse, GetTransactionsData, GetTransactionsResponse, GetUntaggedTransactionsData, GetUntaggedTransactionsResponse, GetUsageReportData, GetUsageReportResponse, GetUserData, GetUserResponse, GetVirtualInstrumentData, GetVirtualInstrumentResponse, GetVirtualInstrumentsData, GetVirtualInstrumentsResponse, GroupMonthlyBalancesReportData, GroupMonthlyBalancesReportResponse, ImportBillsData, ImportBillsResponse, ImportData, ImporterTypesData, ImporterTypesResponse, InOutAverageReportData, InOutAverageReportResponse, InOutReportData, InOutReportResponse, InOutTrendReportData, InOutTrendReportResponse, MonthlyBalancesReportData, MonthlyBalancesReportForPeriodData, MonthlyBalancesReportForPeriodResponse, MonthlyBalancesReportFromData, MonthlyBalancesReportFromResponse, MonthlyBalancesReportResponse, PrincipalVsInterestReportData, PrincipalVsInterestReportResponse, RemoveFamilyMemberData, RemoveFamilyMemberResponse, RemoveSubTagData, RemoveSubTagResponse, RemoveTagData, RemoveTagFromInstrumentRuleData, RemoveTagFromInstrumentRuleResponse, RemoveTagResponse, ReprocessData, ReprocessResponse, RunForecastData, RunForecastResponse, RunRulesData, SavingsInterestReportData, SavingsInterestReportResponse, SearchTransactionsData, SearchTransactionsResponse, SetAccountTagPurposeData, SetAccountTagPurposeResponse, SetBalanceData, SetBalanceResponse, StockHoldingReportData, StockHoldingReportResponse, StockValueReportData, StockValueReportResponse, SuperContributionsReportData, SuperContributionsReportResponse, SuperReturnsReportData, SuperReturnsReportResponse, TagBreakdownReportData, TagBreakdownReportForTagData, TagBreakdownReportForTagResponse, TagBreakdownReportResponse, TagTrendReportData, TagTrendReportResponse, UpdateAccountData, UpdateAccountResponse, UpdateAssetData, UpdateAssetResponse, UpdateBudgetLineData, UpdateBudgetLineResponse, UpdateFamilyData, UpdateFamilyResponse, UpdateForecastPlanData, UpdateForecastPlanResponse, UpdateGroupData, UpdateGroupResponse, UpdateInstitutionAccountData, UpdateInstitutionAccountResponse, UpdateInstitutionData, UpdateInstitutionResponse, UpdateInstrumentRuleData, UpdateInstrumentRuleResponse, UpdateMyFamilyData, UpdateMyFamilyResponse, UpdatePlannedItemData, UpdatePlannedItemResponse, UpdateRecurringTransactionData, UpdateRecurringTransactionResponse, UpdateStockHoldingData, UpdateStockHoldingResponse, UpdateTagData, UpdateTagResponse, UpdateTransactionData, UpdateTransactionResponse, UpdateUserData, UpdateUserResponse, UpdateVirtualInstrumentBalanceData, UpdateVirtualInstrumentBalanceResponse, UpdateVirtualInstrumentData, UpdateVirtualInstrumentResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseURL' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -88,6 +88,34 @@ export const updateAccountMutation = (options?: Partial<Options<UpdateAccountDat
     const mutationOptions: UseMutationOptions<UpdateAccountResponse, AxiosError<DefaultError>, Options<UpdateAccountData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await updateAccount({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const setAccountTagPurposeMutation = (options?: Partial<Options<SetAccountTagPurposeData>>): UseMutationOptions<SetAccountTagPurposeResponse, AxiosError<DefaultError>, Options<SetAccountTagPurposeData>> => {
+    const mutationOptions: UseMutationOptions<SetAccountTagPurposeResponse, AxiosError<DefaultError>, Options<SetAccountTagPurposeData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await setAccountTagPurpose({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const deleteAccountTagPurposeMutation = (options?: Partial<Options<DeleteAccountTagPurposeData>>): UseMutationOptions<DeleteAccountTagPurposeResponse, AxiosError<DefaultError>, Options<DeleteAccountTagPurposeData>> => {
+    const mutationOptions: UseMutationOptions<DeleteAccountTagPurposeResponse, AxiosError<DefaultError>, Options<DeleteAccountTagPurposeData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await deleteAccountTagPurpose({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -569,6 +597,20 @@ export const createBudgetLineMutation = (options?: Partial<Options<CreateBudgetL
     const mutationOptions: UseMutationOptions<CreateBudgetLineResponse, AxiosError<DefaultError>, Options<CreateBudgetLineData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await createBudgetLine({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const generateBudgetMutation = (options?: Partial<Options<GenerateBudgetData>>): UseMutationOptions<GenerateBudgetResponse, AxiosError<DefaultError>, Options<GenerateBudgetData>> => {
+    const mutationOptions: UseMutationOptions<GenerateBudgetResponse, AxiosError<DefaultError>, Options<GenerateBudgetData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await generateBudget({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -1693,6 +1735,138 @@ export const allTagAverageReportInfiniteOptions = (options: Options<AllTagAverag
         return data;
     },
     queryKey: allTagAverageReportInfiniteQueryKey(options)
+});
+
+export const savingsInterestReportQueryKey = (options: Options<SavingsInterestReportData>) => createQueryKey('savingsInterestReport', options);
+
+export const savingsInterestReportOptions = (options: Options<SavingsInterestReportData>) => queryOptions<SavingsInterestReportResponse, AxiosError<DefaultError>, SavingsInterestReportResponse, ReturnType<typeof savingsInterestReportQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await savingsInterestReport({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: savingsInterestReportQueryKey(options)
+});
+
+export const savingsInterestReportInfiniteQueryKey = (options: Options<SavingsInterestReportData>): QueryKey<Options<SavingsInterestReportData>> => createQueryKey('savingsInterestReport', options, true);
+
+export const savingsInterestReportInfiniteOptions = (options: Options<SavingsInterestReportData>) => infiniteQueryOptions<SavingsInterestReportResponse, AxiosError<DefaultError>, InfiniteData<SavingsInterestReportResponse>, QueryKey<Options<SavingsInterestReportData>>, string | Pick<QueryKey<Options<SavingsInterestReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<SavingsInterestReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            path: {
+                start: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await savingsInterestReport({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: savingsInterestReportInfiniteQueryKey(options)
+});
+
+export const superContributionsReportQueryKey = (options: Options<SuperContributionsReportData>) => createQueryKey('superContributionsReport', options);
+
+export const superContributionsReportOptions = (options: Options<SuperContributionsReportData>) => queryOptions<SuperContributionsReportResponse, AxiosError<DefaultError>, SuperContributionsReportResponse, ReturnType<typeof superContributionsReportQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await superContributionsReport({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: superContributionsReportQueryKey(options)
+});
+
+export const superContributionsReportInfiniteQueryKey = (options: Options<SuperContributionsReportData>): QueryKey<Options<SuperContributionsReportData>> => createQueryKey('superContributionsReport', options, true);
+
+export const superContributionsReportInfiniteOptions = (options: Options<SuperContributionsReportData>) => infiniteQueryOptions<SuperContributionsReportResponse, AxiosError<DefaultError>, InfiniteData<SuperContributionsReportResponse>, QueryKey<Options<SuperContributionsReportData>>, string | Pick<QueryKey<Options<SuperContributionsReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<SuperContributionsReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            path: {
+                start: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await superContributionsReport({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: superContributionsReportInfiniteQueryKey(options)
+});
+
+export const superReturnsReportQueryKey = (options: Options<SuperReturnsReportData>) => createQueryKey('superReturnsReport', options);
+
+export const superReturnsReportOptions = (options: Options<SuperReturnsReportData>) => queryOptions<SuperReturnsReportResponse, AxiosError<DefaultError>, SuperReturnsReportResponse, ReturnType<typeof superReturnsReportQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await superReturnsReport({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: superReturnsReportQueryKey(options)
+});
+
+export const principalVsInterestReportQueryKey = (options: Options<PrincipalVsInterestReportData>) => createQueryKey('principalVsInterestReport', options);
+
+export const principalVsInterestReportOptions = (options: Options<PrincipalVsInterestReportData>) => queryOptions<PrincipalVsInterestReportResponse, AxiosError<DefaultError>, PrincipalVsInterestReportResponse, ReturnType<typeof principalVsInterestReportQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await principalVsInterestReport({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: principalVsInterestReportQueryKey(options)
+});
+
+export const principalVsInterestReportInfiniteQueryKey = (options: Options<PrincipalVsInterestReportData>): QueryKey<Options<PrincipalVsInterestReportData>> => createQueryKey('principalVsInterestReport', options, true);
+
+export const principalVsInterestReportInfiniteOptions = (options: Options<PrincipalVsInterestReportData>) => infiniteQueryOptions<PrincipalVsInterestReportResponse, AxiosError<DefaultError>, InfiniteData<PrincipalVsInterestReportResponse>, QueryKey<Options<PrincipalVsInterestReportData>>, string | Pick<QueryKey<Options<PrincipalVsInterestReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<PrincipalVsInterestReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            path: {
+                start: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await principalVsInterestReport({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: principalVsInterestReportInfiniteQueryKey(options)
 });
 
 export const monthlyBalancesReportQueryKey = (options: Options<MonthlyBalancesReportData>) => createQueryKey('monthlyBalancesReport', options);

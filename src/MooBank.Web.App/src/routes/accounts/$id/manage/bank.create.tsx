@@ -8,7 +8,6 @@ import { SectionForm, Form } from "@andrewmclachlan/moo-ds";
 import type { CreateInstitutionAccount as Create, InstitutionAccount, LogicalAccount } from "api/types.gen";
 import { useCreateInstitutionAccount } from "../../-hooks/useCreateInstitutionAccount";
 import { AccountPage, InstitutionSelector, useAccount } from "components";
-import { ImportSettings } from "./-components/ImportSettings";
 
 export const Route = createFileRoute("/accounts/$id/manage/bank/create")({
     component: CreateInstitutionAccount,
@@ -41,10 +40,6 @@ function CreateInstitutionAccount() {
                 <Form.Group groupId="institutionId" >
                     <Form.Label>Institution</Form.Label>
                     <InstitutionSelector accountType={parentAccount?.accountType} />
-                </Form.Group>
-                <Form.Group groupId="importerTypeId" >
-                    <Form.Label>Importer Type</Form.Label>
-                    <ImportSettings />
                 </Form.Group>
                 <Form.Group groupId="openedDate" >
                     <Form.Label>Opened Date</Form.Label>

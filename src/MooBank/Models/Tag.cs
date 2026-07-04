@@ -15,6 +15,7 @@ public static class TagExtensions
             {
                 ApplySmoothing = entity.Settings.ApplySmoothing,
                 ExcludeFromReporting = entity.Settings.ExcludeFromReporting,
+                BudgetCategory = entity.Settings.BudgetCategory,
             }
         };
     }
@@ -29,6 +30,7 @@ public static class TagExtensions
             {
                 ApplySmoothing = tag.Settings.ApplySmoothing,
                 ExcludeFromReporting = tag.Settings.ExcludeFromReporting,
+                BudgetCategory = tag.Settings.BudgetCategory,
             }
         };
     public static ICollection<Domain.Entities.Tag.Tag> ToEntities(this IEnumerable<Tag> tags) =>

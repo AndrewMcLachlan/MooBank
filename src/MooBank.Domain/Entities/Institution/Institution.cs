@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,4 +23,10 @@ public class Institution : KeyedEntity<int>
 
     [Column("InstitutionTypeId")]
     public virtual InstitutionType InstitutionType { get; set; }
+
+    public int? ImporterTypeId { get; set; }
+
+    [ForeignKey(nameof(ImporterTypeId))]
+    [AllowNull]
+    public virtual ImporterType ImporterType { get; set; }
 }
