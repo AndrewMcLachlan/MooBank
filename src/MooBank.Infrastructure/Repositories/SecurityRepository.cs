@@ -1,4 +1,5 @@
-﻿using Asm.MooBank.Domain.Entities.Group;
+﻿using Asm.MooBank.Audit;
+using Asm.MooBank.Domain.Entities.Group;
 using Asm.MooBank.Models;
 using Asm.MooBank.Security;
 using Asm.MooBank.Security.Authorisation;
@@ -7,12 +8,13 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
-public class SecurityRepository(MooBankContext mooBankContext, IAuthorizationService authorizationService, IPrincipalProvider principalProvider, User user) : ISecurity
+public class SecurityRepository(MooBankContext mooBankContext, IAuthorizationService authorizationService, IPrincipalProvider principalProvider, User user, IAuditLogger audit) : ISecurity
 {
     public void AssertGroupPermission(Guid accountId)
     {
         if (!mooBankContext.Groups.Any(a => a.Id == accountId && a.OwnerId == user.Id))
         {
+            audit.AuthorizationDenied(user, "Group", accountId, nameof(AssertGroupPermission));
             throw new NotAuthorisedException("Not authorised to view this account group");
         }
     }
@@ -21,6 +23,7 @@ public class SecurityRepository(MooBankContext mooBankContext, IAuthorizationSer
     {
         if (group.OwnerId != user.Id)
         {
+            audit.AuthorizationDenied(user, "Group", group.Id, nameof(AssertGroupPermission));
             throw new NotAuthorisedException("Not authorised to view this account group");
         }
     }
@@ -31,6 +34,7 @@ public class SecurityRepository(MooBankContext mooBankContext, IAuthorizationSer
 
         if (!authResult.Succeeded)
         {
+            audit.AuthorizationDenied(user, "Family", familyId, nameof(FamilyMemberRequirement));
             throw new NotAuthorisedException("Not authorised to view this family");
         }
     }
@@ -42,6 +46,7 @@ public class SecurityRepository(MooBankContext mooBankContext, IAuthorizationSer
 
         if (!authResult.Succeeded)
         {
+            audit.AuthorizationDenied(user, "BudgetLine", id, nameof(FamilyMemberRequirement));
             throw new NotAuthorisedException("Not authorised to view this budget line");
         }
     }
@@ -55,6 +60,7 @@ public class SecurityRepository(MooBankContext mooBankContext, IAuthorizationSer
 
         if (!authResult.Succeeded)
         {
+            audit.AuthorizationDenied(user, "Administrator", null, Policies.Admin);
             throw new NotAuthorisedException("Not authorised");
         }
     }

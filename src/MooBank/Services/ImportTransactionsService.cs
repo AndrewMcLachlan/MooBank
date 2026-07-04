@@ -1,4 +1,5 @@
 using Asm.Domain;
+using Asm.MooBank.Audit;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Importers;
@@ -12,7 +13,7 @@ public interface IImportTransactionsService
     Task Import(ImportWorkItem import, CancellationToken cancellationToken = default);
 }
 
-internal class ImportTransactionsService(IInstrumentRepository instrumentRepository, IRuleRepository ruleRepository, IImporterFactory importerFactory, IUnitOfWork unitOfWork, ILogger<ImportTransactionsService> logger) : IImportTransactionsService
+internal class ImportTransactionsService(IInstrumentRepository instrumentRepository, IRuleRepository ruleRepository, IImporterFactory importerFactory, IUnitOfWork unitOfWork, IAuditLogger audit, ILogger<ImportTransactionsService> logger) : IImportTransactionsService
 {
     public async Task Import(ImportWorkItem workItem, CancellationToken cancellationToken = default)
     {
@@ -20,7 +21,7 @@ internal class ImportTransactionsService(IInstrumentRepository instrumentReposit
 
         try
         {
-            logger.LogInformation("Processing import for instrument {InstrumentId}, account {AccountId}, user {UserId}", workItem.InstrumentId, workItem.AccountId, workItem.User.Id);
+            audit.ImportStarted(workItem.User, workItem.InstrumentId, workItem.AccountId);
 
             var instrument = await instrumentRepository.Get(workItem.InstrumentId, cancellationToken)
                 ?? throw new InvalidOperationException($"Instrument with ID {workItem.InstrumentId} not found");
@@ -35,8 +36,7 @@ internal class ImportTransactionsService(IInstrumentRepository instrumentReposit
 
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            logger.LogInformation("Import completed for instrument {InstrumentId}, account {AccountId}. {Count} transactions imported.",
-                workItem.InstrumentId, workItem.AccountId, importResult.Transactions.Count());
+            audit.ImportCompleted(workItem.User, workItem.InstrumentId, workItem.AccountId, importResult.Transactions.Count());
         }
         catch (Exception ex)
         {

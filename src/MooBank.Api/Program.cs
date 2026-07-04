@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Text.Json.Serialization;
 using Asm.AspNetCore.Api;
 using Asm.AspNetCore.Modules;
+using Asm.MooBank.Api.Middleware;
 using Asm.MooBank.Infrastructure;
 using Asm.MooBank.Institution.AustralianSuper;
 using Asm.MooBank.Institution.Ing;
@@ -268,6 +269,8 @@ void AddApp(WebApplication app)
     app.UseStaticFiles();
 
     app.UseAuthorization();
+
+    app.UseMiddleware<AuditMiddleware>();
 
     app.MapMcp("mcp").RequireAuthorization(new AuthorizationPolicyBuilder()
         .AddAuthenticationSchemes(McpAuthenticationDefaults.AuthenticationScheme)

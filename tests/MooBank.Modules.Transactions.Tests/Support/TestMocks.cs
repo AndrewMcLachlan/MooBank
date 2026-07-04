@@ -1,4 +1,5 @@
 using Asm.Domain;
+using Asm.MooBank.Audit;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Domain.Entities.Transactions;
@@ -14,6 +15,9 @@ public class TestMocks
         UnitOfWorkMock = new Mock<IUnitOfWork>();
         UnitOfWorkMock.Setup(uow => uow.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
+        AuditingUnitOfWorkMock = new Mock<IAuditingUnitOfWork>();
+        AuditingUnitOfWorkMock.Setup(uow => uow.SaveChangesAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
         TransactionRepositoryMock = new Mock<ITransactionRepository>();
         InstrumentRepositoryMock = new Mock<IInstrumentRepository>();
         TagRepositoryMock = new Mock<ITagRepository>();
@@ -26,6 +30,8 @@ public class TestMocks
     }
 
     public Mock<IUnitOfWork> UnitOfWorkMock { get; }
+
+    public Mock<IAuditingUnitOfWork> AuditingUnitOfWorkMock { get; }
 
     public Mock<ITransactionRepository> TransactionRepositoryMock { get; }
 

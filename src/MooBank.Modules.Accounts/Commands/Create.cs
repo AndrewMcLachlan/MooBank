@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Asm.MooBank.Audit;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Accounts.Models.Account;
 using Asm.MooBank.Services;
@@ -34,7 +35,7 @@ public record Create() : ICommand<LogicalAccount>
     public bool ShareWithFamily { get; init; }
 }
 
-internal class CreateHandler(ILogicalAccountRepository institutionAccountRepository, IUnitOfWork unitOfWork, User user, ICurrencyConverter currencyConverter, ISecurity security) : ICommandHandler<Create, LogicalAccount>
+internal class CreateHandler(ILogicalAccountRepository institutionAccountRepository, IAuditingUnitOfWork unitOfWork, User user, ICurrencyConverter currencyConverter, ISecurity security) : ICommandHandler<Create, LogicalAccount>
 {
     private readonly ILogicalAccountRepository _accountRepository = institutionAccountRepository;
 
@@ -68,7 +69,7 @@ internal class CreateHandler(ILogicalAccountRepository institutionAccountReposit
 
         entity = _accountRepository.Add(entity, command.Balance, command.OpenedDate ?? DateOnly.FromDateTime(DateTime.UtcNow));
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync("Created", "Account", entity.Id, cancellationToken);
 
         return entity.ToModel(currencyConverter);
     }

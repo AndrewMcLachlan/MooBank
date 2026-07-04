@@ -1,4 +1,5 @@
-﻿using Asm.MooBank.Queues;
+﻿using Asm.MooBank.Audit;
+using Asm.MooBank.Queues;
 using Asm.MooBank.Services;
 using Asm.MooBank.Services.Background;
 using Microsoft.Extensions.Configuration;
@@ -9,7 +10,9 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
-        services.AddScoped<IRecurringTransactionService, RecurringTransactionService>()
+        services.AddScoped<IAuditLogger, AuditLogger>()
+            .AddScoped<IAuditingUnitOfWork, AuditingUnitOfWork>()
+            .AddScoped<IRecurringTransactionService, RecurringTransactionService>()
             .AddScoped<ICurrencyConverter, CurrencyConverter>()
             .AddScoped<ICpiService, CpiService>()
             .AddScoped<IRunRulesService, RunRulesService>()

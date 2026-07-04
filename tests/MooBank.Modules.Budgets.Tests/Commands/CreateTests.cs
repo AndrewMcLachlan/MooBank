@@ -25,7 +25,7 @@ public class CreateTests
             .Callback<DomainBudget>(e => capturedEntity = e)
             .Returns<DomainBudget>(e => e);
 
-        var handler = new CreateHandler(_mocks.BudgetRepositoryMock.Object, _mocks.UnitOfWorkMock.Object, _mocks.User);
+        var handler = new CreateHandler(_mocks.BudgetRepositoryMock.Object, _mocks.AuditingUnitOfWorkMock.Object, _mocks.User);
         var command = new Create(2024);
 
         // Act
@@ -46,7 +46,7 @@ public class CreateTests
             .Callback<DomainBudget>(e => capturedEntity = e)
             .Returns<DomainBudget>(e => e);
 
-        var handler = new CreateHandler(_mocks.BudgetRepositoryMock.Object, _mocks.UnitOfWorkMock.Object, _mocks.User);
+        var handler = new CreateHandler(_mocks.BudgetRepositoryMock.Object, _mocks.AuditingUnitOfWorkMock.Object, _mocks.User);
         var command = new Create(2024);
 
         // Act
@@ -67,14 +67,14 @@ public class CreateTests
             .Setup(r => r.Add(It.IsAny<DomainBudget>()))
             .Returns<DomainBudget>(e => e);
 
-        var handler = new CreateHandler(_mocks.BudgetRepositoryMock.Object, _mocks.UnitOfWorkMock.Object, _mocks.User);
+        var handler = new CreateHandler(_mocks.BudgetRepositoryMock.Object, _mocks.AuditingUnitOfWorkMock.Object, _mocks.User);
         var command = new Create(2024);
 
         // Act
         await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
-        _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _mocks.AuditingUnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -91,7 +91,7 @@ public class CreateTests
             .Callback<DomainBudget>(e => capturedEntity = e)
             .Returns<DomainBudget>(e => e);
 
-        var handler = new CreateHandler(_mocks.BudgetRepositoryMock.Object, _mocks.UnitOfWorkMock.Object, _mocks.User);
+        var handler = new CreateHandler(_mocks.BudgetRepositoryMock.Object, _mocks.AuditingUnitOfWorkMock.Object, _mocks.User);
         var command = new Create(2024);
 
         // Act
@@ -115,7 +115,7 @@ public class CreateTests
             .Callback<DomainBudget>(e => capturedEntity = e)
             .Returns<DomainBudget>(e => e);
 
-        var handler = new CreateHandler(_mocks.BudgetRepositoryMock.Object, _mocks.UnitOfWorkMock.Object, _mocks.User);
+        var handler = new CreateHandler(_mocks.BudgetRepositoryMock.Object, _mocks.AuditingUnitOfWorkMock.Object, _mocks.User);
         var command = new Create(year);
 
         // Act
@@ -134,7 +134,7 @@ public class CreateTests
             .Setup(r => r.Add(It.IsAny<DomainBudget>()))
             .Returns<DomainBudget>(e => e);
 
-        var handler = new CreateHandler(_mocks.BudgetRepositoryMock.Object, _mocks.UnitOfWorkMock.Object, _mocks.User);
+        var handler = new CreateHandler(_mocks.BudgetRepositoryMock.Object, _mocks.AuditingUnitOfWorkMock.Object, _mocks.User);
         var command = new Create(2024);
 
         // Act

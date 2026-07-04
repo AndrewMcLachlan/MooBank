@@ -37,7 +37,7 @@ public class CreateTests
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.TransactionRepositoryMock.Object,
             _mocks.UserIdProviderMock.Object,
-            _mocks.UnitOfWorkMock.Object);
+            _mocks.AuditingUnitOfWorkMock.Object);
 
         var command = new Create(instrumentId, new(-50m, "Test purchase", "REF001", DateTimeOffset.Now));
 
@@ -71,7 +71,7 @@ public class CreateTests
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.TransactionRepositoryMock.Object,
             _mocks.UserIdProviderMock.Object,
-            _mocks.UnitOfWorkMock.Object);
+            _mocks.AuditingUnitOfWorkMock.Object);
 
         var command = new Create(instrumentId, new(-100m, "Groceries", null, DateTimeOffset.Now));
 
@@ -104,7 +104,7 @@ public class CreateTests
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.TransactionRepositoryMock.Object,
             _mocks.UserIdProviderMock.Object,
-            _mocks.UnitOfWorkMock.Object);
+            _mocks.AuditingUnitOfWorkMock.Object);
 
         var command = new Create(instrumentId, new(-50m, "Test", null, DateTimeOffset.Now));
 
@@ -112,7 +112,7 @@ public class CreateTests
         await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
-        _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _mocks.AuditingUnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -139,7 +139,7 @@ public class CreateTests
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.TransactionRepositoryMock.Object,
             _mocks.UserIdProviderMock.Object,
-            _mocks.UnitOfWorkMock.Object);
+            _mocks.AuditingUnitOfWorkMock.Object);
 
         var command = new Create(instrumentId, new(-50m, "Test", null, DateTimeOffset.Now));
 
@@ -172,7 +172,7 @@ public class CreateTests
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.TransactionRepositoryMock.Object,
             _mocks.UserIdProviderMock.Object,
-            _mocks.UnitOfWorkMock.Object);
+            _mocks.AuditingUnitOfWorkMock.Object);
 
         var command = new Create(instrumentId, new(-50m, "Test", "REF123", DateTimeOffset.Now));
 
@@ -199,7 +199,7 @@ public class CreateTests
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.TransactionRepositoryMock.Object,
             _mocks.UserIdProviderMock.Object,
-            _mocks.UnitOfWorkMock.Object);
+            _mocks.AuditingUnitOfWorkMock.Object);
 
         var command = new Create(instrumentId, new(-50m, "Test", null, DateTimeOffset.Now));
 
@@ -232,7 +232,7 @@ public class CreateTests
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.TransactionRepositoryMock.Object,
             _mocks.UserIdProviderMock.Object,
-            _mocks.UnitOfWorkMock.Object);
+            _mocks.AuditingUnitOfWorkMock.Object);
 
         var command = new Create(instrumentId, new(amount, "Test", null, DateTimeOffset.Now));
 
