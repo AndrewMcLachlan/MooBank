@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Asm.MooBank.Audit;
 using Asm.MooBank.Domain.Entities.Account.Specifications;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Accounts.Models.Account;
@@ -10,7 +11,7 @@ namespace Asm.MooBank.Modules.Accounts.Commands;
 [DisplayName("UpdateAccount")]
 public record Update(LogicalAccount Account) : ICommand<LogicalAccount>;
 
-internal class UpdateHandler(IUnitOfWork unitOfWork, ILogicalAccountRepository accountRepository, User user, ICurrencyConverter currencyConverter, ISecurity security) : ICommandHandler<Update, LogicalAccount>
+internal class UpdateHandler(IAuditingUnitOfWork unitOfWork, ILogicalAccountRepository accountRepository, User user, ICurrencyConverter currencyConverter, ISecurity security) : ICommandHandler<Update, LogicalAccount>
 {
     public async ValueTask<LogicalAccount> Handle(Update command, CancellationToken cancellationToken)
     {
@@ -33,7 +34,7 @@ internal class UpdateHandler(IUnitOfWork unitOfWork, ILogicalAccountRepository a
 
         accountRepository.Update(entity);
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync("Updated", "Account", entity.Id, cancellationToken);
 
         return entity.ToModel(currencyConverter);
     }

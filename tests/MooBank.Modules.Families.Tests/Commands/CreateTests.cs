@@ -25,7 +25,7 @@ public class CreateTests
 
         var handler = new CreateHandler(
             _mocks.FamilyRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
+            _mocks.AuditingUnitOfWorkMock.Object,
             _mocks.SecurityMock.Object);
 
         var command = new Create("New Family");
@@ -54,7 +54,7 @@ public class CreateTests
 
         var handler = new CreateHandler(
             _mocks.FamilyRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
+            _mocks.AuditingUnitOfWorkMock.Object,
             _mocks.SecurityMock.Object);
 
         var command = new Create("New Family");
@@ -78,7 +78,7 @@ public class CreateTests
 
         var handler = new CreateHandler(
             _mocks.FamilyRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
+            _mocks.AuditingUnitOfWorkMock.Object,
             _mocks.SecurityMock.Object);
 
         var command = new Create("New Family");
@@ -87,7 +87,7 @@ public class CreateTests
         await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
-        _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _mocks.AuditingUnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object?>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -100,7 +100,7 @@ public class CreateTests
 
         var handler = new CreateHandler(
             _mocks.FamilyRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
+            _mocks.AuditingUnitOfWorkMock.Object,
             _mocks.SecurityMock.Object);
 
         var command = new Create("New Family");
@@ -122,7 +122,7 @@ public class CreateTests
 
         var handler = new CreateHandler(
             _mocks.FamilyRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
+            _mocks.AuditingUnitOfWorkMock.Object,
             _mocks.SecurityMock.Object);
 
         var command = new Create("New Family");
@@ -141,7 +141,7 @@ public class CreateTests
 
         var handler = new CreateHandler(
             _mocks.FamilyRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
+            _mocks.AuditingUnitOfWorkMock.Object,
             _mocks.SecurityMock.Object);
 
         var command = new Create("New Family");

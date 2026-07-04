@@ -1,4 +1,5 @@
 using Asm.Domain;
+using Asm.MooBank.Audit;
 using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Models;
@@ -15,6 +16,9 @@ public class TestMocks
         UnitOfWorkMock = new Mock<IUnitOfWork>();
         UnitOfWorkMock.Setup(uow => uow.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
+        AuditingUnitOfWorkMock = new Mock<IAuditingUnitOfWork>();
+        AuditingUnitOfWorkMock.Setup(uow => uow.SaveChangesAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object?>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
         SecurityMock = new Mock<ISecurity>();
         SecurityMock.Setup(s => s.AssertGroupPermission(It.IsAny<Guid>()));
 
@@ -30,6 +34,8 @@ public class TestMocks
     }
 
     public Mock<IUnitOfWork> UnitOfWorkMock { get; }
+
+    public Mock<IAuditingUnitOfWork> AuditingUnitOfWorkMock { get; }
 
     public Mock<ISecurity> SecurityMock { get; }
 

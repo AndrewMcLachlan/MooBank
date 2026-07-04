@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Asm.MooBank.Audit;
 using Asm.MooBank.Domain.Entities.Budget;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Budgets.Models;
@@ -8,7 +9,7 @@ namespace Asm.MooBank.Modules.Budgets.Commands;
 [DisplayName("CreateBudget")]
 public record Create(short Year) : ICommand<Models.Budget>;
 
-internal class CreateHandler(IBudgetRepository budgetRepository, IUnitOfWork unitOfWork, User user) : ICommandHandler<Create, Models.Budget>
+internal class CreateHandler(IBudgetRepository budgetRepository, IAuditingUnitOfWork unitOfWork, User user) : ICommandHandler<Create, Models.Budget>
 {
     public async ValueTask<Models.Budget> Handle(Create request, CancellationToken cancellationToken)
     {
@@ -20,7 +21,7 @@ internal class CreateHandler(IBudgetRepository budgetRepository, IUnitOfWork uni
             Year = request.Year,
         });
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync("Created", "Budget", entity.Id, cancellationToken);
 
         return entity.ToModel();
     }

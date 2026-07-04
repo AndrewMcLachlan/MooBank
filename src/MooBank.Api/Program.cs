@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Text.Json.Serialization;
 using Asm.AspNetCore.Api;
 using Asm.AspNetCore.Modules;
+using Asm.MooBank.Api.Middleware;
 using Asm.MooBank.Infrastructure;
 using Asm.MooBank.Institution.AustralianSuper;
 using Asm.MooBank.Institution.Ing;
@@ -266,6 +267,8 @@ void AddApp(WebApplication app)
     app.UseAuthentication();
     app.UseDefaultFiles();
     app.UseStaticFiles();
+
+    app.UseMiddleware<AuditMiddleware>();
 
     app.UseAuthorization();
 

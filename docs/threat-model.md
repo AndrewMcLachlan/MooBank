@@ -1,8 +1,11 @@
 # MooBank Threat Model
 
-**Date:** 2026-03-12
-**Version:** 1.0
+**Date:** 2026-07-05
+**Version:** 1.1
 **Scope:** Authentication, authorization, data isolation, file upload, API security
+
+**Changes since 1.0:**
+- T-R1 (Insufficient Audit Logging) status updated to MITIGATED following implementation of `IAuditLogger` (PR #844, branch `feature/audit-logging-plan`).
 
 ---
 
@@ -146,26 +149,27 @@ The 5-minute window is narrow, and permission changes are rare admin-level opera
 
 #### T-R1: Insufficient Audit Logging
 
-**Risk Level:** Medium
-**Description:** There is no comprehensive audit trail for security-relevant actions. The only logging observed is authentication failure logging (`Log.Error(context.Exception, "Authentication failed.")`) and importer-level informational logging. Transaction imports are queued for background processing without a persistent audit record of who initiated the import, though raw transaction data is stored with an `Imported` timestamp.
+**Risk Level:** Medium → Low
+**Status:** MITIGATED
 
-**Existing Mitigations:**
-- Authentication failures are logged via Serilog
-- Application Insights integration is configured
-- Serilog sinks include File and Seq
-- Raw import data is stored in institution-specific tables (e.g., `ing.TransactionRaw`) with an `Imported` timestamp
+**Description:** Comprehensive audit trail for security-relevant actions was previously absent. An `IAuditLogger` abstraction (`src/MooBank/Audit/IAuditLogger.cs`) has been introduced, backed by `ILogger<AuditLogger>` with structured logging tagged `AuditEvent = true` and `AuditCategory = <Authentication|Authorization|HttpMutation|Import|DataChange>`. Events flow through the existing Serilog pipeline to Application Insights, File, and Seq sinks — no dedicated audit table is required.
 
-**Residual Risk:** Medium. Lack of audit trails limits the ability to investigate suspicious activity or reconstruct events after an incident.
+**Mitigations Applied:**
+- `LoginSuccess` and `UserProvisioned` emitted from the JWT `OnTokenValidated` handler (`src/MooBank.Api/IServiceCollectionExtensions.cs`)
+- `AuthenticationFailed` emitted from the JWT `OnAuthenticationFailed` handler
+- `AuthorizationDenied` emitted from `SecurityRepository` before each `NotAuthorisedException` throw (`src/MooBank.Infrastructure/Repositories/SecurityRepository.cs`)
+- `HttpMutation` emitted from `AuditMiddleware` for every POST/PUT/PATCH/DELETE on authenticated requests, capturing method, path, IP address, and status code (`src/MooBank.Api/Middleware/AuditMiddleware.cs`)
+- `ImportStarted` and `ImportCompleted` emitted from `ImportTransactionsService` capturing user, instrument, account, and transaction count
+- `DataChanged` emitted automatically by `IAuditingUnitOfWork.SaveChangesAsync(action, entityType, entityId)` — CQRS command handlers for Accounts, Transactions, Tags, Budgets, and Families now inject `IAuditingUnitOfWork` instead of `IUnitOfWork`
+- All events include the acting user ID; HTTP mutations additionally capture IP address
+- Raw import data continues to be stored in institution-specific tables (e.g., `ing.TransactionRaw`) with an `Imported` timestamp
+
+**Residual Risk:** Low. Investigators can reconstruct security-relevant activity from Seq by filtering `AuditEvent = true`. Audit events reside in the same log stream as operational logs; retention and access controls are inherited from Seq/Application Insights configuration.
 
 **Recommended Improvements:**
-- Add structured logging for security-relevant events:
-  - Successful logins (especially first-time / new user provisioning)
-  - Failed authorization attempts
-  - Data modification operations (create/update/delete on financial instruments)
-  - CSV import operations (who imported, how many transactions, which instrument)
-  - Admin operations (family creation, institution management)
-- Consider implementing a dedicated audit trail table for compliance-relevant actions
-- Log the user ID and IP address for all write operations
+- Extend `IAuditingUnitOfWork` coverage to remaining write-side command handlers as they are touched (currently applied to Accounts, Transactions, Tags, Budgets, Families)
+- Verify Seq/Application Insights retention meets the desired audit-retention window
+- Consider a Seq dashboard or saved query pinned to `AuditEvent = true` for incident response
 
 ---
 
@@ -247,7 +251,7 @@ Browser -> Azure AD -> JWT Token -> API Server -> Token Validation -> Claims Enr
 Browser -> File Upload -> API Endpoint -> Memory Stream -> Background Queue -> CSV Parser -> Database
 ```
 
-**Threats:** T-T1, T-D2, T-R1
+**Threats:** T-T1, T-D2
 **Key Code:** `src/MooBank.Modules.Instruments/Endpoints/Import.cs`, `src/MooBank.Institution.Ing/Importers/IngImporter.cs`
 
 ### 5.3 Report Generation Flow
@@ -335,7 +339,7 @@ The following security practices are already well-implemented:
 | T-S1 | JWT Token Theft | Spoofing | Medium | HSTS, TLS | Verify security headers |
 | T-T1 | CSV Import Manipulation | Tampering | Medium | Input validation, size limit, file type check | Review anti-forgery token |
 | T-T2 | Claims Cache Staleness | Tampering | Low | 5-min expiry | Add cache invalidation |
-| T-R1 | Insufficient Audit Logging | Repudiation | Medium | Basic logging, raw import data stored | Add comprehensive audit trail |
+| T-R1 | Insufficient Audit Logging | Repudiation | Medium → Low | **MITIGATED** -- `IAuditLogger` covering auth, authz, HTTP mutations, imports, data changes; structured logs to Seq | Extend `IAuditingUnitOfWork` to remaining modules |
 | T-D1 | No Rate Limiting | DoS | High | **MITIGATED** -- Cloudflare edge rate limiting + DDoS protection | Review Cloudflare rules |
 | T-D2 | Unbounded File Upload | DoS | Medium → Low | **PARTIALLY MITIGATED** -- 10MB limit, file type validation, auth required | Consider blob storage streaming |
 | T-D3 | Report Query Performance | DoS | Low | Date range params | Add max date range validation |
@@ -344,13 +348,10 @@ The following security practices are already well-implemented:
 
 ## 11. Priority Recommendations
 
-### Short-Term (Medium Priority)
-
-1. **Implement audit logging** for security-relevant operations (logins, data modifications, imports).
-
 ### Long-Term (Low Priority)
 
-2. **Review and document the security headers** applied by `UseSecurityHeaders()` from the ASM library.
+1. **Review and document the security headers** applied by `UseSecurityHeaders()` from the ASM library.
+2. **Extend `IAuditingUnitOfWork` coverage** to command handlers in modules not yet migrated (currently applied to Accounts, Transactions, Tags, Budgets, Families).
 
 ---
 

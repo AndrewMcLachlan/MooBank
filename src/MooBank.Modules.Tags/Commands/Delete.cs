@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Asm.MooBank.Audit;
 using Asm.MooBank.Domain.Entities.Tag;
 
 namespace Asm.MooBank.Modules.Tags.Commands;
@@ -6,7 +7,7 @@ namespace Asm.MooBank.Modules.Tags.Commands;
 public record Delete(int Id) : ICommand;
 
 [DisplayName("DeleteTag")]
-internal class DeleteHandler(ITagRepository tagRepository, IUnitOfWork unitOfWork, ISecurity security) : ICommandHandler<Delete>
+internal class DeleteHandler(ITagRepository tagRepository, IAuditingUnitOfWork unitOfWork, ISecurity security) : ICommandHandler<Delete>
 {
     private readonly ITagRepository _tagRepository = tagRepository;
 
@@ -18,6 +19,6 @@ internal class DeleteHandler(ITagRepository tagRepository, IUnitOfWork unitOfWor
 
         _tagRepository.Delete(entity);
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync("Deleted", "Tag", command.Id, cancellationToken);
     }
 }

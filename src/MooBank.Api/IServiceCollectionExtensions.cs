@@ -1,12 +1,12 @@
 ﻿using System.Security.Claims;
 using Asm.AspNetCore.Authentication;
+using Asm.MooBank.Audit;
 using Asm.MooBank.Infrastructure;
 using Asm.OAuth;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Hybrid;
-using Serilog;
 
 namespace Asm.MooBank.Api;
 
@@ -24,7 +24,8 @@ public static class IServiceCollectionExtensions
         {
             OnAuthenticationFailed = context =>
             {
-                Log.Error(context.Exception, "Authentication failed.");
+                var audit = context.HttpContext.RequestServices.GetRequiredService<IAuditLogger>();
+                audit.AuthenticationFailed(context.Exception);
                 return Task.CompletedTask;
             },
             OnTokenValidated = async context =>
@@ -64,6 +65,9 @@ public static class IServiceCollectionExtensions
                             dataContext.Add(user);
 
                             await dataContext.SaveChangesAsync(ct);
+
+                            var provisionAudit = context.HttpContext.RequestServices.GetRequiredService<IAuditLogger>();
+                            provisionAudit.UserProvisioned(user.Id, user.EmailAddress, user.FamilyId);
                         }
 
                         var owned = user.Instruments.Select(i => i.Id);
@@ -91,6 +95,9 @@ public static class IServiceCollectionExtensions
                     }, CacheOptions, cancellationToken: CancellationToken.None);
 
                     principal.AddIdentity(new(claims.Select(c => new Claim(c.Item1, c.Item2))));
+
+                    var audit = context.HttpContext.RequestServices.GetRequiredService<IAuditLogger>();
+                    audit.LoginSuccess(userId, principal.GetClaimValue<string>(ClaimTypes.Email) ?? String.Empty);
                 }
             }
         };

@@ -31,7 +31,7 @@ public class UpdateTests
             .ReturnsAsync(existingEntity);
 
         var handler = new UpdateHandler(
-            _mocks.UnitOfWorkMock.Object,
+            _mocks.AuditingUnitOfWorkMock.Object,
             _mocks.LogicalAccountRepositoryMock.Object,
             _mocks.User,
             _mocks.CurrencyConverterMock.Object,
@@ -75,7 +75,7 @@ public class UpdateTests
             .ReturnsAsync(existingEntity);
 
         var handler = new UpdateHandler(
-            _mocks.UnitOfWorkMock.Object,
+            _mocks.AuditingUnitOfWorkMock.Object,
             _mocks.LogicalAccountRepositoryMock.Object,
             _mocks.User,
             _mocks.CurrencyConverterMock.Object,
@@ -115,7 +115,7 @@ public class UpdateTests
             .ReturnsAsync(existingEntity);
 
         var handler = new UpdateHandler(
-            _mocks.UnitOfWorkMock.Object,
+            _mocks.AuditingUnitOfWorkMock.Object,
             _mocks.LogicalAccountRepositoryMock.Object,
             _mocks.User,
             _mocks.CurrencyConverterMock.Object,
@@ -128,7 +128,7 @@ public class UpdateTests
         await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
-        _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _mocks.AuditingUnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object?>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -143,7 +143,7 @@ public class UpdateTests
             .ReturnsAsync(existingEntity);
 
         var handler = new UpdateHandler(
-            _mocks.UnitOfWorkMock.Object,
+            _mocks.AuditingUnitOfWorkMock.Object,
             _mocks.LogicalAccountRepositoryMock.Object,
             _mocks.User,
             _mocks.CurrencyConverterMock.Object,
@@ -172,7 +172,7 @@ public class UpdateTests
             .ReturnsAsync(existingEntity);
 
         var handler = new UpdateHandler(
-            _mocks.UnitOfWorkMock.Object,
+            _mocks.AuditingUnitOfWorkMock.Object,
             _mocks.LogicalAccountRepositoryMock.Object,
             _mocks.User,
             _mocks.CurrencyConverterMock.Object,
@@ -202,7 +202,7 @@ public class UpdateTests
             .ReturnsAsync(existingEntity);
 
         var handler = new UpdateHandler(
-            _mocks.UnitOfWorkMock.Object,
+            _mocks.AuditingUnitOfWorkMock.Object,
             _mocks.LogicalAccountRepositoryMock.Object,
             _mocks.User,
             _mocks.CurrencyConverterMock.Object,
@@ -224,7 +224,7 @@ public class UpdateTests
         var accountId = Guid.NewGuid();
 
         var handler = new UpdateHandler(
-            _mocks.UnitOfWorkMock.Object,
+            _mocks.AuditingUnitOfWorkMock.Object,
             _mocks.LogicalAccountRepositoryMock.Object,
             _mocks.User,
             _mocks.CurrencyConverterMock.Object,
@@ -262,7 +262,7 @@ public class UpdateTests
             .ReturnsAsync(existingEntity);
 
         var handler = new UpdateHandler(
-            _mocks.UnitOfWorkMock.Object,
+            _mocks.AuditingUnitOfWorkMock.Object,
             _mocks.LogicalAccountRepositoryMock.Object,
             _mocks.User,
             _mocks.CurrencyConverterMock.Object,
@@ -288,7 +288,7 @@ public class UpdateTests
             .ThrowsAsync(new NotFoundException());
 
         var handler = new UpdateHandler(
-            _mocks.UnitOfWorkMock.Object,
+            _mocks.AuditingUnitOfWorkMock.Object,
             _mocks.LogicalAccountRepositoryMock.Object,
             _mocks.User,
             _mocks.CurrencyConverterMock.Object,

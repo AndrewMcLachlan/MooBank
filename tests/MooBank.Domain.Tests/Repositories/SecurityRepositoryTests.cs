@@ -1,5 +1,6 @@
 #nullable enable
 using System.Security.Claims;
+using Asm.MooBank.Audit;
 using Asm.MooBank.Domain.Entities.Budget;
 using Asm.MooBank.Domain.Entities.Group;
 using Asm.MooBank.Domain.Tests.Support;
@@ -249,5 +250,5 @@ public class SecurityRepositoryTests : IDisposable
     #endregion
 
     private SecurityRepository CreateRepository() =>
-        new(_context, _authorizationService.Object, _principalProvider.Object, _user);
+        new(_context, _authorizationService.Object, _principalProvider.Object, _user, Mock.Of<IAuditLogger>());
 }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Asm.MooBank.Audit;
 using Asm.MooBank.Models;
 using ITagRepository = Asm.MooBank.Domain.Entities.Tag.ITagRepository;
 
@@ -7,7 +8,7 @@ namespace Asm.MooBank.Modules.Tags.Commands;
 [DisplayName("CreateTag")]
 public sealed record Create(Tag Tag) : ICommand<Tag>;
 
-internal sealed class CreateHandler(IUnitOfWork unitOfWork, ITagRepository tagRepository, User user) : ICommandHandler<Create, Tag>
+internal sealed class CreateHandler(IAuditingUnitOfWork unitOfWork, ITagRepository tagRepository, User user) : ICommandHandler<Create, Tag>
 {
     public async ValueTask<Tag> Handle(Create request, CancellationToken cancellationToken)
     {
@@ -18,7 +19,7 @@ internal sealed class CreateHandler(IUnitOfWork unitOfWork, ITagRepository tagRe
 
         tagRepository.Add(tag);
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync("Created", "Tag", tag.Id, cancellationToken);
 
         return tag.ToModel();
     }

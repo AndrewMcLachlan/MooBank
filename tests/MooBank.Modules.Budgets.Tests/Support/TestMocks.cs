@@ -1,5 +1,6 @@
 using Asm.Cqrs.Commands;
 using Asm.Domain;
+using Asm.MooBank.Audit;
 using Asm.MooBank.Domain.Entities.Budget;
 using Asm.MooBank.Models;
 using Asm.MooBank.Security;
@@ -13,6 +14,9 @@ public class TestMocks
         UnitOfWorkMock = new Mock<IUnitOfWork>();
         UnitOfWorkMock.Setup(uow => uow.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
+        AuditingUnitOfWorkMock = new Mock<IAuditingUnitOfWork>();
+        AuditingUnitOfWorkMock.Setup(uow => uow.SaveChangesAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object?>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
         BudgetRepositoryMock = new Mock<IBudgetRepository>();
         SecurityMock = new Mock<ISecurity>();
         CommandDispatcherMock = new Mock<ICommandDispatcher>();
@@ -21,6 +25,8 @@ public class TestMocks
     }
 
     public Mock<IUnitOfWork> UnitOfWorkMock { get; }
+
+    public Mock<IAuditingUnitOfWork> AuditingUnitOfWorkMock { get; }
 
     public Mock<IBudgetRepository> BudgetRepositoryMock { get; }
 

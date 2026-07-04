@@ -1,5 +1,6 @@
 #nullable enable
 using Asm.Domain;
+using Asm.MooBank.Audit;
 using Asm.MooBank.Domain.Entities.Family;
 using Asm.MooBank.Domain.Entities.User;
 using Asm.MooBank.Security;
@@ -14,6 +15,9 @@ public class TestMocks
         UnitOfWorkMock = new Mock<IUnitOfWork>();
         UnitOfWorkMock.Setup(uow => uow.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
+        AuditingUnitOfWorkMock = new Mock<IAuditingUnitOfWork>();
+        AuditingUnitOfWorkMock.Setup(uow => uow.SaveChangesAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object?>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
         FamilyRepositoryMock = new Mock<IFamilyRepository>();
         UserRepositoryMock = new Mock<IUserRepository>();
         SecurityMock = new Mock<ISecurity>();
@@ -22,6 +26,8 @@ public class TestMocks
     }
 
     public Mock<IUnitOfWork> UnitOfWorkMock { get; }
+
+    public Mock<IAuditingUnitOfWork> AuditingUnitOfWorkMock { get; }
 
     public Mock<IFamilyRepository> FamilyRepositoryMock { get; }
 

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Asm.MooBank.Audit;
 using Asm.MooBank.Commands;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Transactions;
@@ -14,7 +15,7 @@ public record Create(Guid InstrumentId, CreateTransaction Transcation) : Instrum
     public static ValueTask<Create> BindAsync(HttpContext httpContext) => BindHelper.BindWithInstrumentIdAsync<Create>(httpContext);
 }
 
-internal class CreateHandler(IInstrumentRepository accountRepository, ITransactionRepository transactionRepository, IUserIdProvider userIdProvider, IUnitOfWork unitOfWork) : ICommandHandler<Create, MooBank.Models.Transaction>
+internal class CreateHandler(IInstrumentRepository accountRepository, ITransactionRepository transactionRepository, IUserIdProvider userIdProvider, IAuditingUnitOfWork unitOfWork) : ICommandHandler<Create, MooBank.Models.Transaction>
 {
     public async ValueTask<MooBank.Models.Transaction> Handle(Create command, CancellationToken cancellationToken)
     {
@@ -40,7 +41,7 @@ internal class CreateHandler(IInstrumentRepository accountRepository, ITransacti
 
         transactionRepository.Add(transaction);
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync("Created", "Transaction", transaction.Id, cancellationToken);
 
         return transaction.ToModel();
     }

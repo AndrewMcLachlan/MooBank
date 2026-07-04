@@ -1,4 +1,5 @@
 using Asm.Domain;
+using Asm.MooBank.Audit;
 using Asm.MooBank.Core.Tests.Support;
 using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Instrument;
@@ -25,6 +26,7 @@ public class ImportTransactionsServiceTests
     private readonly Mock<IRuleRepository> _ruleRepositoryMock;
     private readonly Mock<IImporterFactory> _importerFactoryMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
+    private readonly Mock<IAuditLogger> _auditMock;
     private readonly Mock<IImporter> _importerMock;
     private readonly ILogger<ImportTransactionsService> _logger;
     private readonly TestEntities _entities = new();
@@ -35,6 +37,7 @@ public class ImportTransactionsServiceTests
         _ruleRepositoryMock = new Mock<IRuleRepository>();
         _importerFactoryMock = new Mock<IImporterFactory>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
+        _auditMock = new Mock<IAuditLogger>();
         _importerMock = new Mock<IImporter>();
         _logger = NullLoggerFactory.Instance.CreateLogger<ImportTransactionsService>();
 
@@ -564,6 +567,7 @@ public class ImportTransactionsServiceTests
             _ruleRepositoryMock.Object,
             _importerFactoryMock.Object,
             _unitOfWorkMock.Object,
+            _auditMock.Object,
             _logger);
 
     private void SetupSuccessfulImport(ImportWorkItem workItem, DomainInstrument instrument, IEnumerable<DomainTransaction> transactions)

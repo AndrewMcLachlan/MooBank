@@ -32,7 +32,7 @@ public class DeleteTests
 
         var handler = new DeleteHandler(
             _mocks.TagRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
+            _mocks.AuditingUnitOfWorkMock.Object,
             _mocks.SecurityMock.Object);
 
         var command = new Delete(1);
@@ -61,7 +61,7 @@ public class DeleteTests
 
         var handler = new DeleteHandler(
             _mocks.TagRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
+            _mocks.AuditingUnitOfWorkMock.Object,
             _mocks.SecurityMock.Object);
 
         var command = new Delete(1);
@@ -70,7 +70,7 @@ public class DeleteTests
         await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
-        _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _mocks.AuditingUnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object?>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -90,7 +90,7 @@ public class DeleteTests
 
         var handler = new DeleteHandler(
             _mocks.TagRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
+            _mocks.AuditingUnitOfWorkMock.Object,
             _mocks.SecurityMock.Object);
 
         var command = new Delete(1);
@@ -125,7 +125,7 @@ public class DeleteTests
 
         var handler = new DeleteHandler(
             _mocks.TagRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
+            _mocks.AuditingUnitOfWorkMock.Object,
             _mocks.SecurityMock.Object);
 
         var command = new Delete(1);
