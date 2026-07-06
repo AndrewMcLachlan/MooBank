@@ -21,7 +21,7 @@ BEGIN
     FROM dbo.[Transaction] t
     JOIN SplitNet sn ON sn.TransactionId = t.TransactionId
     WHERE t.AccountId = @AccountId
-      AND t.TransactionTime >= @StartDate AND t.TransactionTime <= @EndDate
+      AND t.TransactionTime >= @StartDate AND t.TransactionTime < DATEADD(day, 1, @EndDate)
       AND t.ExcludeFromReporting = 0
     GROUP BY DATEFROMPARTS(YEAR(t.TransactionTime), MONTH(t.TransactionTime), 1), t.TransactionTypeId;
 END

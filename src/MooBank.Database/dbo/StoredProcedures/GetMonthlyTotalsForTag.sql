@@ -88,7 +88,7 @@ BEGIN
         GROUP BY OffsetTransactionId
     ) o2 ON o2.OffsetTransactionId = t.TransactionId
     WHERE t.AccountId = @AccountId
-      AND t.TransactionTime >= @StartDate AND t.TransactionTime <= @EndDate
+      AND t.TransactionTime >= @StartDate AND t.TransactionTime < DATEADD(day, 1, @EndDate)
       AND t.ExcludeFromReporting = 0
       AND (@TransactionTypeId IS NULL OR @TransactionTypeId = 0 OR t.TransactionTypeId  = @TransactionTypeId);
 

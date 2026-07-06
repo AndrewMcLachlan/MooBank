@@ -26,7 +26,7 @@ BEGIN
                 SELECT SUM(t.Amount)
                 FROM dbo.[Transaction] t
                 WHERE t.AccountId = @AccountId
-                  AND t.TransactionTime <= me.PeriodEnd
+                  AND t.TransactionTime < DATEADD(DAY, 1, me.PeriodEnd)
             ),
             0
         )
