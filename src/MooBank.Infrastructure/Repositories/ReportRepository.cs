@@ -1,5 +1,7 @@
-﻿using Asm.MooBank.Domain.Entities.Reports;
+using System.Data;
+using Asm.MooBank.Domain.Entities.Reports;
 using Asm.MooBank.Models;
+using Microsoft.Data.SqlClient;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
@@ -28,12 +30,26 @@ internal class ReportRepository(MooBankContext mooBankContext) : IReportReposito
 
     public async Task<Dictionary<Guid, IEnumerable<CreditDebitTotal>>> GetCreditDebitTotalsForAccounts(IEnumerable<Guid> accountIds, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
     {
-        var result = new Dictionary<Guid, IEnumerable<CreditDebitTotal>>();
+        var ids = accountIds.Distinct().ToList();
+        var result = ids.ToDictionary(id => id, _ => Enumerable.Empty<CreditDebitTotal>());
 
-        foreach (var accountId in accountIds)
+        if (ids.Count == 0) return result;
+
+        var rows = await mooBankContext.AccountCreditDebitTotals
+            .FromSqlRaw("EXEC dbo.GetCreditDebitTotalsForAccounts @AccountIds, @StartDate, @EndDate",
+                CreateAccountIdsParameter(ids),
+                CreateDateParameter("@StartDate", startDate),
+                CreateDateParameter("@EndDate", endDate))
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+
+        foreach (var group in rows.GroupBy(r => r.AccountId))
         {
-            var totals = await GetCreditDebitTotals(accountId, startDate, endDate, cancellationToken);
-            result[accountId] = totals;
+            result[group.Key] = group.Select(r => new CreditDebitTotal
+            {
+                TransactionType = r.TransactionType,
+                Total = r.Total,
+            }).ToList();
         }
 
         return result;
@@ -41,12 +57,26 @@ internal class ReportRepository(MooBankContext mooBankContext) : IReportReposito
 
     public async Task<Dictionary<Guid, IEnumerable<MonthlyBalance>>> GetMonthlyBalancesForAccounts(IEnumerable<Guid> accountIds, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
     {
-        var result = new Dictionary<Guid, IEnumerable<MonthlyBalance>>();
+        var ids = accountIds.Distinct().ToList();
+        var result = ids.ToDictionary(id => id, _ => Enumerable.Empty<MonthlyBalance>());
 
-        foreach (var accountId in accountIds)
+        if (ids.Count == 0) return result;
+
+        var rows = await mooBankContext.AccountMonthlyBalances
+            .FromSqlRaw("EXEC dbo.GetMonthlyBalancesForAccounts @AccountIds, @StartDate, @EndDate",
+                CreateAccountIdsParameter(ids),
+                CreateDateParameter("@StartDate", startDate),
+                CreateDateParameter("@EndDate", endDate))
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+
+        foreach (var group in rows.GroupBy(r => r.AccountId))
         {
-            var balances = await GetMonthlyBalances(accountId, startDate, endDate, cancellationToken);
-            result[accountId] = balances;
+            result[group.Key] = group.Select(r => new MonthlyBalance
+            {
+                PeriodEnd = r.PeriodEnd,
+                Balance = r.Balance,
+            }).ToList();
         }
 
         return result;
@@ -57,14 +87,49 @@ internal class ReportRepository(MooBankContext mooBankContext) : IReportReposito
 
     public async Task<Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>> GetMonthlyCreditDebitTotalsForAccounts(IEnumerable<Guid> accountIds, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
     {
-        var result = new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>();
+        var ids = accountIds.Distinct().ToList();
+        var result = ids.ToDictionary(id => id, _ => Enumerable.Empty<MonthlyCreditDebitTotal>());
 
-        foreach (var accountId in accountIds)
+        if (ids.Count == 0) return result;
+
+        var rows = await mooBankContext.AccountMonthlyCreditDebitTotals
+            .FromSqlRaw("EXEC dbo.GetMonthlyCreditDebitTotalsForAccounts @AccountIds, @StartDate, @EndDate",
+                CreateAccountIdsParameter(ids),
+                CreateDateParameter("@StartDate", startDate),
+                CreateDateParameter("@EndDate", endDate))
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+
+        foreach (var group in rows.GroupBy(r => r.AccountId))
         {
-            var totals = await GetMonthlyCreditDebitTotals(accountId, startDate, endDate, cancellationToken);
-            result[accountId] = totals;
+            result[group.Key] = group.Select(r => new MonthlyCreditDebitTotal
+            {
+                Month = r.Month,
+                TransactionType = r.TransactionType,
+                Total = r.Total,
+            }).ToList();
         }
 
         return result;
     }
+
+    private static SqlParameter CreateAccountIdsParameter(IEnumerable<Guid> accountIds)
+    {
+        var table = new DataTable();
+        table.Columns.Add("Id", typeof(Guid));
+
+        foreach (var id in accountIds)
+        {
+            table.Rows.Add(id);
+        }
+
+        return new SqlParameter("@AccountIds", SqlDbType.Structured)
+        {
+            TypeName = "dbo.GuidList",
+            Value = table,
+        };
+    }
+
+    private static SqlParameter CreateDateParameter(string name, DateOnly value) =>
+        new(name, SqlDbType.Date) { Value = value.ToDateTime(TimeOnly.MinValue) };
 }
