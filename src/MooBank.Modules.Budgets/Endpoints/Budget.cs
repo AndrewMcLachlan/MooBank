@@ -33,10 +33,14 @@ public class Budget : EndpointGroupBase
             .WithNames("Get Budget Line")
             .Produces<BudgetLine>();
 
-        // HACK: How do we get year from the route into the response?
-        routeGroupBuilder.MapPostCreate<CreateLine, BudgetLine>("/{year}/lines", "Get Budget Line".ToMachine(), (line) => new { year = 2023, id = line.Id }, CommandBinding.Parameters)
+        routeGroupBuilder.MapPost("/{year}/lines", async ([AsParameters] CreateLine command, ICommandDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.Dispatch(command, cancellationToken);
+
+            return Results.CreatedAtRoute("Get Budget Line".ToMachine(), new { year = command.Year, id = result.Id }, result);
+        })
             .WithNames("Create Budget Line")
-            .Produces<BudgetLine>();
+            .Produces<BudgetLine>((int)HttpStatusCode.Created);
 
         routeGroupBuilder.MapCommand<GenerateBudget, Models.Budget>("/{year}/generate")
             .WithNames("Generate Budget")

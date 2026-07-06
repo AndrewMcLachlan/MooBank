@@ -2,7 +2,7 @@
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Budgets.Queries;
 using Asm.MooBank.Modules.Budgets.Tests.Support;
-using DomainTransactionSplit = Asm.MooBank.Domain.Entities.Transactions.TransactionSplit;
+using DomainTransactionOffset = Asm.MooBank.Domain.Entities.Transactions.TransactionOffset;
 
 namespace Asm.MooBank.Modules.Budgets.Tests.Queries;
 
@@ -191,275 +191,239 @@ public class ReportForMonthBreakdownUnbudgetedTests
             handler.Handle(query, TestContext.Current.CancellationToken).AsTask());
     }
 
+    /// <summary>
+    /// Given a transaction with a tag that is not in the budget
+    /// When the unbudgeted breakdown is generated
+    /// Then the split's net amount is reported against the unbudgeted tag.
+    /// </summary>
     [Fact]
     public async Task Handle_UnbudgetedTransactions_CalculatesSplitNetAmounts()
     {
-        // Arrange - Set up the delegate to calculate split net amounts
-        DomainTransactionSplit.SetTransactionSplitNetAmountOverride((txnId, splitId, amount) =>
+        // Arrange
+        var familyId = _mocks.User.FamilyId;
+        var accountId = Guid.NewGuid();
+
+        // Unbudgeted tag (the budget line uses tag 1, "Rent")
+        var coffeeTag = TestEntities.CreateTag(2, "Coffee", familyId);
+
+        var lines = new[]
         {
-            // Return the amount as-is (no offsets)
-            return amount;
-        });
+            TestEntities.CreateBudgetLine(tagId: 1, tagName: "Rent", income: false, amount: 1000m, month: 4095),
+        };
+        var budget = TestEntities.CreateBudget(year: 2024, familyId: familyId, lines: lines);
+        var budgetQueryable = TestEntities.CreateBudgetQueryable(budget);
 
-        try
-        {
-            var familyId = _mocks.User.FamilyId;
-            var accountId = Guid.NewGuid();
+        var account = TestEntities.CreateLogicalAccount(id: accountId, includeInBudget: true);
+        var accountQueryable = TestEntities.CreateLogicalAccountQueryable(account);
 
-            // Budgeted tag
-            var rentTag = TestEntities.CreateTag(1, "Rent", familyId);
-            // Unbudgeted tag
-            var coffeeTag = TestEntities.CreateTag(2, "Coffee", familyId);
+        // Transaction with unbudgeted tag
+        var coffeeSplit = TestEntities.CreateTransactionSplit(amount: 25m, tags: [coffeeTag]);
+        var coffeeTxn = TestEntities.CreateTransaction(
+            accountId: accountId,
+            amount: -25m,
+            transactionTime: new DateTime(2024, 6, 15),
+            transactionType: TransactionType.Debit,
+            splits: [coffeeSplit]);
 
-            var lines = new[]
-            {
-                TestEntities.CreateBudgetLine(tagId: 1, tagName: "Rent", income: false, amount: 1000m, month: 4095),
-            };
-            var budget = TestEntities.CreateBudget(year: 2024, familyId: familyId, lines: lines);
-            var budgetQueryable = TestEntities.CreateBudgetQueryable(budget);
+        var transactionQueryable = TestEntities.CreateTransactionQueryable(coffeeTxn);
+        var tagRelationshipQueryable = TestEntities.CreateTagRelationshipQueryable([]);
 
-            var account = TestEntities.CreateLogicalAccount(id: accountId, includeInBudget: true);
-            var accountQueryable = TestEntities.CreateLogicalAccountQueryable(account);
+        _mocks.SetUser(TestMocks.CreateTestUser(familyId: familyId, accounts: [accountId]));
 
-            // Transaction with unbudgeted tag
-            var coffeeSplit = TestEntities.CreateTransactionSplit(amount: 25m, tags: [coffeeTag]);
-            var coffeeTxn = TestEntities.CreateTransaction(
-                accountId: accountId,
-                amount: -25m,
-                transactionTime: new DateTime(2024, 6, 15),
-                transactionType: TransactionType.Debit,
-                splits: [coffeeSplit]);
+        var handler = new ReportForMonthBreakdownUnbudgetedHandler(
+            budgetQueryable, accountQueryable, transactionQueryable, tagRelationshipQueryable, _mocks.User);
+        var query = new ReportForMonthBreakdownUnbudgeted(2024, 6);
 
-            var transactionQueryable = TestEntities.CreateTransactionQueryable(coffeeTxn);
-            var tagRelationshipQueryable = TestEntities.CreateTagRelationshipQueryable([]);
+        // Act
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
-            _mocks.SetUser(TestMocks.CreateTestUser(familyId: familyId, accounts: [accountId]));
-
-            var handler = new ReportForMonthBreakdownUnbudgetedHandler(
-                budgetQueryable, accountQueryable, transactionQueryable, tagRelationshipQueryable, _mocks.User);
-            var query = new ReportForMonthBreakdownUnbudgeted(2024, 6);
-
-            // Act
-            var result = await handler.Handle(query, TestContext.Current.CancellationToken);
-
-            // Assert
-            Assert.NotNull(result);
-            var coffeeItem = result.Tags.FirstOrDefault(i => i.Name == "Coffee");
-            Assert.NotNull(coffeeItem);
-            Assert.Equal(25m, coffeeItem.Actual);
-        }
-        finally
-        {
-            DomainTransactionSplit.ResetTransactionSplitNetAmountOverride();
-        }
+        // Assert
+        Assert.NotNull(result);
+        var coffeeItem = result.Tags.FirstOrDefault(i => i.Name == "Coffee");
+        Assert.NotNull(coffeeItem);
+        Assert.Equal(25m, coffeeItem.Actual);
     }
 
+    /// <summary>
+    /// Given a split with a partial offset
+    /// When the unbudgeted breakdown is generated
+    /// Then the split's net amount (amount minus offsets) is reported, not its gross amount.
+    /// </summary>
     [Fact]
     public async Task Handle_SplitsWithOffsets_UsesNetAmountNotGrossAmount()
     {
-        // Arrange - Simulate splits with partial offsets
-        DomainTransactionSplit.SetTransactionSplitNetAmountOverride((txnId, splitId, amount) =>
+        // Arrange
+        var familyId = _mocks.User.FamilyId;
+        var accountId = Guid.NewGuid();
+
+        var entertainmentTag = TestEntities.CreateTag(3, "Entertainment", familyId);
+
+        var lines = new[]
         {
-            // Simulate: 200 amount has 50 offset, net is 150
-            if (amount == 200m) return 150m;
-            return amount;
-        });
+            TestEntities.CreateBudgetLine(tagId: 1, tagName: "Rent", income: false, amount: 1000m, month: 4095),
+        };
+        var budget = TestEntities.CreateBudget(year: 2024, familyId: familyId, lines: lines);
+        var budgetQueryable = TestEntities.CreateBudgetQueryable(budget);
 
-        try
-        {
-            var familyId = _mocks.User.FamilyId;
-            var accountId = Guid.NewGuid();
+        var account = TestEntities.CreateLogicalAccount(id: accountId, includeInBudget: true);
+        var accountQueryable = TestEntities.CreateLogicalAccountQueryable(account);
 
-            var entertainmentTag = TestEntities.CreateTag(3, "Entertainment", familyId);
+        // Gross amount 200, but net is 150 due to a 50 offset
+        var entertainmentSplit = TestEntities.CreateTransactionSplit(amount: 200m, tags: [entertainmentTag]);
+        entertainmentSplit.OffsetBy.Add(new DomainTransactionOffset { TransactionSplitId = entertainmentSplit.Id, OffsetTransactionId = Guid.NewGuid(), Amount = 50m });
+        var entertainmentTxn = TestEntities.CreateTransaction(
+            accountId: accountId,
+            amount: -200m,
+            transactionTime: new DateTime(2024, 6, 20),
+            transactionType: TransactionType.Debit,
+            splits: [entertainmentSplit]);
 
-            var lines = new[]
-            {
-                TestEntities.CreateBudgetLine(tagId: 1, tagName: "Rent", income: false, amount: 1000m, month: 4095),
-            };
-            var budget = TestEntities.CreateBudget(year: 2024, familyId: familyId, lines: lines);
-            var budgetQueryable = TestEntities.CreateBudgetQueryable(budget);
+        var transactionQueryable = TestEntities.CreateTransactionQueryable(entertainmentTxn);
+        var tagRelationshipQueryable = TestEntities.CreateTagRelationshipQueryable([]);
 
-            var account = TestEntities.CreateLogicalAccount(id: accountId, includeInBudget: true);
-            var accountQueryable = TestEntities.CreateLogicalAccountQueryable(account);
+        _mocks.SetUser(TestMocks.CreateTestUser(familyId: familyId, accounts: [accountId]));
 
-            // Gross amount 200, but net is 150 due to offset
-            var entertainmentSplit = TestEntities.CreateTransactionSplit(amount: 200m, tags: [entertainmentTag]);
-            var entertainmentTxn = TestEntities.CreateTransaction(
-                accountId: accountId,
-                amount: -200m,
-                transactionTime: new DateTime(2024, 6, 20),
-                transactionType: TransactionType.Debit,
-                splits: [entertainmentSplit]);
+        var handler = new ReportForMonthBreakdownUnbudgetedHandler(
+            budgetQueryable, accountQueryable, transactionQueryable, tagRelationshipQueryable, _mocks.User);
+        var query = new ReportForMonthBreakdownUnbudgeted(2024, 6);
 
-            var transactionQueryable = TestEntities.CreateTransactionQueryable(entertainmentTxn);
-            var tagRelationshipQueryable = TestEntities.CreateTagRelationshipQueryable([]);
+        // Act
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
-            _mocks.SetUser(TestMocks.CreateTestUser(familyId: familyId, accounts: [accountId]));
-
-            var handler = new ReportForMonthBreakdownUnbudgetedHandler(
-                budgetQueryable, accountQueryable, transactionQueryable, tagRelationshipQueryable, _mocks.User);
-            var query = new ReportForMonthBreakdownUnbudgeted(2024, 6);
-
-            // Act
-            var result = await handler.Handle(query, TestContext.Current.CancellationToken);
-
-            // Assert
-            Assert.NotNull(result);
-            var entertainmentItem = result.Tags.FirstOrDefault(i => i.Name == "Entertainment");
-            Assert.NotNull(entertainmentItem);
-            Assert.Equal(150m, entertainmentItem.Actual); // Net amount, not gross
-        }
-        finally
-        {
-            DomainTransactionSplit.ResetTransactionSplitNetAmountOverride();
-        }
+        // Assert
+        Assert.NotNull(result);
+        var entertainmentItem = result.Tags.FirstOrDefault(i => i.Name == "Entertainment");
+        Assert.NotNull(entertainmentItem);
+        Assert.Equal(150m, entertainmentItem.Actual); // Net amount, not gross
     }
 
+    /// <summary>
+    /// Given multiple transactions across two unbudgeted tags, some with offsets
+    /// When the unbudgeted breakdown is generated
+    /// Then the net amounts are summed per tag.
+    /// </summary>
     [Fact]
     public async Task Handle_MultipleUnbudgetedTags_SumsNetAmountsPerTag()
     {
         // Arrange
-        DomainTransactionSplit.SetTransactionSplitNetAmountOverride((txnId, splitId, amount) =>
+        var familyId = _mocks.User.FamilyId;
+        var accountId = Guid.NewGuid();
+
+        var coffeeTag = TestEntities.CreateTag(2, "Coffee", familyId);
+        var entertainmentTag = TestEntities.CreateTag(3, "Entertainment", familyId);
+
+        var lines = new[]
         {
-            // Apply varying offsets based on amount
-            return amount switch
-            {
-                50m => 40m,   // 10 offset
-                75m => 75m,   // No offset
-                100m => 80m,  // 20 offset
-                _ => amount
-            };
-        });
+            TestEntities.CreateBudgetLine(tagId: 1, tagName: "Rent", income: false, amount: 1000m, month: 4095),
+        };
+        var budget = TestEntities.CreateBudget(year: 2024, familyId: familyId, lines: lines);
+        var budgetQueryable = TestEntities.CreateBudgetQueryable(budget);
 
-        try
-        {
-            var familyId = _mocks.User.FamilyId;
-            var accountId = Guid.NewGuid();
+        var account = TestEntities.CreateLogicalAccount(id: accountId, includeInBudget: true);
+        var accountQueryable = TestEntities.CreateLogicalAccountQueryable(account);
 
-            var coffeeTag = TestEntities.CreateTag(2, "Coffee", familyId);
-            var entertainmentTag = TestEntities.CreateTag(3, "Entertainment", familyId);
+        // Multiple transactions with unbudgeted tags. 50 has a 10 offset (net 40),
+        // 75 has no offset, and 100 has a 20 offset (net 80).
+        var coffee1Split = TestEntities.CreateTransactionSplit(amount: 50m, tags: [coffeeTag]);
+        coffee1Split.OffsetBy.Add(new DomainTransactionOffset { TransactionSplitId = coffee1Split.Id, OffsetTransactionId = Guid.NewGuid(), Amount = 10m });
+        var coffee1Txn = TestEntities.CreateTransaction(
+            accountId: accountId,
+            amount: -50m,
+            transactionTime: new DateTime(2024, 6, 5),
+            transactionType: TransactionType.Debit,
+            splits: [coffee1Split]);
 
-            var lines = new[]
-            {
-                TestEntities.CreateBudgetLine(tagId: 1, tagName: "Rent", income: false, amount: 1000m, month: 4095),
-            };
-            var budget = TestEntities.CreateBudget(year: 2024, familyId: familyId, lines: lines);
-            var budgetQueryable = TestEntities.CreateBudgetQueryable(budget);
+        var coffee2Split = TestEntities.CreateTransactionSplit(amount: 75m, tags: [coffeeTag]);
+        var coffee2Txn = TestEntities.CreateTransaction(
+            accountId: accountId,
+            amount: -75m,
+            transactionTime: new DateTime(2024, 6, 15),
+            transactionType: TransactionType.Debit,
+            splits: [coffee2Split]);
 
-            var account = TestEntities.CreateLogicalAccount(id: accountId, includeInBudget: true);
-            var accountQueryable = TestEntities.CreateLogicalAccountQueryable(account);
+        var entertainmentSplit = TestEntities.CreateTransactionSplit(amount: 100m, tags: [entertainmentTag]);
+        entertainmentSplit.OffsetBy.Add(new DomainTransactionOffset { TransactionSplitId = entertainmentSplit.Id, OffsetTransactionId = Guid.NewGuid(), Amount = 20m });
+        var entertainmentTxn = TestEntities.CreateTransaction(
+            accountId: accountId,
+            amount: -100m,
+            transactionTime: new DateTime(2024, 6, 25),
+            transactionType: TransactionType.Debit,
+            splits: [entertainmentSplit]);
 
-            // Multiple transactions with unbudgeted tags
-            var coffee1Split = TestEntities.CreateTransactionSplit(amount: 50m, tags: [coffeeTag]);
-            var coffee1Txn = TestEntities.CreateTransaction(
-                accountId: accountId,
-                amount: -50m,
-                transactionTime: new DateTime(2024, 6, 5),
-                transactionType: TransactionType.Debit,
-                splits: [coffee1Split]);
+        var transactionQueryable = TestEntities.CreateTransactionQueryable(coffee1Txn, coffee2Txn, entertainmentTxn);
+        var tagRelationshipQueryable = TestEntities.CreateTagRelationshipQueryable([]);
 
-            var coffee2Split = TestEntities.CreateTransactionSplit(amount: 75m, tags: [coffeeTag]);
-            var coffee2Txn = TestEntities.CreateTransaction(
-                accountId: accountId,
-                amount: -75m,
-                transactionTime: new DateTime(2024, 6, 15),
-                transactionType: TransactionType.Debit,
-                splits: [coffee2Split]);
+        _mocks.SetUser(TestMocks.CreateTestUser(familyId: familyId, accounts: [accountId]));
 
-            var entertainmentSplit = TestEntities.CreateTransactionSplit(amount: 100m, tags: [entertainmentTag]);
-            var entertainmentTxn = TestEntities.CreateTransaction(
-                accountId: accountId,
-                amount: -100m,
-                transactionTime: new DateTime(2024, 6, 25),
-                transactionType: TransactionType.Debit,
-                splits: [entertainmentSplit]);
+        var handler = new ReportForMonthBreakdownUnbudgetedHandler(
+            budgetQueryable, accountQueryable, transactionQueryable, tagRelationshipQueryable, _mocks.User);
+        var query = new ReportForMonthBreakdownUnbudgeted(2024, 6);
 
-            var transactionQueryable = TestEntities.CreateTransactionQueryable(coffee1Txn, coffee2Txn, entertainmentTxn);
-            var tagRelationshipQueryable = TestEntities.CreateTagRelationshipQueryable([]);
+        // Act
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
-            _mocks.SetUser(TestMocks.CreateTestUser(familyId: familyId, accounts: [accountId]));
+        // Assert
+        Assert.NotNull(result);
 
-            var handler = new ReportForMonthBreakdownUnbudgetedHandler(
-                budgetQueryable, accountQueryable, transactionQueryable, tagRelationshipQueryable, _mocks.User);
-            var query = new ReportForMonthBreakdownUnbudgeted(2024, 6);
+        var coffeeItem = result.Tags.FirstOrDefault(i => i.Name == "Coffee");
+        Assert.NotNull(coffeeItem);
+        Assert.Equal(115m, coffeeItem.Actual); // 40 + 75 = 115
 
-            // Act
-            var result = await handler.Handle(query, TestContext.Current.CancellationToken);
-
-            // Assert
-            Assert.NotNull(result);
-
-            var coffeeItem = result.Tags.FirstOrDefault(i => i.Name == "Coffee");
-            Assert.NotNull(coffeeItem);
-            Assert.Equal(115m, coffeeItem.Actual); // 40 + 75 = 115
-
-            var entertainmentItem = result.Tags.FirstOrDefault(i => i.Name == "Entertainment");
-            Assert.NotNull(entertainmentItem);
-            Assert.Equal(80m, entertainmentItem.Actual);
-        }
-        finally
-        {
-            DomainTransactionSplit.ResetTransactionSplitNetAmountOverride();
-        }
+        var entertainmentItem = result.Tags.FirstOrDefault(i => i.Name == "Entertainment");
+        Assert.NotNull(entertainmentItem);
+        Assert.Equal(80m, entertainmentItem.Actual);
     }
 
+    /// <summary>
+    /// Given a split that is fully offset (e.g. a refund was received)
+    /// When the unbudgeted breakdown is generated
+    /// Then the reported amount is zero.
+    /// </summary>
     [Fact]
     public async Task Handle_SplitFullyOffset_ReturnsZeroNetAmount()
     {
-        // Arrange - Split is fully offset (e.g., refund received)
-        DomainTransactionSplit.SetTransactionSplitNetAmountOverride((txnId, splitId, amount) =>
+        // Arrange
+        var familyId = _mocks.User.FamilyId;
+        var accountId = Guid.NewGuid();
+
+        var refundedTag = TestEntities.CreateTag(4, "Refunded Purchase", familyId);
+
+        var lines = new[]
         {
-            // Simulate full offset - net amount is zero
-            return 0m;
-        });
+            TestEntities.CreateBudgetLine(tagId: 1, tagName: "Rent", income: false, amount: 1000m, month: 4095),
+        };
+        var budget = TestEntities.CreateBudget(year: 2024, familyId: familyId, lines: lines);
+        var budgetQueryable = TestEntities.CreateBudgetQueryable(budget);
 
-        try
-        {
-            var familyId = _mocks.User.FamilyId;
-            var accountId = Guid.NewGuid();
+        var account = TestEntities.CreateLogicalAccount(id: accountId, includeInBudget: true);
+        var accountQueryable = TestEntities.CreateLogicalAccountQueryable(account);
 
-            var refundedTag = TestEntities.CreateTag(4, "Refunded Purchase", familyId);
+        // Transaction that was fully refunded
+        var refundedSplit = TestEntities.CreateTransactionSplit(amount: 500m, tags: [refundedTag]);
+        refundedSplit.OffsetBy.Add(new DomainTransactionOffset { TransactionSplitId = refundedSplit.Id, OffsetTransactionId = Guid.NewGuid(), Amount = 500m });
+        var refundedTxn = TestEntities.CreateTransaction(
+            accountId: accountId,
+            amount: -500m,
+            transactionTime: new DateTime(2024, 6, 10),
+            transactionType: TransactionType.Debit,
+            splits: [refundedSplit]);
 
-            var lines = new[]
-            {
-                TestEntities.CreateBudgetLine(tagId: 1, tagName: "Rent", income: false, amount: 1000m, month: 4095),
-            };
-            var budget = TestEntities.CreateBudget(year: 2024, familyId: familyId, lines: lines);
-            var budgetQueryable = TestEntities.CreateBudgetQueryable(budget);
+        var transactionQueryable = TestEntities.CreateTransactionQueryable(refundedTxn);
+        var tagRelationshipQueryable = TestEntities.CreateTagRelationshipQueryable([]);
 
-            var account = TestEntities.CreateLogicalAccount(id: accountId, includeInBudget: true);
-            var accountQueryable = TestEntities.CreateLogicalAccountQueryable(account);
+        _mocks.SetUser(TestMocks.CreateTestUser(familyId: familyId, accounts: [accountId]));
 
-            // Transaction that was fully refunded
-            var refundedSplit = TestEntities.CreateTransactionSplit(amount: 500m, tags: [refundedTag]);
-            var refundedTxn = TestEntities.CreateTransaction(
-                accountId: accountId,
-                amount: -500m,
-                transactionTime: new DateTime(2024, 6, 10),
-                transactionType: TransactionType.Debit,
-                splits: [refundedSplit]);
+        var handler = new ReportForMonthBreakdownUnbudgetedHandler(
+            budgetQueryable, accountQueryable, transactionQueryable, tagRelationshipQueryable, _mocks.User);
+        var query = new ReportForMonthBreakdownUnbudgeted(2024, 6);
 
-            var transactionQueryable = TestEntities.CreateTransactionQueryable(refundedTxn);
-            var tagRelationshipQueryable = TestEntities.CreateTagRelationshipQueryable([]);
+        // Act
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
-            _mocks.SetUser(TestMocks.CreateTestUser(familyId: familyId, accounts: [accountId]));
-
-            var handler = new ReportForMonthBreakdownUnbudgetedHandler(
-                budgetQueryable, accountQueryable, transactionQueryable, tagRelationshipQueryable, _mocks.User);
-            var query = new ReportForMonthBreakdownUnbudgeted(2024, 6);
-
-            // Act
-            var result = await handler.Handle(query, TestContext.Current.CancellationToken);
-
-            // Assert
-            Assert.NotNull(result);
-            var refundedItem = result.Tags.FirstOrDefault(i => i.Name == "Refunded Purchase");
-            Assert.NotNull(refundedItem);
-            Assert.Equal(0m, refundedItem.Actual); // Fully offset
-        }
-        finally
-        {
-            DomainTransactionSplit.ResetTransactionSplitNetAmountOverride();
-        }
+        // Assert
+        Assert.NotNull(result);
+        var refundedItem = result.Tags.FirstOrDefault(i => i.Name == "Refunded Purchase");
+        Assert.NotNull(refundedItem);
+        Assert.Equal(0m, refundedItem.Actual); // Fully offset
     }
 }

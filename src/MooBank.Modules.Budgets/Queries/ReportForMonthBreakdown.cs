@@ -45,19 +45,26 @@ internal class ReportForMonthBreakdownHandler(IQueryable<Domain.Entities.Budget.
         IEnumerable<TagHierarchy> lineTagHierarchy = lineTags.ToHierarchy(relationships);
 
         // Get any transaction tags that are not in the line tag hierarchy as a descendent
-        var otherTagIds = transactionTags.Where(t => !lineTagHierarchy.Any(lt => lt.Id == t.Id) && !lineTagHierarchy.SelectMany(lt => lt.Descendants).Contains(t.Id)).Select(t => t.Id);
+        var otherTagIds = transactionTags
+            .Where(t => !lineTagHierarchy.Any(lt => lt.Id == t.Id) && !lineTagHierarchy.SelectMany(lt => lt.Descendants).Contains(t.Id))
+            .Select(t => t.Id)
+            .ToHashSet();
+
+        // Work at the split level so that a split transaction only contributes each
+        // split's amount to the matching tag, rather than the whole transaction amount.
+        var splits = budgetTransactions.SelectMany(t => t.Splits).ToArray();
 
         BudgetReportByMonthBreakdown breakdown = new(
             lineTagHierarchy.Select(tag =>
                     new BudgetReportValueTag(tag.Name,
-                        lines.Where(t => t.TagId == tag.Id).Sum(l => l.Amount),
-                        budgetTransactions.Where(s => s.Tags.Any(t => t.Id == tag.Id) || tag.Descendants.Intersect(s.Tags.Select(t => t.Id)).Any()).Sum(t => Math.Abs(t.NetAmount))
+                        lines.Where(l => l.TagId == tag.Id).Sum(l => l.Amount),
+                        splits.Where(s => s.Tags.Any(t => t.Id == tag.Id || tag.Descendants.Contains(t.Id))).Sum(s => s.GetNetAmount())
                     )).OrderByDescending(b => b.BudgetedAmount)
                     .ThenByDescending(b => b.Actual)
                     .Append(new(
                         Name: "Other",
                         BudgetedAmount: 0,
-                        Actual: budgetTransactions.Where(s => s.Tags.Any(t => otherTagIds.Contains(t.Id))).Sum(t => Math.Abs(t.NetAmount))
+                        Actual: splits.Where(s => s.Tags.Any(t => otherTagIds.Contains(t.Id))).Sum(s => s.GetNetAmount())
                     ))
         );
 

@@ -407,4 +407,62 @@ public class ReportForMonthBreakdownTests
         Assert.NotNull(result.Tags.FirstOrDefault(i => i.Name == "Utilities"));
         Assert.NotNull(result.Tags.FirstOrDefault(i => i.Name == "Other"));
     }
+
+    /// <summary>
+    /// Given a single transaction split across two budgeted tags ($150 split $100/$50)
+    /// When the breakdown is generated
+    /// Then each budget line's actual is that line's split amount, not the whole transaction amount.
+    /// </summary>
+    [Fact]
+    public async Task Handle_TransactionSplitAcrossBudgetLines_AttributesSplitAmountsPerLine()
+    {
+        // Arrange
+        var familyId = _mocks.User.FamilyId;
+        var accountId = Guid.NewGuid();
+
+        var groceriesTag = TestEntities.CreateTag(1, "Groceries", familyId);
+        var householdTag = TestEntities.CreateTag(2, "Household", familyId);
+
+        var lines = new[]
+        {
+            TestEntities.CreateBudgetLine(tagId: 1, tagName: "Groceries", income: false, amount: 600m, month: 4095),
+            TestEntities.CreateBudgetLine(tagId: 2, tagName: "Household", income: false, amount: 200m, month: 4095),
+        };
+        var budget = TestEntities.CreateBudget(year: 2024, familyId: familyId, lines: lines);
+        var budgetQueryable = TestEntities.CreateBudgetQueryable(budget);
+
+        var account = TestEntities.CreateLogicalAccount(id: accountId, includeInBudget: true);
+        var accountQueryable = TestEntities.CreateLogicalAccountQueryable(account);
+
+        // A single $150 transaction split $100 Groceries / $50 Household
+        var groceriesSplit = TestEntities.CreateTransactionSplit(amount: 100m, tags: [groceriesTag]);
+        var householdSplit = TestEntities.CreateTransactionSplit(amount: 50m, tags: [householdTag]);
+        var txn = TestEntities.CreateTransaction(
+            accountId: accountId,
+            amount: -150m,
+            transactionTime: new DateTime(2024, 6, 15),
+            transactionType: TransactionType.Debit,
+            splits: [groceriesSplit, householdSplit]);
+
+        var transactionQueryable = TestEntities.CreateTransactionQueryable(txn);
+        var tagRelationshipQueryable = TestEntities.CreateTagRelationshipQueryable([]);
+
+        _mocks.SetUser(TestMocks.CreateTestUser(familyId: familyId, accounts: [accountId]));
+
+        var handler = new ReportForMonthBreakdownHandler(
+            budgetQueryable, accountQueryable, transactionQueryable, tagRelationshipQueryable, _mocks.User);
+        var query = new ReportForMonthBreakdown(2024, 6);
+
+        // Act
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
+
+        // Assert - each line receives only its split's amount, not the whole $150
+        var groceriesItem = result.Tags.FirstOrDefault(i => i.Name == "Groceries");
+        Assert.NotNull(groceriesItem);
+        Assert.Equal(100m, groceriesItem.Actual);
+
+        var householdItem = result.Tags.FirstOrDefault(i => i.Name == "Household");
+        Assert.NotNull(householdItem);
+        Assert.Equal(50m, householdItem.Actual);
+    }
 }

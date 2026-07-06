@@ -30,14 +30,16 @@ internal class ReportForMonthBreakdownUnbudgetedHandler(IQueryable<Domain.Entiti
 
         var lineTags = lines.Select(l => l.Tag);
 
-        var otherTags = transactionTags.ExceptWhereRelationship(lineTags, await tagRelationships.ToListAsync(cancellationToken));
+        var otherTags = transactionTags.ExceptWhereRelationship(lineTags, await tagRelationships.ToListAsync(cancellationToken)).ToList();
+
+        var splits = budgetTransactions.SelectMany(t => t.Splits).ToArray();
 
         BudgetReportByMonthBreakdown breakdown = new(
             otherTags.Select(tag =>
                     new BudgetReportValueTag(
                         Name: tag.Name,
                         BudgetedAmount: 0,
-                        Actual: budgetTransactions.SelectMany(t => t.Splits).Where(s => s.Tags.Any(t => t.Id == tag.Id)).Sum(t => Domain.Entities.Transactions.TransactionSplit.TransactionSplitNetAmount(t.TransactionId, t.Id, t.Amount))
+                        Actual: splits.Where(s => s.Tags.Any(t => t.Id == tag.Id)).Sum(s => s.GetNetAmount())
                     )).OrderByDescending(b => b.Actual)
         );
 
@@ -49,57 +51,18 @@ public static class Extensions
 {
     public static IEnumerable<Domain.Entities.Tag.Tag> ExceptWhereRelationship(this IEnumerable<Domain.Entities.Tag.Tag> tags, IEnumerable<Domain.Entities.Tag.Tag> second, IEnumerable<TagRelationship> tagRelationships)
     {
-        return tags.AsParallel().Select(tag =>
+        var secondIds = second.Select(s => s.Id).ToHashSet();
+
+        foreach (var tag in tags)
         {
-            if (second.Any(s => s.Id == tag.Id))
-            {
-                return null;
-            }
+            if (secondIds.Contains(tag.Id)) continue;
 
-            var parentIds = tagRelationships.Where(t => t.Id == tag.Id).Select(t => t.ParentId);
+            var isChildOfSecond = tagRelationships.Any(r => r.Id == tag.Id && secondIds.Contains(r.ParentId));
 
-            if (!second.Any(s => parentIds.Contains(s.Id)))
-            {
-                return tag;
-            }
-
-            return null;
-        }).Where(t => t != null)!;
-    }
-
-    public static IEnumerable<Domain.Entities.Tag.Tag> IncludeWhereRelationship(this IEnumerable<Domain.Entities.Tag.Tag> tags, IEnumerable<Domain.Entities.Tag.Tag> second, IEnumerable<TagRelationship> tagRelationships)
-    {
-
-        return tags.AsParallel().Select(tag =>
-        {
-            if (second.Any(s => s.Id == tag.Id))
-            {
-                return tag;
-            }
-
-            var parentIds = tagRelationships.Where(t => t.Id == tag.Id).Select(t => t.ParentId);
-
-            if (!second.Any(s => parentIds.Contains(s.Id)))
-            {
-                return tag;
-            }
-
-            return null;
-        }).Where(t => t != null)!;
-
-        /*foreach (var tag in tags)
-        {
-            if (second.Any(s => s.Id == tag.Id))
+            if (!isChildOfSecond)
             {
                 yield return tag;
             }
-
-            var parentIds = tagRelationships.Where(t => t.Id == tag.Id).Select(t => t.ParentId);
-
-            if (second.Any(s => parentIds.Contains(s.Id)))
-            {
-                yield return tag;
-            }
-        }*/
+        }
     }
 }
