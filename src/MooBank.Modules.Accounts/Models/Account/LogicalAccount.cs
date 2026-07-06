@@ -24,30 +24,44 @@ public partial record LogicalAccount : TransactionInstrument
 
 public static class LogicalAccountExtensions
 {
-    public static LogicalAccount ToModel(this Domain.Entities.Account.LogicalAccount account, ICurrencyConverter currencyConverter) => new()
+    public static async Task<LogicalAccount> ToModel(this Domain.Entities.Account.LogicalAccount account, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default)
     {
-        Id = account.Id,
-        Name = account.Name,
-        Description = account.Description,
-        AccountType = account.AccountType,
-        Currency = account.Currency,
-        CurrentBalance = account.Balance,
-        CurrentBalanceLocalCurrency = currencyConverter.Convert(account.Balance, account.Currency),
-        BalanceDate = ((Domain.Entities.Instrument.Instrument)account).LastUpdated,
-        LastTransaction = account.LastTransaction,
-        InstrumentType = account.AccountType.ToString(),
-        Controller = account.Controller,
-        ShareWithFamily = account.ShareWithFamily,
-        IncludeInBudget = account.IncludeInBudget,
-        InstitutionAccounts = account.InstitutionAccounts?.ToModel() ?? [],
-        VirtualInstruments = account.VirtualInstruments != null && account.VirtualInstruments.Count != 0 ?
-                             account.VirtualInstruments.Where(v => v.ClosedDate == null).OrderBy(v => v.Name).Select(v => v.ToModel(currencyConverter)).ToArray() : [],
-        RemainingBalance = Remaining(account, currencyConverter).RemainingBalance,
-        RemainingBalanceLocalCurrency = Remaining(account, currencyConverter).RemainingBalanceLocalCurrency,
-        AvailableReports = AccountTypeReports.For(account.AccountType),
-        AvailableTagPurposes = AccountTagPurposes.For(account.AccountType),
-        TagPurposes = [.. account.TagPurposes.Select(t => new TagPurposeAssignment { Purpose = t.Purpose, TagId = t.TagId })],
-    };
+        List<MooBank.Models.VirtualInstrument> virtualInstruments = [];
+
+        if (account.VirtualInstruments != null)
+        {
+            foreach (var virtualInstrument in account.VirtualInstruments.Where(v => v.ClosedDate == null).OrderBy(v => v.Name))
+            {
+                virtualInstruments.Add(await virtualInstrument.ToModel(currencyConverter, cancellationToken));
+            }
+        }
+
+        var (remainingBalance, remainingBalanceLocalCurrency) = await Remaining(account, currencyConverter, cancellationToken);
+
+        return new()
+        {
+            Id = account.Id,
+            Name = account.Name,
+            Description = account.Description,
+            AccountType = account.AccountType,
+            Currency = account.Currency,
+            CurrentBalance = account.Balance,
+            CurrentBalanceLocalCurrency = await currencyConverter.Convert(account.Balance, account.Currency, cancellationToken),
+            BalanceDate = ((Domain.Entities.Instrument.Instrument)account).LastUpdated,
+            LastTransaction = account.LastTransaction,
+            InstrumentType = account.AccountType.ToString(),
+            Controller = account.Controller,
+            ShareWithFamily = account.ShareWithFamily,
+            IncludeInBudget = account.IncludeInBudget,
+            InstitutionAccounts = account.InstitutionAccounts?.ToModel() ?? [],
+            VirtualInstruments = virtualInstruments,
+            RemainingBalance = remainingBalance,
+            RemainingBalanceLocalCurrency = remainingBalanceLocalCurrency,
+            AvailableReports = AccountTypeReports.For(account.AccountType),
+            AvailableTagPurposes = AccountTagPurposes.For(account.AccountType),
+            TagPurposes = [.. account.TagPurposes.Select(t => new TagPurposeAssignment { Purpose = t.Purpose, TagId = t.TagId })],
+        };
+    }
 
     public static Domain.Entities.Account.LogicalAccount ToEntity(this LogicalAccount account) => new(account.Id == Guid.Empty ? Guid.NewGuid() : account.Id, account.InstitutionAccounts.ToEntity())
     {
@@ -60,20 +74,29 @@ public static class LogicalAccountExtensions
         IncludeInBudget = account.IncludeInBudget,
     };
 
-    public static LogicalAccount ToModelWithGroup(this Domain.Entities.Account.LogicalAccount entity, User user, ICurrencyConverter currencyConverter)
+    public static async Task<LogicalAccount> ToModelWithGroup(this Domain.Entities.Account.LogicalAccount entity, User user, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default)
     {
-        var result = entity.ToModel(currencyConverter);
+        var result = await entity.ToModel(currencyConverter, cancellationToken);
         result.GroupId = entity.GetGroup(user.Id)?.Id;
 
         return result;
     }
 
 
-    public static async Task<IEnumerable<LogicalAccount>> ToModelAsync(this IQueryable<Domain.Entities.Account.LogicalAccount> entities, ICurrencyConverter currencyConverter, CancellationToken cancellationToken) =>
-        (await entities.ToListAsync(cancellationToken)).Select(t => t.ToModel(currencyConverter));
+    public static async Task<IEnumerable<LogicalAccount>> ToModelAsync(this IQueryable<Domain.Entities.Account.LogicalAccount> entities, ICurrencyConverter currencyConverter, CancellationToken cancellationToken)
+    {
+        List<LogicalAccount> models = [];
+
+        foreach (var entity in await entities.ToListAsync(cancellationToken))
+        {
+            models.Add(await entity.ToModel(currencyConverter, cancellationToken));
+        }
+
+        return models;
+    }
 
 
-    private static (decimal? RemainingBalance, decimal? RemainingBalanceLocalCurrency) Remaining(Domain.Entities.Account.LogicalAccount account, ICurrencyConverter currencyConverter)
+    private static async Task<(decimal? RemainingBalance, decimal? RemainingBalanceLocalCurrency)> Remaining(Domain.Entities.Account.LogicalAccount account, ICurrencyConverter currencyConverter, CancellationToken cancellationToken)
     {
         if (account.VirtualInstruments == null || account.VirtualInstruments.Count == 0)
         {
@@ -89,7 +112,7 @@ public static class LogicalAccountExtensions
 
         var remainingBalance = account.Balance - openVirtualInstruments.Sum(v => v.Balance);
 
-        var remainingBalanceLocalCurrency = currencyConverter.Convert(remainingBalance, account.Currency);
+        var remainingBalanceLocalCurrency = await currencyConverter.Convert(remainingBalance, account.Currency, cancellationToken);
 
         return (remainingBalance, remainingBalanceLocalCurrency);
     }

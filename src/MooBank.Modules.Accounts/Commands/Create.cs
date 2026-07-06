@@ -68,6 +68,6 @@ internal class CreateHandler(ILogicalAccountRepository institutionAccountReposit
 
         await unitOfWork.SaveChangesAsync("Created", "Account", entity.Id, cancellationToken);
 
-        return entity.ToModel(currencyConverter);
+        return await entity.ToModel(currencyConverter, cancellationToken);
     }
 }

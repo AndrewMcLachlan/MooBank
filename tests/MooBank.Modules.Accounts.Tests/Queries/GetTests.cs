@@ -62,8 +62,8 @@ public class GetTests
         var queryable = TestEntities.CreateLogicalAccountQueryable(account);
 
         _mocks.CurrencyConverterMock
-            .Setup(c => c.Convert(100m, "USD"))
-            .Returns(150m);
+            .Setup(c => c.Convert(100m, "USD", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(150m);
 
         var handler = new GetHandler(queryable, _mocks.User, _mocks.CurrencyConverterMock.Object);
         var query = new Get(accountId);

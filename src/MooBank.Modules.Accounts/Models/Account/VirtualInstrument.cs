@@ -12,7 +12,7 @@ public record VirtualAccount : VirtualInstrument
 
 public static class VirtualAccountExtensions
 {
-    public static VirtualAccount ToModel(this Domain.Entities.Account.VirtualInstrument account, ICurrencyConverter currencyConverter)
+    public static async Task<VirtualAccount> ToModel(this Domain.Entities.Account.VirtualInstrument account, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default)
     {
         return new VirtualAccount
         {
@@ -23,7 +23,7 @@ public static class VirtualAccountExtensions
             Controller = account.Controller,
             Currency = account.Currency,
             CurrentBalance = account.Balance,
-            CurrentBalanceLocalCurrency = currencyConverter.Convert(account.Balance, account.Currency),
+            CurrentBalanceLocalCurrency = await currencyConverter.Convert(account.Balance, account.Currency, cancellationToken),
             BalanceDate = account.LastUpdated,
             LastTransaction = account.LastTransaction,
             ClosedDate = account.ClosedDate,
@@ -31,8 +31,17 @@ public static class VirtualAccountExtensions
         };
     }
 
-    public static IEnumerable<VirtualAccount> ToModel(this IEnumerable<Domain.Entities.Account.VirtualInstrument> accounts, ICurrencyConverter currencyConverter) =>
-        accounts.Select(a => a.ToModel(currencyConverter));
+    public static async Task<IEnumerable<VirtualAccount>> ToModel(this IEnumerable<Domain.Entities.Account.VirtualInstrument> accounts, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default)
+    {
+        List<VirtualAccount> models = [];
+
+        foreach (var account in accounts)
+        {
+            models.Add(await account.ToModel(currencyConverter, cancellationToken));
+        }
+
+        return models;
+    }
 
     public static Domain.Entities.Account.VirtualInstrument ToEntity(this VirtualAccount account, Guid parentInstrumentId) => new(account.Id)
     {

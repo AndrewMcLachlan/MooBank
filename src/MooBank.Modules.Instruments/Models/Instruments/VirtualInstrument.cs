@@ -1,11 +1,11 @@
-﻿using Asm.MooBank.Models;
+using Asm.MooBank.Models;
 using Asm.MooBank.Services;
 
 namespace Asm.MooBank.Modules.Instruments.Models.Instruments;
 
 public static class VirtualInstrumentExtensions
 {
-    public static VirtualInstrument ToModel(this Domain.Entities.Account.VirtualInstrument account, ICurrencyConverter currencyConverter)
+    public static async Task<VirtualInstrument> ToModel(this Domain.Entities.Account.VirtualInstrument account, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default)
     {
         return new VirtualInstrument
         {
@@ -16,15 +16,24 @@ public static class VirtualInstrumentExtensions
             Controller = account.Controller,
             Currency = account.Currency,
             CurrentBalance = account.Balance,
-            CurrentBalanceLocalCurrency = currencyConverter.Convert(account.Balance, account.Currency),
+            CurrentBalanceLocalCurrency = await currencyConverter.Convert(account.Balance, account.Currency, cancellationToken),
             BalanceDate = account.LastUpdated,
             LastTransaction = account.LastTransaction,
             ClosedDate = account.ClosedDate,
         };
     }
 
-    public static IEnumerable<VirtualInstrument> ToModel(this IEnumerable<Domain.Entities.Account.VirtualInstrument> accounts, ICurrencyConverter currencyConverter) =>
-        accounts.Select(a => a.ToModel(currencyConverter));
+    public static async Task<IEnumerable<VirtualInstrument>> ToModel(this IEnumerable<Domain.Entities.Account.VirtualInstrument> accounts, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default)
+    {
+        List<VirtualInstrument> models = [];
+
+        foreach (var account in accounts)
+        {
+            models.Add(await account.ToModel(currencyConverter, cancellationToken));
+        }
+
+        return models;
+    }
 
     public static Domain.Entities.Account.VirtualInstrument ToEntity(this VirtualInstrument account, Guid parentInstrumentId) => new(account.Id)
     {

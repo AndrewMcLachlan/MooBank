@@ -144,8 +144,8 @@ public class GetTests
             virtualInstruments: [virtualInstrument]);
 
         _mocks.CurrencyConverterMock
-            .Setup(c => c.Convert(100m, "USD"))
-            .Returns(150m); // Converted amount
+            .Setup(c => c.Convert(100m, "USD", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(150m); // Converted amount
 
         var queryable = TestEntities.CreateInstrumentQueryable(instrument);
 

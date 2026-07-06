@@ -48,6 +48,6 @@ internal class UpdateHandler(IInstrumentRepository instrumentRepository, IUnitOf
         }
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        return instrument.ToModel(currencyConverter);
+        return await instrument.ToModel(currencyConverter, cancellationToken);
     }
 }

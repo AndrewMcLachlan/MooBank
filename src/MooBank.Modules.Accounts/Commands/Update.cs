@@ -36,6 +36,6 @@ internal class UpdateHandler(IAuditingUnitOfWork unitOfWork, ILogicalAccountRepo
 
         await unitOfWork.SaveChangesAsync("Updated", "Account", entity.Id, cancellationToken);
 
-        return entity.ToModel(currencyConverter);
+        return await entity.ToModel(currencyConverter, cancellationToken);
     }
 }

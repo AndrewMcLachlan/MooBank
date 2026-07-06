@@ -136,8 +136,8 @@ public class GetForAccountTests
             virtualInstruments: [virtualInstrument]);
 
         _mocks.CurrencyConverterMock
-            .Setup(c => c.Convert(100m, "EUR"))
-            .Returns(165m);
+            .Setup(c => c.Convert(100m, "EUR", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(165m);
 
         var queryable = TestEntities.CreateLogicalAccountQueryable(instrument);
 

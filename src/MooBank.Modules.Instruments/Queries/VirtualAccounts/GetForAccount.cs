@@ -13,6 +13,6 @@ internal class GetForAccountHandler(IQueryable<Domain.Entities.Account.LogicalAc
     {
         var account = await accounts.Include(a => a.VirtualInstruments).SingleOrDefaultAsync(a => a.Id == request.InstrumentId, cancellationToken);
 
-        return account != null ? account.VirtualInstruments.ToModel(currencyConverter) : throw new NotFoundException("Account not found");
+        return account != null ? await account.VirtualInstruments.ToModel(currencyConverter, cancellationToken) : throw new NotFoundException("Account not found");
     }
 }

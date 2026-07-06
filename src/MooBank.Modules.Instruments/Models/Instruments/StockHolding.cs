@@ -1,10 +1,10 @@
-﻿using Asm.MooBank.Services;
+using Asm.MooBank.Services;
 
 namespace Asm.MooBank.Modules.Instruments.Models.Instruments;
 
 public static class StockHoldingExtensions
 {
-    public static InstrumentSummary ToModel(this Domain.Entities.StockHolding.StockHolding stockHolding, ICurrencyConverter currencyConverter) => new()
+    public static async Task<InstrumentSummary> ToModel(this Domain.Entities.StockHolding.StockHolding stockHolding, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default) => new()
     {
         Id = stockHolding.Id,
         Name = stockHolding.Name,
@@ -12,11 +12,20 @@ public static class StockHoldingExtensions
         Controller = stockHolding.Controller,
         Currency = stockHolding.Currency,
         CurrentBalance = stockHolding.CurrentValue,
-        CurrentBalanceLocalCurrency = currencyConverter.Convert(stockHolding.CurrentValue, stockHolding.Currency),
+        CurrentBalanceLocalCurrency = await currencyConverter.Convert(stockHolding.CurrentValue, stockHolding.Currency, cancellationToken),
         BalanceDate = ((Domain.Entities.Instrument.Instrument)stockHolding).LastUpdated,
         InstrumentType = "Shares",
     };
 
-    public static IEnumerable<InstrumentSummary> ToModel(this IEnumerable<Domain.Entities.StockHolding.StockHolding> entities, ICurrencyConverter currencyConverter) =>
-        entities.Select(t => t.ToModel(currencyConverter));
+    public static async Task<IEnumerable<InstrumentSummary>> ToModel(this IEnumerable<Domain.Entities.StockHolding.StockHolding> entities, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default)
+    {
+        List<InstrumentSummary> models = [];
+
+        foreach (var entity in entities)
+        {
+            models.Add(await entity.ToModel(currencyConverter, cancellationToken));
+        }
+
+        return models;
+    }
 }

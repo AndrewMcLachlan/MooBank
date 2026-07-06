@@ -28,6 +28,6 @@ internal class CreateHandler(IInstrumentRepository instrumentRepository, IUnitOf
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return entity.ToModel(currencyConverter);
+        return await entity.ToModel(currencyConverter, cancellationToken);
     }
 }
