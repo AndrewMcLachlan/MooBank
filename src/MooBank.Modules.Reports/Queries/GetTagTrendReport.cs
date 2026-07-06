@@ -41,10 +41,11 @@ internal class GetTagTrendReportHandler(IReportRepository repository, IQueryable
 
     private static IEnumerable<TrendPoint> ApplySmoothing(IEnumerable<TrendPoint> months)
     {
-        if (!months.Any()) yield break;
-
         var ordered = months.OrderBy(m => m.Month).ToList();
-        var current = ordered[0].Month;
+
+        if (ordered.Count == 0) yield break;
+
+        yield return ordered[0];
 
         for (int i = 1; i < ordered.Count; i++)
         {
@@ -53,17 +54,19 @@ internal class GetTagTrendReportHandler(IReportRepository repository, IQueryable
 
             var gap = next.Month.DifferenceInMonths(previous.Month);
 
-            if (gap == 1)
+            if (gap <= 1)
             {
-                yield return previous;
-                current = next.Month;
+                yield return next;
                 continue;
             }
 
+            // Spread the next point's amount evenly over the months after the previous
+            // point, up to and including the next point's own month. The previous point
+            // keeps its own value and every month is emitted exactly once.
             var avgGross = next.GrossAmount / gap;
             var avgNet = next.NetAmount / gap;
 
-            for (int j = 0; j < gap; j++)
+            for (int j = 1; j <= gap; j++)
             {
                 yield return new TrendPoint
                 {
@@ -72,46 +75,6 @@ internal class GetTagTrendReportHandler(IReportRepository repository, IQueryable
                     NetAmount = avgNet,
                 };
             }
-
-            current = next.Month;
         }
-
-        // Final point if it wasn't part of smoothing
-        if (ordered.Count == 1 || ordered[^1].Month.DifferenceInMonths(ordered[^2].Month) == 1)
-            yield return ordered[^1];
-
-        /*if (!months.Any()) yield break;
-
-        DateOnly current = months.First().Month;
-
-        yield return months.First();
-
-        foreach (var month in months.Skip(1))
-        {
-            if (month.Month < current) throw new InvalidOperationException("The report data points are no ordered by month");
-
-            if (month.Month.Month == current.Month + 1)
-            {
-                current = month.Month;
-                yield return month;
-                continue;
-            }
-
-            decimal difference = month.Month.DifferenceInMonths(current);
-            var averageAmount = month.GrossAmount / difference;
-            var averageOffset = month.NetAmount / difference;
-
-            for (var i = 0; i < difference; i++)
-            {
-                yield return new TrendPoint
-                {
-                    GrossAmount = averageAmount,
-                    Month = current.AddMonths(i),
-                    NetAmount = averageOffset,
-                };
-            }
-
-            current = month.Month;
-        }*/
     }
 }

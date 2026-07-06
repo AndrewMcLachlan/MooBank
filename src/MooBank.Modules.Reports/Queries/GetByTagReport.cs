@@ -1,6 +1,8 @@
-using Asm.MooBank.Domain.Entities.Transactions;
+using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Domain.Entities.Transactions.Specifications;
+using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Reports.Models;
+using Transaction = Asm.MooBank.Domain.Entities.Transactions.Transaction;
 
 namespace Asm.MooBank.Modules.Reports.Queries;
 
@@ -9,37 +11,45 @@ public record GetByTagReport : TypedReportQuery, IQuery<ByTagReport>
     public int? ParentTagId { get; init; } = null;
 }
 
-internal class GetByTagReportHandler(IQueryable<Transaction> transactions) : IQueryHandler<GetByTagReport, ByTagReport>
+internal class GetByTagReportHandler(IQueryable<Transaction> transactions, IQueryable<TagRelationship> tagRelationships) : IQueryHandler<GetByTagReport, ByTagReport>
 {
-    private readonly IQueryable<Transaction> _transactions = transactions;
-
     public async ValueTask<ByTagReport> Handle(GetByTagReport request, CancellationToken cancellationToken)
     {
-        var start = request.Start.ToStartOfDay();
-        var end = request.End.ToEndOfDay();
+        var loaded = await transactions.Specify(new IncludeSplitsSpecification()).WhereByReportQuery(request).ToListAsync(cancellationToken);
 
-        var transactions = await _transactions.Specify(new IncludeTagsSpecification()).WhereByReportQuery(request).ToListAsync(cancellationToken);
+        // Attribute each split's net amount to that split's tags, so a transaction split
+        // across multiple tags only contributes each split's amount to the matching tag.
+        var perTagAmounts = loaded
+            .SelectMany(t => t.Splits.SelectMany(s => s.Tags.Select(tag =>
+                (Tag: tag, Amount: t.TransactionType == TransactionType.Debit ? -s.GetNetAmount() : s.GetNetAmount()))));
 
-        var tagValuesInterim = transactions
-            .GroupBy(t => t.Tags)
-            .SelectMany(g => g.Key.Select(t =>
-            new TagValue
-            {
-                TagId = t.Id,
-                TagName = t.Name,
-                GrossAmount = Math.Abs(g.Sum(t => t.NetAmount)), // This looks weird, but is correct
-            })).ToList();
-
-        var tagValues = tagValuesInterim.GroupBy(t => new { t.TagId, t.TagName }).Select(g => new TagValue
+        if (request.ParentTagId != null)
         {
-            TagId = g.Key.TagId,
-            TagName = g.Key.TagName,
-            GrossAmount = g.Sum(t => t.GrossAmount),
-        }).ToList();
+            // Restrict the report to the parent tag and its descendants. The TagRelationship
+            // view contains the transitive closure, not just direct parent/child pairs.
+            var descendantIds = await tagRelationships
+                .Where(r => r.ParentId == request.ParentTagId)
+                .Select(r => r.Id)
+                .ToListAsync(cancellationToken);
+
+            var includedTagIds = descendantIds.Append(request.ParentTagId.Value).ToHashSet();
+
+            perTagAmounts = perTagAmounts.Where(ta => includedTagIds.Contains(ta.Tag.Id));
+        }
+
+        var tagValues = perTagAmounts
+            .GroupBy(ta => new { ta.Tag.Id, ta.Tag.Name })
+            .Select(g => new TagValue
+            {
+                TagId = g.Key.Id,
+                TagName = g.Key.Name,
+                GrossAmount = Math.Abs(g.Sum(ta => ta.Amount)),
+            })
+            .ToList();
 
         if (request.ParentTagId == null)
         {
-            var tagLessAmount = await _transactions.Specify(new IncludeTagsSpecification()).WhereByReportQuery(request).Where(t => !t.Splits.SelectMany(ts => ts.Tags).Any()).SumAsync(t => t.Amount, cancellationToken);
+            var tagLessAmount = loaded.Where(t => !t.Splits.SelectMany(ts => ts.Tags).Any()).Sum(t => t.Amount);
             tagValues.Add(new TagValue
             {
                 TagName = "Untagged",

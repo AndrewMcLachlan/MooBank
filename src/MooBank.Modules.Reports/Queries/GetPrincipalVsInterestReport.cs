@@ -42,13 +42,24 @@ internal class GetPrincipalVsInterestReportHandler(
             .ToDictionary(t => t.Month, t => t.Total);
 
         var interestTotals = await repository.GetMonthlyTotalsForTag(request.AccountId, request.Start, request.End, TransactionFilterType.Debit, interestTagId, cancellationToken);
-        var interestSeries = interestTotals.ToModel().ToList();
+
+        // Normalise the sign of both series before subtracting: the credit/debit totals
+        // procedure returns debit totals negated, while the tag totals procedure returns
+        // raw (positive) split amounts. Both series are reported as positive magnitudes.
+        var interestSeries = interestTotals.ToModel()
+            .Select(i => new TrendPoint
+            {
+                Month = i.Month,
+                GrossAmount = Math.Abs(i.GrossAmount),
+                NetAmount = i.NetAmount is null ? null : Math.Abs(i.NetAmount.Value),
+            })
+            .ToList();
 
         var principalSeries = interestSeries
             .Select(i => new TrendPoint
             {
                 Month = i.Month,
-                GrossAmount = (monthlyDebits.TryGetValue(i.Month, out var debit) ? debit : 0m) - i.GrossAmount,
+                GrossAmount = (monthlyDebits.TryGetValue(i.Month, out var debit) ? Math.Abs(debit) : 0m) - i.GrossAmount,
             })
             .ToList();
 
