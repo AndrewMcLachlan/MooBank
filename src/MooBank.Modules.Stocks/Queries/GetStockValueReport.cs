@@ -20,7 +20,7 @@ internal class GetStockValueReportHandler(IQueryable<Domain.Entities.StockHoldin
         //var stocksOnDay1 = selectedTransactions.Where(s => s.TransactionDate <= query.Start.ToStartOfDay()).Sum(s => s.Quantity);
 
         var stockPriceHistory = await stockPriceHistories
-            .Where(s => s.Date >= query.Start && s.Date <= query.End)
+            .Where(s => s.Symbol == stockHolding.Symbol && s.Date >= query.Start && s.Date <= query.End)
             .OrderBy(s => s.Date)
             .ToListAsync(cancellationToken);
 
