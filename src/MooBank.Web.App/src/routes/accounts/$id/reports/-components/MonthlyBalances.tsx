@@ -9,6 +9,7 @@ import type { Period } from "models/dateFns";
 import { getPeriod } from "hooks";
 import { useMonthlyBalancesReport } from "../../../-hooks/useMonthlyBalancesReport";
 import { useChartColours } from "utils/chartColours";
+import { getStepSize } from "utils/charts";
 import { ReportsPage } from "./ReportsPage";
 
 
@@ -26,7 +27,7 @@ export const MonthlyBalances: React.FC = () => {
 
         datasets: [{
             label: "End of Month Balance",
-            data: report.data?.balances.map(i => Math.abs(i.grossAmount)) ?? [],
+            data: report.data?.balances.map(i => i.grossAmount) ?? [],
             backgroundColor: colours.income,
             borderColor: colours.income,
             // @ts-expect-error Not a known property for some reason
@@ -40,11 +41,11 @@ export const MonthlyBalances: React.FC = () => {
     };
 
     return (
-        <ReportsPage title="Tag Trend" kind="MonthlyBalances">
+        <ReportsPage title="Monthly Balances" kind="MonthlyBalances">
             <Section className="mini-filter-panel">
                 <MiniPeriodSelector onChange={setPeriod} instant />
             </Section>
-            <Section className="report" header="Tag Trend" headerSize={3}>
+            <Section className="report" header="Monthly Balances" headerSize={3}>
                 <Line id="inout" data={dataset} options={{
                     maintainAspectRatio: true,
                     scales: {
@@ -67,11 +68,4 @@ export const MonthlyBalances: React.FC = () => {
             </Section>
         </ReportsPage >
     );
-}
-
-const getStepSize = (values: number[]) => {
-    const max = values.reduce((max, d) => d > max ? d : max, -Infinity);
-    const magnitude = Math.pow(10, Math.floor(Math.log10(max)));
-    const roundedMax = Math.ceil(max / magnitude) * magnitude;
-    return roundedMax / 10;
 }

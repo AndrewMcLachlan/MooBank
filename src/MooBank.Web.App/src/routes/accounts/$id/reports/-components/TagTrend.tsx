@@ -15,6 +15,7 @@ import type { TrendReportSettings } from "models/reports";
 import { useTag } from "../../../-hooks/useTag";
 import { useTagTrendReport } from "../../../-hooks/useTagTrendReport";
 import { useChartColours } from "utils/chartColours";
+import { getStepSize } from "utils/charts";
 import { ReportsPage } from "./ReportsPage";
 import { TagSettingsPanel } from "./TagSettingsPanel";
 import type { transactionTypeFilter } from "store/state";
@@ -109,11 +110,4 @@ export const TagTrend: React.FC = () => {
             </Section>
         </ReportsPage >
     );
-}
-
-const getStepSize = (values: number[]) => {
-    const max = values.reduce((max, d) => d > max ? d : max, -Infinity);
-    const magnitude = Math.pow(10, Math.floor(Math.log10(max)));
-    const roundedMax = Math.ceil(max / magnitude) * magnitude;
-    return roundedMax / 10;
 }

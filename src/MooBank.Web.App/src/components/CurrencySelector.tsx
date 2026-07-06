@@ -169,7 +169,7 @@ const currencies: Currency[] = [
     { name: "Peso Uruguayo", code: "UYU", },
     { name: "Unidad Previsional", code: "UYW", },
     { name: "Uzbekistan Sum", code: "UZS", },
-    { name: "BolÃ­var Soberano", code: "VES", },
+    { name: "Bolívar Soberano", code: "VES", },
     { name: "Dong", code: "VND", },
     { name: "Vatu", code: "VUV", },
     { name: "Tala", code: "WST", },
