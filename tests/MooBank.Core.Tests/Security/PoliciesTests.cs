@@ -45,12 +45,6 @@ public class PoliciesTests
         Assert.Equal("GroupOwner", Policies.GroupOwner);
     }
 
-    [Fact]
-    public void BudgetLine_HasCorrectValue()
-    {
-        Assert.Equal("BudgetLine", Policies.BudgetLine);
-    }
-
     #endregion
 
     #region GetInstrumentOwnerPolicy

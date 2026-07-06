@@ -17,8 +17,6 @@ public static class Policies
 
     public const string GroupOwner = nameof(GroupOwner);
 
-    public const string BudgetLine = nameof(BudgetLine);
-
     public static AuthorizationPolicy GetInstrumentOwnerPolicy(string routeParam = "instrumentId") =>
         new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme).GetInstrumentOwnerPolicy(routeParam);
 
