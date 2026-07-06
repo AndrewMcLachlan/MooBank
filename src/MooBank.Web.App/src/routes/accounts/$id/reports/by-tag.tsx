@@ -49,7 +49,7 @@ function ByTag() {
         <ReportsPage title="All Tags" kind="AllTags">
             <Section className="mini-filter-panel">
                 <ReportTypeSelector value={reportType} onChange={setReportType} hidden />
-                <MiniPeriodSelector value={period} onChange={setPeriod} />
+                <MiniPeriodSelector onChange={setPeriod} />
             </Section>
             <section className="report doughnut">
                 <h3>All Tags</h3>
