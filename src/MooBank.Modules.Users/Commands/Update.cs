@@ -1,6 +1,7 @@
 ﻿using Asm.MooBank.Domain.Entities.User;
 using Asm.MooBank.Domain.Entities.User.Specifications;
 using Asm.MooBank.Modules.Users.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Hybrid;
 
 namespace Asm.MooBank.Modules.Users.Commands;
@@ -11,39 +12,55 @@ internal class UpdateHandler(IUnitOfWork unitOfWork, IUserRepository repository,
 {
     public async ValueTask<Models.User> Handle(Update command, CancellationToken cancellationToken)
     {
+        var duplicates = command.User.Cards.GroupBy(c => c.Last4Digits).Where(g => g.Count() > 1).Select(g => g.Key).ToList();
+
+        if (duplicates.Count != 0)
+        {
+            throw new BadHttpRequestException($"Duplicate card numbers supplied: {String.Join(", ", duplicates)}");
+        }
+
         var entity = await repository.Get(user.Id, new GetWithCards(), cancellationToken);
 
         entity.Currency = command.User.Currency;
         entity.PrimaryAccountId = command.User.PrimaryAccountId;
 
-        var existing = entity.Cards.Select(c => c.Last4Digits);
-        var newCards = command.User.Cards.Select(c => c.Last4Digits);
+        var existing = entity.Cards.Select(c => c.Last4Digits).Distinct().ToList();
+        var newCards = command.User.Cards.Select(c => c.Last4Digits).ToList();
 
-        var delete = existing.Except(newCards);
-        var add = newCards.Except(existing);
-        var update = existing.Intersect(newCards);
+        var delete = existing.Except(newCards).ToList();
+        var add = newCards.Except(existing).ToList();
+        var update = existing.Intersect(newCards).ToList();
 
         foreach (var card in delete)
         {
-            entity.Cards.Remove(entity.Cards.Single(c => c.Last4Digits == card));
+            // Remove all matching cards, in case existing data contains duplicates.
+            foreach (var existingCard in entity.Cards.Where(c => c.Last4Digits == card).ToList())
+            {
+                entity.Cards.Remove(existingCard);
+            }
         }
 
         foreach (var card in add)
         {
-            entity.Cards.Add(command.User.Cards.Select(c => new Domain.Entities.User.UserCard
+            var newCard = command.User.Cards.First(c => c.Last4Digits == card);
+
+            entity.Cards.Add(new Domain.Entities.User.UserCard
             {
                 UserId = user.Id,
-                Name = c.Name,
-                Last4Digits = c.Last4Digits,
-            }).Single(c => c.Last4Digits == card));
+                Name = newCard.Name,
+                Last4Digits = newCard.Last4Digits,
+            });
         }
 
         foreach (var card in update)
         {
-            var existingCard = entity.Cards.Single(c => c.Last4Digits == card);
-            var newCard = command.User.Cards.Single(c => c.Last4Digits == card);
+            var newCard = command.User.Cards.First(c => c.Last4Digits == card);
 
-            existingCard.Name = newCard.Name;
+            // Update all matching cards, in case existing data contains duplicates.
+            foreach (var existingCard in entity.Cards.Where(c => c.Last4Digits == card))
+            {
+                existingCard.Name = newCard.Name;
+            }
         }
 
         await unitOfWork.SaveChangesAsync(cancellationToken);

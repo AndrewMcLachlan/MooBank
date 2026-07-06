@@ -1,5 +1,4 @@
 #nullable enable
-using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Modules.Tags.Commands;
 using Asm.MooBank.Modules.Tags.Tests.Support;
 using DomainTag = Asm.MooBank.Domain.Entities.Tag.Tag;
@@ -150,10 +149,7 @@ public class AddSubTagTests
         var childTag = TestEntities.CreateTag(id: 2, name: "Child", familyId: familyId);
 
         // Relationship already exists
-        var existingRelationships = new List<TagRelationship>
-        {
-            new() { Tag = childTag, ParentTag = parentTag }
-        };
+        var existingRelationships = TestMocks.CreateTagRelationships((childTag, parentTag));
 
         _mocks.TagRepositoryMock
             .Setup(r => r.Get(1, true, It.IsAny<CancellationToken>()))
@@ -188,10 +184,7 @@ public class AddSubTagTests
         var childTag = TestEntities.CreateTag(id: 2, name: "Child", familyId: familyId);
 
         // Child is already parent of the proposed parent (circular)
-        var existingRelationships = new List<TagRelationship>
-        {
-            new() { Tag = parentTag, ParentTag = childTag }
-        };
+        var existingRelationships = TestMocks.CreateTagRelationships((parentTag, childTag));
 
         _mocks.TagRepositoryMock
             .Setup(r => r.Get(1, true, It.IsAny<CancellationToken>()))

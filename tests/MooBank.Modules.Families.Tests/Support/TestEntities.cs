@@ -66,4 +66,9 @@ internal static class TestEntities
     {
         return CreateFamilyQueryable(families.AsEnumerable());
     }
+
+    public static IQueryable<DomainUser> CreateUserQueryable(params DomainUser[] users)
+    {
+        return QueryableHelper.CreateAsyncQueryable(users);
+    }
 }

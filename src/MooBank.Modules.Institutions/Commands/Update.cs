@@ -17,7 +17,7 @@ public sealed record Update(int Id, string Name, InstitutionType InstitutionType
     {
         var options = httpContext.RequestServices.GetRequiredService<IOptions<JsonOptions>>();
 
-        var id = (int)httpContext.Request.RouteValues["id"]!;
+        if (!Int32.TryParse(httpContext.Request.RouteValues["id"] as string, out int id)) throw new BadHttpRequestException("Invalid institution ID");
 
         var update = await System.Text.Json.JsonSerializer.DeserializeAsync<Update>(httpContext.Request.Body, options.Value.SerializerOptions, cancellationToken: httpContext.RequestAborted);
         return update! with { Id = id };

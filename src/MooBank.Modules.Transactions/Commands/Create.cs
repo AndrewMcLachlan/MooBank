@@ -32,7 +32,7 @@ internal class CreateHandler(IInstrumentRepository accountRepository, ITransacti
             userIdProvider.CurrentUserId,
             createTransaction.Amount,
             createTransaction.Description,
-            createTransaction.TransactionTime.LocalDateTime,
+            createTransaction.TransactionTime.DateTime,
             null, // TransactionSubType is not set in this command
             "Web"
         );
