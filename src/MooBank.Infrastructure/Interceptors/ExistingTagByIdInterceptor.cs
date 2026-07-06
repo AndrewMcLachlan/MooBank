@@ -33,10 +33,14 @@ public sealed class ExistingTagByIdInterceptor : SaveChangesInterceptor
             if ((entry.State == EntityState.Added && entry.Entity.Id != 0) ||
                 (entry.State == EntityState.Modified && entry.Entity.Name == null))
             {
-                var settings = db.ChangeTracker.Entries<TagSettings>().Single(ts => ts.Entity.TagId == entry.Entity.Id);
+                var settings = db.ChangeTracker.Entries<TagSettings>().SingleOrDefault(ts => ts.Entity.TagId == entry.Entity.Id);
 
                 entry.State = EntityState.Unchanged;
-                settings.State = EntityState.Unchanged;
+
+                if (settings is not null)
+                {
+                    settings.State = EntityState.Unchanged;
+                }
             }
         }
     }

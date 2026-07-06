@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using Asm.Drawing;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,8 +22,4 @@ public class Group([DisallowNull] Guid id) : KeyedEntity<Guid>(id)
     public HexColour? Colour { get; set; }
 
     public virtual User.User Owner { get; set; } = null!;
-
-    [NotMapped]
-    public virtual ICollection<Instrument.Instrument> Accounts { get; set; } = new HashSet<Instrument.Instrument>();
-
 }

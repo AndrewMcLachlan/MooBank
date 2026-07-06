@@ -20,7 +20,11 @@ file static class Extensions
 
         if (!String.IsNullOrWhiteSpace(filter.Filter))
         {
-            var predicate = filters.Select(f => (Expression<Func<Transaction, bool>>)(t => t.Description != null && EF.Functions.Like(t.Description, $"%{f}%")));
+            var predicate = filters.Select(f =>
+            {
+                var pattern = $"%{EscapeLikePattern(f)}%";
+                return (Expression<Func<Transaction, bool>>)(t => t.Description != null && EF.Functions.Like(t.Description, pattern, @"\"));
+            });
             result = result.WhereAny(predicate);
         }
 
@@ -36,4 +40,10 @@ file static class Extensions
 
         return result;
     }
+
+    /// <summary>
+    /// Escapes LIKE pattern metacharacters (<c>%</c>, <c>_</c>, <c>[</c>) in user-supplied filter text.
+    /// </summary>
+    private static string EscapeLikePattern(string value) =>
+        value.Replace(@"\", @"\\").Replace("%", @"\%").Replace("_", @"\_").Replace("[", @"\[");
 }

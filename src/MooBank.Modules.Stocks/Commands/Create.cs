@@ -25,7 +25,7 @@ internal class CreateHandler(IStockHoldingRepository repository, IUnitOfWork uni
     {
         if (command.GroupId != null)
         {
-            security.AssertGroupPermission(command.GroupId.Value);
+            await security.AssertGroupPermission(command.GroupId.Value);
         }
 
         Domain.Entities.StockHolding.StockHolding entity = new(Guid.Empty)

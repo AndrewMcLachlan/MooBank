@@ -10,11 +10,11 @@ namespace Asm.MooBank.Infrastructure.Repositories;
 
 public class SecurityRepository(MooBankContext mooBankContext, IAuthorizationService authorizationService, IPrincipalProvider principalProvider, User user, IAuditLogger audit) : ISecurity
 {
-    public void AssertGroupPermission(Guid accountId)
+    public async Task AssertGroupPermission(Guid groupId)
     {
-        if (!mooBankContext.Groups.Any(a => a.Id == accountId && a.OwnerId == user.Id))
+        if (!await mooBankContext.Groups.AnyAsync(a => a.Id == groupId && a.OwnerId == user.Id))
         {
-            audit.AuthorizationDenied(user, "Group", accountId, nameof(AssertGroupPermission));
+            audit.AuthorizationDenied(user, "Group", groupId, nameof(AssertGroupPermission));
             throw new NotAuthorisedException("Not authorised to view this account group");
         }
     }

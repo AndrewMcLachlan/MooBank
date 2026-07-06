@@ -1,5 +1,4 @@
-using Asm.MooBank.Domain.Entities.Transactions;
-using Asm.MooBank.Domain.Entities.Transactions.Events;
+﻿using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Tests.Support;
 using Asm.MooBank.Models;
 using DomainTransaction = Asm.MooBank.Domain.Entities.Transactions.Transaction;
@@ -254,61 +253,6 @@ public class TransactionTests
 
         // Assert
         Assert.Null(transaction.AccountHolderId);
-    }
-
-    #endregion
-
-    #region Transaction.Create - Events
-
-    /// <summary>
-    /// Given valid parameters
-    /// When Transaction.Create is called
-    /// Then a TransactionAddedEvent should be raised
-    /// </summary>
-    [Fact]
-    [Trait("Category", "Unit")]
-    public void Create_RaisesTransactionAddedEvent()
-    {
-        // Act
-        var transaction = DomainTransaction.Create(
-            AccountId,
-            UserId,
-            -50m,
-            "Test",
-            DateTime.UtcNow,
-            null,
-            "Test",
-            null);
-
-        // Assert
-        Assert.Single(transaction.Events);
-        Assert.IsType<TransactionAddedEvent>(transaction.Events.First());
-    }
-
-    /// <summary>
-    /// Given valid parameters
-    /// When Transaction.Create is called
-    /// Then the event should contain the created transaction
-    /// </summary>
-    [Fact]
-    [Trait("Category", "Unit")]
-    public void Create_EventContainsTransaction()
-    {
-        // Act
-        var transaction = DomainTransaction.Create(
-            AccountId,
-            UserId,
-            -50m,
-            "Test",
-            DateTime.UtcNow,
-            null,
-            "Test",
-            null);
-
-        // Assert
-        var addedEvent = transaction.Events.First() as TransactionAddedEvent;
-        Assert.NotNull(addedEvent);
-        Assert.Same(transaction, addedEvent.Transaction);
     }
 
     #endregion

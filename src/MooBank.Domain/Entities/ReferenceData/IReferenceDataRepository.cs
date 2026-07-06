@@ -14,7 +14,7 @@ public interface IReferenceDataRepository
 
     Task<IEnumerable<CpiChange>> GetCpiChanges(CancellationToken cancellationToken = default);
 
-    StockPriceHistory AddStockPrice(StockPriceHistory stockPrice);
+    Task<StockPriceHistory> AddStockPrice(StockPriceHistory stockPrice, CancellationToken cancellationToken = default);
 
     ExchangeRate AddExchangeRate(ExchangeRate exchangeRate);
 

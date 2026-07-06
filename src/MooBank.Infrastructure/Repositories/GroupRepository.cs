@@ -6,8 +6,7 @@ internal class GroupRepository(MooBankContext dataContext) : RepositoryDeleteBas
 {
     public override void Delete(Guid id)
     {
-
+        var group = Entities.Find(id) ?? throw new NotFoundException();
+        Entities.Remove(group);
     }
-
-    protected IQueryable<Group> GetById(Guid id) => Entities.Where(ag => ag.Id == id);
 }
