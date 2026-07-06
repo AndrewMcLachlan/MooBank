@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using Asm.MooBank.Institution.Ing.Models;
 
@@ -6,6 +6,9 @@ namespace Asm.MooBank.Institution.Ing.Importers;
 
 internal partial class TransactionParser
 {
+    private static readonly string[] PurchaseDateFormats = ["dd MMM yyyy", "dd/MM/yyyy", "yyyy-MM-dd"];
+    private const string PurchaseDateTimeFormat = "dd MMM yyyy h:mmtt";
+
     [GeneratedRegex("^(.+) - Visa (?:Purchase|Refund|Purchase Correction) - Receipt (\\d{1,6}) *In (.*) Date (.+) Card \\d{6}xxxxxx(\\d{4})")]
     private static partial Regex VisaPurchaseRefundCorrection();
 
@@ -57,10 +60,10 @@ internal partial class TransactionParser
         {
             parsed.Description = match.Groups[1].Value.Trim();
             parsed.Location = match.Groups[3].Value.Trim();
-            parsed.PurchaseDate = DateTime.Parse(match.Groups[4].Value);
+            parsed.PurchaseDate = ParsePurchaseDate(match.Groups[4].Value);
             parsed.PurchaseType = "Visa";
-            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
-            parsed.Last4Digits = Int16.Parse(match.Groups[5].Value);
+            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
+            parsed.Last4Digits = Int16.Parse(match.Groups[5].Value, CultureInfo.InvariantCulture);
             parsed.TransactionSubType = MooBank.Models.TransactionSubType.Visa;
             return parsed;
         }
@@ -71,10 +74,10 @@ internal partial class TransactionParser
         {
             parsed.Description = $"{match.Groups[1].Value.Trim()} ({match.Groups[3].Value.Trim()})";
             parsed.Location = match.Groups[4].Value.Trim();
-            parsed.PurchaseDate = DateTime.Parse(match.Groups[5].Value);
+            parsed.PurchaseDate = ParsePurchaseDate(match.Groups[5].Value);
             parsed.PurchaseType = "Visa";
-            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
-            parsed.Last4Digits = Int16.Parse(match.Groups[6].Value);
+            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
+            parsed.Last4Digits = Int16.Parse(match.Groups[6].Value, CultureInfo.InvariantCulture);
             parsed.TransactionSubType = MooBank.Models.TransactionSubType.Visa;
             return parsed;
         }
@@ -85,7 +88,7 @@ internal partial class TransactionParser
         {
             parsed.Description = match.Groups[1].Value.Trim();
             parsed.PurchaseType = "Direct Debit";
-            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
+            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
             parsed.Reference = match.Groups[3].Value.Trim();
             parsed.TransactionSubType = MooBank.Models.TransactionSubType.DirectDebit;
             return parsed;
@@ -97,7 +100,7 @@ internal partial class TransactionParser
         {
             parsed.Description = match.Groups[1].Value.Trim();
             parsed.PurchaseType = "Internal Transfer";
-            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
+            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
             parsed.Reference = match.Groups[3].Value.Trim();
             parsed.TransactionSubType = MooBank.Models.TransactionSubType.Transfer;
             return parsed;
@@ -108,10 +111,10 @@ internal partial class TransactionParser
         if (match.Success)
         {
             parsed.Description = match.Groups[1].Value.Trim();
-            parsed.PurchaseDate = DateTime.ParseExact($"{match.Groups[3].Value} {match.Groups[4].Value}", "dd MMM yyyy h:mmtt", CultureInfo.InvariantCulture);
+            parsed.PurchaseDate = ParsePurchaseDateTime(match.Groups[3].Value, match.Groups[4].Value);
             parsed.PurchaseType = "EFTPOS";
-            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
-            parsed.Last4Digits = Int16.Parse(match.Groups[5].Value);
+            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
+            parsed.Last4Digits = Int16.Parse(match.Groups[5].Value, CultureInfo.InvariantCulture);
             parsed.TransactionSubType = MooBank.Models.TransactionSubType.Eftpos;
             return parsed;
         }
@@ -120,33 +123,25 @@ internal partial class TransactionParser
         if (match.Success)
         {
             parsed.Description = $"{match.Groups[1].Value.Trim()} - ${match.Groups[3]} Cash out";
-            parsed.PurchaseDate = DateTime.ParseExact($"{match.Groups[4].Value} {match.Groups[5].Value}", "dd MMM yyyy h:mmtt", CultureInfo.InvariantCulture);
+            parsed.PurchaseDate = ParsePurchaseDateTime(match.Groups[4].Value, match.Groups[5].Value);
             parsed.PurchaseType = "EFTPOS";
-            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
-            parsed.Last4Digits = Int16.Parse(match.Groups[6].Value);
+            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
+            parsed.Last4Digits = Int16.Parse(match.Groups[6].Value, CultureInfo.InvariantCulture);
             parsed.TransactionSubType = MooBank.Models.TransactionSubType.Eftpos;
             return parsed;
         }
 
-        match = DirectPayment().Match(description);
-        if (match.Success)
-        {
-
-            parsed.Description = match.Groups[1].Value.Trim();
-            parsed.PurchaseType = "Direct";
-            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
-            return parsed;
-        }
-
+        // The more specific direct payment patterns must be tried before the general one,
+        // otherwise location, purchase date and card digits are lost.
         match = DirectPayment2().Match(description);
         if (match.Success)
         {
             parsed.Description = match.Groups[1].Value.Trim();
             parsed.Location = match.Groups[3].Value.Trim();
-            parsed.PurchaseDate = DateTime.ParseExact($"{match.Groups[4].Value} {match.Groups[5].Value}", "dd MMM yyyy h:mmtt", CultureInfo.InvariantCulture);
+            parsed.PurchaseDate = ParsePurchaseDateTime(match.Groups[4].Value, match.Groups[5].Value);
             parsed.PurchaseType = "Direct";
-            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
-            parsed.Last4Digits = Int16.Parse(match.Groups[6].Value);
+            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
+            parsed.Last4Digits = Int16.Parse(match.Groups[6].Value, CultureInfo.InvariantCulture);
             return parsed;
         }
 
@@ -155,20 +150,28 @@ internal partial class TransactionParser
         {
             parsed.Description = match.Groups[1].Value.Trim();
             parsed.Location = match.Groups[3].Value.Trim();
-            parsed.PurchaseDate = DateTime.ParseExact($"{match.Groups[4].Value} {match.Groups[5].Value}", "dd MMM yyyy h:mmtt", CultureInfo.InvariantCulture);
+            parsed.PurchaseDate = ParsePurchaseDateTime(match.Groups[4].Value, match.Groups[5].Value);
             parsed.PurchaseType = "Direct";
-            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
-            parsed.Last4Digits = Int16.Parse(match.Groups[6].Value);
+            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
+            parsed.Last4Digits = Int16.Parse(match.Groups[6].Value, CultureInfo.InvariantCulture);
+            return parsed;
+        }
+
+        match = DirectPayment().Match(description);
+        if (match.Success)
+        {
+            parsed.Description = match.Groups[1].Value.Trim();
+            parsed.PurchaseType = "Direct";
+            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
             return parsed;
         }
 
         match = OskoPayment().Match(description);
         if (match.Success)
         {
-
             parsed.Description = $"{match.Groups[1].Value.Trim()} ({match.Groups[3].Value})";
             parsed.PurchaseType = "Osko";
-            parsed.ReceiptNumber = Int32.Parse(match.Groups[4].Value);
+            parsed.ReceiptNumber = Int32.Parse(match.Groups[4].Value, CultureInfo.InvariantCulture);
             parsed.Reference = match.Groups[6].Value.Trim();
             parsed.TransactionSubType = MooBank.Models.TransactionSubType.Osko;
             return parsed;
@@ -177,20 +180,18 @@ internal partial class TransactionParser
         match = SalaryDeposit().Match(description);
         if (match.Success)
         {
-
             parsed.PurchaseType = "Salary";
             parsed.Description = $"Salary - {match.Groups[2].Value.Trim()}";
-            parsed.ReceiptNumber = Int32.Parse(match.Groups[1].Value);
+            parsed.ReceiptNumber = Int32.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture);
             return parsed;
         }
 
         match = Bpay().Match(description);
         if (match.Success)
         {
-
             parsed.PurchaseType = "BPAY";
             parsed.Description = $"{match.Groups[1].Value.Trim()} - {match.Groups[3].Value.Trim()}";
-            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
+            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
             parsed.TransactionSubType = MooBank.Models.TransactionSubType.Bpay;
             return parsed;
         }
@@ -199,10 +200,10 @@ internal partial class TransactionParser
         if (match.Success)
         {
             parsed.Description = $"{match.Groups[1].Value.Trim()} - ${match.Groups[3].Value.Trim()} fee";
-            parsed.PurchaseDate = DateTime.ParseExact($"{match.Groups[4].Value} {match.Groups[5].Value}", "dd MMM yyyy h:mmtt", CultureInfo.InvariantCulture);
+            parsed.PurchaseDate = ParsePurchaseDateTime(match.Groups[4].Value, match.Groups[5].Value);
             parsed.PurchaseType = "ATM";
-            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value);
-            parsed.Last4Digits = Int16.Parse(match.Groups[6].Value);
+            parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
+            parsed.Last4Digits = Int16.Parse(match.Groups[6].Value, CultureInfo.InvariantCulture);
             parsed.TransactionSubType = MooBank.Models.TransactionSubType.Atm;
             return parsed;
         }
@@ -210,4 +211,18 @@ internal partial class TransactionParser
         parsed.Description = description;
         return parsed;
     }
+
+    /// <summary>
+    /// Parses a purchase date, returning <see langword="null"/> rather than throwing when the value is
+    /// in an unexpected format, so that a single malformed description does not abort an import.
+    /// </summary>
+    private static DateTime? ParsePurchaseDate(string value) =>
+        DateTime.TryParseExact(value.Trim(), PurchaseDateFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result) ? result : null;
+
+    /// <summary>
+    /// Parses a purchase date and time, returning <see langword="null"/> rather than throwing when the
+    /// value is in an unexpected format, so that a single malformed description does not abort an import.
+    /// </summary>
+    private static DateTime? ParsePurchaseDateTime(string date, string time) =>
+        DateTime.TryParseExact($"{date.Trim()} {time.Trim()}", PurchaseDateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result) ? result : null;
 }

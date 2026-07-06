@@ -1,15 +1,17 @@
-﻿using Asm.MooBank.Domain.Entities.Transactions;
+using System.Globalization;
+using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.User;
 using Asm.MooBank.Importers;
 using Asm.MooBank.Institution.Ing.Domain;
 using Asm.MooBank.Institution.Ing.Models;
-using Microsoft.EntityFrameworkCore;
+using CsvHelper;
+using CsvHelper.Configuration;
 using Microsoft.Extensions.Logging;
 using TransactionType = Asm.MooBank.Models.TransactionType;
 
 namespace Asm.MooBank.Institution.Ing.Importers;
 
-internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, IUserRepository accountHolderRepository, ITransactionRawRepository transactionRawRepository, ITransactionRepository transactionRepository, ILogger<IngImporter> logger) : IImporter
+internal partial class IngImporter(IUserRepository accountHolderRepository, ITransactionRawRepository transactionRawRepository, ITransactionRepository transactionRepository, ILogger<IngImporter> logger) : IImporter
 {
     private const int Columns = 5;
     private const int DateColumn = 0;
@@ -19,69 +21,62 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
     private const int BalanceColumn = 4;
     private const string DateFormat = "dd/MM/yyyy";
 
-    private readonly Dictionary<short, User> _accountHolders = [];
+    private readonly Dictionary<short, User?> _accountHolders = [];
 
     public async Task<MooBank.Models.TransactionImportResult> Import(Guid instrumentId, Guid? institutionAccountId, Stream contents, CancellationToken cancellationToken = default)
     {
-
         using var reader = new StreamReader(contents);
-        var rawTransactionEntities = new List<TransactionRaw>();
-
-        // TODO: Get the first and last transaction dates from the import first, to reduce the amount of data we need to check against existing transactions.
-        var checkTransactions = await rawTransactions.Where(t => t.AccountId == instrumentId).Select(t => new
+        var config = new CsvConfiguration(CultureInfo.InvariantCulture)
         {
-            t.Description,
-            t.Date,
-            t.Credit,
-            t.Debit
-        }).ToListAsync(cancellationToken);
+            HasHeaderRecord = true,
+            BadDataFound = null,
+        };
+        using var parser = new CsvParser(reader, config);
 
         // Throw away header row
-        await reader.ReadLineAsync(cancellationToken);
+        await parser.ReadAsync();
+
+        List<string[]> rows = [];
+
+        while (await parser.ReadAsync())
+        {
+            rows.Add(parser.Record ?? []);
+        }
+
+        // Only load existing raw transactions within the date range of the file, projected to the fields
+        // needed for duplicate detection. Receipt numbers are parsed once, up front.
+        var checkTransactions = (await GetCheckTransactions(instrumentId, rows, cancellationToken))
+            .Select(t => new
+            {
+                t.Description,
+                t.Date,
+                t.Credit,
+                t.Debit,
+                TransactionParser.ParseDescription(t.Description).ReceiptNumber,
+            })
+            .ToList();
+
+        var rawTransactionEntities = new List<TransactionRaw>();
 
         int lineCount = 1;
 
         decimal? endBalance = null;
 
-        string? line;
-        while ((line = await reader.ReadLineAsync(cancellationToken)) is not null)
+        foreach (string[] columns in rows)
         {
-            DateOnly transactionTime = DateOnly.MinValue;
             decimal credit = 0;
             decimal debit = 0;
 
             lineCount++;
 
-            string[] prelimColumns = line.Split(",");
-
-            List<string> columns = [];
-
-            string? current = null;
-
-            foreach (string str in prelimColumns)
-            {
-                if (str.StartsWith('\"') && !str.EndsWith('\"'))
-                {
-                    current = str;
-                }
-                else if (!str.StartsWith('\"') && str.EndsWith('\"'))
-                {
-                    columns.Add((current + str).Trim('"').Replace("\"\"", "\""));
-                }
-                else
-                {
-                    columns.Add(str);
-                }
-            }
-
             #region Validation
-            if (columns.Count != Columns)
+            if (columns.Length != Columns)
             {
                 logger.LogWarning("Unrecognised entry at line {lineCount}", lineCount);
                 continue;
             }
 
-            if (!DateOnly.TryParseExact(columns[DateColumn], DateFormat, out transactionTime))
+            if (!DateOnly.TryParseExact(columns[DateColumn], DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly transactionTime))
             {
                 logger.LogWarning("Incorrect date format at line {lineCount}", lineCount);
                 continue;
@@ -98,12 +93,12 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
                 continue;
             }
 
-            if (!String.IsNullOrEmpty(columns[CreditColumn]) && !Decimal.TryParse(columns[CreditColumn], out credit))
+            if (!String.IsNullOrEmpty(columns[CreditColumn]) && !Decimal.TryParse(columns[CreditColumn], NumberStyles.Currency, CultureInfo.InvariantCulture, out credit))
             {
                 logger.LogWarning("Incorrect credit format at line {lineCount}", lineCount);
                 continue;
             }
-            else if (!String.IsNullOrEmpty(columns[DebitColumn]) && !Decimal.TryParse(columns[DebitColumn], out debit))
+            else if (!String.IsNullOrEmpty(columns[DebitColumn]) && !Decimal.TryParse(columns[DebitColumn], NumberStyles.Currency, CultureInfo.InvariantCulture, out debit))
             {
                 logger.LogWarning("Incorrect debit format at line {lineCount}", lineCount);
                 continue;
@@ -111,7 +106,7 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
 
             TransactionType transactionType = !String.IsNullOrEmpty(columns[CreditColumn]) ? TransactionType.Credit : TransactionType.Debit;
 
-            if (!Decimal.TryParse(columns[BalanceColumn], out decimal balance))
+            if (!Decimal.TryParse(columns[BalanceColumn], NumberStyles.Currency, CultureInfo.InvariantCulture, out decimal balance))
             {
                 logger.LogWarning("Incorrect balance format at line {lineCount}", lineCount);
                 continue;
@@ -120,19 +115,20 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
 
             endBalance ??= balance;
 
+            var parsed = TransactionParser.ParseDescription(columns[DescriptionColumn]);
+
+            // A receipt-number match is only valid when both sides have a receipt number.
             if (checkTransactions.Any(t => (t.Description == columns[DescriptionColumn] ||
-                TransactionParser.ParseDescription(t.Description).ReceiptNumber == TransactionParser.ParseDescription(columns[DescriptionColumn]).ReceiptNumber) &&
+                (t.ReceiptNumber is not null && t.ReceiptNumber == parsed.ReceiptNumber)) &&
                 t.Date == transactionTime && t.Debit == debit && t.Credit == credit))
             {
                 logger.LogInformation("Duplicate transaction found {description} {date}", columns[DescriptionColumn], transactionTime);
                 continue;
             }
 
-            var parsed = TransactionParser.ParseDescription(columns[DescriptionColumn]);
-
             Transaction transaction = Transaction.Create(
                 instrumentId,
-                parsed.Last4Digits != null ? (await accountHolderRepository.GetByCard(parsed.Last4Digits.Value, cancellationToken))?.Id : null,
+                (await GetAccountHolder(parsed.Last4Digits, cancellationToken))?.Id,
                 transactionType == TransactionType.Credit ? credit : debit,
                 parsed.Description,
                 transactionTime.ToStartOfDay(),
@@ -168,17 +164,15 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
 
         transactionRawRepository.AddRange(rawTransactionEntities);
 
-        return new MooBank.Models.TransactionImportResult(rawTransactionEntities.Select(r => r.Transaction), endBalance!.Value);
+        return new MooBank.Models.TransactionImportResult(rawTransactionEntities.Select(r => r.Transaction), endBalance);
     }
 
     public async Task Reprocess(Guid instrumentId, Guid institutionAccountId, CancellationToken cancellationToken = default)
     {
-        var transactions = await transactionRepository.GetTransactions(instrumentId, cancellationToken);
-        var transactionIds = transactions.Select(t => t.Id);
+        var transactionIds = (await transactionRepository.GetTransactionIds(instrumentId, cancellationToken: cancellationToken)).ToHashSet();
 
         var rawTransactions = await transactionRawRepository.GetAll(instrumentId, cancellationToken);
         var processed = rawTransactions.Where(t => t.TransactionId != null && transactionIds.Contains(t.TransactionId.Value));
-        var unprocessed = rawTransactions.Except(processed, new Asm.Domain.IIdentifiableEqualityComparer<TransactionRaw, Guid>());
 
         foreach (var raw in processed)
         {
@@ -197,18 +191,28 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
             raw.Transaction.PurchaseDate = parsed.PurchaseDate;
             raw.Transaction.TransactionSubType = parsed.TransactionSubType;
             raw.Transaction.TransactionTime = raw.Date.ToStartOfDay();
-
         }
-        /*
-        foreach (var transaction in unprocessed)
-        {
-            TransactionExtra? extraInfo = TransactionParser.ParseDescription(transaction);
+    }
 
-            if (extraInfo != null)
+    /// <summary>
+    /// Loads the existing raw transactions that fall within the date range of the file being imported,
+    /// projected down to only the fields needed for duplicate detection.
+    /// </summary>
+    private async Task<IReadOnlyCollection<TransactionRawSummary>> GetCheckTransactions(Guid instrumentId, IEnumerable<string[]> rows, CancellationToken cancellationToken)
+    {
+        List<DateOnly> dates = [];
+
+        foreach (string[] row in rows)
+        {
+            if (row.Length > DateColumn && DateOnly.TryParseExact(row[DateColumn], DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly date))
             {
-                transactionExtras.Add(extraInfo);
+                dates.Add(date);
             }
-        }*/
+        }
+
+        if (dates.Count == 0) return [];
+
+        return (await transactionRawRepository.GetSummaries(instrumentId, dates.Min(), dates.Max(), cancellationToken)).ToList();
     }
 
     private async ValueTask<User?> GetAccountHolder(short? last4Digits, CancellationToken cancellationToken)
@@ -218,13 +222,9 @@ internal partial class IngImporter(IQueryable<TransactionRaw> rawTransactions, I
         if (!_accountHolders.TryGetValue(last4Digits.Value, out User? user))
         {
             user = await accountHolderRepository.GetByCard(last4Digits.Value, cancellationToken);
-            if (user == null) return null;
             _accountHolders.Add(last4Digits.Value, user);
         }
 
         return user;
     }
-
-    /*public GetTransactionExtraDetails? CreateExtraDetailsRequest(Guid accountId, Models.PagedResult<Models.Transaction> transactions) =>
-        new GetIngTransactionExtraDetails(accountId, transactions);*/
 }

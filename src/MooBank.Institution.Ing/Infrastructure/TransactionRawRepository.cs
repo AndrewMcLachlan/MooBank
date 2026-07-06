@@ -1,4 +1,4 @@
-﻿using Asm.MooBank.Infrastructure;
+using Asm.MooBank.Infrastructure;
 using Asm.MooBank.Institution.Ing.Domain;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +9,9 @@ internal class TransactionRawRepository(MooBankContext context) : Asm.Domain.Inf
     public async Task<IEnumerable<TransactionRaw>> GetAll(Guid accountId, CancellationToken cancellationToken = default) =>
         await Entities.Include(t => t.Transaction).Where(t => t.AccountId == accountId).ToListAsync(cancellationToken);
 
-    public async Task<IEnumerable<TransactionRaw>> GetUnprocessed(IEnumerable<Guid> transactionIds, CancellationToken cancellationToken = default) =>
-        await Entities.Where(t => !transactionIds.Contains(t.Id)).ToArrayAsync(cancellationToken);
+    public async Task<IEnumerable<TransactionRawSummary>> GetSummaries(Guid accountId, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
+        await Entities.AsNoTracking()
+                      .Where(t => t.AccountId == accountId && t.Date >= startDate && t.Date <= endDate)
+                      .Select(t => new TransactionRawSummary(t.Description, t.Date, t.Credit, t.Debit))
+                      .ToListAsync(cancellationToken);
 }

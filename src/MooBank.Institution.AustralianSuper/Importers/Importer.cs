@@ -1,8 +1,10 @@
-﻿using System.Globalization;
+using System.Globalization;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Importers;
 using Asm.MooBank.Institution.AustralianSuper.Domain;
 using Asm.MooBank.Institution.AustralianSuper.Models;
+using CsvHelper;
+using CsvHelper.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Asm.MooBank.Institution.AustralianSuper.Importers;
@@ -26,62 +28,41 @@ internal partial class Importer(ITransactionRawRepository transactionRawReposito
     public async Task<MooBank.Models.TransactionImportResult> Import(Guid instrumentId, Guid? institutionAccountId, Stream contents, CancellationToken cancellationToken = default)
     {
         using var reader = new StreamReader(contents);
-        var rawTransactionEntities = new List<TransactionRaw>();
-
-        var checkTransactions = (await transactionRawRepository.GetAll(instrumentId, cancellationToken)).Select(t => new
+        var config = new CsvConfiguration(CultureInfo.InvariantCulture)
         {
-            t.Description,
-            t.Date,
-            t.TotalAmount
-        }).ToList();
+            HasHeaderRecord = true,
+            BadDataFound = null,
+        };
+        using var parser = new CsvParser(reader, config);
 
         // Throw away header row
-        await reader.ReadLineAsync(cancellationToken);
+        await parser.ReadAsync();
+
+        List<string[]> rows = [];
+
+        while (await parser.ReadAsync())
+        {
+            rows.Add(parser.Record ?? []);
+        }
+
+        var checkTransactions = await GetCheckTransactions(instrumentId, rows, cancellationToken);
+
+        var rawTransactionEntities = new List<TransactionRaw>();
 
         int lineCount = 1;
 
-        string? line;
-        while ((line = await reader.ReadLineAsync(cancellationToken)) is not null)
+        foreach (string[] columns in rows)
         {
-            DateOnly transactionTime = DateOnly.MinValue;
-
             lineCount++;
 
-            string[] prelimColumns = line.Split(",");
-
-            List<string> columns = [];
-
-            string? current = null;
-
-            decimal sgContributions = 0;
-            decimal employerAdditional = 0;
-            decimal salarySacrifice = 0;
-            decimal memberAdditional = 0;
-
-            foreach (string str in prelimColumns)
-            {
-                if (str.StartsWith('\"') && !str.EndsWith('\"'))
-                {
-                    current = str;
-                }
-                else if (!str.StartsWith('\"') && str.EndsWith('\"'))
-                {
-                    columns.Add((current + str).Trim('"').Replace("\"\"", "\""));
-                }
-                else
-                {
-                    columns.Add(str);
-                }
-            }
-
             #region Validation
-            if (columns.Count != Columns)
+            if (columns.Length != Columns)
             {
                 logger.LogWarning("Unrecognised entry at line {lineCount}", lineCount);
                 continue;
             }
 
-            if (!DateOnly.TryParseExact(columns[DateColumn], DateFormat, out transactionTime))
+            if (!DateOnly.TryParseExact(columns[DateColumn], DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly transactionTime))
             {
                 logger.LogWarning("Incorrect date format at line {lineCount}", lineCount);
                 continue;
@@ -100,19 +81,31 @@ internal partial class Importer(ITransactionRawRepository transactionRawReposito
 
             bool isContribution = columns[CategoryColumn]?.Trim() == ContributionsCategory;
 
-            if (isContribution &&
-                String.IsNullOrWhiteSpace(columns[PaymentPeriodColumn]) &&
-                !Decimal.TryParse(columns[SGContributionsColumn], out sgContributions) &&
-                !Decimal.TryParse(columns[EmployerAdditionalColumn], out employerAdditional) &&
-                !Decimal.TryParse(columns[SalarySacrificeColumn], out salarySacrifice) &&
-                !Decimal.TryParse(columns[MemberAdditionalColumn], out memberAdditional))
+            // Parse the contribution amounts unconditionally so that valid values are always captured.
+            bool amountsValid = TryParseAmount(columns[SGContributionsColumn], out decimal sgContributions) &
+                                TryParseAmount(columns[EmployerAdditionalColumn], out decimal employerAdditional) &
+                                TryParseAmount(columns[SalarySacrificeColumn], out decimal salarySacrifice) &
+                                TryParseAmount(columns[MemberAdditionalColumn], out decimal memberAdditional);
 
+            DateOnly? paymentPeriodStart = null;
+            DateOnly? paymentPeriodEnd = null;
+
+            if (isContribution)
             {
-                logger.LogWarning("Incorrect contribution format at line {lineCount}", lineCount);
-                continue;
+                if (String.IsNullOrWhiteSpace(columns[PaymentPeriodColumn]) || !amountsValid)
+                {
+                    logger.LogWarning("Incorrect contribution format at line {lineCount}", lineCount);
+                    continue;
+                }
+
+                if (!TryParsePaymentPeriod(columns[PaymentPeriodColumn], out paymentPeriodStart, out paymentPeriodEnd))
+                {
+                    logger.LogWarning("Incorrect payment period format at line {lineCount}", lineCount);
+                    continue;
+                }
             }
 
-            if (!Decimal.TryParse(columns[TotalAmountColumn], out decimal totalAmount))
+            if (!Decimal.TryParse(columns[TotalAmountColumn], NumberStyles.Currency, CultureInfo.InvariantCulture, out decimal totalAmount))
             {
                 logger.LogWarning("Incorrect total amount format at line {lineCount}", lineCount);
                 continue;
@@ -152,8 +145,8 @@ internal partial class Importer(ITransactionRawRepository transactionRawReposito
                 Description = columns[DescriptionColumn],
                 EmployerAdditional = isContribution ? employerAdditional : null,
                 MemberAdditional = isContribution ? memberAdditional : null,
-                PaymentPeriodEnd = isContribution ? DateOnly.ParseExact(columns[PaymentPeriodColumn].Split('/')[0], DateFormat, CultureInfo.InvariantCulture) : null,
-                PaymentPeriodStart = isContribution ? DateOnly.ParseExact(columns[PaymentPeriodColumn].Split('/')[1], DateFormat, CultureInfo.InvariantCulture) : null,
+                PaymentPeriodEnd = paymentPeriodEnd,
+                PaymentPeriodStart = paymentPeriodStart,
                 SalarySacrifice = isContribution ? salarySacrifice : null,
                 SGContributions = isContribution ? sgContributions : null,
                 Title = columns[TitleColumn].Trim(),
@@ -172,12 +165,10 @@ internal partial class Importer(ITransactionRawRepository transactionRawReposito
 
     public async Task Reprocess(Guid instrumentId, Guid institutionAccountId, CancellationToken cancellationToken = default)
     {
-        var transactions = await transactionRepository.GetTransactions(instrumentId, cancellationToken);
-        var transactionIds = transactions.Select(t => t.Id);
+        var transactionIds = (await transactionRepository.GetTransactionIds(instrumentId, cancellationToken: cancellationToken)).ToHashSet();
 
         var rawTransactions = await transactionRawRepository.GetAll(instrumentId, cancellationToken);
         var processed = rawTransactions.Where(t => t.TransactionId != null && transactionIds.Contains(t.TransactionId.Value));
-        var unprocessed = rawTransactions.Except(processed, new Asm.Domain.IIdentifiableEqualityComparer<TransactionRaw, Guid>());
 
         foreach (var raw in processed)
         {
@@ -193,9 +184,69 @@ internal partial class Importer(ITransactionRawRepository transactionRawReposito
             } : null;
             raw.Transaction.PurchaseDate = raw.Date.ToDateTime(TimeOnly.MinValue);
             raw.Transaction.TransactionTime = raw.Date.ToStartOfDay();
+        }
+    }
 
+    /// <summary>
+    /// Loads the existing raw transactions that fall within the date range of the file being imported,
+    /// projected down to only the fields needed for duplicate detection.
+    /// </summary>
+    private async Task<IReadOnlyCollection<TransactionRawSummary>> GetCheckTransactions(Guid instrumentId, IEnumerable<string[]> rows, CancellationToken cancellationToken)
+    {
+        List<DateOnly> dates = [];
 
+        foreach (string[] row in rows)
+        {
+            if (row.Length > DateColumn && DateOnly.TryParseExact(row[DateColumn], DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly date))
+            {
+                dates.Add(date);
+            }
         }
 
+        if (dates.Count == 0) return [];
+
+        return (await transactionRawRepository.GetSummaries(instrumentId, dates.Min(), dates.Max(), cancellationToken)).ToList();
+    }
+
+    /// <summary>
+    /// Parses an amount column. Empty values are treated as zero.
+    /// </summary>
+    private static bool TryParseAmount(string? value, out decimal result)
+    {
+        if (String.IsNullOrWhiteSpace(value))
+        {
+            result = 0;
+            return true;
+        }
+
+        return Decimal.TryParse(value, NumberStyles.Currency, CultureInfo.InvariantCulture, out result);
+    }
+
+    /// <summary>
+    /// Parses a payment period in the format "start/end" (e.g. "2024-06-01/2024-06-14").
+    /// If the dates appear in reverse order they are swapped so that start is always the earlier date.
+    /// </summary>
+    private static bool TryParsePaymentPeriod(string value, out DateOnly? start, out DateOnly? end)
+    {
+        start = null;
+        end = null;
+
+        string[] parts = value.Split('/');
+
+        if (parts.Length != 2 ||
+            !DateOnly.TryParseExact(parts[0].Trim(), DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly parsedStart) ||
+            !DateOnly.TryParseExact(parts[1].Trim(), DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly parsedEnd))
+        {
+            return false;
+        }
+
+        if (parsedStart > parsedEnd)
+        {
+            (parsedStart, parsedEnd) = (parsedEnd, parsedStart);
+        }
+
+        start = parsedStart;
+        end = parsedEnd;
+        return true;
     }
 }
