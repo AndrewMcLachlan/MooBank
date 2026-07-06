@@ -178,4 +178,36 @@ public class AddTagTests
         // Assert
         _mocks.TagRepositoryMock.Verify(r => r.Get(tagId, It.IsAny<CancellationToken>()), Times.Once);
     }
+
+    /// <summary>
+    /// Given a transaction that belongs to a different instrument than the one in the command
+    /// When the add tag command is handled
+    /// Then a NotFoundException should be thrown and no changes saved
+    /// </summary>
+    [Fact]
+    public async Task Handle_TransactionBelongsToDifferentInstrument_ThrowsNotFoundException()
+    {
+        // Arrange
+        var instrumentId = Guid.NewGuid();
+        var otherInstrumentId = Guid.NewGuid();
+        var transactionId = Guid.NewGuid();
+        var tagId = 5;
+
+        var existingTransaction = TestEntities.CreateTransaction(id: transactionId, accountId: otherInstrumentId);
+
+        _mocks.TransactionRepositoryMock
+            .Setup(r => r.Get(transactionId, It.IsAny<IncludeSplitsSpecification>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(existingTransaction);
+
+        var handler = new AddTagHandler(
+            _mocks.TransactionRepositoryMock.Object,
+            _mocks.TagRepositoryMock.Object,
+            _mocks.UnitOfWorkMock.Object);
+
+        var command = new AddTag(instrumentId, transactionId, tagId);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
+        _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+    }
 }
