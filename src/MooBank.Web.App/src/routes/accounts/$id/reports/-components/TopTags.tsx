@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import { useAllTagAverageReport } from "../../../-hooks/useAllTagAverageReport";
 
 import type { ChartData } from "chart.js";
@@ -7,16 +5,16 @@ import { Bar } from "react-chartjs-2";
 
 import type { Period } from "models/dateFns";
 import { useNavigate } from "@tanstack/react-router";
-import { chartColours, desaturatedChartColours } from "utils/chartColours";
+import { chartColours } from "utils/chartColours";
 import type { transactionTypeFilter } from "store/state";
 
 export const TopTags: React.FC<TopTagsProps> = ({ accountId, period, reportType, top = 20, periodId }) => {
 
     const navigate = useNavigate();
-    const [showGross] = useState<boolean>(false); //TODO: may make this an option
 
     const report = useAllTagAverageReport(accountId, period?.startDate, period?.endDate, reportType, top);
 
+    // TODO: optionally show gross amounts as a second (desaturated) series.
     const dataset: ChartData<"bar", number[], string> = {
         labels: report.data?.tags.map(t => t.tagName) ?? [],
         datasets: [{
@@ -25,14 +23,6 @@ export const TopTags: React.FC<TopTagsProps> = ({ accountId, period, reportType,
             backgroundColor: chartColours,
         }],
     };
-
-    if (showGross) {
-        dataset.datasets.push({
-            label: "",
-            data: report.data?.tags.map(t => t.grossAmount!) ?? [],
-            backgroundColor: desaturatedChartColours,
-        });
-    }
 
     return (
         <Bar id="alltagaverage" data={dataset} options={{
