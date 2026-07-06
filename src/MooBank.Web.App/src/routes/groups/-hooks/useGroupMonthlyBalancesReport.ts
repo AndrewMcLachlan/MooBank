@@ -4,6 +4,6 @@ import { formatISODate } from "utils/dateFns";
 
 export const useGroupMonthlyBalancesReport = (groupId: string, start: Date, end: Date) =>
     useQuery({
-        ...groupMonthlyBalancesReportOptions({ path: { groupId, start: formatISODate(start), end: formatISODate(end) } }),
+        ...groupMonthlyBalancesReportOptions({ path: { groupId, start: start ? formatISODate(start) : "", end: end ? formatISODate(end) : "" } }),
         enabled: !!groupId && !!start && !!end,
     });

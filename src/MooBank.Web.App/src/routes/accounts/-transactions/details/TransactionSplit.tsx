@@ -11,7 +11,7 @@ import { TransactionSplitTagPanel } from "./TransactionSplitTagPanel";
 export const TransactionSplit: React.FC<TransactionSplitProps> = ({ transaction, split, splitChanged, removeSplit }) => {
 
     const [offsetBy, setOffsetBy] = useState<TransactionOffsetFor[]>(split.offsetBy);
-    const invalidateSearch = useInvalidateSearch(transaction.id);
+    const invalidateSearch = useInvalidateSearch(transaction.accountId);
 
     const offsetChanged = (offset: TransactionOffsetFor, oldOffset?: Transaction) => {
         if (offset.amount > offset.transaction.amount || offset.amount <= 0) offset.amount = offset.transaction.amount;

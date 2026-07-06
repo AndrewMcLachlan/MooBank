@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deletePlannedItemMutation, getForecastPlanQueryKey } from "api/@tanstack/react-query.gen";
-import { forecastKey } from "./keys";
+import { forecastResultQueryKey } from "./keys";
 
 export const useDeletePlannedItem = () => {
     const queryClient = useQueryClient();
@@ -9,7 +9,7 @@ export const useDeletePlannedItem = () => {
         ...deletePlannedItemMutation(),
         onSuccess: (_data, variables) => {
             queryClient.invalidateQueries({ queryKey: getForecastPlanQueryKey({ path: { id: variables.path!.planId } }) });
-            queryClient.invalidateQueries({ queryKey: [...forecastKey, variables.path!.planId, "result"] });
+            queryClient.invalidateQueries({ queryKey: forecastResultQueryKey(variables.path!.planId) });
         },
     });
 

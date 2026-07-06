@@ -7,8 +7,8 @@ export const usePrincipalVsInterestReport = (accountId: string, start: Date, end
         ...principalVsInterestReportOptions({
             path: {
                 accountId,
-                start: formatISODate(start),
-                end: formatISODate(end),
+                start: start ? formatISODate(start) : "",
+                end: end ? formatISODate(end) : "",
             },
         }),
         enabled: enabled && !!accountId && !!start && !!end,

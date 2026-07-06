@@ -1,10 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { CreateStockTransaction } from "models/stocks";
 import { toast } from "@andrewmclachlan/moo-ds";
-import {
-    getStockTransactionsQueryKey,
-    createStockTransactionMutation,
-} from "api/@tanstack/react-query.gen";
+import { createStockTransactionMutation } from "api/@tanstack/react-query.gen";
 
 export const useCreateStockTransaction = () => {
 
@@ -13,7 +10,8 @@ export const useCreateStockTransaction = () => {
     const { mutateAsync } = useMutation({
         ...createStockTransactionMutation(),
         onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: getStockTransactionsQueryKey({ path: { instrumentId: "", pageSize: 0, pageNumber: 0 } } as any) });
+            // Id-only partial key matches every cached getStockTransactions query (all pages and instruments).
+            queryClient.invalidateQueries({ queryKey: [{ _id: "getStockTransactions" }] });
         }
     });
 

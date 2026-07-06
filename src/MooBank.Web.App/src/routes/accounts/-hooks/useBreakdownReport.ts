@@ -4,7 +4,7 @@ import { formatISODate } from "utils/dateFns";
 import type { transactionTypeFilter } from "store/state";
 
 export const useBreakdownReport = (accountId: string, start: Date, end: Date, reportType: transactionTypeFilter, tagId?: number) => {
-    const basePath = { accountId, start: formatISODate(start), end: formatISODate(end), reportType: reportType.toLowerCase() as any };
+    const basePath = { accountId, start: start ? formatISODate(start) : "", end: end ? formatISODate(end) : "", reportType: reportType.toLowerCase() as any };
     const options = tagId
         ? tagBreakdownReportForTagOptions({ path: { ...basePath, parentTagId: tagId } })
         : tagBreakdownReportOptions({ path: basePath });

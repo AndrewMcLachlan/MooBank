@@ -1,26 +1,6 @@
 import type { SortDirection } from "@andrewmclachlan/moo-ds";
 import type { Tag } from "api/types.gen";
 
-export const compareTags = (left: Tag, right: Tag): boolean => {
-    if (!left && !right) return true;
-    if (!left || !right) return false;
-
-    return left.id === right.id && left.name === right.name && left.tags.length === right.tags.length;
-};
-
-export const compareTagArray = (left: Tag[], right: Tag[]) => {
-    if (!left && !right) return true;
-    if (!left || !right) return false;
-    if (left.length !== right.length) return false;
-    for (let i = 0; i < left.length; i++) {
-        if (!compareTags(left[i], right[i])) {
-            return false;
-        }
-    }
-
-    return true;
-};
-
 export const sortTags = (sortDirection: SortDirection) => (a: Tag, b: Tag) => {
 
     const retVal = sortDirection === "Ascending" ? 1 : -1;

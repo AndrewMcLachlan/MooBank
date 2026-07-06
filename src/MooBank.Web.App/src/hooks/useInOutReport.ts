@@ -4,6 +4,6 @@ import { formatISODate } from "utils/dateFns";
 
 export const useInOutReport = (accountId: string, start: Date, end: Date) =>
     useQuery({
-        ...inOutReportOptions({ path: { accountId, start: formatISODate(start), end: formatISODate(end) } }),
+        ...inOutReportOptions({ path: { accountId, start: start ? formatISODate(start) : "", end: end ? formatISODate(end) : "" } }),
         enabled: !!accountId && !!start && !!end,
     });

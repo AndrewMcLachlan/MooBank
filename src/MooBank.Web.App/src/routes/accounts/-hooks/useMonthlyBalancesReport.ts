@@ -4,6 +4,6 @@ import { formatISODate } from "utils/dateFns";
 
 export const useMonthlyBalancesReport = (accountId: string, start: Date, end: Date) =>
     useQuery({
-        ...monthlyBalancesReportForPeriodOptions({ path: { accountId, start: formatISODate(start), end: formatISODate(end) } }),
+        ...monthlyBalancesReportForPeriodOptions({ path: { accountId, start: start ? formatISODate(start) : "", end: end ? formatISODate(end) : "" } }),
         enabled: !!start && !!end,
     });
