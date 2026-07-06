@@ -12,7 +12,10 @@ public sealed record IncomeStrategy
 public sealed record ManualRecurringIncome
 {
     public decimal Amount { get; init; }
+
+    // TODO: not yet honoured by ForecastEngine — the amount is always treated as monthly.
     public string Frequency { get; init; } = "Monthly";
+
     public DateOnly? StartDate { get; init; }
     public DateOnly? EndDate { get; init; }
 }
@@ -26,9 +29,17 @@ public sealed record ManualAdjustment
 public sealed record HistoricalIncomeSettings
 {
     public int LookbackMonths { get; init; } = 12;
+
+    // TODO: not yet honoured by ForecastEngine.
     public IEnumerable<int>? IncludeTagIds { get; init; }
+
+    // TODO: not yet honoured by ForecastEngine.
     public IEnumerable<int>? ExcludeTagIds { get; init; }
+
+    // TODO: not yet honoured by ForecastEngine.
     public bool ExcludeTransfers { get; init; } = true;
+
+    // TODO: not yet honoured by ForecastEngine.
     public bool ExcludeOffsets { get; init; }
 }
 
@@ -37,9 +48,16 @@ public sealed record OutgoingStrategy
     public int Version { get; init; } = 1;
     public string Mode { get; init; } = "HistoricalAverageByTag";
     public int LookbackMonths { get; init; } = 12;
+
+    // TODO: not yet honoured by ForecastEngine.
     public IEnumerable<int>? ExcludeTagIds { get; init; }
+
+    // TODO: not yet honoured by ForecastEngine.
     public decimal? ExcludeAboveAmount { get; init; }
+
+    // TODO: not yet honoured by ForecastEngine.
     public SeasonalitySettings? Seasonality { get; init; }
+
     public IncomeCorrelatedSettings? IncomeCorrelated { get; init; }
 }
 
@@ -54,6 +72,7 @@ public sealed record SeasonalitySettings
     public bool Enabled { get; init; }
 }
 
+// TODO: not yet honoured by ForecastEngine — persisted but never read when forecasting.
 public sealed record Assumptions
 {
     public int Version { get; init; } = 1;

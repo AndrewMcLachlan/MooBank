@@ -23,8 +23,14 @@ public class PlannedItems : EndpointGroupBase
         routeGroupBuilder.MapQuery<GetPlannedItem, PlannedItem>("/{itemId}")
             .WithNames("Get Planned Item");
 
-        routeGroupBuilder.MapPostCreate<CreatePlannedItem, PlannedItem>("/", "Get Planned Item".ToMachine(), (item) => new { planId = Guid.Empty, itemId = item.Id }, CommandBinding.Parameters)
-            .WithNames("Create Planned Item");
+        routeGroupBuilder.MapPost("/", async ([AsParameters] CreatePlannedItem command, ICommandDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.Dispatch(command, cancellationToken);
+
+            return Results.CreatedAtRoute("Get Planned Item".ToMachine(), new { planId = command.PlanId, itemId = result.Id }, result);
+        })
+            .WithNames("Create Planned Item")
+            .Produces<PlannedItem>((int)HttpStatusCode.Created);
 
         routeGroupBuilder.MapPutCommand<UpdatePlannedItem, PlannedItem>("/{itemId}")
             .WithNames("Update Planned Item");

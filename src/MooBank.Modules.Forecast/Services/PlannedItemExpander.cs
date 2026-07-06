@@ -49,8 +49,12 @@ internal static class PlannedItemExpander
 
                         if (item.FlexibleWindow.AllocationMode == AllocationMode.AllAtEnd)
                         {
-                            var endKey = new DateOnly(windowEnd.Year, windowEnd.Month, 1).ToString("yyyy-MM");
-                            result[endKey] = result.GetValueOrDefault(endKey, 0m) + (item.Amount * sign);
+                            // Skip windows that fall entirely outside the plan.
+                            if (windowStart <= windowEnd)
+                            {
+                                var endKey = new DateOnly(windowEnd.Year, windowEnd.Month, 1).ToString("yyyy-MM");
+                                result[endKey] = result.GetValueOrDefault(endKey, 0m) + (item.Amount * sign);
+                            }
                         }
                         else // EvenlySpread
                         {
@@ -84,6 +88,10 @@ internal static class PlannedItemExpander
         var endDate = schedule.EndDate ?? planEnd;
         if (endDate > planEnd) endDate = planEnd;
 
+        // Guard against a non-positive interval, which would never advance the schedule
+        // and loop forever. Commands validate this, but clamp defensively for legacy data.
+        var interval = Math.Max(1, schedule.Interval);
+
         while (current <= endDate)
         {
             if (current >= planStart)
@@ -93,11 +101,11 @@ internal static class PlannedItemExpander
 
             current = schedule.Frequency switch
             {
-                ScheduleFrequency.Daily => current.AddDays(schedule.Interval),
-                ScheduleFrequency.Weekly => current.AddDays(7 * schedule.Interval),
-                ScheduleFrequency.Fortnightly => current.AddDays(14 * schedule.Interval),
-                ScheduleFrequency.Monthly => AddMonthsWithDay(current, schedule.Interval, schedule.DayOfMonth),
-                ScheduleFrequency.Yearly => current.AddYears(schedule.Interval),
+                ScheduleFrequency.Daily => current.AddDays(interval),
+                ScheduleFrequency.Weekly => current.AddDays(7 * interval),
+                ScheduleFrequency.Fortnightly => current.AddDays(14 * interval),
+                ScheduleFrequency.Monthly => AddMonthsWithDay(current, interval, schedule.DayOfMonth),
+                ScheduleFrequency.Yearly => current.AddYears(interval),
                 _ => current.AddMonths(1)
             };
         }
@@ -154,7 +162,8 @@ internal static class PlannedItemExpander
 
                         if (item.FlexibleWindow.AllocationMode == AllocationMode.AllAtEnd)
                         {
-                            if (windowEnd <= realizedBefore)
+                            // Skip windows that fall entirely outside the plan.
+                            if (windowStart <= windowEnd && windowEnd <= realizedBefore)
                             {
                                 var endKey = new DateOnly(windowEnd.Year, windowEnd.Month, 1).ToString("yyyy-MM");
                                 result[endKey] = result.GetValueOrDefault(endKey, 0m) + item.Amount;
