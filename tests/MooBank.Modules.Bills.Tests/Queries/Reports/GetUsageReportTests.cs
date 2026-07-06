@@ -155,8 +155,8 @@ public class GetUsageReportTests
         var userId = _mocks.User.Id;
         var period = TestEntities.CreatePeriod(
             periodStart: new DateTime(2024, 1, 1),
-            periodEnd: new DateTime(2024, 1, 31),
-            totalUsage: 300); // 300 usage over 30 days = 10 per day
+            periodEnd: new DateTime(2024, 1, 30),
+            totalUsage: 300); // 300 usage over 30 days (inclusive of both start and end) = 10 per day
         var bill = TestEntities.CreateBill(
             id: 1,
             issueDate: new DateOnly(2024, 2, 1),
@@ -180,7 +180,7 @@ public class GetUsageReportTests
 
         // Assert
         var dataPoint = result.DataPoints.First();
-        Assert.Equal(10m, dataPoint.UsagePerDay); // 300 / 30 days
+        Assert.Equal(10m, dataPoint.UsagePerDay); // 300 / 30 inclusive days
     }
 
     [Fact]
@@ -189,13 +189,13 @@ public class GetUsageReportTests
         // Arrange
         var userId = _mocks.User.Id;
         var period1 = TestEntities.CreatePeriod(
-            periodStart: new DateTime(2024, 1, 1),
+            periodStart: new DateTime(2024, 1, 2),
             periodEnd: new DateTime(2024, 1, 31),
-            totalUsage: 300); // 30 days
+            totalUsage: 300); // 30 inclusive days
         var period2 = TestEntities.CreatePeriod(
-            periodStart: new DateTime(2024, 1, 16),
+            periodStart: new DateTime(2024, 1, 17),
             periodEnd: new DateTime(2024, 1, 31),
-            totalUsage: 150); // 15 days
+            totalUsage: 150); // 15 inclusive days
         var bill = TestEntities.CreateBill(
             id: 1,
             issueDate: new DateOnly(2024, 2, 1),
@@ -224,22 +224,18 @@ public class GetUsageReportTests
     }
 
     [Fact]
-    public async Task Handle_ZeroDaysPeriod_ExcludedFromResults()
+    public async Task Handle_SingleDayPeriod_IncludedWithOneInclusiveDay()
     {
-        // Arrange
+        // Arrange - a period starting and ending on the same day is one inclusive day
         var userId = _mocks.User.Id;
-        var zeroDaysPeriod = TestEntities.CreatePeriod(
+        var singleDayPeriod = TestEntities.CreatePeriod(
             periodStart: new DateTime(2024, 1, 15),
             periodEnd: new DateTime(2024, 1, 15), // Same day
             totalUsage: 100);
-        var validPeriod = TestEntities.CreatePeriod(
-            periodStart: new DateTime(2024, 1, 1),
-            periodEnd: new DateTime(2024, 1, 31),
-            totalUsage: 300);
         var bill = TestEntities.CreateBill(
             id: 1,
             issueDate: new DateOnly(2024, 2, 1),
-            periods: [zeroDaysPeriod, validPeriod]);
+            periods: [singleDayPeriod]);
         var account = TestEntities.CreateAccountWithOwner(
             name: "Test Account",
             ownerId: userId,
@@ -258,7 +254,46 @@ public class GetUsageReportTests
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
-        // Should only have datapoints for valid period, not zero-days period
+        var dataPoint = Assert.Single(result.DataPoints);
+        Assert.Equal(100m, dataPoint.UsagePerDay); // 100 usage over 1 inclusive day
+    }
+
+    [Fact]
+    public async Task Handle_InvalidPeriod_ExcludedFromResults()
+    {
+        // Arrange - a period ending before it starts has non-positive days and is excluded
+        var userId = _mocks.User.Id;
+        var invalidPeriod = TestEntities.CreatePeriod(
+            periodStart: new DateTime(2024, 1, 15),
+            periodEnd: new DateTime(2024, 1, 10), // Ends before it starts
+            totalUsage: 100);
+        var validPeriod = TestEntities.CreatePeriod(
+            periodStart: new DateTime(2024, 1, 1),
+            periodEnd: new DateTime(2024, 1, 31),
+            totalUsage: 300);
+        var bill = TestEntities.CreateBill(
+            id: 1,
+            issueDate: new DateOnly(2024, 2, 1),
+            periods: [invalidPeriod, validPeriod]);
+        var account = TestEntities.CreateAccountWithOwner(
+            name: "Test Account",
+            ownerId: userId,
+            bills: [bill]);
+
+        var queryable = TestEntities.CreateAccountQueryable(account);
+
+        var handler = new GetUsageReportHandler(queryable, _mocks.User);
+        var query = new GetUsageReport
+        {
+            Start = new DateOnly(2024, 1, 1),
+            End = new DateOnly(2024, 12, 31)
+        };
+
+        // Act
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
+
+        // Assert
+        // Should only have a datapoint for the valid period, not the invalid one
         Assert.Single(result.DataPoints);
     }
 

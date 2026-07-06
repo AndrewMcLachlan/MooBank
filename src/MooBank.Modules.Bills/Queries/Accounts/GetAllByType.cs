@@ -19,7 +19,7 @@ internal class GetAllByTypeHandler(IQueryable<Domain.Entities.Utility.Account> a
             new AccountTypeSummary
             {
                 UtilityType = a.Key,
-                From = a.SelectMany(a => a.Bills).Min(b => b.IssueDate),
+                From = a.SelectMany(a => a.Bills).Min(b => (DateOnly?)b.IssueDate),
                 Accounts = a.Select(a => a.Name),
             });
     }
