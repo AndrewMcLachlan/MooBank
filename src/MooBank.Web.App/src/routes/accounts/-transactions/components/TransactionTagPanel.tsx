@@ -15,11 +15,9 @@ export const TransactionTagPanel: React.FC<TransactionTagPanelProps> = ({alwaysS
 
     const fullTagsListQuery = useTags();
 
-    const [tagsList, setTagsList] = useState<Tag[]>([]);
-
-    useEffect(() => {
-        if (!fullTagsListQuery.data) return;
-        setTagsList(fullTagsListQuery.data.filter((t) => !transactionRow.tags.some((tt) => t.id === tt.id)));
+    const tagsList = useMemo(() => {
+        if (!fullTagsListQuery.data) return [];
+        return fullTagsListQuery.data.filter((t) => !transactionRow.tags.some((tt) => t.id === tt.id));
     }, [transactionRow.tags, fullTagsListQuery.data]);
 
     const selectedTags = useMemo(() => {
