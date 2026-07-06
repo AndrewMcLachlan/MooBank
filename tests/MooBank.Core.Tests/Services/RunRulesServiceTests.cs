@@ -19,7 +19,6 @@ public class RunRulesServiceTests
     private readonly Mock<ITransactionRepository> _transactionRepositoryMock;
     private readonly Mock<IRuleRepository> _ruleRepositoryMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-    private readonly ILogger _logger;
     private readonly TestEntities _entities = new();
 
     public RunRulesServiceTests()
@@ -27,7 +26,6 @@ public class RunRulesServiceTests
         _transactionRepositoryMock = new Mock<ITransactionRepository>();
         _ruleRepositoryMock = new Mock<IRuleRepository>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
-        _logger = NullLoggerFactory.Instance.CreateLogger("RunRulesService");
 
         _unitOfWorkMock.Setup(u => u.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
     }
@@ -344,8 +342,8 @@ public class RunRulesServiceTests
         // Act
         await service.RunRules(accountId, TestContext.Current.CancellationToken);
 
-        // Assert
-        _unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        // Assert - nothing matched, so nothing needs saving
+        _unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 
     /// <summary>
@@ -367,9 +365,9 @@ public class RunRulesServiceTests
         // Act
         await service.RunRules(accountId, TestContext.Current.CancellationToken);
 
-        // Assert
+        // Assert - nothing matched, so nothing needs saving
         Assert.Empty(transaction.Tags);
-        _unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 
     /// <summary>
@@ -443,7 +441,7 @@ public class RunRulesServiceTests
         // Arrange
         var accountId = TestModels.AccountId;
         _transactionRepositoryMock
-            .Setup(r => r.GetTransactions(accountId, It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetTransactionDescriptions(accountId, It.IsAny<CancellationToken>()))
             .ThrowsAsync(new InvalidOperationException("Database error"));
 
         var service = CreateService();
@@ -457,17 +455,23 @@ public class RunRulesServiceTests
     #region Helpers
 
     private IRunRulesService CreateService() =>
-        new RunRulesServiceAccessor(
+        new RunRulesService(
             _transactionRepositoryMock.Object,
             _ruleRepositoryMock.Object,
             _unitOfWorkMock.Object,
-            _logger);
+            NullLogger<RunRulesService>.Instance);
 
     private void SetupRepositories(Guid accountId, IEnumerable<Transaction> transactions, IEnumerable<Rule> rules)
     {
+        var transactionList = transactions.ToList();
+
         _transactionRepositoryMock
-            .Setup(r => r.GetTransactions(accountId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(transactions);
+            .Setup(r => r.GetTransactionDescriptions(accountId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(transactionList.Select(t => new TransactionDescription(t.Id, t.Description)).ToList());
+
+        _transactionRepositoryMock
+            .Setup(r => r.GetTransactions(accountId, It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((Guid _, IEnumerable<Guid> ids, CancellationToken _) => transactionList.Where(t => ids.Contains(t.Id)).ToList());
 
         _ruleRepositoryMock
             .Setup(r => r.GetForInstrument(accountId, It.IsAny<CancellationToken>()))
@@ -496,68 +500,6 @@ public class RunRulesServiceTests
             Tags = tags,
             Description = description,
         };
-    }
-
-    /// <summary>
-    /// Accessor class to create internal RunRulesService for testing.
-    /// </summary>
-    private class RunRulesServiceAccessor : IRunRulesService
-    {
-        private readonly ITransactionRepository _transactionRepository;
-        private readonly IRuleRepository _ruleRepository;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger _logger;
-
-        public RunRulesServiceAccessor(
-            ITransactionRepository transactionRepository,
-            IRuleRepository ruleRepository,
-            IUnitOfWork unitOfWork,
-            ILogger logger)
-        {
-            _transactionRepository = transactionRepository;
-            _ruleRepository = ruleRepository;
-            _unitOfWork = unitOfWork;
-            _logger = logger;
-        }
-
-        public async Task RunRules(Guid accountId, CancellationToken cancellationToken = default)
-        {
-            _logger.LogInformation("Run Rules Service is processing account {AccountId}.", accountId);
-
-            try
-            {
-                var transactions = await _transactionRepository.GetTransactions(accountId, cancellationToken);
-                var rules = await _ruleRepository.GetForInstrument(accountId, cancellationToken);
-
-                // Parallel: compute rule matches (read-only, thread-safe)
-                var ruleMatches = transactions.AsParallel().Select(transaction =>
-                {
-                    var applicableRules = rules.Where(r => transaction.Description?.Contains(r.Contains, StringComparison.OrdinalIgnoreCase) ?? false).ToList();
-                    var tags = applicableRules.SelectMany(r => r.Tags).Distinct().ToList();
-                    var notes = String.Join(". ", applicableRules.Where(r => !String.IsNullOrWhiteSpace(r.Description)).Select(r => r.Description));
-                    return (transaction, tags, notes);
-                }).ToList();
-
-                // Sequential: apply mutations to tracked entities
-                foreach (var (transaction, tags, notes) in ruleMatches)
-                {
-                    transaction.AddOrUpdateSplit(tags);
-                    if (String.IsNullOrEmpty(transaction.Notes))
-                    {
-                        transaction.Notes = notes;
-                    }
-                }
-
-                await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-                _logger.LogInformation("Run Rules completed for account {AccountId}. {Count} transactions processed.", accountId, transactions.Count());
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred running rules for account {AccountId}.", accountId);
-                throw;
-            }
-        }
     }
 
     #endregion

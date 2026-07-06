@@ -18,32 +18,50 @@ internal class RunRulesService(ITransactionRepository transactionRepository, IRu
 
         try
         {
-            var transactions = await transactionRepository.GetTransactions(accountId, cancellationToken);
+            // Match rules against a lightweight projection first, so that only the transactions
+            // that are actually retagged are loaded and tracked.
+            var descriptions = await transactionRepository.GetTransactionDescriptions(accountId, cancellationToken);
 
             var rules = await transactionTagRuleRepository.GetForInstrument(accountId, cancellationToken);
 
-            // Parallel: compute rule matches (read-only, thread-safe)
-            var ruleMatches = transactions.AsParallel().Select(transaction =>
+            // Parallel: find the transactions that match at least one rule (read-only, thread-safe)
+            var matchedIds = descriptions.AsParallel()
+                .Where(t => rules.Any(r => t.Description?.Contains(r.Contains, StringComparison.OrdinalIgnoreCase) ?? false))
+                .Select(t => t.Id)
+                .ToList();
+
+            if (matchedIds.Count == 0)
             {
-                var applicableRules = rules.Where(r => transaction.Description?.Contains(r.Contains, StringComparison.OrdinalIgnoreCase) ?? false).ToList();
-                var tags = applicableRules.SelectMany(r => r.Tags).Distinct().ToList();
-                var notes = String.Join(". ", applicableRules.Where(r => !String.IsNullOrWhiteSpace(r.Description)).Select(r => r.Description));
-                return (transaction, tags, notes);
-            }).ToList();
+                logger.LogInformation("Run Rules completed for account {AccountId}. No matching transactions.", accountId);
+                return;
+            }
+
+            var transactions = await transactionRepository.GetTransactions(accountId, matchedIds, cancellationToken);
+
+            int processed = 0;
 
             // Sequential: apply mutations to tracked entities
-            foreach (var (transaction, tags, notes) in ruleMatches)
+            foreach (var transaction in transactions)
             {
+                var applicableRules = rules.Where(r => transaction.Description?.Contains(r.Contains, StringComparison.OrdinalIgnoreCase) ?? false).ToList();
+
+                if (applicableRules.Count == 0) continue;
+
+                var tags = applicableRules.SelectMany(r => r.Tags).Distinct().ToList();
+                var notes = String.Join(". ", applicableRules.Where(r => !String.IsNullOrWhiteSpace(r.Description)).Select(r => r.Description));
+
                 transaction.AddOrUpdateSplit(tags);
                 if (String.IsNullOrEmpty(transaction.Notes))
                 {
                     transaction.Notes = notes;
                 }
+
+                processed++;
             }
 
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            logger.LogInformation("Run Rules completed for account {AccountId}. {Count} transactions processed.", accountId, transactions.Count());
+            logger.LogInformation("Run Rules completed for account {AccountId}. {Count} transactions processed.", accountId, processed);
         }
         catch (Exception ex)
         {
