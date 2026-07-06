@@ -33,13 +33,4 @@ public static class VirtualAccountExtensions
 
     public static IEnumerable<VirtualAccount> ToModel(this IEnumerable<Domain.Entities.Account.VirtualInstrument> accounts, ICurrencyConverter currencyConverter) =>
         accounts.Select(a => a.ToModel(currencyConverter));
-
-    public static Domain.Entities.Account.VirtualInstrument ToEntity(this VirtualAccount account, Guid parentInstrumentId) => new(account.Id)
-    {
-        ParentInstrumentId = parentInstrumentId,
-        Name = account.Name,
-        Description = account.Description,
-        Balance = account.CurrentBalance,
-        ClosedDate = account.ClosedDate,
-    };
 }
