@@ -14,6 +14,7 @@ import { AddTransaction } from "./components/AddTransaction";
 import { TransactionsAccountCard } from "./components/TransactionsAccountCard";
 import { TransactionsCompactWidgets } from "./components/TransactionsCompactWidgets";
 import { useTransactionList } from "components";
+import { useMediaQuery } from "hooks";
 
 export const Transactions: React.FC = () => {
 
@@ -23,6 +24,8 @@ export const Transactions: React.FC = () => {
     const [compactMode, setCompactMode] = useLocalStorage("compact-mode", false);
     const { showNet, setShowNet } = useTransactionList();
     const [show, setShow] = React.useState(false);
+    // Bootstrap md breakpoint - matches the d-md-* classes used by TransactionList.
+    const isDesktop = useMediaQuery("(min-width: 768px)");
 
     if (!account) return null;
 
@@ -68,8 +71,7 @@ export const Transactions: React.FC = () => {
                     <MiniFilterPanel />
                 </>
             )}
-            <TransactionList />
-            <TransactionList compact />
+            {isDesktop ? <TransactionList /> : <TransactionList compact />}
             {account.controller === "Import" && <Import show={showImport} accountId={account.id} onClose={() => setShowImport(false)} />}
         </AccountPage>
     );
