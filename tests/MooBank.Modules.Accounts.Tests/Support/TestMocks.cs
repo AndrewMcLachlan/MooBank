@@ -6,6 +6,7 @@ using Asm.MooBank.Models;
 using Asm.MooBank.Security;
 using Asm.MooBank.Services;
 using Asm.Security;
+using ITagRepository = Asm.MooBank.Domain.Entities.Tag.ITagRepository;
 
 namespace Asm.MooBank.Modules.Accounts.Tests.Support;
 
@@ -26,6 +27,8 @@ public class TestMocks
 
         InstrumentRepositoryMock = new Mock<IInstrumentRepository>();
 
+        TagRepositoryMock = new Mock<ITagRepository>();
+
         CurrencyConverterMock = new Mock<ICurrencyConverter>();
         CurrencyConverterMock.Setup(c => c.Convert(It.IsAny<decimal>(), It.IsAny<string>()))
             .Returns<decimal, string>((amount, _) => amount);
@@ -42,6 +45,8 @@ public class TestMocks
     public Mock<ILogicalAccountRepository> LogicalAccountRepositoryMock { get; }
 
     public Mock<IInstrumentRepository> InstrumentRepositoryMock { get; }
+
+    public Mock<ITagRepository> TagRepositoryMock { get; }
 
     public Mock<ICurrencyConverter> CurrencyConverterMock { get; }
 
