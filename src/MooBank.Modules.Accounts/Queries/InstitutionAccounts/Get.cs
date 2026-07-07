@@ -8,7 +8,7 @@ internal class GetHandler(IQueryable<Domain.Entities.Account.LogicalAccount> acc
 {
     public async ValueTask<InstitutionAccount> Handle(Get request, CancellationToken cancellationToken)
     {
-        var logicalAccount = await accounts.SingleOrDefaultAsync(a => a.Id == request.InstrumentId, cancellationToken) ?? throw new NotFoundException();
+        var logicalAccount = await accounts.Include(a => a.InstitutionAccounts).SingleOrDefaultAsync(a => a.Id == request.InstrumentId, cancellationToken) ?? throw new NotFoundException();
 
         var entity = logicalAccount.InstitutionAccounts.FirstOrDefault(a => a.Id == request.Id)
             ?? throw new NotFoundException($"Institution account with ID {request.Id} not found in logical account {request.InstrumentId}");

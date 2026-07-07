@@ -1,8 +1,6 @@
 #nullable enable
 using Asm.MooBank.Modules.Budgets.Commands;
 using Asm.MooBank.Modules.Budgets.Tests.Support;
-using DomainBudget = Asm.MooBank.Domain.Entities.Budget.Budget;
-using DomainBudgetLine = Asm.MooBank.Domain.Entities.Budget.BudgetLine;
 
 namespace Asm.MooBank.Modules.Budgets.Tests.Commands;
 
@@ -25,12 +23,11 @@ public class UpdateLineTests
         var existingLine = TestEntities.CreateBudgetLine(id: lineId, budgetId: budgetId, amount: 500m);
         var budget = TestEntities.CreateBudget(id: budgetId, year: 2024, familyId: _mocks.User.FamilyId, lines: [existingLine]);
 
-        _mocks.SecurityMock.Setup(s => s.AssertBudgetLinePermission(lineId, It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
         _mocks.BudgetRepositoryMock
             .Setup(r => r.GetByYear(_mocks.User.FamilyId, (short)2024, It.IsAny<CancellationToken>()))
             .ReturnsAsync(budget);
 
-        var handler = new UpdateLineHandler(_mocks.UnitOfWorkMock.Object, _mocks.BudgetRepositoryMock.Object, _mocks.User, _mocks.SecurityMock.Object);
+        var handler = new UpdateLineHandler(_mocks.UnitOfWorkMock.Object, _mocks.BudgetRepositoryMock.Object, _mocks.User);
         var updatedLine = TestEntities.CreateBudgetLineModel(id: lineId, tagId: 2, amount: 750m, notes: "Updated");
         var command = new UpdateLine(2024, lineId, updatedLine);
 
@@ -51,12 +48,11 @@ public class UpdateLineTests
         var existingLine = TestEntities.CreateBudgetLine(id: lineId, budgetId: budgetId, tagId: 1, amount: 500m, month: 4095);
         var budget = TestEntities.CreateBudget(id: budgetId, year: 2024, familyId: _mocks.User.FamilyId, lines: [existingLine]);
 
-        _mocks.SecurityMock.Setup(s => s.AssertBudgetLinePermission(lineId, It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
         _mocks.BudgetRepositoryMock
             .Setup(r => r.GetByYear(_mocks.User.FamilyId, (short)2024, It.IsAny<CancellationToken>()))
             .ReturnsAsync(budget);
 
-        var handler = new UpdateLineHandler(_mocks.UnitOfWorkMock.Object, _mocks.BudgetRepositoryMock.Object, _mocks.User, _mocks.SecurityMock.Object);
+        var handler = new UpdateLineHandler(_mocks.UnitOfWorkMock.Object, _mocks.BudgetRepositoryMock.Object, _mocks.User);
         var updatedLine = TestEntities.CreateBudgetLineModel(id: lineId, tagId: 5, amount: 1000m, month: 15, notes: "New notes");
         var command = new UpdateLine(2024, lineId, updatedLine);
 
@@ -79,12 +75,11 @@ public class UpdateLineTests
         var existingLine = TestEntities.CreateBudgetLine(id: lineId, budgetId: budgetId);
         var budget = TestEntities.CreateBudget(id: budgetId, year: 2024, familyId: _mocks.User.FamilyId, lines: [existingLine]);
 
-        _mocks.SecurityMock.Setup(s => s.AssertBudgetLinePermission(lineId, It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
         _mocks.BudgetRepositoryMock
             .Setup(r => r.GetByYear(_mocks.User.FamilyId, (short)2024, It.IsAny<CancellationToken>()))
             .ReturnsAsync(budget);
 
-        var handler = new UpdateLineHandler(_mocks.UnitOfWorkMock.Object, _mocks.BudgetRepositoryMock.Object, _mocks.User, _mocks.SecurityMock.Object);
+        var handler = new UpdateLineHandler(_mocks.UnitOfWorkMock.Object, _mocks.BudgetRepositoryMock.Object, _mocks.User);
         var updatedLine = TestEntities.CreateBudgetLineModel(id: lineId);
         var command = new UpdateLine(2024, lineId, updatedLine);
 
@@ -93,31 +88,6 @@ public class UpdateLineTests
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-    }
-
-    [Fact]
-    public async Task Handle_ChecksSecurity()
-    {
-        // Arrange
-        var lineId = Guid.NewGuid();
-        var budgetId = Guid.NewGuid();
-        var existingLine = TestEntities.CreateBudgetLine(id: lineId, budgetId: budgetId);
-        var budget = TestEntities.CreateBudget(id: budgetId, year: 2024, familyId: _mocks.User.FamilyId, lines: [existingLine]);
-
-        _mocks.SecurityMock.Setup(s => s.AssertBudgetLinePermission(lineId, It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-        _mocks.BudgetRepositoryMock
-            .Setup(r => r.GetByYear(_mocks.User.FamilyId, (short)2024, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(budget);
-
-        var handler = new UpdateLineHandler(_mocks.UnitOfWorkMock.Object, _mocks.BudgetRepositoryMock.Object, _mocks.User, _mocks.SecurityMock.Object);
-        var updatedLine = TestEntities.CreateBudgetLineModel(id: lineId);
-        var command = new UpdateLine(2024, lineId, updatedLine);
-
-        // Act
-        await handler.Handle(command, TestContext.Current.CancellationToken);
-
-        // Assert
-        _mocks.SecurityMock.Verify(s => s.AssertBudgetLinePermission(lineId, It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -130,12 +100,11 @@ public class UpdateLineTests
         var existingLine = TestEntities.CreateBudgetLine(id: lineId, budgetId: budgetId);
         var budget = TestEntities.CreateBudget(id: budgetId, year: 2024, familyId: _mocks.User.FamilyId, lines: [existingLine]);
 
-        _mocks.SecurityMock.Setup(s => s.AssertBudgetLinePermission(nonExistentId, It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
         _mocks.BudgetRepositoryMock
             .Setup(r => r.GetByYear(_mocks.User.FamilyId, (short)2024, It.IsAny<CancellationToken>()))
             .ReturnsAsync(budget);
 
-        var handler = new UpdateLineHandler(_mocks.UnitOfWorkMock.Object, _mocks.BudgetRepositoryMock.Object, _mocks.User, _mocks.SecurityMock.Object);
+        var handler = new UpdateLineHandler(_mocks.UnitOfWorkMock.Object, _mocks.BudgetRepositoryMock.Object, _mocks.User);
         var updatedLine = TestEntities.CreateBudgetLineModel(id: nonExistentId);
         var command = new UpdateLine(2024, nonExistentId, updatedLine);
 
@@ -152,12 +121,11 @@ public class UpdateLineTests
         var existingLine = TestEntities.CreateBudgetLine(id: lineId, budgetId: budgetId, tagId: 1, amount: 500m, income: true, month: 4095, notes: "Original");
         var budget = TestEntities.CreateBudget(id: budgetId, year: 2024, familyId: _mocks.User.FamilyId, lines: [existingLine]);
 
-        _mocks.SecurityMock.Setup(s => s.AssertBudgetLinePermission(lineId, It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
         _mocks.BudgetRepositoryMock
             .Setup(r => r.GetByYear(_mocks.User.FamilyId, (short)2024, It.IsAny<CancellationToken>()))
             .ReturnsAsync(budget);
 
-        var handler = new UpdateLineHandler(_mocks.UnitOfWorkMock.Object, _mocks.BudgetRepositoryMock.Object, _mocks.User, _mocks.SecurityMock.Object);
+        var handler = new UpdateLineHandler(_mocks.UnitOfWorkMock.Object, _mocks.BudgetRepositoryMock.Object, _mocks.User);
         // Only update amount
         var updatedLine = TestEntities.CreateBudgetLineModel(id: lineId, tagId: 1, amount: 750m, month: 4095, notes: "Original");
         var command = new UpdateLine(2024, lineId, updatedLine);

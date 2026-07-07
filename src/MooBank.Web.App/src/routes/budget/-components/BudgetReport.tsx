@@ -46,7 +46,7 @@ export const BudgetReport: React.FC = () => {
     useEffect(() => {
         if (!budgetYears) return;
 
-        const newYears = budgetYears;
+        const newYears = [...budgetYears];
 
         next5Years.forEach(y => { if (!newYears.includes(y)) newYears.push(y); });
 

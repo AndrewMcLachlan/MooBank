@@ -13,7 +13,7 @@ internal class VirtualInstrumentAddedEventHandler(Models.User user, ITransaction
             user.Id,
             request.OpeningBalance,
             "Opening Balance",
-            DateTime.Now.Date, // TODO: Local date time
+            DateTime.UtcNow.Date, // TODO: Local date time
             TransactionSubType.OpeningBalance,
             "Event"
         ));

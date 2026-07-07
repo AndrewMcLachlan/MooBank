@@ -5,15 +5,11 @@ using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Modules.Transactions.Models;
 using Asm.MooBank.Modules.Transactions.Models.Extensions;
-using Microsoft.AspNetCore.Http;
 
 namespace Asm.MooBank.Modules.Transactions.Commands;
 
 [DisplayName("CreateTransaction")]
-public record Create(Guid InstrumentId, CreateTransaction Transcation) : InstrumentIdCommand(InstrumentId), ICommand<MooBank.Models.Transaction>
-{
-    public static ValueTask<Create> BindAsync(HttpContext httpContext) => BindHelper.BindWithInstrumentIdAsync<Create>(httpContext);
-}
+public record Create(Guid InstrumentId, CreateTransaction Transcation) : InstrumentIdCommand(InstrumentId), ICommand<MooBank.Models.Transaction>;
 
 internal class CreateHandler(IInstrumentRepository accountRepository, ITransactionRepository transactionRepository, IUserIdProvider userIdProvider, IAuditingUnitOfWork unitOfWork) : ICommandHandler<Create, MooBank.Models.Transaction>
 {
@@ -32,7 +28,7 @@ internal class CreateHandler(IInstrumentRepository accountRepository, ITransacti
             userIdProvider.CurrentUserId,
             createTransaction.Amount,
             createTransaction.Description,
-            createTransaction.TransactionTime.LocalDateTime,
+            createTransaction.TransactionTime.DateTime,
             null, // TransactionSubType is not set in this command
             "Web"
         );

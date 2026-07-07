@@ -11,6 +11,7 @@ import { getPeriod } from "hooks";
 import { useGroupMonthlyBalancesReport } from "../-hooks/useGroupMonthlyBalancesReport";
 import { useGroup } from "../-hooks/useGroup";
 import { useChartColours } from "utils/chartColours";
+import { getStepSize } from "utils/charts";
 
 
 export const GroupMonthlyBalances: React.FC = () => {
@@ -28,7 +29,7 @@ export const GroupMonthlyBalances: React.FC = () => {
 
         datasets: [{
             label: "End of Month Balance",
-            data: report.data?.balances.map(i => Math.abs(i.grossAmount)) ?? [],
+            data: report.data?.balances.map(i => i.grossAmount) ?? [],
             backgroundColor: colours.income,
             borderColor: colours.income,
             // @ts-expect-error Not a known property for some reason
@@ -69,11 +70,4 @@ export const GroupMonthlyBalances: React.FC = () => {
             </Section>
         </Page >
     );
-}
-
-const getStepSize = (values: number[]) => {
-    const max = values.reduce((max, d) => d > max ? d : max, -Infinity);
-    const magnitude = Math.pow(10, Math.floor(Math.log10(max)));
-    const roundedMax = Math.ceil(max / magnitude) * magnitude;
-    return roundedMax / 10;
 }

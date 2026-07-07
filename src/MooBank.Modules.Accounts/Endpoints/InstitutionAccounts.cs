@@ -32,14 +32,4 @@ internal class InstitutionAccounts : EndpointGroupBase
         builder.MapCommand<Close, InstitutionAccount>("/{id}/close")
             .WithNames("Close Institution Account");
     }
-
-    internal static Delegate CreateCreateHandler<TRequest, TResult>(string routeName, Func<TResult, object> getRouteParams) where TRequest : ICommand<TResult>
-    {
-        return async ([AsParameters] TRequest request, ICommandDispatcher dispatcher, CancellationToken cancellationToken) =>
-        {
-            var result = await dispatcher.Dispatch(request!, cancellationToken);
-
-            return Results.CreatedAtRoute(routeName, getRouteParams(result), result);
-        };
-    }
 }

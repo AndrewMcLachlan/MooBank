@@ -36,11 +36,11 @@ file static class Extensions
                 Expression.Call(typeof(Queryable), "OrderBy" + (direction == SortDirection.Descending ? "Descending" : String.Empty), [typeof(Transaction), propertyExp.Type],
                 query.Expression,
                 Expression.Quote(sort));
-            return (IOrderedQueryable<Transaction>)query.Provider.CreateQuery<Transaction>(call);
+            // Append a unique tie-breaker so paging is stable when the sort field has duplicate values.
+            return ((IOrderedQueryable<Transaction>)query.Provider.CreateQuery<Transaction>(call)).ThenBy(t => t.Id);
         }
 
         Expression<Func<Transaction, object>> sortFunc = t => t.TransactionTime;
-        return direction == SortDirection.Ascending ? query.OrderBy(sortFunc) : query.OrderByDescending(sortFunc);
-
+        return (direction == SortDirection.Ascending ? query.OrderBy(sortFunc) : query.OrderByDescending(sortFunc)).ThenBy(t => t.Id);
     }
 }

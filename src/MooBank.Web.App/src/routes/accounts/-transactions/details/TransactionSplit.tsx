@@ -41,7 +41,7 @@ export const TransactionSplit: React.FC<TransactionSplitProps> = ({ transaction,
             <Row>
                 <Col sm={9}>
                     <Form.Label>Tags</Form.Label>
-                    <TransactionSplitTagPanel as="div" transactionSplit={split} transactionId={transaction.id} alwaysShowEditPanel onChange={(s) => splitChanged({ ...split, tags: s.tags })} />
+                    <TransactionSplitTagPanel as="div" transactionSplit={split} alwaysShowEditPanel onChange={(s) => splitChanged({ ...split, tags: s.tags })} />
                 </Col>
                 <Col sm={3}>
                     <Form.Label>Amount</Form.Label>
@@ -58,7 +58,7 @@ export const TransactionSplit: React.FC<TransactionSplitProps> = ({ transaction,
                 {offsetBy?.map((to, index) =>
                     <Row key={to.transaction.id}>
                         <Col sm={9}>
-                            <TransactionSearch value={to.transaction} onChange={(v) => offsetChanged({ ...to, transaction: v }, to.transaction)} transaction={transaction} excludedTransactions={offsetBy.map(ob => ob.transaction.id)} />
+                            <TransactionSearch value={to.transaction} onChange={(v) => v ? offsetChanged({ ...to, transaction: v }, to.transaction) : removeOffset(to.transaction.id)} transaction={transaction} excludedTransactions={offsetBy.map(ob => ob.transaction.id)} />
                         </Col>
                         <Col sm={3} className="offset-controls">
                             <Input type="number" value={to.amount} required max={to.transaction.amount} onChange={e => offsetChanged({ ...to, amount: valueAsNumber(e.currentTarget) })} />
@@ -69,7 +69,7 @@ export const TransactionSplit: React.FC<TransactionSplitProps> = ({ transaction,
                 )}
                 <Row>
                     <Col sm={9}>
-                        <TransactionSearch onChange={(v) => offsetChanged({ transaction: v, amount: v.amount })} transaction={transaction} excludedTransactions={offsetBy?.map(o => o.transaction.id)} />
+                        <TransactionSearch onChange={(v) => { if (v) offsetChanged({ transaction: v, amount: v.amount }); }} transaction={transaction} excludedTransactions={offsetBy?.map(o => o.transaction.id)} />
                     </Col>
                 </Row>
             </section>

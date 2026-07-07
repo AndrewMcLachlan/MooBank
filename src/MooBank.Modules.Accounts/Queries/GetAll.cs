@@ -14,6 +14,9 @@ internal class GetAllHandler(IQueryable<DomainLogicalAccount> logicalAccounts, U
     public async ValueTask<IEnumerable<LogicalAccount>> Handle(GetAll request, CancellationToken cancellationToken)
     {
         var accounts = (await logicalAccounts
+            .Include(a => a.InstitutionAccounts)
+            .Include(a => a.VirtualInstruments)
+            .Include(a => a.TagPurposes)
             .Apply(new OpenAccessibleSpecification<DomainLogicalAccount>(user.Id, user.FamilyId))
             .ToModelAsync(currencyConverter, cancellationToken)).ToList();
 

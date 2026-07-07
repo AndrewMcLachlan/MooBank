@@ -26,7 +26,7 @@ internal class UpdateBalanceHandler(IInstrumentRepository instrumentRepository, 
             userIdProvider.CurrentUserId,
             amount,
             command.BalanceUpdate.Description ?? "Balance adjustment",
-            command.BalanceUpdate.TransactionTime.LocalDateTime,
+            command.BalanceUpdate.TransactionTime.DateTime,
             TransactionSubType.BalanceAdjustment,
             "Web"
         );

@@ -49,17 +49,6 @@ public static class LogicalAccountExtensions
         TagPurposes = [.. account.TagPurposes.Select(t => new TagPurposeAssignment { Purpose = t.Purpose, TagId = t.TagId })],
     };
 
-    public static Domain.Entities.Account.LogicalAccount ToEntity(this LogicalAccount account) => new(account.Id == Guid.Empty ? Guid.NewGuid() : account.Id, account.InstitutionAccounts.ToEntity())
-    {
-        Name = account.Name,
-        Description = account.Description,
-        LastUpdated = account.BalanceDate,
-        AccountType = account.AccountType,
-        Controller = account.Controller,
-        ShareWithFamily = account.ShareWithFamily,
-        IncludeInBudget = account.IncludeInBudget,
-    };
-
     public static LogicalAccount ToModelWithGroup(this Domain.Entities.Account.LogicalAccount entity, User user, ICurrencyConverter currencyConverter)
     {
         var result = entity.ToModel(currencyConverter);
