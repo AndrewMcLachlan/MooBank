@@ -31,7 +31,10 @@ export const InstitutionForm: React.FC<InstitutionFormProps> = ({ institution = 
         navigate({ to: "/settings/institutions" });
     }
 
-    const form = useForm<Institution>({ defaultValues: institution ?? emptyInstitution });
+    const form = useForm<Institution>({
+        values: institution ?? emptyInstitution,
+        resetOptions: { keepDirtyValues: true },
+    });
 
     return (
         <SectionForm form={form} onSubmit={handleSubmit}>
