@@ -4,7 +4,6 @@ import { createRoot } from "react-dom/client";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faArrowsRotate, faCheck, faCheckCircle, faTrashAlt, faChevronDown, faChevronUp, faArrowLeft, faChevronRight, faCircleChevronLeft, faDoorClosed, faLongArrowUp, faLongArrowDown, faUpload, faXmark, faFilterCircleXmark, faInfoCircle, faPenToSquare, faPlus, faTriangleExclamation, faUser } from "@fortawesome/free-solid-svg-icons";
 
-import * as serviceWorker from "./serviceWorkerRegistration";
 import { StrictMode } from "react";
 import { App } from "App";
 
@@ -15,8 +14,3 @@ createRoot(document.getElementById("root")!).render(
         <App />
     </StrictMode>
 );
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.register();
