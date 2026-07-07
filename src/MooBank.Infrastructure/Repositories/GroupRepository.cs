@@ -9,5 +9,4 @@ internal class GroupRepository(MooBankContext dataContext) : RepositoryDeleteBas
 
     }
 
-    protected IQueryable<Group> GetById(Guid id) => Entities.Where(ag => ag.Id == id);
 }

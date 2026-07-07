@@ -45,7 +45,6 @@ public class InstrumentRepository(MooBankContext dataContext, Models.User user) 
         return institutionAccount;
     }
 
-    protected IQueryable<Instrument> GetById(Guid id) => Entities.Where(a => a.Id == id);
 
     public Task Reload(Instrument instrument, CancellationToken cancellationToken) =>
         Context.Entry(instrument).ReloadAsync(cancellationToken);
