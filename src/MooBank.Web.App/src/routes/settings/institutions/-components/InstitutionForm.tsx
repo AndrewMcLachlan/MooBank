@@ -1,6 +1,6 @@
 import { Form, FormComboBox, SectionForm } from "@andrewmclachlan/moo-ds";
 import type { Institution } from "api/types.gen";
-import { institutionTypeOptions } from "models/institutions";
+import { emptyInstitution, institutionTypeOptions } from "models/institutions";
 import React from "react";
 import { Button } from "@andrewmclachlan/moo-ds";
 import { useForm } from "react-hook-form";
@@ -31,7 +31,7 @@ export const InstitutionForm: React.FC<InstitutionFormProps> = ({ institution = 
         navigate({ to: "/settings/institutions" });
     }
 
-    const form = useForm<Institution>({ defaultValues: institution });
+    const form = useForm<Institution>({ defaultValues: institution ?? emptyInstitution });
 
     return (
         <SectionForm form={form} onSubmit={handleSubmit}>
