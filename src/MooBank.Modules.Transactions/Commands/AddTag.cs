@@ -14,6 +14,8 @@ internal class AddTagHandler(ITransactionRepository transactionRepository, ITagR
     {
         var entity = await transactionRepository.Get(request.Id, new IncludeSplitsSpecification(), cancellationToken);
 
+        if (entity.AccountId != request.InstrumentId) throw new NotFoundException("Transaction not found");
+
         if (entity.Tags.Any(t => t.Id == request.TagId)) throw new ExistsException("Cannot add tag, it already exists");
 
         var tag = await tagRepository.Get(request.TagId, cancellationToken);

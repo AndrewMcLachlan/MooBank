@@ -28,6 +28,8 @@ internal class UpdateTransactionHandler(ITransactionRepository transactionReposi
     {
         var transaction = await transactionRepository.Get(request.Id, new IncludeSplitsSpecification(), cancellationToken);
 
+        if (transaction.AccountId != request.InstrumentId) throw new NotFoundException("Transaction not found");
+
         transaction.UpdateSplits(request.Splits);
 
         transaction.Notes = request.Notes;

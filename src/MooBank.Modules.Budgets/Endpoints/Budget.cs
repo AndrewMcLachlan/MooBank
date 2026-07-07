@@ -4,6 +4,7 @@ using Asm.AspNetCore.Routing;
 using Asm.MooBank.Modules.Budgets.Commands;
 using Asm.MooBank.Modules.Budgets.Models;
 using Asm.MooBank.Modules.Budgets.Queries;
+using Asm.MooBank.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -31,7 +32,8 @@ public class Budget : EndpointGroupBase
 
         routeGroupBuilder.MapQuery<GetLine, BudgetLine>("/{year}/lines/{id}")
             .WithNames("Get Budget Line")
-            .Produces<BudgetLine>();
+            .Produces<BudgetLine>()
+            .RequireAuthorization(Policies.GetBudgetLinePolicy("id"));
 
         // HACK: How do we get year from the route into the response?
         routeGroupBuilder.MapPostCreate<CreateLine, BudgetLine>("/{year}/lines", "Get Budget Line".ToMachine(), (line) => new { year = 2023, id = line.Id }, CommandBinding.Parameters)
@@ -43,11 +45,13 @@ public class Budget : EndpointGroupBase
             .Produces<Models.Budget>();
 
         routeGroupBuilder.MapPatchCommand<UpdateLine, BudgetLine>("/{year}/lines/{id}")
-            .WithNames("Update Budget Line");
+            .WithNames("Update Budget Line")
+            .RequireAuthorization(Policies.GetBudgetLinePolicy("id"));
 
         routeGroupBuilder.MapDelete<DeleteLine>("/{year}/lines/{id}")
             .WithNames("Delete Budget Line")
-            .Produces((int)HttpStatusCode.NoContent);
+            .Produces((int)HttpStatusCode.NoContent)
+            .RequireAuthorization(Policies.GetBudgetLinePolicy("id"));
 
         routeGroupBuilder.MapQuery<GetValueForTag, decimal>("tag/{tagId}")
             .WithNames("Get Budget Amount for Tag");

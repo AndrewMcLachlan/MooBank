@@ -22,6 +22,6 @@ public abstract class RepositoryDeleteBase<TEntity, TKey> : RepositoryDeleteBase
         throw new NotImplementedException();
     }
 
-    protected abstract IQueryable<TEntity> GetById(TKey id);
+    protected abstract override IQueryable<TEntity> GetById(TKey id);
 
 }
