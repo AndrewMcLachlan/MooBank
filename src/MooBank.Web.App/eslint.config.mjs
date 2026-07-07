@@ -1,59 +1,60 @@
-import typescriptEslint from "@typescript-eslint/eslint-plugin";
-import react from "eslint-plugin-react";
-import globals from "globals";
-import tsParser from "@typescript-eslint/parser";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import js from "@eslint/js";
-import { FlatCompat } from "@eslint/eslintrc";
+import react from "@eslint-react/eslint-plugin";
+import reactHooks from "eslint-plugin-react-hooks";
+import globals from "globals";
+import tseslint from "typescript-eslint";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-    baseDirectory: __dirname,
-    recommendedConfig: js.configs.recommended,
-    allConfig: js.configs.all
-});
-
-export default [{
-    ignores: ["**/react-app-env.d.ts"],
-}, ...compat.extends(
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:react/recommended",
-), {
-    plugins: {
-        "@typescript-eslint": typescriptEslint,
-        react,
+export default tseslint.config(
+    {
+        ignores: [
+            "dist/**",
+            "node_modules/**",
+            "**/*.gen.ts",
+            "**/routeTree.gen.ts",
+            "**/routes.gen.ts",
+            "**/react-app-env.d.ts",
+        ],
     },
-
-    languageOptions: {
-        globals: {
-            ...globals.browser,
+    js.configs.recommended,
+    tseslint.configs.recommended,
+    {
+        files: ["**/*.{ts,tsx}"],
+        extends: [
+            react.configs["recommended-typescript"],
+            reactHooks.configs.flat.recommended,
+        ],
+        languageOptions: {
+            globals: {
+                ...globals.browser,
+            },
+            ecmaVersion: "latest",
+            sourceType: "module",
         },
+        rules: {
+            "@typescript-eslint/no-explicit-any": "off",
+            "@typescript-eslint/no-empty-object-type": "off",
 
-        parser: tsParser,
-        ecmaVersion: "latest",
-        sourceType: "module",
+            "@typescript-eslint/no-unused-vars": ["warn", {
+                argsIgnorePattern: "^_",
+                varsIgnorePattern: "^_",
+                caughtErrorsIgnorePattern: "^_",
+            }],
+
+            // @ts-expect-error can't be used where strictNullChecks:false means the
+            // next line may compile cleanly; allow documented @ts-ignore instead.
+            "@typescript-eslint/ban-ts-comment": ["error", {
+                "ts-ignore": "allow-with-description",
+            }],
+
+            // New compiler-powered rules in eslint-plugin-react-hooks v7 that flag
+            // long-standing patterns across the codebase. Downgraded to warnings
+            // until the affected components are refactored.
+            "react-hooks/set-state-in-effect": "warn",
+            "react-hooks/immutability": "warn",
+
+            // Off: duplicates of rules already reported by eslint-plugin-react-hooks.
+            "@eslint-react/exhaustive-deps": "off",
+            "@eslint-react/set-state-in-effect": "off",
+        },
     },
-
-    rules: {
-        "@typescript-eslint/no-explicit-any": "off",
-        "@typescript-eslint/no-empty-object-type": "off",
-
-        "@typescript-eslint/no-unused-vars": ["warn", {
-            argsIgnorePattern: "^_",
-            varsIgnorePattern: "^_",
-            caughtErrorsIgnorePattern: "^_",
-        }],
-
-        "react/prop-types": "off",
-        "react/react-in-jsx-scope": "off",
-    },
-
-    "settings": {
-        "react": {
-            "version": "detect",
-        }
-    }
-}];
+);

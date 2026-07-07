@@ -37,7 +37,7 @@ function ManageAccount() {
     const reprocessClick = (instrumentId: string) => {
         if (!account) return;
         if (account.controller !== "Import") return;
-        var openAccounts = account.institutionAccounts.filter(ia => ia.closedDate === null);
+        const openAccounts = account.institutionAccounts.filter(ia => ia.closedDate === null);
         if (openAccounts.length === 0) return;
         if (openAccounts.length === 1) {
             reprocessTransactions(instrumentId, openAccounts[0].id);

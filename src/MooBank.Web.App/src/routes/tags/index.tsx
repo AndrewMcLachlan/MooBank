@@ -61,7 +61,7 @@ function TransactionTags() {
 
     useEffect(() => {
         if (isLoading) {
-            //@ts-ignore
+            // @ts-ignore: placeholder rows of undefined are rendered as loading skeletons
             setPagedTags(Array.from({ length: pageSize }).map((): any => undefined));
             return;
         }
