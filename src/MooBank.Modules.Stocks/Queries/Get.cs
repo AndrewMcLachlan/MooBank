@@ -20,7 +20,7 @@ internal class GetHandler(IQueryable<Domain.Entities.StockHolding.StockHolding> 
         var prices = await referenceDataRepository.GetStockPrices(entity.Symbol, cancellationToken);
         var previous = prices.OrderByDescending(p => p.Date).Skip(1).FirstOrDefault();
 
-        var account = entity.ToModel(user.Id, currencyConverter) with
+        var account = await entity.ToModel(user.Id, currencyConverter, cancellationToken) with
         {
             PreviousPrice = previous?.Price,
             PreviousPriceDate = previous?.Date,

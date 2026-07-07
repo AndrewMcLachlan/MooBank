@@ -64,10 +64,21 @@ public static class IServiceCollectionExtensions
 
                             dataContext.Add(user);
 
-                            await dataContext.SaveChangesAsync(ct);
+                            try
+                            {
+                                await dataContext.SaveChangesAsync(ct);
 
-                            var provisionAudit = context.HttpContext.RequestServices.GetRequiredService<IAuditLogger>();
-                            provisionAudit.UserProvisioned(user.Id, user.EmailAddress, user.FamilyId);
+                                var provisionAudit = context.HttpContext.RequestServices.GetRequiredService<IAuditLogger>();
+                                provisionAudit.UserProvisioned(user.Id, user.EmailAddress, user.FamilyId);
+                            }
+                            catch (DbUpdateException)
+                            {
+                                // A concurrent request provisioned the user first. Discard this attempt and re-query.
+                                dataContext.Entry(user).State = EntityState.Detached;
+                                dataContext.Entry(family).State = EntityState.Detached;
+
+                                user = await dataContext.Set<Domain.Entities.User.User>().Include(ah => ah.InstrumentOwners).ThenInclude(aah => aah.Instrument).ThenInclude(i => i.VirtualInstruments).Include(u => u.Groups).AsNoTracking().SingleAsync(ah => ah.Id == userId, cancellationToken: ct);
+                            }
                         }
 
                         var owned = user.Instruments.Select(i => i.Id);
@@ -91,13 +102,15 @@ public static class IServiceCollectionExtensions
                         claims.Add((Security.ClaimTypes.FamilyId, user.FamilyId.ToString()));
                         claims.Add((Security.ClaimTypes.Currency, user.Currency));
 
+                        // Only audit a login when the user's claims are not cached (i.e. first sight of
+                        // this user within the cache window), rather than on every request.
+                        var audit = context.HttpContext.RequestServices.GetRequiredService<IAuditLogger>();
+                        audit.LoginSuccess(userId, principal.GetClaimValue<string>(ClaimTypes.Email) ?? String.Empty);
+
                         return claims;
                     }, CacheOptions, cancellationToken: CancellationToken.None);
 
                     principal.AddIdentity(new(claims.Select(c => new Claim(c.Item1, c.Item2))));
-
-                    var audit = context.HttpContext.RequestServices.GetRequiredService<IAuditLogger>();
-                    audit.LoginSuccess(userId, principal.GetClaimValue<string>(ClaimTypes.Email) ?? String.Empty);
                 }
             }
         };

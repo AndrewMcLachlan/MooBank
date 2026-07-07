@@ -55,6 +55,6 @@ internal class CreateHandler(IStockHoldingRepository repository, IUnitOfWork uni
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return entity.ToModel(currencyConverter);
+        return await entity.ToModel(currencyConverter, cancellationToken);
     }
 }

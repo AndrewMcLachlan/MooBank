@@ -132,8 +132,8 @@ public class GetTests
         var queryable = TestEntities.CreateAssetQueryable(asset);
 
         _mocks.CurrencyConverterMock
-            .Setup(c => c.Convert(1000m, "USD"))
-            .Returns(1500m);
+            .Setup(c => c.Convert(1000m, "USD", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(1500m);
 
         var handler = new GetHandler(queryable, _mocks.User, _mocks.CurrencyConverterMock.Object);
         var query = new Get(assetId);

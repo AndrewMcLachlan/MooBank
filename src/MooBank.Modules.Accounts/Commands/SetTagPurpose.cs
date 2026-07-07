@@ -31,6 +31,6 @@ internal class SetTagPurposeHandler(IUnitOfWork unitOfWork, ILogicalAccountRepos
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return entity.ToModel(currencyConverter);
+        return await entity.ToModel(currencyConverter, cancellationToken);
     }
 }

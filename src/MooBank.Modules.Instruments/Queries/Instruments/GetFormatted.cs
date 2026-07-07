@@ -36,15 +36,17 @@ internal class GetFormattedHandler(IQueryable<Domain.Entities.Account.LogicalAcc
             .Union(assets1.Select(a => a.GetGroup(userId)))
             .Distinct(new IIdentifiableEqualityComparer<Domain.Entities.Group.Group, Guid>()!);
 
-        var groups = allGroups.Where(ag => ag != null).Select(ag =>
+        List<Group> groups = [];
+
+        foreach (var ag in allGroups.Where(ag => ag != null))
         {
             IEnumerable<Instrument> matchingAccounts = [
-                .. logicalAccounts1.Where(a => a.GetGroup(userId)?.Id == ag!.Id).ToModel(currencyConverter),
-                .. stockHoldings1.Where(a => a.GetGroup(userId)?.Id == ag!.Id).ToModel(currencyConverter),
-                .. assets1.Where(a => a.GetGroup(userId)?.Id == ag!.Id).ToModel(currencyConverter),
+                .. await logicalAccounts1.Where(a => a.GetGroup(userId)?.Id == ag!.Id).ToModel(currencyConverter, cancellationToken),
+                .. await stockHoldings1.Where(a => a.GetGroup(userId)?.Id == ag!.Id).ToModel(currencyConverter, cancellationToken),
+                .. await assets1.Where(a => a.GetGroup(userId)?.Id == ag!.Id).ToModel(currencyConverter, cancellationToken),
             ];
 
-            return new Group
+            groups.Add(new Group
             {
                 Id = ag!.Id,
                 Name = ag!.Name,
@@ -52,8 +54,8 @@ internal class GetFormattedHandler(IQueryable<Domain.Entities.Account.LogicalAcc
                 Instruments = matchingAccounts,
                 ShowTotal = ag.ShowPosition,
                 Total = matchingAccounts.Sum(a => a.CurrentBalanceLocalCurrency),
-            };
-        }).ToList();
+            });
+        }
 
         Group otherAccounts =
             new()
@@ -61,9 +63,9 @@ internal class GetFormattedHandler(IQueryable<Domain.Entities.Account.LogicalAcc
                 Id = null,
                 Name = "Other Accounts",
                 Instruments = [
-                    .. logicalAccounts1.Where(a => a.GetGroup(userId) == null).ToModel(currencyConverter),
-                    .. stockHoldings1.Where(a => a.GetGroup(userId) == null).ToModel(currencyConverter),
-                    .. assets1.Where(a => a.GetGroup(userId) == null).ToModel(currencyConverter),
+                    .. await logicalAccounts1.Where(a => a.GetGroup(userId) == null).ToModel(currencyConverter, cancellationToken),
+                    .. await stockHoldings1.Where(a => a.GetGroup(userId) == null).ToModel(currencyConverter, cancellationToken),
+                    .. await assets1.Where(a => a.GetGroup(userId) == null).ToModel(currencyConverter, cancellationToken),
                 ],
             };
 

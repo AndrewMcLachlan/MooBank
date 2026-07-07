@@ -30,8 +30,8 @@ public class TestMocks
         TagRepositoryMock = new Mock<ITagRepository>();
 
         CurrencyConverterMock = new Mock<ICurrencyConverter>();
-        CurrencyConverterMock.Setup(c => c.Convert(It.IsAny<decimal>(), It.IsAny<string>()))
-            .Returns<decimal, string>((amount, _) => amount);
+        CurrencyConverterMock.Setup(c => c.Convert(It.IsAny<decimal>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Returns<decimal, string, CancellationToken>((amount, _, _) => Task.FromResult<decimal?>(amount));
 
         User = CreateTestUser();
     }

@@ -22,8 +22,8 @@ public class Mocks
         SecurityMock.Setup(s => s.AssertFamilyPermission(It.IsAny<Guid>()));
 
         CurrencyConverterMock = new Mock<ICurrencyConverter>();
-        CurrencyConverterMock.Setup(c => c.Convert(It.IsAny<decimal>(), It.IsAny<string>()))
-            .Returns<decimal, string>((amount, currency) => amount);
+        CurrencyConverterMock.Setup(c => c.Convert(It.IsAny<decimal>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Returns<decimal, string, CancellationToken>((amount, currency, _) => Task.FromResult<decimal?>(amount));
 
         HttpContextAccessorMock = new Mock<IHttpContextAccessor>();
         var httpContext = new DefaultHttpContext();

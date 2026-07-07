@@ -12,10 +12,10 @@ public class ExchangeRates(IServiceScopeFactory serviceScopeFactory)
 #endif
 
     [FunctionName("ExchangeRates")]
-    public async Task Run([TimerTrigger("0 0 0 * * *", RunOnStartup = RunOnStartup)] TimerInfo _)
+    public async Task Run([TimerTrigger("0 0 0 * * *", RunOnStartup = RunOnStartup)] TimerInfo _, CancellationToken cancellationToken)
     {
         using var scope = serviceScopeFactory.CreateScope();
         var service = scope.ServiceProvider.GetRequiredService<IExchangeRateService>();
-        await service.UpdateExchangeRates();
+        await service.UpdateExchangeRates(cancellationToken);
     }
 }

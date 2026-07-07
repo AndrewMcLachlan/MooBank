@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.Globalization;
+using System.Xml.Linq;
 using Asm.MooBank.Models;
 using Microsoft.Extensions.Logging;
 
@@ -65,7 +66,7 @@ internal class AbsClient(IHttpClientFactory httpClientFactory, ILogger<AbsClient
         foreach (var o in obs)
         {
             if (!Quarter.TryParse(o.Element(ns + "ObsDimension")?.Attribute("value")?.Value, out Quarter quarter) ||
-                !Decimal.TryParse(o.Element(ns + "ObsValue")?.Attribute("value")?.Value, out decimal changePercent))
+                !Decimal.TryParse(o.Element(ns + "ObsValue")?.Attribute("value")?.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal changePercent))
             {
                 logger.LogWarning("Invalid data format in ABS API response");
                 continue;

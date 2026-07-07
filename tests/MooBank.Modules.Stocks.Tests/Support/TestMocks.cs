@@ -29,8 +29,8 @@ public class TestMocks
 
         // Default currency converter behavior - pass through
         CurrencyConverterMock
-            .Setup(c => c.Convert(It.IsAny<decimal>(), It.IsAny<string>()))
-            .Returns((decimal amount, string _) => amount);
+            .Setup(c => c.Convert(It.IsAny<decimal>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Returns((decimal amount, string _, CancellationToken _) => Task.FromResult<decimal?>(amount));
 
         // Default CPI service behavior - return same value
         CpiServiceMock

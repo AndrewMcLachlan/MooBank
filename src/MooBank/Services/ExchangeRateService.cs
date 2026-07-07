@@ -1,4 +1,4 @@
-﻿using Asm.Domain;
+using Asm.Domain;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Domain.Entities.User;
@@ -8,21 +8,24 @@ namespace Asm.MooBank.Services;
 
 public interface IExchangeRateService
 {
-    Task UpdateExchangeRates();
+    Task UpdateExchangeRates(CancellationToken cancellationToken = default);
 }
 
 public class ExchangeRateService(IUnitOfWork unitOfWork, IExchangeRateClient exchangeRateClient, IQueryable<Instrument> accounts, IQueryable<User> accountHolders, IReferenceDataRepository referenceDataRepository) : IExchangeRateService
 {
-    public async Task UpdateExchangeRates()
+    public async Task UpdateExchangeRates(CancellationToken cancellationToken = default)
     {
-        var froms = accounts.Select(a => a.Currency).Distinct();
-        var tos = accountHolders.Select(ah => ah.Currency).Distinct();
+        // Materialise the currency sets up front, otherwise each Contains call below issues a query.
+        var froms = accounts.Select(a => a.Currency).Distinct().ToList();
+        var tos = accountHolders.Select(ah => ah.Currency).Distinct().ToHashSet();
 
-        var existingRates = await referenceDataRepository.GetExchangeRates();
+        var existingRates = await referenceDataRepository.GetExchangeRates(cancellationToken);
 
         foreach (var from in froms)
         {
-            var rates = await exchangeRateClient.GetExchangeRates(from);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var rates = await exchangeRateClient.GetExchangeRates(from, cancellationToken);
 
             var toRates = rates.Where(tr => tos.Contains(tr.Key) && tr.Key != from);
 
@@ -48,6 +51,6 @@ public class ExchangeRateService(IUnitOfWork unitOfWork, IExchangeRateClient exc
             }
         }
 
-        await unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

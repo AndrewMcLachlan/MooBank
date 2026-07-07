@@ -16,7 +16,7 @@ internal class GetHandler(IQueryable<Domain.Entities.Instrument.Instrument> acco
 
         var virtualAccount = institutionAccount.VirtualInstruments.SingleOrDefault(va => va.Id == request.VirtualInstrumentId) ?? throw new NotFoundException();
 
-        return virtualAccount.ToModel(currencyConverter);
+        return await virtualAccount.ToModel(currencyConverter, cancellationToken);
 
     }
 }
