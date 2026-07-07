@@ -82,7 +82,7 @@ function Budget() {
                         </Input.Select>
                     </Col>
                     <Col className="budget-toolbar-actions">
-                        <IconButton variant="primary" icon={Sparkle} badge onClick={onGenerate} disabled={isGenerating} title="Build budget lines from your transaction history">
+                        <IconButton badge variant="primary" icon={Sparkle} onClick={onGenerate} disabled={isGenerating} title="Build budget lines from your transaction history">
                             {isGenerating ? "Generating…" : "Generate from history"}
                         </IconButton>
                     </Col>

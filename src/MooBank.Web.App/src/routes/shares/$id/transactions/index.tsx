@@ -20,7 +20,7 @@ function StockTransactions() {
     if (!stockHolding) return null;
 
     const actions = stockHolding.controller === "Manual"
-        ? [<IconLinkButton key="add" variant="primary" icon="plus" to={`/shares/${stockHolding.id}/transactions/add`}>Add Transaction</IconLinkButton>]
+        ? [<IconLinkButton badge key="add" variant="primary" icon="plus" to={`/shares/${stockHolding.id}/transactions/add`}>Add Transaction</IconLinkButton>]
         : [];
 
     return (
