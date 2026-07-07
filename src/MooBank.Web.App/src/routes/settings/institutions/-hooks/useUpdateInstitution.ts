@@ -21,7 +21,7 @@ export const useUpdateInstitution = () => {
             allInstitutions = allInstitutions.sort((t1, t2) => t1.name.localeCompare(t2.name));
             queryClient.setQueryData<Institution[]>(getAllInstitutionsQueryKey(), allInstitutions);
         },
-        onError: (_error, variables) => {
+        onSettled: (_data, _error, variables) => {
             queryClient.invalidateQueries({ queryKey: getAllInstitutionsQueryKey() });
             queryClient.invalidateQueries({ queryKey: getInstitutionQueryKey({ path: { id: variables.path.id } }) });
         }
