@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useMemo } from "react";
 import type { ReactNode } from "react";
 import { useLocalStorage } from "@andrewmclachlan/moo-ds";
 
@@ -16,10 +16,10 @@ interface TransactionListProviderProps {
 export const TransactionListProvider: React.FC<TransactionListProviderProps> = ({ children }) => {
   const [showNet, setShowNet] = useLocalStorage<boolean>("show-net", false);
 
-  const value: TransactionListContextType = {
+  const value: TransactionListContextType = useMemo(() => ({
     showNet,
     setShowNet,
-  };
+  }), [showNet, setShowNet]);
 
   return (
     <TransactionListContext.Provider value={value}>

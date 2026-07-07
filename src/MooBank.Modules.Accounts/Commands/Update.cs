@@ -19,7 +19,7 @@ internal class UpdateHandler(IAuditingUnitOfWork unitOfWork, ILogicalAccountRepo
 
         if (account.GroupId != null)
         {
-            security.AssertGroupPermission(account.GroupId.Value);
+            await security.AssertGroupPermission(account.GroupId.Value);
         }
 
         var entity = await accountRepository.Get(account.Id, new AccountDetailsSpecification(), cancellationToken);

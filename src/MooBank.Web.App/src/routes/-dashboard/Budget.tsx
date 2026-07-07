@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+
 import { format } from "date-fns/format";
 import { getMonth } from "date-fns/getMonth";
 import { getYear } from "date-fns/getYear";
@@ -14,9 +16,9 @@ export const BudgetWidget: React.FC = () => {
 
     const colours = useChartColours();
 
-    const period = lastMonth;
+    const period = useMemo(lastMonth, []);
 
-    const { data: report, isLoading, isError } = useBudgetReportForMonth(lastMonth.startDate.getFullYear(), lastMonth.startDate.getMonth());
+    const { data: report, isLoading, isError } = useBudgetReportForMonth(period.startDate.getFullYear(), period.startDate.getMonth());
 
     const budgeted = report?.budgetedAmount ?? 0;
     const actual = Math.abs(report?.actual ?? 0);
@@ -39,7 +41,7 @@ export const BudgetWidget: React.FC = () => {
     const difference = Math.round((((report?.budgetedAmount ?? 0) - Math.abs(report?.actual ?? 0)) / 10.0)) * 10;
 
     return (
-        <Widget header={`Budget - ${lastMonthName}`} size="single" className="report budget" loading={isLoading} to={`/budget/report/${lastMonth.startDate.getFullYear()}/${lastMonth.startDate.getMonth()}`}>
+        <Widget header={`Budget - ${lastMonthName()}`} size="single" className="report budget" loading={isLoading} to={`/budget/report/${period.startDate.getFullYear()}/${period.startDate.getMonth() + 1}`}>
             {isError && <WidgetError />}
             {!isError && report &&
                 <>

@@ -82,6 +82,89 @@ public class StockSymbolTests
         Assert.Throws<FormatException>(() => StockSymbol.Parse(input));
     }
 
+    /// <summary>
+    /// Given a symbol containing invalid characters
+    /// When Parse is called
+    /// Then FormatException should be thrown
+    /// </summary>
+    [Theory]
+    [InlineData("AA PL")]
+    [InlineData("AA-PL")]
+    [InlineData("")]
+    [Trait("Category", "Unit")]
+    public void Parse_InvalidCharacters_ThrowsFormatException(string input)
+    {
+        // Act & Assert
+        Assert.Throws<FormatException>(() => StockSymbol.Parse(input));
+    }
+
+    #endregion
+
+    #region TryParse
+
+    /// <summary>
+    /// Given a simple symbol without an exchange suffix
+    /// When TryParse is called
+    /// Then true should be returned with a null exchange
+    /// </summary>
+    [Theory]
+    [InlineData("AAPL")]
+    [InlineData("msft")]
+    [Trait("Category", "Unit")]
+    public void TryParse_SymbolWithoutExchange_ReturnsTrue(string input)
+    {
+        // Act
+        var result = StockSymbol.TryParse(input, out var symbol);
+
+        // Assert
+        Assert.True(result);
+        Assert.NotNull(symbol);
+        Assert.Equal(input.ToUpperInvariant(), symbol.Symbol);
+        Assert.Null(symbol.Exchange);
+    }
+
+    /// <summary>
+    /// Given a symbol with an exchange suffix
+    /// When TryParse is called
+    /// Then true should be returned with the exchange populated
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void TryParse_SymbolWithExchange_ReturnsTrue()
+    {
+        // Act
+        var result = StockSymbol.TryParse("bhp.au", out var symbol);
+
+        // Assert
+        Assert.True(result);
+        Assert.NotNull(symbol);
+        Assert.Equal("BHP", symbol.Symbol);
+        Assert.Equal("AU", symbol.Exchange);
+    }
+
+    /// <summary>
+    /// Given invalid input
+    /// When TryParse is called
+    /// Then false should be returned without throwing
+    /// </summary>
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    [InlineData("AAPL.US.EXTRA")]
+    [InlineData("AAPL.USA")]
+    [InlineData("AA PL")]
+    [Trait("Category", "Unit")]
+    public void TryParse_InvalidInput_ReturnsFalse(string? input)
+    {
+        // Act
+        var result = StockSymbol.TryParse(input, out var symbol);
+
+        // Assert
+        Assert.False(result);
+        Assert.Null(symbol);
+    }
+
     #endregion
 
     #region ToString
@@ -212,6 +295,28 @@ public class StockSymbolTests
 
         // Act & Assert
         Assert.True(symbol1.Equals(symbol2));
+    }
+
+    /// <summary>
+    /// Given null operands
+    /// When the equality operators are used
+    /// Then no exception should be thrown and the correct result returned
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void EqualityOperators_NullOperands_AreNullSafe()
+    {
+        // Arrange
+        StockSymbol? nullSymbol = null;
+        var symbol = new StockSymbol("AAPL", "US");
+
+        // Act & Assert
+        Assert.True(nullSymbol == null);
+        Assert.False(nullSymbol == symbol);
+        Assert.False(symbol == nullSymbol);
+        Assert.True(nullSymbol != symbol);
+        Assert.True(symbol != nullSymbol);
+        Assert.False(nullSymbol != null);
     }
 
     #endregion

@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Domain.Entities.Budget;
 using Asm.MooBank.Infrastructure.Repositories;
 using Asm.MooBank.Infrastructure.Tests.Support;
@@ -203,7 +203,7 @@ public class BudgetRepositoryTests : IDisposable
     #region AddLine
 
     [Fact]
-    public void AddLine_AddsLineToContext()
+    public async Task AddLine_AddsLineToContext()
     {
         // Arrange
         var tag = TestEntities.CreateTag(id: 1, familyId: Guid.NewGuid());
@@ -215,7 +215,7 @@ public class BudgetRepositoryTests : IDisposable
         var repository = CreateRepository();
 
         // Act
-        var result = repository.AddLine(budgetLine);
+        var result = await repository.AddLine(budgetLine, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);

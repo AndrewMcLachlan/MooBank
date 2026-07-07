@@ -15,7 +15,7 @@ export const Import: React.FC<ImportProps> = ({ show, accountId, onClose }) => {
 
     const [file, setFile] = useState<File>();
 
-    const openAccounts = account.institutionAccounts?.filter(ia => ia.closedDate === null);
+    const openAccounts = account.institutionAccounts?.filter(ia => ia.closedDate == null) ?? [];
 
     const [institutionAccountId, setInstitutionAccountId] = useState<string | null>(openAccounts?.[0]?.id ?? null);
 
