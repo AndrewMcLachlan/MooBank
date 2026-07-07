@@ -1,4 +1,5 @@
 #nullable enable
+using Asm.MooBank.Domain.Entities.Family.Specifications;
 using Asm.MooBank.Modules.Families.Commands;
 using Asm.MooBank.Modules.Families.Tests.Support;
 using DomainFamily = Asm.MooBank.Domain.Entities.Family.Family;
@@ -19,12 +20,30 @@ public class RemoveMemberTests
         _mocks = new TestMocks();
     }
 
-    private RemoveMemberHandler CreateHandler(IQueryable<DomainUser> users) => new(
+    private RemoveMemberHandler CreateHandler() => new(
         _mocks.FamilyRepositoryMock.Object,
         _mocks.UserRepositoryMock.Object,
-        users,
         _mocks.UnitOfWorkMock.Object,
         _mocks.User);
+
+    private DomainFamily SetupFamily(params DomainUser[] members)
+    {
+        var family = new DomainFamily
+        {
+            Name = "Test Family",
+        };
+
+        foreach (var member in members)
+        {
+            family.AccountHolders.Add(member);
+        }
+
+        _mocks.FamilyRepositoryMock
+            .Setup(r => r.Get(_mocks.User.FamilyId, It.IsAny<GetWithMembers>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(family);
+
+        return family;
+    }
 
     /// <summary>
     /// Given a family with two members
@@ -39,11 +58,13 @@ public class RemoveMemberTests
         var currentUser = TestEntities.CreateDomainUser(id: _mocks.User.Id, familyId: familyId);
         var memberToRemove = TestEntities.CreateDomainUser(firstName: "John", familyId: familyId);
 
+        SetupFamily(currentUser, memberToRemove);
+
         _mocks.UserRepositoryMock
             .Setup(r => r.Get(memberToRemove.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(memberToRemove);
 
-        var handler = CreateHandler(TestEntities.CreateUserQueryable(currentUser, memberToRemove));
+        var handler = CreateHandler();
 
         var command = new RemoveMember(memberToRemove.Id);
 
@@ -55,26 +76,25 @@ public class RemoveMemberTests
     }
 
     /// <summary>
-    /// Given a family with two members where the family aggregate does not have its members loaded
+    /// Given a family with two members
     /// When one member is removed
-    /// Then the member count is determined from the user store and the removal succeeds.
+    /// Then the family is fetched with its members loaded so the member count check works.
     /// </summary>
     [Fact]
-    public async Task Handle_MembersNotPreloadedOnAggregate_CountsMembersFromUserStore()
+    public async Task Handle_ValidCommand_FetchesFamilyWithMembers()
     {
         // Arrange
         var familyId = _mocks.User.FamilyId;
         var currentUser = TestEntities.CreateDomainUser(id: _mocks.User.Id, familyId: familyId);
         var memberToRemove = TestEntities.CreateDomainUser(firstName: "John", familyId: familyId);
 
+        SetupFamily(currentUser, memberToRemove);
+
         _mocks.UserRepositoryMock
             .Setup(r => r.Get(memberToRemove.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(memberToRemove);
 
-        // Note: no family aggregate with populated AccountHolders is supplied. The member count
-        // must come from the injected user query source; if the handler relied on an unloaded
-        // collection it would incorrectly throw "Cannot remove the last member of a family."
-        var handler = CreateHandler(TestEntities.CreateUserQueryable(currentUser, memberToRemove));
+        var handler = CreateHandler();
 
         var command = new RemoveMember(memberToRemove.Id);
 
@@ -82,7 +102,9 @@ public class RemoveMemberTests
         await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
-        Assert.NotEqual(familyId, memberToRemove.FamilyId);
+        _mocks.FamilyRepositoryMock.Verify(
+            r => r.Get(familyId, It.IsAny<GetWithMembers>(), It.IsAny<CancellationToken>()),
+            Times.Once);
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
@@ -99,6 +121,8 @@ public class RemoveMemberTests
         var currentUser = TestEntities.CreateDomainUser(id: _mocks.User.Id, familyId: familyId);
         var memberToRemove = TestEntities.CreateDomainUser(firstName: "John", familyId: familyId);
 
+        SetupFamily(currentUser, memberToRemove);
+
         DomainFamily? capturedFamily = null;
 
         _mocks.FamilyRepositoryMock
@@ -109,7 +133,7 @@ public class RemoveMemberTests
             .Setup(r => r.Get(memberToRemove.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(memberToRemove);
 
-        var handler = CreateHandler(TestEntities.CreateUserQueryable(currentUser, memberToRemove));
+        var handler = CreateHandler();
 
         var command = new RemoveMember(memberToRemove.Id);
 
@@ -135,11 +159,13 @@ public class RemoveMemberTests
         var currentUser = TestEntities.CreateDomainUser(id: _mocks.User.Id, familyId: familyId);
         var memberToRemove = TestEntities.CreateDomainUser(firstName: "John", familyId: familyId);
 
+        SetupFamily(currentUser, memberToRemove);
+
         _mocks.UserRepositoryMock
             .Setup(r => r.Get(memberToRemove.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(memberToRemove);
 
-        var handler = CreateHandler(TestEntities.CreateUserQueryable(currentUser, memberToRemove));
+        var handler = CreateHandler();
 
         var command = new RemoveMember(memberToRemove.Id);
 
@@ -159,7 +185,7 @@ public class RemoveMemberTests
     public async Task Handle_RemoveSelf_ThrowsInvalidOperationException()
     {
         // Arrange
-        var handler = CreateHandler(TestEntities.CreateUserQueryable());
+        var handler = CreateHandler();
 
         var command = new RemoveMember(_mocks.User.Id);
 
@@ -181,11 +207,13 @@ public class RemoveMemberTests
         var familyId = _mocks.User.FamilyId;
         var currentUser = TestEntities.CreateDomainUser(id: _mocks.User.Id, familyId: familyId);
 
+        SetupFamily(currentUser);
+
         _mocks.UserRepositoryMock
             .Setup(r => r.Get(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((DomainUser)null!);
 
-        var handler = CreateHandler(TestEntities.CreateUserQueryable(currentUser));
+        var handler = CreateHandler();
 
         var command = new RemoveMember(Guid.NewGuid());
 
@@ -207,11 +235,13 @@ public class RemoveMemberTests
         var currentUser = TestEntities.CreateDomainUser(id: _mocks.User.Id, familyId: familyId);
         var memberInOtherFamily = TestEntities.CreateDomainUser(familyId: otherFamilyId);
 
+        SetupFamily(currentUser);
+
         _mocks.UserRepositoryMock
             .Setup(r => r.Get(memberInOtherFamily.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(memberInOtherFamily);
 
-        var handler = CreateHandler(TestEntities.CreateUserQueryable(currentUser));
+        var handler = CreateHandler();
 
         var command = new RemoveMember(memberInOtherFamily.Id);
 
@@ -233,11 +263,13 @@ public class RemoveMemberTests
         var familyId = _mocks.User.FamilyId;
         var onlyMember = TestEntities.CreateDomainUser(familyId: familyId);
 
+        SetupFamily(onlyMember);
+
         _mocks.UserRepositoryMock
             .Setup(r => r.Get(onlyMember.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(onlyMember);
 
-        var handler = CreateHandler(TestEntities.CreateUserQueryable(onlyMember));
+        var handler = CreateHandler();
 
         var command = new RemoveMember(onlyMember.Id);
 
@@ -262,6 +294,8 @@ public class RemoveMemberTests
         memberToRemove.FirstName = null;
         memberToRemove.EmailAddress = "john@example.com";
 
+        SetupFamily(currentUser, memberToRemove);
+
         DomainFamily? capturedFamily = null;
 
         _mocks.FamilyRepositoryMock
@@ -272,7 +306,7 @@ public class RemoveMemberTests
             .Setup(r => r.Get(memberToRemove.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(memberToRemove);
 
-        var handler = CreateHandler(TestEntities.CreateUserQueryable(currentUser, memberToRemove));
+        var handler = CreateHandler();
 
         var command = new RemoveMember(memberToRemove.Id);
 
