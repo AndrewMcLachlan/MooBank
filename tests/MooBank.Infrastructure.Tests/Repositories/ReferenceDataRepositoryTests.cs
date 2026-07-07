@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Domain.Entities;
 using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Infrastructure.Repositories;
@@ -26,7 +26,7 @@ public class ReferenceDataRepositoryTests : IDisposable
     #region AddStockPrice
 
     [Fact]
-    public void AddStockPrice_NewStockPrice_AddsToContext()
+    public async Task AddStockPrice_NewStockPrice_AddsToContext()
     {
         // Arrange
         var stockPrice = TestEntities.CreateStockPriceHistory(
@@ -37,7 +37,7 @@ public class ReferenceDataRepositoryTests : IDisposable
         var repository = CreateRepository();
 
         // Act
-        var result = repository.AddStockPrice(stockPrice);
+        var result = await repository.AddStockPrice(stockPrice, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
@@ -51,7 +51,7 @@ public class ReferenceDataRepositoryTests : IDisposable
     }
 
     [Fact]
-    public void AddStockPrice_ExistingStockPrice_DoesNotAddDuplicate()
+    public async Task AddStockPrice_ExistingStockPrice_DoesNotAddDuplicate()
     {
         // Arrange
         var symbol = "AAPL";
@@ -67,7 +67,7 @@ public class ReferenceDataRepositoryTests : IDisposable
         var repository = CreateRepository();
 
         // Act
-        var result = repository.AddStockPrice(newStockPrice);
+        var result = await repository.AddStockPrice(newStockPrice, TestContext.Current.CancellationToken);
 
         // Assert - should return the input but not add it to the context
         Assert.NotNull(result);
@@ -79,7 +79,7 @@ public class ReferenceDataRepositoryTests : IDisposable
     }
 
     [Fact]
-    public void AddStockPrice_SameSymbolDifferentDate_AddsToContext()
+    public async Task AddStockPrice_SameSymbolDifferentDate_AddsToContext()
     {
         // Arrange
         var symbol = "AAPL";
@@ -96,7 +96,7 @@ public class ReferenceDataRepositoryTests : IDisposable
         var repository = CreateRepository();
 
         // Act
-        var result = repository.AddStockPrice(newStockPrice);
+        var result = await repository.AddStockPrice(newStockPrice, TestContext.Current.CancellationToken);
 
         // Assert - different date should be added
         var entry = _context.ChangeTracker.Entries<StockPriceHistory>()
@@ -107,7 +107,7 @@ public class ReferenceDataRepositoryTests : IDisposable
     }
 
     [Fact]
-    public void AddStockPrice_DifferentSymbolSameDate_AddsToContext()
+    public async Task AddStockPrice_DifferentSymbolSameDate_AddsToContext()
     {
         // Arrange
         var date = DateOnly.FromDateTime(DateTime.Today);
@@ -122,11 +122,37 @@ public class ReferenceDataRepositoryTests : IDisposable
         var repository = CreateRepository();
 
         // Act
-        var result = repository.AddStockPrice(newStockPrice);
+        var result = await repository.AddStockPrice(newStockPrice, TestContext.Current.CancellationToken);
 
         // Assert - different symbol should be added
         var entry = _context.ChangeTracker.Entries<StockPriceHistory>()
             .SingleOrDefault(e => e.Entity.Symbol == "GOOGL");
+
+        Assert.NotNull(entry);
+        Assert.Equal(Microsoft.EntityFrameworkCore.EntityState.Added, entry.State);
+    }
+
+    [Fact]
+    public async Task AddStockPrice_SameSymbolAndDateDifferentExchange_AddsToContext()
+    {
+        // Arrange
+        var date = DateOnly.FromDateTime(DateTime.Today);
+
+        var existingStockPrice = TestEntities.CreateStockPriceHistory(symbol: "AAPL", exchange: "US", date: date, price: 150m);
+        _context.StockPriceHistory.Add(existingStockPrice);
+        _context.SaveChanges();
+        _context.ChangeTracker.Clear();
+
+        var newStockPrice = TestEntities.CreateStockPriceHistory(symbol: "AAPL", exchange: "AU", date: date, price: 155m);
+
+        var repository = CreateRepository();
+
+        // Act
+        var result = await repository.AddStockPrice(newStockPrice, TestContext.Current.CancellationToken);
+
+        // Assert - same symbol and date on a different exchange should be added
+        var entry = _context.ChangeTracker.Entries<StockPriceHistory>()
+            .SingleOrDefault(e => e.Entity.Exchange == "AU");
 
         Assert.NotNull(entry);
         Assert.Equal(Microsoft.EntityFrameworkCore.EntityState.Added, entry.State);

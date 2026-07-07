@@ -82,7 +82,7 @@ public readonly struct Quarter : IEquatable<Quarter>, IComparable<Quarter>, ICom
     }
 
     public override bool Equals(object? obj) =>
-    Equals((Quarter?)obj);
+        obj is Quarter other && Equals(other);
 
     public override int GetHashCode() =>
         HashCode.Combine(Year, QuarterNumber);

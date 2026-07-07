@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using Asm.Domain;
 using Asm.MooBank.Domain.Entities;
@@ -157,7 +157,7 @@ public class StockPriceServiceTests
 
         // Assert
         repositoryMock.Verify(r => r.AddStockPrice(It.Is<StockPriceHistory>(
-            p => p.Symbol == "AAPL" && p.Exchange == "US" && p.Price == 150m)), Times.Once);
+            p => p.Symbol == "AAPL" && p.Exchange == "US" && p.Price == 150m), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     /// <summary>
@@ -184,7 +184,7 @@ public class StockPriceServiceTests
         await service.Update(TestContext.Current.CancellationToken);
 
         // Assert - Should not add duplicate
-        repositoryMock.Verify(r => r.AddStockPrice(It.IsAny<StockPriceHistory>()), Times.Never);
+        repositoryMock.Verify(r => r.AddStockPrice(It.IsAny<StockPriceHistory>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     #endregion

@@ -15,6 +15,7 @@ import { Amount } from "components";
 
 
 export const InOut: React.FC<InOutProps> = ({ accountId, period, useInOutReport = defaultReport }) => {
+
     const colours = useChartColours();
 
     const report = useInOutReport(accountId!, period?.startDate, period?.endDate);

@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.RegularExpressions;
 
 namespace Asm.MooBank.Models;
 
@@ -11,7 +12,7 @@ namespace Asm.MooBank.Models;
 /// <param name="exchange"></param>
 public partial class StockSymbol(string symbol, string? exchange) : IEquatable<StockSymbol>
 {
-    [GeneratedRegex(@"\w*")]
+    [GeneratedRegex(@"^\w+$")]
     private static partial Regex AlphaNumeric();
 
     public string Symbol { get; init; } = symbol;
@@ -30,11 +31,13 @@ public partial class StockSymbol(string symbol, string? exchange) : IEquatable<S
         return new StockSymbol(split[0], split.Length > 1 ? split[1] : null);
     }
 
-    public static bool TryParse(string symbol, out StockSymbol? result)
+    public static bool TryParse(string? symbol, [NotNullWhen(true)] out StockSymbol? result)
     {
         result = null;
-        var split = symbol.Split(".");
-        if (split.Length > 2 || split[1].Length != 2) return false;
+        if (String.IsNullOrWhiteSpace(symbol)) return false;
+
+        var split = symbol.ToUpperInvariant().Split(".");
+        if (split.Length > 2 || (split.Length == 2 && split[1].Length != 2)) return false;
         if (!AlphaNumeric().IsMatch(split[0])) return false;
 
         result = new StockSymbol(split[0], split.Length > 1 ? split[1] : null);
@@ -57,9 +60,9 @@ public partial class StockSymbol(string symbol, string? exchange) : IEquatable<S
 
     public static implicit operator string(StockSymbol symbol) => symbol.ToString();
 
-    public static bool operator ==(StockSymbol a, StockSymbol b) => a.Equals(b);
+    public static bool operator ==(StockSymbol? a, StockSymbol? b) => a is null ? b is null : a.Equals(b);
 
-    public static bool operator !=(StockSymbol a, StockSymbol b) => !a.Equals(b);
+    public static bool operator !=(StockSymbol? a, StockSymbol? b) => !(a == b);
 
 }
 

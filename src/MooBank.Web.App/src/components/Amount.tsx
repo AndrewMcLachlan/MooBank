@@ -23,14 +23,15 @@ const calculateColourClass = (amount: number, positiveColour: boolean, negativeC
 
 export const Amount: React.FC<AmountProps> = ({ amount, positiveColour = false, negativeColour = false, plus = false, minus = false, creditdebit = false, prefix = "", suffix = "", decimalPlaces = 2, zeroShowsAs = "neutral", currencyCode }) => {
 
-    const negative = amount < 0;
+    const safeAmount = amount == null || Number.isNaN(amount) ? 0 : amount;
+    const negative = safeAmount < 0;
     const cr_dr = creditdebit ? (negative ? "DR" : "CR") : "";
     const pl_mi = minus && negative ? "-" : plus && !negative ? "+" : "";
     const symbol = getCurrencySymbol(currencyCode);
-    const colourClass = calculateColourClass(amount, positiveColour, negativeColour, zeroShowsAs);
+    const colourClass = calculateColourClass(safeAmount, positiveColour, negativeColour, zeroShowsAs);
     const className = classNames("amount", colourClass);
 
-    return (<span className={className}>{`${prefix}${pl_mi}${symbol}${(Math.abs(amount) ?? 0).toLocaleString(undefined, { minimumFractionDigits: decimalPlaces, maximumFractionDigits: decimalPlaces })}${cr_dr}${suffix}`}</span>);
+    return (<span className={className}>{`${prefix}${pl_mi}${symbol}${Math.abs(safeAmount).toLocaleString(undefined, { minimumFractionDigits: decimalPlaces, maximumFractionDigits: decimalPlaces })}${cr_dr}${suffix}`}</span>);
 }
 
 export interface AmountProps {

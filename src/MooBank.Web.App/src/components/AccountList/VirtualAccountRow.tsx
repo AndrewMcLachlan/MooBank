@@ -47,8 +47,10 @@ const useComponentState = (props: VirtualAccountRowProps) => {
     const balanceRef = useRef(null);
 
     useEffect(() => {
+        // Don't clobber the user's in-progress edit when a background refetch updates the account.
+        if (editingBalance) return;
         setBalance(props.account.currentBalance);
-    }, [props]);
+    }, [props.account.currentBalance, editingBalance]);
 
     useClickAway(setEditingBalance, balanceRef, () => (editingBalance && props.account.currentBalance !== balance) && updateBalance(props.accountId, props.account.id, balance));
 

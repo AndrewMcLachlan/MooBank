@@ -1,4 +1,4 @@
-using Asm.MooBank.Domain.Entities.Account;
+﻿using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Tests.Support;
 using Asm.MooBank.Infrastructure.Repositories;
@@ -289,10 +289,6 @@ public class InstrumentRepositoryTests : IDisposable
     }
 
     #endregion
-
-    // Note: GetInstitutionAccount uses string-based Include("VirtualAccounts") which causes
-    // InvalidIncludePathError with in-memory provider. The type-check branch (line 42) that
-    // throws InvalidOperationException should be covered by integration tests.
 
     private static LogicalAccount CreateInstrument(Guid id, string name) =>
         new(id, [])
