@@ -1,3 +1,4 @@
+import type { QueryClient } from "@tanstack/react-query";
 import type { SortDirection } from "@andrewmclachlan/moo-ds";
 import type { TransactionFilterType, SortDirection as GenSortDirection } from "api/types.gen";
 import type { TransactionsFilter } from "store/state";
@@ -5,6 +6,18 @@ import {
     getTransactionsQueryKey,
     getUntaggedTransactionsQueryKey,
 } from "api/@tanstack/react-query.gen";
+
+/**
+ * Invalidates every cached transaction list query (all accounts, pages, filters and sorts).
+ *
+ * Generated query keys are a single-element array of `{ _id, baseURL, path, query }`, so an
+ * id-only partial key matches all of them via TanStack Query's partial deep matching.
+ */
+export const invalidateTransactionLists = (queryClient: QueryClient) =>
+    Promise.all([
+        queryClient.invalidateQueries({ queryKey: [{ _id: "getTransactions" }] }),
+        queryClient.invalidateQueries({ queryKey: [{ _id: "getUntaggedTransactions" }] }),
+    ]);
 
 export const buildTransactionsQueryKey = (accountId: string, filter: TransactionsFilter, pageSize: number, pageNumber: number, sortField: string, sortDirection: SortDirection) => {
     if (filter.filterTagged) {

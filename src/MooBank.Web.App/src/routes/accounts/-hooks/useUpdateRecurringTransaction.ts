@@ -12,20 +12,23 @@ export const useUpdateRecurringTransaction = (accountId: string, virtualAccountI
     const { mutate } = useMutation({
         ...updateRecurringTransactionMutation(),
         onMutate: async (variables) => {
+            const queryKey = getRecurringTransactionsForAVirtualAccountQueryKey({ path: { accountId, virtualAccountId } });
+            await queryClient.cancelQueries({ queryKey });
 
-            const recurringTransactions = queryClient.getQueryData<RecurringTransaction[]>(
-                getRecurringTransactionsForAVirtualAccountQueryKey({ path: { accountId, virtualAccountId } })
-            );
+            const previous = queryClient.getQueryData<RecurringTransaction[]>(queryKey);
+            if (previous) {
+                const updatedTransaction = variables.body as unknown as RecurringTransaction;
+                queryClient.setQueryData<RecurringTransaction[]>(queryKey, previous.map(rt => rt.id === updatedTransaction.id ? updatedTransaction : rt));
+            }
 
-            const updatedTransaction = variables.body as unknown as RecurringTransaction;
-            const newRecurringTransactions = recurringTransactions.map(rt => rt.id === updatedTransaction.id ? updatedTransaction : rt);
-
-            queryClient.setQueryData<RecurringTransaction[]>(
-                getRecurringTransactionsForAVirtualAccountQueryKey({ path: { accountId, virtualAccountId } }),
-                newRecurringTransactions
-            );
+            return { previous };
         },
-        onSuccess: async () => {
+        onError: (_error, _variables, context: any) => {
+            if (context?.previous) {
+                queryClient.setQueryData(getRecurringTransactionsForAVirtualAccountQueryKey({ path: { accountId, virtualAccountId } }), context.previous);
+            }
+        },
+        onSettled: () => {
             queryClient.invalidateQueries({
                 queryKey: getRecurringTransactionsForAVirtualAccountQueryKey({ path: { accountId, virtualAccountId } }),
             });

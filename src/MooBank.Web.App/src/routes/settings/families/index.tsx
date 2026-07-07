@@ -15,7 +15,7 @@ function Families() {
     const navigate = useNavigate();
 
     return (
-        <SettingsPage title="Families" breadcrumbs={[{ text: "Families", route: "/settings/families" }]} actions={[<IconLinkButton key="add" variant="primary" to="/settings/families/add" icon="plus">Add Family</IconLinkButton>]}>
+        <SettingsPage title="Families" breadcrumbs={[{ text: "Families", route: "/settings/families" }]} actions={[<IconLinkButton badge key="add" variant="primary" to="/settings/families/add" icon="plus">Add Family</IconLinkButton>]}>
             <SectionTable striped hover>
                 <thead>
                     <tr>

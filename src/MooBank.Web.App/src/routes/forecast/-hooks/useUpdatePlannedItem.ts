@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { getForecastPlanQueryKey, updatePlannedItemMutation } from "api/@tanstack/react-query.gen";
 import type { PlannedItem } from "api/types.gen";
-import { forecastKey } from "./keys";
+import { forecastResultQueryKey } from "./keys";
 
 export const useUpdatePlannedItem = () => {
     const queryClient = useQueryClient();
@@ -10,7 +10,7 @@ export const useUpdatePlannedItem = () => {
         ...updatePlannedItemMutation(),
         onSettled: (_data, _error, variables) => {
             queryClient.invalidateQueries({ queryKey: getForecastPlanQueryKey({ path: { id: variables.path!.planId } }) });
-            queryClient.invalidateQueries({ queryKey: [...forecastKey, variables.path!.planId, "result"] });
+            queryClient.invalidateQueries({ queryKey: forecastResultQueryKey(variables.path!.planId) });
         },
     });
 

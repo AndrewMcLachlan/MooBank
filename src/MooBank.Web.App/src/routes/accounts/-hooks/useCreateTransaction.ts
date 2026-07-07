@@ -2,10 +2,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { CreateTransaction } from "models/transactions";
 import { toast } from "@andrewmclachlan/moo-ds";
 import {
-    getTransactionsQueryKey,
     createTransactionMutation,
     getAccountsQueryKey,
 } from "api/@tanstack/react-query.gen";
+import { invalidateTransactionLists } from "./transactionKeys";
 
 export const useCreateTransaction = () => {
 
@@ -14,7 +14,7 @@ export const useCreateTransaction = () => {
     const { mutateAsync, ...rest } = useMutation({
         ...createTransactionMutation(),
         onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: getTransactionsQueryKey({ path: { instrumentId: "", pageSize: 0, pageNumber: 0 } } as any) });
+            invalidateTransactionLists(queryClient);
             queryClient.refetchQueries({ queryKey: getAccountsQueryKey() });
         }
     });

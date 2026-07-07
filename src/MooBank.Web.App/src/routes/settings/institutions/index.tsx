@@ -58,7 +58,7 @@ function Institutions() {
     }, [JSON.stringify(institutions), search, pageSize, pageNumber, sortDirection]);
 
     return (
-        <SettingsPage title="Institutions" breadcrumbs={[{ text: "Institutions", route: "/settings/institutions" }]} actions={[<IconLinkButton variant="primary" key="add" to="/settings/institutions/add" icon="plus">Add Institution</IconLinkButton>]}>
+        <SettingsPage title="Institutions" breadcrumbs={[{ text: "Institutions", route: "/settings/institutions" }]} actions={[<IconLinkButton badge variant="primary" key="add" to="/settings/institutions/add" icon="plus">Add Institution</IconLinkButton>]}>
             <Section>
                 <input className="form-control" type="text" placeholder="Search" value={search} onChange={(e) => setSearch(e.target.value)} />
             </Section>

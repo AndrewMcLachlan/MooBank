@@ -5,11 +5,8 @@ import type { Transaction } from "api/types.gen";
 import type { TransactionUpdate } from "models/transactions";
 import type { State } from "store/state";
 import { toast } from "@andrewmclachlan/moo-ds";
-import {
-    getTransactionsQueryKey,
-    updateTransactionMutation,
-} from "api/@tanstack/react-query.gen";
-import { buildTransactionsQueryKey } from "./transactionKeys";
+import { updateTransactionMutation } from "api/@tanstack/react-query.gen";
+import { buildTransactionsQueryKey, invalidateTransactionLists } from "./transactionKeys";
 
 export const useUpdateTransaction = () => {
 
@@ -19,27 +16,35 @@ export const useUpdateTransaction = () => {
 
     const { mutateAsync, ...rest } = useMutation({
         ...updateTransactionMutation(),
-        onMutate: (variables) => {
+        onMutate: async (variables) => {
 
             const queryKey = buildTransactionsQueryKey((variables as any).path!.instrumentId, filter, pageSize, currentPage, sortField, sortDirection);
-            const transactions = { ...queryClient.getQueryData<PagedResult<Transaction>>(queryKey) };
-            if (!transactions?.results) return;
+            await queryClient.cancelQueries({ queryKey });
 
-            const transaction = transactions.results.find(tr => tr.id === (variables as any).path!.id);
-            if (!transaction) return;
+            const previous = queryClient.getQueryData<PagedResult<Transaction>>(queryKey);
+            if (!previous?.results) return { queryKey, previous: undefined };
 
             const body = variables.body as TransactionUpdate;
-            transaction.notes = body.notes;
-            transaction.splits = body.splits;
-            transaction.excludeFromReporting = body.excludeFromReporting;
-            transaction.tags = body.splits.flatMap(s => s.tags);
+            const next: PagedResult<Transaction> = {
+                ...previous,
+                results: previous.results.map(tr => tr.id === (variables as any).path!.id ? {
+                    ...tr,
+                    notes: body.notes,
+                    splits: body.splits,
+                    excludeFromReporting: body.excludeFromReporting,
+                    tags: body.splits.flatMap(s => s.tags),
+                } : tr),
+            };
+            queryClient.setQueryData<PagedResult<Transaction>>(queryKey, next);
 
-            queryClient.setQueryData<PagedResult<Transaction>>(queryKey, transactions);
-
+            return { queryKey, previous };
         },
-        onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: getTransactionsQueryKey({ path: { instrumentId: "", pageSize: 0, pageNumber: 0 } } as any) });
-        }
+        onError: (_error, _variables, context: any) => {
+            if (context?.previous) {
+                queryClient.setQueryData(context.queryKey, context.previous);
+            }
+        },
+        onSettled: () => invalidateTransactionLists(queryClient),
     });
 
     return {

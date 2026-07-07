@@ -7,8 +7,8 @@ export const useSuperContributionsReport = (accountId: string, start: Date, end:
         ...superContributionsReportOptions({
             path: {
                 accountId,
-                start: formatISODate(start),
-                end: formatISODate(end),
+                start: start ? formatISODate(start) : "",
+                end: end ? formatISODate(end) : "",
             },
         }),
         enabled: enabled && !!accountId && !!start && !!end,

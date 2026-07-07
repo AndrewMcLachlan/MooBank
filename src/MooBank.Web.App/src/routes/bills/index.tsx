@@ -36,14 +36,14 @@ function BillAccountSummaries() {
         <BillsPage
             title="Utilities"
             actions={availableTypes.length > 0 ? [
-                <IconButton key="add" onClick={() => setShowAddBill(true)} icon="plus">Add Bill</IconButton>
+                <IconButton badge key="add" onClick={() => setShowAddBill(true)} icon="plus">Add Bill</IconButton>
             ] : []}
         >
             <AddBill show={showAddBill} onHide={() => setShowAddBill(false)} />
             {availableTypes.length === 0 ? (
                 <Section>
                     <p className="empty-state">No utility accounts found. Create an account to get started.</p>
-                    <IconButton onClick={() => navigate({ to: "/bills/accounts/create" })} icon="plus">Add Account</IconButton>
+                    <IconButton badge onClick={() => navigate({ to: "/bills/accounts/create" })} icon="plus">Add Account</IconButton>
                 </Section>
             ) : (
                 <Tabs activeKey={activeTab} onSelect={(k) => setActiveTab(k as UtilityType)} >
