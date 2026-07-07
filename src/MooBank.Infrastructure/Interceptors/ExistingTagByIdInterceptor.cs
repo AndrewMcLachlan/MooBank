@@ -37,10 +37,7 @@ public sealed class ExistingTagByIdInterceptor : SaveChangesInterceptor
 
                 entry.State = EntityState.Unchanged;
 
-                if (settings is not null)
-                {
-                    settings.State = EntityState.Unchanged;
-                }
+                settings?.State = EntityState.Unchanged;
             }
         }
     }
