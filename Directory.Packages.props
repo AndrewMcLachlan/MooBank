@@ -53,7 +53,6 @@
     <PackageVersion Include="Asm.Domain" Version="3.8.167" />
     <PackageVersion Include="Asm.Domain.Infrastructure" Version="3.8.167" />
     <PackageVersion Include="Asm.ModelContextProtocol" Version="3.8.167" />
-    <PackageVersion Include="Asm.Reqnroll" Version="3.6.756" />
     <PackageVersion Include="Asm.Testing.Domain" Version="3.8.167" />
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { DeleteIcon, EditColumn } from "@andrewmclachlan/moo-ds";
 import { TagPanel } from "components";
@@ -15,13 +15,11 @@ export const RuleRow: React.FC<RuleRowProps> = (props) => {
     const transactionRow = useRuleRowEvents(props);
 
     const fullTagsListQuery = useTags();
-    const fullTagsList = fullTagsListQuery.data ?? [];
 
-    const [tagsList, setTagsList] = useState([]);
-
-    useEffect(() => {
-        setTagsList(fullTagsList.filter((t) => !transactionRow.tags.some((tt) => t.id === tt.id)));
-    }, [transactionRow.tags, fullTagsList]);
+    const tagsList = useMemo(() => {
+        if (!fullTagsListQuery.data) return [];
+        return fullTagsListQuery.data.filter((t) => !transactionRow.tags.some((tt) => t.id === tt.id));
+    }, [transactionRow.tags, fullTagsListQuery.data]);
 
     return (
         <tr>

@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Widget } from "@andrewmclachlan/moo-ds";
 import { lastMonth, lastMonthName } from "utils/dateFns";
 import { TopTags } from "../accounts/$id/reports/-components/TopTags";
@@ -10,9 +11,12 @@ export const TopTagsWidget: React.FC = () => {
 
     const account = accounts?.find(a => a.isPrimary === true) ?? accounts?.[0];
 
+    const period = useMemo(lastMonth, []);
+    const monthName = lastMonthName();
+
     return (
-        <Widget header={(account && `Top Tags - ${account.name} - ${lastMonthName}`) ?? lastMonthName} size="double" headerSize={2} className="report" loading={isLoading} to={account ? `/accounts/${account.id}/reports/all-tag-average?period=1` : undefined}>
-            {isError ? <WidgetError /> : account && <TopTags accountId={account?.id} period={lastMonth} reportType={"Debit"} top={10} periodId="1" />}
+        <Widget header={(account && `Top Tags - ${account.name} - ${monthName}`) ?? monthName} size="double" headerSize={2} className="report" loading={isLoading} to={account ? `/accounts/${account.id}/reports/all-tag-average?period=1` : undefined}>
+            {isError ? <WidgetError /> : account && <TopTags accountId={account?.id} period={period} reportType={"Debit"} top={10} periodId="1" />}
         </Widget>
     );
 };

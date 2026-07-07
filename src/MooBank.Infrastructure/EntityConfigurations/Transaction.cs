@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Asm.MooBank.Domain.Entities.Transactions;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Asm.MooBank.Infrastructure.EntityConfigurations;
 
@@ -34,8 +35,16 @@ internal class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
         // This transaction offsets the linked "TransactionId" transaction
         entity.HasMany(e => e.OffsetFor).WithOne(e => e.OffsetByTransaction).HasForeignKey(t => t.OffsetTransactionId);
 
+        // Extra is a polymorphic payload written by the institution importers (each has its own
+        // TransactionExtra type), so it cannot be deserialized to a single concrete type.
+        // The string-snapshot value comparer ensures EF change detection works for the mutable
+        // JsonElement-based values produced on materialisation.
         entity.Property(e => e.Extra).HasConversion(
                        v => JsonSerializer.Serialize(v, JsonSerializerOptions.Default),
-                       v => JsonSerializer.Deserialize<object>(v, JsonSerializerOptions.Default));
+                       v => JsonSerializer.Deserialize<object>(v, JsonSerializerOptions.Default),
+                       new ValueComparer<object?>(
+                           (l, r) => JsonSerializer.Serialize(l, JsonSerializerOptions.Default) == JsonSerializer.Serialize(r, JsonSerializerOptions.Default),
+                           v => v == null ? 0 : JsonSerializer.Serialize(v, JsonSerializerOptions.Default).GetHashCode(),
+                           v => v == null ? null : JsonSerializer.Deserialize<object>(JsonSerializer.Serialize(v, JsonSerializerOptions.Default), JsonSerializerOptions.Default)));
     }
 }

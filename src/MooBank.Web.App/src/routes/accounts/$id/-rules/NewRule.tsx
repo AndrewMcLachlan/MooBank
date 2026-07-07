@@ -39,8 +39,10 @@ export const NewRule: React.FC = () => {
         setNewRule({ ...newRule, description: e.currentTarget.value });
     }
 
-    const tagCreateHandler = (name: string) => {
-        createTag.mutate({ name });
+    const tagCreateHandler = async (name: string) => {
+        const tag = await createTag.mutateAsync({ name });
+        // Functional update - the rule may have changed while the create was in flight.
+        setNewRule(current => ({ ...current, tags: [...current.tags, tag] }));
     }
 
     const addTag = (tag: Tag) => {
@@ -66,7 +68,7 @@ export const NewRule: React.FC = () => {
     return (
         <tr>
             <td><input type="text" className="form-control" placeholder="Description contains..." value={newRule.contains} onChange={nameChange} /></td>
-            <TagPanel as="td" selectedItems={newRule.tags} items={fullTagsList} onAdd={addTag} onCreate={tagCreateHandler} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} onKeyUp={keyUp} />
+            <TagPanel as="td" selectedItems={newRule.tags} items={fullTagsList} onAdd={addTag} onCreate={tagCreateHandler} onRemove={removeTag} allowCreate={true} alwaysShowEditPanel={true} onKeyUp={keyUp} />
             <td><input type="text" className="form-control" placeholder="Notes..." value={newRule.description} onChange={descriptionChange} onKeyUp={keyUp} /></td>
             <td className="row-action column-5"><SaveIcon onClick={save} /></td>
         </tr>

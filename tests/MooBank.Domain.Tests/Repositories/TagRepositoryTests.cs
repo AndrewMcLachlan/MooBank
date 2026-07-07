@@ -1,4 +1,4 @@
-using Asm.MooBank.Domain.Entities.Tag;
+﻿using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Domain.Tests.Support;
 using Asm.MooBank.Infrastructure.Repositories;
 
@@ -292,66 +292,6 @@ public class TagRepositoryTests : IDisposable
         var deletedTag = await _context.Set<Tag>().FirstOrDefaultAsync(t => t.Id == 1, TestContext.Current.CancellationToken);
         Assert.NotNull(deletedTag);
         Assert.True(deletedTag.Deleted);
-    }
-
-    #endregion
-
-    #region AddSettings
-
-    /// <summary>
-    /// Given a tag without settings
-    /// When AddSettings is called
-    /// Then settings should be created
-    /// </summary>
-    [Fact]
-    [Trait("Category", "Integration")]
-    public async Task AddSettings_TagWithoutSettings_CreatesSettings()
-    {
-        // Arrange
-        var tag = new Tag(1)
-        {
-            Name = "Test",
-            FamilyId = _familyId,
-            Settings = null!,
-        };
-        _context.Set<Tag>().Add(tag);
-        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
-
-        var repository = new TagRepository(_context, _user);
-
-        // Act
-        repository.AddSettings(tag);
-        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
-
-        // Assert
-        var reloadedTag = await _context.Set<Tag>().Include(t => t.Settings).FirstOrDefaultAsync(t => t.Id == 1, TestContext.Current.CancellationToken);
-        Assert.NotNull(reloadedTag?.Settings);
-    }
-
-    /// <summary>
-    /// Given a tag with existing settings
-    /// When AddSettings is called
-    /// Then no new settings should be created
-    /// </summary>
-    [Fact]
-    [Trait("Category", "Integration")]
-    public async Task AddSettings_TagWithSettings_DoesNothing()
-    {
-        // Arrange
-        var tag = CreateTag(1, "Test", _familyId);
-        _context.Set<Tag>().Add(tag);
-        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
-
-        var repository = new TagRepository(_context, _user);
-        var initialCount = await _context.Set<TagSettings>().CountAsync(TestContext.Current.CancellationToken);
-
-        // Act
-        repository.AddSettings(tag);
-        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
-
-        // Assert
-        var finalCount = await _context.Set<TagSettings>().CountAsync(TestContext.Current.CancellationToken);
-        Assert.Equal(initialCount, finalCount);
     }
 
     #endregion

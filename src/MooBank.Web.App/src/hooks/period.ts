@@ -5,7 +5,7 @@ import { lastMonth } from "utils/dateFns";
 import { periodOptions } from "models/periodOptions";
 
 export const useCustomPeriod = (): [period: Period, setPeriod: (value: Period) => void] => {
-    const [period, setPeriod] = useLocalStorage("period", lastMonth);
+    const [period, setPeriod] = useLocalStorage("period", lastMonth());
 
     period.startDate = period.startDate && typeof period.startDate === "string" ? parseISO(period.startDate as any) : period.startDate;
     period.endDate = period.endDate && typeof period.endDate === "string" ? parseISO(period.endDate as any) : period.endDate;
@@ -28,6 +28,10 @@ export const getPeriod = (): Period => {
     }
 
     const period = localStorage.getItem("period") ? JSON.parse(localStorage.getItem("period") as string) : null;
+
+    // A custom period is selected but none has been stored - fall back to last month.
+    if (!period) return lastMonth();
+
     period.startDate = period.startDate && typeof period.startDate === "string" ? parseISO(period.startDate as any) : period.startDate;
     period.endDate = period.endDate && typeof period.endDate === "string" ? parseISO(period.endDate as any) : period.endDate;
 

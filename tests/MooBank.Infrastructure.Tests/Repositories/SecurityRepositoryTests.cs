@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System.Security.Claims;
 using Asm.MooBank.Audit;
 using Asm.MooBank.Domain.Entities.Budget;
@@ -42,7 +42,7 @@ public class SecurityRepositoryTests : IDisposable
     #region AssertGroupPermission(Guid)
 
     [Fact]
-    public void AssertGroupPermission_ById_UserOwnsGroup_DoesNotThrow()
+    public async Task AssertGroupPermission_ById_UserOwnsGroup_DoesNotThrow()
     {
         // Arrange
         var group = TestEntities.CreateGroup(ownerId: _user.Id);
@@ -52,11 +52,11 @@ public class SecurityRepositoryTests : IDisposable
         var repository = CreateRepository();
 
         // Act & Assert - should not throw
-        repository.AssertGroupPermission(group.Id);
+        await repository.AssertGroupPermission(group.Id);
     }
 
     [Fact]
-    public void AssertGroupPermission_ById_UserDoesNotOwnGroup_ThrowsNotAuthorisedException()
+    public async Task AssertGroupPermission_ById_UserDoesNotOwnGroup_ThrowsNotAuthorisedException()
     {
         // Arrange
         var otherUserId = Guid.NewGuid();
@@ -67,18 +67,18 @@ public class SecurityRepositoryTests : IDisposable
         var repository = CreateRepository();
 
         // Act & Assert
-        Assert.Throws<NotAuthorisedException>(() => repository.AssertGroupPermission(group.Id));
+        await Assert.ThrowsAsync<NotAuthorisedException>(() => repository.AssertGroupPermission(group.Id));
     }
 
     [Fact]
-    public void AssertGroupPermission_ById_GroupDoesNotExist_ThrowsNotAuthorisedException()
+    public async Task AssertGroupPermission_ById_GroupDoesNotExist_ThrowsNotAuthorisedException()
     {
         // Arrange
         var nonExistentGroupId = Guid.NewGuid();
         var repository = CreateRepository();
 
         // Act & Assert
-        Assert.Throws<NotAuthorisedException>(() => repository.AssertGroupPermission(nonExistentGroupId));
+        await Assert.ThrowsAsync<NotAuthorisedException>(() => repository.AssertGroupPermission(nonExistentGroupId));
     }
 
     #endregion

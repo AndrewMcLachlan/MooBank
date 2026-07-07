@@ -1,5 +1,4 @@
-﻿using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Domain.Entities.Instrument;
+﻿using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Instrument.Events;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
@@ -32,22 +31,8 @@ public class InstrumentRepository(MooBankContext dataContext, Models.User user) 
         return await Entities.Where(i => userAccounts.Contains(i.Id)).ToListAsync(cancellationToken);
     }
 
-    public override Task<Instrument> Get(Guid id, CancellationToken cancellationToken = default) =>
-        (Entities.Include(a => a.Rules).ThenInclude(a => a.Tags).FindAsync(id, cancellationToken) ?? throw new NotFoundException())!;
-
-    public async Task<LogicalAccount> GetInstitutionAccount(Guid accountId, CancellationToken cancellationToken)
-    {
-        var account = await GetById(accountId).Include("VirtualAccounts").SingleOrDefaultAsync(cancellationToken) ?? throw new NotFoundException();
-
-        if (account is not LogicalAccount institutionAccount)
-            throw new InvalidOperationException("Cannot update virtual account on non-institution account.");
-
-        return institutionAccount;
-    }
-
-
-    public Task Reload(Instrument instrument, CancellationToken cancellationToken) =>
-        Context.Entry(instrument).ReloadAsync(cancellationToken);
+    public override async Task<Instrument> Get(Guid id, CancellationToken cancellationToken = default) =>
+        await Entities.Include(a => a.Rules).ThenInclude(a => a.Tags).FindAsync(id, cancellationToken) ?? throw new NotFoundException();
 
     public async Task<IEnumerable<Instrument>> Get(IEnumerable<Guid> ids, CancellationToken cancellationToken = default)
     {

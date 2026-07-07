@@ -1,4 +1,4 @@
-using Asm.MooBank.Domain.Entities.ReferenceData;
+﻿using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Domain.Tests.Support;
 using Asm.MooBank.Infrastructure.Repositories;
 
@@ -157,7 +157,7 @@ public class ReferenceDataRepositoryTests : IDisposable
         };
 
         // Act
-        repository.AddStockPrice(price);
+        await repository.AddStockPrice(price, TestContext.Current.CancellationToken);
         await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Assert
@@ -186,7 +186,7 @@ public class ReferenceDataRepositoryTests : IDisposable
         var duplicatePrice = new StockPriceHistory { Symbol = "GOOGL", Exchange = "US", Date = date, Price = 2850.00m };
 
         // Act
-        repository.AddStockPrice(duplicatePrice);
+        await repository.AddStockPrice(duplicatePrice, TestContext.Current.CancellationToken);
         await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Assert

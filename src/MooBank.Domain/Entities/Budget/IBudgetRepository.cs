@@ -5,7 +5,7 @@ public interface IBudgetRepository : IDeletableRepository<Budget, Guid>, IWritab
     Task<Budget> GetByYear(Guid accountId, short year, CancellationToken cancellationToken = default);
     Task<Budget> GetOrCreate(Guid accountId, short year, CancellationToken cancellationToken = default);
 
-    BudgetLine AddLine(BudgetLine entity);
+    Task<BudgetLine> AddLine(BudgetLine entity, CancellationToken cancellationToken = default);
 
     void DeleteLine(Guid id);
 }

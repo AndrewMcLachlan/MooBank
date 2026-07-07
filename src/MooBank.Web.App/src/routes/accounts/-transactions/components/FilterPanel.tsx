@@ -9,13 +9,13 @@ import { useFilterPanel } from "../hooks/useFilterPanel";
 
 export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
 
-    const { filterDescription, filterTagged, filterTags, filterNetZero, filterType, storedFilterType, period, clear, setFilterDescription, setFilterTagged, setFilterNetZero, setFilterTags, setFilterType, setPeriod } = useFilterPanel();
+    const { filterDescription, filterTagged, filterTags, filterNetZero, filterType, period, clear, setFilterDescription, setFilterTagged, setFilterNetZero, setFilterTags, setFilterType, setPeriod } = useFilterPanel();
 
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(TransactionsSlice.actions.setTransactionListFilter({ description: filterDescription, filterTagged, filterNetZero, tags: filterTags, transactionType: storedFilterType, start: period?.startDate?.toISOString(), end: period?.endDate?.toISOString() }));
-    }, [period, filterDescription, filterTagged, filterNetZero, filterTags, storedFilterType, window.location.search]);
+        dispatch(TransactionsSlice.actions.setTransactionListFilter({ description: filterDescription, filterTagged, filterNetZero, tags: filterTags, transactionType: filterType, start: period?.startDate?.toISOString(), end: period?.endDate?.toISOString() }));
+    }, [period, filterDescription, filterTagged, filterNetZero, filterTags, filterType]);
 
     return (
         <Section className="filter-panel" {...props}>

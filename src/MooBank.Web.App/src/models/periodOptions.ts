@@ -6,14 +6,23 @@ export interface PeriodOption extends Period {
     label: string,
 }
 
+// startDate/endDate are getters so the dates are evaluated when accessed,
+// not once at module load (which goes stale in long-lived tabs).
+const option = (value: string, label: string, period: () => Period): PeriodOption => ({
+    value,
+    label,
+    get startDate() { return period().startDate; },
+    get endDate() { return period().endDate; },
+});
+
 export const periodOptions: PeriodOption[] = [
-    { value: "0", label: "This Month", ...thisMonth },
-    { value: "1", label: "Last Month", ...lastMonth },
-    { value: "2", label: "Previous Month", ...previousMonth },
-    { value: "3", label: "Last 3 months", ...last3Months },
-    { value: "4", label: "Last 6 months", ...last6Months },
-    { value: "5", label: "Last 12 months", ...last12Months },
-    { value: "8", label: "This Year", ...thisYear },
-    { value: "6", label: "Last year", ...lastYear },
-    { value: "7", label: "All time", ...allTime },
+    option("0", "This Month", thisMonth),
+    option("1", "Last Month", lastMonth),
+    option("2", "Previous Month", previousMonth),
+    option("3", "Last 3 months", last3Months),
+    option("4", "Last 6 months", last6Months),
+    option("5", "Last 12 months", last12Months),
+    option("8", "This Year", thisYear),
+    option("6", "Last year", lastYear),
+    option("7", "All time", allTime),
 ];
