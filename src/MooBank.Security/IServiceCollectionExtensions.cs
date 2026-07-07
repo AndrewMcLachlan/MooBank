@@ -20,6 +20,7 @@ public static class IServiceCollectionExtensions
         services.AddScoped<IAuthorizationHandler, InstrumentOwnerResourceAuthorisationHandler>();
         services.AddScoped<IAuthorizationHandler, FamilyMemberAuthorisationHandler>();
         services.AddScoped<IAuthorizationHandler, GroupOwnerAuthorisationHandler>();
+        services.AddScoped<IAuthorizationHandler, BudgetLineAuthorisationHandler>();
 
         return services;
     }

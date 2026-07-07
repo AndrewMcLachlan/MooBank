@@ -45,12 +45,6 @@ public class PoliciesTests
         Assert.Equal("GroupOwner", Policies.GroupOwner);
     }
 
-    [Fact]
-    public void BudgetLine_HasCorrectValue()
-    {
-        Assert.Equal("BudgetLine", Policies.BudgetLine);
-    }
-
     #endregion
 
     #region GetInstrumentOwnerPolicy
@@ -179,6 +173,71 @@ public class PoliciesTests
         // Assert
         Assert.NotNull(policy);
         Assert.Single(policy.Requirements.OfType<InstrumentViewerRequirement>());
+    }
+
+    #endregion
+
+    #region GetBudgetLinePolicy
+
+    [Fact]
+    public void GetBudgetLinePolicy_DefaultParam_ReturnsPolicy()
+    {
+        // Act
+        var policy = Policies.GetBudgetLinePolicy();
+
+        // Assert
+        Assert.NotNull(policy);
+        Assert.Contains(JwtBearerDefaults.AuthenticationScheme, policy.AuthenticationSchemes);
+        Assert.Single(policy.Requirements.OfType<BudgetLineRequirement>());
+    }
+
+    [Fact]
+    public void GetBudgetLinePolicy_CustomParam_ReturnsPolicy()
+    {
+        // Act
+        var policy = Policies.GetBudgetLinePolicy("customLineId");
+
+        // Assert
+        Assert.NotNull(policy);
+        Assert.Single(policy.Requirements.OfType<BudgetLineRequirement>());
+    }
+
+    [Fact]
+    public void GetBudgetLinePolicy_RequiresAuthentication()
+    {
+        // Act
+        var policy = Policies.GetBudgetLinePolicy();
+
+        // Assert
+        Assert.Contains(policy.Requirements, r => r is DenyAnonymousAuthorizationRequirement);
+    }
+
+    [Fact]
+    public void GetBudgetLinePolicy_ExtensionMethod_ReturnsPolicy()
+    {
+        // Arrange
+        var builder = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme);
+
+        // Act
+        var policy = builder.GetBudgetLinePolicy();
+
+        // Assert
+        Assert.NotNull(policy);
+        Assert.Single(policy.Requirements.OfType<BudgetLineRequirement>());
+    }
+
+    [Fact]
+    public void GetBudgetLinePolicy_ExtensionMethod_CustomParam_ReturnsPolicy()
+    {
+        // Arrange
+        var builder = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme);
+
+        // Act
+        var policy = builder.GetBudgetLinePolicy("myLineId");
+
+        // Assert
+        Assert.NotNull(policy);
+        Assert.Single(policy.Requirements.OfType<BudgetLineRequirement>());
     }
 
     #endregion

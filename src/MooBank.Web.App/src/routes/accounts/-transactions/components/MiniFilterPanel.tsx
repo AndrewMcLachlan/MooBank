@@ -12,13 +12,13 @@ import type { transactionTypeFilter } from "store/state";
 
 export const MiniFilterPanel: React.FC<MiniFilterPanelProps> = (props) => {
 
-    const { filterDescription, filterTagged, filterNetZero, filterTags, filterType, storedFilterType, period, setFilterDescription, setFilterTagged, setFilterNetZero, setFilterTags, setFilterType, setPeriod } = useFilterPanel();
+    const { filterDescription, filterTagged, filterNetZero, filterTags, filterType, period, setFilterDescription, setFilterTagged, setFilterNetZero, setFilterTags, setFilterType, setPeriod } = useFilterPanel();
     const dispatch = useDispatch();
 
 
     useEffect(() => {
-        dispatch(TransactionsSlice.actions.setTransactionListFilter({ description: filterDescription, filterTagged, tags: filterTags, transactionType: storedFilterType, start: period?.startDate?.toISOString(), end: period?.endDate?.toISOString() }));
-    }, [period, filterDescription, filterTagged, filterTags, storedFilterType, window.location.search]);
+        dispatch(TransactionsSlice.actions.setTransactionListFilter({ description: filterDescription, filterTagged, tags: filterTags, transactionType: filterType, start: period?.startDate?.toISOString(), end: period?.endDate?.toISOString() }));
+    }, [period, filterDescription, filterTagged, filterTags, filterType]);
 
     return (
         <Section className="mini-filter-panel" {...props}>

@@ -18,7 +18,7 @@ internal class BalanceAdjustmentEventHandler(ITransactionRepository transactionR
             accountHolderId: null,
             domainEvent.Amount,
             "Balance adjustment",
-            DateTime.Now,
+            DateTime.UtcNow,
             TransactionSubType.BalanceAdjustment,
             domainEvent.Source
         );

@@ -11,7 +11,7 @@ export const ReportTypeSelector: React.FC<ReportTypeSelectorProps> = ({ value, o
     }
 
     return (
-        <ButtonGroup className="btn-group-form" aria-label="Filter by income or expense">
+        <ButtonGroup className="btn-group-form" aria-label="Filter by income or expense" {...rest}>
             <Button variant={value == "Credit" ? "primary" : "outline-primary"} onClick={() => onClick("Credit")}>Income</Button>
             <Button variant={value == "Debit" ? "primary" : "outline-primary"} onClick={() => onClick("Debit")}>Expense</Button>
         </ButtonGroup>

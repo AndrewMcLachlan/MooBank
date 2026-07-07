@@ -43,7 +43,6 @@ export const PeriodSelector: React.FC<PeriodSelectorProps> = ({instant = false, 
 }
 
 export interface PeriodSelectorProps {
-    value?: Period;
     onChange?: (value: Period) => void;
     instant?: boolean;
     cacheKey?: string;
@@ -70,7 +69,7 @@ export const usePeriodSelector = ({instant, cacheKey, ...props}: PeriodSelectorP
         setStoredPeriod(value);
     };
 
-    const [period, setPeriod] = useState<Period>(periodOptions.find(o => o.value === selectedPeriod) ?? (selectedPeriod === "-1" ? customPeriod : lastMonth));
+    const [period, setPeriod] = useState<Period>(periodOptions.find(o => o.value === selectedPeriod) ?? (selectedPeriod === "-1" ? customPeriod : lastMonth()));
     const [customStart, setCustomStart] = useState<Date>(customPeriod.startDate);
     const [customEnd, setCustomEnd] = useState<Date>(customPeriod.endDate);
 
@@ -82,7 +81,7 @@ export const usePeriodSelector = ({instant, cacheKey, ...props}: PeriodSelectorP
 
     useEffect(() => {
         if (selectedPeriod !== "-1") {
-            setPeriod(periodOptions.find(o => o.value === selectedPeriod) ?? lastMonth);
+            setPeriod(periodOptions.find(o => o.value === selectedPeriod) ?? lastMonth());
             return;
         }
 

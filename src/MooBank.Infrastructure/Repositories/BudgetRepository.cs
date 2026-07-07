@@ -6,11 +6,11 @@ namespace Asm.MooBank.Infrastructure.Repositories
 {
     internal class BudgetRepository(MooBankContext context) : RepositoryDeleteBase<MooBankContext, Budget, Guid>(context), IBudgetRepository
     {
-        public BudgetLine AddLine(BudgetLine entity)
+        public async Task<BudgetLine> AddLine(BudgetLine entity, CancellationToken cancellationToken = default)
         {
             var result = Context.Add(entity).Entity;
 
-            Context.Entry(result).Reference(e => e.Tag).Load();
+            await Context.Entry(result).Reference(e => e.Tag).LoadAsync(cancellationToken);
 
             return result;
         }

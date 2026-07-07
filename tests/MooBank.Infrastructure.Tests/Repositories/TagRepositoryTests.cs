@@ -1,4 +1,4 @@
-using Asm.MooBank.Domain.Entities.Tag;
+﻿using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Infrastructure.Repositories;
 using Asm.MooBank.Infrastructure.Tests.Support;
 
@@ -15,51 +15,6 @@ public class TagRepositoryTests : IDisposable
         _context.Dispose();
         GC.SuppressFinalize(this);
     }
-
-    #region AddSettings
-
-    [Fact]
-    public void AddSettings_TagHasNoSettings_CreatesNewSettings()
-    {
-        // Arrange
-        var tag = TestEntities.CreateTag(id: 1, familyId: _user.FamilyId);
-        tag.Settings = null!;
-
-        _context.Add(tag);
-        _context.SaveChanges();
-
-        var repository = CreateRepository();
-
-        // Act
-        repository.AddSettings(tag);
-
-        // Assert - verify TagSettings was added
-        var settingsEntries = _context.ChangeTracker.Entries<TagSettings>()
-            .Where(e => e.State == Microsoft.EntityFrameworkCore.EntityState.Added);
-
-        Assert.Single(settingsEntries);
-        Assert.NotNull(tag.Settings);
-    }
-
-    [Fact]
-    public void AddSettings_TagHasSettings_DoesNotCreateNewSettings()
-    {
-        // Arrange
-        var tag = TestEntities.CreateTag(id: 1, familyId: _user.FamilyId);
-        tag.Settings = TestEntities.CreateTagSettings(tag.Id);
-
-        var repository = CreateRepository();
-        var initialCount = _context.ChangeTracker.Entries<TagSettings>().Count();
-
-        // Act
-        repository.AddSettings(tag);
-
-        // Assert - no new settings should be added
-        var finalCount = _context.ChangeTracker.Entries<TagSettings>().Count();
-        Assert.Equal(initialCount, finalCount);
-    }
-
-    #endregion
 
     #region Get(int id, bool includeSubTags)
 

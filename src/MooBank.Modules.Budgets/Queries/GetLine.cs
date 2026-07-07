@@ -5,12 +5,10 @@ namespace Asm.MooBank.Modules.Budgets.Queries;
 
 public record GetLine(short Year, Guid Id) : IQuery<BudgetLine>;
 
-internal class GetLineHandler(IQueryable<Domain.Entities.Budget.BudgetLine> budgetLines, ISecurity security) : IQueryHandler<GetLine, BudgetLine>
+internal class GetLineHandler(IQueryable<Domain.Entities.Budget.BudgetLine> budgetLines) : IQueryHandler<GetLine, BudgetLine>
 {
     public async ValueTask<BudgetLine> Handle(GetLine request, CancellationToken cancellationToken)
     {
-        await security.AssertBudgetLinePermission(request.Id, cancellationToken);
-
         var entity = await budgetLines
                    .Include(b => b.Budget)
                    .Include(b => b.Tag)

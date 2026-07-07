@@ -14,6 +14,7 @@ import { AddTransaction } from "./components/AddTransaction";
 import { TransactionsAccountCard } from "./components/TransactionsAccountCard";
 import { TransactionsCompactWidgets } from "./components/TransactionsCompactWidgets";
 import { useTransactionList } from "components";
+import { useIsDesktop } from "hooks";
 
 export const Transactions: React.FC = () => {
 
@@ -23,6 +24,7 @@ export const Transactions: React.FC = () => {
     const [compactMode, setCompactMode] = useLocalStorage("compact-mode", false);
     const { showNet, setShowNet } = useTransactionList();
     const [show, setShow] = React.useState(false);
+    const isDesktop = useIsDesktop();
 
     if (!account) return null;
 
@@ -68,8 +70,7 @@ export const Transactions: React.FC = () => {
                     <MiniFilterPanel />
                 </>
             )}
-            <TransactionList />
-            <TransactionList compact />
+            {isDesktop ? <TransactionList /> : <TransactionList compact />}
             {account.controller === "Import" && <Import show={showImport} accountId={account.id} onClose={() => setShowImport(false)} />}
         </AccountPage>
     );

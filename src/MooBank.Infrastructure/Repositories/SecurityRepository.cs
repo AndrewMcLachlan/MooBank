@@ -10,11 +10,11 @@ namespace Asm.MooBank.Infrastructure.Repositories;
 
 public class SecurityRepository(MooBankContext mooBankContext, IAuthorizationService authorizationService, IPrincipalProvider principalProvider, User user, IAuditLogger audit) : ISecurity
 {
-    public void AssertGroupPermission(Guid accountId)
+    public async Task AssertGroupPermission(Guid groupId)
     {
-        if (!mooBankContext.Groups.Any(a => a.Id == accountId && a.OwnerId == user.Id))
+        if (!await mooBankContext.Groups.AnyAsync(a => a.Id == groupId && a.OwnerId == user.Id))
         {
-            audit.AuthorizationDenied(user, "Group", accountId, nameof(AssertGroupPermission));
+            audit.AuthorizationDenied(user, "Group", groupId, nameof(AssertGroupPermission));
             throw new NotAuthorisedException("Not authorised to view this account group");
         }
     }
@@ -39,16 +39,16 @@ public class SecurityRepository(MooBankContext mooBankContext, IAuthorizationSer
         }
     }
 
-    public async Task AssertBudgetLinePermission(Guid id, CancellationToken cancellationToken = default)
+    public async Task<bool> HasBudgetLinePermission(Guid id, CancellationToken cancellationToken = default)
     {
-        var budgetLine = await mooBankContext.BudgetLines.Include(b => b.Budget).FindAsync(id, cancellationToken) ?? throw new NotFoundException("Budget line not found");
-        var authResult = await authorizationService.AuthorizeAsync(principalProvider.Principal!, budgetLine.Budget.FamilyId, new FamilyMemberRequirement());
+        var permitted = await mooBankContext.BudgetLines.AnyAsync(bl => bl.Id == id && bl.Budget.FamilyId == user.FamilyId, cancellationToken);
 
-        if (!authResult.Succeeded)
+        if (!permitted)
         {
-            audit.AuthorizationDenied(user, "BudgetLine", id, nameof(FamilyMemberRequirement));
-            throw new NotAuthorisedException("Not authorised to view this budget line");
+            audit.AuthorizationDenied(user, "BudgetLine", id, nameof(BudgetLineRequirement));
         }
+
+        return permitted;
     }
 
     public async Task<IEnumerable<Guid>> GetInstrumentIds(CancellationToken cancellationToken = default) =>
