@@ -2,8 +2,6 @@
 using Asm.MooBank.Domain.Entities.User.Specifications;
 using Asm.MooBank.Modules.Users.Commands;
 using Asm.MooBank.Modules.Users.Tests.Support;
-using Microsoft.AspNetCore.Http;
-using DomainUser = Asm.MooBank.Domain.Entities.User.User;
 
 namespace Asm.MooBank.Modules.Users.Tests.Commands;
 
