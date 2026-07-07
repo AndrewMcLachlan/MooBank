@@ -22,6 +22,7 @@ public class SecurityRepositoryTests : IDisposable
     private readonly Models.User _user;
     private readonly Mock<IAuthorizationService> _authorizationService;
     private readonly Mock<IPrincipalProvider> _principalProvider;
+    private readonly Mock<IAuditLogger> _auditLogger;
 
     public SecurityRepositoryTests()
     {
@@ -35,6 +36,7 @@ public class SecurityRepositoryTests : IDisposable
         };
         _authorizationService = new Mock<IAuthorizationService>();
         _principalProvider = new Mock<IPrincipalProvider>();
+        _auditLogger = new Mock<IAuditLogger>();
 
         var principal = new ClaimsPrincipal(new ClaimsIdentity(
             [new Claim(SysClaims.ClaimTypes.NameIdentifier, _userId.ToString())],
@@ -159,21 +161,78 @@ public class SecurityRepositoryTests : IDisposable
 
     #endregion
 
-    #region AssertBudgetLinePermission
-
-    // Note: AssertBudgetLinePermission tests require a real database or different query approach
-    // because FindAsync with Include doesn't work properly with in-memory provider.
-    // The NotFoundException branch is tested below; authorization branches need integration tests.
+    #region HasBudgetLinePermission
 
     [Fact]
-    public async Task AssertBudgetLinePermission_BudgetLineNotFound_ThrowsNotFoundException()
+    public async Task HasBudgetLinePermission_BudgetLineInUsersFamily_ReturnsTrueAndDoesNotAudit()
     {
         // Arrange
+        var lineId = AddBudgetLine(_familyId);
         var repository = CreateRepository();
 
-        // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() =>
-            repository.AssertBudgetLinePermission(Guid.NewGuid(), TestContext.Current.CancellationToken));
+        // Act
+        var result = await repository.HasBudgetLinePermission(lineId, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.True(result);
+        _auditLogger.Verify(
+            a => a.AuthorizationDenied(It.IsAny<Models.User>(), It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<string>()),
+            Times.Never);
+    }
+
+    [Fact]
+    public async Task HasBudgetLinePermission_BudgetLineInOtherFamily_ReturnsFalseAndAudits()
+    {
+        // Arrange
+        var lineId = AddBudgetLine(Guid.NewGuid());
+        var repository = CreateRepository();
+
+        // Act
+        var result = await repository.HasBudgetLinePermission(lineId, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.False(result);
+        _auditLogger.Verify(
+            a => a.AuthorizationDenied(_user, "BudgetLine", lineId, nameof(BudgetLineRequirement)),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task HasBudgetLinePermission_BudgetLineNotFound_ReturnsFalseAndAudits()
+    {
+        // Arrange
+        var nonExistentId = Guid.NewGuid();
+        var repository = CreateRepository();
+
+        // Act
+        var result = await repository.HasBudgetLinePermission(nonExistentId, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.False(result);
+        _auditLogger.Verify(
+            a => a.AuthorizationDenied(_user, "BudgetLine", nonExistentId, nameof(BudgetLineRequirement)),
+            Times.Once);
+    }
+
+    private Guid AddBudgetLine(Guid familyId)
+    {
+        var budget = new Budget(Guid.NewGuid())
+        {
+            FamilyId = familyId,
+            Year = 2024,
+        };
+        var line = new BudgetLine(Guid.NewGuid())
+        {
+            BudgetId = budget.Id,
+            TagId = 1,
+            Amount = 100m,
+        };
+
+        _context.Set<Budget>().Add(budget);
+        _context.Set<BudgetLine>().Add(line);
+        _context.SaveChanges();
+
+        return line.Id;
     }
 
     #endregion
@@ -250,5 +309,5 @@ public class SecurityRepositoryTests : IDisposable
     #endregion
 
     private SecurityRepository CreateRepository() =>
-        new(_context, _authorizationService.Object, _principalProvider.Object, _user, Mock.Of<IAuditLogger>());
+        new(_context, _authorizationService.Object, _principalProvider.Object, _user, _auditLogger.Object);
 }

@@ -612,3 +612,122 @@ public class RouteParamAuthorizationHandlerTests
 
     #endregion
 }
+
+/// <summary>
+/// Tests for the BudgetLineAuthorisationHandler, which authorises the budget line route
+/// parameter via ISecurity.HasBudgetLinePermission.
+/// </summary>
+[Trait("Category", "Unit")]
+public class BudgetLineAuthorisationHandlerTests
+{
+    private static readonly Guid BudgetLineId = Guid.NewGuid();
+
+    /// <summary>
+    /// Given a valid budget line id in the route and a user with permission
+    /// When the requirement is handled
+    /// Then authorization should succeed
+    /// </summary>
+    [Fact]
+    public async Task BudgetLineHandler_ValidRouteValueWithPermission_Succeeds()
+    {
+        // Arrange
+        var security = new Mock<Asm.MooBank.Security.ISecurity>();
+        security.Setup(s => s.HasBudgetLinePermission(BudgetLineId, It.IsAny<CancellationToken>())).ReturnsAsync(true);
+        var handler = new BudgetLineAuthorisationHandler(CreateHttpContextAccessor("id", BudgetLineId.ToString()), security.Object);
+        var context = CreateAuthorizationContext(new BudgetLineRequirement());
+
+        // Act
+        await handler.HandleAsync(context);
+
+        // Assert
+        Assert.True(context.HasSucceeded);
+        Assert.False(context.HasFailed);
+    }
+
+    /// <summary>
+    /// Given a valid budget line id in the route and a user without permission
+    /// When the requirement is handled
+    /// Then authorization should fail
+    /// </summary>
+    [Fact]
+    public async Task BudgetLineHandler_ValidRouteValueWithoutPermission_Fails()
+    {
+        // Arrange
+        var security = new Mock<Asm.MooBank.Security.ISecurity>();
+        security.Setup(s => s.HasBudgetLinePermission(BudgetLineId, It.IsAny<CancellationToken>())).ReturnsAsync(false);
+        var handler = new BudgetLineAuthorisationHandler(CreateHttpContextAccessor("id", BudgetLineId.ToString()), security.Object);
+        var context = CreateAuthorizationContext(new BudgetLineRequirement());
+
+        // Act
+        await handler.HandleAsync(context);
+
+        // Assert
+        Assert.False(context.HasSucceeded);
+        Assert.True(context.HasFailed);
+    }
+
+    /// <summary>
+    /// Given a route value that is not a valid GUID
+    /// When the requirement is handled
+    /// Then authorization should fail without consulting security
+    /// </summary>
+    [Fact]
+    public async Task BudgetLineHandler_InvalidGuidRouteValue_Fails()
+    {
+        // Arrange
+        var security = new Mock<Asm.MooBank.Security.ISecurity>();
+        var handler = new BudgetLineAuthorisationHandler(CreateHttpContextAccessor("id", "not-a-guid"), security.Object);
+        var context = CreateAuthorizationContext(new BudgetLineRequirement());
+
+        // Act
+        await handler.HandleAsync(context);
+
+        // Assert
+        Assert.False(context.HasSucceeded);
+        Assert.True(context.HasFailed);
+        security.Verify(s => s.HasBudgetLinePermission(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    /// <summary>
+    /// Given a request without the budget line route value
+    /// When the requirement is handled
+    /// Then authorization should fail (base class behaviour is fail-closed)
+    /// </summary>
+    [Fact]
+    public async Task BudgetLineHandler_MissingRouteValue_Fails()
+    {
+        // Arrange
+        var security = new Mock<Asm.MooBank.Security.ISecurity>();
+        var handler = new BudgetLineAuthorisationHandler(CreateHttpContextAccessor(), security.Object);
+        var context = CreateAuthorizationContext(new BudgetLineRequirement());
+
+        // Act
+        await handler.HandleAsync(context);
+
+        // Assert
+        Assert.False(context.HasSucceeded);
+        Assert.True(context.HasFailed);
+        security.Verify(s => s.HasBudgetLinePermission(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    private static AuthorizationHandlerContext CreateAuthorizationContext(IAuthorizationRequirement requirement)
+    {
+        var requirements = new[] { requirement };
+        var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity("TestAuth"));
+        return new AuthorizationHandlerContext(requirements, claimsPrincipal, null);
+    }
+
+    private static IHttpContextAccessor CreateHttpContextAccessor(string? routeParamName = null, object? routeValue = null)
+    {
+        var httpContext = new DefaultHttpContext();
+
+        if (routeParamName is not null)
+        {
+            httpContext.Request.RouteValues[routeParamName] = routeValue;
+        }
+
+        var mock = new Mock<IHttpContextAccessor>();
+        mock.Setup(x => x.HttpContext).Returns(httpContext);
+        return mock.Object;
+    }
+}

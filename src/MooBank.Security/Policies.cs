@@ -39,6 +39,17 @@ public static class Policies
         return policyBuilder.Build();
     }
 
+    public static AuthorizationPolicy GetBudgetLinePolicy(string routeParam = "id") =>
+        new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme).GetBudgetLinePolicy(routeParam);
+
+    public static AuthorizationPolicy GetBudgetLinePolicy(this AuthorizationPolicyBuilder policyBuilder, string routeParam = "id")
+    {
+        policyBuilder.RequireAuthenticatedUser();
+        policyBuilder.AddRequirements(new BudgetLineRequirement(routeParam));
+
+        return policyBuilder.Build();
+    }
+
     public static AuthorizationPolicy GetGroupOwnerPolicy(string routeParam = "groupId") =>
         new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme).GetGroupOwnerPolicy(routeParam);
 
