@@ -5,6 +5,6 @@ import type { reportInterval } from "models/reports";
 
 export const useInOutAverageReport = (accountId: string, start: Date, end: Date, interval: reportInterval = "Monthly") =>
     useQuery({
-        ...inOutAverageReportOptions({ path: { accountId, start: formatISODate(start), end: formatISODate(end) }, query: { Interval: interval } }),
+        ...inOutAverageReportOptions({ path: { accountId, start: start ? formatISODate(start) : "", end: end ? formatISODate(end) : "" }, query: { Interval: interval } }),
         enabled: !!start && !!end,
     });

@@ -14,6 +14,8 @@ internal class RemoveTagHandler(ITransactionRepository transactionRepository, IU
     {
         var entity = await transactionRepository.Get(request.Id, new IncludeSplitsSpecification(), cancellationToken);
 
+        if (entity.AccountId != request.InstrumentId) throw new NotFoundException("Transaction not found");
+
         var tag = entity.Tags.SingleOrDefault(t => t.Id == request.TagId) ?? throw new NotFoundException("Tag not found");
 
         entity.UpdateOrRemoveSplit(tag);

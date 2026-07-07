@@ -38,7 +38,7 @@ internal class UpdateHandler(IStockHoldingRepository repository, IUnitOfWork uni
     {
         if (command.GroupId != null)
         {
-            security.AssertGroupPermission(command.GroupId.Value);
+            await security.AssertGroupPermission(command.GroupId.Value);
         }
 
         var stockHolding = await repository.Get(command.InstrumentId, new IncludeSpecification(), cancellationToken) ?? throw new NotFoundException();
@@ -54,6 +54,6 @@ internal class UpdateHandler(IStockHoldingRepository repository, IUnitOfWork uni
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return stockHolding.ToModel(currencyConverter);
+        return await stockHolding.ToModel(currencyConverter, cancellationToken);
     }
 }

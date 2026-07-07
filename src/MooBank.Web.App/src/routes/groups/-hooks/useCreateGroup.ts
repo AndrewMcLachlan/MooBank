@@ -13,8 +13,8 @@ export const useCreateGroup = () => {
     });
 
     return {
-        mutateAsync: (group: Group) => {
-            mutateAsync({ body: { name: group.name, description: group.description ?? "", showTotal: group.showTotal, colour: group.colour } });
-        }, ...rest,
+        mutateAsync: (group: Group) =>
+            mutateAsync({ body: { name: group.name, description: group.description ?? "", showTotal: group.showTotal, colour: group.colour } }),
+        ...rest,
     };
 };

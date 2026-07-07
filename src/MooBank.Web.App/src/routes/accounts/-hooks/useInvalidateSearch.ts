@@ -1,11 +1,11 @@
 import { useQueryClient } from "@tanstack/react-query";
 import {
-    searchTransactionsOptions,
+    searchTransactionsQueryKey,
 } from "api/@tanstack/react-query.gen";
 
-export const useInvalidateSearch = (transactionId: string) => {
+export const useInvalidateSearch = (accountId: string) => {
 
     const queryClient = useQueryClient();
 
-    return () => queryClient.invalidateQueries({ queryKey: searchTransactionsOptions({ path: { instrumentId: transactionId } } as any).queryKey });
+    return () => queryClient.invalidateQueries({ queryKey: searchTransactionsQueryKey({ path: { instrumentId: accountId } } as any) });
 }

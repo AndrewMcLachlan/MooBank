@@ -157,4 +157,36 @@ public class RemoveTagTests
         // Act & Assert
         await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
+
+    /// <summary>
+    /// Given a transaction that belongs to a different instrument than the one in the command
+    /// When the remove tag command is handled
+    /// Then a NotFoundException should be thrown and no changes saved
+    /// </summary>
+    [Fact]
+    public async Task Handle_TransactionBelongsToDifferentInstrument_ThrowsNotFoundException()
+    {
+        // Arrange
+        var instrumentId = Guid.NewGuid();
+        var otherInstrumentId = Guid.NewGuid();
+        var transactionId = Guid.NewGuid();
+        var tagId = 5;
+
+        var existingTag = TestEntities.CreateTag(id: tagId, name: "Tag");
+        var existingTransaction = TestEntities.CreateTransaction(id: transactionId, accountId: otherInstrumentId, tags: [existingTag]);
+
+        _mocks.TransactionRepositoryMock
+            .Setup(r => r.Get(transactionId, It.IsAny<IncludeSplitsSpecification>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(existingTransaction);
+
+        var handler = new RemoveTagHandler(
+            _mocks.TransactionRepositoryMock.Object,
+            _mocks.UnitOfWorkMock.Object);
+
+        var command = new RemoveTag(instrumentId, transactionId, tagId);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
+        _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+    }
 }

@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { addMonths, format, parseISO, startOfMonth } from "date-fns";
 import { Widget } from "@andrewmclachlan/moo-ds";
 import type { ChartOptions } from "chart.js";
@@ -8,7 +7,7 @@ import { useChartColours } from "utils/chartColours";
 import { WidgetError } from "components/WidgetError";
 import { useForecastPlans } from "../forecast/-hooks/useForecastPlans";
 import { useForecastPlan } from "../forecast/-hooks/useForecastPlan";
-import { useRunForecast } from "../forecast/-hooks/useRunForecast";
+import { useForecastResult } from "../forecast/-hooks/useForecastResult";
 
 const MONTHS_BEHIND = 6;
 const MONTHS_AHEAD = 6;
@@ -19,15 +18,9 @@ export const ForecastWidget: React.FC = () => {
     const plan = plans?.[0];
     const planId = plan?.id ?? "";
 
-    const { data: planDetail, isError: planError } = useForecastPlan(planId);
-    const { run, result, isPending, isError: runError } = useRunForecast();
+    const { isError: planError } = useForecastPlan(planId);
+    const { data: result, isFetching, isError: runError } = useForecastResult(planId);
     const colours = useChartColours();
-
-    useEffect(() => {
-        if (planId && planDetail) {
-            run(planId);
-        }
-    }, [planId, planDetail?.updatedUtc]);
 
     // No forecast plan exists at all - don't render the widget
     if (!plansLoading && !plansError && plans && plans.length === 0) {
@@ -105,7 +98,7 @@ export const ForecastWidget: React.FC = () => {
     };
 
     return (
-        <Widget header={header} size="double" headerSize={2} className="report forecast-widget" loading={plansLoading || isPending} to="/forecast">
+        <Widget header={header} size="double" headerSize={2} className="report forecast-widget" loading={plansLoading || isFetching} to="/forecast">
             <div className="forecast-widget-chart">
                 <Line data={data} options={options} />
             </div>

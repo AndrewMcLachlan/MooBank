@@ -25,6 +25,6 @@ internal class DeleteTagPurposeHandler(IUnitOfWork unitOfWork, ILogicalAccountRe
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return entity.ToModel(currencyConverter);
+        return await entity.ToModel(currencyConverter, cancellationToken);
     }
 }

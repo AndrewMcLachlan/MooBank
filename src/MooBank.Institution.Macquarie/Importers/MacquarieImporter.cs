@@ -5,13 +5,12 @@ using Asm.MooBank.Institution.Macquarie.Domain;
 using Asm.MooBank.Institution.Macquarie.Models;
 using CsvHelper;
 using CsvHelper.Configuration;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TransactionType = Asm.MooBank.Models.TransactionType;
 
 namespace Asm.MooBank.Institution.Macquarie.Importers;
 
-internal partial class MacquarieImporter(IQueryable<TransactionRaw> rawTransactions, ITransactionRawRepository transactionRawRepository, ITransactionRepository transactionRepository, ILogger<MacquarieImporter> logger) : IImporter
+internal partial class MacquarieImporter(ITransactionRawRepository transactionRawRepository, ITransactionRepository transactionRepository, ILogger<MacquarieImporter> logger) : IImporter
 {
     private const string DateFormat = "dd MMM yyyy";
 
@@ -24,18 +23,11 @@ internal partial class MacquarieImporter(IQueryable<TransactionRaw> rawTransacti
         };
 
         using var csv = new CsvReader(reader, config);
-        var records = csv.GetRecords<MacquarieCsvRecord>();
+        var records = csv.GetRecords<MacquarieCsvRecord>().ToList();
 
         var rawTransactionEntities = new List<TransactionRaw>();
 
-        var checkTransactions = await rawTransactions.Where(t => t.AccountId == instrumentId).Select(t => new
-        {
-            t.Details,
-            t.Date,
-            t.Credit,
-            t.Debit,
-            t.Balance,
-        }).ToListAsync(cancellationToken);
+        var checkTransactions = await GetCheckTransactions(instrumentId, records, cancellationToken);
 
         int lineCount = 1;
         decimal? endBalance = null;
@@ -47,7 +39,7 @@ internal partial class MacquarieImporter(IQueryable<TransactionRaw> rawTransacti
             lineCount++;
 
             #region Validation
-            if (!DateOnly.TryParseExact(record.TransactionDate, DateFormat, out DateOnly transactionTime))
+            if (!DateOnly.TryParseExact(record.TransactionDate, DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly transactionTime))
             {
                 logger.LogWarning("Incorrect date format at line {lineCount}: {date}", lineCount, record.TransactionDate);
                 continue;
@@ -68,12 +60,12 @@ internal partial class MacquarieImporter(IQueryable<TransactionRaw> rawTransacti
             decimal credit = 0;
             decimal debit = 0;
 
-            if (!String.IsNullOrEmpty(record.Credit) && !Decimal.TryParse(record.Credit, out credit))
+            if (!String.IsNullOrEmpty(record.Credit) && !Decimal.TryParse(record.Credit, NumberStyles.Currency, CultureInfo.InvariantCulture, out credit))
             {
                 logger.LogWarning("Incorrect credit format at line {lineCount}: {credit}", lineCount, record.Credit);
                 continue;
             }
-            else if (!String.IsNullOrEmpty(record.Debit) && !Decimal.TryParse(record.Debit, out debit))
+            else if (!String.IsNullOrEmpty(record.Debit) && !Decimal.TryParse(record.Debit, NumberStyles.Currency, CultureInfo.InvariantCulture, out debit))
             {
                 logger.LogWarning("Incorrect debit format at line {lineCount}: {debit}", lineCount, record.Debit);
                 continue;
@@ -86,7 +78,7 @@ internal partial class MacquarieImporter(IQueryable<TransactionRaw> rawTransacti
                 // Assume this is a pending transaction and ignore.
                 continue;
             }
-            if (!Decimal.TryParse(record.Balance, out decimal balance))
+            if (!Decimal.TryParse(record.Balance, NumberStyles.Currency, CultureInfo.InvariantCulture, out decimal balance))
             {
                 logger.LogWarning("Incorrect balance format at line {lineCount}: {balance}", lineCount, record.Balance);
                 continue;
@@ -103,12 +95,18 @@ internal partial class MacquarieImporter(IQueryable<TransactionRaw> rawTransacti
             }
             else if (checkTransactions.Any(t => t.Details == record.Details && t.Date == transactionTime && t.Debit == debit && t.Credit == credit))
             {
-                var existing = await transactionRawRepository.GetZeroBalance(record.Details, transactionTime, debit, credit, cancellationToken);
+                var existing = await transactionRawRepository.GetZeroBalance(instrumentId, record.Details, transactionTime, debit, credit, cancellationToken);
 
-                existing.Balance = balance;
+                if (existing is not null)
+                {
+                    existing.Balance = balance;
 
-                logger.LogInformation("Pending Transaction found and updated {details} {date}", record.Details, transactionTime);
-                continue;
+                    logger.LogInformation("Pending Transaction found and updated {details} {date}", record.Details, transactionTime);
+                    continue;
+                }
+
+                // No matching pending transaction - this is a genuinely new transaction with
+                // identical details, date and amount, so fall through and insert it as new.
             }
 
             // Track sequence within each date - reset when date changes
@@ -165,13 +163,12 @@ internal partial class MacquarieImporter(IQueryable<TransactionRaw> rawTransacti
 
         transactionRawRepository.AddRange(rawTransactionEntities);
 
-        return new MooBank.Models.TransactionImportResult(rawTransactionEntities.Select(r => r.Transaction), endBalance!.Value);
+        return new MooBank.Models.TransactionImportResult(rawTransactionEntities.Select(r => r.Transaction), endBalance);
     }
 
     public async Task Reprocess(Guid instrumentId, Guid institutionAccountId, CancellationToken cancellationToken = default)
     {
-        var transactions = await transactionRepository.GetTransactions(instrumentId, institutionAccountId, cancellationToken);
-        var transactionIds = transactions.Select(t => t.Id);
+        var transactionIds = (await transactionRepository.GetTransactionIds(instrumentId, institutionAccountId, cancellationToken)).ToHashSet();
 
         var rawTransactions = await transactionRawRepository.GetAll(instrumentId, cancellationToken);
         var processed = rawTransactions.Where(t => t.TransactionId != null && transactionIds.Contains(t.TransactionId.Value));
@@ -191,6 +188,27 @@ internal partial class MacquarieImporter(IQueryable<TransactionRaw> rawTransacti
                 OriginalDescription = raw.OriginalDescription,
             };
         }
+    }
+
+    /// <summary>
+    /// Loads the existing raw transactions that fall within the date range of the file being imported,
+    /// projected down to only the fields needed for duplicate detection.
+    /// </summary>
+    private async Task<IReadOnlyCollection<TransactionRawSummary>> GetCheckTransactions(Guid instrumentId, IEnumerable<MacquarieCsvRecord> records, CancellationToken cancellationToken)
+    {
+        List<DateOnly> dates = [];
+
+        foreach (var record in records)
+        {
+            if (DateOnly.TryParseExact(record.TransactionDate, DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly date))
+            {
+                dates.Add(date);
+            }
+        }
+
+        if (dates.Count == 0) return [];
+
+        return (await transactionRawRepository.GetSummaries(instrumentId, dates.Min(), dates.Max(), cancellationToken)).ToList();
     }
 
     private static string? GetDetails(string? details, string? subcategory) =>

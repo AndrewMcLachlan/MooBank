@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Models;
@@ -71,9 +71,9 @@ public class GenerateBudgetTests : IDisposable
 
         var captured = new List<DomainBudgetLine>();
         _mocks.BudgetRepositoryMock
-            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>()))
-            .Callback<DomainBudgetLine>(l => { l.Tag = TestEntities.CreateTag(l.TagId, "Groceries"); captured.Add(l); })
-            .Returns<DomainBudgetLine>(l => l);
+            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>(), It.IsAny<CancellationToken>()))
+            .Callback<DomainBudgetLine, CancellationToken>((l, _) => { l.Tag = TestEntities.CreateTag(l.TagId, "Groceries"); captured.Add(l); })
+            .Returns<DomainBudgetLine, CancellationToken>((l, _) => Task.FromResult(l));
 
         var handler = new GenerateBudgetHandler(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable,
             relationshipQueryable, _mocks.BudgetRepositoryMock.Object, _mocks.UnitOfWorkMock.Object, _mocks.User);
@@ -123,7 +123,7 @@ public class GenerateBudgetTests : IDisposable
         await handler.Handle(new GenerateBudget(2026), TestContext.Current.CancellationToken);
 
         // Assert — nothing added because the only spending tag is already budgeted.
-        _mocks.BudgetRepositoryMock.Verify(r => r.AddLine(It.IsAny<DomainBudgetLine>()), Times.Never);
+        _mocks.BudgetRepositoryMock.Verify(r => r.AddLine(It.IsAny<DomainBudgetLine>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -157,7 +157,7 @@ public class GenerateBudgetTests : IDisposable
         await handler.Handle(new GenerateBudget(2026), TestContext.Current.CancellationToken);
 
         // Assert
-        _mocks.BudgetRepositoryMock.Verify(r => r.AddLine(It.IsAny<DomainBudgetLine>()), Times.Never);
+        _mocks.BudgetRepositoryMock.Verify(r => r.AddLine(It.IsAny<DomainBudgetLine>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -187,9 +187,9 @@ public class GenerateBudgetTests : IDisposable
 
         var captured = new List<DomainBudgetLine>();
         _mocks.BudgetRepositoryMock
-            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>()))
-            .Callback<DomainBudgetLine>(l => { l.Tag = TestEntities.CreateTag(l.TagId, "Shopping"); captured.Add(l); })
-            .Returns<DomainBudgetLine>(l => l);
+            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>(), It.IsAny<CancellationToken>()))
+            .Callback<DomainBudgetLine, CancellationToken>((l, _) => { l.Tag = TestEntities.CreateTag(l.TagId, "Shopping"); captured.Add(l); })
+            .Returns<DomainBudgetLine, CancellationToken>((l, _) => Task.FromResult(l));
 
         var handler = new GenerateBudgetHandler(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable,
             relationshipQueryable, _mocks.BudgetRepositoryMock.Object, _mocks.UnitOfWorkMock.Object, _mocks.User);
@@ -229,9 +229,9 @@ public class GenerateBudgetTests : IDisposable
 
         var captured = new List<DomainBudgetLine>();
         _mocks.BudgetRepositoryMock
-            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>()))
-            .Callback<DomainBudgetLine>(l => { l.Tag = TestEntities.CreateTag(l.TagId, "Salary"); captured.Add(l); })
-            .Returns<DomainBudgetLine>(l => l);
+            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>(), It.IsAny<CancellationToken>()))
+            .Callback<DomainBudgetLine, CancellationToken>((l, _) => { l.Tag = TestEntities.CreateTag(l.TagId, "Salary"); captured.Add(l); })
+            .Returns<DomainBudgetLine, CancellationToken>((l, _) => Task.FromResult(l));
 
         var handler = new GenerateBudgetHandler(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable,
             relationshipQueryable, _mocks.BudgetRepositoryMock.Object, _mocks.UnitOfWorkMock.Object, _mocks.User);
@@ -286,9 +286,9 @@ public class GenerateBudgetTests : IDisposable
 
         var captured = new List<DomainBudgetLine>();
         _mocks.BudgetRepositoryMock
-            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>()))
-            .Callback<DomainBudgetLine>(l => { l.Tag = TestEntities.CreateTag(l.TagId, "House Insurance"); captured.Add(l); })
-            .Returns<DomainBudgetLine>(l => l);
+            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>(), It.IsAny<CancellationToken>()))
+            .Callback<DomainBudgetLine, CancellationToken>((l, _) => { l.Tag = TestEntities.CreateTag(l.TagId, "House Insurance"); captured.Add(l); })
+            .Returns<DomainBudgetLine, CancellationToken>((l, _) => Task.FromResult(l));
 
         var handler = new GenerateBudgetHandler(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable,
             relationshipQueryable, _mocks.BudgetRepositoryMock.Object, _mocks.UnitOfWorkMock.Object, _mocks.User);
@@ -333,9 +333,9 @@ public class GenerateBudgetTests : IDisposable
 
         var captured = new List<DomainBudgetLine>();
         _mocks.BudgetRepositoryMock
-            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>()))
-            .Callback<DomainBudgetLine>(l => { l.Tag = TestEntities.CreateTag(l.TagId, "Insurance"); captured.Add(l); })
-            .Returns<DomainBudgetLine>(l => l);
+            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>(), It.IsAny<CancellationToken>()))
+            .Callback<DomainBudgetLine, CancellationToken>((l, _) => { l.Tag = TestEntities.CreateTag(l.TagId, "Insurance"); captured.Add(l); })
+            .Returns<DomainBudgetLine, CancellationToken>((l, _) => Task.FromResult(l));
 
         var handler = new GenerateBudgetHandler(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable,
             rels, _mocks.BudgetRepositoryMock.Object, _mocks.UnitOfWorkMock.Object, _mocks.User);
@@ -382,9 +382,9 @@ public class GenerateBudgetTests : IDisposable
 
         var captured = new List<DomainBudgetLine>();
         _mocks.BudgetRepositoryMock
-            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>()))
-            .Callback<DomainBudgetLine>(l => { l.Tag = TestEntities.CreateTag(l.TagId, "Tag"); captured.Add(l); })
-            .Returns<DomainBudgetLine>(l => l);
+            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>(), It.IsAny<CancellationToken>()))
+            .Callback<DomainBudgetLine, CancellationToken>((l, _) => { l.Tag = TestEntities.CreateTag(l.TagId, "Tag"); captured.Add(l); })
+            .Returns<DomainBudgetLine, CancellationToken>((l, _) => Task.FromResult(l));
 
         var handler = new GenerateBudgetHandler(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable,
             rels, _mocks.BudgetRepositoryMock.Object, _mocks.UnitOfWorkMock.Object, _mocks.User);
@@ -426,9 +426,9 @@ public class GenerateBudgetTests : IDisposable
 
         var captured = new List<DomainBudgetLine>();
         _mocks.BudgetRepositoryMock
-            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>()))
-            .Callback<DomainBudgetLine>(l => { l.Tag = TestEntities.CreateTag(l.TagId, "Medical"); captured.Add(l); })
-            .Returns<DomainBudgetLine>(l => l);
+            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>(), It.IsAny<CancellationToken>()))
+            .Callback<DomainBudgetLine, CancellationToken>((l, _) => { l.Tag = TestEntities.CreateTag(l.TagId, "Medical"); captured.Add(l); })
+            .Returns<DomainBudgetLine, CancellationToken>((l, _) => Task.FromResult(l));
 
         var handler = new GenerateBudgetHandler(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable,
             rels, _mocks.BudgetRepositoryMock.Object, _mocks.UnitOfWorkMock.Object, _mocks.User);
@@ -473,9 +473,9 @@ public class GenerateBudgetTests : IDisposable
 
         var captured = new List<DomainBudgetLine>();
         _mocks.BudgetRepositoryMock
-            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>()))
-            .Callback<DomainBudgetLine>(l => { l.Tag = TestEntities.CreateTag(l.TagId, "Insurance"); captured.Add(l); })
-            .Returns<DomainBudgetLine>(l => l);
+            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>(), It.IsAny<CancellationToken>()))
+            .Callback<DomainBudgetLine, CancellationToken>((l, _) => { l.Tag = TestEntities.CreateTag(l.TagId, "Insurance"); captured.Add(l); })
+            .Returns<DomainBudgetLine, CancellationToken>((l, _) => Task.FromResult(l));
 
         var handler = new GenerateBudgetHandler(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable,
             rels, _mocks.BudgetRepositoryMock.Object, _mocks.UnitOfWorkMock.Object, _mocks.User);
@@ -523,9 +523,9 @@ public class GenerateBudgetTests : IDisposable
 
         var captured = new List<DomainBudgetLine>();
         _mocks.BudgetRepositoryMock
-            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>()))
-            .Callback<DomainBudgetLine>(l => { l.Tag = TestEntities.CreateTag(l.TagId, "Medical"); captured.Add(l); })
-            .Returns<DomainBudgetLine>(l => l);
+            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>(), It.IsAny<CancellationToken>()))
+            .Callback<DomainBudgetLine, CancellationToken>((l, _) => { l.Tag = TestEntities.CreateTag(l.TagId, "Medical"); captured.Add(l); })
+            .Returns<DomainBudgetLine, CancellationToken>((l, _) => Task.FromResult(l));
 
         var handler = new GenerateBudgetHandler(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable,
             rels, _mocks.BudgetRepositoryMock.Object, _mocks.UnitOfWorkMock.Object, _mocks.User);

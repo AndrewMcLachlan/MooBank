@@ -30,7 +30,7 @@ internal class TransactionsEndpoints : EndpointGroupBase
 
         builder.MapCommand<Create, Transaction>("", CommandBinding.Parameters)
             .WithNames("Create Transaction")
-            .Accepts<Create>("application/json");
+            .Accepts<Models.CreateTransaction>("application/json");
 
         builder.MapCommand<UpdateBalance, Transaction>("/balance-adjustment", CommandBinding.Parameters)
             .WithNames("Set Balance");

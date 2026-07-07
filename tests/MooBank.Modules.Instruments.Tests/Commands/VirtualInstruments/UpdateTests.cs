@@ -1,6 +1,7 @@
 #nullable enable
 using Asm.Domain;
 using Asm.MooBank.Domain.Entities.Account.Specifications;
+using Asm.MooBank.Domain.Entities.Instrument.Events;
 using Asm.MooBank.Modules.Instruments.Commands.VirtualInstruments;
 using Asm.MooBank.Modules.Instruments.Tests.Support;
 
@@ -135,6 +136,11 @@ public class UpdateTests
         await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
+    /// <summary>
+    /// Given a virtual instrument with a balance of 1000
+    /// When it is updated with a lower balance of 800
+    /// Then a balance adjustment event is raised for -200 and the balance is not set directly.
+    /// </summary>
     [Fact]
     public async Task Handle_BalanceDecrease_RaisesBalanceAdjustmentEvent()
     {
@@ -164,8 +170,11 @@ public class UpdateTests
         await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
-        Assert.NotEmpty(virtualInstrument.Events);
-        Assert.Equal(800m, virtualInstrument.Balance);
+        var domainEvent = Assert.IsType<BalanceAdjustmentEvent>(Assert.Single(virtualInstrument.Events));
+        Assert.Equal(-200m, domainEvent.Amount);
+        // The balance itself is a computed column applied via the adjustment transaction,
+        // so the in-memory value is not set directly.
+        Assert.Equal(1000m, virtualInstrument.Balance);
     }
 
     [Fact]
@@ -200,11 +209,15 @@ public class UpdateTests
         Assert.Empty(virtualInstrument.Events);
     }
 
+    /// <summary>
+    /// Given a virtual instrument with a balance of 500
+    /// When it is updated with a higher balance of 800
+    /// Then a balance adjustment event is raised for +300.
+    /// </summary>
     [Fact]
-    public async Task Handle_BalanceIncrease_DoesNotUpdateBalanceOrRaiseEvent()
+    public async Task Handle_BalanceIncrease_RaisesBalanceAdjustmentEvent()
     {
-        // Arrange - When new balance is higher than existing (amount is negative),
-        // the balance is NOT updated and no event is raised (intentional behavior)
+        // Arrange
         var instrumentId = Guid.NewGuid();
         var virtualInstrumentId = Guid.NewGuid();
         var virtualInstrument = TestEntities.CreateVirtualInstrument(
@@ -223,14 +236,14 @@ public class UpdateTests
             _mocks.UnitOfWorkMock.Object,
             _mocks.CurrencyConverterMock.Object);
 
-        // Higher balance requested - amount = 500 - 800 = -300 (negative, so condition fails)
+        // Higher balance requested - amount = 800 - 500 = +300
         var command = new Update(instrumentId, virtualInstrumentId, "Name", "Desc", 800m);
 
         // Act
         await handler.Handle(command, TestContext.Current.CancellationToken);
 
-        // Assert - Balance should remain unchanged when trying to increase
-        Assert.Equal(500m, virtualInstrument.Balance);
-        Assert.Empty(virtualInstrument.Events);
+        // Assert
+        var domainEvent = Assert.IsType<BalanceAdjustmentEvent>(Assert.Single(virtualInstrument.Events));
+        Assert.Equal(300m, domainEvent.Amount);
     }
 }

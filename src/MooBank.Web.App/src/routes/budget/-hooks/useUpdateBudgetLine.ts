@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateBudgetLineMutation, getAllBudgetYearsQueryKey } from "api/@tanstack/react-query.gen";
+import { updateBudgetLineMutation, getAllBudgetYearsQueryKey, getBudgetQueryKey } from "api/@tanstack/react-query.gen";
 import type { BudgetLine } from "api/types.gen";
 
 export const useUpdateBudgetLine = () => {
@@ -7,7 +7,8 @@ export const useUpdateBudgetLine = () => {
 
     const { mutate } = useMutation({
         ...updateBudgetLineMutation(),
-        onSettled: () => {
+        onSettled: (_data, _error, variables) => {
+            queryClient.invalidateQueries({ queryKey: getBudgetQueryKey({ path: { year: variables.path!.year } }) });
             queryClient.invalidateQueries({ queryKey: getAllBudgetYearsQueryKey() });
         },
     });

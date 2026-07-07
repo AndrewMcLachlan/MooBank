@@ -195,6 +195,41 @@ public class QuarterTests
         Assert.False(quarter1 == quarter2);
     }
 
+    /// <summary>
+    /// Given a Quarter compared to a boxed equal Quarter
+    /// When Equals(object) is called
+    /// Then true should be returned
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void Equals_ObjectOverload_BoxedEqualQuarter_ReturnsTrue()
+    {
+        // Arrange
+        var quarter = new Quarter(2024, 2);
+        object boxed = new Quarter(2024, 2);
+
+        // Act & Assert
+        Assert.True(quarter.Equals(boxed));
+    }
+
+    /// <summary>
+    /// Given a Quarter compared to null or a non-Quarter object
+    /// When Equals(object) is called
+    /// Then false should be returned without throwing
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void Equals_ObjectOverload_NullOrOtherType_ReturnsFalse()
+    {
+        // Arrange
+        var quarter = new Quarter(2024, 2);
+
+        // Act & Assert
+        Assert.False(quarter.Equals((object?)null));
+        Assert.False(quarter.Equals((object)"2024-Q2"));
+        Assert.False(quarter.Equals(2024));
+    }
+
     #endregion
 
     #region Comparison Operators

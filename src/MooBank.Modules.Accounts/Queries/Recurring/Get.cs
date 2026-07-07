@@ -9,8 +9,11 @@ internal class GetHandler(IQueryable<Domain.Entities.Instrument.Instrument> acco
 
     public async ValueTask<RecurringTransaction> Handle(Get query, CancellationToken cancellationToken)
     {
-        var account = await accounts.Include(a => a.VirtualInstruments).ThenInclude(a => a.RecurringTransactions).SingleAsync(a => a.Id == query.AccountId, cancellationToken);
+        var recurringTransaction = await accounts.Where(a => a.Id == query.AccountId)
+            .SelectMany(a => a.VirtualInstruments)
+            .SelectMany(v => v.RecurringTransactions)
+            .SingleOrDefaultAsync(r => r.Id == query.RecurringTransactionId, cancellationToken);
 
-        return account.VirtualInstruments.SelectMany(v => v.RecurringTransactions).SingleOrDefault(r => r.Id == query.RecurringTransactionId)?.ToModel() ?? throw new NotFoundException();
+        return recurringTransaction?.ToModel() ?? throw new NotFoundException();
     }
 }

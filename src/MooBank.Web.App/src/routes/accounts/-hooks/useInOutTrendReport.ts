@@ -6,6 +6,6 @@ import type { TrendReportSettings } from "models/reports";
 
 export const useInOutTrendReport = (accountId: string, start: Date, end: Date, settings: TrendReportSettings = defaultSettings) =>
     useQuery({
-        ...inOutTrendReportOptions({ path: { accountId, start: formatISODate(start), end: formatISODate(end) }, query: { Interval: settings.interval } }),
+        ...inOutTrendReportOptions({ path: { accountId, start: start ? formatISODate(start) : "", end: end ? formatISODate(end) : "" }, query: { Interval: settings.interval } }),
         enabled: !!start && !!end,
     });

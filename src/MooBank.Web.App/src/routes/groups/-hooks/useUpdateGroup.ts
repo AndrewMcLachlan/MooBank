@@ -13,8 +13,8 @@ export const useUpdateGroup = () => {
     });
 
     return {
-        mutateAsync: (group: Group) => {
-            mutateAsync({ body: group, path: { id: group.id } } as any);
-        }, ...rest,
+        mutateAsync: (group: Group) =>
+            mutateAsync({ body: group, path: { id: group.id } } as any),
+        ...rest,
     };
 };

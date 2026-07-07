@@ -39,7 +39,7 @@ internal class UpdateHandler(IAssetRepository repository, IUnitOfWork unitOfWork
     {
         if (command.GroupId != null)
         {
-            security.AssertGroupPermission(command.GroupId.Value);
+            await security.AssertGroupPermission(command.GroupId.Value);
         }
 
         var entity = await repository.Get(command.AccountId, new IncludeSpecification(), cancellationToken) ?? throw new NotFoundException();
@@ -56,6 +56,6 @@ internal class UpdateHandler(IAssetRepository repository, IUnitOfWork unitOfWork
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return entity.ToModel(currencyConverter);
+        return await entity.ToModel(currencyConverter, cancellationToken);
     }
 }

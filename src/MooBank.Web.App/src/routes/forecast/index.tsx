@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Spinner } from "@andrewmclachlan/moo-ds";
 import { useForecastPlans } from "./-hooks/useForecastPlans";
 import { useForecastPlan } from "./-hooks/useForecastPlan";
-import { useRunForecast } from "./-hooks/useRunForecast";
+import { useForecastResult } from "./-hooks/useForecastResult";
 import { useAccounts } from "hooks/useAccounts";
 import { ForecastPage } from "./-components/ForecastPage";
 import { ForecastChart } from "./-components/ForecastChart";
@@ -31,14 +31,7 @@ function Forecast() {
     }, [plans, planId]);
 
     const { data: plan, isLoading: planLoading } = useForecastPlan(planId);
-    const { run: runForecast, result, isPending: resultLoading } = useRunForecast();
-
-    // Run forecast when plan is loaded or updated
-    useEffect(() => {
-        if (planId && plan) {
-            runForecast(planId);
-        }
-    }, [planId, plan?.updatedUtc]);
+    const { data: result, isFetching: resultLoading } = useForecastResult(planId);
 
     // Loading state
     if (plansLoading || accountsLoading) {

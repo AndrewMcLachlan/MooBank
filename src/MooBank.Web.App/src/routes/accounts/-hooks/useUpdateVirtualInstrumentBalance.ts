@@ -15,33 +15,45 @@ export const useUpdateVirtualInstrumentBalance = () => {
 
         onMutate: async (variables) => {
 
+            const queryKey = getFormattedInstrumentsListQueryKey();
+
             await queryClient.cancelQueries({ queryKey: getAccountsQueryKey() });
-            await queryClient.cancelQueries({ queryKey: getFormattedInstrumentsListQueryKey() });
+            await queryClient.cancelQueries({ queryKey });
 
-            const accounts = queryClient.getQueryData<InstrumentsList>(getFormattedInstrumentsListQueryKey());
-
-            if (!accounts) return;
+            const previous = queryClient.getQueryData<InstrumentsList>(queryKey);
+            if (!previous) return { previous: undefined };
 
             const vars = variables as any;
-            const account = accounts.groups.flatMap(g => g.instruments).find(a => a.id === vars.path!.instrumentId);
-            if (!account) return;
-            const vAccount = account.virtualInstruments.find(a => a.id === vars.path!.virtualInstrumentId);
-            if (!vAccount) return;
+            const account = previous.groups.flatMap(g => g.instruments).find(a => a.id === vars.path!.instrumentId);
+            const vAccount = account?.virtualInstruments.find(a => a.id === vars.path!.virtualInstrumentId);
+            if (!account || !vAccount) return { previous: undefined };
 
             const difference = Number(vAccount.currentBalance) - vars.body.balance;
 
-            vAccount.currentBalance = vars.body.balance;
-            (account as any).remainingBalance += difference;
-            // TODO: Update the local currency balance if needed
-            accounts.total = 0;
+            const next: InstrumentsList = {
+                ...previous,
+                groups: previous.groups.map(group => ({
+                    ...group,
+                    instruments: group.instruments.map(instrument => instrument.id !== vars.path!.instrumentId ? instrument : {
+                        ...instrument,
+                        remainingBalance: ((instrument as any).remainingBalance ?? 0) + difference,
+                        virtualInstruments: instrument.virtualInstruments.map(vi => vi.id !== vars.path!.virtualInstrumentId ? vi : {
+                            ...vi,
+                            currentBalance: vars.body.balance,
+                        }),
+                    } as any),
+                })),
+            };
 
-            queryClient.setQueryData<InstrumentsList>(getFormattedInstrumentsListQueryKey(), { ...accounts });
+            queryClient.setQueryData<InstrumentsList>(queryKey, next);
 
-            return accounts;
+            return { previous };
         },
 
-        onError: (e) => {
-            console.error(e);
+        onError: (_error, _variables, context: any) => {
+            if (context?.previous) {
+                queryClient.setQueryData(getFormattedInstrumentsListQueryKey(), context.previous);
+            }
         },
 
         onSettled: (_data, _error, variables) => {

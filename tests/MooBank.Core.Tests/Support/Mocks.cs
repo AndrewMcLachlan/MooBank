@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Linq.Expressions;
 using Asm.Domain;
 using Asm.MooBank.Domain.Entities.ReferenceData;
@@ -18,12 +18,12 @@ public class Mocks
         UnitOfWorkMock.Setup(uow => uow.SaveChangesAsync(default)).ReturnsAsync(1);
 
         SecurityMock = new Mock<ISecurity>();
-        SecurityMock.Setup(s => s.AssertGroupPermission(It.IsAny<Guid>()));
+        SecurityMock.Setup(s => s.AssertGroupPermission(It.IsAny<Guid>())).Returns(Task.CompletedTask);
         SecurityMock.Setup(s => s.AssertFamilyPermission(It.IsAny<Guid>()));
 
         CurrencyConverterMock = new Mock<ICurrencyConverter>();
-        CurrencyConverterMock.Setup(c => c.Convert(It.IsAny<decimal>(), It.IsAny<string>()))
-            .Returns<decimal, string>((amount, currency) => amount);
+        CurrencyConverterMock.Setup(c => c.Convert(It.IsAny<decimal>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Returns<decimal, string, CancellationToken>((amount, currency, _) => Task.FromResult<decimal?>(amount));
 
         HttpContextAccessorMock = new Mock<IHttpContextAccessor>();
         var httpContext = new DefaultHttpContext();

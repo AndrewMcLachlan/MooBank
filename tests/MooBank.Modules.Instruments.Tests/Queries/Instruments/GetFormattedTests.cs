@@ -165,8 +165,8 @@ public class GetFormattedTests
         var account = TestEntities.CreateInstrumentWithOwner(name: "USD Account", ownerId: userId, balance: 100m, currency: "USD");
 
         _mocks.CurrencyConverterMock
-            .Setup(c => c.Convert(100m, "USD"))
-            .Returns(150m);
+            .Setup(c => c.Convert(100m, "USD", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(150m);
 
         var logicalAccounts = TestEntities.CreateLogicalAccountQueryable(account);
         var stockHoldings = TestEntities.CreateStockHoldingQueryable([]);

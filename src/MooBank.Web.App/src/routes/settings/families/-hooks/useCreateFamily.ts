@@ -9,20 +9,27 @@ export const useCreateFamily = () => {
 
     const { mutateAsync } = useMutation({
         ...createFamilyMutation(),
-        onMutate: (variables) => {
-            let allFamilies = queryClient.getQueryData<Family[]>(getAllFamiliesQueryKey());
-            if (!allFamilies) {
-                console.warn("Query Cache is missing Families");
-                return;
+        onMutate: async (variables) => {
+            const queryKey = getAllFamiliesQueryKey();
+            await queryClient.cancelQueries({ queryKey });
+
+            const previous = queryClient.getQueryData<Family[]>(queryKey);
+            if (previous) {
+                const next = [...previous, variables.body as Family].sort((f1, f2) => f1.name.localeCompare(f2.name));
+                queryClient.setQueryData<Family[]>(queryKey, next);
             }
 
-            allFamilies.push(variables.body as Family);
-            allFamilies = allFamilies.sort((t1, t2) => t1.name.localeCompare(t2.name));
-            queryClient.setQueryData<Family[]>(getAllFamiliesQueryKey(), allFamilies);
+            return { previous };
         },
-        onError: () => {
+        onError: (_error, _variables, context: any) => {
+            if (context?.previous) {
+                queryClient.setQueryData(getAllFamiliesQueryKey(), context.previous);
+            }
+        },
+        onSettled: () => {
+            // Refetch so the optimistic entry (which has no server-assigned id) is replaced.
             queryClient.invalidateQueries({ queryKey: getAllFamiliesQueryKey() });
-        }
+        },
     });
 
     return (family: Family) =>

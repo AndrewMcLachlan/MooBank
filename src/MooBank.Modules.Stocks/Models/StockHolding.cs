@@ -24,7 +24,7 @@ public record StockHolding : MooBank.Models.Instrument
 
 public static class StockHoldingExtensions
 {
-    public static StockHolding ToModel(this Domain.Entities.StockHolding.StockHolding account, ICurrencyConverter currencyConverter) => new()
+    public static async Task<StockHolding> ToModel(this Domain.Entities.StockHolding.StockHolding account, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default) => new()
     {
         Id = account.Id,
         Name = account.Name,
@@ -33,7 +33,7 @@ public static class StockHoldingExtensions
         Controller = account.Controller,
         CurrentBalance = account.CurrentValue,
         Currency = account.Currency,
-        CurrentBalanceLocalCurrency = currencyConverter.Convert(account.CurrentValue, account.Currency),
+        CurrentBalanceLocalCurrency = await currencyConverter.Convert(account.CurrentValue, account.Currency, cancellationToken),
         GainLoss = account.GainLoss,
         BalanceDate = ((Instrument)account).LastUpdated,
         InstrumentType = "Shares",
@@ -42,16 +42,14 @@ public static class StockHoldingExtensions
         CurrentValue = account.CurrentValue,
     };
 
-    public static StockHolding ToModel(this Domain.Entities.StockHolding.StockHolding account, Guid userId, ICurrencyConverter currencyConverter)
+    public static async Task<StockHolding> ToModel(this Domain.Entities.StockHolding.StockHolding account, Guid userId, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default)
     {
-        var result = account.ToModel(currencyConverter);
+        var result = await account.ToModel(currencyConverter, cancellationToken);
         result.GroupId = account.GetGroup(userId)?.Id;
 
         return result;
     }
 
-    public static IEnumerable<StockHolding> ToModel(this IEnumerable<Domain.Entities.StockHolding.StockHolding> entities, ICurrencyConverter currencyConverter)
-    {
-        return entities.Select(t => t.ToModel(currencyConverter));
-    }
+    public static async Task<IEnumerable<StockHolding>> ToModel(this IEnumerable<Domain.Entities.StockHolding.StockHolding> entities, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default) =>
+        await entities.SelectAsync(entity => entity.ToModel(currencyConverter, cancellationToken));
 }

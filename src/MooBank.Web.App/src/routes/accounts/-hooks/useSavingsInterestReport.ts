@@ -7,8 +7,8 @@ export const useSavingsInterestReport = (accountId: string, start: Date, end: Da
         ...savingsInterestReportOptions({
             path: {
                 accountId,
-                start: formatISODate(start),
-                end: formatISODate(end),
+                start: start ? formatISODate(start) : "",
+                end: end ? formatISODate(end) : "",
             },
         }),
         enabled: enabled && !!accountId && !!start && !!end,

@@ -2,6 +2,7 @@ import { defineConfig } from "vite"
 import { visualizer } from "rollup-plugin-visualizer";
 import react from "@vitejs/plugin-react"
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
+import { VitePWA } from "vite-plugin-pwa";
 import { fileURLToPath } from "url"
 
 import fs from 'fs';
@@ -44,7 +45,16 @@ export default defineConfig({
         autoCodeSplitting: true,
         quoteStyle: "double",
     }),
-    react(), visualizer() as any],
+    react(),
+    VitePWA({
+        registerType: "autoUpdate",
+        manifest: false,
+        workbox: {
+            globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
+            navigateFallbackDenylist: [/^\/api/, /^\/swagger/, /^\/mcp/],
+        },
+    }),
+    visualizer() as any],
     server: {
         port: 3005,
         proxy: {

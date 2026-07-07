@@ -1,4 +1,3 @@
-import { emptyGuid } from "@andrewmclachlan/moo-ds";
 import { format } from "date-fns/format";
 import type { TransactionSplit } from "api/types.gen";
 
@@ -8,12 +7,14 @@ export interface TransactionUpdate {
     splits?: TransactionSplit[];
 }
 
-export const emptyTransactionSplit: TransactionSplit = {
-    id: emptyGuid,
+// Each unsaved split needs a unique id so React keys and edit/remove operations
+// don't collide. The API uses the client-supplied id when creating new splits.
+export const newTransactionSplit = (): TransactionSplit => ({
+    id: crypto.randomUUID(),
     amount: 0,
     offsetBy: [],
     tags: [],
-};
+});
 
 export interface CreateTransaction {
     amount: number;

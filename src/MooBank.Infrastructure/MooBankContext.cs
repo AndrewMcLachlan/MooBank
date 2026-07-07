@@ -78,9 +78,6 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
     public virtual DbSet<User> Users { get; set; }
 
     [AllowNull]
-    public virtual DbSet<VirtualInstrument> VirtualAccounts { get; set; }
-
-    [AllowNull]
     public virtual DbSet<CpiChange> CpiChanges { get; set; }
 
     [AllowNull]

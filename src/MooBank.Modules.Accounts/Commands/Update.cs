@@ -19,7 +19,7 @@ internal class UpdateHandler(IAuditingUnitOfWork unitOfWork, ILogicalAccountRepo
 
         if (account.GroupId != null)
         {
-            security.AssertGroupPermission(account.GroupId.Value);
+            await security.AssertGroupPermission(account.GroupId.Value);
         }
 
         var entity = await accountRepository.Get(account.Id, new AccountDetailsSpecification(), cancellationToken);
@@ -36,6 +36,6 @@ internal class UpdateHandler(IAuditingUnitOfWork unitOfWork, ILogicalAccountRepo
 
         await unitOfWork.SaveChangesAsync("Updated", "Account", entity.Id, cancellationToken);
 
-        return entity.ToModel(currencyConverter);
+        return await entity.ToModel(currencyConverter, cancellationToken);
     }
 }

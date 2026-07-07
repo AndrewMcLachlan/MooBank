@@ -39,6 +39,6 @@ internal class UpdateBalanceHandler(IInstrumentRepository instrumentRepository, 
         instrument.Events.Add(new BalanceAdjustmentEvent(instrument, amount, "Web"));
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        return instrument.ToModel(currencyConverter);
+        return await instrument.ToModel(currencyConverter, cancellationToken);
     }
 }

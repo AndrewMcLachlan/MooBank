@@ -7,13 +7,6 @@ namespace Asm.MooBank.Modules.Budgets.Tests.Queries;
 [Trait("Category", "Unit")]
 public class GetLineTests
 {
-    private readonly TestMocks _mocks;
-
-    public GetLineTests()
-    {
-        _mocks = new TestMocks();
-    }
-
     [Fact]
     public async Task Handle_ExistingBudgetLine_ReturnsBudgetLine()
     {
@@ -25,9 +18,7 @@ public class GetLineTests
         line.Budget = budget;
         var queryable = TestEntities.CreateBudgetLineQueryable(line);
 
-        _mocks.SecurityMock.Setup(s => s.AssertBudgetLinePermission(lineId, It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-
-        var handler = new GetLineHandler(queryable, _mocks.SecurityMock.Object);
+        var handler = new GetLineHandler(queryable);
         var query = new GetLine(2024, lineId);
 
         // Act
@@ -54,9 +45,7 @@ public class GetLineTests
         line2.Budget = budget;
         var queryable = TestEntities.CreateBudgetLineQueryable(line1, line2);
 
-        _mocks.SecurityMock.Setup(s => s.AssertBudgetLinePermission(lineId2, It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-
-        var handler = new GetLineHandler(queryable, _mocks.SecurityMock.Object);
+        var handler = new GetLineHandler(queryable);
         var query = new GetLine(2024, lineId2);
 
         // Act
@@ -79,9 +68,7 @@ public class GetLineTests
         line.Budget = budget;
         var queryable = TestEntities.CreateBudgetLineQueryable(line);
 
-        _mocks.SecurityMock.Setup(s => s.AssertBudgetLinePermission(nonExistentId, It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-
-        var handler = new GetLineHandler(queryable, _mocks.SecurityMock.Object);
+        var handler = new GetLineHandler(queryable);
         var query = new GetLine(2024, nonExistentId);
 
         // Act & Assert
@@ -99,36 +86,11 @@ public class GetLineTests
         line.Budget = budget;
         var queryable = TestEntities.CreateBudgetLineQueryable(line);
 
-        _mocks.SecurityMock.Setup(s => s.AssertBudgetLinePermission(lineId, It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-
-        var handler = new GetLineHandler(queryable, _mocks.SecurityMock.Object);
+        var handler = new GetLineHandler(queryable);
         var query = new GetLine(2023, lineId); // Wrong year
 
         // Act & Assert
         await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(query, TestContext.Current.CancellationToken).AsTask());
-    }
-
-    [Fact]
-    public async Task Handle_ChecksSecurity()
-    {
-        // Arrange
-        var lineId = Guid.NewGuid();
-        var budgetId = Guid.NewGuid();
-        var budget = TestEntities.CreateBudget(id: budgetId, year: 2024);
-        var line = TestEntities.CreateBudgetLine(id: lineId, budgetId: budgetId);
-        line.Budget = budget;
-        var queryable = TestEntities.CreateBudgetLineQueryable(line);
-
-        _mocks.SecurityMock.Setup(s => s.AssertBudgetLinePermission(lineId, It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-
-        var handler = new GetLineHandler(queryable, _mocks.SecurityMock.Object);
-        var query = new GetLine(2024, lineId);
-
-        // Act
-        await handler.Handle(query, TestContext.Current.CancellationToken);
-
-        // Assert
-        _mocks.SecurityMock.Verify(s => s.AssertBudgetLinePermission(lineId, It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -142,9 +104,7 @@ public class GetLineTests
         line.Budget = budget;
         var queryable = TestEntities.CreateBudgetLineQueryable(line);
 
-        _mocks.SecurityMock.Setup(s => s.AssertBudgetLinePermission(lineId, It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-
-        var handler = new GetLineHandler(queryable, _mocks.SecurityMock.Object);
+        var handler = new GetLineHandler(queryable);
         var query = new GetLine(2024, lineId);
 
         // Act

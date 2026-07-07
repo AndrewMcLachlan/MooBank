@@ -110,6 +110,8 @@
     <Project Path="tests/MooBank.Core.Tests/MooBank.Core.Tests.csproj" />
     <Project Path="tests/MooBank.Domain.Tests/MooBank.Domain.Tests.csproj" />
     <Project Path="tests/MooBank.Infrastructure.Tests/MooBank.Infrastructure.Tests.csproj" />
+    <Project Path="tests/MooBank.Institution.AustralianSuper.Tests/MooBank.Institution.AustralianSuper.Tests.csproj" />
+    <Project Path="tests/MooBank.Institution.Ing.Tests/MooBank.Institution.Ing.Tests.csproj" />
     <Project Path="tests/MooBank.Modules.Accounts.Tests/MooBank.Modules.Accounts.Tests.csproj" />
     <Project Path="tests/MooBank.Modules.Assets.Tests/MooBank.Modules.Assets.Tests.csproj" />
     <Project Path="tests/MooBank.Modules.Bills.Tests/MooBank.Modules.Bills.Tests.csproj" />

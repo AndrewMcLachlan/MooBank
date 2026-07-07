@@ -19,6 +19,10 @@ internal class UpdateUserValidator : AbstractValidator<UpdateUser>
             .NotEmpty().WithMessage("Currency is required")
             .Length(3).WithMessage("Currency must be a 3-letter ISO code");
 
+        RuleFor(x => x.Cards)
+            .Must(cards => cards.GroupBy(c => c.Last4Digits).All(g => g.Count() == 1))
+            .WithMessage("Duplicate card numbers are not allowed");
+
         RuleForEach(x => x.Cards).SetValidator(new UserCardValidator());
     }
 }

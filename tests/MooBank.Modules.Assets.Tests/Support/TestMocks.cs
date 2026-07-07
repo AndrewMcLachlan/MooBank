@@ -1,4 +1,4 @@
-using Asm.Domain;
+﻿using Asm.Domain;
 using Asm.MooBank.Domain.Entities.Asset;
 using Asm.MooBank.Models;
 using Asm.MooBank.Security;
@@ -15,13 +15,13 @@ public class TestMocks
         UnitOfWorkMock.Setup(uow => uow.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         SecurityMock = new Mock<ISecurity>();
-        SecurityMock.Setup(s => s.AssertGroupPermission(It.IsAny<Guid>()));
+        SecurityMock.Setup(s => s.AssertGroupPermission(It.IsAny<Guid>())).Returns(Task.CompletedTask);
 
         AssetRepositoryMock = new Mock<IAssetRepository>();
 
         CurrencyConverterMock = new Mock<ICurrencyConverter>();
-        CurrencyConverterMock.Setup(c => c.Convert(It.IsAny<decimal>(), It.IsAny<string>()))
-            .Returns<decimal, string>((amount, _) => amount);
+        CurrencyConverterMock.Setup(c => c.Convert(It.IsAny<decimal>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Returns<decimal, string, CancellationToken>((amount, _, _) => Task.FromResult<decimal?>(amount));
 
         User = CreateTestUser();
     }

@@ -11,7 +11,7 @@ public record Asset : MooBank.Models.Instrument
 
 public static class AssetExtensions
 {
-    public static Asset ToModel(this Domain.Entities.Asset.Asset asset, ICurrencyConverter currencyConverter) => new()
+    public static async Task<Asset> ToModel(this Domain.Entities.Asset.Asset asset, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default) => new()
     {
         Id = asset.Id,
         Name = asset.Name,
@@ -22,20 +22,18 @@ public static class AssetExtensions
         PurchasePrice = asset.PurchasePrice,
         InstrumentType = "Asset",
         Currency = asset.Currency,
-        CurrentBalanceLocalCurrency = currencyConverter.Convert(asset.Value, asset.Currency),
+        CurrentBalanceLocalCurrency = await currencyConverter.Convert(asset.Value, asset.Currency, cancellationToken),
         ShareWithFamily = asset.ShareWithFamily,
     };
 
-    public static Asset ToModel(this Domain.Entities.Asset.Asset asset, Guid userId, ICurrencyConverter currencyConverter)
+    public static async Task<Asset> ToModel(this Domain.Entities.Asset.Asset asset, Guid userId, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default)
     {
-        var result = asset.ToModel(currencyConverter);
+        var result = await asset.ToModel(currencyConverter, cancellationToken);
         result.GroupId = asset.GetGroup(userId)?.Id;
 
         return result;
     }
 
-    public static IEnumerable<Asset> ToModel(this IEnumerable<Domain.Entities.Asset.Asset> entities, ICurrencyConverter currencyConverter)
-    {
-        return entities.Select(t => t.ToModel(currencyConverter));
-    }
+    public static async Task<IEnumerable<Asset>> ToModel(this IEnumerable<Domain.Entities.Asset.Asset> entities, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default) =>
+        await entities.SelectAsync(entity => entity.ToModel(currencyConverter, cancellationToken));
 }

@@ -12,19 +12,22 @@ export const useCreateRecurringTransaction = (accountId: string, virtualAccountI
     const { mutate } = useMutation({
         ...createRecurringTransactionMutation(),
         onMutate: async (variables) => {
+            const queryKey = getRecurringTransactionsForAVirtualAccountQueryKey({ path: { accountId, virtualAccountId } });
+            await queryClient.cancelQueries({ queryKey });
 
-            const recurringTransactions = queryClient.getQueryData<RecurringTransaction[]>(
-                getRecurringTransactionsForAVirtualAccountQueryKey({ path: { accountId, virtualAccountId } })
-            );
+            const previous = queryClient.getQueryData<RecurringTransaction[]>(queryKey);
+            if (previous) {
+                queryClient.setQueryData<RecurringTransaction[]>(queryKey, [...previous, variables.body as unknown as RecurringTransaction]);
+            }
 
-            recurringTransactions.push(variables.body as unknown as RecurringTransaction);
-
-            queryClient.setQueryData<RecurringTransaction[]>(
-                getRecurringTransactionsForAVirtualAccountQueryKey({ path: { accountId, virtualAccountId } }),
-                recurringTransactions
-            );
+            return { previous };
         },
-        onSuccess: async () => {
+        onError: (_error, _variables, context: any) => {
+            if (context?.previous) {
+                queryClient.setQueryData(getRecurringTransactionsForAVirtualAccountQueryKey({ path: { accountId, virtualAccountId } }), context.previous);
+            }
+        },
+        onSettled: () => {
             queryClient.invalidateQueries({
                 queryKey: getRecurringTransactionsForAVirtualAccountQueryKey({ path: { accountId, virtualAccountId } }),
             });

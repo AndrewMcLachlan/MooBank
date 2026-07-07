@@ -49,13 +49,13 @@ public class StockPriceService(IUnitOfWork unitOfWork, IStockHoldingRepository s
         foreach (var price in prices.Where(p => !existingPrices.Select(e => new StockSymbol(e.Symbol, e.Exchange)).Contains(p.Key)))
         {
             logger.LogInformation("Setting {symbol} to {price}", price.Key, price.Value);
-            referenceDataRepository.AddStockPrice(new StockPriceHistory()
+            await referenceDataRepository.AddStockPrice(new StockPriceHistory()
             {
                 Symbol = price.Key.Symbol,
                 Exchange = price.Key.Exchange,
                 Date = DateOnly.Today.AddDays(-1),
                 Price = price.Value,
-            });
+            }, cancellationToken);
         }
 
         await unitOfWork.SaveChangesAsync(cancellationToken);

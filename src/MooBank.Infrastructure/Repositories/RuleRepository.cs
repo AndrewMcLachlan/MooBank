@@ -12,7 +12,7 @@ public class RuleRepository(MooBankContext context) : RepositoryDeleteBase<Rule,
 
     public async Task<Rule> Get(Guid accountId, int id, CancellationToken cancellationToken = default)
     {
-        var rule = await Entities.Where(t => t.InstrumentId == accountId && t.Id == id).SingleOrDefaultAsync(cancellationToken);
+        var rule = await Entities.Include(t => t.Tags).Where(t => t.InstrumentId == accountId && t.Id == id).SingleOrDefaultAsync(cancellationToken);
 
         return rule ?? throw new NotFoundException("Rule not found");
     }

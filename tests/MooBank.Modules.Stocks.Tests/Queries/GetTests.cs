@@ -96,8 +96,8 @@ public class GetTests
 
         // Set up currency converter to return a different value
         _mocks.CurrencyConverterMock
-            .Setup(c => c.Convert(It.IsAny<decimal>(), It.IsAny<string>()))
-            .Returns(1500m); // Converted value
+            .Setup(c => c.Convert(It.IsAny<decimal>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(1500m); // Converted value
 
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
 
@@ -110,7 +110,7 @@ public class GetTests
 
         // Assert
         Assert.Equal(1500m, result.CurrentBalanceLocalCurrency);
-        _mocks.CurrencyConverterMock.Verify(c => c.Convert(It.IsAny<decimal>(), It.IsAny<string>()), Times.Once);
+        _mocks.CurrencyConverterMock.Verify(c => c.Convert(It.IsAny<decimal>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]

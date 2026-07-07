@@ -19,7 +19,7 @@ public class InstrumentExtensionsTests
     #region LogicalAccount.ToModel
 
     [Fact]
-    public void LogicalAccount_ToModel_MapsBasicProperties()
+    public async Task LogicalAccount_ToModel_MapsBasicProperties()
     {
         // Arrange
         var accountId = Guid.NewGuid();
@@ -34,7 +34,7 @@ public class InstrumentExtensionsTests
         };
 
         // Act
-        var model = account.ToModel(_mocks.CurrencyConverterMock.Object);
+        var model = await account.ToModel(_mocks.CurrencyConverterMock.Object, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(accountId, model.Id);
@@ -46,7 +46,7 @@ public class InstrumentExtensionsTests
     }
 
     [Fact]
-    public void LogicalAccount_ToModel_MapsAccountType()
+    public async Task LogicalAccount_ToModel_MapsAccountType()
     {
         // Arrange
         var account = new LogicalAccount(Guid.NewGuid(), [])
@@ -57,14 +57,14 @@ public class InstrumentExtensionsTests
         };
 
         // Act
-        var model = account.ToModel(_mocks.CurrencyConverterMock.Object);
+        var model = await account.ToModel(_mocks.CurrencyConverterMock.Object, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal("Savings", model.InstrumentType);
     }
 
     [Fact]
-    public void LogicalAccount_ToModel_ConvertsCurrency()
+    public async Task LogicalAccount_ToModel_ConvertsCurrency()
     {
         // Arrange
         var account = new LogicalAccount(Guid.NewGuid(), [])
@@ -75,11 +75,11 @@ public class InstrumentExtensionsTests
         };
 
         _mocks.CurrencyConverterMock
-            .Setup(c => c.Convert(100m, "USD"))
-            .Returns(150m);
+            .Setup(c => c.Convert(100m, "USD", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(150m);
 
         // Act
-        var model = account.ToModel(_mocks.CurrencyConverterMock.Object);
+        var model = await account.ToModel(_mocks.CurrencyConverterMock.Object, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(100m, model.CurrentBalance);
@@ -87,7 +87,7 @@ public class InstrumentExtensionsTests
     }
 
     [Fact]
-    public void LogicalAccount_ToModel_WithNoVirtualInstruments_ReturnsEmptyArray()
+    public async Task LogicalAccount_ToModel_WithNoVirtualInstruments_ReturnsEmptyArray()
     {
         // Arrange
         var account = new LogicalAccount(Guid.NewGuid(), [])
@@ -97,14 +97,14 @@ public class InstrumentExtensionsTests
         };
 
         // Act
-        var model = account.ToModel(_mocks.CurrencyConverterMock.Object);
+        var model = await account.ToModel(_mocks.CurrencyConverterMock.Object, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Empty(model.VirtualInstruments);
     }
 
     [Fact]
-    public void LogicalAccount_ToModel_WithVirtualInstruments_MapsVirtualInstruments()
+    public async Task LogicalAccount_ToModel_WithVirtualInstruments_MapsVirtualInstruments()
     {
         // Arrange
         var account = TestEntities.CreateInstrument(
@@ -115,14 +115,14 @@ public class InstrumentExtensionsTests
             ]);
 
         // Act
-        var model = account.ToModel(_mocks.CurrencyConverterMock.Object);
+        var model = await account.ToModel(_mocks.CurrencyConverterMock.Object, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, model.VirtualInstruments.Count());
     }
 
     [Fact]
-    public void LogicalAccount_ToModel_ExcludesClosedVirtualInstruments()
+    public async Task LogicalAccount_ToModel_ExcludesClosedVirtualInstruments()
     {
         // Arrange
         var openVi = TestEntities.CreateVirtualInstrument(name: "Open");
@@ -134,7 +134,7 @@ public class InstrumentExtensionsTests
             virtualInstruments: [openVi, closedVi]);
 
         // Act
-        var model = account.ToModel(_mocks.CurrencyConverterMock.Object);
+        var model = await account.ToModel(_mocks.CurrencyConverterMock.Object, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Single(model.VirtualInstruments);
@@ -142,7 +142,7 @@ public class InstrumentExtensionsTests
     }
 
     [Fact]
-    public void LogicalAccount_ToModel_CalculatesRemainingBalance()
+    public async Task LogicalAccount_ToModel_CalculatesRemainingBalance()
     {
         // Arrange
         var vi1 = TestEntities.CreateVirtualInstrument(name: "VI1", balance: 300m);
@@ -153,14 +153,14 @@ public class InstrumentExtensionsTests
         account.Balance = 1000m;
 
         // Act
-        var model = account.ToModel(_mocks.CurrencyConverterMock.Object);
+        var model = await account.ToModel(_mocks.CurrencyConverterMock.Object, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(500m, model.RemainingBalance); // 1000 - 300 - 200
     }
 
     [Fact]
-    public void LogicalAccount_ToModel_NoVirtualInstruments_RemainingBalanceIsNull()
+    public async Task LogicalAccount_ToModel_NoVirtualInstruments_RemainingBalanceIsNull()
     {
         // Arrange
         var account = new LogicalAccount(Guid.NewGuid(), [])
@@ -171,14 +171,14 @@ public class InstrumentExtensionsTests
         };
 
         // Act
-        var model = account.ToModel(_mocks.CurrencyConverterMock.Object);
+        var model = await account.ToModel(_mocks.CurrencyConverterMock.Object, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Null(model.RemainingBalance);
     }
 
     [Fact]
-    public void LogicalAccountCollection_ToModel_MapsAllAccounts()
+    public async Task LogicalAccountCollection_ToModel_MapsAllAccounts()
     {
         // Arrange
         var account1 = new LogicalAccount(Guid.NewGuid(), []) { Name = "A", Currency = "AUD" };
@@ -186,7 +186,7 @@ public class InstrumentExtensionsTests
         var accounts = new[] { account1, account2 };
 
         // Act
-        var models = accounts.ToModel(_mocks.CurrencyConverterMock.Object);
+        var models = await accounts.ToModel(_mocks.CurrencyConverterMock.Object, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, models.Count());
@@ -197,7 +197,7 @@ public class InstrumentExtensionsTests
     #region StockHolding.ToModel
 
     [Fact]
-    public void StockHolding_ToModel_MapsBasicProperties()
+    public async Task StockHolding_ToModel_MapsBasicProperties()
     {
         // Arrange
         var holdingId = Guid.NewGuid();
@@ -209,7 +209,7 @@ public class InstrumentExtensionsTests
             currentValue: 5000m);
 
         // Act
-        var model = holding.ToModel(_mocks.CurrencyConverterMock.Object);
+        var model = await holding.ToModel(_mocks.CurrencyConverterMock.Object, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(holdingId, model.Id);
@@ -220,30 +220,30 @@ public class InstrumentExtensionsTests
     }
 
     [Fact]
-    public void StockHolding_ToModel_SetsInstrumentTypeToShares()
+    public async Task StockHolding_ToModel_SetsInstrumentTypeToShares()
     {
         // Arrange
         var holding = TestEntities.CreateStockHolding(name: "Stocks");
 
         // Act
-        var model = holding.ToModel(_mocks.CurrencyConverterMock.Object);
+        var model = await holding.ToModel(_mocks.CurrencyConverterMock.Object, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal("Shares", model.InstrumentType);
     }
 
     [Fact]
-    public void StockHolding_ToModel_ConvertsCurrency()
+    public async Task StockHolding_ToModel_ConvertsCurrency()
     {
         // Arrange
         var holding = TestEntities.CreateStockHolding(currency: "USD", currentValue: 100m);
 
         _mocks.CurrencyConverterMock
-            .Setup(c => c.Convert(100m, "USD"))
-            .Returns(150m);
+            .Setup(c => c.Convert(100m, "USD", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(150m);
 
         // Act
-        var model = holding.ToModel(_mocks.CurrencyConverterMock.Object);
+        var model = await holding.ToModel(_mocks.CurrencyConverterMock.Object, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(100m, model.CurrentBalance);
@@ -251,7 +251,7 @@ public class InstrumentExtensionsTests
     }
 
     [Fact]
-    public void StockHoldingCollection_ToModel_MapsAllHoldings()
+    public async Task StockHoldingCollection_ToModel_MapsAllHoldings()
     {
         // Arrange
         var holdings = new[]
@@ -261,7 +261,7 @@ public class InstrumentExtensionsTests
         };
 
         // Act
-        var models = holdings.ToModel(_mocks.CurrencyConverterMock.Object);
+        var models = await holdings.ToModel(_mocks.CurrencyConverterMock.Object, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, models.Count());
@@ -272,7 +272,7 @@ public class InstrumentExtensionsTests
     #region Asset.ToModel
 
     [Fact]
-    public void Asset_ToModel_MapsBasicProperties()
+    public async Task Asset_ToModel_MapsBasicProperties()
     {
         // Arrange
         var assetId = Guid.NewGuid();
@@ -284,7 +284,7 @@ public class InstrumentExtensionsTests
             value: 500000m);
 
         // Act
-        var model = asset.ToModel(_mocks.CurrencyConverterMock.Object);
+        var model = await asset.ToModel(_mocks.CurrencyConverterMock.Object, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(assetId, model.Id);
@@ -295,30 +295,30 @@ public class InstrumentExtensionsTests
     }
 
     [Fact]
-    public void Asset_ToModel_SetsInstrumentTypeToAsset()
+    public async Task Asset_ToModel_SetsInstrumentTypeToAsset()
     {
         // Arrange
         var asset = TestEntities.CreateAsset(name: "Car");
 
         // Act
-        var model = asset.ToModel(_mocks.CurrencyConverterMock.Object);
+        var model = await asset.ToModel(_mocks.CurrencyConverterMock.Object, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal("Asset", model.InstrumentType);
     }
 
     [Fact]
-    public void Asset_ToModel_ConvertsCurrency()
+    public async Task Asset_ToModel_ConvertsCurrency()
     {
         // Arrange
         var asset = TestEntities.CreateAsset(currency: "EUR", value: 100m);
 
         _mocks.CurrencyConverterMock
-            .Setup(c => c.Convert(100m, "EUR"))
-            .Returns(165m);
+            .Setup(c => c.Convert(100m, "EUR", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(165m);
 
         // Act
-        var model = asset.ToModel(_mocks.CurrencyConverterMock.Object);
+        var model = await asset.ToModel(_mocks.CurrencyConverterMock.Object, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(100m, model.CurrentBalance);
@@ -326,7 +326,7 @@ public class InstrumentExtensionsTests
     }
 
     [Fact]
-    public void AssetCollection_ToModel_MapsAllAssets()
+    public async Task AssetCollection_ToModel_MapsAllAssets()
     {
         // Arrange
         var assets = new[]
@@ -336,7 +336,7 @@ public class InstrumentExtensionsTests
         };
 
         // Act
-        var models = assets.ToModel(_mocks.CurrencyConverterMock.Object);
+        var models = await assets.ToModel(_mocks.CurrencyConverterMock.Object, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, models.Count());
@@ -347,7 +347,7 @@ public class InstrumentExtensionsTests
     #region VirtualInstrument.ToModel
 
     [Fact]
-    public void VirtualInstrument_ToModel_MapsBasicProperties()
+    public async Task VirtualInstrument_ToModel_MapsBasicProperties()
     {
         // Arrange
         var viId = Guid.NewGuid();
@@ -362,7 +362,7 @@ public class InstrumentExtensionsTests
             controller: Controller.Virtual);
 
         // Act
-        var model = vi.ToModel(_mocks.CurrencyConverterMock.Object);
+        var model = await vi.ToModel(_mocks.CurrencyConverterMock.Object, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(viId, model.Id);
@@ -375,17 +375,17 @@ public class InstrumentExtensionsTests
     }
 
     [Fact]
-    public void VirtualInstrument_ToModel_ConvertsCurrency()
+    public async Task VirtualInstrument_ToModel_ConvertsCurrency()
     {
         // Arrange
         var vi = TestEntities.CreateVirtualInstrument(currency: "USD", balance: 100m);
 
         _mocks.CurrencyConverterMock
-            .Setup(c => c.Convert(100m, "USD"))
-            .Returns(150m);
+            .Setup(c => c.Convert(100m, "USD", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(150m);
 
         // Act
-        var model = vi.ToModel(_mocks.CurrencyConverterMock.Object);
+        var model = await vi.ToModel(_mocks.CurrencyConverterMock.Object, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(100m, model.CurrentBalance);
@@ -393,7 +393,7 @@ public class InstrumentExtensionsTests
     }
 
     [Fact]
-    public void VirtualInstrumentCollection_ToModel_MapsAllInstruments()
+    public async Task VirtualInstrumentCollection_ToModel_MapsAllInstruments()
     {
         // Arrange
         var instruments = new[]
@@ -403,7 +403,7 @@ public class InstrumentExtensionsTests
         };
 
         // Act
-        var models = instruments.ToModel(_mocks.CurrencyConverterMock.Object);
+        var models = await instruments.ToModel(_mocks.CurrencyConverterMock.Object, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(2, models.Count());

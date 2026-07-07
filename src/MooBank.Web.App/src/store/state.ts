@@ -1,14 +1,8 @@
 import type { SortDirection } from "@andrewmclachlan/moo-ds";
 
 export interface State {
-    app: App,
     transactions: Transactions,
     stockTransactions: Transactions,
-}
-
-export interface App {
-    baseUrl: string;
-    message?: string;
 }
 
 export interface Transactions {

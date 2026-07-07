@@ -31,7 +31,7 @@ public class ExchangeRateServiceTests
         var (service, repositoryMock, exchangeRateClientMock) = CreateService(accounts, users, [], []);
 
         // Act
-        await service.UpdateExchangeRates();
+        await service.UpdateExchangeRates(TestContext.Current.CancellationToken);
 
         // Assert
         exchangeRateClientMock.Verify(c => c.GetExchangeRates(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
@@ -55,7 +55,7 @@ public class ExchangeRateServiceTests
         var (service, repositoryMock, _) = CreateService(accounts, users, [], apiRates);
 
         // Act
-        await service.UpdateExchangeRates();
+        await service.UpdateExchangeRates(TestContext.Current.CancellationToken);
 
         // Assert - AUD to AUD shouldn't create a rate
         repositoryMock.Verify(r => r.AddExchangeRate(It.IsAny<ExchangeRate>()), Times.Never);
@@ -78,7 +78,7 @@ public class ExchangeRateServiceTests
         var (service, repositoryMock, _) = CreateService(accounts, users, [], apiRates);
 
         // Act
-        await service.UpdateExchangeRates();
+        await service.UpdateExchangeRates(TestContext.Current.CancellationToken);
 
         // Assert
         repositoryMock.Verify(r => r.AddExchangeRate(It.Is<ExchangeRate>(
@@ -103,7 +103,7 @@ public class ExchangeRateServiceTests
         var (service, repositoryMock, _) = CreateService(accounts, users, [existingRate], apiRates);
 
         // Act
-        await service.UpdateExchangeRates();
+        await service.UpdateExchangeRates(TestContext.Current.CancellationToken);
 
         // Assert - Rate should be updated, not added
         Assert.Equal(0.65m, existingRate.Rate);
@@ -127,7 +127,7 @@ public class ExchangeRateServiceTests
         var (service, _, exchangeRateClientMock) = CreateService(accounts, users, [], apiRates);
 
         // Act
-        await service.UpdateExchangeRates();
+        await service.UpdateExchangeRates(TestContext.Current.CancellationToken);
 
         // Assert - Should fetch rates for AUD, GBP, and EUR
         exchangeRateClientMock.Verify(c => c.GetExchangeRates("AUD", It.IsAny<CancellationToken>()), Times.Once);
@@ -151,10 +151,10 @@ public class ExchangeRateServiceTests
         var (service, _, _, unitOfWorkMock) = CreateServiceWithUnitOfWork(accounts, users, [], []);
 
         // Act
-        await service.UpdateExchangeRates();
+        await service.UpdateExchangeRates(TestContext.Current.CancellationToken);
 
         // Assert
-        unitOfWorkMock.Verify(u => u.SaveChangesAsync(default), Times.Once);
+        unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     /// <summary>
@@ -175,7 +175,7 @@ public class ExchangeRateServiceTests
         var (service, repositoryMock, _) = CreateService(accounts, users, [], apiRates);
 
         // Act
-        await service.UpdateExchangeRates();
+        await service.UpdateExchangeRates(TestContext.Current.CancellationToken);
 
         // Assert - Only USD rate should be added
         repositoryMock.Verify(r => r.AddExchangeRate(It.Is<ExchangeRate>(
@@ -212,7 +212,7 @@ public class ExchangeRateServiceTests
         var (service, _, _) = CreateService(accounts, users, [existingRate], apiRates);
 
         // Act
-        await service.UpdateExchangeRates();
+        await service.UpdateExchangeRates(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotEqual(oldTimestamp, existingRate.LastUpdated);
@@ -247,7 +247,7 @@ public class ExchangeRateServiceTests
         var exchangeRateClientMock = new Mock<IExchangeRateClient>();
         var repositoryMock = new Mock<IReferenceDataRepository>();
 
-        repositoryMock.Setup(r => r.GetExchangeRates())
+        repositoryMock.Setup(r => r.GetExchangeRates(It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingRates);
 
         exchangeRateClientMock.Setup(c => c.GetExchangeRates(It.IsAny<string>(), It.IsAny<CancellationToken>()))

@@ -8,20 +8,27 @@ export const useCreateInstitution = () => {
 
     const { mutateAsync, ...rest } = useMutation({
         ...createInstitutionMutation(),
-        onMutate: (variables) => {
-            let allInstitutions = queryClient.getQueryData<Institution[]>(getAllInstitutionsQueryKey());
-            if (!allInstitutions) {
-                console.warn("Query Cache is missing Institutions");
-                return;
+        onMutate: async (variables) => {
+            const queryKey = getAllInstitutionsQueryKey();
+            await queryClient.cancelQueries({ queryKey });
+
+            const previous = queryClient.getQueryData<Institution[]>(queryKey);
+            if (previous) {
+                const next = [...previous, variables.body as Institution].sort((i1, i2) => i1.name.localeCompare(i2.name));
+                queryClient.setQueryData<Institution[]>(queryKey, next);
             }
 
-            allInstitutions.push(variables.body as Institution);
-            allInstitutions = allInstitutions.sort((t1, t2) => t1.name.localeCompare(t2.name));
-            queryClient.setQueryData<Institution[]>(getAllInstitutionsQueryKey(), allInstitutions);
+            return { previous };
         },
-        onError: () => {
+        onError: (_error, _variables, context: any) => {
+            if (context?.previous) {
+                queryClient.setQueryData(getAllInstitutionsQueryKey(), context.previous);
+            }
+        },
+        onSettled: () => {
+            // Refetch so the optimistic entry (which has no server-assigned id) is replaced.
             queryClient.invalidateQueries({ queryKey: getAllInstitutionsQueryKey() });
-        }
+        },
     });
 
     return {

@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Modules.Budgets.Commands;
 using Asm.MooBank.Modules.Budgets.Tests.Support;
 using DomainBudget = Asm.MooBank.Domain.Entities.Budget.Budget;
@@ -29,12 +29,12 @@ public class CreateLineTests
 
         DomainBudgetLine? capturedLine = null;
         _mocks.BudgetRepositoryMock
-            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>()))
-            .Callback<DomainBudgetLine>(l => capturedLine = l)
-            .Returns<DomainBudgetLine>(l =>
+            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>(), It.IsAny<CancellationToken>()))
+            .Callback<DomainBudgetLine, CancellationToken>((l, _) => capturedLine = l)
+            .Returns<DomainBudgetLine, CancellationToken>((l, _) =>
             {
                 l.Tag = TestEntities.CreateTag(l.TagId, "Groceries");
-                return l;
+                return Task.FromResult(l);
             });
 
         var handler = new CreateLineHandler(_mocks.UnitOfWorkMock.Object, _mocks.BudgetRepositoryMock.Object, _mocks.User);
@@ -63,12 +63,12 @@ public class CreateLineTests
 
         DomainBudgetLine? capturedLine = null;
         _mocks.BudgetRepositoryMock
-            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>()))
-            .Callback<DomainBudgetLine>(l => capturedLine = l)
-            .Returns<DomainBudgetLine>(l =>
+            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>(), It.IsAny<CancellationToken>()))
+            .Callback<DomainBudgetLine, CancellationToken>((l, _) => capturedLine = l)
+            .Returns<DomainBudgetLine, CancellationToken>((l, _) =>
             {
                 l.Tag = TestEntities.CreateTag(l.TagId, "Rent");
-                return l;
+                return Task.FromResult(l);
             });
 
         var handler = new CreateLineHandler(_mocks.UnitOfWorkMock.Object, _mocks.BudgetRepositoryMock.Object, _mocks.User);
@@ -79,7 +79,7 @@ public class CreateLineTests
         await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
-        _mocks.BudgetRepositoryMock.Verify(r => r.AddLine(It.IsAny<DomainBudgetLine>()), Times.Once);
+        _mocks.BudgetRepositoryMock.Verify(r => r.AddLine(It.IsAny<DomainBudgetLine>(), It.IsAny<CancellationToken>()), Times.Once);
         Assert.NotNull(capturedLine);
         Assert.Equal(budgetId, capturedLine.BudgetId);
         Assert.Equal(1500m, capturedLine.Amount);
@@ -96,11 +96,11 @@ public class CreateLineTests
             .ReturnsAsync(budget);
 
         _mocks.BudgetRepositoryMock
-            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>()))
-            .Returns<DomainBudgetLine>(l =>
+            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>(), It.IsAny<CancellationToken>()))
+            .Returns<DomainBudgetLine, CancellationToken>((l, _) =>
             {
                 l.Tag = TestEntities.CreateTag(l.TagId, "Test");
-                return l;
+                return Task.FromResult(l);
             });
 
         var handler = new CreateLineHandler(_mocks.UnitOfWorkMock.Object, _mocks.BudgetRepositoryMock.Object, _mocks.User);
@@ -126,12 +126,12 @@ public class CreateLineTests
 
         DomainBudgetLine? capturedLine = null;
         _mocks.BudgetRepositoryMock
-            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>()))
-            .Callback<DomainBudgetLine>(l => capturedLine = l)
-            .Returns<DomainBudgetLine>(l =>
+            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>(), It.IsAny<CancellationToken>()))
+            .Callback<DomainBudgetLine, CancellationToken>((l, _) => capturedLine = l)
+            .Returns<DomainBudgetLine, CancellationToken>((l, _) =>
             {
                 l.Tag = TestEntities.CreateTag(l.TagId, "Salary");
-                return l;
+                return Task.FromResult(l);
             });
 
         var handler = new CreateLineHandler(_mocks.UnitOfWorkMock.Object, _mocks.BudgetRepositoryMock.Object, _mocks.User);
@@ -158,12 +158,12 @@ public class CreateLineTests
 
         DomainBudgetLine? capturedLine = null;
         _mocks.BudgetRepositoryMock
-            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>()))
-            .Callback<DomainBudgetLine>(l => capturedLine = l)
-            .Returns<DomainBudgetLine>(l =>
+            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>(), It.IsAny<CancellationToken>()))
+            .Callback<DomainBudgetLine, CancellationToken>((l, _) => capturedLine = l)
+            .Returns<DomainBudgetLine, CancellationToken>((l, _) =>
             {
                 l.Tag = TestEntities.CreateTag(l.TagId, "Groceries");
-                return l;
+                return Task.FromResult(l);
             });
 
         var handler = new CreateLineHandler(_mocks.UnitOfWorkMock.Object, _mocks.BudgetRepositoryMock.Object, _mocks.User);
@@ -190,12 +190,12 @@ public class CreateLineTests
 
         DomainBudgetLine? capturedLine = null;
         _mocks.BudgetRepositoryMock
-            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>()))
-            .Callback<DomainBudgetLine>(l => capturedLine = l)
-            .Returns<DomainBudgetLine>(l =>
+            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>(), It.IsAny<CancellationToken>()))
+            .Callback<DomainBudgetLine, CancellationToken>((l, _) => capturedLine = l)
+            .Returns<DomainBudgetLine, CancellationToken>((l, _) =>
             {
                 l.Tag = TestEntities.CreateTag(l.TagId, "Test");
-                return l;
+                return Task.FromResult(l);
             });
 
         var handler = new CreateLineHandler(_mocks.UnitOfWorkMock.Object, _mocks.BudgetRepositoryMock.Object, _mocks.User);
@@ -222,12 +222,12 @@ public class CreateLineTests
 
         DomainBudgetLine? capturedLine = null;
         _mocks.BudgetRepositoryMock
-            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>()))
-            .Callback<DomainBudgetLine>(l => capturedLine = l)
-            .Returns<DomainBudgetLine>(l =>
+            .Setup(r => r.AddLine(It.IsAny<DomainBudgetLine>(), It.IsAny<CancellationToken>()))
+            .Callback<DomainBudgetLine, CancellationToken>((l, _) => capturedLine = l)
+            .Returns<DomainBudgetLine, CancellationToken>((l, _) =>
             {
                 l.Tag = TestEntities.CreateTag(l.TagId, "Test");
-                return l;
+                return Task.FromResult(l);
             });
 
         var handler = new CreateLineHandler(_mocks.UnitOfWorkMock.Object, _mocks.BudgetRepositoryMock.Object, _mocks.User);

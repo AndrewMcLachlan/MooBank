@@ -41,7 +41,7 @@ internal class ImportTransactionsService(IInstrumentRepository instrumentReposit
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error occurred importing transactions for account {AccountId}.", workItem.AccountId);
+            logger.LogError(ex, "Error occurred importing transactions for instrument {InstrumentId}, account {AccountId}. File size: {FileSize} bytes.", workItem.InstrumentId, workItem.AccountId, workItem.FileData.Length);
         }
     }
 

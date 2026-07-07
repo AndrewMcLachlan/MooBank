@@ -27,8 +27,8 @@ public class TestMocks
 
         // Default currency converter behavior - returns same amount (no conversion)
         CurrencyConverterMock
-            .Setup(c => c.Convert(It.IsAny<decimal>(), It.IsAny<string>()))
-            .Returns((decimal amount, string currency) => amount);
+            .Setup(c => c.Convert(It.IsAny<decimal>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Returns((decimal amount, string currency, CancellationToken _) => Task.FromResult<decimal?>(amount));
 
         User = CreateTestUser();
     }

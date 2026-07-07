@@ -11,17 +11,26 @@ export const useDeleteRecurringTransaction = (accountId: string, virtualAccountI
 
     const { mutate } = useMutation({
         ...deleteRecurringTransactionMutation(),
-        onSuccess: (_data, variables) => {
+        onMutate: async (variables) => {
+            const queryKey = getRecurringTransactionsForAVirtualAccountQueryKey({ path: { accountId, virtualAccountId } });
+            await queryClient.cancelQueries({ queryKey });
 
-            const recurringTransactions = queryClient.getQueryData<RecurringTransaction[]>(
-                getRecurringTransactionsForAVirtualAccountQueryKey({ path: { accountId, virtualAccountId } })
-            );
+            const previous = queryClient.getQueryData<RecurringTransaction[]>(queryKey);
+            if (previous) {
+                queryClient.setQueryData<RecurringTransaction[]>(queryKey, previous.filter(rt => rt.id !== (variables as any).path.recurringTransactionId));
+            }
 
-            const newRecurringTransactions = recurringTransactions.filter(rt => rt.id !== variables.path.recurringTransactionId);
-            queryClient.setQueryData<RecurringTransaction[]>(
-                getRecurringTransactionsForAVirtualAccountQueryKey({ path: { accountId, virtualAccountId } }),
-                newRecurringTransactions
-            );
+            return { previous };
+        },
+        onError: (_error, _variables, context: any) => {
+            if (context?.previous) {
+                queryClient.setQueryData(getRecurringTransactionsForAVirtualAccountQueryKey({ path: { accountId, virtualAccountId } }), context.previous);
+            }
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({
+                queryKey: getRecurringTransactionsForAVirtualAccountQueryKey({ path: { accountId, virtualAccountId } }),
+            });
         },
     });
 

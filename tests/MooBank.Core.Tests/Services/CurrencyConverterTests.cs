@@ -20,13 +20,13 @@ public class CurrencyConverterTests
     /// </summary>
     [Fact]
     [Trait("Category", "Unit")]
-    public void Convert_SameCurrency_ReturnsSameAmount()
+    public async Task Convert_SameCurrency_ReturnsSameAmount()
     {
         // Arrange
         var converter = CreateConverter("AUD", []);
 
         // Act
-        var result = converter.Convert(100m, "AUD");
+        var result = await converter.Convert(100m, "AUD", TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(100m, result);
@@ -39,7 +39,7 @@ public class CurrencyConverterTests
     /// </summary>
     [Fact]
     [Trait("Category", "Unit")]
-    public void Convert_WithForwardExchangeRate_AppliesRate()
+    public async Task Convert_WithForwardExchangeRate_AppliesRate()
     {
         // Arrange
         var exchangeRates = new List<ExchangeRate>
@@ -49,7 +49,7 @@ public class CurrencyConverterTests
         var converter = CreateConverter("USD", exchangeRates);
 
         // Act
-        var result = converter.Convert(100m, "AUD");
+        var result = await converter.Convert(100m, "AUD", TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(65m, result);
@@ -62,7 +62,7 @@ public class CurrencyConverterTests
     /// </summary>
     [Fact]
     [Trait("Category", "Unit")]
-    public void Convert_WithReverseExchangeRate_AppliesRate()
+    public async Task Convert_WithReverseExchangeRate_AppliesRate()
     {
         // Arrange
         var exchangeRates = new List<ExchangeRate>
@@ -72,7 +72,7 @@ public class CurrencyConverterTests
         var converter = CreateConverter("AUD", exchangeRates);
 
         // Act
-        var result = converter.Convert(100m, "GBP");
+        var result = await converter.Convert(100m, "GBP", TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(190m, result);
@@ -85,13 +85,13 @@ public class CurrencyConverterTests
     /// </summary>
     [Fact]
     [Trait("Category", "Unit")]
-    public void Convert_WithMissingExchangeRate_ReturnsNull()
+    public async Task Convert_WithMissingExchangeRate_ReturnsNull()
     {
         // Arrange
         var converter = CreateConverter("JPY", []);
 
         // Act
-        var result = converter.Convert(100m, "AUD");
+        var result = await converter.Convert(100m, "AUD", TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Null(result);
@@ -104,7 +104,7 @@ public class CurrencyConverterTests
     /// </summary>
     [Fact]
     [Trait("Category", "Unit")]
-    public void Convert_ExtremeHighRate_HandlesCorrectly()
+    public async Task Convert_ExtremeHighRate_HandlesCorrectly()
     {
         // Arrange - Very high rate like JPY
         var exchangeRates = new List<ExchangeRate>
@@ -114,7 +114,7 @@ public class CurrencyConverterTests
         var converter = CreateConverter("JPY", exchangeRates);
 
         // Act
-        var result = converter.Convert(1000m, "USD");
+        var result = await converter.Convert(1000m, "USD", TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(150500m, result);
@@ -127,7 +127,7 @@ public class CurrencyConverterTests
     /// </summary>
     [Fact]
     [Trait("Category", "Unit")]
-    public void Convert_ExtremeLowRate_MaintainsPrecision()
+    public async Task Convert_ExtremeLowRate_MaintainsPrecision()
     {
         // Arrange - Very low rate
         var exchangeRates = new List<ExchangeRate>
@@ -137,7 +137,7 @@ public class CurrencyConverterTests
         var converter = CreateConverter("USD", exchangeRates);
 
         // Act
-        var result = converter.Convert(40000m, "BTC");
+        var result = await converter.Convert(40000m, "BTC", TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(1m, result);

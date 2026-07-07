@@ -11,10 +11,10 @@ public class StockPrices(IServiceScopeFactory serviceScopeFactory)
 #endif
 
     [FunctionName("StockPrices")]
-    public async Task Run([TimerTrigger("0 0 0 * * *", RunOnStartup = RunOnStartup)] TimerInfo _)
+    public async Task Run([TimerTrigger("0 0 0 * * *", RunOnStartup = RunOnStartup)] TimerInfo _, CancellationToken cancellationToken)
     {
         using var scope = serviceScopeFactory.CreateScope();
         var service = scope.ServiceProvider.GetRequiredService<Asm.MooBank.Services.IStockPriceService>();
-        await service.Update();
+        await service.Update(cancellationToken);
     }
 }

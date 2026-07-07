@@ -16,7 +16,7 @@ internal class GetHandler(IQueryable<Domain.Entities.Asset.Asset> accounts, User
                                    .Include(a => a.Viewers).ThenInclude(ah => ah.User)
                                    .SingleOrDefaultAsync(a => a.Id == query.Id, cancellationToken) ?? throw new NotFoundException();
 
-        var account = entity.ToModel(user.Id, currencyConverter);
+        var account = await entity.ToModel(user.Id, currencyConverter, cancellationToken);
 
         return account!;
     }
