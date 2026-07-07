@@ -47,12 +47,6 @@ internal class AuditLogger(ILogger<AuditLogger> logger) : IAuditLogger
         logger.LogInformation("CSV import completed by {UserId} for instrument {InstrumentId}, account {AccountId}: {TransactionCount} transactions", user.Id, instrumentId, accountId, transactionCount);
     }
 
-    public void ImportFailed(User user, Guid instrumentId, Guid accountId, Exception exception)
-    {
-        using var scope = AuditScope("Import");
-        logger.LogError(exception, "CSV import failed for {UserId}, instrument {InstrumentId}, account {AccountId}", user.Id, instrumentId, accountId);
-    }
-
     public void DataChanged(User user, string action, string entityType, object? entityId)
     {
         using var scope = AuditScope("DataChange");
