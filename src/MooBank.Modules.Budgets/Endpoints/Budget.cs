@@ -1,5 +1,4 @@
-﻿using System.Net;
-using Asm.AspNetCore;
+﻿using Asm.AspNetCore;
 using Asm.AspNetCore.Routing;
 using Asm.MooBank.Modules.Budgets.Commands;
 using Asm.MooBank.Modules.Budgets.Models;
@@ -47,7 +46,7 @@ public class Budget : EndpointGroupBase
 
         routeGroupBuilder.MapDelete<DeleteLine>("/{year}/lines/{id}")
             .WithNames("Delete Budget Line")
-            .Produces((int)HttpStatusCode.NoContent);
+            .Produces(StatusCodes.Status204NoContent);
 
         routeGroupBuilder.MapQuery<GetValueForTag, decimal>("tag/{tagId}")
             .WithNames("Get Budget Amount for Tag");
