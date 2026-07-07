@@ -57,7 +57,11 @@
       "react": "^19.0.0",
       "react-dom": "^19.0.0"
     },
-    "eslint": "$eslint"
+    "eslint": "$eslint",
+    "@emnapi/core": "$@emnapi/core",
+    "@emnapi/runtime": "$@emnapi/runtime",
+    "@emnapi/wasi-threads": "1.2.2",
+    "@tybys/wasm-util": "$@tybys/wasm-util"
   },
   "devDependencies": {
     "@emnapi/core": "1.11.1",
