@@ -19,7 +19,7 @@ internal class CreateLineHandler(IUnitOfWork unitOfWork, IBudgetRepository budge
 
         var entity = budgetLine.ToDomain(budget.Id);
 
-        budgetRepository.AddLine(entity);
+        await budgetRepository.AddLine(entity, cancellationToken);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

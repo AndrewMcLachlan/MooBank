@@ -16,7 +16,7 @@ export const TransactionSearch: React.FC<TransactionSearchProps> = ({ transactio
             valueField={(t) => t.id}
             placeholder="Select Transaction..."
             onChange={t => props.onChange(t.length ? t[0] : null)}
-            key={props.value?.id || JSON.stringify(filteredTransactions)}
+            key={props.value?.id ?? "empty"}
             labelField={(t) => t &&
                 <><span className="amount">${t.amount}</span> - {formatDate(t.transactionTime)} - {t.description}</>
             } />

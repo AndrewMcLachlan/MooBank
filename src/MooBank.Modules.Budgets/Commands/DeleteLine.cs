@@ -6,12 +6,10 @@ namespace Asm.MooBank.Modules.Budgets.Commands;
 
 public record DeleteLine(short Year, Guid Id) : ICommand;
 
-internal class DeleteLineHandler(IBudgetRepository budgetRepository, IUnitOfWork unitOfWork, ISecurity security) : ICommandHandler<DeleteLine>
+internal class DeleteLineHandler(IBudgetRepository budgetRepository, IUnitOfWork unitOfWork) : ICommandHandler<DeleteLine>
 {
     public async ValueTask Handle(DeleteLine request, CancellationToken cancellationToken)
     {
-        await security.AssertBudgetLinePermission(request.Id, cancellationToken);
-
         budgetRepository.DeleteLine(request.Id);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);

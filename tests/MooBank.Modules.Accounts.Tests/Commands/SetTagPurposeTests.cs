@@ -3,6 +3,7 @@ using Asm.MooBank.Domain.Entities.Account.Specifications;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Accounts.Commands;
 using Asm.MooBank.Modules.Accounts.Tests.Support;
+using DomainTag = Asm.MooBank.Domain.Entities.Tag.Tag;
 
 namespace Asm.MooBank.Modules.Accounts.Tests.Commands;
 
@@ -35,10 +36,9 @@ public class SetTagPurposeTests
             .Setup(r => r.Get(accountId, It.IsAny<AccountDetailsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(entity);
 
-        var handler = new SetTagPurposeHandler(
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.LogicalAccountRepositoryMock.Object,
-            _mocks.CurrencyConverterMock.Object);
+        SetupTag(42);
+
+        var handler = CreateHandler();
 
         var command = new SetTagPurpose { InstrumentId = accountId, Purpose = TagPurpose.Interest, TagId = 42 };
 
@@ -68,10 +68,9 @@ public class SetTagPurposeTests
             .Setup(r => r.Get(accountId, It.IsAny<AccountDetailsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(entity);
 
-        var handler = new SetTagPurposeHandler(
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.LogicalAccountRepositoryMock.Object,
-            _mocks.CurrencyConverterMock.Object);
+        SetupTag(99);
+
+        var handler = CreateHandler();
 
         var command = new SetTagPurpose { InstrumentId = accountId, Purpose = TagPurpose.Interest, TagId = 99 };
 
@@ -99,10 +98,9 @@ public class SetTagPurposeTests
             .Setup(r => r.Get(accountId, It.IsAny<AccountDetailsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(entity);
 
-        var handler = new SetTagPurposeHandler(
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.LogicalAccountRepositoryMock.Object,
-            _mocks.CurrencyConverterMock.Object);
+        SetupTag(1);
+
+        var handler = CreateHandler();
 
         var command = new SetTagPurpose { InstrumentId = accountId, Purpose = TagPurpose.Interest, TagId = 1 };
 
@@ -112,4 +110,47 @@ public class SetTagPurposeTests
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
+
+    /// <summary>
+    /// Given a tag that does not belong to the user's family
+    /// When the handler runs
+    /// Then a NotFoundException is thrown and no changes are saved.
+    /// </summary>
+    [Fact]
+    public async Task Handle_TagNotInFamily_ThrowsNotFoundException()
+    {
+        // Arrange
+        var accountId = Guid.NewGuid();
+        var entity = TestEntities.CreateLogicalAccount(id: accountId);
+
+        _mocks.LogicalAccountRepositoryMock
+            .Setup(r => r.Get(accountId, It.IsAny<AccountDetailsSpecification>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(entity);
+
+        // The family-scoped tag repository throws when the tag is not visible to the user's family.
+        _mocks.TagRepositoryMock
+            .Setup(r => r.Get(42, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new NotFoundException("Transaction tag with id 42 was not found"));
+
+        var handler = CreateHandler();
+
+        var command = new SetTagPurpose { InstrumentId = accountId, Purpose = TagPurpose.Interest, TagId = 42 };
+
+        // Act & Assert
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
+        Assert.Empty(entity.TagPurposes);
+        _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    private SetTagPurposeHandler CreateHandler() =>
+        new(
+            _mocks.UnitOfWorkMock.Object,
+            _mocks.LogicalAccountRepositoryMock.Object,
+            _mocks.TagRepositoryMock.Object,
+            _mocks.CurrencyConverterMock.Object);
+
+    private void SetupTag(int tagId) =>
+        _mocks.TagRepositoryMock
+            .Setup(r => r.Get(tagId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new DomainTag(tagId) { Name = "Test Tag", FamilyId = Guid.NewGuid() });
 }

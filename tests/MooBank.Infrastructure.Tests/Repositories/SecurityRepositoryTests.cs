@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System.Security.Claims;
 using Asm.MooBank.Audit;
 using Asm.MooBank.Domain.Entities.Budget;
@@ -18,6 +18,7 @@ public class SecurityRepositoryTests : IDisposable
     private readonly MooBankContext _context;
     private readonly Mock<IAuthorizationService> _authorizationServiceMock;
     private readonly Mock<IPrincipalProvider> _principalProviderMock;
+    private readonly Mock<IAuditLogger> _auditLoggerMock;
     private readonly Models.User _user;
     private readonly ClaimsPrincipal _principal;
 
@@ -26,6 +27,7 @@ public class SecurityRepositoryTests : IDisposable
         _context = TestDbContextFactory.Create();
         _authorizationServiceMock = new Mock<IAuthorizationService>();
         _principalProviderMock = new Mock<IPrincipalProvider>();
+        _auditLoggerMock = new Mock<IAuditLogger>();
         _user = TestEntities.CreateUserModel();
         _principal = new ClaimsPrincipal(new ClaimsIdentity([new Claim(System.Security.Claims.ClaimTypes.NameIdentifier, _user.Id.ToString())]));
         _principalProviderMock.Setup(p => p.Principal).Returns(_principal);
@@ -40,7 +42,7 @@ public class SecurityRepositoryTests : IDisposable
     #region AssertGroupPermission(Guid)
 
     [Fact]
-    public void AssertGroupPermission_ById_UserOwnsGroup_DoesNotThrow()
+    public async Task AssertGroupPermission_ById_UserOwnsGroup_DoesNotThrow()
     {
         // Arrange
         var group = TestEntities.CreateGroup(ownerId: _user.Id);
@@ -50,11 +52,11 @@ public class SecurityRepositoryTests : IDisposable
         var repository = CreateRepository();
 
         // Act & Assert - should not throw
-        repository.AssertGroupPermission(group.Id);
+        await repository.AssertGroupPermission(group.Id);
     }
 
     [Fact]
-    public void AssertGroupPermission_ById_UserDoesNotOwnGroup_ThrowsNotAuthorisedException()
+    public async Task AssertGroupPermission_ById_UserDoesNotOwnGroup_ThrowsNotAuthorisedException()
     {
         // Arrange
         var otherUserId = Guid.NewGuid();
@@ -65,18 +67,18 @@ public class SecurityRepositoryTests : IDisposable
         var repository = CreateRepository();
 
         // Act & Assert
-        Assert.Throws<NotAuthorisedException>(() => repository.AssertGroupPermission(group.Id));
+        await Assert.ThrowsAsync<NotAuthorisedException>(() => repository.AssertGroupPermission(group.Id));
     }
 
     [Fact]
-    public void AssertGroupPermission_ById_GroupDoesNotExist_ThrowsNotAuthorisedException()
+    public async Task AssertGroupPermission_ById_GroupDoesNotExist_ThrowsNotAuthorisedException()
     {
         // Arrange
         var nonExistentGroupId = Guid.NewGuid();
         var repository = CreateRepository();
 
         // Act & Assert
-        Assert.Throws<NotAuthorisedException>(() => repository.AssertGroupPermission(nonExistentGroupId));
+        await Assert.ThrowsAsync<NotAuthorisedException>(() => repository.AssertGroupPermission(nonExistentGroupId));
     }
 
     #endregion
@@ -146,22 +148,68 @@ public class SecurityRepositoryTests : IDisposable
 
     #endregion
 
-    #region AssertBudgetLinePermission
+    #region HasBudgetLinePermission
 
     [Fact]
-    public async Task AssertBudgetLinePermission_BudgetLineNotFound_ThrowsNotFoundException()
+    public async Task HasBudgetLinePermission_BudgetLineInUsersFamily_ReturnsTrueAndDoesNotAudit()
+    {
+        // Arrange
+        var budget = TestEntities.CreateBudget(familyId: _user.FamilyId);
+        var line = TestEntities.CreateBudgetLine(budgetId: budget.Id);
+        _context.Add(budget);
+        _context.Add(line);
+        _context.SaveChanges();
+
+        var repository = CreateRepository();
+
+        // Act
+        var result = await repository.HasBudgetLinePermission(line.Id, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.True(result);
+        _auditLoggerMock.Verify(
+            a => a.AuthorizationDenied(It.IsAny<Models.User>(), It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<string>()),
+            Times.Never);
+    }
+
+    [Fact]
+    public async Task HasBudgetLinePermission_BudgetLineInOtherFamily_ReturnsFalseAndAudits()
+    {
+        // Arrange
+        var budget = TestEntities.CreateBudget(familyId: Guid.NewGuid());
+        var line = TestEntities.CreateBudgetLine(budgetId: budget.Id);
+        _context.Add(budget);
+        _context.Add(line);
+        _context.SaveChanges();
+
+        var repository = CreateRepository();
+
+        // Act
+        var result = await repository.HasBudgetLinePermission(line.Id, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.False(result);
+        _auditLoggerMock.Verify(
+            a => a.AuthorizationDenied(_user, "BudgetLine", line.Id, nameof(BudgetLineRequirement)),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task HasBudgetLinePermission_BudgetLineNotFound_ReturnsFalseAndAudits()
     {
         // Arrange
         var nonExistentId = Guid.NewGuid();
         var repository = CreateRepository();
 
-        // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => repository.AssertBudgetLinePermission(nonExistentId, TestContext.Current.CancellationToken));
-    }
+        // Act
+        var result = await repository.HasBudgetLinePermission(nonExistentId, TestContext.Current.CancellationToken);
 
-    // Note: Full integration tests for AssertBudgetLinePermission with authorization
-    // require complex setup with in-memory database and custom extension methods.
-    // These scenarios are better tested via integration tests with a real database.
+        // Assert
+        Assert.False(result);
+        _auditLoggerMock.Verify(
+            a => a.AuthorizationDenied(_user, "BudgetLine", nonExistentId, nameof(BudgetLineRequirement)),
+            Times.Once);
+    }
 
     #endregion
 
@@ -237,5 +285,5 @@ public class SecurityRepositoryTests : IDisposable
     #endregion
 
     private SecurityRepository CreateRepository() =>
-        new(_context, _authorizationServiceMock.Object, _principalProviderMock.Object, _user, Mock.Of<IAuditLogger>());
+        new(_context, _authorizationServiceMock.Object, _principalProviderMock.Object, _user, _auditLoggerMock.Object);
 }

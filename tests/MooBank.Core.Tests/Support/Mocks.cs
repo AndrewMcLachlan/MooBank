@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Linq.Expressions;
 using Asm.Domain;
 using Asm.MooBank.Domain.Entities.ReferenceData;
@@ -18,7 +18,7 @@ public class Mocks
         UnitOfWorkMock.Setup(uow => uow.SaveChangesAsync(default)).ReturnsAsync(1);
 
         SecurityMock = new Mock<ISecurity>();
-        SecurityMock.Setup(s => s.AssertGroupPermission(It.IsAny<Guid>()));
+        SecurityMock.Setup(s => s.AssertGroupPermission(It.IsAny<Guid>())).Returns(Task.CompletedTask);
         SecurityMock.Setup(s => s.AssertFamilyPermission(It.IsAny<Guid>()));
 
         CurrencyConverterMock = new Mock<ICurrencyConverter>();

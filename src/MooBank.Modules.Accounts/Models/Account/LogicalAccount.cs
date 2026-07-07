@@ -57,17 +57,6 @@ public static class LogicalAccountExtensions
         };
     }
 
-    public static Domain.Entities.Account.LogicalAccount ToEntity(this LogicalAccount account) => new(account.Id == Guid.Empty ? Guid.NewGuid() : account.Id, account.InstitutionAccounts.ToEntity())
-    {
-        Name = account.Name,
-        Description = account.Description,
-        LastUpdated = account.BalanceDate,
-        AccountType = account.AccountType,
-        Controller = account.Controller,
-        ShareWithFamily = account.ShareWithFamily,
-        IncludeInBudget = account.IncludeInBudget,
-    };
-
     public static async Task<LogicalAccount> ToModelWithGroup(this Domain.Entities.Account.LogicalAccount entity, User user, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default)
     {
         var result = await entity.ToModel(currencyConverter, cancellationToken);

@@ -28,9 +28,9 @@ function Profile() {
         setNewUserCard({ name: "", last4Digits: null });
     }
 
-    const deleteUserCard = (card: UserCard) => {
+    const deleteUserCard = (index: number) => {
         const cards = getValues("cards");
-        setValue("cards", cards.filter(uc => uc.last4Digits !== card.last4Digits));
+        setValue("cards", cards.filter((_, i) => i !== index));
     }
 
     const editUserCard = (index: number, card: UserCard) => {
@@ -91,7 +91,7 @@ function Profile() {
                             <tr key={index}>
                                 <EditColumn value={c.name} onChange={t => editUserCard(index, { ...c, name: t.value })}>{c.name}</EditColumn>
                                 <td>{c.last4Digits}</td>
-                                <td className="row-action"><DeleteIcon onClick={() => deleteUserCard(c)} /></td>
+                                <td className="row-action"><DeleteIcon onClick={() => deleteUserCard(index)} /></td>
                             </tr>
                         )
                         )}

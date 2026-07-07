@@ -150,7 +150,7 @@ internal class GenerateBudgetHandler(
                 var suggestion = BudgetSuggestionCalculator.Calculate(series);
                 if (suggestion is null || suggestion.Amount <= 0m) continue;
 
-                budgetRepository.AddLine(new DomainBudgetLine(Guid.NewGuid())
+                await budgetRepository.AddLine(new DomainBudgetLine(Guid.NewGuid())
                 {
                     BudgetId = budget.Id,
                     TagId = candidate.Key,
@@ -158,7 +158,7 @@ internal class GenerateBudgetHandler(
                     Amount = suggestion.Amount,
                     Month = suggestion.Months,
                     Notes = suggestion.Note,
-                });
+                }, cancellationToken);
                 added = true;
             }
 

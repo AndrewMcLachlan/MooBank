@@ -24,15 +24,5 @@ public static class InstitutionAccountExtensions
         ClosedDate = account.ClosedDate,
     };
 
-    public static Domain.Entities.Account.InstitutionAccount ToEntity(this InstitutionAccount account) => new(account.Id == Guid.Empty ? Guid.NewGuid() : account.Id)
-    {
-        InstitutionId = account.InstitutionId,
-        Name = account.Name,
-        OpenedDate = account.OpenedDate,
-        ClosedDate = account.ClosedDate,
-    };
-
     public static IEnumerable<InstitutionAccount> ToModel(this IReadOnlyCollection<Domain.Entities.Account.InstitutionAccount> entities) => entities.Select(ToModel);
-
-    public static IReadOnlyCollection<Domain.Entities.Account.InstitutionAccount> ToEntity(this IEnumerable<InstitutionAccount> models) => [.. models.Select(ToEntity)];
 }

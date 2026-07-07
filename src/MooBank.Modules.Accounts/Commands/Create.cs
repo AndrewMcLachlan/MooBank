@@ -41,7 +41,7 @@ internal class CreateHandler(ILogicalAccountRepository institutionAccountReposit
     {
         if (command.GroupId != null)
         {
-            security.AssertGroupPermission(command.GroupId.Value);
+            await security.AssertGroupPermission(command.GroupId.Value);
         }
 
         Domain.Entities.Account.LogicalAccount entity = new()

@@ -23,7 +23,7 @@ internal class CreateHandler(IAssetRepository repository, IUnitOfWork unitOfWork
     {
         if (command.GroupId != null)
         {
-            security.AssertGroupPermission(command.GroupId.Value);
+            await security.AssertGroupPermission(command.GroupId.Value);
         }
 
         Domain.Entities.Asset.Asset entity = new(Guid.Empty)

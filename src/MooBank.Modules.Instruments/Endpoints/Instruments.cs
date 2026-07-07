@@ -25,14 +25,4 @@ internal class Instruments : EndpointGroupBase
         builder.MapQuery<GetList, IEnumerable<ListItem<Guid>>>("/list")
             .WithNames("Get Instruments List");
     }
-
-    internal static Delegate CreateCreateHandler<TRequest, TResult>(string routeName, Func<TResult, object> getRouteParams) where TRequest : ICommand<TResult>
-    {
-        return async ([AsParameters] TRequest request, ICommandDispatcher dispatcher, CancellationToken cancellationToken) =>
-        {
-            var result = await dispatcher.Dispatch(request!, cancellationToken);
-
-            return Results.CreatedAtRoute(routeName, getRouteParams(result), result);
-        };
-    }
 }

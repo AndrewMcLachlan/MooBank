@@ -38,12 +38,10 @@ internal class UpdateHandler(IInstrumentRepository instrumentRepository, IUnitOf
         instrument.Name = command.Name;
         instrument.Description = command.Description;
 
-        var amount = instrument.Balance - command.CurrentBalance;
+        var amount = command.CurrentBalance - instrument.Balance;
 
-        if (amount > 0)
+        if (amount != 0)
         {
-            instrument.Balance = command.CurrentBalance;
-
             instrument.Events.Add(new BalanceAdjustmentEvent(instrument, amount, "Web"));
         }
 

@@ -10,7 +10,7 @@ internal class GetHandler(IQueryable<Domain.Entities.Instrument.Instrument> acco
 {
     public async ValueTask<VirtualInstrument> Handle(Get request, CancellationToken cancellationToken)
     {
-        var account = await accounts.Include(a => a.VirtualInstruments).ThenInclude(va => va.RecurringTransactions).SingleOrDefaultAsync(a => a.Id == request.InstrumentId, cancellationToken) ?? throw new NotFoundException();
+        var account = await accounts.Include(a => a.VirtualInstruments.Where(va => va.Id == request.VirtualInstrumentId)).SingleOrDefaultAsync(a => a.Id == request.InstrumentId, cancellationToken) ?? throw new NotFoundException();
 
         if (account is not Domain.Entities.Account.LogicalAccount institutionAccount) throw new InvalidOperationException("Virtual accounts are only available for institution accounts.");
 

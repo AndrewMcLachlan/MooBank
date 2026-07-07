@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
 
 import { TagPanel } from "components";
 
@@ -8,33 +8,29 @@ import { useTags } from "hooks/useTags";
 
 export const TransactionSplitTagPanel: React.FC<TransactionSplitPanelProps> = ({ alwaysShowEditPanel = false, ...props }) => {
 
-    const [transactionSplit, setTransactionSplit] = useState<TransactionSplit>(props.transactionSplit);
+    // Fully controlled: the split always comes from props so the panel stays
+    // in sync when the parent resets or replaces the split (e.g. after save).
+    const transactionSplit = props.transactionSplit;
 
     const createTransactionTag = useCreateTag();
 
     const createTag = async (name: string) => {
         const data = await createTransactionTag.mutateAsync({ name });
-        const newSplit = { ...transactionSplit, tags: [...transactionSplit.tags, data]};
-        setTransactionSplit(newSplit);
-        props.onChange(newSplit);
+        props.onChange({ ...transactionSplit, tags: [...transactionSplit.tags, data] });
     }
 
     const addTag = (tag: Tag) => {
 
         if (!tag.id) return;
 
-        const newSplit = { ...transactionSplit, tags: [...transactionSplit.tags, tag]};
-        setTransactionSplit(newSplit);
-        props.onChange(newSplit);
+        props.onChange({ ...transactionSplit, tags: [...transactionSplit.tags, tag] });
     }
 
     const removeTag = (tag: Tag) => {
 
         if (!tag.id) return;
 
-        const newSplit = { ...transactionSplit, tags: transactionSplit.tags.filter((t) => t.id !== tag.id)}
-        setTransactionSplit(newSplit);
-        props.onChange(newSplit);
+        props.onChange({ ...transactionSplit, tags: transactionSplit.tags.filter((t) => t.id !== tag.id) });
     }
 
     const fullTagsListQuery = useTags();
@@ -57,7 +53,6 @@ export const TransactionSplitTagPanel: React.FC<TransactionSplitPanelProps> = ({
 export interface TransactionSplitPanelProps {
     as?: string;
     alwaysShowEditPanel?: boolean;
-    transactionId: string;
     transactionSplit: TransactionSplit;
     onChange: (transactionSplit: TransactionSplit) => void;
 }

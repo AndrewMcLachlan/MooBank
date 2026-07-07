@@ -16,8 +16,8 @@ internal class UpdateHandler(IUnitOfWork unitOfWork, IUserRepository repository,
         entity.Currency = command.User.Currency;
         entity.PrimaryAccountId = command.User.PrimaryAccountId;
 
-        var existing = entity.Cards.Select(c => c.Last4Digits);
-        var newCards = command.User.Cards.Select(c => c.Last4Digits);
+        var existing = entity.Cards.Select(c => c.Last4Digits).ToList();
+        var newCards = command.User.Cards.Select(c => c.Last4Digits).ToList();
 
         var delete = existing.Except(newCards);
         var add = newCards.Except(existing);
@@ -30,20 +30,19 @@ internal class UpdateHandler(IUnitOfWork unitOfWork, IUserRepository repository,
 
         foreach (var card in add)
         {
-            entity.Cards.Add(command.User.Cards.Select(c => new Domain.Entities.User.UserCard
+            var newCard = command.User.Cards.Single(c => c.Last4Digits == card);
+
+            entity.Cards.Add(new Domain.Entities.User.UserCard
             {
                 UserId = user.Id,
-                Name = c.Name,
-                Last4Digits = c.Last4Digits,
-            }).Single(c => c.Last4Digits == card));
+                Name = newCard.Name,
+                Last4Digits = newCard.Last4Digits,
+            });
         }
 
         foreach (var card in update)
         {
-            var existingCard = entity.Cards.Single(c => c.Last4Digits == card);
-            var newCard = command.User.Cards.Single(c => c.Last4Digits == card);
-
-            existingCard.Name = newCard.Name;
+            entity.Cards.Single(c => c.Last4Digits == card).Name = command.User.Cards.Single(c => c.Last4Digits == card).Name;
         }
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
