@@ -14,10 +14,6 @@ internal partial class MacquarieImporter(ITransactionRawRepository transactionRa
 {
     private const string DateFormat = "dd MMM yyyy";
 
-    // Same-day transactions are numbered down from this value so that a descending CSV
-    // sorts correctly when ordered ascending.
-    private const int MaxSequenceNumber = 59;
-
     public async Task<MooBank.Models.TransactionImportResult> Import(Guid instrumentId, Guid? institutionAccountId, Stream contents, CancellationToken cancellationToken = default)
     {
         using var reader = new StreamReader(contents);
@@ -36,7 +32,7 @@ internal partial class MacquarieImporter(ITransactionRawRepository transactionRa
         int lineCount = 1;
         decimal? endBalance = null;
         DateOnly? previousDate = null;
-        int sameDayCount = 0;
+        int sequenceNumber = 1;
 
         foreach (var record in records)
         {
@@ -113,15 +109,14 @@ internal partial class MacquarieImporter(ITransactionRawRepository transactionRa
                 // identical details, date and amount, so fall through and insert it as new.
             }
 
-            // Track sequence within each date - reset when date changes.
-            // CSV is descending, so we subtract from the maximum to preserve order when sorted ascending.
+            // Track sequence within each date - reset when date changes
+            // CSV is descending, so we subtract from 59 to preserve order when sorted ascending
             if (previousDate != transactionTime)
             {
-                sameDayCount = 0;
+                sequenceNumber = 1;
                 previousDate = transactionTime;
             }
-            int sequenceNumber = Math.Max(MaxSequenceNumber - sameDayCount, 0);
-            sameDayCount++;
+            sequenceNumber++;
 
             Transaction transaction = Transaction.Create(
                 instrumentId,
