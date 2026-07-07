@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Widget } from "@andrewmclachlan/moo-ds";
 import { useNavigate } from "@tanstack/react-router";
 import { lastMonth, lastMonthName } from "utils/dateFns";
@@ -15,6 +16,9 @@ export const BreakdownWidget: React.FC = () => {
 
     const account = accounts?.find(a => a.isPrimary === true) ?? accounts?.[0];
 
+    const period = useMemo(lastMonth, []);
+    const monthName = lastMonthName();
+
     const selectedTagChanged = (clickedTag: TagValue) => {
         // period=1 (Last Month) scopes the target page to the dashboard's period.
         if (!clickedTag.hasChildren) {
@@ -29,8 +33,8 @@ export const BreakdownWidget: React.FC = () => {
     };
 
     return (
-        <Widget header={(account && `Breakdown - ${account.name} - ${lastMonthName}`) ?? lastMonthName} size="double" headerSize={2} className="report" loading={isLoading} to={account ? `/accounts/${account.id}/reports/breakdown?period=1` : undefined}>
-            {isError ? <WidgetError /> : account && <Breakdown accountId={account.id} period={lastMonth} reportType={reportType} selectedTagChanged={selectedTagChanged} />}
+        <Widget header={(account && `Breakdown - ${account.name} - ${monthName}`) ?? monthName} size="double" headerSize={2} className="report" loading={isLoading} to={account ? `/accounts/${account.id}/reports/breakdown?period=1` : undefined}>
+            {isError ? <WidgetError /> : account && <Breakdown accountId={account.id} period={period} reportType={reportType} selectedTagChanged={selectedTagChanged} />}
         </Widget>
     );
 };

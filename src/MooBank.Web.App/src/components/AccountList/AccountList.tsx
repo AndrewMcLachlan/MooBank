@@ -8,8 +8,8 @@ export const AccountList: React.FC = () => {
 
     return (
         <>
-            {data?.groups.map((ag, index) =>
-                <AccountListGroup group={ag} isLoading={isLoading} key={index} />
+            {data?.groups.map((ag) =>
+                <AccountListGroup group={ag} isLoading={isLoading} key={ag.name} />
             )}
         </>
     );
