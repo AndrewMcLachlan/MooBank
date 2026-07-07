@@ -53,7 +53,7 @@ internal class GetFormattedHandler(IQueryable<Domain.Entities.Account.LogicalAcc
                 ShowTotal = ag.ShowPosition,
                 Total = matchingAccounts.Sum(a => a.CurrentBalanceLocalCurrency),
             };
-        });
+        }).ToList();
 
         Group otherAccounts =
             new()

@@ -37,6 +37,7 @@ public class User : EndpointGroupBase
 
         routeGroupBuilder.MapPatchCommand<Update, Models.User>("/me")
             .WithNames("Update User")
+            .WithValidation<Update>()
             .Produces<Models.User>();
 
         //routeGroupBuilder.MapDelete<Delete>("/{id}")

@@ -12,8 +12,5 @@ internal class GetAllHandler(IQueryable<Domain.Entities.Tag.Tag> tags, User user
         await _tags
             .Include(t => t.Settings)
             .Include(t => t.Tags)
-        .ThenInclude(t => t.Tags)
-        .ThenInclude(t => t.Tags)
-        .ThenInclude(t => t.Tags)
         .Where(t => t.FamilyId == user.FamilyId && !t.Deleted).OrderBy(t => t.Name).ToModel().ToListAsync(cancellationToken);
 }

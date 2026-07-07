@@ -43,14 +43,4 @@ internal class Accounts : EndpointGroupBase
             .WithNames("Delete Account Tag Purpose")
             .RequireAuthorization(Policies.GetInstrumentViewerPolicy("instrumentId"));
     }
-
-    internal static Delegate CreateCreateHandler<TRequest, TResult>(string routeName, Func<TResult, object> getRouteParams) where TRequest : ICommand<TResult>
-    {
-        return async ([AsParameters] TRequest request, ICommandDispatcher dispatcher, CancellationToken cancellationToken) =>
-        {
-            var result = await dispatcher.Dispatch(request!, cancellationToken);
-
-            return Results.CreatedAtRoute(routeName, getRouteParams(result), result);
-        };
-    }
 }

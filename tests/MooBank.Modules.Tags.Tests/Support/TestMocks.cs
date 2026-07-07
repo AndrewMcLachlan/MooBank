@@ -62,10 +62,16 @@ public class TestMocks
         };
     }
 
-    public static IEnumerable<TagRelationship> CreateEmptyTagRelationships() => [];
+    public static IQueryable<TagRelationship> CreateEmptyTagRelationships() => QueryableHelper.CreateAsyncQueryable<TagRelationship>([]);
 
-    public static IEnumerable<TagRelationship> CreateTagRelationships(params (DomainTag tag, DomainTag parentTag)[] relationships)
+    public static IQueryable<TagRelationship> CreateTagRelationships(params (DomainTag tag, DomainTag parentTag)[] relationships)
     {
-        return relationships.Select(r => new TagRelationship { Tag = r.tag, ParentTag = r.parentTag });
+        return QueryableHelper.CreateAsyncQueryable(relationships.Select(r => new TagRelationship
+        {
+            Id = r.tag.Id,
+            ParentId = r.parentTag.Id,
+            Tag = r.tag,
+            ParentTag = r.parentTag,
+        }).ToList());
     }
 }

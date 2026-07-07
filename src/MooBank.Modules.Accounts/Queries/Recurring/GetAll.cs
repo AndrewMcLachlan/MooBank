@@ -9,8 +9,11 @@ internal class GetAllHandler(IQueryable<Domain.Entities.Instrument.Instrument> a
 {
     public async ValueTask<IEnumerable<RecurringTransaction>> Handle(GetAll query, CancellationToken cancellationToken)
     {
-        var account = await accounts.Include(a => a.VirtualInstruments).ThenInclude(a => a.RecurringTransactions).SingleAsync(a => a.Id == query.AccountId, cancellationToken);
+        var recurringTransactions = await accounts.Where(a => a.Id == query.AccountId)
+            .SelectMany(a => a.VirtualInstruments)
+            .SelectMany(v => v.RecurringTransactions)
+            .ToListAsync(cancellationToken);
 
-        return account.VirtualInstruments.SelectMany(v => v.RecurringTransactions).ToModel();
+        return recurringTransactions.ToModel();
     }
 }

@@ -13,7 +13,7 @@ public record Update(Guid AccountId, Guid VirtualAccountId, Guid RecurringTransa
 {
     public static async ValueTask<Update> BindAsync(HttpContext httpContext)
     {
-        Update update = await BindHelper.BindWithInstrumentIdAsync<Update>(httpContext);
+        Update update = await BindHelper.BindWithInstrumentIdAsync<Update>("accountId", httpContext);
 
         if (!Guid.TryParse(httpContext.Request.RouteValues["recurringTransactionId"] as string, out Guid recurringTransactionId)) throw new BadHttpRequestException("Invalid recurring transaction ID");
 
