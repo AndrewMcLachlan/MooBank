@@ -2,6 +2,7 @@
 using Asm.Domain;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Tag;
+using Asm.MooBank.Domain.Entities.Transactions.Events;
 using Asm.MooBank.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -42,6 +43,8 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
 
         transaction.EnsureMinimumSplit();
 
+        transaction.Events.Add(new TransactionAddedEvent(transaction));
+
         return transaction;
     }
 
@@ -72,6 +75,8 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
         };
 
         transaction.EnsureMinimumSplit();
+
+        transaction.Events.Add(new TransactionAddedEvent(transaction));
 
         return transaction;
     }
