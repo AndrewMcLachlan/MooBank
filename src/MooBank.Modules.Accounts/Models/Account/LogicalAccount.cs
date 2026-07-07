@@ -26,15 +26,9 @@ public static class LogicalAccountExtensions
 {
     public static async Task<LogicalAccount> ToModel(this Domain.Entities.Account.LogicalAccount account, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default)
     {
-        List<MooBank.Models.VirtualInstrument> virtualInstruments = [];
-
-        if (account.VirtualInstruments != null)
-        {
-            foreach (var virtualInstrument in account.VirtualInstruments.Where(v => v.ClosedDate == null).OrderBy(v => v.Name))
-            {
-                virtualInstruments.Add(await virtualInstrument.ToModel(currencyConverter, cancellationToken));
-            }
-        }
+        var virtualInstruments = await (account.VirtualInstruments ?? [])
+            .Where(v => v.ClosedDate == null).OrderBy(v => v.Name)
+            .SelectAsync(v => v.ToModel(currencyConverter, cancellationToken));
 
         var (remainingBalance, remainingBalanceLocalCurrency) = await Remaining(account, currencyConverter, cancellationToken);
 
@@ -54,7 +48,7 @@ public static class LogicalAccountExtensions
             ShareWithFamily = account.ShareWithFamily,
             IncludeInBudget = account.IncludeInBudget,
             InstitutionAccounts = account.InstitutionAccounts?.ToModel() ?? [],
-            VirtualInstruments = virtualInstruments,
+            VirtualInstruments = [.. virtualInstruments],
             RemainingBalance = remainingBalance,
             RemainingBalanceLocalCurrency = remainingBalanceLocalCurrency,
             AvailableReports = AccountTypeReports.For(account.AccountType),
@@ -83,17 +77,8 @@ public static class LogicalAccountExtensions
     }
 
 
-    public static async Task<IEnumerable<LogicalAccount>> ToModelAsync(this IQueryable<Domain.Entities.Account.LogicalAccount> entities, ICurrencyConverter currencyConverter, CancellationToken cancellationToken)
-    {
-        List<LogicalAccount> models = [];
-
-        foreach (var entity in await entities.ToListAsync(cancellationToken))
-        {
-            models.Add(await entity.ToModel(currencyConverter, cancellationToken));
-        }
-
-        return models;
-    }
+    public static async Task<IEnumerable<LogicalAccount>> ToModelAsync(this IQueryable<Domain.Entities.Account.LogicalAccount> entities, ICurrencyConverter currencyConverter, CancellationToken cancellationToken) =>
+        await (await entities.ToListAsync(cancellationToken)).SelectAsync(entity => entity.ToModel(currencyConverter, cancellationToken));
 
 
     private static async Task<(decimal? RemainingBalance, decimal? RemainingBalanceLocalCurrency)> Remaining(Domain.Entities.Account.LogicalAccount account, ICurrencyConverter currencyConverter, CancellationToken cancellationToken)

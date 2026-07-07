@@ -50,15 +50,6 @@ public static class StockHoldingExtensions
         return result;
     }
 
-    public static async Task<IEnumerable<StockHolding>> ToModel(this IEnumerable<Domain.Entities.StockHolding.StockHolding> entities, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default)
-    {
-        List<StockHolding> models = [];
-
-        foreach (var entity in entities)
-        {
-            models.Add(await entity.ToModel(currencyConverter, cancellationToken));
-        }
-
-        return models;
-    }
+    public static async Task<IEnumerable<StockHolding>> ToModel(this IEnumerable<Domain.Entities.StockHolding.StockHolding> entities, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default) =>
+        await entities.SelectAsync(entity => entity.ToModel(currencyConverter, cancellationToken));
 }

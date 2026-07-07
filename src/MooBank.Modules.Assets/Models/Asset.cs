@@ -34,15 +34,6 @@ public static class AssetExtensions
         return result;
     }
 
-    public static async Task<IEnumerable<Asset>> ToModel(this IEnumerable<Domain.Entities.Asset.Asset> entities, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default)
-    {
-        List<Asset> models = [];
-
-        foreach (var entity in entities)
-        {
-            models.Add(await entity.ToModel(currencyConverter, cancellationToken));
-        }
-
-        return models;
-    }
+    public static async Task<IEnumerable<Asset>> ToModel(this IEnumerable<Domain.Entities.Asset.Asset> entities, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default) =>
+        await entities.SelectAsync(entity => entity.ToModel(currencyConverter, cancellationToken));
 }

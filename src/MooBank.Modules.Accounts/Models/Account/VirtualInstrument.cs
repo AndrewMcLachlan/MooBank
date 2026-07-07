@@ -31,17 +31,8 @@ public static class VirtualAccountExtensions
         };
     }
 
-    public static async Task<IEnumerable<VirtualAccount>> ToModel(this IEnumerable<Domain.Entities.Account.VirtualInstrument> accounts, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default)
-    {
-        List<VirtualAccount> models = [];
-
-        foreach (var account in accounts)
-        {
-            models.Add(await account.ToModel(currencyConverter, cancellationToken));
-        }
-
-        return models;
-    }
+    public static async Task<IEnumerable<VirtualAccount>> ToModel(this IEnumerable<Domain.Entities.Account.VirtualInstrument> accounts, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default) =>
+        await accounts.SelectAsync(account => account.ToModel(currencyConverter, cancellationToken));
 
     public static Domain.Entities.Account.VirtualInstrument ToEntity(this VirtualAccount account, Guid parentInstrumentId) => new(account.Id)
     {
