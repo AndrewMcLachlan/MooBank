@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System.Security.Claims;
 using Asm.MooBank.Audit;
 using Asm.MooBank.Domain.Entities.Budget;
@@ -51,7 +51,7 @@ public class SecurityRepositoryTests : IDisposable
     #region AssertGroupPermission (Guid overload)
 
     [Fact]
-    public void AssertGroupPermissionById_UserOwnsGroup_DoesNotThrow()
+    public async Task AssertGroupPermissionById_UserOwnsGroup_DoesNotThrow()
     {
         // Arrange
         var groupId = Guid.NewGuid();
@@ -62,11 +62,11 @@ public class SecurityRepositoryTests : IDisposable
         var repository = CreateRepository();
 
         // Act & Assert - should not throw
-        repository.AssertGroupPermission(groupId);
+        await repository.AssertGroupPermission(groupId);
     }
 
     [Fact]
-    public void AssertGroupPermissionById_UserDoesNotOwnGroup_ThrowsNotAuthorisedException()
+    public async Task AssertGroupPermissionById_UserDoesNotOwnGroup_ThrowsNotAuthorisedException()
     {
         // Arrange
         var groupId = Guid.NewGuid();
@@ -78,17 +78,17 @@ public class SecurityRepositoryTests : IDisposable
         var repository = CreateRepository();
 
         // Act & Assert
-        Assert.Throws<NotAuthorisedException>(() => repository.AssertGroupPermission(groupId));
+        await Assert.ThrowsAsync<NotAuthorisedException>(() => repository.AssertGroupPermission(groupId));
     }
 
     [Fact]
-    public void AssertGroupPermissionById_GroupDoesNotExist_ThrowsNotAuthorisedException()
+    public async Task AssertGroupPermissionById_GroupDoesNotExist_ThrowsNotAuthorisedException()
     {
         // Arrange
         var repository = CreateRepository();
 
         // Act & Assert
-        Assert.Throws<NotAuthorisedException>(() => repository.AssertGroupPermission(Guid.NewGuid()));
+        await Assert.ThrowsAsync<NotAuthorisedException>(() => repository.AssertGroupPermission(Guid.NewGuid()));
     }
 
     #endregion
