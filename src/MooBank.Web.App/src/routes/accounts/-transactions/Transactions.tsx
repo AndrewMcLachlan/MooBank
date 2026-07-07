@@ -14,7 +14,7 @@ import { AddTransaction } from "./components/AddTransaction";
 import { TransactionsAccountCard } from "./components/TransactionsAccountCard";
 import { TransactionsCompactWidgets } from "./components/TransactionsCompactWidgets";
 import { useTransactionList } from "components";
-import { useMediaQuery } from "hooks";
+import { useIsDesktop } from "hooks";
 
 export const Transactions: React.FC = () => {
 
@@ -24,8 +24,7 @@ export const Transactions: React.FC = () => {
     const [compactMode, setCompactMode] = useLocalStorage("compact-mode", false);
     const { showNet, setShowNet } = useTransactionList();
     const [show, setShow] = React.useState(false);
-    // Bootstrap md breakpoint - matches the d-md-* classes used by TransactionList.
-    const isDesktop = useMediaQuery("(min-width: 768px)");
+    const isDesktop = useIsDesktop();
 
     if (!account) return null;
 

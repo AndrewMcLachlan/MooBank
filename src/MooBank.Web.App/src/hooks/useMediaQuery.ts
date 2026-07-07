@@ -16,3 +16,9 @@ export const useMediaQuery = (query: string): boolean => {
 
     return matches;
 };
+
+/**
+ * True at or above the moo-ds `md` breakpoint (the same breakpoint the
+ * `d-md-*` utility classes respond to), i.e. a desktop-sized viewport.
+ */
+export const useIsDesktop = (): boolean => useMediaQuery("(min-width: 768px)");
