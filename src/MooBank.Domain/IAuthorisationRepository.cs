@@ -1,0 +1,18 @@
+namespace Asm.MooBank.Domain;
+
+/// <summary>
+/// Data queries used by authorisation requirement handlers.
+/// </summary>
+/// <remarks>
+/// Implementations must not depend on the authorisation system: requirement handlers are
+/// constructed when <c>IAuthorizationService</c> is resolved, so any such dependency is circular.
+/// Authorisation decisions belong in the handlers; this repository only answers questions of fact.
+/// </remarks>
+public interface IAuthorisationRepository
+{
+    Task<bool> IsGroupOwner(Guid groupId, Guid userId, CancellationToken cancellationToken = default);
+
+    Task<Guid?> GetBudgetLineFamilyId(Guid budgetLineId, CancellationToken cancellationToken = default);
+
+    Task<IEnumerable<Guid>> GetOwnedInstrumentIds(Guid userId, CancellationToken cancellationToken = default);
+}
