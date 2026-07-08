@@ -1,13 +1,13 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Utility;
 
 [Table("Bill", Schema = "utilities")]
-public class Bill
+[PrimaryKey(nameof(Id))]
+public class Bill(int id) : KeyedEntity<int>(id)
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+    public Bill() : this(default) { }
 
     public required Guid AccountId { get; set; }
 

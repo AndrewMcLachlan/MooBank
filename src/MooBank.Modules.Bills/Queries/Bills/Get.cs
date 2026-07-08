@@ -9,9 +9,9 @@ internal class GetHandler(IQueryable<Domain.Entities.Utility.Account> accounts) 
 {
     public async ValueTask<Bill> Handle(Get query, CancellationToken cancellationToken)
     {
-        var account = await accounts.Specify(new BillDetailsSpecification()).Where(a => a.Id == query.InstrumentId).SingleOrDefaultAsync(cancellationToken) ?? throw new NotFoundException("Accoutn not found");
+        if (!await accounts.AnyAsync(a => a.Id == query.InstrumentId, cancellationToken)) throw new NotFoundException("Account not found");
 
-        var bill = account.Bills.Where(b => b.Id == query.Id).FirstOrDefault() ?? throw new NotFoundException("Bill not found");
+        var bill = await accounts.Where(a => a.Id == query.InstrumentId).SelectMany(a => a.Bills).Specify(new BillDetailsSpecification()).FirstOrDefaultAsync(b => b.Id == query.Id, cancellationToken) ?? throw new NotFoundException("Bill not found");
 
         return bill.ToModel();
     }
