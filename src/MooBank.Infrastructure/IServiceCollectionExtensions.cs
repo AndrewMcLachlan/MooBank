@@ -71,6 +71,7 @@ public static class IServiceCollectionExtensions
                 .AddScoped<IReferenceDataRepository, ReferenceDataRepository>()
                 .AddScoped<IReportRepository, ReportRepository>()
                 .AddScoped<ISecurity, SecurityRepository>()
+                .AddScoped<IBudgetLineSecurity, BudgetLineSecurity>()
                 .AddScoped<IStockHoldingRepository, StockHoldingRepository>()
                 .AddScoped<ITransactionRepository, TransactionRepository>()
                 .AddScoped<ITagRepository, TagRepository>()

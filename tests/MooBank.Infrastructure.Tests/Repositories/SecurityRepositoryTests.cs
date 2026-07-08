@@ -160,10 +160,10 @@ public class SecurityRepositoryTests : IDisposable
         _context.Add(line);
         _context.SaveChanges();
 
-        var repository = CreateRepository();
+        var security = CreateBudgetLineSecurity();
 
         // Act
-        var result = await repository.HasBudgetLinePermission(line.Id, TestContext.Current.CancellationToken);
+        var result = await security.HasBudgetLinePermission(line.Id, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result);
@@ -182,10 +182,10 @@ public class SecurityRepositoryTests : IDisposable
         _context.Add(line);
         _context.SaveChanges();
 
-        var repository = CreateRepository();
+        var security = CreateBudgetLineSecurity();
 
         // Act
-        var result = await repository.HasBudgetLinePermission(line.Id, TestContext.Current.CancellationToken);
+        var result = await security.HasBudgetLinePermission(line.Id, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result);
@@ -199,10 +199,10 @@ public class SecurityRepositoryTests : IDisposable
     {
         // Arrange
         var nonExistentId = Guid.NewGuid();
-        var repository = CreateRepository();
+        var security = CreateBudgetLineSecurity();
 
         // Act
-        var result = await repository.HasBudgetLinePermission(nonExistentId, TestContext.Current.CancellationToken);
+        var result = await security.HasBudgetLinePermission(nonExistentId, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result);
@@ -286,4 +286,6 @@ public class SecurityRepositoryTests : IDisposable
 
     private SecurityRepository CreateRepository() =>
         new(_context, _authorizationServiceMock.Object, _principalProviderMock.Object, _user, _auditLoggerMock.Object);
+
+    private BudgetLineSecurity CreateBudgetLineSecurity() => new(_context, _user, _auditLoggerMock.Object);
 }

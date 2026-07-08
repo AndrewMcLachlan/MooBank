@@ -39,18 +39,6 @@ public class SecurityRepository(MooBankContext mooBankContext, IAuthorizationSer
         }
     }
 
-    public async Task<bool> HasBudgetLinePermission(Guid id, CancellationToken cancellationToken = default)
-    {
-        var permitted = await mooBankContext.BudgetLines.AnyAsync(bl => bl.Id == id && bl.Budget.FamilyId == user.FamilyId, cancellationToken);
-
-        if (!permitted)
-        {
-            audit.AuthorizationDenied(user, "BudgetLine", id, nameof(BudgetLineRequirement));
-        }
-
-        return permitted;
-    }
-
     public async Task<IEnumerable<Guid>> GetInstrumentIds(CancellationToken cancellationToken = default) =>
         await mooBankContext.InstrumentOwners.Where(aah => aah.UserId == user.Id).Select(aah => aah.InstrumentId).ToListAsync(cancellationToken);
 

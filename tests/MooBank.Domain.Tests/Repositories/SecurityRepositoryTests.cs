@@ -168,10 +168,10 @@ public class SecurityRepositoryTests : IDisposable
     {
         // Arrange
         var lineId = AddBudgetLine(_familyId);
-        var repository = CreateRepository();
+        var security = CreateBudgetLineSecurity();
 
         // Act
-        var result = await repository.HasBudgetLinePermission(lineId, TestContext.Current.CancellationToken);
+        var result = await security.HasBudgetLinePermission(lineId, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result);
@@ -185,10 +185,10 @@ public class SecurityRepositoryTests : IDisposable
     {
         // Arrange
         var lineId = AddBudgetLine(Guid.NewGuid());
-        var repository = CreateRepository();
+        var security = CreateBudgetLineSecurity();
 
         // Act
-        var result = await repository.HasBudgetLinePermission(lineId, TestContext.Current.CancellationToken);
+        var result = await security.HasBudgetLinePermission(lineId, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result);
@@ -202,10 +202,10 @@ public class SecurityRepositoryTests : IDisposable
     {
         // Arrange
         var nonExistentId = Guid.NewGuid();
-        var repository = CreateRepository();
+        var security = CreateBudgetLineSecurity();
 
         // Act
-        var result = await repository.HasBudgetLinePermission(nonExistentId, TestContext.Current.CancellationToken);
+        var result = await security.HasBudgetLinePermission(nonExistentId, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.False(result);
@@ -213,6 +213,8 @@ public class SecurityRepositoryTests : IDisposable
             a => a.AuthorizationDenied(_user, "BudgetLine", nonExistentId, nameof(BudgetLineRequirement)),
             Times.Once);
     }
+
+    private BudgetLineSecurity CreateBudgetLineSecurity() => new(_context, _user, _auditLogger.Object);
 
     private Guid AddBudgetLine(Guid familyId)
     {

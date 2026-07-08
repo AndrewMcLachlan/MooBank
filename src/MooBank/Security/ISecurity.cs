@@ -10,7 +10,6 @@ public interface ISecurity
 
     Task AssertFamilyPermission(Guid familyId);
 
-    Task<bool> HasBudgetLinePermission(Guid id, CancellationToken cancellationToken = default);
     Task<IEnumerable<Guid>> GetInstrumentIds(CancellationToken cancellationToken = default);
 
     Task AssertAdministrator(CancellationToken cancellationToken = default);
