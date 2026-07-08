@@ -35,10 +35,7 @@ internal class ReportRepository(MooBankContext mooBankContext) : IReportReposito
 
         if (ids.Count == 0) return result;
 
-        var rows = await mooBankContext.AccountCreditDebitTotals
-            .FromSqlInterpolated($@"EXEC dbo.GetCreditDebitTotalsForAccounts {CreateAccountIdsParameter(ids)}, {startDate}, {endDate}")
-            .AsNoTracking()
-            .ToListAsync(cancellationToken);
+        var rows = await QueryCreditDebitTotalsForAccounts(ids, startDate, endDate, cancellationToken);
 
         foreach (var group in rows.GroupBy(r => r.AccountId))
         {
@@ -59,10 +56,7 @@ internal class ReportRepository(MooBankContext mooBankContext) : IReportReposito
 
         if (ids.Count == 0) return result;
 
-        var rows = await mooBankContext.AccountMonthlyBalances
-            .FromSqlInterpolated($@"EXEC dbo.GetMonthlyBalancesForAccounts {CreateAccountIdsParameter(ids)}, {startDate}, {endDate}")
-            .AsNoTracking()
-            .ToListAsync(cancellationToken);
+        var rows = await QueryMonthlyBalancesForAccounts(ids, startDate, endDate, cancellationToken);
 
         foreach (var group in rows.GroupBy(r => r.AccountId))
         {
@@ -86,10 +80,7 @@ internal class ReportRepository(MooBankContext mooBankContext) : IReportReposito
 
         if (ids.Count == 0) return result;
 
-        var rows = await mooBankContext.AccountMonthlyCreditDebitTotals
-            .FromSqlInterpolated($@"EXEC dbo.GetMonthlyCreditDebitTotalsForAccounts {CreateAccountIdsParameter(ids)}, {startDate}, {endDate}")
-            .AsNoTracking()
-            .ToListAsync(cancellationToken);
+        var rows = await QueryMonthlyCreditDebitTotalsForAccounts(ids, startDate, endDate, cancellationToken);
 
         foreach (var group in rows.GroupBy(r => r.AccountId))
         {
@@ -103,6 +94,15 @@ internal class ReportRepository(MooBankContext mooBankContext) : IReportReposito
 
         return result;
     }
+
+    private async Task<IEnumerable<AccountCreditDebitTotal>> QueryCreditDebitTotalsForAccounts(IEnumerable<Guid> accountIds, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
+        await mooBankContext.AccountCreditDebitTotals.FromSqlInterpolated($@"EXEC dbo.GetCreditDebitTotalsForAccounts {CreateAccountIdsParameter(accountIds)}, {startDate}, {endDate}").AsNoTracking().ToListAsync(cancellationToken);
+
+    private async Task<IEnumerable<AccountMonthlyBalance>> QueryMonthlyBalancesForAccounts(IEnumerable<Guid> accountIds, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
+        await mooBankContext.AccountMonthlyBalances.FromSqlInterpolated($@"EXEC dbo.GetMonthlyBalancesForAccounts {CreateAccountIdsParameter(accountIds)}, {startDate}, {endDate}").AsNoTracking().ToListAsync(cancellationToken);
+
+    private async Task<IEnumerable<AccountMonthlyCreditDebitTotal>> QueryMonthlyCreditDebitTotalsForAccounts(IEnumerable<Guid> accountIds, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
+        await mooBankContext.AccountMonthlyCreditDebitTotals.FromSqlInterpolated($@"EXEC dbo.GetMonthlyCreditDebitTotalsForAccounts {CreateAccountIdsParameter(accountIds)}, {startDate}, {endDate}").AsNoTracking().ToListAsync(cancellationToken);
 
     private static SqlParameter CreateAccountIdsParameter(IEnumerable<Guid> accountIds)
     {
