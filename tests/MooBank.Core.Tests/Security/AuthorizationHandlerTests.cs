@@ -5,6 +5,7 @@ using Asm.MooBank.Models;
 using Asm.MooBank.Security.Authorisation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Asm.MooBank.Core.Tests.Security;
 
@@ -622,6 +623,50 @@ public class BudgetLineAuthorisationHandlerTests
 {
     private static readonly Guid BudgetLineId = Guid.NewGuid();
 
+    private static IServiceProvider CreateServiceProvider(Asm.MooBank.Security.ISecurity security) =>
+        new ServiceCollection().AddScoped(_ => security).BuildServiceProvider();
+
+    /// <summary>
+    /// Given the registered authorisation handlers, where ISecurity depends on IAuthorizationService
+    /// When IAuthorizationService is resolved
+    /// Then no circular dependency should occur
+    /// </summary>
+    [Fact]
+    public void BudgetLineHandler_SecurityDependsOnAuthorizationService_NoCircularDependency()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddAuthorization();
+        services.AddHttpContextAccessor();
+        services.AddScoped(_ => new User
+        {
+            Id = Guid.NewGuid(),
+            EmailAddress = "test@test.com",
+            FamilyId = Guid.NewGuid(),
+            Currency = "AUD",
+        });
+        services.AddScoped<Asm.MooBank.Security.ISecurity, AuthorizationServiceDependentSecurity>();
+        Asm.MooBank.Security.IServiceCollectionExtensions.AddAuthorisationHandlers(services);
+
+        using var provider = services.BuildServiceProvider();
+        using var scope = provider.CreateScope();
+
+        // Act & Assert
+        var exception = Record.Exception(() => scope.ServiceProvider.GetRequiredService<IAuthorizationService>());
+        Assert.Null(exception);
+    }
+
+    private sealed class AuthorizationServiceDependentSecurity(IAuthorizationService authorizationService) : Asm.MooBank.Security.ISecurity
+    {
+        public Task AssertGroupPermission(Guid groupId) => Task.FromResult(authorizationService is not null);
+        public void AssertGroupPermission(Domain.Entities.Group.Group group) => throw new NotImplementedException();
+        public Task AssertFamilyPermission(Guid familyId) => throw new NotImplementedException();
+        public Task<bool> HasBudgetLinePermission(Guid id, CancellationToken cancellationToken = default) => Task.FromResult(false);
+        public Task<IEnumerable<Guid>> GetInstrumentIds(CancellationToken cancellationToken = default) => throw new NotImplementedException();
+        public Task AssertAdministrator(CancellationToken cancellationToken = default) => throw new NotImplementedException();
+    }
+
     /// <summary>
     /// Given a valid budget line id in the route and a user with permission
     /// When the requirement is handled
@@ -633,7 +678,7 @@ public class BudgetLineAuthorisationHandlerTests
         // Arrange
         var security = new Mock<Asm.MooBank.Security.ISecurity>();
         security.Setup(s => s.HasBudgetLinePermission(BudgetLineId, It.IsAny<CancellationToken>())).ReturnsAsync(true);
-        var handler = new BudgetLineAuthorisationHandler(CreateHttpContextAccessor("id", BudgetLineId.ToString()), security.Object);
+        var handler = new BudgetLineAuthorisationHandler(CreateHttpContextAccessor("id", BudgetLineId.ToString()), CreateServiceProvider(security.Object));
         var context = CreateAuthorizationContext(new BudgetLineRequirement());
 
         // Act
@@ -655,7 +700,7 @@ public class BudgetLineAuthorisationHandlerTests
         // Arrange
         var security = new Mock<Asm.MooBank.Security.ISecurity>();
         security.Setup(s => s.HasBudgetLinePermission(BudgetLineId, It.IsAny<CancellationToken>())).ReturnsAsync(false);
-        var handler = new BudgetLineAuthorisationHandler(CreateHttpContextAccessor("id", BudgetLineId.ToString()), security.Object);
+        var handler = new BudgetLineAuthorisationHandler(CreateHttpContextAccessor("id", BudgetLineId.ToString()), CreateServiceProvider(security.Object));
         var context = CreateAuthorizationContext(new BudgetLineRequirement());
 
         // Act
@@ -676,7 +721,7 @@ public class BudgetLineAuthorisationHandlerTests
     {
         // Arrange
         var security = new Mock<Asm.MooBank.Security.ISecurity>();
-        var handler = new BudgetLineAuthorisationHandler(CreateHttpContextAccessor("id", "not-a-guid"), security.Object);
+        var handler = new BudgetLineAuthorisationHandler(CreateHttpContextAccessor("id", "not-a-guid"), CreateServiceProvider(security.Object));
         var context = CreateAuthorizationContext(new BudgetLineRequirement());
 
         // Act
@@ -698,7 +743,7 @@ public class BudgetLineAuthorisationHandlerTests
     {
         // Arrange
         var security = new Mock<Asm.MooBank.Security.ISecurity>();
-        var handler = new BudgetLineAuthorisationHandler(CreateHttpContextAccessor(), security.Object);
+        var handler = new BudgetLineAuthorisationHandler(CreateHttpContextAccessor(), CreateServiceProvider(security.Object));
         var context = CreateAuthorizationContext(new BudgetLineRequirement());
 
         // Act
