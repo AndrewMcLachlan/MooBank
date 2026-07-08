@@ -1,3 +1,4 @@
+﻿using Asm.MooBank.Domain.Entities.Utility.Specifications;
 using Asm.MooBank.Modules.Bills.Models;
 
 namespace Asm.MooBank.Modules.Bills.Queries.Bills;
@@ -8,26 +9,15 @@ internal class GetForAccountHandler(IQueryable<Domain.Entities.Utility.Account> 
 {
     public async ValueTask<PagedResult<Bill>> Handle(GetForAccount query, CancellationToken cancellationToken)
     {
-        if (!await accounts.AnyAsync(a => a.Id == query.InstrumentId, cancellationToken)) throw new NotFoundException();
+        var account = await accounts.Specify(new BillDetailsSpecification()).Where(a => a.Id == query.InstrumentId).SingleOrDefaultAsync(cancellationToken) ?? throw new NotFoundException();
 
-        var billsQuery = accounts.Where(a => a.Id == query.InstrumentId).SelectMany(a => a.Bills);
-
-        var count = await billsQuery.CountAsync(cancellationToken);
-
-        // Page in the query rather than loading every bill into memory.
-        var bills = await billsQuery
-            .Include(b => b.Periods).ThenInclude(p => p.Usage)
-            .Include(b => b.Periods).ThenInclude(p => p.ServiceCharge)
-            .Include(b => b.Discounts)
-            .OrderBy(b => b.Id)
-            .Skip((query.PageNumber - 1) * query.PageSize)
-            .Take(query.PageSize)
-            .ToListAsync(cancellationToken);
+        var count = account.Bills.Count;
+        var all = account.Bills.Page(query.PageSize, query.PageNumber).ToList();
 
         return new PagedResult<Bill>
         {
             Total = count,
-            Results = bills.ToModel(),
+            Results = all.ToModel(),
         };
     }
 }
