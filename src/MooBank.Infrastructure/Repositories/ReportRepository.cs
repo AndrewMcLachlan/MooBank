@@ -36,10 +36,7 @@ internal class ReportRepository(MooBankContext mooBankContext) : IReportReposito
         if (ids.Count == 0) return result;
 
         var rows = await mooBankContext.AccountCreditDebitTotals
-            .FromSqlRaw("EXEC dbo.GetCreditDebitTotalsForAccounts @AccountIds, @StartDate, @EndDate",
-                CreateAccountIdsParameter(ids),
-                CreateDateParameter("@StartDate", startDate),
-                CreateDateParameter("@EndDate", endDate))
+            .FromSqlInterpolated($@"EXEC dbo.GetCreditDebitTotalsForAccounts {CreateAccountIdsParameter(ids)}, {startDate}, {endDate}")
             .AsNoTracking()
             .ToListAsync(cancellationToken);
 
@@ -63,10 +60,7 @@ internal class ReportRepository(MooBankContext mooBankContext) : IReportReposito
         if (ids.Count == 0) return result;
 
         var rows = await mooBankContext.AccountMonthlyBalances
-            .FromSqlRaw("EXEC dbo.GetMonthlyBalancesForAccounts @AccountIds, @StartDate, @EndDate",
-                CreateAccountIdsParameter(ids),
-                CreateDateParameter("@StartDate", startDate),
-                CreateDateParameter("@EndDate", endDate))
+            .FromSqlInterpolated($@"EXEC dbo.GetMonthlyBalancesForAccounts {CreateAccountIdsParameter(ids)}, {startDate}, {endDate}")
             .AsNoTracking()
             .ToListAsync(cancellationToken);
 
@@ -93,10 +87,7 @@ internal class ReportRepository(MooBankContext mooBankContext) : IReportReposito
         if (ids.Count == 0) return result;
 
         var rows = await mooBankContext.AccountMonthlyCreditDebitTotals
-            .FromSqlRaw("EXEC dbo.GetMonthlyCreditDebitTotalsForAccounts @AccountIds, @StartDate, @EndDate",
-                CreateAccountIdsParameter(ids),
-                CreateDateParameter("@StartDate", startDate),
-                CreateDateParameter("@EndDate", endDate))
+            .FromSqlInterpolated($@"EXEC dbo.GetMonthlyCreditDebitTotalsForAccounts {CreateAccountIdsParameter(ids)}, {startDate}, {endDate}")
             .AsNoTracking()
             .ToListAsync(cancellationToken);
 
@@ -130,6 +121,4 @@ internal class ReportRepository(MooBankContext mooBankContext) : IReportReposito
         };
     }
 
-    private static SqlParameter CreateDateParameter(string name, DateOnly value) =>
-        new(name, SqlDbType.Date) { Value = value.ToDateTime(TimeOnly.MinValue) };
 }
