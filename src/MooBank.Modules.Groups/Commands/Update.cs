@@ -13,7 +13,7 @@ internal class UpdateHandler(IGroupRepository groupRepository, IUnitOfWork unitO
     {
         var entity = await groupRepository.Get(request.Group.Id, cancellationToken);
 
-        security.AssertGroupPermission(entity);
+        await security.AssertGroupPermission(entity);
 
         entity.Name = request.Group.Name;
         entity.Description = request.Group.Description;

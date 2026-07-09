@@ -14,12 +14,15 @@ public static class IServiceCollectionExtensions
 
     public static IServiceCollection AddAuthorisationHandlers(this IServiceCollection services)
     {
+        services.AddScoped<ISecurity, Security>();
+
         services.AddScoped<IAuthorizationHandler, InstrumentOwnerAuthorisationHandler>();
         services.AddScoped<IAuthorizationHandler, InstrumentViewerAuthorisationHandler>();
         services.AddScoped<IAuthorizationHandler, InstrumentViewerResourceAuthorisationHandler>();
         services.AddScoped<IAuthorizationHandler, InstrumentOwnerResourceAuthorisationHandler>();
         services.AddScoped<IAuthorizationHandler, FamilyMemberAuthorisationHandler>();
         services.AddScoped<IAuthorizationHandler, GroupOwnerAuthorisationHandler>();
+        services.AddScoped<IAuthorizationHandler, GroupOwnerResourceAuthorisationHandler>();
         services.AddScoped<IAuthorizationHandler, BudgetLineAuthorisationHandler>();
 
         return services;

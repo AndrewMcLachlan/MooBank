@@ -12,7 +12,7 @@ internal class DeleteHandler(IGroupRepository groupRepository, IUnitOfWork unitO
     {
         var group = await groupRepository.Get(request.Id, cancellationToken);
 
-        security.AssertGroupPermission(group);
+        await security.AssertGroupPermission(group);
 
         groupRepository.Delete(group);
 
