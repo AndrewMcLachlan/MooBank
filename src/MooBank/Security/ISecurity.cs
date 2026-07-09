@@ -1,17 +1,18 @@
-﻿using Asm.MooBank.Domain.Entities.Group;
-using Asm.MooBank.Domain.Entities.Instrument;
+using Asm.MooBank.Domain.Entities.Group;
 
 namespace Asm.MooBank.Security;
 
+/// <summary>
+/// A friendly wrapper over requirement-based authorisation. Implementations evaluate
+/// requirements via <c>IAuthorizationService</c>, audit denials and throw; they contain
+/// no data access of their own.
+/// </summary>
 public interface ISecurity
 {
     Task AssertGroupPermission(Guid groupId);
-    void AssertGroupPermission(Group group);
+    Task AssertGroupPermission(Group group);
 
     Task AssertFamilyPermission(Guid familyId);
-
-    Task<bool> HasBudgetLinePermission(Guid id, CancellationToken cancellationToken = default);
-    Task<IEnumerable<Guid>> GetInstrumentIds(CancellationToken cancellationToken = default);
 
     Task AssertAdministrator(CancellationToken cancellationToken = default);
 }

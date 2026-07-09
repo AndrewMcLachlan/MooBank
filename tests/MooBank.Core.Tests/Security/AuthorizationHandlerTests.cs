@@ -492,63 +492,105 @@ public class RouteParamAuthorizationHandlerTests
     #region GroupOwnerAuthorisationHandler Tests
 
     [Fact]
-    public async Task GroupOwnerHandler_OwnedGroup_ReturnsTrue()
+    public async Task GroupOwnerHandler_OwnedGroupRouteValue_Succeeds()
     {
         // Arrange
         var user = CreateUser(groups: [OwnedGroupId]);
-        var httpContextAccessor = CreateHttpContextAccessor();
-        var handler = new TestableGroupOwnerHandler(httpContextAccessor, user);
+        var requirement = new GroupOwnerRequirement();
+        var handler = new GroupOwnerAuthorisationHandler(CreateHttpContextAccessor("groupId", OwnedGroupId.ToString()), user);
+        var context = CreateAuthorizationContext(requirement);
 
         // Act
-        var result = await handler.TestIsAuthorised(OwnedGroupId);
+        await handler.HandleAsync(context);
 
         // Assert
-        Assert.True(result);
+        Assert.True(context.HasSucceeded);
+        Assert.False(context.HasFailed);
     }
 
     [Fact]
-    public async Task GroupOwnerHandler_NonOwnedGroup_ReturnsFalse()
+    public async Task GroupOwnerHandler_NonOwnedGroupRouteValue_Fails()
     {
         // Arrange
         var user = CreateUser(groups: [OwnedGroupId]);
-        var httpContextAccessor = CreateHttpContextAccessor();
-        var handler = new TestableGroupOwnerHandler(httpContextAccessor, user);
+        var requirement = new GroupOwnerRequirement();
+        var handler = new GroupOwnerAuthorisationHandler(CreateHttpContextAccessor("groupId", Guid.NewGuid().ToString()), user);
+        var context = CreateAuthorizationContext(requirement);
 
         // Act
-        var result = await handler.TestIsAuthorised(Guid.NewGuid());
+        await handler.HandleAsync(context);
 
         // Assert
-        Assert.False(result);
+        Assert.False(context.HasSucceeded);
+        Assert.True(context.HasFailed);
     }
 
     [Fact]
-    public async Task GroupOwnerHandler_InvalidGuidString_ReturnsFalse()
+    public async Task GroupOwnerHandler_InvalidGuidRouteValue_Fails()
     {
         // Arrange
         var user = CreateUser(groups: [OwnedGroupId]);
-        var httpContextAccessor = CreateHttpContextAccessor();
-        var handler = new TestableGroupOwnerHandler(httpContextAccessor, user);
+        var requirement = new GroupOwnerRequirement();
+        var handler = new GroupOwnerAuthorisationHandler(CreateHttpContextAccessor("groupId", "not-a-guid"), user);
+        var context = CreateAuthorizationContext(requirement);
 
         // Act
-        var result = await handler.TestIsAuthorised("not-a-guid");
+        await handler.HandleAsync(context);
 
         // Assert
-        Assert.False(result);
+        Assert.False(context.HasSucceeded);
+        Assert.True(context.HasFailed);
     }
 
+    /// <summary>
+    /// Given no group route value and a resource-based evaluation for an owned group
+    /// When both group handlers run
+    /// Then the resource handler decides and authorization succeeds
+    /// </summary>
     [Fact]
-    public async Task GroupOwnerHandler_NullUser_ReturnsFalse()
+    public async Task GroupOwnerHandlers_NoRouteValue_OwnedGroupResource_Succeeds()
     {
         // Arrange
-        User? user = null;
-        var httpContextAccessor = CreateHttpContextAccessor();
-        var handler = new TestableGroupOwnerHandler(httpContextAccessor, user);
+        var user = CreateUser(groups: [OwnedGroupId]);
+        var repository = new Mock<Asm.MooBank.Domain.IAuthorisationRepository>();
+        repository.Setup(r => r.IsGroupOwner(OwnedGroupId, user.Id, It.IsAny<CancellationToken>())).ReturnsAsync(true);
+        var requirement = new GroupOwnerRequirement();
+        var routeHandler = new GroupOwnerAuthorisationHandler(CreateHttpContextAccessor(), user);
+        var resourceHandler = new GroupOwnerResourceAuthorisationHandler(repository.Object, user);
+        var context = CreateAuthorizationContext(requirement, OwnedGroupId);
 
         // Act
-        var result = await handler.TestIsAuthorised(OwnedGroupId);
+        await routeHandler.HandleAsync(context);
+        await resourceHandler.HandleAsync(context);
 
         // Assert
-        Assert.False(result);
+        Assert.True(context.HasSucceeded);
+        Assert.False(context.HasFailed);
+    }
+
+    /// <summary>
+    /// Given no group route value and a resource-based evaluation for a group the user does not own
+    /// When both group handlers run
+    /// Then authorization does not succeed (fail-closed)
+    /// </summary>
+    [Fact]
+    public async Task GroupOwnerHandlers_NoRouteValue_NonOwnedGroupResource_DoesNotSucceed()
+    {
+        // Arrange
+        var user = CreateUser();
+        var repository = new Mock<Asm.MooBank.Domain.IAuthorisationRepository>();
+        repository.Setup(r => r.IsGroupOwner(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(false);
+        var requirement = new GroupOwnerRequirement();
+        var routeHandler = new GroupOwnerAuthorisationHandler(CreateHttpContextAccessor(), user);
+        var resourceHandler = new GroupOwnerResourceAuthorisationHandler(repository.Object, user);
+        var context = CreateAuthorizationContext(requirement, Guid.NewGuid());
+
+        // Act
+        await routeHandler.HandleAsync(context);
+        await resourceHandler.HandleAsync(context);
+
+        // Assert
+        Assert.False(context.HasSucceeded);
     }
 
     #endregion
@@ -595,45 +637,42 @@ public class RouteParamAuthorizationHandlerTests
 
     #endregion
 
-    #region Test Wrappers
-
-    /// <summary>
-    /// Test wrapper that exposes the protected IsAuthorised method.
-    /// </summary>
-    private class TestableGroupOwnerHandler : GroupOwnerAuthorisationHandler
-    {
-        public TestableGroupOwnerHandler(IHttpContextAccessor httpContextAccessor, User? user)
-            : base(httpContextAccessor, user!)
-        {
-        }
-
-        public ValueTask<bool> TestIsAuthorised(object value) => IsAuthorised(value);
-    }
-
-    #endregion
 }
 
 /// <summary>
 /// Tests for the BudgetLineAuthorisationHandler, which authorises the budget line route
-/// parameter via ISecurity.HasBudgetLinePermission.
+/// parameter via IAuthorisationRepository.
 /// </summary>
 [Trait("Category", "Unit")]
 public class BudgetLineAuthorisationHandlerTests
 {
     private static readonly Guid BudgetLineId = Guid.NewGuid();
+    private static readonly Guid FamilyId = Guid.NewGuid();
+
+    private readonly Mock<Asm.MooBank.Domain.IAuthorisationRepository> _repository = new();
+    private readonly Mock<Asm.MooBank.Audit.IAuditLogger> _audit = new();
+    private readonly User _user = new()
+    {
+        Id = Guid.NewGuid(),
+        EmailAddress = "test@test.com",
+        FamilyId = FamilyId,
+        Currency = "AUD",
+    };
+
+    private BudgetLineAuthorisationHandler CreateHandler(IHttpContextAccessor httpContextAccessor) =>
+        new(httpContextAccessor, _repository.Object, _user, _audit.Object);
 
     /// <summary>
-    /// Given a valid budget line id in the route and a user with permission
+    /// Given a valid budget line id in the route belonging to the user's family
     /// When the requirement is handled
-    /// Then authorization should succeed
+    /// Then authorization should succeed and nothing is audited
     /// </summary>
     [Fact]
-    public async Task BudgetLineHandler_ValidRouteValueWithPermission_Succeeds()
+    public async Task BudgetLineHandler_ValidRouteValueInUsersFamily_Succeeds()
     {
         // Arrange
-        var security = new Mock<Asm.MooBank.Security.ISecurity>();
-        security.Setup(s => s.HasBudgetLinePermission(BudgetLineId, It.IsAny<CancellationToken>())).ReturnsAsync(true);
-        var handler = new BudgetLineAuthorisationHandler(CreateHttpContextAccessor("id", BudgetLineId.ToString()), security.Object);
+        _repository.Setup(r => r.GetBudgetLineFamilyId(BudgetLineId, It.IsAny<CancellationToken>())).ReturnsAsync(FamilyId);
+        var handler = CreateHandler(CreateHttpContextAccessor("id", BudgetLineId.ToString()));
         var context = CreateAuthorizationContext(new BudgetLineRequirement());
 
         // Act
@@ -642,20 +681,20 @@ public class BudgetLineAuthorisationHandlerTests
         // Assert
         Assert.True(context.HasSucceeded);
         Assert.False(context.HasFailed);
+        _audit.Verify(a => a.AuthorizationDenied(It.IsAny<User>(), It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<string>()), Times.Never);
     }
 
     /// <summary>
-    /// Given a valid budget line id in the route and a user without permission
+    /// Given a valid budget line id in the route belonging to another family
     /// When the requirement is handled
-    /// Then authorization should fail
+    /// Then authorization should fail and the denial is audited
     /// </summary>
     [Fact]
-    public async Task BudgetLineHandler_ValidRouteValueWithoutPermission_Fails()
+    public async Task BudgetLineHandler_ValidRouteValueInOtherFamily_FailsAndAudits()
     {
         // Arrange
-        var security = new Mock<Asm.MooBank.Security.ISecurity>();
-        security.Setup(s => s.HasBudgetLinePermission(BudgetLineId, It.IsAny<CancellationToken>())).ReturnsAsync(false);
-        var handler = new BudgetLineAuthorisationHandler(CreateHttpContextAccessor("id", BudgetLineId.ToString()), security.Object);
+        _repository.Setup(r => r.GetBudgetLineFamilyId(BudgetLineId, It.IsAny<CancellationToken>())).ReturnsAsync(Guid.NewGuid());
+        var handler = CreateHandler(CreateHttpContextAccessor("id", BudgetLineId.ToString()));
         var context = CreateAuthorizationContext(new BudgetLineRequirement());
 
         // Act
@@ -664,19 +703,41 @@ public class BudgetLineAuthorisationHandlerTests
         // Assert
         Assert.False(context.HasSucceeded);
         Assert.True(context.HasFailed);
+        _audit.Verify(a => a.AuthorizationDenied(_user, "BudgetLine", BudgetLineId, nameof(BudgetLineRequirement)), Times.Once);
+    }
+
+    /// <summary>
+    /// Given a budget line id that does not exist
+    /// When the requirement is handled
+    /// Then authorization should fail and the denial is audited
+    /// </summary>
+    [Fact]
+    public async Task BudgetLineHandler_UnknownBudgetLine_FailsAndAudits()
+    {
+        // Arrange
+        _repository.Setup(r => r.GetBudgetLineFamilyId(BudgetLineId, It.IsAny<CancellationToken>())).ReturnsAsync((Guid?)null);
+        var handler = CreateHandler(CreateHttpContextAccessor("id", BudgetLineId.ToString()));
+        var context = CreateAuthorizationContext(new BudgetLineRequirement());
+
+        // Act
+        await handler.HandleAsync(context);
+
+        // Assert
+        Assert.False(context.HasSucceeded);
+        Assert.True(context.HasFailed);
+        _audit.Verify(a => a.AuthorizationDenied(_user, "BudgetLine", BudgetLineId, nameof(BudgetLineRequirement)), Times.Once);
     }
 
     /// <summary>
     /// Given a route value that is not a valid GUID
     /// When the requirement is handled
-    /// Then authorization should fail without consulting security
+    /// Then authorization should fail without consulting the repository
     /// </summary>
     [Fact]
     public async Task BudgetLineHandler_InvalidGuidRouteValue_Fails()
     {
         // Arrange
-        var security = new Mock<Asm.MooBank.Security.ISecurity>();
-        var handler = new BudgetLineAuthorisationHandler(CreateHttpContextAccessor("id", "not-a-guid"), security.Object);
+        var handler = CreateHandler(CreateHttpContextAccessor("id", "not-a-guid"));
         var context = CreateAuthorizationContext(new BudgetLineRequirement());
 
         // Act
@@ -685,7 +746,7 @@ public class BudgetLineAuthorisationHandlerTests
         // Assert
         Assert.False(context.HasSucceeded);
         Assert.True(context.HasFailed);
-        security.Verify(s => s.HasBudgetLinePermission(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _repository.Verify(r => r.GetBudgetLineFamilyId(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     /// <summary>
@@ -697,8 +758,7 @@ public class BudgetLineAuthorisationHandlerTests
     public async Task BudgetLineHandler_MissingRouteValue_Fails()
     {
         // Arrange
-        var security = new Mock<Asm.MooBank.Security.ISecurity>();
-        var handler = new BudgetLineAuthorisationHandler(CreateHttpContextAccessor(), security.Object);
+        var handler = CreateHandler(CreateHttpContextAccessor());
         var context = CreateAuthorizationContext(new BudgetLineRequirement());
 
         // Act
@@ -707,7 +767,7 @@ public class BudgetLineAuthorisationHandlerTests
         // Assert
         Assert.False(context.HasSucceeded);
         Assert.True(context.HasFailed);
-        security.Verify(s => s.HasBudgetLinePermission(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        _repository.Verify(r => r.GetBudgetLineFamilyId(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     private static AuthorizationHandlerContext CreateAuthorizationContext(IAuthorizationRequirement requirement)
