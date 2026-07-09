@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
 using ModelContextProtocol.AspNetCore.Authentication;
 
-var result = WebApplicationStart.Run(args, "Asm.MooBank.Web.Api", AddServices, AddApp, AddHealthChecks);
+var result = WebApplicationStart.Run(args, "Asm.MooBank.Api", AddServices, AddApp, AddHealthChecks);
 
 return result;
 
