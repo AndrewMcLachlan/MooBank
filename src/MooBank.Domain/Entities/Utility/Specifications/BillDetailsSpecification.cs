@@ -1,11 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Utility.Specifications;
 
-public class BillDetailsSpecification : ISpecification<Account>
+public class BillDetailsSpecification : ISpecification<Bill>
 {
-    public IQueryable<Account> Apply(IQueryable<Account> query) =>
-        query.Include(a => a.Bills).ThenInclude(b => b.Periods).ThenInclude(p => p.Usage)
-             .Include(a => a.Bills).ThenInclude(b => b.Periods).ThenInclude(p => p.ServiceCharge)
-             .Include(a => a.Bills).ThenInclude(b => b.Discounts);
+    public IQueryable<Bill> Apply(IQueryable<Bill> query) =>
+        query.Include(b => b.Periods).ThenInclude(p => p.Usage)
+             .Include(b => b.Periods).ThenInclude(p => p.ServiceCharge)
+             .Include(b => b.Discounts);
 }

@@ -1500,16 +1500,6 @@
                 }
               }
             }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BudgetLine"
-                }
-              }
-            }
           }
         }
       }
@@ -5506,7 +5496,6 @@
       "AccountTypeSummary": {
         "required": [
           "utilityType",
-          "from",
           "accounts"
         ],
         "type": "object",
@@ -5515,7 +5504,10 @@
             "$ref": "#/components/schemas/UtilityType"
           },
           "from": {
-            "type": "string",
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date"
           },
           "accounts": {

@@ -48,7 +48,8 @@ internal class GetUsageReportHandler(IQueryable<Domain.Entities.Utility.Account>
                 Date = DateOnly.FromDateTime(p.PeriodEnd),
                 AccountName = b.Account?.Name ?? String.Empty,
                 TotalUsage = p.Usage?.TotalUsage ?? 0,
-                Days = (p.PeriodEnd - p.PeriodStart).Days
+                // Billing periods are inclusive of both start and end dates.
+                Days = p.DaysInclusive ?? (p.PeriodEnd - p.PeriodStart).Days + 1
             }))
             .Where(x => x.Days > 0)
             .GroupBy(x => new { x.Date, x.AccountName })

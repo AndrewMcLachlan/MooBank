@@ -60,9 +60,8 @@ internal static class TestEntities
         IEnumerable<Period>? periods = null,
         IEnumerable<Discount>? discounts = null)
     {
-        var bill = new Bill
+        var bill = new Bill(id)
         {
-            Id = id,
             AccountId = accountId ?? Guid.NewGuid(),
             InvoiceNumber = invoiceNumber ?? Faker.Random.AlphaNumeric(10),
             IssueDate = issueDate ?? DateOnly.FromDateTime(DateTime.UtcNow),

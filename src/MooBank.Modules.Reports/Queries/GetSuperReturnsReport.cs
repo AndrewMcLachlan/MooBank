@@ -52,6 +52,23 @@ internal class GetSuperReturnsReportHandler(
 
         var years = new List<SuperReturnsYear>();
 
+        // Fetch contributions once per tag over the full reporting window and bucket the
+        // monthly totals by financial year, rather than one repository call per FY per tag.
+        var rangeStart = new DateOnly(firstFy - 1, 7, 1);
+        var rangeEnd = new DateOnly(lastFy, 6, 30);
+        var contributionsByFy = new Dictionary<int, decimal>();
+
+        foreach (var tagId in configured)
+        {
+            var totals = await repository.GetMonthlyTotalsForTag(request.AccountId, rangeStart, rangeEnd, TransactionFilterType.Credit, tagId, cancellationToken);
+
+            foreach (var total in totals)
+            {
+                var fy = FinancialYear.For(total.Month).Year;
+                contributionsByFy[fy] = contributionsByFy.GetValueOrDefault(fy) + total.GrossAmount;
+            }
+        }
+
         for (var year = firstFy; year <= lastFy; year++)
         {
             var fyStart = new DateOnly(year - 1, 7, 1);
@@ -60,12 +77,7 @@ internal class GetSuperReturnsReportHandler(
             var opening = FindOpeningBalance(balances, fyStart);
             var closing = FindClosingBalance(balances, fyEnd);
 
-            var contributions = 0m;
-            foreach (var tagId in configured)
-            {
-                var totals = await repository.GetMonthlyTotalsForTag(request.AccountId, fyStart, fyEnd, TransactionFilterType.Credit, tagId, cancellationToken);
-                contributions += totals.Sum(t => t.GrossAmount);
-            }
+            var contributions = contributionsByFy.GetValueOrDefault(year);
 
             var implied = closing - opening - contributions;
             decimal? returnPercent = opening != 0m ? Math.Round(implied / opening * 100m, 2) : null;

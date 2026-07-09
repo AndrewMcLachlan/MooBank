@@ -20,19 +20,4 @@ public static class FinancialYear
         }
         return (new DateOnly(date.Year - 1, 7, 1), new DateOnly(date.Year, 6, 30), date.Year);
     }
-
-    /// <summary>
-    /// Enumerates each AU financial year window between two dates inclusive,
-    /// in chronological order. Both dates are mapped to their containing FY first.
-    /// </summary>
-    public static IEnumerable<(DateOnly Start, DateOnly End, int Year)> Range(DateOnly start, DateOnly end)
-    {
-        var first = For(start);
-        var last = For(end);
-
-        for (var year = first.Year; year <= last.Year; year++)
-        {
-            yield return (new DateOnly(year - 1, 7, 1), new DateOnly(year, 6, 30), year);
-        }
-    }
 }

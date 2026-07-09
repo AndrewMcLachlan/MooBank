@@ -1,11 +1,9 @@
-using System.Net;
 using Asm.AspNetCore;
 using Asm.AspNetCore.Routing;
 using Asm.MooBank.Modules.Forecast.Commands;
 using Asm.MooBank.Modules.Forecast.Models;
 using Asm.MooBank.Modules.Forecast.Queries;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
 namespace Asm.MooBank.Modules.Forecast.Endpoints;
@@ -23,7 +21,7 @@ public class PlannedItems : EndpointGroupBase
         routeGroupBuilder.MapQuery<GetPlannedItem, PlannedItem>("/{itemId}")
             .WithNames("Get Planned Item");
 
-        routeGroupBuilder.MapPostCreate<CreatePlannedItem, PlannedItem>("/", "Get Planned Item".ToMachine(), (item) => new { planId = Guid.Empty, itemId = item.Id }, CommandBinding.Parameters)
+        routeGroupBuilder.MapPostCreate<CreatePlannedItem, PlannedItem>("/", "Get Planned Item".ToMachine(), (command, item) => new { planId = command.PlanId, itemId = item.Id }, CommandBinding.Parameters)
             .WithNames("Create Planned Item");
 
         routeGroupBuilder.MapPutCommand<UpdatePlannedItem, PlannedItem>("/{itemId}")

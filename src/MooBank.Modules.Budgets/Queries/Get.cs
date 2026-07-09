@@ -17,6 +17,19 @@ internal class GetHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, Use
         if (entity != null) return entity.ToModel();
 
         // Create the budget if it does not exist
-        return await commandDispatcher.Dispatch(new Create(query.Year), cancellationToken);
+        try
+        {
+            return await commandDispatcher.Dispatch(new Create(query.Year), cancellationToken);
+        }
+        catch (DbUpdateException)
+        {
+            // A concurrent request created the budget first (unique index on FamilyId + Year).
+            // Re-query and return the existing budget.
+            entity = await budgets.Include(b => b.Lines).ThenInclude(b => b.Tag).Where(b => b.FamilyId == familyId && b.Year == query.Year).SingleOrDefaultAsync(cancellationToken);
+
+            if (entity == null) throw;
+
+            return entity.ToModel();
+        }
     }
 }

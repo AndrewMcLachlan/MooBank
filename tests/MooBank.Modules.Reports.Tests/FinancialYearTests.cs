@@ -42,32 +42,4 @@ public class FinancialYearTests
         Assert.Equal(new DateOnly(ey, em, ed), result.End);
         Assert.Equal(fy, result.Year);
     }
-
-    /// <summary>
-    /// Given a range spanning two FYs
-    /// When Range is enumerated
-    /// Then both FYs are returned in chronological order.
-    /// </summary>
-    [Fact]
-    public void Range_SpansTwoFys()
-    {
-        var result = FinancialYear.Range(new DateOnly(2025, 1, 15), new DateOnly(2026, 3, 1)).ToList();
-
-        Assert.Equal(2, result.Count);
-        Assert.Equal(2025, result[0].Year);
-        Assert.Equal(2026, result[1].Year);
-    }
-
-    /// <summary>
-    /// Given a range entirely within one FY
-    /// When Range is enumerated
-    /// Then a single FY entry is returned.
-    /// </summary>
-    [Fact]
-    public void Range_WithinSingleFy_ReturnsOne()
-    {
-        var result = FinancialYear.Range(new DateOnly(2025, 8, 1), new DateOnly(2026, 1, 1)).ToList();
-        Assert.Single(result);
-        Assert.Equal(2026, result[0].Year);
-    }
 }

@@ -554,6 +554,61 @@ public class GetTagTrendReportTests
         Assert.True(result.Months.Count() > 3);
     }
 
+    /// <summary>
+    /// Given months with a gap (Jan=10, Apr=30, May=5)
+    /// When smoothing is applied
+    /// Then the earlier point keeps its own value, the gap month values are spread from the
+    /// later point, each month appears exactly once, and the overall total is preserved (45).
+    /// </summary>
+    [Fact]
+    public async Task Handle_WithSmoothingTrue_GapInMonths_PreservesTotalAndEmitsEachMonthOnce()
+    {
+        // Arrange
+        var accountId = Guid.NewGuid();
+        var start = new DateOnly(2024, 1, 1);
+        var end = new DateOnly(2024, 6, 30);
+        var tagId = 1;
+
+        var monthlyTotals = new[]
+        {
+            TestEntities.CreateMonthlyTagTotal(new DateOnly(2024, 1, 1), 10m, 10m),
+            TestEntities.CreateMonthlyTagTotal(new DateOnly(2024, 4, 1), 30m, 30m), // 3-month gap
+            TestEntities.CreateMonthlyTagTotal(new DateOnly(2024, 5, 1), 5m, 5m),   // consecutive
+        };
+        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId));
+
+        _mocks.ReportRepositoryMock
+            .Setup(r => r.GetMonthlyTotalsForTag(accountId, start, end, TransactionFilterType.Debit, tagId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(monthlyTotals);
+
+        var handler = new GetTagTrendReportHandler(_mocks.ReportRepositoryMock.Object, tags);
+
+        var query = new GetTagTrendReport
+        {
+            AccountId = accountId,
+            Start = start,
+            End = end,
+            ReportType = TestEntities.CreateDebitReportType(),
+            TagId = tagId,
+            ApplySmoothing = true,
+        };
+
+        // Act
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
+
+        // Assert
+        var monthsList = result.Months.ToList();
+
+        Assert.Equal(5, monthsList.Count); // Jan, Feb, Mar, Apr, May - each exactly once
+        Assert.Equal(45m, monthsList.Sum(m => m.GrossAmount)); // 10 + 30 + 5 preserved
+
+        Assert.Equal(10m, monthsList[0].GrossAmount); // Jan keeps its own value
+        Assert.Equal(10m, monthsList[1].GrossAmount); // Feb = 30 / 3
+        Assert.Equal(10m, monthsList[2].GrossAmount); // Mar = 30 / 3
+        Assert.Equal(10m, monthsList[3].GrossAmount); // Apr = 30 / 3
+        Assert.Equal(5m, monthsList[4].GrossAmount);  // May keeps its own value
+    }
+
     [Fact]
     public async Task Handle_WithSmoothingTrue_MaintainsChronologicalOrder()
     {

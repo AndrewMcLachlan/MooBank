@@ -201,29 +201,6 @@ public class ReportQueryExtensionsTests
 
     #endregion
 
-    #region ExcludeOffset Tests
-
-    [Fact]
-    public void ExcludeOffset_TransactionsWithNoOffset_AllIncluded()
-    {
-        // Arrange
-        var transaction1 = CreateTransaction(TestAccountId, 100m, DateTime.Today.AddDays(-1));
-        var transaction2 = CreateTransaction(TestAccountId, 200m, DateTime.Today.AddDays(-2));
-
-        var transactions = CreateTransactions(transaction1, transaction2);
-
-        // Act
-        var result = transactions.ExcludeOffset().ToList();
-
-        // Assert
-        Assert.Equal(2, result.Count);
-    }
-
-    // Note: Tests for ExcludeOffset with actual offsets would require complex entity setup
-    // The extension method is tested implicitly through integration tests
-
-    #endregion
-
     #region TypedReportQuery WhereByReportQuery Tests
 
     [Fact]

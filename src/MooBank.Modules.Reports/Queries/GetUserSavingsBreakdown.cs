@@ -32,14 +32,32 @@ internal class GetUserSavingsBreakdownHandler(
 
         if (nonTransactional.Count > 0)
         {
-            var monthlyBalances = await repository.GetMonthlyBalancesForAccounts(nonTransactional.Select(a => a.Id), start, end, cancellationToken);
+            var startMonth = new DateOnly(start.Year, start.Month, 1);
+
+            // Fetch from the month before the range so the closing balance of that month
+            // can serve as the opening balance for the range. Without it, the first month's
+            // movement is lost and single-month ranges always report a zero delta.
+            var fetchStart = startMonth.AddMonths(-1);
+
+            var monthlyBalances = await repository.GetMonthlyBalancesForAccounts(nonTransactional.Select(a => a.Id), fetchStart, end, cancellationToken);
 
             foreach (var account in nonTransactional)
             {
                 var series = monthlyBalances.TryGetValue(account.Id, out var rows) ? rows.OrderBy(b => b.PeriodEnd).ToList() : [];
-                var startBalance = series.FirstOrDefault()?.Balance;
-                var endBalance = series.LastOrDefault()?.Balance;
-                var delta = (startBalance is not null && endBalance is not null) ? endBalance - startBalance : null;
+
+                decimal? startBalance = null;
+                decimal? endBalance = null;
+
+                if (series.Count > 0)
+                {
+                    // The opening balance is the last known balance before the range starts.
+                    // If there is no history before the range, the account opened during the
+                    // range, so its opening balance is zero.
+                    startBalance = series.LastOrDefault(b => b.PeriodEnd < startMonth)?.Balance ?? 0m;
+                    endBalance = series[^1].Balance;
+                }
+
+                var delta = endBalance - startBalance;
 
                 instrumentChanges.Add(new InstrumentBalanceChange
                 {

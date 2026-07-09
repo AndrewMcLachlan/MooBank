@@ -63,6 +63,10 @@ public class PlannedItemBaseValidator : AbstractValidator<PlannedItemBase>
         RuleFor(x => x.Amount)
             .GreaterThan(0).WithMessage("Amount must be greater than zero");
 
+        RuleFor(x => x.ScheduleInterval)
+            .GreaterThanOrEqualTo(1).WithMessage("Schedule interval must be at least 1")
+            .When(x => x.ScheduleInterval != null);
+
         RuleFor(x => x.Notes)
             .MaximumLength(512).WithMessage("Notes must not exceed 512 characters")
             .When(x => x.Notes != null);

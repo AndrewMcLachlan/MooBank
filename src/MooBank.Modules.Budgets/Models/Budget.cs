@@ -28,8 +28,8 @@ public static class BudgetExtensions
         for (int i = 0; i < 12; i++)
         {
             var mask = 1 << i;
-            var monthIncome = lines.Where(l => l.Type == BudgetLineType.Income && (l.Month & 1 << i) != 0).Sum(l => l.Amount);
-            var monthExpenses = lines.Where(l => l.Type == BudgetLineType.Expenses && (l.Month & 1 << i) != 0).Sum(l => l.Amount);
+            var monthIncome = lines.Where(l => l.Type == BudgetLineType.Income && (l.Month & mask) != 0).Sum(l => l.Amount);
+            var monthExpenses = lines.Where(l => l.Type == BudgetLineType.Expenses && (l.Month & mask) != 0).Sum(l => l.Amount);
 
             months.Add(new(i, monthIncome, monthExpenses));
         }
@@ -49,8 +49,8 @@ public static class BudgetExtensions
         for (int i = 0; i < 12; i++)
         {
             var mask = 1 << i;
-            var monthIncome = budget.Lines.Where(l => l.Income && (l.Month & 1 << i) != 0).Sum(l => l.Amount);
-            var monthExpenses = budget.Lines.Where(l => !l.Income && (l.Month & 1 << i) != 0).Sum(l => l.Amount);
+            var monthIncome = budget.Lines.Where(l => l.Income && (l.Month & mask) != 0).Sum(l => l.Amount);
+            var monthExpenses = budget.Lines.Where(l => !l.Income && (l.Month & mask) != 0).Sum(l => l.Amount);
 
             // Add one to the month as the DateTime months are one-based
             months.Add(new(i + 1, monthIncome, monthExpenses));

@@ -1,12 +1,11 @@
-CREATE PROCEDURE dbo.GetMonthlyCreditDebitTotals
-    @AccountId UNIQUEIDENTIFIER,
+CREATE PROCEDURE dbo.GetCreditDebitTotalsForAccounts
+    @AccountIds dbo.GuidList READONLY,
     @StartDate date,
     @EndDate date
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    SELECT @StartDate = GREATEST(@StartDate, (SELECT Min(TransactionTime) FROM [Transaction] WHERE AccountId = @AccountId))
     SELECT @EndDate = LEAST(@EndDate, CAST(GETDATE() as DATE));
 
     -- Use TransactionSplitNetAmounts view to aggregate per transaction
@@ -15,13 +14,13 @@ BEGIN
         FROM dbo.TransactionSplitNetAmounts
     )
     SELECT
-        DATEFROMPARTS(YEAR(t.TransactionTime), MONTH(t.TransactionTime), 1) AS [Month],
+        t.AccountId,
         t.TransactionTypeId AS TransactionType,
         SUM(CASE WHEN t.TransactionTypeId = 2 THEN -CAST(sn.NetAmount AS DECIMAL(12,4)) ELSE CAST(sn.NetAmount AS DECIMAL(12,4)) END) AS Total
     FROM dbo.[Transaction] t
+    JOIN @AccountIds a ON a.Id = t.AccountId
     JOIN SplitNet sn ON sn.TransactionId = t.TransactionId
-    WHERE t.AccountId = @AccountId
-      AND t.TransactionTime >= @StartDate AND t.TransactionTime < DATEADD(day, 1, @EndDate)
+    WHERE t.TransactionTime >= @StartDate AND t.TransactionTime < DATEADD(day, 1, @EndDate)
       AND t.ExcludeFromReporting = 0
-    GROUP BY DATEFROMPARTS(YEAR(t.TransactionTime), MONTH(t.TransactionTime), 1), t.TransactionTypeId;
+    GROUP BY t.AccountId, t.TransactionTypeId;
 END

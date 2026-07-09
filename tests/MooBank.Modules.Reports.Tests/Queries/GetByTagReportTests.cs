@@ -1,4 +1,5 @@
 #nullable enable
+using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Reports.Models;
 using Asm.MooBank.Modules.Reports.Queries;
@@ -22,7 +23,7 @@ public class GetByTagReportTests
         var end = DateOnly.FromDateTime(DateTime.Today);
         var transactions = CreateTransactionQueryable([]);
 
-        var handler = new GetByTagReportHandler(transactions);
+        var handler = CreateHandler(transactions);
 
         var query = new GetByTagReport
         {
@@ -57,7 +58,7 @@ public class GetByTagReportTests
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
-        var handler = new GetByTagReportHandler(transactionsQueryable);
+        var handler = CreateHandler(transactionsQueryable);
 
         var query = new GetByTagReport
         {
@@ -89,7 +90,7 @@ public class GetByTagReportTests
         // Arrange
         var transactions = CreateTransactionQueryable([]);
 
-        var handler = new GetByTagReportHandler(transactions);
+        var handler = CreateHandler(transactions);
 
         var query = new GetByTagReport
         {
@@ -122,7 +123,7 @@ public class GetByTagReportTests
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
-        var handler = new GetByTagReportHandler(transactionsQueryable);
+        var handler = CreateHandler(transactionsQueryable);
 
         var query = new GetByTagReport
         {
@@ -153,7 +154,7 @@ public class GetByTagReportTests
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
-        var handler = new GetByTagReportHandler(transactionsQueryable);
+        var handler = CreateHandler(transactionsQueryable);
 
         var query = new GetByTagReport
         {
@@ -185,7 +186,7 @@ public class GetByTagReportTests
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
-        var handler = new GetByTagReportHandler(transactionsQueryable);
+        var handler = CreateHandler(transactionsQueryable);
 
         var query = new GetByTagReport
         {
@@ -224,7 +225,7 @@ public class GetByTagReportTests
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
-        var handler = new GetByTagReportHandler(transactionsQueryable);
+        var handler = CreateHandler(transactionsQueryable);
 
         var query = new GetByTagReport
         {
@@ -257,7 +258,7 @@ public class GetByTagReportTests
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
-        var handler = new GetByTagReportHandler(transactionsQueryable);
+        var handler = CreateHandler(transactionsQueryable);
 
         var query = new GetByTagReport
         {
@@ -290,7 +291,7 @@ public class GetByTagReportTests
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
-        var handler = new GetByTagReportHandler(transactionsQueryable);
+        var handler = CreateHandler(transactionsQueryable);
 
         var query = new GetByTagReport
         {
@@ -322,7 +323,7 @@ public class GetByTagReportTests
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
-        var handler = new GetByTagReportHandler(transactionsQueryable);
+        var handler = CreateHandler(transactionsQueryable);
 
         var query = new GetByTagReport
         {
@@ -354,7 +355,7 @@ public class GetByTagReportTests
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
-        var handler = new GetByTagReportHandler(transactionsQueryable);
+        var handler = CreateHandler(transactionsQueryable);
 
         var query = new GetByTagReport
         {
@@ -386,7 +387,7 @@ public class GetByTagReportTests
         var transactions = new[] { includedTransaction, excludedTransaction };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
-        var handler = new GetByTagReportHandler(transactionsQueryable);
+        var handler = CreateHandler(transactionsQueryable);
 
         var query = new GetByTagReport
         {
@@ -423,7 +424,7 @@ public class GetByTagReportTests
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
-        var handler = new GetByTagReportHandler(transactionsQueryable);
+        var handler = CreateHandler(transactionsQueryable);
 
         var query = new GetByTagReport
         {
@@ -465,7 +466,7 @@ public class GetByTagReportTests
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
-        var handler = new GetByTagReportHandler(transactionsQueryable);
+        var handler = CreateHandler(transactionsQueryable);
 
         var query = new GetByTagReport
         {
@@ -498,7 +499,7 @@ public class GetByTagReportTests
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
-        var handler = new GetByTagReportHandler(transactionsQueryable);
+        var handler = CreateHandler(transactionsQueryable);
 
         var query = new GetByTagReport
         {
@@ -531,7 +532,7 @@ public class GetByTagReportTests
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
-        var handler = new GetByTagReportHandler(transactionsQueryable);
+        var handler = CreateHandler(transactionsQueryable);
 
         var query = new GetByTagReport
         {
@@ -563,7 +564,7 @@ public class GetByTagReportTests
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
-        var handler = new GetByTagReportHandler(transactionsQueryable);
+        var handler = CreateHandler(transactionsQueryable);
 
         var query = new GetByTagReport
         {
@@ -595,7 +596,7 @@ public class GetByTagReportTests
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
-        var handler = new GetByTagReportHandler(transactionsQueryable);
+        var handler = CreateHandler(transactionsQueryable);
 
         var query = new GetByTagReport
         {
@@ -630,7 +631,7 @@ public class GetByTagReportTests
 
         var transactionsQueryable = CreateTransactionQueryable([transaction]);
 
-        var handler = new GetByTagReportHandler(transactionsQueryable);
+        var handler = CreateHandler(transactionsQueryable);
 
         var query = new GetByTagReport
         {
@@ -663,7 +664,7 @@ public class GetByTagReportTests
 
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
-        var handler = new GetByTagReportHandler(transactionsQueryable);
+        var handler = CreateHandler(transactionsQueryable);
 
         var query = new GetByTagReport
         {
@@ -701,7 +702,7 @@ public class GetByTagReportTests
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
-        var handler = new GetByTagReportHandler(transactionsQueryable);
+        var handler = CreateHandler(transactionsQueryable);
 
         var query = new GetByTagReport
         {
@@ -720,7 +721,88 @@ public class GetByTagReportTests
         Assert.Equal(500m, recurringTags[0].GrossAmount);
     }
 
+    /// <summary>
+    /// Given a transaction split across two tags
+    /// When the report is generated
+    /// Then each tag receives only its split's amount, not the whole transaction amount.
+    /// </summary>
+    [Fact]
+    public async Task Handle_SplitTransaction_AttributesSplitAmountsToTags()
+    {
+        // Arrange
+        var groceries = CreateTag(1, "Groceries");
+        var household = CreateTag(2, "Household");
+
+        var transaction = CreateTransactionWithMultipleSplits(
+            TestAccountId,
+            -150m,
+            DateTime.Today.AddDays(-5),
+            TransactionType.Debit,
+            [(100m, [groceries]), (50m, [household])]);
+
+        var handler = CreateHandler(CreateTransactionQueryable([transaction]));
+
+        var query = new GetByTagReport
+        {
+            AccountId = TestAccountId,
+            Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
+            End = DateOnly.FromDateTime(DateTime.Today),
+            ReportType = TestEntities.CreateDebitReportType(),
+        };
+
+        // Act
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
+
+        // Assert - each tag gets its split's amount, not the whole transaction's 150
+        Assert.Equal(100m, result.Tags.First(t => t.TagName == "Groceries").GrossAmount);
+        Assert.Equal(50m, result.Tags.First(t => t.TagName == "Household").GrossAmount);
+    }
+
+    /// <summary>
+    /// Given a parent tag id and transactions tagged with a child of the parent and an unrelated tag
+    /// When the report is generated
+    /// Then only the parent and its descendants are included.
+    /// </summary>
+    [Fact]
+    public async Task Handle_WithParentTagId_FiltersToDescendantTags()
+    {
+        // Arrange
+        var child = CreateTag(2, "Child");
+        var unrelated = CreateTag(3, "Unrelated");
+
+        var transactions = new[]
+        {
+            CreateTransaction(TestAccountId, -100m, DateTime.Today.AddDays(-5), TransactionType.Debit, [child]),
+            CreateTransaction(TestAccountId, -50m, DateTime.Today.AddDays(-4), TransactionType.Debit, [unrelated]),
+        };
+
+        var handler = CreateHandler(
+            CreateTransactionQueryable(transactions),
+            [new TagRelationship { Id = 2, ParentId = 1 }]);
+
+        var query = new GetByTagReport
+        {
+            AccountId = TestAccountId,
+            Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
+            End = DateOnly.FromDateTime(DateTime.Today),
+            ReportType = TestEntities.CreateDebitReportType(),
+            ParentTagId = 1,
+        };
+
+        // Act
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
+
+        // Assert
+        var childTag = result.Tags.FirstOrDefault(t => t.TagName == "Child");
+        Assert.NotNull(childTag);
+        Assert.Equal(100m, childTag.GrossAmount);
+        Assert.DoesNotContain(result.Tags, t => t.TagName == "Unrelated");
+    }
+
     #region Helper Methods
+
+    private static GetByTagReportHandler CreateHandler(IQueryable<DomainTransaction> transactions, IEnumerable<TagRelationship>? tagRelationships = null) =>
+        new(transactions, QueryableHelper.CreateAsyncQueryable(tagRelationships ?? []));
 
     private static DomainTag CreateTag(int id, string name)
     {

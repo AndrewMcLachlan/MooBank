@@ -3,7 +3,6 @@ using Asm.AspNetCore.Routing;
 using Asm.MooBank.Modules.Budgets.Commands;
 using Asm.MooBank.Modules.Budgets.Models;
 using Asm.MooBank.Modules.Budgets.Queries;
-using Asm.MooBank.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -34,10 +33,8 @@ public class Budget : EndpointGroupBase
             .Produces<BudgetLine>()
             .RequireAuthorization(Policies.GetBudgetLinePolicy("id"));
 
-        // HACK: How do we get year from the route into the response?
-        routeGroupBuilder.MapPostCreate<CreateLine, BudgetLine>("/{year}/lines", "Get Budget Line".ToMachine(), (line) => new { year = 2023, id = line.Id }, CommandBinding.Parameters)
-            .WithNames("Create Budget Line")
-            .Produces<BudgetLine>();
+        routeGroupBuilder.MapPostCreate<CreateLine, BudgetLine>("/{year}/lines", "Get Budget Line".ToMachine(), (command, line) => new { year = command.Year, id = line.Id }, CommandBinding.Parameters)
+            .WithNames("Create Budget Line");
 
         routeGroupBuilder.MapCommand<GenerateBudget, Models.Budget>("/{year}/generate")
             .WithNames("Generate Budget")

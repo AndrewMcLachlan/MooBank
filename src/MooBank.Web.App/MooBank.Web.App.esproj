@@ -7,5 +7,7 @@
     <ShouldRunBuildScript>false</ShouldRunBuildScript>
     <!-- Folder where production build objects will be placed -->
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist</BuildOutputFolder>
+    <!-- Satisfies NuGet restore when referenced by projects restored with a runtime identifier -->
+    <RuntimeIdentifiers>win;linux-x64</RuntimeIdentifiers>
   </PropertyGroup>
 </Project>

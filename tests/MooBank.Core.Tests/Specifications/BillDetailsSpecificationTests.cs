@@ -1,41 +1,37 @@
-using Asm.MooBank.Core.Tests.Support;
-using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Utility;
 using Asm.MooBank.Domain.Entities.Utility.Specifications;
-using Asm.MooBank.Models;
-using UtilityAccount = Asm.MooBank.Domain.Entities.Utility.Account;
 
 namespace Asm.MooBank.Core.Tests.Specifications;
 
 /// <summary>
 /// Unit tests for the <see cref="BillDetailsSpecification"/> specification.
-/// Tests verify that the specification correctly includes Bills with Periods, Usage, ServiceCharge, and Discounts.
+/// Tests verify that the specification correctly includes Periods, Usage, ServiceCharge, and Discounts.
 /// </summary>
 public class BillDetailsSpecificationTests
 {
     #region Basic Application
 
     /// <summary>
-    /// Given a collection of utility accounts
+    /// Given a collection of bills
     /// When BillDetailsSpecification is applied
-    /// Then all accounts should be returned
+    /// Then all bills should be returned
     /// </summary>
     [Fact]
     [Trait("Category", "Unit")]
-    public void Apply_WithAccounts_ReturnsAllAccounts()
+    public void Apply_WithBills_ReturnsAllBills()
     {
         // Arrange
-        var accounts = new List<UtilityAccount>
+        var bills = new List<Bill>
         {
-            CreateUtilityAccount("Account 1", "ACC001"),
-            CreateUtilityAccount("Account 2", "ACC002"),
-            CreateUtilityAccount("Account 3", "ACC003"),
+            CreateBill(1, "INV001"),
+            CreateBill(2, "INV002"),
+            CreateBill(3, "INV003"),
         };
 
         var spec = new BillDetailsSpecification();
 
         // Act
-        var result = spec.Apply(accounts.AsQueryable());
+        var result = spec.Apply(bills.AsQueryable());
 
         // Assert
         Assert.Equal(3, result.Count());
@@ -51,39 +47,39 @@ public class BillDetailsSpecificationTests
     public void Apply_WithEmptyCollection_ReturnsEmpty()
     {
         // Arrange
-        var accounts = new List<UtilityAccount>();
+        var bills = new List<Bill>();
         var spec = new BillDetailsSpecification();
 
         // Act
-        var result = spec.Apply(accounts.AsQueryable());
+        var result = spec.Apply(bills.AsQueryable());
 
         // Assert
         Assert.Empty(result);
     }
 
     /// <summary>
-    /// Given a single utility account
+    /// Given a single bill
     /// When BillDetailsSpecification is applied
-    /// Then the account should be returned
+    /// Then the bill should be returned
     /// </summary>
     [Fact]
     [Trait("Category", "Unit")]
-    public void Apply_WithSingleAccount_ReturnsSingleAccount()
+    public void Apply_WithSingleBill_ReturnsSingleBill()
     {
         // Arrange
-        var accounts = new List<UtilityAccount>
+        var bills = new List<Bill>
         {
-            CreateUtilityAccount("Single Account", "ACC001"),
+            CreateBill(1, "INV001"),
         };
 
         var spec = new BillDetailsSpecification();
 
         // Act
-        var result = spec.Apply(accounts.AsQueryable()).ToList();
+        var result = spec.Apply(bills.AsQueryable()).ToList();
 
         // Assert
         Assert.Single(result);
-        Assert.Equal("Single Account", result[0].Name);
+        Assert.Equal("INV001", result[0].InvoiceNumber);
     }
 
     #endregion
@@ -91,29 +87,29 @@ public class BillDetailsSpecificationTests
     #region Query Preservation
 
     /// <summary>
-    /// Given utility accounts with various account numbers
+    /// Given bills with various invoice numbers
     /// When BillDetailsSpecification is applied
-    /// Then account numbers should be preserved
+    /// Then invoice numbers should be preserved
     /// </summary>
     [Fact]
     [Trait("Category", "Unit")]
-    public void Apply_PreservesAccountNumbers()
+    public void Apply_PreservesInvoiceNumbers()
     {
         // Arrange
-        var accounts = new List<UtilityAccount>
+        var bills = new List<Bill>
         {
-            CreateUtilityAccount("Electric", "ELEC001"),
-            CreateUtilityAccount("Gas", "GAS001"),
+            CreateBill(1, "ELEC001"),
+            CreateBill(2, "GAS001"),
         };
 
         var spec = new BillDetailsSpecification();
 
         // Act
-        var result = spec.Apply(accounts.AsQueryable()).ToList();
+        var result = spec.Apply(bills.AsQueryable()).ToList();
 
         // Assert
-        Assert.Contains(result, a => a.AccountNumber == "ELEC001");
-        Assert.Contains(result, a => a.AccountNumber == "GAS001");
+        Assert.Contains(result, b => b.InvoiceNumber == "ELEC001");
+        Assert.Contains(result, b => b.InvoiceNumber == "GAS001");
     }
 
     /// <summary>
@@ -126,14 +122,15 @@ public class BillDetailsSpecificationTests
     public void Apply_PreservesExistingFilters()
     {
         // Arrange
-        var accounts = new List<UtilityAccount>
+        var accountId = Guid.NewGuid();
+        var bills = new List<Bill>
         {
-            CreateUtilityAccount("Keep", "ACC001"),
-            CreateUtilityAccount("Remove", "ACC002"),
-            CreateUtilityAccount("Keep", "ACC003"),
+            CreateBill(1, "INV001", accountId),
+            CreateBill(2, "INV002"),
+            CreateBill(3, "INV003", accountId),
         };
 
-        var filteredQuery = accounts.AsQueryable().Where(a => a.Name == "Keep");
+        var filteredQuery = bills.AsQueryable().Where(b => b.AccountId == accountId);
         var spec = new BillDetailsSpecification();
 
         // Act
@@ -141,7 +138,7 @@ public class BillDetailsSpecificationTests
 
         // Assert
         Assert.Equal(2, result.Count);
-        Assert.All(result, a => Assert.Equal("Keep", a.Name));
+        Assert.All(result, b => Assert.Equal(accountId, b.AccountId));
     }
 
     #endregion
@@ -149,7 +146,7 @@ public class BillDetailsSpecificationTests
     #region Queryable Behavior
 
     /// <summary>
-    /// Given a queryable of utility accounts
+    /// Given a queryable of bills
     /// When BillDetailsSpecification is applied
     /// Then the result should be queryable
     /// </summary>
@@ -158,31 +155,29 @@ public class BillDetailsSpecificationTests
     public void Apply_ReturnsQueryable()
     {
         // Arrange
-        var accounts = new List<UtilityAccount>
+        var bills = new List<Bill>
         {
-            CreateUtilityAccount("Test", "ACC001"),
+            CreateBill(1, "INV001"),
         };
 
         var spec = new BillDetailsSpecification();
 
         // Act
-        var result = spec.Apply(accounts.AsQueryable());
+        var result = spec.Apply(bills.AsQueryable());
 
         // Assert
-        Assert.IsAssignableFrom<IQueryable<UtilityAccount>>(result);
+        Assert.IsAssignableFrom<IQueryable<Bill>>(result);
     }
 
     #endregion
 
-    private UtilityAccount CreateUtilityAccount(string name, string accountNumber)
+    private static Bill CreateBill(int id, string invoiceNumber, Guid? accountId = null)
     {
-        return new UtilityAccount(Guid.NewGuid())
+        return new Bill(id)
         {
-            Name = name,
-            AccountNumber = accountNumber,
-            Currency = "AUD",
-            UtilityType = UtilityType.Electricity,
-            Owners = [new InstrumentOwner { UserId = TestModels.UserId }],
+            AccountId = accountId ?? Guid.NewGuid(),
+            InvoiceNumber = invoiceNumber,
+            IssueDate = DateOnly.FromDateTime(DateTime.UtcNow),
         };
     }
 }
