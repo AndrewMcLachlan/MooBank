@@ -114,7 +114,7 @@ public class FakePolicyEvaluator : IPolicyEvaluator
                     return PolicyAuthorizationResult.Forbid();
                 }
             }
-            else if (requirement is AdminRequirement)
+            else if (requirement is RoleRequirement)
             {
                 // The Admin policy requires the Admin role
                 var userRoles = principal.Claims
@@ -122,7 +122,7 @@ public class FakePolicyEvaluator : IPolicyEvaluator
                     .Select(c => c.Value)
                     .ToList();
 
-                if (!userRoles.Contains(AdminRequirement.RoleName))
+                if (!userRoles.Contains(AdminRequirement.AdminRoleName))
                 {
                     return PolicyAuthorizationResult.Forbid();
                 }

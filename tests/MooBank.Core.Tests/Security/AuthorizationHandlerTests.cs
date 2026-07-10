@@ -1169,7 +1169,7 @@ public class AdminAuthorisationHandlerTests
     public async Task AdminHandler_UserInAdminRole_Succeeds()
     {
         // Arrange
-        var handler = new AdminAuthorisationHandler(_user, _audit.Object);
+        var handler = new RoleAuthorisationHandler(_user, _audit.Object);
         var context = CreateAuthorizationContext(new AdminRequirement(), isAdmin: true);
 
         // Act
@@ -1190,7 +1190,7 @@ public class AdminAuthorisationHandlerTests
     public async Task AdminHandler_UserNotInAdminRole_DoesNotSucceedAndAudits()
     {
         // Arrange
-        var handler = new AdminAuthorisationHandler(_user, _audit.Object);
+        var handler = new RoleAuthorisationHandler(_user, _audit.Object);
         var context = CreateAuthorizationContext(new AdminRequirement(), isAdmin: false);
 
         // Act
@@ -1198,7 +1198,7 @@ public class AdminAuthorisationHandlerTests
 
         // Assert
         Assert.False(context.HasSucceeded);
-        _audit.Verify(a => a.AuthorizationDenied(_user, "Administrator", null, nameof(AdminRequirement)), Times.Once);
+        _audit.Verify(a => a.AuthorizationDenied(_user, "Administrator", null, nameof(RoleRequirement)), Times.Once);
     }
 
     /// <summary>
@@ -1210,7 +1210,7 @@ public class AdminAuthorisationHandlerTests
     public async Task AdminHandler_NullUser_DoesNotSucceedAndDoesNotAudit()
     {
         // Arrange
-        var handler = new AdminAuthorisationHandler(null, _audit.Object);
+        var handler = new RoleAuthorisationHandler(null, _audit.Object);
         var context = CreateAuthorizationContext(new AdminRequirement(), isAdmin: false);
 
         // Act
@@ -1224,7 +1224,7 @@ public class AdminAuthorisationHandlerTests
     private static AuthorizationHandlerContext CreateAuthorizationContext(IAuthorizationRequirement requirement, bool isAdmin)
     {
         var requirements = new[] { requirement };
-        Claim[] claims = isAdmin ? [new Claim(ClaimTypes.Role, AdminRequirement.RoleName)] : [];
+        Claim[] claims = isAdmin ? [new Claim(ClaimTypes.Role, AdminRequirement.AdminRoleName)] : [];
         var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(claims, "TestAuth"));
         return new AuthorizationHandlerContext(requirements, claimsPrincipal, null);
     }
