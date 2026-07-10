@@ -9,12 +9,10 @@ namespace Asm.MooBank.Modules.Institutions.Commands;
 [DisplayName("UpdateInstitution")]
 public sealed record Update(int Id, string Name, InstitutionType InstitutionType, int? ImporterTypeId = null) : ICommand<Models.Institution>;
 
-internal class UpdateHandler(IInstitutionRepository repository, IUnitOfWork unitOfWork, ISecurity security) : ICommandHandler<Update, Models.Institution>
+internal class UpdateHandler(IInstitutionRepository repository, IUnitOfWork unitOfWork) : ICommandHandler<Update, Models.Institution>
 {
     public async ValueTask<Models.Institution> Handle(Update command, CancellationToken cancellationToken)
     {
-        await security.AssertAdministrator();
-
         Domain.Entities.Institution.Institution entity = await repository.Get(command.Id, cancellationToken);
 
         entity.Name = command.Name;

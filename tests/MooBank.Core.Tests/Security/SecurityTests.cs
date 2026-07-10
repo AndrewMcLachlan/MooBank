@@ -42,11 +42,6 @@ public class SecurityTests
             .Setup(a => a.AuthorizeAsync(_principal, It.IsAny<object?>(), It.IsAny<IEnumerable<IAuthorizationRequirement>>()))
             .ReturnsAsync(succeeds ? AuthorizationResult.Success() : AuthorizationResult.Failed());
 
-    private void SetupPolicyAuthorization(bool succeeds) =>
-        _authorizationService
-            .Setup(a => a.AuthorizeAsync(_principal, It.IsAny<object?>(), It.IsAny<string>()))
-            .ReturnsAsync(succeeds ? AuthorizationResult.Success() : AuthorizationResult.Failed());
-
     #region AssertGroupPermission
 
     /// <summary>
@@ -174,41 +169,6 @@ public class SecurityTests
         // Act & Assert
         await Assert.ThrowsAsync<NotAuthorisedException>(() => CreateSecurity().AssertInstrumentViewer(instrumentId));
         _audit.Verify(a => a.AuthorizationDenied(_user, "Instrument", instrumentId, nameof(InstrumentViewerRequirement)), Times.Once);
-    }
-
-    #endregion
-
-    #region AssertAdministrator
-
-    /// <summary>
-    /// Given the Admin policy succeeds
-    /// When AssertAdministrator is called
-    /// Then no exception is thrown
-    /// </summary>
-    [Fact]
-    public async Task AssertAdministrator_Authorised_DoesNotThrow()
-    {
-        // Arrange
-        SetupPolicyAuthorization(true);
-
-        // Act & Assert
-        await CreateSecurity().AssertAdministrator();
-    }
-
-    /// <summary>
-    /// Given the Admin policy fails
-    /// When AssertAdministrator is called
-    /// Then NotAuthorisedException is thrown and the denial audited
-    /// </summary>
-    [Fact]
-    public async Task AssertAdministrator_NotAuthorised_ThrowsAndAudits()
-    {
-        // Arrange
-        SetupPolicyAuthorization(false);
-
-        // Act & Assert
-        await Assert.ThrowsAsync<NotAuthorisedException>(() => CreateSecurity().AssertAdministrator());
-        _audit.Verify(a => a.AuthorizationDenied(_user, "Administrator", null, Policies.Admin), Times.Once);
     }
 
     #endregion

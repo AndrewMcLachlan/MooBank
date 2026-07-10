@@ -15,6 +15,4 @@ public interface ISecurity
     Task AssertFamilyPermission(Guid familyId);
 
     Task AssertInstrumentViewer(Guid instrumentId);
-
-    Task AssertAdministrator();
 }

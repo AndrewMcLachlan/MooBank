@@ -8,7 +8,7 @@ internal class GetHandler(IQueryable<Domain.Entities.Instrument.Instrument> acco
 {
     public async ValueTask<Rule> Handle(Get request, CancellationToken cancellationToken)
     {
-        var account = await accounts.Include(a => a.Rules).ThenInclude(r => r.Tags).IgnoreQueryFilters(["SoftDelete"]).SingleOrDefaultAsync(a => a.Id == request.InstrumentId, cancellationToken) ?? throw new NotFoundException();
+        var account = await accounts.Include(a => a.Rules).ThenInclude(r => r.Tags).SingleOrDefaultAsync(a => a.Id == request.InstrumentId, cancellationToken) ?? throw new NotFoundException();
 
         var rule = account.Rules.SingleOrDefault(r => r.Id == request.RuleId) ?? throw new NotFoundException();
 

@@ -31,10 +31,11 @@ public class InstrumentRepository(MooBankContext dataContext, Models.User user) 
         return await Entities.Where(i => userAccounts.Contains(i.Id)).ToListAsync(cancellationToken);
     }
 
-    // The rules' tag references are facts, not a view — the Tag query filters are lifted here
-    // (this load also serves system paths that run without a user context).
+    // This load serves system paths that run without a user context, so the Tenant filter is
+    // lifted. The SoftDelete filter stays active: a soft-deleted tag must never load into a rule,
+    // or the rules engine would apply it to transactions.
     public override async Task<Instrument> Get(Guid id, CancellationToken cancellationToken = default) =>
-        await Entities.Include(a => a.Rules).ThenInclude(a => a.Tags).IgnoreQueryFilters().FindAsync(id, cancellationToken) ?? throw new NotFoundException();
+        await Entities.Include(a => a.Rules).ThenInclude(a => a.Tags).IgnoreQueryFilters(["Tenant"]).FindAsync(id, cancellationToken) ?? throw new NotFoundException();
 
     public async Task<IEnumerable<Instrument>> Get(IEnumerable<Guid> ids, CancellationToken cancellationToken = default)
     {

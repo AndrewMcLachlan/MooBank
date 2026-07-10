@@ -22,11 +22,7 @@ public class GetTests
         var family = TestEntities.CreateFamily(id: familyId, name: "Test Family");
         var queryable = TestEntities.CreateFamilyQueryable(family);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator())
-            .Returns(Task.CompletedTask);
-
-        var handler = new GetHandler(queryable, _mocks.SecurityMock.Object);
+        var handler = new GetHandler(queryable);
         var query = new Get(familyId);
 
         // Act
@@ -51,11 +47,7 @@ public class GetTests
         };
         var queryable = TestEntities.CreateFamilyQueryable(families);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator())
-            .Returns(Task.CompletedTask);
-
-        var handler = new GetHandler(queryable, _mocks.SecurityMock.Object);
+        var handler = new GetHandler(queryable);
         var query = new Get(targetId);
 
         // Act
@@ -73,11 +65,7 @@ public class GetTests
         var family = TestEntities.CreateFamily(name: "Some Family");
         var queryable = TestEntities.CreateFamilyQueryable(family);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator())
-            .Returns(Task.CompletedTask);
-
-        var handler = new GetHandler(queryable, _mocks.SecurityMock.Object);
+        var handler = new GetHandler(queryable);
         var query = new Get(Guid.NewGuid());
 
         // Act & Assert
@@ -90,36 +78,11 @@ public class GetTests
         // Arrange
         var queryable = TestEntities.CreateFamilyQueryable([]);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator())
-            .Returns(Task.CompletedTask);
-
-        var handler = new GetHandler(queryable, _mocks.SecurityMock.Object);
+        var handler = new GetHandler(queryable);
         var query = new Get(Guid.NewGuid());
 
         // Act & Assert
         await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(query, TestContext.Current.CancellationToken).AsTask());
     }
 
-    [Fact]
-    public async Task Handle_ValidQuery_AssertAdministrator()
-    {
-        // Arrange
-        var familyId = Guid.NewGuid();
-        var family = TestEntities.CreateFamily(id: familyId, name: "Test Family");
-        var queryable = TestEntities.CreateFamilyQueryable(family);
-
-        _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator())
-            .Returns(Task.CompletedTask);
-
-        var handler = new GetHandler(queryable, _mocks.SecurityMock.Object);
-        var query = new Get(familyId);
-
-        // Act
-        await handler.Handle(query, TestContext.Current.CancellationToken);
-
-        // Assert
-        _mocks.SecurityMock.Verify(s => s.AssertAdministrator(), Times.Once);
-    }
 }

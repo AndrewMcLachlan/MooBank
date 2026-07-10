@@ -22,8 +22,7 @@ public class CreateTests
         // Arrange
         var handler = new CreateHandler(
             _mocks.InstitutionRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
         var command = new Create("New Bank", InstitutionType.Bank);
 
         // Act
@@ -46,8 +45,7 @@ public class CreateTests
 
         var handler = new CreateHandler(
             _mocks.InstitutionRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
         var command = new Create("New Bank", InstitutionType.Bank);
 
         // Act
@@ -66,8 +64,7 @@ public class CreateTests
         // Arrange
         var handler = new CreateHandler(
             _mocks.InstitutionRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
         var command = new Create("New Bank", InstitutionType.Bank);
 
         // Act
@@ -94,8 +91,7 @@ public class CreateTests
 
         var handler = new CreateHandler(
             _mocks.InstitutionRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
         var command = new Create("Test Institution", expectedType);
 
         // Act
@@ -107,46 +103,4 @@ public class CreateTests
         Assert.Equal(expectedType, capturedEntity.InstitutionType);
     }
 
-    [Fact]
-    public async Task Handle_NonAdminUser_ThrowsNotAuthorisedException()
-    {
-        // Arrange
-        _mocks.SecurityFailAdmin();
-
-        var handler = new CreateHandler(
-            _mocks.InstitutionRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
-        var command = new Create("New Bank", InstitutionType.Bank);
-
-        // Act & Assert
-        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
-    }
-
-    [Fact]
-    public async Task Handle_NonAdminUser_DoesNotAddToRepository()
-    {
-        // Arrange
-        _mocks.SecurityFailAdmin();
-
-        var handler = new CreateHandler(
-            _mocks.InstitutionRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
-        var command = new Create("New Bank", InstitutionType.Bank);
-
-        // Act
-        try
-        {
-            await handler.Handle(command, TestContext.Current.CancellationToken);
-        }
-        catch (NotAuthorisedException)
-        {
-            // Expected
-        }
-
-        // Assert
-        _mocks.InstitutionRepositoryMock.Verify(r => r.Add(It.IsAny<Institution>()), Times.Never);
-        _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
-    }
 }

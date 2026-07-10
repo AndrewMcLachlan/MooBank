@@ -29,7 +29,8 @@ public static class AuthorizationOptionsExtensions
         options.AddPolicy(Policies.Admin, policy =>
         {
             policy.RequireAuthenticatedUser();
-            policy.RequireRole("Admin");
+            // Requirement rather than RequireRole so that denials are audited.
+            policy.Requirements.Add(new AdminRequirement());
         });
     }
 }

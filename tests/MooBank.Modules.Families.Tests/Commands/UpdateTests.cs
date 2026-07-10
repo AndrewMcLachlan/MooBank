@@ -23,18 +23,13 @@ public class UpdateTests
         var familyId = Guid.NewGuid();
         var existingFamily = TestEntities.CreateFamily(id: familyId, name: "Old Name");
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator())
-            .Returns(Task.CompletedTask);
-
         _mocks.FamilyRepositoryMock
             .Setup(r => r.Get(familyId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingFamily);
 
         var handler = new UpdateHandler(
             _mocks.FamilyRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var updateFamily = new UpdateFamily { Name = "New Name" };
         var command = new Update(familyId, updateFamily);
@@ -54,18 +49,13 @@ public class UpdateTests
         var familyId = Guid.NewGuid();
         var existingFamily = TestEntities.CreateFamily(id: familyId, name: "Old Name");
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator())
-            .Returns(Task.CompletedTask);
-
         _mocks.FamilyRepositoryMock
             .Setup(r => r.Get(familyId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingFamily);
 
         var handler = new UpdateHandler(
             _mocks.FamilyRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var updateFamily = new UpdateFamily { Name = "New Name" };
         var command = new Update(familyId, updateFamily);
@@ -84,18 +74,13 @@ public class UpdateTests
         var familyId = Guid.NewGuid();
         var existingFamily = TestEntities.CreateFamily(id: familyId, name: "Old Name");
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator())
-            .Returns(Task.CompletedTask);
-
         _mocks.FamilyRepositoryMock
             .Setup(r => r.Get(familyId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingFamily);
 
         var handler = new UpdateHandler(
             _mocks.FamilyRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var updateFamily = new UpdateFamily { Name = "New Name" };
         var command = new Update(familyId, updateFamily);
@@ -107,83 +92,4 @@ public class UpdateTests
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
-    [Fact]
-    public async Task Handle_ValidCommand_AssertAdministrator()
-    {
-        // Arrange
-        var familyId = Guid.NewGuid();
-        var existingFamily = TestEntities.CreateFamily(id: familyId, name: "Old Name");
-
-        _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator())
-            .Returns(Task.CompletedTask);
-
-        _mocks.FamilyRepositoryMock
-            .Setup(r => r.Get(familyId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existingFamily);
-
-        var handler = new UpdateHandler(
-            _mocks.FamilyRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
-
-        var updateFamily = new UpdateFamily { Name = "New Name" };
-        var command = new Update(familyId, updateFamily);
-
-        // Act
-        await handler.Handle(command, TestContext.Current.CancellationToken);
-
-        // Assert
-        _mocks.SecurityMock.Verify(s => s.AssertAdministrator(), Times.Once);
-    }
-
-    [Fact]
-    public async Task Handle_NonAdmin_ThrowsNotAuthorisedException()
-    {
-        // Arrange
-        _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator())
-            .ThrowsAsync(new NotAuthorisedException());
-
-        var handler = new UpdateHandler(
-            _mocks.FamilyRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
-
-        var updateFamily = new UpdateFamily { Name = "New Name" };
-        var command = new Update(Guid.NewGuid(), updateFamily);
-
-        // Act & Assert
-        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
-    }
-
-    [Fact]
-    public async Task Handle_NonAdmin_DoesNotFetchFromRepository()
-    {
-        // Arrange
-        _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator())
-            .ThrowsAsync(new NotAuthorisedException());
-
-        var handler = new UpdateHandler(
-            _mocks.FamilyRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
-
-        var updateFamily = new UpdateFamily { Name = "New Name" };
-        var command = new Update(Guid.NewGuid(), updateFamily);
-
-        // Act
-        try
-        {
-            await handler.Handle(command, TestContext.Current.CancellationToken);
-        }
-        catch (NotAuthorisedException)
-        {
-            // Expected
-        }
-
-        // Assert
-        _mocks.FamilyRepositoryMock.Verify(r => r.Get(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
-    }
 }

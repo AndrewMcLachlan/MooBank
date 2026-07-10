@@ -1144,3 +1144,88 @@ public class ForecastPlanAuthorisationHandlerTests
         return mock.Object;
     }
 }
+/// <summary>
+/// Tests for the AdminAuthorisationHandler, which backs the Admin policy so that
+/// denials are audited.
+/// </summary>
+[Trait("Category", "Unit")]
+public class AdminAuthorisationHandlerTests
+{
+    private readonly Mock<Asm.MooBank.Audit.IAuditLogger> _audit = new();
+    private readonly User _user = new()
+    {
+        Id = Guid.NewGuid(),
+        EmailAddress = "test@test.com",
+        FamilyId = Guid.NewGuid(),
+        Currency = "AUD",
+    };
+
+    /// <summary>
+    /// Given a principal in the Admin role
+    /// When the requirement is handled
+    /// Then authorization should succeed and nothing is audited
+    /// </summary>
+    [Fact]
+    public async Task AdminHandler_UserInAdminRole_Succeeds()
+    {
+        // Arrange
+        var handler = new AdminAuthorisationHandler(_user, _audit.Object);
+        var context = CreateAuthorizationContext(new AdminRequirement(), isAdmin: true);
+
+        // Act
+        await handler.HandleAsync(context);
+
+        // Assert
+        Assert.True(context.HasSucceeded);
+        Assert.False(context.HasFailed);
+        _audit.Verify(a => a.AuthorizationDenied(It.IsAny<User>(), It.IsAny<string>(), It.IsAny<object?>(), It.IsAny<string>()), Times.Never);
+    }
+
+    /// <summary>
+    /// Given a principal not in the Admin role
+    /// When the requirement is handled
+    /// Then authorization should not succeed and the denial is audited
+    /// </summary>
+    [Fact]
+    public async Task AdminHandler_UserNotInAdminRole_DoesNotSucceedAndAudits()
+    {
+        // Arrange
+        var handler = new AdminAuthorisationHandler(_user, _audit.Object);
+        var context = CreateAuthorizationContext(new AdminRequirement(), isAdmin: false);
+
+        // Act
+        await handler.HandleAsync(context);
+
+        // Assert
+        Assert.False(context.HasSucceeded);
+        _audit.Verify(a => a.AuthorizationDenied(_user, "Administrator", null, nameof(AdminRequirement)), Times.Once);
+    }
+
+    /// <summary>
+    /// Given no current user
+    /// When the requirement is handled
+    /// Then authorization should not succeed and nothing is audited
+    /// </summary>
+    [Fact]
+    public async Task AdminHandler_NullUser_DoesNotSucceedAndDoesNotAudit()
+    {
+        // Arrange
+        var handler = new AdminAuthorisationHandler(null, _audit.Object);
+        var context = CreateAuthorizationContext(new AdminRequirement(), isAdmin: false);
+
+        // Act
+        await handler.HandleAsync(context);
+
+        // Assert
+        Assert.False(context.HasSucceeded);
+        _audit.Verify(a => a.AuthorizationDenied(It.IsAny<User>(), It.IsAny<string>(), It.IsAny<object?>(), It.IsAny<string>()), Times.Never);
+    }
+
+    private static AuthorizationHandlerContext CreateAuthorizationContext(IAuthorizationRequirement requirement, bool isAdmin)
+    {
+        var requirements = new[] { requirement };
+        Claim[] claims = isAdmin ? [new Claim(ClaimTypes.Role, AdminRequirement.RoleName)] : [];
+        var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(claims, "TestAuth"));
+        return new AuthorizationHandlerContext(requirements, claimsPrincipal, null);
+    }
+}
