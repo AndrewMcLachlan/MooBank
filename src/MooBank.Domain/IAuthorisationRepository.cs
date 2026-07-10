@@ -14,5 +14,7 @@ public interface IAuthorisationRepository
 
     Task<Guid?> GetBudgetLineFamilyId(Guid budgetLineId, CancellationToken cancellationToken = default);
 
-    Task<IEnumerable<Guid>> GetOwnedInstrumentIds(Guid userId, CancellationToken cancellationToken = default);
+    Task<Guid?> GetTagFamilyId(int tagId, CancellationToken cancellationToken = default);
+
+    Task<Guid?> GetForecastPlanFamilyId(Guid planId, CancellationToken cancellationToken = default);
 }

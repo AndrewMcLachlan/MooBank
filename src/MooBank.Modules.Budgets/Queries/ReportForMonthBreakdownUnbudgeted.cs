@@ -13,11 +13,11 @@ internal class ReportForMonthBreakdownUnbudgetedHandler(IQueryable<Domain.Entiti
 {
     public async ValueTask<BudgetReportByMonthBreakdown> Handle(ReportForMonthBreakdownUnbudgeted query, CancellationToken cancellationToken)
     {
-        var budget = await budgets.Include(b => b.Lines).ThenInclude(l => l.Tag).ThenInclude(t => t.Settings).SingleOrDefaultAsync(b => b.FamilyId == user.FamilyId && b.Year == query.Year, cancellationToken) ?? throw new NotFoundException();
+        var budget = await budgets.Include(b => b.Lines).ThenInclude(l => l.Tag).ThenInclude(t => t.Settings).IgnoreQueryFilters(["SoftDelete"]).SingleOrDefaultAsync(b => b.FamilyId == user.FamilyId && b.Year == query.Year, cancellationToken) ?? throw new NotFoundException();
 
         var budgetAccounts = await accounts.Where(a => a.IncludeInBudget && user.Accounts.Contains(a.Id)).Select(a => a.Id).ToArrayAsync(cancellationToken);
 
-        var budgetTransactions = await transactions.Specify(new IncludeSplitsSpecification()).Where(t =>
+        var budgetTransactions = await transactions.Specify(new IncludeSplitsSpecification()).IgnoreQueryFilters(["SoftDelete"]).Where(t =>
                 budgetAccounts.Contains(t.AccountId) &&
                 t.TransactionType == TransactionType.Debit &&
                 !t.ExcludeFromReporting &&

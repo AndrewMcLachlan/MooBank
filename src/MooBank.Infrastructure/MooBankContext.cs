@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Asset;
 using Asm.MooBank.Domain.Entities.Budget;
 using Asm.MooBank.Domain.Entities.Forecast;
@@ -11,6 +10,7 @@ using Asm.MooBank.Domain.Entities.Reports;
 using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.User;
+using Asm.MooBank.Security;
 
 namespace Asm.MooBank.Infrastructure;
 
@@ -18,12 +18,40 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
 {
     private static readonly List<Assembly> Assemblies = [];
 
+    private readonly Security.IUserDataProvider? _userDataProvider;
+
     public MooBankContext(IPublisher publisher) : base(publisher)
     {
     }
 
     public MooBankContext(DbContextOptions<MooBankContext> options, IPublisher publisher) : base(options, publisher)
     {
+    }
+
+    public MooBankContext(DbContextOptions<MooBankContext> options, IPublisher publisher, IUserDataProvider userDataProvider) : base(options, publisher)
+    {
+        _userDataProvider = userDataProvider;
+    }
+
+    /// <summary>
+    /// The current user's family, used by the family query filter. Evaluated per query, so a user
+    /// set after construction (e.g. background processing via <c>ISettableUserDataProvider</c>) is honoured.
+    /// Resolves to <see cref="Guid.Empty"/> when there is no current user, so family-filtered queries
+    /// are fail-closed; system paths that legitimately span tenants must use <c>IgnoreQueryFilters</c>.
+    /// </summary>
+    private Guid CurrentFamilyId
+    {
+        get
+        {
+            try
+            {
+                return _userDataProvider?.GetCurrentUser()?.FamilyId ?? Guid.Empty;
+            }
+            catch (InvalidOperationException)
+            {
+                return Guid.Empty;
+            }
+        }
     }
 
     [AllowNull]
@@ -122,6 +150,13 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
         modelBuilder.Entity<TransactionInstrument>().ToTable(tb => tb.UseSqlOutputClause(false));
 
         modelBuilder.Entity<TagRelationship>();
+
+        // Named query filters: "Family" applies unconditionally (never ignored outside system paths);
+        // "SoftDelete" may be selectively lifted per query via IgnoreQueryFilters(["SoftDelete"])
+        // (e.g. historical transaction views, trend reports on deleted tags).
+        modelBuilder.Entity<Domain.Entities.Tag.Tag>()
+            .HasQueryFilter("Family", t => t.FamilyId == CurrentFamilyId)
+            .HasQueryFilter("SoftDelete", t => !t.Deleted);
 
         modelBuilder.Entity<TransactionTagTotal>().HasNoKey();
         modelBuilder.Entity<MonthlyTagTotal>().HasNoKey();

@@ -29,6 +29,30 @@ public static class TestDbContextFactory
     }
 
     /// <summary>
+    /// Creates a new in-memory MooBankContext scoped to the given user, so the tenant
+    /// and soft-delete query filters behave as they do at runtime.
+    /// </summary>
+    public static MooBankContext Create(Models.User user, string? databaseName = null)
+    {
+        databaseName ??= Guid.NewGuid().ToString();
+
+        var options = new DbContextOptionsBuilder<MooBankContext>()
+            .UseInMemoryDatabase(databaseName)
+            .Options;
+
+        var publisher = new Mock<IPublisher>();
+        var userDataProvider = new Mock<Security.IUserDataProvider>();
+        userDataProvider.Setup(p => p.GetCurrentUser()).Returns(user);
+        userDataProvider.Setup(p => p.CurrentUserId).Returns(user.Id);
+
+        var context = new MooBankContext(options, publisher.Object, userDataProvider.Object);
+
+        context.Database.EnsureCreated();
+
+        return context;
+    }
+
+    /// <summary>
     /// Creates a test user model for repository tests.
     /// </summary>
     public static Models.User CreateTestUser(Guid? familyId = null) =>

@@ -1,4 +1,4 @@
----
+﻿---
 paths:
   - "src/MooBank.Api/**"
   - "src/MooBank.Modules*/Endpoints/**"
@@ -64,3 +64,24 @@ When applying authorization to endpoints that involve instruments, **always use 
 - Users are grouped into Families for data isolation
 - Authorization policies enforce data access boundaries
 - Always consider tenant context when designing new endpoints
+
+## Authorization Ownership Contract
+
+Auth is handled by policies and requirements wherever possible; filtering is defence-in-depth.
+
+1. **Single-resource routes** (id in the route) → parameterized policy backed by a route-based
+   requirement handler (403 + audit on denial). Existing policies: `GetInstrumentViewerPolicy`,
+   `GetInstrumentOwnerPolicy`, `GetGroupOwnerPolicy`, `GetBudgetLinePolicy`, `GetTagFamilyPolicy`,
+   `GetForecastPlanPolicy`. A policy-less id route is not acceptable where a suitable requirement exists.
+2. **Non-route contexts** (MCP tools, command-body foreign keys such as `GroupId`/`FamilyId`) →
+   resource-based requirement invoked via `ISecurity.Assert*` (audits and throws).
+3. **Collection/list endpoints** → handler/query filtering by user/family (policies cannot scope
+   lists); the EF named query filters (e.g. `"Family"` on Tag) make this structural.
+4. **Repository and query filters are defence-in-depth** for id routes and the primary mechanism
+   for lists. Redundancy with a policy is acceptable; do not add handler asserts that a policy or
+   repository filter already makes unreachable.
+5. **Denial auditing**: route-based handlers audit in their base class; resource-based handlers do
+   not audit — their `ISecurity` callers do. Every denial is logged exactly once.
+6. **Truth sources**: route handlers for instruments/groups answer from cached claims (5-minute
+   staleness accepted); data-backed handlers (tag, budget line, forecast plan) and resource
+   handlers query the database via `IAuthorisationRepository`.

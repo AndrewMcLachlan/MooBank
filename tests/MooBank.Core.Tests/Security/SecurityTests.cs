@@ -42,11 +42,6 @@ public class SecurityTests
             .Setup(a => a.AuthorizeAsync(_principal, It.IsAny<object?>(), It.IsAny<IEnumerable<IAuthorizationRequirement>>()))
             .ReturnsAsync(succeeds ? AuthorizationResult.Success() : AuthorizationResult.Failed());
 
-    private void SetupPolicyAuthorization(bool succeeds) =>
-        _authorizationService
-            .Setup(a => a.AuthorizeAsync(_principal, It.IsAny<object?>(), It.IsAny<string>()))
-            .ReturnsAsync(succeeds ? AuthorizationResult.Success() : AuthorizationResult.Failed());
-
     #region AssertGroupPermission
 
     /// <summary>
@@ -141,37 +136,39 @@ public class SecurityTests
 
     #endregion
 
-    #region AssertAdministrator
+    #region AssertInstrumentViewer
 
     /// <summary>
-    /// Given the Admin policy succeeds
-    /// When AssertAdministrator is called
-    /// Then no exception is thrown
+    /// Given the instrument viewer requirement succeeds
+    /// When AssertInstrumentViewer is called
+    /// Then no exception is thrown and nothing is audited
     /// </summary>
     [Fact]
-    public async Task AssertAdministrator_Authorised_DoesNotThrow()
+    public async Task AssertInstrumentViewer_Authorised_DoesNotThrow()
     {
         // Arrange
-        SetupPolicyAuthorization(true);
+        SetupResourceAuthorization(true);
 
         // Act & Assert
-        await CreateSecurity().AssertAdministrator(TestContext.Current.CancellationToken);
+        await CreateSecurity().AssertInstrumentViewer(Guid.NewGuid());
+        _audit.Verify(a => a.AuthorizationDenied(It.IsAny<User>(), It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<string>()), Times.Never);
     }
 
     /// <summary>
-    /// Given the Admin policy fails
-    /// When AssertAdministrator is called
+    /// Given the instrument viewer requirement fails
+    /// When AssertInstrumentViewer is called
     /// Then NotAuthorisedException is thrown and the denial audited
     /// </summary>
     [Fact]
-    public async Task AssertAdministrator_NotAuthorised_ThrowsAndAudits()
+    public async Task AssertInstrumentViewer_NotAuthorised_ThrowsAndAudits()
     {
         // Arrange
-        SetupPolicyAuthorization(false);
+        var instrumentId = Guid.NewGuid();
+        SetupResourceAuthorization(false);
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotAuthorisedException>(() => CreateSecurity().AssertAdministrator(TestContext.Current.CancellationToken));
-        _audit.Verify(a => a.AuthorizationDenied(_user, "Administrator", null, Policies.Admin), Times.Once);
+        await Assert.ThrowsAsync<NotAuthorisedException>(() => CreateSecurity().AssertInstrumentViewer(instrumentId));
+        _audit.Verify(a => a.AuthorizationDenied(_user, "Instrument", instrumentId, nameof(InstrumentViewerRequirement)), Times.Once);
     }
 
     #endregion

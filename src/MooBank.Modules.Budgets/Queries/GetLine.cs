@@ -12,6 +12,7 @@ internal class GetLineHandler(IQueryable<Domain.Entities.Budget.BudgetLine> budg
         var entity = await budgetLines
                    .Include(b => b.Budget)
                    .Include(b => b.Tag)
+                   .IgnoreQueryFilters(["SoftDelete"])
                    .SingleOrDefaultAsync(b => b.Budget.Year == request.Year && b.Id == request.Id, cancellationToken) ?? throw new NotFoundException("Budget line not found");
 
         return entity.ToModel();

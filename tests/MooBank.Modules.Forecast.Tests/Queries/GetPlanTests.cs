@@ -31,11 +31,7 @@ public class GetPlanTests
 
         var plans = TestEntities.CreatePlanQueryable(plan);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
-        var handler = new GetPlanHandler(plans, _mocks.SecurityMock.Object);
+        var handler = new GetPlanHandler(plans, _mocks.User);
         var query = new GetPlan(planId);
 
         // Act
@@ -63,11 +59,7 @@ public class GetPlanTests
 
         var plans = TestEntities.CreatePlanQueryable(plan);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
-        var handler = new GetPlanHandler(plans, _mocks.SecurityMock.Object);
+        var handler = new GetPlanHandler(plans, _mocks.User);
         var query = new GetPlan(planId);
 
         // Act
@@ -92,11 +84,7 @@ public class GetPlanTests
 
         var plans = TestEntities.CreatePlanQueryable(plan);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
-        var handler = new GetPlanHandler(plans, _mocks.SecurityMock.Object);
+        var handler = new GetPlanHandler(plans, _mocks.User);
         var query = new GetPlan(planId);
 
         // Act
@@ -105,51 +93,6 @@ public class GetPlanTests
         // Assert
         Assert.Equal(StartingBalanceMode.ManualAmount, result.StartingBalanceMode);
         Assert.Equal(5000m, result.StartingBalanceAmount);
-    }
-
-    [Fact]
-    public async Task Handle_ExistingPlan_ChecksFamilyPermission()
-    {
-        // Arrange
-        var familyId = _mocks.User.FamilyId;
-        var planId = Guid.NewGuid();
-        var plan = TestEntities.CreateForecastPlan(id: planId, familyId: familyId);
-
-        var plans = TestEntities.CreatePlanQueryable(plan);
-
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
-        var handler = new GetPlanHandler(plans, _mocks.SecurityMock.Object);
-        var query = new GetPlan(planId);
-
-        // Act
-        await handler.Handle(query, TestContext.Current.CancellationToken);
-
-        // Assert
-        _mocks.SecurityMock.Verify(s => s.AssertFamilyPermission(familyId), Times.Once);
-    }
-
-    [Fact]
-    public async Task Handle_NoPermission_ThrowsNotAuthorisedException()
-    {
-        // Arrange
-        var familyId = _mocks.User.FamilyId;
-        var planId = Guid.NewGuid();
-        var plan = TestEntities.CreateForecastPlan(id: planId, familyId: familyId);
-
-        var plans = TestEntities.CreatePlanQueryable(plan);
-
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .ThrowsAsync(new NotAuthorisedException());
-
-        var handler = new GetPlanHandler(plans, _mocks.SecurityMock.Object);
-        var query = new GetPlan(planId);
-
-        // Act & Assert
-        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(query, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -162,7 +105,7 @@ public class GetPlanTests
 
         var plans = TestEntities.CreatePlanQueryable(existingPlan);
 
-        var handler = new GetPlanHandler(plans, _mocks.SecurityMock.Object);
+        var handler = new GetPlanHandler(plans, _mocks.User);
         var query = new GetPlan(nonExistentPlanId);
 
         // Act & Assert
@@ -191,11 +134,7 @@ public class GetPlanTests
 
         var plans = TestEntities.CreatePlanQueryable(plan);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
-        var handler = new GetPlanHandler(plans, _mocks.SecurityMock.Object);
+        var handler = new GetPlanHandler(plans, _mocks.User);
         var query = new GetPlan(planId);
 
         // Act
@@ -203,5 +142,25 @@ public class GetPlanTests
 
         // Assert
         Assert.Equal(2, result.PlannedItems.Count());
+    }
+
+    [Fact]
+    public async Task Handle_PlanFromDifferentFamily_ThrowsException()
+    {
+        // Arrange - the handler scopes plans to the user's family, so another family's plan is not found
+        var planId = Guid.NewGuid();
+        var plan = TestEntities.CreateForecastPlan(id: planId, familyId: Guid.NewGuid());
+
+        var plans = TestEntities.CreatePlanQueryable(plan);
+
+        var handler = new GetPlanHandler(plans, _mocks.User);
+        var query = new GetPlan(planId);
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAnyAsync<Exception>(() => handler.Handle(query, TestContext.Current.CancellationToken).AsTask());
+        Assert.True(
+            exception is InvalidOperationException ||
+            (exception.InnerException is InvalidOperationException),
+            "Expected InvalidOperationException or wrapped InvalidOperationException");
     }
 }

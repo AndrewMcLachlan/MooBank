@@ -7,11 +7,9 @@ public static class AuthorizationOptionsExtensions
 {
     public static void AddPolicies(this AuthorizationOptions options)
     {
-        options.AddPolicy(Policies.FamilyMember, policy =>
-        {
-            policy.RequireAuthenticatedUser();
-            policy.Requirements.Add(new FamilyMemberRequirement());
-        });
+        // Note: FamilyMemberRequirement is deliberately NOT registered as a named policy.
+        // Its only handler is resource-based (used via ISecurity.AssertFamilyPermission);
+        // attaching it to a route would always fail closed.
 
         options.AddPolicy(Policies.InstrumentOwner, policy =>
         {
@@ -31,7 +29,8 @@ public static class AuthorizationOptionsExtensions
         options.AddPolicy(Policies.Admin, policy =>
         {
             policy.RequireAuthenticatedUser();
-            policy.RequireRole("Admin");
+            // Requirement rather than RequireRole so that denials are audited.
+            policy.Requirements.Add(new AdminRequirement());
         });
     }
 }

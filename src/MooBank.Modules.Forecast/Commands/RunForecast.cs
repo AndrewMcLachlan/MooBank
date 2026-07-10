@@ -13,15 +13,13 @@ public record RunForecast(Guid PlanId) : ICommand<ForecastResult>;
 internal class RunForecastHandler(
     IQueryable<DomainEntities.ForecastPlan> plans,
     IForecastEngine forecastEngine,
-    ISecurity security) : ICommandHandler<RunForecast, ForecastResult>
+    MooBank.Models.User user) : ICommandHandler<RunForecast, ForecastResult>
 {
     public async ValueTask<ForecastResult> Handle(RunForecast command, CancellationToken cancellationToken)
     {
         var plan = await plans
             .Apply(new ForecastPlanDetailsSpecification())
-            .SingleAsync(p => p.Id == command.PlanId, cancellationToken);
-
-        await security.AssertFamilyPermission(plan.FamilyId);
+            .SingleAsync(p => p.Id == command.PlanId && p.FamilyId == user.FamilyId, cancellationToken);
 
         return await forecastEngine.Calculate(plan, cancellationToken);
     }

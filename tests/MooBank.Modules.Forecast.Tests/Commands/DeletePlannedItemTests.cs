@@ -29,14 +29,9 @@ public class DeletePlannedItemTests
             .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(plan);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new DeletePlannedItemHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var command = new DeletePlannedItem(planId, itemId);
 
@@ -61,14 +56,9 @@ public class DeletePlannedItemTests
             .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(plan);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new DeletePlannedItemHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var command = new DeletePlannedItem(planId, itemId);
 
@@ -77,65 +67,6 @@ public class DeletePlannedItemTests
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-    }
-
-    [Fact]
-    public async Task Handle_ValidCommand_ChecksFamilyPermission()
-    {
-        // Arrange
-        var familyId = _mocks.User.FamilyId;
-        var planId = Guid.NewGuid();
-        var itemId = Guid.NewGuid();
-        var plannedItem = TestEntities.CreatePlannedItem(id: itemId, planId: planId);
-        var plan = TestEntities.CreateForecastPlan(id: planId, familyId: familyId, plannedItems: [plannedItem]);
-
-        _mocks.ForecastRepositoryMock
-            .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(plan);
-
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
-        var handler = new DeletePlannedItemHandler(
-            _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
-
-        var command = new DeletePlannedItem(planId, itemId);
-
-        // Act
-        await handler.Handle(command, TestContext.Current.CancellationToken);
-
-        // Assert
-        _mocks.SecurityMock.Verify(s => s.AssertFamilyPermission(familyId), Times.Once);
-    }
-
-    [Fact]
-    public async Task Handle_NoPermission_ThrowsNotAuthorisedException()
-    {
-        // Arrange
-        var familyId = _mocks.User.FamilyId;
-        var planId = Guid.NewGuid();
-        var plan = TestEntities.CreateForecastPlan(id: planId, familyId: familyId);
-
-        _mocks.ForecastRepositoryMock
-            .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(plan);
-
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .ThrowsAsync(new NotAuthorisedException());
-
-        var handler = new DeletePlannedItemHandler(
-            _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
-
-        var command = new DeletePlannedItem(planId, Guid.NewGuid());
-
-        // Act & Assert
-        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -150,14 +81,9 @@ public class DeletePlannedItemTests
             .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(plan);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new DeletePlannedItemHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var command = new DeletePlannedItem(planId, Guid.NewGuid());
 
@@ -187,14 +113,9 @@ public class DeletePlannedItemTests
             .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(plan);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new DeletePlannedItemHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var command = new DeletePlannedItem(planId, targetItemId);
 

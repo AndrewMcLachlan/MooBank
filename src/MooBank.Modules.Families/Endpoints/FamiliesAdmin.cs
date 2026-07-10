@@ -27,11 +27,9 @@ internal class FamiliesAdmin : EndpointGroupBase
             .Produces<Models.Family>();
 
         routeGroupBuilder.MapPostCreate<Create, Models.Family>("/", "Get Family".ToMachine(), (i) => new { id = i.Id }, CommandBinding.Body)
-            .WithNames("Create Family")
-            .RequireAuthorization(Policies.Admin);
+            .WithNames("Create Family");
 
         routeGroupBuilder.MapPatchCommand<Update, Models.Family>("/{id}")
-            .WithNames("Update Family")
-            .RequireAuthorization(Policies.Admin);
+            .WithNames("Update Family");
     }
 }

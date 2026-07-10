@@ -32,15 +32,10 @@ public class AddSubTagTests
             .Setup(r => r.Get(2, false, It.IsAny<CancellationToken>()))
             .ReturnsAsync(childTag);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new AddSubTagHandler(
             _mocks.TagRepositoryMock.Object,
             emptyRelationships,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var command = new AddSubTag(1, 2);
 
@@ -69,15 +64,10 @@ public class AddSubTagTests
             .Setup(r => r.Get(2, false, It.IsAny<CancellationToken>()))
             .ReturnsAsync(childTag);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new AddSubTagHandler(
             _mocks.TagRepositoryMock.Object,
             emptyRelationships,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var command = new AddSubTag(1, 2);
 
@@ -97,8 +87,7 @@ public class AddSubTagTests
         var handler = new AddSubTagHandler(
             _mocks.TagRepositoryMock.Object,
             emptyRelationships,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var command = new AddSubTag(1, 1);
 
@@ -107,13 +96,11 @@ public class AddSubTagTests
     }
 
     [Fact]
-    public async Task Handle_DifferentFamilies_ThrowsInvalidOperationException()
+    public async Task Handle_SubTagFromDifferentFamily_ThrowsNotFoundException()
     {
-        // Arrange
-        var familyId1 = Guid.NewGuid();
-        var familyId2 = Guid.NewGuid();
-        var parentTag = TestEntities.CreateTag(id: 1, name: "Parent", familyId: familyId1);
-        var childTag = TestEntities.CreateTag(id: 2, name: "Child", familyId: familyId2);
+        // Arrange - the family-scoped repository cannot see cross-family tags, so it throws
+        var familyId = _mocks.User.FamilyId;
+        var parentTag = TestEntities.CreateTag(id: 1, name: "Parent", familyId: familyId);
         var emptyRelationships = TestMocks.CreateEmptyTagRelationships();
 
         _mocks.TagRepositoryMock
@@ -122,22 +109,17 @@ public class AddSubTagTests
 
         _mocks.TagRepositoryMock
             .Setup(r => r.Get(2, false, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(childTag);
-
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId1))
-            .Returns(Task.CompletedTask);
+            .ThrowsAsync(new NotFoundException("Transaction tag with id 2 was not found"));
 
         var handler = new AddSubTagHandler(
             _mocks.TagRepositoryMock.Object,
             emptyRelationships,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var command = new AddSubTag(1, 2);
 
         // Act & Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -159,15 +141,10 @@ public class AddSubTagTests
             .Setup(r => r.Get(2, false, It.IsAny<CancellationToken>()))
             .ReturnsAsync(childTag);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new AddSubTagHandler(
             _mocks.TagRepositoryMock.Object,
             existingRelationships,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var command = new AddSubTag(1, 2);
 
@@ -194,15 +171,10 @@ public class AddSubTagTests
             .Setup(r => r.Get(2, false, It.IsAny<CancellationToken>()))
             .ReturnsAsync(childTag);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new AddSubTagHandler(
             _mocks.TagRepositoryMock.Object,
             existingRelationships,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var command = new AddSubTag(1, 2);
 
@@ -210,39 +182,4 @@ public class AddSubTagTests
         await Assert.ThrowsAsync<ExistsException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
-    [Fact]
-    public async Task Handle_ValidCommand_ChecksFamilyPermission()
-    {
-        // Arrange
-        var familyId = _mocks.User.FamilyId;
-        var parentTag = TestEntities.CreateTag(id: 1, name: "Parent", familyId: familyId);
-        var childTag = TestEntities.CreateTag(id: 2, name: "Child", familyId: familyId);
-        var emptyRelationships = TestMocks.CreateEmptyTagRelationships();
-
-        _mocks.TagRepositoryMock
-            .Setup(r => r.Get(1, true, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(parentTag);
-
-        _mocks.TagRepositoryMock
-            .Setup(r => r.Get(2, false, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(childTag);
-
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
-        var handler = new AddSubTagHandler(
-            _mocks.TagRepositoryMock.Object,
-            emptyRelationships,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
-
-        var command = new AddSubTag(1, 2);
-
-        // Act
-        await handler.Handle(command, TestContext.Current.CancellationToken);
-
-        // Assert
-        _mocks.SecurityMock.Verify(s => s.AssertFamilyPermission(familyId), Times.Once);
-    }
 }

@@ -31,14 +31,9 @@ public class RemoveSubTagTests
             .Setup(r => r.Get(2, false, It.IsAny<CancellationToken>()))
             .ReturnsAsync(childTag);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new RemoveSubTagHandler(
             _mocks.TagRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var command = new RemoveSubTag(1, 2);
 
@@ -65,14 +60,9 @@ public class RemoveSubTagTests
             .Setup(r => r.Get(2, false, It.IsAny<CancellationToken>()))
             .ReturnsAsync(childTag);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new RemoveSubTagHandler(
             _mocks.TagRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var command = new RemoveSubTag(1, 2);
 
@@ -100,53 +90,14 @@ public class RemoveSubTagTests
             .Setup(r => r.Get(2, false, It.IsAny<CancellationToken>()))
             .ReturnsAsync(childTag);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new RemoveSubTagHandler(
             _mocks.TagRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var command = new RemoveSubTag(1, 2);
 
         // Act & Assert
         await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
-    }
-
-    [Fact]
-    public async Task Handle_ValidCommand_ChecksFamilyPermission()
-    {
-        // Arrange
-        var familyId = _mocks.User.FamilyId;
-        var childTag = TestEntities.CreateTag(id: 2, name: "Child", familyId: familyId);
-        var parentTag = TestEntities.CreateTag(id: 1, name: "Parent", familyId: familyId, subTags: [childTag]);
-
-        _mocks.TagRepositoryMock
-            .Setup(r => r.Get(1, true, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(parentTag);
-
-        _mocks.TagRepositoryMock
-            .Setup(r => r.Get(2, false, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(childTag);
-
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
-        var handler = new RemoveSubTagHandler(
-            _mocks.TagRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
-
-        var command = new RemoveSubTag(1, 2);
-
-        // Act
-        await handler.Handle(command, TestContext.Current.CancellationToken);
-
-        // Assert
-        _mocks.SecurityMock.Verify(s => s.AssertFamilyPermission(familyId), Times.Once);
     }
 
     [Fact]
@@ -165,14 +116,9 @@ public class RemoveSubTagTests
             .Setup(r => r.Get(2, false, It.IsAny<CancellationToken>()))
             .ReturnsAsync(childTag);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new RemoveSubTagHandler(
             _mocks.TagRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var command = new RemoveSubTag(1, 2);
 

@@ -27,8 +27,7 @@ public class UpdateTests
 
         var handler = new UpdateHandler(
             _mocks.InstitutionRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
         var command = new Update(1, "New Name", InstitutionType.CreditUnion);
 
         // Act
@@ -52,8 +51,7 @@ public class UpdateTests
 
         var handler = new UpdateHandler(
             _mocks.InstitutionRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
         var command = new Update(1, "Updated Name", InstitutionType.BuildingSociety);
 
         // Act
@@ -75,8 +73,7 @@ public class UpdateTests
 
         var handler = new UpdateHandler(
             _mocks.InstitutionRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
         var command = new Update(1, "New Name", InstitutionType.CreditUnion);
 
         // Act
@@ -84,49 +81,6 @@ public class UpdateTests
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-    }
-
-    [Fact]
-    public async Task Handle_NonAdminUser_ThrowsNotAuthorisedException()
-    {
-        // Arrange
-        _mocks.SecurityFailAdmin();
-
-        var handler = new UpdateHandler(
-            _mocks.InstitutionRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
-        var command = new Update(1, "New Name", InstitutionType.Bank);
-
-        // Act & Assert
-        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
-    }
-
-    [Fact]
-    public async Task Handle_NonAdminUser_DoesNotFetchFromRepository()
-    {
-        // Arrange
-        _mocks.SecurityFailAdmin();
-
-        var handler = new UpdateHandler(
-            _mocks.InstitutionRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
-        var command = new Update(1, "New Name", InstitutionType.Bank);
-
-        // Act
-        try
-        {
-            await handler.Handle(command, TestContext.Current.CancellationToken);
-        }
-        catch (NotAuthorisedException)
-        {
-            // Expected
-        }
-
-        // Assert
-        _mocks.InstitutionRepositoryMock.Verify(r => r.Get(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Never);
-        _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -139,8 +93,7 @@ public class UpdateTests
 
         var handler = new UpdateHandler(
             _mocks.InstitutionRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
         var command = new Update(999, "New Name", InstitutionType.Bank);
 
         // Act & Assert

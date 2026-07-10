@@ -22,7 +22,7 @@ public class GetTests
         var tag = TestEntities.CreateTag(id: 1, name: "Groceries", familyId: familyId);
         var queryable = TestEntities.CreateTagQueryable(tag);
 
-        var handler = new GetHandler(queryable, _mocks.User);
+        var handler = new GetHandler(queryable);
         var query = new Get(1);
 
         // Act
@@ -47,7 +47,7 @@ public class GetTests
         };
         var queryable = TestEntities.CreateTagQueryable(tags);
 
-        var handler = new GetHandler(queryable, _mocks.User);
+        var handler = new GetHandler(queryable);
         var query = new Get(2);
 
         // Act
@@ -66,23 +66,8 @@ public class GetTests
         var tag = TestEntities.CreateTag(id: 1, name: "Groceries", familyId: familyId);
         var queryable = TestEntities.CreateTagQueryable(tag);
 
-        var handler = new GetHandler(queryable, _mocks.User);
+        var handler = new GetHandler(queryable);
         var query = new Get(999);
-
-        // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(query, TestContext.Current.CancellationToken).AsTask());
-    }
-
-    [Fact]
-    public async Task Handle_TagFromDifferentFamily_ThrowsNotFoundException()
-    {
-        // Arrange
-        var otherFamilyId = Guid.NewGuid();
-        var tag = TestEntities.CreateTag(id: 1, name: "Other Family Tag", familyId: otherFamilyId);
-        var queryable = TestEntities.CreateTagQueryable(tag);
-
-        var handler = new GetHandler(queryable, _mocks.User);
-        var query = new Get(1);
 
         // Act & Assert
         await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(query, TestContext.Current.CancellationToken).AsTask());
@@ -101,7 +86,7 @@ public class GetTests
             excludeFromReporting: true);
         var queryable = TestEntities.CreateTagQueryable(tag);
 
-        var handler = new GetHandler(queryable, _mocks.User);
+        var handler = new GetHandler(queryable);
         var query = new Get(1);
 
         // Act
@@ -118,7 +103,7 @@ public class GetTests
         // Arrange
         var queryable = TestEntities.CreateTagQueryable([]);
 
-        var handler = new GetHandler(queryable, _mocks.User);
+        var handler = new GetHandler(queryable);
         var query = new Get(1);
 
         // Act & Assert

@@ -11,12 +11,10 @@ public sealed record Update([FromRoute] Guid Id, [FromBody] UpdateFamily Family)
 {
 }
 
-internal class UpdateHandler(IFamilyRepository repository, IUnitOfWork unitOfWork, ISecurity security) : ICommandHandler<Update, Models.Family>
+internal class UpdateHandler(IFamilyRepository repository, IUnitOfWork unitOfWork) : ICommandHandler<Update, Models.Family>
 {
     public async ValueTask<Models.Family> Handle(Update command, CancellationToken cancellationToken)
     {
-        await security.AssertAdministrator(cancellationToken);
-
         Domain.Entities.Family.Family entity = await repository.Get(command.Id, cancellationToken);
 
         entity.Name = command.Family.Name;

@@ -1,4 +1,4 @@
-using Asm.MooBank.Domain.Entities.Account;
+﻿using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Budget;
 using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Models;
@@ -168,6 +168,7 @@ internal class GenerateBudgetHandler(
         // Re-read so the returned model reflects every line (existing + generated) with tags.
         var result = await budgets
             .Include(b => b.Lines).ThenInclude(l => l.Tag)
+            .IgnoreQueryFilters(["SoftDelete"])
             .SingleAsync(b => b.FamilyId == user.FamilyId && b.Year == request.Year, cancellationToken);
 
         return result.ToModel();

@@ -8,13 +8,11 @@ namespace Asm.MooBank.Modules.Forecast.Commands;
 [DisplayName("CreatePlannedItem")]
 public record CreatePlannedItem(Guid PlanId, PlannedItemBase Item) : ICommand<PlannedItem>;
 
-internal class CreatePlannedItemHandler(IForecastRepository forecastRepository, IUnitOfWork unitOfWork, ISecurity security) : ICommandHandler<CreatePlannedItem, PlannedItem>
+internal class CreatePlannedItemHandler(IForecastRepository forecastRepository, IUnitOfWork unitOfWork) : ICommandHandler<CreatePlannedItem, PlannedItem>
 {
     public async ValueTask<PlannedItem> Handle(CreatePlannedItem request, CancellationToken cancellationToken)
     {
         var plan = await forecastRepository.Get(request.PlanId, new ForecastPlanDetailsSpecification(), cancellationToken);
-
-        await security.AssertFamilyPermission(plan.FamilyId);
 
         var entity = request.Item.ToDomain(request.PlanId);
         plan.AddPlannedItem(entity);

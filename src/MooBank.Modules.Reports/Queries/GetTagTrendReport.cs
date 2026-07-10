@@ -11,7 +11,7 @@ public record GetTagTrendReport : TypedReportQuery, IQuery<TagTrendReport>
     public bool? ApplySmoothing { get; init; } = false;
 }
 
-internal class GetTagTrendReportHandler(IReportRepository repository, IQueryable<Tag> tags) : IQueryHandler<GetTagTrendReport, TagTrendReport>
+internal class GetTagTrendReportHandler(IReportRepository repository, IQueryable<Tag> tags, MooBank.Models.User user) : IQueryHandler<GetTagTrendReport, TagTrendReport>
 {
     public async ValueTask<TagTrendReport> Handle(GetTagTrendReport request, CancellationToken cancellationToken)
     {
@@ -19,7 +19,8 @@ internal class GetTagTrendReportHandler(IReportRepository repository, IQueryable
 
         var months = tagTotals.ToModel();
 
-        var tag = await tags.SingleAsync(t => t.Id == request.TagId, cancellationToken);
+        // Trend reports remain available for soft-deleted tags; the family filter still applies.
+        var tag = await tags.IgnoreQueryFilters(["SoftDelete"]).SingleAsync(t => t.Id == request.TagId && t.FamilyId == user.FamilyId, cancellationToken);
 
         if (request.ApplySmoothing ?? false)
         {
