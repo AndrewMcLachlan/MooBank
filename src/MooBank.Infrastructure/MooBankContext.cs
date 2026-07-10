@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Asset;
 using Asm.MooBank.Domain.Entities.Budget;
 using Asm.MooBank.Domain.Entities.Forecast;
@@ -11,6 +10,7 @@ using Asm.MooBank.Domain.Entities.Reports;
 using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.User;
+using Asm.MooBank.Security;
 
 namespace Asm.MooBank.Infrastructure;
 
@@ -28,7 +28,7 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
     {
     }
 
-    public MooBankContext(DbContextOptions<MooBankContext> options, IPublisher publisher, Security.IUserDataProvider userDataProvider) : base(options, publisher)
+    public MooBankContext(DbContextOptions<MooBankContext> options, IPublisher publisher, IUserDataProvider userDataProvider) : base(options, publisher)
     {
         _userDataProvider = userDataProvider;
     }
