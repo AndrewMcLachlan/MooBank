@@ -1,4 +1,4 @@
----
+﻿---
 paths:
   - "src/MooBank.Web.Api/**"
   - "src/MooBank.Modules*/Endpoints/**"
@@ -76,7 +76,7 @@ Auth is handled by policies and requirements wherever possible; filtering is def
 2. **Non-route contexts** (MCP tools, command-body foreign keys such as `GroupId`/`FamilyId`) →
    resource-based requirement invoked via `ISecurity.Assert*` (audits and throws).
 3. **Collection/list endpoints** → handler/query filtering by user/family (policies cannot scope
-   lists); the EF named query filters (e.g. `"Tenant"` on Tag) make this structural.
+   lists); the EF named query filters (e.g. `"Family"` on Tag) make this structural.
 4. **Repository and query filters are defence-in-depth** for id routes and the primary mechanism
    for lists. Redundancy with a policy is acceptable; do not add handler asserts that a policy or
    repository filter already makes unreachable.

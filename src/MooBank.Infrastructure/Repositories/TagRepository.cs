@@ -1,10 +1,10 @@
-using Asm.MooBank.Domain.Entities.Tag;
+﻿using Asm.MooBank.Domain.Entities.Tag;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
 internal sealed class TagRepository(MooBankContext dataContext) : RepositoryDeleteBase<Tag, int>(dataContext), ITagRepository
 {
-    // Tenant and soft-delete scoping are applied by the named query filters on Tag.
+    // Family and soft-delete scoping are applied by the named query filters on Tag.
 
     public override async Task<IEnumerable<Tag>> Get(CancellationToken cancellationToken = default)
     {

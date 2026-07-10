@@ -19,7 +19,7 @@ internal class GetHandler(IQueryable<Domain.Entities.Transactions.Transaction> t
     {
         var filterSpecification = new FilterSpecification(query);
 
-        // Historical transactions keep showing soft-deleted tags; the tenant filter still applies.
+        // Historical transactions keep showing soft-deleted tags; the family filter still applies.
         var total = await transactions.Specify(filterSpecification).IgnoreQueryFilters(["SoftDelete"]).CountAsync(cancellationToken);
 
         query = MapSortFieldNames(query);

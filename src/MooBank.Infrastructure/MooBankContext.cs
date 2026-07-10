@@ -34,9 +34,9 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
     }
 
     /// <summary>
-    /// The current user's family, used by the tenant query filter. Evaluated per query, so a user
+    /// The current user's family, used by the family query filter. Evaluated per query, so a user
     /// set after construction (e.g. background processing via <c>ISettableUserDataProvider</c>) is honoured.
-    /// Resolves to <see cref="Guid.Empty"/> when there is no current user, so tenant-filtered queries
+    /// Resolves to <see cref="Guid.Empty"/> when there is no current user, so family-filtered queries
     /// are fail-closed; system paths that legitimately span tenants must use <c>IgnoreQueryFilters</c>.
     /// </summary>
     private Guid CurrentFamilyId
@@ -151,11 +151,11 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
 
         modelBuilder.Entity<TagRelationship>();
 
-        // Named query filters: "Tenant" applies unconditionally (never ignored outside system paths);
+        // Named query filters: "Family" applies unconditionally (never ignored outside system paths);
         // "SoftDelete" may be selectively lifted per query via IgnoreQueryFilters(["SoftDelete"])
         // (e.g. historical transaction views, trend reports on deleted tags).
         modelBuilder.Entity<Domain.Entities.Tag.Tag>()
-            .HasQueryFilter("Tenant", t => t.FamilyId == CurrentFamilyId)
+            .HasQueryFilter("Family", t => t.FamilyId == CurrentFamilyId)
             .HasQueryFilter("SoftDelete", t => !t.Deleted);
 
         modelBuilder.Entity<TransactionTagTotal>().HasNoKey();

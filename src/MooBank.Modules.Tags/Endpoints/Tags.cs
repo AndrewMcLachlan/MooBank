@@ -53,10 +53,12 @@ internal class TagsEndpoints : EndpointGroupBase
 
         builder.MapPutCommand<AddSubTag, MooBank.Models.Tag>("{id}/tags/{subTagId}")
             .WithNames("Add Sub Tag")
-            .RequireAuthorization(Policies.GetTagFamilyPolicy());
+            .RequireAuthorization(Policies.GetTagFamilyPolicy())
+            .RequireAuthorization(Policies.GetTagFamilyPolicy("subTagId"));
 
         builder.MapDelete<RemoveSubTag>("{id}/tags/{subTagId}")
             .WithNames("Remove Sub Tag")
-            .RequireAuthorization(Policies.GetTagFamilyPolicy());
+            .RequireAuthorization(Policies.GetTagFamilyPolicy())
+            .RequireAuthorization(Policies.GetTagFamilyPolicy("subTagId"));
     }
 }

@@ -15,7 +15,8 @@ internal sealed class AddSubTagHandler(ITagRepository tagRepository, IQueryable<
 
         if (id == subId) throw new ExistsException("Cannot add a tag to itself!");
 
-        // Cross-family ids 404 in the family-scoped repository, so both tags are same-family here.
+        // Both route ids carry the TagFamily policy; the family query filter is defence-in-depth
+        // (cross-family ids 404 here), so both tags are same-family.
         var tag = await GetEntity(id, true, cancellationToken);
         var subTag = await GetEntity(subId, false, cancellationToken);
 

@@ -19,7 +19,7 @@ internal class GetTagTrendReportHandler(IReportRepository repository, IQueryable
 
         var months = tagTotals.ToModel();
 
-        // Trend reports remain available for soft-deleted tags; the tenant filter still applies.
+        // Trend reports remain available for soft-deleted tags; the family filter still applies.
         var tag = await tags.IgnoreQueryFilters(["SoftDelete"]).SingleAsync(t => t.Id == request.TagId && t.FamilyId == user.FamilyId, cancellationToken);
 
         if (request.ApplySmoothing ?? false)

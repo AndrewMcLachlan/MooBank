@@ -7,8 +7,7 @@ namespace Asm.MooBank.Modules.Tags.Queries;
 
 public record GetTagsGraph : IQuery<TagGraph>;
 
-internal sealed class GetTagsGraphHandler(
-    IQueryable<TagEntity> tags) : IQueryHandler<GetTagsGraph, TagGraph>
+internal sealed class GetTagsGraphHandler(IQueryable<TagEntity> tags) : IQueryHandler<GetTagsGraph, TagGraph>
 {
     public async ValueTask<TagGraph> Handle(GetTagsGraph request, CancellationToken cancellationToken)
     {
