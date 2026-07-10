@@ -31,8 +31,7 @@ See @.claude/PRD.md for detailed product requirements and domain concepts.
 ```
 src/
 ├── MooBank.Api/               # ASP.NET Core Web API entry point (also hosts Azure WebJobs under Jobs/)
-├── MooBank/                   # Application core: cross-cutting abstractions, application services,
-│                              #   hosted workers, entity↔DTO mapping (one project by design)
+├── MooBank/                   # Application core: cross-cutting abstractions, application services, hosted workers, entity↔DTO mapping (one project by design)
 ├── MooBank.Domain/            # Domain entities, aggregates, specifications, events
 ├── MooBank.Infrastructure/    # EF Core, repository implementations
 ├── MooBank.Models/            # Shared DTOs
@@ -73,7 +72,7 @@ dotnet test tests/                          # Run all tests
 dotnet test --filter /[Category=Unit]       # Unit tests only
 
 # Frontend (from src/MooBank.Web.App/)
-npm run build                               # Build (includes tsgo type checking)
+npm run build                               # Build (includes tsc type checking)
 npm run lint                                # Lint
 npm run generate                            # Regenerate API types from OpenAPI spec
 npm test                                    # Run Vitest component tests
