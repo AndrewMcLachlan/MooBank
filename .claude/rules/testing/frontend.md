@@ -10,7 +10,7 @@ paths:
 ## Component Tests
 
 ### Scope
-**Only test shared components** in `src/components/` that are used across multiple pages. Do not write tests for page-specific components.
+**Only test shared components** in `src/components/` that are used across multiple routes. Do not write tests for route-specific components.
 
 ### Framework
 - **Vitest** - Test runner (Vite-native)
@@ -19,10 +19,10 @@ paths:
 ### What to Test
 - Shared components in `src/components/`
 - Custom hooks in `src/hooks/` with complex logic
-- Utility functions in `src/helpers/`
+- Utility functions in `src/utils/`
 
 ### What NOT to Test
-- Page components (`src/pages/*`)
+- Route components and their co-located `-components/` (`src/routes/**`)
 - Simple wrapper components
 - Components only used in one place
 

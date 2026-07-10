@@ -5,55 +5,37 @@ paths:
 
 # TypeScript / React Conventions
 
+**Full frontend conventions live in `src/MooBank.Web.App/CLAUDE.md` — read it before writing frontend code.** This rule covers only the essentials.
+
 ## Technology Stack
 
 - **React 19** - UI framework
-- **TypeScript** - Type-safe JavaScript
-- **Vite** - Build tool and dev server
-- **React Router 7** - Client-side routing
-- **React Query (TanStack Query v5)** - Server state management
-- **MooApp** - Application framework, including UI components
-- **React Bootstrap** - UI component library
+- **TypeScript** - `strictNullChecks: false` and `noImplicitAny: false` are accepted trade-offs for TanStack Router typing — do not "fix" them
+- **Vite 7** - Build tool and dev server
+- **TanStack Router** - File-based routing (`src/routes/`, generated `src/routeTree.gen.ts`)
+- **TanStack Query v5** - Server state management
+- **MooApp / MooDS** - Application framework and component library (Storybook: https://storybook.mclachlan.family; source: https://github.com/AndrewMcLachlan/MooApp)
 - **MSAL** - Microsoft Authentication Library for Azure AD
-
-## Custom Libraries
-
-### MooApp
-A set of custom packages for React development:
-
-- **@andrewmclachlan/moo-ds** - An opinionated component library inspired by, but not dependent on, Bootstrap and React-Bootstrap
-- **@andrewmclachlan/moo-app** - Provides app-level components:
-  - Application bootstrapper
-  - Layout components
-  - Authentication with MSAL
-  - API management with React Query and Axios
-  - Custom React Query hooks for different HTTP verbs
-
-Source Code: https://github.com/AndrewMcLachlan/MooApp
-Storybook (for moo-ds): https://storybook.mclachlan.family
 
 ## Type Safety
 
-- Use TypeScript strictly for type safety
 - All components and functions should have proper type annotations
-- Avoid `any` type - use proper typing or `unknown` with type guards
+- Avoid `any` where practical - prefer proper typing or `unknown` with type guards
+- `src/api/**` and `src/routeTree.gen.ts` are generated — never hand-edit
 
 ## API Integration
 
-- Use React Query for all API calls
-- API types are generated from OpenAPI spec via `@hey-api/openapi-ts`
-- Run `npm run generate` to regenerate API types after backend changes
+- All API access goes through the generated `@hey-api/openapi-ts` client (`src/api/`) and its generated TanStack Query options — there are no hand-coded HTTP services
+- Run `npm run generate` to regenerate API types after backend changes (the OpenAPI spec regenerates on `dotnet build`)
 
 ## Project Structure
 
 ```
-src/MooBank.Web.App/
-├── src/
-│   ├── components/     # Reusable UI components
-│   ├── pages/          # Route-level components
-│   ├── hooks/          # Custom React hooks
-│   ├── services/       # API service functions
-│   └── types/          # TypeScript type definitions
-├── public/             # Static assets
-└── index.html          # Entry HTML file
+src/MooBank.Web.App/src/
+├── api/            # GENERATED API client + types
+├── routes/         # File-based routes with co-located -components/ -hooks/ -utils/
+├── components/     # Cross-feature shared components
+├── hooks/          # Cross-feature shared hooks
+├── utils/          # Shared utilities
+└── routeTree.gen.ts  # GENERATED route tree
 ```

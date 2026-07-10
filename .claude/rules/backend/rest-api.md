@@ -1,6 +1,6 @@
 ---
 paths:
-  - "src/MooBank.Web.Api/**"
+  - "src/MooBank.Api/**"
   - "src/MooBank.Modules*/Endpoints/**"
 ---
 
