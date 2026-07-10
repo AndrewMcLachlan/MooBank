@@ -10,7 +10,7 @@ using TagSettings = Asm.MooBank.Domain.Entities.Tag.TagSettings;
 namespace Asm.MooBank.Domain.Tests.Repositories;
 
 /// <summary>
-/// Integration tests for the <see cref="SecurityRepository"/> data queries used by
+/// Integration tests for the <see cref="AuthorisationRepository"/> data queries used by
 /// authorisation requirement handlers.
 /// </summary>
 [Trait("Category", "Integration")]
@@ -31,7 +31,7 @@ public class SecurityRepositoryTests : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    private SecurityRepository CreateRepository() => new(_context);
+    private AuthorisationRepository CreateRepository() => new(_context);
 
     #region IsGroupOwner
 

@@ -71,7 +71,7 @@ public static class IServiceCollectionExtensions
                 .AddScoped<IRecurringTransactionRepository, RecurringTransactionRepository>()
                 .AddScoped<IReferenceDataRepository, ReferenceDataRepository>()
                 .AddScoped<IReportRepository, ReportRepository>()
-                .AddScoped<IAuthorisationRepository, SecurityRepository>()
+                .AddScoped<IAuthorisationRepository, AuthorisationRepository>()
                 .AddScoped<IStockHoldingRepository, StockHoldingRepository>()
                 .AddScoped<ITransactionRepository, TransactionRepository>()
                 .AddScoped<ITagRepository, TagRepository>()
