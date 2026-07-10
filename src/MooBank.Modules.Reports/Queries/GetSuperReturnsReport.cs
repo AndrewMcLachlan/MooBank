@@ -16,7 +16,7 @@ public record GetSuperReturnsReport : IQuery<SuperReturnsReport>
 }
 
 internal class GetSuperReturnsReportHandler(
-    IReportRepository repository,
+    IReportReader reportReader,
     IQueryable<LogicalAccount> accounts) : IQueryHandler<GetSuperReturnsReport, SuperReturnsReport>
 {
     public async ValueTask<SuperReturnsReport> Handle(GetSuperReturnsReport request, CancellationToken cancellationToken)
@@ -29,7 +29,7 @@ internal class GetSuperReturnsReportHandler(
             .ToListAsync(cancellationToken);
 
         var today = DateOnly.FromDateTime(DateTime.Today);
-        var rawBalances = (await repository.GetMonthlyBalances(request.AccountId, DateOnly.MinValue, today, cancellationToken)).ToList();
+        var rawBalances = (await reportReader.GetMonthlyBalances(request.AccountId, DateOnly.MinValue, today, cancellationToken)).ToList();
 
         if (rawBalances.Count == 0)
         {
@@ -53,14 +53,14 @@ internal class GetSuperReturnsReportHandler(
         var years = new List<SuperReturnsYear>();
 
         // Fetch contributions once per tag over the full reporting window and bucket the
-        // monthly totals by financial year, rather than one repository call per FY per tag.
+        // monthly totals by financial year, rather than one reportReader call per FY per tag.
         var rangeStart = new DateOnly(firstFy - 1, 7, 1);
         var rangeEnd = new DateOnly(lastFy, 6, 30);
         var contributionsByFy = new Dictionary<int, decimal>();
 
         foreach (var tagId in configured)
         {
-            var totals = await repository.GetMonthlyTotalsForTag(request.AccountId, rangeStart, rangeEnd, TransactionFilterType.Credit, tagId, cancellationToken);
+            var totals = await reportReader.GetMonthlyTotalsForTag(request.AccountId, rangeStart, rangeEnd, TransactionFilterType.Credit, tagId, cancellationToken);
 
             foreach (var total in totals)
             {

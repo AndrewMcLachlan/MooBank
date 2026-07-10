@@ -12,9 +12,9 @@ internal class DeleteHandler(IInstrumentRepository accountRepository, IUnitOfWor
     {
         var account = await accountRepository.Get(command.AccountId, new RecurringTransactionSpecification(), cancellationToken);
 
-        var recurringTransaction = account.VirtualInstruments.SelectMany(v => v.RecurringTransactions).SingleOrDefault(r => r.Id == command.RecurringTransactionId) ?? throw new NotFoundException();
+        var virtualAccount = account.VirtualInstruments.SingleOrDefault(v => v.RecurringTransactions.Any(r => r.Id == command.RecurringTransactionId)) ?? throw new NotFoundException();
 
-        recurringTransaction.VirtualAccount.RecurringTransactions.Remove(recurringTransaction);
+        virtualAccount.RemoveRecurringTransaction(command.RecurringTransactionId);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }

@@ -1,4 +1,4 @@
-using Asm.MooBank.Domain.Entities.Account;
+﻿using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Models;
 using DomainVirtualInstrument = Asm.MooBank.Domain.Entities.Account.VirtualInstrument;
 
@@ -181,6 +181,82 @@ public class VirtualInstrumentTests
     }
 
     #endregion
+
+    #region RemoveRecurringTransaction
+
+    /// <summary>
+    /// Given a virtual instrument with a recurring transaction
+    /// When RemoveRecurringTransaction is called
+    /// Then the recurring transaction should be removed
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void RemoveRecurringTransaction_ExistingTransaction_RemovesFromCollection()
+    {
+        // Arrange
+        var virtualInstrument = CreateVirtualInstrument();
+        var recurring = CreateRecurringTransaction(virtualInstrument, "Rent", 1500m);
+
+        // Act
+        virtualInstrument.RemoveRecurringTransaction(recurring.Id);
+
+        // Assert
+        Assert.Empty(virtualInstrument.RecurringTransactions);
+    }
+
+    /// <summary>
+    /// Given a virtual instrument with multiple recurring transactions
+    /// When RemoveRecurringTransaction is called
+    /// Then only the requested recurring transaction should be removed
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void RemoveRecurringTransaction_MultipleTransactions_RemovesOnlyRequested()
+    {
+        // Arrange
+        var virtualInstrument = CreateVirtualInstrument();
+        var toRemove = CreateRecurringTransaction(virtualInstrument, "Rent", 1500m);
+        var toKeep = CreateRecurringTransaction(virtualInstrument, "Utilities", 200m);
+
+        // Act
+        virtualInstrument.RemoveRecurringTransaction(toRemove.Id);
+
+        // Assert
+        Assert.Single(virtualInstrument.RecurringTransactions);
+        Assert.Contains(toKeep, virtualInstrument.RecurringTransactions);
+    }
+
+    /// <summary>
+    /// Given a virtual instrument without the requested recurring transaction
+    /// When RemoveRecurringTransaction is called
+    /// Then NotFoundException should be thrown
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void RemoveRecurringTransaction_NotFound_ThrowsNotFoundException()
+    {
+        // Arrange
+        var virtualInstrument = CreateVirtualInstrument();
+
+        // Act & Assert
+        Assert.Throws<NotFoundException>(() => virtualInstrument.RemoveRecurringTransaction(Guid.NewGuid()));
+    }
+
+    #endregion
+
+    private static RecurringTransaction CreateRecurringTransaction(DomainVirtualInstrument virtualInstrument, string description, decimal amount)
+    {
+        var recurring = new RecurringTransaction(Guid.NewGuid())
+        {
+            VirtualAccountId = virtualInstrument.Id,
+            Description = description,
+            Amount = amount,
+            Schedule = ScheduleFrequency.Monthly,
+            NextRun = DateOnly.FromDateTime(DateTime.UtcNow),
+        };
+        virtualInstrument.RecurringTransactions.Add(recurring);
+        return recurring;
+    }
 
     private DomainVirtualInstrument CreateVirtualInstrument()
     {

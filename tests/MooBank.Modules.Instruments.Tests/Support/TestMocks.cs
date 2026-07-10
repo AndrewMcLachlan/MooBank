@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.Domain;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Tag;
@@ -17,7 +17,6 @@ public class TestMocks
         UnitOfWorkMock.Setup(uow => uow.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         InstrumentRepositoryMock = new Mock<IInstrumentRepository>();
-        RuleRepositoryMock = new Mock<IRuleRepository>();
         TagRepositoryMock = new Mock<ITagRepository>();
         SecurityMock = new Mock<ISecurity>();
         CurrencyConverterMock = new Mock<ICurrencyConverter>();
@@ -36,8 +35,6 @@ public class TestMocks
     public Mock<IUnitOfWork> UnitOfWorkMock { get; }
 
     public Mock<IInstrumentRepository> InstrumentRepositoryMock { get; }
-
-    public Mock<IRuleRepository> RuleRepositoryMock { get; }
 
     public Mock<ITagRepository> TagRepositoryMock { get; }
 

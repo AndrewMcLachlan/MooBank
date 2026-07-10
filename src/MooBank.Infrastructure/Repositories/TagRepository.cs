@@ -27,6 +27,12 @@ internal sealed class TagRepository(MooBankContext dataContext, Models.User user
         return tag ?? throw new NotFoundException($"Transaction tag with id {id} was not found");
     }
 
+    public override void Delete(int id)
+    {
+        var tag = GetById(id).SingleOrDefault() ?? throw new NotFoundException($"Transaction tag with id {id} was not found");
+        Delete(tag);
+    }
+
     public override void Delete(Tag tag)
     {
         tag.Deleted = true;

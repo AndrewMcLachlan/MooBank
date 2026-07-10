@@ -11,12 +11,12 @@ public record GetAllTagAverageReport() : TypedReportQuery, IQuery<AllTagAverageR
     public ReportInterval Interval { get; init; }
 }
 
-internal class GetAllTagAverageReportHandler(IReportRepository repository) : IQueryHandler<GetAllTagAverageReport, AllTagAverageReport>
+internal class GetAllTagAverageReportHandler(IReportReader reportReader) : IQueryHandler<GetAllTagAverageReport, AllTagAverageReport>
 {
     public async ValueTask<AllTagAverageReport> Handle(GetAllTagAverageReport query, CancellationToken cancellationToken)
     {
 
-        var results = (await repository.GetTopTagAverages(query.AccountId, query.Start, query.End, query.Interval, cancellationToken)).Take(query.Top);
+        var results = (await reportReader.GetTopTagAverages(query.AccountId, query.Start, query.End, query.Interval, cancellationToken)).Take(query.Top);
 
         return new()
         {

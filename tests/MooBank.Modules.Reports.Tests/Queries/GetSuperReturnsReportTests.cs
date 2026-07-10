@@ -45,18 +45,18 @@ public class GetSuperReturnsReportTests
 
         var accounts = QueryableHelper.CreateAsyncQueryable([CreateAccount(accountId, employerTagId: employerTagId)]);
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyBalances(accountId, DateOnly.MinValue, It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new[]
             {
                 Balance(new DateOnly(2024, 6, 30), 100000m),
                 Balance(new DateOnly(2025, 6, 30), 130000m),
             });
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyTotalsForTag(accountId, new DateOnly(2024, 7, 1), new DateOnly(2025, 6, 30), TransactionFilterType.Credit, employerTagId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new[] { TestEntities.CreateMonthlyTagTotal(new DateOnly(2025, 1, 1), 20000m, 20000m) });
 
-        var handler = new GetSuperReturnsReportHandler(_mocks.ReportRepositoryMock.Object, accounts);
+        var handler = new GetSuperReturnsReportHandler(_mocks.ReportReaderMock.Object, accounts);
         var query = new GetSuperReturnsReport { AccountId = accountId };
 
         // Act
@@ -84,7 +84,7 @@ public class GetSuperReturnsReportTests
         var accountId = Guid.NewGuid();
         var accounts = QueryableHelper.CreateAsyncQueryable([CreateAccount(accountId)]);
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyBalances(accountId, DateOnly.MinValue, It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new[]
             {
@@ -94,7 +94,7 @@ public class GetSuperReturnsReportTests
                 Balance(new DateOnly(2025, 6, 30), 80000m),
             });
 
-        var handler = new GetSuperReturnsReportHandler(_mocks.ReportRepositoryMock.Object, accounts);
+        var handler = new GetSuperReturnsReportHandler(_mocks.ReportReaderMock.Object, accounts);
         var query = new GetSuperReturnsReport { AccountId = accountId };
 
         // Act
@@ -117,11 +117,11 @@ public class GetSuperReturnsReportTests
         var accountId = Guid.NewGuid();
         var accounts = QueryableHelper.CreateAsyncQueryable([CreateAccount(accountId)]);
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyBalances(accountId, DateOnly.MinValue, It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
-        var handler = new GetSuperReturnsReportHandler(_mocks.ReportRepositoryMock.Object, accounts);
+        var handler = new GetSuperReturnsReportHandler(_mocks.ReportReaderMock.Object, accounts);
         var query = new GetSuperReturnsReport { AccountId = accountId };
 
         // Act
@@ -143,11 +143,11 @@ public class GetSuperReturnsReportTests
         var accountId = Guid.NewGuid();
         var accounts = QueryableHelper.CreateAsyncQueryable([CreateAccount(accountId)]);
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyBalances(accountId, DateOnly.MinValue, It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new[] { Balance(new DateOnly(2025, 6, 30), 100000m) });
 
-        var handler = new GetSuperReturnsReportHandler(_mocks.ReportRepositoryMock.Object, accounts);
+        var handler = new GetSuperReturnsReportHandler(_mocks.ReportReaderMock.Object, accounts);
         var query = new GetSuperReturnsReport { AccountId = accountId };
 
         // Act

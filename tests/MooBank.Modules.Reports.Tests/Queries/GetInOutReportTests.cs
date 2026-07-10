@@ -25,11 +25,11 @@ public class GetInOutReportTests
 
         var totals = TestEntities.CreateSampleCreditDebitTotals();
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitTotals(accountId, start, end, It.IsAny<CancellationToken>()))
             .ReturnsAsync(totals);
 
-        var handler = new GetInOutReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetInOutReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetInOutReport
         {
@@ -63,11 +63,11 @@ public class GetInOutReportTests
             TestEntities.CreateCreditDebitTotal(TransactionFilterType.Debit, 1500m),
         };
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitTotals(accountId, start, end, It.IsAny<CancellationToken>()))
             .ReturnsAsync(totals);
 
-        var handler = new GetInOutReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetInOutReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetInOutReport
         {
@@ -98,11 +98,11 @@ public class GetInOutReportTests
             TestEntities.CreateCreditDebitTotal(TransactionFilterType.Debit, 1000m),
         };
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitTotals(accountId, start, end, It.IsAny<CancellationToken>()))
             .ReturnsAsync(totals);
 
-        var handler = new GetInOutReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetInOutReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetInOutReport
         {
@@ -126,11 +126,11 @@ public class GetInOutReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitTotals(accountId, start, end, It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
-        var handler = new GetInOutReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetInOutReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetInOutReport
         {
@@ -160,11 +160,11 @@ public class GetInOutReportTests
             TestEntities.CreateCreditDebitTotal(TransactionFilterType.Credit, 5000m),
         };
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitTotals(accountId, start, end, It.IsAny<CancellationToken>()))
             .ReturnsAsync(totals);
 
-        var handler = new GetInOutReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetInOutReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetInOutReport
         {
@@ -194,11 +194,11 @@ public class GetInOutReportTests
             TestEntities.CreateCreditDebitTotal(TransactionFilterType.Debit, 3500m),
         };
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitTotals(accountId, start, end, It.IsAny<CancellationToken>()))
             .ReturnsAsync(totals);
 
-        var handler = new GetInOutReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetInOutReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetInOutReport
         {

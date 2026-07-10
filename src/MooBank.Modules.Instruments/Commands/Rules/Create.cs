@@ -29,16 +29,9 @@ internal class CreateHandler(IInstrumentRepository instrumentRepository, ITagRep
     {
         var instrument = await instrumentRepository.Get(request.InstrumentId, cancellationToken);
 
-        var rule = new Domain.Entities.Instrument.Rule
-        {
-            InstrumentId = request.InstrumentId,
-            Contains = request.Contains,
-            Description = request.Description,
-            Tags = [.. (await tagRepository.Get(request.Tags.Select(t => t.Id), cancellationToken))],
-        };
+        var tags = await tagRepository.Get(request.Tags.Select(t => t.Id), cancellationToken);
 
-
-        instrument.Rules.Add(rule);
+        var rule = instrument.AddRule(request.Contains, request.Description, tags);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

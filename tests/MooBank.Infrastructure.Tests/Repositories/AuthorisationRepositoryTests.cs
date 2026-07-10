@@ -5,17 +5,17 @@ using Asm.MooBank.Infrastructure.Tests.Support;
 namespace Asm.MooBank.Infrastructure.Tests.Repositories;
 
 /// <summary>
-/// Unit tests for the <see cref="SecurityRepository"/> data queries used by
+/// Unit tests for the <see cref="AuthorisationRepository"/> data queries used by
 /// authorisation requirement handlers.
 /// </summary>
 [Trait("Category", "Unit")]
-public class SecurityRepositoryTests : IDisposable
+public class AuthorisationRepositoryTests : IDisposable
 {
     private readonly MooBankContext _context;
     private readonly Guid _userId = Guid.NewGuid();
     private readonly Guid _familyId = Guid.NewGuid();
 
-    public SecurityRepositoryTests()
+    public AuthorisationRepositoryTests()
     {
         _context = TestDbContextFactory.Create();
     }
@@ -26,7 +26,7 @@ public class SecurityRepositoryTests : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    private SecurityRepository CreateRepository() => new(_context);
+    private AuthorisationRepository CreateRepository() => new(_context);
 
     #region IsGroupOwner
 

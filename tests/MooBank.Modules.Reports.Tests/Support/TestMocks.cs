@@ -7,8 +7,8 @@ public class TestMocks
 {
     public TestMocks()
     {
-        ReportRepositoryMock = new Mock<IReportRepository>();
+        ReportReaderMock = new Mock<IReportReader>();
     }
 
-    public Mock<IReportRepository> ReportRepositoryMock { get; }
+    public Mock<IReportReader> ReportReaderMock { get; }
 }

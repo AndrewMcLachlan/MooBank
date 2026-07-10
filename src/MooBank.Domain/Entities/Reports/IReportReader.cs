@@ -2,7 +2,7 @@
 
 namespace Asm.MooBank.Domain.Entities.Reports;
 
-public interface IReportRepository
+public interface IReportReader
 {
     Task<IEnumerable<TransactionTagTotal>> GetTransactionTagTotals(Guid accountId, DateOnly startDate, DateOnly endDate, TransactionFilterType filterType, int? rootTagId = null, CancellationToken cancellationToken = default);
 

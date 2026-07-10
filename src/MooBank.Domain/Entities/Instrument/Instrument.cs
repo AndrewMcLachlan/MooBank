@@ -102,4 +102,34 @@ public abstract class Instrument(Guid id) : KeyedEntity<Guid>(id)
         var virtualInstrument = _virtualInstruments.SingleOrDefault(a => a.Id == virtualInstrumentId) ?? throw new NotFoundException("Virtual instrument not found");
         _virtualInstruments.Remove(virtualInstrument);
     }
+
+    public Rule AddRule(string contains, string? description, IEnumerable<Tag.Tag> tags)
+    {
+        var rule = new Rule
+        {
+            InstrumentId = Id,
+            Contains = contains,
+            Description = description,
+            Tags = [.. tags],
+        };
+
+        Rules.Add(rule);
+
+        return rule;
+    }
+
+    public Rule UpdateRule(int ruleId, string contains, string? description)
+    {
+        var rule = GetRule(ruleId);
+
+        rule.Contains = contains;
+        rule.Description = description;
+
+        return rule;
+    }
+
+    public void RemoveRule(int ruleId) => Rules.Remove(GetRule(ruleId));
+
+    private Rule GetRule(int ruleId) =>
+        Rules.SingleOrDefault(r => r.Id == ruleId) ?? throw new NotFoundException($"Rule with ID {ruleId} not found");
 }

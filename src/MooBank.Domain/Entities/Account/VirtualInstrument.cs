@@ -27,4 +27,10 @@ public partial class VirtualInstrument(Guid id) : TransactionInstrument(id)
 
         return recurringTransaction;
     }
+
+    public void RemoveRecurringTransaction(Guid recurringTransactionId)
+    {
+        var recurringTransaction = RecurringTransactions.SingleOrDefault(r => r.Id == recurringTransactionId) ?? throw new NotFoundException("Recurring transaction not found");
+        RecurringTransactions.Remove(recurringTransaction);
+    }
 }

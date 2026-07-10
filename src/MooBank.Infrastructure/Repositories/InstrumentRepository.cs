@@ -1,9 +1,12 @@
 ﻿using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Instrument.Events;
+using Asm.MooBank.Security;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
-public class InstrumentRepository(MooBankContext dataContext, Models.User user) : RepositoryDeleteBase<MooBankContext, Instrument, Guid>(dataContext), IInstrumentRepository
+// The current user is resolved lazily so this repository can be used on background paths
+// (rules, recurring transactions) where no user is present.
+public class InstrumentRepository(MooBankContext dataContext, IUserDataProvider userDataProvider) : RepositoryDeleteBase<MooBankContext, Instrument, Guid>(dataContext), IInstrumentRepository
 {
     public override Instrument Add(Instrument entity)
     {
@@ -27,6 +30,7 @@ public class InstrumentRepository(MooBankContext dataContext, Models.User user) 
 
     public override async Task<IEnumerable<Instrument>> Get(CancellationToken cancellationToken = default)
     {
+        var user = userDataProvider.GetCurrentUser();
         var userAccounts = user.Accounts.Concat(user.SharedAccounts);
         return await Entities.Where(i => userAccounts.Contains(i.Id)).ToListAsync(cancellationToken);
     }

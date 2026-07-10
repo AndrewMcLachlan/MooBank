@@ -11,11 +11,11 @@ public record GetTagTrendReport : TypedReportQuery, IQuery<TagTrendReport>
     public bool? ApplySmoothing { get; init; } = false;
 }
 
-internal class GetTagTrendReportHandler(IReportRepository repository, IQueryable<Tag> tags) : IQueryHandler<GetTagTrendReport, TagTrendReport>
+internal class GetTagTrendReportHandler(IReportReader reportReader, IQueryable<Tag> tags) : IQueryHandler<GetTagTrendReport, TagTrendReport>
 {
     public async ValueTask<TagTrendReport> Handle(GetTagTrendReport request, CancellationToken cancellationToken)
     {
-        var tagTotals = await repository.GetMonthlyTotalsForTag(request.AccountId, request.Start, request.End, request.ReportType, request.TagId, cancellationToken);
+        var tagTotals = await reportReader.GetMonthlyTotalsForTag(request.AccountId, request.Start, request.End, request.ReportType, request.TagId, cancellationToken);
 
         var months = tagTotals.ToModel();
 

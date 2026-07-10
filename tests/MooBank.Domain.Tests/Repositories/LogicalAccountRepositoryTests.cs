@@ -1,4 +1,4 @@
-using Asm.MooBank.Domain.Entities.Account;
+﻿using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Account.Events;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Instrument.Events;
@@ -321,6 +321,57 @@ public class LogicalAccountRepositoryTests : IDisposable
 
     #endregion
 
+    #region Delete
+
+    /// <summary>
+    /// Given an existing logical account owned by the user
+    /// When Delete is called with the account's id
+    /// Then the account should have ClosedDate set (close, not hard delete)
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Integration")]
+    public async Task Delete_ById_SetsClosedDate()
+    {
+        // Arrange
+        var accountId = Guid.NewGuid();
+        var account = CreateLogicalAccount(accountId, "To Close");
+        _context.Set<LogicalAccount>().Add(account);
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var repository = new LogicalAccountRepository(_context, CreateUser());
+
+        // Act
+        repository.Delete(accountId);
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        // Assert
+        var closedAccount = await _context.Set<LogicalAccount>()
+            .FindAsync([accountId], cancellationToken: TestContext.Current.CancellationToken);
+        Assert.NotNull(closedAccount!.ClosedDate);
+    }
+
+    /// <summary>
+    /// Given an account owned by a different user
+    /// When Delete is called with the account's id
+    /// Then NotFoundException should be thrown
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Integration")]
+    public async Task Delete_ById_NotOwned_ThrowsNotFoundException()
+    {
+        // Arrange
+        var accountId = Guid.NewGuid();
+        var account = CreateLogicalAccountWithOwner(accountId, "Not Mine", Guid.NewGuid(), Guid.NewGuid());
+        _context.Set<LogicalAccount>().Add(account);
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var repository = new LogicalAccountRepository(_context, CreateUser());
+
+        // Act & Assert
+        Assert.Throws<NotFoundException>(() => repository.Delete(accountId));
+    }
+
+    #endregion
 
     #region Helpers
 

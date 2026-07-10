@@ -2,7 +2,6 @@
 
 namespace Asm.MooBank.Domain.Entities.Budget;
 
-[AggregateRoot]
 [PrimaryKey(nameof(Id))]
 public class BudgetLine(Guid id) : KeyedEntity<Guid>(id)
 {

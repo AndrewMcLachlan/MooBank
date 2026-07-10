@@ -68,20 +68,22 @@ public static class IServiceCollectionExtensions
                 .AddScoped<IBudgetRepository, BudgetRepository>()
                 .AddScoped<IFamilyRepository, FamilyRepository>()
                 .AddScoped<IInstitutionRepository, InstitutionRepository>()
-                .AddScoped<IRecurringTransactionRepository, RecurringTransactionRepository>()
                 .AddScoped<IReferenceDataRepository, ReferenceDataRepository>()
-                .AddScoped<IReportRepository, ReportRepository>()
-                .AddScoped<IAuthorisationRepository, SecurityRepository>()
+                .AddScoped<IReportReader, ReportReader>()
+                .AddScoped<IAuthorisationRepository, AuthorisationRepository>()
                 .AddScoped<IStockHoldingRepository, StockHoldingRepository>()
                 .AddScoped<ITransactionRepository, TransactionRepository>()
                 .AddScoped<ITagRepository, TagRepository>()
-                .AddScoped<IRuleRepository, RuleRepository>()
                 .AddScoped<IAccountRepository, UtilityAccountRepository>()
                 .AddScoped<IForecastRepository, ForecastRepository>()
         ;
 
     public static IServiceCollection AddEntities(this IServiceCollection services) =>
-        services.AddAggregateRoots<MooBankContext>(typeof(IGroupRepository).Assembly);
+        services.AddAggregateRoots<MooBankContext>(typeof(IGroupRepository).Assembly)
+                // TagRelationship is a read-model over the TagHierarchies transitive-closure view,
+                // not an aggregate root. It stays queryable so consumers can expand ancestor/descendant
+                // sets, which cannot be expressed by navigating Tag.Tags (direct children only).
+                .AddQueryable<Asm.MooBank.Domain.Entities.TagRelationships.TagRelationship, MooBankContext>();
 
     public static IServiceCollection AddImporterFactory(this IServiceCollection services) =>
         services.AddTransient<IImporterFactory, ImporterFactory>();

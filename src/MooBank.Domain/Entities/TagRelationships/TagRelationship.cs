@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 namespace Asm.MooBank.Domain.Entities.TagRelationships;
 
 [Table("TagHierarchies", Schema = "dbo")]
-[AggregateRoot]
 [PrimaryKey(nameof(Id), nameof(ParentId))]
 public class TagRelationship
 {

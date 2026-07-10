@@ -47,21 +47,21 @@ public class GetSuperContributionsReportTests
             TestEntities.CreateTag(employerTagId, "SG Contributions"),
             TestEntities.CreateTag(personalTagId, "Personal Super"));
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyTotalsForTag(accountId, start, end, TransactionFilterType.Credit, employerTagId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new[]
             {
                 TestEntities.CreateMonthlyTagTotal(new DateOnly(2026, 1, 1), 1000m, 1000m),
                 TestEntities.CreateMonthlyTagTotal(new DateOnly(2026, 2, 1), 1200m, 1200m),
             });
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyTotalsForTag(accountId, start, end, TransactionFilterType.Credit, personalTagId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new[]
             {
                 TestEntities.CreateMonthlyTagTotal(new DateOnly(2026, 1, 1), 500m, 500m),
             });
 
-        var handler = new GetSuperContributionsReportHandler(_mocks.ReportRepositoryMock.Object, accounts, tags);
+        var handler = new GetSuperContributionsReportHandler(_mocks.ReportReaderMock.Object, accounts, tags);
         var query = new GetSuperContributionsReport { AccountId = accountId, Start = start, End = end };
 
         // Act
@@ -94,7 +94,7 @@ public class GetSuperContributionsReportTests
         var accounts = QueryableHelper.CreateAsyncQueryable([CreateAccount(accountId)]);
         var tags = TestEntities.CreateTagQueryable();
 
-        var handler = new GetSuperContributionsReportHandler(_mocks.ReportRepositoryMock.Object, accounts, tags);
+        var handler = new GetSuperContributionsReportHandler(_mocks.ReportReaderMock.Object, accounts, tags);
         var query = new GetSuperContributionsReport { AccountId = accountId, Start = start, End = end };
 
         // Act
@@ -108,7 +108,7 @@ public class GetSuperContributionsReportTests
         Assert.Equal(0m, result.EmployerTotal);
         Assert.Equal(0m, result.PersonalTotal);
 
-        _mocks.ReportRepositoryMock.Verify(
+        _mocks.ReportReaderMock.Verify(
             r => r.GetMonthlyTotalsForTag(It.IsAny<Guid>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<TransactionFilterType>(), It.IsAny<int?>(), It.IsAny<CancellationToken>()),
             Times.Never);
     }
@@ -130,11 +130,11 @@ public class GetSuperContributionsReportTests
         var accounts = QueryableHelper.CreateAsyncQueryable([CreateAccount(accountId, employerTagId: employerTagId)]);
         var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(employerTagId, "Employer"));
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyTotalsForTag(accountId, start, end, TransactionFilterType.Credit, employerTagId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new[] { TestEntities.CreateMonthlyTagTotal(new DateOnly(2026, 1, 1), 1000m, 1000m) });
 
-        var handler = new GetSuperContributionsReportHandler(_mocks.ReportRepositoryMock.Object, accounts, tags);
+        var handler = new GetSuperContributionsReportHandler(_mocks.ReportReaderMock.Object, accounts, tags);
         var query = new GetSuperContributionsReport { AccountId = accountId, Start = start, End = end };
 
         // Act

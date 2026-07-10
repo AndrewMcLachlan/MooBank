@@ -7,14 +7,13 @@ namespace Asm.MooBank.Modules.Instruments.Commands.Rules;
 [DisplayName("UpdateRule")]
 public record Update(Guid InstrumentId, int RuleId, UpdateRule Rule) : ICommand<Models.Rules.Rule>;
 
-internal sealed class UpdateRuleHandler(IRuleRepository ruleRepository, IUnitOfWork unitOfWork) : ICommandHandler<Update, Models.Rules.Rule>
+internal sealed class UpdateRuleHandler(IInstrumentRepository instrumentRepository, IUnitOfWork unitOfWork) : ICommandHandler<Update, Models.Rules.Rule>
 {
     public async ValueTask<Models.Rules.Rule> Handle(Update command, CancellationToken cancellationToken)
     {
-        var entity = await ruleRepository.Get(command.InstrumentId, command.RuleId, cancellationToken);
+        var instrument = await instrumentRepository.Get(command.InstrumentId, cancellationToken);
 
-        entity.Contains = command.Rule.Contains;
-        entity.Description = command.Rule.Description;
+        var entity = instrument.UpdateRule(command.RuleId, command.Rule.Contains, command.Rule.Description);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

@@ -294,6 +294,52 @@ public class TagRepositoryTests : IDisposable
         Assert.True(deletedTag.Deleted);
     }
 
+    /// <summary>
+    /// Given an existing tag in the user's family
+    /// When Delete is called with the tag's id
+    /// Then the tag should be marked as deleted (soft delete)
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Integration")]
+    public async Task Delete_ById_SoftDeletesTag()
+    {
+        // Arrange
+        var tag = CreateTag(1, "ToDelete", _familyId);
+        _context.Set<Tag>().Add(tag);
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var repository = new TagRepository(_context, _user);
+
+        // Act
+        repository.Delete(1);
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        // Assert
+        var deletedTag = await _context.Set<Tag>().FirstOrDefaultAsync(t => t.Id == 1, TestContext.Current.CancellationToken);
+        Assert.NotNull(deletedTag);
+        Assert.True(deletedTag.Deleted);
+    }
+
+    /// <summary>
+    /// Given a tag belonging to another family
+    /// When Delete is called with the tag's id
+    /// Then NotFoundException should be thrown
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Integration")]
+    public async Task Delete_ById_OtherFamilyTag_ThrowsNotFoundException()
+    {
+        // Arrange
+        var tag = CreateTag(1, "Other Family", Guid.NewGuid());
+        _context.Set<Tag>().Add(tag);
+        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        var repository = new TagRepository(_context, _user);
+
+        // Act & Assert
+        Assert.Throws<NotFoundException>(() => repository.Delete(1));
+    }
+
     #endregion
 
     private static Tag CreateTag(int id, string name, Guid familyId, bool deleted = false) =>

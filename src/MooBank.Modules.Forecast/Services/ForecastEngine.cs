@@ -10,7 +10,7 @@ using DomainTransactionInstrument = Asm.MooBank.Domain.Entities.Instrument.Trans
 namespace Asm.MooBank.Modules.Forecast.Services;
 
 internal class ForecastEngine(
-    IReportRepository reportRepository,
+    IReportReader reportReader,
     IInstrumentRepository instrumentRepository,
     User user) : IForecastEngine
 {
@@ -211,7 +211,7 @@ internal class ForecastEngine(
         var previousMonthEnd = previousMonth.AddMonths(1).AddDays(-1);
 
         // Batch query all accounts in parallel
-        var allBalances = await reportRepository.GetMonthlyBalancesForAccounts(accountIds, previousMonth, previousMonthEnd, cancellationToken);
+        var allBalances = await reportReader.GetMonthlyBalancesForAccounts(accountIds, previousMonth, previousMonthEnd, cancellationToken);
 
         return allBalances.Values
             .SelectMany(b => b)
@@ -229,7 +229,7 @@ internal class ForecastEngine(
         var lookbackStart = lookbackEnd.AddMonths(-strategy.LookbackMonths);
 
         // Batch query all accounts in parallel
-        var allTotals = await reportRepository.GetCreditDebitTotalsForAccounts(accountIds, lookbackStart, lookbackEnd, cancellationToken);
+        var allTotals = await reportReader.GetCreditDebitTotalsForAccounts(accountIds, lookbackStart, lookbackEnd, cancellationToken);
 
         var totalOutgoings = allTotals.Values
             .SelectMany(t => t)
@@ -254,7 +254,7 @@ internal class ForecastEngine(
         var lookbackStart = lookbackEnd.AddMonths(-lookbackMonths);
 
         // Batch query all accounts in parallel
-        var allTotals = await reportRepository.GetCreditDebitTotalsForAccounts(accountIds, lookbackStart, lookbackEnd, cancellationToken);
+        var allTotals = await reportReader.GetCreditDebitTotalsForAccounts(accountIds, lookbackStart, lookbackEnd, cancellationToken);
 
         var totalIncome = allTotals.Values
             .SelectMany(t => t)
@@ -293,7 +293,7 @@ internal class ForecastEngine(
         var fetchStart = new DateOnly(startDate.Year, startDate.Month, 1).AddMonths(-1);
 
         // Batch query all accounts in parallel
-        var allBalances = await reportRepository.GetMonthlyBalancesForAccounts(accountIds, fetchStart, effectiveEndDate, cancellationToken);
+        var allBalances = await reportReader.GetMonthlyBalancesForAccounts(accountIds, fetchStart, effectiveEndDate, cancellationToken);
 
         var startMonth = new DateOnly(startDate.Year, startDate.Month, 1);
         var endMonth = new DateOnly(effectiveEndDate.Year, effectiveEndDate.Month, 1).AddMonths(1);
@@ -378,7 +378,7 @@ internal class ForecastEngine(
         var lookbackEnd = latestTransactionDate;
         var lookbackStart = lookbackEnd.AddMonths(-strategy.LookbackMonths);
 
-        var allTotals = await reportRepository.GetMonthlyCreditDebitTotalsForAccounts(accountIds, lookbackStart, lookbackEnd, cancellationToken);
+        var allTotals = await reportReader.GetMonthlyCreditDebitTotalsForAccounts(accountIds, lookbackStart, lookbackEnd, cancellationToken);
 
         var monthlyData = AggregateMonthlyData(allTotals);
         var settings = strategy.IncomeCorrelated ?? new IncomeCorrelatedSettings();
@@ -428,7 +428,7 @@ internal class ForecastEngine(
             return result;
         }
 
-        var allTotals = await reportRepository.GetMonthlyCreditDebitTotalsForAccounts(accountIds, startDate, endDate, cancellationToken);
+        var allTotals = await reportReader.GetMonthlyCreditDebitTotalsForAccounts(accountIds, startDate, endDate, cancellationToken);
 
         foreach (var totals in allTotals.Values)
         {
