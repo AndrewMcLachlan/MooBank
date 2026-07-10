@@ -14,7 +14,7 @@ public class TestMocks
         UnitOfWorkMock.Setup(uow => uow.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         SecurityMock = new Mock<ISecurity>();
-        SecurityMock.Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+        SecurityMock.Setup(s => s.AssertAdministrator()).Returns(Task.CompletedTask);
 
         InstitutionRepositoryMock = new Mock<IInstitutionRepository>();
     }
@@ -27,7 +27,7 @@ public class TestMocks
 
     public void SecurityFailAdmin()
     {
-        SecurityMock.Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>()))
+        SecurityMock.Setup(s => s.AssertAdministrator())
             .ThrowsAsync(new NotAuthorisedException());
     }
 }

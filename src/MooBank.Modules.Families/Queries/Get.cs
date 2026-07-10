@@ -12,7 +12,7 @@ internal class GetHandler(IQueryable<Domain.Entities.Family.Family> families, IS
 
     public async ValueTask<Family> Handle(Get query, CancellationToken cancellationToken)
     {
-        await _security.AssertAdministrator(cancellationToken);
+        await _security.AssertAdministrator();
 
         return await _families.Where(i => i.Id == query.Id).ToModel().SingleOrDefaultAsync(cancellationToken) ?? throw new NotFoundException();
     }

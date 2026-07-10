@@ -10,6 +10,9 @@ public class SecurityRepository(MooBankContext mooBankContext) : IAuthorisationR
     public async Task<Guid?> GetBudgetLineFamilyId(Guid budgetLineId, CancellationToken cancellationToken = default) =>
         await mooBankContext.BudgetLines.Where(bl => bl.Id == budgetLineId).Select(bl => (Guid?)bl.Budget.FamilyId).SingleOrDefaultAsync(cancellationToken);
 
-    public async Task<IEnumerable<Guid>> GetOwnedInstrumentIds(Guid userId, CancellationToken cancellationToken = default) =>
-        await mooBankContext.InstrumentOwners.Where(aah => aah.UserId == userId).Select(aah => aah.InstrumentId).ToListAsync(cancellationToken);
+    public async Task<Guid?> GetTagFamilyId(int tagId, CancellationToken cancellationToken = default) =>
+        await mooBankContext.Set<Domain.Entities.Tag.Tag>().IgnoreQueryFilters().Where(t => t.Id == tagId).Select(t => (Guid?)t.FamilyId).SingleOrDefaultAsync(cancellationToken);
+
+    public async Task<Guid?> GetForecastPlanFamilyId(Guid planId, CancellationToken cancellationToken = default) =>
+        await mooBankContext.ForecastPlans.Where(p => p.Id == planId).Select(p => (Guid?)p.FamilyId).SingleOrDefaultAsync(cancellationToken);
 }

@@ -7,15 +7,14 @@ namespace Asm.MooBank.Modules.Forecast.Queries;
 
 public record GetPlan(Guid Id) : IQuery<Models.ForecastPlan>;
 
-internal class GetPlanHandler(IQueryable<DomainEntities.ForecastPlan> plans, ISecurity security) : IQueryHandler<GetPlan, Models.ForecastPlan>
+internal class GetPlanHandler(IQueryable<DomainEntities.ForecastPlan> plans, MooBank.Models.User user) : IQueryHandler<GetPlan, Models.ForecastPlan>
 {
     public async ValueTask<Models.ForecastPlan> Handle(GetPlan query, CancellationToken cancellationToken)
     {
         var plan = await plans
             .Apply(new ForecastPlanDetailsSpecification())
-            .SingleAsync(p => p.Id == query.Id, cancellationToken);
+            .SingleAsync(p => p.Id == query.Id && p.FamilyId == user.FamilyId, cancellationToken);
 
-        await security.AssertFamilyPermission(plan.FamilyId);
         return plan.ToModel();
     }
 }

@@ -13,7 +13,7 @@ internal class UpdateHandler(IInstitutionRepository repository, IUnitOfWork unit
 {
     public async ValueTask<Models.Institution> Handle(Update command, CancellationToken cancellationToken)
     {
-        await security.AssertAdministrator(cancellationToken);
+        await security.AssertAdministrator();
 
         Domain.Entities.Institution.Institution entity = await repository.Get(command.Id, cancellationToken);
 

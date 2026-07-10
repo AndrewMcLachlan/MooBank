@@ -7,7 +7,7 @@ namespace Asm.MooBank.Modules.Tags.Commands;
 
 public sealed record AddSubTag(int Id, int SubTagId) : ICommand<Tag>;
 
-internal sealed class AddSubTagHandler(ITagRepository tagRepository, IQueryable<TagRelationship> tagRelationships, IUnitOfWork unitOfWork, ISecurity security) : ICommandHandler<AddSubTag, Tag>
+internal sealed class AddSubTagHandler(ITagRepository tagRepository, IQueryable<TagRelationship> tagRelationships, IUnitOfWork unitOfWork) : ICommandHandler<AddSubTag, Tag>
 {
     public async ValueTask<Tag> Handle(AddSubTag request, CancellationToken cancellationToken)
     {
@@ -15,12 +15,9 @@ internal sealed class AddSubTagHandler(ITagRepository tagRepository, IQueryable<
 
         if (id == subId) throw new ExistsException("Cannot add a tag to itself!");
 
+        // Cross-family ids 404 in the family-scoped repository, so both tags are same-family here.
         var tag = await GetEntity(id, true, cancellationToken);
         var subTag = await GetEntity(subId, false, cancellationToken);
-
-        await security.AssertFamilyPermission(tag.FamilyId);
-
-        if (tag.FamilyId != subTag.FamilyId) throw new InvalidOperationException("Tags must belong to the same family");
 
         if (await tagRelationships.AnyAsync(tr => tr.Id == subId && tr.ParentId == id, cancellationToken)) throw new ExistsException($"{subTag.Name} is already a child or grand-child of {tag.Name}");
         if (await tagRelationships.AnyAsync(tr => tr.Id == id && tr.ParentId == subId, cancellationToken)) throw new ExistsException($"{subTag.Name} is parent or grand-parent of {tag.Name}. Circular relationships are not allowed!");

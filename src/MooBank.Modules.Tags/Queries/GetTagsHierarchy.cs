@@ -7,17 +7,17 @@ namespace Asm.MooBank.Modules.Tags.Queries;
 
 public record GetTagsHierarchy : IQuery<TagHierarchy>;
 
-internal sealed class GetTagsHierarchyHandler(IQueryable<TagEntity> tags, User user) : IQueryHandler<GetTagsHierarchy, TagHierarchy>
+internal sealed class GetTagsHierarchyHandler(IQueryable<TagEntity> tags) : IQueryHandler<GetTagsHierarchy, TagHierarchy>
 {
     public async ValueTask<TagHierarchy> Handle(GetTagsHierarchy request, CancellationToken cancellationToken)
     {
         const int maxLevels = 5;
 
-        IIncludableQueryable<TagEntity, IEnumerable<TagEntity>> query = tags.Where(t => t.FamilyId == user.FamilyId && !t.Deleted && t.TaggedTo.Count == 0).Include(t => t.Tags.Where(t => !t.Deleted));
+        IIncludableQueryable<TagEntity, IEnumerable<TagEntity>> query = tags.Where(t => t.TaggedTo.Count == 0).Include(t => t.Tags);
 
         for (int i = 0; i < maxLevels; i++)
         {
-            query = query.ThenInclude(t => t.Tags.Where(t => !t.Deleted));
+            query = query.ThenInclude(t => t.Tags);
         }
 
 

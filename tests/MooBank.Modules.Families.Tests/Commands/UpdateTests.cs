@@ -24,7 +24,7 @@ public class UpdateTests
         var existingFamily = TestEntities.CreateFamily(id: familyId, name: "Old Name");
 
         _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>()))
+            .Setup(s => s.AssertAdministrator())
             .Returns(Task.CompletedTask);
 
         _mocks.FamilyRepositoryMock
@@ -55,7 +55,7 @@ public class UpdateTests
         var existingFamily = TestEntities.CreateFamily(id: familyId, name: "Old Name");
 
         _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>()))
+            .Setup(s => s.AssertAdministrator())
             .Returns(Task.CompletedTask);
 
         _mocks.FamilyRepositoryMock
@@ -85,7 +85,7 @@ public class UpdateTests
         var existingFamily = TestEntities.CreateFamily(id: familyId, name: "Old Name");
 
         _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>()))
+            .Setup(s => s.AssertAdministrator())
             .Returns(Task.CompletedTask);
 
         _mocks.FamilyRepositoryMock
@@ -115,7 +115,7 @@ public class UpdateTests
         var existingFamily = TestEntities.CreateFamily(id: familyId, name: "Old Name");
 
         _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>()))
+            .Setup(s => s.AssertAdministrator())
             .Returns(Task.CompletedTask);
 
         _mocks.FamilyRepositoryMock
@@ -134,7 +134,7 @@ public class UpdateTests
         await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
-        _mocks.SecurityMock.Verify(s => s.AssertAdministrator(It.IsAny<CancellationToken>()), Times.Once);
+        _mocks.SecurityMock.Verify(s => s.AssertAdministrator(), Times.Once);
     }
 
     [Fact]
@@ -142,7 +142,7 @@ public class UpdateTests
     {
         // Arrange
         _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>()))
+            .Setup(s => s.AssertAdministrator())
             .ThrowsAsync(new NotAuthorisedException());
 
         var handler = new UpdateHandler(
@@ -162,7 +162,7 @@ public class UpdateTests
     {
         // Arrange
         _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>()))
+            .Setup(s => s.AssertAdministrator())
             .ThrowsAsync(new NotAuthorisedException());
 
         var handler = new UpdateHandler(

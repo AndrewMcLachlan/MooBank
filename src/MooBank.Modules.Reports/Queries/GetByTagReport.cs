@@ -15,7 +15,8 @@ internal class GetByTagReportHandler(IQueryable<Transaction> transactions, IQuer
 {
     public async ValueTask<ByTagReport> Handle(GetByTagReport request, CancellationToken cancellationToken)
     {
-        var loaded = await transactions.Specify(new IncludeSplitsSpecification()).WhereByReportQuery(request).ToListAsync(cancellationToken);
+        // Historical spending attributed to soft-deleted tags is still reported.
+        var loaded = await transactions.Specify(new IncludeSplitsSpecification()).IgnoreQueryFilters(["SoftDelete"]).WhereByReportQuery(request).ToListAsync(cancellationToken);
 
         // Attribute each split's net amount to that split's tags, so a transaction split
         // across multiple tags only contributes each split's amount to the matching tag.

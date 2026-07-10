@@ -18,12 +18,40 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
 {
     private static readonly List<Assembly> Assemblies = [];
 
+    private readonly Security.IUserDataProvider? _userDataProvider;
+
     public MooBankContext(IPublisher publisher) : base(publisher)
     {
     }
 
     public MooBankContext(DbContextOptions<MooBankContext> options, IPublisher publisher) : base(options, publisher)
     {
+    }
+
+    public MooBankContext(DbContextOptions<MooBankContext> options, IPublisher publisher, Security.IUserDataProvider userDataProvider) : base(options, publisher)
+    {
+        _userDataProvider = userDataProvider;
+    }
+
+    /// <summary>
+    /// The current user's family, used by the tenant query filter. Evaluated per query, so a user
+    /// set after construction (e.g. background processing via <c>ISettableUserDataProvider</c>) is honoured.
+    /// Resolves to <see cref="Guid.Empty"/> when there is no current user, so tenant-filtered queries
+    /// are fail-closed; system paths that legitimately span tenants must use <c>IgnoreQueryFilters</c>.
+    /// </summary>
+    private Guid CurrentFamilyId
+    {
+        get
+        {
+            try
+            {
+                return _userDataProvider?.GetCurrentUser()?.FamilyId ?? Guid.Empty;
+            }
+            catch (InvalidOperationException)
+            {
+                return Guid.Empty;
+            }
+        }
     }
 
     [AllowNull]
@@ -122,6 +150,13 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
         modelBuilder.Entity<TransactionInstrument>().ToTable(tb => tb.UseSqlOutputClause(false));
 
         modelBuilder.Entity<TagRelationship>();
+
+        // Named query filters: "Tenant" applies unconditionally (never ignored outside system paths);
+        // "SoftDelete" may be selectively lifted per query via IgnoreQueryFilters(["SoftDelete"])
+        // (e.g. historical transaction views, trend reports on deleted tags).
+        modelBuilder.Entity<Domain.Entities.Tag.Tag>()
+            .HasQueryFilter("Tenant", t => t.FamilyId == CurrentFamilyId)
+            .HasQueryFilter("SoftDelete", t => !t.Deleted);
 
         modelBuilder.Entity<TransactionTagTotal>().HasNoKey();
         modelBuilder.Entity<MonthlyTagTotal>().HasNoKey();

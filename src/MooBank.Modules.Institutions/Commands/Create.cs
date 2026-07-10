@@ -13,7 +13,7 @@ internal class CreateHandler(IInstitutionRepository repository, IUnitOfWork unit
 {
     public async ValueTask<Models.Institution> Handle(Create command, CancellationToken cancellationToken)
     {
-        await security.AssertAdministrator(cancellationToken);
+        await security.AssertAdministrator();
 
         Domain.Entities.Institution.Institution entity = new()
         {

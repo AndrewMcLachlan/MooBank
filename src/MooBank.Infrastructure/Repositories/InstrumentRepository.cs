@@ -31,8 +31,10 @@ public class InstrumentRepository(MooBankContext dataContext, Models.User user) 
         return await Entities.Where(i => userAccounts.Contains(i.Id)).ToListAsync(cancellationToken);
     }
 
+    // The rules' tag references are facts, not a view — the Tag query filters are lifted here
+    // (this load also serves system paths that run without a user context).
     public override async Task<Instrument> Get(Guid id, CancellationToken cancellationToken = default) =>
-        await Entities.Include(a => a.Rules).ThenInclude(a => a.Tags).FindAsync(id, cancellationToken) ?? throw new NotFoundException();
+        await Entities.Include(a => a.Rules).ThenInclude(a => a.Tags).IgnoreQueryFilters().FindAsync(id, cancellationToken) ?? throw new NotFoundException();
 
     public async Task<IEnumerable<Instrument>> Get(IEnumerable<Guid> ids, CancellationToken cancellationToken = default)
     {

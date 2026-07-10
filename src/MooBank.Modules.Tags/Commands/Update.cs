@@ -9,13 +9,11 @@ namespace Asm.MooBank.Modules.Tags.Commands;
 [DisplayName("UpdateTag")]
 public sealed record Update([FromRoute] int Id, [FromBody] UpdateTag Tag) : ICommand<MooBank.Models.Tag>;
 
-internal sealed class UpdateHandler(ITagRepository tagRepository, IUnitOfWork unitOfWork, ISecurity security) : ICommandHandler<Update, MooBank.Models.Tag>
+internal sealed class UpdateHandler(ITagRepository tagRepository, IUnitOfWork unitOfWork) : ICommandHandler<Update, MooBank.Models.Tag>
 {
     public async ValueTask<MooBank.Models.Tag> Handle(Update request, CancellationToken cancellationToken)
     {
         var tag = await tagRepository.Get(request.Id, cancellationToken);
-
-        await security.AssertFamilyPermission(tag.FamilyId);
 
         tag.Name = request.Tag.Name;
         tag.Colour = request.Tag.Colour;

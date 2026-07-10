@@ -23,7 +23,7 @@ internal class AuditLogger(ILogger<AuditLogger> logger) : IAuditLogger
         logger.LogError(exception, "Authentication failed");
     }
 
-    public void AuthorizationDenied(User user, string resource, Guid? resourceId, string policy)
+    public void AuthorizationDenied(User user, string resource, object? resourceId, string policy)
     {
         using var scope = AuditScope("Authorization");
         logger.LogWarning("Authorization denied for {UserId} on {Resource} {ResourceId} (policy: {Policy})", user.Id, resource, resourceId, policy);

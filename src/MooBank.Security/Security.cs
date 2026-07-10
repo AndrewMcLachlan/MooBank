@@ -33,7 +33,18 @@ public class Security(IAuthorizationService authorizationService, IPrincipalProv
         }
     }
 
-    public async Task AssertAdministrator(CancellationToken cancellationToken = default)
+    public async Task AssertInstrumentViewer(Guid instrumentId)
+    {
+        var authResult = await authorizationService.AuthorizeAsync(principalProvider.Principal!, instrumentId, new InstrumentViewerRequirement());
+
+        if (!authResult.Succeeded)
+        {
+            audit.AuthorizationDenied(user, "Instrument", instrumentId, nameof(InstrumentViewerRequirement));
+            throw new NotAuthorisedException("Not authorised to view this instrument.");
+        }
+    }
+
+    public async Task AssertAdministrator()
     {
         var authResult = await authorizationService.AuthorizeAsync(principalProvider.Principal!, Policies.Admin);
 

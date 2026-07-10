@@ -3,6 +3,7 @@ using Asm.AspNetCore.Routing;
 using Asm.MooBank.Modules.Tags.Commands;
 using Asm.MooBank.Modules.Tags.Models;
 using Asm.MooBank.Modules.Tags.Queries;
+using Asm.MooBank.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -29,7 +30,8 @@ internal class TagsEndpoints : EndpointGroupBase
             .WithNames("Get Tag Graph");
 
         builder.MapQuery<Get, MooBank.Models.Tag>("{id}")
-            .WithNames("Get Tag");
+            .WithNames("Get Tag")
+            .RequireAuthorization(Policies.GetTagFamilyPolicy());
 
         builder.MapPostCreate<Create, MooBank.Models.Tag>("", "get-tag", t => new { t.Id }, CommandBinding.Body)
             .WithNames("Create Tag")
@@ -42,15 +44,19 @@ internal class TagsEndpoints : EndpointGroupBase
 
         builder.MapPatchCommand<Update, MooBank.Models.Tag>("{id}")
             .WithNames("Update Tag")
-            .WithValidation<Update>();
+            .WithValidation<Update>()
+            .RequireAuthorization(Policies.GetTagFamilyPolicy());
 
         builder.MapDelete<Delete>("{id}")
-            .WithNames("Delete Tag");
+            .WithNames("Delete Tag")
+            .RequireAuthorization(Policies.GetTagFamilyPolicy());
 
         builder.MapPutCommand<AddSubTag, MooBank.Models.Tag>("{id}/tags/{subTagId}")
-            .WithNames("Add Sub Tag");
+            .WithNames("Add Sub Tag")
+            .RequireAuthorization(Policies.GetTagFamilyPolicy());
 
         builder.MapDelete<RemoveSubTag>("{id}/tags/{subTagId}")
-            .WithNames("Remove Sub Tag");
+            .WithNames("Remove Sub Tag")
+            .RequireAuthorization(Policies.GetTagFamilyPolicy());
     }
 }

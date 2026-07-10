@@ -14,5 +14,7 @@ public interface ISecurity
 
     Task AssertFamilyPermission(Guid familyId);
 
-    Task AssertAdministrator(CancellationToken cancellationToken = default);
+    Task AssertInstrumentViewer(Guid instrumentId);
+
+    Task AssertAdministrator();
 }

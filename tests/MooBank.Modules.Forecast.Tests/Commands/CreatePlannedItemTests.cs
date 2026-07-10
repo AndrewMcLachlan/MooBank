@@ -29,14 +29,9 @@ public class CreatePlannedItemTests
             .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(plan);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new CreatePlannedItemHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var item = TestEntities.CreatePlannedItemModel(name: "New Item", amount: 250m);
         var command = new CreatePlannedItem(planId, item);
@@ -60,14 +55,9 @@ public class CreatePlannedItemTests
             .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(plan);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new CreatePlannedItemHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var item = TestEntities.CreatePlannedItemModel(name: "New Item", amount: 250m, itemType: PlannedItemType.Income);
         var command = new CreatePlannedItem(planId, item);
@@ -93,14 +83,9 @@ public class CreatePlannedItemTests
             .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(plan);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new CreatePlannedItemHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var item = TestEntities.CreatePlannedItemModel(name: "New Item");
         var command = new CreatePlannedItem(planId, item);
@@ -110,65 +95,6 @@ public class CreatePlannedItemTests
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-    }
-
-    [Fact]
-    public async Task Handle_ValidCommand_ChecksFamilyPermission()
-    {
-        // Arrange
-        var familyId = _mocks.User.FamilyId;
-        var planId = Guid.NewGuid();
-        var plan = TestEntities.CreateForecastPlan(id: planId, familyId: familyId);
-
-        _mocks.ForecastRepositoryMock
-            .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(plan);
-
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
-        var handler = new CreatePlannedItemHandler(
-            _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
-
-        var item = TestEntities.CreatePlannedItemModel(name: "New Item");
-        var command = new CreatePlannedItem(planId, item);
-
-        // Act
-        await handler.Handle(command, TestContext.Current.CancellationToken);
-
-        // Assert
-        _mocks.SecurityMock.Verify(s => s.AssertFamilyPermission(familyId), Times.Once);
-    }
-
-    [Fact]
-    public async Task Handle_NoPermission_ThrowsNotAuthorisedException()
-    {
-        // Arrange
-        var familyId = _mocks.User.FamilyId;
-        var planId = Guid.NewGuid();
-        var plan = TestEntities.CreateForecastPlan(id: planId, familyId: familyId);
-
-        _mocks.ForecastRepositoryMock
-            .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(plan);
-
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .ThrowsAsync(new NotAuthorisedException());
-
-        var handler = new CreatePlannedItemHandler(
-            _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
-
-        var item = TestEntities.CreatePlannedItemModel(name: "New Item");
-        var command = new CreatePlannedItem(planId, item);
-
-        // Act & Assert
-        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
     }
 
     [Fact]
@@ -184,14 +110,9 @@ public class CreatePlannedItemTests
             .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(plan);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new CreatePlannedItemHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var item = TestEntities.CreatePlannedItemModel(
             name: "Fixed Date Item",

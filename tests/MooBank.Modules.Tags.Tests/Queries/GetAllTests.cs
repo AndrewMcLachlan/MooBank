@@ -27,7 +27,7 @@ public class GetAllTests
         };
         var queryable = TestEntities.CreateTagQueryable(tags);
 
-        var handler = new GetAllHandler(queryable, _mocks.User);
+        var handler = new GetAllHandler(queryable);
         var query = new GetAll();
 
         // Act
@@ -43,7 +43,7 @@ public class GetAllTests
         // Arrange
         var queryable = TestEntities.CreateTagQueryable([]);
 
-        var handler = new GetAllHandler(queryable, _mocks.User);
+        var handler = new GetAllHandler(queryable);
         var query = new GetAll();
 
         // Act
@@ -51,54 +51,6 @@ public class GetAllTests
 
         // Assert
         Assert.Empty(result);
-    }
-
-    [Fact]
-    public async Task Handle_FiltersToUserFamily()
-    {
-        // Arrange
-        var userFamilyId = _mocks.User.FamilyId;
-        var otherFamilyId = Guid.NewGuid();
-        var tags = new[]
-        {
-            TestEntities.CreateTag(id: 1, name: "User Tag 1", familyId: userFamilyId),
-            TestEntities.CreateTag(id: 2, name: "User Tag 2", familyId: userFamilyId),
-            TestEntities.CreateTag(id: 3, name: "Other Family Tag", familyId: otherFamilyId),
-        };
-        var queryable = TestEntities.CreateTagQueryable(tags);
-
-        var handler = new GetAllHandler(queryable, _mocks.User);
-        var query = new GetAll();
-
-        // Act
-        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
-
-        // Assert
-        Assert.Equal(2, result.Count());
-        Assert.All(result, t => Assert.StartsWith("User Tag", t.Name));
-    }
-
-    [Fact]
-    public async Task Handle_ExcludesDeletedTags()
-    {
-        // Arrange
-        var familyId = _mocks.User.FamilyId;
-        var tags = new[]
-        {
-            TestEntities.CreateTag(id: 1, name: "Active Tag", familyId: familyId, deleted: false),
-            TestEntities.CreateTag(id: 2, name: "Deleted Tag", familyId: familyId, deleted: true),
-        };
-        var queryable = TestEntities.CreateTagQueryable(tags);
-
-        var handler = new GetAllHandler(queryable, _mocks.User);
-        var query = new GetAll();
-
-        // Act
-        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
-
-        // Assert
-        Assert.Single(result);
-        Assert.Equal("Active Tag", result.First().Name);
     }
 
     [Fact]
@@ -114,7 +66,7 @@ public class GetAllTests
         };
         var queryable = TestEntities.CreateTagQueryable(tags);
 
-        var handler = new GetAllHandler(queryable, _mocks.User);
+        var handler = new GetAllHandler(queryable);
         var query = new GetAll();
 
         // Act
@@ -136,7 +88,7 @@ public class GetAllTests
         var parentTag = TestEntities.CreateTag(id: 1, name: "Parent Tag", familyId: familyId, subTags: [subTag]);
         var queryable = TestEntities.CreateTagQueryable(parentTag, subTag);
 
-        var handler = new GetAllHandler(queryable, _mocks.User);
+        var handler = new GetAllHandler(queryable);
         var query = new GetAll();
 
         // Act

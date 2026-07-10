@@ -16,8 +16,8 @@ public class TagRepositoryTests : IDisposable
 
     public TagRepositoryTests()
     {
-        _context = TestDbContextFactory.Create();
         _user = TestDbContextFactory.CreateTestUser(_familyId);
+        _context = TestDbContextFactory.Create(_user);
     }
 
     public void Dispose()
@@ -45,7 +45,7 @@ public class TagRepositoryTests : IDisposable
         _context.Set<Tag>().AddRange(tag1, tag2, otherFamilyTag);
         await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var repository = new TagRepository(_context, _user);
+        var repository = new TagRepository(_context);
 
         // Act
         var result = await repository.Get(TestContext.Current.CancellationToken);
@@ -71,7 +71,7 @@ public class TagRepositoryTests : IDisposable
         _context.Set<Tag>().AddRange(activeTag, deletedTag);
         await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var repository = new TagRepository(_context, _user);
+        var repository = new TagRepository(_context);
 
         // Act
         var result = await repository.Get(TestContext.Current.CancellationToken);
@@ -99,7 +99,7 @@ public class TagRepositoryTests : IDisposable
         _context.Set<Tag>().Add(tag);
         await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var repository = new TagRepository(_context, _user);
+        var repository = new TagRepository(_context);
 
         // Act
         var result = await repository.Get(1, TestContext.Current.CancellationToken);
@@ -119,7 +119,7 @@ public class TagRepositoryTests : IDisposable
     public async Task GetById_NonExistentTag_ThrowsNotFoundException()
     {
         // Arrange
-        var repository = new TagRepository(_context, _user);
+        var repository = new TagRepository(_context);
 
         // Act & Assert
         await Assert.ThrowsAsync<NotFoundException>(() => repository.Get(999, TestContext.Current.CancellationToken));
@@ -139,7 +139,7 @@ public class TagRepositoryTests : IDisposable
         _context.Set<Tag>().Add(otherFamilyTag);
         await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var repository = new TagRepository(_context, _user);
+        var repository = new TagRepository(_context);
 
         // Act & Assert
         await Assert.ThrowsAsync<NotFoundException>(() => repository.Get(1, TestContext.Current.CancellationToken));
@@ -166,7 +166,7 @@ public class TagRepositoryTests : IDisposable
         _context.Set<Tag>().AddRange(parentTag, childTag);
         await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var repository = new TagRepository(_context, _user);
+        var repository = new TagRepository(_context);
 
         // Act
         var result = await repository.Get(1, includeSubTags: true, TestContext.Current.CancellationToken);
@@ -195,7 +195,7 @@ public class TagRepositoryTests : IDisposable
         _context.Set<Tag>().AddRange(parentTag, childTag);
         await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var repository = new TagRepository(_context, _user);
+        var repository = new TagRepository(_context);
 
         // Act
         var result = await repository.Get(1, includeSubTags: false, TestContext.Current.CancellationToken);
@@ -227,7 +227,7 @@ public class TagRepositoryTests : IDisposable
         _context.Set<Tag>().AddRange(tag1, tag2, tag3);
         await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var repository = new TagRepository(_context, _user);
+        var repository = new TagRepository(_context);
 
         // Act
         var result = await repository.Get([1, 3], TestContext.Current.CancellationToken);
@@ -252,7 +252,7 @@ public class TagRepositoryTests : IDisposable
     public async Task Add_NewTag_PersistsTag()
     {
         // Arrange
-        var repository = new TagRepository(_context, _user);
+        var repository = new TagRepository(_context);
         var tag = CreateTag(0, "New Tag", _familyId);
 
         // Act
@@ -282,14 +282,14 @@ public class TagRepositoryTests : IDisposable
         _context.Set<Tag>().Add(tag);
         await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var repository = new TagRepository(_context, _user);
+        var repository = new TagRepository(_context);
 
         // Act
         repository.Delete(tag);
         await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        // Assert
-        var deletedTag = await _context.Set<Tag>().FirstOrDefaultAsync(t => t.Id == 1, TestContext.Current.CancellationToken);
+        // Assert - the soft-delete filter hides the tag from normal queries, so lift it
+        var deletedTag = await _context.Set<Tag>().IgnoreQueryFilters(["SoftDelete"]).FirstOrDefaultAsync(t => t.Id == 1, TestContext.Current.CancellationToken);
         Assert.NotNull(deletedTag);
         Assert.True(deletedTag.Deleted);
     }

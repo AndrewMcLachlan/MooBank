@@ -22,7 +22,7 @@ public class GetAllTests
         var queryable = TestEntities.CreateFamilyQueryable(families);
 
         _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>()))
+            .Setup(s => s.AssertAdministrator())
             .Returns(Task.CompletedTask);
 
         var handler = new GetAllHandler(queryable, _mocks.SecurityMock.Object);
@@ -42,7 +42,7 @@ public class GetAllTests
         var queryable = TestEntities.CreateFamilyQueryable([]);
 
         _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>()))
+            .Setup(s => s.AssertAdministrator())
             .Returns(Task.CompletedTask);
 
         var handler = new GetAllHandler(queryable, _mocks.SecurityMock.Object);
@@ -68,7 +68,7 @@ public class GetAllTests
         var queryable = TestEntities.CreateFamilyQueryable(families);
 
         _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>()))
+            .Setup(s => s.AssertAdministrator())
             .Returns(Task.CompletedTask);
 
         var handler = new GetAllHandler(queryable, _mocks.SecurityMock.Object);
@@ -94,7 +94,7 @@ public class GetAllTests
         var queryable = TestEntities.CreateFamilyQueryable(family);
 
         _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>()))
+            .Setup(s => s.AssertAdministrator())
             .Returns(Task.CompletedTask);
 
         var handler = new GetAllHandler(queryable, _mocks.SecurityMock.Object);
@@ -116,7 +116,7 @@ public class GetAllTests
         var queryable = TestEntities.CreateFamilyQueryable(families);
 
         _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>()))
+            .Setup(s => s.AssertAdministrator())
             .Returns(Task.CompletedTask);
 
         var handler = new GetAllHandler(queryable, _mocks.SecurityMock.Object);
@@ -126,6 +126,6 @@ public class GetAllTests
         await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
-        _mocks.SecurityMock.Verify(s => s.AssertAdministrator(It.IsAny<CancellationToken>()), Times.Once);
+        _mocks.SecurityMock.Verify(s => s.AssertAdministrator(), Times.Once);
     }
 }

@@ -275,6 +275,12 @@ void AddApp(WebApplication app)
     app.MapMcp("mcp").RequireAuthorization(new AuthorizationPolicyBuilder()
         .AddAuthenticationSchemes(McpAuthenticationDefaults.AuthenticationScheme)
         .RequireAuthenticatedUser()
+        // The resource metadata advertises api.read; require it rather than accepting any token
+        // that is merely valid for the API audience.
+        .RequireAssertion(context => context.User
+            .FindAll(c => c.Type == "scp" || c.Type == "http://schemas.microsoft.com/identity/claims/scope")
+            .SelectMany(c => c.Value.Split(' '))
+            .Contains("api.read"))
         .Build());
 
     IEndpointRouteBuilder builder = app.MapGroup("/api");

@@ -22,12 +22,6 @@ public class PoliciesTests
     }
 
     [Fact]
-    public void FamilyMember_HasCorrectValue()
-    {
-        Assert.Equal("FamilyMember", Policies.FamilyMember);
-    }
-
-    [Fact]
     public void InstrumentOwner_HasCorrectValue()
     {
         Assert.Equal("InstrumentOwner", Policies.InstrumentOwner);
@@ -238,6 +232,136 @@ public class PoliciesTests
         // Assert
         Assert.NotNull(policy);
         Assert.Single(policy.Requirements.OfType<BudgetLineRequirement>());
+    }
+
+    #endregion
+
+    #region GetTagFamilyPolicy
+
+    [Fact]
+    public void GetTagFamilyPolicy_DefaultParam_ReturnsPolicy()
+    {
+        // Act
+        var policy = Policies.GetTagFamilyPolicy();
+
+        // Assert
+        Assert.NotNull(policy);
+        Assert.Contains(JwtBearerDefaults.AuthenticationScheme, policy.AuthenticationSchemes);
+        Assert.Single(policy.Requirements.OfType<TagFamilyRequirement>());
+    }
+
+    [Fact]
+    public void GetTagFamilyPolicy_CustomParam_ReturnsPolicy()
+    {
+        // Act
+        var policy = Policies.GetTagFamilyPolicy("customTagId");
+
+        // Assert
+        Assert.NotNull(policy);
+        Assert.Single(policy.Requirements.OfType<TagFamilyRequirement>());
+    }
+
+    [Fact]
+    public void GetTagFamilyPolicy_RequiresAuthentication()
+    {
+        // Act
+        var policy = Policies.GetTagFamilyPolicy();
+
+        // Assert
+        Assert.Contains(policy.Requirements, r => r is DenyAnonymousAuthorizationRequirement);
+    }
+
+    [Fact]
+    public void GetTagFamilyPolicy_ExtensionMethod_ReturnsPolicy()
+    {
+        // Arrange
+        var builder = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme);
+
+        // Act
+        var policy = builder.GetTagFamilyPolicy();
+
+        // Assert
+        Assert.NotNull(policy);
+        Assert.Single(policy.Requirements.OfType<TagFamilyRequirement>());
+    }
+
+    [Fact]
+    public void GetTagFamilyPolicy_ExtensionMethod_CustomParam_ReturnsPolicy()
+    {
+        // Arrange
+        var builder = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme);
+
+        // Act
+        var policy = builder.GetTagFamilyPolicy("myTagId");
+
+        // Assert
+        Assert.NotNull(policy);
+        Assert.Single(policy.Requirements.OfType<TagFamilyRequirement>());
+    }
+
+    #endregion
+
+    #region GetForecastPlanPolicy
+
+    [Fact]
+    public void GetForecastPlanPolicy_DefaultParam_ReturnsPolicy()
+    {
+        // Act
+        var policy = Policies.GetForecastPlanPolicy();
+
+        // Assert
+        Assert.NotNull(policy);
+        Assert.Contains(JwtBearerDefaults.AuthenticationScheme, policy.AuthenticationSchemes);
+        Assert.Single(policy.Requirements.OfType<ForecastPlanRequirement>());
+    }
+
+    [Fact]
+    public void GetForecastPlanPolicy_CustomParam_ReturnsPolicy()
+    {
+        // Act
+        var policy = Policies.GetForecastPlanPolicy("customPlanId");
+
+        // Assert
+        Assert.NotNull(policy);
+        Assert.Single(policy.Requirements.OfType<ForecastPlanRequirement>());
+    }
+
+    [Fact]
+    public void GetForecastPlanPolicy_RequiresAuthentication()
+    {
+        // Act
+        var policy = Policies.GetForecastPlanPolicy();
+
+        // Assert
+        Assert.Contains(policy.Requirements, r => r is DenyAnonymousAuthorizationRequirement);
+    }
+
+    [Fact]
+    public void GetForecastPlanPolicy_ExtensionMethod_ReturnsPolicy()
+    {
+        // Arrange
+        var builder = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme);
+
+        // Act
+        var policy = builder.GetForecastPlanPolicy();
+
+        // Assert
+        Assert.NotNull(policy);
+        Assert.Single(policy.Requirements.OfType<ForecastPlanRequirement>());
+    }
+
+    [Fact]
+    public void GetForecastPlanPolicy_ExtensionMethod_CustomParam_ReturnsPolicy()
+    {
+        // Arrange
+        var builder = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme);
+
+        // Act
+        var policy = builder.GetForecastPlanPolicy("myPlanId");
+
+        // Assert
+        Assert.NotNull(policy);
+        Assert.Single(policy.Requirements.OfType<ForecastPlanRequirement>());
     }
 
     #endregion

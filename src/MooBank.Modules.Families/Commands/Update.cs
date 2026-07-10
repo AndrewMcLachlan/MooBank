@@ -15,7 +15,7 @@ internal class UpdateHandler(IFamilyRepository repository, IUnitOfWork unitOfWor
 {
     public async ValueTask<Models.Family> Handle(Update command, CancellationToken cancellationToken)
     {
-        await security.AssertAdministrator(cancellationToken);
+        await security.AssertAdministrator();
 
         Domain.Entities.Family.Family entity = await repository.Get(command.Id, cancellationToken);
 

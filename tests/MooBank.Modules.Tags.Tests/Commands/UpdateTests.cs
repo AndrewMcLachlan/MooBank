@@ -26,14 +26,9 @@ public class UpdateTests
             .Setup(r => r.Get(1, It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingTag);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new UpdateHandler(
             _mocks.TagRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var updateTag = TestEntities.CreateUpdateTag(name: "New Name");
         var command = new Update(1, updateTag);
@@ -57,14 +52,9 @@ public class UpdateTests
             .Setup(r => r.Get(1, It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingTag);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new UpdateHandler(
             _mocks.TagRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var updateTag = TestEntities.CreateUpdateTag(name: "Updated Name");
         var command = new Update(1, updateTag);
@@ -87,14 +77,9 @@ public class UpdateTests
             .Setup(r => r.Get(1, It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingTag);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new UpdateHandler(
             _mocks.TagRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var updateTag = TestEntities.CreateUpdateTag(name: "Test");
         var command = new Update(1, updateTag);
@@ -104,36 +89,6 @@ public class UpdateTests
 
         // Assert
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-    }
-
-    [Fact]
-    public async Task Handle_ValidCommand_ChecksFamilyPermission()
-    {
-        // Arrange
-        var familyId = _mocks.User.FamilyId;
-        var existingTag = TestEntities.CreateTag(id: 1, name: "Test", familyId: familyId);
-
-        _mocks.TagRepositoryMock
-            .Setup(r => r.Get(1, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existingTag);
-
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
-        var handler = new UpdateHandler(
-            _mocks.TagRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
-
-        var updateTag = TestEntities.CreateUpdateTag(name: "Test");
-        var command = new Update(1, updateTag);
-
-        // Act
-        await handler.Handle(command, TestContext.Current.CancellationToken);
-
-        // Assert
-        _mocks.SecurityMock.Verify(s => s.AssertFamilyPermission(familyId), Times.Once);
     }
 
     [Fact]
@@ -147,14 +102,9 @@ public class UpdateTests
             .Setup(r => r.Get(1, It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingTag);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new UpdateHandler(
             _mocks.TagRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var newColour = new Asm.Drawing.HexColour("#00FF00");
         var updateTag = TestEntities.CreateUpdateTag(name: "Test", colour: newColour);
@@ -178,14 +128,9 @@ public class UpdateTests
             .Setup(r => r.Get(1, It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingTag);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new UpdateHandler(
             _mocks.TagRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var updateTag = TestEntities.CreateUpdateTag(
             name: "Test",

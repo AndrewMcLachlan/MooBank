@@ -194,6 +194,8 @@ public class RouteParamAuthorizationHandlerTests
     private static readonly Guid UnauthorizedInstrumentId = Guid.NewGuid();
     private static readonly Guid OwnedGroupId = Guid.NewGuid();
 
+    private readonly Mock<Asm.MooBank.Audit.IAuditLogger> _audit = new();
+
     #region InstrumentOwnerAuthorisationHandler Tests
 
     /// <summary>
@@ -207,7 +209,7 @@ public class RouteParamAuthorizationHandlerTests
         // Arrange
         var user = CreateUser(accounts: [OwnedInstrumentId]);
         var requirement = new InstrumentOwnerRequirement();
-        var handler = new InstrumentOwnerAuthorisationHandler(CreateHttpContextAccessor("instrumentId", OwnedInstrumentId.ToString()), user);
+        var handler = new InstrumentOwnerAuthorisationHandler(CreateHttpContextAccessor("instrumentId", OwnedInstrumentId.ToString()), user, _audit.Object);
         var context = CreateAuthorizationContext(requirement);
 
         // Act
@@ -229,7 +231,7 @@ public class RouteParamAuthorizationHandlerTests
         // Arrange
         var user = CreateUser(accounts: [OwnedInstrumentId]);
         var requirement = new InstrumentOwnerRequirement();
-        var handler = new InstrumentOwnerAuthorisationHandler(CreateHttpContextAccessor("instrumentId", UnauthorizedInstrumentId.ToString()), user);
+        var handler = new InstrumentOwnerAuthorisationHandler(CreateHttpContextAccessor("instrumentId", UnauthorizedInstrumentId.ToString()), user, _audit.Object);
         var context = CreateAuthorizationContext(requirement);
 
         // Act
@@ -238,6 +240,7 @@ public class RouteParamAuthorizationHandlerTests
         // Assert
         Assert.False(context.HasSucceeded);
         Assert.True(context.HasFailed);
+        _audit.Verify(a => a.AuthorizationDenied(user, "Instrument", UnauthorizedInstrumentId.ToString(), nameof(InstrumentOwnerRequirement)), Times.Once);
     }
 
     /// <summary>
@@ -251,7 +254,7 @@ public class RouteParamAuthorizationHandlerTests
         // Arrange
         var user = CreateUser(sharedAccounts: [SharedInstrumentId]);
         var requirement = new InstrumentOwnerRequirement();
-        var handler = new InstrumentOwnerAuthorisationHandler(CreateHttpContextAccessor("instrumentId", SharedInstrumentId.ToString()), user);
+        var handler = new InstrumentOwnerAuthorisationHandler(CreateHttpContextAccessor("instrumentId", SharedInstrumentId.ToString()), user, _audit.Object);
         var context = CreateAuthorizationContext(requirement);
 
         // Act
@@ -273,7 +276,7 @@ public class RouteParamAuthorizationHandlerTests
         // Arrange
         var user = CreateUser(accounts: [OwnedInstrumentId]);
         var requirement = new InstrumentOwnerRequirement();
-        var handler = new InstrumentOwnerAuthorisationHandler(CreateHttpContextAccessor("instrumentId", "not-a-guid"), user);
+        var handler = new InstrumentOwnerAuthorisationHandler(CreateHttpContextAccessor("instrumentId", "not-a-guid"), user, _audit.Object);
         var context = CreateAuthorizationContext(requirement);
 
         // Act
@@ -294,7 +297,7 @@ public class RouteParamAuthorizationHandlerTests
     {
         // Arrange
         var requirement = new InstrumentOwnerRequirement();
-        var handler = new InstrumentOwnerAuthorisationHandler(CreateHttpContextAccessor("instrumentId", OwnedInstrumentId.ToString()), null);
+        var handler = new InstrumentOwnerAuthorisationHandler(CreateHttpContextAccessor("instrumentId", OwnedInstrumentId.ToString()), null, _audit.Object);
         var context = CreateAuthorizationContext(requirement);
 
         // Act
@@ -303,6 +306,7 @@ public class RouteParamAuthorizationHandlerTests
         // Assert
         Assert.False(context.HasSucceeded);
         Assert.True(context.HasFailed);
+        _audit.Verify(a => a.AuthorizationDenied(It.IsAny<User>(), It.IsAny<string>(), It.IsAny<object?>(), It.IsAny<string>()), Times.Never);
     }
 
     /// <summary>
@@ -316,7 +320,7 @@ public class RouteParamAuthorizationHandlerTests
         // Arrange
         var user = CreateUser(accounts: [OwnedInstrumentId]);
         var requirement = new InstrumentOwnerRequirement();
-        var handler = new InstrumentOwnerAuthorisationHandler(CreateHttpContextAccessor(), user);
+        var handler = new InstrumentOwnerAuthorisationHandler(CreateHttpContextAccessor(), user, _audit.Object);
         var context = CreateAuthorizationContext(requirement);
 
         // Act
@@ -342,7 +346,7 @@ public class RouteParamAuthorizationHandlerTests
         // Arrange
         var user = CreateUser(accounts: [OwnedInstrumentId]);
         var requirement = new InstrumentViewerRequirement();
-        var handler = new InstrumentViewerAuthorisationHandler(CreateHttpContextAccessor("instrumentId", OwnedInstrumentId.ToString()), user);
+        var handler = new InstrumentViewerAuthorisationHandler(CreateHttpContextAccessor("instrumentId", OwnedInstrumentId.ToString()), user, _audit.Object);
         var context = CreateAuthorizationContext(requirement);
 
         // Act
@@ -364,7 +368,7 @@ public class RouteParamAuthorizationHandlerTests
         // Arrange
         var user = CreateUser(sharedAccounts: [SharedInstrumentId]);
         var requirement = new InstrumentViewerRequirement();
-        var handler = new InstrumentViewerAuthorisationHandler(CreateHttpContextAccessor("instrumentId", SharedInstrumentId.ToString()), user);
+        var handler = new InstrumentViewerAuthorisationHandler(CreateHttpContextAccessor("instrumentId", SharedInstrumentId.ToString()), user, _audit.Object);
         var context = CreateAuthorizationContext(requirement);
 
         // Act
@@ -386,7 +390,7 @@ public class RouteParamAuthorizationHandlerTests
         // Arrange
         var user = CreateUser(accounts: [OwnedInstrumentId]);
         var requirement = new InstrumentViewerRequirement();
-        var handler = new InstrumentViewerAuthorisationHandler(CreateHttpContextAccessor("instrumentId", UnauthorizedInstrumentId.ToString()), user);
+        var handler = new InstrumentViewerAuthorisationHandler(CreateHttpContextAccessor("instrumentId", UnauthorizedInstrumentId.ToString()), user, _audit.Object);
         var context = CreateAuthorizationContext(requirement);
 
         // Act
@@ -395,6 +399,7 @@ public class RouteParamAuthorizationHandlerTests
         // Assert
         Assert.False(context.HasSucceeded);
         Assert.True(context.HasFailed);
+        _audit.Verify(a => a.AuthorizationDenied(user, "Instrument", UnauthorizedInstrumentId.ToString(), nameof(InstrumentViewerRequirement)), Times.Once);
     }
 
     /// <summary>
@@ -408,7 +413,7 @@ public class RouteParamAuthorizationHandlerTests
         // Arrange
         var user = CreateUser(accounts: [OwnedInstrumentId]);
         var requirement = new InstrumentViewerRequirement();
-        var handler = new InstrumentViewerAuthorisationHandler(CreateHttpContextAccessor("instrumentId", "invalid"), user);
+        var handler = new InstrumentViewerAuthorisationHandler(CreateHttpContextAccessor("instrumentId", "invalid"), user, _audit.Object);
         var context = CreateAuthorizationContext(requirement);
 
         // Act
@@ -429,7 +434,7 @@ public class RouteParamAuthorizationHandlerTests
     {
         // Arrange
         var requirement = new InstrumentViewerRequirement();
-        var handler = new InstrumentViewerAuthorisationHandler(CreateHttpContextAccessor("instrumentId", OwnedInstrumentId.ToString()), null);
+        var handler = new InstrumentViewerAuthorisationHandler(CreateHttpContextAccessor("instrumentId", OwnedInstrumentId.ToString()), null, _audit.Object);
         var context = CreateAuthorizationContext(requirement);
 
         // Act
@@ -451,7 +456,7 @@ public class RouteParamAuthorizationHandlerTests
         // Arrange
         var user = CreateUser(accounts: [OwnedInstrumentId]);
         var requirement = new InstrumentViewerRequirement();
-        var routeHandler = new InstrumentViewerAuthorisationHandler(CreateHttpContextAccessor(), user);
+        var routeHandler = new InstrumentViewerAuthorisationHandler(CreateHttpContextAccessor(), user, _audit.Object);
         var resourceHandler = new InstrumentViewerResourceAuthorisationHandler(user);
         var context = CreateAuthorizationContext(requirement, OwnedInstrumentId);
 
@@ -475,7 +480,7 @@ public class RouteParamAuthorizationHandlerTests
         // Arrange
         var user = CreateUser(accounts: [OwnedInstrumentId]);
         var requirement = new InstrumentViewerRequirement();
-        var routeHandler = new InstrumentViewerAuthorisationHandler(CreateHttpContextAccessor(), user);
+        var routeHandler = new InstrumentViewerAuthorisationHandler(CreateHttpContextAccessor(), user, _audit.Object);
         var resourceHandler = new InstrumentViewerResourceAuthorisationHandler(user);
         var context = CreateAuthorizationContext(requirement, UnauthorizedInstrumentId);
 
@@ -497,7 +502,7 @@ public class RouteParamAuthorizationHandlerTests
         // Arrange
         var user = CreateUser(groups: [OwnedGroupId]);
         var requirement = new GroupOwnerRequirement();
-        var handler = new GroupOwnerAuthorisationHandler(CreateHttpContextAccessor("groupId", OwnedGroupId.ToString()), user);
+        var handler = new GroupOwnerAuthorisationHandler(CreateHttpContextAccessor("groupId", OwnedGroupId.ToString()), user, _audit.Object);
         var context = CreateAuthorizationContext(requirement);
 
         // Act
@@ -514,7 +519,7 @@ public class RouteParamAuthorizationHandlerTests
         // Arrange
         var user = CreateUser(groups: [OwnedGroupId]);
         var requirement = new GroupOwnerRequirement();
-        var handler = new GroupOwnerAuthorisationHandler(CreateHttpContextAccessor("groupId", Guid.NewGuid().ToString()), user);
+        var handler = new GroupOwnerAuthorisationHandler(CreateHttpContextAccessor("groupId", Guid.NewGuid().ToString()), user, _audit.Object);
         var context = CreateAuthorizationContext(requirement);
 
         // Act
@@ -531,7 +536,7 @@ public class RouteParamAuthorizationHandlerTests
         // Arrange
         var user = CreateUser(groups: [OwnedGroupId]);
         var requirement = new GroupOwnerRequirement();
-        var handler = new GroupOwnerAuthorisationHandler(CreateHttpContextAccessor("groupId", "not-a-guid"), user);
+        var handler = new GroupOwnerAuthorisationHandler(CreateHttpContextAccessor("groupId", "not-a-guid"), user, _audit.Object);
         var context = CreateAuthorizationContext(requirement);
 
         // Act
@@ -555,7 +560,7 @@ public class RouteParamAuthorizationHandlerTests
         var repository = new Mock<Asm.MooBank.Domain.IAuthorisationRepository>();
         repository.Setup(r => r.IsGroupOwner(OwnedGroupId, user.Id, It.IsAny<CancellationToken>())).ReturnsAsync(true);
         var requirement = new GroupOwnerRequirement();
-        var routeHandler = new GroupOwnerAuthorisationHandler(CreateHttpContextAccessor(), user);
+        var routeHandler = new GroupOwnerAuthorisationHandler(CreateHttpContextAccessor(), user, _audit.Object);
         var resourceHandler = new GroupOwnerResourceAuthorisationHandler(repository.Object, user);
         var context = CreateAuthorizationContext(requirement, OwnedGroupId);
 
@@ -581,7 +586,7 @@ public class RouteParamAuthorizationHandlerTests
         var repository = new Mock<Asm.MooBank.Domain.IAuthorisationRepository>();
         repository.Setup(r => r.IsGroupOwner(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(false);
         var requirement = new GroupOwnerRequirement();
-        var routeHandler = new GroupOwnerAuthorisationHandler(CreateHttpContextAccessor(), user);
+        var routeHandler = new GroupOwnerAuthorisationHandler(CreateHttpContextAccessor(), user, _audit.Object);
         var resourceHandler = new GroupOwnerResourceAuthorisationHandler(repository.Object, user);
         var context = CreateAuthorizationContext(requirement, Guid.NewGuid());
 
@@ -703,7 +708,7 @@ public class BudgetLineAuthorisationHandlerTests
         // Assert
         Assert.False(context.HasSucceeded);
         Assert.True(context.HasFailed);
-        _audit.Verify(a => a.AuthorizationDenied(_user, "BudgetLine", BudgetLineId, nameof(BudgetLineRequirement)), Times.Once);
+        _audit.Verify(a => a.AuthorizationDenied(_user, "BudgetLine", BudgetLineId.ToString(), nameof(BudgetLineRequirement)), Times.Once);
     }
 
     /// <summary>
@@ -725,7 +730,7 @@ public class BudgetLineAuthorisationHandlerTests
         // Assert
         Assert.False(context.HasSucceeded);
         Assert.True(context.HasFailed);
-        _audit.Verify(a => a.AuthorizationDenied(_user, "BudgetLine", BudgetLineId, nameof(BudgetLineRequirement)), Times.Once);
+        _audit.Verify(a => a.AuthorizationDenied(_user, "BudgetLine", BudgetLineId.ToString(), nameof(BudgetLineRequirement)), Times.Once);
     }
 
     /// <summary>
@@ -752,10 +757,10 @@ public class BudgetLineAuthorisationHandlerTests
     /// <summary>
     /// Given a request without the budget line route value
     /// When the requirement is handled
-    /// Then authorization should fail (base class behaviour is fail-closed)
+    /// Then the handler should neither succeed nor fail (tolerant behaviour)
     /// </summary>
     [Fact]
-    public async Task BudgetLineHandler_MissingRouteValue_Fails()
+    public async Task BudgetLineHandler_MissingRouteValue_DoesNotVeto()
     {
         // Arrange
         var handler = CreateHandler(CreateHttpContextAccessor());
@@ -766,8 +771,356 @@ public class BudgetLineAuthorisationHandlerTests
 
         // Assert
         Assert.False(context.HasSucceeded);
-        Assert.True(context.HasFailed);
+        Assert.False(context.HasFailed);
         _repository.Verify(r => r.GetBudgetLineFamilyId(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    private static AuthorizationHandlerContext CreateAuthorizationContext(IAuthorizationRequirement requirement)
+    {
+        var requirements = new[] { requirement };
+        var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity("TestAuth"));
+        return new AuthorizationHandlerContext(requirements, claimsPrincipal, null);
+    }
+
+    private static IHttpContextAccessor CreateHttpContextAccessor(string? routeParamName = null, object? routeValue = null)
+    {
+        var httpContext = new DefaultHttpContext();
+
+        if (routeParamName is not null)
+        {
+            httpContext.Request.RouteValues[routeParamName] = routeValue;
+        }
+
+        var mock = new Mock<IHttpContextAccessor>();
+        mock.Setup(x => x.HttpContext).Returns(httpContext);
+        return mock.Object;
+    }
+}
+
+/// <summary>
+/// Tests for the TagFamilyAuthorisationHandler, which authorises the tag route
+/// parameter via IAuthorisationRepository.
+/// </summary>
+[Trait("Category", "Unit")]
+public class TagFamilyAuthorisationHandlerTests
+{
+    private const int TagId = 42;
+    private static readonly Guid FamilyId = Guid.NewGuid();
+
+    private readonly Mock<Asm.MooBank.Domain.IAuthorisationRepository> _repository = new();
+    private readonly Mock<Asm.MooBank.Audit.IAuditLogger> _audit = new();
+    private readonly User _user = new()
+    {
+        Id = Guid.NewGuid(),
+        EmailAddress = "test@test.com",
+        FamilyId = FamilyId,
+        Currency = "AUD",
+    };
+
+    private TagFamilyAuthorisationHandler CreateHandler(IHttpContextAccessor httpContextAccessor) =>
+        new(httpContextAccessor, _repository.Object, _user, _audit.Object);
+
+    /// <summary>
+    /// Given a valid tag id in the route belonging to the user's family
+    /// When the requirement is handled
+    /// Then authorization should succeed and nothing is audited
+    /// </summary>
+    [Fact]
+    public async Task TagFamilyHandler_ValidRouteValueInUsersFamily_Succeeds()
+    {
+        // Arrange
+        _repository.Setup(r => r.GetTagFamilyId(TagId, It.IsAny<CancellationToken>())).ReturnsAsync(FamilyId);
+        var handler = CreateHandler(CreateHttpContextAccessor("id", TagId.ToString()));
+        var context = CreateAuthorizationContext(new TagFamilyRequirement());
+
+        // Act
+        await handler.HandleAsync(context);
+
+        // Assert
+        Assert.True(context.HasSucceeded);
+        Assert.False(context.HasFailed);
+        _audit.Verify(a => a.AuthorizationDenied(It.IsAny<User>(), It.IsAny<string>(), It.IsAny<object?>(), It.IsAny<string>()), Times.Never);
+    }
+
+    /// <summary>
+    /// Given a valid tag id in the route belonging to another family
+    /// When the requirement is handled
+    /// Then authorization should fail and the denial is audited
+    /// </summary>
+    [Fact]
+    public async Task TagFamilyHandler_ValidRouteValueInOtherFamily_FailsAndAudits()
+    {
+        // Arrange
+        _repository.Setup(r => r.GetTagFamilyId(TagId, It.IsAny<CancellationToken>())).ReturnsAsync(Guid.NewGuid());
+        var handler = CreateHandler(CreateHttpContextAccessor("id", TagId.ToString()));
+        var context = CreateAuthorizationContext(new TagFamilyRequirement());
+
+        // Act
+        await handler.HandleAsync(context);
+
+        // Assert
+        Assert.False(context.HasSucceeded);
+        Assert.True(context.HasFailed);
+        _audit.Verify(a => a.AuthorizationDenied(_user, "Tag", TagId.ToString(), nameof(TagFamilyRequirement)), Times.Once);
+    }
+
+    /// <summary>
+    /// Given a tag id that does not exist
+    /// When the requirement is handled
+    /// Then authorization should fail and the denial is audited
+    /// </summary>
+    [Fact]
+    public async Task TagFamilyHandler_UnknownTag_FailsAndAudits()
+    {
+        // Arrange
+        _repository.Setup(r => r.GetTagFamilyId(TagId, It.IsAny<CancellationToken>())).ReturnsAsync((Guid?)null);
+        var handler = CreateHandler(CreateHttpContextAccessor("id", TagId.ToString()));
+        var context = CreateAuthorizationContext(new TagFamilyRequirement());
+
+        // Act
+        await handler.HandleAsync(context);
+
+        // Assert
+        Assert.False(context.HasSucceeded);
+        Assert.True(context.HasFailed);
+        _audit.Verify(a => a.AuthorizationDenied(_user, "Tag", TagId.ToString(), nameof(TagFamilyRequirement)), Times.Once);
+    }
+
+    /// <summary>
+    /// Given a route value that is not a valid integer
+    /// When the requirement is handled
+    /// Then authorization should fail without consulting the repository
+    /// </summary>
+    [Fact]
+    public async Task TagFamilyHandler_InvalidIntRouteValue_Fails()
+    {
+        // Arrange
+        var handler = CreateHandler(CreateHttpContextAccessor("id", "not-an-int"));
+        var context = CreateAuthorizationContext(new TagFamilyRequirement());
+
+        // Act
+        await handler.HandleAsync(context);
+
+        // Assert
+        Assert.False(context.HasSucceeded);
+        Assert.True(context.HasFailed);
+        _repository.Verify(r => r.GetTagFamilyId(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    /// <summary>
+    /// Given a request without the tag route value
+    /// When the requirement is handled
+    /// Then the handler should neither succeed nor fail (tolerant behaviour)
+    /// </summary>
+    [Fact]
+    public async Task TagFamilyHandler_MissingRouteValue_DoesNotVeto()
+    {
+        // Arrange
+        var handler = CreateHandler(CreateHttpContextAccessor());
+        var context = CreateAuthorizationContext(new TagFamilyRequirement());
+
+        // Act
+        await handler.HandleAsync(context);
+
+        // Assert
+        Assert.False(context.HasSucceeded);
+        Assert.False(context.HasFailed);
+        _repository.Verify(r => r.GetTagFamilyId(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    /// <summary>
+    /// Given no current user
+    /// When the requirement is handled
+    /// Then authorization should fail and nothing is audited
+    /// </summary>
+    [Fact]
+    public async Task TagFamilyHandler_NullUser_FailsWithoutAudit()
+    {
+        // Arrange
+        var handler = new TagFamilyAuthorisationHandler(CreateHttpContextAccessor("id", TagId.ToString()), _repository.Object, null, _audit.Object);
+        var context = CreateAuthorizationContext(new TagFamilyRequirement());
+
+        // Act
+        await handler.HandleAsync(context);
+
+        // Assert
+        Assert.False(context.HasSucceeded);
+        Assert.True(context.HasFailed);
+        _audit.Verify(a => a.AuthorizationDenied(It.IsAny<User>(), It.IsAny<string>(), It.IsAny<object?>(), It.IsAny<string>()), Times.Never);
+    }
+
+    private static AuthorizationHandlerContext CreateAuthorizationContext(IAuthorizationRequirement requirement)
+    {
+        var requirements = new[] { requirement };
+        var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity("TestAuth"));
+        return new AuthorizationHandlerContext(requirements, claimsPrincipal, null);
+    }
+
+    private static IHttpContextAccessor CreateHttpContextAccessor(string? routeParamName = null, object? routeValue = null)
+    {
+        var httpContext = new DefaultHttpContext();
+
+        if (routeParamName is not null)
+        {
+            httpContext.Request.RouteValues[routeParamName] = routeValue;
+        }
+
+        var mock = new Mock<IHttpContextAccessor>();
+        mock.Setup(x => x.HttpContext).Returns(httpContext);
+        return mock.Object;
+    }
+}
+
+/// <summary>
+/// Tests for the ForecastPlanAuthorisationHandler, which authorises the forecast plan route
+/// parameter via IAuthorisationRepository.
+/// </summary>
+[Trait("Category", "Unit")]
+public class ForecastPlanAuthorisationHandlerTests
+{
+    private static readonly Guid PlanId = Guid.NewGuid();
+    private static readonly Guid FamilyId = Guid.NewGuid();
+
+    private readonly Mock<Asm.MooBank.Domain.IAuthorisationRepository> _repository = new();
+    private readonly Mock<Asm.MooBank.Audit.IAuditLogger> _audit = new();
+    private readonly User _user = new()
+    {
+        Id = Guid.NewGuid(),
+        EmailAddress = "test@test.com",
+        FamilyId = FamilyId,
+        Currency = "AUD",
+    };
+
+    private ForecastPlanAuthorisationHandler CreateHandler(IHttpContextAccessor httpContextAccessor) =>
+        new(httpContextAccessor, _repository.Object, _user, _audit.Object);
+
+    /// <summary>
+    /// Given a valid plan id in the route belonging to the user's family
+    /// When the requirement is handled
+    /// Then authorization should succeed and nothing is audited
+    /// </summary>
+    [Fact]
+    public async Task ForecastPlanHandler_ValidRouteValueInUsersFamily_Succeeds()
+    {
+        // Arrange
+        _repository.Setup(r => r.GetForecastPlanFamilyId(PlanId, It.IsAny<CancellationToken>())).ReturnsAsync(FamilyId);
+        var handler = CreateHandler(CreateHttpContextAccessor("id", PlanId.ToString()));
+        var context = CreateAuthorizationContext(new ForecastPlanRequirement());
+
+        // Act
+        await handler.HandleAsync(context);
+
+        // Assert
+        Assert.True(context.HasSucceeded);
+        Assert.False(context.HasFailed);
+        _audit.Verify(a => a.AuthorizationDenied(It.IsAny<User>(), It.IsAny<string>(), It.IsAny<object?>(), It.IsAny<string>()), Times.Never);
+    }
+
+    /// <summary>
+    /// Given a valid plan id in the route belonging to another family
+    /// When the requirement is handled
+    /// Then authorization should fail and the denial is audited
+    /// </summary>
+    [Fact]
+    public async Task ForecastPlanHandler_ValidRouteValueInOtherFamily_FailsAndAudits()
+    {
+        // Arrange
+        _repository.Setup(r => r.GetForecastPlanFamilyId(PlanId, It.IsAny<CancellationToken>())).ReturnsAsync(Guid.NewGuid());
+        var handler = CreateHandler(CreateHttpContextAccessor("id", PlanId.ToString()));
+        var context = CreateAuthorizationContext(new ForecastPlanRequirement());
+
+        // Act
+        await handler.HandleAsync(context);
+
+        // Assert
+        Assert.False(context.HasSucceeded);
+        Assert.True(context.HasFailed);
+        _audit.Verify(a => a.AuthorizationDenied(_user, "ForecastPlan", PlanId.ToString(), nameof(ForecastPlanRequirement)), Times.Once);
+    }
+
+    /// <summary>
+    /// Given a plan id that does not exist
+    /// When the requirement is handled
+    /// Then authorization should fail and the denial is audited
+    /// </summary>
+    [Fact]
+    public async Task ForecastPlanHandler_UnknownPlan_FailsAndAudits()
+    {
+        // Arrange
+        _repository.Setup(r => r.GetForecastPlanFamilyId(PlanId, It.IsAny<CancellationToken>())).ReturnsAsync((Guid?)null);
+        var handler = CreateHandler(CreateHttpContextAccessor("id", PlanId.ToString()));
+        var context = CreateAuthorizationContext(new ForecastPlanRequirement());
+
+        // Act
+        await handler.HandleAsync(context);
+
+        // Assert
+        Assert.False(context.HasSucceeded);
+        Assert.True(context.HasFailed);
+        _audit.Verify(a => a.AuthorizationDenied(_user, "ForecastPlan", PlanId.ToString(), nameof(ForecastPlanRequirement)), Times.Once);
+    }
+
+    /// <summary>
+    /// Given a route value that is not a valid GUID
+    /// When the requirement is handled
+    /// Then authorization should fail without consulting the repository
+    /// </summary>
+    [Fact]
+    public async Task ForecastPlanHandler_InvalidGuidRouteValue_Fails()
+    {
+        // Arrange
+        var handler = CreateHandler(CreateHttpContextAccessor("id", "not-a-guid"));
+        var context = CreateAuthorizationContext(new ForecastPlanRequirement());
+
+        // Act
+        await handler.HandleAsync(context);
+
+        // Assert
+        Assert.False(context.HasSucceeded);
+        Assert.True(context.HasFailed);
+        _repository.Verify(r => r.GetForecastPlanFamilyId(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    /// <summary>
+    /// Given a request without the plan route value
+    /// When the requirement is handled
+    /// Then the handler should neither succeed nor fail (tolerant behaviour)
+    /// </summary>
+    [Fact]
+    public async Task ForecastPlanHandler_MissingRouteValue_DoesNotVeto()
+    {
+        // Arrange
+        var handler = CreateHandler(CreateHttpContextAccessor());
+        var context = CreateAuthorizationContext(new ForecastPlanRequirement());
+
+        // Act
+        await handler.HandleAsync(context);
+
+        // Assert
+        Assert.False(context.HasSucceeded);
+        Assert.False(context.HasFailed);
+        _repository.Verify(r => r.GetForecastPlanFamilyId(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    /// <summary>
+    /// Given no current user
+    /// When the requirement is handled
+    /// Then authorization should fail and nothing is audited
+    /// </summary>
+    [Fact]
+    public async Task ForecastPlanHandler_NullUser_FailsWithoutAudit()
+    {
+        // Arrange
+        var handler = new ForecastPlanAuthorisationHandler(CreateHttpContextAccessor("id", PlanId.ToString()), _repository.Object, null, _audit.Object);
+        var context = CreateAuthorizationContext(new ForecastPlanRequirement());
+
+        // Act
+        await handler.HandleAsync(context);
+
+        // Assert
+        Assert.False(context.HasSucceeded);
+        Assert.True(context.HasFailed);
+        _audit.Verify(a => a.AuthorizationDenied(It.IsAny<User>(), It.IsAny<string>(), It.IsAny<object?>(), It.IsAny<string>()), Times.Never);
     }
 
     private static AuthorizationHandlerContext CreateAuthorizationContext(IAuthorizationRequirement requirement)

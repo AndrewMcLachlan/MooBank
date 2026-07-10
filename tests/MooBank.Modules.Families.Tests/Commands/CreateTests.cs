@@ -20,7 +20,7 @@ public class CreateTests
     {
         // Arrange
         _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>()))
+            .Setup(s => s.AssertAdministrator())
             .Returns(Task.CompletedTask);
 
         var handler = new CreateHandler(
@@ -45,7 +45,7 @@ public class CreateTests
         DomainFamily? capturedFamily = null;
 
         _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>()))
+            .Setup(s => s.AssertAdministrator())
             .Returns(Task.CompletedTask);
 
         _mocks.FamilyRepositoryMock
@@ -73,7 +73,7 @@ public class CreateTests
     {
         // Arrange
         _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>()))
+            .Setup(s => s.AssertAdministrator())
             .Returns(Task.CompletedTask);
 
         var handler = new CreateHandler(
@@ -95,7 +95,7 @@ public class CreateTests
     {
         // Arrange
         _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>()))
+            .Setup(s => s.AssertAdministrator())
             .Returns(Task.CompletedTask);
 
         var handler = new CreateHandler(
@@ -109,7 +109,7 @@ public class CreateTests
         await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
-        _mocks.SecurityMock.Verify(s => s.AssertAdministrator(It.IsAny<CancellationToken>()), Times.Once);
+        _mocks.SecurityMock.Verify(s => s.AssertAdministrator(), Times.Once);
     }
 
     [Fact]
@@ -117,7 +117,7 @@ public class CreateTests
     {
         // Arrange
         _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>()))
+            .Setup(s => s.AssertAdministrator())
             .ThrowsAsync(new NotAuthorisedException());
 
         var handler = new CreateHandler(
@@ -136,7 +136,7 @@ public class CreateTests
     {
         // Arrange
         _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>()))
+            .Setup(s => s.AssertAdministrator())
             .ThrowsAsync(new NotAuthorisedException());
 
         var handler = new CreateHandler(

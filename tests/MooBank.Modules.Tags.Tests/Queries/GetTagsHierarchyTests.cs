@@ -31,7 +31,7 @@ public class GetTagsHierarchyTests
         // Arrange
         var tags = TestEntities.CreateTagQueryable([]);
 
-        var handler = new GetTagsHierarchyHandler(tags, _mocks.User);
+        var handler = new GetTagsHierarchyHandler(tags);
 
         var query = new GetTagsHierarchy();
 
@@ -60,7 +60,7 @@ public class GetTagsHierarchyTests
 
         var tags = TestEntities.CreateTagQueryable(rootTag);
 
-        var handler = new GetTagsHierarchyHandler(tags, _mocks.User);
+        var handler = new GetTagsHierarchyHandler(tags);
 
         var query = new GetTagsHierarchy();
 
@@ -93,7 +93,7 @@ public class GetTagsHierarchyTests
 
         var tags = TestEntities.CreateTagQueryable(childTag);
 
-        var handler = new GetTagsHierarchyHandler(tags, _mocks.User);
+        var handler = new GetTagsHierarchyHandler(tags);
 
         var query = new GetTagsHierarchy();
 
@@ -102,63 +102,6 @@ public class GetTagsHierarchyTests
 
         // Assert
         Assert.Empty(result.Tags);
-    }
-
-    /// <summary>
-    /// Given root tags in different families
-    /// When the hierarchy is requested
-    /// Then only tags in the user's family are returned.
-    /// </summary>
-    [Fact]
-    public async Task Handle_FiltersByUserFamily()
-    {
-        // Arrange
-        var userFamilyId = _mocks.User.FamilyId;
-        var otherFamilyId = Guid.NewGuid();
-
-        var userTag = TestEntities.CreateTag(id: 1, name: "UserTag", familyId: userFamilyId);
-        var otherTag = TestEntities.CreateTag(id: 2, name: "OtherTag", familyId: otherFamilyId);
-
-        var tags = TestEntities.CreateTagQueryable(userTag, otherTag);
-
-        var handler = new GetTagsHierarchyHandler(tags, _mocks.User);
-
-        var query = new GetTagsHierarchy();
-
-        // Act
-        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
-
-        // Assert
-        Assert.Single(result.Tags);
-        Assert.Equal("UserTag", result.Tags.First().Name);
-    }
-
-    /// <summary>
-    /// Given active and deleted root tags
-    /// When the hierarchy is requested
-    /// Then deleted tags are excluded.
-    /// </summary>
-    [Fact]
-    public async Task Handle_ExcludesDeletedTags()
-    {
-        // Arrange
-        var familyId = _mocks.User.FamilyId;
-
-        var activeTag = TestEntities.CreateTag(id: 1, name: "ActiveTag", familyId: familyId);
-        var deletedTag = TestEntities.CreateTag(id: 2, name: "DeletedTag", familyId: familyId, deleted: true);
-
-        var tags = TestEntities.CreateTagQueryable(activeTag, deletedTag);
-
-        var handler = new GetTagsHierarchyHandler(tags, _mocks.User);
-
-        var query = new GetTagsHierarchy();
-
-        // Act
-        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
-
-        // Assert
-        Assert.Single(result.Tags);
-        Assert.Equal("ActiveTag", result.Tags.First().Name);
     }
 
     /// <summary>
@@ -176,7 +119,7 @@ public class GetTagsHierarchyTests
 
         var tags = TestEntities.CreateTagQueryable(tag);
 
-        var handler = new GetTagsHierarchyHandler(tags, _mocks.User);
+        var handler = new GetTagsHierarchyHandler(tags);
 
         var query = new GetTagsHierarchy();
 
@@ -209,7 +152,7 @@ public class GetTagsHierarchyTests
 
         var tags = TestEntities.CreateTagQueryable(tag1, tag2);
 
-        var handler = new GetTagsHierarchyHandler(tags, _mocks.User);
+        var handler = new GetTagsHierarchyHandler(tags);
 
         var query = new GetTagsHierarchy();
 
@@ -239,7 +182,7 @@ public class GetTagsHierarchyTests
 
         var tags = TestEntities.CreateTagQueryable(tag);
 
-        var handler = new GetTagsHierarchyHandler(tags, _mocks.User);
+        var handler = new GetTagsHierarchyHandler(tags);
 
         var query = new GetTagsHierarchy();
 
@@ -268,7 +211,7 @@ public class GetTagsHierarchyTests
 
         var tags = TestEntities.CreateTagQueryable(tag);
 
-        var handler = new GetTagsHierarchyHandler(tags, _mocks.User);
+        var handler = new GetTagsHierarchyHandler(tags);
 
         var query = new GetTagsHierarchy();
 
@@ -299,7 +242,7 @@ public class GetTagsHierarchyTests
 
         var tags = TestEntities.CreateTagQueryable(mainTag);
 
-        var handler = new GetTagsHierarchyHandler(tags, _mocks.User);
+        var handler = new GetTagsHierarchyHandler(tags);
 
         var query = new GetTagsHierarchy();
 

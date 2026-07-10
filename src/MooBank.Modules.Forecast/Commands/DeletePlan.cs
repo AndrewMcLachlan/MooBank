@@ -6,12 +6,11 @@ namespace Asm.MooBank.Modules.Forecast.Commands;
 [DisplayName("DeleteForecastPlan")]
 public record DeletePlan(Guid Id) : ICommand;
 
-internal class DeletePlanHandler(IForecastRepository forecastRepository, IUnitOfWork unitOfWork, ISecurity security) : ICommandHandler<DeletePlan>
+internal class DeletePlanHandler(IForecastRepository forecastRepository, IUnitOfWork unitOfWork) : ICommandHandler<DeletePlan>
 {
     public async ValueTask Handle(DeletePlan request, CancellationToken cancellationToken)
     {
         var entity = await forecastRepository.Get(request.Id, cancellationToken);
-        await security.AssertFamilyPermission(entity.FamilyId);
 
         entity.Archive();
 
