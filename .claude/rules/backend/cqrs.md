@@ -43,6 +43,7 @@ internal class CreateTransactionHandler(
 - Should validate business rules
 - Throw appropriate exceptions (`NotFoundException`, `BadHttpRequestException`)
 - Use `IRepository<TEntity>` for data access (tracked entities)
+- Commands deliberately return the full DTO of the created/updated resource (house style — a pragmatic divergence from purist CQRS)
 
 ## Queries
 
@@ -105,6 +106,9 @@ public static void MapTransactionEndpoints(this IEndpointRouteBuilder endpoints)
 ### Endpoint Guidelines
 - Use `.MapCommand()` and `.MapQuery()` extensions from `Asm.Cqrs.AspNetCore`
 - Apply authorization policies using `.RequireAuthorization()`
+- Note: the Transactions module intentionally applies `GetInstrumentViewerPolicy` to its whole
+  endpoint group **including writes** (viewers may tag/annotate transactions). This is a settled
+  decision — do not "tighten" it to the Owner policy.
 
 ## Module Structure
 

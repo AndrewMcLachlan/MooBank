@@ -30,19 +30,23 @@ See @.claude/PRD.md for detailed product requirements and domain concepts.
 
 ```
 src/
-├── MooBank.Web.Api/           # ASP.NET Core Web API (minimal, delegates to modules)
+├── MooBank.Api/               # ASP.NET Core Web API entry point (also hosts Azure WebJobs under Jobs/)
+├── MooBank/                   # Application core: cross-cutting abstractions, application services, hosted workers, entity↔DTO mapping (one project by design)
 ├── MooBank.Domain/            # Domain entities, aggregates, specifications, events
 ├── MooBank.Infrastructure/    # EF Core, repository implementations
 ├── MooBank.Models/            # Shared DTOs
 ├── MooBank.Modules.*/         # Feature modules (CQRS commands/queries/endpoints)
-├── MooBank.Security/          # Auth policies
+├── MooBank.Security/          # Auth policies and requirement handlers
 ├── MooBank.Institution.*/     # Bank importers (ING, Macquarie, AustralianSuper)
-├── MooBank.Web.App/           # React/TypeScript SPA
+├── MooBank.Abs / .Eodhd / .ExchangeRateApi  # Reference-data integration clients
+├── MooBank.Web.App/           # React/TypeScript SPA (see src/MooBank.Web.App/CLAUDE.md)
 ├── MooBank.Database/          # SQL Server Database Project
 └── MooBank.AppHost/           # Aspire AppHost for local dev
 tests/
 └── MooBank.*.Tests/           # Unit and integration tests
 ```
+
+Note: projects live in `MooBank.*` folders but build as `Asm.MooBank.*` assemblies/namespaces (see `Directory.Build.props`).
 
 ### Libraries and Frameworks
 
@@ -105,7 +109,7 @@ Path-scoped rules in `.claude/rules/` auto-load when working on matching files:
 | `backend/csharp.md` | `src/**/*.cs` |
 | `backend/cqrs.md` | `src/MooBank.Modules*/**` |
 | `backend/entity-framework.md` | `src/MooBank.Infrastructure/**`, `src/MooBank.Domain/**` |
-| `backend/rest-api.md` | `src/MooBank.Web.Api/**`, `src/MooBank.Modules*/Endpoints/**` |
+| `backend/rest-api.md` | `src/MooBank.Api/**`, `src/MooBank.Modules*/Endpoints/**` |
 | `backend/sql-database.md` | `src/MooBank.Database/**` |
 | `frontend/typescript.md` | `src/MooBank.Web.App/**/*.{ts,tsx}` |
 | `testing/backend.md` | `tests/**/*.cs` |
@@ -118,7 +122,7 @@ Path-scoped rules in `.claude/rules/` auto-load when working on matching files:
 1. **Follow established patterns**: CQRS, DDD, specifications, modules
 2. **Respect folder structure**: Place files in the correct project and folder
 3. **Use ASM library conventions**: Commands, Queries, and their handlers
-4. **Maintain separation of concerns**: Domain → Infrastructure → Web.Api
+4. **Maintain separation of concerns**: Domain → Infrastructure → Api
 5. **Write clear, descriptive names** using domain-driven language
 6. **No warnings**: Ensure code compiles without warnings
 7. **Consider security**: Apply authorization policies where appropriate

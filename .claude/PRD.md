@@ -121,7 +121,7 @@ MooBank is a mature application with an established feature set. The current MVP
                                ▼
                         ┌─────────────────┐
                         │  Azure WebJobs  │
-                        │  (Background)   │
+                        │ (hosted in API) │
                         └─────────────────┘
 ```
 
@@ -138,16 +138,17 @@ MooBank is a mature application with an established feature set. The current MVP
 
 ```
 src/
-├── MooBank.Web.Api/           # API entry point (minimal)
+├── MooBank.Api/               # API entry point (also hosts Azure WebJobs under Jobs/)
+├── MooBank/                   # Application core (abstractions, services, mapping)
 ├── MooBank.Domain/            # Entities, aggregates, specifications
 ├── MooBank.Infrastructure/    # EF Core, repository implementations
 ├── MooBank.Modules.*/         # Feature modules (CQRS)
 ├── MooBank.Models/            # Shared DTOs
 ├── MooBank.Security/          # Auth policies
 ├── MooBank.Web.App/           # React frontend
-├── MooBank.Web.Jobs/          # Background jobs
 ├── MooBank.Database/          # SQL database project
-└── MooBank.Institution.*/     # Bank importers
+├── MooBank.Institution.*/     # Bank importers
+└── MooBank.AppHost/           # Aspire AppHost for local dev
 ```
 
 ### Module Structure
@@ -207,11 +208,11 @@ Modules.{Feature}/
 ### Backend
 | Component | Technology | Version |
 |-----------|------------|---------|
-| Runtime | .NET | 9.0+ (latest GA including STS) |
-| Framework | ASP.NET Core Minimal APIs | 9.0+ |
-| ORM | Entity Framework Core | 9.0+ |
+| Runtime | .NET | 10.0 (latest GA including STS) |
+| Framework | ASP.NET Core Minimal APIs | 10.0 |
+| ORM | Entity Framework Core | 10.0 |
 | Database | Azure SQL Server | - |
-| Background Jobs | Azure WebJobs | - |
+| Background Jobs | Azure WebJobs (hosted in the API) | - |
 | API Docs | Microsoft.AspNetCore.OpenApi | - |
 
 ### Frontend
@@ -220,10 +221,10 @@ Modules.{Feature}/
 | Framework | React | 19.x |
 | Language | TypeScript | 5.x |
 | Build Tool | Vite | 7.x |
-| Routing | React Router | 7.x |
+| Routing | TanStack Router (file-based) | 1.x |
 | State (Server) | TanStack Query | 5.x |
-| State (UI) | Redux Toolkit | 2.x |
-| UI Components | React Bootstrap | 2.x |
+| State (UI) | Redux Toolkit (legacy, being retired) | 2.x |
+| UI Components | MooDS (@andrewmclachlan/moo-ds) | - |
 | Forms | React Hook Form | 7.x |
 | Charts | Chart.js / react-chartjs-2 | 4.x |
 | Dates | date-fns | 4.x |
@@ -422,12 +423,7 @@ The application successfully enables users to consolidate financial data, catego
 
 ### Technical Debt
 
-- Testing. There are next to no back-end or front-end tests for MooBank.
-- Front-end 
-  - Replace hand-coded services with `ts-openapi` react-query hooks.
-  - Architecture and code layout review
-
-
+Technical debt and pending engineering work is tracked as GitHub issues, not in this document.
 
 ## 14. Risks & Mitigations
 
@@ -443,7 +439,8 @@ The application successfully enables users to consolidate financial data, catego
 
 ### Related Documents
 - `CLAUDE.md` - Developer coding conventions and patterns
-- `.claude/reference/*.md` - Technology-specific guidelines
+- `src/MooBank.Web.App/CLAUDE.md` - Frontend conventions
+- `.claude/rules/*.md` - Path-scoped technology guidelines
 
 ### Key Dependencies
 | Dependency | Repository |
@@ -458,10 +455,11 @@ MooBank/
 ├── src/                    # Source code
 ├── tests/                  # Test projects
 ├── .claude/                # Claude Code configuration
-│   ├── commands/           # Slash commands
-│   ├── reference/          # Technology guides
+│   ├── skills/             # Slash commands / skills
+│   ├── rules/              # Path-scoped technology rules
+│   ├── plans/              # Implementation plans
 │   └── PRD.md              # This document
-├── .agents/plans/          # Implementation plans
+├── .agents/                # Agent-generated plans and review reports
 ├── CLAUDE.md               # Claude Code entry point
 └── README.md               # Project overview
 ```
