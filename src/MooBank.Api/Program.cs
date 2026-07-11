@@ -64,6 +64,27 @@ void AddServices(WebApplicationBuilder builder)
             return Task.CompletedTask;
         });
 
+        options.AddDocumentTransformer((document, context, cancellationToken) =>
+        {
+            // The module endpoints are mapped under MapGroup("/api"). Move that segment into the
+            // server URL and strip it from each operation path, so the document reads as /accounts
+            // rather than /api/accounts. The relative /api server is resolved by Swagger UI and the
+            // generated client (baseURL: "/api") against the current origin, so requests still go to
+            // /api/accounts with the caller's host and protocol.
+            document.Servers = [new OpenApiServer { Url = "/api" }];
+
+            var rewritten = new OpenApiPaths();
+            foreach (var (path, item) in document.Paths)
+            {
+                var trimmed = path.StartsWith("/api", StringComparison.OrdinalIgnoreCase) ? path["/api".Length..] : path;
+                if (trimmed.Length == 0) trimmed = "/";
+                rewritten.Add(trimmed, item);
+            }
+            document.Paths = rewritten;
+
+            return Task.CompletedTask;
+        });
+
         options.AddSchemaTransformer((schema, context, cancellationToken) =>
         {
             if (context.JsonTypeInfo.Kind != System.Text.Json.Serialization.Metadata.JsonTypeInfoKind.Object)
@@ -228,41 +249,35 @@ void AddServices(WebApplicationBuilder builder)
 
 void AddApp(WebApplication app)
 {
-    // MooBank is always served over HTTPS in production but the App Service /
-    // Cloudflare hop terminates TLS, so the app sees the inbound scheme as http.
-    // Force it back to https so URL generation (e.g. the resource_metadata URL in
-    // the MCP WWW-Authenticate header) emits the correct scheme. Skipped in dev
-    // where the SPA proxy may use http://localhost.
-    if (!app.Environment.IsDevelopment())
-    {
-        app.Use((ctx, next) =>
-        {
-            ctx.Request.Scheme = "https";
-            return next();
-        });
-    }
-
     if (app.Environment.IsDevelopment())
     {
-        app.MapOpenApi();
+        app.MapOpenApi("api/openapi/{documentName}.json").AllowAnonymous();
         app.UseSwaggerUI(options =>
         {
-            options.SwaggerEndpoint("/openapi/v1.json", "MooBank API");
+            options.RoutePrefix = "api/swagger";
+            options.SwaggerEndpoint("/api/openapi/v1.json", "MooBank API");
             options.OAuthClientId(app.Configuration["OAuth:Audience"]);
             options.OAuthAppName("MooBank");
             options.OAuthUsePkce();
             options.OAuthScopes("api://moobank.mclachlan.family/.default");
         });
-    }
-
-    if (app.Environment.IsDevelopment())
-    {
         app.UseDeveloperExceptionPage();
     }
     else
     {
         app.UseHsts();
         app.UseHttpsRedirection();
+
+        // MooBank is always served over HTTPS in production but the App Service /
+        // Cloudflare hop terminates TLS, so the app sees the inbound scheme as http.
+        // Force it back to https so URL generation (e.g. the resource_metadata URL in
+        // the MCP WWW-Authenticate header) emits the correct scheme. Skipped in dev
+        // where the SPA proxy may use http://localhost.
+        app.Use((ctx, next) =>
+        {
+            ctx.Request.Scheme = "https";
+            return next();
+        });
     }
 
     app.UseStandardExceptionHandler();

@@ -1403,27 +1403,30 @@ const createInfiniteParams = <K extends Pick<QueryKey<Options>[0], 'body' | 'hea
 
 export const inOutReportInfiniteQueryKey = (options: Options<InOutReportData>): QueryKey<Options<InOutReportData>> => createQueryKey('inOutReport', options, true);
 
-export const inOutReportInfiniteOptions = (options: Options<InOutReportData>) => infiniteQueryOptions<InOutReportResponse, AxiosError<DefaultError>, InfiniteData<InOutReportResponse>, QueryKey<Options<InOutReportData>>, string | Pick<QueryKey<Options<InOutReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-// @ts-ignore
-{
-    queryFn: async ({ pageParam, queryKey, signal }) => {
-        // @ts-ignore
-        const page: Pick<QueryKey<Options<InOutReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-            path: {
-                start: pageParam
-            }
-        };
-        const params = createInfiniteParams(queryKey, page);
-        const { data } = await inOutReport({
-            ...options,
-            ...params,
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: inOutReportInfiniteQueryKey(options)
-});
+export const inOutReportInfiniteOptions = (options: Options<InOutReportData>) => {
+    const opts = infiniteQueryOptions<InOutReportResponse, AxiosError<DefaultError>, InfiniteData<InOutReportResponse>, QueryKey<Options<InOutReportData>>, string | Pick<QueryKey<Options<InOutReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<InOutReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                path: {
+                    start: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await inOutReport({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: inOutReportInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
 
 export const inOutTrendReportQueryKey = (options: Options<InOutTrendReportData>) => createQueryKey('inOutTrendReport', options);
 
@@ -1442,27 +1445,30 @@ export const inOutTrendReportOptions = (options: Options<InOutTrendReportData>) 
 
 export const inOutTrendReportInfiniteQueryKey = (options: Options<InOutTrendReportData>): QueryKey<Options<InOutTrendReportData>> => createQueryKey('inOutTrendReport', options, true);
 
-export const inOutTrendReportInfiniteOptions = (options: Options<InOutTrendReportData>) => infiniteQueryOptions<InOutTrendReportResponse, AxiosError<DefaultError>, InfiniteData<InOutTrendReportResponse>, QueryKey<Options<InOutTrendReportData>>, string | Pick<QueryKey<Options<InOutTrendReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-// @ts-ignore
-{
-    queryFn: async ({ pageParam, queryKey, signal }) => {
-        // @ts-ignore
-        const page: Pick<QueryKey<Options<InOutTrendReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-            path: {
-                start: pageParam
-            }
-        };
-        const params = createInfiniteParams(queryKey, page);
-        const { data } = await inOutTrendReport({
-            ...options,
-            ...params,
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: inOutTrendReportInfiniteQueryKey(options)
-});
+export const inOutTrendReportInfiniteOptions = (options: Options<InOutTrendReportData>) => {
+    const opts = infiniteQueryOptions<InOutTrendReportResponse, AxiosError<DefaultError>, InfiniteData<InOutTrendReportResponse>, QueryKey<Options<InOutTrendReportData>>, string | Pick<QueryKey<Options<InOutTrendReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<InOutTrendReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                path: {
+                    start: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await inOutTrendReport({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: inOutTrendReportInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
 
 export const inOutAverageReportQueryKey = (options: Options<InOutAverageReportData>) => createQueryKey('inOutAverageReport', options);
 
@@ -1481,27 +1487,30 @@ export const inOutAverageReportOptions = (options: Options<InOutAverageReportDat
 
 export const inOutAverageReportInfiniteQueryKey = (options: Options<InOutAverageReportData>): QueryKey<Options<InOutAverageReportData>> => createQueryKey('inOutAverageReport', options, true);
 
-export const inOutAverageReportInfiniteOptions = (options: Options<InOutAverageReportData>) => infiniteQueryOptions<InOutAverageReportResponse, AxiosError<DefaultError>, InfiniteData<InOutAverageReportResponse>, QueryKey<Options<InOutAverageReportData>>, string | Pick<QueryKey<Options<InOutAverageReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-// @ts-ignore
-{
-    queryFn: async ({ pageParam, queryKey, signal }) => {
-        // @ts-ignore
-        const page: Pick<QueryKey<Options<InOutAverageReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-            path: {
-                start: pageParam
-            }
-        };
-        const params = createInfiniteParams(queryKey, page);
-        const { data } = await inOutAverageReport({
-            ...options,
-            ...params,
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: inOutAverageReportInfiniteQueryKey(options)
-});
+export const inOutAverageReportInfiniteOptions = (options: Options<InOutAverageReportData>) => {
+    const opts = infiniteQueryOptions<InOutAverageReportResponse, AxiosError<DefaultError>, InfiniteData<InOutAverageReportResponse>, QueryKey<Options<InOutAverageReportData>>, string | Pick<QueryKey<Options<InOutAverageReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<InOutAverageReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                path: {
+                    start: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await inOutAverageReport({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: inOutAverageReportInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
 
 export const byTagReportQueryKey = (options: Options<ByTagReportData>) => createQueryKey('byTagReport', options);
 
@@ -1520,27 +1529,30 @@ export const byTagReportOptions = (options: Options<ByTagReportData>) => queryOp
 
 export const byTagReportInfiniteQueryKey = (options: Options<ByTagReportData>): QueryKey<Options<ByTagReportData>> => createQueryKey('byTagReport', options, true);
 
-export const byTagReportInfiniteOptions = (options: Options<ByTagReportData>) => infiniteQueryOptions<ByTagReportResponse, AxiosError<DefaultError>, InfiniteData<ByTagReportResponse>, QueryKey<Options<ByTagReportData>>, string | Pick<QueryKey<Options<ByTagReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-// @ts-ignore
-{
-    queryFn: async ({ pageParam, queryKey, signal }) => {
-        // @ts-ignore
-        const page: Pick<QueryKey<Options<ByTagReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-            path: {
-                start: pageParam
-            }
-        };
-        const params = createInfiniteParams(queryKey, page);
-        const { data } = await byTagReport({
-            ...options,
-            ...params,
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: byTagReportInfiniteQueryKey(options)
-});
+export const byTagReportInfiniteOptions = (options: Options<ByTagReportData>) => {
+    const opts = infiniteQueryOptions<ByTagReportResponse, AxiosError<DefaultError>, InfiniteData<ByTagReportResponse>, QueryKey<Options<ByTagReportData>>, string | Pick<QueryKey<Options<ByTagReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<ByTagReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                path: {
+                    start: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await byTagReport({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: byTagReportInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
 
 export const byTagReportForTagQueryKey = (options: Options<ByTagReportForTagData>) => createQueryKey('byTagReportForTag', options);
 
@@ -1559,27 +1571,30 @@ export const byTagReportForTagOptions = (options: Options<ByTagReportForTagData>
 
 export const byTagReportForTagInfiniteQueryKey = (options: Options<ByTagReportForTagData>): QueryKey<Options<ByTagReportForTagData>> => createQueryKey('byTagReportForTag', options, true);
 
-export const byTagReportForTagInfiniteOptions = (options: Options<ByTagReportForTagData>) => infiniteQueryOptions<ByTagReportForTagResponse, AxiosError<DefaultError>, InfiniteData<ByTagReportForTagResponse>, QueryKey<Options<ByTagReportForTagData>>, string | Pick<QueryKey<Options<ByTagReportForTagData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-// @ts-ignore
-{
-    queryFn: async ({ pageParam, queryKey, signal }) => {
-        // @ts-ignore
-        const page: Pick<QueryKey<Options<ByTagReportForTagData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-            path: {
-                start: pageParam
-            }
-        };
-        const params = createInfiniteParams(queryKey, page);
-        const { data } = await byTagReportForTag({
-            ...options,
-            ...params,
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: byTagReportForTagInfiniteQueryKey(options)
-});
+export const byTagReportForTagInfiniteOptions = (options: Options<ByTagReportForTagData>) => {
+    const opts = infiniteQueryOptions<ByTagReportForTagResponse, AxiosError<DefaultError>, InfiniteData<ByTagReportForTagResponse>, QueryKey<Options<ByTagReportForTagData>>, string | Pick<QueryKey<Options<ByTagReportForTagData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<ByTagReportForTagData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                path: {
+                    start: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await byTagReportForTag({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: byTagReportForTagInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
 
 export const tagBreakdownReportQueryKey = (options: Options<TagBreakdownReportData>) => createQueryKey('tagBreakdownReport', options);
 
@@ -1598,27 +1613,30 @@ export const tagBreakdownReportOptions = (options: Options<TagBreakdownReportDat
 
 export const tagBreakdownReportInfiniteQueryKey = (options: Options<TagBreakdownReportData>): QueryKey<Options<TagBreakdownReportData>> => createQueryKey('tagBreakdownReport', options, true);
 
-export const tagBreakdownReportInfiniteOptions = (options: Options<TagBreakdownReportData>) => infiniteQueryOptions<TagBreakdownReportResponse, AxiosError<DefaultError>, InfiniteData<TagBreakdownReportResponse>, QueryKey<Options<TagBreakdownReportData>>, string | Pick<QueryKey<Options<TagBreakdownReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-// @ts-ignore
-{
-    queryFn: async ({ pageParam, queryKey, signal }) => {
-        // @ts-ignore
-        const page: Pick<QueryKey<Options<TagBreakdownReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-            path: {
-                start: pageParam
-            }
-        };
-        const params = createInfiniteParams(queryKey, page);
-        const { data } = await tagBreakdownReport({
-            ...options,
-            ...params,
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: tagBreakdownReportInfiniteQueryKey(options)
-});
+export const tagBreakdownReportInfiniteOptions = (options: Options<TagBreakdownReportData>) => {
+    const opts = infiniteQueryOptions<TagBreakdownReportResponse, AxiosError<DefaultError>, InfiniteData<TagBreakdownReportResponse>, QueryKey<Options<TagBreakdownReportData>>, string | Pick<QueryKey<Options<TagBreakdownReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<TagBreakdownReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                path: {
+                    start: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await tagBreakdownReport({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: tagBreakdownReportInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
 
 export const tagBreakdownReportForTagQueryKey = (options: Options<TagBreakdownReportForTagData>) => createQueryKey('tagBreakdownReportForTag', options);
 
@@ -1637,27 +1655,30 @@ export const tagBreakdownReportForTagOptions = (options: Options<TagBreakdownRep
 
 export const tagBreakdownReportForTagInfiniteQueryKey = (options: Options<TagBreakdownReportForTagData>): QueryKey<Options<TagBreakdownReportForTagData>> => createQueryKey('tagBreakdownReportForTag', options, true);
 
-export const tagBreakdownReportForTagInfiniteOptions = (options: Options<TagBreakdownReportForTagData>) => infiniteQueryOptions<TagBreakdownReportForTagResponse, AxiosError<DefaultError>, InfiniteData<TagBreakdownReportForTagResponse>, QueryKey<Options<TagBreakdownReportForTagData>>, string | Pick<QueryKey<Options<TagBreakdownReportForTagData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-// @ts-ignore
-{
-    queryFn: async ({ pageParam, queryKey, signal }) => {
-        // @ts-ignore
-        const page: Pick<QueryKey<Options<TagBreakdownReportForTagData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-            path: {
-                start: pageParam
-            }
-        };
-        const params = createInfiniteParams(queryKey, page);
-        const { data } = await tagBreakdownReportForTag({
-            ...options,
-            ...params,
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: tagBreakdownReportForTagInfiniteQueryKey(options)
-});
+export const tagBreakdownReportForTagInfiniteOptions = (options: Options<TagBreakdownReportForTagData>) => {
+    const opts = infiniteQueryOptions<TagBreakdownReportForTagResponse, AxiosError<DefaultError>, InfiniteData<TagBreakdownReportForTagResponse>, QueryKey<Options<TagBreakdownReportForTagData>>, string | Pick<QueryKey<Options<TagBreakdownReportForTagData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<TagBreakdownReportForTagData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                path: {
+                    start: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await tagBreakdownReportForTag({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: tagBreakdownReportForTagInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
 
 export const tagTrendReportQueryKey = (options: Options<TagTrendReportData>) => createQueryKey('tagTrendReport', options);
 
@@ -1676,27 +1697,30 @@ export const tagTrendReportOptions = (options: Options<TagTrendReportData>) => q
 
 export const tagTrendReportInfiniteQueryKey = (options: Options<TagTrendReportData>): QueryKey<Options<TagTrendReportData>> => createQueryKey('tagTrendReport', options, true);
 
-export const tagTrendReportInfiniteOptions = (options: Options<TagTrendReportData>) => infiniteQueryOptions<TagTrendReportResponse, AxiosError<DefaultError>, InfiniteData<TagTrendReportResponse>, QueryKey<Options<TagTrendReportData>>, string | Pick<QueryKey<Options<TagTrendReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-// @ts-ignore
-{
-    queryFn: async ({ pageParam, queryKey, signal }) => {
-        // @ts-ignore
-        const page: Pick<QueryKey<Options<TagTrendReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-            path: {
-                start: pageParam
-            }
-        };
-        const params = createInfiniteParams(queryKey, page);
-        const { data } = await tagTrendReport({
-            ...options,
-            ...params,
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: tagTrendReportInfiniteQueryKey(options)
-});
+export const tagTrendReportInfiniteOptions = (options: Options<TagTrendReportData>) => {
+    const opts = infiniteQueryOptions<TagTrendReportResponse, AxiosError<DefaultError>, InfiniteData<TagTrendReportResponse>, QueryKey<Options<TagTrendReportData>>, string | Pick<QueryKey<Options<TagTrendReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<TagTrendReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                path: {
+                    start: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await tagTrendReport({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: tagTrendReportInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
 
 export const allTagAverageReportQueryKey = (options: Options<AllTagAverageReportData>) => createQueryKey('allTagAverageReport', options);
 
@@ -1715,27 +1739,30 @@ export const allTagAverageReportOptions = (options: Options<AllTagAverageReportD
 
 export const allTagAverageReportInfiniteQueryKey = (options: Options<AllTagAverageReportData>): QueryKey<Options<AllTagAverageReportData>> => createQueryKey('allTagAverageReport', options, true);
 
-export const allTagAverageReportInfiniteOptions = (options: Options<AllTagAverageReportData>) => infiniteQueryOptions<AllTagAverageReportResponse, AxiosError<DefaultError>, InfiniteData<AllTagAverageReportResponse>, QueryKey<Options<AllTagAverageReportData>>, string | Pick<QueryKey<Options<AllTagAverageReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-// @ts-ignore
-{
-    queryFn: async ({ pageParam, queryKey, signal }) => {
-        // @ts-ignore
-        const page: Pick<QueryKey<Options<AllTagAverageReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-            path: {
-                start: pageParam
-            }
-        };
-        const params = createInfiniteParams(queryKey, page);
-        const { data } = await allTagAverageReport({
-            ...options,
-            ...params,
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: allTagAverageReportInfiniteQueryKey(options)
-});
+export const allTagAverageReportInfiniteOptions = (options: Options<AllTagAverageReportData>) => {
+    const opts = infiniteQueryOptions<AllTagAverageReportResponse, AxiosError<DefaultError>, InfiniteData<AllTagAverageReportResponse>, QueryKey<Options<AllTagAverageReportData>>, string | Pick<QueryKey<Options<AllTagAverageReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<AllTagAverageReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                path: {
+                    start: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await allTagAverageReport({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: allTagAverageReportInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
 
 export const savingsInterestReportQueryKey = (options: Options<SavingsInterestReportData>) => createQueryKey('savingsInterestReport', options);
 
@@ -1754,27 +1781,30 @@ export const savingsInterestReportOptions = (options: Options<SavingsInterestRep
 
 export const savingsInterestReportInfiniteQueryKey = (options: Options<SavingsInterestReportData>): QueryKey<Options<SavingsInterestReportData>> => createQueryKey('savingsInterestReport', options, true);
 
-export const savingsInterestReportInfiniteOptions = (options: Options<SavingsInterestReportData>) => infiniteQueryOptions<SavingsInterestReportResponse, AxiosError<DefaultError>, InfiniteData<SavingsInterestReportResponse>, QueryKey<Options<SavingsInterestReportData>>, string | Pick<QueryKey<Options<SavingsInterestReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-// @ts-ignore
-{
-    queryFn: async ({ pageParam, queryKey, signal }) => {
-        // @ts-ignore
-        const page: Pick<QueryKey<Options<SavingsInterestReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-            path: {
-                start: pageParam
-            }
-        };
-        const params = createInfiniteParams(queryKey, page);
-        const { data } = await savingsInterestReport({
-            ...options,
-            ...params,
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: savingsInterestReportInfiniteQueryKey(options)
-});
+export const savingsInterestReportInfiniteOptions = (options: Options<SavingsInterestReportData>) => {
+    const opts = infiniteQueryOptions<SavingsInterestReportResponse, AxiosError<DefaultError>, InfiniteData<SavingsInterestReportResponse>, QueryKey<Options<SavingsInterestReportData>>, string | Pick<QueryKey<Options<SavingsInterestReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<SavingsInterestReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                path: {
+                    start: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await savingsInterestReport({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: savingsInterestReportInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
 
 export const superContributionsReportQueryKey = (options: Options<SuperContributionsReportData>) => createQueryKey('superContributionsReport', options);
 
@@ -1793,27 +1823,30 @@ export const superContributionsReportOptions = (options: Options<SuperContributi
 
 export const superContributionsReportInfiniteQueryKey = (options: Options<SuperContributionsReportData>): QueryKey<Options<SuperContributionsReportData>> => createQueryKey('superContributionsReport', options, true);
 
-export const superContributionsReportInfiniteOptions = (options: Options<SuperContributionsReportData>) => infiniteQueryOptions<SuperContributionsReportResponse, AxiosError<DefaultError>, InfiniteData<SuperContributionsReportResponse>, QueryKey<Options<SuperContributionsReportData>>, string | Pick<QueryKey<Options<SuperContributionsReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-// @ts-ignore
-{
-    queryFn: async ({ pageParam, queryKey, signal }) => {
-        // @ts-ignore
-        const page: Pick<QueryKey<Options<SuperContributionsReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-            path: {
-                start: pageParam
-            }
-        };
-        const params = createInfiniteParams(queryKey, page);
-        const { data } = await superContributionsReport({
-            ...options,
-            ...params,
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: superContributionsReportInfiniteQueryKey(options)
-});
+export const superContributionsReportInfiniteOptions = (options: Options<SuperContributionsReportData>) => {
+    const opts = infiniteQueryOptions<SuperContributionsReportResponse, AxiosError<DefaultError>, InfiniteData<SuperContributionsReportResponse>, QueryKey<Options<SuperContributionsReportData>>, string | Pick<QueryKey<Options<SuperContributionsReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<SuperContributionsReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                path: {
+                    start: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await superContributionsReport({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: superContributionsReportInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
 
 export const superReturnsReportQueryKey = (options: Options<SuperReturnsReportData>) => createQueryKey('superReturnsReport', options);
 
@@ -1847,27 +1880,30 @@ export const principalVsInterestReportOptions = (options: Options<PrincipalVsInt
 
 export const principalVsInterestReportInfiniteQueryKey = (options: Options<PrincipalVsInterestReportData>): QueryKey<Options<PrincipalVsInterestReportData>> => createQueryKey('principalVsInterestReport', options, true);
 
-export const principalVsInterestReportInfiniteOptions = (options: Options<PrincipalVsInterestReportData>) => infiniteQueryOptions<PrincipalVsInterestReportResponse, AxiosError<DefaultError>, InfiniteData<PrincipalVsInterestReportResponse>, QueryKey<Options<PrincipalVsInterestReportData>>, string | Pick<QueryKey<Options<PrincipalVsInterestReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-// @ts-ignore
-{
-    queryFn: async ({ pageParam, queryKey, signal }) => {
-        // @ts-ignore
-        const page: Pick<QueryKey<Options<PrincipalVsInterestReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-            path: {
-                start: pageParam
-            }
-        };
-        const params = createInfiniteParams(queryKey, page);
-        const { data } = await principalVsInterestReport({
-            ...options,
-            ...params,
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: principalVsInterestReportInfiniteQueryKey(options)
-});
+export const principalVsInterestReportInfiniteOptions = (options: Options<PrincipalVsInterestReportData>) => {
+    const opts = infiniteQueryOptions<PrincipalVsInterestReportResponse, AxiosError<DefaultError>, InfiniteData<PrincipalVsInterestReportResponse>, QueryKey<Options<PrincipalVsInterestReportData>>, string | Pick<QueryKey<Options<PrincipalVsInterestReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<PrincipalVsInterestReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                path: {
+                    start: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await principalVsInterestReport({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: principalVsInterestReportInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
 
 export const monthlyBalancesReportQueryKey = (options: Options<MonthlyBalancesReportData>) => createQueryKey('monthlyBalancesReport', options);
 
@@ -1901,27 +1937,30 @@ export const monthlyBalancesReportFromOptions = (options: Options<MonthlyBalance
 
 export const monthlyBalancesReportFromInfiniteQueryKey = (options: Options<MonthlyBalancesReportFromData>): QueryKey<Options<MonthlyBalancesReportFromData>> => createQueryKey('monthlyBalancesReportFrom', options, true);
 
-export const monthlyBalancesReportFromInfiniteOptions = (options: Options<MonthlyBalancesReportFromData>) => infiniteQueryOptions<MonthlyBalancesReportFromResponse, AxiosError<DefaultError>, InfiniteData<MonthlyBalancesReportFromResponse>, QueryKey<Options<MonthlyBalancesReportFromData>>, string | Pick<QueryKey<Options<MonthlyBalancesReportFromData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-// @ts-ignore
-{
-    queryFn: async ({ pageParam, queryKey, signal }) => {
-        // @ts-ignore
-        const page: Pick<QueryKey<Options<MonthlyBalancesReportFromData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-            path: {
-                start: pageParam
-            }
-        };
-        const params = createInfiniteParams(queryKey, page);
-        const { data } = await monthlyBalancesReportFrom({
-            ...options,
-            ...params,
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: monthlyBalancesReportFromInfiniteQueryKey(options)
-});
+export const monthlyBalancesReportFromInfiniteOptions = (options: Options<MonthlyBalancesReportFromData>) => {
+    const opts = infiniteQueryOptions<MonthlyBalancesReportFromResponse, AxiosError<DefaultError>, InfiniteData<MonthlyBalancesReportFromResponse>, QueryKey<Options<MonthlyBalancesReportFromData>>, string | Pick<QueryKey<Options<MonthlyBalancesReportFromData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<MonthlyBalancesReportFromData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                path: {
+                    start: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await monthlyBalancesReportFrom({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: monthlyBalancesReportFromInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
 
 export const monthlyBalancesReportForPeriodQueryKey = (options: Options<MonthlyBalancesReportForPeriodData>) => createQueryKey('monthlyBalancesReportForPeriod', options);
 
@@ -1940,27 +1979,30 @@ export const monthlyBalancesReportForPeriodOptions = (options: Options<MonthlyBa
 
 export const monthlyBalancesReportForPeriodInfiniteQueryKey = (options: Options<MonthlyBalancesReportForPeriodData>): QueryKey<Options<MonthlyBalancesReportForPeriodData>> => createQueryKey('monthlyBalancesReportForPeriod', options, true);
 
-export const monthlyBalancesReportForPeriodInfiniteOptions = (options: Options<MonthlyBalancesReportForPeriodData>) => infiniteQueryOptions<MonthlyBalancesReportForPeriodResponse, AxiosError<DefaultError>, InfiniteData<MonthlyBalancesReportForPeriodResponse>, QueryKey<Options<MonthlyBalancesReportForPeriodData>>, string | Pick<QueryKey<Options<MonthlyBalancesReportForPeriodData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-// @ts-ignore
-{
-    queryFn: async ({ pageParam, queryKey, signal }) => {
-        // @ts-ignore
-        const page: Pick<QueryKey<Options<MonthlyBalancesReportForPeriodData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-            path: {
-                start: pageParam
-            }
-        };
-        const params = createInfiniteParams(queryKey, page);
-        const { data } = await monthlyBalancesReportForPeriod({
-            ...options,
-            ...params,
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: monthlyBalancesReportForPeriodInfiniteQueryKey(options)
-});
+export const monthlyBalancesReportForPeriodInfiniteOptions = (options: Options<MonthlyBalancesReportForPeriodData>) => {
+    const opts = infiniteQueryOptions<MonthlyBalancesReportForPeriodResponse, AxiosError<DefaultError>, InfiniteData<MonthlyBalancesReportForPeriodResponse>, QueryKey<Options<MonthlyBalancesReportForPeriodData>>, string | Pick<QueryKey<Options<MonthlyBalancesReportForPeriodData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<MonthlyBalancesReportForPeriodData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                path: {
+                    start: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await monthlyBalancesReportForPeriod({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: monthlyBalancesReportForPeriodInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
 
 export const groupMonthlyBalancesReportQueryKey = (options: Options<GroupMonthlyBalancesReportData>) => createQueryKey('groupMonthlyBalancesReport', options);
 
@@ -1979,27 +2021,30 @@ export const groupMonthlyBalancesReportOptions = (options: Options<GroupMonthlyB
 
 export const groupMonthlyBalancesReportInfiniteQueryKey = (options: Options<GroupMonthlyBalancesReportData>): QueryKey<Options<GroupMonthlyBalancesReportData>> => createQueryKey('groupMonthlyBalancesReport', options, true);
 
-export const groupMonthlyBalancesReportInfiniteOptions = (options: Options<GroupMonthlyBalancesReportData>) => infiniteQueryOptions<GroupMonthlyBalancesReportResponse, AxiosError<DefaultError>, InfiniteData<GroupMonthlyBalancesReportResponse>, QueryKey<Options<GroupMonthlyBalancesReportData>>, string | Pick<QueryKey<Options<GroupMonthlyBalancesReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-// @ts-ignore
-{
-    queryFn: async ({ pageParam, queryKey, signal }) => {
-        // @ts-ignore
-        const page: Pick<QueryKey<Options<GroupMonthlyBalancesReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-            path: {
-                start: pageParam
-            }
-        };
-        const params = createInfiniteParams(queryKey, page);
-        const { data } = await groupMonthlyBalancesReport({
-            ...options,
-            ...params,
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: groupMonthlyBalancesReportInfiniteQueryKey(options)
-});
+export const groupMonthlyBalancesReportInfiniteOptions = (options: Options<GroupMonthlyBalancesReportData>) => {
+    const opts = infiniteQueryOptions<GroupMonthlyBalancesReportResponse, AxiosError<DefaultError>, InfiniteData<GroupMonthlyBalancesReportResponse>, QueryKey<Options<GroupMonthlyBalancesReportData>>, string | Pick<QueryKey<Options<GroupMonthlyBalancesReportData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<GroupMonthlyBalancesReportData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                path: {
+                    start: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await groupMonthlyBalancesReport({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: groupMonthlyBalancesReportInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
 
 export const getStockHoldingQueryKey = (options: Options<GetStockHoldingData>) => createQueryKey('getStockHolding', options);
 

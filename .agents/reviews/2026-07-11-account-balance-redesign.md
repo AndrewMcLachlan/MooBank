@@ -1,6 +1,6 @@
 # Design Spike — `dbo.AccountBalance` redesign (Theme 7.3)
 
-**Status:** **Option B selected by the user and implemented** (2026-07-11). Build + full test suite + SQL project all green. The one item that automated tests do **not** cover — TPT + `ToView` runtime SQL against real SQL Server — remains for the dev-DB validation gate in §7.
+**Status:** **Option B (table+view entity mapping) REVERTED — not viable in EF Core with this hierarchy.** Restored the original scalar-UDF computed columns. See §9 for the failure. The perf goal remains open; the only viable set-based path is the keyed view-entity in §5.1, which is more invasive and needs a separate decision.
 **Date:** 2026-07-11
 **Related:** `.claude/plans/joyful-tickling-parrot.md` (Theme 7.3), architecture review `2026-07-10-architecture-review.md`.
 
@@ -127,13 +127,20 @@ Store `Balance` on `TransactionInstrument`, updated incrementally by domain beha
 
 ## 5. EF Core mapping considerations (applies to B and C)
 
-The entity must keep a readable `decimal Balance` (and ideally `LastTransaction`) with the call sites in §3 unchanged. Candidate approaches, to be prototyped:
+The entity must keep a readable `decimal Balance` (and ideally `LastTransaction`) with the call sites in §3 unchanged.
 
-1. **Keyless companion entity mapped to the view**, auto-included and projected onto `TransactionInstrument` — cleanest separation; verify EF emits a single joined query (no N+1) for account-list reads.
-2. **`ToView` / table-splitting** so `TransactionInstrument` reads `Balance`/`LastTransaction` from a view while its writable columns remain on the base table — keeps `account.Balance` working verbatim; confirm EF treats them as store-generated/read-only.
-3. Keep `LastTransaction` as a trivial correlated expression (or leave its current computed column) if Option C is chosen, since `MAX` can't be materialised.
+### 5.1 Keyed view-entity + navigation (the only viable path — not yet implemented)
 
-The chosen approach must produce **one** query for the dashboard/account-list path (join, not per-row), which is the whole point.
+A **keyed** entity `InstrumentBalance { Guid InstrumentId (key); decimal Balance; DateOnly? LastTransaction }` mapped `ToView("TransactionInstrumentBalance")` — **outside** the `Instrument`/TPT hierarchy — with a one-to-one relationship to `TransactionInstrument` (shared `InstrumentId`). Consumers `.Include(x => x.BalanceInfo)` and read `account.BalanceInfo?.Balance ?? 0`.
+
+- **Pro:** each entity keeps a **single table base**, so it sidesteps the EF failure in §9.
+- **Con (invasive):** changes the domain shape (new navigation), and **every** read path that needs a balance must add the `Include` — miss one and the balance silently reads null/0. Broad blast radius across account DTOs, Reports, Forecast. Needs its own plan + the §7 validation, and must be smoke-tested against real SQL Server (InMemory won't catch mapping faults — see §9).
+
+### 5.2 Rejected: `ToView` + `ToTable` dual mapping on `TransactionInstrument`
+
+Keeping `account.Balance` verbatim by mapping the **same** TPT entity to both the table (writes) and the view (reads). **This does not work** — see §9. Do not retry it.
+
+Whatever approach is chosen must produce **one** query for the dashboard/account-list path (join, not per-row), which is the whole point.
 
 ---
 
@@ -168,3 +175,28 @@ Effectively: **do the cheap, safe structural fix (B) first; measure; only take o
 - Confirm the EF mapping approach preference (§5) — or leave it to a prototype spike.
 
 On sign-off, this becomes an implementation task (SQL objects + EF mapping + validation), shipped as its own PR per the standing batching rule.
+
+---
+
+## 9. Post-implementation finding — why §5.2 (`ToView` + `ToTable` on a TPT type) fails
+
+Option B was implemented with the §5.2 dual mapping (`builder.ToTable(...); builder.ToView("TransactionInstrumentBalance");` on `TransactionInstrument`, keeping `Balance`/`LastTransaction` as `DatabaseGeneratedOption.Computed`). Build, full test suite, and the SQL project were all green — **but the app threw at runtime on every instrument-loading query** (user token validation in `OnTokenValidated`, recurring-transaction processing, account lists, …):
+
+```
+System.InvalidOperationException: Sequence contains more than one matching element
+  System.Linq.Enumerable.Single<TSource>(source, predicate)
+  EFCore.Relational … RelationalQueryableMethodTranslatingExpressionVisitor
+        .CreateSelect.GetTableBaseFiltered(IEntityType entityType, Dictionary<ITableBase,string> existingTables)
+        .CreateSelect.CreateRootSelectExpressionCore(IEntityType entityType)
+        .CreateSelect(IEntityType entityType)
+        .CreateShapedQueryExpression(IEntityType entityType)
+```
+
+**Root cause:** the failure is at **query translation**, not materialisation. When building the root `SELECT` for a type in a **TPT hierarchy**, EF's `GetTableBaseFiltered` calls `.Single(...)` expecting the type to resolve to **exactly one table base**. The dual mapping gives `TransactionInstrument` **two** table bases (the `TransactionInstrument` table *and* the `TransactionInstrumentBalance` view), so `.Single` throws. Because the type is loaded polymorphically, this breaks essentially every query that touches an instrument.
+
+**Two lessons:**
+
+1. **`ToTable` + `ToView` on the same entity is incompatible with that entity participating in a TPT inheritance hierarchy.** The EF docs advertise table+view dual mapping for *simple* entities; they do not support it for a hierarchy member. (Entity *splitting* is explicitly unsupported in hierarchies; this is the analogous limitation for table/view dual mapping.)
+2. **The InMemory test provider does not exercise `ToView`**, so the entire test suite passed while the relational query was un-translatable. Any future view-mapping work here **must** be validated against real SQL Server (e.g. `ToQueryString()` on a `UseSqlServer` context, which reproduces the throw without a live connection), not just the InMemory suite.
+
+**Resolution:** reverted to the original scalar-UDF computed columns (known-good). The perf goal is unchanged and still open; if pursued, use §5.1 (keyed view-entity + navigation), which keeps a single table base per entity, and validate per lesson 2 above.

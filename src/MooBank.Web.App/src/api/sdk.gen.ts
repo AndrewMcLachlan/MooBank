@@ -21,14 +21,14 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
 export const getAccounts = <ThrowOnError extends boolean = false>(options?: Options<GetAccountsData, ThrowOnError>): RequestResult<GetAccountsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetAccountsResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts',
+    url: '/accounts',
     ...options
 });
 
 export const createAccount = <ThrowOnError extends boolean = false>(options: Options<CreateAccountData, ThrowOnError>): RequestResult<CreateAccountResponses, unknown, ThrowOnError> => (options.client ?? client).post<CreateAccountResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts',
+    url: '/accounts',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -39,14 +39,14 @@ export const createAccount = <ThrowOnError extends boolean = false>(options: Opt
 export const getAccount = <ThrowOnError extends boolean = false>(options: Options<GetAccountData, ThrowOnError>): RequestResult<GetAccountResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetAccountResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{instrumentId}',
+    url: '/accounts/{instrumentId}',
     ...options
 });
 
 export const updateAccount = <ThrowOnError extends boolean = false>(options: Options<UpdateAccountData, ThrowOnError>): RequestResult<UpdateAccountResponses, unknown, ThrowOnError> => (options.client ?? client).patch<UpdateAccountResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{id}',
+    url: '/accounts/{id}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -57,28 +57,28 @@ export const updateAccount = <ThrowOnError extends boolean = false>(options: Opt
 export const setAccountTagPurpose = <ThrowOnError extends boolean = false>(options: Options<SetAccountTagPurposeData, ThrowOnError>): RequestResult<SetAccountTagPurposeResponses, unknown, ThrowOnError> => (options.client ?? client).put<SetAccountTagPurposeResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{instrumentId}/tag-purposes/{purpose}/{tagId}',
+    url: '/accounts/{instrumentId}/tag-purposes/{purpose}/{tagId}',
     ...options
 });
 
 export const deleteAccountTagPurpose = <ThrowOnError extends boolean = false>(options: Options<DeleteAccountTagPurposeData, ThrowOnError>): RequestResult<DeleteAccountTagPurposeResponses, unknown, ThrowOnError> => (options.client ?? client).delete<DeleteAccountTagPurposeResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{instrumentId}/tag-purposes/{purpose}',
+    url: '/accounts/{instrumentId}/tag-purposes/{purpose}',
     ...options
 });
 
 export const getInstitutionAccount = <ThrowOnError extends boolean = false>(options: Options<GetInstitutionAccountData, ThrowOnError>): RequestResult<GetInstitutionAccountResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetInstitutionAccountResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{instrumentId}/institution-accounts/{id}',
+    url: '/accounts/{instrumentId}/institution-accounts/{id}',
     ...options
 });
 
 export const updateInstitutionAccount = <ThrowOnError extends boolean = false>(options: Options<UpdateInstitutionAccountData, ThrowOnError>): RequestResult<UpdateInstitutionAccountResponses, unknown, ThrowOnError> => (options.client ?? client).patch<UpdateInstitutionAccountResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{instrumentId}/institution-accounts/{id}',
+    url: '/accounts/{instrumentId}/institution-accounts/{id}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -89,7 +89,7 @@ export const updateInstitutionAccount = <ThrowOnError extends boolean = false>(o
 export const createInstitutionAccount = <ThrowOnError extends boolean = false>(options: Options<CreateInstitutionAccountData, ThrowOnError>): RequestResult<CreateInstitutionAccountResponses, unknown, ThrowOnError> => (options.client ?? client).post<CreateInstitutionAccountResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{instrumentId}/institution-accounts',
+    url: '/accounts/{instrumentId}/institution-accounts',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -100,21 +100,21 @@ export const createInstitutionAccount = <ThrowOnError extends boolean = false>(o
 export const closeInstitutionAccount = <ThrowOnError extends boolean = false>(options: Options<CloseInstitutionAccountData, ThrowOnError>): RequestResult<CloseInstitutionAccountResponses, unknown, ThrowOnError> => (options.client ?? client).post<CloseInstitutionAccountResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{instrumentId}/institution-accounts/{id}/close',
+    url: '/accounts/{instrumentId}/institution-accounts/{id}/close',
     ...options
 });
 
 export const getAllRecurringTransactions = <ThrowOnError extends boolean = false>(options: Options<GetAllRecurringTransactionsData, ThrowOnError>): RequestResult<GetAllRecurringTransactionsResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetAllRecurringTransactionsResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{accountId}/recurring',
+    url: '/accounts/{accountId}/recurring',
     ...options
 });
 
 export const createRecurringTransaction = <ThrowOnError extends boolean = false>(options: Options<CreateRecurringTransactionData, ThrowOnError>): RequestResult<CreateRecurringTransactionResponses, unknown, ThrowOnError> => (options.client ?? client).post<CreateRecurringTransactionResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{accountId}/recurring',
+    url: '/accounts/{accountId}/recurring',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -124,21 +124,21 @@ export const createRecurringTransaction = <ThrowOnError extends boolean = false>
 
 export const deleteRecurringTransaction = <ThrowOnError extends boolean = false>(options: Options<DeleteRecurringTransactionData, ThrowOnError>): RequestResult<DeleteRecurringTransactionResponses, unknown, ThrowOnError> => (options.client ?? client).delete<DeleteRecurringTransactionResponses, unknown, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{accountId}/recurring/{recurringTransactionId}',
+    url: '/accounts/{accountId}/recurring/{recurringTransactionId}',
     ...options
 });
 
 export const getRecurringTransaction = <ThrowOnError extends boolean = false>(options: Options<GetRecurringTransactionData, ThrowOnError>): RequestResult<GetRecurringTransactionResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetRecurringTransactionResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{accountId}/recurring/{recurringTransactionId}',
+    url: '/accounts/{accountId}/recurring/{recurringTransactionId}',
     ...options
 });
 
 export const updateRecurringTransaction = <ThrowOnError extends boolean = false>(options: Options<UpdateRecurringTransactionData, ThrowOnError>): RequestResult<UpdateRecurringTransactionResponses, unknown, ThrowOnError> => (options.client ?? client).patch<UpdateRecurringTransactionResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{accountId}/recurring/{recurringTransactionId}',
+    url: '/accounts/{accountId}/recurring/{recurringTransactionId}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -149,21 +149,21 @@ export const updateRecurringTransaction = <ThrowOnError extends boolean = false>
 export const getRecurringTransactionsForAVirtualAccount = <ThrowOnError extends boolean = false>(options: Options<GetRecurringTransactionsForAVirtualAccountData, ThrowOnError>): RequestResult<GetRecurringTransactionsForAVirtualAccountResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetRecurringTransactionsForAVirtualAccountResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{accountId}/virtual/{virtualAccountId}/recurring',
+    url: '/accounts/{accountId}/virtual/{virtualAccountId}/recurring',
     ...options
 });
 
 export const getAsset = <ThrowOnError extends boolean = false>(options: Options<GetAssetData, ThrowOnError>): RequestResult<GetAssetResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetAssetResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/assets/{id}',
+    url: '/assets/{id}',
     ...options
 });
 
 export const updateAsset = <ThrowOnError extends boolean = false>(options: Options<UpdateAssetData, ThrowOnError>): RequestResult<UpdateAssetResponses, unknown, ThrowOnError> => (options.client ?? client).patch<UpdateAssetResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/assets/{id}',
+    url: '/assets/{id}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -174,7 +174,7 @@ export const updateAsset = <ThrowOnError extends boolean = false>(options: Optio
 export const createAsset = <ThrowOnError extends boolean = false>(options: Options<CreateAssetData, ThrowOnError>): RequestResult<CreateAssetResponses, unknown, ThrowOnError> => (options.client ?? client).post<CreateAssetResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/assets',
+    url: '/assets',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -185,35 +185,35 @@ export const createAsset = <ThrowOnError extends boolean = false>(options: Optio
 export const getAllBills = <ThrowOnError extends boolean = false>(options: Options<GetAllBillsData, ThrowOnError>): RequestResult<GetAllBillsResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetAllBillsResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/bills',
+    url: '/bills',
     ...options
 });
 
 export const getBillAccountSummariesByType = <ThrowOnError extends boolean = false>(options?: Options<GetBillAccountSummariesByTypeData, ThrowOnError>): RequestResult<GetBillAccountSummariesByTypeResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetBillAccountSummariesByTypeResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/bills/accounts/types',
+    url: '/bills/accounts/types',
     ...options
 });
 
 export const getBillAccountsByType = <ThrowOnError extends boolean = false>(options: Options<GetBillAccountsByTypeData, ThrowOnError>): RequestResult<GetBillAccountsByTypeResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetBillAccountsByTypeResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/bills/accounts/types/{type}',
+    url: '/bills/accounts/types/{type}',
     ...options
 });
 
 export const getBillAccounts = <ThrowOnError extends boolean = false>(options?: Options<GetBillAccountsData, ThrowOnError>): RequestResult<GetBillAccountsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetBillAccountsResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/bills/accounts',
+    url: '/bills/accounts',
     ...options
 });
 
 export const createBillAccount = <ThrowOnError extends boolean = false>(options: Options<CreateBillAccountData, ThrowOnError>): RequestResult<CreateBillAccountResponses, unknown, ThrowOnError> => (options.client ?? client).post<CreateBillAccountResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/bills/accounts',
+    url: '/bills/accounts',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -224,14 +224,14 @@ export const createBillAccount = <ThrowOnError extends boolean = false>(options:
 export const getBillsByUtilityType = <ThrowOnError extends boolean = false>(options: Options<GetBillsByUtilityTypeData, ThrowOnError>): RequestResult<GetBillsByUtilityTypeResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetBillsByUtilityTypeResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/bills/types/{utilityType}/bills',
+    url: '/bills/types/{utilityType}/bills',
     ...options
 });
 
 export const importBills = <ThrowOnError extends boolean = false>(options: Options<ImportBillsData, ThrowOnError>): RequestResult<ImportBillsResponses, unknown, ThrowOnError> => (options.client ?? client).post<ImportBillsResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/bills/import',
+    url: '/bills/import',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -242,21 +242,21 @@ export const importBills = <ThrowOnError extends boolean = false>(options: Optio
 export const getBillAccount = <ThrowOnError extends boolean = false>(options: Options<GetBillAccountData, ThrowOnError>): RequestResult<GetBillAccountResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetBillAccountResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/bills/accounts/{instrumentId}',
+    url: '/bills/accounts/{instrumentId}',
     ...options
 });
 
 export const getBillsForAnAccount = <ThrowOnError extends boolean = false>(options: Options<GetBillsForAnAccountData, ThrowOnError>): RequestResult<GetBillsForAnAccountResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetBillsForAnAccountResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/bills/accounts/{instrumentId}/bills',
+    url: '/bills/accounts/{instrumentId}/bills',
     ...options
 });
 
 export const createBill = <ThrowOnError extends boolean = false>(options: Options<CreateBillData, ThrowOnError>): RequestResult<CreateBillResponses, unknown, ThrowOnError> => (options.client ?? client).post<CreateBillResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/bills/accounts/{instrumentId}/bills',
+    url: '/bills/accounts/{instrumentId}/bills',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -267,62 +267,62 @@ export const createBill = <ThrowOnError extends boolean = false>(options: Option
 export const getBill = <ThrowOnError extends boolean = false>(options: Options<GetBillData, ThrowOnError>): RequestResult<GetBillResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetBillResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/bills/accounts/{instrumentId}/bills/{id}',
+    url: '/bills/accounts/{instrumentId}/bills/{id}',
     ...options
 });
 
 export const getCostPerUnitReport = <ThrowOnError extends boolean = false>(options: Options<GetCostPerUnitReportData, ThrowOnError>): RequestResult<GetCostPerUnitReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetCostPerUnitReportResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/bills/reports/cost-per-unit',
+    url: '/bills/reports/cost-per-unit',
     ...options
 });
 
 export const getServiceChargeReport = <ThrowOnError extends boolean = false>(options: Options<GetServiceChargeReportData, ThrowOnError>): RequestResult<GetServiceChargeReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetServiceChargeReportResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/bills/reports/service-charge',
+    url: '/bills/reports/service-charge',
     ...options
 });
 
 export const getUsageReport = <ThrowOnError extends boolean = false>(options: Options<GetUsageReportData, ThrowOnError>): RequestResult<GetUsageReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetUsageReportResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/bills/reports/usage',
+    url: '/bills/reports/usage',
     ...options
 });
 
 export const getAllBudgetYears = <ThrowOnError extends boolean = false>(options?: Options<GetAllBudgetYearsData, ThrowOnError>): RequestResult<GetAllBudgetYearsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetAllBudgetYearsResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/budget',
+    url: '/budget',
     ...options
 });
 
 export const getBudget = <ThrowOnError extends boolean = false>(options: Options<GetBudgetData, ThrowOnError>): RequestResult<GetBudgetResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetBudgetResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/budget/{year}',
+    url: '/budget/{year}',
     ...options
 });
 
 export const deleteBudgetLine = <ThrowOnError extends boolean = false>(options: Options<DeleteBudgetLineData, ThrowOnError>): RequestResult<DeleteBudgetLineResponses, unknown, ThrowOnError> => (options.client ?? client).delete<DeleteBudgetLineResponses, unknown, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/budget/{year}/lines/{id}',
+    url: '/budget/{year}/lines/{id}',
     ...options
 });
 
 export const getBudgetLine = <ThrowOnError extends boolean = false>(options: Options<GetBudgetLineData, ThrowOnError>): RequestResult<GetBudgetLineResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetBudgetLineResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/budget/{year}/lines/{id}',
+    url: '/budget/{year}/lines/{id}',
     ...options
 });
 
 export const updateBudgetLine = <ThrowOnError extends boolean = false>(options: Options<UpdateBudgetLineData, ThrowOnError>): RequestResult<UpdateBudgetLineResponses, unknown, ThrowOnError> => (options.client ?? client).patch<UpdateBudgetLineResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/budget/{year}/lines/{id}',
+    url: '/budget/{year}/lines/{id}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -333,7 +333,7 @@ export const updateBudgetLine = <ThrowOnError extends boolean = false>(options: 
 export const createBudgetLine = <ThrowOnError extends boolean = false>(options: Options<CreateBudgetLineData, ThrowOnError>): RequestResult<CreateBudgetLineResponses, unknown, ThrowOnError> => (options.client ?? client).post<CreateBudgetLineResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/budget/{year}/lines',
+    url: '/budget/{year}/lines',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -344,56 +344,56 @@ export const createBudgetLine = <ThrowOnError extends boolean = false>(options: 
 export const generateBudget = <ThrowOnError extends boolean = false>(options: Options<GenerateBudgetData, ThrowOnError>): RequestResult<GenerateBudgetResponses, unknown, ThrowOnError> => (options.client ?? client).post<GenerateBudgetResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/budget/{year}/generate',
+    url: '/budget/{year}/generate',
     ...options
 });
 
 export const getBudgetAmountForTag = <ThrowOnError extends boolean = false>(options: Options<GetBudgetAmountForTagData, ThrowOnError>): RequestResult<GetBudgetAmountForTagResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetBudgetAmountForTagResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/budget/tag/{tagId}',
+    url: '/budget/tag/{tagId}',
     ...options
 });
 
 export const getBudgetReport = <ThrowOnError extends boolean = false>(options: Options<GetBudgetReportData, ThrowOnError>): RequestResult<GetBudgetReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetBudgetReportResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/budget/{year}/report',
+    url: '/budget/{year}/report',
     ...options
 });
 
 export const getBudgetReportForMonth = <ThrowOnError extends boolean = false>(options: Options<GetBudgetReportForMonthData, ThrowOnError>): RequestResult<GetBudgetReportForMonthResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetBudgetReportForMonthResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/budget/{year}/report/{month}',
+    url: '/budget/{year}/report/{month}',
     ...options
 });
 
 export const getBudgetReportBreakdownForMonth = <ThrowOnError extends boolean = false>(options: Options<GetBudgetReportBreakdownForMonthData, ThrowOnError>): RequestResult<GetBudgetReportBreakdownForMonthResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetBudgetReportBreakdownForMonthResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/budget/{year}/report/{month}/breakdown',
+    url: '/budget/{year}/report/{month}/breakdown',
     ...options
 });
 
 export const getBudgetReportBreakdownForMonthForUnbudgetedItems = <ThrowOnError extends boolean = false>(options: Options<GetBudgetReportBreakdownForMonthForUnbudgetedItemsData, ThrowOnError>): RequestResult<GetBudgetReportBreakdownForMonthForUnbudgetedItemsResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetBudgetReportBreakdownForMonthForUnbudgetedItemsResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/budget/{year}/report/{month}/breakdown/unbudgeted',
+    url: '/budget/{year}/report/{month}/breakdown/unbudgeted',
     ...options
 });
 
 export const getMyFamily = <ThrowOnError extends boolean = false>(options?: Options<GetMyFamilyData, ThrowOnError>): RequestResult<GetMyFamilyResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetMyFamilyResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/families',
+    url: '/families',
     ...options
 });
 
 export const updateMyFamily = <ThrowOnError extends boolean = false>(options: Options<UpdateMyFamilyData, ThrowOnError>): RequestResult<UpdateMyFamilyResponses, unknown, ThrowOnError> => (options.client ?? client).patch<UpdateMyFamilyResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/families',
+    url: '/families',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -403,21 +403,21 @@ export const updateMyFamily = <ThrowOnError extends boolean = false>(options: Op
 
 export const removeFamilyMember = <ThrowOnError extends boolean = false>(options: Options<RemoveFamilyMemberData, ThrowOnError>): RequestResult<RemoveFamilyMemberResponses, unknown, ThrowOnError> => (options.client ?? client).delete<RemoveFamilyMemberResponses, unknown, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/families/members/{userId}',
+    url: '/families/members/{userId}',
     ...options
 });
 
 export const getAllFamilies = <ThrowOnError extends boolean = false>(options?: Options<GetAllFamiliesData, ThrowOnError>): RequestResult<GetAllFamiliesResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetAllFamiliesResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/families/admin',
+    url: '/families/admin',
     ...options
 });
 
 export const createFamily = <ThrowOnError extends boolean = false>(options: Options<CreateFamilyData, ThrowOnError>): RequestResult<CreateFamilyResponses, unknown, ThrowOnError> => (options.client ?? client).post<CreateFamilyResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/families/admin',
+    url: '/families/admin',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -428,14 +428,14 @@ export const createFamily = <ThrowOnError extends boolean = false>(options: Opti
 export const getFamily = <ThrowOnError extends boolean = false>(options: Options<GetFamilyData, ThrowOnError>): RequestResult<GetFamilyResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetFamilyResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/families/admin/{id}',
+    url: '/families/admin/{id}',
     ...options
 });
 
 export const updateFamily = <ThrowOnError extends boolean = false>(options: Options<UpdateFamilyData, ThrowOnError>): RequestResult<UpdateFamilyResponses, unknown, ThrowOnError> => (options.client ?? client).patch<UpdateFamilyResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/families/admin/{id}',
+    url: '/families/admin/{id}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -446,14 +446,14 @@ export const updateFamily = <ThrowOnError extends boolean = false>(options: Opti
 export const getAllForecastPlans = <ThrowOnError extends boolean = false>(options?: Options<GetAllForecastPlansData, ThrowOnError>): RequestResult<GetAllForecastPlansResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetAllForecastPlansResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/forecast/plans',
+    url: '/forecast/plans',
     ...options
 });
 
 export const createForecastPlan = <ThrowOnError extends boolean = false>(options: Options<CreateForecastPlanData, ThrowOnError>): RequestResult<CreateForecastPlanResponses, unknown, ThrowOnError> => (options.client ?? client).post<CreateForecastPlanResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/forecast/plans',
+    url: '/forecast/plans',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -463,21 +463,21 @@ export const createForecastPlan = <ThrowOnError extends boolean = false>(options
 
 export const deleteForecastPlan = <ThrowOnError extends boolean = false>(options: Options<DeleteForecastPlanData, ThrowOnError>): RequestResult<DeleteForecastPlanResponses, unknown, ThrowOnError> => (options.client ?? client).delete<DeleteForecastPlanResponses, unknown, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/forecast/plans/{id}',
+    url: '/forecast/plans/{id}',
     ...options
 });
 
 export const getForecastPlan = <ThrowOnError extends boolean = false>(options: Options<GetForecastPlanData, ThrowOnError>): RequestResult<GetForecastPlanResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetForecastPlanResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/forecast/plans/{id}',
+    url: '/forecast/plans/{id}',
     ...options
 });
 
 export const updateForecastPlan = <ThrowOnError extends boolean = false>(options: Options<UpdateForecastPlanData, ThrowOnError>): RequestResult<UpdateForecastPlanResponses, unknown, ThrowOnError> => (options.client ?? client).put<UpdateForecastPlanResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/forecast/plans/{id}',
+    url: '/forecast/plans/{id}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -488,34 +488,34 @@ export const updateForecastPlan = <ThrowOnError extends boolean = false>(options
 export const archiveForecastPlan = <ThrowOnError extends boolean = false>(options: Options<ArchiveForecastPlanData, ThrowOnError>): RequestResult<ArchiveForecastPlanResponses, unknown, ThrowOnError> => (options.client ?? client).patch<ArchiveForecastPlanResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/forecast/plans/{id}/archive',
+    url: '/forecast/plans/{id}/archive',
     ...options
 });
 
 export const runForecast = <ThrowOnError extends boolean = false>(options: Options<RunForecastData, ThrowOnError>): RequestResult<RunForecastResponses, unknown, ThrowOnError> => (options.client ?? client).post<RunForecastResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/forecast/plans/{planId}/run',
+    url: '/forecast/plans/{planId}/run',
     ...options
 });
 
 export const deletePlannedItem = <ThrowOnError extends boolean = false>(options: Options<DeletePlannedItemData, ThrowOnError>): RequestResult<DeletePlannedItemResponses, unknown, ThrowOnError> => (options.client ?? client).delete<DeletePlannedItemResponses, unknown, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/forecast/plans/{planId}/items/{itemId}',
+    url: '/forecast/plans/{planId}/items/{itemId}',
     ...options
 });
 
 export const getPlannedItem = <ThrowOnError extends boolean = false>(options: Options<GetPlannedItemData, ThrowOnError>): RequestResult<GetPlannedItemResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetPlannedItemResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/forecast/plans/{planId}/items/{itemId}',
+    url: '/forecast/plans/{planId}/items/{itemId}',
     ...options
 });
 
 export const updatePlannedItem = <ThrowOnError extends boolean = false>(options: Options<UpdatePlannedItemData, ThrowOnError>): RequestResult<UpdatePlannedItemResponses, unknown, ThrowOnError> => (options.client ?? client).put<UpdatePlannedItemResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/forecast/plans/{planId}/items/{itemId}',
+    url: '/forecast/plans/{planId}/items/{itemId}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -526,7 +526,7 @@ export const updatePlannedItem = <ThrowOnError extends boolean = false>(options:
 export const createPlannedItem = <ThrowOnError extends boolean = false>(options: Options<CreatePlannedItemData, ThrowOnError>): RequestResult<CreatePlannedItemResponses, unknown, ThrowOnError> => (options.client ?? client).post<CreatePlannedItemResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/forecast/plans/{planId}/items',
+    url: '/forecast/plans/{planId}/items',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -537,14 +537,14 @@ export const createPlannedItem = <ThrowOnError extends boolean = false>(options:
 export const getAllGroups = <ThrowOnError extends boolean = false>(options?: Options<GetAllGroupsData, ThrowOnError>): RequestResult<GetAllGroupsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetAllGroupsResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/groups',
+    url: '/groups',
     ...options
 });
 
 export const createGroup = <ThrowOnError extends boolean = false>(options: Options<CreateGroupData, ThrowOnError>): RequestResult<CreateGroupResponses, unknown, ThrowOnError> => (options.client ?? client).post<CreateGroupResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/groups',
+    url: '/groups',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -554,21 +554,21 @@ export const createGroup = <ThrowOnError extends boolean = false>(options: Optio
 
 export const deleteGroup = <ThrowOnError extends boolean = false>(options: Options<DeleteGroupData, ThrowOnError>): RequestResult<DeleteGroupResponses, unknown, ThrowOnError> => (options.client ?? client).delete<DeleteGroupResponses, unknown, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/groups/{id}',
+    url: '/groups/{id}',
     ...options
 });
 
 export const getGroup = <ThrowOnError extends boolean = false>(options: Options<GetGroupData, ThrowOnError>): RequestResult<GetGroupResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetGroupResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/groups/{id}',
+    url: '/groups/{id}',
     ...options
 });
 
 export const updateGroup = <ThrowOnError extends boolean = false>(options: Options<UpdateGroupData, ThrowOnError>): RequestResult<UpdateGroupResponses, unknown, ThrowOnError> => (options.client ?? client).patch<UpdateGroupResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/groups/{id}',
+    url: '/groups/{id}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -579,14 +579,14 @@ export const updateGroup = <ThrowOnError extends boolean = false>(options: Optio
 export const getAllInstitutions = <ThrowOnError extends boolean = false>(options?: Options<GetAllInstitutionsData, ThrowOnError>): RequestResult<GetAllInstitutionsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetAllInstitutionsResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/institutions',
+    url: '/institutions',
     ...options
 });
 
 export const createInstitution = <ThrowOnError extends boolean = false>(options: Options<CreateInstitutionData, ThrowOnError>): RequestResult<CreateInstitutionResponses, unknown, ThrowOnError> => (options.client ?? client).post<CreateInstitutionResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/institutions',
+    url: '/institutions',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -597,14 +597,14 @@ export const createInstitution = <ThrowOnError extends boolean = false>(options:
 export const getInstitution = <ThrowOnError extends boolean = false>(options: Options<GetInstitutionData, ThrowOnError>): RequestResult<GetInstitutionResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetInstitutionResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/institutions/{id}',
+    url: '/institutions/{id}',
     ...options
 });
 
 export const updateInstitution = <ThrowOnError extends boolean = false>(options: Options<UpdateInstitutionData, ThrowOnError>): RequestResult<UpdateInstitutionResponses, unknown, ThrowOnError> => (options.client ?? client).patch<UpdateInstitutionResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/institutions/{id}',
+    url: '/institutions/{id}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -615,21 +615,21 @@ export const updateInstitution = <ThrowOnError extends boolean = false>(options:
 export const getFormattedInstrumentsList = <ThrowOnError extends boolean = false>(options?: Options<GetFormattedInstrumentsListData, ThrowOnError>): RequestResult<GetFormattedInstrumentsListResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetFormattedInstrumentsListResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/instruments/summary',
+    url: '/instruments/summary',
     ...options
 });
 
 export const getInstrumentsList = <ThrowOnError extends boolean = false>(options?: Options<GetInstrumentsListData, ThrowOnError>): RequestResult<GetInstrumentsListResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetInstrumentsListResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/instruments/list',
+    url: '/instruments/list',
     ...options
 });
 
 export const import_ = <ThrowOnError extends boolean = false>(options: Options<ImportData, ThrowOnError>): RequestResult<ImportResponses, unknown, ThrowOnError> => (options.client ?? client).post<ImportResponses, unknown, ThrowOnError>({
     ...formDataBodySerializer,
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/instruments/{instrumentId}/accounts/{accountId}/import',
+    url: '/instruments/{instrumentId}/accounts/{accountId}/import',
     ...options,
     headers: {
         'Content-Type': null,
@@ -639,21 +639,21 @@ export const import_ = <ThrowOnError extends boolean = false>(options: Options<I
 
 export const reprocess = <ThrowOnError extends boolean = false>(options: Options<ReprocessData, ThrowOnError>): RequestResult<ReprocessResponses, unknown, ThrowOnError> => (options.client ?? client).post<ReprocessResponses, unknown, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/instruments/{instrumentId}/accounts/{accountId}/import/reprocess',
+    url: '/instruments/{instrumentId}/accounts/{accountId}/import/reprocess',
     ...options
 });
 
 export const getAllInstrumentRules = <ThrowOnError extends boolean = false>(options: Options<GetAllInstrumentRulesData, ThrowOnError>): RequestResult<GetAllInstrumentRulesResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetAllInstrumentRulesResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/instruments/{instrumentId}/rules',
+    url: '/instruments/{instrumentId}/rules',
     ...options
 });
 
 export const createInstrumentRule = <ThrowOnError extends boolean = false>(options: Options<CreateInstrumentRuleData, ThrowOnError>): RequestResult<CreateInstrumentRuleResponses, unknown, ThrowOnError> => (options.client ?? client).post<CreateInstrumentRuleResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/instruments/{instrumentId}/rules',
+    url: '/instruments/{instrumentId}/rules',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -663,21 +663,21 @@ export const createInstrumentRule = <ThrowOnError extends boolean = false>(optio
 
 export const deleteInstrumentRule = <ThrowOnError extends boolean = false>(options: Options<DeleteInstrumentRuleData, ThrowOnError>): RequestResult<DeleteInstrumentRuleResponses, unknown, ThrowOnError> => (options.client ?? client).delete<DeleteInstrumentRuleResponses, unknown, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/instruments/{instrumentId}/rules/{ruleId}',
+    url: '/instruments/{instrumentId}/rules/{ruleId}',
     ...options
 });
 
 export const getInstrumentRule = <ThrowOnError extends boolean = false>(options: Options<GetInstrumentRuleData, ThrowOnError>): RequestResult<GetInstrumentRuleResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetInstrumentRuleResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/instruments/{instrumentId}/rules/{ruleId}',
+    url: '/instruments/{instrumentId}/rules/{ruleId}',
     ...options
 });
 
 export const updateInstrumentRule = <ThrowOnError extends boolean = false>(options: Options<UpdateInstrumentRuleData, ThrowOnError>): RequestResult<UpdateInstrumentRuleResponses, unknown, ThrowOnError> => (options.client ?? client).patch<UpdateInstrumentRuleResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/instruments/{instrumentId}/rules/{ruleId}',
+    url: '/instruments/{instrumentId}/rules/{ruleId}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -687,34 +687,34 @@ export const updateInstrumentRule = <ThrowOnError extends boolean = false>(optio
 
 export const removeTagFromInstrumentRule = <ThrowOnError extends boolean = false>(options: Options<RemoveTagFromInstrumentRuleData, ThrowOnError>): RequestResult<RemoveTagFromInstrumentRuleResponses, unknown, ThrowOnError> => (options.client ?? client).delete<RemoveTagFromInstrumentRuleResponses, unknown, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/instruments/{instrumentId}/rules/{ruleId}/tag/{tagId}',
+    url: '/instruments/{instrumentId}/rules/{ruleId}/tag/{tagId}',
     ...options
 });
 
 export const addTagToInstrumentRule = <ThrowOnError extends boolean = false>(options: Options<AddTagToInstrumentRuleData, ThrowOnError>): RequestResult<AddTagToInstrumentRuleResponses, unknown, ThrowOnError> => (options.client ?? client).put<AddTagToInstrumentRuleResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/instruments/{instrumentId}/rules/{ruleId}/tag/{tagId}',
+    url: '/instruments/{instrumentId}/rules/{ruleId}/tag/{tagId}',
     ...options
 });
 
 export const runRules = <ThrowOnError extends boolean = false>(options: Options<RunRulesData, ThrowOnError>): RequestResult<RunRulesResponses, unknown, ThrowOnError> => (options.client ?? client).post<RunRulesResponses, unknown, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/instruments/{instrumentId}/rules/run',
+    url: '/instruments/{instrumentId}/rules/run',
     ...options
 });
 
 export const getVirtualInstruments = <ThrowOnError extends boolean = false>(options: Options<GetVirtualInstrumentsData, ThrowOnError>): RequestResult<GetVirtualInstrumentsResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetVirtualInstrumentsResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/instruments/{instrumentId}/virtual',
+    url: '/instruments/{instrumentId}/virtual',
     ...options
 });
 
 export const createVirtualInstrument = <ThrowOnError extends boolean = false>(options: Options<CreateVirtualInstrumentData, ThrowOnError>): RequestResult<CreateVirtualInstrumentResponses, unknown, ThrowOnError> => (options.client ?? client).post<CreateVirtualInstrumentResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/instruments/{instrumentId}/virtual',
+    url: '/instruments/{instrumentId}/virtual',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -724,21 +724,21 @@ export const createVirtualInstrument = <ThrowOnError extends boolean = false>(op
 
 export const deleteVirtualInstrument = <ThrowOnError extends boolean = false>(options: Options<DeleteVirtualInstrumentData, ThrowOnError>): RequestResult<DeleteVirtualInstrumentResponses, unknown, ThrowOnError> => (options.client ?? client).delete<DeleteVirtualInstrumentResponses, unknown, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/instruments/{instrumentId}/virtual/{virtualInstrumentId}',
+    url: '/instruments/{instrumentId}/virtual/{virtualInstrumentId}',
     ...options
 });
 
 export const getVirtualInstrument = <ThrowOnError extends boolean = false>(options: Options<GetVirtualInstrumentData, ThrowOnError>): RequestResult<GetVirtualInstrumentResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetVirtualInstrumentResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/instruments/{instrumentId}/virtual/{virtualInstrumentId}',
+    url: '/instruments/{instrumentId}/virtual/{virtualInstrumentId}',
     ...options
 });
 
 export const updateVirtualInstrument = <ThrowOnError extends boolean = false>(options: Options<UpdateVirtualInstrumentData, ThrowOnError>): RequestResult<UpdateVirtualInstrumentResponses, unknown, ThrowOnError> => (options.client ?? client).patch<UpdateVirtualInstrumentResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/instruments/{instrumentId}/virtual/{virtualInstrumentId}',
+    url: '/instruments/{instrumentId}/virtual/{virtualInstrumentId}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -749,7 +749,7 @@ export const updateVirtualInstrument = <ThrowOnError extends boolean = false>(op
 export const updateVirtualInstrumentBalance = <ThrowOnError extends boolean = false>(options: Options<UpdateVirtualInstrumentBalanceData, ThrowOnError>): RequestResult<UpdateVirtualInstrumentBalanceResponses, unknown, ThrowOnError> => (options.client ?? client).patch<UpdateVirtualInstrumentBalanceResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/instruments/{instrumentId}/virtual/{virtualInstrumentId}/balance',
+    url: '/instruments/{instrumentId}/virtual/{virtualInstrumentId}/balance',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -760,140 +760,140 @@ export const updateVirtualInstrumentBalance = <ThrowOnError extends boolean = fa
 export const importerTypes = <ThrowOnError extends boolean = false>(options?: Options<ImporterTypesData, ThrowOnError>): RequestResult<ImporterTypesResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ImporterTypesResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/reference-data/importer-types',
+    url: '/reference-data/importer-types',
     ...options
 });
 
 export const inOutReport = <ThrowOnError extends boolean = false>(options: Options<InOutReportData, ThrowOnError>): RequestResult<InOutReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<InOutReportResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{accountId}/reports/in-out/{start}/{end}',
+    url: '/accounts/{accountId}/reports/in-out/{start}/{end}',
     ...options
 });
 
 export const inOutTrendReport = <ThrowOnError extends boolean = false>(options: Options<InOutTrendReportData, ThrowOnError>): RequestResult<InOutTrendReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<InOutTrendReportResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{accountId}/reports/in-out-trend/{start}/{end}',
+    url: '/accounts/{accountId}/reports/in-out-trend/{start}/{end}',
     ...options
 });
 
 export const inOutAverageReport = <ThrowOnError extends boolean = false>(options: Options<InOutAverageReportData, ThrowOnError>): RequestResult<InOutAverageReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<InOutAverageReportResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{accountId}/reports/in-out-average/{start}/{end}',
+    url: '/accounts/{accountId}/reports/in-out-average/{start}/{end}',
     ...options
 });
 
 export const byTagReport = <ThrowOnError extends boolean = false>(options: Options<ByTagReportData, ThrowOnError>): RequestResult<ByTagReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<ByTagReportResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{accountId}/reports/{reportType}/tags/{start}/{end}',
+    url: '/accounts/{accountId}/reports/{reportType}/tags/{start}/{end}',
     ...options
 });
 
 export const byTagReportForTag = <ThrowOnError extends boolean = false>(options: Options<ByTagReportForTagData, ThrowOnError>): RequestResult<ByTagReportForTagResponses, unknown, ThrowOnError> => (options.client ?? client).get<ByTagReportForTagResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{accountId}/reports/{reportType}/tags/{start}/{end}/{parentTagId}',
+    url: '/accounts/{accountId}/reports/{reportType}/tags/{start}/{end}/{parentTagId}',
     ...options
 });
 
 export const tagBreakdownReport = <ThrowOnError extends boolean = false>(options: Options<TagBreakdownReportData, ThrowOnError>): RequestResult<TagBreakdownReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<TagBreakdownReportResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{accountId}/reports/{reportType}/breakdown/{start}/{end}',
+    url: '/accounts/{accountId}/reports/{reportType}/breakdown/{start}/{end}',
     ...options
 });
 
 export const tagBreakdownReportForTag = <ThrowOnError extends boolean = false>(options: Options<TagBreakdownReportForTagData, ThrowOnError>): RequestResult<TagBreakdownReportForTagResponses, unknown, ThrowOnError> => (options.client ?? client).get<TagBreakdownReportForTagResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{accountId}/reports/{reportType}/breakdown/{start}/{end}/{parentTagId}',
+    url: '/accounts/{accountId}/reports/{reportType}/breakdown/{start}/{end}/{parentTagId}',
     ...options
 });
 
 export const tagTrendReport = <ThrowOnError extends boolean = false>(options: Options<TagTrendReportData, ThrowOnError>): RequestResult<TagTrendReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<TagTrendReportResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{accountId}/reports/{reportType}/tag-trend/{start}/{end}/{tagId}',
+    url: '/accounts/{accountId}/reports/{reportType}/tag-trend/{start}/{end}/{tagId}',
     ...options
 });
 
 export const allTagAverageReport = <ThrowOnError extends boolean = false>(options: Options<AllTagAverageReportData, ThrowOnError>): RequestResult<AllTagAverageReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<AllTagAverageReportResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{accountId}/reports/{reportType}/all-tag-average/{start}/{end}',
+    url: '/accounts/{accountId}/reports/{reportType}/all-tag-average/{start}/{end}',
     ...options
 });
 
 export const savingsInterestReport = <ThrowOnError extends boolean = false>(options: Options<SavingsInterestReportData, ThrowOnError>): RequestResult<SavingsInterestReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<SavingsInterestReportResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{accountId}/reports/savings-interest/{start}/{end}',
+    url: '/accounts/{accountId}/reports/savings-interest/{start}/{end}',
     ...options
 });
 
 export const superContributionsReport = <ThrowOnError extends boolean = false>(options: Options<SuperContributionsReportData, ThrowOnError>): RequestResult<SuperContributionsReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<SuperContributionsReportResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{accountId}/reports/super-contributions/{start}/{end}',
+    url: '/accounts/{accountId}/reports/super-contributions/{start}/{end}',
     ...options
 });
 
 export const superReturnsReport = <ThrowOnError extends boolean = false>(options: Options<SuperReturnsReportData, ThrowOnError>): RequestResult<SuperReturnsReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<SuperReturnsReportResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{accountId}/reports/super-returns',
+    url: '/accounts/{accountId}/reports/super-returns',
     ...options
 });
 
 export const principalVsInterestReport = <ThrowOnError extends boolean = false>(options: Options<PrincipalVsInterestReportData, ThrowOnError>): RequestResult<PrincipalVsInterestReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<PrincipalVsInterestReportResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{accountId}/reports/principal-vs-interest/{start}/{end}',
+    url: '/accounts/{accountId}/reports/principal-vs-interest/{start}/{end}',
     ...options
 });
 
 export const monthlyBalancesReport = <ThrowOnError extends boolean = false>(options: Options<MonthlyBalancesReportData, ThrowOnError>): RequestResult<MonthlyBalancesReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<MonthlyBalancesReportResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{accountId}/reports/monthly-balances',
+    url: '/accounts/{accountId}/reports/monthly-balances',
     ...options
 });
 
 export const monthlyBalancesReportFrom = <ThrowOnError extends boolean = false>(options: Options<MonthlyBalancesReportFromData, ThrowOnError>): RequestResult<MonthlyBalancesReportFromResponses, unknown, ThrowOnError> => (options.client ?? client).get<MonthlyBalancesReportFromResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{accountId}/reports/monthly-balances/{start}',
+    url: '/accounts/{accountId}/reports/monthly-balances/{start}',
     ...options
 });
 
 export const monthlyBalancesReportForPeriod = <ThrowOnError extends boolean = false>(options: Options<MonthlyBalancesReportForPeriodData, ThrowOnError>): RequestResult<MonthlyBalancesReportForPeriodResponses, unknown, ThrowOnError> => (options.client ?? client).get<MonthlyBalancesReportForPeriodResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{accountId}/reports/monthly-balances/{start}/{end}',
+    url: '/accounts/{accountId}/reports/monthly-balances/{start}/{end}',
     ...options
 });
 
 export const groupMonthlyBalancesReport = <ThrowOnError extends boolean = false>(options: Options<GroupMonthlyBalancesReportData, ThrowOnError>): RequestResult<GroupMonthlyBalancesReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<GroupMonthlyBalancesReportResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/groups/{groupId}/reports/monthly-balances/{start}/{end}',
+    url: '/groups/{groupId}/reports/monthly-balances/{start}/{end}',
     ...options
 });
 
 export const getStockHolding = <ThrowOnError extends boolean = false>(options: Options<GetStockHoldingData, ThrowOnError>): RequestResult<GetStockHoldingResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetStockHoldingResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/stocks/{instrumentId}',
+    url: '/stocks/{instrumentId}',
     ...options
 });
 
 export const updateStockHolding = <ThrowOnError extends boolean = false>(options: Options<UpdateStockHoldingData, ThrowOnError>): RequestResult<UpdateStockHoldingResponses, unknown, ThrowOnError> => (options.client ?? client).patch<UpdateStockHoldingResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/stocks/{instrumentId}',
+    url: '/stocks/{instrumentId}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -904,14 +904,14 @@ export const updateStockHolding = <ThrowOnError extends boolean = false>(options
 export const getStockHoldingCpiAdjustedGainLoss = <ThrowOnError extends boolean = false>(options: Options<GetStockHoldingCpiAdjustedGainLossData, ThrowOnError>): RequestResult<GetStockHoldingCpiAdjustedGainLossResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetStockHoldingCpiAdjustedGainLossResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/stocks/{instrumentId}/cpi-adjusted-gain-loss',
+    url: '/stocks/{instrumentId}/cpi-adjusted-gain-loss',
     ...options
 });
 
 export const createStockHolding = <ThrowOnError extends boolean = false>(options: Options<CreateStockHoldingData, ThrowOnError>): RequestResult<CreateStockHoldingResponses, unknown, ThrowOnError> => (options.client ?? client).post<CreateStockHoldingResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/stocks',
+    url: '/stocks',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -922,28 +922,28 @@ export const createStockHolding = <ThrowOnError extends boolean = false>(options
 export const stockHoldingReport = <ThrowOnError extends boolean = false>(options: Options<StockHoldingReportData, ThrowOnError>): RequestResult<StockHoldingReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<StockHoldingReportResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/stocks/{instrumentId}/reports/holding',
+    url: '/stocks/{instrumentId}/reports/holding',
     ...options
 });
 
 export const stockValueReport = <ThrowOnError extends boolean = false>(options: Options<StockValueReportData, ThrowOnError>): RequestResult<StockValueReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<StockValueReportResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/stocks/{instrumentId}/reports/value',
+    url: '/stocks/{instrumentId}/reports/value',
     ...options
 });
 
 export const getStockTransactions = <ThrowOnError extends boolean = false>(options: Options<GetStockTransactionsData, ThrowOnError>): RequestResult<GetStockTransactionsResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetStockTransactionsResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/stocks/{instrumentId}/transactions/{pageSize}/{pageNumber}',
+    url: '/stocks/{instrumentId}/transactions/{pageSize}/{pageNumber}',
     ...options
 });
 
 export const createStockTransaction = <ThrowOnError extends boolean = false>(options: Options<CreateStockTransactionData, ThrowOnError>): RequestResult<CreateStockTransactionResponses, unknown, ThrowOnError> => (options.client ?? client).post<CreateStockTransactionResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/stocks/{instrumentId}/transactions',
+    url: '/stocks/{instrumentId}/transactions',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -954,14 +954,14 @@ export const createStockTransaction = <ThrowOnError extends boolean = false>(opt
 export const getTags = <ThrowOnError extends boolean = false>(options?: Options<GetTagsData, ThrowOnError>): RequestResult<GetTagsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetTagsResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/tags',
+    url: '/tags',
     ...options
 });
 
 export const createTag = <ThrowOnError extends boolean = false>(options: Options<CreateTagData, ThrowOnError>): RequestResult<CreateTagResponses, unknown, ThrowOnError> => (options.client ?? client).post<CreateTagResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/tags',
+    url: '/tags',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -972,34 +972,34 @@ export const createTag = <ThrowOnError extends boolean = false>(options: Options
 export const getTagHierarchy = <ThrowOnError extends boolean = false>(options?: Options<GetTagHierarchyData, ThrowOnError>): RequestResult<GetTagHierarchyResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetTagHierarchyResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/tags/hierarchy',
+    url: '/tags/hierarchy',
     ...options
 });
 
 export const getTagGraph = <ThrowOnError extends boolean = false>(options?: Options<GetTagGraphData, ThrowOnError>): RequestResult<GetTagGraphResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetTagGraphResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/tags/graph',
+    url: '/tags/graph',
     ...options
 });
 
 export const deleteTag = <ThrowOnError extends boolean = false>(options: Options<DeleteTagData, ThrowOnError>): RequestResult<DeleteTagResponses, unknown, ThrowOnError> => (options.client ?? client).delete<DeleteTagResponses, unknown, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/tags/{id}',
+    url: '/tags/{id}',
     ...options
 });
 
 export const getTag = <ThrowOnError extends boolean = false>(options: Options<GetTagData, ThrowOnError>): RequestResult<GetTagResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetTagResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/tags/{id}',
+    url: '/tags/{id}',
     ...options
 });
 
 export const updateTag = <ThrowOnError extends boolean = false>(options: Options<UpdateTagData, ThrowOnError>): RequestResult<UpdateTagResponses, unknown, ThrowOnError> => (options.client ?? client).patch<UpdateTagResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/tags/{id}',
+    url: '/tags/{id}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -1013,7 +1013,7 @@ export const updateTag = <ThrowOnError extends boolean = false>(options: Options
 export const createTagByName = <ThrowOnError extends boolean = false>(options: Options<CreateTagByNameData, ThrowOnError>): RequestResult<CreateTagByNameResponses, unknown, ThrowOnError> => (options.client ?? client).put<CreateTagByNameResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/tags/{name}',
+    url: '/tags/{name}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -1023,42 +1023,42 @@ export const createTagByName = <ThrowOnError extends boolean = false>(options: O
 
 export const removeSubTag = <ThrowOnError extends boolean = false>(options: Options<RemoveSubTagData, ThrowOnError>): RequestResult<RemoveSubTagResponses, unknown, ThrowOnError> => (options.client ?? client).delete<RemoveSubTagResponses, unknown, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/tags/{id}/tags/{subTagId}',
+    url: '/tags/{id}/tags/{subTagId}',
     ...options
 });
 
 export const addSubTag = <ThrowOnError extends boolean = false>(options: Options<AddSubTagData, ThrowOnError>): RequestResult<AddSubTagResponses, unknown, ThrowOnError> => (options.client ?? client).put<AddSubTagResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/tags/{id}/tags/{subTagId}',
+    url: '/tags/{id}/tags/{subTagId}',
     ...options
 });
 
 export const getTransactions = <ThrowOnError extends boolean = false>(options: Options<GetTransactionsData, ThrowOnError>): RequestResult<GetTransactionsResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetTransactionsResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{instrumentId}/transactions/{pageSize}/{pageNumber}',
+    url: '/accounts/{instrumentId}/transactions/{pageSize}/{pageNumber}',
     ...options
 });
 
 export const getUntaggedTransactions = <ThrowOnError extends boolean = false>(options: Options<GetUntaggedTransactionsData, ThrowOnError>): RequestResult<GetUntaggedTransactionsResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetUntaggedTransactionsResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{instrumentId}/transactions/untagged/{pageSize}/{pageNumber}',
+    url: '/accounts/{instrumentId}/transactions/untagged/{pageSize}/{pageNumber}',
     ...options
 });
 
 export const searchTransactions = <ThrowOnError extends boolean = false>(options: Options<SearchTransactionsData, ThrowOnError>): RequestResult<SearchTransactionsResponses, unknown, ThrowOnError> => (options.client ?? client).get<SearchTransactionsResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{instrumentId}/transactions',
+    url: '/accounts/{instrumentId}/transactions',
     ...options
 });
 
 export const createTransaction = <ThrowOnError extends boolean = false>(options: Options<CreateTransactionData, ThrowOnError>): RequestResult<CreateTransactionResponses, unknown, ThrowOnError> => (options.client ?? client).post<CreateTransactionResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{instrumentId}/transactions',
+    url: '/accounts/{instrumentId}/transactions',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -1069,7 +1069,7 @@ export const createTransaction = <ThrowOnError extends boolean = false>(options:
 export const setBalance = <ThrowOnError extends boolean = false>(options: Options<SetBalanceData, ThrowOnError>): RequestResult<SetBalanceResponses, unknown, ThrowOnError> => (options.client ?? client).post<SetBalanceResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{instrumentId}/transactions/balance-adjustment',
+    url: '/accounts/{instrumentId}/transactions/balance-adjustment',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -1080,7 +1080,7 @@ export const setBalance = <ThrowOnError extends boolean = false>(options: Option
 export const updateTransaction = <ThrowOnError extends boolean = false>(options: Options<UpdateTransactionData, ThrowOnError>): RequestResult<UpdateTransactionResponses, unknown, ThrowOnError> => (options.client ?? client).patch<UpdateTransactionResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{instrumentId}/transactions/{id}',
+    url: '/accounts/{instrumentId}/transactions/{id}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -1091,28 +1091,28 @@ export const updateTransaction = <ThrowOnError extends boolean = false>(options:
 export const removeTag = <ThrowOnError extends boolean = false>(options: Options<RemoveTagData, ThrowOnError>): RequestResult<RemoveTagResponses, unknown, ThrowOnError> => (options.client ?? client).delete<RemoveTagResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{instrumentId}/transactions/{id}/tag/{tagId}',
+    url: '/accounts/{instrumentId}/transactions/{id}/tag/{tagId}',
     ...options
 });
 
 export const addTag = <ThrowOnError extends boolean = false>(options: Options<AddTagData, ThrowOnError>): RequestResult<AddTagResponses, unknown, ThrowOnError> => (options.client ?? client).put<AddTagResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/accounts/{instrumentId}/transactions/{id}/tag/{tagId}',
+    url: '/accounts/{instrumentId}/transactions/{id}/tag/{tagId}',
     ...options
 });
 
 export const getUser = <ThrowOnError extends boolean = false>(options?: Options<GetUserData, ThrowOnError>): RequestResult<GetUserResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetUserResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/users/me',
+    url: '/users/me',
     ...options
 });
 
 export const updateUser = <ThrowOnError extends boolean = false>(options: Options<UpdateUserData, ThrowOnError>): RequestResult<UpdateUserResponses, unknown, ThrowOnError> => (options.client ?? client).patch<UpdateUserResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/users/me',
+    url: '/users/me',
     ...options,
     headers: {
         'Content-Type': 'application/json',
