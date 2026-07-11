@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Modal, Form } from "@andrewmclachlan/moo-ds";
 import { useForm } from "react-hook-form";
 import { format } from "date-fns/format";
@@ -31,13 +31,15 @@ export const AddTransaction: React.FC<AddTransactionProps> = ({ show, onClose, o
 
     const allowBalance = account?.controller === "Manual" || account?.controller === "Virtual";
 
+    const [today] = useState(() => format(new Date(), "yyyy-MM-dd"));
+
     const form = useForm<AddTransactionForm>({
         defaultValues: {
             amount: "",
             newBalance: "",
             description: "",
             reference: "",
-            transactionTime: format(new Date(), "yyyy-MM-dd"),
+            transactionTime: today,
         },
     });
 
