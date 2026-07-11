@@ -14,7 +14,7 @@ import { subtractYear } from "utils/dateFns";
 import { InOut } from "./-components/InOut";
 import { InOutTrend } from "./-components/InOutTrend";
 import { useInOutAverageReport } from "../../-hooks/useInOutAverageReport";
-import { useInOutReport } from "routes/accounts/-hooks/useInOutReport";
+import { useInOutReport } from "hooks/useInOutReport";
 import { Col, Row } from "@andrewmclachlan/moo-ds";
 import { MiniPeriodSelector } from "components/MiniPeriodSelector";
 import { getPeriod } from "hooks";

@@ -9,7 +9,7 @@ import { Bar } from "react-chartjs-2";
 
 import { useChartColours } from "utils/chartColours";
 import type { Period } from "models/dateFns";
-import { useInOutReport as defaultReport } from "routes/accounts/-hooks/useInOutReport";
+import { useInOutReport as defaultReport } from "hooks/useInOutReport";
 import { SpinnerContainer } from "@andrewmclachlan/moo-ds";
 import { Amount } from "components";
 
