@@ -1,4 +1,6 @@
+import { useMemo } from "react";
 import { useNavigate, useSearch } from "@tanstack/react-router";
+import { useDebounce } from "use-debounce";
 import type { SortDirection } from "@andrewmclachlan/moo-ds";
 
 import {
@@ -21,7 +23,10 @@ export const useStockTransactionSearch = () => {
     const page = search.page ?? 1;
     const sortField = search.sortField ?? defaultStockSortField;
     const sortDirection = search.sortDirection ?? defaultStockSortDirection;
-    const filter = stockSearchToFilter(search);
+    // Memoise so the debounced filter has a stable reference; debounce the whole filter at the
+    // query, as the former slice did.
+    const filter = useMemo(() => stockSearchToFilter(search), [search]);
+    const [debouncedFilter] = useDebounce(filter, 250);
 
     const patch = (values: Partial<StockTransactionSearch>) =>
         navigate({ search: ((prev: StockTransactionSearch) => ({ ...prev, ...values })) as any, replace: true });
@@ -33,5 +38,5 @@ export const useStockTransactionSearch = () => {
     // Applying a filter always returns to the first page.
     const setFilter = (values: Partial<StockTransactionSearch>) => patch({ ...values, page: undefined });
 
-    return { search, filter, page, pageSize: stockPageSize, sortField, sortDirection, setPage, setSort, setFilter };
+    return { search, filter, debouncedFilter, page, pageSize: stockPageSize, sortField, sortDirection, setPage, setSort, setFilter };
 };

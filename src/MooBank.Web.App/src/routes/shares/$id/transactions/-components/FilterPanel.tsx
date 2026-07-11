@@ -1,7 +1,6 @@
 import { Input, Section, Tooltip, useLocalStorage } from "@andrewmclachlan/moo-ds";
 import { useEffect, useState } from "react";
 import { format } from "date-fns/format";
-import { useDebounce } from "use-debounce";
 
 import { usePeriodSelector } from "components";
 import { periodOptions } from "models/periodOptions";
@@ -22,13 +21,11 @@ export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
         setFilterDescription("");
     };
 
-    // Debounce the free-text description so typing doesn't push a URL update per keystroke.
-    const [debouncedDescription] = useDebounce(filterDescription, 250);
-
+    // The query is debounced in useStockTransactionSearch, so typing doesn't fire a request per keystroke.
     useEffect(() => {
-        setFilter({ description: debouncedDescription || undefined, start: period?.startDate?.toISOString(), end: period?.endDate?.toISOString() });
+        setFilter({ description: filterDescription || undefined, start: period?.startDate?.toISOString(), end: period?.endDate?.toISOString() });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [period, debouncedDescription]);
+    }, [period, filterDescription]);
 
     const isCustom = selectedPeriod === "-1";
 

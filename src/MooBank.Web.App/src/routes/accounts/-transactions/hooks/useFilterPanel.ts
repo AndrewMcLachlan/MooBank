@@ -1,6 +1,5 @@
 import { useLocalStorage } from "@andrewmclachlan/moo-ds";
 import { useEffect, useMemo, useState } from "react";
-import { useDebounce } from "use-debounce";
 
 import type { Period } from "models/dateFns";
 import type { transactionTypeFilter } from "models/transactions";
@@ -48,14 +47,12 @@ export const useFilterPanel = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // Debounce the free-text description so typing doesn't push a URL update per keystroke.
-    const [debouncedDescription] = useDebounce(filterDescription, 250);
-
     // Push the resolved filter to the route search params (formerly a Redux dispatch). setFilter
-    // returns to page 1 whenever the filter changes.
+    // returns to page 1 whenever the filter changes. The query itself is debounced in
+    // useTransactionSearch, so typing doesn't fire a request per keystroke.
     useEffect(() => {
         setFilter({
-            description: debouncedDescription || undefined,
+            description: filterDescription || undefined,
             tagged: filterTagged || undefined,
             netZero: filterNetZero || undefined,
             tags: filterTags?.length ? filterTags : undefined,
@@ -64,7 +61,7 @@ export const useFilterPanel = () => {
             end: period?.endDate?.toISOString(),
         });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [period, debouncedDescription, filterTagged, filterNetZero, filterTags, filterType]);
+    }, [period, filterDescription, filterTagged, filterNetZero, filterTags, filterType]);
 
     const setFilterTags = (tag: number | number[]) => {
         const tagArray = Array.isArray(tag) ? tag : [tag];

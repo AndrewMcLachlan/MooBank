@@ -14,9 +14,9 @@ export const StockTransactionList: React.FC<TransactionListProps> = () => {
 
     const stockHolding = useStockHolding();
 
-    const { filter, page: pageNumber, pageSize, sortField, sortDirection, setPage } = useStockTransactionSearch();
+    const { debouncedFilter, page: pageNumber, pageSize, sortField, sortDirection, setPage } = useStockTransactionSearch();
 
-    const transactionsQuery = useStockTransactions(stockHolding.id, filter, pageSize, pageNumber, sortField, sortDirection);
+    const transactionsQuery = useStockTransactions(stockHolding.id, debouncedFilter, pageSize, pageNumber, sortField, sortDirection);
     const transactions = transactionsQuery.data?.results;
     const totalTransactions = transactionsQuery.data?.total ?? 0;
 

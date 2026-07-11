@@ -15,11 +15,11 @@ export const TransactionList: React.FC<TransactionListProps> = ({compact = false
 
     const account = useAccount();
 
-    const { filter, page: pageNumber, pageSize, setPageSize, sortField, sortDirection, setPage } = useTransactionSearch();
+    const { debouncedFilter, page: pageNumber, pageSize, setPageSize, sortField, sortDirection, setPage } = useTransactionSearch();
     const [showDetails, setShowDetails] = useState(false);
     const [selectedTransaction, setSelectedTransaction] = useState<Transaction>(undefined);
 
-    const transactionsQuery = useTransactions(account.id, filter, pageSize, pageNumber, sortField, sortDirection);
+    const transactionsQuery = useTransactions(account.id, debouncedFilter, pageSize, pageNumber, sortField, sortDirection);
     const transactions = transactionsQuery.data?.results;
     const totalTransactions = transactionsQuery.data?.total ?? 0;
 
