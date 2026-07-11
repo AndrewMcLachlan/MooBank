@@ -3,6 +3,7 @@ import {
     getAllInstrumentRulesQueryKey,
     deleteInstrumentRuleMutation,
 } from "api/@tanstack/react-query.gen";
+import type { Rule } from "api/types.gen";
 import { toast } from "@andrewmclachlan/moo-ds";
 
 export const useDeleteRule = () => {
@@ -11,16 +12,24 @@ export const useDeleteRule = () => {
 
     const { mutateAsync, ...rest } = useMutation({
         ...deleteInstrumentRuleMutation(),
-        onSettled: (_data, _error, variables) => {
+        onSuccess: (_data, variables) => {
             const accountId = variables.path?.instrumentId;
+            const ruleId = variables.path?.ruleId;
             if (!accountId) return;
-            queryClient.invalidateQueries({ queryKey: getAllInstrumentRulesQueryKey({ path: { instrumentId: accountId } }) });
+            let allRules = queryClient.getQueryData<Rule[]>(getAllInstrumentRulesQueryKey({ path: { instrumentId: accountId } }));
+            if (!allRules) return;
+            allRules = allRules.filter(r => r.id !== ruleId);
+            allRules = allRules.sort((t1, t2) => t1.contains.localeCompare(t2.contains));
+            queryClient.setQueryData<Rule[]>(getAllInstrumentRulesQueryKey({ path: { instrumentId: accountId } }), allRules);
         },
     });
 
+    const withToast = (variables: Parameters<typeof mutateAsync>[0]) =>
+        toast.promise(mutateAsync(variables), { pending: "Deleting rule", success: "Rule deleted", error: "Failed to delete rule" });
+
     return {
         ...rest,
-        mutate: (variables: Parameters<typeof mutateAsync>[0]) =>
-            toast.promise(mutateAsync(variables), { pending: "Deleting rule", success: "Rule deleted", error: "Failed to delete rule" }),
+        mutate: withToast,
+        mutateAsync: withToast,
     };
 }

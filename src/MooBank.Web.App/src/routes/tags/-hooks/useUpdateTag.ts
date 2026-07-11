@@ -10,14 +10,23 @@ export const useUpdateTag = () => {
 
     const { mutateAsync, ...rest } = useMutation({
         ...updateTagMutation(),
-        onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: getTagsQueryKey() });
+        onSuccess: (data) => {
+            const allTags = queryClient.getQueryData<Tag[]>(getTagsQueryKey());
+            if (!allTags) return;
+
+            const tagIndex = allTags.findIndex(r => r.id === data.id);
+            if (tagIndex === -1) return;
+
+            const newTags = [...allTags];
+            newTags.splice(tagIndex, 1, data);
+            newTags.sort((t1, t2) => t1.name.localeCompare(t2.name));
+            queryClient.setQueryData<Tag[]>(getTagsQueryKey(), newTags);
         }
     });
 
     return {
         ...rest,
-        mutate: (variables: Tag) => {
+        mutate: (variables: Tag) =>
             toast.promise(mutateAsync({
                 body: {
                     name: variables.name?.trim(),
@@ -27,7 +36,6 @@ export const useUpdateTag = () => {
                     budgetCategory: variables.settings?.budgetCategory ?? false,
                 },
                 path: { id: variables.id },
-            }), { pending: "Updating tag", success: "Tag updated", error: "Failed to update tag" });
-        },
+            }), { pending: "Updating tag", success: "Tag updated", error: "Failed to update tag" }),
     };
 }
