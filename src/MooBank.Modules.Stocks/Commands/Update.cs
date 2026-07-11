@@ -43,14 +43,8 @@ internal class UpdateHandler(IStockHoldingRepository repository, IUnitOfWork uni
 
         var stockHolding = await repository.Get(command.InstrumentId, new IncludeSpecification(), cancellationToken) ?? throw new NotFoundException();
 
-        stockHolding.Name = command.Name;
-        stockHolding.Description = command.Description;
-        stockHolding.ShareWithFamily = command.ShareWithFamily;
-        stockHolding.CurrentPrice = command.CurrentPrice;
-
+        stockHolding.Update(command.Name, command.Description, command.ShareWithFamily, command.CurrentPrice);
         stockHolding.SetGroup(command.GroupId, user.Id);
-
-        stockHolding.MarkUpdated();
 
         repository.Update(stockHolding);
 

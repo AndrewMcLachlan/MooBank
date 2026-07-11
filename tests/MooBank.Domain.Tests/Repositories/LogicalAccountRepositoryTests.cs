@@ -179,40 +179,40 @@ public class LogicalAccountRepositoryTests : IDisposable
     }
 
     /// <summary>
-    /// Given a new logical account
-    /// When Open is called
+    /// Given account details
+    /// When the Create factory is called
     /// Then InstrumentCreatedEvent should be raised
     /// </summary>
     [Fact]
     [Trait("Category", "Unit")]
-    public void Open_NewAccount_RaisesInstrumentCreatedEvent()
+    public void Create_NewAccount_RaisesInstrumentCreatedEvent()
     {
-        // Arrange
-        var account = CreateLogicalAccount(Guid.NewGuid(), "Event Test");
-
         // Act
-        account.Open(500m, DateOnly.FromDateTime(DateTime.Today));
+        var account = LogicalAccount.Create("Event Test", null, "AUD", Models.AccountType.Transaction, Models.Controller.Manual, false, false,
+            new InstitutionAccount { Name = "Event Test", OpenedDate = DateOnly.FromDateTime(DateTime.Today), InstitutionId = 1 },
+            500m, DateOnly.FromDateTime(DateTime.Today));
 
         // Assert
         Assert.Contains(account.Events, e => e is InstrumentCreatedEvent);
     }
 
     /// <summary>
-    /// Given a new logical account
-    /// When Open is called
+    /// Given account details with an opening balance
+    /// When the Create factory is called
     /// Then AccountAddedEvent should be raised with correct values
     /// </summary>
     [Fact]
     [Trait("Category", "Unit")]
-    public void Open_NewAccount_RaisesAccountAddedEvent()
+    public void Create_NewAccount_RaisesAccountAddedEvent()
     {
         // Arrange
-        var account = CreateLogicalAccount(Guid.NewGuid(), "Balance Event Test");
         var openingBalance = 2500m;
         var openedDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-30));
 
         // Act
-        account.Open(openingBalance, openedDate);
+        var account = LogicalAccount.Create("Balance Event Test", null, "AUD", Models.AccountType.Transaction, Models.Controller.Manual, false, false,
+            new InstitutionAccount { Name = "Balance Event Test", OpenedDate = openedDate, InstitutionId = 1 },
+            openingBalance, openedDate);
 
         // Assert
         var accountAddedEvent = account.Events.OfType<AccountAddedEvent>().SingleOrDefault();
@@ -256,18 +256,18 @@ public class LogicalAccountRepositoryTests : IDisposable
 
     /// <summary>
     /// Given an existing logical account
-    /// When MarkUpdated is called
+    /// When the Update mutation method is called
     /// Then InstrumentUpdatedEvent should be raised
     /// </summary>
     [Fact]
     [Trait("Category", "Unit")]
-    public void MarkUpdated_ExistingAccount_RaisesInstrumentUpdatedEvent()
+    public void Update_ExistingAccount_RaisesInstrumentUpdatedEvent()
     {
         // Arrange
         var account = CreateLogicalAccount(Guid.NewGuid(), "Update Event Test");
 
         // Act
-        account.MarkUpdated();
+        account.Update("Updated", null, Models.Controller.Manual, Models.AccountType.Savings, true, true);
 
         // Assert
         Assert.Contains(account.Events, e => e is InstrumentUpdatedEvent);

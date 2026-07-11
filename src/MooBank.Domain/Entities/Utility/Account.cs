@@ -10,6 +10,25 @@ public class Account(Guid id) : Instrument.Instrument(id)
     {
     }
 
+    public static Account Create(string name, string? description, string currency, bool shareWithFamily, UtilityType utilityType, string accountNumber, int? institutionId)
+    {
+        var account = new Account
+        {
+            Name = name,
+            Description = description,
+            Currency = currency,
+            Controller = Controller.Manual,
+            ShareWithFamily = shareWithFamily,
+            UtilityType = utilityType,
+            AccountNumber = accountNumber,
+            InstitutionId = institutionId,
+        };
+
+        account.MarkCreated();
+
+        return account;
+    }
+
     [MaxLength(15)]
     public required string AccountNumber { get; set; }
 

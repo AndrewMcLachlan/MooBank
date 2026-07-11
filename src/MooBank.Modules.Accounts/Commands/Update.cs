@@ -24,15 +24,8 @@ internal class UpdateHandler(IAuditingUnitOfWork unitOfWork, ILogicalAccountRepo
 
         var entity = await accountRepository.Get(account.Id, new AccountDetailsSpecification(), cancellationToken);
 
-        entity.Name = account.Name;
-        entity.Description = account.Description;
-        entity.SetController(account.Controller);
+        entity.Update(account.Name, account.Description, account.Controller, account.AccountType, account.ShareWithFamily, account.IncludeInBudget);
         entity.SetGroup(account.GroupId, user.Id);
-        entity.AccountType = account.AccountType;
-        entity.ShareWithFamily = account.ShareWithFamily;
-        entity.IncludeInBudget = account.IncludeInBudget;
-
-        entity.MarkUpdated();
 
         accountRepository.Update(entity);
 

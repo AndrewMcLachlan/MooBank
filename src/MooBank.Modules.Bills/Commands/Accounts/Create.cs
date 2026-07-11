@@ -27,21 +27,9 @@ internal class CreateHandler(IUnitOfWork unitOfWork, Domain.Entities.Utility.IAc
 {
     public async ValueTask<Account> Handle(Create command, CancellationToken cancellationToken)
     {
-        Domain.Entities.Utility.Account entity = new()
-        {
-            Name = command.Name,
-            Description = command.Description,
-            Currency = command.Currency,
-            Controller = Controller.Manual,
-            ShareWithFamily = command.ShareWithFamily,
-            UtilityType = command.UtilityType,
-            AccountNumber = command.AccountNumber,
-            InstitutionId = command.InstitutionId,
-        };
+        var entity = Domain.Entities.Utility.Account.Create(command.Name, command.Description, command.Currency, command.ShareWithFamily, command.UtilityType, command.AccountNumber, command.InstitutionId);
 
         entity.SetAccountHolder(user.Id);
-
-        entity.MarkCreated();
 
         accountRepository.Add(entity);
 

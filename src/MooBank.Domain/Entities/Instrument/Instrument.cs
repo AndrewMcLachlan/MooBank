@@ -92,9 +92,9 @@ public abstract class Instrument(Guid id) : KeyedEntity<Guid>(id)
         });
     }
 
-    public void MarkCreated() => Events.Add(new InstrumentCreatedEvent(this));
+    protected void MarkCreated() => Events.Add(new InstrumentCreatedEvent(this));
 
-    public void MarkUpdated() => Events.Add(new InstrumentUpdatedEvent(this));
+    protected void MarkUpdated() => Events.Add(new InstrumentUpdatedEvent(this));
 
     public void AddVirtualInstrument(VirtualInstrument virtualInstrument, decimal openingBalance)
     {

@@ -13,6 +13,26 @@ public class LogicalAccount(Guid id, IEnumerable<InstitutionAccount> institution
 
     public LogicalAccount() : this(Guid.Empty, []) { }
 
+    public static LogicalAccount Create(string name, string? description, string currency, AccountType accountType, Controller controller, bool includeInBudget, bool shareWithFamily, InstitutionAccount institutionAccount, decimal openingBalance, DateOnly openedDate)
+    {
+        var account = new LogicalAccount
+        {
+            Name = name,
+            Description = description,
+            Currency = currency,
+            AccountType = accountType,
+            Controller = controller,
+            IncludeInBudget = includeInBudget,
+            ShareWithFamily = shareWithFamily,
+        };
+
+        account.AddInstitutionAccount(institutionAccount);
+        account.MarkCreated();
+        account.Events.Add(new AccountAddedEvent(account, openingBalance, openedDate));
+
+        return account;
+    }
+
     public bool IncludeInBudget { get; set; }
 
     [Column("AccountTypeId")]
@@ -38,10 +58,16 @@ public class LogicalAccount(Guid id, IEnumerable<InstitutionAccount> institution
         _institutionAccounts.Add(institutionAccount);
     }
 
-    public void Open(decimal openingBalance, DateOnly openedDate)
+    public void Update(string name, string? description, Controller controller, AccountType accountType, bool shareWithFamily, bool includeInBudget)
     {
-        MarkCreated();
-        Events.Add(new AccountAddedEvent(this, openingBalance, openedDate));
+        Name = name;
+        Description = description;
+        Controller = controller;
+        AccountType = accountType;
+        ShareWithFamily = shareWithFamily;
+        IncludeInBudget = includeInBudget;
+
+        MarkUpdated();
     }
 
     public override Group.Group? GetGroup(Guid user) =>
