@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { getAllInstitutionsQueryKey, createInstitutionMutation } from "api/@tanstack/react-query.gen";
 import type { Institution } from "api/types.gen";
+import { toast } from "@andrewmclachlan/moo-ds";
 
 export const useCreateInstitution = () => {
 
@@ -33,7 +34,7 @@ export const useCreateInstitution = () => {
 
     return {
         mutateAsync: (institution: Institution) =>
-            mutateAsync({ body: institution as any }),
+            toast.promise(mutateAsync({ body: institution as any }), { pending: "Creating institution", success: "Institution created", error: "Failed to create institution" }),
         ...rest,
     };
 }

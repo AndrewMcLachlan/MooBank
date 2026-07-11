@@ -10,7 +10,7 @@ import { useAccount } from "./AccountProvider";
 import { Amount } from "./Amount";
 import { AccountTypeBadge } from "./AccountTypeBadge";
 import { KeyValue } from "./KeyValue";
-import { formatDate } from "utils/dateFns";
+import { formatDisplayDate } from "utils/dateFns";
 
 export const AccountSummary: React.FC<AccountSummaryProps> = ({ className, ...props }) => {
 
@@ -31,7 +31,7 @@ export const AccountSummary: React.FC<AccountSummaryProps> = ({ className, ...pr
             </KeyValue>
             <KeyValue className="d-none d-lg-flex">
                 <div>Last Transaction</div>
-                <div>{formatDate(account.lastTransaction)}</div>
+                <div>{formatDisplayDate(account.lastTransaction)}</div>
             </KeyValue>
             <hr className="d-none d-lg-block" />
             <KeyValue className="d-none d-lg-flex">

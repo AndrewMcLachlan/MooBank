@@ -8,7 +8,7 @@ export const useUpdateInstitutionAccount = () => {
 
     const { mutateAsync, ...rest } = useMutation({
         ...updateInstitutionAccountMutation(),
-        onSuccess: () => {
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: getAccountsQueryKey() });
         },
     });

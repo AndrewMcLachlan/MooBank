@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Button, InputGroup } from "@andrewmclachlan/moo-ds";
 import { useMatchRoute, useNavigate, useParams } from "@tanstack/react-router";
 import { Form, Section, SectionForm } from "@andrewmclachlan/moo-ds";
@@ -29,11 +29,7 @@ export const ManageVirtualAccount = () => {
         navigate({ to: `/accounts/${id}/manage/` });
     }
 
-    const form = useForm({ defaultValues: account });
-
-    useEffect(() => {
-        form.reset(account);
-    }, [account, form]);
+    const form = useForm({ values: account, resetOptions: { keepDirtyValues: true } });
 
     const breadcrumbs = isDirect ?
         [{ text: "Manage", route: `/accounts/${id}/virtual/${virtualId}/manage` }] :

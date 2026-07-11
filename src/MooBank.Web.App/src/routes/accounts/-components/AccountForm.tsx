@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Button, InputGroup } from "@andrewmclachlan/moo-ds";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "@tanstack/react-router";
@@ -29,12 +29,6 @@ export const AccountForm: React.FC<{ account?: LogicalAccount }> = ({ account = 
     const handleSubmit = (data: CreateAccount) => {
 
         if (!account) {
-
-            if (data.institutionId === undefined) {
-                window.alert("Please select an institution");
-                return;
-            }
-
             createAccount.mutateAsync(data);
             navigate({ to: "/accounts" });
         } else {
@@ -43,16 +37,15 @@ export const AccountForm: React.FC<{ account?: LogicalAccount }> = ({ account = 
     }
 
     const form = useForm<CreateAccount>({
-        defaultValues: account ?? {
+        values: (account ?? {
             currency: user?.currency,
-        }
+        }) as CreateAccount,
+        resetOptions: { keepDirtyValues: true },
     });
 
-    useEffect(() => {
-        if (!account && user?.currency && !form.getValues("currency")) {
-            form.setValue("currency", user.currency);
-        }
-    }, [user?.currency, account]);
+    if (!account) {
+        form.register("institutionId", { required: "Please select an institution" });
+    }
 
     const accountType = form.watch("accountType");
 
@@ -72,7 +65,8 @@ export const AccountForm: React.FC<{ account?: LogicalAccount }> = ({ account = 
             </Form.Group>
             <Form.Group groupId="institutionId" show={!account}>
                 <Form.Label>Institution</Form.Label>
-                <InstitutionSelector accountType={accountType} /> {/* TODO: Required */}
+                <InstitutionSelector accountType={accountType} />
+                {form.formState.errors.institutionId && <p className="form-error">{form.formState.errors.institutionId.message}</p>}
             </Form.Group>
             <Form.Group groupId="currency">
                 <Form.Label>Currency</Form.Label>

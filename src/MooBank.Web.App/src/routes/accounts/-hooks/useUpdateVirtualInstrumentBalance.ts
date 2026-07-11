@@ -6,11 +6,12 @@ import {
     getAccountsQueryKey,
     getFormattedInstrumentsListQueryKey,
 } from "api/@tanstack/react-query.gen";
+import { toast } from "@andrewmclachlan/moo-ds";
 
 export const useUpdateVirtualInstrumentBalance = () => {
     const queryClient = useQueryClient();
 
-    const { mutate } = useMutation({
+    const { mutateAsync } = useMutation({
         ...updateVirtualInstrumentBalanceMutation(),
 
         onMutate: async (variables) => {
@@ -65,7 +66,7 @@ export const useUpdateVirtualInstrumentBalance = () => {
 
     const update = (accountId: string, virtualInstrumentId: string, balance: number) => {
 
-        mutate({ body: { balance }, path: { instrumentId: accountId, virtualInstrumentId } } as any);
+        toast.promise(mutateAsync({ body: { balance }, path: { instrumentId: accountId, virtualInstrumentId } } as any), { pending: "Updating balance", success: "Balance updated", error: "Failed to update balance" });
     };
 
     return update;

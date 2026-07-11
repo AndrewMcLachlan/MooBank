@@ -1,18 +1,19 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteBudgetLineMutation, getBudgetQueryKey } from "api/@tanstack/react-query.gen";
+import { toast } from "@andrewmclachlan/moo-ds";
 
 export const useDeleteBudgetLine = () => {
     const queryClient = useQueryClient();
 
-    const { mutate } = useMutation({
+    const { mutateAsync } = useMutation({
         ...deleteBudgetLineMutation(),
-        onSuccess: (_data, variables) => {
+        onSettled: (_data, _error, variables) => {
             queryClient.invalidateQueries({ queryKey: getBudgetQueryKey({ path: { year: variables.path!.year } }) });
         },
     });
 
     const deleteBudgetLine = (year: number, lineId: string) => {
-        mutate({ path: { year, id: lineId } });
+        toast.promise(mutateAsync({ path: { year, id: lineId } }), { pending: "Deleting budget line", success: "Budget line deleted", error: "Failed to delete budget line" });
     };
 
     return deleteBudgetLine;

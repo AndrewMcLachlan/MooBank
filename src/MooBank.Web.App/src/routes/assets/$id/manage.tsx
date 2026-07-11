@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Button, InputGroup } from "@andrewmclachlan/moo-ds";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
@@ -32,11 +32,7 @@ function ManageAsset() {
         navigate({ to: "/accounts" });
     }
 
-    const form = useForm({ defaultValues: asset });
-
-    useEffect(() => {
-        form.reset(asset);
-    }, [asset, form]);
+    const form = useForm({ values: asset, resetOptions: { keepDirtyValues: true } });
 
     return (
         <AssetPage title="Manage" breadcrumbs={[{ text: "Manage", route: `/assets/${asset?.id}/manage` }]}>

@@ -8,7 +8,7 @@ export const useCreateInstitutionAccount = () => {
 
     const { mutateAsync, ...rest } = useMutation({
         ...createInstitutionAccountMutation(),
-        onSuccess: () => {
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: getAccountsQueryKey() });
         },
     });

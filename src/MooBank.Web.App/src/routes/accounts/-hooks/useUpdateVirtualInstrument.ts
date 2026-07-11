@@ -5,11 +5,12 @@ import {
     updateVirtualInstrumentMutation,
     getAccountsQueryKey,
 } from "api/@tanstack/react-query.gen";
+import { toast } from "@andrewmclachlan/moo-ds";
 
 export const useUpdateVirtualInstrument = () => {
     const queryClient = useQueryClient();
 
-    const { mutate } = useMutation({
+    const { mutateAsync } = useMutation({
         ...updateVirtualInstrumentMutation(),
         onSettled: (_data, _error, variables) => {
             queryClient.invalidateQueries({ queryKey: getAccountsQueryKey() });
@@ -18,7 +19,7 @@ export const useUpdateVirtualInstrument = () => {
     });
 
     const update = (accountId: string, virtualInstrument: VirtualInstrument) => {
-        mutate({ body: virtualInstrument as any, path: { instrumentId: accountId, virtualInstrumentId: virtualInstrument.id } } as any);
+        toast.promise(mutateAsync({ body: virtualInstrument as any, path: { instrumentId: accountId, virtualInstrumentId: virtualInstrument.id } } as any), { pending: "Updating virtual account", success: "Virtual account updated", error: "Failed to update virtual account" });
     };
 
     return update;

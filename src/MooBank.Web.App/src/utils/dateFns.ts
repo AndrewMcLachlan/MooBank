@@ -25,7 +25,7 @@ export const allTime = (): Period => ({ startDate: startOfYear(addYears(new Date
 
 export const formatISODate = (date: Date) => format(date, "yyyy-MM-dd");
 
-export const formatDate = (date?: string) => date ? format(parseISO(date), "dd/MM/yyyy") : "-";
+export const formatDisplayDate = (date?: string) => date ? format(parseISO(date), "dd/MM/yyyy") : "-";
 
 export const formatDateShort = (date?: string) => date ? format(parseISO(date), "dd MMM yy") : "-";
 

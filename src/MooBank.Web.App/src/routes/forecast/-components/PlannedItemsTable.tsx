@@ -6,6 +6,7 @@ import { Input } from "@andrewmclachlan/moo-ds";
 import { useUpdatePlannedItem } from "../-hooks/useUpdatePlannedItem";
 import { useDeletePlannedItem } from "../-hooks/useDeletePlannedItem";
 import { NewPlannedItem } from "./NewPlannedItem";
+import { Amount } from "components";
 
 interface PlannedItemsTableProps {
     plan?: ForecastPlan;
@@ -57,7 +58,7 @@ const PlannedItemsSection: React.FC<PlannedItemsSectionProps> = ({ planId, title
             <tfoot>
                 <tr>
                     <td>Total</td>
-                    <td className="amount">${items.reduce((sum, i) => sum + (i.isIncluded ? i.amount : 0), 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+                    <td className="amount"><Amount amount={items.reduce((sum, i) => sum + (i.isIncluded ? i.amount : 0), 0)} currencyCode="AUD" minus /></td>
                     <td colSpan={5}></td>
                 </tr>
             </tfoot>

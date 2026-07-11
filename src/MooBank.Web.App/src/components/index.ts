@@ -8,6 +8,7 @@ export * from "./ColourPicker";
 export * from "./CurrencyInput";
 export * from "./CurrencySelector";
 export * from "./InstitutionSelector";
+export * from "./InstrumentPage";
 export * from "./FormRow";
 export * from "./MonthSelector";
 export * from "./PeriodSelector";

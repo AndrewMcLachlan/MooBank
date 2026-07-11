@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Button, InputGroup } from "@andrewmclachlan/moo-ds";
 import { useNavigate } from "@tanstack/react-router";
@@ -32,11 +32,7 @@ function ManageStockHolding() {
         navigate({ to: "/accounts" });
     }
 
-    const form = useForm({ defaultValues: stockHolding });
-
-    useEffect(() => {
-        form.reset(stockHolding);
-    }, [stockHolding, form]);
+    const form = useForm({ values: stockHolding, resetOptions: { keepDirtyValues: true } });
 
     if (!stockHolding) return null;
 

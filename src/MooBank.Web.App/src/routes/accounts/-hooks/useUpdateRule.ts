@@ -4,12 +4,13 @@ import {
     updateInstrumentRuleMutation,
 } from "api/@tanstack/react-query.gen";
 import type { Rule } from "api/types.gen";
+import { toast } from "@andrewmclachlan/moo-ds";
 
 export const useUpdateRule = () => {
 
     const queryClient = useQueryClient();
 
-    return useMutation({
+    const { mutateAsync, ...rest } = useMutation({
         ...updateInstrumentRuleMutation(),
         onMutate: (variables) => {
             const accountId = variables.path?.instrumentId;
@@ -33,4 +34,13 @@ export const useUpdateRule = () => {
             queryClient.invalidateQueries({ queryKey: getAllInstrumentRulesQueryKey({ path: { instrumentId: accountId } }) });
         },
     });
+
+    const withToast = (variables: Parameters<typeof mutateAsync>[0]) =>
+        toast.promise(mutateAsync(variables), { pending: "Updating rule", success: "Rule updated", error: "Failed to update rule" });
+
+    return {
+        ...rest,
+        mutate: withToast,
+        mutateAsync: withToast,
+    };
 }

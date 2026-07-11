@@ -3,7 +3,7 @@ import { Page } from "@andrewmclachlan/moo-app";
 import { DeleteIcon, EditColumn, Form, FormComboBox, SaveIcon, Section, SectionTable, ThemeSelector } from "@andrewmclachlan/moo-ds";
 import { CurrencySelector } from "components";
 import type { UserWithCards, UserCard } from "api/types.gen";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@andrewmclachlan/moo-ds";
 import { useForm } from "react-hook-form";
 import { useAccountsList } from "hooks/useAccountsList";
@@ -24,31 +24,27 @@ function Profile() {
 
     const createUserCard = () => {
         const cards = getValues("cards");
-        setValue("cards", [...cards, newUserCard].sort((a, b) => a.name?.localeCompare(b.name)));
+        setValue("cards", [...cards, newUserCard].sort((a, b) => a.name?.localeCompare(b.name)), { shouldDirty: true });
         setNewUserCard({ name: "", last4Digits: null });
     }
 
     const deleteUserCard = (index: number) => {
         const cards = getValues("cards");
-        setValue("cards", cards.filter((_, i) => i !== index));
+        setValue("cards", cards.filter((_, i) => i !== index), { shouldDirty: true });
     }
 
     const editUserCard = (index: number, card: UserCard) => {
         const cards = getValues("cards");
         cards[index] = card;
-        setValue("cards", cards.sort((a, b) => a.name?.localeCompare(b.name)));
+        setValue("cards", cards.sort((a, b) => a.name?.localeCompare(b.name)), { shouldDirty: true });
     }
 
     const handleSubmit = async (data: UserWithCards) => {
         updateMe(data);
     };
 
-    useEffect(() => {
-        reset(me);
-    }, [me, accounts]);
-
-    const form = useForm<UserWithCards>({ defaultValues: me });
-    const { reset, getValues, setValue } = form;
+    const form = useForm<UserWithCards>({ values: me, resetOptions: { keepDirtyValues: true } });
+    const { getValues, setValue } = form;
 
     return (
         <Page title="Profile" breadcrumbs={[{ text: "Profile", route: "/profile" }]}>
