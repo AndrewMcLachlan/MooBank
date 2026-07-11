@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Domain.Entities.Budget;
 using Asm.MooBank.Domain.Entities.Group;
 using Asm.MooBank.Domain.Tests.Support;
@@ -10,17 +10,17 @@ using TagSettings = Asm.MooBank.Domain.Entities.Tag.TagSettings;
 namespace Asm.MooBank.Domain.Tests.Repositories;
 
 /// <summary>
-/// Integration tests for the <see cref="AuthorisationRepository"/> data queries used by
+/// Integration tests for the <see cref="AuthorisationReader"/> data queries used by
 /// authorisation requirement handlers.
 /// </summary>
 [Trait("Category", "Integration")]
-public class SecurityRepositoryTests : IDisposable
+public class AuthorisationReaderTests : IDisposable
 {
     private readonly Infrastructure.MooBankContext _context;
     private readonly Guid _userId = Guid.NewGuid();
     private readonly Guid _familyId = Guid.NewGuid();
 
-    public SecurityRepositoryTests()
+    public AuthorisationReaderTests()
     {
         _context = TestDbContextFactory.Create();
     }
@@ -31,7 +31,7 @@ public class SecurityRepositoryTests : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    private AuthorisationRepository CreateRepository() => new(_context);
+    private AuthorisationReader CreateRepository() => new(_context);
 
     #region IsGroupOwner
 

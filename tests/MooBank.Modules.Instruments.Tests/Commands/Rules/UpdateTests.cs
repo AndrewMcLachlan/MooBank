@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Modules.Instruments.Commands.Rules;
 using Asm.MooBank.Modules.Instruments.Tests.Support;
 using DomainRule = Asm.MooBank.Domain.Entities.Instrument.Rule;
@@ -22,12 +22,14 @@ public class UpdateTests
         var instrumentId = Guid.NewGuid();
         var existingRule = TestEntities.CreateRule(id: 1, instrumentId: instrumentId, contains: "OLD_VALUE");
 
-        _mocks.RuleRepositoryMock
-            .Setup(r => r.Get(instrumentId, 1, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existingRule);
+        var instrument = TestEntities.CreateInstrument(id: instrumentId, rules: [existingRule]);
+
+        _mocks.InstrumentRepositoryMock
+            .Setup(r => r.Get(instrumentId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(instrument);
 
         var handler = new UpdateRuleHandler(
-            _mocks.RuleRepositoryMock.Object,
+            _mocks.InstrumentRepositoryMock.Object,
             _mocks.UnitOfWorkMock.Object);
 
         var updateRule = TestEntities.CreateUpdateRule(contains: "NEW_VALUE", description: "New Description");
@@ -49,12 +51,14 @@ public class UpdateTests
         var instrumentId = Guid.NewGuid();
         var existingRule = TestEntities.CreateRule(id: 1, instrumentId: instrumentId, contains: "OLD_VALUE", description: "Old Description");
 
-        _mocks.RuleRepositoryMock
-            .Setup(r => r.Get(instrumentId, 1, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existingRule);
+        var instrument = TestEntities.CreateInstrument(id: instrumentId, rules: [existingRule]);
+
+        _mocks.InstrumentRepositoryMock
+            .Setup(r => r.Get(instrumentId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(instrument);
 
         var handler = new UpdateRuleHandler(
-            _mocks.RuleRepositoryMock.Object,
+            _mocks.InstrumentRepositoryMock.Object,
             _mocks.UnitOfWorkMock.Object);
 
         var updateRule = TestEntities.CreateUpdateRule(contains: "NEW_VALUE", description: "New Description");
@@ -75,12 +79,14 @@ public class UpdateTests
         var instrumentId = Guid.NewGuid();
         var existingRule = TestEntities.CreateRule(id: 1, instrumentId: instrumentId);
 
-        _mocks.RuleRepositoryMock
-            .Setup(r => r.Get(instrumentId, 1, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existingRule);
+        var instrument = TestEntities.CreateInstrument(id: instrumentId, rules: [existingRule]);
+
+        _mocks.InstrumentRepositoryMock
+            .Setup(r => r.Get(instrumentId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(instrument);
 
         var handler = new UpdateRuleHandler(
-            _mocks.RuleRepositoryMock.Object,
+            _mocks.InstrumentRepositoryMock.Object,
             _mocks.UnitOfWorkMock.Object);
 
         var updateRule = TestEntities.CreateUpdateRule(contains: "NEW_VALUE");
@@ -100,12 +106,14 @@ public class UpdateTests
         var instrumentId = Guid.NewGuid();
         var existingRule = TestEntities.CreateRule(id: 1, instrumentId: instrumentId, description: "Has Description");
 
-        _mocks.RuleRepositoryMock
-            .Setup(r => r.Get(instrumentId, 1, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existingRule);
+        var instrument = TestEntities.CreateInstrument(id: instrumentId, rules: [existingRule]);
+
+        _mocks.InstrumentRepositoryMock
+            .Setup(r => r.Get(instrumentId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(instrument);
 
         var handler = new UpdateRuleHandler(
-            _mocks.RuleRepositoryMock.Object,
+            _mocks.InstrumentRepositoryMock.Object,
             _mocks.UnitOfWorkMock.Object);
 
         // Create UpdateRule directly to explicitly set null description
@@ -131,12 +139,14 @@ public class UpdateTests
         var instrumentId = Guid.NewGuid();
         var nonExistentRuleId = 999;
 
-        _mocks.RuleRepositoryMock
-            .Setup(r => r.Get(instrumentId, nonExistentRuleId, It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new NotFoundException());
+        var instrument = TestEntities.CreateInstrument(id: instrumentId);
+
+        _mocks.InstrumentRepositoryMock
+            .Setup(r => r.Get(instrumentId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(instrument);
 
         var handler = new UpdateRuleHandler(
-            _mocks.RuleRepositoryMock.Object,
+            _mocks.InstrumentRepositoryMock.Object,
             _mocks.UnitOfWorkMock.Object);
 
         var updateRule = TestEntities.CreateUpdateRule(contains: "NEW_VALUE");

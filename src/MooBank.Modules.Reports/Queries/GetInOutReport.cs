@@ -6,11 +6,11 @@ namespace Asm.MooBank.Modules.Reports.Queries;
 
 public record GetInOutReport : ReportQuery, IQuery<InOutReport>;
 
-internal class GetInOutReportHandler(IReportRepository repository) : IQueryHandler<GetInOutReport, InOutReport>
+internal class GetInOutReportHandler(IReportReader reportReader) : IQueryHandler<GetInOutReport, InOutReport>
 {
     public async ValueTask<InOutReport> Handle(GetInOutReport request, CancellationToken cancellationToken)
     {
-        var results = await repository.GetCreditDebitTotals(request.AccountId, request.Start, request.End, cancellationToken);
+        var results = await reportReader.GetCreditDebitTotals(request.AccountId, request.Start, request.End, cancellationToken);
 
         return new()
         {

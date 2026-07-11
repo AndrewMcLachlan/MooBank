@@ -84,4 +84,4 @@ Auth is handled by policies and requirements wherever possible; filtering is def
    not audit — their `ISecurity` callers do. Every denial is logged exactly once.
 6. **Truth sources**: route handlers for instruments/groups answer from cached claims (5-minute
    staleness accepted); data-backed handlers (tag, budget line, forecast plan) and resource
-   handlers query the database via `IAuthorisationRepository`.
+   handlers query the database via `IAuthorisationReader`.

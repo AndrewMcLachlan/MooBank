@@ -50,18 +50,18 @@ public class GetSavingsInterestReportTests
         var accounts = QueryableHelper.CreateAsyncQueryable([CreateAccount(accountId, tagId)]);
         var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId, "Interest"));
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyTotalsForTag(accountId, start, end, TransactionFilterType.Credit, tagId, It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
-        var handler = new GetSavingsInterestReportHandler(_mocks.ReportRepositoryMock.Object, accounts, tags);
+        var handler = new GetSavingsInterestReportHandler(_mocks.ReportReaderMock.Object, accounts, tags);
         var query = new GetSavingsInterestReport { AccountId = accountId, Start = start, End = end };
 
         // Act
         await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
-        _mocks.ReportRepositoryMock.Verify(
+        _mocks.ReportReaderMock.Verify(
             r => r.GetMonthlyTotalsForTag(accountId, start, end, TransactionFilterType.Credit, tagId, It.IsAny<CancellationToken>()),
             Times.Once);
     }
@@ -90,11 +90,11 @@ public class GetSavingsInterestReportTests
             TestEntities.CreateMonthlyTagTotal(new DateOnly(2026, 3, 1), 100m, 100m),
         };
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyTotalsForTag(accountId, start, end, TransactionFilterType.Credit, tagId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(monthlyTotals);
 
-        var handler = new GetSavingsInterestReportHandler(_mocks.ReportRepositoryMock.Object, accounts, tags);
+        var handler = new GetSavingsInterestReportHandler(_mocks.ReportReaderMock.Object, accounts, tags);
         var query = new GetSavingsInterestReport { AccountId = accountId, Start = start, End = end };
 
         // Act
@@ -125,7 +125,7 @@ public class GetSavingsInterestReportTests
         var accounts = QueryableHelper.CreateAsyncQueryable([CreateAccount(accountId, interestTagId: null)]);
         var tags = TestEntities.CreateTagQueryable();
 
-        var handler = new GetSavingsInterestReportHandler(_mocks.ReportRepositoryMock.Object, accounts, tags);
+        var handler = new GetSavingsInterestReportHandler(_mocks.ReportReaderMock.Object, accounts, tags);
         var query = new GetSavingsInterestReport { AccountId = accountId, Start = start, End = end };
 
         // Act
@@ -138,7 +138,7 @@ public class GetSavingsInterestReportTests
         Assert.Equal(0m, result.Total);
         Assert.Equal(0m, result.MonthlyAverage);
 
-        _mocks.ReportRepositoryMock.Verify(
+        _mocks.ReportReaderMock.Verify(
             r => r.GetMonthlyTotalsForTag(It.IsAny<Guid>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<TransactionFilterType>(), It.IsAny<int?>(), It.IsAny<CancellationToken>()),
             Times.Never);
     }

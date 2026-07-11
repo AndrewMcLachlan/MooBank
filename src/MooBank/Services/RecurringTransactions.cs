@@ -1,5 +1,7 @@
 ﻿using Asm.Domain;
 using Asm.MooBank.Domain.Entities.Account;
+using Asm.MooBank.Domain.Entities.Instrument;
+using Asm.MooBank.Domain.Entities.Instrument.Specifications;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Models;
 using Microsoft.Extensions.Logging;
@@ -17,7 +19,7 @@ public interface IRecurringTransactionService
 /// <summary>
 /// Processes recurring transactions.
 /// </summary>
-public class RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionRepository transactionRepository, IRecurringTransactionRepository recurringTransactionRepository, ILogger<RecurringTransactionService> logger) : IRecurringTransactionService
+public class RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionRepository transactionRepository, IInstrumentRepository instrumentRepository, ILogger<RecurringTransactionService> logger) : IRecurringTransactionService
 {
     /// <summary>
     /// Get all recurring transactions and process them.
@@ -27,7 +29,10 @@ public class RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionRep
     /// <exception cref="InvalidOperationException">Thrown when the schedule type is unrecognised.</exception>
     public async Task Process(CancellationToken cancellationToken = default)
     {
-        foreach (var trans in await recurringTransactionRepository.Get(cancellationToken))
+        // Background path: loads across all users via the unfiltered specification overload.
+        var instruments = await instrumentRepository.Get(new RecurringTransactionSpecification(), cancellationToken);
+
+        foreach (var trans in instruments.SelectMany(i => i.VirtualInstruments).SelectMany(v => v.RecurringTransactions))
         {
             cancellationToken.ThrowIfCancellationRequested();
 

@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Domain.Entities.Reports;
 using Asm.MooBank.Models;
 
@@ -8,7 +8,7 @@ public class TestMocks
 {
     public TestMocks()
     {
-        ReportRepositoryMock = new Mock<IReportRepository>();
+        ReportReaderMock = new Mock<IReportReader>();
 
         User = new User
         {
@@ -24,7 +24,7 @@ public class TestMocks
         };
     }
 
-    public Mock<IReportRepository> ReportRepositoryMock { get; }
+    public Mock<IReportReader> ReportReaderMock { get; }
 
     public User User { get; }
 }

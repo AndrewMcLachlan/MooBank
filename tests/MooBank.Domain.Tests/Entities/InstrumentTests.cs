@@ -1,4 +1,4 @@
-using Asm.MooBank.Domain.Entities.Account;
+﻿using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Account.Events;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Models;
@@ -488,6 +488,110 @@ public class InstrumentTests
 
         // Assert
         Assert.Empty(permittedUsers);
+    }
+
+    #endregion
+
+    #region Rules
+
+    /// <summary>
+    /// Given an instrument
+    /// When AddRule is called
+    /// Then the rule should be added with the instrument's ID and the supplied tags
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void AddRule_AddsRuleToInstrument()
+    {
+        // Arrange
+        var instrument = CreateInstrument();
+        var tag = new Asm.MooBank.Domain.Entities.Tag.Tag(1) { Name = "Groceries" };
+
+        // Act
+        var rule = instrument.AddRule("COSTCO", "Costco shopping", [tag]);
+
+        // Assert
+        Assert.Contains(rule, instrument.Rules);
+        Assert.Equal(instrument.Id, rule.InstrumentId);
+        Assert.Equal("COSTCO", rule.Contains);
+        Assert.Equal("Costco shopping", rule.Description);
+        Assert.Single(rule.Tags);
+        Assert.Contains(rule.Tags, t => t.Id == tag.Id);
+    }
+
+    /// <summary>
+    /// Given an instrument with a rule
+    /// When UpdateRule is called
+    /// Then the rule's contains and description should be updated
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void UpdateRule_ExistingRule_UpdatesProperties()
+    {
+        // Arrange
+        var instrument = CreateInstrument();
+        instrument.Rules.Add(new Rule(1) { InstrumentId = instrument.Id, Contains = "OLD", Description = "Old description" });
+
+        // Act
+        var rule = instrument.UpdateRule(1, "NEW", "New description");
+
+        // Assert
+        Assert.Equal("NEW", rule.Contains);
+        Assert.Equal("New description", rule.Description);
+    }
+
+    /// <summary>
+    /// Given an instrument without the requested rule
+    /// When UpdateRule is called
+    /// Then NotFoundException should be thrown
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void UpdateRule_RuleNotFound_ThrowsNotFoundException()
+    {
+        // Arrange
+        var instrument = CreateInstrument();
+
+        // Act & Assert
+        Assert.Throws<NotFoundException>(() => instrument.UpdateRule(999, "NEW", null));
+    }
+
+    /// <summary>
+    /// Given an instrument with rules
+    /// When RemoveRule is called
+    /// Then only the requested rule should be removed
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void RemoveRule_ExistingRule_RemovesRule()
+    {
+        // Arrange
+        var instrument = CreateInstrument();
+        instrument.Rules.Add(new Rule(1) { InstrumentId = instrument.Id, Contains = "AMAZON" });
+        instrument.Rules.Add(new Rule(2) { InstrumentId = instrument.Id, Contains = "NETFLIX" });
+
+        // Act
+        instrument.RemoveRule(1);
+
+        // Assert
+        Assert.Single(instrument.Rules);
+        Assert.Contains(instrument.Rules, r => r.Id == 2);
+    }
+
+    /// <summary>
+    /// Given an instrument without the requested rule
+    /// When RemoveRule is called
+    /// Then NotFoundException should be thrown
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void RemoveRule_RuleNotFound_ThrowsNotFoundException()
+    {
+        // Arrange
+        var instrument = CreateInstrument();
+
+        // Act & Assert
+        Assert.Throws<NotFoundException>(() => instrument.RemoveRule(999));
     }
 
     #endregion

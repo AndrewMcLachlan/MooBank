@@ -9,7 +9,7 @@ namespace Asm.MooBank.Modules.Reports.Queries;
 public record GetSuperContributionsReport : ReportQuery, IQuery<SuperContributionsReport>;
 
 internal class GetSuperContributionsReportHandler(
-    IReportRepository repository,
+    IReportReader reportReader,
     IQueryable<LogicalAccount> accounts,
     IQueryable<TagEntity> tags) : IQueryHandler<GetSuperContributionsReport, SuperContributionsReport>
 {
@@ -25,8 +25,8 @@ internal class GetSuperContributionsReportHandler(
         var employerTagId = configured.FirstOrDefault(t => t.Purpose == TagPurpose.EmployerContribution)?.TagId;
         var personalTagId = configured.FirstOrDefault(t => t.Purpose == TagPurpose.PersonalContribution)?.TagId;
 
-        var employer = await LoadSeries(repository, request, employerTagId, cancellationToken);
-        var personal = await LoadSeries(repository, request, personalTagId, cancellationToken);
+        var employer = await LoadSeries(reportReader, request, employerTagId, cancellationToken);
+        var personal = await LoadSeries(reportReader, request, personalTagId, cancellationToken);
 
         var configuredTagIds = configured.Select(t => t.TagId).ToList();
         var tagNames = configuredTagIds.Count == 0
@@ -50,11 +50,11 @@ internal class GetSuperContributionsReportHandler(
         };
     }
 
-    private static async Task<List<TrendPoint>> LoadSeries(IReportRepository repository, GetSuperContributionsReport request, int? tagId, CancellationToken cancellationToken)
+    private static async Task<List<TrendPoint>> LoadSeries(IReportReader reportReader, GetSuperContributionsReport request, int? tagId, CancellationToken cancellationToken)
     {
         if (tagId is null) return [];
 
-        var totals = await repository.GetMonthlyTotalsForTag(
+        var totals = await reportReader.GetMonthlyTotalsForTag(
             request.AccountId,
             request.Start,
             request.End,

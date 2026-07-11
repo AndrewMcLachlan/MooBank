@@ -24,11 +24,11 @@ public class GetGroupMonthlyBalancesReportTests
 
         var balances = TestEntities.CreateSampleMonthlyBalances();
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetGroupMonthlyBalances(groupId, start, end, It.IsAny<CancellationToken>()))
             .ReturnsAsync(balances);
 
-        var handler = new GetGroupMonthlyBalancesReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetGroupMonthlyBalancesReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetGroupMonthlyBalancesReport(groupId, start, end);
 
@@ -52,11 +52,11 @@ public class GetGroupMonthlyBalancesReportTests
 
         var balances = TestEntities.CreateSampleMonthlyBalances();
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetGroupMonthlyBalances(groupId, start, end, It.IsAny<CancellationToken>()))
             .ReturnsAsync(balances);
 
-        var handler = new GetGroupMonthlyBalancesReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetGroupMonthlyBalancesReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetGroupMonthlyBalancesReport(groupId, start, end);
 
@@ -81,11 +81,11 @@ public class GetGroupMonthlyBalancesReportTests
             TestEntities.CreateMonthlyBalance(periodEnd, 15000m),
         };
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetGroupMonthlyBalances(groupId, start, end, It.IsAny<CancellationToken>()))
             .ReturnsAsync(balances);
 
-        var handler = new GetGroupMonthlyBalancesReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetGroupMonthlyBalancesReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetGroupMonthlyBalancesReport(groupId, start, end);
 
@@ -111,11 +111,11 @@ public class GetGroupMonthlyBalancesReportTests
             TestEntities.CreateMonthlyBalance(balance: expectedBalance),
         };
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetGroupMonthlyBalances(groupId, start, end, It.IsAny<CancellationToken>()))
             .ReturnsAsync(balances);
 
-        var handler = new GetGroupMonthlyBalancesReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetGroupMonthlyBalancesReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetGroupMonthlyBalancesReport(groupId, start, end);
 
@@ -135,11 +135,11 @@ public class GetGroupMonthlyBalancesReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetGroupMonthlyBalances(groupId, start, end, It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
-        var handler = new GetGroupMonthlyBalancesReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetGroupMonthlyBalancesReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetGroupMonthlyBalancesReport(groupId, start, end);
 
@@ -158,11 +158,11 @@ public class GetGroupMonthlyBalancesReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetGroupMonthlyBalances(groupId, start, end, It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
-        var handler = new GetGroupMonthlyBalancesReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetGroupMonthlyBalancesReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetGroupMonthlyBalancesReport(groupId, start, end);
 
@@ -170,7 +170,7 @@ public class GetGroupMonthlyBalancesReportTests
         await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
-        _mocks.ReportRepositoryMock.Verify(
+        _mocks.ReportReaderMock.Verify(
             r => r.GetGroupMonthlyBalances(groupId, start, end, It.IsAny<CancellationToken>()),
             Times.Once);
     }

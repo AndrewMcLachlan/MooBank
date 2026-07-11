@@ -7,7 +7,7 @@ namespace Asm.MooBank.Modules.Reports.Queries;
 
 public record GetUserSpendingTrend : UserReportQuery, IQuery<UserSpendingTrendReport>;
 
-internal class GetUserSpendingTrendHandler(IQueryable<LogicalAccount> accounts, IReportRepository repository, User user) : IQueryHandler<GetUserSpendingTrend, UserSpendingTrendReport>
+internal class GetUserSpendingTrendHandler(IQueryable<LogicalAccount> accounts, IReportReader reportReader, User user) : IQueryHandler<GetUserSpendingTrend, UserSpendingTrendReport>
 {
     public async ValueTask<UserSpendingTrendReport> Handle(GetUserSpendingTrend request, CancellationToken cancellationToken)
     {
@@ -26,7 +26,7 @@ internal class GetUserSpendingTrendHandler(IQueryable<LogicalAccount> accounts, 
             };
         }
 
-        var perAccount = await repository.GetMonthlyCreditDebitTotalsForAccounts(accountIds, start, end, cancellationToken);
+        var perAccount = await reportReader.GetMonthlyCreditDebitTotalsForAccounts(accountIds, start, end, cancellationToken);
 
         var months = perAccount.Values
             .SelectMany(rows => rows)
