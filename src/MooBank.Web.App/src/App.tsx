@@ -4,6 +4,7 @@ import "utils/chartSetup";
 import { MooApp } from "@andrewmclachlan/moo-app";
 import { createRouter } from "@tanstack/react-router";
 import { Spinner } from "@andrewmclachlan/moo-ds";
+import { RouteError } from "components";
 import { routeTree } from "./routeTree.gen.ts";
 import { client } from "./api/client.gen";
 import { createIDBPersister, shouldPersistQuery } from "utils/queryPersister";
@@ -24,6 +25,7 @@ export const App = () => {
         defaultPreloadStaleTime: 0,
         scrollRestoration: true,
         defaultPendingComponent: Spinner,
+        defaultErrorComponent: RouteError,
     })
 
     return (
