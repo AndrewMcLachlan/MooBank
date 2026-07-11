@@ -6,13 +6,18 @@ internal class TransactionInstrumentConfiguration : IEntityTypeConfiguration<Tra
 {
     public void Configure(EntityTypeBuilder<TransactionInstrument> builder)
     {
-        // Writes target the TransactionInstrument table; reads come from the
-        // TransactionInstrumentBalance view, which supplies the derived Balance and
-        // LastTransaction (see dbo.Views.TransactionInstrumentBalance). Those two
-        // properties are DatabaseGeneratedOption.Computed, so EF never writes them to
-        // the table — it only reads them from the view.
-        builder.ToTable(tb => tb.UseSqlOutputClause(false));
-        builder.ToView("TransactionInstrumentBalance");
+        builder.ToTable(tb => tb.UseSqlOutputClause(false)).Property(e => e.Id).HasColumnName("InstrumentId");
         builder.Property(e => e.Id).HasColumnName("InstrumentId");
+
+        // Balance and LastTransaction are read from the TransactionInstrumentBalance view via a
+        // 1:1 read-only navigation. It is auto-included so every instrument load carries its
+        // derived balance without callers needing an explicit Include. The view is joined (not a
+        // second table base on this TPT type), which is why this works where a direct table+view
+        // mapping on TransactionInstrument does not.
+        builder.HasOne(e => e.BalanceInfo)
+            .WithOne()
+            .HasForeignKey<InstrumentBalance>(e => e.InstrumentId);
+
+        builder.Navigation(e => e.BalanceInfo).AutoInclude();
     }
 }
