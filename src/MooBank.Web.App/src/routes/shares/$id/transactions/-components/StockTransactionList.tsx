@@ -1,15 +1,12 @@
 
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
 
 import { Table } from "@andrewmclachlan/moo-ds";
 
 import { getNumberOfPages, Pagination } from "@andrewmclachlan/moo-ds";
 import { useStockTransactions } from "routes/shares/-hooks/useStockTransactions";
-import { StockTransactionsSlice } from "store";
-import type { State } from "store/state";
-import { useDebounce } from "use-debounce";
 import { useStockHolding } from "../../../-components/StockHoldingProvider";
+import { useStockTransactionSearch } from "../-hooks/useStockTransactionSearch";
 import { StockTransactionRow } from "./StockTransactionRow";
 import { StockTransactionTableHead } from "./StockTransactionTableHead";
 
@@ -17,13 +14,9 @@ export const StockTransactionList: React.FC<TransactionListProps> = () => {
 
     const stockHolding = useStockHolding();
 
-    const { currentPage: pageNumber, pageSize, filter, sortField, sortDirection } = useSelector((state: State) => state.stockTransactions);
-    const dispatch = useDispatch();
-    const [debouncedFilter] = useDebounce(filter, 250);
+    const { filter, page: pageNumber, pageSize, sortField, sortDirection, setPage } = useStockTransactionSearch();
 
-    useEffect(() => { dispatch(StockTransactionsSlice.actions.setCurrentPage(1)) }, [debouncedFilter]);
-
-    const transactionsQuery = useStockTransactions(stockHolding.id, debouncedFilter, pageSize, pageNumber, sortField, sortDirection);
+    const transactionsQuery = useStockTransactions(stockHolding.id, filter, pageSize, pageNumber, sortField, sortDirection);
     const transactions = transactionsQuery.data?.results;
     const totalTransactions = transactionsQuery.data?.total ?? 0;
 
@@ -40,7 +33,7 @@ export const StockTransactionList: React.FC<TransactionListProps> = () => {
                 <tr>
                     <td colSpan={2} className="page-totals">Page {pageNumber} of {numberOfPages} ({totalTransactions} transactions)</td>
                     <td colSpan={5}>
-                        <Pagination pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={(_current, newPage) => dispatch(StockTransactionsSlice.actions.setCurrentPage(newPage))} />
+                        <Pagination pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={(_current, newPage) => setPage(newPage)} />
                     </td>
                 </tr>
             </tfoot>

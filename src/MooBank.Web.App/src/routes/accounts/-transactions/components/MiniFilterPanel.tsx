@@ -1,24 +1,16 @@
 import { Section } from "@andrewmclachlan/moo-ds";
-import React, { useEffect } from "react";
+import React from "react";
 import { Form, Input } from "@andrewmclachlan/moo-ds";
-import { useDispatch, } from "react-redux";
 
 import { TagSelector } from "components";
-import { TransactionsSlice } from "store/Transactions";
 
 import { MiniPeriodSelector } from "components/MiniPeriodSelector";
 import { useFilterPanel } from "../hooks/useFilterPanel";
-import type { transactionTypeFilter } from "store/state";
+import type { transactionTypeFilter } from "models/transactions";
 
 export const MiniFilterPanel: React.FC<MiniFilterPanelProps> = (props) => {
 
-    const { filterDescription, filterTagged, filterNetZero, filterTags, filterType, period, setFilterDescription, setFilterTagged, setFilterNetZero, setFilterTags, setFilterType, setPeriod } = useFilterPanel();
-    const dispatch = useDispatch();
-
-
-    useEffect(() => {
-        dispatch(TransactionsSlice.actions.setTransactionListFilter({ description: filterDescription, filterTagged, tags: filterTags, transactionType: filterType, start: period?.startDate?.toISOString(), end: period?.endDate?.toISOString() }));
-    }, [period, filterDescription, filterTagged, filterTags, filterType]);
+    const { filterDescription, filterTagged, filterNetZero, filterTags, filterType, setFilterDescription, setFilterTagged, setFilterNetZero, setFilterTags, setFilterType, setPeriod } = useFilterPanel();
 
     return (
         <Section className="mini-filter-panel" {...props}>

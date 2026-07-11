@@ -18,7 +18,7 @@ import { useChartColours } from "utils/chartColours";
 import { getStepSize } from "utils/charts";
 import { ReportsPage } from "./ReportsPage";
 import { TagSettingsPanel } from "./TagSettingsPanel";
-import type { transactionTypeFilter } from "store/state";
+import type { transactionTypeFilter } from "models/transactions";
 import { MiniPeriodSelector } from "components/MiniPeriodSelector";
 import { getPeriod } from "hooks";
 

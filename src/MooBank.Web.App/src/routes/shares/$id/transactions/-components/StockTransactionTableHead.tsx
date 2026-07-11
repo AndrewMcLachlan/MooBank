@@ -1,15 +1,12 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
 
 import type { SortDirection } from "@andrewmclachlan/moo-ds";
 
-import type { State } from "store/state";
-import { StockTransactionsSlice } from "store/StockTransactions";
+import { useStockTransactionSearch } from "../-hooks/useStockTransactionSearch";
 
 export const StockTransactionTableHead: React.FC = () => {
 
-    const dispatch = useDispatch();
-    const { sortField, sortDirection } = useSelector((state: State) => state.transactions);
+    const { sortField, sortDirection, setSort } = useStockTransactionSearch();
 
     const sort = (newSortField: string) => {
 
@@ -19,7 +16,7 @@ export const StockTransactionTableHead: React.FC = () => {
             newSortDirection = sortDirection === "Ascending" ? "Descending" : "Ascending";
         }
 
-        dispatch(StockTransactionsSlice.actions.setSort([newSortField, newSortDirection]));
+        setSort(newSortField, newSortDirection);
     }
 
     const getClassName = (field: string) => field === sortField ? `sortable ${sortDirection.toLowerCase()}` : `sortable`;

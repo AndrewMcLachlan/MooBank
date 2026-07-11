@@ -1,9 +1,7 @@
-import { useSelector } from "react-redux";
-
-import type { State } from "store/state";
 import { getPeriodLabel } from "utils/periodLabel";
+import { useStockTransactionSearch } from "./useStockTransactionSearch";
 
 export const usePeriodLabel = (): string => {
-    const filter = useSelector((s: State) => s.stockTransactions.filter);
+    const { filter } = useStockTransactionSearch();
     return getPeriodLabel(filter);
 };

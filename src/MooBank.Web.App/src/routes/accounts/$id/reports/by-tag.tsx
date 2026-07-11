@@ -12,7 +12,7 @@ import { Section} from "@andrewmclachlan/moo-ds";
 import type { Period } from "models/dateFns";
 import { ReportTypeSelector } from "components/ReportTypeSelector";
 import { chartColours } from "utils/chartColours";
-import type { transactionTypeFilter } from "store/state";
+import type { transactionTypeFilter } from "models/transactions";
 import { MiniPeriodSelector } from "components/MiniPeriodSelector";
 import { getPeriod } from "hooks";
 

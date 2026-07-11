@@ -1,89 +1,91 @@
 import { useLocalStorage } from "@andrewmclachlan/moo-ds";
 import { useEffect, useMemo, useState } from "react";
-import { useLocation } from "@tanstack/react-router";
+import { useDebounce } from "use-debounce";
 
 import type { Period } from "models/dateFns";
-import type { transactionTypeFilter } from "store/state";
-import { cleanQueryString } from "utils/queryString";
+import type { transactionTypeFilter } from "models/transactions";
+import { useTransactionSearch } from "./useTransactionSearch";
 
 export const useFilterPanel = () => {
 
-    // The router's search string is reactive; window.location.search is not.
-    const searchStr = useLocation({ select: (location) => location.searchStr });
+    const { search, setFilter } = useTransactionSearch();
 
-    const urlFilters = useMemo(() => {
-        const params = new URLSearchParams(searchStr);
-        const tagParam = params.get("tag");
-        return {
-            tags: tagParam ? tagParam.split(",").map(t => Number(t)) : null,
-            type: params.get("type") as transactionTypeFilter | null,
-            untagged: params.get("untagged") !== null,
-            netZero: params.get("netzero") !== null,
-        };
-    }, [searchStr]);
+    // Seed the form once from the URL search params (shareable links, report/dashboard widgets);
+    // where the URL is silent, fall back to the persisted defaults below. Read once on mount —
+    // widgets navigate from other routes, so the transaction route always mounts fresh.
+    const fromUrl = useMemo(() => ({
+        tags: search.tags,
+        type: search.type,
+        tagged: search.tagged,
+        netZero: search.netZero,
+        description: search.description,
+        hasWidgetFilter: !!(search.tags?.length || search.type || search.tagged),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }), []);
 
-    // Persisted filter values.
+    // Persisted filter defaults.
     const [storedFilterTagged, setStoredFilterTagged] = useLocalStorage("filter-tagged", false);
     const [storedFilterNetZero, setStoredFilterNetZero] = useLocalStorage("filter-netzero", false);
     const [filterDescription, setFilterDescription] = useLocalStorage("filter-description", "");
     const [storedFilterTags, setStoredFilterTags] = useLocalStorage<number[]>("filter-tag", []);
     const [storedFilterType, setStoredFilterType] = useLocalStorage<transactionTypeFilter>("filter-type", "");
 
-    // Single source of truth for the applied filters: restored from the URL first, then localStorage.
-    const [filterTags, setFilterTagsState] = useState<number[]>(urlFilters.tags ?? storedFilterTags);
-    const [filterTagged, setFilterTaggedState] = useState<boolean>(urlFilters.untagged ? true : storedFilterTagged);
-    const [filterNetZero, setFilterNetZeroState] = useState<boolean>(urlFilters.netZero ? true : storedFilterNetZero);
-    const [filterType, setFilterTypeState] = useState<transactionTypeFilter>(urlFilters.type ?? storedFilterType);
+    // Applied filters: URL first, then localStorage.
+    const [filterTags, setFilterTagsState] = useState<number[]>(fromUrl.tags ?? storedFilterTags);
+    const [filterTagged, setFilterTaggedState] = useState<boolean>(fromUrl.tagged ?? (fromUrl.hasWidgetFilter ? false : storedFilterTagged));
+    const [filterNetZero, setFilterNetZeroState] = useState<boolean>(fromUrl.netZero ?? storedFilterNetZero);
+    const [filterType, setFilterTypeState] = useState<transactionTypeFilter>(fromUrl.type ?? storedFilterType);
 
-    // Re-apply URL filters when the search string changes (e.g. navigating from a dashboard widget).
+    const [period, setPeriod] = useState<Period>({ startDate: null, endDate: null });
+
+    // Arriving from a widget filter clears the description so it doesn't stack with the tag/type filter.
     useEffect(() => {
-        if (urlFilters.tags) setFilterTagsState(urlFilters.tags);
-        if (urlFilters.type !== null) setFilterTypeState(urlFilters.type);
-        if (urlFilters.untagged) setFilterTaggedState(true);
-        if (urlFilters.netZero) setFilterNetZeroState(true);
-
-        // If the URL has filters defined, clear the description filter.
-        if (urlFilters.type !== null || urlFilters.tags?.length || urlFilters.untagged) setFilterDescription("");
-        if (urlFilters.tags?.length) {
+        if (fromUrl.hasWidgetFilter) setFilterDescription("");
+        if (fromUrl.tags?.length) {
             setFilterTaggedState(false);
             setStoredFilterTagged(false);
         }
-    }, [urlFilters]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-    // Once a filter is changed by the user, its URL override no longer applies.
-    const cleanParam = (key: string) => cleanQueryString(new URLSearchParams(window.location.search), key);
+    // Debounce the free-text description so typing doesn't push a URL update per keystroke.
+    const [debouncedDescription] = useDebounce(filterDescription, 250);
+
+    // Push the resolved filter to the route search params (formerly a Redux dispatch). setFilter
+    // returns to page 1 whenever the filter changes.
+    useEffect(() => {
+        setFilter({
+            description: debouncedDescription || undefined,
+            tagged: filterTagged || undefined,
+            netZero: filterNetZero || undefined,
+            tags: filterTags?.length ? filterTags : undefined,
+            type: filterType || undefined,
+            start: period?.startDate?.toISOString(),
+            end: period?.endDate?.toISOString(),
+        });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [period, debouncedDescription, filterTagged, filterNetZero, filterTags, filterType]);
 
     const setFilterTags = (tag: number | number[]) => {
-        cleanParam("tag");
-
         const tagArray = Array.isArray(tag) ? tag : [tag];
-
         setFilterTagsState(tagArray);
         setStoredFilterTags(tagArray);
-    }
+    };
 
-    const setFilterTagged = (filter: boolean) => {
-        cleanParam("untagged");
+    const setFilterTagged = (value: boolean) => {
+        setFilterTaggedState(value);
+        setStoredFilterTagged(value);
+    };
 
-        setFilterTaggedState(filter);
-        setStoredFilterTagged(filter);
-    }
-
-    const setFilterNetZero = (filter: boolean) => {
-        cleanParam("netzero");
-
-        setFilterNetZeroState(filter);
-        setStoredFilterNetZero(filter);
-    }
+    const setFilterNetZero = (value: boolean) => {
+        setFilterNetZeroState(value);
+        setStoredFilterNetZero(value);
+    };
 
     const setFilterType = (type: transactionTypeFilter) => {
-        cleanParam("type");
-
         setFilterTypeState(type);
         setStoredFilterType(type);
-    }
-
-    const [period, setPeriod] = useState<Period>({ startDate: null, endDate: null });
+    };
 
     const clear = () => {
         setFilterDescription("");
@@ -91,7 +93,7 @@ export const useFilterPanel = () => {
         setFilterNetZero(false);
         setFilterTags([]);
         setFilterType("");
-    }
+    };
 
     return {
         filterDescription,

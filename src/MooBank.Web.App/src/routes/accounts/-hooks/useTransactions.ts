@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import type { PagedResult, SortDirection } from "@andrewmclachlan/moo-ds";
 import type { Transaction, TransactionFilterType, SortDirection as GenSortDirection } from "api/types.gen";
-import type { TransactionsFilter } from "store/state";
+import type { TransactionsFilter } from "models/transactions";
 import {
     getTransactionsQueryKey,
     getUntaggedTransactionsQueryKey,

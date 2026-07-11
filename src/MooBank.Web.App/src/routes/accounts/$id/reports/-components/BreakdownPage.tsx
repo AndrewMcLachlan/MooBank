@@ -11,7 +11,7 @@ import { ReportTypeSelector } from "components/ReportTypeSelector";
 import type { Period } from "models/dateFns";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { Breakdown } from "./Breakdown";
-import type { transactionTypeFilter } from "store/state";
+import type { transactionTypeFilter } from "models/transactions";
 import type { TagValue } from "api/types.gen";
 import { MiniPeriodSelector } from "components/MiniPeriodSelector";
 import { getPeriod } from "hooks";

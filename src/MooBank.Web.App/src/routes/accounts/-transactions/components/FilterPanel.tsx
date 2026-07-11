@@ -1,21 +1,13 @@
 import { Section, Tooltip } from "@andrewmclachlan/moo-ds";
-import React, { useEffect } from "react";
+import React from "react";
 import { Button, ButtonGroup, Col, Form, Input } from "@andrewmclachlan/moo-ds";
-import { useDispatch, } from "react-redux";
 
 import { PeriodSelector, FormRow as Row, TagSelector } from "components";
-import { TransactionsSlice } from "store/Transactions";
 import { useFilterPanel } from "../hooks/useFilterPanel";
 
 export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
 
-    const { filterDescription, filterTagged, filterTags, filterNetZero, filterType, period, clear, setFilterDescription, setFilterTagged, setFilterNetZero, setFilterTags, setFilterType, setPeriod } = useFilterPanel();
-
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(TransactionsSlice.actions.setTransactionListFilter({ description: filterDescription, filterTagged, filterNetZero, tags: filterTags, transactionType: filterType, start: period?.startDate?.toISOString(), end: period?.endDate?.toISOString() }));
-    }, [period, filterDescription, filterTagged, filterNetZero, filterTags, filterType]);
+    const { filterDescription, filterTagged, filterTags, filterNetZero, filterType, clear, setFilterDescription, setFilterTagged, setFilterNetZero, setFilterTags, setFilterType, setPeriod } = useFilterPanel();
 
     return (
         <Section className="filter-panel" {...props}>
