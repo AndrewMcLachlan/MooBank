@@ -33,14 +33,9 @@ public class UpdatePlannedItemTests
             .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(plan);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new UpdatePlannedItemHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var updateModel = new ModelPlannedItem
         {
@@ -76,14 +71,9 @@ public class UpdatePlannedItemTests
             .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(plan);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new UpdatePlannedItemHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var updateModel = new ModelPlannedItem
         {
@@ -119,14 +109,9 @@ public class UpdatePlannedItemTests
             .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(plan);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new UpdatePlannedItemHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var updateModel = new ModelPlannedItem
         {
@@ -162,14 +147,9 @@ public class UpdatePlannedItemTests
             .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(plan);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new UpdatePlannedItemHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var fixedDate = new DateOnly(2024, 12, 25);
         var updateModel = new ModelPlannedItem
@@ -209,14 +189,9 @@ public class UpdatePlannedItemTests
             .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(plan);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new UpdatePlannedItemHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var anchorDate = new DateOnly(2024, 1, 15);
         var updateModel = new ModelPlannedItem
@@ -262,14 +237,9 @@ public class UpdatePlannedItemTests
             .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(plan);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new UpdatePlannedItemHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var windowStart = new DateOnly(2024, 6, 1);
         var windowEnd = new DateOnly(2024, 8, 31);
@@ -314,14 +284,9 @@ public class UpdatePlannedItemTests
             .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(plan);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new UpdatePlannedItemHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var updateModel = new ModelPlannedItem
         {
@@ -357,14 +322,9 @@ public class UpdatePlannedItemTests
             .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(plan);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new UpdatePlannedItemHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var updateModel = new ModelPlannedItem
         {
@@ -400,14 +360,9 @@ public class UpdatePlannedItemTests
             .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(plan);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new UpdatePlannedItemHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var updateModel = new ModelPlannedItem
         {
@@ -426,45 +381,6 @@ public class UpdatePlannedItemTests
     }
 
     [Fact]
-    public async Task Handle_NoPermission_ThrowsNotAuthorisedException()
-    {
-        // Arrange
-        var familyId = _mocks.User.FamilyId;
-        var planId = Guid.NewGuid();
-        var itemId = Guid.NewGuid();
-        var existingItem = TestEntities.CreatePlannedItem(id: itemId, planId: planId);
-        var plan = TestEntities.CreateForecastPlan(id: planId, familyId: familyId, plannedItems: [existingItem]);
-
-        _mocks.ForecastRepositoryMock
-            .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(plan);
-
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .ThrowsAsync(new NotAuthorisedException());
-
-        var handler = new UpdatePlannedItemHandler(
-            _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
-
-        var updateModel = new ModelPlannedItem
-        {
-            Id = itemId,
-            Name = "Test Item",
-            ItemType = PlannedItemType.Expense,
-            Amount = 100m,
-            IsIncluded = true,
-            DateMode = PlannedItemDateMode.FixedDate,
-            FixedDate = new DateOnly(2024, 6, 15),
-        };
-        var command = new UpdatePlannedItem(planId, itemId, updateModel);
-
-        // Act & Assert
-        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
-    }
-
-    [Fact]
     public async Task Handle_ValidCommand_UpdatesPlanTimestamp()
     {
         // Arrange
@@ -480,14 +396,9 @@ public class UpdatePlannedItemTests
             .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(plan);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new UpdatePlannedItemHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var updateModel = new ModelPlannedItem
         {

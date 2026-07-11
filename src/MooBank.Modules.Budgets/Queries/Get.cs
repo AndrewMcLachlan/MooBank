@@ -12,7 +12,9 @@ internal class GetHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, Use
     {
         var familyId = user.FamilyId;
 
-        var entity = await budgets.Include(b => b.Lines).ThenInclude(b => b.Tag).Where(b => b.FamilyId == familyId && b.Year == query.Year).SingleOrDefaultAsync(cancellationToken);
+        // Budget lines must survive their tag being soft-deleted (BudgetLine.Tag is a required
+        // navigation, so the SoftDelete filter would otherwise drop the whole line).
+        var entity = await budgets.Include(b => b.Lines).ThenInclude(b => b.Tag).IgnoreQueryFilters(["SoftDelete"]).Where(b => b.FamilyId == familyId && b.Year == query.Year).SingleOrDefaultAsync(cancellationToken);
 
         if (entity != null) return entity.ToModel();
 
@@ -25,7 +27,7 @@ internal class GetHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, Use
         {
             // A concurrent request created the budget first (unique index on FamilyId + Year).
             // Re-query and return the existing budget.
-            entity = await budgets.Include(b => b.Lines).ThenInclude(b => b.Tag).Where(b => b.FamilyId == familyId && b.Year == query.Year).SingleOrDefaultAsync(cancellationToken);
+            entity = await budgets.Include(b => b.Lines).ThenInclude(b => b.Tag).IgnoreQueryFilters(["SoftDelete"]).Where(b => b.FamilyId == familyId && b.Year == query.Year).SingleOrDefaultAsync(cancellationToken);
 
             if (entity == null) throw;
 

@@ -7,8 +7,13 @@ namespace Asm.MooBank.Infrastructure.Tests.Repositories;
 [Trait("Category", "Unit")]
 public class TagRepositoryTests : IDisposable
 {
-    private readonly MooBankContext _context = TestDbContextFactory.Create();
     private readonly Models.User _user = TestEntities.CreateUserModel();
+    private readonly MooBankContext _context;
+
+    public TagRepositoryTests()
+    {
+        _context = TestDbContextFactory.Create(_user);
+    }
 
     public void Dispose()
     {
@@ -207,5 +212,5 @@ public class TagRepositoryTests : IDisposable
 
     #endregion
 
-    private TagRepository CreateRepository() => new(_context, _user);
+    private TagRepository CreateRepository() => new(_context);
 }

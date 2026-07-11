@@ -9,13 +9,11 @@ namespace Asm.MooBank.Modules.Forecast.Commands;
 [DisplayName("UpdatePlannedItem")]
 public record UpdatePlannedItem(Guid PlanId, Guid ItemId, PlannedItemBase Item) : ICommand<PlannedItem>;
 
-internal class UpdatePlannedItemHandler(IForecastRepository forecastRepository, IUnitOfWork unitOfWork, ISecurity security) : ICommandHandler<UpdatePlannedItem, PlannedItem>
+internal class UpdatePlannedItemHandler(IForecastRepository forecastRepository, IUnitOfWork unitOfWork) : ICommandHandler<UpdatePlannedItem, PlannedItem>
 {
     public async ValueTask<PlannedItem> Handle(UpdatePlannedItem request, CancellationToken cancellationToken)
     {
         var plan = await forecastRepository.Get(request.PlanId, new ForecastPlanDetailsSpecification(), cancellationToken);
-
-        await security.AssertFamilyPermission(plan.FamilyId);
 
         var entity = plan.PlannedItems.SingleOrDefault(i => i.Id == request.ItemId)
             ?? throw new NotFoundException("Planned item not found");

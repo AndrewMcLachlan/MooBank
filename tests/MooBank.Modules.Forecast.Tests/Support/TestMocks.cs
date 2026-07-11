@@ -4,7 +4,6 @@ using Asm.MooBank.Domain.Entities.Forecast;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Reports;
 using Asm.MooBank.Modules.Forecast.Services;
-using Asm.MooBank.Security;
 using User = Asm.MooBank.Models.User;
 
 namespace Asm.MooBank.Modules.Forecast.Tests.Support;
@@ -17,7 +16,6 @@ public class TestMocks
         UnitOfWorkMock.Setup(uow => uow.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         ForecastRepositoryMock = new Mock<IForecastRepository>();
-        SecurityMock = new Mock<ISecurity>();
         ForecastEngineMock = new Mock<IForecastEngine>();
         ReportReaderMock = new Mock<IReportReader>();
         ReportReaderMock
@@ -35,8 +33,6 @@ public class TestMocks
     public Mock<IUnitOfWork> UnitOfWorkMock { get; }
 
     public Mock<IForecastRepository> ForecastRepositoryMock { get; }
-
-    public Mock<ISecurity> SecurityMock { get; }
 
     public Mock<IForecastEngine> ForecastEngineMock { get; }
 

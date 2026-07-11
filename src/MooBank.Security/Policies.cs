@@ -9,8 +9,6 @@ public static class Policies
 {
     public const string Admin = nameof(Admin);
 
-    public const string FamilyMember = nameof(FamilyMember);
-
     public const string InstrumentOwner = nameof(InstrumentOwner);
 
     public const string InstrumentViewer = nameof(InstrumentViewer);
@@ -57,6 +55,28 @@ public static class Policies
     {
         policyBuilder.RequireAuthenticatedUser();
         policyBuilder.AddRequirements(new GroupOwnerRequirement(routeParam));
+
+        return policyBuilder.Build();
+    }
+
+    public static AuthorizationPolicy GetTagFamilyPolicy(string routeParam = "id") =>
+        new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme).GetTagFamilyPolicy(routeParam);
+
+    public static AuthorizationPolicy GetTagFamilyPolicy(this AuthorizationPolicyBuilder policyBuilder, string routeParam = "id")
+    {
+        policyBuilder.RequireAuthenticatedUser();
+        policyBuilder.AddRequirements(new TagFamilyRequirement(routeParam));
+
+        return policyBuilder.Build();
+    }
+
+    public static AuthorizationPolicy GetForecastPlanPolicy(string routeParam = "id") =>
+        new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme).GetForecastPlanPolicy(routeParam);
+
+    public static AuthorizationPolicy GetForecastPlanPolicy(this AuthorizationPolicyBuilder policyBuilder, string routeParam = "id")
+    {
+        policyBuilder.RequireAuthenticatedUser();
+        policyBuilder.AddRequirements(new ForecastPlanRequirement(routeParam));
 
         return policyBuilder.Build();
     }

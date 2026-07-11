@@ -23,7 +23,7 @@ public class GetTagsGraphTests
     public async Task Handle_EmptyTags_ReturnsEmptyGraph()
     {
         var tags = TestEntities.CreateTagQueryable([]);
-        var handler = new GetTagsGraphHandler(tags, _mocks.User);
+        var handler = new GetTagsGraphHandler(tags);
 
         var result = await handler.Handle(new GetTagsGraph(), TestContext.Current.CancellationToken);
 
@@ -43,7 +43,7 @@ public class GetTagsGraphTests
         var standalone = TestEntities.CreateTag(id: 1, name: "Standalone", familyId: familyId);
 
         var tags = TestEntities.CreateTagQueryable(standalone);
-        var handler = new GetTagsGraphHandler(tags, _mocks.User);
+        var handler = new GetTagsGraphHandler(tags);
 
         var result = await handler.Handle(new GetTagsGraph(), TestContext.Current.CancellationToken);
 
@@ -67,7 +67,7 @@ public class GetTagsGraphTests
         child.TaggedTo.Add(parent);
 
         var tags = TestEntities.CreateTagQueryable(parent, child);
-        var handler = new GetTagsGraphHandler(tags, _mocks.User);
+        var handler = new GetTagsGraphHandler(tags);
 
         var result = await handler.Handle(new GetTagsGraph(), TestContext.Current.CancellationToken);
 
@@ -96,7 +96,7 @@ public class GetTagsGraphTests
         sport.TaggedTo.Add(luxury);
 
         var tags = TestEntities.CreateTagQueryable(living, luxury, sport);
-        var handler = new GetTagsGraphHandler(tags, _mocks.User);
+        var handler = new GetTagsGraphHandler(tags);
 
         var result = await handler.Handle(new GetTagsGraph(), TestContext.Current.CancellationToken);
 
@@ -105,58 +105,6 @@ public class GetTagsGraphTests
         Assert.Equal(2, result.Edges.Count(e => e.ChildId == 3));
         Assert.Contains(result.Edges, e => e.ParentId == 1 && e.ChildId == 3);
         Assert.Contains(result.Edges, e => e.ParentId == 2 && e.ChildId == 3);
-    }
-
-    /// <summary>
-    /// Given tags belonging to two families
-    /// When the handler runs as a user from family A
-    /// Then only family A tags and edges are returned
-    /// </summary>
-    [Fact]
-    public async Task Handle_FiltersByUserFamily()
-    {
-        var userFamilyId = _mocks.User.FamilyId;
-        var otherFamilyId = Guid.NewGuid();
-
-        var mine = TestEntities.CreateTag(id: 1, name: "Mine", familyId: userFamilyId);
-        var theirs = TestEntities.CreateTag(id: 2, name: "Theirs", familyId: otherFamilyId);
-
-        var tags = TestEntities.CreateTagQueryable(mine, theirs);
-        var handler = new GetTagsGraphHandler(tags, _mocks.User);
-
-        var result = await handler.Handle(new GetTagsGraph(), TestContext.Current.CancellationToken);
-
-        Assert.Single(result.Nodes);
-        Assert.Equal("Mine", result.Nodes[0].Name);
-    }
-
-    /// <summary>
-    /// Given a deleted tag
-    /// When the handler runs
-    /// Then the deleted node and any edges referencing it are excluded
-    /// </summary>
-    [Fact]
-    public async Task Handle_ExcludesDeletedTagsAndTheirEdges()
-    {
-        var familyId = _mocks.User.FamilyId;
-        var parent = TestEntities.CreateTag(id: 1, name: "Parent", familyId: familyId);
-        var live = TestEntities.CreateTag(id: 2, name: "Live", familyId: familyId);
-        var dead = TestEntities.CreateTag(id: 3, name: "Dead", familyId: familyId, deleted: true);
-
-        parent.Tags.Add(live);
-        parent.Tags.Add(dead);
-        live.TaggedTo.Add(parent);
-        dead.TaggedTo.Add(parent);
-
-        var tags = TestEntities.CreateTagQueryable(parent, live, dead);
-        var handler = new GetTagsGraphHandler(tags, _mocks.User);
-
-        var result = await handler.Handle(new GetTagsGraph(), TestContext.Current.CancellationToken);
-
-        Assert.Equal(2, result.Nodes.Count);
-        Assert.DoesNotContain(result.Nodes, n => n.Name == "Dead");
-        Assert.Single(result.Edges);
-        Assert.Equal(2, result.Edges[0].ChildId);
     }
 
     /// <summary>
@@ -177,7 +125,7 @@ public class GetTagsGraphTests
             excludeFromReporting: true);
 
         var tags = TestEntities.CreateTagQueryable(tag);
-        var handler = new GetTagsGraphHandler(tags, _mocks.User);
+        var handler = new GetTagsGraphHandler(tags);
 
         var result = await handler.Handle(new GetTagsGraph(), TestContext.Current.CancellationToken);
 

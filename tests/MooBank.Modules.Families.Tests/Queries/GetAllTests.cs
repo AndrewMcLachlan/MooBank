@@ -21,11 +21,7 @@ public class GetAllTests
         var families = TestEntities.CreateSampleFamilies();
         var queryable = TestEntities.CreateFamilyQueryable(families);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>()))
-            .Returns(Task.CompletedTask);
-
-        var handler = new GetAllHandler(queryable, _mocks.SecurityMock.Object);
+        var handler = new GetAllHandler(queryable);
         var query = new GetAll();
 
         // Act
@@ -41,11 +37,7 @@ public class GetAllTests
         // Arrange
         var queryable = TestEntities.CreateFamilyQueryable([]);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>()))
-            .Returns(Task.CompletedTask);
-
-        var handler = new GetAllHandler(queryable, _mocks.SecurityMock.Object);
+        var handler = new GetAllHandler(queryable);
         var query = new GetAll();
 
         // Act
@@ -67,11 +59,7 @@ public class GetAllTests
         };
         var queryable = TestEntities.CreateFamilyQueryable(families);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>()))
-            .Returns(Task.CompletedTask);
-
-        var handler = new GetAllHandler(queryable, _mocks.SecurityMock.Object);
+        var handler = new GetAllHandler(queryable);
         var query = new GetAll();
 
         // Act
@@ -93,11 +81,7 @@ public class GetAllTests
         var family = TestEntities.CreateFamily(name: "Doe Family", members: [member1, member2]);
         var queryable = TestEntities.CreateFamilyQueryable(family);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>()))
-            .Returns(Task.CompletedTask);
-
-        var handler = new GetAllHandler(queryable, _mocks.SecurityMock.Object);
+        var handler = new GetAllHandler(queryable);
         var query = new GetAll();
 
         // Act
@@ -108,24 +92,4 @@ public class GetAllTests
         Assert.Equal(2, familyResult.Members.Count());
     }
 
-    [Fact]
-    public async Task Handle_ValidQuery_AssertAdministrator()
-    {
-        // Arrange
-        var families = TestEntities.CreateSampleFamilies();
-        var queryable = TestEntities.CreateFamilyQueryable(families);
-
-        _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>()))
-            .Returns(Task.CompletedTask);
-
-        var handler = new GetAllHandler(queryable, _mocks.SecurityMock.Object);
-        var query = new GetAll();
-
-        // Act
-        await handler.Handle(query, TestContext.Current.CancellationToken);
-
-        // Assert
-        _mocks.SecurityMock.Verify(s => s.AssertAdministrator(It.IsAny<CancellationToken>()), Times.Once);
-    }
 }

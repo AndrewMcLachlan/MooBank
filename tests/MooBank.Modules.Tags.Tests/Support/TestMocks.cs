@@ -3,7 +3,6 @@ using Asm.MooBank.Audit;
 using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Models;
-using Asm.MooBank.Security;
 using DomainTag = Asm.MooBank.Domain.Entities.Tag.Tag;
 
 namespace Asm.MooBank.Modules.Tags.Tests.Support;
@@ -19,7 +18,6 @@ public class TestMocks
         AuditingUnitOfWorkMock.Setup(uow => uow.SaveChangesAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object?>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
         TagRepositoryMock = new Mock<ITagRepository>();
-        SecurityMock = new Mock<ISecurity>();
 
         User = CreateTestUser();
     }
@@ -29,8 +27,6 @@ public class TestMocks
     public Mock<IAuditingUnitOfWork> AuditingUnitOfWorkMock { get; }
 
     public Mock<ITagRepository> TagRepositoryMock { get; }
-
-    public Mock<ISecurity> SecurityMock { get; }
 
     public User User { get; private set; }
 

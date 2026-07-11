@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Audit;
 using Asm.MooBank.Domain;
 using Asm.MooBank.Models;
@@ -10,7 +10,7 @@ namespace Asm.MooBank.Core.Tests.Security;
 
 /// <summary>
 /// Guards the authorisation dependency architecture: requirement handlers depend on
-/// IAuthorisationRepository (data), never on ISecurity, whose implementation consumes
+/// IAuthorisationReader (data), never on ISecurity, whose implementation consumes
 /// IAuthorizationService. Resolving IAuthorizationService constructs every registered
 /// handler, so a handler depending on ISecurity is a circular dependency.
 /// </summary>
@@ -37,7 +37,7 @@ public class AuthorisationDependencyTests
             FamilyId = Guid.NewGuid(),
             Currency = "AUD",
         });
-        services.AddScoped(_ => new Mock<IAuthorisationRepository>().Object);
+        services.AddScoped(_ => new Mock<IAuthorisationReader>().Object);
         services.AddScoped(_ => new Mock<IAuditLogger>().Object);
         services.AddScoped(_ => new Mock<IPrincipalProvider>().Object);
         Asm.MooBank.Security.IServiceCollectionExtensions.AddAuthorisationHandlers(services);

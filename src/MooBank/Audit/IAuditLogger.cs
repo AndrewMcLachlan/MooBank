@@ -8,7 +8,7 @@ public interface IAuditLogger
     void UserProvisioned(Guid userId, string email, Guid familyId);
     void AuthenticationFailed(Exception exception);
 
-    void AuthorizationDenied(User user, string resource, Guid? resourceId, string policy);
+    void AuthorizationDenied(User user, string resource, object? resourceId, string policy);
 
     void HttpMutation(User user, string method, string path, string? ipAddress, int statusCode);
 

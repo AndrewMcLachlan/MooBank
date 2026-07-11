@@ -33,14 +33,9 @@ public class UpdatePlanTests
             .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingPlan);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new UpdatePlanHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var updateModel = new ForecastPlan
         {
@@ -82,14 +77,9 @@ public class UpdatePlanTests
             .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingPlan);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new UpdatePlanHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var newStartDate = new DateOnly(2024, 6, 1);
         var newEndDate = new DateOnly(2025, 5, 31);
@@ -135,14 +125,9 @@ public class UpdatePlanTests
             .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingPlan);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new UpdatePlanHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var updateModel = new ForecastPlan
         {
@@ -181,14 +166,9 @@ public class UpdatePlanTests
             .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingPlan);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new UpdatePlanHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var incomeStrategy = new IncomeStrategy
         {
@@ -241,14 +221,9 @@ public class UpdatePlanTests
             .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingPlan);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new UpdatePlanHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var updateModel = new ForecastPlan
         {
@@ -274,91 +249,6 @@ public class UpdatePlanTests
     }
 
     [Fact]
-    public async Task Handle_ValidCommand_ChecksFamilyPermission()
-    {
-        // Arrange
-        var familyId = _mocks.User.FamilyId;
-        var planId = Guid.NewGuid();
-        var existingPlan = TestEntities.CreateForecastPlan(id: planId, familyId: familyId);
-
-        _mocks.ForecastRepositoryMock
-            .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existingPlan);
-
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
-        var handler = new UpdatePlanHandler(
-            _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
-
-        var updateModel = new ForecastPlan
-        {
-            Id = planId,
-            Name = "Test Plan",
-            StartDate = existingPlan.StartDate,
-            EndDate = existingPlan.EndDate,
-            AccountScopeMode = existingPlan.AccountScopeMode,
-            StartingBalanceMode = existingPlan.StartingBalanceMode,
-            IsArchived = false,
-            CreatedUtc = DateTime.UtcNow,
-            UpdatedUtc = DateTime.UtcNow,
-            AccountIds = [],
-            PlannedItems = [],
-        };
-        var command = new UpdatePlan(planId, updateModel);
-
-        // Act
-        await handler.Handle(command, TestContext.Current.CancellationToken);
-
-        // Assert
-        _mocks.SecurityMock.Verify(s => s.AssertFamilyPermission(familyId), Times.Once);
-    }
-
-    [Fact]
-    public async Task Handle_NoPermission_ThrowsNotAuthorisedException()
-    {
-        // Arrange
-        var familyId = _mocks.User.FamilyId;
-        var planId = Guid.NewGuid();
-        var existingPlan = TestEntities.CreateForecastPlan(id: planId, familyId: familyId);
-
-        _mocks.ForecastRepositoryMock
-            .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(existingPlan);
-
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .ThrowsAsync(new NotAuthorisedException());
-
-        var handler = new UpdatePlanHandler(
-            _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
-
-        var updateModel = new ForecastPlan
-        {
-            Id = planId,
-            Name = "Test Plan",
-            StartDate = existingPlan.StartDate,
-            EndDate = existingPlan.EndDate,
-            AccountScopeMode = existingPlan.AccountScopeMode,
-            StartingBalanceMode = existingPlan.StartingBalanceMode,
-            IsArchived = false,
-            CreatedUtc = DateTime.UtcNow,
-            UpdatedUtc = DateTime.UtcNow,
-            AccountIds = [],
-            PlannedItems = [],
-        };
-        var command = new UpdatePlan(planId, updateModel);
-
-        // Act & Assert
-        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
-    }
-
-    [Fact]
     public async Task Handle_ValidCommand_UpdatesTimestamp()
     {
         // Arrange
@@ -372,14 +262,9 @@ public class UpdatePlanTests
             .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingPlan);
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertFamilyPermission(familyId))
-            .Returns(Task.CompletedTask);
-
         var handler = new UpdatePlanHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.UnitOfWorkMock.Object);
 
         var updateModel = new ForecastPlan
         {

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Authorization.Policy;
+using Asm.MooBank.Security.Authorisation;
 using Microsoft.AspNetCore.Http;
 using MooBankClaimTypes = Asm.MooBank.Security.ClaimTypes;
 
@@ -109,6 +110,19 @@ public class FakePolicyEvaluator : IPolicyEvaluator
                     .ToList();
 
                 if (!groupIds.Contains(groupId))
+                {
+                    return PolicyAuthorizationResult.Forbid();
+                }
+            }
+            else if (requirement is RoleRequirement)
+            {
+                // The Admin policy requires the Admin role
+                var userRoles = principal.Claims
+                    .Where(c => c.Type == ClaimTypes.Role)
+                    .Select(c => c.Value)
+                    .ToList();
+
+                if (!userRoles.Contains(AdminRequirement.AdminRoleName))
                 {
                     return PolicyAuthorizationResult.Forbid();
                 }

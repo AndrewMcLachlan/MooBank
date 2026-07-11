@@ -19,14 +19,9 @@ public class CreateTests
     public async Task Handle_ValidCommand_ReturnsCreatedFamily()
     {
         // Arrange
-        _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>()))
-            .Returns(Task.CompletedTask);
-
         var handler = new CreateHandler(
             _mocks.FamilyRepositoryMock.Object,
-            _mocks.AuditingUnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.AuditingUnitOfWorkMock.Object);
 
         var command = new Create("New Family");
 
@@ -44,18 +39,13 @@ public class CreateTests
         // Arrange
         DomainFamily? capturedFamily = null;
 
-        _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>()))
-            .Returns(Task.CompletedTask);
-
         _mocks.FamilyRepositoryMock
             .Setup(r => r.Add(It.IsAny<DomainFamily>()))
             .Callback<DomainFamily>(f => capturedFamily = f);
 
         var handler = new CreateHandler(
             _mocks.FamilyRepositoryMock.Object,
-            _mocks.AuditingUnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.AuditingUnitOfWorkMock.Object);
 
         var command = new Create("New Family");
 
@@ -72,14 +62,9 @@ public class CreateTests
     public async Task Handle_ValidCommand_SavesChanges()
     {
         // Arrange
-        _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>()))
-            .Returns(Task.CompletedTask);
-
         var handler = new CreateHandler(
             _mocks.FamilyRepositoryMock.Object,
-            _mocks.AuditingUnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
+            _mocks.AuditingUnitOfWorkMock.Object);
 
         var command = new Create("New Family");
 
@@ -90,73 +75,4 @@ public class CreateTests
         _mocks.AuditingUnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object?>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
-    [Fact]
-    public async Task Handle_ValidCommand_AssertAdministrator()
-    {
-        // Arrange
-        _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>()))
-            .Returns(Task.CompletedTask);
-
-        var handler = new CreateHandler(
-            _mocks.FamilyRepositoryMock.Object,
-            _mocks.AuditingUnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
-
-        var command = new Create("New Family");
-
-        // Act
-        await handler.Handle(command, TestContext.Current.CancellationToken);
-
-        // Assert
-        _mocks.SecurityMock.Verify(s => s.AssertAdministrator(It.IsAny<CancellationToken>()), Times.Once);
-    }
-
-    [Fact]
-    public async Task Handle_NonAdmin_ThrowsNotAuthorisedException()
-    {
-        // Arrange
-        _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new NotAuthorisedException());
-
-        var handler = new CreateHandler(
-            _mocks.FamilyRepositoryMock.Object,
-            _mocks.AuditingUnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
-
-        var command = new Create("New Family");
-
-        // Act & Assert
-        await Assert.ThrowsAsync<NotAuthorisedException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
-    }
-
-    [Fact]
-    public async Task Handle_NonAdmin_DoesNotAddToRepository()
-    {
-        // Arrange
-        _mocks.SecurityMock
-            .Setup(s => s.AssertAdministrator(It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new NotAuthorisedException());
-
-        var handler = new CreateHandler(
-            _mocks.FamilyRepositoryMock.Object,
-            _mocks.AuditingUnitOfWorkMock.Object,
-            _mocks.SecurityMock.Object);
-
-        var command = new Create("New Family");
-
-        // Act
-        try
-        {
-            await handler.Handle(command, TestContext.Current.CancellationToken);
-        }
-        catch (NotAuthorisedException)
-        {
-            // Expected
-        }
-
-        // Assert
-        _mocks.FamilyRepositoryMock.Verify(r => r.Add(It.IsAny<DomainFamily>()), Times.Never);
-    }
 }

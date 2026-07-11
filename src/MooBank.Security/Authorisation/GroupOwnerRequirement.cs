@@ -1,9 +1,8 @@
-﻿using Asm.AspNetCore.Authorisation;
+using Asm.AspNetCore.Authorisation;
 
 namespace Asm.MooBank.Security.Authorisation;
 
-
-internal class GroupOwnerRequirement : RouteParamAuthorisationRequirement
+public class GroupOwnerRequirement : RouteParamAuthorisationRequirement
 {
     public GroupOwnerRequirement() : base("groupId")
     {

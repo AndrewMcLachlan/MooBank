@@ -9,15 +9,13 @@ namespace Asm.MooBank.Modules.Forecast.Commands;
 [DisplayName("UpdateForecastPlan")]
 public record UpdatePlan(Guid Id, Models.ForecastPlanBase Plan) : ICommand<Models.ForecastPlan>;
 
-internal class UpdatePlanHandler(IForecastRepository forecastRepository, IUnitOfWork unitOfWork, ISecurity security) : ICommandHandler<UpdatePlan, Models.ForecastPlan>
+internal class UpdatePlanHandler(IForecastRepository forecastRepository, IUnitOfWork unitOfWork) : ICommandHandler<UpdatePlan, Models.ForecastPlan>
 {
     private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
     public async ValueTask<Models.ForecastPlan> Handle(UpdatePlan request, CancellationToken cancellationToken)
     {
         var entity = await forecastRepository.Get(request.Id, new ForecastPlanDetailsSpecification(), cancellationToken);
-
-        await security.AssertFamilyPermission(entity.FamilyId);
 
         entity.Name = request.Plan.Name;
         entity.StartDate = request.Plan.StartDate;

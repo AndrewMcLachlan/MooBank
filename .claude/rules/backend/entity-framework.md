@@ -81,6 +81,10 @@ internal class UpdatePlanHandler(IForecastRepository forecastRepository, ...) : 
 
 ## Best Practices
 
-- Navigation properties should be explicitly loaded via specifications
+- Inline `.Include()` chains are acceptable in **query handlers**; use specifications for include
+  bundles that are reused, or that are passed to `repository.Get(id, spec, ct)` in command handlers
+- **Never add Includes to existing specifications defensively** — they are deliberately tuned, and
+  extra joins damage performance for every consumer. If a navigation genuinely needs loading for a
+  new path, fix it at the consuming site (and confirm first)
 - Avoid N+1 query problems by using `.Include()` or specifications
 - Don't use EF migrations - schema changes go in the Database Project

@@ -70,7 +70,7 @@ public static class IServiceCollectionExtensions
                 .AddScoped<IInstitutionRepository, InstitutionRepository>()
                 .AddScoped<IReferenceDataRepository, ReferenceDataRepository>()
                 .AddScoped<IReportReader, ReportReader>()
-                .AddScoped<IAuthorisationRepository, AuthorisationRepository>()
+                .AddScoped<IAuthorisationReader, AuthorisationReader>()
                 .AddScoped<IStockHoldingRepository, StockHoldingRepository>()
                 .AddScoped<ITransactionRepository, TransactionRepository>()
                 .AddScoped<ITagRepository, TagRepository>()

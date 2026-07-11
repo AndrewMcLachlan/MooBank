@@ -5,7 +5,7 @@ using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
-public class LogicalAccountRepository(MooBankContext dataContext, User user) : RepositoryDeleteBase<LogicalAccount, Guid>(dataContext), ILogicalAccountRepository
+public class LogicalAccountRepository(MooBankContext dataContext, User user) : RepositoryDeleteBase<MooBankContext, LogicalAccount, Guid>(dataContext), ILogicalAccountRepository
 {
     public LogicalAccount Add(LogicalAccount entity, decimal openingBalance, DateOnly openedDate)
     {

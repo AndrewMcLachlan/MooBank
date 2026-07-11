@@ -6,15 +6,13 @@ namespace Asm.MooBank.Modules.Tags.Commands;
 
 internal sealed record RemoveSubTag(int Id, int SubTagId) : ICommand;
 
-internal class RemoveSubTagHandler(ITagRepository tagRepository, IUnitOfWork unitOfWork, ISecurity security) : ICommandHandler<RemoveSubTag>
+internal class RemoveSubTagHandler(ITagRepository tagRepository, IUnitOfWork unitOfWork) : ICommandHandler<RemoveSubTag>
 {
     private readonly ITagRepository _tagRepository = tagRepository;
 
     public async ValueTask Handle(RemoveSubTag request, CancellationToken cancellationToken)
     {
         var tag = await GetEntity(request.Id, true, cancellationToken);
-
-        await security.AssertFamilyPermission(tag.FamilyId);
 
         var subTag = await GetEntity(request.SubTagId, false, cancellationToken);
 

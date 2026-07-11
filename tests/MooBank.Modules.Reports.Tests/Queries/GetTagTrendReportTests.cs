@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Reports.Models;
 using Asm.MooBank.Modules.Reports.Queries;
@@ -27,13 +27,13 @@ public class GetTagTrendReportTests
         var tagName = "Groceries";
 
         var monthlyTotals = TestEntities.CreateSampleMonthlyTagTotals();
-        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId, tagName));
+        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId, tagName, familyId: _mocks.User.FamilyId));
 
         _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyTotalsForTag(accountId, start, end, TransactionFilterType.Debit, tagId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(monthlyTotals);
 
-        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags);
+        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags, _mocks.User);
 
         var query = new GetTagTrendReport
         {
@@ -66,13 +66,13 @@ public class GetTagTrendReportTests
         var tagId = 1;
 
         var monthlyTotals = TestEntities.CreateSampleMonthlyTagTotals();
-        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId));
+        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId, familyId: _mocks.User.FamilyId));
 
         _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyTotalsForTag(accountId, start, end, TransactionFilterType.Debit, tagId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(monthlyTotals);
 
-        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags);
+        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags, _mocks.User);
 
         var query = new GetTagTrendReport
         {
@@ -99,13 +99,13 @@ public class GetTagTrendReportTests
         var end = DateOnly.FromDateTime(DateTime.Today);
         var tagId = 1;
 
-        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId));
+        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId, familyId: _mocks.User.FamilyId));
 
         _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyTotalsForTag(accountId, start, end, TransactionFilterType.Debit, tagId, It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
-        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags);
+        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags, _mocks.User);
 
         var query = new GetTagTrendReport
         {
@@ -139,13 +139,13 @@ public class GetTagTrendReportTests
             TestEntities.CreateMonthlyTagTotal(today.AddMonths(-1), 200m, 180m),
             TestEntities.CreateMonthlyTagTotal(today, 300m, 270m),
         };
-        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId));
+        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId, familyId: _mocks.User.FamilyId));
 
         _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyTotalsForTag(accountId, start, end, TransactionFilterType.Debit, tagId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(monthlyTotals);
 
-        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags);
+        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags, _mocks.User);
 
         var query = new GetTagTrendReport
         {
@@ -173,13 +173,13 @@ public class GetTagTrendReportTests
         var tagId = 1;
 
         var monthlyTotals = TestEntities.CreateSampleMonthlyTagTotals();
-        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId));
+        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId, familyId: _mocks.User.FamilyId));
 
         _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyTotalsForTag(accountId, start, end, TransactionFilterType.Debit, tagId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(monthlyTotals);
 
-        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags);
+        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags, _mocks.User);
 
         var query = new GetTagTrendReport
         {
@@ -207,13 +207,13 @@ public class GetTagTrendReportTests
         var end = DateOnly.FromDateTime(DateTime.Today);
         var tagId = 1;
 
-        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId));
+        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId, familyId: _mocks.User.FamilyId));
 
         _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyTotalsForTag(accountId, start, end, TransactionFilterType.Debit, tagId, It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
-        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags);
+        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags, _mocks.User);
 
         var query = new GetTagTrendReport
         {
@@ -242,13 +242,13 @@ public class GetTagTrendReportTests
         var end = DateOnly.FromDateTime(DateTime.Today);
         var tagId = 1;
 
-        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId));
+        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId, familyId: _mocks.User.FamilyId));
 
         _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyTotalsForTag(accountId, start, end, TransactionFilterType.Credit, tagId, It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
-        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags);
+        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags, _mocks.User);
 
         var query = new GetTagTrendReport
         {
@@ -286,13 +286,13 @@ public class GetTagTrendReportTests
             TestEntities.CreateMonthlyTagTotal(new DateOnly(2024, 2, 1), 200m, 180m),
             TestEntities.CreateMonthlyTagTotal(new DateOnly(2024, 3, 1), 300m, 270m),
         };
-        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId));
+        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId, familyId: _mocks.User.FamilyId));
 
         _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyTotalsForTag(accountId, start, end, TransactionFilterType.Debit, tagId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(monthlyTotals);
 
-        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags);
+        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags, _mocks.User);
 
         var query = new GetTagTrendReport
         {
@@ -326,13 +326,13 @@ public class GetTagTrendReportTests
             TestEntities.CreateMonthlyTagTotal(new DateOnly(2024, 1, 1), 100m, 90m),
             TestEntities.CreateMonthlyTagTotal(new DateOnly(2024, 3, 1), 300m, 270m), // 2-month gap
         };
-        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId));
+        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId, familyId: _mocks.User.FamilyId));
 
         _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyTotalsForTag(accountId, start, end, TransactionFilterType.Debit, tagId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(monthlyTotals);
 
-        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags);
+        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags, _mocks.User);
 
         var query = new GetTagTrendReport
         {
@@ -360,13 +360,13 @@ public class GetTagTrendReportTests
         var end = new DateOnly(2024, 6, 30);
         var tagId = 1;
 
-        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId));
+        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId, familyId: _mocks.User.FamilyId));
 
         _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyTotalsForTag(accountId, start, end, TransactionFilterType.Debit, tagId, It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
-        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags);
+        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags, _mocks.User);
 
         var query = new GetTagTrendReport
         {
@@ -398,13 +398,13 @@ public class GetTagTrendReportTests
         {
             TestEntities.CreateMonthlyTagTotal(new DateOnly(2024, 3, 1), 300m, 270m),
         };
-        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId));
+        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId, familyId: _mocks.User.FamilyId));
 
         _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyTotalsForTag(accountId, start, end, TransactionFilterType.Debit, tagId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(monthlyTotals);
 
-        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags);
+        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags, _mocks.User);
 
         var query = new GetTagTrendReport
         {
@@ -439,13 +439,13 @@ public class GetTagTrendReportTests
             TestEntities.CreateMonthlyTagTotal(new DateOnly(2024, 1, 1), 100m, 90m),
             TestEntities.CreateMonthlyTagTotal(new DateOnly(2024, 2, 1), 200m, 180m),
         };
-        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId));
+        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId, familyId: _mocks.User.FamilyId));
 
         _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyTotalsForTag(accountId, start, end, TransactionFilterType.Debit, tagId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(monthlyTotals);
 
-        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags);
+        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags, _mocks.User);
 
         var query = new GetTagTrendReport
         {
@@ -482,13 +482,13 @@ public class GetTagTrendReportTests
             TestEntities.CreateMonthlyTagTotal(new DateOnly(2024, 1, 1), 100m, 90m),
             TestEntities.CreateMonthlyTagTotal(new DateOnly(2024, 3, 1), 300m, 270m),
         };
-        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId));
+        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId, familyId: _mocks.User.FamilyId));
 
         _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyTotalsForTag(accountId, start, end, TransactionFilterType.Debit, tagId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(monthlyTotals);
 
-        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags);
+        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags, _mocks.User);
 
         var query = new GetTagTrendReport
         {
@@ -527,13 +527,13 @@ public class GetTagTrendReportTests
             TestEntities.CreateMonthlyTagTotal(new DateOnly(2024, 4, 1), 400m, 360m), // 3-month gap
             TestEntities.CreateMonthlyTagTotal(new DateOnly(2024, 5, 1), 500m, 450m), // consecutive
         };
-        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId));
+        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId, familyId: _mocks.User.FamilyId));
 
         _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyTotalsForTag(accountId, start, end, TransactionFilterType.Debit, tagId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(monthlyTotals);
 
-        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags);
+        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags, _mocks.User);
 
         var query = new GetTagTrendReport
         {
@@ -575,13 +575,13 @@ public class GetTagTrendReportTests
             TestEntities.CreateMonthlyTagTotal(new DateOnly(2024, 4, 1), 30m, 30m), // 3-month gap
             TestEntities.CreateMonthlyTagTotal(new DateOnly(2024, 5, 1), 5m, 5m),   // consecutive
         };
-        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId));
+        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId, familyId: _mocks.User.FamilyId));
 
         _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyTotalsForTag(accountId, start, end, TransactionFilterType.Debit, tagId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(monthlyTotals);
 
-        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags);
+        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags, _mocks.User);
 
         var query = new GetTagTrendReport
         {
@@ -624,13 +624,13 @@ public class GetTagTrendReportTests
             TestEntities.CreateMonthlyTagTotal(new DateOnly(2024, 3, 1), 300m, 270m),
             TestEntities.CreateMonthlyTagTotal(new DateOnly(2024, 5, 1), 500m, 450m),
         };
-        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId));
+        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId, familyId: _mocks.User.FamilyId));
 
         _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyTotalsForTag(accountId, start, end, TransactionFilterType.Debit, tagId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(monthlyTotals);
 
-        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags);
+        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags, _mocks.User);
 
         var query = new GetTagTrendReport
         {
@@ -669,13 +669,13 @@ public class GetTagTrendReportTests
             TestEntities.CreateMonthlyTagTotal(new DateOnly(2024, 1, 1), 100m, 90m),
             TestEntities.CreateMonthlyTagTotal(new DateOnly(2024, 3, 1), 200m, 180m),
         };
-        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId));
+        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId, familyId: _mocks.User.FamilyId));
 
         _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyTotalsForTag(accountId, start, end, TransactionFilterType.Debit, tagId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(monthlyTotals);
 
-        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags);
+        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags, _mocks.User);
 
         var query = new GetTagTrendReport
         {
@@ -716,13 +716,13 @@ public class GetTagTrendReportTests
             TestEntities.CreateMonthlyTagTotal(today.AddMonths(-1), 200m, 160m),
             TestEntities.CreateMonthlyTagTotal(today, 300m, 240m),
         };
-        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId));
+        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId, familyId: _mocks.User.FamilyId));
 
         _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyTotalsForTag(accountId, start, end, TransactionFilterType.Debit, tagId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(monthlyTotals);
 
-        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags);
+        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags, _mocks.User);
 
         var query = new GetTagTrendReport
         {
@@ -739,5 +739,75 @@ public class GetTagTrendReportTests
         // Assert
         Assert.True(result.OffsetAverage > 0);
         // OffsetAverage should be calculated from NetAmount
+    }
+
+    [Fact]
+    public async Task Handle_TagFromDifferentFamily_Throws()
+    {
+        // Arrange - the tag lookup is family-scoped, so another family's tag is not found
+        var accountId = Guid.NewGuid();
+        var start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-3));
+        var end = DateOnly.FromDateTime(DateTime.Today);
+        var tagId = 1;
+
+        var monthlyTotals = TestEntities.CreateSampleMonthlyTagTotals();
+        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId, familyId: Guid.NewGuid()));
+
+        _mocks.ReportReaderMock
+            .Setup(r => r.GetMonthlyTotalsForTag(accountId, start, end, TransactionFilterType.Debit, tagId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(monthlyTotals);
+
+        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags, _mocks.User);
+
+        var query = new GetTagTrendReport
+        {
+            AccountId = accountId,
+            Start = start,
+            End = end,
+            ReportType = TestEntities.CreateDebitReportType(),
+            TagId = tagId,
+        };
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAnyAsync<Exception>(() => handler.Handle(query, TestContext.Current.CancellationToken).AsTask());
+        Assert.True(
+            exception is InvalidOperationException ||
+            (exception.InnerException is InvalidOperationException),
+            "Expected InvalidOperationException or wrapped InvalidOperationException");
+    }
+
+    [Fact]
+    public async Task Handle_DeletedTag_StillReturnsReport()
+    {
+        // Arrange - trend reports remain available for soft-deleted tags
+        var accountId = Guid.NewGuid();
+        var start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-3));
+        var end = DateOnly.FromDateTime(DateTime.Today);
+        var tagId = 1;
+        var tagName = "Deleted Tag";
+
+        var monthlyTotals = TestEntities.CreateSampleMonthlyTagTotals();
+        var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId, tagName, familyId: _mocks.User.FamilyId, deleted: true));
+
+        _mocks.ReportReaderMock
+            .Setup(r => r.GetMonthlyTotalsForTag(accountId, start, end, TransactionFilterType.Debit, tagId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(monthlyTotals);
+
+        var handler = new GetTagTrendReportHandler(_mocks.ReportReaderMock.Object, tags, _mocks.User);
+
+        var query = new GetTagTrendReport
+        {
+            AccountId = accountId,
+            Start = start,
+            End = end,
+            ReportType = TestEntities.CreateDebitReportType(),
+            TagId = tagId,
+        };
+
+        // Act
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(tagName, result.TagName);
     }
 }

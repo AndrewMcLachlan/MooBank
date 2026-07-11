@@ -68,9 +68,13 @@ paths:
 ## Domain Events
 
 - Raised within aggregate roots during state changes
-- Handled by event handlers in the infrastructure layer
+- Handlers live in the **Domain** project when they express cross-aggregate business logic
+  (e.g. `MooBank.Domain/Entities/Transactions/EventHandlers/BalanceAdjustmentEventHandler.cs`
+  creates an adjustment transaction), and in **Infrastructure** for technical concerns
+  (e.g. `MooBank.Infrastructure/EventHandlers/InstrumentChangedEventHandler.cs` invalidates cache)
 - Used for decoupled communication between aggregates
-- Example: `TransactionAddedEvent` triggers balance updates
+- Examples: `BalanceAdjustmentEvent` → creates an adjustment transaction; `InstrumentChangedEvent` → invalidates cached instrument data
+- `TransactionAddedEvent` is raised but intentionally unconsumed — a deliberate extension point, not dead code. Do not remove it.
 
 ## Module Registration
 

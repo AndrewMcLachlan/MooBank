@@ -5,11 +5,16 @@ namespace Asm.MooBank.Infrastructure.Repositories;
 
 public class TransactionRepository(MooBankContext dataContext) : RepositoryWriteBase<MooBankContext, Transaction, Guid>(dataContext), ITransactionRepository
 {
+    // Transaction loads serve write/system paths (rules, imports run without a user context), and a
+    // transaction's EXISTING split tags are facts the split reconciliation must see in full — both
+    // Tag filters are lifted. This cannot apply a soft-deleted tag: tags are only ever *added* from
+    // rule loads, which keep the SoftDelete filter active.
+
     public async Task<IEnumerable<Transaction>> GetTransactions(Guid instrumentId, CancellationToken cancellationToken = default) =>
         await GetTransactionsQuery(instrumentId).ToListAsync(cancellationToken);
 
     public async Task<IEnumerable<Transaction>> GetTransactions(Guid instrumentId, Guid institutionAccountId, CancellationToken cancellationToken = default) =>
-        await Entities.Include(t => t.Splits).ThenInclude(t => t.Tags).Where(t => t.AccountId == instrumentId && t.InstitutionAccountId == institutionAccountId).ToListAsync(cancellationToken);
+        await Entities.Include(t => t.Splits).ThenInclude(t => t.Tags).IgnoreQueryFilters().Where(t => t.AccountId == instrumentId && t.InstitutionAccountId == institutionAccountId).ToListAsync(cancellationToken);
 
     public async Task<IEnumerable<Transaction>> GetTransactions(Guid instrumentId, IEnumerable<Guid> transactionIds, CancellationToken cancellationToken = default) =>
         await GetTransactionsQuery(instrumentId).Where(t => transactionIds.Contains(t.Id)).ToListAsync(cancellationToken);
@@ -27,5 +32,5 @@ public class TransactionRepository(MooBankContext dataContext) : RepositoryWrite
                       .ToListAsync(cancellationToken);
 
     private IQueryable<Transaction> GetTransactionsQuery(Guid accountId) =>
-        Entities.Include(t => t.Splits).ThenInclude(t => t.Tags).Where(t => t.AccountId == accountId);
+        Entities.Include(t => t.Splits).ThenInclude(t => t.Tags).IgnoreQueryFilters().Where(t => t.AccountId == accountId);
 }

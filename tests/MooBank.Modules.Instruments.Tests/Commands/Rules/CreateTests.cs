@@ -138,6 +138,36 @@ public class CreateTests
     }
 
     [Fact]
+    public async Task Handle_TagNotInFamily_ThrowsNotFoundException()
+    {
+        // Arrange
+        var instrumentId = Guid.NewGuid();
+        var instrument = TestEntities.CreateInstrument(id: instrumentId);
+        var domainTag1 = TestEntities.CreateTag(id: 1, name: "Groceries");
+
+        _mocks.InstrumentRepositoryMock
+            .Setup(r => r.Get(instrumentId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(instrument);
+
+        // The family-scoped repository only returns tags the user may attach; id 2 is dropped.
+        _mocks.TagRepositoryMock
+            .Setup(r => r.Get(It.IsAny<IEnumerable<int>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync([domainTag1]);
+
+        var handler = new CreateHandler(
+            _mocks.InstrumentRepositoryMock.Object,
+            _mocks.TagRepositoryMock.Object,
+            _mocks.UnitOfWorkMock.Object);
+
+        var tags = new[] { TestEntities.CreateTagModel(id: 1), TestEntities.CreateTagModel(id: 2) };
+        var command = new Create(instrumentId, "WOOLWORTHS", "Grocery store", tags);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<NotFoundException>(async () => await handler.Handle(command, TestContext.Current.CancellationToken));
+        _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
     public async Task Handle_WithTags_FetchesTagsFromRepository()
     {
         // Arrange
@@ -150,7 +180,7 @@ public class CreateTests
 
         _mocks.TagRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<int>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync([]);
+            .ReturnsAsync([TestEntities.CreateTag(id: 1, name: "Groceries"), TestEntities.CreateTag(id: 2, name: "Food")]);
 
         var handler = new CreateHandler(
             _mocks.InstrumentRepositoryMock.Object,

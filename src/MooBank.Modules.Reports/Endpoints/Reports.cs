@@ -2,6 +2,7 @@
 using Asm.AspNetCore.Routing;
 using Asm.MooBank.Modules.Reports.Models;
 using Asm.MooBank.Modules.Reports.Queries;
+using Asm.MooBank.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 
@@ -30,16 +31,19 @@ internal class Reports : EndpointGroupBase
             .WithNames("By Tag Report");
 
         builder.MapQuery<GetByTagReport, ByTagReport>("{reportType}/tags/{start}/{end}/{parentTagId}")
-            .WithNames("By Tag Report For Tag");
+            .WithNames("By Tag Report For Tag")
+            .RequireAuthorization(Policies.GetTagFamilyPolicy("parentTagId"));
 
         builder.MapQuery<GetBreakdownReport, BreakdownReport>("{reportType}/breakdown/{start}/{end}")
             .WithNames("Tag Breakdown Report");
 
         builder.MapQuery<GetBreakdownReport, BreakdownReport>("{reportType}/breakdown/{start}/{end}/{parentTagId}")
-            .WithNames("Tag Breakdown Report For Tag");
+            .WithNames("Tag Breakdown Report For Tag")
+            .RequireAuthorization(Policies.GetTagFamilyPolicy("parentTagId"));
 
         builder.MapQuery<GetTagTrendReport, TagTrendReport>("{reportType}/tag-trend/{start}/{end}/{tagId}")
-            .WithNames("Tag Trend Report");
+            .WithNames("Tag Trend Report")
+            .RequireAuthorization(Policies.GetTagFamilyPolicy("tagId"));
 
         builder.MapQuery<GetAllTagAverageReport, AllTagAverageReport>("{reportType}/all-tag-average/{start}/{end}")
             .WithNames("All Tag Average Report");

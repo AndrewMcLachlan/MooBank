@@ -3,7 +3,6 @@ using Asm.Domain;
 using Asm.MooBank.Audit;
 using Asm.MooBank.Domain.Entities.Family;
 using Asm.MooBank.Domain.Entities.User;
-using Asm.MooBank.Security;
 using User = Asm.MooBank.Models.User;
 
 namespace Asm.MooBank.Modules.Families.Tests.Support;
@@ -20,7 +19,6 @@ public class TestMocks
 
         FamilyRepositoryMock = new Mock<IFamilyRepository>();
         UserRepositoryMock = new Mock<IUserRepository>();
-        SecurityMock = new Mock<ISecurity>();
 
         User = CreateTestUser();
     }
@@ -32,8 +30,6 @@ public class TestMocks
     public Mock<IFamilyRepository> FamilyRepositoryMock { get; }
 
     public Mock<IUserRepository> UserRepositoryMock { get; }
-
-    public Mock<ISecurity> SecurityMock { get; }
 
     public User User { get; private set; }
 

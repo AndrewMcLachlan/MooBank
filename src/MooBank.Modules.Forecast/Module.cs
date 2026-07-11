@@ -15,7 +15,7 @@ public class Module : IModule
     public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
     {
         new Endpoints.ForecastPlans().MapGroup(endpoints).RequireAuthorization();
-        new Endpoints.PlannedItems().MapGroup(endpoints).RequireAuthorization();
+        new Endpoints.PlannedItems().MapGroup(endpoints).RequireAuthorization(Security.Policies.GetForecastPlanPolicy("planId"));
 
         return endpoints;
     }

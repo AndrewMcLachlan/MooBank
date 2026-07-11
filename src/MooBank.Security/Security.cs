@@ -33,14 +33,15 @@ public class Security(IAuthorizationService authorizationService, IPrincipalProv
         }
     }
 
-    public async Task AssertAdministrator(CancellationToken cancellationToken = default)
+    public async Task AssertInstrumentViewer(Guid instrumentId)
     {
-        var authResult = await authorizationService.AuthorizeAsync(principalProvider.Principal!, Policies.Admin);
+        var authResult = await authorizationService.AuthorizeAsync(principalProvider.Principal!, instrumentId, new InstrumentViewerRequirement());
 
         if (!authResult.Succeeded)
         {
-            audit.AuthorizationDenied(user, "Administrator", null, Policies.Admin);
-            throw new NotAuthorisedException("Not authorised to administer MooBank");
+            audit.AuthorizationDenied(user, "Instrument", instrumentId, nameof(InstrumentViewerRequirement));
+            throw new NotAuthorisedException("Not authorised to view this instrument.");
         }
     }
+
 }
