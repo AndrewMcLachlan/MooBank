@@ -330,7 +330,7 @@ public class ImportTransactionsServiceTests
     /// </summary>
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task Import_WhenInstrumentNotFound_DoesNotThrow()
+    public async Task Import_WhenInstrumentNotFound_Propagates()
     {
         // Arrange
         var workItem = CreateWorkItem();
@@ -342,10 +342,9 @@ public class ImportTransactionsServiceTests
 
         var service = CreateService();
 
-        // Act - Should complete without throwing
-        await service.Import(workItem, TestContext.Current.CancellationToken);
+        // Act & Assert - the failure propagates so the queue loop can log it and move on
+        await Assert.ThrowsAsync<InvalidOperationException>(async () => await service.Import(workItem, TestContext.Current.CancellationToken));
 
-        // Assert - Save should not be called since we hit an error
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 
@@ -356,7 +355,7 @@ public class ImportTransactionsServiceTests
     /// </summary>
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task Import_WhenImporterNotSupported_DoesNotThrow()
+    public async Task Import_WhenImporterNotSupported_Propagates()
     {
         // Arrange
         var workItem = CreateWorkItem();
@@ -369,10 +368,9 @@ public class ImportTransactionsServiceTests
 
         var service = CreateService();
 
-        // Act - Should complete without throwing
-        await service.Import(workItem, TestContext.Current.CancellationToken);
+        // Act & Assert - the failure propagates so the queue loop can log it and move on
+        await Assert.ThrowsAsync<InvalidOperationException>(async () => await service.Import(workItem, TestContext.Current.CancellationToken));
 
-        // Assert - Save should not be called since we hit an error
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 
@@ -383,7 +381,7 @@ public class ImportTransactionsServiceTests
     /// </summary>
     [Fact]
     [Trait("Category", "Unit")]
-    public async Task Import_WhenImporterThrows_DoesNotThrow()
+    public async Task Import_WhenImporterThrows_Propagates()
     {
         // Arrange
         var workItem = CreateWorkItem();
@@ -397,10 +395,9 @@ public class ImportTransactionsServiceTests
 
         var service = CreateService();
 
-        // Act - Should complete without throwing
-        await service.Import(workItem, TestContext.Current.CancellationToken);
+        // Act & Assert - the failure propagates so the queue loop can log it and move on
+        await Assert.ThrowsAsync<InvalidOperationException>(async () => await service.Import(workItem, TestContext.Current.CancellationToken));
 
-        // Assert - Save should not be called since we hit an error
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 

@@ -41,7 +41,10 @@ internal class ImportTransactionsService(IInstrumentRepository instrumentReposit
         }
         catch (Exception ex)
         {
+            // Log the rich context here, then rethrow so the failure isn't silently swallowed —
+            // the background queue loop catches it to stay alive (matching RunRulesService).
             logger.LogError(ex, "Error occurred importing transactions for instrument {InstrumentId}, account {AccountId}. File size: {FileSize} bytes.", workItem.InstrumentId, workItem.AccountId, workItem.FileData.Length);
+            throw;
         }
     }
 
