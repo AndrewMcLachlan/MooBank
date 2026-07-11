@@ -7,26 +7,33 @@ import { formatDisplayDate } from "utils/dateFns";
 
 import { usePeriodLabel } from "../hooks/usePeriodLabel";
 import { useTransactionPeriodStats } from "../hooks/useTransactionPeriodStats";
+import { useUser } from "hooks/useUser";
 
 export const TransactionsAccountCard: React.FC = () => {
 
     const account = useAccount();
+    const { data: user } = useUser();
     const stats = useTransactionPeriodStats(account?.id ?? "");
     const periodLabel = usePeriodLabel();
 
     if (!account) return null;
 
-    const balance = (account as LogicalAccount).currentBalanceLocalCurrency ?? account.currentBalance ?? 0;
+    const balance = (account as LogicalAccount).currentBalance ?? 0;
     const instrumentType = (account as LogicalAccount).instrumentType ?? "Virtual";
 
     return (
         <Section className="tx-account-card accent-stripe">
             <div className="eyebrow">{account.name} · Balance</div>
             <div className="hero-balance"><Amount amount={balance} currencyCode={account.currency} minus /></div>
+            {account.currentBalanceLocalCurrency && account.currentBalanceLocalCurrency !== balance && (
+                <div className="hero-balance-local">
+                    <Amount amount={account.currentBalanceLocalCurrency} currencyCode={user?.currency} minus />
+                </div>
+            )}
             <div className="hero-subline">
-                Last transaction <span className="strong">{formatDisplayDate(account.lastTransaction)}</span>
+                Last transaction <strong>{formatDisplayDate(account.lastTransaction)}</strong>
                 <span className="sep">·</span>
-                Type <span className="strong">{instrumentType}</span>
+                Type <strong>{instrumentType}</strong>
             </div>
 
             <div className="period-block">
