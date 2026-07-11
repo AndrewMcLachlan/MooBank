@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { changeSortDirection, IconLinkButton, Input, MiniPagination, PageSize, Pagination, PaginationControls, SortablePaginationTh, Section, SectionTable, SortableTh, useLocalStorage } from "@andrewmclachlan/moo-ds";
-import type { SortDirection } from "@andrewmclachlan/moo-ds";
+import { changeSortDirection, IconLinkButton, Input, MiniPagination, PageSize, Pagination, PaginationControls, SortablePaginationTh, Section, SectionTable, SortableTh, useLocalStorage, Badge } from "@andrewmclachlan/moo-ds";
+import type { BadgeHue, SortDirection } from "@andrewmclachlan/moo-ds";
 import { institutionTypeOptions } from "models/institutions";
 import { useNavigate } from "@tanstack/react-router";
 import { useInstitutions } from "hooks/useInstitutions";
@@ -16,6 +16,16 @@ type displayInstitution = {
     name: string;
     type: string;
 }
+
+const hueByType: Record<string, BadgeHue> = {
+    Bank:  "blue",
+    SuperannuationFund:  "indigo",
+    Broker: "amber",
+    CreditUnion: "orange",
+    BuildingSociety:"rose",
+    InvestmentFund: "teal",
+    Government: "pink",
+};
 
 function Institutions() {
 
@@ -41,7 +51,8 @@ function Institutions() {
             return {
                 id: i.id,
                 name: i.name,
-                type: institutionTypeOptions.find(t => t.value === i.institutionType)?.label
+                type: i.institutionType,
+                typeLabel: institutionTypeOptions.find(t => t.value === i.institutionType)?.label
             } as displayInstitution
         });
 
@@ -77,7 +88,7 @@ function Institutions() {
                     {filteredInstitutions && filteredInstitutions.map((f) => (
                         <tr key={f.id} className="clickable" onClick={() => navigate({ to: `/settings/institutions/${f.id}` })}>
                             <td>{f.name}</td>
-                            <td>{f.type}</td>
+                            <td><Badge pill muted bg={hueByType[f.type]}>{f.typeLabel}</Badge></td>
                         </tr>
                     ))}
                 </tbody>
