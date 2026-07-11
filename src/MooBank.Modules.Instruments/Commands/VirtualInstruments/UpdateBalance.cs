@@ -1,5 +1,4 @@
 using Asm.MooBank.Domain.Entities.Account.Specifications;
-using Asm.MooBank.Domain.Entities.Instrument.Events;
 using Asm.MooBank.Domain.Entities.Utility;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Instruments.Models.Instruments;
@@ -34,9 +33,7 @@ internal class UpdateBalanceHandler(IInstrumentRepository instrumentRepository, 
 
         var instrument = parentInstrument.VirtualInstruments.SingleOrDefault(a => a.Id == command.VirtualInstrumentId) ?? throw new NotFoundException();
 
-        var amount = command.Balance - instrument.Balance;
-
-        instrument.Events.Add(new BalanceAdjustmentEvent(instrument, amount, "Web"));
+        instrument.AdjustBalance(command.Balance, "Web");
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return await instrument.ToModel(currencyConverter, cancellationToken);

@@ -1,4 +1,5 @@
 ﻿using Asm.MooBank.Domain.Entities.Account;
+using Asm.MooBank.Domain.Entities.Instrument.Events;
 using Asm.MooBank.Models;
 using DomainVirtualInstrument = Asm.MooBank.Domain.Entities.Account.VirtualInstrument;
 
@@ -240,6 +241,63 @@ public class VirtualInstrumentTests
 
         // Act & Assert
         Assert.Throws<NotFoundException>(() => virtualInstrument.RemoveRecurringTransaction(Guid.NewGuid()));
+    }
+
+    #endregion
+
+    #region AdjustBalance
+
+    /// <summary>
+    /// Given a virtual instrument with a balance of 500
+    /// When AdjustBalance is called with a higher balance of 800
+    /// Then a balance adjustment event is raised for +300 and the balance is not set directly.
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void AdjustBalance_HigherBalance_RaisesPositiveAdjustmentEvent()
+    {
+        // Arrange
+        var virtualInstrument = new DomainVirtualInstrument(Guid.NewGuid())
+        {
+            Name = "Test Virtual Instrument",
+            Currency = "AUD",
+            Balance = 500m,
+        };
+
+        // Act
+        virtualInstrument.AdjustBalance(800m, "Web");
+
+        // Assert
+        var domainEvent = Assert.IsType<BalanceAdjustmentEvent>(Assert.Single(virtualInstrument.Events));
+        Assert.Equal(300m, domainEvent.Amount);
+        Assert.Equal("Web", domainEvent.Source);
+        Assert.Same(virtualInstrument, domainEvent.Instrument);
+        Assert.Equal(500m, virtualInstrument.Balance);
+    }
+
+    /// <summary>
+    /// Given a virtual instrument with a balance of 1000
+    /// When AdjustBalance is called with a lower balance of 800
+    /// Then a balance adjustment event is raised for -200.
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void AdjustBalance_LowerBalance_RaisesNegativeAdjustmentEvent()
+    {
+        // Arrange
+        var virtualInstrument = new DomainVirtualInstrument(Guid.NewGuid())
+        {
+            Name = "Test Virtual Instrument",
+            Currency = "AUD",
+            Balance = 1000m,
+        };
+
+        // Act
+        virtualInstrument.AdjustBalance(800m, "Web");
+
+        // Assert
+        var domainEvent = Assert.IsType<BalanceAdjustmentEvent>(Assert.Single(virtualInstrument.Events));
+        Assert.Equal(-200m, domainEvent.Amount);
     }
 
     #endregion

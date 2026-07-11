@@ -25,6 +25,8 @@ public class Module : IModule
         services.AddQueryHandlers(Assembly);
         services.AddValidatorsFromAssembly(Assembly);
 
+        services.AddScoped<Services.IBudgetGenerationReader, Services.BudgetGenerationReader>();
+
         return services;
     }
 }

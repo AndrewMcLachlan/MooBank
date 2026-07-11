@@ -16,13 +16,11 @@ internal class CreateHandler(IInstrumentRepository instrumentRepository, IUnitOf
     {
         var instrument = await instrumentRepository.Get(command.InstrumentId, cancellationToken);
 
-        var entity = new Domain.Entities.Account.VirtualInstrument()
-        {
-            Name = command.VirtualInstrument.Name,
-            Description = command.VirtualInstrument.Description,
-            Controller = command.VirtualInstrument.Controller,
-            Currency = instrument.Currency,
-        };
+        var entity = Domain.Entities.Account.VirtualInstrument.Create(
+            command.VirtualInstrument.Name,
+            command.VirtualInstrument.Description,
+            command.VirtualInstrument.Controller,
+            instrument.Currency);
 
         instrument.AddVirtualInstrument(entity, command.VirtualInstrument.OpeningBalance);
 
