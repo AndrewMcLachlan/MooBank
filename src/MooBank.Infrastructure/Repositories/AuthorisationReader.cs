@@ -1,8 +1,8 @@
-using Asm.MooBank.Domain;
+﻿using Asm.MooBank.Domain;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
-public class AuthorisationRepository(MooBankContext mooBankContext) : IAuthorisationRepository
+public class AuthorisationReader(MooBankContext mooBankContext) : IAuthorisationReader
 {
     public async Task<bool> IsGroupOwner(Guid groupId, Guid userId, CancellationToken cancellationToken = default) =>
         await mooBankContext.Groups.AnyAsync(g => g.Id == groupId && g.OwnerId == userId, cancellationToken);

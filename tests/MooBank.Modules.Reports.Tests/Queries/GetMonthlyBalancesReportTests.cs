@@ -24,11 +24,11 @@ public class GetMonthlyBalancesReportTests
 
         var balances = TestEntities.CreateSampleMonthlyBalances();
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyBalances(accountId, start, end, It.IsAny<CancellationToken>()))
             .ReturnsAsync(balances);
 
-        var handler = new GetMonthlyBalancesReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetMonthlyBalancesReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetMonthlyBalancesReport
         {
@@ -57,11 +57,11 @@ public class GetMonthlyBalancesReportTests
 
         var balances = TestEntities.CreateSampleMonthlyBalances();
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyBalances(accountId, start, end, It.IsAny<CancellationToken>()))
             .ReturnsAsync(balances);
 
-        var handler = new GetMonthlyBalancesReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetMonthlyBalancesReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetMonthlyBalancesReport
         {
@@ -91,11 +91,11 @@ public class GetMonthlyBalancesReportTests
             TestEntities.CreateMonthlyBalance(periodEnd, 5000m),
         };
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyBalances(accountId, start, end, It.IsAny<CancellationToken>()))
             .ReturnsAsync(balances);
 
-        var handler = new GetMonthlyBalancesReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetMonthlyBalancesReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetMonthlyBalancesReport
         {
@@ -126,11 +126,11 @@ public class GetMonthlyBalancesReportTests
             TestEntities.CreateMonthlyBalance(balance: expectedBalance),
         };
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyBalances(accountId, start, end, It.IsAny<CancellationToken>()))
             .ReturnsAsync(balances);
 
-        var handler = new GetMonthlyBalancesReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetMonthlyBalancesReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetMonthlyBalancesReport
         {
@@ -155,11 +155,11 @@ public class GetMonthlyBalancesReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyBalances(accountId, start, end, It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
-        var handler = new GetMonthlyBalancesReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetMonthlyBalancesReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetMonthlyBalancesReport
         {

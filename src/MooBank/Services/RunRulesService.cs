@@ -10,7 +10,7 @@ public interface IRunRulesService
     Task RunRules(Guid accountId, CancellationToken cancellationToken = default);
 }
 
-internal class RunRulesService(ITransactionRepository transactionRepository, IRuleRepository transactionTagRuleRepository, IUnitOfWork unitOfWork, ILogger<RunRulesService> logger) : IRunRulesService
+internal class RunRulesService(ITransactionRepository transactionRepository, IInstrumentRepository instrumentRepository, IUnitOfWork unitOfWork, ILogger<RunRulesService> logger) : IRunRulesService
 {
     public async Task RunRules(Guid accountId, CancellationToken cancellationToken = default)
     {
@@ -22,7 +22,8 @@ internal class RunRulesService(ITransactionRepository transactionRepository, IRu
             // that are actually retagged are loaded and tracked.
             var descriptions = await transactionRepository.GetTransactionDescriptions(accountId, cancellationToken);
 
-            var rules = await transactionTagRuleRepository.GetForInstrument(accountId, cancellationToken);
+            var instrument = await instrumentRepository.Get(accountId, cancellationToken);
+            var rules = instrument.Rules.OrderBy(r => r.Contains).ToList();
 
             // Parallel: find the transactions that match at least one rule (read-only, thread-safe)
             var matchedIds = descriptions.AsParallel()

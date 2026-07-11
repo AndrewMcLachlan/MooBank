@@ -3,6 +3,7 @@ using Asm.AspNetCore.Routing;
 using Asm.MooBank.Modules.Instruments.Commands.Rules;
 using Asm.MooBank.Modules.Instruments.Models.Rules;
 using Asm.MooBank.Modules.Instruments.Queries.Rules;
+using Asm.MooBank.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -44,10 +45,12 @@ public class RulesEndpoints : EndpointGroupBase
 
         routeGroupBuilder.MapPutCommand<AddTag, Rule>("/{ruleId}/tag/{tagId}")
             .WithNames("Add Tag to Instrument Rule")
-            .Produces<Rule>();
+            .Produces<Rule>()
+            .RequireAuthorization(Policies.GetTagFamilyPolicy("tagId"));
 
         routeGroupBuilder.MapDelete<RemoveTag>("/{ruleId}/tag/{tagId}")
-            .WithNames("Remove Tag from Instrument Rule");
+            .WithNames("Remove Tag from Instrument Rule")
+            .RequireAuthorization(Policies.GetTagFamilyPolicy("tagId"));
 
         routeGroupBuilder.MapCommand<Run>("run", StatusCodes.Status202Accepted, CommandBinding.Parameters)
             .WithNames("Run rules");

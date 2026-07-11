@@ -1,10 +1,13 @@
-#nullable enable
+﻿#nullable enable
 
 using Asm.Domain;
 using Asm.MooBank.Domain.Entities.Account;
+using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Models;
 using Asm.MooBank.Services;
 using Microsoft.Extensions.Logging;
+using DomainInstrument = Asm.MooBank.Domain.Entities.Instrument.Instrument;
+using DomainVirtualInstrument = Asm.MooBank.Domain.Entities.Account.VirtualInstrument;
 using DomainTransaction = Asm.MooBank.Domain.Entities.Transactions.Transaction;
 using ITransactionRepository = Asm.MooBank.Domain.Entities.Transactions.ITransactionRepository;
 
@@ -241,16 +244,35 @@ public class RecurringTransactionServiceTests
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         var transactionRepoMock = new Mock<ITransactionRepository>();
-        var recurringRepoMock = new Mock<IRecurringTransactionRepository>();
+        var instrumentRepoMock = new Mock<IInstrumentRepository>();
         var loggerMock = new Mock<ILogger<RecurringTransactionService>>();
 
-        recurringRepoMock.Setup(r => r.Get(It.IsAny<CancellationToken>()))
-            .ReturnsAsync(recurringTransactions);
+        var virtualInstrument = new DomainVirtualInstrument(Guid.NewGuid())
+        {
+            Name = "Test Virtual Account",
+            Currency = "AUD",
+        };
+
+        foreach (var recurringTransaction in recurringTransactions)
+        {
+            virtualInstrument.RecurringTransactions.Add(recurringTransaction);
+        }
+
+        var account = new LogicalAccount(Guid.NewGuid(), [])
+        {
+            Name = "Test Account",
+            Currency = "AUD",
+        };
+        account.AddVirtualInstrument(virtualInstrument, 0m);
+
+        instrumentRepoMock
+            .Setup(r => r.Get(It.IsAny<ISpecification<DomainInstrument>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new DomainInstrument[] { account });
 
         var service = new RecurringTransactionService(
             unitOfWorkMock.Object,
             transactionRepoMock.Object,
-            recurringRepoMock.Object,
+            instrumentRepoMock.Object,
             loggerMock.Object);
 
         return (service, transactionRepoMock, unitOfWorkMock);

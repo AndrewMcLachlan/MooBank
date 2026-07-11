@@ -26,11 +26,11 @@ public class GetAllTagAverageReportTests
 
         var tagAverages = TestEntities.CreateSampleTagAverages();
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetTopTagAverages(accountId, start, end, ReportInterval.Monthly, It.IsAny<CancellationToken>()))
             .ReturnsAsync(tagAverages);
 
-        var handler = new GetAllTagAverageReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetAllTagAverageReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetAllTagAverageReport
         {
@@ -62,11 +62,11 @@ public class GetAllTagAverageReportTests
 
         var tagAverages = TestEntities.CreateSampleTagAverages();
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetTopTagAverages(accountId, start, end, ReportInterval.Monthly, It.IsAny<CancellationToken>()))
             .ReturnsAsync(tagAverages);
 
-        var handler = new GetAllTagAverageReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetAllTagAverageReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetAllTagAverageReport
         {
@@ -102,11 +102,11 @@ public class GetAllTagAverageReportTests
             TestEntities.CreateTagAverage(5, "Tag5", 100m),
         };
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetTopTagAverages(accountId, start, end, ReportInterval.Monthly, It.IsAny<CancellationToken>()))
             .ReturnsAsync(tagAverages);
 
-        var handler = new GetAllTagAverageReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetAllTagAverageReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetAllTagAverageReport
         {
@@ -133,11 +133,11 @@ public class GetAllTagAverageReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-6));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetTopTagAverages(accountId, start, end, ReportInterval.Monthly, It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
-        var handler = new GetAllTagAverageReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetAllTagAverageReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetAllTagAverageReport
         {
@@ -166,11 +166,11 @@ public class GetAllTagAverageReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddYears(-1));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetTopTagAverages(accountId, start, end, interval, It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
-        var handler = new GetAllTagAverageReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetAllTagAverageReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetAllTagAverageReport
         {
@@ -186,7 +186,7 @@ public class GetAllTagAverageReportTests
         await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
-        _mocks.ReportRepositoryMock.Verify(
+        _mocks.ReportReaderMock.Verify(
             r => r.GetTopTagAverages(accountId, start, end, interval, It.IsAny<CancellationToken>()),
             Times.Once);
     }
@@ -199,11 +199,11 @@ public class GetAllTagAverageReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-6));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetTopTagAverages(accountId, start, end, ReportInterval.Monthly, It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
-        var handler = new GetAllTagAverageReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetAllTagAverageReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetAllTagAverageReport
         {
@@ -232,11 +232,11 @@ public class GetAllTagAverageReportTests
 
         var tagAverages = TestEntities.CreateSampleTagAverages();
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetTopTagAverages(accountId, start, end, ReportInterval.Monthly, It.IsAny<CancellationToken>()))
             .ReturnsAsync(tagAverages);
 
-        var handler = new GetAllTagAverageReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetAllTagAverageReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetAllTagAverageReport
         {
@@ -272,11 +272,11 @@ public class GetAllTagAverageReportTests
             TestEntities.CreateTagAverage(4, "Fourth", 100m),
         };
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetTopTagAverages(accountId, start, end, ReportInterval.Monthly, It.IsAny<CancellationToken>()))
             .ReturnsAsync(tagAverages);
 
-        var handler = new GetAllTagAverageReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetAllTagAverageReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetAllTagAverageReport
         {

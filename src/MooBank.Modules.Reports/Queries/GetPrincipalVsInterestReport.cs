@@ -9,7 +9,7 @@ namespace Asm.MooBank.Modules.Reports.Queries;
 public record GetPrincipalVsInterestReport : ReportQuery, IQuery<PrincipalVsInterestReport>;
 
 internal class GetPrincipalVsInterestReportHandler(
-    IReportRepository repository,
+    IReportReader reportReader,
     IQueryable<LogicalAccount> accounts,
     IQueryable<TagEntity> tags) : IQueryHandler<GetPrincipalVsInterestReport, PrincipalVsInterestReport>
 {
@@ -36,12 +36,12 @@ internal class GetPrincipalVsInterestReportHandler(
             };
         }
 
-        var monthlyTotals = await repository.GetMonthlyCreditDebitTotals(request.AccountId, request.Start, request.End, cancellationToken);
+        var monthlyTotals = await reportReader.GetMonthlyCreditDebitTotals(request.AccountId, request.Start, request.End, cancellationToken);
         var monthlyDebits = monthlyTotals
             .Where(t => t.TransactionType == TransactionFilterType.Debit)
             .ToDictionary(t => t.Month, t => t.Total);
 
-        var interestTotals = await repository.GetMonthlyTotalsForTag(request.AccountId, request.Start, request.End, TransactionFilterType.Debit, interestTagId, cancellationToken);
+        var interestTotals = await reportReader.GetMonthlyTotalsForTag(request.AccountId, request.Start, request.End, TransactionFilterType.Debit, interestTagId, cancellationToken);
 
         // Normalise the sign of both series before subtracting: the credit/debit totals
         // procedure returns debit totals negated, while the tag totals procedure returns

@@ -42,7 +42,7 @@ public class ForecastEngineTests
         SetupEmptyRepositoryMocks();
 
         var engine = new ForecastEngine(
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.User);
 
@@ -73,7 +73,7 @@ public class ForecastEngineTests
         SetupEmptyRepositoryMocks();
 
         var engine = new ForecastEngine(
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.User);
 
@@ -114,7 +114,7 @@ public class ForecastEngineTests
         SetupEmptyReportMocks();
 
         var engine = new ForecastEngine(
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.User);
 
@@ -152,7 +152,7 @@ public class ForecastEngineTests
             .ReturnsAsync(new List<DomainInstrument> { mockAccount });
 
         // Setup historical outgoings - 3000 per month over 3 months
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(),
                 It.IsAny<DateOnly>(),
@@ -166,7 +166,7 @@ public class ForecastEngineTests
                 }
             });
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyBalancesForAccounts(
                 It.IsAny<IEnumerable<Guid>>(),
                 It.IsAny<DateOnly>(),
@@ -175,7 +175,7 @@ public class ForecastEngineTests
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyBalance>>());
 
         var engine = new ForecastEngine(
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.User);
 
@@ -222,7 +222,7 @@ public class ForecastEngineTests
         SetupEmptyRepositoryMocks();
 
         var engine = new ForecastEngine(
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.User);
 
@@ -269,7 +269,7 @@ public class ForecastEngineTests
         SetupEmptyRepositoryMocks();
 
         var engine = new ForecastEngine(
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.User);
 
@@ -318,7 +318,7 @@ public class ForecastEngineTests
         SetupEmptyRepositoryMocks();
 
         var engine = new ForecastEngine(
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.User);
 
@@ -367,7 +367,7 @@ public class ForecastEngineTests
         SetupEmptyRepositoryMocks();
 
         var engine = new ForecastEngine(
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.User);
 
@@ -416,7 +416,7 @@ public class ForecastEngineTests
         SetupEmptyRepositoryMocks();
 
         var engine = new ForecastEngine(
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.User);
 
@@ -465,7 +465,7 @@ public class ForecastEngineTests
         SetupEmptyRepositoryMocks();
 
         var engine = new ForecastEngine(
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.User);
 
@@ -512,7 +512,7 @@ public class ForecastEngineTests
         SetupEmptyRepositoryMocks();
 
         var engine = new ForecastEngine(
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.User);
 
@@ -560,7 +560,7 @@ public class ForecastEngineTests
         SetupEmptyRepositoryMocks();
 
         var engine = new ForecastEngine(
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.User);
 
@@ -593,7 +593,7 @@ public class ForecastEngineTests
         SetupEmptyRepositoryMocks();
 
         var engine = new ForecastEngine(
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.User);
 
@@ -626,7 +626,7 @@ public class ForecastEngineTests
         SetupEmptyRepositoryMocks();
 
         var engine = new ForecastEngine(
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.User);
 
@@ -669,7 +669,7 @@ public class ForecastEngineTests
         SetupEmptyReportMocks();
 
         var engine = new ForecastEngine(
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.User);
 
@@ -718,7 +718,7 @@ public class ForecastEngineTests
             .ReturnsAsync(new List<DomainInstrument> { transactionAccount, savingsAccount });
 
         // Historical analysis should only be called for non-savings accounts
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitTotalsForAccounts(
                 It.Is<IEnumerable<Guid>>(ids => ids.Count() == 1 && ids.First() == transactionAccountId),
                 It.IsAny<DateOnly>(),
@@ -726,7 +726,7 @@ public class ForecastEngineTests
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>());
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyBalancesForAccounts(
                 It.IsAny<IEnumerable<Guid>>(),
                 It.IsAny<DateOnly>(),
@@ -735,7 +735,7 @@ public class ForecastEngineTests
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyBalance>>());
 
         var engine = new ForecastEngine(
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.User);
 
@@ -815,7 +815,7 @@ public class ForecastEngineTests
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<DomainInstrument>());
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(),
                 It.IsAny<DateOnly>(),
@@ -826,7 +826,7 @@ public class ForecastEngineTests
         // Actual balances for Jan and Feb:
         // Dec closing = 10000 (opening for Jan), Jan closing = 12000 (opening for Feb)
         // Actual outgoings for Jan: 10000 + 5000 + 0 - 12000 = 3000
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyBalancesForAccounts(
                 It.IsAny<IEnumerable<Guid>>(),
                 It.IsAny<DateOnly>(),
@@ -842,7 +842,7 @@ public class ForecastEngineTests
             });
 
         // Actual monthly credits used to derive outgoings from balance changes
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(),
                 It.IsAny<DateOnly>(),
@@ -857,7 +857,7 @@ public class ForecastEngineTests
             });
 
         var engine = new ForecastEngine(
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.User);
 
@@ -908,7 +908,7 @@ public class ForecastEngineTests
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<DomainInstrument>());
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(),
                 It.IsAny<DateOnly>(),
@@ -921,7 +921,7 @@ public class ForecastEngineTests
         // Jan actual outgoings: 10000 + 5000 - 13000 = 2000
         // Feb actual outgoings: 13000 + 5000 - 14000 = 4000
         // Average = (2000 + 4000) / 2 = 3000
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyBalancesForAccounts(
                 It.IsAny<IEnumerable<Guid>>(),
                 It.IsAny<DateOnly>(),
@@ -938,7 +938,7 @@ public class ForecastEngineTests
             });
 
         // Actual monthly credits used to derive outgoings from balance changes
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(),
                 It.IsAny<DateOnly>(),
@@ -954,7 +954,7 @@ public class ForecastEngineTests
             });
 
         var engine = new ForecastEngine(
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.User);
 
@@ -990,7 +990,7 @@ public class ForecastEngineTests
         SetupEmptyRepositoryMocks();
 
         var engine = new ForecastEngine(
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.User);
 
@@ -1035,7 +1035,7 @@ public class ForecastEngineTests
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<DomainInstrument>());
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(),
                 It.IsAny<DateOnly>(),
@@ -1046,7 +1046,7 @@ public class ForecastEngineTests
         // Actual balances: Dec closing = 10000, Jan closing = 20000
         // Derived outgoings for Jan: 10000 + 5000 + 0 - 20000 = -5000 (negative - anomalous)
         // Should be skipped, falling back to historical baseline (0)
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyBalancesForAccounts(
                 It.IsAny<IEnumerable<Guid>>(),
                 It.IsAny<DateOnly>(),
@@ -1062,7 +1062,7 @@ public class ForecastEngineTests
             });
 
         var engine = new ForecastEngine(
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.User);
 
@@ -1107,12 +1107,12 @@ public class ForecastEngineTests
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<DomainInstrument>());
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>());
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyBalancesForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyBalance>>());
@@ -1121,7 +1121,7 @@ public class ForecastEngineTests
         // Income: 5000, 6000, 7000, 8000, 9000, 10000
         // Expense: 3000, 3500, 4000, 4500, 5000, 5500
         // Regression: expense = 500 + 0.5 * income, R² = 1.0
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>
@@ -1132,7 +1132,7 @@ public class ForecastEngineTests
             });
 
         var engine = new ForecastEngine(
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.User);
 
@@ -1186,7 +1186,7 @@ public class ForecastEngineTests
             .ReturnsAsync(new List<DomainInstrument> { mockAccount });
 
         // Historical baseline: 42000 total debits / 12 months = 3500/month
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>
@@ -1194,13 +1194,13 @@ public class ForecastEngineTests
                 [accountId] = [new() { TransactionType = TransactionFilterType.Debit, Total = 42000m }]
             });
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyBalancesForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyBalance>>());
 
         // Only 3 months of data — below the MinDataPoints threshold of 6
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>
@@ -1211,7 +1211,7 @@ public class ForecastEngineTests
             });
 
         var engine = new ForecastEngine(
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.User);
 
@@ -1256,7 +1256,7 @@ public class ForecastEngineTests
             .ReturnsAsync(new List<DomainInstrument> { mockAccount });
 
         // Historical baseline: 60000 total debits / 12 months = 5000/month
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>
@@ -1264,13 +1264,13 @@ public class ForecastEngineTests
                 [accountId] = [new() { TransactionType = TransactionFilterType.Debit, Total = 60000m }]
             });
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyBalancesForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyBalance>>());
 
         // Scatter data with essentially no correlation — expenses are random relative to income
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>
@@ -1281,7 +1281,7 @@ public class ForecastEngineTests
             });
 
         var engine = new ForecastEngine(
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.User);
 
@@ -1327,7 +1327,7 @@ public class ForecastEngineTests
             .ReturnsAsync(new List<DomainInstrument> { mockAccount });
 
         // Historical baseline: 57000 total debits / 12 months = 4750/month
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>
@@ -1335,13 +1335,13 @@ public class ForecastEngineTests
                 [accountId] = [new() { TransactionType = TransactionFilterType.Debit, Total = 57000m }]
             });
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyBalancesForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyBalance>>());
 
         // Inverse relationship: as income goes up, expenses go down (negative slope)
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>
@@ -1352,7 +1352,7 @@ public class ForecastEngineTests
             });
 
         var engine = new ForecastEngine(
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.User);
 
@@ -1415,19 +1415,19 @@ public class ForecastEngineTests
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<DomainInstrument>());
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>());
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyBalancesForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyBalance>>());
 
         // Perfect linear relationship: expense = 1000 + 0.5 * income
         // Historical avg income = 7500
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>
@@ -1438,7 +1438,7 @@ public class ForecastEngineTests
             });
 
         var engine = new ForecastEngine(
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.User);
 
@@ -1499,12 +1499,12 @@ public class ForecastEngineTests
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<DomainInstrument> { account1, account2 });
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>());
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyBalancesForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyBalance>>());
@@ -1513,7 +1513,7 @@ public class ForecastEngineTests
         // Account 2: income 1000/month, expenses 1000/month
         // Combined per month: income = 5000..10000, expense = 3000..5500
         // This is equivalent to the single-account test data
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>
@@ -1527,7 +1527,7 @@ public class ForecastEngineTests
             });
 
         var engine = new ForecastEngine(
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.User);
 
@@ -1562,7 +1562,7 @@ public class ForecastEngineTests
         SetupEmptyRepositoryMocks();
 
         var engine = new ForecastEngine(
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.User);
 
@@ -1604,7 +1604,7 @@ public class ForecastEngineTests
             .ReturnsAsync(new List<DomainInstrument> { mockAccount });
 
         // Historical baseline: 36000 total debits / 12 months = 3000/month
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>
@@ -1612,13 +1612,13 @@ public class ForecastEngineTests
                 [accountId] = [new() { TransactionType = TransactionFilterType.Debit, Total = 36000m }]
             });
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyBalancesForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyBalance>>());
 
         // All months have identical income — zero variance, regression denominator = 0
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>
@@ -1629,7 +1629,7 @@ public class ForecastEngineTests
             });
 
         var engine = new ForecastEngine(
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.User);
 
@@ -1696,18 +1696,18 @@ public class ForecastEngineTests
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<DomainInstrument>());
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>());
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyBalancesForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyBalance>>());
 
         // Regression: expense = 1000 + 0.5 * income, avg income = 7500
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>
@@ -1718,7 +1718,7 @@ public class ForecastEngineTests
             });
 
         var engine = new ForecastEngine(
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.User);
 
@@ -1773,7 +1773,7 @@ public class ForecastEngineTests
 
     private void SetupEmptyReportMocks()
     {
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(),
                 It.IsAny<DateOnly>(),
@@ -1781,7 +1781,7 @@ public class ForecastEngineTests
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>());
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyBalancesForAccounts(
                 It.IsAny<IEnumerable<Guid>>(),
                 It.IsAny<DateOnly>(),
@@ -1789,7 +1789,7 @@ public class ForecastEngineTests
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyBalance>>());
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(),
                 It.IsAny<DateOnly>(),

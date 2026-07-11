@@ -14,7 +14,7 @@ public record CreatePlan([FromBody] Models.ForecastPlan Plan) : ICommand<Models.
 
 internal class CreatePlanHandler(
     IForecastRepository forecastRepository,
-    IReportRepository reportRepository,
+    IReportReader reportReader,
     IInstrumentRepository instrumentRepository,
     IUnitOfWork unitOfWork,
     User user) : ICommandHandler<CreatePlan, Models.ForecastPlan>
@@ -127,7 +127,7 @@ internal class CreatePlanHandler(
         {
             try
             {
-                var totals = await reportRepository.GetCreditDebitTotals(accountId, lookbackStart, lookbackEnd, cancellationToken);
+                var totals = await reportReader.GetCreditDebitTotals(accountId, lookbackStart, lookbackEnd, cancellationToken);
                 total += totals.Where(t => t.TransactionType == transactionType).Sum(t => t.Total);
             }
             catch (Exception)

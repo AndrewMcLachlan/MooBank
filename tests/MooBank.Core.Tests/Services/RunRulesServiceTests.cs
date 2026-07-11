@@ -1,5 +1,6 @@
-using Asm.Domain;
+﻿using Asm.Domain;
 using Asm.MooBank.Core.Tests.Support;
+using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Domain.Entities.Transactions;
@@ -17,14 +18,14 @@ namespace Asm.MooBank.Core.Tests.Services;
 public class RunRulesServiceTests
 {
     private readonly Mock<ITransactionRepository> _transactionRepositoryMock;
-    private readonly Mock<IRuleRepository> _ruleRepositoryMock;
+    private readonly Mock<IInstrumentRepository> _instrumentRepositoryMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly TestEntities _entities = new();
 
     public RunRulesServiceTests()
     {
         _transactionRepositoryMock = new Mock<ITransactionRepository>();
-        _ruleRepositoryMock = new Mock<IRuleRepository>();
+        _instrumentRepositoryMock = new Mock<IInstrumentRepository>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
 
         _unitOfWorkMock.Setup(u => u.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
@@ -457,7 +458,7 @@ public class RunRulesServiceTests
     private IRunRulesService CreateService() =>
         new RunRulesService(
             _transactionRepositoryMock.Object,
-            _ruleRepositoryMock.Object,
+            _instrumentRepositoryMock.Object,
             _unitOfWorkMock.Object,
             NullLogger<RunRulesService>.Instance);
 
@@ -473,9 +474,16 @@ public class RunRulesServiceTests
             .Setup(r => r.GetTransactions(accountId, It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((Guid _, IEnumerable<Guid> ids, CancellationToken _) => transactionList.Where(t => ids.Contains(t.Id)).ToList());
 
-        _ruleRepositoryMock
-            .Setup(r => r.GetForInstrument(accountId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(rules);
+        var instrument = new LogicalAccount(accountId, [])
+        {
+            Name = "Test Account",
+            Currency = "AUD",
+            Rules = [.. rules],
+        };
+
+        _instrumentRepositoryMock
+            .Setup(r => r.Get(accountId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(instrument);
     }
 
     private Transaction CreateTransaction(string? description)

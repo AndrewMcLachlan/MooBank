@@ -1,21 +1,21 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Infrastructure.Repositories;
 using Asm.MooBank.Infrastructure.Tests.Support;
 
 namespace Asm.MooBank.Infrastructure.Tests.Repositories;
 
 /// <summary>
-/// Unit tests for the <see cref="AuthorisationRepository"/> data queries used by
+/// Unit tests for the <see cref="AuthorisationReader"/> data queries used by
 /// authorisation requirement handlers.
 /// </summary>
 [Trait("Category", "Unit")]
-public class SecurityRepositoryTests : IDisposable
+public class AuthorisationReaderTests : IDisposable
 {
     private readonly MooBankContext _context;
     private readonly Guid _userId = Guid.NewGuid();
     private readonly Guid _familyId = Guid.NewGuid();
 
-    public SecurityRepositoryTests()
+    public AuthorisationReaderTests()
     {
         _context = TestDbContextFactory.Create();
     }
@@ -26,7 +26,7 @@ public class SecurityRepositoryTests : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    private AuthorisationRepository CreateRepository() => new(_context);
+    private AuthorisationReader CreateRepository() => new(_context);
 
     #region IsGroupOwner
 
@@ -168,7 +168,7 @@ public class SecurityRepositoryTests : IDisposable
         userScopedContext.SaveChanges();
 
         // Act
-        var result = await new AuthorisationRepository(userScopedContext).GetTagFamilyId(tag.Id, TestContext.Current.CancellationToken);
+        var result = await new AuthorisationReader(userScopedContext).GetTagFamilyId(tag.Id, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(otherFamilyId, result);

@@ -2,6 +2,7 @@
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Tests.Support;
 using Asm.MooBank.Infrastructure.Repositories;
+using Asm.MooBank.Security;
 
 namespace Asm.MooBank.Domain.Tests.Repositories;
 
@@ -60,7 +61,7 @@ public class InstrumentRepositoryTests : IDisposable
             SharedAccounts = [sharedAccountId],
         };
 
-        var repository = new InstrumentRepository(_context, user);
+        var repository = new InstrumentRepository(_context, CreateUserDataProvider(user));
 
         // Act
         var result = await repository.Get(TestContext.Current.CancellationToken);
@@ -92,7 +93,7 @@ public class InstrumentRepositoryTests : IDisposable
             SharedAccounts = [],
         };
 
-        var repository = new InstrumentRepository(_context, user);
+        var repository = new InstrumentRepository(_context, CreateUserDataProvider(user));
 
         // Act
         var result = await repository.Get(TestContext.Current.CancellationToken);
@@ -120,7 +121,7 @@ public class InstrumentRepositoryTests : IDisposable
         _context.Set<LogicalAccount>().Add(instrument);
         await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var repository = new InstrumentRepository(_context, _user);
+        var repository = new InstrumentRepository(_context, CreateUserDataProvider(_user));
 
         // Act
         var result = await repository.Get(instrumentId, TestContext.Current.CancellationToken);
@@ -155,7 +156,7 @@ public class InstrumentRepositoryTests : IDisposable
         _context.Set<LogicalAccount>().AddRange(instrument1, instrument2, instrument3);
         await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var repository = new InstrumentRepository(_context, _user);
+        var repository = new InstrumentRepository(_context, CreateUserDataProvider(_user));
 
         // Act
         var result = await repository.Get([id1, id3], TestContext.Current.CancellationToken);
@@ -176,7 +177,7 @@ public class InstrumentRepositoryTests : IDisposable
     public async Task GetByIds_EmptyIdList_ReturnsEmpty()
     {
         // Arrange
-        var repository = new InstrumentRepository(_context, _user);
+        var repository = new InstrumentRepository(_context, CreateUserDataProvider(_user));
 
         // Act
         var result = await repository.Get([], TestContext.Current.CancellationToken);
@@ -199,7 +200,7 @@ public class InstrumentRepositoryTests : IDisposable
     public async Task Add_NewInstrument_PersistsInstrument()
     {
         // Arrange
-        var repository = new InstrumentRepository(_context, _user);
+        var repository = new InstrumentRepository(_context, CreateUserDataProvider(_user));
         var instrument = CreateInstrument(Guid.NewGuid(), "New Instrument");
 
         // Act
@@ -230,7 +231,7 @@ public class InstrumentRepositoryTests : IDisposable
         _context.Set<LogicalAccount>().Add(instrument);
         await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var repository = new InstrumentRepository(_context, _user);
+        var repository = new InstrumentRepository(_context, CreateUserDataProvider(_user));
 
         // Act
         instrument.Name = "Updated Name";
@@ -261,7 +262,7 @@ public class InstrumentRepositoryTests : IDisposable
         _context.Set<LogicalAccount>().Add(instrument);
         await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var repository = new InstrumentRepository(_context, _user);
+        var repository = new InstrumentRepository(_context, CreateUserDataProvider(_user));
 
         // Act
         repository.Delete(instrumentId);
@@ -282,7 +283,7 @@ public class InstrumentRepositoryTests : IDisposable
     public void Delete_NonExistentInstrument_ThrowsNotFoundException()
     {
         // Arrange
-        var repository = new InstrumentRepository(_context, _user);
+        var repository = new InstrumentRepository(_context, CreateUserDataProvider(_user));
 
         // Act & Assert
         Assert.Throws<NotFoundException>(() => repository.Delete(Guid.NewGuid()));
@@ -307,4 +308,11 @@ public class InstrumentRepositoryTests : IDisposable
             Accounts = [],
             SharedAccounts = [],
         };
+
+    private static IUserDataProvider CreateUserDataProvider(Models.User user)
+    {
+        var provider = new Mock<IUserDataProvider>();
+        provider.Setup(p => p.GetCurrentUser()).Returns(user);
+        return provider.Object;
+    }
 }

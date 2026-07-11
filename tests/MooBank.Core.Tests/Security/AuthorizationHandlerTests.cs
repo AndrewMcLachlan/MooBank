@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System.Security.Claims;
 using Asm.MooBank.Core.Tests.Support;
 using Asm.MooBank.Models;
@@ -557,7 +557,7 @@ public class RouteParamAuthorizationHandlerTests
     {
         // Arrange
         var user = CreateUser(groups: [OwnedGroupId]);
-        var repository = new Mock<Asm.MooBank.Domain.IAuthorisationRepository>();
+        var repository = new Mock<Asm.MooBank.Domain.IAuthorisationReader>();
         repository.Setup(r => r.IsGroupOwner(OwnedGroupId, user.Id, It.IsAny<CancellationToken>())).ReturnsAsync(true);
         var requirement = new GroupOwnerRequirement();
         var routeHandler = new GroupOwnerAuthorisationHandler(CreateHttpContextAccessor(), user, _audit.Object);
@@ -583,7 +583,7 @@ public class RouteParamAuthorizationHandlerTests
     {
         // Arrange
         var user = CreateUser();
-        var repository = new Mock<Asm.MooBank.Domain.IAuthorisationRepository>();
+        var repository = new Mock<Asm.MooBank.Domain.IAuthorisationReader>();
         repository.Setup(r => r.IsGroupOwner(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(false);
         var requirement = new GroupOwnerRequirement();
         var routeHandler = new GroupOwnerAuthorisationHandler(CreateHttpContextAccessor(), user, _audit.Object);
@@ -646,7 +646,7 @@ public class RouteParamAuthorizationHandlerTests
 
 /// <summary>
 /// Tests for the BudgetLineAuthorisationHandler, which authorises the budget line route
-/// parameter via IAuthorisationRepository.
+/// parameter via IAuthorisationReader.
 /// </summary>
 [Trait("Category", "Unit")]
 public class BudgetLineAuthorisationHandlerTests
@@ -654,7 +654,7 @@ public class BudgetLineAuthorisationHandlerTests
     private static readonly Guid BudgetLineId = Guid.NewGuid();
     private static readonly Guid FamilyId = Guid.NewGuid();
 
-    private readonly Mock<Asm.MooBank.Domain.IAuthorisationRepository> _repository = new();
+    private readonly Mock<Asm.MooBank.Domain.IAuthorisationReader> _repository = new();
     private readonly Mock<Asm.MooBank.Audit.IAuditLogger> _audit = new();
     private readonly User _user = new()
     {
@@ -799,7 +799,7 @@ public class BudgetLineAuthorisationHandlerTests
 
 /// <summary>
 /// Tests for the TagFamilyAuthorisationHandler, which authorises the tag route
-/// parameter via IAuthorisationRepository.
+/// parameter via IAuthorisationReader.
 /// </summary>
 [Trait("Category", "Unit")]
 public class TagFamilyAuthorisationHandlerTests
@@ -807,7 +807,7 @@ public class TagFamilyAuthorisationHandlerTests
     private const int TagId = 42;
     private static readonly Guid FamilyId = Guid.NewGuid();
 
-    private readonly Mock<Asm.MooBank.Domain.IAuthorisationRepository> _repository = new();
+    private readonly Mock<Asm.MooBank.Domain.IAuthorisationReader> _repository = new();
     private readonly Mock<Asm.MooBank.Audit.IAuditLogger> _audit = new();
     private readonly User _user = new()
     {
@@ -973,7 +973,7 @@ public class TagFamilyAuthorisationHandlerTests
 
 /// <summary>
 /// Tests for the ForecastPlanAuthorisationHandler, which authorises the forecast plan route
-/// parameter via IAuthorisationRepository.
+/// parameter via IAuthorisationReader.
 /// </summary>
 [Trait("Category", "Unit")]
 public class ForecastPlanAuthorisationHandlerTests
@@ -981,7 +981,7 @@ public class ForecastPlanAuthorisationHandlerTests
     private static readonly Guid PlanId = Guid.NewGuid();
     private static readonly Guid FamilyId = Guid.NewGuid();
 
-    private readonly Mock<Asm.MooBank.Domain.IAuthorisationRepository> _repository = new();
+    private readonly Mock<Asm.MooBank.Domain.IAuthorisationReader> _repository = new();
     private readonly Mock<Asm.MooBank.Audit.IAuditLogger> _audit = new();
     private readonly User _user = new()
     {

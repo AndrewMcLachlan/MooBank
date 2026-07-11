@@ -5,11 +5,11 @@ namespace Asm.MooBank.Modules.Reports.Queries;
 
 public record GetGroupMonthlyBalancesReport(Guid GroupId, DateOnly Start, DateOnly End) : IQuery<MonthlyBalancesReport>;
 
-internal class GetGroupMonthlyBalancesReportHandler(IReportRepository repository) : IQueryHandler<GetGroupMonthlyBalancesReport, MonthlyBalancesReport>
+internal class GetGroupMonthlyBalancesReportHandler(IReportReader reportReader) : IQueryHandler<GetGroupMonthlyBalancesReport, MonthlyBalancesReport>
 {
     public async ValueTask<MonthlyBalancesReport> Handle(GetGroupMonthlyBalancesReport query, CancellationToken cancellationToken)
     {
-        var results = await repository.GetGroupMonthlyBalances(query.GroupId, query.Start, query.End, cancellationToken);
+        var results = await reportReader.GetGroupMonthlyBalances(query.GroupId, query.Start, query.End, cancellationToken);
 
         return new()
         {

@@ -7,7 +7,7 @@ namespace Asm.MooBank.Modules.Reports.Queries;
 
 public record GetUserCashFlow : UserReportQuery, IQuery<UserCashFlowReport>;
 
-internal class GetUserCashFlowHandler(IQueryable<LogicalAccount> accounts, IReportRepository repository, User user) : IQueryHandler<GetUserCashFlow, UserCashFlowReport>
+internal class GetUserCashFlowHandler(IQueryable<LogicalAccount> accounts, IReportReader reportReader, User user) : IQueryHandler<GetUserCashFlow, UserCashFlowReport>
 {
     public async ValueTask<UserCashFlowReport> Handle(GetUserCashFlow request, CancellationToken cancellationToken)
     {
@@ -27,7 +27,7 @@ internal class GetUserCashFlowHandler(IQueryable<LogicalAccount> accounts, IRepo
             };
         }
 
-        var totals = await repository.GetCreditDebitTotalsForAccounts(accountIds, start, end, cancellationToken);
+        var totals = await reportReader.GetCreditDebitTotalsForAccounts(accountIds, start, end, cancellationToken);
 
         decimal income = 0;
         decimal outgoings = 0;
