@@ -57,7 +57,9 @@ paths:
 - Located in `Specifications/` folders under entity folders
 - Implement `ISpecification<T>`
 - Should be composable and reusable
-- Common examples: `FilterSpecification`, `IncludeXxxSpecification`, `SortSpecification`
+- Applied to an `IQueryable<T>` via the ASM `.Specify()` extension method
+- Naming convention for new specifications: `XxxDetailsSpecification` for an include bundle
+  (eager-loading a set of navigations), verb-named (e.g. `GetWithMembers`) for a filtered load
 
 ### Repositories
 - Interface defined in `MooBank.Domain/Entities/`

@@ -1,4 +1,4 @@
-using Asm.MooBank.Domain;
+﻿using Asm.MooBank.Domain;
 using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Asset;
 using Asm.MooBank.Domain.Entities.Instrument.Specifications;
@@ -72,7 +72,7 @@ internal class GetUserSavingsBreakdownHandler(
         }
 
         var stocks = await stockHoldings
-            .Apply(new OpenAccessibleSpecification<StockHolding>(user.Id, user.FamilyId))
+            .Specify(new OpenAccessibleSpecification<StockHolding>(user.Id, user.FamilyId))
             .Select(s => new { s.Id, s.Name, s.CurrentValue })
             .ToListAsync(cancellationToken);
 
@@ -89,7 +89,7 @@ internal class GetUserSavingsBreakdownHandler(
         }
 
         var assetsList = await assets
-            .Apply(new OpenAccessibleSpecification<Asset>(user.Id, user.FamilyId))
+            .Specify(new OpenAccessibleSpecification<Asset>(user.Id, user.FamilyId))
             .Select(a => new { a.Id, a.Name, a.Value })
             .ToListAsync(cancellationToken);
 

@@ -12,17 +12,17 @@ internal class GetListHandler(IQueryable<Domain.Entities.Account.LogicalAccount>
     public async ValueTask<IEnumerable<ListItem<Guid>>> Handle(GetList request, CancellationToken cancellationToken = default)
     {
         var logicalAccounts1 = await logicalAccounts
-                                      .Apply(new OpenAccessibleSpecification<Domain.Entities.Account.LogicalAccount>(user.Id, user.FamilyId))
+                                      .Specify(new OpenAccessibleSpecification<Domain.Entities.Account.LogicalAccount>(user.Id, user.FamilyId))
                                       .Select(a => new ListItem<Guid> { Id = a.Id, Name = a.Name })
                                       .ToListAsync(cancellationToken);
 
         var stockHoldings1 = await stockHoldings
-                                      .Apply(new OpenAccessibleSpecification<Domain.Entities.StockHolding.StockHolding>(user.Id, user.FamilyId))
+                                      .Specify(new OpenAccessibleSpecification<Domain.Entities.StockHolding.StockHolding>(user.Id, user.FamilyId))
                                       .Select(a => new ListItem<Guid> { Id = a.Id, Name = a.Name })
                                       .ToListAsync(cancellationToken);
 
         var assets1 = await assets
-                                      .Apply(new OpenAccessibleSpecification<Domain.Entities.Asset.Asset>(user.Id, user.FamilyId))
+                                      .Specify(new OpenAccessibleSpecification<Domain.Entities.Asset.Asset>(user.Id, user.FamilyId))
                                       .Select(a => new ListItem<Guid> { Id = a.Id, Name = a.Name })
                                       .ToListAsync(cancellationToken);
 

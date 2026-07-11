@@ -35,7 +35,7 @@ internal class GetPlanHandler(IQueryable<ForecastPlan> plans, ...) : IQueryHandl
     public async ValueTask<ForecastPlan> Handle(GetPlan query, ...)
     {
         var plan = await plans
-            .Apply(new ForecastPlanDetailsSpecification())
+            .Specify(new ForecastPlanDetailsSpecification())
             .SingleAsync(p => p.Id == query.Id, cancellationToken);
         return plan.ToModel();
     }
@@ -73,7 +73,7 @@ internal class UpdatePlanHandler(IForecastRepository forecastRepository, ...) : 
 
 - Used for complex query logic and filtering
 - Implement `ISpecification<T>`
-- Applied via `.Apply()` extension method
+- Applied via the ASM `.Specify()` extension method
 - Common patterns:
   - `IncludeXxxSpecification` - Eager loading related entities
   - `FilterSpecification` - Filtering criteria

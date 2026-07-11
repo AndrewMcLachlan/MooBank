@@ -1,4 +1,4 @@
-using Asm.MooBank.Domain;
+﻿using Asm.MooBank.Domain;
 using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Instrument.Specifications;
 using Asm.MooBank.Models;
@@ -34,7 +34,7 @@ internal static class UserReportScope
     public static readonly AccountType[] TransactionalTypes = [AccountType.Transaction, AccountType.Credit];
 
     public static IQueryable<LogicalAccount> AccessibleTo(this IQueryable<LogicalAccount> accounts, User user) =>
-        accounts.Apply(new OpenAccessibleSpecification<LogicalAccount>(user.Id, user.FamilyId));
+        accounts.Specify(new OpenAccessibleSpecification<LogicalAccount>(user.Id, user.FamilyId));
 
     public static IQueryable<LogicalAccount> Transactional(this IQueryable<LogicalAccount> accounts) =>
         accounts.Where(a => TransactionalTypes.Contains(a.AccountType));
