@@ -2,12 +2,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { getAllInstrumentRulesQueryKey } from "api/@tanstack/react-query.gen";
 import { removeTagFromInstrumentRule } from "api/sdk.gen";
 import type { Rule, Tag } from "api/types.gen";
+import { toast } from "@andrewmclachlan/moo-ds";
 
 export const useRemoveRuleTag = () => {
 
     const queryClient = useQueryClient();
 
-    return useMutation({
+    const { mutateAsync, ...rest } = useMutation({
         mutationFn: (variables: { instrumentId: string, ruleId: number, tag: Tag }) =>
             removeTagFromInstrumentRule({ path: { instrumentId: variables.instrumentId, ruleId: variables.ruleId, tagId: variables.tag.id }, throwOnError: true }),
         onMutate: async (variables) => {
@@ -31,4 +32,10 @@ export const useRemoveRuleTag = () => {
             queryClient.invalidateQueries({ queryKey: getAllInstrumentRulesQueryKey({ path: { instrumentId: variables.instrumentId } }) });
         },
     });
+
+    return {
+        ...rest,
+        mutate: (variables: { instrumentId: string, ruleId: number, tag: Tag }) =>
+            toast.promise(mutateAsync(variables), { pending: "Removing tag", success: "Tag removed", error: "Failed to remove tag" }),
+    };
 }

@@ -13,9 +13,20 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="Asm.MooBank.Infrastructure" />
+    <!-- Test assemblies get internal access so their fixtures can construct entities directly.
+         The aggregate constructors are internal so production module assemblies must go through
+         the Create factories. -->
     <InternalsVisibleTo Include="Asm.MooBank.Domain.Tests" />
     <InternalsVisibleTo Include="Asm.MooBank.Core.Tests" />
+    <InternalsVisibleTo Include="Asm.MooBank.Infrastructure.Tests" />
+    <InternalsVisibleTo Include="Asm.MooBank.Modules.Accounts.Tests" />
+    <InternalsVisibleTo Include="Asm.MooBank.Modules.Assets.Tests" />
+    <InternalsVisibleTo Include="Asm.MooBank.Modules.Bills.Tests" />
     <InternalsVisibleTo Include="Asm.MooBank.Modules.Budgets.Tests" />
+    <InternalsVisibleTo Include="Asm.MooBank.Modules.Forecast.Tests" />
+    <InternalsVisibleTo Include="Asm.MooBank.Modules.Instruments.Tests" />
+    <InternalsVisibleTo Include="Asm.MooBank.Modules.Reports.Tests" />
+    <InternalsVisibleTo Include="Asm.MooBank.Modules.Stocks.Tests" />
   </ItemGroup>
 
   <ItemGroup>

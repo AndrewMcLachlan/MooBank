@@ -1,6 +1,6 @@
 import { ComboBox } from "@andrewmclachlan/moo-ds";
 import type { ValueProps } from "@andrewmclachlan/moo-ds";
-import { formatDate } from "utils/dateFns";
+import { formatDisplayDate } from "utils/dateFns";
 import type { Transaction, TransactionType } from "api/types.gen";
 import { useSearchTransactions } from "routes/accounts/-hooks/useSearchTransactions";
 
@@ -18,7 +18,7 @@ export const TransactionSearch: React.FC<TransactionSearchProps> = ({ transactio
             onChange={t => props.onChange(t.length ? t[0] : null)}
             key={props.value?.id ?? "empty"}
             labelField={(t) => t &&
-                <><span className="amount">${t.amount}</span> - {formatDate(t.transactionTime)} - {t.description}</>
+                <><span className="amount">${t.amount}</span> - {formatDisplayDate(t.transactionTime)} - {t.description}</>
             } />
     );
 }

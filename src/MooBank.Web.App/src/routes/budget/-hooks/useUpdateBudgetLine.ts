@@ -1,11 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateBudgetLineMutation, getAllBudgetYearsQueryKey, getBudgetQueryKey } from "api/@tanstack/react-query.gen";
 import type { BudgetLine } from "api/types.gen";
+import { toast } from "@andrewmclachlan/moo-ds";
 
 export const useUpdateBudgetLine = () => {
     const queryClient = useQueryClient();
 
-    const { mutate } = useMutation({
+    const { mutateAsync } = useMutation({
         ...updateBudgetLineMutation(),
         onSettled: (_data, _error, variables) => {
             queryClient.invalidateQueries({ queryKey: getBudgetQueryKey({ path: { year: variables.path!.year } }) });
@@ -14,7 +15,7 @@ export const useUpdateBudgetLine = () => {
     });
 
     const update = (year: number, budget: BudgetLine) => {
-        mutate({ body: budget, path: { year, id: budget.id } });
+        toast.promise(mutateAsync({ body: budget, path: { year, id: budget.id } }), { pending: "Updating budget line", success: "Budget line updated", error: "Failed to update budget line" });
     };
 
     return update;

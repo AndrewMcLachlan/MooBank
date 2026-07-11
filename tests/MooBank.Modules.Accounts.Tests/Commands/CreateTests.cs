@@ -23,9 +23,9 @@ public class CreateTests
         // Arrange
         LogicalAccount? capturedEntity = null;
         _mocks.LogicalAccountRepositoryMock
-            .Setup(r => r.Add(It.IsAny<LogicalAccount>(), It.IsAny<decimal>(), It.IsAny<DateOnly>()))
-            .Callback<LogicalAccount, decimal, DateOnly>((e, _, _) => capturedEntity = e)
-            .Returns<LogicalAccount, decimal, DateOnly>((e, _, _) => e);
+            .Setup(r => r.Add(It.IsAny<LogicalAccount>()))
+            .Callback<LogicalAccount>(e => capturedEntity = e)
+            .Returns<LogicalAccount>(e => e);
 
         var handler = new CreateHandler(
             _mocks.LogicalAccountRepositoryMock.Object,
@@ -63,18 +63,11 @@ public class CreateTests
     {
         // Arrange
         LogicalAccount? capturedEntity = null;
-        decimal capturedBalance = 0;
-        DateOnly capturedDate = default;
 
         _mocks.LogicalAccountRepositoryMock
-            .Setup(r => r.Add(It.IsAny<LogicalAccount>(), It.IsAny<decimal>(), It.IsAny<DateOnly>()))
-            .Callback<LogicalAccount, decimal, DateOnly>((e, b, d) =>
-            {
-                capturedEntity = e;
-                capturedBalance = b;
-                capturedDate = d;
-            })
-            .Returns<LogicalAccount, decimal, DateOnly>((e, _, _) => e);
+            .Setup(r => r.Add(It.IsAny<LogicalAccount>()))
+            .Callback<LogicalAccount>(e => capturedEntity = e)
+            .Returns<LogicalAccount>(e => e);
 
         var handler = new CreateHandler(
             _mocks.LogicalAccountRepositoryMock.Object,
@@ -101,11 +94,9 @@ public class CreateTests
         await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
-        _mocks.LogicalAccountRepositoryMock.Verify(r => r.Add(It.IsAny<LogicalAccount>(), It.IsAny<decimal>(), It.IsAny<DateOnly>()), Times.Once);
+        _mocks.LogicalAccountRepositoryMock.Verify(r => r.Add(It.IsAny<LogicalAccount>()), Times.Once);
         Assert.NotNull(capturedEntity);
         Assert.Equal("New Account", capturedEntity.Name);
-        Assert.Equal(2500m, capturedBalance);
-        Assert.Equal(openedDate, capturedDate);
     }
 
     [Fact]
@@ -113,8 +104,8 @@ public class CreateTests
     {
         // Arrange
         _mocks.LogicalAccountRepositoryMock
-            .Setup(r => r.Add(It.IsAny<LogicalAccount>(), It.IsAny<decimal>(), It.IsAny<DateOnly>()))
-            .Returns<LogicalAccount, decimal, DateOnly>((e, _, _) => e);
+            .Setup(r => r.Add(It.IsAny<LogicalAccount>()))
+            .Returns<LogicalAccount>(e => e);
 
         var handler = new CreateHandler(
             _mocks.LogicalAccountRepositoryMock.Object,
@@ -148,9 +139,9 @@ public class CreateTests
         // Arrange
         LogicalAccount? capturedEntity = null;
         _mocks.LogicalAccountRepositoryMock
-            .Setup(r => r.Add(It.IsAny<LogicalAccount>(), It.IsAny<decimal>(), It.IsAny<DateOnly>()))
-            .Callback<LogicalAccount, decimal, DateOnly>((e, _, _) => capturedEntity = e)
-            .Returns<LogicalAccount, decimal, DateOnly>((e, _, _) => e);
+            .Setup(r => r.Add(It.IsAny<LogicalAccount>()))
+            .Callback<LogicalAccount>(e => capturedEntity = e)
+            .Returns<LogicalAccount>(e => e);
 
         var handler = new CreateHandler(
             _mocks.LogicalAccountRepositoryMock.Object,
@@ -190,9 +181,9 @@ public class CreateTests
         // Arrange
         LogicalAccount? capturedEntity = null;
         _mocks.LogicalAccountRepositoryMock
-            .Setup(r => r.Add(It.IsAny<LogicalAccount>(), It.IsAny<decimal>(), It.IsAny<DateOnly>()))
-            .Callback<LogicalAccount, decimal, DateOnly>((e, _, _) => capturedEntity = e)
-            .Returns<LogicalAccount, decimal, DateOnly>((e, _, _) => e);
+            .Setup(r => r.Add(It.IsAny<LogicalAccount>()))
+            .Callback<LogicalAccount>(e => capturedEntity = e)
+            .Returns<LogicalAccount>(e => e);
 
         var handler = new CreateHandler(
             _mocks.LogicalAccountRepositoryMock.Object,
@@ -228,8 +219,8 @@ public class CreateTests
         // Arrange
         var groupId = Guid.NewGuid();
         _mocks.LogicalAccountRepositoryMock
-            .Setup(r => r.Add(It.IsAny<LogicalAccount>(), It.IsAny<decimal>(), It.IsAny<DateOnly>()))
-            .Returns<LogicalAccount, decimal, DateOnly>((e, _, _) => e);
+            .Setup(r => r.Add(It.IsAny<LogicalAccount>()))
+            .Returns<LogicalAccount>(e => e);
 
         var handler = new CreateHandler(
             _mocks.LogicalAccountRepositoryMock.Object,
@@ -293,8 +284,8 @@ public class CreateTests
     {
         // Arrange
         _mocks.LogicalAccountRepositoryMock
-            .Setup(r => r.Add(It.IsAny<LogicalAccount>(), It.IsAny<decimal>(), It.IsAny<DateOnly>()))
-            .Returns<LogicalAccount, decimal, DateOnly>((e, _, _) => e);
+            .Setup(r => r.Add(It.IsAny<LogicalAccount>()))
+            .Returns<LogicalAccount>(e => e);
 
         var handler = new CreateHandler(
             _mocks.LogicalAccountRepositoryMock.Object,
@@ -335,9 +326,9 @@ public class CreateTests
         // Arrange
         LogicalAccount? capturedEntity = null;
         _mocks.LogicalAccountRepositoryMock
-            .Setup(r => r.Add(It.IsAny<LogicalAccount>(), It.IsAny<decimal>(), It.IsAny<DateOnly>()))
-            .Callback<LogicalAccount, decimal, DateOnly>((e, _, _) => capturedEntity = e)
-            .Returns<LogicalAccount, decimal, DateOnly>((e, _, _) => e);
+            .Setup(r => r.Add(It.IsAny<LogicalAccount>()))
+            .Callback<LogicalAccount>(e => capturedEntity = e)
+            .Returns<LogicalAccount>(e => e);
 
         var handler = new CreateHandler(
             _mocks.LogicalAccountRepositoryMock.Object,
@@ -374,9 +365,9 @@ public class CreateTests
         // Arrange
         LogicalAccount? capturedEntity = null;
         _mocks.LogicalAccountRepositoryMock
-            .Setup(r => r.Add(It.IsAny<LogicalAccount>(), It.IsAny<decimal>(), It.IsAny<DateOnly>()))
-            .Callback<LogicalAccount, decimal, DateOnly>((e, _, _) => capturedEntity = e)
-            .Returns<LogicalAccount, decimal, DateOnly>((e, _, _) => e);
+            .Setup(r => r.Add(It.IsAny<LogicalAccount>()))
+            .Callback<LogicalAccount>(e => capturedEntity = e)
+            .Returns<LogicalAccount>(e => e);
 
         var handler = new CreateHandler(
             _mocks.LogicalAccountRepositoryMock.Object,

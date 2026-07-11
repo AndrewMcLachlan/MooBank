@@ -11,7 +11,7 @@ export const TopTagsWidget: React.FC = () => {
 
     const account = accounts?.find(a => a.isPrimary === true) ?? accounts?.[0];
 
-    const period = useMemo(lastMonth, []);
+    const period = useMemo(() => lastMonth(), []);
     const monthName = lastMonthName();
 
     return (

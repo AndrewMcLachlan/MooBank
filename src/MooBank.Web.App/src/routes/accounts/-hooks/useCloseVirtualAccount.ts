@@ -12,7 +12,7 @@ export const useCloseVirtualAccount = () => {
 
     const { mutateAsync, ...rest } = useMutation({
         ...deleteVirtualInstrumentMutation(),
-        onSuccess: (_data, variables) => {
+        onSettled: (_data, _error, variables) => {
             queryClient.invalidateQueries({ queryKey: getAccountsQueryKey() });
             queryClient.invalidateQueries({ queryKey: getFormattedInstrumentsListQueryKey() });
             queryClient.invalidateQueries({ queryKey: getVirtualInstrumentsQueryKey({ path: { instrumentId: (variables as any).path!.instrumentId } }) });

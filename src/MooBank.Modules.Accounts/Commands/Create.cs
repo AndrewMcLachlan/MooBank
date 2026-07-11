@@ -44,27 +44,29 @@ internal class CreateHandler(ILogicalAccountRepository institutionAccountReposit
             await security.AssertGroupPermission(command.GroupId.Value);
         }
 
-        Domain.Entities.Account.LogicalAccount entity = new()
-        {
-            Name = command.Name,
-            Description = command.Description,
-            Currency = command.Currency,
-            AccountType = command.AccountType,
-            Controller = command.Controller,
-            IncludeInBudget = command.IncludeInBudget,
-            ShareWithFamily = command.ShareWithFamily,
-        };
+        var openedDate = command.OpenedDate ?? DateOnly.FromDateTime(DateTime.UtcNow);
 
-        entity.AddInstitutionAccount(new()
-        {
-            Name = command.Name,
-            OpenedDate = command.OpenedDate ?? DateOnly.FromDateTime(DateTime.UtcNow),
-            InstitutionId = command.InstitutionId,
-        });
+        var entity = Domain.Entities.Account.LogicalAccount.Create(
+            command.Name,
+            command.Description,
+            command.Currency,
+            command.AccountType,
+            command.Controller,
+            command.IncludeInBudget,
+            command.ShareWithFamily,
+            new Domain.Entities.Account.InstitutionAccount
+            {
+                Name = command.Name,
+                OpenedDate = openedDate,
+                InstitutionId = command.InstitutionId,
+            },
+            command.Balance,
+            openedDate);
+
         entity.SetAccountHolder(user.Id);
         entity.SetGroup(command.GroupId, user.Id);
 
-        entity = _accountRepository.Add(entity, command.Balance, command.OpenedDate ?? DateOnly.FromDateTime(DateTime.UtcNow));
+        _accountRepository.Add(entity);
 
         await unitOfWork.SaveChangesAsync("Created", "Account", entity.Id, cancellationToken);
 

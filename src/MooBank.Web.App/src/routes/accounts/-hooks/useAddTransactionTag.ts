@@ -3,6 +3,7 @@ import type { PagedResult } from "@andrewmclachlan/moo-ds";
 import type { Transaction, Tag } from "api/types.gen";
 import { addTag } from "api/sdk.gen";
 import { useTransactionSearch } from "../-transactions/hooks/useTransactionSearch";
+import { toast } from "@andrewmclachlan/moo-ds";
 import { buildTransactionsQueryKey, invalidateTransactionLists } from "./transactionKeys";
 
 export const useAddTransactionTag = () => {
@@ -11,7 +12,7 @@ export const useAddTransactionTag = () => {
 
     const { filter, page, pageSize, sortField, sortDirection } = useTransactionSearch();
 
-    const { mutate } = useMutation({
+    const { mutateAsync } = useMutation({
         mutationFn: (variables: { accountId: string, transactionId: string, tag: Tag }) =>
             addTag({ path: { instrumentId: variables.accountId, id: variables.transactionId, tagId: variables.tag.id }, throwOnError: true }),
         onMutate: async (variables) => {
@@ -57,5 +58,8 @@ export const useAddTransactionTag = () => {
         onSettled: () => invalidateTransactionLists(queryClient),
     });
 
-    return { mutate };
+    return {
+        mutate: (variables: { accountId: string, transactionId: string, tag: Tag }) =>
+            toast.promise(mutateAsync(variables), { pending: "Adding tag", success: "Tag added", error: "Failed to add tag" }),
+    };
 }

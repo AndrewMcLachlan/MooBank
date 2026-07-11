@@ -1,12 +1,13 @@
 import type { Tag } from "api/types.gen";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addSubTagMutation, getTagsQueryKey } from "api/@tanstack/react-query.gen";
+import { toast } from "@andrewmclachlan/moo-ds";
 
 export const useAddSubTag = () => {
 
     const queryClient = useQueryClient();
 
-    return useMutation({
+    const { mutateAsync, ...rest } = useMutation({
         ...addSubTagMutation(),
         onSuccess: (data) => {
             const allTags = queryClient.getQueryData<Tag[]>(getTagsQueryKey());
@@ -21,4 +22,10 @@ export const useAddSubTag = () => {
             queryClient.setQueryData<Tag[]>(getTagsQueryKey(), newTags);
         }
     });
+
+    return {
+        ...rest,
+        mutate: (variables: { path: { id: number, subTagId: number } }) =>
+            toast.promise(mutateAsync(variables as any), { pending: "Adding sub tag", success: "Sub tag added", error: "Failed to add sub tag" }),
+    };
 }

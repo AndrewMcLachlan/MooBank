@@ -1,15 +1,35 @@
 ﻿using Asm.MooBank.Domain.Entities.Instrument;
+using Asm.MooBank.Domain.Entities.Instrument.Events;
 using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Domain.Entities.Account;
 
-public partial class VirtualInstrument(Guid id) : TransactionInstrument(id)
+public partial class VirtualInstrument : TransactionInstrument
 {
-    public VirtualInstrument() : this(Guid.Empty) { }
+    internal VirtualInstrument(Guid id) : base(id) { }
+
+    // For EF materialisation only. Construct through Create.
+    internal VirtualInstrument() : this(Guid.Empty) { }
+
+    public static VirtualInstrument Create(string name, string? description, Controller controller, string currency) =>
+        new()
+        {
+            Name = name,
+            Description = description,
+            Controller = controller,
+            Currency = currency,
+        };
 
     public Guid ParentInstrumentId { get; set; }
 
     public ICollection<RecurringTransaction> RecurringTransactions { get; set; } = new HashSet<RecurringTransaction>();
+
+    public void AdjustBalance(decimal newBalance, string source)
+    {
+        var amount = newBalance - Balance;
+
+        Events.Add(new BalanceAdjustmentEvent(this, amount, source));
+    }
 
 
     public RecurringTransaction AddRecurringTransaction(string? description, decimal amount, ScheduleFrequency schedule, DateOnly nextRun)

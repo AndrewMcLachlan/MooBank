@@ -17,7 +17,7 @@ internal class GetAllHandler(IQueryable<DomainLogicalAccount> logicalAccounts, U
             .Include(a => a.InstitutionAccounts)
             .Include(a => a.VirtualInstruments)
             .Include(a => a.TagPurposes)
-            .Apply(new OpenAccessibleSpecification<DomainLogicalAccount>(user.Id, user.FamilyId))
+            .Specify(new OpenAccessibleSpecification<DomainLogicalAccount>(user.Id, user.FamilyId))
             .ToModelAsync(currencyConverter, cancellationToken)).ToList();
 
         var primary = accounts.SingleOrDefault(a => a.Id == user.PrimaryAccountId);

@@ -7,7 +7,7 @@ export const useCloseInstitutionAccount = () => {
 
     const { mutateAsync, ...rest } = useMutation({
         ...closeInstitutionAccountMutation(),
-        onSuccess: () => {
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: getAccountsQueryKey() });
         },
     });

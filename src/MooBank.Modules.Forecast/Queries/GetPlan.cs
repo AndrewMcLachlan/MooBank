@@ -1,4 +1,4 @@
-using Asm.MooBank.Domain;
+﻿using Asm.MooBank.Domain;
 using Asm.MooBank.Domain.Entities.Forecast.Specifications;
 using Asm.MooBank.Modules.Forecast.Models;
 using DomainEntities = Asm.MooBank.Domain.Entities.Forecast;
@@ -12,7 +12,7 @@ internal class GetPlanHandler(IQueryable<DomainEntities.ForecastPlan> plans, Moo
     public async ValueTask<Models.ForecastPlan> Handle(GetPlan query, CancellationToken cancellationToken)
     {
         var plan = await plans
-            .Apply(new ForecastPlanDetailsSpecification())
+            .Specify(new ForecastPlanDetailsSpecification())
             .SingleAsync(p => p.Id == query.Id && p.FamilyId == user.FamilyId, cancellationToken);
 
         return plan.ToModel();

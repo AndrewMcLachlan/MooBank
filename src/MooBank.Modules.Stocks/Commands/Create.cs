@@ -28,15 +28,7 @@ internal class CreateHandler(IStockHoldingRepository repository, IUnitOfWork uni
             await security.AssertGroupPermission(command.GroupId.Value);
         }
 
-        Domain.Entities.StockHolding.StockHolding entity = new(Guid.Empty)
-        {
-            Name = command.Name,
-            Description = command.Description,
-            Symbol = command.Symbol,
-            ShareWithFamily = command.ShareWithFamily,
-            CurrentPrice = command.Price,
-            Controller = Controller.Manual,
-        };
+        var entity = Domain.Entities.StockHolding.StockHolding.Create(command.Name, command.Description, command.Symbol, command.ShareWithFamily, command.Price);
 
         entity.SetAccountHolder(user.Id);
         entity.SetGroup(command.GroupId, user.Id);

@@ -4,10 +4,34 @@ namespace Asm.MooBank.Domain.Entities.Utility;
 
 [Table("Account", Schema = "utilities")]
 [AggregateRoot]
-public class Account(Guid id) : Instrument.Instrument(id)
+public class Account : Instrument.Instrument
 {
-    public Account() : this(Guid.Empty)
+    internal Account(Guid id) : base(id)
     {
+    }
+
+    // For EF materialisation only. Construct through Create.
+    internal Account() : this(Guid.Empty)
+    {
+    }
+
+    public static Account Create(string name, string? description, string currency, bool shareWithFamily, UtilityType utilityType, string accountNumber, int? institutionId)
+    {
+        var account = new Account
+        {
+            Name = name,
+            Description = description,
+            Currency = currency,
+            Controller = Controller.Manual,
+            ShareWithFamily = shareWithFamily,
+            UtilityType = utilityType,
+            AccountNumber = accountNumber,
+            InstitutionId = institutionId,
+        };
+
+        account.MarkCreated();
+
+        return account;
     }
 
     [MaxLength(15)]

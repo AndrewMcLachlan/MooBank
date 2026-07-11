@@ -26,15 +26,7 @@ internal class CreateHandler(IAssetRepository repository, IUnitOfWork unitOfWork
             await security.AssertGroupPermission(command.GroupId.Value);
         }
 
-        Domain.Entities.Asset.Asset entity = new(Guid.Empty)
-        {
-            Value = command.CurrentBalance,
-            Name = command.Name,
-            Description = command.Description,
-            ShareWithFamily = command.ShareWithFamily,
-            PurchasePrice = command.PurchasePrice,
-
-        };
+        var entity = Domain.Entities.Asset.Asset.Create(command.Name, command.Description, command.CurrentBalance, command.ShareWithFamily, command.PurchasePrice);
 
         entity.SetAccountHolder(user.Id);
         entity.SetGroup(command.GroupId, user.Id);

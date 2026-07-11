@@ -12,7 +12,7 @@ export const useImportTransactions = () => {
 
     const { mutateAsync } = useMutation({
         ...importMutation(),
-        onSuccess: () => {
+        onSettled: () => {
             client.invalidateQueries({ queryKey: getAccountsQueryKey() });
         },
     });

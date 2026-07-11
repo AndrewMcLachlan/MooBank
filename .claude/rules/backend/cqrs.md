@@ -66,7 +66,7 @@ internal class GetTransactionHandler(
     public async ValueTask<Transaction> Handle(GetTransaction query, CancellationToken cancellationToken)
     {
         var entity = await transactions
-            .Apply(new TransactionDetailsSpecification())
+            .Specify(new TransactionDetailsSpecification())
             .SingleAsync(t => t.Id == query.Id, cancellationToken);
         return entity.ToModel();
     }

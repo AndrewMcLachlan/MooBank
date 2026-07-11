@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using Asm.MooBank.Domain;
 using Asm.MooBank.Domain.Entities.Forecast.Specifications;
 using Asm.MooBank.Modules.Forecast.Models;
@@ -18,7 +18,7 @@ internal class RunForecastHandler(
     public async ValueTask<ForecastResult> Handle(RunForecast command, CancellationToken cancellationToken)
     {
         var plan = await plans
-            .Apply(new ForecastPlanDetailsSpecification())
+            .Specify(new ForecastPlanDetailsSpecification())
             .SingleAsync(p => p.Id == command.PlanId && p.FamilyId == user.FamilyId, cancellationToken);
 
         return await forecastEngine.Calculate(plan, cancellationToken);

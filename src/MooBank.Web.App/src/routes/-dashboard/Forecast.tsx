@@ -4,6 +4,7 @@ import type { ChartOptions } from "chart.js";
 import { Line } from "react-chartjs-2";
 
 import { useChartColours } from "utils/chartColours";
+import { formatCurrency } from "utils/currency";
 import { WidgetError } from "components/WidgetError";
 import { useForecastPlans } from "../forecast/-hooks/useForecastPlans";
 import { useForecastPlan } from "../forecast/-hooks/useForecastPlan";
@@ -79,7 +80,7 @@ export const ForecastWidget: React.FC = () => {
                 callbacks: {
                     label: (context) => {
                         const value = context.parsed.y;
-                        return `${context.dataset.label}: $${value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                        return `${context.dataset.label}: ${formatCurrency(value)}`;
                     },
                 },
             },
@@ -88,7 +89,7 @@ export const ForecastWidget: React.FC = () => {
             y: {
                 grid: { color: colours.grid },
                 ticks: {
-                    callback: (value) => `$${Number(value).toLocaleString()}`,
+                    callback: (value) => formatCurrency(Number(value), "AUD", 0),
                 },
             },
             x: {

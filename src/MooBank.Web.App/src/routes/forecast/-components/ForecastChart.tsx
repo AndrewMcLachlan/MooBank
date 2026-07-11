@@ -5,6 +5,7 @@ import type {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import type { ForecastMonth } from "api/types.gen";
+import { formatCurrency } from "utils/currency";
 
 
 interface ForecastChartProps {
@@ -50,7 +51,7 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({ months }) => {
                 callbacks: {
                     label: (context) => {
                         const value = context.parsed.y;
-                        return `${context.dataset.label}: $${value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                        return `${context.dataset.label}: ${formatCurrency(value)}`;
                     }
                 }
             }
@@ -58,7 +59,7 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({ months }) => {
         scales: {
             y: {
                 ticks: {
-                    callback: (value) => `$${Number(value).toLocaleString()}`
+                    callback: (value) => formatCurrency(Number(value), "AUD", 0)
                 }
             }
         }

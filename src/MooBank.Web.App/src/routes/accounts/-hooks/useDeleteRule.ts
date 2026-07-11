@@ -4,12 +4,13 @@ import {
     deleteInstrumentRuleMutation,
 } from "api/@tanstack/react-query.gen";
 import type { Rule } from "api/types.gen";
+import { toast } from "@andrewmclachlan/moo-ds";
 
 export const useDeleteRule = () => {
 
     const queryClient = useQueryClient();
 
-    return useMutation({
+    const { mutateAsync, ...rest } = useMutation({
         ...deleteInstrumentRuleMutation(),
         onSuccess: (_data, variables) => {
             const accountId = variables.path?.instrumentId;
@@ -22,4 +23,13 @@ export const useDeleteRule = () => {
             queryClient.setQueryData<Rule[]>(getAllInstrumentRulesQueryKey({ path: { instrumentId: accountId } }), allRules);
         },
     });
+
+    const withToast = (variables: Parameters<typeof mutateAsync>[0]) =>
+        toast.promise(mutateAsync(variables), { pending: "Deleting rule", success: "Rule deleted", error: "Failed to delete rule" });
+
+    return {
+        ...rest,
+        mutate: withToast,
+        mutateAsync: withToast,
+    };
 }

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Button } from "@andrewmclachlan/moo-ds";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "@tanstack/react-router";
@@ -32,18 +32,12 @@ export const BillAccountForm: React.FC = () => {
     };
 
     const form = useForm<CreateBillAccountForm>({
-        defaultValues: {
+        values: {
             currency: user?.currency ?? "AUD",
             shareWithFamily: true,
-        }
+        } as CreateBillAccountForm,
+        resetOptions: { keepDirtyValues: true },
     });
-
-    useEffect(() => {
-        form.reset({
-            currency: user?.currency ?? "AUD",
-            shareWithFamily: true,
-        });
-    }, [form, user]);
 
     return (
         <SectionForm form={form} onSubmit={handleSubmit}>

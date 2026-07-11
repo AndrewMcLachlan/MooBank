@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button, Input, Spinner } from "@andrewmclachlan/moo-ds";
 import { useCreateForecastPlan } from "../-hooks/useCreateForecastPlan";
 import type { LogicalAccount } from "api/types.gen";
+import { formatCurrency } from "utils/currency";
 
 const formatDate = (date: Date) => format(date, "yyyy-MM-dd");
 
@@ -94,7 +95,7 @@ export const CreateForecastPlan: React.FC<CreateForecastPlanProps> = ({ accounts
                         key={account.id}
                         type="checkbox"
                         id={`account-${account.id}`}
-                        label={`${account.name} ($${account.currentBalance.toLocaleString(undefined, { minimumFractionDigits: 2 })})`}
+                        label={`${account.name} (${formatCurrency(account.currentBalance)})`}
                         checked={selectedAccountIds.includes(account.id)}
                         onChange={() => handleAccountToggle(account.id)}
                         className="mb-2"

@@ -15,7 +15,7 @@ export const useCreateTransaction = () => {
         ...createTransactionMutation(),
         onSettled: () => {
             invalidateTransactionLists(queryClient);
-            queryClient.refetchQueries({ queryKey: getAccountsQueryKey() });
+            queryClient.invalidateQueries({ queryKey: getAccountsQueryKey() });
         }
     });
 

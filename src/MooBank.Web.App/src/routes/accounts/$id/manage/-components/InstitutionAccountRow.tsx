@@ -1,6 +1,6 @@
 import { DeleteIcon, Icon } from "@andrewmclachlan/moo-ds";
 import { useAccount } from "components";
-import { formatDate } from "utils/dateFns";
+import { formatDisplayDate } from "utils/dateFns";
 import type { InstitutionAccount, LogicalAccount } from "api/types.gen";
 import React from "react";
 import { useCloseInstitutionAccount } from "../../../-hooks/useCloseInstitutionAccount";
@@ -17,8 +17,8 @@ export const InstitutionAccountRow: React.FC<InstitutionAccountRowProps> = ({ in
         <tr key={institutionAccount.id}>
             <td>{institutions?.find(i => i.id === institutionAccount.institutionId)?.name}</td>
             <td>{institutionAccount.name}</td>
-            <td>{formatDate(institutionAccount.openedDate)}</td>
-            <td>{formatDate(institutionAccount.closedDate)}</td>
+            <td>{formatDisplayDate(institutionAccount.openedDate)}</td>
+            <td>{formatDisplayDate(institutionAccount.closedDate)}</td>
             <td className="row-action">
                 <div hidden={institutionAccount.closedDate !== null}>
                     <Icon icon="pen-to-square" title="Edit Details" onClick={() => onClick(institutionAccount)} />

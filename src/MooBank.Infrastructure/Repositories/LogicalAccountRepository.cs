@@ -1,27 +1,10 @@
 ﻿using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Domain.Entities.Account.Events;
-using Asm.MooBank.Domain.Entities.Instrument.Events;
 using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
 public class LogicalAccountRepository(MooBankContext dataContext, User user) : RepositoryDeleteBase<MooBankContext, LogicalAccount, Guid>(dataContext), ILogicalAccountRepository
 {
-    public LogicalAccount Add(LogicalAccount entity, decimal openingBalance, DateOnly openedDate)
-    {
-        var tracked = base.Add(entity);
-        tracked.Events.Add(new InstrumentCreatedEvent(tracked));
-        tracked.Events.Add(new AccountAddedEvent(tracked, openingBalance, openedDate));
-        return tracked;
-    }
-
-    public override LogicalAccount Update(LogicalAccount entity)
-    {
-        var tracked = base.Update(entity);
-        tracked.Events.Add(new InstrumentUpdatedEvent(tracked));
-        return tracked;
-    }
-
     public override void Delete(Guid id)
     {
         var account = GetById(id).SingleOrDefault() ?? throw new NotFoundException();

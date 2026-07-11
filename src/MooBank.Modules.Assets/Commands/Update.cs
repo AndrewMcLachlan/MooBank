@@ -44,12 +44,7 @@ internal class UpdateHandler(IAssetRepository repository, IUnitOfWork unitOfWork
 
         var entity = await repository.Get(command.AccountId, new IncludeSpecification(), cancellationToken) ?? throw new NotFoundException();
 
-        entity.Value = command.CurrentBalance;
-        entity.Name = command.Name;
-        entity.Description = command.Description;
-        entity.ShareWithFamily = command.ShareWithFamily;
-        entity.PurchasePrice = command.PurchasePrice;
-
+        entity.Update(command.Name, command.Description, command.CurrentBalance, command.ShareWithFamily, command.PurchasePrice);
         entity.SetGroup(command.GroupId, user.Id);
 
         repository.Update(entity);

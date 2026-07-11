@@ -4,6 +4,7 @@ import { BudgetLine } from "./BudgetLine";
 import { NewBudgetLine } from "./NewBudgetLine";
 import { numberOfMonths } from "utils/dateFns";
 import { useTags } from "hooks/useTags";
+import { Amount } from "components/Amount";
 
 export const BudgetTable: React.FC<BudgetTableProps> = ({ title, type, year, lines = [] }) => {
 
@@ -31,7 +32,7 @@ export const BudgetTable: React.FC<BudgetTableProps> = ({ title, type, year, lin
             <tfoot>
                 <tr>
                     <td colSpan={2}>Monthly Average</td>
-                    <td colSpan={3}><span className="amount">{(lines.map(b => b.amount * numberOfMonths(b.month ?? 0)).reduce((total, current) => total + current, 0) / 12).toFixed(2)}</span></td>
+                    <td colSpan={3}><Amount amount={lines.map(b => b.amount * numberOfMonths(b.month ?? 0)).reduce((total, current) => total + current, 0) / 12} minus /></td>
                 </tr>
             </tfoot>
         </SectionTable>

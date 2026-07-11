@@ -4,12 +4,13 @@ import {
     createInstrumentRuleMutation,
 } from "api/@tanstack/react-query.gen";
 import type { Rule } from "api/types.gen";
+import { toast } from "@andrewmclachlan/moo-ds";
 
 export const useCreateRule = () => {
 
     const queryClient = useQueryClient();
 
-    return useMutation({
+    const { mutateAsync, ...rest } = useMutation({
         ...createInstrumentRuleMutation(),
         onMutate: (variables) => {
             const accountId = variables.body?.instrumentId;
@@ -29,4 +30,13 @@ export const useCreateRule = () => {
             queryClient.invalidateQueries({ queryKey: getAllInstrumentRulesQueryKey({ path: { instrumentId: accountId } }) });
         },
     });
+
+    const withToast = (variables: Parameters<typeof mutateAsync>[0]) =>
+        toast.promise(mutateAsync(variables), { pending: "Creating rule", success: "Rule created", error: "Failed to create rule" });
+
+    return {
+        ...rest,
+        mutate: withToast,
+        mutateAsync: withToast,
+    };
 }

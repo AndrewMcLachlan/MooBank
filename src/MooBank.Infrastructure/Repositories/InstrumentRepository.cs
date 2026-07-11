@@ -1,5 +1,4 @@
 ﻿using Asm.MooBank.Domain.Entities.Instrument;
-using Asm.MooBank.Domain.Entities.Instrument.Events;
 using Asm.MooBank.Security;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
@@ -8,20 +7,6 @@ namespace Asm.MooBank.Infrastructure.Repositories;
 // (rules, recurring transactions) where no user is present.
 public class InstrumentRepository(MooBankContext dataContext, IUserDataProvider userDataProvider) : RepositoryDeleteBase<MooBankContext, Instrument, Guid>(dataContext), IInstrumentRepository
 {
-    public override Instrument Add(Instrument entity)
-    {
-        var tracked = base.Add(entity);
-        tracked.Events.Add(new InstrumentCreatedEvent(tracked));
-        return tracked;
-    }
-
-    public override Instrument Update(Instrument entity)
-    {
-        var tracked = base.Update(entity);
-        tracked.Events.Add(new InstrumentUpdatedEvent(tracked));
-        return tracked;
-    }
-
     public override void Delete(Guid id)
     {
         var instrument = Entities.Find(id) ?? throw new NotFoundException();

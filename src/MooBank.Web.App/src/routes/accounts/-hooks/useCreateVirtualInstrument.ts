@@ -12,7 +12,7 @@ export const useCreateVirtualInstrument = () => {
 
     const { mutateAsync, ...rest } = useMutation({
         ...createVirtualInstrumentMutation(),
-        onSuccess: () => {
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: getAccountsQueryKey() });
         }
     });

@@ -1,5 +1,6 @@
 ﻿using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Account.Events;
+using Asm.MooBank.Domain.Entities.Instrument.Events;
 using Asm.MooBank.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,11 +8,16 @@ namespace Asm.MooBank.Domain.Entities.Instrument;
 
 [AggregateRoot]
 [PrimaryKey(nameof(Id))]
-public abstract class Instrument(Guid id) : KeyedEntity<Guid>(id)
+public abstract class Instrument : KeyedEntity<Guid>
 {
     private readonly List<VirtualInstrument> _virtualInstruments = [];
 
-    public Instrument() : this(Guid.Empty)
+    protected Instrument(Guid id) : base(id)
+    {
+    }
+
+    // For EF materialisation only. Construct instruments through the concrete aggregate factories.
+    private Instrument() : this(Guid.Empty)
     {
     }
 
@@ -90,6 +96,10 @@ public abstract class Instrument(Guid id) : KeyedEntity<Guid>(id)
             UserId = currentUserId,
         });
     }
+
+    protected void MarkCreated() => Events.Add(new InstrumentCreatedEvent(this));
+
+    protected void MarkUpdated() => Events.Add(new InstrumentUpdatedEvent(this));
 
     public void AddVirtualInstrument(VirtualInstrument virtualInstrument, decimal openingBalance)
     {
