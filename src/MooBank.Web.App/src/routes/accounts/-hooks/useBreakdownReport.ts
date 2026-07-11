@@ -1,7 +1,7 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { tagBreakdownReportForTagOptions, tagBreakdownReportOptions } from "api/@tanstack/react-query.gen";
 import { formatISODate } from "utils/dateFns";
-import type { transactionTypeFilter } from "store/state";
+import type { transactionTypeFilter } from "models/transactions";
 
 export const useBreakdownReport = (accountId: string, start: Date, end: Date, reportType: transactionTypeFilter, tagId?: number) => {
     const basePath = { accountId, start: start ? formatISODate(start) : "", end: end ? formatISODate(end) : "", reportType: reportType.toLowerCase() as any };

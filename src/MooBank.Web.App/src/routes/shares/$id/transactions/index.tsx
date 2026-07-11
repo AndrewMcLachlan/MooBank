@@ -8,8 +8,10 @@ import { StockHoldingCard } from "./-components/StockHoldingCard";
 import { StockTransactionList } from "./-components/StockTransactionList";
 import { StockHoldingPage } from "../../-components/StockHoldingPage";
 import { useStockHolding } from "../../-components/StockHoldingProvider";
+import { validateStockTransactionSearch } from "./stockTransactionSearch";
 
 export const Route = createFileRoute("/shares/$id/transactions/")({
+    validateSearch: validateStockTransactionSearch,
     component: StockTransactions,
 });
 

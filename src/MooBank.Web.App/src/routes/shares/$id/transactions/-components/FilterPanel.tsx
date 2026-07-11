@@ -1,19 +1,19 @@
 import { Input, Section, Tooltip, useLocalStorage } from "@andrewmclachlan/moo-ds";
 import { useEffect, useState } from "react";
 import { format } from "date-fns/format";
-import { useDispatch } from "react-redux";
 
 import { usePeriodSelector } from "components";
 import { periodOptions } from "models/periodOptions";
-import { StockTransactionsSlice } from "store";
 
 import type { Period } from "models/dateFns";
+import { useStockTransactionSearch } from "../-hooks/useStockTransactionSearch";
 
 export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
 
+    const { setFilter } = useStockTransactionSearch();
+
     const [filterDescription, setFilterDescription] = useLocalStorage("filter-description", "");
     const [period, setPeriod] = useState<Period>({ startDate: null, endDate: null });
-    const dispatch = useDispatch();
 
     const { changePeriod, selectedPeriod, customStart, onCustomStartChange, customEnd, onCustomEndChange } = usePeriodSelector({ instant: true, cacheKey: "period-id", onChange: setPeriod });
 
@@ -21,9 +21,11 @@ export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
         setFilterDescription("");
     };
 
+    // The query is debounced in useStockTransactionSearch, so typing doesn't fire a request per keystroke.
     useEffect(() => {
-        dispatch(StockTransactionsSlice.actions.setTransactionListFilter({ description: filterDescription, transactionType: "", start: period?.startDate?.toISOString(), end: period?.endDate?.toISOString() }));
-    }, [period, filterDescription, window.location.search]);
+        setFilter({ description: filterDescription || undefined, start: period?.startDate?.toISOString(), end: period?.endDate?.toISOString() });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [period, filterDescription]);
 
     const isCustom = selectedPeriod === "-1";
 

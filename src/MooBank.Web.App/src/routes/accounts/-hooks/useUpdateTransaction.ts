@@ -1,24 +1,23 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useSelector } from "react-redux";
 import type { PagedResult } from "@andrewmclachlan/moo-ds";
 import type { Transaction } from "api/types.gen";
 import type { TransactionUpdate } from "models/transactions";
-import type { State } from "store/state";
 import { toast } from "@andrewmclachlan/moo-ds";
 import { updateTransactionMutation } from "api/@tanstack/react-query.gen";
+import { useTransactionSearch } from "../-transactions/hooks/useTransactionSearch";
 import { buildTransactionsQueryKey, invalidateTransactionLists } from "./transactionKeys";
 
 export const useUpdateTransaction = () => {
 
     const queryClient = useQueryClient();
 
-    const { currentPage, pageSize, filter, sortField, sortDirection } = useSelector((state: State) => state.transactions);
+    const { filter, page, pageSize, sortField, sortDirection } = useTransactionSearch();
 
     const { mutateAsync, ...rest } = useMutation({
         ...updateTransactionMutation(),
         onMutate: async (variables) => {
 
-            const queryKey = buildTransactionsQueryKey((variables as any).path!.instrumentId, filter, pageSize, currentPage, sortField, sortDirection);
+            const queryKey = buildTransactionsQueryKey((variables as any).path!.instrumentId, filter, pageSize, page, sortField, sortDirection);
             await queryClient.cancelQueries({ queryKey });
 
             const previous = queryClient.getQueryData<PagedResult<Transaction>>(queryKey);

@@ -11,7 +11,7 @@ import { ReportTypeSelector } from "components/ReportTypeSelector";
 import type { Period } from "models/dateFns";
 import { subtractYear } from "utils/dateFns";
 import { TopTags } from "./-components/TopTags";
-import type { transactionTypeFilter } from "store/state";
+import type { transactionTypeFilter } from "models/transactions";
 import { MiniPeriodSelector } from "components/MiniPeriodSelector";
 import { getPeriod } from "hooks";
 import { differenceInMonths } from "date-fns";

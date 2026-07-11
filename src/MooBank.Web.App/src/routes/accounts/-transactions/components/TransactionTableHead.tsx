@@ -1,16 +1,13 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
 
 import { PaginationTh, SortableTh } from "@andrewmclachlan/moo-ds";
 import type { PaginationProps, SortDirection } from "@andrewmclachlan/moo-ds";
 
-import type { State } from "store/state";
-import { TransactionsSlice } from "store/Transactions";
+import { useTransactionSearch } from "../hooks/useTransactionSearch";
 
 export const TransactionTableHead: React.FC<TransactionTableHeadProps> = ({ compact, ...props }) => {
 
-    const dispatch = useDispatch();
-    const { sortField, sortDirection } = useSelector((state: State) => state.transactions);
+    const { sortField, sortDirection, setSort } = useTransactionSearch();
 
     const sort = (newSortField: string) => {
 
@@ -20,7 +17,7 @@ export const TransactionTableHead: React.FC<TransactionTableHeadProps> = ({ comp
             newSortDirection = sortDirection === "Ascending" ? "Descending" : "Ascending";
         }
 
-        dispatch(TransactionsSlice.actions.setSort([newSortField, newSortDirection]));
+        setSort(newSortField, newSortDirection);
     }
 
     return (

@@ -1,9 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useSelector } from "react-redux";
 import type { PagedResult } from "@andrewmclachlan/moo-ds";
 import type { Transaction, Tag } from "api/types.gen";
-import type { State } from "store/state";
 import { removeTag } from "api/sdk.gen";
+import { useTransactionSearch } from "../-transactions/hooks/useTransactionSearch";
 import { toast } from "@andrewmclachlan/moo-ds";
 import { buildTransactionsQueryKey, invalidateTransactionLists } from "./transactionKeys";
 
@@ -11,14 +10,14 @@ export const useRemoveTransactionTag = () => {
 
     const queryClient = useQueryClient();
 
-    const { currentPage, pageSize, filter, sortField, sortDirection } = useSelector((state: State) => state.transactions);
+    const { filter, page, pageSize, sortField, sortDirection } = useTransactionSearch();
 
     const { mutateAsync } = useMutation({
         mutationFn: (variables: { accountId: string, transactionId: string, tag: Tag }) =>
             removeTag({ path: { instrumentId: variables.accountId, id: variables.transactionId, tagId: variables.tag.id }, throwOnError: true }),
         onMutate: async (variables) => {
 
-            const queryKey = buildTransactionsQueryKey(variables.accountId, filter, pageSize, currentPage, sortField, sortDirection);
+            const queryKey = buildTransactionsQueryKey(variables.accountId, filter, pageSize, page, sortField, sortDirection);
             await queryClient.cancelQueries({ queryKey });
 
             const previous = queryClient.getQueryData<PagedResult<Transaction>>(queryKey);

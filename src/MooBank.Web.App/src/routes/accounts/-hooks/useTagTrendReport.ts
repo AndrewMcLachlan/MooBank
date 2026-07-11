@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { tagTrendReportOptions } from "api/@tanstack/react-query.gen";
 import { formatISODate } from "utils/dateFns";
 import type { TrendReportSettings } from "models/reports";
-import type { transactionTypeFilter } from "store/state";
+import type { transactionTypeFilter } from "models/transactions";
 
 export const useTagTrendReport = (accountId: string, start: Date, end: Date, reportType: transactionTypeFilter, tagId: number, settings: TrendReportSettings) =>
     useQuery({

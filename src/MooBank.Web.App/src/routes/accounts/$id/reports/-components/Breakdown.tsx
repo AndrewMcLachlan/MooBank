@@ -7,7 +7,7 @@ import { Doughnut } from "react-chartjs-2";
 
 import type { Period } from "models/dateFns";
 import { chartColours } from "utils/chartColours";
-import type { transactionTypeFilter } from "store/state";
+import type { transactionTypeFilter } from "models/transactions";
 import type { TagValue } from "api/types.gen";
 
 
