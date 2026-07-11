@@ -5,7 +5,7 @@ using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
-public class LogicalAccountRepository(MooBankContext dataContext, User user) : RepositoryDeleteBase<LogicalAccount, Guid>(dataContext), ILogicalAccountRepository
+public class LogicalAccountRepository(MooBankContext dataContext, User user) : RepositoryDeleteBase<MooBankContext, LogicalAccount, Guid>(dataContext), ILogicalAccountRepository
 {
     public LogicalAccount Add(LogicalAccount entity, decimal openingBalance, DateOnly openedDate)
     {
@@ -20,6 +20,12 @@ public class LogicalAccountRepository(MooBankContext dataContext, User user) : R
         var tracked = base.Update(entity);
         tracked.Events.Add(new InstrumentUpdatedEvent(tracked));
         return tracked;
+    }
+
+    public override void Delete(Guid id)
+    {
+        var account = GetById(id).SingleOrDefault() ?? throw new NotFoundException();
+        account.ClosedDate = DateOnly.FromDateTime(DateTime.UtcNow);
     }
 
     protected override IQueryable<LogicalAccount> GetById(Guid id) => Entities.Include(a => a.Owners).Include(t => t.InstitutionAccounts).ThenInclude(i => i!.Institution).Where(a => a.Id == id && a.Owners.Any(ah => ah.UserId == user.Id || (a.ShareWithFamily && ah.User.FamilyId == user.FamilyId)));

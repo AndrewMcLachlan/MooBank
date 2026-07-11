@@ -17,8 +17,8 @@ public class TestMocks
 
         ForecastRepositoryMock = new Mock<IForecastRepository>();
         ForecastEngineMock = new Mock<IForecastEngine>();
-        ReportRepositoryMock = new Mock<IReportRepository>();
-        ReportRepositoryMock
+        ReportReaderMock = new Mock<IReportReader>();
+        ReportReaderMock
             .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(),
                 It.IsAny<DateOnly>(),
@@ -36,7 +36,7 @@ public class TestMocks
 
     public Mock<IForecastEngine> ForecastEngineMock { get; }
 
-    public Mock<IReportRepository> ReportRepositoryMock { get; }
+    public Mock<IReportReader> ReportReaderMock { get; }
 
     public Mock<IInstrumentRepository> InstrumentRepositoryMock { get; }
 

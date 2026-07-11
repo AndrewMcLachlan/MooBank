@@ -9,11 +9,11 @@ public record GetInOutAverageReport : ReportQuery, IQuery<InOutReport>
     public ReportInterval Interval { get; init; } = ReportInterval.Monthly;
 }
 
-internal class GetInOutAverageReportHandler(IReportRepository repository) : IQueryHandler<GetInOutAverageReport, InOutReport>
+internal class GetInOutAverageReportHandler(IReportReader reportReader) : IQueryHandler<GetInOutAverageReport, InOutReport>
 {
     public async ValueTask<InOutReport> Handle(GetInOutAverageReport request, CancellationToken cancellationToken)
     {
-        var results = await repository.GetCreditDebitAverages(request.AccountId, request.Start, request.End, request.Interval, cancellationToken);
+        var results = await reportReader.GetCreditDebitAverages(request.AccountId, request.Start, request.End, request.Interval, cancellationToken);
 
         return new()
         {

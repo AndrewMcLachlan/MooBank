@@ -1,4 +1,4 @@
-using Asm.Domain;
+﻿using Asm.Domain;
 using Asm.MooBank.Audit;
 using Asm.MooBank.Core.Tests.Support;
 using Asm.MooBank.Domain.Entities.Account;
@@ -23,7 +23,6 @@ namespace Asm.MooBank.Core.Tests.Services;
 public class ImportTransactionsServiceTests
 {
     private readonly Mock<IInstrumentRepository> _instrumentRepositoryMock;
-    private readonly Mock<IRuleRepository> _ruleRepositoryMock;
     private readonly Mock<IImporterFactory> _importerFactoryMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly Mock<IAuditLogger> _auditMock;
@@ -34,7 +33,6 @@ public class ImportTransactionsServiceTests
     public ImportTransactionsServiceTests()
     {
         _instrumentRepositoryMock = new Mock<IInstrumentRepository>();
-        _ruleRepositoryMock = new Mock<IRuleRepository>();
         _importerFactoryMock = new Mock<IImporterFactory>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
         _auditMock = new Mock<IAuditLogger>();
@@ -42,7 +40,6 @@ public class ImportTransactionsServiceTests
         _logger = NullLoggerFactory.Instance.CreateLogger<ImportTransactionsService>();
 
         _unitOfWorkMock.Setup(u => u.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
-        _ruleRepositoryMock.Setup(r => r.GetForInstrument(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync([]);
     }
 
     #region Successful Import
@@ -153,7 +150,7 @@ public class ImportTransactionsServiceTests
         SetupInstrumentRepository(workItem.InstrumentId, instrument);
         SetupImporterFactory(workItem, _importerMock.Object);
         SetupImporterImport(workItem, [transaction]);
-        SetupRuleRepository(workItem.InstrumentId, [rule]);
+        AddRules(instrument, [rule]);
 
         var service = CreateService();
 
@@ -183,7 +180,7 @@ public class ImportTransactionsServiceTests
         SetupInstrumentRepository(workItem.InstrumentId, instrument);
         SetupImporterFactory(workItem, _importerMock.Object);
         SetupImporterImport(workItem, [transaction]);
-        SetupRuleRepository(workItem.InstrumentId, [rule]);
+        AddRules(instrument, [rule]);
 
         var service = CreateService();
 
@@ -213,7 +210,7 @@ public class ImportTransactionsServiceTests
         SetupInstrumentRepository(workItem.InstrumentId, instrument);
         SetupImporterFactory(workItem, _importerMock.Object);
         SetupImporterImport(workItem, [transaction]);
-        SetupRuleRepository(workItem.InstrumentId, [rule]);
+        AddRules(instrument, [rule]);
 
         var service = CreateService();
 
@@ -246,7 +243,7 @@ public class ImportTransactionsServiceTests
         SetupInstrumentRepository(workItem.InstrumentId, instrument);
         SetupImporterFactory(workItem, _importerMock.Object);
         SetupImporterImport(workItem, [transaction]);
-        SetupRuleRepository(workItem.InstrumentId, [rule1, rule2]);
+        AddRules(instrument, [rule1, rule2]);
 
         var service = CreateService();
 
@@ -279,7 +276,7 @@ public class ImportTransactionsServiceTests
         SetupInstrumentRepository(workItem.InstrumentId, instrument);
         SetupImporterFactory(workItem, _importerMock.Object);
         SetupImporterImport(workItem, [transaction]);
-        SetupRuleRepository(workItem.InstrumentId, [rule1, rule2]);
+        AddRules(instrument, [rule1, rule2]);
 
         var service = CreateService();
 
@@ -311,7 +308,7 @@ public class ImportTransactionsServiceTests
         SetupInstrumentRepository(workItem.InstrumentId, instrument);
         SetupImporterFactory(workItem, _importerMock.Object);
         SetupImporterImport(workItem, [transaction]);
-        SetupRuleRepository(workItem.InstrumentId, [rule]);
+        AddRules(instrument, [rule]);
 
         var service = CreateService();
 
@@ -447,7 +444,7 @@ public class ImportTransactionsServiceTests
         var instrument = CreateInstrument(workItem.InstrumentId);
         var transaction = CreateTransaction("Costco Purchase");
         SetupSuccessfulImport(workItem, instrument, [transaction]);
-        SetupRuleRepository(workItem.InstrumentId, []);
+        AddRules(instrument, []);
         var service = CreateService();
 
         // Act
@@ -478,7 +475,7 @@ public class ImportTransactionsServiceTests
         SetupInstrumentRepository(workItem.InstrumentId, instrument);
         SetupImporterFactory(workItem, _importerMock.Object);
         SetupImporterImport(workItem, [transaction]);
-        SetupRuleRepository(workItem.InstrumentId, [rule]);
+        AddRules(instrument, [rule]);
 
         var service = CreateService();
 
@@ -513,7 +510,7 @@ public class ImportTransactionsServiceTests
         SetupInstrumentRepository(workItem.InstrumentId, instrument);
         SetupImporterFactory(workItem, _importerMock.Object);
         SetupImporterImport(workItem, [transaction]);
-        SetupRuleRepository(workItem.InstrumentId, [rule1, rule2, rule3]);
+        AddRules(instrument, [rule1, rule2, rule3]);
 
         var service = CreateService();
 
@@ -546,7 +543,7 @@ public class ImportTransactionsServiceTests
         SetupInstrumentRepository(workItem.InstrumentId, instrument);
         SetupImporterFactory(workItem, _importerMock.Object);
         SetupImporterImport(workItem, [transaction]);
-        SetupRuleRepository(workItem.InstrumentId, [rule]);
+        AddRules(instrument, [rule]);
 
         var service = CreateService();
 
@@ -564,7 +561,6 @@ public class ImportTransactionsServiceTests
     private IImportTransactionsService CreateService() =>
         new ImportTransactionsService(
             _instrumentRepositoryMock.Object,
-            _ruleRepositoryMock.Object,
             _importerFactoryMock.Object,
             _unitOfWorkMock.Object,
             _auditMock.Object,
@@ -600,11 +596,12 @@ public class ImportTransactionsServiceTests
             .ReturnsAsync(new TransactionImportResult(transactions));
     }
 
-    private void SetupRuleRepository(Guid instrumentId, IEnumerable<Rule> rules)
+    private static void AddRules(DomainInstrument instrument, IEnumerable<Rule> rules)
     {
-        _ruleRepositoryMock
-            .Setup(r => r.GetForInstrument(instrumentId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(rules);
+        foreach (var rule in rules)
+        {
+            instrument.Rules.Add(rule);
+        }
     }
 
     private DomainInstrument CreateInstrument(Guid id)

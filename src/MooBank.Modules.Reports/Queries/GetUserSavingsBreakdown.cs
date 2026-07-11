@@ -15,7 +15,7 @@ internal class GetUserSavingsBreakdownHandler(
     IQueryable<LogicalAccount> accounts,
     IQueryable<StockHolding> stockHoldings,
     IQueryable<Asset> assets,
-    IReportRepository repository,
+    IReportReader reportReader,
     IQueryDispatcher queryDispatcher,
     User user) : IQueryHandler<GetUserSavingsBreakdown, UserSavingsBreakdownReport>
 {
@@ -39,7 +39,7 @@ internal class GetUserSavingsBreakdownHandler(
             // movement is lost and single-month ranges always report a zero delta.
             var fetchStart = startMonth.AddMonths(-1);
 
-            var monthlyBalances = await repository.GetMonthlyBalancesForAccounts(nonTransactional.Select(a => a.Id), fetchStart, end, cancellationToken);
+            var monthlyBalances = await reportReader.GetMonthlyBalancesForAccounts(nonTransactional.Select(a => a.Id), fetchStart, end, cancellationToken);
 
             foreach (var account in nonTransactional)
             {

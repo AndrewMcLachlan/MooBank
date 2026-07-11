@@ -55,7 +55,7 @@ public class CreatePlanTests
 
         var handler = new CreatePlanHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.UnitOfWorkMock.Object,
             _mocks.User);
@@ -106,7 +106,7 @@ public class CreatePlanTests
 
         var handler = new CreatePlanHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.UnitOfWorkMock.Object,
             _mocks.User);
@@ -156,7 +156,7 @@ public class CreatePlanTests
 
         var handler = new CreatePlanHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.UnitOfWorkMock.Object,
             _mocks.User);
@@ -202,7 +202,7 @@ public class CreatePlanTests
 
         var handler = new CreatePlanHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.UnitOfWorkMock.Object,
             _mocks.User);
@@ -244,7 +244,7 @@ public class CreatePlanTests
 
         var handler = new CreatePlanHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.UnitOfWorkMock.Object,
             _mocks.User);
@@ -283,7 +283,7 @@ public class CreatePlanTests
             OutgoingStrategy = new OutgoingStrategy { LookbackMonths = 12 },
         };
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitTotals(accountId, It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<CreditDebitTotal>
             {
@@ -297,7 +297,7 @@ public class CreatePlanTests
 
         var handler = new CreatePlanHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.UnitOfWorkMock.Object,
             _mocks.User);
@@ -346,7 +346,7 @@ public class CreatePlanTests
 
         var handler = new CreatePlanHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.UnitOfWorkMock.Object,
             _mocks.User);
@@ -409,7 +409,7 @@ public class CreatePlanTests
 
         var handler = new CreatePlanHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.UnitOfWorkMock.Object,
             _mocks.User);
@@ -460,7 +460,7 @@ public class CreatePlanTests
 
         var handler = new CreatePlanHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.UnitOfWorkMock.Object,
             _mocks.User);
@@ -511,7 +511,7 @@ public class CreatePlanTests
 
         var handler = new CreatePlanHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.UnitOfWorkMock.Object,
             _mocks.User);
@@ -561,7 +561,7 @@ public class CreatePlanTests
 
         var handler = new CreatePlanHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.UnitOfWorkMock.Object,
             _mocks.User);
@@ -608,7 +608,7 @@ public class CreatePlanTests
 
         var handler = new CreatePlanHandler(
             _mocks.ForecastRepositoryMock.Object,
-            _mocks.ReportRepositoryMock.Object,
+            _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.UnitOfWorkMock.Object,
             _mocks.User);

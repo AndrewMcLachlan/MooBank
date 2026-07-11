@@ -2,7 +2,7 @@
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
-internal sealed class TagRepository(MooBankContext dataContext) : RepositoryDeleteBase<Tag, int>(dataContext), ITagRepository
+internal sealed class TagRepository(MooBankContext dataContext) : RepositoryDeleteBase<MooBankContext, Tag, int>(dataContext), ITagRepository
 {
     // Family and soft-delete scoping are applied by the named query filters on Tag.
 
@@ -27,6 +27,12 @@ internal sealed class TagRepository(MooBankContext dataContext) : RepositoryDele
             await GetById(id).Include(t => t.Settings).SingleOrDefaultAsync(cancellationToken);
 
         return tag ?? throw new NotFoundException($"Transaction tag with id {id} was not found");
+    }
+
+    public override void Delete(int id)
+    {
+        var tag = GetById(id).SingleOrDefault() ?? throw new NotFoundException($"Transaction tag with id {id} was not found");
+        Delete(tag);
     }
 
     public override void Delete(Tag tag)

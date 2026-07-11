@@ -44,7 +44,7 @@ public class GetPrincipalVsInterestReportTests
         var accounts = QueryableHelper.CreateAsyncQueryable([CreateAccount(accountId, tagId)]);
         var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId, "Mortgage Interest"));
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyCreditDebitTotals(accountId, start, end, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new[]
             {
@@ -52,7 +52,7 @@ public class GetPrincipalVsInterestReportTests
                 new MonthlyCreditDebitTotal { Month = new DateOnly(2026, 2, 1), TransactionType = TransactionFilterType.Debit, Total = 3000m },
                 new MonthlyCreditDebitTotal { Month = new DateOnly(2026, 3, 1), TransactionType = TransactionFilterType.Debit, Total = 3000m },
             });
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyTotalsForTag(accountId, start, end, TransactionFilterType.Debit, tagId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new[]
             {
@@ -61,7 +61,7 @@ public class GetPrincipalVsInterestReportTests
                 TestEntities.CreateMonthlyTagTotal(new DateOnly(2026, 3, 1), 1400m, 1400m),
             });
 
-        var handler = new GetPrincipalVsInterestReportHandler(_mocks.ReportRepositoryMock.Object, accounts, tags);
+        var handler = new GetPrincipalVsInterestReportHandler(_mocks.ReportReaderMock.Object, accounts, tags);
         var query = new GetPrincipalVsInterestReport { AccountId = accountId, Start = start, End = end };
 
         // Act
@@ -95,7 +95,7 @@ public class GetPrincipalVsInterestReportTests
         var accounts = QueryableHelper.CreateAsyncQueryable([CreateAccount(accountId, interestTagId: null)]);
         var tags = TestEntities.CreateTagQueryable();
 
-        var handler = new GetPrincipalVsInterestReportHandler(_mocks.ReportRepositoryMock.Object, accounts, tags);
+        var handler = new GetPrincipalVsInterestReportHandler(_mocks.ReportReaderMock.Object, accounts, tags);
         var query = new GetPrincipalVsInterestReport { AccountId = accountId, Start = start, End = end };
 
         // Act
@@ -108,10 +108,10 @@ public class GetPrincipalVsInterestReportTests
         Assert.Equal(0m, result.InterestTotal);
         Assert.Equal(0m, result.PrincipalTotal);
 
-        _mocks.ReportRepositoryMock.Verify(
+        _mocks.ReportReaderMock.Verify(
             r => r.GetMonthlyCreditDebitTotals(It.IsAny<Guid>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()),
             Times.Never);
-        _mocks.ReportRepositoryMock.Verify(
+        _mocks.ReportReaderMock.Verify(
             r => r.GetMonthlyTotalsForTag(It.IsAny<Guid>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<TransactionFilterType>(), It.IsAny<int?>(), It.IsAny<CancellationToken>()),
             Times.Never);
     }
@@ -133,14 +133,14 @@ public class GetPrincipalVsInterestReportTests
         var accounts = QueryableHelper.CreateAsyncQueryable([CreateAccount(accountId, tagId)]);
         var tags = TestEntities.CreateTagQueryable(TestEntities.CreateTag(tagId, "Mortgage Interest"));
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyCreditDebitTotals(accountId, start, end, It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyTotalsForTag(accountId, start, end, TransactionFilterType.Debit, tagId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new[] { TestEntities.CreateMonthlyTagTotal(new DateOnly(2026, 1, 1), 500m, 500m) });
 
-        var handler = new GetPrincipalVsInterestReportHandler(_mocks.ReportRepositoryMock.Object, accounts, tags);
+        var handler = new GetPrincipalVsInterestReportHandler(_mocks.ReportReaderMock.Object, accounts, tags);
         var query = new GetPrincipalVsInterestReport { AccountId = accountId, Start = start, End = end };
 
         // Act

@@ -13,7 +13,7 @@ public interface IImportTransactionsService
     Task Import(ImportWorkItem import, CancellationToken cancellationToken = default);
 }
 
-internal class ImportTransactionsService(IInstrumentRepository instrumentRepository, IRuleRepository ruleRepository, IImporterFactory importerFactory, IUnitOfWork unitOfWork, IAuditLogger audit, ILogger<ImportTransactionsService> logger) : IImportTransactionsService
+internal class ImportTransactionsService(IInstrumentRepository instrumentRepository, IImporterFactory importerFactory, IUnitOfWork unitOfWork, IAuditLogger audit, ILogger<ImportTransactionsService> logger) : IImportTransactionsService
 {
     public async Task Import(ImportWorkItem workItem, CancellationToken cancellationToken = default)
     {
@@ -33,7 +33,7 @@ internal class ImportTransactionsService(IInstrumentRepository instrumentReposit
             var importResult = await importer.Import(workItem.InstrumentId, workItem.AccountId, stream, cancellationToken);
             var transactions = importResult.Transactions as IReadOnlyCollection<Domain.Entities.Transactions.Transaction> ?? importResult.Transactions.ToList();
 
-            await ApplyRules(ruleRepository, instrument, transactions, cancellationToken);
+            ApplyRules(instrument, transactions);
 
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -45,9 +45,9 @@ internal class ImportTransactionsService(IInstrumentRepository instrumentReposit
         }
     }
 
-    private static async Task ApplyRules(IRuleRepository ruleRepository, Domain.Entities.Instrument.Instrument instrument, IReadOnlyCollection<Domain.Entities.Transactions.Transaction> transactions, CancellationToken cancellationToken)
+    private static void ApplyRules(Domain.Entities.Instrument.Instrument instrument, IReadOnlyCollection<Domain.Entities.Transactions.Transaction> transactions)
     {
-        var rules = await ruleRepository.GetForInstrument(instrument.Id, cancellationToken);
+        var rules = instrument.Rules.OrderBy(r => r.Contains).ToList();
 
         foreach (var transaction in transactions)
         {

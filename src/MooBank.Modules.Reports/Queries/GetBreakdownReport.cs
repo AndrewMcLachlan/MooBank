@@ -8,11 +8,11 @@ public record GetBreakdownReport : TypedReportQuery, IQuery<BreakdownReport>
     public int? ParentTagId { get; init; } = null;
 }
 
-internal class GetBreakdownReportHandler(IReportRepository reportRepository) : IQueryHandler<GetBreakdownReport, BreakdownReport>
+internal class GetBreakdownReportHandler(IReportReader reportReader) : IQueryHandler<GetBreakdownReport, BreakdownReport>
 {
     public async ValueTask<BreakdownReport> Handle(GetBreakdownReport request, CancellationToken cancellationToken)
     {
-        var tagValues = await reportRepository.GetTransactionTagTotals(request.AccountId, request.Start, request.End, request.ReportType, request.ParentTagId, cancellationToken);
+        var tagValues = await reportReader.GetTransactionTagTotals(request.AccountId, request.Start, request.End, request.ReportType, request.ParentTagId, cancellationToken);
 
         return new()
         {

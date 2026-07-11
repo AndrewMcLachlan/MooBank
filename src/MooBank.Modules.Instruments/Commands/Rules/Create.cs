@@ -29,16 +29,15 @@ internal class CreateHandler(IInstrumentRepository instrumentRepository, ITagRep
     {
         var instrument = await instrumentRepository.Get(request.InstrumentId, cancellationToken);
 
-        var rule = new Domain.Entities.Instrument.Rule
-        {
-            InstrumentId = request.InstrumentId,
-            Contains = request.Contains,
-            Description = request.Description,
-            Tags = [.. (await tagRepository.Get(request.Tags.Select(t => t.Id), cancellationToken))],
-        };
+        // The repository load is family- and soft-delete-scoped, so any id it does not return
+        // is not a tag this user may attach — fail loudly rather than silently dropping it.
+        var requestedTagIds = request.Tags.Select(t => t.Id).ToList();
+        var tags = (await tagRepository.Get(requestedTagIds, cancellationToken)).ToList();
 
+        var missingTagIds = requestedTagIds.Except(tags.Select(t => t.Id)).ToList();
+        if (missingTagIds.Count > 0) throw new NotFoundException($"Tag(s) not found: {String.Join(", ", missingTagIds)}");
 
-        instrument.Rules.Add(rule);
+        var rule = instrument.AddRule(request.Contains, request.Description, tags);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

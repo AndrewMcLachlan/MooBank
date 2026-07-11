@@ -5,7 +5,7 @@ using Microsoft.Data.SqlClient;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
-internal class ReportRepository(MooBankContext mooBankContext) : IReportRepository
+internal class ReportReader(MooBankContext mooBankContext) : IReportReader
 {
     public async Task<IEnumerable<TransactionTagTotal>> GetTransactionTagTotals(Guid accountId, DateOnly startDate, DateOnly endDate, TransactionFilterType filterType, int? rootTagId = null, CancellationToken cancellationToken = default) =>
         await mooBankContext.TransactionTagTotals.FromSqlInterpolated($@"EXEC dbo.GetTransactionTotalsByTag {accountId}, {startDate}, {endDate}, {rootTagId}, {(int)filterType}").AsNoTracking().ToListAsync(cancellationToken);

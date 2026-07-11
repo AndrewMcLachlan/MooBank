@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Modules.Budgets.Queries;
 using Asm.MooBank.Modules.Budgets.Tests.Support;
 
@@ -15,8 +15,8 @@ public class GetLineTests
         var budgetId = Guid.NewGuid();
         var budget = TestEntities.CreateBudget(id: budgetId, year: 2024);
         var line = TestEntities.CreateBudgetLine(id: lineId, budgetId: budgetId, tagId: 1, tagName: "Groceries", amount: 500m);
-        line.Budget = budget;
-        var queryable = TestEntities.CreateBudgetLineQueryable(line);
+        budget.Lines.Add(line);
+        var queryable = TestEntities.CreateBudgetQueryable(budget);
 
         var handler = new GetLineHandler(queryable);
         var query = new GetLine(2024, lineId);
@@ -41,9 +41,9 @@ public class GetLineTests
         var budget = TestEntities.CreateBudget(id: budgetId, year: 2024);
         var line1 = TestEntities.CreateBudgetLine(id: lineId1, budgetId: budgetId, tagId: 1, tagName: "Groceries", amount: 500m);
         var line2 = TestEntities.CreateBudgetLine(id: lineId2, budgetId: budgetId, tagId: 2, tagName: "Rent", amount: 1500m);
-        line1.Budget = budget;
-        line2.Budget = budget;
-        var queryable = TestEntities.CreateBudgetLineQueryable(line1, line2);
+        budget.Lines.Add(line1);
+        budget.Lines.Add(line2);
+        var queryable = TestEntities.CreateBudgetQueryable(budget);
 
         var handler = new GetLineHandler(queryable);
         var query = new GetLine(2024, lineId2);
@@ -65,8 +65,8 @@ public class GetLineTests
         var budgetId = Guid.NewGuid();
         var budget = TestEntities.CreateBudget(id: budgetId, year: 2024);
         var line = TestEntities.CreateBudgetLine(id: lineId, budgetId: budgetId);
-        line.Budget = budget;
-        var queryable = TestEntities.CreateBudgetLineQueryable(line);
+        budget.Lines.Add(line);
+        var queryable = TestEntities.CreateBudgetQueryable(budget);
 
         var handler = new GetLineHandler(queryable);
         var query = new GetLine(2024, nonExistentId);
@@ -83,8 +83,8 @@ public class GetLineTests
         var budgetId = Guid.NewGuid();
         var budget = TestEntities.CreateBudget(id: budgetId, year: 2024);
         var line = TestEntities.CreateBudgetLine(id: lineId, budgetId: budgetId);
-        line.Budget = budget;
-        var queryable = TestEntities.CreateBudgetLineQueryable(line);
+        budget.Lines.Add(line);
+        var queryable = TestEntities.CreateBudgetQueryable(budget);
 
         var handler = new GetLineHandler(queryable);
         var query = new GetLine(2023, lineId); // Wrong year
@@ -101,8 +101,8 @@ public class GetLineTests
         var budgetId = Guid.NewGuid();
         var budget = TestEntities.CreateBudget(id: budgetId, year: 2024);
         var line = TestEntities.CreateBudgetLine(id: lineId, budgetId: budgetId, tagId: 1, tagName: "Salary", income: true, amount: 5000m);
-        line.Budget = budget;
-        var queryable = TestEntities.CreateBudgetLineQueryable(line);
+        budget.Lines.Add(line);
+        var queryable = TestEntities.CreateBudgetQueryable(budget);
 
         var handler = new GetLineHandler(queryable);
         var query = new GetLine(2024, lineId);

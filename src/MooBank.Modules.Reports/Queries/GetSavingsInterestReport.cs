@@ -9,7 +9,7 @@ namespace Asm.MooBank.Modules.Reports.Queries;
 public record GetSavingsInterestReport : ReportQuery, IQuery<SavingsInterestReport>;
 
 internal class GetSavingsInterestReportHandler(
-    IReportRepository repository,
+    IReportReader reportReader,
     IQueryable<LogicalAccount> accounts,
     IQueryable<TagEntity> tags) : IQueryHandler<GetSavingsInterestReport, SavingsInterestReport>
 {
@@ -37,7 +37,7 @@ internal class GetSavingsInterestReportHandler(
             };
         }
 
-        var tagTotals = await repository.GetMonthlyTotalsForTag(
+        var tagTotals = await reportReader.GetMonthlyTotalsForTag(
             request.AccountId,
             request.Start,
             request.End,

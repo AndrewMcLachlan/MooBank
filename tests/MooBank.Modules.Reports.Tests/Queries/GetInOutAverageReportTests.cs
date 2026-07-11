@@ -25,11 +25,11 @@ public class GetInOutAverageReportTests
 
         var averages = TestEntities.CreateSampleCreditDebitAverages();
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitAverages(accountId, start, end, ReportInterval.Monthly, It.IsAny<CancellationToken>()))
             .ReturnsAsync(averages);
 
-        var handler = new GetInOutAverageReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetInOutAverageReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetInOutAverageReport
         {
@@ -64,11 +64,11 @@ public class GetInOutAverageReportTests
             TestEntities.CreateCreditDebitAverage(TransactionFilterType.Debit, 800m),
         };
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitAverages(accountId, start, end, ReportInterval.Monthly, It.IsAny<CancellationToken>()))
             .ReturnsAsync(averages);
 
-        var handler = new GetInOutAverageReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetInOutAverageReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetInOutAverageReport
         {
@@ -100,11 +100,11 @@ public class GetInOutAverageReportTests
             TestEntities.CreateCreditDebitAverage(TransactionFilterType.Debit, 500m),
         };
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitAverages(accountId, start, end, ReportInterval.Monthly, It.IsAny<CancellationToken>()))
             .ReturnsAsync(averages);
 
-        var handler = new GetInOutAverageReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetInOutAverageReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetInOutAverageReport
         {
@@ -129,11 +129,11 @@ public class GetInOutAverageReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitAverages(accountId, start, end, ReportInterval.Monthly, It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
-        var handler = new GetInOutAverageReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetInOutAverageReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetInOutAverageReport
         {
@@ -161,11 +161,11 @@ public class GetInOutAverageReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddYears(-1));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitAverages(accountId, start, end, interval, It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
-        var handler = new GetInOutAverageReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetInOutAverageReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetInOutAverageReport
         {
@@ -179,7 +179,7 @@ public class GetInOutAverageReportTests
         await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
-        _mocks.ReportRepositoryMock.Verify(
+        _mocks.ReportReaderMock.Verify(
             r => r.GetCreditDebitAverages(accountId, start, end, interval, It.IsAny<CancellationToken>()),
             Times.Once);
     }

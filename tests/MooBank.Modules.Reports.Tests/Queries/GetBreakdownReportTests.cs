@@ -26,12 +26,12 @@ public class GetBreakdownReportTests
 
         var tagTotals = TestEntities.CreateSampleTransactionTagTotals();
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetTransactionTagTotals(
                 accountId, start, end, TransactionFilterType.Debit, null, It.IsAny<CancellationToken>()))
             .ReturnsAsync(tagTotals);
 
-        var handler = new GetBreakdownReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetBreakdownReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetBreakdownReport
         {
@@ -61,12 +61,12 @@ public class GetBreakdownReportTests
 
         var tagTotals = TestEntities.CreateSampleTransactionTagTotals();
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetTransactionTagTotals(
                 accountId, start, end, TransactionFilterType.Debit, null, It.IsAny<CancellationToken>()))
             .ReturnsAsync(tagTotals);
 
-        var handler = new GetBreakdownReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetBreakdownReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetBreakdownReport
         {
@@ -92,12 +92,12 @@ public class GetBreakdownReportTests
         var end = DateOnly.FromDateTime(DateTime.Today);
         var parentTagId = 42;
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetTransactionTagTotals(
                 accountId, start, end, TransactionFilterType.Debit, parentTagId, It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
-        var handler = new GetBreakdownReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetBreakdownReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetBreakdownReport
         {
@@ -112,7 +112,7 @@ public class GetBreakdownReportTests
         await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
-        _mocks.ReportRepositoryMock.Verify(
+        _mocks.ReportReaderMock.Verify(
             r => r.GetTransactionTagTotals(
                 accountId, start, end, TransactionFilterType.Debit, parentTagId, It.IsAny<CancellationToken>()),
             Times.Once);
@@ -126,12 +126,12 @@ public class GetBreakdownReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetTransactionTagTotals(
                 accountId, start, end, TransactionFilterType.Debit, null, It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
-        var handler = new GetBreakdownReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetBreakdownReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetBreakdownReport
         {
@@ -156,12 +156,12 @@ public class GetBreakdownReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetTransactionTagTotals(
                 accountId, start, end, TransactionFilterType.Debit, null, It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
-        var handler = new GetBreakdownReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetBreakdownReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetBreakdownReport
         {
@@ -175,7 +175,7 @@ public class GetBreakdownReportTests
         await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
-        _mocks.ReportRepositoryMock.Verify(
+        _mocks.ReportReaderMock.Verify(
             r => r.GetTransactionTagTotals(
                 accountId, start, end, TransactionFilterType.Debit, null, It.IsAny<CancellationToken>()),
             Times.Once);
@@ -189,12 +189,12 @@ public class GetBreakdownReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        _mocks.ReportRepositoryMock
+        _mocks.ReportReaderMock
             .Setup(r => r.GetTransactionTagTotals(
                 accountId, start, end, TransactionFilterType.Credit, null, It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
-        var handler = new GetBreakdownReportHandler(_mocks.ReportRepositoryMock.Object);
+        var handler = new GetBreakdownReportHandler(_mocks.ReportReaderMock.Object);
 
         var query = new GetBreakdownReport
         {
@@ -208,7 +208,7 @@ public class GetBreakdownReportTests
         await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
-        _mocks.ReportRepositoryMock.Verify(
+        _mocks.ReportReaderMock.Verify(
             r => r.GetTransactionTagTotals(
                 accountId, start, end, TransactionFilterType.Credit, null, It.IsAny<CancellationToken>()),
             Times.Once);
