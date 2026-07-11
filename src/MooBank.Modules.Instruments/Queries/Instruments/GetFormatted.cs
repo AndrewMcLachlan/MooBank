@@ -18,17 +18,17 @@ internal class GetFormattedHandler(IQueryable<Domain.Entities.Account.LogicalAcc
         var logicalAccounts1 = await logicalAccounts.Include(a => a.VirtualInstruments)
                                                             .Include(a => a.Owners).ThenInclude(a => a.Group).Include(a => a.Owners).ThenInclude(a => a.User)
                                                             .Include(a => a.Viewers).ThenInclude(a => a.Group).Include(a => a.Viewers).ThenInclude(a => a.User)
-                                      .Apply(new OpenAccessibleSpecification<Domain.Entities.Account.LogicalAccount>(user.Id, user.FamilyId))
+                                      .Specify(new OpenAccessibleSpecification<Domain.Entities.Account.LogicalAccount>(user.Id, user.FamilyId))
                                       .ToListAsync(cancellationToken);
 
         var stockHoldings1 = await stockHoldings.Include(a => a.Owners).ThenInclude(a => a.Group).Include(a => a.Owners).ThenInclude(a => a.User)
                                                 .Include(a => a.Viewers).ThenInclude(a => a.Group).Include(a => a.Viewers).ThenInclude(a => a.User)
-                                      .Apply(new OpenAccessibleSpecification<Domain.Entities.StockHolding.StockHolding>(user.Id, user.FamilyId))
+                                      .Specify(new OpenAccessibleSpecification<Domain.Entities.StockHolding.StockHolding>(user.Id, user.FamilyId))
                                       .ToListAsync(cancellationToken);
 
         var assets1 = await assets.Include(a => a.Owners).ThenInclude(a => a.Group).Include(a => a.Owners).ThenInclude(a => a.User)
                                                 .Include(a => a.Viewers).ThenInclude(a => a.Group).Include(a => a.Viewers).ThenInclude(a => a.User)
-                                      .Apply(new OpenAccessibleSpecification<Domain.Entities.Asset.Asset>(user.Id, user.FamilyId))
+                                      .Specify(new OpenAccessibleSpecification<Domain.Entities.Asset.Asset>(user.Id, user.FamilyId))
                                       .ToListAsync(cancellationToken);
 
         var allGroups = logicalAccounts1.Select(g => g.GetGroup(userId))
