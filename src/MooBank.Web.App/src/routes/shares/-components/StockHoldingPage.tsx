@@ -12,14 +12,16 @@ export const StockHoldingPage: React.FC<PropsWithChildren<StockHoldingPageProps>
 
     const stockHolding = useStockHolding();
 
+    if (!stockHolding) return null;
+
     const navItems: (NavItem | ReactNode)[] = [
-        { route: `/shares/${stockHolding?.id}/transactions`, text: "Transactions", image: <Transaction /> },
-        { route: `/shares/${stockHolding?.id}/reports`, text: "Reports", image: <Reports /> },
-        { route: `/shares/${stockHolding?.id}/manage`, text: "Manage", image: <Sliders /> },
+        { route: `/shares/${stockHolding.id}/transactions`, text: "Transactions", image: <Transaction /> },
+        { route: `/shares/${stockHolding.id}/reports`, text: "Reports", image: <Reports /> },
+        { route: `/shares/${stockHolding.id}/manage`, text: "Manage", image: <Sliders /> },
     ];
 
     return (
-        <InstrumentPage instrument={stockHolding} instrumentRoute={`/shares/${stockHolding?.id}`} instrumentNavItems={navItems} {...props}>
+        <InstrumentPage instrument={stockHolding} instrumentRoute={`/shares/${stockHolding.id}`} instrumentNavItems={navItems} {...props}>
             {children}
         </InstrumentPage>
     )

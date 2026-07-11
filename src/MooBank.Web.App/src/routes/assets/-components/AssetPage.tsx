@@ -11,8 +11,10 @@ export const AssetPage: React.FC<PropsWithChildren<AssetPageProps>> = ({ childre
 
     const asset = useAsset();
 
+    if (!asset) return null;
+
     return (
-        <InstrumentPage instrument={asset} instrumentRoute={`/assets/${asset?.id}`} instrumentNavItems={[{ route: `/assets/${asset?.id}/manage`, text: "Manage", image: <Sliders /> }]} {...props}>
+        <InstrumentPage instrument={asset} instrumentRoute={`/assets/${asset.id}`} instrumentNavItems={[{ route: `/assets/${asset.id}/manage`, text: "Manage", image: <Sliders /> }]} {...props}>
             {children}
         </InstrumentPage>
     )
