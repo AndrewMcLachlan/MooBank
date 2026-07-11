@@ -41,6 +41,8 @@ internal class CreateHandler(IUnitOfWork unitOfWork, Domain.Entities.Utility.IAc
 
         entity.SetAccountHolder(user.Id);
 
+        entity.MarkCreated();
+
         accountRepository.Add(entity);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);

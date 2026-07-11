@@ -1,11 +1,7 @@
-﻿using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Domain.Entities.Budget;
-using Asm.MooBank.Domain.Entities.TagRelationships;
+﻿using Asm.MooBank.Domain.Entities.Budget;
 using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Budgets.Models;
 using Asm.MooBank.Modules.Budgets.Services;
 using DomainBudgetLine = Asm.MooBank.Domain.Entities.Budget.BudgetLine;
-using Transaction = Asm.MooBank.Domain.Entities.Transactions.Transaction;
 
 namespace Asm.MooBank.Modules.Budgets.Commands;
 
@@ -20,12 +16,8 @@ public record GenerateBudget(short Year) : ICommand<Models.Budget>;
 /// year get a line.
 /// </summary>
 internal class GenerateBudgetHandler(
-    IQueryable<Domain.Entities.Budget.Budget> budgets,
-    IQueryable<LogicalAccount> accounts,
-    IQueryable<Transaction> transactions,
-    IQueryable<Domain.Entities.Tag.Tag> tags,
-    IQueryable<TagRelationship> tagRelationships,
     IBudgetRepository budgetRepository,
+    IBudgetGenerationReader reader,
     IUnitOfWork unitOfWork,
     User user) : ICommandHandler<GenerateBudget, Models.Budget>
 {
@@ -36,33 +28,19 @@ internal class GenerateBudgetHandler(
         // Security: family-scoped via the user; year is the only input (as with CreateLine).
         var budget = await budgetRepository.GetOrCreate(user.FamilyId, request.Year, cancellationToken);
 
-        var existingBudget = await budgets
-            .Include(b => b.Lines)
-            .SingleOrDefaultAsync(b => b.FamilyId == user.FamilyId && b.Year == request.Year, cancellationToken);
-        var existingTagIds = existingBudget?.Lines.Select(l => l.TagId).ToHashSet() ?? [];
+        var existingTagIds = await reader.GetExistingLineTagIds(user.FamilyId, request.Year, cancellationToken);
 
         // Rollup targets: the levels at which budget lines are generated. Spend rolls up to
         // the nearest target ancestor. A tag is a target if it's marked as a budget category,
         // OR if the family has budgeted it before — so areas without an explicit category
         // still roll up to the level they're used to (as before tag settings existed), and
         // marking a tag simply adds or forces a rollup level.
-        var rollupTargets = (await tags
-            .Where(t => t.Settings.BudgetCategory)
-            .Select(t => t.Id)
-            .ToListAsync(cancellationToken)).ToHashSet();
+        var rollupTargets = await reader.GetBudgetCategoryTagIds(cancellationToken);
 
-        var budgetedTagIds = await budgets
-            .Where(b => b.FamilyId == user.FamilyId)
-            .SelectMany(b => b.Lines)
-            .Select(l => l.TagId)
-            .Distinct()
-            .ToListAsync(cancellationToken);
+        var budgetedTagIds = await reader.GetBudgetedTagIds(user.FamilyId, cancellationToken);
         rollupTargets.UnionWith(budgetedTagIds);
 
-        var budgetAccounts = await accounts
-            .Where(a => a.IncludeInBudget && user.Accounts.Contains(a.Id))
-            .Select(a => a.Id)
-            .ToArrayAsync(cancellationToken);
+        var budgetAccounts = await reader.GetBudgetAccountIds(user.Accounts, cancellationToken);
 
         if (budgetAccounts.Length != 0)
         {
@@ -79,34 +57,15 @@ internal class GenerateBudgetHandler(
             // entirely (mirrors the report's net-of-offsets via TransactionNetAmount, the
             // same DB function Report.cs uses), so offsetting entries don't inflate the
             // budget. Split-level offsets reduce the split they apply to.
-            var rows = await transactions
-                .Where(t => budgetAccounts.Contains(t.AccountId) && !t.ExcludeFromReporting &&
-                            t.TransactionTime >= startTime && t.TransactionTime < endTime &&
-                            Transaction.TransactionNetAmount(t.TransactionType, t.Id, t.Amount) != 0m)
-                .SelectMany(t => t.Splits.SelectMany(s => s.Tags.Select(tag => new
-                {
-                    t.TransactionTime.Year,
-                    t.TransactionTime.Month,
-                    TagId = tag.Id,
-                    Net = (t.TransactionType == TransactionType.Credit ? 1m : -1m) * (s.Amount - s.OffsetBy.Sum(o => o.Amount)),
-                })))
-                .ToListAsync(cancellationToken);
+            var rows = await reader.GetTransactionRows(budgetAccounts, startTime, endTime, cancellationToken);
 
-            var excludedTagIds = await tags
-                .Where(t => t.Settings.ExcludeFromReporting)
-                .Select(t => t.Id)
-                .ToListAsync(cancellationToken);
-            var excluded = excludedTagIds.ToHashSet();
+            var excluded = await reader.GetExcludedTagIds(cancellationToken);
 
             // Ancestors of each tag, from the TagHierarchies closure view: a row's Id is the
             // tag and ParentId is an ancestor (every ancestor is listed, not just the direct
             // parent). Ordinal runs topmost-first, so order ancestors nearest-first (highest
             // ordinal) to find the closest budget-category ancestor.
-            var ancestorsOf = (await tagRelationships
-                    .Select(r => new { r.Id, r.ParentId, r.Ordinal })
-                    .ToListAsync(cancellationToken))
-                .GroupBy(r => r.Id)
-                .ToDictionary(g => g.Key, g => g.OrderByDescending(x => x.Ordinal).Select(x => x.ParentId).ToList());
+            var ancestorsOf = await reader.GetTagAncestors(cancellationToken);
 
             // Roll a tag up to the nearest ancestor (including the tag itself) that is a
             // rollup target. If neither the tag nor any ancestor is a target, keep it as
@@ -166,11 +125,6 @@ internal class GenerateBudgetHandler(
         }
 
         // Re-read so the returned model reflects every line (existing + generated) with tags.
-        var result = await budgets
-            .Include(b => b.Lines).ThenInclude(l => l.Tag)
-            .IgnoreQueryFilters(["SoftDelete"])
-            .SingleAsync(b => b.FamilyId == user.FamilyId && b.Year == request.Year, cancellationToken);
-
-        return result.ToModel();
+        return await reader.GetGeneratedBudget(user.FamilyId, request.Year, cancellationToken);
     }
 }

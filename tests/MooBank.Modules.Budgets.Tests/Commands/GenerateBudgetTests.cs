@@ -3,6 +3,7 @@ using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Budgets.Commands;
+using Asm.MooBank.Modules.Budgets.Services;
 using Asm.MooBank.Modules.Budgets.Tests.Support;
 using DomainBudgetLine = Asm.MooBank.Domain.Entities.Budget.BudgetLine;
 using DomainTag = Asm.MooBank.Domain.Entities.Tag.Tag;
@@ -75,8 +76,8 @@ public class GenerateBudgetTests : IDisposable
             .Callback<DomainBudgetLine, CancellationToken>((l, _) => { l.Tag = TestEntities.CreateTag(l.TagId, "Groceries"); captured.Add(l); })
             .Returns<DomainBudgetLine, CancellationToken>((l, _) => Task.FromResult(l));
 
-        var handler = new GenerateBudgetHandler(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable,
-            relationshipQueryable, _mocks.BudgetRepositoryMock.Object, _mocks.UnitOfWorkMock.Object, _mocks.User);
+        var reader = new BudgetGenerationReader(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable, relationshipQueryable);
+        var handler = new GenerateBudgetHandler(_mocks.BudgetRepositoryMock.Object, reader, _mocks.UnitOfWorkMock.Object, _mocks.User);
 
         // Act
         await handler.Handle(new GenerateBudget(2026), TestContext.Current.CancellationToken);
@@ -116,8 +117,8 @@ public class GenerateBudgetTests : IDisposable
             .Setup(r => r.GetOrCreate(familyId, (short)2026, It.IsAny<CancellationToken>()))
             .ReturnsAsync(budget);
 
-        var handler = new GenerateBudgetHandler(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable,
-            relationshipQueryable, _mocks.BudgetRepositoryMock.Object, _mocks.UnitOfWorkMock.Object, _mocks.User);
+        var reader = new BudgetGenerationReader(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable, relationshipQueryable);
+        var handler = new GenerateBudgetHandler(_mocks.BudgetRepositoryMock.Object, reader, _mocks.UnitOfWorkMock.Object, _mocks.User);
 
         // Act
         await handler.Handle(new GenerateBudget(2026), TestContext.Current.CancellationToken);
@@ -150,8 +151,8 @@ public class GenerateBudgetTests : IDisposable
             .Setup(r => r.GetOrCreate(familyId, (short)2026, It.IsAny<CancellationToken>()))
             .ReturnsAsync(budget);
 
-        var handler = new GenerateBudgetHandler(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable,
-            relationshipQueryable, _mocks.BudgetRepositoryMock.Object, _mocks.UnitOfWorkMock.Object, _mocks.User);
+        var reader = new BudgetGenerationReader(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable, relationshipQueryable);
+        var handler = new GenerateBudgetHandler(_mocks.BudgetRepositoryMock.Object, reader, _mocks.UnitOfWorkMock.Object, _mocks.User);
 
         // Act
         await handler.Handle(new GenerateBudget(2026), TestContext.Current.CancellationToken);
@@ -191,8 +192,8 @@ public class GenerateBudgetTests : IDisposable
             .Callback<DomainBudgetLine, CancellationToken>((l, _) => { l.Tag = TestEntities.CreateTag(l.TagId, "Shopping"); captured.Add(l); })
             .Returns<DomainBudgetLine, CancellationToken>((l, _) => Task.FromResult(l));
 
-        var handler = new GenerateBudgetHandler(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable,
-            relationshipQueryable, _mocks.BudgetRepositoryMock.Object, _mocks.UnitOfWorkMock.Object, _mocks.User);
+        var reader = new BudgetGenerationReader(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable, relationshipQueryable);
+        var handler = new GenerateBudgetHandler(_mocks.BudgetRepositoryMock.Object, reader, _mocks.UnitOfWorkMock.Object, _mocks.User);
 
         // Act
         await handler.Handle(new GenerateBudget(2026), TestContext.Current.CancellationToken);
@@ -233,8 +234,8 @@ public class GenerateBudgetTests : IDisposable
             .Callback<DomainBudgetLine, CancellationToken>((l, _) => { l.Tag = TestEntities.CreateTag(l.TagId, "Salary"); captured.Add(l); })
             .Returns<DomainBudgetLine, CancellationToken>((l, _) => Task.FromResult(l));
 
-        var handler = new GenerateBudgetHandler(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable,
-            relationshipQueryable, _mocks.BudgetRepositoryMock.Object, _mocks.UnitOfWorkMock.Object, _mocks.User);
+        var reader = new BudgetGenerationReader(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable, relationshipQueryable);
+        var handler = new GenerateBudgetHandler(_mocks.BudgetRepositoryMock.Object, reader, _mocks.UnitOfWorkMock.Object, _mocks.User);
 
         // Act
         await handler.Handle(new GenerateBudget(2026), TestContext.Current.CancellationToken);
@@ -290,8 +291,8 @@ public class GenerateBudgetTests : IDisposable
             .Callback<DomainBudgetLine, CancellationToken>((l, _) => { l.Tag = TestEntities.CreateTag(l.TagId, "House Insurance"); captured.Add(l); })
             .Returns<DomainBudgetLine, CancellationToken>((l, _) => Task.FromResult(l));
 
-        var handler = new GenerateBudgetHandler(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable,
-            relationshipQueryable, _mocks.BudgetRepositoryMock.Object, _mocks.UnitOfWorkMock.Object, _mocks.User);
+        var reader = new BudgetGenerationReader(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable, relationshipQueryable);
+        var handler = new GenerateBudgetHandler(_mocks.BudgetRepositoryMock.Object, reader, _mocks.UnitOfWorkMock.Object, _mocks.User);
 
         // Act
         await handler.Handle(new GenerateBudget(2026), TestContext.Current.CancellationToken);
@@ -337,8 +338,8 @@ public class GenerateBudgetTests : IDisposable
             .Callback<DomainBudgetLine, CancellationToken>((l, _) => { l.Tag = TestEntities.CreateTag(l.TagId, "Insurance"); captured.Add(l); })
             .Returns<DomainBudgetLine, CancellationToken>((l, _) => Task.FromResult(l));
 
-        var handler = new GenerateBudgetHandler(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable,
-            rels, _mocks.BudgetRepositoryMock.Object, _mocks.UnitOfWorkMock.Object, _mocks.User);
+        var reader = new BudgetGenerationReader(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable, rels);
+        var handler = new GenerateBudgetHandler(_mocks.BudgetRepositoryMock.Object, reader, _mocks.UnitOfWorkMock.Object, _mocks.User);
 
         // Act
         await handler.Handle(new GenerateBudget(2026), TestContext.Current.CancellationToken);
@@ -386,8 +387,8 @@ public class GenerateBudgetTests : IDisposable
             .Callback<DomainBudgetLine, CancellationToken>((l, _) => { l.Tag = TestEntities.CreateTag(l.TagId, "Tag"); captured.Add(l); })
             .Returns<DomainBudgetLine, CancellationToken>((l, _) => Task.FromResult(l));
 
-        var handler = new GenerateBudgetHandler(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable,
-            rels, _mocks.BudgetRepositoryMock.Object, _mocks.UnitOfWorkMock.Object, _mocks.User);
+        var reader = new BudgetGenerationReader(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable, rels);
+        var handler = new GenerateBudgetHandler(_mocks.BudgetRepositoryMock.Object, reader, _mocks.UnitOfWorkMock.Object, _mocks.User);
 
         // Act
         await handler.Handle(new GenerateBudget(2026), TestContext.Current.CancellationToken);
@@ -430,8 +431,8 @@ public class GenerateBudgetTests : IDisposable
             .Callback<DomainBudgetLine, CancellationToken>((l, _) => { l.Tag = TestEntities.CreateTag(l.TagId, "Medical"); captured.Add(l); })
             .Returns<DomainBudgetLine, CancellationToken>((l, _) => Task.FromResult(l));
 
-        var handler = new GenerateBudgetHandler(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable,
-            rels, _mocks.BudgetRepositoryMock.Object, _mocks.UnitOfWorkMock.Object, _mocks.User);
+        var reader = new BudgetGenerationReader(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable, rels);
+        var handler = new GenerateBudgetHandler(_mocks.BudgetRepositoryMock.Object, reader, _mocks.UnitOfWorkMock.Object, _mocks.User);
 
         // Act
         await handler.Handle(new GenerateBudget(2026), TestContext.Current.CancellationToken);
@@ -477,8 +478,8 @@ public class GenerateBudgetTests : IDisposable
             .Callback<DomainBudgetLine, CancellationToken>((l, _) => { l.Tag = TestEntities.CreateTag(l.TagId, "Insurance"); captured.Add(l); })
             .Returns<DomainBudgetLine, CancellationToken>((l, _) => Task.FromResult(l));
 
-        var handler = new GenerateBudgetHandler(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable,
-            rels, _mocks.BudgetRepositoryMock.Object, _mocks.UnitOfWorkMock.Object, _mocks.User);
+        var reader = new BudgetGenerationReader(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable, rels);
+        var handler = new GenerateBudgetHandler(_mocks.BudgetRepositoryMock.Object, reader, _mocks.UnitOfWorkMock.Object, _mocks.User);
 
         // Act
         await handler.Handle(new GenerateBudget(2026), TestContext.Current.CancellationToken);
@@ -527,8 +528,8 @@ public class GenerateBudgetTests : IDisposable
             .Callback<DomainBudgetLine, CancellationToken>((l, _) => { l.Tag = TestEntities.CreateTag(l.TagId, "Medical"); captured.Add(l); })
             .Returns<DomainBudgetLine, CancellationToken>((l, _) => Task.FromResult(l));
 
-        var handler = new GenerateBudgetHandler(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable,
-            rels, _mocks.BudgetRepositoryMock.Object, _mocks.UnitOfWorkMock.Object, _mocks.User);
+        var reader = new BudgetGenerationReader(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable, rels);
+        var handler = new GenerateBudgetHandler(_mocks.BudgetRepositoryMock.Object, reader, _mocks.UnitOfWorkMock.Object, _mocks.User);
 
         // Act
         await handler.Handle(new GenerateBudget(2026), TestContext.Current.CancellationToken);

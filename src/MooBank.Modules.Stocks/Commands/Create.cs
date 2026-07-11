@@ -41,6 +41,8 @@ internal class CreateHandler(IStockHoldingRepository repository, IUnitOfWork uni
         entity.SetAccountHolder(user.Id);
         entity.SetGroup(command.GroupId, user.Id);
 
+        entity.MarkCreated();
+
         repository.Add(entity);
 
         // TODO: Move to domain event

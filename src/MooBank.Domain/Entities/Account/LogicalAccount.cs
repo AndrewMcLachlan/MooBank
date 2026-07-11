@@ -1,4 +1,5 @@
-﻿using Asm.MooBank.Domain.Entities.Instrument;
+﻿using Asm.MooBank.Domain.Entities.Account.Events;
+using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Domain.Entities.Account;
@@ -35,6 +36,12 @@ public class LogicalAccount(Guid id, IEnumerable<InstitutionAccount> institution
     public void AddInstitutionAccount(InstitutionAccount institutionAccount)
     {
         _institutionAccounts.Add(institutionAccount);
+    }
+
+    public void Open(decimal openingBalance, DateOnly openedDate)
+    {
+        MarkCreated();
+        Events.Add(new AccountAddedEvent(this, openingBalance, openedDate));
     }
 
     public override Group.Group? GetGroup(Guid user) =>

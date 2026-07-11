@@ -167,11 +167,9 @@ public class LogicalAccountRepositoryTests : IDisposable
         var user = CreateUser();
         var repository = new LogicalAccountRepository(_context, user);
         var account = CreateLogicalAccount(Guid.NewGuid(), "New Account");
-        var openingBalance = 1000m;
-        var openedDate = DateOnly.FromDateTime(DateTime.Today);
 
         // Act
-        repository.Add(account, openingBalance, openedDate);
+        repository.Add(account);
         await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Assert
@@ -182,46 +180,42 @@ public class LogicalAccountRepositoryTests : IDisposable
 
     /// <summary>
     /// Given a new logical account
-    /// When Add is called
+    /// When Open is called
     /// Then InstrumentCreatedEvent should be raised
     /// </summary>
     [Fact]
-    [Trait("Category", "Integration")]
-    public void Add_NewAccount_RaisesInstrumentCreatedEvent()
+    [Trait("Category", "Unit")]
+    public void Open_NewAccount_RaisesInstrumentCreatedEvent()
     {
         // Arrange
-        var user = CreateUser();
-        var repository = new LogicalAccountRepository(_context, user);
         var account = CreateLogicalAccount(Guid.NewGuid(), "Event Test");
 
         // Act
-        var trackedAccount = repository.Add(account, 500m, DateOnly.FromDateTime(DateTime.Today));
+        account.Open(500m, DateOnly.FromDateTime(DateTime.Today));
 
-        // Assert - Check events before SaveChangesAsync as events are transient
-        Assert.Contains(trackedAccount.Events, e => e is InstrumentCreatedEvent);
+        // Assert
+        Assert.Contains(account.Events, e => e is InstrumentCreatedEvent);
     }
 
     /// <summary>
     /// Given a new logical account
-    /// When Add is called
+    /// When Open is called
     /// Then AccountAddedEvent should be raised with correct values
     /// </summary>
     [Fact]
-    [Trait("Category", "Integration")]
-    public void Add_NewAccount_RaisesAccountAddedEvent()
+    [Trait("Category", "Unit")]
+    public void Open_NewAccount_RaisesAccountAddedEvent()
     {
         // Arrange
-        var user = CreateUser();
-        var repository = new LogicalAccountRepository(_context, user);
         var account = CreateLogicalAccount(Guid.NewGuid(), "Balance Event Test");
         var openingBalance = 2500m;
         var openedDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-30));
 
         // Act
-        var trackedAccount = repository.Add(account, openingBalance, openedDate);
+        account.Open(openingBalance, openedDate);
 
-        // Assert - Check events before SaveChangesAsync as events are transient
-        var accountAddedEvent = trackedAccount.Events.OfType<AccountAddedEvent>().SingleOrDefault();
+        // Assert
+        var accountAddedEvent = account.Events.OfType<AccountAddedEvent>().SingleOrDefault();
         Assert.NotNull(accountAddedEvent);
         Assert.Equal(openingBalance, accountAddedEvent.OpeningBalance);
         Assert.Equal(openedDate, accountAddedEvent.OpenedDate);
@@ -262,31 +256,21 @@ public class LogicalAccountRepositoryTests : IDisposable
 
     /// <summary>
     /// Given an existing logical account
-    /// When Update is called
+    /// When MarkUpdated is called
     /// Then InstrumentUpdatedEvent should be raised
     /// </summary>
     [Fact]
-    [Trait("Category", "Integration")]
-    public async Task Update_ExistingAccount_RaisesInstrumentUpdatedEvent()
+    [Trait("Category", "Unit")]
+    public void MarkUpdated_ExistingAccount_RaisesInstrumentUpdatedEvent()
     {
         // Arrange
-        var accountId = Guid.NewGuid();
-        var account = CreateLogicalAccount(accountId, "Update Event Test");
-        _context.Set<LogicalAccount>().Add(account);
-        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
-
-        // Clear events from initial add
-        account.Events.Clear();
-
-        var user = CreateUser();
-        var repository = new LogicalAccountRepository(_context, user);
+        var account = CreateLogicalAccount(Guid.NewGuid(), "Update Event Test");
 
         // Act
-        account.Name = "Updated";
-        var trackedAccount = repository.Update(account);
+        account.MarkUpdated();
 
         // Assert
-        Assert.Contains(trackedAccount.Events, e => e is InstrumentUpdatedEvent);
+        Assert.Contains(account.Events, e => e is InstrumentUpdatedEvent);
     }
 
     /// <summary>

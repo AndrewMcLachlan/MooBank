@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using Asm.MooBank.Domain.Entities.Account.Specifications;
-using Asm.MooBank.Domain.Entities.Instrument.Events;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Instruments.Models.Instruments;
 using Asm.MooBank.Services;
@@ -38,11 +37,9 @@ internal class UpdateHandler(IInstrumentRepository instrumentRepository, IUnitOf
         instrument.Name = command.Name;
         instrument.Description = command.Description;
 
-        var amount = command.CurrentBalance - instrument.Balance;
-
-        if (amount != 0)
+        if (command.CurrentBalance != instrument.Balance)
         {
-            instrument.Events.Add(new BalanceAdjustmentEvent(instrument, amount, "Web"));
+            instrument.AdjustBalance(command.CurrentBalance, "Web");
         }
 
         await unitOfWork.SaveChangesAsync(cancellationToken);

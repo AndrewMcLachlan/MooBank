@@ -64,7 +64,9 @@ internal class CreateHandler(ILogicalAccountRepository institutionAccountReposit
         entity.SetAccountHolder(user.Id);
         entity.SetGroup(command.GroupId, user.Id);
 
-        entity = _accountRepository.Add(entity, command.Balance, command.OpenedDate ?? DateOnly.FromDateTime(DateTime.UtcNow));
+        entity.Open(command.Balance, command.OpenedDate ?? DateOnly.FromDateTime(DateTime.UtcNow));
+
+        _accountRepository.Add(entity);
 
         await unitOfWork.SaveChangesAsync("Created", "Account", entity.Id, cancellationToken);
 

@@ -39,6 +39,8 @@ internal class CreateHandler(IAssetRepository repository, IUnitOfWork unitOfWork
         entity.SetAccountHolder(user.Id);
         entity.SetGroup(command.GroupId, user.Id);
 
+        entity.MarkCreated();
+
         repository.Add(entity);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);

@@ -1,5 +1,6 @@
 ﻿using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Account.Events;
+using Asm.MooBank.Domain.Entities.Instrument.Events;
 using Asm.MooBank.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -90,6 +91,10 @@ public abstract class Instrument(Guid id) : KeyedEntity<Guid>(id)
             UserId = currentUserId,
         });
     }
+
+    public void MarkCreated() => Events.Add(new InstrumentCreatedEvent(this));
+
+    public void MarkUpdated() => Events.Add(new InstrumentUpdatedEvent(this));
 
     public void AddVirtualInstrument(VirtualInstrument virtualInstrument, decimal openingBalance)
     {

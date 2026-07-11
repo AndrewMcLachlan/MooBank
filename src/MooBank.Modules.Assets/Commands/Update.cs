@@ -52,6 +52,8 @@ internal class UpdateHandler(IAssetRepository repository, IUnitOfWork unitOfWork
 
         entity.SetGroup(command.GroupId, user.Id);
 
+        entity.MarkUpdated();
+
         repository.Update(entity);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
