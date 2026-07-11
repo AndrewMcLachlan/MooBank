@@ -14,6 +14,6 @@ export const useRunRules = () => {
     return {
         ...rest,
         mutate: (variables: { path: { instrumentId: string } }) =>
-            toast.promise(mutateAsync(variables as any), { pending: "Queuing rules", success: "Rules queued", error: "Failed to queue rules" }),
+            toast.promise(mutateAsync(variables as any), { pending: "Running rules", success: "Rule run started", error: "Failed to run rules" }),
     };
 };
