@@ -12,9 +12,10 @@ interface ForecastSettingsProps {
     plan?: ForecastPlan;
     monthlyExpenses?: number;
     regression?: RegressionDiagnostics;
+    currencyCode: string;
 }
 
-export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthlyExpenses, regression }) => {
+export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthlyExpenses, regression, currencyCode }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [name, setName] = useState(plan?.name);
     const [startDate, setStartDate] = useState(plan?.startDate);
@@ -104,7 +105,7 @@ export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthl
                         <div className="settings-item">
                             <div className="settings-label">Monthly Income</div>
                             <div className="settings-value">
-                                <Amount amount={plan?.incomeStrategy?.manualRecurring?.amount ?? 0} currencyCode="AUD" minus />
+                                <Amount amount={plan?.incomeStrategy?.manualRecurring?.amount ?? 0} currencyCode={currencyCode} minus />
                             </div>
                         </div>
                     </Col>
@@ -112,7 +113,7 @@ export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthl
                         <div className="settings-item">
                             <div className="settings-label">Monthly Expenses</div>
                             <div className="settings-value">
-                                <Amount amount={monthlyExpenses ?? 0} currencyCode="AUD" minus />
+                                <Amount amount={monthlyExpenses ?? 0} currencyCode={currencyCode} minus />
                             </div>
                             <div className="settings-sublabel">
                                 {plan?.outgoingStrategy?.mode === "IncomeCorrelated" && regression && !regression.fellBackToFlatAverage ? (

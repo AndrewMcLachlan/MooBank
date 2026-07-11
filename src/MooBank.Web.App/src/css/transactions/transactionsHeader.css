@@ -54,12 +54,19 @@
         margin-top: 6px;
     }
 
+    .hero-balance-local {
+        font-size: 1.5rem;
+        letter-spacing: -1.8px;
+        margin-top: 6px;
+        font-weight: 600;
+    }
+
     .hero-subline {
-        font-size: 12px;
+        font-size: 0.8rem;
         color: var(--body-colour-dim);
         margin-top: 6px;
 
-        .strong { color: var(--body-colour); }
+        strong { color: var(--body-colour); font-weight: normal; }
         .sep { margin: 0 8px; opacity: 0.4; }
     }
 

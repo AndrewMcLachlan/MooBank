@@ -6,6 +6,7 @@ import { Line } from "react-chartjs-2";
 import { useChartColours } from "utils/chartColours";
 import { formatCurrency } from "utils/currency";
 import { WidgetError } from "components/WidgetError";
+import { useUser } from "hooks/useUser";
 import { useForecastPlans } from "../forecast/-hooks/useForecastPlans";
 import { useForecastPlan } from "../forecast/-hooks/useForecastPlan";
 import { useForecastResult } from "../forecast/-hooks/useForecastResult";
@@ -19,9 +20,13 @@ export const ForecastWidget: React.FC = () => {
     const plan = plans?.[0];
     const planId = plan?.id ?? "";
 
-    const { isError: planError } = useForecastPlan(planId);
+    const { data: fullPlan, isError: planError } = useForecastPlan(planId);
     const { data: result, isFetching, isError: runError } = useForecastResult(planId);
+    const { data: user } = useUser();
     const colours = useChartColours();
+
+    // The forecast is denominated in the plan's currency, falling back to the user's preferred currency.
+    const currencyCode = fullPlan?.currencyCode ?? user?.currency ?? "AUD";
 
     // No forecast plan exists at all - don't render the widget
     if (!plansLoading && !plansError && plans && plans.length === 0) {
@@ -80,7 +85,7 @@ export const ForecastWidget: React.FC = () => {
                 callbacks: {
                     label: (context) => {
                         const value = context.parsed.y;
-                        return `${context.dataset.label}: ${formatCurrency(value)}`;
+                        return `${context.dataset.label}: ${formatCurrency(value, currencyCode)}`;
                     },
                 },
             },
@@ -89,7 +94,7 @@ export const ForecastWidget: React.FC = () => {
             y: {
                 grid: { color: colours.grid },
                 ticks: {
-                    callback: (value) => formatCurrency(Number(value), "AUD", 0),
+                    callback: (value) => formatCurrency(Number(value), currencyCode, 0),
                 },
             },
             x: {

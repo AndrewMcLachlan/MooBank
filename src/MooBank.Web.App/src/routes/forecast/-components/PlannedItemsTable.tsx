@@ -10,9 +10,10 @@ import { Amount } from "components";
 
 interface PlannedItemsTableProps {
     plan?: ForecastPlan;
+    currencyCode: string;
 }
 
-export const PlannedItemsTable: React.FC<PlannedItemsTableProps> = ({ plan }) => {
+export const PlannedItemsTable: React.FC<PlannedItemsTableProps> = ({ plan, currencyCode }) => {
 
     const items = plan?.plannedItems ?? [];
     const planId = plan?.id;
@@ -22,8 +23,8 @@ export const PlannedItemsTable: React.FC<PlannedItemsTableProps> = ({ plan }) =>
 
     return (
         <>
-            <PlannedItemsSection planId={planId} title="Planned Income" items={incomeItems} itemType="Income" />
-            <PlannedItemsSection planId={planId} title="Planned Expenses" items={expenseItems} itemType="Expense" />
+            <PlannedItemsSection planId={planId} title="Planned Income" items={incomeItems} itemType="Income" currencyCode={currencyCode} />
+            <PlannedItemsSection planId={planId} title="Planned Expenses" items={expenseItems} itemType="Expense" currencyCode={currencyCode} />
         </>
     );
 };
@@ -33,9 +34,10 @@ interface PlannedItemsSectionProps {
     title: string;
     items: PlannedItem[];
     itemType: "Income" | "Expense";
+    currencyCode: string;
 }
 
-const PlannedItemsSection: React.FC<PlannedItemsSectionProps> = ({ planId, title, items, itemType }) => {
+const PlannedItemsSection: React.FC<PlannedItemsSectionProps> = ({ planId, title, items, itemType, currencyCode }) => {
     return (
         <SectionTable header={title} striped>
             <thead>
@@ -58,7 +60,7 @@ const PlannedItemsSection: React.FC<PlannedItemsSectionProps> = ({ planId, title
             <tfoot>
                 <tr>
                     <td>Total</td>
-                    <td className="amount"><Amount amount={items.reduce((sum, i) => sum + (i.isIncluded ? i.amount : 0), 0)} currencyCode="AUD" minus /></td>
+                    <td className="amount"><Amount amount={items.reduce((sum, i) => sum + (i.isIncluded ? i.amount : 0), 0)} currencyCode={currencyCode} minus /></td>
                     <td colSpan={5}></td>
                 </tr>
             </tfoot>

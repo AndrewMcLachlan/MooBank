@@ -6,6 +6,7 @@ import { useForecastPlans } from "./-hooks/useForecastPlans";
 import { useForecastPlan } from "./-hooks/useForecastPlan";
 import { useForecastResult } from "./-hooks/useForecastResult";
 import { useAccounts } from "hooks/useAccounts";
+import { useUser } from "hooks/useUser";
 import { ForecastPage } from "./-components/ForecastPage";
 import { ForecastChart } from "./-components/ForecastChart";
 import { ForecastSummaryPanel } from "./-components/ForecastSummaryPanel";
@@ -22,6 +23,7 @@ function Forecast() {
 
     const { data: plans, isLoading: plansLoading } = useForecastPlans();
     const { data: accounts, isLoading: accountsLoading } = useAccounts();
+    const { data: user } = useUser();
 
     // Set planId when plans are loaded and one exists
     useEffect(() => {
@@ -32,6 +34,9 @@ function Forecast() {
 
     const { data: plan, isLoading: planLoading } = useForecastPlan(planId);
     const { data: result, isFetching: resultLoading } = useForecastResult(planId);
+
+    // The forecast is denominated in the plan's currency, falling back to the user's preferred currency.
+    const currencyCode = plan?.currencyCode ?? user?.currency ?? "AUD";
 
     // Loading state
     if (plansLoading || accountsLoading) {
@@ -55,15 +60,15 @@ function Forecast() {
         <ForecastPage>
             {(
                 <>
-                    <ForecastSettings plan={plan} monthlyExpenses={result?.summary.monthlyBaselineOutgoings} regression={result?.summary.regression} />
+                    <ForecastSettings plan={plan} monthlyExpenses={result?.summary.monthlyBaselineOutgoings} regression={result?.summary.regression} currencyCode={currencyCode} />
 
-                    <ForecastSummaryPanel summary={result?.summary} />
+                    <ForecastSummaryPanel summary={result?.summary} currencyCode={currencyCode} />
                     <div>
-                        <ForecastChart months={result?.months ?? []} />
+                        <ForecastChart months={result?.months ?? []} currencyCode={currencyCode} />
                         {resultLoading && (<SpinnerContainer />)}
                     </div>
 
-                    <PlannedItemsTable plan={plan} />
+                    <PlannedItemsTable plan={plan} currencyCode={currencyCode} />
                 </>
             )}
 
