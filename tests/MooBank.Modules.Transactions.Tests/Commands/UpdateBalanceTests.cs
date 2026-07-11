@@ -38,7 +38,7 @@ public class UpdateBalanceTests
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.TransactionRepositoryMock.Object,
             _mocks.UserIdProviderMock.Object,
-            _mocks.UnitOfWorkMock.Object);
+            _mocks.AuditingUnitOfWorkMock.Object);
 
         var balanceUpdate = new CreateTransaction(1500m, "Balance update", null, DateTimeOffset.Now);
         var command = new UpdateBalance(instrumentId, balanceUpdate);
@@ -71,7 +71,7 @@ public class UpdateBalanceTests
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.TransactionRepositoryMock.Object,
             _mocks.UserIdProviderMock.Object,
-            _mocks.UnitOfWorkMock.Object);
+            _mocks.AuditingUnitOfWorkMock.Object);
 
         var balanceUpdate = new CreateTransaction(1500m, "Balance update", null, DateTimeOffset.Now);
         var command = new UpdateBalance(instrumentId, balanceUpdate);
@@ -80,7 +80,9 @@ public class UpdateBalanceTests
         await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
-        _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _mocks.AuditingUnitOfWorkMock.Verify(
+            u => u.SaveChangesAsync("Adjusted Balance", "Transaction", It.IsAny<object?>(), It.IsAny<CancellationToken>()),
+            Times.Once);
     }
 
     [Fact]
@@ -104,7 +106,7 @@ public class UpdateBalanceTests
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.TransactionRepositoryMock.Object,
             _mocks.UserIdProviderMock.Object,
-            _mocks.UnitOfWorkMock.Object);
+            _mocks.AuditingUnitOfWorkMock.Object);
 
         var balanceUpdate = new CreateTransaction(500m, "Balance decrease", null, DateTimeOffset.Now);
         var command = new UpdateBalance(instrumentId, balanceUpdate);
@@ -138,7 +140,7 @@ public class UpdateBalanceTests
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.TransactionRepositoryMock.Object,
             _mocks.UserIdProviderMock.Object,
-            _mocks.UnitOfWorkMock.Object);
+            _mocks.AuditingUnitOfWorkMock.Object);
 
         var balanceUpdate = new CreateTransaction(1500m, null!, null, DateTimeOffset.Now);
         var command = new UpdateBalance(instrumentId, balanceUpdate);
@@ -172,7 +174,7 @@ public class UpdateBalanceTests
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.TransactionRepositoryMock.Object,
             _mocks.UserIdProviderMock.Object,
-            _mocks.UnitOfWorkMock.Object);
+            _mocks.AuditingUnitOfWorkMock.Object);
 
         var balanceUpdate = new CreateTransaction(1500m, "Custom description", null, DateTimeOffset.Now);
         var command = new UpdateBalance(instrumentId, balanceUpdate);
@@ -200,13 +202,47 @@ public class UpdateBalanceTests
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.TransactionRepositoryMock.Object,
             _mocks.UserIdProviderMock.Object,
-            _mocks.UnitOfWorkMock.Object);
+            _mocks.AuditingUnitOfWorkMock.Object);
 
         var balanceUpdate = new CreateTransaction(1500m, "Test", null, DateTimeOffset.Now);
         var command = new UpdateBalance(instrumentId, balanceUpdate);
 
         // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(() => handler.Handle(command, TestContext.Current.CancellationToken).AsTask());
+    }
+
+    [Fact]
+    public async Task Handle_WithReference_PersistsReference()
+    {
+        // Arrange
+        var instrumentId = Guid.NewGuid();
+        var instrument = TestEntities.CreateTransactionInstrument(id: instrumentId, balance: 1000m);
+
+        _mocks.InstrumentRepositoryMock
+            .Setup(r => r.Get(instrumentId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(instrument);
+
+        DomainTransaction? capturedTransaction = null;
+        _mocks.TransactionRepositoryMock
+            .Setup(r => r.Add(It.IsAny<DomainTransaction>()))
+            .Callback<DomainTransaction>(t => capturedTransaction = t)
+            .Returns<DomainTransaction>(t => t);
+
+        var handler = new UpdateBalanceHandler(
+            _mocks.InstrumentRepositoryMock.Object,
+            _mocks.TransactionRepositoryMock.Object,
+            _mocks.UserIdProviderMock.Object,
+            _mocks.AuditingUnitOfWorkMock.Object);
+
+        var balanceUpdate = new CreateTransaction(1500m, "Adj", "REF-123", DateTimeOffset.Now);
+        var command = new UpdateBalance(instrumentId, balanceUpdate);
+
+        // Act
+        await handler.Handle(command, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.NotNull(capturedTransaction);
+        Assert.Equal("REF-123", capturedTransaction.Reference);
     }
 
     [Fact]
@@ -230,7 +266,7 @@ public class UpdateBalanceTests
             _mocks.InstrumentRepositoryMock.Object,
             _mocks.TransactionRepositoryMock.Object,
             _mocks.UserIdProviderMock.Object,
-            _mocks.UnitOfWorkMock.Object);
+            _mocks.AuditingUnitOfWorkMock.Object);
 
         var balanceUpdate = new CreateTransaction(1000m, "No change", null, DateTimeOffset.Now);
         var command = new UpdateBalance(instrumentId, balanceUpdate);

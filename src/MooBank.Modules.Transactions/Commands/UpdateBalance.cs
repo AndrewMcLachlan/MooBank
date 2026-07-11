@@ -1,4 +1,5 @@
-﻿using Asm.MooBank.Domain.Entities.Transactions;
+using Asm.MooBank.Audit;
+using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Transactions.Models;
 using Asm.MooBank.Modules.Transactions.Models.Extensions;
@@ -8,7 +9,7 @@ namespace Asm.MooBank.Modules.Transactions.Commands;
 
 public record UpdateBalance(Guid InstrumentId, CreateTransaction BalanceUpdate) : ICommand<MooBank.Models.Transaction>;
 
-internal class UpdateBalanceHandler(IInstrumentRepository instrumentRepository, ITransactionRepository transactionRepository, IUserIdProvider userIdProvider, IUnitOfWork unitOfWork) : ICommandHandler<UpdateBalance, MooBank.Models.Transaction>
+internal class UpdateBalanceHandler(IInstrumentRepository instrumentRepository, ITransactionRepository transactionRepository, IUserIdProvider userIdProvider, IAuditingUnitOfWork unitOfWork) : ICommandHandler<UpdateBalance, MooBank.Models.Transaction>
 {
     public async ValueTask<MooBank.Models.Transaction> Handle(UpdateBalance command, CancellationToken cancellationToken)
     {
@@ -31,9 +32,11 @@ internal class UpdateBalanceHandler(IInstrumentRepository instrumentRepository, 
             "Web"
         );
 
+        transaction.Reference = command.BalanceUpdate.Reference;
+
         transactionRepository.Add(transaction);
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync("Adjusted Balance", "Transaction", transaction.Id, cancellationToken);
 
         return transaction.ToModel();
     }
