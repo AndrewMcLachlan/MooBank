@@ -10,9 +10,10 @@ import { formatCurrency } from "utils/currency";
 
 interface ForecastChartProps {
     months: ForecastMonth[];
+    currencyCode: string;
 }
 
-export const ForecastChart: React.FC<ForecastChartProps> = ({ months }) => {
+export const ForecastChart: React.FC<ForecastChartProps> = ({ months, currencyCode }) => {
 
     const labels = months.map(m => format(parseISO(m.monthStart), "MMM yy"));
 
@@ -59,7 +60,7 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({ months }) => {
         scales: {
             y: {
                 ticks: {
-                    callback: (value) => formatCurrency(Number(value), "AUD", 0)
+                    callback: (value) => formatCurrency(Number(value), currencyCode, 0)
                 }
             }
         }
