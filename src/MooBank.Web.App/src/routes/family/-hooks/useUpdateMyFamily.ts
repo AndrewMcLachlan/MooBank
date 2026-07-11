@@ -9,10 +9,7 @@ export const useUpdateMyFamily = () => {
 
     const { mutateAsync } = useMutation({
         ...updateMyFamilyMutation(),
-        onSuccess: (data) => {
-            queryClient.setQueryData<Family>(getMyFamilyQueryKey(), data);
-        },
-        onError: () => {
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: getMyFamilyQueryKey() });
         },
     });

@@ -5,6 +5,8 @@ import { Button, Col, Form, Input, OverlayTrigger, Popover, Row } from "@andrewm
 import type { AccountScopeMode, ForecastPlan, RegressionDiagnostics } from "api/types.gen";
 import { useUpdateForecastPlan } from "../-hooks/useUpdateForecastPlan";
 import { useAccounts } from "hooks/useAccounts";
+import { Amount } from "components";
+import { formatCurrency } from "utils/currency";
 
 interface ForecastSettingsProps {
     plan?: ForecastPlan;
@@ -102,7 +104,7 @@ export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthl
                         <div className="settings-item">
                             <div className="settings-label">Monthly Income</div>
                             <div className="settings-value">
-                                ${(plan?.incomeStrategy?.manualRecurring?.amount ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                <Amount amount={plan?.incomeStrategy?.manualRecurring?.amount ?? 0} currencyCode="AUD" minus />
                             </div>
                         </div>
                     </Col>
@@ -110,7 +112,7 @@ export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthl
                         <div className="settings-item">
                             <div className="settings-label">Monthly Expenses</div>
                             <div className="settings-value">
-                                ${(monthlyExpenses ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                <Amount amount={monthlyExpenses ?? 0} currencyCode="AUD" minus />
                             </div>
                             <div className="settings-sublabel">
                                 {plan?.outgoingStrategy?.mode === "IncomeCorrelated" && regression && !regression.fellBackToFlatAverage ? (
@@ -118,7 +120,7 @@ export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthl
                                         <Popover id="regression-popover">
                                             <Popover.Body>
                                                 <div className="regression-popover">
-                                                    <div>Fixed expenses: ${regression.fixedComponent.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/mo</div>
+                                                    <div>Fixed expenses: {formatCurrency(regression.fixedComponent)}/mo</div>
                                                     <div>Variable rate: {(regression.variableComponent * 100).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}% of income</div>
                                                     <div>Model fit: {(regression.rSquared * 100).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}% R²</div>
                                                 </div>

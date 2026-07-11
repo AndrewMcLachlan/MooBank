@@ -2,3 +2,8 @@
     display: flex;
     gap: 10px;
 }
+
+.form-error {
+    color: var(--expense-fg);
+    margin: 4px 0 0;
+}

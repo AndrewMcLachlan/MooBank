@@ -2,6 +2,7 @@ import { Section } from "@andrewmclachlan/moo-ds";
 import { format, parseISO } from "date-fns";
 import { Col, Row } from "@andrewmclachlan/moo-ds";
 import type { ForecastSummary } from "api/types.gen";
+import { Amount } from "components";
 
 interface ForecastSummaryPanelProps {
     summary: ForecastSummary;
@@ -17,7 +18,7 @@ export const ForecastSummaryPanel: React.FC<ForecastSummaryPanelProps> = ({ summ
                     <div className="summary-card">
                         <div className="summary-label">Lowest Balance</div>
                         <div className={`summary-value ${summary?.lowestBalance < 0 ? 'negative' : ''}`}>
-                            ${summary?.lowestBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            <Amount amount={summary?.lowestBalance} currencyCode="AUD" minus />
                         </div>
                         <div className="summary-sublabel">
                            {summary && `in ${format(lowestBalanceDate, "MMMM yyyy")}`}
@@ -28,7 +29,7 @@ export const ForecastSummaryPanel: React.FC<ForecastSummaryPanelProps> = ({ summ
                     <div className="summary-card">
                         <div className="summary-label">Required Monthly Uplift</div>
                         <div className={`summary-value ${summary?.requiredMonthlyUplift > 0 ? 'negative' : ''}`}>
-                            ${summary?.requiredMonthlyUplift.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            <Amount amount={summary?.requiredMonthlyUplift} currencyCode="AUD" minus />
                         </div>
                         <div className="summary-sublabel">
                             {summary?.requiredMonthlyUplift > 0 ? 'to avoid negative balance' : 'no uplift required'}
@@ -52,7 +53,7 @@ export const ForecastSummaryPanel: React.FC<ForecastSummaryPanelProps> = ({ summ
                     <div className="summary-card">
                         <div className="summary-label">Total Projected Income</div>
                         <div className="summary-value">
-                            ${summary?.totalIncome.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            <Amount amount={summary?.totalIncome} currencyCode="AUD" minus />
                         </div>
                     </div>
                 </Col>
@@ -60,7 +61,7 @@ export const ForecastSummaryPanel: React.FC<ForecastSummaryPanelProps> = ({ summ
                     <div className="summary-card">
                         <div className="summary-label">Total Projected Outgoings</div>
                         <div className="summary-value">
-                            ${summary?.totalOutgoings.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            <Amount amount={summary?.totalOutgoings} currencyCode="AUD" minus />
                         </div>
                     </div>
                 </Col>

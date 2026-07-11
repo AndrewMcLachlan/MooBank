@@ -12,7 +12,7 @@ export const useReprocessTransactions = () => {
 
     const { mutateAsync } = useMutation({
         ...reprocessMutation(),
-        onSuccess: () => {
+        onSettled: () => {
             client.invalidateQueries({ queryKey: getAccountsQueryKey() });
         },
     });

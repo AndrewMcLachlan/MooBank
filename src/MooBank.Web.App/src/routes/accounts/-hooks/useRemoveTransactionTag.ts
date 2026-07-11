@@ -4,6 +4,7 @@ import type { PagedResult } from "@andrewmclachlan/moo-ds";
 import type { Transaction, Tag } from "api/types.gen";
 import type { State } from "store/state";
 import { removeTag } from "api/sdk.gen";
+import { toast } from "@andrewmclachlan/moo-ds";
 import { buildTransactionsQueryKey, invalidateTransactionLists } from "./transactionKeys";
 
 export const useRemoveTransactionTag = () => {
@@ -12,7 +13,7 @@ export const useRemoveTransactionTag = () => {
 
     const { currentPage, pageSize, filter, sortField, sortDirection } = useSelector((state: State) => state.transactions);
 
-    const { mutate } = useMutation({
+    const { mutateAsync } = useMutation({
         mutationFn: (variables: { accountId: string, transactionId: string, tag: Tag }) =>
             removeTag({ path: { instrumentId: variables.accountId, id: variables.transactionId, tagId: variables.tag.id }, throwOnError: true }),
         onMutate: async (variables) => {
@@ -55,5 +56,8 @@ export const useRemoveTransactionTag = () => {
         onSettled: () => invalidateTransactionLists(queryClient),
     });
 
-    return { mutate };
+    return {
+        mutate: (variables: { accountId: string, transactionId: string, tag: Tag }) =>
+            toast.promise(mutateAsync(variables), { pending: "Removing tag", success: "Tag removed", error: "Failed to remove tag" }),
+    };
 }

@@ -2,7 +2,7 @@ import React from "react";
 import { Section } from "@andrewmclachlan/moo-ds";
 
 import { Amount } from "components";
-import { formatDate } from "utils/dateFns";
+import { formatDisplayDate } from "utils/dateFns";
 
 import { useStockHolding } from "../../../-components/StockHoldingProvider";
 import { useStockHoldingAdjustedGainLoss } from "routes/shares/-hooks/useStockHoldingAdjustedGainLoss";
@@ -31,7 +31,7 @@ export const StockHoldingCard: React.FC = () => {
                     <div className="eyebrow">{stockHolding.name} · Balance</div>
                     <div className="hero-balance"><Amount amount={balance} currencyCode={currency} minus /></div>
                     <div className="hero-subline">
-                        Last update <span className="strong">{formatDate(stockHolding.balanceDate)}</span>
+                        Last update <span className="strong">{formatDisplayDate(stockHolding.balanceDate)}</span>
                         <span className="sep">·</span>
                         Type <span className="strong">{instrumentType}</span>
                     </div>

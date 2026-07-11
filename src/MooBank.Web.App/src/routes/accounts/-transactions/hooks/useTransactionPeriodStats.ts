@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { useDebounce } from "use-debounce";
 import { parseISO } from "date-fns";
 
-import { useInOutReport } from "hooks/useInOutReport";
+import { useInOutReport } from "routes/accounts/-hooks/useInOutReport";
 import { useTransactions } from "routes/accounts/-hooks/useTransactions";
 import type { State } from "store/state";
 

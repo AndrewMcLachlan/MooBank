@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { getMyFamilyQueryKey, removeFamilyMemberMutation } from "api/@tanstack/react-query.gen";
-import type { Family } from "api/types.gen";
 import { toast } from "@andrewmclachlan/moo-ds";
 
 export const useRemoveFamilyMember = () => {
@@ -9,16 +8,7 @@ export const useRemoveFamilyMember = () => {
 
     const { mutateAsync } = useMutation({
         ...removeFamilyMemberMutation(),
-        onSuccess: (_data, variables) => {
-            const family = queryClient.getQueryData<Family>(getMyFamilyQueryKey());
-            if (family) {
-                queryClient.setQueryData<Family>(getMyFamilyQueryKey(), {
-                    ...family,
-                    members: family.members?.filter(m => m.id !== variables.path!.userId)
-                });
-            }
-        },
-        onError: () => {
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: getMyFamilyQueryKey() });
         },
     });

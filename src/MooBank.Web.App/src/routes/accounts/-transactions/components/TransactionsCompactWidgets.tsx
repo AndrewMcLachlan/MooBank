@@ -3,7 +3,7 @@ import { Section } from "@andrewmclachlan/moo-ds";
 
 import { Amount, useAccount } from "components";
 import type { LogicalAccount } from "api/types.gen";
-import { formatDate } from "utils/dateFns";
+import { formatDisplayDate } from "utils/dateFns";
 
 import { usePeriodLabel } from "../hooks/usePeriodLabel";
 import { useTransactionPeriodStats } from "../hooks/useTransactionPeriodStats";
@@ -24,7 +24,7 @@ export const TransactionsCompactWidgets: React.FC = () => {
             <Section className="widget" data-tone="balance">
                 <div className="eyebrow">{account.name} · Balance</div>
                 <div className="widget-value strong"><Amount amount={balance} currencyCode={account.currency} minus /></div>
-                <div className="widget-sub">Last tx · {formatDate(account.lastTransaction)}</div>
+                <div className="widget-sub">Last tx · {formatDisplayDate(account.lastTransaction)}</div>
             </Section>
             <Section className="widget" data-tone="income">
                 <div className="eyebrow">Income</div>

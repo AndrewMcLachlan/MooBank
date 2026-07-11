@@ -1,38 +1,31 @@
 import type { Tag } from "api/types.gen";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createTagByNameMutation, getTagsQueryKey } from "api/@tanstack/react-query.gen";
+import { toast } from "@andrewmclachlan/moo-ds";
 
 export const useCreateTag = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutate, mutateAsync, ...rest } = useMutation({
+    const { mutateAsync, ...rest } = useMutation({
         ...createTagByNameMutation(),
-        onSuccess: (data) => {
-            const allTags = queryClient.getQueryData<Tag[]>(getTagsQueryKey());
-            if (!allTags) return;
-            const newTags = [data, ...allTags].sort((t1, t2) => t1.name.localeCompare(t2.name));
-            queryClient.setQueryData<Tag[]>(getTagsQueryKey(), newTags);
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: getTagsQueryKey() });
         }
     });
 
-    const wrappedMutate = (variables: { name: string } | Tag) => {
+    const wrappedMutateAsync = (variables: { name: string } | Tag): Promise<Tag> => {
         const name = (variables as Tag).name?.trim() ?? (variables as { name: string }).name.trim();
         const tags = (variables as Tag).tags?.map(t => t.id) ?? [];
         // The generated client URL-encodes path parameters; encoding here would double-encode the name.
-        mutate({ body: tags, path: { name } } as any);
-    };
-
-    const wrappedMutateAsync = async (variables: { name: string } | Tag): Promise<Tag> => {
-        const name = (variables as Tag).name?.trim() ?? (variables as { name: string }).name.trim();
-        const tags = (variables as Tag).tags?.map(t => t.id) ?? [];
-        const result = await mutateAsync({ body: tags, path: { name } } as any);
-        return result as Tag;
+        return toast.promise(mutateAsync({ body: tags, path: { name } } as any) as Promise<Tag>, { pending: "Creating tag", success: "Tag created", error: "Failed to create tag" });
     };
 
     return {
-        mutate: wrappedMutate,
-        mutateAsync: wrappedMutateAsync,
         ...rest,
+        mutate: (variables: { name: string } | Tag) => {
+            wrappedMutateAsync(variables);
+        },
+        mutateAsync: wrappedMutateAsync,
     };
 }

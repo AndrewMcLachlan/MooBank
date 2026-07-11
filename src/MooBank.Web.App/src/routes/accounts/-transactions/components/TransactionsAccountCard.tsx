@@ -3,7 +3,7 @@ import { Section } from "@andrewmclachlan/moo-ds";
 
 import { Amount, useAccount } from "components";
 import type { LogicalAccount } from "api/types.gen";
-import { formatDate } from "utils/dateFns";
+import { formatDisplayDate } from "utils/dateFns";
 
 import { usePeriodLabel } from "../hooks/usePeriodLabel";
 import { useTransactionPeriodStats } from "../hooks/useTransactionPeriodStats";
@@ -24,7 +24,7 @@ export const TransactionsAccountCard: React.FC = () => {
             <div className="eyebrow">{account.name} · Balance</div>
             <div className="hero-balance"><Amount amount={balance} currencyCode={account.currency} minus /></div>
             <div className="hero-subline">
-                Last transaction <span className="strong">{formatDate(account.lastTransaction)}</span>
+                Last transaction <span className="strong">{formatDisplayDate(account.lastTransaction)}</span>
                 <span className="sep">·</span>
                 Type <span className="strong">{instrumentType}</span>
             </div>

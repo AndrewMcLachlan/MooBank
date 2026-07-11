@@ -4,12 +4,13 @@ import {
     getRecurringTransactionsForAVirtualAccountQueryKey,
     updateRecurringTransactionMutation,
 } from "api/@tanstack/react-query.gen";
+import { toast } from "@andrewmclachlan/moo-ds";
 
 export const useUpdateRecurringTransaction = (accountId: string, virtualAccountId: string) => {
 
     const queryClient = useQueryClient();
 
-    const { mutate } = useMutation({
+    const { mutateAsync } = useMutation({
         ...updateRecurringTransactionMutation(),
         onMutate: async (variables) => {
             const queryKey = getRecurringTransactionsForAVirtualAccountQueryKey({ path: { accountId, virtualAccountId } });
@@ -37,7 +38,7 @@ export const useUpdateRecurringTransaction = (accountId: string, virtualAccountI
 
     const update = (recurringTransaction: RecurringTransaction) => {
 
-        mutate({ body: recurringTransaction as any, path: { accountId, recurringTransactionId: recurringTransaction.id } } as any);
+        toast.promise(mutateAsync({ body: recurringTransaction as any, path: { accountId, recurringTransactionId: recurringTransaction.id } } as any), { pending: "Updating recurring transaction", success: "Recurring transaction updated", error: "Failed to update recurring transaction" });
     };
 
     return update;

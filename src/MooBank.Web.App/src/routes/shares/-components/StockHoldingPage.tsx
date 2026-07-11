@@ -1,45 +1,29 @@
 import React from "react";
 import type { PropsWithChildren, ReactNode } from "react";
 
-import { Page } from "@andrewmclachlan/moo-app";
 import type { PageProps } from "@andrewmclachlan/moo-app";
-import { NavItemDivider } from "@andrewmclachlan/moo-ds";
 import type { NavItem } from "@andrewmclachlan/moo-ds";
-import type { StockHolding } from "api/types.gen";
-import { useStockHolding } from "./StockHoldingProvider";
-
 import { Reports, Sliders, Transaction } from "@andrewmclachlan/moo-icons";
 
-export const StockHoldingPage: React.FC<PropsWithChildren<AccountPageProps>> = ({ children, breadcrumbs = [], ...props }) => {
+import { InstrumentPage } from "components";
+import { useStockHolding } from "./StockHoldingProvider";
+
+export const StockHoldingPage: React.FC<PropsWithChildren<StockHoldingPageProps>> = ({ children, ...props }) => {
 
     const stockHolding = useStockHolding();
 
-    if (!stockHolding) return null;
+    const navItems: (NavItem | ReactNode)[] = [
+        { route: `/shares/${stockHolding?.id}/transactions`, text: "Transactions", image: <Transaction /> },
+        { route: `/shares/${stockHolding?.id}/reports`, text: "Reports", image: <Reports /> },
+        { route: `/shares/${stockHolding?.id}/manage`, text: "Manage", image: <Sliders /> },
+    ];
 
     return (
-        <Page title={`${stockHolding.name}${props.title && " : "}${props.title}`} actions={props.actions} navItems={getMenuItems(stockHolding, props.navItems ?? [])} breadcrumbs={[{ text: "Accounts", route: "/accounts" }, { text: stockHolding.name, route: `/shares/${stockHolding.id}` }, ...breadcrumbs]}>
+        <InstrumentPage instrument={stockHolding} instrumentRoute={`/shares/${stockHolding?.id}`} instrumentNavItems={navItems} {...props}>
             {children}
-        </Page>
+        </InstrumentPage>
     )
 }
 
-const getMenuItems = (stockHolding: StockHolding, navItems: (ReactNode | NavItem)[]) => {
-
-    if (!stockHolding) return [];
-
-    const items: (NavItem | ReactNode)[] = [
-        { route: `/shares/${stockHolding.id}/transactions`, text: "Transactions", image: <Transaction /> },
-    ];
-
-    items.push({ route: `/shares/${stockHolding.id}/reports`, text: "Reports", image: <Reports /> });
-    items.push({ route: `/shares/${stockHolding.id}/manage`, text: "Manage", image: <Sliders /> });
-
-    if (navItems.length > 0) {
-        items.push(<NavItemDivider />);
-    }
-
-    return items.concat(navItems);
-}
-
-export interface AccountPageProps extends PageProps {
+export interface StockHoldingPageProps extends PageProps {
 }

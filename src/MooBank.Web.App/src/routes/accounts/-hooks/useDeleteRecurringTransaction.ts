@@ -4,12 +4,13 @@ import {
     getRecurringTransactionsForAVirtualAccountQueryKey,
     deleteRecurringTransactionMutation,
 } from "api/@tanstack/react-query.gen";
+import { toast } from "@andrewmclachlan/moo-ds";
 
 export const useDeleteRecurringTransaction = (accountId: string, virtualAccountId: string) => {
 
     const queryClient = useQueryClient();
 
-    const { mutate } = useMutation({
+    const { mutateAsync } = useMutation({
         ...deleteRecurringTransactionMutation(),
         onMutate: async (variables) => {
             const queryKey = getRecurringTransactionsForAVirtualAccountQueryKey({ path: { accountId, virtualAccountId } });
@@ -36,7 +37,7 @@ export const useDeleteRecurringTransaction = (accountId: string, virtualAccountI
 
     const deleteRecurringTransaction = (recurringTransactionId: string) => {
 
-        mutate({ path: { accountId, recurringTransactionId } });
+        toast.promise(mutateAsync({ path: { accountId, recurringTransactionId } }), { pending: "Deleting recurring transaction", success: "Recurring transaction deleted", error: "Failed to delete recurring transaction" });
     }
 
     return deleteRecurringTransaction;

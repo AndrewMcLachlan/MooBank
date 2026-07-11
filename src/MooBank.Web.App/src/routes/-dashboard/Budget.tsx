@@ -16,7 +16,7 @@ export const BudgetWidget: React.FC = () => {
 
     const colours = useChartColours();
 
-    const period = useMemo(lastMonth, []);
+    const period = useMemo(() => lastMonth(), []);
 
     const { data: report, isLoading, isError } = useBudgetReportForMonth(period.startDate.getFullYear(), period.startDate.getMonth());
 

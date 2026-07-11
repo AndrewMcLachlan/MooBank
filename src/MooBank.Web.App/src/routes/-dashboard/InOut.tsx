@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { lastMonth, lastMonthName } from "utils/dateFns";
 import { InOut } from "../accounts/$id/reports/-components/InOut";
 import { useAccounts } from "hooks/useAccounts";
-import { useInOutReport } from "hooks/useInOutReport";
+import { useInOutReport } from "routes/accounts/-hooks/useInOutReport";
 import { Widget } from "@andrewmclachlan/moo-ds";
 import { WidgetError } from "components/WidgetError";
 
@@ -12,7 +12,7 @@ export const InOutWidget: React.FC = () => {
 
     const account = accounts?.find(a => a.isPrimary === true) ?? accounts?.[0];
 
-    const period = useMemo(lastMonth, []);
+    const period = useMemo(() => lastMonth(), []);
     const monthName = lastMonthName();
 
     return (
