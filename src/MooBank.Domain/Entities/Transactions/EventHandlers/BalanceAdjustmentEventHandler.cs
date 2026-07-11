@@ -1,6 +1,5 @@
 ﻿using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Instrument.Events;
-using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Domain.Entities.Transactions.EventHandlers;
 

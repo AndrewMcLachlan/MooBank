@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Asm.MooBank.Models;
+namespace Asm.MooBank;
 
 public enum TransactionSubType
 {

@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MooBank.Models\MooBank.Models.csproj" />
+    <ProjectReference Include="..\MooBank\MooBank.csproj" />
   </ItemGroup>
 
 </Project>

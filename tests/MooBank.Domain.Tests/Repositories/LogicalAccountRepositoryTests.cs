@@ -188,7 +188,7 @@ public class LogicalAccountRepositoryTests : IDisposable
     public void Create_NewAccount_RaisesInstrumentCreatedEvent()
     {
         // Act
-        var account = LogicalAccount.Create("Event Test", null, "AUD", Models.AccountType.Transaction, Models.Controller.Manual, false, false,
+        var account = LogicalAccount.Create("Event Test", null, "AUD", AccountType.Transaction, Controller.Manual, false, false,
             new InstitutionAccount { Name = "Event Test", OpenedDate = DateOnly.FromDateTime(DateTime.Today), InstitutionId = 1 },
             500m, DateOnly.FromDateTime(DateTime.Today));
 
@@ -210,7 +210,7 @@ public class LogicalAccountRepositoryTests : IDisposable
         var openedDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-30));
 
         // Act
-        var account = LogicalAccount.Create("Balance Event Test", null, "AUD", Models.AccountType.Transaction, Models.Controller.Manual, false, false,
+        var account = LogicalAccount.Create("Balance Event Test", null, "AUD", AccountType.Transaction, Controller.Manual, false, false,
             new InstitutionAccount { Name = "Balance Event Test", OpenedDate = openedDate, InstitutionId = 1 },
             openingBalance, openedDate);
 
@@ -267,7 +267,7 @@ public class LogicalAccountRepositoryTests : IDisposable
         var account = CreateLogicalAccount(Guid.NewGuid(), "Update Event Test");
 
         // Act
-        account.Update("Updated", null, Models.Controller.Manual, Models.AccountType.Savings, true, true);
+        account.Update("Updated", null, Controller.Manual, AccountType.Savings, true, true);
 
         // Assert
         Assert.Contains(account.Events, e => e is InstrumentUpdatedEvent);

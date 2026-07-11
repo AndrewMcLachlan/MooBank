@@ -6,7 +6,7 @@ using Asm.MooBank.Institution.Macquarie.Models;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Microsoft.Extensions.Logging;
-using TransactionType = Asm.MooBank.Models.TransactionType;
+using TransactionType = Asm.MooBank.TransactionType;
 
 namespace Asm.MooBank.Institution.Macquarie.Importers;
 
@@ -124,7 +124,7 @@ internal partial class MacquarieImporter(ITransactionRawRepository transactionRa
                 transactionType == TransactionType.Credit ? credit : -Math.Abs(debit),
                 GetDetails(record.Details, record.Subcategory),
                 transactionTime.ToStartOfDay(),
-                record.Subcategory == "Transfers" ? MooBank.Models.TransactionSubType.Transfer : null, // No sub-type yet
+                record.Subcategory == "Transfers" ? MooBank.TransactionSubType.Transfer : null, // No sub-type yet
                 "Macquarie Import",
                 institutionAccountId,
                 transactionType: transactionType

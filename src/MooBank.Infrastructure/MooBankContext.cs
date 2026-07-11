@@ -126,6 +126,10 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
     [AllowNull]
     public virtual DbSet<PlannedItemFlexibleWindow> PlannedItemFlexibleWindows { get; set; }
 
+    // Importer (and other) assemblies contribute their EF configurations to the shared model via this
+    // list, which OnModelCreating applies. Registration is order-sensitive: every assembly must be
+    // registered before the context is first used. EF caches the built model, so any RegisterAssembly
+    // call after first use is silently ignored.
     public static void RegisterAssembly(Assembly assembly) => Assemblies.Add(assembly);
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -169,7 +173,7 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
         modelBuilder.Entity<AccountMonthlyBalance>().HasNoKey();
         modelBuilder.Entity<AccountMonthlyCreditDebitTotal>().HasNoKey();
 
-        modelBuilder.HasDbFunction(typeof(Transaction).GetMethod(nameof(Transaction.TransactionNetAmount), [typeof(Models.TransactionType), typeof(Guid), typeof(decimal)])!);
+        modelBuilder.HasDbFunction(typeof(Transaction).GetMethod(nameof(Transaction.TransactionNetAmount), [typeof(TransactionType), typeof(Guid), typeof(decimal)])!);
         modelBuilder.HasDbFunction(typeof(TransactionSplit).GetMethod(nameof(TransactionSplit.TransactionSplitNetAmount), [typeof(Guid), typeof(Guid), typeof(decimal)])!);
     }
 }

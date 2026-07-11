@@ -7,7 +7,7 @@ using Asm.MooBank.Institution.Ing.Models;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Microsoft.Extensions.Logging;
-using TransactionType = Asm.MooBank.Models.TransactionType;
+using TransactionType = Asm.MooBank.TransactionType;
 
 namespace Asm.MooBank.Institution.Ing.Importers;
 

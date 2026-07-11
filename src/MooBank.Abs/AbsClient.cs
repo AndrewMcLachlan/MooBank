@@ -1,14 +1,8 @@
 ﻿using System.Globalization;
 using System.Xml.Linq;
-using Asm.MooBank.Models;
 using Microsoft.Extensions.Logging;
 
 namespace Asm.MooBank.Abs;
-
-public interface IAbsClient
-{
-    Task<IEnumerable<CpiChange>> GetCpiChanges(DateOnly? startDate, DateOnly? endDate, CancellationToken cancellationToken = default);
-}
 
 internal class AbsClient(IHttpClientFactory httpClientFactory, ILogger<AbsClient> logger) : IAbsClient
 {

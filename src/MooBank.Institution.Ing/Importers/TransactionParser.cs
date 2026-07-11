@@ -64,7 +64,7 @@ internal partial class TransactionParser
             parsed.PurchaseType = "Visa";
             parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
             parsed.Last4Digits = Int16.Parse(match.Groups[5].Value, CultureInfo.InvariantCulture);
-            parsed.TransactionSubType = MooBank.Models.TransactionSubType.Visa;
+            parsed.TransactionSubType = MooBank.TransactionSubType.Visa;
             return parsed;
         }
 
@@ -78,7 +78,7 @@ internal partial class TransactionParser
             parsed.PurchaseType = "Visa";
             parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
             parsed.Last4Digits = Int16.Parse(match.Groups[6].Value, CultureInfo.InvariantCulture);
-            parsed.TransactionSubType = MooBank.Models.TransactionSubType.Visa;
+            parsed.TransactionSubType = MooBank.TransactionSubType.Visa;
             return parsed;
         }
 
@@ -90,7 +90,7 @@ internal partial class TransactionParser
             parsed.PurchaseType = "Direct Debit";
             parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
             parsed.Reference = match.Groups[3].Value.Trim();
-            parsed.TransactionSubType = MooBank.Models.TransactionSubType.DirectDebit;
+            parsed.TransactionSubType = MooBank.TransactionSubType.DirectDebit;
             return parsed;
         }
 
@@ -102,7 +102,7 @@ internal partial class TransactionParser
             parsed.PurchaseType = "Internal Transfer";
             parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
             parsed.Reference = match.Groups[3].Value.Trim();
-            parsed.TransactionSubType = MooBank.Models.TransactionSubType.Transfer;
+            parsed.TransactionSubType = MooBank.TransactionSubType.Transfer;
             return parsed;
         }
 
@@ -115,7 +115,7 @@ internal partial class TransactionParser
             parsed.PurchaseType = "EFTPOS";
             parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
             parsed.Last4Digits = Int16.Parse(match.Groups[5].Value, CultureInfo.InvariantCulture);
-            parsed.TransactionSubType = MooBank.Models.TransactionSubType.Eftpos;
+            parsed.TransactionSubType = MooBank.TransactionSubType.Eftpos;
             return parsed;
         }
 
@@ -127,7 +127,7 @@ internal partial class TransactionParser
             parsed.PurchaseType = "EFTPOS";
             parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
             parsed.Last4Digits = Int16.Parse(match.Groups[6].Value, CultureInfo.InvariantCulture);
-            parsed.TransactionSubType = MooBank.Models.TransactionSubType.Eftpos;
+            parsed.TransactionSubType = MooBank.TransactionSubType.Eftpos;
             return parsed;
         }
 
@@ -173,7 +173,7 @@ internal partial class TransactionParser
             parsed.PurchaseType = "Osko";
             parsed.ReceiptNumber = Int32.Parse(match.Groups[4].Value, CultureInfo.InvariantCulture);
             parsed.Reference = match.Groups[6].Value.Trim();
-            parsed.TransactionSubType = MooBank.Models.TransactionSubType.Osko;
+            parsed.TransactionSubType = MooBank.TransactionSubType.Osko;
             return parsed;
         }
 
@@ -192,7 +192,7 @@ internal partial class TransactionParser
             parsed.PurchaseType = "BPAY";
             parsed.Description = $"{match.Groups[1].Value.Trim()} - {match.Groups[3].Value.Trim()}";
             parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
-            parsed.TransactionSubType = MooBank.Models.TransactionSubType.Bpay;
+            parsed.TransactionSubType = MooBank.TransactionSubType.Bpay;
             return parsed;
         }
 
@@ -204,7 +204,7 @@ internal partial class TransactionParser
             parsed.PurchaseType = "ATM";
             parsed.ReceiptNumber = Int32.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
             parsed.Last4Digits = Int16.Parse(match.Groups[6].Value, CultureInfo.InvariantCulture);
-            parsed.TransactionSubType = MooBank.Models.TransactionSubType.Atm;
+            parsed.TransactionSubType = MooBank.TransactionSubType.Atm;
             return parsed;
         }
 

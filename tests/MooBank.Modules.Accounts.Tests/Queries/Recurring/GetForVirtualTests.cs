@@ -163,7 +163,7 @@ public class GetForVirtualTests
             virtualAccountId: virtualId,
             description: "Complete RT",
             amount: 200m,
-            schedule: MooBank.Models.ScheduleFrequency.Yearly,
+            schedule: MooBank.ScheduleFrequency.Yearly,
             nextRun: nextRun);
 
         var vi = TestEntities.CreateVirtualInstrument(
@@ -188,7 +188,7 @@ public class GetForVirtualTests
         Assert.Equal(virtualId, result.VirtualAccountId);
         Assert.Equal("Complete RT", result.Description);
         Assert.Equal(200m, result.Amount);
-        Assert.Equal(MooBank.Models.ScheduleFrequency.Yearly, result.Schedule);
+        Assert.Equal(MooBank.ScheduleFrequency.Yearly, result.Schedule);
         Assert.Equal(nextRun, result.NextRun);
     }
 

@@ -135,6 +135,7 @@
   <Project Path="src/MooBank.Domain/MooBank.Domain.csproj" />
   <Project Path="src/MooBank.Infrastructure/MooBank.Infrastructure.csproj" />
   <Project Path="src/MooBank.Models/MooBank.Models.csproj" />
+  <Project Path="src/MooBank.Primitives/MooBank.Primitives.csproj" />
   <Project Path="src/MooBank.Security/MooBank.Security.csproj" />
   <Project Path="src/MooBank.Web.App/MooBank.Web.App.esproj">
     <Build />

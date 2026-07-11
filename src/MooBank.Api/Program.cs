@@ -194,7 +194,10 @@ void AddServices(WebApplicationBuilder builder)
         .WithHttpTransport()
         .WithToolsFromAssemblies("Asm.MooBank.Modules");
 
-    services.AddIntegrations(builder.Configuration);
+    services.AddEodhd(options => builder.Configuration.Bind("EODHD", options))
+            .AddExchangeRateApi(options => builder.Configuration.Bind("ExchangeRateApi", options))
+            .AddAbs()
+            .AddIntegrationServices();
 
     var headerPolicies = services.AddStandardSecurityHeaders()
         .AddContentSecurityPolicy(options =>

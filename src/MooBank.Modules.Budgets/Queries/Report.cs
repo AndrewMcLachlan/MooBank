@@ -15,7 +15,7 @@ internal class ReportHandler(IQueryable<Domain.Entities.Budget.Budget> budgets, 
 
         var monthlyTotals = await transactions
             .Where(t => budgetAccounts.Contains(t.AccountId) &&
-                        t.TransactionType == MooBank.Models.TransactionType.Debit &&
+                        t.TransactionType == MooBank.TransactionType.Debit &&
                         !t.ExcludeFromReporting &&
                         t.TransactionTime.Year == request.Year)
             .GroupBy(t => t.TransactionTime.Month)

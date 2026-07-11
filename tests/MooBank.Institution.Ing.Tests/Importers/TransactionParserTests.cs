@@ -81,7 +81,7 @@ public class TransactionParserTests
         Assert.Equal(new DateTime(2024, 6, 1), parsed.PurchaseDate);
         Assert.Equal(123456, parsed.ReceiptNumber);
         Assert.Equal((short)1234, parsed.Last4Digits);
-        Assert.Equal(MooBank.Models.TransactionSubType.Visa, parsed.TransactionSubType);
+        Assert.Equal(MooBank.TransactionSubType.Visa, parsed.TransactionSubType);
     }
 
     /// <summary>
@@ -99,7 +99,7 @@ public class TransactionParserTests
         Assert.Equal("Some Store", parsed.Description);
         Assert.Null(parsed.PurchaseDate);
         Assert.Equal(123456, parsed.ReceiptNumber);
-        Assert.Equal(MooBank.Models.TransactionSubType.Visa, parsed.TransactionSubType);
+        Assert.Equal(MooBank.TransactionSubType.Visa, parsed.TransactionSubType);
     }
 
     /// <summary>
@@ -116,7 +116,7 @@ public class TransactionParserTests
         Assert.Equal("Some Store", parsed.Description);
         Assert.Equal(new DateTime(2024, 6, 1, 13, 23, 0), parsed.PurchaseDate);
         Assert.Equal(123456, parsed.ReceiptNumber);
-        Assert.Equal(MooBank.Models.TransactionSubType.Eftpos, parsed.TransactionSubType);
+        Assert.Equal(MooBank.TransactionSubType.Eftpos, parsed.TransactionSubType);
     }
 
     /// <summary>

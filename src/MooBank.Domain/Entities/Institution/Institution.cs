@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Asm.MooBank.Domain.Entities.ReferenceData;
-using Asm.MooBank.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Institution;

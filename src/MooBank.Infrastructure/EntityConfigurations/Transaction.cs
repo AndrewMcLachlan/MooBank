@@ -23,13 +23,13 @@ internal class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
 
         entity.Property(e => e.TransactionType)
             .HasColumnName($"{nameof(Transaction.TransactionType)}Id")
-            .HasConversion(e => (int)e, e => (Models.TransactionType)e)
-            .HasDefaultValue(Models.TransactionType.Debit)
-            .HasSentinel(Models.TransactionType.NotSet);
+            .HasConversion(e => (int)e, e => (TransactionType)e)
+            .HasDefaultValue(TransactionType.Debit)
+            .HasSentinel(TransactionType.NotSet);
 
         entity.Property(e => e.TransactionSubType)
             .HasColumnName($"{nameof(Transaction.TransactionSubType)}Id")
-            .HasConversion(e => (int?)e, e => (Models.TransactionSubType?)e)
+            .HasConversion(e => (int?)e, e => (TransactionSubType?)e)
             .HasSentinel(null);
 
         // This transaction offsets the linked "TransactionId" transaction
