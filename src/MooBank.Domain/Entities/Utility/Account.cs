@@ -4,9 +4,14 @@ namespace Asm.MooBank.Domain.Entities.Utility;
 
 [Table("Account", Schema = "utilities")]
 [AggregateRoot]
-public class Account(Guid id) : Instrument.Instrument(id)
+public class Account : Instrument.Instrument
 {
-    public Account() : this(Guid.Empty)
+    internal Account(Guid id) : base(id)
+    {
+    }
+
+    // For EF materialisation only. Construct through Create.
+    internal Account() : this(Guid.Empty)
     {
     }
 

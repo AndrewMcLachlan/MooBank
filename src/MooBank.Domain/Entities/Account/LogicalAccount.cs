@@ -5,13 +5,19 @@ using Asm.MooBank.Models;
 namespace Asm.MooBank.Domain.Entities.Account;
 
 [AggregateRoot]
-public class LogicalAccount(Guid id, IEnumerable<InstitutionAccount> institutionAccounts) : TransactionInstrument(id)
+public class LogicalAccount : TransactionInstrument
 {
-    private readonly List<InstitutionAccount> _institutionAccounts = [.. institutionAccounts];
+    private readonly List<InstitutionAccount> _institutionAccounts;
 
     private readonly List<AccountTagPurpose> _tagPurposes = [];
 
-    public LogicalAccount() : this(Guid.Empty, []) { }
+    internal LogicalAccount(Guid id, IEnumerable<InstitutionAccount> institutionAccounts) : base(id)
+    {
+        _institutionAccounts = [.. institutionAccounts];
+    }
+
+    // For EF materialisation only. Construct through Create.
+    internal LogicalAccount() : this(Guid.Empty, []) { }
 
     public static LogicalAccount Create(string name, string? description, string currency, AccountType accountType, Controller controller, bool includeInBudget, bool shareWithFamily, InstitutionAccount institutionAccount, decimal openingBalance, DateOnly openedDate)
     {

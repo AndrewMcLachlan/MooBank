@@ -7,8 +7,12 @@ using Microsoft.EntityFrameworkCore;
 namespace Asm.MooBank.Domain.Entities.StockHolding;
 
 [AggregateRoot]
-public class StockHolding([DisallowNull] Guid id) : Instrument.Instrument(id)
+public class StockHolding : Instrument.Instrument
 {
+    internal StockHolding([DisallowNull] Guid id) : base(id)
+    {
+    }
+
     public static StockHolding Create(string name, string description, string symbol, bool shareWithFamily, decimal currentPrice)
     {
         var stockHolding = new StockHolding(Guid.Empty)

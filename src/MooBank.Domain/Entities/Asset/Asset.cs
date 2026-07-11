@@ -3,9 +3,14 @@
 namespace Asm.MooBank.Domain.Entities.Asset;
 
 [AggregateRoot]
-public class Asset(Guid id) : Instrument.Instrument(id)
+public class Asset : Instrument.Instrument
 {
-    public Asset() : this(Guid.Empty)
+    internal Asset(Guid id) : base(id)
+    {
+    }
+
+    // For EF materialisation only. Construct through Create.
+    internal Asset() : this(Guid.Empty)
     {
     }
 

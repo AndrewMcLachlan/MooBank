@@ -8,11 +8,16 @@ namespace Asm.MooBank.Domain.Entities.Instrument;
 
 [AggregateRoot]
 [PrimaryKey(nameof(Id))]
-public abstract class Instrument(Guid id) : KeyedEntity<Guid>(id)
+public abstract class Instrument : KeyedEntity<Guid>
 {
     private readonly List<VirtualInstrument> _virtualInstruments = [];
 
-    public Instrument() : this(Guid.Empty)
+    protected Instrument(Guid id) : base(id)
+    {
+    }
+
+    // For EF materialisation only. Construct instruments through the concrete aggregate factories.
+    private Instrument() : this(Guid.Empty)
     {
     }
 

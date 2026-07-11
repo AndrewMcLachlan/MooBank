@@ -4,9 +4,21 @@ using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Domain.Entities.Account;
 
-public partial class VirtualInstrument(Guid id) : TransactionInstrument(id)
+public partial class VirtualInstrument : TransactionInstrument
 {
-    public VirtualInstrument() : this(Guid.Empty) { }
+    internal VirtualInstrument(Guid id) : base(id) { }
+
+    // For EF materialisation only. Construct through Create.
+    internal VirtualInstrument() : this(Guid.Empty) { }
+
+    public static VirtualInstrument Create(string name, string? description, Controller controller, string currency) =>
+        new()
+        {
+            Name = name,
+            Description = description,
+            Controller = controller,
+            Currency = currency,
+        };
 
     public Guid ParentInstrumentId { get; set; }
 
