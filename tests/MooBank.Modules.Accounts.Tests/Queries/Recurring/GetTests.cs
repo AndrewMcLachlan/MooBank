@@ -161,7 +161,7 @@ public class GetTests
             virtualAccountId: virtualId,
             description: "Complete RT",
             amount: 250.50m,
-            schedule: MooBank.Models.ScheduleFrequency.Fortnightly,
+            schedule: MooBank.ScheduleFrequency.Fortnightly,
             nextRun: nextRun,
             lastRun: lastRun);
 
@@ -187,7 +187,7 @@ public class GetTests
         Assert.Equal(virtualId, result.VirtualAccountId);
         Assert.Equal("Complete RT", result.Description);
         Assert.Equal(250.50m, result.Amount);
-        Assert.Equal(MooBank.Models.ScheduleFrequency.Fortnightly, result.Schedule);
+        Assert.Equal(MooBank.ScheduleFrequency.Fortnightly, result.Schedule);
         Assert.Equal(nextRun, result.NextRun);
     }
 }

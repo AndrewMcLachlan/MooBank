@@ -1,7 +1,6 @@
 ﻿using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Account.Events;
 using Asm.MooBank.Domain.Entities.Instrument.Events;
-using Asm.MooBank.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Instrument;

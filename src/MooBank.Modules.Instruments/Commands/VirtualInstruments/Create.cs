@@ -4,7 +4,7 @@ using Asm.MooBank.Modules.Instruments.Models.Instruments;
 using Asm.MooBank.Modules.Instruments.Models.Virtual;
 using Asm.MooBank.Services;
 using Microsoft.AspNetCore.Mvc;
-using Controller = Asm.MooBank.Models.Controller;
+using Controller = Asm.MooBank.Controller;
 
 namespace Asm.MooBank.Modules.Instruments.Commands.VirtualInstruments;
 

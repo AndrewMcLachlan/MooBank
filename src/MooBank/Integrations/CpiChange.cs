@@ -1,6 +1,4 @@
-﻿using Asm.MooBank.Models;
-
-namespace Asm.MooBank.Abs;
+﻿namespace Asm.MooBank.Abs;
 
 public record CpiChange
 {

@@ -1,4 +1,3 @@
-using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Domain.Entities.Reports;
 

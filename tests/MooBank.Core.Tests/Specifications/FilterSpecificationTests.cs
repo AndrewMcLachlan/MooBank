@@ -923,7 +923,7 @@ public class FilterSpecificationTests
     public void Apply_WithExcludeNetZero_ConsidersTransactionType()
     {
         // Arrange - The override receives transaction type
-        var capturedTypes = new List<MooBank.Models.TransactionType>();
+        var capturedTypes = new List<MooBank.TransactionType>();
         DomainTransaction.SetTransactionNetAmountOverride((type, id, amount) =>
         {
             capturedTypes.Add(type);
@@ -950,8 +950,8 @@ public class FilterSpecificationTests
 
             // Assert
             Assert.Equal(2, result.Count);
-            Assert.Contains(MooBank.Models.TransactionType.Debit, capturedTypes);
-            Assert.Contains(MooBank.Models.TransactionType.Credit, capturedTypes);
+            Assert.Contains(MooBank.TransactionType.Debit, capturedTypes);
+            Assert.Contains(MooBank.TransactionType.Credit, capturedTypes);
         }
         finally
         {

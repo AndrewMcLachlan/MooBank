@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 
-namespace Asm.MooBank.Models;
+namespace Asm.MooBank;
 
 /// <summary>
 /// Note that this is wildly wrong.

@@ -8,6 +8,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MooBank.Primitives\MooBank.Primitives.csproj" />
+    <!-- Domain still consumes a handful of DTOs from Models (User, TransactionFilter, TransactionSplit,
+         TransactionOffsetBy) in domain methods, event handlers and a specification. Removing this
+         reference requires reshaping those domain APIs to not accept DTOs and is out of scope for the
+         shared-kernel extraction. The shared enums/value types now come from Primitives. -->
     <ProjectReference Include="..\MooBank.Models\MooBank.Models.csproj" />
   </ItemGroup>
 

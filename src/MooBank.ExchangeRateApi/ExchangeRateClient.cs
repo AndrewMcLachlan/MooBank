@@ -4,11 +4,6 @@ using Microsoft.Extensions.Options;
 
 namespace Asm.MooBank.ExchangeRateApi;
 
-public interface IExchangeRateClient
-{
-    Task<IDictionary<string, decimal>> GetExchangeRates(string from, CancellationToken cancellationToken = default);
-}
-
 internal class ExchangeRateClient(IHttpClientFactory httpClientFactory, IOptions<ExchangeRateApiConfig> config, ILogger<ExchangeRateClient> logger) : IExchangeRateClient
 {
 

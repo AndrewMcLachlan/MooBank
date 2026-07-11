@@ -17,7 +17,7 @@ internal class GetCpiAdjustedCapitalGainHandler(IQueryable<StockHolding> stockHo
         var adjustmentTasks = stockHolding.Transactions.Select(async transaction =>
         {
             var amount = transaction.Quantity * transaction.Price;
-            amount = transaction.TransactionType == MooBank.Models.TransactionType.Debit ? -amount : amount;
+            amount = transaction.TransactionType == MooBank.TransactionType.Debit ? -amount : amount;
             return await cpiService.CalculateAdjustedValue(amount, transaction.TransactionDate, cancellationToken);
         }).ToList();
 

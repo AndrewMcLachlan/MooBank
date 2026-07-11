@@ -10,10 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MooBank.Abs\MooBank.Abs.csproj" />
     <ProjectReference Include="..\MooBank.Domain\MooBank.Domain.csproj" />
-    <ProjectReference Include="..\MooBank.Eodhd\MooBank.Eodhd.csproj" />
-    <ProjectReference Include="..\MooBank.ExchangeRateApi\MooBank.ExchangeRateApi.csproj" />
     <ProjectReference Include="..\MooBank.Models\MooBank.Models.csproj" />
   </ItemGroup>
 

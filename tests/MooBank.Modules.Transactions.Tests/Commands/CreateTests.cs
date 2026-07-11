@@ -241,7 +241,7 @@ public class CreateTests
 
         // Assert
         Assert.NotNull(capturedTransaction);
-        var expectedType = amount < 0 ? MooBank.Models.TransactionType.Debit : MooBank.Models.TransactionType.Credit;
+        var expectedType = amount < 0 ? MooBank.TransactionType.Debit : MooBank.TransactionType.Credit;
         Assert.Equal(expectedType, capturedTransaction.TransactionType);
     }
 }
