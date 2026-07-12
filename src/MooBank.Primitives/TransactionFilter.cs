@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel;
 
-namespace Asm.MooBank.Models;
+namespace Asm.MooBank;
 
 /// <summary>
 /// Filter specification for querying transactions.
 /// </summary>
 [Description("Filter specification for querying transactions.")]
-public record TransactionFilter : ISortable, ITransactionFilter
+public record TransactionFilter : ISortable
 {
     /// <summary>
     /// The ID of the instrument (account) to filter transactions for.

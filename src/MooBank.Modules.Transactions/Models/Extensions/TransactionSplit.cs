@@ -11,4 +11,16 @@ public static class TransactionSplitExtensions
         Tags = split.Tags.Where(t => !t.Deleted).ToSimpleModel(),
         OffsetBy = split.OffsetBy.Select(t => t.ToOffsetByModel()),
     };
+
+    public static IEnumerable<Domain.Entities.Transactions.TransactionSplit> ToEntities(this IEnumerable<TransactionSplit> splits) =>
+        splits.Select(split => new Domain.Entities.Transactions.TransactionSplit(split.Id)
+        {
+            Amount = split.Amount,
+            Tags = [.. split.Tags.Select(tag => new Domain.Entities.Tag.Tag(tag.Id))],
+            OffsetBy = [.. split.OffsetBy.Select(offset => new Domain.Entities.Transactions.TransactionOffset
+            {
+                OffsetTransactionId = offset.Transaction.Id,
+                Amount = offset.Amount,
+            })],
+        });
 }
