@@ -1,3 +1,17 @@
 @import "transactions/transactionDetails.css";
 @import "transactions/transactionList.css";
 @import "transactions/transactionTagDetails.css";
+
+/* Add Transaction: choose between entering an amount or setting a new balance */
+.balance-choice {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.balance-choice .balance-choice-field {
+    flex: 1 1 9rem;
+    margin-bottom: 0;
+}
