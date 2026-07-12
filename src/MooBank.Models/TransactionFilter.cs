@@ -6,7 +6,7 @@ namespace Asm.MooBank.Models;
 /// Filter specification for querying transactions.
 /// </summary>
 [Description("Filter specification for querying transactions.")]
-public record TransactionFilter : ISortable
+public record TransactionFilter : ISortable, ITransactionFilter
 {
     /// <summary>
     /// The ID of the instrument (account) to filter transactions for.

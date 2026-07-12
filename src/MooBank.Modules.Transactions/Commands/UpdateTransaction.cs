@@ -30,7 +30,7 @@ internal class UpdateTransactionHandler(ITransactionRepository transactionReposi
 
         if (transaction.AccountId != request.InstrumentId) throw new NotFoundException("Transaction not found");
 
-        transaction.UpdateSplits(request.Splits.ToSplitUpdates());
+        transaction.UpdateSplits(request.Splits);
 
         transaction.Notes = request.Notes;
         transaction.ExcludeFromReporting = request.ExcludeFromReporting;

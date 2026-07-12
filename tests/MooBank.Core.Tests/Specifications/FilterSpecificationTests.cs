@@ -1,5 +1,6 @@
 using Asm.MooBank.Core.Tests.Support;
 using Asm.MooBank.Domain.Entities.Transactions.Specifications;
+using Asm.MooBank.Models;
 using DomainTransaction = Asm.MooBank.Domain.Entities.Transactions.Transaction;
 
 namespace Asm.MooBank.Core.Tests.Specifications;
@@ -35,7 +36,7 @@ public class FilterSpecificationTests
             CreateTransaction(otherAccountId, -100m, "Other Account"),
         };
 
-        var filter = new TransactionFilterCriteria { InstrumentId = targetAccountId };
+        var filter = new TransactionFilter { InstrumentId = targetAccountId };
         var spec = new FilterSpecification(filter);
 
         // Act
@@ -68,7 +69,7 @@ public class FilterSpecificationTests
             CreateTransaction(TestModels.AccountId, -25m, "Costco Gas"),
         };
 
-        var filter = new TransactionFilterCriteria
+        var filter = new TransactionFilter
         {
             InstrumentId = TestModels.AccountId,
             Filter = "Costco",
@@ -102,7 +103,7 @@ public class FilterSpecificationTests
             CreateTransaction(TestModels.AccountId, -15m, "Amazon Order"),
         };
 
-        var filter = new TransactionFilterCriteria
+        var filter = new TransactionFilter
         {
             InstrumentId = TestModels.AccountId,
             Filter = "Costco,Target",
@@ -132,7 +133,7 @@ public class FilterSpecificationTests
             CreateTransaction(TestModels.AccountId, -30m, "Transaction 2"),
         };
 
-        var filter = new TransactionFilterCriteria
+        var filter = new TransactionFilter
         {
             InstrumentId = TestModels.AccountId,
             Filter = null,
@@ -167,7 +168,7 @@ public class FilterSpecificationTests
             CreateTransaction(TestModels.AccountId, -30m, "Debit 2"),
         };
 
-        var filter = new TransactionFilterCriteria
+        var filter = new TransactionFilter
         {
             InstrumentId = TestModels.AccountId,
             TransactionType = TransactionFilterType.Debit,
@@ -199,7 +200,7 @@ public class FilterSpecificationTests
             CreateTransaction(TestModels.AccountId, 75m, "Credit 2"),
         };
 
-        var filter = new TransactionFilterCriteria
+        var filter = new TransactionFilter
         {
             InstrumentId = TestModels.AccountId,
             TransactionType = TransactionFilterType.Credit,
@@ -230,7 +231,7 @@ public class FilterSpecificationTests
             CreateTransaction(TestModels.AccountId, 100m, "Credit 1"),
         };
 
-        var filter = new TransactionFilterCriteria
+        var filter = new TransactionFilter
         {
             InstrumentId = TestModels.AccountId,
             TransactionType = TransactionFilterType.None,
@@ -266,7 +267,7 @@ public class FilterSpecificationTests
             CreateTransaction(TestModels.AccountId, -25m, "Today", now),
         };
 
-        var filter = new TransactionFilterCriteria
+        var filter = new TransactionFilter
         {
             InstrumentId = TestModels.AccountId,
             Start = now.AddDays(-5),
@@ -298,7 +299,7 @@ public class FilterSpecificationTests
             CreateTransaction(TestModels.AccountId, -25m, "Recent", now),
         };
 
-        var filter = new TransactionFilterCriteria
+        var filter = new TransactionFilter
         {
             InstrumentId = TestModels.AccountId,
             End = now.AddDays(-4),
@@ -331,7 +332,7 @@ public class FilterSpecificationTests
             CreateTransaction(TestModels.AccountId, -20m, "Too Recent", now),
         };
 
-        var filter = new TransactionFilterCriteria
+        var filter = new TransactionFilter
         {
             InstrumentId = TestModels.AccountId,
             Start = now.AddDays(-10),
@@ -368,7 +369,7 @@ public class FilterSpecificationTests
 
         var transactions = new List<DomainTransaction> { taggedTransaction, untaggedTransaction };
 
-        var filter = new TransactionFilterCriteria
+        var filter = new TransactionFilter
         {
             InstrumentId = TestModels.AccountId,
             UntaggedOnly = true,
@@ -401,7 +402,7 @@ public class FilterSpecificationTests
 
         var transactions = new List<DomainTransaction> { taggedTransaction, untaggedTransaction };
 
-        var filter = new TransactionFilterCriteria
+        var filter = new TransactionFilter
         {
             InstrumentId = TestModels.AccountId,
         };
@@ -448,7 +449,7 @@ public class FilterSpecificationTests
             utilitiesTransaction,
         };
 
-        var filter = new TransactionFilterCriteria
+        var filter = new TransactionFilter
         {
             InstrumentId = TestModels.AccountId,
             TagIds = [1, 2], // Groceries and Entertainment
@@ -481,7 +482,7 @@ public class FilterSpecificationTests
 
         var transactions = new List<DomainTransaction> { taggedTransaction, untaggedTransaction };
 
-        var filter = new TransactionFilterCriteria
+        var filter = new TransactionFilter
         {
             InstrumentId = TestModels.AccountId,
             TagIds = [],
@@ -536,7 +537,7 @@ public class FilterSpecificationTests
             oldTransaction,
         };
 
-        var filter = new TransactionFilterCriteria
+        var filter = new TransactionFilter
         {
             InstrumentId = TestModels.AccountId,
             TransactionType = TransactionFilterType.Debit,
@@ -569,7 +570,7 @@ public class FilterSpecificationTests
     {
         // Arrange
         var transactions = new List<DomainTransaction>();
-        var filter = new TransactionFilterCriteria { InstrumentId = TestModels.AccountId };
+        var filter = new TransactionFilter { InstrumentId = TestModels.AccountId };
         var spec = new FilterSpecification(filter);
 
         // Act
@@ -597,7 +598,7 @@ public class FilterSpecificationTests
 
         var transactions = new List<DomainTransaction> { taggedTransaction, untaggedTransaction };
 
-        var filter = new TransactionFilterCriteria
+        var filter = new TransactionFilter
         {
             InstrumentId = TestModels.AccountId,
             TagIds = null,
@@ -633,7 +634,7 @@ public class FilterSpecificationTests
 
         var transactions = new List<DomainTransaction> { transaction1, transaction2, transaction3 };
 
-        var filter = new TransactionFilterCriteria
+        var filter = new TransactionFilter
         {
             InstrumentId = TestModels.AccountId,
             TagIds = [1],
@@ -667,7 +668,7 @@ public class FilterSpecificationTests
 
         var transactions = new List<DomainTransaction> { transaction };
 
-        var filter = new TransactionFilterCriteria
+        var filter = new TransactionFilter
         {
             InstrumentId = TestModels.AccountId,
             TagIds = [2], // Only searching for tag2
@@ -697,7 +698,7 @@ public class FilterSpecificationTests
             CreateTransaction(TestModels.AccountId, 0m, "Zero"),
         };
 
-        var filter = new TransactionFilterCriteria
+        var filter = new TransactionFilter
         {
             InstrumentId = TestModels.AccountId,
             TransactionType = TransactionFilterType.Credit,
@@ -733,7 +734,7 @@ public class FilterSpecificationTests
             CreateTransaction(TestModels.AccountId, -20m, "After End", endDate.AddSeconds(1)),
         };
 
-        var filter = new TransactionFilterCriteria
+        var filter = new TransactionFilter
         {
             InstrumentId = TestModels.AccountId,
             Start = startDate,
@@ -768,7 +769,7 @@ public class FilterSpecificationTests
 
         var transactions = new List<DomainTransaction> { taggedTransaction, untaggedTransaction };
 
-        var filter = new TransactionFilterCriteria
+        var filter = new TransactionFilter
         {
             InstrumentId = TestModels.AccountId,
             // Not filtering by untagged - leave Untagged unset
@@ -812,7 +813,7 @@ public class FilterSpecificationTests
                 CreateTransaction(TestModels.AccountId, -30m, "Another Debit"),
             };
 
-            var filter = new TransactionFilterCriteria
+            var filter = new TransactionFilter
             {
                 InstrumentId = TestModels.AccountId,
                 ExcludeNetZero = true,
@@ -853,7 +854,7 @@ public class FilterSpecificationTests
                 CreateTransaction(TestModels.AccountId, -30m, "Transaction 3"),
             };
 
-            var filter = new TransactionFilterCriteria
+            var filter = new TransactionFilter
             {
                 InstrumentId = TestModels.AccountId,
                 ExcludeNetZero = false,
@@ -893,7 +894,7 @@ public class FilterSpecificationTests
                 CreateTransaction(TestModels.AccountId, 100m, "Transaction 2"),
             };
 
-            var filter = new TransactionFilterCriteria
+            var filter = new TransactionFilter
             {
                 InstrumentId = TestModels.AccountId,
                 ExcludeNetZero = null,
@@ -937,7 +938,7 @@ public class FilterSpecificationTests
                 CreateTransaction(TestModels.AccountId, 100m, "Credit"),
             };
 
-            var filter = new TransactionFilterCriteria
+            var filter = new TransactionFilter
             {
                 InstrumentId = TestModels.AccountId,
                 ExcludeNetZero = true,
@@ -992,7 +993,7 @@ public class FilterSpecificationTests
                 untaggedTransaction,
             };
 
-            var filter = new TransactionFilterCriteria
+            var filter = new TransactionFilter
             {
                 InstrumentId = TestModels.AccountId,
                 TagIds = [1],

@@ -17,17 +17,7 @@ internal class GetHandler(IQueryable<Domain.Entities.Transactions.Transaction> t
 {
     public async ValueTask<PagedResult> Handle(Get query, CancellationToken cancellationToken)
     {
-        var filterSpecification = new FilterSpecification(new TransactionFilterCriteria
-        {
-            InstrumentId = query.InstrumentId,
-            Filter = query.Filter,
-            Start = query.Start,
-            End = query.End,
-            TagIds = query.TagIds,
-            TransactionType = query.TransactionType,
-            UntaggedOnly = query.UntaggedOnly,
-            ExcludeNetZero = query.ExcludeNetZero,
-        });
+        var filterSpecification = new FilterSpecification(query);
 
         // Historical transactions keep showing soft-deleted tags; the family filter still applies.
         var total = await transactions.Specify(filterSpecification).IgnoreQueryFilters(["SoftDelete"]).CountAsync(cancellationToken);

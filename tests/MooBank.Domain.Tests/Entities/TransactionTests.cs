@@ -1,6 +1,7 @@
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.Transactions.Events;
 using Asm.MooBank.Domain.Tests.Support;
+using Asm.MooBank.Models;
 using DomainTransaction = Asm.MooBank.Domain.Entities.Transactions.Transaction;
 
 namespace Asm.MooBank.Domain.Tests.Entities;
@@ -489,10 +490,10 @@ public class TransactionTests
         });
 
         // Add a second split using UpdateSplits
-        var updatedSplits = new List<SplitUpdate>
+        var updatedSplits = new List<Models.TransactionSplit>
         {
-            new() { Id = firstSplit.Id, Amount = 60m, TagIds = [], OffsetBy = [new OffsetUpdate { Amount = 10m, TransactionId = Guid.NewGuid() }] },
-            new() { Id = Guid.NewGuid(), Amount = 40m, TagIds = [], OffsetBy = [new OffsetUpdate { Amount = 5m, TransactionId = Guid.NewGuid() }] },
+            new() { Id = firstSplit.Id, Amount = 60m, Tags = [], OffsetBy = [new TransactionOffsetBy { Amount = 10m, Transaction = new Models.Transaction { Id = Guid.NewGuid() } }] },
+            new() { Id = Guid.NewGuid(), Amount = 40m, Tags = [], OffsetBy = [new TransactionOffsetBy { Amount = 5m, Transaction = new Models.Transaction { Id = Guid.NewGuid() } }] },
         };
         transaction.UpdateSplits(updatedSplits);
 
@@ -636,10 +637,10 @@ public class TransactionTests
         // Arrange
         var transaction = _entities.CreateDebitTransaction(100m);
         var existingSplit = transaction.Splits.First();
-        var updatedSplits = new List<SplitUpdate>
+        var updatedSplits = new List<Models.TransactionSplit>
         {
-            new() { Id = existingSplit.Id, Amount = 70m, TagIds = [], OffsetBy = [] },
-            new() { Id = Guid.NewGuid(), Amount = 30m, TagIds = [], OffsetBy = [] },
+            new() { Id = existingSplit.Id, Amount = 70m, Tags = [], OffsetBy = [] },
+            new() { Id = Guid.NewGuid(), Amount = 30m, Tags = [], OffsetBy = [] },
         };
 
         // Act
@@ -680,9 +681,9 @@ public class TransactionTests
         // Arrange
         var transaction = _entities.CreateDebitTransaction(50m);
         var existingSplitId = transaction.Splits.First().Id;
-        var updatedSplits = new List<SplitUpdate>
+        var updatedSplits = new List<Models.TransactionSplit>
         {
-            new() { Id = existingSplitId, Amount = 75m, TagIds = [], OffsetBy = [] },
+            new() { Id = existingSplitId, Amount = 75m, Tags = [], OffsetBy = [] },
         };
 
         // Act
@@ -707,18 +708,18 @@ public class TransactionTests
 
         // Add a second split first
         var splitId2 = Guid.NewGuid();
-        var splitsWithTwo = new List<SplitUpdate>
+        var splitsWithTwo = new List<Models.TransactionSplit>
         {
-            new() { Id = existingSplit.Id, Amount = 70m, TagIds = [], OffsetBy = [] },
-            new() { Id = splitId2, Amount = 30m, TagIds = [], OffsetBy = [] },
+            new() { Id = existingSplit.Id, Amount = 70m, Tags = [], OffsetBy = [] },
+            new() { Id = splitId2, Amount = 30m, Tags = [], OffsetBy = [] },
         };
         transaction.UpdateSplits(splitsWithTwo);
         Assert.Equal(2, transaction.Splits.Count);
 
         // Now remove one
-        var splitsWithOne = new List<SplitUpdate>
+        var splitsWithOne = new List<Models.TransactionSplit>
         {
-            new() { Id = existingSplit.Id, Amount = 100m, TagIds = [], OffsetBy = [] },
+            new() { Id = existingSplit.Id, Amount = 100m, Tags = [], OffsetBy = [] },
         };
 
         // Act
@@ -754,14 +755,14 @@ public class TransactionTests
             Amount = 25m,
         });
 
-        var updatedSplits = new List<SplitUpdate>
+        var updatedSplits = new List<Models.TransactionSplit>
         {
             new()
             {
                 Id = existingSplit.Id,
                 Amount = 100m,
-                TagIds = [],
-                OffsetBy = [new OffsetUpdate { Amount = 50m, TransactionId = offsetTransactionId }]
+                Tags = [],
+                OffsetBy = [new TransactionOffsetBy { Amount = 50m, Transaction = new Models.Transaction { Id = offsetTransactionId } }]
             },
         };
 
@@ -793,13 +794,13 @@ public class TransactionTests
             Amount = 25m,
         });
 
-        var updatedSplits = new List<SplitUpdate>
+        var updatedSplits = new List<Models.TransactionSplit>
         {
             new()
             {
                 Id = existingSplit.Id,
                 Amount = 100m,
-                TagIds = [],
+                Tags = [],
                 OffsetBy = [] // No offsets
             },
         };
@@ -990,10 +991,10 @@ public class TransactionTests
         var existingSplit = transaction.Splits.First();
 
         // Add another split with different tag
-        var updatedSplits = new List<SplitUpdate>
+        var updatedSplits = new List<Models.TransactionSplit>
         {
-            new() { Id = existingSplit.Id, Amount = 50m, TagIds = [1], OffsetBy = [] },
-            new() { Id = Guid.NewGuid(), Amount = 50m, TagIds = [2], OffsetBy = [] },
+            new() { Id = existingSplit.Id, Amount = 50m, Tags = [new Tag { Id = 1, Name = "Tag1" }], OffsetBy = [] },
+            new() { Id = Guid.NewGuid(), Amount = 50m, Tags = [new Tag { Id = 2, Name = "Tag2" }], OffsetBy = [] },
         };
         transaction.UpdateSplits(updatedSplits);
 
