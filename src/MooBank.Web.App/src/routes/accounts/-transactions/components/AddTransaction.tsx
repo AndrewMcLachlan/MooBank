@@ -81,17 +81,17 @@ export const AddTransaction: React.FC<AddTransactionProps> = ({ show, onClose, o
                         <div className="balance-choice">
                             <span className="balance-choice-text">Either enter the amount</span>
                             <Form.Group groupId="amount" className="balance-choice-field">
-                                <CurrencyInput clearable disabled={newBalanceFilled} />
+                                <CurrencyInput clearable currency={account.currency} disabled={newBalanceFilled} />
                             </Form.Group>
                             <span className="balance-choice-text">or set the new balance</span>
                             <Form.Group groupId="newBalance" className="balance-choice-field">
-                                <CurrencyInput clearable disabled={amountFilled} />
+                                <CurrencyInput clearable currency={account.currency} disabled={amountFilled} />
                             </Form.Group>
                         </div>
                     ) : (
                         <Form.Group groupId="amount">
                             <Form.Label>Amount</Form.Label>
-                            <CurrencyInput clearable />
+                            <CurrencyInput clearable currency={account.currency} />
                         </Form.Group>
                     )}
                     <Form.Group groupId="transactionTime">
