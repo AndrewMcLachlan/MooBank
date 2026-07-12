@@ -5,7 +5,7 @@ import { format } from "date-fns/format";
 
 import { useAccount } from "components";
 import type { CreateTransaction } from "models/transactions";
-import { useUpdateBalance } from "hooks/useUpdateBalance";
+import { useUpdateBalance } from "routes/accounts/-hooks/useUpdateBalance";
 import { useCreateTransaction } from "routes/accounts/-hooks/useCreateTransaction";
 import { CurrencyInput } from "components";
 
@@ -49,20 +49,18 @@ export const AddTransaction: React.FC<AddTransactionProps> = ({ show, onClose, o
     const handleSubmit = (values: AddTransactionForm) => {
         if (!account) return;
 
+        // Blank optional fields are sent as undefined (not ""), so the backend stores null and the
+        // balance adjustment's default description applies when none is entered.
+        const common = {
+            description: values.description || undefined,
+            reference: values.reference || undefined,
+            transactionTime: values.transactionTime,
+        };
+
         if (newBalanceFilled) {
-            updateBalance.mutateAsync(account.id, {
-                amount: Number(values.newBalance),
-                description: values.description,
-                reference: values.reference,
-                transactionTime: values.transactionTime,
-            });
+            updateBalance.mutateAsync(account.id, { amount: Number(values.newBalance), ...common });
         } else {
-            addTransaction.mutateAsync(account.id, {
-                amount: Number(values.amount),
-                description: values.description,
-                reference: values.reference,
-                transactionTime: values.transactionTime,
-            });
+            addTransaction.mutateAsync(account.id, { amount: Number(values.amount), ...common });
         }
 
         onSave?.();
