@@ -5,6 +5,7 @@ import type { TransactionsFilter } from "models/transactions";
 import {
     getTransactionsQueryKey,
     getUntaggedTransactionsQueryKey,
+    getAccountsQueryKey,
 } from "api/@tanstack/react-query.gen";
 
 /**
@@ -17,6 +18,18 @@ export const invalidateTransactionLists = (queryClient: QueryClient) =>
     Promise.all([
         queryClient.invalidateQueries({ queryKey: [{ _id: "getTransactions" }] }),
         queryClient.invalidateQueries({ queryKey: [{ _id: "getUntaggedTransactions" }] }),
+    ]);
+
+/**
+ * Invalidates the account-derived views a transaction mutation affects: the accounts list, the
+ * single-account query (balance, last transaction) and the in/out period report. Uses the same
+ * id-only partial-key matching as the transaction lists.
+ */
+export const invalidateAccountViews = (queryClient: QueryClient) =>
+    Promise.all([
+        queryClient.invalidateQueries({ queryKey: getAccountsQueryKey() }),
+        queryClient.invalidateQueries({ queryKey: [{ _id: "getAccount" }] }),
+        queryClient.invalidateQueries({ queryKey: [{ _id: "inOutReport" }] }),
     ]);
 
 export const buildTransactionsQueryKey = (accountId: string, filter: TransactionsFilter, pageSize: number, pageNumber: number, sortField: string, sortDirection: SortDirection) => {
