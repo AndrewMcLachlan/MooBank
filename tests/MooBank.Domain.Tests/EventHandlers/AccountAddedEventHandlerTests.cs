@@ -3,7 +3,7 @@ using Asm.MooBank.Domain.Entities.Account.Events;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.Transactions.EventHandlers;
-using Asm.MooBank.Models;
+using Asm.MooBank.Security;
 using Moq;
 using DomainTransaction = Asm.MooBank.Domain.Entities.Transactions.Transaction;
 
@@ -16,24 +16,15 @@ namespace Asm.MooBank.Domain.Tests.EventHandlers;
 public class AccountAddedEventHandlerTests
 {
     private readonly Guid _userId = Guid.NewGuid();
-    private readonly Guid _familyId = Guid.NewGuid();
     private readonly Mock<ITransactionRepository> _mockRepository;
-    private readonly Models.User _user;
     private readonly AccountAddedEventHandler _handler;
 
     public AccountAddedEventHandlerTests()
     {
         _mockRepository = new Mock<ITransactionRepository>();
-        _user = new Models.User
-        {
-            Id = _userId,
-            EmailAddress = "test@test.com",
-            FamilyId = _familyId,
-            Currency = "AUD",
-            Accounts = [],
-            SharedAccounts = [],
-        };
-        _handler = new AccountAddedEventHandler(_user, _mockRepository.Object);
+        var userIdProvider = new Mock<IUserIdProvider>();
+        userIdProvider.Setup(p => p.CurrentUserId).Returns(_userId);
+        _handler = new AccountAddedEventHandler(userIdProvider.Object, _mockRepository.Object);
     }
 
     #region Opening Balance Creation

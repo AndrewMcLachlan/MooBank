@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Asm.MooBank.Models;
+namespace Asm.MooBank;
 
 /// <summary>
 /// Filter specification for querying transactions.
