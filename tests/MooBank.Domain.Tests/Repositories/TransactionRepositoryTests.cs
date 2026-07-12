@@ -4,7 +4,6 @@ using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.Transactions.Specifications;
 using Asm.MooBank.Domain.Tests.Support;
 using Asm.MooBank.Infrastructure.Repositories;
-using Asm.MooBank.Models;
 using DomainTag = Asm.MooBank.Domain.Entities.Tag.Tag;
 using DomainTransactionSplit = Asm.MooBank.Domain.Entities.Transactions.TransactionSplit;
 using Transaction = Asm.MooBank.Domain.Entities.Transactions.Transaction;
@@ -234,7 +233,7 @@ public class TransactionRepositoryTests : IDisposable
         await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var repository = new TransactionRepository(_context);
-        var filter = new TransactionFilter
+        var filter = new TransactionFilterCriteria
         {
             InstrumentId = _instrumentId,
             Start = DateTime.UtcNow.AddDays(-10),
@@ -271,7 +270,7 @@ public class TransactionRepositoryTests : IDisposable
         _context.Set<Transaction>().AddRange(debitTransaction, creditTransaction);
         await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var filter = new TransactionFilter
+        var filter = new TransactionFilterCriteria
         {
             InstrumentId = _instrumentId,
             TransactionType = TransactionFilterType.Debit,
@@ -303,7 +302,7 @@ public class TransactionRepositoryTests : IDisposable
         _context.Set<Transaction>().AddRange(debitTransaction, creditTransaction);
         await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var filter = new TransactionFilter
+        var filter = new TransactionFilterCriteria
         {
             InstrumentId = _instrumentId,
             TransactionType = TransactionFilterType.Credit,
@@ -340,7 +339,7 @@ public class TransactionRepositoryTests : IDisposable
         _context.Set<Transaction>().AddRange(groceryTransaction, gasTransaction, anotherGrocery);
         await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var filter = new TransactionFilter
+        var filter = new TransactionFilterCriteria
         {
             InstrumentId = _instrumentId,
             Filter = "Grocer",

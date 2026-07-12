@@ -1,10 +1,9 @@
 ﻿using System.Linq.Expressions;
-using Asm.MooBank.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Transactions.Specifications;
 
-public class FilterSpecification(TransactionFilter filter) : ISpecification<Transaction>
+public class FilterSpecification(TransactionFilterCriteria filter) : ISpecification<Transaction>
 {
     public IQueryable<Transaction> Apply(IQueryable<Transaction> query) =>
         query.Where(filter);
@@ -12,7 +11,7 @@ public class FilterSpecification(TransactionFilter filter) : ISpecification<Tran
 
 file static class Extensions
 {
-    public static IQueryable<Transaction> Where(this IQueryable<Transaction> queryable, TransactionFilter filter)
+    public static IQueryable<Transaction> Where(this IQueryable<Transaction> queryable, TransactionFilterCriteria filter)
     {
         var result = queryable.Where(t => t.AccountId == filter.InstrumentId);
 

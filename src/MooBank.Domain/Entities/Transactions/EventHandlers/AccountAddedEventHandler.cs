@@ -1,8 +1,9 @@
 ﻿using Asm.MooBank.Domain.Entities.Account.Events;
+using Asm.MooBank.Security;
 
 namespace Asm.MooBank.Domain.Entities.Transactions.EventHandlers;
 
-internal class AccountAddedEventHandler(Models.User user, ITransactionRepository transactionRepository) : IDomainEventHandler<AccountAddedEvent>
+internal class AccountAddedEventHandler(IUserIdProvider userIdProvider, ITransactionRepository transactionRepository) : IDomainEventHandler<AccountAddedEvent>
 {
     public ValueTask Handle(AccountAddedEvent request, CancellationToken cancellationToken)
     {
@@ -11,7 +12,7 @@ internal class AccountAddedEventHandler(Models.User user, ITransactionRepository
         transactionRepository.Add(
         Transaction.Create(
             request.Account,
-            user.Id,
+            userIdProvider.CurrentUserId,
             request.OpeningBalance,
             "Opening Balance",
             request.OpenedDate.ToDateTime(TimeOnly.MinValue),

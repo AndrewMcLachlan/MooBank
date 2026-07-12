@@ -152,7 +152,7 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
     #endregion
 
     #region Methods
-    public void UpdateSplits(IEnumerable<Models.TransactionSplit> updatedSplits)
+    public void UpdateSplits(IEnumerable<SplitUpdate> updatedSplits)
     {
         var currentSplitIds = _splits.Select(s => s.Id).ToHashSet();
         var updatedSplitIds = updatedSplits.Select(s => s.Id).ToHashSet();
@@ -240,14 +240,14 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
         }
     }
 
-    private void AddSplit(Models.TransactionSplit splitModel)
+    private void AddSplit(SplitUpdate splitModel)
     {
         var newSplit = new TransactionSplit(splitModel.Id)
         {
             Amount = splitModel.Amount,
             TransactionId = Id,
-            // Convert model tags to domain entities
-            Tags = [.. splitModel.Tags.Select(t => new Tag.Tag(t.Id))],
+            // Convert tag ids to domain entities
+            Tags = [.. splitModel.TagIds.Select(id => new Tag.Tag(id))],
         };
 
         // Add offsets from the model
@@ -257,30 +257,30 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
             {
                 Amount = offsetModel.Amount,
                 TransactionSplitId = splitModel.Id,
-                OffsetTransactionId = offsetModel.Transaction.Id,
+                OffsetTransactionId = offsetModel.TransactionId,
             });
         }
 
         _splits.Add(newSplit);
     }
 
-    private void UpdateSplit(Models.TransactionSplit splitModel)
+    private void UpdateSplit(SplitUpdate splitModel)
     {
         var splitEntity = _splits.Single(s => s.Id == splitModel.Id);
         splitEntity.Amount = splitModel.Amount;
 
         // Update tags using the model data
-        var newTags = splitModel.Tags.Select(t => new Tag.Tag(t.Id));
+        var newTags = splitModel.TagIds.Select(id => new Tag.Tag(id));
         splitEntity.UpdateTags(newTags);
 
         // Update offsets
         UpdateSplitOffsets(splitEntity, splitModel.OffsetBy);
     }
 
-    private static void UpdateSplitOffsets(TransactionSplit split, IEnumerable<Models.TransactionOffsetBy> offsetModels)
+    private static void UpdateSplitOffsets(TransactionSplit split, IEnumerable<OffsetUpdate> offsetModels)
     {
         var currentOffsetIds = split.OffsetBy.Select(o => o.OffsetTransactionId).ToHashSet();
-        var updatedOffsetIds = offsetModels.Select(o => o.Transaction.Id).ToHashSet();
+        var updatedOffsetIds = offsetModels.Select(o => o.TransactionId).ToHashSet();
 
         // Remove offsets that are no longer present
         var offsetsToRemove = split.OffsetBy.Where(o => !updatedOffsetIds.Contains(o.OffsetTransactionId)).ToList();
@@ -290,22 +290,22 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
         }
 
         // Add new offsets
-        var offsetsToAdd = offsetModels.Where(o => !currentOffsetIds.Contains(o.Transaction.Id));
+        var offsetsToAdd = offsetModels.Where(o => !currentOffsetIds.Contains(o.TransactionId));
         foreach (var offsetModel in offsetsToAdd)
         {
             split.OffsetBy.Add(new TransactionOffset
             {
                 Amount = offsetModel.Amount,
                 TransactionSplitId = split.Id,
-                OffsetTransactionId = offsetModel.Transaction.Id,
+                OffsetTransactionId = offsetModel.TransactionId,
             });
         }
 
         // Update existing offsets
-        var offsetsToUpdate = offsetModels.Where(o => currentOffsetIds.Contains(o.Transaction.Id));
+        var offsetsToUpdate = offsetModels.Where(o => currentOffsetIds.Contains(o.TransactionId));
         foreach (var offsetModel in offsetsToUpdate)
         {
-            var offset = split.OffsetBy.First(o => o.OffsetTransactionId == offsetModel.Transaction.Id);
+            var offset = split.OffsetBy.First(o => o.OffsetTransactionId == offsetModel.TransactionId);
             offset.Amount = offsetModel.Amount;
         }
     }
