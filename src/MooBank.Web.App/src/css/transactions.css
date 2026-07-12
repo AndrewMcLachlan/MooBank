@@ -12,6 +12,11 @@
 }
 
 .balance-choice .balance-choice-field {
-    flex: 1 1 9rem;
+    flex: 1 1 11rem;
     margin-bottom: 0;
+}
+
+/* Keep the currency addon ($) inline with its input; moo-ds .input-group wraps by default. */
+.balance-choice .input-group {
+    flex-wrap: nowrap;
 }
