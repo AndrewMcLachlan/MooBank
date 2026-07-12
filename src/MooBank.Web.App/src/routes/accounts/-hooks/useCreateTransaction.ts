@@ -3,9 +3,8 @@ import type { CreateTransaction } from "models/transactions";
 import { toast } from "@andrewmclachlan/moo-ds";
 import {
     createTransactionMutation,
-    getAccountsQueryKey,
 } from "api/@tanstack/react-query.gen";
-import { invalidateTransactionLists } from "./transactionKeys";
+import { invalidateTransactionLists, invalidateAccountViews } from "./transactionKeys";
 
 export const useCreateTransaction = () => {
 
@@ -15,7 +14,7 @@ export const useCreateTransaction = () => {
         ...createTransactionMutation(),
         onSettled: () => {
             invalidateTransactionLists(queryClient);
-            queryClient.invalidateQueries({ queryKey: getAccountsQueryKey() });
+            invalidateAccountViews(queryClient);
         }
     });
 

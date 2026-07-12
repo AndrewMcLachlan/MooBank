@@ -1,4 +1,3 @@
-import { format } from "date-fns/format";
 import type { TransactionSplit } from "api/types.gen";
 
 export type transactionTypeFilter = "" | "Debit" | "Credit";
@@ -36,10 +35,3 @@ export interface CreateTransaction {
     reference?: string;
     transactionTime: string;
 }
-
-export const emptyTransaction: CreateTransaction = {
-    amount: 0,
-    description: "",
-    reference: "",
-    transactionTime: format(new Date(), 'yyyy-MM-dd'),
-};

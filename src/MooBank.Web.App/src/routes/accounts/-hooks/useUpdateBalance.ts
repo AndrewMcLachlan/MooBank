@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { setBalanceMutation, getAccountsQueryKey } from "api/@tanstack/react-query.gen";
+import { setBalanceMutation } from "api/@tanstack/react-query.gen";
 import type { CreateTransaction } from "models/transactions";
 import { toast } from "@andrewmclachlan/moo-ds";
+import { invalidateTransactionLists, invalidateAccountViews } from "./transactionKeys";
 
 export const useUpdateBalance = () => {
     const queryClient = useQueryClient();
@@ -9,7 +10,8 @@ export const useUpdateBalance = () => {
     const { mutateAsync, ...rest } = useMutation({
         ...setBalanceMutation(),
         onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: getAccountsQueryKey() });
+            invalidateTransactionLists(queryClient);
+            invalidateAccountViews(queryClient);
         },
     });
 

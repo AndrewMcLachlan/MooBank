@@ -53,7 +53,7 @@ export const Transactions: React.FC = () => {
 
     return (
         <AccountPage title="Transactions" actions={actions}>
-            <AddTransaction show={show} onClose={() => setShow(false)} onSave={() => setShow(false)} balanceUpdate={false} />
+            <AddTransaction show={show} onClose={() => setShow(false)} onSave={() => setShow(false)} />
             {!compactMode && (
                 <SectionRow>
                     <Col xxl={5} xl={12} lg={12} md={12} sm={12}>

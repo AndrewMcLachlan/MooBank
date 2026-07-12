@@ -1,3 +1,22 @@
 @import "transactions/transactionDetails.css";
 @import "transactions/transactionList.css";
 @import "transactions/transactionTagDetails.css";
+
+/* Add Transaction: choose between entering an amount or setting a new balance */
+.balance-choice {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.balance-choice .balance-choice-field {
+    flex: 1 1 11rem;
+    margin-bottom: 0;
+}
+
+/* Keep the currency addon ($) inline with its input; moo-ds .input-group wraps by default. */
+.balance-choice .input-group {
+    flex-wrap: nowrap;
+}
