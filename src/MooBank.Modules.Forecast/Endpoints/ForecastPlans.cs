@@ -13,11 +13,9 @@ namespace Asm.MooBank.Modules.Forecast.Endpoints;
 
 public class ForecastPlans : EndpointGroupBase
 {
-    public override string Name => "Forecast Plans";
-
     public override string Path => "/forecast/plans";
 
-    public override string Tags => "Forecast";
+    public override string[] Tags => ["Forecast"];
 
     protected override void MapEndpoints(IEndpointRouteBuilder routeGroupBuilder)
     {

@@ -9,11 +9,9 @@ namespace Asm.MooBank.Modules.Budgets.Endpoints;
 
 public class ReportEndpoint : EndpointGroupBase
 {
-    public override string Name => "Budget";
-
     public override string Path => "/budget/{year}/report";
 
-    public override string Tags => "Budget Report";
+    public override string[] Tags => ["Budget Report"];
 
 
     protected override void MapEndpoints(IEndpointRouteBuilder routeGroupBuilder)
@@ -25,10 +23,10 @@ public class ReportEndpoint : EndpointGroupBase
         routeGroupBuilder.MapQuery<ReportForMonth, BudgetReportValueMonth?>("{month}")
             .WithNames("Get Budget Report for Month");
 
-        routeGroupBuilder.MapQuery<ReportForMonthBreakdown, BudgetReportByMonthBreakdown?>("{month}/breakdown")
+        routeGroupBuilder.MapQuery<ReportForMonthBreakdown, BudgetReportByMonthBreakdown>("{month}/breakdown")
             .WithNames("Get Budget Report Breakdown for Month");
 
-        routeGroupBuilder.MapQuery<ReportForMonthBreakdownUnbudgeted, BudgetReportByMonthBreakdown?>("{month}/breakdown/unbudgeted")
+        routeGroupBuilder.MapQuery<ReportForMonthBreakdownUnbudgeted, BudgetReportByMonthBreakdown>("{month}/breakdown/unbudgeted")
             .WithNames("Get Budget Report Breakdown for Month for Unbudgeted Items");
     }
 }

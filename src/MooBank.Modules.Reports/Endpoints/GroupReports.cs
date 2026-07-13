@@ -9,11 +9,9 @@ namespace Asm.MooBank.Modules.Reports.Endpoints;
 
 internal class GroupReports : EndpointGroupBase
 {
-    public override string Name => "Group Reports";
-
     public override string Path => "groups/{groupId}/reports";
 
-    public override string Tags => "Group Reports";
+    public override string[] Tags => ["Group Reports"];
 
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {

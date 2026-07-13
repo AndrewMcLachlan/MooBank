@@ -10,11 +10,9 @@ namespace Asm.MooBank.Modules.Families.Endpoints;
 
 internal class FamiliesAdmin : EndpointGroupBase
 {
-    public override string Name => "Families Admin";
-
     public override string Path => "/families/admin";
 
-    public override string Tags => "Families";
+    public override string[] Tags => ["Families"];
 
     protected override void MapEndpoints(IEndpointRouteBuilder routeGroupBuilder)
     {

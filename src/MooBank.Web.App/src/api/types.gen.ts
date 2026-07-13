@@ -3329,7 +3329,9 @@ export type UpdateTagResponse = UpdateTagResponses[keyof UpdateTagResponses];
 
 export type CreateTagByNameData = {
     body: Array<number>;
-    path?: never;
+    path: {
+        name: string;
+    };
     query?: never;
     url: '/tags/{name}';
 };

@@ -11,11 +11,9 @@ namespace Asm.MooBank.Modules.Accounts.Endpoints;
 
 internal class InstitutionAccounts : EndpointGroupBase
 {
-    public override string Name => "Accounts";
-
     public override string Path => "/accounts/{instrumentId}/institution-accounts";
 
-    public override string Tags => "Accounts";
+    public override string[] Tags => ["Accounts"];
 
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {

@@ -12,11 +12,9 @@ namespace Asm.MooBank.Modules.Instruments.Endpoints;
 
 public class RulesEndpoints : EndpointGroupBase
 {
-    public override string Name => "Rules";
-
     public override string Path => "instruments/{instrumentId}/rules";
 
-    public override string Tags => "Rules";
+    public override string[] Tags => ["Rules"];
 
 
     protected override void MapEndpoints(IEndpointRouteBuilder routeGroupBuilder)

@@ -7,11 +7,9 @@ namespace Asm.MooBank.Modules.Bills.Endpoints;
 
 internal class BillReports : EndpointGroupBase
 {
-    public override string Name => "Bill Reports";
-
     public override string Path => "/bills/reports";
 
-    public override string Tags => "Bills";
+    public override string[] Tags => ["Bills"];
 
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {

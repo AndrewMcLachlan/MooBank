@@ -10,11 +10,9 @@ namespace Asm.MooBank.Modules.Institutions.Endpoints;
 
 internal class Institutions : EndpointGroupBase
 {
-    public override string Name => "Institutions";
-
     public override string Path => "/institutions";
 
-    public override string Tags => "Institutions";
+    public override string[] Tags => ["Institutions"];
 
     protected override void MapEndpoints(IEndpointRouteBuilder routeGroupBuilder)
     {
@@ -24,7 +22,7 @@ internal class Institutions : EndpointGroupBase
         routeGroupBuilder.MapQuery<Get, Models.Institution>("/{id}")
             .WithNames("Get Institution");
 
-        routeGroupBuilder.MapPostCreate<Create, Models.Institution>("/", "Get Institution".ToMachine(), (i) => new { i.Id })
+        routeGroupBuilder.MapPostCreate<Create, Models.Institution>("/", "Get Institution".ToMachine(), (i) => new { i.Id }, CommandBinding.Body)
             .WithNames("Create Institution")
             .RequireAuthorization(Policies.Admin)
             .WithValidation<Create>();

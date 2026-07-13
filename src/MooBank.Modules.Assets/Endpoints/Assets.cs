@@ -11,11 +11,9 @@ namespace Asm.MooBank.Modules.Assets.Endpoints;
 
 internal class Assets : EndpointGroupBase
 {
-    public override string Name => "Assets";
-
     public override string Path => "/assets";
 
-    public override string Tags => "Assets";
+    public override string[] Tags => ["Assets"];
 
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {
@@ -26,7 +24,7 @@ internal class Assets : EndpointGroupBase
         builder.MapPostCreate<Create, Asset>("/", "Get Asset".ToMachine(), a => new { a.Id }, CommandBinding.Body)
             .WithNames("Create Asset");
 
-        builder.MapPatchCommand<Update, Asset>("/{id}", CommandBinding.None)
+        builder.MapPatchCommand<Update, Asset>("/{id}", binding: CommandBinding.None)
             .WithNames("Update Asset")
             .Accepts<Update>("application/json")
             .RequireAuthorization(Policies.GetInstrumentViewerPolicy("id"));

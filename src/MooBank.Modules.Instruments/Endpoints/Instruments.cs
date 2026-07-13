@@ -11,11 +11,9 @@ namespace Asm.MooBank.Modules.Instruments.Endpoints;
 
 internal class Instruments : EndpointGroupBase
 {
-    public override string Name => "Instruments";
-
     public override string Path => "/instruments";
 
-    public override string Tags => "Instruments";
+    public override string[] Tags => ["Instruments"];
 
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {

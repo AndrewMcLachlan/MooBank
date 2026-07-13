@@ -11,11 +11,9 @@ namespace Asm.MooBank.Modules.Transactions.Endpoints;
 
 internal class TransactionsEndpoints : EndpointGroupBase
 {
-    public override string Name => "Transactions";
-
     public override string Path => "accounts/{instrumentId}/transactions";
 
-    public override string Tags => "Transactions";
+    public override string[] Tags => ["Transactions"];
 
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {
@@ -28,14 +26,14 @@ internal class TransactionsEndpoints : EndpointGroupBase
         builder.MapQuery<Search, IEnumerable<Transaction>>("")
             .WithNames("Search Transactions");
 
-        builder.MapCommand<Create, Transaction>("", CommandBinding.Parameters)
+        builder.MapCommand<Create, Transaction>("", binding: CommandBinding.Parameters)
             .WithNames("Create Transaction")
             .Accepts<Models.CreateTransaction>("application/json");
 
-        builder.MapCommand<UpdateBalance, Transaction>("/balance-adjustment", CommandBinding.Parameters)
+        builder.MapCommand<UpdateBalance, Transaction>("/balance-adjustment", binding: CommandBinding.Parameters)
             .WithNames("Set Balance");
 
-        builder.MapPatchCommand<UpdateTransaction, Transaction>("{id}", CommandBinding.None)
+        builder.MapPatchCommand<UpdateTransaction, Transaction>("{id}", binding: CommandBinding.None)
             .WithNames("Update Transaction")
             .Accepts<UpdateTransaction>("application/json");
 

@@ -11,11 +11,9 @@ namespace Asm.MooBank.Modules.Budgets.Endpoints;
 
 public class Budget : EndpointGroupBase
 {
-    public override string Name => "Budget";
-
     public override string Path => "/budget";
 
-    public override string Tags => "Budget";
+    public override string[] Tags => ["Budget"];
 
 
     protected override void MapEndpoints(IEndpointRouteBuilder routeGroupBuilder)

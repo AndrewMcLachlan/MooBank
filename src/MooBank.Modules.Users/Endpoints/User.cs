@@ -10,11 +10,9 @@ namespace Asm.MooBank.Modules.Users.Endpoints;
 
 public class User : EndpointGroupBase
 {
-    public override string Name => "User";
-
     public override string Path => "/users";
 
-    public override string Tags => "User";
+    public override string[] Tags => ["User"];
 
 
     protected override void MapEndpoints(IEndpointRouteBuilder routeGroupBuilder)

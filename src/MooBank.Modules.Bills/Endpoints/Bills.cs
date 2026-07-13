@@ -7,11 +7,9 @@ namespace Asm.MooBank.Modules.Bills.Endpoints;
 
 internal class Bills : EndpointGroupBase
 {
-    public override string Name => "Bills";
-
     public override string Path => "/bills";
 
-    public override string Tags => "Bills";
+    public override string[] Tags => ["Bills"];
 
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {
@@ -27,13 +25,13 @@ internal class Bills : EndpointGroupBase
         builder.MapQuery<Queries.Accounts.GetAll, IEnumerable<Models.Account>>("/accounts")
             .WithNames("Get Bill Accounts");
 
-        builder.MapPostCreate<Commands.Accounts.Create, Models.Account>("/accounts", "Get Bill Account".ToMachine(), a => new { InstrumentId = a.Id })
+        builder.MapPostCreate<Commands.Accounts.Create, Models.Account>("/accounts", "Get Bill Account".ToMachine(), a => new { InstrumentId = a.Id }, CommandBinding.Body)
             .WithNames("Create Bill Account");
 
         builder.MapPagedQuery<Queries.Bills.GetByUtilityType, Models.Bill>("/types/{utilityType}/bills")
             .WithNames("Get Bills By Utility Type");
 
-        builder.MapCommand<Commands.Bills.Import, Models.ImportResult>("/import", CommandBinding.Body)
+        builder.MapCommand<Commands.Bills.Import, Models.ImportResult>("/import", binding: CommandBinding.Body)
             .WithNames("Import Bills");
     }
 }
