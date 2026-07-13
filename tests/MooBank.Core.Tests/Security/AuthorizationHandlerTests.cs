@@ -492,6 +492,70 @@ public class RouteParamAuthorizationHandlerTests
         Assert.False(context.HasSucceeded);
     }
 
+    /// <summary>
+    /// Given a user who owns the instrument
+    /// When the owner requirement is handled by the resource handler with that instrument as the resource
+    /// Then authorization should succeed
+    /// </summary>
+    [Fact]
+    public async Task InstrumentOwnerResourceHandler_OwnedResource_Succeeds()
+    {
+        // Arrange
+        var user = CreateUser(accounts: [OwnedInstrumentId]);
+        var requirement = new InstrumentOwnerRequirement();
+        var resourceHandler = new InstrumentOwnerResourceAuthorisationHandler(user);
+        var context = CreateAuthorizationContext(requirement, OwnedInstrumentId);
+
+        // Act
+        await resourceHandler.HandleAsync(context);
+
+        // Assert
+        Assert.True(context.HasSucceeded);
+        Assert.False(context.HasFailed);
+    }
+
+    /// <summary>
+    /// Given a user who does not own the instrument
+    /// When the owner requirement is handled by the resource handler
+    /// Then authorization should not succeed (fail-closed)
+    /// </summary>
+    [Fact]
+    public async Task InstrumentOwnerResourceHandler_UnownedResource_DoesNotSucceed()
+    {
+        // Arrange
+        var user = CreateUser(accounts: [OwnedInstrumentId]);
+        var requirement = new InstrumentOwnerRequirement();
+        var resourceHandler = new InstrumentOwnerResourceAuthorisationHandler(user);
+        var context = CreateAuthorizationContext(requirement, UnauthorizedInstrumentId);
+
+        // Act
+        await resourceHandler.HandleAsync(context);
+
+        // Assert
+        Assert.False(context.HasSucceeded);
+    }
+
+    /// <summary>
+    /// Given a user with only shared access to the instrument
+    /// When the owner requirement is handled by the resource handler
+    /// Then authorization should not succeed (owner requires ownership, not shared access)
+    /// </summary>
+    [Fact]
+    public async Task InstrumentOwnerResourceHandler_SharedResource_DoesNotSucceed()
+    {
+        // Arrange
+        var user = CreateUser(sharedAccounts: [SharedInstrumentId]);
+        var requirement = new InstrumentOwnerRequirement();
+        var resourceHandler = new InstrumentOwnerResourceAuthorisationHandler(user);
+        var context = CreateAuthorizationContext(requirement, SharedInstrumentId);
+
+        // Act
+        await resourceHandler.HandleAsync(context);
+
+        // Assert
+        Assert.False(context.HasSucceeded);
+    }
+
     #endregion
 
     #region GroupOwnerAuthorisationHandler Tests

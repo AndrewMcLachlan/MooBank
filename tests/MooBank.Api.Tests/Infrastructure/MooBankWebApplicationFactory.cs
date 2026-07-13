@@ -1,12 +1,13 @@
 #nullable enable
 using Asm.MooBank.Infrastructure;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -19,24 +20,53 @@ public class MooBankWebApplicationFactory : WebApplicationFactory<Program>
 {
     private readonly string _databaseName = $"MooBankTest_{Guid.NewGuid()}";
 
+    // Holds the in-memory store outside the EF internal service provider so the seeding context and
+    // the request-scoped contexts share the same data.
+    private readonly InMemoryDatabaseRoot _databaseRoot = new();
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureTestServices(services =>
         {
-            // Remove the real DbContext registration
-            services.RemoveAll<DbContextOptions<MooBankContext>>();
-            services.RemoveAll<MooBankContext>();
+            // Replace the app's SqlServer DbContext with an in-memory one. Removing the options object
+            // is not enough: AddDbContext also registers an IDbContextOptionsConfiguration<MooBankContext>
+            // (the app's UseSqlServer action) that would otherwise run alongside our UseInMemoryDatabase,
+            // leaving both providers on the options ("Only a single database provider can be registered",
+            // and — more subtly — writes and reads landing in different stores). Remove it too.
+            var descriptorsToRemove = services
+                .Where(d => d.ServiceType == typeof(DbContextOptions<MooBankContext>)
+                         || d.ServiceType == typeof(DbContextOptions)
+                         || d.ServiceType == typeof(MooBankContext)
+                         || d.ServiceType.Name.StartsWith("IDbContextOptionsConfiguration", StringComparison.Ordinal))
+                .ToList();
+            foreach (var descriptor in descriptorsToRemove)
+            {
+                services.Remove(descriptor);
+            }
 
-            // Add in-memory database
+            // A shared InMemoryDatabaseRoot keeps one store per database name across the seeding context
+            // and the request-scoped contexts.
             services.AddDbContext<MooBankContext>(options =>
             {
-                options.UseInMemoryDatabase(_databaseName);
-                options.EnableServiceProviderCaching(false);
+                options.UseInMemoryDatabase(_databaseName, _databaseRoot);
             });
 
-            // Replace policy evaluator with our fake implementation
-            // This handles both authentication and authorization in tests
-            services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
+            // Authenticate via test headers, but leave the REAL authorization pipeline in place so
+            // the production requirement handlers execute (against seeded data / claims). The app
+            // explicitly sets the JwtBearer authenticate/challenge schemes, so override every default
+            // to TestScheme (setting DefaultScheme alone is not enough).
+            // The authorization policies pin the JwtBearer ("Bearer") authentication scheme, so the
+            // policy evaluator authenticates against it regardless of the default scheme. Swap that
+            // scheme's handler for the test handler, so the REAL authorization requirement handlers
+            // execute over claims supplied via test headers (see TestAuthHandler).
+            services.AddTransient<TestAuthHandler>();
+            services.PostConfigure<AuthenticationOptions>(options =>
+            {
+                if (options.SchemeMap.TryGetValue(JwtBearerDefaults.AuthenticationScheme, out var bearer))
+                {
+                    bearer.HandlerType = typeof(TestAuthHandler);
+                }
+            });
         });
 
         builder.UseEnvironment("Testing");

@@ -253,4 +253,98 @@ public class LogicalAccountTests
     }
 
     #endregion
+
+    #region SetTagPurpose
+
+    /// <summary>
+    /// Given a LogicalAccount with no tag purpose for a purpose
+    /// When SetTagPurpose is called with a tag id
+    /// Then a new tag purpose is added
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void SetTagPurpose_NoExisting_AddsTagPurpose()
+    {
+        // Arrange
+        var account = CreateAccount();
+
+        // Act
+        account.SetTagPurpose(TagPurpose.Interest, 42);
+
+        // Assert
+        var tagPurpose = Assert.Single(account.TagPurposes);
+        Assert.Equal(TagPurpose.Interest, tagPurpose.Purpose);
+        Assert.Equal(42, tagPurpose.TagId);
+    }
+
+    /// <summary>
+    /// Given a LogicalAccount with an existing tag purpose
+    /// When SetTagPurpose is called for the same purpose with a different tag id
+    /// Then the existing tag purpose's tag id is updated (not duplicated)
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void SetTagPurpose_Existing_UpdatesTagId()
+    {
+        // Arrange
+        var account = CreateAccount();
+        account.SetTagPurpose(TagPurpose.Interest, 42);
+
+        // Act
+        account.SetTagPurpose(TagPurpose.Interest, 99);
+
+        // Assert
+        var tagPurpose = Assert.Single(account.TagPurposes);
+        Assert.Equal(99, tagPurpose.TagId);
+    }
+
+    /// <summary>
+    /// Given a LogicalAccount with an existing tag purpose
+    /// When SetTagPurpose is called for that purpose with a null tag id
+    /// Then the existing tag purpose is removed
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void SetTagPurpose_NullTagId_RemovesExisting()
+    {
+        // Arrange
+        var account = CreateAccount();
+        account.SetTagPurpose(TagPurpose.Interest, 42);
+
+        // Act
+        account.SetTagPurpose(TagPurpose.Interest, null);
+
+        // Assert
+        Assert.Empty(account.TagPurposes);
+    }
+
+    /// <summary>
+    /// Given a LogicalAccount with a tag purpose for a different purpose
+    /// When SetTagPurpose is called with a null tag id for a purpose that is not set
+    /// Then nothing is removed and the unrelated purpose is left intact
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void SetTagPurpose_NullTagId_NoMatchingPurpose_LeavesOthersIntact()
+    {
+        // Arrange
+        var account = CreateAccount();
+        account.SetTagPurpose(TagPurpose.Interest, 42);
+
+        // Act
+        account.SetTagPurpose(TagPurpose.MortgageInterest, null);
+
+        // Assert
+        var tagPurpose = Assert.Single(account.TagPurposes);
+        Assert.Equal(TagPurpose.Interest, tagPurpose.Purpose);
+    }
+
+    private static LogicalAccount CreateAccount() =>
+        new(TestModels.AccountId, [])
+        {
+            Name = "Test Account",
+            Currency = "AUD",
+        };
+
+    #endregion
 }
