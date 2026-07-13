@@ -130,6 +130,32 @@ jobs:
         name: coverage-${{ matrix.test-project.name }}
         path: testresults/${{ matrix.test-project.name }}/**/coverage.cobertura.xml
 
+  test-frontend:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: read
+      contents: read
+    steps:
+    - uses: actions/checkout@v7
+    - name: Setup node and npm
+      uses: actions/setup-node@v6
+      with:
+        node-version: 24
+        cache: npm
+        cache-dependency-path: 'src/MooBank.Web.App/package-lock.json'
+        registry-url: "https://npm.pkg.github.com"
+    - name: Install App dependencies
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.CROSS_REPO_PACKAGE_TOKEN }}
+      run: npm ci --prefix src/MooBank.Web.App --force
+    - name: Test App
+      run: npm run test:coverage --prefix src/MooBank.Web.App
+    - name: Upload frontend coverage
+      uses: actions/upload-artifact@v7.0.1
+      with:
+        name: coverage-frontend
+        path: src/MooBank.Web.App/coverage/cobertura-coverage.xml
+
   coverage-report:
     runs-on: ubuntu-latest
     needs: test
@@ -165,7 +191,7 @@ jobs:
 
   docker-push:
     runs-on: ubuntu-latest
-    needs: [build, test]
+    needs: [build, test, test-frontend]
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
     permissions:
       packages: write
@@ -199,7 +225,7 @@ jobs:
     concurrency:
       group: moobank-deploy-group
       cancel-in-progress: true
-    needs: [build, test, docker-push]
+    needs: [build, test, test-frontend, docker-push]
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
     uses: AndrewMcLachlan/actions/.github/workflows/deploy-azure.yml@v4
     with:

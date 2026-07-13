@@ -117,7 +117,7 @@ See `routes/settings/institutions/-components/InstitutionForm.tsx`. Validation g
 
 ### Critical Rules
 
-**NEVER use Bootstrap's utility CSS classes** such as:
+This app does **not** use Bootstrap (or any utility-CSS framework) — MooDS ships its own components and styles. Do not reach for atomic/utility class names; they are not defined and do nothing. **NEVER use utility CSS classes** such as:
 - `d-flex`, `d-block`, `d-none`, etc.
 - `justify-content-*`, `align-items-*`, `flex-*`
 - `m-*`, `mb-*`, `mt-*`, `mx-*`, `my-*` (margin utilities)
@@ -139,7 +139,7 @@ See `routes/settings/institutions/-components/InstitutionForm.tsx`. Validation g
 - Action columns: `row-action`
 - Negative values: `negative` class; amount formatting: `amount` class
 - Use nested CSS for component-scoped styles
-- Prefer CSS Grid over Bootstrap's grid system for layouts
+- Prefer CSS Grid for layouts
 
 ## Component Usage (moo-ds)
 
