@@ -90,9 +90,13 @@ jobs:
       fail-fast: false
       matrix:
         test-project:
+          - { name: "MooBank.Api.Tests" }
           - { name: "MooBank.Core.Tests" }
           - { name: "MooBank.Domain.Tests" }
           - { name: "MooBank.Infrastructure.Tests" }
+          - { name: "MooBank.Institution.AustralianSuper.Tests" }
+          - { name: "MooBank.Institution.Ing.Tests" }
+          - { name: "MooBank.Institution.Macquarie.Tests" }
           - { name: "MooBank.Modules.Accounts.Tests" }
           - { name: "MooBank.Modules.Assets.Tests" }
           - { name: "MooBank.Modules.Bills.Tests" }

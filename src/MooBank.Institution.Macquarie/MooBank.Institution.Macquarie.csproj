@@ -10,4 +10,9 @@
     <ProjectReference Include="..\MooBank.Models\MooBank.Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="Asm.MooBank.Institution.Macquarie.Tests" />
+    <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+  </ItemGroup>
+
 </Project>
