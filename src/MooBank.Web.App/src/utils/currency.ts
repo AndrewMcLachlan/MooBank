@@ -1,4 +1,4 @@
-const SYMBOLS: Record<string, string> = {
+export const currencySymbols: Record<string, string> = {
     AUD: "$",
     USD: "$",
     NZD: "$",
@@ -17,7 +17,7 @@ const SYMBOLS: Record<string, string> = {
 export const getCurrencySymbol = (code: string | null | undefined): string => {
     if (!code) return "";
     const upper = code.toUpperCase();
-    return SYMBOLS[upper] ?? `${upper} `;
+    return currencySymbols[upper] ?? `${upper} `;
 };
 
 export const formatCurrency = (amount: number | null | undefined, currencyCode: string = "AUD", decimalPlaces = 2): string => {

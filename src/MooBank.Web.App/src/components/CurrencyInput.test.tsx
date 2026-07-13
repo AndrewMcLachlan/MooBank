@@ -31,6 +31,11 @@ describe("CurrencyInput", () => {
         expect(screen.getByText("$")).toBeInTheDocument();
     });
 
+    it("falls back to $ for an unrecognised currency code", () => {
+        renderCurrencyInput({ currency: "XYZ" });
+        expect(screen.getByText("$")).toBeInTheDocument();
+    });
+
     it("renders a number input", () => {
         renderCurrencyInput({ currency: "AUD" });
         const input = document.querySelector<HTMLInputElement>("#amount")!;
