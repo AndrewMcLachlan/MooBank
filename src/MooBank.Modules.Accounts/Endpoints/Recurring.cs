@@ -13,7 +13,7 @@ internal class RecurringEndpoints : EndpointGroupBase
 {
     public override string Path => "accounts/{accountId}/recurring";
 
-    public override string[] Tags => ["Recurring Transactions"];
+    public override string? Tag => "Recurring Transactions";
 
     protected override void MapEndpoints(IEndpointRouteBuilder routeGroupBuilder)
     {

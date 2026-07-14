@@ -13,7 +13,7 @@ internal class Instruments : EndpointGroupBase
 {
     public override string Path => "/instruments";
 
-    public override string[] Tags => ["Instruments"];
+    public override string? Tag => "Instruments";
 
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {

@@ -14,7 +14,7 @@ internal class VirtualInstruments : EndpointGroupBase
 {
     public override string Path => "/instruments/{instrumentId}/virtual";
 
-    public override string[] Tags => ["Virtual Instruments"];
+    public override string? Tag => "Virtual Instruments";
 
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {

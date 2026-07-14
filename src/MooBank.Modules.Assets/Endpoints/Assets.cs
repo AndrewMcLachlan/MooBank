@@ -13,7 +13,7 @@ internal class Assets : EndpointGroupBase
 {
     public override string Path => "/assets";
 
-    public override string[] Tags => ["Assets"];
+    public override string? Tag => "Assets";
 
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {

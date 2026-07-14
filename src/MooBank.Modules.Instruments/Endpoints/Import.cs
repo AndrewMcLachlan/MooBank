@@ -13,7 +13,7 @@ internal class Import : EndpointGroupBase
 {
     public override string Path => "/instruments/{instrumentId}/accounts/{accountId}/import";
 
-    public override string[] Tags => ["Import"];
+    public override string? Tag => "Import";
 
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {

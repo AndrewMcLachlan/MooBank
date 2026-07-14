@@ -13,7 +13,7 @@ internal class StockTransactionsEndpoints : EndpointGroupBase
 {
     public override string Path => "/stocks/{instrumentId}/transactions";
 
-    public override string[] Tags => ["Transactions"];
+    public override string? Tag => "Transactions";
 
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {

@@ -12,7 +12,7 @@ internal class Reports : EndpointGroupBase
 {
     public override string Path => "accounts/{accountId}/reports";
 
-    public override string[] Tags => ["Reports"];
+    public override string? Tag => "Reports";
 
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {

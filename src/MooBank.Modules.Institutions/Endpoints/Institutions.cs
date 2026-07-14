@@ -12,7 +12,7 @@ internal class Institutions : EndpointGroupBase
 {
     public override string Path => "/institutions";
 
-    public override string[] Tags => ["Institutions"];
+    public override string? Tag => "Institutions";
 
     protected override void MapEndpoints(IEndpointRouteBuilder routeGroupBuilder)
     {

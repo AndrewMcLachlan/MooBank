@@ -9,7 +9,7 @@ internal class Bills : EndpointGroupBase
 {
     public override string Path => "/bills";
 
-    public override string[] Tags => ["Bills"];
+    public override string? Tag => "Bills";
 
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {

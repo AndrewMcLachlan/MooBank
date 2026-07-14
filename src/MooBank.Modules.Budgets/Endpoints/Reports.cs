@@ -11,7 +11,7 @@ public class ReportEndpoint : EndpointGroupBase
 {
     public override string Path => "/budget/{year}/report";
 
-    public override string[] Tags => ["Budget Report"];
+    public override string? Tag => "Budget Report";
 
 
     protected override void MapEndpoints(IEndpointRouteBuilder routeGroupBuilder)

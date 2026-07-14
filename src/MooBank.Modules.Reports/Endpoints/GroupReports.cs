@@ -11,7 +11,7 @@ internal class GroupReports : EndpointGroupBase
 {
     public override string Path => "groups/{groupId}/reports";
 
-    public override string[] Tags => ["Group Reports"];
+    public override string? Tag => "Group Reports";
 
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {

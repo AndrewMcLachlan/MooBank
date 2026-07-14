@@ -13,7 +13,7 @@ public class Budget : EndpointGroupBase
 {
     public override string Path => "/budget";
 
-    public override string[] Tags => ["Budget"];
+    public override string? Tag => "Budget";
 
 
     protected override void MapEndpoints(IEndpointRouteBuilder routeGroupBuilder)

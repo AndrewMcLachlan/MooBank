@@ -14,7 +14,7 @@ internal class TagsEndpoints : EndpointGroupBase
 {
     public override string Path => "/tags";
 
-    public override string[] Tags => ["Tags"];
+    public override string? Tag => "Tags";
 
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {

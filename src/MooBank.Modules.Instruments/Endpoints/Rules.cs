@@ -14,7 +14,7 @@ public class RulesEndpoints : EndpointGroupBase
 {
     public override string Path => "instruments/{instrumentId}/rules";
 
-    public override string[] Tags => ["Rules"];
+    public override string? Tag => "Rules";
 
 
     protected override void MapEndpoints(IEndpointRouteBuilder routeGroupBuilder)

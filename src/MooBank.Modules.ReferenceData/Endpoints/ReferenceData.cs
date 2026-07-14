@@ -11,7 +11,7 @@ internal class ReferenceData : EndpointGroupBase
 {
     public override string Path => "/reference-data";
 
-    public override string[] Tags => ["Reference Data"];
+    public override string? Tag => "Reference Data";
 
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {

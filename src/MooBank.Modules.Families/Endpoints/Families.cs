@@ -12,7 +12,7 @@ internal class Families : EndpointGroupBase
 {
     public override string Path => "/families";
 
-    public override string[] Tags => ["Families"];
+    public override string? Tag => "Families";
 
     protected override void MapEndpoints(IEndpointRouteBuilder routeGroupBuilder)
     {

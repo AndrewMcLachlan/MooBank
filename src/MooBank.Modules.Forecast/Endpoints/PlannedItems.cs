@@ -12,7 +12,7 @@ public class PlannedItems : EndpointGroupBase
 {
     public override string Path => "/forecast/plans/{planId}/items";
 
-    public override string[] Tags => ["Forecast"];
+    public override string? Tag => "Forecast";
 
     protected override void MapEndpoints(IEndpointRouteBuilder routeGroupBuilder)
     {

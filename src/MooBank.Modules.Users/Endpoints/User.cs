@@ -12,7 +12,7 @@ public class User : EndpointGroupBase
 {
     public override string Path => "/users";
 
-    public override string[] Tags => ["User"];
+    public override string? Tag => "User";
 
 
     protected override void MapEndpoints(IEndpointRouteBuilder routeGroupBuilder)
