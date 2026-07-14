@@ -34,7 +34,7 @@ internal class GetFormattedHandler(IQueryable<Domain.Entities.Account.LogicalAcc
         var allGroups = logicalAccounts1.Select(g => g.GetGroup(userId))
             .Union(stockHoldings1.Select(g => g.GetGroup(userId)))
             .Union(assets1.Select(a => a.GetGroup(userId)))
-            .Distinct(new IIdentifiableEqualityComparer<Domain.Entities.Group.Group, Guid>()!);
+            .Distinct(new IdentifiableEqualityComparer<Domain.Entities.Group.Group, Guid>()!);
 
         List<Group> groups = [];
 

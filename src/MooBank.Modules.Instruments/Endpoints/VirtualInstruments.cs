@@ -12,11 +12,9 @@ namespace Asm.MooBank.Modules.Instruments.Endpoints;
 
 internal class VirtualInstruments : EndpointGroupBase
 {
-    public override string Name => "Virtual Instruments";
-
     public override string Path => "/instruments/{instrumentId}/virtual";
 
-    public override string Tags => Name;
+    public override string? Tag => "Virtual Instruments";
 
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {
@@ -29,11 +27,11 @@ internal class VirtualInstruments : EndpointGroupBase
         builder.MapPostCreate<Create, VirtualInstrument>("/", "Get Virtual Instrument".ToMachine(), a => new { VirtualInstrumentId = a.Id }, CommandBinding.Parameters)
             .WithNames("Create Virtual Instrument");
 
-        builder.MapPatchCommand<Update, VirtualInstrument>("/{virtualInstrumentId}", CommandBinding.None)
+        builder.MapPatchCommand<Update, VirtualInstrument>("/{virtualInstrumentId}", binding: CommandBinding.None)
             .WithNames("Update Virtual Instrument")
             .Accepts<Update>("application/json");
 
-        builder.MapPatchCommand<UpdateBalance, VirtualInstrument>("/{virtualInstrumentId}/balance", CommandBinding.None)
+        builder.MapPatchCommand<UpdateBalance, VirtualInstrument>("/{virtualInstrumentId}/balance", binding: CommandBinding.None)
             .WithNames("Update Virtual Instrument Balance")
             .Accepts<UpdateBalance>("application/json");
 

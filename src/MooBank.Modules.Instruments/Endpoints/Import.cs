@@ -11,11 +11,9 @@ namespace Asm.MooBank.Modules.Instruments.Endpoints;
 
 internal class Import : EndpointGroupBase
 {
-    public override string Name => "Import";
-
     public override string Path => "/instruments/{instrumentId}/accounts/{accountId}/import";
 
-    public override string Tags => "Import";
+    public override string? Tag => "Import";
 
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {
@@ -28,7 +26,7 @@ internal class Import : EndpointGroupBase
             }
 
             using Stream stream = file.OpenReadStream();
-            await commandDispatcher.Dispatch(new Commands.Import.Import(instrumentId, accountId, stream), cancellationToken);
+            await commandDispatcher.Execute(new Commands.Import.Import(instrumentId, accountId, stream), cancellationToken);
             return Results.NoContent();
         })
             .WithMetadata(new RequireAntiforgeryTokenAttribute(false))
