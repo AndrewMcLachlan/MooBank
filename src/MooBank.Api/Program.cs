@@ -125,7 +125,7 @@ void AddServices(WebApplicationBuilder builder)
         options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
-    services.AddProblemDetailsFactory();
+    services.AddAsmExceptionHandler();
 
     services.AddMooBankDbContext(builder.Environment, builder.Configuration);
 
@@ -220,8 +220,9 @@ void AddServices(WebApplicationBuilder builder)
             .AddAbs()
             .AddIntegrationServices();
 
-    var headerPolicies = services.AddStandardSecurityHeaders()
-        .AddContentSecurityPolicy(options =>
+    services.AddStandardSecurityHeaders(policies =>
+    {
+        policies.AddContentSecurityPolicy(options =>
         {
             options.AddDefaultSrc().Self();
             options.AddConnectSrc().Self().From("https://login.microsoftonline.com").From("https://graph.microsoft.com");
@@ -231,14 +232,16 @@ void AddServices(WebApplicationBuilder builder)
             options.AddFontSrc().Self().From("https://cdn.mclachlan.family");
             options.AddStyleSrc().Self().UnsafeInline();
             options.AddScriptSrc().Self().UnsafeInline();
-        })
-        .AddPermissionsPolicyWithDefaultSecureDirectives();
+        });
 
-    // MSAL loads Microsoft's authorize endpoint in a hidden iframe and that response
-    // does not include Cross-Origin-Resource-Policy. With COEP=require-corp the browser
-    // blocks it. We don't use SharedArrayBuffer or any other COEP-gated feature, so
-    // remove the header entirely rather than relying on UnsafeNone overriding the default.
-    headerPolicies.Remove("Cross-Origin-Embedder-Policy");
+        policies.AddPermissionsPolicyWithDefaultSecureDirectives();
+
+        // MSAL loads Microsoft's authorize endpoint in a hidden iframe and that response
+        // does not include Cross-Origin-Resource-Policy. With COEP=require-corp the browser
+        // blocks it. We don't use SharedArrayBuffer or any other COEP-gated feature, so
+        // remove the header entirely rather than relying on UnsafeNone overriding the default.
+        policies.Remove("Cross-Origin-Embedder-Policy");
+    });
 
     // Register WebJobs SDK for in-process background jobs
     builder.Host.ConfigureWebJobs(webJobsBuilder =>

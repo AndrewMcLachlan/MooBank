@@ -11,11 +11,9 @@ namespace Asm.MooBank.Modules.Stocks.Endpoints;
 
 internal class StockHoldings : EndpointGroupBase
 {
-    public override string Name => "Stock Holdings";
-
     public override string Path => "/stocks";
 
-    public override string Tags => "Stock Holding";
+    public override string? Tag => "Stock Holding";
 
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {
@@ -30,7 +28,7 @@ internal class StockHoldings : EndpointGroupBase
         builder.MapPostCreate<Create, StockHolding>("/", "Get Stock Holding".ToMachine(), a => new { InstrumentId = a.Id }, CommandBinding.Body)
             .WithNames("Create Stock Holding");
 
-        builder.MapPatchCommand<Update, StockHolding>("/{instrumentId}", CommandBinding.None)
+        builder.MapPatchCommand<Update, StockHolding>("/{instrumentId}", binding: CommandBinding.None)
             .WithNames("Update Stock Holding")
             .Accepts<Update>("application/json")
             .RequireAuthorization(Policies.GetInstrumentViewerPolicy());

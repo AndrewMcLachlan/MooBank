@@ -12,11 +12,9 @@ namespace Asm.MooBank.Modules.Tags.Endpoints;
 
 internal class TagsEndpoints : EndpointGroupBase
 {
-    public override string Name => "Tags";
-
     public override string Path => "/tags";
 
-    public override string Tags => "Tags";
+    public override string? Tag => "Tags";
 
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {

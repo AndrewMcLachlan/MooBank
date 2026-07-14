@@ -20,6 +20,4 @@ public interface ITransactionRepository : IWritableRepository<Transaction, Guid>
     /// Gets the ID and description of each transaction for an instrument without loading or tracking the entities.
     /// </summary>
     Task<IEnumerable<TransactionDescription>> GetTransactionDescriptions(Guid instrumentId, CancellationToken cancellationToken = default);
-
-    void AddRange(IEnumerable<Transaction> transactions);
 }

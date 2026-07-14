@@ -4690,6 +4690,16 @@
         ],
         "summary": "Create a tag by name",
         "operationId": "create-tag-by-name",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -10037,7 +10047,7 @@
       "oidc": {
         "type": "openIdConnect",
         "description": "OIDC",
-        "openIdConnectUrl": "https://login.microsoftonline.com/00000000-0000-0000-0000-000000000000/v2.0/.well-known/openid-configuration"
+        "openIdConnectUrl": "https://login.microsoftonline.com/30efefb9-9034-4e0c-8c69-17f4578f5924/v2.0/.well-known/openid-configuration"
       }
     }
   },

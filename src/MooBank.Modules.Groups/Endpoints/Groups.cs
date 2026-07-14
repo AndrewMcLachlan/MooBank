@@ -10,11 +10,9 @@ namespace Asm.MooBank.Modules.Groups.Endpoints;
 
 public class Groups : EndpointGroupBase
 {
-    public override string Name => "Groups";
-
     public override string Path => "/groups";
 
-    public override string Tags => "Groups";
+    public override string? Tag => "Groups";
 
 
     protected override void MapEndpoints(IEndpointRouteBuilder routeGroupBuilder)
@@ -26,7 +24,7 @@ public class Groups : EndpointGroupBase
             .WithNames("Get Group")
             .RequireAuthorization(Policies.GetGroupOwnerPolicy("id"));
 
-        routeGroupBuilder.MapPostCreate<Create, Models.Group>("/", "Get Group".ToMachine(), (group) => new { id = group.Id })
+        routeGroupBuilder.MapPostCreate<Create, Models.Group>("/", "Get Group".ToMachine(), (group) => new { id = group.Id }, CommandBinding.Body)
             .WithNames("Create Group")
             .WithValidation<Create>();
 

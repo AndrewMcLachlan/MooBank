@@ -11,11 +11,9 @@ namespace Asm.MooBank.Modules.Accounts.Endpoints;
 
 internal class RecurringEndpoints : EndpointGroupBase
 {
-    public override string Name => "Recurring Transactions";
-
     public override string Path => "accounts/{accountId}/recurring";
 
-    public override string Tags => "Recurring Transactions";
+    public override string? Tag => "Recurring Transactions";
 
     protected override void MapEndpoints(IEndpointRouteBuilder routeGroupBuilder)
     {
@@ -33,7 +31,7 @@ internal class RecurringEndpoints : EndpointGroupBase
             .Produces<RecurringTransaction>();
 
 
-        routeGroupBuilder.MapPatchCommand<Update, RecurringTransaction>("/{recurringTransactionId}", CommandBinding.None)
+        routeGroupBuilder.MapPatchCommand<Update, RecurringTransaction>("/{recurringTransactionId}", binding: CommandBinding.None)
             .WithNames("Update Recurring Transaction")
             .Accepts<Update>("application/json")
             .Produces<RecurringTransaction>();
