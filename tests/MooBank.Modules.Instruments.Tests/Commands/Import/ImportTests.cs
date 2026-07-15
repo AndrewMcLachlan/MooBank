@@ -1,4 +1,5 @@
 #nullable enable
+using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Instruments.Tests.Support;
 using ImportCommand = Asm.MooBank.Modules.Instruments.Commands.Import.Import;
 using ImportHandler = Asm.MooBank.Modules.Instruments.Commands.Import.ImportHandler;
@@ -32,7 +33,7 @@ public class ImportTests
 
         // Assert
         _mocks.ImportQueueMock.Verify(
-            q => q.QueueImport(instrumentId, accountId, _mocks.User, It.IsAny<byte[]>()),
+            q => q.Queue(It.Is<ImportWorkItem>(w => w.InstrumentId == instrumentId && w.AccountId == accountId && w.User == _mocks.User)),
             Times.Once);
     }
 
@@ -47,8 +48,8 @@ public class ImportTests
         byte[]? capturedData = null;
 
         _mocks.ImportQueueMock
-            .Setup(q => q.QueueImport(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<MooBank.Models.User>(), It.IsAny<byte[]>()))
-            .Callback<Guid, Guid, MooBank.Models.User, byte[]>((_, _, _, data) => capturedData = data);
+            .Setup(q => q.Queue(It.IsAny<ImportWorkItem>()))
+            .Callback<ImportWorkItem>(w => capturedData = w.FileData);
 
         var handler = new ImportHandler(_mocks.ImportQueueMock.Object, _mocks.User);
         var command = new ImportCommand(instrumentId, accountId, stream);
@@ -71,8 +72,8 @@ public class ImportTests
         Guid? capturedInstrumentId = null;
 
         _mocks.ImportQueueMock
-            .Setup(q => q.QueueImport(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<MooBank.Models.User>(), It.IsAny<byte[]>()))
-            .Callback<Guid, Guid, MooBank.Models.User, byte[]>((iid, _, _, _) => capturedInstrumentId = iid);
+            .Setup(q => q.Queue(It.IsAny<ImportWorkItem>()))
+            .Callback<ImportWorkItem>(w => capturedInstrumentId = w.InstrumentId);
 
         var handler = new ImportHandler(_mocks.ImportQueueMock.Object, _mocks.User);
         var command = new ImportCommand(instrumentId, accountId, stream);
@@ -94,8 +95,8 @@ public class ImportTests
         Guid? capturedAccountId = null;
 
         _mocks.ImportQueueMock
-            .Setup(q => q.QueueImport(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<MooBank.Models.User>(), It.IsAny<byte[]>()))
-            .Callback<Guid, Guid, MooBank.Models.User, byte[]>((_, aid, _, _) => capturedAccountId = aid);
+            .Setup(q => q.Queue(It.IsAny<ImportWorkItem>()))
+            .Callback<ImportWorkItem>(w => capturedAccountId = w.AccountId);
 
         var handler = new ImportHandler(_mocks.ImportQueueMock.Object, _mocks.User);
         var command = new ImportCommand(instrumentId, accountId, stream);
@@ -117,8 +118,8 @@ public class ImportTests
         MooBank.Models.User? capturedUser = null;
 
         _mocks.ImportQueueMock
-            .Setup(q => q.QueueImport(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<MooBank.Models.User>(), It.IsAny<byte[]>()))
-            .Callback<Guid, Guid, MooBank.Models.User, byte[]>((_, _, user, _) => capturedUser = user);
+            .Setup(q => q.Queue(It.IsAny<ImportWorkItem>()))
+            .Callback<ImportWorkItem>(w => capturedUser = w.User);
 
         var handler = new ImportHandler(_mocks.ImportQueueMock.Object, _mocks.User);
         var command = new ImportCommand(instrumentId, accountId, stream);
@@ -140,8 +141,8 @@ public class ImportTests
         byte[]? capturedData = null;
 
         _mocks.ImportQueueMock
-            .Setup(q => q.QueueImport(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<MooBank.Models.User>(), It.IsAny<byte[]>()))
-            .Callback<Guid, Guid, MooBank.Models.User, byte[]>((_, _, _, data) => capturedData = data);
+            .Setup(q => q.Queue(It.IsAny<ImportWorkItem>()))
+            .Callback<ImportWorkItem>(w => capturedData = w.FileData);
 
         var handler = new ImportHandler(_mocks.ImportQueueMock.Object, _mocks.User);
         var command = new ImportCommand(instrumentId, accountId, stream);
@@ -166,8 +167,8 @@ public class ImportTests
         byte[]? capturedData = null;
 
         _mocks.ImportQueueMock
-            .Setup(q => q.QueueImport(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<MooBank.Models.User>(), It.IsAny<byte[]>()))
-            .Callback<Guid, Guid, MooBank.Models.User, byte[]>((_, _, _, data) => capturedData = data);
+            .Setup(q => q.Queue(It.IsAny<ImportWorkItem>()))
+            .Callback<ImportWorkItem>(w => capturedData = w.FileData);
 
         var handler = new ImportHandler(_mocks.ImportQueueMock.Object, _mocks.User);
         var command = new ImportCommand(instrumentId, accountId, stream);

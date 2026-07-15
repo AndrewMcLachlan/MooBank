@@ -1,12 +1,11 @@
-using Asm.MooBank.Queues;
-using Asm.MooBank.Security;
-using Asm.MooBank.Services;
+using Asm.Hosting;
+using Asm.MooBank.Models;
 
 namespace Asm.MooBank.Modules.Instruments.Commands.Import;
 
 public record Import(Guid InstrumentId, Guid AccountId, Stream Stream) : ICommand;
 
-internal class ImportHandler(IImportTransactionsQueue importQueue, MooBank.Models.User user) : ICommandHandler<Import>
+internal class ImportHandler(IBackgroundWorkQueue<ImportWorkItem> importQueue, MooBank.Models.User user) : ICommandHandler<Import>
 {
     public async ValueTask Handle(Import request, CancellationToken cancellationToken)
     {
@@ -18,6 +17,6 @@ internal class ImportHandler(IImportTransactionsQueue importQueue, MooBank.Model
         var fileData = memoryStream.ToArray();
 
         // Queue the import for background processing
-        importQueue.QueueImport(instrumentId, accountId, user, fileData);
+        importQueue.Queue(new ImportWorkItem(instrumentId, accountId, user, fileData));
     }
 }

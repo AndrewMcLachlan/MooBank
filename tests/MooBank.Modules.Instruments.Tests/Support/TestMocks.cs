@@ -1,8 +1,9 @@
 ﻿#nullable enable
 using Asm.Domain;
 using Asm.MooBank.Domain.Entities.Instrument;
+using Asm.Hosting;
 using Asm.MooBank.Domain.Entities.Tag;
-using Asm.MooBank.Queues;
+using Asm.MooBank.Models;
 using Asm.MooBank.Security;
 using Asm.MooBank.Services;
 using User = Asm.MooBank.Models.User;
@@ -20,9 +21,9 @@ public class TestMocks
         TagRepositoryMock = new Mock<ITagRepository>();
         SecurityMock = new Mock<ISecurity>();
         CurrencyConverterMock = new Mock<ICurrencyConverter>();
-        ImportQueueMock = new Mock<IImportTransactionsQueue>();
-        ReprocessQueueMock = new Mock<IReprocessTransactionsQueue>();
-        RunRulesQueueMock = new Mock<IRunRulesQueue>();
+        ImportQueueMock = new Mock<IBackgroundWorkQueue<ImportWorkItem>>();
+        ReprocessQueueMock = new Mock<IBackgroundWorkQueue<ReprocessWorkItem>>();
+        RunRulesQueueMock = new Mock<IBackgroundWorkQueue<Guid>>();
 
         // Default currency converter behavior - returns same amount (no conversion)
         CurrencyConverterMock
@@ -42,11 +43,11 @@ public class TestMocks
 
     public Mock<ICurrencyConverter> CurrencyConverterMock { get; }
 
-    public Mock<IImportTransactionsQueue> ImportQueueMock { get; }
+    public Mock<IBackgroundWorkQueue<ImportWorkItem>> ImportQueueMock { get; }
 
-    public Mock<IReprocessTransactionsQueue> ReprocessQueueMock { get; }
+    public Mock<IBackgroundWorkQueue<ReprocessWorkItem>> ReprocessQueueMock { get; }
 
-    public Mock<IRunRulesQueue> RunRulesQueueMock { get; }
+    public Mock<IBackgroundWorkQueue<Guid>> RunRulesQueueMock { get; }
 
     public User User { get; private set; }
 

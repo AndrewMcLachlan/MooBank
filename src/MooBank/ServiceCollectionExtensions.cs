@@ -1,5 +1,6 @@
-﻿using Asm.MooBank.Audit;
-using Asm.MooBank.Queues;
+﻿using Asm.Hosting;
+using Asm.MooBank.Audit;
+using Asm.MooBank.Models;
 using Asm.MooBank.Services;
 using Asm.MooBank.Services.Background;
 
@@ -21,9 +22,9 @@ public static class ServiceCollectionExtensions
             .AddHostedService<RunRulesBackgroundService>()
             .AddHostedService<ReprocessTransactionsBackgroundService>()
             .AddHostedService<ImportTransactionsBackgroundService>()
-            .AddSingleton<IRunRulesQueue, RunRulesQueue>()
-            .AddSingleton<IReprocessTransactionsQueue, ReprocessTransactionsQueue>()
-            .AddSingleton<IImportTransactionsQueue, ImportTransactionsQueue>();
+            .AddBackgroundWorkQueue<Guid>()
+            .AddBackgroundWorkQueue<ReprocessWorkItem>()
+            .AddBackgroundWorkQueue<ImportWorkItem>();
 
         services.AddHybridCache();
 
