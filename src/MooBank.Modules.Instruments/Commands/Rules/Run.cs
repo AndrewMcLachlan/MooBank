@@ -1,15 +1,14 @@
-﻿using Asm.MooBank.Queues;
-using Asm.MooBank.Services;
+﻿using Asm.Hosting;
 
 namespace Asm.MooBank.Modules.Instruments.Commands.Rules;
 
 public record Run(Guid InstrumentId) : ICommand;
 
-internal class RunHandler(IRunRulesQueue runRulesQueue) : ICommandHandler<Run>
+internal class RunHandler(IBackgroundWorkQueue<Guid> runRulesQueue) : ICommandHandler<Run>
 {
     public ValueTask Handle(Run request, CancellationToken cancellationToken)
     {
-        runRulesQueue.QueueRunRules(request.InstrumentId);
+        runRulesQueue.Queue(request.InstrumentId);
 
         return ValueTask.CompletedTask;
     }

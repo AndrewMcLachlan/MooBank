@@ -51,6 +51,7 @@
     <PackageVersion Include="Asm.Cqrs.AspNetCore" Version="4.0.22" />
     <PackageVersion Include="Asm.Domain" Version="4.0.22" />
     <PackageVersion Include="Asm.Domain.Infrastructure" Version="4.0.22" />
+    <PackageVersion Include="Asm.Hosting" Version="4.0.22" />
     <PackageVersion Include="Asm.ModelContextProtocol" Version="4.0.22" />
     <PackageVersion Include="Asm.Testing.Domain" Version="4.0.22" />
   </ItemGroup>

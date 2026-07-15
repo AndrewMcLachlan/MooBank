@@ -1,4 +1,5 @@
 #nullable enable
+using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Instruments.Commands.Import;
 using Asm.MooBank.Modules.Instruments.Tests.Support;
 
@@ -29,7 +30,7 @@ public class ReprocessTests
 
         // Assert
         _mocks.ReprocessQueueMock.Verify(
-            q => q.QueueReprocessTransactions(instrumentId, accountId),
+            q => q.Queue(It.Is<ReprocessWorkItem>(w => w.InstrumentId == instrumentId && w.AccountId == accountId)),
             Times.Once);
     }
 
@@ -42,8 +43,8 @@ public class ReprocessTests
         Guid? capturedInstrumentId = null;
 
         _mocks.ReprocessQueueMock
-            .Setup(q => q.QueueReprocessTransactions(It.IsAny<Guid>(), It.IsAny<Guid>()))
-            .Callback<Guid, Guid>((iid, _) => capturedInstrumentId = iid);
+            .Setup(q => q.Queue(It.IsAny<ReprocessWorkItem>()))
+            .Callback<ReprocessWorkItem>(w => capturedInstrumentId = w.InstrumentId);
 
         var handler = new ReprocessHandler(_mocks.ReprocessQueueMock.Object);
         var command = new Reprocess(instrumentId, accountId);
@@ -64,8 +65,8 @@ public class ReprocessTests
         Guid? capturedAccountId = null;
 
         _mocks.ReprocessQueueMock
-            .Setup(q => q.QueueReprocessTransactions(It.IsAny<Guid>(), It.IsAny<Guid>()))
-            .Callback<Guid, Guid>((_, aid) => capturedAccountId = aid);
+            .Setup(q => q.Queue(It.IsAny<ReprocessWorkItem>()))
+            .Callback<ReprocessWorkItem>(w => capturedAccountId = w.AccountId);
 
         var handler = new ReprocessHandler(_mocks.ReprocessQueueMock.Object);
         var command = new Reprocess(instrumentId, accountId);

@@ -28,7 +28,7 @@ public class RunTests
 
         // Assert
         _mocks.RunRulesQueueMock.Verify(
-            q => q.QueueRunRules(instrumentId),
+            q => q.Queue(instrumentId),
             Times.Once);
     }
 
@@ -40,7 +40,7 @@ public class RunTests
         Guid? capturedInstrumentId = null;
 
         _mocks.RunRulesQueueMock
-            .Setup(q => q.QueueRunRules(It.IsAny<Guid>()))
+            .Setup(q => q.Queue(It.IsAny<Guid>()))
             .Callback<Guid>(iid => capturedInstrumentId = iid);
 
         var handler = new RunHandler(_mocks.RunRulesQueueMock.Object);
@@ -76,7 +76,7 @@ public class RunTests
         var queuedIds = new List<Guid>();
 
         _mocks.RunRulesQueueMock
-            .Setup(q => q.QueueRunRules(It.IsAny<Guid>()))
+            .Setup(q => q.Queue(It.IsAny<Guid>()))
             .Callback<Guid>(iid => queuedIds.Add(iid));
 
         var handler = new RunHandler(_mocks.RunRulesQueueMock.Object);
