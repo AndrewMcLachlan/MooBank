@@ -17,4 +17,7 @@ internal class ImportTransactionsBackgroundService(IBackgroundWorkQueue<ImportWo
         var importTransactionsService = services.GetRequiredService<IImportTransactionsService>();
         await importTransactionsService.Import(workItem, cancellationToken);
     }
+
+    // Log only the ids — never User (PII) or FileData (the imported statement).
+    protected override object? DescribeWorkItem(ImportWorkItem workItem) => new { workItem.InstrumentId, workItem.AccountId };
 }
