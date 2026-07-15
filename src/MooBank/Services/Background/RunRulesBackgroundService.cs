@@ -12,4 +12,6 @@ internal class RunRulesBackgroundService(IBackgroundWorkQueue<Guid> queue, IServ
         var runRulesService = services.GetRequiredService<IRunRulesService>();
         await runRulesService.RunRules(accountId, cancellationToken);
     }
+
+    protected override object? DescribeWorkItem(Guid accountId) => accountId;
 }

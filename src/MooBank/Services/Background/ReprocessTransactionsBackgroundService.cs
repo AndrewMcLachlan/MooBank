@@ -13,4 +13,6 @@ internal class ReprocessTransactionsBackgroundService(IBackgroundWorkQueue<Repro
         var reprocessTransactionsService = services.GetRequiredService<IReprocessTransactionsService>();
         await reprocessTransactionsService.Reprocess(workItem, cancellationToken);
     }
+
+    protected override object? DescribeWorkItem(ReprocessWorkItem workItem) => new { workItem.InstrumentId, workItem.AccountId };
 }
