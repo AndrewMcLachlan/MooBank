@@ -50,73 +50,10 @@ void AddServices(WebApplicationBuilder builder)
     {
         options.OpenApiVersion = OpenApiSpecVersion.OpenApi3_1;
         options.AddDocumentTransformer<OidcSecuritySchemeTransformer>();
-        options.AddDocumentTransformer((document, context, cancellationToken) =>
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-            var fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
-
-            document.Info.Title = "MooBank API";
-            document.Info.Version = fileVersionInfo.FileVersion;
-
-            document.Tags ??= new HashSet<OpenApiTag>();
-            document.Tags.AddRange(document.Tags.OrderBy(t => t.Name));
-
-            return Task.CompletedTask;
-        });
-
-        options.AddDocumentTransformer((document, context, cancellationToken) =>
-        {
-            // The module endpoints are mapped under MapGroup("/api"). Move that segment into the
-            // server URL and strip it from each operation path, so the document reads as /accounts
-            // rather than /api/accounts. The relative /api server is resolved by Swagger UI and the
-            // generated client (baseURL: "/api") against the current origin, so requests still go to
-            // /api/accounts with the caller's host and protocol.
-            document.Servers = [new OpenApiServer { Url = "/api" }];
-
-            var rewritten = new OpenApiPaths();
-            foreach (var (path, item) in document.Paths)
-            {
-                var trimmed = path.StartsWith("/api", StringComparison.OrdinalIgnoreCase) ? path["/api".Length..] : path;
-                if (trimmed.Length == 0) trimmed = "/";
-                rewritten.Add(trimmed, item);
-            }
-            document.Paths = rewritten;
-
-            return Task.CompletedTask;
-        });
-
-        options.AddSchemaTransformer((schema, context, cancellationToken) =>
-        {
-            if (context.JsonTypeInfo.Kind != System.Text.Json.Serialization.Metadata.JsonTypeInfoKind.Object)
-                return Task.CompletedTask;
-
-            var nullabilityContext = new NullabilityInfoContext();
-
-            foreach (var jsonProperty in context.JsonTypeInfo.Properties)
-            {
-                if (jsonProperty.AttributeProvider is not PropertyInfo propertyInfo)
-                    continue;
-
-                var nullabilityInfo = nullabilityContext.Create(propertyInfo);
-
-                if (nullabilityInfo.WriteState != NullabilityState.Nullable)
-                {
-                    schema.Required ??= new HashSet<string>();
-                    schema.Required.Add(jsonProperty.Name);
-                }
-            }
-
-            return Task.CompletedTask;
-        });
-
-        options.CreateSchemaReferenceId = arg =>
-        {
-            if (arg.Kind == System.Text.Json.Serialization.Metadata.JsonTypeInfoKind.Object)
-            {
-                return arg.Type.GetCustomAttribute<DisplayNameAttribute>(false)?.DisplayName ?? OpenApiOptions.CreateDefaultSchemaReferenceId(arg);
-            }
-            return OpenApiOptions.CreateDefaultSchemaReferenceId(arg);
-        };
+        options.AddDocumentInfo("MooBank API", Assembly.GetExecutingAssembly());
+        options.RelocatePathPrefixToServer("/api");
+        options.AddRequiredForNonNullableProperties();
+        options.UseDisplayNameSchemaReferenceIds();
     });
 
     services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>

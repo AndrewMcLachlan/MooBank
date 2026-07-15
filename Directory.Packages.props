@@ -45,14 +45,14 @@
     <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.2.3" />
   </ItemGroup>
   <ItemGroup>
-    <PackageVersion Include="Asm" Version="4.0.18" />
-    <PackageVersion Include="Asm.AspNetCore" Version="4.0.18" />
-    <PackageVersion Include="Asm.AspNetCore.Api" Version="4.0.18" />
-    <PackageVersion Include="Asm.Cqrs.AspNetCore" Version="4.0.18" />
-    <PackageVersion Include="Asm.Domain" Version="4.0.18" />
-    <PackageVersion Include="Asm.Domain.Infrastructure" Version="4.0.18" />
-    <PackageVersion Include="Asm.ModelContextProtocol" Version="4.0.18" />
-    <PackageVersion Include="Asm.Testing.Domain" Version="4.0.18" />
+    <PackageVersion Include="Asm" Version="4.0.22" />
+    <PackageVersion Include="Asm.AspNetCore" Version="4.0.22" />
+    <PackageVersion Include="Asm.AspNetCore.Api" Version="4.0.22" />
+    <PackageVersion Include="Asm.Cqrs.AspNetCore" Version="4.0.22" />
+    <PackageVersion Include="Asm.Domain" Version="4.0.22" />
+    <PackageVersion Include="Asm.Domain.Infrastructure" Version="4.0.22" />
+    <PackageVersion Include="Asm.ModelContextProtocol" Version="4.0.22" />
+    <PackageVersion Include="Asm.Testing.Domain" Version="4.0.22" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="Bogus" Version="35.6.5" />
