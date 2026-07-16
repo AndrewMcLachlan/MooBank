@@ -57,7 +57,7 @@ jobs:
     - name: Install App dependencies
       env:
         NODE_AUTH_TOKEN: ${{ secrets.CROSS_REPO_PACKAGE_TOKEN }}
-      run: npm ci --prefix src/MooBank.Web.App --force
+      run: npm ci --prefix src/MooBank.Web.App
     - name: Version App
       run: npm version ${{ steps.set-version-number.outputs.version }} --prefix src/MooBank.Web.App --force
     - name: Build App
@@ -147,7 +147,7 @@ jobs:
     - name: Install App dependencies
       env:
         NODE_AUTH_TOKEN: ${{ secrets.CROSS_REPO_PACKAGE_TOKEN }}
-      run: npm ci --prefix src/MooBank.Web.App --force
+      run: npm ci --prefix src/MooBank.Web.App
     - name: Test App
       run: npm run test:coverage --prefix src/MooBank.Web.App
     - name: Upload frontend coverage
