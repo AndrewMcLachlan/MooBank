@@ -18,6 +18,21 @@ This file provides guidance for AI agents working on the MooBank React frontend.
 
 TypeScript settings: `strictNullChecks: false` and `noImplicitAny: false` are **accepted trade-offs** for TanStack Router's typed params — do not "fix" them.
 
+### TypeScript packages — read before changing them
+
+The project compiles with **TypeScript 7 and must stay on it**. The dependency layout looks wrong at a glance, but is deliberate:
+
+| package.json entry | Provides | Consumed by |
+|---|---|---|
+| `"@typescript/native": "npm:typescript@^7.0.2"` | the **TS 7** compiler → the `tsc` binary | `build`, `typecheck`, `trace` |
+| `"typescript": "npm:@typescript/typescript6@^6.0.2"` | the **TS 6.0 compiler API** (plus a `tsc6` binary) | ESLint only |
+
+TypeScript 7.0 ships **no programmatic API** — `require("typescript")` returns only `{ version, versionMajorMinor }`, and the API is due in 7.1. Type-aware linting needs `ts.TypeFlags`/`ts.createProgram`, so typescript-eslint cannot run against TS 7. This is **not** a peer-range problem and `overrides` cannot force it; the npm-alias arrangement is [Microsoft's recommended workaround](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/).
+
+- **Never "fix" lint by downgrading the compiler.** `tsc` is TS 7. The `typescript` alias is lint tooling, not the compiler.
+- Check `npx tsc --version` (must be 7.x) after any dependency change — the compat package pulls real TS 6 in as `@typescript/old`, which also carries a `tsc` binary and could win the bin if `@typescript/native` is removed.
+- **Remove this when** typescript-eslint supports the TS 7.1 API: drop `@typescript/native`, set `"typescript": "^7.x"`, restore `tsc`.
+
 ## Project Structure
 
 ```
@@ -158,7 +173,7 @@ This app does **not** use Bootstrap (or any utility-CSS framework) — MooDS shi
 
 ```bash
 npm start           # Development server
-npm run build       # Production build (runs tsgo — TypeScript native preview — then vite build)
+npm run build       # Production build (runs tsc — TypeScript 7 — then vite build)
 npm run lint        # ESLint (flat config, eslint 10)
 npm run generate    # Regenerate API types from the OpenAPI spec (build the backend first)
 npm test            # Vitest component tests
