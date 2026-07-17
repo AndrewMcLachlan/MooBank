@@ -1,3 +1,10 @@
+/* The dashboard section is a CSS grid with `align-items: center` (moo-ds). During load the header
+   is the only in-flow item (the chart's spinner is absolutely positioned), so centring drifts the
+   title downward — it isn't pinned to the top. Top-align the header so it stays put in both states. */
+main.dashboard .section > .section-header {
+    align-self: start;
+}
+
 .widget-error {
     display: flex;
     flex-direction: column;
