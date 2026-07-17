@@ -23,8 +23,8 @@ export const BreakdownWidget: React.FC = () => {
         // period=1 (Last Month) scopes the target page to the dashboard's period.
         if (!clickedTag.hasChildren) {
             const url = !clickedTag.tagId
-                ? `/accounts/${account!.id}?untagged=true&period=1`
-                : `/accounts/${account!.id}?tag=${clickedTag.tagId}&type=${reportType}&period=1`;
+                ? `/accounts/${account!.id}/transactions?untagged=true&period=1`
+                : `/accounts/${account!.id}/transactions?tag=${clickedTag.tagId}&type=${reportType}&period=1`;
             navigate({ to: url });
             return;
         }

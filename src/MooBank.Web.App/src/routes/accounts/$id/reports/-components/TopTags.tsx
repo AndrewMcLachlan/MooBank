@@ -60,7 +60,7 @@ export const TopTags: React.FC<TopTagsProps> = ({ accountId, period, reportType,
                 if (elements.length !== 1) return;
                 const tag = report.data!.tags[elements[0].index];
                 const periodQuery = periodId ? `&period=${periodId}` : "";
-                const url = !tag.tagId ? `/accounts/${accountId}?untagged=true${periodQuery}` : `/accounts/${accountId}?tag=${tag.tagId}&type=${reportType}${periodQuery}`;
+                const url = !tag.tagId ? `/accounts/${accountId}/transactions?untagged=true${periodQuery}` : `/accounts/${accountId}/transactions?tag=${tag.tagId}&type=${reportType}${periodQuery}`;
                 navigate({ to: url });
             },
         }}

@@ -32,8 +32,8 @@ export const BreakdownPage = () => {
     const selectedTagChanged = (clickedTag: TagValue) => {
         if (!clickedTag.hasChildren || clickedTag.tagId === tagId) {
             const url = !clickedTag.tagId
-                ? `/accounts/${accountId}?untagged=true`
-                : `/accounts/${accountId}?tag=${clickedTag.tagId}&type=${reportType}`;
+                ? `/accounts/${accountId}/transactions?untagged=true`
+                : `/accounts/${accountId}/transactions?tag=${clickedTag.tagId}&type=${reportType}`;
             navigate({ to: url });
             return;
         }
