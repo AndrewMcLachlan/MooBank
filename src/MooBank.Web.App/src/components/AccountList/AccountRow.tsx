@@ -2,7 +2,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import React, { useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouter } from "@tanstack/react-router";
 
 import { numberClassName } from "utils/classNameHelpers";
 
@@ -14,7 +14,7 @@ import { AccountTypeBadge } from "components/AccountTypeBadge";
 
 export const AccountRow: React.FC<AccountRowProps> = (props) => {
 
-    const { onRowClick } = useAccountRowCommonState(props);
+    const { onRowClick, onRowMouseEnter } = useAccountRowCommonState(props);
 
     const [showVirtualAccounts, setShowVirtualAccounts] = useState<boolean>(localStorage.getItem(`account|${MD5(props.instrument.id)}`) === "true");
 
@@ -28,7 +28,7 @@ export const AccountRow: React.FC<AccountRowProps> = (props) => {
 
     return (
         <>
-            <tr onClick={onRowClick} className="clickable">
+            <tr onClick={onRowClick} onMouseEnter={onRowMouseEnter} className="clickable">
                 <td className="d-none d-sm-table-cell" onClick={showVirtualAccountsClick}>{props.instrument.virtualInstruments && props.instrument.virtualInstruments.length > 0 && <FontAwesomeIcon icon={showVirtualAccounts ? "chevron-down" : "chevron-right"} />}</td>
                 <td>{props.instrument.name}</td>
                 <td className="d-none d-sm-table-cell"><AccountTypeBadge type={props.instrument.instrumentType} /></td>
@@ -59,6 +59,7 @@ export interface AccountRowProps {
 export const useAccountRowCommonState = (props: AccountRowProps) => {
 
     const navigate = useNavigate();
+    const router = useRouter();
 
     const onRowClick = () => {
 
@@ -70,12 +71,20 @@ export const useAccountRowCommonState = (props: AccountRowProps) => {
                 navigate({ to: `/shares/${props.instrument.id}` });
                 break;
             default:
-                navigate({ to: `/accounts/${props.instrument.id}` });
+                navigate({ to: `/accounts/${props.instrument.id}/transactions` });
                 break;
         }
     };
 
+    // Hover-prefetch the transactions route (runs its warming loader) so the list is ready by the
+    // time the row is clicked. Only accounts have the optimised route; assets/shares are unchanged.
+    const onRowMouseEnter = () => {
+        if (props.instrument.instrumentType === "Asset" || props.instrument.instrumentType === "Shares") return;
+        void router.preloadRoute({ to: "/accounts/$id/transactions", params: { id: props.instrument.id } } as any);
+    };
+
     return {
         onRowClick,
+        onRowMouseEnter,
     };
 }

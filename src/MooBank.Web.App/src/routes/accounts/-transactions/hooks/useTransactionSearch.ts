@@ -7,6 +7,7 @@ import type { SortDirection } from "@andrewmclachlan/moo-ds";
 import {
     defaultSortDirection,
     defaultSortField,
+    resolveTransactionSearch,
     searchToFilter,
     type TransactionSearch,
 } from "../transactionSearch";
@@ -22,9 +23,13 @@ export const useTransactionSearch = () => {
     const page = search.page ?? 1;
     const sortField = search.sortField ?? defaultSortField;
     const sortDirection = search.sortDirection ?? defaultSortDirection;
+    // Resolve defaults (persisted filters + default period) so the filter carries a date range from
+    // the first render — the query is then enabled immediately (and hits the loader-warmed cache)
+    // instead of waiting for the filter panel's post-mount effect to write params to the URL. `search`
+    // stays raw for the panel, which distinguishes explicit URL/widget params from these defaults.
     // Memoise so the debounced filter has a stable reference to track (searchToFilter builds a
     // fresh object each render); debounce the whole filter at the query, as the former slice did.
-    const filter = useMemo(() => searchToFilter(search), [search]);
+    const filter = useMemo(() => searchToFilter(resolveTransactionSearch(search as Record<string, unknown>)), [search]);
     const [debouncedFilter] = useDebounce(filter, 250);
 
     const patch = (values: Partial<TransactionSearch>) =>

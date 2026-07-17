@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import type { QueryClient } from "@tanstack/react-query";
 import type { PagedResult, SortDirection } from "@andrewmclachlan/moo-ds";
 import type { Transaction, TransactionFilterType, SortDirection as GenSortDirection } from "api/types.gen";
 import type { TransactionsFilter } from "models/transactions";
@@ -8,9 +9,14 @@ import {
 } from "api/@tanstack/react-query.gen";
 import { getTransactions, getUntaggedTransactions } from "api/sdk.gen";
 
-export const useTransactions = (accountId: string, filter: TransactionsFilter, pageSize: number, pageNumber: number, sortField: string, sortDirection: SortDirection) => {
+// Single source of the query key + fetch for the transaction list, so the component hook and the
+// route loader (which warms the cache) always agree on the key. `tagged` selects the untagged
+// endpoint. `enabled` mirrors the guard that a date range must be present.
+export const transactionsQueryConfig = (accountId: string, filter: TransactionsFilter, pageSize: number, pageNumber: number, sortField: string, sortDirection: SortDirection) => {
 
-    const queryParams = {
+    const path = { instrumentId: accountId, pageSize, pageNumber };
+
+    const query = {
         Filter: filter.description || undefined,
         Start: filter.start || undefined,
         End: filter.end || undefined,
@@ -21,41 +27,44 @@ export const useTransactions = (accountId: string, filter: TransactionsFilter, p
         ExcludeNetZero: filter.filterNetZero || undefined,
     };
 
-    const tagged = filter.filterTagged;
+    const enabled = !!accountId && !!filter?.start && !!filter?.end;
 
-    const untaggedResult = useQuery({
-        queryKey: getUntaggedTransactionsQueryKey({
-            path: { instrumentId: accountId, pageSize, pageNumber },
-            query: queryParams,
-        }),
-        queryFn: async ({ signal }) => {
-            const { data, headers } = await getUntaggedTransactions({
-                path: { instrumentId: accountId, pageSize, pageNumber },
-                query: queryParams,
-                signal,
-                throwOnError: true,
-            });
+    if (filter.filterTagged) {
+        return {
+            enabled,
+            queryKey: getUntaggedTransactionsQueryKey({ path, query }),
+            queryFn: async ({ signal }: { signal: AbortSignal }) => {
+                const { data, headers } = await getUntaggedTransactions({ path, query, signal, throwOnError: true });
+                return { results: data, total: Number(headers['x-total-count'] ?? 0) } as PagedResult<Transaction>;
+            },
+        };
+    }
+
+    return {
+        enabled,
+        queryKey: getTransactionsQueryKey({ path, query }),
+        queryFn: async ({ signal }: { signal: AbortSignal }) => {
+            const { data, headers } = await getTransactions({ path, query, signal, throwOnError: true });
             return { results: data, total: Number(headers['x-total-count'] ?? 0) } as PagedResult<Transaction>;
         },
-        enabled: !!accountId && !!filter?.start && !!filter?.end && tagged,
-    });
+    };
+};
 
-    const regularResult = useQuery({
-        queryKey: getTransactionsQueryKey({
-            path: { instrumentId: accountId, pageSize, pageNumber },
-            query: queryParams,
-        }),
-        queryFn: async ({ signal }) => {
-            const { data, headers } = await getTransactions({
-                path: { instrumentId: accountId, pageSize, pageNumber },
-                query: queryParams,
-                signal,
-                throwOnError: true,
-            });
-            return { results: data, total: Number(headers['x-total-count'] ?? 0) } as PagedResult<Transaction>;
-        },
-        enabled: !!accountId && !!filter?.start && !!filter?.end && !tagged,
-    });
+export const useTransactions = (accountId: string, filter: TransactionsFilter, pageSize: number, pageNumber: number, sortField: string, sortDirection: SortDirection) => {
 
-    return tagged ? untaggedResult : regularResult;
-}
+    const { enabled, queryKey, queryFn } = transactionsQueryConfig(accountId, filter, pageSize, pageNumber, sortField, sortDirection);
+
+    return useQuery({ queryKey, queryFn, enabled });
+};
+
+// Warms the active transactions query into the cache. Used by the transactions route loader so a
+// hover-preload (or the click) fetches the list ahead of the component mounting. No-op if the
+// filter has no date range (the query would be disabled anyway).
+export const warmTransactions = (queryClient: QueryClient, accountId: string, filter: TransactionsFilter, pageSize: number, pageNumber: number, sortField: string, sortDirection: SortDirection) => {
+
+    const { enabled, queryKey, queryFn } = transactionsQueryConfig(accountId, filter, pageSize, pageNumber, sortField, sortDirection);
+
+    if (!enabled) return Promise.resolve(undefined);
+
+    return queryClient.ensureQueryData({ queryKey, queryFn });
+};
