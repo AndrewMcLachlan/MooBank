@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Authenticating…</title>
+  </head>
+  <!--
+    Dedicated redirect target for MSAL silent token renewal (the hidden iframe used by
+    acquireTokenSilent), wired up via the `silentRedirectUri` prop on <MooApp> in App.tsx.
+    It MUST NOT load the app or MSAL: the SPA re-booting inside the iframe is what triggers
+    BrowserAuthError: block_iframe_reload and forces an interactive sign-in. MSAL reads the
+    auth response straight from this page's URL hash, so no script is needed.
+    This URL must also be registered as a SPA redirect URI on the Entra app registration.
+    See https://learn.microsoft.com/entra/identity-platform/msal-js-avoid-page-reloads
+  -->
+  <body></body>
+</html>

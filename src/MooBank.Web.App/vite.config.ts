@@ -51,7 +51,10 @@ export default defineConfig({
         manifest: false,
         workbox: {
             globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
-            navigateFallbackDenylist: [/^\/api/, /^\/swagger/, /^\/mcp/],
+            // /blank.html is the MSAL silent-renewal iframe target: it must serve the real blank
+            // page, never the SPA shell (index.html) — booting the app in the iframe re-triggers
+            // BrowserAuthError: block_iframe_reload. See public/blank.html and App.tsx silentRedirectUri.
+            navigateFallbackDenylist: [/^\/api/, /^\/swagger/, /^\/mcp/, /^\/blank\.html$/],
         },
     }),
     visualizer() as any],
