@@ -1,5 +1,7 @@
 import { useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { byTagReportOptions } from "api/@tanstack/react-query.gen";
+import { warmReport } from "./-utils/warmReport";
 
 import { ReportsPage } from "./-components/ReportsPage";
 import { useByTagReport } from "../../-hooks/useByTagReport";
@@ -18,6 +20,8 @@ import { getPeriod } from "hooks";
 
 
 export const Route = createFileRoute("/accounts/$id/reports/by-tag")({
+    // Matches the page default reportType "Debit".
+    loader: ({ params }) => warmReport(params.id, ({ accountId, start, end }) => byTagReportOptions({ path: { accountId, start, end, reportType: "debit" as any } })),
     component: ByTag,
 });
 

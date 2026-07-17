@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { inOutReportOptions } from "api/@tanstack/react-query.gen";
+import { warmReport } from "./-utils/warmReport";
 
 import { ReportsPage } from "./-components/ReportsPage";
 import "./-components/Reports.css";
@@ -21,6 +23,7 @@ import { getPeriod } from "hooks";
 
 
 export const Route = createFileRoute("/accounts/$id/reports/in-out")({
+    loader: ({ params }) => warmReport(params.id, ({ accountId, start, end }) => inOutReportOptions({ path: { accountId, start, end } })),
     component: InOutPage,
 });
 
