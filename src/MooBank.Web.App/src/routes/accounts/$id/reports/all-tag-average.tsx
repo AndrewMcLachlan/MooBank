@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { allTagAverageReportOptions } from "api/@tanstack/react-query.gen";
+import { warmReport } from "./-utils/warmReport";
 
 import { ReportsPage } from "./-components/ReportsPage";
 
@@ -18,6 +20,8 @@ import { differenceInMonths } from "date-fns";
 
 
 export const Route = createFileRoute("/accounts/$id/reports/all-tag-average")({
+    // Matches the page defaults: reportType "Debit", top 20, monthly.
+    loader: ({ params }) => warmReport(params.id, ({ accountId, start, end }) => allTagAverageReportOptions({ path: { accountId, start, end, reportType: "debit" as any }, query: { Top: 20, Interval: "Monthly" } })),
     component: AllTagAverage,
 });
 
