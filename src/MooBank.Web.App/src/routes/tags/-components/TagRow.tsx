@@ -1,7 +1,7 @@
 import React from "react";
 
 import type { Tag } from "api/types.gen";
-import { EditColumn, Icon, useUpdatingState } from "@andrewmclachlan/moo-ds";
+import { EditColumn, Icon, LoadingTableRow, useUpdatingState } from "@andrewmclachlan/moo-ds";
 import { useDeleteTag } from "../-hooks/useDeleteTag";
 import { useUpdateTag } from "../-hooks/useUpdateTag";
 import { TransactionTagTransactionTagPanel } from "./TagTagPanel";
@@ -12,9 +12,7 @@ export const TransactionTagRow: React.FC<TransactionTagRowProps> = (props) => {
 
     const { tag, ...tagRow } = useTagRowEvents(props);
 
-    if (!tag) return (
-        <tr className="empty-row"><td colSpan={3}>&nbsp;</td></tr>
-    );
+    if (!tag) return <LoadingTableRow cols={3} />;
 
     return (
         <tr>

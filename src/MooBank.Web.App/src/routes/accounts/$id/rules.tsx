@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import React, { useEffect, useState } from "react";
-import { Table } from "@andrewmclachlan/moo-ds";
+import { LoadingTableRows, Table } from "@andrewmclachlan/moo-ds";
 
 import { IconButton, PageSize, Pagination, PaginationControls, PaginationTh, SearchBox, Section, SortableTh, changeSortDirection, getNumberOfPages, useLocalStorage } from "@andrewmclachlan/moo-ds";
 import type { SortDirection } from "@andrewmclachlan/moo-ds";
@@ -82,7 +82,8 @@ function Rules() {
                 </thead>
                 <tbody>
                     <NewRule />
-                    {pagedRules.map((r) => <RuleRow key={r.id} accountId={account.id} rule={r} />)}
+                    {!rules && <LoadingTableRows rows={pageSize} cols={4} />}
+                    {rules && pagedRules.map((r) => <RuleRow key={r.id} accountId={account.id} rule={r} />)}
                 </tbody>
                 <tfoot>
                     <tr>
