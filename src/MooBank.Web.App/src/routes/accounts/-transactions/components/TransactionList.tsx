@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { getNumberOfPages, Pagination, PaginationControls, PageSize, SectionTable, MiniPagination } from "@andrewmclachlan/moo-ds";
+import { getNumberOfPages, Pagination, PaginationControls, PageSize, SectionTable, MiniPagination, LoadingTableRows } from "@andrewmclachlan/moo-ds";
 
 import { useAccount } from "components";
 import type { Transaction } from "api/types.gen";
@@ -43,7 +43,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({compact = false
                     {transactions?.map((t, index) =>
                         <TransactionRow compact={compact} key={t.id} transaction={t} onClick={rowClick} previousDate={index > 0 ? parseISO(transactions[index - 1].transactionTime) : undefined} />
                     )}
-                    {!transactions && Array.from({ length: pageSize }, (_value, index) => index).map((i) => <tr key={i}><td colSpan={6}>&nbsp;</td></tr>)}
+                    {!transactions && <LoadingTableRows rows={pageSize} cols={compact ? 2 : 6} />}
                 </tbody>
                 <tfoot>
                     <tr>
