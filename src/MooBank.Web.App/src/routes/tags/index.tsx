@@ -60,7 +60,9 @@ function TransactionTags() {
     }, [JSON.stringify(allTags), search]);
 
     useEffect(() => {
-        if (isLoading) {
+        // Gate on "no data yet" rather than isLoading: while a persisted query rehydrates from
+        // IndexedDB it is pending-but-paused, so isLoading is false even though allTags is undefined.
+        if (!allTags) {
             // @ts-ignore: placeholder rows of undefined are rendered as loading skeletons
             setPagedTags(Array.from({ length: pageSize }).map((): any => undefined));
             return;

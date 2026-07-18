@@ -7,7 +7,10 @@ export const AccountList: React.FC = () => {
 
     const { data, isLoading } = useFormattedAccounts();
 
-    if (isLoading) return <AccountListSkeleton />;
+    // Gate on "no data yet" rather than isLoading: a persisted query rehydrating from IndexedDB is
+    // pending-but-paused (isLoading === false) while data is still undefined, so isLoading would skip
+    // the skeleton on a normal refresh.
+    if (!data) return <AccountListSkeleton />;
 
     return (
         <>
