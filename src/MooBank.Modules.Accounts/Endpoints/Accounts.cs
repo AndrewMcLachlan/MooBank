@@ -4,7 +4,6 @@ using Asm.MooBank.Modules.Accounts.Commands;
 using Asm.MooBank.Modules.Accounts.Models.Account;
 using Asm.MooBank.Modules.Accounts.Queries;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
 namespace Asm.MooBank.Modules.Accounts.Endpoints;
