@@ -4,6 +4,7 @@ import { useBreakdownReport } from "../../../-hooks/useBreakdownReport";
 
 import type { ChartData } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
+import { SpinnerContainer } from "@andrewmclachlan/moo-ds";
 
 import type { Period } from "models/dateFns";
 import { chartColours } from "utils/chartColours";
@@ -41,6 +42,8 @@ export const Breakdown: React.FC<BreakdownProps> = ({ accountId, tagId, period, 
     }, [report.data, accountId, period?.startDate, period?.endDate, reportType, tagId]);
 
     return (
+        <>
+        {report.isLoading && <SpinnerContainer />}
         <Doughnut id="bytag" ref={chartRef} data={dataset} options={{
             maintainAspectRatio: false,
             plugins: {
@@ -63,6 +66,7 @@ export const Breakdown: React.FC<BreakdownProps> = ({ accountId, tagId, period, 
             },
         }}
         />
+        </>
     );
 }
 

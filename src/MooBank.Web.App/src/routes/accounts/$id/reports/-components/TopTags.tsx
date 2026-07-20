@@ -4,6 +4,7 @@ import { useAllTagAverageReport } from "../../../-hooks/useAllTagAverageReport";
 
 import type { ChartData } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import { SpinnerContainer } from "@andrewmclachlan/moo-ds";
 
 import type { Period } from "models/dateFns";
 import { useNavigate } from "@tanstack/react-router";
@@ -35,6 +36,8 @@ export const TopTags: React.FC<TopTagsProps> = ({ accountId, period, reportType,
     }
 
     return (
+        <>
+        {report.isLoading && <SpinnerContainer />}
         <Bar id="alltagaverage" data={dataset} options={{
             plugins: {
                 legend: {
@@ -65,6 +68,7 @@ export const TopTags: React.FC<TopTagsProps> = ({ accountId, period, reportType,
             },
         }}
         />
+        </>
     );
 }
 
