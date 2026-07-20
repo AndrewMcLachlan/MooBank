@@ -14,6 +14,13 @@ export const currencySymbols: Record<string, string> = {
     CHF: "CHF ",
 };
 
+/**
+ * Step for monetary inputs. Amounts are persisted as decimal(12, 4), so inputs must accept
+ * 4 decimal places — a coarser step makes the browser reject finer values on form submit
+ * (stepMismatch), which is what blocked 4dp share prices.
+ */
+export const amountStep = 0.0001;
+
 export const getCurrencySymbol = (code: string | null | undefined): string => {
     if (!code) return "";
     const upper = code.toUpperCase();

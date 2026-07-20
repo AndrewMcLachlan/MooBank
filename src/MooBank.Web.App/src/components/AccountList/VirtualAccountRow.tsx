@@ -2,6 +2,7 @@ import classNames from "classnames";
 import React, { useEffect, useRef, useState } from "react";
 
 import { numberClassName } from "utils/classNameHelpers";
+import { amountStep } from "utils/currency";
 import { EditColumn, emptyGuid, useClickAway } from "@andrewmclachlan/moo-ds";
 
 import type { VirtualInstrument } from "api/types.gen";
@@ -23,7 +24,7 @@ export const VirtualAccountRow: React.FC<VirtualAccountRowProps> = (props) => {
             <td className="d-none d-sm-table-cell"><AccountTypeBadge type={props.account.controller === "Virtual" ? "Virtual" : "Reserved Sum"} /></td>
             <td className={classNames("number", numberClassName(balance))} onClick={canEditBalance ? balanceClick : undefined}>
                 {!editingBalance && <Amount amount={balance} negativeColour minus />}
-                {editingBalance && <input autoFocus type="number" className="form-control" value={balance} onChange={balanceChange} onKeyUp={keyPress} ref={balanceRef} />}
+                {editingBalance && <input autoFocus type="number" step={amountStep} className="form-control" value={balance} onChange={balanceChange} onKeyUp={keyPress} ref={balanceRef} />}
             </td>
         </tr>
     );

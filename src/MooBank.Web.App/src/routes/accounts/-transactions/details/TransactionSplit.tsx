@@ -1,6 +1,7 @@
 import { TransactionSearch } from "components";
 import { DeleteIcon } from "@andrewmclachlan/moo-ds";
 import { valueAsNumber } from "utils/valueAsNumber";
+import { amountStep } from "utils/currency";
 import type { Transaction, TransactionSplit as TransactionSplitModel, TransactionOffsetFor } from "api/types.gen";
 import { isCredit } from "utils/transactions";
 import React, { useState } from "react";
@@ -46,7 +47,7 @@ export const TransactionSplit: React.FC<TransactionSplitProps> = ({ transaction,
                 <Col sm={3}>
                     <Form.Label>Amount</Form.Label>
                     <div className="split-controls">
-                        <Input type="number" value={split.amount} required max={transaction.amount} onChange={(e) => splitChanged({ ...split, amount: valueAsNumber(e.currentTarget) })} />
+                        <Input type="number" step={amountStep} value={split.amount} required max={transaction.amount} onChange={(e) => splitChanged({ ...split, amount: valueAsNumber(e.currentTarget) })} />
                         {/*<Input.Feedback type="invalid">Please enter an amount</Input.Feedback>*/}
                         <DeleteIcon onClick={() => removeSplit(split.id)} />
                     </div>
@@ -61,7 +62,7 @@ export const TransactionSplit: React.FC<TransactionSplitProps> = ({ transaction,
                             <TransactionSearch value={to.transaction} onChange={(v) => v ? offsetChanged({ ...to, transaction: v }, to.transaction) : removeOffset(to.transaction.id)} transaction={transaction} excludedTransactions={offsetBy.map(ob => ob.transaction.id)} />
                         </Col>
                         <Col sm={3} className="offset-controls">
-                            <Input type="number" value={to.amount} required max={to.transaction.amount} onChange={e => offsetChanged({ ...to, amount: valueAsNumber(e.currentTarget) })} />
+                            <Input type="number" step={amountStep} value={to.amount} required max={to.transaction.amount} onChange={e => offsetChanged({ ...to, amount: valueAsNumber(e.currentTarget) })} />
                             {/* <Input.Feedback type="invalid">Please enter an amount</Input.Feedback> */}
                             <DeleteIcon onClick={() => removeOffset(to.transaction.id)} />
                         </Col>

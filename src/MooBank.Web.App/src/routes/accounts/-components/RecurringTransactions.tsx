@@ -11,6 +11,7 @@ import { useGetRecurringTransactions } from "routes/accounts/-hooks/useGetRecurr
 import { useCreateRecurringTransaction } from "routes/accounts/-hooks/useCreateRecurringTransaction";
 import { useUpdateRecurringTransaction } from "routes/accounts/-hooks/useUpdateRecurringTransaction";
 import { useDeleteRecurringTransaction } from "routes/accounts/-hooks/useDeleteRecurringTransaction";
+import { amountStep } from "utils/currency";
 
 export const RecurringTransactions: React.FC<RecurringTransactionsProps> = ({ account }) => {
 
@@ -51,7 +52,7 @@ export const RecurringTransactions: React.FC<RecurringTransactionsProps> = ({ ac
             <tbody>
                 <tr>
                     <td><input type="text" className="form-control" placeholder="Description" value={newRT.description} onChange={e => setNewRT({ ...newRT, description: e.currentTarget.value })} /></td>
-                    <td><input type="number" className="form-control" placeholder="Amount" value={newRT.amount} onChange={e => setNewRT({ ...newRT, amount: e.currentTarget.valueAsNumber })} /></td>
+                    <td><input type="number" step={amountStep} className="form-control" placeholder="Amount" value={newRT.amount} onChange={e => setNewRT({ ...newRT, amount: e.currentTarget.valueAsNumber })} /></td>
                     <td>
                         <select className="form-control" value={newRT.schedule} onChange={e => setNewRT({ ...newRT, schedule: e.currentTarget.value as ScheduleFrequency })}>
                             {Schedules.map(s => <option key={s}>{s}</option>)}

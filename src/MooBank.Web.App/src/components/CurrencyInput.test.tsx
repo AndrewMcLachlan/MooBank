@@ -41,4 +41,22 @@ describe("CurrencyInput", () => {
         const input = document.querySelector<HTMLInputElement>("#amount")!;
         expect(input).toHaveAttribute("type", "number");
     });
+
+    // Amounts persist as decimal(12, 4). A coarser step makes the browser reject finer values
+    // with a stepMismatch on submit, which previously capped every amount field at 2dp.
+    it("accepts 4 decimal places", () => {
+        renderCurrencyInput({ currency: "AUD" });
+        const input = document.querySelector<HTMLInputElement>("#amount")!;
+
+        expect(input).toHaveAttribute("step", "0.0001");
+
+        input.value = "12.3456";
+        expect(input.validity.stepMismatch).toBe(false);
+    });
+
+    it("lets a caller override the step", () => {
+        renderCurrencyInput({ currency: "AUD", step: 1 });
+        const input = document.querySelector<HTMLInputElement>("#amount")!;
+        expect(input).toHaveAttribute("step", "1");
+    });
 });
