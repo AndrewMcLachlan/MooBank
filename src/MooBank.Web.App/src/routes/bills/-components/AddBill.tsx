@@ -8,6 +8,7 @@ import { Form, Section, SectionForm } from "@andrewmclachlan/moo-ds";
 import type { CreateBill } from "models/bills";
 import { useCreateBill } from "../-hooks/useCreateBill";
 import { useBillAccounts } from "../-hooks/useBillAccounts";
+import { amountStep } from "utils/currency";
 
 export interface AddBillProps {
     accountId?: string;
@@ -183,7 +184,7 @@ export const AddBill: React.FC<AddBillProps> = ({ accountId, show, onHide }) => 
                                     </Form.Group>
                                     <Form.Group groupId={`discounts.${index}.discountAmount`}>
                                         <Form.Label>Discount Amount</Form.Label>
-                                        <Form.Input type="number" step="0.01" />
+                                        <Form.Input type="number" step={amountStep} />
                                     </Form.Group>
                                     <Form.Group groupId={`discounts.${index}.reason`}>
                                         <Form.Label>Reason</Form.Label>

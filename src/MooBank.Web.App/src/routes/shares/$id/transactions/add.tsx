@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Button, Form, SectionForm } from "@andrewmclachlan/moo-ds";
+import { CurrencyInput } from "components";
 import { type CreateStockTransaction, emptyStockTransaction } from "models/stocks";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "@tanstack/react-router";
@@ -39,11 +40,11 @@ function AddStockTransaction() {
                 </Form.Group>
                 <Form.Group groupId="price">
                     <Form.Label>Price</Form.Label>
-                    <Form.Input type="number" required maxLength={10} />
+                    <CurrencyInput required />
                 </Form.Group>
                 <Form.Group groupId="fees">
                     <Form.Label>Fees</Form.Label>
-                    <Form.Input type="number" required maxLength={10} />
+                    <CurrencyInput required />
                 </Form.Group>
                 <Form.Group groupId="date">
                     <Form.Label>Date</Form.Label>

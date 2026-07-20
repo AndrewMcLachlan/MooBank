@@ -8,6 +8,7 @@ import { Input } from "@andrewmclachlan/moo-ds";
 import { useTags } from "hooks/useTags";
 import { useCreateBudgetLine } from "../-hooks/useCreateBudgetLine";
 import { useGetTagValue } from "../-hooks/useGetTagValue";
+import { amountStep } from "utils/currency";
 
 export const NewBudgetLine: React.FC<NewBudgetLineProps> = (props) => {
 
@@ -38,7 +39,7 @@ export const NewBudgetLine: React.FC<NewBudgetLineProps> = (props) => {
         <tr>
             <td><ComboBox<Tag> selectedItems={[tag]} onChange={(t: Tag[]) => setTag(t[0])} items={allTags.data ?? []} labelField={(t) => t?.name} valueField={(t) => t.id?.toString()} /></td>
             <td><Input value={notes} onChange={(e) => setNotes(e.currentTarget.value)} /></td>
-            <td><Input type="number" min={0} value={amount} onChange={(e) => setAmount((e.currentTarget as any).valueAsNumber)} /></td>
+            <td><Input type="number" step={amountStep} min={0} value={amount} onChange={(e) => setAmount((e.currentTarget as any).valueAsNumber)} /></td>
             <td><MonthSelector value={month} onChange={setMonth} /></td>
             <td className="row-action"><SaveIcon onClick={add} /></td>
         </tr>
