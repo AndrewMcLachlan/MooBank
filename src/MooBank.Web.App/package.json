@@ -65,7 +65,7 @@
     "@hey-api/openapi-ts": "^0.99.0",
     "@svgr/plugin-svgo": "^8.1.0",
     "@tanstack/router-plugin": "^1.168.23",
-    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/jest-dom": "^7.0.0",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
     "@tybys/wasm-util": "0.10.3",
