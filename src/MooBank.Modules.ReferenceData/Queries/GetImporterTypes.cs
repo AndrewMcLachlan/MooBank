@@ -1,4 +1,4 @@
-﻿using Asm.Cqrs.Queries;
+﻿using Postie.Cqrs.Queries;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.ReferenceData.Models;
 using Microsoft.EntityFrameworkCore;

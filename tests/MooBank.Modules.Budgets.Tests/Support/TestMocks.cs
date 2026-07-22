@@ -1,4 +1,4 @@
-using Asm.Cqrs.Commands;
+using Postie.Cqrs.Commands;
 using Asm.Domain;
 using Asm.MooBank.Audit;
 using Asm.MooBank.Domain.Entities.Budget;
