@@ -43,6 +43,8 @@ void AddServices(WebApplicationBuilder builder)
         new Asm.MooBank.Modules.Users.Module(),
     ]);
 
+    services.AddPostieEndpointDispatcher();
+
     services.AddEndpointsApiExplorer();
     services.AddAzureOAuthOptions("OAuth");
 

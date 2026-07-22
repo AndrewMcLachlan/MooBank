@@ -2,6 +2,7 @@ using Asm.AspNetCore;
 using Asm.AspNetCore.Routing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
+using Postie.AspNetCore;
 
 namespace Asm.MooBank.Modules.Bills.Endpoints;
 

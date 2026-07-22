@@ -104,7 +104,7 @@ public static void MapTransactionEndpoints(this IEndpointRouteBuilder endpoints)
 ```
 
 ### Endpoint Guidelines
-- Use `.MapCommand()` and `.MapQuery()` extensions from `Asm.Cqrs.AspNetCore`
+- Use `.MapCommand()` and `.MapQuery()` extensions from `Postie.AspNetCore`
 - Apply authorization policies using `.RequireAuthorization()`
 - Note: the Transactions module intentionally applies `GetInstrumentViewerPolicy` to its whole
   endpoint group **including writes** (viewers may tag/annotate transactions). This is a settled
@@ -131,6 +131,8 @@ Modules.{Feature}/
 
 ## ASM Library
 
-The CQRS implementation uses the ASM library:
-- `Asm.Cqrs.AspNetCore` - Extensions for mapping endpoints to commands/queries
-- Documentation: https://github.com/AndrewMcLachlan/ASM
+The CQRS implementation uses the ASM and Postie libraries:
+- `Postie.Cqrs` / `Postie.Cqrs.AspNetCore` - CQRS mediator and endpoint dispatcher
+- `Postie.AspNetCore` - Extensions for mapping endpoints to commands/queries
+- `Asm.AspNetCore.Postie` - Paged query endpoint mapping
+- Documentation: https://github.com/AndrewMcLachlan/ASM and https://github.com/AndrewMcLachlan/Postie

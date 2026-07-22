@@ -1,4 +1,4 @@
-﻿using Asm.AspNetCore;
+using Asm.AspNetCore;
 using Asm.AspNetCore.Routing;
 using Asm.MooBank.Modules.Assets.Commands;
 using Asm.MooBank.Modules.Assets.Models;
@@ -6,6 +6,7 @@ using Asm.MooBank.Modules.Assets.Queries;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Postie.AspNetCore;
 
 namespace Asm.MooBank.Modules.Assets.Endpoints;
 
@@ -21,10 +22,10 @@ internal class Assets : EndpointGroupBase
             .WithNames("Get Asset")
             .RequireAuthorization(Policies.GetInstrumentViewerPolicy("id"));
 
-        builder.MapPostCreate<Create, Asset>("/", "Get Asset".ToMachine(), a => new { a.Id }, CommandBinding.Body)
+        builder.MapPostCreate<Create, Asset>("/", "Get Asset".ToMachine(), a => new { a.Id }, RequestBinding.Body)
             .WithNames("Create Asset");
 
-        builder.MapPatchCommand<Update, Asset>("/{id}", binding: CommandBinding.None)
+        builder.MapPatchCommand<Update, Asset>("/{id}", binding: RequestBinding.Default)
             .WithNames("Update Asset")
             .Accepts<Update>("application/json")
             .RequireAuthorization(Policies.GetInstrumentViewerPolicy("id"));

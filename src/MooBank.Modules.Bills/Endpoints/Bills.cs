@@ -2,6 +2,7 @@ using Asm.AspNetCore;
 using Asm.AspNetCore.Routing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
+using Postie.AspNetCore;
 
 namespace Asm.MooBank.Modules.Bills.Endpoints;
 
@@ -25,13 +26,13 @@ internal class Bills : EndpointGroupBase
         builder.MapQuery<Queries.Accounts.GetAll, IEnumerable<Models.Account>>("/accounts")
             .WithNames("Get Bill Accounts");
 
-        builder.MapPostCreate<Commands.Accounts.Create, Models.Account>("/accounts", "Get Bill Account".ToMachine(), a => new { InstrumentId = a.Id }, CommandBinding.Body)
+        builder.MapPostCreate<Commands.Accounts.Create, Models.Account>("/accounts", "Get Bill Account".ToMachine(), a => new { InstrumentId = a.Id }, RequestBinding.Body)
             .WithNames("Create Bill Account");
 
         builder.MapPagedQuery<Queries.Bills.GetByUtilityType, Models.Bill>("/types/{utilityType}/bills")
             .WithNames("Get Bills By Utility Type");
 
-        builder.MapCommand<Commands.Bills.Import, Models.ImportResult>("/import", binding: CommandBinding.Body)
+        builder.MapCommand<Commands.Bills.Import, Models.ImportResult>("/import", binding: RequestBinding.Body)
             .WithNames("Import Bills");
     }
 }

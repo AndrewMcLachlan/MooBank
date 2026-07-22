@@ -54,7 +54,7 @@ Note: projects live in `MooBank.*` folders but build as `Asm.MooBank.*` assembli
 - **ASM Library** (https://github.com/AndrewMcLachlan/ASM) - Custom NuGet packages:
   - `Asm.AspNetCore.Api` - OpenAPI configuration
   - `Asm.AspNetCore.Modules` - Module registration and endpoint mapping
-  - `Asm.Cqrs.AspNetCore` - CQRS endpoint extensions
+  - `Postie.Cqrs.AspNetCore` / `Postie.AspNetCore` - CQRS endpoint extensions
   - `Asm.Domain` / `Asm.Domain.Infrastructure` - DDD base classes
 - **ReqnRoll** - BDD testing framework
 

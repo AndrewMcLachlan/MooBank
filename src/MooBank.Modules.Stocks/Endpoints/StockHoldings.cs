@@ -1,4 +1,4 @@
-﻿using Asm.AspNetCore;
+using Asm.AspNetCore;
 using Asm.AspNetCore.Routing;
 using Asm.MooBank.Modules.Stocks.Commands;
 using Asm.MooBank.Modules.Stocks.Models;
@@ -6,6 +6,7 @@ using Asm.MooBank.Modules.Stocks.Queries;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Postie.AspNetCore;
 
 namespace Asm.MooBank.Modules.Stocks.Endpoints;
 
@@ -25,10 +26,10 @@ internal class StockHoldings : EndpointGroupBase
             .WithNames("Get Stock Holding CPI adjusted gain/loss")
             .RequireAuthorization(Policies.GetInstrumentViewerPolicy());
 
-        builder.MapPostCreate<Create, StockHolding>("/", "Get Stock Holding".ToMachine(), a => new { InstrumentId = a.Id }, CommandBinding.Body)
+        builder.MapPostCreate<Create, StockHolding>("/", "Get Stock Holding".ToMachine(), a => new { InstrumentId = a.Id }, RequestBinding.Body)
             .WithNames("Create Stock Holding");
 
-        builder.MapPatchCommand<Update, StockHolding>("/{instrumentId}", binding: CommandBinding.None)
+        builder.MapPatchCommand<Update, StockHolding>("/{instrumentId}", binding: RequestBinding.Default)
             .WithNames("Update Stock Holding")
             .Accepts<Update>("application/json")
             .RequireAuthorization(Policies.GetInstrumentViewerPolicy());

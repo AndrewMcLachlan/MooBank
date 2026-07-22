@@ -5,6 +5,7 @@ using Asm.MooBank.Modules.Families.Queries;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Postie.AspNetCore;
 
 namespace Asm.MooBank.Modules.Families.Endpoints;
 
@@ -24,10 +25,10 @@ internal class FamiliesAdmin : EndpointGroupBase
             .WithNames("Get Family")
             .Produces<Models.Family>();
 
-        routeGroupBuilder.MapPostCreate<Create, Models.Family>("/", "Get Family".ToMachine(), (i) => new { id = i.Id }, CommandBinding.Body)
+        routeGroupBuilder.MapPostCreate<Create, Models.Family>("/", "Get Family".ToMachine(), (i) => new { id = i.Id }, RequestBinding.Body)
             .WithNames("Create Family");
 
-        routeGroupBuilder.MapPatchCommand<Update, Models.Family>("/{id}")
+        routeGroupBuilder.MapPatchCommand<Update, Models.Family>("/{id}", binding: RequestBinding.Parameters)
             .WithNames("Update Family");
     }
 }

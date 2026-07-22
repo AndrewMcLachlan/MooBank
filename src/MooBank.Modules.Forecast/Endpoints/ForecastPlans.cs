@@ -8,6 +8,7 @@ using Asm.MooBank.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Postie.AspNetCore;
 
 namespace Asm.MooBank.Modules.Forecast.Endpoints;
 
@@ -26,22 +27,22 @@ public class ForecastPlans : EndpointGroupBase
             .WithNames("Get Forecast Plan")
             .RequireAuthorization(Policies.GetForecastPlanPolicy());
 
-        routeGroupBuilder.MapPostCreate<CreatePlan, ForecastPlan>("/", "Get Forecast Plan".ToMachine(), (plan) => new { id = plan.Id }, CommandBinding.Parameters)
+        routeGroupBuilder.MapPostCreate<CreatePlan, ForecastPlan>("/", "Get Forecast Plan".ToMachine(), (plan) => new { id = plan.Id }, RequestBinding.Parameters)
             .WithNames("Create Forecast Plan");
 
-        routeGroupBuilder.MapPutCommand<UpdatePlan, ForecastPlan>("/{id}")
+        routeGroupBuilder.MapPutCommand<UpdatePlan, ForecastPlan>("/{id}", binding: RequestBinding.Parameters)
             .WithNames("Update Forecast Plan")
             .RequireAuthorization(Policies.GetForecastPlanPolicy());
 
-        routeGroupBuilder.MapDelete<DeletePlan>("/{id}")
+        routeGroupBuilder.MapDeleteCommand<DeletePlan>("/{id}")
             .WithNames("Delete Forecast Plan")
             .RequireAuthorization(Policies.GetForecastPlanPolicy());
 
-        routeGroupBuilder.MapPatchCommand<ArchivePlan, ForecastPlan>("/{id}/archive")
+        routeGroupBuilder.MapPatchCommand<ArchivePlan, ForecastPlan>("/{id}/archive", binding: RequestBinding.Parameters)
             .WithNames("Archive Forecast Plan")
             .RequireAuthorization(Policies.GetForecastPlanPolicy());
 
-        routeGroupBuilder.MapCommand<RunForecast, ForecastResult>("/{planId}/run")
+        routeGroupBuilder.MapCommand<RunForecast, ForecastResult>("/{planId}/run", binding: RequestBinding.Parameters)
             .WithNames("Run Forecast")
             .RequireAuthorization(Policies.GetForecastPlanPolicy("planId"));
     }

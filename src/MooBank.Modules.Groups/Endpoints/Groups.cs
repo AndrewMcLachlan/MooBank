@@ -1,10 +1,11 @@
-﻿using Asm.AspNetCore;
+using Asm.AspNetCore;
 using Asm.AspNetCore.Routing;
 using Asm.MooBank.Modules.Groups.Commands;
 using Asm.MooBank.Modules.Groups.Queries;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Postie.AspNetCore;
 
 namespace Asm.MooBank.Modules.Groups.Endpoints;
 
@@ -24,16 +25,16 @@ public class Groups : EndpointGroupBase
             .WithNames("Get Group")
             .RequireAuthorization(Policies.GetGroupOwnerPolicy("id"));
 
-        routeGroupBuilder.MapPostCreate<Create, Models.Group>("/", "Get Group".ToMachine(), (group) => new { id = group.Id }, CommandBinding.Body)
+        routeGroupBuilder.MapPostCreate<Create, Models.Group>("/", "Get Group".ToMachine(), (group) => new { id = group.Id }, RequestBinding.Body)
             .WithNames("Create Group")
             .WithValidation<Create>();
 
-        routeGroupBuilder.MapPatchCommand<Update, Models.Group>("/{id}")
+        routeGroupBuilder.MapPatchCommand<Update, Models.Group>("/{id}", binding: RequestBinding.Parameters)
             .WithNames("Update Group")
             .RequireAuthorization(Policies.GetGroupOwnerPolicy("id"))
             .WithValidation<Update>();
 
-        routeGroupBuilder.MapDelete<Delete>("/{id}")
+        routeGroupBuilder.MapDeleteCommand<Delete>("/{id}")
             .WithNames("Delete Group")
             .RequireAuthorization(Policies.GetGroupOwnerPolicy("id"));
     }
