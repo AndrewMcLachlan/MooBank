@@ -1,6 +1,6 @@
 import React from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Button, InputGroup } from "@andrewmclachlan/moo-ds";
+import { Button } from "@andrewmclachlan/moo-ds";
 import { useNavigate } from "@tanstack/react-router";
 import type { StockHolding } from "api/types.gen";
 import { StockHoldingPage } from "../-components/StockHoldingPage";

@@ -1,4 +1,4 @@
-import { DeleteIcon, Icon } from "@andrewmclachlan/moo-ds";
+import { Icon } from "@andrewmclachlan/moo-ds";
 import { useAccount } from "components";
 import { formatDisplayDate } from "utils/dateFns";
 import type { InstitutionAccount, LogicalAccount } from "api/types.gen";

@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Section, SpinnerContainer } from "@andrewmclachlan/moo-ds";
+import { SpinnerContainer } from "@andrewmclachlan/moo-ds";
 import { useEffect, useState } from "react";
-import { Spinner } from "@andrewmclachlan/moo-ds";
 import { useForecastPlans } from "./-hooks/useForecastPlans";
 import { useForecastPlan } from "./-hooks/useForecastPlan";
 import { useForecastResult } from "./-hooks/useForecastResult";
@@ -32,7 +31,7 @@ function Forecast() {
         }
     }, [plans, planId]);
 
-    const { data: plan, isLoading: planLoading } = useForecastPlan(planId);
+    const { data: plan } = useForecastPlan(planId);
     const { data: result, isFetching: resultLoading } = useForecastResult(planId);
 
     // The forecast is denominated in the plan's currency, falling back to the user's preferred currency.

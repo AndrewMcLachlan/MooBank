@@ -2,7 +2,7 @@ import { format } from "date-fns/format";
 
 import { usePeriodSelector } from ".";
 import type { PeriodSelectorProps } from ".";
-import { Button, Form, Input } from "@andrewmclachlan/moo-ds";
+import { Button, Input } from "@andrewmclachlan/moo-ds";
 import { periodOptions } from "models/periodOptions";
 
 export const MiniPeriodSelector: React.FC<PeriodSelectorProps> = ({ instant = false, cacheKey = "period-id", ...props }) => {

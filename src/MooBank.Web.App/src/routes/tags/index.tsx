@@ -80,10 +80,6 @@ function TransactionTags() {
         setNewTag(blankTag);
     }
 
-    const createSubTag = (name: string) => {
-        createTransactionTag.mutate({ name });
-    }
-
     const nameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setNewTag({ ...newTag, name: e.currentTarget.value });
     }

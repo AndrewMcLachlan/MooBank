@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 import { numberClassName } from "utils/classNameHelpers";
 import { amountStep } from "utils/currency";
-import { EditColumn, emptyGuid, useClickAway } from "@andrewmclachlan/moo-ds";
+import { emptyGuid, useClickAway } from "@andrewmclachlan/moo-ds";
 
 import type { VirtualInstrument } from "api/types.gen";
 import { useUpdateVirtualInstrumentBalance } from "routes/accounts/-hooks/useUpdateVirtualInstrumentBalance";

@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, InputGroup } from "@andrewmclachlan/moo-ds";
+import { Button } from "@andrewmclachlan/moo-ds";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 import { Form, SectionForm } from "@andrewmclachlan/moo-ds";

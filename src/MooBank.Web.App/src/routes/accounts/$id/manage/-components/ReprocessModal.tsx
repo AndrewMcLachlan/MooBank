@@ -35,7 +35,7 @@ export const ReprocessModal: React.FC<ReprocessModalProps> = ({ instrumentId, on
                         {openAccounts.map(ia => {
                             return (
                                 <div key={ia.id} className={`import-type-option ${institutionAccountId === ia.id ? 'selected' : ''}`} onClick={() => setInstitutionAccountId(ia.id)}>
-                                    <input type="radio" id={ia.id} name="institutionAccountId" value={ia.id} className="form-check-input" checked={institutionAccountId === ia.id} onChange={(e) => { setInstitutionAccountId(ia.id); }} />
+                                    <input type="radio" id={ia.id} name="institutionAccountId" value={ia.id} className="form-check-input" checked={institutionAccountId === ia.id} onChange={() => { setInstitutionAccountId(ia.id); }} />
                                     <label htmlFor={ia.id} className="form-label">{ia.name ?? ia.institutionId}</label>
                                 </div>
                             );
