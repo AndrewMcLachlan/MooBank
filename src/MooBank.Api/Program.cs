@@ -44,10 +44,6 @@ void AddServices(WebApplicationBuilder builder)
     ]);
 
     services.AddPostieEndpointDispatcher();
-    // The endpoint dispatcher registers stream support unconditionally; the granular module
-    // registrations never wire IStreamQueryDispatcher, so DI validation needs it registered
-    // even though no endpoint streams yet.
-    services.AddStreamQueryHandlers(typeof(Program).Assembly);
 
     services.AddEndpointsApiExplorer();
     services.AddAzureOAuthOptions("OAuth");
