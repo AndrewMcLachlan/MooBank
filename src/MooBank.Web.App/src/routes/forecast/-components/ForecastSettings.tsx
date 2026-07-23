@@ -1,11 +1,12 @@
-import { Section } from "@andrewmclachlan/moo-ds";
+import { Section, SectionForm } from "@andrewmclachlan/moo-ds";
 import { format, parseISO } from "date-fns";
 import { useState } from "react";
 import { Button, Col, Form, Input, OverlayTrigger, Popover, Row } from "@andrewmclachlan/moo-ds";
+import { useForm, useWatch } from "react-hook-form";
 import type { AccountScopeMode, ForecastPlan, RegressionDiagnostics } from "api/types.gen";
 import { useUpdateForecastPlan } from "../-hooks/useUpdateForecastPlan";
 import { useAccounts } from "hooks/useAccounts";
-import { Amount } from "components";
+import { Amount, CurrencyInput } from "components";
 import { formatCurrency } from "utils/currency";
 
 interface ForecastSettingsProps {
@@ -15,58 +16,77 @@ interface ForecastSettingsProps {
     currencyCode: string;
 }
 
+interface ForecastSettingsFormValues {
+    name: string;
+    startDate: string;
+    endDate: string;
+    monthlyIncome: number;
+    accountScopeMode: AccountScopeMode;
+    accountIds: string[];
+    outgoingMode: string;
+}
+
+const toFormValues = (plan?: ForecastPlan): ForecastSettingsFormValues => ({
+    name: plan?.name ?? "",
+    startDate: plan?.startDate ?? "",
+    endDate: plan?.endDate ?? "",
+    monthlyIncome: plan?.incomeStrategy?.manualRecurring?.amount ?? 0,
+    accountScopeMode: plan?.accountScopeMode,
+    accountIds: plan?.accountIds ?? [],
+    outgoingMode: plan?.outgoingStrategy?.mode ?? "HistoricalAverageByTag",
+});
+
 export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthlyExpenses, regression, currencyCode }) => {
     const [isEditing, setIsEditing] = useState(false);
-    const [name, setName] = useState(plan?.name);
-    const [startDate, setStartDate] = useState(plan?.startDate);
-    const [endDate, setEndDate] = useState(plan?.endDate);
-    const [monthlyIncome, setMonthlyIncome] = useState(plan?.incomeStrategy?.manualRecurring?.amount ?? 0);
-    const [accountScopeMode, setAccountScopeMode] = useState<AccountScopeMode>(plan?.accountScopeMode);
-    const [selectedAccountIds, setSelectedAccountIds] = useState<string[]>(plan?.accountIds ?? []);
-    const [outgoingMode, setOutgoingMode] = useState(plan?.outgoingStrategy?.mode ?? "HistoricalAverageByTag");
 
     const { data: accounts } = useAccounts();
     const { update, isPending } = useUpdateForecastPlan();
 
-    const handleSave = () => {
+    const form = useForm<ForecastSettingsFormValues>({
+        values: toFormValues(plan),
+        resetOptions: { keepDirtyValues: true },
+    });
+
+    const accountScopeMode = useWatch({ control: form.control, name: "accountScopeMode" });
+    const selectedAccountIds = useWatch({ control: form.control, name: "accountIds" });
+    const outgoingMode = useWatch({ control: form.control, name: "outgoingMode" });
+
+    const handleSave = (data: ForecastSettingsFormValues) => {
         update(plan.id, {
-            name,
-            startDate,
-            endDate,
-            accountScopeMode,
-            accountIds: accountScopeMode === "SelectedAccounts" ? selectedAccountIds : [],
+            name: data.name,
+            startDate: data.startDate,
+            endDate: data.endDate,
+            accountScopeMode: data.accountScopeMode,
+            accountIds: data.accountScopeMode === "SelectedAccounts" ? data.accountIds : [],
             incomeStrategy: {
                 ...plan.incomeStrategy,
                 manualRecurring: {
                     ...plan.incomeStrategy?.manualRecurring,
-                    amount: monthlyIncome,
+                    amount: Number(data.monthlyIncome) || 0,
                     frequency: "Monthly"
                 }
             },
             outgoingStrategy: {
                 ...plan.outgoingStrategy,
-                mode: outgoingMode,
+                mode: data.outgoingMode,
             }
         });
         setIsEditing(false);
     };
 
     const handleAccountToggle = (accountId: string) => {
-        setSelectedAccountIds(prev =>
-            prev.includes(accountId)
-                ? prev.filter(id => id !== accountId)
-                : [...prev, accountId]
+        const current = form.getValues("accountIds");
+        form.setValue(
+            "accountIds",
+            current.includes(accountId)
+                ? current.filter(id => id !== accountId)
+                : [...current, accountId],
+            { shouldDirty: true }
         );
     };
 
     const handleCancel = () => {
-        setName(plan.name);
-        setStartDate(plan.startDate);
-        setEndDate(plan.endDate);
-        setMonthlyIncome(plan.incomeStrategy?.manualRecurring?.amount ?? 0);
-        setAccountScopeMode(plan.accountScopeMode);
-        setSelectedAccountIds(plan.accountIds ?? []);
-        setOutgoingMode(plan.outgoingStrategy?.mode ?? "HistoricalAverageByTag");
+        form.reset(toFormValues(plan));
         setIsEditing(false);
     };
 
@@ -142,13 +162,7 @@ export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthl
                     </Col>
                     <Col md={2} className="settings-actions">
                         <Button variant="outline-primary" size="sm" onClick={() => {
-                            setName(plan?.name);
-                            setStartDate(plan?.startDate);
-                            setEndDate(plan?.endDate);
-                            setMonthlyIncome(plan?.incomeStrategy?.manualRecurring?.amount ?? 0);
-                            setAccountScopeMode(plan?.accountScopeMode);
-                            setSelectedAccountIds(plan?.accountIds ?? []);
-                            setOutgoingMode(plan?.outgoingStrategy?.mode ?? "HistoricalAverageByTag");
+                            form.reset(toFormValues(plan));
                             setIsEditing(true);
                         }}>
                             Edit Settings
@@ -160,41 +174,31 @@ export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthl
     }
 
     return (
-        <Section header="Forecast Settings">
+        <SectionForm form={form} onSubmit={handleSave} header="Forecast Settings">
             <Row className="g-3">
                 <Col md={3}>
+                    <Form.Group groupId="name">
                         <Form.Label>Plan Name</Form.Label>
-                        <Input
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                        />
+                        <Form.Input type="text" />
+                    </Form.Group>
                 </Col>
                 <Col md={2}>
+                    <Form.Group groupId="startDate">
                         <Form.Label>Start Date</Form.Label>
-                        <Input
-                            type="date"
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
-                        />
+                        <Form.Input type="date" />
+                    </Form.Group>
                 </Col>
                 <Col md={2}>
+                    <Form.Group groupId="endDate">
                         <Form.Label>End Date</Form.Label>
-                        <Input
-                            type="date"
-                            value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
-                        />
+                        <Form.Input type="date" />
+                    </Form.Group>
                 </Col>
                 <Col md={2}>
+                    <Form.Group groupId="monthlyIncome">
                         <Form.Label>Monthly Income</Form.Label>
-                        <Input
-                            type="number"
-                            min={0}
-                            step={0.01}
-                            value={monthlyIncome}
-                            onChange={(e) => setMonthlyIncome(parseFloat(e.target.value) || 0)}
-                        />
+                        <CurrencyInput currency={currencyCode} min={0} />
+                    </Form.Group>
                 </Col>
                 <Col md={3}>
                     <Form.Label>Expense Calculation</Form.Label>
@@ -205,7 +209,7 @@ export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthl
                             name="outgoingMode"
                             label="Historical average"
                             checked={outgoingMode === "HistoricalAverageByTag"}
-                            onChange={() => setOutgoingMode("HistoricalAverageByTag")}
+                            onChange={() => form.setValue("outgoingMode", "HistoricalAverageByTag", { shouldDirty: true })}
                             inline
                         />
                         <Input.Check
@@ -214,7 +218,7 @@ export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthl
                             name="outgoingMode"
                             label="Income-correlated"
                             checked={outgoingMode === "IncomeCorrelated"}
-                            onChange={() => setOutgoingMode("IncomeCorrelated")}
+                            onChange={() => form.setValue("outgoingMode", "IncomeCorrelated", { shouldDirty: true })}
                             inline
                         />
                     </div>
@@ -223,7 +227,7 @@ export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthl
             <Row className="g-3 mt-2">
                 <Col md={9} />
                 <Col md={3} className="settings-actions">
-                    <Button variant="primary" size="sm" onClick={handleSave} disabled={isPending}>
+                    <Button type="submit" variant="primary" size="sm" disabled={isPending}>
                         {isPending ? "Saving..." : "Save"}
                     </Button>
                     <Button variant="outline-secondary" size="sm" onClick={handleCancel}>
@@ -241,7 +245,7 @@ export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthl
                             name="accountScope"
                             label="Use all accounts"
                             checked={accountScopeMode === "AllAccounts"}
-                            onChange={() => setAccountScopeMode("AllAccounts")}
+                            onChange={() => form.setValue("accountScopeMode", "AllAccounts", { shouldDirty: true })}
                             inline
                         />
                         <Input.Check
@@ -250,7 +254,7 @@ export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthl
                             name="accountScope"
                             label="Select specific accounts"
                             checked={accountScopeMode === "SelectedAccounts"}
-                            onChange={() => setAccountScopeMode("SelectedAccounts")}
+                            onChange={() => form.setValue("accountScopeMode", "SelectedAccounts", { shouldDirty: true })}
                             inline
                         />
                     </div>
@@ -270,6 +274,6 @@ export const ForecastSettings: React.FC<ForecastSettingsProps> = ({ plan, monthl
                     )}
                 </Col>
             </Row>
-        </Section>
+        </SectionForm>
     );
 };
