@@ -4,7 +4,7 @@ import type { AnnotationOptions } from "chartjs-plugin-annotation";
 import { Line } from "react-chartjs-2";
 import { Section } from "@andrewmclachlan/moo-ds";
 
-import type { BillFilter, CostDataPoint } from "../-hooks/types";
+import type { BillFilter } from "../-hooks/types";
 import { useCostPerUnitReport } from "../-hooks/useCostPerUnitReport";
 import { useServiceChargeReport } from "../-hooks/useServiceChargeReport";
 import { chartColours, useChartColours } from "utils/chartColours";

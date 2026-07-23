@@ -1,10 +1,11 @@
-﻿using Asm.AspNetCore;
+using Asm.AspNetCore;
 using Asm.AspNetCore.Routing;
 using Asm.MooBank.Modules.Users.Commands;
 using Asm.MooBank.Modules.Users.Queries;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Postie.AspNetCore;
 
 namespace Asm.MooBank.Modules.Users.Endpoints;
 
@@ -33,12 +34,12 @@ public class User : EndpointGroupBase
             .WithNames("Get User")
             .Produces<Models.User>();
 
-        routeGroupBuilder.MapPatchCommand<Update, Models.User>("/me")
+        routeGroupBuilder.MapPatchCommand<Update, Models.User>("/me", binding: RequestBinding.Parameters)
             .WithNames("Update User")
             .WithValidation<Update>()
             .Produces<Models.User>();
 
-        //routeGroupBuilder.MapDelete<Delete>("/{id}")
+        //routeGroupBuilder.MapDeleteCommand<Delete>("/{id}")
         //.WithName("Delete User");
     }
 }

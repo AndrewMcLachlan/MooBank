@@ -5,7 +5,7 @@ import { useNavigate } from "@tanstack/react-router";
 
 import { SectionForm, Form } from "@andrewmclachlan/moo-ds";
 
-import type { CreateInstitutionAccount as Create, InstitutionAccount, LogicalAccount } from "api/types.gen";
+import type { CreateInstitutionAccount as Create, LogicalAccount } from "api/types.gen";
 import { useCreateInstitutionAccount } from "../../-hooks/useCreateInstitutionAccount";
 import { AccountPage, InstitutionSelector, useAccount } from "components";
 

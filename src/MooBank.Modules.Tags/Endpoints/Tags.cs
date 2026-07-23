@@ -1,4 +1,4 @@
-﻿using Asm.AspNetCore;
+using Asm.AspNetCore;
 using Asm.AspNetCore.Routing;
 using Asm.MooBank.Modules.Tags.Commands;
 using Asm.MooBank.Modules.Tags.Models;
@@ -7,6 +7,7 @@ using Asm.MooBank.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Postie.AspNetCore;
 
 namespace Asm.MooBank.Modules.Tags.Endpoints;
 
@@ -31,30 +32,30 @@ internal class TagsEndpoints : EndpointGroupBase
             .WithNames("Get Tag")
             .RequireAuthorization(Policies.GetTagFamilyPolicy());
 
-        builder.MapPostCreate<Create, MooBank.Models.Tag>("", "get-tag", t => new { t.Id }, CommandBinding.Body)
+        builder.MapPostCreate<Create, MooBank.Models.Tag>("", "get-tag", t => new { t.Id }, RequestBinding.Body)
             .WithNames("Create Tag")
             .WithValidation<Create>();
 
-        builder.MapPutCreate<CreateByName, MooBank.Models.Tag>("{name}", "get-tag", t => new { t.Id })
+        builder.MapPutCreate<CreateByName, MooBank.Models.Tag>("{name}", "get-tag", t => new { t.Id }, RequestBinding.Parameters)
             .WithNames("Create Tag by Name")
             .Accepts<IEnumerable<int>>("application/json")
             .WithSummary("Create a tag by name");
 
-        builder.MapPatchCommand<Update, MooBank.Models.Tag>("{id}")
+        builder.MapPatchCommand<Update, MooBank.Models.Tag>("{id}", binding: RequestBinding.Parameters)
             .WithNames("Update Tag")
             .WithValidation<Update>()
             .RequireAuthorization(Policies.GetTagFamilyPolicy());
 
-        builder.MapDelete<Delete>("{id}")
+        builder.MapDeleteCommand<Delete>("{id}")
             .WithNames("Delete Tag")
             .RequireAuthorization(Policies.GetTagFamilyPolicy());
 
-        builder.MapPutCommand<AddSubTag, MooBank.Models.Tag>("{id}/tags/{subTagId}")
+        builder.MapPutCommand<AddSubTag, MooBank.Models.Tag>("{id}/tags/{subTagId}", binding: RequestBinding.Parameters)
             .WithNames("Add Sub Tag")
             .RequireAuthorization(Policies.GetTagFamilyPolicy())
             .RequireAuthorization(Policies.GetTagFamilyPolicy("subTagId"));
 
-        builder.MapDelete<RemoveSubTag>("{id}/tags/{subTagId}")
+        builder.MapDeleteCommand<RemoveSubTag>("{id}/tags/{subTagId}")
             .WithNames("Remove Sub Tag")
             .RequireAuthorization(Policies.GetTagFamilyPolicy())
             .RequireAuthorization(Policies.GetTagFamilyPolicy("subTagId"));

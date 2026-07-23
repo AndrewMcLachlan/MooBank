@@ -1,9 +1,10 @@
-﻿using Asm.AspNetCore;
+using Asm.AspNetCore;
 using Asm.AspNetCore.Routing;
 using Asm.MooBank.Modules.Accounts.Models.Recurring;
 using Asm.MooBank.Modules.Accounts.Queries.Recurring;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
+using Postie.AspNetCore;
 
 namespace Asm.MooBank.Modules.Accounts.Endpoints;
 

@@ -5,6 +5,7 @@ using Asm.MooBank.Modules.Families.Queries;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Postie.AspNetCore;
 
 namespace Asm.MooBank.Modules.Families.Endpoints;
 
@@ -20,11 +21,11 @@ internal class Families : EndpointGroupBase
             .WithNames("Get My Family")
             .Produces<Models.Family>();
 
-        routeGroupBuilder.MapPatchCommand<UpdateMine, Models.Family>("/")
+        routeGroupBuilder.MapPatchCommand<UpdateMine, Models.Family>("/", binding: RequestBinding.Parameters)
             .WithNames("Update My Family")
             .Produces<Models.Family>();
 
-        routeGroupBuilder.MapDelete<RemoveMember>("/members/{userId}")
+        routeGroupBuilder.MapDeleteCommand<RemoveMember>("/members/{userId}")
             .WithNames("Remove Family Member");
     }
 }

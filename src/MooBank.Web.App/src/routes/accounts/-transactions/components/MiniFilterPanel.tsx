@@ -1,6 +1,6 @@
 import { Section } from "@andrewmclachlan/moo-ds";
 import React from "react";
-import { Form, Input } from "@andrewmclachlan/moo-ds";
+import { Input } from "@andrewmclachlan/moo-ds";
 
 import { TagSelector } from "components";
 

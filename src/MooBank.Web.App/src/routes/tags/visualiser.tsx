@@ -45,7 +45,6 @@ function Visualiser() {
 
     const handleFocus = useCallback((id: number) => {
         state.setFocusId(id);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         navigate({ search: { focus: id } as any, replace: true });
     }, [navigate, state]);
 

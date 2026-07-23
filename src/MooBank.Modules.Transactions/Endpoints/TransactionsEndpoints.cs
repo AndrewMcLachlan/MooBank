@@ -1,4 +1,4 @@
-﻿using Asm.AspNetCore;
+using Asm.AspNetCore;
 using Asm.AspNetCore.Routing;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Transactions.Commands;
@@ -6,6 +6,7 @@ using Asm.MooBank.Modules.Transactions.Queries.Transactions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Postie.AspNetCore;
 
 namespace Asm.MooBank.Modules.Transactions.Endpoints;
 
@@ -26,21 +27,21 @@ internal class TransactionsEndpoints : EndpointGroupBase
         builder.MapQuery<Search, IEnumerable<Transaction>>("")
             .WithNames("Search Transactions");
 
-        builder.MapCommand<Create, Transaction>("", binding: CommandBinding.Parameters)
+        builder.MapCommand<Create, Transaction>("", binding: RequestBinding.Parameters)
             .WithNames("Create Transaction")
             .Accepts<Models.CreateTransaction>("application/json");
 
-        builder.MapCommand<UpdateBalance, Transaction>("/balance-adjustment", binding: CommandBinding.Parameters)
+        builder.MapCommand<UpdateBalance, Transaction>("/balance-adjustment", binding: RequestBinding.Parameters)
             .WithNames("Set Balance");
 
-        builder.MapPatchCommand<UpdateTransaction, Transaction>("{id}", binding: CommandBinding.None)
+        builder.MapPatchCommand<UpdateTransaction, Transaction>("{id}", binding: RequestBinding.Default)
             .WithNames("Update Transaction")
             .Accepts<UpdateTransaction>("application/json");
 
-        builder.MapPutCommand<AddTag, Transaction>("{id}/tag/{tagId}")
+        builder.MapPutCommand<AddTag, Transaction>("{id}/tag/{tagId}", binding: RequestBinding.Parameters)
             .WithNames("Add Tag");
 
-        builder.MapDelete<RemoveTag, Transaction>("{id}/tag/{tagId}")
+        builder.MapDeleteCommand<RemoveTag, Transaction>("{id}/tag/{tagId}")
             .WithNames("Remove Tag");
     }
 }

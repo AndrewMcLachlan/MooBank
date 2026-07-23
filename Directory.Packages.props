@@ -1,4 +1,4 @@
-<Project>
+﻿<Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
@@ -45,15 +45,19 @@
     <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.2.3" />
   </ItemGroup>
   <ItemGroup>
-    <PackageVersion Include="Asm" Version="4.0.31" />
+    <PackageVersion Include="Asm" Version="4.1.16" />
     <PackageVersion Include="Asm.AspNetCore" Version="4.0.31" />
     <PackageVersion Include="Asm.AspNetCore.Api" Version="4.0.31" />
-    <PackageVersion Include="Asm.Cqrs.AspNetCore" Version="4.0.31" />
+    <PackageVersion Include="Asm.AspNetCore.Postie" Version="4.1.16" />
     <PackageVersion Include="Asm.Domain" Version="4.0.31" />
     <PackageVersion Include="Asm.Domain.Infrastructure" Version="4.0.31" />
     <PackageVersion Include="Asm.Hosting" Version="4.0.31" />
     <PackageVersion Include="Asm.ModelContextProtocol" Version="4.0.31" />
     <PackageVersion Include="Asm.Testing.Domain" Version="4.0.31" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageVersion Include="Postie.AspNetCore" Version="1.0.1" />
+    <PackageVersion Include="Postie.Cqrs.AspNetCore" Version="1.0.1" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="Bogus" Version="35.6.5" />

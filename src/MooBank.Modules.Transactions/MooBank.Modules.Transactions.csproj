@@ -1,6 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <PackageReference Include="Asm.Cqrs.AspNetCore" />
+    <PackageReference Include="Postie.Cqrs.AspNetCore" />
+    <PackageReference Include="Postie.AspNetCore" />
+    <PackageReference Include="Asm.AspNetCore.Postie" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
     <PackageReference Include="ModelContextProtocol" />
   </ItemGroup>

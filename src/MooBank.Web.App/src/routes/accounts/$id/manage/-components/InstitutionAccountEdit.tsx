@@ -5,7 +5,7 @@ import { Button, Modal } from "@andrewmclachlan/moo-ds";
 import { useForm } from "react-hook-form";
 import { useUpdateInstitutionAccount } from "../../../-hooks/useUpdateInstitutionAccount";
 
-export const InstitutionAccountEdit: React.FC<InstitutionAccountEditProps> = ({ institutionAccount, show, onHide, onSave }) => {
+export const InstitutionAccountEdit: React.FC<InstitutionAccountEditProps> = ({ institutionAccount, show, onHide }) => {
 
     const account = useAccount() as LogicalAccount;
     const updateInstitutionAccount = useUpdateInstitutionAccount();

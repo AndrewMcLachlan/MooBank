@@ -3,6 +3,7 @@ using Asm.AspNetCore.Routing;
 using Asm.MooBank.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
+using Postie.AspNetCore;
 
 namespace Asm.MooBank.Modules.Bills.Endpoints;
 
@@ -23,7 +24,7 @@ internal class BillAccounts : EndpointGroupBase
         builder.MapQuery<Queries.Bills.Get, Models.Bill>("/bills/{id}")
             .WithNames("Get Bill");
 
-        builder.MapPostCreate<Commands.Bills.Create, Models.Bill>("/bills", "Get Bill".ToMachine(), b => b.Id, CommandBinding.Parameters)
+        builder.MapPostCreate<Commands.Bills.Create, Models.Bill>("/bills", "Get Bill".ToMachine(), b => b.Id, RequestBinding.Parameters)
             .WithNames("Create Bill")
             .RequireAuthorization(Policies.GetInstrumentOwnerPolicy());
     }

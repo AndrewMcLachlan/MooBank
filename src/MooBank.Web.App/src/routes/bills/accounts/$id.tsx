@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import type { PropsWithChildren } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { Page, useIdParams } from "@andrewmclachlan/moo-app";
@@ -8,7 +7,7 @@ import type { Bill } from "api/types.gen";
 import { useBillAccount } from "../-hooks/useBillAccount";
 import { useBills } from "../-hooks/useBills";
 
-import { Button, Table } from "@andrewmclachlan/moo-ds";
+import { Table } from "@andrewmclachlan/moo-ds";
 import { AddBill } from "../-components/AddBill";
 import { BillDetails } from "../-components/BillDetails";
 import { BillRow } from "../-components/BillRow";

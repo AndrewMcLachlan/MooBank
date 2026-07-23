@@ -56,7 +56,7 @@ export const TransactionSplit: React.FC<TransactionSplitProps> = ({ transaction,
             <section className="offsets" hidden={isCredit(transaction.transactionType)}>
                 <Form.Label>Corresponding rebate / refund</Form.Label>
 
-                {offsetBy?.map((to, index) =>
+                {offsetBy?.map((to) =>
                     <Row key={to.transaction.id}>
                         <Col sm={9}>
                             <TransactionSearch value={to.transaction} onChange={(v) => v ? offsetChanged({ ...to, transaction: v }, to.transaction) : removeOffset(to.transaction.id)} transaction={transaction} excludedTransactions={offsetBy.map(ob => ob.transaction.id)} />

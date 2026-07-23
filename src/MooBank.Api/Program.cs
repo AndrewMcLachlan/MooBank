@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using Asm.AspNetCore.Api;
@@ -42,6 +42,8 @@ void AddServices(WebApplicationBuilder builder)
         new Asm.MooBank.Modules.Transactions.Module(),
         new Asm.MooBank.Modules.Users.Module(),
     ]);
+
+    services.AddPostieEndpointDispatcher();
 
     services.AddEndpointsApiExplorer();
     services.AddAzureOAuthOptions("OAuth");

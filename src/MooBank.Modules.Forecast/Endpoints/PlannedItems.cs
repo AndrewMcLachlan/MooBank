@@ -5,6 +5,7 @@ using Asm.MooBank.Modules.Forecast.Models;
 using Asm.MooBank.Modules.Forecast.Queries;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
+using Postie.AspNetCore;
 
 namespace Asm.MooBank.Modules.Forecast.Endpoints;
 
@@ -19,13 +20,13 @@ public class PlannedItems : EndpointGroupBase
         routeGroupBuilder.MapQuery<GetPlannedItem, PlannedItem>("/{itemId}")
             .WithNames("Get Planned Item");
 
-        routeGroupBuilder.MapPostCreate<CreatePlannedItem, PlannedItem>("/", "Get Planned Item".ToMachine(), (command, item) => new { planId = command.PlanId, itemId = item.Id }, CommandBinding.Parameters)
+        routeGroupBuilder.MapPostCreate<CreatePlannedItem, PlannedItem>("/", "Get Planned Item".ToMachine(), (command, item) => new { planId = command.PlanId, itemId = item.Id }, RequestBinding.Parameters)
             .WithNames("Create Planned Item");
 
-        routeGroupBuilder.MapPutCommand<UpdatePlannedItem, PlannedItem>("/{itemId}")
+        routeGroupBuilder.MapPutCommand<UpdatePlannedItem, PlannedItem>("/{itemId}", binding: RequestBinding.Parameters)
             .WithNames("Update Planned Item");
 
-        routeGroupBuilder.MapDelete<DeletePlannedItem>("/{itemId}")
+        routeGroupBuilder.MapDeleteCommand<DeletePlannedItem>("/{itemId}")
             .WithNames("Delete Planned Item");
     }
 }

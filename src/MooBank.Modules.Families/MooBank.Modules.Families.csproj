@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <PackageReference Include="Asm.Cqrs.AspNetCore" />
+    <PackageReference Include="Postie.Cqrs.AspNetCore" />
+    <PackageReference Include="Postie.AspNetCore" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
   </ItemGroup>
 

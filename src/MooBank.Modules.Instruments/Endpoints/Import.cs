@@ -1,4 +1,4 @@
-﻿using Asm.AspNetCore;
+using Asm.AspNetCore;
 using Asm.AspNetCore.Routing;
 using Asm.MooBank.Modules.Instruments.Commands.Import;
 using Microsoft.AspNetCore.Antiforgery;
@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Postie.AspNetCore;
 
 namespace Asm.MooBank.Modules.Instruments.Endpoints;
 
@@ -33,7 +34,7 @@ internal class Import : EndpointGroupBase
             .WithMetadata(new RequestSizeLimitAttribute(10 * 1024 * 1024)) // 10MB
             .WithNames("Import");
 
-        builder.MapCommand<Reprocess>("/reprocess", StatusCodes.Status204NoContent, CommandBinding.Parameters)
+        builder.MapCommand<Reprocess>("/reprocess", StatusCodes.Status204NoContent, RequestBinding.Parameters)
             .WithNames("Reprocess")
             .Produces(StatusCodes.Status204NoContent);
 

@@ -2,11 +2,9 @@ import { Section } from "@andrewmclachlan/moo-ds";
 import type { ChartData } from "chart.js";
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
-import { Form, Row } from "@andrewmclachlan/moo-ds";
 import { useNavigate, useParams } from "@tanstack/react-router";
 
 import { TagSelector } from "components";
-import { PeriodSelector } from "components/PeriodSelector";
 import { ReportTypeSelector } from "components/ReportTypeSelector";
 import type { Period } from "models/dateFns";
 import type { TagSettings } from "api/types.gen";

@@ -1,6 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <PackageReference Include="Asm.Cqrs.AspNetCore" />
+    <PackageReference Include="Postie.Cqrs.AspNetCore" />
+    <PackageReference Include="Postie.AspNetCore" />
+    <PackageReference Include="Asm.AspNetCore.Postie" />
     <PackageReference Include="FluentValidation" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
@@ -14,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="Asm.Cqrs.Commands" />
-    <Using Include="Asm.Cqrs.Queries" />
+    <Using Include="Postie.Cqrs.Commands" />
+    <Using Include="Postie.Cqrs.Queries" />
     <Using Include="Microsoft.EntityFrameworkCore" />
   </ItemGroup>
 

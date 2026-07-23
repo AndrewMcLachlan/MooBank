@@ -1,11 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { changeSortDirection, IconLinkButton, Input, MiniPagination, PageSize, Pagination, PaginationControls, SortablePaginationTh, Section, SectionTable, SortableTh, useLocalStorage, Badge } from "@andrewmclachlan/moo-ds";
+import { changeSortDirection, IconLinkButton, PageSize, Pagination, PaginationControls, SortablePaginationTh, Section, SectionTable, SortableTh, useLocalStorage, Badge } from "@andrewmclachlan/moo-ds";
 import type { BadgeHue, SortDirection } from "@andrewmclachlan/moo-ds";
 import { institutionTypeOptions } from "models/institutions";
 import { useNavigate } from "@tanstack/react-router";
 import { useInstitutions } from "hooks/useInstitutions";
 import { SettingsPage } from "../-components/SettingsPage";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/settings/institutions/")({
     component: Institutions,

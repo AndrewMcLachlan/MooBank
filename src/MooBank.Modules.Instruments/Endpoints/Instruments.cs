@@ -1,4 +1,4 @@
-﻿using Asm.AspNetCore;
+using Asm.AspNetCore;
 using Asm.AspNetCore.Routing;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Instruments.Models.Instruments;
@@ -6,6 +6,7 @@ using Asm.MooBank.Modules.Instruments.Queries.Instruments;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Postie.AspNetCore;
 
 namespace Asm.MooBank.Modules.Instruments.Endpoints;
 

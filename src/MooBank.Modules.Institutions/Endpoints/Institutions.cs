@@ -1,10 +1,11 @@
-﻿using Asm.AspNetCore;
+using Asm.AspNetCore;
 using Asm.AspNetCore.Routing;
 using Asm.MooBank.Modules.Institutions.Commands;
 using Asm.MooBank.Modules.Institutions.Queries;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Postie.AspNetCore;
 
 namespace Asm.MooBank.Modules.Institutions.Endpoints;
 
@@ -22,12 +23,12 @@ internal class Institutions : EndpointGroupBase
         routeGroupBuilder.MapQuery<Get, Models.Institution>("/{id}")
             .WithNames("Get Institution");
 
-        routeGroupBuilder.MapPostCreate<Create, Models.Institution>("/", "Get Institution".ToMachine(), (i) => new { i.Id }, CommandBinding.Body)
+        routeGroupBuilder.MapPostCreate<Create, Models.Institution>("/", "Get Institution".ToMachine(), (i) => new { i.Id }, RequestBinding.Body)
             .WithNames("Create Institution")
             .RequireAuthorization(Policies.Admin)
             .WithValidation<Create>();
 
-        routeGroupBuilder.MapPatchCommand<Update, Models.Institution>("/{id}")
+        routeGroupBuilder.MapPatchCommand<Update, Models.Institution>("/{id}", binding: RequestBinding.Parameters)
             .WithNames("Update Institution")
             .Accepts<Update>("application/json")
             .RequireAuthorization(Policies.Admin)

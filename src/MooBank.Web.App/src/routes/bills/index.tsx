@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Nav, Tab, Tabs } from "@andrewmclachlan/moo-ds";
+import { Tab, Tabs } from "@andrewmclachlan/moo-ds";
 import { useNavigate } from "@tanstack/react-router";
 
 import { IconButton, Section } from "@andrewmclachlan/moo-ds";

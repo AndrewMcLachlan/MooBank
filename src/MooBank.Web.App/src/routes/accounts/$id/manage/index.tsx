@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
 
 import { useIdParams } from "@andrewmclachlan/moo-app";
-import { DeleteIcon, EditColumn, Icon, IconButton, SectionTable } from "@andrewmclachlan/moo-ds";
+import { Icon, IconButton, SectionTable } from "@andrewmclachlan/moo-ds";
 
 import { AccountPage, useAccount } from "components";
 import type { Controller, InstitutionAccount, LogicalAccount } from "api/types.gen";

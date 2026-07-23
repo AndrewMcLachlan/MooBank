@@ -2,10 +2,7 @@ import React from "react";
 
 import { Section } from "@andrewmclachlan/moo-ds";
 import classNames from "classnames";
-import { format } from "date-fns/format";
-import { parseISO } from "date-fns/parseISO";
 import type { LogicalAccount } from "api/types.gen";
-import { useInstitutions } from "hooks/useInstitutions";
 import { useAccount } from "./AccountProvider";
 import { Amount } from "./Amount";
 import { AccountTypeBadge } from "./AccountTypeBadge";
@@ -15,7 +12,6 @@ import { formatDisplayDate } from "utils/dateFns";
 export const AccountSummary: React.FC<AccountSummaryProps> = ({ className, ...props }) => {
 
     const account = useAccount();
-    const { data: institutions } = useInstitutions();
 
     if (!account) return null;
 
