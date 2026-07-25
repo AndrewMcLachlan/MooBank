@@ -76,18 +76,6 @@
 }
 
 /* ---- Planned items ---- */
-.forecast-planned-tables {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-}
-
-@media (max-width: 992px) {
-    .forecast-planned-tables {
-        grid-template-columns: 1fr;
-    }
-}
-
 .new-planned-item {
     input, select {
         font-size: 0.875rem;

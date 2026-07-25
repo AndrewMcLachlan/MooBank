@@ -64,9 +64,7 @@ function Forecast() {
         <ForecastPage plan={plan} actions={actions}>
             <ForecastOutlook plan={plan} summary={result?.summary} months={result?.months ?? []} currencyCode={currencyCode} loading={resultLoading} />
 
-            <div className="forecast-planned-tables">
-                <PlannedItemsTable plan={plan} currencyCode={currencyCode} />
-            </div>
+            <PlannedItemsTable plan={plan} currencyCode={currencyCode} />
 
             <ForecastSettingsModal plan={plan} currencyCode={currencyCode} show={editOpen} onHide={() => setEditOpen(false)} />
         </ForecastPage>
