@@ -23,45 +23,49 @@
         background: color-mix(in srgb, var(--warning) 16%, transparent);
     }
 
-    .outlook-kpis {
+    /* Compact metric cards — the split-out risk figures, styled like the account
+       compact widgets (shared .eyebrow label + global --income-bar/--expense-bar
+       accent tokens), but with forecast-owned layout classes. */
+    .forecast-metrics {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 1.25rem;
+        gap: 0.625rem;
         padding-bottom: 1.25rem;
         margin-bottom: 1.25rem;
         border-bottom: 1px solid var(--border-colour);
     }
 
-    .kpi {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
+    .forecast-metrics .section.metric {
+        padding: 0.625rem 0.875rem;
+        border-top: 2px solid var(--primary);
     }
 
-    .kpi-label {
-        font-size: 0.75rem;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-        color: var(--secondary-colour);
-    }
+    .forecast-metrics .section.metric[data-tone="ok"] { border-top-color: var(--income-bar); }
+    .forecast-metrics .section.metric[data-tone="risk"] { border-top-color: var(--expense-bar); }
 
-    .kpi-value {
-        font-size: 1.75rem;
+    .metric-value {
+        font-size: 1.375rem;
         font-weight: 600;
+        letter-spacing: -0.6px;
+        line-height: 1.1;
         font-variant-numeric: tabular-nums;
+        margin-top: 0.125rem;
+        color: var(--body-colour-bold);
     }
 
-    .kpi-value.negative {
-        color: var(--red);
+    .metric-value.negative {
+        color: var(--expense-fg);
     }
 
-    .kpi-sub {
+    .metric-sub {
         font-size: 0.75rem;
         color: var(--secondary-colour);
+        margin-top: 0.125rem;
     }
 
     .forecast-chart-canvas {
         height: 400px;
+        margin-top: 1.25rem;
     }
 
     .outlook-footer {
@@ -86,9 +90,8 @@
 }
 
 @media (max-width: 768px) {
-    .forecast-outlook .outlook-kpis {
+    .forecast-outlook .forecast-metrics {
         grid-template-columns: 1fr;
-        gap: 0.875rem;
     }
 }
 

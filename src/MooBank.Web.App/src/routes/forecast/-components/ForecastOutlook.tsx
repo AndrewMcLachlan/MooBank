@@ -26,29 +26,33 @@ export const ForecastOutlook: React.FC<ForecastOutlookProps> = ({ summary, month
         </div>
     );
 
+    const lowestBalanceRisk = !!summary && summary.lowestBalance < 0;
+    const monthsRisk = !!summary && summary.monthsBelowZero > 0;
+    const upliftRisk = !!summary && summary.requiredMonthlyUplift > 0;
+
     return (
         <Section header={header} className="forecast-outlook">
             {summary && (
-                <div className="outlook-kpis">
-                    <div className="kpi">
-                        <div className="kpi-label">Lowest Balance</div>
-                        <div className={`kpi-value ${summary.lowestBalance < 0 ? "negative" : ""}`}>
+                <div className="forecast-metrics">
+                    <Section className="metric" data-tone={lowestBalanceRisk ? "risk" : "ok"}>
+                        <div className="eyebrow">Lowest Balance</div>
+                        <div className={`metric-value ${lowestBalanceRisk ? "negative" : ""}`}>
                             <Amount amount={summary.lowestBalance} currencyCode={currencyCode} minus />
                         </div>
-                        <div className="kpi-sub">in {format(parseISO(summary.lowestBalanceMonth), "MMMM yyyy")}</div>
-                    </div>
-                    <div className="kpi">
-                        <div className="kpi-label">Months Below Zero</div>
-                        <div className={`kpi-value ${summary.monthsBelowZero > 0 ? "negative" : ""}`}>{summary.monthsBelowZero}</div>
-                        <div className="kpi-sub">{summary.monthsBelowZero === 0 ? "never runs negative" : "needs attention"}</div>
-                    </div>
-                    <div className="kpi">
-                        <div className="kpi-label">Required Monthly Uplift</div>
-                        <div className={`kpi-value ${summary.requiredMonthlyUplift > 0 ? "negative" : ""}`}>
+                        <div className="metric-sub">in {format(parseISO(summary.lowestBalanceMonth), "MMMM yyyy")}</div>
+                    </Section>
+                    <Section className="metric" data-tone={monthsRisk ? "risk" : "ok"}>
+                        <div className="eyebrow">Months Below Zero</div>
+                        <div className={`metric-value ${monthsRisk ? "negative" : ""}`}>{summary.monthsBelowZero}</div>
+                        <div className="metric-sub">{summary.monthsBelowZero === 0 ? "never runs negative" : "needs attention"}</div>
+                    </Section>
+                    <Section className="metric" data-tone={upliftRisk ? "risk" : "ok"}>
+                        <div className="eyebrow">Required Monthly Uplift</div>
+                        <div className={`metric-value ${upliftRisk ? "negative" : ""}`}>
                             <Amount amount={summary.requiredMonthlyUplift} currencyCode={currencyCode} minus />
                         </div>
-                        <div className="kpi-sub">{summary.requiredMonthlyUplift > 0 ? "to avoid negative balance" : "no uplift required"}</div>
-                    </div>
+                        <div className="metric-sub">{summary.requiredMonthlyUplift > 0 ? "to avoid negative balance" : "no uplift required"}</div>
+                    </Section>
                 </div>
             )}
 

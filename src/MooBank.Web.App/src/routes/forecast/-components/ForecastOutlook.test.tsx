@@ -42,7 +42,7 @@ describe("ForecastOutlook", () => {
         const container = renderOutlook();
         expect(screen.getByText("On track")).toBeInTheDocument();
         expect(container.querySelector(".health-pill.on-track")).not.toBeNull();
-        expect(container.querySelectorAll(".kpi-value.negative")).toHaveLength(0);
+        expect(container.querySelectorAll(".metric-value.negative")).toHaveLength(0);
     });
 
     it("flips to Needs attention and marks Months Below Zero as risk when it runs negative", () => {
@@ -50,7 +50,7 @@ describe("ForecastOutlook", () => {
         expect(screen.getByText("Needs attention")).toBeInTheDocument();
         expect(container.querySelector(".health-pill.attention")).not.toBeNull();
         // Only the Months Below Zero figure is over threshold here.
-        const risk = container.querySelectorAll(".kpi-value.negative");
+        const risk = container.querySelectorAll(".metric-value.negative");
         expect(risk).toHaveLength(1);
         expect(risk[0]).toHaveTextContent("2");
     });
@@ -58,12 +58,12 @@ describe("ForecastOutlook", () => {
     it("flips to Needs attention and marks Required Monthly Uplift as risk when uplift is needed", () => {
         const container = renderOutlook({ requiredMonthlyUplift: 250 });
         expect(screen.getByText("Needs attention")).toBeInTheDocument();
-        expect(container.querySelectorAll(".kpi-value.negative")).toHaveLength(1);
+        expect(container.querySelectorAll(".metric-value.negative")).toHaveLength(1);
     });
 
     it("marks Lowest Balance as risk when it drops below zero", () => {
         const container = renderOutlook({ lowestBalance: -500, monthsBelowZero: 1 });
-        const risk = container.querySelectorAll(".kpi-value.negative");
+        const risk = container.querySelectorAll(".metric-value.negative");
         // Lowest Balance (< 0) and Months Below Zero (> 0) are both risks.
         expect(risk).toHaveLength(2);
     });
@@ -81,7 +81,7 @@ describe("ForecastOutlook", () => {
             <ForecastOutlook months={[]} currencyCode="AUD" loading />,
         );
         expect(container.querySelector(".health-pill")).toBeNull();
-        expect(container.querySelector(".outlook-kpis")).toBeNull();
+        expect(container.querySelector(".forecast-metrics")).toBeNull();
         expect(screen.getByTestId("forecast-chart")).toBeInTheDocument();
     });
 });
