@@ -302,6 +302,8 @@ export type ForecastMonth = {
     incomeTotal: number;
     baselineOutgoingsTotal: number;
     plannedItemsTotal: number;
+    plannedIncomeTotal: number;
+    plannedExpensesTotal: number;
     closingBalance: number;
     actualBalance?: null | number;
     actualIncome?: null | number;

@@ -17,7 +17,20 @@ public sealed record ForecastMonth
     public decimal OpeningBalance { get; init; }
     public decimal IncomeTotal { get; init; }
     public decimal BaselineOutgoingsTotal { get; init; }
+    /// <summary>
+    /// Net planned items for this month: positive for income, negative for expenses.
+    /// </summary>
     public decimal PlannedItemsTotal { get; init; }
+    /// <summary>
+    /// Planned income allocated to this month (positive). Split out of <see cref="PlannedItemsTotal"/>
+    /// so income and expenses can be charted independently.
+    /// </summary>
+    public decimal PlannedIncomeTotal { get; init; }
+    /// <summary>
+    /// Planned expenses allocated to this month (positive). Split out of <see cref="PlannedItemsTotal"/>
+    /// so income and expenses can be charted independently.
+    /// </summary>
+    public decimal PlannedExpensesTotal { get; init; }
     public decimal ClosingBalance { get; init; }
     /// <summary>
     /// The actual historical balance for this month, if available (null for future months).

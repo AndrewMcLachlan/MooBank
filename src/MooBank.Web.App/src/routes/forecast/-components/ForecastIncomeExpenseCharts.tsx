@@ -19,9 +19,11 @@ export const ForecastIncomeExpenseCharts: React.FC<ForecastIncomeExpenseChartsPr
 
     const options = forecastChartOptions(currencyCode, colours);
 
+    // Projected totals include planned items, so one-off and scheduled items show as the spikes
+    // they are — the recurring/baseline figures alone are flat lines.
     const incomeData = projectedActualChartData(
         months,
-        (m) => m.incomeTotal,
+        (m) => m.incomeTotal + m.plannedIncomeTotal,
         (m) => m.actualIncome,
         { projected: "Projected", actual: "Actual" },
         { solid: colours.income, trend: colours.incomeTrend },
@@ -29,7 +31,7 @@ export const ForecastIncomeExpenseCharts: React.FC<ForecastIncomeExpenseChartsPr
 
     const expensesData = projectedActualChartData(
         months,
-        (m) => m.baselineOutgoingsTotal,
+        (m) => m.baselineOutgoingsTotal + m.plannedExpensesTotal,
         (m) => m.actualOutgoings,
         { projected: "Projected", actual: "Actual" },
         { solid: colours.expenses, trend: colours.expensesTrend },

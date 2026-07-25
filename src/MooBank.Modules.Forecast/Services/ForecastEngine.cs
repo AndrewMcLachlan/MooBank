@@ -49,8 +49,10 @@ internal class ForecastEngine(
         // 7. Calculate baseline outgoings from historical data (excluding Savings accounts)
         var baselineOutgoings = await CalculateBaselineOutgoings(accountIdsForHistoricalAnalysis, outgoingStrategy, plan.StartDate, cancellationToken);
 
-        // 8. Expand planned items into monthly allocations
-        var plannedItemsByMonth = PlannedItemExpander.ExpandPlannedItems(plan);
+        // 8. Expand planned items into monthly allocations, split by type so income and expenses
+        //    can be reported (and charted) independently as well as netted.
+        var (plannedIncomeByMonth, plannedExpensesByMonth) = PlannedItemExpander.ExpandPlannedItemsByType(plan);
+        var plannedItemsByMonth = PlannedItemExpander.NetPlannedItems(plannedIncomeByMonth, plannedExpensesByMonth);
 
         // 8a. Determine realized non-baseline expenses for future training data exclusion.
         var realizedNonBaselineExpenses = latestTransactionDate >= plan.StartDate
@@ -145,6 +147,8 @@ internal class ForecastEngine(
                 IncomeTotal = monthIncome,
                 BaselineOutgoingsTotal = monthOutgoings,
                 PlannedItemsTotal = monthPlanned,
+                PlannedIncomeTotal = plannedIncomeByMonth.GetValueOrDefault(monthKey, 0m),
+                PlannedExpensesTotal = plannedExpensesByMonth.GetValueOrDefault(monthKey, 0m),
                 // monthPlanned already has correct sign: positive for income, negative for expenses
                 ClosingBalance = currentBalance + monthIncome - Math.Abs(monthOutgoings) + monthPlanned,
                 ActualBalance = actualBalance,

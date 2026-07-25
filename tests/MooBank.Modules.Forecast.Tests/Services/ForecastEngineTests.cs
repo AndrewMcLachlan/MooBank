@@ -1082,6 +1082,68 @@ public class ForecastEngineTests
     }
 
     /// <summary>
+    /// Given a month containing both planned income and a planned expense
+    /// When the forecast is calculated
+    /// Then the two are reported separately as positive amounts, and still net into PlannedItemsTotal
+    /// </summary>
+    [Fact]
+    public async Task Calculate_PlannedIncomeAndExpenseInSameMonth_ReportsBothSeparately()
+    {
+        // Arrange
+        var accountId = Guid.NewGuid();
+        _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId]));
+
+        var planId = Guid.NewGuid();
+        var plan = CreatePlanWithStrategies(
+            id: planId,
+            startDate: new DateOnly(2024, 1, 1),
+            endDate: new DateOnly(2024, 1, 31),
+            startingBalance: 10000m,
+            monthlyIncome: 5000m,
+            lookbackMonths: 0);
+
+        plan.PlannedItems.Add(new DomainPlannedItem(Guid.NewGuid())
+        {
+            ForecastPlanId = planId,
+            Name = "Tax Refund",
+            ItemType = PlannedItemType.Income,
+            Amount = 2000m,
+            IsIncluded = true,
+            DateMode = PlannedItemDateMode.FixedDate,
+            FixedDate = new PlannedItemFixedDate { FixedDate = new DateOnly(2024, 1, 20) }
+        });
+
+        plan.PlannedItems.Add(new DomainPlannedItem(Guid.NewGuid())
+        {
+            ForecastPlanId = planId,
+            Name = "School Fees",
+            ItemType = PlannedItemType.Expense,
+            Amount = 1200m,
+            IsIncluded = true,
+            DateMode = PlannedItemDateMode.FixedDate,
+            FixedDate = new PlannedItemFixedDate { FixedDate = new DateOnly(2024, 1, 15) }
+        });
+
+        SetupEmptyRepositoryMocks();
+
+        var engine = new ForecastEngine(
+            _mocks.ReportReaderMock.Object,
+            _mocks.InstrumentRepositoryMock.Object,
+            _mocks.User);
+
+        // Act
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
+
+        // Assert
+        var firstMonth = result.Months.First();
+        // Both are positive and independently addressable — the netted total alone would hide them.
+        Assert.Equal(2000m, firstMonth.PlannedIncomeTotal);
+        Assert.Equal(1200m, firstMonth.PlannedExpensesTotal);
+        // Existing netting behaviour is preserved: 2000 - 1200 = 800
+        Assert.Equal(800m, firstMonth.PlannedItemsTotal);
+    }
+
+    /// <summary>
     /// Given historical transaction data for past months
     /// When the forecast is calculated
     /// Then each historical month exposes actual income (credits) and outgoings (absolute debits)
