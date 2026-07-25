@@ -1,11 +1,10 @@
-import { addMonths, format, parseISO, startOfMonth } from "date-fns";
+import { addMonths, parseISO, startOfMonth } from "date-fns";
 import { Widget } from "@andrewmclachlan/moo-ds";
-import type { ChartOptions } from "chart.js";
 import { Line } from "react-chartjs-2";
 
 import { useChartColours } from "utils/chartColours";
-import { formatCurrency } from "utils/currency";
 import { WidgetError } from "components/WidgetError";
+import { forecastChartData, forecastChartOptions } from "../forecast/-utils/forecastChart";
 import { useUser } from "hooks/useUser";
 import { useForecastPlans } from "../forecast/-hooks/useForecastPlans";
 import { useForecastPlan } from "../forecast/-hooks/useForecastPlan";
@@ -53,55 +52,8 @@ export const ForecastWidget: React.FC = () => {
         return monthDate >= windowStart && monthDate <= windowEnd;
     });
 
-    const labels = months.map(m => format(parseISO(m.monthStart), "MMM yy"));
-
-    const data = {
-        labels,
-        datasets: [
-            {
-                label: "Projected Balance",
-                data: months.map(m => m.openingBalance),
-                borderColor: "rgb(53, 162, 235)",
-                backgroundColor: "rgba(53, 162, 235, 0.5)",
-                tension: 0.1,
-            },
-            {
-                label: "Actual Balance",
-                data: months.map(m => m.actualBalance ?? null),
-                borderColor: colours.income,
-                backgroundColor: colours.incomeTrend,
-                tension: 0.1,
-                spanGaps: false,
-            },
-        ],
-    };
-
-    const options: ChartOptions<"line"> = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: { position: "top" },
-            tooltip: {
-                callbacks: {
-                    label: (context) => {
-                        const value = context.parsed.y;
-                        return `${context.dataset.label}: ${formatCurrency(value, currencyCode)}`;
-                    },
-                },
-            },
-        },
-        scales: {
-            y: {
-                grid: { color: colours.grid },
-                ticks: {
-                    callback: (value) => formatCurrency(Number(value), currencyCode, 0),
-                },
-            },
-            x: {
-                grid: { color: colours.grid },
-            },
-        },
-    };
+    const data = forecastChartData(months, colours);
+    const options = forecastChartOptions(currencyCode, colours);
 
     return (
         <Widget header={header} size="double" headerSize={2} className="report forecast-widget" loading={plansLoading || isFetching} to="/forecast">

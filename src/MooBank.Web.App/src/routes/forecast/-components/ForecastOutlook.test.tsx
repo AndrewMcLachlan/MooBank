@@ -1,0 +1,87 @@
+import { describe, it, expect, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+import type { ForecastSummary } from "api/types.gen";
+import { ForecastOutlook } from "./ForecastOutlook";
+
+// The chart pulls in react-chartjs-2 (canvas) and theme context; the Outlook's own logic is the
+// health verdict + KPI risk colouring, so stub the chart to keep the test deterministic.
+vi.mock("./ForecastChart", () => ({
+    ForecastChart: () => <div data-testid="forecast-chart" />,
+}));
+
+// Section renders through moo-ds's LinkProvider, which the app supplies but a unit test does not.
+// Stub the two primitives this component uses so the test stays provider-free and focused.
+vi.mock("@andrewmclachlan/moo-ds", () => ({
+    Section: ({ header, children }: { header?: React.ReactNode; children?: React.ReactNode }) => (
+        <section>{header}{children}</section>
+    ),
+    SpinnerContainer: () => <div data-testid="spinner" />,
+}));
+
+const summary = (over: Partial<ForecastSummary> = {}): ForecastSummary => ({
+    lowestBalance: 101536,
+    lowestBalanceMonth: "2026-07-01",
+    requiredMonthlyUplift: 0,
+    monthsBelowZero: 0,
+    totalIncome: 303138,
+    totalOutgoings: 311925,
+    monthlyBaselineOutgoings: 6457,
+    regression: null,
+    ...over,
+});
+
+const renderOutlook = (over?: Partial<ForecastSummary>) => {
+    const { container } = render(
+        <ForecastOutlook summary={summary(over)} months={[]} currencyCode="AUD" />,
+    );
+    return container;
+};
+
+describe("ForecastOutlook", () => {
+    it("reads On track and colours no KPI as risk when the forecast is healthy", () => {
+        const container = renderOutlook();
+        expect(screen.getByText("On track")).toBeInTheDocument();
+        expect(container.querySelector(".health-pill.on-track")).not.toBeNull();
+        expect(container.querySelectorAll(".kpi-value.negative")).toHaveLength(0);
+    });
+
+    it("flips to Needs attention and marks Months Below Zero as risk when it runs negative", () => {
+        const container = renderOutlook({ monthsBelowZero: 2 });
+        expect(screen.getByText("Needs attention")).toBeInTheDocument();
+        expect(container.querySelector(".health-pill.attention")).not.toBeNull();
+        // Only the Months Below Zero figure is over threshold here.
+        const risk = container.querySelectorAll(".kpi-value.negative");
+        expect(risk).toHaveLength(1);
+        expect(risk[0]).toHaveTextContent("2");
+    });
+
+    it("flips to Needs attention and marks Required Monthly Uplift as risk when uplift is needed", () => {
+        const container = renderOutlook({ requiredMonthlyUplift: 250 });
+        expect(screen.getByText("Needs attention")).toBeInTheDocument();
+        expect(container.querySelectorAll(".kpi-value.negative")).toHaveLength(1);
+    });
+
+    it("marks Lowest Balance as risk when it drops below zero", () => {
+        const container = renderOutlook({ lowestBalance: -500, monthsBelowZero: 1 });
+        const risk = container.querySelectorAll(".kpi-value.negative");
+        // Lowest Balance (< 0) and Months Below Zero (> 0) are both risks.
+        expect(risk).toHaveLength(2);
+    });
+
+    it("shows the regression fallback note only when the model fell back to a flat average", () => {
+        const withFallback = renderOutlook({ regression: { fellBackToFlatAverage: true, rSquared: 0.004 } as ForecastSummary["regression"] });
+        expect(withFallback.querySelector(".outlook-note")).not.toBeNull();
+
+        const withoutFallback = renderOutlook();
+        expect(withoutFallback.querySelector(".outlook-note")).toBeNull();
+    });
+
+    it("renders neither the health pill nor the KPI band while the summary is still loading", () => {
+        const { container } = render(
+            <ForecastOutlook months={[]} currencyCode="AUD" loading />,
+        );
+        expect(container.querySelector(".health-pill")).toBeNull();
+        expect(container.querySelector(".outlook-kpis")).toBeNull();
+        expect(screen.getByTestId("forecast-chart")).toBeInTheDocument();
+    });
+});
