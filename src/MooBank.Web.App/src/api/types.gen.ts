@@ -302,8 +302,12 @@ export type ForecastMonth = {
     incomeTotal: number;
     baselineOutgoingsTotal: number;
     plannedItemsTotal: number;
+    plannedIncomeTotal: number;
+    plannedExpensesTotal: number;
     closingBalance: number;
     actualBalance?: null | number;
+    actualIncome?: null | number;
+    actualOutgoings?: null | number;
 };
 
 export type ForecastPlan = {
@@ -1058,6 +1062,13 @@ export type GetAccountsData = {
     url: '/accounts';
 };
 
+export type GetAccountsErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type GetAccountsResponses = {
     /**
      * OK
@@ -1090,6 +1101,13 @@ export type GetAccountData = {
     };
     query?: never;
     url: '/accounts/{instrumentId}';
+};
+
+export type GetAccountErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
 };
 
 export type GetAccountResponses = {
@@ -1166,6 +1184,13 @@ export type GetInstitutionAccountData = {
     url: '/accounts/{instrumentId}/institution-accounts/{id}';
 };
 
+export type GetInstitutionAccountErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type GetInstitutionAccountResponses = {
     /**
      * OK
@@ -1240,6 +1265,13 @@ export type GetAllRecurringTransactionsData = {
     url: '/accounts/{accountId}/recurring';
 };
 
+export type GetAllRecurringTransactionsErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type GetAllRecurringTransactionsResponses = {
     /**
      * OK
@@ -1298,6 +1330,13 @@ export type GetRecurringTransactionData = {
     url: '/accounts/{accountId}/recurring/{recurringTransactionId}';
 };
 
+export type GetRecurringTransactionErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type GetRecurringTransactionResponses = {
     /**
      * OK
@@ -1333,6 +1372,13 @@ export type GetRecurringTransactionsForAVirtualAccountData = {
     url: '/accounts/{accountId}/virtual/{virtualAccountId}/recurring';
 };
 
+export type GetRecurringTransactionsForAVirtualAccountErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type GetRecurringTransactionsForAVirtualAccountResponses = {
     /**
      * OK
@@ -1349,6 +1395,13 @@ export type GetAssetData = {
     };
     query?: never;
     url: '/assets/{id}';
+};
+
+export type GetAssetErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
 };
 
 export type GetAssetResponses = {
@@ -1422,6 +1475,13 @@ export type GetBillAccountSummariesByTypeData = {
     url: '/bills/accounts/types';
 };
 
+export type GetBillAccountSummariesByTypeErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type GetBillAccountSummariesByTypeResponses = {
     /**
      * OK
@@ -1440,6 +1500,13 @@ export type GetBillAccountsByTypeData = {
     url: '/bills/accounts/types/{type}';
 };
 
+export type GetBillAccountsByTypeErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type GetBillAccountsByTypeResponses = {
     /**
      * OK
@@ -1454,6 +1521,13 @@ export type GetBillAccountsData = {
     path?: never;
     query?: never;
     url: '/bills/accounts';
+};
+
+export type GetBillAccountsErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
 };
 
 export type GetBillAccountsResponses = {
@@ -1530,6 +1604,13 @@ export type GetBillAccountData = {
     url: '/bills/accounts/{instrumentId}';
 };
 
+export type GetBillAccountErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type GetBillAccountResponses = {
     /**
      * OK
@@ -1588,6 +1669,13 @@ export type GetBillData = {
     url: '/bills/accounts/{instrumentId}/bills/{id}';
 };
 
+export type GetBillErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type GetBillResponses = {
     /**
      * OK
@@ -1607,6 +1695,13 @@ export type GetCostPerUnitReportData = {
         UtilityType?: UtilityType;
     };
     url: '/bills/reports/cost-per-unit';
+};
+
+export type GetCostPerUnitReportErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
 };
 
 export type GetCostPerUnitReportResponses = {
@@ -1630,6 +1725,13 @@ export type GetServiceChargeReportData = {
     url: '/bills/reports/service-charge';
 };
 
+export type GetServiceChargeReportErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type GetServiceChargeReportResponses = {
     /**
      * OK
@@ -1651,6 +1753,13 @@ export type GetUsageReportData = {
     url: '/bills/reports/usage';
 };
 
+export type GetUsageReportErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type GetUsageReportResponses = {
     /**
      * OK
@@ -1665,6 +1774,13 @@ export type GetAllBudgetYearsData = {
     path?: never;
     query?: never;
     url: '/budget';
+};
+
+export type GetAllBudgetYearsErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
 };
 
 export type GetAllBudgetYearsResponses = {
@@ -1683,6 +1799,13 @@ export type GetBudgetData = {
     };
     query?: never;
     url: '/budget/{year}';
+};
+
+export type GetBudgetErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
 };
 
 export type GetBudgetResponses = {
@@ -1721,6 +1844,13 @@ export type GetBudgetLineData = {
     };
     query?: never;
     url: '/budget/{year}/lines/{id}';
+};
+
+export type GetBudgetLineErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
 };
 
 export type GetBudgetLineResponses = {
@@ -1814,6 +1944,13 @@ export type GetBudgetReportData = {
     url: '/budget/{year}/report';
 };
 
+export type GetBudgetReportErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type GetBudgetReportResponses = {
     /**
      * OK
@@ -1831,6 +1968,13 @@ export type GetBudgetReportForMonthData = {
     };
     query?: never;
     url: '/budget/{year}/report/{month}';
+};
+
+export type GetBudgetReportForMonthErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
 };
 
 export type GetBudgetReportForMonthResponses = {
@@ -1852,6 +1996,13 @@ export type GetBudgetReportBreakdownForMonthData = {
     url: '/budget/{year}/report/{month}/breakdown';
 };
 
+export type GetBudgetReportBreakdownForMonthErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type GetBudgetReportBreakdownForMonthResponses = {
     /**
      * OK
@@ -1871,6 +2022,13 @@ export type GetBudgetReportBreakdownForMonthForUnbudgetedItemsData = {
     url: '/budget/{year}/report/{month}/breakdown/unbudgeted';
 };
 
+export type GetBudgetReportBreakdownForMonthForUnbudgetedItemsErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type GetBudgetReportBreakdownForMonthForUnbudgetedItemsResponses = {
     /**
      * OK
@@ -1885,6 +2043,13 @@ export type GetMyFamilyData = {
     path?: never;
     query?: never;
     url: '/families';
+};
+
+export type GetMyFamilyErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
 };
 
 export type GetMyFamilyResponses = {
@@ -1937,6 +2102,13 @@ export type GetAllFamiliesData = {
     url: '/families/admin';
 };
 
+export type GetAllFamiliesErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type GetAllFamiliesResponses = {
     /**
      * OK
@@ -1969,6 +2141,13 @@ export type GetFamilyData = {
     };
     query?: never;
     url: '/families/admin/{id}';
+};
+
+export type GetFamilyErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
 };
 
 export type GetFamilyResponses = {
@@ -2005,6 +2184,13 @@ export type GetAllForecastPlansData = {
         IncludeArchived?: boolean;
     };
     url: '/forecast/plans';
+};
+
+export type GetAllForecastPlansErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
 };
 
 export type GetAllForecastPlansResponses = {
@@ -2057,6 +2243,13 @@ export type GetForecastPlanData = {
     };
     query?: never;
     url: '/forecast/plans/{id}';
+};
+
+export type GetForecastPlanErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
 };
 
 export type GetForecastPlanResponses = {
@@ -2151,6 +2344,13 @@ export type GetPlannedItemData = {
     url: '/forecast/plans/{planId}/items/{itemId}';
 };
 
+export type GetPlannedItemErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type GetPlannedItemResponses = {
     /**
      * OK
@@ -2202,6 +2402,13 @@ export type GetAllGroupsData = {
     path?: never;
     query?: never;
     url: '/groups';
+};
+
+export type GetAllGroupsErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
 };
 
 export type GetAllGroupsResponses = {
@@ -2256,6 +2463,13 @@ export type GetGroupData = {
     url: '/groups/{id}';
 };
 
+export type GetGroupErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type GetGroupResponses = {
     /**
      * OK
@@ -2290,6 +2504,13 @@ export type GetAllInstitutionsData = {
     url: '/institutions';
 };
 
+export type GetAllInstitutionsErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type GetAllInstitutionsResponses = {
     /**
      * OK
@@ -2322,6 +2543,13 @@ export type GetInstitutionData = {
     };
     query?: never;
     url: '/institutions/{id}';
+};
+
+export type GetInstitutionErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
 };
 
 export type GetInstitutionResponses = {
@@ -2362,6 +2590,13 @@ export type GetFormattedInstrumentsListData = {
     url: '/instruments/summary';
 };
 
+export type GetFormattedInstrumentsListErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type GetFormattedInstrumentsListResponses = {
     /**
      * OK
@@ -2376,6 +2611,13 @@ export type GetInstrumentsListData = {
     path?: never;
     query?: never;
     url: '/instruments/list';
+};
+
+export type GetInstrumentsListErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
 };
 
 export type GetInstrumentsListResponses = {
@@ -2434,6 +2676,13 @@ export type GetAllInstrumentRulesData = {
     url: '/instruments/{instrumentId}/rules';
 };
 
+export type GetAllInstrumentRulesErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type GetAllInstrumentRulesResponses = {
     /**
      * OK
@@ -2490,6 +2739,13 @@ export type GetInstrumentRuleData = {
     };
     query?: never;
     url: '/instruments/{instrumentId}/rules/{ruleId}';
+};
+
+export type GetInstrumentRuleErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
 };
 
 export type GetInstrumentRuleResponses = {
@@ -2585,6 +2841,13 @@ export type GetVirtualInstrumentsData = {
     url: '/instruments/{instrumentId}/virtual';
 };
 
+export type GetVirtualInstrumentsErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type GetVirtualInstrumentsResponses = {
     /**
      * OK
@@ -2641,6 +2904,13 @@ export type GetVirtualInstrumentData = {
     url: '/instruments/{instrumentId}/virtual/{virtualInstrumentId}';
 };
 
+export type GetVirtualInstrumentErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type GetVirtualInstrumentResponses = {
     /**
      * OK
@@ -2689,6 +2959,13 @@ export type ImporterTypesData = {
     url: '/reference-data/importer-types';
 };
 
+export type ImporterTypesErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type ImporterTypesResponses = {
     /**
      * OK
@@ -2707,6 +2984,13 @@ export type InOutReportData = {
     };
     query?: never;
     url: '/accounts/{accountId}/reports/in-out/{start}/{end}';
+};
+
+export type InOutReportErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
 };
 
 export type InOutReportResponses = {
@@ -2731,6 +3015,13 @@ export type InOutTrendReportData = {
     url: '/accounts/{accountId}/reports/in-out-trend/{start}/{end}';
 };
 
+export type InOutTrendReportErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type InOutTrendReportResponses = {
     /**
      * OK
@@ -2751,6 +3042,13 @@ export type InOutAverageReportData = {
         Interval: ReportInterval;
     };
     url: '/accounts/{accountId}/reports/in-out-average/{start}/{end}';
+};
+
+export type InOutAverageReportErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
 };
 
 export type InOutAverageReportResponses = {
@@ -2776,6 +3074,13 @@ export type ByTagReportData = {
     url: '/accounts/{accountId}/reports/{reportType}/tags/{start}/{end}';
 };
 
+export type ByTagReportErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type ByTagReportResponses = {
     /**
      * OK
@@ -2796,6 +3101,13 @@ export type ByTagReportForTagData = {
     };
     query?: never;
     url: '/accounts/{accountId}/reports/{reportType}/tags/{start}/{end}/{parentTagId}';
+};
+
+export type ByTagReportForTagErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
 };
 
 export type ByTagReportForTagResponses = {
@@ -2821,6 +3133,13 @@ export type TagBreakdownReportData = {
     url: '/accounts/{accountId}/reports/{reportType}/breakdown/{start}/{end}';
 };
 
+export type TagBreakdownReportErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type TagBreakdownReportResponses = {
     /**
      * OK
@@ -2841,6 +3160,13 @@ export type TagBreakdownReportForTagData = {
     };
     query?: never;
     url: '/accounts/{accountId}/reports/{reportType}/breakdown/{start}/{end}/{parentTagId}';
+};
+
+export type TagBreakdownReportForTagErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
 };
 
 export type TagBreakdownReportForTagResponses = {
@@ -2867,6 +3193,13 @@ export type TagTrendReportData = {
     url: '/accounts/{accountId}/reports/{reportType}/tag-trend/{start}/{end}/{tagId}';
 };
 
+export type TagTrendReportErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type TagTrendReportResponses = {
     /**
      * OK
@@ -2891,6 +3224,13 @@ export type AllTagAverageReportData = {
     url: '/accounts/{accountId}/reports/{reportType}/all-tag-average/{start}/{end}';
 };
 
+export type AllTagAverageReportErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type AllTagAverageReportResponses = {
     /**
      * OK
@@ -2909,6 +3249,13 @@ export type SavingsInterestReportData = {
     };
     query?: never;
     url: '/accounts/{accountId}/reports/savings-interest/{start}/{end}';
+};
+
+export type SavingsInterestReportErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
 };
 
 export type SavingsInterestReportResponses = {
@@ -2931,6 +3278,13 @@ export type SuperContributionsReportData = {
     url: '/accounts/{accountId}/reports/super-contributions/{start}/{end}';
 };
 
+export type SuperContributionsReportErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type SuperContributionsReportResponses = {
     /**
      * OK
@@ -2947,6 +3301,13 @@ export type SuperReturnsReportData = {
     };
     query?: never;
     url: '/accounts/{accountId}/reports/super-returns';
+};
+
+export type SuperReturnsReportErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
 };
 
 export type SuperReturnsReportResponses = {
@@ -2967,6 +3328,13 @@ export type PrincipalVsInterestReportData = {
     };
     query?: never;
     url: '/accounts/{accountId}/reports/principal-vs-interest/{start}/{end}';
+};
+
+export type PrincipalVsInterestReportErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
 };
 
 export type PrincipalVsInterestReportResponses = {
@@ -2990,6 +3358,13 @@ export type MonthlyBalancesReportData = {
     url: '/accounts/{accountId}/reports/monthly-balances';
 };
 
+export type MonthlyBalancesReportErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type MonthlyBalancesReportResponses = {
     /**
      * OK
@@ -3009,6 +3384,13 @@ export type MonthlyBalancesReportFromData = {
         End: string;
     };
     url: '/accounts/{accountId}/reports/monthly-balances/{start}';
+};
+
+export type MonthlyBalancesReportFromErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
 };
 
 export type MonthlyBalancesReportFromResponses = {
@@ -3031,6 +3413,13 @@ export type MonthlyBalancesReportForPeriodData = {
     url: '/accounts/{accountId}/reports/monthly-balances/{start}/{end}';
 };
 
+export type MonthlyBalancesReportForPeriodErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type MonthlyBalancesReportForPeriodResponses = {
     /**
      * OK
@@ -3051,6 +3440,13 @@ export type GroupMonthlyBalancesReportData = {
     url: '/groups/{groupId}/reports/monthly-balances/{start}/{end}';
 };
 
+export type GroupMonthlyBalancesReportErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type GroupMonthlyBalancesReportResponses = {
     /**
      * OK
@@ -3067,6 +3463,13 @@ export type GetStockHoldingData = {
     };
     query?: never;
     url: '/stocks/{instrumentId}';
+};
+
+export type GetStockHoldingErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
 };
 
 export type GetStockHoldingResponses = {
@@ -3137,6 +3540,13 @@ export type StockHoldingReportData = {
     url: '/stocks/{instrumentId}/reports/holding';
 };
 
+export type StockHoldingReportErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type StockHoldingReportResponses = {
     /**
      * OK
@@ -3156,6 +3566,13 @@ export type StockValueReportData = {
         End: string;
     };
     url: '/stocks/{instrumentId}/reports/value';
+};
+
+export type StockValueReportErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
 };
 
 export type StockValueReportResponses = {
@@ -3216,6 +3633,13 @@ export type GetTagsData = {
     url: '/tags';
 };
 
+export type GetTagsErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type GetTagsResponses = {
     /**
      * OK
@@ -3248,6 +3672,13 @@ export type GetTagHierarchyData = {
     url: '/tags/hierarchy';
 };
 
+export type GetTagHierarchyErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type GetTagHierarchyResponses = {
     /**
      * OK
@@ -3262,6 +3693,13 @@ export type GetTagGraphData = {
     path?: never;
     query?: never;
     url: '/tags/graph';
+};
+
+export type GetTagGraphErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
 };
 
 export type GetTagGraphResponses = {
@@ -3298,6 +3736,13 @@ export type GetTagData = {
     };
     query?: never;
     url: '/tags/{id}';
+};
+
+export type GetTagErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
 };
 
 export type GetTagResponses = {
@@ -3516,6 +3961,13 @@ export type SearchTransactionsData = {
     url: '/accounts/{instrumentId}/transactions';
 };
 
+export type SearchTransactionsErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
 export type SearchTransactionsResponses = {
     /**
      * OK
@@ -3622,6 +4074,13 @@ export type GetUserData = {
     path?: never;
     query?: never;
     url: '/users/me';
+};
+
+export type GetUserErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
 };
 
 export type GetUserResponses = {

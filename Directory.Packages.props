@@ -1,5 +1,7 @@
 ﻿<Project>
-  <PropertyGroup>
+  <!-- MSBuild ignores Condition on the <Project> element, so these must be conditioned
+       per-group to keep .esproj / .sqlproj out of Central Package Management. -->
+  <PropertyGroup Condition="'$(MSBuildProjectExtension)' == '.csproj'">
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>

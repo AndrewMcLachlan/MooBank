@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { SpinnerContainer } from "@andrewmclachlan/moo-ds";
+import { IconButton, SpinnerContainer } from "@andrewmclachlan/moo-ds";
+import { Sliders } from "@andrewmclachlan/moo-icons";
 import { useEffect, useState } from "react";
 import { useForecastPlans } from "./-hooks/useForecastPlans";
 import { useForecastPlan } from "./-hooks/useForecastPlan";
@@ -7,10 +8,10 @@ import { useForecastResult } from "./-hooks/useForecastResult";
 import { useAccounts } from "hooks/useAccounts";
 import { useUser } from "hooks/useUser";
 import { ForecastPage } from "./-components/ForecastPage";
-import { ForecastChart } from "./-components/ForecastChart";
-import { ForecastSummaryPanel } from "./-components/ForecastSummaryPanel";
+import { ForecastOutlook } from "./-components/ForecastOutlook";
+import { ForecastIncomeExpenseCharts } from "./-components/ForecastIncomeExpenseCharts";
 import { PlannedItemsTable } from "./-components/PlannedItemsTable";
-import { ForecastSettings } from "./-components/ForecastSettings";
+import { ForecastSettingsModal } from "./-components/ForecastSettingsModal";
 import { CreateForecastPlan } from "./-components/CreateForecastPlan";
 
 export const Route = createFileRoute("/forecast/")({
@@ -19,6 +20,7 @@ export const Route = createFileRoute("/forecast/")({
 
 function Forecast() {
     const [planId, setPlanId] = useState<string | null>(null);
+    const [editOpen, setEditOpen] = useState(false);
 
     const { data: plans, isLoading: plansLoading } = useForecastPlans();
     const { data: accounts, isLoading: accountsLoading } = useAccounts();
@@ -55,22 +57,19 @@ function Forecast() {
         );
     }
 
+    const actions = plan ? [
+        <IconButton badge key="edit-settings" variant="primary" icon={Sliders} onClick={() => setEditOpen(true)}>Edit Settings</IconButton>
+    ] : [];
+
     return (
-        <ForecastPage>
-            {(
-                <>
-                    <ForecastSettings plan={plan} monthlyExpenses={result?.summary.monthlyBaselineOutgoings} regression={result?.summary.regression} currencyCode={currencyCode} />
+        <ForecastPage plan={plan} actions={actions}>
+            <ForecastOutlook plan={plan} summary={result?.summary} months={result?.months ?? []} currencyCode={currencyCode} loading={resultLoading} />
 
-                    <ForecastSummaryPanel summary={result?.summary} currencyCode={currencyCode} />
-                    <div>
-                        <ForecastChart months={result?.months ?? []} currencyCode={currencyCode} />
-                        {resultLoading && (<SpinnerContainer />)}
-                    </div>
+            <ForecastIncomeExpenseCharts months={result?.months ?? []} currencyCode={currencyCode} />
 
-                    <PlannedItemsTable plan={plan} currencyCode={currencyCode} />
-                </>
-            )}
+            <PlannedItemsTable plan={plan} currencyCode={currencyCode} />
 
+            <ForecastSettingsModal plan={plan} currencyCode={currencyCode} show={editOpen} onHide={() => setEditOpen(false)} />
         </ForecastPage>
     );
 }

@@ -2,7 +2,7 @@
 
 import { type Client, type ClientMeta, formDataBodySerializer, type Options as Options2, type RequestResult, type TDataShape } from './client';
 import { client } from './client.gen';
-import type { AddSubTagData, AddSubTagResponses, AddTagData, AddTagResponses, AddTagToInstrumentRuleData, AddTagToInstrumentRuleResponses, AllTagAverageReportData, AllTagAverageReportResponses, ArchiveForecastPlanData, ArchiveForecastPlanResponses, ByTagReportData, ByTagReportForTagData, ByTagReportForTagResponses, ByTagReportResponses, CloseInstitutionAccountData, CloseInstitutionAccountResponses, CreateAccountData, CreateAccountResponses, CreateAssetData, CreateAssetResponses, CreateBillAccountData, CreateBillAccountResponses, CreateBillData, CreateBillResponses, CreateBudgetLineData, CreateBudgetLineResponses, CreateFamilyData, CreateFamilyResponses, CreateForecastPlanData, CreateForecastPlanResponses, CreateGroupData, CreateGroupResponses, CreateInstitutionAccountData, CreateInstitutionAccountResponses, CreateInstitutionData, CreateInstitutionResponses, CreateInstrumentRuleData, CreateInstrumentRuleResponses, CreatePlannedItemData, CreatePlannedItemResponses, CreateRecurringTransactionData, CreateRecurringTransactionResponses, CreateStockHoldingData, CreateStockHoldingResponses, CreateStockTransactionData, CreateStockTransactionResponses, CreateTagByNameData, CreateTagByNameResponses, CreateTagData, CreateTagResponses, CreateTransactionData, CreateTransactionResponses, CreateVirtualInstrumentData, CreateVirtualInstrumentResponses, DeleteAccountTagPurposeData, DeleteAccountTagPurposeResponses, DeleteBudgetLineData, DeleteBudgetLineResponses, DeleteForecastPlanData, DeleteForecastPlanResponses, DeleteGroupData, DeleteGroupResponses, DeleteInstrumentRuleData, DeleteInstrumentRuleResponses, DeletePlannedItemData, DeletePlannedItemResponses, DeleteRecurringTransactionData, DeleteRecurringTransactionResponses, DeleteTagData, DeleteTagResponses, DeleteVirtualInstrumentData, DeleteVirtualInstrumentResponses, GenerateBudgetData, GenerateBudgetResponses, GetAccountData, GetAccountResponses, GetAccountsData, GetAccountsResponses, GetAllBillsData, GetAllBillsResponses, GetAllBudgetYearsData, GetAllBudgetYearsResponses, GetAllFamiliesData, GetAllFamiliesResponses, GetAllForecastPlansData, GetAllForecastPlansResponses, GetAllGroupsData, GetAllGroupsResponses, GetAllInstitutionsData, GetAllInstitutionsResponses, GetAllInstrumentRulesData, GetAllInstrumentRulesResponses, GetAllRecurringTransactionsData, GetAllRecurringTransactionsResponses, GetAssetData, GetAssetResponses, GetBillAccountData, GetBillAccountResponses, GetBillAccountsByTypeData, GetBillAccountsByTypeResponses, GetBillAccountsData, GetBillAccountsResponses, GetBillAccountSummariesByTypeData, GetBillAccountSummariesByTypeResponses, GetBillData, GetBillResponses, GetBillsByUtilityTypeData, GetBillsByUtilityTypeResponses, GetBillsForAnAccountData, GetBillsForAnAccountResponses, GetBudgetAmountForTagData, GetBudgetAmountForTagResponses, GetBudgetData, GetBudgetLineData, GetBudgetLineResponses, GetBudgetReportBreakdownForMonthData, GetBudgetReportBreakdownForMonthForUnbudgetedItemsData, GetBudgetReportBreakdownForMonthForUnbudgetedItemsResponses, GetBudgetReportBreakdownForMonthResponses, GetBudgetReportData, GetBudgetReportForMonthData, GetBudgetReportForMonthResponses, GetBudgetReportResponses, GetBudgetResponses, GetCostPerUnitReportData, GetCostPerUnitReportResponses, GetFamilyData, GetFamilyResponses, GetForecastPlanData, GetForecastPlanResponses, GetFormattedInstrumentsListData, GetFormattedInstrumentsListResponses, GetGroupData, GetGroupResponses, GetInstitutionAccountData, GetInstitutionAccountResponses, GetInstitutionData, GetInstitutionResponses, GetInstrumentRuleData, GetInstrumentRuleResponses, GetInstrumentsListData, GetInstrumentsListResponses, GetMyFamilyData, GetMyFamilyResponses, GetPlannedItemData, GetPlannedItemResponses, GetRecurringTransactionData, GetRecurringTransactionResponses, GetRecurringTransactionsForAVirtualAccountData, GetRecurringTransactionsForAVirtualAccountResponses, GetServiceChargeReportData, GetServiceChargeReportResponses, GetStockHoldingCpiAdjustedGainLossData, GetStockHoldingCpiAdjustedGainLossResponses, GetStockHoldingData, GetStockHoldingResponses, GetStockTransactionsData, GetStockTransactionsResponses, GetTagData, GetTagGraphData, GetTagGraphResponses, GetTagHierarchyData, GetTagHierarchyResponses, GetTagResponses, GetTagsData, GetTagsResponses, GetTransactionsData, GetTransactionsResponses, GetUntaggedTransactionsData, GetUntaggedTransactionsResponses, GetUsageReportData, GetUsageReportResponses, GetUserData, GetUserResponses, GetVirtualInstrumentData, GetVirtualInstrumentResponses, GetVirtualInstrumentsData, GetVirtualInstrumentsResponses, GroupMonthlyBalancesReportData, GroupMonthlyBalancesReportResponses, ImportBillsData, ImportBillsResponses, ImportData, ImporterTypesData, ImporterTypesResponses, ImportResponses, InOutAverageReportData, InOutAverageReportResponses, InOutReportData, InOutReportResponses, InOutTrendReportData, InOutTrendReportResponses, MonthlyBalancesReportData, MonthlyBalancesReportForPeriodData, MonthlyBalancesReportForPeriodResponses, MonthlyBalancesReportFromData, MonthlyBalancesReportFromResponses, MonthlyBalancesReportResponses, PrincipalVsInterestReportData, PrincipalVsInterestReportResponses, RemoveFamilyMemberData, RemoveFamilyMemberResponses, RemoveSubTagData, RemoveSubTagResponses, RemoveTagData, RemoveTagFromInstrumentRuleData, RemoveTagFromInstrumentRuleResponses, RemoveTagResponses, ReprocessData, ReprocessResponses, RunForecastData, RunForecastResponses, RunRulesData, RunRulesResponses, SavingsInterestReportData, SavingsInterestReportResponses, SearchTransactionsData, SearchTransactionsResponses, SetAccountTagPurposeData, SetAccountTagPurposeResponses, SetBalanceData, SetBalanceResponses, StockHoldingReportData, StockHoldingReportResponses, StockValueReportData, StockValueReportResponses, SuperContributionsReportData, SuperContributionsReportResponses, SuperReturnsReportData, SuperReturnsReportResponses, TagBreakdownReportData, TagBreakdownReportForTagData, TagBreakdownReportForTagResponses, TagBreakdownReportResponses, TagTrendReportData, TagTrendReportResponses, UpdateAccountData, UpdateAccountResponses, UpdateAssetData, UpdateAssetResponses, UpdateBudgetLineData, UpdateBudgetLineResponses, UpdateFamilyData, UpdateFamilyResponses, UpdateForecastPlanData, UpdateForecastPlanResponses, UpdateGroupData, UpdateGroupResponses, UpdateInstitutionAccountData, UpdateInstitutionAccountResponses, UpdateInstitutionData, UpdateInstitutionResponses, UpdateInstrumentRuleData, UpdateInstrumentRuleResponses, UpdateMyFamilyData, UpdateMyFamilyResponses, UpdatePlannedItemData, UpdatePlannedItemResponses, UpdateRecurringTransactionData, UpdateRecurringTransactionResponses, UpdateStockHoldingData, UpdateStockHoldingResponses, UpdateTagData, UpdateTagResponses, UpdateTransactionData, UpdateTransactionResponses, UpdateUserData, UpdateUserResponses, UpdateVirtualInstrumentBalanceData, UpdateVirtualInstrumentBalanceResponses, UpdateVirtualInstrumentData, UpdateVirtualInstrumentResponses } from './types.gen';
+import type { AddSubTagData, AddSubTagResponses, AddTagData, AddTagResponses, AddTagToInstrumentRuleData, AddTagToInstrumentRuleResponses, AllTagAverageReportData, AllTagAverageReportErrors, AllTagAverageReportResponses, ArchiveForecastPlanData, ArchiveForecastPlanResponses, ByTagReportData, ByTagReportErrors, ByTagReportForTagData, ByTagReportForTagErrors, ByTagReportForTagResponses, ByTagReportResponses, CloseInstitutionAccountData, CloseInstitutionAccountResponses, CreateAccountData, CreateAccountResponses, CreateAssetData, CreateAssetResponses, CreateBillAccountData, CreateBillAccountResponses, CreateBillData, CreateBillResponses, CreateBudgetLineData, CreateBudgetLineResponses, CreateFamilyData, CreateFamilyResponses, CreateForecastPlanData, CreateForecastPlanResponses, CreateGroupData, CreateGroupResponses, CreateInstitutionAccountData, CreateInstitutionAccountResponses, CreateInstitutionData, CreateInstitutionResponses, CreateInstrumentRuleData, CreateInstrumentRuleResponses, CreatePlannedItemData, CreatePlannedItemResponses, CreateRecurringTransactionData, CreateRecurringTransactionResponses, CreateStockHoldingData, CreateStockHoldingResponses, CreateStockTransactionData, CreateStockTransactionResponses, CreateTagByNameData, CreateTagByNameResponses, CreateTagData, CreateTagResponses, CreateTransactionData, CreateTransactionResponses, CreateVirtualInstrumentData, CreateVirtualInstrumentResponses, DeleteAccountTagPurposeData, DeleteAccountTagPurposeResponses, DeleteBudgetLineData, DeleteBudgetLineResponses, DeleteForecastPlanData, DeleteForecastPlanResponses, DeleteGroupData, DeleteGroupResponses, DeleteInstrumentRuleData, DeleteInstrumentRuleResponses, DeletePlannedItemData, DeletePlannedItemResponses, DeleteRecurringTransactionData, DeleteRecurringTransactionResponses, DeleteTagData, DeleteTagResponses, DeleteVirtualInstrumentData, DeleteVirtualInstrumentResponses, GenerateBudgetData, GenerateBudgetResponses, GetAccountData, GetAccountErrors, GetAccountResponses, GetAccountsData, GetAccountsErrors, GetAccountsResponses, GetAllBillsData, GetAllBillsResponses, GetAllBudgetYearsData, GetAllBudgetYearsErrors, GetAllBudgetYearsResponses, GetAllFamiliesData, GetAllFamiliesErrors, GetAllFamiliesResponses, GetAllForecastPlansData, GetAllForecastPlansErrors, GetAllForecastPlansResponses, GetAllGroupsData, GetAllGroupsErrors, GetAllGroupsResponses, GetAllInstitutionsData, GetAllInstitutionsErrors, GetAllInstitutionsResponses, GetAllInstrumentRulesData, GetAllInstrumentRulesErrors, GetAllInstrumentRulesResponses, GetAllRecurringTransactionsData, GetAllRecurringTransactionsErrors, GetAllRecurringTransactionsResponses, GetAssetData, GetAssetErrors, GetAssetResponses, GetBillAccountData, GetBillAccountErrors, GetBillAccountResponses, GetBillAccountsByTypeData, GetBillAccountsByTypeErrors, GetBillAccountsByTypeResponses, GetBillAccountsData, GetBillAccountsErrors, GetBillAccountsResponses, GetBillAccountSummariesByTypeData, GetBillAccountSummariesByTypeErrors, GetBillAccountSummariesByTypeResponses, GetBillData, GetBillErrors, GetBillResponses, GetBillsByUtilityTypeData, GetBillsByUtilityTypeResponses, GetBillsForAnAccountData, GetBillsForAnAccountResponses, GetBudgetAmountForTagData, GetBudgetAmountForTagResponses, GetBudgetData, GetBudgetErrors, GetBudgetLineData, GetBudgetLineErrors, GetBudgetLineResponses, GetBudgetReportBreakdownForMonthData, GetBudgetReportBreakdownForMonthErrors, GetBudgetReportBreakdownForMonthForUnbudgetedItemsData, GetBudgetReportBreakdownForMonthForUnbudgetedItemsErrors, GetBudgetReportBreakdownForMonthForUnbudgetedItemsResponses, GetBudgetReportBreakdownForMonthResponses, GetBudgetReportData, GetBudgetReportErrors, GetBudgetReportForMonthData, GetBudgetReportForMonthErrors, GetBudgetReportForMonthResponses, GetBudgetReportResponses, GetBudgetResponses, GetCostPerUnitReportData, GetCostPerUnitReportErrors, GetCostPerUnitReportResponses, GetFamilyData, GetFamilyErrors, GetFamilyResponses, GetForecastPlanData, GetForecastPlanErrors, GetForecastPlanResponses, GetFormattedInstrumentsListData, GetFormattedInstrumentsListErrors, GetFormattedInstrumentsListResponses, GetGroupData, GetGroupErrors, GetGroupResponses, GetInstitutionAccountData, GetInstitutionAccountErrors, GetInstitutionAccountResponses, GetInstitutionData, GetInstitutionErrors, GetInstitutionResponses, GetInstrumentRuleData, GetInstrumentRuleErrors, GetInstrumentRuleResponses, GetInstrumentsListData, GetInstrumentsListErrors, GetInstrumentsListResponses, GetMyFamilyData, GetMyFamilyErrors, GetMyFamilyResponses, GetPlannedItemData, GetPlannedItemErrors, GetPlannedItemResponses, GetRecurringTransactionData, GetRecurringTransactionErrors, GetRecurringTransactionResponses, GetRecurringTransactionsForAVirtualAccountData, GetRecurringTransactionsForAVirtualAccountErrors, GetRecurringTransactionsForAVirtualAccountResponses, GetServiceChargeReportData, GetServiceChargeReportErrors, GetServiceChargeReportResponses, GetStockHoldingCpiAdjustedGainLossData, GetStockHoldingCpiAdjustedGainLossResponses, GetStockHoldingData, GetStockHoldingErrors, GetStockHoldingResponses, GetStockTransactionsData, GetStockTransactionsResponses, GetTagData, GetTagErrors, GetTagGraphData, GetTagGraphErrors, GetTagGraphResponses, GetTagHierarchyData, GetTagHierarchyErrors, GetTagHierarchyResponses, GetTagResponses, GetTagsData, GetTagsErrors, GetTagsResponses, GetTransactionsData, GetTransactionsResponses, GetUntaggedTransactionsData, GetUntaggedTransactionsResponses, GetUsageReportData, GetUsageReportErrors, GetUsageReportResponses, GetUserData, GetUserErrors, GetUserResponses, GetVirtualInstrumentData, GetVirtualInstrumentErrors, GetVirtualInstrumentResponses, GetVirtualInstrumentsData, GetVirtualInstrumentsErrors, GetVirtualInstrumentsResponses, GroupMonthlyBalancesReportData, GroupMonthlyBalancesReportErrors, GroupMonthlyBalancesReportResponses, ImportBillsData, ImportBillsResponses, ImportData, ImporterTypesData, ImporterTypesErrors, ImporterTypesResponses, ImportResponses, InOutAverageReportData, InOutAverageReportErrors, InOutAverageReportResponses, InOutReportData, InOutReportErrors, InOutReportResponses, InOutTrendReportData, InOutTrendReportErrors, InOutTrendReportResponses, MonthlyBalancesReportData, MonthlyBalancesReportErrors, MonthlyBalancesReportForPeriodData, MonthlyBalancesReportForPeriodErrors, MonthlyBalancesReportForPeriodResponses, MonthlyBalancesReportFromData, MonthlyBalancesReportFromErrors, MonthlyBalancesReportFromResponses, MonthlyBalancesReportResponses, PrincipalVsInterestReportData, PrincipalVsInterestReportErrors, PrincipalVsInterestReportResponses, RemoveFamilyMemberData, RemoveFamilyMemberResponses, RemoveSubTagData, RemoveSubTagResponses, RemoveTagData, RemoveTagFromInstrumentRuleData, RemoveTagFromInstrumentRuleResponses, RemoveTagResponses, ReprocessData, ReprocessResponses, RunForecastData, RunForecastResponses, RunRulesData, RunRulesResponses, SavingsInterestReportData, SavingsInterestReportErrors, SavingsInterestReportResponses, SearchTransactionsData, SearchTransactionsErrors, SearchTransactionsResponses, SetAccountTagPurposeData, SetAccountTagPurposeResponses, SetBalanceData, SetBalanceResponses, StockHoldingReportData, StockHoldingReportErrors, StockHoldingReportResponses, StockValueReportData, StockValueReportErrors, StockValueReportResponses, SuperContributionsReportData, SuperContributionsReportErrors, SuperContributionsReportResponses, SuperReturnsReportData, SuperReturnsReportErrors, SuperReturnsReportResponses, TagBreakdownReportData, TagBreakdownReportErrors, TagBreakdownReportForTagData, TagBreakdownReportForTagErrors, TagBreakdownReportForTagResponses, TagBreakdownReportResponses, TagTrendReportData, TagTrendReportErrors, TagTrendReportResponses, UpdateAccountData, UpdateAccountResponses, UpdateAssetData, UpdateAssetResponses, UpdateBudgetLineData, UpdateBudgetLineResponses, UpdateFamilyData, UpdateFamilyResponses, UpdateForecastPlanData, UpdateForecastPlanResponses, UpdateGroupData, UpdateGroupResponses, UpdateInstitutionAccountData, UpdateInstitutionAccountResponses, UpdateInstitutionData, UpdateInstitutionResponses, UpdateInstrumentRuleData, UpdateInstrumentRuleResponses, UpdateMyFamilyData, UpdateMyFamilyResponses, UpdatePlannedItemData, UpdatePlannedItemResponses, UpdateRecurringTransactionData, UpdateRecurringTransactionResponses, UpdateStockHoldingData, UpdateStockHoldingResponses, UpdateTagData, UpdateTagResponses, UpdateTransactionData, UpdateTransactionResponses, UpdateUserData, UpdateUserResponses, UpdateVirtualInstrumentBalanceData, UpdateVirtualInstrumentBalanceResponses, UpdateVirtualInstrumentData, UpdateVirtualInstrumentResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -18,7 +18,7 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
     meta?: keyof ClientMeta extends never ? Record<string, unknown> : ClientMeta;
 };
 
-export const getAccounts = <ThrowOnError extends boolean = false>(options?: Options<GetAccountsData, ThrowOnError>): RequestResult<GetAccountsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetAccountsResponses, unknown, ThrowOnError>({
+export const getAccounts = <ThrowOnError extends boolean = false>(options?: Options<GetAccountsData, ThrowOnError>): RequestResult<GetAccountsResponses, GetAccountsErrors, ThrowOnError> => (options?.client ?? client).get<GetAccountsResponses, GetAccountsErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/accounts',
@@ -36,7 +36,7 @@ export const createAccount = <ThrowOnError extends boolean = false>(options: Opt
     }
 });
 
-export const getAccount = <ThrowOnError extends boolean = false>(options: Options<GetAccountData, ThrowOnError>): RequestResult<GetAccountResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetAccountResponses, unknown, ThrowOnError>({
+export const getAccount = <ThrowOnError extends boolean = false>(options: Options<GetAccountData, ThrowOnError>): RequestResult<GetAccountResponses, GetAccountErrors, ThrowOnError> => (options.client ?? client).get<GetAccountResponses, GetAccountErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/accounts/{instrumentId}',
@@ -68,7 +68,7 @@ export const deleteAccountTagPurpose = <ThrowOnError extends boolean = false>(op
     ...options
 });
 
-export const getInstitutionAccount = <ThrowOnError extends boolean = false>(options: Options<GetInstitutionAccountData, ThrowOnError>): RequestResult<GetInstitutionAccountResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetInstitutionAccountResponses, unknown, ThrowOnError>({
+export const getInstitutionAccount = <ThrowOnError extends boolean = false>(options: Options<GetInstitutionAccountData, ThrowOnError>): RequestResult<GetInstitutionAccountResponses, GetInstitutionAccountErrors, ThrowOnError> => (options.client ?? client).get<GetInstitutionAccountResponses, GetInstitutionAccountErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/accounts/{instrumentId}/institution-accounts/{id}',
@@ -104,7 +104,7 @@ export const closeInstitutionAccount = <ThrowOnError extends boolean = false>(op
     ...options
 });
 
-export const getAllRecurringTransactions = <ThrowOnError extends boolean = false>(options: Options<GetAllRecurringTransactionsData, ThrowOnError>): RequestResult<GetAllRecurringTransactionsResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetAllRecurringTransactionsResponses, unknown, ThrowOnError>({
+export const getAllRecurringTransactions = <ThrowOnError extends boolean = false>(options: Options<GetAllRecurringTransactionsData, ThrowOnError>): RequestResult<GetAllRecurringTransactionsResponses, GetAllRecurringTransactionsErrors, ThrowOnError> => (options.client ?? client).get<GetAllRecurringTransactionsResponses, GetAllRecurringTransactionsErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/accounts/{accountId}/recurring',
@@ -128,7 +128,7 @@ export const deleteRecurringTransaction = <ThrowOnError extends boolean = false>
     ...options
 });
 
-export const getRecurringTransaction = <ThrowOnError extends boolean = false>(options: Options<GetRecurringTransactionData, ThrowOnError>): RequestResult<GetRecurringTransactionResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetRecurringTransactionResponses, unknown, ThrowOnError>({
+export const getRecurringTransaction = <ThrowOnError extends boolean = false>(options: Options<GetRecurringTransactionData, ThrowOnError>): RequestResult<GetRecurringTransactionResponses, GetRecurringTransactionErrors, ThrowOnError> => (options.client ?? client).get<GetRecurringTransactionResponses, GetRecurringTransactionErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/accounts/{accountId}/recurring/{recurringTransactionId}',
@@ -146,14 +146,14 @@ export const updateRecurringTransaction = <ThrowOnError extends boolean = false>
     }
 });
 
-export const getRecurringTransactionsForAVirtualAccount = <ThrowOnError extends boolean = false>(options: Options<GetRecurringTransactionsForAVirtualAccountData, ThrowOnError>): RequestResult<GetRecurringTransactionsForAVirtualAccountResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetRecurringTransactionsForAVirtualAccountResponses, unknown, ThrowOnError>({
+export const getRecurringTransactionsForAVirtualAccount = <ThrowOnError extends boolean = false>(options: Options<GetRecurringTransactionsForAVirtualAccountData, ThrowOnError>): RequestResult<GetRecurringTransactionsForAVirtualAccountResponses, GetRecurringTransactionsForAVirtualAccountErrors, ThrowOnError> => (options.client ?? client).get<GetRecurringTransactionsForAVirtualAccountResponses, GetRecurringTransactionsForAVirtualAccountErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/accounts/{accountId}/virtual/{virtualAccountId}/recurring',
     ...options
 });
 
-export const getAsset = <ThrowOnError extends boolean = false>(options: Options<GetAssetData, ThrowOnError>): RequestResult<GetAssetResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetAssetResponses, unknown, ThrowOnError>({
+export const getAsset = <ThrowOnError extends boolean = false>(options: Options<GetAssetData, ThrowOnError>): RequestResult<GetAssetResponses, GetAssetErrors, ThrowOnError> => (options.client ?? client).get<GetAssetResponses, GetAssetErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/assets/{id}',
@@ -189,21 +189,21 @@ export const getAllBills = <ThrowOnError extends boolean = false>(options: Optio
     ...options
 });
 
-export const getBillAccountSummariesByType = <ThrowOnError extends boolean = false>(options?: Options<GetBillAccountSummariesByTypeData, ThrowOnError>): RequestResult<GetBillAccountSummariesByTypeResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetBillAccountSummariesByTypeResponses, unknown, ThrowOnError>({
+export const getBillAccountSummariesByType = <ThrowOnError extends boolean = false>(options?: Options<GetBillAccountSummariesByTypeData, ThrowOnError>): RequestResult<GetBillAccountSummariesByTypeResponses, GetBillAccountSummariesByTypeErrors, ThrowOnError> => (options?.client ?? client).get<GetBillAccountSummariesByTypeResponses, GetBillAccountSummariesByTypeErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/bills/accounts/types',
     ...options
 });
 
-export const getBillAccountsByType = <ThrowOnError extends boolean = false>(options: Options<GetBillAccountsByTypeData, ThrowOnError>): RequestResult<GetBillAccountsByTypeResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetBillAccountsByTypeResponses, unknown, ThrowOnError>({
+export const getBillAccountsByType = <ThrowOnError extends boolean = false>(options: Options<GetBillAccountsByTypeData, ThrowOnError>): RequestResult<GetBillAccountsByTypeResponses, GetBillAccountsByTypeErrors, ThrowOnError> => (options.client ?? client).get<GetBillAccountsByTypeResponses, GetBillAccountsByTypeErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/bills/accounts/types/{type}',
     ...options
 });
 
-export const getBillAccounts = <ThrowOnError extends boolean = false>(options?: Options<GetBillAccountsData, ThrowOnError>): RequestResult<GetBillAccountsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetBillAccountsResponses, unknown, ThrowOnError>({
+export const getBillAccounts = <ThrowOnError extends boolean = false>(options?: Options<GetBillAccountsData, ThrowOnError>): RequestResult<GetBillAccountsResponses, GetBillAccountsErrors, ThrowOnError> => (options?.client ?? client).get<GetBillAccountsResponses, GetBillAccountsErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/bills/accounts',
@@ -239,7 +239,7 @@ export const importBills = <ThrowOnError extends boolean = false>(options: Optio
     }
 });
 
-export const getBillAccount = <ThrowOnError extends boolean = false>(options: Options<GetBillAccountData, ThrowOnError>): RequestResult<GetBillAccountResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetBillAccountResponses, unknown, ThrowOnError>({
+export const getBillAccount = <ThrowOnError extends boolean = false>(options: Options<GetBillAccountData, ThrowOnError>): RequestResult<GetBillAccountResponses, GetBillAccountErrors, ThrowOnError> => (options.client ?? client).get<GetBillAccountResponses, GetBillAccountErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/bills/accounts/{instrumentId}',
@@ -264,42 +264,42 @@ export const createBill = <ThrowOnError extends boolean = false>(options: Option
     }
 });
 
-export const getBill = <ThrowOnError extends boolean = false>(options: Options<GetBillData, ThrowOnError>): RequestResult<GetBillResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetBillResponses, unknown, ThrowOnError>({
+export const getBill = <ThrowOnError extends boolean = false>(options: Options<GetBillData, ThrowOnError>): RequestResult<GetBillResponses, GetBillErrors, ThrowOnError> => (options.client ?? client).get<GetBillResponses, GetBillErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/bills/accounts/{instrumentId}/bills/{id}',
     ...options
 });
 
-export const getCostPerUnitReport = <ThrowOnError extends boolean = false>(options: Options<GetCostPerUnitReportData, ThrowOnError>): RequestResult<GetCostPerUnitReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetCostPerUnitReportResponses, unknown, ThrowOnError>({
+export const getCostPerUnitReport = <ThrowOnError extends boolean = false>(options: Options<GetCostPerUnitReportData, ThrowOnError>): RequestResult<GetCostPerUnitReportResponses, GetCostPerUnitReportErrors, ThrowOnError> => (options.client ?? client).get<GetCostPerUnitReportResponses, GetCostPerUnitReportErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/bills/reports/cost-per-unit',
     ...options
 });
 
-export const getServiceChargeReport = <ThrowOnError extends boolean = false>(options: Options<GetServiceChargeReportData, ThrowOnError>): RequestResult<GetServiceChargeReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetServiceChargeReportResponses, unknown, ThrowOnError>({
+export const getServiceChargeReport = <ThrowOnError extends boolean = false>(options: Options<GetServiceChargeReportData, ThrowOnError>): RequestResult<GetServiceChargeReportResponses, GetServiceChargeReportErrors, ThrowOnError> => (options.client ?? client).get<GetServiceChargeReportResponses, GetServiceChargeReportErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/bills/reports/service-charge',
     ...options
 });
 
-export const getUsageReport = <ThrowOnError extends boolean = false>(options: Options<GetUsageReportData, ThrowOnError>): RequestResult<GetUsageReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetUsageReportResponses, unknown, ThrowOnError>({
+export const getUsageReport = <ThrowOnError extends boolean = false>(options: Options<GetUsageReportData, ThrowOnError>): RequestResult<GetUsageReportResponses, GetUsageReportErrors, ThrowOnError> => (options.client ?? client).get<GetUsageReportResponses, GetUsageReportErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/bills/reports/usage',
     ...options
 });
 
-export const getAllBudgetYears = <ThrowOnError extends boolean = false>(options?: Options<GetAllBudgetYearsData, ThrowOnError>): RequestResult<GetAllBudgetYearsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetAllBudgetYearsResponses, unknown, ThrowOnError>({
+export const getAllBudgetYears = <ThrowOnError extends boolean = false>(options?: Options<GetAllBudgetYearsData, ThrowOnError>): RequestResult<GetAllBudgetYearsResponses, GetAllBudgetYearsErrors, ThrowOnError> => (options?.client ?? client).get<GetAllBudgetYearsResponses, GetAllBudgetYearsErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/budget',
     ...options
 });
 
-export const getBudget = <ThrowOnError extends boolean = false>(options: Options<GetBudgetData, ThrowOnError>): RequestResult<GetBudgetResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetBudgetResponses, unknown, ThrowOnError>({
+export const getBudget = <ThrowOnError extends boolean = false>(options: Options<GetBudgetData, ThrowOnError>): RequestResult<GetBudgetResponses, GetBudgetErrors, ThrowOnError> => (options.client ?? client).get<GetBudgetResponses, GetBudgetErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/budget/{year}',
@@ -312,7 +312,7 @@ export const deleteBudgetLine = <ThrowOnError extends boolean = false>(options: 
     ...options
 });
 
-export const getBudgetLine = <ThrowOnError extends boolean = false>(options: Options<GetBudgetLineData, ThrowOnError>): RequestResult<GetBudgetLineResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetBudgetLineResponses, unknown, ThrowOnError>({
+export const getBudgetLine = <ThrowOnError extends boolean = false>(options: Options<GetBudgetLineData, ThrowOnError>): RequestResult<GetBudgetLineResponses, GetBudgetLineErrors, ThrowOnError> => (options.client ?? client).get<GetBudgetLineResponses, GetBudgetLineErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/budget/{year}/lines/{id}',
@@ -355,35 +355,35 @@ export const getBudgetAmountForTag = <ThrowOnError extends boolean = false>(opti
     ...options
 });
 
-export const getBudgetReport = <ThrowOnError extends boolean = false>(options: Options<GetBudgetReportData, ThrowOnError>): RequestResult<GetBudgetReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetBudgetReportResponses, unknown, ThrowOnError>({
+export const getBudgetReport = <ThrowOnError extends boolean = false>(options: Options<GetBudgetReportData, ThrowOnError>): RequestResult<GetBudgetReportResponses, GetBudgetReportErrors, ThrowOnError> => (options.client ?? client).get<GetBudgetReportResponses, GetBudgetReportErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/budget/{year}/report',
     ...options
 });
 
-export const getBudgetReportForMonth = <ThrowOnError extends boolean = false>(options: Options<GetBudgetReportForMonthData, ThrowOnError>): RequestResult<GetBudgetReportForMonthResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetBudgetReportForMonthResponses, unknown, ThrowOnError>({
+export const getBudgetReportForMonth = <ThrowOnError extends boolean = false>(options: Options<GetBudgetReportForMonthData, ThrowOnError>): RequestResult<GetBudgetReportForMonthResponses, GetBudgetReportForMonthErrors, ThrowOnError> => (options.client ?? client).get<GetBudgetReportForMonthResponses, GetBudgetReportForMonthErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/budget/{year}/report/{month}',
     ...options
 });
 
-export const getBudgetReportBreakdownForMonth = <ThrowOnError extends boolean = false>(options: Options<GetBudgetReportBreakdownForMonthData, ThrowOnError>): RequestResult<GetBudgetReportBreakdownForMonthResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetBudgetReportBreakdownForMonthResponses, unknown, ThrowOnError>({
+export const getBudgetReportBreakdownForMonth = <ThrowOnError extends boolean = false>(options: Options<GetBudgetReportBreakdownForMonthData, ThrowOnError>): RequestResult<GetBudgetReportBreakdownForMonthResponses, GetBudgetReportBreakdownForMonthErrors, ThrowOnError> => (options.client ?? client).get<GetBudgetReportBreakdownForMonthResponses, GetBudgetReportBreakdownForMonthErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/budget/{year}/report/{month}/breakdown',
     ...options
 });
 
-export const getBudgetReportBreakdownForMonthForUnbudgetedItems = <ThrowOnError extends boolean = false>(options: Options<GetBudgetReportBreakdownForMonthForUnbudgetedItemsData, ThrowOnError>): RequestResult<GetBudgetReportBreakdownForMonthForUnbudgetedItemsResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetBudgetReportBreakdownForMonthForUnbudgetedItemsResponses, unknown, ThrowOnError>({
+export const getBudgetReportBreakdownForMonthForUnbudgetedItems = <ThrowOnError extends boolean = false>(options: Options<GetBudgetReportBreakdownForMonthForUnbudgetedItemsData, ThrowOnError>): RequestResult<GetBudgetReportBreakdownForMonthForUnbudgetedItemsResponses, GetBudgetReportBreakdownForMonthForUnbudgetedItemsErrors, ThrowOnError> => (options.client ?? client).get<GetBudgetReportBreakdownForMonthForUnbudgetedItemsResponses, GetBudgetReportBreakdownForMonthForUnbudgetedItemsErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/budget/{year}/report/{month}/breakdown/unbudgeted',
     ...options
 });
 
-export const getMyFamily = <ThrowOnError extends boolean = false>(options?: Options<GetMyFamilyData, ThrowOnError>): RequestResult<GetMyFamilyResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetMyFamilyResponses, unknown, ThrowOnError>({
+export const getMyFamily = <ThrowOnError extends boolean = false>(options?: Options<GetMyFamilyData, ThrowOnError>): RequestResult<GetMyFamilyResponses, GetMyFamilyErrors, ThrowOnError> => (options?.client ?? client).get<GetMyFamilyResponses, GetMyFamilyErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/families',
@@ -407,7 +407,7 @@ export const removeFamilyMember = <ThrowOnError extends boolean = false>(options
     ...options
 });
 
-export const getAllFamilies = <ThrowOnError extends boolean = false>(options?: Options<GetAllFamiliesData, ThrowOnError>): RequestResult<GetAllFamiliesResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetAllFamiliesResponses, unknown, ThrowOnError>({
+export const getAllFamilies = <ThrowOnError extends boolean = false>(options?: Options<GetAllFamiliesData, ThrowOnError>): RequestResult<GetAllFamiliesResponses, GetAllFamiliesErrors, ThrowOnError> => (options?.client ?? client).get<GetAllFamiliesResponses, GetAllFamiliesErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/families/admin',
@@ -425,7 +425,7 @@ export const createFamily = <ThrowOnError extends boolean = false>(options: Opti
     }
 });
 
-export const getFamily = <ThrowOnError extends boolean = false>(options: Options<GetFamilyData, ThrowOnError>): RequestResult<GetFamilyResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetFamilyResponses, unknown, ThrowOnError>({
+export const getFamily = <ThrowOnError extends boolean = false>(options: Options<GetFamilyData, ThrowOnError>): RequestResult<GetFamilyResponses, GetFamilyErrors, ThrowOnError> => (options.client ?? client).get<GetFamilyResponses, GetFamilyErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/families/admin/{id}',
@@ -443,7 +443,7 @@ export const updateFamily = <ThrowOnError extends boolean = false>(options: Opti
     }
 });
 
-export const getAllForecastPlans = <ThrowOnError extends boolean = false>(options?: Options<GetAllForecastPlansData, ThrowOnError>): RequestResult<GetAllForecastPlansResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetAllForecastPlansResponses, unknown, ThrowOnError>({
+export const getAllForecastPlans = <ThrowOnError extends boolean = false>(options?: Options<GetAllForecastPlansData, ThrowOnError>): RequestResult<GetAllForecastPlansResponses, GetAllForecastPlansErrors, ThrowOnError> => (options?.client ?? client).get<GetAllForecastPlansResponses, GetAllForecastPlansErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/forecast/plans',
@@ -467,7 +467,7 @@ export const deleteForecastPlan = <ThrowOnError extends boolean = false>(options
     ...options
 });
 
-export const getForecastPlan = <ThrowOnError extends boolean = false>(options: Options<GetForecastPlanData, ThrowOnError>): RequestResult<GetForecastPlanResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetForecastPlanResponses, unknown, ThrowOnError>({
+export const getForecastPlan = <ThrowOnError extends boolean = false>(options: Options<GetForecastPlanData, ThrowOnError>): RequestResult<GetForecastPlanResponses, GetForecastPlanErrors, ThrowOnError> => (options.client ?? client).get<GetForecastPlanResponses, GetForecastPlanErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/forecast/plans/{id}',
@@ -505,7 +505,7 @@ export const deletePlannedItem = <ThrowOnError extends boolean = false>(options:
     ...options
 });
 
-export const getPlannedItem = <ThrowOnError extends boolean = false>(options: Options<GetPlannedItemData, ThrowOnError>): RequestResult<GetPlannedItemResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetPlannedItemResponses, unknown, ThrowOnError>({
+export const getPlannedItem = <ThrowOnError extends boolean = false>(options: Options<GetPlannedItemData, ThrowOnError>): RequestResult<GetPlannedItemResponses, GetPlannedItemErrors, ThrowOnError> => (options.client ?? client).get<GetPlannedItemResponses, GetPlannedItemErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/forecast/plans/{planId}/items/{itemId}',
@@ -534,7 +534,7 @@ export const createPlannedItem = <ThrowOnError extends boolean = false>(options:
     }
 });
 
-export const getAllGroups = <ThrowOnError extends boolean = false>(options?: Options<GetAllGroupsData, ThrowOnError>): RequestResult<GetAllGroupsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetAllGroupsResponses, unknown, ThrowOnError>({
+export const getAllGroups = <ThrowOnError extends boolean = false>(options?: Options<GetAllGroupsData, ThrowOnError>): RequestResult<GetAllGroupsResponses, GetAllGroupsErrors, ThrowOnError> => (options?.client ?? client).get<GetAllGroupsResponses, GetAllGroupsErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/groups',
@@ -558,7 +558,7 @@ export const deleteGroup = <ThrowOnError extends boolean = false>(options: Optio
     ...options
 });
 
-export const getGroup = <ThrowOnError extends boolean = false>(options: Options<GetGroupData, ThrowOnError>): RequestResult<GetGroupResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetGroupResponses, unknown, ThrowOnError>({
+export const getGroup = <ThrowOnError extends boolean = false>(options: Options<GetGroupData, ThrowOnError>): RequestResult<GetGroupResponses, GetGroupErrors, ThrowOnError> => (options.client ?? client).get<GetGroupResponses, GetGroupErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/groups/{id}',
@@ -576,7 +576,7 @@ export const updateGroup = <ThrowOnError extends boolean = false>(options: Optio
     }
 });
 
-export const getAllInstitutions = <ThrowOnError extends boolean = false>(options?: Options<GetAllInstitutionsData, ThrowOnError>): RequestResult<GetAllInstitutionsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetAllInstitutionsResponses, unknown, ThrowOnError>({
+export const getAllInstitutions = <ThrowOnError extends boolean = false>(options?: Options<GetAllInstitutionsData, ThrowOnError>): RequestResult<GetAllInstitutionsResponses, GetAllInstitutionsErrors, ThrowOnError> => (options?.client ?? client).get<GetAllInstitutionsResponses, GetAllInstitutionsErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/institutions',
@@ -594,7 +594,7 @@ export const createInstitution = <ThrowOnError extends boolean = false>(options:
     }
 });
 
-export const getInstitution = <ThrowOnError extends boolean = false>(options: Options<GetInstitutionData, ThrowOnError>): RequestResult<GetInstitutionResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetInstitutionResponses, unknown, ThrowOnError>({
+export const getInstitution = <ThrowOnError extends boolean = false>(options: Options<GetInstitutionData, ThrowOnError>): RequestResult<GetInstitutionResponses, GetInstitutionErrors, ThrowOnError> => (options.client ?? client).get<GetInstitutionResponses, GetInstitutionErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/institutions/{id}',
@@ -612,14 +612,14 @@ export const updateInstitution = <ThrowOnError extends boolean = false>(options:
     }
 });
 
-export const getFormattedInstrumentsList = <ThrowOnError extends boolean = false>(options?: Options<GetFormattedInstrumentsListData, ThrowOnError>): RequestResult<GetFormattedInstrumentsListResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetFormattedInstrumentsListResponses, unknown, ThrowOnError>({
+export const getFormattedInstrumentsList = <ThrowOnError extends boolean = false>(options?: Options<GetFormattedInstrumentsListData, ThrowOnError>): RequestResult<GetFormattedInstrumentsListResponses, GetFormattedInstrumentsListErrors, ThrowOnError> => (options?.client ?? client).get<GetFormattedInstrumentsListResponses, GetFormattedInstrumentsListErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/instruments/summary',
     ...options
 });
 
-export const getInstrumentsList = <ThrowOnError extends boolean = false>(options?: Options<GetInstrumentsListData, ThrowOnError>): RequestResult<GetInstrumentsListResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetInstrumentsListResponses, unknown, ThrowOnError>({
+export const getInstrumentsList = <ThrowOnError extends boolean = false>(options?: Options<GetInstrumentsListData, ThrowOnError>): RequestResult<GetInstrumentsListResponses, GetInstrumentsListErrors, ThrowOnError> => (options?.client ?? client).get<GetInstrumentsListResponses, GetInstrumentsListErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/instruments/list',
@@ -643,7 +643,7 @@ export const reprocess = <ThrowOnError extends boolean = false>(options: Options
     ...options
 });
 
-export const getAllInstrumentRules = <ThrowOnError extends boolean = false>(options: Options<GetAllInstrumentRulesData, ThrowOnError>): RequestResult<GetAllInstrumentRulesResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetAllInstrumentRulesResponses, unknown, ThrowOnError>({
+export const getAllInstrumentRules = <ThrowOnError extends boolean = false>(options: Options<GetAllInstrumentRulesData, ThrowOnError>): RequestResult<GetAllInstrumentRulesResponses, GetAllInstrumentRulesErrors, ThrowOnError> => (options.client ?? client).get<GetAllInstrumentRulesResponses, GetAllInstrumentRulesErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/instruments/{instrumentId}/rules',
@@ -667,7 +667,7 @@ export const deleteInstrumentRule = <ThrowOnError extends boolean = false>(optio
     ...options
 });
 
-export const getInstrumentRule = <ThrowOnError extends boolean = false>(options: Options<GetInstrumentRuleData, ThrowOnError>): RequestResult<GetInstrumentRuleResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetInstrumentRuleResponses, unknown, ThrowOnError>({
+export const getInstrumentRule = <ThrowOnError extends boolean = false>(options: Options<GetInstrumentRuleData, ThrowOnError>): RequestResult<GetInstrumentRuleResponses, GetInstrumentRuleErrors, ThrowOnError> => (options.client ?? client).get<GetInstrumentRuleResponses, GetInstrumentRuleErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/instruments/{instrumentId}/rules/{ruleId}',
@@ -704,7 +704,7 @@ export const runRules = <ThrowOnError extends boolean = false>(options: Options<
     ...options
 });
 
-export const getVirtualInstruments = <ThrowOnError extends boolean = false>(options: Options<GetVirtualInstrumentsData, ThrowOnError>): RequestResult<GetVirtualInstrumentsResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetVirtualInstrumentsResponses, unknown, ThrowOnError>({
+export const getVirtualInstruments = <ThrowOnError extends boolean = false>(options: Options<GetVirtualInstrumentsData, ThrowOnError>): RequestResult<GetVirtualInstrumentsResponses, GetVirtualInstrumentsErrors, ThrowOnError> => (options.client ?? client).get<GetVirtualInstrumentsResponses, GetVirtualInstrumentsErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/instruments/{instrumentId}/virtual',
@@ -728,7 +728,7 @@ export const deleteVirtualInstrument = <ThrowOnError extends boolean = false>(op
     ...options
 });
 
-export const getVirtualInstrument = <ThrowOnError extends boolean = false>(options: Options<GetVirtualInstrumentData, ThrowOnError>): RequestResult<GetVirtualInstrumentResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetVirtualInstrumentResponses, unknown, ThrowOnError>({
+export const getVirtualInstrument = <ThrowOnError extends boolean = false>(options: Options<GetVirtualInstrumentData, ThrowOnError>): RequestResult<GetVirtualInstrumentResponses, GetVirtualInstrumentErrors, ThrowOnError> => (options.client ?? client).get<GetVirtualInstrumentResponses, GetVirtualInstrumentErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/instruments/{instrumentId}/virtual/{virtualInstrumentId}',
@@ -757,133 +757,133 @@ export const updateVirtualInstrumentBalance = <ThrowOnError extends boolean = fa
     }
 });
 
-export const importerTypes = <ThrowOnError extends boolean = false>(options?: Options<ImporterTypesData, ThrowOnError>): RequestResult<ImporterTypesResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ImporterTypesResponses, unknown, ThrowOnError>({
+export const importerTypes = <ThrowOnError extends boolean = false>(options?: Options<ImporterTypesData, ThrowOnError>): RequestResult<ImporterTypesResponses, ImporterTypesErrors, ThrowOnError> => (options?.client ?? client).get<ImporterTypesResponses, ImporterTypesErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/reference-data/importer-types',
     ...options
 });
 
-export const inOutReport = <ThrowOnError extends boolean = false>(options: Options<InOutReportData, ThrowOnError>): RequestResult<InOutReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<InOutReportResponses, unknown, ThrowOnError>({
+export const inOutReport = <ThrowOnError extends boolean = false>(options: Options<InOutReportData, ThrowOnError>): RequestResult<InOutReportResponses, InOutReportErrors, ThrowOnError> => (options.client ?? client).get<InOutReportResponses, InOutReportErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/accounts/{accountId}/reports/in-out/{start}/{end}',
     ...options
 });
 
-export const inOutTrendReport = <ThrowOnError extends boolean = false>(options: Options<InOutTrendReportData, ThrowOnError>): RequestResult<InOutTrendReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<InOutTrendReportResponses, unknown, ThrowOnError>({
+export const inOutTrendReport = <ThrowOnError extends boolean = false>(options: Options<InOutTrendReportData, ThrowOnError>): RequestResult<InOutTrendReportResponses, InOutTrendReportErrors, ThrowOnError> => (options.client ?? client).get<InOutTrendReportResponses, InOutTrendReportErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/accounts/{accountId}/reports/in-out-trend/{start}/{end}',
     ...options
 });
 
-export const inOutAverageReport = <ThrowOnError extends boolean = false>(options: Options<InOutAverageReportData, ThrowOnError>): RequestResult<InOutAverageReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<InOutAverageReportResponses, unknown, ThrowOnError>({
+export const inOutAverageReport = <ThrowOnError extends boolean = false>(options: Options<InOutAverageReportData, ThrowOnError>): RequestResult<InOutAverageReportResponses, InOutAverageReportErrors, ThrowOnError> => (options.client ?? client).get<InOutAverageReportResponses, InOutAverageReportErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/accounts/{accountId}/reports/in-out-average/{start}/{end}',
     ...options
 });
 
-export const byTagReport = <ThrowOnError extends boolean = false>(options: Options<ByTagReportData, ThrowOnError>): RequestResult<ByTagReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<ByTagReportResponses, unknown, ThrowOnError>({
+export const byTagReport = <ThrowOnError extends boolean = false>(options: Options<ByTagReportData, ThrowOnError>): RequestResult<ByTagReportResponses, ByTagReportErrors, ThrowOnError> => (options.client ?? client).get<ByTagReportResponses, ByTagReportErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/accounts/{accountId}/reports/{reportType}/tags/{start}/{end}',
     ...options
 });
 
-export const byTagReportForTag = <ThrowOnError extends boolean = false>(options: Options<ByTagReportForTagData, ThrowOnError>): RequestResult<ByTagReportForTagResponses, unknown, ThrowOnError> => (options.client ?? client).get<ByTagReportForTagResponses, unknown, ThrowOnError>({
+export const byTagReportForTag = <ThrowOnError extends boolean = false>(options: Options<ByTagReportForTagData, ThrowOnError>): RequestResult<ByTagReportForTagResponses, ByTagReportForTagErrors, ThrowOnError> => (options.client ?? client).get<ByTagReportForTagResponses, ByTagReportForTagErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/accounts/{accountId}/reports/{reportType}/tags/{start}/{end}/{parentTagId}',
     ...options
 });
 
-export const tagBreakdownReport = <ThrowOnError extends boolean = false>(options: Options<TagBreakdownReportData, ThrowOnError>): RequestResult<TagBreakdownReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<TagBreakdownReportResponses, unknown, ThrowOnError>({
+export const tagBreakdownReport = <ThrowOnError extends boolean = false>(options: Options<TagBreakdownReportData, ThrowOnError>): RequestResult<TagBreakdownReportResponses, TagBreakdownReportErrors, ThrowOnError> => (options.client ?? client).get<TagBreakdownReportResponses, TagBreakdownReportErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/accounts/{accountId}/reports/{reportType}/breakdown/{start}/{end}',
     ...options
 });
 
-export const tagBreakdownReportForTag = <ThrowOnError extends boolean = false>(options: Options<TagBreakdownReportForTagData, ThrowOnError>): RequestResult<TagBreakdownReportForTagResponses, unknown, ThrowOnError> => (options.client ?? client).get<TagBreakdownReportForTagResponses, unknown, ThrowOnError>({
+export const tagBreakdownReportForTag = <ThrowOnError extends boolean = false>(options: Options<TagBreakdownReportForTagData, ThrowOnError>): RequestResult<TagBreakdownReportForTagResponses, TagBreakdownReportForTagErrors, ThrowOnError> => (options.client ?? client).get<TagBreakdownReportForTagResponses, TagBreakdownReportForTagErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/accounts/{accountId}/reports/{reportType}/breakdown/{start}/{end}/{parentTagId}',
     ...options
 });
 
-export const tagTrendReport = <ThrowOnError extends boolean = false>(options: Options<TagTrendReportData, ThrowOnError>): RequestResult<TagTrendReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<TagTrendReportResponses, unknown, ThrowOnError>({
+export const tagTrendReport = <ThrowOnError extends boolean = false>(options: Options<TagTrendReportData, ThrowOnError>): RequestResult<TagTrendReportResponses, TagTrendReportErrors, ThrowOnError> => (options.client ?? client).get<TagTrendReportResponses, TagTrendReportErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/accounts/{accountId}/reports/{reportType}/tag-trend/{start}/{end}/{tagId}',
     ...options
 });
 
-export const allTagAverageReport = <ThrowOnError extends boolean = false>(options: Options<AllTagAverageReportData, ThrowOnError>): RequestResult<AllTagAverageReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<AllTagAverageReportResponses, unknown, ThrowOnError>({
+export const allTagAverageReport = <ThrowOnError extends boolean = false>(options: Options<AllTagAverageReportData, ThrowOnError>): RequestResult<AllTagAverageReportResponses, AllTagAverageReportErrors, ThrowOnError> => (options.client ?? client).get<AllTagAverageReportResponses, AllTagAverageReportErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/accounts/{accountId}/reports/{reportType}/all-tag-average/{start}/{end}',
     ...options
 });
 
-export const savingsInterestReport = <ThrowOnError extends boolean = false>(options: Options<SavingsInterestReportData, ThrowOnError>): RequestResult<SavingsInterestReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<SavingsInterestReportResponses, unknown, ThrowOnError>({
+export const savingsInterestReport = <ThrowOnError extends boolean = false>(options: Options<SavingsInterestReportData, ThrowOnError>): RequestResult<SavingsInterestReportResponses, SavingsInterestReportErrors, ThrowOnError> => (options.client ?? client).get<SavingsInterestReportResponses, SavingsInterestReportErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/accounts/{accountId}/reports/savings-interest/{start}/{end}',
     ...options
 });
 
-export const superContributionsReport = <ThrowOnError extends boolean = false>(options: Options<SuperContributionsReportData, ThrowOnError>): RequestResult<SuperContributionsReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<SuperContributionsReportResponses, unknown, ThrowOnError>({
+export const superContributionsReport = <ThrowOnError extends boolean = false>(options: Options<SuperContributionsReportData, ThrowOnError>): RequestResult<SuperContributionsReportResponses, SuperContributionsReportErrors, ThrowOnError> => (options.client ?? client).get<SuperContributionsReportResponses, SuperContributionsReportErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/accounts/{accountId}/reports/super-contributions/{start}/{end}',
     ...options
 });
 
-export const superReturnsReport = <ThrowOnError extends boolean = false>(options: Options<SuperReturnsReportData, ThrowOnError>): RequestResult<SuperReturnsReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<SuperReturnsReportResponses, unknown, ThrowOnError>({
+export const superReturnsReport = <ThrowOnError extends boolean = false>(options: Options<SuperReturnsReportData, ThrowOnError>): RequestResult<SuperReturnsReportResponses, SuperReturnsReportErrors, ThrowOnError> => (options.client ?? client).get<SuperReturnsReportResponses, SuperReturnsReportErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/accounts/{accountId}/reports/super-returns',
     ...options
 });
 
-export const principalVsInterestReport = <ThrowOnError extends boolean = false>(options: Options<PrincipalVsInterestReportData, ThrowOnError>): RequestResult<PrincipalVsInterestReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<PrincipalVsInterestReportResponses, unknown, ThrowOnError>({
+export const principalVsInterestReport = <ThrowOnError extends boolean = false>(options: Options<PrincipalVsInterestReportData, ThrowOnError>): RequestResult<PrincipalVsInterestReportResponses, PrincipalVsInterestReportErrors, ThrowOnError> => (options.client ?? client).get<PrincipalVsInterestReportResponses, PrincipalVsInterestReportErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/accounts/{accountId}/reports/principal-vs-interest/{start}/{end}',
     ...options
 });
 
-export const monthlyBalancesReport = <ThrowOnError extends boolean = false>(options: Options<MonthlyBalancesReportData, ThrowOnError>): RequestResult<MonthlyBalancesReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<MonthlyBalancesReportResponses, unknown, ThrowOnError>({
+export const monthlyBalancesReport = <ThrowOnError extends boolean = false>(options: Options<MonthlyBalancesReportData, ThrowOnError>): RequestResult<MonthlyBalancesReportResponses, MonthlyBalancesReportErrors, ThrowOnError> => (options.client ?? client).get<MonthlyBalancesReportResponses, MonthlyBalancesReportErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/accounts/{accountId}/reports/monthly-balances',
     ...options
 });
 
-export const monthlyBalancesReportFrom = <ThrowOnError extends boolean = false>(options: Options<MonthlyBalancesReportFromData, ThrowOnError>): RequestResult<MonthlyBalancesReportFromResponses, unknown, ThrowOnError> => (options.client ?? client).get<MonthlyBalancesReportFromResponses, unknown, ThrowOnError>({
+export const monthlyBalancesReportFrom = <ThrowOnError extends boolean = false>(options: Options<MonthlyBalancesReportFromData, ThrowOnError>): RequestResult<MonthlyBalancesReportFromResponses, MonthlyBalancesReportFromErrors, ThrowOnError> => (options.client ?? client).get<MonthlyBalancesReportFromResponses, MonthlyBalancesReportFromErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/accounts/{accountId}/reports/monthly-balances/{start}',
     ...options
 });
 
-export const monthlyBalancesReportForPeriod = <ThrowOnError extends boolean = false>(options: Options<MonthlyBalancesReportForPeriodData, ThrowOnError>): RequestResult<MonthlyBalancesReportForPeriodResponses, unknown, ThrowOnError> => (options.client ?? client).get<MonthlyBalancesReportForPeriodResponses, unknown, ThrowOnError>({
+export const monthlyBalancesReportForPeriod = <ThrowOnError extends boolean = false>(options: Options<MonthlyBalancesReportForPeriodData, ThrowOnError>): RequestResult<MonthlyBalancesReportForPeriodResponses, MonthlyBalancesReportForPeriodErrors, ThrowOnError> => (options.client ?? client).get<MonthlyBalancesReportForPeriodResponses, MonthlyBalancesReportForPeriodErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/accounts/{accountId}/reports/monthly-balances/{start}/{end}',
     ...options
 });
 
-export const groupMonthlyBalancesReport = <ThrowOnError extends boolean = false>(options: Options<GroupMonthlyBalancesReportData, ThrowOnError>): RequestResult<GroupMonthlyBalancesReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<GroupMonthlyBalancesReportResponses, unknown, ThrowOnError>({
+export const groupMonthlyBalancesReport = <ThrowOnError extends boolean = false>(options: Options<GroupMonthlyBalancesReportData, ThrowOnError>): RequestResult<GroupMonthlyBalancesReportResponses, GroupMonthlyBalancesReportErrors, ThrowOnError> => (options.client ?? client).get<GroupMonthlyBalancesReportResponses, GroupMonthlyBalancesReportErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/groups/{groupId}/reports/monthly-balances/{start}/{end}',
     ...options
 });
 
-export const getStockHolding = <ThrowOnError extends boolean = false>(options: Options<GetStockHoldingData, ThrowOnError>): RequestResult<GetStockHoldingResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetStockHoldingResponses, unknown, ThrowOnError>({
+export const getStockHolding = <ThrowOnError extends boolean = false>(options: Options<GetStockHoldingData, ThrowOnError>): RequestResult<GetStockHoldingResponses, GetStockHoldingErrors, ThrowOnError> => (options.client ?? client).get<GetStockHoldingResponses, GetStockHoldingErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/stocks/{instrumentId}',
@@ -919,14 +919,14 @@ export const createStockHolding = <ThrowOnError extends boolean = false>(options
     }
 });
 
-export const stockHoldingReport = <ThrowOnError extends boolean = false>(options: Options<StockHoldingReportData, ThrowOnError>): RequestResult<StockHoldingReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<StockHoldingReportResponses, unknown, ThrowOnError>({
+export const stockHoldingReport = <ThrowOnError extends boolean = false>(options: Options<StockHoldingReportData, ThrowOnError>): RequestResult<StockHoldingReportResponses, StockHoldingReportErrors, ThrowOnError> => (options.client ?? client).get<StockHoldingReportResponses, StockHoldingReportErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/stocks/{instrumentId}/reports/holding',
     ...options
 });
 
-export const stockValueReport = <ThrowOnError extends boolean = false>(options: Options<StockValueReportData, ThrowOnError>): RequestResult<StockValueReportResponses, unknown, ThrowOnError> => (options.client ?? client).get<StockValueReportResponses, unknown, ThrowOnError>({
+export const stockValueReport = <ThrowOnError extends boolean = false>(options: Options<StockValueReportData, ThrowOnError>): RequestResult<StockValueReportResponses, StockValueReportErrors, ThrowOnError> => (options.client ?? client).get<StockValueReportResponses, StockValueReportErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/stocks/{instrumentId}/reports/value',
@@ -951,7 +951,7 @@ export const createStockTransaction = <ThrowOnError extends boolean = false>(opt
     }
 });
 
-export const getTags = <ThrowOnError extends boolean = false>(options?: Options<GetTagsData, ThrowOnError>): RequestResult<GetTagsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetTagsResponses, unknown, ThrowOnError>({
+export const getTags = <ThrowOnError extends boolean = false>(options?: Options<GetTagsData, ThrowOnError>): RequestResult<GetTagsResponses, GetTagsErrors, ThrowOnError> => (options?.client ?? client).get<GetTagsResponses, GetTagsErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/tags',
@@ -969,14 +969,14 @@ export const createTag = <ThrowOnError extends boolean = false>(options: Options
     }
 });
 
-export const getTagHierarchy = <ThrowOnError extends boolean = false>(options?: Options<GetTagHierarchyData, ThrowOnError>): RequestResult<GetTagHierarchyResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetTagHierarchyResponses, unknown, ThrowOnError>({
+export const getTagHierarchy = <ThrowOnError extends boolean = false>(options?: Options<GetTagHierarchyData, ThrowOnError>): RequestResult<GetTagHierarchyResponses, GetTagHierarchyErrors, ThrowOnError> => (options?.client ?? client).get<GetTagHierarchyResponses, GetTagHierarchyErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/tags/hierarchy',
     ...options
 });
 
-export const getTagGraph = <ThrowOnError extends boolean = false>(options?: Options<GetTagGraphData, ThrowOnError>): RequestResult<GetTagGraphResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetTagGraphResponses, unknown, ThrowOnError>({
+export const getTagGraph = <ThrowOnError extends boolean = false>(options?: Options<GetTagGraphData, ThrowOnError>): RequestResult<GetTagGraphResponses, GetTagGraphErrors, ThrowOnError> => (options?.client ?? client).get<GetTagGraphResponses, GetTagGraphErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/tags/graph',
@@ -989,7 +989,7 @@ export const deleteTag = <ThrowOnError extends boolean = false>(options: Options
     ...options
 });
 
-export const getTag = <ThrowOnError extends boolean = false>(options: Options<GetTagData, ThrowOnError>): RequestResult<GetTagResponses, unknown, ThrowOnError> => (options.client ?? client).get<GetTagResponses, unknown, ThrowOnError>({
+export const getTag = <ThrowOnError extends boolean = false>(options: Options<GetTagData, ThrowOnError>): RequestResult<GetTagResponses, GetTagErrors, ThrowOnError> => (options.client ?? client).get<GetTagResponses, GetTagErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/tags/{id}',
@@ -1048,7 +1048,7 @@ export const getUntaggedTransactions = <ThrowOnError extends boolean = false>(op
     ...options
 });
 
-export const searchTransactions = <ThrowOnError extends boolean = false>(options: Options<SearchTransactionsData, ThrowOnError>): RequestResult<SearchTransactionsResponses, unknown, ThrowOnError> => (options.client ?? client).get<SearchTransactionsResponses, unknown, ThrowOnError>({
+export const searchTransactions = <ThrowOnError extends boolean = false>(options: Options<SearchTransactionsData, ThrowOnError>): RequestResult<SearchTransactionsResponses, SearchTransactionsErrors, ThrowOnError> => (options.client ?? client).get<SearchTransactionsResponses, SearchTransactionsErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/accounts/{instrumentId}/transactions',
@@ -1102,7 +1102,7 @@ export const addTag = <ThrowOnError extends boolean = false>(options: Options<Ad
     ...options
 });
 
-export const getUser = <ThrowOnError extends boolean = false>(options?: Options<GetUserData, ThrowOnError>): RequestResult<GetUserResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetUserResponses, unknown, ThrowOnError>({
+export const getUser = <ThrowOnError extends boolean = false>(options?: Options<GetUserData, ThrowOnError>): RequestResult<GetUserResponses, GetUserErrors, ThrowOnError> => (options?.client ?? client).get<GetUserResponses, GetUserErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/users/me',

@@ -1,56 +1,89 @@
-.forecast-summary {
-    .summary-card {
-        padding: 1rem;
-        text-align: center;
-    }
+/* ---- Outlook ----
+   A heading line (name · period · status) sits above the metric cards. The cards are
+   standalone Sections on the page background (like the account compact widgets) —
+   deliberately NOT nested inside another Section, so they contrast against the page
+   rather than blending into a same-coloured card. The chart lives in its own
+   "Balance Projection" Section below. */
 
-    .summary-label {
+.forecast-heading {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.875rem;
+    margin-bottom: 1rem;
+
+    .forecast-title {
+        margin: 0;
+        padding: 0;
+        color: var(--body-colour-bold);
+    }
+    .forecast-period {
         font-size: 0.875rem;
         color: var(--secondary-colour);
-        margin-bottom: 0.25rem;
-    }
-
-    .summary-value {
-        font-size: 1.5rem;
-        font-weight: 600;
-    }
-
-    .summary-sublabel {
-        font-size: 0.75rem;
-        color: var(--secondary-colour);
-        margin-top: 0.25rem;
     }
 }
 
-.forecast-chart {
-    .section-content {
-        padding: 1rem;
+.forecast-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Shared .eyebrow label + global --income-bar/--expense-bar accent tokens, with
+   forecast-owned layout classes (not coupled to the tx- compact-widget class). */
+.forecast-metrics .section.metric {
+    padding: 0.75rem 1rem;
+    border-top: 2px solid var(--primary);
+}
+
+.forecast-metrics .section.metric[data-tone="income"],
+.forecast-metrics .section.metric[data-tone="ok"] { border-top-color: var(--income-bar); }
+.forecast-metrics .section.metric[data-tone="expense"],
+.forecast-metrics .section.metric[data-tone="risk"] { border-top-color: var(--expense-bar); }
+
+.forecast-metrics .metric-value {
+    font-size: 1.375rem;
+    font-weight: 600;
+    letter-spacing: -0.6px;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+    margin-top: 0.125rem;
+    color: var(--body-colour-bold);
+}
+
+.forecast-metrics .metric-value.income { color: var(--income-fg); }
+.forecast-metrics .metric-value.expense,
+.forecast-metrics .metric-value.negative { color: var(--expense-fg); }
+
+.forecast-metrics .metric-sub {
+    font-size: 0.75rem;
+    color: var(--secondary-colour);
+    margin-top: 0.125rem;
+}
+
+.forecast-chart-section .forecast-chart-canvas {
+    height: 400px;
+}
+
+/* ---- Income / expenses charts (projected vs actual, under the main chart) ---- */
+.forecast-io-charts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+}
+
+.forecast-io-charts .forecast-mini-chart {
+    height: 240px;
+}
+
+@media (max-width: 768px) {
+    .forecast-io-charts {
+        grid-template-columns: 1fr;
     }
 }
 
-.settings-item {
-    .settings-label {
-        font-size: 0.75rem;
-        color: var(--secondary-colour);
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-
-    .settings-value {
-        font-size: 1rem;
-        font-weight: 500;
-    }
-
-    .settings-sublabel {
-        font-size: 0.75rem;
-        color: var(--secondary-colour);
-    }
-}
-
-.regression-fallback {
-    font-style: italic;
-}
-
+/* Expense-calc note: hover for the fitted regression (fixed / variable / R²). */
 .regression-hint {
     cursor: help;
     text-decoration: underline dotted;
@@ -64,18 +97,14 @@
     }
 }
 
-.settings-actions {
-    display: flex;
-    align-items: end;
-    gap: 0.5rem;
-}
-
+/* ---- Planned items ---- */
 .new-planned-item {
     input, select {
         font-size: 0.875rem;
     }
 }
 
+/* ---- Dashboard widget ---- */
 .forecast-widget-chart {
     height: 100%;
     min-height: 300px;

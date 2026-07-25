@@ -6831,6 +6831,8 @@
           "incomeTotal",
           "baselineOutgoingsTotal",
           "plannedItemsTotal",
+          "plannedIncomeTotal",
+          "plannedExpensesTotal",
           "closingBalance"
         ],
         "type": "object",
@@ -6855,11 +6857,33 @@
             "type": "number",
             "format": "double"
           },
+          "plannedIncomeTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "plannedExpensesTotal": {
+            "type": "number",
+            "format": "double"
+          },
           "closingBalance": {
             "type": "number",
             "format": "double"
           },
           "actualBalance": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "actualIncome": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "actualOutgoings": {
             "type": [
               "null",
               "number"

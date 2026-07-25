@@ -1,12 +1,7 @@
-import { Section } from "@andrewmclachlan/moo-ds";
-import { format, parseISO } from "date-fns";
-import type {
-    ChartOptions
-} from "chart.js";
 import { Line } from "react-chartjs-2";
 import type { ForecastMonth } from "api/types.gen";
-import { formatCurrency } from "utils/currency";
-
+import { useChartColours } from "utils/chartColours";
+import { forecastChartData, forecastChartOptions } from "../-utils/forecastChart";
 
 interface ForecastChartProps {
     months: ForecastMonth[];
@@ -15,62 +10,11 @@ interface ForecastChartProps {
 
 export const ForecastChart: React.FC<ForecastChartProps> = ({ months, currencyCode }) => {
 
-    const labels = months.map(m => format(parseISO(m.monthStart), "MMM yy"));
-
-    const data = {
-        labels,
-        datasets: [
-            {
-                label: "Projected Balance",
-                data: months.map(m => m.openingBalance),
-                borderColor: "rgb(53, 162, 235)",
-                backgroundColor: "rgba(53, 162, 235, 0.5)",
-                tension: 0.1
-            },
-            {
-                label: "Actual Balance",
-                data: months.map(m => m.actualBalance ?? null),
-                borderColor: "rgb(34, 197, 94)",
-                backgroundColor: "rgba(34, 197, 94, 0.5)",
-                tension: 0.1,
-                spanGaps: false
-            }
-        ]
-    };
-
-    const options: ChartOptions<"line"> = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                position: "top" as const,
-            },
-            title: {
-                display: false,
-            },
-            tooltip: {
-                callbacks: {
-                    label: (context) => {
-                        const value = context.parsed.y;
-                        return `${context.dataset.label}: ${formatCurrency(value)}`;
-                    }
-                }
-            }
-        },
-        scales: {
-            y: {
-                ticks: {
-                    callback: (value) => formatCurrency(Number(value), currencyCode, 0)
-                }
-            }
-        }
-    };
+    const colours = useChartColours();
 
     return (
-        <Section header="Balance Projection" className="forecast-chart">
-            <div style={{ height: "400px" }}>
-                <Line options={options} data={data} />
-            </div>
-        </Section>
+        <div className="forecast-chart-canvas">
+            <Line data={forecastChartData(months, colours)} options={forecastChartOptions(currencyCode, colours)} />
+        </div>
     );
 };
