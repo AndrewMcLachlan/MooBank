@@ -1,7 +1,8 @@
-import { Badge, Section, SpinnerContainer } from "@andrewmclachlan/moo-ds";
+import { Badge, OverlayTrigger, Popover, Section, SpinnerContainer } from "@andrewmclachlan/moo-ds";
 import { format, parseISO } from "date-fns";
 import type { ForecastMonth, ForecastPlan, ForecastSummary } from "api/types.gen";
 import { Amount } from "components";
+import { formatCurrency } from "utils/currency";
 import { ForecastChart } from "./ForecastChart";
 
 interface ForecastOutlookProps {
@@ -12,13 +13,31 @@ interface ForecastOutlookProps {
     loading?: boolean;
 }
 
-const expenseNote = (plan?: ForecastPlan, summary?: ForecastSummary): string => {
+// The expense calc note. When the plan is income-correlated and the regression held, it exposes the
+// fitted model (fixed/variable/R²) in a hover popover — carried over from the old settings panel.
+const ExpenseNote: React.FC<{ plan?: ForecastPlan; summary: ForecastSummary; currencyCode: string }> = ({ plan, summary, currencyCode }) => {
     if (plan?.outgoingStrategy?.mode !== "IncomeCorrelated") {
-        return "historical average";
+        return <>historical average</>;
     }
-    return summary?.regression && !summary.regression.fellBackToFlatAverage
-        ? "income-correlated"
-        : "income-correlated · flat average";
+    const regression = summary.regression;
+    if (!regression || regression.fellBackToFlatAverage) {
+        return <>income-correlated · flat average</>;
+    }
+    return (
+        <OverlayTrigger placement="bottom" overlay={
+            <Popover id="forecast-regression-popover">
+                <Popover.Body>
+                    <div className="regression-popover">
+                        <div>Fixed expenses: {formatCurrency(regression.fixedComponent, currencyCode)}/mo</div>
+                        <div>Variable rate: {(regression.variableComponent * 100).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}% of income</div>
+                        <div>Model fit: {(regression.rSquared * 100).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}% R²</div>
+                    </div>
+                </Popover.Body>
+            </Popover>
+        }>
+            <span className="regression-hint">income-correlated</span>
+        </OverlayTrigger>
+    );
 };
 
 export const ForecastOutlook: React.FC<ForecastOutlookProps> = ({ plan, summary, months, currencyCode, loading }) => {
@@ -55,7 +74,7 @@ export const ForecastOutlook: React.FC<ForecastOutlookProps> = ({ plan, summary,
                     <Section className="metric" data-tone="expense">
                         <div className="eyebrow">Monthly Expenses</div>
                         <div className="metric-value expense"><Amount amount={summary.monthlyBaselineOutgoings} currencyCode={currencyCode} /></div>
-                        <div className="metric-sub">{expenseNote(plan, summary)}</div>
+                        <div className="metric-sub"><ExpenseNote plan={plan} summary={summary} currencyCode={currencyCode} /></div>
                     </Section>
                     <Section className="metric" data-tone={lowestBalanceRisk ? "risk" : "ok"}>
                         <div className="eyebrow">Lowest Balance</div>

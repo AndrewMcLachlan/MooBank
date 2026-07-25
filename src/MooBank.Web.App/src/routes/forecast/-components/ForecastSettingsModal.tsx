@@ -1,4 +1,4 @@
-import { Button, Col, Form, Input, Modal, Row } from "@andrewmclachlan/moo-ds";
+import { Button, Col, ComboBox, Form, Input, Modal, Row } from "@andrewmclachlan/moo-ds";
 import { useForm, useWatch } from "react-hook-form";
 import type { AccountScopeMode, ForecastPlan } from "api/types.gen";
 import { useUpdateForecastPlan } from "../-hooks/useUpdateForecastPlan";
@@ -69,17 +69,6 @@ export const ForecastSettingsModal: React.FC<ForecastSettingsModalProps> = ({ pl
             }
         });
         onHide();
-    };
-
-    const handleAccountToggle = (accountId: string) => {
-        const current = form.getValues("accountIds");
-        form.setValue(
-            "accountIds",
-            current.includes(accountId)
-                ? current.filter(id => id !== accountId)
-                : [...current, accountId],
-            { shouldDirty: true }
-        );
     };
 
     const handleHide = () => {
@@ -161,19 +150,17 @@ export const ForecastSettingsModal: React.FC<ForecastSettingsModalProps> = ({ pl
                                 inline
                             />
                         </div>
-                        {accountScopeMode === "SelectedAccounts" && accounts && (
-                            <div className="account-checklist">
-                                {accounts.map(account => (
-                                    <Input.Check
-                                        key={account.id}
-                                        type="checkbox"
-                                        id={`account-${account.id}`}
-                                        label={account.name}
-                                        checked={selectedAccountIds.includes(account.id)}
-                                        onChange={() => handleAccountToggle(account.id)}
-                                    />
-                                ))}
-                            </div>
+                        {accountScopeMode === "SelectedAccounts" && (
+                            <ComboBox
+                                multiSelect
+                                clearable
+                                placeholder="Select accounts..."
+                                items={accounts ?? []}
+                                selectedItems={(accounts ?? []).filter(a => selectedAccountIds.includes(a.id))}
+                                labelField={a => a?.name}
+                                valueField={a => a?.id}
+                                onChange={(items) => form.setValue("accountIds", items.map(a => a.id), { shouldDirty: true })}
+                            />
                         )}
                     </Form.Group>
                 </Modal.Body>

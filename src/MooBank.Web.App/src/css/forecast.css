@@ -66,13 +66,18 @@
     height: 400px;
 }
 
-/* ---- Edit Settings modal ---- */
-.account-checklist {
-    max-height: 200px;
-    overflow-y: auto;
-    border: 1px solid var(--border-colour);
-    border-radius: var(--border-radius);
-    padding: 0.5rem;
+/* Expense-calc note: hover for the fitted regression (fixed / variable / R²). */
+.regression-hint {
+    cursor: help;
+    text-decoration: underline dotted;
+}
+
+.regression-popover {
+    font-size: 0.8125rem;
+
+    div + div {
+        margin-top: 0.25rem;
+    }
 }
 
 /* ---- Planned items ---- */

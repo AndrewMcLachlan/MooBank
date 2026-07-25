@@ -17,6 +17,12 @@ vi.mock("@andrewmclachlan/moo-ds", () => ({
     ),
     Badge: ({ children }: { children?: React.ReactNode }) => <span data-testid="badge">{children}</span>,
     SpinnerContainer: () => <div data-testid="spinner" />,
+    // Render the overlay inline so the popover content is assertable without a hover.
+    OverlayTrigger: ({ children, overlay }: { children?: React.ReactNode; overlay?: React.ReactNode }) => <>{children}{overlay}</>,
+    Popover: Object.assign(
+        ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+        { Body: ({ children }: { children?: React.ReactNode }) => <div>{children}</div> },
+    ),
 }));
 
 const summary = (over: Partial<ForecastSummary> = {}): ForecastSummary => ({
@@ -89,6 +95,15 @@ describe("ForecastOutlook", () => {
         const fellBack = summary({ regression: { fellBackToFlatAverage: true, rSquared: 0.004 } as ForecastSummary["regression"] });
         render(<ForecastOutlook plan={plan} summary={fellBack} months={[]} currencyCode="AUD" />);
         expect(screen.getByText("income-correlated · flat average")).toBeInTheDocument();
+    });
+
+    it("exposes the fitted regression (fixed / variable / R²) when the income correlation holds", () => {
+        const plan = { startDate: "2024-12-01", endDate: "2027-12-01", outgoingStrategy: { mode: "IncomeCorrelated" } } as ForecastPlan;
+        const held = summary({ regression: { fellBackToFlatAverage: false, rSquared: 0.83, fixedComponent: 1200, variableComponent: 0.42 } as ForecastSummary["regression"] });
+        render(<ForecastOutlook plan={plan} summary={held} months={[]} currencyCode="AUD" />);
+        expect(screen.getByText("income-correlated")).toBeInTheDocument();
+        expect(screen.getByText(/83\.0% R²/)).toBeInTheDocument();
+        expect(screen.getByText(/42\.0% of income/)).toBeInTheDocument();
     });
 
     it("renders neither the health pill nor the KPI band while the summary is still loading", () => {
