@@ -10,7 +10,6 @@ import { useUser } from "hooks/useUser";
 import { ForecastPage } from "./-components/ForecastPage";
 import { ForecastOutlook } from "./-components/ForecastOutlook";
 import { PlannedItemsTable } from "./-components/PlannedItemsTable";
-import { ForecastSettings } from "./-components/ForecastSettings";
 import { ForecastSettingsModal } from "./-components/ForecastSettingsModal";
 import { CreateForecastPlan } from "./-components/CreateForecastPlan";
 
@@ -63,9 +62,7 @@ function Forecast() {
 
     return (
         <ForecastPage plan={plan} actions={actions}>
-            <ForecastOutlook summary={result?.summary} months={result?.months ?? []} currencyCode={currencyCode} loading={resultLoading} />
-
-            <ForecastSettings plan={plan} monthlyExpenses={result?.summary.monthlyBaselineOutgoings} regression={result?.summary.regression} currencyCode={currencyCode} />
+            <ForecastOutlook plan={plan} summary={result?.summary} months={result?.months ?? []} currencyCode={currencyCode} loading={resultLoading} />
 
             <div className="forecast-planned-tables">
                 <PlannedItemsTable plan={plan} currencyCode={currencyCode} />

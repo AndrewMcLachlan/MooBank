@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import type { ForecastSummary } from "api/types.gen";
+import type { ForecastPlan, ForecastSummary } from "api/types.gen";
 import { ForecastOutlook } from "./ForecastOutlook";
 
 // The chart pulls in react-chartjs-2 (canvas) and theme context; the Outlook's own logic is the
@@ -68,12 +68,28 @@ describe("ForecastOutlook", () => {
         expect(risk).toHaveLength(2);
     });
 
-    it("shows the regression fallback note only when the model fell back to a flat average", () => {
-        const withFallback = renderOutlook({ regression: { fellBackToFlatAverage: true, rSquared: 0.004 } as ForecastSummary["regression"] });
-        expect(withFallback.querySelector(".outlook-note")).not.toBeNull();
+    it("renders the monthly income and expenses cards from the plan and summary", () => {
+        const plan = {
+            name: "My Forecast",
+            startDate: "2024-12-01",
+            endDate: "2027-12-01",
+            incomeStrategy: { manualRecurring: { amount: 8192.92 } },
+            outgoingStrategy: { mode: "IncomeCorrelated" },
+        } as ForecastPlan;
+        const { container } = render(
+            <ForecastOutlook plan={plan} summary={summary({ monthlyBaselineOutgoings: 6457 })} months={[]} currencyCode="AUD" />,
+        );
+        expect(container.querySelector(".metric-value.income")).toHaveTextContent("8,192.92");
+        expect(container.querySelector(".metric-value.expense")).toHaveTextContent("6,457");
+        // Income and expenses use their own semantic classes, not the risk .negative marker.
+        expect(container.querySelectorAll(".metric-value.negative")).toHaveLength(0);
+    });
 
-        const withoutFallback = renderOutlook();
-        expect(withoutFallback.querySelector(".outlook-note")).toBeNull();
+    it("notes the flat-average fallback on the expenses card when the correlation is weak", () => {
+        const plan = { startDate: "2024-12-01", endDate: "2027-12-01", outgoingStrategy: { mode: "IncomeCorrelated" } } as ForecastPlan;
+        const fellBack = summary({ regression: { fellBackToFlatAverage: true, rSquared: 0.004 } as ForecastSummary["regression"] });
+        render(<ForecastOutlook plan={plan} summary={fellBack} months={[]} currencyCode="AUD" />);
+        expect(screen.getByText("income-correlated · flat average")).toBeInTheDocument();
     });
 
     it("renders neither the health pill nor the KPI band while the summary is still loading", () => {

@@ -6,11 +6,7 @@ import type { ForecastPlan } from "api/types.gen";
 export const ForecastPage: React.FC<PropsWithChildren<ForecastPageProps>> = ({ plan, actions, children, breadcrumbs = [] }) => (
     <Page
         title={plan?.name ?? "Forecast"}
-        breadcrumbs={[
-            { text: "Forecast", route: `/forecast` },
-            ...(plan ? [{ text: plan.name, route: `/forecast` }] : []),
-            ...breadcrumbs,
-        ]}
+        breadcrumbs={[{ text: "Forecast", route: `/forecast` }, ...breadcrumbs]}
         actions={actions}
     >
         {children}

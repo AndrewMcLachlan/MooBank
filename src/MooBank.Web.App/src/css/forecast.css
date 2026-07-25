@@ -1,137 +1,92 @@
-/* ---- Outlook ---- */
-.forecast-outlook {
-    .outlook-header {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-    }
+/* ---- Outlook ----
+   A heading line (name · period · status) sits above the metric cards. The cards are
+   standalone Sections on the page background (like the account compact widgets) —
+   deliberately NOT nested inside another Section, so they contrast against the page
+   rather than blending into a same-coloured card. The chart lives in its own
+   "Balance Projection" Section below. */
 
-    .health-pill {
-        font-size: 0.75rem;
-        font-weight: 600;
-        padding: 0.125rem 0.625rem;
-        border-radius: 999px;
-    }
-
-    .health-pill.on-track {
-        color: var(--success);
-        background: color-mix(in srgb, var(--success) 16%, transparent);
-    }
-
-    .health-pill.attention {
-        color: var(--warning);
-        background: color-mix(in srgb, var(--warning) 16%, transparent);
-    }
-
-    /* Compact metric cards — the split-out risk figures, styled like the account
-       compact widgets (shared .eyebrow label + global --income-bar/--expense-bar
-       accent tokens), but with forecast-owned layout classes. */
-    .forecast-metrics {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 0.625rem;
-        padding-bottom: 1.25rem;
-        margin-bottom: 1.25rem;
-        border-bottom: 1px solid var(--border-colour);
-    }
-
-    .forecast-metrics .section.metric {
-        padding: 0.625rem 0.875rem;
-        border-top: 2px solid var(--primary);
-    }
-
-    .forecast-metrics .section.metric[data-tone="ok"] { border-top-color: var(--income-bar); }
-    .forecast-metrics .section.metric[data-tone="risk"] { border-top-color: var(--expense-bar); }
-
-    .metric-value {
-        font-size: 1.375rem;
-        font-weight: 600;
-        letter-spacing: -0.6px;
-        line-height: 1.1;
-        font-variant-numeric: tabular-nums;
-        margin-top: 0.125rem;
-        color: var(--body-colour-bold);
-    }
-
-    .metric-value.negative {
-        color: var(--expense-fg);
-    }
-
-    .metric-sub {
-        font-size: 0.75rem;
-        color: var(--secondary-colour);
-        margin-top: 0.125rem;
-    }
-
-    .forecast-chart-canvas {
-        height: 400px;
-        margin-top: 1.25rem;
-    }
-
-    .outlook-footer {
-        margin-top: 0.875rem;
-        padding-top: 0.875rem;
-        border-top: 1px solid var(--border-colour);
-        display: flex;
-        flex-wrap: wrap;
-        align-items: baseline;
-        gap: 0.5rem 1.5rem;
-    }
-
-    .outlook-totals {
-        font-size: 0.875rem;
-    }
-
-    .outlook-note {
-        font-size: 0.8125rem;
-        font-style: italic;
-        color: var(--secondary-colour);
-    }
+.forecast-heading {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.875rem;
+    margin-bottom: 1.125rem;
 }
 
-@media (max-width: 768px) {
-    .forecast-outlook .forecast-metrics {
-        grid-template-columns: 1fr;
-    }
+.forecast-heading .forecast-title {
+    font-size: 1.375rem;
+    font-weight: 600;
+    color: var(--body-colour-bold);
 }
 
-/* ---- Settings summary ---- */
-.forecast-settings-summary {
-    .settings-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 1.125rem 1.5rem;
-    }
-
-    .setting-label {
-        font-size: 0.75rem;
-        color: var(--secondary-colour);
-        margin-bottom: 0.25rem;
-    }
-
-    .setting-value {
-        font-size: 1rem;
-        font-weight: 500;
-    }
-
-    .setting-sub {
-        font-size: 0.75rem;
-        color: var(--secondary-colour);
-        margin-top: 0.125rem;
-    }
+.forecast-heading .forecast-period {
+    font-size: 0.875rem;
+    color: var(--secondary-colour);
 }
 
-.regression-hint {
-    cursor: help;
-    text-decoration: underline dotted;
+.health-pill {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.125rem 0.625rem;
+    border-radius: 999px;
 }
 
-.regression-popover {
-    font-size: 0.8125rem;
+.health-pill.on-track {
+    color: var(--success);
+    background: color-mix(in srgb, var(--success) 16%, transparent);
+}
 
-    div + div {
-        margin-top: 0.25rem;
-    }
+.health-pill.attention {
+    color: var(--warning);
+    background: color-mix(in srgb, var(--warning) 16%, transparent);
+}
+
+/* Push the status pill to the far end of the heading line. */
+.forecast-heading .health-pill {
+    margin-left: auto;
+}
+
+.forecast-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Shared .eyebrow label + global --income-bar/--expense-bar accent tokens, with
+   forecast-owned layout classes (not coupled to the tx- compact-widget class). */
+.forecast-metrics .section.metric {
+    padding: 0.75rem 1rem;
+    border-top: 2px solid var(--primary);
+}
+
+.forecast-metrics .section.metric[data-tone="income"],
+.forecast-metrics .section.metric[data-tone="ok"] { border-top-color: var(--income-bar); }
+.forecast-metrics .section.metric[data-tone="expense"],
+.forecast-metrics .section.metric[data-tone="risk"] { border-top-color: var(--expense-bar); }
+
+.forecast-metrics .metric-value {
+    font-size: 1.375rem;
+    font-weight: 600;
+    letter-spacing: -0.6px;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+    margin-top: 0.125rem;
+    color: var(--body-colour-bold);
+}
+
+.forecast-metrics .metric-value.income { color: var(--income-fg); }
+.forecast-metrics .metric-value.expense,
+.forecast-metrics .metric-value.negative { color: var(--expense-fg); }
+
+.forecast-metrics .metric-sub {
+    font-size: 0.75rem;
+    color: var(--secondary-colour);
+    margin-top: 0.125rem;
+}
+
+.forecast-chart-section .forecast-chart-canvas {
+    height: 400px;
 }
 
 /* ---- Edit Settings modal ---- */
