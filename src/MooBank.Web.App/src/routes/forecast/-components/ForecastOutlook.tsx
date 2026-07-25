@@ -1,4 +1,4 @@
-import { Section, SpinnerContainer } from "@andrewmclachlan/moo-ds";
+import { Badge, Section, SpinnerContainer } from "@andrewmclachlan/moo-ds";
 import { format, parseISO } from "date-fns";
 import type { ForecastMonth, ForecastPlan, ForecastSummary } from "api/types.gen";
 import { Amount } from "components";
@@ -32,16 +32,16 @@ export const ForecastOutlook: React.FC<ForecastOutlookProps> = ({ plan, summary,
     return (
         <div className="forecast-outlook">
             <div className="forecast-heading">
-                <h1 className="forecast-title">{plan?.name}</h1>
+                <h2 className="forecast-title">{plan?.name}</h2>
                 {plan?.startDate && plan?.endDate && (
                     <span className="forecast-period">
                         {format(parseISO(plan.startDate), "MMM yyyy")} – {format(parseISO(plan.endDate), "MMM yyyy")}
                     </span>
                 )}
                 {summary && (
-                    <span className={`health-pill ${onTrack ? "on-track" : "attention"}`}>
+                    <Badge pill muted bg={onTrack ? "success" : "warning"}>
                         {onTrack ? "On track" : "Needs attention"}
-                    </span>
+                    </Badge>
                 )}
             </div>
 

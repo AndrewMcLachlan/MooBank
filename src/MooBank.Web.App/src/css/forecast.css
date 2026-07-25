@@ -10,42 +10,17 @@
     align-items: baseline;
     flex-wrap: wrap;
     gap: 0.875rem;
-    margin-bottom: 1.125rem;
-}
+    margin-bottom: 1rem;
 
-.forecast-heading .forecast-title {
-    margin: 0;
-    padding: 0;
-    font-size: 1.375rem;
-    font-weight: 600;
-    color: var(--body-colour-bold);
-}
-
-.forecast-heading .forecast-period {
-    font-size: 0.875rem;
-    color: var(--secondary-colour);
-}
-
-.health-pill {
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 0.125rem 0.625rem;
-    border-radius: 999px;
-}
-
-.health-pill.on-track {
-    color: var(--success);
-    background: color-mix(in srgb, var(--success) 16%, transparent);
-}
-
-.health-pill.attention {
-    color: var(--warning);
-    background: color-mix(in srgb, var(--warning) 16%, transparent);
-}
-
-/* Push the status pill to the far end of the heading line. */
-.forecast-heading .health-pill {
-    margin-left: auto;
+    .forecast-title {
+        margin: 0;
+        padding: 0;
+        color: var(--body-colour-bold);
+    }
+    .forecast-period {
+        font-size: 0.875rem;
+        color: var(--secondary-colour);
+    }
 }
 
 .forecast-metrics {

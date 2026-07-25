@@ -15,6 +15,7 @@ vi.mock("@andrewmclachlan/moo-ds", () => ({
     Section: ({ header, children }: { header?: React.ReactNode; children?: React.ReactNode }) => (
         <section>{header}{children}</section>
     ),
+    Badge: ({ children }: { children?: React.ReactNode }) => <span data-testid="badge">{children}</span>,
     SpinnerContainer: () => <div data-testid="spinner" />,
 }));
 
@@ -41,14 +42,12 @@ describe("ForecastOutlook", () => {
     it("reads On track and colours no KPI as risk when the forecast is healthy", () => {
         const container = renderOutlook();
         expect(screen.getByText("On track")).toBeInTheDocument();
-        expect(container.querySelector(".health-pill.on-track")).not.toBeNull();
         expect(container.querySelectorAll(".metric-value.negative")).toHaveLength(0);
     });
 
     it("flips to Needs attention and marks Months Below Zero as risk when it runs negative", () => {
         const container = renderOutlook({ monthsBelowZero: 2 });
         expect(screen.getByText("Needs attention")).toBeInTheDocument();
-        expect(container.querySelector(".health-pill.attention")).not.toBeNull();
         // Only the Months Below Zero figure is over threshold here.
         const risk = container.querySelectorAll(".metric-value.negative");
         expect(risk).toHaveLength(1);
@@ -96,7 +95,7 @@ describe("ForecastOutlook", () => {
         const { container } = render(
             <ForecastOutlook months={[]} currencyCode="AUD" loading />,
         );
-        expect(container.querySelector(".health-pill")).toBeNull();
+        expect(screen.queryByTestId("badge")).toBeNull();
         expect(container.querySelector(".forecast-metrics")).toBeNull();
         expect(screen.getByTestId("forecast-chart")).toBeInTheDocument();
     });
