@@ -32,7 +32,7 @@ export const ForecastOutlook: React.FC<ForecastOutlookProps> = ({ plan, summary,
     return (
         <div className="forecast-outlook">
             <div className="forecast-heading">
-                <span className="forecast-title">{plan?.name}</span>
+                <h1 className="forecast-title">{plan?.name}</h1>
                 {plan?.startDate && plan?.endDate && (
                     <span className="forecast-period">
                         {format(parseISO(plan.startDate), "MMM yyyy")} – {format(parseISO(plan.endDate), "MMM yyyy")}
