@@ -1,5 +1,7 @@
 ﻿<Project>
-  <PropertyGroup>
+  <!-- MSBuild ignores Condition on the <Project> element, so this must be conditioned on the
+       PropertyGroup to keep C#-only settings off .esproj / .sqlproj. -->
+  <PropertyGroup Condition="'$(MSBuildProjectExtension)' == '.csproj'">
     <TargetFramework>net10.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <Authors>Andrew McLachlan</Authors>

@@ -103,7 +103,6 @@
     <Project Path="src/MooBank.Modules.Transactions/MooBank.Modules.Transactions.csproj" />
     <Project Path="src/MooBank.Modules.Users/MooBank.Modules.Users.csproj" />
   </Folder>
-  <Folder Name="/src/" />
   <Folder Name="/Tests/">
     <File Path="tests/Directory.Build.props" />
     <Project Path="tests/MooBank.Api.Tests/MooBank.Api.Tests.csproj" />
