@@ -6865,6 +6865,20 @@
               "number"
             ],
             "format": "double"
+          },
+          "actualIncome": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "actualOutgoings": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
           }
         }
       },

@@ -69,6 +69,12 @@ internal class ForecastEngine(
         // 10. Fetch historical actual balances for comparison
         var actualBalancesByMonth = await GetActualBalancesByMonth(accountIds, plan.StartDate, plan.EndDate, latestTransactionDate, cancellationToken);
 
+        // 10a. Fetch actual monthly income/expenses (excl. savings, matching the projected series)
+        //      for the projected-vs-actual income and expenses charts.
+        var actualIncomeExpenseByMonth = await GetActualMonthlyIncomeAndExpenses(
+            accountIdsForHistoricalAnalysis, plan.StartDate, latestTransactionDate, cancellationToken);
+        var latestTransactionMonth = new DateOnly(latestTransactionDate.Year, latestTransactionDate.Month, 1);
+
         // 11. Fit income-expense regression if mode is IncomeCorrelated
         RegressionModel? regressionModel = null;
         var useRegression = false;
@@ -128,6 +134,10 @@ internal class ForecastEngine(
                 ? Math.Max(0m, regressionModel!.Intercept + regressionModel.Slope * (monthIncome + regressionIncomeOffset))
                 : effectiveBaselineOutgoings;
 
+            // Actual income/expenses only exist for historical months (up to the latest transaction).
+            var isHistorical = currentDate <= latestTransactionMonth;
+            var actual = isHistorical ? actualIncomeExpenseByMonth.GetValueOrDefault(monthKey) : ((decimal Income, decimal Expense)?)null;
+
             var forecastMonth = new ForecastMonth
             {
                 MonthStart = currentDate,
@@ -137,7 +147,9 @@ internal class ForecastEngine(
                 PlannedItemsTotal = monthPlanned,
                 // monthPlanned already has correct sign: positive for income, negative for expenses
                 ClosingBalance = currentBalance + monthIncome - Math.Abs(monthOutgoings) + monthPlanned,
-                ActualBalance = actualBalance
+                ActualBalance = actualBalance,
+                ActualIncome = actual?.Income,
+                ActualOutgoings = actual?.Expense
             };
 
             months.Add(forecastMonth);
@@ -440,6 +452,30 @@ internal class ForecastEngine(
                     result[monthKey] = result.GetValueOrDefault(monthKey, 0m) + total.Total;
                 }
             }
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Gets actual monthly income (credits) and outgoings (debits, positive) for the given range,
+    /// keyed by month (yyyy-MM). Feeds the projected-vs-actual income and expenses charts.
+    /// </summary>
+    private async Task<Dictionary<string, (decimal Income, decimal Expense)>> GetActualMonthlyIncomeAndExpenses(
+        List<Guid> accountIds, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
+    {
+        var result = new Dictionary<string, (decimal Income, decimal Expense)>();
+
+        if (accountIds.Count == 0 || startDate > endDate)
+        {
+            return result;
+        }
+
+        var allTotals = await reportReader.GetMonthlyCreditDebitTotalsForAccounts(accountIds, startDate, endDate, cancellationToken);
+
+        foreach (var (month, values) in AggregateMonthlyData(allTotals))
+        {
+            result[month.ToString("yyyy-MM")] = values;
         }
 
         return result;

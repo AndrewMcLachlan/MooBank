@@ -23,6 +23,16 @@ public sealed record ForecastMonth
     /// The actual historical balance for this month, if available (null for future months).
     /// </summary>
     public decimal? ActualBalance { get; init; }
+    /// <summary>
+    /// Actual income (total credits) for this month, if historical (null for future months).
+    /// Scoped to the historical-analysis accounts (excludes savings), matching <see cref="IncomeTotal"/>.
+    /// </summary>
+    public decimal? ActualIncome { get; init; }
+    /// <summary>
+    /// Actual outgoings (total debits, positive) for this month, if historical (null for future months).
+    /// Scoped to the historical-analysis accounts (excludes savings), matching <see cref="BaselineOutgoingsTotal"/>.
+    /// </summary>
+    public decimal? ActualOutgoings { get; init; }
 }
 
 [DisplayName("ForecastSummary")]

@@ -1081,6 +1081,103 @@ public class ForecastEngineTests
         Assert.Equal(25000m, months[2].ClosingBalance);
     }
 
+    /// <summary>
+    /// Given historical transaction data for past months
+    /// When the forecast is calculated
+    /// Then each historical month exposes actual income (credits) and outgoings (absolute debits)
+    /// </summary>
+    [Fact]
+    public async Task Calculate_HistoricalMonths_PopulatesActualIncomeAndOutgoings()
+    {
+        // Arrange
+        var accountId = Guid.NewGuid();
+        _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId]));
+
+        var plan = CreatePlanWithStrategies(
+            startDate: new DateOnly(2024, 1, 1),
+            endDate: new DateOnly(2024, 3, 31),
+            startingBalance: 10000m,
+            monthlyIncome: 5000m,
+            lookbackMonths: 0);
+
+        SetupEmptyRepositoryMocks();
+
+        // A transaction account so it survives the historical-analysis filter (which excludes savings).
+        _mocks.InstrumentRepositoryMock
+            .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<DomainInstrument>
+            {
+                new LogicalAccount(accountId, []) { Name = "Test Account", Balance = 10000m, AccountType = AccountType.Transaction },
+            });
+
+        // Actual credits/debits for Jan and Feb (debit totals come back negative from the SP)
+        _mocks.ReportReaderMock
+            .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>
+            {
+                [accountId] =
+                [
+                    new MonthlyCreditDebitTotal { Month = new DateOnly(2024, 1, 1), TransactionType = TransactionFilterType.Credit, Total = 5000m },
+                    new MonthlyCreditDebitTotal { Month = new DateOnly(2024, 1, 1), TransactionType = TransactionFilterType.Debit, Total = -3000m },
+                    new MonthlyCreditDebitTotal { Month = new DateOnly(2024, 2, 1), TransactionType = TransactionFilterType.Credit, Total = 6000m },
+                    new MonthlyCreditDebitTotal { Month = new DateOnly(2024, 2, 1), TransactionType = TransactionFilterType.Debit, Total = -2000m },
+                ]
+            });
+
+        var engine = new ForecastEngine(
+            _mocks.ReportReaderMock.Object,
+            _mocks.InstrumentRepositoryMock.Object,
+            _mocks.User);
+
+        // Act
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
+
+        // Assert
+        var months = result.Months.ToList();
+        Assert.Equal(5000m, months[0].ActualIncome);
+        Assert.Equal(3000m, months[0].ActualOutgoings);
+        Assert.Equal(6000m, months[1].ActualIncome);
+        Assert.Equal(2000m, months[1].ActualOutgoings);
+        // March is historical but has no data — zero, not null
+        Assert.Equal(0m, months[2].ActualIncome);
+        Assert.Equal(0m, months[2].ActualOutgoings);
+    }
+
+    /// <summary>
+    /// Given a plan whose months are entirely in the future
+    /// When the forecast is calculated
+    /// Then actual income and outgoings are null (no actuals exist yet)
+    /// </summary>
+    [Fact]
+    public async Task Calculate_FutureMonths_HaveNullActualIncomeAndOutgoings()
+    {
+        // Arrange
+        var accountId = Guid.NewGuid();
+        _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId]));
+
+        var plan = CreatePlanWithStrategies(
+            startDate: DateOnly.FromDateTime(DateTime.Today.AddMonths(1)),
+            endDate: DateOnly.FromDateTime(DateTime.Today.AddMonths(2)),
+            startingBalance: 10000m,
+            monthlyIncome: 5000m,
+            lookbackMonths: 0);
+
+        SetupEmptyRepositoryMocks();
+
+        var engine = new ForecastEngine(
+            _mocks.ReportReaderMock.Object,
+            _mocks.InstrumentRepositoryMock.Object,
+            _mocks.User);
+
+        // Act
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.All(result.Months, m => Assert.Null(m.ActualIncome));
+        Assert.All(result.Months, m => Assert.Null(m.ActualOutgoings));
+    }
+
     #region Income-Correlated Regression Tests
 
     /// <summary>

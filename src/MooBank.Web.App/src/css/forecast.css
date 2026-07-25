@@ -66,6 +66,23 @@
     height: 400px;
 }
 
+/* ---- Income / expenses charts (projected vs actual, under the main chart) ---- */
+.forecast-io-charts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+}
+
+.forecast-io-charts .forecast-mini-chart {
+    height: 240px;
+}
+
+@media (max-width: 768px) {
+    .forecast-io-charts {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* Expense-calc note: hover for the fitted regression (fixed / variable / R²). */
 .regression-hint {
     cursor: help;

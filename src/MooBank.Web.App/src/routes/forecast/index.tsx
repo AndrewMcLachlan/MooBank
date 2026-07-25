@@ -9,6 +9,7 @@ import { useAccounts } from "hooks/useAccounts";
 import { useUser } from "hooks/useUser";
 import { ForecastPage } from "./-components/ForecastPage";
 import { ForecastOutlook } from "./-components/ForecastOutlook";
+import { ForecastIncomeExpenseCharts } from "./-components/ForecastIncomeExpenseCharts";
 import { PlannedItemsTable } from "./-components/PlannedItemsTable";
 import { ForecastSettingsModal } from "./-components/ForecastSettingsModal";
 import { CreateForecastPlan } from "./-components/CreateForecastPlan";
@@ -63,6 +64,8 @@ function Forecast() {
     return (
         <ForecastPage plan={plan} actions={actions}>
             <ForecastOutlook plan={plan} summary={result?.summary} months={result?.months ?? []} currencyCode={currencyCode} loading={resultLoading} />
+
+            <ForecastIncomeExpenseCharts months={result?.months ?? []} currencyCode={currencyCode} />
 
             <PlannedItemsTable plan={plan} currencyCode={currencyCode} />
 
