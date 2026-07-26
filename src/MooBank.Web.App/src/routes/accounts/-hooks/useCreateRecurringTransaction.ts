@@ -1,43 +1,48 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import type { RecurringTransaction } from "api/types.gen";
+import { emptyGuid, toast } from "@andrewmclachlan/moo-ds";
+import type { RecurringTransaction, RecurringTransactionDetails } from "api/types.gen";
 import {
-    getRecurringTransactionsForAVirtualAccountQueryKey,
+    getRecurringTransactionsQueryKey,
     createRecurringTransactionMutation,
 } from "api/@tanstack/react-query.gen";
-import { toast } from "@andrewmclachlan/moo-ds";
 
-export const useCreateRecurringTransaction = (accountId: string, virtualAccountId: string) => {
+export const useCreateRecurringTransaction = (instrumentId: string, virtualInstrumentId: string) => {
 
     const queryClient = useQueryClient();
+
+    const queryKey = getRecurringTransactionsQueryKey({ path: { instrumentId, virtualInstrumentId } });
 
     const { mutateAsync } = useMutation({
         ...createRecurringTransactionMutation(),
         onMutate: async (variables) => {
-            const queryKey = getRecurringTransactionsForAVirtualAccountQueryKey({ path: { accountId, virtualAccountId } });
             await queryClient.cancelQueries({ queryKey });
 
             const previous = queryClient.getQueryData<RecurringTransaction[]>(queryKey);
             if (previous) {
-                queryClient.setQueryData<RecurringTransaction[]>(queryKey, [...previous, variables.body as unknown as RecurringTransaction]);
+                // The server assigns the id, so the optimistic row is the submitted details
+                // plus the ids we already know.
+                queryClient.setQueryData<RecurringTransaction[]>(queryKey, [...previous, {
+                    ...variables.body,
+                    id: emptyGuid,
+                    virtualInstrumentId,
+                }]);
             }
 
             return { previous };
         },
-        onError: (_error, _variables, context: any) => {
+        onError: (_error, _variables, context) => {
             if (context?.previous) {
-                queryClient.setQueryData(getRecurringTransactionsForAVirtualAccountQueryKey({ path: { accountId, virtualAccountId } }), context.previous);
+                queryClient.setQueryData(queryKey, context.previous);
             }
         },
         onSettled: () => {
-            queryClient.invalidateQueries({
-                queryKey: getRecurringTransactionsForAVirtualAccountQueryKey({ path: { accountId, virtualAccountId } }),
-            });
+            queryClient.invalidateQueries({ queryKey });
         },
     });
 
-    const create = (recurringTransaction: RecurringTransaction) => {
+    const create = (recurringTransaction: RecurringTransactionDetails) => {
 
-        toast.promise(mutateAsync({ body: recurringTransaction as any, path: { accountId } } as any), { pending: "Creating recurring transaction", success: "Recurring transaction created", error: "Failed to create recurring transaction" });
+        toast.promise(mutateAsync({ body: recurringTransaction, path: { instrumentId, virtualInstrumentId } }), { pending: "Creating recurring transaction", success: "Recurring transaction created", error: "Failed to create recurring transaction" });
     };
 
     return create;

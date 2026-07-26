@@ -1,28 +1,25 @@
-﻿using System.ComponentModel;
-using Asm.MooBank.Commands;
+using System.ComponentModel;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Instrument.Specifications;
-using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Accounts.Models.Recurring;
-using Microsoft.AspNetCore.Http;
+using Asm.MooBank.Modules.Instruments.Models.Recurring;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Asm.MooBank.Modules.Accounts.Commands.Recurring;
+namespace Asm.MooBank.Modules.Instruments.Commands.Recurring;
 
 [DisplayName("CreateRecurringTransaction")]
-public record Create(Guid AccountId, Guid VirtualAccountId, string? Description, decimal Amount, ScheduleFrequency Schedule, DateOnly NextRun) : InstrumentIdCommand(AccountId), ICommand<Models.Recurring.RecurringTransaction>
-{
-    public static ValueTask<Create> BindAsync(HttpContext context) => BindHelper.BindWithInstrumentIdAsync<Create>("accountId", context);
-}
+public record Create(Guid InstrumentId, Guid VirtualInstrumentId, [FromBody] RecurringTransactionDetails RecurringTransaction) : ICommand<Models.Recurring.RecurringTransaction>;
 
-internal class CreateHandler(IInstrumentRepository accountRepository, IUnitOfWork unitOfWork) : ICommandHandler<Create, Models.Recurring.RecurringTransaction>
+internal class CreateHandler(IInstrumentRepository instrumentRepository, IUnitOfWork unitOfWork) : ICommandHandler<Create, Models.Recurring.RecurringTransaction>
 {
     public async ValueTask<Models.Recurring.RecurringTransaction> Handle(Create command, CancellationToken cancellationToken)
     {
-        var account = await accountRepository.Get(command.InstrumentId, new RecurringTransactionSpecification(), cancellationToken);
+        var instrument = await instrumentRepository.Get(command.InstrumentId, new VirtualInstrumentSpecification(), cancellationToken);
 
-        var virtualAccount = account.VirtualInstruments.SingleOrDefault(v => v.Id == command.VirtualAccountId) ?? throw new NotFoundException();
+        var virtualInstrument = instrument.VirtualInstruments.SingleOrDefault(v => v.Id == command.VirtualInstrumentId) ?? throw new NotFoundException();
 
-        var recurringTransaction = virtualAccount.AddRecurringTransaction(command.Description, command.Amount, command.Schedule, command.NextRun);
+        var details = command.RecurringTransaction;
+
+        var recurringTransaction = virtualInstrument.AddRecurringTransaction(details.Description, details.Amount, details.Schedule, details.NextRun);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

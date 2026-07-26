@@ -28,7 +28,7 @@ public class ForecastPlannedItem(Guid id) : KeyedEntity<Guid>(id)
     public Guid? VirtualInstrumentId { get; set; }
 
     [ForeignKey(nameof(VirtualInstrumentId))]
-    public virtual Account.VirtualInstrument? VirtualInstrument { get; set; }
+    public virtual Instrument.VirtualInstrument? VirtualInstrument { get; set; }
 
     public bool IsIncluded { get; set; } = true;
 

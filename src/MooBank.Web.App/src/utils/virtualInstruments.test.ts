@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import type { LogicalAccount, VirtualInstrument } from "api/types.gen";
-import { isVirtualInstrument } from "utils/virtualAccounts";
+import { isVirtualInstrument } from "utils/virtualInstruments";
 
 describe("isVirtualInstrument", () => {
     it("is true when parentId is present", () => {

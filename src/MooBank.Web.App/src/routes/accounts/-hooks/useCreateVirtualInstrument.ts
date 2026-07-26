@@ -18,8 +18,8 @@ export const useCreateVirtualInstrument = () => {
     });
 
     return {
-        mutateAsync: (accountId: string, virtualAccount: CreateVirtualInstrument) =>
-            toast.promise(mutateAsync({ body: virtualAccount, path: { instrumentId: accountId } }), { pending: "Creating virtual account", success: "Virtual account created", error: "Failed to create virtual account" }),
+        mutateAsync: (accountId: string, virtualInstrument: CreateVirtualInstrument) =>
+            toast.promise(mutateAsync({ body: virtualInstrument, path: { instrumentId: accountId } }), { pending: "Creating virtual account", success: "Virtual account created", error: "Failed to create virtual account" }),
         ...rest,
     };
 }

@@ -5,6 +5,8 @@ using Asm.MooBank.Modules.Instruments.Models.Virtual;
 using Asm.MooBank.Services;
 using Microsoft.AspNetCore.Mvc;
 using Controller = Asm.MooBank.Controller;
+// The domain entity and the model share a name; this file deals in the model.
+using VirtualInstrument = Asm.MooBank.Models.VirtualInstrument;
 
 namespace Asm.MooBank.Modules.Instruments.Commands.VirtualInstruments;
 
@@ -16,7 +18,7 @@ internal class CreateHandler(IInstrumentRepository instrumentRepository, IUnitOf
     {
         var instrument = await instrumentRepository.Get(command.InstrumentId, cancellationToken);
 
-        var entity = Domain.Entities.Account.VirtualInstrument.Create(
+        var entity = Domain.Entities.Instrument.VirtualInstrument.Create(
             command.VirtualInstrument.Name,
             command.VirtualInstrument.Description,
             command.VirtualInstrument.Controller,

@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-using Asm.MooBank.Domain.Entities.Account.Specifications;
+using Asm.MooBank.Domain.Entities.Instrument.Specifications;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Instruments.Models.Instruments;
 using Asm.MooBank.Services;
@@ -30,7 +30,7 @@ internal class UpdateHandler(IInstrumentRepository instrumentRepository, IUnitOf
 {
     public async ValueTask<VirtualInstrument> Handle(Update command, CancellationToken cancellationToken)
     {
-        var parentInstrument = await instrumentRepository.Get(command.InstrumentId, new VirtualAccountSpecification(), cancellationToken);
+        var parentInstrument = await instrumentRepository.Get(command.InstrumentId, new VirtualInstrumentSpecification(), cancellationToken);
 
         var instrument = parentInstrument.VirtualInstruments.SingleOrDefault(a => a.Id == command.VirtualInstrumentId) ?? throw new NotFoundException();
 

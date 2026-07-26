@@ -2,10 +2,11 @@
 using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Instrument.Specifications;
 using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Accounts.Commands.Recurring;
-using Asm.MooBank.Modules.Accounts.Tests.Support;
+using Asm.MooBank.Modules.Instruments.Commands.Recurring;
+using Asm.MooBank.Modules.Instruments.Models.Recurring;
+using Asm.MooBank.Modules.Instruments.Tests.Support;
 
-namespace Asm.MooBank.Modules.Accounts.Tests.Commands.Recurring;
+namespace Asm.MooBank.Modules.Instruments.Tests.Commands.Recurring;
 
 [Trait("Category", "Unit")]
 public class CreateTests
@@ -29,7 +30,7 @@ public class CreateTests
             virtualInstruments: [vi]);
 
         _mocks.InstrumentRepositoryMock
-            .Setup(r => r.Get(accountId, It.IsAny<RecurringTransactionSpecification>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.Get(accountId, It.IsAny<VirtualInstrumentSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(account);
 
         var handler = new CreateHandler(
@@ -37,7 +38,7 @@ public class CreateTests
             _mocks.UnitOfWorkMock.Object);
 
         var nextRun = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(7));
-        var command = new Create(accountId, virtualId, "Monthly Bills", 500m, ScheduleFrequency.Monthly, nextRun);
+        var command = new Create(accountId, virtualId, new RecurringTransactionDetails { Description = "Monthly Bills", Amount = 500m, Schedule = ScheduleFrequency.Monthly, NextRun = nextRun });
 
         // Act
         var result = await handler.Handle(command, TestContext.Current.CancellationToken);
@@ -61,7 +62,7 @@ public class CreateTests
             virtualInstruments: [vi]);
 
         _mocks.InstrumentRepositoryMock
-            .Setup(r => r.Get(accountId, It.IsAny<RecurringTransactionSpecification>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.Get(accountId, It.IsAny<VirtualInstrumentSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(account);
 
         var handler = new CreateHandler(
@@ -69,7 +70,7 @@ public class CreateTests
             _mocks.UnitOfWorkMock.Object);
 
         var nextRun = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(7));
-        var command = new Create(accountId, virtualId, "Test", 100m, ScheduleFrequency.Weekly, nextRun);
+        var command = new Create(accountId, virtualId, new RecurringTransactionDetails { Description = "Test", Amount = 100m, Schedule = ScheduleFrequency.Weekly, NextRun = nextRun });
 
         // Act
         await handler.Handle(command, TestContext.Current.CancellationToken);
@@ -91,7 +92,7 @@ public class CreateTests
             virtualInstruments: [vi]);
 
         _mocks.InstrumentRepositoryMock
-            .Setup(r => r.Get(accountId, It.IsAny<RecurringTransactionSpecification>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.Get(accountId, It.IsAny<VirtualInstrumentSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(account);
 
         var handler = new CreateHandler(
@@ -99,7 +100,7 @@ public class CreateTests
             _mocks.UnitOfWorkMock.Object);
 
         var nextRun = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(7));
-        var command = new Create(accountId, virtualId, "Test", 100m, ScheduleFrequency.Weekly, nextRun);
+        var command = new Create(accountId, virtualId, new RecurringTransactionDetails { Description = "Test", Amount = 100m, Schedule = ScheduleFrequency.Weekly, NextRun = nextRun });
 
         // Act
         await handler.Handle(command, TestContext.Current.CancellationToken);
@@ -109,7 +110,7 @@ public class CreateTests
     }
 
     [Fact]
-    public async Task Handle_InvalidVirtualAccountId_ThrowsNotFoundException()
+    public async Task Handle_InvalidVirtualInstrumentId_ThrowsNotFoundException()
     {
         // Arrange
         var accountId = Guid.NewGuid();
@@ -120,7 +121,7 @@ public class CreateTests
             virtualInstruments: [vi]);
 
         _mocks.InstrumentRepositoryMock
-            .Setup(r => r.Get(accountId, It.IsAny<RecurringTransactionSpecification>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.Get(accountId, It.IsAny<VirtualInstrumentSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(account);
 
         var handler = new CreateHandler(
@@ -129,7 +130,7 @@ public class CreateTests
 
         var wrongVirtualId = Guid.NewGuid();
         var nextRun = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(7));
-        var command = new Create(accountId, wrongVirtualId, "Test", 100m, ScheduleFrequency.Weekly, nextRun);
+        var command = new Create(accountId, wrongVirtualId, new RecurringTransactionDetails { Description = "Test", Amount = 100m, Schedule = ScheduleFrequency.Weekly, NextRun = nextRun });
 
         // Act & Assert
         await Assert.ThrowsAsync<NotFoundException>(
@@ -148,7 +149,7 @@ public class CreateTests
             virtualInstruments: [vi]);
 
         _mocks.InstrumentRepositoryMock
-            .Setup(r => r.Get(accountId, It.IsAny<RecurringTransactionSpecification>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.Get(accountId, It.IsAny<VirtualInstrumentSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(account);
 
         var handler = new CreateHandler(
@@ -156,7 +157,7 @@ public class CreateTests
             _mocks.UnitOfWorkMock.Object);
 
         var nextRun = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(7));
-        var command = new Create(accountId, virtualId, null, 100m, ScheduleFrequency.Monthly, nextRun);
+        var command = new Create(accountId, virtualId, new RecurringTransactionDetails { Description = null, Amount = 100m, Schedule = ScheduleFrequency.Monthly, NextRun = nextRun });
 
         // Act
         var result = await handler.Handle(command, TestContext.Current.CancellationToken);
@@ -182,7 +183,7 @@ public class CreateTests
             virtualInstruments: [vi]);
 
         _mocks.InstrumentRepositoryMock
-            .Setup(r => r.Get(accountId, It.IsAny<RecurringTransactionSpecification>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.Get(accountId, It.IsAny<VirtualInstrumentSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(account);
 
         var handler = new CreateHandler(
@@ -190,7 +191,7 @@ public class CreateTests
             _mocks.UnitOfWorkMock.Object);
 
         var nextRun = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(7));
-        var command = new Create(accountId, virtualId, "Test", 100m, schedule, nextRun);
+        var command = new Create(accountId, virtualId, new RecurringTransactionDetails { Description = "Test", Amount = 100m, Schedule = schedule, NextRun = nextRun });
 
         // Act
         var result = await handler.Handle(command, TestContext.Current.CancellationToken);
@@ -200,7 +201,7 @@ public class CreateTests
     }
 
     [Fact]
-    public async Task Handle_ValidCommand_ReturnsVirtualAccountId()
+    public async Task Handle_ValidCommand_ReturnsVirtualInstrumentId()
     {
         // Arrange
         var accountId = Guid.NewGuid();
@@ -211,7 +212,7 @@ public class CreateTests
             virtualInstruments: [vi]);
 
         _mocks.InstrumentRepositoryMock
-            .Setup(r => r.Get(accountId, It.IsAny<RecurringTransactionSpecification>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.Get(accountId, It.IsAny<VirtualInstrumentSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(account);
 
         var handler = new CreateHandler(
@@ -219,12 +220,12 @@ public class CreateTests
             _mocks.UnitOfWorkMock.Object);
 
         var nextRun = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(7));
-        var command = new Create(accountId, virtualId, "Test", 100m, ScheduleFrequency.Monthly, nextRun);
+        var command = new Create(accountId, virtualId, new RecurringTransactionDetails { Description = "Test", Amount = 100m, Schedule = ScheduleFrequency.Monthly, NextRun = nextRun });
 
         // Act
         var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
-        Assert.Equal(virtualId, result.VirtualAccountId);
+        Assert.Equal(virtualId, result.VirtualInstrumentId);
     }
 }

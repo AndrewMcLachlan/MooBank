@@ -1,8 +1,8 @@
 #nullable enable
-using Asm.MooBank.Modules.Instruments.Queries.VirtualAccounts;
+using Asm.MooBank.Modules.Instruments.Queries.VirtualInstruments;
 using Asm.MooBank.Modules.Instruments.Tests.Support;
 
-namespace Asm.MooBank.Modules.Instruments.Tests.Queries.VirtualAccounts;
+namespace Asm.MooBank.Modules.Instruments.Tests.Queries.VirtualInstruments;
 
 [Trait("Category", "Unit")]
 public class GetTests

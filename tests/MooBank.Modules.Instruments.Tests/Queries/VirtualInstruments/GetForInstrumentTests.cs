@@ -1,15 +1,15 @@
 #nullable enable
-using Asm.MooBank.Modules.Instruments.Queries.VirtualAccounts;
+using Asm.MooBank.Modules.Instruments.Queries.VirtualInstruments;
 using Asm.MooBank.Modules.Instruments.Tests.Support;
 
-namespace Asm.MooBank.Modules.Instruments.Tests.Queries.VirtualAccounts;
+namespace Asm.MooBank.Modules.Instruments.Tests.Queries.VirtualInstruments;
 
 [Trait("Category", "Unit")]
-public class GetForAccountTests
+public class GetForInstrumentTests
 {
     private readonly TestMocks _mocks;
 
-    public GetForAccountTests()
+    public GetForInstrumentTests()
     {
         _mocks = new TestMocks();
     }
@@ -28,8 +28,8 @@ public class GetForAccountTests
 
         var queryable = TestEntities.CreateLogicalAccountQueryable(instrument);
 
-        var handler = new GetForAccountHandler(queryable, _mocks.CurrencyConverterMock.Object);
-        var query = new GetForAccount(instrumentId);
+        var handler = new GetForInstrumentHandler(queryable, _mocks.CurrencyConverterMock.Object);
+        var query = new GetForInstrument(instrumentId);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
@@ -47,8 +47,8 @@ public class GetForAccountTests
 
         var queryable = TestEntities.CreateLogicalAccountQueryable(instrument);
 
-        var handler = new GetForAccountHandler(queryable, _mocks.CurrencyConverterMock.Object);
-        var query = new GetForAccount(instrumentId);
+        var handler = new GetForInstrumentHandler(queryable, _mocks.CurrencyConverterMock.Object);
+        var query = new GetForInstrument(instrumentId);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
@@ -64,8 +64,8 @@ public class GetForAccountTests
         var nonExistentId = Guid.NewGuid();
         var queryable = TestEntities.CreateLogicalAccountQueryable([]);
 
-        var handler = new GetForAccountHandler(queryable, _mocks.CurrencyConverterMock.Object);
-        var query = new GetForAccount(nonExistentId);
+        var handler = new GetForInstrumentHandler(queryable, _mocks.CurrencyConverterMock.Object);
+        var query = new GetForInstrument(nonExistentId);
 
         // Act & Assert
         await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(query, TestContext.Current.CancellationToken).AsTask());
@@ -86,8 +86,8 @@ public class GetForAccountTests
 
         var queryable = TestEntities.CreateLogicalAccountQueryable(instrument);
 
-        var handler = new GetForAccountHandler(queryable, _mocks.CurrencyConverterMock.Object);
-        var query = new GetForAccount(instrumentId);
+        var handler = new GetForInstrumentHandler(queryable, _mocks.CurrencyConverterMock.Object);
+        var query = new GetForInstrument(instrumentId);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
@@ -112,8 +112,8 @@ public class GetForAccountTests
 
         var queryable = TestEntities.CreateLogicalAccountQueryable(instrument1, instrument2);
 
-        var handler = new GetForAccountHandler(queryable, _mocks.CurrencyConverterMock.Object);
-        var query = new GetForAccount(instrumentId1);
+        var handler = new GetForInstrumentHandler(queryable, _mocks.CurrencyConverterMock.Object);
+        var query = new GetForInstrument(instrumentId1);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
@@ -141,8 +141,8 @@ public class GetForAccountTests
 
         var queryable = TestEntities.CreateLogicalAccountQueryable(instrument);
 
-        var handler = new GetForAccountHandler(queryable, _mocks.CurrencyConverterMock.Object);
-        var query = new GetForAccount(instrumentId);
+        var handler = new GetForInstrumentHandler(queryable, _mocks.CurrencyConverterMock.Object);
+        var query = new GetForInstrument(instrumentId);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);

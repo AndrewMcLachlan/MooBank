@@ -229,16 +229,6 @@ export type CreateInstitutionAccount = {
     openedDate: string;
 };
 
-export type CreateRecurringTransaction = {
-    accountId: string;
-    virtualAccountId: string;
-    description: null | string;
-    amount: number;
-    schedule: ScheduleFrequency;
-    nextRun: string;
-    instrumentId: string;
-};
-
 export type CreateRule = {
     instrumentId: string;
     contains: string;
@@ -583,12 +573,19 @@ export type PrincipalVsInterestReport = {
 
 export type RecurringTransaction = {
     id: string;
-    virtualAccountId: string;
+    virtualInstrumentId: string;
     description?: null | string;
     amount: number;
     lastRun?: null | string;
     nextRun: string;
     schedule: ScheduleFrequency;
+};
+
+export type RecurringTransactionDetails = {
+    description?: null | string;
+    amount: number;
+    schedule: ScheduleFrequency;
+    nextRun: string;
 };
 
 export type RegressionDiagnostics = {
@@ -934,17 +931,6 @@ export type UpdateInstitutionAccount = {
     name: string;
 };
 
-export type UpdateRecurringTransaction = {
-    accountId: string;
-    virtualAccountId: string;
-    recurringTransactionId: string;
-    description: null | string;
-    amount: number;
-    schedule: ScheduleFrequency;
-    nextRun: string;
-    instrumentId: string;
-};
-
 export type UpdateRule = {
     contains: string;
     description?: null | string;
@@ -1255,138 +1241,6 @@ export type CloseInstitutionAccountResponses = {
 };
 
 export type CloseInstitutionAccountResponse = CloseInstitutionAccountResponses[keyof CloseInstitutionAccountResponses];
-
-export type GetAllRecurringTransactionsData = {
-    body?: never;
-    path: {
-        accountId: string;
-    };
-    query?: never;
-    url: '/accounts/{accountId}/recurring';
-};
-
-export type GetAllRecurringTransactionsErrors = {
-    /**
-     * Not Found
-     */
-    404: unknown;
-};
-
-export type GetAllRecurringTransactionsResponses = {
-    /**
-     * OK
-     */
-    200: Array<RecurringTransaction>;
-};
-
-export type GetAllRecurringTransactionsResponse = GetAllRecurringTransactionsResponses[keyof GetAllRecurringTransactionsResponses];
-
-export type CreateRecurringTransactionData = {
-    body: CreateRecurringTransaction;
-    path?: never;
-    query?: never;
-    url: '/accounts/{accountId}/recurring';
-};
-
-export type CreateRecurringTransactionResponses = {
-    /**
-     * OK
-     */
-    200: RecurringTransaction;
-    /**
-     * Created
-     */
-    201: RecurringTransaction;
-};
-
-export type CreateRecurringTransactionResponse = CreateRecurringTransactionResponses[keyof CreateRecurringTransactionResponses];
-
-export type DeleteRecurringTransactionData = {
-    body?: never;
-    path: {
-        accountId: string;
-        recurringTransactionId: string;
-    };
-    query?: never;
-    url: '/accounts/{accountId}/recurring/{recurringTransactionId}';
-};
-
-export type DeleteRecurringTransactionResponses = {
-    /**
-     * No Content
-     */
-    204: void;
-};
-
-export type DeleteRecurringTransactionResponse = DeleteRecurringTransactionResponses[keyof DeleteRecurringTransactionResponses];
-
-export type GetRecurringTransactionData = {
-    body?: never;
-    path: {
-        accountId: string;
-        recurringTransactionId: string;
-    };
-    query?: never;
-    url: '/accounts/{accountId}/recurring/{recurringTransactionId}';
-};
-
-export type GetRecurringTransactionErrors = {
-    /**
-     * Not Found
-     */
-    404: unknown;
-};
-
-export type GetRecurringTransactionResponses = {
-    /**
-     * OK
-     */
-    200: RecurringTransaction;
-};
-
-export type GetRecurringTransactionResponse = GetRecurringTransactionResponses[keyof GetRecurringTransactionResponses];
-
-export type UpdateRecurringTransactionData = {
-    body: UpdateRecurringTransaction;
-    path?: never;
-    query?: never;
-    url: '/accounts/{accountId}/recurring/{recurringTransactionId}';
-};
-
-export type UpdateRecurringTransactionResponses = {
-    /**
-     * OK
-     */
-    200: RecurringTransaction;
-};
-
-export type UpdateRecurringTransactionResponse = UpdateRecurringTransactionResponses[keyof UpdateRecurringTransactionResponses];
-
-export type GetRecurringTransactionsForAVirtualAccountData = {
-    body?: never;
-    path: {
-        accountId: string;
-        virtualAccountId: string;
-    };
-    query?: never;
-    url: '/accounts/{accountId}/virtual/{virtualAccountId}/recurring';
-};
-
-export type GetRecurringTransactionsForAVirtualAccountErrors = {
-    /**
-     * Not Found
-     */
-    404: unknown;
-};
-
-export type GetRecurringTransactionsForAVirtualAccountResponses = {
-    /**
-     * OK
-     */
-    200: Array<RecurringTransaction>;
-};
-
-export type GetRecurringTransactionsForAVirtualAccountResponse = GetRecurringTransactionsForAVirtualAccountResponses[keyof GetRecurringTransactionsForAVirtualAccountResponses];
 
 export type GetAssetData = {
     body?: never;
@@ -2951,6 +2805,122 @@ export type UpdateVirtualInstrumentBalanceResponses = {
 };
 
 export type UpdateVirtualInstrumentBalanceResponse = UpdateVirtualInstrumentBalanceResponses[keyof UpdateVirtualInstrumentBalanceResponses];
+
+export type GetRecurringTransactionsData = {
+    body?: never;
+    path: {
+        instrumentId: string;
+        virtualInstrumentId: string;
+    };
+    query?: never;
+    url: '/instruments/{instrumentId}/virtual/{virtualInstrumentId}/recurring';
+};
+
+export type GetRecurringTransactionsErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
+export type GetRecurringTransactionsResponses = {
+    /**
+     * OK
+     */
+    200: Array<RecurringTransaction>;
+};
+
+export type GetRecurringTransactionsResponse = GetRecurringTransactionsResponses[keyof GetRecurringTransactionsResponses];
+
+export type CreateRecurringTransactionData = {
+    body: RecurringTransactionDetails;
+    path: {
+        instrumentId: string;
+        virtualInstrumentId: string;
+    };
+    query?: never;
+    url: '/instruments/{instrumentId}/virtual/{virtualInstrumentId}/recurring';
+};
+
+export type CreateRecurringTransactionResponses = {
+    /**
+     * OK
+     */
+    200: RecurringTransaction;
+    /**
+     * Created
+     */
+    201: RecurringTransaction;
+};
+
+export type CreateRecurringTransactionResponse = CreateRecurringTransactionResponses[keyof CreateRecurringTransactionResponses];
+
+export type DeleteRecurringTransactionData = {
+    body?: never;
+    path: {
+        instrumentId: string;
+        virtualInstrumentId: string;
+        recurringTransactionId: string;
+    };
+    query?: never;
+    url: '/instruments/{instrumentId}/virtual/{virtualInstrumentId}/recurring/{recurringTransactionId}';
+};
+
+export type DeleteRecurringTransactionResponses = {
+    /**
+     * No Content
+     */
+    204: void;
+};
+
+export type DeleteRecurringTransactionResponse = DeleteRecurringTransactionResponses[keyof DeleteRecurringTransactionResponses];
+
+export type GetRecurringTransactionData = {
+    body?: never;
+    path: {
+        instrumentId: string;
+        virtualInstrumentId: string;
+        recurringTransactionId: string;
+    };
+    query?: never;
+    url: '/instruments/{instrumentId}/virtual/{virtualInstrumentId}/recurring/{recurringTransactionId}';
+};
+
+export type GetRecurringTransactionErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
+export type GetRecurringTransactionResponses = {
+    /**
+     * OK
+     */
+    200: RecurringTransaction;
+};
+
+export type GetRecurringTransactionResponse = GetRecurringTransactionResponses[keyof GetRecurringTransactionResponses];
+
+export type UpdateRecurringTransactionData = {
+    body: RecurringTransactionDetails;
+    path: {
+        instrumentId: string;
+        virtualInstrumentId: string;
+        recurringTransactionId: string;
+    };
+    query?: never;
+    url: '/instruments/{instrumentId}/virtual/{virtualInstrumentId}/recurring/{recurringTransactionId}';
+};
+
+export type UpdateRecurringTransactionResponses = {
+    /**
+     * OK
+     */
+    200: RecurringTransaction;
+};
+
+export type UpdateRecurringTransactionResponse = UpdateRecurringTransactionResponses[keyof UpdateRecurringTransactionResponses];
 
 export type ImporterTypesData = {
     body?: never;

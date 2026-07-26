@@ -6,7 +6,7 @@ import type { NavItem } from "@andrewmclachlan/moo-ds";
 import { Reports, Rules, Sliders, Transaction } from "@andrewmclachlan/moo-icons";
 
 import type { VirtualInstrument } from "api/types.gen";
-import { isVirtualInstrument } from "utils/virtualAccounts";
+import { isVirtualInstrument } from "utils/virtualInstruments";
 import { useAccount } from "./AccountProvider";
 import { InstrumentPage } from "./InstrumentPage";
 

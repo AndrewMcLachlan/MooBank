@@ -342,7 +342,7 @@ public class InstrumentAuthorizationTests
 
     /// <summary>
     /// Given I am authenticated but own a different account
-    /// When I attempt to POST a recurring transaction for an account I don't own
+    /// When I attempt to POST a recurring transaction for an instrument I don't own
     /// Then the response status should be 403 Forbidden
     /// </summary>
     [Fact]
@@ -358,7 +358,7 @@ public class InstrumentAuthorizationTests
 
         // Act
         var content = new StringContent("{\"description\":\"Test\"}", System.Text.Encoding.UTF8, "application/json");
-        var response = await client.PostAsync($"/api/accounts/{_testAccountId}/recurring", content, TestContext.Current.CancellationToken);
+        var response = await client.PostAsync($"/api/instruments/{_testAccountId}/virtual/{Guid.NewGuid()}/recurring", content, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
@@ -366,14 +366,14 @@ public class InstrumentAuthorizationTests
 
     /// <summary>
     /// Given I am authenticated but own a different account
-    /// When I request GET for virtual recurring transactions for an account I don't own
+    /// When I request GET for virtual recurring transactions for an instrument I don't own
     /// Then the response status should be 403 Forbidden
     /// </summary>
     [Fact]
     public async Task GetVirtualRecurring_NonOwner_Returns403()
     {
         // Arrange
-        var virtualAccountId = Guid.NewGuid();
+        var virtualInstrumentId = Guid.NewGuid();
         var user = new TestUser
         {
             FamilyId = _testFamilyId,
@@ -382,7 +382,7 @@ public class InstrumentAuthorizationTests
         var client = _factory.CreateAuthenticatedClient(user);
 
         // Act
-        var response = await client.GetAsync($"/api/accounts/{_testAccountId}/virtual/{virtualAccountId}/recurring", TestContext.Current.CancellationToken);
+        var response = await client.GetAsync($"/api/instruments/{_testAccountId}/virtual/{virtualInstrumentId}/recurring", TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
@@ -423,7 +423,7 @@ public class InstrumentAuthorizationTests
 
         // Act
         var content = new StringContent("{\"description\":\"Test\"}", System.Text.Encoding.UTF8, "application/json");
-        var response = await client.PostAsync($"/api/accounts/{_testAccountId}/recurring", content, TestContext.Current.CancellationToken);
+        var response = await client.PostAsync($"/api/instruments/{_testAccountId}/virtual/{Guid.NewGuid()}/recurring", content, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotEqual(HttpStatusCode.Forbidden, response.StatusCode);

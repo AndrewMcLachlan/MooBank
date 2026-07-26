@@ -2,7 +2,7 @@
 using Asm.MooBank.Modules.Instruments.Models.Instruments;
 using Asm.MooBank.Services;
 
-namespace Asm.MooBank.Modules.Instruments.Queries.VirtualAccounts;
+namespace Asm.MooBank.Modules.Instruments.Queries.VirtualInstruments;
 
 public record Get(Guid InstrumentId, Guid VirtualInstrumentId) : IQuery<VirtualInstrument>;
 

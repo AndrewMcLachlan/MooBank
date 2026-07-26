@@ -1,12 +1,12 @@
-﻿using Asm.MooBank.Models;
+using Asm.MooBank.Models;
 
-namespace Asm.MooBank.Modules.Accounts.Models.Recurring;
+namespace Asm.MooBank.Modules.Instruments.Models.Recurring;
 
 public record RecurringTransaction
 {
     public Guid Id { get; init; }
 
-    public Guid VirtualAccountId { get; init; }
+    public Guid VirtualInstrumentId { get; init; }
 
     public string? Description { get; init; }
 
@@ -21,7 +21,7 @@ public record RecurringTransaction
 
 public static class RecurringTransactionExtensions
 {
-    public static RecurringTransaction ToModel(this Domain.Entities.Account.RecurringTransaction recurringTransaction) =>
+    public static RecurringTransaction ToModel(this Domain.Entities.Instrument.RecurringTransaction recurringTransaction) =>
         new()
         {
             Description = recurringTransaction.Description,
@@ -30,9 +30,9 @@ public static class RecurringTransactionExtensions
             NextRun = recurringTransaction.NextRun,
             Schedule = recurringTransaction.Schedule,
             Id = recurringTransaction.Id,
-            VirtualAccountId = recurringTransaction.VirtualAccountId,
+            VirtualInstrumentId = recurringTransaction.VirtualInstrumentId,
         };
 
-    public static IEnumerable<RecurringTransaction> ToModel(this IEnumerable<Domain.Entities.Account.RecurringTransaction> recurringTransactions) =>
+    public static IEnumerable<RecurringTransaction> ToModel(this IEnumerable<Domain.Entities.Instrument.RecurringTransaction> recurringTransactions) =>
         recurringTransactions.Select(t => t.ToModel());
 }

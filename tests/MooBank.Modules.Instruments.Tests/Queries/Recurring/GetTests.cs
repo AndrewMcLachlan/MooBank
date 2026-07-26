@@ -1,9 +1,9 @@
 #nullable enable
 using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Modules.Accounts.Queries.Recurring;
-using Asm.MooBank.Modules.Accounts.Tests.Support;
+using Asm.MooBank.Modules.Instruments.Queries.Recurring;
+using Asm.MooBank.Modules.Instruments.Tests.Support;
 
-namespace Asm.MooBank.Modules.Accounts.Tests.Queries.Recurring;
+namespace Asm.MooBank.Modules.Instruments.Tests.Queries.Recurring;
 
 [Trait("Category", "Unit")]
 public class GetTests
@@ -18,7 +18,7 @@ public class GetTests
 
         var rt = TestEntities.CreateRecurringTransaction(
             id: rtId,
-            virtualAccountId: virtualId,
+            virtualInstrumentId: virtualId,
             description: "Monthly Bill",
             amount: 100m);
 
@@ -34,7 +34,7 @@ public class GetTests
         var queryable = TestEntities.CreateInstrumentQueryable(account);
 
         var handler = new GetHandler(queryable);
-        var query = new Get(accountId, rtId);
+        var query = new Get(accountId, virtualId, rtId);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
@@ -54,7 +54,7 @@ public class GetTests
         var virtualId = Guid.NewGuid();
         var rtId = Guid.NewGuid();
 
-        var rt = TestEntities.CreateRecurringTransaction(id: rtId, virtualAccountId: virtualId);
+        var rt = TestEntities.CreateRecurringTransaction(id: rtId, virtualInstrumentId: virtualId);
         var vi = TestEntities.CreateVirtualInstrument(
             id: virtualId,
             parentId: accountId,
@@ -66,7 +66,7 @@ public class GetTests
         var queryable = TestEntities.CreateInstrumentQueryable(account);
 
         var handler = new GetHandler(queryable);
-        var query = new Get(accountId, Guid.NewGuid());
+        var query = new Get(accountId, virtualId, Guid.NewGuid());
 
         // Act & Assert
         await Assert.ThrowsAsync<NotFoundException>(
@@ -83,9 +83,9 @@ public class GetTests
         var rtId2 = Guid.NewGuid();
         var rtId3 = Guid.NewGuid();
 
-        var rt1 = TestEntities.CreateRecurringTransaction(id: rtId1, virtualAccountId: virtualId, description: "First");
-        var rt2 = TestEntities.CreateRecurringTransaction(id: rtId2, virtualAccountId: virtualId, description: "Second");
-        var rt3 = TestEntities.CreateRecurringTransaction(id: rtId3, virtualAccountId: virtualId, description: "Third");
+        var rt1 = TestEntities.CreateRecurringTransaction(id: rtId1, virtualInstrumentId: virtualId, description: "First");
+        var rt2 = TestEntities.CreateRecurringTransaction(id: rtId2, virtualInstrumentId: virtualId, description: "Second");
+        var rt3 = TestEntities.CreateRecurringTransaction(id: rtId3, virtualInstrumentId: virtualId, description: "Third");
 
         var vi = TestEntities.CreateVirtualInstrument(
             id: virtualId,
@@ -99,7 +99,7 @@ public class GetTests
         var queryable = TestEntities.CreateInstrumentQueryable(account);
 
         var handler = new GetHandler(queryable);
-        var query = new Get(accountId, rtId2);
+        var query = new Get(accountId, virtualId, rtId2);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
@@ -117,8 +117,8 @@ public class GetTests
         var virtualId2 = Guid.NewGuid();
         var rtId = Guid.NewGuid();
 
-        var rt1 = TestEntities.CreateRecurringTransaction(virtualAccountId: virtualId1, description: "VI1 RT");
-        var rt2 = TestEntities.CreateRecurringTransaction(id: rtId, virtualAccountId: virtualId2, description: "Target RT");
+        var rt1 = TestEntities.CreateRecurringTransaction(virtualInstrumentId: virtualId1, description: "VI1 RT");
+        var rt2 = TestEntities.CreateRecurringTransaction(id: rtId, virtualInstrumentId: virtualId2, description: "Target RT");
 
         var vi1 = TestEntities.CreateVirtualInstrument(
             id: virtualId1,
@@ -136,14 +136,14 @@ public class GetTests
         var queryable = TestEntities.CreateInstrumentQueryable(account);
 
         var handler = new GetHandler(queryable);
-        var query = new Get(accountId, rtId);
+        var query = new Get(accountId, virtualId2, rtId);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal("Target RT", result.Description);
-        Assert.Equal(virtualId2, result.VirtualAccountId);
+        Assert.Equal(virtualId2, result.VirtualInstrumentId);
     }
 
     [Fact]
@@ -158,7 +158,7 @@ public class GetTests
 
         var rt = TestEntities.CreateRecurringTransaction(
             id: rtId,
-            virtualAccountId: virtualId,
+            virtualInstrumentId: virtualId,
             description: "Complete RT",
             amount: 250.50m,
             schedule: MooBank.ScheduleFrequency.Fortnightly,
@@ -177,14 +177,14 @@ public class GetTests
         var queryable = TestEntities.CreateInstrumentQueryable(account);
 
         var handler = new GetHandler(queryable);
-        var query = new Get(accountId, rtId);
+        var query = new Get(accountId, virtualId, rtId);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(rtId, result.Id);
-        Assert.Equal(virtualId, result.VirtualAccountId);
+        Assert.Equal(virtualId, result.VirtualInstrumentId);
         Assert.Equal("Complete RT", result.Description);
         Assert.Equal(250.50m, result.Amount);
         Assert.Equal(MooBank.ScheduleFrequency.Fortnightly, result.Schedule);

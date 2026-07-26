@@ -1,13 +1,13 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 
-namespace Asm.MooBank.Domain.Entities.Account;
+namespace Asm.MooBank.Domain.Entities.Instrument;
 
 [PrimaryKey(nameof(Id))]
 public class RecurringTransaction([DisallowNull] Guid id) : KeyedEntity<Guid>(id)
 {
     public RecurringTransaction() : this(default) { }
-    public Guid VirtualAccountId { get; set; }
+    public Guid VirtualInstrumentId { get; set; }
     public string? Description { get; set; }
 
     [Precision(12, 4)]
@@ -16,7 +16,7 @@ public class RecurringTransaction([DisallowNull] Guid id) : KeyedEntity<Guid>(id
 
     public DateOnly NextRun { get; set; } = DateTime.UtcNow.ToDateOnly();
 
-    public virtual VirtualInstrument VirtualAccount { get; set; } = null!;
+    public virtual VirtualInstrument VirtualInstrument { get; set; } = null!;
 
     [Column("ScheduleId")]
     public virtual ScheduleFrequency Schedule { get; set; }

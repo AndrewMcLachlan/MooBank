@@ -1,22 +1,22 @@
 #nullable enable
 using Asm.MooBank.Domain.Entities.Account;
-using Asm.MooBank.Modules.Accounts.Queries.Recurring;
-using Asm.MooBank.Modules.Accounts.Tests.Support;
+using Asm.MooBank.Modules.Instruments.Queries.Recurring;
+using Asm.MooBank.Modules.Instruments.Tests.Support;
 
-namespace Asm.MooBank.Modules.Accounts.Tests.Queries.Recurring;
+namespace Asm.MooBank.Modules.Instruments.Tests.Queries.Recurring;
 
 [Trait("Category", "Unit")]
-public class GetForVirtualTests
+public class GetAllTests
 {
     [Fact]
-    public async Task Handle_ValidVirtualAccount_ReturnsRecurringTransactions()
+    public async Task Handle_ValidVirtualInstrument_ReturnsRecurringTransactions()
     {
         // Arrange
         var accountId = Guid.NewGuid();
         var virtualId = Guid.NewGuid();
 
-        var rt1 = TestEntities.CreateRecurringTransaction(virtualAccountId: virtualId, description: "RT1");
-        var rt2 = TestEntities.CreateRecurringTransaction(virtualAccountId: virtualId, description: "RT2");
+        var rt1 = TestEntities.CreateRecurringTransaction(virtualInstrumentId: virtualId, description: "RT1");
+        var rt2 = TestEntities.CreateRecurringTransaction(virtualInstrumentId: virtualId, description: "RT2");
 
         var vi = TestEntities.CreateVirtualInstrument(
             id: virtualId,
@@ -29,8 +29,8 @@ public class GetForVirtualTests
 
         var queryable = TestEntities.CreateInstrumentQueryable(account);
 
-        var handler = new GetForVirtualHandler(queryable);
-        var query = new GetForVirtual(accountId, virtualId);
+        var handler = new GetAllHandler(queryable);
+        var query = new GetAll(accountId, virtualId);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
@@ -54,8 +54,8 @@ public class GetForVirtualTests
 
         var queryable = TestEntities.CreateInstrumentQueryable(account);
 
-        var handler = new GetForVirtualHandler(queryable);
-        var query = new GetForVirtual(Guid.NewGuid(), virtualId);
+        var handler = new GetAllHandler(queryable);
+        var query = new GetAll(Guid.NewGuid(), virtualId);
 
         // Act & Assert
         await Assert.ThrowsAsync<NotFoundException>(
@@ -63,7 +63,7 @@ public class GetForVirtualTests
     }
 
     [Fact]
-    public async Task Handle_NonExistentVirtualAccount_ThrowsNotFoundException()
+    public async Task Handle_NonExistentVirtualInstrument_ThrowsNotFoundException()
     {
         // Arrange
         var accountId = Guid.NewGuid();
@@ -75,8 +75,8 @@ public class GetForVirtualTests
 
         var queryable = TestEntities.CreateInstrumentQueryable(account);
 
-        var handler = new GetForVirtualHandler(queryable);
-        var query = new GetForVirtual(accountId, Guid.NewGuid());
+        var handler = new GetAllHandler(queryable);
+        var query = new GetAll(accountId, Guid.NewGuid());
 
         // Act & Assert
         await Assert.ThrowsAsync<NotFoundException>(
@@ -99,8 +99,8 @@ public class GetForVirtualTests
 
         var queryable = TestEntities.CreateInstrumentQueryable(account);
 
-        var handler = new GetForVirtualHandler(queryable);
-        var query = new GetForVirtual(accountId, virtualId);
+        var handler = new GetAllHandler(queryable);
+        var query = new GetAll(accountId, virtualId);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
@@ -110,16 +110,16 @@ public class GetForVirtualTests
     }
 
     [Fact]
-    public async Task Handle_MultipleVirtualInstruments_ReturnsOnlySpecifiedVirtualAccountTransactions()
+    public async Task Handle_MultipleVirtualInstruments_ReturnsOnlySpecifiedVirtualInstrumentTransactions()
     {
         // Arrange
         var accountId = Guid.NewGuid();
         var virtualId1 = Guid.NewGuid();
         var virtualId2 = Guid.NewGuid();
 
-        var rt1 = TestEntities.CreateRecurringTransaction(virtualAccountId: virtualId1, description: "VI1 RT1");
-        var rt2 = TestEntities.CreateRecurringTransaction(virtualAccountId: virtualId1, description: "VI1 RT2");
-        var rt3 = TestEntities.CreateRecurringTransaction(virtualAccountId: virtualId2, description: "VI2 RT1");
+        var rt1 = TestEntities.CreateRecurringTransaction(virtualInstrumentId: virtualId1, description: "VI1 RT1");
+        var rt2 = TestEntities.CreateRecurringTransaction(virtualInstrumentId: virtualId1, description: "VI1 RT2");
+        var rt3 = TestEntities.CreateRecurringTransaction(virtualInstrumentId: virtualId2, description: "VI2 RT1");
 
         var vi1 = TestEntities.CreateVirtualInstrument(
             id: virtualId1,
@@ -136,8 +136,8 @@ public class GetForVirtualTests
 
         var queryable = TestEntities.CreateInstrumentQueryable(account);
 
-        var handler = new GetForVirtualHandler(queryable);
-        var query = new GetForVirtual(accountId, virtualId1);
+        var handler = new GetAllHandler(queryable);
+        var query = new GetAll(accountId, virtualId1);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
@@ -160,7 +160,7 @@ public class GetForVirtualTests
 
         var rt = TestEntities.CreateRecurringTransaction(
             id: rtId,
-            virtualAccountId: virtualId,
+            virtualInstrumentId: virtualId,
             description: "Complete RT",
             amount: 200m,
             schedule: MooBank.ScheduleFrequency.Yearly,
@@ -177,15 +177,15 @@ public class GetForVirtualTests
 
         var queryable = TestEntities.CreateInstrumentQueryable(account);
 
-        var handler = new GetForVirtualHandler(queryable);
-        var query = new GetForVirtual(accountId, virtualId);
+        var handler = new GetAllHandler(queryable);
+        var query = new GetAll(accountId, virtualId);
 
         // Act
         var result = (await handler.Handle(query, TestContext.Current.CancellationToken)).Single();
 
         // Assert
         Assert.Equal(rtId, result.Id);
-        Assert.Equal(virtualId, result.VirtualAccountId);
+        Assert.Equal(virtualId, result.VirtualInstrumentId);
         Assert.Equal("Complete RT", result.Description);
         Assert.Equal(200m, result.Amount);
         Assert.Equal(MooBank.ScheduleFrequency.Yearly, result.Schedule);
@@ -193,7 +193,7 @@ public class GetForVirtualTests
     }
 
     [Fact]
-    public async Task Handle_VirtualAccountFromDifferentAccount_ThrowsNotFoundException()
+    public async Task Handle_VirtualInstrumentFromDifferentInstrument_ThrowsNotFoundException()
     {
         // Arrange
         var accountId1 = Guid.NewGuid();
@@ -213,9 +213,9 @@ public class GetForVirtualTests
 
         var queryable = TestEntities.CreateInstrumentQueryable(account1, account2);
 
-        var handler = new GetForVirtualHandler(queryable);
+        var handler = new GetAllHandler(queryable);
         // Request virtual account from account2 but specify account1 as the parent
-        var query = new GetForVirtual(accountId1, virtualId2);
+        var query = new GetAll(accountId1, virtualId2);
 
         // Act & Assert
         await Assert.ThrowsAsync<NotFoundException>(

@@ -411,10 +411,10 @@ public class InstrumentExtensionsTests
 
     #endregion
 
-    #region InstrumentSummary.VirtualAccountRemainingBalance
+    #region InstrumentSummary.VirtualInstrumentRemainingBalance
 
     [Fact]
-    public void InstrumentSummary_VirtualAccountRemainingBalance_CalculatesCorrectly()
+    public void InstrumentSummary_VirtualInstrumentRemainingBalance_CalculatesCorrectly()
     {
         // Arrange
         var summary = new InstrumentSummary
@@ -433,14 +433,14 @@ public class InstrumentExtensionsTests
         };
 
         // Act
-        var remaining = summary.VirtualAccountRemainingBalance;
+        var remaining = summary.VirtualInstrumentRemainingBalance;
 
         // Assert
         Assert.Equal(500m, remaining); // 1000 - 300 - 200
     }
 
     [Fact]
-    public void InstrumentSummary_VirtualAccountRemainingBalance_NoVirtualInstruments_ReturnsFullBalance()
+    public void InstrumentSummary_VirtualInstrumentRemainingBalance_NoVirtualInstruments_ReturnsFullBalance()
     {
         // Arrange
         var summary = new InstrumentSummary
@@ -455,14 +455,14 @@ public class InstrumentExtensionsTests
         };
 
         // Act
-        var remaining = summary.VirtualAccountRemainingBalance;
+        var remaining = summary.VirtualInstrumentRemainingBalance;
 
         // Assert
         Assert.Equal(1000m, remaining);
     }
 
     [Fact]
-    public void InstrumentSummary_VirtualAccountRemainingBalance_EmptyVirtualInstruments_ReturnsFullBalance()
+    public void InstrumentSummary_VirtualInstrumentRemainingBalance_EmptyVirtualInstruments_ReturnsFullBalance()
     {
         // Arrange
         var summary = new InstrumentSummary
@@ -477,7 +477,7 @@ public class InstrumentExtensionsTests
         };
 
         // Act
-        var remaining = summary.VirtualAccountRemainingBalance;
+        var remaining = summary.VirtualInstrumentRemainingBalance;
 
         // Assert
         Assert.Equal(1000m, remaining);

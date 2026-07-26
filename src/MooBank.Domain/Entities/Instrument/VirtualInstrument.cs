@@ -1,7 +1,6 @@
-﻿using Asm.MooBank.Domain.Entities.Instrument;
-using Asm.MooBank.Domain.Entities.Instrument.Events;
+﻿using Asm.MooBank.Domain.Entities.Instrument.Events;
 
-namespace Asm.MooBank.Domain.Entities.Account;
+namespace Asm.MooBank.Domain.Entities.Instrument;
 
 public partial class VirtualInstrument : TransactionInstrument
 {
@@ -37,7 +36,7 @@ public partial class VirtualInstrument : TransactionInstrument
         {
             Amount = amount,
             Description = description,
-            VirtualAccountId = Id,
+            VirtualInstrumentId = Id,
             Schedule = schedule,
             NextRun = nextRun
         };

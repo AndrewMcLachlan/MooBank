@@ -1,2 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02" />
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="c3f18d92-7932-4c56-a948-bdd479329cf7" ChangeDateTime="2026-07-26T10:53:56.5108226Z">
+    <Property Name="ElementName" Value="[dbo].[RecurringTransaction].[VirtualAccountId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[RecurringTransaction]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="VirtualInstrumentId" />
+  </Operation>
+</Operations>

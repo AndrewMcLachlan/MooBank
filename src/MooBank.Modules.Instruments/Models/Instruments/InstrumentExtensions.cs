@@ -8,7 +8,7 @@ internal static class InstrumentExtensions
 
 public record InstrumentSummary : Instrument
 {
-    public decimal VirtualAccountRemainingBalance
+    public decimal VirtualInstrumentRemainingBalance
     {
         get => CurrentBalance - (VirtualInstruments?.Sum(v => v.CurrentBalance) ?? 0);
     }

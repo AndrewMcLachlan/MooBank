@@ -7,7 +7,7 @@ using Asm.MooBank.Models;
 using Asm.MooBank.Services;
 using Microsoft.Extensions.Logging;
 using DomainInstrument = Asm.MooBank.Domain.Entities.Instrument.Instrument;
-using DomainVirtualInstrument = Asm.MooBank.Domain.Entities.Account.VirtualInstrument;
+using DomainVirtualInstrument = Asm.MooBank.Domain.Entities.Instrument.VirtualInstrument;
 using DomainTransaction = Asm.MooBank.Domain.Entities.Transactions.Transaction;
 using ITransactionRepository = Asm.MooBank.Domain.Entities.Transactions.ITransactionRepository;
 
@@ -231,7 +231,7 @@ public class RecurringTransactionServiceTests
     {
         return new RecurringTransaction(Guid.NewGuid())
         {
-            VirtualAccountId = Guid.NewGuid(),
+            VirtualInstrumentId = Guid.NewGuid(),
             Schedule = schedule,
             NextRun = nextRun,
             Amount = amount,

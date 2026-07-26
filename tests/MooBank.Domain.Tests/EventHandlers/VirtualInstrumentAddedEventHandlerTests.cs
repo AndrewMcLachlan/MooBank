@@ -1,11 +1,12 @@
 using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Account.Events;
+using Asm.MooBank.Domain.Entities.Instrument.Events;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.Transactions.EventHandlers;
 using Asm.MooBank.Security;
 using Moq;
 using DomainTransaction = Asm.MooBank.Domain.Entities.Transactions.Transaction;
-using DomainVirtualInstrument = Asm.MooBank.Domain.Entities.Account.VirtualInstrument;
+using DomainVirtualInstrument = Asm.MooBank.Domain.Entities.Instrument.VirtualInstrument;
 
 namespace Asm.MooBank.Domain.Tests.EventHandlers;
 

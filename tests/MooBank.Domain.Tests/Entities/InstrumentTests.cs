@@ -1,8 +1,9 @@
 ﻿using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Account.Events;
+using Asm.MooBank.Domain.Entities.Instrument.Events;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Models;
-using DomainVirtualInstrument = Asm.MooBank.Domain.Entities.Account.VirtualInstrument;
+using DomainVirtualInstrument = Asm.MooBank.Domain.Entities.Instrument.VirtualInstrument;
 
 namespace Asm.MooBank.Domain.Tests.Entities;
 

@@ -2,10 +2,11 @@
 using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Instrument.Specifications;
 using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Accounts.Commands.Recurring;
-using Asm.MooBank.Modules.Accounts.Tests.Support;
+using Asm.MooBank.Modules.Instruments.Commands.Recurring;
+using Asm.MooBank.Modules.Instruments.Models.Recurring;
+using Asm.MooBank.Modules.Instruments.Tests.Support;
 
-namespace Asm.MooBank.Modules.Accounts.Tests.Commands.Recurring;
+namespace Asm.MooBank.Modules.Instruments.Tests.Commands.Recurring;
 
 [Trait("Category", "Unit")]
 public class UpdateTests
@@ -27,7 +28,7 @@ public class UpdateTests
 
         var rt = TestEntities.CreateRecurringTransaction(
             id: rtId,
-            virtualAccountId: virtualId,
+            virtualInstrumentId: virtualId,
             description: "Old Description",
             amount: 100m,
             schedule: ScheduleFrequency.Weekly);
@@ -42,7 +43,7 @@ public class UpdateTests
             virtualInstruments: [vi]);
 
         _mocks.InstrumentRepositoryMock
-            .Setup(r => r.Get(accountId, It.IsAny<RecurringTransactionSpecification>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.Get(accountId, It.IsAny<VirtualInstrumentSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(account);
 
         var handler = new UpdateHandler(
@@ -50,7 +51,7 @@ public class UpdateTests
             _mocks.UnitOfWorkMock.Object);
 
         var newNextRun = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(1));
-        var command = new Update(accountId, virtualId, rtId, "New Description", 200m, ScheduleFrequency.Monthly, newNextRun);
+        var command = new Update(accountId, virtualId, rtId, new RecurringTransactionDetails { Description = "New Description", Amount = 200m, Schedule = ScheduleFrequency.Monthly, NextRun = newNextRun });
 
         // Act
         var result = await handler.Handle(command, TestContext.Current.CancellationToken);
@@ -70,7 +71,7 @@ public class UpdateTests
         var virtualId = Guid.NewGuid();
         var rtId = Guid.NewGuid();
 
-        var rt = TestEntities.CreateRecurringTransaction(id: rtId, virtualAccountId: virtualId);
+        var rt = TestEntities.CreateRecurringTransaction(id: rtId, virtualInstrumentId: virtualId);
         var vi = TestEntities.CreateVirtualInstrument(
             id: virtualId,
             parentId: accountId,
@@ -80,7 +81,7 @@ public class UpdateTests
             virtualInstruments: [vi]);
 
         _mocks.InstrumentRepositoryMock
-            .Setup(r => r.Get(accountId, It.IsAny<RecurringTransactionSpecification>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.Get(accountId, It.IsAny<VirtualInstrumentSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(account);
 
         var handler = new UpdateHandler(
@@ -88,7 +89,7 @@ public class UpdateTests
             _mocks.UnitOfWorkMock.Object);
 
         var nextRun = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(7));
-        var command = new Update(accountId, virtualId, rtId, "Updated", 150m, ScheduleFrequency.Weekly, nextRun);
+        var command = new Update(accountId, virtualId, rtId, new RecurringTransactionDetails { Description = "Updated", Amount = 150m, Schedule = ScheduleFrequency.Weekly, NextRun = nextRun });
 
         // Act
         await handler.Handle(command, TestContext.Current.CancellationToken);
@@ -98,14 +99,14 @@ public class UpdateTests
     }
 
     [Fact]
-    public async Task Handle_InvalidVirtualAccountId_ThrowsNotFoundException()
+    public async Task Handle_InvalidVirtualInstrumentId_ThrowsNotFoundException()
     {
         // Arrange
         var accountId = Guid.NewGuid();
         var virtualId = Guid.NewGuid();
         var rtId = Guid.NewGuid();
 
-        var rt = TestEntities.CreateRecurringTransaction(id: rtId, virtualAccountId: virtualId);
+        var rt = TestEntities.CreateRecurringTransaction(id: rtId, virtualInstrumentId: virtualId);
         var vi = TestEntities.CreateVirtualInstrument(
             id: virtualId,
             parentId: accountId,
@@ -115,7 +116,7 @@ public class UpdateTests
             virtualInstruments: [vi]);
 
         _mocks.InstrumentRepositoryMock
-            .Setup(r => r.Get(accountId, It.IsAny<RecurringTransactionSpecification>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.Get(accountId, It.IsAny<VirtualInstrumentSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(account);
 
         var handler = new UpdateHandler(
@@ -124,7 +125,7 @@ public class UpdateTests
 
         var wrongVirtualId = Guid.NewGuid();
         var nextRun = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(7));
-        var command = new Update(accountId, wrongVirtualId, rtId, "Test", 100m, ScheduleFrequency.Weekly, nextRun);
+        var command = new Update(accountId, wrongVirtualId, rtId, new RecurringTransactionDetails { Description = "Test", Amount = 100m, Schedule = ScheduleFrequency.Weekly, NextRun = nextRun });
 
         // Act & Assert
         await Assert.ThrowsAsync<NotFoundException>(
@@ -139,7 +140,7 @@ public class UpdateTests
         var virtualId = Guid.NewGuid();
         var rtId = Guid.NewGuid();
 
-        var rt = TestEntities.CreateRecurringTransaction(id: rtId, virtualAccountId: virtualId);
+        var rt = TestEntities.CreateRecurringTransaction(id: rtId, virtualInstrumentId: virtualId);
         var vi = TestEntities.CreateVirtualInstrument(
             id: virtualId,
             parentId: accountId,
@@ -149,7 +150,7 @@ public class UpdateTests
             virtualInstruments: [vi]);
 
         _mocks.InstrumentRepositoryMock
-            .Setup(r => r.Get(accountId, It.IsAny<RecurringTransactionSpecification>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.Get(accountId, It.IsAny<VirtualInstrumentSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(account);
 
         var handler = new UpdateHandler(
@@ -158,7 +159,7 @@ public class UpdateTests
 
         var wrongRtId = Guid.NewGuid();
         var nextRun = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(7));
-        var command = new Update(accountId, virtualId, wrongRtId, "Test", 100m, ScheduleFrequency.Weekly, nextRun);
+        var command = new Update(accountId, virtualId, wrongRtId, new RecurringTransactionDetails { Description = "Test", Amount = 100m, Schedule = ScheduleFrequency.Weekly, NextRun = nextRun });
 
         // Act & Assert
         await Assert.ThrowsAsync<NotFoundException>(
@@ -175,7 +176,7 @@ public class UpdateTests
 
         var rt = TestEntities.CreateRecurringTransaction(
             id: rtId,
-            virtualAccountId: virtualId,
+            virtualInstrumentId: virtualId,
             description: "Original Description");
 
         var vi = TestEntities.CreateVirtualInstrument(
@@ -187,7 +188,7 @@ public class UpdateTests
             virtualInstruments: [vi]);
 
         _mocks.InstrumentRepositoryMock
-            .Setup(r => r.Get(accountId, It.IsAny<RecurringTransactionSpecification>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.Get(accountId, It.IsAny<VirtualInstrumentSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(account);
 
         var handler = new UpdateHandler(
@@ -195,7 +196,7 @@ public class UpdateTests
             _mocks.UnitOfWorkMock.Object);
 
         var nextRun = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(7));
-        var command = new Update(accountId, virtualId, rtId, null, 100m, ScheduleFrequency.Monthly, nextRun);
+        var command = new Update(accountId, virtualId, rtId, new RecurringTransactionDetails { Description = null, Amount = 100m, Schedule = ScheduleFrequency.Monthly, NextRun = nextRun });
 
         // Act
         var result = await handler.Handle(command, TestContext.Current.CancellationToken);
@@ -214,7 +215,7 @@ public class UpdateTests
 
         var rt = TestEntities.CreateRecurringTransaction(
             id: rtId,
-            virtualAccountId: virtualId,
+            virtualInstrumentId: virtualId,
             amount: 100m);
 
         var vi = TestEntities.CreateVirtualInstrument(
@@ -226,7 +227,7 @@ public class UpdateTests
             virtualInstruments: [vi]);
 
         _mocks.InstrumentRepositoryMock
-            .Setup(r => r.Get(accountId, It.IsAny<RecurringTransactionSpecification>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.Get(accountId, It.IsAny<VirtualInstrumentSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(account);
 
         var handler = new UpdateHandler(
@@ -234,7 +235,7 @@ public class UpdateTests
             _mocks.UnitOfWorkMock.Object);
 
         var nextRun = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(7));
-        var command = new Update(accountId, virtualId, rtId, "Test", 999.99m, ScheduleFrequency.Monthly, nextRun);
+        var command = new Update(accountId, virtualId, rtId, new RecurringTransactionDetails { Description = "Test", Amount = 999.99m, Schedule = ScheduleFrequency.Monthly, NextRun = nextRun });
 
         // Act
         await handler.Handle(command, TestContext.Current.CancellationToken);

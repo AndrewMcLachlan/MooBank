@@ -1,5 +1,4 @@
 ﻿using Asm.Domain;
-using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Instrument.Specifications;
 using Asm.MooBank.Domain.Entities.Transactions;
@@ -30,7 +29,7 @@ public class RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionRep
     public async Task Process(CancellationToken cancellationToken = default)
     {
         // Background path: loads across all users via the unfiltered specification overload.
-        var instruments = await instrumentRepository.Get(new RecurringTransactionSpecification(), cancellationToken);
+        var instruments = await instrumentRepository.Get(new VirtualInstrumentSpecification(), cancellationToken);
 
         foreach (var trans in instruments.SelectMany(i => i.VirtualInstruments).SelectMany(v => v.RecurringTransactions))
         {
@@ -38,7 +37,7 @@ public class RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionRep
 
             while (trans.NextRun <= DateTime.UtcNow.ToDateOnly())
             {
-                logger.LogInformation("Running recurring transaction for {AccountId}.", trans.VirtualAccountId);
+                logger.LogInformation("Running recurring transaction for {VirtualInstrumentId}.", trans.VirtualInstrumentId);
                 RunTransaction(trans);
                 trans.LastRun = DateTime.UtcNow;
                 trans.NextRun = trans.Schedule switch
@@ -61,7 +60,7 @@ public class RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionRep
     private void RunTransaction(RecurringTransaction recurring)
     {
         var transaction = Domain.Entities.Transactions.Transaction.Create(
-            recurring.VirtualAccountId,
+            recurring.VirtualInstrumentId,
             null,
             recurring.Amount,
             recurring.Description,

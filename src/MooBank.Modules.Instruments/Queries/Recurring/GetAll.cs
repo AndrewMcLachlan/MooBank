@@ -1,19 +1,19 @@
-﻿using Asm.MooBank.Modules.Accounts.Models.Recurring;
+using Asm.MooBank.Modules.Instruments.Models.Recurring;
 
-namespace Asm.MooBank.Modules.Accounts.Queries.Recurring;
+namespace Asm.MooBank.Modules.Instruments.Queries.Recurring;
 
-public record GetForVirtual(Guid AccountId, Guid VirtualAccountId) : IQuery<IEnumerable<RecurringTransaction>>;
+public record GetAll(Guid InstrumentId, Guid VirtualInstrumentId) : IQuery<IEnumerable<RecurringTransaction>>;
 
-internal class GetForVirtualHandler(IQueryable<Domain.Entities.Instrument.Instrument> accounts) : IQueryHandler<GetForVirtual, IEnumerable<RecurringTransaction>>
+internal class GetAllHandler(IQueryable<Domain.Entities.Instrument.Instrument> instruments) : IQueryHandler<GetAll, IEnumerable<RecurringTransaction>>
 {
-    public async ValueTask<IEnumerable<RecurringTransaction>> Handle(GetForVirtual query, CancellationToken cancellationToken)
+    public async ValueTask<IEnumerable<RecurringTransaction>> Handle(GetAll query, CancellationToken cancellationToken)
     {
-        var account = (await accounts.Include(a => a.VirtualInstruments.Where(v => v.Id == query.VirtualAccountId)).ThenInclude(v => v.RecurringTransactions).SingleOrDefaultAsync(a => a.Id == query.AccountId, cancellationToken))
-            ?? throw new NotFoundException($"Account with ID {query.AccountId} was not found.");
+        var instrument = (await instruments.Include(a => a.VirtualInstruments.Where(v => v.Id == query.VirtualInstrumentId)).ThenInclude(v => v.RecurringTransactions).SingleOrDefaultAsync(a => a.Id == query.InstrumentId, cancellationToken))
+            ?? throw new NotFoundException($"Instrument with ID {query.InstrumentId} was not found.");
 
-        var virtualAccount = account.VirtualInstruments.SingleOrDefault(v => v.Id == query.VirtualAccountId)
-            ?? throw new NotFoundException($"Virtual account with ID {query.VirtualAccountId} for account ID {query.AccountId} was not found.");
+        var virtualInstrument = instrument.VirtualInstruments.SingleOrDefault(v => v.Id == query.VirtualInstrumentId)
+            ?? throw new NotFoundException($"Virtual instrument with ID {query.VirtualInstrumentId} for instrument ID {query.InstrumentId} was not found.");
 
-        return virtualAccount.RecurringTransactions.ToModel();
+        return virtualInstrument.RecurringTransactions.ToModel();
     }
 }
