@@ -26,7 +26,7 @@ public static class RecurringTransactionExtensions
         {
             Description = recurringTransaction.Description,
             Amount = recurringTransaction.Amount,
-            LastRun = recurringTransaction.LastRun,
+            LastRun = AsUtc(recurringTransaction.LastRun),
             NextRun = recurringTransaction.NextRun,
             Schedule = recurringTransaction.Schedule,
             Id = recurringTransaction.Id,
@@ -35,4 +35,12 @@ public static class RecurringTransactionExtensions
 
     public static IEnumerable<RecurringTransaction> ToModel(this IEnumerable<Domain.Entities.Instrument.RecurringTransaction> recurringTransactions) =>
         recurringTransactions.Select(t => t.ToModel());
+
+    /// <summary>
+    /// LastRun is written as UTC but stored in a DATETIME2 column, which EF reads back as
+    /// <see cref="DateTimeKind.Unspecified"/>. Converting that to a DateTimeOffset implicitly
+    /// would stamp the server's local offset onto a UTC value, so the kind is restored first.
+    /// </summary>
+    private static DateTimeOffset? AsUtc(DateTime? value) =>
+        value is null ? null : new DateTimeOffset(DateTime.SpecifyKind(value.Value, DateTimeKind.Utc));
 }

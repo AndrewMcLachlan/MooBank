@@ -221,6 +221,121 @@ public class RecurringTransactionServiceTests
         transactionRepoMock.Verify(r => r.Add(It.IsAny<DomainTransaction>()), Times.Once);
     }
 
+    /// <summary>
+    /// Given a fortnightly recurring transaction due today
+    /// When Process is called
+    /// Then a transaction should be created and NextRun advanced by 14 days
+    /// </summary>
+    /// <remarks>
+    /// Fortnightly and Yearly are selectable but were unhandled, so processing them threw.
+    /// </remarks>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public async Task Process_FortnightlyTransaction_UpdatesNextRunBy14Days()
+    {
+        // Arrange
+        var today = DateTime.UtcNow.ToDateOnly();
+        var recurring = CreateRecurringTransaction(ScheduleFrequency.Fortnightly, today, 250m, "Fortnightly");
+
+        var (service, transactionRepoMock, _) = CreateService([recurring]);
+
+        // Act
+        await service.Process(TestContext.Current.CancellationToken);
+
+        // Assert
+        transactionRepoMock.Verify(r => r.Add(It.Is<DomainTransaction>(t => t.Amount == 250m)), Times.Once);
+        Assert.Equal(today.AddDays(14), recurring.NextRun);
+    }
+
+    /// <summary>
+    /// Given a yearly recurring transaction due today
+    /// When Process is called
+    /// Then a transaction should be created and NextRun advanced by one year
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public async Task Process_YearlyTransaction_UpdatesNextRunByOneYear()
+    {
+        // Arrange
+        var today = DateTime.UtcNow.ToDateOnly();
+        var recurring = CreateRecurringTransaction(ScheduleFrequency.Yearly, today, 1000m, "Yearly");
+
+        var (service, transactionRepoMock, _) = CreateService([recurring]);
+
+        // Act
+        await service.Process(TestContext.Current.CancellationToken);
+
+        // Assert
+        transactionRepoMock.Verify(r => r.Add(It.Is<DomainTransaction>(t => t.Amount == 1000m)), Times.Once);
+        Assert.Equal(today.AddYears(1), recurring.NextRun);
+    }
+
+    /// <summary>
+    /// Given a recurring transaction with an unrecognised schedule alongside a valid one
+    /// When Process is called
+    /// Then the valid one should still run and changes should still be saved
+    /// </summary>
+    /// <remarks>
+    /// The job processes every user's recurring transactions in one pass, so a single bad row
+    /// must not abort the run.
+    /// </remarks>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public async Task Process_UnrecognisedSchedule_DoesNotStopOtherTransactions()
+    {
+        // Arrange
+        var today = DateTime.UtcNow.ToDateOnly();
+        var broken = CreateRecurringTransaction((ScheduleFrequency)999, today, 100m, "Broken");
+        var healthy = CreateRecurringTransaction(ScheduleFrequency.Daily, today, 200m, "Healthy");
+
+        var (service, transactionRepoMock, unitOfWorkMock) = CreateService([broken, healthy]);
+
+        // Act
+        await service.Process(TestContext.Current.CancellationToken);
+
+        // Assert
+        transactionRepoMock.Verify(r => r.Add(It.Is<DomainTransaction>(t => t.Amount == 200m)), Times.Once);
+        Assert.Equal(today.AddDays(1), healthy.NextRun);
+
+        // The broken one is left untouched — no transaction created, nothing advanced.
+        transactionRepoMock.Verify(r => r.Add(It.Is<DomainTransaction>(t => t.Amount == 100m)), Times.Never);
+        Assert.Equal(today, broken.NextRun);
+        Assert.Null(broken.LastRun);
+
+        unitOfWorkMock.Verify(u => u.SaveChangesAsync(TestContext.Current.CancellationToken), Times.Once);
+    }
+
+    /// <summary>
+    /// Given a recurring transaction that runs
+    /// When Process is called
+    /// Then LastRun and the transaction time should both be recorded in UTC
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public async Task Process_TransactionRuns_RecordsTimesInUtc()
+    {
+        // Arrange
+        var today = DateTime.UtcNow.ToDateOnly();
+        var recurring = CreateRecurringTransaction(ScheduleFrequency.Daily, today, 100m, "Daily");
+
+        var before = DateTime.UtcNow;
+        var (service, transactionRepoMock, _) = CreateService([recurring]);
+
+        DomainTransaction? created = null;
+        transactionRepoMock.Setup(r => r.Add(It.IsAny<DomainTransaction>())).Callback<DomainTransaction>(t => created = t);
+
+        // Act
+        await service.Process(TestContext.Current.CancellationToken);
+
+        var after = DateTime.UtcNow;
+
+        // Assert
+        Assert.NotNull(created);
+        Assert.InRange(created.TransactionTime, before, after);
+        Assert.NotNull(recurring.LastRun);
+        Assert.InRange(recurring.LastRun.Value, before, after);
+    }
+
     #endregion
 
     private static RecurringTransaction CreateRecurringTransaction(
