@@ -3,7 +3,7 @@ using Asm.MooBank.Domain.Entities.Forecast;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Models;
 using Bogus;
-using DomainVirtualInstrument = Asm.MooBank.Domain.Entities.Account.VirtualInstrument;
+using DomainVirtualInstrument = Asm.MooBank.Domain.Entities.Instrument.VirtualInstrument;
 using Transaction = Asm.MooBank.Domain.Entities.Transactions.Transaction;
 using TransactionOffset = Asm.MooBank.Domain.Entities.Transactions.TransactionOffset;
 

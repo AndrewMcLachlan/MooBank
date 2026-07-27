@@ -1,36 +1,28 @@
 ﻿using Asm.MooBank.Models;
-using Asm.MooBank.Modules.Accounts.Models.Account;
-using Asm.MooBank.Modules.Accounts.Models.Recurring;
 using Asm.MooBank.Services;
 
 namespace Asm.MooBank.Modules.Accounts.Models.Account;
 
-public record VirtualAccount : VirtualInstrument
+public static class VirtualInstrumentExtensions
 {
-    public IEnumerable<RecurringTransaction> RecurringTransactions { get; set; } = [];
-}
-
-public static class VirtualAccountExtensions
-{
-    public static async Task<VirtualAccount> ToModel(this Domain.Entities.Account.VirtualInstrument account, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default)
+    public static async Task<VirtualInstrument> ToModel(this Domain.Entities.Instrument.VirtualInstrument virtualInstrument, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default)
     {
-        return new VirtualAccount
+        return new VirtualInstrument
         {
-            Id = account.Id,
-            ParentId = account.ParentInstrumentId,
-            Name = account.Name,
-            Description = account.Description,
-            Controller = account.Controller,
-            Currency = account.Currency,
-            CurrentBalance = account.Balance,
-            CurrentBalanceLocalCurrency = await currencyConverter.Convert(account.Balance, account.Currency, cancellationToken),
-            BalanceDate = account.LastUpdated,
-            LastTransaction = account.LastTransaction,
-            ClosedDate = account.ClosedDate,
-            RecurringTransactions = account.RecurringTransactions.ToModel(),
+            Id = virtualInstrument.Id,
+            ParentId = virtualInstrument.ParentInstrumentId,
+            Name = virtualInstrument.Name,
+            Description = virtualInstrument.Description,
+            Controller = virtualInstrument.Controller,
+            Currency = virtualInstrument.Currency,
+            CurrentBalance = virtualInstrument.Balance,
+            CurrentBalanceLocalCurrency = await currencyConverter.Convert(virtualInstrument.Balance, virtualInstrument.Currency, cancellationToken),
+            BalanceDate = virtualInstrument.LastUpdated,
+            LastTransaction = virtualInstrument.LastTransaction,
+            ClosedDate = virtualInstrument.ClosedDate,
         };
     }
 
-    public static async Task<IEnumerable<VirtualAccount>> ToModel(this IEnumerable<Domain.Entities.Account.VirtualInstrument> accounts, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default) =>
-        await accounts.SelectAsync(account => account.ToModel(currencyConverter, cancellationToken));
+    public static async Task<IEnumerable<VirtualInstrument>> ToModel(this IEnumerable<Domain.Entities.Instrument.VirtualInstrument> virtualInstruments, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default) =>
+        await virtualInstruments.SelectAsync(virtualInstrument => virtualInstrument.ToModel(currencyConverter, cancellationToken));
 }

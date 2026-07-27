@@ -3,7 +3,7 @@ using Asm.AspNetCore.Routing;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Instruments.Commands.VirtualInstruments;
 using Asm.MooBank.Modules.Instruments.Models.Virtual;
-using Asm.MooBank.Modules.Instruments.Queries.VirtualAccounts;
+using Asm.MooBank.Modules.Instruments.Queries.VirtualInstruments;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -19,7 +19,7 @@ internal class VirtualInstruments : EndpointGroupBase
 
     protected override void MapEndpoints(IEndpointRouteBuilder builder)
     {
-        builder.MapQuery<GetForAccount, IEnumerable<VirtualInstrument>>("/")
+        builder.MapQuery<GetForInstrument, IEnumerable<VirtualInstrument>>("/")
             .WithNames("Get Virtual Instruments");
 
         builder.MapQuery<Get, VirtualInstrument>("/{virtualInstrumentId}")

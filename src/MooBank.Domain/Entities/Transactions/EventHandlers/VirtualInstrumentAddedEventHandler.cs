@@ -1,4 +1,4 @@
-﻿using Asm.MooBank.Domain.Entities.Account.Events;
+﻿using Asm.MooBank.Domain.Entities.Instrument.Events;
 using Asm.MooBank.Security;
 
 namespace Asm.MooBank.Domain.Entities.Transactions.EventHandlers;

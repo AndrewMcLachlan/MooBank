@@ -4,7 +4,7 @@ import { SaveIcon } from "@andrewmclachlan/moo-ds";
 import { format } from "date-fns/format";
 import { parse } from "date-fns/parse";
 import { parseISO } from "date-fns/parseISO";
-import type { VirtualInstrument, RecurringTransaction, ScheduleFrequency } from "api/types.gen";
+import type { VirtualInstrument, RecurringTransactionDetails, ScheduleFrequency } from "api/types.gen";
 import { Schedules, emptyRecurringTransaction } from "models/recurringTransactions";
 import React, { useState } from "react";
 import { useGetRecurringTransactions } from "routes/accounts/-hooks/useGetRecurringTransactions";
@@ -15,21 +15,21 @@ import { amountStep } from "utils/currency";
 
 export const RecurringTransactions: React.FC<RecurringTransactionsProps> = ({ account }) => {
 
-    const {data: recurringTransactions } = useGetRecurringTransactions(account.parentId, account.id);
+    const instrumentId = account.parentId;
+    const virtualInstrumentId = account.id;
 
-    const accountId = account.parentId;
-    const virtualId = account.id;
+    const { data: recurringTransactions } = useGetRecurringTransactions(instrumentId, virtualInstrumentId);
 
-    const createRecurringTransaction = useCreateRecurringTransaction(accountId, virtualId);
-    const updateRecurringTransaction = useUpdateRecurringTransaction(accountId, virtualId);
-    const deleteRecurringTransaction = useDeleteRecurringTransaction(accountId, virtualId);
+    const createRecurringTransaction = useCreateRecurringTransaction(instrumentId, virtualInstrumentId);
+    const updateRecurringTransaction = useUpdateRecurringTransaction(instrumentId, virtualInstrumentId);
+    const deleteRecurringTransaction = useDeleteRecurringTransaction(instrumentId, virtualInstrumentId);
 
     const create = () => {
         createRecurringTransaction(newRT);
-        setNewRT(emptyRecurringTransaction(virtualId));
+        setNewRT(emptyRecurringTransaction());
     }
 
-    const [newRT, setNewRT] = useState<RecurringTransaction>(emptyRecurringTransaction(virtualId));
+    const [newRT, setNewRT] = useState<RecurringTransactionDetails>(() => emptyRecurringTransaction());
 
     const onDelete = (id: string) => {
         if (confirm("Are you sure you want to delete this recurring transaction?")) {

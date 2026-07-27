@@ -1,5 +1,4 @@
 ﻿using Asm.Domain;
-using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Instrument.Specifications;
 using Asm.MooBank.Domain.Entities.Transactions;
@@ -26,33 +25,71 @@ public class RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionRep
     /// </summary>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A task.</returns>
-    /// <exception cref="InvalidOperationException">Thrown when the schedule type is unrecognised.</exception>
     public async Task Process(CancellationToken cancellationToken = default)
     {
         // Background path: loads across all users via the unfiltered specification overload.
-        var instruments = await instrumentRepository.Get(new RecurringTransactionSpecification(), cancellationToken);
+        var instruments = await instrumentRepository.Get(new VirtualInstrumentSpecification(), cancellationToken);
 
-        foreach (var trans in instruments.SelectMany(i => i.VirtualInstruments).SelectMany(v => v.RecurringTransactions))
+        foreach (var recurring in instruments.SelectMany(i => i.VirtualInstruments).SelectMany(v => v.RecurringTransactions))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            while (trans.NextRun <= DateTime.UtcNow.ToDateOnly())
+            try
             {
-                logger.LogInformation("Running recurring transaction for {AccountId}.", trans.VirtualAccountId);
-                RunTransaction(trans);
-                trans.LastRun = DateTime.UtcNow;
-                trans.NextRun = trans.Schedule switch
-                {
-                    ScheduleFrequency.Daily => trans.NextRun.AddDays(1),
-                    ScheduleFrequency.Weekly => trans.NextRun.AddDays(7),
-                    ScheduleFrequency.Monthly => trans.NextRun.AddMonths(1),
-                    _ => throw new InvalidOperationException("Unsupported schedule: " + trans.Schedule.ToString()),
-                };
+                ProcessDueOccurrences(recurring);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                // This job runs across every user, so one bad recurring transaction must not
+                // stop the rest from running. Log it and carry on; whatever succeeded before
+                // the failure is still saved below.
+                logger.LogError(ex, "Failed to process recurring transaction {RecurringTransactionId} for virtual instrument {VirtualInstrumentId}.", recurring.Id, recurring.VirtualInstrumentId);
             }
         }
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
+
+    /// <summary>
+    /// Run a recurring transaction for every occurrence that is now due, catching up if the
+    /// job has not run for a while.
+    /// </summary>
+    /// <param name="recurring">The recurring transaction definition.</param>
+    /// <exception cref="InvalidOperationException">Thrown when the schedule type is unrecognised.</exception>
+    private void ProcessDueOccurrences(RecurringTransaction recurring)
+    {
+        while (recurring.NextRun <= DateTime.UtcNow.ToDateOnly())
+        {
+            // Resolve the following occurrence first: an unrecognised schedule then throws
+            // before anything is mutated, rather than leaving a transaction created against a
+            // NextRun that never advanced (which would replay it on the next run).
+            var nextRun = NextRun(recurring.NextRun, recurring.Schedule);
+
+            logger.LogInformation("Running recurring transaction for {VirtualInstrumentId}.", recurring.VirtualInstrumentId);
+
+            RunTransaction(recurring);
+
+            recurring.LastRun = DateTime.UtcNow;
+            recurring.NextRun = nextRun;
+        }
+    }
+
+    /// <summary>
+    /// Work out when a schedule next falls due after the given occurrence.
+    /// </summary>
+    /// <param name="occurrence">The occurrence being run.</param>
+    /// <param name="schedule">The schedule to advance.</param>
+    /// <returns>The date of the following occurrence.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when the schedule type is unrecognised.</exception>
+    private static DateOnly NextRun(DateOnly occurrence, ScheduleFrequency schedule) => schedule switch
+    {
+        ScheduleFrequency.Daily => occurrence.AddDays(1),
+        ScheduleFrequency.Weekly => occurrence.AddDays(7),
+        ScheduleFrequency.Fortnightly => occurrence.AddDays(14),
+        ScheduleFrequency.Monthly => occurrence.AddMonths(1),
+        ScheduleFrequency.Yearly => occurrence.AddYears(1),
+        _ => throw new InvalidOperationException($"Unsupported schedule: {schedule}"),
+    };
 
     /// <summary>
     /// Execute the transaction and update the balance.
@@ -61,11 +98,12 @@ public class RecurringTransactionService(IUnitOfWork unitOfWork, ITransactionRep
     private void RunTransaction(RecurringTransaction recurring)
     {
         var transaction = Domain.Entities.Transactions.Transaction.Create(
-            recurring.VirtualAccountId,
+            recurring.VirtualInstrumentId,
             null,
             recurring.Amount,
             recurring.Description,
-            DateTime.Now,
+            // UTC, matching LastRun above and the other programmatic transaction creators.
+            DateTime.UtcNow,
             TransactionSubType.Recurring,
             "Recurring",
             null

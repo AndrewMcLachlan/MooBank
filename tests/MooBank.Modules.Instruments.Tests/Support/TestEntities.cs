@@ -9,7 +9,7 @@ using DomainInstrument = Asm.MooBank.Domain.Entities.Instrument.Instrument;
 using DomainRule = Asm.MooBank.Domain.Entities.Instrument.Rule;
 using DomainStockHolding = Asm.MooBank.Domain.Entities.StockHolding.StockHolding;
 using DomainTag = Asm.MooBank.Domain.Entities.Tag.Tag;
-using DomainVirtualInstrument = Asm.MooBank.Domain.Entities.Account.VirtualInstrument;
+using DomainVirtualInstrument = Asm.MooBank.Domain.Entities.Instrument.VirtualInstrument;
 
 namespace Asm.MooBank.Modules.Instruments.Tests.Support;
 
@@ -65,9 +65,11 @@ internal static class TestEntities
         string? description = null,
         string currency = "AUD",
         decimal balance = 0m,
-        Controller controller = Controller.Virtual)
+        Controller controller = Controller.Virtual,
+        IEnumerable<RecurringTransaction>? recurringTransactions = null)
     {
-        return new DomainVirtualInstrument(id ?? Guid.NewGuid())
+        var virtualInstrumentId = id ?? Guid.NewGuid();
+        var virtualInstrument = new DomainVirtualInstrument(virtualInstrumentId)
         {
             ParentInstrumentId = parentId ?? Guid.NewGuid(),
             Name = name ?? Faker.Finance.AccountName(),
@@ -76,6 +78,73 @@ internal static class TestEntities
             Balance = balance,
             Controller = controller,
         };
+
+        if (recurringTransactions != null)
+        {
+            foreach (var recurringTransaction in recurringTransactions)
+            {
+                recurringTransaction.VirtualInstrumentId = virtualInstrumentId;
+                virtualInstrument.RecurringTransactions.Add(recurringTransaction);
+            }
+        }
+
+        return virtualInstrument;
+    }
+
+    public static RecurringTransaction CreateRecurringTransaction(
+        Guid? id = null,
+        Guid? virtualInstrumentId = null,
+        string? description = null,
+        decimal amount = 100m,
+        ScheduleFrequency schedule = ScheduleFrequency.Monthly,
+        DateOnly? nextRun = null,
+        DateTime? lastRun = null)
+    {
+        return new RecurringTransaction(id ?? Guid.NewGuid())
+        {
+            VirtualInstrumentId = virtualInstrumentId ?? Guid.NewGuid(),
+            Description = description ?? Faker.Lorem.Sentence(),
+            Amount = amount,
+            Schedule = schedule,
+            NextRun = nextRun ?? DateOnly.FromDateTime(DateTime.UtcNow.AddDays(7)),
+            LastRun = lastRun,
+        };
+    }
+
+    public static LogicalAccount CreateLogicalAccountWithVirtualInstruments(
+        Guid? id = null,
+        string? name = null,
+        string currency = "AUD",
+        decimal balance = 1000m,
+        IEnumerable<DomainVirtualInstrument>? virtualInstruments = null,
+        Guid? ownerId = null)
+    {
+        var accountId = id ?? Guid.NewGuid();
+        var account = new LogicalAccount(accountId, [])
+        {
+            Name = name ?? Faker.Finance.AccountName(),
+            Currency = currency,
+            Balance = balance,
+            AccountType = AccountType.Transaction,
+        };
+
+        if (virtualInstruments != null)
+        {
+            foreach (var virtualInstrument in virtualInstruments)
+            {
+                virtualInstrument.ParentInstrumentId = accountId;
+                account.AddVirtualInstrument(virtualInstrument, 0m);
+            }
+            // Clear events raised by AddVirtualInstrument so tests start clean
+            account.Events.Clear();
+        }
+
+        if (ownerId.HasValue)
+        {
+            account.Owners.Add(new InstrumentOwner { UserId = ownerId.Value, InstrumentId = accountId });
+        }
+
+        return account;
     }
 
     public static CreateVirtualInstrument CreateVirtualInstrumentModel(

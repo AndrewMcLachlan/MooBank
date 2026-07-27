@@ -32,7 +32,7 @@ function ManageAccount() {
     const [selectedInstitutionAccount, setSelectedInstitutionAccount] = useState<InstitutionAccount>(undefined);
 
     const account = useAccount() as LogicalAccount;
-    const { data: virtualAccounts } = useVirtualInstruments(account?.id ?? id);
+    const { data: virtualInstruments } = useVirtualInstruments(account?.id ?? id);
 
     const reprocessClick = (instrumentId: string) => {
         if (!account) return;
@@ -65,13 +65,13 @@ function ManageAccount() {
         setShowDetails(true);
     }
 
-    const handleEditVirtualAccount = (virtualAccountId: string) => {
-        navigate({ to: `/accounts/${account?.id}/manage/virtual/${virtualAccountId}` });
+    const handleEditVirtualInstrument = (virtualInstrumentId: string) => {
+        navigate({ to: `/accounts/${account?.id}/manage/virtual/${virtualInstrumentId}` });
     }
 
-    const handleCloseVirtualAccount = async (virtualAccountId: string) => {
+    const handleCloseVirtualInstrument = async (virtualInstrumentId: string) => {
         if (confirm("Are you sure you want to close this virtual account?")) {
-            await closeVirtualAccount.mutateAsync(account?.id ?? id, virtualAccountId);
+            await closeVirtualAccount.mutateAsync(account?.id ?? id, virtualInstrumentId);
         }
     }
 
@@ -107,14 +107,14 @@ function ManageAccount() {
                     </tr>
                 </thead>
                 <tbody>
-                    {virtualAccounts && virtualAccounts.map(a => (
+                    {virtualInstruments && virtualInstruments.map(a => (
                         <tr key={a.id}>
                             <td>{a.name}</td>
                             <td>{a.description}</td>
                             <td>{a.controller === "Virtual" ? "Virtual" : "Reserved Sum"}</td>
                             <td className="row-action">
-                                <Icon icon="pen-to-square" title="Edit" onClick={() => handleEditVirtualAccount(a.id)} />
-                                <Icon icon="door-closed" title="Close" onClick={() => handleCloseVirtualAccount(a.id)} />
+                                <Icon icon="pen-to-square" title="Edit" onClick={() => handleEditVirtualInstrument(a.id)} />
+                                <Icon icon="door-closed" title="Close" onClick={() => handleCloseVirtualInstrument(a.id)} />
                             </td>
                         </tr>
                     ))}

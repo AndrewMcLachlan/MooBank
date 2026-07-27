@@ -191,7 +191,7 @@ public class GetFormattedTests
     }
 
     [Fact]
-    public async Task Handle_InstrumentWithVirtualAccounts_IncludesVirtualAccounts()
+    public async Task Handle_InstrumentWithVirtualInstruments_IncludesVirtualInstruments()
     {
         // Arrange
         var userId = _mocks.User.Id;

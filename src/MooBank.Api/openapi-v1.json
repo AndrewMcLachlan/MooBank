@@ -387,229 +387,6 @@
         }
       }
     },
-    "/accounts/{accountId}/recurring": {
-      "get": {
-        "tags": [
-          "Recurring Transactions"
-        ],
-        "operationId": "get-all-recurring-transactions",
-        "parameters": [
-          {
-            "name": "accountId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/RecurringTransaction"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Recurring Transactions"
-        ],
-        "operationId": "create-recurring-transaction",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateRecurringTransaction"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "description": "Created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RecurringTransaction"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RecurringTransaction"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/accounts/{accountId}/recurring/{recurringTransactionId}": {
-      "get": {
-        "tags": [
-          "Recurring Transactions"
-        ],
-        "operationId": "get-recurring-transaction",
-        "parameters": [
-          {
-            "name": "accountId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "recurringTransactionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RecurringTransaction"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      },
-      "patch": {
-        "tags": [
-          "Recurring Transactions"
-        ],
-        "operationId": "update-recurring-transaction",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateRecurringTransaction"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RecurringTransaction"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Recurring Transactions"
-        ],
-        "operationId": "delete-recurring-transaction",
-        "parameters": [
-          {
-            "name": "accountId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "recurringTransactionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          }
-        }
-      }
-    },
-    "/accounts/{accountId}/virtual/{virtualAccountId}/recurring": {
-      "get": {
-        "tags": [
-          "Recurring Transactions"
-        ],
-        "operationId": "Get Recurring Transactions for a Virtual Account",
-        "parameters": [
-          {
-            "name": "accountId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "virtualAccountId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/RecurringTransaction"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      }
-    },
     "/assets/{id}": {
       "get": {
         "tags": [
@@ -3320,6 +3097,259 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/instruments/{instrumentId}/virtual/{virtualInstrumentId}/recurring": {
+      "get": {
+        "tags": [
+          "Recurring Transactions"
+        ],
+        "operationId": "get-recurring-transactions",
+        "parameters": [
+          {
+            "name": "instrumentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "virtualInstrumentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RecurringTransaction"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Recurring Transactions"
+        ],
+        "operationId": "create-recurring-transaction",
+        "parameters": [
+          {
+            "name": "instrumentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "virtualInstrumentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecurringTransactionDetails"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecurringTransaction"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecurringTransaction"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/instruments/{instrumentId}/virtual/{virtualInstrumentId}/recurring/{recurringTransactionId}": {
+      "get": {
+        "tags": [
+          "Recurring Transactions"
+        ],
+        "operationId": "get-recurring-transaction",
+        "parameters": [
+          {
+            "name": "instrumentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "virtualInstrumentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "recurringTransactionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecurringTransaction"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Recurring Transactions"
+        ],
+        "operationId": "update-recurring-transaction",
+        "parameters": [
+          {
+            "name": "instrumentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "virtualInstrumentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "recurringTransactionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecurringTransactionDetails"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecurringTransaction"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Recurring Transactions"
+        ],
+        "operationId": "delete-recurring-transaction",
+        "parameters": [
+          {
+            "name": "instrumentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "virtualInstrumentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "recurringTransactionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
           }
         }
       }
@@ -6557,49 +6587,6 @@
           }
         }
       },
-      "CreateRecurringTransaction": {
-        "required": [
-          "accountId",
-          "virtualAccountId",
-          "description",
-          "amount",
-          "schedule",
-          "nextRun",
-          "instrumentId"
-        ],
-        "type": "object",
-        "properties": {
-          "accountId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "virtualAccountId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "description": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "amount": {
-            "type": "number",
-            "format": "double"
-          },
-          "schedule": {
-            "$ref": "#/components/schemas/ScheduleFrequency"
-          },
-          "nextRun": {
-            "type": "string",
-            "format": "date"
-          },
-          "instrumentId": {
-            "type": "string",
-            "format": "uuid"
-          }
-        }
-      },
       "CreateRule": {
         "required": [
           "instrumentId",
@@ -8191,7 +8178,7 @@
       "RecurringTransaction": {
         "required": [
           "id",
-          "virtualAccountId",
+          "virtualInstrumentId",
           "amount",
           "nextRun",
           "schedule"
@@ -8202,7 +8189,7 @@
             "type": "string",
             "format": "uuid"
           },
-          "virtualAccountId": {
+          "virtualInstrumentId": {
             "type": "string",
             "format": "uuid"
           },
@@ -8229,6 +8216,33 @@
           },
           "schedule": {
             "$ref": "#/components/schemas/ScheduleFrequency"
+          }
+        }
+      },
+      "RecurringTransactionDetails": {
+        "required": [
+          "amount",
+          "schedule",
+          "nextRun"
+        ],
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "schedule": {
+            "$ref": "#/components/schemas/ScheduleFrequency"
+          },
+          "nextRun": {
+            "type": "string",
+            "format": "date"
           }
         }
       },
@@ -8368,7 +8382,8 @@
           "Weekly",
           "Monthly",
           "Yearly",
-          "Fortnightly"
+          "Fortnightly",
+          null
         ]
       },
       "SeasonalitySettings": {
@@ -9710,54 +9725,6 @@
           }
         }
       },
-      "UpdateRecurringTransaction": {
-        "required": [
-          "accountId",
-          "virtualAccountId",
-          "recurringTransactionId",
-          "description",
-          "amount",
-          "schedule",
-          "nextRun",
-          "instrumentId"
-        ],
-        "type": "object",
-        "properties": {
-          "accountId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "virtualAccountId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "recurringTransactionId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "description": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "amount": {
-            "type": "number",
-            "format": "double"
-          },
-          "schedule": {
-            "$ref": "#/components/schemas/ScheduleFrequency"
-          },
-          "nextRun": {
-            "type": "string",
-            "format": "date"
-          },
-          "instrumentId": {
-            "type": "string",
-            "format": "uuid"
-          }
-        }
-      },
       "UpdateRule": {
         "required": [
           "contains",
@@ -10280,9 +10247,6 @@
       "name": "Accounts"
     },
     {
-      "name": "Recurring Transactions"
-    },
-    {
       "name": "Assets"
     },
     {
@@ -10317,6 +10281,9 @@
     },
     {
       "name": "Virtual Instruments"
+    },
+    {
+      "name": "Recurring Transactions"
     },
     {
       "name": "Reference Data"

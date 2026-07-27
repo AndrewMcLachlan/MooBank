@@ -5,7 +5,7 @@ namespace Asm.MooBank.Modules.Instruments.Models.Instruments;
 
 public static class VirtualInstrumentExtensions
 {
-    public static async Task<VirtualInstrument> ToModel(this Domain.Entities.Account.VirtualInstrument account, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default)
+    public static async Task<VirtualInstrument> ToModel(this Domain.Entities.Instrument.VirtualInstrument account, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default)
     {
         return new VirtualInstrument
         {
@@ -23,6 +23,6 @@ public static class VirtualInstrumentExtensions
         };
     }
 
-    public static async Task<IEnumerable<VirtualInstrument>> ToModel(this IEnumerable<Domain.Entities.Account.VirtualInstrument> accounts, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default) =>
+    public static async Task<IEnumerable<VirtualInstrument>> ToModel(this IEnumerable<Domain.Entities.Instrument.VirtualInstrument> accounts, ICurrencyConverter currencyConverter, CancellationToken cancellationToken = default) =>
         await accounts.SelectAsync(account => account.ToModel(currencyConverter, cancellationToken));
 }

@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import {
-    getRecurringTransactionsForAVirtualAccountOptions,
+    getRecurringTransactionsOptions,
 } from "api/@tanstack/react-query.gen";
 
-export const useGetRecurringTransactions = (accountId: string, virtualAccountId: string) =>
+export const useGetRecurringTransactions = (instrumentId: string, virtualInstrumentId: string) =>
     useQuery({
-        ...getRecurringTransactionsForAVirtualAccountOptions({ path: { accountId, virtualAccountId } }),
+        ...getRecurringTransactionsOptions({ path: { instrumentId, virtualInstrumentId } }),
     });
