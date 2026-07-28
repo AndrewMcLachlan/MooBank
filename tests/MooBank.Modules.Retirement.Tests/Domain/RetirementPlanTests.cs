@@ -51,7 +51,7 @@ public class RetirementPlanTests
         var instrumentId = Guid.NewGuid();
 
         // Act
-        var member = plan.AddMember("Self", new DateOnly(1980, 1, 1), 100_000m, 65, [instrumentId]);
+        var member = plan.AddMember("Self", 45, 100_000m, 0m, 65, GrowthStrategy.Balanced, [instrumentId]);
 
         // Assert
         Assert.Equal(plan.Id, member.RetirementPlanId);
@@ -69,7 +69,7 @@ public class RetirementPlanTests
     {
         // Arrange
         var plan = RetirementPlan.Create(Guid.NewGuid(), "Retirement", Assumptions);
-        var member = plan.AddMember("Self", new DateOnly(1980, 1, 1), 100_000m, 65, []);
+        var member = plan.AddMember("Self", 45, 100_000m, 0m, 65, GrowthStrategy.Balanced, []);
 
         // Act
         plan.RemoveMember(member.Id);
@@ -133,28 +133,25 @@ public class RetirementPlanTests
     }
 
     /// <summary>
-    /// Given a date of birth
-    /// When the age is taken at a date
-    /// Then a birthday that has not been reached should not be counted
+    /// Given a member
+    /// When they are updated
+    /// Then their income, salary sacrifice, age and strategy should all be applied
     /// </summary>
-    [Theory]
-    // Birthday already passed this year.
-    [InlineData("1980-01-01", "2026-06-01", 46)]
-    // Birthday falls exactly on the date.
-    [InlineData("1980-06-01", "2026-06-01", 46)]
-    // Birthday still to come this year.
-    [InlineData("1980-12-31", "2026-06-01", 45)]
-    // The day before their birthday.
-    [InlineData("1980-06-02", "2026-06-01", 45)]
-    public void AgeAt_ByBirthday_CountsOnlyCompletedYears(string dateOfBirth, string at, int expected)
+    [Fact]
+    public void Update_Member_AppliesEveryField()
     {
         // Arrange
-        var member = TestEntities.CreateMember(dateOfBirth: DateOnly.Parse(dateOfBirth));
+        var member = TestEntities.CreateMember(name: "Self", currentAge: 45, currentIncome: 100_000m, salarySacrifice: 0m, retirementAge: 65, growthStrategy: GrowthStrategy.Balanced);
 
         // Act
-        var age = member.AgeAt(DateOnly.Parse(at));
+        member.Update("Renamed", 50, 130_000m, 12_000m, 62, GrowthStrategy.Conservative);
 
         // Assert
-        Assert.Equal(expected, age);
+        Assert.Equal("Renamed", member.Name);
+        Assert.Equal(50, member.CurrentAge);
+        Assert.Equal(130_000m, member.CurrentIncome);
+        Assert.Equal(12_000m, member.SalarySacrifice);
+        Assert.Equal(62, member.RetirementAge);
+        Assert.Equal(GrowthStrategy.Conservative, member.GrowthStrategy);
     }
 }

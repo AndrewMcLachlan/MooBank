@@ -41,7 +41,7 @@ public class UpdatePlanTests
         {
             Id = id,
             Name = name,
-            DateOfBirth = new DateOnly(1980, 1, 1),
+            CurrentAge = 45,
             CurrentIncome = 100_000m,
             RetirementAge = retirementAge,
             InstrumentIds = instrumentIds ?? [],

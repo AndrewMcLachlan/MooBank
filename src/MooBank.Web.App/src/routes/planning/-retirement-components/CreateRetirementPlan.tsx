@@ -1,6 +1,6 @@
 import { Button, Section } from "@andrewmclachlan/moo-ds";
-import { useCreateRetirementPlan } from "../-hooks/useCreateRetirementPlan";
-import { emptyPlan } from "../-utils/retirementDefaults";
+import { useCreateRetirementPlan } from "../-retirement-hooks/useCreateRetirementPlan";
+import { emptyPlan } from "../-retirement-utils/retirementDefaults";
 
 interface CreateRetirementPlanProps {
     onPlanCreated: (planId: string) => void;

@@ -40,7 +40,9 @@ public class RetirementPlanUpdateTests(MooBankWebApplicationFactory factory)
     {
         id,
         name,
-        dateOfBirth = "1980-01-01",
+        currentAge = 45,
+        salarySacrifice = 0m,
+        growthStrategy = "Balanced",
         currentIncome = 100_000m,
         retirementAge = 65,
         instrumentIds = instrumentIds ?? [],

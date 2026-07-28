@@ -106,7 +106,7 @@ public class CreatePlanTests
             new RetirementPlanMember
             {
                 Name = "Self",
-                DateOfBirth = new DateOnly(1980, 5, 1),
+                CurrentAge = 45,
                 CurrentIncome = 120_000m,
                 RetirementAge = 65,
                 InstrumentIds = [instrumentId],
@@ -114,7 +114,7 @@ public class CreatePlanTests
             new RetirementPlanMember
             {
                 Name = "Spouse",
-                DateOfBirth = new DateOnly(1982, 9, 12),
+                CurrentAge = 43,
                 CurrentIncome = 90_000m,
                 RetirementAge = 67,
                 InstrumentIds = [],
@@ -130,7 +130,7 @@ public class CreatePlanTests
         Assert.Equal(2, result.Members.Count());
 
         var self = result.Members.Single(m => m.Name == "Self");
-        Assert.Equal(new DateOnly(1980, 5, 1), self.DateOfBirth);
+        Assert.Equal(45, self.CurrentAge);
         Assert.Equal(120_000m, self.CurrentIncome);
         Assert.Equal(65, self.RetirementAge);
         Assert.Equal([instrumentId], self.InstrumentIds);
@@ -156,7 +156,7 @@ public class CreatePlanTests
             new RetirementPlanMember
             {
                 Name = "Self",
-                DateOfBirth = new DateOnly(1980, 5, 1),
+                CurrentAge = 45,
                 RetirementAge = 65,
                 InstrumentIds = [instrumentId, instrumentId],
             },

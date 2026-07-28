@@ -2,7 +2,7 @@ import { Line } from "react-chartjs-2";
 import { Section } from "@andrewmclachlan/moo-ds";
 import type { RetirementProjectionYear } from "api/types.gen";
 import { useChartColours } from "utils/chartColours";
-import { retirementChartData, retirementChartOptions } from "../-utils/retirementChart";
+import { retirementChartData, retirementChartOptions } from "../-retirement-utils/retirementChart";
 
 interface RetirementChartProps {
     years: RetirementProjectionYear[];

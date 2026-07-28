@@ -922,7 +922,11 @@ export const runRetirementProjection = <ThrowOnError extends boolean = false>(op
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/retirement/plans/{planId}/run',
-    ...options
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 export const getStockHolding = <ThrowOnError extends boolean = false>(options: Options<GetStockHoldingData, ThrowOnError>): RequestResult<GetStockHoldingResponses, GetStockHoldingErrors, ThrowOnError> => (options.client ?? client).get<GetStockHoldingResponses, GetStockHoldingErrors, ThrowOnError>({

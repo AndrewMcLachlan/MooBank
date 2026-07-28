@@ -22,10 +22,10 @@ import { Route as BillsIndexRouteImport } from "./routes/bills/index"
 import { Route as BillsIdRouteImport } from "./routes/bills/$id"
 import { Route as BudgetIndexRouteImport } from "./routes/budget/index"
 import { Route as FamilyIndexRouteImport } from "./routes/family/index"
-import { Route as ForecastIndexRouteImport } from "./routes/forecast/index"
 import { Route as GroupsIndexRouteImport } from "./routes/groups/index"
 import { Route as GroupsCreateRouteImport } from "./routes/groups/create"
-import { Route as RetirementIndexRouteImport } from "./routes/retirement/index"
+import { Route as PlanningIndexRouteImport } from "./routes/planning/index"
+import { Route as PlanningRetirementRouteImport } from "./routes/planning/retirement"
 import { Route as SettingsIndexRouteImport } from "./routes/settings/index"
 import { Route as SharesIdRouteRouteImport } from "./routes/shares/$id/route"
 import { Route as SharesCreateRouteImport } from "./routes/shares/create"
@@ -146,11 +146,6 @@ const FamilyIndexRoute = FamilyIndexRouteImport.update({
   path: "/family/",
   getParentRoute: () => rootRouteImport,
 } as any)
-const ForecastIndexRoute = ForecastIndexRouteImport.update({
-  id: "/forecast/",
-  path: "/forecast/",
-  getParentRoute: () => rootRouteImport,
-} as any)
 const GroupsIndexRoute = GroupsIndexRouteImport.update({
   id: "/groups/",
   path: "/groups/",
@@ -161,9 +156,14 @@ const GroupsCreateRoute = GroupsCreateRouteImport.update({
   path: "/groups/create",
   getParentRoute: () => rootRouteImport,
 } as any)
-const RetirementIndexRoute = RetirementIndexRouteImport.update({
-  id: "/retirement/",
-  path: "/retirement/",
+const PlanningIndexRoute = PlanningIndexRouteImport.update({
+  id: "/planning/",
+  path: "/planning/",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlanningRetirementRoute = PlanningRetirementRouteImport.update({
+  id: "/planning/retirement",
+  path: "/planning/retirement",
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsIndexRoute = SettingsIndexRouteImport.update({
@@ -470,15 +470,15 @@ export interface FileRoutesByFullPath {
   "/assets/create": typeof AssetsCreateRoute
   "/bills/$id": typeof BillsIdRoute
   "/groups/create": typeof GroupsCreateRoute
+  "/planning/retirement": typeof PlanningRetirementRoute
   "/shares/create": typeof SharesCreateRoute
   "/tags/visualiser": typeof TagsVisualiserRoute
   "/accounts/": typeof AccountsIndexRoute
   "/bills/": typeof BillsIndexRoute
   "/budget/": typeof BudgetIndexRoute
   "/family/": typeof FamilyIndexRoute
-  "/forecast/": typeof ForecastIndexRoute
   "/groups/": typeof GroupsIndexRoute
-  "/retirement/": typeof RetirementIndexRoute
+  "/planning/": typeof PlanningIndexRoute
   "/settings/": typeof SettingsIndexRoute
   "/tags/": typeof TagsIndexRoute
   "/accounts/$id/reports": typeof AccountsIdReportsRouteRouteWithChildren
@@ -539,15 +539,15 @@ export interface FileRoutesByTo {
   "/assets/create": typeof AssetsCreateRoute
   "/bills/$id": typeof BillsIdRoute
   "/groups/create": typeof GroupsCreateRoute
+  "/planning/retirement": typeof PlanningRetirementRoute
   "/shares/create": typeof SharesCreateRoute
   "/tags/visualiser": typeof TagsVisualiserRoute
   "/accounts": typeof AccountsIndexRoute
   "/bills": typeof BillsIndexRoute
   "/budget": typeof BudgetIndexRoute
   "/family": typeof FamilyIndexRoute
-  "/forecast": typeof ForecastIndexRoute
   "/groups": typeof GroupsIndexRoute
-  "/retirement": typeof RetirementIndexRoute
+  "/planning": typeof PlanningIndexRoute
   "/settings": typeof SettingsIndexRoute
   "/tags": typeof TagsIndexRoute
   "/accounts/$id/rules": typeof AccountsIdRulesRoute
@@ -609,15 +609,15 @@ export interface FileRoutesById {
   "/assets/create": typeof AssetsCreateRoute
   "/bills/$id": typeof BillsIdRoute
   "/groups/create": typeof GroupsCreateRoute
+  "/planning/retirement": typeof PlanningRetirementRoute
   "/shares/create": typeof SharesCreateRoute
   "/tags/visualiser": typeof TagsVisualiserRoute
   "/accounts/": typeof AccountsIndexRoute
   "/bills/": typeof BillsIndexRoute
   "/budget/": typeof BudgetIndexRoute
   "/family/": typeof FamilyIndexRoute
-  "/forecast/": typeof ForecastIndexRoute
   "/groups/": typeof GroupsIndexRoute
-  "/retirement/": typeof RetirementIndexRoute
+  "/planning/": typeof PlanningIndexRoute
   "/settings/": typeof SettingsIndexRoute
   "/tags/": typeof TagsIndexRoute
   "/accounts/$id/reports": typeof AccountsIdReportsRouteRouteWithChildren
@@ -684,15 +684,15 @@ export interface FileRouteTypes {
     | "/assets/create"
     | "/bills/$id"
     | "/groups/create"
+    | "/planning/retirement"
     | "/shares/create"
     | "/tags/visualiser"
     | "/accounts/"
     | "/bills/"
     | "/budget/"
     | "/family/"
-    | "/forecast/"
     | "/groups/"
-    | "/retirement/"
+    | "/planning/"
     | "/settings/"
     | "/tags/"
     | "/accounts/$id/reports"
@@ -753,15 +753,15 @@ export interface FileRouteTypes {
     | "/assets/create"
     | "/bills/$id"
     | "/groups/create"
+    | "/planning/retirement"
     | "/shares/create"
     | "/tags/visualiser"
     | "/accounts"
     | "/bills"
     | "/budget"
     | "/family"
-    | "/forecast"
     | "/groups"
-    | "/retirement"
+    | "/planning"
     | "/settings"
     | "/tags"
     | "/accounts/$id/rules"
@@ -822,15 +822,15 @@ export interface FileRouteTypes {
     | "/assets/create"
     | "/bills/$id"
     | "/groups/create"
+    | "/planning/retirement"
     | "/shares/create"
     | "/tags/visualiser"
     | "/accounts/"
     | "/bills/"
     | "/budget/"
     | "/family/"
-    | "/forecast/"
     | "/groups/"
-    | "/retirement/"
+    | "/planning/"
     | "/settings/"
     | "/tags/"
     | "/accounts/$id/reports"
@@ -896,15 +896,15 @@ export interface RootRouteChildren {
   AssetsCreateRoute: typeof AssetsCreateRoute
   BillsIdRoute: typeof BillsIdRoute
   GroupsCreateRoute: typeof GroupsCreateRoute
+  PlanningRetirementRoute: typeof PlanningRetirementRoute
   SharesCreateRoute: typeof SharesCreateRoute
   TagsVisualiserRoute: typeof TagsVisualiserRoute
   AccountsIndexRoute: typeof AccountsIndexRoute
   BillsIndexRoute: typeof BillsIndexRoute
   BudgetIndexRoute: typeof BudgetIndexRoute
   FamilyIndexRoute: typeof FamilyIndexRoute
-  ForecastIndexRoute: typeof ForecastIndexRoute
   GroupsIndexRoute: typeof GroupsIndexRoute
-  RetirementIndexRoute: typeof RetirementIndexRoute
+  PlanningIndexRoute: typeof PlanningIndexRoute
   TagsIndexRoute: typeof TagsIndexRoute
   BillsAccountsIdRoute: typeof BillsAccountsIdRoute
   BillsAccountsCreateRoute: typeof BillsAccountsCreateRoute
@@ -1009,13 +1009,6 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof FamilyIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    "/forecast/": {
-      id: "/forecast/"
-      path: "/forecast"
-      fullPath: "/forecast/"
-      preLoaderRoute: typeof ForecastIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     "/groups/": {
       id: "/groups/"
       path: "/groups"
@@ -1030,11 +1023,18 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof GroupsCreateRouteImport
       parentRoute: typeof rootRouteImport
     }
-    "/retirement/": {
-      id: "/retirement/"
-      path: "/retirement"
-      fullPath: "/retirement/"
-      preLoaderRoute: typeof RetirementIndexRouteImport
+    "/planning/": {
+      id: "/planning/"
+      path: "/planning"
+      fullPath: "/planning/"
+      preLoaderRoute: typeof PlanningIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/planning/retirement": {
+      id: "/planning/retirement"
+      path: "/planning/retirement"
+      fullPath: "/planning/retirement"
+      preLoaderRoute: typeof PlanningRetirementRouteImport
       parentRoute: typeof rootRouteImport
     }
     "/settings/": {
@@ -1607,15 +1607,15 @@ const rootRouteChildren: RootRouteChildren = {
   AssetsCreateRoute: AssetsCreateRoute,
   BillsIdRoute: BillsIdRoute,
   GroupsCreateRoute: GroupsCreateRoute,
+  PlanningRetirementRoute: PlanningRetirementRoute,
   SharesCreateRoute: SharesCreateRoute,
   TagsVisualiserRoute: TagsVisualiserRoute,
   AccountsIndexRoute: AccountsIndexRoute,
   BillsIndexRoute: BillsIndexRoute,
   BudgetIndexRoute: BudgetIndexRoute,
   FamilyIndexRoute: FamilyIndexRoute,
-  ForecastIndexRoute: ForecastIndexRoute,
   GroupsIndexRoute: GroupsIndexRoute,
-  RetirementIndexRoute: RetirementIndexRoute,
+  PlanningIndexRoute: PlanningIndexRoute,
   TagsIndexRoute: TagsIndexRoute,
   BillsAccountsIdRoute: BillsAccountsIdRoute,
   BillsAccountsCreateRoute: BillsAccountsCreateRoute,

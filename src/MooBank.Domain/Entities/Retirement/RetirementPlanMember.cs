@@ -6,6 +6,12 @@ namespace Asm.MooBank.Domain.Entities.Retirement;
 /// One person within a retirement plan, with their own income, retirement age and superannuation
 /// accounts. A household plan has a member per individual whose super is being projected.
 /// </summary>
+/// <remarks>
+/// Age is held as a number rather than a date of birth: the projection only needs the number of
+/// years to retirement, and a date of birth is personal information the application has no reason
+/// to hold. The trade-off is that a saved age does not advance on its own — a plan left untouched
+/// for a year projects from the age it was last given.
+/// </remarks>
 [PrimaryKey(nameof(Id))]
 public class RetirementPlanMember(Guid id) : KeyedEntity<Guid>(id)
 {
@@ -21,7 +27,7 @@ public class RetirementPlanMember(Guid id) : KeyedEntity<Guid>(id)
     [MaxLength(200)]
     public required string Name { get; set; }
 
-    public DateOnly DateOfBirth { get; set; }
+    public int CurrentAge { get; set; }
 
     /// <summary>
     /// Current gross annual income, which drives employer contributions.
@@ -29,29 +35,28 @@ public class RetirementPlanMember(Guid id) : KeyedEntity<Guid>(id)
     [Precision(18, 2)]
     public decimal CurrentIncome { get; set; }
 
+    /// <summary>
+    /// Additional concessional contributions made from pre-tax income each year, on top of the
+    /// employer's.
+    /// </summary>
+    [Precision(18, 2)]
+    public decimal SalarySacrifice { get; set; }
+
     public int RetirementAge { get; set; }
+
+    [Column("GrowthStrategyId")]
+    public GrowthStrategy GrowthStrategy { get; set; }
 
     public IReadOnlyCollection<RetirementPlanMemberAccount> Accounts { get => _accounts; internal init => _accounts = [.. value]; }
 
-    /// <summary>
-    /// The member's age at a given date, in completed years.
-    /// </summary>
-    public int AgeAt(DateOnly date)
-    {
-        var age = date.Year - DateOfBirth.Year;
-
-        // Their birthday has not come round yet this year.
-        if (DateOfBirth.AddYears(age) > date) age--;
-
-        return age;
-    }
-
-    public void Update(string name, DateOnly dateOfBirth, decimal currentIncome, int retirementAge)
+    public void Update(string name, int currentAge, decimal currentIncome, decimal salarySacrifice, int retirementAge, GrowthStrategy growthStrategy)
     {
         Name = name;
-        DateOfBirth = dateOfBirth;
+        CurrentAge = currentAge;
         CurrentIncome = currentIncome;
+        SalarySacrifice = salarySacrifice;
         RetirementAge = retirementAge;
+        GrowthStrategy = growthStrategy;
     }
 
     /// <summary>

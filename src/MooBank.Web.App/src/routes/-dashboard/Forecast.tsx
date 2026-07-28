@@ -4,11 +4,11 @@ import { Line } from "react-chartjs-2";
 
 import { useChartColours } from "utils/chartColours";
 import { WidgetError } from "components/WidgetError";
-import { forecastChartData, forecastChartOptions } from "../forecast/-utils/forecastChart";
+import { forecastChartData, forecastChartOptions } from "../planning/-utils/forecastChart";
 import { useUser } from "hooks/useUser";
-import { useForecastPlans } from "../forecast/-hooks/useForecastPlans";
-import { useForecastPlan } from "../forecast/-hooks/useForecastPlan";
-import { useForecastResult } from "../forecast/-hooks/useForecastResult";
+import { useForecastPlans } from "../planning/-hooks/useForecastPlans";
+import { useForecastPlan } from "../planning/-hooks/useForecastPlan";
+import { useForecastResult } from "../planning/-hooks/useForecastResult";
 
 const MONTHS_BEHIND = 6;
 const MONTHS_AHEAD = 6;
@@ -37,7 +37,7 @@ export const ForecastWidget: React.FC = () => {
 
     if (hasError) {
         return (
-            <Widget header={header} size="double" headerSize={2} className="report forecast-widget" to="/forecast">
+            <Widget header={header} size="double" headerSize={2} className="report forecast-widget" to="/planning">
                 <WidgetError />
             </Widget>
         );
@@ -56,7 +56,7 @@ export const ForecastWidget: React.FC = () => {
     const options = forecastChartOptions(currencyCode, colours);
 
     return (
-        <Widget header={header} size="double" headerSize={2} className="report forecast-widget" loading={plansLoading || isFetching} to="/forecast">
+        <Widget header={header} size="double" headerSize={2} className="report forecast-widget" loading={plansLoading || isFetching} to="/planning">
             <div className="forecast-widget-chart">
                 <Line data={data} options={options} />
             </div>

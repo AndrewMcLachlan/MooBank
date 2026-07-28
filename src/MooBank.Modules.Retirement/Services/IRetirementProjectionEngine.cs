@@ -10,5 +10,9 @@ public interface IRetirementProjectionEngine
     /// </summary>
     /// <param name="plan">The plan, with its members and their instruments loaded.</param>
     /// <param name="today">The date the projection starts from.</param>
-    RetirementProjection Calculate(DomainEntities.RetirementPlan plan, DateOnly today);
+    /// <param name="overrides">
+    /// Values to run under instead of the plan's own. Used by the tweak sliders; the plan is never
+    /// modified.
+    /// </param>
+    RetirementProjection Calculate(DomainEntities.RetirementPlan plan, DateOnly today, ProjectionOverrides? overrides = null);
 }

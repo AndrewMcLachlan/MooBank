@@ -83,6 +83,17 @@ public sealed record RetirementMemberOutcome
     /// projected for them.
     /// </summary>
     public bool AlreadyRetired { get; init; }
+
+    /// <summary>
+    /// The investment option this member's balance was projected under.
+    /// </summary>
+    public GrowthStrategy GrowthStrategy { get; init; }
+
+    /// <summary>
+    /// The nominal return the strategy implies. Surfaced so the page can show what a strategy
+    /// actually means without the caller having to know the table.
+    /// </summary>
+    public decimal ReturnRate { get; init; }
 }
 
 [DisplayName("RetirementProjectionSummary")]

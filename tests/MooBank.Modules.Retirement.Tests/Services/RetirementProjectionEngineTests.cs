@@ -16,12 +16,6 @@ public class RetirementProjectionEngineTests
 {
     private static readonly DateOnly Today = new(2026, 1, 1);
 
-    /// <summary>
-    /// A member turning 60 on the projection date, so with a retirement age of 65 they have
-    /// exactly five years to run.
-    /// </summary>
-    private static readonly DateOnly BornSixtyYearsAgo = new(1966, 1, 1);
-
     private readonly RetirementProjectionEngine _engine = new();
 
     /// <summary>
@@ -34,7 +28,7 @@ public class RetirementProjectionEngineTests
     {
         // Arrange
         var plan = TestEntities.CreatePlan(members: [
-            TestEntities.CreateMember(dateOfBirth: BornSixtyYearsAgo, retirementAge: 65, accountBalances: [100_000m]),
+            TestEntities.CreateMember(retirementAge: 65, accountBalances: [100_000m]),
         ]);
 
         // Act
@@ -60,7 +54,7 @@ public class RetirementProjectionEngineTests
     {
         // Arrange
         var plan = TestEntities.CreatePlan(members: [
-            TestEntities.CreateMember(dateOfBirth: BornSixtyYearsAgo, retirementAge: 65, currentIncome: 100_000m, accountBalances: [100_000m]),
+            TestEntities.CreateMember(retirementAge: 65, currentIncome: 100_000m, accountBalances: [100_000m]),
         ]);
 
         // Act
@@ -88,7 +82,7 @@ public class RetirementProjectionEngineTests
     {
         // Arrange
         var plan = TestEntities.CreatePlan(members: [
-            TestEntities.CreateMember(dateOfBirth: BornSixtyYearsAgo, retirementAge: 65, currentIncome: 100_000m, accountBalances: [100_000m]),
+            TestEntities.CreateMember(retirementAge: 65, currentIncome: 100_000m, accountBalances: [100_000m]),
         ]);
 
         // Act
@@ -109,7 +103,7 @@ public class RetirementProjectionEngineTests
     {
         // Arrange
         var plan = TestEntities.CreatePlan(members: [
-            TestEntities.CreateMember(dateOfBirth: BornSixtyYearsAgo, accountBalances: [50_000m, 30_000m, 20_000m]),
+            TestEntities.CreateMember(accountBalances: [50_000m, 30_000m, 20_000m]),
         ]);
 
         // Act
@@ -132,7 +126,7 @@ public class RetirementProjectionEngineTests
         var plan = TestEntities.CreatePlan(
             inflationRate: 0.02m,
             contributionsTaxRate: 0.15m,
-            members: [TestEntities.CreateMember(dateOfBirth: BornSixtyYearsAgo, retirementAge: 65, currentIncome: 100_000m, accountBalances: [0m])]);
+            members: [TestEntities.CreateMember(retirementAge: 65, currentIncome: 100_000m, accountBalances: [0m])]);
 
         // Act
         var years = _engine.Calculate(plan, Today).Years.ToList();
@@ -155,7 +149,7 @@ public class RetirementProjectionEngineTests
         // Arrange
         var plan = TestEntities.CreatePlan(
             inflationRate: 0.03m,
-            members: [TestEntities.CreateMember(dateOfBirth: BornSixtyYearsAgo, retirementAge: 65, accountBalances: [100_000m])]);
+            members: [TestEntities.CreateMember(retirementAge: 65, accountBalances: [100_000m])]);
 
         // Act
         var finalYear = _engine.Calculate(plan, Today).Years.Last();
@@ -177,7 +171,7 @@ public class RetirementProjectionEngineTests
     {
         // Arrange
         var plan = TestEntities.CreatePlan(members: [
-            TestEntities.CreateMember(dateOfBirth: BornSixtyYearsAgo, accountBalances: [100_000m]),
+            TestEntities.CreateMember(accountBalances: [100_000m]),
         ]);
 
         // Act
@@ -197,7 +191,7 @@ public class RetirementProjectionEngineTests
     {
         // Arrange
         var plan = TestEntities.CreatePlan(members: [
-            TestEntities.CreateMember(dateOfBirth: BornSixtyYearsAgo, retirementAge: 55, accountBalances: [100_000m]),
+            TestEntities.CreateMember(retirementAge: 55, accountBalances: [100_000m]),
         ]);
 
         // Act
@@ -222,8 +216,8 @@ public class RetirementProjectionEngineTests
     public void Calculate_MembersRetiringInDifferentYears_CapturesEachAtTheirOwnRetirement()
     {
         // Arrange
-        var earlier = TestEntities.CreateMember(name: "Early", dateOfBirth: BornSixtyYearsAgo, retirementAge: 62, currentIncome: 100_000m, accountBalances: [100_000m]);
-        var later = TestEntities.CreateMember(name: "Late", dateOfBirth: BornSixtyYearsAgo, retirementAge: 67, currentIncome: 100_000m, accountBalances: [100_000m]);
+        var earlier = TestEntities.CreateMember(name: "Early", retirementAge: 62, currentIncome: 100_000m, accountBalances: [100_000m]);
+        var later = TestEntities.CreateMember(name: "Late", retirementAge: 67, currentIncome: 100_000m, accountBalances: [100_000m]);
         var plan = TestEntities.CreatePlan(members: [earlier, later]);
 
         // Act
@@ -252,8 +246,8 @@ public class RetirementProjectionEngineTests
     {
         // Arrange
         var plan = TestEntities.CreatePlan(members: [
-            TestEntities.CreateMember(name: "Early", dateOfBirth: BornSixtyYearsAgo, retirementAge: 61, currentIncome: 100_000m, accountBalances: [0m]),
-            TestEntities.CreateMember(name: "Late", dateOfBirth: BornSixtyYearsAgo, retirementAge: 65, currentIncome: 100_000m, accountBalances: [0m]),
+            TestEntities.CreateMember(name: "Early", retirementAge: 61, currentIncome: 100_000m, accountBalances: [0m]),
+            TestEntities.CreateMember(name: "Late", retirementAge: 65, currentIncome: 100_000m, accountBalances: [0m]),
         ]);
 
         // Act
@@ -275,8 +269,8 @@ public class RetirementProjectionEngineTests
     {
         // Arrange
         var plan = TestEntities.CreatePlan(members: [
-            TestEntities.CreateMember(name: "Early", dateOfBirth: BornSixtyYearsAgo, retirementAge: 61, currentIncome: 0m, accountBalances: [100_000m]),
-            TestEntities.CreateMember(name: "Late", dateOfBirth: BornSixtyYearsAgo, retirementAge: 65, currentIncome: 0m, accountBalances: [0m]),
+            TestEntities.CreateMember(name: "Early", retirementAge: 61, currentIncome: 0m, accountBalances: [100_000m]),
+            TestEntities.CreateMember(name: "Late", retirementAge: 65, currentIncome: 0m, accountBalances: [0m]),
         ]);
 
         // Act
@@ -318,7 +312,7 @@ public class RetirementProjectionEngineTests
     {
         // Arrange
         var plan = TestEntities.CreatePlan(members: [
-            TestEntities.CreateMember(dateOfBirth: new DateOnly(1966, 12, 31), retirementAge: 65, accountBalances: [0m]),
+            TestEntities.CreateMember(currentAge: 59, retirementAge: 65, accountBalances: [0m]),
         ]);
 
         // Act
@@ -407,7 +401,7 @@ public class RetirementProjectionEngineTests
         // Arrange
         var plan = TestEntities.CreatePlan(
             lifeExpectancy: 90,
-            members: [TestEntities.CreateMember(dateOfBirth: BornSixtyYearsAgo, retirementAge: 65, accountBalances: [100_000m])]);
+            members: [TestEntities.CreateMember(retirementAge: 65, accountBalances: [100_000m])]);
 
         // Act
         var projection = _engine.Calculate(plan, Today);
@@ -429,7 +423,7 @@ public class RetirementProjectionEngineTests
         // Arrange
         var plan = TestEntities.CreatePlan(
             lifeExpectancy: 65,
-            members: [TestEntities.CreateMember(dateOfBirth: BornSixtyYearsAgo, retirementAge: 65, accountBalances: [100_000m])]);
+            members: [TestEntities.CreateMember(retirementAge: 65, accountBalances: [100_000m])]);
 
         // Act
         var member = _engine.Calculate(plan, Today).Members.Single();
@@ -448,8 +442,8 @@ public class RetirementProjectionEngineTests
     {
         // Arrange
         var plan = TestEntities.CreatePlan(members: [
-            TestEntities.CreateMember(name: "One", dateOfBirth: BornSixtyYearsAgo, retirementAge: 65, accountBalances: [100_000m]),
-            TestEntities.CreateMember(name: "Two", dateOfBirth: BornSixtyYearsAgo, retirementAge: 65, accountBalances: [200_000m]),
+            TestEntities.CreateMember(name: "One", retirementAge: 65, accountBalances: [100_000m]),
+            TestEntities.CreateMember(name: "Two", retirementAge: 65, accountBalances: [200_000m]),
         ]);
 
         // Act
@@ -475,8 +469,8 @@ public class RetirementProjectionEngineTests
             inflationRate: 0.025m,
             contributionsTaxRate: 0.15m,
             members: [
-                TestEntities.CreateMember(dateOfBirth: BornSixtyYearsAgo, retirementAge: 67, currentIncome: 95_000m, accountBalances: [180_000m]),
-                TestEntities.CreateMember(dateOfBirth: new DateOnly(1972, 6, 15), retirementAge: 65, currentIncome: 70_000m, accountBalances: [120_000m]),
+                TestEntities.CreateMember(retirementAge: 67, currentIncome: 95_000m, accountBalances: [180_000m]),
+                TestEntities.CreateMember(currentAge: 53, retirementAge: 65, currentIncome: 70_000m, accountBalances: [120_000m]),
             ]);
 
         // Act
@@ -497,7 +491,7 @@ public class RetirementProjectionEngineTests
     {
         // Arrange
         var plan = TestEntities.CreatePlan(members: [
-            TestEntities.CreateMember(dateOfBirth: BornSixtyYearsAgo, retirementAge: 67, accountBalances: [180_000m]),
+            TestEntities.CreateMember(retirementAge: 67, accountBalances: [180_000m]),
         ]);
 
         // Act

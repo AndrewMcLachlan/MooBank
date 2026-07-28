@@ -14,7 +14,7 @@ import { PlannedItemsTable } from "./-components/PlannedItemsTable";
 import { ForecastSettingsModal } from "./-components/ForecastSettingsModal";
 import { CreateForecastPlan } from "./-components/CreateForecastPlan";
 
-export const Route = createFileRoute("/forecast/")({
+export const Route = createFileRoute("/planning/")({
     component: Forecast,
 });
 

@@ -1,4 +1,4 @@
-import type { RetirementPlanMember, SimpleRetirementPlan } from "api/types.gen";
+import type { GrowthStrategy, RetirementPlanMember, SimpleRetirementPlan } from "api/types.gen";
 
 /**
  * Starting assumptions for a new plan, matching the Australian settings a superannuation
@@ -15,11 +15,27 @@ export const defaultAssumptions = {
 
 export const defaultRetirementAge = 67;
 
+export const defaultCurrentAge = 40;
+
+/**
+ * The investment options a member can be projected under. The rates each one implies live on the
+ * server; the projection reports the rate it used, so nothing here needs to restate them.
+ */
+export const growthStrategies: { value: GrowthStrategy; label: string }[] = [
+    { value: "Conservative", label: "Conservative" },
+    { value: "Balanced", label: "Balanced" },
+    { value: "Growth", label: "Growth" },
+    { value: "HighGrowth", label: "High Growth" },
+    { value: "Custom", label: "Custom (use the plan's rate)" },
+];
+
 export const emptyMember = (name: string): RetirementPlanMember => ({
     name,
-    dateOfBirth: "",
+    currentAge: defaultCurrentAge,
     currentIncome: 0,
+    salarySacrifice: 0,
     retirementAge: defaultRetirementAge,
+    growthStrategy: "Balanced",
     instrumentIds: [],
 });
 

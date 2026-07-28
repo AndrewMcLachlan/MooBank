@@ -67,19 +67,14 @@ const sideMenu = [
         route: "/budget"
     },
     {
-        text: "Forecast",
+        text: "Planning",
         image: <Icons.Trendline />,
-        route: "/forecast"
+        route: "/planning"
     },
     {
         text: "Groups",
         image: <Icons.Stack />,
         route: "/groups"
-    },
-    {
-        text: "Retirement",
-        image: <Icons.PiggyBank />,
-        route: "/retirement"
     },
     {
         text: "Tags",

@@ -8,7 +8,9 @@ public record RetirementPlanBase
     public required string Name { get; init; }
 
     /// <summary>
-    /// Assumed nominal return on the balance, as a rate (0.065 is 6.5% a year).
+    /// Assumed nominal return on the balance, as a rate (0.065 is 6.5% a year). Applies to members
+    /// whose growth strategy is <see cref="GrowthStrategy.Custom"/>; the named strategies carry
+    /// their own assumed return.
     /// </summary>
     public decimal ExpectedReturnRate { get; init; }
 
@@ -55,14 +57,25 @@ public sealed record RetirementPlanMember
 
     public required string Name { get; init; }
 
-    public DateOnly DateOfBirth { get; init; }
+    /// <summary>
+    /// The member's age now. Held rather than a date of birth so the application does not store
+    /// personal information it has no use for.
+    /// </summary>
+    public int CurrentAge { get; init; }
 
     /// <summary>
     /// Current gross annual income, which drives employer contributions.
     /// </summary>
     public decimal CurrentIncome { get; init; }
 
+    /// <summary>
+    /// Additional concessional contributions made from pre-tax income each year.
+    /// </summary>
+    public decimal SalarySacrifice { get; init; }
+
     public int RetirementAge { get; init; }
+
+    public GrowthStrategy GrowthStrategy { get; init; }
 
     /// <summary>
     /// The superannuation instruments belonging to this member.

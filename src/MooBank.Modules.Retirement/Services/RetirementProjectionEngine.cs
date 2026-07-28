@@ -12,10 +12,11 @@ namespace Asm.MooBank.Modules.Retirement.Services;
 /// makes is stated here rather than buried in the arithmetic:
 ///
 /// <list type="bullet">
-/// <item>Contributions are employer contributions only, at the plan's superannuation guarantee
-/// rate, reduced by the contributions tax rate as they enter the fund. Salary sacrifice,
-/// after-tax contributions and the concessional cap are not modelled.</item>
-/// <item>Income grows at the inflation rate, so a member's contributions hold their real value.</item>
+/// <item>Contributions are the employer's, at the plan's superannuation guarantee rate, plus any
+/// salary sacrifice. Both are concessional, so both are reduced by the contributions tax rate as
+/// they enter the fund. After-tax contributions and the concessional cap are not modelled.</item>
+/// <item>Income and salary sacrifice grow at the inflation rate, so both hold their real
+/// value.</item>
 /// <item>A year's investment return is applied to the opening balance; that year's contributions
 /// earn nothing until the following year. This is the conservative end of the range — real funds
 /// receive contributions through the year.</item>
@@ -32,16 +33,43 @@ namespace Asm.MooBank.Modules.Retirement.Services;
 /// </remarks>
 internal class RetirementProjectionEngine : IRetirementProjectionEngine
 {
-    public RetirementProjection Calculate(DomainEntities.RetirementPlan plan, DateOnly today)
+    /// <summary>
+    /// Assumed long-run nominal returns for the named investment options.
+    /// </summary>
+    /// <remarks>
+    /// Illustrative figures in the range Australian funds publish for options of each risk level,
+    /// not a quote from any particular fund. A member set to <see cref="GrowthStrategy.Custom"/>
+    /// uses the rate on the plan instead.
+    /// </remarks>
+    private static readonly Dictionary<GrowthStrategy, decimal> StrategyReturns = new()
+    {
+        [GrowthStrategy.Conservative] = 0.045m,
+        [GrowthStrategy.Balanced] = 0.060m,
+        [GrowthStrategy.Growth] = 0.070m,
+        [GrowthStrategy.HighGrowth] = 0.080m,
+    };
+
+    /// <summary>
+    /// The assumed nominal return for a strategy, falling back to the plan's own rate.
+    /// </summary>
+    internal static decimal ReturnRateFor(GrowthStrategy strategy, decimal planRate) =>
+        StrategyReturns.TryGetValue(strategy, out var rate) ? rate : planRate;
+
+    public RetirementProjection Calculate(DomainEntities.RetirementPlan plan, DateOnly today, ProjectionOverrides? overrides = null)
     {
         ArgumentNullException.ThrowIfNull(plan);
 
+        var assumptions = ResolvedAssumptions.From(plan, overrides);
         var startYear = today.Year;
-        var members = plan.Members.Select(m => MemberState.From(m, today)).ToList();
+
+        var members = plan.Members
+            .Select(m => ResolvedMember.From(m, overrides, CurrentBalance(m)))
+            .Select(m => new MemberState(m, assumptions))
+            .ToList();
 
         if (members.Count == 0)
         {
-            return EmptyProjection(plan, startYear);
+            return EmptyProjection(plan, assumptions, startYear);
         }
 
         var horizon = members.Max(m => m.YearsToRetirement);
@@ -67,7 +95,7 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
         for (var yearOffset = 1; yearOffset <= horizon; yearOffset++)
         {
             // A year further from today, so a dollar in it is worth a year's inflation less.
-            todaysDollarsFactor /= 1m + plan.InflationRate;
+            todaysDollarsFactor /= 1m + assumptions.InflationRate;
 
             var opening = 0m;
             var contributions = 0m;
@@ -77,9 +105,9 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
             {
                 opening += member.Balance;
 
-                var memberReturn = Round(member.Balance * plan.ExpectedReturnRate);
+                var memberReturn = Round(member.Balance * member.ReturnRate);
                 var memberContribution = member.IsAccumulating(yearOffset)
-                    ? Round(member.IncomeForYear(yearOffset, plan.InflationRate) * plan.SuperGuaranteeRate * (1m - plan.ContributionsTaxRate))
+                    ? Round(member.ContributionForYear(yearOffset, assumptions))
                     : 0m;
 
                 member.Balance += memberReturn + memberContribution;
@@ -109,9 +137,7 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
             });
         }
 
-        var realReturnRate = RealReturnRate(plan.ExpectedReturnRate, plan.InflationRate);
-
-        var outcomes = members.Select(m => m.ToOutcome(plan, startYear, realReturnRate)).ToList();
+        var outcomes = members.Select(m => m.ToOutcome(assumptions, startYear)).ToList();
 
         var finalYear = years[^1];
 
@@ -127,7 +153,7 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
                 BalanceAtRetirementInTodaysDollars = finalYear.ClosingBalanceInTodaysDollars,
                 AnnualRetirementIncomeInTodaysDollars = outcomes.Sum(o => o.AnnualRetirementIncomeInTodaysDollars),
                 RetirementYear = startYear + horizon,
-                RealReturnRate = realReturnRate,
+                RealReturnRate = RealReturnRate(assumptions.ExpectedReturnRate, assumptions.InflationRate),
             },
         };
     }
@@ -168,7 +194,20 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
         return Round(balance * realReturnRate / (decimal)discountFactor);
     }
 
-    private static RetirementProjection EmptyProjection(DomainEntities.RetirementPlan plan, int startYear) =>
+    /// <summary>
+    /// A member's combined balance across their selected instruments.
+    /// </summary>
+    /// <remarks>
+    /// Only transaction instruments carry a balance; anything else selected contributes nothing
+    /// rather than failing the projection.
+    /// </remarks>
+    private static decimal CurrentBalance(DomainEntities.RetirementPlanMember member) =>
+        member.Accounts
+              .Select(a => a.Instrument)
+              .OfType<TransactionInstrument>()
+              .Sum(i => i.Balance);
+
+    private static RetirementProjection EmptyProjection(DomainEntities.RetirementPlan plan, ResolvedAssumptions assumptions, int startYear) =>
         new()
         {
             PlanId = plan.Id,
@@ -177,7 +216,7 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
             Summary = new RetirementProjectionSummary
             {
                 RetirementYear = startYear,
-                RealReturnRate = RealReturnRate(plan.ExpectedReturnRate, plan.InflationRate),
+                RealReturnRate = RealReturnRate(assumptions.ExpectedReturnRate, assumptions.InflationRate),
             },
         };
 
@@ -188,21 +227,25 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
     /// </summary>
     private sealed class MemberState
     {
-        private MemberState(DomainEntities.RetirementPlanMember member, int currentAge, decimal balance)
+        private readonly ResolvedMember _member;
+
+        public MemberState(ResolvedMember member, ResolvedAssumptions assumptions)
         {
-            Member = member;
-            CurrentAge = currentAge;
-            StartingBalance = balance;
-            Balance = balance;
-            BalanceAtRetirement = balance;
-            YearsToRetirement = Math.Max(0, member.RetirementAge - currentAge);
+            _member = member;
+            StartingBalance = member.Balance;
+            Balance = member.Balance;
+            BalanceAtRetirement = member.Balance;
+            YearsToRetirement = Math.Max(0, member.RetirementAge - member.CurrentAge);
+            ReturnRate = ReturnRateFor(member.GrowthStrategy, assumptions.ExpectedReturnRate);
         }
 
-        public DomainEntities.RetirementPlanMember Member { get; }
-
-        public int CurrentAge { get; }
-
         public int YearsToRetirement { get; }
+
+        /// <summary>
+        /// The nominal return this member's balance earns, which their growth strategy may set
+        /// independently of the rest of the household.
+        /// </summary>
+        public decimal ReturnRate { get; }
 
         public decimal StartingBalance { get; }
 
@@ -216,10 +259,7 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
         /// </summary>
         public decimal TodaysDollarsFactorAtRetirement { get; set; } = 1m;
 
-        public bool AlreadyRetired => CurrentAge >= Member.RetirementAge;
-
-        public static MemberState From(DomainEntities.RetirementPlanMember member, DateOnly today) =>
-            new(member, member.AgeAt(today), CurrentBalance(member));
+        public bool AlreadyRetired => _member.CurrentAge >= _member.RetirementAge;
 
         /// <summary>
         /// Whether the member is still contributing in the given projection year.
@@ -227,32 +267,39 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
         public bool IsAccumulating(int yearOffset) => yearOffset <= YearsToRetirement;
 
         /// <summary>
-        /// The member's income in a projection year, grown from today's income at the inflation
-        /// rate. The first projected year uses today's income unindexed.
+        /// Employer contributions plus salary sacrifice for a projection year, net of contributions
+        /// tax. Both grow with inflation, so the first projected year uses today's figures
+        /// unindexed.
         /// </summary>
-        public decimal IncomeForYear(int yearOffset, decimal inflationRate)
+        public decimal ContributionForYear(int yearOffset, ResolvedAssumptions assumptions)
         {
-            var income = Member.CurrentIncome;
+            var indexation = 1m;
 
             for (var i = 1; i < yearOffset; i++)
             {
-                income *= 1m + inflationRate;
+                indexation *= 1m + assumptions.InflationRate;
             }
 
-            return income;
+            var employer = _member.CurrentIncome * indexation * assumptions.SuperGuaranteeRate;
+            var sacrificed = _member.SalarySacrifice * indexation;
+
+            return (employer + sacrificed) * (1m - assumptions.ContributionsTaxRate);
         }
 
-        public RetirementMemberOutcome ToOutcome(DomainEntities.RetirementPlan plan, int startYear, decimal realReturnRate)
+        public RetirementMemberOutcome ToOutcome(ResolvedAssumptions assumptions, int startYear)
         {
             var balanceAtRetirementReal = Round(BalanceAtRetirement * TodaysDollarsFactorAtRetirement);
-            var drawdownYears = plan.LifeExpectancy - Member.RetirementAge;
+            var drawdownYears = assumptions.LifeExpectancy - _member.RetirementAge;
+
+            // Drawdown earns this member's own return, not the household's.
+            var realReturnRate = RealReturnRate(ReturnRate, assumptions.InflationRate);
 
             return new RetirementMemberOutcome
             {
-                MemberId = Member.Id,
-                Name = Member.Name,
-                CurrentAge = CurrentAge,
-                RetirementAge = Member.RetirementAge,
+                MemberId = _member.Id,
+                Name = _member.Name,
+                CurrentAge = _member.CurrentAge,
+                RetirementAge = _member.RetirementAge,
                 YearsToRetirement = YearsToRetirement,
                 RetirementYear = startYear + YearsToRetirement,
                 CurrentBalance = StartingBalance,
@@ -260,20 +307,9 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
                 BalanceAtRetirementInTodaysDollars = balanceAtRetirementReal,
                 AnnualRetirementIncomeInTodaysDollars = AnnualDrawdown(balanceAtRetirementReal, realReturnRate, drawdownYears),
                 AlreadyRetired = AlreadyRetired,
+                GrowthStrategy = _member.GrowthStrategy,
+                ReturnRate = ReturnRate,
             };
         }
-
-        /// <summary>
-        /// The member's combined balance across their selected instruments.
-        /// </summary>
-        /// <remarks>
-        /// Only transaction instruments carry a balance; anything else selected contributes nothing
-        /// rather than failing the projection.
-        /// </remarks>
-        private static decimal CurrentBalance(DomainEntities.RetirementPlanMember member) =>
-            member.Accounts
-                  .Select(a => a.Instrument)
-                  .OfType<TransactionInstrument>()
-                  .Sum(i => i.Balance);
     }
 }

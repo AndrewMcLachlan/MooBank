@@ -4543,6 +4543,22 @@
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RetirementProjectionOverrides"
+                  }
+                ]
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -7276,6 +7292,15 @@
           }
         }
       },
+      "GrowthStrategy": {
+        "enum": [
+          "Custom",
+          "Conservative",
+          "Balanced",
+          "Growth",
+          "HighGrowth"
+        ]
+      },
       "HexColour": { },
       "HistoricalIncomeSettings": {
         "required": [
@@ -8487,7 +8512,9 @@
           "balanceAtRetirement",
           "balanceAtRetirementInTodaysDollars",
           "annualRetirementIncomeInTodaysDollars",
-          "alreadyRetired"
+          "alreadyRetired",
+          "growthStrategy",
+          "returnRate"
         ],
         "type": "object",
         "properties": {
@@ -8532,6 +8559,63 @@
           },
           "alreadyRetired": {
             "type": "boolean"
+          },
+          "growthStrategy": {
+            "$ref": "#/components/schemas/GrowthStrategy"
+          },
+          "returnRate": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "RetirementMemberOverride": {
+        "required": [
+          "memberId"
+        ],
+        "type": "object",
+        "properties": {
+          "memberId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "currentAge": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "currentIncome": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "salarySacrifice": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "retirementAge": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "growthStrategy": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/GrowthStrategy"
+              }
+            ]
           }
         }
       },
@@ -8596,9 +8680,11 @@
       "RetirementPlanMember": {
         "required": [
           "name",
-          "dateOfBirth",
+          "currentAge",
           "currentIncome",
+          "salarySacrifice",
           "retirementAge",
+          "growthStrategy",
           "instrumentIds"
         ],
         "type": "object",
@@ -8613,17 +8699,24 @@
           "name": {
             "type": "string"
           },
-          "dateOfBirth": {
-            "type": "string",
-            "format": "date"
+          "currentAge": {
+            "type": "integer",
+            "format": "int32"
           },
           "currentIncome": {
+            "type": "number",
+            "format": "double"
+          },
+          "salarySacrifice": {
             "type": "number",
             "format": "double"
           },
           "retirementAge": {
             "type": "integer",
             "format": "int32"
+          },
+          "growthStrategy": {
+            "$ref": "#/components/schemas/GrowthStrategy"
           },
           "instrumentIds": {
             "type": "array",
@@ -8661,6 +8754,55 @@
           },
           "summary": {
             "$ref": "#/components/schemas/RetirementProjectionSummary"
+          }
+        }
+      },
+      "RetirementProjectionOverrides": {
+        "required": [
+          "members"
+        ],
+        "type": "object",
+        "properties": {
+          "expectedReturnRate": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "inflationRate": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "superGuaranteeRate": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "contributionsTaxRate": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "lifeExpectancy": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RetirementMemberOverride"
+            }
           }
         }
       },

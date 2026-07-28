@@ -1,6 +1,6 @@
 import { Section } from "@andrewmclachlan/moo-ds";
 import type { RetirementPlan } from "api/types.gen";
-import { toPercent } from "../-utils/retirementDefaults";
+import { toPercent } from "../-retirement-utils/retirementDefaults";
 
 interface RetirementAssumptionsNoteProps {
     plan?: RetirementPlan;

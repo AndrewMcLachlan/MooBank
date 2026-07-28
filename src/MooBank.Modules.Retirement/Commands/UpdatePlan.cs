@@ -48,14 +48,14 @@ internal class UpdatePlanHandler(
         {
             if (member.Id is null)
             {
-                entity.AddMember(member.Name, member.DateOfBirth, member.CurrentIncome, member.RetirementAge, member.InstrumentIds);
+                entity.AddMember(member.Name, member.CurrentAge, member.CurrentIncome, member.SalarySacrifice, member.RetirementAge, member.GrowthStrategy, member.InstrumentIds);
                 continue;
             }
 
             var existing = entity.Members.SingleOrDefault(m => m.Id == member.Id.Value) ??
                 throw new NotFoundException($"Member {member.Id} does not belong to this plan");
 
-            existing.Update(member.Name, member.DateOfBirth, member.CurrentIncome, member.RetirementAge);
+            existing.Update(member.Name, member.CurrentAge, member.CurrentIncome, member.SalarySacrifice, member.RetirementAge, member.GrowthStrategy);
             existing.SetAccounts(member.InstrumentIds);
         }
     }

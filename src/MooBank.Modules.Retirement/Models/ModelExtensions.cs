@@ -27,9 +27,11 @@ public static class ModelExtensions
         {
             Id = member.Id,
             Name = member.Name,
-            DateOfBirth = member.DateOfBirth,
+            CurrentAge = member.CurrentAge,
             CurrentIncome = member.CurrentIncome,
+            SalarySacrifice = member.SalarySacrifice,
             RetirementAge = member.RetirementAge,
+            GrowthStrategy = member.GrowthStrategy,
             InstrumentIds = member.Accounts.Select(a => a.InstrumentId).ToList(),
         };
 

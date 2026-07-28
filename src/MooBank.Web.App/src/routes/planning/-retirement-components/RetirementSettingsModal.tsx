@@ -1,10 +1,10 @@
 import { Button, ComboBox, Form, Modal } from "@andrewmclachlan/moo-ds";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
-import type { LogicalAccount, RetirementPlan, SimpleRetirementPlan } from "api/types.gen";
-import { useUpdateRetirementPlan } from "../-hooks/useUpdateRetirementPlan";
+import type { GrowthStrategy, LogicalAccount, RetirementPlan, SimpleRetirementPlan } from "api/types.gen";
+import { useUpdateRetirementPlan } from "../-retirement-hooks/useUpdateRetirementPlan";
 import { useAccounts } from "hooks/useAccounts";
 import { CurrencyInput } from "components";
-import { defaultRetirementAge, fromPercent, toPercent } from "../-utils/retirementDefaults";
+import { defaultCurrentAge, defaultRetirementAge, fromPercent, growthStrategies, toPercent } from "../-retirement-utils/retirementDefaults";
 
 interface RetirementSettingsModalProps {
     plan?: RetirementPlan;
@@ -27,7 +27,9 @@ interface RetirementSettingsFormValues {
     members: {
         id?: string;
         name: string;
-        dateOfBirth: string;
+        currentAge: number;
+        salarySacrifice: number;
+        growthStrategy: GrowthStrategy;
         currentIncome: number;
         retirementAge: number;
         instrumentIds: string[];
@@ -44,7 +46,9 @@ const toFormValues = (plan?: RetirementPlan): RetirementSettingsFormValues => ({
     members: (plan?.members ?? []).map(m => ({
         id: m.id,
         name: m.name,
-        dateOfBirth: m.dateOfBirth,
+        currentAge: m.currentAge,
+        salarySacrifice: m.salarySacrifice,
+        growthStrategy: m.growthStrategy,
         currentIncome: m.currentIncome,
         retirementAge: m.retirementAge,
         instrumentIds: [...m.instrumentIds],
@@ -61,7 +65,9 @@ const toRequest = (data: RetirementSettingsFormValues): SimpleRetirementPlan => 
     members: data.members.map(m => ({
         id: m.id,
         name: m.name,
-        dateOfBirth: m.dateOfBirth,
+        currentAge: Number(m.currentAge) || 0,
+        salarySacrifice: Number(m.salarySacrifice) || 0,
+        growthStrategy: m.growthStrategy,
         currentIncome: Number(m.currentIncome) || 0,
         retirementAge: Number(m.retirementAge) || 0,
         instrumentIds: m.instrumentIds ?? [],
@@ -147,17 +153,27 @@ export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = (
                                         <Form.Label>Name</Form.Label>
                                         <Form.Input type="text" />
                                     </Form.Group>
-                                    <Form.Group groupId={`members.${index}.dateOfBirth`}>
-                                        <Form.Label>Date of Birth</Form.Label>
-                                        <Form.Input type="date" />
+                                    <Form.Group groupId={`members.${index}.currentAge`}>
+                                        <Form.Label>Current Age</Form.Label>
+                                        <Form.Input type="number" step="1" />
                                     </Form.Group>
                                     <Form.Group groupId={`members.${index}.currentIncome`}>
                                         <Form.Label>Current Income</Form.Label>
                                         <CurrencyInput currency={currencyCode} min={0} />
                                     </Form.Group>
+                                    <Form.Group groupId={`members.${index}.salarySacrifice`}>
+                                        <Form.Label>Salary Sacrifice (a year)</Form.Label>
+                                        <CurrencyInput currency={currencyCode} min={0} />
+                                    </Form.Group>
                                     <Form.Group groupId={`members.${index}.retirementAge`}>
                                         <Form.Label>Retirement Age</Form.Label>
                                         <Form.Input type="number" step="1" />
+                                    </Form.Group>
+                                    <Form.Group groupId={`members.${index}.growthStrategy`}>
+                                        <Form.Label>Growth Strategy</Form.Label>
+                                        <Form.Select>
+                                            {growthStrategies.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+                                        </Form.Select>
                                     </Form.Group>
                                 </div>
                                 <Form.Group groupId={`members.${index}.instrumentIds`}>
@@ -180,7 +196,7 @@ export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = (
                         ))}
                         <Button
                             variant="outline-primary"
-                            onClick={() => append({ name: "", dateOfBirth: "", currentIncome: 0, retirementAge: defaultRetirementAge, instrumentIds: [] })}
+                            onClick={() => append({ name: "", currentAge: defaultCurrentAge, currentIncome: 0, salarySacrifice: 0, retirementAge: defaultRetirementAge, growthStrategy: "Balanced", instrumentIds: [] })}
                         >
                             Add Person
                         </Button>

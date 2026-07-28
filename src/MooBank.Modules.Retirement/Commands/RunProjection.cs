@@ -2,12 +2,13 @@ using System.ComponentModel;
 using Asm.MooBank.Domain.Entities.Retirement.Specifications;
 using Asm.MooBank.Modules.Retirement.Models;
 using Asm.MooBank.Modules.Retirement.Services;
+using Microsoft.AspNetCore.Mvc;
 using DomainEntities = Asm.MooBank.Domain.Entities.Retirement;
 
 namespace Asm.MooBank.Modules.Retirement.Commands;
 
 [DisplayName("RunRetirementProjection")]
-public record RunProjection(Guid PlanId) : ICommand<RetirementProjection>;
+public record RunProjection(Guid PlanId, [FromBody] ProjectionOverrides? Overrides = null) : ICommand<RetirementProjection>;
 
 internal class RunProjectionHandler(
     IQueryable<DomainEntities.RetirementPlan> plans,
@@ -21,6 +22,6 @@ internal class RunProjectionHandler(
             .SingleOrDefaultAsync(p => p.Id == command.PlanId && p.FamilyId == user.FamilyId, cancellationToken) ??
             throw new NotFoundException("Retirement plan not found");
 
-        return projectionEngine.Calculate(plan, DateOnly.FromDateTime(DateTime.UtcNow));
+        return projectionEngine.Calculate(plan, DateOnly.FromDateTime(DateTime.UtcNow), command.Overrides);
     }
 }

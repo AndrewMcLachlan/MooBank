@@ -344,6 +344,8 @@ export type Group = {
     colour?: null | HexColour;
 };
 
+export type GrowthStrategy = 'Custom' | 'Conservative' | 'Balanced' | 'Growth' | 'HighGrowth';
+
 export type HexColour = unknown;
 
 export type HistoricalIncomeSettings = {
@@ -615,6 +617,17 @@ export type RetirementMemberOutcome = {
     balanceAtRetirementInTodaysDollars: number;
     annualRetirementIncomeInTodaysDollars: number;
     alreadyRetired: boolean;
+    growthStrategy: GrowthStrategy;
+    returnRate: number;
+};
+
+export type RetirementMemberOverride = {
+    memberId: string;
+    currentAge?: null | number;
+    currentIncome?: null | number;
+    salarySacrifice?: null | number;
+    retirementAge?: null | number;
+    growthStrategy?: null | GrowthStrategy;
 };
 
 export type RetirementPlan = {
@@ -633,9 +646,11 @@ export type RetirementPlan = {
 export type RetirementPlanMember = {
     id?: null | string;
     name: string;
-    dateOfBirth: string;
+    currentAge: number;
     currentIncome: number;
+    salarySacrifice: number;
     retirementAge: number;
+    growthStrategy: GrowthStrategy;
     instrumentIds: Array<string>;
 };
 
@@ -644,6 +659,15 @@ export type RetirementProjection = {
     years: Array<RetirementProjectionYear>;
     members: Array<RetirementMemberOutcome>;
     summary: RetirementProjectionSummary;
+};
+
+export type RetirementProjectionOverrides = {
+    expectedReturnRate?: null | number;
+    inflationRate?: null | number;
+    superGuaranteeRate?: null | number;
+    contributionsTaxRate?: null | number;
+    lifeExpectancy?: null | number;
+    members: Array<RetirementMemberOverride>;
 };
 
 export type RetirementProjectionSummary = {
@@ -3599,7 +3623,7 @@ export type UpdateRetirementPlanResponses = {
 export type UpdateRetirementPlanResponse = UpdateRetirementPlanResponses[keyof UpdateRetirementPlanResponses];
 
 export type RunRetirementProjectionData = {
-    body?: never;
+    body?: null | RetirementProjectionOverrides;
     path: {
         planId: string;
     };

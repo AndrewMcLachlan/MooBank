@@ -59,10 +59,16 @@ public class RetirementPlanMemberValidator : AbstractValidator<RetirementPlanMem
         RuleFor(x => x.CurrentIncome)
             .GreaterThanOrEqualTo(0m).WithMessage("Income cannot be negative");
 
+        RuleFor(x => x.SalarySacrifice)
+            .GreaterThanOrEqualTo(0m).WithMessage("Salary sacrifice cannot be negative");
+
+        RuleFor(x => x.CurrentAge)
+            .InclusiveBetween(0, 120).WithMessage("Age must be between 0 and 120");
+
         RuleFor(x => x.RetirementAge)
             .InclusiveBetween(1, 120).WithMessage("Retirement age must be between 1 and 120");
 
-        RuleFor(x => x.DateOfBirth)
-            .LessThan(_ => DateOnly.FromDateTime(DateTime.UtcNow)).WithMessage("Date of birth must be in the past");
+        RuleFor(x => x.GrowthStrategy)
+            .IsInEnum().WithMessage("Unknown growth strategy");
     }
 }

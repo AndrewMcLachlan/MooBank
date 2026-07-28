@@ -43,9 +43,11 @@ internal static class TestEntities
     public static DomainPlanMember CreateMember(
         Guid? id = null,
         string? name = null,
-        DateOnly? dateOfBirth = null,
+        int currentAge = 60,
         decimal currentIncome = 100_000m,
+        decimal salarySacrifice = 0m,
         int retirementAge = 65,
+        GrowthStrategy growthStrategy = GrowthStrategy.Custom,
         IEnumerable<decimal>? accountBalances = null)
     {
         var memberId = id ?? Guid.NewGuid();
@@ -53,9 +55,11 @@ internal static class TestEntities
         return new DomainPlanMember(memberId)
         {
             Name = name ?? Faker.Name.FirstName(),
-            DateOfBirth = dateOfBirth ?? new DateOnly(1980, 1, 1),
+            CurrentAge = currentAge,
             CurrentIncome = currentIncome,
+            SalarySacrifice = salarySacrifice,
             RetirementAge = retirementAge,
+            GrowthStrategy = growthStrategy,
             Accounts = (accountBalances ?? []).Select(balance => CreateMemberAccount(memberId, balance)).ToList(),
         };
     }
