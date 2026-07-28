@@ -4377,6 +4377,186 @@
         }
       }
     },
+    "/retirement/plans": {
+      "get": {
+        "tags": [
+          "Retirement"
+        ],
+        "operationId": "get-all-retirement-plans",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RetirementPlan"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Retirement"
+        ],
+        "operationId": "create-retirement-plan",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SimpleRetirementPlan"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RetirementPlan"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/retirement/plans/{id}": {
+      "get": {
+        "tags": [
+          "Retirement"
+        ],
+        "operationId": "get-retirement-plan",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RetirementPlan"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Retirement"
+        ],
+        "operationId": "update-retirement-plan",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SimpleRetirementPlan"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RetirementPlan"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Retirement"
+        ],
+        "operationId": "delete-retirement-plan",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/retirement/plans/{planId}/run": {
+      "post": {
+        "tags": [
+          "Retirement"
+        ],
+        "operationId": "run-retirement-projection",
+        "parameters": [
+          {
+            "name": "planId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RetirementProjection"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/stocks/{instrumentId}": {
       "get": {
         "tags": [
@@ -8295,6 +8475,273 @@
       "ReportType": {
         "type": "object"
       },
+      "RetirementMemberOutcome": {
+        "required": [
+          "name",
+          "memberId",
+          "currentAge",
+          "retirementAge",
+          "yearsToRetirement",
+          "retirementYear",
+          "currentBalance",
+          "balanceAtRetirement",
+          "balanceAtRetirementInTodaysDollars",
+          "annualRetirementIncomeInTodaysDollars",
+          "alreadyRetired"
+        ],
+        "type": "object",
+        "properties": {
+          "memberId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "currentAge": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "retirementAge": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "yearsToRetirement": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "retirementYear": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "currentBalance": {
+            "type": "number",
+            "format": "double"
+          },
+          "balanceAtRetirement": {
+            "type": "number",
+            "format": "double"
+          },
+          "balanceAtRetirementInTodaysDollars": {
+            "type": "number",
+            "format": "double"
+          },
+          "annualRetirementIncomeInTodaysDollars": {
+            "type": "number",
+            "format": "double"
+          },
+          "alreadyRetired": {
+            "type": "boolean"
+          }
+        }
+      },
+      "RetirementPlan": {
+        "required": [
+          "name",
+          "id",
+          "createdUtc",
+          "updatedUtc",
+          "expectedReturnRate",
+          "inflationRate",
+          "superGuaranteeRate",
+          "contributionsTaxRate",
+          "lifeExpectancy",
+          "members"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string"
+          },
+          "expectedReturnRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "inflationRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "superGuaranteeRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "contributionsTaxRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "lifeExpectancy": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RetirementPlanMember"
+            }
+          }
+        }
+      },
+      "RetirementPlanMember": {
+        "required": [
+          "name",
+          "dateOfBirth",
+          "currentIncome",
+          "retirementAge",
+          "instrumentIds"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "format": "date"
+          },
+          "currentIncome": {
+            "type": "number",
+            "format": "double"
+          },
+          "retirementAge": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "instrumentIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        }
+      },
+      "RetirementProjection": {
+        "required": [
+          "years",
+          "members",
+          "summary",
+          "planId"
+        ],
+        "type": "object",
+        "properties": {
+          "planId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "years": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RetirementProjectionYear"
+            }
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RetirementMemberOutcome"
+            }
+          },
+          "summary": {
+            "$ref": "#/components/schemas/RetirementProjectionSummary"
+          }
+        }
+      },
+      "RetirementProjectionSummary": {
+        "required": [
+          "currentBalance",
+          "balanceAtRetirement",
+          "balanceAtRetirementInTodaysDollars",
+          "annualRetirementIncomeInTodaysDollars",
+          "retirementYear",
+          "realReturnRate"
+        ],
+        "type": "object",
+        "properties": {
+          "currentBalance": {
+            "type": "number",
+            "format": "double"
+          },
+          "balanceAtRetirement": {
+            "type": "number",
+            "format": "double"
+          },
+          "balanceAtRetirementInTodaysDollars": {
+            "type": "number",
+            "format": "double"
+          },
+          "annualRetirementIncomeInTodaysDollars": {
+            "type": "number",
+            "format": "double"
+          },
+          "retirementYear": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "realReturnRate": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "RetirementProjectionYear": {
+        "required": [
+          "year",
+          "openingBalance",
+          "contributions",
+          "investmentReturn",
+          "closingBalance",
+          "closingBalanceInTodaysDollars",
+          "allRetired"
+        ],
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "openingBalance": {
+            "type": "number",
+            "format": "double"
+          },
+          "contributions": {
+            "type": "number",
+            "format": "double"
+          },
+          "investmentReturn": {
+            "type": "number",
+            "format": "double"
+          },
+          "closingBalance": {
+            "type": "number",
+            "format": "double"
+          },
+          "closingBalanceInTodaysDollars": {
+            "type": "number",
+            "format": "double"
+          },
+          "allRetired": {
+            "type": "boolean"
+          }
+        }
+      },
       "Rule": {
         "required": [
           "id",
@@ -8681,6 +9128,49 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "SimpleRetirementPlan": {
+        "required": [
+          "name",
+          "expectedReturnRate",
+          "inflationRate",
+          "superGuaranteeRate",
+          "contributionsTaxRate",
+          "lifeExpectancy",
+          "members"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "expectedReturnRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "inflationRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "superGuaranteeRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "contributionsTaxRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "lifeExpectancy": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RetirementPlanMember"
+            }
           }
         }
       },
@@ -10293,6 +10783,9 @@
     },
     {
       "name": "Group Reports"
+    },
+    {
+      "name": "Retirement"
     },
     {
       "name": "Stock Holding"

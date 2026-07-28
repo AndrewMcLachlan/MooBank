@@ -98,6 +98,7 @@
     <Project Path="src/MooBank.Modules.Instruments/MooBank.Modules.Instruments.csproj" />
     <Project Path="src/MooBank.Modules.ReferenceData/MooBank.Modules.ReferenceData.csproj" />
     <Project Path="src/MooBank.Modules.Reports/MooBank.Modules.Reports.csproj" />
+    <Project Path="src/MooBank.Modules.Retirement/MooBank.Modules.Retirement.csproj" />
     <Project Path="src/MooBank.Modules.Stocks/MooBank.Modules.Stocks.csproj" />
     <Project Path="src/MooBank.Modules.Tags/MooBank.Modules.Tags.csproj" />
     <Project Path="src/MooBank.Modules.Transactions/MooBank.Modules.Transactions.csproj" />
@@ -122,6 +123,7 @@
     <Project Path="tests/MooBank.Modules.Institutions.Tests/MooBank.Modules.Institutions.Tests.csproj" />
     <Project Path="tests/MooBank.Modules.Instruments.Tests/MooBank.Modules.Instruments.Tests.csproj" />
     <Project Path="tests/MooBank.Modules.Reports.Tests/MooBank.Modules.Reports.Tests.csproj" />
+    <Project Path="tests/MooBank.Modules.Retirement.Tests/MooBank.Modules.Retirement.Tests.csproj" />
     <Project Path="tests/MooBank.Modules.Stocks.Tests/MooBank.Modules.Stocks.Tests.csproj" />
     <Project Path="tests/MooBank.Modules.Tags.Tests/MooBank.Modules.Tags.Tests.csproj" />
     <Project Path="tests/MooBank.Modules.Transactions.Tests/MooBank.Modules.Transactions.Tests.csproj" />

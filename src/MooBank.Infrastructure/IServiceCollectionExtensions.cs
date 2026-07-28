@@ -9,6 +9,7 @@ using Asm.MooBank.Domain.Entities.Institution;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Domain.Entities.Reports;
+using Asm.MooBank.Domain.Entities.Retirement;
 using Asm.MooBank.Domain.Entities.StockHolding;
 using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Domain.Entities.Transactions;
@@ -76,6 +77,7 @@ public static class IServiceCollectionExtensions
                 .AddScoped<ITagRepository, TagRepository>()
                 .AddScoped<IAccountRepository, UtilityAccountRepository>()
                 .AddScoped<IForecastRepository, ForecastRepository>()
+                .AddScoped<IRetirementRepository, RetirementRepository>()
         ;
 
     public static IServiceCollection AddEntities(this IServiceCollection services) =>

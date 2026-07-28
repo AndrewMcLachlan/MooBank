@@ -77,6 +77,11 @@ const sideMenu = [
         route: "/groups"
     },
     {
+        text: "Retirement",
+        image: <Icons.PiggyBank />,
+        route: "/retirement"
+    },
+    {
         text: "Tags",
         image: <Icons.Tags />,
         route: "/tags"

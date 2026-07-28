@@ -9,80 +9,81 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from "./routes/__root"
-import { Route as ProfileRouteImport } from "./routes/profile"
-import { Route as SplatRouteImport } from "./routes/$"
-import { Route as SettingsRouteRouteImport } from "./routes/settings/route"
 import { Route as IndexRouteImport } from "./routes/index"
-import { Route as TagsIndexRouteImport } from "./routes/tags/index"
-import { Route as SettingsIndexRouteImport } from "./routes/settings/index"
-import { Route as GroupsIndexRouteImport } from "./routes/groups/index"
-import { Route as ForecastIndexRouteImport } from "./routes/forecast/index"
-import { Route as FamilyIndexRouteImport } from "./routes/family/index"
-import { Route as BudgetIndexRouteImport } from "./routes/budget/index"
-import { Route as BillsIndexRouteImport } from "./routes/bills/index"
+import { Route as SplatRouteImport } from "./routes/$"
+import { Route as ProfileRouteImport } from "./routes/profile"
+import { Route as SettingsRouteRouteImport } from "./routes/settings/route"
 import { Route as AccountsIndexRouteImport } from "./routes/accounts/index"
-import { Route as TagsVisualiserRouteImport } from "./routes/tags/visualiser"
-import { Route as SharesCreateRouteImport } from "./routes/shares/create"
-import { Route as GroupsCreateRouteImport } from "./routes/groups/create"
-import { Route as BillsIdRouteImport } from "./routes/bills/$id"
-import { Route as AssetsCreateRouteImport } from "./routes/assets/create"
-import { Route as AccountsCreateRouteImport } from "./routes/accounts/create"
-import { Route as SharesIdRouteRouteImport } from "./routes/shares/$id/route"
-import { Route as AssetsIdRouteRouteImport } from "./routes/assets/$id/route"
 import { Route as AccountsIdRouteRouteImport } from "./routes/accounts/$id/route"
-import { Route as SharesIdIndexRouteImport } from "./routes/shares/$id/index"
-import { Route as SettingsInstitutionsIndexRouteImport } from "./routes/settings/institutions/index"
-import { Route as SettingsFamiliesIndexRouteImport } from "./routes/settings/families/index"
-import { Route as BudgetReportIndexRouteImport } from "./routes/budget/report/index"
-import { Route as BillsAccountsIndexRouteImport } from "./routes/bills/accounts/index"
-import { Route as AssetsIdIndexRouteImport } from "./routes/assets/$id/index"
+import { Route as AccountsCreateRouteImport } from "./routes/accounts/create"
+import { Route as AssetsIdRouteRouteImport } from "./routes/assets/$id/route"
+import { Route as AssetsCreateRouteImport } from "./routes/assets/create"
+import { Route as BillsIndexRouteImport } from "./routes/bills/index"
+import { Route as BillsIdRouteImport } from "./routes/bills/$id"
+import { Route as BudgetIndexRouteImport } from "./routes/budget/index"
+import { Route as FamilyIndexRouteImport } from "./routes/family/index"
+import { Route as ForecastIndexRouteImport } from "./routes/forecast/index"
+import { Route as GroupsIndexRouteImport } from "./routes/groups/index"
+import { Route as GroupsCreateRouteImport } from "./routes/groups/create"
+import { Route as RetirementIndexRouteImport } from "./routes/retirement/index"
+import { Route as SettingsIndexRouteImport } from "./routes/settings/index"
+import { Route as SharesIdRouteRouteImport } from "./routes/shares/$id/route"
+import { Route as SharesCreateRouteImport } from "./routes/shares/create"
+import { Route as TagsIndexRouteImport } from "./routes/tags/index"
+import { Route as TagsVisualiserRouteImport } from "./routes/tags/visualiser"
 import { Route as AccountsIdIndexRouteImport } from "./routes/accounts/$id/index"
-import { Route as SharesIdManageRouteImport } from "./routes/shares/$id/manage"
-import { Route as SettingsInstitutionsAddRouteImport } from "./routes/settings/institutions/add"
-import { Route as SettingsInstitutionsIdRouteImport } from "./routes/settings/institutions/$id"
-import { Route as SettingsFamiliesAddRouteImport } from "./routes/settings/families/add"
-import { Route as SettingsFamiliesIdRouteImport } from "./routes/settings/families/$id"
-import { Route as GroupsIdManageRouteImport } from "./routes/groups/$id/manage"
-import { Route as BillsAccountsCreateRouteImport } from "./routes/bills/accounts/create"
-import { Route as BillsAccountsIdRouteImport } from "./routes/bills/accounts/$id"
-import { Route as AssetsIdManageRouteImport } from "./routes/assets/$id/manage"
-import { Route as AccountsIdTransactionsRouteImport } from "./routes/accounts/$id/transactions"
-import { Route as AccountsIdRulesRouteImport } from "./routes/accounts/$id/rules"
-import { Route as SharesIdReportsRouteRouteImport } from "./routes/shares/$id/reports/route"
 import { Route as AccountsIdReportsRouteRouteImport } from "./routes/accounts/$id/reports/route"
-import { Route as SharesIdTransactionsIndexRouteImport } from "./routes/shares/$id/transactions/index"
-import { Route as SharesIdReportsIndexRouteImport } from "./routes/shares/$id/reports/index"
-import { Route as BudgetReportYearIndexRouteImport } from "./routes/budget/report/$year/index"
-import { Route as AccountsIdReportsIndexRouteImport } from "./routes/accounts/$id/reports/index"
+import { Route as AccountsIdRulesRouteImport } from "./routes/accounts/$id/rules"
+import { Route as AccountsIdTransactionsRouteImport } from "./routes/accounts/$id/transactions"
+import { Route as AssetsIdIndexRouteImport } from "./routes/assets/$id/index"
+import { Route as AssetsIdManageRouteImport } from "./routes/assets/$id/manage"
+import { Route as BillsAccountsIndexRouteImport } from "./routes/bills/accounts/index"
+import { Route as BillsAccountsIdRouteImport } from "./routes/bills/accounts/$id"
+import { Route as BillsAccountsCreateRouteImport } from "./routes/bills/accounts/create"
+import { Route as BudgetReportIndexRouteImport } from "./routes/budget/report/index"
+import { Route as GroupsIdManageRouteImport } from "./routes/groups/$id/manage"
+import { Route as SettingsFamiliesIndexRouteImport } from "./routes/settings/families/index"
+import { Route as SettingsFamiliesIdRouteImport } from "./routes/settings/families/$id"
+import { Route as SettingsFamiliesAddRouteImport } from "./routes/settings/families/add"
+import { Route as SettingsInstitutionsIndexRouteImport } from "./routes/settings/institutions/index"
+import { Route as SettingsInstitutionsIdRouteImport } from "./routes/settings/institutions/$id"
+import { Route as SettingsInstitutionsAddRouteImport } from "./routes/settings/institutions/add"
+import { Route as SharesIdIndexRouteImport } from "./routes/shares/$id/index"
+import { Route as SharesIdManageRouteImport } from "./routes/shares/$id/manage"
+import { Route as SharesIdReportsRouteRouteImport } from "./routes/shares/$id/reports/route"
 import { Route as AccountsIdManageIndexRouteImport } from "./routes/accounts/$id/manage/index"
-import { Route as SharesIdTransactionsAddRouteImport } from "./routes/shares/$id/transactions/add"
-import { Route as SharesIdReportsValueRouteImport } from "./routes/shares/$id/reports/value"
-import { Route as GroupsIdReportsMonthlyBalancesRouteImport } from "./routes/groups/$id/reports.monthly-balances"
-import { Route as BudgetReportYearMonthRouteImport } from "./routes/budget/report/$year/$month"
-import { Route as AccountsIdReportsSuperReturnsRouteImport } from "./routes/accounts/$id/reports/super-returns"
-import { Route as AccountsIdReportsSuperContributionsRouteImport } from "./routes/accounts/$id/reports/super-contributions"
-import { Route as AccountsIdReportsSavingsInterestRouteImport } from "./routes/accounts/$id/reports/savings-interest"
-import { Route as AccountsIdReportsPrincipalVsInterestRouteImport } from "./routes/accounts/$id/reports/principal-vs-interest"
-import { Route as AccountsIdReportsMonthlyBalancesRouteImport } from "./routes/accounts/$id/reports/monthly-balances"
-import { Route as AccountsIdReportsInOutRouteImport } from "./routes/accounts/$id/reports/in-out"
-import { Route as AccountsIdReportsByTagRouteImport } from "./routes/accounts/$id/reports/by-tag"
+import { Route as AccountsIdReportsIndexRouteImport } from "./routes/accounts/$id/reports/index"
 import { Route as AccountsIdReportsAllTagAverageRouteImport } from "./routes/accounts/$id/reports/all-tag-average"
-import { Route as AccountsIdVirtualVirtualIdRouteRouteImport } from "./routes/accounts/$id/virtual.$virtualId/route"
 import { Route as AccountsIdReportsBreakdownRouteRouteImport } from "./routes/accounts/$id/reports/breakdown/route"
-import { Route as AccountsIdVirtualVirtualIdIndexRouteImport } from "./routes/accounts/$id/virtual.$virtualId/index"
-import { Route as AccountsIdReportsTagTrendIndexRouteImport } from "./routes/accounts/$id/reports/tag-trend/index"
-import { Route as AccountsIdReportsBreakdownIndexRouteImport } from "./routes/accounts/$id/reports/breakdown/index"
-import { Route as AccountsIdVirtualVirtualIdTransactionsRouteImport } from "./routes/accounts/$id/virtual.$virtualId/transactions"
-import { Route as AccountsIdVirtualVirtualIdManageRouteImport } from "./routes/accounts/$id/virtual.$virtualId/manage"
-import { Route as AccountsIdReportsTagTrendTagIdRouteImport } from "./routes/accounts/$id/reports/tag-trend/$tagId"
-import { Route as AccountsIdReportsBreakdownTagIdRouteImport } from "./routes/accounts/$id/reports/breakdown/$tagId"
-import { Route as AccountsIdManageVirtualCreateRouteImport } from "./routes/accounts/$id/manage/virtual.create"
-import { Route as AccountsIdManageVirtualVirtualIdRouteImport } from "./routes/accounts/$id/manage/virtual.$virtualId"
+import { Route as AccountsIdReportsByTagRouteImport } from "./routes/accounts/$id/reports/by-tag"
+import { Route as AccountsIdReportsInOutRouteImport } from "./routes/accounts/$id/reports/in-out"
+import { Route as AccountsIdReportsMonthlyBalancesRouteImport } from "./routes/accounts/$id/reports/monthly-balances"
+import { Route as AccountsIdReportsPrincipalVsInterestRouteImport } from "./routes/accounts/$id/reports/principal-vs-interest"
+import { Route as AccountsIdReportsSavingsInterestRouteImport } from "./routes/accounts/$id/reports/savings-interest"
+import { Route as AccountsIdReportsSuperContributionsRouteImport } from "./routes/accounts/$id/reports/super-contributions"
+import { Route as AccountsIdReportsSuperReturnsRouteImport } from "./routes/accounts/$id/reports/super-returns"
+import { Route as AccountsIdVirtualVirtualIdRouteRouteImport } from "./routes/accounts/$id/virtual.$virtualId/route"
+import { Route as BudgetReportYearIndexRouteImport } from "./routes/budget/report/$year/index"
+import { Route as BudgetReportYearMonthRouteImport } from "./routes/budget/report/$year/$month"
+import { Route as GroupsIdReportsMonthlyBalancesRouteImport } from "./routes/groups/$id/reports.monthly-balances"
+import { Route as SharesIdReportsIndexRouteImport } from "./routes/shares/$id/reports/index"
+import { Route as SharesIdReportsValueRouteImport } from "./routes/shares/$id/reports/value"
+import { Route as SharesIdTransactionsIndexRouteImport } from "./routes/shares/$id/transactions/index"
+import { Route as SharesIdTransactionsAddRouteImport } from "./routes/shares/$id/transactions/add"
 import { Route as AccountsIdManageBankCreateRouteImport } from "./routes/accounts/$id/manage/bank.create"
+import { Route as AccountsIdManageVirtualVirtualIdRouteImport } from "./routes/accounts/$id/manage/virtual.$virtualId"
+import { Route as AccountsIdManageVirtualCreateRouteImport } from "./routes/accounts/$id/manage/virtual.create"
+import { Route as AccountsIdReportsBreakdownIndexRouteImport } from "./routes/accounts/$id/reports/breakdown/index"
+import { Route as AccountsIdReportsBreakdownTagIdRouteImport } from "./routes/accounts/$id/reports/breakdown/$tagId"
+import { Route as AccountsIdReportsTagTrendIndexRouteImport } from "./routes/accounts/$id/reports/tag-trend/index"
+import { Route as AccountsIdReportsTagTrendTagIdRouteImport } from "./routes/accounts/$id/reports/tag-trend/$tagId"
+import { Route as AccountsIdVirtualVirtualIdIndexRouteImport } from "./routes/accounts/$id/virtual.$virtualId/index"
+import { Route as AccountsIdVirtualVirtualIdManageRouteImport } from "./routes/accounts/$id/virtual.$virtualId/manage"
+import { Route as AccountsIdVirtualVirtualIdTransactionsRouteImport } from "./routes/accounts/$id/virtual.$virtualId/transactions"
 
-const ProfileRoute = ProfileRouteImport.update({
-  id: "/profile",
-  path: "/profile",
+const IndexRoute = IndexRouteImport.update({
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRouteImport,
 } as any)
 const SplatRoute = SplatRouteImport.update({
@@ -90,49 +91,14 @@ const SplatRoute = SplatRouteImport.update({
   path: "/$",
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: "/profile",
+  path: "/profile",
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsRouteRoute = SettingsRouteRouteImport.update({
   id: "/settings",
   path: "/settings",
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IndexRoute = IndexRouteImport.update({
-  id: "/",
-  path: "/",
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TagsIndexRoute = TagsIndexRouteImport.update({
-  id: "/tags/",
-  path: "/tags/",
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsIndexRoute = SettingsIndexRouteImport.update({
-  id: "/",
-  path: "/",
-  getParentRoute: () => SettingsRouteRoute,
-} as any)
-const GroupsIndexRoute = GroupsIndexRouteImport.update({
-  id: "/groups/",
-  path: "/groups/",
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ForecastIndexRoute = ForecastIndexRouteImport.update({
-  id: "/forecast/",
-  path: "/forecast/",
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FamilyIndexRoute = FamilyIndexRouteImport.update({
-  id: "/family/",
-  path: "/family/",
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BudgetIndexRoute = BudgetIndexRouteImport.update({
-  id: "/budget/",
-  path: "/budget/",
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BillsIndexRoute = BillsIndexRouteImport.update({
-  id: "/bills/",
-  path: "/bills/",
   getParentRoute: () => rootRouteImport,
 } as any)
 const AccountsIndexRoute = AccountsIndexRouteImport.update({
@@ -140,29 +106,9 @@ const AccountsIndexRoute = AccountsIndexRouteImport.update({
   path: "/accounts/",
   getParentRoute: () => rootRouteImport,
 } as any)
-const TagsVisualiserRoute = TagsVisualiserRouteImport.update({
-  id: "/tags/visualiser",
-  path: "/tags/visualiser",
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SharesCreateRoute = SharesCreateRouteImport.update({
-  id: "/shares/create",
-  path: "/shares/create",
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GroupsCreateRoute = GroupsCreateRouteImport.update({
-  id: "/groups/create",
-  path: "/groups/create",
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BillsIdRoute = BillsIdRouteImport.update({
-  id: "/bills/$id",
-  path: "/bills/$id",
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AssetsCreateRoute = AssetsCreateRouteImport.update({
-  id: "/assets/create",
-  path: "/assets/create",
+const AccountsIdRouteRoute = AccountsIdRouteRouteImport.update({
+  id: "/accounts/$id",
+  path: "/accounts/$id",
   getParentRoute: () => rootRouteImport,
 } as any)
 const AccountsCreateRoute = AccountsCreateRouteImport.update({
@@ -170,105 +116,89 @@ const AccountsCreateRoute = AccountsCreateRouteImport.update({
   path: "/accounts/create",
   getParentRoute: () => rootRouteImport,
 } as any)
-const SharesIdRouteRoute = SharesIdRouteRouteImport.update({
-  id: "/shares/$id",
-  path: "/shares/$id",
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AssetsIdRouteRoute = AssetsIdRouteRouteImport.update({
   id: "/assets/$id",
   path: "/assets/$id",
   getParentRoute: () => rootRouteImport,
 } as any)
-const AccountsIdRouteRoute = AccountsIdRouteRouteImport.update({
-  id: "/accounts/$id",
-  path: "/accounts/$id",
+const AssetsCreateRoute = AssetsCreateRouteImport.update({
+  id: "/assets/create",
+  path: "/assets/create",
   getParentRoute: () => rootRouteImport,
 } as any)
-const SharesIdIndexRoute = SharesIdIndexRouteImport.update({
+const BillsIndexRoute = BillsIndexRouteImport.update({
+  id: "/bills/",
+  path: "/bills/",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BillsIdRoute = BillsIdRouteImport.update({
+  id: "/bills/$id",
+  path: "/bills/$id",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BudgetIndexRoute = BudgetIndexRouteImport.update({
+  id: "/budget/",
+  path: "/budget/",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FamilyIndexRoute = FamilyIndexRouteImport.update({
+  id: "/family/",
+  path: "/family/",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForecastIndexRoute = ForecastIndexRouteImport.update({
+  id: "/forecast/",
+  path: "/forecast/",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GroupsIndexRoute = GroupsIndexRouteImport.update({
+  id: "/groups/",
+  path: "/groups/",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GroupsCreateRoute = GroupsCreateRouteImport.update({
+  id: "/groups/create",
+  path: "/groups/create",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RetirementIndexRoute = RetirementIndexRouteImport.update({
+  id: "/retirement/",
+  path: "/retirement/",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsIndexRoute = SettingsIndexRouteImport.update({
   id: "/",
   path: "/",
-  getParentRoute: () => SharesIdRouteRoute,
-} as any)
-const SettingsInstitutionsIndexRoute =
-  SettingsInstitutionsIndexRouteImport.update({
-    id: "/institutions/",
-    path: "/institutions/",
-    getParentRoute: () => SettingsRouteRoute,
-  } as any)
-const SettingsFamiliesIndexRoute = SettingsFamiliesIndexRouteImport.update({
-  id: "/families/",
-  path: "/families/",
   getParentRoute: () => SettingsRouteRoute,
 } as any)
-const BudgetReportIndexRoute = BudgetReportIndexRouteImport.update({
-  id: "/budget/report/",
-  path: "/budget/report/",
+const SharesIdRouteRoute = SharesIdRouteRouteImport.update({
+  id: "/shares/$id",
+  path: "/shares/$id",
   getParentRoute: () => rootRouteImport,
 } as any)
-const BillsAccountsIndexRoute = BillsAccountsIndexRouteImport.update({
-  id: "/bills/accounts/",
-  path: "/bills/accounts/",
+const SharesCreateRoute = SharesCreateRouteImport.update({
+  id: "/shares/create",
+  path: "/shares/create",
   getParentRoute: () => rootRouteImport,
 } as any)
-const AssetsIdIndexRoute = AssetsIdIndexRouteImport.update({
-  id: "/",
-  path: "/",
-  getParentRoute: () => AssetsIdRouteRoute,
+const TagsIndexRoute = TagsIndexRouteImport.update({
+  id: "/tags/",
+  path: "/tags/",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TagsVisualiserRoute = TagsVisualiserRouteImport.update({
+  id: "/tags/visualiser",
+  path: "/tags/visualiser",
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AccountsIdIndexRoute = AccountsIdIndexRouteImport.update({
   id: "/",
   path: "/",
   getParentRoute: () => AccountsIdRouteRoute,
 } as any)
-const SharesIdManageRoute = SharesIdManageRouteImport.update({
-  id: "/manage",
-  path: "/manage",
-  getParentRoute: () => SharesIdRouteRoute,
-} as any)
-const SettingsInstitutionsAddRoute = SettingsInstitutionsAddRouteImport.update({
-  id: "/institutions/add",
-  path: "/institutions/add",
-  getParentRoute: () => SettingsRouteRoute,
-} as any)
-const SettingsInstitutionsIdRoute = SettingsInstitutionsIdRouteImport.update({
-  id: "/institutions/$id",
-  path: "/institutions/$id",
-  getParentRoute: () => SettingsRouteRoute,
-} as any)
-const SettingsFamiliesAddRoute = SettingsFamiliesAddRouteImport.update({
-  id: "/families/add",
-  path: "/families/add",
-  getParentRoute: () => SettingsRouteRoute,
-} as any)
-const SettingsFamiliesIdRoute = SettingsFamiliesIdRouteImport.update({
-  id: "/families/$id",
-  path: "/families/$id",
-  getParentRoute: () => SettingsRouteRoute,
-} as any)
-const GroupsIdManageRoute = GroupsIdManageRouteImport.update({
-  id: "/groups/$id/manage",
-  path: "/groups/$id/manage",
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BillsAccountsCreateRoute = BillsAccountsCreateRouteImport.update({
-  id: "/bills/accounts/create",
-  path: "/bills/accounts/create",
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BillsAccountsIdRoute = BillsAccountsIdRouteImport.update({
-  id: "/bills/accounts/$id",
-  path: "/bills/accounts/$id",
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AssetsIdManageRoute = AssetsIdManageRouteImport.update({
-  id: "/manage",
-  path: "/manage",
-  getParentRoute: () => AssetsIdRouteRoute,
-} as any)
-const AccountsIdTransactionsRoute = AccountsIdTransactionsRouteImport.update({
-  id: "/transactions",
-  path: "/transactions",
+const AccountsIdReportsRouteRoute = AccountsIdReportsRouteRouteImport.update({
+  id: "/reports",
+  path: "/reports",
   getParentRoute: () => AccountsIdRouteRoute,
 } as any)
 const AccountsIdRulesRoute = AccountsIdRulesRouteImport.update({
@@ -276,101 +206,100 @@ const AccountsIdRulesRoute = AccountsIdRulesRouteImport.update({
   path: "/rules",
   getParentRoute: () => AccountsIdRouteRoute,
 } as any)
+const AccountsIdTransactionsRoute = AccountsIdTransactionsRouteImport.update({
+  id: "/transactions",
+  path: "/transactions",
+  getParentRoute: () => AccountsIdRouteRoute,
+} as any)
+const AssetsIdIndexRoute = AssetsIdIndexRouteImport.update({
+  id: "/",
+  path: "/",
+  getParentRoute: () => AssetsIdRouteRoute,
+} as any)
+const AssetsIdManageRoute = AssetsIdManageRouteImport.update({
+  id: "/manage",
+  path: "/manage",
+  getParentRoute: () => AssetsIdRouteRoute,
+} as any)
+const BillsAccountsIndexRoute = BillsAccountsIndexRouteImport.update({
+  id: "/bills/accounts/",
+  path: "/bills/accounts/",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BillsAccountsIdRoute = BillsAccountsIdRouteImport.update({
+  id: "/bills/accounts/$id",
+  path: "/bills/accounts/$id",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BillsAccountsCreateRoute = BillsAccountsCreateRouteImport.update({
+  id: "/bills/accounts/create",
+  path: "/bills/accounts/create",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BudgetReportIndexRoute = BudgetReportIndexRouteImport.update({
+  id: "/budget/report/",
+  path: "/budget/report/",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GroupsIdManageRoute = GroupsIdManageRouteImport.update({
+  id: "/groups/$id/manage",
+  path: "/groups/$id/manage",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsFamiliesIndexRoute = SettingsFamiliesIndexRouteImport.update({
+  id: "/families/",
+  path: "/families/",
+  getParentRoute: () => SettingsRouteRoute,
+} as any)
+const SettingsFamiliesIdRoute = SettingsFamiliesIdRouteImport.update({
+  id: "/families/$id",
+  path: "/families/$id",
+  getParentRoute: () => SettingsRouteRoute,
+} as any)
+const SettingsFamiliesAddRoute = SettingsFamiliesAddRouteImport.update({
+  id: "/families/add",
+  path: "/families/add",
+  getParentRoute: () => SettingsRouteRoute,
+} as any)
+const SettingsInstitutionsIndexRoute =
+  SettingsInstitutionsIndexRouteImport.update({
+    id: "/institutions/",
+    path: "/institutions/",
+    getParentRoute: () => SettingsRouteRoute,
+  } as any)
+const SettingsInstitutionsIdRoute = SettingsInstitutionsIdRouteImport.update({
+  id: "/institutions/$id",
+  path: "/institutions/$id",
+  getParentRoute: () => SettingsRouteRoute,
+} as any)
+const SettingsInstitutionsAddRoute = SettingsInstitutionsAddRouteImport.update({
+  id: "/institutions/add",
+  path: "/institutions/add",
+  getParentRoute: () => SettingsRouteRoute,
+} as any)
+const SharesIdIndexRoute = SharesIdIndexRouteImport.update({
+  id: "/",
+  path: "/",
+  getParentRoute: () => SharesIdRouteRoute,
+} as any)
+const SharesIdManageRoute = SharesIdManageRouteImport.update({
+  id: "/manage",
+  path: "/manage",
+  getParentRoute: () => SharesIdRouteRoute,
+} as any)
 const SharesIdReportsRouteRoute = SharesIdReportsRouteRouteImport.update({
   id: "/reports",
   path: "/reports",
   getParentRoute: () => SharesIdRouteRoute,
-} as any)
-const AccountsIdReportsRouteRoute = AccountsIdReportsRouteRouteImport.update({
-  id: "/reports",
-  path: "/reports",
-  getParentRoute: () => AccountsIdRouteRoute,
-} as any)
-const SharesIdTransactionsIndexRoute =
-  SharesIdTransactionsIndexRouteImport.update({
-    id: "/transactions/",
-    path: "/transactions/",
-    getParentRoute: () => SharesIdRouteRoute,
-  } as any)
-const SharesIdReportsIndexRoute = SharesIdReportsIndexRouteImport.update({
-  id: "/",
-  path: "/",
-  getParentRoute: () => SharesIdReportsRouteRoute,
-} as any)
-const BudgetReportYearIndexRoute = BudgetReportYearIndexRouteImport.update({
-  id: "/budget/report/$year/",
-  path: "/budget/report/$year/",
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AccountsIdReportsIndexRoute = AccountsIdReportsIndexRouteImport.update({
-  id: "/",
-  path: "/",
-  getParentRoute: () => AccountsIdReportsRouteRoute,
 } as any)
 const AccountsIdManageIndexRoute = AccountsIdManageIndexRouteImport.update({
   id: "/manage/",
   path: "/manage/",
   getParentRoute: () => AccountsIdRouteRoute,
 } as any)
-const SharesIdTransactionsAddRoute = SharesIdTransactionsAddRouteImport.update({
-  id: "/transactions/add",
-  path: "/transactions/add",
-  getParentRoute: () => SharesIdRouteRoute,
-} as any)
-const SharesIdReportsValueRoute = SharesIdReportsValueRouteImport.update({
-  id: "/value",
-  path: "/value",
-  getParentRoute: () => SharesIdReportsRouteRoute,
-} as any)
-const GroupsIdReportsMonthlyBalancesRoute =
-  GroupsIdReportsMonthlyBalancesRouteImport.update({
-    id: "/groups/$id/reports/monthly-balances",
-    path: "/groups/$id/reports/monthly-balances",
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const BudgetReportYearMonthRoute = BudgetReportYearMonthRouteImport.update({
-  id: "/budget/report/$year/$month",
-  path: "/budget/report/$year/$month",
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AccountsIdReportsSuperReturnsRoute =
-  AccountsIdReportsSuperReturnsRouteImport.update({
-    id: "/super-returns",
-    path: "/super-returns",
-    getParentRoute: () => AccountsIdReportsRouteRoute,
-  } as any)
-const AccountsIdReportsSuperContributionsRoute =
-  AccountsIdReportsSuperContributionsRouteImport.update({
-    id: "/super-contributions",
-    path: "/super-contributions",
-    getParentRoute: () => AccountsIdReportsRouteRoute,
-  } as any)
-const AccountsIdReportsSavingsInterestRoute =
-  AccountsIdReportsSavingsInterestRouteImport.update({
-    id: "/savings-interest",
-    path: "/savings-interest",
-    getParentRoute: () => AccountsIdReportsRouteRoute,
-  } as any)
-const AccountsIdReportsPrincipalVsInterestRoute =
-  AccountsIdReportsPrincipalVsInterestRouteImport.update({
-    id: "/principal-vs-interest",
-    path: "/principal-vs-interest",
-    getParentRoute: () => AccountsIdReportsRouteRoute,
-  } as any)
-const AccountsIdReportsMonthlyBalancesRoute =
-  AccountsIdReportsMonthlyBalancesRouteImport.update({
-    id: "/monthly-balances",
-    path: "/monthly-balances",
-    getParentRoute: () => AccountsIdReportsRouteRoute,
-  } as any)
-const AccountsIdReportsInOutRoute = AccountsIdReportsInOutRouteImport.update({
-  id: "/in-out",
-  path: "/in-out",
-  getParentRoute: () => AccountsIdReportsRouteRoute,
-} as any)
-const AccountsIdReportsByTagRoute = AccountsIdReportsByTagRouteImport.update({
-  id: "/by-tag",
-  path: "/by-tag",
+const AccountsIdReportsIndexRoute = AccountsIdReportsIndexRouteImport.update({
+  id: "/",
+  path: "/",
   getParentRoute: () => AccountsIdReportsRouteRoute,
 } as any)
 const AccountsIdReportsAllTagAverageRoute =
@@ -379,64 +308,99 @@ const AccountsIdReportsAllTagAverageRoute =
     path: "/all-tag-average",
     getParentRoute: () => AccountsIdReportsRouteRoute,
   } as any)
-const AccountsIdVirtualVirtualIdRouteRoute =
-  AccountsIdVirtualVirtualIdRouteRouteImport.update({
-    id: "/virtual/$virtualId",
-    path: "/virtual/$virtualId",
-    getParentRoute: () => AccountsIdRouteRoute,
-  } as any)
 const AccountsIdReportsBreakdownRouteRoute =
   AccountsIdReportsBreakdownRouteRouteImport.update({
     id: "/breakdown",
     path: "/breakdown",
     getParentRoute: () => AccountsIdReportsRouteRoute,
   } as any)
-const AccountsIdVirtualVirtualIdIndexRoute =
-  AccountsIdVirtualVirtualIdIndexRouteImport.update({
-    id: "/",
-    path: "/",
-    getParentRoute: () => AccountsIdVirtualVirtualIdRouteRoute,
-  } as any)
-const AccountsIdReportsTagTrendIndexRoute =
-  AccountsIdReportsTagTrendIndexRouteImport.update({
-    id: "/tag-trend/",
-    path: "/tag-trend/",
+const AccountsIdReportsByTagRoute = AccountsIdReportsByTagRouteImport.update({
+  id: "/by-tag",
+  path: "/by-tag",
+  getParentRoute: () => AccountsIdReportsRouteRoute,
+} as any)
+const AccountsIdReportsInOutRoute = AccountsIdReportsInOutRouteImport.update({
+  id: "/in-out",
+  path: "/in-out",
+  getParentRoute: () => AccountsIdReportsRouteRoute,
+} as any)
+const AccountsIdReportsMonthlyBalancesRoute =
+  AccountsIdReportsMonthlyBalancesRouteImport.update({
+    id: "/monthly-balances",
+    path: "/monthly-balances",
     getParentRoute: () => AccountsIdReportsRouteRoute,
   } as any)
-const AccountsIdReportsBreakdownIndexRoute =
-  AccountsIdReportsBreakdownIndexRouteImport.update({
-    id: "/",
-    path: "/",
-    getParentRoute: () => AccountsIdReportsBreakdownRouteRoute,
-  } as any)
-const AccountsIdVirtualVirtualIdTransactionsRoute =
-  AccountsIdVirtualVirtualIdTransactionsRouteImport.update({
-    id: "/transactions",
-    path: "/transactions",
-    getParentRoute: () => AccountsIdVirtualVirtualIdRouteRoute,
-  } as any)
-const AccountsIdVirtualVirtualIdManageRoute =
-  AccountsIdVirtualVirtualIdManageRouteImport.update({
-    id: "/manage",
-    path: "/manage",
-    getParentRoute: () => AccountsIdVirtualVirtualIdRouteRoute,
-  } as any)
-const AccountsIdReportsTagTrendTagIdRoute =
-  AccountsIdReportsTagTrendTagIdRouteImport.update({
-    id: "/tag-trend/$tagId",
-    path: "/tag-trend/$tagId",
+const AccountsIdReportsPrincipalVsInterestRoute =
+  AccountsIdReportsPrincipalVsInterestRouteImport.update({
+    id: "/principal-vs-interest",
+    path: "/principal-vs-interest",
     getParentRoute: () => AccountsIdReportsRouteRoute,
   } as any)
-const AccountsIdReportsBreakdownTagIdRoute =
-  AccountsIdReportsBreakdownTagIdRouteImport.update({
-    id: "/$tagId",
-    path: "/$tagId",
-    getParentRoute: () => AccountsIdReportsBreakdownRouteRoute,
+const AccountsIdReportsSavingsInterestRoute =
+  AccountsIdReportsSavingsInterestRouteImport.update({
+    id: "/savings-interest",
+    path: "/savings-interest",
+    getParentRoute: () => AccountsIdReportsRouteRoute,
   } as any)
-const AccountsIdManageVirtualCreateRoute =
-  AccountsIdManageVirtualCreateRouteImport.update({
-    id: "/manage/virtual/create",
-    path: "/manage/virtual/create",
+const AccountsIdReportsSuperContributionsRoute =
+  AccountsIdReportsSuperContributionsRouteImport.update({
+    id: "/super-contributions",
+    path: "/super-contributions",
+    getParentRoute: () => AccountsIdReportsRouteRoute,
+  } as any)
+const AccountsIdReportsSuperReturnsRoute =
+  AccountsIdReportsSuperReturnsRouteImport.update({
+    id: "/super-returns",
+    path: "/super-returns",
+    getParentRoute: () => AccountsIdReportsRouteRoute,
+  } as any)
+const AccountsIdVirtualVirtualIdRouteRoute =
+  AccountsIdVirtualVirtualIdRouteRouteImport.update({
+    id: "/virtual/$virtualId",
+    path: "/virtual/$virtualId",
+    getParentRoute: () => AccountsIdRouteRoute,
+  } as any)
+const BudgetReportYearIndexRoute = BudgetReportYearIndexRouteImport.update({
+  id: "/budget/report/$year/",
+  path: "/budget/report/$year/",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BudgetReportYearMonthRoute = BudgetReportYearMonthRouteImport.update({
+  id: "/budget/report/$year/$month",
+  path: "/budget/report/$year/$month",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GroupsIdReportsMonthlyBalancesRoute =
+  GroupsIdReportsMonthlyBalancesRouteImport.update({
+    id: "/groups/$id/reports/monthly-balances",
+    path: "/groups/$id/reports/monthly-balances",
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const SharesIdReportsIndexRoute = SharesIdReportsIndexRouteImport.update({
+  id: "/",
+  path: "/",
+  getParentRoute: () => SharesIdReportsRouteRoute,
+} as any)
+const SharesIdReportsValueRoute = SharesIdReportsValueRouteImport.update({
+  id: "/value",
+  path: "/value",
+  getParentRoute: () => SharesIdReportsRouteRoute,
+} as any)
+const SharesIdTransactionsIndexRoute =
+  SharesIdTransactionsIndexRouteImport.update({
+    id: "/transactions/",
+    path: "/transactions/",
+    getParentRoute: () => SharesIdRouteRoute,
+  } as any)
+const SharesIdTransactionsAddRoute = SharesIdTransactionsAddRouteImport.update({
+  id: "/transactions/add",
+  path: "/transactions/add",
+  getParentRoute: () => SharesIdRouteRoute,
+} as any)
+const AccountsIdManageBankCreateRoute =
+  AccountsIdManageBankCreateRouteImport.update({
+    id: "/manage/bank/create",
+    path: "/manage/bank/create",
     getParentRoute: () => AccountsIdRouteRoute,
   } as any)
 const AccountsIdManageVirtualVirtualIdRoute =
@@ -445,11 +409,53 @@ const AccountsIdManageVirtualVirtualIdRoute =
     path: "/manage/virtual/$virtualId",
     getParentRoute: () => AccountsIdRouteRoute,
   } as any)
-const AccountsIdManageBankCreateRoute =
-  AccountsIdManageBankCreateRouteImport.update({
-    id: "/manage/bank/create",
-    path: "/manage/bank/create",
+const AccountsIdManageVirtualCreateRoute =
+  AccountsIdManageVirtualCreateRouteImport.update({
+    id: "/manage/virtual/create",
+    path: "/manage/virtual/create",
     getParentRoute: () => AccountsIdRouteRoute,
+  } as any)
+const AccountsIdReportsBreakdownIndexRoute =
+  AccountsIdReportsBreakdownIndexRouteImport.update({
+    id: "/",
+    path: "/",
+    getParentRoute: () => AccountsIdReportsBreakdownRouteRoute,
+  } as any)
+const AccountsIdReportsBreakdownTagIdRoute =
+  AccountsIdReportsBreakdownTagIdRouteImport.update({
+    id: "/$tagId",
+    path: "/$tagId",
+    getParentRoute: () => AccountsIdReportsBreakdownRouteRoute,
+  } as any)
+const AccountsIdReportsTagTrendIndexRoute =
+  AccountsIdReportsTagTrendIndexRouteImport.update({
+    id: "/tag-trend/",
+    path: "/tag-trend/",
+    getParentRoute: () => AccountsIdReportsRouteRoute,
+  } as any)
+const AccountsIdReportsTagTrendTagIdRoute =
+  AccountsIdReportsTagTrendTagIdRouteImport.update({
+    id: "/tag-trend/$tagId",
+    path: "/tag-trend/$tagId",
+    getParentRoute: () => AccountsIdReportsRouteRoute,
+  } as any)
+const AccountsIdVirtualVirtualIdIndexRoute =
+  AccountsIdVirtualVirtualIdIndexRouteImport.update({
+    id: "/",
+    path: "/",
+    getParentRoute: () => AccountsIdVirtualVirtualIdRouteRoute,
+  } as any)
+const AccountsIdVirtualVirtualIdManageRoute =
+  AccountsIdVirtualVirtualIdManageRouteImport.update({
+    id: "/manage",
+    path: "/manage",
+    getParentRoute: () => AccountsIdVirtualVirtualIdRouteRoute,
+  } as any)
+const AccountsIdVirtualVirtualIdTransactionsRoute =
+  AccountsIdVirtualVirtualIdTransactionsRouteImport.update({
+    id: "/transactions",
+    path: "/transactions",
+    getParentRoute: () => AccountsIdVirtualVirtualIdRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -472,6 +478,7 @@ export interface FileRoutesByFullPath {
   "/family/": typeof FamilyIndexRoute
   "/forecast/": typeof ForecastIndexRoute
   "/groups/": typeof GroupsIndexRoute
+  "/retirement/": typeof RetirementIndexRoute
   "/settings/": typeof SettingsIndexRoute
   "/tags/": typeof TagsIndexRoute
   "/accounts/$id/reports": typeof AccountsIdReportsRouteRouteWithChildren
@@ -540,6 +547,7 @@ export interface FileRoutesByTo {
   "/family": typeof FamilyIndexRoute
   "/forecast": typeof ForecastIndexRoute
   "/groups": typeof GroupsIndexRoute
+  "/retirement": typeof RetirementIndexRoute
   "/settings": typeof SettingsIndexRoute
   "/tags": typeof TagsIndexRoute
   "/accounts/$id/rules": typeof AccountsIdRulesRoute
@@ -609,6 +617,7 @@ export interface FileRoutesById {
   "/family/": typeof FamilyIndexRoute
   "/forecast/": typeof ForecastIndexRoute
   "/groups/": typeof GroupsIndexRoute
+  "/retirement/": typeof RetirementIndexRoute
   "/settings/": typeof SettingsIndexRoute
   "/tags/": typeof TagsIndexRoute
   "/accounts/$id/reports": typeof AccountsIdReportsRouteRouteWithChildren
@@ -683,6 +692,7 @@ export interface FileRouteTypes {
     | "/family/"
     | "/forecast/"
     | "/groups/"
+    | "/retirement/"
     | "/settings/"
     | "/tags/"
     | "/accounts/$id/reports"
@@ -751,6 +761,7 @@ export interface FileRouteTypes {
     | "/family"
     | "/forecast"
     | "/groups"
+    | "/retirement"
     | "/settings"
     | "/tags"
     | "/accounts/$id/rules"
@@ -819,6 +830,7 @@ export interface FileRouteTypes {
     | "/family/"
     | "/forecast/"
     | "/groups/"
+    | "/retirement/"
     | "/settings/"
     | "/tags/"
     | "/accounts/$id/reports"
@@ -892,6 +904,7 @@ export interface RootRouteChildren {
   FamilyIndexRoute: typeof FamilyIndexRoute
   ForecastIndexRoute: typeof ForecastIndexRoute
   GroupsIndexRoute: typeof GroupsIndexRoute
+  RetirementIndexRoute: typeof RetirementIndexRoute
   TagsIndexRoute: typeof TagsIndexRoute
   BillsAccountsIdRoute: typeof BillsAccountsIdRoute
   BillsAccountsCreateRoute: typeof BillsAccountsCreateRoute
@@ -905,11 +918,11 @@ export interface RootRouteChildren {
 
 declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    "/profile": {
-      id: "/profile"
-      path: "/profile"
-      fullPath: "/profile"
-      preLoaderRoute: typeof ProfileRouteImport
+    "/": {
+      id: "/"
+      path: "/"
+      fullPath: "/"
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     "/$": {
@@ -919,67 +932,18 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof SplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    "/profile": {
+      id: "/profile"
+      path: "/profile"
+      fullPath: "/profile"
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     "/settings": {
       id: "/settings"
       path: "/settings"
       fullPath: "/settings"
       preLoaderRoute: typeof SettingsRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    "/": {
-      id: "/"
-      path: "/"
-      fullPath: "/"
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    "/tags/": {
-      id: "/tags/"
-      path: "/tags"
-      fullPath: "/tags/"
-      preLoaderRoute: typeof TagsIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    "/settings/": {
-      id: "/settings/"
-      path: "/"
-      fullPath: "/settings/"
-      preLoaderRoute: typeof SettingsIndexRouteImport
-      parentRoute: typeof SettingsRouteRoute
-    }
-    "/groups/": {
-      id: "/groups/"
-      path: "/groups"
-      fullPath: "/groups/"
-      preLoaderRoute: typeof GroupsIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    "/forecast/": {
-      id: "/forecast/"
-      path: "/forecast"
-      fullPath: "/forecast/"
-      preLoaderRoute: typeof ForecastIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    "/family/": {
-      id: "/family/"
-      path: "/family"
-      fullPath: "/family/"
-      preLoaderRoute: typeof FamilyIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    "/budget/": {
-      id: "/budget/"
-      path: "/budget"
-      fullPath: "/budget/"
-      preLoaderRoute: typeof BudgetIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    "/bills/": {
-      id: "/bills/"
-      path: "/bills"
-      fullPath: "/bills/"
-      preLoaderRoute: typeof BillsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     "/accounts/": {
@@ -989,39 +953,11 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AccountsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    "/tags/visualiser": {
-      id: "/tags/visualiser"
-      path: "/tags/visualiser"
-      fullPath: "/tags/visualiser"
-      preLoaderRoute: typeof TagsVisualiserRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    "/shares/create": {
-      id: "/shares/create"
-      path: "/shares/create"
-      fullPath: "/shares/create"
-      preLoaderRoute: typeof SharesCreateRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    "/groups/create": {
-      id: "/groups/create"
-      path: "/groups/create"
-      fullPath: "/groups/create"
-      preLoaderRoute: typeof GroupsCreateRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    "/bills/$id": {
-      id: "/bills/$id"
-      path: "/bills/$id"
-      fullPath: "/bills/$id"
-      preLoaderRoute: typeof BillsIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    "/assets/create": {
-      id: "/assets/create"
-      path: "/assets/create"
-      fullPath: "/assets/create"
-      preLoaderRoute: typeof AssetsCreateRouteImport
+    "/accounts/$id": {
+      id: "/accounts/$id"
+      path: "/accounts/$id"
+      fullPath: "/accounts/$id"
+      preLoaderRoute: typeof AccountsIdRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     "/accounts/create": {
@@ -1031,13 +967,6 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AccountsCreateRouteImport
       parentRoute: typeof rootRouteImport
     }
-    "/shares/$id": {
-      id: "/shares/$id"
-      path: "/shares/$id"
-      fullPath: "/shares/$id"
-      preLoaderRoute: typeof SharesIdRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     "/assets/$id": {
       id: "/assets/$id"
       path: "/assets/$id"
@@ -1045,54 +974,103 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AssetsIdRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    "/accounts/$id": {
-      id: "/accounts/$id"
-      path: "/accounts/$id"
-      fullPath: "/accounts/$id"
-      preLoaderRoute: typeof AccountsIdRouteRouteImport
+    "/assets/create": {
+      id: "/assets/create"
+      path: "/assets/create"
+      fullPath: "/assets/create"
+      preLoaderRoute: typeof AssetsCreateRouteImport
       parentRoute: typeof rootRouteImport
     }
-    "/shares/$id/": {
-      id: "/shares/$id/"
-      path: "/"
-      fullPath: "/shares/$id/"
-      preLoaderRoute: typeof SharesIdIndexRouteImport
-      parentRoute: typeof SharesIdRouteRoute
+    "/bills/": {
+      id: "/bills/"
+      path: "/bills"
+      fullPath: "/bills/"
+      preLoaderRoute: typeof BillsIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    "/settings/institutions/": {
-      id: "/settings/institutions/"
-      path: "/institutions"
-      fullPath: "/settings/institutions/"
-      preLoaderRoute: typeof SettingsInstitutionsIndexRouteImport
+    "/bills/$id": {
+      id: "/bills/$id"
+      path: "/bills/$id"
+      fullPath: "/bills/$id"
+      preLoaderRoute: typeof BillsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/budget/": {
+      id: "/budget/"
+      path: "/budget"
+      fullPath: "/budget/"
+      preLoaderRoute: typeof BudgetIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/family/": {
+      id: "/family/"
+      path: "/family"
+      fullPath: "/family/"
+      preLoaderRoute: typeof FamilyIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/forecast/": {
+      id: "/forecast/"
+      path: "/forecast"
+      fullPath: "/forecast/"
+      preLoaderRoute: typeof ForecastIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/groups/": {
+      id: "/groups/"
+      path: "/groups"
+      fullPath: "/groups/"
+      preLoaderRoute: typeof GroupsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/groups/create": {
+      id: "/groups/create"
+      path: "/groups/create"
+      fullPath: "/groups/create"
+      preLoaderRoute: typeof GroupsCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/retirement/": {
+      id: "/retirement/"
+      path: "/retirement"
+      fullPath: "/retirement/"
+      preLoaderRoute: typeof RetirementIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/settings/": {
+      id: "/settings/"
+      path: "/"
+      fullPath: "/settings/"
+      preLoaderRoute: typeof SettingsIndexRouteImport
       parentRoute: typeof SettingsRouteRoute
     }
-    "/settings/families/": {
-      id: "/settings/families/"
-      path: "/families"
-      fullPath: "/settings/families/"
-      preLoaderRoute: typeof SettingsFamiliesIndexRouteImport
-      parentRoute: typeof SettingsRouteRoute
-    }
-    "/budget/report/": {
-      id: "/budget/report/"
-      path: "/budget/report"
-      fullPath: "/budget/report/"
-      preLoaderRoute: typeof BudgetReportIndexRouteImport
+    "/shares/$id": {
+      id: "/shares/$id"
+      path: "/shares/$id"
+      fullPath: "/shares/$id"
+      preLoaderRoute: typeof SharesIdRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    "/bills/accounts/": {
-      id: "/bills/accounts/"
-      path: "/bills/accounts"
-      fullPath: "/bills/accounts/"
-      preLoaderRoute: typeof BillsAccountsIndexRouteImport
+    "/shares/create": {
+      id: "/shares/create"
+      path: "/shares/create"
+      fullPath: "/shares/create"
+      preLoaderRoute: typeof SharesCreateRouteImport
       parentRoute: typeof rootRouteImport
     }
-    "/assets/$id/": {
-      id: "/assets/$id/"
-      path: "/"
-      fullPath: "/assets/$id/"
-      preLoaderRoute: typeof AssetsIdIndexRouteImport
-      parentRoute: typeof AssetsIdRouteRoute
+    "/tags/": {
+      id: "/tags/"
+      path: "/tags"
+      fullPath: "/tags/"
+      preLoaderRoute: typeof TagsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/tags/visualiser": {
+      id: "/tags/visualiser"
+      path: "/tags/visualiser"
+      fullPath: "/tags/visualiser"
+      preLoaderRoute: typeof TagsVisualiserRouteImport
+      parentRoute: typeof rootRouteImport
     }
     "/accounts/$id/": {
       id: "/accounts/$id/"
@@ -1101,74 +1079,11 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AccountsIdIndexRouteImport
       parentRoute: typeof AccountsIdRouteRoute
     }
-    "/shares/$id/manage": {
-      id: "/shares/$id/manage"
-      path: "/manage"
-      fullPath: "/shares/$id/manage"
-      preLoaderRoute: typeof SharesIdManageRouteImport
-      parentRoute: typeof SharesIdRouteRoute
-    }
-    "/settings/institutions/add": {
-      id: "/settings/institutions/add"
-      path: "/institutions/add"
-      fullPath: "/settings/institutions/add"
-      preLoaderRoute: typeof SettingsInstitutionsAddRouteImport
-      parentRoute: typeof SettingsRouteRoute
-    }
-    "/settings/institutions/$id": {
-      id: "/settings/institutions/$id"
-      path: "/institutions/$id"
-      fullPath: "/settings/institutions/$id"
-      preLoaderRoute: typeof SettingsInstitutionsIdRouteImport
-      parentRoute: typeof SettingsRouteRoute
-    }
-    "/settings/families/add": {
-      id: "/settings/families/add"
-      path: "/families/add"
-      fullPath: "/settings/families/add"
-      preLoaderRoute: typeof SettingsFamiliesAddRouteImport
-      parentRoute: typeof SettingsRouteRoute
-    }
-    "/settings/families/$id": {
-      id: "/settings/families/$id"
-      path: "/families/$id"
-      fullPath: "/settings/families/$id"
-      preLoaderRoute: typeof SettingsFamiliesIdRouteImport
-      parentRoute: typeof SettingsRouteRoute
-    }
-    "/groups/$id/manage": {
-      id: "/groups/$id/manage"
-      path: "/groups/$id/manage"
-      fullPath: "/groups/$id/manage"
-      preLoaderRoute: typeof GroupsIdManageRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    "/bills/accounts/create": {
-      id: "/bills/accounts/create"
-      path: "/bills/accounts/create"
-      fullPath: "/bills/accounts/create"
-      preLoaderRoute: typeof BillsAccountsCreateRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    "/bills/accounts/$id": {
-      id: "/bills/accounts/$id"
-      path: "/bills/accounts/$id"
-      fullPath: "/bills/accounts/$id"
-      preLoaderRoute: typeof BillsAccountsIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    "/assets/$id/manage": {
-      id: "/assets/$id/manage"
-      path: "/manage"
-      fullPath: "/assets/$id/manage"
-      preLoaderRoute: typeof AssetsIdManageRouteImport
-      parentRoute: typeof AssetsIdRouteRoute
-    }
-    "/accounts/$id/transactions": {
-      id: "/accounts/$id/transactions"
-      path: "/transactions"
-      fullPath: "/accounts/$id/transactions"
-      preLoaderRoute: typeof AccountsIdTransactionsRouteImport
+    "/accounts/$id/reports": {
+      id: "/accounts/$id/reports"
+      path: "/reports"
+      fullPath: "/accounts/$id/reports"
+      preLoaderRoute: typeof AccountsIdReportsRouteRouteImport
       parentRoute: typeof AccountsIdRouteRoute
     }
     "/accounts/$id/rules": {
@@ -1178,47 +1093,124 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AccountsIdRulesRouteImport
       parentRoute: typeof AccountsIdRouteRoute
     }
+    "/accounts/$id/transactions": {
+      id: "/accounts/$id/transactions"
+      path: "/transactions"
+      fullPath: "/accounts/$id/transactions"
+      preLoaderRoute: typeof AccountsIdTransactionsRouteImport
+      parentRoute: typeof AccountsIdRouteRoute
+    }
+    "/assets/$id/": {
+      id: "/assets/$id/"
+      path: "/"
+      fullPath: "/assets/$id/"
+      preLoaderRoute: typeof AssetsIdIndexRouteImport
+      parentRoute: typeof AssetsIdRouteRoute
+    }
+    "/assets/$id/manage": {
+      id: "/assets/$id/manage"
+      path: "/manage"
+      fullPath: "/assets/$id/manage"
+      preLoaderRoute: typeof AssetsIdManageRouteImport
+      parentRoute: typeof AssetsIdRouteRoute
+    }
+    "/bills/accounts/": {
+      id: "/bills/accounts/"
+      path: "/bills/accounts"
+      fullPath: "/bills/accounts/"
+      preLoaderRoute: typeof BillsAccountsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/bills/accounts/$id": {
+      id: "/bills/accounts/$id"
+      path: "/bills/accounts/$id"
+      fullPath: "/bills/accounts/$id"
+      preLoaderRoute: typeof BillsAccountsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/bills/accounts/create": {
+      id: "/bills/accounts/create"
+      path: "/bills/accounts/create"
+      fullPath: "/bills/accounts/create"
+      preLoaderRoute: typeof BillsAccountsCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/budget/report/": {
+      id: "/budget/report/"
+      path: "/budget/report"
+      fullPath: "/budget/report/"
+      preLoaderRoute: typeof BudgetReportIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/groups/$id/manage": {
+      id: "/groups/$id/manage"
+      path: "/groups/$id/manage"
+      fullPath: "/groups/$id/manage"
+      preLoaderRoute: typeof GroupsIdManageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/settings/families/": {
+      id: "/settings/families/"
+      path: "/families"
+      fullPath: "/settings/families/"
+      preLoaderRoute: typeof SettingsFamiliesIndexRouteImport
+      parentRoute: typeof SettingsRouteRoute
+    }
+    "/settings/families/$id": {
+      id: "/settings/families/$id"
+      path: "/families/$id"
+      fullPath: "/settings/families/$id"
+      preLoaderRoute: typeof SettingsFamiliesIdRouteImport
+      parentRoute: typeof SettingsRouteRoute
+    }
+    "/settings/families/add": {
+      id: "/settings/families/add"
+      path: "/families/add"
+      fullPath: "/settings/families/add"
+      preLoaderRoute: typeof SettingsFamiliesAddRouteImport
+      parentRoute: typeof SettingsRouteRoute
+    }
+    "/settings/institutions/": {
+      id: "/settings/institutions/"
+      path: "/institutions"
+      fullPath: "/settings/institutions/"
+      preLoaderRoute: typeof SettingsInstitutionsIndexRouteImport
+      parentRoute: typeof SettingsRouteRoute
+    }
+    "/settings/institutions/$id": {
+      id: "/settings/institutions/$id"
+      path: "/institutions/$id"
+      fullPath: "/settings/institutions/$id"
+      preLoaderRoute: typeof SettingsInstitutionsIdRouteImport
+      parentRoute: typeof SettingsRouteRoute
+    }
+    "/settings/institutions/add": {
+      id: "/settings/institutions/add"
+      path: "/institutions/add"
+      fullPath: "/settings/institutions/add"
+      preLoaderRoute: typeof SettingsInstitutionsAddRouteImport
+      parentRoute: typeof SettingsRouteRoute
+    }
+    "/shares/$id/": {
+      id: "/shares/$id/"
+      path: "/"
+      fullPath: "/shares/$id/"
+      preLoaderRoute: typeof SharesIdIndexRouteImport
+      parentRoute: typeof SharesIdRouteRoute
+    }
+    "/shares/$id/manage": {
+      id: "/shares/$id/manage"
+      path: "/manage"
+      fullPath: "/shares/$id/manage"
+      preLoaderRoute: typeof SharesIdManageRouteImport
+      parentRoute: typeof SharesIdRouteRoute
+    }
     "/shares/$id/reports": {
       id: "/shares/$id/reports"
       path: "/reports"
       fullPath: "/shares/$id/reports"
       preLoaderRoute: typeof SharesIdReportsRouteRouteImport
       parentRoute: typeof SharesIdRouteRoute
-    }
-    "/accounts/$id/reports": {
-      id: "/accounts/$id/reports"
-      path: "/reports"
-      fullPath: "/accounts/$id/reports"
-      preLoaderRoute: typeof AccountsIdReportsRouteRouteImport
-      parentRoute: typeof AccountsIdRouteRoute
-    }
-    "/shares/$id/transactions/": {
-      id: "/shares/$id/transactions/"
-      path: "/transactions"
-      fullPath: "/shares/$id/transactions/"
-      preLoaderRoute: typeof SharesIdTransactionsIndexRouteImport
-      parentRoute: typeof SharesIdRouteRoute
-    }
-    "/shares/$id/reports/": {
-      id: "/shares/$id/reports/"
-      path: "/"
-      fullPath: "/shares/$id/reports/"
-      preLoaderRoute: typeof SharesIdReportsIndexRouteImport
-      parentRoute: typeof SharesIdReportsRouteRoute
-    }
-    "/budget/report/$year/": {
-      id: "/budget/report/$year/"
-      path: "/budget/report/$year"
-      fullPath: "/budget/report/$year/"
-      preLoaderRoute: typeof BudgetReportYearIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    "/accounts/$id/reports/": {
-      id: "/accounts/$id/reports/"
-      path: "/"
-      fullPath: "/accounts/$id/reports/"
-      preLoaderRoute: typeof AccountsIdReportsIndexRouteImport
-      parentRoute: typeof AccountsIdReportsRouteRoute
     }
     "/accounts/$id/manage/": {
       id: "/accounts/$id/manage/"
@@ -1227,81 +1219,11 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AccountsIdManageIndexRouteImport
       parentRoute: typeof AccountsIdRouteRoute
     }
-    "/shares/$id/transactions/add": {
-      id: "/shares/$id/transactions/add"
-      path: "/transactions/add"
-      fullPath: "/shares/$id/transactions/add"
-      preLoaderRoute: typeof SharesIdTransactionsAddRouteImport
-      parentRoute: typeof SharesIdRouteRoute
-    }
-    "/shares/$id/reports/value": {
-      id: "/shares/$id/reports/value"
-      path: "/value"
-      fullPath: "/shares/$id/reports/value"
-      preLoaderRoute: typeof SharesIdReportsValueRouteImport
-      parentRoute: typeof SharesIdReportsRouteRoute
-    }
-    "/groups/$id/reports/monthly-balances": {
-      id: "/groups/$id/reports/monthly-balances"
-      path: "/groups/$id/reports/monthly-balances"
-      fullPath: "/groups/$id/reports/monthly-balances"
-      preLoaderRoute: typeof GroupsIdReportsMonthlyBalancesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    "/budget/report/$year/$month": {
-      id: "/budget/report/$year/$month"
-      path: "/budget/report/$year/$month"
-      fullPath: "/budget/report/$year/$month"
-      preLoaderRoute: typeof BudgetReportYearMonthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    "/accounts/$id/reports/super-returns": {
-      id: "/accounts/$id/reports/super-returns"
-      path: "/super-returns"
-      fullPath: "/accounts/$id/reports/super-returns"
-      preLoaderRoute: typeof AccountsIdReportsSuperReturnsRouteImport
-      parentRoute: typeof AccountsIdReportsRouteRoute
-    }
-    "/accounts/$id/reports/super-contributions": {
-      id: "/accounts/$id/reports/super-contributions"
-      path: "/super-contributions"
-      fullPath: "/accounts/$id/reports/super-contributions"
-      preLoaderRoute: typeof AccountsIdReportsSuperContributionsRouteImport
-      parentRoute: typeof AccountsIdReportsRouteRoute
-    }
-    "/accounts/$id/reports/savings-interest": {
-      id: "/accounts/$id/reports/savings-interest"
-      path: "/savings-interest"
-      fullPath: "/accounts/$id/reports/savings-interest"
-      preLoaderRoute: typeof AccountsIdReportsSavingsInterestRouteImport
-      parentRoute: typeof AccountsIdReportsRouteRoute
-    }
-    "/accounts/$id/reports/principal-vs-interest": {
-      id: "/accounts/$id/reports/principal-vs-interest"
-      path: "/principal-vs-interest"
-      fullPath: "/accounts/$id/reports/principal-vs-interest"
-      preLoaderRoute: typeof AccountsIdReportsPrincipalVsInterestRouteImport
-      parentRoute: typeof AccountsIdReportsRouteRoute
-    }
-    "/accounts/$id/reports/monthly-balances": {
-      id: "/accounts/$id/reports/monthly-balances"
-      path: "/monthly-balances"
-      fullPath: "/accounts/$id/reports/monthly-balances"
-      preLoaderRoute: typeof AccountsIdReportsMonthlyBalancesRouteImport
-      parentRoute: typeof AccountsIdReportsRouteRoute
-    }
-    "/accounts/$id/reports/in-out": {
-      id: "/accounts/$id/reports/in-out"
-      path: "/in-out"
-      fullPath: "/accounts/$id/reports/in-out"
-      preLoaderRoute: typeof AccountsIdReportsInOutRouteImport
-      parentRoute: typeof AccountsIdReportsRouteRoute
-    }
-    "/accounts/$id/reports/by-tag": {
-      id: "/accounts/$id/reports/by-tag"
-      path: "/by-tag"
-      fullPath: "/accounts/$id/reports/by-tag"
-      preLoaderRoute: typeof AccountsIdReportsByTagRouteImport
+    "/accounts/$id/reports/": {
+      id: "/accounts/$id/reports/"
+      path: "/"
+      fullPath: "/accounts/$id/reports/"
+      preLoaderRoute: typeof AccountsIdReportsIndexRouteImport
       parentRoute: typeof AccountsIdReportsRouteRoute
     }
     "/accounts/$id/reports/all-tag-average": {
@@ -1311,13 +1233,6 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AccountsIdReportsAllTagAverageRouteImport
       parentRoute: typeof AccountsIdReportsRouteRoute
     }
-    "/accounts/$id/virtual/$virtualId": {
-      id: "/accounts/$id/virtual/$virtualId"
-      path: "/virtual/$virtualId"
-      fullPath: "/accounts/$id/virtual/$virtualId"
-      preLoaderRoute: typeof AccountsIdVirtualVirtualIdRouteRouteImport
-      parentRoute: typeof AccountsIdRouteRoute
-    }
     "/accounts/$id/reports/breakdown": {
       id: "/accounts/$id/reports/breakdown"
       path: "/breakdown"
@@ -1325,60 +1240,116 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AccountsIdReportsBreakdownRouteRouteImport
       parentRoute: typeof AccountsIdReportsRouteRoute
     }
-    "/accounts/$id/virtual/$virtualId/": {
-      id: "/accounts/$id/virtual/$virtualId/"
-      path: "/"
-      fullPath: "/accounts/$id/virtual/$virtualId/"
-      preLoaderRoute: typeof AccountsIdVirtualVirtualIdIndexRouteImport
-      parentRoute: typeof AccountsIdVirtualVirtualIdRouteRoute
-    }
-    "/accounts/$id/reports/tag-trend/": {
-      id: "/accounts/$id/reports/tag-trend/"
-      path: "/tag-trend"
-      fullPath: "/accounts/$id/reports/tag-trend/"
-      preLoaderRoute: typeof AccountsIdReportsTagTrendIndexRouteImport
+    "/accounts/$id/reports/by-tag": {
+      id: "/accounts/$id/reports/by-tag"
+      path: "/by-tag"
+      fullPath: "/accounts/$id/reports/by-tag"
+      preLoaderRoute: typeof AccountsIdReportsByTagRouteImport
       parentRoute: typeof AccountsIdReportsRouteRoute
     }
-    "/accounts/$id/reports/breakdown/": {
-      id: "/accounts/$id/reports/breakdown/"
-      path: "/"
-      fullPath: "/accounts/$id/reports/breakdown/"
-      preLoaderRoute: typeof AccountsIdReportsBreakdownIndexRouteImport
-      parentRoute: typeof AccountsIdReportsBreakdownRouteRoute
+    "/accounts/$id/reports/in-out": {
+      id: "/accounts/$id/reports/in-out"
+      path: "/in-out"
+      fullPath: "/accounts/$id/reports/in-out"
+      preLoaderRoute: typeof AccountsIdReportsInOutRouteImport
+      parentRoute: typeof AccountsIdReportsRouteRoute
     }
-    "/accounts/$id/virtual/$virtualId/transactions": {
-      id: "/accounts/$id/virtual/$virtualId/transactions"
+    "/accounts/$id/reports/monthly-balances": {
+      id: "/accounts/$id/reports/monthly-balances"
+      path: "/monthly-balances"
+      fullPath: "/accounts/$id/reports/monthly-balances"
+      preLoaderRoute: typeof AccountsIdReportsMonthlyBalancesRouteImport
+      parentRoute: typeof AccountsIdReportsRouteRoute
+    }
+    "/accounts/$id/reports/principal-vs-interest": {
+      id: "/accounts/$id/reports/principal-vs-interest"
+      path: "/principal-vs-interest"
+      fullPath: "/accounts/$id/reports/principal-vs-interest"
+      preLoaderRoute: typeof AccountsIdReportsPrincipalVsInterestRouteImport
+      parentRoute: typeof AccountsIdReportsRouteRoute
+    }
+    "/accounts/$id/reports/savings-interest": {
+      id: "/accounts/$id/reports/savings-interest"
+      path: "/savings-interest"
+      fullPath: "/accounts/$id/reports/savings-interest"
+      preLoaderRoute: typeof AccountsIdReportsSavingsInterestRouteImport
+      parentRoute: typeof AccountsIdReportsRouteRoute
+    }
+    "/accounts/$id/reports/super-contributions": {
+      id: "/accounts/$id/reports/super-contributions"
+      path: "/super-contributions"
+      fullPath: "/accounts/$id/reports/super-contributions"
+      preLoaderRoute: typeof AccountsIdReportsSuperContributionsRouteImport
+      parentRoute: typeof AccountsIdReportsRouteRoute
+    }
+    "/accounts/$id/reports/super-returns": {
+      id: "/accounts/$id/reports/super-returns"
+      path: "/super-returns"
+      fullPath: "/accounts/$id/reports/super-returns"
+      preLoaderRoute: typeof AccountsIdReportsSuperReturnsRouteImport
+      parentRoute: typeof AccountsIdReportsRouteRoute
+    }
+    "/accounts/$id/virtual/$virtualId": {
+      id: "/accounts/$id/virtual/$virtualId"
+      path: "/virtual/$virtualId"
+      fullPath: "/accounts/$id/virtual/$virtualId"
+      preLoaderRoute: typeof AccountsIdVirtualVirtualIdRouteRouteImport
+      parentRoute: typeof AccountsIdRouteRoute
+    }
+    "/budget/report/$year/": {
+      id: "/budget/report/$year/"
+      path: "/budget/report/$year"
+      fullPath: "/budget/report/$year/"
+      preLoaderRoute: typeof BudgetReportYearIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/budget/report/$year/$month": {
+      id: "/budget/report/$year/$month"
+      path: "/budget/report/$year/$month"
+      fullPath: "/budget/report/$year/$month"
+      preLoaderRoute: typeof BudgetReportYearMonthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/groups/$id/reports/monthly-balances": {
+      id: "/groups/$id/reports/monthly-balances"
+      path: "/groups/$id/reports/monthly-balances"
+      fullPath: "/groups/$id/reports/monthly-balances"
+      preLoaderRoute: typeof GroupsIdReportsMonthlyBalancesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/shares/$id/reports/": {
+      id: "/shares/$id/reports/"
+      path: "/"
+      fullPath: "/shares/$id/reports/"
+      preLoaderRoute: typeof SharesIdReportsIndexRouteImport
+      parentRoute: typeof SharesIdReportsRouteRoute
+    }
+    "/shares/$id/reports/value": {
+      id: "/shares/$id/reports/value"
+      path: "/value"
+      fullPath: "/shares/$id/reports/value"
+      preLoaderRoute: typeof SharesIdReportsValueRouteImport
+      parentRoute: typeof SharesIdReportsRouteRoute
+    }
+    "/shares/$id/transactions/": {
+      id: "/shares/$id/transactions/"
       path: "/transactions"
-      fullPath: "/accounts/$id/virtual/$virtualId/transactions"
-      preLoaderRoute: typeof AccountsIdVirtualVirtualIdTransactionsRouteImport
-      parentRoute: typeof AccountsIdVirtualVirtualIdRouteRoute
+      fullPath: "/shares/$id/transactions/"
+      preLoaderRoute: typeof SharesIdTransactionsIndexRouteImport
+      parentRoute: typeof SharesIdRouteRoute
     }
-    "/accounts/$id/virtual/$virtualId/manage": {
-      id: "/accounts/$id/virtual/$virtualId/manage"
-      path: "/manage"
-      fullPath: "/accounts/$id/virtual/$virtualId/manage"
-      preLoaderRoute: typeof AccountsIdVirtualVirtualIdManageRouteImport
-      parentRoute: typeof AccountsIdVirtualVirtualIdRouteRoute
+    "/shares/$id/transactions/add": {
+      id: "/shares/$id/transactions/add"
+      path: "/transactions/add"
+      fullPath: "/shares/$id/transactions/add"
+      preLoaderRoute: typeof SharesIdTransactionsAddRouteImport
+      parentRoute: typeof SharesIdRouteRoute
     }
-    "/accounts/$id/reports/tag-trend/$tagId": {
-      id: "/accounts/$id/reports/tag-trend/$tagId"
-      path: "/tag-trend/$tagId"
-      fullPath: "/accounts/$id/reports/tag-trend/$tagId"
-      preLoaderRoute: typeof AccountsIdReportsTagTrendTagIdRouteImport
-      parentRoute: typeof AccountsIdReportsRouteRoute
-    }
-    "/accounts/$id/reports/breakdown/$tagId": {
-      id: "/accounts/$id/reports/breakdown/$tagId"
-      path: "/$tagId"
-      fullPath: "/accounts/$id/reports/breakdown/$tagId"
-      preLoaderRoute: typeof AccountsIdReportsBreakdownTagIdRouteImport
-      parentRoute: typeof AccountsIdReportsBreakdownRouteRoute
-    }
-    "/accounts/$id/manage/virtual/create": {
-      id: "/accounts/$id/manage/virtual/create"
-      path: "/manage/virtual/create"
-      fullPath: "/accounts/$id/manage/virtual/create"
-      preLoaderRoute: typeof AccountsIdManageVirtualCreateRouteImport
+    "/accounts/$id/manage/bank/create": {
+      id: "/accounts/$id/manage/bank/create"
+      path: "/manage/bank/create"
+      fullPath: "/accounts/$id/manage/bank/create"
+      preLoaderRoute: typeof AccountsIdManageBankCreateRouteImport
       parentRoute: typeof AccountsIdRouteRoute
     }
     "/accounts/$id/manage/virtual/$virtualId": {
@@ -1388,12 +1359,61 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AccountsIdManageVirtualVirtualIdRouteImport
       parentRoute: typeof AccountsIdRouteRoute
     }
-    "/accounts/$id/manage/bank/create": {
-      id: "/accounts/$id/manage/bank/create"
-      path: "/manage/bank/create"
-      fullPath: "/accounts/$id/manage/bank/create"
-      preLoaderRoute: typeof AccountsIdManageBankCreateRouteImport
+    "/accounts/$id/manage/virtual/create": {
+      id: "/accounts/$id/manage/virtual/create"
+      path: "/manage/virtual/create"
+      fullPath: "/accounts/$id/manage/virtual/create"
+      preLoaderRoute: typeof AccountsIdManageVirtualCreateRouteImport
       parentRoute: typeof AccountsIdRouteRoute
+    }
+    "/accounts/$id/reports/breakdown/": {
+      id: "/accounts/$id/reports/breakdown/"
+      path: "/"
+      fullPath: "/accounts/$id/reports/breakdown/"
+      preLoaderRoute: typeof AccountsIdReportsBreakdownIndexRouteImport
+      parentRoute: typeof AccountsIdReportsBreakdownRouteRoute
+    }
+    "/accounts/$id/reports/breakdown/$tagId": {
+      id: "/accounts/$id/reports/breakdown/$tagId"
+      path: "/$tagId"
+      fullPath: "/accounts/$id/reports/breakdown/$tagId"
+      preLoaderRoute: typeof AccountsIdReportsBreakdownTagIdRouteImport
+      parentRoute: typeof AccountsIdReportsBreakdownRouteRoute
+    }
+    "/accounts/$id/reports/tag-trend/": {
+      id: "/accounts/$id/reports/tag-trend/"
+      path: "/tag-trend"
+      fullPath: "/accounts/$id/reports/tag-trend/"
+      preLoaderRoute: typeof AccountsIdReportsTagTrendIndexRouteImport
+      parentRoute: typeof AccountsIdReportsRouteRoute
+    }
+    "/accounts/$id/reports/tag-trend/$tagId": {
+      id: "/accounts/$id/reports/tag-trend/$tagId"
+      path: "/tag-trend/$tagId"
+      fullPath: "/accounts/$id/reports/tag-trend/$tagId"
+      preLoaderRoute: typeof AccountsIdReportsTagTrendTagIdRouteImport
+      parentRoute: typeof AccountsIdReportsRouteRoute
+    }
+    "/accounts/$id/virtual/$virtualId/": {
+      id: "/accounts/$id/virtual/$virtualId/"
+      path: "/"
+      fullPath: "/accounts/$id/virtual/$virtualId/"
+      preLoaderRoute: typeof AccountsIdVirtualVirtualIdIndexRouteImport
+      parentRoute: typeof AccountsIdVirtualVirtualIdRouteRoute
+    }
+    "/accounts/$id/virtual/$virtualId/manage": {
+      id: "/accounts/$id/virtual/$virtualId/manage"
+      path: "/manage"
+      fullPath: "/accounts/$id/virtual/$virtualId/manage"
+      preLoaderRoute: typeof AccountsIdVirtualVirtualIdManageRouteImport
+      parentRoute: typeof AccountsIdVirtualVirtualIdRouteRoute
+    }
+    "/accounts/$id/virtual/$virtualId/transactions": {
+      id: "/accounts/$id/virtual/$virtualId/transactions"
+      path: "/transactions"
+      fullPath: "/accounts/$id/virtual/$virtualId/transactions"
+      preLoaderRoute: typeof AccountsIdVirtualVirtualIdTransactionsRouteImport
+      parentRoute: typeof AccountsIdVirtualVirtualIdRouteRoute
     }
   }
 }
@@ -1595,6 +1615,7 @@ const rootRouteChildren: RootRouteChildren = {
   FamilyIndexRoute: FamilyIndexRoute,
   ForecastIndexRoute: ForecastIndexRoute,
   GroupsIndexRoute: GroupsIndexRoute,
+  RetirementIndexRoute: RetirementIndexRoute,
   TagsIndexRoute: TagsIndexRoute,
   BillsAccountsIdRoute: BillsAccountsIdRoute,
   BillsAccountsCreateRoute: BillsAccountsCreateRoute,

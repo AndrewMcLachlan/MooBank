@@ -57,6 +57,7 @@
     <ProjectReference Include="..\MooBank.Modules.Instruments\MooBank.Modules.Instruments.csproj" />
     <ProjectReference Include="..\MooBank.Modules.ReferenceData\MooBank.Modules.ReferenceData.csproj" />
     <ProjectReference Include="..\MooBank.Modules.Reports\MooBank.Modules.Reports.csproj" />
+    <ProjectReference Include="..\MooBank.Modules.Retirement\MooBank.Modules.Retirement.csproj" />
     <ProjectReference Include="..\MooBank.Modules.Stocks\MooBank.Modules.Stocks.csproj" />
     <ProjectReference Include="..\MooBank.Modules.Tags\MooBank.Modules.Tags.csproj" />
     <ProjectReference Include="..\MooBank.Modules.Transactions\MooBank.Modules.Transactions.csproj" />

@@ -7,6 +7,7 @@ using Asm.MooBank.Domain.Entities.Group;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Domain.Entities.Reports;
+using Asm.MooBank.Domain.Entities.Retirement;
 using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.User;
@@ -125,6 +126,15 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
 
     [AllowNull]
     public virtual DbSet<PlannedItemFlexibleWindow> PlannedItemFlexibleWindows { get; set; }
+
+    [AllowNull]
+    public virtual DbSet<RetirementPlan> RetirementPlans { get; set; }
+
+    [AllowNull]
+    public virtual DbSet<RetirementPlanMember> RetirementPlanMembers { get; set; }
+
+    [AllowNull]
+    public virtual DbSet<RetirementPlanMemberAccount> RetirementPlanMemberAccounts { get; set; }
 
     // Importer (and other) assemblies contribute their EF configurations to the shared model via this
     // list, which OnModelCreating applies. Registration is order-sensitive: every assembly must be

@@ -15,4 +15,7 @@ public class AuthorisationReader(MooBankContext mooBankContext) : IAuthorisation
 
     public async Task<Guid?> GetForecastPlanFamilyId(Guid planId, CancellationToken cancellationToken = default) =>
         await mooBankContext.ForecastPlans.Where(p => p.Id == planId).Select(p => (Guid?)p.FamilyId).SingleOrDefaultAsync(cancellationToken);
+
+    public async Task<Guid?> GetRetirementPlanFamilyId(Guid planId, CancellationToken cancellationToken = default) =>
+        await mooBankContext.RetirementPlans.Where(p => p.Id == planId).Select(p => (Guid?)p.FamilyId).SingleOrDefaultAsync(cancellationToken);
 }
