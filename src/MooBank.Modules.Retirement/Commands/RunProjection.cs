@@ -17,7 +17,7 @@ internal class RunProjectionHandler(
     public async ValueTask<RetirementProjection> Handle(RunProjection command, CancellationToken cancellationToken)
     {
         var plan = await plans
-            .Specify(new RetirementPlanDetailsSpecification())
+            .Specify(new RetirementPlanProjectionSpecification())
             .SingleOrDefaultAsync(p => p.Id == command.PlanId && p.FamilyId == user.FamilyId, cancellationToken) ??
             throw new NotFoundException("Retirement plan not found");
 

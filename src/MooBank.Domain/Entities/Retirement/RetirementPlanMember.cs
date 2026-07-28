@@ -54,13 +54,21 @@ public class RetirementPlanMember(Guid id) : KeyedEntity<Guid>(id)
         RetirementAge = retirementAge;
     }
 
+    /// <summary>
+    /// Replace the set of instruments belonging to this member.
+    /// </summary>
+    /// <remarks>
+    /// Links are constructed without an id: the key is store-generated, and EF reads an entity that
+    /// already carries one as a row that exists, which would be written as an UPDATE rather than an
+    /// insert. <see cref="RetirementPlan.AddMember"/> has the same constraint.
+    /// </remarks>
     public void SetAccounts(IEnumerable<Guid> instrumentIds)
     {
         _accounts.Clear();
 
         foreach (var instrumentId in instrumentIds.Distinct())
         {
-            _accounts.Add(new RetirementPlanMemberAccount(Guid.NewGuid())
+            _accounts.Add(new RetirementPlanMemberAccount
             {
                 RetirementPlanMemberId = Id,
                 InstrumentId = instrumentId,

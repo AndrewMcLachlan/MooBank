@@ -84,9 +84,17 @@ public class RetirementPlan(Guid id) : KeyedEntity<Guid>(id)
         UpdatedUtc = DateTime.UtcNow;
     }
 
+    /// <summary>
+    /// Add a person to the plan.
+    /// </summary>
+    /// <remarks>
+    /// The member is constructed without an id on purpose. The key is store-generated, and EF
+    /// treats an entity that already carries one as a row that exists: adding it to a loaded plan
+    /// would then be written as an UPDATE against a row that was never inserted.
+    /// </remarks>
     public RetirementPlanMember AddMember(string name, DateOnly dateOfBirth, decimal currentIncome, int retirementAge, IEnumerable<Guid> instrumentIds)
     {
-        var member = new RetirementPlanMember(Guid.NewGuid())
+        var member = new RetirementPlanMember
         {
             RetirementPlanId = Id,
             Name = name,
