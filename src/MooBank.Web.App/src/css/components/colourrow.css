@@ -1,0 +1,23 @@
+/* ---- Colour-coded management rows ----
+   On the tag and group management screens the row *is* the entity, so its colour is
+   shown as an edge on the row rather than as a marker beside the name. The account
+   list already treats a group's colour this way (see accountlist.css), so groups read
+   the same in both places.
+
+   Set --row-colour and the has-colour class on the <tr>, matching the convention in
+   accountlist.css. The border goes on the first cell because a border on a <tr> does
+   not render under border-collapse: collapse. */
+
+.colour-row > td:first-child {
+    /* Reserved even with no colour set, so rows do not shift sideways as colours are
+       applied and cleared. */
+    border-left: 4px solid transparent;
+}
+
+.colour-row.has-colour > td:first-child {
+    /* Mixed a little towards the opposite end of the theme so a pale colour still
+       separates from the page — the dot got this from its hairline outline, which a
+       border has no equivalent of. The shift is small enough to leave the hue
+       readable. Same light-dark() approach as accountlist.css. */
+    border-left-color: color-mix(in srgb, var(--row-colour) 88%, light-dark(#000, #fff));
+}
