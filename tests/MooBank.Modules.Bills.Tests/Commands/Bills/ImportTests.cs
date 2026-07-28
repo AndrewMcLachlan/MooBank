@@ -301,6 +301,45 @@ public class ImportTests
         Assert.Single(account.Bills);
     }
 
+    /// <summary>
+    /// Given a bill whose invoice number is longer than the column allows
+    /// When the bills are imported
+    /// Then that bill should be rejected with an error and the others still imported
+    /// </summary>
+    /// <remarks>
+    /// utilities.Bill.InvoiceNumber is VARCHAR(15). Without the guard the insert fails with a
+    /// truncation error that takes the whole batch down instead of the one offending bill.
+    /// </remarks>
+    [Fact]
+    public async Task Handle_InvoiceNumberTooLong_RejectsOnlyThatBill()
+    {
+        // Arrange
+        var account = TestEntities.CreateAccount(name: "Test Account");
+        _mocks.AccountRepositoryMock
+            .Setup(r => r.Get(It.IsAny<CancellationToken>()))
+            .ReturnsAsync([account]);
+
+        var handler = new ImportHandler(
+            _mocks.UnitOfWorkMock.Object,
+            _mocks.AccountRepositoryMock.Object);
+
+        var bills = new[]
+        {
+            TestEntities.CreateImportBill(accountName: "Test Account", issueDate: new DateOnly(2024, 1, 15), invoiceNumber: "1234567890123456"),
+            TestEntities.CreateImportBill(accountName: "Test Account", issueDate: new DateOnly(2024, 2, 15), invoiceNumber: "123456789012345"),
+        };
+        var command = new Import(bills);
+
+        // Act
+        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(1, result.Imported);
+        Assert.Equal(1, result.Failed);
+        Assert.Contains(result.Errors, e => e.Contains("1234567890123456") && e.Contains("exceeds 15 characters"));
+        Assert.Single(account.Bills);
+    }
+
     [Fact]
     public async Task Handle_EmptyBillsList_ImportsNothing()
     {
