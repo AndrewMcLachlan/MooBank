@@ -1,9 +1,6 @@
-.tag-name-cell {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
+/* Still used by the budget lines, which show a tag's colour inline rather than as a
+   row edge. budget.css overrides only the size and background, so the shape and
+   outline come from here. */
 .tag-swatch {
     display: inline-block;
     width: 12px;

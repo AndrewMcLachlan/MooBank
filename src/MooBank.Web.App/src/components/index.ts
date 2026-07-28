@@ -5,6 +5,7 @@ export * from "./AccountSummary";
 export * from "./AccountTypeBadge";
 export * from "./Amount";
 export * from "./ColourPicker";
+export * from "./colourRow";
 export * from "./CurrencyInput";
 export * from "./CurrencySelector";
 export * from "./InstitutionSelector";

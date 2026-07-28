@@ -3,13 +3,14 @@ import React from "react";
 import { useNavigate } from "@tanstack/react-router";
 
 import type { Group } from "api/types.gen";
+import { colourRowProps } from "components";
 
 export const GroupRow: React.FC<GroupRowProps> = (props) => {
 
     const { onRowClick } = useAccountRowCommonState(props);
 
     return (
-        <tr onClick={onRowClick} className="clickable">
+        <tr onClick={onRowClick} {...colourRowProps(props.group.colour, "clickable")}>
             <td>
                 <div className="name">{props.group.name}</div>
             </td>
