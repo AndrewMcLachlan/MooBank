@@ -17,7 +17,7 @@ public class BillTools(IQueryDispatcher queryDispatcher, ICommandDispatcher comm
         "Records one or more utility bills, typically read from a supplier's invoice. " +
         "Bills whose invoice number or issue date already exists on the account are rejected rather than duplicated, so re-reading the same invoice is safe. " +
         "Each bill is accepted or rejected on its own; the result reports how many of each and why. " +
-        "Do not supply the bill's total cost or total usage — MooBank calculates both from the periods, readings and discounts.")]
+        "Do not supply the bill's total cost or overall usage total (the computed Total) — MooBank calculates those from the readings, periods and discounts.")]
     public ValueTask<ImportResult> ImportBills(
         [Description("The bills to record.")] IEnumerable<BillEntry> bills,
         CancellationToken cancellationToken = default) =>
