@@ -2,6 +2,7 @@
 using Asm.MooBank.Domain.Entities.Utility;
 using Asm.MooBank.Models;
 using Bogus;
+using BillModels = Asm.MooBank.Modules.Bills.Models;
 using DomainAccount = Asm.MooBank.Domain.Entities.Utility.Account;
 
 namespace Asm.MooBank.Modules.Bills.Tests.Support;
@@ -190,7 +191,7 @@ internal static class TestEntities
         return account;
     }
 
-    public static Models.ImportBill CreateImportBill(
+    public static BillModels.ImportBill CreateImportBill(
         string accountName = "Test Account",
         DateOnly? issueDate = null,
         string? invoiceNumber = null,
@@ -198,10 +199,10 @@ internal static class TestEntities
         bool costsIncludeGST = true,
         int? currentReading = null,
         int? previousReading = null,
-        IEnumerable<Models.Period>? periods = null,
-        IEnumerable<Models.Discount>? discounts = null)
+        IEnumerable<BillModels.Period>? periods = null,
+        IEnumerable<BillModels.Discount>? discounts = null)
     {
-        return new Models.ImportBill
+        return new BillModels.ImportBill
         {
             AccountName = accountName,
             IssueDate = issueDate ?? DateOnly.FromDateTime(DateTime.UtcNow),
@@ -216,14 +217,14 @@ internal static class TestEntities
         };
     }
 
-    public static Models.Period CreateModelPeriod(
+    public static BillModels.Period CreateModelPeriod(
         DateTime? periodStart = null,
         DateTime? periodEnd = null,
         decimal chargePerDay = 1.0m,
         decimal pricePerUnit = 0.25m,
         int totalUsage = 500)
     {
-        return new Models.Period
+        return new BillModels.Period
         {
             PeriodStart = periodStart ?? DateTime.UtcNow.AddMonths(-1),
             PeriodEnd = periodEnd ?? DateTime.UtcNow,
@@ -233,12 +234,12 @@ internal static class TestEntities
         };
     }
 
-    public static Models.Discount CreateModelDiscount(
+    public static BillModels.Discount CreateModelDiscount(
         byte? discountPercent = null,
         decimal? discountAmount = null,
         string reason = "Discount")
     {
-        return new Models.Discount
+        return new BillModels.Discount
         {
             DiscountPercent = discountPercent,
             DiscountAmount = discountAmount,

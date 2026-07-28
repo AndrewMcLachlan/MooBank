@@ -9,6 +9,8 @@ internal class ImportHandler(
     IUnitOfWork unitOfWork,
     Domain.Entities.Utility.IAccountRepository accountRepository) : ICommandHandler<Import, ImportResult>
 {
+    private const int InvoiceNumberMaxLength = 15;
+
     public async ValueTask<ImportResult> Handle(Import command, CancellationToken cancellationToken)
     {
         var userAccounts = (await accountRepository.Get(cancellationToken)).ToList();
@@ -24,6 +26,14 @@ internal class ImportHandler(
             if (account == null)
             {
                 errors.Add($"Account '{bill.AccountName}' not found for bill dated {bill.IssueDate}");
+                continue;
+            }
+
+            // The column is VARCHAR(15); without this the insert fails with a truncation error
+            // that takes the whole batch down rather than just the offending bill.
+            if (bill.InvoiceNumber?.Length > InvoiceNumberMaxLength)
+            {
+                errors.Add($"Invoice number '{bill.InvoiceNumber}' exceeds {InvoiceNumberMaxLength} characters for account '{account.Name}'");
                 continue;
             }
 
