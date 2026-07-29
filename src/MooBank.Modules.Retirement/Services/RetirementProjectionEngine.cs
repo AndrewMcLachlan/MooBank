@@ -127,7 +127,7 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
             // them are touched so the shares are consistent with each other.
             var openingTotalThisYear = members.Sum(m => m.Balance);
             var targetThisYear = isDrawingDown
-                ? assumptions.TargetRetirementIncome * Indexation(yearOffset, assumptions.InflationRate)
+                ? assumptions.TargetRetirementIncome * DrawdownIndexation(yearOffset, assumptions.InflationRate)
                 : 0m;
 
             var memberYears = new List<RetirementMemberYear>(members.Count);
@@ -237,7 +237,7 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
 
         for (var yearOffset = yearsToAllRetired + 1; yearOffset < years.Count; yearOffset++)
         {
-            var wanted = assumptions.TargetRetirementIncome * Indexation(yearOffset, assumptions.InflationRate);
+            var wanted = assumptions.TargetRetirementIncome * DrawdownIndexation(yearOffset, assumptions.InflationRate);
 
             // A cent of rounding either way is not a shortfall.
             if (years[yearOffset].Drawdown < wanted - 0.01m)
@@ -328,6 +328,19 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
 
         return indexation;
     }
+
+    /// <summary>
+    /// How far the target retirement income has been indexed by the given projection year.
+    /// </summary>
+    /// <remarks>
+    /// A full year ahead of <see cref="Indexation"/>, which is not an inconsistency but the point.
+    /// Income and fees are stated as today's figures and deliberately go unindexed in the first
+    /// projected year, so their real value drifts. The target income is a promise about buying power:
+    /// it has to match the discounting exactly, year for year, or a target set at 90,000 would report
+    /// as 87,805 in today's dollars for the whole of retirement.
+    /// </remarks>
+    private static decimal DrawdownIndexation(int yearOffset, decimal inflationRate) =>
+        Indexation(yearOffset + 1, inflationRate);
 
     /// <summary>
     /// A member's running position through the projection.
