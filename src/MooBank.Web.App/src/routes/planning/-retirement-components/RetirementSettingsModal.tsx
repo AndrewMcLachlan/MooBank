@@ -1,10 +1,14 @@
 import { Button, ComboBox, Form, Modal } from "@andrewmclachlan/moo-ds";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
-import type { GrowthStrategy, LogicalAccount, RetirementPlan, SimpleRetirementPlan } from "api/types.gen";
+import type { GrowthStrategy, LogicalAccount, RetirementPlan, SimpleRetirementPlan, User } from "api/types.gen";
 import { useUpdateRetirementPlan } from "../-retirement-hooks/useUpdateRetirementPlan";
 import { useAccounts } from "hooks/useAccounts";
+import { useFamilyMembers } from "../-retirement-hooks/useFamilyMembers";
 import { CurrencyInput } from "components";
 import { defaultCurrentAge, defaultRetirementAge, fromPercent, growthStrategies, toPercent } from "../-retirement-utils/retirementDefaults";
+
+/** A person's name for the picker, falling back to their email when they have not set one. */
+const displayName = (u: User) => [u.firstName, u.lastName].filter(Boolean).join(" ") || u.emailAddress;
 
 interface RetirementSettingsModalProps {
     plan?: RetirementPlan;
@@ -26,7 +30,7 @@ interface RetirementSettingsFormValues {
     lifeExpectancy: number;
     members: {
         id?: string;
-        name: string;
+        userId: string;
         currentAge: number;
         salarySacrifice: number;
         growthStrategy: GrowthStrategy;
@@ -47,7 +51,7 @@ const toFormValues = (plan?: RetirementPlan): RetirementSettingsFormValues => ({
     lifeExpectancy: plan?.lifeExpectancy ?? 90,
     members: (plan?.members ?? []).map(m => ({
         id: m.id,
-        name: m.name,
+        userId: m.userId,
         currentAge: m.currentAge,
         salarySacrifice: m.salarySacrifice,
         growthStrategy: m.growthStrategy,
@@ -68,7 +72,7 @@ const toRequest = (data: RetirementSettingsFormValues): SimpleRetirementPlan => 
     lifeExpectancy: Number(data.lifeExpectancy) || 0,
     members: data.members.map(m => ({
         id: m.id,
-        name: m.name,
+        userId: m.userId,
         currentAge: Number(m.currentAge) || 0,
         salarySacrifice: Number(m.salarySacrifice) || 0,
         growthStrategy: m.growthStrategy,
@@ -83,6 +87,7 @@ const toRequest = (data: RetirementSettingsFormValues): SimpleRetirementPlan => 
 export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = ({ plan, currencyCode, show, onHide }) => {
 
     const { data: accounts } = useAccounts();
+    const { members: familyMembers } = useFamilyMembers();
     const { updateAsync, isPending } = useUpdateRetirementPlan();
 
     const form = useForm<RetirementSettingsFormValues>({
@@ -96,6 +101,18 @@ export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = (
 
     // Only superannuation accounts can back a retirement projection, so nothing else is offered.
     const superAccounts: LogicalAccount[] = (accounts ?? []).filter(a => a.accountType === "Superannuation");
+
+    /**
+     * The accounts a member can be credited with: the superannuation accounts the selected person
+     * owns. The server enforces the same rule, so this keeps the form from offering a choice that
+     * would be rejected — and stops one person being credited with another's balance.
+     */
+    const accountsFor = (userId: string) => {
+        const owner = familyMembers.find(u => u.id === userId);
+        if (!owner) return [];
+
+        return superAccounts.filter(a => owner.accounts.includes(a.id));
+    };
 
     if (!plan) return null;
 
@@ -155,9 +172,14 @@ export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = (
                         {fields.map((field, index) => (
                             <div className="retirement-member" key={field.id}>
                                 <div className="retirement-member-fields">
-                                    <Form.Group groupId={`members.${index}.name`}>
-                                        <Form.Label>Name</Form.Label>
-                                        <Form.Input type="text" />
+                                    <Form.Group groupId={`members.${index}.userId`}>
+                                        <Form.Label>Person</Form.Label>
+                                        <Form.Select>
+                                            <option value="">Select a person…</option>
+                                            {familyMembers.map(u => (
+                                                <option key={u.id} value={u.id}>{displayName(u)}</option>
+                                            ))}
+                                        </Form.Select>
                                     </Form.Group>
                                     <Form.Group groupId={`members.${index}.currentAge`}>
                                         <Form.Label>Current Age</Form.Label>
@@ -196,8 +218,8 @@ export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = (
                                         multiSelect
                                         clearable
                                         placeholder="Select superannuation accounts..."
-                                        items={superAccounts}
-                                        selectedItems={superAccounts.filter(a => (members?.[index]?.instrumentIds ?? []).includes(a.id))}
+                                        items={accountsFor(members?.[index]?.userId ?? "")}
+                                        selectedItems={accountsFor(members?.[index]?.userId ?? "").filter(a => (members?.[index]?.instrumentIds ?? []).includes(a.id))}
                                         labelField={a => a?.name}
                                         valueField={a => a?.id}
                                         onChange={(items) => form.setValue(`members.${index}.instrumentIds`, items.map(a => a.id), { shouldDirty: true })}
@@ -210,7 +232,7 @@ export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = (
                         ))}
                         <Button
                             variant="outline-primary"
-                            onClick={() => append({ name: "", currentAge: defaultCurrentAge, currentIncome: 0, salarySacrifice: 0, retirementAge: defaultRetirementAge, growthStrategy: "Balanced", annualFees: 0, insurancePremium: 0, instrumentIds: [] })}
+                            onClick={() => append({ userId: "", currentAge: defaultCurrentAge, currentIncome: 0, salarySacrifice: 0, retirementAge: defaultRetirementAge, growthStrategy: "Balanced", annualFees: 0, insurancePremium: 0, instrumentIds: [] })}
                         >
                             Add Person
                         </Button>

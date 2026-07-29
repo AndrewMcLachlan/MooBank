@@ -51,7 +51,7 @@ public class RetirementPlanTests
         var instrumentId = Guid.NewGuid();
 
         // Act
-        var member = plan.AddMember("Self", 45, 100_000m, 0m, 65, GrowthStrategy.Balanced, 0m, 0m, [instrumentId]);
+        var member = plan.AddMember(Guid.NewGuid(), 45, 100_000m, 0m, 65, GrowthStrategy.Balanced, 0m, 0m, [instrumentId]);
 
         // Assert
         Assert.Equal(plan.Id, member.RetirementPlanId);
@@ -69,7 +69,7 @@ public class RetirementPlanTests
     {
         // Arrange
         var plan = RetirementPlan.Create(Guid.NewGuid(), "Retirement", Assumptions);
-        var member = plan.AddMember("Self", 45, 100_000m, 0m, 65, GrowthStrategy.Balanced, 0m, 0m, []);
+        var member = plan.AddMember(Guid.NewGuid(), 45, 100_000m, 0m, 65, GrowthStrategy.Balanced, 0m, 0m, []);
 
         // Act
         plan.RemoveMember(member.Id);
@@ -144,10 +144,9 @@ public class RetirementPlanTests
         var member = TestEntities.CreateMember(name: "Self", currentAge: 45, currentIncome: 100_000m, salarySacrifice: 0m, retirementAge: 65, growthStrategy: GrowthStrategy.Balanced);
 
         // Act
-        member.Update("Renamed", 50, 130_000m, 12_000m, 62, GrowthStrategy.Conservative, 250m, 300m);
+        member.Update(50, 130_000m, 12_000m, 62, GrowthStrategy.Conservative, 250m, 300m);
 
         // Assert
-        Assert.Equal("Renamed", member.Name);
         Assert.Equal(50, member.CurrentAge);
         Assert.Equal(130_000m, member.CurrentIncome);
         Assert.Equal(12_000m, member.SalarySacrifice);

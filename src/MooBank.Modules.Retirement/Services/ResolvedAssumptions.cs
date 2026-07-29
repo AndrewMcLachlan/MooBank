@@ -67,7 +67,7 @@ internal sealed record ResolvedMember
         return new ResolvedMember
         {
             Id = member.Id,
-            Name = member.Name,
+            Name = member.User is null ? "" : $"{member.User.FirstName} {member.User.LastName}".Trim(),
             CurrentAge = over?.CurrentAge ?? member.CurrentAge,
             CurrentIncome = over?.CurrentIncome ?? member.CurrentIncome,
             SalarySacrifice = over?.SalarySacrifice ?? member.SalarySacrifice,

@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using Asm.MooBank.Api.Tests.Authorization;
 using Asm.MooBank.Api.Tests.Infrastructure;
+using Asm.MooBank.Domain.Entities.Instrument;
 
 namespace Asm.MooBank.Api.Tests.Retirement;
 
@@ -22,8 +23,42 @@ public class RetirementPlanUpdateTests(MooBankWebApplicationFactory factory)
 
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
-    private static HttpClient CreateClient(MooBankWebApplicationFactory factory) =>
-        factory.CreateAuthenticatedClient(new TestUser { FamilyId = Guid.NewGuid() });
+    /// <summary>
+    /// A caller plus two people in their family, and an instrument owned by each.
+    /// </summary>
+    /// <remarks>
+    /// A member now names a user and can only hold accounts that user owns, so both have to exist
+    /// before the API will accept a plan — the guard rejects anything else.
+    /// </remarks>
+    private sealed record Household(HttpClient Client, Guid SelfUserId, Guid SpouseUserId, Guid SelfInstrumentId, Guid SelfOtherInstrumentId, Guid SpouseInstrumentId);
+
+    private async Task<Household> CreateHouseholdAsync()
+    {
+        var familyId = Guid.NewGuid();
+        var self = Guid.NewGuid();
+        var spouse = Guid.NewGuid();
+        var selfInstrument = Guid.NewGuid();
+        var selfOtherInstrument = Guid.NewGuid();
+        var spouseInstrument = Guid.NewGuid();
+
+        await _factory.SeedDataAsync(async context =>
+        {
+            context.Add(new Asm.MooBank.Domain.Entities.User.User(self) { EmailAddress = $"self-{self}@example.com", FirstName = "Self", FamilyId = familyId });
+            context.Add(new Asm.MooBank.Domain.Entities.User.User(spouse) { EmailAddress = $"spouse-{spouse}@example.com", FirstName = "Spouse", FamilyId = familyId });
+
+            // Ownership rows only: the in-memory provider does not enforce the foreign key, and the
+            // guard reads ownership rather than the instrument itself.
+            context.Add(new InstrumentOwner { UserId = self, InstrumentId = selfInstrument });
+            context.Add(new InstrumentOwner { UserId = self, InstrumentId = selfOtherInstrument });
+            context.Add(new InstrumentOwner { UserId = spouse, InstrumentId = spouseInstrument });
+
+            await context.SaveChangesAsync();
+        });
+
+        var client = _factory.CreateAuthenticatedClient(new TestUser { Id = self, FamilyId = familyId });
+
+        return new Household(client, self, spouse, selfInstrument, selfOtherInstrument, spouseInstrument);
+    }
 
     private static object Plan(params object[] members) => new
     {
@@ -36,10 +71,10 @@ public class RetirementPlanUpdateTests(MooBankWebApplicationFactory factory)
         members,
     };
 
-    private static object Member(string name, Guid? id = null, IEnumerable<Guid>? instrumentIds = null) => new
+    private static object Member(Guid userId, Guid? id = null, IEnumerable<Guid>? instrumentIds = null) => new
     {
         id,
-        name,
+        userId,
         currentAge = 45,
         salarySacrifice = 0m,
         growthStrategy = "Balanced",
@@ -53,7 +88,11 @@ public class RetirementPlanUpdateTests(MooBankWebApplicationFactory factory)
     private static async Task<JsonElement> CreatePlanAsync(HttpClient client, params object[] members)
     {
         var response = await client.PostAsJsonAsync("/api/retirement/plans", Plan(members), TestContext.Current.CancellationToken);
-        response.EnsureSuccessStatusCode();
+        if (!response.IsSuccessStatusCode)
+        {
+            // The body carries the validation or authorisation reason, which a bare status code hides.
+            throw new Exception($"Create failed with {(int)response.StatusCode}: {await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken)}");
+        }
 
         return await response.Content.ReadFromJsonAsync<JsonElement>(JsonOptions, TestContext.Current.CancellationToken);
     }
@@ -71,22 +110,23 @@ public class RetirementPlanUpdateTests(MooBankWebApplicationFactory factory)
     public async Task Update_AddingAPersonToAnExistingPlan_Succeeds()
     {
         // Arrange
-        var client = CreateClient(_factory);
-        var created = await CreatePlanAsync(client, Member("Self"));
+        var h = await CreateHouseholdAsync();
+        var client = h.Client;
+        var created = await CreatePlanAsync(client, Member(h.SelfUserId));
         var planId = IdOf(created);
         var selfId = MembersOf(created).Single().GetProperty("id").GetGuid();
 
         // Act
         var response = await client.PutAsJsonAsync(
             $"/api/retirement/plans/{planId}",
-            Plan(Member("Self", selfId), Member("Spouse")),
+            Plan(Member(h.SelfUserId, selfId), Member(h.SpouseUserId)),
             TestContext.Current.CancellationToken);
 
         // Assert
         response.EnsureSuccessStatusCode();
 
         var updated = await response.Content.ReadFromJsonAsync<JsonElement>(JsonOptions, TestContext.Current.CancellationToken);
-        Assert.Equal(["Self", "Spouse"], MembersOf(updated).Select(m => m.GetProperty("name").GetString()));
+        Assert.Equal([h.SelfUserId, h.SpouseUserId], MembersOf(updated).Select(m => m.GetProperty("userId").GetGuid()));
     }
 
     /// <summary>
@@ -98,15 +138,16 @@ public class RetirementPlanUpdateTests(MooBankWebApplicationFactory factory)
     public async Task Update_AddingAPerson_PersistsToTheStore()
     {
         // Arrange
-        var client = CreateClient(_factory);
-        var created = await CreatePlanAsync(client, Member("Self"));
+        var h = await CreateHouseholdAsync();
+        var client = h.Client;
+        var created = await CreatePlanAsync(client, Member(h.SelfUserId));
         var planId = IdOf(created);
         var selfId = MembersOf(created).Single().GetProperty("id").GetGuid();
 
         // Act
         var update = await client.PutAsJsonAsync(
             $"/api/retirement/plans/{planId}",
-            Plan(Member("Self", selfId), Member("Spouse")),
+            Plan(Member(h.SelfUserId, selfId), Member(h.SpouseUserId)),
             TestContext.Current.CancellationToken);
         update.EnsureSuccessStatusCode();
 
@@ -128,15 +169,16 @@ public class RetirementPlanUpdateTests(MooBankWebApplicationFactory factory)
     public async Task Update_SavingAnUnchangedMember_Succeeds()
     {
         // Arrange
-        var client = CreateClient(_factory);
-        var created = await CreatePlanAsync(client, Member("Self"));
+        var h = await CreateHouseholdAsync();
+        var client = h.Client;
+        var created = await CreatePlanAsync(client, Member(h.SelfUserId));
         var planId = IdOf(created);
         var selfId = MembersOf(created).Single().GetProperty("id").GetGuid();
 
         // Act
         var response = await client.PutAsJsonAsync(
             $"/api/retirement/plans/{planId}",
-            Plan(Member("Self", selfId)),
+            Plan(Member(h.SelfUserId, selfId)),
             TestContext.Current.CancellationToken);
 
         // Assert
@@ -157,23 +199,24 @@ public class RetirementPlanUpdateTests(MooBankWebApplicationFactory factory)
     public async Task Update_AddingAPersonWithAccounts_PersistsTheAccountLinks()
     {
         // Arrange
-        var client = CreateClient(_factory);
-        var created = await CreatePlanAsync(client, Member("Self"));
+        var h = await CreateHouseholdAsync();
+        var client = h.Client;
+        var created = await CreatePlanAsync(client, Member(h.SelfUserId));
         var planId = IdOf(created);
         var selfId = MembersOf(created).Single().GetProperty("id").GetGuid();
-        var instrumentId = Guid.NewGuid();
+
 
         // Act
         var response = await client.PutAsJsonAsync(
             $"/api/retirement/plans/{planId}",
-            Plan(Member("Self", selfId), Member("Spouse", instrumentIds: [instrumentId])),
+            Plan(Member(h.SelfUserId, selfId), Member(h.SpouseUserId, instrumentIds: [h.SpouseInstrumentId])),
             TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
 
         // Assert
         var reread = await client.GetFromJsonAsync<JsonElement>($"/api/retirement/plans/{planId}", JsonOptions, TestContext.Current.CancellationToken);
-        var spouse = MembersOf(reread).Single(m => m.GetProperty("name").GetString() == "Spouse");
-        Assert.Equal([instrumentId], spouse.GetProperty("instrumentIds").EnumerateArray().Select(i => i.GetGuid()));
+        var spouse = MembersOf(reread).Single(m => m.GetProperty("userId").GetGuid() == h.SpouseUserId);
+        Assert.Equal([h.SpouseInstrumentId], spouse.GetProperty("instrumentIds").EnumerateArray().Select(i => i.GetGuid()));
     }
 
     /// <summary>
@@ -191,25 +234,26 @@ public class RetirementPlanUpdateTests(MooBankWebApplicationFactory factory)
     public async Task Update_ChangingAMembersAccounts_ReplacesTheSet()
     {
         // Arrange
-        var client = CreateClient(_factory);
-        var original = Guid.NewGuid();
-        var replacement = Guid.NewGuid();
+        var h = await CreateHouseholdAsync();
+        var client = h.Client;
 
-        var created = await CreatePlanAsync(client, Member("Self", instrumentIds: [original]));
+
+
+        var created = await CreatePlanAsync(client, Member(h.SelfUserId, instrumentIds: [h.SelfInstrumentId]));
         var planId = IdOf(created);
         var selfId = MembersOf(created).Single().GetProperty("id").GetGuid();
 
         // Act
         var response = await client.PutAsJsonAsync(
             $"/api/retirement/plans/{planId}",
-            Plan(Member("Self", selfId, instrumentIds: [replacement])),
+            Plan(Member(h.SelfUserId, selfId, instrumentIds: [h.SelfOtherInstrumentId])),
             TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
 
         // Assert
         var reread = await client.GetFromJsonAsync<JsonElement>($"/api/retirement/plans/{planId}", JsonOptions, TestContext.Current.CancellationToken);
         var self = MembersOf(reread).Single();
-        Assert.Equal([replacement], self.GetProperty("instrumentIds").EnumerateArray().Select(i => i.GetGuid()));
+        Assert.Equal([h.SelfOtherInstrumentId], self.GetProperty("instrumentIds").EnumerateArray().Select(i => i.GetGuid()));
     }
 
     /// <summary>
@@ -221,20 +265,21 @@ public class RetirementPlanUpdateTests(MooBankWebApplicationFactory factory)
     public async Task Update_RemovingAPerson_DeletesThatMember()
     {
         // Arrange
-        var client = CreateClient(_factory);
-        var created = await CreatePlanAsync(client, Member("Self"), Member("Spouse"));
+        var h = await CreateHouseholdAsync();
+        var client = h.Client;
+        var created = await CreatePlanAsync(client, Member(h.SelfUserId), Member(h.SpouseUserId));
         var planId = IdOf(created);
-        var selfId = MembersOf(created).Single(m => m.GetProperty("name").GetString() == "Self").GetProperty("id").GetGuid();
+        var selfId = MembersOf(created).Single(m => m.GetProperty("userId").GetGuid() == h.SelfUserId).GetProperty("id").GetGuid();
 
         // Act
         var response = await client.PutAsJsonAsync(
             $"/api/retirement/plans/{planId}",
-            Plan(Member("Self", selfId)),
+            Plan(Member(h.SelfUserId, selfId)),
             TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
 
         // Assert
         var reread = await client.GetFromJsonAsync<JsonElement>($"/api/retirement/plans/{planId}", JsonOptions, TestContext.Current.CancellationToken);
-        Assert.Equal("Self", MembersOf(reread).Single().GetProperty("name").GetString());
+        Assert.Equal(h.SelfUserId, MembersOf(reread).Single().GetProperty("userId").GetGuid());
     }
 }

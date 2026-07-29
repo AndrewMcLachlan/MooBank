@@ -15,7 +15,7 @@ public class CreatePlanTests
     private readonly TestMocks _mocks = new();
 
     private CreatePlanHandler CreateHandler() =>
-        new(_mocks.RetirementRepositoryMock.Object, _mocks.UnitOfWorkMock.Object, _mocks.User);
+        new(_mocks.RetirementRepositoryMock.Object, _mocks.UnitOfWorkMock.Object, _mocks.MemberGuardMock.Object, _mocks.User);
 
     private static RetirementPlanBase CreateRequest(IEnumerable<RetirementPlanMember>? members = null) =>
         new()
@@ -102,10 +102,13 @@ public class CreatePlanTests
     {
         // Arrange
         var instrumentId = Guid.NewGuid();
+        var selfUserId = Guid.NewGuid();
+        var spouseUserId = Guid.NewGuid();
+
         var request = CreateRequest([
             new RetirementPlanMember
             {
-                Name = "Self",
+                UserId = selfUserId,
                 CurrentAge = 45,
                 CurrentIncome = 120_000m,
                 RetirementAge = 65,
@@ -113,7 +116,7 @@ public class CreatePlanTests
             },
             new RetirementPlanMember
             {
-                Name = "Spouse",
+                UserId = spouseUserId,
                 CurrentAge = 43,
                 CurrentIncome = 90_000m,
                 RetirementAge = 67,
@@ -127,15 +130,17 @@ public class CreatePlanTests
         var result = await handler.Handle(new CreatePlan(request), TestContext.Current.CancellationToken);
 
         // Assert
+        // Identified by user rather than by name: the name is read from the user record, which a
+        // freshly constructed entity has not loaded.
         Assert.Equal(2, result.Members.Count());
 
-        var self = result.Members.Single(m => m.Name == "Self");
+        var self = result.Members.Single(m => m.UserId == selfUserId);
         Assert.Equal(45, self.CurrentAge);
         Assert.Equal(120_000m, self.CurrentIncome);
         Assert.Equal(65, self.RetirementAge);
         Assert.Equal([instrumentId], self.InstrumentIds);
 
-        Assert.Empty(result.Members.Single(m => m.Name == "Spouse").InstrumentIds);
+        Assert.Empty(result.Members.Single(m => m.UserId == spouseUserId).InstrumentIds);
     }
 
     /// <summary>
@@ -155,7 +160,7 @@ public class CreatePlanTests
         var request = CreateRequest([
             new RetirementPlanMember
             {
-                Name = "Self",
+                UserId = Guid.NewGuid(),
                 CurrentAge = 45,
                 RetirementAge = 65,
                 InstrumentIds = [instrumentId, instrumentId],

@@ -52,9 +52,8 @@ public class RetirementPlanMemberValidator : AbstractValidator<RetirementPlanMem
 {
     public RetirementPlanMemberValidator()
     {
-        RuleFor(x => x.Name)
-            .NotEmpty().WithMessage("Member name is required")
-            .MaximumLength(200).WithMessage("Member name must not exceed 200 characters");
+        RuleFor(x => x.UserId)
+            .NotEmpty().WithMessage("A person must be selected");
 
         RuleFor(x => x.CurrentIncome)
             .GreaterThanOrEqualTo(0m).WithMessage("Income cannot be negative");
@@ -69,7 +68,7 @@ public class RetirementPlanMemberValidator : AbstractValidator<RetirementPlanMem
             .GreaterThanOrEqualTo(0m).WithMessage("Insurance premiums cannot be negative");
 
         RuleFor(x => x.CurrentAge)
-            .InclusiveBetween(0, 120).WithMessage("Age must be between 0 and 120");
+            .InclusiveBetween(15, 120).WithMessage("Age must be between 15 and 120");
 
         RuleFor(x => x.RetirementAge)
             .InclusiveBetween(1, 120).WithMessage("Retirement age must be between 1 and 120");

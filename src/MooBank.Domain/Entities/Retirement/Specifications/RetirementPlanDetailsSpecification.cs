@@ -14,6 +14,7 @@ public class RetirementPlanDetailsSpecification : ISpecification<RetirementPlan>
 {
     public IQueryable<RetirementPlan> Apply(IQueryable<RetirementPlan> query) =>
         query
+            .Include(p => p.Members).ThenInclude(m => m.User)
             .Include(p => p.Members).ThenInclude(m => m.Accounts);
 }
 
@@ -25,5 +26,6 @@ public class RetirementPlanProjectionSpecification : ISpecification<RetirementPl
 {
     public IQueryable<RetirementPlan> Apply(IQueryable<RetirementPlan> query) =>
         query
+            .Include(p => p.Members).ThenInclude(m => m.User)
             .Include(p => p.Members).ThenInclude(m => m.Accounts).ThenInclude(a => a.Instrument);
 }

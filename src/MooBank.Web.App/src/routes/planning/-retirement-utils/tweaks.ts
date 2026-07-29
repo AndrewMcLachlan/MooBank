@@ -1,43 +1,100 @@
 import type { RetirementMemberOverride, RetirementPlan, RetirementProjectionOverrides, SimpleRetirementPlan } from "api/types.gen";
 
 /**
- * The tweak sliders' working copy. It is a full set of overrides seeded from the saved plan, so
- * every slider has a position and an untouched draft projects exactly as the plan does.
+ * The tweak sliders' working copy: only the values someone has actually moved.
  *
- * It is only ever sent as overrides, never saved, until the user chooses to lock it in.
+ * Deliberately sparse rather than a snapshot of the whole plan. A slider nobody has touched is
+ * simply absent, so it reads through to the plan — which means editing the plan's settings moves
+ * every untouched slider to the new value while the tweaks in progress survive. A full snapshot
+ * would pin every slider to whatever the plan held when the first one moved.
+ *
+ * Nothing here is saved until it is locked in; see the overrides model on the server.
  */
-export const draftFromPlan = (plan: RetirementPlan): RetirementProjectionOverrides => ({
-    expectedReturnRate: plan.expectedReturnRate,
-    inflationRate: plan.inflationRate,
-    superGuaranteeRate: plan.superGuaranteeRate,
-    contributionsTaxRate: plan.contributionsTaxRate,
-    lifeExpectancy: plan.lifeExpectancy,
-    members: plan.members.map(m => ({
-        memberId: m.id,
-        currentAge: m.currentAge,
-        currentIncome: m.currentIncome,
-        salarySacrifice: m.salarySacrifice,
-        retirementAge: m.retirementAge,
-        growthStrategy: m.growthStrategy,
-    })),
-});
+export const emptyDraft: RetirementProjectionOverrides = { members: [] };
 
-/** Whether the draft still matches the saved plan. */
-export const isDirty = (draft: RetirementProjectionOverrides, plan: RetirementPlan) =>
-    JSON.stringify(draft) !== JSON.stringify(draftFromPlan(plan));
-
-/** Replace one member's values within the draft, leaving the others alone. */
-export const withMember = (
+/** The value a slider should show: the tweak if there is one, otherwise the plan's own value. */
+export const planValue = <K extends keyof RetirementPlan & keyof RetirementProjectionOverrides>(
     draft: RetirementProjectionOverrides,
+    plan: RetirementPlan,
+    key: K,
+) => (draft[key] ?? plan[key]) as RetirementPlan[K];
+
+/** The value a member's slider should show. */
+export const memberValue = <K extends keyof RetirementMemberOverride>(
+    draft: RetirementProjectionOverrides,
+    plan: RetirementPlan,
     memberId: string,
-    changes: Partial<RetirementMemberOverride>,
-): RetirementProjectionOverrides => ({
-    ...draft,
-    members: draft.members.map(m => m.memberId === memberId ? { ...m, ...changes } : m),
-});
+    key: K,
+) => {
+    const tweak = draft.members.find(m => m.memberId === memberId)?.[key];
+    if (tweak !== undefined && tweak !== null) return tweak;
+
+    const member = plan.members.find(m => m.id === memberId);
+    return member?.[key as keyof typeof member] as RetirementMemberOverride[K];
+};
 
 /**
- * Fold the draft back onto the plan, ready to save.
+ * Whether anything has been tweaked.
+ *
+ * Overrides naming a member the plan no longer has are ignored, so removing someone in settings
+ * cannot leave the page claiming a what-if that has nothing behind it.
+ */
+export const isDirty = (draft: RetirementProjectionOverrides, plan: RetirementPlan) => {
+    const planLevel = (["expectedReturnRate", "inflationRate", "superGuaranteeRate", "contributionsTaxRate", "lifeExpectancy"] as const)
+        .some(k => draft[k] !== undefined && draft[k] !== null);
+
+    const memberLevel = draft.members.some(m =>
+        plan.members.some(p => p.id === m.memberId) &&
+        (["currentAge", "currentIncome", "salarySacrifice", "retirementAge", "growthStrategy", "annualFees", "insurancePremium"] as const)
+            .some(k => m[k] !== undefined && m[k] !== null));
+
+    return planLevel || memberLevel;
+};
+
+/** Set one plan-level value, or clear it when it matches the plan again. */
+export const withPlanValue = <K extends "expectedReturnRate" | "inflationRate" | "superGuaranteeRate" | "contributionsTaxRate" | "lifeExpectancy">(
+    draft: RetirementProjectionOverrides,
+    plan: RetirementPlan,
+    key: K,
+    value: RetirementProjectionOverrides[K],
+): RetirementProjectionOverrides => {
+    const next = { ...draft };
+
+    // Moving a slider back to the plan's own value is the same as never having moved it, so the
+    // override is dropped rather than left sitting there equal to the plan.
+    if (value === plan[key]) delete next[key];
+    else next[key] = value;
+
+    return next;
+};
+
+/** Set one of a member's values, or clear it when it matches the plan again. */
+export const withMemberValue = <K extends "currentAge" | "currentIncome" | "salarySacrifice" | "retirementAge" | "growthStrategy" | "annualFees" | "insurancePremium">(
+    draft: RetirementProjectionOverrides,
+    plan: RetirementPlan,
+    memberId: string,
+    key: K,
+    value: RetirementMemberOverride[K],
+): RetirementProjectionOverrides => {
+    const member = plan.members.find(m => m.id === memberId);
+    const existing = draft.members.find(m => m.memberId === memberId);
+
+    const updated: RetirementMemberOverride = { ...(existing ?? { memberId }), [key]: value };
+    if (member && value === member[key as keyof typeof member]) delete updated[key];
+
+    const stillTweaked = (["currentAge", "currentIncome", "salarySacrifice", "retirementAge", "growthStrategy", "annualFees", "insurancePremium"] as const)
+        .some(k => updated[k] !== undefined && updated[k] !== null);
+
+    return {
+        ...draft,
+        members: stillTweaked
+            ? [...draft.members.filter(m => m.memberId !== memberId), updated]
+            : draft.members.filter(m => m.memberId !== memberId),
+    };
+};
+
+/**
+ * Fold the draft onto the plan, ready to save.
  *
  * Members are matched by id and keep everything the sliders do not touch — their name and their
  * superannuation accounts.
@@ -59,6 +116,17 @@ export const applyDraftToPlan = (draft: RetirementProjectionOverrides, plan: Ret
             salarySacrifice: tweak?.salarySacrifice ?? member.salarySacrifice,
             retirementAge: tweak?.retirementAge ?? member.retirementAge,
             growthStrategy: tweak?.growthStrategy ?? member.growthStrategy,
+            annualFees: tweak?.annualFees ?? member.annualFees,
+            insurancePremium: tweak?.insurancePremium ?? member.insurancePremium,
         };
     }),
+});
+
+/**
+ * Drop overrides for members the plan no longer has, so a projection is never run against a
+ * member who was removed in settings.
+ */
+export const pruneDraft = (draft: RetirementProjectionOverrides, plan: RetirementPlan): RetirementProjectionOverrides => ({
+    ...draft,
+    members: draft.members.filter(m => plan.members.some(p => p.id === m.memberId)),
 });

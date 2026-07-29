@@ -16,7 +16,7 @@ import { RetirementAssumptionsNote } from "./-retirement-components/RetirementAs
 import { RetirementSettingsModal } from "./-retirement-components/RetirementSettingsModal";
 import { RetirementTweaks } from "./-retirement-components/RetirementTweaks";
 import { CreateRetirementPlan } from "./-retirement-components/CreateRetirementPlan";
-import { applyDraftToPlan, draftFromPlan, isDirty } from "./-retirement-utils/tweaks";
+import { applyDraftToPlan, emptyDraft, pruneDraft } from "./-retirement-utils/tweaks";
 import type { RetirementProjectionOverrides } from "api/types.gen";
 
 export const Route = createFileRoute("/planning/retirement")({
@@ -27,9 +27,10 @@ function Retirement() {
     const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
     const [editOpen, setEditOpen] = useState(false);
 
-    // The tweak sliders' working copy. Null means "as saved"; it is seeded from the plan the first
-    // time a slider moves, and lives only here, so a refresh loses it.
-    const [draft, setDraft] = useState<RetirementProjectionOverrides | null>(null);
+    // The tweak sliders' working copy: only the values actually moved, so an untouched slider reads
+    // through to the plan and follows it when the settings are edited. Lives only here, so a
+    // refresh loses it.
+    const [draft, setDraft] = useState<RetirementProjectionOverrides>(emptyDraft);
 
     const { data: plans, isLoading: plansLoading } = useRetirementPlans();
     const { data: user } = useUser();
@@ -43,8 +44,11 @@ function Retirement() {
     const { updateAsync, isPending: saving } = useUpdateRetirementPlan();
 
     // Only the settled draft reaches the query, so dragging a slider does not fire a request a frame.
-    const settledDraft = useDebounced(draft, 300);
-    const { data: projection, isFetching: projectionLoading } = useRetirementProjection(planId, settledDraft ?? undefined);
+    // Overrides for members the plan no longer has are dropped, so removing someone in settings
+    // cannot leave a stale tweak driving the projection.
+    const scoped = useMemo(() => plan ? pruneDraft(draft, plan) : draft, [draft, plan]);
+    const settledDraft = useDebounced(scoped, 300);
+    const { data: projection, isFetching: projectionLoading } = useRetirementProjection(planId, settledDraft);
 
     const currencyCode = user?.currency ?? "AUD";
 
@@ -72,12 +76,12 @@ function Retirement() {
     }
 
     const lockIn = async () => {
-        if (!plan || !draft) return;
+        if (!plan) return;
 
-        await updateAsync(plan.id, applyDraftToPlan(draft, plan));
+        await updateAsync(plan.id, applyDraftToPlan(scoped, plan));
 
         // The tweaks are the plan now, so drop the working copy and go back to reading it.
-        setDraft(null);
+        setDraft(emptyDraft);
     };
 
     return (
@@ -89,12 +93,11 @@ function Retirement() {
             {plan && plan.members.length > 0 && (
                 <RetirementTweaks
                     plan={plan}
-                    draft={draft ?? draftFromPlan(plan)}
-                    dirty={!!draft && isDirty(draft, plan)}
+                    draft={scoped}
                     saving={saving}
                     currencyCode={currencyCode}
                     onChange={setDraft}
-                    onReset={() => setDraft(null)}
+                    onReset={() => setDraft(emptyDraft)}
                     onLockIn={lockIn}
                 />
             )}

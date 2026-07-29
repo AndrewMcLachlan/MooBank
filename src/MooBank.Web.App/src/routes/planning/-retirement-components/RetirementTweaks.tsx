@@ -2,13 +2,12 @@ import { Button, Section } from "@andrewmclachlan/moo-ds";
 import type { GrowthStrategy, RetirementPlan, RetirementProjectionOverrides } from "api/types.gen";
 import { formatCurrency } from "utils/currency";
 import { TweakSlider } from "./TweakSlider";
-import { withMember } from "../-retirement-utils/tweaks";
-import { growthStrategies, toPercent } from "../-retirement-utils/retirementDefaults";
+import { isDirty, memberValue, planValue, withMemberValue, withPlanValue } from "../-retirement-utils/tweaks";
+import { growthStrategies, minWorkingAge, toPercent } from "../-retirement-utils/retirementDefaults";
 
 interface RetirementTweaksProps {
     plan: RetirementPlan;
     draft: RetirementProjectionOverrides;
-    dirty: boolean;
     saving: boolean;
     currencyCode: string;
     onChange: (draft: RetirementProjectionOverrides) => void;
@@ -21,10 +20,17 @@ interface RetirementTweaksProps {
  *
  * Nothing here is saved. Moving a slider re-runs the projection under the new value and leaves the
  * plan alone, so a refresh returns to the saved position. "Lock in" is the only thing that writes.
+ *
+ * Each slider reads its value through the draft to the plan, so a slider nobody has moved follows
+ * the plan — including after the settings are edited underneath it.
  */
-export const RetirementTweaks: React.FC<RetirementTweaksProps> = ({ plan, draft, dirty, saving, currencyCode, onChange, onReset, onLockIn }) => {
+export const RetirementTweaks: React.FC<RetirementTweaksProps> = ({ plan, draft, saving, currencyCode, onChange, onReset, onLockIn }) => {
 
     const money = (value: number) => formatCurrency(value, currencyCode, 0);
+    const dirty = isDirty(draft, plan);
+
+    const setPlan = <K extends "expectedReturnRate" | "inflationRate" | "lifeExpectancy">(key: K, value: number) =>
+        onChange(withPlanValue(draft, plan, key, value));
 
     return (
         <Section header="Try It Out">
@@ -35,63 +41,67 @@ export const RetirementTweaks: React.FC<RetirementTweaksProps> = ({ plan, draft,
             </p>
 
             {plan.members.map(member => {
-                const tweak = draft.members.find(m => m.memberId === member.id);
-                if (!tweak) return null;
+                const set = <K extends "currentAge" | "currentIncome" | "salarySacrifice" | "retirementAge" | "growthStrategy">(key: K, value: unknown) =>
+                    onChange(withMemberValue(draft, plan, member.id, key, value as never));
 
-                const set = (changes: Partial<typeof tweak>) => onChange(withMember(draft, member.id, changes));
+                const age = memberValue(draft, plan, member.id, "currentAge") as number;
+                const retirementAge = memberValue(draft, plan, member.id, "retirementAge") as number;
+                const income = memberValue(draft, plan, member.id, "currentIncome") as number;
+                const sacrifice = memberValue(draft, plan, member.id, "salarySacrifice") as number;
+                const strategy = memberValue(draft, plan, member.id, "growthStrategy") as GrowthStrategy;
 
                 return (
                     <div className="tweak-member" key={member.id}>
-                        <h4 className="tweak-member-name">{member.name}</h4>
+                        <h4 className="tweak-member-name">{member.name || "Unnamed"}</h4>
                         <div className="tweak-grid">
                             <TweakSlider
                                 label="Retirement age"
-                                value={tweak.retirementAge ?? member.retirementAge}
-                                min={Math.min(tweak.currentAge ?? member.currentAge, 50)}
+                                value={retirementAge}
+                                min={Math.min(age, 50)}
                                 max={80}
-                                display={`${tweak.retirementAge}`}
-                                savedDisplay={tweak.retirementAge !== member.retirementAge ? `${member.retirementAge}` : undefined}
-                                onChange={retirementAge => set({ retirementAge })}
+                                display={`${retirementAge}`}
+                                savedDisplay={retirementAge !== member.retirementAge ? `${member.retirementAge}` : undefined}
+                                onChange={v => set("retirementAge", v)}
                             />
                             <TweakSlider
                                 label="Current age"
-                                value={tweak.currentAge ?? member.currentAge}
-                                min={16}
+                                value={age}
+                                min={minWorkingAge}
                                 max={80}
-                                display={`${tweak.currentAge}`}
-                                savedDisplay={tweak.currentAge !== member.currentAge ? `${member.currentAge}` : undefined}
-                                onChange={currentAge => set({ currentAge })}
+                                display={`${age}`}
+                                savedDisplay={age !== member.currentAge ? `${member.currentAge}` : undefined}
+                                onChange={v => set("currentAge", v)}
                             />
                             <TweakSlider
                                 label="Income"
-                                value={tweak.currentIncome ?? member.currentIncome}
+                                value={income}
                                 min={0}
                                 max={400_000}
                                 step={1_000}
-                                display={money(tweak.currentIncome ?? 0)}
-                                savedDisplay={tweak.currentIncome !== member.currentIncome ? money(member.currentIncome) : undefined}
-                                onChange={currentIncome => set({ currentIncome })}
+                                display={money(income)}
+                                savedDisplay={income !== member.currentIncome ? money(member.currentIncome) : undefined}
+                                onChange={v => set("currentIncome", v)}
                             />
                             <TweakSlider
                                 label="Salary sacrifice"
-                                value={tweak.salarySacrifice ?? member.salarySacrifice}
+                                value={sacrifice}
                                 min={0}
                                 max={30_000}
                                 step={500}
-                                display={money(tweak.salarySacrifice ?? 0)}
-                                savedDisplay={tweak.salarySacrifice !== member.salarySacrifice ? money(member.salarySacrifice) : undefined}
-                                onChange={salarySacrifice => set({ salarySacrifice })}
+                                display={money(sacrifice)}
+                                savedDisplay={sacrifice !== member.salarySacrifice ? money(member.salarySacrifice) : undefined}
+                                onChange={v => set("salarySacrifice", v)}
                             />
                             <label className="tweak-select">
                                 <span className="tweak-slider-label">Growth strategy</span>
                                 <select
                                     className="form-control"
-                                    value={tweak.growthStrategy ?? member.growthStrategy}
-                                    onChange={e => set({ growthStrategy: e.currentTarget.value as GrowthStrategy })}
+                                    value={strategy}
+                                    onChange={e => set("growthStrategy", e.currentTarget.value as GrowthStrategy)}
                                 >
                                     {growthStrategies.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                                 </select>
-                                {tweak.growthStrategy !== member.growthStrategy && (
+                                {strategy !== member.growthStrategy && (
                                     <span className="tweak-slider-saved">saved: {growthStrategies.find(s => s.value === member.growthStrategy)?.label}</span>
                                 )}
                             </label>
@@ -105,32 +115,32 @@ export const RetirementTweaks: React.FC<RetirementTweaksProps> = ({ plan, draft,
                 <div className="tweak-grid">
                     <TweakSlider
                         label="Expected return"
-                        value={toPercent(draft.expectedReturnRate ?? plan.expectedReturnRate)}
+                        value={toPercent(planValue(draft, plan, "expectedReturnRate"))}
                         min={0}
                         max={15}
                         step={0.1}
-                        display={`${toPercent(draft.expectedReturnRate ?? 0)}%`}
-                        savedDisplay={draft.expectedReturnRate !== plan.expectedReturnRate ? `${toPercent(plan.expectedReturnRate)}%` : undefined}
-                        onChange={percent => onChange({ ...draft, expectedReturnRate: percent / 100 })}
+                        display={`${toPercent(planValue(draft, plan, "expectedReturnRate"))}%`}
+                        savedDisplay={draft.expectedReturnRate != null ? `${toPercent(plan.expectedReturnRate)}%` : undefined}
+                        onChange={percent => setPlan("expectedReturnRate", percent / 100)}
                     />
                     <TweakSlider
                         label="Inflation"
-                        value={toPercent(draft.inflationRate ?? plan.inflationRate)}
+                        value={toPercent(planValue(draft, plan, "inflationRate"))}
                         min={0}
                         max={10}
                         step={0.1}
-                        display={`${toPercent(draft.inflationRate ?? 0)}%`}
-                        savedDisplay={draft.inflationRate !== plan.inflationRate ? `${toPercent(plan.inflationRate)}%` : undefined}
-                        onChange={percent => onChange({ ...draft, inflationRate: percent / 100 })}
+                        display={`${toPercent(planValue(draft, plan, "inflationRate"))}%`}
+                        savedDisplay={draft.inflationRate != null ? `${toPercent(plan.inflationRate)}%` : undefined}
+                        onChange={percent => setPlan("inflationRate", percent / 100)}
                     />
                     <TweakSlider
                         label="Savings must last until"
-                        value={draft.lifeExpectancy ?? plan.lifeExpectancy}
+                        value={planValue(draft, plan, "lifeExpectancy")}
                         min={70}
                         max={110}
-                        display={`age ${draft.lifeExpectancy}`}
-                        savedDisplay={draft.lifeExpectancy !== plan.lifeExpectancy ? `age ${plan.lifeExpectancy}` : undefined}
-                        onChange={lifeExpectancy => onChange({ ...draft, lifeExpectancy })}
+                        display={`age ${planValue(draft, plan, "lifeExpectancy")}`}
+                        savedDisplay={draft.lifeExpectancy != null ? `age ${plan.lifeExpectancy}` : undefined}
+                        onChange={v => setPlan("lifeExpectancy", v)}
                     />
                 </div>
                 <p className="retirement-tweak-note">

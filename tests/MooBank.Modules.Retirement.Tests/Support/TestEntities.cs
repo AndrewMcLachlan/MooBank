@@ -40,9 +40,14 @@ internal static class TestEntities
             Members = members?.ToList() ?? [],
         };
 
+    /// <summary>
+    /// A plan member. The <c>User</c> navigation is populated because the projection reads the
+    /// member's display name from it.
+    /// </summary>
     public static DomainPlanMember CreateMember(
         Guid? id = null,
         string? name = null,
+        Guid? userId = null,
         int currentAge = 60,
         decimal currentIncome = 100_000m,
         decimal salarySacrifice = 0m,
@@ -53,10 +58,12 @@ internal static class TestEntities
         IEnumerable<decimal>? accountBalances = null)
     {
         var memberId = id ?? Guid.NewGuid();
+        var personId = userId ?? Guid.NewGuid();
 
         return new DomainPlanMember(memberId)
         {
-            Name = name ?? Faker.Name.FirstName(),
+            UserId = personId,
+            User = CreateDomainUser(personId, name ?? Faker.Name.FirstName()),
             CurrentAge = currentAge,
             CurrentIncome = currentIncome,
             SalarySacrifice = salarySacrifice,
@@ -67,6 +74,18 @@ internal static class TestEntities
             Accounts = (accountBalances ?? []).Select(balance => CreateMemberAccount(memberId, balance)).ToList(),
         };
     }
+
+    /// <summary>
+    /// A user record, used as the member's person. The projection joins first and last name, so a
+    /// single name here comes back unchanged.
+    /// </summary>
+    public static Asm.MooBank.Domain.Entities.User.User CreateDomainUser(Guid id, string firstName) =>
+        new(id)
+        {
+            EmailAddress = $"{firstName.ToLowerInvariant()}@example.com",
+            FirstName = firstName,
+            FamilyId = Guid.NewGuid(),
+        };
 
     /// <summary>
     /// A member's link to an instrument, with the instrument's balance set directly. The balance

@@ -647,7 +647,8 @@ export type RetirementPlan = {
 
 export type RetirementPlanMember = {
     id?: null | string;
-    name: string;
+    userId: string;
+    name?: null | string;
     currentAge: number;
     currentIncome: number;
     salarySacrifice: number;

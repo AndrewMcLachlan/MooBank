@@ -25,6 +25,7 @@ public class Module : IModule
         services.AddQueryHandlers(Assembly);
         services.AddValidatorsFromAssembly(Assembly);
         services.AddScoped<IRetirementProjectionEngine, RetirementProjectionEngine>();
+        services.AddScoped<IMemberGuard, MemberGuard>();
 
         return services;
     }

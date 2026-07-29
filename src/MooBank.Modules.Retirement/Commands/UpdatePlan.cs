@@ -2,6 +2,7 @@ using System.ComponentModel;
 using Asm.MooBank.Domain.Entities.Retirement;
 using Asm.MooBank.Domain.Entities.Retirement.Specifications;
 using Asm.MooBank.Modules.Retirement.Models;
+using Asm.MooBank.Modules.Retirement.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Asm.MooBank.Modules.Retirement.Commands;
@@ -11,10 +12,13 @@ public record UpdatePlan(Guid Id, [FromBody] RetirementPlanBase Plan) : ICommand
 
 internal class UpdatePlanHandler(
     IRetirementRepository retirementRepository,
+    IMemberGuard memberGuard,
     IUnitOfWork unitOfWork) : ICommandHandler<UpdatePlan, Models.RetirementPlan>
 {
     public async ValueTask<Models.RetirementPlan> Handle(UpdatePlan request, CancellationToken cancellationToken)
     {
+        await memberGuard.Assert(request.Plan.Members, cancellationToken);
+
         var entity = await retirementRepository.Get(request.Id, new RetirementPlanDetailsSpecification(), cancellationToken);
 
         entity.Update(request.Plan.Name, request.Plan.ToAssumptions());
@@ -48,14 +52,14 @@ internal class UpdatePlanHandler(
         {
             if (member.Id is null)
             {
-                entity.AddMember(member.Name, member.CurrentAge, member.CurrentIncome, member.SalarySacrifice, member.RetirementAge, member.GrowthStrategy, member.AnnualFees, member.InsurancePremium, member.InstrumentIds);
+                entity.AddMember(member.UserId, member.CurrentAge, member.CurrentIncome, member.SalarySacrifice, member.RetirementAge, member.GrowthStrategy, member.AnnualFees, member.InsurancePremium, member.InstrumentIds);
                 continue;
             }
 
             var existing = entity.Members.SingleOrDefault(m => m.Id == member.Id.Value) ??
                 throw new NotFoundException($"Member {member.Id} does not belong to this plan");
 
-            existing.Update(member.Name, member.CurrentAge, member.CurrentIncome, member.SalarySacrifice, member.RetirementAge, member.GrowthStrategy, member.AnnualFees, member.InsurancePremium);
+            existing.Update(member.CurrentAge, member.CurrentIncome, member.SalarySacrifice, member.RetirementAge, member.GrowthStrategy, member.AnnualFees, member.InsurancePremium);
             existing.SetAccounts(member.InstrumentIds);
         }
     }

@@ -8693,7 +8693,7 @@
       },
       "RetirementPlanMember": {
         "required": [
-          "name",
+          "userId",
           "currentAge",
           "currentIncome",
           "salarySacrifice",
@@ -8712,8 +8712,15 @@
             ],
             "format": "uuid"
           },
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
           "name": {
-            "type": "string"
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "currentAge": {
             "type": "integer",

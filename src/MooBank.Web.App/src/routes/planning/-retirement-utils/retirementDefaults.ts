@@ -18,6 +18,13 @@ export const defaultRetirementAge = 67;
 export const defaultCurrentAge = 40;
 
 /**
+ * The youngest age a plan member can be given. Superannuation guarantee contributions follow
+ * employment, so anyone in a projection is of working age; the floor exists to stop an unset age
+ * reading as a newborn and producing a projection running most of a century.
+ */
+export const minWorkingAge = 15;
+
+/**
  * The investment options a member can be projected under. The rates each one implies live on the
  * server; the projection reports the rate it used, so nothing here needs to restate them.
  */
@@ -29,8 +36,8 @@ export const growthStrategies: { value: GrowthStrategy; label: string }[] = [
     { value: "Custom", label: "Custom (use the plan's rate)" },
 ];
 
-export const emptyMember = (name: string): RetirementPlanMember => ({
-    name,
+export const emptyMember = (): RetirementPlanMember => ({
+    userId: "",
     currentAge: defaultCurrentAge,
     currentIncome: 0,
     salarySacrifice: 0,

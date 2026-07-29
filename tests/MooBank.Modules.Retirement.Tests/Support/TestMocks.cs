@@ -6,7 +6,7 @@ using User = Asm.MooBank.Models.User;
 
 namespace Asm.MooBank.Modules.Retirement.Tests.Support;
 
-public class TestMocks
+internal class TestMocks
 {
     public TestMocks()
     {
@@ -16,6 +16,10 @@ public class TestMocks
         RetirementRepositoryMock = new Mock<IRetirementRepository>();
         ProjectionEngineMock = new Mock<IRetirementProjectionEngine>();
 
+        // The guard is exercised in its own tests; handler tests let every member through.
+        MemberGuardMock = new Mock<IMemberGuard>();
+        MemberGuardMock.Setup(g => g.Assert(It.IsAny<IEnumerable<Asm.MooBank.Modules.Retirement.Models.RetirementPlanMember>>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
         User = TestEntities.CreateUser();
     }
 
@@ -24,6 +28,8 @@ public class TestMocks
     public Mock<IRetirementRepository> RetirementRepositoryMock { get; }
 
     public Mock<IRetirementProjectionEngine> ProjectionEngineMock { get; }
+
+    public Mock<IMemberGuard> MemberGuardMock { get; }
 
     public User User { get; private set; }
 

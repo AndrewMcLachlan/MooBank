@@ -21,7 +21,7 @@ public class UpdatePlanTests
             .Setup(r => r.Get(plan.Id, It.IsAny<RetirementPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(plan);
 
-        return new UpdatePlanHandler(_mocks.RetirementRepositoryMock.Object, _mocks.UnitOfWorkMock.Object);
+        return new UpdatePlanHandler(_mocks.RetirementRepositoryMock.Object, _mocks.MemberGuardMock.Object, _mocks.UnitOfWorkMock.Object);
     }
 
     private static RetirementPlanBase Request(string name = "Updated", IEnumerable<RetirementPlanMember>? members = null) =>
@@ -36,11 +36,11 @@ public class UpdatePlanTests
             Members = members ?? [],
         };
 
-    private static RetirementPlanMember Member(Guid? id = null, string name = "Self", int retirementAge = 65, IEnumerable<Guid>? instrumentIds = null) =>
+    private static RetirementPlanMember Member(Guid? id = null, Guid? userId = null, int retirementAge = 65, IEnumerable<Guid>? instrumentIds = null) =>
         new()
         {
             Id = id,
-            Name = name,
+            UserId = userId ?? Guid.NewGuid(),
             CurrentAge = 45,
             CurrentIncome = 100_000m,
             RetirementAge = retirementAge,
@@ -80,12 +80,15 @@ public class UpdatePlanTests
         // Arrange
         var plan = TestEntities.CreatePlan();
         var handler = CreateHandler(plan);
+        var spouseUserId = Guid.NewGuid();
 
         // Act
-        var result = await handler.Handle(new UpdatePlan(plan.Id, Request(members: [Member(name: "Spouse")])), TestContext.Current.CancellationToken);
+        var result = await handler.Handle(new UpdatePlan(plan.Id, Request(members: [Member(userId: spouseUserId)])), TestContext.Current.CancellationToken);
 
         // Assert
-        Assert.Equal("Spouse", result.Members.Single().Name);
+        // Identified by user: the display name comes from the user record, which a member added in
+        // this request has not loaded.
+        Assert.Equal(spouseUserId, result.Members.Single().UserId);
     }
 
     /// <summary>
@@ -105,13 +108,12 @@ public class UpdatePlanTests
 
         // Act
         var result = await handler.Handle(
-            new UpdatePlan(plan.Id, Request(members: [Member(existing.Id, name: "Renamed", retirementAge: 60, instrumentIds: [instrumentId])])),
+            new UpdatePlan(plan.Id, Request(members: [Member(existing.Id, userId: existing.UserId, retirementAge: 60, instrumentIds: [instrumentId])])),
             TestContext.Current.CancellationToken);
 
         // Assert
         var member = result.Members.Single();
         Assert.Equal(existing.Id, member.Id);
-        Assert.Equal("Renamed", member.Name);
         Assert.Equal(60, member.RetirementAge);
         Assert.Equal([instrumentId], member.InstrumentIds);
     }
@@ -132,11 +134,11 @@ public class UpdatePlanTests
 
         // Act
         var result = await handler.Handle(
-            new UpdatePlan(plan.Id, Request(members: [Member(kept.Id, name: "Kept")])),
+            new UpdatePlan(plan.Id, Request(members: [Member(kept.Id, userId: kept.UserId)])),
             TestContext.Current.CancellationToken);
 
         // Assert
-        Assert.Equal("Kept", result.Members.Single().Name);
+        Assert.Equal(kept.UserId, result.Members.Single().UserId);
     }
 
     /// <summary>

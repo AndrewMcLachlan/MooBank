@@ -24,8 +24,15 @@ public class RetirementPlanMember(Guid id) : KeyedEntity<Guid>(id)
     [ForeignKey(nameof(RetirementPlanId))]
     public virtual RetirementPlan RetirementPlan { get; set; } = null!;
 
-    [MaxLength(200)]
-    public required string Name { get; set; }
+    /// <summary>
+    /// The person this member is. A plan projects the superannuation of people in the family, so a
+    /// member references a user rather than carrying a name of its own — which also means the
+    /// accounts it can hold are exactly the ones that user owns.
+    /// </summary>
+    public Guid UserId { get; set; }
+
+    [ForeignKey(nameof(UserId))]
+    public virtual User.User User { get; set; } = null!;
 
     public int CurrentAge { get; set; }
 
@@ -61,9 +68,8 @@ public class RetirementPlanMember(Guid id) : KeyedEntity<Guid>(id)
 
     public IReadOnlyCollection<RetirementPlanMemberAccount> Accounts { get => _accounts; internal init => _accounts = [.. value]; }
 
-    public void Update(string name, int currentAge, decimal currentIncome, decimal salarySacrifice, int retirementAge, GrowthStrategy growthStrategy, decimal annualFees, decimal insurancePremium)
+    public void Update(int currentAge, decimal currentIncome, decimal salarySacrifice, int retirementAge, GrowthStrategy growthStrategy, decimal annualFees, decimal insurancePremium)
     {
-        Name = name;
         CurrentAge = currentAge;
         CurrentIncome = currentIncome;
         SalarySacrifice = salarySacrifice;

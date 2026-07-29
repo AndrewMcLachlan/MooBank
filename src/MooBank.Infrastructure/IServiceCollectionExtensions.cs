@@ -85,7 +85,12 @@ public static class IServiceCollectionExtensions
                 // TagRelationship is a read-model over the TagHierarchies transitive-closure view,
                 // not an aggregate root. It stays queryable so consumers can expand ancestor/descendant
                 // sets, which cannot be expressed by navigating Tag.Tags (direct children only).
-                .AddQueryable<Asm.MooBank.Domain.Entities.TagRelationships.TagRelationship, MooBankContext>();
+                .AddQueryable<Asm.MooBank.Domain.Entities.TagRelationships.TagRelationship, MooBankContext>()
+                // InstrumentOwner is the Instrument-to-User link, not an aggregate root. The
+                // retirement member guard reads it to confirm an account belongs to the person it
+                // is being recorded against, which navigating from Instrument cannot answer
+                // without loading the aggregate.
+                .AddQueryable<Asm.MooBank.Domain.Entities.Instrument.InstrumentOwner, MooBankContext>();
 
     public static IServiceCollection AddImporterFactory(this IServiceCollection services) =>
         services.AddTransient<IImporterFactory, ImporterFactory>();

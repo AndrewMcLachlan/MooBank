@@ -92,12 +92,24 @@ public class RetirementPlan(Guid id) : KeyedEntity<Guid>(id)
     /// treats an entity that already carries one as a row that exists: adding it to a loaded plan
     /// would then be written as an UPDATE against a row that was never inserted.
     /// </remarks>
-    public RetirementPlanMember AddMember(string name, int currentAge, decimal currentIncome, decimal salarySacrifice, int retirementAge, GrowthStrategy growthStrategy, decimal annualFees, decimal insurancePremium, IEnumerable<Guid> instrumentIds)
+    /// <summary>
+    /// Add a person to the plan.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when that person is already on the plan. Two members for one person would double
+    /// their balance in the projection.
+    /// </exception>
+    public RetirementPlanMember AddMember(Guid userId, int currentAge, decimal currentIncome, decimal salarySacrifice, int retirementAge, GrowthStrategy growthStrategy, decimal annualFees, decimal insurancePremium, IEnumerable<Guid> instrumentIds)
     {
+        if (_members.Any(m => m.UserId == userId))
+        {
+            throw new InvalidOperationException("That person is already on this plan");
+        }
+
         var member = new RetirementPlanMember
         {
             RetirementPlanId = Id,
-            Name = name,
+            UserId = userId,
             CurrentAge = currentAge,
             CurrentIncome = currentIncome,
             SalarySacrifice = salarySacrifice,

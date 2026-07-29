@@ -55,7 +55,15 @@ public sealed record RetirementPlanMember
     /// </summary>
     public Guid? Id { get; init; }
 
-    public required string Name { get; init; }
+    /// <summary>
+    /// The person this member is, which must be someone in the plan's family.
+    /// </summary>
+    public Guid UserId { get; init; }
+
+    /// <summary>
+    /// The person's name, read from their user record. Ignored on the way in.
+    /// </summary>
+    public string? Name { get; init; }
 
     /// <summary>
     /// The member's age now. Held rather than a date of birth so the application does not store
