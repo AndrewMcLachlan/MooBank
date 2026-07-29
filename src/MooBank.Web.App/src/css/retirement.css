@@ -116,31 +116,6 @@
     margin-bottom: 0.5rem;
 }
 
-/* ---- Planning tabs ---- */
-
-.planning-tabs {
-    display: flex;
-    gap: 0.25rem;
-    border-bottom: 1px solid var(--border-colour);
-    margin-bottom: 1.25rem;
-
-    .planning-tab {
-        padding: 0.5rem 1rem;
-        border-bottom: 2px solid transparent;
-        color: var(--secondary-colour);
-        text-decoration: none;
-
-        &:hover {
-            color: var(--body-colour-bold);
-        }
-
-        &[aria-current="page"] {
-            color: var(--body-colour-bold);
-            border-bottom-color: var(--primary);
-            font-weight: 600;
-        }
-    }
-}
 
 /* ---- Tweak sliders ---- */
 
