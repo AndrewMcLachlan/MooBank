@@ -72,7 +72,10 @@ function Forecast() {
 
             <PlannedItemsTable plan={plan} currencyCode={currencyCode} />
 
-            <ForecastSettingsModal plan={plan} currencyCode={currencyCode} show={editOpen} onHide={() => setEditOpen(false)} />
+            {/* Mounted only while open. A closed modal still runs its hooks, which put a second
+                subscription on the accounts query; with two subscribers and a failing request the
+                two components' re-renders feed each other and the query refetches without end. */}
+            {editOpen && <ForecastSettingsModal plan={plan} currencyCode={currencyCode} show={editOpen} onHide={() => setEditOpen(false)} />}
         </ForecastPage>
     );
 }

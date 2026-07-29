@@ -103,7 +103,8 @@ function Retirement() {
 
             <RetirementAssumptionsNote plan={plan} />
 
-            <RetirementSettingsModal plan={plan} currencyCode={currencyCode} show={editOpen} onHide={() => setEditOpen(false)} />
+            {/* Mounted only while open — see the note on the forecast page. */}
+            {editOpen && <RetirementSettingsModal plan={plan} currencyCode={currencyCode} show={editOpen} onHide={() => setEditOpen(false)} />}
         </RetirementPage>
     );
 }
