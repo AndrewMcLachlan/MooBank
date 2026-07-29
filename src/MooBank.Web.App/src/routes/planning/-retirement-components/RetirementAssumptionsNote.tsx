@@ -40,10 +40,12 @@ export const RetirementAssumptionsNote: React.FC<RetirementAssumptionsNoteProps>
                 </div>
             </dl>
             <p className="retirement-caveat">
-                Income is assumed to grow with inflation, and a year's return is applied to the opening balance
-                only. Salary sacrifice, contribution caps, fund fees, insurance premiums, tax on earnings within
-                the fund, the Age Pension and tax on withdrawals are not modelled. These figures are arithmetic
-                on the assumptions above, not a prediction or financial advice.
+                Income, salary sacrifice, fund fees and insurance premiums all grow with inflation, and a year's
+                return is applied to the opening balance only. Fees and premiums come out year by year, so they
+                cost their own value plus the growth they would have earned. Premiums keep being charged after
+                retirement, which is the conservative reading — cover usually ceases. Contribution caps, tax on
+                earnings within the fund, the Age Pension and tax on withdrawals are not modelled. These figures
+                are arithmetic on the assumptions above, not a prediction or financial advice.
             </p>
         </Section>
     );

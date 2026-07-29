@@ -17,8 +17,8 @@ const plan = (): RetirementPlan => ({
     createdUtc: "2026-01-01T00:00:00Z",
     updatedUtc: "2026-01-01T00:00:00Z",
     members: [
-        { id: selfId, name: "Self", currentAge: 45, currentIncome: 120_000, salarySacrifice: 5_000, retirementAge: 65, growthStrategy: "Balanced", instrumentIds: [instrumentId] },
-        { id: spouseId, name: "Spouse", currentAge: 43, currentIncome: 90_000, salarySacrifice: 0, retirementAge: 67, growthStrategy: "Growth", instrumentIds: [] },
+        { id: selfId, name: "Self", currentAge: 45, currentIncome: 120_000, salarySacrifice: 5_000, retirementAge: 65, growthStrategy: "Balanced", annualFees: 372, insurancePremium: 364, instrumentIds: [instrumentId] },
+        { id: spouseId, name: "Spouse", currentAge: 43, currentIncome: 90_000, salarySacrifice: 0, retirementAge: 67, growthStrategy: "Growth", annualFees: 250, insurancePremium: 0, instrumentIds: [] },
     ],
 });
 

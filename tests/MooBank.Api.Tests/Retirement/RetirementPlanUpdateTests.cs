@@ -43,6 +43,8 @@ public class RetirementPlanUpdateTests(MooBankWebApplicationFactory factory)
         currentAge = 45,
         salarySacrifice = 0m,
         growthStrategy = "Balanced",
+        annualFees = 0m,
+        insurancePremium = 0m,
         currentIncome = 100_000m,
         retirementAge = 65,
         instrumentIds = instrumentIds ?? [],

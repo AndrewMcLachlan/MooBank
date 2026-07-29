@@ -75,6 +75,16 @@ public sealed record RetirementPlanMember
 
     public int RetirementAge { get; init; }
 
+    /// <summary>
+    /// Administration fees charged by the fund each year.
+    /// </summary>
+    public decimal AnnualFees { get; init; }
+
+    /// <summary>
+    /// Insurance premiums deducted from the balance each year.
+    /// </summary>
+    public decimal InsurancePremium { get; init; }
+
     public GrowthStrategy GrowthStrategy { get; init; }
 
     /// <summary>

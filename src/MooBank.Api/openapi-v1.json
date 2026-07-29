@@ -8600,6 +8600,20 @@
             ],
             "format": "double"
           },
+          "annualFees": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "insurancePremium": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
           "retirementAge": {
             "type": [
               "null",
@@ -8684,6 +8698,8 @@
           "currentIncome",
           "salarySacrifice",
           "retirementAge",
+          "annualFees",
+          "insurancePremium",
           "growthStrategy",
           "instrumentIds"
         ],
@@ -8714,6 +8730,14 @@
           "retirementAge": {
             "type": "integer",
             "format": "int32"
+          },
+          "annualFees": {
+            "type": "number",
+            "format": "double"
+          },
+          "insurancePremium": {
+            "type": "number",
+            "format": "double"
           },
           "growthStrategy": {
             "$ref": "#/components/schemas/GrowthStrategy"
@@ -8813,7 +8837,8 @@
           "balanceAtRetirementInTodaysDollars",
           "annualRetirementIncomeInTodaysDollars",
           "retirementYear",
-          "realReturnRate"
+          "realReturnRate",
+          "totalCosts"
         ],
         "type": "object",
         "properties": {
@@ -8840,6 +8865,10 @@
           "realReturnRate": {
             "type": "number",
             "format": "double"
+          },
+          "totalCosts": {
+            "type": "number",
+            "format": "double"
           }
         }
       },
@@ -8849,6 +8878,7 @@
           "openingBalance",
           "contributions",
           "investmentReturn",
+          "costs",
           "closingBalance",
           "closingBalanceInTodaysDollars",
           "allRetired"
@@ -8868,6 +8898,10 @@
             "format": "double"
           },
           "investmentReturn": {
+            "type": "number",
+            "format": "double"
+          },
+          "costs": {
             "type": "number",
             "format": "double"
           },

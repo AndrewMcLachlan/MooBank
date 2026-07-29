@@ -62,6 +62,12 @@ public class RetirementPlanMemberValidator : AbstractValidator<RetirementPlanMem
         RuleFor(x => x.SalarySacrifice)
             .GreaterThanOrEqualTo(0m).WithMessage("Salary sacrifice cannot be negative");
 
+        RuleFor(x => x.AnnualFees)
+            .GreaterThanOrEqualTo(0m).WithMessage("Fees cannot be negative");
+
+        RuleFor(x => x.InsurancePremium)
+            .GreaterThanOrEqualTo(0m).WithMessage("Insurance premiums cannot be negative");
+
         RuleFor(x => x.CurrentAge)
             .InclusiveBetween(0, 120).WithMessage("Age must be between 0 and 120");
 

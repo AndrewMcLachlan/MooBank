@@ -44,12 +44,24 @@ public class RetirementPlanMember(Guid id) : KeyedEntity<Guid>(id)
 
     public int RetirementAge { get; set; }
 
+    /// <summary>
+    /// Administration fees charged by the fund each year.
+    /// </summary>
+    [Precision(18, 2)]
+    public decimal AnnualFees { get; set; }
+
+    /// <summary>
+    /// Insurance premiums deducted from the balance each year.
+    /// </summary>
+    [Precision(18, 2)]
+    public decimal InsurancePremium { get; set; }
+
     [Column("GrowthStrategyId")]
     public GrowthStrategy GrowthStrategy { get; set; }
 
     public IReadOnlyCollection<RetirementPlanMemberAccount> Accounts { get => _accounts; internal init => _accounts = [.. value]; }
 
-    public void Update(string name, int currentAge, decimal currentIncome, decimal salarySacrifice, int retirementAge, GrowthStrategy growthStrategy)
+    public void Update(string name, int currentAge, decimal currentIncome, decimal salarySacrifice, int retirementAge, GrowthStrategy growthStrategy, decimal annualFees, decimal insurancePremium)
     {
         Name = name;
         CurrentAge = currentAge;
@@ -57,6 +69,8 @@ public class RetirementPlanMember(Guid id) : KeyedEntity<Guid>(id)
         SalarySacrifice = salarySacrifice;
         RetirementAge = retirementAge;
         GrowthStrategy = growthStrategy;
+        AnnualFees = annualFees;
+        InsurancePremium = insurancePremium;
     }
 
     /// <summary>

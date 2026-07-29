@@ -9,6 +9,7 @@ const year = (over: Partial<RetirementProjectionYear>): RetirementProjectionYear
     contributions: 0,
     investmentReturn: 0,
     closingBalance: 0,
+    costs: 0,
     closingBalanceInTodaysDollars: 0,
     allRetired: false,
     ...over,

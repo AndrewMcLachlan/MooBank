@@ -36,6 +36,8 @@ export const emptyMember = (name: string): RetirementPlanMember => ({
     salarySacrifice: 0,
     retirementAge: defaultRetirementAge,
     growthStrategy: "Balanced",
+    annualFees: 0,
+    insurancePremium: 0,
     instrumentIds: [],
 });
 

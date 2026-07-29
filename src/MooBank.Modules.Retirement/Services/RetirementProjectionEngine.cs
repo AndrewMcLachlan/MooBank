@@ -100,6 +100,7 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
             var opening = 0m;
             var contributions = 0m;
             var investmentReturn = 0m;
+            var costs = 0m;
 
             foreach (var member in members)
             {
@@ -110,10 +111,18 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
                     ? Round(member.ContributionForYear(yearOffset, assumptions))
                     : 0m;
 
-                member.Balance += memberReturn + memberContribution;
+                // Taken out year by year rather than as a lump at the end, so the fees paid
+                // early lose their compounding too — which is most of what fees actually cost.
+                var memberCosts = Round(member.CostsForYear(yearOffset, assumptions));
+
+                // A balance cannot be charged into the red.
+                memberCosts = Math.Min(memberCosts, member.Balance + memberReturn + memberContribution);
+
+                member.Balance += memberReturn + memberContribution - memberCosts;
 
                 investmentReturn += memberReturn;
                 contributions += memberContribution;
+                costs += memberCosts;
 
                 // Capture the balance the moment this member reaches their retirement age.
                 if (yearOffset == member.YearsToRetirement)
@@ -123,7 +132,7 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
                 }
             }
 
-            var closing = opening + contributions + investmentReturn;
+            var closing = opening + contributions + investmentReturn - costs;
 
             years.Add(new RetirementProjectionYear
             {
@@ -131,6 +140,7 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
                 OpeningBalance = opening,
                 Contributions = contributions,
                 InvestmentReturn = investmentReturn,
+                Costs = costs,
                 ClosingBalance = closing,
                 ClosingBalanceInTodaysDollars = Round(closing * todaysDollarsFactor),
                 AllRetired = members.All(m => yearOffset >= m.YearsToRetirement),
@@ -154,6 +164,7 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
                 AnnualRetirementIncomeInTodaysDollars = outcomes.Sum(o => o.AnnualRetirementIncomeInTodaysDollars),
                 RetirementYear = startYear + horizon,
                 RealReturnRate = RealReturnRate(assumptions.ExpectedReturnRate, assumptions.InflationRate),
+                TotalCosts = years.Sum(y => y.Costs),
             },
         };
     }
@@ -273,17 +284,42 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
         /// </summary>
         public decimal ContributionForYear(int yearOffset, ResolvedAssumptions assumptions)
         {
-            var indexation = 1m;
-
-            for (var i = 1; i < yearOffset; i++)
-            {
-                indexation *= 1m + assumptions.InflationRate;
-            }
+            var indexation = Indexation(yearOffset, assumptions.InflationRate);
 
             var employer = _member.CurrentIncome * indexation * assumptions.SuperGuaranteeRate;
             var sacrificed = _member.SalarySacrifice * indexation;
 
             return (employer + sacrificed) * (1m - assumptions.ContributionsTaxRate);
+        }
+
+        /// <summary>
+        /// Administration fees and insurance premiums for a projection year.
+        /// </summary>
+        /// <remarks>
+        /// Indexed with inflation, like income and salary sacrifice, so they hold their real
+        /// value rather than shrinking away over a long projection.
+        ///
+        /// Both keep being charged after the member reaches their retirement age, for as long as
+        /// the projection runs. Fees genuinely do continue; insurance cover usually ceases, so
+        /// this is the conservative reading rather than the exact one.
+        /// </remarks>
+        public decimal CostsForYear(int yearOffset, ResolvedAssumptions assumptions) =>
+            (_member.AnnualFees + _member.InsurancePremium) * Indexation(yearOffset, assumptions.InflationRate);
+
+        /// <summary>
+        /// How far a starting figure has been indexed by the given projection year. The first
+        /// projected year uses today's figures unindexed.
+        /// </summary>
+        private static decimal Indexation(int yearOffset, decimal inflationRate)
+        {
+            var indexation = 1m;
+
+            for (var i = 1; i < yearOffset; i++)
+            {
+                indexation *= 1m + inflationRate;
+            }
+
+            return indexation;
         }
 
         public RetirementMemberOutcome ToOutcome(ResolvedAssumptions assumptions, int startYear)

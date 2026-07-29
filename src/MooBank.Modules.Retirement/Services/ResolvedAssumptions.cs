@@ -49,6 +49,10 @@ internal sealed record ResolvedMember
 
     public required decimal SalarySacrifice { get; init; }
 
+    public required decimal AnnualFees { get; init; }
+
+    public required decimal InsurancePremium { get; init; }
+
     public required int RetirementAge { get; init; }
 
     public required GrowthStrategy GrowthStrategy { get; init; }
@@ -67,6 +71,8 @@ internal sealed record ResolvedMember
             CurrentAge = over?.CurrentAge ?? member.CurrentAge,
             CurrentIncome = over?.CurrentIncome ?? member.CurrentIncome,
             SalarySacrifice = over?.SalarySacrifice ?? member.SalarySacrifice,
+            AnnualFees = over?.AnnualFees ?? member.AnnualFees,
+            InsurancePremium = over?.InsurancePremium ?? member.InsurancePremium,
             RetirementAge = over?.RetirementAge ?? member.RetirementAge,
             GrowthStrategy = over?.GrowthStrategy ?? member.GrowthStrategy,
             Balance = balance,

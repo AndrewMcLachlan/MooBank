@@ -92,7 +92,7 @@ public class RetirementPlan(Guid id) : KeyedEntity<Guid>(id)
     /// treats an entity that already carries one as a row that exists: adding it to a loaded plan
     /// would then be written as an UPDATE against a row that was never inserted.
     /// </remarks>
-    public RetirementPlanMember AddMember(string name, int currentAge, decimal currentIncome, decimal salarySacrifice, int retirementAge, GrowthStrategy growthStrategy, IEnumerable<Guid> instrumentIds)
+    public RetirementPlanMember AddMember(string name, int currentAge, decimal currentIncome, decimal salarySacrifice, int retirementAge, GrowthStrategy growthStrategy, decimal annualFees, decimal insurancePremium, IEnumerable<Guid> instrumentIds)
     {
         var member = new RetirementPlanMember
         {
@@ -103,6 +103,8 @@ public class RetirementPlan(Guid id) : KeyedEntity<Guid>(id)
             SalarySacrifice = salarySacrifice,
             RetirementAge = retirementAge,
             GrowthStrategy = growthStrategy,
+            AnnualFees = annualFees,
+            InsurancePremium = insurancePremium,
         };
 
         member.SetAccounts(instrumentIds);

@@ -30,6 +30,8 @@ public static class ModelExtensions
             CurrentAge = member.CurrentAge,
             CurrentIncome = member.CurrentIncome,
             SalarySacrifice = member.SalarySacrifice,
+            AnnualFees = member.AnnualFees,
+            InsurancePremium = member.InsurancePremium,
             RetirementAge = member.RetirementAge,
             GrowthStrategy = member.GrowthStrategy,
             InstrumentIds = member.Accounts.Select(a => a.InstrumentId).ToList(),

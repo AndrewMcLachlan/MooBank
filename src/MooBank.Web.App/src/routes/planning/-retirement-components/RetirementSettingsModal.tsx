@@ -30,6 +30,8 @@ interface RetirementSettingsFormValues {
         currentAge: number;
         salarySacrifice: number;
         growthStrategy: GrowthStrategy;
+        annualFees: number;
+        insurancePremium: number;
         currentIncome: number;
         retirementAge: number;
         instrumentIds: string[];
@@ -49,6 +51,8 @@ const toFormValues = (plan?: RetirementPlan): RetirementSettingsFormValues => ({
         currentAge: m.currentAge,
         salarySacrifice: m.salarySacrifice,
         growthStrategy: m.growthStrategy,
+        annualFees: m.annualFees,
+        insurancePremium: m.insurancePremium,
         currentIncome: m.currentIncome,
         retirementAge: m.retirementAge,
         instrumentIds: [...m.instrumentIds],
@@ -68,6 +72,8 @@ const toRequest = (data: RetirementSettingsFormValues): SimpleRetirementPlan => 
         currentAge: Number(m.currentAge) || 0,
         salarySacrifice: Number(m.salarySacrifice) || 0,
         growthStrategy: m.growthStrategy,
+        annualFees: Number(m.annualFees) || 0,
+        insurancePremium: Number(m.insurancePremium) || 0,
         currentIncome: Number(m.currentIncome) || 0,
         retirementAge: Number(m.retirementAge) || 0,
         instrumentIds: m.instrumentIds ?? [],
@@ -175,6 +181,14 @@ export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = (
                                             {growthStrategies.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                                         </Form.Select>
                                     </Form.Group>
+                                    <Form.Group groupId={`members.${index}.annualFees`}>
+                                        <Form.Label>Fund Fees (a year)</Form.Label>
+                                        <CurrencyInput currency={currencyCode} min={0} />
+                                    </Form.Group>
+                                    <Form.Group groupId={`members.${index}.insurancePremium`}>
+                                        <Form.Label>Insurance Premium (a year)</Form.Label>
+                                        <CurrencyInput currency={currencyCode} min={0} />
+                                    </Form.Group>
                                 </div>
                                 <Form.Group groupId={`members.${index}.instrumentIds`}>
                                     <Form.Label>Superannuation Accounts</Form.Label>
@@ -196,7 +210,7 @@ export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = (
                         ))}
                         <Button
                             variant="outline-primary"
-                            onClick={() => append({ name: "", currentAge: defaultCurrentAge, currentIncome: 0, salarySacrifice: 0, retirementAge: defaultRetirementAge, growthStrategy: "Balanced", instrumentIds: [] })}
+                            onClick={() => append({ name: "", currentAge: defaultCurrentAge, currentIncome: 0, salarySacrifice: 0, retirementAge: defaultRetirementAge, growthStrategy: "Balanced", annualFees: 0, insurancePremium: 0, instrumentIds: [] })}
                         >
                             Add Person
                         </Button>

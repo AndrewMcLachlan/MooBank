@@ -48,6 +48,8 @@ internal static class TestEntities
         decimal salarySacrifice = 0m,
         int retirementAge = 65,
         GrowthStrategy growthStrategy = GrowthStrategy.Custom,
+        decimal annualFees = 0m,
+        decimal insurancePremium = 0m,
         IEnumerable<decimal>? accountBalances = null)
     {
         var memberId = id ?? Guid.NewGuid();
@@ -60,6 +62,8 @@ internal static class TestEntities
             SalarySacrifice = salarySacrifice,
             RetirementAge = retirementAge,
             GrowthStrategy = growthStrategy,
+            AnnualFees = annualFees,
+            InsurancePremium = insurancePremium,
             Accounts = (accountBalances ?? []).Select(balance => CreateMemberAccount(memberId, balance)).ToList(),
         };
     }

@@ -28,11 +28,16 @@ public sealed record RetirementProjectionYear
     public decimal OpeningBalance { get; init; }
 
     /// <summary>
-    /// Employer contributions for the year, after contributions tax.
+    /// Employer contributions and salary sacrifice for the year, after contributions tax.
     /// </summary>
     public decimal Contributions { get; init; }
 
     public decimal InvestmentReturn { get; init; }
+
+    /// <summary>
+    /// Administration fees and insurance premiums taken out during the year.
+    /// </summary>
+    public decimal Costs { get; init; }
 
     public decimal ClosingBalance { get; init; }
 
@@ -122,4 +127,10 @@ public sealed record RetirementProjectionSummary
     /// The real (above-inflation) return implied by the plan's return and inflation assumptions.
     /// </summary>
     public decimal RealReturnRate { get; init; }
+
+    /// <summary>
+    /// Every fee and insurance premium taken out across the projection, so the drag they apply
+    /// is visible rather than only implied by a smaller balance.
+    /// </summary>
+    public decimal TotalCosts { get; init; }
 }

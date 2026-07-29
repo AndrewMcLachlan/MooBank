@@ -469,8 +469,8 @@ public class RetirementProjectionEngineTests
             inflationRate: 0.025m,
             contributionsTaxRate: 0.15m,
             members: [
-                TestEntities.CreateMember(retirementAge: 67, currentIncome: 95_000m, accountBalances: [180_000m]),
-                TestEntities.CreateMember(currentAge: 53, retirementAge: 65, currentIncome: 70_000m, accountBalances: [120_000m]),
+                TestEntities.CreateMember(retirementAge: 67, currentIncome: 95_000m, annualFees: 372m, insurancePremium: 364m, accountBalances: [180_000m]),
+                TestEntities.CreateMember(currentAge: 53, retirementAge: 65, currentIncome: 70_000m, annualFees: 250m, insurancePremium: 180m, accountBalances: [120_000m]),
             ]);
 
         // Act
@@ -478,7 +478,7 @@ public class RetirementProjectionEngineTests
 
         // Assert
         Assert.All(years, year =>
-            Assert.Equal(year.OpeningBalance + year.Contributions + year.InvestmentReturn, year.ClosingBalance));
+            Assert.Equal(year.OpeningBalance + year.Contributions + year.InvestmentReturn - year.Costs, year.ClosingBalance));
     }
 
     /// <summary>

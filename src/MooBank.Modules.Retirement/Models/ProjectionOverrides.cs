@@ -46,6 +46,10 @@ public sealed record MemberOverride
 
     public decimal? SalarySacrifice { get; init; }
 
+    public decimal? AnnualFees { get; init; }
+
+    public decimal? InsurancePremium { get; init; }
+
     public int? RetirementAge { get; init; }
 
     public GrowthStrategy? GrowthStrategy { get; init; }

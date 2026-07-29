@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { IconButton, SpinnerContainer } from "@andrewmclachlan/moo-ds";
 import { Sliders } from "@andrewmclachlan/moo-icons";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRetirementPlans } from "./-retirement-hooks/useRetirementPlans";
 import { useRetirementPlan } from "./-retirement-hooks/useRetirementPlan";
 import { useRetirementProjection } from "./-retirement-hooks/useRetirementProjection";
@@ -48,6 +48,13 @@ function Retirement() {
 
     const currencyCode = user?.currency ?? "AUD";
 
+    // Page pushes actions into the layout by reference, so a fresh array on every render sets the
+    // context every render, which re-renders and builds another array. Memoised, and declared
+    // above the early returns so the hook order stays fixed.
+    const actions = useMemo(() => plan ? [
+        <IconButton badge key="edit-settings" variant="primary" icon={Sliders} onClick={() => setEditOpen(true)}>Edit Plan</IconButton>
+    ] : [], [plan]);
+
     if (plansLoading) {
         return (
             <RetirementPage>
@@ -63,10 +70,6 @@ function Retirement() {
             </RetirementPage>
         );
     }
-
-    const actions = plan ? [
-        <IconButton badge key="edit-settings" variant="primary" icon={Sliders} onClick={() => setEditOpen(true)}>Edit Plan</IconButton>
-    ] : [];
 
     const lockIn = async () => {
         if (!plan || !draft) return;

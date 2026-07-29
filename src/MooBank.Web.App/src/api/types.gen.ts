@@ -626,6 +626,8 @@ export type RetirementMemberOverride = {
     currentAge?: null | number;
     currentIncome?: null | number;
     salarySacrifice?: null | number;
+    annualFees?: null | number;
+    insurancePremium?: null | number;
     retirementAge?: null | number;
     growthStrategy?: null | GrowthStrategy;
 };
@@ -650,6 +652,8 @@ export type RetirementPlanMember = {
     currentIncome: number;
     salarySacrifice: number;
     retirementAge: number;
+    annualFees: number;
+    insurancePremium: number;
     growthStrategy: GrowthStrategy;
     instrumentIds: Array<string>;
 };
@@ -677,6 +681,7 @@ export type RetirementProjectionSummary = {
     annualRetirementIncomeInTodaysDollars: number;
     retirementYear: number;
     realReturnRate: number;
+    totalCosts: number;
 };
 
 export type RetirementProjectionYear = {
@@ -684,6 +689,7 @@ export type RetirementProjectionYear = {
     openingBalance: number;
     contributions: number;
     investmentReturn: number;
+    costs: number;
     closingBalance: number;
     closingBalanceInTodaysDollars: number;
     allRetired: boolean;
