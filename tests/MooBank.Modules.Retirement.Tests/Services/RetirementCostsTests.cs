@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Modules.Retirement.Services;
 using Asm.MooBank.Modules.Retirement.Tests.Support;
 
@@ -79,7 +79,9 @@ public class RetirementCostsTests
 
         // Assert
         // Five projected years at 500 a year; the starting-position row carries no costs.
-        Assert.Equal(2_500m, projection.Summary.TotalCosts);
+        // 500 a year for the 30 years from 60 to the plan's life expectancy of 90. Fees are charged
+        // through retirement too, not only while contributing.
+        Assert.Equal(15_000m, projection.Summary.TotalCosts);
         Assert.Equal(projection.Years.Sum(y => y.Costs), projection.Summary.TotalCosts);
     }
 
@@ -133,7 +135,8 @@ public class RetirementCostsTests
         var difference = withoutFeesResult.Summary.BalanceAtRetirement - withFeesResult.Summary.BalanceAtRetirement;
 
         // 20 years at 1,000 is 20,000 of face value; the lost growth makes the real cost far more.
-        Assert.Equal(20_000m, withFeesResult.Summary.TotalCosts);
+        // 1,000 a year from 45 to the life expectancy of 90.
+        Assert.Equal(45_000m, withFeesResult.Summary.TotalCosts);
         Assert.True(difference > 20_000m, $"expected the drag to exceed the fees' face value, but it was {difference}");
     }
 

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import type { RetirementPlan } from "api/types.gen";
-import { applyDraftToPlan, emptyDraft, isDirty, memberValue, planValue, pruneDraft, withMemberValue, withPlanValue } from "./tweaks";
+import { applyDraftToPlan, emptyDraft, isDirty, memberValue, planTweakKeys, planValue, pruneDraft, withMemberValue, withPlanValue } from "./tweaks";
 
 const selfId = "11111111-1111-1111-1111-111111111111";
 const spouseId = "22222222-2222-2222-2222-222222222222";
@@ -16,6 +16,9 @@ const plan = (over: Partial<RetirementPlan> = {}): RetirementPlan => ({
     superGuaranteeRate: 0.12,
     contributionsTaxRate: 0.15,
     lifeExpectancy: 90,
+    targetRetirementIncome: 60_000,
+    preRetirementSwitchYears: 2,
+    cashReturnRate: 0.03,
     createdUtc: "2026-01-01T00:00:00Z",
     updatedUtc: "2026-01-01T00:00:00Z",
     members: [
@@ -97,6 +100,47 @@ describe("moving a slider", () => {
 
         const back = withPlanValue(draft, p, "lifeExpectancy", 90);
         expect(isDirty(back, p)).toBe(false);
+    });
+});
+
+describe("the target income slider", () => {
+    it("overrides the plan and marks the draft dirty", () => {
+        const p = plan();
+        const draft = withPlanValue(emptyDraft, p, "targetRetirementIncome", 80_000);
+
+        expect(planValue(draft, p, "targetRetirementIncome")).toBe(80_000);
+        expect(isDirty(draft, p)).toBe(true);
+    });
+
+    it("folds into the plan on lock-in", () => {
+        const p = plan();
+        const draft = withPlanValue(emptyDraft, p, "targetRetirementIncome", 80_000);
+
+        expect(applyDraftToPlan(draft, p).targetRetirementIncome).toBe(80_000);
+    });
+
+    /** The drawdown settings ride along untouched rather than being dropped on save. */
+    it("carries the cash settings through untweaked", () => {
+        const p = plan();
+        const updated = applyDraftToPlan(emptyDraft, p);
+
+        expect(updated.preRetirementSwitchYears).toBe(2);
+        expect(updated.cashReturnRate).toBe(0.03);
+    });
+});
+
+/**
+ * The list backing both setting a value and the dirty check. It drifted once when a new plan-level
+ * value was added to one place and not the other, leaving a slider unable to mark the draft dirty.
+ */
+describe("planTweakKeys", () => {
+    it("marks the draft dirty for every key it lists", () => {
+        const p = plan();
+
+        for (const key of planTweakKeys) {
+            const draft = { ...emptyDraft, [key]: 999 };
+            expect(isDirty(draft, p), `${key} should mark the draft dirty`).toBe(true);
+        }
     });
 });
 

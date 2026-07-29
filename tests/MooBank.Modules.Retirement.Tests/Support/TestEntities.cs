@@ -16,6 +16,11 @@ internal static class TestEntities
     /// Rates chosen so the arithmetic in tests stays easy to check by hand: 10% return, no
     /// inflation, 10% employer contributions and no contributions tax.
     /// </summary>
+    /// <remarks>
+    /// The drawdown phase is off by default: no target income, and a cash rate equal to the expected
+    /// return, so the switch to cash cannot change any figure. That keeps a test about accumulation
+    /// from also testing those. Tests that want either ask for it.
+    /// </remarks>
     public static DomainPlan CreatePlan(
         Guid? id = null,
         string? name = null,
@@ -25,6 +30,9 @@ internal static class TestEntities
         decimal superGuaranteeRate = 0.10m,
         decimal contributionsTaxRate = 0m,
         int lifeExpectancy = 90,
+        decimal targetRetirementIncome = 0m,
+        int preRetirementSwitchYears = 0,
+        decimal? cashReturnRate = null,
         IEnumerable<DomainPlanMember>? members = null) =>
         new(id ?? Guid.NewGuid())
         {
@@ -35,6 +43,9 @@ internal static class TestEntities
             SuperGuaranteeRate = superGuaranteeRate,
             ContributionsTaxRate = contributionsTaxRate,
             LifeExpectancy = lifeExpectancy,
+            TargetRetirementIncome = targetRetirementIncome,
+            PreRetirementSwitchYears = preRetirementSwitchYears,
+            CashReturnRate = cashReturnRate ?? expectedReturnRate,
             CreatedUtc = DateTime.UtcNow,
             UpdatedUtc = DateTime.UtcNow,
             Members = members?.ToList() ?? [],

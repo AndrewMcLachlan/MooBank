@@ -10,7 +10,7 @@ namespace Asm.MooBank.Modules.Retirement.Tests.Domain;
 [Trait("Category", "Unit")]
 public class RetirementPlanTests
 {
-    private static readonly RetirementAssumptions Assumptions = new(0.065m, 0.025m, 0.12m, 0.15m, 90);
+    private static readonly RetirementAssumptions Assumptions = new(0.065m, 0.025m, 0.12m, 0.15m, 90, 60_000m, 2, 0.03m);
 
     /// <summary>
     /// Given a family and a set of assumptions
@@ -105,12 +105,15 @@ public class RetirementPlanTests
         var plan = RetirementPlan.Create(Guid.NewGuid(), "Retirement", Assumptions);
 
         // Act
-        plan.Update("Renamed", new RetirementAssumptions(0.08m, 0.03m, 0.11m, 0.15m, 95));
+        plan.Update("Renamed", new RetirementAssumptions(0.08m, 0.03m, 0.11m, 0.15m, 95, 70_000m, 5, 0.035m));
 
         // Assert
         Assert.Equal("Renamed", plan.Name);
         Assert.Equal(0.08m, plan.ExpectedReturnRate);
         Assert.Equal(95, plan.LifeExpectancy);
+        Assert.Equal(70_000m, plan.TargetRetirementIncome);
+        Assert.Equal(5, plan.PreRetirementSwitchYears);
+        Assert.Equal(0.035m, plan.CashReturnRate);
     }
 
     /// <summary>

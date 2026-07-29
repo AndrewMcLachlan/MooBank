@@ -12,6 +12,9 @@ const year = (over: Partial<RetirementProjectionYear>): RetirementProjectionYear
     costs: 0,
     closingBalanceInTodaysDollars: 0,
     allRetired: false,
+    drawdown: 0,
+    drawdownInTodaysDollars: 0,
+    members: [],
     ...over,
 });
 

@@ -1,4 +1,4 @@
-using DomainEntities = Asm.MooBank.Domain.Entities.Retirement;
+﻿using DomainEntities = Asm.MooBank.Domain.Entities.Retirement;
 
 namespace Asm.MooBank.Modules.Retirement.Models;
 
@@ -14,6 +14,9 @@ public static class ModelExtensions
             SuperGuaranteeRate = plan.SuperGuaranteeRate,
             ContributionsTaxRate = plan.ContributionsTaxRate,
             LifeExpectancy = plan.LifeExpectancy,
+            TargetRetirementIncome = plan.TargetRetirementIncome,
+            PreRetirementSwitchYears = plan.PreRetirementSwitchYears,
+            CashReturnRate = plan.CashReturnRate,
             CreatedUtc = plan.CreatedUtc,
             UpdatedUtc = plan.UpdatedUtc,
             Members = plan.Members.Select(m => m.ToModel()).ToList(),
@@ -39,5 +42,6 @@ public static class ModelExtensions
         };
 
     public static DomainEntities.RetirementAssumptions ToAssumptions(this RetirementPlanBase plan) =>
-        new(plan.ExpectedReturnRate, plan.InflationRate, plan.SuperGuaranteeRate, plan.ContributionsTaxRate, plan.LifeExpectancy);
+        new(plan.ExpectedReturnRate, plan.InflationRate, plan.SuperGuaranteeRate, plan.ContributionsTaxRate, plan.LifeExpectancy,
+            plan.TargetRetirementIncome, plan.PreRetirementSwitchYears, plan.CashReturnRate);
 }

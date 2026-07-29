@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace Asm.MooBank.Modules.Retirement.Models;
 
@@ -33,6 +33,22 @@ public record RetirementPlanBase
     /// The age savings are assumed to need to last until.
     /// </summary>
     public int LifeExpectancy { get; init; }
+
+    /// <summary>
+    /// What the household intends to live on each year in retirement, in today's dollars. Drawn from
+    /// the members' balances once they have all retired.
+    /// </summary>
+    public decimal TargetRetirementIncome { get; init; }
+
+    /// <summary>
+    /// How many years before retiring a member's balance moves to cash. Nought turns the glide off.
+    /// </summary>
+    public int PreRetirementSwitchYears { get; init; }
+
+    /// <summary>
+    /// The nominal return a balance earns once it has moved to cash.
+    /// </summary>
+    public decimal CashReturnRate { get; init; }
 
     public IEnumerable<RetirementPlanMember> Members { get; init; } = [];
 }

@@ -23,6 +23,12 @@ internal sealed record ResolvedAssumptions
 
     public required int LifeExpectancy { get; init; }
 
+    public required decimal TargetRetirementIncome { get; init; }
+
+    public required int PreRetirementSwitchYears { get; init; }
+
+    public required decimal CashReturnRate { get; init; }
+
     public static ResolvedAssumptions From(DomainEntities.RetirementPlan plan, ProjectionOverrides? overrides) =>
         new()
         {
@@ -31,6 +37,9 @@ internal sealed record ResolvedAssumptions
             SuperGuaranteeRate = overrides?.SuperGuaranteeRate ?? plan.SuperGuaranteeRate,
             ContributionsTaxRate = overrides?.ContributionsTaxRate ?? plan.ContributionsTaxRate,
             LifeExpectancy = overrides?.LifeExpectancy ?? plan.LifeExpectancy,
+            TargetRetirementIncome = overrides?.TargetRetirementIncome ?? plan.TargetRetirementIncome,
+            PreRetirementSwitchYears = overrides?.PreRetirementSwitchYears ?? plan.PreRetirementSwitchYears,
+            CashReturnRate = overrides?.CashReturnRate ?? plan.CashReturnRate,
         };
 }
 

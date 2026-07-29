@@ -1,4 +1,4 @@
-import type { RetirementMemberOverride, RetirementPlan, RetirementProjectionOverrides, SimpleRetirementPlan } from "api/types.gen";
+﻿import type { RetirementMemberOverride, RetirementPlan, RetirementProjectionOverrides, SimpleRetirementPlan } from "api/types.gen";
 
 /**
  * The tweak sliders' working copy: only the values someone has actually moved.
@@ -11,6 +11,26 @@ import type { RetirementMemberOverride, RetirementPlan, RetirementProjectionOver
  * Nothing here is saved until it is locked in; see the overrides model on the server.
  */
 export const emptyDraft: RetirementProjectionOverrides = { members: [] };
+
+/**
+ * The plan-level values a tweak can override.
+ *
+ * Named once and derived from, because the same list is needed both to set a value and to decide
+ * whether anything has been tweaked. Written out by hand in both places, adding a value to one and
+ * not the other left it silently unable to mark the draft dirty.
+ */
+export const planTweakKeys = [
+    "expectedReturnRate",
+    "inflationRate",
+    "superGuaranteeRate",
+    "contributionsTaxRate",
+    "lifeExpectancy",
+    "targetRetirementIncome",
+    "preRetirementSwitchYears",
+    "cashReturnRate",
+] as const;
+
+export type PlanTweakKey = typeof planTweakKeys[number];
 
 /** The value a slider should show: the tweak if there is one, otherwise the plan's own value. */
 export const planValue = <K extends keyof RetirementPlan & keyof RetirementProjectionOverrides>(
@@ -40,8 +60,7 @@ export const memberValue = <K extends keyof RetirementMemberOverride>(
  * cannot leave the page claiming a what-if that has nothing behind it.
  */
 export const isDirty = (draft: RetirementProjectionOverrides, plan: RetirementPlan) => {
-    const planLevel = (["expectedReturnRate", "inflationRate", "superGuaranteeRate", "contributionsTaxRate", "lifeExpectancy"] as const)
-        .some(k => draft[k] !== undefined && draft[k] !== null);
+    const planLevel = planTweakKeys.some(k => draft[k] !== undefined && draft[k] !== null);
 
     const memberLevel = draft.members.some(m =>
         plan.members.some(p => p.id === m.memberId) &&
@@ -52,7 +71,7 @@ export const isDirty = (draft: RetirementProjectionOverrides, plan: RetirementPl
 };
 
 /** Set one plan-level value, or clear it when it matches the plan again. */
-export const withPlanValue = <K extends "expectedReturnRate" | "inflationRate" | "superGuaranteeRate" | "contributionsTaxRate" | "lifeExpectancy">(
+export const withPlanValue = <K extends PlanTweakKey>(
     draft: RetirementProjectionOverrides,
     plan: RetirementPlan,
     key: K,
@@ -106,6 +125,9 @@ export const applyDraftToPlan = (draft: RetirementProjectionOverrides, plan: Ret
     superGuaranteeRate: draft.superGuaranteeRate ?? plan.superGuaranteeRate,
     contributionsTaxRate: draft.contributionsTaxRate ?? plan.contributionsTaxRate,
     lifeExpectancy: draft.lifeExpectancy ?? plan.lifeExpectancy,
+    targetRetirementIncome: draft.targetRetirementIncome ?? plan.targetRetirementIncome,
+    preRetirementSwitchYears: draft.preRetirementSwitchYears ?? plan.preRetirementSwitchYears,
+    cashReturnRate: draft.cashReturnRate ?? plan.cashReturnRate,
     members: plan.members.map(member => {
         const tweak = draft.members.find(m => m.memberId === member.id);
 

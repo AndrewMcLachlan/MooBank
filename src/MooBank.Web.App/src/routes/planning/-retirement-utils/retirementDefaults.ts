@@ -1,4 +1,4 @@
-import type { GrowthStrategy, RetirementPlanMember, SimpleRetirementPlan } from "api/types.gen";
+﻿import type { GrowthStrategy, RetirementPlanMember, SimpleRetirementPlan } from "api/types.gen";
 
 /**
  * Starting assumptions for a new plan, matching the Australian settings a superannuation
@@ -11,6 +11,14 @@ export const defaultAssumptions = {
     superGuaranteeRate: 0.12,
     contributionsTaxRate: 0.15,
     lifeExpectancy: 90,
+    /**
+     * Left at nought deliberately: what a household means to live on is theirs to say, and a made-up
+     * figure here would produce a "your money runs out" verdict nobody asked for.
+     */
+    targetRetirementIncome: 0,
+    /** The de-risking glide most funds apply, moving a balance to cash as it nears being drawn on. */
+    preRetirementSwitchYears: 2,
+    cashReturnRate: 0.03,
 } as const;
 
 export const defaultRetirementAge = 67;

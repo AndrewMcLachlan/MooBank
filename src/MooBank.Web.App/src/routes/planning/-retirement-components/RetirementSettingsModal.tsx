@@ -1,4 +1,4 @@
-import { Button, ComboBox, Form, Modal } from "@andrewmclachlan/moo-ds";
+﻿import { Button, ComboBox, Form, Modal } from "@andrewmclachlan/moo-ds";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import type { GrowthStrategy, LogicalAccount, RetirementPlan, SimpleRetirementPlan, User } from "api/types.gen";
 import { useUpdateRetirementPlan } from "../-retirement-hooks/useUpdateRetirementPlan";
@@ -28,6 +28,9 @@ interface RetirementSettingsFormValues {
     superGuaranteePercent: number;
     contributionsTaxPercent: number;
     lifeExpectancy: number;
+    targetRetirementIncome: number;
+    preRetirementSwitchYears: number;
+    cashReturnPercent: number;
     members: {
         id?: string;
         userId: string;
@@ -49,6 +52,9 @@ const toFormValues = (plan?: RetirementPlan): RetirementSettingsFormValues => ({
     superGuaranteePercent: toPercent(plan?.superGuaranteeRate),
     contributionsTaxPercent: toPercent(plan?.contributionsTaxRate),
     lifeExpectancy: plan?.lifeExpectancy ?? 90,
+    targetRetirementIncome: plan?.targetRetirementIncome ?? 0,
+    preRetirementSwitchYears: plan?.preRetirementSwitchYears ?? 2,
+    cashReturnPercent: toPercent(plan?.cashReturnRate),
     members: (plan?.members ?? []).map(m => ({
         id: m.id,
         userId: m.userId,
@@ -70,6 +76,9 @@ const toRequest = (data: RetirementSettingsFormValues): SimpleRetirementPlan => 
     superGuaranteeRate: fromPercent(data.superGuaranteePercent),
     contributionsTaxRate: fromPercent(data.contributionsTaxPercent),
     lifeExpectancy: Number(data.lifeExpectancy) || 0,
+    targetRetirementIncome: Number(data.targetRetirementIncome) || 0,
+    preRetirementSwitchYears: Number(data.preRetirementSwitchYears) || 0,
+    cashReturnRate: fromPercent(data.cashReturnPercent),
     members: data.members.map(m => ({
         id: m.id,
         userId: m.userId,
@@ -160,6 +169,24 @@ export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = (
                             <Form.Group groupId="lifeExpectancy">
                                 <Form.Label>Savings Must Last Until Age</Form.Label>
                                 <Form.Input type="number" step="1" />
+                            </Form.Group>
+                        </div>
+                    </fieldset>
+
+                    <fieldset className="retirement-fieldset">
+                        <legend>Retirement</legend>
+                        <div className="retirement-assumptions">
+                            <Form.Group groupId="targetRetirementIncome">
+                                <Form.Label>Target Income (a year, today's dollars)</Form.Label>
+                                <CurrencyInput currency={currencyCode} />
+                            </Form.Group>
+                            <Form.Group groupId="preRetirementSwitchYears">
+                                <Form.Label>Years Switched to Cash Before Retiring</Form.Label>
+                                <Form.Input type="number" step="1" min="0" />
+                            </Form.Group>
+                            <Form.Group groupId="cashReturnPercent">
+                                <Form.Label>Cash Return (% a year)</Form.Label>
+                                <Form.Input type="number" step="0.1" />
                             </Form.Group>
                         </div>
                     </fieldset>

@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace Asm.MooBank.Modules.Retirement.Models;
 
@@ -24,6 +24,12 @@ public sealed record ProjectionOverrides
     public decimal? ContributionsTaxRate { get; init; }
 
     public int? LifeExpectancy { get; init; }
+
+    public decimal? TargetRetirementIncome { get; init; }
+
+    public int? PreRetirementSwitchYears { get; init; }
+
+    public decimal? CashReturnRate { get; init; }
 
     public IEnumerable<MemberOverride> Members { get; init; } = [];
 }

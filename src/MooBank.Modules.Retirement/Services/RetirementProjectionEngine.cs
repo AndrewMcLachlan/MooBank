@@ -5,7 +5,8 @@ using DomainEntities = Asm.MooBank.Domain.Entities.Retirement;
 namespace Asm.MooBank.Modules.Retirement.Services;
 
 /// <summary>
-/// Projects superannuation balances forward to retirement, one year at a time.
+/// Projects superannuation balances from today through retirement to life expectancy, one year at a
+/// time — accumulating while members work, then drawing down once they have all retired.
 /// </summary>
 /// <remarks>
 /// The model follows the shape of a standard superannuation calculator, and every assumption it
@@ -20,12 +21,20 @@ namespace Asm.MooBank.Modules.Retirement.Services;
 /// <item>A year's investment return is applied to the opening balance; that year's contributions
 /// earn nothing until the following year. This is the conservative end of the range — real funds
 /// receive contributions through the year.</item>
-/// <item>A member who has reached their retirement age stops contributing but their balance keeps
-/// earning returns. Drawdown is not modelled during the projection, so the household total in a
-/// year where one member has retired and another has not assumes the retired member has not
-/// started spending.</item>
-/// <item>Fees, insurance premiums, investment earnings tax within the fund, the Age Pension and
-/// any tax on withdrawals are not modelled.</item>
+/// <item>A member stops contributing at their retirement age, and their balance moves to cash a
+/// set number of years before that — the de-risking glide most funds apply, on the reasoning that
+/// a balance about to be drawn on has no working years left to recover a fall from. It stays in
+/// cash through retirement.</item>
+/// <item>Drawdown begins the year after every member has retired, not when the first one does: a
+/// household with someone still earning lives on that income. From then on the plan's target
+/// income is withdrawn each year, indexed to inflation so it holds its real value, and split
+/// across the members in proportion to their balances so they deplete together.</item>
+/// <item>A balance cannot go negative. Once the household's balances are exhausted the projection
+/// keeps running to life expectancy, drawing whatever is left — which is how a plan that does not
+/// last shows up.</item>
+/// <item>The Age Pension is not modelled, so a household whose super runs out shows no income at
+/// all rather than falling back to it. Nor are investment earnings tax within the fund, or tax on
+/// withdrawals.</item>
 /// </list>
 ///
 /// Because of the last point in particular, projections are indicative arithmetic on the stated
@@ -72,7 +81,11 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
             return EmptyProjection(plan, assumptions, startYear);
         }
 
-        var horizon = members.Max(m => m.YearsToRetirement);
+        var yearsToAllRetired = members.Max(m => m.YearsToRetirement);
+
+        // The projection now runs past retirement to life expectancy, so its horizon is however long
+        // the longest-lived member has left rather than however long until the last one retires.
+        var horizon = Math.Max(yearsToAllRetired, members.Max(m => m.YearsToLifeExpectancy));
 
         var years = new List<RetirementProjectionYear>(horizon + 1);
 
@@ -86,7 +99,8 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
             InvestmentReturn = 0m,
             ClosingBalance = openingTotal,
             ClosingBalanceInTodaysDollars = openingTotal,
-            AllRetired = horizon == 0,
+            AllRetired = yearsToAllRetired == 0,
+            Members = members.Select(m => m.ToYear(0, m.Balance, 0m, 0m, 0m, 0m)).ToList(),
         });
 
         // The factor that converts a nominal amount in the current year back to today's dollars.
@@ -101,12 +115,29 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
             var contributions = 0m;
             var investmentReturn = 0m;
             var costs = 0m;
+            var drawdown = 0m;
+
+            var allRetired = members.All(m => yearOffset >= m.YearsToRetirement);
+
+            // Drawing starts the year after the last member retires, not in the retirement year
+            // itself — that year they are still working, and still being paid.
+            var isDrawingDown = yearOffset > yearsToAllRetired;
+
+            // Split the household's target across the members by balance, worked out before any of
+            // them are touched so the shares are consistent with each other.
+            var openingTotalThisYear = members.Sum(m => m.Balance);
+            var targetThisYear = isDrawingDown
+                ? assumptions.TargetRetirementIncome * Indexation(yearOffset, assumptions.InflationRate)
+                : 0m;
+
+            var memberYears = new List<RetirementMemberYear>(members.Count);
 
             foreach (var member in members)
             {
-                opening += member.Balance;
+                var memberOpening = member.Balance;
+                opening += memberOpening;
 
-                var memberReturn = Round(member.Balance * member.ReturnRate);
+                var memberReturn = Round(memberOpening * member.ReturnRateInYear(yearOffset, assumptions));
                 var memberContribution = member.IsAccumulating(yearOffset)
                     ? Round(member.ContributionForYear(yearOffset, assumptions))
                     : 0m;
@@ -116,13 +147,23 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
                 var memberCosts = Round(member.CostsForYear(yearOffset, assumptions));
 
                 // A balance cannot be charged into the red.
-                memberCosts = Math.Min(memberCosts, member.Balance + memberReturn + memberContribution);
+                memberCosts = Math.Min(memberCosts, memberOpening + memberReturn + memberContribution);
 
-                member.Balance += memberReturn + memberContribution - memberCosts;
+                var available = memberOpening + memberReturn + memberContribution - memberCosts;
+
+                // Their share of the target, and never more than they have: a member whose balance
+                // is exhausted simply stops contributing to the household's income.
+                var share = openingTotalThisYear > 0m ? memberOpening / openingTotalThisYear : 0m;
+                var memberDrawdown = Math.Min(Round(targetThisYear * share), Math.Max(0m, available));
+
+                member.Balance = available - memberDrawdown;
 
                 investmentReturn += memberReturn;
                 contributions += memberContribution;
                 costs += memberCosts;
+                drawdown += memberDrawdown;
+
+                memberYears.Add(member.ToYear(yearOffset, member.Balance, memberContribution, memberReturn, memberCosts, memberDrawdown));
 
                 // Capture the balance the moment this member reaches their retirement age.
                 if (yearOffset == member.YearsToRetirement)
@@ -132,7 +173,7 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
                 }
             }
 
-            var closing = opening + contributions + investmentReturn - costs;
+            var closing = opening + contributions + investmentReturn - costs - drawdown;
 
             years.Add(new RetirementProjectionYear
             {
@@ -141,14 +182,20 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
                 Contributions = contributions,
                 InvestmentReturn = investmentReturn,
                 Costs = costs,
+                Drawdown = drawdown,
                 ClosingBalance = closing,
                 ClosingBalanceInTodaysDollars = Round(closing * todaysDollarsFactor),
-                AllRetired = members.All(m => yearOffset >= m.YearsToRetirement),
+                DrawdownInTodaysDollars = Round(drawdown * todaysDollarsFactor),
+                AllRetired = allRetired,
+                Members = memberYears,
             });
         }
 
         var outcomes = members.Select(m => m.ToOutcome(assumptions, startYear)).ToList();
 
+        // The retirement year is where the accumulation phase ends, which is no longer the end of
+        // the projection now that drawdown runs on past it.
+        var retirementYear = years[yearsToAllRetired];
         var finalYear = years[^1];
 
         return new RetirementProjection
@@ -159,14 +206,47 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
             Summary = new RetirementProjectionSummary
             {
                 CurrentBalance = members.Sum(m => m.StartingBalance),
-                BalanceAtRetirement = finalYear.ClosingBalance,
-                BalanceAtRetirementInTodaysDollars = finalYear.ClosingBalanceInTodaysDollars,
+                BalanceAtRetirement = retirementYear.ClosingBalance,
+                BalanceAtRetirementInTodaysDollars = retirementYear.ClosingBalanceInTodaysDollars,
                 AnnualRetirementIncomeInTodaysDollars = outcomes.Sum(o => o.AnnualRetirementIncomeInTodaysDollars),
-                RetirementYear = startYear + horizon,
+                RetirementYear = startYear + yearsToAllRetired,
                 RealReturnRate = RealReturnRate(assumptions.ExpectedReturnRate, assumptions.InflationRate),
                 TotalCosts = years.Sum(y => y.Costs),
+                FinalBalance = finalYear.ClosingBalance,
+                FinalBalanceInTodaysDollars = finalYear.ClosingBalanceInTodaysDollars,
+                LifeExpectancyYear = startYear + horizon,
+                MoneyRunsOutYear = MoneyRunsOutYear(years, assumptions, startYear, yearsToAllRetired),
             },
         };
+    }
+
+    /// <summary>
+    /// The first year the household could not draw the income it was targeting, or null if the money
+    /// lasted to life expectancy.
+    /// </summary>
+    /// <remarks>
+    /// Answers "does this plan hold up" from what the projection actually paid out rather than from
+    /// the closing balance: a year that pays a partial income is already the year it ran short, even
+    /// though a little may be left in the fund.
+    ///
+    /// A plan targeting no income cannot run short, so it never reports a year.
+    /// </remarks>
+    private static int? MoneyRunsOutYear(List<RetirementProjectionYear> years, ResolvedAssumptions assumptions, int startYear, int yearsToAllRetired)
+    {
+        if (assumptions.TargetRetirementIncome <= 0m) return null;
+
+        for (var yearOffset = yearsToAllRetired + 1; yearOffset < years.Count; yearOffset++)
+        {
+            var wanted = assumptions.TargetRetirementIncome * Indexation(yearOffset, assumptions.InflationRate);
+
+            // A cent of rounding either way is not a shortfall.
+            if (years[yearOffset].Drawdown < wanted - 0.01m)
+            {
+                return startYear + yearOffset;
+            }
+        }
+
+        return null;
     }
 
     /// <summary>
@@ -234,6 +314,22 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
     private static decimal Round(decimal value) => Math.Round(value, 2, MidpointRounding.AwayFromZero);
 
     /// <summary>
+    /// How far a starting figure has been indexed by the given projection year. The first projected
+    /// year uses today's figures unindexed.
+    /// </summary>
+    private static decimal Indexation(int yearOffset, decimal inflationRate)
+    {
+        var indexation = 1m;
+
+        for (var i = 1; i < yearOffset; i++)
+        {
+            indexation *= 1m + inflationRate;
+        }
+
+        return indexation;
+    }
+
+    /// <summary>
     /// A member's running position through the projection.
     /// </summary>
     private sealed class MemberState
@@ -247,16 +343,64 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
             Balance = member.Balance;
             BalanceAtRetirement = member.Balance;
             YearsToRetirement = Math.Max(0, member.RetirementAge - member.CurrentAge);
+            YearsToLifeExpectancy = Math.Max(0, assumptions.LifeExpectancy - member.CurrentAge);
             ReturnRate = ReturnRateFor(member.GrowthStrategy, assumptions.ExpectedReturnRate);
         }
 
         public int YearsToRetirement { get; }
 
         /// <summary>
-        /// The nominal return this member's balance earns, which their growth strategy may set
-        /// independently of the rest of the household.
+        /// How many projection years this member has left, which is what the drawdown phase runs
+        /// for. Zero for someone already past the plan's life expectancy.
+        /// </summary>
+        public int YearsToLifeExpectancy { get; }
+
+        /// <summary>
+        /// The nominal return this member's balance earns while invested in their chosen strategy,
+        /// which they may set independently of the rest of the household.
         /// </summary>
         public decimal ReturnRate { get; }
+
+        /// <summary>
+        /// The age this member reaches in the given projection year.
+        /// </summary>
+        public int AgeAt(int yearOffset) => _member.CurrentAge + yearOffset;
+
+        /// <summary>
+        /// Whether the balance has moved to cash by the given year: once the member is within the
+        /// plan's switch window of their retirement age, and every year after.
+        /// </summary>
+        /// <remarks>
+        /// A member already inside the window, or already retired, is in cash from the first
+        /// projected year. Nought switch years means the move happens at retirement rather than
+        /// ahead of it — not that it never happens, since a balance being drawn on is in cash either
+        /// way. Set the plan's cash rate to the expected return to model no switch at all.
+        /// </remarks>
+        public bool IsInCash(int yearOffset, ResolvedAssumptions assumptions) =>
+            YearsToRetirement - yearOffset <= assumptions.PreRetirementSwitchYears;
+
+        /// <summary>
+        /// The nominal return earned in the given year: their strategy's while it is still invested,
+        /// the plan's cash rate once the balance has been moved across.
+        /// </summary>
+        public decimal ReturnRateInYear(int yearOffset, ResolvedAssumptions assumptions) =>
+            IsInCash(yearOffset, assumptions) ? assumptions.CashReturnRate : ReturnRate;
+
+        /// <summary>
+        /// This member's position at the end of a projection year.
+        /// </summary>
+        public RetirementMemberYear ToYear(int yearOffset, decimal closing, decimal contributions, decimal investmentReturn, decimal costs, decimal drawdown) =>
+            new()
+            {
+                MemberId = _member.Id,
+                Name = _member.Name,
+                Age = AgeAt(yearOffset),
+                Contributions = contributions,
+                InvestmentReturn = investmentReturn,
+                Costs = costs,
+                Drawdown = drawdown,
+                ClosingBalance = closing,
+            };
 
         public decimal StartingBalance { get; }
 
@@ -305,22 +449,6 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
         /// </remarks>
         public decimal CostsForYear(int yearOffset, ResolvedAssumptions assumptions) =>
             (_member.AnnualFees + _member.InsurancePremium) * Indexation(yearOffset, assumptions.InflationRate);
-
-        /// <summary>
-        /// How far a starting figure has been indexed by the given projection year. The first
-        /// projected year uses today's figures unindexed.
-        /// </summary>
-        private static decimal Indexation(int yearOffset, decimal inflationRate)
-        {
-            var indexation = 1m;
-
-            for (var i = 1; i < yearOffset; i++)
-            {
-                indexation *= 1m + inflationRate;
-            }
-
-            return indexation;
-        }
 
         public RetirementMemberOutcome ToOutcome(ResolvedAssumptions assumptions, int startYear)
         {

@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Modules.Retirement.Services;
 using Asm.MooBank.Modules.Retirement.Tests.Support;
 
@@ -35,9 +35,12 @@ public class RetirementProjectionEngineTests
         var projection = _engine.Calculate(plan, Today);
 
         // Assert
-        Assert.Equal(6, projection.Years.Count());
+        // Age 60 to the plan's life expectancy of 90, plus the starting year.
+        Assert.Equal(31, projection.Years.Count());
         Assert.Equal(2026, projection.Years.First().Year);
-        Assert.Equal(2031, projection.Years.Last().Year);
+        Assert.Equal(2056, projection.Years.Last().Year);
+        Assert.Equal(2031, projection.Summary.RetirementYear);
+        Assert.Equal(2056, projection.Summary.LifeExpectancyYear);
     }
 
     /// <summary>
@@ -152,13 +155,15 @@ public class RetirementProjectionEngineTests
             members: [TestEntities.CreateMember(retirementAge: 65, accountBalances: [100_000m])]);
 
         // Act
-        var finalYear = _engine.Calculate(plan, Today).Years.Last();
+        // The retirement year, five years out — not the last year of the projection, which now runs
+        // on to life expectancy.
+        var retirementYear = _engine.Calculate(plan, Today).Years.ElementAt(5);
 
         // Assert
-        Assert.True(finalYear.ClosingBalanceInTodaysDollars < finalYear.ClosingBalance);
+        Assert.True(retirementYear.ClosingBalanceInTodaysDollars < retirementYear.ClosingBalance);
         // Five years of 3% inflation.
-        var expected = Math.Round(finalYear.ClosingBalance / (decimal)Math.Pow(1.03d, 5), 2, MidpointRounding.AwayFromZero);
-        Assert.Equal(expected, finalYear.ClosingBalanceInTodaysDollars, 2);
+        var expected = Math.Round(retirementYear.ClosingBalance / (decimal)Math.Pow(1.03d, 5), 2, MidpointRounding.AwayFromZero);
+        Assert.Equal(expected, retirementYear.ClosingBalanceInTodaysDollars, 2);
     }
 
     /// <summary>
@@ -202,8 +207,10 @@ public class RetirementProjectionEngineTests
         Assert.True(member.AlreadyRetired);
         Assert.Equal(0, member.YearsToRetirement);
         Assert.Equal(100_000m, member.BalanceAtRetirement);
-        Assert.Single(projection.Years);
-        Assert.True(projection.Years.Single().AllRetired);
+        // Retirement is behind them, so there is no accumulation phase — but the projection still
+        // runs out their remaining years so a drawdown can be shown.
+        Assert.Equal(31, projection.Years.Count());
+        Assert.True(projection.Years.First().AllRetired);
     }
 
     /// <summary>

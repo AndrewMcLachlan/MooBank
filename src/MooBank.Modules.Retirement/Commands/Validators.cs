@@ -44,6 +44,15 @@ public class RetirementPlanBaseValidator : AbstractValidator<RetirementPlanBase>
         RuleFor(x => x.LifeExpectancy)
             .InclusiveBetween(1, 120).WithMessage("Life expectancy must be between 1 and 120");
 
+        RuleFor(x => x.TargetRetirementIncome)
+            .GreaterThanOrEqualTo(0m).WithMessage("Target retirement income cannot be negative");
+
+        RuleFor(x => x.PreRetirementSwitchYears)
+            .InclusiveBetween(0, 40).WithMessage("Years switched to cash must be between 0 and 40");
+
+        RuleFor(x => x.CashReturnRate)
+            .InclusiveBetween(-1m, 1m).WithMessage("Cash return rate must be between -100% and 100%");
+
         RuleForEach(x => x.Members).SetValidator(new RetirementPlanMemberValidator());
     }
 }

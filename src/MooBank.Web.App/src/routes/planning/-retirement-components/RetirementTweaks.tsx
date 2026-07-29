@@ -1,8 +1,8 @@
-import { Button, Section } from "@andrewmclachlan/moo-ds";
+﻿import { Button, Section } from "@andrewmclachlan/moo-ds";
 import type { GrowthStrategy, RetirementPlan, RetirementProjectionOverrides } from "api/types.gen";
 import { formatCurrency } from "utils/currency";
 import { TweakSlider } from "./TweakSlider";
-import { isDirty, memberValue, planValue, withMemberValue, withPlanValue } from "../-retirement-utils/tweaks";
+import { isDirty, memberValue, planValue, withMemberValue, withPlanValue, type PlanTweakKey } from "../-retirement-utils/tweaks";
 import { growthStrategies, minWorkingAge, toPercent } from "../-retirement-utils/retirementDefaults";
 
 interface RetirementTweaksProps {
@@ -29,7 +29,7 @@ export const RetirementTweaks: React.FC<RetirementTweaksProps> = ({ plan, draft,
     const money = (value: number) => formatCurrency(value, currencyCode, 0);
     const dirty = isDirty(draft, plan);
 
-    const setPlan = <K extends "expectedReturnRate" | "inflationRate" | "lifeExpectancy">(key: K, value: number) =>
+    const setPlan = <K extends PlanTweakKey>(key: K, value: number) =>
         onChange(withPlanValue(draft, plan, key, value));
 
     return (
@@ -134,6 +134,16 @@ export const RetirementTweaks: React.FC<RetirementTweaksProps> = ({ plan, draft,
                         onChange={percent => setPlan("inflationRate", percent / 100)}
                     />
                     <TweakSlider
+                        label="Target income"
+                        value={planValue(draft, plan, "targetRetirementIncome")}
+                        min={0}
+                        max={200_000}
+                        step={1_000}
+                        display={money(planValue(draft, plan, "targetRetirementIncome"))}
+                        savedDisplay={draft.targetRetirementIncome != null ? money(plan.targetRetirementIncome) : undefined}
+                        onChange={v => setPlan("targetRetirementIncome", v)}
+                    />
+                    <TweakSlider
                         label="Savings must last until"
                         value={planValue(draft, plan, "lifeExpectancy")}
                         min={70}
@@ -145,6 +155,7 @@ export const RetirementTweaks: React.FC<RetirementTweaksProps> = ({ plan, draft,
                 </div>
                 <p className="retirement-tweak-note">
                     Expected return applies to anyone on the Custom strategy; the named strategies carry their own.
+                    Target income is what the household draws each year once everyone has retired, in today's dollars.
                 </p>
             </div>
 

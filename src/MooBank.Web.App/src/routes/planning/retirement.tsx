@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+﻿import { createFileRoute } from "@tanstack/react-router";
 import { IconButton, SpinnerContainer } from "@andrewmclachlan/moo-ds";
 import { Sliders } from "@andrewmclachlan/moo-icons";
 import { useMemo, useState } from "react";
@@ -11,6 +11,7 @@ import { useUser } from "hooks/useUser";
 import { RetirementPage } from "./-retirement-components/RetirementPage";
 import { RetirementOutlook } from "./-retirement-components/RetirementOutlook";
 import { RetirementChart } from "./-retirement-components/RetirementChart";
+import { RetirementIncomeChart } from "./-retirement-components/RetirementIncomeChart";
 import { RetirementMembersTable } from "./-retirement-components/RetirementMembersTable";
 import { RetirementAssumptionsNote } from "./-retirement-components/RetirementAssumptionsNote";
 import { RetirementSettingsModal } from "./-retirement-components/RetirementSettingsModal";
@@ -89,6 +90,8 @@ function Retirement() {
             <RetirementOutlook projection={projection} currencyCode={currencyCode} loading={projectionLoading && !projection} />
 
             <RetirementChart years={projection?.years ?? []} currencyCode={currencyCode} />
+
+            <RetirementIncomeChart years={projection?.years ?? []} currencyCode={currencyCode} />
 
             {plan && plan.members.length > 0 && (
                 <RetirementTweaks

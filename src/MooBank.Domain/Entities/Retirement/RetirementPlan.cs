@@ -71,6 +71,21 @@ public class RetirementPlan(Guid id) : KeyedEntity<Guid>(id)
     /// </summary>
     public int LifeExpectancy { get; set; }
 
+    /// <summary>
+    /// What the household intends to live on each year in retirement, in today's dollars.
+    /// </summary>
+    public decimal TargetRetirementIncome { get; set; }
+
+    /// <summary>
+    /// How many years before retiring a member's balance moves to cash.
+    /// </summary>
+    public int PreRetirementSwitchYears { get; set; }
+
+    /// <summary>
+    /// The nominal return a balance earns once it has moved to cash.
+    /// </summary>
+    public decimal CashReturnRate { get; set; }
+
     public DateTime CreatedUtc { get; set; }
 
     public DateTime UpdatedUtc { get; set; }
@@ -146,6 +161,9 @@ public class RetirementPlan(Guid id) : KeyedEntity<Guid>(id)
         SuperGuaranteeRate = assumptions.SuperGuaranteeRate;
         ContributionsTaxRate = assumptions.ContributionsTaxRate;
         LifeExpectancy = assumptions.LifeExpectancy;
+        TargetRetirementIncome = assumptions.TargetRetirementIncome;
+        PreRetirementSwitchYears = assumptions.PreRetirementSwitchYears;
+        CashReturnRate = assumptions.CashReturnRate;
     }
 }
 
@@ -157,9 +175,21 @@ public class RetirementPlan(Guid id) : KeyedEntity<Guid>(id)
 /// <param name="SuperGuaranteeRate">Employer contribution rate applied to income.</param>
 /// <param name="ContributionsTaxRate">Tax withheld on contributions entering the fund.</param>
 /// <param name="LifeExpectancy">The age savings must last until.</param>
+/// <param name="TargetRetirementIncome">
+/// The household's spending money each year in retirement, in today's dollars. Drawn from the
+/// members' balances once they have all retired.
+/// </param>
+/// <param name="PreRetirementSwitchYears">
+/// How many years before retiring a member's balance moves to cash, protecting it from a market
+/// fall it would have no working years left to recover from.
+/// </param>
+/// <param name="CashReturnRate">The nominal return earned once a balance has moved to cash.</param>
 public readonly record struct RetirementAssumptions(
     decimal ExpectedReturnRate,
     decimal InflationRate,
     decimal SuperGuaranteeRate,
     decimal ContributionsTaxRate,
-    int LifeExpectancy);
+    int LifeExpectancy,
+    decimal TargetRetirementIncome,
+    int PreRetirementSwitchYears,
+    decimal CashReturnRate);

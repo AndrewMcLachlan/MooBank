@@ -8633,6 +8633,52 @@
           }
         }
       },
+      "RetirementMemberYear": {
+        "required": [
+          "name",
+          "memberId",
+          "age",
+          "contributions",
+          "investmentReturn",
+          "costs",
+          "drawdown",
+          "closingBalance"
+        ],
+        "type": "object",
+        "properties": {
+          "memberId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "age": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "contributions": {
+            "type": "number",
+            "format": "double"
+          },
+          "investmentReturn": {
+            "type": "number",
+            "format": "double"
+          },
+          "costs": {
+            "type": "number",
+            "format": "double"
+          },
+          "drawdown": {
+            "type": "number",
+            "format": "double"
+          },
+          "closingBalance": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
       "RetirementPlan": {
         "required": [
           "name",
@@ -8644,6 +8690,9 @@
           "superGuaranteeRate",
           "contributionsTaxRate",
           "lifeExpectancy",
+          "targetRetirementIncome",
+          "preRetirementSwitchYears",
+          "cashReturnRate",
           "members"
         ],
         "type": "object",
@@ -8682,6 +8731,18 @@
           "lifeExpectancy": {
             "type": "integer",
             "format": "int32"
+          },
+          "targetRetirementIncome": {
+            "type": "number",
+            "format": "double"
+          },
+          "preRetirementSwitchYears": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cashReturnRate": {
+            "type": "number",
+            "format": "double"
           },
           "members": {
             "type": "array",
@@ -8829,6 +8890,27 @@
             ],
             "format": "int32"
           },
+          "targetRetirementIncome": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "preRetirementSwitchYears": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "cashReturnRate": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
           "members": {
             "type": "array",
             "items": {
@@ -8845,7 +8927,10 @@
           "annualRetirementIncomeInTodaysDollars",
           "retirementYear",
           "realReturnRate",
-          "totalCosts"
+          "totalCosts",
+          "finalBalance",
+          "finalBalanceInTodaysDollars",
+          "lifeExpectancyYear"
         ],
         "type": "object",
         "properties": {
@@ -8876,6 +8961,25 @@
           "totalCosts": {
             "type": "number",
             "format": "double"
+          },
+          "finalBalance": {
+            "type": "number",
+            "format": "double"
+          },
+          "finalBalanceInTodaysDollars": {
+            "type": "number",
+            "format": "double"
+          },
+          "lifeExpectancyYear": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "moneyRunsOutYear": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
           }
         }
       },
@@ -8888,7 +8992,10 @@
           "costs",
           "closingBalance",
           "closingBalanceInTodaysDollars",
-          "allRetired"
+          "allRetired",
+          "drawdown",
+          "drawdownInTodaysDollars",
+          "members"
         ],
         "type": "object",
         "properties": {
@@ -8922,6 +9029,20 @@
           },
           "allRetired": {
             "type": "boolean"
+          },
+          "drawdown": {
+            "type": "number",
+            "format": "double"
+          },
+          "drawdownInTodaysDollars": {
+            "type": "number",
+            "format": "double"
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RetirementMemberYear"
+            }
           }
         }
       },
@@ -9322,6 +9443,9 @@
           "superGuaranteeRate",
           "contributionsTaxRate",
           "lifeExpectancy",
+          "targetRetirementIncome",
+          "preRetirementSwitchYears",
+          "cashReturnRate",
           "members"
         ],
         "type": "object",
@@ -9348,6 +9472,18 @@
           "lifeExpectancy": {
             "type": "integer",
             "format": "int32"
+          },
+          "targetRetirementIncome": {
+            "type": "number",
+            "format": "double"
+          },
+          "preRetirementSwitchYears": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cashReturnRate": {
+            "type": "number",
+            "format": "double"
           },
           "members": {
             "type": "array",

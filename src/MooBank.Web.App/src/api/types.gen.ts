@@ -632,6 +632,17 @@ export type RetirementMemberOverride = {
     growthStrategy?: null | GrowthStrategy;
 };
 
+export type RetirementMemberYear = {
+    memberId: string;
+    name: string;
+    age: number;
+    contributions: number;
+    investmentReturn: number;
+    costs: number;
+    drawdown: number;
+    closingBalance: number;
+};
+
 export type RetirementPlan = {
     id: string;
     createdUtc: string;
@@ -642,6 +653,9 @@ export type RetirementPlan = {
     superGuaranteeRate: number;
     contributionsTaxRate: number;
     lifeExpectancy: number;
+    targetRetirementIncome: number;
+    preRetirementSwitchYears: number;
+    cashReturnRate: number;
     members: Array<RetirementPlanMember>;
 };
 
@@ -672,6 +686,9 @@ export type RetirementProjectionOverrides = {
     superGuaranteeRate?: null | number;
     contributionsTaxRate?: null | number;
     lifeExpectancy?: null | number;
+    targetRetirementIncome?: null | number;
+    preRetirementSwitchYears?: null | number;
+    cashReturnRate?: null | number;
     members: Array<RetirementMemberOverride>;
 };
 
@@ -683,6 +700,10 @@ export type RetirementProjectionSummary = {
     retirementYear: number;
     realReturnRate: number;
     totalCosts: number;
+    finalBalance: number;
+    finalBalanceInTodaysDollars: number;
+    lifeExpectancyYear: number;
+    moneyRunsOutYear?: null | number;
 };
 
 export type RetirementProjectionYear = {
@@ -694,6 +715,9 @@ export type RetirementProjectionYear = {
     closingBalance: number;
     closingBalanceInTodaysDollars: number;
     allRetired: boolean;
+    drawdown: number;
+    drawdownInTodaysDollars: number;
+    members: Array<RetirementMemberYear>;
 };
 
 export type Rule = {
@@ -783,6 +807,9 @@ export type SimpleRetirementPlan = {
     superGuaranteeRate: number;
     contributionsTaxRate: number;
     lifeExpectancy: number;
+    targetRetirementIncome: number;
+    preRetirementSwitchYears: number;
+    cashReturnRate: number;
     members: Array<RetirementPlanMember>;
 };
 
