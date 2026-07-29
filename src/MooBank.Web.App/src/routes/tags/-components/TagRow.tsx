@@ -6,6 +6,7 @@ import { useDeleteTag } from "../-hooks/useDeleteTag";
 import { useUpdateTag } from "../-hooks/useUpdateTag";
 import { TransactionTagTransactionTagPanel } from "./TagTagPanel";
 import { DeleteIcon } from "@andrewmclachlan/moo-ds";
+import { colourRowProps } from "components";
 
 
 export const TransactionTagRow: React.FC<TransactionTagRowProps> = (props) => {
@@ -15,12 +16,9 @@ export const TransactionTagRow: React.FC<TransactionTagRowProps> = (props) => {
     if (!tag) return <LoadingTableRow cols={3} />;
 
     return (
-        <tr>
+        <tr {...colourRowProps(tag.colour)}>
             <EditColumn value={tag.name} onChange={t => tagRow.updateTag(t.value)}>
-                <span className="tag-name-cell">
-                    <span className="tag-swatch" style={{ background: (tag.colour as string) || "var(--primary)" }} aria-hidden="true" />
-                    {tag.name}
-                </span>
+                {tag.name}
             </EditColumn>
             <TransactionTagTransactionTagPanel as="td" tag={tag} />
             <td className="row-action">

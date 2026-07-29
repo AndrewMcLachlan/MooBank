@@ -19,7 +19,7 @@ public record BillEntry
     public string? InvoiceNumber { get; set; }
 
     [Description("The date the bill was issued.")]
-    public DateOnly IssueDate { get; set; }
+    public required DateOnly IssueDate { get; set; }
 
     [Description("The meter reading at the end of the billing period, where the bill shows one.")]
     public int? CurrentReading { get; set; }
