@@ -215,6 +215,7 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
         // The retirement year is where the accumulation phase ends, which is no longer the end of
         // the projection now that drawdown runs on past it.
         var retirementYear = years[yearsToAllRetired];
+        var retirementAge = members.Max(m => m.AgeAt(m.YearsToRetirement));
         var finalYear = years[^1];
 
         return new RetirementProjection
@@ -227,8 +228,12 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
                 CurrentBalance = members.Sum(m => m.StartingBalance),
                 BalanceAtRetirement = retirementYear.ClosingBalance,
                 BalanceAtRetirementInTodaysDollars = retirementYear.ClosingBalanceInTodaysDollars,
-                AnnualRetirementIncomeInTodaysDollars = outcomes.Sum(o => o.AnnualRetirementIncomeInTodaysDollars),
+                AnnualRetirementIncomeInTodaysDollars = AnnualDrawdown(
+                    retirementYear.ClosingBalanceInTodaysDollars,
+                    RealReturnRate(assumptions.ExpectedReturnRate, assumptions.InflationRate),
+                    assumptions.LifeExpectancy - retirementAge),
                 RetirementYear = startYear + yearsToAllRetired,
+                RetirementAge = retirementAge,
                 RealReturnRate = RealReturnRate(assumptions.ExpectedReturnRate, assumptions.InflationRate),
                 TotalCosts = years.Sum(y => y.Costs),
                 FinalBalance = finalYear.ClosingBalance,

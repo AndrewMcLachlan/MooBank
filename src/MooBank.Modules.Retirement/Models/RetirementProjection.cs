@@ -170,14 +170,34 @@ public sealed record RetirementProjectionSummary
     public decimal BalanceAtRetirementInTodaysDollars { get; init; }
 
     /// <summary>
-    /// Combined level annual household income in today's dollars.
+    /// The level annual income, in today's dollars, that the household's balance at retirement would
+    /// sustain to the plan's life expectancy. This is the figure a target income is solved against.
     /// </summary>
+    /// <remarks>
+    /// Computed on the household as a whole — its combined balance, the plan's return, and the years
+    /// from the last retirement to life expectancy — rather than by summing the members' own figures.
+    /// The two differ, because each member has their own return and their own retirement age, and the
+    /// target income the sliders solve for is a household figure. Keeping this one on the same basis
+    /// is what stops the page reporting a sustainable income that contradicts the target beside it.
+    ///
+    /// The per-member figures are still on each <see cref="RetirementMemberOutcome"/>.
+    /// </remarks>
     public decimal AnnualRetirementIncomeInTodaysDollars { get; init; }
 
     /// <summary>
     /// The year the last member reaches their retirement age.
     /// </summary>
     public int RetirementYear { get; init; }
+
+    /// <summary>
+    /// The age of the last member to retire, which is where the drawdown starts.
+    /// </summary>
+    /// <remarks>
+    /// Stated rather than left to be worked out from the years, because reconstructing it needs the
+    /// life expectancy the projection was actually run under — and a caller holding unsaved slider
+    /// values does not have it.
+    /// </remarks>
+    public int RetirementAge { get; init; }
 
     /// <summary>
     /// The real (above-inflation) return implied by the plan's return and inflation assumptions.

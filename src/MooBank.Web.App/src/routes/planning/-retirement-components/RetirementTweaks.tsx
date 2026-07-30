@@ -1,13 +1,16 @@
 ﻿import { Button, Section } from "@andrewmclachlan/moo-ds";
-import type { GrowthStrategy, RetirementPlan, RetirementProjectionOverrides } from "api/types.gen";
+import type { GrowthStrategy, RetirementPlan, RetirementProjectionOverrides, RetirementProjectionSummary } from "api/types.gen";
 import { formatCurrency } from "utils/currency";
 import { TweakSlider } from "./TweakSlider";
 import { isDirty, memberValue, planValue, withMemberValue, withPlanValue, type PlanTweakKey } from "../-retirement-utils/tweaks";
 import { growthStrategies, minWorkingAge, toPercent } from "../-retirement-utils/retirementDefaults";
+import { ageForIncome, incomeForAge, type SyncBasis } from "../-retirement-utils/retirementSync";
 
 interface RetirementTweaksProps {
     plan: RetirementPlan;
     draft: RetirementProjectionOverrides;
+    /** The projection the sliders are sitting on, which is where the sync figures come from. */
+    summary?: RetirementProjectionSummary;
     saving: boolean;
     currencyCode: string;
     onChange: (draft: RetirementProjectionOverrides) => void;
@@ -24,13 +27,50 @@ interface RetirementTweaksProps {
  * Each slider reads its value through the draft to the plan, so a slider nobody has moved follows
  * the plan — including after the settings are edited underneath it.
  */
-export const RetirementTweaks: React.FC<RetirementTweaksProps> = ({ plan, draft, saving, currencyCode, onChange, onReset, onLockIn }) => {
+export const RetirementTweaks: React.FC<RetirementTweaksProps> = ({ plan, draft, summary, saving, currencyCode, onChange, onReset, onLockIn }) => {
 
     const money = (value: number) => formatCurrency(value, currencyCode, 0);
     const dirty = isDirty(draft, plan);
 
     const setPlan = <K extends PlanTweakKey>(key: K, value: number) =>
         onChange(withPlanValue(draft, plan, key, value));
+
+    /**
+     * The target income and how long the savings must last are two ends of one equation, so moving
+     * either solves the other. Without the link the two could quietly contradict each other — a
+     * target the balance cannot sustain to the age on the slider beside it.
+     */
+    const basis: SyncBasis | undefined = summary && summary.balanceAtRetirementInTodaysDollars > 0
+        ? {
+            balance: summary.balanceAtRetirementInTodaysDollars,
+            realReturnRate: summary.realReturnRate,
+            retirementAge: summary.retirementAge,
+        }
+        : undefined;
+
+    const setLifeExpectancy = (age: number) => {
+        let next = withPlanValue(draft, plan, "lifeExpectancy", age);
+
+        if (basis) {
+            next = withPlanValue(next, plan, "targetRetirementIncome", incomeForAge(basis, age));
+        }
+
+        onChange(next);
+    };
+
+    const setTargetIncome = (income: number) => {
+        let next = withPlanValue(draft, plan, "targetRetirementIncome", income);
+
+        // No age to offer when the balance never runs down, or lasts past any age a plan can hold.
+        // The horizon stays where it is rather than being set to a year the money does not run out in.
+        const age = basis ? ageForIncome(basis, income) : null;
+
+        if (age !== null) {
+            next = withPlanValue(next, plan, "lifeExpectancy", age);
+        }
+
+        onChange(next);
+    };
 
     return (
         <Section header="Try It Out">
@@ -141,7 +181,7 @@ export const RetirementTweaks: React.FC<RetirementTweaksProps> = ({ plan, draft,
                         step={1_000}
                         display={money(planValue(draft, plan, "targetRetirementIncome"))}
                         savedDisplay={draft.targetRetirementIncome != null ? money(plan.targetRetirementIncome) : undefined}
-                        onChange={v => setPlan("targetRetirementIncome", v)}
+                        onChange={setTargetIncome}
                     />
                     <TweakSlider
                         label="Savings must last until"
@@ -150,12 +190,13 @@ export const RetirementTweaks: React.FC<RetirementTweaksProps> = ({ plan, draft,
                         max={110}
                         display={`age ${planValue(draft, plan, "lifeExpectancy")}`}
                         savedDisplay={draft.lifeExpectancy != null ? `age ${plan.lifeExpectancy}` : undefined}
-                        onChange={v => setPlan("lifeExpectancy", v)}
+                        onChange={setLifeExpectancy}
                     />
                 </div>
                 <p className="retirement-tweak-note">
                     Expected return applies to anyone on the Custom strategy; the named strategies carry their own.
-                    Target income is what the household draws each year once everyone has retired, in today's dollars.
+                    Target income is what the household draws each year once everyone has retired, in today's dollars —
+                    moving it and the age the savings must last to solves the other, since the two are one equation.
                 </p>
             </div>
 

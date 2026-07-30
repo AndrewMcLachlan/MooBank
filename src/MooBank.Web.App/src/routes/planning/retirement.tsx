@@ -97,6 +97,7 @@ function Retirement() {
                 <RetirementTweaks
                     plan={plan}
                     draft={scoped}
+                    summary={projection?.summary}
                     saving={saving}
                     currencyCode={currencyCode}
                     onChange={setDraft}
@@ -110,7 +111,7 @@ function Retirement() {
             <RetirementAssumptionsNote plan={plan} />
 
             {/* Mounted only while open — see the note on the forecast page. */}
-            {editOpen && <RetirementSettingsModal plan={plan} currencyCode={currencyCode} show={editOpen} onHide={() => setEditOpen(false)} />}
+            {editOpen && <RetirementSettingsModal plan={plan} summary={projection?.summary} currencyCode={currencyCode} show={editOpen} onHide={() => setEditOpen(false)} />}
         </RetirementPage>
     );
 }

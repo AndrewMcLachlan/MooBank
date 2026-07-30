@@ -709,6 +709,7 @@ export type RetirementProjectionSummary = {
     balanceAtRetirementInTodaysDollars: number;
     annualRetirementIncomeInTodaysDollars: number;
     retirementYear: number;
+    retirementAge: number;
     realReturnRate: number;
     totalCosts: number;
     finalBalance: number;

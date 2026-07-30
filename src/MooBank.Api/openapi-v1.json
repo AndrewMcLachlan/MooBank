@@ -9027,6 +9027,7 @@
           "balanceAtRetirementInTodaysDollars",
           "annualRetirementIncomeInTodaysDollars",
           "retirementYear",
+          "retirementAge",
           "realReturnRate",
           "totalCosts",
           "finalBalance",
@@ -9053,6 +9054,10 @@
             "format": "double"
           },
           "retirementYear": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "retirementAge": {
             "type": "integer",
             "format": "int32"
           },
