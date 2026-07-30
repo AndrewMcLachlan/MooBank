@@ -37,7 +37,7 @@ export const ForecastWidget: React.FC = () => {
 
     if (hasError) {
         return (
-            <Widget header={header} size="double" headerSize={2} className="report forecast-widget" to="/planning">
+            <Widget header={header} size="double" headerSize={2} className="report forecast-widget" to="/planning/forecast">
                 <WidgetError />
             </Widget>
         );
@@ -56,7 +56,7 @@ export const ForecastWidget: React.FC = () => {
     const options = forecastChartOptions(currencyCode, colours);
 
     return (
-        <Widget header={header} size="double" headerSize={2} className="report forecast-widget" loading={plansLoading || isFetching} to="/planning">
+        <Widget header={header} size="double" headerSize={2} className="report forecast-widget" loading={plansLoading || isFetching} to="/planning/forecast">
             <div className="forecast-widget-chart">
                 <Line data={data} options={options} />
             </div>

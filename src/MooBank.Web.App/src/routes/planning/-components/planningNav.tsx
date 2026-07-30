@@ -9,6 +9,6 @@ import { PiggyBank, Trendline } from "@andrewmclachlan/moo-icons";
  * the context every time.
  */
 export const planningNavItems: NavItem[] = [
-    { route: "/planning", text: "Forecast", image: <Trendline /> },
+    { route: "/planning/forecast", text: "Forecast", image: <Trendline /> },
     { route: "/planning/retirement", text: "Retirement", image: <PiggyBank /> },
 ];

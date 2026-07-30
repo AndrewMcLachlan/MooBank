@@ -25,6 +25,7 @@ import { Route as FamilyIndexRouteImport } from "./routes/family/index"
 import { Route as GroupsIndexRouteImport } from "./routes/groups/index"
 import { Route as GroupsCreateRouteImport } from "./routes/groups/create"
 import { Route as PlanningIndexRouteImport } from "./routes/planning/index"
+import { Route as PlanningForecastRouteImport } from "./routes/planning/forecast"
 import { Route as PlanningRetirementRouteImport } from "./routes/planning/retirement"
 import { Route as SettingsIndexRouteImport } from "./routes/settings/index"
 import { Route as SharesIdRouteRouteImport } from "./routes/shares/$id/route"
@@ -160,6 +161,11 @@ const GroupsCreateRoute = GroupsCreateRouteImport.update({
 const PlanningIndexRoute = PlanningIndexRouteImport.update({
   id: "/planning/",
   path: "/planning/",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlanningForecastRoute = PlanningForecastRouteImport.update({
+  id: "/planning/forecast",
+  path: "/planning/forecast",
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlanningRetirementRoute = PlanningRetirementRouteImport.update({
@@ -476,6 +482,7 @@ export interface FileRoutesByFullPath {
   "/assets/create": typeof AssetsCreateRoute
   "/bills/$id": typeof BillsIdRoute
   "/groups/create": typeof GroupsCreateRoute
+  "/planning/forecast": typeof PlanningForecastRoute
   "/planning/retirement": typeof PlanningRetirementRoute
   "/shares/create": typeof SharesCreateRoute
   "/tags/visualiser": typeof TagsVisualiserRoute
@@ -546,6 +553,7 @@ export interface FileRoutesByTo {
   "/assets/create": typeof AssetsCreateRoute
   "/bills/$id": typeof BillsIdRoute
   "/groups/create": typeof GroupsCreateRoute
+  "/planning/forecast": typeof PlanningForecastRoute
   "/planning/retirement": typeof PlanningRetirementRoute
   "/shares/create": typeof SharesCreateRoute
   "/tags/visualiser": typeof TagsVisualiserRoute
@@ -617,6 +625,7 @@ export interface FileRoutesById {
   "/assets/create": typeof AssetsCreateRoute
   "/bills/$id": typeof BillsIdRoute
   "/groups/create": typeof GroupsCreateRoute
+  "/planning/forecast": typeof PlanningForecastRoute
   "/planning/retirement": typeof PlanningRetirementRoute
   "/shares/create": typeof SharesCreateRoute
   "/tags/visualiser": typeof TagsVisualiserRoute
@@ -693,6 +702,7 @@ export interface FileRouteTypes {
     | "/assets/create"
     | "/bills/$id"
     | "/groups/create"
+    | "/planning/forecast"
     | "/planning/retirement"
     | "/shares/create"
     | "/tags/visualiser"
@@ -763,6 +773,7 @@ export interface FileRouteTypes {
     | "/assets/create"
     | "/bills/$id"
     | "/groups/create"
+    | "/planning/forecast"
     | "/planning/retirement"
     | "/shares/create"
     | "/tags/visualiser"
@@ -833,6 +844,7 @@ export interface FileRouteTypes {
     | "/assets/create"
     | "/bills/$id"
     | "/groups/create"
+    | "/planning/forecast"
     | "/planning/retirement"
     | "/shares/create"
     | "/tags/visualiser"
@@ -908,6 +920,7 @@ export interface RootRouteChildren {
   AssetsCreateRoute: typeof AssetsCreateRoute
   BillsIdRoute: typeof BillsIdRoute
   GroupsCreateRoute: typeof GroupsCreateRoute
+  PlanningForecastRoute: typeof PlanningForecastRoute
   PlanningRetirementRoute: typeof PlanningRetirementRoute
   SharesCreateRoute: typeof SharesCreateRoute
   TagsVisualiserRoute: typeof TagsVisualiserRoute
@@ -1040,6 +1053,13 @@ declare module "@tanstack/react-router" {
       path: "/planning"
       fullPath: "/planning/"
       preLoaderRoute: typeof PlanningIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/planning/forecast": {
+      id: "/planning/forecast"
+      path: "/planning/forecast"
+      fullPath: "/planning/forecast"
+      preLoaderRoute: typeof PlanningForecastRouteImport
       parentRoute: typeof rootRouteImport
     }
     "/planning/retirement": {
@@ -1628,6 +1648,7 @@ const rootRouteChildren: RootRouteChildren = {
   AssetsCreateRoute: AssetsCreateRoute,
   BillsIdRoute: BillsIdRoute,
   GroupsCreateRoute: GroupsCreateRoute,
+  PlanningForecastRoute: PlanningForecastRoute,
   PlanningRetirementRoute: PlanningRetirementRoute,
   SharesCreateRoute: SharesCreateRoute,
   TagsVisualiserRoute: TagsVisualiserRoute,
