@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace Asm.MooBank.Modules.Retirement.Models;
 
@@ -62,6 +62,18 @@ public sealed record RetirementProjectionYear
     /// years — the nominal one grows with inflation even though its buying power does not.
     /// </summary>
     public decimal DrawdownInTodaysDollars { get; init; }
+
+    /// <summary>
+    /// The Age Pension the household is entitled to this year, given what it holds.
+    /// </summary>
+    public decimal Pension { get; init; }
+
+    /// <summary>
+    /// What the household actually lives on this year: the drawdown plus the pension.
+    /// </summary>
+    public decimal TotalIncome { get; init; }
+
+    public decimal TotalIncomeInTodaysDollars { get; init; }
 
     /// <summary>
     /// Each member's part of the year, so a chart can show whose balance is funding the income.
@@ -195,4 +207,10 @@ public sealed record RetirementProjectionSummary
     /// lasted. This is the headline answer to whether the plan works.
     /// </summary>
     public int? MoneyRunsOutYear { get; init; }
+
+    /// <summary>
+    /// Everything the household draws from the Age Pension across the projection. Nought means it
+    /// never qualified — usually because its balances stayed above the assets test's cut-off.
+    /// </summary>
+    public decimal TotalPension { get; init; }
 }

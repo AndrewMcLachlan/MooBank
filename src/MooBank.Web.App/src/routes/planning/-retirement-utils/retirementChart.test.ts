@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+﻿import { describe, it, expect } from "vitest";
 import type { RetirementProjectionYear } from "api/types.gen";
 import { retirementChartData } from "./retirementChart";
 import { fromPercent, toPercent } from "./retirementDefaults";
@@ -14,6 +14,9 @@ const year = (over: Partial<RetirementProjectionYear>): RetirementProjectionYear
     allRetired: false,
     drawdown: 0,
     drawdownInTodaysDollars: 0,
+    pension: 0,
+    totalIncome: 0,
+    totalIncomeInTodaysDollars: 0,
     members: [],
     ...over,
 });

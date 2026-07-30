@@ -623,3 +623,23 @@ BEGIN
     DROP TABLE dbo.__RetirementPlanMemberAccountMigration;
     DROP TABLE dbo.__RetirementPlanMemberMigration;
 END
+
+GO
+
+/*
+ A starting set of Age Pension rates, so a projection has something to work with before anyone
+ visits the settings screen.
+
+ THESE FIGURES NEED CHECKING. They are approximate rates for a homeowner, and Services Australia
+ reindexes them every March and September, so they will be out of date. They are seeded only so the
+ model runs; the settings screen exists to correct them against the published rates.
+
+ Seeded once and never updated, so a corrected row is not overwritten by a later deployment.
+*/
+IF NOT EXISTS (SELECT 1 FROM dbo.PensionRate)
+BEGIN
+    INSERT INTO dbo.PensionRate
+        (EffectiveFrom, EligibilityAge, MaxAnnualSingle, MaxAnnualCouple, AssetsFreeAreaSingle, AssetsFreeAreaCouple, AssetsTaperRate)
+    VALUES
+        ('2025-09-20', 67, 29900.00, 45080.00, 314000.00, 470000.00, 0.0780);
+END

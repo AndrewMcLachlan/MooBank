@@ -32,7 +32,7 @@ public class RetirementCostsTests
         ]);
 
         // Act
-        var firstYear = _engine.Calculate(plan, Today).Years.ElementAt(1);
+        var firstYear = _engine.CalculateWithoutPension(plan, Today).Years.ElementAt(1);
 
         // Assert
         Assert.Equal(736m, firstYear.Costs);
@@ -54,7 +54,7 @@ public class RetirementCostsTests
         ]);
 
         // Act
-        var projection = _engine.Calculate(plan, Today);
+        var projection = _engine.CalculateWithoutPension(plan, Today);
 
         // Assert
         Assert.All(projection.Years, y => Assert.Equal(0m, y.Costs));
@@ -75,7 +75,7 @@ public class RetirementCostsTests
         ]);
 
         // Act
-        var projection = _engine.Calculate(plan, Today);
+        var projection = _engine.CalculateWithoutPension(plan, Today);
 
         // Assert
         // Five projected years at 500 a year; the starting-position row carries no costs.
@@ -99,7 +99,7 @@ public class RetirementCostsTests
             members: [TestEntities.CreateMember(currentAge: 60, retirementAge: 65, currentIncome: 0m, annualFees: 1_000m, accountBalances: [100_000m])]);
 
         // Act
-        var years = _engine.Calculate(plan, Today).Years.ToList();
+        var years = _engine.CalculateWithoutPension(plan, Today).Years.ToList();
 
         // Assert
         Assert.Equal(1_000m, years[1].Costs);
@@ -128,8 +128,8 @@ public class RetirementCostsTests
         ]);
 
         // Act
-        var withFeesResult = _engine.Calculate(withFees, Today);
-        var withoutFeesResult = _engine.Calculate(withoutFees, Today);
+        var withFeesResult = _engine.CalculateWithoutPension(withFees, Today);
+        var withoutFeesResult = _engine.CalculateWithoutPension(withoutFees, Today);
 
         // Assert
         var difference = withoutFeesResult.Summary.BalanceAtRetirement - withFeesResult.Summary.BalanceAtRetirement;
@@ -154,7 +154,7 @@ public class RetirementCostsTests
         ]);
 
         // Act
-        var projection = _engine.Calculate(plan, Today);
+        var projection = _engine.CalculateWithoutPension(plan, Today);
 
         // Assert
         Assert.All(projection.Years, y => Assert.True(y.ClosingBalance >= 0m, $"balance went negative: {y.ClosingBalance}"));
@@ -178,7 +178,7 @@ public class RetirementCostsTests
         ]);
 
         // Act
-        var years = _engine.Calculate(plan, Today).Years.ToList();
+        var years = _engine.CalculateWithoutPension(plan, Today).Years.ToList();
 
         // Assert
         Assert.Equal(500m, years[1].Costs);

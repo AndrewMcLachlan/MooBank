@@ -1,4 +1,4 @@
-import type { ChartData, ChartOptions } from "chart.js";
+﻿import type { ChartData, ChartOptions } from "chart.js";
 import type { RetirementProjectionYear } from "api/types.gen";
 import { formatCurrency } from "utils/currency";
 
@@ -10,16 +10,25 @@ import { formatCurrency } from "utils/currency";
 const memberColours = [
     "rgb(166, 42, 121)",
     "rgb(232, 132, 187)",
-    "rgb(53, 132, 196)",
     "rgb(122, 178, 92)",
+    "rgb(214, 152, 60)",
 ];
 
-/** Where the drawdown starts, so the chart shows retirement rather than the decades before it. */
+/**
+ * Where the retirement income starts, so the chart shows retirement rather than the decades before
+ * it.
+ *
+ * Keyed on total income, not the drawdown: a household whose pension covers its whole target draws
+ * nothing from super, and the chart would otherwise be empty for it.
+ */
 const drawdownYears = (years: RetirementProjectionYear[]) => {
-    const first = years.findIndex((y) => y.drawdown > 0);
+    const first = years.findIndex((y) => y.totalIncome > 0);
 
     return first < 0 ? [] : years.slice(first);
 };
+
+/** The Age Pension keeps one colour of its own, distinct from the members'. */
+const pensionColour = "rgb(53, 132, 196)";
 
 /**
  * Whether there is a retirement income to chart at all. A plan with no target income draws nothing,
@@ -37,16 +46,28 @@ export const hasRetirementIncome = (years: RetirementProjectionYear[]) => drawdo
 export const retirementIncomeChartData = (years: RetirementProjectionYear[]): ChartData<"bar"> => {
     const drawing = drawdownYears(years);
 
+    // Nothing to plot: return an empty chart rather than a lone empty pension series.
+    if (drawing.length === 0) return { labels: [], datasets: [] };
+
     // Members are consistent across years, so the first year fixes the order and the colours.
-    const members = drawing[0]?.members ?? [];
+    const members = drawing[0].members;
 
     return {
         labels: drawing.map((y) => (y.members[0]?.age ?? y.year).toString()),
-        datasets: members.map((member, index) => ({
-            label: `Income from ${member.name}'s super`,
-            data: drawing.map((y) => y.members.find((m) => m.memberId === member.memberId)?.drawdown ?? 0),
-            backgroundColor: memberColours[index % memberColours.length],
-        })),
+        datasets: [
+            ...members.map((member, index) => ({
+                label: `Income from ${member.name}'s super`,
+                data: drawing.map((y) => y.members.find((m) => m.memberId === member.memberId)?.drawdown ?? 0),
+                backgroundColor: memberColours[index % memberColours.length],
+            })),
+            // Stacked last so it sits under the super income, which is the order these charts are
+            // conventionally read: the pension is the floor the household falls back to.
+            {
+                label: "Age pension",
+                data: drawing.map((y) => y.pension),
+                backgroundColor: pensionColour,
+            },
+        ],
     };
 };
 

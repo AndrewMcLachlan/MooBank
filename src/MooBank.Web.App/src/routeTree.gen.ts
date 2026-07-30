@@ -48,6 +48,7 @@ import { Route as SettingsFamiliesAddRouteImport } from "./routes/settings/famil
 import { Route as SettingsInstitutionsIndexRouteImport } from "./routes/settings/institutions/index"
 import { Route as SettingsInstitutionsIdRouteImport } from "./routes/settings/institutions/$id"
 import { Route as SettingsInstitutionsAddRouteImport } from "./routes/settings/institutions/add"
+import { Route as SettingsPensionIndexRouteImport } from "./routes/settings/pension/index"
 import { Route as SharesIdIndexRouteImport } from "./routes/shares/$id/index"
 import { Route as SharesIdManageRouteImport } from "./routes/shares/$id/manage"
 import { Route as SharesIdReportsRouteRouteImport } from "./routes/shares/$id/reports/route"
@@ -277,6 +278,11 @@ const SettingsInstitutionsAddRoute = SettingsInstitutionsAddRouteImport.update({
   path: "/institutions/add",
   getParentRoute: () => SettingsRouteRoute,
 } as any)
+const SettingsPensionIndexRoute = SettingsPensionIndexRouteImport.update({
+  id: "/pension/",
+  path: "/pension/",
+  getParentRoute: () => SettingsRouteRoute,
+} as any)
 const SharesIdIndexRoute = SharesIdIndexRouteImport.update({
   id: "/",
   path: "/",
@@ -500,6 +506,7 @@ export interface FileRoutesByFullPath {
   "/budget/report/": typeof BudgetReportIndexRoute
   "/settings/families/": typeof SettingsFamiliesIndexRoute
   "/settings/institutions/": typeof SettingsInstitutionsIndexRoute
+  "/settings/pension/": typeof SettingsPensionIndexRoute
   "/shares/$id/": typeof SharesIdIndexRoute
   "/accounts/$id/reports/breakdown": typeof AccountsIdReportsBreakdownRouteRouteWithChildren
   "/accounts/$id/virtual/$virtualId": typeof AccountsIdVirtualVirtualIdRouteRouteWithChildren
@@ -567,6 +574,7 @@ export interface FileRoutesByTo {
   "/budget/report": typeof BudgetReportIndexRoute
   "/settings/families": typeof SettingsFamiliesIndexRoute
   "/settings/institutions": typeof SettingsInstitutionsIndexRoute
+  "/settings/pension": typeof SettingsPensionIndexRoute
   "/shares/$id": typeof SharesIdIndexRoute
   "/accounts/$id/reports/all-tag-average": typeof AccountsIdReportsAllTagAverageRoute
   "/accounts/$id/reports/by-tag": typeof AccountsIdReportsByTagRoute
@@ -639,6 +647,7 @@ export interface FileRoutesById {
   "/budget/report/": typeof BudgetReportIndexRoute
   "/settings/families/": typeof SettingsFamiliesIndexRoute
   "/settings/institutions/": typeof SettingsInstitutionsIndexRoute
+  "/settings/pension/": typeof SettingsPensionIndexRoute
   "/shares/$id/": typeof SharesIdIndexRoute
   "/accounts/$id/reports/breakdown": typeof AccountsIdReportsBreakdownRouteRouteWithChildren
   "/accounts/$id/virtual/$virtualId": typeof AccountsIdVirtualVirtualIdRouteRouteWithChildren
@@ -714,6 +723,7 @@ export interface FileRouteTypes {
     | "/budget/report/"
     | "/settings/families/"
     | "/settings/institutions/"
+    | "/settings/pension/"
     | "/shares/$id/"
     | "/accounts/$id/reports/breakdown"
     | "/accounts/$id/virtual/$virtualId"
@@ -781,6 +791,7 @@ export interface FileRouteTypes {
     | "/budget/report"
     | "/settings/families"
     | "/settings/institutions"
+    | "/settings/pension"
     | "/shares/$id"
     | "/accounts/$id/reports/all-tag-average"
     | "/accounts/$id/reports/by-tag"
@@ -852,6 +863,7 @@ export interface FileRouteTypes {
     | "/budget/report/"
     | "/settings/families/"
     | "/settings/institutions/"
+    | "/settings/pension/"
     | "/shares/$id/"
     | "/accounts/$id/reports/breakdown"
     | "/accounts/$id/virtual/$virtualId"
@@ -1191,6 +1203,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof SettingsInstitutionsAddRouteImport
       parentRoute: typeof SettingsRouteRoute
     }
+    "/settings/pension/": {
+      id: "/settings/pension/"
+      path: "/pension"
+      fullPath: "/settings/pension/"
+      preLoaderRoute: typeof SettingsPensionIndexRouteImport
+      parentRoute: typeof SettingsRouteRoute
+    }
     "/shares/$id/": {
       id: "/shares/$id/"
       path: "/"
@@ -1426,6 +1445,7 @@ interface SettingsRouteRouteChildren {
   SettingsInstitutionsAddRoute: typeof SettingsInstitutionsAddRoute
   SettingsFamiliesIndexRoute: typeof SettingsFamiliesIndexRoute
   SettingsInstitutionsIndexRoute: typeof SettingsInstitutionsIndexRoute
+  SettingsPensionIndexRoute: typeof SettingsPensionIndexRoute
 }
 
 const SettingsRouteRouteChildren: SettingsRouteRouteChildren = {
@@ -1436,6 +1456,7 @@ const SettingsRouteRouteChildren: SettingsRouteRouteChildren = {
   SettingsInstitutionsAddRoute: SettingsInstitutionsAddRoute,
   SettingsFamiliesIndexRoute: SettingsFamiliesIndexRoute,
   SettingsInstitutionsIndexRoute: SettingsInstitutionsIndexRoute,
+  SettingsPensionIndexRoute: SettingsPensionIndexRoute,
 }
 
 const SettingsRouteRouteWithChildren = SettingsRouteRoute._addFileChildren(

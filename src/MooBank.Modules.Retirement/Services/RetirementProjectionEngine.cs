@@ -1,4 +1,4 @@
-using Asm.MooBank.Domain.Entities.Instrument;
+﻿using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Modules.Retirement.Models;
 using DomainEntities = Asm.MooBank.Domain.Entities.Retirement;
 
@@ -29,16 +29,17 @@ namespace Asm.MooBank.Modules.Retirement.Services;
 /// household with someone still earning lives on that income. From then on the plan's target
 /// income is withdrawn each year, indexed to inflation so it holds its real value, and split
 /// across the members in proportion to their balances so they deplete together.</item>
+/// <item>The Age Pension is worked out first and superannuation covers only the rest of the target.
+/// Because the pension is means-tested on what the household holds, it grows as the balances
+/// deplete — so a household that spends its superannuation falls back to the pension rather than to
+/// nothing. See <see cref="AgePension"/> for what is and is not modelled in that test.</item>
 /// <item>A balance cannot go negative. Once the household's balances are exhausted the projection
-/// keeps running to life expectancy, drawing whatever is left — which is how a plan that does not
-/// last shows up.</item>
-/// <item>The Age Pension is not modelled, so a household whose super runs out shows no income at
-/// all rather than falling back to it. Nor are investment earnings tax within the fund, or tax on
-/// withdrawals.</item>
+/// keeps running to life expectancy on the pension alone — and a plan "runs out" when its total
+/// income falls short of the target, not when the superannuation is spent.</item>
+/// <item>Investment earnings tax within the fund, and tax on withdrawals, are not modelled.</item>
 /// </list>
 ///
-/// Because of the last point in particular, projections are indicative arithmetic on the stated
-/// assumptions and not a prediction or advice.
+/// Projections are indicative arithmetic on the stated assumptions, not a prediction, and not advice.
 /// </remarks>
 internal class RetirementProjectionEngine : IRetirementProjectionEngine
 {
@@ -64,7 +65,7 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
     internal static decimal ReturnRateFor(GrowthStrategy strategy, decimal planRate) =>
         StrategyReturns.TryGetValue(strategy, out var rate) ? rate : planRate;
 
-    public RetirementProjection Calculate(DomainEntities.RetirementPlan plan, DateOnly today, ProjectionOverrides? overrides = null)
+    public RetirementProjection Calculate(DomainEntities.RetirementPlan plan, DateOnly today, AgePensionRates pensionRates, ProjectionOverrides? overrides = null)
     {
         ArgumentNullException.ThrowIfNull(plan);
 
@@ -126,8 +127,23 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
             // Split the household's target across the members by balance, worked out before any of
             // them are touched so the shares are consistent with each other.
             var openingTotalThisYear = members.Sum(m => m.Balance);
+
+            var drawdownIndexation = DrawdownIndexation(yearOffset, assumptions.InflationRate);
+
+            // The pension is means-tested on what the household holds, so it is worked out from the
+            // opening balances — and it rises as those balances deplete, which is what lets a plan
+            // keep paying an income after the superannuation is spent.
+            var pension = isDrawingDown
+                ? Round(AgePension.ForYear(
+                    AgePension.Indexed(pensionRates, drawdownIndexation),
+                    [.. members.Select(m => m.AgeAt(yearOffset))],
+                    openingTotalThisYear))
+                : 0m;
+
+            // Superannuation covers whatever the pension does not. Drawing the full target on top of
+            // the pension would spend the balance faster than the household actually needs to.
             var targetThisYear = isDrawingDown
-                ? assumptions.TargetRetirementIncome * DrawdownIndexation(yearOffset, assumptions.InflationRate)
+                ? Math.Max(0m, (assumptions.TargetRetirementIncome * drawdownIndexation) - pension)
                 : 0m;
 
             var memberYears = new List<RetirementMemberYear>(members.Count);
@@ -183,9 +199,12 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
                 InvestmentReturn = investmentReturn,
                 Costs = costs,
                 Drawdown = drawdown,
+                Pension = pension,
+                TotalIncome = drawdown + pension,
                 ClosingBalance = closing,
                 ClosingBalanceInTodaysDollars = Round(closing * todaysDollarsFactor),
                 DrawdownInTodaysDollars = Round(drawdown * todaysDollarsFactor),
+                TotalIncomeInTodaysDollars = Round((drawdown + pension) * todaysDollarsFactor),
                 AllRetired = allRetired,
                 Members = memberYears,
             });
@@ -216,18 +235,23 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
                 FinalBalanceInTodaysDollars = finalYear.ClosingBalanceInTodaysDollars,
                 LifeExpectancyYear = startYear + horizon,
                 MoneyRunsOutYear = MoneyRunsOutYear(years, assumptions, startYear, yearsToAllRetired),
+                TotalPension = years.Sum(y => y.Pension),
             },
         };
     }
 
     /// <summary>
-    /// The first year the household could not draw the income it was targeting, or null if the money
-    /// lasted to life expectancy.
+    /// The first year the household could not reach the income it was targeting, or null if it never
+    /// fell short.
     /// </summary>
     /// <remarks>
     /// Answers "does this plan hold up" from what the projection actually paid out rather than from
     /// the closing balance: a year that pays a partial income is already the year it ran short, even
     /// though a little may be left in the fund.
+    ///
+    /// Measured against total income, pension included. Once the pension is modelled, an exhausted
+    /// balance is no longer the end of the household's income — a modest target can be met by the
+    /// pension alone, and calling that "run out" because the superannuation is spent would be wrong.
     ///
     /// A plan targeting no income cannot run short, so it never reports a year.
     /// </remarks>
@@ -240,7 +264,7 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
             var wanted = assumptions.TargetRetirementIncome * DrawdownIndexation(yearOffset, assumptions.InflationRate);
 
             // A cent of rounding either way is not a shortfall.
-            if (years[yearOffset].Drawdown < wanted - 0.01m)
+            if (years[yearOffset].TotalIncome < wanted - 0.01m)
             {
                 return startYear + yearOffset;
             }

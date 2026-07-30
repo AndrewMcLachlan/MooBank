@@ -34,7 +34,7 @@ public class RetirementDrawdownTests
             members: [TestEntities.CreateMember(currentAge: 60, retirementAge: 65, accountBalances: [500_000m])]);
 
         // Act
-        var years = _engine.Calculate(plan, Today).Years.ToList();
+        var years = _engine.CalculateWithoutPension(plan, Today).Years.ToList();
 
         // Assert
         Assert.Equal(0m, years[5].Drawdown);
@@ -61,7 +61,7 @@ public class RetirementDrawdownTests
             members: [TestEntities.CreateMember(currentAge: 64, retirementAge: 65, currentIncome: 0m, accountBalances: [800_000m])]);
 
         // Act
-        var years = _engine.Calculate(plan, Today).Years.ToList();
+        var years = _engine.CalculateWithoutPension(plan, Today).Years.ToList();
 
         // Assert
         var atRetirement = years[1].ClosingBalance;
@@ -85,7 +85,7 @@ public class RetirementDrawdownTests
             members: [TestEntities.CreateMember(currentAge: 65, retirementAge: 65, currentIncome: 0m, accountBalances: [100_000m])]);
 
         // Act
-        var projection = _engine.Calculate(plan, Today);
+        var projection = _engine.CalculateWithoutPension(plan, Today);
         var years = projection.Years.ToList();
 
         // Assert
@@ -111,7 +111,7 @@ public class RetirementDrawdownTests
             members: [TestEntities.CreateMember(currentAge: 65, retirementAge: 65, currentIncome: 0m, accountBalances: [2_000_000m])]);
 
         // Act
-        var summary = _engine.Calculate(plan, Today).Summary;
+        var summary = _engine.CalculateWithoutPension(plan, Today).Summary;
 
         // Assert
         Assert.Null(summary.MoneyRunsOutYear);
@@ -136,7 +136,7 @@ public class RetirementDrawdownTests
             members: [TestEntities.CreateMember(currentAge: 64, retirementAge: 65, accountBalances: [1_000m])]);
 
         // Act
-        var projection = _engine.Calculate(plan, Today);
+        var projection = _engine.CalculateWithoutPension(plan, Today);
 
         // Assert
         Assert.Null(projection.Summary.MoneyRunsOutYear);
@@ -162,7 +162,7 @@ public class RetirementDrawdownTests
             ]);
 
         // Act
-        var firstDrawdownYear = _engine.Calculate(plan, Today).Years.ElementAt(1);
+        var firstDrawdownYear = _engine.CalculateWithoutPension(plan, Today).Years.ElementAt(1);
 
         // Assert
         Assert.Equal(40_000m, firstDrawdownYear.Drawdown);
@@ -187,7 +187,7 @@ public class RetirementDrawdownTests
             ]);
 
         // Act
-        var years = _engine.Calculate(plan, Today).Years.ToList();
+        var years = _engine.CalculateWithoutPension(plan, Today).Years.ToList();
 
         // Assert
         // Ten years until the younger one retires, then drawing starts the year after.
@@ -212,7 +212,7 @@ public class RetirementDrawdownTests
             members: [TestEntities.CreateMember(currentAge: 60, retirementAge: 65, currentIncome: 0m, growthStrategy: GrowthStrategy.Custom, accountBalances: [100_000m])]);
 
         // Act
-        var years = _engine.Calculate(plan, Today).Years.ToList();
+        var years = _engine.CalculateWithoutPension(plan, Today).Years.ToList();
 
         // Assert
         // Years 1 and 2 are still invested; from year 3 they are two years out and in cash.
@@ -243,8 +243,8 @@ public class RetirementDrawdownTests
                 members: [TestEntities.CreateMember(currentAge: 50, retirementAge: 65, accountBalances: [200_000m])]);
 
         // Act
-        var withGlide = _engine.Calculate(Plan(5), Today).Summary.BalanceAtRetirement;
-        var withoutGlide = _engine.Calculate(Plan(0), Today).Summary.BalanceAtRetirement;
+        var withGlide = _engine.CalculateWithoutPension(Plan(5), Today).Summary.BalanceAtRetirement;
+        var withoutGlide = _engine.CalculateWithoutPension(Plan(0), Today).Summary.BalanceAtRetirement;
 
         // Assert
         Assert.True(withGlide < withoutGlide, $"expected the glide to cost growth, but it left {withGlide} against {withoutGlide}");

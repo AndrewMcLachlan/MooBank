@@ -26,6 +26,7 @@ public class Module : IModule
         services.AddValidatorsFromAssembly(Assembly);
         services.AddScoped<IRetirementProjectionEngine, RetirementProjectionEngine>();
         services.AddScoped<IMemberGuard, MemberGuard>();
+        services.AddScoped<IPensionRateReader, PensionRateReader>();
 
         return services;
     }

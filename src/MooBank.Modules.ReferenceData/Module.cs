@@ -2,6 +2,7 @@
 using Asm.AspNetCore.Modules;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Asm.MooBank.Modules.ReferenceData;
@@ -20,6 +21,8 @@ public class Module : IModule
     public IServiceCollection AddServices(IServiceCollection services)
     {
         services.AddQueryHandlers(Assembly);
+        services.AddCommandHandlers(Assembly);
+        services.AddValidatorsFromAssembly(Assembly);
 
         return services;
     }

@@ -32,7 +32,7 @@ public class RetirementProjectionEngineTests
         ]);
 
         // Act
-        var projection = _engine.Calculate(plan, Today);
+        var projection = _engine.CalculateWithoutPension(plan, Today);
 
         // Assert
         // Age 60 to the plan's life expectancy of 90, plus the starting year.
@@ -61,7 +61,7 @@ public class RetirementProjectionEngineTests
         ]);
 
         // Act
-        var firstProjectedYear = _engine.Calculate(plan, Today).Years.ElementAt(1);
+        var firstProjectedYear = _engine.CalculateWithoutPension(plan, Today).Years.ElementAt(1);
 
         // Assert
         Assert.Equal(100_000m, firstProjectedYear.OpeningBalance);
@@ -89,7 +89,7 @@ public class RetirementProjectionEngineTests
         ]);
 
         // Act
-        var year = _engine.Calculate(plan, Today).Years.ElementAt(yearOffset);
+        var year = _engine.CalculateWithoutPension(plan, Today).Years.ElementAt(yearOffset);
 
         // Assert
         Assert.Equal(expectedOpening, year.OpeningBalance);
@@ -110,7 +110,7 @@ public class RetirementProjectionEngineTests
         ]);
 
         // Act
-        var projection = _engine.Calculate(plan, Today);
+        var projection = _engine.CalculateWithoutPension(plan, Today);
 
         // Assert
         Assert.Equal(100_000m, projection.Summary.CurrentBalance);
@@ -132,7 +132,7 @@ public class RetirementProjectionEngineTests
             members: [TestEntities.CreateMember(retirementAge: 65, currentIncome: 100_000m, accountBalances: [0m])]);
 
         // Act
-        var years = _engine.Calculate(plan, Today).Years.ToList();
+        var years = _engine.CalculateWithoutPension(plan, Today).Years.ToList();
 
         // Assert
         // 100,000 * 10% * (1 - 15%)
@@ -157,7 +157,7 @@ public class RetirementProjectionEngineTests
         // Act
         // The retirement year, five years out — not the last year of the projection, which now runs
         // on to life expectancy.
-        var retirementYear = _engine.Calculate(plan, Today).Years.ElementAt(5);
+        var retirementYear = _engine.CalculateWithoutPension(plan, Today).Years.ElementAt(5);
 
         // Assert
         Assert.True(retirementYear.ClosingBalanceInTodaysDollars < retirementYear.ClosingBalance);
@@ -180,7 +180,7 @@ public class RetirementProjectionEngineTests
         ]);
 
         // Act
-        var finalYear = _engine.Calculate(plan, Today).Years.Last();
+        var finalYear = _engine.CalculateWithoutPension(plan, Today).Years.Last();
 
         // Assert
         Assert.Equal(finalYear.ClosingBalance, finalYear.ClosingBalanceInTodaysDollars);
@@ -200,7 +200,7 @@ public class RetirementProjectionEngineTests
         ]);
 
         // Act
-        var projection = _engine.Calculate(plan, Today);
+        var projection = _engine.CalculateWithoutPension(plan, Today);
         var member = projection.Members.Single();
 
         // Assert
@@ -228,7 +228,7 @@ public class RetirementProjectionEngineTests
         var plan = TestEntities.CreatePlan(members: [earlier, later]);
 
         // Act
-        var projection = _engine.Calculate(plan, Today);
+        var projection = _engine.CalculateWithoutPension(plan, Today);
 
         // Assert
         Assert.Equal(2033, projection.Summary.RetirementYear);
@@ -258,7 +258,7 @@ public class RetirementProjectionEngineTests
         ]);
 
         // Act
-        var years = _engine.Calculate(plan, Today).Years.ToList();
+        var years = _engine.CalculateWithoutPension(plan, Today).Years.ToList();
 
         // Assert
         // Both contribute in the first year, only the later member from the second onwards.
@@ -281,7 +281,7 @@ public class RetirementProjectionEngineTests
         ]);
 
         // Act
-        var years = _engine.Calculate(plan, Today).Years.ToList();
+        var years = _engine.CalculateWithoutPension(plan, Today).Years.ToList();
 
         // Assert
         // The retired member's 110,000 earns 11,000 in the second year.
@@ -300,7 +300,7 @@ public class RetirementProjectionEngineTests
         var plan = TestEntities.CreatePlan();
 
         // Act
-        var projection = _engine.Calculate(plan, Today);
+        var projection = _engine.CalculateWithoutPension(plan, Today);
 
         // Assert
         Assert.Empty(projection.Years);
@@ -323,7 +323,7 @@ public class RetirementProjectionEngineTests
         ]);
 
         // Act
-        var member = _engine.Calculate(plan, Today).Members.Single();
+        var member = _engine.CalculateWithoutPension(plan, Today).Members.Single();
 
         // Assert
         Assert.Equal(59, member.CurrentAge);
@@ -411,7 +411,7 @@ public class RetirementProjectionEngineTests
             members: [TestEntities.CreateMember(retirementAge: 65, accountBalances: [100_000m])]);
 
         // Act
-        var projection = _engine.Calculate(plan, Today);
+        var projection = _engine.CalculateWithoutPension(plan, Today);
         var member = projection.Members.Single();
 
         // Assert
@@ -433,7 +433,7 @@ public class RetirementProjectionEngineTests
             members: [TestEntities.CreateMember(retirementAge: 65, accountBalances: [100_000m])]);
 
         // Act
-        var member = _engine.Calculate(plan, Today).Members.Single();
+        var member = _engine.CalculateWithoutPension(plan, Today).Members.Single();
 
         // Assert
         Assert.Equal(0m, member.AnnualRetirementIncomeInTodaysDollars);
@@ -454,7 +454,7 @@ public class RetirementProjectionEngineTests
         ]);
 
         // Act
-        var projection = _engine.Calculate(plan, Today);
+        var projection = _engine.CalculateWithoutPension(plan, Today);
 
         // Assert
         Assert.Equal(
@@ -481,7 +481,7 @@ public class RetirementProjectionEngineTests
             ]);
 
         // Act
-        var years = _engine.Calculate(plan, Today).Years.ToList();
+        var years = _engine.CalculateWithoutPension(plan, Today).Years.ToList();
 
         // Assert
         Assert.All(years, year =>
@@ -502,7 +502,7 @@ public class RetirementProjectionEngineTests
         ]);
 
         // Act
-        var years = _engine.Calculate(plan, Today).Years.ToList();
+        var years = _engine.CalculateWithoutPension(plan, Today).Years.ToList();
 
         // Assert
         for (var i = 1; i < years.Count; i++)

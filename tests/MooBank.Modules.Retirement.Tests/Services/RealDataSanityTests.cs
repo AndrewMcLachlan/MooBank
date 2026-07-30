@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Retirement.Services;
 using Asm.MooBank.Modules.Retirement.Tests.Support;
@@ -48,7 +48,7 @@ public class RealDataSanityTests
     public void Calculate_TheRealPlan_HoldsUp()
     {
         // Act
-        var projection = _engine.Calculate(Plan(90_000m), Today);
+        var projection = _engine.CalculateWithoutPension(Plan(90_000m), Today);
         var years = projection.Years.ToList();
         var summary = projection.Summary;
 
@@ -86,9 +86,9 @@ public class RealDataSanityTests
     public void Calculate_ARaisedTarget_RunsOutSooner()
     {
         // Act
-        var modest = _engine.Calculate(Plan(60_000m), Today).Summary;
-        var comfortable = _engine.Calculate(Plan(150_000m), Today).Summary;
-        var extravagant = _engine.Calculate(Plan(400_000m), Today).Summary;
+        var modest = _engine.CalculateWithoutPension(Plan(60_000m), Today).Summary;
+        var comfortable = _engine.CalculateWithoutPension(Plan(150_000m), Today).Summary;
+        var extravagant = _engine.CalculateWithoutPension(Plan(400_000m), Today).Summary;
 
         // Assert
         Assert.Null(modest.MoneyRunsOutYear);
@@ -101,6 +101,41 @@ public class RealDataSanityTests
     }
 
     /// <summary>
+    /// Given the real plan with the seeded pension rates
+    /// When the projection is run
+    /// Then the pension should start at nothing and appear only as the balances deplete
+    /// </summary>
+    /// <remarks>
+    /// The shape a superannuation calculator shows, checked on real figures: the household is far
+    /// above the assets cut-off at retirement, so it qualifies for nothing at first, and the pension
+    /// only appears once enough has been spent to bring it under the threshold.
+    /// </remarks>
+    [Fact]
+    public void Calculate_TheRealPlanWithAPension_QualifiesOnlyAsTheBalanceFalls()
+    {
+        // Arrange: rates approximating the seeded homeowner figures.
+        var rates = new AgePensionRates(67, 29_900m, 45_080m, 314_000m, 470_000m, 0.078m);
+
+        // Act
+        var projection = _engine.Calculate(Plan(150_000m), Today, rates);
+        var drawing = projection.Years.Where(y => y.TotalIncome > 0m).ToList();
+
+        // Assert
+        Assert.NotEmpty(drawing);
+        Assert.Equal(0m, drawing[0].Pension);
+
+        // The pension never falls back once it starts, because the balance only goes down.
+        for (var i = 1; i < drawing.Count; i++)
+        {
+            Assert.True(drawing[i].Pension >= drawing[i - 1].Pension,
+                $"pension fell from {drawing[i - 1].Pension} to {drawing[i].Pension} in {drawing[i].Year}");
+        }
+
+        // And by the end it is carrying part of the income.
+        Assert.True(projection.Summary.TotalPension > 0m);
+    }
+
+    /// <summary>
     /// Given the real plan
     /// When the projection is run
     /// Then both people should fund the income, the larger balance carrying more of it
@@ -109,7 +144,7 @@ public class RealDataSanityTests
     public void Calculate_TheRealPlan_SplitsTheIncomeBetweenBothPeople()
     {
         // Act
-        var firstDrawYear = _engine.Calculate(Plan(90_000m), Today).Years.ElementAt(21);
+        var firstDrawYear = _engine.CalculateWithoutPension(Plan(90_000m), Today).Years.ElementAt(21);
 
         // Assert
         var andy = firstDrawYear.Members.Single(m => m.Name == "Andy");

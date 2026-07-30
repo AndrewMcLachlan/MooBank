@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using Asm.MooBank.Domain.Entities.Retirement.Specifications;
 using Asm.MooBank.Modules.Retirement.Models;
 using Asm.MooBank.Modules.Retirement.Services;
@@ -13,6 +13,7 @@ public record RunProjection(Guid PlanId, [FromBody] ProjectionOverrides? Overrid
 internal class RunProjectionHandler(
     IQueryable<DomainEntities.RetirementPlan> plans,
     IRetirementProjectionEngine projectionEngine,
+    IPensionRateReader pensionRateReader,
     MooBank.Models.User user) : ICommandHandler<RunProjection, RetirementProjection>
 {
     public async ValueTask<RetirementProjection> Handle(RunProjection command, CancellationToken cancellationToken)
@@ -22,6 +23,9 @@ internal class RunProjectionHandler(
             .SingleOrDefaultAsync(p => p.Id == command.PlanId && p.FamilyId == user.FamilyId, cancellationToken) ??
             throw new NotFoundException("Retirement plan not found");
 
-        return projectionEngine.Calculate(plan, DateOnly.FromDateTime(DateTime.UtcNow), command.Overrides);
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var pensionRates = await pensionRateReader.Current(today, cancellationToken);
+
+        return projectionEngine.Calculate(plan, today, pensionRates, command.Overrides);
     }
 }

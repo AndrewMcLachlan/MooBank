@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+﻿import { describe, it, expect } from "vitest";
 import type { RetirementMemberYear, RetirementProjectionYear } from "api/types.gen";
 import { hasRetirementIncome, retirementIncomeChartData } from "./retirementIncomeChart";
 
@@ -28,6 +28,9 @@ const year = (over: Partial<RetirementProjectionYear>): RetirementProjectionYear
     allRetired: false,
     drawdown: 0,
     drawdownInTodaysDollars: 0,
+    pension: 0,
+    totalIncome: 0,
+    totalIncomeInTodaysDollars: 0,
     members: [],
     ...over,
 });
@@ -39,6 +42,7 @@ const projection = (): RetirementProjectionYear[] => [
     year({
         year: 2028,
         drawdown: 40_000,
+        totalIncome: 40_000,
         members: [
             member({ age: 65, drawdown: 30_000 }),
             member({ memberId: spouseId, name: "Spouse", age: 63, drawdown: 10_000 }),
@@ -47,6 +51,7 @@ const projection = (): RetirementProjectionYear[] => [
     year({
         year: 2029,
         drawdown: 40_000,
+        totalIncome: 40_000,
         members: [
             member({ age: 66, drawdown: 32_000 }),
             member({ memberId: spouseId, name: "Spouse", age: 64, drawdown: 8_000 }),
@@ -72,12 +77,44 @@ describe("retirementIncomeChartData", () => {
         expect(data.labels).toEqual(["65", "66"]);
     });
 
-    it("gives each member their own stacked series", () => {
+    it("gives each member their own stacked series, with the pension last", () => {
         const data = retirementIncomeChartData(projection());
 
-        expect(data.datasets.map(d => d.label)).toEqual(["Income from Self's super", "Income from Spouse's super"]);
+        expect(data.datasets.map(d => d.label)).toEqual(["Income from Self's super", "Income from Spouse's super", "Age pension"]);
         expect(data.datasets[0].data).toEqual([30_000, 32_000]);
         expect(data.datasets[1].data).toEqual([10_000, 8_000]);
+    });
+
+    it("plots the pension as its own series", () => {
+        const years = projection();
+        years[2] = year({ year: 2028, drawdown: 30_000, pension: 10_000, totalIncome: 40_000, members: [member({ age: 65, drawdown: 30_000 })] });
+
+        const data = retirementIncomeChartData(years);
+        const pension = data.datasets.find(d => d.label === "Age pension");
+
+        expect(pension?.data[0]).toBe(10_000);
+    });
+
+    /**
+     * A household whose pension covers its whole target draws nothing from super. Keyed on the
+     * drawdown, the chart would show it nothing at all.
+     */
+    it("charts a year funded entirely by the pension", () => {
+        const years = [
+            year({ year: 2026, members: [member({ age: 66 })] }),
+            year({ year: 2027, pension: 45_000, totalIncome: 45_000, members: [member({ age: 67 })] }),
+        ];
+
+        expect(hasRetirementIncome(years)).toBe(true);
+        expect(retirementIncomeChartData(years).labels).toEqual(["67"]);
+    });
+
+    it("gives the pension a colour of its own", () => {
+        const data = retirementIncomeChartData(projection());
+        const memberColours = data.datasets.filter(d => d.label !== "Age pension").map(d => d.backgroundColor);
+        const pensionColour = data.datasets.find(d => d.label === "Age pension")?.backgroundColor;
+
+        expect(memberColours).not.toContain(pensionColour);
     });
 
     it("gives the members different colours", () => {
@@ -95,6 +132,7 @@ describe("retirementIncomeChartData", () => {
         years[3] = year({
             year: 2029,
             drawdown: 8_000,
+            totalIncome: 8_000,
             members: [member({ memberId: spouseId, name: "Spouse", age: 64, drawdown: 8_000 })],
         });
 

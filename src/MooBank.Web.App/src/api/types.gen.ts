@@ -524,6 +524,17 @@ export type OutgoingStrategy = {
     incomeCorrelated?: null | IncomeCorrelatedSettings;
 };
 
+export type PensionRates = {
+    id: number;
+    effectiveFrom: string;
+    eligibilityAge: number;
+    maxAnnualSingle: number;
+    maxAnnualCouple: number;
+    assetsFreeAreaSingle: number;
+    assetsFreeAreaCouple: number;
+    assetsTaperRate: number;
+};
+
 export type Period = {
     periodStart: string;
     periodEnd: string;
@@ -704,6 +715,7 @@ export type RetirementProjectionSummary = {
     finalBalanceInTodaysDollars: number;
     lifeExpectancyYear: number;
     moneyRunsOutYear?: null | number;
+    totalPension: number;
 };
 
 export type RetirementProjectionYear = {
@@ -717,6 +729,9 @@ export type RetirementProjectionYear = {
     allRetired: boolean;
     drawdown: number;
     drawdownInTodaysDollars: number;
+    pension: number;
+    totalIncome: number;
+    totalIncomeInTodaysDollars: number;
     members: Array<RetirementMemberYear>;
 };
 
@@ -725,6 +740,10 @@ export type Rule = {
     contains: string;
     description?: null | string;
     tags: Array<Tag>;
+};
+
+export type SavePensionRates = {
+    rates: PensionRates;
 };
 
 export type SavingsInterestReport = {
@@ -3074,6 +3093,45 @@ export type ImporterTypesResponses = {
 };
 
 export type ImporterTypesResponse = ImporterTypesResponses[keyof ImporterTypesResponses];
+
+export type PensionRatesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/reference-data/pension-rates';
+};
+
+export type PensionRatesErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
+export type PensionRatesResponses = {
+    /**
+     * OK
+     */
+    200: Array<PensionRates>;
+};
+
+export type PensionRatesResponse = PensionRatesResponses[keyof PensionRatesResponses];
+
+export type SavePensionRatesData = {
+    body: SavePensionRates;
+    path?: never;
+    query?: never;
+    url: '/reference-data/pension-rates';
+};
+
+export type SavePensionRatesResponses = {
+    /**
+     * OK
+     */
+    200: PensionRates;
+};
+
+export type SavePensionRatesResponse = SavePensionRatesResponses[keyof SavePensionRatesResponses];
 
 export type InOutReportData = {
     body?: never;

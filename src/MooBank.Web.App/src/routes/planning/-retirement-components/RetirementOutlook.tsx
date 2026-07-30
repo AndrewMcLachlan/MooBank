@@ -59,6 +59,13 @@ export const RetirementOutlook: React.FC<RetirementOutlookProps> = ({ projection
                         <div className="metric-sub">at {summary.lifeExpectancyYear}, in today's dollars</div>
                     </Section>
                 )}
+                {summary.totalPension > 0 && (
+                    <Section className="metric">
+                        <div className="eyebrow">Age Pension</div>
+                        <div className="metric-value"><Amount amount={summary.totalPension} currencyCode={currencyCode} decimalPlaces={0} /></div>
+                        <div className="metric-sub">over the whole retirement</div>
+                    </Section>
+                )}
                 {summary.totalCosts > 0 && (
                     <Section className="metric">
                         <div className="eyebrow">Fees &amp; Insurance</div>

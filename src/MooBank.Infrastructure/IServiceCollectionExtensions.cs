@@ -90,7 +90,10 @@ public static class IServiceCollectionExtensions
                 // retirement member guard reads it to confirm an account belongs to the person it
                 // is being recorded against, which navigating from Instrument cannot answer
                 // without loading the aggregate.
-                .AddQueryable<Asm.MooBank.Domain.Entities.Instrument.InstrumentOwner, MooBankContext>();
+                .AddQueryable<Asm.MooBank.Domain.Entities.Instrument.InstrumentOwner, MooBankContext>()
+                // Age Pension rates are national reference data, read by the retirement projection
+                // and edited in settings. Not an aggregate root — nothing owns them.
+                .AddQueryable<Asm.MooBank.Domain.Entities.ReferenceData.PensionRate, MooBankContext>();
 
     public static IServiceCollection AddImporterFactory(this IServiceCollection services) =>
         services.AddTransient<IImporterFactory, ImporterFactory>();

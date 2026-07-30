@@ -3380,6 +3380,60 @@
         }
       }
     },
+    "/reference-data/pension-rates": {
+      "get": {
+        "tags": [
+          "Reference Data"
+        ],
+        "operationId": "pension-rates",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PensionRates"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Reference Data"
+        ],
+        "operationId": "save-pension-rates",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SavePensionRates"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PensionRates"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/accounts/{accountId}/reports/in-out/{start}/{end}": {
       "get": {
         "tags": [
@@ -8127,6 +8181,53 @@
           }
         }
       },
+      "PensionRates": {
+        "required": [
+          "effectiveFrom",
+          "eligibilityAge",
+          "maxAnnualSingle",
+          "maxAnnualCouple",
+          "assetsFreeAreaSingle",
+          "assetsFreeAreaCouple",
+          "assetsTaperRate",
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "effectiveFrom": {
+            "type": "string",
+            "format": "date"
+          },
+          "eligibilityAge": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maxAnnualSingle": {
+            "type": "number",
+            "format": "double"
+          },
+          "maxAnnualCouple": {
+            "type": "number",
+            "format": "double"
+          },
+          "assetsFreeAreaSingle": {
+            "type": "number",
+            "format": "double"
+          },
+          "assetsFreeAreaCouple": {
+            "type": "number",
+            "format": "double"
+          },
+          "assetsTaperRate": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
       "Period": {
         "required": [
           "periodStart",
@@ -8930,7 +9031,8 @@
           "totalCosts",
           "finalBalance",
           "finalBalanceInTodaysDollars",
-          "lifeExpectancyYear"
+          "lifeExpectancyYear",
+          "totalPension"
         ],
         "type": "object",
         "properties": {
@@ -8980,6 +9082,10 @@
               "integer"
             ],
             "format": "int32"
+          },
+          "totalPension": {
+            "type": "number",
+            "format": "double"
           }
         }
       },
@@ -8995,6 +9101,9 @@
           "allRetired",
           "drawdown",
           "drawdownInTodaysDollars",
+          "pension",
+          "totalIncome",
+          "totalIncomeInTodaysDollars",
           "members"
         ],
         "type": "object",
@@ -9038,6 +9147,18 @@
             "type": "number",
             "format": "double"
           },
+          "pension": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalIncome": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalIncomeInTodaysDollars": {
+            "type": "number",
+            "format": "double"
+          },
           "members": {
             "type": "array",
             "items": {
@@ -9072,6 +9193,17 @@
             "items": {
               "$ref": "#/components/schemas/Tag"
             }
+          }
+        }
+      },
+      "SavePensionRates": {
+        "required": [
+          "rates"
+        ],
+        "type": "object",
+        "properties": {
+          "rates": {
+            "$ref": "#/components/schemas/PensionRates"
           }
         }
       },
