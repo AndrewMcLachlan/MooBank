@@ -1,7 +1,7 @@
 ﻿import { createFileRoute } from "@tanstack/react-router";
 import { IconButton, SpinnerContainer } from "@andrewmclachlan/moo-ds";
 import { Sliders } from "@andrewmclachlan/moo-icons";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRetirementPlans } from "./-retirement-hooks/useRetirementPlans";
 import { useRetirementPlan } from "./-retirement-hooks/useRetirementPlan";
 import { useRetirementProjection } from "./-retirement-hooks/useRetirementProjection";
@@ -17,7 +17,8 @@ import { RetirementAssumptionsNote } from "./-retirement-components/RetirementAs
 import { RetirementSettingsModal } from "./-retirement-components/RetirementSettingsModal";
 import { RetirementTweaks } from "./-retirement-components/RetirementTweaks";
 import { CreateRetirementPlan } from "./-retirement-components/CreateRetirementPlan";
-import { applyDraftToPlan, emptyDraft, pruneDraft } from "./-retirement-utils/tweaks";
+import { applyDraftToPlan, emptyDraft, planValue, pruneDraft, withPlanValue } from "./-retirement-utils/tweaks";
+import { incomeForAge } from "./-retirement-utils/retirementSync";
 import type { RetirementProjectionOverrides } from "api/types.gen";
 
 export const Route = createFileRoute("/planning/retirement")({
@@ -52,6 +53,46 @@ function Retirement() {
     const { data: projection, isFetching: projectionLoading } = useRetirementProjection(planId, settledDraft);
 
     const currencyCode = user?.currency ?? "AUD";
+
+    /**
+     * Leaving someone out changes the household, and with it the balance the target income was
+     * solved against — a target a couple could sustain will outlive one person's savings. The income
+     * is re-solved for the age already chosen, which is the same rule the two sliders follow when
+     * either is moved: the horizon is what the household holds to, and the income follows from it.
+     *
+     * Waits for the projection to settle, because only then does the summary describe the household
+     * as it now stands. It cannot chase its own tail: a balance at retirement is fixed before any
+     * drawdown begins, so it does not move when the target income does.
+     */
+    const solvedFor = useRef<string | null>(null);
+
+    useEffect(() => {
+        if (!plan || !projection || projectionLoading) return;
+
+        const key = [...(scoped.excludedMemberIds ?? [])].sort().join(",");
+
+        // The first settled projection establishes the baseline rather than re-solving against it.
+        if (solvedFor.current === null || solvedFor.current === key) {
+            solvedFor.current = key;
+            return;
+        }
+
+        solvedFor.current = key;
+
+        const summary = projection.summary;
+        if (summary.balanceAtRetirementInTodaysDollars <= 0) return;
+
+        const income = incomeForAge(
+            {
+                balance: summary.balanceAtRetirementInTodaysDollars,
+                realReturnRate: summary.drawdownRealReturnRate,
+                retirementAge: summary.retirementAge,
+            },
+            planValue(scoped, plan, "lifeExpectancy"),
+        );
+
+        setDraft(current => withPlanValue(current, plan, "targetRetirementIncome", income));
+    }, [plan, projection, projectionLoading, scoped]);
 
     // Page pushes actions into the layout by reference, so a fresh array on every render sets the
     // context every render, which re-renders and builds another array. Memoised, and declared
