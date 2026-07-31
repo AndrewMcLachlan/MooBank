@@ -156,7 +156,18 @@ export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = (
 
     if (!plan) return null;
 
+    /**
+     * A person nobody has been chosen for cannot be saved.
+     *
+     * Held back here rather than sent and refused: an unchosen person carries no readable id, so the
+     * request would be rejected before any rule could explain why, and the caller would see a bare
+     * failure instead of being told which row is unfinished.
+     */
+    const unchosen = (members ?? []).some(m => !m.userId);
+
     const handleSave = async (data: RetirementSettingsFormValues) => {
+        if (data.members.some(m => !m.userId)) return;
+
         await updateAsync(plan.id, toRequest(data));
         onHide();
     };
@@ -288,6 +299,9 @@ export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = (
                                 </div>
                             </div>
                         ))}
+                        {unchosen && (
+                            <p className="retirement-empty">Choose a person for everyone on the plan before saving.</p>
+                        )}
                         <Button
                             variant="outline-primary"
                             onClick={() => append({ userId: "", currentAge: defaultCurrentAge, currentIncome: 0, salarySacrifice: 0, retirementAge: defaultRetirementAge, growthStrategy: "Balanced", annualFees: 0, insurancePremium: 0, instrumentIds: [] })}
@@ -298,7 +312,7 @@ export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = (
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="outline-primary" onClick={handleHide}>Close</Button>
-                    <Button type="submit" variant="primary" disabled={isPending}>Save</Button>
+                    <Button type="submit" variant="primary" disabled={isPending || unchosen}>Save</Button>
                 </Modal.Footer>
             </Form>
         </Modal>
