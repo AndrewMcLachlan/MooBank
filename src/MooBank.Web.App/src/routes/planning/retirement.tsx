@@ -18,7 +18,7 @@ import { RetirementSettingsModal } from "./-retirement-components/RetirementSett
 import { RetirementTweaks } from "./-retirement-components/RetirementTweaks";
 import { CreateRetirementPlan } from "./-retirement-components/CreateRetirementPlan";
 import { applyDraftToPlan, emptyDraft, planValue, pruneDraft, withPlanValue } from "./-retirement-utils/tweaks";
-import { incomeForAge } from "./-retirement-utils/retirementSync";
+import { householdKey, incomeForAge, projectionMatchesDraft } from "./-retirement-utils/retirementSync";
 import type { RetirementProjectionOverrides } from "api/types.gen";
 
 export const Route = createFileRoute("/planning/retirement")({
@@ -60,24 +60,37 @@ function Retirement() {
      * is re-solved for the age already chosen, which is the same rule the two sliders follow when
      * either is moved: the horizon is what the household holds to, and the income follows from it.
      *
-     * Waits for the projection to settle, because only then does the summary describe the household
-     * as it now stands. It cannot chase its own tail: a balance at retirement is fixed before any
-     * drawdown begins, so it does not move when the target income does.
+     * Gated on the projection actually describing the household the draft is asking for, rather than
+     * on the request having had time to finish. The draft reaches the query debounced, so for a
+     * moment the projection on screen still belongs to the previous set of people — and an earlier
+     * version of this read the summary in exactly that moment. It re-solved against the household it
+     * was leaving, which changed nothing visible, marked the work done, and never looked again; then
+     * putting the person back solved against the one-person figures still on screen. Comparing who
+     * is in the result against who is wanted cannot drift that way.
+     *
+     * It cannot chase its own tail either: a balance at retirement is settled before any drawdown
+     * begins, so it does not move when the target income does.
      */
     const solvedFor = useRef<string | null>(null);
 
     useEffect(() => {
-        if (!plan || !projection || projectionLoading) return;
+        if (!plan || !projection) return;
 
-        const key = [...(scoped.excludedMemberIds ?? [])].sort().join(",");
+        const planMemberIds = plan.members.map(m => m.id);
+        const projectedMemberIds = projection.members.map(m => m.memberId);
 
-        // The first settled projection establishes the baseline rather than re-solving against it.
-        if (solvedFor.current === null || solvedFor.current === key) {
-            solvedFor.current = key;
+        // Still showing the previous household; wait for the one that was asked for.
+        if (!projectionMatchesDraft(planMemberIds, scoped.excludedMemberIds, projectedMemberIds)) return;
+
+        const household = householdKey(projectedMemberIds);
+
+        // The first matching projection sets the baseline rather than re-solving against it.
+        if (solvedFor.current === null || solvedFor.current === household) {
+            solvedFor.current = household;
             return;
         }
 
-        solvedFor.current = key;
+        solvedFor.current = household;
 
         const summary = projection.summary;
         if (summary.balanceAtRetirementInTodaysDollars <= 0) return;
@@ -92,7 +105,7 @@ function Retirement() {
         );
 
         setDraft(current => withPlanValue(current, plan, "targetRetirementIncome", income));
-    }, [plan, projection, projectionLoading, scoped]);
+    }, [plan, projection, scoped]);
 
     // Page pushes actions into the layout by reference, so a fresh array on every render sets the
     // context every render, which re-renders and builds another array. Memoised, and declared
