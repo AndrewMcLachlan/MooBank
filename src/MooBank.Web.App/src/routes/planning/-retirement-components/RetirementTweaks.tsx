@@ -43,7 +43,7 @@ export const RetirementTweaks: React.FC<RetirementTweaksProps> = ({ plan, draft,
     const basis: SyncBasis | undefined = summary && summary.balanceAtRetirementInTodaysDollars > 0
         ? {
             balance: summary.balanceAtRetirementInTodaysDollars,
-            realReturnRate: summary.realReturnRate,
+            realReturnRate: summary.drawdownRealReturnRate,
             retirementAge: summary.retirementAge,
         }
         : undefined;

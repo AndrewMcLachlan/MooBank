@@ -8855,7 +8855,6 @@
       },
       "RetirementPlanMember": {
         "required": [
-          "userId",
           "currentAge",
           "currentIncome",
           "salarySacrifice",
@@ -8875,7 +8874,10 @@
             "format": "uuid"
           },
           "userId": {
-            "type": "string",
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "uuid"
           },
           "name": {
@@ -9029,6 +9031,7 @@
           "retirementYear",
           "retirementAge",
           "realReturnRate",
+          "drawdownRealReturnRate",
           "totalCosts",
           "finalBalance",
           "finalBalanceInTodaysDollars",
@@ -9062,6 +9065,10 @@
             "format": "int32"
           },
           "realReturnRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "drawdownRealReturnRate": {
             "type": "number",
             "format": "double"
           },

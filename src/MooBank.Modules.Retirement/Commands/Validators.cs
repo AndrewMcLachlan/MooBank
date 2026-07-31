@@ -1,4 +1,4 @@
-using Asm.MooBank.Modules.Retirement.Models;
+﻿using Asm.MooBank.Modules.Retirement.Models;
 using FluentValidation;
 
 namespace Asm.MooBank.Modules.Retirement.Commands;
@@ -62,7 +62,8 @@ public class RetirementPlanMemberValidator : AbstractValidator<RetirementPlanMem
     public RetirementPlanMemberValidator()
     {
         RuleFor(x => x.UserId)
-            .NotEmpty().WithMessage("A person must be selected");
+            .NotNull().WithMessage("A person must be selected")
+            .NotEqual(Guid.Empty).WithMessage("A person must be selected");
 
         RuleFor(x => x.CurrentIncome)
             .GreaterThanOrEqualTo(0m).WithMessage("Income cannot be negative");

@@ -1,4 +1,4 @@
-using Asm.AspNetCore;
+﻿using Asm.AspNetCore;
 using Asm.AspNetCore.Routing;
 using Asm.MooBank.Modules.Retirement.Commands;
 using Asm.MooBank.Modules.Retirement.Models;
@@ -26,11 +26,13 @@ public class RetirementPlans : EndpointGroupBase
             .RequireAuthorization(Policies.GetRetirementPlanPolicy());
 
         routeGroupBuilder.MapPostCreate<CreatePlan, RetirementPlan>("/", "Get Retirement Plan".ToMachine(), (plan) => new { id = plan.Id }, RequestBinding.Parameters)
-            .WithNames("Create Retirement Plan");
+            .WithNames("Create Retirement Plan")
+            .WithValidation<CreatePlan>();
 
         routeGroupBuilder.MapPutCommand<UpdatePlan, RetirementPlan>("/{id}", binding: RequestBinding.Parameters)
             .WithNames("Update Retirement Plan")
-            .RequireAuthorization(Policies.GetRetirementPlanPolicy());
+            .RequireAuthorization(Policies.GetRetirementPlanPolicy())
+            .WithValidation<UpdatePlan>();
 
         routeGroupBuilder.MapDeleteCommand<DeletePlan>("/{id}")
             .WithNames("Delete Retirement Plan")

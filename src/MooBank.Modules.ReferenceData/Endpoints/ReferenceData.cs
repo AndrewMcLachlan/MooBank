@@ -28,6 +28,7 @@ internal class ReferenceData : EndpointGroupBase
         // editing them behind the admin policy while reading them stays open to any signed-in user.
         builder.MapPutCommand<SavePensionRates, PensionRates>("pension-rates")
             .RequireAuthorization(Policies.Admin)
-            .WithNames("Save Pension Rates");
+            .WithNames("Save Pension Rates")
+            .WithValidation<SavePensionRates>();
     }
 }

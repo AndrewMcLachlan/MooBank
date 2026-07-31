@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Modules.ReferenceData.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -40,6 +40,18 @@ internal class SavePensionRatesHandler(
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return command.Rates with { Id = entity.Id };
+    }
+}
+
+/// <summary>
+/// The command-level validator, which is what the endpoint's validation filter looks for. Without
+/// one the rules below never run.
+/// </summary>
+public class SavePensionRatesCommandValidator : AbstractValidator<SavePensionRates>
+{
+    public SavePensionRatesCommandValidator()
+    {
+        RuleFor(x => x.Rates).NotNull().SetValidator(new SavePensionRatesValidator());
     }
 }
 

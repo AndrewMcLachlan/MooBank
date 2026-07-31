@@ -74,7 +74,13 @@ public sealed record RetirementPlanMember
     /// <summary>
     /// The person this member is, which must be someone in the plan's family.
     /// </summary>
-    public Guid UserId { get; init; }
+    /// <remarks>
+    /// Nullable so that a member with nobody chosen yet still binds. A non-nullable Guid cannot read
+    /// the empty value the form sends for an unselected person, and the request would fail to
+    /// deserialise before validation ran — surfacing a raw JSON binding exception instead of "a
+    /// person must be selected". The validator makes it required.
+    /// </remarks>
+    public Guid? UserId { get; init; }
 
     /// <summary>
     /// The person's name, read from their user record. Ignored on the way in.

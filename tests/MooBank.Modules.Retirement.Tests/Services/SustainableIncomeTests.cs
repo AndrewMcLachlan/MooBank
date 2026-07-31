@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Retirement.Services;
 using Asm.MooBank.Modules.Retirement.Tests.Support;
@@ -111,6 +111,42 @@ public class SustainableIncomeTests
         Assert.Equal(70, summary.RetirementAge);
         // Twenty years until the younger one reaches 70.
         Assert.Equal(2026 + 20, summary.RetirementYear);
+    }
+
+    /// <summary>
+    /// Given a plan whose balance is de-risked to cash before retirement
+    /// When the sustainable income is worked out
+    /// Then it should use the cash return, not the growth return
+    /// </summary>
+    /// <remarks>
+    /// The balance moves to cash before retirement and stays there, so cash is what it earns for the
+    /// whole drawdown. Working the income out at the accumulation return promised an income the
+    /// projection beside it could not pay — about a third too much at a 6.5% growth assumption
+    /// against a 3% cash rate.
+    /// </remarks>
+    [Fact]
+    public void Calculate_TheSustainableIncome_UsesTheCashReturn()
+    {
+        // Arrange
+        var plan = TestEntities.CreatePlan(
+            expectedReturnRate: 0.065m, inflationRate: 0.025m, cashReturnRate: 0.03m,
+            preRetirementSwitchYears: 2, lifeExpectancy: 85,
+            members: [TestEntities.CreateMember(currentAge: 55, retirementAge: 67, accountBalances: [600_000m])]);
+
+        // Act
+        var summary = _engine.CalculateWithoutPension(plan, Today).Summary;
+
+        // Assert
+        var atCash = RetirementProjectionEngine.AnnualDrawdown(
+            summary.BalanceAtRetirementInTodaysDollars, RetirementProjectionEngine.RealReturnRate(0.03m, 0.025m), 85 - 67);
+        var atGrowth = RetirementProjectionEngine.AnnualDrawdown(
+            summary.BalanceAtRetirementInTodaysDollars, RetirementProjectionEngine.RealReturnRate(0.065m, 0.025m), 85 - 67);
+
+        Assert.Equal(atCash, summary.AnnualRetirementIncomeInTodaysDollars);
+        Assert.True(atGrowth > atCash, "the growth basis should be the more generous one, which is why it was wrong");
+
+        // And the rate the web app solves against is the drawdown one.
+        Assert.Equal(RetirementProjectionEngine.RealReturnRate(0.03m, 0.025m), summary.DrawdownRealReturnRate);
     }
 
     /// <summary>

@@ -228,13 +228,18 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
                 CurrentBalance = members.Sum(m => m.StartingBalance),
                 BalanceAtRetirement = retirementYear.ClosingBalance,
                 BalanceAtRetirementInTodaysDollars = retirementYear.ClosingBalanceInTodaysDollars,
+                // Worked out at the cash return, not the growth one: the balance is de-risked to
+                // cash before retirement and stays there, so that is what it earns for the whole
+                // drawdown. Using the accumulation return here would promise an income the
+                // projection beside it could not actually pay.
                 AnnualRetirementIncomeInTodaysDollars = AnnualDrawdown(
                     retirementYear.ClosingBalanceInTodaysDollars,
-                    RealReturnRate(assumptions.ExpectedReturnRate, assumptions.InflationRate),
+                    RealReturnRate(assumptions.CashReturnRate, assumptions.InflationRate),
                     assumptions.LifeExpectancy - retirementAge),
                 RetirementYear = startYear + yearsToAllRetired,
                 RetirementAge = retirementAge,
                 RealReturnRate = RealReturnRate(assumptions.ExpectedReturnRate, assumptions.InflationRate),
+                DrawdownRealReturnRate = RealReturnRate(assumptions.CashReturnRate, assumptions.InflationRate),
                 TotalCosts = years.Sum(y => y.Costs),
                 FinalBalance = finalYear.ClosingBalance,
                 FinalBalanceInTodaysDollars = finalYear.ClosingBalanceInTodaysDollars,
@@ -337,6 +342,7 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
             {
                 RetirementYear = startYear,
                 RealReturnRate = RealReturnRate(assumptions.ExpectedReturnRate, assumptions.InflationRate),
+                DrawdownRealReturnRate = RealReturnRate(assumptions.CashReturnRate, assumptions.InflationRate),
             },
         };
 
@@ -497,8 +503,10 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
             var balanceAtRetirementReal = Round(BalanceAtRetirement * TodaysDollarsFactorAtRetirement);
             var drawdownYears = assumptions.LifeExpectancy - _member.RetirementAge;
 
-            // Drawdown earns this member's own return, not the household's.
-            var realReturnRate = RealReturnRate(ReturnRate, assumptions.InflationRate);
+            // Drawdown earns the cash return, not this member's growth strategy: their balance moves
+            // to cash before they retire and stays there, so the strategy is what got them here, not
+            // what they live on.
+            var realReturnRate = RealReturnRate(assumptions.CashReturnRate, assumptions.InflationRate);
 
             return new RetirementMemberOutcome
             {

@@ -84,7 +84,9 @@ const toRequest = (data: RetirementSettingsFormValues): SimpleRetirementPlan => 
     cashReturnRate: fromPercent(data.cashReturnPercent),
     members: data.members.map(m => ({
         id: m.id,
-        userId: m.userId,
+        // Null rather than the empty string the select carries for "not chosen yet": an empty string
+        // is not a readable id, so the request would fail to parse before validation could say so.
+        userId: m.userId || null,
         currentAge: Number(m.currentAge) || 0,
         salarySacrifice: Number(m.salarySacrifice) || 0,
         growthStrategy: m.growthStrategy,
@@ -117,7 +119,7 @@ export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = (
      * cannot disagree about it.
      */
     const basis: SyncBasis | undefined = summary && summary.balanceAtRetirementInTodaysDollars > 0
-        ? { balance: summary.balanceAtRetirementInTodaysDollars, realReturnRate: summary.realReturnRate, retirementAge: summary.retirementAge }
+        ? { balance: summary.balanceAtRetirementInTodaysDollars, realReturnRate: summary.drawdownRealReturnRate, retirementAge: summary.retirementAge }
         : undefined;
 
     const syncFromLifeExpectancy = (age: number) => {

@@ -201,8 +201,21 @@ public sealed record RetirementProjectionSummary
 
     /// <summary>
     /// The real (above-inflation) return implied by the plan's return and inflation assumptions.
+    /// This is the accumulation return, earned while the balances are still invested.
     /// </summary>
     public decimal RealReturnRate { get; init; }
+
+    /// <summary>
+    /// The real return earned once the balance has moved to cash, which is what it earns for the
+    /// whole of retirement.
+    /// </summary>
+    /// <remarks>
+    /// The rate that matters for how long the money lasts. A balance de-risked to cash before
+    /// retirement does not go on earning the growth rate it earned while it was invested, and using
+    /// the accumulation return to work out a sustainable income overstates it substantially — with a
+    /// 6.5% growth assumption against a 3% cash rate and 2.5% inflation, by about a third.
+    /// </remarks>
+    public decimal DrawdownRealReturnRate { get; init; }
 
     /// <summary>
     /// Every fee and insurance premium taken out across the projection, so the drag they apply

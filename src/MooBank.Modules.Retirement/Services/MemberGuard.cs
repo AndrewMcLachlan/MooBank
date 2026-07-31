@@ -1,4 +1,4 @@
-using Asm.MooBank.Domain.Entities.Instrument;
+﻿using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Modules.Retirement.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -37,7 +37,14 @@ internal class MemberGuard(
 
     private async Task AssertPeopleAreInTheFamily(List<RetirementPlanMember> members, CancellationToken cancellationToken)
     {
-        var userIds = members.Select(m => m.UserId).Distinct().ToList();
+        // A member with nobody chosen is caught by validation before this runs, but the guard does
+        // not rely on that: nobody is not somebody in the family.
+        if (members.Any(m => m.UserId is null || m.UserId == Guid.Empty))
+        {
+            throw new NotAuthorisedException("A retirement plan can only include members of your family");
+        }
+
+        var userIds = members.Select(m => m.UserId!.Value).Distinct().ToList();
 
         var inFamily = await users
             .Where(u => userIds.Contains(u.Id) && u.FamilyId == caller.FamilyId)
@@ -55,7 +62,7 @@ internal class MemberGuard(
     private async Task AssertAccountsBelongToTheirMember(List<RetirementPlanMember> members, CancellationToken cancellationToken)
     {
         var wanted = members
-            .SelectMany(m => m.InstrumentIds.Select(i => new { m.UserId, InstrumentId = i }))
+            .SelectMany(m => m.InstrumentIds.Select(i => new { UserId = m.UserId!.Value, InstrumentId = i }))
             .Distinct()
             .ToList();
 

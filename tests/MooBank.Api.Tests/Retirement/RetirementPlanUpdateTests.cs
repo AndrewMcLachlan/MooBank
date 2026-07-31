@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System.Net.Http.Json;
 using System.Text.Json;
 using Asm.MooBank.Api.Tests.Authorization;
@@ -71,6 +71,23 @@ public class RetirementPlanUpdateTests(MooBankWebApplicationFactory factory)
         members,
     };
 
+    /// <summary>
+    /// A member with nobody chosen, as the form sends it before a person is picked.
+    /// </summary>
+    private static object MemberWithNoPerson() => new
+    {
+        id = (Guid?)null,
+        userId = (Guid?)null,
+        currentAge = 45,
+        salarySacrifice = 0m,
+        growthStrategy = "Balanced",
+        annualFees = 0m,
+        insurancePremium = 0m,
+        currentIncome = 100_000m,
+        retirementAge = 65,
+        instrumentIds = Array.Empty<Guid>(),
+    };
+
     private static object Member(Guid userId, Guid? id = null, IEnumerable<Guid>? instrumentIds = null) => new
     {
         id,
@@ -100,6 +117,76 @@ public class RetirementPlanUpdateTests(MooBankWebApplicationFactory factory)
     private static Guid IdOf(JsonElement plan) => plan.GetProperty("id").GetGuid();
 
     private static IEnumerable<JsonElement> MembersOf(JsonElement plan) => plan.GetProperty("members").EnumerateArray();
+
+    /// <summary>
+    /// Given a member added but no person chosen for them yet
+    /// When the plan is saved
+    /// Then it should come back as a validation problem, not a request that could not be read
+    /// </summary>
+    /// <remarks>
+    /// A person not yet picked used to reach the server as an empty string against a non-nullable
+    /// Guid, which cannot be read as one — so the request died in the binder before validation ran
+    /// and the caller saw a raw JSON exception rather than a refusal it could handle. The field is
+    /// now nullable and the form sends null, which reads cleanly and is refused by the rules.
+    ///
+    /// Null rather than an empty string on purpose: an empty string does not parse as a Guid whether
+    /// the field is nullable or not, so sending one would put the failure straight back in the
+    /// binder. This asserts the payload the form actually sends.
+    ///
+    /// The assertion is on the shape of the failure, not its wording — this application answers a
+    /// failed validation with a bare 400 and no body.
+    /// </remarks>
+    [Fact]
+    public async Task Update_MemberWithNoPersonChosen_IsAValidationProblem()
+    {
+        // Arrange
+        var h = await CreateHouseholdAsync();
+        var client = h.Client;
+        var created = await CreatePlanAsync(client, Member(h.SelfUserId));
+        var planId = IdOf(created);
+        var selfId = MembersOf(created).Single().GetProperty("id").GetGuid();
+
+        // Act
+        var response = await client.PutAsJsonAsync(
+            $"/api/retirement/plans/{planId}",
+            Plan(Member(h.SelfUserId, selfId), MemberWithNoPerson()),
+            TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(System.Net.HttpStatusCode.BadRequest, response.StatusCode);
+
+        var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        Assert.DoesNotContain("Failed to read parameter", body);
+        Assert.DoesNotContain("BadHttpRequestException", body);
+    }
+
+    /// <summary>
+    /// Given a life expectancy outside the allowed range
+    /// When the plan is saved
+    /// Then it should be refused
+    /// </summary>
+    /// <remarks>
+    /// The rules were written but never ran: the endpoints did not carry the validation filter, so
+    /// every rule on the plan and its members was dead. This is the canary for that — an obviously
+    /// impossible value that used to save happily.
+    /// </remarks>
+    [Fact]
+    public async Task Update_AnImpossibleLifeExpectancy_IsRefused()
+    {
+        // Arrange
+        var h = await CreateHouseholdAsync();
+        var created = await CreatePlanAsync(h.Client, Member(h.SelfUserId));
+        var planId = IdOf(created);
+
+        // Act
+        var response = await h.Client.PutAsJsonAsync(
+            $"/api/retirement/plans/{planId}",
+            new { name = "Retirement", expectedReturnRate = 0.065m, inflationRate = 0.025m, superGuaranteeRate = 0.12m, contributionsTaxRate = 0.15m, lifeExpectancy = 999, members = Array.Empty<object>() },
+            TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(System.Net.HttpStatusCode.BadRequest, response.StatusCode);
+    }
 
     /// <summary>
     /// Given a plan with an existing member

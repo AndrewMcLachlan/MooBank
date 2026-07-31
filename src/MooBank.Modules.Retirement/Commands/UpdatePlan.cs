@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using Asm.MooBank.Domain.Entities.Retirement;
 using Asm.MooBank.Domain.Entities.Retirement.Specifications;
 using Asm.MooBank.Modules.Retirement.Models;
@@ -52,7 +52,7 @@ internal class UpdatePlanHandler(
         {
             if (member.Id is null)
             {
-                entity.AddMember(member.UserId, member.CurrentAge, member.CurrentIncome, member.SalarySacrifice, member.RetirementAge, member.GrowthStrategy, member.AnnualFees, member.InsurancePremium, member.InstrumentIds);
+                entity.AddMember(member.UserId!.Value, member.CurrentAge, member.CurrentIncome, member.SalarySacrifice, member.RetirementAge, member.GrowthStrategy, member.AnnualFees, member.InsurancePremium, member.InstrumentIds);
                 continue;
             }
 

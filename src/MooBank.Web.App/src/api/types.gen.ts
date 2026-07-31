@@ -672,7 +672,7 @@ export type RetirementPlan = {
 
 export type RetirementPlanMember = {
     id?: null | string;
-    userId: string;
+    userId?: null | string;
     name?: null | string;
     currentAge: number;
     currentIncome: number;
@@ -711,6 +711,7 @@ export type RetirementProjectionSummary = {
     retirementYear: number;
     retirementAge: number;
     realReturnRate: number;
+    drawdownRealReturnRate: number;
     totalCosts: number;
     finalBalance: number;
     finalBalanceInTodaysDollars: number;
