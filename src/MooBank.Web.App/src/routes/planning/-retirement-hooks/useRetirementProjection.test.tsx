@@ -77,7 +77,7 @@ describe("useRetirementProjection when the backend is down", () => {
         runRetirementProjection.mockResolvedValue({ data: { planId: "plan-1", years: [], members: [], summary: {} } });
 
         const client = createClient();
-        const overrides = { expectedReturnRate: 0.07, members: [] };
+        const overrides = { expectedReturnRate: 0.07, members: [], excludedMemberIds: [] };
 
         const { result, rerender } = renderHook(
             ({ o }) => useRetirementProjection("plan-1", o),
@@ -88,7 +88,7 @@ describe("useRetirementProjection when the backend is down", () => {
 
         // A fresh object with the same values must hash to the same key, or every render would
         // start a new query.
-        rerender({ o: { expectedReturnRate: 0.07, members: [] } });
+        rerender({ o: { expectedReturnRate: 0.07, members: [], excludedMemberIds: [] } });
         await new Promise(resolve => setTimeout(resolve, 50));
 
         expect(runRetirementProjection).toHaveBeenCalledTimes(1);

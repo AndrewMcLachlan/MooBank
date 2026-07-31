@@ -1,3 +1,4 @@
+﻿using Asm.MooBank.Domain.Entities.Retirement.Specifications;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Retirement.Models;
 using DomainEntities = Asm.MooBank.Domain.Entities.Retirement;
@@ -11,6 +12,7 @@ internal class GetPlansHandler(IQueryable<DomainEntities.RetirementPlan> plans, 
     public async ValueTask<IEnumerable<Models.RetirementPlan>> Handle(GetPlans query, CancellationToken cancellationToken)
     {
         var result = await plans
+            .Specify(new RetirementPlanDetailsSpecification())
             .Where(p => p.FamilyId == user.FamilyId)
             .OrderByDescending(p => p.UpdatedUtc)
             .ToListAsync(cancellationToken);

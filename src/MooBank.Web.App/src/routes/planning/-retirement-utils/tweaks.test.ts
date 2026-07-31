@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
+﻿import { describe, it, expect } from "vitest";
 import type { RetirementPlan } from "api/types.gen";
-import { applyDraftToPlan, emptyDraft, isDirty, memberValue, planTweakKeys, planValue, pruneDraft, withMemberValue, withPlanValue } from "./tweaks";
+import { applyDraftToPlan, emptyDraft, isDirty, isExcluded, memberValue, planTweakKeys, planValue, pruneDraft, withExcluded, withMemberValue, withPlanValue } from "./tweaks";
 
 const selfId = "11111111-1111-1111-1111-111111111111";
 const spouseId = "22222222-2222-2222-2222-222222222222";
@@ -141,6 +141,49 @@ describe("planTweakKeys", () => {
             const draft = { ...emptyDraft, [key]: 999 };
             expect(isDirty(draft, p), `${key} should mark the draft dirty`).toBe(true);
         }
+    });
+});
+
+describe("leaving a member out of the projection", () => {
+    it("marks them excluded and counts as a what-if", () => {
+        const p = plan();
+        const draft = withExcluded(emptyDraft, spouseId, true);
+
+        expect(isExcluded(draft, spouseId)).toBe(true);
+        expect(isExcluded(draft, selfId)).toBe(false);
+        expect(isDirty(draft, p)).toBe(true);
+    });
+
+    it("puts them back", () => {
+        const p = plan();
+        const draft = withExcluded(withExcluded(emptyDraft, spouseId, true), spouseId, false);
+
+        expect(isExcluded(draft, spouseId)).toBe(false);
+        expect(isDirty(draft, p)).toBe(false);
+    });
+
+    it("does not exclude the same person twice", () => {
+        const draft = withExcluded(withExcluded(emptyDraft, spouseId, true), spouseId, true);
+
+        expect(draft.excludedMemberIds).toEqual([spouseId]);
+    });
+
+    /**
+     * Seeing the plan without someone must never be a step towards removing them from it, so an
+     * exclusion is not part of what locking in saves.
+     */
+    it("is never folded into the saved plan", () => {
+        const p = plan();
+        const draft = withExcluded(emptyDraft, spouseId, true);
+
+        expect(applyDraftToPlan(draft, p).members).toHaveLength(2);
+    });
+
+    it("stops counting as a what-if once that member leaves the plan", () => {
+        const p = plan();
+        const draft = withExcluded(emptyDraft, spouseId, true);
+
+        expect(isDirty(draft, plan({ members: [p.members[0]] }))).toBe(false);
     });
 });
 

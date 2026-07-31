@@ -1,4 +1,4 @@
-/* ---- Retirement planner ----
+﻿/* ---- Retirement planner ----
    Mirrors the forecast layout: standalone metric Sections sitting on the page background,
    above a chart Section and a per-person table. */
 
@@ -205,4 +205,69 @@
     border-top: 1px solid var(--border-colour);
     padding-top: 0.75rem;
     margin-top: 1rem;
+}
+
+.tweak-member-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.tweak-member-include {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.8125rem;
+    color: var(--secondary-colour);
+    cursor: pointer;
+
+    input {
+        accent-color: var(--primary);
+    }
+}
+
+/* Dimmed rather than hidden: the sliders stay reachable so a member can be adjusted and brought
+   back without hunting for them. */
+.tweak-member-excluded .tweak-grid {
+    opacity: 0.45;
+}
+
+/* ---- Wide screens ----
+
+   The balance curve and the income breakdown answer different questions about the same years, so
+   reading them together is worth a lot — but only where each still has room to be read. Below the
+   FHD breakpoint they stay stacked at full width; a squeezed chart is worse than a scrolled one.
+
+   Uses the design system's own large-display breakpoints (1880 FHD, 2520 QHD, 3200 UHD) rather than
+   inventing thresholds, and a semantic class rather than column utilities, per the app's CSS
+   conventions. */
+.retirement-charts {
+    display: grid;
+    gap: 1rem;
+}
+
+@media (min-width: 1880px) {
+    .retirement-charts {
+        grid-template-columns: 1fr 1fr;
+        align-items: start;
+    }
+
+    /* The income chart is absent until a plan draws one, so a lone balance chart takes the full
+       width rather than sitting in half of it beside nothing. */
+    .retirement-charts > :only-child {
+        grid-column: 1 / -1;
+    }
+
+    /* Taller charts earn their keep on a big display, where the extra height is free. */
+    .retirement-chart-canvas {
+        height: 460px;
+    }
+}
+
+@media (min-width: 2520px) {
+    .retirement-chart-canvas {
+        height: 540px;
+    }
 }

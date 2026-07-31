@@ -2,7 +2,7 @@
 import type { GrowthStrategy, RetirementPlan, RetirementProjectionOverrides, RetirementProjectionSummary } from "api/types.gen";
 import { formatCurrency } from "utils/currency";
 import { TweakSlider } from "./TweakSlider";
-import { isDirty, memberValue, planValue, withMemberValue, withPlanValue, type PlanTweakKey } from "../-retirement-utils/tweaks";
+import { isDirty, isExcluded, memberValue, planValue, withExcluded, withMemberValue, withPlanValue, type PlanTweakKey } from "../-retirement-utils/tweaks";
 import { growthStrategies, minWorkingAge, toPercent } from "../-retirement-utils/retirementDefaults";
 import { ageForIncome, incomeForAge, type SyncBasis } from "../-retirement-utils/retirementSync";
 
@@ -89,10 +89,25 @@ export const RetirementTweaks: React.FC<RetirementTweaksProps> = ({ plan, draft,
                 const income = memberValue(draft, plan, member.id, "currentIncome") as number;
                 const sacrifice = memberValue(draft, plan, member.id, "salarySacrifice") as number;
                 const strategy = memberValue(draft, plan, member.id, "growthStrategy") as GrowthStrategy;
+                const excluded = isExcluded(draft, member.id);
 
                 return (
-                    <div className="tweak-member" key={member.id}>
-                        <h4 className="tweak-member-name">{member.name || "Unnamed"}</h4>
+                    <div className={excluded ? "tweak-member tweak-member-excluded" : "tweak-member"} key={member.id}>
+                        <div className="tweak-member-header">
+                            <h4 className="tweak-member-name">{member.name || "Unnamed"}</h4>
+                            {/* Only worth offering for a household — there is nothing to see in a
+                                plan of one person without that person. */}
+                            {plan.members.length > 1 && (
+                                <label className="tweak-member-include">
+                                    <input
+                                        type="checkbox"
+                                        checked={!excluded}
+                                        onChange={e => onChange(withExcluded(draft, member.id, !e.target.checked))}
+                                    />
+                                    Include
+                                </label>
+                            )}
+                        </div>
                         <div className="tweak-grid">
                             <TweakSlider
                                 label="Retirement age"
@@ -197,6 +212,8 @@ export const RetirementTweaks: React.FC<RetirementTweaksProps> = ({ plan, draft,
                     Expected return applies to anyone on the Custom strategy; the named strategies carry their own.
                     Target income is what the household draws each year once everyone has retired, in today's dollars —
                     moving it and the age the savings must last to solves the other, since the two are one equation.
+                    Clearing "Include" leaves someone out of the projection to see the plan for one person; it changes
+                    what is shown, never who is on the plan, so locking in cannot remove them.
                 </p>
             </div>
 

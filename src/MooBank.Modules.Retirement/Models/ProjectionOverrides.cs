@@ -32,6 +32,21 @@ public sealed record ProjectionOverrides
     public decimal? CashReturnRate { get; init; }
 
     public IEnumerable<MemberOverride> Members { get; init; } = [];
+
+    /// <summary>
+    /// Members to leave out of this projection entirely, so a household can be seen one person at a
+    /// time.
+    /// </summary>
+    /// <remarks>
+    /// A view of the plan, not an edit to it: an excluded member keeps their place on the plan and
+    /// comes back the moment the exclusion is dropped. Leaving everyone out is treated the same as
+    /// leaving nobody out, since a projection of nobody says nothing.
+    ///
+    /// Excluding someone changes what the household is, not just what it holds — a couple projected
+    /// as one person is assessed at the single Age Pension rate and free area, which is what makes
+    /// the answer a genuine "just me" rather than half of a couple's.
+    /// </remarks>
+    public IEnumerable<Guid> ExcludedMemberIds { get; init; } = [];
 }
 
 /// <summary>

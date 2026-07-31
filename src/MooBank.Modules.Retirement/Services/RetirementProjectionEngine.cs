@@ -72,7 +72,15 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
         var assumptions = ResolvedAssumptions.From(plan, overrides);
         var startYear = today.Year;
 
-        var members = plan.Members
+        var excluded = overrides?.ExcludedMemberIds?.ToHashSet() ?? [];
+
+        var included = plan.Members.Where(m => !excluded.Contains(m.Id)).ToList();
+
+        // Excluding everybody would project nothing at all, which answers no question; treat it as
+        // excluding nobody.
+        if (included.Count == 0) included = plan.Members.ToList();
+
+        var members = included
             .Select(m => ResolvedMember.From(m, overrides, CurrentBalance(m)))
             .Select(m => new MemberState(m, assumptions))
             .ToList();

@@ -89,9 +89,10 @@ function Retirement() {
         <RetirementPage plan={plan} actions={actions}>
             <RetirementOutlook projection={projection} currencyCode={currencyCode} loading={projectionLoading && !projection} />
 
-            <RetirementChart years={projection?.years ?? []} currencyCode={currencyCode} />
-
-            <RetirementIncomeChart years={projection?.years ?? []} currencyCode={currencyCode} />
+            <div className="retirement-charts">
+                <RetirementChart years={projection?.years ?? []} currencyCode={currencyCode} />
+                <RetirementIncomeChart years={projection?.years ?? []} currencyCode={currencyCode} />
+            </div>
 
             {plan && plan.members.length > 0 && (
                 <RetirementTweaks

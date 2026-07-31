@@ -10,7 +10,26 @@
  *
  * Nothing here is saved until it is locked in; see the overrides model on the server.
  */
-export const emptyDraft: RetirementProjectionOverrides = { members: [] };
+export const emptyDraft: RetirementProjectionOverrides = { members: [], excludedMemberIds: [] };
+
+/** Whether a member is currently left out of the projection. */
+export const isExcluded = (draft: RetirementProjectionOverrides, memberId: string) =>
+    (draft.excludedMemberIds ?? []).includes(memberId);
+
+/**
+ * Leave a member out of the projection, or put them back.
+ *
+ * A view of the plan rather than an edit to it, so it never forms part of what "lock in" saves —
+ * seeing the plan without someone must not be a step towards removing them from it.
+ */
+export const withExcluded = (draft: RetirementProjectionOverrides, memberId: string, excluded: boolean): RetirementProjectionOverrides => {
+    const current = draft.excludedMemberIds ?? [];
+
+    return {
+        ...draft,
+        excludedMemberIds: excluded ? [...new Set([...current, memberId])] : current.filter(id => id !== memberId),
+    };
+};
 
 /**
  * The plan-level values a tweak can override.
@@ -62,12 +81,16 @@ export const memberValue = <K extends keyof RetirementMemberOverride>(
 export const isDirty = (draft: RetirementProjectionOverrides, plan: RetirementPlan) => {
     const planLevel = planTweakKeys.some(k => draft[k] !== undefined && draft[k] !== null);
 
+    // An exclusion only counts while the member is still on the plan, for the same reason a member
+    // override does: removing someone in settings must not leave the page claiming a what-if.
+    const excluded = (draft.excludedMemberIds ?? []).some(id => plan.members.some(m => m.id === id));
+
     const memberLevel = draft.members.some(m =>
         plan.members.some(p => p.id === m.memberId) &&
         (["currentAge", "currentIncome", "salarySacrifice", "retirementAge", "growthStrategy", "annualFees", "insurancePremium"] as const)
             .some(k => m[k] !== undefined && m[k] !== null));
 
-    return planLevel || memberLevel;
+    return planLevel || memberLevel || excluded;
 };
 
 /** Set one plan-level value, or clear it when it matches the plan again. */

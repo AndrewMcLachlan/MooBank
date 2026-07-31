@@ -161,6 +161,41 @@ public class RetirementPlanUpdateTests(MooBankWebApplicationFactory factory)
     }
 
     /// <summary>
+    /// Given a plan with two people
+    /// When a projection is run excluding one of them
+    /// Then only the other should be projected
+    /// </summary>
+    /// <remarks>
+    /// Covers the wire, not the arithmetic — the engine's own tests cover that. What this pins is
+    /// that the exclusion survives the request: it is a new field on a body that binds through an
+    /// [AsParameters] command, which is exactly the sort of thing that can be silently dropped.
+    /// </remarks>
+    [Fact]
+    public async Task Run_ExcludingAMember_ProjectsOnlyTheOther()
+    {
+        // Arrange
+        var h = await CreateHouseholdAsync();
+        var created = await CreatePlanAsync(h.Client, Member(h.SelfUserId), Member(h.SpouseUserId));
+        var planId = IdOf(created);
+        var spouseMemberId = MembersOf(created).Single(m => m.GetProperty("userId").GetGuid() == h.SpouseUserId).GetProperty("id").GetGuid();
+
+        // Act
+        var response = await h.Client.PostAsJsonAsync(
+            $"/api/retirement/plans/{planId}/run",
+            new { excludedMemberIds = new[] { spouseMemberId }, members = Array.Empty<object>() },
+            TestContext.Current.CancellationToken);
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+
+        var projection = await response.Content.ReadFromJsonAsync<JsonElement>(JsonOptions, TestContext.Current.CancellationToken);
+        var projected = projection.GetProperty("members").EnumerateArray().ToList();
+
+        Assert.Single(projected);
+        Assert.NotEqual(spouseMemberId, projected[0].GetProperty("memberId").GetGuid());
+    }
+
+    /// <summary>
     /// Given a life expectancy outside the allowed range
     /// When the plan is saved
     /// Then it should be refused
