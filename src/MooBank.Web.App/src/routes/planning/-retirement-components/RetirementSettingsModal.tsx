@@ -1,15 +1,12 @@
 ﻿import { Button, ComboBox, Form, Modal } from "@andrewmclachlan/moo-ds";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
-import type { GrowthStrategy, LogicalAccount, RetirementPlan, RetirementProjectionSummary, SimpleRetirementPlan, User } from "api/types.gen";
+import type { GrowthStrategy, LogicalAccount, RetirementPlan, RetirementProjectionSummary, SimpleRetirementPlan } from "api/types.gen";
 import { useUpdateRetirementPlan } from "../-retirement-hooks/useUpdateRetirementPlan";
 import { useAccounts } from "hooks/useAccounts";
 import { useFamilyMembers } from "../-retirement-hooks/useFamilyMembers";
 import { CurrencyInput } from "components";
 import { defaultCurrentAge, defaultRetirementAge, fromPercent, growthStrategies, toPercent } from "../-retirement-utils/retirementDefaults";
 import { ageForIncome, incomeForAge, type SyncBasis } from "../-retirement-utils/retirementSync";
-
-/** A person's name for the picker, falling back to their email when they have not set one. */
-const displayName = (u: User) => [u.firstName, u.lastName].filter(Boolean).join(" ") || u.emailAddress;
 
 interface RetirementSettingsModalProps {
     plan?: RetirementPlan;
@@ -101,7 +98,7 @@ const toRequest = (data: RetirementSettingsFormValues): SimpleRetirementPlan => 
 export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = ({ plan, summary, currencyCode, show, onHide }) => {
 
     const { data: accounts } = useAccounts();
-    const { members: familyMembers } = useFamilyMembers();
+    const { members: familyMembers, isPending: peoplePending } = useFamilyMembers();
     const { updateAsync, isPending } = useUpdateRetirementPlan();
 
     const form = useForm<RetirementSettingsFormValues>({
@@ -148,13 +145,31 @@ export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = (
      * would be rejected — and stops one person being credited with another's balance.
      */
     const accountsFor = (userId: string) => {
-        const owner = familyMembers.find(u => u.id === userId);
+        const owner = familyMembers.find(u => u.userId === userId);
         if (!owner) return [];
 
-        return superAccounts.filter(a => owner.accounts.includes(a.id));
+        return superAccounts.filter(a => owner.instrumentIds.includes(a.id));
     };
 
     if (!plan) return null;
+
+    /**
+     * Nothing is rendered until the people are known.
+     *
+     * A select cannot hold a value that is not among its options: mount it before they arrive and the
+     * browser falls back to the placeholder, so a plan whose members were saved months ago opens
+     * showing nobody chosen — and saving from that state wipes them. Waiting is the whole fix; the
+     * options must exist before the field is given its value.
+     */
+    if (peoplePending) {
+        return (
+            <Modal show={show} onHide={onHide} size="lg" title="Edit Retirement Plan">
+                <Modal.Body>
+                    <p className="retirement-empty">Loading…</p>
+                </Modal.Body>
+            </Modal>
+        );
+    }
 
     /**
      * A person nobody has been chosen for cannot be saved.
@@ -246,7 +261,7 @@ export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = (
                                         <Form.Select>
                                             <option value="">Select a person…</option>
                                             {familyMembers.map(u => (
-                                                <option key={u.id} value={u.id}>{displayName(u)}</option>
+                                                <option key={u.userId} value={u.userId}>{u.name}</option>
                                             ))}
                                         </Form.Select>
                                     </Form.Group>

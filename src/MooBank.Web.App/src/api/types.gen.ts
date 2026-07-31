@@ -654,6 +654,12 @@ export type RetirementMemberYear = {
     closingBalance: number;
 };
 
+export type RetirementPerson = {
+    userId: string;
+    name: string;
+    instrumentIds: Array<string>;
+};
+
 export type RetirementPlan = {
     id: string;
     createdUtc: string;
@@ -3654,6 +3660,29 @@ export type CreateRetirementPlanResponses = {
 };
 
 export type CreateRetirementPlanResponse = CreateRetirementPlanResponses[keyof CreateRetirementPlanResponses];
+
+export type GetRetirementPeopleData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/retirement/plans/people';
+};
+
+export type GetRetirementPeopleErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
+export type GetRetirementPeopleResponses = {
+    /**
+     * OK
+     */
+    200: Array<RetirementPerson>;
+};
+
+export type GetRetirementPeopleResponse = GetRetirementPeopleResponses[keyof GetRetirementPeopleResponses];
 
 export type DeleteRetirementPlanData = {
     body?: never;

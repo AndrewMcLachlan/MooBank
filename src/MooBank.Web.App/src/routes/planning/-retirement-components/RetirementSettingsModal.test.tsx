@@ -3,6 +3,13 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { RetirementPlan } from "api/types.gen";
 
+const selfUserId = "11111111-1111-1111-1111-111111111111";
+const spouseUserId = "22222222-2222-2222-2222-222222222222";
+const selfAccountId = "33333333-3333-3333-3333-333333333333";
+const spouseAccountId = "44444444-4444-4444-4444-444444444444";
+const selfMemberId = "55555555-5555-5555-5555-555555555555";
+
+
 const updateAsync = vi.fn().mockResolvedValue({});
 
 vi.mock("../-retirement-hooks/useUpdateRetirementPlan", () => ({
@@ -16,18 +23,21 @@ vi.mock("hooks/useAccounts", () => ({
     ] }),
 }));
 
+/**
+ * The people load asynchronously in the application, so the test controls when they arrive. An
+ * earlier version of this file supplied them synchronously and hid the very bug these cover.
+ */
+const people = [
+    { userId: selfUserId, name: "Andy McLachlan", instrumentIds: [selfAccountId] },
+    { userId: spouseUserId, name: "Margo McLachlan", instrumentIds: [spouseAccountId] },
+];
+
+let peoplePending = false;
+
 vi.mock("../-retirement-hooks/useFamilyMembers", () => ({
-    useFamilyMembers: () => ({ members: [
-        { id: selfUserId, firstName: "Andy", lastName: "M", emailAddress: "a@example.com", accounts: [selfAccountId] },
-        { id: spouseUserId, firstName: "Margo", lastName: "M", emailAddress: "m@example.com", accounts: [spouseAccountId] },
-    ] }),
+    useFamilyMembers: () => ({ members: peoplePending ? [] : people, isPending: peoplePending }),
 }));
 
-const selfUserId = "11111111-1111-1111-1111-111111111111";
-const spouseUserId = "22222222-2222-2222-2222-222222222222";
-const selfAccountId = "33333333-3333-3333-3333-333333333333";
-const spouseAccountId = "44444444-4444-4444-4444-444444444444";
-const selfMemberId = "55555555-5555-5555-5555-555555555555";
 
 const plan = (): RetirementPlan => ({
     id: "66666666-6666-6666-6666-666666666666",
@@ -62,12 +72,41 @@ const { RetirementSettingsModal } = await import("./RetirementSettingsModal");
  * gets that far.
  */
 describe("saving the retirement plan", () => {
-    beforeEach(() => updateAsync.mockClear());
+    beforeEach(() => { updateAsync.mockClear(); peoplePending = false; });
 
     const save = async () => {
         await userEvent.click(screen.getByRole("button", { name: /^save$/i }));
         return updateAsync.mock.calls[0]?.[1];
     };
+
+    /**
+     * The bug behind a save that failed in the binder: a member's person is a saved id, and a select
+     * cannot hold a value that is not among its options. Rendering before the people arrive left the
+     * browser on the placeholder, so a plan with people saved opened showing none — and saving from
+     * there sent nothing for them.
+     */
+    it("does not show the form until the people it must choose from are known", () => {
+        peoplePending = true;
+        render(<RetirementSettingsModal plan={plan()} currencyCode="AUD" show onHide={() => { }} />);
+
+        expect(screen.queryByRole("button", { name: /^save$/i })).not.toBeInTheDocument();
+        expect(screen.queryByLabelText(/person/i)).not.toBeInTheDocument();
+    });
+
+    it("shows the saved person as chosen once they are known", async () => {
+        render(<RetirementSettingsModal plan={plan()} currencyCode="AUD" show onHide={() => { }} />);
+
+        const select = screen.getAllByRole("combobox").find(s => s.getAttribute("name")?.endsWith(".userId")) as HTMLSelectElement;
+
+        expect(select.value).toBe(selfUserId);
+    });
+
+    /** The accounts offered are the ones that person owns, which is the rule the server enforces. */
+    it("offers the chosen person's own superannuation accounts", async () => {
+        render(<RetirementSettingsModal plan={plan()} currencyCode="AUD" show onHide={() => { }} />);
+
+        expect(screen.getByText(/AustralianSuper \(Andy\)/)).toBeInTheDocument();
+    });
 
     it("sends the existing member unchanged", async () => {
         render(<RetirementSettingsModal plan={plan()} currencyCode="AUD" show onHide={() => { }} />);

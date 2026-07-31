@@ -2,7 +2,7 @@
   "openapi": "3.1.1",
   "info": {
     "title": "MooBank API",
-    "version": "2026.7.0"
+    "version": "2026.8.0"
   },
   "servers": [
     {
@@ -4485,6 +4485,32 @@
         }
       }
     },
+    "/retirement/plans/people": {
+      "get": {
+        "tags": [
+          "Retirement"
+        ],
+        "operationId": "get-retirement-people",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RetirementPerson"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/retirement/plans/{id}": {
       "get": {
         "tags": [
@@ -8777,6 +8803,30 @@
           "closingBalance": {
             "type": "number",
             "format": "double"
+          }
+        }
+      },
+      "RetirementPerson": {
+        "required": [
+          "name",
+          "userId",
+          "instrumentIds"
+        ],
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "instrumentIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         }
       },

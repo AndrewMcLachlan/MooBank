@@ -122,3 +122,23 @@ public sealed record RetirementPlanMember
     /// </summary>
     public IEnumerable<Guid> InstrumentIds { get; init; } = [];
 }
+
+/// <summary>
+/// Someone a retirement plan can include, with the superannuation accounts they own.
+/// </summary>
+/// <remarks>
+/// The accounts are the ones the server will accept against this person, so the form can offer
+/// exactly that and no more.
+/// </remarks>
+[DisplayName("RetirementPerson")]
+public record RetirementPerson
+{
+    public Guid UserId { get; init; }
+
+    /// <summary>
+    /// Their name, falling back to their email address where they have not set one.
+    /// </summary>
+    public required string Name { get; init; }
+
+    public IEnumerable<Guid> InstrumentIds { get; init; } = [];
+}

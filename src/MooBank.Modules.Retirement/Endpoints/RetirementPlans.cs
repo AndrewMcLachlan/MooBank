@@ -21,6 +21,9 @@ public class RetirementPlans : EndpointGroupBase
         routeGroupBuilder.MapQuery<GetPlans, IEnumerable<RetirementPlan>>("/")
             .WithNames("Get All Retirement Plans");
 
+        routeGroupBuilder.MapQuery<GetPeople, IEnumerable<RetirementPerson>>("/people")
+            .WithNames("Get Retirement People");
+
         routeGroupBuilder.MapQuery<GetPlan, RetirementPlan>("/{id}")
             .WithNames("Get Retirement Plan")
             .RequireAuthorization(Policies.GetRetirementPlanPolicy());
