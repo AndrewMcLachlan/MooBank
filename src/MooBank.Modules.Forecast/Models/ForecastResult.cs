@@ -8,6 +8,46 @@ public sealed record ForecastResult
     public Guid PlanId { get; init; }
     public required IEnumerable<ForecastMonth> Months { get; init; }
     public required ForecastSummary Summary { get; init; }
+
+    /// <summary>
+    /// How each planned item is tracking against what was actually spent.
+    /// </summary>
+    public IEnumerable<PlannedItemProgress> PlannedItems { get; init; } = [];
+}
+
+/// <summary>
+/// A planned item measured against the spending that carried its tag.
+/// </summary>
+/// <remarks>
+/// This is how the author knows to adjust the plan, which makes it as much the feature as the
+/// arithmetic is: the engine reports the divergence, and correcting it is theirs to do.
+/// </remarks>
+[DisplayName("PlannedItemProgress")]
+public sealed record PlannedItemProgress
+{
+    public Guid PlannedItemId { get; init; }
+
+    public required string Name { get; init; }
+
+    /// <summary>What the item expects to cost in total across the plan.</summary>
+    public decimal PlannedTotal { get; init; }
+
+    /// <summary>What has actually been spent against it so far.</summary>
+    public decimal ActualToDate { get; init; }
+
+    public decimal Remaining { get; init; }
+
+    /// <summary>
+    /// Whether the item carries a tag. Without one nothing can be attributed to it, and it simply
+    /// stands as planned.
+    /// </summary>
+    public bool IsMatched { get; init; }
+
+    /// <summary>
+    /// Whether the window in which spending could still be attributed has passed. A closed item with
+    /// nothing against it never happened; one with less than it planned came in under.
+    /// </summary>
+    public bool IsClosed { get; init; }
 }
 
 [DisplayName("ForecastMonth")]
@@ -24,6 +64,11 @@ public sealed record ForecastMonth
     /// Planned expenses allocated to this month (positive).
     /// </summary>
     public decimal PlannedExpensesTotal { get; init; }
+    /// <summary>
+    /// Of <see cref="PlannedExpensesTotal"/>, how much is actual spending attributed to a planned
+    /// item rather than a figure still only planned. Nought for months yet to happen.
+    /// </summary>
+    public decimal RealisedExpensesTotal { get; init; }
     public decimal ClosingBalance { get; init; }
     /// <summary>
     /// The actual historical balance for this month, if available (null for future months).

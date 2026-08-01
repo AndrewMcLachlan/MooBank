@@ -85,6 +85,32 @@ internal static class ForecastCalculations
     }
 
     /// <summary>
+    /// Takes spending claimed by planned items back out of the pre-plan lookback average.
+    /// </summary>
+    /// <remarks>
+    /// A yearly insurance bill or a term's school fees sits in the lookback window as ordinary
+    /// spending while also being planned for the future, so without this it is charged to the
+    /// forecast twice — once smeared across the baseline and again on its own date.
+    /// </remarks>
+    public static decimal ExcludeAttributedSpend(
+        decimal baselineOutgoings,
+        Dictionary<string, decimal> attributedByMonth,
+        DateOnly planStartDate,
+        int lookbackMonths)
+    {
+        if (lookbackMonths <= 0 || attributedByMonth.Count == 0) return baselineOutgoings;
+
+        var lookbackEnd = new DateOnly(planStartDate.Year, planStartDate.Month, 1).AddDays(-1);
+        var lookbackStart = new DateOnly(lookbackEnd.Year, lookbackEnd.Month, 1).AddMonths(-(lookbackMonths - 1));
+
+        var attributed = attributedByMonth
+            .Where(kvp => DateOnly.TryParseExact(kvp.Key, "yyyy-MM", out var month) && month >= lookbackStart && month <= lookbackEnd)
+            .Sum(kvp => kvp.Value);
+
+        return Math.Max(0m, baselineOutgoings - (attributed / lookbackMonths));
+    }
+
+    /// <summary>
     /// Recalculates baseline outgoings using actual balance data from past months.
     /// </summary>
     /// <param name="actualCreditsByMonth">Actual credits — every dollar that arrived, not modelled income.</param>

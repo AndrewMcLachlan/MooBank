@@ -7094,6 +7094,7 @@
           "incomeTotal",
           "baselineOutgoingsTotal",
           "plannedExpensesTotal",
+          "realisedExpensesTotal",
           "closingBalance"
         ],
         "type": "object",
@@ -7115,6 +7116,10 @@
             "format": "double"
           },
           "plannedExpensesTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "realisedExpensesTotal": {
             "type": "number",
             "format": "double"
           },
@@ -7245,7 +7250,8 @@
         "required": [
           "months",
           "summary",
-          "planId"
+          "planId",
+          "plannedItems"
         ],
         "type": "object",
         "properties": {
@@ -7261,6 +7267,12 @@
           },
           "summary": {
             "$ref": "#/components/schemas/ForecastSummary"
+          },
+          "plannedItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PlannedItemProgress"
+            }
           }
         }
       },
@@ -8001,7 +8013,8 @@
         "required": [
           "version",
           "mode",
-          "lookbackMonths"
+          "lookbackMonths",
+          "matchWindowMonths"
         ],
         "type": "object",
         "properties": {
@@ -8013,6 +8026,10 @@
             "type": "string"
           },
           "lookbackMonths": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "matchWindowMonths": {
             "type": "integer",
             "format": "int32"
           },
@@ -8289,6 +8306,45 @@
           "Schedule",
           "FlexibleWindow"
         ]
+      },
+      "PlannedItemProgress": {
+        "required": [
+          "name",
+          "plannedItemId",
+          "plannedTotal",
+          "actualToDate",
+          "remaining",
+          "isMatched",
+          "isClosed"
+        ],
+        "type": "object",
+        "properties": {
+          "plannedItemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "plannedTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "actualToDate": {
+            "type": "number",
+            "format": "double"
+          },
+          "remaining": {
+            "type": "number",
+            "format": "double"
+          },
+          "isMatched": {
+            "type": "boolean"
+          },
+          "isClosed": {
+            "type": "boolean"
+          }
+        }
       },
       "PlannedItemType": {
         "enum": [

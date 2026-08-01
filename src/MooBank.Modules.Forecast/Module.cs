@@ -26,6 +26,7 @@ public class Module : IModule
         services.AddQueryHandlers(Assembly);
         services.AddValidatorsFromAssembly(Assembly);
         services.AddScoped<IForecastEngine, ForecastEngine>();
+        services.AddScoped<IPlannedItemMatcher, PlannedItemMatcher>();
 
         return services;
     }

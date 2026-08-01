@@ -16,6 +16,9 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <InternalsVisibleTo Include="Asm.MooBank.Modules.Forecast.Tests" />
+    <!-- Moq builds its proxies in a generated assembly, so mocking an internal interface
+         (IPlannedItemMatcher) needs that assembly to see internals too. -->
+    <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
   </ItemGroup>
 
 </Project>

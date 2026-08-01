@@ -12,6 +12,7 @@ namespace Asm.MooBank.Modules.Forecast.Services;
 internal class ForecastEngine(
     IReportReader reportReader,
     IInstrumentRepository instrumentRepository,
+    IPlannedItemMatcher plannedItemMatcher,
     User user) : IForecastEngine
 {
     private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
@@ -56,9 +57,20 @@ internal class ForecastEngine(
         // 7. Calculate baseline outgoings from historical data (excluding Savings accounts)
         var baselineOutgoings = await CalculateBaselineOutgoings(accountIdsForHistoricalAnalysis, outgoingStrategy, plan.StartDate, cancellationToken);
 
-        // 8. Expand planned items into monthly allocations. Income and expenses stay apart: income
-        //    is the plan's whole income model, and expenses are added on top of the baseline.
-        var (incomeByMonth, plannedExpensesByMonth) = PlannedItemExpander.ExpandPlannedItemsByType(plan);
+        // 8. Expand planned items into monthly allocations, then measure them against the spending
+        //    that actually carried their tags. Income and expenses stay apart: income is the plan's
+        //    whole income model, and expenses are added on top of the baseline.
+        var latestTransactionMonth = new DateOnly(latestTransactionDate.Year, latestTransactionDate.Month, 1);
+        var realised = await RealisePlannedItems(
+            plan, accountIds, accountIdsForHistoricalAnalysis, outgoingStrategy, latestTransactionMonth, cancellationToken);
+
+        var incomeByMonth = realised.IncomeByMonth;
+        var plannedExpensesByMonth = realised.ExpensesByMonth;
+
+        // 9. Spending a planned item claims is that item's, never baseline. Taken out of the
+        //    pre-plan lookback average here, and out of the regression's training data below.
+        baselineOutgoings = ForecastCalculations.ExcludeAttributedSpend(
+            baselineOutgoings, realised.AttributedByMonth, plan.StartDate, outgoingStrategy.LookbackMonths);
 
         // 10. Fetch historical actual balances for comparison
         var actualBalancesByMonth = await GetActualBalancesByMonth(accountIds, plan.StartDate, plan.EndDate, latestTransactionDate, cancellationToken);
@@ -67,7 +79,6 @@ internal class ForecastEngine(
         //      for the projected-vs-actual income and expenses charts.
         var actualIncomeExpenseByMonth = await GetActualMonthlyIncomeAndExpenses(
             accountIdsForHistoricalAnalysis, plan.StartDate, latestTransactionDate, cancellationToken);
-        var latestTransactionMonth = new DateOnly(latestTransactionDate.Year, latestTransactionDate.Month, 1);
 
         // 11. Fit income-expense regression if mode is IncomeCorrelated
         RegressionModel? regressionModel = null;
@@ -78,7 +89,7 @@ internal class ForecastEngine(
         if (outgoingStrategy.Mode == "IncomeCorrelated")
         {
             regressionModel = await FitIncomeExpenseRegression(
-                    accountIdsForHistoricalAnalysis, outgoingStrategy, trainingWindow, cancellationToken);
+                    accountIdsForHistoricalAnalysis, outgoingStrategy, trainingWindow, realised.AttributedByMonth, cancellationToken);
 
             useRegression = regressionModel.Valid;
 
@@ -137,6 +148,7 @@ internal class ForecastEngine(
                 IncomeTotal = monthIncome,
                 BaselineOutgoingsTotal = monthOutgoings,
                 PlannedExpensesTotal = monthPlannedExpenses,
+                RealisedExpensesTotal = realised.AttributedByMonth.GetValueOrDefault(monthKey, 0m),
                 ClosingBalance = currentBalance + monthIncome - Math.Abs(monthOutgoings) - monthPlannedExpenses,
                 ActualBalance = actualBalance,
                 ActualIncome = actual?.Income,
@@ -155,7 +167,8 @@ internal class ForecastEngine(
         {
             PlanId = plan.Id,
             Months = months,
-            Summary = summary
+            Summary = summary,
+            PlannedItems = realised.Progress,
         };
     }
 
@@ -241,6 +254,42 @@ internal class ForecastEngine(
 
         // Calculate monthly average
         return totalOutgoings / strategy.LookbackMonths;
+    }
+
+    /// <summary>
+    /// Measures the plan's items against the spending that actually carried their tags.
+    /// </summary>
+    /// <remarks>
+    /// One query covers every tag on the plan across both the baseline's lookback window and the
+    /// plan itself, because a recurring item anchored before the plan begins has to be able to claim
+    /// its own history back out of the baseline average.
+    /// </remarks>
+    private async Task<RealisedPlan> RealisePlannedItems(
+        DomainForecastPlan plan,
+        List<Guid> accountIds,
+        List<Guid> historicalAccountIds,
+        OutgoingStrategy outgoingStrategy,
+        DateOnly latestTransactionMonth,
+        CancellationToken cancellationToken)
+    {
+        var tagIds = plan.PlannedItems
+            .Where(i => i.IsIncluded && i.TagId.HasValue)
+            .Select(i => i.TagId!.Value)
+            .Distinct()
+            .ToList();
+
+        var spend = tagIds.Count == 0
+            ? []
+            : await plannedItemMatcher.GetTaggedSpend(
+                accountIds,
+                tagIds,
+                // Back to the start of the lookback, since an item may claim spending from it.
+                plan.StartDate.AddDays(-1).AddMonths(-Math.Max(0, outgoingStrategy.LookbackMonths)),
+                plan.EndDate,
+                cancellationToken);
+
+        return PlannedItemRealiser.Realise(
+            plan, spend, historicalAccountIds, latestTransactionMonth, outgoingStrategy.MatchWindowMonths);
     }
 
     /// <summary>
@@ -333,7 +382,8 @@ internal class ForecastEngine(
     /// nothing was earned or spent.
     /// </remarks>
     private async Task<RegressionModel> FitIncomeExpenseRegression(
-        List<Guid> accountIds, OutgoingStrategy strategy, TrainingWindow? window, CancellationToken cancellationToken)
+        List<Guid> accountIds, OutgoingStrategy strategy, TrainingWindow? window,
+        Dictionary<string, decimal> attributedByMonth, CancellationToken cancellationToken)
     {
         if (window is null) return RegressionModel.None;
 
@@ -343,7 +393,13 @@ internal class ForecastEngine(
         // than resting on how the stored procedure treats the range boundaries.
         var monthlyData = AggregateMonthlyData(allTotals)
             .Where(kvp => window.Contains(kvp.Key))
-            .ToDictionary();
+            .ToDictionary(
+                kvp => kvp.Key,
+                // Spending a planned item claims is not ordinary spending, and the model being fitted
+                // is one of ordinary spending. Leaving a solar installation in the training data
+                // teaches the fit that a household at that income spends that much every month.
+                kvp => (kvp.Value.Income,
+                        Expense: Math.Max(0m, kvp.Value.Expense - attributedByMonth.GetValueOrDefault(kvp.Key.ToString("yyyy-MM"), 0m))));
 
         return ForecastCalculations.FitRegression(monthlyData, strategy.IncomeCorrelated ?? new IncomeCorrelatedSettings());
     }

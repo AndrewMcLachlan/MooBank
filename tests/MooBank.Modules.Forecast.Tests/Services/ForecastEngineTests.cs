@@ -63,6 +63,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -94,6 +95,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -135,6 +137,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -196,6 +199,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -243,6 +247,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -290,6 +295,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -339,6 +345,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -388,6 +395,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -437,6 +445,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -486,6 +495,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -533,6 +543,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -581,6 +592,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -614,6 +626,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -647,6 +660,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -690,6 +704,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -756,6 +771,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -903,6 +919,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -1004,6 +1021,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -1040,6 +1058,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -1112,6 +1131,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -1177,6 +1197,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -1239,6 +1260,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -1279,6 +1301,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -1342,6 +1365,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -1422,6 +1446,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -1488,6 +1513,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -1555,6 +1581,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -1628,6 +1655,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -1707,6 +1735,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -1742,6 +1771,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -1805,6 +1835,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -1871,6 +1902,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -1943,6 +1975,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -2012,6 +2045,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -2022,6 +2056,92 @@ public class ForecastEngineTests
         Assert.False(result.Summary.Regression.FellBackToFlatAverage);
         Assert.True(result.Summary.Regression.RSquared >= 0.99m,
             $"empty months were fitted: R² came out at {result.Summary.Regression.RSquared}");
+    }
+
+    /// <summary>
+    /// Given a planned expense that has been paid, and is therefore in the training data
+    /// When the forecast is calculated
+    /// Then it should not teach the expense model that the household spends that much every month
+    /// </summary>
+    /// <remarks>
+    /// This is the complaint issue #928 opens with: a planned expense appearing in the transaction
+    /// log throws out the expense calculations even though it was expected. A $30,000 solar
+    /// installation sitting in one training month drags the fitted line up for every month of the
+    /// plan, so the forecast charges for it once on its own date and again, smeared, forever.
+    /// </remarks>
+    [Fact]
+    public async Task Calculate_PlannedExpenseThatWasPaid_DoesNotTeachTheModelItRecurs()
+    {
+        // Arrange
+        var accountId = Guid.NewGuid();
+        _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId]));
+
+        const int solarTag = 42;
+        var planId = Guid.NewGuid();
+
+        var plan = CreatePlanWithStrategies(
+            id: planId,
+            startDate: new DateOnly(2024, 1, 1),
+            endDate: new DateOnly(2024, 8, 31),
+            startingBalance: 50000m,
+            monthlyIncome: 6000m,
+            lookbackMonths: 6,
+            outgoingMode: "IncomeCorrelated");
+
+        plan.PlannedItems.Add(new DomainPlannedItem(Guid.NewGuid())
+        {
+            ForecastPlanId = planId,
+            Name = "Solar",
+            ItemType = PlannedItemType.Expense,
+            Amount = 30_000m,
+            TagId = solarTag,
+            IsIncluded = true,
+            DateMode = PlannedItemDateMode.FixedDate,
+            FixedDate = new PlannedItemFixedDate { FixedDate = new DateOnly(2024, 4, 15) },
+        });
+
+        _mocks.InstrumentRepositoryMock
+            .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<DomainInstrument> { HistoricalAccount(accountId, TrainingDataThrough) });
+
+        SetupEmptyReportMocks();
+
+        // Six months on the line expense = 500 + 0.5 x income, except April, which also carries the
+        // 30,000 solar payment.
+        _mocks.ReportReaderMock
+            .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>
+            {
+                [accountId] = CreateMonthlyData(
+                    new DateOnly(2024, 1, 1),
+                    [(5000m, 3000m), (6000m, 3500m), (7000m, 4000m), (8000m, 34_500m), (9000m, 5000m), (10000m, 5500m)])
+            });
+
+        // The solar payment landed in April, tagged.
+        _mocks.SetTaggedSpend(new TaggedSpend(accountId, new DateOnly(2024, 4, 1), solarTag, TransactionType.Debit, 30_000m));
+
+        var engine = new ForecastEngine(
+            _mocks.ReportReaderMock.Object,
+            _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
+            _mocks.User);
+
+        // Act
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
+
+        // Assert — with the solar payment taken back out, the six months are exactly on the line
+        // again, so the fit is the clean one and not the one the spike would have produced.
+        Assert.NotNull(result.Summary.Regression);
+        Assert.False(result.Summary.Regression.FellBackToFlatAverage);
+        Assert.True(result.Summary.Regression.RSquared >= 0.99m,
+            $"the planned expense was left in the training data: R² came out at {result.Summary.Regression.RSquared}");
+        Assert.Equal(0.5m, Math.Round(result.Summary.Regression.VariableComponent, 4));
+
+        // And the item reports what actually happened rather than what was planned.
+        var progress = Assert.Single(result.PlannedItems, p => p.Name == "Solar");
+        Assert.Equal(30_000m, progress.ActualToDate);
+        Assert.Equal(0m, progress.Remaining);
     }
 
     #endregion

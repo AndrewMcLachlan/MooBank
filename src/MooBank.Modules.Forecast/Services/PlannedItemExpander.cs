@@ -28,67 +28,127 @@ internal static class PlannedItemExpander
         {
             var result = item.ItemType == PlannedItemType.Income ? income : expenses;
 
-            switch (item.DateMode)
+            foreach (var (monthKey, amount) in Allocate(item, plan.StartDate, plan.EndDate))
             {
-                case PlannedItemDateMode.FixedDate when item.FixedDate != null:
-                    {
-                        var fixedDate = item.FixedDate.FixedDate;
-                        var monthKey = new DateOnly(fixedDate.Year, fixedDate.Month, 1).ToString("yyyy-MM");
-                        if (fixedDate >= plan.StartDate && fixedDate <= plan.EndDate)
-                        {
-                            result[monthKey] = result.GetValueOrDefault(monthKey, 0m) + item.Amount;
-                        }
-                        break;
-                    }
-
-                case PlannedItemDateMode.Schedule when item.Schedule != null:
-                    {
-                        var occurrences = GenerateScheduleOccurrences(item, plan.StartDate, plan.EndDate);
-                        foreach (var occurrence in occurrences)
-                        {
-                            var key = new DateOnly(occurrence.Year, occurrence.Month, 1).ToString("yyyy-MM");
-                            result[key] = result.GetValueOrDefault(key, 0m) + item.Amount;
-                        }
-                        break;
-                    }
-
-                case PlannedItemDateMode.FlexibleWindow when item.FlexibleWindow != null:
-                    {
-                        var windowStart = item.FlexibleWindow.StartDate < plan.StartDate ? plan.StartDate : item.FlexibleWindow.StartDate;
-                        var windowEnd = item.FlexibleWindow.EndDate > plan.EndDate ? plan.EndDate : item.FlexibleWindow.EndDate;
-
-                        if (item.FlexibleWindow.AllocationMode == AllocationMode.AllAtEnd)
-                        {
-                            // Skip windows that fall entirely outside the plan.
-                            if (windowStart <= windowEnd)
-                            {
-                                var endKey = new DateOnly(windowEnd.Year, windowEnd.Month, 1).ToString("yyyy-MM");
-                                result[endKey] = result.GetValueOrDefault(endKey, 0m) + item.Amount;
-                            }
-                        }
-                        else // EvenlySpread
-                        {
-                            var months = CountMonths(windowStart, windowEnd);
-                            if (months > 0)
-                            {
-                                var amountPerMonth = item.Amount / months;
-                                var current = new DateOnly(windowStart.Year, windowStart.Month, 1);
-                                var end = new DateOnly(windowEnd.Year, windowEnd.Month, 1);
-                                while (current <= end)
-                                {
-                                    var key = current.ToString("yyyy-MM");
-                                    result[key] = result.GetValueOrDefault(key, 0m) + amountPerMonth;
-                                    current = current.AddMonths(1);
-                                }
-                            }
-                        }
-                        break;
-                    }
+                result[monthKey] = result.GetValueOrDefault(monthKey, 0m) + amount;
             }
         }
 
         return (income, expenses);
     }
+
+    /// <summary>
+    /// Spreads one item's money across the months of the plan, keyed <c>yyyy-MM</c>.
+    /// </summary>
+    /// <remarks>
+    /// Kept per-item rather than pre-aggregated because realisation has to measure each item against
+    /// its own actual spending: once several items are summed into a month there is no way back to
+    /// which of them a payment belongs to.
+    /// </remarks>
+    public static Dictionary<string, decimal> Allocate(DomainForecastPlannedItem item, DateOnly planStart, DateOnly planEnd)
+    {
+        var result = new Dictionary<string, decimal>();
+
+        switch (item.DateMode)
+        {
+            case PlannedItemDateMode.FixedDate when item.FixedDate != null:
+                {
+                    var fixedDate = item.FixedDate.FixedDate;
+                    if (fixedDate >= planStart && fixedDate <= planEnd)
+                    {
+                        var monthKey = new DateOnly(fixedDate.Year, fixedDate.Month, 1).ToString("yyyy-MM");
+                        result[monthKey] = result.GetValueOrDefault(monthKey, 0m) + item.Amount;
+                    }
+                    break;
+                }
+
+            case PlannedItemDateMode.Schedule when item.Schedule != null:
+                {
+                    foreach (var occurrence in GenerateScheduleOccurrences(item, planStart, planEnd))
+                    {
+                        var key = new DateOnly(occurrence.Year, occurrence.Month, 1).ToString("yyyy-MM");
+                        result[key] = result.GetValueOrDefault(key, 0m) + item.Amount;
+                    }
+                    break;
+                }
+
+            case PlannedItemDateMode.FlexibleWindow when item.FlexibleWindow != null:
+                {
+                    var windowStart = item.FlexibleWindow.StartDate < planStart ? planStart : item.FlexibleWindow.StartDate;
+                    var windowEnd = item.FlexibleWindow.EndDate > planEnd ? planEnd : item.FlexibleWindow.EndDate;
+
+                    if (item.FlexibleWindow.AllocationMode == AllocationMode.AllAtEnd)
+                    {
+                        // Skip windows that fall entirely outside the plan.
+                        if (windowStart <= windowEnd)
+                        {
+                            var endKey = new DateOnly(windowEnd.Year, windowEnd.Month, 1).ToString("yyyy-MM");
+                            result[endKey] = result.GetValueOrDefault(endKey, 0m) + item.Amount;
+                        }
+                    }
+                    else // EvenlySpread
+                    {
+                        var months = CountMonths(windowStart, windowEnd);
+                        if (months > 0)
+                        {
+                            var amountPerMonth = item.Amount / months;
+                            var current = new DateOnly(windowStart.Year, windowStart.Month, 1);
+                            var end = new DateOnly(windowEnd.Year, windowEnd.Month, 1);
+                            while (current <= end)
+                            {
+                                var key = current.ToString("yyyy-MM");
+                                result[key] = result.GetValueOrDefault(key, 0m) + amountPerMonth;
+                                current = current.AddMonths(1);
+                            }
+                        }
+                    }
+                    break;
+                }
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// The span of months in which spending carrying an item's tag is treated as that item's.
+    /// </summary>
+    /// <param name="slippageMonths">
+    /// How far either side of the item's own dates a payment still counts as its own. An allowance
+    /// for a bill paid late or early — not a way to model spending genuinely spread over a period,
+    /// which is what a flexible window is for.
+    /// </param>
+    /// <remarks>
+    /// Deliberately not clamped to the plan. A recurring item anchored before the plan begins has
+    /// history inside the baseline's lookback, and unless it can claim that history back it is
+    /// counted twice: once in the baseline average and again as a planned item.
+    /// </remarks>
+    public static (DateOnly First, DateOnly Last)? ClaimWindow(DomainForecastPlannedItem item, DateOnly planEnd, int slippageMonths)
+    {
+        var slippage = Math.Max(0, slippageMonths);
+
+        static DateOnly MonthOf(DateOnly date) => new(date.Year, date.Month, 1);
+
+        return item.DateMode switch
+        {
+            PlannedItemDateMode.FixedDate when item.FixedDate != null =>
+                (MonthOf(item.FixedDate.FixedDate).AddMonths(-slippage), MonthOf(item.FixedDate.FixedDate).AddMonths(slippage)),
+
+            PlannedItemDateMode.Schedule when item.Schedule != null =>
+                (MonthOf(item.Schedule.AnchorDate), MonthOf(item.Schedule.EndDate ?? planEnd).AddMonths(slippage)),
+
+            PlannedItemDateMode.FlexibleWindow when item.FlexibleWindow != null =>
+                (MonthOf(item.FlexibleWindow.StartDate).AddMonths(-slippage), MonthOf(item.FlexibleWindow.EndDate).AddMonths(slippage)),
+
+            _ => null,
+        };
+    }
+
+    /// <summary>
+    /// Whether an item's money is a fixed total that can be used up, as opposed to a recurring
+    /// charge that cannot.
+    /// </summary>
+    public static bool HasFiniteTotal(DomainForecastPlannedItem item) =>
+        item.DateMode is PlannedItemDateMode.FixedDate or PlannedItemDateMode.FlexibleWindow;
 
     internal static IEnumerable<DateOnly> GenerateScheduleOccurrences(DomainForecastPlannedItem item, DateOnly planStart, DateOnly planEnd)
     {

@@ -12,6 +12,17 @@ public sealed record OutgoingStrategy
     public string Mode { get; init; } = "HistoricalAverageByTag";
     public int LookbackMonths { get; init; } = 12;
 
+    /// <summary>
+    /// How far either side of a planned item's own dates a payment carrying its tag still counts as
+    /// that item's, in months.
+    /// </summary>
+    /// <remarks>
+    /// A slippage allowance for a bill paid late or early, not a way to model spending genuinely
+    /// spread over a period — that is what a flexible window is for. It applies to every item on the
+    /// plan at once, so widening it to cover one long job loosens matching for all the rest.
+    /// </remarks>
+    public int MatchWindowMonths { get; init; } = 1;
+
     // TODO: not yet honoured by ForecastEngine.
     public IEnumerable<int>? ExcludeTagIds { get; init; }
 

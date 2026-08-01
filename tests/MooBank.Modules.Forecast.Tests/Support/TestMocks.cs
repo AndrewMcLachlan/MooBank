@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.Domain;
 using Asm.MooBank.Domain.Entities.Forecast;
 using Asm.MooBank.Domain.Entities.Instrument;
@@ -27,6 +27,16 @@ public class TestMocks
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>());
         InstrumentRepositoryMock = new Mock<IInstrumentRepository>();
 
+        PlannedItemMatcherMock = new Mock<IPlannedItemMatcher>();
+        PlannedItemMatcherMock
+            .Setup(m => m.GetTaggedSpend(
+                It.IsAny<IEnumerable<Guid>>(),
+                It.IsAny<IEnumerable<int>>(),
+                It.IsAny<DateOnly>(),
+                It.IsAny<DateOnly>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync([]);
+
         User = CreateTestUser();
     }
 
@@ -39,6 +49,21 @@ public class TestMocks
     public Mock<IReportReader> ReportReaderMock { get; }
 
     public Mock<IInstrumentRepository> InstrumentRepositoryMock { get; }
+
+    internal Mock<IPlannedItemMatcher> PlannedItemMatcherMock { get; }
+
+    /// <summary>
+    /// Sets the actual tagged spending the matcher will report.
+    /// </summary>
+    internal void SetTaggedSpend(params TaggedSpend[] spend) =>
+        PlannedItemMatcherMock
+            .Setup(m => m.GetTaggedSpend(
+                It.IsAny<IEnumerable<Guid>>(),
+                It.IsAny<IEnumerable<int>>(),
+                It.IsAny<DateOnly>(),
+                It.IsAny<DateOnly>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(spend);
 
     public User User { get; private set; }
 
