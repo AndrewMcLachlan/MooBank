@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Text.Json;
 using Asm.MooBank.Domain.Entities.Forecast;
 using Asm.MooBank.Domain.Entities.Instrument;
@@ -20,7 +20,18 @@ internal class CreatePlanHandler(
     User user) : ICommandHandler<CreatePlan, Models.ForecastPlan>
 {
     private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-    private const int DefaultLookbackMonths = 12;
+    /// <summary>
+    /// How far back the expense model is fitted over by default. Two years rather than one: the fit
+    /// needs enough months, and enough variation in income, to find a slope at all.
+    /// </summary>
+    private const int DefaultLookbackMonths = 24;
+
+    /// <summary>
+    /// How far back the seeded income item is averaged over. Deliberately shorter than the expense
+    /// lookback — income tends to rise, so a two-year average would seed a figure the household has
+    /// already grown out of.
+    /// </summary>
+    private const int IncomeSeedMonths = 12;
 
     public async ValueTask<Models.ForecastPlan> Handle(CreatePlan request, CancellationToken cancellationToken)
     {
@@ -42,11 +53,9 @@ internal class CreatePlanHandler(
         // Calculate historical outgoings if using default lookback
         if (outgoingStrategy.LookbackMonths == 0)
         {
-            //var historicalOutgoings = await CalculateHistoricalAverage(accountIds, request.Plan.StartDate, DefaultLookbackMonths, TransactionFilterType.Debit, cancellationToken);
             outgoingStrategy = outgoingStrategy with
             {
                 LookbackMonths = DefaultLookbackMonths,
-                Mode = "HistoricalAverage",
             };
         }
 
@@ -76,7 +85,7 @@ internal class CreatePlanHandler(
         // the author can date, end or split as their circumstances change.
         if (!request.Plan.PlannedItems.Any(i => i.ItemType == PlannedItemType.Income))
         {
-            var historicalIncome = await CalculateHistoricalAverage(accountIds, request.Plan.StartDate, DefaultLookbackMonths, TransactionFilterType.Credit, cancellationToken);
+            var historicalIncome = await CalculateHistoricalAverage(accountIds, request.Plan.StartDate, IncomeSeedMonths, TransactionFilterType.Credit, cancellationToken);
 
             if (historicalIncome > 0m)
             {

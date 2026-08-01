@@ -37,7 +37,7 @@ public class RunForecastTests
                 MonthsBelowZero = 0,
                 TotalIncome = 60000m,
                 TotalOutgoings = 48000m,
-                MonthlyBaselineOutgoings = 4000m,
+                Expenses = new ExpenseModel { FixedComponent = 2000m, VariableComponent = 0.4m, AverageMonthly = 4000m },
             }
         };
 
@@ -82,7 +82,7 @@ public class RunForecastTests
                 MonthsBelowZero = 0,
                 TotalIncome = 0m,
                 TotalOutgoings = 0m,
-                MonthlyBaselineOutgoings = 0m,
+                Expenses = new ExpenseModel { AverageMonthly = 0m },
             }
         };
 
@@ -158,7 +158,7 @@ public class RunForecastTests
                 MonthsBelowZero = 0,
                 TotalIncome = 0m,
                 TotalOutgoings = 0m,
-                MonthlyBaselineOutgoings = 0m,
+                Expenses = new ExpenseModel { AverageMonthly = 0m },
             }
         };
 

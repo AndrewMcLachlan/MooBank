@@ -7064,6 +7064,52 @@
           }
         }
       },
+      "ExpenseModel": {
+        "required": [
+          "fixedComponent",
+          "variableComponent",
+          "rSquared",
+          "dataPoints",
+          "usingFlatAverage",
+          "flatAverage",
+          "modelledIncomeShortfall",
+          "averageMonthly"
+        ],
+        "type": "object",
+        "properties": {
+          "fixedComponent": {
+            "type": "number",
+            "format": "double"
+          },
+          "variableComponent": {
+            "type": "number",
+            "format": "double"
+          },
+          "rSquared": {
+            "type": "number",
+            "format": "double"
+          },
+          "dataPoints": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usingFlatAverage": {
+            "type": "boolean"
+          },
+          "flatAverage": {
+            "type": "number",
+            "format": "double"
+          },
+          "modelledIncomeShortfall": {
+            "type": "number",
+            "format": "double"
+          },
+          "averageMonthly": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
       "Family": {
         "required": [
           "name",
@@ -7278,13 +7324,13 @@
       },
       "ForecastSummary": {
         "required": [
+          "expenses",
           "lowestBalance",
           "lowestBalanceMonth",
           "requiredMonthlyUplift",
           "monthsBelowZero",
           "totalIncome",
-          "totalOutgoings",
-          "monthlyBaselineOutgoings"
+          "totalOutgoings"
         ],
         "type": "object",
         "properties": {
@@ -7312,19 +7358,8 @@
             "type": "number",
             "format": "double"
           },
-          "monthlyBaselineOutgoings": {
-            "type": "number",
-            "format": "double"
-          },
-          "regression": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "$ref": "#/components/schemas/RegressionDiagnostics"
-              }
-            ]
+          "expenses": {
+            "$ref": "#/components/schemas/ExpenseModel"
           }
         }
       },
@@ -8012,7 +8047,6 @@
       "OutgoingStrategy": {
         "required": [
           "version",
-          "mode",
           "lookbackMonths",
           "matchWindowMonths"
         ],
@@ -8021,9 +8055,6 @@
           "version": {
             "type": "integer",
             "format": "int32"
-          },
-          "mode": {
-            "type": "string"
           },
           "lookbackMonths": {
             "type": "integer",
@@ -8479,32 +8510,6 @@
           "nextRun": {
             "type": "string",
             "format": "date"
-          }
-        }
-      },
-      "RegressionDiagnostics": {
-        "required": [
-          "fixedComponent",
-          "variableComponent",
-          "rSquared",
-          "fellBackToFlatAverage"
-        ],
-        "type": "object",
-        "properties": {
-          "fixedComponent": {
-            "type": "number",
-            "format": "double"
-          },
-          "variableComponent": {
-            "type": "number",
-            "format": "double"
-          },
-          "rSquared": {
-            "type": "number",
-            "format": "double"
-          },
-          "fellBackToFlatAverage": {
-            "type": "boolean"
           }
         }
       },

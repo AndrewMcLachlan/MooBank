@@ -80,25 +80,18 @@ internal class ForecastEngine(
         var actualIncomeExpenseByMonth = await GetActualMonthlyIncomeAndExpenses(
             accountIdsForHistoricalAnalysis, plan.StartDate, latestTransactionDate, cancellationToken);
 
-        // 11. Fit income-expense regression if mode is IncomeCorrelated
-        RegressionModel? regressionModel = null;
-        var useRegression = false;
-        var modelledIncomeShortfall = 0m;
+        // 11. Fit the expense model: spending as a fixed amount plus a share of income. Always
+        //     attempted — it is the model, not a mode — and falls back to a flat average only when
+        //     there is too little signal to fit a slope.
         var trainingWindow = ForecastCalculations.BuildTrainingWindow(historicalDataThrough, outgoingStrategy.LookbackMonths);
 
-        if (outgoingStrategy.Mode == "IncomeCorrelated")
-        {
-            regressionModel = await FitIncomeExpenseRegression(
-                    accountIdsForHistoricalAnalysis, outgoingStrategy, trainingWindow, realised.AttributedByMonth, cancellationToken);
+        var regressionModel = await FitIncomeExpenseRegression(
+                accountIdsForHistoricalAnalysis, outgoingStrategy, trainingWindow, realised.AttributedByMonth, cancellationToken);
 
-            useRegression = regressionModel.Valid;
-
-            if (useRegression && trainingWindow is not null)
-            {
-                modelledIncomeShortfall = ModelledIncomeShortfall(regressionModel.AvgHistoricalIncome, incomeByMonth, trainingWindow);
-            }
-            // If regression is invalid, baselineOutgoings from step 7 is used as-is
-        }
+        var useRegression = regressionModel.Valid;
+        var modelledIncomeShortfall = useRegression && trainingWindow is not null
+            ? ModelledIncomeShortfall(regressionModel.AvgHistoricalIncome, incomeByMonth, trainingWindow)
+            : 0m;
 
         // 12. Recalculate baseline outgoings from actual balance data if available
         //     (skip when using valid regression — outgoings vary per month)
@@ -134,7 +127,7 @@ internal class ForecastEngine(
             var actualBalance = actualBalancesByMonth.GetValueOrDefault(monthKey);
 
             var monthOutgoings = useRegression
-                ? Math.Max(0m, regressionModel!.Intercept + regressionModel.Slope * (monthIncome + modelledIncomeShortfall))
+                ? Math.Max(0m, regressionModel.Intercept + regressionModel.Slope * (monthIncome + modelledIncomeShortfall))
                 : effectiveBaselineOutgoings;
 
             // Actual income/expenses only exist for historical months (up to the latest transaction).
@@ -161,7 +154,7 @@ internal class ForecastEngine(
         }
 
         // 14. Calculate summary metrics
-        var summary = ForecastCalculations.CalculateSummary(months, effectiveBaselineOutgoings, regressionModel);
+        var summary = ForecastCalculations.CalculateSummary(months, effectiveBaselineOutgoings, regressionModel, modelledIncomeShortfall);
 
         return new ForecastResult
         {

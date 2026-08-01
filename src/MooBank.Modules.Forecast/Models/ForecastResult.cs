@@ -95,15 +95,58 @@ public sealed record ForecastSummary
     public int MonthsBelowZero { get; init; }
     public decimal TotalIncome { get; init; }
     public decimal TotalOutgoings { get; init; }
-    public decimal MonthlyBaselineOutgoings { get; init; }
-    public RegressionDiagnostics? Regression { get; init; }
+
+    /// <summary>
+    /// How ordinary spending is modelled.
+    /// </summary>
+    public required ExpenseModel Expenses { get; init; }
 }
 
-[DisplayName("RegressionDiagnostics")]
-public sealed record RegressionDiagnostics
+/// <summary>
+/// How ordinary monthly spending is modelled: a fixed amount, plus a share of whatever is earned.
+/// </summary>
+/// <remarks>
+/// There is no single monthly expenses figure, and reporting one would be a fiction. Spending moves
+/// with income — a lower income means less discretionary spending — so the honest answer has two
+/// parts, and only two parts can say what happens when income changes.
+/// </remarks>
+[DisplayName("ExpenseModel")]
+public sealed record ExpenseModel
 {
+    /// <summary>What is spent each month regardless of income.</summary>
     public decimal FixedComponent { get; init; }
+
+    /// <summary>The share of each additional dollar earned that gets spent, as a rate.</summary>
     public decimal VariableComponent { get; init; }
+
+    /// <summary>How much of the variation in spending the fit accounts for.</summary>
     public decimal RSquared { get; init; }
-    public bool FellBackToFlatAverage { get; init; }
+
+    /// <summary>How many whole months the fit was made from.</summary>
+    public int DataPoints { get; init; }
+
+    /// <summary>
+    /// Whether there was too little signal to fit a slope, leaving the forecast on a flat average.
+    /// Reported rather than silent: a flat average cannot answer what happens when income changes.
+    /// </summary>
+    public bool UsingFlatAverage { get; init; }
+
+    /// <summary>The flat monthly average, used when <see cref="UsingFlatAverage"/> is set.</summary>
+    public decimal FlatAverage { get; init; }
+
+    /// <summary>
+    /// How far the plan's modelled income falls short of the credits actually seen each month.
+    /// </summary>
+    /// <remarks>
+    /// Nought is healthy. A large figure means the plan is not modelling all of its income, and
+    /// spending is being priced at a higher income than the plan credits itself with — so it is
+    /// worth showing rather than quietly correcting for.
+    /// </remarks>
+    public decimal ModelledIncomeShortfall { get; init; }
+
+    /// <summary>
+    /// What the model works out to per month on average across the plan. A convenience, not the
+    /// model: it cannot be applied to a month whose income differs.
+    /// </summary>
+    public decimal AverageMonthly { get; init; }
 }

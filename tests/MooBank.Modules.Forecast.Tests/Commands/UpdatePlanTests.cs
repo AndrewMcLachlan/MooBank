@@ -175,7 +175,6 @@ public class UpdatePlanTests
 
         var outgoingStrategy = new OutgoingStrategy
         {
-            Mode = "HistoricalAverage",
             LookbackMonths = 6
         };
 

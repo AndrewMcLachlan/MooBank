@@ -6,11 +6,16 @@ namespace Asm.MooBank.Modules.Forecast.Models;
 // fortnightly and monthly schedules with start and end dates, which is everything a pay rise,
 // a promotion or a redundancy needs — and, unlike a single figure, they can change over time.
 
+// There is deliberately no mode. Expenses move with income — lower income, less discretionary
+// spending — so that is the model, not one option among several. The flat average survives only as
+// the degenerate case, used when there is not enough signal to fit a slope, and it is reported as a
+// fallback rather than chosen. The mode this replaces was named "HistoricalAverageByTag" and did
+// nothing by tag: it averaged every debit.
+
 public sealed record OutgoingStrategy
 {
     public int Version { get; init; } = 1;
-    public string Mode { get; init; } = "HistoricalAverageByTag";
-    public int LookbackMonths { get; init; } = 12;
+    public int LookbackMonths { get; init; } = 24;
 
     /// <summary>
     /// How far either side of a planned item's own dates a payment carrying its tag still counts as

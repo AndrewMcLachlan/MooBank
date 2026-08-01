@@ -335,7 +335,7 @@ public class CreatePlanTests
         // Assert
         Assert.NotNull(capturedPlan);
         Assert.NotNull(capturedPlan.OutgoingStrategySerialized);
-        Assert.Contains("12", capturedPlan.OutgoingStrategySerialized);
+        Assert.Contains("24", capturedPlan.OutgoingStrategySerialized);
     }
 
     [Fact]

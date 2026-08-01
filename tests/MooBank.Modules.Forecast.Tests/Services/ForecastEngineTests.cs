@@ -792,12 +792,10 @@ public class ForecastEngineTests
         decimal monthlyIncome = 0m,
         int lookbackMonths = 12,
         AccountScopeMode accountScopeMode = AccountScopeMode.AllAccounts,
-        string outgoingMode = "HistoricalAverage",
         IncomeCorrelatedSettings? incomeCorrelatedSettings = null)
     {
         var outgoingStrategy = new OutgoingStrategy
         {
-            Mode = outgoingMode,
             LookbackMonths = lookbackMonths,
             IncomeCorrelated = incomeCorrelatedSettings,
         };
@@ -947,7 +945,7 @@ public class ForecastEngineTests
         Assert.Equal(16000m, months[2].ClosingBalance);
 
         // Summary also reflects updated baseline
-        Assert.Equal(3000m, result.Summary.MonthlyBaselineOutgoings);
+        Assert.Equal(3000m, result.Summary.Expenses.AverageMonthly);
     }
 
     /// <summary>
@@ -1331,8 +1329,7 @@ public class ForecastEngineTests
             endDate: new DateOnly(2024, 9, 30),
             startingBalance: 20000m,
             monthlyIncome: 6000m,
-            lookbackMonths: 6,
-            outgoingMode: "IncomeCorrelated");
+            lookbackMonths: 6);
 
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
@@ -1386,9 +1383,8 @@ public class ForecastEngineTests
         Assert.All(months, m => Assert.Equal(3500m, m.BaselineOutgoingsTotal));
 
         // Regression diagnostics should be populated
-        Assert.NotNull(result.Summary.Regression);
-        Assert.False(result.Summary.Regression.FellBackToFlatAverage);
-        Assert.True(result.Summary.Regression.RSquared >= 0.99m);
+                Assert.False(result.Summary.Expenses.UsingFlatAverage);
+        Assert.True(result.Summary.Expenses.RSquared >= 0.99m);
     }
 
     /// <summary>
@@ -1409,7 +1405,6 @@ public class ForecastEngineTests
             startingBalance: 10000m,
             monthlyIncome: 5000m,
             lookbackMonths: 12,
-            outgoingMode: "IncomeCorrelated",
             incomeCorrelatedSettings: new IncomeCorrelatedSettings { MinDataPoints = 6 });
 
         var mockAccount = HistoricalAccount(accountId, TrainingDataThrough);
@@ -1455,8 +1450,7 @@ public class ForecastEngineTests
         // Assert — falls back to historical baseline (42000 / 12 = 3500)
         Assert.All(result.Months, m => Assert.Equal(3500m, m.BaselineOutgoingsTotal));
 
-        Assert.NotNull(result.Summary.Regression);
-        Assert.True(result.Summary.Regression.FellBackToFlatAverage);
+                Assert.True(result.Summary.Expenses.UsingFlatAverage);
     }
 
     /// <summary>
@@ -1476,8 +1470,7 @@ public class ForecastEngineTests
             endDate: new DateOnly(2024, 9, 30),
             startingBalance: 10000m,
             monthlyIncome: 5000m,
-            lookbackMonths: 12,
-            outgoingMode: "IncomeCorrelated");
+            lookbackMonths: 12);
 
         var mockAccount = HistoricalAccount(accountId, TrainingDataThrough);
 
@@ -1522,9 +1515,8 @@ public class ForecastEngineTests
         // Assert — falls back to historical baseline (60000 / 12 = 5000)
         Assert.All(result.Months, m => Assert.Equal(5000m, m.BaselineOutgoingsTotal));
 
-        Assert.NotNull(result.Summary.Regression);
-        Assert.True(result.Summary.Regression.FellBackToFlatAverage);
-        Assert.True(result.Summary.Regression.RSquared < 0.5m);
+                Assert.True(result.Summary.Expenses.UsingFlatAverage);
+        Assert.True(result.Summary.Expenses.RSquared < 0.5m);
     }
 
     /// <summary>
@@ -1544,8 +1536,7 @@ public class ForecastEngineTests
             endDate: new DateOnly(2024, 9, 30),
             startingBalance: 10000m,
             monthlyIncome: 5000m,
-            lookbackMonths: 12,
-            outgoingMode: "IncomeCorrelated");
+            lookbackMonths: 12);
 
         var mockAccount = HistoricalAccount(accountId, TrainingDataThrough);
 
@@ -1590,8 +1581,7 @@ public class ForecastEngineTests
         // Assert — falls back to historical baseline (57000 / 12 = 4750)
         Assert.All(result.Months, m => Assert.Equal(4750m, m.BaselineOutgoingsTotal));
 
-        Assert.NotNull(result.Summary.Regression);
-        Assert.True(result.Summary.Regression.FellBackToFlatAverage);
+                Assert.True(result.Summary.Expenses.UsingFlatAverage);
     }
 
     /// <summary>
@@ -1620,8 +1610,7 @@ public class ForecastEngineTests
             endDate: new DateOnly(2024, 9, 30),
             startingBalance: 20000m,
             monthlyIncome: 5000m,          // the salary that carries on
-            lookbackMonths: 6,
-            outgoingMode: "IncomeCorrelated");
+            lookbackMonths: 6);
 
         // Extra income of 3000 a month that stops after July.
         plan.PlannedItems.Add(MonthlyIncome(planId, 3000m, new DateOnly(2024, 7, 1), until: new DateOnly(2024, 7, 31), name: "Contract work"));
@@ -1695,8 +1684,7 @@ public class ForecastEngineTests
             endDate: new DateOnly(2024, 7, 31),
             startingBalance: 20000m,
             monthlyIncome: 6000m,
-            lookbackMonths: 6,
-            outgoingMode: "IncomeCorrelated");
+            lookbackMonths: 6);
 
         var account1 = HistoricalAccount(accountId1, TrainingDataThrough, balance: 15000m, name: "Transaction Account");
         var account2 = HistoricalAccount(accountId2, TrainingDataThrough, balance: 5000m, name: "Credit Card");
@@ -1742,9 +1730,8 @@ public class ForecastEngineTests
         var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert
-        Assert.NotNull(result.Summary.Regression);
-        Assert.False(result.Summary.Regression.FellBackToFlatAverage);
-        Assert.True(result.Summary.Regression.RSquared > 0.5m);
+                Assert.False(result.Summary.Expenses.UsingFlatAverage);
+        Assert.True(result.Summary.Expenses.RSquared > 0.5m);
     }
 
     /// <summary>
@@ -1778,7 +1765,7 @@ public class ForecastEngineTests
         var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert
-        Assert.Null(result.Summary.Regression);
+        Assert.True(result.Summary.Expenses.UsingFlatAverage);
     }
 
     /// <summary>
@@ -1798,8 +1785,7 @@ public class ForecastEngineTests
             endDate: new DateOnly(2024, 9, 30),
             startingBalance: 10000m,
             monthlyIncome: 5000m,
-            lookbackMonths: 12,
-            outgoingMode: "IncomeCorrelated");
+            lookbackMonths: 12);
 
         var mockAccount = HistoricalAccount(accountId, TrainingDataThrough);
 
@@ -1844,8 +1830,7 @@ public class ForecastEngineTests
         // Assert — falls back to historical baseline (36000 / 12 = 3000)
         Assert.All(result.Months, m => Assert.Equal(3000m, m.BaselineOutgoingsTotal));
 
-        Assert.NotNull(result.Summary.Regression);
-        Assert.True(result.Summary.Regression.FellBackToFlatAverage);
+                Assert.True(result.Summary.Expenses.UsingFlatAverage);
     }
 
     /// <summary>
@@ -1876,8 +1861,7 @@ public class ForecastEngineTests
             endDate: new DateOnly(2024, 12, 31),
             startingBalance: 10000m,
             monthlyIncome: 0m,
-            lookbackMonths: 6,
-            outgoingMode: "IncomeCorrelated");
+            lookbackMonths: 6);
 
         // 20,000 a month for the first half of the year, then nothing.
         plan.PlannedItems.Add(MonthlyIncome(planId, 20000m, new DateOnly(2024, 1, 1), until: new DateOnly(2024, 6, 30)));
@@ -1951,8 +1935,7 @@ public class ForecastEngineTests
             endDate: new DateOnly(2024, 8, 31),
             startingBalance: 20000m,
             monthlyIncome: 6000m,
-            lookbackMonths: 6,
-            outgoingMode: "IncomeCorrelated");
+            lookbackMonths: 6);
 
         // The account's data stops on the 1st of July — one day into the month.
         _mocks.InstrumentRepositoryMock
@@ -1982,14 +1965,13 @@ public class ForecastEngineTests
         var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert
-        Assert.NotNull(result.Summary.Regression);
-        Assert.False(result.Summary.Regression.FellBackToFlatAverage);
+                Assert.False(result.Summary.Expenses.UsingFlatAverage);
 
         // The six real months fit exactly. Including the stub would drag R² off 1.
-        Assert.True(result.Summary.Regression.RSquared >= 0.99m,
-            $"the part-month was fitted: R² came out at {result.Summary.Regression.RSquared}");
-        Assert.Equal(0.5m, Math.Round(result.Summary.Regression.VariableComponent, 4));
-        Assert.Equal(500m, Math.Round(result.Summary.Regression.FixedComponent, 2));
+        Assert.True(result.Summary.Expenses.RSquared >= 0.99m,
+            $"the part-month was fitted: R² came out at {result.Summary.Expenses.RSquared}");
+        Assert.Equal(0.5m, Math.Round(result.Summary.Expenses.VariableComponent, 4));
+        Assert.Equal(500m, Math.Round(result.Summary.Expenses.FixedComponent, 2));
     }
 
     /// <summary>
@@ -2016,8 +1998,7 @@ public class ForecastEngineTests
             endDate: new DateOnly(2024, 8, 31),
             startingBalance: 20000m,
             monthlyIncome: 6000m,
-            lookbackMonths: 6,
-            outgoingMode: "IncomeCorrelated");
+            lookbackMonths: 6);
 
         var savings = new LogicalAccount(savingsAccountId, [])
         {
@@ -2052,10 +2033,9 @@ public class ForecastEngineTests
         var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert — July, August and September hold no data for the fitted account and must not appear.
-        Assert.NotNull(result.Summary.Regression);
-        Assert.False(result.Summary.Regression.FellBackToFlatAverage);
-        Assert.True(result.Summary.Regression.RSquared >= 0.99m,
-            $"empty months were fitted: R² came out at {result.Summary.Regression.RSquared}");
+                Assert.False(result.Summary.Expenses.UsingFlatAverage);
+        Assert.True(result.Summary.Expenses.RSquared >= 0.99m,
+            $"empty months were fitted: R² came out at {result.Summary.Expenses.RSquared}");
     }
 
     /// <summary>
@@ -2085,8 +2065,7 @@ public class ForecastEngineTests
             endDate: new DateOnly(2024, 8, 31),
             startingBalance: 50000m,
             monthlyIncome: 6000m,
-            lookbackMonths: 6,
-            outgoingMode: "IncomeCorrelated");
+            lookbackMonths: 6);
 
         plan.PlannedItems.Add(new DomainPlannedItem(Guid.NewGuid())
         {
@@ -2132,11 +2111,10 @@ public class ForecastEngineTests
 
         // Assert — with the solar payment taken back out, the six months are exactly on the line
         // again, so the fit is the clean one and not the one the spike would have produced.
-        Assert.NotNull(result.Summary.Regression);
-        Assert.False(result.Summary.Regression.FellBackToFlatAverage);
-        Assert.True(result.Summary.Regression.RSquared >= 0.99m,
-            $"the planned expense was left in the training data: R² came out at {result.Summary.Regression.RSquared}");
-        Assert.Equal(0.5m, Math.Round(result.Summary.Regression.VariableComponent, 4));
+                Assert.False(result.Summary.Expenses.UsingFlatAverage);
+        Assert.True(result.Summary.Expenses.RSquared >= 0.99m,
+            $"the planned expense was left in the training data: R² came out at {result.Summary.Expenses.RSquared}");
+        Assert.Equal(0.5m, Math.Round(result.Summary.Expenses.VariableComponent, 4));
 
         // And the item reports what actually happened rather than what was planned.
         var progress = Assert.Single(result.PlannedItems, p => p.Name == "Solar");

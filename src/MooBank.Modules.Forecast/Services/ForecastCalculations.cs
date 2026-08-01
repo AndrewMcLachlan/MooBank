@@ -1,4 +1,4 @@
-using Asm.MooBank.Domain.Entities.Account;
+﻿using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Forecast.Models;
 using DomainInstrument = Asm.MooBank.Domain.Entities.Instrument.Instrument;
@@ -24,12 +24,12 @@ internal sealed record TrainingWindow(DateOnly StartMonth, DateOnly EndMonth)
     }
 }
 
-internal sealed record RegressionModel(decimal Intercept, decimal Slope, decimal RSquared, bool Valid, decimal AvgHistoricalIncome)
+internal sealed record RegressionModel(decimal Intercept, decimal Slope, decimal RSquared, bool Valid, decimal AvgHistoricalIncome, int DataPoints)
 {
     /// <summary>
     /// No fit: too little data to attempt one. Consumers fall back to the flat average.
     /// </summary>
-    public static RegressionModel None { get; } = new(0m, 0m, 0m, false, 0m);
+    public static RegressionModel None { get; } = new(0m, 0m, 0m, false, 0m, 0);
 }
 
 /// <summary>
@@ -185,7 +185,7 @@ internal static class ForecastCalculations
         // Validate minimum data points
         if (points.Count < settings.MinDataPoints)
         {
-            return new RegressionModel(0m, 0m, 0m, false, avgIncome);
+            return new RegressionModel(0m, 0m, 0m, false, avgIncome, points.Count);
         }
 
         // Fit simple linear regression: expense = intercept + slope * income
@@ -200,7 +200,7 @@ internal static class ForecastCalculations
         // Zero variance in income — cannot fit regression
         if (denominator == 0m)
         {
-            return new RegressionModel(0m, 0m, 0m, false, avgIncome);
+            return new RegressionModel(0m, 0m, 0m, false, avgIncome, points.Count);
         }
 
         var slope = (n * sumXY - sumX * sumY) / denominator;
@@ -217,14 +217,32 @@ internal static class ForecastCalculations
 
         var rSquared = ssTotal == 0m ? 0m : 1m - ssResidual / ssTotal;
 
-        // Reject if R-squared below threshold or negative slope (nonsensical)
-        var valid = rSquared >= settings.RSquaredThreshold && slope >= 0m;
+        // Reject a fit that says nothing, or says something absurd. A negative slope has spending
+        // fall as income rises; a slope above one has every extra dollar earned spent more than
+        // once over, which is not a forecast so much as a countdown.
+        var valid = rSquared >= settings.RSquaredThreshold && slope is >= 0m and <= 1m;
 
-        return new RegressionModel(intercept, slope, rSquared, valid, avgIncome);
+        return new RegressionModel(intercept, slope, rSquared, valid, avgIncome, points.Count);
     }
 
-    public static ForecastSummary CalculateSummary(List<ForecastMonth> months, decimal monthlyBaselineOutgoings, RegressionModel? regression = null)
+    public static ForecastSummary CalculateSummary(
+        List<ForecastMonth> months,
+        decimal flatAverage,
+        RegressionModel regression,
+        decimal modelledIncomeShortfall)
     {
+        var expenses = new ExpenseModel
+        {
+            FixedComponent = regression.Valid ? regression.Intercept : 0m,
+            VariableComponent = regression.Valid ? regression.Slope : 0m,
+            RSquared = regression.RSquared,
+            DataPoints = regression.DataPoints,
+            UsingFlatAverage = !regression.Valid,
+            FlatAverage = flatAverage,
+            ModelledIncomeShortfall = modelledIncomeShortfall,
+            AverageMonthly = months.Count > 0 ? months.Average(m => Math.Abs(m.BaselineOutgoingsTotal)) : 0m,
+        };
+
         if (!months.Any())
         {
             return new ForecastSummary
@@ -235,7 +253,7 @@ internal static class ForecastCalculations
                 MonthsBelowZero = 0,
                 TotalIncome = 0m,
                 TotalOutgoings = 0m,
-                MonthlyBaselineOutgoings = 0m
+                Expenses = expenses,
             };
         }
 
@@ -246,10 +264,6 @@ internal static class ForecastCalculations
             ? Math.Abs(lowestMonth.ClosingBalance) / monthsUntilLow
             : 0m;
 
-        var effectiveBaseline = regression is { Valid: true }
-            ? months.Average(m => Math.Abs(m.BaselineOutgoingsTotal))
-            : monthlyBaselineOutgoings;
-
         return new ForecastSummary
         {
             LowestBalance = lowestMonth.ClosingBalance,
@@ -259,14 +273,7 @@ internal static class ForecastCalculations
             // IncomeTotal is already the whole income model, so there is nothing to add to it.
             TotalIncome = months.Sum(m => m.IncomeTotal),
             TotalOutgoings = months.Sum(m => Math.Abs(m.BaselineOutgoingsTotal) + m.PlannedExpensesTotal),
-            MonthlyBaselineOutgoings = effectiveBaseline,
-            Regression = regression is not null ? new RegressionDiagnostics
-            {
-                FixedComponent = regression.Intercept,
-                VariableComponent = regression.Slope,
-                RSquared = regression.RSquared,
-                FellBackToFlatAverage = !regression.Valid,
-            } : null,
+            Expenses = expenses,
         };
     }
 }
