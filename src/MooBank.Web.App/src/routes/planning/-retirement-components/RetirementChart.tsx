@@ -18,7 +18,7 @@ export const RetirementChart: React.FC<RetirementChartProps> = ({ years, currenc
     return (
         <Section header="Projected Balance">
             <div className="retirement-chart-canvas">
-                <Line data={retirementChartData(years)} options={retirementChartOptions(currencyCode, colours)} />
+                <Line data={retirementChartData(years, colours)} options={retirementChartOptions(currencyCode, colours)} />
             </div>
         </Section>
     );
