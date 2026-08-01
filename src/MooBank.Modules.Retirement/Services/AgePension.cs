@@ -1,4 +1,4 @@
-namespace Asm.MooBank.Modules.Retirement.Services;
+﻿namespace Asm.MooBank.Modules.Retirement.Services;
 
 /// <summary>
 /// The Age Pension rates a projection runs under.
@@ -80,6 +80,31 @@ internal static class AgePension
         var reduction = excess * rates.AssetsTaperRate;
 
         return Math.Max(0m, maximum - reduction);
+    }
+
+    /// <summary>
+    /// The assets at which the pension runs out entirely, for a household of the given ages.
+    /// </summary>
+    /// <param name="rates">The rates in force, already indexed to the year being asked about.</param>
+    /// <param name="ages">Each member's age in that year.</param>
+    /// <remarks>
+    /// The free area plus however far the taper has to run to take the whole entitlement away. Below
+    /// this a household receives something; above it, nothing — which is what makes it worth drawing
+    /// against a falling balance.
+    ///
+    /// Nought when nobody has reached pension age, because no level of assets would pay anything.
+    /// </remarks>
+    public static decimal AssetsCutOff(AgePensionRates rates, IReadOnlyCollection<int> ages)
+    {
+        var eligible = ages.Count(age => age >= rates.EligibilityAge);
+
+        if (eligible == 0 || rates.AssetsTaperRate <= 0m) return 0m;
+
+        var isCouple = ages.Count > 1;
+        var maximum = (isCouple ? rates.MaxAnnualCouple / 2m : rates.MaxAnnualSingle) * eligible;
+        var freeArea = isCouple ? rates.AssetsFreeAreaCouple : rates.AssetsFreeAreaSingle;
+
+        return freeArea + (maximum / rates.AssetsTaperRate);
     }
 
     /// <summary>

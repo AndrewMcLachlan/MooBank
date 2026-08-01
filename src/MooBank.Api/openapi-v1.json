@@ -9175,6 +9175,8 @@
           "totalIncome",
           "totalIncomeInTodaysDollars",
           "pensionInTodaysDollars",
+          "pensionAssetsCutOff",
+          "pensionAssetsCutOffInTodaysDollars",
           "members"
         ],
         "type": "object",
@@ -9231,6 +9233,14 @@
             "format": "double"
           },
           "pensionInTodaysDollars": {
+            "type": "number",
+            "format": "double"
+          },
+          "pensionAssetsCutOff": {
+            "type": "number",
+            "format": "double"
+          },
+          "pensionAssetsCutOffInTodaysDollars": {
             "type": "number",
             "format": "double"
           },

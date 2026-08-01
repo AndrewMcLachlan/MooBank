@@ -83,6 +83,18 @@ public sealed record RetirementProjectionYear
     public decimal PensionInTodaysDollars { get; init; }
 
     /// <summary>
+    /// The assets at which the Age Pension runs out entirely this year, or nought where nobody is
+    /// old enough for any level of assets to pay.
+    /// </summary>
+    /// <remarks>
+    /// Worth plotting against the balance: where the curve crosses it is where the pension begins,
+    /// and the threshold itself climbs with the indexation applied to the rates.
+    /// </remarks>
+    public decimal PensionAssetsCutOff { get; init; }
+
+    public decimal PensionAssetsCutOffInTodaysDollars { get; init; }
+
+    /// <summary>
     /// Each member's part of the year, so a chart can show whose balance is funding the income.
     /// </summary>
     public IEnumerable<RetirementMemberYear> Members { get; init; } = [];

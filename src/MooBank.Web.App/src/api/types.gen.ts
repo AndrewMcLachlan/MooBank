@@ -742,6 +742,8 @@ export type RetirementProjectionYear = {
     totalIncome: number;
     totalIncomeInTodaysDollars: number;
     pensionInTodaysDollars: number;
+    pensionAssetsCutOff: number;
+    pensionAssetsCutOffInTodaysDollars: number;
     members: Array<RetirementMemberYear>;
 };
 

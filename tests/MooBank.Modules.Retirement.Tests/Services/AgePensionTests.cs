@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Modules.Retirement.Services;
 using Asm.MooBank.Modules.Retirement.Tests.Support;
 
@@ -118,6 +118,55 @@ public class AgePensionTests
     public void ForYear_NoRatesRecorded_GetsNothing()
     {
         Assert.Equal(0m, AgePension.ForYear(AgePensionRates.None, [90, 90], 0m));
+    }
+
+    /// <summary>
+    /// Given a household of a given age
+    /// When the assets cut-off is worked out
+    /// Then it should be the point at which the taper has taken the whole entitlement
+    /// </summary>
+    [Fact]
+    public void AssetsCutOff_IsWhereTheTaperExhaustsThePension()
+    {
+        // 470,000 free area plus 45,080 of entitlement at 7.8% a year.
+        var expected = 470_000m + (45_080m / 0.078m);
+
+        Assert.Equal(expected, AgePension.AssetsCutOff(Rates, [67, 67]), 2);
+
+        // And a household exactly there receives nothing, while a pound under receives something.
+        Assert.Equal(0m, AgePension.ForYear(Rates, [67, 67], expected));
+        Assert.True(AgePension.ForYear(Rates, [67, 67], expected - 1_000m) > 0m);
+    }
+
+    /// <summary>
+    /// Given a single person
+    /// When the assets cut-off is worked out
+    /// Then it should use the single free area and rate
+    /// </summary>
+    [Fact]
+    public void AssetsCutOff_ForOnePerson_IsLowerThanForACouple()
+    {
+        var single = AgePension.AssetsCutOff(Rates, [67]);
+        var couple = AgePension.AssetsCutOff(Rates, [67, 67]);
+
+        Assert.Equal(314_000m + (29_900m / 0.078m), single, 2);
+        Assert.True(single < couple);
+    }
+
+    /// <summary>
+    /// Given nobody old enough
+    /// When the assets cut-off is worked out
+    /// Then there should be none to draw
+    /// </summary>
+    /// <remarks>
+    /// No level of assets pays anything before pension age, so a threshold would be a line with no
+    /// meaning under it.
+    /// </remarks>
+    [Fact]
+    public void AssetsCutOff_NobodyEligible_IsNought()
+    {
+        Assert.Equal(0m, AgePension.AssetsCutOff(Rates, [60, 55]));
+        Assert.Equal(0m, AgePension.AssetsCutOff(AgePensionRates.None, [90]));
     }
 
     /// <summary>

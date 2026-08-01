@@ -191,12 +191,16 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
             // The pension is means-tested on what the household holds, so it is worked out from the
             // opening balances — and it rises as those balances deplete, which is what lets a plan
             // keep paying an income after the superannuation is spent.
+            var indexedRates = AgePension.Indexed(pensionRates, drawdownIndexation);
+            var ages = members.Select(m => m.AgeAt(yearOffset)).ToArray();
+
             var pension = isDrawingDown
-                ? Round(AgePension.ForYear(
-                    AgePension.Indexed(pensionRates, drawdownIndexation),
-                    [.. members.Select(m => m.AgeAt(yearOffset))],
-                    openingTotalThisYear))
+                ? Round(AgePension.ForYear(indexedRates, ages, openingTotalThisYear))
                 : 0m;
+
+            // Reported for every year old enough to qualify, drawdown or not: the balance crossing it
+            // is what makes the pension's arrival legible on the curve.
+            var pensionCutOff = Round(AgePension.AssetsCutOff(indexedRates, ages));
 
             // Superannuation covers whatever the pension does not. Drawing the full target on top of
             // the pension would spend the balance faster than the household actually needs to.
@@ -264,6 +268,8 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
                 DrawdownInTodaysDollars = Round(drawdown * todaysDollarsFactor),
                 TotalIncomeInTodaysDollars = Round((drawdown + pension) * todaysDollarsFactor),
                 PensionInTodaysDollars = Round(pension * todaysDollarsFactor),
+                PensionAssetsCutOff = pensionCutOff,
+                PensionAssetsCutOffInTodaysDollars = Round(pensionCutOff * todaysDollarsFactor),
                 AllRetired = allRetired,
                 Members = memberYears,
             });

@@ -14,6 +14,23 @@ export interface RetirementChartColours {
 const nominalColour = "rgb(53, 162, 235)";
 const nominalFill = "rgba(53, 162, 235, 0.5)";
 
+/** Muted, because the threshold is a reference the balance is read against, not a result. */
+const cutOffColour = "rgb(214, 152, 60)";
+
+/**
+ * Where the Age Pension cuts out, plotted only from the year someone is old enough for it to mean
+ * anything.
+ *
+ * The balance crossing this line is the year the pension starts, which is otherwise invisible on a
+ * balance chart. It rises rather than sitting flat because the thresholds are indexed, so it is
+ * drawn against the nominal balance — the series it shares a scale with.
+ */
+const cutOffSeries = (years: RetirementProjectionYear[]) =>
+    years.map((y) => (y.pensionAssetsCutOff > 0 ? y.pensionAssetsCutOff : null));
+
+/** Whether anyone in the projection ever reaches an age at which the threshold applies. */
+const hasCutOff = (years: RetirementProjectionYear[]) => years.some((y) => y.pensionAssetsCutOff > 0);
+
 export const retirementChartData = (years: RetirementProjectionYear[], colours: RetirementChartColours): ChartData<"line"> => ({
     labels: years.map((y) => y.year.toString()),
     datasets: [
@@ -32,6 +49,18 @@ export const retirementChartData = (years: RetirementProjectionYear[], colours: 
             borderDash: [5, 5],
             tension: 0.1,
         },
+        ...(hasCutOff(years) ? [{
+            label: "Age pension cuts out above",
+            data: cutOffSeries(years),
+            borderColor: cutOffColour,
+            backgroundColor: cutOffColour,
+            borderDash: [2, 3],
+            borderWidth: 1.5,
+            pointRadius: 0,
+            // Gaps before pension age are meant to be gaps, not a line drawn through them.
+            spanGaps: false,
+            tension: 0,
+        }] : []),
     ],
 });
 
