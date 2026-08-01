@@ -28,6 +28,22 @@ All three land together. They touch the same engine, the same result model and t
 - **Expenses:** income-correlated becomes *the* model, not a mode. The flat average survives only
   as the degenerate case when there is no signal to fit.
 
+### Design stance
+
+**It is the plan author's job to get the plan reasonably close to reality and adjust it as reality
+unfolds.** The engine's job is to make divergence obvious, not to guess its way around it.
+
+This settles a whole class of questions that would otherwise be argued case by case. Matching is
+bounded and predictable rather than eager: spend outside a claim window is ordinary spend, and the
+item says so. There is no fuzzy amount-similarity search, no inferring that a payment "must have
+been" a given item, and no tolerance constants quietly absorbing differences. Where the engine does
+hold money in the forecast — the remainder of a part-paid one-off — it is because dropping it would
+make the forecast silently optimistic, and it is reported, not hidden.
+
+The corollary is that the per-item reporting is **load-bearing, not decoration**. Spent, Remaining,
+unrealised and underspent are the mechanism by which the author knows to adjust. They are the
+feature, as much as the arithmetic is.
+
 ## Verified diagnosis
 
 Measured against the production database on 2026-08-01, not inferred. Two plans exist, both with
@@ -360,10 +376,11 @@ and move to the new expense model.
   workaround, and worth saying plainly rather than leaving implied: the *correct* way to express
   spend spread over a period is a `FlexibleWindow`, which is exactly what the UI can't create.
 
-  Kept out of scope to hold this change to one shape, but it is a small piece of work — the table
-  already renders start and end dates for `Schedule` items, so it is one more option in the
-  frequency dropdown plus the `AllocationMode` choice. Flagged for a decision rather than quietly
-  bundled.
+  **Decided: follow-up issue, not this change.** Under the design stance above, a one-off whose
+  payments straggle is the author's to adjust — move the date, split the item — and the per-item
+  reporting tells them to. Modelling the spread properly is an improvement, not a correctness fix.
+  It is small when it comes (the table already renders start and end dates for `Schedule` items, so
+  it is one more option in the frequency dropdown plus the `AllocationMode` choice).
 
 ## Risks
 
