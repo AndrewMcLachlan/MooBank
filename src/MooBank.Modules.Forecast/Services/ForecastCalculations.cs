@@ -5,7 +5,13 @@ using DomainInstrument = Asm.MooBank.Domain.Entities.Instrument.Instrument;
 
 namespace Asm.MooBank.Modules.Forecast.Services;
 
-internal sealed record RegressionModel(decimal Intercept, decimal Slope, decimal RSquared, bool Valid, decimal AvgHistoricalIncome);
+internal sealed record RegressionModel(decimal Intercept, decimal Slope, decimal RSquared, bool Valid, decimal AvgHistoricalIncome)
+{
+    /// <summary>
+    /// No fit: too little data to attempt one. Consumers fall back to the flat average.
+    /// </summary>
+    public static RegressionModel None { get; } = new(0m, 0m, 0m, false, 0m);
+}
 
 /// <summary>
 /// Pure computational logic for the forecast engine: regression fitting, baseline recalculation, and summary generation.
@@ -13,15 +19,40 @@ internal sealed record RegressionModel(decimal Intercept, decimal Slope, decimal
 internal static class ForecastCalculations
 {
     /// <summary>
-    /// Filters account IDs to exclude Savings accounts for historical analysis.
+    /// Filters instruments to exclude Savings accounts for historical analysis.
     /// Savings accounts often have large transfers that skew income/expense averages.
     /// </summary>
-    public static List<Guid> FilterAccountsForHistoricalAnalysis(List<DomainInstrument> instruments) =>
+    public static List<LogicalAccount> FilterInstrumentsForHistoricalAnalysis(List<DomainInstrument> instruments) =>
         instruments
             .OfType<LogicalAccount>()
             .Where(a => a.AccountType != AccountType.Savings)
-            .Select(a => a.Id)
             .ToList();
+
+    /// <summary>
+    /// Filters account IDs to exclude Savings accounts for historical analysis.
+    /// </summary>
+    public static List<Guid> FilterAccountsForHistoricalAnalysis(List<DomainInstrument> instruments) =>
+        [.. FilterInstrumentsForHistoricalAnalysis(instruments).Select(a => a.Id)];
+
+    /// <summary>
+    /// The start of the last month the data covers in full, or null when it doesn't cover one.
+    /// </summary>
+    /// <remarks>
+    /// A partial month holds a fraction of a month's income and spending. Fitting it as though it
+    /// were a whole one puts a point near the origin, and a point near the origin anchors the
+    /// regression line: in the real data a single day's tail — income $0, expenses $9 — pulled the
+    /// fixed component from $6,965 down to $2,399, the slope from 0.327 to 0.529, and R² from 0.284
+    /// to 0.691. Only whole months are fit.
+    /// </remarks>
+    public static DateOnly? LastCompleteMonth(DateOnly? dataThrough)
+    {
+        if (dataThrough is not { } through) return null;
+
+        var monthStart = new DateOnly(through.Year, through.Month, 1);
+
+        // The month is complete only if the data reaches its final day.
+        return through >= monthStart.AddMonths(1).AddDays(-1) ? monthStart : monthStart.AddMonths(-1);
+    }
 
     /// <summary>
     /// Recalculates baseline outgoings using actual balance data from past months.

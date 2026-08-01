@@ -31,8 +31,18 @@ internal class ForecastEngine(
             .Where(d => d.HasValue)
             .Max() ?? DateOnly.FromDateTime(DateTime.Today);
 
-        // 4. Get account IDs excluding Savings accounts for historical calculations
-        var accountIdsForHistoricalAnalysis = ForecastCalculations.FilterAccountsForHistoricalAnalysis(allInstruments);
+        // 4. Get accounts excluding Savings for historical calculations
+        var instrumentsForHistoricalAnalysis = ForecastCalculations.FilterInstrumentsForHistoricalAnalysis(allInstruments);
+        var accountIdsForHistoricalAnalysis = instrumentsForHistoricalAnalysis.Select(a => a.Id).ToList();
+
+        // 4a. How far the data behind the *historical* figures runs. This is deliberately not
+        //     latestTransactionDate: that is the maximum across every account, so a savings account
+        //     with fresher data would extend the training window past the end of the transaction
+        //     accounts being fit, adding an empty month at the far end.
+        var historicalDataThrough = instrumentsForHistoricalAnalysis
+            .Select(i => i.LastTransaction)
+            .Where(d => d.HasValue)
+            .Max() ?? latestTransactionDate;
 
         // 5. Parse strategies
         var incomeStrategy = String.IsNullOrEmpty(plan.IncomeStrategySerialized)
@@ -85,7 +95,7 @@ internal class ForecastEngine(
         if (outgoingStrategy.Mode == "IncomeCorrelated")
         {
             regressionModel = await FitIncomeExpenseRegression(
-                    accountIdsForHistoricalAnalysis, outgoingStrategy, latestTransactionDate, cancellationToken);
+                    accountIdsForHistoricalAnalysis, outgoingStrategy, historicalDataThrough, cancellationToken);
 
             useRegression = regressionModel.Valid;
 
@@ -388,16 +398,31 @@ internal class ForecastEngine(
     /// <summary>
     /// Fetches monthly credit/debit data and fits a linear regression of expense vs income.
     /// </summary>
+    /// <remarks>
+    /// The window covers whole calendar months only. Anchoring it on the last transaction instead
+    /// would open and close it mid-month, and a part-month reads to the fit as a month where almost
+    /// nothing was earned or spent.
+    /// </remarks>
     private async Task<RegressionModel> FitIncomeExpenseRegression(
-        List<Guid> accountIds, OutgoingStrategy strategy, DateOnly latestTransactionDate, CancellationToken cancellationToken)
+        List<Guid> accountIds, OutgoingStrategy strategy, DateOnly historicalDataThrough, CancellationToken cancellationToken)
     {
-        var lookbackEnd = latestTransactionDate;
-        var lookbackStart = lookbackEnd.AddMonths(-strategy.LookbackMonths);
-
-        var allTotals = await reportReader.GetMonthlyCreditDebitTotalsForAccounts(accountIds, lookbackStart, lookbackEnd, cancellationToken);
-
-        var monthlyData = AggregateMonthlyData(allTotals);
         var settings = strategy.IncomeCorrelated ?? new IncomeCorrelatedSettings();
+
+        if (ForecastCalculations.LastCompleteMonth(historicalDataThrough) is not { } trainingEndMonth || strategy.LookbackMonths <= 0)
+        {
+            return RegressionModel.None;
+        }
+
+        var trainingStartMonth = trainingEndMonth.AddMonths(-(strategy.LookbackMonths - 1));
+        var trainingEnd = trainingEndMonth.AddMonths(1).AddDays(-1);
+
+        var allTotals = await reportReader.GetMonthlyCreditDebitTotalsForAccounts(accountIds, trainingStartMonth, trainingEnd, cancellationToken);
+
+        // Filtered here as well as in the query, so the whole-month guarantee holds locally rather
+        // than resting on how the stored procedure treats the range boundaries.
+        var monthlyData = AggregateMonthlyData(allTotals)
+            .Where(kvp => kvp.Key >= trainingStartMonth && kvp.Key <= trainingEndMonth)
+            .ToDictionary();
 
         return ForecastCalculations.FitRegression(monthlyData, settings);
     }
