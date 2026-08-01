@@ -1,6 +1,6 @@
 ﻿import { describe, it, expect } from "vitest";
 import type { RetirementMemberYear, RetirementProjectionYear } from "api/types.gen";
-import { hasRetirementIncome, retirementIncomeChartData } from "./retirementIncomeChart";
+import { hasRetirementIncome, retirementIncomeChartData, retirementIncomeChartOptions } from "./retirementIncomeChart";
 
 const selfId = "11111111-1111-1111-1111-111111111111";
 const spouseId = "22222222-2222-2222-2222-222222222222";
@@ -166,5 +166,33 @@ describe("retirementIncomeChartData", () => {
 
         expect(data.labels).toEqual([]);
         expect(data.datasets).toEqual([]);
+    });
+});
+
+/**
+ * The tooltip on a stacked chart.
+ *
+ * Its footer sums the items it is handed, so what it reports depends entirely on how the hover is
+ * resolved. Pointing at one segment used to hand it that segment alone, and the "total" repeated the
+ * figure directly above it.
+ */
+describe("the income tooltip", () => {
+    const options = () => retirementIncomeChartOptions("AUD", { grid: "#333" }, projection());
+
+    it("resolves a hover to the whole bar, not the segment under the pointer", () => {
+        expect(options().interaction?.mode).toBe("index");
+        expect(options().interaction?.intersect).toBe(false);
+    });
+
+    it("totals every series in the bar", () => {
+        const footer = options().plugins?.tooltip?.callbacks?.footer as (items: { parsed: { y: number } }[]) => string;
+
+        expect(footer([{ parsed: { y: 30_000 } }, { parsed: { y: 10_000 } }, { parsed: { y: 5_000 } }])).toContain("45,000");
+    });
+
+    it("names the year alongside the age the axis shows", () => {
+        const title = options().plugins?.tooltip?.callbacks?.title as (items: { dataIndex: number; label: string }[]) => string;
+
+        expect(title([{ dataIndex: 0, label: "65" }])).toBe("Age 65 (2028)");
     });
 });

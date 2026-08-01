@@ -1,4 +1,4 @@
-import type { ChartData, ChartOptions } from "chart.js";
+﻿import type { ChartData, ChartOptions } from "chart.js";
 import type { RetirementProjectionYear } from "api/types.gen";
 import { formatCurrency } from "utils/currency";
 
@@ -38,6 +38,9 @@ export const retirementChartData = (years: RetirementProjectionYear[], colours: 
 export const retirementChartOptions = (currencyCode: string, colours: RetirementChartColours): ChartOptions<"line"> => ({
     responsive: true,
     maintainAspectRatio: false,
+    // Both series for the year the pointer is nearest, so the nominal balance and what it is worth
+    // today can be read together — which is the only reason to plot them on the same axes.
+    interaction: { mode: "index", intersect: false },
     plugins: {
         legend: { position: "top" },
         tooltip: {

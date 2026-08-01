@@ -87,6 +87,13 @@ export const retirementIncomeChartOptions = (
     return {
         responsive: true,
         maintainAspectRatio: false,
+        /**
+         * Resolve the hover to the whole bar rather than the segment under the pointer. Without it
+         * the tooltip is handed only the series being pointed at, so it lists one line and its
+         * "total" is that same figure again — which reads as a bug, because on a stacked chart the
+         * total anyone wants is the bar's.
+         */
+        interaction: { mode: "index", intersect: false },
         plugins: {
             legend: { position: "top" },
             tooltip: {
@@ -98,11 +105,8 @@ export const retirementIncomeChartOptions = (
                         return year ? `Age ${items[0].label} (${year})` : `Age ${items[0]?.label}`;
                     },
                     label: (context) => `${context.dataset.label}: ${formatCurrency(context.parsed.y, currencyCode)}`,
-                    footer: (items) => {
-                        const total = items.reduce((sum, item) => sum + item.parsed.y, 0);
-
-                        return `Total: ${formatCurrency(total, currencyCode)}`;
-                    },
+                    // Every series for the year, so this is the household's income, not a share of it.
+                    footer: (items) => `Total: ${formatCurrency(items.reduce((sum, item) => sum + item.parsed.y, 0), currencyCode)}`,
                 },
             },
         },
