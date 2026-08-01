@@ -4,7 +4,7 @@ import { formatCurrency } from "utils/currency";
 import { TweakSlider } from "./TweakSlider";
 import { isDirty, isExcluded, memberValue, planValue, withExcluded, withMemberValue, withPlanValue, type PlanTweakKey } from "../-retirement-utils/tweaks";
 import { growthStrategies, minWorkingAge, toPercent } from "../-retirement-utils/retirementDefaults";
-import { ageForIncome, incomeForAge, type SyncBasis } from "../-retirement-utils/retirementSync";
+import { ageForIncome, type SyncBasis } from "../-retirement-utils/retirementSync";
 
 interface RetirementTweaksProps {
     plan: RetirementPlan;
@@ -48,15 +48,12 @@ export const RetirementTweaks: React.FC<RetirementTweaksProps> = ({ plan, draft,
         }
         : undefined;
 
-    const setLifeExpectancy = (age: number) => {
-        let next = withPlanValue(draft, plan, "lifeExpectancy", age);
-
-        if (basis) {
-            next = withPlanValue(next, plan, "targetRetirementIncome", incomeForAge(basis, age));
-        }
-
-        onChange(next);
-    };
+    /**
+     * Moves the horizon alone. The income that goes with it is solved on the server against the
+     * projection itself and arrives with the next run — an estimate worked out here would only be
+     * replaced a moment later by a figure a tenth different, having shown a wrong number meanwhile.
+     */
+    const setLifeExpectancy = (age: number) => onChange(withPlanValue(draft, plan, "lifeExpectancy", age));
 
     const setTargetIncome = (income: number) => {
         let next = withPlanValue(draft, plan, "targetRetirementIncome", income);

@@ -17,8 +17,8 @@ import { RetirementAssumptionsNote } from "./-retirement-components/RetirementAs
 import { RetirementSettingsModal } from "./-retirement-components/RetirementSettingsModal";
 import { RetirementTweaks } from "./-retirement-components/RetirementTweaks";
 import { CreateRetirementPlan } from "./-retirement-components/CreateRetirementPlan";
-import { applyDraftToPlan, emptyDraft, planValue, pruneDraft, withPlanValue } from "./-retirement-utils/tweaks";
-import { householdKey, incomeForAge, projectionMatchesDraft } from "./-retirement-utils/retirementSync";
+import { applyDraftToPlan, emptyDraft, pruneDraft, withPlanValue } from "./-retirement-utils/tweaks";
+import { householdKey, projectionMatchesDraft } from "./-retirement-utils/retirementSync";
 import type { RetirementProjectionOverrides } from "api/types.gen";
 
 export const Route = createFileRoute("/planning/retirement")({
@@ -82,7 +82,10 @@ function Retirement() {
         // Still showing the previous household; wait for the one that was asked for.
         if (!projectionMatchesDraft(planMemberIds, scoped.excludedMemberIds, projectedMemberIds)) return;
 
-        const household = householdKey(projectedMemberIds);
+        // Keyed on the horizon as well as the household, both read from the result rather than the
+        // draft, so the income is re-solved whenever either changes — and never against a projection
+        // that has not caught up.
+        const household = `${householdKey(projectedMemberIds)}@${projection.summary.lifeExpectancyYear}`;
 
         // The first matching projection sets the baseline rather than re-solving against it.
         if (solvedFor.current === null || solvedFor.current === household) {
@@ -92,17 +95,11 @@ function Retirement() {
 
         solvedFor.current = household;
 
-        const summary = projection.summary;
-        if (summary.balanceAtRetirementInTodaysDollars <= 0) return;
-
-        const income = incomeForAge(
-            {
-                balance: summary.balanceAtRetirementInTodaysDollars,
-                realReturnRate: summary.drawdownRealReturnRate,
-                retirementAge: summary.retirementAge,
-            },
-            planValue(scoped, plan, "lifeExpectancy"),
-        );
+        // The server's own figure, solved against the projection rather than estimated from the
+        // closing balance: it accounts for the fees still being charged and for the pension sharing
+        // the load, which an annuity cannot, and which it overstated by a tenth or more.
+        const income = projection.summary.sustainableIncomeInTodaysDollars;
+        if (income <= 0) return;
 
         setDraft(current => withPlanValue(current, plan, "targetRetirementIncome", income));
     }, [plan, projection, scoped]);

@@ -9094,7 +9094,8 @@
           "finalBalance",
           "finalBalanceInTodaysDollars",
           "lifeExpectancyYear",
-          "totalPension"
+          "totalPension",
+          "sustainableIncomeInTodaysDollars"
         ],
         "type": "object",
         "properties": {
@@ -9154,6 +9155,10 @@
             "format": "int32"
           },
           "totalPension": {
+            "type": "number",
+            "format": "double"
+          },
+          "sustainableIncomeInTodaysDollars": {
             "type": "number",
             "format": "double"
           }

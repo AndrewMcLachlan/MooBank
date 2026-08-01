@@ -246,4 +246,16 @@ public sealed record RetirementProjectionSummary
     /// never qualified — usually because its balances stayed above the assets test's cut-off.
     /// </summary>
     public decimal TotalPension { get; init; }
+
+    /// <summary>
+    /// The largest income, in today's dollars, the plan can pay every year without falling short
+    /// before its life expectancy.
+    /// </summary>
+    /// <remarks>
+    /// Solved against the projection itself, so it accounts for the fees and premiums still being
+    /// charged in retirement and for the Age Pension sharing the load. This is the figure to set a
+    /// target income from; the annuity on <see cref="BalanceAtRetirement"/> is a far looser guide and
+    /// reads high.
+    /// </remarks>
+    public decimal SustainableIncomeInTodaysDollars { get; init; }
 }

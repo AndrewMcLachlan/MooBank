@@ -69,6 +69,56 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
     {
         ArgumentNullException.ThrowIfNull(plan);
 
+        var projection = Project(plan, today, pensionRates, overrides);
+
+        // Nobody to project is nobody to pay: with no members there is no drawdown, so no target is
+        // ever unaffordable and the search would run to its own ceiling.
+        var sustainable = projection.Members.Any()
+            ? SolveSustainableIncome(plan, today, pensionRates, overrides)
+            : 0m;
+
+        return projection with
+        {
+            Summary = projection.Summary with { SustainableIncomeInTodaysDollars = sustainable },
+        };
+    }
+
+    /// <summary>
+    /// The largest target income the plan can pay every year without falling short before its life
+    /// expectancy, in today's dollars.
+    /// </summary>
+    /// <remarks>
+    /// Found by running the projection itself and halving the interval, rather than by an annuity on
+    /// the closing balance. The two are not close: an annuity knows nothing of the fees and premiums
+    /// still being charged, nor of the Age Pension arriving to share the load, and on a real plan it
+    /// overstated what was affordable by around a tenth with the pension and a third without.
+    ///
+    /// Twenty-eight halvings of a range up to a million settle to well under a dollar, and the answer
+    /// is rounded to the nearest hundred because a target income is a decision, not a measurement.
+    /// Each pass is a few dozen years of arithmetic over a handful of people, so the whole solve costs
+    /// far less than the request that carried it.
+    /// </remarks>
+    private decimal SolveSustainableIncome(DomainEntities.RetirementPlan plan, DateOnly today, AgePensionRates pensionRates, ProjectionOverrides? overrides)
+    {
+        decimal affordable = 0m, tooMuch = 1_000_000m;
+
+        for (var i = 0; i < 28; i++)
+        {
+            var candidate = (affordable + tooMuch) / 2m;
+            var trial = overrides is null
+                ? new ProjectionOverrides { TargetRetirementIncome = candidate }
+                : overrides with { TargetRetirementIncome = candidate };
+
+            if (Project(plan, today, pensionRates, trial).Summary.MoneyRunsOutYear is null) affordable = candidate;
+            else tooMuch = candidate;
+        }
+
+        return Math.Floor(affordable / 100m) * 100m;
+    }
+
+    private RetirementProjection Project(DomainEntities.RetirementPlan plan, DateOnly today, AgePensionRates pensionRates, ProjectionOverrides? overrides)
+    {
+
         var assumptions = ResolvedAssumptions.From(plan, overrides);
         var startYear = today.Year;
 

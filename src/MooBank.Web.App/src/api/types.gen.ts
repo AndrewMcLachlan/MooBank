@@ -725,6 +725,7 @@ export type RetirementProjectionSummary = {
     lifeExpectancyYear: number;
     moneyRunsOutYear?: null | number;
     totalPension: number;
+    sustainableIncomeInTodaysDollars: number;
 };
 
 export type RetirementProjectionYear = {
