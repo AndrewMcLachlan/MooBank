@@ -31,7 +31,7 @@ internal static class TestEntities
         decimal contributionsTaxRate = 0m,
         int lifeExpectancy = 90,
         decimal targetRetirementIncome = 0m,
-        int preRetirementSwitchYears = 0,
+        int cashBucketYears = 0,
         decimal? cashReturnRate = null,
         IEnumerable<DomainPlanMember>? members = null) =>
         new(id ?? Guid.NewGuid())
@@ -44,7 +44,7 @@ internal static class TestEntities
             ContributionsTaxRate = contributionsTaxRate,
             LifeExpectancy = lifeExpectancy,
             TargetRetirementIncome = targetRetirementIncome,
-            PreRetirementSwitchYears = preRetirementSwitchYears,
+            CashBucketYears = cashBucketYears,
             CashReturnRate = cashReturnRate ?? expectedReturnRate,
             CreatedUtc = DateTime.UtcNow,
             UpdatedUtc = DateTime.UtcNow,

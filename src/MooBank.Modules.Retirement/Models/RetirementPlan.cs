@@ -43,7 +43,7 @@ public record RetirementPlanBase
     /// <summary>
     /// How many years before retiring a member's balance moves to cash. Nought turns the glide off.
     /// </summary>
-    public int PreRetirementSwitchYears { get; init; }
+    public int CashBucketYears { get; init; }
 
     /// <summary>
     /// The nominal return a balance earns once it has moved to cash.

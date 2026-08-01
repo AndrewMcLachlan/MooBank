@@ -6,7 +6,6 @@ import { useAccounts } from "hooks/useAccounts";
 import { useFamilyMembers } from "../-retirement-hooks/useFamilyMembers";
 import { CurrencyInput } from "components";
 import { defaultCurrentAge, defaultRetirementAge, fromPercent, growthStrategies, toPercent } from "../-retirement-utils/retirementDefaults";
-import { ageForIncome, incomeForAge, type SyncBasis } from "../-retirement-utils/retirementSync";
 
 interface RetirementSettingsModalProps {
     plan?: RetirementPlan;
@@ -29,7 +28,7 @@ interface RetirementSettingsFormValues {
     contributionsTaxPercent: number;
     lifeExpectancy: number;
     targetRetirementIncome: number;
-    preRetirementSwitchYears: number;
+    cashBucketYears: number;
     cashReturnPercent: number;
     members: {
         id?: string;
@@ -53,7 +52,7 @@ const toFormValues = (plan?: RetirementPlan): RetirementSettingsFormValues => ({
     contributionsTaxPercent: toPercent(plan?.contributionsTaxRate),
     lifeExpectancy: plan?.lifeExpectancy ?? 90,
     targetRetirementIncome: plan?.targetRetirementIncome ?? 0,
-    preRetirementSwitchYears: plan?.preRetirementSwitchYears ?? 2,
+    cashBucketYears: plan?.cashBucketYears ?? 2,
     cashReturnPercent: toPercent(plan?.cashReturnRate),
     members: (plan?.members ?? []).map(m => ({
         id: m.id,
@@ -77,7 +76,7 @@ const toRequest = (data: RetirementSettingsFormValues): SimpleRetirementPlan => 
     contributionsTaxRate: fromPercent(data.contributionsTaxPercent),
     lifeExpectancy: Number(data.lifeExpectancy) || 0,
     targetRetirementIncome: Number(data.targetRetirementIncome) || 0,
-    preRetirementSwitchYears: Number(data.preRetirementSwitchYears) || 0,
+    cashBucketYears: Number(data.cashBucketYears) || 0,
     cashReturnRate: fromPercent(data.cashReturnPercent),
     members: data.members.map(m => ({
         id: m.id,
@@ -110,31 +109,7 @@ export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = (
 
     const members = useWatch({ control: form.control, name: "members" });
 
-    /**
-     * The target income and the age the savings must last to are two ends of one equation, so editing
-     * either solves the other — the same link the sliders on the plan page use, so the two screens
-     * cannot disagree about it.
-     */
-    const basis: SyncBasis | undefined = summary && summary.balanceAtRetirementInTodaysDollars > 0
-        ? { balance: summary.balanceAtRetirementInTodaysDollars, realReturnRate: summary.drawdownRealReturnRate, retirementAge: summary.retirementAge }
-        : undefined;
 
-    const syncFromLifeExpectancy = (age: number) => {
-        if (!basis || !age) return;
-
-        form.setValue("targetRetirementIncome", incomeForAge(basis, age), { shouldDirty: true });
-    };
-
-    const syncFromTargetIncome = (income: number) => {
-        if (!basis || !income) return;
-
-        const age = ageForIncome(basis, income);
-
-        // Nothing to set when the balance never runs down, or lasts past any age a plan can hold.
-        if (age !== null) {
-            form.setValue("lifeExpectancy", age, { shouldDirty: true });
-        }
-    };
 
     // Only superannuation accounts can back a retirement projection, so nothing else is offered.
     const superAccounts: LogicalAccount[] = (accounts ?? []).filter(a => a.accountType === "Superannuation");
@@ -225,7 +200,7 @@ export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = (
                             </Form.Group>
                             <Form.Group groupId="lifeExpectancy">
                                 <Form.Label>Savings Must Last Until Age</Form.Label>
-                                <Form.Input type="number" step="1" onBlur={e => syncFromLifeExpectancy(Number(e.target.value))} />
+                                <Form.Input type="number" step="1" />
                             </Form.Group>
                         </div>
                     </fieldset>
@@ -235,10 +210,10 @@ export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = (
                         <div className="retirement-assumptions">
                             <Form.Group groupId="targetRetirementIncome">
                                 <Form.Label>Target Income (a year, today's dollars)</Form.Label>
-                                <CurrencyInput currency={currencyCode} onBlur={e => syncFromTargetIncome(Number(e.target.value))} />
+                                <CurrencyInput currency={currencyCode} />
                             </Form.Group>
-                            <Form.Group groupId="preRetirementSwitchYears">
-                                <Form.Label>Years Switched to Cash Before Retiring</Form.Label>
+                            <Form.Group groupId="cashBucketYears">
+                                <Form.Label>Years of Spending Held in Cash</Form.Label>
                                 <Form.Input type="number" step="1" min="0" />
                             </Form.Group>
                             <Form.Group groupId="cashReturnPercent">

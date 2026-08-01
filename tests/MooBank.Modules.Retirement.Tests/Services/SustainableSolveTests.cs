@@ -26,7 +26,7 @@ public class SustainableSolveTests
         TestEntities.CreatePlan(
             expectedReturnRate: 0.065m, inflationRate: 0.025m, superGuaranteeRate: 0.12m,
             contributionsTaxRate: 0.15m, lifeExpectancy: lifeExpectancy,
-            targetRetirementIncome: target, preRetirementSwitchYears: 2, cashReturnRate: 0.03m,
+            targetRetirementIncome: target, cashBucketYears: 2, cashReturnRate: 0.03m,
             members: [
                 TestEntities.CreateMember(name: "Andy", currentAge: 55, retirementAge: 67, currentIncome: 150_000m,
                     annualFees: 400m, insurancePremium: 300m, accountBalances: [600_000m]),

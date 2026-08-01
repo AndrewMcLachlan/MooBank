@@ -48,7 +48,7 @@ const plan = (): RetirementPlan => ({
     contributionsTaxRate: 0.15,
     lifeExpectancy: 85,
     targetRetirementIncome: 138_000,
-    preRetirementSwitchYears: 2,
+    cashBucketYears: 2,
     cashReturnRate: 0.03,
     createdUtc: "2026-01-01T00:00:00Z",
     updatedUtc: "2026-01-01T00:00:00Z",

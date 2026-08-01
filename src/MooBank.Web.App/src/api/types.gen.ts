@@ -671,7 +671,7 @@ export type RetirementPlan = {
     contributionsTaxRate: number;
     lifeExpectancy: number;
     targetRetirementIncome: number;
-    preRetirementSwitchYears: number;
+    cashBucketYears: number;
     cashReturnRate: number;
     members: Array<RetirementPlanMember>;
 };
@@ -704,7 +704,7 @@ export type RetirementProjectionOverrides = {
     contributionsTaxRate?: null | number;
     lifeExpectancy?: null | number;
     targetRetirementIncome?: null | number;
-    preRetirementSwitchYears?: null | number;
+    cashBucketYears?: null | number;
     cashReturnRate?: null | number;
     members: Array<RetirementMemberOverride>;
     excludedMemberIds: Array<string>;
@@ -838,7 +838,7 @@ export type SimpleRetirementPlan = {
     contributionsTaxRate: number;
     lifeExpectancy: number;
     targetRetirementIncome: number;
-    preRetirementSwitchYears: number;
+    cashBucketYears: number;
     cashReturnRate: number;
     members: Array<RetirementPlanMember>;
 };

@@ -296,7 +296,10 @@ public class AgePensionTests
     public void Calculate_AsTheBalanceFalls_ThePensionRises()
     {
         // Arrange: starting above the couple cut-off, so the pension begins at nothing.
+        // No return at all, invested or in cash: only the bucket used to sit still, so zeroing the
+        // cash rate alone would leave the rest compounding and the balance climbing.
         var plan = TestEntities.CreatePlan(
+            expectedReturnRate: 0m,
             inflationRate: 0m,
             cashReturnRate: 0m,
             targetRetirementIncome: 80_000m,
@@ -339,7 +342,9 @@ public class AgePensionTests
     public void Calculate_ThePensionCoversTheTarget_DrawsNothingFromSuper()
     {
         // Arrange: a modest target, and a balance inside the free area.
+        // No return at all, so the balance is left alone by anything but the drawdown.
         var plan = TestEntities.CreatePlan(
+            expectedReturnRate: 0m,
             inflationRate: 0m,
             cashReturnRate: 0m,
             targetRetirementIncome: 30_000m,

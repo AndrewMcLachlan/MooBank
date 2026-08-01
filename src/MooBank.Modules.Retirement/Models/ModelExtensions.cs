@@ -15,7 +15,7 @@ public static class ModelExtensions
             ContributionsTaxRate = plan.ContributionsTaxRate,
             LifeExpectancy = plan.LifeExpectancy,
             TargetRetirementIncome = plan.TargetRetirementIncome,
-            PreRetirementSwitchYears = plan.PreRetirementSwitchYears,
+            CashBucketYears = plan.CashBucketYears,
             CashReturnRate = plan.CashReturnRate,
             CreatedUtc = plan.CreatedUtc,
             UpdatedUtc = plan.UpdatedUtc,
@@ -43,5 +43,5 @@ public static class ModelExtensions
 
     public static DomainEntities.RetirementAssumptions ToAssumptions(this RetirementPlanBase plan) =>
         new(plan.ExpectedReturnRate, plan.InflationRate, plan.SuperGuaranteeRate, plan.ContributionsTaxRate, plan.LifeExpectancy,
-            plan.TargetRetirementIncome, plan.PreRetirementSwitchYears, plan.CashReturnRate);
+            plan.TargetRetirementIncome, plan.CashBucketYears, plan.CashReturnRate);
 }

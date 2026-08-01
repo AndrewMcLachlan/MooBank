@@ -27,7 +27,7 @@ public sealed record ProjectionOverrides
 
     public decimal? TargetRetirementIncome { get; init; }
 
-    public int? PreRetirementSwitchYears { get; init; }
+    public int? CashBucketYears { get; init; }
 
     public decimal? CashReturnRate { get; init; }
 

@@ -17,7 +17,7 @@ export const defaultAssumptions = {
      */
     targetRetirementIncome: 0,
     /** The de-risking glide most funds apply, moving a balance to cash as it nears being drawn on. */
-    preRetirementSwitchYears: 2,
+    cashBucketYears: 2,
     cashReturnRate: 0.03,
 } as const;
 

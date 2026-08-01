@@ -221,7 +221,21 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
                 var memberOpening = member.Balance;
                 opening += memberOpening;
 
-                var memberReturn = Round(memberOpening * member.ReturnRateInYear(yearOffset, assumptions));
+                // What this member is expected to fund of the household's spending, which is what the
+                // cash bucket is sized against. Known before any return is applied, because the shares
+                // are settled from the opening balances.
+                var expectedDrawdown = openingTotalThisYear > 0m
+                    ? targetThisYear * (memberOpening / openingTotalThisYear)
+                    : 0m;
+
+                // Before drawing starts there is nothing to cover yet, so the bucket is sized on what
+                // the household means to spend once it does.
+                if (expectedDrawdown <= 0m)
+                {
+                    expectedDrawdown = members.Count > 0 ? assumptions.TargetRetirementIncome / members.Count : 0m;
+                }
+
+                var memberReturn = Round(memberOpening * member.ReturnRateInYear(yearOffset, memberOpening, expectedDrawdown, assumptions));
                 var memberContribution = member.IsAccumulating(yearOffset)
                     ? Round(member.ContributionForYear(yearOffset, assumptions))
                     : 0m;
@@ -451,24 +465,43 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
         public int AgeAt(int yearOffset) => _member.CurrentAge + yearOffset;
 
         /// <summary>
-        /// Whether the balance has moved to cash by the given year: once the member is within the
-        /// plan's switch window of their retirement age, and every year after.
+        /// How much of this member's balance is held in cash in the given year.
         /// </summary>
         /// <remarks>
-        /// A member already inside the window, or already retired, is in cash from the first
-        /// projected year. Nought switch years means the move happens at retirement rather than
-        /// ahead of it — not that it never happens, since a balance being drawn on is in cash either
-        /// way. Set the plan's cash rate to the expected return to model no switch at all.
+        /// The cash bucket: enough to cover the next few years of spending, so a market fall never
+        /// forces units to be sold cheaply to live on. The rest stays in the member's chosen strategy,
+        /// because a retirement lasting twenty or thirty years has to outrun inflation as well as
+        /// survive a downturn — parking the whole balance in cash trades one risk for another.
+        ///
+        /// The bucket is filled as retirement comes into view rather than on the day itself, so the
+        /// selling happens while there is still time to choose when. It cannot exceed the balance.
         /// </remarks>
-        public bool IsInCash(int yearOffset, ResolvedAssumptions assumptions) =>
-            YearsToRetirement - yearOffset <= assumptions.PreRetirementSwitchYears;
+        public decimal CashHeld(int yearOffset, decimal balance, decimal expectedDrawdown, ResolvedAssumptions assumptions)
+        {
+            if (assumptions.CashBucketYears <= 0 || balance <= 0m) return 0m;
+
+            // Before the drawdown starts there is no spending to cover yet, so the bucket is sized on
+            // what the first years are expected to cost, and only once retirement is within reach.
+            var yearsAway = YearsToRetirement - yearOffset;
+            if (yearsAway > assumptions.CashBucketYears) return 0m;
+
+            var wanted = expectedDrawdown * assumptions.CashBucketYears;
+
+            return Math.Min(balance, wanted);
+        }
 
         /// <summary>
-        /// The nominal return earned in the given year: their strategy's while it is still invested,
-        /// the plan's cash rate once the balance has been moved across.
+        /// The return this member's balance earns in the given year, blended across the part held in
+        /// cash and the part still invested.
         /// </summary>
-        public decimal ReturnRateInYear(int yearOffset, ResolvedAssumptions assumptions) =>
-            IsInCash(yearOffset, assumptions) ? assumptions.CashReturnRate : ReturnRate;
+        public decimal ReturnRateInYear(int yearOffset, decimal balance, decimal expectedDrawdown, ResolvedAssumptions assumptions)
+        {
+            if (balance <= 0m) return ReturnRate;
+
+            var cash = CashHeld(yearOffset, balance, expectedDrawdown, assumptions);
+
+            return ((cash * assumptions.CashReturnRate) + ((balance - cash) * ReturnRate)) / balance;
+        }
 
         /// <summary>
         /// This member's position at the end of a projection year.

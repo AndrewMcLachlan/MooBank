@@ -17,7 +17,7 @@ const plan = (over: Partial<RetirementPlan> = {}): RetirementPlan => ({
     contributionsTaxRate: 0.15,
     lifeExpectancy: 90,
     targetRetirementIncome: 60_000,
-    preRetirementSwitchYears: 2,
+    cashBucketYears: 2,
     cashReturnRate: 0.03,
     createdUtc: "2026-01-01T00:00:00Z",
     updatedUtc: "2026-01-01T00:00:00Z",
@@ -124,7 +124,7 @@ describe("the target income slider", () => {
         const p = plan();
         const updated = applyDraftToPlan(emptyDraft, p);
 
-        expect(updated.preRetirementSwitchYears).toBe(2);
+        expect(updated.cashBucketYears).toBe(2);
         expect(updated.cashReturnRate).toBe(0.03);
     });
 });

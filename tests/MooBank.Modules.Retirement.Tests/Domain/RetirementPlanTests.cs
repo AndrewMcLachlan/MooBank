@@ -112,7 +112,7 @@ public class RetirementPlanTests
         Assert.Equal(0.08m, plan.ExpectedReturnRate);
         Assert.Equal(95, plan.LifeExpectancy);
         Assert.Equal(70_000m, plan.TargetRetirementIncome);
-        Assert.Equal(5, plan.PreRetirementSwitchYears);
+        Assert.Equal(5, plan.CashBucketYears);
         Assert.Equal(0.035m, plan.CashReturnRate);
     }
 

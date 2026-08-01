@@ -4,7 +4,6 @@ import { formatCurrency } from "utils/currency";
 import { TweakSlider } from "./TweakSlider";
 import { isDirty, isExcluded, memberValue, planValue, withExcluded, withMemberValue, withPlanValue, type PlanTweakKey } from "../-retirement-utils/tweaks";
 import { growthStrategies, minWorkingAge, toPercent } from "../-retirement-utils/retirementDefaults";
-import { ageForIncome, type SyncBasis } from "../-retirement-utils/retirementSync";
 
 interface RetirementTweaksProps {
     plan: RetirementPlan;
@@ -40,13 +39,6 @@ export const RetirementTweaks: React.FC<RetirementTweaksProps> = ({ plan, draft,
      * either solves the other. Without the link the two could quietly contradict each other — a
      * target the balance cannot sustain to the age on the slider beside it.
      */
-    const basis: SyncBasis | undefined = summary && summary.balanceAtRetirementInTodaysDollars > 0
-        ? {
-            balance: summary.balanceAtRetirementInTodaysDollars,
-            realReturnRate: summary.drawdownRealReturnRate,
-            retirementAge: summary.retirementAge,
-        }
-        : undefined;
 
     /**
      * Moves the horizon alone. The income that goes with it is solved on the server against the
@@ -55,19 +47,11 @@ export const RetirementTweaks: React.FC<RetirementTweaksProps> = ({ plan, draft,
      */
     const setLifeExpectancy = (age: number) => onChange(withPlanValue(draft, plan, "lifeExpectancy", age));
 
-    const setTargetIncome = (income: number) => {
-        let next = withPlanValue(draft, plan, "targetRetirementIncome", income);
-
-        // No age to offer when the balance never runs down, or lasts past any age a plan can hold.
-        // The horizon stays where it is rather than being set to a year the money does not run out in.
-        const age = basis ? ageForIncome(basis, income) : null;
-
-        if (age !== null) {
-            next = withPlanValue(next, plan, "lifeExpectancy", age);
-        }
-
-        onChange(next);
-    };
+    /**
+     * Moves the target alone. What it costs — whether the money still lasts, and how long — comes
+     * back with the next projection, which is the only thing that knows.
+     */
+    const setTargetIncome = (income: number) => onChange(withPlanValue(draft, plan, "targetRetirementIncome", income));
 
     return (
         <Section header="Try It Out">

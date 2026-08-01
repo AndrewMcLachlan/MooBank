@@ -30,7 +30,7 @@ public class RealDataSanityTests
             contributionsTaxRate: 0.15m,
             lifeExpectancy: 90,
             targetRetirementIncome: targetIncome,
-            preRetirementSwitchYears: 2,
+            cashBucketYears: 2,
             cashReturnRate: 0.03m,
             members: [
                 TestEntities.CreateMember(name: "Andy", currentAge: 47, retirementAge: 67, currentIncome: 231_000m,
@@ -61,9 +61,15 @@ public class RealDataSanityTests
         Assert.Equal(0m, years[20].Drawdown);
         Assert.True(years[21].Drawdown > 0m);
 
-        // The balance peaks at retirement and falls from there.
-        Assert.True(summary.BalanceAtRetirement > years[^1].ClosingBalance);
-        Assert.True(years[25].ClosingBalance < years[20].ClosingBalance);
+        // A 90,000 target never touches this plan: under the cash bucket most of the balance stays
+        // invested, and the return on it outruns the draw for the whole retirement. The balance grows
+        // rather than falls, and nothing runs short.
+        //
+        // Worth pinning as it stands, because it was the reverse before the bucket — the whole
+        // balance sat in cash and a modest target still ate into it.
+        Assert.Null(summary.MoneyRunsOutYear);
+        Assert.True(years[^1].ClosingBalance > summary.BalanceAtRetirement);
+        Assert.True(summary.SustainableIncomeInTodaysDollars > 90_000m);
 
         // A 90,000 target in today's dollars, indexed twenty-one years at 2.5%, is about 151,000.
         var expectedFirstDraw = 90_000m * (decimal)Math.Pow(1.025d, 21);

@@ -25,7 +25,7 @@ internal sealed record ResolvedAssumptions
 
     public required decimal TargetRetirementIncome { get; init; }
 
-    public required int PreRetirementSwitchYears { get; init; }
+    public required int CashBucketYears { get; init; }
 
     public required decimal CashReturnRate { get; init; }
 
@@ -38,7 +38,7 @@ internal sealed record ResolvedAssumptions
             ContributionsTaxRate = overrides?.ContributionsTaxRate ?? plan.ContributionsTaxRate,
             LifeExpectancy = overrides?.LifeExpectancy ?? plan.LifeExpectancy,
             TargetRetirementIncome = overrides?.TargetRetirementIncome ?? plan.TargetRetirementIncome,
-            PreRetirementSwitchYears = overrides?.PreRetirementSwitchYears ?? plan.PreRetirementSwitchYears,
+            CashBucketYears = overrides?.CashBucketYears ?? plan.CashBucketYears,
             CashReturnRate = overrides?.CashReturnRate ?? plan.CashReturnRate,
         };
 }

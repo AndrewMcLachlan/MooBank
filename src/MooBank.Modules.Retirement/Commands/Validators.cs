@@ -47,7 +47,7 @@ public class RetirementPlanBaseValidator : AbstractValidator<RetirementPlanBase>
         RuleFor(x => x.TargetRetirementIncome)
             .GreaterThanOrEqualTo(0m).WithMessage("Target retirement income cannot be negative");
 
-        RuleFor(x => x.PreRetirementSwitchYears)
+        RuleFor(x => x.CashBucketYears)
             .InclusiveBetween(0, 40).WithMessage("Years switched to cash must be between 0 and 40");
 
         RuleFor(x => x.CashReturnRate)

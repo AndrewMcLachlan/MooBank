@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Retirement;
 
@@ -77,12 +77,18 @@ public class RetirementPlan(Guid id) : KeyedEntity<Guid>(id)
     public decimal TargetRetirementIncome { get; set; }
 
     /// <summary>
-    /// How many years before retiring a member's balance moves to cash.
+    /// How many years of spending money each member holds in cash: the cash bucket.
     /// </summary>
-    public int PreRetirementSwitchYears { get; set; }
+    /// <remarks>
+    /// The column is still named for the earlier model, where the whole balance switched to cash at
+    /// a set point before retirement. Renaming it would cost a data migration for no behavioural
+    /// gain, so the mapping carries the old name and this property carries the meaning.
+    /// </remarks>
+    [Column("PreRetirementSwitchYears")]
+    public int CashBucketYears { get; set; }
 
     /// <summary>
-    /// The nominal return a balance earns once it has moved to cash.
+    /// The nominal return earned on the part of a balance held in cash.
     /// </summary>
     public decimal CashReturnRate { get; set; }
 
@@ -162,7 +168,7 @@ public class RetirementPlan(Guid id) : KeyedEntity<Guid>(id)
         ContributionsTaxRate = assumptions.ContributionsTaxRate;
         LifeExpectancy = assumptions.LifeExpectancy;
         TargetRetirementIncome = assumptions.TargetRetirementIncome;
-        PreRetirementSwitchYears = assumptions.PreRetirementSwitchYears;
+        CashBucketYears = assumptions.CashBucketYears;
         CashReturnRate = assumptions.CashReturnRate;
     }
 }
@@ -179,11 +185,11 @@ public class RetirementPlan(Guid id) : KeyedEntity<Guid>(id)
 /// The household's spending money each year in retirement, in today's dollars. Drawn from the
 /// members' balances once they have all retired.
 /// </param>
-/// <param name="PreRetirementSwitchYears">
-/// How many years before retiring a member's balance moves to cash, protecting it from a market
-/// fall it would have no working years left to recover from.
+/// <param name="CashBucketYears">
+/// How many years of spending each member keeps in cash, so a market fall never forces them to sell
+/// cheaply to live on. The rest of the balance stays invested.
 /// </param>
-/// <param name="CashReturnRate">The nominal return earned once a balance has moved to cash.</param>
+/// <param name="CashReturnRate">The nominal return earned on the part held in cash.</param>
 public readonly record struct RetirementAssumptions(
     decimal ExpectedReturnRate,
     decimal InflationRate,
@@ -191,5 +197,5 @@ public readonly record struct RetirementAssumptions(
     decimal ContributionsTaxRate,
     int LifeExpectancy,
     decimal TargetRetirementIncome,
-    int PreRetirementSwitchYears,
+    int CashBucketYears,
     decimal CashReturnRate);

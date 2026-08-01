@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Retirement.Services;
 using Asm.MooBank.Modules.Retirement.Tests.Support;
@@ -196,57 +196,76 @@ public class RetirementDrawdownTests
     }
 
     /// <summary>
-    /// Given a member whose balance moves to cash before they retire
+    /// Given a member holding a cash bucket
     /// When the projection is run
-    /// Then the years inside the switch window should earn the cash rate
+    /// Then only the part in cash should earn the cash rate
     /// </summary>
+    /// <remarks>
+    /// The point of the bucket, and what separates it from the earlier model: the balance is not
+    /// moved to cash wholesale. Enough to cover the next few years of spending sits in cash and the
+    /// rest keeps earning, so the return is a blend weighted by how much each part holds.
+    /// </remarks>
     [Fact]
-    public void Calculate_WithinTheSwitchWindow_EarnsTheCashRate()
+    public void Calculate_HoldingACashBucket_BlendsTheReturn()
     {
-        // Arrange: 8% invested, 2% in cash, switching two years out.
+        // Arrange: 8% invested, 2% in cash, two years of a 20,000 target held back.
         var plan = TestEntities.CreatePlan(
             expectedReturnRate: 0.08m,
             cashReturnRate: 0.02m,
-            preRetirementSwitchYears: 2,
+            cashBucketYears: 2,
             superGuaranteeRate: 0m,
-            members: [TestEntities.CreateMember(currentAge: 60, retirementAge: 65, currentIncome: 0m, growthStrategy: GrowthStrategy.Custom, accountBalances: [100_000m])]);
+            targetRetirementIncome: 20_000m,
+            inflationRate: 0m,
+            members: [TestEntities.CreateMember(currentAge: 60, retirementAge: 65, currentIncome: 0m, growthStrategy: GrowthStrategy.Custom, accountBalances: [500_000m])]);
 
         // Act
         var years = _engine.CalculateWithoutPension(plan, Today).Years.ToList();
 
         // Assert
-        // Years 1 and 2 are still invested; from year 3 they are two years out and in cash.
-        Assert.Equal(8_000m, years[1].InvestmentReturn);
-        Assert.Equal(Math.Round(years[2].OpeningBalance * 0.08m, 2), years[2].InvestmentReturn);
-        Assert.Equal(Math.Round(years[3].OpeningBalance * 0.02m, 2), years[3].InvestmentReturn);
-        Assert.Equal(Math.Round(years[5].OpeningBalance * 0.02m, 2), years[5].InvestmentReturn);
+        // Year 1 is four years from retirement, beyond a two-year bucket, so the whole balance earns 8%.
+        Assert.Equal(40_000m, years[1].InvestmentReturn);
+
+        // By year 4 they are one year out, so two years of spending — 40,000 — sits in cash and the
+        // rest stays invested.
+        var opening = years[4].OpeningBalance;
+        var blended = ((40_000m * 0.02m) + ((opening - 40_000m) * 0.08m)) / opening;
+        Assert.Equal(Math.Round(opening * blended, 2), years[4].InvestmentReturn, 2);
+
+        // And that is short of the whole balance at 8%, but far nearer it than cash would be.
+        Assert.True(years[4].InvestmentReturn < opening * 0.08m);
+        Assert.True(years[4].InvestmentReturn > opening * 0.07m);
     }
 
     /// <summary>
-    /// Given a plan that switches to cash and one that does not
+    /// Given a plan holding a cash bucket and one holding none
     /// When both are projected
-    /// Then the switch should leave less at retirement
+    /// Then the bucket should cost a little growth, but only on the part held back
     /// </summary>
     /// <remarks>
-    /// The switch is protection, not free: it gives up the higher return for the years it applies to.
-    /// Worth pinning, because a glide that made no difference would mean it was not being applied.
+    /// Protection is not free. What makes the bucket worth having is how little it costs: only the
+    /// few years of spending give up the return, not the whole balance.
     /// </remarks>
     [Fact]
-    public void Calculate_TheSwitchToCash_CostsGrowthBeforeRetirement()
+    public void Calculate_TheCashBucket_CostsGrowthOnlyOnWhatItHolds()
     {
         // Arrange
-        static Asm.MooBank.Domain.Entities.Retirement.RetirementPlan Plan(int switchYears) =>
+        static Asm.MooBank.Domain.Entities.Retirement.RetirementPlan Plan(int bucketYears) =>
             TestEntities.CreatePlan(
                 expectedReturnRate: 0.08m,
                 cashReturnRate: 0.02m,
-                preRetirementSwitchYears: switchYears,
+                cashBucketYears: bucketYears,
+                targetRetirementIncome: 40_000m,
                 members: [TestEntities.CreateMember(currentAge: 50, retirementAge: 65, accountBalances: [200_000m])]);
 
         // Act
-        var withGlide = _engine.CalculateWithoutPension(Plan(5), Today).Summary.BalanceAtRetirement;
-        var withoutGlide = _engine.CalculateWithoutPension(Plan(0), Today).Summary.BalanceAtRetirement;
+        var withBucket = _engine.CalculateWithoutPension(Plan(3), Today).Summary.BalanceAtRetirement;
+        var without = _engine.CalculateWithoutPension(Plan(0), Today).Summary.BalanceAtRetirement;
 
         // Assert
-        Assert.True(withGlide < withoutGlide, $"expected the glide to cost growth, but it left {withGlide} against {withoutGlide}");
+        Assert.True(withBucket < without, $"expected the bucket to cost some growth, but it left {withBucket} against {without}");
+
+        // And the cost is a few per cent, not the third that moving the whole balance would take:
+        // only the years of spending gave up the return.
+        Assert.True(withBucket > without * 0.9m, $"expected the bucket to cost little, but {withBucket} is far below {without}");
     }
 }

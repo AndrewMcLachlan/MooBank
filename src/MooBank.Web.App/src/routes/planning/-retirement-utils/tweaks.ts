@@ -45,7 +45,7 @@ export const planTweakKeys = [
     "contributionsTaxRate",
     "lifeExpectancy",
     "targetRetirementIncome",
-    "preRetirementSwitchYears",
+    "cashBucketYears",
     "cashReturnRate",
 ] as const;
 
@@ -149,7 +149,7 @@ export const applyDraftToPlan = (draft: RetirementProjectionOverrides, plan: Ret
     contributionsTaxRate: draft.contributionsTaxRate ?? plan.contributionsTaxRate,
     lifeExpectancy: draft.lifeExpectancy ?? plan.lifeExpectancy,
     targetRetirementIncome: draft.targetRetirementIncome ?? plan.targetRetirementIncome,
-    preRetirementSwitchYears: draft.preRetirementSwitchYears ?? plan.preRetirementSwitchYears,
+    cashBucketYears: draft.cashBucketYears ?? plan.cashBucketYears,
     cashReturnRate: draft.cashReturnRate ?? plan.cashReturnRate,
     members: plan.members.map(member => {
         const tweak = draft.members.find(m => m.memberId === member.id);
