@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { IconButton, SpinnerContainer } from "@andrewmclachlan/moo-ds";
 import { Sliders } from "@andrewmclachlan/moo-icons";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForecastPlans } from "./-hooks/useForecastPlans";
 import { useForecastPlan } from "./-hooks/useForecastPlan";
 import { useForecastResult } from "./-hooks/useForecastResult";
@@ -14,7 +14,7 @@ import { PlannedItemsTable } from "./-components/PlannedItemsTable";
 import { ForecastSettingsModal } from "./-components/ForecastSettingsModal";
 import { CreateForecastPlan } from "./-components/CreateForecastPlan";
 
-export const Route = createFileRoute("/forecast/")({
+export const Route = createFileRoute("/planning/forecast")({
     component: Forecast,
 });
 
@@ -39,6 +39,13 @@ function Forecast() {
     // The forecast is denominated in the plan's currency, falling back to the user's preferred currency.
     const currencyCode = plan?.currencyCode ?? user?.currency ?? "AUD";
 
+    // Page pushes actions into the layout by reference, so a fresh array on every render sets the
+    // context every render, which re-renders and builds another array. Memoised, and declared
+    // above the early returns so the hook order stays fixed.
+    const actions = useMemo(() => plan ? [
+        <IconButton badge key="edit-settings" variant="primary" icon={Sliders} onClick={() => setEditOpen(true)}>Edit Settings</IconButton>
+    ] : [], [plan]);
+
     // Loading state
     if (plansLoading || accountsLoading) {
         return (
@@ -57,10 +64,6 @@ function Forecast() {
         );
     }
 
-    const actions = plan ? [
-        <IconButton badge key="edit-settings" variant="primary" icon={Sliders} onClick={() => setEditOpen(true)}>Edit Settings</IconButton>
-    ] : [];
-
     return (
         <ForecastPage plan={plan} actions={actions}>
             <ForecastOutlook plan={plan} summary={result?.summary} months={result?.months ?? []} currencyCode={currencyCode} loading={resultLoading} />
@@ -69,7 +72,10 @@ function Forecast() {
 
             <PlannedItemsTable plan={plan} currencyCode={currencyCode} />
 
-            <ForecastSettingsModal plan={plan} currencyCode={currencyCode} show={editOpen} onHide={() => setEditOpen(false)} />
+            {/* Mounted only while open. A closed modal still runs its hooks, which put a second
+                subscription on the accounts query; with two subscribers and a failing request the
+                two components' re-renders feed each other and the query refetches without end. */}
+            {editOpen && <ForecastSettingsModal plan={plan} currencyCode={currencyCode} show={editOpen} onHide={() => setEditOpen(false)} />}
         </ForecastPage>
     );
 }

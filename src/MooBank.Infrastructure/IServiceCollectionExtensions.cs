@@ -9,6 +9,7 @@ using Asm.MooBank.Domain.Entities.Institution;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Domain.Entities.Reports;
+using Asm.MooBank.Domain.Entities.Retirement;
 using Asm.MooBank.Domain.Entities.StockHolding;
 using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Domain.Entities.Transactions;
@@ -76,6 +77,7 @@ public static class IServiceCollectionExtensions
                 .AddScoped<ITagRepository, TagRepository>()
                 .AddScoped<IAccountRepository, UtilityAccountRepository>()
                 .AddScoped<IForecastRepository, ForecastRepository>()
+                .AddScoped<IRetirementRepository, RetirementRepository>()
         ;
 
     public static IServiceCollection AddEntities(this IServiceCollection services) =>
@@ -83,7 +85,15 @@ public static class IServiceCollectionExtensions
                 // TagRelationship is a read-model over the TagHierarchies transitive-closure view,
                 // not an aggregate root. It stays queryable so consumers can expand ancestor/descendant
                 // sets, which cannot be expressed by navigating Tag.Tags (direct children only).
-                .AddQueryable<Asm.MooBank.Domain.Entities.TagRelationships.TagRelationship, MooBankContext>();
+                .AddQueryable<Asm.MooBank.Domain.Entities.TagRelationships.TagRelationship, MooBankContext>()
+                // InstrumentOwner is the Instrument-to-User link, not an aggregate root. The
+                // retirement member guard reads it to confirm an account belongs to the person it
+                // is being recorded against, which navigating from Instrument cannot answer
+                // without loading the aggregate.
+                .AddQueryable<Asm.MooBank.Domain.Entities.Instrument.InstrumentOwner, MooBankContext>()
+                // Age Pension rates are national reference data, read by the retirement projection
+                // and edited in settings. Not an aggregate root — nothing owns them.
+                .AddQueryable<Asm.MooBank.Domain.Entities.ReferenceData.PensionRate, MooBankContext>();
 
     public static IServiceCollection AddImporterFactory(this IServiceCollection services) =>
         services.AddTransient<IImporterFactory, ImporterFactory>();

@@ -10,6 +10,8 @@
 @import "css/transactions" layer(moobank);
 @import "css/transactions/transactionsHeader" layer(moobank);
 @import "css/forecast" layer(moobank);
+@import "css/retirement" layer(moobank);
+@import "css/pension" layer(moobank);
 @import "css/dashboard" layer(moobank);
 @import "css/visualiser" layer(moobank);
 @import "css/bills" layer(moobank);

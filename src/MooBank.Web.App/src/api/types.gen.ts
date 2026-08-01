@@ -344,6 +344,8 @@ export type Group = {
     colour?: null | HexColour;
 };
 
+export type GrowthStrategy = 'Custom' | 'Conservative' | 'Balanced' | 'Growth' | 'HighGrowth';
+
 export type HexColour = unknown;
 
 export type HistoricalIncomeSettings = {
@@ -522,6 +524,17 @@ export type OutgoingStrategy = {
     incomeCorrelated?: null | IncomeCorrelatedSettings;
 };
 
+export type PensionRates = {
+    id: number;
+    effectiveFrom: string;
+    eligibilityAge: number;
+    maxAnnualSingle: number;
+    maxAnnualCouple: number;
+    assetsFreeAreaSingle: number;
+    assetsFreeAreaCouple: number;
+    assetsTaperRate: number;
+};
+
 export type Period = {
     periodStart: string;
     periodEnd: string;
@@ -603,11 +616,145 @@ export type ReportType = {
     [key: string]: unknown;
 };
 
+export type RetirementMemberOutcome = {
+    memberId: string;
+    name: string;
+    currentAge: number;
+    retirementAge: number;
+    yearsToRetirement: number;
+    retirementYear: number;
+    currentBalance: number;
+    balanceAtRetirement: number;
+    balanceAtRetirementInTodaysDollars: number;
+    alreadyRetired: boolean;
+    growthStrategy: GrowthStrategy;
+    returnRate: number;
+};
+
+export type RetirementMemberOverride = {
+    memberId: string;
+    currentAge?: null | number;
+    currentIncome?: null | number;
+    salarySacrifice?: null | number;
+    annualFees?: null | number;
+    insurancePremium?: null | number;
+    retirementAge?: null | number;
+    growthStrategy?: null | GrowthStrategy;
+};
+
+export type RetirementMemberYear = {
+    memberId: string;
+    name: string;
+    age: number;
+    contributions: number;
+    investmentReturn: number;
+    costs: number;
+    drawdown: number;
+    drawdownInTodaysDollars: number;
+    closingBalance: number;
+};
+
+export type RetirementPerson = {
+    userId: string;
+    name: string;
+    instrumentIds: Array<string>;
+};
+
+export type RetirementPlan = {
+    id: string;
+    createdUtc: string;
+    updatedUtc: string;
+    name: string;
+    expectedReturnRate: number;
+    inflationRate: number;
+    superGuaranteeRate: number;
+    contributionsTaxRate: number;
+    lifeExpectancy: number;
+    targetRetirementIncome: number;
+    cashBucketYears: number;
+    cashReturnRate: number;
+    members: Array<RetirementPlanMember>;
+};
+
+export type RetirementPlanMember = {
+    id?: null | string;
+    userId?: null | string;
+    name?: null | string;
+    currentAge: number;
+    currentIncome: number;
+    salarySacrifice: number;
+    retirementAge: number;
+    annualFees: number;
+    insurancePremium: number;
+    growthStrategy: GrowthStrategy;
+    instrumentIds: Array<string>;
+};
+
+export type RetirementProjection = {
+    planId: string;
+    years: Array<RetirementProjectionYear>;
+    members: Array<RetirementMemberOutcome>;
+    summary: RetirementProjectionSummary;
+};
+
+export type RetirementProjectionOverrides = {
+    expectedReturnRate?: null | number;
+    inflationRate?: null | number;
+    superGuaranteeRate?: null | number;
+    contributionsTaxRate?: null | number;
+    lifeExpectancy?: null | number;
+    targetRetirementIncome?: null | number;
+    cashBucketYears?: null | number;
+    cashReturnRate?: null | number;
+    members: Array<RetirementMemberOverride>;
+    excludedMemberIds: Array<string>;
+};
+
+export type RetirementProjectionSummary = {
+    currentBalance: number;
+    balanceAtRetirement: number;
+    balanceAtRetirementInTodaysDollars: number;
+    retirementYear: number;
+    retirementAge: number;
+    realReturnRate: number;
+    drawdownRealReturnRate: number;
+    totalCosts: number;
+    finalBalance: number;
+    finalBalanceInTodaysDollars: number;
+    lifeExpectancyYear: number;
+    moneyRunsOutYear?: null | number;
+    totalPension: number;
+    sustainableIncomeInTodaysDollars: number;
+    pensionStartsBelowInTodaysDollars: number;
+};
+
+export type RetirementProjectionYear = {
+    year: number;
+    openingBalance: number;
+    contributions: number;
+    investmentReturn: number;
+    costs: number;
+    closingBalance: number;
+    closingBalanceInTodaysDollars: number;
+    allRetired: boolean;
+    drawdown: number;
+    drawdownInTodaysDollars: number;
+    pension: number;
+    totalIncome: number;
+    totalIncomeInTodaysDollars: number;
+    pensionInTodaysDollars: number;
+    members: Array<RetirementMemberYear>;
+};
+
 export type Rule = {
     id: number;
     contains: string;
     description?: null | string;
     tags: Array<Tag>;
+};
+
+export type SavePensionRates = {
+    rates: PensionRates;
 };
 
 export type SavingsInterestReport = {
@@ -681,6 +828,19 @@ export type SimplePlannedItem = {
     windowEndDate?: null | string;
     allocationMode?: null | AllocationMode;
     notes?: null | string;
+};
+
+export type SimpleRetirementPlan = {
+    name: string;
+    expectedReturnRate: number;
+    inflationRate: number;
+    superGuaranteeRate: number;
+    contributionsTaxRate: number;
+    lifeExpectancy: number;
+    targetRetirementIncome: number;
+    cashBucketYears: number;
+    cashReturnRate: number;
+    members: Array<RetirementPlanMember>;
 };
 
 export type SimpleTag = {
@@ -2945,6 +3105,45 @@ export type ImporterTypesResponses = {
 
 export type ImporterTypesResponse = ImporterTypesResponses[keyof ImporterTypesResponses];
 
+export type PensionRatesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/reference-data/pension-rates';
+};
+
+export type PensionRatesErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
+export type PensionRatesResponses = {
+    /**
+     * OK
+     */
+    200: Array<PensionRates>;
+};
+
+export type PensionRatesResponse = PensionRatesResponses[keyof PensionRatesResponses];
+
+export type SavePensionRatesData = {
+    body: SavePensionRates;
+    path?: never;
+    query?: never;
+    url: '/reference-data/pension-rates';
+};
+
+export type SavePensionRatesResponses = {
+    /**
+     * OK
+     */
+    200: PensionRates;
+};
+
+export type SavePensionRatesResponse = SavePensionRatesResponses[keyof SavePensionRatesResponses];
+
 export type InOutReportData = {
     body?: never;
     path: {
@@ -3425,6 +3624,147 @@ export type GroupMonthlyBalancesReportResponses = {
 };
 
 export type GroupMonthlyBalancesReportResponse = GroupMonthlyBalancesReportResponses[keyof GroupMonthlyBalancesReportResponses];
+
+export type GetAllRetirementPlansData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/retirement/plans';
+};
+
+export type GetAllRetirementPlansErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
+export type GetAllRetirementPlansResponses = {
+    /**
+     * OK
+     */
+    200: Array<RetirementPlan>;
+};
+
+export type GetAllRetirementPlansResponse = GetAllRetirementPlansResponses[keyof GetAllRetirementPlansResponses];
+
+export type CreateRetirementPlanData = {
+    body: SimpleRetirementPlan;
+    path?: never;
+    query?: never;
+    url: '/retirement/plans';
+};
+
+export type CreateRetirementPlanResponses = {
+    /**
+     * Created
+     */
+    201: RetirementPlan;
+};
+
+export type CreateRetirementPlanResponse = CreateRetirementPlanResponses[keyof CreateRetirementPlanResponses];
+
+export type GetRetirementPeopleData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/retirement/plans/people';
+};
+
+export type GetRetirementPeopleErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
+export type GetRetirementPeopleResponses = {
+    /**
+     * OK
+     */
+    200: Array<RetirementPerson>;
+};
+
+export type GetRetirementPeopleResponse = GetRetirementPeopleResponses[keyof GetRetirementPeopleResponses];
+
+export type DeleteRetirementPlanData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/retirement/plans/{id}';
+};
+
+export type DeleteRetirementPlanResponses = {
+    /**
+     * No Content
+     */
+    204: void;
+};
+
+export type DeleteRetirementPlanResponse = DeleteRetirementPlanResponses[keyof DeleteRetirementPlanResponses];
+
+export type GetRetirementPlanData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/retirement/plans/{id}';
+};
+
+export type GetRetirementPlanErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
+export type GetRetirementPlanResponses = {
+    /**
+     * OK
+     */
+    200: RetirementPlan;
+};
+
+export type GetRetirementPlanResponse = GetRetirementPlanResponses[keyof GetRetirementPlanResponses];
+
+export type UpdateRetirementPlanData = {
+    body: SimpleRetirementPlan;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/retirement/plans/{id}';
+};
+
+export type UpdateRetirementPlanResponses = {
+    /**
+     * OK
+     */
+    200: RetirementPlan;
+};
+
+export type UpdateRetirementPlanResponse = UpdateRetirementPlanResponses[keyof UpdateRetirementPlanResponses];
+
+export type RunRetirementProjectionData = {
+    body?: null | RetirementProjectionOverrides;
+    path: {
+        planId: string;
+    };
+    query?: never;
+    url: '/retirement/plans/{planId}/run';
+};
+
+export type RunRetirementProjectionResponses = {
+    /**
+     * OK
+     */
+    200: RetirementProjection;
+};
+
+export type RunRetirementProjectionResponse = RunRetirementProjectionResponses[keyof RunRetirementProjectionResponses];
 
 export type GetStockHoldingData = {
     body?: never;

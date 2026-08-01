@@ -1,6 +1,4 @@
 <Solution>
-  <Project Path="tools\MooBank.Tools.TransactionGenerator\MooBank.Tools.TransactionGenerator.csproj" />
-  <Properties Name="Visual Studio">
-    <Property Name="OpenWith" Value="17" />
-  </Properties>
+  <Project Path="K:/Dev/Apps/MooBank/tools/MooBank.Tools.SuperCalculator/MooBank.Tools.SuperCalculator.csproj" />
+  <Project Path="K:/Dev/Apps/MooBank/tools/MooBank.Tools.TransactionGenerator/MooBank.Tools.TransactionGenerator.csproj" />
 </Solution>

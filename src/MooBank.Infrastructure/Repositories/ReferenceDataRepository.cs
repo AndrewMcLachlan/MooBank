@@ -40,4 +40,15 @@ internal class ReferenceDataRepository(MooBankContext dataContext) : IReferenceD
 
     public CpiChange AddCpiChange(CpiChange cpiChange) =>
         dataContext.CpiChanges.Add(cpiChange).Entity;
+
+    public async Task<PensionRate> GetPensionRate(int id, CancellationToken cancellationToken = default) =>
+        await dataContext.PensionRates.SingleOrDefaultAsync(r => r.Id == id, cancellationToken) ??
+        throw new NotFoundException("Pension rates not found");
+
+    /// <remarks>
+    /// Added without an id: the column is an identity, so setting one would have EF read the row as
+    /// an existing one and issue an update that matches nothing.
+    /// </remarks>
+    public PensionRate AddPensionRate() =>
+        dataContext.PensionRates.Add(new PensionRate()).Entity;
 }

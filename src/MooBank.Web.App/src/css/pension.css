@@ -1,0 +1,26 @@
+/* Age Pension settings */
+
+.pension-note {
+    font-size: 0.875rem;
+    color: var(--secondary-colour);
+    margin: 0 0 0.75rem;
+    max-width: 70ch;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.pension-fields {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+    gap: 0 1rem;
+}
+
+.pension-actions {
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid var(--border-colour);
+    padding-top: 0.75rem;
+    margin-top: 1rem;
+}

@@ -588,3 +588,58 @@ MERGE [ScheduleFrequency] AS TARGET USING (SELECT 5 as Id, 'Fortnightly' as [Des
 ON (TARGET.[Id] = SOURCE.Id)
 WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
 WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Description]);
+
+GO
+
+/*
+ Puts the retirement plan members back, now that the table carries UserId.
+
+ The pre-deployment script moved them out and emptied the table so SSDT could rebuild it — see the
+ note there for why a backfill in place does not survive. Anything it could not match to a person is
+ staged with a null UserId and fails here on the NOT NULL, which is deliberate: a member whose
+ identity cannot be derived should stop the deployment rather than be invented or dropped.
+
+ The staging tables are removed once their rows are restored, so a later deployment does nothing.
+*/
+IF OBJECT_ID('dbo.__RetirementPlanMemberMigration', 'U') IS NOT NULL
+BEGIN
+    DECLARE @unresolved INT = (SELECT COUNT(*) FROM dbo.__RetirementPlanMemberMigration WHERE UserId IS NULL);
+
+    IF @unresolved > 0
+    BEGIN
+        RAISERROR (N'%d retirement plan member(s) could not be matched to a person from their linked accounts. Resolve dbo.__RetirementPlanMemberMigration before retrying.', 16, 127, @unresolved) WITH NOWAIT;
+    END
+
+    INSERT INTO dbo.RetirementPlanMember
+        (Id, RetirementPlanId, UserId, CurrentAge, CurrentIncome, SalarySacrifice, RetirementAge, GrowthStrategyId, AnnualFees, InsurancePremium)
+    SELECT
+        Id, RetirementPlanId, UserId, CurrentAge, CurrentIncome, SalarySacrifice, RetirementAge, GrowthStrategyId, AnnualFees, InsurancePremium
+    FROM dbo.__RetirementPlanMemberMigration;
+
+    INSERT INTO dbo.RetirementPlanMemberAccount (Id, RetirementPlanMemberId, InstrumentId)
+    SELECT Id, RetirementPlanMemberId, InstrumentId
+    FROM dbo.__RetirementPlanMemberAccountMigration;
+
+    DROP TABLE dbo.__RetirementPlanMemberAccountMigration;
+    DROP TABLE dbo.__RetirementPlanMemberMigration;
+END
+
+GO
+
+/*
+ A starting set of Age Pension rates, so a projection has something to work with before anyone
+ visits the settings screen.
+
+ THESE FIGURES NEED CHECKING. They are approximate rates for a homeowner, and Services Australia
+ reindexes them every March and September, so they will be out of date. They are seeded only so the
+ model runs; the settings screen exists to correct them against the published rates.
+
+ Seeded once and never updated, so a corrected row is not overwritten by a later deployment.
+*/
+IF NOT EXISTS (SELECT 1 FROM dbo.PensionRate)
+BEGIN
+    INSERT INTO dbo.PensionRate
+        (EffectiveFrom, EligibilityAge, MaxAnnualSingle, MaxAnnualCouple, AssetsFreeAreaSingle, AssetsFreeAreaCouple, AssetsTaperRate)
+    VALUES
+        ('2025-09-20', 67, 29900.00, 45080.00, 314000.00, 470000.00, 0.0780);
+END

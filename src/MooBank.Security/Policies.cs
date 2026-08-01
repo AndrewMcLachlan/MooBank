@@ -80,4 +80,15 @@ public static class Policies
 
         return policyBuilder.Build();
     }
+
+    public static AuthorizationPolicy GetRetirementPlanPolicy(string routeParam = "id") =>
+        new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme).GetRetirementPlanPolicy(routeParam);
+
+    public static AuthorizationPolicy GetRetirementPlanPolicy(this AuthorizationPolicyBuilder policyBuilder, string routeParam = "id")
+    {
+        policyBuilder.RequireAuthenticatedUser();
+        policyBuilder.AddRequirements(new RetirementPlanRequirement(routeParam));
+
+        return policyBuilder.Build();
+    }
 }

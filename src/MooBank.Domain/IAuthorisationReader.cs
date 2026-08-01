@@ -17,4 +17,6 @@ public interface IAuthorisationReader
     Task<Guid?> GetTagFamilyId(int tagId, CancellationToken cancellationToken = default);
 
     Task<Guid?> GetForecastPlanFamilyId(Guid planId, CancellationToken cancellationToken = default);
+
+    Task<Guid?> GetRetirementPlanFamilyId(Guid planId, CancellationToken cancellationToken = default);
 }

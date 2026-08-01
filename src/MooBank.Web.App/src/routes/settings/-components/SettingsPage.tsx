@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import type { PropsWithChildren, ReactNode } from "react";
 
 import { Page } from "@andrewmclachlan/moo-app";
@@ -6,7 +6,7 @@ import type { PageProps } from "@andrewmclachlan/moo-app";
 import { NavItemDivider } from "@andrewmclachlan/moo-ds";
 import type { NavItem } from "@andrewmclachlan/moo-ds";
 
-import { Sliders, Users } from "@andrewmclachlan/moo-icons";
+import { PiggyBank, Sliders, Users } from "@andrewmclachlan/moo-icons";
 
 export const SettingsPage: React.FC<PropsWithChildren<SettingsPageProps>> = ({ children, breadcrumbs = [], ...props }) => {
 
@@ -21,7 +21,8 @@ const getMenuItems = (navItems: (ReactNode | NavItem)[]) => {
 
     const items: (NavItem | ReactNode)[] = [
         { route: `/settings/institutions`, text: "Institutions", image: <Sliders />  },
-        { route: `/settings/families`, text: "Families", image: <Users /> }
+        { route: `/settings/families`, text: "Families", image: <Users /> },
+        { route: `/settings/pension`, text: "Age Pension", image: <PiggyBank /> },
     ];
 
     if (navItems.length > 0) {

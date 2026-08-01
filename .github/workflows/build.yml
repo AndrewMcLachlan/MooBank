@@ -107,6 +107,7 @@ jobs:
           - { name: "MooBank.Modules.Institutions.Tests" }
           - { name: "MooBank.Modules.Instruments.Tests" }
           - { name: "MooBank.Modules.Reports.Tests" }
+          - { name: "MooBank.Modules.Retirement.Tests" }
           - { name: "MooBank.Modules.Stocks.Tests" }
           - { name: "MooBank.Modules.Tags.Tests" }
           - { name: "MooBank.Modules.Transactions.Tests" }

@@ -1,0 +1,273 @@
+﻿/* ---- Retirement planner ----
+   Mirrors the forecast layout: standalone metric Sections sitting on the page background,
+   above a chart Section and a per-person table. */
+
+.retirement-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.retirement-metrics .section.metric {
+    padding: 0.75rem 1rem;
+    border-top: 2px solid var(--primary);
+}
+
+.retirement-metrics .metric-value {
+    font-size: 1.375rem;
+    font-weight: 600;
+    letter-spacing: -0.6px;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+    margin-top: 0.125rem;
+    color: var(--body-colour-bold);
+}
+
+.retirement-metrics .metric-sub {
+    font-size: 0.75rem;
+    color: var(--secondary-colour);
+}
+
+.retirement-chart-canvas {
+    height: 400px;
+}
+
+.retirement-age-note {
+    font-size: 0.8125rem;
+    color: var(--secondary-colour);
+}
+
+.retirement-empty {
+    color: var(--secondary-colour);
+}
+
+/* ---- Assumptions panel ---- */
+
+.retirement-assumption-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+    gap: 0.75rem 1.5rem;
+    margin: 0 0 1rem;
+
+    dt {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--secondary-colour);
+    }
+
+    dd {
+        margin: 0;
+        font-variant-numeric: tabular-nums;
+        color: var(--body-colour-bold);
+    }
+}
+
+.retirement-caveat {
+    font-size: 0.8125rem;
+    color: var(--secondary-colour);
+    margin: 0;
+}
+
+/* ---- Settings form ---- */
+
+.retirement-fieldset {
+    /* A fieldset carries browser defaults for border, padding and min-width that have nothing to do
+       with this design, and min-inline-size in particular stops it ever narrowing to its container. */
+    border: 1px solid var(--border-colour);
+    border-radius: 0.375rem;
+    padding: 0 1rem 1rem;
+    margin: 1rem 0 0;
+    min-inline-size: 0;
+
+    /* Nothing styles a legend for us, and its defaults are unlike any other element: it sits in the
+       fieldset's border, shrink-wraps, and ignores the width it is given. Taking it out of the
+       border and making it an ordinary block is what lets it read as the heading it is, rather than
+       sitting alongside the first field. */
+    legend {
+        display: block;
+        float: none;
+        width: 100%;
+        padding: 0;
+        margin-block: 0.875rem 0.75rem;
+
+        /* The same label treatment as the metric eyebrows, so the two read as one family. */
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.7px;
+        text-transform: uppercase;
+        color: var(--body-colour-dim);
+    }
+}
+
+.retirement-assumptions {
+    display: grid;
+    /* min() so a column can fall below its ideal width rather than overflow the modal on a narrow
+       screen — auto-fit alone holds the 180px floor and pushes the fields out of view. */
+    grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
+    gap: 0 1rem;
+}
+
+.retirement-member {
+    border-top: 1px solid var(--border-colour);
+    padding-top: 0.75rem;
+    margin-top: 0.75rem;
+
+    &:first-of-type {
+        border-top: none;
+        padding-top: 0;
+        margin-top: 0;
+    }
+}
+
+.retirement-member-fields {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr));
+    gap: 0 1rem;
+}
+
+.retirement-member-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 0.5rem;
+}
+
+
+/* ---- Tweak sliders ---- */
+
+.retirement-tweak-note {
+    font-size: 0.8125rem;
+    color: var(--secondary-colour);
+    margin: 0 0 1rem;
+}
+
+.tweak-member {
+    border-top: 1px solid var(--border-colour);
+    padding-top: 0.75rem;
+    margin-top: 0.75rem;
+
+    &:first-of-type {
+        border-top: none;
+        padding-top: 0;
+        margin-top: 0;
+    }
+}
+
+.tweak-member-name {
+    font-size: 0.9375rem;
+    margin: 0 0 0.5rem;
+    color: var(--body-colour-bold);
+}
+
+.tweak-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+    gap: 1rem;
+}
+
+.tweak-slider,
+.tweak-select {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    input[type="range"] {
+        width: 100%;
+        accent-color: var(--primary);
+    }
+}
+
+.tweak-slider-label {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--secondary-colour);
+}
+
+.tweak-slider-value {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    color: var(--body-colour-bold);
+}
+
+.tweak-slider-saved {
+    font-size: 0.75rem;
+    color: var(--secondary-colour);
+    font-variant-numeric: tabular-nums;
+}
+
+.tweak-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    border-top: 1px solid var(--border-colour);
+    padding-top: 0.75rem;
+    margin-top: 1rem;
+}
+
+.tweak-member-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.tweak-member-include {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.8125rem;
+    color: var(--secondary-colour);
+    cursor: pointer;
+
+    input {
+        accent-color: var(--primary);
+    }
+}
+
+/* Dimmed rather than hidden: the sliders stay reachable so a member can be adjusted and brought
+   back without hunting for them. */
+.tweak-member-excluded .tweak-grid {
+    opacity: 0.45;
+}
+
+/* ---- Wide screens ----
+
+   The balance curve and the income breakdown answer different questions about the same years, so
+   reading them together is worth a lot — but only where each still has room to be read. Below the
+   FHD breakpoint they stay stacked at full width; a squeezed chart is worse than a scrolled one.
+
+   Uses the design system's own large-display breakpoints (1880 FHD, 2520 QHD, 3200 UHD) rather than
+   inventing thresholds, and a semantic class rather than column utilities, per the app's CSS
+   conventions. */
+.retirement-charts {
+    display: grid;
+    gap: 1rem;
+}
+
+@media (min-width: 1880px) {
+    .retirement-charts {
+        grid-template-columns: 1fr 1fr;
+        align-items: start;
+    }
+
+    /* The income chart is absent until a plan draws one, so a lone balance chart takes the full
+       width rather than sitting in half of it beside nothing. */
+    .retirement-charts > :only-child {
+        grid-column: 1 / -1;
+    }
+
+    /* Taller charts earn their keep on a big display, where the extra height is free. */
+    .retirement-chart-canvas {
+        height: 460px;
+    }
+}
+
+@media (min-width: 2520px) {
+    .retirement-chart-canvas {
+        height: 540px;
+    }
+}
