@@ -170,9 +170,6 @@ public class UpdatePlanTests
             _mocks.ForecastRepositoryMock.Object,
             _mocks.UnitOfWorkMock.Object);
 
-        // Whatever the plan was carrying before the update.
-        existingPlan.IncomeStrategySerialized = """{"manualRecurring":{"amount":12960}}""";
-
         var outgoingStrategy = new OutgoingStrategy
         {
             LookbackMonths = 6
@@ -201,11 +198,6 @@ public class UpdatePlanTests
         // Assert
         Assert.NotNull(existingPlan.OutgoingStrategySerialized);
         Assert.Contains("6", existingPlan.OutgoingStrategySerialized);
-
-        // The income strategy is no longer part of the model, but the column still holds the figures
-        // the migration turns into planned income items. An update must leave them alone: writing
-        // null here would destroy them before the migration ever runs.
-        Assert.Contains("12960", existingPlan.IncomeStrategySerialized);
     }
 
     [Fact]

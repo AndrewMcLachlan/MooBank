@@ -1,4 +1,4 @@
-/*
+﻿/*
  Pre-Deployment Script
  Stashes the existing Institution → ImporterType mapping (from InstitutionAccount.ImporterTypeId)
  into a staging table before the schema changes drop the column. The post-deployment script
@@ -77,3 +77,100 @@ BEGIN
     ');
 END
 GO
+
+GO
+
+/*
+ Income used to be modelled twice: a fixed monthly figure on the plan, and planned income items,
+ with nothing reconciling them. The fixed figure is also the same in every month by construction,
+ so extra income that ends could not be expressed at all — and since spending is modelled as a
+ function of income, the expense line was flat forever whatever the fitted slope said.
+
+ The figure is converted into an ordinary planned income item on a monthly schedule, which the
+ author can date, end or split as their circumstances change. Manual adjustments were cumulative
+ deltas applied from a date onwards, so they become a sequence of items: each runs from its own
+ date until the next adjustment, carrying the running total.
+
+ Every plan with a figure is converted, including one that already has income items of its own: a
+ household can have two earners, and the fixed figure and the planned items were as likely to be
+ complementary as duplicated. Skipping those plans lost the figure silently, and the plan carrying
+ both models is exactly the one the double-counting affected.
+
+ The JSON is staged first and the column dropped here rather than by the schema comparison, which
+ would otherwise refuse the deploy as data loss. Dropping the column is also what makes this run
+ once: the COL_LENGTH guard turns the whole block into a no-op afterwards.
+*/
+IF OBJECT_ID('dbo.ForecastPlan', 'U') IS NOT NULL
+   AND COL_LENGTH('dbo.ForecastPlan', 'IncomeStrategy') IS NOT NULL
+BEGIN
+    IF OBJECT_ID('dbo.__ForecastIncomeStrategyMigration', 'U') IS NOT NULL
+        DROP TABLE dbo.__ForecastIncomeStrategyMigration;
+
+    -- Wrapped in EXEC so the column reference is bound at runtime; otherwise the batch fails to
+    -- parse on any deploy where IncomeStrategy no longer exists.
+    EXEC ('
+        SELECT p.Id AS PlanId, p.IncomeStrategy, CONVERT(int, 0) AS ItemsCreated
+        INTO dbo.__ForecastIncomeStrategyMigration
+        FROM dbo.ForecastPlan p
+        WHERE p.IncomeStrategy IS NOT NULL AND ISJSON(p.IncomeStrategy) = 1;
+    ');
+
+    ;WITH Src AS (
+        SELECT m.PlanId,
+               TRY_CONVERT(decimal(18,2), JSON_VALUE(m.IncomeStrategy, '$.manualRecurring.amount')) AS BaseAmount,
+               COALESCE(TRY_CONVERT(date, JSON_VALUE(m.IncomeStrategy, '$.manualRecurring.startDate')), p.StartDate) AS IncomeStart,
+               TRY_CONVERT(date, JSON_VALUE(m.IncomeStrategy, '$.manualRecurring.endDate')) AS IncomeEnd,
+               m.IncomeStrategy
+        FROM dbo.__ForecastIncomeStrategyMigration m
+        JOIN dbo.ForecastPlan p ON p.Id = m.PlanId
+    ),
+    Adj AS (
+        SELECT s.PlanId, a.AdjDate, a.DeltaAmount,
+               ROW_NUMBER() OVER (PARTITION BY s.PlanId ORDER BY a.AdjDate) AS Seq
+        FROM Src s
+        CROSS APPLY OPENJSON(s.IncomeStrategy, '$.manualAdjustments')
+            WITH (AdjDate date '$.date', DeltaAmount decimal(18,2) '$.deltaAmount') a
+        WHERE a.AdjDate IS NOT NULL
+    ),
+    Segments AS (
+        -- The original amount, running until the first adjustment moved it.
+        SELECT s.PlanId, 0 AS Seq, s.BaseAmount AS Amount, s.IncomeStart AS SegStart,
+               COALESCE(DATEADD(day, -1, (SELECT MIN(a.AdjDate) FROM Adj a WHERE a.PlanId = s.PlanId)), s.IncomeEnd) AS SegEnd
+        FROM Src s
+        UNION ALL
+        -- One segment per adjustment, carrying the running total forward.
+        SELECT a.PlanId, a.Seq,
+               s.BaseAmount + (SELECT SUM(a2.DeltaAmount) FROM Adj a2 WHERE a2.PlanId = a.PlanId AND a2.Seq <= a.Seq),
+               a.AdjDate,
+               COALESCE(DATEADD(day, -1, (SELECT MIN(a3.AdjDate) FROM Adj a3 WHERE a3.PlanId = a.PlanId AND a3.Seq > a.Seq)), s.IncomeEnd)
+        FROM Adj a
+        JOIN Src s ON s.PlanId = a.PlanId
+    )
+    SELECT NEWID() AS ItemId, PlanId, Seq, Amount, SegStart, SegEnd
+    INTO #ForecastIncomeSegments
+    FROM Segments
+    WHERE Amount IS NOT NULL AND Amount > 0;
+
+    INSERT INTO dbo.ForecastPlannedItem (Id, ForecastPlanId, ItemType, [Name], Amount, IsIncluded, DateMode)
+    SELECT ItemId, PlanId, 1, -- Income
+           CASE WHEN Seq = 0 THEN N'Income'
+                ELSE CONCAT(N'Income (from ', FORMAT(SegStart, 'MMM yyyy', 'en-AU'), N')') END,
+           Amount, 1, 1 -- Schedule
+    FROM #ForecastIncomeSegments;
+
+    INSERT INTO dbo.PlannedItemSchedule (PlannedItemId, Frequency, AnchorDate, [Interval], EndDate)
+    SELECT ItemId, 3 /* Monthly */, SegStart, 1, SegEnd
+    FROM #ForecastIncomeSegments;
+
+    -- Recorded per plan so the post-deployment check can tell a plan this migration converted from
+    -- one that merely happens to have an income item already.
+    UPDATE m
+    SET ItemsCreated = x.Created
+    FROM dbo.__ForecastIncomeStrategyMigration m
+    JOIN (SELECT PlanId, COUNT(*) AS Created FROM #ForecastIncomeSegments GROUP BY PlanId) x
+        ON x.PlanId = m.PlanId;
+
+    DROP TABLE #ForecastIncomeSegments;
+
+    ALTER TABLE dbo.ForecastPlan DROP COLUMN [IncomeStrategy];
+END

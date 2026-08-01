@@ -643,3 +643,35 @@ BEGIN
     VALUES
         ('2025-09-20', 67, 29900.00, 45080.00, 314000.00, 470000.00, 0.0780);
 END
+
+GO
+
+/*
+ Checks the income migration came out right, then clears its staging table.
+
+ A plan whose fixed income figure was present and positive must have had an item created for it.
+ The count comes from the migration itself rather than from whether the plan has any income item,
+ because a plan may have had its own income items all along — checking for those would pass a plan
+ whose figure was silently dropped. Failing the deployment is deliberate: a plan that silently lost its income would forecast a
+ household living on nothing, and the balance line would be wrong in the alarming direction without
+ anything on screen saying why.
+
+ Plans that never had a figure, or had it set to nought, are expected to come out with nothing.
+*/
+IF OBJECT_ID('dbo.__ForecastIncomeStrategyMigration', 'U') IS NOT NULL
+BEGIN
+    DECLARE @lostIncome INT =
+    (
+        SELECT COUNT(*)
+        FROM dbo.__ForecastIncomeStrategyMigration m
+        WHERE TRY_CONVERT(decimal(18,2), JSON_VALUE(m.IncomeStrategy, '$.manualRecurring.amount')) > 0
+          AND m.ItemsCreated = 0
+    );
+
+    IF @lostIncome > 0
+    BEGIN
+        RAISERROR (N'%d forecast plan(s) had a monthly income figure but came out with no income item. Inspect dbo.__ForecastIncomeStrategyMigration before retrying.', 16, 127, @lostIncome) WITH NOWAIT;
+    END
+
+    DROP TABLE dbo.__ForecastIncomeStrategyMigration;
+END

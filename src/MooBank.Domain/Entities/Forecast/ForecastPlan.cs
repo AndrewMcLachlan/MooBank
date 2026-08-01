@@ -30,9 +30,6 @@ public class ForecastPlan(Guid id) : KeyedEntity<Guid>(id)
     [MaxLength(3)]
     public string? CurrencyCode { get; set; }
 
-    [Column("IncomeStrategy")]
-    public string? IncomeStrategySerialized { get; set; }
-
     [Column("OutgoingStrategy")]
     public string? OutgoingStrategySerialized { get; set; }
 
