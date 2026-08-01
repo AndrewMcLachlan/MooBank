@@ -126,20 +126,34 @@ For item `I` and month `M`, with `latestMonth` = month of the latest transaction
 
 ```
 M <= latestMonth        → attributed(I, M)                    // what actually happened
+
 M >  latestMonth, Schedule
                         → plannedAllocation(I, M)             // recurring: can't be "used up"
+
 M >  latestMonth, FixedDate | FlexibleWindow
-                        → remaining, re-spread across I's remaining allocation months
-                          in the same proportions as planned, where
-                          remaining = max(0, I.Amount − Σ attributed(I, ·))
+                        remaining = max(0, I.Amount − Σ attributed(I, ·))
+                        targets   = I's allocation months after latestMonth
+
+                        targets non-empty     → remaining, re-spread across targets in the
+                                                same proportions as planned
+                        else, claim window
+                        still open            → all of remaining lands in the first
+                                                unsettled month
+                        else                  → 0, reported underspent
 ```
 
 This covers all four failure modes from the issue: bill came in at $220 not $200; bill paid a month
 late; renovation spread over five months; item planned but never happened.
 
-**Deliberate edge case:** a one-off whose date has passed with nothing matched contributes **0** and
-is reported as unrealised, rather than being carried forward. Carrying it forward would be a guess
-about intent; the UI flags it and the user moves the date.
+**Money still owed doesn't vanish.** A one-off has a single allocation month, so once its planned
+date has passed there is nothing left to spread across — $15,000 planned, $8,000 paid, and the
+remaining $7,000 would silently disappear from the forecast. Hence the middle branch: while the
+claim window is still open, the remainder moves to the next unsettled month.
+
+**An item is written off once its claim window has fully passed.** Whatever wasn't spent contributes
+0 and is reported underspent. This is what keeps a $200 bill paid at $195 from trailing a $5 phantom
+forever, and it avoids a tolerance constant doing the same job less legibly. A genuinely delayed
+payment is then the user's call — move the date, or widen the window.
 
 ### What this fixes downstream
 
@@ -338,9 +352,18 @@ and move to the new expense model.
 - **Explicit transaction↔item links** — considered and rejected in brainstorming.
 - **`FlexibleWindow` in the UI.** The domain, database and API support it fully; only the planned
   items table can't create one, so "build work spread over months" can only be *planned* as a fixed
-  date today. Realisation still handles the spread payment via the match window, so the workaround
-  is to widen `MatchWindowMonths`. Worth its own small issue — flagged for a decision rather than
-  quietly bundled.
+  date today.
+
+  `MatchWindowMonths` is a **slippage allowance, not a duration model** — it exists so a bill paid a
+  few weeks late still matches. Stretching it to six months to cover a renovation loosens matching
+  for every other item on the plan at the same time, because it is plan-wide. That is a poor
+  workaround, and worth saying plainly rather than leaving implied: the *correct* way to express
+  spend spread over a period is a `FlexibleWindow`, which is exactly what the UI can't create.
+
+  Kept out of scope to hold this change to one shape, but it is a small piece of work — the table
+  already renders start and end dates for `Schedule` items, so it is one more option in the
+  frequency dropdown plus the `AllocationMode` choice. Flagged for a decision rather than quietly
+  bundled.
 
 ## Risks
 
