@@ -4,15 +4,12 @@ import { formatCurrency } from "utils/currency";
 
 /** The subset of `useChartColours()` the retirement chart needs. */
 export interface RetirementChartColours {
-    income: string;
-    incomeTrend: string;
     grid: string;
 }
 
-// The nominal series is neither income nor expense, so it keeps a fixed blue in both themes; the
-// today's-dollars series uses the theme-aware income colour.
-const nominalColour = "rgb(53, 162, 235)";
-const nominalFill = "rgba(53, 162, 235, 0.5)";
+// The balance is neither income nor expense, so it keeps a fixed blue in both themes.
+const balanceColour = "rgb(53, 162, 235)";
+const balanceFill = "rgba(53, 162, 235, 0.5)";
 
 /** Muted, because the threshold is a reference the balance is read against, not a result. */
 const cutOffColour = "rgb(214, 152, 60)";
@@ -22,31 +19,30 @@ const cutOffColour = "rgb(214, 152, 60)";
  * anything.
  *
  * The balance crossing this line is the year the pension starts, which is otherwise invisible on a
- * balance chart. It rises rather than sitting flat because the thresholds are indexed, so it is
- * drawn against the nominal balance — the series it shares a scale with.
+ * balance chart. In today's dollars it is level — the thresholds are indexed, so in real terms they
+ * do not move — and a level reference is what makes the crossing readable at a glance.
  */
 const cutOffSeries = (years: RetirementProjectionYear[]) =>
-    years.map((y) => (y.pensionAssetsCutOff > 0 ? y.pensionAssetsCutOff : null));
+    years.map((y) => (y.pensionAssetsCutOffInTodaysDollars > 0 ? y.pensionAssetsCutOffInTodaysDollars : null));
 
 /** Whether anyone in the projection ever reaches an age at which the threshold applies. */
 const hasCutOff = (years: RetirementProjectionYear[]) => years.some((y) => y.pensionAssetsCutOff > 0);
 
-export const retirementChartData = (years: RetirementProjectionYear[], colours: RetirementChartColours): ChartData<"line"> => ({
+/**
+ * The balance, in today's dollars.
+ *
+ * One curve rather than two. A nominal balance climbing to seven figures alongside its real value
+ * invited every figure on the page to be read against the wrong one, and a threshold cannot be drawn
+ * against both scales at once — which is the whole point of drawing it.
+ */
+export const retirementChartData = (years: RetirementProjectionYear[]): ChartData<"line"> => ({
     labels: years.map((y) => y.year.toString()),
     datasets: [
         {
-            label: "Projected Balance",
-            data: years.map((y) => y.closingBalance),
-            borderColor: nominalColour,
-            backgroundColor: nominalFill,
-            tension: 0.1,
-        },
-        {
-            label: "In Today's Dollars",
+            label: "Balance in today's dollars",
             data: years.map((y) => y.closingBalanceInTodaysDollars),
-            borderColor: colours.income,
-            backgroundColor: colours.incomeTrend,
-            borderDash: [5, 5],
+            borderColor: balanceColour,
+            backgroundColor: balanceFill,
             tension: 0.1,
         },
         ...(hasCutOff(years) ? [{
