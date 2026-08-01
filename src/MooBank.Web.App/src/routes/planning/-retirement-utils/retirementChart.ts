@@ -18,22 +18,19 @@ const nominalFill = "rgba(53, 162, 235, 0.5)";
 const cutOffColour = "rgb(214, 152, 60)";
 
 /**
- * Where the Age Pension cuts out, drawn against the nominal balance it shares a scale with.
+ * The level below which the Age Pension starts, drawn flat across the whole chart.
  *
- * The balance crossing this line is the year the pension starts topping up the income, which a
- * balance chart otherwise gives no hint of. It climbs because the thresholds are indexed along with
- * the rates, at the same pace as the nominal balance beside it.
- *
- * Only where it applies: before anyone reaches pension age no level of assets pays anything, so
- * there is no threshold to draw rather than one sitting at nought.
+ * Straight on purpose. It is one number in today's dollars — the thresholds are indexed, so in real
+ * terms the level does not move — and a straight line is what makes the crossing easy to see: above
+ * it the pension pays nothing, below it the pension starts topping the income up.
  */
-const cutOffSeries = (years: RetirementProjectionYear[]) =>
-    years.map((y) => (y.pensionAssetsCutOff > 0 ? y.pensionAssetsCutOff : null));
+const cutOffSeries = (years: RetirementProjectionYear[], startsBelow: number) => years.map(() => startsBelow);
 
-/** Whether anyone in the projection ever reaches an age at which the threshold applies. */
-const hasCutOff = (years: RetirementProjectionYear[]) => years.some((y) => y.pensionAssetsCutOff > 0);
-
-export const retirementChartData = (years: RetirementProjectionYear[], colours: RetirementChartColours): ChartData<"line"> => ({
+export const retirementChartData = (
+    years: RetirementProjectionYear[],
+    colours: RetirementChartColours,
+    pensionStartsBelow = 0,
+): ChartData<"line"> => ({
     labels: years.map((y) => y.year.toString()),
     datasets: [
         {
@@ -51,16 +48,14 @@ export const retirementChartData = (years: RetirementProjectionYear[], colours: 
             borderDash: [5, 5],
             tension: 0.1,
         },
-        ...(hasCutOff(years) ? [{
-            label: "Age pension cuts out above",
-            data: cutOffSeries(years),
+        ...(pensionStartsBelow > 0 ? [{
+            label: "Age pension starts below",
+            data: cutOffSeries(years, pensionStartsBelow),
             borderColor: cutOffColour,
             backgroundColor: cutOffColour,
-            borderDash: [2, 3],
-            borderWidth: 1.5,
+            borderDash: [6, 4],
+            borderWidth: 2,
             pointRadius: 0,
-            // Gaps before pension age are meant to be gaps, not a line drawn through them.
-            spanGaps: false,
             tension: 0,
         }] : []),
     ],

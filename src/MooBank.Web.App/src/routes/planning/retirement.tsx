@@ -141,7 +141,7 @@ function Retirement() {
             <RetirementOutlook projection={projection} currencyCode={currencyCode} loading={projectionLoading && !projection} />
 
             <div className="retirement-charts">
-                <RetirementChart years={projection?.years ?? []} currencyCode={currencyCode} />
+                <RetirementChart years={projection?.years ?? []} currencyCode={currencyCode} pensionStartsBelow={projection?.summary.pensionStartsBelowInTodaysDollars} />
                 <RetirementIncomeChart years={projection?.years ?? []} currencyCode={currencyCode} />
             </div>
 

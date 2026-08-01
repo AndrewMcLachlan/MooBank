@@ -20,8 +20,6 @@ const year = (over: Partial<RetirementProjectionYear>): RetirementProjectionYear
     totalIncome: 0,
     totalIncomeInTodaysDollars: 0,
     pensionInTodaysDollars: 0,
-    pensionAssetsCutOff: 0,
-    pensionAssetsCutOffInTodaysDollars: 0,
     members: [],
     ...over,
 });
@@ -77,44 +75,38 @@ describe("rate conversion", () => {
  * gives no hint of.
  */
 describe("the pension threshold", () => {
-    // Drawn against the nominal balance, so the nominal threshold is what should appear.
-    const withCutOff = () => [
+    const years = () => [
         year({ year: 2026, closingBalance: 2_000_000 }),
-        year({ year: 2027, closingBalance: 1_500_000, pensionAssetsCutOff: 1_100_000, pensionAssetsCutOffInTodaysDollars: 1_048_000 }),
-        year({ year: 2028, closingBalance: 900_000, pensionAssetsCutOff: 1_130_000, pensionAssetsCutOffInTodaysDollars: 1_048_000 }),
+        year({ year: 2027, closingBalance: 1_500_000 }),
+        year({ year: 2028, closingBalance: 900_000 }),
     ];
 
-    const cutOffSeries = (years: Parameters<typeof retirementChartData>[0]) =>
-        retirementChartData(years, colours).datasets.find(d => /pension/i.test(String(d.label)));
+    const series = (startsBelow?: number) =>
+        retirementChartData(years(), colours, startsBelow).datasets.find(d => /pension/i.test(String(d.label)));
 
-    it("is not drawn when nobody ever reaches pension age", () => {
-        const data = retirementChartData([year({ year: 2026 }), year({ year: 2027 })], colours);
-
-        expect(data.datasets).toHaveLength(2);
-        expect(data.datasets.some(d => /pension/i.test(String(d.label)))).toBe(false);
+    it("is not drawn when there is no level to draw", () => {
+        expect(series(0)).toBeUndefined();
+        expect(series()).toBeUndefined();
     });
 
-    it("is drawn dotted, without points, once it applies", () => {
-        const series = cutOffSeries(withCutOff());
-
-        expect(series).toBeDefined();
-        expect(series!.borderDash).toEqual([2, 3]);
-        expect(series!.pointRadius).toBe(0);
+    /**
+     * Straight on purpose. The level is one number in today's dollars, and a flat line is what makes
+     * the crossing easy to see: above it the pension pays nothing, below it the pension starts.
+     */
+    it("is a straight line at the level, across every year", () => {
+        expect(series(1_048_000)!.data).toEqual([1_048_000, 1_048_000, 1_048_000]);
     });
 
-    /** Years before pension age are gaps, not a line dropped to nought. */
-    it("leaves a gap for years the threshold does not apply to", () => {
-        const series = cutOffSeries(withCutOff());
-
-        expect(series!.data).toEqual([null, 1_100_000, 1_130_000]);
-        expect(series!.spanGaps).toBe(false);
+    it("is dashed and carries no points of its own", () => {
+        expect(series(1_048_000)!.borderDash).toEqual([6, 4]);
+        expect(series(1_048_000)!.pointRadius).toBe(0);
     });
 
-    /** Drawn against the nominal balance, so it climbs with it rather than against its real value. */
-    it("is plotted in the same money as the nominal balance", () => {
-        const series = cutOffSeries(withCutOff());
+    it("leaves the balance series untouched", () => {
+        const data = retirementChartData(years(), colours, 1_048_000);
 
-        expect(series!.data[2]).toBeGreaterThan(series!.data[1] as number);
-        expect(series!.data).not.toContain(1_048_000);
+        expect(data.datasets).toHaveLength(3);
+        expect(data.datasets[0].label).toBe("Projected Balance");
+        expect(data.datasets[1].label).toBe("In Today's Dollars");
     });
 });

@@ -79,7 +79,17 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
 
         return projection with
         {
-            Summary = projection.Summary with { SustainableIncomeInTodaysDollars = sustainable },
+            Summary = projection.Summary with
+            {
+                SustainableIncomeInTodaysDollars = sustainable,
+
+                // The unindexed threshold, so it is already in today's dollars: a level the balance
+                // can be read against rather than a moving target. Everyone counted as being of
+                // pension age, since that is the level which holds for all but the first few years.
+                PensionStartsBelowInTodaysDollars = projection.Members.Any()
+                    ? Round(AgePension.AssetsCutOff(pensionRates, [.. projection.Members.Select(_ => pensionRates.EligibilityAge)]))
+                    : 0m,
+            },
         };
     }
 
@@ -198,10 +208,6 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
                 ? Round(AgePension.ForYear(indexedRates, ages, openingTotalThisYear))
                 : 0m;
 
-            // Reported for every year old enough to qualify, drawdown or not: the balance crossing it
-            // is what makes the pension's arrival legible on the curve.
-            var pensionCutOff = Round(AgePension.AssetsCutOff(indexedRates, ages));
-
             // Superannuation covers whatever the pension does not. Drawing the full target on top of
             // the pension would spend the balance faster than the household actually needs to.
             var targetThisYear = isDrawingDown
@@ -268,8 +274,6 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
                 DrawdownInTodaysDollars = Round(drawdown * todaysDollarsFactor),
                 TotalIncomeInTodaysDollars = Round((drawdown + pension) * todaysDollarsFactor),
                 PensionInTodaysDollars = Round(pension * todaysDollarsFactor),
-                PensionAssetsCutOff = pensionCutOff,
-                PensionAssetsCutOffInTodaysDollars = Round(pensionCutOff * todaysDollarsFactor),
                 AllRetired = allRetired,
                 Members = memberYears,
             });

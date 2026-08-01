@@ -170,6 +170,65 @@ public class AgePensionTests
     }
 
     /// <summary>
+    /// Given a projection
+    /// When the summary is read
+    /// Then it should state one level, in today's dollars, below which the pension starts
+    /// </summary>
+    /// <remarks>
+    /// A single figure so a chart can draw a straight line for the balance to cross. It is stated for
+    /// the household with everyone of pension age, and it does not move over the projection because
+    /// the thresholds are indexed exactly as the money is.
+    /// </remarks>
+    [Fact]
+    public void Calculate_TheSummary_StatesOneLevelBelowWhichThePensionStarts()
+    {
+        // Arrange
+        var plan = TestEntities.CreatePlan(members: [
+            TestEntities.CreateMember(currentAge: 60, retirementAge: 65, accountBalances: [400_000m]),
+            TestEntities.CreateMember(currentAge: 60, retirementAge: 65, accountBalances: [400_000m]),
+        ]);
+
+        // Act
+        var summary = _engine.Calculate(plan, Today, Rates).Summary;
+
+        // Assert
+        Assert.Equal(470_000m + (45_080m / 0.078m), summary.PensionStartsBelowInTodaysDollars, 0);
+    }
+
+    /// <summary>
+    /// Given a household of one
+    /// When the summary is read
+    /// Then the level should be the single person's, which is lower
+    /// </summary>
+    [Fact]
+    public void Calculate_OnePerson_StatesTheSingleLevel()
+    {
+        // Arrange
+        var plan = TestEntities.CreatePlan(members: [
+            TestEntities.CreateMember(currentAge: 60, retirementAge: 65, accountBalances: [400_000m]),
+        ]);
+
+        // Act
+        var summary = _engine.Calculate(plan, Today, Rates).Summary;
+
+        // Assert
+        Assert.Equal(314_000m + (29_900m / 0.078m), summary.PensionStartsBelowInTodaysDollars, 0);
+    }
+
+    /// <summary>
+    /// Given no pension rates recorded
+    /// When the summary is read
+    /// Then there should be no level to draw
+    /// </summary>
+    [Fact]
+    public void Calculate_NoRates_StatesNoLevel()
+    {
+        var plan = TestEntities.CreatePlan(members: [TestEntities.CreateMember(accountBalances: [400_000m])]);
+
+        Assert.Equal(0m, _engine.CalculateWithoutPension(plan, Today).Summary.PensionStartsBelowInTodaysDollars);
+    }
+
+    /// <summary>
     /// Given rates indexed to a later year
     /// When they are read
     /// Then the money figures should move but the eligibility age should not

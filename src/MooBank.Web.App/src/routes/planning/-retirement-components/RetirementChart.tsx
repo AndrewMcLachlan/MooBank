@@ -7,9 +7,11 @@ import { retirementChartData, retirementChartOptions } from "../-retirement-util
 interface RetirementChartProps {
     years: RetirementProjectionYear[];
     currencyCode: string;
+    /** The balance below which the Age Pension starts, marked as a straight line. */
+    pensionStartsBelow?: number;
 }
 
-export const RetirementChart: React.FC<RetirementChartProps> = ({ years, currencyCode }) => {
+export const RetirementChart: React.FC<RetirementChartProps> = ({ years, currencyCode, pensionStartsBelow }) => {
 
     const colours = useChartColours();
 
@@ -18,7 +20,7 @@ export const RetirementChart: React.FC<RetirementChartProps> = ({ years, currenc
     return (
         <Section header="Projected Balance">
             <div className="retirement-chart-canvas">
-                <Line data={retirementChartData(years, colours)} options={retirementChartOptions(currencyCode, colours)} />
+                <Line data={retirementChartData(years, colours, pensionStartsBelow)} options={retirementChartOptions(currencyCode, colours)} />
             </div>
         </Section>
     );

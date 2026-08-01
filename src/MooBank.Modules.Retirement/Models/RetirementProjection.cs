@@ -82,17 +82,6 @@ public sealed record RetirementProjectionYear
     /// </summary>
     public decimal PensionInTodaysDollars { get; init; }
 
-    /// <summary>
-    /// The assets at which the Age Pension runs out entirely this year, or nought where nobody is
-    /// old enough for any level of assets to pay.
-    /// </summary>
-    /// <remarks>
-    /// Worth plotting against the balance: where the curve crosses it is where the pension begins,
-    /// and the threshold itself climbs with the indexation applied to the rates.
-    /// </remarks>
-    public decimal PensionAssetsCutOff { get; init; }
-
-    public decimal PensionAssetsCutOffInTodaysDollars { get; init; }
 
     /// <summary>
     /// Each member's part of the year, so a chart can show whose balance is funding the income.
@@ -264,4 +253,17 @@ public sealed record RetirementProjectionSummary
     /// reads high.
     /// </remarks>
     public decimal SustainableIncomeInTodaysDollars { get; init; }
+
+    /// <summary>
+    /// The balance below which the household starts receiving the Age Pension, in today's dollars.
+    /// </summary>
+    /// <remarks>
+    /// One figure for the whole projection rather than a value per year. The thresholds are indexed,
+    /// so in today's dollars this does not move — which is what lets it be drawn as a straight line
+    /// for the balance to cross.
+    ///
+    /// Stated for the household with everyone of pension age, since that is the level that holds for
+    /// all but the first few years and the one worth marking. Nought where no rates are recorded.
+    /// </remarks>
+    public decimal PensionStartsBelowInTodaysDollars { get; init; }
 }
