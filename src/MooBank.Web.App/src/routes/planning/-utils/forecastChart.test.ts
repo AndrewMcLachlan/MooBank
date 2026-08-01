@@ -7,8 +7,7 @@ const month = (over: Partial<ForecastMonth>): ForecastMonth => ({
     openingBalance: 0,
     incomeTotal: 0,
     baselineOutgoingsTotal: 0,
-    plannedItemsTotal: 0,
-    plannedIncomeTotal: 0,
+    realisedExpensesTotal: 0,
     plannedExpensesTotal: 0,
     closingBalance: 0,
     ...over,
@@ -38,17 +37,18 @@ describe("projectedActualChartData", () => {
         expect(actual.spanGaps).toBe(false);
     });
 
-    it("adds planned items to the projected series so one-offs are not flattened away", () => {
-        // Recurring income is flat, but a one-off planned item lands in Feb — the projected
-        // line must spike, not sit flat at the recurring amount.
+    it("follows income month by month so one-offs are not flattened away", () => {
+        // A one-off — a tax refund, say — lands in February on top of the recurring salary, and the
+        // projected line has to spike with it rather than sit flat. Income is a single series now
+        // that it all comes from planned items, so the month's total carries both.
         const months = [
-            month({ monthStart: "2024-01-01", incomeTotal: 100, plannedIncomeTotal: 0 }),
-            month({ monthStart: "2024-02-01", incomeTotal: 100, plannedIncomeTotal: 500 }),
+            month({ monthStart: "2024-01-01", incomeTotal: 100 }),
+            month({ monthStart: "2024-02-01", incomeTotal: 600 }),
         ];
 
         const data = projectedActualChartData(
             months,
-            (m) => m.incomeTotal + m.plannedIncomeTotal,
+            (m) => m.incomeTotal,
             (m) => m.actualIncome,
             { projected: "Projected", actual: "Actual" },
             { solid: "#0a0", trend: "#afa" },

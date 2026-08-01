@@ -48,18 +48,12 @@ export const CreateForecastPlan: React.FC<CreateForecastPlanProps> = ({ accounts
                 accountScopeMode: "SelectedAccounts",
                 startingBalanceMode: "CalculatedCurrent",
                 accountIds: selectedAccountIds,
-                incomeStrategy: {
-                    version: 1,
-                    mode: "ManualRecurring",
-                    manualRecurring: {
-                        amount: 0,
-                        frequency: "Monthly"
-                    }
-                },
+                // Income is not set here: the API seeds a monthly income item from the account
+                // history, which the plan's Planned Income table then owns.
                 outgoingStrategy: {
                     version: 1,
-                    mode: "HistoricalAverageByTag",
-                    lookbackMonths: 12
+                    lookbackMonths: 24,
+                    matchWindowMonths: 1
                 }
             });
             onPlanCreated(newPlan.id);

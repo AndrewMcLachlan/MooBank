@@ -23,7 +23,7 @@ export const ForecastIncomeExpenseCharts: React.FC<ForecastIncomeExpenseChartsPr
     // they are — the recurring/baseline figures alone are flat lines.
     const incomeData = projectedActualChartData(
         months,
-        (m) => m.incomeTotal + m.plannedIncomeTotal,
+        (m) => m.incomeTotal,
         (m) => m.actualIncome,
         { projected: "Projected", actual: "Actual" },
         { solid: colours.income, trend: colours.incomeTrend },

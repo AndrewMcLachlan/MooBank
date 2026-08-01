@@ -109,3 +109,76 @@
     height: 100%;
     min-height: 300px;
 }
+
+/* ---- The expense model ----
+   Spending is a fixed amount plus a share of income, so the metric carries two parts. The rate is
+   set smaller than the amount so the pair reads as one figure rather than two competing ones. */
+.forecast-metrics .expense-model-plus {
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    opacity: 0.85;
+}
+
+.forecast-metrics .expense-model-hint {
+    border-bottom: 1px dotted var(--secondary-colour);
+    cursor: help;
+}
+
+.expense-model-detail {
+    display: grid;
+    gap: 0.25rem;
+    font-size: 0.8125rem;
+}
+
+/* Said out loud rather than corrected for silently: the forecast is pessimistic while income is
+   under-modelled, and the author is the one who can fix it. */
+.forecast-notice {
+    border-left: 3px solid var(--expense-bar);
+    padding: 0.625rem 0.875rem;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    color: var(--secondary-colour);
+    background: var(--section-bg, transparent);
+    border-radius: 0 4px 4px 0;
+}
+
+/* ---- Planned item tracking ---- */
+.planned-item-tag .combo-box {
+    min-width: 0;
+}
+
+td.planned-item-spent {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+td.planned-item-spent.untracked {
+    color: var(--secondary-colour);
+    font-style: italic;
+}
+
+.planned-item-note {
+    display: block;
+    font-size: 0.75rem;
+    font-style: normal;
+    color: var(--secondary-colour);
+}
+
+.planned-item-note.over { color: var(--expense-fg); }
+.planned-item-note.unseen { font-style: italic; }
+
+tr.excluded {
+    color: var(--secondary-colour);
+    opacity: 0.7;
+}
+
+td.no-value {
+    color: var(--secondary-colour);
+}
+
+.field-hint {
+    font-size: 0.75rem;
+    color: var(--secondary-colour);
+    margin-top: 0.25rem;
+}

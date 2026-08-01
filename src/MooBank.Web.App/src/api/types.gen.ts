@@ -280,6 +280,17 @@ export type Discount = {
     reason?: null | string;
 };
 
+export type ExpenseModel = {
+    fixedComponent: number;
+    variableComponent: number;
+    rSquared: number;
+    dataPoints: number;
+    usingFlatAverage: boolean;
+    flatAverage: number;
+    modelledIncomeShortfall: number;
+    averageMonthly: number;
+};
+
 export type Family = {
     id: string;
     name: string;
@@ -291,9 +302,8 @@ export type ForecastMonth = {
     openingBalance: number;
     incomeTotal: number;
     baselineOutgoingsTotal: number;
-    plannedItemsTotal: number;
-    plannedIncomeTotal: number;
     plannedExpensesTotal: number;
+    realisedExpensesTotal: number;
     closingBalance: number;
     actualBalance?: null | number;
     actualIncome?: null | number;
@@ -312,7 +322,6 @@ export type ForecastPlan = {
     startingBalanceMode: StartingBalanceMode;
     startingBalanceAmount?: null | number;
     currencyCode?: null | string;
-    incomeStrategy?: null | IncomeStrategy;
     outgoingStrategy?: null | OutgoingStrategy;
     assumptions?: null | Assumptions;
     accountIds: Array<string>;
@@ -323,6 +332,7 @@ export type ForecastResult = {
     planId: string;
     months: Array<ForecastMonth>;
     summary: ForecastSummary;
+    plannedItems: Array<PlannedItemProgress>;
 };
 
 export type ForecastSummary = {
@@ -332,8 +342,7 @@ export type ForecastSummary = {
     monthsBelowZero: number;
     totalIncome: number;
     totalOutgoings: number;
-    monthlyBaselineOutgoings: number;
-    regression?: null | RegressionDiagnostics;
+    expenses: ExpenseModel;
 };
 
 export type Group = {
@@ -347,14 +356,6 @@ export type Group = {
 export type GrowthStrategy = 'Custom' | 'Conservative' | 'Balanced' | 'Growth' | 'HighGrowth';
 
 export type HexColour = unknown;
-
-export type HistoricalIncomeSettings = {
-    lookbackMonths: number;
-    includeTagIds?: null | Array<number>;
-    excludeTagIds?: null | Array<number>;
-    excludeTransfers: boolean;
-    excludeOffsets: boolean;
-};
 
 export type IFormFile = Blob | File;
 
@@ -390,14 +391,6 @@ export type ImportResult = {
 export type IncomeCorrelatedSettings = {
     rSquaredThreshold: number;
     minDataPoints: number;
-};
-
-export type IncomeStrategy = {
-    version: number;
-    mode: string;
-    manualRecurring?: null | ManualRecurringIncome;
-    manualAdjustments?: null | Array<ManualAdjustment>;
-    historical?: null | HistoricalIncomeSettings;
 };
 
 export type InOutReport = {
@@ -495,18 +488,6 @@ export type LogicalAccount = {
     remainingBalanceLocalCurrency?: null | number;
 };
 
-export type ManualAdjustment = {
-    date: string;
-    deltaAmount: number;
-};
-
-export type ManualRecurringIncome = {
-    amount: number;
-    frequency: string;
-    startDate?: null | string;
-    endDate?: null | string;
-};
-
 export type MonthlyBalancesReport = {
     balances: Array<TrendPoint>;
     accountId: string;
@@ -516,8 +497,8 @@ export type MonthlyBalancesReport = {
 
 export type OutgoingStrategy = {
     version: number;
-    mode: string;
     lookbackMonths: number;
+    matchWindowMonths: number;
     excludeTagIds?: null | Array<number>;
     excludeAboveAmount?: null | number;
     seasonality?: null | SeasonalitySettings;
@@ -570,6 +551,16 @@ export type PlannedItem = {
 
 export type PlannedItemDateMode = 'FixedDate' | 'Schedule' | 'FlexibleWindow';
 
+export type PlannedItemProgress = {
+    plannedItemId: string;
+    name: string;
+    plannedTotal: number;
+    actualToDate: number;
+    remaining: number;
+    isMatched: boolean;
+    isClosed: boolean;
+};
+
 export type PlannedItemType = 'Expense' | 'Income';
 
 export type PrincipalVsInterestReport = {
@@ -599,13 +590,6 @@ export type RecurringTransactionDetails = {
     amount: number;
     schedule: ScheduleFrequency;
     nextRun: string;
-};
-
-export type RegressionDiagnostics = {
-    fixedComponent: number;
-    variableComponent: number;
-    rSquared: number;
-    fellBackToFlatAverage: boolean;
 };
 
 export type ReportInterval = 'Monthly' | 'Yearly';
@@ -802,7 +786,6 @@ export type SimpleForecastPlan = {
     startingBalanceMode: StartingBalanceMode;
     startingBalanceAmount?: null | number;
     currencyCode?: null | string;
-    incomeStrategy?: null | IncomeStrategy;
     outgoingStrategy?: null | OutgoingStrategy;
     assumptions?: null | Assumptions;
     accountIds: Array<string>;

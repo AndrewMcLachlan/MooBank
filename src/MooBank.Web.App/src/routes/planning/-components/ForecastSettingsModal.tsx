@@ -3,11 +3,9 @@ import { useForm, useWatch } from "react-hook-form";
 import type { AccountScopeMode, ForecastPlan } from "api/types.gen";
 import { useUpdateForecastPlan } from "../-hooks/useUpdateForecastPlan";
 import { useAccounts } from "hooks/useAccounts";
-import { CurrencyInput } from "components";
 
 interface ForecastSettingsModalProps {
     plan?: ForecastPlan;
-    currencyCode: string;
     show: boolean;
     onHide: () => void;
 }
@@ -16,23 +14,23 @@ interface ForecastSettingsFormValues {
     name: string;
     startDate: string;
     endDate: string;
-    monthlyIncome: number;
     accountScopeMode: AccountScopeMode;
     accountIds: string[];
-    outgoingMode: string;
+    lookbackMonths: number;
+    matchWindowMonths: number;
 }
 
 const toFormValues = (plan?: ForecastPlan): ForecastSettingsFormValues => ({
     name: plan?.name ?? "",
     startDate: plan?.startDate ?? "",
     endDate: plan?.endDate ?? "",
-    monthlyIncome: plan?.incomeStrategy?.manualRecurring?.amount ?? 0,
     accountScopeMode: plan?.accountScopeMode,
     accountIds: plan?.accountIds ?? [],
-    outgoingMode: plan?.outgoingStrategy?.mode ?? "HistoricalAverageByTag",
+    lookbackMonths: plan?.outgoingStrategy?.lookbackMonths ?? 24,
+    matchWindowMonths: plan?.outgoingStrategy?.matchWindowMonths ?? 1,
 });
 
-export const ForecastSettingsModal: React.FC<ForecastSettingsModalProps> = ({ plan, currencyCode, show, onHide }) => {
+export const ForecastSettingsModal: React.FC<ForecastSettingsModalProps> = ({ plan, show, onHide }) => {
 
     const { data: accounts } = useAccounts();
     const { update, isPending } = useUpdateForecastPlan();
@@ -44,7 +42,6 @@ export const ForecastSettingsModal: React.FC<ForecastSettingsModalProps> = ({ pl
 
     const accountScopeMode = useWatch({ control: form.control, name: "accountScopeMode" });
     const selectedAccountIds = useWatch({ control: form.control, name: "accountIds" });
-    const outgoingMode = useWatch({ control: form.control, name: "outgoingMode" });
 
     if (!plan) return null;
 
@@ -55,17 +52,10 @@ export const ForecastSettingsModal: React.FC<ForecastSettingsModalProps> = ({ pl
             endDate: data.endDate,
             accountScopeMode: data.accountScopeMode,
             accountIds: data.accountScopeMode === "SelectedAccounts" ? data.accountIds : [],
-            incomeStrategy: {
-                ...plan.incomeStrategy,
-                manualRecurring: {
-                    ...plan.incomeStrategy?.manualRecurring,
-                    amount: Number(data.monthlyIncome) || 0,
-                    frequency: "Monthly"
-                }
-            },
             outgoingStrategy: {
                 ...plan.outgoingStrategy,
-                mode: data.outgoingMode,
+                lookbackMonths: Number(data.lookbackMonths) || 24,
+                matchWindowMonths: Number(data.matchWindowMonths) || 0,
             }
         });
         onHide();
@@ -101,33 +91,22 @@ export const ForecastSettingsModal: React.FC<ForecastSettingsModalProps> = ({ pl
                             </Form.Group>
                         </Col>
                     </Row>
-                    <Form.Group groupId="monthlyIncome">
-                        <Form.Label>Monthly Income</Form.Label>
-                        <CurrencyInput currency={currencyCode} min={0} />
-                    </Form.Group>
-                    <Form.Group groupId="outgoingMode">
-                        <Form.Label>Expense Calculation</Form.Label>
-                        <div>
-                            <Input.Check
-                                type="radio"
-                                id="outgoing-historical"
-                                name="outgoingMode"
-                                label="Historical average"
-                                checked={outgoingMode === "HistoricalAverageByTag"}
-                                onChange={() => form.setValue("outgoingMode", "HistoricalAverageByTag", { shouldDirty: true })}
-                                inline
-                            />
-                            <Input.Check
-                                type="radio"
-                                id="outgoing-correlated"
-                                name="outgoingMode"
-                                label="Income-correlated"
-                                checked={outgoingMode === "IncomeCorrelated"}
-                                onChange={() => form.setValue("outgoingMode", "IncomeCorrelated", { shouldDirty: true })}
-                                inline
-                            />
-                        </div>
-                    </Form.Group>
+                    <Row className="g-3">
+                        <Col md={6}>
+                            <Form.Group groupId="lookbackMonths">
+                                <Form.Label>History Used (months)</Form.Label>
+                                <Form.Input type="number" min={1} max={60} />
+                                <div className="field-hint">How far back spending is studied to work out how it moves with income.</div>
+                            </Form.Group>
+                        </Col>
+                        <Col md={6}>
+                            <Form.Group groupId="matchWindowMonths">
+                                <Form.Label>Planned Item Slippage (months)</Form.Label>
+                                <Form.Input type="number" min={0} max={12} />
+                                <div className="field-hint">How late or early a tagged payment can be and still count towards its planned item.</div>
+                            </Form.Group>
+                        </Col>
+                    </Row>
                     <Form.Group groupId="accountScopeMode">
                         <Form.Label>Accounts</Form.Label>
                         <div className="mb-2">

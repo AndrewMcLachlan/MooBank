@@ -1,8 +1,9 @@
-import { SectionTable, DeleteIcon, EditColumn, useUpdatingState } from "@andrewmclachlan/moo-ds";
+import { SectionTable, DeleteIcon, EditColumn, ComboBox, useUpdatingState } from "@andrewmclachlan/moo-ds";
 import { format, parseISO } from "date-fns";
-import type { ForecastPlan, PlannedItem, ScheduleFrequency } from "api/types.gen";
+import type { ForecastPlan, PlannedItem, PlannedItemProgress, ScheduleFrequency, Tag } from "api/types.gen";
 import { useState } from "react";
 import { Input } from "@andrewmclachlan/moo-ds";
+import { useTags } from "hooks/useTags";
 import { useUpdatePlannedItem } from "../-hooks/useUpdatePlannedItem";
 import { useDeletePlannedItem } from "../-hooks/useDeletePlannedItem";
 import { NewPlannedItem } from "./NewPlannedItem";
@@ -11,9 +12,10 @@ import { Amount } from "components";
 interface PlannedItemsTableProps {
     plan?: ForecastPlan;
     currencyCode: string;
+    progress?: PlannedItemProgress[];
 }
 
-export const PlannedItemsTable: React.FC<PlannedItemsTableProps> = ({ plan, currencyCode }) => {
+export const PlannedItemsTable: React.FC<PlannedItemsTableProps> = ({ plan, currencyCode, progress }) => {
 
     const items = plan?.plannedItems ?? [];
     const planId = plan?.id;
@@ -21,10 +23,12 @@ export const PlannedItemsTable: React.FC<PlannedItemsTableProps> = ({ plan, curr
     const incomeItems = items.filter(i => i.itemType === "Income");
     const expenseItems = items.filter(i => i.itemType === "Expense");
 
+    const progressById = new Map((progress ?? []).map(p => [p.plannedItemId, p]));
+
     return (
         <>
-            <PlannedItemsSection planId={planId} title="Planned Income" items={incomeItems} itemType="Income" currencyCode={currencyCode} />
-            <PlannedItemsSection planId={planId} title="Planned Expenses" items={expenseItems} itemType="Expense" currencyCode={currencyCode} />
+            <PlannedItemsSection planId={planId} title="Planned Income" items={incomeItems} itemType="Income" currencyCode={currencyCode} progressById={progressById} />
+            <PlannedItemsSection planId={planId} title="Planned Expenses" items={expenseItems} itemType="Expense" currencyCode={currencyCode} progressById={progressById} />
         </>
     );
 };
@@ -35,25 +39,27 @@ interface PlannedItemsSectionProps {
     items: PlannedItem[];
     itemType: "Income" | "Expense";
     currencyCode: string;
+    progressById: Map<string, PlannedItemProgress>;
 }
 
-const PlannedItemsSection: React.FC<PlannedItemsSectionProps> = ({ planId, title, items, itemType, currencyCode }) => {
+const PlannedItemsSection: React.FC<PlannedItemsSectionProps> = ({ planId, title, items, itemType, currencyCode, progressById }) => {
     return (
         <SectionTable header={title} striped>
             <thead>
                 <tr>
                     <th className="column-20">Name</th>
                     <th className="column-10">Amount</th>
+                    <th className="column-15">Tag</th>
+                    <th className="column-15">Spent</th>
                     <th className="column-12">Start Date</th>
                     <th className="column-12">End Date</th>
                     <th className="column-12">Frequency</th>
-                    <th className="column-20">Notes</th>
                     <th className="row-action"></th>
                 </tr>
             </thead>
             <tbody>
                 {items.map((item) => (
-                    <PlannedItemRow key={item.id} planId={planId} item={item} />
+                    <PlannedItemRow key={item.id} planId={planId} item={item} currencyCode={currencyCode} progress={progressById.get(item.id)} />
                 ))}
                 <NewPlannedItem planId={planId} itemType={itemType} />
             </tbody>
@@ -61,7 +67,7 @@ const PlannedItemsSection: React.FC<PlannedItemsSectionProps> = ({ planId, title
                 <tr>
                     <td>Total</td>
                     <td className="amount"><Amount amount={items.reduce((sum, i) => sum + (i.isIncluded ? i.amount : 0), 0)} currencyCode={currencyCode} minus /></td>
-                    <td colSpan={5}></td>
+                    <td colSpan={6}></td>
                 </tr>
             </tfoot>
         </SectionTable>
@@ -71,11 +77,40 @@ const PlannedItemsSection: React.FC<PlannedItemsSectionProps> = ({ planId, title
 interface PlannedItemRowProps {
     planId: string;
     item: PlannedItem;
+    currencyCode: string;
+    progress?: PlannedItemProgress;
 }
 
-const PlannedItemRow: React.FC<PlannedItemRowProps> = ({ planId, item: propItem }) => {
+// What has actually been spent against an item, and what that says about it. An untagged item shows
+// nothing, because nothing can be attributed to it: this is how the author sees which figures are
+// being measured against reality and which are still only guesses.
+const SpentCell: React.FC<{ progress?: PlannedItemProgress; currencyCode: string }> = ({ progress, currencyCode }) => {
+    if (!progress?.isMatched) {
+        return <td className="planned-item-spent untracked">not tracked</td>;
+    }
+
+    const overspent = progress.actualToDate > progress.plannedTotal;
+    const shortOfPlan = progress.isClosed && progress.actualToDate < progress.plannedTotal;
+
+    return (
+        <td className="planned-item-spent amount">
+            <Amount amount={progress.actualToDate} currencyCode={currencyCode} />
+            {overspent && <span className="planned-item-note over">over</span>}
+            {shortOfPlan && progress.actualToDate === 0 && <span className="planned-item-note unseen">not seen</span>}
+            {shortOfPlan && progress.actualToDate > 0 && <span className="planned-item-note under">came in under</span>}
+            {!progress.isClosed && progress.remaining > 0 && progress.actualToDate > 0 && (
+                <span className="planned-item-note remaining">
+                    <Amount amount={progress.remaining} currencyCode={currencyCode} /> to go
+                </span>
+            )}
+        </td>
+    );
+};
+
+const PlannedItemRow: React.FC<PlannedItemRowProps> = ({ planId, item: propItem, currencyCode, progress }) => {
     const [item, setItem] = useUpdatingState(propItem);
     const { update } = useUpdatePlannedItem();
+    const { data: tags } = useTags();
     const deleteItem = useDeletePlannedItem();
     const [isEditingFrequency, setIsEditingFrequency] = useState(false);
 
@@ -200,7 +235,7 @@ const PlannedItemRow: React.FC<PlannedItemRowProps> = ({ planId, item: propItem 
     };
 
     return (
-        <tr className={!item.isIncluded ? "text-muted" : ""}>
+        <tr className={!item.isIncluded ? "excluded" : ""}>
             <EditColumn
                 value={item.name}
                 onChange={(v) => handleUpdate({ name: v.value })}
@@ -211,6 +246,18 @@ const PlannedItemRow: React.FC<PlannedItemRowProps> = ({ planId, item: propItem 
                 value={item.amount.toFixed(2)}
                 onChange={(v) => handleUpdate({ amount: parseFloat(v.value) || 0 })}
             />
+            <td className="planned-item-tag">
+                <ComboBox
+                    clearable
+                    placeholder="Untagged"
+                    items={tags ?? []}
+                    selectedItems={(tags ?? []).filter(t => t.id === item.tagId)}
+                    labelField={(t: Tag) => t?.name}
+                    valueField={(t: Tag) => String(t?.id)}
+                    onChange={(selected: Tag[]) => handleUpdate({ tagId: selected[0]?.id ?? undefined })}
+                />
+            </td>
+            <SpentCell progress={progress} currencyCode={currencyCode} />
             <EditColumn
                 type="date"
                 value={getDateValue()}
@@ -219,7 +266,7 @@ const PlannedItemRow: React.FC<PlannedItemRowProps> = ({ planId, item: propItem 
                 {formatStartDateDisplay()}
             </EditColumn>
             {item.dateMode === "FixedDate" ? (
-                <td className="text-muted">-</td>
+                <td className="no-value">-</td>
             ) : (
                 <EditColumn
                     type="date"
@@ -247,10 +294,6 @@ const PlannedItemRow: React.FC<PlannedItemRowProps> = ({ planId, item: propItem 
                     <span className="clickable">{getFrequencyDisplay()}</span>
                 )}
             </td>
-            <EditColumn
-                value={item.notes ?? ""}
-                onChange={(v) => handleUpdate({ notes: v.value })}
-            />
             <td className="row-action">
                 <DeleteIcon onClick={handleDelete} />
             </td>

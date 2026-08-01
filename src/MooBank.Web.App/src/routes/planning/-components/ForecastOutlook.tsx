@@ -1,6 +1,6 @@
 import { Badge, OverlayTrigger, Popover, Section, SpinnerContainer } from "@andrewmclachlan/moo-ds";
 import { format, parseISO } from "date-fns";
-import type { ForecastMonth, ForecastPlan, ForecastSummary } from "api/types.gen";
+import type { ExpenseModel, ForecastMonth, ForecastPlan, ForecastSummary } from "api/types.gen";
 import { Amount } from "components";
 import { formatCurrency } from "utils/currency";
 import { ForecastChart } from "./ForecastChart";
@@ -13,36 +13,83 @@ interface ForecastOutlookProps {
     loading?: boolean;
 }
 
-// The expense calc note. When the plan is income-correlated and the regression held, it exposes the
-// fitted model (fixed/variable/R²) in a hover popover — carried over from the old settings panel.
-const ExpenseNote: React.FC<{ plan?: ForecastPlan; summary: ForecastSummary; currencyCode: string }> = ({ plan, summary, currencyCode }) => {
-    if (plan?.outgoingStrategy?.mode !== "IncomeCorrelated") {
-        return <>historical average</>;
+const percent = (rate: number) =>
+    (rate * 100).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+// The expenses figure. There is no single monthly expenses number — spending moves with income —
+// so the two parts of the model lead, and the average is demoted to the caption it belongs in.
+const ExpenseMetric: React.FC<{ expenses: ExpenseModel; currencyCode: string }> = ({ expenses, currencyCode }) => {
+    if (expenses.usingFlatAverage) {
+        return (
+            <>
+                <div className="eyebrow">Monthly Expenses</div>
+                <div className="metric-value expense"><Amount amount={expenses.flatAverage} currencyCode={currencyCode} /></div>
+                <div className="metric-sub">
+                    <OverlayTrigger placement="bottom" overlay={
+                        <Popover id="forecast-expense-popover">
+                            <Popover.Body>
+                                <div className="expense-model-detail">
+                                    <div>Spending could not be tied to income from {expenses.dataPoints} month{expenses.dataPoints === 1 ? "" : "s"} of history.</div>
+                                    <div>A flat average is being used instead, so a change in income will not move this figure.</div>
+                                </div>
+                            </Popover.Body>
+                        </Popover>
+                    }>
+                        <span className="expense-model-hint">flat average · not tied to income</span>
+                    </OverlayTrigger>
+                </div>
+            </>
+        );
     }
-    const regression = summary.regression;
-    if (!regression || regression.fellBackToFlatAverage) {
-        return <>income-correlated · flat average</>;
-    }
+
     return (
-        <OverlayTrigger placement="bottom" overlay={
-            <Popover id="forecast-regression-popover">
-                <Popover.Body>
-                    <div className="regression-popover">
-                        <div>Fixed expenses: {formatCurrency(regression.fixedComponent, currencyCode)}/mo</div>
-                        <div>Variable rate: {(regression.variableComponent * 100).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}% of income</div>
-                        <div>Model fit: {(regression.rSquared * 100).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}% R²</div>
-                    </div>
-                </Popover.Body>
-            </Popover>
-        }>
-            <span className="regression-hint">income-correlated</span>
-        </OverlayTrigger>
+        <>
+            <div className="eyebrow">Monthly Expenses</div>
+            <div className="metric-value expense">
+                <Amount amount={expenses.fixedComponent} currencyCode={currencyCode} />
+                <span className="expense-model-plus"> + {percent(expenses.variableComponent)}%</span>
+            </div>
+            <div className="metric-sub">
+                <OverlayTrigger placement="bottom" overlay={
+                    <Popover id="forecast-expense-popover">
+                        <Popover.Body>
+                            <div className="expense-model-detail">
+                                <div>{formatCurrency(expenses.fixedComponent, currencyCode)} a month, plus {percent(expenses.variableComponent)}% of income.</div>
+                                <div>Averages {formatCurrency(expenses.averageMonthly, currencyCode)} a month across this plan.</div>
+                                <div>Fitted from {expenses.dataPoints} months · {percent(expenses.rSquared)}% R²</div>
+                            </div>
+                        </Popover.Body>
+                    </Popover>
+                }>
+                    <span className="expense-model-hint">of income · averages {formatCurrency(expenses.averageMonthly, currencyCode)}</span>
+                </OverlayTrigger>
+            </div>
+        </>
+    );
+};
+
+// Shown only when the plan's own income items fall materially short of the credits the accounts
+// actually received. Spending is priced off the higher figure, so the forecast is pessimistic until
+// the missing income is modelled — better said out loud than silently corrected for.
+const IncomeShortfallNote: React.FC<{ expenses: ExpenseModel; currencyCode: string }> = ({ expenses, currencyCode }) => {
+    if (expenses.usingFlatAverage || expenses.modelledIncomeShortfall < 100) return null;
+
+    return (
+        <div className="forecast-notice">
+            Your accounts receive about {formatCurrency(expenses.modelledIncomeShortfall, currencyCode)} a month
+            more than this plan's income items account for. Expenses are modelled against the larger figure,
+            so the outlook is gloomier than it should be until the rest of your income is listed.
+        </div>
     );
 };
 
 export const ForecastOutlook: React.FC<ForecastOutlookProps> = ({ plan, summary, months, currencyCode, loading }) => {
 
     const onTrack = !summary || (summary.monthsBelowZero === 0 && summary.requiredMonthlyUplift <= 0);
+
+    // Income varies month to month now that it comes from planned items, so the headline figure is
+    // an average rather than the single number a plan used to carry.
+    const averageIncome = months.length > 0 ? months.reduce((sum, m) => sum + m.incomeTotal, 0) / months.length : 0;
 
     const lowestBalanceRisk = !!summary && summary.lowestBalance < 0;
     const monthsRisk = !!summary && summary.monthsBelowZero > 0;
@@ -68,13 +115,11 @@ export const ForecastOutlook: React.FC<ForecastOutlookProps> = ({ plan, summary,
                 <div className="forecast-metrics">
                     <Section className="metric" data-tone="income">
                         <div className="eyebrow">Monthly Income</div>
-                        <div className="metric-value income"><Amount amount={plan?.incomeStrategy?.manualRecurring?.amount ?? 0} currencyCode={currencyCode} /></div>
-                        <div className="metric-sub">per month</div>
+                        <div className="metric-value income"><Amount amount={averageIncome} currencyCode={currencyCode} /></div>
+                        <div className="metric-sub">average across the plan</div>
                     </Section>
                     <Section className="metric" data-tone="expense">
-                        <div className="eyebrow">Monthly Expenses</div>
-                        <div className="metric-value expense"><Amount amount={summary.monthlyBaselineOutgoings} currencyCode={currencyCode} /></div>
-                        <div className="metric-sub"><ExpenseNote plan={plan} summary={summary} currencyCode={currencyCode} /></div>
+                        <ExpenseMetric expenses={summary.expenses} currencyCode={currencyCode} />
                     </Section>
                     <Section className="metric" data-tone={lowestBalanceRisk ? "risk" : "ok"}>
                         <div className="eyebrow">Lowest Balance</div>
@@ -97,6 +142,8 @@ export const ForecastOutlook: React.FC<ForecastOutlookProps> = ({ plan, summary,
                     </Section>
                 </div>
             )}
+
+            {summary && <IncomeShortfallNote expenses={summary.expenses} currencyCode={currencyCode} />}
 
             <Section header="Balance Projection" className="forecast-chart-section">
                 <ForecastChart months={months} currencyCode={currencyCode} />

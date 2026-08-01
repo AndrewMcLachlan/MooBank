@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import type { ForecastPlan, ForecastSummary } from "api/types.gen";
+import type { ExpenseModel, ForecastMonth, ForecastPlan, ForecastSummary } from "api/types.gen";
 import { ForecastOutlook } from "./ForecastOutlook";
 
 // The chart pulls in react-chartjs-2 (canvas) and theme context; the Outlook's own logic is the
@@ -25,6 +25,18 @@ vi.mock("@andrewmclachlan/moo-ds", () => ({
     ),
 }));
 
+const expenses = (over: Partial<ExpenseModel> = {}): ExpenseModel => ({
+    fixedComponent: 1200,
+    variableComponent: 0.42,
+    rSquared: 0.83,
+    dataPoints: 24,
+    usingFlatAverage: false,
+    flatAverage: 6457,
+    modelledIncomeShortfall: 0,
+    averageMonthly: 6457,
+    ...over,
+});
+
 const summary = (over: Partial<ForecastSummary> = {}): ForecastSummary => ({
     lowestBalance: 101536,
     lowestBalanceMonth: "2026-07-01",
@@ -32,9 +44,18 @@ const summary = (over: Partial<ForecastSummary> = {}): ForecastSummary => ({
     monthsBelowZero: 0,
     totalIncome: 303138,
     totalOutgoings: 311925,
-    monthlyBaselineOutgoings: 6457,
-    regression: null,
+    expenses: expenses(),
     ...over,
+});
+
+const month = (incomeTotal: number): ForecastMonth => ({
+    monthStart: "2026-01-01",
+    openingBalance: 0,
+    incomeTotal,
+    baselineOutgoingsTotal: 0,
+    plannedExpensesTotal: 0,
+    realisedExpensesTotal: 0,
+    closingBalance: 0,
 });
 
 const renderOutlook = (over?: Partial<ForecastSummary>) => {
@@ -73,37 +94,45 @@ describe("ForecastOutlook", () => {
         expect(risk).toHaveLength(2);
     });
 
-    it("renders the monthly income and expenses cards from the plan and summary", () => {
-        const plan = {
-            name: "My Forecast",
-            startDate: "2024-12-01",
-            endDate: "2027-12-01",
-            incomeStrategy: { manualRecurring: { amount: 8192.92 } },
-            outgoingStrategy: { mode: "IncomeCorrelated" },
-        } as ForecastPlan;
+    it("averages income across the plan's months rather than quoting a single figure", () => {
+        // Income comes from planned items now, so it varies month to month and there is no one
+        // number on the plan to read it from.
         const { container } = render(
-            <ForecastOutlook plan={plan} summary={summary({ monthlyBaselineOutgoings: 6457 })} months={[]} currencyCode="AUD" />,
+            <ForecastOutlook summary={summary()} months={[month(8000), month(8000), month(5000)]} currencyCode="AUD" />,
         );
-        expect(container.querySelector(".metric-value.income")).toHaveTextContent("8,192.92");
-        expect(container.querySelector(".metric-value.expense")).toHaveTextContent("6,457");
-        // Income and expenses use their own semantic classes, not the risk .negative marker.
+        expect(container.querySelector(".metric-value.income")).toHaveTextContent("7,000");
         expect(container.querySelectorAll(".metric-value.negative")).toHaveLength(0);
     });
 
-    it("notes the flat-average fallback on the expenses card when the correlation is weak", () => {
-        const plan = { startDate: "2024-12-01", endDate: "2027-12-01", outgoingStrategy: { mode: "IncomeCorrelated" } } as ForecastPlan;
-        const fellBack = summary({ regression: { fellBackToFlatAverage: true, rSquared: 0.004 } as ForecastSummary["regression"] });
-        render(<ForecastOutlook plan={plan} summary={fellBack} months={[]} currencyCode="AUD" />);
-        expect(screen.getByText("income-correlated · flat average")).toBeInTheDocument();
+    it("leads with both parts of the expense model, not one figure", () => {
+        const { container } = render(
+            <ForecastOutlook summary={summary()} months={[]} currencyCode="AUD" />,
+        );
+        const expense = container.querySelector(".metric-value.expense");
+        expect(expense).toHaveTextContent("1,200");
+        expect(expense).toHaveTextContent("42.0%");
+        // The average is still available, but as a caption rather than the answer.
+        expect(screen.getByText(/averages/)).toBeInTheDocument();
     });
 
-    it("exposes the fitted regression (fixed / variable / R²) when the income correlation holds", () => {
-        const plan = { startDate: "2024-12-01", endDate: "2027-12-01", outgoingStrategy: { mode: "IncomeCorrelated" } } as ForecastPlan;
-        const held = summary({ regression: { fellBackToFlatAverage: false, rSquared: 0.83, fixedComponent: 1200, variableComponent: 0.42 } as ForecastSummary["regression"] });
-        render(<ForecastOutlook plan={plan} summary={held} months={[]} currencyCode="AUD" />);
-        expect(screen.getByText("income-correlated")).toBeInTheDocument();
-        expect(screen.getByText(/83\.0% R²/)).toBeInTheDocument();
-        expect(screen.getByText(/42\.0% of income/)).toBeInTheDocument();
+    it("says so when the fit was rejected, rather than passing the average off as the model", () => {
+        const fellBack = summary({ expenses: expenses({ usingFlatAverage: true, rSquared: 0.004, dataPoints: 7 }) });
+        render(<ForecastOutlook summary={fellBack} months={[]} currencyCode="AUD" />);
+        expect(screen.getByText("flat average · not tied to income")).toBeInTheDocument();
+        expect(screen.getByText(/will not move this figure/)).toBeInTheDocument();
+    });
+
+    it("warns when the plan models less income than the accounts actually receive", () => {
+        // Spending is priced off the larger figure, so the outlook is gloomier than it should be.
+        const short = summary({ expenses: expenses({ modelledIncomeShortfall: 7037 }) });
+        render(<ForecastOutlook summary={short} months={[]} currencyCode="AUD" />);
+        expect(screen.getByText(/7,037/)).toBeInTheDocument();
+        expect(screen.getByText(/gloomier than it should be/)).toBeInTheDocument();
+    });
+
+    it("stays quiet about the shortfall when the income model is complete", () => {
+        render(<ForecastOutlook summary={summary()} months={[]} currencyCode="AUD" />);
+        expect(screen.queryByText(/gloomier than it should be/)).toBeNull();
     });
 
     it("renders neither the health pill nor the KPI band while the summary is still loading", () => {
