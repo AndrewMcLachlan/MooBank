@@ -250,7 +250,7 @@ public class ForecastEngineTests
 
         // Assert
         var firstMonth = result.Months.First();
-        Assert.Equal(-1200m, firstMonth.PlannedItemsTotal);
+        Assert.Equal(1200m, firstMonth.PlannedExpensesTotal);
     }
 
     [Fact]
@@ -297,7 +297,7 @@ public class ForecastEngineTests
 
         // Assert
         var firstMonth = result.Months.First();
-        Assert.Equal(2000m, firstMonth.PlannedItemsTotal);
+        Assert.Equal(2000m, firstMonth.IncomeTotal);
     }
 
     [Fact]
@@ -346,7 +346,7 @@ public class ForecastEngineTests
 
         // Assert
         Assert.Equal(3, result.Months.Count());
-        Assert.All(result.Months, m => Assert.Equal(-100m, m.PlannedItemsTotal));
+        Assert.All(result.Months, m => Assert.Equal(100m, m.PlannedExpensesTotal));
     }
 
     [Fact]
@@ -395,7 +395,7 @@ public class ForecastEngineTests
 
         // Assert
         Assert.Equal(3, result.Months.Count());
-        Assert.All(result.Months, m => Assert.Equal(-1000m, m.PlannedItemsTotal)); // 3000 / 3 months
+        Assert.All(result.Months, m => Assert.Equal(1000m, m.PlannedExpensesTotal)); // 3000 / 3 months
     }
 
     [Fact]
@@ -444,9 +444,9 @@ public class ForecastEngineTests
 
         // Assert
         var months = result.Months.ToList();
-        Assert.Equal(0m, months[0].PlannedItemsTotal);
-        Assert.Equal(0m, months[1].PlannedItemsTotal);
-        Assert.Equal(-3000m, months[2].PlannedItemsTotal);
+        Assert.Equal(0m, months[0].PlannedExpensesTotal);
+        Assert.Equal(0m, months[1].PlannedExpensesTotal);
+        Assert.Equal(3000m, months[2].PlannedExpensesTotal);
     }
 
     [Fact]
@@ -493,7 +493,7 @@ public class ForecastEngineTests
 
         // Assert
         var firstMonth = result.Months.First();
-        Assert.Equal(0m, firstMonth.PlannedItemsTotal);
+        Assert.Equal(0m, firstMonth.PlannedExpensesTotal);
     }
 
     [Fact]
@@ -779,12 +779,6 @@ public class ForecastEngineTests
         string outgoingMode = "HistoricalAverage",
         IncomeCorrelatedSettings? incomeCorrelatedSettings = null)
     {
-        var incomeStrategy = new IncomeStrategy
-        {
-            Mode = "ManualRecurring",
-            ManualRecurring = new ManualRecurringIncome { Amount = monthlyIncome, Frequency = "Monthly" }
-        };
-
         var outgoingStrategy = new OutgoingStrategy
         {
             Mode = outgoingMode,
@@ -792,22 +786,53 @@ public class ForecastEngineTests
             IncomeCorrelated = incomeCorrelatedSettings,
         };
 
-        return new DomainForecastPlan(id ?? Guid.NewGuid())
+        var planId = id ?? Guid.NewGuid();
+        var start = startDate ?? new DateOnly(2024, 1, 1);
+
+        var plan = new DomainForecastPlan(planId)
         {
             FamilyId = _mocks.User.FamilyId,
             Name = "Test Plan",
-            StartDate = startDate ?? new DateOnly(2024, 1, 1),
+            StartDate = start,
             EndDate = endDate ?? new DateOnly(2024, 12, 31),
             StartingBalanceMode = startingBalanceMode,
             StartingBalanceAmount = startingBalance,
             AccountScopeMode = accountScopeMode,
             CurrencyCode = "AUD",
-            IncomeStrategySerialized = JsonSerializer.Serialize(incomeStrategy, JsonOptions),
             OutgoingStrategySerialized = JsonSerializer.Serialize(outgoingStrategy, JsonOptions),
             CreatedUtc = DateTime.UtcNow,
             UpdatedUtc = DateTime.UtcNow,
         };
+
+        if (monthlyIncome > 0m)
+        {
+            plan.PlannedItems.Add(MonthlyIncome(planId, monthlyIncome, start));
+        }
+
+        return plan;
     }
+
+    /// <summary>
+    /// A recurring monthly income item — how a plan models a salary now that there is no fixed
+    /// income figure.
+    /// </summary>
+    private static DomainPlannedItem MonthlyIncome(Guid planId, decimal amount, DateOnly from, DateOnly? until = null, string name = "Income") =>
+        new(Guid.NewGuid())
+        {
+            ForecastPlanId = planId,
+            Name = name,
+            ItemType = PlannedItemType.Income,
+            Amount = amount,
+            IsIncluded = true,
+            DateMode = PlannedItemDateMode.Schedule,
+            Schedule = new PlannedItemSchedule
+            {
+                Frequency = ScheduleFrequency.Monthly,
+                AnchorDate = from,
+                Interval = 1,
+                EndDate = until,
+            },
+        };
 
     /// <summary>
     /// Given actual balance data exists for consecutive past months
@@ -886,7 +911,11 @@ public class ForecastEngineTests
         // Assert
         var months = result.Months.ToList();
 
-        // Baseline should be recalculated to 3000 (derived from actual balance change)
+        // Baseline should be recalculated to 3000 (derived from actual balance change).
+        //
+        // Also guards the double-count that used to hide here: the plan's 5000 of income is a
+        // planned income item now, and the derivation used to add planned income back on top of the
+        // actual credits that already contained it — which would read this month as 8000.
         Assert.All(months, m => Assert.Equal(3000m, m.BaselineOutgoingsTotal));
 
         // Projected line chains from starting balance with updated baseline:
@@ -1155,11 +1184,12 @@ public class ForecastEngineTests
 
         // Assert
         var firstMonth = result.Months.First();
-        // Both are positive and independently addressable — the netted total alone would hide them.
-        Assert.Equal(2000m, firstMonth.PlannedIncomeTotal);
+        // Income is the salary plus the refund; expenses stay on their own series rather than
+        // being netted against it, which would hide both.
+        Assert.Equal(7000m, firstMonth.IncomeTotal);
         Assert.Equal(1200m, firstMonth.PlannedExpensesTotal);
-        // Existing netting behaviour is preserved: 2000 - 1200 = 800
-        Assert.Equal(800m, firstMonth.PlannedItemsTotal);
+        // The balance takes both: 10000 + 7000 - 1200
+        Assert.Equal(15800m, firstMonth.ClosingBalance);
     }
 
     /// <summary>
@@ -1321,10 +1351,15 @@ public class ForecastEngineTests
         var months = result.Months.ToList();
         Assert.Equal(3, months.Count);
 
-        // All months have same income (6000) but regression adjusts outgoings based on
-        // income + offset. Avg historical income = 7500, plan income = 6000, offset = 1500
-        // Predicted outgoings = 500 + 0.5 * (6000 + 1500) = 500 + 3750 = 4250
-        Assert.All(months, m => Assert.Equal(4250m, m.BaselineOutgoingsTotal));
+        // Regression: expense = 500 + 0.5 x income. The plan starts after the training window, so it
+        // models no income inside it and there is no shortfall to correct for — expenses are priced
+        // at the income the plan actually says it will have: 500 + 0.5 x 6000 = 3500.
+        //
+        // This used to read 4250, because the offset was the gap to a flat annual salary
+        // (7500 - 6000 = 1500) and so priced spending at 7500 while crediting only 6000. That is the
+        // shape of the defect this change removes: spending at the high-income level, earning at the
+        // low one, in every month of the plan.
+        Assert.All(months, m => Assert.Equal(3500m, m.BaselineOutgoingsTotal));
 
         // Regression diagnostics should be populated
         Assert.NotNull(result.Summary.Regression);
@@ -1533,49 +1568,36 @@ public class ForecastEngineTests
     }
 
     /// <summary>
-    /// Given a valid regression and income that drops between months
-    /// When the forecast is calculated with IncomeCorrelated mode
-    /// Then the outgoings should decrease proportionally with lower income
+    /// Given extra income that ends part-way through the plan
+    /// When the forecast is calculated
+    /// Then modelled expenses should fall back with it
     /// </summary>
+    /// <remarks>
+    /// The behaviour the whole expense model exists for. A plan carrying a single flat income figure
+    /// could not express this at all: income was the same constant in every month, so the expense
+    /// line was flat by construction whatever the fitted slope said. Income is a series now, so a
+    /// second job, an allowance or a contract that ends is an income item with an end date, and
+    /// spending follows it down.
+    /// </remarks>
     [Fact]
-    public async Task Calculate_IncomeCorrelatedWithIncomeAdjustment_OutgoingsFollowIncome()
+    public async Task Calculate_ExtraIncomeEnds_ExpensesFallBackWithIt()
     {
         // Arrange
         var accountId = Guid.NewGuid();
         _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId]));
 
-        // Plan with income starting at 8000, then dropping by 3000 in month 2
-        var incomeStrategy = new IncomeStrategy
-        {
-            Mode = "ManualRecurring",
-            ManualRecurring = new ManualRecurringIncome { Amount = 8000m, Frequency = "Monthly" },
-            ManualAdjustments =
-            [
-                new ManualAdjustment { Date = new DateOnly(2024, 8, 1), DeltaAmount = -3000m }
-            ],
-        };
+        var planId = Guid.NewGuid();
+        var plan = CreatePlanWithStrategies(
+            id: planId,
+            startDate: new DateOnly(2024, 7, 1),
+            endDate: new DateOnly(2024, 9, 30),
+            startingBalance: 20000m,
+            monthlyIncome: 5000m,          // the salary that carries on
+            lookbackMonths: 6,
+            outgoingMode: "IncomeCorrelated");
 
-        var outgoingStrategy = new OutgoingStrategy
-        {
-            Mode = "IncomeCorrelated",
-            LookbackMonths = 6,
-        };
-
-        var plan = new DomainForecastPlan(Guid.NewGuid())
-        {
-            FamilyId = _mocks.User.FamilyId,
-            Name = "Test Plan",
-            StartDate = new DateOnly(2024, 7, 1),
-            EndDate = new DateOnly(2024, 9, 30),
-            StartingBalanceMode = StartingBalanceMode.ManualAmount,
-            StartingBalanceAmount = 20000m,
-            AccountScopeMode = AccountScopeMode.AllAccounts,
-            CurrencyCode = "AUD",
-            IncomeStrategySerialized = JsonSerializer.Serialize(incomeStrategy, JsonOptions),
-            OutgoingStrategySerialized = JsonSerializer.Serialize(outgoingStrategy, JsonOptions),
-            CreatedUtc = DateTime.UtcNow,
-            UpdatedUtc = DateTime.UtcNow,
-        };
+        // Extra income of 3000 a month that stops after July.
+        plan.PlannedItems.Add(MonthlyIncome(planId, 3000m, new DateOnly(2024, 7, 1), until: new DateOnly(2024, 7, 31), name: "Contract work"));
 
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
@@ -1614,17 +1636,17 @@ public class ForecastEngineTests
         // Assert
         var months = result.Months.ToList();
 
-        // Regression: expense = 1000 + 0.5 * income
-        // Historical avg income = 7500, plan base income = 8000, offset = -500
-        // Month 1 (income 8000): 1000 + 0.5 * (8000 + (-500)) = 1000 + 3750 = 4750
-        // Month 2 (income 5000): 1000 + 0.5 * (5000 + (-500)) = 1000 + 2250 = 3250
-        // Month 3 (income 5000): same as month 2 = 3250
-        Assert.Equal(4750m, months[0].BaselineOutgoingsTotal);
-        Assert.Equal(3250m, months[1].BaselineOutgoingsTotal);
-        Assert.Equal(3250m, months[2].BaselineOutgoingsTotal);
+        // The plan models no income inside the training window (it starts after it), so there is no
+        // shortfall to correct for and the fit is read at the modelled income directly.
+        // Regression: expense = 1000 + 0.5 x income
+        //   July   (8000 = 5000 + 3000): 1000 + 4000 = 5000
+        //   August (5000, contract over): 1000 + 2500 = 3500
+        Assert.Equal(8000m, months[0].IncomeTotal);
+        Assert.Equal(5000m, months[1].IncomeTotal);
 
-        // Outgoings should be lower in months with lower income
-        Assert.True(months[1].BaselineOutgoingsTotal < months[0].BaselineOutgoingsTotal);
+        Assert.Equal(5000m, months[0].BaselineOutgoingsTotal);
+        Assert.Equal(3500m, months[1].BaselineOutgoingsTotal);
+        Assert.Equal(3500m, months[2].BaselineOutgoingsTotal);
     }
 
     /// <summary>
@@ -1796,69 +1818,46 @@ public class ForecastEngineTests
     }
 
     /// <summary>
-    /// Given a valid regression where an income adjustment drops income far below the base
-    /// When the forecast is calculated with IncomeCorrelated mode
-    /// Then the outgoings should be floored at zero (not go negative)
+    /// Given a plan whose modelled income stops entirely part-way through
+    /// When the forecast is calculated
+    /// Then the predicted outgoings should be floored at nought rather than going negative
     /// </summary>
+    /// <remarks>
+    /// Income can no longer be negative — planned items are validated above zero — so the way to
+    /// drive the prediction below the axis is a plan that models a large income for a while and
+    /// then none at all, which makes the shortfall correction outweigh the month's own income.
+    ///
+    /// Worth naming what the floor is hiding: a household with no income does not stop spending, so
+    /// nought is not a believable answer either. The honest floor is the fixed component. That is a
+    /// change to the expense model rather than to income, so it is deliberately not made here.
+    /// </remarks>
     [Fact]
-    public async Task Calculate_IncomeCorrelatedNegativePrediction_FloorsAtZero()
+    public async Task Calculate_ModelledIncomeStops_PredictedOutgoingsAreFlooredAtNought()
     {
         // Arrange
         var accountId = Guid.NewGuid();
         _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId]));
 
-        // Plan with base income 8000, then a -10000 adjustment in month 1 → effective month income = -2000
-        // The offset is computed from planBaseIncome (8000), so the regression input will be:
-        //   monthIncome + offset = -2000 + (avgHistorical - 8000)
-        // With avgHistorical = 7500, offset = -500, effective = -2500
-        // Regression: 1000 + 0.5 * (-2500) = -250 → floored to 0
-        var incomeStrategy = new IncomeStrategy
-        {
-            Mode = "ManualRecurring",
-            ManualRecurring = new ManualRecurringIncome { Amount = 8000m, Frequency = "Monthly" },
-            ManualAdjustments =
-            [
-                new ManualAdjustment { Date = new DateOnly(2024, 7, 1), DeltaAmount = -10000m }
-            ],
-        };
+        var planId = Guid.NewGuid();
+        var plan = CreatePlanWithStrategies(
+            id: planId,
+            startDate: new DateOnly(2024, 1, 1),
+            endDate: new DateOnly(2024, 12, 31),
+            startingBalance: 10000m,
+            monthlyIncome: 0m,
+            lookbackMonths: 6,
+            outgoingMode: "IncomeCorrelated");
 
-        var outgoingStrategy = new OutgoingStrategy
-        {
-            Mode = "IncomeCorrelated",
-            LookbackMonths = 6,
-        };
-
-        var plan = new DomainForecastPlan(Guid.NewGuid())
-        {
-            FamilyId = _mocks.User.FamilyId,
-            Name = "Test Plan",
-            StartDate = new DateOnly(2024, 7, 1),
-            EndDate = new DateOnly(2024, 7, 31),
-            StartingBalanceMode = StartingBalanceMode.ManualAmount,
-            StartingBalanceAmount = 10000m,
-            AccountScopeMode = AccountScopeMode.AllAccounts,
-            CurrencyCode = "AUD",
-            IncomeStrategySerialized = JsonSerializer.Serialize(incomeStrategy, JsonOptions),
-            OutgoingStrategySerialized = JsonSerializer.Serialize(outgoingStrategy, JsonOptions),
-            CreatedUtc = DateTime.UtcNow,
-            UpdatedUtc = DateTime.UtcNow,
-        };
+        // 20,000 a month for the first half of the year, then nothing.
+        plan.PlannedItems.Add(MonthlyIncome(planId, 20000m, new DateOnly(2024, 1, 1), until: new DateOnly(2024, 6, 30)));
 
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<DomainInstrument> { HistoricalAccount(accountId, TrainingDataThrough) });
 
-        _mocks.ReportReaderMock
-            .Setup(r => r.GetCreditDebitTotalsForAccounts(
-                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>());
+        SetupEmptyReportMocks();
 
-        _mocks.ReportReaderMock
-            .Setup(r => r.GetMonthlyBalancesForAccounts(
-                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyBalance>>());
-
-        // Regression: expense = 1000 + 0.5 * income, avg income = 7500
+        // Regression: expense = 1000 + 0.5 x income, average historical income 7500.
         _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
@@ -1878,8 +1877,18 @@ public class ForecastEngineTests
         var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert
-        var month = result.Months.First();
-        Assert.Equal(0m, month.BaselineOutgoingsTotal); // Floored at zero
+        var months = result.Months.ToList();
+
+        // The plan models 20,000 a month across the whole training window, against 7,500 of actual
+        // credits, so the shortfall is -12,500. July onwards has no modelled income at all:
+        //   1000 + 0.5 x (0 - 12500) = -5250, floored to 0.
+        Assert.Equal(0m, months[6].IncomeTotal);
+        Assert.Equal(0m, months[6].BaselineOutgoingsTotal);
+
+        // While the income was being modelled the shortfall cancels it back to the historical
+        // average, so the earlier months predict off the middle of the fitted line.
+        Assert.Equal(20000m, months[0].IncomeTotal);
+        Assert.Equal(4750m, months[0].BaselineOutgoingsTotal);
     }
 
     /// <summary>

@@ -15,20 +15,13 @@ public sealed record ForecastMonth
 {
     public DateOnly MonthStart { get; init; }
     public decimal OpeningBalance { get; init; }
+    /// <summary>
+    /// Income allocated to this month, entirely from planned income items.
+    /// </summary>
     public decimal IncomeTotal { get; init; }
     public decimal BaselineOutgoingsTotal { get; init; }
     /// <summary>
-    /// Net planned items for this month: positive for income, negative for expenses.
-    /// </summary>
-    public decimal PlannedItemsTotal { get; init; }
-    /// <summary>
-    /// Planned income allocated to this month (positive). Split out of <see cref="PlannedItemsTotal"/>
-    /// so income and expenses can be charted independently.
-    /// </summary>
-    public decimal PlannedIncomeTotal { get; init; }
-    /// <summary>
-    /// Planned expenses allocated to this month (positive). Split out of <see cref="PlannedItemsTotal"/>
-    /// so income and expenses can be charted independently.
+    /// Planned expenses allocated to this month (positive).
     /// </summary>
     public decimal PlannedExpensesTotal { get; init; }
     public decimal ClosingBalance { get; init; }

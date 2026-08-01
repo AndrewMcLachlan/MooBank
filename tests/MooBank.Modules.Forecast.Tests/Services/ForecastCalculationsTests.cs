@@ -159,6 +159,37 @@ public class ForecastCalculationsTests
     }
 
     /// <summary>
+    /// Given a month containing a planned expense that was actually paid
+    /// When the baseline is recalculated
+    /// Then the planned expense is not counted as baseline spending
+    /// </summary>
+    /// <remarks>
+    /// The balance change holds everything that was spent, planned or not. Planned expenses are
+    /// added to the forecast on their own, so leaving them in the derived baseline would charge the
+    /// forecast for them twice — and, because the baseline is an average applied to every future
+    /// month, a single large one-off would be spread across the whole plan as if it recurred.
+    /// </remarks>
+    [Fact]
+    public void RecalculateBaseline_PlannedExpense_IsNotCountedAsBaseline()
+    {
+        var balances = new Dictionary<string, decimal?>
+        {
+            ["2024-01"] = 10000m,
+            ["2024-02"] = 4000m, // 5000 of ordinary spending, plus a 2000 planned expense
+        };
+        var credits = new Dictionary<string, decimal> { ["2024-01"] = 1000m };
+        var plannedExpenses = new Dictionary<string, decimal> { ["2024-01"] = 2000m };
+
+        var result = ForecastCalculations.RecalculateBaselineFromActuals(
+            balances, credits, plannedExpenses,
+            new DateOnly(2024, 1, 1), new DateOnly(2024, 1, 1),
+            fallbackBaseline: 0m);
+
+        // Spent = 10000 + 1000 - 4000 = 7000, of which 2000 was planned.
+        Assert.Equal(5000m, result);
+    }
+
+    /// <summary>
     /// Given a month whose derived outgoings are negative (unexplained balance growth)
     /// When the baseline is recalculated
     /// Then that month is skipped; with no usable months the fallback is returned.

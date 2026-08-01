@@ -5,6 +5,25 @@ using DomainInstrument = Asm.MooBank.Domain.Entities.Instrument.Instrument;
 
 namespace Asm.MooBank.Modules.Forecast.Services;
 
+/// <summary>
+/// The span of whole calendar months the expense model is fitted over, inclusive at both ends.
+/// </summary>
+internal sealed record TrainingWindow(DateOnly StartMonth, DateOnly EndMonth)
+{
+    /// <summary>The last day of the final month, for querying by date range.</summary>
+    public DateOnly EndDate => EndMonth.AddMonths(1).AddDays(-1);
+
+    public bool Contains(DateOnly month) => month >= StartMonth && month <= EndMonth;
+
+    public IEnumerable<DateOnly> Months()
+    {
+        for (var month = StartMonth; month <= EndMonth; month = month.AddMonths(1))
+        {
+            yield return month;
+        }
+    }
+}
+
 internal sealed record RegressionModel(decimal Intercept, decimal Slope, decimal RSquared, bool Valid, decimal AvgHistoricalIncome)
 {
     /// <summary>
@@ -55,16 +74,40 @@ internal static class ForecastCalculations
     }
 
     /// <summary>
-    /// Recalculates baseline outgoings using actual balance data from past months.
-    /// For each past month where we have consecutive actual balances, we can derive
-    /// what the actual outgoings were: actual_outgoings = opening + income + planned - closing.
-    /// The average of these actuals replaces the historical baseline for the forecast.
-    /// Falls back to the original baseline if no actual data is available.
+    /// Builds the window of whole months the expense model is fitted over, or null when the data
+    /// doesn't cover one.
     /// </summary>
+    public static TrainingWindow? BuildTrainingWindow(DateOnly? dataThrough, int lookbackMonths)
+    {
+        if (lookbackMonths <= 0 || LastCompleteMonth(dataThrough) is not { } endMonth) return null;
+
+        return new TrainingWindow(endMonth.AddMonths(-(lookbackMonths - 1)), endMonth);
+    }
+
+    /// <summary>
+    /// Recalculates baseline outgoings using actual balance data from past months.
+    /// </summary>
+    /// <param name="actualCreditsByMonth">Actual credits — every dollar that arrived, not modelled income.</param>
+    /// <param name="plannedExpensesByMonth">Planned expenses allocated to each month, positive.</param>
+    /// <remarks>
+    /// Balances are the authority on what a month cost, so the total spent is read from the balance
+    /// change rather than from the transaction feed:
+    /// <code>
+    /// closing   = opening + credits - spent
+    /// spent     = opening + credits - closing
+    /// baseline  = spent - plannedExpenses
+    /// </code>
+    /// The subtraction is what makes this a *baseline*: planned expenses are added to the forecast
+    /// separately, so leaving them in here would count them twice.
+    ///
+    /// Planned income is deliberately absent. It is already part of <paramref name="actualCreditsByMonth"/>,
+    /// and adding it again — as this did while a plan carried both a fixed income figure and planned
+    /// income items — inflates every derived month by the planned income.
+    /// </remarks>
     public static decimal RecalculateBaselineFromActuals(
         Dictionary<string, decimal?> actualBalancesByMonth,
-        Dictionary<string, decimal> incomeByMonth,
-        Dictionary<string, decimal> plannedItemsByMonth,
+        Dictionary<string, decimal> actualCreditsByMonth,
+        Dictionary<string, decimal> plannedExpensesByMonth,
         DateOnly startDate, DateOnly endDate,
         decimal fallbackBaseline)
     {
@@ -82,13 +125,10 @@ internal static class ForecastCalculations
 
             if (opening.HasValue && closing.HasValue)
             {
-                var income = incomeByMonth.GetValueOrDefault(monthKey, 0m);
-                var planned = plannedItemsByMonth.GetValueOrDefault(monthKey, 0m);
+                var credits = actualCreditsByMonth.GetValueOrDefault(monthKey, 0m);
+                var plannedExpenses = plannedExpensesByMonth.GetValueOrDefault(monthKey, 0m);
 
-                // Derive actual outgoings from balance change:
-                // closing = opening + income - outgoings + planned
-                // outgoings = opening + income + planned - closing
-                var derived = opening.Value + income + planned - closing.Value;
+                var derived = opening.Value + credits - closing.Value - plannedExpenses;
 
                 // Skip months where derived outgoings are negative — this indicates
                 // unexplained balance growth (e.g. transfers in, windfalls) that would
@@ -180,10 +220,6 @@ internal static class ForecastCalculations
             ? Math.Abs(lowestMonth.ClosingBalance) / monthsUntilLow
             : 0m;
 
-        // Calculate total outgoings (baseline + planned expenses only, not planned income)
-        var totalPlannedExpenses = months.Sum(m => m.PlannedItemsTotal < 0 ? Math.Abs(m.PlannedItemsTotal) : 0);
-        var totalPlannedIncome = months.Sum(m => m.PlannedItemsTotal > 0 ? m.PlannedItemsTotal : 0);
-
         var effectiveBaseline = regression is { Valid: true }
             ? months.Average(m => Math.Abs(m.BaselineOutgoingsTotal))
             : monthlyBaselineOutgoings;
@@ -194,8 +230,9 @@ internal static class ForecastCalculations
             LowestBalanceMonth = lowestMonth.MonthStart,
             RequiredMonthlyUplift = Math.Ceiling(requiredUplift * 100) / 100, // Round up to nearest cent
             MonthsBelowZero = months.Count(m => m.ClosingBalance < 0),
-            TotalIncome = months.Sum(m => m.IncomeTotal) + totalPlannedIncome,
-            TotalOutgoings = months.Sum(m => Math.Abs(m.BaselineOutgoingsTotal)) + totalPlannedExpenses,
+            // IncomeTotal is already the whole income model, so there is nothing to add to it.
+            TotalIncome = months.Sum(m => m.IncomeTotal),
+            TotalOutgoings = months.Sum(m => Math.Abs(m.BaselineOutgoingsTotal) + m.PlannedExpensesTotal),
             MonthlyBaselineOutgoings = effectiveBaseline,
             Regression = regression is not null ? new RegressionDiagnostics
             {

@@ -7093,8 +7093,6 @@
           "openingBalance",
           "incomeTotal",
           "baselineOutgoingsTotal",
-          "plannedItemsTotal",
-          "plannedIncomeTotal",
           "plannedExpensesTotal",
           "closingBalance"
         ],
@@ -7113,14 +7111,6 @@
             "format": "double"
           },
           "baselineOutgoingsTotal": {
-            "type": "number",
-            "format": "double"
-          },
-          "plannedItemsTotal": {
-            "type": "number",
-            "format": "double"
-          },
-          "plannedIncomeTotal": {
             "type": "number",
             "format": "double"
           },
@@ -7214,16 +7204,6 @@
             "type": [
               "null",
               "string"
-            ]
-          },
-          "incomeStrategy": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "$ref": "#/components/schemas/IncomeStrategy"
-              }
             ]
           },
           "outgoingStrategy": {
@@ -7382,46 +7362,6 @@
         ]
       },
       "HexColour": { },
-      "HistoricalIncomeSettings": {
-        "required": [
-          "lookbackMonths",
-          "excludeTransfers",
-          "excludeOffsets"
-        ],
-        "type": "object",
-        "properties": {
-          "lookbackMonths": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "includeTagIds": {
-            "type": [
-              "null",
-              "array"
-            ],
-            "items": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          "excludeTagIds": {
-            "type": [
-              "null",
-              "array"
-            ],
-            "items": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          "excludeTransfers": {
-            "type": "boolean"
-          },
-          "excludeOffsets": {
-            "type": "boolean"
-          }
-        }
-      },
       "IFormFile": {
         "required": [
           "contentType",
@@ -7576,51 +7516,6 @@
           "minDataPoints": {
             "type": "integer",
             "format": "int32"
-          }
-        }
-      },
-      "IncomeStrategy": {
-        "required": [
-          "version",
-          "mode"
-        ],
-        "type": "object",
-        "properties": {
-          "version": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "mode": {
-            "type": "string"
-          },
-          "manualRecurring": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "$ref": "#/components/schemas/ManualRecurringIncome"
-              }
-            ]
-          },
-          "manualAdjustments": {
-            "type": [
-              "null",
-              "array"
-            ],
-            "items": {
-              "$ref": "#/components/schemas/ManualAdjustment"
-            }
-          },
-          "historical": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "$ref": "#/components/schemas/HistoricalIncomeSettings"
-              }
-            ]
           }
         }
       },
@@ -8070,53 +7965,6 @@
               "number"
             ],
             "format": "double"
-          }
-        }
-      },
-      "ManualAdjustment": {
-        "required": [
-          "date",
-          "deltaAmount"
-        ],
-        "type": "object",
-        "properties": {
-          "date": {
-            "type": "string",
-            "format": "date"
-          },
-          "deltaAmount": {
-            "type": "number",
-            "format": "double"
-          }
-        }
-      },
-      "ManualRecurringIncome": {
-        "required": [
-          "amount",
-          "frequency"
-        ],
-        "type": "object",
-        "properties": {
-          "amount": {
-            "type": "number",
-            "format": "double"
-          },
-          "frequency": {
-            "type": "string"
-          },
-          "startDate": {
-            "type": [
-              "null",
-              "string"
-            ],
-            "format": "date"
-          },
-          "endDate": {
-            "type": [
-              "null",
-              "string"
-            ],
-            "format": "date"
           }
         }
       },
@@ -9477,16 +9325,6 @@
             "type": [
               "null",
               "string"
-            ]
-          },
-          "incomeStrategy": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "$ref": "#/components/schemas/IncomeStrategy"
-              }
             ]
           },
           "outgoingStrategy": {

@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Instrument;
 using Asm.MooBank.Domain.Entities.Reports;
@@ -40,11 +40,6 @@ public class CreatePlanTests
             UpdatedUtc = DateTime.UtcNow,
             AccountIds = [],
             PlannedItems = [],
-            IncomeStrategy = new IncomeStrategy
-            {
-                Mode = "ManualRecurring",
-                ManualRecurring = new ManualRecurringIncome { Amount = 5000m, Frequency = "Monthly" }
-            },
             OutgoingStrategy = new OutgoingStrategy { LookbackMonths = 12 },
         };
 
@@ -91,11 +86,6 @@ public class CreatePlanTests
             UpdatedUtc = DateTime.UtcNow,
             AccountIds = [],
             PlannedItems = [],
-            IncomeStrategy = new IncomeStrategy
-            {
-                Mode = "ManualRecurring",
-                ManualRecurring = new ManualRecurringIncome { Amount = 5000m }
-            },
             OutgoingStrategy = new OutgoingStrategy { LookbackMonths = 12 },
         };
 
@@ -141,11 +131,6 @@ public class CreatePlanTests
             UpdatedUtc = DateTime.UtcNow,
             AccountIds = [],
             PlannedItems = [],
-            IncomeStrategy = new IncomeStrategy
-            {
-                Mode = "ManualRecurring",
-                ManualRecurring = new ManualRecurringIncome { Amount = 5000m }
-            },
             OutgoingStrategy = new OutgoingStrategy { LookbackMonths = 12 },
         };
 
@@ -192,11 +177,6 @@ public class CreatePlanTests
             UpdatedUtc = DateTime.UtcNow,
             AccountIds = [],
             PlannedItems = [],
-            IncomeStrategy = new IncomeStrategy
-            {
-                Mode = "ManualRecurring",
-                ManualRecurring = new ManualRecurringIncome { Amount = 5000m }
-            },
             OutgoingStrategy = new OutgoingStrategy { LookbackMonths = 12 },
         };
 
@@ -234,11 +214,6 @@ public class CreatePlanTests
             UpdatedUtc = DateTime.UtcNow,
             AccountIds = [],
             PlannedItems = [],
-            IncomeStrategy = new IncomeStrategy
-            {
-                Mode = "ManualRecurring",
-                ManualRecurring = new ManualRecurringIncome { Amount = 5000m }
-            },
             OutgoingStrategy = new OutgoingStrategy { LookbackMonths = 12 },
         };
 
@@ -259,7 +234,7 @@ public class CreatePlanTests
     }
 
     [Fact]
-    public async Task Handle_NoIncomeStrategy_CalculatesHistoricalIncome()
+    public async Task Handle_NoIncomeItems_SeedsOneFromHistory()
     {
         // Arrange
         var accountId = Guid.NewGuid();
@@ -279,7 +254,7 @@ public class CreatePlanTests
             UpdatedUtc = DateTime.UtcNow,
             AccountIds = [],
             PlannedItems = [],
-            // No income strategy - should calculate from history
+            // No income items - one should be seeded from history
             OutgoingStrategy = new OutgoingStrategy { LookbackMonths = 12 },
         };
 
@@ -309,8 +284,14 @@ public class CreatePlanTests
 
         // Assert
         Assert.NotNull(capturedPlan);
-        Assert.NotNull(capturedPlan.IncomeStrategySerialized);
-        Assert.Contains("5000", capturedPlan.IncomeStrategySerialized); // 60000 / 12 = 5000
+
+        // Seeded as an ordinary recurring income item, so the author can date it, end it or split
+        // it as their circumstances change — none of which a fixed figure on the plan allowed.
+        var income = Assert.Single(capturedPlan.PlannedItems, i => i.ItemType == PlannedItemType.Income);
+        Assert.Equal(5000m, income.Amount); // 60000 / 12
+        Assert.Equal(PlannedItemDateMode.Schedule, income.DateMode);
+        Assert.Equal(ScheduleFrequency.Monthly, income.Schedule!.Frequency);
+        Assert.Equal(planModel.StartDate, income.Schedule.AnchorDate);
     }
 
     [Fact]
@@ -331,11 +312,6 @@ public class CreatePlanTests
             UpdatedUtc = DateTime.UtcNow,
             AccountIds = [],
             PlannedItems = [],
-            IncomeStrategy = new IncomeStrategy
-            {
-                Mode = "ManualRecurring",
-                ManualRecurring = new ManualRecurringIncome { Amount = 5000m }
-            },
             // No outgoing strategy - should default to 12 month lookback
         };
 
@@ -383,11 +359,6 @@ public class CreatePlanTests
             AccountIds = [],
             PlannedItems = [],
             // No starting balance amount - should calculate from accounts
-            IncomeStrategy = new IncomeStrategy
-            {
-                Mode = "ManualRecurring",
-                ManualRecurring = new ManualRecurringIncome { Amount = 5000m }
-            },
             OutgoingStrategy = new OutgoingStrategy { LookbackMonths = 12 },
         };
 
@@ -445,11 +416,6 @@ public class CreatePlanTests
             UpdatedUtc = DateTime.UtcNow,
             AccountIds = [accountId1, accountId2],
             PlannedItems = [],
-            IncomeStrategy = new IncomeStrategy
-            {
-                Mode = "ManualRecurring",
-                ManualRecurring = new ManualRecurringIncome { Amount = 5000m }
-            },
             OutgoingStrategy = new OutgoingStrategy { LookbackMonths = 12 },
         };
 
@@ -496,11 +462,6 @@ public class CreatePlanTests
             AccountIds = [],
             PlannedItems = [],
             // No currency code - should use user's currency
-            IncomeStrategy = new IncomeStrategy
-            {
-                Mode = "ManualRecurring",
-                ManualRecurring = new ManualRecurringIncome { Amount = 5000m }
-            },
             OutgoingStrategy = new OutgoingStrategy { LookbackMonths = 12 },
         };
 
@@ -544,11 +505,6 @@ public class CreatePlanTests
             UpdatedUtc = DateTime.UtcNow,
             AccountIds = [],
             PlannedItems = [],
-            IncomeStrategy = new IncomeStrategy
-            {
-                Mode = "ManualRecurring",
-                ManualRecurring = new ManualRecurringIncome { Amount = 5000m }
-            },
             OutgoingStrategy = new OutgoingStrategy { LookbackMonths = 12 },
         };
 
@@ -598,11 +554,6 @@ public class CreatePlanTests
             UpdatedUtc = DateTime.UtcNow,
             AccountIds = [],
             PlannedItems = [],
-            IncomeStrategy = new IncomeStrategy
-            {
-                Mode = "ManualRecurring",
-                ManualRecurring = new ManualRecurringIncome { Amount = 5000m }
-            },
             OutgoingStrategy = new OutgoingStrategy { LookbackMonths = 12 },
         };
 

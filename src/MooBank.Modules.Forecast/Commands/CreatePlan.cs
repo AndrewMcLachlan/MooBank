@@ -30,7 +30,6 @@ internal class CreatePlanHandler(
             : user.Accounts.Concat(user.SharedAccounts);
 
         // Pre-calculate historical values if not provided
-        var incomeStrategy = request.Plan.IncomeStrategy ?? new IncomeStrategy();
         var outgoingStrategy = request.Plan.OutgoingStrategy ?? new OutgoingStrategy();
 
         // Calculate starting balance if using calculated mode
@@ -38,17 +37,6 @@ internal class CreatePlanHandler(
         if (request.Plan.StartingBalanceMode == StartingBalanceMode.CalculatedCurrent && !startingBalance.HasValue)
         {
             startingBalance = await CalculateCurrentBalance(accountIds, cancellationToken);
-        }
-
-        // Calculate historical income if not manually specified
-        if (incomeStrategy.ManualRecurring == null || incomeStrategy.ManualRecurring.Amount == 0)
-        {
-            var historicalIncome = await CalculateHistoricalAverage(accountIds, request.Plan.StartDate, DefaultLookbackMonths, TransactionFilterType.Credit, cancellationToken);
-            incomeStrategy = incomeStrategy with
-            {
-                Mode = "ManualRecurring",
-                ManualRecurring = new ManualRecurringIncome { Amount = historicalIncome, Frequency = "Monthly" }
-            };
         }
 
         // Calculate historical outgoings if using default lookback
@@ -72,7 +60,6 @@ internal class CreatePlanHandler(
             StartingBalanceMode = request.Plan.StartingBalanceMode,
             StartingBalanceAmount = startingBalance,
             CurrencyCode = request.Plan.CurrencyCode ?? user.Currency,
-            IncomeStrategySerialized = JsonSerializer.Serialize(incomeStrategy, JsonOptions),
             OutgoingStrategySerialized = JsonSerializer.Serialize(outgoingStrategy, JsonOptions),
             AssumptionsSerialized = request.Plan.Assumptions != null ? JsonSerializer.Serialize(request.Plan.Assumptions, JsonOptions) : null,
             CreatedUtc = DateTime.UtcNow,
@@ -82,6 +69,32 @@ internal class CreatePlanHandler(
         if (request.Plan.AccountIds.Any())
         {
             entity.SetAccounts(request.Plan.AccountIds);
+        }
+
+        // Seed income from history so a new plan forecasts something on its first run. This used to
+        // be a fixed monthly figure on the plan; it is now an ordinary planned income item, which
+        // the author can date, end or split as their circumstances change.
+        if (!request.Plan.PlannedItems.Any(i => i.ItemType == PlannedItemType.Income))
+        {
+            var historicalIncome = await CalculateHistoricalAverage(accountIds, request.Plan.StartDate, DefaultLookbackMonths, TransactionFilterType.Credit, cancellationToken);
+
+            if (historicalIncome > 0m)
+            {
+                entity.AddPlannedItem(new ForecastPlannedItem
+                {
+                    Name = "Income",
+                    ItemType = PlannedItemType.Income,
+                    Amount = historicalIncome,
+                    IsIncluded = true,
+                    DateMode = PlannedItemDateMode.Schedule,
+                    Schedule = new PlannedItemSchedule
+                    {
+                        Frequency = ScheduleFrequency.Monthly,
+                        AnchorDate = request.Plan.StartDate,
+                        Interval = 1,
+                    },
+                });
+            }
         }
 
         forecastRepository.Add(entity);

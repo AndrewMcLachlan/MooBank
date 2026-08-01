@@ -1,47 +1,10 @@
 namespace Asm.MooBank.Modules.Forecast.Models;
 
-public sealed record IncomeStrategy
-{
-    public int Version { get; init; } = 1;
-    public string Mode { get; init; } = "ManualRecurring";
-    public ManualRecurringIncome? ManualRecurring { get; init; }
-    public IEnumerable<ManualAdjustment>? ManualAdjustments { get; init; }
-    public HistoricalIncomeSettings? Historical { get; init; }
-}
-
-public sealed record ManualRecurringIncome
-{
-    public decimal Amount { get; init; }
-
-    // TODO: not yet honoured by ForecastEngine — the amount is always treated as monthly.
-    public string Frequency { get; init; } = "Monthly";
-
-    public DateOnly? StartDate { get; init; }
-    public DateOnly? EndDate { get; init; }
-}
-
-public sealed record ManualAdjustment
-{
-    public DateOnly Date { get; init; }
-    public decimal DeltaAmount { get; init; }
-}
-
-public sealed record HistoricalIncomeSettings
-{
-    public int LookbackMonths { get; init; } = 12;
-
-    // TODO: not yet honoured by ForecastEngine.
-    public IEnumerable<int>? IncludeTagIds { get; init; }
-
-    // TODO: not yet honoured by ForecastEngine.
-    public IEnumerable<int>? ExcludeTagIds { get; init; }
-
-    // TODO: not yet honoured by ForecastEngine.
-    public bool ExcludeTransfers { get; init; } = true;
-
-    // TODO: not yet honoured by ForecastEngine.
-    public bool ExcludeOffsets { get; init; }
-}
+// Income is modelled entirely by planned income items. There is deliberately no income strategy:
+// a plan used to carry a fixed monthly figure *and* planned income items, with nothing reconciling
+// them, so a salary entered in both places was counted twice. Planned items already express
+// fortnightly and monthly schedules with start and end dates, which is everything a pay rise,
+// a promotion or a redundancy needs — and, unlike a single figure, they can change over time.
 
 public sealed record OutgoingStrategy
 {

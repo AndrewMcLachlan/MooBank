@@ -24,7 +24,9 @@ internal class UpdatePlanHandler(IForecastRepository forecastRepository, IUnitOf
         entity.StartingBalanceMode = request.Plan.StartingBalanceMode;
         entity.StartingBalanceAmount = request.Plan.StartingBalanceAmount;
         entity.CurrencyCode = request.Plan.CurrencyCode;
-        entity.IncomeStrategySerialized = request.Plan.IncomeStrategy != null ? JsonSerializer.Serialize(request.Plan.IncomeStrategy, JsonOptions) : null;
+        // IncomeStrategySerialized is deliberately left alone. Income now comes from planned items,
+        // but the column still holds the figures the pre-deployment migration reads to create those
+        // items, and writing null here would destroy them before it runs.
         entity.OutgoingStrategySerialized = request.Plan.OutgoingStrategy != null ? JsonSerializer.Serialize(request.Plan.OutgoingStrategy, JsonOptions) : null;
         entity.AssumptionsSerialized = request.Plan.Assumptions != null ? JsonSerializer.Serialize(request.Plan.Assumptions, JsonOptions) : null;
         entity.UpdatedUtc = DateTime.UtcNow;

@@ -18,7 +18,6 @@ public static class ModelExtensions
         StartingBalanceMode = plan.StartingBalanceMode,
         StartingBalanceAmount = plan.StartingBalanceAmount,
         CurrencyCode = plan.CurrencyCode,
-        IncomeStrategy = String.IsNullOrEmpty(plan.IncomeStrategySerialized) ? null : JsonSerializer.Deserialize<IncomeStrategy>(plan.IncomeStrategySerialized, JsonOptions),
         OutgoingStrategy = String.IsNullOrEmpty(plan.OutgoingStrategySerialized) ? null : JsonSerializer.Deserialize<OutgoingStrategy>(plan.OutgoingStrategySerialized, JsonOptions),
         Assumptions = String.IsNullOrEmpty(plan.AssumptionsSerialized) ? null : JsonSerializer.Deserialize<Assumptions>(plan.AssumptionsSerialized, JsonOptions),
         IsArchived = plan.IsArchived,

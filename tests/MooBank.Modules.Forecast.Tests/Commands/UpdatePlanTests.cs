@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Domain.Entities.Forecast.Specifications;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Forecast.Commands;
@@ -170,11 +170,9 @@ public class UpdatePlanTests
             _mocks.ForecastRepositoryMock.Object,
             _mocks.UnitOfWorkMock.Object);
 
-        var incomeStrategy = new IncomeStrategy
-        {
-            Mode = "ManualRecurring",
-            ManualRecurring = new ManualRecurringIncome { Amount = 5000m, Frequency = "Monthly" }
-        };
+        // Whatever the plan was carrying before the update.
+        existingPlan.IncomeStrategySerialized = """{"manualRecurring":{"amount":12960}}""";
+
         var outgoingStrategy = new OutgoingStrategy
         {
             Mode = "HistoricalAverage",
@@ -194,7 +192,6 @@ public class UpdatePlanTests
             UpdatedUtc = DateTime.UtcNow,
             AccountIds = [],
             PlannedItems = [],
-            IncomeStrategy = incomeStrategy,
             OutgoingStrategy = outgoingStrategy,
         };
         var command = new UpdatePlan(planId, updateModel);
@@ -203,10 +200,13 @@ public class UpdatePlanTests
         var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
-        Assert.NotNull(existingPlan.IncomeStrategySerialized);
         Assert.NotNull(existingPlan.OutgoingStrategySerialized);
-        Assert.Contains("5000", existingPlan.IncomeStrategySerialized);
         Assert.Contains("6", existingPlan.OutgoingStrategySerialized);
+
+        // The income strategy is no longer part of the model, but the column still holds the figures
+        // the migration turns into planned income items. An update must leave them alone: writing
+        // null here would destroy them before the migration ever runs.
+        Assert.Contains("12960", existingPlan.IncomeStrategySerialized);
     }
 
     [Fact]

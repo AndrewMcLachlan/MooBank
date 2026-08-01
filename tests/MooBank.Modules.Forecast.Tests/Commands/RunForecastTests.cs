@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Modules.Forecast.Commands;
 using Asm.MooBank.Modules.Forecast.Models;
 using Asm.MooBank.Modules.Forecast.Tests.Support;
@@ -141,9 +141,9 @@ public class RunForecastTests
 
         var months = new List<ForecastMonth>
         {
-            new() { MonthStart = new DateOnly(2024, 1, 1), OpeningBalance = 10000m, IncomeTotal = 0m, BaselineOutgoingsTotal = 0m, PlannedItemsTotal = 0m, ClosingBalance = 8000m },
-            new() { MonthStart = new DateOnly(2024, 2, 1), OpeningBalance = 8000m, IncomeTotal = 0m, BaselineOutgoingsTotal = 0m, PlannedItemsTotal = 0m, ClosingBalance = 6000m },
-            new() { MonthStart = new DateOnly(2024, 3, 1), OpeningBalance = 6000m, IncomeTotal = 0m, BaselineOutgoingsTotal = 0m, PlannedItemsTotal = 0m, ClosingBalance = 4000m },
+            new() { MonthStart = new DateOnly(2024, 1, 1), OpeningBalance = 10000m, IncomeTotal = 0m, BaselineOutgoingsTotal = 0m, ClosingBalance = 8000m },
+            new() { MonthStart = new DateOnly(2024, 2, 1), OpeningBalance = 8000m, IncomeTotal = 0m, BaselineOutgoingsTotal = 0m, ClosingBalance = 6000m },
+            new() { MonthStart = new DateOnly(2024, 3, 1), OpeningBalance = 6000m, IncomeTotal = 0m, BaselineOutgoingsTotal = 0m, ClosingBalance = 4000m },
         };
 
         var expectedResult = new ForecastResult
