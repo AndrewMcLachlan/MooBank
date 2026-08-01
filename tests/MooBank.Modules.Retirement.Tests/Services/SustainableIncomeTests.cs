@@ -22,69 +22,8 @@ public class SustainableIncomeTests
 
     private readonly RetirementProjectionEngine _engine = new();
 
-    /// <summary>
-    /// Given a balance, a real return and a horizon
-    /// When the sustainable income is worked out
-    /// Then it should be the annuity payment those three imply
-    /// </summary>
-    [Fact]
-    public void AnnualDrawdown_IsTheAnnuityPayment()
-    {
-        // 1,000,000 over 20 years at a 4% real return.
-        var expected = (decimal)(1_000_000d * 0.04d / (1d - Math.Pow(1.04d, -20)));
 
-        Assert.Equal(expected, RetirementProjectionEngine.AnnualDrawdown(1_000_000m, 0.04m, 20), 2);
-    }
 
-    /// <summary>
-    /// Given no real return
-    /// When the sustainable income is worked out
-    /// Then the balance should simply be spread across the years
-    /// </summary>
-    [Fact]
-    public void AnnualDrawdown_WithNoRealReturn_SpreadsEvenly()
-    {
-        Assert.Equal(50_000m, RetirementProjectionEngine.AnnualDrawdown(1_000_000m, 0m, 20));
-    }
-
-    /// <summary>
-    /// Given a projection
-    /// When the summary is read
-    /// Then the sustainable income should be worked out on the household, not summed from the members
-    /// </summary>
-    /// <remarks>
-    /// The two bases give different answers — each member has their own return and retirement age —
-    /// and a target income is a household figure. Summing the members here would have the page report
-    /// a sustainable income that contradicted the target beside it.
-    /// </remarks>
-    [Fact]
-    public void Calculate_TheSummaryFigure_IsWorkedOutOnTheHousehold()
-    {
-        // Arrange: two members on different strategies, so the two bases cannot coincide.
-        var plan = TestEntities.CreatePlan(
-            expectedReturnRate: 0.065m,
-            inflationRate: 0.025m,
-            lifeExpectancy: 90,
-            members: [
-                TestEntities.CreateMember(currentAge: 60, retirementAge: 67, growthStrategy: GrowthStrategy.Growth, accountBalances: [500_000m]),
-                TestEntities.CreateMember(currentAge: 62, retirementAge: 65, growthStrategy: GrowthStrategy.Conservative, accountBalances: [200_000m]),
-            ]);
-
-        // Act
-        var projection = _engine.CalculateWithoutPension(plan, Today);
-        var summary = projection.Summary;
-
-        // Assert
-        var expected = RetirementProjectionEngine.AnnualDrawdown(
-            summary.BalanceAtRetirementInTodaysDollars,
-            RetirementProjectionEngine.RealReturnRate(0.065m, 0.025m),
-            summary.LifeExpectancyYear - summary.RetirementYear);
-
-        Assert.Equal(expected, summary.AnnualRetirementIncomeInTodaysDollars);
-
-        // And it is genuinely not the sum of the members' own figures.
-        Assert.NotEqual(projection.Members.Sum(m => m.AnnualRetirementIncomeInTodaysDollars), summary.AnnualRetirementIncomeInTodaysDollars);
-    }
 
     /// <summary>
     /// Given a projection
@@ -113,41 +52,6 @@ public class SustainableIncomeTests
         Assert.Equal(2026 + 20, summary.RetirementYear);
     }
 
-    /// <summary>
-    /// Given a plan whose balance is de-risked to cash before retirement
-    /// When the sustainable income is worked out
-    /// Then it should use the cash return, not the growth return
-    /// </summary>
-    /// <remarks>
-    /// The balance moves to cash before retirement and stays there, so cash is what it earns for the
-    /// whole drawdown. Working the income out at the accumulation return promised an income the
-    /// projection beside it could not pay — about a third too much at a 6.5% growth assumption
-    /// against a 3% cash rate.
-    /// </remarks>
-    [Fact]
-    public void Calculate_TheSustainableIncome_UsesTheCashReturn()
-    {
-        // Arrange
-        var plan = TestEntities.CreatePlan(
-            expectedReturnRate: 0.065m, inflationRate: 0.025m, cashReturnRate: 0.03m,
-            preRetirementSwitchYears: 2, lifeExpectancy: 85,
-            members: [TestEntities.CreateMember(currentAge: 55, retirementAge: 67, accountBalances: [600_000m])]);
-
-        // Act
-        var summary = _engine.CalculateWithoutPension(plan, Today).Summary;
-
-        // Assert
-        var atCash = RetirementProjectionEngine.AnnualDrawdown(
-            summary.BalanceAtRetirementInTodaysDollars, RetirementProjectionEngine.RealReturnRate(0.03m, 0.025m), 85 - 67);
-        var atGrowth = RetirementProjectionEngine.AnnualDrawdown(
-            summary.BalanceAtRetirementInTodaysDollars, RetirementProjectionEngine.RealReturnRate(0.065m, 0.025m), 85 - 67);
-
-        Assert.Equal(atCash, summary.AnnualRetirementIncomeInTodaysDollars);
-        Assert.True(atGrowth > atCash, "the growth basis should be the more generous one, which is why it was wrong");
-
-        // And the rate the web app solves against is the drawdown one.
-        Assert.Equal(RetirementProjectionEngine.RealReturnRate(0.03m, 0.025m), summary.DrawdownRealReturnRate);
-    }
 
     /// <summary>
     /// Given the horizon and the income solved from each other
@@ -170,7 +74,7 @@ public class SustainableIncomeTests
             members: [TestEntities.CreateMember(currentAge: 55, retirementAge: 67, accountBalances: [600_000m])]);
 
         // Act: read the sustainable income off a first pass, then run again targeting it.
-        var sustainable = _engine.CalculateWithoutPension(plan, Today).Summary.AnnualRetirementIncomeInTodaysDollars;
+        var sustainable = _engine.CalculateWithoutPension(plan, Today).Summary.SustainableIncomeInTodaysDollars;
 
         plan.TargetRetirementIncome = sustainable;
         var summary = _engine.CalculateWithoutPension(plan, Today).Summary;

@@ -8638,7 +8638,6 @@
           "currentBalance",
           "balanceAtRetirement",
           "balanceAtRetirementInTodaysDollars",
-          "annualRetirementIncomeInTodaysDollars",
           "alreadyRetired",
           "growthStrategy",
           "returnRate"
@@ -8677,10 +8676,6 @@
             "format": "double"
           },
           "balanceAtRetirementInTodaysDollars": {
-            "type": "number",
-            "format": "double"
-          },
-          "annualRetirementIncomeInTodaysDollars": {
             "type": "number",
             "format": "double"
           },
@@ -9090,7 +9085,6 @@
           "currentBalance",
           "balanceAtRetirement",
           "balanceAtRetirementInTodaysDollars",
-          "annualRetirementIncomeInTodaysDollars",
           "retirementYear",
           "retirementAge",
           "realReturnRate",
@@ -9113,10 +9107,6 @@
             "format": "double"
           },
           "balanceAtRetirementInTodaysDollars": {
-            "type": "number",
-            "format": "double"
-          },
-          "annualRetirementIncomeInTodaysDollars": {
             "type": "number",
             "format": "double"
           },

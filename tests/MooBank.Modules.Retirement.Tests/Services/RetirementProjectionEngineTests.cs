@@ -348,104 +348,12 @@ public class RetirementProjectionEngineTests
     }
 
     /// <summary>
-    /// Given a balance and no real return
-    /// When the annual drawdown is calculated
-    /// Then the balance should be spread evenly across the years
-    /// </summary>
-    [Fact]
-    public void AnnualDrawdown_WithNoRealReturn_SpreadsTheBalanceEvenly()
-    {
-        // Act
-        var drawdown = RetirementProjectionEngine.AnnualDrawdown(100_000m, 0m, 10);
-
-        // Assert
-        Assert.Equal(10_000m, drawdown);
-    }
-
-    /// <summary>
-    /// Given a balance earning a real return during drawdown
-    /// When the annual drawdown is calculated
-    /// Then it should exceed an even split, because the remaining balance keeps earning
-    /// </summary>
-    [Fact]
-    public void AnnualDrawdown_WithARealReturn_ExceedsAnEvenSplit()
-    {
-        // Act
-        var drawdown = RetirementProjectionEngine.AnnualDrawdown(100_000m, 0.05m, 10);
-
-        // Assert
-        Assert.True(drawdown > 10_000m);
-        // The standard annuity payment for 100,000 over 10 years at 5%.
-        Assert.Equal(12_950.46m, drawdown, 2);
-    }
-
-    /// <summary>
-    /// Given a drawdown horizon of zero years or a balance of nothing
-    /// When the annual drawdown is calculated
-    /// Then it should be nothing rather than dividing by zero
-    /// </summary>
-    [Theory]
-    [InlineData(100_000, 0)]
-    [InlineData(0, 10)]
-    [InlineData(-100, 10)]
-    public void AnnualDrawdown_WithNothingToDrawOn_IsZero(decimal balance, int years)
-    {
-        // Act
-        var drawdown = RetirementProjectionEngine.AnnualDrawdown(balance, 0.05m, years);
-
-        // Assert
-        Assert.Equal(0m, drawdown);
-    }
-
-    /// <summary>
-    /// Given a plan whose life expectancy is beyond the retirement age
-    /// When the projection is run
-    /// Then a member should be given an annual retirement income
-    /// </summary>
-    [Fact]
-    public void Calculate_LifeExpectancyBeyondRetirement_ProducesRetirementIncome()
-    {
-        // Arrange
-        var plan = TestEntities.CreatePlan(
-            lifeExpectancy: 90,
-            members: [TestEntities.CreateMember(retirementAge: 65, accountBalances: [100_000m])]);
-
-        // Act
-        var projection = _engine.CalculateWithoutPension(plan, Today);
-        var member = projection.Members.Single();
-
-        // Assert
-        Assert.True(member.AnnualRetirementIncomeInTodaysDollars > 0m);
-        Assert.Equal(member.AnnualRetirementIncomeInTodaysDollars, projection.Summary.AnnualRetirementIncomeInTodaysDollars);
-    }
-
-    /// <summary>
-    /// Given a life expectancy at or below the retirement age
-    /// When the projection is run
-    /// Then there should be no drawdown period and so no retirement income
-    /// </summary>
-    [Fact]
-    public void Calculate_LifeExpectancyAtRetirementAge_ProducesNoRetirementIncome()
-    {
-        // Arrange
-        var plan = TestEntities.CreatePlan(
-            lifeExpectancy: 65,
-            members: [TestEntities.CreateMember(retirementAge: 65, accountBalances: [100_000m])]);
-
-        // Act
-        var member = _engine.CalculateWithoutPension(plan, Today).Members.Single();
-
-        // Assert
-        Assert.Equal(0m, member.AnnualRetirementIncomeInTodaysDollars);
-    }
-
-    /// <summary>
     /// Given a household of two members
     /// When the projection is run
-    /// Then the summary income should be the sum of the members' incomes
+    /// Then the summary balance should cover them both
     /// </summary>
     [Fact]
-    public void Calculate_Household_SummaryIncomeIsTheSumOfMembers()
+    public void Calculate_Household_SummaryBalanceCoversBothMembers()
     {
         // Arrange
         var plan = TestEntities.CreatePlan(members: [
@@ -457,10 +365,8 @@ public class RetirementProjectionEngineTests
         var projection = _engine.CalculateWithoutPension(plan, Today);
 
         // Assert
-        Assert.Equal(
-            projection.Members.Sum(m => m.AnnualRetirementIncomeInTodaysDollars),
-            projection.Summary.AnnualRetirementIncomeInTodaysDollars);
         Assert.Equal(300_000m, projection.Summary.CurrentBalance);
+        Assert.Equal(2, projection.Members.Count());
     }
 
     /// <summary>

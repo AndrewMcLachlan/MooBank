@@ -287,14 +287,6 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
                 CurrentBalance = members.Sum(m => m.StartingBalance),
                 BalanceAtRetirement = retirementYear.ClosingBalance,
                 BalanceAtRetirementInTodaysDollars = retirementYear.ClosingBalanceInTodaysDollars,
-                // Worked out at the cash return, not the growth one: the balance is de-risked to
-                // cash before retirement and stays there, so that is what it earns for the whole
-                // drawdown. Using the accumulation return here would promise an income the
-                // projection beside it could not actually pay.
-                AnnualRetirementIncomeInTodaysDollars = AnnualDrawdown(
-                    retirementYear.ClosingBalanceInTodaysDollars,
-                    RealReturnRate(assumptions.CashReturnRate, assumptions.InflationRate),
-                    assumptions.LifeExpectancy - retirementAge),
                 RetirementYear = startYear + yearsToAllRetired,
                 RetirementAge = retirementAge,
                 RealReturnRate = RealReturnRate(assumptions.ExpectedReturnRate, assumptions.InflationRate),
@@ -352,31 +344,6 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
     internal static decimal RealReturnRate(decimal nominalRate, decimal inflationRate) =>
         ((1m + nominalRate) / (1m + inflationRate)) - 1m;
 
-    /// <summary>
-    /// The level annual payment a balance supports over a number of years, in the same dollars as
-    /// the balance.
-    /// </summary>
-    /// <param name="balance">The balance at the start of the drawdown.</param>
-    /// <param name="realReturnRate">The return earned during drawdown, above inflation.</param>
-    /// <param name="years">How many years the balance must last.</param>
-    /// <remarks>
-    /// The standard present-value-of-an-annuity formula, rearranged for the payment. When the real
-    /// return is negligible it degenerates to dividing the balance evenly across the years, which
-    /// is also the correct answer in the limit.
-    /// </remarks>
-    internal static decimal AnnualDrawdown(decimal balance, decimal realReturnRate, int years)
-    {
-        if (years <= 0 || balance <= 0m) return 0m;
-
-        if (Math.Abs(realReturnRate) < 0.000001m) return Round(balance / years);
-
-        var discountFactor = 1d - Math.Pow(1d + (double)realReturnRate, -years);
-
-        // A real return of -100% or worse leaves nothing to draw on and would divide by zero.
-        if (discountFactor <= 0d) return 0m;
-
-        return Round(balance * realReturnRate / (decimal)discountFactor);
-    }
 
     /// <summary>
     /// A member's combined balance across their selected instruments.
@@ -561,12 +528,7 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
         public RetirementMemberOutcome ToOutcome(ResolvedAssumptions assumptions, int startYear)
         {
             var balanceAtRetirementReal = Round(BalanceAtRetirement * TodaysDollarsFactorAtRetirement);
-            var drawdownYears = assumptions.LifeExpectancy - _member.RetirementAge;
 
-            // Drawdown earns the cash return, not this member's growth strategy: their balance moves
-            // to cash before they retire and stays there, so the strategy is what got them here, not
-            // what they live on.
-            var realReturnRate = RealReturnRate(assumptions.CashReturnRate, assumptions.InflationRate);
 
             return new RetirementMemberOutcome
             {
@@ -579,7 +541,6 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
                 CurrentBalance = StartingBalance,
                 BalanceAtRetirement = BalanceAtRetirement,
                 BalanceAtRetirementInTodaysDollars = balanceAtRetirementReal,
-                AnnualRetirementIncomeInTodaysDollars = AnnualDrawdown(balanceAtRetirementReal, realReturnRate, drawdownYears),
                 AlreadyRetired = AlreadyRetired,
                 GrowthStrategy = _member.GrowthStrategy,
                 ReturnRate = ReturnRate,

@@ -626,7 +626,6 @@ export type RetirementMemberOutcome = {
     currentBalance: number;
     balanceAtRetirement: number;
     balanceAtRetirementInTodaysDollars: number;
-    annualRetirementIncomeInTodaysDollars: number;
     alreadyRetired: boolean;
     growthStrategy: GrowthStrategy;
     returnRate: number;
@@ -715,7 +714,6 @@ export type RetirementProjectionSummary = {
     currentBalance: number;
     balanceAtRetirement: number;
     balanceAtRetirementInTodaysDollars: number;
-    annualRetirementIncomeInTodaysDollars: number;
     retirementYear: number;
     retirementAge: number;
     realReturnRate: number;

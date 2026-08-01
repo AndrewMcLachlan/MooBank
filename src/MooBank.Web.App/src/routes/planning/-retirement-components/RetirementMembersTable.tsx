@@ -1,4 +1,4 @@
-import { Badge, SectionTable } from "@andrewmclachlan/moo-ds";
+﻿import { Badge, SectionTable } from "@andrewmclachlan/moo-ds";
 import type { RetirementMemberOutcome } from "api/types.gen";
 import { Amount } from "components";
 
@@ -21,7 +21,6 @@ export const RetirementMembersTable: React.FC<RetirementMembersTableProps> = ({ 
                     <th>Balance Today</th>
                     <th>At Retirement</th>
                     <th>In Today's Dollars</th>
-                    <th>Income a Year</th>
                 </tr>
             </thead>
             <tbody>
@@ -37,7 +36,6 @@ export const RetirementMembersTable: React.FC<RetirementMembersTableProps> = ({ 
                         <td><Amount amount={member.currentBalance} currencyCode={currencyCode} decimalPlaces={0} /></td>
                         <td><Amount amount={member.balanceAtRetirement} currencyCode={currencyCode} decimalPlaces={0} /></td>
                         <td><Amount amount={member.balanceAtRetirementInTodaysDollars} currencyCode={currencyCode} decimalPlaces={0} /></td>
-                        <td><Amount amount={member.annualRetirementIncomeInTodaysDollars} currencyCode={currencyCode} decimalPlaces={0} /></td>
                     </tr>
                 ))}
             </tbody>
