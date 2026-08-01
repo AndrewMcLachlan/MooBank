@@ -96,16 +96,20 @@ GO
  complementary as duplicated. Skipping those plans lost the figure silently, and the plan carrying
  both models is exactly the one the double-counting affected.
 
- The JSON is staged first and the column dropped here rather than by the schema comparison, which
- would otherwise refuse the deploy as data loss. Dropping the column is also what makes this run
- once: the COL_LENGTH guard turns the whole block into a no-op afterwards.
+ The JSON is staged here; the column itself is dropped by the schema comparison, in the main body
+ of the deployment that follows. Dropping it here instead does not work: the comparison plans its
+ statements against the database as it stands *before* this script runs, so it has already decided
+ to drop the column, and finds it gone when its turn comes.
+
+ Two guards, because two things can leave work half done. COL_LENGTH covers the ordinary case: once
+ a deployment has succeeded the column is gone and the whole block is skipped. The staging table
+ covers a deployment that failed after this script ran but before the column was dropped -- the
+ items exist, the column does not, and creating them a second time would double the plan's income.
 */
 IF OBJECT_ID('dbo.ForecastPlan', 'U') IS NOT NULL
    AND COL_LENGTH('dbo.ForecastPlan', 'IncomeStrategy') IS NOT NULL
+   AND OBJECT_ID('dbo.__ForecastIncomeStrategyMigration', 'U') IS NULL
 BEGIN
-    IF OBJECT_ID('dbo.__ForecastIncomeStrategyMigration', 'U') IS NOT NULL
-        DROP TABLE dbo.__ForecastIncomeStrategyMigration;
-
     -- Wrapped in EXEC so the column reference is bound at runtime; otherwise the batch fails to
     -- parse on any deploy where IncomeStrategy no longer exists.
     EXEC ('
@@ -171,6 +175,4 @@ BEGIN
         ON x.PlanId = m.PlanId;
 
     DROP TABLE #ForecastIncomeSegments;
-
-    ALTER TABLE dbo.ForecastPlan DROP COLUMN [IncomeStrategy];
 END
