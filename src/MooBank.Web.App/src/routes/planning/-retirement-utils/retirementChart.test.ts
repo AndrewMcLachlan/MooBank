@@ -17,6 +17,7 @@ const year = (over: Partial<RetirementProjectionYear>): RetirementProjectionYear
     pension: 0,
     totalIncome: 0,
     totalIncomeInTodaysDollars: 0,
+    pensionInTodaysDollars: 0,
     members: [],
     ...over,
 });

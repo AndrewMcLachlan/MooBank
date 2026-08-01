@@ -13,6 +13,7 @@ const member = (over: Partial<RetirementMemberYear>): RetirementMemberYear => ({
     investmentReturn: 0,
     costs: 0,
     drawdown: 0,
+    drawdownInTodaysDollars: 0,
     closingBalance: 0,
     ...over,
 });
@@ -31,11 +32,17 @@ const year = (over: Partial<RetirementProjectionYear>): RetirementProjectionYear
     pension: 0,
     totalIncome: 0,
     totalIncomeInTodaysDollars: 0,
+    pensionInTodaysDollars: 0,
     members: [],
     ...over,
 });
 
-/** Two accumulating years, then two drawing years. */
+/**
+ * Two accumulating years, then two drawing years.
+ *
+ * The nominal and today's-dollars figures differ deliberately: the chart plots the latter, and a
+ * fixture where they matched could not tell the two apart.
+ */
 const projection = (): RetirementProjectionYear[] => [
     year({ year: 2026, members: [member({ age: 63 }), member({ memberId: spouseId, name: "Spouse", age: 61 })] }),
     year({ year: 2027, members: [member({ age: 64 }), member({ memberId: spouseId, name: "Spouse", age: 62 })] }),
@@ -44,8 +51,8 @@ const projection = (): RetirementProjectionYear[] => [
         drawdown: 40_000,
         totalIncome: 40_000,
         members: [
-            member({ age: 65, drawdown: 30_000 }),
-            member({ memberId: spouseId, name: "Spouse", age: 63, drawdown: 10_000 }),
+            member({ age: 65, drawdown: 33_000, drawdownInTodaysDollars: 30_000 }),
+            member({ memberId: spouseId, name: "Spouse", age: 63, drawdown: 11_000, drawdownInTodaysDollars: 10_000 }),
         ],
     }),
     year({
@@ -53,8 +60,8 @@ const projection = (): RetirementProjectionYear[] => [
         drawdown: 40_000,
         totalIncome: 40_000,
         members: [
-            member({ age: 66, drawdown: 32_000 }),
-            member({ memberId: spouseId, name: "Spouse", age: 64, drawdown: 8_000 }),
+            member({ age: 66, drawdown: 35_200, drawdownInTodaysDollars: 32_000 }),
+            member({ memberId: spouseId, name: "Spouse", age: 64, drawdown: 8_800, drawdownInTodaysDollars: 8_000 }),
         ],
     }),
 ];
@@ -87,7 +94,7 @@ describe("retirementIncomeChartData", () => {
 
     it("plots the pension as its own series", () => {
         const years = projection();
-        years[2] = year({ year: 2028, drawdown: 30_000, pension: 10_000, totalIncome: 40_000, members: [member({ age: 65, drawdown: 30_000 })] });
+        years[2] = year({ year: 2028, drawdown: 30_000, pension: 11_000, pensionInTodaysDollars: 10_000, totalIncome: 41_000, members: [member({ age: 65, drawdown: 33_000, drawdownInTodaysDollars: 30_000 })] });
 
         const data = retirementIncomeChartData(years);
         const pension = data.datasets.find(d => d.label === "Age pension");
@@ -107,6 +114,18 @@ describe("retirementIncomeChartData", () => {
 
         expect(hasRetirementIncome(years)).toBe(true);
         expect(retirementIncomeChartData(years).labels).toEqual(["67"]);
+    });
+
+    /**
+     * The chart is read against a target income stated in today's dollars, so it must plot the same
+     * money. Nominal figures climb year on year and reconcile with nothing else on the page.
+     */
+    it("plots today's dollars, not nominal", () => {
+        const data = retirementIncomeChartData(projection());
+
+        // The fixture's nominal figures are ten per cent higher; none of them should appear.
+        expect(data.datasets[0].data).toEqual([30_000, 32_000]);
+        expect(data.datasets[0].data).not.toContain(33_000);
     });
 
     it("gives the pension a colour of its own", () => {
@@ -131,9 +150,9 @@ describe("retirementIncomeChartData", () => {
         const years = projection();
         years[3] = year({
             year: 2029,
-            drawdown: 8_000,
-            totalIncome: 8_000,
-            members: [member({ memberId: spouseId, name: "Spouse", age: 64, drawdown: 8_000 })],
+            drawdown: 8_800,
+            totalIncome: 8_800,
+            members: [member({ memberId: spouseId, name: "Spouse", age: 64, drawdown: 8_800, drawdownInTodaysDollars: 8_000 })],
         });
 
         const data = retirementIncomeChartData(years);

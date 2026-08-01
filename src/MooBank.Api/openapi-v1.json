@@ -8769,6 +8769,7 @@
           "investmentReturn",
           "costs",
           "drawdown",
+          "drawdownInTodaysDollars",
           "closingBalance"
         ],
         "type": "object",
@@ -8797,6 +8798,10 @@
             "format": "double"
           },
           "drawdown": {
+            "type": "number",
+            "format": "double"
+          },
+          "drawdownInTodaysDollars": {
             "type": "number",
             "format": "double"
           },
@@ -9179,6 +9184,7 @@
           "pension",
           "totalIncome",
           "totalIncomeInTodaysDollars",
+          "pensionInTodaysDollars",
           "members"
         ],
         "type": "object",
@@ -9231,6 +9237,10 @@
             "format": "double"
           },
           "totalIncomeInTodaysDollars": {
+            "type": "number",
+            "format": "double"
+          },
+          "pensionInTodaysDollars": {
             "type": "number",
             "format": "double"
           },

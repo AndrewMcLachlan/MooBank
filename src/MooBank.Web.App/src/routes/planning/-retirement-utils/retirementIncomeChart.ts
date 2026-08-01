@@ -42,6 +42,12 @@ export const hasRetirementIncome = (years: RetirementProjectionYear[]) => drawdo
  * Plotted against the first member's age rather than the calendar year: a retirement plan is read in
  * terms of how old you are. Members with different birthdays reach a given year at different ages,
  * so the axis follows the first of them and the tooltip names the year.
+ *
+ * Every figure is in today's dollars, because the target income the plan is built around is stated
+ * that way. In nominal terms the same plan climbs year on year and reconciles with nothing on the
+ * page — a couple's pension at the published maximum reads as a hundred thousand thirty years out,
+ * which looks like an error rather than the indexation it is. In today's dollars the total sits flat
+ * at the target, which is the plan's actual promise.
  */
 export const retirementIncomeChartData = (years: RetirementProjectionYear[]): ChartData<"bar"> => {
     const drawing = drawdownYears(years);
@@ -57,14 +63,14 @@ export const retirementIncomeChartData = (years: RetirementProjectionYear[]): Ch
         datasets: [
             ...members.map((member, index) => ({
                 label: `Income from ${member.name}'s super`,
-                data: drawing.map((y) => y.members.find((m) => m.memberId === member.memberId)?.drawdown ?? 0),
+                data: drawing.map((y) => y.members.find((m) => m.memberId === member.memberId)?.drawdownInTodaysDollars ?? 0),
                 backgroundColor: memberColours[index % memberColours.length],
             })),
             // Stacked last so it sits under the super income, which is the order these charts are
             // conventionally read: the pension is the floor the household falls back to.
             {
                 label: "Age pension",
-                data: drawing.map((y) => y.pension),
+                data: drawing.map((y) => y.pensionInTodaysDollars),
                 backgroundColor: pensionColour,
             },
         ],

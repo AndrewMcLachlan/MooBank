@@ -651,6 +651,7 @@ export type RetirementMemberYear = {
     investmentReturn: number;
     costs: number;
     drawdown: number;
+    drawdownInTodaysDollars: number;
     closingBalance: number;
 };
 
@@ -742,6 +743,7 @@ export type RetirementProjectionYear = {
     pension: number;
     totalIncome: number;
     totalIncomeInTodaysDollars: number;
+    pensionInTodaysDollars: number;
     members: Array<RetirementMemberYear>;
 };
 

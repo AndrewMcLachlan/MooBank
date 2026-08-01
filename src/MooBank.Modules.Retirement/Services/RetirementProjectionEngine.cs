@@ -159,7 +159,7 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
             ClosingBalance = openingTotal,
             ClosingBalanceInTodaysDollars = openingTotal,
             AllRetired = yearsToAllRetired == 0,
-            Members = members.Select(m => m.ToYear(0, m.Balance, 0m, 0m, 0m, 0m)).ToList(),
+            Members = members.Select(m => m.ToYear(0, m.Balance, 0m, 0m, 0m, 0m, 0m)).ToList(),
         });
 
         // The factor that converts a nominal amount in the current year back to today's dollars.
@@ -237,7 +237,7 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
                 costs += memberCosts;
                 drawdown += memberDrawdown;
 
-                memberYears.Add(member.ToYear(yearOffset, member.Balance, memberContribution, memberReturn, memberCosts, memberDrawdown));
+                memberYears.Add(member.ToYear(yearOffset, member.Balance, memberContribution, memberReturn, memberCosts, memberDrawdown, Round(memberDrawdown * todaysDollarsFactor)));
 
                 // Capture the balance the moment this member reaches their retirement age.
                 if (yearOffset == member.YearsToRetirement)
@@ -263,6 +263,7 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
                 ClosingBalanceInTodaysDollars = Round(closing * todaysDollarsFactor),
                 DrawdownInTodaysDollars = Round(drawdown * todaysDollarsFactor),
                 TotalIncomeInTodaysDollars = Round((drawdown + pension) * todaysDollarsFactor),
+                PensionInTodaysDollars = Round(pension * todaysDollarsFactor),
                 AllRetired = allRetired,
                 Members = memberYears,
             });
@@ -495,7 +496,7 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
         /// <summary>
         /// This member's position at the end of a projection year.
         /// </summary>
-        public RetirementMemberYear ToYear(int yearOffset, decimal closing, decimal contributions, decimal investmentReturn, decimal costs, decimal drawdown) =>
+        public RetirementMemberYear ToYear(int yearOffset, decimal closing, decimal contributions, decimal investmentReturn, decimal costs, decimal drawdown, decimal drawdownInTodaysDollars) =>
             new()
             {
                 MemberId = _member.Id,
@@ -505,6 +506,7 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
                 InvestmentReturn = investmentReturn,
                 Costs = costs,
                 Drawdown = drawdown,
+                DrawdownInTodaysDollars = drawdownInTodaysDollars,
                 ClosingBalance = closing,
             };
 

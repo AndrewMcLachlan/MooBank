@@ -76,6 +76,13 @@ public sealed record RetirementProjectionYear
     public decimal TotalIncomeInTodaysDollars { get; init; }
 
     /// <summary>
+    /// The Age Pension in today's dollars, which is the figure worth reading: the nominal one grows
+    /// with the indexation applied to the rates and reads alarmingly large late in a projection when
+    /// it is only ever the published maximum.
+    /// </summary>
+    public decimal PensionInTodaysDollars { get; init; }
+
+    /// <summary>
     /// Each member's part of the year, so a chart can show whose balance is funding the income.
     /// </summary>
     public IEnumerable<RetirementMemberYear> Members { get; init; } = [];
@@ -105,6 +112,12 @@ public sealed record RetirementMemberYear
     /// Drawn from this member's balance this year — their share of the household's income.
     /// </summary>
     public decimal Drawdown { get; init; }
+
+    /// <summary>
+    /// The same withdrawal in today's dollars, so a chart can be read against a target income that
+    /// is itself stated in today's dollars.
+    /// </summary>
+    public decimal DrawdownInTodaysDollars { get; init; }
 
     public decimal ClosingBalance { get; init; }
 }
