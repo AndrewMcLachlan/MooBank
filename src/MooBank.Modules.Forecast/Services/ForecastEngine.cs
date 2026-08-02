@@ -62,7 +62,7 @@ internal class ForecastEngine(
         //    whole income model, and expenses are added on top of the baseline.
         var latestTransactionMonth = new DateOnly(latestTransactionDate.Year, latestTransactionDate.Month, 1);
         var realised = await RealisePlannedItems(
-            plan, accountIds, accountIdsForHistoricalAnalysis, outgoingStrategy, latestTransactionMonth, cancellationToken);
+            plan, accountIdsForHistoricalAnalysis, latestTransactionMonth, cancellationToken);
 
         var incomeByMonth = realised.IncomeByMonth;
         var plannedExpensesByMonth = realised.ExpensesByMonth;
@@ -93,21 +93,12 @@ internal class ForecastEngine(
             ? ModelledIncomeShortfall(regressionModel.AvgHistoricalIncome, incomeByMonth, trainingWindow)
             : 0m;
 
-        // 12. Recalculate baseline outgoings from actual balance data if available
-        //     (skip when using valid regression — outgoings vary per month)
-        decimal effectiveBaselineOutgoings;
-        if (useRegression)
-        {
-            effectiveBaselineOutgoings = baselineOutgoings; // unused per-month, but kept for summary fallback
-        }
-        else
-        {
-            // Same accounts, same exclusions and same figures the expense model is fitted to, so the
-            // fallback describes the same thing the fit would have.
-            effectiveBaselineOutgoings = ForecastCalculations.AverageOrdinarySpending(
-                actualIncomeExpenseByMonth, realised.AttributedByMonth,
-                plan.StartDate, latestTransactionMonth, baselineOutgoings);
-        }
+        // 12. Where there were too few months to find a slope, spending is modelled as a level with
+        //     no variable part. Same accounts, same exclusions and same figures the fit would have
+        //     used, so it describes the same thing the fit describes -- just without the slope.
+        var levelWithoutAFit = useRegression ? 0m : ForecastCalculations.AverageOrdinarySpending(
+            actualIncomeExpenseByMonth, realised.AttributedByMonth,
+            plan.StartDate, latestTransactionMonth, baselineOutgoings);
 
         // 13. Generate forecast months
         var months = new List<ForecastMonth>();
@@ -124,7 +115,7 @@ internal class ForecastEngine(
 
             var monthOutgoings = useRegression
                 ? Math.Max(0m, regressionModel.Intercept + regressionModel.Slope * (monthIncome + modelledIncomeShortfall))
-                : effectiveBaselineOutgoings;
+                : levelWithoutAFit;
 
             // Actual income/expenses only exist for historical months (up to the latest transaction).
             var isHistorical = currentDate <= latestTransactionMonth;
@@ -150,7 +141,7 @@ internal class ForecastEngine(
         }
 
         // 14. Calculate summary metrics
-        var summary = ForecastCalculations.CalculateSummary(months, effectiveBaselineOutgoings, regressionModel, modelledIncomeShortfall);
+        var summary = ForecastCalculations.CalculateSummary(months, levelWithoutAFit, regressionModel, modelledIncomeShortfall);
 
         return new ForecastResult
         {
@@ -249,15 +240,13 @@ internal class ForecastEngine(
     /// Measures the plan's items against the spending that actually carried their tags.
     /// </summary>
     /// <remarks>
-    /// One query covers every tag on the plan across both the baseline's lookback window and the
-    /// plan itself, because a recurring item anchored before the plan begins has to be able to claim
-    /// its own history back out of the baseline average.
+    /// Only the payments the author has linked. A tag identifies a category rather than a project,
+    /// so it cannot say which payment belongs to which item; it is used to narrow what is offered
+    /// when linking, and plays no part here.
     /// </remarks>
     private async Task<RealisedPlan> RealisePlannedItems(
         DomainForecastPlan plan,
-        List<Guid> accountIds,
         List<Guid> historicalAccountIds,
-        OutgoingStrategy outgoingStrategy,
         DateOnly latestTransactionMonth,
         CancellationToken cancellationToken)
     {
@@ -268,28 +257,9 @@ internal class ForecastEngine(
             .Distinct()
             .ToList();
 
-        // Only items the author has not linked need a tag lookup; the rest have their answer.
-        var tagIds = included
-            .Where(i => i.Transactions.Count == 0 && i.TagId.HasValue)
-            .Select(i => i.TagId!.Value)
-            .Distinct()
-            .ToList();
-
-        var spend = tagIds.Count == 0
-            ? []
-            : await plannedItemMatcher.GetTaggedSpend(
-                accountIds,
-                tagIds,
-                // Back to the start of the lookback, since an item may claim spending from it.
-                plan.StartDate.AddDays(-1).AddMonths(-Math.Max(0, outgoingStrategy.LookbackMonths)),
-                plan.EndDate,
-                linkedTransactionIds,
-                cancellationToken);
-
         var payments = await plannedItemMatcher.GetPayments(linkedTransactionIds, cancellationToken);
 
-        return PlannedItemRealiser.Realise(
-            plan, spend, payments, historicalAccountIds, latestTransactionMonth, outgoingStrategy.MatchWindowMonths);
+        return PlannedItemRealiser.Realise(plan, payments, historicalAccountIds, latestTransactionMonth);
     }
 
     /// <summary>

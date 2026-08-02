@@ -17,7 +17,6 @@ interface ForecastSettingsFormValues {
     accountScopeMode: AccountScopeMode;
     accountIds: string[];
     lookbackMonths: number;
-    matchWindowMonths: number;
 }
 
 const toFormValues = (plan?: ForecastPlan): ForecastSettingsFormValues => ({
@@ -27,7 +26,6 @@ const toFormValues = (plan?: ForecastPlan): ForecastSettingsFormValues => ({
     accountScopeMode: plan?.accountScopeMode,
     accountIds: plan?.accountIds ?? [],
     lookbackMonths: plan?.outgoingStrategy?.lookbackMonths ?? 24,
-    matchWindowMonths: plan?.outgoingStrategy?.matchWindowMonths ?? 1,
 });
 
 export const ForecastSettingsModal: React.FC<ForecastSettingsModalProps> = ({ plan, show, onHide }) => {
@@ -55,7 +53,6 @@ export const ForecastSettingsModal: React.FC<ForecastSettingsModalProps> = ({ pl
             outgoingStrategy: {
                 ...plan.outgoingStrategy,
                 lookbackMonths: Number(data.lookbackMonths) || 24,
-                matchWindowMonths: Number(data.matchWindowMonths) || 0,
             }
         });
         onHide();
@@ -91,22 +88,11 @@ export const ForecastSettingsModal: React.FC<ForecastSettingsModalProps> = ({ pl
                             </Form.Group>
                         </Col>
                     </Row>
-                    <Row className="g-3">
-                        <Col md={6}>
-                            <Form.Group groupId="lookbackMonths">
-                                <Form.Label>History Used (months)</Form.Label>
-                                <Form.Input type="number" min={1} max={60} />
-                                <div className="field-hint">How far back spending is studied to work out how it moves with income.</div>
-                            </Form.Group>
-                        </Col>
-                        <Col md={6}>
-                            <Form.Group groupId="matchWindowMonths">
-                                <Form.Label>Planned Item Slippage (months)</Form.Label>
-                                <Form.Input type="number" min={0} max={12} />
-                                <div className="field-hint">How late or early a tagged payment can be and still count towards its planned item.</div>
-                            </Form.Group>
-                        </Col>
-                    </Row>
+                    <Form.Group groupId="lookbackMonths">
+                        <Form.Label>History Used (months)</Form.Label>
+                        <Form.Input type="number" min={1} max={60} />
+                        <div className="field-hint">How far back spending is studied to work out how it moves with income.</div>
+                    </Form.Group>
                     <Form.Group groupId="accountScopeMode">
                         <Form.Label>Accounts</Form.Label>
                         <div className="mb-2">

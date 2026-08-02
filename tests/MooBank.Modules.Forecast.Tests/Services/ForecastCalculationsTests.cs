@@ -12,7 +12,7 @@ namespace Asm.MooBank.Modules.Forecast.Tests.Services;
 [Trait("Category", "Unit")]
 public class ForecastCalculationsTests
 {
-    private static readonly IncomeCorrelatedSettings Settings = new() { MinDataPoints = 6, RSquaredThreshold = 0.5m };
+    private static readonly IncomeCorrelatedSettings Settings = new() { MinDataPoints = 6 };
 
     #region FitRegression
 
@@ -80,12 +80,12 @@ public class ForecastCalculationsTests
     }
 
     /// <summary>
-    /// Given a strong fit but a negative slope (expense falls as income rises)
+    /// Given a fit whose slope is negative (expense falls as income rises)
     /// When the regression is fitted
-    /// Then the model is rejected as invalid (nonsensical for expense forecasting).
+    /// Then the slope is clamped flat rather than the fit discarded
     /// </summary>
     [Fact]
-    public void FitRegression_NegativeSlope_ReturnsInvalid()
+    public void FitRegression_NegativeSlope_IsClampedFlat()
     {
         var data = new Dictionary<DateOnly, (decimal Income, decimal Expense)>();
         for (var i = 0; i < 6; i++)
@@ -96,22 +96,19 @@ public class ForecastCalculationsTests
 
         var model = ForecastCalculations.FitRegression(data, Settings);
 
-        Assert.False(model.Valid);
+        // Clamped to flat rather than thrown away: spending that falls as income rises is not a
+        // believable shape to project, but a flat line through the data still beats no model.
+        Assert.True(model.Valid);
+        Assert.Equal(0m, model.Slope);
     }
 
     /// <summary>
-    /// Given a strong fit whose slope exceeds one
+    /// Given a fit whose slope exceeds one
     /// When the regression is fitted
-    /// Then the model is rejected
+    /// Then the slope is clamped to one rather than the fit discarded
     /// </summary>
-    /// <remarks>
-    /// A slope above one has every extra dollar earned spent more than once over. It fits some
-    /// stretches of real data — a windfall that gets spent along with some savings — but projected
-    /// forward it says a pay rise makes you worse off, which is not a forecast so much as a
-    /// countdown. Better a flat average, reported as one.
-    /// </remarks>
     [Fact]
-    public void FitRegression_SlopeAboveOne_ReturnsInvalid()
+    public void FitRegression_SlopeAboveOne_IsClampedToOne()
     {
         var data = new Dictionary<DateOnly, (decimal Income, decimal Expense)>();
         for (var i = 0; i < 6; i++)
@@ -122,9 +119,10 @@ public class ForecastCalculationsTests
 
         var model = ForecastCalculations.FitRegression(data, Settings);
 
-        Assert.False(model.Valid);
-        Assert.Equal(1.4m, model.Slope, 4);      // it fitted
-        Assert.Equal(1m, model.RSquared, 4);     // and fitted perfectly
+        // Clamped to one. Spending every additional dollar is believable; spending more than all of
+        // it says a pay rise makes you worse off, which is a countdown rather than a forecast.
+        Assert.True(model.Valid);
+        Assert.Equal(1m, model.Slope, 4);
     }
 
     /// <summary>
@@ -284,7 +282,7 @@ public class ForecastCalculationsTests
     [Fact]
     public void CalculateSummary_NoMonths_ReturnsZeroedSummary()
     {
-        var summary = ForecastCalculations.CalculateSummary([], flatAverage: 500m, RegressionModel.None, modelledIncomeShortfall: 0m);
+        var summary = ForecastCalculations.CalculateSummary([], levelWithoutAFit: 500m, RegressionModel.None, modelledIncomeShortfall: 0m);
 
         Assert.Equal(0m, summary.LowestBalance);
         Assert.Equal(0, summary.MonthsBelowZero);
@@ -305,7 +303,7 @@ public class ForecastCalculationsTests
             new() { MonthStart = new(2024, 2, 1), ClosingBalance = -200m, IncomeTotal = 1000m, BaselineOutgoingsTotal = -1200m },
         };
 
-        var summary = ForecastCalculations.CalculateSummary(months, flatAverage: 1000m, RegressionModel.None, modelledIncomeShortfall: 0m);
+        var summary = ForecastCalculations.CalculateSummary(months, levelWithoutAFit: 1000m, RegressionModel.None, modelledIncomeShortfall: 0m);
 
         Assert.Equal(-200m, summary.LowestBalance);
         Assert.Equal(new DateOnly(2024, 2, 1), summary.LowestBalanceMonth);
@@ -334,9 +332,8 @@ public class ForecastCalculationsTests
         };
         var regression = new RegressionModel(Intercept: 100m, Slope: 0.5m, RSquared: 0.9m, Valid: true, AvgHistoricalIncome: 3000m, DataPoints: 12);
 
-        var summary = ForecastCalculations.CalculateSummary(months, flatAverage: 999m, regression, modelledIncomeShortfall: 250m);
+        var summary = ForecastCalculations.CalculateSummary(months, levelWithoutAFit: 999m, regression, modelledIncomeShortfall: 250m);
 
-        Assert.False(summary.Expenses.UsingFlatAverage);
         Assert.Equal(100m, summary.Expenses.FixedComponent);
         Assert.Equal(0.5m, summary.Expenses.VariableComponent);
         Assert.Equal(12, summary.Expenses.DataPoints);
@@ -345,31 +342,30 @@ public class ForecastCalculationsTests
     }
 
     /// <summary>
-    /// Given a fit that was rejected
+    /// Given too little history to find a slope
     /// When the summary is calculated
-    /// Then the fallback to a flat average should be reported rather than passed off as the model
+    /// Then spending is reported as a level with no variable part
     /// </summary>
+    /// <remarks>
+    /// Not a different kind of answer, just the same answer with nothing to say about income. There
+    /// is no flat-average mode any more: a fit is always used where one can be made, because a flat
+    /// line cannot say what happens when income changes and that is the question the forecast is
+    /// for.
+    /// </remarks>
     [Fact]
-    public void CalculateSummary_RejectedFit_ReportsTheFallback()
+    public void CalculateSummary_TooLittleToFit_ReportsALevelWithNoVariablePart()
     {
         var months = new List<ForecastMonth>
         {
             new() { MonthStart = new(2024, 1, 1), ClosingBalance = 500m, BaselineOutgoingsTotal = -999m },
         };
-        var rejected = new RegressionModel(Intercept: 100m, Slope: 0.5m, RSquared: 0.1m, Valid: false, AvgHistoricalIncome: 3000m, DataPoints: 7);
+        var noFit = new RegressionModel(Intercept: 0m, Slope: 0m, RSquared: 0m, Valid: false, AvgHistoricalIncome: 3000m, DataPoints: 2);
 
-        var summary = ForecastCalculations.CalculateSummary(months, flatAverage: 999m, rejected, modelledIncomeShortfall: 0m);
+        var summary = ForecastCalculations.CalculateSummary(months, levelWithoutAFit: 999m, noFit, modelledIncomeShortfall: 0m);
 
-        Assert.True(summary.Expenses.UsingFlatAverage);
-        Assert.Equal(999m, summary.Expenses.FlatAverage);
-
-        // No components are offered, because a rejected fit has none worth quoting.
-        Assert.Equal(0m, summary.Expenses.FixedComponent);
+        Assert.Equal(999m, summary.Expenses.FixedComponent);
         Assert.Equal(0m, summary.Expenses.VariableComponent);
-
-        // The R² is still reported, so the reason for the fallback is visible.
-        Assert.Equal(0.1m, summary.Expenses.RSquared);
-        Assert.Equal(7, summary.Expenses.DataPoints);
+        Assert.Equal(2, summary.Expenses.DataPoints);
     }
 
     #endregion

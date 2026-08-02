@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace Asm.MooBank.Modules.Forecast.Models;
 
@@ -109,6 +109,12 @@ public sealed record ForecastSummary
 /// There is no single monthly expenses figure, and reporting one would be a fiction. Spending moves
 /// with income — a lower income means less discretionary spending — so the honest answer has two
 /// parts, and only two parts can say what happens when income changes.
+///
+/// The fit is always used. Household spending is noisy enough that a real relationship rarely
+/// reaches a high correlation over a year or two of monthly points, and rejecting it on that basis
+/// left the forecast on a flat line that could not answer the question it exists for.
+/// <see cref="RSquared"/> says how much of the variation it accounts for; where that is low the
+/// variable part is small, which is the honest version of the same caution.
 /// </remarks>
 [DisplayName("ExpenseModel")]
 public sealed record ExpenseModel
@@ -124,15 +130,6 @@ public sealed record ExpenseModel
 
     /// <summary>How many whole months the fit was made from.</summary>
     public int DataPoints { get; init; }
-
-    /// <summary>
-    /// Whether there was too little signal to fit a slope, leaving the forecast on a flat average.
-    /// Reported rather than silent: a flat average cannot answer what happens when income changes.
-    /// </summary>
-    public bool UsingFlatAverage { get; init; }
-
-    /// <summary>The flat monthly average, used when <see cref="UsingFlatAverage"/> is set.</summary>
-    public decimal FlatAverage { get; init; }
 
     /// <summary>
     /// How far the plan's modelled income falls short of the credits actually seen each month.

@@ -110,40 +110,6 @@ internal static class PlannedItemExpander
     }
 
     /// <summary>
-    /// The span of months in which spending carrying an item's tag is treated as that item's.
-    /// </summary>
-    /// <param name="slippageMonths">
-    /// How far either side of the item's own dates a payment still counts as its own. An allowance
-    /// for a bill paid late or early — not a way to model spending genuinely spread over a period,
-    /// which is what a flexible window is for.
-    /// </param>
-    /// <remarks>
-    /// Deliberately not clamped to the plan. A recurring item anchored before the plan begins has
-    /// history inside the baseline's lookback, and unless it can claim that history back it is
-    /// counted twice: once in the baseline average and again as a planned item.
-    /// </remarks>
-    public static (DateOnly First, DateOnly Last)? ClaimWindow(DomainForecastPlannedItem item, DateOnly planEnd, int slippageMonths)
-    {
-        var slippage = Math.Max(0, slippageMonths);
-
-        static DateOnly MonthOf(DateOnly date) => new(date.Year, date.Month, 1);
-
-        return item.DateMode switch
-        {
-            PlannedItemDateMode.FixedDate when item.FixedDate != null =>
-                (MonthOf(item.FixedDate.FixedDate).AddMonths(-slippage), MonthOf(item.FixedDate.FixedDate).AddMonths(slippage)),
-
-            PlannedItemDateMode.Schedule when item.Schedule != null =>
-                (MonthOf(item.Schedule.AnchorDate), MonthOf(item.Schedule.EndDate ?? planEnd).AddMonths(slippage)),
-
-            PlannedItemDateMode.FlexibleWindow when item.FlexibleWindow != null =>
-                (MonthOf(item.FlexibleWindow.StartDate).AddMonths(-slippage), MonthOf(item.FlexibleWindow.EndDate).AddMonths(slippage)),
-
-            _ => null,
-        };
-    }
-
-    /// <summary>
     /// Whether an item's money is a fixed total that can be used up, as opposed to a recurring
     /// charge that cannot.
     /// </summary>

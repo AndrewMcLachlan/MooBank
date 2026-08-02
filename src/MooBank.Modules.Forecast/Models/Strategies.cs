@@ -1,4 +1,4 @@
-namespace Asm.MooBank.Modules.Forecast.Models;
+﻿namespace Asm.MooBank.Modules.Forecast.Models;
 
 // Income is modelled entirely by planned income items. There is deliberately no income strategy:
 // a plan used to carry a fixed monthly figure *and* planned income items, with nothing reconciling
@@ -17,17 +17,6 @@ public sealed record OutgoingStrategy
     public int Version { get; init; } = 1;
     public int LookbackMonths { get; init; } = 24;
 
-    /// <summary>
-    /// How far either side of a planned item's own dates a payment carrying its tag still counts as
-    /// that item's, in months.
-    /// </summary>
-    /// <remarks>
-    /// A slippage allowance for a bill paid late or early, not a way to model spending genuinely
-    /// spread over a period — that is what a flexible window is for. It applies to every item on the
-    /// plan at once, so widening it to cover one long job loosens matching for all the rest.
-    /// </remarks>
-    public int MatchWindowMonths { get; init; } = 1;
-
     // TODO: not yet honoured by ForecastEngine.
     public IEnumerable<int>? ExcludeTagIds { get; init; }
 
@@ -40,9 +29,12 @@ public sealed record OutgoingStrategy
     public IncomeCorrelatedSettings? IncomeCorrelated { get; init; }
 }
 
+// There is deliberately no R-squared threshold. Household spending is noisy, so a real relationship
+// between income and spending rarely reaches a high correlation over a year or two of monthly
+// points -- and rejecting it left the forecast on a flat line, which cannot answer what happens when
+// income changes. A fit that explains some of the variation beats one that explains none.
 public sealed record IncomeCorrelatedSettings
 {
-    public decimal RSquaredThreshold { get; init; } = 0.5m;
     public int MinDataPoints { get; init; } = 6;
 }
 

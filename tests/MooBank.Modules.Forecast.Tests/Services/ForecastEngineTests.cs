@@ -1323,8 +1323,7 @@ public class ForecastEngineTests
         Assert.All(months, m => Assert.Equal(3500m, m.BaselineOutgoingsTotal));
 
         // Regression diagnostics should be populated
-                Assert.False(result.Summary.Expenses.UsingFlatAverage);
-        Assert.True(result.Summary.Expenses.RSquared >= 0.99m);
+                Assert.True(result.Summary.Expenses.RSquared >= 0.99m);
     }
 
     /// <summary>
@@ -1390,7 +1389,7 @@ public class ForecastEngineTests
         // Assert — falls back to historical baseline (42000 / 12 = 3500)
         Assert.All(result.Months, m => Assert.Equal(3500m, m.BaselineOutgoingsTotal));
 
-                Assert.True(result.Summary.Expenses.UsingFlatAverage);
+                Assert.Equal(0m, result.Summary.Expenses.VariableComponent);
     }
 
     /// <summary>
@@ -1455,7 +1454,7 @@ public class ForecastEngineTests
         // Assert — falls back to historical baseline (60000 / 12 = 5000)
         Assert.All(result.Months, m => Assert.Equal(5000m, m.BaselineOutgoingsTotal));
 
-                Assert.True(result.Summary.Expenses.UsingFlatAverage);
+                Assert.Equal(0m, result.Summary.Expenses.VariableComponent);
         Assert.True(result.Summary.Expenses.RSquared < 0.5m);
     }
 
@@ -1521,7 +1520,7 @@ public class ForecastEngineTests
         // Assert — falls back to historical baseline (57000 / 12 = 4750)
         Assert.All(result.Months, m => Assert.Equal(4750m, m.BaselineOutgoingsTotal));
 
-                Assert.True(result.Summary.Expenses.UsingFlatAverage);
+                Assert.Equal(0m, result.Summary.Expenses.VariableComponent);
     }
 
     /// <summary>
@@ -1670,8 +1669,7 @@ public class ForecastEngineTests
         var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert
-                Assert.False(result.Summary.Expenses.UsingFlatAverage);
-        Assert.True(result.Summary.Expenses.RSquared > 0.5m);
+                Assert.True(result.Summary.Expenses.RSquared > 0.5m);
     }
 
     /// <summary>
@@ -1705,7 +1703,7 @@ public class ForecastEngineTests
         var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert
-        Assert.True(result.Summary.Expenses.UsingFlatAverage);
+        Assert.Equal(0m, result.Summary.Expenses.VariableComponent);
     }
 
     /// <summary>
@@ -1770,7 +1768,7 @@ public class ForecastEngineTests
         // Assert — falls back to historical baseline (36000 / 12 = 3000)
         Assert.All(result.Months, m => Assert.Equal(3000m, m.BaselineOutgoingsTotal));
 
-                Assert.True(result.Summary.Expenses.UsingFlatAverage);
+                Assert.Equal(0m, result.Summary.Expenses.VariableComponent);
     }
 
     /// <summary>
@@ -1905,7 +1903,6 @@ public class ForecastEngineTests
         var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert
-                Assert.False(result.Summary.Expenses.UsingFlatAverage);
 
         // The six real months fit exactly. Including the stub would drag R² off 1.
         Assert.True(result.Summary.Expenses.RSquared >= 0.99m,
@@ -1973,8 +1970,7 @@ public class ForecastEngineTests
         var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert — July, August and September hold no data for the fitted account and must not appear.
-                Assert.False(result.Summary.Expenses.UsingFlatAverage);
-        Assert.True(result.Summary.Expenses.RSquared >= 0.99m,
+                Assert.True(result.Summary.Expenses.RSquared >= 0.99m,
             $"empty months were fitted: R² came out at {result.Summary.Expenses.RSquared}");
     }
 
@@ -1996,7 +1992,7 @@ public class ForecastEngineTests
         var accountId = Guid.NewGuid();
         _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId]));
 
-        const int solarTag = 42;
+        var solarPaymentId = Guid.NewGuid();
         var planId = Guid.NewGuid();
 
         var plan = CreatePlanWithStrategies(
@@ -2007,17 +2003,22 @@ public class ForecastEngineTests
             monthlyIncome: 6000m,
             lookbackMonths: 6);
 
-        plan.PlannedItems.Add(new DomainPlannedItem(Guid.NewGuid())
+        var solar = new DomainPlannedItem(Guid.NewGuid())
         {
             ForecastPlanId = planId,
             Name = "Solar",
             ItemType = PlannedItemType.Expense,
             Amount = 30_000m,
-            TagId = solarTag,
             IsIncluded = true,
             DateMode = PlannedItemDateMode.FixedDate,
             FixedDate = new PlannedItemFixedDate { FixedDate = new DateOnly(2024, 4, 15) },
+        };
+        solar.Transactions.Add(new ForecastPlannedItemTransaction(Guid.NewGuid())
+        {
+            PlannedItemId = solar.Id,
+            TransactionId = solarPaymentId,
         });
+        plan.PlannedItems.Add(solar);
 
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
@@ -2037,8 +2038,8 @@ public class ForecastEngineTests
                     [(5000m, 3000m), (6000m, 3500m), (7000m, 4000m), (8000m, 34_500m), (9000m, 5000m), (10000m, 5500m)])
             });
 
-        // The solar payment landed in April, tagged.
-        _mocks.SetTaggedSpend(new TaggedSpend(accountId, new DateOnly(2024, 4, 1), solarTag, TransactionType.Debit, 30_000m, InReporting: true));
+        // The author linked the April payment to Solar.
+        _mocks.SetLinkedPayments(new LinkedPayment(solarPaymentId, accountId, new DateOnly(2024, 4, 1), 30_000m, InReporting: true));
 
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
@@ -2051,8 +2052,7 @@ public class ForecastEngineTests
 
         // Assert — with the solar payment taken back out, the six months are exactly on the line
         // again, so the fit is the clean one and not the one the spike would have produced.
-                Assert.False(result.Summary.Expenses.UsingFlatAverage);
-        Assert.True(result.Summary.Expenses.RSquared >= 0.99m,
+                Assert.True(result.Summary.Expenses.RSquared >= 0.99m,
             $"the planned expense was left in the training data: R² came out at {result.Summary.Expenses.RSquared}");
         Assert.Equal(0.5m, Math.Round(result.Summary.Expenses.VariableComponent, 4));
 

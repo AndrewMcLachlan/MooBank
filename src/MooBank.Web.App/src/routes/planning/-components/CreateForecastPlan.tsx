@@ -52,8 +52,7 @@ export const CreateForecastPlan: React.FC<CreateForecastPlanProps> = ({ accounts
                 // history, which the plan's Planned Income table then owns.
                 outgoingStrategy: {
                     version: 1,
-                    lookbackMonths: 24,
-                    matchWindowMonths: 1
+                    lookbackMonths: 24
                 }
             });
             onPlanCreated(newPlan.id);

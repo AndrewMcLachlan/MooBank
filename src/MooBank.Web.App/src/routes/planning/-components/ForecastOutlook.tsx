@@ -16,63 +16,51 @@ interface ForecastOutlookProps {
 const percent = (rate: number) =>
     (rate * 100).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
-// The expenses figure. There is no single monthly expenses number — spending moves with income —
+// The expenses figure. There is no single monthly expenses number -- spending moves with income --
 // so the two parts of the model lead, and the average is demoted to the caption it belongs in.
-const ExpenseMetric: React.FC<{ expenses: ExpenseModel; currencyCode: string }> = ({ expenses, currencyCode }) => {
-    if (expenses.usingFlatAverage) {
-        return (
-            <>
-                <div className="eyebrow">Monthly Expenses</div>
-                <div className="metric-value expense"><Amount amount={expenses.flatAverage} currencyCode={currencyCode} /></div>
-                <div className="metric-sub">
-                    <OverlayTrigger placement="bottom" overlay={
-                        <Popover id="forecast-expense-popover">
-                            <Popover.Body>
-                                <div className="expense-model-detail">
-                                    <div>Spending could not be tied to income from {expenses.dataPoints} month{expenses.dataPoints === 1 ? "" : "s"} of history.</div>
-                                    <div>A flat average is being used instead, so a change in income will not move this figure.</div>
-                                </div>
-                            </Popover.Body>
-                        </Popover>
-                    }>
-                        <span className="expense-model-hint">flat average · not tied to income</span>
-                    </OverlayTrigger>
-                </div>
-            </>
-        );
-    }
-
-    return (
-        <>
-            <div className="eyebrow">Monthly Expenses</div>
-            <div className="metric-value expense">
-                <Amount amount={expenses.fixedComponent} currencyCode={currencyCode} />
+const ExpenseMetric: React.FC<{ expenses: ExpenseModel; currencyCode: string }> = ({ expenses, currencyCode }) => (
+    <>
+        <div className="eyebrow">Monthly Expenses</div>
+        <div className="metric-value expense">
+            <Amount amount={expenses.fixedComponent} currencyCode={currencyCode} />
+            {expenses.variableComponent > 0 && (
                 <span className="expense-model-plus"> + {percent(expenses.variableComponent)}%</span>
-            </div>
-            <div className="metric-sub">
-                <OverlayTrigger placement="bottom" overlay={
-                    <Popover id="forecast-expense-popover">
-                        <Popover.Body>
-                            <div className="expense-model-detail">
-                                <div>{formatCurrency(expenses.fixedComponent, currencyCode)} a month, plus {percent(expenses.variableComponent)}% of income.</div>
-                                <div>Averages {formatCurrency(expenses.averageMonthly, currencyCode)} a month across this plan.</div>
-                                <div>Fitted from {expenses.dataPoints} months · {percent(expenses.rSquared)}% R²</div>
+            )}
+        </div>
+        <div className="metric-sub">
+            <OverlayTrigger placement="bottom" overlay={
+                <Popover id="forecast-expense-popover">
+                    <Popover.Body>
+                        <div className="expense-model-detail">
+                            <div>
+                                {formatCurrency(expenses.fixedComponent, currencyCode)} a month
+                                {expenses.variableComponent > 0 && `, plus ${percent(expenses.variableComponent)}% of income`}.
                             </div>
-                        </Popover.Body>
-                    </Popover>
-                }>
-                    <span className="expense-model-hint">of income · averages {formatCurrency(expenses.averageMonthly, currencyCode)}</span>
-                </OverlayTrigger>
-            </div>
-        </>
-    );
-};
+                            <div>Averages {formatCurrency(expenses.averageMonthly, currencyCode)} a month across this plan.</div>
+                            <div>
+                                {expenses.dataPoints > 0
+                                    ? `Fitted from ${expenses.dataPoints} months · ${percent(expenses.rSquared)}% of the variation explained`
+                                    : "Not enough history to relate spending to income yet."}
+                            </div>
+                        </div>
+                    </Popover.Body>
+                </Popover>
+            }>
+                <span className="expense-model-hint">
+                    {expenses.variableComponent > 0
+                        ? `of income · averages ${formatCurrency(expenses.averageMonthly, currencyCode)}`
+                        : `averages ${formatCurrency(expenses.averageMonthly, currencyCode)}`}
+                </span>
+            </OverlayTrigger>
+        </div>
+    </>
+);
 
 // Shown only when the plan's own income items fall materially short of the credits the accounts
 // actually received. Spending is priced off the higher figure, so the forecast is pessimistic until
 // the missing income is modelled — better said out loud than silently corrected for.
 const IncomeShortfallNote: React.FC<{ expenses: ExpenseModel; currencyCode: string }> = ({ expenses, currencyCode }) => {
-    if (expenses.usingFlatAverage || expenses.modelledIncomeShortfall < 100) return null;
+    if (expenses.modelledIncomeShortfall < 100) return null;
 
     return (
         <div className="forecast-notice">

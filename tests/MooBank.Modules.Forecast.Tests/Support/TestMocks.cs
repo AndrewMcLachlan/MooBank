@@ -29,15 +29,6 @@ public class TestMocks
 
         PlannedItemMatcherMock = new Mock<IPlannedItemMatcher>();
         PlannedItemMatcherMock
-            .Setup(m => m.GetTaggedSpend(
-                It.IsAny<IEnumerable<Guid>>(),
-                It.IsAny<IEnumerable<int>>(),
-                It.IsAny<DateOnly>(),
-                It.IsAny<DateOnly>(),
-                It.IsAny<IEnumerable<Guid>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync([]);
-        PlannedItemMatcherMock
             .Setup(m => m.GetPayments(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
@@ -57,18 +48,12 @@ public class TestMocks
     internal Mock<IPlannedItemMatcher> PlannedItemMatcherMock { get; }
 
     /// <summary>
-    /// Sets the actual tagged spending the matcher will report.
+    /// Sets the payments the matcher will report for the plan's links.
     /// </summary>
-    internal void SetTaggedSpend(params TaggedSpend[] spend) =>
+    internal void SetLinkedPayments(params LinkedPayment[] payments) =>
         PlannedItemMatcherMock
-            .Setup(m => m.GetTaggedSpend(
-                It.IsAny<IEnumerable<Guid>>(),
-                It.IsAny<IEnumerable<int>>(),
-                It.IsAny<DateOnly>(),
-                It.IsAny<DateOnly>(),
-                It.IsAny<IEnumerable<Guid>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(spend);
+            .Setup(m => m.GetPayments(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(payments);
 
     public User User { get; private set; }
 

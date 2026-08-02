@@ -285,8 +285,6 @@ export type ExpenseModel = {
     variableComponent: number;
     rSquared: number;
     dataPoints: number;
-    usingFlatAverage: boolean;
-    flatAverage: number;
     modelledIncomeShortfall: number;
     averageMonthly: number;
 };
@@ -389,7 +387,6 @@ export type ImportResult = {
 };
 
 export type IncomeCorrelatedSettings = {
-    rSquaredThreshold: number;
     minDataPoints: number;
 };
 
@@ -498,7 +495,6 @@ export type MonthlyBalancesReport = {
 export type OutgoingStrategy = {
     version: number;
     lookbackMonths: number;
-    matchWindowMonths: number;
     excludeTagIds?: null | Array<number>;
     excludeAboveAmount?: null | number;
     seasonality?: null | SeasonalitySettings;

@@ -168,7 +168,7 @@ internal static class ForecastCalculations
 
         var avgIncome = points.Count > 0 ? points.Average(p => p.Income) : 0m;
 
-        // Validate minimum data points
+        // Too little to fit a slope through. The caller supplies a level instead.
         if (points.Count < settings.MinDataPoints)
         {
             return new RegressionModel(0m, 0m, 0m, false, avgIncome, points.Count);
@@ -183,7 +183,7 @@ internal static class ForecastCalculations
 
         var denominator = n * sumXX - sumX * sumX;
 
-        // Zero variance in income — cannot fit regression
+        // Every month earned the same, so there is no slope to find.
         if (denominator == 0m)
         {
             return new RegressionModel(0m, 0m, 0m, false, avgIncome, points.Count);
@@ -192,7 +192,6 @@ internal static class ForecastCalculations
         var slope = (n * sumXY - sumX * sumY) / denominator;
         var intercept = (sumY - slope * sumX) / n;
 
-        // Compute R-squared
         var meanY = sumY / n;
         var ssTotal = points.Sum(p => (p.Expense - meanY) * (p.Expense - meanY));
         var ssResidual = points.Sum(p =>
@@ -203,28 +202,37 @@ internal static class ForecastCalculations
 
         var rSquared = ssTotal == 0m ? 0m : 1m - ssResidual / ssTotal;
 
-        // Reject a fit that says nothing, or says something absurd. A negative slope has spending
-        // fall as income rises; a slope above one has every extra dollar earned spent more than
-        // once over, which is not a forecast so much as a countdown.
-        var valid = rSquared >= settings.RSquaredThreshold && slope is >= 0m and <= 1m;
+        // The fit is used whatever its correlation. What is not allowed is a nonsensical shape: a
+        // negative slope has spending fall as income rises, and a slope above one has every extra
+        // dollar earned spent more than once over, which is a countdown rather than a forecast.
+        // Those are clamped back to the nearest believable line through the data rather than thrown
+        // away, because the alternative -- a flat average -- cannot answer what happens when income
+        // changes, and answering that is the point.
+        var clamped = Math.Clamp(slope, 0m, 1m);
 
-        return new RegressionModel(intercept, slope, rSquared, valid, avgIncome, points.Count);
+        if (clamped != slope)
+        {
+            intercept = meanY - (clamped * (sumX / n));
+            slope = clamped;
+        }
+
+        return new RegressionModel(intercept, slope, rSquared, true, avgIncome, points.Count);
     }
 
     public static ForecastSummary CalculateSummary(
         List<ForecastMonth> months,
-        decimal flatAverage,
+        decimal levelWithoutAFit,
         RegressionModel regression,
         decimal modelledIncomeShortfall)
     {
         var expenses = new ExpenseModel
         {
-            FixedComponent = regression.Valid ? regression.Intercept : 0m,
+            // Without enough months to find a slope, spending is modelled as a level with no
+            // variable part -- reported as such rather than as a separate kind of answer.
+            FixedComponent = regression.Valid ? regression.Intercept : levelWithoutAFit,
             VariableComponent = regression.Valid ? regression.Slope : 0m,
             RSquared = regression.RSquared,
             DataPoints = regression.DataPoints,
-            UsingFlatAverage = !regression.Valid,
-            FlatAverage = flatAverage,
             ModelledIncomeShortfall = modelledIncomeShortfall,
             AverageMonthly = months.Count > 0 ? months.Average(m => Math.Abs(m.BaselineOutgoingsTotal)) : 0m,
         };

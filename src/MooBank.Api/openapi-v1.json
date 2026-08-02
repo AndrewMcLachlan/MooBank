@@ -7166,8 +7166,6 @@
           "variableComponent",
           "rSquared",
           "dataPoints",
-          "usingFlatAverage",
-          "flatAverage",
           "modelledIncomeShortfall",
           "averageMonthly"
         ],
@@ -7188,13 +7186,6 @@
           "dataPoints": {
             "type": "integer",
             "format": "int32"
-          },
-          "usingFlatAverage": {
-            "type": "boolean"
-          },
-          "flatAverage": {
-            "type": "number",
-            "format": "double"
           },
           "modelledIncomeShortfall": {
             "type": "number",
@@ -7647,15 +7638,10 @@
       },
       "IncomeCorrelatedSettings": {
         "required": [
-          "rSquaredThreshold",
           "minDataPoints"
         ],
         "type": "object",
         "properties": {
-          "rSquaredThreshold": {
-            "type": "number",
-            "format": "double"
-          },
           "minDataPoints": {
             "type": "integer",
             "format": "int32"
@@ -8143,8 +8129,7 @@
       "OutgoingStrategy": {
         "required": [
           "version",
-          "lookbackMonths",
-          "matchWindowMonths"
+          "lookbackMonths"
         ],
         "type": "object",
         "properties": {
@@ -8153,10 +8138,6 @@
             "format": "int32"
           },
           "lookbackMonths": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "matchWindowMonths": {
             "type": "integer",
             "format": "int32"
           },

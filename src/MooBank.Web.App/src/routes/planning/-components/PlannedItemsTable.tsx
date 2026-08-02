@@ -44,31 +44,38 @@ interface PlannedItemsSectionProps {
 }
 
 const PlannedItemsSection: React.FC<PlannedItemsSectionProps> = ({ planId, title, items, itemType, currencyCode, progressById }) => {
+
+    // Only expenses are measured against the accounts. Income is the plan's own statement of what
+    // will arrive -- nothing is averaged or fitted from it the way it is from spending -- so a tag
+    // and a spent-to-date would be columns with no job.
+    const tracked = itemType === "Expense";
+
     return (
         <SectionTable header={title} striped>
             <thead>
                 <tr>
                     <th className="column-20">Name</th>
                     <th className="column-10">Amount</th>
-                    <th className="column-15">Tag</th>
-                    <th className="column-15">Spent</th>
+                    {tracked && <th className="column-15">Tag</th>}
+                    {tracked && <th className="column-15">Spent</th>}
                     <th className="column-12">Start Date</th>
                     <th className="column-12">End Date</th>
                     <th className="column-12">Frequency</th>
+                    <th className="column-15">Notes</th>
                     <th className="row-action"></th>
                 </tr>
             </thead>
             <tbody>
                 {items.map((item) => (
-                    <PlannedItemRow key={item.id} planId={planId} item={item} currencyCode={currencyCode} progress={progressById.get(item.id)} />
+                    <PlannedItemRow key={item.id} planId={planId} item={item} currencyCode={currencyCode} tracked={tracked} progress={progressById.get(item.id)} />
                 ))}
-                <NewPlannedItem planId={planId} itemType={itemType} />
+                <NewPlannedItem planId={planId} itemType={itemType} tracked={tracked} />
             </tbody>
             <tfoot>
                 <tr>
                     <td>Total</td>
                     <td className="amount"><Amount amount={items.reduce((sum, i) => sum + (i.isIncluded ? i.amount : 0), 0)} currencyCode={currencyCode} minus /></td>
-                    <td colSpan={6}></td>
+                    <td colSpan={tracked ? 7 : 5}></td>
                 </tr>
             </tfoot>
         </SectionTable>
@@ -79,15 +86,16 @@ interface PlannedItemRowProps {
     planId: string;
     item: PlannedItem;
     currencyCode: string;
+    tracked: boolean;
     progress?: PlannedItemProgress;
 }
 
-// What has actually been spent against an item, and what that says about it. An untagged item shows
-// nothing, because nothing can be attributed to it: this is how the author sees which figures are
-// being measured against reality and which are still only guesses.
+// What has actually been paid against an item. An item with no linked payments shows nothing,
+// because nothing has been said about it: this is how the author sees which figures are measured
+// against reality and which are still only intentions.
 const SpentCell: React.FC<{ progress?: PlannedItemProgress; currencyCode: string }> = ({ progress, currencyCode }) => {
     if (!progress?.isMatched) {
-        return <td className="planned-item-spent untracked">not tracked</td>;
+        return <td className="planned-item-spent untracked">not linked</td>;
     }
 
     const overspent = progress.actualToDate > progress.plannedTotal;
@@ -97,8 +105,7 @@ const SpentCell: React.FC<{ progress?: PlannedItemProgress; currencyCode: string
         <td className="planned-item-spent amount">
             <Amount amount={progress.actualToDate} currencyCode={currencyCode} />
             {overspent && <span className="planned-item-note over">over</span>}
-            {shortOfPlan && progress.actualToDate === 0 && <span className="planned-item-note unseen">not seen</span>}
-            {shortOfPlan && progress.actualToDate > 0 && <span className="planned-item-note under">came in under</span>}
+            {shortOfPlan && <span className="planned-item-note under">came in under</span>}
             {!progress.isClosed && progress.remaining > 0 && progress.actualToDate > 0 && (
                 <span className="planned-item-note remaining">
                     <Amount amount={progress.remaining} currencyCode={currencyCode} /> to go
@@ -108,7 +115,7 @@ const SpentCell: React.FC<{ progress?: PlannedItemProgress; currencyCode: string
     );
 };
 
-const PlannedItemRow: React.FC<PlannedItemRowProps> = ({ planId, item: propItem, currencyCode, progress }) => {
+const PlannedItemRow: React.FC<PlannedItemRowProps> = ({ planId, item: propItem, currencyCode, tracked, progress }) => {
     const [item, setItem] = useUpdatingState(propItem);
     const { update } = useUpdatePlannedItem();
     const { data: tags } = useTags();
@@ -248,7 +255,7 @@ const PlannedItemRow: React.FC<PlannedItemRowProps> = ({ planId, item: propItem,
                 value={item.amount.toFixed(2)}
                 onChange={(v) => handleUpdate({ amount: parseFloat(v.value) || 0 })}
             />
-            <td className="planned-item-tag">
+            {tracked && <td className="planned-item-tag">
                 <ComboBox
                     clearable
                     placeholder="Untagged"
@@ -258,8 +265,8 @@ const PlannedItemRow: React.FC<PlannedItemRowProps> = ({ planId, item: propItem,
                     valueField={(t: Tag) => String(t?.id)}
                     onChange={(selected: Tag[]) => handleUpdate({ tagId: selected[0]?.id ?? undefined })}
                 />
-            </td>
-            <SpentCell progress={progress} currencyCode={currencyCode} />
+            </td>}
+            {tracked && <SpentCell progress={progress} currencyCode={currencyCode} />}
             <EditColumn
                 type="date"
                 value={getDateValue()}
@@ -296,8 +303,12 @@ const PlannedItemRow: React.FC<PlannedItemRowProps> = ({ planId, item: propItem,
                     <span className="clickable">{getFrequencyDisplay()}</span>
                 )}
             </td>
+            <EditColumn
+                value={item.notes ?? ""}
+                onChange={(v) => handleUpdate({ notes: v.value })}
+            />
             <td className="row-action">
-                <button
+                {tracked && <button
                     type="button"
                     className="link-payments-action"
                     title={item.tagId ? "Link the payments that are this item's" : "Give the item a tag to link payments"}
@@ -305,7 +316,7 @@ const PlannedItemRow: React.FC<PlannedItemRowProps> = ({ planId, item: propItem,
                     onClick={() => setLinkingPayments(true)}
                 >
                     {item.linkedTransactionIds?.length ? `${item.linkedTransactionIds.length} linked` : "Link"}
-                </button>
+                </button>}
                 <DeleteIcon onClick={handleDelete} />
             </td>
 

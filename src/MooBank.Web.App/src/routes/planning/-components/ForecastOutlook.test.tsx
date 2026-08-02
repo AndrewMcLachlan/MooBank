@@ -30,8 +30,6 @@ const expenses = (over: Partial<ExpenseModel> = {}): ExpenseModel => ({
     variableComponent: 0.42,
     rSquared: 0.83,
     dataPoints: 24,
-    usingFlatAverage: false,
-    flatAverage: 6457,
     modelledIncomeShortfall: 0,
     averageMonthly: 6457,
     ...over,
@@ -115,11 +113,13 @@ describe("ForecastOutlook", () => {
         expect(screen.getByText(/averages/)).toBeInTheDocument();
     });
 
-    it("says so when the fit was rejected, rather than passing the average off as the model", () => {
-        const fellBack = summary({ expenses: expenses({ usingFlatAverage: true, rSquared: 0.004, dataPoints: 7 }) });
-        render(<ForecastOutlook summary={fellBack} months={[]} currencyCode="AUD" />);
-        expect(screen.getByText("flat average · not tied to income")).toBeInTheDocument();
-        expect(screen.getByText(/will not move this figure/)).toBeInTheDocument();
+    it("drops the variable part when there was too little history to relate spending to income", () => {
+        // Not a different kind of answer -- the same model with nothing to say about income yet.
+        const noFit = summary({ expenses: expenses({ variableComponent: 0, rSquared: 0, dataPoints: 0, fixedComponent: 6457 }) });
+        const { container } = render(<ForecastOutlook summary={noFit} months={[]} currencyCode="AUD" />);
+        expect(container.querySelector(".metric-value.expense")).toHaveTextContent("6,457");
+        expect(container.querySelector(".expense-model-plus")).toBeNull();
+        expect(screen.getByText(/Not enough history/)).toBeInTheDocument();
     });
 
     it("warns when the plan models less income than the accounts actually receive", () => {

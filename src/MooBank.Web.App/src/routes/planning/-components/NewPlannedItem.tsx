@@ -7,9 +7,11 @@ import { useCreatePlannedItem } from "../-hooks/useCreatePlannedItem";
 interface NewPlannedItemProps {
     planId: string;
     itemType: PlannedItemType;
+    /// Whether the section shows the tag and spent columns, so this row lines up with them.
+    tracked: boolean;
 }
 
-export const NewPlannedItem: React.FC<NewPlannedItemProps> = ({ planId, itemType }) => {
+export const NewPlannedItem: React.FC<NewPlannedItemProps> = ({ planId, itemType, tracked }) => {
     const { create, isPending } = useCreatePlannedItem();
 
     const [name, setName] = useState("");
@@ -63,6 +65,8 @@ export const NewPlannedItem: React.FC<NewPlannedItemProps> = ({ planId, itemType
                     onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
                 />
             </td>
+            {tracked && <td className="no-value">&mdash;</td>}
+            {tracked && <td className="no-value">&mdash;</td>}
             <td>
                 <Input
                     type="date"
@@ -72,7 +76,7 @@ export const NewPlannedItem: React.FC<NewPlannedItemProps> = ({ planId, itemType
             </td>
             <td>
                 {dateMode === "FixedDate" ? (
-                    <span className="text-muted">-</span>
+                    <span className="no-value">-</span>
                 ) : (
                     <Input
                         type="date"
