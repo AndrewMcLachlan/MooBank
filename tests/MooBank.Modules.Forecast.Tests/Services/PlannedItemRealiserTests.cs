@@ -304,6 +304,9 @@ public class PlannedItemRealiserTests
         Assert.Equal(17_238.40m, Month(realised.ExpensesByMonth, 2026, 3));
         Assert.Equal(17_238.40m, Assert.Single(realised.Progress).ActualToDate);
         Assert.DoesNotContain(realised.AttributedByMonth, m => m.Value != 0m);
+
+        // It was still paid, and the chart of what was actually spent has to show it.
+        Assert.Equal(17_238.40m, Month(realised.PaidByMonth, 2026, 3));
     }
 
     /// <summary>

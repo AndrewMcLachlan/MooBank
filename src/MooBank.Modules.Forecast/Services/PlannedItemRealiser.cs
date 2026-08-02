@@ -15,13 +15,19 @@ namespace Asm.MooBank.Modules.Forecast.Services;
 /// spending is read from the record, because spending that belongs to a planned item is by
 /// definition not baseline.
 /// </param>
+/// <param name="PaidByMonth">
+/// Every linked payment, per month, whatever account it came from and whether or not reporting
+/// counts it. What was actually paid against the plan, as opposed to the part of it the baseline
+/// figures could have seen.
+/// </param>
 internal sealed record RealisedPlan(
     Dictionary<string, decimal> IncomeByMonth,
     Dictionary<string, decimal> ExpensesByMonth,
     Dictionary<string, decimal> AttributedByMonth,
+    Dictionary<string, decimal> PaidByMonth,
     IReadOnlyList<PlannedItemProgress> Progress)
 {
-    public static RealisedPlan Empty => new([], [], [], []);
+    public static RealisedPlan Empty => new([], [], [], [], []);
 }
 
 /// <summary>
@@ -57,6 +63,7 @@ internal static class PlannedItemRealiser
         var incomeByMonth = new Dictionary<string, decimal>();
         var expensesByMonth = new Dictionary<string, decimal>();
         var attributedByMonth = new Dictionary<string, decimal>();
+        var paidByMonth = new Dictionary<string, decimal>();
         var progress = new List<PlannedItemProgress>();
 
         foreach (var item in items)
@@ -92,16 +99,22 @@ internal static class PlannedItemRealiser
             // Only what the baseline could have held comes back out of it: spending on the accounts
             // those figures were computed over, and visible to reporting. A payment kept out of the
             // reports still paid the item, but it was never in the baseline to remove.
-            foreach (var payment in links.Where(p => p.InReporting && historicalAccountIds.Contains(p.AccountId)))
+            foreach (var payment in links)
             {
                 var monthKey = payment.Month.ToString("yyyy-MM");
-                attributedByMonth[monthKey] = attributedByMonth.GetValueOrDefault(monthKey, 0m) + payment.Amount;
+
+                paidByMonth[monthKey] = paidByMonth.GetValueOrDefault(monthKey, 0m) + payment.Amount;
+
+                if (payment.InReporting && historicalAccountIds.Contains(payment.AccountId))
+                {
+                    attributedByMonth[monthKey] = attributedByMonth.GetValueOrDefault(monthKey, 0m) + payment.Amount;
+                }
             }
 
             progress.Add(Measured(item, allocations, actualByMonth, latestTransactionMonth));
         }
 
-        return new RealisedPlan(incomeByMonth, expensesByMonth, attributedByMonth, progress);
+        return new RealisedPlan(incomeByMonth, expensesByMonth, attributedByMonth, paidByMonth, progress);
     }
 
     /// <summary>

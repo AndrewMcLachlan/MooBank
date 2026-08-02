@@ -121,6 +121,14 @@ internal class ForecastEngine(
             var isHistorical = currentDate <= latestTransactionMonth;
             var actual = isHistorical ? actualIncomeExpenseByMonth.GetValueOrDefault(monthKey) : ((decimal Income, decimal Expense)?)null;
 
+            // What was actually spent: everything reporting counted, plus the linked payments it did
+            // not. Planned payments are routinely kept out of the reports -- that is the same
+            // instinct that makes them planned items -- so a line built from reporting alone shows
+            // none of the spikes the projection is drawn with, and the two cannot be compared.
+            var paid = realised.PaidByMonth.GetValueOrDefault(monthKey, 0m);
+            var alreadyReported = realised.AttributedByMonth.GetValueOrDefault(monthKey, 0m);
+            var actualOutgoings = actual.HasValue ? actual.Value.Expense + paid - alreadyReported : (decimal?)null;
+
             var forecastMonth = new ForecastMonth
             {
                 MonthStart = currentDate,
@@ -128,11 +136,11 @@ internal class ForecastEngine(
                 IncomeTotal = monthIncome,
                 BaselineOutgoingsTotal = monthOutgoings,
                 PlannedExpensesTotal = monthPlannedExpenses,
-                RealisedExpensesTotal = realised.AttributedByMonth.GetValueOrDefault(monthKey, 0m),
+                RealisedExpensesTotal = paid,
                 ClosingBalance = currentBalance + monthIncome - Math.Abs(monthOutgoings) - monthPlannedExpenses,
                 ActualBalance = actualBalance,
                 ActualIncome = actual?.Income,
-                ActualOutgoings = actual?.Expense
+                ActualOutgoings = actualOutgoings
             };
 
             months.Add(forecastMonth);

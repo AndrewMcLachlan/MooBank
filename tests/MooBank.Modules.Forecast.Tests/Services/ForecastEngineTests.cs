@@ -2062,6 +2062,86 @@ public class ForecastEngineTests
         Assert.Equal(0m, progress.Remaining);
     }
 
+    /// <summary>
+    /// Given a linked payment that reporting does not count
+    /// When the forecast is calculated
+    /// Then what was actually spent that month should still include it
+    /// </summary>
+    /// <remarks>
+    /// Every planned payment on the real plan is marked excluded from reporting, which is the same
+    /// instinct that made it a planned item. The actual-spending line is built from the reporting
+    /// figures, so it showed none of the spikes the projection is drawn with, and the two lines
+    /// could not be compared: the projection dropped twenty thousand pounds for the school fees and
+    /// the record of what happened stayed flat.
+    /// </remarks>
+    [Fact]
+    public async Task Calculate_LinkedPaymentOutsideReporting_StillShowsInWhatWasSpent()
+    {
+        // Arrange
+        var accountId = Guid.NewGuid();
+        _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId]));
+
+        var paymentId = Guid.NewGuid();
+        var planId = Guid.NewGuid();
+
+        var plan = CreatePlanWithStrategies(
+            id: planId,
+            startDate: new DateOnly(2024, 1, 1),
+            endDate: new DateOnly(2024, 3, 31),
+            startingBalance: 50_000m,
+            monthlyIncome: 6000m,
+            lookbackMonths: 0);
+
+        var fees = new DomainPlannedItem(Guid.NewGuid())
+        {
+            ForecastPlanId = planId,
+            Name = "School Fees",
+            ItemType = PlannedItemType.Expense,
+            Amount = 20_000m,
+            IsIncluded = true,
+            DateMode = PlannedItemDateMode.FixedDate,
+            FixedDate = new PlannedItemFixedDate { FixedDate = new DateOnly(2024, 2, 4) },
+        };
+        fees.Transactions.Add(new ForecastPlannedItemTransaction(Guid.NewGuid()) { PlannedItemId = fees.Id, TransactionId = paymentId });
+        plan.PlannedItems.Add(fees);
+
+        _mocks.InstrumentRepositoryMock
+            .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<DomainInstrument> { HistoricalAccount(accountId, new DateOnly(2024, 2, 29)) });
+
+        SetupEmptyReportMocks();
+
+        // Ordinary spending of 3,000 a month. The fees are absent, because reporting does not count
+        // them -- exactly as they are absent from the real data.
+        _mocks.ReportReaderMock
+            .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>
+            {
+                [accountId] = CreateMonthlyData(new DateOnly(2024, 1, 1), [(6000m, 3000m), (6000m, 3000m)])
+            });
+
+        _mocks.SetLinkedPayments(new LinkedPayment(paymentId, accountId, new DateOnly(2024, 2, 1), 20_000m, InReporting: false));
+
+        var engine = new ForecastEngine(
+            _mocks.ReportReaderMock.Object,
+            _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
+            _mocks.User);
+
+        // Act
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
+
+        // Assert
+        var february = result.Months.Single(m => m.MonthStart == new DateOnly(2024, 2, 1));
+
+        // 3,000 of ordinary spending plus the 20,000 the reports never saw.
+        Assert.Equal(23_000m, february.ActualOutgoings);
+
+        // January had no planned payment, so it is the reporting figure alone.
+        Assert.Equal(3_000m, result.Months.Single(m => m.MonthStart == new DateOnly(2024, 1, 1)).ActualOutgoings);
+    }
+
     #endregion
 
     /// <summary>
