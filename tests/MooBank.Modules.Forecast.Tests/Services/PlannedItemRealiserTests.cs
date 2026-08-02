@@ -248,6 +248,37 @@ public class PlannedItemRealiserTests
     }
 
     /// <summary>
+    /// Given a recurring payment made a few days before the month it was due
+    /// When the plan is realised
+    /// Then it should settle that occurrence rather than be counted alongside it
+    /// </summary>
+    /// <remarks>
+    /// The defect this pins down, from the real data. School fees fall due in February; the 2025
+    /// invoice was paid on 29 January. The payment landed in January and February still stood as
+    /// planned, so a single bill was counted twice -- once as what was paid and again as what was
+    /// expected -- and the projection lost about twenty thousand pounds it never spent.
+    ///
+    /// A payment settles the occurrence nearest to it. Which occurrence a payment clears is
+    /// arithmetic on dates, not a guess: the author has already said the payment belongs to this
+    /// item.
+    /// </remarks>
+    [Fact]
+    public void Realise_RecurringPaymentMadeEarly_SettlesThatOccurrence()
+    {
+        var januaryPayment = Guid.NewGuid();
+        var fees = LinkedTo(Recurring("School Fees", 21_000m, new DateOnly(2026, 2, 4), ScheduleFrequency.Yearly), januaryPayment);
+
+        // Paid on the 29th of January against a February occurrence.
+        var realised = Realise(Plan(fees), new DateOnly(2026, 6, 1), Payment(januaryPayment, new DateOnly(2026, 1, 1), 19_206m));
+
+        Assert.Equal(19_206m, Month(realised.ExpensesByMonth, 2026, 1));
+        Assert.Equal(0m, Month(realised.ExpensesByMonth, 2026, 2));
+
+        // One bill, not two.
+        Assert.Equal(19_206m, realised.ExpensesByMonth.Values.Sum());
+    }
+
+    /// <summary>
     /// Given a payment marked as excluded from reporting
     /// When the plan is realised
     /// Then it should still pay off the item, but not be taken back out of the baseline

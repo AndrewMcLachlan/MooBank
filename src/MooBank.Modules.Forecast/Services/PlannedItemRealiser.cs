@@ -135,14 +135,23 @@ internal static class PlannedItemRealiser
             // A recurring charge is never used up: paying this month's electricity does nothing
             // about next month's, so each occurrence answers for itself.
             //
-            // An occurrence with a linked payment is answered by it. One without stands as planned,
-            // whether or not its month has been and gone: no link is absence of information, not
-            // evidence that nothing was spent. Treating a settled month as nought unless it was
-            // linked meant that linking one year of school fees silently emptied every other year,
-            // and the forecast lost a real payment the moment it was told about a different one.
+            // An occurrence a payment has settled is answered by it. One nothing has been linked to
+            // stands as planned, whether or not its month has been and gone: no link is absence of
+            // information, not evidence that nothing was spent.
+            //
+            // A payment settles the occurrence it is nearest to, rather than only the one falling in
+            // the very month it was paid. Which occurrence a payment clears is arithmetic on dates,
+            // not a guess about intent -- the author has already said the payment is this item's.
+            // Matching by month alone meant a bill paid a few days early settled nothing: the 2025
+            // school fees, paid on 29 January against a February occurrence, were counted once as
+            // the payment and again as the plan.
+            var settled = allocations.Keys
+                .Where(occurrence => actualByMonth.Keys.Any(paid => NearestOccurrence(paid, allocations.Keys) == occurrence))
+                .ToHashSet();
+
             foreach (var (monthKey, amount) in allocations)
             {
-                if (actualByMonth.ContainsKey(monthKey)) continue;
+                if (settled.Contains(monthKey)) continue;
 
                 result[monthKey] = result.GetValueOrDefault(monthKey, 0m) + amount;
             }
@@ -171,6 +180,22 @@ internal static class PlannedItemRealiser
 
         return result;
     }
+
+    /// <summary>
+    /// The occurrence a payment settles: whichever falls closest to the month it was paid in.
+    /// </summary>
+    private static string? NearestOccurrence(string paidMonth, IEnumerable<string> occurrences)
+    {
+        var paid = DateOnly.ParseExact(paidMonth + "-01", "yyyy-MM-dd");
+
+        return occurrences
+            .OrderBy(o => Math.Abs(MonthsBetween(DateOnly.ParseExact(o + "-01", "yyyy-MM-dd"), paid)))
+            .ThenBy(o => o, StringComparer.Ordinal)
+            .FirstOrDefault();
+    }
+
+    private static int MonthsBetween(DateOnly from, DateOnly to) =>
+        ((to.Year - from.Year) * 12) + to.Month - from.Month;
 
     /// <summary>An item nothing has been measured against, standing exactly as planned.</summary>
     private static PlannedItemProgress AsPlanned(DomainForecastPlannedItem item, Dictionary<string, decimal> allocations)
