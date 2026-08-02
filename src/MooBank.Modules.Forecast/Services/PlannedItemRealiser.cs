@@ -1,4 +1,4 @@
-using Asm.MooBank.Models;
+﻿using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Forecast.Models;
 using DomainForecastPlan = Asm.MooBank.Domain.Entities.Forecast.ForecastPlan;
 using DomainForecastPlannedItem = Asm.MooBank.Domain.Entities.Forecast.ForecastPlannedItem;
@@ -55,12 +55,14 @@ internal static class PlannedItemRealiser
         var allocations = items.ToDictionary(i => i.Id, i => PlannedItemExpander.Allocate(i, plan.StartDate, plan.EndDate));
         var claims = items.ToDictionary(i => i.Id, i => PlannedItemExpander.ClaimWindow(i, plan.EndDate, slippageMonths));
 
-        // Attribution runs twice over the same rows. The item's own figures cover every account the
-        // plan spans — a car paid for out of savings is still the car — while the baseline
-        // subtraction has to match the narrower set those baseline figures were computed over, or it
-        // would take out spending that was never in them.
-        var attributedAll = Attribute(items, allocations, claims, spend, accounts: null);
-        var attributedHistorical = Attribute(items, allocations, claims, spend, historicalAccountIds);
+        // Attribution runs twice over the same rows, because two different questions are being
+        // asked. What an item has cost counts every payment: a car paid for out of savings is still
+        // the car, and a purchase kept out of the reports still emptied the account. What may be
+        // taken back out of the baseline counts only what the baseline could have contained —
+        // spending on the accounts those figures were computed over, and visible to reporting.
+        var attributedAll = Attribute(items, allocations, claims, spend, _ => true);
+        var attributedInBaseline = Attribute(items, allocations, claims, spend,
+            s => s.InReporting && historicalAccountIds.Contains(s.AccountId));
 
         var incomeByMonth = new Dictionary<string, decimal>();
         var expensesByMonth = new Dictionary<string, decimal>();
@@ -82,7 +84,7 @@ internal static class PlannedItemRealiser
         var attributedByMonth = new Dictionary<string, decimal>();
         foreach (var item in items.Where(i => i.ItemType == PlannedItemType.Expense))
         {
-            foreach (var (monthKey, amount) in attributedHistorical.GetValueOrDefault(item.Id) ?? [])
+            foreach (var (monthKey, amount) in attributedInBaseline.GetValueOrDefault(item.Id) ?? [])
             {
                 attributedByMonth[monthKey] = attributedByMonth.GetValueOrDefault(monthKey, 0m) + amount;
             }
@@ -105,11 +107,11 @@ internal static class PlannedItemRealiser
         Dictionary<Guid, Dictionary<string, decimal>> allocations,
         Dictionary<Guid, (DateOnly First, DateOnly Last)?> claims,
         IReadOnlyList<TaggedSpend> spend,
-        IReadOnlyCollection<Guid>? accounts)
+        Func<TaggedSpend, bool> counts)
     {
         var result = items.ToDictionary(i => i.Id, _ => new Dictionary<string, decimal>());
 
-        var relevant = spend.Where(s => accounts is null || accounts.Contains(s.AccountId));
+        var relevant = spend.Where(counts);
 
         foreach (var group in relevant.GroupBy(s => (s.TagId, s.Month, s.Direction)))
         {

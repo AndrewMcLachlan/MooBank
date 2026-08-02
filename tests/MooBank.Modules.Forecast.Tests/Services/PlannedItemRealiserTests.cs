@@ -70,8 +70,8 @@ public class PlannedItemRealiserTests
             Schedule = new PlannedItemSchedule { Frequency = ScheduleFrequency.Monthly, AnchorDate = from, Interval = 1 },
         };
 
-    private static TaggedSpend Spend(DateOnly month, decimal amount, int tagId = SolarTag, Guid? account = null) =>
-        new(account ?? AccountId, month, tagId, TransactionType.Debit, amount);
+    private static TaggedSpend Spend(DateOnly month, decimal amount, int tagId = SolarTag, Guid? account = null, bool inReporting = true) =>
+        new(account ?? AccountId, month, tagId, TransactionType.Debit, amount, inReporting);
 
     private static RealisedPlan Realise(DomainForecastPlan plan, DateOnly settledThrough, params TaggedSpend[] spend) =>
         PlannedItemRealiser.Realise(plan, spend, [AccountId], settledThrough, slippageMonths: 1);
@@ -322,6 +322,53 @@ public class PlannedItemRealiserTests
     }
 
     /// <summary>
+    /// Given a payment marked as excluded from reporting
+    /// When the plan is realised
+    /// Then it should still pay off the item, but not be taken back out of the baseline
+    /// </summary>
+    /// <remarks>
+    /// Keeping a large one-off out of the reports is the same instinct as planning for it, so these
+    /// are exactly the payments a planned item is most likely to be waiting for — the solar
+    /// installation this was found on was marked that way. The money left the account, so the item
+    /// is paid.
+    ///
+    /// The baseline is the other way round. Both the lookback average and the regression's training
+    /// data are built from procedures that skip these transactions, so this spending was never in
+    /// them; subtracting it would take out something that was never there and understate ordinary
+    /// spending by the whole amount.
+    /// </remarks>
+    [Fact]
+    public void Realise_PaymentExcludedFromReporting_PaysTheItemButIsNotTakenOutOfTheBaseline()
+    {
+        var plan = Plan(OneOff("Solar", 17_238.40m, new DateOnly(2026, 3, 6)));
+
+        var realised = Realise(
+            plan,
+            new DateOnly(2026, 4, 1),
+            Spend(new DateOnly(2026, 3, 1), 17_238.40m, inReporting: false));
+
+        Assert.Equal(17_238.40m, Month(realised.ExpensesByMonth, 2026, 3));
+        Assert.Equal(17_238.40m, Assert.Single(realised.Progress).ActualToDate);
+
+        Assert.DoesNotContain(realised.AttributedByMonth, m => m.Value != 0m);
+    }
+
+    /// <summary>
+    /// Given a payment that reporting does count
+    /// When the plan is realised
+    /// Then it should be taken back out of the baseline
+    /// </summary>
+    [Fact]
+    public void Realise_PaymentVisibleToReporting_IsTakenOutOfTheBaseline()
+    {
+        var plan = Plan(OneOff("Solar", 17_238.40m, new DateOnly(2026, 3, 6)));
+
+        var realised = Realise(plan, new DateOnly(2026, 4, 1), Spend(new DateOnly(2026, 3, 1), 17_238.40m));
+
+        Assert.Equal(17_238.40m, Month(realised.AttributedByMonth, 2026, 3));
+    }
+
+    /// <summary>
     /// Given a planned income item with a tag
     /// When the plan is realised
     /// Then only credits should be attributed to it
@@ -343,8 +390,8 @@ public class PlannedItemRealiserTests
         var realised = Realise(
             plan: Plan(salary),
             settledThrough: new DateOnly(2026, 1, 1),
-            new TaggedSpend(AccountId, new DateOnly(2026, 1, 1), SolarTag, TransactionType.Credit, 5_600m),
-            new TaggedSpend(AccountId, new DateOnly(2026, 1, 1), SolarTag, TransactionType.Debit, 999m));
+            new TaggedSpend(AccountId, new DateOnly(2026, 1, 1), SolarTag, TransactionType.Credit, 5_600m, true),
+            new TaggedSpend(AccountId, new DateOnly(2026, 1, 1), SolarTag, TransactionType.Debit, 999m, true));
 
         Assert.Equal(5_600m, Month(realised.IncomeByMonth, 2026, 1));
 

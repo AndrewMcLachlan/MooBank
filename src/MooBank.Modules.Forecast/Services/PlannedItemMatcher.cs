@@ -1,4 +1,4 @@
-using Asm.MooBank.Domain.Entities.Transactions;
+﻿using Asm.MooBank.Domain.Entities.Transactions;
 using DomainTransaction = Asm.MooBank.Domain.Entities.Transactions.Transaction;
 
 namespace Asm.MooBank.Modules.Forecast.Services;
@@ -37,8 +37,10 @@ internal class PlannedItemMatcher(IQueryable<DomainTransaction> transactions) : 
         var end = to.ToEndOfDay();
 
         var rows = await transactions
+            // Transactions excluded from reporting are deliberately still read. Excluding a large
+            // one-off from the reports is the same instinct as planning for it, so those are exactly
+            // the payments a planned item is most likely to be waiting for.
             .Where(t => accounts.Contains(t.AccountId) &&
-                        !t.ExcludeFromReporting &&
                         t.TransactionTime >= start &&
                         t.TransactionTime <= end)
             .SelectMany(t => t.Splits, (t, split) => new { Transaction = t, Split = split })
@@ -47,12 +49,13 @@ internal class PlannedItemMatcher(IQueryable<DomainTransaction> transactions) : 
                 x.Transaction.AccountId,
                 x.Transaction.TransactionTime,
                 x.Transaction.TransactionType,
+                x.Transaction.ExcludeFromReporting,
                 TagId = tag.Id,
                 // Split amounts are stored as positive magnitudes whichever way the money went;
                 // TransactionType is what says which.
                 Amount = TransactionSplit.TransactionSplitNetAmount(x.Transaction.Id, x.Split.Id, x.Split.Amount),
             })
-            .GroupBy(x => new { x.AccountId, x.TransactionTime.Year, x.TransactionTime.Month, x.TagId, x.TransactionType })
+            .GroupBy(x => new { x.AccountId, x.TransactionTime.Year, x.TransactionTime.Month, x.TagId, x.TransactionType, x.ExcludeFromReporting })
             .Select(g => new
             {
                 g.Key.AccountId,
@@ -60,6 +63,7 @@ internal class PlannedItemMatcher(IQueryable<DomainTransaction> transactions) : 
                 g.Key.Month,
                 g.Key.TagId,
                 g.Key.TransactionType,
+                g.Key.ExcludeFromReporting,
                 Amount = g.Sum(x => x.Amount),
             })
             .ToListAsync(cancellationToken);
@@ -69,6 +73,7 @@ internal class PlannedItemMatcher(IQueryable<DomainTransaction> transactions) : 
             new DateOnly(r.Year, r.Month, 1),
             r.TagId,
             r.TransactionType,
-            Math.Abs(r.Amount)))];
+            Math.Abs(r.Amount),
+            !r.ExcludeFromReporting))];
     }
 }

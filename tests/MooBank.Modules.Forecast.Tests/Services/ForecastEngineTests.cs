@@ -2098,7 +2098,7 @@ public class ForecastEngineTests
             });
 
         // The solar payment landed in April, tagged.
-        _mocks.SetTaggedSpend(new TaggedSpend(accountId, new DateOnly(2024, 4, 1), solarTag, TransactionType.Debit, 30_000m));
+        _mocks.SetTaggedSpend(new TaggedSpend(accountId, new DateOnly(2024, 4, 1), solarTag, TransactionType.Debit, 30_000m, InReporting: true));
 
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
