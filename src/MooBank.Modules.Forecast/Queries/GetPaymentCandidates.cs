@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using Asm.MooBank.Domain.Entities.Forecast.Specifications;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Forecast.Models;
@@ -15,6 +15,10 @@ namespace Asm.MooBank.Modules.Forecast.Queries;
 /// The tag cannot say which payment is the item's, but it is a good filter for which ones are worth
 /// looking at: spending that carried the item's tag, around the item's own date. That is all this
 /// is for.
+///
+/// A recurring item is offered a window around each of its occurrences rather than one window from
+/// the first to the last. School fees due each February should show five payments over five years,
+/// not five years of everything else the school was ever paid for.
 /// </remarks>
 [DisplayName("GetPaymentCandidates")]
 public record GetPaymentCandidates(Guid PlanId, Guid ItemId) : IQuery<IEnumerable<PaymentCandidate>>;
@@ -78,7 +82,14 @@ internal class GetPaymentCandidatesHandler(
             .OrderByDescending(t => t.TransactionTime)
             .ToListAsync(cancellationToken);
 
-        return [.. candidates.Select(c => new PaymentCandidate
+        // A recurring item recurs: its whole span is not one window but a window around each
+        // occurrence. Offering the span end to end buries five yearly school fee payments in five
+        // years of every other transaction that happens to carry the school's tag.
+        var wanted = CandidateMonths(item, plan);
+
+        return [.. candidates
+            .Where(c => wanted is null || wanted.Contains(new DateOnly(c.TransactionTime.Year, c.TransactionTime.Month, 1)))
+            .Select(c => new PaymentCandidate
         {
             TransactionId = c.Id,
             AccountId = c.AccountId,
@@ -87,6 +98,29 @@ internal class GetPaymentCandidatesHandler(
             Amount = Math.Abs(c.Amount),
             IsLinked = linkedHere.Contains(c.Id),
         })];
+    }
+
+    /// <summary>
+    /// The months worth offering for a recurring item: those near one of its occurrences. Null for
+    /// anything else, whose single window already says everything.
+    /// </summary>
+    internal static HashSet<DateOnly>? CandidateMonths(DomainEntities.ForecastPlannedItem item, DomainEntities.ForecastPlan plan)
+    {
+        if (item.DateMode != PlannedItemDateMode.Schedule || item.Schedule is null) return null;
+
+        var months = new HashSet<DateOnly>();
+
+        foreach (var occurrence in PlannedItemExpander.GenerateScheduleOccurrences(item, plan.StartDate, plan.EndDate))
+        {
+            var month = new DateOnly(occurrence.Year, occurrence.Month, 1);
+
+            for (var offset = -CandidateWindowMonths; offset <= CandidateWindowMonths; offset++)
+            {
+                months.Add(month.AddMonths(offset));
+            }
+        }
+
+        return months;
     }
 
     private static (DateOnly From, DateOnly To) CandidateWindow(DomainEntities.ForecastPlannedItem item, DomainEntities.ForecastPlan plan) =>
