@@ -1,4 +1,5 @@
 import { SectionTable, DeleteIcon, EditColumn, ComboBox, useUpdatingState } from "@andrewmclachlan/moo-ds";
+import { LinkPaymentsModal } from "./LinkPaymentsModal";
 import { format, parseISO } from "date-fns";
 import type { ForecastPlan, PlannedItem, PlannedItemProgress, ScheduleFrequency, Tag } from "api/types.gen";
 import { useState } from "react";
@@ -111,6 +112,7 @@ const PlannedItemRow: React.FC<PlannedItemRowProps> = ({ planId, item: propItem,
     const [item, setItem] = useUpdatingState(propItem);
     const { update } = useUpdatePlannedItem();
     const { data: tags } = useTags();
+    const [linkingPayments, setLinkingPayments] = useState(false);
     const deleteItem = useDeletePlannedItem();
     const [isEditingFrequency, setIsEditingFrequency] = useState(false);
 
@@ -295,8 +297,28 @@ const PlannedItemRow: React.FC<PlannedItemRowProps> = ({ planId, item: propItem,
                 )}
             </td>
             <td className="row-action">
+                <button
+                    type="button"
+                    className="link-payments-action"
+                    title={item.tagId ? "Link the payments that are this item's" : "Give the item a tag to link payments"}
+                    disabled={!item.tagId}
+                    onClick={() => setLinkingPayments(true)}
+                >
+                    {item.linkedTransactionIds?.length ? `${item.linkedTransactionIds.length} linked` : "Link"}
+                </button>
                 <DeleteIcon onClick={handleDelete} />
             </td>
+
+            {/* Mounted only while open so the candidate query is not run for every row. */}
+            {linkingPayments && (
+                <LinkPaymentsModal
+                    planId={planId}
+                    item={item}
+                    currencyCode={currencyCode}
+                    show={linkingPayments}
+                    onHide={() => setLinkingPayments(false)}
+                />
+            )}
         </tr>
     );
 };

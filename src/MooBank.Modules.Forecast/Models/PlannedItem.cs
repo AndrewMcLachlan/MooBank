@@ -34,6 +34,20 @@ public record PlannedItemBase
 }
 
 /// <summary>
+/// The payments an author says belong to a planned item.
+/// </summary>
+/// <remarks>
+/// Wrapped in a record rather than sent as a bare list so it binds as a request body. A list of
+/// identifiers on its own binds from the query string, which is the wrong place for a set that can
+/// run to dozens.
+/// </remarks>
+[DisplayName("PlannedItemPayments")]
+public sealed record PlannedItemPayments
+{
+    public IEnumerable<Guid> TransactionIds { get; init; } = [];
+}
+
+/// <summary>
 /// A payment that could belong to a planned item, offered for the author to confirm.
 /// </summary>
 [DisplayName("PaymentCandidate")]

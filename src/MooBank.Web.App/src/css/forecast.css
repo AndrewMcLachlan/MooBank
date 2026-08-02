@@ -182,3 +182,50 @@ td.no-value {
     color: var(--secondary-colour);
     margin-top: 0.25rem;
 }
+
+/* ---- Linking payments to a planned item ----
+   A tag is a category and an item is a project, so the author is the only one who can say which
+   payment is which. This is where they say it. */
+.link-payments-action {
+    background: none;
+    border: 1px solid var(--border-colour, currentColor);
+    border-radius: 4px;
+    color: inherit;
+    font-size: 0.75rem;
+    padding: 0.125rem 0.5rem;
+    margin-right: 0.5rem;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.link-payments-action:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.link-payments-intro,
+.link-payments-empty {
+    font-size: 0.875rem;
+    color: var(--secondary-colour);
+    margin-bottom: 0.75rem;
+}
+
+table.link-payments {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table.link-payments td,
+table.link-payments th {
+    padding: 0.375rem 0.5rem;
+    border-bottom: 1px solid var(--border-colour, transparent);
+}
+
+table.link-payments .link-payments-description {
+    overflow-wrap: anywhere;
+}
+
+table.link-payments tfoot td {
+    font-weight: 600;
+    border-bottom: none;
+}

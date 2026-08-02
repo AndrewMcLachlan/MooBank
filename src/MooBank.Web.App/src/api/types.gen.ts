@@ -505,6 +505,15 @@ export type OutgoingStrategy = {
     incomeCorrelated?: null | IncomeCorrelatedSettings;
 };
 
+export type PaymentCandidate = {
+    transactionId: string;
+    accountId: string;
+    when: string;
+    description?: null | string;
+    amount: number;
+    isLinked: boolean;
+};
+
 export type PensionRates = {
     id: number;
     effectiveFrom: string;
@@ -529,6 +538,7 @@ export type Period = {
 
 export type PlannedItem = {
     id: string;
+    linkedTransactionIds: Array<string>;
     itemType: PlannedItemType;
     name: string;
     amount: number;
@@ -550,6 +560,10 @@ export type PlannedItem = {
 };
 
 export type PlannedItemDateMode = 'FixedDate' | 'Schedule' | 'FlexibleWindow';
+
+export type PlannedItemPayments = {
+    transactionIds: Array<string>;
+};
 
 export type PlannedItemProgress = {
     plannedItemId: string;
@@ -2393,6 +2407,51 @@ export type CreatePlannedItemResponses = {
 };
 
 export type CreatePlannedItemResponse = CreatePlannedItemResponses[keyof CreatePlannedItemResponses];
+
+export type GetPaymentCandidatesData = {
+    body?: never;
+    path: {
+        planId: string;
+        itemId: string;
+    };
+    query?: never;
+    url: '/forecast/plans/{planId}/items/{itemId}/payment-candidates';
+};
+
+export type GetPaymentCandidatesErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
+export type GetPaymentCandidatesResponses = {
+    /**
+     * OK
+     */
+    200: Array<PaymentCandidate>;
+};
+
+export type GetPaymentCandidatesResponse = GetPaymentCandidatesResponses[keyof GetPaymentCandidatesResponses];
+
+export type SetPlannedItemPaymentsData = {
+    body: PlannedItemPayments;
+    path: {
+        planId: string;
+        itemId: string;
+    };
+    query?: never;
+    url: '/forecast/plans/{planId}/items/{itemId}/payments';
+};
+
+export type SetPlannedItemPaymentsResponses = {
+    /**
+     * OK
+     */
+    200: PlannedItem;
+};
+
+export type SetPlannedItemPaymentsResponse = SetPlannedItemPaymentsResponses[keyof SetPlannedItemPaymentsResponses];
 
 export type GetAllGroupsData = {
     body?: never;

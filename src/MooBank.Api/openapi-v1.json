@@ -2224,6 +2224,16 @@
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlannedItemPayments"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -8468,6 +8478,21 @@
           "Schedule",
           "FlexibleWindow"
         ]
+      },
+      "PlannedItemPayments": {
+        "required": [
+          "transactionIds"
+        ],
+        "type": "object",
+        "properties": {
+          "transactionIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        }
       },
       "PlannedItemProgress": {
         "required": [
