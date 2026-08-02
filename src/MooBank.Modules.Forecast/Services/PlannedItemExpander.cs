@@ -49,6 +49,15 @@ internal static class PlannedItemExpander
     {
         var result = new Dictionary<string, decimal>();
 
+        // The forecast reports whole months, so allocation runs to the whole months the plan covers
+        // rather than to its exact dates. Otherwise the first and last months are systematically
+        // under-filled: a plan ending on the 1st of December still shows December, but a monthly
+        // schedule falling on the 28th has no occurrence on or before the 1st, so the month is
+        // modelled with no income at all -- and a month with no income drags the whole projection
+        // down to the fixed part of the expense model.
+        planStart = new DateOnly(planStart.Year, planStart.Month, 1);
+        planEnd = new DateOnly(planEnd.Year, planEnd.Month, 1).AddMonths(1).AddDays(-1);
+
         switch (item.DateMode)
         {
             case PlannedItemDateMode.FixedDate when item.FixedDate != null:
@@ -121,12 +130,21 @@ internal static class PlannedItemExpander
         var occurrences = new List<DateOnly>();
         var schedule = item.Schedule!;
         var current = schedule.AnchorDate;
+
+        // An item's own end date is a real end; the plan's is only the edge of what is shown.
         var endDate = schedule.EndDate ?? planEnd;
         if (endDate > planEnd) endDate = planEnd;
 
         // Guard against a non-positive interval, which would never advance the schedule
         // and loop forever. Commands validate this, but clamp defensively for legacy data.
         var interval = Math.Max(1, schedule.Interval);
+
+        // Monthly schedules keep the day they were anchored on. Adding a month repeatedly does not:
+        // once a short month clamps the 30th to the 28th, every later occurrence stays on the 28th,
+        // and the schedule silently drifts away from the day it was set for.
+        var dayOfMonth = schedule.DayOfMonth ?? schedule.AnchorDate.Day;
+
+        var elapsed = 0;
 
         while (current <= endDate)
         {
@@ -140,7 +158,7 @@ internal static class PlannedItemExpander
                 ScheduleFrequency.Daily => current.AddDays(interval),
                 ScheduleFrequency.Weekly => current.AddDays(7 * interval),
                 ScheduleFrequency.Fortnightly => current.AddDays(14 * interval),
-                ScheduleFrequency.Monthly => AddMonthsWithDay(current, interval, schedule.DayOfMonth),
+                ScheduleFrequency.Monthly => AddMonthsWithDay(schedule.AnchorDate, interval * (++elapsed), dayOfMonth),
                 ScheduleFrequency.Yearly => current.AddYears(interval),
                 _ => current.AddMonths(1)
             };
