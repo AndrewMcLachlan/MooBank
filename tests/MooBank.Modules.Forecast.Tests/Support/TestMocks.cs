@@ -34,7 +34,11 @@ public class TestMocks
                 It.IsAny<IEnumerable<int>>(),
                 It.IsAny<DateOnly>(),
                 It.IsAny<DateOnly>(),
+                It.IsAny<IEnumerable<Guid>>(),
                 It.IsAny<CancellationToken>()))
+            .ReturnsAsync([]);
+        PlannedItemMatcherMock
+            .Setup(m => m.GetPayments(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
         User = CreateTestUser();
@@ -62,6 +66,7 @@ public class TestMocks
                 It.IsAny<IEnumerable<int>>(),
                 It.IsAny<DateOnly>(),
                 It.IsAny<DateOnly>(),
+                It.IsAny<IEnumerable<Guid>>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(spend);
 

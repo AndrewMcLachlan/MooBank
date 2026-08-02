@@ -261,8 +261,16 @@ internal class ForecastEngine(
         DateOnly latestTransactionMonth,
         CancellationToken cancellationToken)
     {
-        var tagIds = plan.PlannedItems
-            .Where(i => i.IsIncluded && i.TagId.HasValue)
+        var included = plan.PlannedItems.Where(i => i.IsIncluded).ToList();
+
+        var linkedTransactionIds = included
+            .SelectMany(i => i.Transactions.Select(t => t.TransactionId))
+            .Distinct()
+            .ToList();
+
+        // Only items the author has not linked need a tag lookup; the rest have their answer.
+        var tagIds = included
+            .Where(i => i.Transactions.Count == 0 && i.TagId.HasValue)
             .Select(i => i.TagId!.Value)
             .Distinct()
             .ToList();
@@ -275,10 +283,13 @@ internal class ForecastEngine(
                 // Back to the start of the lookback, since an item may claim spending from it.
                 plan.StartDate.AddDays(-1).AddMonths(-Math.Max(0, outgoingStrategy.LookbackMonths)),
                 plan.EndDate,
+                linkedTransactionIds,
                 cancellationToken);
 
+        var payments = await plannedItemMatcher.GetPayments(linkedTransactionIds, cancellationToken);
+
         return PlannedItemRealiser.Realise(
-            plan, spend, historicalAccountIds, latestTransactionMonth, outgoingStrategy.MatchWindowMonths);
+            plan, spend, payments, historicalAccountIds, latestTransactionMonth, outgoingStrategy.MatchWindowMonths);
     }
 
     /// <summary>

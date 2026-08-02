@@ -74,7 +74,28 @@ public class PlannedItemRealiserTests
         new(account ?? AccountId, month, tagId, TransactionType.Debit, amount, inReporting);
 
     private static RealisedPlan Realise(DomainForecastPlan plan, DateOnly settledThrough, params TaggedSpend[] spend) =>
-        PlannedItemRealiser.Realise(plan, spend, [AccountId], settledThrough, slippageMonths: 1);
+        PlannedItemRealiser.Realise(plan, spend, [], [AccountId], settledThrough, slippageMonths: 1);
+
+    private static RealisedPlan RealiseWithLinks(
+        DomainForecastPlan plan, DateOnly settledThrough, LinkedPayment[] payments, params TaggedSpend[] spend) =>
+        PlannedItemRealiser.Realise(plan, spend, payments, [AccountId], settledThrough, slippageMonths: 1);
+
+    private static LinkedPayment Payment(Guid transactionId, DateOnly month, decimal amount, bool inReporting = true) =>
+        new(transactionId, AccountId, month, amount, inReporting);
+
+    private static DomainPlannedItem LinkedTo(DomainPlannedItem item, params Guid[] transactionIds)
+    {
+        foreach (var id in transactionIds)
+        {
+            item.Transactions.Add(new ForecastPlannedItemTransaction(Guid.NewGuid())
+            {
+                PlannedItemId = item.Id,
+                TransactionId = id,
+            });
+        }
+
+        return item;
+    }
 
     private static decimal Month(Dictionary<string, decimal> byMonth, int year, int month) =>
         byMonth.GetValueOrDefault(new DateOnly(year, month, 1).ToString("yyyy-MM"), 0m);
@@ -219,29 +240,79 @@ public class PlannedItemRealiserTests
 
     /// <summary>
     /// Given two items sharing one tag
-    /// When a month's spending is claimed by both
-    /// Then it should be split in proportion to what each planned
+    /// When neither has linked payments
+    /// Then neither should claim the spending
     /// </summary>
     /// <remarks>
-    /// A real shape, not a contrivance: one school fees item per child, both against a single
-    /// "School Fees" tag.
+    /// A category shared by several projects identifies none of them. Solar and Fence are both Home
+    /// Improvements, so no rule over tags and dates can say which a payment belongs to -- and
+    /// dividing it between them, which this used to do, invents an answer rather than admitting
+    /// there is not one. The author links it instead.
     /// </remarks>
     [Fact]
-    public void Realise_TwoItemsShareATag_TheMonthIsSplitInProportion()
+    public void Realise_TwoUnlinkedItemsShareATag_NeitherClaimsTheSpending()
     {
-        var felix = OneOff("Felix School Fees", 22_000m, new DateOnly(2026, 2, 15), SchoolFeesTag);
-        var xander = OneOff("Xander School Fees", 11_000m, new DateOnly(2026, 2, 15), SchoolFeesTag);
-        var plan = Plan(felix, xander);
+        var solar = OneOff("Solar", 17_238.40m, new DateOnly(2026, 3, 6), SchoolFeesTag);
+        var fence = OneOff("Fence", 18_600m, new DateOnly(2026, 3, 20), SchoolFeesTag);
+        var plan = Plan(solar, fence);
 
-        var realised = Realise(plan, new DateOnly(2026, 3, 1), Spend(new DateOnly(2026, 2, 1), 30_000m, SchoolFeesTag));
+        var realised = Realise(plan, new DateOnly(2026, 4, 1), Spend(new DateOnly(2026, 3, 1), 17_238.40m, SchoolFeesTag));
 
-        // 22,000 : 11,000 is two to one.
-        var felixProgress = realised.Progress.Single(p => p.PlannedItemId == felix.Id);
-        var xanderProgress = realised.Progress.Single(p => p.PlannedItemId == xander.Id);
+        Assert.Equal(0m, realised.Progress.Single(p => p.PlannedItemId == solar.Id).ActualToDate);
+        Assert.Equal(0m, realised.Progress.Single(p => p.PlannedItemId == fence.Id).ActualToDate);
+        Assert.DoesNotContain(realised.AttributedByMonth, m => m.Value != 0m);
+    }
 
-        Assert.Equal(20_000m, felixProgress.ActualToDate);
-        Assert.Equal(10_000m, xanderProgress.ActualToDate);
-        Assert.Equal(30_000m, Month(realised.ExpensesByMonth, 2026, 2));
+    /// <summary>
+    /// Given two items sharing a tag, one of which has the payment linked
+    /// When the plan is realised
+    /// Then the linked item takes it and the other gets nothing
+    /// </summary>
+    /// <remarks>
+    /// The case the linking mechanism exists for. The payment is Solar's because the author said so,
+    /// and it must not then also be offered to Fence on the strength of the shared tag.
+    /// </remarks>
+    [Fact]
+    public void Realise_PaymentLinkedToOneOfTwoItemsSharingATag_OnlyThatItemClaimsIt()
+    {
+        var transactionId = Guid.NewGuid();
+        var solar = LinkedTo(OneOff("Solar", 17_238.40m, new DateOnly(2026, 3, 6), SchoolFeesTag), transactionId);
+        var fence = OneOff("Fence", 18_600m, new DateOnly(2026, 3, 20), SchoolFeesTag);
+        var plan = Plan(solar, fence);
+
+        var realised = RealiseWithLinks(
+            plan,
+            new DateOnly(2026, 4, 1),
+            [Payment(transactionId, new DateOnly(2026, 3, 1), 17_238.40m)]);
+
+        Assert.Equal(17_238.40m, realised.Progress.Single(p => p.PlannedItemId == solar.Id).ActualToDate);
+        Assert.Equal(0m, realised.Progress.Single(p => p.PlannedItemId == fence.Id).ActualToDate);
+        Assert.Equal(17_238.40m, Month(realised.ExpensesByMonth, 2026, 3));
+    }
+
+    /// <summary>
+    /// Given an item with links
+    /// When spending carries its tag but was not linked
+    /// Then the item should count only what was linked
+    /// </summary>
+    /// <remarks>
+    /// Once the author has answered, the tag stops guessing. Otherwise linking one payment would
+    /// quietly pull in every other transaction that happened to share the category.
+    /// </remarks>
+    [Fact]
+    public void Realise_LinkedItem_CountsOnlyWhatWasLinked()
+    {
+        var transactionId = Guid.NewGuid();
+        var solar = LinkedTo(OneOff("Solar", 17_238.40m, new DateOnly(2026, 3, 6)), transactionId);
+
+        var realised = RealiseWithLinks(
+            plan: Plan(solar),
+            settledThrough: new DateOnly(2026, 4, 1),
+            payments: [Payment(transactionId, new DateOnly(2026, 3, 1), 17_238.40m)],
+            Spend(new DateOnly(2026, 4, 1), 9_338.45m));
+
+        Assert.Equal(17_238.40m, Assert.Single(realised.Progress).ActualToDate);
+        Assert.Equal(0m, Month(realised.ExpensesByMonth, 2026, 4));
     }
 
     /// <summary>
@@ -310,6 +381,7 @@ public class PlannedItemRealiserTests
         var realised = PlannedItemRealiser.Realise(
             plan,
             [Spend(new DateOnly(2026, 3, 1), 50_000m, account: SavingsId)],
+            payments: [],
             historicalAccountIds: [AccountId],
             latestTransactionMonth: new DateOnly(2026, 4, 1),
             slippageMonths: 1);

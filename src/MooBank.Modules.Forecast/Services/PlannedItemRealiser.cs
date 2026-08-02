@@ -37,13 +37,15 @@ internal sealed record RealisedPlan(
 /// ordinary spending, and the item is reported unmatched. Keeping the plan close to reality is the
 /// author's job; this only has to make the divergence visible.
 ///
-/// An item with no tag is left exactly as planned, so realisation is opt-in per item.
+/// An item with neither links nor a tag is left exactly as planned, so realisation is opt-in per
+/// item.
 /// </remarks>
 internal static class PlannedItemRealiser
 {
     public static RealisedPlan Realise(
         DomainForecastPlan plan,
         IReadOnlyList<TaggedSpend> spend,
+        IReadOnlyList<LinkedPayment> payments,
         IReadOnlyCollection<Guid> historicalAccountIds,
         DateOnly latestTransactionMonth,
         int slippageMonths)
@@ -60,8 +62,10 @@ internal static class PlannedItemRealiser
         // the car, and a purchase kept out of the reports still emptied the account. What may be
         // taken back out of the baseline counts only what the baseline could have contained —
         // spending on the accounts those figures were computed over, and visible to reporting.
-        var attributedAll = Attribute(items, allocations, claims, spend, _ => true);
-        var attributedInBaseline = Attribute(items, allocations, claims, spend,
+        var byTransaction = payments.ToDictionary(p => p.TransactionId);
+
+        var attributedAll = Attribute(items, allocations, claims, spend, byTransaction, _ => true);
+        var attributedInBaseline = Attribute(items, allocations, claims, spend, byTransaction,
             s => s.InReporting && historicalAccountIds.Contains(s.AccountId));
 
         var incomeByMonth = new Dictionary<string, decimal>();
@@ -94,23 +98,40 @@ internal static class PlannedItemRealiser
     }
 
     /// <summary>
-    /// Shares actual tagged spending out among the items claiming it.
+    /// Works out what has actually been spent against each item.
     /// </summary>
     /// <remarks>
-    /// Two items can legitimately share a tag — one per child against a single "School Fees" tag,
-    /// say — so a month claimed by both is split in proportion to what each planned for it. Where
-    /// neither planned anything that month, which is what a payment arriving early or late looks
-    /// like, the split falls back to their totals.
+    /// Two sources, in order of authority. Payments the author has linked are the item's spending
+    /// outright. Everything else falls to the tag, which is only allowed to answer when exactly one
+    /// item could be meant — a category shared by several projects identifies none of them, and
+    /// dividing the payment between them would be inventing an answer rather than admitting there
+    /// isn't one.
     /// </remarks>
     private static Dictionary<Guid, Dictionary<string, decimal>> Attribute(
         List<DomainForecastPlannedItem> items,
         Dictionary<Guid, Dictionary<string, decimal>> allocations,
         Dictionary<Guid, (DateOnly First, DateOnly Last)?> claims,
         IReadOnlyList<TaggedSpend> spend,
+        Dictionary<Guid, LinkedPayment> paymentsByTransaction,
         Func<TaggedSpend, bool> counts)
     {
         var result = items.ToDictionary(i => i.Id, _ => new Dictionary<string, decimal>());
 
+        // Linked items answer for themselves. Whatever the author attached is the item's spending,
+        // in the month it happened, and nothing else counts towards it.
+        foreach (var item in items.Where(i => i.Transactions.Count > 0))
+        {
+            foreach (var link in item.Transactions)
+            {
+                if (!paymentsByTransaction.TryGetValue(link.TransactionId, out var payment)) continue;
+                if (!counts(new TaggedSpend(payment.AccountId, payment.Month, 0, DirectionOf(item), payment.Amount, payment.InReporting))) continue;
+
+                var monthKey = payment.Month.ToString("yyyy-MM");
+                result[item.Id][monthKey] = result[item.Id].GetValueOrDefault(monthKey, 0m) + payment.Amount;
+            }
+        }
+
+        var unlinked = items.Where(i => i.Transactions.Count == 0).ToList();
         var relevant = spend.Where(counts);
 
         foreach (var group in relevant.GroupBy(s => (s.TagId, s.Month, s.Direction)))
@@ -121,32 +142,20 @@ internal static class PlannedItemRealiser
 
             if (total == 0m) continue;
 
-            var claimants = items
+            var claimants = unlinked
                 .Where(i => i.TagId == tagId)
                 .Where(i => DirectionOf(i) == direction)
                 .Where(i => claims[i.Id] is { } window && month >= window.First && month <= window.Last)
                 .ToList();
 
-            if (claimants.Count == 0) continue;
+            // A tag identifies an item only when it identifies exactly one. Where two items share a
+            // category -- the solar panels and the fence are both Home Improvements -- no rule over
+            // tags and dates can say which a payment belongs to, so none of them claim it and the
+            // author links it instead.
+            if (claimants.Count != 1) continue;
 
-            var shares = claimants.ToDictionary(i => i.Id, i => allocations[i.Id].GetValueOrDefault(monthKey, 0m));
-            var shareTotal = shares.Values.Sum();
-
-            // Nobody planned anything for this month, so fall back to relative size.
-            if (shareTotal == 0m)
-            {
-                shares = claimants.ToDictionary(i => i.Id, i => i.Amount);
-                shareTotal = shares.Values.Sum();
-            }
-
-            foreach (var claimant in claimants)
-            {
-                var share = shareTotal == 0m
-                    ? total / claimants.Count
-                    : total * shares[claimant.Id] / shareTotal;
-
-                result[claimant.Id][monthKey] = result[claimant.Id].GetValueOrDefault(monthKey, 0m) + share;
-            }
+            var claimant = claimants[0];
+            result[claimant.Id][monthKey] = result[claimant.Id].GetValueOrDefault(monthKey, 0m) + total;
         }
 
         return result;
