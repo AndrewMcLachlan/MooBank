@@ -2152,6 +2152,92 @@
         }
       }
     },
+    "/forecast/plans/{planId}/items/{itemId}/payment-candidates": {
+      "get": {
+        "tags": [
+          "Forecast"
+        ],
+        "operationId": "get-payment-candidates",
+        "parameters": [
+          {
+            "name": "planId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PaymentCandidate"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/forecast/plans/{planId}/items/{itemId}/payments": {
+      "put": {
+        "tags": [
+          "Forecast"
+        ],
+        "operationId": "set-planned-item-payments",
+        "parameters": [
+          {
+            "name": "planId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlannedItem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/groups": {
       "get": {
         "tags": [
@@ -8103,6 +8189,43 @@
           }
         }
       },
+      "PaymentCandidate": {
+        "required": [
+          "transactionId",
+          "accountId",
+          "when",
+          "amount",
+          "isLinked"
+        ],
+        "type": "object",
+        "properties": {
+          "transactionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "when": {
+            "type": "string",
+            "format": "date"
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "isLinked": {
+            "type": "boolean"
+          }
+        }
+      },
       "PensionRates": {
         "required": [
           "effectiveFrom",
@@ -8207,6 +8330,7 @@
         "required": [
           "name",
           "id",
+          "linkedTransactionIds",
           "itemType",
           "amount",
           "isIncluded",
@@ -8217,6 +8341,13 @@
           "id": {
             "type": "string",
             "format": "uuid"
+          },
+          "linkedTransactionIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
           },
           "itemType": {
             "$ref": "#/components/schemas/PlannedItemType"

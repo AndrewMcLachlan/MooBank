@@ -1,4 +1,4 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using Asm.MooBank.Models;
 using DomainEntities = Asm.MooBank.Domain.Entities.Forecast;
 
@@ -48,7 +48,8 @@ public static class ModelExtensions
         WindowStartDate = item.FlexibleWindow?.StartDate,
         WindowEndDate = item.FlexibleWindow?.EndDate,
         AllocationMode = item.FlexibleWindow?.AllocationMode,
-        Notes = item.Notes
+        Notes = item.Notes,
+        LinkedTransactionIds = item.Transactions.Select(t => t.TransactionId).ToList(),
     };
 
     public static DomainEntities.ForecastPlannedItem ToDomain(this PlannedItemBase item, Guid planId)
