@@ -46,6 +46,8 @@ const summary = (over: Partial<ForecastSummary> = {}): ForecastSummary => ({
     ...over,
 });
 
+const spending = (baselineOutgoingsTotal: number): ForecastMonth => ({ ...month(0), baselineOutgoingsTotal });
+
 const month = (incomeTotal: number): ForecastMonth => ({
     monthStart: "2026-01-01",
     openingBalance: 0,
@@ -92,33 +94,45 @@ describe("ForecastOutlook", () => {
         expect(risk).toHaveLength(2);
     });
 
-    it("averages income across the plan's months rather than quoting a single figure", () => {
-        // Income comes from planned items now, so it varies month to month and there is no one
-        // number on the plan to read it from.
+    it("shows income as the span it covers, not one figure", () => {
+        // Income comes from dated planned items, so it moves; an average would read as the answer.
         const { container } = render(
             <ForecastOutlook summary={summary()} months={[month(8000), month(8000), month(5000)]} currencyCode="AUD" />,
         );
-        expect(container.querySelector(".metric-value.income")).toHaveTextContent("7,000");
+        const income = container.querySelector(".metric-value.income");
+        expect(income).toHaveTextContent("5,000");
+        expect(income).toHaveTextContent("8,000");
         expect(container.querySelectorAll(".metric-value.negative")).toHaveLength(0);
     });
 
-    it("leads with both parts of the expense model, not one figure", () => {
+    it("shows spending as the span it covers, and explains it with the model", () => {
+        // Spending follows income, so it moves too. No single figure describes it: the fixed
+        // component is a coefficient rather than an amount, and an average reads as the answer.
         const { container } = render(
-            <ForecastOutlook summary={summary()} months={[]} currencyCode="AUD" />,
+            <ForecastOutlook
+                summary={summary()}
+                months={[spending(10400), spending(12800), spending(14200)]}
+                currencyCode="AUD" />,
         );
         const expense = container.querySelector(".metric-value.expense");
-        expect(expense).toHaveTextContent("1,200");
-        expect(expense).toHaveTextContent("42.0%");
-        // The average is still available, but as a caption rather than the answer.
-        expect(screen.getByText(/averages/)).toBeInTheDocument();
+        expect(expense).toHaveTextContent("10,400");
+        expect(expense).toHaveTextContent("14,200");
+        expect(screen.getByText(/1,200.*42\.0% of income/)).toBeInTheDocument();
+    });
+
+    it("collapses to a single figure when spending does not move", () => {
+        const { container } = render(
+            <ForecastOutlook summary={summary()} months={[spending(9000), spending(9000)]} currencyCode="AUD" />,
+        );
+        expect(container.querySelector(".metric-range-to")).toBeNull();
+        expect(container.querySelector(".metric-value.expense")).toHaveTextContent("9,000");
     });
 
     it("drops the variable part when there was too little history to relate spending to income", () => {
         // Not a different kind of answer -- the same model with nothing to say about income yet.
-        const noFit = summary({ expenses: expenses({ variableComponent: 0, rSquared: 0, dataPoints: 0, fixedComponent: 6457 }) });
-        const { container } = render(<ForecastOutlook summary={noFit} months={[]} currencyCode="AUD" />);
-        expect(container.querySelector(".metric-value.expense")).toHaveTextContent("6,457");
-        expect(container.querySelector(".expense-model-plus")).toBeNull();
+        const noFit = summary({ expenses: expenses({ variableComponent: 0, rSquared: 0, dataPoints: 0, fixedComponent: 6457, averageMonthly: 6457 }) });
+        render(<ForecastOutlook summary={noFit} months={[spending(6457)]} currencyCode="AUD" />);
+        expect(screen.getByText("not enough history to tie this to income")).toBeInTheDocument();
         expect(screen.getByText(/Not enough history/)).toBeInTheDocument();
     });
 
