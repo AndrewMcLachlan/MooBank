@@ -849,69 +849,37 @@ public class ForecastEngineTests
         };
 
     /// <summary>
-    /// Given actual balance data exists for consecutive past months
-    /// When the forecast is calculated
-    /// Then the baseline outgoings should be recalculated from actual spending
-    /// and the projected line should remain a consistent chain from starting balance
+    /// Given past months with recorded spending
+    /// When the forecast is calculated without a fitted model
+    /// Then the baseline should be the average of what was actually spent
     /// </summary>
     [Fact]
-    public async Task Calculate_WithActualBalances_RecalculatesBaselineOutgoings()
+    public async Task Calculate_NoFittedModel_AveragesWhatWasActuallySpent()
     {
         // Arrange
         var accountId = Guid.NewGuid();
         _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId]));
 
-        // Plan: 3 months, income 5000/month, no historical baseline
         var plan = CreatePlanWithStrategies(
             startDate: new DateOnly(2024, 1, 1),
             endDate: new DateOnly(2024, 3, 31),
             startingBalance: 10000m,
             monthlyIncome: 5000m,
-            lookbackMonths: 0);
+            lookbackMonths: 0); // no fit is attempted
 
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<DomainInstrument>());
+            .ReturnsAsync(new List<DomainInstrument> { HistoricalAccount(accountId, new DateOnly(2024, 2, 29)) });
 
-        _mocks.ReportReaderMock
-            .Setup(r => r.GetCreditDebitTotalsForAccounts(
-                It.IsAny<IEnumerable<Guid>>(),
-                It.IsAny<DateOnly>(),
-                It.IsAny<DateOnly>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>());
+        SetupEmptyReportMocks();
 
-        // Actual balances for Jan and Feb:
-        // Dec closing = 10000 (opening for Jan), Jan closing = 12000 (opening for Feb)
-        // Actual outgoings for Jan: 10000 + 5000 + 0 - 12000 = 3000
-        _mocks.ReportReaderMock
-            .Setup(r => r.GetMonthlyBalancesForAccounts(
-                It.IsAny<IEnumerable<Guid>>(),
-                It.IsAny<DateOnly>(),
-                It.IsAny<DateOnly>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyBalance>>
-            {
-                [accountId] =
-                [
-                    new MonthlyBalance { PeriodEnd = new DateOnly(2023, 12, 31), Balance = 10000m },
-                    new MonthlyBalance { PeriodEnd = new DateOnly(2024, 1, 31), Balance = 12000m },
-                ]
-            });
-
-        // Actual monthly credits used to derive outgoings from balance changes
+        // January spent 2,000 and February 4,000.
         _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
-                It.IsAny<IEnumerable<Guid>>(),
-                It.IsAny<DateOnly>(),
-                It.IsAny<DateOnly>(),
-                It.IsAny<CancellationToken>()))
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>
             {
-                [accountId] =
-                [
-                    new MonthlyCreditDebitTotal { Month = new DateOnly(2024, 1, 1), TransactionType = TransactionFilterType.Credit, Total = 5000m },
-                ]
+                [accountId] = CreateMonthlyData(new DateOnly(2024, 1, 1), [(5000m, 2000m), (5000m, 4000m)])
             });
 
         var engine = new ForecastEngine(
@@ -925,95 +893,70 @@ public class ForecastEngineTests
 
         // Assert
         var months = result.Months.ToList();
+        Assert.All(months, m => Assert.Equal(3000m, m.BaselineOutgoingsTotal)); // (2000 + 4000) / 2
 
-        // Baseline should be recalculated to 3000 (derived from actual balance change).
-        //
-        // Also guards the double-count that used to hide here: the plan's 5000 of income is a
-        // planned income item now, and the derivation used to add planned income back on top of the
-        // actual credits that already contained it — which would read this month as 8000.
-        Assert.All(months, m => Assert.Equal(3000m, m.BaselineOutgoingsTotal));
-
-        // Projected line chains from starting balance with updated baseline:
-        // Jan: 10000 + 5000 - 3000 = 12000
-        // Feb: 12000 + 5000 - 3000 = 14000
-        // Mar: 14000 + 5000 - 3000 = 16000
+        // The projected line chains from the starting balance on that baseline.
         Assert.Equal(10000m, months[0].OpeningBalance);
-        Assert.Equal(12000m, months[0].ClosingBalance);
-        Assert.Equal(12000m, months[1].OpeningBalance);
+        Assert.Equal(12000m, months[0].ClosingBalance); // 10000 + 5000 - 3000
         Assert.Equal(14000m, months[1].ClosingBalance);
-        Assert.Equal(14000m, months[2].OpeningBalance);
         Assert.Equal(16000m, months[2].ClosingBalance);
 
-        // Summary also reflects updated baseline
         Assert.Equal(3000m, result.Summary.Expenses.AverageMonthly);
     }
 
     /// <summary>
-    /// Given actual balance data exists for multiple consecutive months
+    /// Given a large transfer between two of the plan's own accounts
     /// When the forecast is calculated
-    /// Then the baseline should be the average of actual outgoings across those months
+    /// Then it must not read as spending
     /// </summary>
+    /// <remarks>
+    /// The defect this pins down, from the real data. The baseline used to be inferred from the
+    /// change in balance — <c>opening + credits - closing</c> — with balances summed across every
+    /// account the plan covers. A $20,000 "Savings bump" moved from the current account into a
+    /// savings account inside the same plan leaves that total untouched, but its credit side still
+    /// counted, so it read as $20,000 spent. Averaged across the plan it lifted the expense line for
+    /// every future month, and two such transfers put it thousands above the truth.
+    ///
+    /// Here the transfer is visible in the balances and absent from the spending totals, exactly as
+    /// it is in the data. Reading the spending figure instead of inferring it is what makes the two
+    /// disagreeing harmless.
+    /// </remarks>
     [Fact]
-    public async Task Calculate_MultipleActualMonths_AveragesActualOutgoings()
+    public async Task Calculate_TransferBetweenThePlansOwnAccounts_IsNotCountedAsSpending()
     {
         // Arrange
-        var accountId = Guid.NewGuid();
-        _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId]));
+        var currentAccountId = Guid.NewGuid();
+        var savingsAccountId = Guid.NewGuid();
+        _mocks.SetUser(TestMocks.CreateTestUser(accounts: [currentAccountId, savingsAccountId]));
 
         var plan = CreatePlanWithStrategies(
             startDate: new DateOnly(2024, 1, 1),
-            endDate: new DateOnly(2024, 4, 30),
-            startingBalance: 10000m,
+            endDate: new DateOnly(2024, 2, 29),
+            startingBalance: 100_000m,
             monthlyIncome: 5000m,
             lookbackMonths: 0);
 
+        var savings = new LogicalAccount(savingsAccountId, [])
+        {
+            Name = "Savings",
+            AccountType = AccountType.Savings,
+            LastTransaction = new DateOnly(2024, 1, 31),
+        };
+
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<DomainInstrument>());
+            .ReturnsAsync(new List<DomainInstrument> { HistoricalAccount(currentAccountId, new DateOnly(2024, 1, 31)), savings });
 
-        _mocks.ReportReaderMock
-            .Setup(r => r.GetCreditDebitTotalsForAccounts(
-                It.IsAny<IEnumerable<Guid>>(),
-                It.IsAny<DateOnly>(),
-                It.IsAny<DateOnly>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>());
+        SetupEmptyReportMocks();
 
-        // Actual balances for Jan, Feb, Mar:
-        // Dec closing = 10000, Jan closing = 13000, Feb closing = 14000
-        // Jan actual outgoings: 10000 + 5000 - 13000 = 2000
-        // Feb actual outgoings: 13000 + 5000 - 14000 = 4000
-        // Average = (2000 + 4000) / 2 = 3000
-        _mocks.ReportReaderMock
-            .Setup(r => r.GetMonthlyBalancesForAccounts(
-                It.IsAny<IEnumerable<Guid>>(),
-                It.IsAny<DateOnly>(),
-                It.IsAny<DateOnly>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyBalance>>
-            {
-                [accountId] =
-                [
-                    new MonthlyBalance { PeriodEnd = new DateOnly(2023, 12, 31), Balance = 10000m },
-                    new MonthlyBalance { PeriodEnd = new DateOnly(2024, 1, 31), Balance = 13000m },
-                    new MonthlyBalance { PeriodEnd = new DateOnly(2024, 2, 29), Balance = 14000m },
-                ]
-            });
-
-        // Actual monthly credits used to derive outgoings from balance changes
+        // The month's real spending is 2,000. The 20,000 transfer is not in the spending totals,
+        // because it moved between the plan's own accounts.
         _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
-                It.IsAny<IEnumerable<Guid>>(),
-                It.IsAny<DateOnly>(),
-                It.IsAny<DateOnly>(),
-                It.IsAny<CancellationToken>()))
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>
             {
-                [accountId] =
-                [
-                    new MonthlyCreditDebitTotal { Month = new DateOnly(2024, 1, 1), TransactionType = TransactionFilterType.Credit, Total = 5000m },
-                    new MonthlyCreditDebitTotal { Month = new DateOnly(2024, 2, 1), TransactionType = TransactionFilterType.Credit, Total = 5000m },
-                ]
+                [currentAccountId] = CreateMonthlyData(new DateOnly(2024, 1, 1), [(5000m, 2000m)])
             });
 
         var engine = new ForecastEngine(
@@ -1026,10 +969,7 @@ public class ForecastEngineTests
         var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert
-        var months = result.Months.ToList();
-
-        // Baseline should be average of actual outgoings: (2000 + 4000) / 2 = 3000
-        Assert.All(months, m => Assert.Equal(3000m, m.BaselineOutgoingsTotal));
+        Assert.All(result.Months, m => Assert.Equal(2000m, m.BaselineOutgoingsTotal));
     }
 
     /// <summary>

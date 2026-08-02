@@ -102,15 +102,11 @@ internal class ForecastEngine(
         }
         else
         {
-            // Actual credits, not modelled income: the balance change reflects every dollar that
-            // arrived — refunds, cashback, interest — and modelled income captures only what the
-            // plan lists, so using it would understate what was spent by the difference.
-            var actualCreditsByMonth = await GetActualMonthlyCredits(
-                accountIds, plan.StartDate, latestTransactionDate, cancellationToken);
-
-            effectiveBaselineOutgoings = ForecastCalculations.RecalculateBaselineFromActuals(
-                actualBalancesByMonth, actualCreditsByMonth, plannedExpensesByMonth,
-                plan.StartDate, plan.EndDate, baselineOutgoings);
+            // Same accounts, same exclusions and same figures the expense model is fitted to, so the
+            // fallback describes the same thing the fit would have.
+            effectiveBaselineOutgoings = ForecastCalculations.AverageOrdinarySpending(
+                actualIncomeExpenseByMonth, realised.AttributedByMonth,
+                plan.StartDate, latestTransactionMonth, baselineOutgoings);
         }
 
         // 13. Generate forecast months
@@ -395,38 +391,6 @@ internal class ForecastEngine(
                         Expense: Math.Max(0m, kvp.Value.Expense - attributedByMonth.GetValueOrDefault(kvp.Key.ToString("yyyy-MM"), 0m))));
 
         return ForecastCalculations.FitRegression(monthlyData, strategy.IncomeCorrelated ?? new IncomeCorrelatedSettings());
-    }
-
-    /// <summary>
-    /// Gets actual monthly credit totals (all income sources) for the given date range.
-    /// Used to derive accurate outgoings from actual balance changes, avoiding the bias
-    /// that occurs when using predicted salary-only income.
-    /// </summary>
-    private async Task<Dictionary<string, decimal>> GetActualMonthlyCredits(
-        List<Guid> accountIds, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
-    {
-        var result = new Dictionary<string, decimal>();
-
-        if (accountIds.Count == 0 || startDate > endDate)
-        {
-            return result;
-        }
-
-        var allTotals = await reportReader.GetMonthlyCreditDebitTotalsForAccounts(accountIds, startDate, endDate, cancellationToken);
-
-        foreach (var totals in allTotals.Values)
-        {
-            foreach (var total in totals)
-            {
-                if (total.TransactionType == TransactionFilterType.Credit)
-                {
-                    var monthKey = total.Month.ToString("yyyy-MM");
-                    result[monthKey] = result.GetValueOrDefault(monthKey, 0m) + total.Total;
-                }
-            }
-        }
-
-        return result;
     }
 
     /// <summary>

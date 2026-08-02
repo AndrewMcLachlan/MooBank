@@ -111,64 +111,50 @@ internal static class ForecastCalculations
     }
 
     /// <summary>
-    /// Recalculates baseline outgoings using actual balance data from past months.
+    /// Average ordinary monthly spending: what was actually spent, less whatever a planned item
+    /// claims.
     /// </summary>
-    /// <param name="actualCreditsByMonth">Actual credits — every dollar that arrived, not modelled income.</param>
-    /// <param name="plannedExpensesByMonth">Planned expenses allocated to each month, positive.</param>
+    /// <param name="actualByMonth">Actual income and spending per month, spending positive.</param>
+    /// <param name="attributedByMonth">Spending already claimed by a planned item.</param>
     /// <remarks>
-    /// Balances are the authority on what a month cost, so the total spent is read from the balance
-    /// change rather than from the transaction feed:
-    /// <code>
-    /// closing   = opening + credits - spent
-    /// spent     = opening + credits - closing
-    /// baseline  = spent - plannedExpenses
-    /// </code>
-    /// The subtraction is what makes this a *baseline*: planned expenses are added to the forecast
-    /// separately, so leaving them in here would count them twice.
+    /// Read from what was spent rather than inferred from the change in balance. Balances are raw —
+    /// they have to be, since they are the account's actual position — while the spending totals
+    /// honour the exclusions that decide what counts. Subtracting one from the other therefore made
+    /// every excluded transaction look like an unexplained difference, and unexplained differences
+    /// landed in "spending": a $20,000 transfer between two of the plan's own accounts, which never
+    /// left the pool at all, read as $20,000 spent.
     ///
-    /// Planned income is deliberately absent. It is already part of <paramref name="actualCreditsByMonth"/>,
-    /// and adding it again — as this did while a plan carried both a fixed income figure and planned
-    /// income items — inflates every derived month by the planned income.
+    /// Planned spending comes out because the forecast adds it back on its own date. What remains is
+    /// the ordinary spending a baseline is meant to describe, on the same footing as the data the
+    /// expense model is fitted to.
     /// </remarks>
-    public static decimal RecalculateBaselineFromActuals(
-        Dictionary<string, decimal?> actualBalancesByMonth,
-        Dictionary<string, decimal> actualCreditsByMonth,
-        Dictionary<string, decimal> plannedExpensesByMonth,
-        DateOnly startDate, DateOnly endDate,
-        decimal fallbackBaseline)
+    public static decimal AverageOrdinarySpending(
+        Dictionary<string, (decimal Income, decimal Expense)> actualByMonth,
+        Dictionary<string, decimal> attributedByMonth,
+        DateOnly startDate,
+        DateOnly throughMonth,
+        decimal fallback)
     {
-        var actualOutgoings = new List<decimal>();
-        var currentDate = new DateOnly(startDate.Year, startDate.Month, 1);
-        var lastDate = new DateOnly(endDate.Year, endDate.Month, 1);
+        var months = new List<decimal>();
+        var current = new DateOnly(startDate.Year, startDate.Month, 1);
+        var last = new DateOnly(throughMonth.Year, throughMonth.Month, 1);
 
-        while (currentDate <= lastDate)
+        while (current <= last)
         {
-            var monthKey = currentDate.ToString("yyyy-MM");
-            var nextMonthKey = currentDate.AddMonths(1).ToString("yyyy-MM");
+            var monthKey = current.ToString("yyyy-MM");
 
-            var opening = actualBalancesByMonth.GetValueOrDefault(monthKey);
-            var closing = actualBalancesByMonth.GetValueOrDefault(nextMonthKey);
-
-            if (opening.HasValue && closing.HasValue)
+            // Only months the data actually covers. A month with no transactions is a gap in the
+            // record, not a month where nothing was spent, and averaging it in would drag the
+            // baseline down.
+            if (actualByMonth.TryGetValue(monthKey, out var actual))
             {
-                var credits = actualCreditsByMonth.GetValueOrDefault(monthKey, 0m);
-                var plannedExpenses = plannedExpensesByMonth.GetValueOrDefault(monthKey, 0m);
-
-                var derived = opening.Value + credits - closing.Value - plannedExpenses;
-
-                // Skip months where derived outgoings are negative — this indicates
-                // unexplained balance growth (e.g. transfers in, windfalls) that would
-                // distort the baseline average.
-                if (derived >= 0)
-                {
-                    actualOutgoings.Add(derived);
-                }
+                months.Add(Math.Max(0m, actual.Expense - attributedByMonth.GetValueOrDefault(monthKey, 0m)));
             }
 
-            currentDate = currentDate.AddMonths(1);
+            current = current.AddMonths(1);
         }
 
-        return actualOutgoings.Count > 0 ? actualOutgoings.Average() : fallbackBaseline;
+        return months.Count > 0 ? months.Average() : fallback;
     }
 
     /// <summary>

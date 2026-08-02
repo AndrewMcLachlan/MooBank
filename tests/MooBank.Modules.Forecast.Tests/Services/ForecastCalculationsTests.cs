@@ -168,100 +168,108 @@ public class ForecastCalculationsTests
 
     #endregion
 
-    #region RecalculateBaselineFromActuals
+    #region AverageOrdinarySpending
 
     /// <summary>
-    /// Given no actual balance data
-    /// When the baseline is recalculated
-    /// Then the fallback baseline is returned.
+    /// Given no actual data
+    /// When ordinary spending is averaged
+    /// Then the fallback is returned.
     /// </summary>
     [Fact]
-    public void RecalculateBaseline_NoActuals_ReturnsFallback()
+    public void AverageOrdinarySpending_NoActuals_ReturnsFallback()
     {
-        var result = ForecastCalculations.RecalculateBaselineFromActuals(
-            [], [], [],
-            new DateOnly(2024, 1, 1), new DateOnly(2024, 2, 1),
-            fallbackBaseline: 1234m);
+        var result = ForecastCalculations.AverageOrdinarySpending(
+            [], [], new DateOnly(2024, 1, 1), new DateOnly(2024, 3, 1), fallback: 1234m);
 
         Assert.Equal(1234m, result);
     }
 
     /// <summary>
-    /// Given consecutive actual balances for two months
-    /// When the baseline is recalculated
-    /// Then it returns the average of the derived outgoings (opening + income + planned - closing).
-    /// </summary>
-    [Fact]
-    public void RecalculateBaseline_ConsecutiveActuals_AveragesDerivedOutgoings()
-    {
-        var balances = new Dictionary<string, decimal?>
-        {
-            ["2024-01"] = 1000m,
-            ["2024-02"] = 900m,
-            ["2024-03"] = 750m,
-        };
-        var income = new Dictionary<string, decimal> { ["2024-01"] = 500m, ["2024-02"] = 500m };
-
-        var result = ForecastCalculations.RecalculateBaselineFromActuals(
-            balances, income, [],
-            new DateOnly(2024, 1, 1), new DateOnly(2024, 2, 1),
-            fallbackBaseline: 0m);
-
-        // Jan: 1000 + 500 - 900 = 600; Feb: 900 + 500 - 750 = 650; average = 625.
-        Assert.Equal(625m, result);
-    }
-
-    /// <summary>
-    /// Given a month containing a planned expense that was actually paid
-    /// When the baseline is recalculated
-    /// Then the planned expense is not counted as baseline spending
+    /// Given spending across several months
+    /// When it is averaged
+    /// Then only the months the data covers are counted
     /// </summary>
     /// <remarks>
-    /// The balance change holds everything that was spent, planned or not. Planned expenses are
-    /// added to the forecast on their own, so leaving them in the derived baseline would charge the
-    /// forecast for them twice — and, because the baseline is an average applied to every future
-    /// month, a single large one-off would be spread across the whole plan as if it recurred.
+    /// A month with no transactions is a gap in the record, not a month where nothing was spent.
+    /// Averaging it in as a nought would drag the baseline down by however many months are missing.
     /// </remarks>
     [Fact]
-    public void RecalculateBaseline_PlannedExpense_IsNotCountedAsBaseline()
+    public void AverageOrdinarySpending_MonthsWithoutData_AreNotCountedAsNought()
     {
-        var balances = new Dictionary<string, decimal?>
+        var actual = new Dictionary<string, (decimal Income, decimal Expense)>
         {
-            ["2024-01"] = 10000m,
-            ["2024-02"] = 4000m, // 5000 of ordinary spending, plus a 2000 planned expense
+            ["2024-01"] = (5000m, 4000m),
+            ["2024-03"] = (5000m, 6000m),
         };
-        var credits = new Dictionary<string, decimal> { ["2024-01"] = 1000m };
-        var plannedExpenses = new Dictionary<string, decimal> { ["2024-01"] = 2000m };
 
-        var result = ForecastCalculations.RecalculateBaselineFromActuals(
-            balances, credits, plannedExpenses,
-            new DateOnly(2024, 1, 1), new DateOnly(2024, 1, 1),
-            fallbackBaseline: 0m);
+        var result = ForecastCalculations.AverageOrdinarySpending(
+            actual, [], new DateOnly(2024, 1, 1), new DateOnly(2024, 3, 1), fallback: 0m);
 
-        // Spent = 10000 + 1000 - 4000 = 7000, of which 2000 was planned.
+        // February has no data, so the average is over January and March alone.
         Assert.Equal(5000m, result);
     }
 
     /// <summary>
-    /// Given a month whose derived outgoings are negative (unexplained balance growth)
-    /// When the baseline is recalculated
-    /// Then that month is skipped; with no usable months the fallback is returned.
+    /// Given a month whose spending includes a planned item
+    /// When ordinary spending is averaged
+    /// Then the planned part is not counted as baseline
     /// </summary>
     [Fact]
-    public void RecalculateBaseline_NegativeDerived_SkipsMonth()
+    public void AverageOrdinarySpending_PlannedSpending_IsNotCountedAsBaseline()
     {
-        var balances = new Dictionary<string, decimal?>
-        {
-            ["2024-01"] = 1000m,
-            ["2024-02"] = 2000m, // balance grew with no income → derived outgoings negative
-        };
+        var actual = new Dictionary<string, (decimal Income, decimal Expense)> { ["2024-01"] = (5000m, 25_000m) };
+        var attributed = new Dictionary<string, decimal> { ["2024-01"] = 20_000m };
 
-        var result = ForecastCalculations.RecalculateBaselineFromActuals(
-            balances, [], [],
-            new DateOnly(2024, 1, 1), new DateOnly(2024, 1, 1),
-            fallbackBaseline: 42m);
+        var result = ForecastCalculations.AverageOrdinarySpending(
+            actual, attributed, new DateOnly(2024, 1, 1), new DateOnly(2024, 1, 1), fallback: 0m);
 
-        Assert.Equal(42m, result);
+        Assert.Equal(5000m, result);
+    }
+
+    /// <summary>
+    /// Given a transfer between two of the plan's own accounts
+    /// When ordinary spending is averaged
+    /// Then it should not read as spending
+    /// </summary>
+    /// <remarks>
+    /// The defect this pins down. The baseline used to be inferred from the change in balance:
+    /// <c>spent = opening + credits - closing</c>. Balances are raw and count every movement, while
+    /// the credit totals honour exclusions — so the two disagreed by exactly the excluded amount and
+    /// the difference landed in "spending". A $20,000 "Savings bump" moved between two accounts of
+    /// the same plan left the total balance untouched, yet read as $20,000 spent, and being averaged
+    /// across the plan it lifted every future month.
+    ///
+    /// Reading the spending figure directly instead means a transfer is only ever spending if the
+    /// spending totals say it is.
+    /// </remarks>
+    [Fact]
+    public void AverageOrdinarySpending_TransferBetweenThePlansOwnAccounts_IsNotSpending()
+    {
+        // The month's genuine spending is 6,000. A 20,000 transfer moved between the plan's own
+        // accounts as well, which the spending totals do not count.
+        var actual = new Dictionary<string, (decimal Income, decimal Expense)> { ["2025-09"] = (15_721m, 6_000m) };
+
+        var result = ForecastCalculations.AverageOrdinarySpending(
+            actual, [], new DateOnly(2025, 9, 1), new DateOnly(2025, 9, 1), fallback: 0m);
+
+        Assert.Equal(6_000m, result);
+    }
+
+    /// <summary>
+    /// Given a month whose planned spending exceeds the total recorded
+    /// When ordinary spending is averaged
+    /// Then it is floored at nought rather than going negative
+    /// </summary>
+    [Fact]
+    public void AverageOrdinarySpending_PlannedExceedsRecorded_IsFlooredAtNought()
+    {
+        var actual = new Dictionary<string, (decimal Income, decimal Expense)> { ["2024-01"] = (5000m, 1_000m) };
+        var attributed = new Dictionary<string, decimal> { ["2024-01"] = 9_000m };
+
+        var result = ForecastCalculations.AverageOrdinarySpending(
+            actual, attributed, new DateOnly(2024, 1, 1), new DateOnly(2024, 1, 1), fallback: 0m);
+
+        Assert.Equal(0m, result);
     }
 
     #endregion
