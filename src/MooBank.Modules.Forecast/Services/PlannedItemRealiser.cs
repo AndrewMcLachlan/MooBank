@@ -1,4 +1,4 @@
-using Asm.MooBank.Models;
+﻿using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Forecast.Models;
 using DomainForecastPlan = Asm.MooBank.Domain.Entities.Forecast.ForecastPlan;
 using DomainForecastPlannedItem = Asm.MooBank.Domain.Entities.Forecast.ForecastPlannedItem;
@@ -133,9 +133,17 @@ internal static class PlannedItemRealiser
         if (!PlannedItemExpander.HasFiniteTotal(item))
         {
             // A recurring charge is never used up: paying this month's electricity does nothing
-            // about next month's.
-            foreach (var (monthKey, amount) in unsettled)
+            // about next month's, so each occurrence answers for itself.
+            //
+            // An occurrence with a linked payment is answered by it. One without stands as planned,
+            // whether or not its month has been and gone: no link is absence of information, not
+            // evidence that nothing was spent. Treating a settled month as nought unless it was
+            // linked meant that linking one year of school fees silently emptied every other year,
+            // and the forecast lost a real payment the moment it was told about a different one.
+            foreach (var (monthKey, amount) in allocations)
             {
+                if (actualByMonth.ContainsKey(monthKey)) continue;
+
                 result[monthKey] = result.GetValueOrDefault(monthKey, 0m) + amount;
             }
 

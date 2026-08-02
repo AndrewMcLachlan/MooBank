@@ -54,7 +54,7 @@ public class PlannedItemRealiserTests
             FixedDate = new PlannedItemFixedDate { FixedDate = on },
         };
 
-    private static DomainPlannedItem Recurring(string name, decimal amount, DateOnly from) =>
+    private static DomainPlannedItem Recurring(string name, decimal amount, DateOnly from, ScheduleFrequency frequency = ScheduleFrequency.Monthly) =>
         new(Guid.NewGuid())
         {
             Name = name,
@@ -62,7 +62,7 @@ public class PlannedItemRealiserTests
             Amount = amount,
             IsIncluded = true,
             DateMode = PlannedItemDateMode.Schedule,
-            Schedule = new PlannedItemSchedule { Frequency = ScheduleFrequency.Monthly, AnchorDate = from, Interval = 1 },
+            Schedule = new PlannedItemSchedule { Frequency = frequency, AnchorDate = from, Interval = 1 },
         };
 
     private static DomainPlannedItem LinkedTo(DomainPlannedItem item, params Guid[] transactionIds)
@@ -208,6 +208,43 @@ public class PlannedItemRealiserTests
         Assert.Equal(355m, Month(realised.ExpensesByMonth, 2026, 1));
         Assert.Equal(300m, Month(realised.ExpensesByMonth, 2026, 2));
         Assert.Equal(300m, Month(realised.ExpensesByMonth, 2026, 12));
+    }
+
+    /// <summary>
+    /// Given a recurring item with one occurrence linked
+    /// When the plan is realised
+    /// Then the occurrences that were not linked should stand as planned
+    /// </summary>
+    /// <remarks>
+    /// The defect this pins down, from the real data. School fees are a yearly item, and linking a
+    /// single year emptied every other year: settled months were taken to have cost only what had
+    /// been linked to them, so a year nobody had got round to linking read as nothing spent, and a
+    /// real twenty-one thousand pound payment vanished from the projection the moment the forecast
+    /// was told about a different one.
+    ///
+    /// No link is absence of information, not evidence of nought. Each occurrence answers for
+    /// itself: linked, and it is what was paid; not linked, and it stands as planned.
+    /// </remarks>
+    [Fact]
+    public void Realise_RecurringItemWithOneOccurrenceLinked_LeavesTheRestAsPlanned()
+    {
+        var marchPayment = Guid.NewGuid();
+        var fees = LinkedTo(Recurring("School Fees", 21_000m, PlanStart), marchPayment);
+
+        // Settled through June, with only March's payment linked.
+        var realised = Realise(Plan(fees), new DateOnly(2026, 6, 1), Payment(marchPayment, new DateOnly(2026, 3, 1), 22_500m));
+
+        // The linked month is what was actually paid.
+        Assert.Equal(22_500m, Month(realised.ExpensesByMonth, 2026, 3));
+
+        // The settled months nobody linked still stand as planned. Reading them as nought is what
+        // made a real payment disappear from the projection.
+        Assert.Equal(21_000m, Month(realised.ExpensesByMonth, 2026, 1));
+        Assert.Equal(21_000m, Month(realised.ExpensesByMonth, 2026, 2));
+        Assert.Equal(21_000m, Month(realised.ExpensesByMonth, 2026, 4));
+
+        // And so do the months still ahead.
+        Assert.Equal(21_000m, Month(realised.ExpensesByMonth, 2026, 12));
     }
 
     /// <summary>
