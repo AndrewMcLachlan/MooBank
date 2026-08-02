@@ -41,6 +41,10 @@ export const LinkPaymentsModal: React.FC<LinkPaymentsModalProps> = ({ planId, it
         .filter(c => selected.includes(c.transactionId))
         .reduce((sum, c) => sum + c.amount, 0);
 
+    // A schedule has no single date and no single amount: it recurs, so the whole span of it is on
+    // offer and each occurrence is linked as it happens. A one-off has one of each.
+    const recurs = item.dateMode === "Schedule";
+
     const handleSave = async () => {
         await setPayments(planId, item.id, selected);
         onHide();
@@ -62,15 +66,20 @@ export const LinkPaymentsModal: React.FC<LinkPaymentsModalProps> = ({ planId, it
 
                 {!isLoading && item.tagId && candidates?.length === 0 && (
                     <p className="link-payments-empty">
-                        No payments carrying this item&rsquo;s tag within two months of its date.
+                        {recurs
+                            ? <>No payments carrying this item&rsquo;s tag anywhere in its schedule yet.</>
+                            : <>No payments carrying this item&rsquo;s tag within two months of its date.</>}
                     </p>
                 )}
 
                 {!isLoading && !!candidates?.length && (
                     <>
                         <p className="link-payments-intro">
-                            Payments tagged {item.tagName} within two months of {item.name}&rsquo;s date.
-                            Anything already linked to another item is not shown.
+                            {recurs
+                                ? <>Payments tagged {item.tagName} across this item&rsquo;s whole schedule &mdash; tick every
+                                    occurrence that has happened, and come back for later ones as they do.</>
+                                : <>Payments tagged {item.tagName} within two months of {item.name}&rsquo;s date.</>}
+                            {" "}Anything already linked to another item is not shown.
                         </p>
                         <table className="link-payments">
                             <thead>
@@ -100,11 +109,15 @@ export const LinkPaymentsModal: React.FC<LinkPaymentsModalProps> = ({ planId, it
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colSpan={3}>{selected.length} selected, against a plan of</td>
+                                    <td colSpan={3}>{recurs ? "Planned, each occurrence" : "Planned"}</td>
                                     <td className="amount"><Amount amount={item.amount} currencyCode={currencyCode} /></td>
                                 </tr>
                                 <tr>
-                                    <td colSpan={3}>Linked total</td>
+                                    <td colSpan={3}>
+                                        {selected.length} linked
+                                        {recurs && selected.length > 0 && ", totalling"}
+                                        {!recurs && ", totalling"}
+                                    </td>
                                     <td className="amount"><Amount amount={selectedTotal} currencyCode={currencyCode} /></td>
                                 </tr>
                             </tfoot>
