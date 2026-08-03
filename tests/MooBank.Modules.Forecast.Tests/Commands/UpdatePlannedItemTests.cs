@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Domain.Entities.Forecast;
 using Asm.MooBank.Domain.Entities.Forecast.Specifications;
 using Asm.MooBank.Models;
@@ -172,7 +172,6 @@ public class UpdatePlannedItemTests
         Assert.NotNull(existingItem.FixedDate);
         Assert.Equal(fixedDate, existingItem.FixedDate.FixedDate);
         Assert.Null(existingItem.Schedule);
-        Assert.Null(existingItem.FlexibleWindow);
     }
 
     [Fact]
@@ -220,54 +219,6 @@ public class UpdatePlannedItemTests
         Assert.Equal(1, existingItem.Schedule.Interval);
         Assert.Equal(15, existingItem.Schedule.DayOfMonth);
         Assert.Null(existingItem.FixedDate);
-        Assert.Null(existingItem.FlexibleWindow);
-    }
-
-    [Fact]
-    public async Task Handle_FlexibleWindowMode_SetsWindow()
-    {
-        // Arrange
-        var familyId = _mocks.User.FamilyId;
-        var planId = Guid.NewGuid();
-        var itemId = Guid.NewGuid();
-        var existingItem = TestEntities.CreatePlannedItem(id: itemId, planId: planId);
-        var plan = TestEntities.CreateForecastPlan(id: planId, familyId: familyId, plannedItems: [existingItem]);
-
-        _mocks.ForecastRepositoryMock
-            .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(plan);
-
-        var handler = new UpdatePlannedItemHandler(
-            _mocks.ForecastRepositoryMock.Object,
-            _mocks.UnitOfWorkMock.Object);
-
-        var windowStart = new DateOnly(2024, 6, 1);
-        var windowEnd = new DateOnly(2024, 8, 31);
-        var updateModel = new ModelPlannedItem
-        {
-            Id = itemId,
-            Name = "Vacation Fund",
-            ItemType = PlannedItemType.Expense,
-            Amount = 3000m,
-            IsIncluded = true,
-            DateMode = PlannedItemDateMode.FlexibleWindow,
-            WindowStartDate = windowStart,
-            WindowEndDate = windowEnd,
-            AllocationMode = AllocationMode.EvenlySpread,
-        };
-        var command = new UpdatePlannedItem(planId, itemId, updateModel);
-
-        // Act
-        var result = await handler.Handle(command, TestContext.Current.CancellationToken);
-
-        // Assert
-        Assert.Equal(PlannedItemDateMode.FlexibleWindow, existingItem.DateMode);
-        Assert.NotNull(existingItem.FlexibleWindow);
-        Assert.Equal(windowStart, existingItem.FlexibleWindow.StartDate);
-        Assert.Equal(windowEnd, existingItem.FlexibleWindow.EndDate);
-        Assert.Equal(AllocationMode.EvenlySpread, existingItem.FlexibleWindow.AllocationMode);
-        Assert.Null(existingItem.FixedDate);
-        Assert.Null(existingItem.Schedule);
     }
 
     [Fact]

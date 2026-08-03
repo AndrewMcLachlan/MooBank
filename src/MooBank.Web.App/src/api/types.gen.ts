@@ -34,8 +34,6 @@ export type AccountTypeSummary = {
     accounts: Array<string>;
 };
 
-export type AllocationMode = 'EvenlySpread' | 'AllAtEnd';
-
 export type AllTagAverageReport = {
     tags: Array<TagValue>;
     reportType: ReportType;
@@ -549,13 +547,10 @@ export type PlannedItem = {
     scheduleInterval?: null | number;
     scheduleDayOfMonth?: null | number;
     scheduleEndDate?: null | string;
-    windowStartDate?: null | string;
-    windowEndDate?: null | string;
-    allocationMode?: null | AllocationMode;
     notes?: null | string;
 };
 
-export type PlannedItemDateMode = 'FixedDate' | 'Schedule' | 'FlexibleWindow';
+export type PlannedItemDateMode = 'FixedDate' | 'Schedule';
 
 export type PlannedItemPayments = {
     transactionIds: Array<string>;
@@ -817,9 +812,6 @@ export type SimplePlannedItem = {
     scheduleInterval?: null | number;
     scheduleDayOfMonth?: null | number;
     scheduleEndDate?: null | string;
-    windowStartDate?: null | string;
-    windowEndDate?: null | string;
-    allocationMode?: null | AllocationMode;
     notes?: null | string;
 };
 

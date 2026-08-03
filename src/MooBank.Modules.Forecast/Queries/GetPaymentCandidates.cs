@@ -133,9 +133,6 @@ internal class GetPaymentCandidatesHandler(
                 (item.Schedule.AnchorDate.AddMonths(-CandidateWindowMonths),
                  (item.Schedule.EndDate ?? plan.EndDate).AddMonths(CandidateWindowMonths)),
 
-            PlannedItemDateMode.FlexibleWindow when item.FlexibleWindow is not null =>
-                (item.FlexibleWindow.StartDate.AddMonths(-CandidateWindowMonths), item.FlexibleWindow.EndDate.AddMonths(CandidateWindowMonths)),
-
             _ => (plan.StartDate, plan.EndDate),
         };
 }

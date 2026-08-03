@@ -547,21 +547,29 @@ ON (TARGET.[Id] = SOURCE.Id)
 WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
 WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Description]);
 
-MERGE [PlannedItemDateMode] AS TARGET USING (SELECT 2 as Id, 'FlexibleWindow' as [Description]) AS SOURCE
-ON (TARGET.[Id] = SOURCE.Id)
-WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Description]);
+-- The flexible-window date mode was removed: it was never reachable from the UI, and its two
+-- allocation modes asked the author to make a modelling decision rather than state a fact. Linking
+-- payments to a fixed-date item covers the same ground using real dates.
+--
+-- Dropped here rather than by leaving the table files out of the project, because
+-- DropObjectsNotInSource is False on every publish profile -- removing the files alone would leave
+-- both tables orphaned in the database.
+--
+-- The whole block is guarded on nothing actually using the mode. It never could through the UI, and
+-- no environment has a row, but a guard costs nothing and the alternative is silently discarding
+-- someone's planned item. If the guard ever does hold something back it says so rather than passing
+-- quietly, and the deployment still succeeds.
+IF NOT EXISTS (SELECT 1 FROM [ForecastPlannedItem] WHERE [DateMode] = 2)
+BEGIN
+    DROP TABLE IF EXISTS [dbo].[PlannedItemFlexibleWindow];  -- references AllocationMode, so goes first
+    DROP TABLE IF EXISTS [dbo].[AllocationMode];
 
--- Allocation Mode (for Forecast Plans - Flexible Window)
-MERGE [AllocationMode] AS TARGET USING (SELECT 0 as Id, 'EvenlySpread' as [Description]) AS SOURCE
-ON (TARGET.[Id] = SOURCE.Id)
-WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Description]);
-
-MERGE [AllocationMode] AS TARGET USING (SELECT 1 as Id, 'AllAtEnd' as [Description]) AS SOURCE
-ON (TARGET.[Id] = SOURCE.Id)
-WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
-WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Description]);
+    DELETE FROM [PlannedItemDateMode] WHERE [Id] = 2;
+END
+ELSE
+BEGIN
+    PRINT 'Skipped removing the FlexibleWindow date mode: planned items still use it.';
+END
 
 -- Schedule Frequency (for Forecast Plans - Schedule)
 MERGE [ScheduleFrequency] AS TARGET USING (SELECT 1 as Id, 'Daily' as [Description]) AS SOURCE
