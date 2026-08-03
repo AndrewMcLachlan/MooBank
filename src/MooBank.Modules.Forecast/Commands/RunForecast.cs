@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using Asm.MooBank.Domain;
 using Asm.MooBank.Domain.Entities.Forecast.Specifications;
 using Asm.MooBank.Modules.Forecast.Models;
 using Asm.MooBank.Modules.Forecast.Services;
