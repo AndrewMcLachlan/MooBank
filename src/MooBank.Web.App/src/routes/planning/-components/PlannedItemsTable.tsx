@@ -1,4 +1,4 @@
-import { SectionTable, DeleteIcon, EditColumn, ComboBox, useUpdatingState } from "@andrewmclachlan/moo-ds";
+import { SectionTable, DeleteIcon, EditColumn, ComboBox, LoadingTableRows, useUpdatingState } from "@andrewmclachlan/moo-ds";
 import { LinkPaymentsModal } from "./LinkPaymentsModal";
 import { format, parseISO } from "date-fns";
 import type { ForecastPlan, PlannedItem, PlannedItemProgress, ScheduleFrequency, Tag } from "api/types.gen";
@@ -21,6 +21,9 @@ export const PlannedItemsTable: React.FC<PlannedItemsTableProps> = ({ plan, curr
     const items = plan?.plannedItems ?? [];
     const planId = plan?.id;
 
+    // No plan yet means it is still loading — an empty plan still arrives as an object.
+    const loading = !plan;
+
     const incomeItems = items.filter(i => i.itemType === "Income");
     const expenseItems = items.filter(i => i.itemType === "Expense");
 
@@ -28,8 +31,8 @@ export const PlannedItemsTable: React.FC<PlannedItemsTableProps> = ({ plan, curr
 
     return (
         <>
-            <PlannedItemsSection planId={planId} title="Planned Income" items={incomeItems} itemType="Income" currencyCode={currencyCode} progressById={progressById} />
-            <PlannedItemsSection planId={planId} title="Planned Expenses" items={expenseItems} itemType="Expense" currencyCode={currencyCode} progressById={progressById} />
+            <PlannedItemsSection planId={planId} title="Planned Income" items={incomeItems} itemType="Income" currencyCode={currencyCode} progressById={progressById} loading={loading} />
+            <PlannedItemsSection planId={planId} title="Planned Expenses" items={expenseItems} itemType="Expense" currencyCode={currencyCode} progressById={progressById} loading={loading} />
         </>
     );
 };
@@ -41,9 +44,10 @@ interface PlannedItemsSectionProps {
     itemType: "Income" | "Expense";
     currencyCode: string;
     progressById: Map<string, PlannedItemProgress>;
+    loading?: boolean;
 }
 
-const PlannedItemsSection: React.FC<PlannedItemsSectionProps> = ({ planId, title, items, itemType, currencyCode, progressById }) => {
+const PlannedItemsSection: React.FC<PlannedItemsSectionProps> = ({ planId, title, items, itemType, currencyCode, progressById, loading }) => {
 
     // Only expenses are measured against the accounts. Income is the plan's own statement of what
     // will arrive -- nothing is averaged or fitted from it the way it is from spending -- so a tag
@@ -66,10 +70,13 @@ const PlannedItemsSection: React.FC<PlannedItemsSectionProps> = ({ planId, title
                 </tr>
             </thead>
             <tbody>
-                {items.map((item) => (
-                    <PlannedItemRow key={item.id} planId={planId} item={item} currencyCode={currencyCode} tracked={tracked} progress={progressById.get(item.id)} />
-                ))}
-                <NewPlannedItem planId={planId} itemType={itemType} tracked={tracked} />
+                {loading ? <LoadingTableRows rows={3} cols={tracked ? 9 : 7} /> : <>
+                    {items.map((item) => (
+                        <PlannedItemRow key={item.id} planId={planId} item={item} currencyCode={currencyCode} tracked={tracked} progress={progressById.get(item.id)} />
+                    ))}
+                    {/* The add row needs a plan to add to, so it waits for one. */}
+                    <NewPlannedItem planId={planId} itemType={itemType} tracked={tracked} />
+                </>}
             </tbody>
             <tfoot>
                 <tr>

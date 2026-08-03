@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { IconButton, SpinnerContainer } from "@andrewmclachlan/moo-ds";
+import { IconButton } from "@andrewmclachlan/moo-ds";
 import { Sliders } from "@andrewmclachlan/moo-icons";
 import { useEffect, useMemo, useState } from "react";
 import { useForecastPlans } from "./-hooks/useForecastPlans";
@@ -46,14 +46,8 @@ function Forecast() {
         <IconButton badge key="edit-settings" variant="primary" icon={Sliders} onClick={() => setEditOpen(true)}>Edit Settings</IconButton>
     ] : [], [plan]);
 
-    // Loading state
-    if (plansLoading || accountsLoading) {
-        return (
-            <ForecastPage>
-                <SpinnerContainer />
-            </ForecastPage>
-        );
-    }
+    // No early return while loading: the page below renders its own placeholders in place, so the
+    // layout holds its shape instead of blanking to a spinner and jumping in all at once.
 
     // No plan exists - show account selection screen
     if (plans && plans.length === 0 && accounts) {
@@ -68,7 +62,9 @@ function Forecast() {
         <ForecastPage plan={plan} actions={actions}>
             <ForecastOutlook plan={plan} summary={result?.summary} months={result?.months ?? []} currencyCode={currencyCode} loading={resultLoading} />
 
-            <ForecastIncomeExpenseCharts months={result?.months ?? []} currencyCode={currencyCode} />
+            {/* Keyed off the absence of a result rather than isFetching, so a refetch keeps the
+                drawn charts on screen instead of flicking back to placeholders. */}
+            <ForecastIncomeExpenseCharts months={result?.months ?? []} currencyCode={currencyCode} loading={!result} />
 
             <PlannedItemsTable plan={plan} currencyCode={currencyCode} progress={result?.plannedItems} />
 

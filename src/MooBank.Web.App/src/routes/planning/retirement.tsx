@@ -1,5 +1,5 @@
 ﻿import { createFileRoute } from "@tanstack/react-router";
-import { IconButton, SpinnerContainer } from "@andrewmclachlan/moo-ds";
+import { IconButton } from "@andrewmclachlan/moo-ds";
 import { Sliders } from "@andrewmclachlan/moo-icons";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRetirementPlans } from "./-retirement-hooks/useRetirementPlans";
@@ -111,13 +111,7 @@ function Retirement() {
         <IconButton badge key="edit-settings" variant="primary" icon={Sliders} onClick={() => setEditOpen(true)}>Edit Plan</IconButton>
     ] : [], [plan]);
 
-    if (plansLoading) {
-        return (
-            <RetirementPage>
-                <SpinnerContainer />
-            </RetirementPage>
-        );
-    }
+    // No early return while loading — see the note on the forecast page.
 
     if (plans && plans.length === 0) {
         return (
@@ -138,11 +132,13 @@ function Retirement() {
 
     return (
         <RetirementPage plan={plan} actions={actions}>
-            <RetirementOutlook projection={projection} currencyCode={currencyCode} loading={projectionLoading && !projection} />
+            {/* plansLoading counts too: with no plan yet the projection query is idle, so without it
+                the outlook would show its "add someone to the plan" empty state mid-load. */}
+            <RetirementOutlook projection={projection} currencyCode={currencyCode} loading={plansLoading || (projectionLoading && !projection)} />
 
             <div className="retirement-charts">
-                <RetirementChart years={projection?.years ?? []} currencyCode={currencyCode} pensionStartsBelow={projection?.summary.pensionStartsBelowInTodaysDollars} />
-                <RetirementIncomeChart years={projection?.years ?? []} currencyCode={currencyCode} />
+                <RetirementChart years={projection?.years ?? []} currencyCode={currencyCode} pensionStartsBelow={projection?.summary.pensionStartsBelowInTodaysDollars} loading={!projection} />
+                <RetirementIncomeChart years={projection?.years ?? []} currencyCode={currencyCode} loading={!projection} />
             </div>
 
             {plan && plan.members.length > 0 && (
@@ -158,7 +154,7 @@ function Retirement() {
                 />
             )}
 
-            <RetirementMembersTable members={projection?.members ?? []} currencyCode={currencyCode} />
+            <RetirementMembersTable members={projection?.members ?? []} currencyCode={currencyCode} loading={plansLoading || (projectionLoading && !projection)} />
 
             <RetirementAssumptionsNote plan={plan} />
 

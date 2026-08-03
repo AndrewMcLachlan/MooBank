@@ -1,13 +1,36 @@
-﻿import { Badge, SectionTable } from "@andrewmclachlan/moo-ds";
+﻿import { Badge, LoadingTableRows, SectionTable } from "@andrewmclachlan/moo-ds";
 import type { RetirementMemberOutcome } from "api/types.gen";
 import { Amount } from "components";
 
 interface RetirementMembersTableProps {
     members: RetirementMemberOutcome[];
     currencyCode: string;
+    loading?: boolean;
 }
 
-export const RetirementMembersTable: React.FC<RetirementMembersTableProps> = ({ members, currencyCode }) => {
+export const RetirementMembersTable: React.FC<RetirementMembersTableProps> = ({ members, currencyCode, loading }) => {
+
+    // While loading, hold the table's shape rather than collapsing to nothing and pushing
+    // everything below it up. A genuinely empty projection still renders nothing.
+    if (loading) {
+        return (
+            <SectionTable striped header="By Person">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>Retires</th>
+                        <th>Balance Today</th>
+                        <th>At Retirement</th>
+                        <th>In Today's Dollars</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <LoadingTableRows rows={2} cols={6} />
+                </tbody>
+            </SectionTable>
+        );
+    }
 
     if (members.length === 0) return null;
 

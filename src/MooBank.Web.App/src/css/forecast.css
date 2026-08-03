@@ -30,41 +30,35 @@
     margin-bottom: 1.5rem;
 }
 
-/* Shared .eyebrow label + global --income-bar/--expense-bar accent tokens, with
-   forecast-owned layout classes (not coupled to the tx- compact-widget class). */
-.forecast-metrics .section.metric {
+/* Card, accent, value and caption come from components/kpi.css; only the sizing is ours. */
+.forecast-metrics .section.kpi {
     padding: 0.75rem 1rem;
-    border-top: 2px solid var(--primary);
 }
 
-.forecast-metrics .section.metric[data-tone="income"],
-.forecast-metrics .section.metric[data-tone="ok"] { border-top-color: var(--income-bar); }
-.forecast-metrics .section.metric[data-tone="expense"],
-.forecast-metrics .section.metric[data-tone="risk"] { border-top-color: var(--expense-bar); }
-
-.forecast-metrics .metric-value {
+.forecast-metrics .kpi-value {
     font-size: 1.375rem;
-    font-weight: 600;
-    letter-spacing: -0.6px;
-    line-height: 1.1;
-    font-variant-numeric: tabular-nums;
-    margin-top: 0.125rem;
     color: var(--body-colour-bold);
 }
 
-.forecast-metrics .metric-value.income { color: var(--income-fg); }
-.forecast-metrics .metric-value.expense,
-.forecast-metrics .metric-value.negative { color: var(--expense-fg); }
+.forecast-metrics .kpi-value.income { color: var(--income-fg); }
+.forecast-metrics .kpi-value.expense,
+.forecast-metrics .kpi-value.negative { color: var(--expense-fg); }
 
-.forecast-metrics .metric-sub {
-    font-size: 0.75rem;
+.forecast-metrics .kpi-sub {
     color: var(--secondary-colour);
-    margin-top: 0.125rem;
 }
 
 .forecast-chart-section .forecast-chart-canvas {
     height: 400px;
 }
+
+/* ---- Loading placeholders (see MetricsSkeleton) ----
+   Heights come from the real classes via the shared rule in components.css; only the widths are
+   set here, so a placeholder card doesn't read as three full-width bars. */
+.section.kpi .eyebrow > .skeleton-text > .skeleton-text-line { width: 45%; }
+.section.kpi .kpi-value > .skeleton-text > .skeleton-text-line { width: 70%; }
+.section.kpi .kpi-sub > .skeleton-text > .skeleton-text-line { width: 60%; }
+.forecast-title > .skeleton-text > .skeleton-text-line { width: 14rem; }
 
 /* ---- Income / expenses charts (projected vs actual, under the main chart) ---- */
 .forecast-io-charts {
@@ -225,7 +219,7 @@ table.link-payments tfoot td {
 
 /* The span between a low and a high month. Set smaller and quieter than the figures so the pair
    reads as one value with a range, not as two competing numbers. */
-.forecast-metrics .metric-range-to {
+.forecast-metrics .kpi-range-to {
     font-size: 0.75rem;
     font-weight: 400;
     letter-spacing: 0;

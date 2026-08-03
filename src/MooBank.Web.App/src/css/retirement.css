@@ -9,24 +9,19 @@
     margin-bottom: 1.5rem;
 }
 
-.retirement-metrics .section.metric {
+/* Card, accent, value and caption come from components/kpi.css; only the sizing is ours. */
+.retirement-metrics .section.kpi {
     padding: 0.75rem 1rem;
-    border-top: 2px solid var(--primary);
 }
 
-.retirement-metrics .metric-value {
+.retirement-metrics .kpi-value {
     font-size: 1.375rem;
-    font-weight: 600;
-    letter-spacing: -0.6px;
-    line-height: 1.1;
-    font-variant-numeric: tabular-nums;
-    margin-top: 0.125rem;
     color: var(--body-colour-bold);
 }
 
-.retirement-metrics .metric-sub {
-    font-size: 0.75rem;
+.retirement-metrics .kpi-sub {
     color: var(--secondary-colour);
+    margin-top: 0;
 }
 
 .retirement-chart-canvas {

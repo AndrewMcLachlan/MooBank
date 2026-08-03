@@ -3,10 +3,12 @@ import { Section } from "@andrewmclachlan/moo-ds";
 import type { RetirementProjectionYear } from "api/types.gen";
 import { useChartColours } from "utils/chartColours";
 import { hasRetirementIncome, retirementIncomeChartData, retirementIncomeChartOptions } from "../-retirement-utils/retirementIncomeChart";
+import { ChartSkeleton } from "../-components/ChartSkeleton";
 
 interface RetirementIncomeChartProps {
     years: RetirementProjectionYear[];
     currencyCode: string;
+    loading?: boolean;
 }
 
 /**
@@ -15,10 +17,14 @@ interface RetirementIncomeChartProps {
  * The balance chart answers "how much will we have"; this answers "what do we get to spend, and for
  * how long" — which is the question a retirement plan is really asked.
  */
-export const RetirementIncomeChart: React.FC<RetirementIncomeChartProps> = ({ years, currencyCode }) => {
+export const RetirementIncomeChart: React.FC<RetirementIncomeChartProps> = ({ years, currencyCode, loading }) => {
 
     const colours = useChartColours();
 
+    if (loading) return <ChartSkeleton header="Retirement Income" canvasClassName="retirement-chart-canvas" />;
+
+    // A plan that draws no retirement income has no chart to show — see the grid rule in
+    // retirement.css, which lets the balance chart take the full width when this is absent.
     if (!hasRetirementIncome(years)) return null;
 
     return (
