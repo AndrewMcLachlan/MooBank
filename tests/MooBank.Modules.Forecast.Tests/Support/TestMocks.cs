@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.Domain;
 using Asm.MooBank.Domain.Entities.Forecast;
 using Asm.MooBank.Domain.Entities.Instrument;
@@ -27,6 +27,11 @@ public class TestMocks
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>());
         InstrumentRepositoryMock = new Mock<IInstrumentRepository>();
 
+        PlannedItemMatcherMock = new Mock<IPlannedItemMatcher>();
+        PlannedItemMatcherMock
+            .Setup(m => m.GetPayments(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync([]);
+
         User = CreateTestUser();
     }
 
@@ -39,6 +44,16 @@ public class TestMocks
     public Mock<IReportReader> ReportReaderMock { get; }
 
     public Mock<IInstrumentRepository> InstrumentRepositoryMock { get; }
+
+    internal Mock<IPlannedItemMatcher> PlannedItemMatcherMock { get; }
+
+    /// <summary>
+    /// Sets the payments the matcher will report for the plan's links.
+    /// </summary>
+    internal void SetLinkedPayments(params LinkedPayment[] payments) =>
+        PlannedItemMatcherMock
+            .Setup(m => m.GetPayments(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(payments);
 
     public User User { get; private set; }
 

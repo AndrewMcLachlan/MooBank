@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Modules.Forecast.Commands;
 using Asm.MooBank.Modules.Forecast.Models;
 using Asm.MooBank.Modules.Forecast.Tests.Support;
@@ -37,7 +37,7 @@ public class RunForecastTests
                 MonthsBelowZero = 0,
                 TotalIncome = 60000m,
                 TotalOutgoings = 48000m,
-                MonthlyBaselineOutgoings = 4000m,
+                Expenses = new ExpenseModel { FixedComponent = 2000m, VariableComponent = 0.4m, AverageMonthly = 4000m },
             }
         };
 
@@ -82,7 +82,7 @@ public class RunForecastTests
                 MonthsBelowZero = 0,
                 TotalIncome = 0m,
                 TotalOutgoings = 0m,
-                MonthlyBaselineOutgoings = 0m,
+                Expenses = new ExpenseModel { AverageMonthly = 0m },
             }
         };
 
@@ -141,9 +141,9 @@ public class RunForecastTests
 
         var months = new List<ForecastMonth>
         {
-            new() { MonthStart = new DateOnly(2024, 1, 1), OpeningBalance = 10000m, IncomeTotal = 0m, BaselineOutgoingsTotal = 0m, PlannedItemsTotal = 0m, ClosingBalance = 8000m },
-            new() { MonthStart = new DateOnly(2024, 2, 1), OpeningBalance = 8000m, IncomeTotal = 0m, BaselineOutgoingsTotal = 0m, PlannedItemsTotal = 0m, ClosingBalance = 6000m },
-            new() { MonthStart = new DateOnly(2024, 3, 1), OpeningBalance = 6000m, IncomeTotal = 0m, BaselineOutgoingsTotal = 0m, PlannedItemsTotal = 0m, ClosingBalance = 4000m },
+            new() { MonthStart = new DateOnly(2024, 1, 1), OpeningBalance = 10000m, IncomeTotal = 0m, BaselineOutgoingsTotal = 0m, ClosingBalance = 8000m },
+            new() { MonthStart = new DateOnly(2024, 2, 1), OpeningBalance = 8000m, IncomeTotal = 0m, BaselineOutgoingsTotal = 0m, ClosingBalance = 6000m },
+            new() { MonthStart = new DateOnly(2024, 3, 1), OpeningBalance = 6000m, IncomeTotal = 0m, BaselineOutgoingsTotal = 0m, ClosingBalance = 4000m },
         };
 
         var expectedResult = new ForecastResult
@@ -158,7 +158,7 @@ public class RunForecastTests
                 MonthsBelowZero = 0,
                 TotalIncome = 0m,
                 TotalOutgoings = 0m,
-                MonthlyBaselineOutgoings = 0m,
+                Expenses = new ExpenseModel { AverageMonthly = 0m },
             }
         };
 

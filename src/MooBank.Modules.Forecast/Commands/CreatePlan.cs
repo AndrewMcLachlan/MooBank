@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Text.Json;
 using Asm.MooBank.Domain.Entities.Forecast;
 using Asm.MooBank.Domain.Entities.Instrument;
@@ -20,7 +20,18 @@ internal class CreatePlanHandler(
     User user) : ICommandHandler<CreatePlan, Models.ForecastPlan>
 {
     private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-    private const int DefaultLookbackMonths = 12;
+    /// <summary>
+    /// How far back the expense model is fitted over by default. Two years rather than one: the fit
+    /// needs enough months, and enough variation in income, to find a slope at all.
+    /// </summary>
+    private const int DefaultLookbackMonths = 24;
+
+    /// <summary>
+    /// How far back the seeded income item is averaged over. Deliberately shorter than the expense
+    /// lookback — income tends to rise, so a two-year average would seed a figure the household has
+    /// already grown out of.
+    /// </summary>
+    private const int IncomeSeedMonths = 12;
 
     public async ValueTask<Models.ForecastPlan> Handle(CreatePlan request, CancellationToken cancellationToken)
     {
@@ -30,7 +41,6 @@ internal class CreatePlanHandler(
             : user.Accounts.Concat(user.SharedAccounts);
 
         // Pre-calculate historical values if not provided
-        var incomeStrategy = request.Plan.IncomeStrategy ?? new IncomeStrategy();
         var outgoingStrategy = request.Plan.OutgoingStrategy ?? new OutgoingStrategy();
 
         // Calculate starting balance if using calculated mode
@@ -40,25 +50,12 @@ internal class CreatePlanHandler(
             startingBalance = await CalculateCurrentBalance(accountIds, cancellationToken);
         }
 
-        // Calculate historical income if not manually specified
-        if (incomeStrategy.ManualRecurring == null || incomeStrategy.ManualRecurring.Amount == 0)
-        {
-            var historicalIncome = await CalculateHistoricalAverage(accountIds, request.Plan.StartDate, DefaultLookbackMonths, TransactionFilterType.Credit, cancellationToken);
-            incomeStrategy = incomeStrategy with
-            {
-                Mode = "ManualRecurring",
-                ManualRecurring = new ManualRecurringIncome { Amount = historicalIncome, Frequency = "Monthly" }
-            };
-        }
-
         // Calculate historical outgoings if using default lookback
         if (outgoingStrategy.LookbackMonths == 0)
         {
-            //var historicalOutgoings = await CalculateHistoricalAverage(accountIds, request.Plan.StartDate, DefaultLookbackMonths, TransactionFilterType.Debit, cancellationToken);
             outgoingStrategy = outgoingStrategy with
             {
                 LookbackMonths = DefaultLookbackMonths,
-                Mode = "HistoricalAverage",
             };
         }
 
@@ -72,7 +69,6 @@ internal class CreatePlanHandler(
             StartingBalanceMode = request.Plan.StartingBalanceMode,
             StartingBalanceAmount = startingBalance,
             CurrencyCode = request.Plan.CurrencyCode ?? user.Currency,
-            IncomeStrategySerialized = JsonSerializer.Serialize(incomeStrategy, JsonOptions),
             OutgoingStrategySerialized = JsonSerializer.Serialize(outgoingStrategy, JsonOptions),
             AssumptionsSerialized = request.Plan.Assumptions != null ? JsonSerializer.Serialize(request.Plan.Assumptions, JsonOptions) : null,
             CreatedUtc = DateTime.UtcNow,
@@ -82,6 +78,32 @@ internal class CreatePlanHandler(
         if (request.Plan.AccountIds.Any())
         {
             entity.SetAccounts(request.Plan.AccountIds);
+        }
+
+        // Seed income from history so a new plan forecasts something on its first run. This used to
+        // be a fixed monthly figure on the plan; it is now an ordinary planned income item, which
+        // the author can date, end or split as their circumstances change.
+        if (!request.Plan.PlannedItems.Any(i => i.ItemType == PlannedItemType.Income))
+        {
+            var historicalIncome = await CalculateHistoricalAverage(accountIds, request.Plan.StartDate, IncomeSeedMonths, TransactionFilterType.Credit, cancellationToken);
+
+            if (historicalIncome > 0m)
+            {
+                entity.AddPlannedItem(new ForecastPlannedItem
+                {
+                    Name = "Income",
+                    ItemType = PlannedItemType.Income,
+                    Amount = historicalIncome,
+                    IsIncluded = true,
+                    DateMode = PlannedItemDateMode.Schedule,
+                    Schedule = new PlannedItemSchedule
+                    {
+                        Frequency = ScheduleFrequency.Monthly,
+                        AnchorDate = request.Plan.StartDate,
+                        Interval = 1,
+                    },
+                });
+            }
         }
 
         forecastRepository.Add(entity);

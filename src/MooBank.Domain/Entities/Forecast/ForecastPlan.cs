@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Forecast;
 
@@ -29,9 +29,6 @@ public class ForecastPlan(Guid id) : KeyedEntity<Guid>(id)
 
     [MaxLength(3)]
     public string? CurrencyCode { get; set; }
-
-    [Column("IncomeStrategy")]
-    public string? IncomeStrategySerialized { get; set; }
 
     [Column("OutgoingStrategy")]
     public string? OutgoingStrategySerialized { get; set; }
@@ -65,6 +62,49 @@ public class ForecastPlan(Guid id) : KeyedEntity<Guid>(id)
             PlannedItems.Remove(item);
             UpdatedUtc = DateTime.UtcNow;
         }
+    }
+
+    /// <summary>
+    /// Records which payments belong to a planned item, replacing whatever was there before.
+    /// </summary>
+    /// <exception cref="NotFoundException">Thrown when the item does not belong to this plan.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when a payment already belongs to another item on the plan. A payment covering two
+    /// items is a sign the two should be one item, and counting it against both would overstate the
+    /// plan by its whole amount.
+    /// </exception>
+    public void SetPlannedItemTransactions(Guid plannedItemId, IEnumerable<Guid> transactionIds)
+    {
+        var item = PlannedItems.SingleOrDefault(i => i.Id == plannedItemId)
+            ?? throw new NotFoundException("Planned item not found");
+
+        var ids = transactionIds.Distinct().ToList();
+
+        var takenElsewhere = PlannedItems
+            .Where(i => i.Id != plannedItemId)
+            .SelectMany(i => i.Transactions)
+            .Where(t => ids.Contains(t.TransactionId))
+            .Select(t => t.TransactionId)
+            .ToList();
+
+        if (takenElsewhere.Count > 0)
+        {
+            throw new InvalidOperationException("That payment already belongs to another planned item on this plan");
+        }
+
+        item.Transactions.Clear();
+
+        foreach (var transactionId in ids)
+        {
+            item.Transactions.Add(new ForecastPlannedItemTransaction
+            {
+                PlannedItemId = item.Id,
+                ForecastPlanId = Id,
+                TransactionId = transactionId,
+            });
+        }
+
+        UpdatedUtc = DateTime.UtcNow;
     }
 
     public void SetAccounts(IEnumerable<Guid> instrumentIds)

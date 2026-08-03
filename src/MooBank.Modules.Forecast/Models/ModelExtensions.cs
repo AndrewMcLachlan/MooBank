@@ -1,4 +1,4 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using Asm.MooBank.Models;
 using DomainEntities = Asm.MooBank.Domain.Entities.Forecast;
 
@@ -18,7 +18,6 @@ public static class ModelExtensions
         StartingBalanceMode = plan.StartingBalanceMode,
         StartingBalanceAmount = plan.StartingBalanceAmount,
         CurrencyCode = plan.CurrencyCode,
-        IncomeStrategy = String.IsNullOrEmpty(plan.IncomeStrategySerialized) ? null : JsonSerializer.Deserialize<IncomeStrategy>(plan.IncomeStrategySerialized, JsonOptions),
         OutgoingStrategy = String.IsNullOrEmpty(plan.OutgoingStrategySerialized) ? null : JsonSerializer.Deserialize<OutgoingStrategy>(plan.OutgoingStrategySerialized, JsonOptions),
         Assumptions = String.IsNullOrEmpty(plan.AssumptionsSerialized) ? null : JsonSerializer.Deserialize<Assumptions>(plan.AssumptionsSerialized, JsonOptions),
         IsArchived = plan.IsArchived,
@@ -49,7 +48,8 @@ public static class ModelExtensions
         WindowStartDate = item.FlexibleWindow?.StartDate,
         WindowEndDate = item.FlexibleWindow?.EndDate,
         AllocationMode = item.FlexibleWindow?.AllocationMode,
-        Notes = item.Notes
+        Notes = item.Notes,
+        LinkedTransactionIds = item.Transactions.Select(t => t.TransactionId).ToList(),
     };
 
     public static DomainEntities.ForecastPlannedItem ToDomain(this PlannedItemBase item, Guid planId)

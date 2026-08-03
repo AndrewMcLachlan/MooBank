@@ -278,3 +278,6 @@ attribcache140.bin
 
 # Agent worktrees
 .claude/worktrees/
+
+# TanStack Router dev-server scratch
+src/MooBank.Web.App/.tanstack/

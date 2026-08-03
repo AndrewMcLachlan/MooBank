@@ -2152,6 +2152,102 @@
         }
       }
     },
+    "/forecast/plans/{planId}/items/{itemId}/payment-candidates": {
+      "get": {
+        "tags": [
+          "Forecast"
+        ],
+        "operationId": "get-payment-candidates",
+        "parameters": [
+          {
+            "name": "planId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PaymentCandidate"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/forecast/plans/{planId}/items/{itemId}/payments": {
+      "put": {
+        "tags": [
+          "Forecast"
+        ],
+        "operationId": "set-planned-item-payments",
+        "parameters": [
+          {
+            "name": "planId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlannedItemPayments"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlannedItem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/groups": {
       "get": {
         "tags": [
@@ -7064,6 +7160,43 @@
           }
         }
       },
+      "ExpenseModel": {
+        "required": [
+          "fixedComponent",
+          "variableComponent",
+          "rSquared",
+          "dataPoints",
+          "modelledIncomeShortfall",
+          "averageMonthly"
+        ],
+        "type": "object",
+        "properties": {
+          "fixedComponent": {
+            "type": "number",
+            "format": "double"
+          },
+          "variableComponent": {
+            "type": "number",
+            "format": "double"
+          },
+          "rSquared": {
+            "type": "number",
+            "format": "double"
+          },
+          "dataPoints": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "modelledIncomeShortfall": {
+            "type": "number",
+            "format": "double"
+          },
+          "averageMonthly": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
       "Family": {
         "required": [
           "name",
@@ -7093,9 +7226,8 @@
           "openingBalance",
           "incomeTotal",
           "baselineOutgoingsTotal",
-          "plannedItemsTotal",
-          "plannedIncomeTotal",
           "plannedExpensesTotal",
+          "realisedExpensesTotal",
           "closingBalance"
         ],
         "type": "object",
@@ -7116,15 +7248,11 @@
             "type": "number",
             "format": "double"
           },
-          "plannedItemsTotal": {
-            "type": "number",
-            "format": "double"
-          },
-          "plannedIncomeTotal": {
-            "type": "number",
-            "format": "double"
-          },
           "plannedExpensesTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "realisedExpensesTotal": {
             "type": "number",
             "format": "double"
           },
@@ -7216,16 +7344,6 @@
               "string"
             ]
           },
-          "incomeStrategy": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "$ref": "#/components/schemas/IncomeStrategy"
-              }
-            ]
-          },
           "outgoingStrategy": {
             "oneOf": [
               {
@@ -7265,7 +7383,8 @@
         "required": [
           "months",
           "summary",
-          "planId"
+          "planId",
+          "plannedItems"
         ],
         "type": "object",
         "properties": {
@@ -7281,18 +7400,24 @@
           },
           "summary": {
             "$ref": "#/components/schemas/ForecastSummary"
+          },
+          "plannedItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PlannedItemProgress"
+            }
           }
         }
       },
       "ForecastSummary": {
         "required": [
+          "expenses",
           "lowestBalance",
           "lowestBalanceMonth",
           "requiredMonthlyUplift",
           "monthsBelowZero",
           "totalIncome",
-          "totalOutgoings",
-          "monthlyBaselineOutgoings"
+          "totalOutgoings"
         ],
         "type": "object",
         "properties": {
@@ -7320,19 +7445,8 @@
             "type": "number",
             "format": "double"
           },
-          "monthlyBaselineOutgoings": {
-            "type": "number",
-            "format": "double"
-          },
-          "regression": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "$ref": "#/components/schemas/RegressionDiagnostics"
-              }
-            ]
+          "expenses": {
+            "$ref": "#/components/schemas/ExpenseModel"
           }
         }
       },
@@ -7382,46 +7496,6 @@
         ]
       },
       "HexColour": { },
-      "HistoricalIncomeSettings": {
-        "required": [
-          "lookbackMonths",
-          "excludeTransfers",
-          "excludeOffsets"
-        ],
-        "type": "object",
-        "properties": {
-          "lookbackMonths": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "includeTagIds": {
-            "type": [
-              "null",
-              "array"
-            ],
-            "items": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          "excludeTagIds": {
-            "type": [
-              "null",
-              "array"
-            ],
-            "items": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          "excludeTransfers": {
-            "type": "boolean"
-          },
-          "excludeOffsets": {
-            "type": "boolean"
-          }
-        }
-      },
       "IFormFile": {
         "required": [
           "contentType",
@@ -7564,63 +7638,13 @@
       },
       "IncomeCorrelatedSettings": {
         "required": [
-          "rSquaredThreshold",
           "minDataPoints"
         ],
         "type": "object",
         "properties": {
-          "rSquaredThreshold": {
-            "type": "number",
-            "format": "double"
-          },
           "minDataPoints": {
             "type": "integer",
             "format": "int32"
-          }
-        }
-      },
-      "IncomeStrategy": {
-        "required": [
-          "version",
-          "mode"
-        ],
-        "type": "object",
-        "properties": {
-          "version": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "mode": {
-            "type": "string"
-          },
-          "manualRecurring": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "$ref": "#/components/schemas/ManualRecurringIncome"
-              }
-            ]
-          },
-          "manualAdjustments": {
-            "type": [
-              "null",
-              "array"
-            ],
-            "items": {
-              "$ref": "#/components/schemas/ManualAdjustment"
-            }
-          },
-          "historical": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "$ref": "#/components/schemas/HistoricalIncomeSettings"
-              }
-            ]
           }
         }
       },
@@ -8073,53 +8097,6 @@
           }
         }
       },
-      "ManualAdjustment": {
-        "required": [
-          "date",
-          "deltaAmount"
-        ],
-        "type": "object",
-        "properties": {
-          "date": {
-            "type": "string",
-            "format": "date"
-          },
-          "deltaAmount": {
-            "type": "number",
-            "format": "double"
-          }
-        }
-      },
-      "ManualRecurringIncome": {
-        "required": [
-          "amount",
-          "frequency"
-        ],
-        "type": "object",
-        "properties": {
-          "amount": {
-            "type": "number",
-            "format": "double"
-          },
-          "frequency": {
-            "type": "string"
-          },
-          "startDate": {
-            "type": [
-              "null",
-              "string"
-            ],
-            "format": "date"
-          },
-          "endDate": {
-            "type": [
-              "null",
-              "string"
-            ],
-            "format": "date"
-          }
-        }
-      },
       "MonthlyBalancesReport": {
         "required": [
           "balances",
@@ -8152,7 +8129,6 @@
       "OutgoingStrategy": {
         "required": [
           "version",
-          "mode",
           "lookbackMonths"
         ],
         "type": "object",
@@ -8160,9 +8136,6 @@
           "version": {
             "type": "integer",
             "format": "int32"
-          },
-          "mode": {
-            "type": "string"
           },
           "lookbackMonths": {
             "type": "integer",
@@ -8204,6 +8177,43 @@
                 "$ref": "#/components/schemas/IncomeCorrelatedSettings"
               }
             ]
+          }
+        }
+      },
+      "PaymentCandidate": {
+        "required": [
+          "transactionId",
+          "accountId",
+          "when",
+          "amount",
+          "isLinked"
+        ],
+        "type": "object",
+        "properties": {
+          "transactionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "when": {
+            "type": "string",
+            "format": "date"
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "isLinked": {
+            "type": "boolean"
           }
         }
       },
@@ -8311,6 +8321,7 @@
         "required": [
           "name",
           "id",
+          "linkedTransactionIds",
           "itemType",
           "amount",
           "isIncluded",
@@ -8321,6 +8332,13 @@
           "id": {
             "type": "string",
             "format": "uuid"
+          },
+          "linkedTransactionIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
           },
           "itemType": {
             "$ref": "#/components/schemas/PlannedItemType"
@@ -8441,6 +8459,60 @@
           "Schedule",
           "FlexibleWindow"
         ]
+      },
+      "PlannedItemPayments": {
+        "required": [
+          "transactionIds"
+        ],
+        "type": "object",
+        "properties": {
+          "transactionIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        }
+      },
+      "PlannedItemProgress": {
+        "required": [
+          "name",
+          "plannedItemId",
+          "plannedTotal",
+          "actualToDate",
+          "remaining",
+          "isMatched",
+          "isClosed"
+        ],
+        "type": "object",
+        "properties": {
+          "plannedItemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "plannedTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "actualToDate": {
+            "type": "number",
+            "format": "double"
+          },
+          "remaining": {
+            "type": "number",
+            "format": "double"
+          },
+          "isMatched": {
+            "type": "boolean"
+          },
+          "isClosed": {
+            "type": "boolean"
+          }
+        }
       },
       "PlannedItemType": {
         "enum": [
@@ -8575,32 +8647,6 @@
           "nextRun": {
             "type": "string",
             "format": "date"
-          }
-        }
-      },
-      "RegressionDiagnostics": {
-        "required": [
-          "fixedComponent",
-          "variableComponent",
-          "rSquared",
-          "fellBackToFlatAverage"
-        ],
-        "type": "object",
-        "properties": {
-          "fixedComponent": {
-            "type": "number",
-            "format": "double"
-          },
-          "variableComponent": {
-            "type": "number",
-            "format": "double"
-          },
-          "rSquared": {
-            "type": "number",
-            "format": "double"
-          },
-          "fellBackToFlatAverage": {
-            "type": "boolean"
           }
         }
       },
@@ -9477,16 +9523,6 @@
             "type": [
               "null",
               "string"
-            ]
-          },
-          "incomeStrategy": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "$ref": "#/components/schemas/IncomeStrategy"
-              }
             ]
           },
           "outgoingStrategy": {

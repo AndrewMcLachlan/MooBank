@@ -1,53 +1,21 @@
-namespace Asm.MooBank.Modules.Forecast.Models;
+﻿namespace Asm.MooBank.Modules.Forecast.Models;
 
-public sealed record IncomeStrategy
-{
-    public int Version { get; init; } = 1;
-    public string Mode { get; init; } = "ManualRecurring";
-    public ManualRecurringIncome? ManualRecurring { get; init; }
-    public IEnumerable<ManualAdjustment>? ManualAdjustments { get; init; }
-    public HistoricalIncomeSettings? Historical { get; init; }
-}
+// Income is modelled entirely by planned income items. There is deliberately no income strategy:
+// a plan used to carry a fixed monthly figure *and* planned income items, with nothing reconciling
+// them, so a salary entered in both places was counted twice. Planned items already express
+// fortnightly and monthly schedules with start and end dates, which is everything a pay rise,
+// a promotion or a redundancy needs — and, unlike a single figure, they can change over time.
 
-public sealed record ManualRecurringIncome
-{
-    public decimal Amount { get; init; }
-
-    // TODO: not yet honoured by ForecastEngine — the amount is always treated as monthly.
-    public string Frequency { get; init; } = "Monthly";
-
-    public DateOnly? StartDate { get; init; }
-    public DateOnly? EndDate { get; init; }
-}
-
-public sealed record ManualAdjustment
-{
-    public DateOnly Date { get; init; }
-    public decimal DeltaAmount { get; init; }
-}
-
-public sealed record HistoricalIncomeSettings
-{
-    public int LookbackMonths { get; init; } = 12;
-
-    // TODO: not yet honoured by ForecastEngine.
-    public IEnumerable<int>? IncludeTagIds { get; init; }
-
-    // TODO: not yet honoured by ForecastEngine.
-    public IEnumerable<int>? ExcludeTagIds { get; init; }
-
-    // TODO: not yet honoured by ForecastEngine.
-    public bool ExcludeTransfers { get; init; } = true;
-
-    // TODO: not yet honoured by ForecastEngine.
-    public bool ExcludeOffsets { get; init; }
-}
+// There is deliberately no mode. Expenses move with income — lower income, less discretionary
+// spending — so that is the model, not one option among several. The flat average survives only as
+// the degenerate case, used when there is not enough signal to fit a slope, and it is reported as a
+// fallback rather than chosen. The mode this replaces was named "HistoricalAverageByTag" and did
+// nothing by tag: it averaged every debit.
 
 public sealed record OutgoingStrategy
 {
     public int Version { get; init; } = 1;
-    public string Mode { get; init; } = "HistoricalAverageByTag";
-    public int LookbackMonths { get; init; } = 12;
+    public int LookbackMonths { get; init; } = 24;
 
     // TODO: not yet honoured by ForecastEngine.
     public IEnumerable<int>? ExcludeTagIds { get; init; }
@@ -61,9 +29,12 @@ public sealed record OutgoingStrategy
     public IncomeCorrelatedSettings? IncomeCorrelated { get; init; }
 }
 
+// There is deliberately no R-squared threshold. Household spending is noisy, so a real relationship
+// between income and spending rarely reaches a high correlation over a year or two of monthly
+// points -- and rejecting it left the forecast on a flat line, which cannot answer what happens when
+// income changes. A fit that explains some of the variation beats one that explains none.
 public sealed record IncomeCorrelatedSettings
 {
-    public decimal RSquaredThreshold { get; init; } = 0.5m;
     public int MinDataPoints { get; init; } = 6;
 }
 

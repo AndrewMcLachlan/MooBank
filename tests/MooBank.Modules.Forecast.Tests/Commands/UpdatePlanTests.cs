@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Domain.Entities.Forecast.Specifications;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Forecast.Commands;
@@ -170,14 +170,8 @@ public class UpdatePlanTests
             _mocks.ForecastRepositoryMock.Object,
             _mocks.UnitOfWorkMock.Object);
 
-        var incomeStrategy = new IncomeStrategy
-        {
-            Mode = "ManualRecurring",
-            ManualRecurring = new ManualRecurringIncome { Amount = 5000m, Frequency = "Monthly" }
-        };
         var outgoingStrategy = new OutgoingStrategy
         {
-            Mode = "HistoricalAverage",
             LookbackMonths = 6
         };
 
@@ -194,7 +188,6 @@ public class UpdatePlanTests
             UpdatedUtc = DateTime.UtcNow,
             AccountIds = [],
             PlannedItems = [],
-            IncomeStrategy = incomeStrategy,
             OutgoingStrategy = outgoingStrategy,
         };
         var command = new UpdatePlan(planId, updateModel);
@@ -203,9 +196,7 @@ public class UpdatePlanTests
         var result = await handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
-        Assert.NotNull(existingPlan.IncomeStrategySerialized);
         Assert.NotNull(existingPlan.OutgoingStrategySerialized);
-        Assert.Contains("5000", existingPlan.IncomeStrategySerialized);
         Assert.Contains("6", existingPlan.OutgoingStrategySerialized);
     }
 

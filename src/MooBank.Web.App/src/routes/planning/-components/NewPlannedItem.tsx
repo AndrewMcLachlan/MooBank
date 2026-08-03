@@ -1,16 +1,20 @@
-import { SaveIcon, Input } from "@andrewmclachlan/moo-ds";
+import { SaveIcon, Input, ComboBox } from "@andrewmclachlan/moo-ds";
 import { format } from "date-fns";
-import type { PlannedItemDateMode, PlannedItemType, ScheduleFrequency } from "api/types.gen";
+import type { PlannedItemDateMode, PlannedItemType, ScheduleFrequency, Tag } from "api/types.gen";
 import { useState } from "react";
+import { useTags } from "hooks/useTags";
 import { useCreatePlannedItem } from "../-hooks/useCreatePlannedItem";
 
 interface NewPlannedItemProps {
     planId: string;
     itemType: PlannedItemType;
+    /// Whether the section shows the tag and spent columns, so this row lines up with them.
+    tracked: boolean;
 }
 
-export const NewPlannedItem: React.FC<NewPlannedItemProps> = ({ planId, itemType }) => {
+export const NewPlannedItem: React.FC<NewPlannedItemProps> = ({ planId, itemType, tracked }) => {
     const { create, isPending } = useCreatePlannedItem();
+    const { data: tags } = useTags();
 
     const [name, setName] = useState("");
     const [amount, setAmount] = useState(0);
@@ -19,6 +23,7 @@ export const NewPlannedItem: React.FC<NewPlannedItemProps> = ({ planId, itemType
     const [scheduleFrequency, setScheduleFrequency] = useState<ScheduleFrequency>("Monthly");
     const [endDate, setEndDate] = useState("");
     const [notes, setNotes] = useState("");
+    const [tagId, setTagId] = useState<number | undefined>(undefined);
 
     const handleAdd = () => {
         if (!name || amount <= 0) return;
@@ -34,7 +39,8 @@ export const NewPlannedItem: React.FC<NewPlannedItemProps> = ({ planId, itemType
             scheduleAnchorDate: dateMode === "Schedule" ? startDate : undefined,
             scheduleInterval: dateMode === "Schedule" ? 1 : undefined,
             scheduleEndDate: dateMode === "Schedule" && endDate ? endDate : undefined,
-            notes: notes || undefined
+            notes: notes || undefined,
+            tagId,
         });
 
         // Reset form
@@ -42,6 +48,7 @@ export const NewPlannedItem: React.FC<NewPlannedItemProps> = ({ planId, itemType
         setAmount(0);
         setEndDate("");
         setNotes("");
+        setTagId(undefined);
     };
 
     return (
@@ -63,6 +70,18 @@ export const NewPlannedItem: React.FC<NewPlannedItemProps> = ({ planId, itemType
                     onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
                 />
             </td>
+            {tracked && <td className="planned-item-tag">
+                <ComboBox
+                    clearable
+                    placeholder="Untagged"
+                    items={tags ?? []}
+                    selectedItems={(tags ?? []).filter(t => t.id === tagId)}
+                    labelField={(t: Tag) => t?.name}
+                    valueField={(t: Tag) => String(t?.id)}
+                    onChange={(selected: Tag[]) => setTagId(selected[0]?.id ?? undefined)}
+                />
+            </td>}
+            {tracked && <td />}
             <td>
                 <Input
                     type="date"
@@ -72,7 +91,7 @@ export const NewPlannedItem: React.FC<NewPlannedItemProps> = ({ planId, itemType
             </td>
             <td>
                 {dateMode === "FixedDate" ? (
-                    <span className="text-muted">-</span>
+                    <span className="no-value">-</span>
                 ) : (
                     <Input
                         type="date"

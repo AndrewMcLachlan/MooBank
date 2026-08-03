@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Text.Json;
 using Asm.MooBank.Domain.Entities.Forecast;
 using Asm.MooBank.Domain.Entities.Forecast.Specifications;
@@ -24,7 +24,6 @@ internal class UpdatePlanHandler(IForecastRepository forecastRepository, IUnitOf
         entity.StartingBalanceMode = request.Plan.StartingBalanceMode;
         entity.StartingBalanceAmount = request.Plan.StartingBalanceAmount;
         entity.CurrencyCode = request.Plan.CurrencyCode;
-        entity.IncomeStrategySerialized = request.Plan.IncomeStrategy != null ? JsonSerializer.Serialize(request.Plan.IncomeStrategy, JsonOptions) : null;
         entity.OutgoingStrategySerialized = request.Plan.OutgoingStrategy != null ? JsonSerializer.Serialize(request.Plan.OutgoingStrategy, JsonOptions) : null;
         entity.AssumptionsSerialized = request.Plan.Assumptions != null ? JsonSerializer.Serialize(request.Plan.Assumptions, JsonOptions) : null;
         entity.UpdatedUtc = DateTime.UtcNow;

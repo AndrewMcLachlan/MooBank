@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import type { ForecastPlan, ForecastSummary } from "api/types.gen";
+import type { ExpenseModel, ForecastMonth, ForecastPlan, ForecastSummary } from "api/types.gen";
 import { ForecastOutlook } from "./ForecastOutlook";
 
 // The chart pulls in react-chartjs-2 (canvas) and theme context; the Outlook's own logic is the
@@ -25,6 +25,16 @@ vi.mock("@andrewmclachlan/moo-ds", () => ({
     ),
 }));
 
+const expenses = (over: Partial<ExpenseModel> = {}): ExpenseModel => ({
+    fixedComponent: 1200,
+    variableComponent: 0.42,
+    rSquared: 0.83,
+    dataPoints: 24,
+    modelledIncomeShortfall: 0,
+    averageMonthly: 6457,
+    ...over,
+});
+
 const summary = (over: Partial<ForecastSummary> = {}): ForecastSummary => ({
     lowestBalance: 101536,
     lowestBalanceMonth: "2026-07-01",
@@ -32,9 +42,20 @@ const summary = (over: Partial<ForecastSummary> = {}): ForecastSummary => ({
     monthsBelowZero: 0,
     totalIncome: 303138,
     totalOutgoings: 311925,
-    monthlyBaselineOutgoings: 6457,
-    regression: null,
+    expenses: expenses(),
     ...over,
+});
+
+const spending = (baselineOutgoingsTotal: number): ForecastMonth => ({ ...month(0), baselineOutgoingsTotal });
+
+const month = (incomeTotal: number): ForecastMonth => ({
+    monthStart: "2026-01-01",
+    openingBalance: 0,
+    incomeTotal,
+    baselineOutgoingsTotal: 0,
+    plannedExpensesTotal: 0,
+    realisedExpensesTotal: 0,
+    closingBalance: 0,
 });
 
 const renderOutlook = (over?: Partial<ForecastSummary>) => {
@@ -73,37 +94,62 @@ describe("ForecastOutlook", () => {
         expect(risk).toHaveLength(2);
     });
 
-    it("renders the monthly income and expenses cards from the plan and summary", () => {
-        const plan = {
-            name: "My Forecast",
-            startDate: "2024-12-01",
-            endDate: "2027-12-01",
-            incomeStrategy: { manualRecurring: { amount: 8192.92 } },
-            outgoingStrategy: { mode: "IncomeCorrelated" },
-        } as ForecastPlan;
+    it("shows income as the span it covers, not one figure", () => {
+        // Income comes from dated planned items, so it moves; an average would read as the answer.
         const { container } = render(
-            <ForecastOutlook plan={plan} summary={summary({ monthlyBaselineOutgoings: 6457 })} months={[]} currencyCode="AUD" />,
+            <ForecastOutlook summary={summary()} months={[month(8000), month(8000), month(5000)]} currencyCode="AUD" />,
         );
-        expect(container.querySelector(".metric-value.income")).toHaveTextContent("8,192.92");
-        expect(container.querySelector(".metric-value.expense")).toHaveTextContent("6,457");
-        // Income and expenses use their own semantic classes, not the risk .negative marker.
+        const income = container.querySelector(".metric-value.income");
+        expect(income).toHaveTextContent("5,000");
+        expect(income).toHaveTextContent("8,000");
         expect(container.querySelectorAll(".metric-value.negative")).toHaveLength(0);
     });
 
-    it("notes the flat-average fallback on the expenses card when the correlation is weak", () => {
-        const plan = { startDate: "2024-12-01", endDate: "2027-12-01", outgoingStrategy: { mode: "IncomeCorrelated" } } as ForecastPlan;
-        const fellBack = summary({ regression: { fellBackToFlatAverage: true, rSquared: 0.004 } as ForecastSummary["regression"] });
-        render(<ForecastOutlook plan={plan} summary={fellBack} months={[]} currencyCode="AUD" />);
-        expect(screen.getByText("income-correlated · flat average")).toBeInTheDocument();
+    it("shows spending as the span it covers, and explains it with the model", () => {
+        // Spending follows income, so it moves too. No single figure describes it: the fixed
+        // component is a coefficient rather than an amount, and an average reads as the answer.
+        const { container } = render(
+            <ForecastOutlook
+                summary={summary()}
+                months={[spending(10400), spending(12800), spending(14200)]}
+                currencyCode="AUD" />,
+        );
+        const expense = container.querySelector(".metric-value.expense");
+        expect(expense).toHaveTextContent("10,400");
+        expect(expense).toHaveTextContent("14,200");
+        // The caption states the sensitivity -- what spending does when income moves -- rather than
+        // the fixed component, which is where the line crosses zero income and is not an amount
+        // anyone ever spends.
+        expect(screen.getByText(/moves about .*0\.42 per/)).toBeInTheDocument();
     });
 
-    it("exposes the fitted regression (fixed / variable / R²) when the income correlation holds", () => {
-        const plan = { startDate: "2024-12-01", endDate: "2027-12-01", outgoingStrategy: { mode: "IncomeCorrelated" } } as ForecastPlan;
-        const held = summary({ regression: { fellBackToFlatAverage: false, rSquared: 0.83, fixedComponent: 1200, variableComponent: 0.42 } as ForecastSummary["regression"] });
-        render(<ForecastOutlook plan={plan} summary={held} months={[]} currencyCode="AUD" />);
-        expect(screen.getByText("income-correlated")).toBeInTheDocument();
-        expect(screen.getByText(/83\.0% R²/)).toBeInTheDocument();
-        expect(screen.getByText(/42\.0% of income/)).toBeInTheDocument();
+    it("collapses to a single figure when spending does not move", () => {
+        const { container } = render(
+            <ForecastOutlook summary={summary()} months={[spending(9000), spending(9000)]} currencyCode="AUD" />,
+        );
+        expect(container.querySelector(".metric-range-to")).toBeNull();
+        expect(container.querySelector(".metric-value.expense")).toHaveTextContent("9,000");
+    });
+
+    it("drops the variable part when there was too little history to relate spending to income", () => {
+        // Not a different kind of answer -- the same model with nothing to say about income yet.
+        const noFit = summary({ expenses: expenses({ variableComponent: 0, rSquared: 0, dataPoints: 0, fixedComponent: 6457, averageMonthly: 6457 }) });
+        render(<ForecastOutlook summary={noFit} months={[spending(6457)]} currencyCode="AUD" />);
+        expect(screen.getByText("not enough history to tie this to income")).toBeInTheDocument();
+        expect(screen.getByText(/Not enough history/)).toBeInTheDocument();
+    });
+
+    it("warns when the plan models less income than the accounts actually receive", () => {
+        // Spending is priced off the larger figure, so the outlook is gloomier than it should be.
+        const short = summary({ expenses: expenses({ modelledIncomeShortfall: 7037 }) });
+        render(<ForecastOutlook summary={short} months={[]} currencyCode="AUD" />);
+        expect(screen.getByText(/7,037/)).toBeInTheDocument();
+        expect(screen.getByText(/gloomier than it should be/)).toBeInTheDocument();
+    });
+
+    it("stays quiet about the shortfall when the income model is complete", () => {
+        render(<ForecastOutlook summary={summary()} months={[]} currencyCode="AUD" />);
+        expect(screen.queryByText(/gloomier than it should be/)).toBeNull();
     });
 
     it("renders neither the health pill nor the KPI band while the summary is still loading", () => {

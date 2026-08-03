@@ -1,4 +1,4 @@
-CREATE TABLE [dbo].[ForecastPlan]
+﻿CREATE TABLE [dbo].[ForecastPlan]
 (
     [Id] UNIQUEIDENTIFIER NOT NULL CONSTRAINT DF_ForecastPlan_Id DEFAULT NEWID(),
     [FamilyId] UNIQUEIDENTIFIER NOT NULL,
@@ -9,7 +9,6 @@ CREATE TABLE [dbo].[ForecastPlan]
     [StartingBalanceMode] TINYINT NOT NULL CONSTRAINT DF_ForecastPlan_StartingBalanceMode DEFAULT 0,
     [StartingBalanceAmount] DECIMAL(18,2) NULL,
     [CurrencyCode] CHAR(3) NULL,
-    [IncomeStrategy] NVARCHAR(MAX) NULL,
     [OutgoingStrategy] NVARCHAR(MAX) NULL,
     [Assumptions] NVARCHAR(MAX) NULL,
     [IsArchived] BIT NOT NULL CONSTRAINT DF_ForecastPlan_IsArchived DEFAULT 0,

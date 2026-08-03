@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Forecast;
 
@@ -35,6 +35,12 @@ public class ForecastPlannedItem(Guid id) : KeyedEntity<Guid>(id)
     public PlannedItemDateMode DateMode { get; set; }
 
     public string? Notes { get; set; }
+
+    /// <summary>
+    /// Payments the author has said belong to this item. Where there are any, they are the item's
+    /// actuals and tag matching plays no further part.
+    /// </summary>
+    public virtual ICollection<ForecastPlannedItemTransaction> Transactions { get; set; } = [];
 
     // Navigation properties for schedule configurations (0-1 relationship)
     public virtual PlannedItemFixedDate? FixedDate { get; set; }

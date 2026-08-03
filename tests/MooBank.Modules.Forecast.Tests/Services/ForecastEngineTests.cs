@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System.Text.Json;
 using Asm.MooBank.Domain.Entities.Account;
 using Asm.MooBank.Domain.Entities.Forecast;
@@ -20,10 +20,29 @@ public class ForecastEngineTests
     private readonly TestMocks _mocks;
     private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
+    /// <summary>
+    /// The regression tests' historical data runs January–June 2024, so the accounts must report
+    /// data through the last day of June: the training window closes on the last <em>complete</em>
+    /// month, and a window anchored on today would exclude all of it.
+    /// </summary>
+    private static readonly DateOnly TrainingDataThrough = new(2024, 6, 30);
+
     public ForecastEngineTests()
     {
         _mocks = new TestMocks();
     }
+
+    /// <summary>
+    /// A transaction account whose data runs to <paramref name="dataThrough"/>.
+    /// </summary>
+    private static LogicalAccount HistoricalAccount(Guid id, DateOnly dataThrough, decimal balance = 0m, string name = "Test Account") =>
+        new(id, [])
+        {
+            Name = name,
+            Balance = balance,
+            AccountType = AccountType.Transaction,
+            LastTransaction = dataThrough,
+        };
 
     [Fact]
     public async Task Calculate_SimplePlan_ReturnsForecastResult()
@@ -44,6 +63,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -75,6 +95,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -116,6 +137,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -177,6 +199,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -224,6 +247,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -231,7 +255,7 @@ public class ForecastEngineTests
 
         // Assert
         var firstMonth = result.Months.First();
-        Assert.Equal(-1200m, firstMonth.PlannedItemsTotal);
+        Assert.Equal(1200m, firstMonth.PlannedExpensesTotal);
     }
 
     [Fact]
@@ -271,6 +295,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -278,7 +303,7 @@ public class ForecastEngineTests
 
         // Assert
         var firstMonth = result.Months.First();
-        Assert.Equal(2000m, firstMonth.PlannedItemsTotal);
+        Assert.Equal(2000m, firstMonth.IncomeTotal);
     }
 
     [Fact]
@@ -320,6 +345,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -327,7 +353,7 @@ public class ForecastEngineTests
 
         // Assert
         Assert.Equal(3, result.Months.Count());
-        Assert.All(result.Months, m => Assert.Equal(-100m, m.PlannedItemsTotal));
+        Assert.All(result.Months, m => Assert.Equal(100m, m.PlannedExpensesTotal));
     }
 
     [Fact]
@@ -369,6 +395,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -376,7 +403,7 @@ public class ForecastEngineTests
 
         // Assert
         Assert.Equal(3, result.Months.Count());
-        Assert.All(result.Months, m => Assert.Equal(-1000m, m.PlannedItemsTotal)); // 3000 / 3 months
+        Assert.All(result.Months, m => Assert.Equal(1000m, m.PlannedExpensesTotal)); // 3000 / 3 months
     }
 
     [Fact]
@@ -418,6 +445,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -425,9 +453,9 @@ public class ForecastEngineTests
 
         // Assert
         var months = result.Months.ToList();
-        Assert.Equal(0m, months[0].PlannedItemsTotal);
-        Assert.Equal(0m, months[1].PlannedItemsTotal);
-        Assert.Equal(-3000m, months[2].PlannedItemsTotal);
+        Assert.Equal(0m, months[0].PlannedExpensesTotal);
+        Assert.Equal(0m, months[1].PlannedExpensesTotal);
+        Assert.Equal(3000m, months[2].PlannedExpensesTotal);
     }
 
     [Fact]
@@ -467,6 +495,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -474,7 +503,7 @@ public class ForecastEngineTests
 
         // Assert
         var firstMonth = result.Months.First();
-        Assert.Equal(0m, firstMonth.PlannedItemsTotal);
+        Assert.Equal(0m, firstMonth.PlannedExpensesTotal);
     }
 
     [Fact]
@@ -514,6 +543,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -562,6 +592,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -595,6 +626,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -628,6 +660,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -671,6 +704,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -737,6 +771,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -757,108 +792,100 @@ public class ForecastEngineTests
         decimal monthlyIncome = 0m,
         int lookbackMonths = 12,
         AccountScopeMode accountScopeMode = AccountScopeMode.AllAccounts,
-        string outgoingMode = "HistoricalAverage",
         IncomeCorrelatedSettings? incomeCorrelatedSettings = null)
     {
-        var incomeStrategy = new IncomeStrategy
-        {
-            Mode = "ManualRecurring",
-            ManualRecurring = new ManualRecurringIncome { Amount = monthlyIncome, Frequency = "Monthly" }
-        };
-
         var outgoingStrategy = new OutgoingStrategy
         {
-            Mode = outgoingMode,
             LookbackMonths = lookbackMonths,
             IncomeCorrelated = incomeCorrelatedSettings,
         };
 
-        return new DomainForecastPlan(id ?? Guid.NewGuid())
+        var planId = id ?? Guid.NewGuid();
+        var start = startDate ?? new DateOnly(2024, 1, 1);
+
+        var plan = new DomainForecastPlan(planId)
         {
             FamilyId = _mocks.User.FamilyId,
             Name = "Test Plan",
-            StartDate = startDate ?? new DateOnly(2024, 1, 1),
+            StartDate = start,
             EndDate = endDate ?? new DateOnly(2024, 12, 31),
             StartingBalanceMode = startingBalanceMode,
             StartingBalanceAmount = startingBalance,
             AccountScopeMode = accountScopeMode,
             CurrencyCode = "AUD",
-            IncomeStrategySerialized = JsonSerializer.Serialize(incomeStrategy, JsonOptions),
             OutgoingStrategySerialized = JsonSerializer.Serialize(outgoingStrategy, JsonOptions),
             CreatedUtc = DateTime.UtcNow,
             UpdatedUtc = DateTime.UtcNow,
         };
+
+        if (monthlyIncome > 0m)
+        {
+            plan.PlannedItems.Add(MonthlyIncome(planId, monthlyIncome, start));
+        }
+
+        return plan;
     }
 
     /// <summary>
-    /// Given actual balance data exists for consecutive past months
-    /// When the forecast is calculated
-    /// Then the baseline outgoings should be recalculated from actual spending
-    /// and the projected line should remain a consistent chain from starting balance
+    /// A recurring monthly income item — how a plan models a salary now that there is no fixed
+    /// income figure.
+    /// </summary>
+    private static DomainPlannedItem MonthlyIncome(Guid planId, decimal amount, DateOnly from, DateOnly? until = null, string name = "Income") =>
+        new(Guid.NewGuid())
+        {
+            ForecastPlanId = planId,
+            Name = name,
+            ItemType = PlannedItemType.Income,
+            Amount = amount,
+            IsIncluded = true,
+            DateMode = PlannedItemDateMode.Schedule,
+            Schedule = new PlannedItemSchedule
+            {
+                Frequency = ScheduleFrequency.Monthly,
+                AnchorDate = from,
+                Interval = 1,
+                EndDate = until,
+            },
+        };
+
+    /// <summary>
+    /// Given past months with recorded spending
+    /// When the forecast is calculated without a fitted model
+    /// Then the baseline should be the average of what was actually spent
     /// </summary>
     [Fact]
-    public async Task Calculate_WithActualBalances_RecalculatesBaselineOutgoings()
+    public async Task Calculate_NoFittedModel_AveragesWhatWasActuallySpent()
     {
         // Arrange
         var accountId = Guid.NewGuid();
         _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId]));
 
-        // Plan: 3 months, income 5000/month, no historical baseline
         var plan = CreatePlanWithStrategies(
             startDate: new DateOnly(2024, 1, 1),
             endDate: new DateOnly(2024, 3, 31),
             startingBalance: 10000m,
             monthlyIncome: 5000m,
-            lookbackMonths: 0);
+            lookbackMonths: 0); // no fit is attempted
 
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<DomainInstrument>());
+            .ReturnsAsync(new List<DomainInstrument> { HistoricalAccount(accountId, new DateOnly(2024, 2, 29)) });
 
-        _mocks.ReportReaderMock
-            .Setup(r => r.GetCreditDebitTotalsForAccounts(
-                It.IsAny<IEnumerable<Guid>>(),
-                It.IsAny<DateOnly>(),
-                It.IsAny<DateOnly>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>());
+        SetupEmptyReportMocks();
 
-        // Actual balances for Jan and Feb:
-        // Dec closing = 10000 (opening for Jan), Jan closing = 12000 (opening for Feb)
-        // Actual outgoings for Jan: 10000 + 5000 + 0 - 12000 = 3000
-        _mocks.ReportReaderMock
-            .Setup(r => r.GetMonthlyBalancesForAccounts(
-                It.IsAny<IEnumerable<Guid>>(),
-                It.IsAny<DateOnly>(),
-                It.IsAny<DateOnly>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyBalance>>
-            {
-                [accountId] =
-                [
-                    new MonthlyBalance { PeriodEnd = new DateOnly(2023, 12, 31), Balance = 10000m },
-                    new MonthlyBalance { PeriodEnd = new DateOnly(2024, 1, 31), Balance = 12000m },
-                ]
-            });
-
-        // Actual monthly credits used to derive outgoings from balance changes
+        // January spent 2,000 and February 4,000.
         _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
-                It.IsAny<IEnumerable<Guid>>(),
-                It.IsAny<DateOnly>(),
-                It.IsAny<DateOnly>(),
-                It.IsAny<CancellationToken>()))
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>
             {
-                [accountId] =
-                [
-                    new MonthlyCreditDebitTotal { Month = new DateOnly(2024, 1, 1), TransactionType = TransactionFilterType.Credit, Total = 5000m },
-                ]
+                [accountId] = CreateMonthlyData(new DateOnly(2024, 1, 1), [(5000m, 2000m), (5000m, 4000m)])
             });
 
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -866,106 +893,83 @@ public class ForecastEngineTests
 
         // Assert
         var months = result.Months.ToList();
+        Assert.All(months, m => Assert.Equal(3000m, m.BaselineOutgoingsTotal)); // (2000 + 4000) / 2
 
-        // Baseline should be recalculated to 3000 (derived from actual balance change)
-        Assert.All(months, m => Assert.Equal(3000m, m.BaselineOutgoingsTotal));
-
-        // Projected line chains from starting balance with updated baseline:
-        // Jan: 10000 + 5000 - 3000 = 12000
-        // Feb: 12000 + 5000 - 3000 = 14000
-        // Mar: 14000 + 5000 - 3000 = 16000
+        // The projected line chains from the starting balance on that baseline.
         Assert.Equal(10000m, months[0].OpeningBalance);
-        Assert.Equal(12000m, months[0].ClosingBalance);
-        Assert.Equal(12000m, months[1].OpeningBalance);
+        Assert.Equal(12000m, months[0].ClosingBalance); // 10000 + 5000 - 3000
         Assert.Equal(14000m, months[1].ClosingBalance);
-        Assert.Equal(14000m, months[2].OpeningBalance);
         Assert.Equal(16000m, months[2].ClosingBalance);
 
-        // Summary also reflects updated baseline
-        Assert.Equal(3000m, result.Summary.MonthlyBaselineOutgoings);
+        Assert.Equal(3000m, result.Summary.Expenses.AverageMonthly);
     }
 
     /// <summary>
-    /// Given actual balance data exists for multiple consecutive months
+    /// Given a large transfer between two of the plan's own accounts
     /// When the forecast is calculated
-    /// Then the baseline should be the average of actual outgoings across those months
+    /// Then it must not read as spending
     /// </summary>
+    /// <remarks>
+    /// The defect this pins down, from the real data. The baseline used to be inferred from the
+    /// change in balance — <c>opening + credits - closing</c> — with balances summed across every
+    /// account the plan covers. A $20,000 "Savings bump" moved from the current account into a
+    /// savings account inside the same plan leaves that total untouched, but its credit side still
+    /// counted, so it read as $20,000 spent. Averaged across the plan it lifted the expense line for
+    /// every future month, and two such transfers put it thousands above the truth.
+    ///
+    /// Here the transfer is visible in the balances and absent from the spending totals, exactly as
+    /// it is in the data. Reading the spending figure instead of inferring it is what makes the two
+    /// disagreeing harmless.
+    /// </remarks>
     [Fact]
-    public async Task Calculate_MultipleActualMonths_AveragesActualOutgoings()
+    public async Task Calculate_TransferBetweenThePlansOwnAccounts_IsNotCountedAsSpending()
     {
         // Arrange
-        var accountId = Guid.NewGuid();
-        _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId]));
+        var currentAccountId = Guid.NewGuid();
+        var savingsAccountId = Guid.NewGuid();
+        _mocks.SetUser(TestMocks.CreateTestUser(accounts: [currentAccountId, savingsAccountId]));
 
         var plan = CreatePlanWithStrategies(
             startDate: new DateOnly(2024, 1, 1),
-            endDate: new DateOnly(2024, 4, 30),
-            startingBalance: 10000m,
+            endDate: new DateOnly(2024, 2, 29),
+            startingBalance: 100_000m,
             monthlyIncome: 5000m,
             lookbackMonths: 0);
 
+        var savings = new LogicalAccount(savingsAccountId, [])
+        {
+            Name = "Savings",
+            AccountType = AccountType.Savings,
+            LastTransaction = new DateOnly(2024, 1, 31),
+        };
+
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<DomainInstrument>());
+            .ReturnsAsync(new List<DomainInstrument> { HistoricalAccount(currentAccountId, new DateOnly(2024, 1, 31)), savings });
 
-        _mocks.ReportReaderMock
-            .Setup(r => r.GetCreditDebitTotalsForAccounts(
-                It.IsAny<IEnumerable<Guid>>(),
-                It.IsAny<DateOnly>(),
-                It.IsAny<DateOnly>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>());
+        SetupEmptyReportMocks();
 
-        // Actual balances for Jan, Feb, Mar:
-        // Dec closing = 10000, Jan closing = 13000, Feb closing = 14000
-        // Jan actual outgoings: 10000 + 5000 - 13000 = 2000
-        // Feb actual outgoings: 13000 + 5000 - 14000 = 4000
-        // Average = (2000 + 4000) / 2 = 3000
-        _mocks.ReportReaderMock
-            .Setup(r => r.GetMonthlyBalancesForAccounts(
-                It.IsAny<IEnumerable<Guid>>(),
-                It.IsAny<DateOnly>(),
-                It.IsAny<DateOnly>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyBalance>>
-            {
-                [accountId] =
-                [
-                    new MonthlyBalance { PeriodEnd = new DateOnly(2023, 12, 31), Balance = 10000m },
-                    new MonthlyBalance { PeriodEnd = new DateOnly(2024, 1, 31), Balance = 13000m },
-                    new MonthlyBalance { PeriodEnd = new DateOnly(2024, 2, 29), Balance = 14000m },
-                ]
-            });
-
-        // Actual monthly credits used to derive outgoings from balance changes
+        // The month's real spending is 2,000. The 20,000 transfer is not in the spending totals,
+        // because it moved between the plan's own accounts.
         _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
-                It.IsAny<IEnumerable<Guid>>(),
-                It.IsAny<DateOnly>(),
-                It.IsAny<DateOnly>(),
-                It.IsAny<CancellationToken>()))
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>
             {
-                [accountId] =
-                [
-                    new MonthlyCreditDebitTotal { Month = new DateOnly(2024, 1, 1), TransactionType = TransactionFilterType.Credit, Total = 5000m },
-                    new MonthlyCreditDebitTotal { Month = new DateOnly(2024, 2, 1), TransactionType = TransactionFilterType.Credit, Total = 5000m },
-                ]
+                [currentAccountId] = CreateMonthlyData(new DateOnly(2024, 1, 1), [(5000m, 2000m)])
             });
 
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
         var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert
-        var months = result.Months.ToList();
-
-        // Baseline should be average of actual outgoings: (2000 + 4000) / 2 = 3000
-        Assert.All(months, m => Assert.Equal(3000m, m.BaselineOutgoingsTotal));
+        Assert.All(result.Months, m => Assert.Equal(2000m, m.BaselineOutgoingsTotal));
     }
 
     /// <summary>
@@ -992,6 +996,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -1064,6 +1069,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -1129,6 +1135,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -1136,11 +1143,12 @@ public class ForecastEngineTests
 
         // Assert
         var firstMonth = result.Months.First();
-        // Both are positive and independently addressable — the netted total alone would hide them.
-        Assert.Equal(2000m, firstMonth.PlannedIncomeTotal);
+        // Income is the salary plus the refund; expenses stay on their own series rather than
+        // being netted against it, which would hide both.
+        Assert.Equal(7000m, firstMonth.IncomeTotal);
         Assert.Equal(1200m, firstMonth.PlannedExpensesTotal);
-        // Existing netting behaviour is preserved: 2000 - 1200 = 800
-        Assert.Equal(800m, firstMonth.PlannedItemsTotal);
+        // The balance takes both: 10000 + 7000 - 1200
+        Assert.Equal(15800m, firstMonth.ClosingBalance);
     }
 
     /// <summary>
@@ -1190,6 +1198,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -1230,6 +1239,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -1259,12 +1269,11 @@ public class ForecastEngineTests
             endDate: new DateOnly(2024, 9, 30),
             startingBalance: 20000m,
             monthlyIncome: 6000m,
-            lookbackMonths: 6,
-            outgoingMode: "IncomeCorrelated");
+            lookbackMonths: 6);
 
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<DomainInstrument>());
+            .ReturnsAsync(new List<DomainInstrument> { HistoricalAccount(accountId, TrainingDataThrough) });
 
         _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitTotalsForAccounts(
@@ -1293,6 +1302,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -1302,15 +1312,18 @@ public class ForecastEngineTests
         var months = result.Months.ToList();
         Assert.Equal(3, months.Count);
 
-        // All months have same income (6000) but regression adjusts outgoings based on
-        // income + offset. Avg historical income = 7500, plan income = 6000, offset = 1500
-        // Predicted outgoings = 500 + 0.5 * (6000 + 1500) = 500 + 3750 = 4250
-        Assert.All(months, m => Assert.Equal(4250m, m.BaselineOutgoingsTotal));
+        // Regression: expense = 500 + 0.5 x income. The plan starts after the training window, so it
+        // models no income inside it and there is no shortfall to correct for — expenses are priced
+        // at the income the plan actually says it will have: 500 + 0.5 x 6000 = 3500.
+        //
+        // This used to read 4250, because the offset was the gap to a flat annual salary
+        // (7500 - 6000 = 1500) and so priced spending at 7500 while crediting only 6000. That is the
+        // shape of the defect this change removes: spending at the high-income level, earning at the
+        // low one, in every month of the plan.
+        Assert.All(months, m => Assert.Equal(3500m, m.BaselineOutgoingsTotal));
 
         // Regression diagnostics should be populated
-        Assert.NotNull(result.Summary.Regression);
-        Assert.False(result.Summary.Regression.FellBackToFlatAverage);
-        Assert.True(result.Summary.Regression.RSquared >= 0.99m);
+                Assert.True(result.Summary.Expenses.RSquared >= 0.99m);
     }
 
     /// <summary>
@@ -1331,14 +1344,9 @@ public class ForecastEngineTests
             startingBalance: 10000m,
             monthlyIncome: 5000m,
             lookbackMonths: 12,
-            outgoingMode: "IncomeCorrelated",
             incomeCorrelatedSettings: new IncomeCorrelatedSettings { MinDataPoints = 6 });
 
-        var mockAccount = new LogicalAccount(accountId, [])
-        {
-            Name = "Test Account",
-            AccountType = AccountType.Transaction,
-        };
+        var mockAccount = HistoricalAccount(accountId, TrainingDataThrough);
 
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
@@ -1372,6 +1380,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -1380,8 +1389,7 @@ public class ForecastEngineTests
         // Assert — falls back to historical baseline (42000 / 12 = 3500)
         Assert.All(result.Months, m => Assert.Equal(3500m, m.BaselineOutgoingsTotal));
 
-        Assert.NotNull(result.Summary.Regression);
-        Assert.True(result.Summary.Regression.FellBackToFlatAverage);
+                Assert.Equal(0m, result.Summary.Expenses.VariableComponent);
     }
 
     /// <summary>
@@ -1401,14 +1409,9 @@ public class ForecastEngineTests
             endDate: new DateOnly(2024, 9, 30),
             startingBalance: 10000m,
             monthlyIncome: 5000m,
-            lookbackMonths: 12,
-            outgoingMode: "IncomeCorrelated");
+            lookbackMonths: 12);
 
-        var mockAccount = new LogicalAccount(accountId, [])
-        {
-            Name = "Test Account",
-            AccountType = AccountType.Transaction,
-        };
+        var mockAccount = HistoricalAccount(accountId, TrainingDataThrough);
 
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
@@ -1442,6 +1445,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -1450,9 +1454,8 @@ public class ForecastEngineTests
         // Assert — falls back to historical baseline (60000 / 12 = 5000)
         Assert.All(result.Months, m => Assert.Equal(5000m, m.BaselineOutgoingsTotal));
 
-        Assert.NotNull(result.Summary.Regression);
-        Assert.True(result.Summary.Regression.FellBackToFlatAverage);
-        Assert.True(result.Summary.Regression.RSquared < 0.5m);
+                Assert.Equal(0m, result.Summary.Expenses.VariableComponent);
+        Assert.True(result.Summary.Expenses.RSquared < 0.5m);
     }
 
     /// <summary>
@@ -1472,14 +1475,9 @@ public class ForecastEngineTests
             endDate: new DateOnly(2024, 9, 30),
             startingBalance: 10000m,
             monthlyIncome: 5000m,
-            lookbackMonths: 12,
-            outgoingMode: "IncomeCorrelated");
+            lookbackMonths: 12);
 
-        var mockAccount = new LogicalAccount(accountId, [])
-        {
-            Name = "Test Account",
-            AccountType = AccountType.Transaction,
-        };
+        var mockAccount = HistoricalAccount(accountId, TrainingDataThrough);
 
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
@@ -1513,6 +1511,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -1521,58 +1520,43 @@ public class ForecastEngineTests
         // Assert — falls back to historical baseline (57000 / 12 = 4750)
         Assert.All(result.Months, m => Assert.Equal(4750m, m.BaselineOutgoingsTotal));
 
-        Assert.NotNull(result.Summary.Regression);
-        Assert.True(result.Summary.Regression.FellBackToFlatAverage);
+                Assert.Equal(0m, result.Summary.Expenses.VariableComponent);
     }
 
     /// <summary>
-    /// Given a valid regression and income that drops between months
-    /// When the forecast is calculated with IncomeCorrelated mode
-    /// Then the outgoings should decrease proportionally with lower income
+    /// Given extra income that ends part-way through the plan
+    /// When the forecast is calculated
+    /// Then modelled expenses should fall back with it
     /// </summary>
+    /// <remarks>
+    /// The behaviour the whole expense model exists for. A plan carrying a single flat income figure
+    /// could not express this at all: income was the same constant in every month, so the expense
+    /// line was flat by construction whatever the fitted slope said. Income is a series now, so a
+    /// second job, an allowance or a contract that ends is an income item with an end date, and
+    /// spending follows it down.
+    /// </remarks>
     [Fact]
-    public async Task Calculate_IncomeCorrelatedWithIncomeAdjustment_OutgoingsFollowIncome()
+    public async Task Calculate_ExtraIncomeEnds_ExpensesFallBackWithIt()
     {
         // Arrange
         var accountId = Guid.NewGuid();
         _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId]));
 
-        // Plan with income starting at 8000, then dropping by 3000 in month 2
-        var incomeStrategy = new IncomeStrategy
-        {
-            Mode = "ManualRecurring",
-            ManualRecurring = new ManualRecurringIncome { Amount = 8000m, Frequency = "Monthly" },
-            ManualAdjustments =
-            [
-                new ManualAdjustment { Date = new DateOnly(2024, 8, 1), DeltaAmount = -3000m }
-            ],
-        };
+        var planId = Guid.NewGuid();
+        var plan = CreatePlanWithStrategies(
+            id: planId,
+            startDate: new DateOnly(2024, 7, 1),
+            endDate: new DateOnly(2024, 9, 30),
+            startingBalance: 20000m,
+            monthlyIncome: 5000m,          // the salary that carries on
+            lookbackMonths: 6);
 
-        var outgoingStrategy = new OutgoingStrategy
-        {
-            Mode = "IncomeCorrelated",
-            LookbackMonths = 6,
-        };
-
-        var plan = new DomainForecastPlan(Guid.NewGuid())
-        {
-            FamilyId = _mocks.User.FamilyId,
-            Name = "Test Plan",
-            StartDate = new DateOnly(2024, 7, 1),
-            EndDate = new DateOnly(2024, 9, 30),
-            StartingBalanceMode = StartingBalanceMode.ManualAmount,
-            StartingBalanceAmount = 20000m,
-            AccountScopeMode = AccountScopeMode.AllAccounts,
-            CurrencyCode = "AUD",
-            IncomeStrategySerialized = JsonSerializer.Serialize(incomeStrategy, JsonOptions),
-            OutgoingStrategySerialized = JsonSerializer.Serialize(outgoingStrategy, JsonOptions),
-            CreatedUtc = DateTime.UtcNow,
-            UpdatedUtc = DateTime.UtcNow,
-        };
+        // Extra income of 3000 a month that stops after July.
+        plan.PlannedItems.Add(MonthlyIncome(planId, 3000m, new DateOnly(2024, 7, 1), until: new DateOnly(2024, 7, 31), name: "Contract work"));
 
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<DomainInstrument>());
+            .ReturnsAsync(new List<DomainInstrument> { HistoricalAccount(accountId, TrainingDataThrough) });
 
         _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitTotalsForAccounts(
@@ -1599,6 +1583,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -1607,17 +1592,17 @@ public class ForecastEngineTests
         // Assert
         var months = result.Months.ToList();
 
-        // Regression: expense = 1000 + 0.5 * income
-        // Historical avg income = 7500, plan base income = 8000, offset = -500
-        // Month 1 (income 8000): 1000 + 0.5 * (8000 + (-500)) = 1000 + 3750 = 4750
-        // Month 2 (income 5000): 1000 + 0.5 * (5000 + (-500)) = 1000 + 2250 = 3250
-        // Month 3 (income 5000): same as month 2 = 3250
-        Assert.Equal(4750m, months[0].BaselineOutgoingsTotal);
-        Assert.Equal(3250m, months[1].BaselineOutgoingsTotal);
-        Assert.Equal(3250m, months[2].BaselineOutgoingsTotal);
+        // The plan models no income inside the training window (it starts after it), so there is no
+        // shortfall to correct for and the fit is read at the modelled income directly.
+        // Regression: expense = 1000 + 0.5 x income
+        //   July   (8000 = 5000 + 3000): 1000 + 4000 = 5000
+        //   August (5000, contract over): 1000 + 2500 = 3500
+        Assert.Equal(8000m, months[0].IncomeTotal);
+        Assert.Equal(5000m, months[1].IncomeTotal);
 
-        // Outgoings should be lower in months with lower income
-        Assert.True(months[1].BaselineOutgoingsTotal < months[0].BaselineOutgoingsTotal);
+        Assert.Equal(5000m, months[0].BaselineOutgoingsTotal);
+        Assert.Equal(3500m, months[1].BaselineOutgoingsTotal);
+        Assert.Equal(3500m, months[2].BaselineOutgoingsTotal);
     }
 
     /// <summary>
@@ -1638,21 +1623,10 @@ public class ForecastEngineTests
             endDate: new DateOnly(2024, 7, 31),
             startingBalance: 20000m,
             monthlyIncome: 6000m,
-            lookbackMonths: 6,
-            outgoingMode: "IncomeCorrelated");
+            lookbackMonths: 6);
 
-        var account1 = new LogicalAccount(accountId1, [])
-        {
-            Name = "Transaction Account",
-            Balance = 15000m,
-            AccountType = AccountType.Transaction,
-        };
-        var account2 = new LogicalAccount(accountId2, [])
-        {
-            Name = "Credit Card",
-            Balance = 5000m,
-            AccountType = AccountType.Transaction,
-        };
+        var account1 = HistoricalAccount(accountId1, TrainingDataThrough, balance: 15000m, name: "Transaction Account");
+        var account2 = HistoricalAccount(accountId2, TrainingDataThrough, balance: 5000m, name: "Credit Card");
 
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
@@ -1688,15 +1662,14 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
         var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert
-        Assert.NotNull(result.Summary.Regression);
-        Assert.False(result.Summary.Regression.FellBackToFlatAverage);
-        Assert.True(result.Summary.Regression.RSquared > 0.5m);
+                Assert.True(result.Summary.Expenses.RSquared > 0.5m);
     }
 
     /// <summary>
@@ -1723,13 +1696,14 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
         var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert
-        Assert.Null(result.Summary.Regression);
+        Assert.Equal(0m, result.Summary.Expenses.VariableComponent);
     }
 
     /// <summary>
@@ -1749,14 +1723,9 @@ public class ForecastEngineTests
             endDate: new DateOnly(2024, 9, 30),
             startingBalance: 10000m,
             monthlyIncome: 5000m,
-            lookbackMonths: 12,
-            outgoingMode: "IncomeCorrelated");
+            lookbackMonths: 12);
 
-        var mockAccount = new LogicalAccount(accountId, [])
-        {
-            Name = "Test Account",
-            AccountType = AccountType.Transaction,
-        };
+        var mockAccount = HistoricalAccount(accountId, TrainingDataThrough);
 
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
@@ -1790,6 +1759,7 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
@@ -1798,74 +1768,49 @@ public class ForecastEngineTests
         // Assert — falls back to historical baseline (36000 / 12 = 3000)
         Assert.All(result.Months, m => Assert.Equal(3000m, m.BaselineOutgoingsTotal));
 
-        Assert.NotNull(result.Summary.Regression);
-        Assert.True(result.Summary.Regression.FellBackToFlatAverage);
+                Assert.Equal(0m, result.Summary.Expenses.VariableComponent);
     }
 
     /// <summary>
-    /// Given a valid regression where an income adjustment drops income far below the base
-    /// When the forecast is calculated with IncomeCorrelated mode
-    /// Then the outgoings should be floored at zero (not go negative)
+    /// Given a plan whose modelled income stops entirely part-way through
+    /// When the forecast is calculated
+    /// Then the predicted outgoings should be floored at nought rather than going negative
     /// </summary>
+    /// <remarks>
+    /// Income can no longer be negative — planned items are validated above zero — so the way to
+    /// drive the prediction below the axis is a plan that models a large income for a while and
+    /// then none at all, which makes the shortfall correction outweigh the month's own income.
+    ///
+    /// Worth naming what the floor is hiding: a household with no income does not stop spending, so
+    /// nought is not a believable answer either. The honest floor is the fixed component. That is a
+    /// change to the expense model rather than to income, so it is deliberately not made here.
+    /// </remarks>
     [Fact]
-    public async Task Calculate_IncomeCorrelatedNegativePrediction_FloorsAtZero()
+    public async Task Calculate_ModelledIncomeStops_PredictedOutgoingsAreFlooredAtNought()
     {
         // Arrange
         var accountId = Guid.NewGuid();
         _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId]));
 
-        // Plan with base income 8000, then a -10000 adjustment in month 1 → effective month income = -2000
-        // The offset is computed from planBaseIncome (8000), so the regression input will be:
-        //   monthIncome + offset = -2000 + (avgHistorical - 8000)
-        // With avgHistorical = 7500, offset = -500, effective = -2500
-        // Regression: 1000 + 0.5 * (-2500) = -250 → floored to 0
-        var incomeStrategy = new IncomeStrategy
-        {
-            Mode = "ManualRecurring",
-            ManualRecurring = new ManualRecurringIncome { Amount = 8000m, Frequency = "Monthly" },
-            ManualAdjustments =
-            [
-                new ManualAdjustment { Date = new DateOnly(2024, 7, 1), DeltaAmount = -10000m }
-            ],
-        };
+        var planId = Guid.NewGuid();
+        var plan = CreatePlanWithStrategies(
+            id: planId,
+            startDate: new DateOnly(2024, 1, 1),
+            endDate: new DateOnly(2024, 12, 31),
+            startingBalance: 10000m,
+            monthlyIncome: 0m,
+            lookbackMonths: 6);
 
-        var outgoingStrategy = new OutgoingStrategy
-        {
-            Mode = "IncomeCorrelated",
-            LookbackMonths = 6,
-        };
-
-        var plan = new DomainForecastPlan(Guid.NewGuid())
-        {
-            FamilyId = _mocks.User.FamilyId,
-            Name = "Test Plan",
-            StartDate = new DateOnly(2024, 7, 1),
-            EndDate = new DateOnly(2024, 7, 31),
-            StartingBalanceMode = StartingBalanceMode.ManualAmount,
-            StartingBalanceAmount = 10000m,
-            AccountScopeMode = AccountScopeMode.AllAccounts,
-            CurrencyCode = "AUD",
-            IncomeStrategySerialized = JsonSerializer.Serialize(incomeStrategy, JsonOptions),
-            OutgoingStrategySerialized = JsonSerializer.Serialize(outgoingStrategy, JsonOptions),
-            CreatedUtc = DateTime.UtcNow,
-            UpdatedUtc = DateTime.UtcNow,
-        };
+        // 20,000 a month for the first half of the year, then nothing.
+        plan.PlannedItems.Add(MonthlyIncome(planId, 20000m, new DateOnly(2024, 1, 1), until: new DateOnly(2024, 6, 30)));
 
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<DomainInstrument>());
+            .ReturnsAsync(new List<DomainInstrument> { HistoricalAccount(accountId, TrainingDataThrough) });
 
-        _mocks.ReportReaderMock
-            .Setup(r => r.GetCreditDebitTotalsForAccounts(
-                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Dictionary<Guid, IEnumerable<CreditDebitTotal>>());
+        SetupEmptyReportMocks();
 
-        _mocks.ReportReaderMock
-            .Setup(r => r.GetMonthlyBalancesForAccounts(
-                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyBalance>>());
-
-        // Regression: expense = 1000 + 0.5 * income, avg income = 7500
+        // Regression: expense = 1000 + 0.5 x income, average historical income 7500.
         _mocks.ReportReaderMock
             .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
                 It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
@@ -1879,14 +1824,322 @@ public class ForecastEngineTests
         var engine = new ForecastEngine(
             _mocks.ReportReaderMock.Object,
             _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
             _mocks.User);
 
         // Act
         var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
 
         // Assert
-        var month = result.Months.First();
-        Assert.Equal(0m, month.BaselineOutgoingsTotal); // Floored at zero
+        var months = result.Months.ToList();
+
+        // The plan models 20,000 a month across the whole training window, against 7,500 of actual
+        // credits, so the shortfall is -12,500. July onwards has no modelled income at all:
+        //   1000 + 0.5 x (0 - 12500) = -5250, floored to 0.
+        Assert.Equal(0m, months[6].IncomeTotal);
+        Assert.Equal(0m, months[6].BaselineOutgoingsTotal);
+
+        // While the income was being modelled the shortfall cancels it back to the historical
+        // average, so the earlier months predict off the middle of the fitted line.
+        Assert.Equal(20000m, months[0].IncomeTotal);
+        Assert.Equal(4750m, months[0].BaselineOutgoingsTotal);
+    }
+
+    /// <summary>
+    /// Given account data that stops part-way through a month
+    /// When the forecast is calculated with a regression
+    /// Then that part-month must not be fitted
+    /// </summary>
+    /// <remarks>
+    /// The defect this pins down: the training window used to open at
+    /// <c>latestTransactionDate - LookbackMonths</c>, so it began and ended mid-month. In the real
+    /// data that put a single day's tail — income $0, expenses $9 — into the training set as though
+    /// it were a whole month. A point at the origin anchors the line: it moved the fixed component
+    /// from $6,965 to $2,399, the slope from 0.327 to 0.529, and R² from 0.284 to 0.691, and the
+    /// inflated fit was the one the forecast ran on.
+    ///
+    /// Here the six real months are perfectly collinear (expense = 500 + 0.5 x income). A stub month
+    /// off that line can only survive by changing the fit, so an unchanged fit proves it was dropped.
+    /// </remarks>
+    [Fact]
+    public async Task Calculate_PartialMonthAtTheEdgeOfTheData_IsNotFitted()
+    {
+        // Arrange
+        var accountId = Guid.NewGuid();
+        _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId]));
+
+        var plan = CreatePlanWithStrategies(
+            startDate: new DateOnly(2024, 8, 1),
+            endDate: new DateOnly(2024, 8, 31),
+            startingBalance: 20000m,
+            monthlyIncome: 6000m,
+            lookbackMonths: 6);
+
+        // The account's data stops on the 1st of July — one day into the month.
+        _mocks.InstrumentRepositoryMock
+            .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<DomainInstrument> { HistoricalAccount(accountId, new DateOnly(2024, 7, 1)) });
+
+        SetupEmptyReportMocks();
+
+        // Six clean months on the line, then July's nine dollars.
+        _mocks.ReportReaderMock
+            .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>
+            {
+                [accountId] = CreateMonthlyData(
+                    new DateOnly(2024, 1, 1),
+                    [(5000m, 3000m), (6000m, 3500m), (7000m, 4000m), (8000m, 4500m), (9000m, 5000m), (10000m, 5500m), (0m, 9m)])
+            });
+
+        var engine = new ForecastEngine(
+            _mocks.ReportReaderMock.Object,
+            _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
+            _mocks.User);
+
+        // Act
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
+
+        // Assert
+
+        // The six real months fit exactly. Including the stub would drag R² off 1.
+        Assert.True(result.Summary.Expenses.RSquared >= 0.99m,
+            $"the part-month was fitted: R² came out at {result.Summary.Expenses.RSquared}");
+        Assert.Equal(0.5m, Math.Round(result.Summary.Expenses.VariableComponent, 4));
+        Assert.Equal(500m, Math.Round(result.Summary.Expenses.FixedComponent, 2));
+    }
+
+    /// <summary>
+    /// Given a savings account with fresher data than the transaction accounts being fitted
+    /// When the forecast is calculated with a regression
+    /// Then the training window must still close on the transaction accounts' last complete month
+    /// </summary>
+    /// <remarks>
+    /// Savings accounts are excluded from historical analysis, so their transactions never reach the
+    /// regression — but the data boundary used to be the maximum across every account, which let a
+    /// savings account hold the window open over months the fitted accounts had no data for. That
+    /// produces the same empty-month-at-the-origin as a part-month does.
+    /// </remarks>
+    [Fact]
+    public async Task Calculate_SavingsAccountWithFresherData_DoesNotExtendTheTrainingWindow()
+    {
+        // Arrange
+        var transactionAccountId = Guid.NewGuid();
+        var savingsAccountId = Guid.NewGuid();
+        _mocks.SetUser(TestMocks.CreateTestUser(accounts: [transactionAccountId, savingsAccountId]));
+
+        var plan = CreatePlanWithStrategies(
+            startDate: new DateOnly(2024, 8, 1),
+            endDate: new DateOnly(2024, 8, 31),
+            startingBalance: 20000m,
+            monthlyIncome: 6000m,
+            lookbackMonths: 6);
+
+        var savings = new LogicalAccount(savingsAccountId, [])
+        {
+            Name = "Savings",
+            AccountType = AccountType.Savings,
+            LastTransaction = new DateOnly(2024, 9, 30), // three months ahead of the fitted account
+        };
+
+        _mocks.InstrumentRepositoryMock
+            .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<DomainInstrument> { HistoricalAccount(transactionAccountId, TrainingDataThrough), savings });
+
+        SetupEmptyReportMocks();
+
+        _mocks.ReportReaderMock
+            .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>
+            {
+                [transactionAccountId] = CreateMonthlyData(
+                    new DateOnly(2024, 1, 1),
+                    [(5000m, 3000m), (6000m, 3500m), (7000m, 4000m), (8000m, 4500m), (9000m, 5000m), (10000m, 5500m)]),
+            });
+
+        var engine = new ForecastEngine(
+            _mocks.ReportReaderMock.Object,
+            _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
+            _mocks.User);
+
+        // Act
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
+
+        // Assert — July, August and September hold no data for the fitted account and must not appear.
+                Assert.True(result.Summary.Expenses.RSquared >= 0.99m,
+            $"empty months were fitted: R² came out at {result.Summary.Expenses.RSquared}");
+    }
+
+    /// <summary>
+    /// Given a planned expense that has been paid, and is therefore in the training data
+    /// When the forecast is calculated
+    /// Then it should not teach the expense model that the household spends that much every month
+    /// </summary>
+    /// <remarks>
+    /// This is the complaint issue #928 opens with: a planned expense appearing in the transaction
+    /// log throws out the expense calculations even though it was expected. A $30,000 solar
+    /// installation sitting in one training month drags the fitted line up for every month of the
+    /// plan, so the forecast charges for it once on its own date and again, smeared, forever.
+    /// </remarks>
+    [Fact]
+    public async Task Calculate_PlannedExpenseThatWasPaid_DoesNotTeachTheModelItRecurs()
+    {
+        // Arrange
+        var accountId = Guid.NewGuid();
+        _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId]));
+
+        var solarPaymentId = Guid.NewGuid();
+        var planId = Guid.NewGuid();
+
+        var plan = CreatePlanWithStrategies(
+            id: planId,
+            startDate: new DateOnly(2024, 1, 1),
+            endDate: new DateOnly(2024, 8, 31),
+            startingBalance: 50000m,
+            monthlyIncome: 6000m,
+            lookbackMonths: 6);
+
+        var solar = new DomainPlannedItem(Guid.NewGuid())
+        {
+            ForecastPlanId = planId,
+            Name = "Solar",
+            ItemType = PlannedItemType.Expense,
+            Amount = 30_000m,
+            IsIncluded = true,
+            DateMode = PlannedItemDateMode.FixedDate,
+            FixedDate = new PlannedItemFixedDate { FixedDate = new DateOnly(2024, 4, 15) },
+        };
+        solar.Transactions.Add(new ForecastPlannedItemTransaction(Guid.NewGuid())
+        {
+            PlannedItemId = solar.Id,
+            TransactionId = solarPaymentId,
+        });
+        plan.PlannedItems.Add(solar);
+
+        _mocks.InstrumentRepositoryMock
+            .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<DomainInstrument> { HistoricalAccount(accountId, TrainingDataThrough) });
+
+        SetupEmptyReportMocks();
+
+        // Six months on the line expense = 500 + 0.5 x income, except April, which also carries the
+        // 30,000 solar payment.
+        _mocks.ReportReaderMock
+            .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>
+            {
+                [accountId] = CreateMonthlyData(
+                    new DateOnly(2024, 1, 1),
+                    [(5000m, 3000m), (6000m, 3500m), (7000m, 4000m), (8000m, 34_500m), (9000m, 5000m), (10000m, 5500m)])
+            });
+
+        // The author linked the April payment to Solar.
+        _mocks.SetLinkedPayments(new LinkedPayment(solarPaymentId, accountId, new DateOnly(2024, 4, 1), 30_000m, InReporting: true));
+
+        var engine = new ForecastEngine(
+            _mocks.ReportReaderMock.Object,
+            _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
+            _mocks.User);
+
+        // Act
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
+
+        // Assert — with the solar payment taken back out, the six months are exactly on the line
+        // again, so the fit is the clean one and not the one the spike would have produced.
+                Assert.True(result.Summary.Expenses.RSquared >= 0.99m,
+            $"the planned expense was left in the training data: R² came out at {result.Summary.Expenses.RSquared}");
+        Assert.Equal(0.5m, Math.Round(result.Summary.Expenses.VariableComponent, 4));
+
+        // And the item reports what actually happened rather than what was planned.
+        var progress = Assert.Single(result.PlannedItems, p => p.Name == "Solar");
+        Assert.Equal(30_000m, progress.ActualToDate);
+        Assert.Equal(0m, progress.Remaining);
+    }
+
+    /// <summary>
+    /// Given a linked payment that reporting does not count
+    /// When the forecast is calculated
+    /// Then what was actually spent that month should still include it
+    /// </summary>
+    /// <remarks>
+    /// Every planned payment on the real plan is marked excluded from reporting, which is the same
+    /// instinct that made it a planned item. The actual-spending line is built from the reporting
+    /// figures, so it showed none of the spikes the projection is drawn with, and the two lines
+    /// could not be compared: the projection dropped twenty thousand pounds for the school fees and
+    /// the record of what happened stayed flat.
+    /// </remarks>
+    [Fact]
+    public async Task Calculate_LinkedPaymentOutsideReporting_StillShowsInWhatWasSpent()
+    {
+        // Arrange
+        var accountId = Guid.NewGuid();
+        _mocks.SetUser(TestMocks.CreateTestUser(accounts: [accountId]));
+
+        var paymentId = Guid.NewGuid();
+        var planId = Guid.NewGuid();
+
+        var plan = CreatePlanWithStrategies(
+            id: planId,
+            startDate: new DateOnly(2024, 1, 1),
+            endDate: new DateOnly(2024, 3, 31),
+            startingBalance: 50_000m,
+            monthlyIncome: 6000m,
+            lookbackMonths: 0);
+
+        var fees = new DomainPlannedItem(Guid.NewGuid())
+        {
+            ForecastPlanId = planId,
+            Name = "School Fees",
+            ItemType = PlannedItemType.Expense,
+            Amount = 20_000m,
+            IsIncluded = true,
+            DateMode = PlannedItemDateMode.FixedDate,
+            FixedDate = new PlannedItemFixedDate { FixedDate = new DateOnly(2024, 2, 4) },
+        };
+        fees.Transactions.Add(new ForecastPlannedItemTransaction(Guid.NewGuid()) { PlannedItemId = fees.Id, TransactionId = paymentId });
+        plan.PlannedItems.Add(fees);
+
+        _mocks.InstrumentRepositoryMock
+            .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<DomainInstrument> { HistoricalAccount(accountId, new DateOnly(2024, 2, 29)) });
+
+        SetupEmptyReportMocks();
+
+        // Ordinary spending of 3,000 a month. The fees are absent, because reporting does not count
+        // them -- exactly as they are absent from the real data.
+        _mocks.ReportReaderMock
+            .Setup(r => r.GetMonthlyCreditDebitTotalsForAccounts(
+                It.IsAny<IEnumerable<Guid>>(), It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>
+            {
+                [accountId] = CreateMonthlyData(new DateOnly(2024, 1, 1), [(6000m, 3000m), (6000m, 3000m)])
+            });
+
+        _mocks.SetLinkedPayments(new LinkedPayment(paymentId, accountId, new DateOnly(2024, 2, 1), 20_000m, InReporting: false));
+
+        var engine = new ForecastEngine(
+            _mocks.ReportReaderMock.Object,
+            _mocks.InstrumentRepositoryMock.Object,
+            _mocks.PlannedItemMatcherMock.Object,
+            _mocks.User);
+
+        // Act
+        var result = await engine.Calculate(plan, TestContext.Current.CancellationToken);
+
+        // Assert
+        var february = result.Months.Single(m => m.MonthStart == new DateOnly(2024, 2, 1));
+
+        // 3,000 of ordinary spending plus the 20,000 the reports never saw.
+        Assert.Equal(23_000m, february.ActualOutgoings);
+
+        // January had no planned payment, so it is the reporting figure alone.
+        Assert.Equal(3_000m, result.Months.Single(m => m.MonthStart == new DateOnly(2024, 1, 1)).ActualOutgoings);
     }
 
     #endregion

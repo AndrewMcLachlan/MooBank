@@ -13,7 +13,6 @@ public record ForecastPlanBase
     public StartingBalanceMode StartingBalanceMode { get; init; }
     public decimal? StartingBalanceAmount { get; init; }
     public string? CurrencyCode { get; init; }
-    public IncomeStrategy? IncomeStrategy { get; init; }
     public OutgoingStrategy? OutgoingStrategy { get; init; }
     public Assumptions? Assumptions { get; init; }
     public IEnumerable<Guid> AccountIds { get; init; } = [];

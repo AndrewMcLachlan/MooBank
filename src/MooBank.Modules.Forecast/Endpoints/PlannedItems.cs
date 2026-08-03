@@ -1,4 +1,4 @@
-using Asm.AspNetCore;
+﻿using Asm.AspNetCore;
 using Asm.AspNetCore.Routing;
 using Asm.MooBank.Modules.Forecast.Commands;
 using Asm.MooBank.Modules.Forecast.Models;
@@ -28,5 +28,11 @@ public class PlannedItems : EndpointGroupBase
 
         routeGroupBuilder.MapDeleteCommand<DeletePlannedItem>("/{itemId}")
             .WithNames("Delete Planned Item");
+
+        routeGroupBuilder.MapQuery<GetPaymentCandidates, IEnumerable<PaymentCandidate>>("/{itemId}/payment-candidates")
+            .WithNames("Get Payment Candidates");
+
+        routeGroupBuilder.MapPutCommand<SetPlannedItemPayments, PlannedItem>("/{itemId}/payments", binding: RequestBinding.Parameters)
+            .WithNames("Set Planned Item Payments");
     }
 }
