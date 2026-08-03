@@ -99,7 +99,7 @@
     border: 1px solid var(--border-colour);
     border-radius: 80px;
     background: transparent;
-    color: var(--muted-colour);
+    color: var(--body-colour-dim);
     font-size: 0.7rem;
     line-height: 1;
     padding: 3px 7px;

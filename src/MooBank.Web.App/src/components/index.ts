@@ -4,6 +4,7 @@ export * from "./AccountProvider";
 export * from "./AccountSummary";
 export * from "./AccountTypeBadge";
 export * from "./Amount";
+export * from "./Kpi";
 export * from "./ColourPicker";
 export * from "./colourRow";
 export * from "./CurrencyInput";

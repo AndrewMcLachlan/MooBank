@@ -17,6 +17,14 @@ vi.mock("@andrewmclachlan/moo-ds", () => ({
     ),
     Badge: ({ children }: { children?: React.ReactNode }) => <span data-testid="badge">{children}</span>,
     SpinnerContainer: () => <div data-testid="spinner" />,
+    Skeleton: Object.assign(
+        () => <div data-testid="skeleton" />,
+        {
+            Text: () => <div data-testid="skeleton" />,
+            Circle: () => <div data-testid="skeleton" />,
+            Rect: () => <div data-testid="skeleton" />,
+        },
+    ),
     // Render the overlay inline so the popover content is assertable without a hover.
     OverlayTrigger: ({ children, overlay }: { children?: React.ReactNode; overlay?: React.ReactNode }) => <>{children}{overlay}</>,
     Popover: Object.assign(
@@ -69,14 +77,14 @@ describe("ForecastOutlook", () => {
     it("reads On track and colours no KPI as risk when the forecast is healthy", () => {
         const container = renderOutlook();
         expect(screen.getByText("On track")).toBeInTheDocument();
-        expect(container.querySelectorAll(".metric-value.negative")).toHaveLength(0);
+        expect(container.querySelectorAll(".kpi-value.negative")).toHaveLength(0);
     });
 
     it("flips to Needs attention and marks Months Below Zero as risk when it runs negative", () => {
         const container = renderOutlook({ monthsBelowZero: 2 });
         expect(screen.getByText("Needs attention")).toBeInTheDocument();
         // Only the Months Below Zero figure is over threshold here.
-        const risk = container.querySelectorAll(".metric-value.negative");
+        const risk = container.querySelectorAll(".kpi-value.negative");
         expect(risk).toHaveLength(1);
         expect(risk[0]).toHaveTextContent("2");
     });
@@ -84,12 +92,12 @@ describe("ForecastOutlook", () => {
     it("flips to Needs attention and marks Required Monthly Uplift as risk when uplift is needed", () => {
         const container = renderOutlook({ requiredMonthlyUplift: 250 });
         expect(screen.getByText("Needs attention")).toBeInTheDocument();
-        expect(container.querySelectorAll(".metric-value.negative")).toHaveLength(1);
+        expect(container.querySelectorAll(".kpi-value.negative")).toHaveLength(1);
     });
 
     it("marks Lowest Balance as risk when it drops below zero", () => {
         const container = renderOutlook({ lowestBalance: -500, monthsBelowZero: 1 });
-        const risk = container.querySelectorAll(".metric-value.negative");
+        const risk = container.querySelectorAll(".kpi-value.negative");
         // Lowest Balance (< 0) and Months Below Zero (> 0) are both risks.
         expect(risk).toHaveLength(2);
     });
@@ -99,10 +107,10 @@ describe("ForecastOutlook", () => {
         const { container } = render(
             <ForecastOutlook summary={summary()} months={[month(8000), month(8000), month(5000)]} currencyCode="AUD" />,
         );
-        const income = container.querySelector(".metric-value.income");
+        const income = container.querySelector(".kpi-value.income");
         expect(income).toHaveTextContent("5,000");
         expect(income).toHaveTextContent("8,000");
-        expect(container.querySelectorAll(".metric-value.negative")).toHaveLength(0);
+        expect(container.querySelectorAll(".kpi-value.negative")).toHaveLength(0);
     });
 
     it("shows spending as the span it covers, and explains it with the model", () => {
@@ -114,7 +122,7 @@ describe("ForecastOutlook", () => {
                 months={[spending(10400), spending(12800), spending(14200)]}
                 currencyCode="AUD" />,
         );
-        const expense = container.querySelector(".metric-value.expense");
+        const expense = container.querySelector(".kpi-value.expense");
         expect(expense).toHaveTextContent("10,400");
         expect(expense).toHaveTextContent("14,200");
         // The caption states the sensitivity -- what spending does when income moves -- rather than
@@ -127,8 +135,8 @@ describe("ForecastOutlook", () => {
         const { container } = render(
             <ForecastOutlook summary={summary()} months={[spending(9000), spending(9000)]} currencyCode="AUD" />,
         );
-        expect(container.querySelector(".metric-range-to")).toBeNull();
-        expect(container.querySelector(".metric-value.expense")).toHaveTextContent("9,000");
+        expect(container.querySelector(".kpi-range-to")).toBeNull();
+        expect(container.querySelector(".kpi-value.expense")).toHaveTextContent("9,000");
     });
 
     it("drops the variable part when there was too little history to relate spending to income", () => {
@@ -152,12 +160,15 @@ describe("ForecastOutlook", () => {
         expect(screen.queryByText(/gloomier than it should be/)).toBeNull();
     });
 
-    it("renders neither the health pill nor the KPI band while the summary is still loading", () => {
+    it("holds the KPI band's shape with placeholders while the summary loads, but claims no verdict", () => {
         const { container } = render(
             <ForecastOutlook months={[]} currencyCode="AUD" loading />,
         );
+        // No health pill: "On track" is an assertion about data we don't have yet.
         expect(screen.queryByTestId("badge")).toBeNull();
-        expect(container.querySelector(".forecast-metrics")).toBeNull();
+        // The band is still present, so the chart below it doesn't start high and jump down.
+        expect(container.querySelector(".forecast-metrics")).not.toBeNull();
+        expect(screen.getAllByTestId("skeleton").length).toBeGreaterThan(0);
         expect(screen.getByTestId("forecast-chart")).toBeInTheDocument();
     });
 });

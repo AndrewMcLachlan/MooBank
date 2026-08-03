@@ -5,3 +5,23 @@
 @import "components/import.css";
 @import "components/summary.css";
 @import "components/monthselector.css";
+@import "components/kpi.css";
+
+/* ===========================================
+   Skeleton placeholders
+   ===========================================
+   moo-ds sizes a placeholder line at 0.8em plus 0.15em margins — roughly 1.1em, which equals a real
+   line of text only where line-height happens to be 1.1. Where a placeholder stands in for actual
+   text, pin it to the container's own line box instead: the element then occupies exactly the same
+   height loaded or not, so nothing below it moves when the data arrives. */
+:is(.eyebrow, .kpi-value, .kpi-sub, h1, h2, h3, td) > .skeleton-text > .skeleton-text-line {
+    height: 1lh;
+    margin-block: 0;
+}
+
+/* A placeholder standing in for a whole block — a chart canvas — takes the height its container
+   already defines, so the block occupies the same space before and after the data arrives. */
+.skeleton-fill {
+    height: 100%;
+    width: 100%;
+}

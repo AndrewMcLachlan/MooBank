@@ -153,28 +153,18 @@
     grid-template-columns: 1.2fr 1fr 1fr 1fr;
     gap: 10px;
 
-    .section.widget {
+    /* Card, accent, value and caption come from components/kpi.css; only the sizing is ours. */
+    .section.kpi {
         padding: 10px 14px;
-        border-top: 2px solid var(--primary);
-
-        &[data-tone="income"]  { border-top-color: var(--income-bar); }
-        &[data-tone="expense"] { border-top-color: var(--expense-bar); }
     }
 
-    .widget-value {
+    .kpi-value {
         font-size: 20px;
-        font-weight: 600;
-        letter-spacing: -0.6px;
-        line-height: 1.1;
-        font-variant-numeric: tabular-nums;
-        margin-top: 2px;
     }
-    .widget .widget-value.strong { color: var(--body-colour-bold); font-size: 22px; }
 
-    .widget-sub {
-        font-size: 0.75rem;
-        color: var(--body-colour-dim);
-        margin-top: 2px;
+    .kpi-value.strong {
+        color: var(--body-colour-bold);
+        font-size: 22px;
     }
 }
 
