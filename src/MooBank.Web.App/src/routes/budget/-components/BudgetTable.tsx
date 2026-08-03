@@ -42,6 +42,7 @@ export const BudgetTable: React.FC<BudgetTableProps> = ({ title, type, year, lin
 export interface BudgetTableProps {
     type: BudgetLineType;
     lines?: BudgetLineModel[];
-    title: string;
+    /** Omitted when the table sits in a tab that already names it. */
+    title?: string;
     year: number;
 }

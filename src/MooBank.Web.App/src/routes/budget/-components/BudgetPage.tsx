@@ -5,9 +5,9 @@ import { Page } from "@andrewmclachlan/moo-app";
 import type { PageProps } from "@andrewmclachlan/moo-app";
 import { TwoCoins } from "@andrewmclachlan/moo-icons";
 
-export const BudgetPage: React.FC<PropsWithChildren<BudgetPageProps>> = ({ children, breadcrumbs = [] }) => (
+export const BudgetPage: React.FC<PropsWithChildren<BudgetPageProps>> = ({ children, breadcrumbs = [], actions }) => (
 
-    <Page title="Budget" breadcrumbs={[{ text: "Budget", route: `/budget` }, ...breadcrumbs]} navItems={[{ text: "Report", route: `/budget/report`, image: <TwoCoins /> }]}>
+    <Page title="Budget" actions={actions} breadcrumbs={[{ text: "Budget", route: `/budget` }, ...breadcrumbs]} navItems={[{ text: "Report", route: `/budget/report`, image: <TwoCoins /> }]}>
         {children}
     </Page>
 );

@@ -21,6 +21,7 @@ import { Route as AssetsCreateRouteImport } from "./routes/assets/create"
 import { Route as BillsIndexRouteImport } from "./routes/bills/index"
 import { Route as BillsIdRouteImport } from "./routes/bills/$id"
 import { Route as BudgetIndexRouteImport } from "./routes/budget/index"
+import { Route as BudgetYearRouteImport } from "./routes/budget/$year"
 import { Route as FamilyIndexRouteImport } from "./routes/family/index"
 import { Route as GroupsIndexRouteImport } from "./routes/groups/index"
 import { Route as GroupsCreateRouteImport } from "./routes/groups/create"
@@ -141,6 +142,11 @@ const BillsIdRoute = BillsIdRouteImport.update({
 const BudgetIndexRoute = BudgetIndexRouteImport.update({
   id: "/budget/",
   path: "/budget/",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BudgetYearRoute = BudgetYearRouteImport.update({
+  id: "/budget/$year",
+  path: "/budget/$year",
   getParentRoute: () => rootRouteImport,
 } as any)
 const FamilyIndexRoute = FamilyIndexRouteImport.update({
@@ -481,6 +487,7 @@ export interface FileRoutesByFullPath {
   "/accounts/create": typeof AccountsCreateRoute
   "/assets/create": typeof AssetsCreateRoute
   "/bills/$id": typeof BillsIdRoute
+  "/budget/$year": typeof BudgetYearRoute
   "/groups/create": typeof GroupsCreateRoute
   "/planning/forecast": typeof PlanningForecastRoute
   "/planning/retirement": typeof PlanningRetirementRoute
@@ -552,6 +559,7 @@ export interface FileRoutesByTo {
   "/accounts/create": typeof AccountsCreateRoute
   "/assets/create": typeof AssetsCreateRoute
   "/bills/$id": typeof BillsIdRoute
+  "/budget/$year": typeof BudgetYearRoute
   "/groups/create": typeof GroupsCreateRoute
   "/planning/forecast": typeof PlanningForecastRoute
   "/planning/retirement": typeof PlanningRetirementRoute
@@ -624,6 +632,7 @@ export interface FileRoutesById {
   "/accounts/create": typeof AccountsCreateRoute
   "/assets/create": typeof AssetsCreateRoute
   "/bills/$id": typeof BillsIdRoute
+  "/budget/$year": typeof BudgetYearRoute
   "/groups/create": typeof GroupsCreateRoute
   "/planning/forecast": typeof PlanningForecastRoute
   "/planning/retirement": typeof PlanningRetirementRoute
@@ -701,6 +710,7 @@ export interface FileRouteTypes {
     | "/accounts/create"
     | "/assets/create"
     | "/bills/$id"
+    | "/budget/$year"
     | "/groups/create"
     | "/planning/forecast"
     | "/planning/retirement"
@@ -772,6 +782,7 @@ export interface FileRouteTypes {
     | "/accounts/create"
     | "/assets/create"
     | "/bills/$id"
+    | "/budget/$year"
     | "/groups/create"
     | "/planning/forecast"
     | "/planning/retirement"
@@ -843,6 +854,7 @@ export interface FileRouteTypes {
     | "/accounts/create"
     | "/assets/create"
     | "/bills/$id"
+    | "/budget/$year"
     | "/groups/create"
     | "/planning/forecast"
     | "/planning/retirement"
@@ -919,6 +931,7 @@ export interface RootRouteChildren {
   AccountsCreateRoute: typeof AccountsCreateRoute
   AssetsCreateRoute: typeof AssetsCreateRoute
   BillsIdRoute: typeof BillsIdRoute
+  BudgetYearRoute: typeof BudgetYearRoute
   GroupsCreateRoute: typeof GroupsCreateRoute
   PlanningForecastRoute: typeof PlanningForecastRoute
   PlanningRetirementRoute: typeof PlanningRetirementRoute
@@ -1025,6 +1038,13 @@ declare module "@tanstack/react-router" {
       path: "/budget"
       fullPath: "/budget/"
       preLoaderRoute: typeof BudgetIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/budget/$year": {
+      id: "/budget/$year"
+      path: "/budget/$year"
+      fullPath: "/budget/$year"
+      preLoaderRoute: typeof BudgetYearRouteImport
       parentRoute: typeof rootRouteImport
     }
     "/family/": {
@@ -1647,6 +1667,7 @@ const rootRouteChildren: RootRouteChildren = {
   AccountsCreateRoute: AccountsCreateRoute,
   AssetsCreateRoute: AssetsCreateRoute,
   BillsIdRoute: BillsIdRoute,
+  BudgetYearRoute: BudgetYearRoute,
   GroupsCreateRoute: GroupsCreateRoute,
   PlanningForecastRoute: PlanningForecastRoute,
   PlanningRetirementRoute: PlanningRetirementRoute,
