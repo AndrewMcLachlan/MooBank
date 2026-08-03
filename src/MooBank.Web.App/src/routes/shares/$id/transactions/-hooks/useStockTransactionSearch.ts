@@ -8,7 +8,7 @@ import {
     defaultStockSortField,
     stockSearchToFilter,
     type StockTransactionSearch,
-} from "../stockTransactionSearch";
+} from "../-stockTransactionSearch";
 
 // Fixed page size: the stock-transaction list has no page-size control (the former slice hard-coded 50).
 const stockPageSize = 50;
