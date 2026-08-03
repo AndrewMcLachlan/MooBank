@@ -117,7 +117,10 @@ describe("ForecastOutlook", () => {
         const expense = container.querySelector(".metric-value.expense");
         expect(expense).toHaveTextContent("10,400");
         expect(expense).toHaveTextContent("14,200");
-        expect(screen.getByText(/1,200.*42\.0% of income/)).toBeInTheDocument();
+        // The caption states the sensitivity -- what spending does when income moves -- rather than
+        // the fixed component, which is where the line crosses zero income and is not an amount
+        // anyone ever spends.
+        expect(screen.getByText(/moves about .*0\.42 per/)).toBeInTheDocument();
     });
 
     it("collapses to a single figure when spending does not move", () => {

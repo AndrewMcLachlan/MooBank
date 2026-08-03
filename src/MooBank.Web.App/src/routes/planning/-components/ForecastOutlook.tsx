@@ -40,8 +40,11 @@ const MonthlyRange: React.FC<{ months: number[]; currencyCode: string; tone: str
     );
 };
 
-// The model behind the expenses span: a fixed amount plus a share of income. This is what says how
-// the figure moves when income changes, which no amount on its own can.
+// The model behind the expenses span, stated as what it is useful for: how much spending moves when
+// income does. The fitted line also has a fixed part, but that is where it crosses zero income --
+// a construction artefact rather than an amount anyone ever spends, and reading it as fixed costs is
+// the mistake that produced a phantom month at the household's whole outgoings. It stays in the
+// detail for checking the model, and out of the way of using it.
 const ExpenseModelNote: React.FC<{ expenses: ExpenseModel; currencyCode: string }> = ({ expenses, currencyCode }) => (
     <div className="metric-sub">
         <OverlayTrigger placement="bottom" overlay={
@@ -50,6 +53,7 @@ const ExpenseModelNote: React.FC<{ expenses: ExpenseModel; currencyCode: string 
                     <div className="expense-model-detail">
                         <div>Each month is worked out from that month&rsquo;s income, so the figure moves with it.</div>
                         <div>Averages {formatCurrency(expenses.averageMonthly, currencyCode)} a month across this plan.</div>
+                        <div>{formatCurrency(expenses.fixedComponent, currencyCode)} + {percent(expenses.variableComponent)}% of income, where the line crosses.</div>
                         <div>
                             {expenses.dataPoints > 0
                                 ? `Fitted from ${expenses.dataPoints} months · ${percent(expenses.rSquared)}% of the variation explained`
@@ -61,7 +65,9 @@ const ExpenseModelNote: React.FC<{ expenses: ExpenseModel; currencyCode: string 
         }>
             <span className="expense-model-hint">
                 {expenses.variableComponent > 0
-                    ? `${formatCurrency(expenses.fixedComponent, currencyCode)} + ${percent(expenses.variableComponent)}% of income`
+                    // The slope as money rather than a rate: what an extra unit earned comes with
+                    // in extra spending, which is the thing worth doing arithmetic against.
+                    ? `moves about ${formatCurrency(expenses.variableComponent, currencyCode)} per ${formatCurrency(1, currencyCode)} earned`
                     : "not enough history to tie this to income"}
             </span>
         </OverlayTrigger>
