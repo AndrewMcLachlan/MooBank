@@ -25,11 +25,6 @@ public record PlannedItemBase
     public int? ScheduleDayOfMonth { get; init; }
     public DateOnly? ScheduleEndDate { get; init; }
 
-    // Flexible window (V1)
-    public DateOnly? WindowStartDate { get; init; }
-    public DateOnly? WindowEndDate { get; init; }
-    public AllocationMode? AllocationMode { get; init; }
-
     public string? Notes { get; init; }
 }
 

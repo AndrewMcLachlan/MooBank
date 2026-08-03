@@ -21,12 +21,5 @@ public enum PlannedItemType : byte
 public enum PlannedItemDateMode : byte
 {
     FixedDate = 0,
-    Schedule = 1,
-    FlexibleWindow = 2
-}
-
-public enum AllocationMode : byte
-{
-    EvenlySpread = 0,
-    AllAtEnd = 1
+    Schedule = 1
 }

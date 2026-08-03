@@ -31,7 +31,6 @@ internal class UpdatePlannedItemHandler(IForecastRepository forecastRepository, 
         // Clear existing configurations
         entity.FixedDate = null;
         entity.Schedule = null;
-        entity.FlexibleWindow = null;
 
         switch (request.Item.DateMode)
         {
@@ -52,16 +51,6 @@ internal class UpdatePlannedItemHandler(IForecastRepository forecastRepository, 
                     Interval = request.Item.ScheduleInterval ?? 1,
                     DayOfMonth = request.Item.ScheduleDayOfMonth,
                     EndDate = request.Item.ScheduleEndDate
-                };
-                break;
-
-            case PlannedItemDateMode.FlexibleWindow when request.Item.WindowStartDate.HasValue && request.Item.WindowEndDate.HasValue:
-                entity.FlexibleWindow = new PlannedItemFlexibleWindow
-                {
-                    PlannedItemId = entity.Id,
-                    StartDate = request.Item.WindowStartDate.Value,
-                    EndDate = request.Item.WindowEndDate.Value,
-                    AllocationMode = request.Item.AllocationMode ?? AllocationMode.EvenlySpread
                 };
                 break;
         }

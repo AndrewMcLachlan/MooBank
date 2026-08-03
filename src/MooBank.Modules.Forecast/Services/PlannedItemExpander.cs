@@ -80,39 +80,6 @@ internal static class PlannedItemExpander
                     }
                     break;
                 }
-
-            case PlannedItemDateMode.FlexibleWindow when item.FlexibleWindow != null:
-                {
-                    var windowStart = item.FlexibleWindow.StartDate < planStart ? planStart : item.FlexibleWindow.StartDate;
-                    var windowEnd = item.FlexibleWindow.EndDate > planEnd ? planEnd : item.FlexibleWindow.EndDate;
-
-                    if (item.FlexibleWindow.AllocationMode == AllocationMode.AllAtEnd)
-                    {
-                        // Skip windows that fall entirely outside the plan.
-                        if (windowStart <= windowEnd)
-                        {
-                            var endKey = new DateOnly(windowEnd.Year, windowEnd.Month, 1).ToString("yyyy-MM");
-                            result[endKey] = result.GetValueOrDefault(endKey, 0m) + item.Amount;
-                        }
-                    }
-                    else // EvenlySpread
-                    {
-                        var months = CountMonths(windowStart, windowEnd);
-                        if (months > 0)
-                        {
-                            var amountPerMonth = item.Amount / months;
-                            var current = new DateOnly(windowStart.Year, windowStart.Month, 1);
-                            var end = new DateOnly(windowEnd.Year, windowEnd.Month, 1);
-                            while (current <= end)
-                            {
-                                var key = current.ToString("yyyy-MM");
-                                result[key] = result.GetValueOrDefault(key, 0m) + amountPerMonth;
-                                current = current.AddMonths(1);
-                            }
-                        }
-                    }
-                    break;
-                }
         }
 
         return result;
@@ -123,7 +90,7 @@ internal static class PlannedItemExpander
     /// charge that cannot.
     /// </summary>
     public static bool HasFiniteTotal(DomainForecastPlannedItem item) =>
-        item.DateMode is PlannedItemDateMode.FixedDate or PlannedItemDateMode.FlexibleWindow;
+        item.DateMode is PlannedItemDateMode.FixedDate;
 
     internal static IEnumerable<DateOnly> GenerateScheduleOccurrences(DomainForecastPlannedItem item, DateOnly planStart, DateOnly planEnd)
     {
@@ -165,11 +132,6 @@ internal static class PlannedItemExpander
         }
 
         return occurrences;
-    }
-
-    internal static int CountMonths(DateOnly start, DateOnly end)
-    {
-        return ((end.Year - start.Year) * 12) + end.Month - start.Month + 1;
     }
 
     private static DateOnly AddMonthsWithDay(DateOnly date, int months, int? dayOfMonth)

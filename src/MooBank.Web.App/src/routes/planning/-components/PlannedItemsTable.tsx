@@ -137,8 +137,6 @@ const PlannedItemRow: React.FC<PlannedItemRowProps> = ({ planId, item: propItem,
             fixedDate: updated.fixedDate || undefined,
             scheduleAnchorDate: updated.scheduleAnchorDate || undefined,
             scheduleEndDate: updated.scheduleEndDate || undefined,
-            windowStartDate: updated.windowStartDate || undefined,
-            windowEndDate: updated.windowEndDate || undefined,
         };
         setItem(cleaned as PlannedItem);
         update(planId, item.id, cleaned);
@@ -169,8 +167,6 @@ const PlannedItemRow: React.FC<PlannedItemRowProps> = ({ planId, item: propItem,
                 return item.fixedDate ? format(parseISO(item.fixedDate), "dd MMM yyyy") : "-";
             case "Schedule":
                 return item.scheduleAnchorDate ? format(parseISO(item.scheduleAnchorDate), "dd MMM yyyy") : "-";
-            case "FlexibleWindow":
-                return item.windowStartDate ? format(parseISO(item.windowStartDate), "dd MMM yyyy") : "-";
             default:
                 return "-";
         }
@@ -182,29 +178,17 @@ const PlannedItemRow: React.FC<PlannedItemRowProps> = ({ planId, item: propItem,
                 return "-";
             case "Schedule":
                 return item.scheduleEndDate ? format(parseISO(item.scheduleEndDate), "dd MMM yyyy") : "Ongoing";
-            case "FlexibleWindow":
-                return item.windowEndDate ? format(parseISO(item.windowEndDate), "dd MMM yyyy") : "-";
             default:
                 return "-";
         }
     };
 
-    const getEndDateValue = (): string => {
-        switch (item.dateMode) {
-            case "Schedule":
-                return item.scheduleEndDate ?? "";
-            case "FlexibleWindow":
-                return item.windowEndDate ?? "";
-            default:
-                return "";
-        }
-    };
+    const getEndDateValue = (): string =>
+        item.dateMode === "Schedule" ? item.scheduleEndDate ?? "" : "";
 
     const handleEndDateChange = (value: string) => {
         if (item.dateMode === "Schedule") {
             handleUpdate({ scheduleEndDate: value || undefined });
-        } else if (item.dateMode === "FlexibleWindow") {
-            handleUpdate({ windowEndDate: value || undefined });
         }
     };
 
