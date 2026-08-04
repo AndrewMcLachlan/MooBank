@@ -1,6 +1,6 @@
 import type { Budget } from "api/types.gen";
 import { Amount } from "components/Amount";
-import { Kpi, KpiValue } from "components/Kpi";
+import { Kpi } from "@andrewmclachlan/moo-ds";
 
 export const BudgetSummary: React.FC<BudgetSummaryProps> = ({ budget }) => {
 
@@ -10,16 +10,16 @@ export const BudgetSummary: React.FC<BudgetSummaryProps> = ({ budget }) => {
 
     return (
         <section className="budget-summary" aria-label="Annual budget summary">
-            <Kpi label="Income" tone="income">
-                <KpiValue className="income"><Amount amount={income} /></KpiValue>
+            <Kpi label="Income" tone="positive">
+                <Kpi.Value className="income"><Amount amount={income} /></Kpi.Value>
             </Kpi>
-            <Kpi label="Expenses" tone="expense">
-                <KpiValue className="expense"><Amount amount={expenses} /></KpiValue>
+            <Kpi label="Expenses" tone="negative">
+                <Kpi.Value className="expense"><Amount amount={expenses} /></Kpi.Value>
             </Kpi>
             {/* The surplus takes its accent from the result: living within the budget reads as
                 income, spending beyond it as an expense. Breaking exactly even is not overspending. */}
-            <Kpi label="Surplus" tone={surplus < 0 ? "expense" : "income"}>
-                <KpiValue><Amount amount={surplus} positiveColour negativeColour minus /></KpiValue>
+            <Kpi label="Surplus" tone={surplus < 0 ? "negative" : "positive"}>
+                <Kpi.Value><Amount amount={surplus} positiveColour negativeColour minus /></Kpi.Value>
             </Kpi>
         </section>
     );

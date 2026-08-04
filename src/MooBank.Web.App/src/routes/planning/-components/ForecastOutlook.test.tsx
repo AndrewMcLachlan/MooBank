@@ -16,6 +16,24 @@ vi.mock("@andrewmclachlan/moo-ds", () => ({
         <section>{header}{children}</section>
     ),
     Badge: ({ children }: { children?: React.ReactNode }) => <span data-testid="badge">{children}</span>,
+    // Mirrors moo-ds's Kpi closely enough for the class-based assertions below: the card carries
+    // the tone, and the three slots keep their class names.
+    Kpi: Object.assign(
+        ({ label, tone, className, children }: { label?: React.ReactNode; tone?: string; className?: string; children?: React.ReactNode }) => (
+            <section className={`section kpi ${className ?? ""}`} data-tone={tone ?? "neutral"}>
+                <div className="kpi-label">{label}</div>
+                {children}
+            </section>
+        ),
+        {
+            Value: ({ className, children }: { className?: string; children?: React.ReactNode }) => (
+                <div className={`kpi-value ${className ?? ""}`}>{children}</div>
+            ),
+            Sub: ({ className, children }: { className?: string; children?: React.ReactNode }) => (
+                <div className={`kpi-sub ${className ?? ""}`}>{children}</div>
+            ),
+        },
+    ),
     SpinnerContainer: () => <div data-testid="spinner" />,
     Skeleton: Object.assign(
         () => <div data-testid="skeleton" />,

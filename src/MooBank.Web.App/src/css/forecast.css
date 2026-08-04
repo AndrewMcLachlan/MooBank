@@ -30,7 +30,7 @@
     margin-bottom: 1.5rem;
 }
 
-/* Card, accent, value and caption come from components/kpi.css; only the sizing is ours. */
+/* Card, accent, value and caption come from moo-ds; only the sizing is ours. */
 .forecast-metrics .section.kpi {
     padding: 0.75rem 1rem;
 }
@@ -55,7 +55,7 @@
 /* ---- Loading placeholders (see MetricsSkeleton) ----
    Heights come from the real classes via the shared rule in components.css; only the widths are
    set here, so a placeholder card doesn't read as three full-width bars. */
-.section.kpi .eyebrow > .skeleton-text > .skeleton-text-line { width: 45%; }
+.section.kpi .kpi-label > .skeleton-text > .skeleton-text-line { width: 45%; }
 .section.kpi .kpi-value > .skeleton-text > .skeleton-text-line { width: 70%; }
 .section.kpi .kpi-sub > .skeleton-text > .skeleton-text-line { width: 60%; }
 .forecast-title > .skeleton-text > .skeleton-text-line { width: 14rem; }

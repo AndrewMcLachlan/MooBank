@@ -1,5 +1,4 @@
-import { Badge, OverlayTrigger, Popover, Section, Skeleton, SpinnerContainer } from "@andrewmclachlan/moo-ds";
-import { Kpi, KpiSub, KpiValue } from "components/Kpi";
+import { Badge, Kpi, OverlayTrigger, Popover, Section, Skeleton, SpinnerContainer } from "@andrewmclachlan/moo-ds";
 import { MetricsSkeleton } from "./MetricsSkeleton";
 import { format, parseISO } from "date-fns";
 import type { ExpenseModel, ForecastMonth, ForecastPlan, ForecastSummary } from "api/types.gen";
@@ -127,31 +126,31 @@ export const ForecastOutlook: React.FC<ForecastOutlookProps> = ({ plan, summary,
 
             {summary && (
                 <div className="forecast-metrics">
-                    <Kpi label="Monthly Income" tone="income">
+                    <Kpi label="Monthly Income" tone="positive">
                         <MonthlyRange months={incomes} currencyCode={currencyCode} tone="income" />
-                        <KpiSub>across the plan</KpiSub>
+                        <Kpi.Sub>across the plan</Kpi.Sub>
                     </Kpi>
-                    <Kpi label="Monthly Expenses" tone="expense">
+                    <Kpi label="Monthly Expenses" tone="negative">
                         <MonthlyRange months={outgoings} currencyCode={currencyCode} tone="expense" />
                         <ExpenseModelNote expenses={summary.expenses} currencyCode={currencyCode} />
                     </Kpi>
                     {/* A risk reads as an expense and a clean result as income — the same two
                         accents the rest of the app uses, rather than a second vocabulary. */}
-                    <Kpi label="Lowest Balance" tone={lowestBalanceRisk ? "expense" : "income"}>
-                        <KpiValue className={lowestBalanceRisk ? "negative" : undefined}>
+                    <Kpi label="Lowest Balance" tone={lowestBalanceRisk ? "negative" : "positive"}>
+                        <Kpi.Value className={lowestBalanceRisk ? "negative" : undefined}>
                             <Amount amount={summary.lowestBalance} currencyCode={currencyCode} minus />
-                        </KpiValue>
-                        <KpiSub>in {format(parseISO(summary.lowestBalanceMonth), "MMMM yyyy")}</KpiSub>
+                        </Kpi.Value>
+                        <Kpi.Sub>in {format(parseISO(summary.lowestBalanceMonth), "MMMM yyyy")}</Kpi.Sub>
                     </Kpi>
-                    <Kpi label="Months Below Zero" tone={monthsRisk ? "expense" : "income"}>
-                        <KpiValue className={monthsRisk ? "negative" : undefined}>{summary.monthsBelowZero}</KpiValue>
-                        <KpiSub>{summary.monthsBelowZero === 0 ? "never runs negative" : "needs attention"}</KpiSub>
+                    <Kpi label="Months Below Zero" tone={monthsRisk ? "negative" : "positive"}>
+                        <Kpi.Value className={monthsRisk ? "negative" : undefined}>{summary.monthsBelowZero}</Kpi.Value>
+                        <Kpi.Sub>{summary.monthsBelowZero === 0 ? "never runs negative" : "needs attention"}</Kpi.Sub>
                     </Kpi>
-                    <Kpi label="Required Monthly Uplift" tone={upliftRisk ? "expense" : "income"}>
-                        <KpiValue className={upliftRisk ? "negative" : undefined}>
+                    <Kpi label="Required Monthly Uplift" tone={upliftRisk ? "negative" : "positive"}>
+                        <Kpi.Value className={upliftRisk ? "negative" : undefined}>
                             <Amount amount={summary.requiredMonthlyUplift} currencyCode={currencyCode} minus />
-                        </KpiValue>
-                        <KpiSub>{summary.requiredMonthlyUplift > 0 ? "to avoid negative balance" : "no uplift required"}</KpiSub>
+                        </Kpi.Value>
+                        <Kpi.Sub>{summary.requiredMonthlyUplift > 0 ? "to avoid negative balance" : "no uplift required"}</Kpi.Sub>
                     </Kpi>
                 </div>
             )}

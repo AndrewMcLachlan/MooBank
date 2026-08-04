@@ -153,7 +153,7 @@
     grid-template-columns: 1.2fr 1fr 1fr 1fr;
     gap: 10px;
 
-    /* Card, accent, value and caption come from components/kpi.css; only the sizing is ours. */
+    /* Card, accent, value and caption come from moo-ds; only the sizing is ours. */
     .section.kpi {
         padding: 10px 14px;
     }

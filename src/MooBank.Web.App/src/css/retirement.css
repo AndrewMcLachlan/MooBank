@@ -9,7 +9,7 @@
     margin-bottom: 1.5rem;
 }
 
-/* Card, accent, value and caption come from components/kpi.css; only the sizing is ours. */
+/* Card, accent, value and caption come from moo-ds; only the sizing is ours. */
 .retirement-metrics .section.kpi {
     padding: 0.75rem 1rem;
 }

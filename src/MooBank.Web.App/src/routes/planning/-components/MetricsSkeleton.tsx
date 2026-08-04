@@ -1,5 +1,4 @@
-import { Skeleton } from "@andrewmclachlan/moo-ds";
-import { Kpi, KpiSub, KpiValue } from "components/Kpi";
+import { Kpi, Skeleton } from "@andrewmclachlan/moo-ds";
 
 /**
  * Stand-in for a metrics strip while its projection loads.
@@ -13,8 +12,8 @@ export const MetricsSkeleton: React.FC<MetricsSkeletonProps> = ({ className, cou
     <div className={className} role="status" aria-label="Loading">
         {Array.from({ length: count }, (_, i) =>
             <Kpi label={<Skeleton.Text />} key={i}>
-                <KpiValue><Skeleton.Text /></KpiValue>
-                <KpiSub><Skeleton.Text /></KpiSub>
+                <Kpi.Value><Skeleton.Text /></Kpi.Value>
+                <Kpi.Sub><Skeleton.Text /></Kpi.Sub>
             </Kpi>
         )}
     </div>
