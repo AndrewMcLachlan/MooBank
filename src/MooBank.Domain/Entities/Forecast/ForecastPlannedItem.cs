@@ -45,5 +45,4 @@ public class ForecastPlannedItem(Guid id) : KeyedEntity<Guid>(id)
     // Navigation properties for schedule configurations (0-1 relationship)
     public virtual PlannedItemFixedDate? FixedDate { get; set; }
     public virtual PlannedItemSchedule? Schedule { get; set; }
-    public virtual PlannedItemFlexibleWindow? FlexibleWindow { get; set; }
 }

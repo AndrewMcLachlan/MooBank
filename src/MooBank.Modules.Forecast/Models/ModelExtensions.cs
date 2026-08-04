@@ -45,9 +45,6 @@ public static class ModelExtensions
         ScheduleInterval = item.Schedule?.Interval,
         ScheduleDayOfMonth = item.Schedule?.DayOfMonth,
         ScheduleEndDate = item.Schedule?.EndDate,
-        WindowStartDate = item.FlexibleWindow?.StartDate,
-        WindowEndDate = item.FlexibleWindow?.EndDate,
-        AllocationMode = item.FlexibleWindow?.AllocationMode,
         Notes = item.Notes,
         LinkedTransactionIds = item.Transactions.Select(t => t.TransactionId).ToList(),
     };
@@ -85,15 +82,6 @@ public static class ModelExtensions
                     Interval = item.ScheduleInterval ?? 1,
                     DayOfMonth = item.ScheduleDayOfMonth,
                     EndDate = item.ScheduleEndDate
-                };
-                break;
-
-            case PlannedItemDateMode.FlexibleWindow when item.WindowStartDate.HasValue && item.WindowEndDate.HasValue:
-                entity.FlexibleWindow = new DomainEntities.PlannedItemFlexibleWindow
-                {
-                    StartDate = item.WindowStartDate.Value,
-                    EndDate = item.WindowEndDate.Value,
-                    AllocationMode = item.AllocationMode ?? AllocationMode.EvenlySpread
                 };
                 break;
         }

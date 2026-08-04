@@ -6130,13 +6130,6 @@
           }
         }
       },
-      "AllocationMode": {
-        "enum": [
-          "EvenlySpread",
-          "AllAtEnd",
-          null
-        ]
-      },
       "AllTagAverageReport": {
         "required": [
           "tags",
@@ -8421,30 +8414,6 @@
             ],
             "format": "date"
           },
-          "windowStartDate": {
-            "type": [
-              "null",
-              "string"
-            ],
-            "format": "date"
-          },
-          "windowEndDate": {
-            "type": [
-              "null",
-              "string"
-            ],
-            "format": "date"
-          },
-          "allocationMode": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "$ref": "#/components/schemas/AllocationMode"
-              }
-            ]
-          },
           "notes": {
             "type": [
               "null",
@@ -8456,8 +8425,7 @@
       "PlannedItemDateMode": {
         "enum": [
           "FixedDate",
-          "Schedule",
-          "FlexibleWindow"
+          "Schedule"
         ]
       },
       "PlannedItemPayments": {
@@ -9650,30 +9618,6 @@
               "string"
             ],
             "format": "date"
-          },
-          "windowStartDate": {
-            "type": [
-              "null",
-              "string"
-            ],
-            "format": "date"
-          },
-          "windowEndDate": {
-            "type": [
-              "null",
-              "string"
-            ],
-            "format": "date"
-          },
-          "allocationMode": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "$ref": "#/components/schemas/AllocationMode"
-              }
-            ]
           },
           "notes": {
             "type": [

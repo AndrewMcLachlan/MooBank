@@ -127,9 +127,6 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
     public virtual DbSet<PlannedItemSchedule> PlannedItemSchedules { get; set; }
 
     [AllowNull]
-    public virtual DbSet<PlannedItemFlexibleWindow> PlannedItemFlexibleWindows { get; set; }
-
-    [AllowNull]
     public virtual DbSet<RetirementPlan> RetirementPlans { get; set; }
 
     [AllowNull]
