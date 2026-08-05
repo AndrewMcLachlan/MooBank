@@ -15,7 +15,9 @@ export const TagSelector: React.FC<TagSelectorProps> = ({ id, value, multiSelect
     }
 
     return (
-        <ComboBox id={id} items={tags.data ?? []} selectedItems={tag} labelField={tag => tag?.name} valueField={tag => tag?.id} onChange={change} multiSelect={multiSelect} clearable placeholder={`Select Tag${multiSelect ? "s" : ""}...`} />
+        // colourField is what puts a tag's own colour on its pill — the same wiring TagPanel uses,
+        // and the reason the filter's tags were rendering in the default badge colour.
+        <ComboBox id={id} items={tags.data ?? []} selectedItems={tag} labelField={tag => tag?.name} valueField={tag => tag?.id} colourField={tag => tag?.colour as string} onChange={change} multiSelect={multiSelect} clearable placeholder={`Select Tag${multiSelect ? "s" : ""}...`} />
     );
 };
 
