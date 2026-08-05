@@ -14,9 +14,9 @@
   },
   "type": "module",
   "dependencies": {
-    "@andrewmclachlan/moo-app": "^5.2.199",
-    "@andrewmclachlan/moo-ds": "^5.2.199",
-    "@andrewmclachlan/moo-icons": "^5.2.199",
+    "@andrewmclachlan/moo-app": "^5.2.230",
+    "@andrewmclachlan/moo-ds": "^5.2.230",
+    "@andrewmclachlan/moo-icons": "^5.2.230",
     "@azure/msal-react": "^5.5.4",
     "@fortawesome/fontawesome-svg-core": "^7.3.0",
     "@fortawesome/free-solid-svg-icons": "^7.3.0",

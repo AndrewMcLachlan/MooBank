@@ -7,13 +7,13 @@
 @import "components/monthselector.css";
 
 /* ===========================================
-   KPI accents
+   KPI tones
    ===========================================
-   moo-ds ships the Kpi card with positive/negative tones on --success/--danger, which is right for
-   a design system that knows nothing about ledgers. This is a ledger: money in and money out have
-   their own established hues here, so the accent is repointed once for the whole app. */
-.section.kpi[data-tone="positive"] { --kpi-accent: var(--income-bar); }
-.section.kpi[data-tone="negative"] { --kpi-accent: var(--expense-bar); }
+   moo-ds ships semantic and hue tones; money in and money out are neither, so they are the app's
+   own — a name, and the rule that colours it. Only the line is set here: the figures already carry
+   their own colouring, from Amount's positive/negative classes and the per-strip rules. */
+.section.kpi-income  { --kpi-bar: var(--income-bar); }
+.section.kpi-expense { --kpi-bar: var(--expense-bar); }
 
 /* ===========================================
    Skeleton placeholders

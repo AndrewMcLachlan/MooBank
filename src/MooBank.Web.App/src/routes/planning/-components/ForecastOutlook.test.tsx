@@ -20,7 +20,7 @@ vi.mock("@andrewmclachlan/moo-ds", () => ({
     // the tone, and the three slots keep their class names.
     Kpi: Object.assign(
         ({ label, tone, className, children }: { label?: React.ReactNode; tone?: string; className?: string; children?: React.ReactNode }) => (
-            <section className={`section kpi ${className ?? ""}`} data-tone={tone ?? "neutral"}>
+            <section className={`section kpi ${tone ? `kpi-${tone}` : ""} ${className ?? ""}`}>
                 <div className="kpi-label">{label}</div>
                 {children}
             </section>

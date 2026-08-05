@@ -1,4 +1,8 @@
-﻿@layer mooapp, layout, moobank;
+﻿/* moo-ds declares its own top-level layers (reset, base, components, layout). Naming them here is
+   what puts them in front of moobank: a layer this statement doesn't mention is appended after
+   everything it does, so leaving them out silently placed the whole design system *above* the app
+   and any rule of ours competing with one of theirs lost, regardless of specificity. */
+@layer mooapp, reset, base, components, layout, moobank;
 
 @import "@andrewmclachlan/moo-ds/css" layer(mooapp);
 @import "css/layout" layer(layout);
