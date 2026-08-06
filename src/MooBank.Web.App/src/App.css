@@ -143,10 +143,6 @@
         max-width: 100%;
     }
 
-    .section-row {
-        --gutter-y: 1.5rem;
-    }
-
     .net-worth.key-value {
         font-size: 1.2em;
 
