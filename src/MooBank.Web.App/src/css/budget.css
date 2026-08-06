@@ -77,15 +77,9 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
-    margin-bottom: 1.5rem;
 }
 
 /* Card, accent, label, value and caption come from components/kpi.css; only the sizing is ours. */
-.budget-summary .section.kpi {
-    padding: 1rem 1.25rem;
-    border-radius: 0.5rem;
-}
-
 .budget-summary .kpi-value {
     font-size: 1.5rem;
 }

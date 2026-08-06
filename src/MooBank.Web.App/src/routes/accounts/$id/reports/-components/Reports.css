@@ -17,7 +17,7 @@
             font-weight: 300;
             grid-area: total;
         }
-        div, .spinner, canvas {
+        div, .spinner, .skeleton-chart, canvas {
             grid-area: chart;
         }
     }

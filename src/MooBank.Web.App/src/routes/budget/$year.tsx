@@ -1,5 +1,5 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import { Col, IconButton, Row, SectionTable, Tab, Tabs } from "@andrewmclachlan/moo-ds";
+import { Col, IconButton, Row, SectionTable, Stack, Tab, Tabs } from "@andrewmclachlan/moo-ds";
 import { Sparkle } from "@andrewmclachlan/moo-icons";
 import { useBudget } from "./-hooks/useBudget";
 import { useBudgetYears } from "./-hooks/useBudgetYears";
@@ -52,6 +52,7 @@ function Budget() {
         ]}>
             <Tabs defaultActiveKey="summary">
                 <Tab eventKey="summary" title="Summary">
+                    <Stack>
                     <BudgetSummary budget={budget} />
                     <Row>
                         <Col xxl={6} xl={12}>
@@ -76,6 +77,7 @@ function Budget() {
                             )}
                         </tbody>
                     </SectionTable>
+                    </Stack>
                 </Tab>
                 <Tab eventKey="income" title="Income">
                     <BudgetTable year={year} lines={budget?.incomeLines} type="Income" />

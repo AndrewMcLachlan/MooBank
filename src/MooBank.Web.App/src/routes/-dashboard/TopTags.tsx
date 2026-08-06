@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Widget } from "@andrewmclachlan/moo-ds";
+import { Skeleton, Widget } from "@andrewmclachlan/moo-ds";
 import { lastMonth, lastMonthName } from "utils/dateFns";
 import { TopTags } from "../accounts/$id/reports/-components/TopTags";
 import { useAccounts } from "hooks/useAccounts";
@@ -15,7 +15,7 @@ export const TopTagsWidget: React.FC = () => {
     const monthName = lastMonthName();
 
     return (
-        <Widget header={(account && `Top Tags - ${account.name} - ${monthName}`) ?? monthName} size="double" headerSize={2} className="report" loading={isLoading} to={account ? `/accounts/${account.id}/reports/all-tag-average?period=1` : undefined}>
+        <Widget header={(account && `Top Tags - ${account.name} - ${monthName}`) ?? monthName} size="double" headerSize={2} className="report" loading={isLoading} loadingPlaceholder={<Skeleton.Chart variant="bar" count={10} />} to={account ? `/accounts/${account.id}/reports/all-tag-average?period=1` : undefined}>
             {isError ? <WidgetError /> : account && <TopTags accountId={account?.id} period={period} reportType={"Debit"} top={10} periodId="1" />}
         </Widget>
     );

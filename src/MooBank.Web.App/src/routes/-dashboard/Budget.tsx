@@ -4,7 +4,7 @@ import { format } from "date-fns/format";
 import { getMonth } from "date-fns/getMonth";
 import { getYear } from "date-fns/getYear";
 
-import { Widget } from "@andrewmclachlan/moo-ds";
+import { Skeleton, Widget } from "@andrewmclachlan/moo-ds";
 import type { ChartData } from "chart.js";
 import { useChartColours } from "utils/chartColours";
 import { lastMonth, lastMonthName } from "utils/dateFns";
@@ -41,7 +41,7 @@ export const BudgetWidget: React.FC = () => {
     const difference = Math.round((((report?.budgetedAmount ?? 0) - Math.abs(report?.actual ?? 0)) / 10.0)) * 10;
 
     return (
-        <Widget header={`Budget - ${lastMonthName()}`} size="single" className="report budget" loading={isLoading} to={`/budget/report/${period.startDate.getFullYear()}/${period.startDate.getMonth() + 1}`}>
+        <Widget header={`Budget - ${lastMonthName()}`} size="single" className="report budget" loading={isLoading} loadingPlaceholder={<Skeleton.Chart variant="horizontal-bar" count={2} />} to={`/budget/report/${period.startDate.getFullYear()}/${period.startDate.getMonth() + 1}`}>
             {isError && <WidgetError />}
             {!isError && report &&
                 <>
