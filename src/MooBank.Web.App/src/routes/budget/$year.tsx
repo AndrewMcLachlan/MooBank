@@ -62,7 +62,7 @@ function Budget() {
                             <BudgetCumulativeChart months={budget?.months} />
                         </Col>
                     </Row>
-                    <SectionTable header="Monthly Budget" striped className="budget-list">
+                    <SectionTable header="Monthly Budget" striped className="budget-list" loading={!budget} loadingRows={12}>
                         <thead>
                             <tr>
                                 <th className="column-15">Month</th>

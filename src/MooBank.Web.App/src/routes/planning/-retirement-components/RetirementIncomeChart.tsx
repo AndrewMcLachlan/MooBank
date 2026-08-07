@@ -1,9 +1,8 @@
 import { Bar } from "react-chartjs-2";
-import { Section } from "@andrewmclachlan/moo-ds";
+import { Section, Skeleton } from "@andrewmclachlan/moo-ds";
 import type { RetirementProjectionYear } from "api/types.gen";
 import { useChartColours } from "utils/chartColours";
 import { hasRetirementIncome, retirementIncomeChartData, retirementIncomeChartOptions } from "../-retirement-utils/retirementIncomeChart";
-import { ChartSkeleton } from "../-components/ChartSkeleton";
 
 interface RetirementIncomeChartProps {
     years: RetirementProjectionYear[];
@@ -20,13 +19,17 @@ interface RetirementIncomeChartProps {
 export const RetirementIncomeChart: React.FC<RetirementIncomeChartProps> = ({ years, currencyCode, loading }) => {
 
     const colours = useChartColours();
-
-    if (loading) return <ChartSkeleton header="Retirement Income" canvasClassName="retirement-chart-canvas" />;
+/*
+    if (loading) return (
+        <Section header="Retirement Income" className="retirement-chart-canvas">
+            <Skeleton.Chart variant="bar" count={17} />
+        </Section>
+    );
 
     // A plan that draws no retirement income has no chart to show — see the grid rule in
     // retirement.css, which lets the balance chart take the full width when this is absent.
     if (!hasRetirementIncome(years)) return null;
-
+*/
     return (
         <Section header="Retirement Income">
             <div className="retirement-chart-canvas">

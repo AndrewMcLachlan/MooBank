@@ -36,7 +36,9 @@ export const NewBudgetLine: React.FC<NewBudgetLineProps> = (props) => {
     };
 
     return (
-        <tr>
+        // No tag chosen yet, so no colour -- but the row still reserves the edge, or it would
+        // sit shifted against the lines above it.
+        <tr className="colour-row">
             <td><ComboBox<Tag> selectedItems={[tag]} onChange={(t: Tag[]) => setTag(t[0])} items={allTags.data ?? []} labelField={(t) => t?.name} valueField={(t) => t.id?.toString()} /></td>
             <td><Input value={notes} onChange={(e) => setNotes(e.currentTarget.value)} /></td>
             <td><Input type="number" step={amountStep} min={0} value={amount} onChange={(e) => setAmount((e.currentTarget as any).valueAsNumber)} /></td>
