@@ -1,5 +1,6 @@
 import { EditColumn } from "@andrewmclachlan/moo-ds";
 import { MonthSelector } from "components";
+import { colourRowProps } from "components/colourRow";
 import { DeleteIcon } from "@andrewmclachlan/moo-ds";
 import type { BudgetLine as BudgetLineModel } from "api/types.gen";
 import { useDeleteBudgetLine } from "../-hooks/useDeleteBudgetLine";
@@ -20,13 +21,8 @@ export const BudgetLine: React.FC<BudgetLineProps> = ({ year, budgetLine, colour
     const isAuto = budgetLine.notes?.startsWith(autoPrefix) ?? false;
 
     return (
-        <tr key={budgetLine.id}>
-            <td>
-                <span className="tag-chip">
-                    <span className="tag-swatch" style={colour ? { backgroundColor: colour } : undefined} />
-                    {budgetLine.name}
-                </span>
-            </td>
+        <tr key={budgetLine.id} {...colourRowProps(colour)}>
+            <td>{budgetLine.name}</td>
             <EditColumn className={isAuto ? "provenance" : undefined} value={budgetLine.notes} onChange={(v) => updateBudgetLine(year, { ...budgetLine, notes: v.value })} />
             <EditColumn className="amount" value={budgetLine.amount.toFixed(2).toString()} onChange={(v) => updateBudgetLine(year, { ...budgetLine, amount: Number(v.value) })} />
             <td><MonthSelector value={budgetLine.month} onChange={(v) => updateBudgetLine(year, { ...budgetLine, month: v })} /></td>

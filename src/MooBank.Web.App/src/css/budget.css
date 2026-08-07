@@ -92,20 +92,11 @@
     color: var(--expense-fg);
 }
 
-/* Tag colour chips in the budget tables. */
-.budget-list .tag-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.budget-list .tag-swatch {
-    display: inline-block;
-    width: 0.75rem;
-    height: 0.75rem;
-    border-radius: 50%;
-    background: var(--border-colour);
-    flex: 0 0 auto;
+/* A budget line's tag shows its colour as a row edge, the same as the tag management screen
+   (see components/colourrow.css). A tag with no colour of its own takes the theme's, so the
+   column reads as a continuous edge rather than one broken by gaps. */
+.budget-list {
+    --row-colour-default: var(--primary);
 }
 
 /* Provenance hint shown on auto-generated lines' notes. */
