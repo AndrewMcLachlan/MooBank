@@ -10,12 +10,8 @@
 
 .colour-row > td:first-child {
     /* Reserved even with no colour set, so rows do not shift sideways as colours are
-       applied and cleared.
-
-       A table can fill that reserved edge instead of leaving it blank by setting
-       --row-colour-default on any ancestor: the property inherits, so opting in costs one
-       declaration and no fight with the has-colour rule below. */
-    border-left: 4px solid var(--row-colour-default, transparent);
+       applied and cleared. */
+    border-left: 4px solid transparent;
 }
 
 .colour-row.has-colour > td:first-child {

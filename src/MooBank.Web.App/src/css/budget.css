@@ -93,11 +93,7 @@
 }
 
 /* A budget line's tag shows its colour as a row edge, the same as the tag management screen
-   (see components/colourrow.css). A tag with no colour of its own takes the theme's, so the
-   column reads as a continuous edge rather than one broken by gaps. */
-.budget-list {
-    --row-colour-default: var(--primary);
-}
+   (see components/colourrow.css). Nothing to declare here -- the shared styles do it all. */
 
 /* Provenance hint shown on auto-generated lines' notes. */
 .budget-list .provenance {
