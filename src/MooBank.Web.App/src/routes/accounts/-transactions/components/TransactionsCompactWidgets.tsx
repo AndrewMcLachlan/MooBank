@@ -1,5 +1,6 @@
 import React from "react";
-import { Section } from "@andrewmclachlan/moo-ds";
+
+import { Kpi } from "@andrewmclachlan/moo-ds";
 
 import { Amount, useAccount } from "components";
 import type { LogicalAccount } from "api/types.gen";
@@ -21,26 +22,22 @@ export const TransactionsCompactWidgets: React.FC = () => {
 
     return (
         <div className="tx-compact-widgets">
-            <Section className="widget" data-tone="balance">
-                <div className="eyebrow">{account.name} · Balance</div>
-                <div className="widget-value strong"><Amount amount={balance} currencyCode={account.currency} minus /></div>
-                <div className="widget-sub">Last tx · {formatDisplayDate(account.lastTransaction)}</div>
-            </Section>
-            <Section className="widget" data-tone="income">
-                <div className="eyebrow">Income</div>
-                <div className="widget-value"><Amount amount={stats.income} currencyCode={account.currency} positiveColour /></div>
-                <div className="widget-sub">{periodLabel}</div>
-            </Section>
-            <Section className="widget" data-tone="expense">
-                <div className="eyebrow">Expenses</div>
-                <div className="widget-value"><Amount amount={stats.expenses} currencyCode={account.currency} negativeColour zeroShowsAs="negative" /></div>
-                <div className="widget-sub">{periodLabel}</div>
-            </Section>
-            <Section className="widget" data-tone={netTone}>
-                <div className="eyebrow">Net</div>
-                <div className="widget-value"><Amount amount={stats.net} currencyCode={account.currency} plus minus positiveColour negativeColour zeroShowsAs="neutral" /></div>
-                <div className="widget-sub">{periodLabel}</div>
-            </Section>
+            <Kpi label={`${account.name} · Balance`}>
+                <Kpi.Value className="strong"><Amount amount={balance} currencyCode={account.currency} minus /></Kpi.Value>
+                <Kpi.Sub>Last tx · {formatDisplayDate(account.lastTransaction)}</Kpi.Sub>
+            </Kpi>
+            <Kpi label="Income" tone="income">
+                <Kpi.Value><Amount amount={stats.income} currencyCode={account.currency} positiveColour /></Kpi.Value>
+                <Kpi.Sub>{periodLabel}</Kpi.Sub>
+            </Kpi>
+            <Kpi label="Expenses" tone="expense">
+                <Kpi.Value><Amount amount={stats.expenses} currencyCode={account.currency} negativeColour zeroShowsAs="negative" /></Kpi.Value>
+                <Kpi.Sub>{periodLabel}</Kpi.Sub>
+            </Kpi>
+            <Kpi label="Net" tone={netTone}>
+                <Kpi.Value><Amount amount={stats.net} currencyCode={account.currency} plus minus positiveColour negativeColour zeroShowsAs="neutral" /></Kpi.Value>
+                <Kpi.Sub>{periodLabel}</Kpi.Sub>
+            </Kpi>
         </div>
     );
 };

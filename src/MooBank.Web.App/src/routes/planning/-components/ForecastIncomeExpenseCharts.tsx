@@ -3,15 +3,28 @@ import { Line } from "react-chartjs-2";
 import type { ForecastMonth } from "api/types.gen";
 import { useChartColours } from "utils/chartColours";
 import { forecastChartOptions, projectedActualChartData } from "../-utils/forecastChart";
+import { ChartSkeleton } from "./ChartSkeleton";
 
 interface ForecastIncomeExpenseChartsProps {
     months: ForecastMonth[];
     currencyCode: string;
+    loading?: boolean;
 }
 
-export const ForecastIncomeExpenseCharts: React.FC<ForecastIncomeExpenseChartsProps> = ({ months, currencyCode }) => {
+export const ForecastIncomeExpenseCharts: React.FC<ForecastIncomeExpenseChartsProps> = ({ months, currencyCode, loading }) => {
 
     const colours = useChartColours();
+
+    // Hold the pair's height while loading. Once loaded, a plan with no months really has nothing
+    // to draw, so it still collapses.
+    if (loading) {
+        return (
+            <div className="forecast-io-charts">
+                <ChartSkeleton header="Income" canvasClassName="forecast-mini-chart" />
+                <ChartSkeleton header="Expenses" canvasClassName="forecast-mini-chart" />
+            </div>
+        );
+    }
 
     if (months.length === 0) {
         return null;

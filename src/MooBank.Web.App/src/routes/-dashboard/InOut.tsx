@@ -3,7 +3,7 @@ import { lastMonth, lastMonthName } from "utils/dateFns";
 import { InOut } from "../accounts/$id/reports/-components/InOut";
 import { useAccounts } from "hooks/useAccounts";
 import { useInOutReport } from "hooks/useInOutReport";
-import { Widget } from "@andrewmclachlan/moo-ds";
+import { Skeleton, Widget } from "@andrewmclachlan/moo-ds";
 import { WidgetError } from "components/WidgetError";
 
 export const InOutWidget: React.FC = () => {
@@ -16,7 +16,7 @@ export const InOutWidget: React.FC = () => {
     const monthName = lastMonthName();
 
     return (
-        <Widget header={(account && `${account.name} - ${monthName}`) ?? monthName} size="single" headerSize={2} className="report inout" loading={isLoading} to={account ? `/accounts/${account.id}/reports/in-out?period=1` : undefined}>
+        <Widget header={(account && `${account.name} - ${monthName}`) ?? monthName} size="single" headerSize={2} loading={isLoading} loadingPlaceholder={<Skeleton.Chart variant="horizontal-bar" count={2} />} className="report inout" to={account ? `/accounts/${account.id}/reports/in-out?period=1` : undefined}>
             {isError ? <WidgetError /> : account && <InOut accountId={account?.id} period={period} useInOutReport={useInOutReport} />}
         </Widget>
     );

@@ -5,3 +5,33 @@
 @import "components/import.css";
 @import "components/summary.css";
 @import "components/monthselector.css";
+
+/* ===========================================
+   KPI tones
+   ===========================================
+   moo-ds ships semantic and hue tones; money in and money out are neither, so they are the app's
+   own — a name, and the rule that colours it. Only the line is set here: the figures already carry
+   their own colouring, from Amount's positive/negative classes and the per-strip rules. */
+.section.kpi-income  { --kpi-bar: var(--income-bar); }
+.section.kpi-expense { --kpi-bar: var(--expense-bar); }
+
+/* ===========================================
+   Skeleton placeholders
+   ===========================================
+   moo-ds sizes a placeholder line at 0.8em plus 0.15em margins — roughly 1.1em, which equals a real
+   line of text only where line-height happens to be 1.1. Where a placeholder stands in for actual
+   text, pin it to the container's own line box instead: the element then occupies exactly the same
+   height loaded or not, so nothing below it moves when the data arrives.
+
+   The Kpi card's own three lines are handled by moo-ds; these are the app's remaining cases. */
+:is(h1, h2, h3, td) > .skeleton-text > .skeleton-text-line {
+    height: 1lh;
+    margin-block: 0;
+}
+
+/* A placeholder standing in for a whole block — a chart canvas — takes the height its container
+   already defines, so the block occupies the same space before and after the data arrives. */
+.skeleton-fill {
+    height: 100%;
+    width: 100%;
+}

@@ -1,8 +1,8 @@
 import { Section, Tooltip } from "@andrewmclachlan/moo-ds";
 import React from "react";
-import { Button, ButtonGroup, Col, Form, Input } from "@andrewmclachlan/moo-ds";
+import { Button, ButtonGroup, Col, Form, Input, Row } from "@andrewmclachlan/moo-ds";
 
-import { PeriodSelector, FormRow as Row, TagSelector } from "components";
+import { PeriodSelector, TagSelector } from "components";
 import { useFilterPanel } from "../hooks/useFilterPanel";
 
 export const FilterPanel: React.FC<FilterPanelProps> = (props) => {

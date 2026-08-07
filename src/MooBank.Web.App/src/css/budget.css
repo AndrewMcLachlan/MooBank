@@ -2,11 +2,74 @@
     position: relative;
 }
 
-/* Toolbar: year / month filters on the left, generate action on the right. */
-.budget-toolbar .budget-toolbar-actions {
-    display: flex;
-    align-items: flex-end;
-    justify-content: flex-end;
+/* Year picker in the page actions: arrows step a year, the year itself opens the list. */
+.budget-year-picker {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--border-colour);
+    border-radius: 0.375rem;
+    overflow: hidden;
+}
+
+.budget-year-picker button {
+    background: none;
+    border: 0;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    padding: 0.25rem 0.6rem;
+}
+
+.budget-year-picker button:hover:not(:disabled) {
+    background: var(--section-bg);
+}
+
+.budget-year-picker .year-step {
+    color: var(--body-colour-dim);
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+.budget-year-picker .year-step:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+.budget-year-picker .year-current {
+    font-weight: 600;
+    min-width: 3.5rem;
+}
+
+.budget-year-popover ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    min-width: 7rem;
+}
+
+.budget-year-popover li button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: 0;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    padding: 0.3rem 0.75rem;
+    border-radius: 0.25rem;
+}
+
+.budget-year-popover li button:hover {
+    background: var(--section-bg);
+}
+
+.budget-year-popover li button.current {
+    font-weight: 600;
+}
+
+.budget-year-popover li button.add {
+    color: var(--body-colour-dim);
 }
 
 /* Annual summary strip (income / expenses / surplus). */
@@ -14,29 +77,11 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
-    margin-bottom: 1.5rem;
 }
 
-.budget-summary .kpi {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    padding: 1rem 1.25rem;
-    border: 1px solid var(--border-colour);
-    border-radius: 0.5rem;
-    background: var(--surface);
-}
-
-.budget-summary .kpi-label {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--muted-colour);
-}
-
+/* Card, accent, label, value and caption come from components/kpi.css; only the sizing is ours. */
 .budget-summary .kpi-value {
     font-size: 1.5rem;
-    font-weight: 600;
 }
 
 .budget-summary .kpi-value.income .amount {
@@ -65,7 +110,7 @@
 
 /* Provenance hint shown on auto-generated lines' notes. */
 .budget-list .provenance {
-    color: var(--muted-colour);
+    color: var(--body-colour-dim);
     font-style: italic;
 }
 
@@ -76,6 +121,12 @@
 }
 
 .budget-report-chart {
+    position: relative;
+    height: 24rem;
+}
+
+/* Year-at-a-glance chart on the budget editor page. */
+.budget-year-chart {
     position: relative;
     height: 24rem;
 }

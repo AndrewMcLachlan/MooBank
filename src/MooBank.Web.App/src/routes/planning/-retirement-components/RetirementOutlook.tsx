@@ -1,4 +1,5 @@
-﻿import { Section, SpinnerContainer } from "@andrewmclachlan/moo-ds";
+import { Kpi, Section } from "@andrewmclachlan/moo-ds";
+import { MetricsSkeleton } from "../-components/MetricsSkeleton";
 import type { RetirementProjection } from "api/types.gen";
 import { Amount } from "components";
 
@@ -10,7 +11,13 @@ interface RetirementOutlookProps {
 
 export const RetirementOutlook: React.FC<RetirementOutlookProps> = ({ projection, currencyCode, loading }) => {
 
-    if (loading) return <SpinnerContainer />;
+    // Four cards are always present and up to three more are conditional; five keeps the
+    // placeholder close to the usual height without overshooting into an extra grid row.
+    if (loading) return (
+        <div className="retirement-outlook">
+            <MetricsSkeleton className="retirement-metrics" count={5} />
+        </div>
+    );
 
     if (!projection || projection.members.length === 0) {
         return (
@@ -25,53 +32,45 @@ export const RetirementOutlook: React.FC<RetirementOutlookProps> = ({ projection
     return (
         <div className="retirement-outlook">
             <div className="retirement-metrics">
-                <Section className="metric">
-                    <div className="eyebrow">Balance Today</div>
-                    <div className="metric-value"><Amount amount={summary.currentBalance} currencyCode={currencyCode} decimalPlaces={0} /></div>
-                    <div className="metric-sub">across {projection.members.length === 1 ? "1 person" : `${projection.members.length} people`}</div>
-                </Section>
-                <Section className="metric">
-                    <div className="eyebrow">At Retirement</div>
-                    <div className="metric-value"><Amount amount={summary.balanceAtRetirement} currencyCode={currencyCode} decimalPlaces={0} /></div>
-                    <div className="metric-sub">in {summary.retirementYear}</div>
-                </Section>
-                <Section className="metric">
-                    <div className="eyebrow">In Today's Dollars</div>
-                    <div className="metric-value"><Amount amount={summary.balanceAtRetirementInTodaysDollars} currencyCode={currencyCode} decimalPlaces={0} /></div>
-                    <div className="metric-sub">what it would buy now</div>
-                </Section>
-                <Section className="metric">
-                    <div className="eyebrow">Sustainable Income</div>
-                    <div className="metric-value"><Amount amount={summary.sustainableIncomeInTodaysDollars} currencyCode={currencyCode} decimalPlaces={0} /></div>
-                    <div className="metric-sub">the most this plan can pay to {summary.lifeExpectancyYear}, in today's dollars</div>
-                </Section>
+                <Kpi label="Balance Today">
+                    <Kpi.Value><Amount amount={summary.currentBalance} currencyCode={currencyCode} decimalPlaces={0} /></Kpi.Value>
+                    <Kpi.Sub>across {projection.members.length === 1 ? "1 person" : `${projection.members.length} people`}</Kpi.Sub>
+                </Kpi>
+                <Kpi label="At Retirement">
+                    <Kpi.Value><Amount amount={summary.balanceAtRetirement} currencyCode={currencyCode} decimalPlaces={0} /></Kpi.Value>
+                    <Kpi.Sub>in {summary.retirementYear}</Kpi.Sub>
+                </Kpi>
+                <Kpi label="In Today's Dollars">
+                    <Kpi.Value><Amount amount={summary.balanceAtRetirementInTodaysDollars} currencyCode={currencyCode} decimalPlaces={0} /></Kpi.Value>
+                    <Kpi.Sub>what it would buy now</Kpi.Sub>
+                </Kpi>
+                <Kpi label="Sustainable Income">
+                    <Kpi.Value><Amount amount={summary.sustainableIncomeInTodaysDollars} currencyCode={currencyCode} decimalPlaces={0} /></Kpi.Value>
+                    <Kpi.Sub>the most this plan can pay to {summary.lifeExpectancyYear}, in today&rsquo;s dollars</Kpi.Sub>
+                </Kpi>
                 {summary.moneyRunsOutYear && (
-                    <Section className="metric metric-warning">
-                        <div className="eyebrow">Money Runs Out</div>
-                        <div className="metric-value">{summary.moneyRunsOutYear}</div>
-                        <div className="metric-sub">before the plan's life expectancy of {summary.lifeExpectancyYear}</div>
-                    </Section>
+                    <Kpi label="Money Runs Out">
+                        <Kpi.Value>{summary.moneyRunsOutYear}</Kpi.Value>
+                        <Kpi.Sub>before the plan&rsquo;s life expectancy of {summary.lifeExpectancyYear}</Kpi.Sub>
+                    </Kpi>
                 )}
                 {!summary.moneyRunsOutYear && summary.finalBalanceInTodaysDollars > 0 && (
-                    <Section className="metric">
-                        <div className="eyebrow">Left Over</div>
-                        <div className="metric-value"><Amount amount={summary.finalBalanceInTodaysDollars} currencyCode={currencyCode} decimalPlaces={0} /></div>
-                        <div className="metric-sub">at {summary.lifeExpectancyYear}, in today's dollars</div>
-                    </Section>
+                    <Kpi label="Left Over">
+                        <Kpi.Value><Amount amount={summary.finalBalanceInTodaysDollars} currencyCode={currencyCode} decimalPlaces={0} /></Kpi.Value>
+                        <Kpi.Sub>at {summary.lifeExpectancyYear}, in today&rsquo;s dollars</Kpi.Sub>
+                    </Kpi>
                 )}
                 {summary.totalPension > 0 && (
-                    <Section className="metric">
-                        <div className="eyebrow">Age Pension</div>
-                        <div className="metric-value"><Amount amount={summary.totalPension} currencyCode={currencyCode} decimalPlaces={0} /></div>
-                        <div className="metric-sub">over the whole retirement</div>
-                    </Section>
+                    <Kpi label="Age Pension">
+                        <Kpi.Value><Amount amount={summary.totalPension} currencyCode={currencyCode} decimalPlaces={0} /></Kpi.Value>
+                        <Kpi.Sub>over the whole retirement</Kpi.Sub>
+                    </Kpi>
                 )}
                 {summary.totalCosts > 0 && (
-                    <Section className="metric">
-                        <div className="eyebrow">Fees &amp; Insurance</div>
-                        <div className="metric-value"><Amount amount={summary.totalCosts} currencyCode={currencyCode} decimalPlaces={0} /></div>
-                        <div className="metric-sub">over the whole projection</div>
-                    </Section>
+                    <Kpi label="Fees &amp; Insurance">
+                        <Kpi.Value><Amount amount={summary.totalCosts} currencyCode={currencyCode} decimalPlaces={0} /></Kpi.Value>
+                        <Kpi.Sub>over the whole projection</Kpi.Sub>
+                    </Kpi>
                 )}
             </div>
         </div>

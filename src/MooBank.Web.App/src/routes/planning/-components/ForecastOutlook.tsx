@@ -1,4 +1,5 @@
-import { Badge, OverlayTrigger, Popover, Section, SpinnerContainer } from "@andrewmclachlan/moo-ds";
+import { Badge, Kpi, OverlayTrigger, Popover, Section, Skeleton, SpinnerContainer } from "@andrewmclachlan/moo-ds";
+import { MetricsSkeleton } from "./MetricsSkeleton";
 import { format, parseISO } from "date-fns";
 import type { ExpenseModel, ForecastMonth, ForecastPlan, ForecastSummary } from "api/types.gen";
 import { Amount } from "components";
@@ -28,11 +29,11 @@ const MonthlyRange: React.FC<{ months: number[]; currencyCode: string; tone: str
     const high = months.length ? Math.max(...months) : 0;
 
     return (
-        <div className={`metric-value ${tone}`}>
+        <div className={`kpi-value ${tone}`}>
             <Amount amount={low} currencyCode={currencyCode} />
             {Math.round(high - low) > 0 && (
                 <>
-                    <span className="metric-range-to">to</span>
+                    <span className="kpi-range-to">to</span>
                     <Amount amount={high} currencyCode={currencyCode} />
                 </>
             )}
@@ -46,7 +47,7 @@ const MonthlyRange: React.FC<{ months: number[]; currencyCode: string; tone: str
 // the mistake that produced a phantom month at the household's whole outgoings. It stays in the
 // detail for checking the model, and out of the way of using it.
 const ExpenseModelNote: React.FC<{ expenses: ExpenseModel; currencyCode: string }> = ({ expenses, currencyCode }) => (
-    <div className="metric-sub">
+    <div className="kpi-sub">
         <OverlayTrigger placement="bottom" overlay={
             <Popover id="forecast-expense-popover">
                 <Popover.Body>
@@ -106,7 +107,8 @@ export const ForecastOutlook: React.FC<ForecastOutlookProps> = ({ plan, summary,
     return (
         <div className="forecast-outlook">
             <div className="forecast-heading">
-                <h2 className="forecast-title">{plan?.name}</h2>
+                {/* Kept as the real h2 so its font size and margins size the placeholder. */}
+                <h2 className="forecast-title">{plan ? plan.name : <Skeleton.Text />}</h2>
                 {plan?.startDate && plan?.endDate && (
                     <span className="forecast-period">
                         {format(parseISO(plan.startDate), "MMM yyyy")} – {format(parseISO(plan.endDate), "MMM yyyy")}
@@ -119,37 +121,37 @@ export const ForecastOutlook: React.FC<ForecastOutlookProps> = ({ plan, summary,
                 )}
             </div>
 
+            {/* Placeholder rather than nothing, so the strip holds its height until the numbers land. */}
+            {!summary && <MetricsSkeleton className="forecast-metrics" count={5} />}
+
             {summary && (
                 <div className="forecast-metrics">
-                    <Section className="metric" data-tone="income">
-                        <div className="eyebrow">Monthly Income</div>
+                    <Kpi label="Monthly Income" tone="income">
                         <MonthlyRange months={incomes} currencyCode={currencyCode} tone="income" />
-                        <div className="metric-sub">across the plan</div>
-                    </Section>
-                    <Section className="metric" data-tone="expense">
-                        <div className="eyebrow">Monthly Expenses</div>
+                        <Kpi.Sub>across the plan</Kpi.Sub>
+                    </Kpi>
+                    <Kpi label="Monthly Expenses" tone="expense">
                         <MonthlyRange months={outgoings} currencyCode={currencyCode} tone="expense" />
                         <ExpenseModelNote expenses={summary.expenses} currencyCode={currencyCode} />
-                    </Section>
-                    <Section className="metric" data-tone={lowestBalanceRisk ? "risk" : "ok"}>
-                        <div className="eyebrow">Lowest Balance</div>
-                        <div className={`metric-value ${lowestBalanceRisk ? "negative" : ""}`}>
+                    </Kpi>
+                    {/* A risk reads as an expense and a clean result as income — the same two
+                        accents the rest of the app uses, rather than a second vocabulary. */}
+                    <Kpi label="Lowest Balance" tone={lowestBalanceRisk ? "expense" : "income"}>
+                        <Kpi.Value className={lowestBalanceRisk ? "negative" : undefined}>
                             <Amount amount={summary.lowestBalance} currencyCode={currencyCode} minus />
-                        </div>
-                        <div className="metric-sub">in {format(parseISO(summary.lowestBalanceMonth), "MMMM yyyy")}</div>
-                    </Section>
-                    <Section className="metric" data-tone={monthsRisk ? "risk" : "ok"}>
-                        <div className="eyebrow">Months Below Zero</div>
-                        <div className={`metric-value ${monthsRisk ? "negative" : ""}`}>{summary.monthsBelowZero}</div>
-                        <div className="metric-sub">{summary.monthsBelowZero === 0 ? "never runs negative" : "needs attention"}</div>
-                    </Section>
-                    <Section className="metric" data-tone={upliftRisk ? "risk" : "ok"}>
-                        <div className="eyebrow">Required Monthly Uplift</div>
-                        <div className={`metric-value ${upliftRisk ? "negative" : ""}`}>
+                        </Kpi.Value>
+                        <Kpi.Sub>in {format(parseISO(summary.lowestBalanceMonth), "MMMM yyyy")}</Kpi.Sub>
+                    </Kpi>
+                    <Kpi label="Months Below Zero" tone={monthsRisk ? "expense" : "income"}>
+                        <Kpi.Value className={monthsRisk ? "negative" : undefined}>{summary.monthsBelowZero}</Kpi.Value>
+                        <Kpi.Sub>{summary.monthsBelowZero === 0 ? "never runs negative" : "needs attention"}</Kpi.Sub>
+                    </Kpi>
+                    <Kpi label="Required Monthly Uplift" tone={upliftRisk ? "expense" : "income"}>
+                        <Kpi.Value className={upliftRisk ? "negative" : undefined}>
                             <Amount amount={summary.requiredMonthlyUplift} currencyCode={currencyCode} minus />
-                        </div>
-                        <div className="metric-sub">{summary.requiredMonthlyUplift > 0 ? "to avoid negative balance" : "no uplift required"}</div>
-                    </Section>
+                        </Kpi.Value>
+                        <Kpi.Sub>{summary.requiredMonthlyUplift > 0 ? "to avoid negative balance" : "no uplift required"}</Kpi.Sub>
+                    </Kpi>
                 </div>
             )}
 

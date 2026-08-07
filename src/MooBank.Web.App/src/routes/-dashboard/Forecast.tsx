@@ -1,5 +1,5 @@
 import { addMonths, parseISO, startOfMonth } from "date-fns";
-import { Widget } from "@andrewmclachlan/moo-ds";
+import { Skeleton, Widget } from "@andrewmclachlan/moo-ds";
 import { Line } from "react-chartjs-2";
 
 import { useChartColours } from "utils/chartColours";
@@ -56,7 +56,7 @@ export const ForecastWidget: React.FC = () => {
     const options = forecastChartOptions(currencyCode, colours);
 
     return (
-        <Widget header={header} size="double" headerSize={2} className="report forecast-widget" loading={plansLoading || isFetching} to="/planning/forecast">
+        <Widget header={header} size="double" headerSize={2} className="report forecast-widget" loading={plansLoading || isFetching} loadingPlaceholder={<Skeleton.Chart variant="line" count={2} />} to="/planning/forecast">
             <div className="forecast-widget-chart">
                 <Line data={data} options={options} />
             </div>

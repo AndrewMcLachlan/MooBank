@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Widget } from "@andrewmclachlan/moo-ds";
+import { Skeleton, Widget } from "@andrewmclachlan/moo-ds";
 import { useNavigate } from "@tanstack/react-router";
 import { lastMonth, lastMonthName } from "utils/dateFns";
 import { Breakdown } from "../accounts/$id/reports/-components/Breakdown";
@@ -33,7 +33,7 @@ export const BreakdownWidget: React.FC = () => {
     };
 
     return (
-        <Widget header={(account && `Breakdown - ${account.name} - ${monthName}`) ?? monthName} size="double" headerSize={2} className="report" loading={isLoading} to={account ? `/accounts/${account.id}/reports/breakdown?period=1` : undefined}>
+        <Widget header={(account && `Breakdown - ${account.name} - ${monthName}`) ?? monthName} size="double" headerSize={2} className="report" loading={isLoading} loadingPlaceholder={<Skeleton.Chart variant="doughnut" count={3} />} to={account ? `/accounts/${account.id}/reports/breakdown?period=1` : undefined}>
             {isError ? <WidgetError /> : account && <Breakdown accountId={account.id} period={period} reportType={reportType} selectedTagChanged={selectedTagChanged} />}
         </Widget>
     );
