@@ -19,7 +19,6 @@
 @import "css/dashboard" layer(moobank);
 @import "css/visualiser" layer(moobank);
 @import "css/bills" layer(moobank);
-@import "css/tags" layer(moobank);
 @import "css/treeflex";
 
 @layer moobank {
