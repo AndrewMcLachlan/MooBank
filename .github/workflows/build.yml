@@ -237,7 +237,14 @@ jobs:
       group: moobank-database
       cancel-in-progress: false
     needs: [build, test, test-frontend]
-    if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
+    # main deploys as usual. A workflow_dispatch from any branch also deploys, which is how
+    # this gets proved before it is trusted: the Staging environment's own deployment-branch
+    # rules decide which branches qualify and who approves them, which is a better place for
+    # that decision than a condition in here.
+    #
+    # Dispatch rather than the pull request itself, because on a pull_request event github.ref
+    # is refs/pull/N/merge -- it never matches a feature/* branch policy.
+    if: (github.event_name == 'workflow_dispatch') || (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
     # TEMPORARY: pinned to the branch so this can be proved before it is released.
     # Change to @v4 once AndrewMcLachlan/Actions#36 is merged and v4.8 is cut.
     uses: AndrewMcLachlan/actions/.github/workflows/deploy-sql-database.yml@feature/deploy-sql-database
