@@ -31,14 +31,19 @@ internal class GetFormattedHandler(IQueryable<Domain.Entities.Account.LogicalAcc
                                       .Specify(new OpenAccessibleSpecification<Domain.Entities.Asset.Asset>(user.Id, user.FamilyId))
                                       .ToListAsync(cancellationToken);
 
+        // The order the owner dragged their groups into, so the accounts page reads the same way
+        // the group page does. Name breaks ties, matching the groups list: everything created
+        // before the order existed sits at nought until something reorders it.
         var allGroups = logicalAccounts1.Select(g => g.GetGroup(userId))
             .Union(stockHoldings1.Select(g => g.GetGroup(userId)))
             .Union(assets1.Select(a => a.GetGroup(userId)))
-            .Distinct(new IdentifiableEqualityComparer<Domain.Entities.Group.Group, Guid>()!);
+            .Distinct(new IdentifiableEqualityComparer<Domain.Entities.Group.Group, Guid>()!)
+            .Where(ag => ag != null)
+            .OrderBy(ag => ag!.SortOrder).ThenBy(ag => ag!.Name);
 
         List<Group> groups = [];
 
-        foreach (var ag in allGroups.Where(ag => ag != null))
+        foreach (var ag in allGroups)
         {
             IEnumerable<Instrument> matchingAccounts = [
                 .. await logicalAccounts1.Where(a => a.GetGroup(userId)?.Id == ag!.Id).ToModel(currencyConverter, cancellationToken),
