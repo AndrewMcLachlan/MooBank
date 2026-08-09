@@ -20,4 +20,17 @@ internal interface IPlannedItemMatcher
     Task<IReadOnlyList<LinkedPayment>> GetPayments(
         IEnumerable<Guid> transactionIds,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Which of the given payments are not on any of the given accounts.
+    /// </summary>
+    /// <remarks>
+    /// Identifiers that match no transaction at all count as out of scope: from the caller's side
+    /// there is no difference between a payment that is somebody else's and one that does not
+    /// exist, and answering differently would say which.
+    /// </remarks>
+    Task<IReadOnlyList<Guid>> FindOutOfScope(
+        IEnumerable<Guid> transactionIds,
+        IReadOnlyCollection<Guid> accountIds,
+        CancellationToken cancellationToken = default);
 }

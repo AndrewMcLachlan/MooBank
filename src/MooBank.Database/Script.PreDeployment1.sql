@@ -176,3 +176,30 @@ BEGIN
 
     DROP TABLE #ForecastIncomeSegments;
 END
+
+/*
+ Gives every forecast plan a currency, so the column can be made NOT NULL.
+
+ Plans have always been created with one -- CreatePlan falls back to the author's own currency --
+ but rows predating that are still null, and a plan with no currency renders every amount in the
+ forecast with no symbol. The family's currency is the right answer for a family's plan; AUD is the
+ same default the User table already carries, for the case where a family somehow has no members.
+
+ Runs before the column is altered: the deployment plan is worked out first, but pre-deployment
+ executes ahead of the schema changes it was planned alongside.
+
+ Idempotent by construction -- once nothing is null there is nothing to update.
+*/
+IF OBJECT_ID('dbo.ForecastPlan', 'U') IS NOT NULL
+   AND COL_LENGTH('dbo.ForecastPlan', 'CurrencyCode') IS NOT NULL
+   AND EXISTS (SELECT 1 FROM dbo.ForecastPlan WHERE CurrencyCode IS NULL)
+BEGIN
+    UPDATE p
+    SET p.CurrencyCode = COALESCE(
+        (SELECT TOP 1 u.Currency FROM dbo.[User] u WHERE u.FamilyId = p.FamilyId ORDER BY u.Id),
+        'AUD')
+    FROM dbo.ForecastPlan p
+    WHERE p.CurrencyCode IS NULL;
+
+    PRINT 'Backfilled CurrencyCode on forecast plans that had none.';
+END

@@ -41,4 +41,23 @@ internal class PlannedItemMatcher(IQueryable<DomainTransaction> transactions) : 
             Math.Abs(r.Amount),
             !r.ExcludeFromReporting))];
     }
+
+    public async Task<IReadOnlyList<Guid>> FindOutOfScope(
+        IEnumerable<Guid> transactionIds,
+        IReadOnlyCollection<Guid> accountIds,
+        CancellationToken cancellationToken = default)
+    {
+        var ids = transactionIds.Distinct().ToList();
+
+        if (ids.Count == 0) return [];
+
+        // Asked the way round that cannot be fooled by a missing row: find the ones that *are*
+        // allowed, and treat everything else as refused.
+        var inScope = await transactions
+            .Where(t => ids.Contains(t.Id) && accountIds.Contains(t.AccountId))
+            .Select(t => t.Id)
+            .ToListAsync(cancellationToken);
+
+        return [.. ids.Except(inScope)];
+    }
 }
