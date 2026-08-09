@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Modules.Instruments.Queries.Instruments;
 using Asm.MooBank.Modules.Instruments.Tests.Support;
 
@@ -329,6 +329,49 @@ public class GetFormattedTests
         Assert.True(resultGroup.ShowTotal);
         Assert.Equal(2, resultGroup.Instruments.Count());
         Assert.Equal(3000m, resultGroup.Total);
+    }
+
+    /// <summary>
+    /// Given groups their owner has put in an order
+    /// When the accounts page is built
+    /// Then the groups should appear in that order, with ungrouped instruments last
+    /// </summary>
+    /// <remarks>
+    /// The order is set on the group page but it is the accounts page it exists for. Ungrouped
+    /// instruments are not a real group and have no position, so they stay on the end.
+    /// </remarks>
+    [Fact]
+    public async Task Handle_GroupsWithSortOrder_ReturnsThemInThatOrderWithOtherAccountsLast()
+    {
+        // Arrange -- created back to front, and named so alphabetical order would differ too.
+        var userId = _mocks.User.Id;
+
+        var third = new Domain.Entities.Group.Group(Guid.NewGuid()) { Name = "Alpha", OwnerId = userId, SortOrder = 2 };
+        var first = new Domain.Entities.Group.Group(Guid.NewGuid()) { Name = "Zulu", OwnerId = userId, SortOrder = 0 };
+        var second = new Domain.Entities.Group.Group(Guid.NewGuid()) { Name = "Mike", OwnerId = userId, SortOrder = 1 };
+
+        var accounts = new[] { third, first, second }.Select((g, i) =>
+        {
+            var account = TestEntities.CreateInstrumentWithOwner(name: $"Account {i}", ownerId: userId, balance: 100m);
+            account.Owners.First().Group = g;
+            account.Owners.First().GroupId = g.Id;
+            return account;
+        }).ToArray();
+
+        var ungrouped = TestEntities.CreateInstrumentWithOwner(name: "Loose Change", ownerId: userId, balance: 5m);
+
+        var handler = new GetFormattedHandler(
+            TestEntities.CreateLogicalAccountQueryable([.. accounts, ungrouped]),
+            TestEntities.CreateStockHoldingQueryable([]),
+            TestEntities.CreateAssetQueryable([]),
+            _mocks.User,
+            _mocks.CurrencyConverterMock.Object);
+
+        // Act
+        var result = await handler.Handle(new GetFormatted(), TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(["Zulu", "Mike", "Alpha", "Other Accounts"], result.Groups.Select(g => g.Name));
     }
 
     [Fact]

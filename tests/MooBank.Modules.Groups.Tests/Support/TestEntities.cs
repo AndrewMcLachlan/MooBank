@@ -16,7 +16,8 @@ internal static class TestEntities
         string? description = null,
         Guid? ownerId = null,
         bool showPosition = false,
-        HexColour? colour = null)
+        HexColour? colour = null,
+        int sortOrder = 0)
     {
         return new DomainGroup(id ?? Guid.NewGuid())
         {
@@ -25,6 +26,7 @@ internal static class TestEntities
             OwnerId = ownerId ?? Guid.NewGuid(),
             ShowPosition = showPosition,
             Colour = colour,
+            SortOrder = sortOrder,
         };
     }
 

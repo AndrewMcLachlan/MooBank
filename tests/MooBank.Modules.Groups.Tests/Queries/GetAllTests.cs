@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Modules.Groups.Queries;
 using Asm.MooBank.Modules.Groups.Tests.Support;
 
@@ -30,6 +30,56 @@ public class GetAllTests
 
         // Assert
         Assert.Equal(3, result.Count());
+    }
+
+    /// <summary>
+    /// Given groups with an order set
+    /// When they are listed
+    /// Then they should come back in that order, not the order they were stored in
+    /// </summary>
+    [Fact]
+    public async Task Handle_WithSortOrder_ReturnsGroupsInThatOrder()
+    {
+        // Arrange -- deliberately stored back to front.
+        var userId = _mocks.User.Id;
+        var last = TestEntities.CreateGroup(name: "Everyday", ownerId: userId, sortOrder: 2);
+        var first = TestEntities.CreateGroup(name: "Savings", ownerId: userId, sortOrder: 0);
+        var middle = TestEntities.CreateGroup(name: "Investments", ownerId: userId, sortOrder: 1);
+
+        var handler = new GetAllHandler(TestEntities.CreateGroupQueryable(last, first, middle), _mocks.User);
+
+        // Act
+        var result = await handler.Handle(new GetAll(), TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(["Savings", "Investments", "Everyday"], result.Select(g => g.Name));
+    }
+
+    /// <summary>
+    /// Given groups that all share a sort order
+    /// When they are listed
+    /// Then they should fall back to name order rather than an arbitrary one
+    /// </summary>
+    /// <remarks>
+    /// Every group created before the order existed sits at nought until something reorders them.
+    /// Without the tie-break the list is whatever order the database returns, which is stable
+    /// enough to look deliberate and arbitrary enough to be wrong.
+    /// </remarks>
+    [Fact]
+    public async Task Handle_AllSharingASortOrder_FallsBackToNameOrder()
+    {
+        // Arrange
+        var userId = _mocks.User.Id;
+        var handler = new GetAllHandler(TestEntities.CreateGroupQueryable(
+            TestEntities.CreateGroup(name: "Savings", ownerId: userId),
+            TestEntities.CreateGroup(name: "Everyday", ownerId: userId),
+            TestEntities.CreateGroup(name: "Investments", ownerId: userId)), _mocks.User);
+
+        // Act
+        var result = await handler.Handle(new GetAll(), TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(["Everyday", "Investments", "Savings"], result.Select(g => g.Name));
     }
 
     [Fact]

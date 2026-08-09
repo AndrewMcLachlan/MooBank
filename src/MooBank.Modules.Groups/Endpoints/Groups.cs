@@ -29,6 +29,11 @@ public class Groups : EndpointGroupBase
             .WithNames("Create Group")
             .WithValidation<Create>();
 
+        // No id in the route, so no parameterized policy applies: the handler answers only for the
+        // caller's own groups, and asserts ownership of each before moving it.
+        routeGroupBuilder.MapPutCommand<Reorder, IEnumerable<Models.Group>>("/order", binding: RequestBinding.Body)
+            .WithNames("Reorder Groups");
+
         routeGroupBuilder.MapPatchCommand<Update, Models.Group>("/{id}", binding: RequestBinding.Parameters)
             .WithNames("Update Group")
             .RequireAuthorization(Policies.GetGroupOwnerPolicy("id"))

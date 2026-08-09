@@ -1,0 +1,56 @@
+/* ---- Drag-to-reorder handles on management tables ----
+   A row that can be dragged says so with a handle rather than by being draggable anywhere:
+   the group rows are also links, and a whole-row drag surface would leave no unambiguous
+   way to simply open one.
+
+   The column is sized to the handle, and the handle carries the grab cursor so the rest of
+   the row keeps the pointer that says "this opens". */
+
+th.drag-handle,
+td.drag-handle {
+    width: 2.5rem;
+    text-align: center;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+}
+
+td.drag-handle button {
+    /* A button for the keyboard and for screen readers -- dnd-kit drives its own keyboard
+       sorting through this element -- but it should not look like one. */
+    background: none;
+    border: 0;
+    padding: 0.25rem 0.5rem;
+    color: var(--body-colour-dim);
+    cursor: grab;
+    touch-action: none; /* or the browser scrolls instead of letting the pointer sensor drag */
+    line-height: 1;
+}
+
+td.drag-handle button:active {
+    cursor: grabbing;
+}
+
+td.drag-handle button:hover {
+    color: var(--body-colour);
+}
+
+/* The row being dragged rides above its neighbours, and is dimmed so the gap it will land in
+   stays readable underneath. */
+tr.dragging {
+    position: relative;
+    z-index: 1;
+    opacity: 0.85;
+}
+
+tr.dragging td.drag-handle button {
+    cursor: grabbing;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    /* dnd-kit sets an inline transition while rows settle; nothing to animate for someone who
+       has asked not to see it. */
+    tr.dragging,
+    .group-list tbody tr {
+        transition: none !important;
+    }
+}
