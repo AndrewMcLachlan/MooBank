@@ -140,6 +140,9 @@ publish/
 
 # Publish Web Output
 *.[Pp]ublish.xml
+# ...except the deployment options CI uses. It is exempt because it is the one profile with no
+# connection details in it, which is the reason the rule above exists.
+!src/MooBank.Database/Deploy.publish.xml
 *.azurePubxml
 # TODO: Comment the next line if you want to checkin your web deploy settings
 # but database connection strings (with potential passwords) will be unencrypted

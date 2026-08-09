@@ -69,6 +69,14 @@ jobs:
       with:
         name: publish
         path: ${{ github.workspace }}/publish
+    - name: Build database project
+      run: dotnet build src/MooBank.Database/MooBank.Database.sqlproj --configuration Release --no-restore
+    - name: Upload dacpac
+      uses: actions/upload-artifact@v7.0.1
+      with:
+        name: database
+        path: src/MooBank.Database/bin/Release/*.dacpac
+        if-no-files-found: error
     - name: Build Docker image (validation only)
       uses: docker/build-push-action@v7
       with:
@@ -222,11 +230,41 @@ jobs:
         cache-from: type=registry,ref=ghcr.io/andrewmclachlan/moobank:latest
         cache-to: type=inline
 
+  # Schema goes first, and in its own concurrency group: a superseded app deploy is harmless, but
+  # SqlPackage killed part way through a schema change is not. These queue rather than cancel.
+  database-staging:
+    concurrency:
+      group: moobank-database
+      cancel-in-progress: false
+    needs: [build, test, test-frontend]
+    # main deploys as usual. A workflow_dispatch from any branch also deploys, which is how
+    # this gets proved before it is trusted: the Staging environment's own deployment-branch
+    # rules decide which branches qualify and who approves them, which is a better place for
+    # that decision than a condition in here.
+    #
+    # Dispatch rather than the pull request itself, because on a pull_request event github.ref
+    # is refs/pull/N/merge -- it never matches a feature/* branch policy.
+    if: (github.event_name == 'workflow_dispatch') || (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
+    # TEMPORARY: pinned to the branch so this can be proved before it is released.
+    # Change to @v4 once AndrewMcLachlan/Actions#36 is merged and v4.8 is cut.
+    uses: AndrewMcLachlan/actions/.github/workflows/deploy-sql-database.yml@feature/deploy-sql-database
+    with:
+      environment: Staging
+      artifact-name: database
+      server-name: mclachlan-staging
+      database-name: MooBank-Staging
+      resource-group: MooBank
+      publish-profile: src/MooBank.Database/Deploy.publish.xml
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
   staging:
     concurrency:
       group: moobank-deploy-group
       cancel-in-progress: true
-    needs: [build, test, test-frontend, docker-push]
+    needs: [build, test, test-frontend, docker-push, database-staging]
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
     uses: AndrewMcLachlan/actions/.github/workflows/deploy-azure.yml@v4
     with:
@@ -242,11 +280,34 @@ jobs:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+  # The production schema lands after staging has exercised it, and before the swap puts the new
+  # code in front of it.
+  database-production:
+    concurrency:
+      group: moobank-database
+      cancel-in-progress: false
+    needs: staging
+    if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
+    # TEMPORARY: pinned to the branch so this can be proved before it is released.
+    # Change to @v4 once AndrewMcLachlan/Actions#36 is merged and v4.8 is cut.
+    uses: AndrewMcLachlan/actions/.github/workflows/deploy-sql-database.yml@feature/deploy-sql-database
+    with:
+      environment: Production
+      artifact-name: database
+      server-name: mclachlan
+      database-name: MooBank
+      resource-group: MooBank
+      publish-profile: src/MooBank.Database/Deploy.publish.xml
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
   production:
     concurrency:
       group: moobank-deploy-group
       cancel-in-progress: true
-    needs: staging
+    needs: database-production
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
     uses: AndrewMcLachlan/actions/.github/workflows/azure-appservice-swap-slot.yml@v4
     with:
