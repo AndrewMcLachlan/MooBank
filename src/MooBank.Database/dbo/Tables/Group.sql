@@ -5,6 +5,7 @@ CREATE TABLE [Group] (
     [OwnerId] UNIQUEIDENTIFIER NOT NULL,
     [ShowPosition] BIT NOT NULL,
     [Colour] CHAR(7) NULL,
+    [SortOrder] INT NOT NULL CONSTRAINT DF_Group_SortOrder DEFAULT (0),
 
     CONSTRAINT PK_Group PRIMARY KEY CLUSTERED (Id),
     CONSTRAINT FK_Group_AccountHolder FOREIGN KEY ([OwnerId]) REFERENCES [dbo].[User]([Id])

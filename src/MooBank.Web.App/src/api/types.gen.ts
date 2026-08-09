@@ -349,6 +349,10 @@ export type Group = {
     colour?: null | HexColour;
 };
 
+export type GroupOrder = {
+    groupIds: Array<string>;
+};
+
 export type GrowthStrategy = 'Custom' | 'Conservative' | 'Balanced' | 'Growth' | 'HighGrowth';
 
 export type HexColour = unknown;
@@ -595,6 +599,10 @@ export type RecurringTransactionDetails = {
     amount: number;
     schedule: ScheduleFrequency;
     nextRun: string;
+};
+
+export type ReorderGroups = {
+    order: GroupOrder;
 };
 
 export type ReportInterval = 'Monthly' | 'Yearly';
@@ -2538,6 +2546,22 @@ export type UpdateGroupResponses = {
 };
 
 export type UpdateGroupResponse = UpdateGroupResponses[keyof UpdateGroupResponses];
+
+export type ReorderGroupsData = {
+    body: ReorderGroups;
+    path?: never;
+    query?: never;
+    url: '/groups/order';
+};
+
+export type ReorderGroupsResponses = {
+    /**
+     * OK
+     */
+    200: Array<Group>;
+};
+
+export type ReorderGroupsResponse = ReorderGroupsResponses[keyof ReorderGroupsResponses];
 
 export type GetAllInstitutionsData = {
     body?: never;

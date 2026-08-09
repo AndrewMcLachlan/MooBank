@@ -21,5 +21,13 @@ public class Group([DisallowNull] Guid id) : KeyedEntity<Guid>(id)
 
     public HexColour? Colour { get; set; }
 
+    /// <summary>
+    /// Where the group sits in its owner's list, lowest first.
+    /// </summary>
+    /// <remarks>
+    /// Only meaningful within one owner's groups; values are not unique across the table.
+    /// </remarks>
+    public int SortOrder { get; set; }
+
     public virtual User.User Owner { get; set; } = null!;
 }

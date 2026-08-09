@@ -683,3 +683,29 @@ BEGIN
 
     DROP TABLE dbo.__ForecastIncomeStrategyMigration;
 END
+
+/*
+ Seeds a starting order for groups that predate the SortOrder column.
+
+ New rows default to 0, so without this every existing group ties and the list falls back to
+ whatever order the database feels like returning -- which is stable enough to look deliberate and
+ arbitrary enough to be wrong. Alphabetical is the order the page effectively had before.
+
+ Only owners whose groups are *all* still 0 are touched, which is what makes this idempotent: once
+ an owner has ordered their groups the values differ, and a second run leaves them alone. An owner
+ with a single group is a no-op either way.
+*/
+GO
+
+WITH Unordered AS
+(
+    SELECT [Id],
+           ROW_NUMBER() OVER (PARTITION BY [OwnerId] ORDER BY [Name]) - 1 AS NewOrder
+    FROM [dbo].[Group] g
+    WHERE NOT EXISTS (SELECT 1 FROM [dbo].[Group] o WHERE o.[OwnerId] = g.[OwnerId] AND o.[SortOrder] <> 0)
+)
+UPDATE g
+SET g.[SortOrder] = u.NewOrder
+FROM [dbo].[Group] g
+INNER JOIN Unordered u ON u.[Id] = g.[Id]
+WHERE g.[SortOrder] <> u.NewOrder;
