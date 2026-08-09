@@ -245,7 +245,7 @@ jobs:
       server-name: mclachlan-staging
       database-name: MooBank-Staging
       resource-group: MooBank
-      publish-profile: src/MooBank.Database/Staging.publish.xml
+      publish-profile: src/MooBank.Database/Deploy.publish.xml
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
@@ -286,7 +286,7 @@ jobs:
       server-name: mclachlan
       database-name: MooBank
       resource-group: MooBank
-      publish-profile: src/MooBank.Database/Prod.publish.xml
+      publish-profile: src/MooBank.Database/Deploy.publish.xml
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}

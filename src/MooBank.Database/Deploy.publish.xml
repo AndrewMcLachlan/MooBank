@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Deployment options for automated deployments, with no server or database in them.
+
+  The Local, Staging and Prod profiles are personal: they carry connection details, they are
+  gitignored, and they exist so a person can deploy from their own machine. CI has no such file,
+  so this one holds the half that is not personal - how to deploy - and the workflow supplies
+  where to.
+
+  The options here are copied from those profiles unchanged, so an automated deployment does
+  exactly what deploying by hand has always done. Change them here and in your own profiles
+  together, or the two will start to disagree about what a deployment means.
+
+  Deliberately absent: TargetConnectionString, TargetDatabaseName, TargetServerName.
+-->
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <DeployScriptFileName>Asm.MooBank.Database.sql</DeployScriptFileName>
+    <BlockWhenDriftDetected>False</BlockWhenDriftDetected>
+    <RegisterDataTierApplication>False</RegisterDataTierApplication>
+    <ProfileVersionNumber>1</ProfileVersionNumber>
+    <BlockOnPossibleDataLoss>False</BlockOnPossibleDataLoss>
+    <DatabaseEdition>Basic</DatabaseEdition>
+    <DatabaseServiceObjective>Basic</DatabaseServiceObjective>
+    <DatabaseMaximumSize>2</DatabaseMaximumSize>
+    <!--
+      Users, logins and role membership are left alone. The deployment authenticates as a contained
+      user created outside the project; without these it could drop the credentials it is using.
+    -->
+    <ExcludeUsers>True</ExcludeUsers>
+    <ExcludeSymmetricKeys>True</ExcludeSymmetricKeys>
+    <ExcludeSignatures>True</ExcludeSignatures>
+    <ExcludeServerRoles>True</ExcludeServerRoles>
+    <ExcludeServerRoleMembership>True</ExcludeServerRoleMembership>
+    <ExcludeServerAuditSpecifications>True</ExcludeServerAuditSpecifications>
+    <ExcludeSecurityPolicies>True</ExcludeSecurityPolicies>
+    <IgnoreRoleMembership>True</IgnoreRoleMembership>
+    <ExcludeLogins>True</ExcludeLogins>
+  </PropertyGroup>
+</Project>
