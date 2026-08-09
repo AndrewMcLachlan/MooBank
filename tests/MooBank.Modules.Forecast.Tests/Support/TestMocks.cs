@@ -32,6 +32,11 @@ public class TestMocks
             .Setup(m => m.GetPayments(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
+        // Everything is in scope unless a test says otherwise.
+        PlannedItemMatcherMock
+            .Setup(m => m.FindOutOfScope(It.IsAny<IEnumerable<Guid>>(), It.IsAny<IReadOnlyCollection<Guid>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync([]);
+
         User = CreateTestUser();
     }
 

@@ -8,7 +8,7 @@
     [AccountScopeMode] TINYINT NOT NULL CONSTRAINT DF_ForecastPlan_AccountScopeMode DEFAULT 0,
     [StartingBalanceMode] TINYINT NOT NULL CONSTRAINT DF_ForecastPlan_StartingBalanceMode DEFAULT 0,
     [StartingBalanceAmount] DECIMAL(18,2) NULL,
-    [CurrencyCode] CHAR(3) NULL,
+    [CurrencyCode] CHAR(3) NOT NULL,
     [OutgoingStrategy] NVARCHAR(MAX) NULL,
     [Assumptions] NVARCHAR(MAX) NULL,
     [IsArchived] BIT NOT NULL CONSTRAINT DF_ForecastPlan_IsArchived DEFAULT 0,

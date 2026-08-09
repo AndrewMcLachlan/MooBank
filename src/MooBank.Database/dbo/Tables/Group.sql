@@ -1,7 +1,7 @@
-CREATE TABLE [Group] (
+﻿CREATE TABLE [Group] (
     Id UNIQUEIDENTIFIER NOT NULL CONSTRAINT DF_AccountGroup_Id DEFAULT (NEWID()),
     [Name] NVARCHAR(255) NOT NULL,
-    [Description] NVARCHAR(4000) NOT NULL,
+    [Description] NVARCHAR(4000) NULL,
     [OwnerId] UNIQUEIDENTIFIER NOT NULL,
     [ShowPosition] BIT NOT NULL,
     [Colour] CHAR(7) NULL,
