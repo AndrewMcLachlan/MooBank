@@ -238,7 +238,9 @@ jobs:
       cancel-in-progress: false
     needs: [build, test, test-frontend]
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
-    uses: AndrewMcLachlan/actions/.github/workflows/deploy-sql-database.yml@v4
+    # TEMPORARY: pinned to the branch so this can be proved before it is released.
+    # Change to @v4 once AndrewMcLachlan/Actions#36 is merged and v4.8 is cut.
+    uses: AndrewMcLachlan/actions/.github/workflows/deploy-sql-database.yml@feature/deploy-sql-database
     with:
       environment: Staging
       artifact-name: database
@@ -279,7 +281,9 @@ jobs:
       cancel-in-progress: false
     needs: staging
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
-    uses: AndrewMcLachlan/actions/.github/workflows/deploy-sql-database.yml@v4
+    # TEMPORARY: pinned to the branch so this can be proved before it is released.
+    # Change to @v4 once AndrewMcLachlan/Actions#36 is merged and v4.8 is cut.
+    uses: AndrewMcLachlan/actions/.github/workflows/deploy-sql-database.yml@feature/deploy-sql-database
     with:
       environment: Production
       artifact-name: database
