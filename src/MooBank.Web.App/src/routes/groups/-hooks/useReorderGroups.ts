@@ -1,7 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { reorderGroupsMutation, getAllGroupsQueryKey } from "api/@tanstack/react-query.gen";
-import type { Group } from "api/types.gen";
+import type { Options } from "api/sdk.gen";
+import type { Group, ReorderGroupsData } from "api/types.gen";
 import { toast } from "@andrewmclachlan/moo-ds";
+
+/** What the generated mutation takes: the request body, plus the usual per-call client options. */
+type ReorderVariables = Options<ReorderGroupsData>;
 
 /**
  * Saves the order the groups have been dragged into.
@@ -20,7 +24,7 @@ export const useReorderGroups = () => {
 
     const { mutateAsync, ...rest } = useMutation({
         ...reorderGroupsMutation(),
-        onMutate: async (variables: { body: { order: { groupIds: string[] } } }) => {
+        onMutate: async (variables: ReorderVariables) => {
             await queryClient.cancelQueries({ queryKey });
 
             const previous = queryClient.getQueryData<Group[]>(queryKey);
@@ -48,7 +52,7 @@ export const useReorderGroups = () => {
     });
 
     return {
-        reorder: (groupIds: string[]) => mutateAsync({ body: { order: { groupIds } } } as any),
+        reorder: (groupIds: string[]) => mutateAsync({ body: { order: { groupIds } } }),
         ...rest,
     };
 };
