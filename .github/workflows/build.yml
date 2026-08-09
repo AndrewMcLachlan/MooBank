@@ -236,7 +236,7 @@ jobs:
     concurrency:
       group: moobank-database
       cancel-in-progress: false
-    needs: [build, test, test-frontend]
+    needs: [build, test, test-frontend, docker-push]
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
     # TEMPORARY: pinned to the branch so this can be proved before it is released.
     # Change to @v4 once AndrewMcLachlan/Actions#36 is merged and v4.8 is cut.
