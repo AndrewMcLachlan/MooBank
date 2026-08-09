@@ -257,7 +257,7 @@ jobs:
     concurrency:
       group: moobank-deploy-group
       cancel-in-progress: true
-    needs: [build, test, test-frontend, docker-push, database-staging]
+    needs: [build, test, test-frontend, docker-push]
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
     uses: AndrewMcLachlan/actions/.github/workflows/deploy-azure.yml@v4
     with:
@@ -279,7 +279,7 @@ jobs:
     concurrency:
       group: moobank-database
       cancel-in-progress: false
-    needs: staging
+    needs: [staging, database-staging]
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
     # TEMPORARY: pinned to the branch so this can be proved before it is released.
     # Change to @v4 once AndrewMcLachlan/Actions#36 is merged and v4.8 is cut.
@@ -300,7 +300,7 @@ jobs:
     concurrency:
       group: moobank-deploy-group
       cancel-in-progress: true
-    needs: database-production
+    needs: [staging, database-staging]
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
     uses: AndrewMcLachlan/actions/.github/workflows/azure-appservice-swap-slot.yml@v4
     with:
@@ -317,7 +317,7 @@ jobs:
     concurrency:
       group: moobank-deploy-group
       cancel-in-progress: true
-    needs: [build, production]
+    needs: [build, production, database-production]
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
     uses: AndrewMcLachlan/actions/.github/workflows/deploy-azure.yml@v4
     with:
