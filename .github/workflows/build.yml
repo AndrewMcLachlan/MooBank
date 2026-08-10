@@ -246,7 +246,7 @@ jobs:
       artifact-name: database
       server-name: mclachlan-staging
       database-name: MooBank-Staging
-      resource-group: MooBank
+      resource-group: Data-Staging
       publish-profile: src/MooBank.Database/Deploy.publish.xml
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
@@ -289,7 +289,7 @@ jobs:
       artifact-name: database
       server-name: mclachlan
       database-name: MooBank
-      resource-group: MooBank
+      resource-group: Data
       publish-profile: src/MooBank.Database/Deploy.publish.xml
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
