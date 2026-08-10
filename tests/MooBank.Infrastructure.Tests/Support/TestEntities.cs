@@ -59,13 +59,15 @@ internal static class TestEntities
         Guid? id = null,
         string? name = null,
         Guid? ownerId = null,
-        bool showPosition = true)
+        bool showPosition = true,
+        int sortOrder = 0)
     {
         return new Group(id ?? Guid.NewGuid())
         {
             Name = name ?? Faker.Commerce.Department(),
             OwnerId = ownerId ?? Guid.NewGuid(),
             ShowPosition = showPosition,
+            SortOrder = sortOrder,
         };
     }
 

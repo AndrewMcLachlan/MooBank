@@ -9,4 +9,14 @@ internal class GroupRepository(MooBankContext dataContext) : RepositoryDeleteBas
         var group = Entities.Find(id) ?? throw new NotFoundException();
         Entities.Remove(group);
     }
+
+    public async Task<int> GetNextSortOrder(Guid ownerId, CancellationToken cancellationToken = default)
+    {
+        // Projected as nullable so an owner with no groups gives null rather than throwing on Max.
+        var last = await Entities.Where(g => g.OwnerId == ownerId)
+                                 .Select(g => (int?)g.SortOrder)
+                                 .MaxAsync(cancellationToken);
+
+        return last is null ? 0 : last.Value + 1;
+    }
 }

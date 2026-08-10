@@ -14,13 +14,17 @@ internal class CreateHandler(IGroupRepository groupRepository, IUnitOfWork unitO
     {
         // Security: Check not required the group is created against the current user.
 
+        // A new group goes on the end. Without a position of its own it would take the column
+        // default of zero and sort in among whatever else sits there, so it would appear part-way
+        // up a list the owner had already arranged.
         Domain.Entities.Group.Group entity = new()
         {
             Name = request.Name,
             Description = request.Description,
             ShowPosition = request.ShowTotal,
             Colour = request.Colour,
-            OwnerId = user.Id
+            OwnerId = user.Id,
+            SortOrder = await groupRepository.GetNextSortOrder(user.Id, cancellationToken),
         };
 
         groupRepository.Add(entity);

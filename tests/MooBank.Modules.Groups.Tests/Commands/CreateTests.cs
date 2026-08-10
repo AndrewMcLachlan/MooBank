@@ -196,6 +196,72 @@ public class CreateTests
         Assert.Null(result.Colour);
     }
 
+    /// <summary>
+    /// Given an owner who already has groups
+    /// When a group is created
+    /// Then it should take the position after the last of them
+    /// </summary>
+    /// <remarks>
+    /// Without a position of its own the new group keeps the column default of zero and sorts by
+    /// name among everything else sitting there, so it turns up part-way up a list the owner has
+    /// already arranged rather than on the end of it.
+    /// </remarks>
+    [Fact]
+    public async Task Handle_OwnerHasGroups_PlacesTheNewGroupLast()
+    {
+        // Arrange
+        DomainGroup? capturedGroup = null;
+
+        _mocks.GroupRepositoryMock
+            .Setup(r => r.Add(It.IsAny<DomainGroup>()))
+            .Callback<DomainGroup>(g => capturedGroup = g);
+
+        _mocks.GroupRepositoryMock
+            .Setup(r => r.GetNextSortOrder(_mocks.User.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(3);
+
+        var handler = new CreateHandler(
+            _mocks.GroupRepositoryMock.Object,
+            _mocks.UnitOfWorkMock.Object,
+            _mocks.User);
+
+        var command = new Create("New Group", "A test group", false);
+
+        // Act
+        await handler.Handle(command, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.NotNull(capturedGroup);
+        Assert.Equal(3, capturedGroup.SortOrder);
+    }
+
+    /// <summary>
+    /// Given a user creating a group
+    /// When the handler is invoked
+    /// Then the position should be asked for against that user's own list
+    /// </summary>
+    /// <remarks>
+    /// Positions only mean anything within one owner's groups, so the wrong owner would give a
+    /// number picked from somebody else's list.
+    /// </remarks>
+    [Fact]
+    public async Task Handle_ValidCommand_AsksForThePositionOfTheOwnersList()
+    {
+        // Arrange
+        var handler = new CreateHandler(
+            _mocks.GroupRepositoryMock.Object,
+            _mocks.UnitOfWorkMock.Object,
+            _mocks.User);
+
+        var command = new Create("New Group", "A test group", false);
+
+        // Act
+        await handler.Handle(command, TestContext.Current.CancellationToken);
+
+        // Assert
+        _mocks.GroupRepositoryMock.Verify(r => r.GetNextSortOrder(_mocks.User.Id, It.IsAny<CancellationToken>()), Times.Once);
+    }
+
     [Fact]
     public async Task Handle_DifferentUser_SetsCorrectOwner()
     {
