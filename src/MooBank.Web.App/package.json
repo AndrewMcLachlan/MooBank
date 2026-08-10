@@ -17,7 +17,7 @@
     "@andrewmclachlan/moo-app": "^5.2.243",
     "@andrewmclachlan/moo-ds": "^5.2.243",
     "@andrewmclachlan/moo-icons": "^5.2.243",
-    "@azure/msal-react": "^5.5.4",
+    "@azure/msal-react": "^5.5.5",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
@@ -39,7 +39,7 @@
     "react-chartjs-2": "^5.3.1",
     "react-dev-utils": "^12.0.1",
     "react-dom": "^19.2.8",
-    "react-hook-form": "^7.83.0",
+    "react-hook-form": "^7.84.0",
     "semver": "^7.8.5",
     "treeflex": "^2.0.1",
     "use-debounce": "^10.1.1",
@@ -47,7 +47,7 @@
   },
   "optionalDependencies": {
     "@esbuild/linux-arm64": "0.28.1",
-    "@rollup/rollup-linux-arm64-gnu": "4.62.3"
+    "@rollup/rollup-linux-arm64-gnu": "4.62.4"
   },
   "overrides": {
     "react-chartjs-2": {
