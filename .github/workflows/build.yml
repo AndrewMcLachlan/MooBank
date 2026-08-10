@@ -234,7 +234,7 @@ jobs:
   # SqlPackage killed part way through a schema change is not. These queue rather than cancel.
   database-staging:
     concurrency:
-      group: moobank-database
+      group: moobank-staging
       cancel-in-progress: false
     needs: [build, test, test-frontend, docker-push]
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
@@ -255,8 +255,8 @@ jobs:
 
   staging:
     concurrency:
-      group: moobank-deploy-group
-      cancel-in-progress: true
+      group: moobank-staging
+      cancel-in-progress: false
     needs: [build, test, test-frontend, docker-push]
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
     uses: AndrewMcLachlan/actions/.github/workflows/deploy-azure.yml@v4
@@ -277,7 +277,7 @@ jobs:
   # code in front of it.
   database-production:
     concurrency:
-      group: moobank-database
+      group: moobank-production
       cancel-in-progress: false
     needs: [staging, database-staging]
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
@@ -298,8 +298,8 @@ jobs:
 
   production:
     concurrency:
-      group: moobank-deploy-group
-      cancel-in-progress: true
+      group: moobank-production
+      cancel-in-progress: false
     needs: [staging, database-staging]
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
     uses: AndrewMcLachlan/actions/.github/workflows/azure-appservice-swap-slot.yml@v4
@@ -315,7 +315,7 @@ jobs:
 
   post-production:
     concurrency:
-      group: moobank-deploy-group
+      group: moobank-post-production
       cancel-in-progress: true
     needs: [build, production, database-production]
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
