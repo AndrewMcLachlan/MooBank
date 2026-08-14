@@ -273,19 +273,29 @@ jobs:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+  # The one approval for a production release. It does nothing, which is the point: GitHub asks
+  # for environment approval once per job, so the gate has to be a job by itself or every job
+  # behind it asks again. Approving this approves the release; what follows is the release.
+  approve-production:
+    runs-on: ubuntu-latest
+    environment: Production
+    needs: [staging, database-staging]
+    if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
+    steps:
+      - run: echo "::notice::Starting production deployment"
+
   # The production schema lands after staging has exercised it, and before the swap puts the new
   # code in front of it.
   database-production:
     concurrency:
       group: moobank-production
       cancel-in-progress: false
-    needs: [staging, database-staging]
+    needs: approve-production
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
     # TEMPORARY: pinned to the branch so this can be proved before it is released.
     # Change to @v4 once AndrewMcLachlan/Actions#36 is merged and v4.8 is cut.
     uses: AndrewMcLachlan/actions/.github/workflows/deploy-sql-database.yml@feature/deploy-sql-database
     with:
-      environment: Production
       artifact-name: database
       server-name: mclachlan
       database-name: MooBank
@@ -300,11 +310,12 @@ jobs:
     concurrency:
       group: moobank-production
       cancel-in-progress: false
-    needs: [staging, database-staging]
+    needs: approve-production
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
-    uses: AndrewMcLachlan/actions/.github/workflows/azure-appservice-swap-slot.yml@v4
+    # TEMPORARY: pinned alongside the database workflow, for the optional environment input.
+    # Back to @v4 with the others once AndrewMcLachlan/Actions#36 is released.
+    uses: AndrewMcLachlan/actions/.github/workflows/azure-appservice-swap-slot.yml@feature/deploy-sql-database
     with:
-      environment: Production
       app-name: moobank
       resource-group: MooBank
       slot-name: staging
