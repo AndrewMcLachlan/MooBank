@@ -3,6 +3,28 @@ using System.ComponentModel;
 namespace Asm.MooBank.Modules.Bills.Models;
 
 /// <summary>
+/// The bills handed to the import tool.
+/// </summary>
+/// <remarks>
+/// A wrapper rather than a bare collection parameter, and not a stylistic choice: the MCP server
+/// builds each tool's schema with the DI container available, and asks it whether it can supply
+/// each parameter. Microsoft's container answers yes to <c>IEnumerable&lt;T&gt;</c> for any T --
+/// that is how it resolves "all the registered T", returning an empty sequence when there are none.
+/// So a collection parameter is taken for a dependency, left out of the published schema entirely,
+/// and injected empty at call time. The tool then reports importing nothing, having been given
+/// nothing, however much the caller sent.
+///
+/// A concrete record is not resolvable, so it stays in the schema. Anything the container could
+/// satisfy -- <c>IEnumerable&lt;T&gt;</c>, <c>IList&lt;T&gt;</c>, a registered interface -- has the
+/// same problem, and fails just as quietly.
+/// </remarks>
+public record BillImport
+{
+    [Description("The bills to record.")]
+    public IEnumerable<BillEntry> Bills { get; set; } = [];
+}
+
+/// <summary>
 /// A bill as read off a supplier's invoice.
 /// </summary>
 /// <remarks>
