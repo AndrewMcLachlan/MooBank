@@ -3,6 +3,32 @@ using System.ComponentModel;
 namespace Asm.MooBank.Modules.Bills.Models;
 
 /// <summary>
+/// The bills handed to the import tool.
+/// </summary>
+/// <remarks>
+/// A wrapper rather than a bare collection parameter, and not a stylistic choice: the MCP server
+/// builds each tool's schema with the DI container available, and asks it, of each parameter,
+/// whether that is something it supplies. Anything it claims is left out of the schema and injected
+/// at call time instead.
+///
+/// Microsoft's container claims <c>IEnumerable&lt;T&gt;</c> for every T. It is special-cased: asking
+/// for one does not look for a registration of <c>IEnumerable&lt;T&gt;</c> but gathers every
+/// registration of T, and succeeds even when there are none, handing back an empty array. So a
+/// bare collection parameter is taken for a dependency and quietly supplied empty, and the tool
+/// reports importing nothing because it was given nothing, however much the caller sent. An empty
+/// array rather than null is why nothing threw.
+///
+/// <c>IEnumerable&lt;T&gt;</c> alone behaves this way: <c>IList&lt;T&gt;</c>,
+/// <c>ICollection&lt;T&gt;</c>, <c>T[]</c> and <c>List&lt;T&gt;</c> are all refused, as is any type
+/// nothing has registered. A record is safe for that reason, not because it is a record.
+/// </remarks>
+public record BillImport
+{
+    [Description("The bills to record.")]
+    public IEnumerable<BillEntry> Bills { get; set; } = [];
+}
+
+/// <summary>
 /// A bill as read off a supplier's invoice.
 /// </summary>
 /// <remarks>
