@@ -7,16 +7,20 @@ namespace Asm.MooBank.Modules.Bills.Models;
 /// </summary>
 /// <remarks>
 /// A wrapper rather than a bare collection parameter, and not a stylistic choice: the MCP server
-/// builds each tool's schema with the DI container available, and asks it whether it can supply
-/// each parameter. Microsoft's container answers yes to <c>IEnumerable&lt;T&gt;</c> for any T --
-/// that is how it resolves "all the registered T", returning an empty sequence when there are none.
-/// So a collection parameter is taken for a dependency, left out of the published schema entirely,
-/// and injected empty at call time. The tool then reports importing nothing, having been given
-/// nothing, however much the caller sent.
+/// builds each tool's schema with the DI container available, and asks it, of each parameter,
+/// whether that is something it supplies. Anything it claims is left out of the schema and injected
+/// at call time instead.
 ///
-/// A concrete record is not resolvable, so it stays in the schema. Anything the container could
-/// satisfy -- <c>IEnumerable&lt;T&gt;</c>, <c>IList&lt;T&gt;</c>, a registered interface -- has the
-/// same problem, and fails just as quietly.
+/// Microsoft's container claims <c>IEnumerable&lt;T&gt;</c> for every T. It is special-cased: asking
+/// for one does not look for a registration of <c>IEnumerable&lt;T&gt;</c> but gathers every
+/// registration of T, and succeeds even when there are none, handing back an empty array. So a
+/// bare collection parameter is taken for a dependency and quietly supplied empty, and the tool
+/// reports importing nothing because it was given nothing, however much the caller sent. An empty
+/// array rather than null is why nothing threw.
+///
+/// <c>IEnumerable&lt;T&gt;</c> alone behaves this way: <c>IList&lt;T&gt;</c>,
+/// <c>ICollection&lt;T&gt;</c>, <c>T[]</c> and <c>List&lt;T&gt;</c> are all refused, as is any type
+/// nothing has registered. A record is safe for that reason, not because it is a record.
 /// </remarks>
 public record BillImport
 {

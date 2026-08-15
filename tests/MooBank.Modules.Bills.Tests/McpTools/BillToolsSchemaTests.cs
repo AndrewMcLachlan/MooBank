@@ -49,9 +49,12 @@ public class BillToolsSchemaTests
     /// </summary>
     /// <remarks>
     /// The defect this pins down: import-bills took an IEnumerable of bills, which the container
-    /// will happily resolve to an empty sequence, so it was classed as a dependency and dropped
-    /// from the schema. The tool published no parameters at all and imported nothing, whatever it
-    /// was sent.
+    /// claims for every T and resolves to an empty array, so it was classed as a dependency and
+    /// dropped from the schema. The tool published no parameters at all and imported nothing,
+    /// whatever it was sent.
+    ///
+    /// Generic over the assembly rather than written against the one tool, because the same thing
+    /// happens to any parameter the container will claim, and it never announces itself.
     /// </remarks>
     [Fact]
     public void EveryCallerSuppliedParameterAppearsInTheSchema()
