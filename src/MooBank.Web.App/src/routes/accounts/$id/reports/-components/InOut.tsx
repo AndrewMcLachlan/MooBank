@@ -10,7 +10,7 @@ import { Bar } from "react-chartjs-2";
 import { useChartColours } from "utils/chartColours";
 import type { Period } from "models/dateFns";
 import { useInOutReport as defaultReport } from "hooks/useInOutReport";
-import { SpinnerContainer } from "@andrewmclachlan/moo-ds";
+import { Skeleton } from "@andrewmclachlan/moo-ds";
 import { Amount } from "components";
 
 
@@ -37,13 +37,17 @@ export const InOut: React.FC<InOutProps> = ({ accountId, period, useInOutReport 
     // Calculate the difference to the nearest $10
     const difference = Math.round((((report.data?.income ?? 0) - Math.abs(report.data?.outgoings ?? 0)) / 10.0)) * 10;
 
+    // The chart's shape is known before its data is, so hold the space with a
+    // skeleton rather than a spinner. Returning early also suppresses the
+    // heading, which would otherwise read "$0 saved" off the absent report.
+    if (report.isLoading) return <Skeleton.Chart variant="horizontal-bar" count={2} />;
+
     return (
         <>
             {difference >= 0 ?
                 <h4><Amount amount={difference} prefix="$" suffix=" saved" decimalPlaces={0} positiveColour negativeColour /></h4> :
                 <h4><Amount amount={difference} prefix="$" suffix=" overspent" decimalPlaces={0} positiveColour negativeColour /></h4>
             }
-            {report.isLoading && <SpinnerContainer />}
             <Bar id="inout" data={dataset} options={{
                 indexAxis: "y",
                 maintainAspectRatio: false,

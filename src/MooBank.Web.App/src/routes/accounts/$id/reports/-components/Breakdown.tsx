@@ -4,7 +4,7 @@ import { useBreakdownReport } from "../../../-hooks/useBreakdownReport";
 
 import type { ChartData } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
-import { SpinnerContainer } from "@andrewmclachlan/moo-ds";
+import { Skeleton } from "@andrewmclachlan/moo-ds";
 
 import type { Period } from "models/dateFns";
 import { chartColours } from "utils/chartColours";
@@ -26,7 +26,9 @@ export const Breakdown: React.FC<BreakdownProps> = ({ accountId, tagId, period, 
             chartRef.current?.setDatasetVisibility(i, true);
         });
 
-        chartRef.current.update();
+        // Optional: the chart is unmounted while the report loads, so this runs
+        // with a null ref on the first pass.
+        chartRef.current?.update();
     }, [tagId]);
 
     const dataset: ChartData<"doughnut", number[], string> = useMemo(() => {
@@ -41,9 +43,12 @@ export const Breakdown: React.FC<BreakdownProps> = ({ accountId, tagId, period, 
         };
     }, [report.data, accountId, period?.startDate, period?.endDate, reportType, tagId]);
 
+    // The chart's shape is known before its data is, so hold the space with a
+    // skeleton rather than a spinner. Returning early also keeps an empty
+    // <Doughnut> from being painted underneath the placeholder while it loads.
+    if (report.isLoading) return <Skeleton.Chart variant="doughnut" count={3} />;
+
     return (
-        <>
-        {report.isLoading && <SpinnerContainer />}
         <Doughnut id="bytag" ref={chartRef} data={dataset} options={{
             maintainAspectRatio: false,
             plugins: {
@@ -66,7 +71,6 @@ export const Breakdown: React.FC<BreakdownProps> = ({ accountId, tagId, period, 
             },
         }}
         />
-        </>
     );
 }
 

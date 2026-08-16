@@ -4,7 +4,7 @@ import { useAllTagAverageReport } from "../../../-hooks/useAllTagAverageReport";
 
 import type { ChartData } from "chart.js";
 import { Bar } from "react-chartjs-2";
-import { SpinnerContainer } from "@andrewmclachlan/moo-ds";
+import { Skeleton } from "@andrewmclachlan/moo-ds";
 
 import type { Period } from "models/dateFns";
 import { useNavigate } from "@tanstack/react-router";
@@ -35,9 +35,12 @@ export const TopTags: React.FC<TopTagsProps> = ({ accountId, period, reportType,
         });
     }
 
+    // The chart's shape is known before its data is, so hold the space with a
+    // skeleton rather than a spinner. Returning early also keeps an empty <Bar>
+    // from being painted underneath the placeholder while the report loads.
+    if (report.isLoading) return <Skeleton.Chart variant="bar" count={top} />;
+
     return (
-        <>
-        {report.isLoading && <SpinnerContainer />}
         <Bar id="alltagaverage" data={dataset} options={{
             plugins: {
                 legend: {
@@ -68,7 +71,6 @@ export const TopTags: React.FC<TopTagsProps> = ({ accountId, period, reportType,
             },
         }}
         />
-        </>
     );
 }
 

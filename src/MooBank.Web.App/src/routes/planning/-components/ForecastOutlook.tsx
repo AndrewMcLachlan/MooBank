@@ -1,4 +1,4 @@
-import { Badge, Kpi, OverlayTrigger, Popover, Section, Skeleton, SpinnerContainer } from "@andrewmclachlan/moo-ds";
+import { Badge, Kpi, OverlayTrigger, Popover, Section, Skeleton } from "@andrewmclachlan/moo-ds";
 import { MetricsSkeleton } from "./MetricsSkeleton";
 import { format, parseISO } from "date-fns";
 import type { ExpenseModel, ForecastMonth, ForecastPlan, ForecastSummary } from "api/types.gen";
@@ -158,8 +158,12 @@ export const ForecastOutlook: React.FC<ForecastOutlookProps> = ({ plan, summary,
             {summary && <IncomeShortfallNote expenses={summary.expenses} currencyCode={currencyCode} />}
 
             <Section header="Balance Projection" className="forecast-chart-section">
-                <ForecastChart months={months} currencyCode={currencyCode} />
-                {loading && <SpinnerContainer />}
+                {/* A skeleton rather than a spinner: the projection is always two
+                    series, so the shape is known before the data is. Swapping for
+                    the chart also stops an empty one being painted underneath. */}
+                {loading
+                    ? <Skeleton.Chart variant="line" count={2} />
+                    : <ForecastChart months={months} currencyCode={currencyCode} />}
             </Section>
         </div>
     );

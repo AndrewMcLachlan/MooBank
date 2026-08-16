@@ -5,7 +5,7 @@ import type { ChartData } from "chart.js";
 
 import type { Period } from "models/dateFns";
 import { useChartColours } from "utils/chartColours";
-import { SpinnerContainer } from "@andrewmclachlan/moo-ds";
+import { Skeleton } from "@andrewmclachlan/moo-ds";
 
 
 export const InOutTrend: React.FC<InOutTrendProps> = ({ accountId, period }) => {
@@ -44,9 +44,12 @@ export const InOutTrend: React.FC<InOutTrendProps> = ({ accountId, period }) => 
         }]
     };
 
+    // The chart's shape is known before its data is, so hold the space with a
+    // skeleton rather than a spinner. Returning early also keeps an empty
+    // <Line> from being painted underneath the placeholder while it loads.
+    if (report.isLoading) return <Skeleton.Chart variant="line" count={2} />;
+
     return (
-        <>
-            {report.isLoading && <SpinnerContainer />}
             <Line id="inout" data={dataset} options={{
                 maintainAspectRatio: false,
                 scales: {
@@ -66,7 +69,6 @@ export const InOutTrend: React.FC<InOutTrendProps> = ({ accountId, period }) => 
                     }
                 }
             }} />
-        </>
     );
 }
 

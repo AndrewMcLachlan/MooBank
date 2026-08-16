@@ -41,6 +41,9 @@ vi.mock("@andrewmclachlan/moo-ds", () => ({
             Text: () => <div data-testid="skeleton" />,
             Circle: () => <div data-testid="skeleton" />,
             Rect: () => <div data-testid="skeleton" />,
+            // Distinct testid: the chart placeholder is asserted separately from
+            // the KPI band's, which are counted in aggregate.
+            Chart: () => <div data-testid="skeleton-chart" />,
         },
     ),
     // Render the overlay inline so the popover content is assertable without a hover.
@@ -187,6 +190,10 @@ describe("ForecastOutlook", () => {
         // The band is still present, so the chart below it doesn't start high and jump down.
         expect(container.querySelector(".forecast-metrics")).not.toBeNull();
         expect(screen.getAllByTestId("skeleton").length).toBeGreaterThan(0);
-        expect(screen.getByTestId("forecast-chart")).toBeInTheDocument();
+        // The chart's slot is held by its skeleton, not by the chart itself: an
+        // empty <Line> under a placeholder is furniture drawn from data we do
+        // not have yet.
+        expect(screen.getByTestId("skeleton-chart")).toBeInTheDocument();
+        expect(screen.queryByTestId("forecast-chart")).toBeNull();
     });
 });
