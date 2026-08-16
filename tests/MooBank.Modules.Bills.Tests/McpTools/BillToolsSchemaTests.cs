@@ -74,6 +74,33 @@ public class BillToolsSchemaTests
     }
 
     /// <summary>
+    /// Given the get-bills tool
+    /// When its schema is published
+    /// Then the filters should be described and none of them should be demanded of the caller
+    /// </summary>
+    /// <remarks>
+    /// Same reasoning as the import wrapper below: the parameter appearing is not enough, the
+    /// filters inside it have to be visible too. Their being optional is the point of the tool
+    /// taking its own criteria record rather than the query, whose paging is required -- a caller
+    /// asking a one-line question about a bill should not have to choose a page size to ask it.
+    /// </remarks>
+    [Fact]
+    public void GetBillsDescribesOptionalCriteria()
+    {
+        var (_, tool) = Tools().Single(t => t.Tool.ProtocolTool.Name == "get-bills");
+
+        var criteria = tool.ProtocolTool.InputSchema.GetProperty("properties").GetProperty("criteria");
+
+        string[] filters = [.. criteria.GetProperty("properties").EnumerateObject().Select(p => p.Name)];
+
+        Assert.Equal(
+            ["accountId", "endDate", "pageNumber", "pageSize", "startDate", "utilityType"],
+            filters.Order());
+
+        Assert.False(criteria.TryGetProperty("required", out _), "No part of the criteria should be required of the caller.");
+    }
+
+    /// <summary>
     /// Given the import tool
     /// When its schema is published
     /// Then the bills themselves should be described, not just the wrapper around them
