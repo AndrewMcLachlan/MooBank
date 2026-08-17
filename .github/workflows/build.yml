@@ -238,9 +238,7 @@ jobs:
       cancel-in-progress: false
     needs: [build, test, test-frontend, docker-push]
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
-    # TEMPORARY: pinned to the branch so this can be proved before it is released.
-    # Change to @v4 once AndrewMcLachlan/Actions#36 is merged and v4.8 is cut.
-    uses: AndrewMcLachlan/actions/.github/workflows/deploy-sql-database.yml@feature/deploy-sql-database
+    uses: AndrewMcLachlan/actions/.github/workflows/deploy-sql-database.yml@v4
     with:
       environment: Staging
       artifact-name: database
@@ -292,9 +290,7 @@ jobs:
       cancel-in-progress: false
     needs: approve-production
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
-    # TEMPORARY: pinned to the branch so this can be proved before it is released.
-    # Change to @v4 once AndrewMcLachlan/Actions#36 is merged and v4.8 is cut.
-    uses: AndrewMcLachlan/actions/.github/workflows/deploy-sql-database.yml@feature/deploy-sql-database
+    uses: AndrewMcLachlan/actions/.github/workflows/deploy-sql-database.yml@v4
     with:
       artifact-name: database
       server-name: mclachlan
@@ -312,9 +308,7 @@ jobs:
       cancel-in-progress: false
     needs: approve-production
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
-    # TEMPORARY: pinned alongside the database workflow, for the optional environment input.
-    # Back to @v4 with the others once AndrewMcLachlan/Actions#36 is released.
-    uses: AndrewMcLachlan/actions/.github/workflows/azure-appservice-swap-slot.yml@feature/deploy-sql-database
+    uses: AndrewMcLachlan/actions/.github/workflows/azure-appservice-swap-slot.yml@v4
     with:
       app-name: moobank
       resource-group: MooBank
